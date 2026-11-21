@@ -1,0 +1,50 @@
+{
+  "BvSimdTseitin": {
+    "module": "BvSimdTseitin",
+    "lines": 3063,
+    "ok": true,
+    "compile": {
+      "wall_s": 12.96,
+      "user_s": 13.22,
+      "sys_s": 0.24,
+      "rss_mb": 470.74
+    },
+    "olean_bytes": 7464280,
+    "warnings_or_msgs": "",
+    "replay": {
+      "import_ms": 482,
+      "replay_ms": 1356,
+      "kernel_consts": 1007,
+      "lcnf_unsafe_rec": 42,
+      "axioms": "[Quot.sound, Classical.choice, propext]"
+    }
+  },
+  "F2BasisSimd": {
+    "module": "F2BasisSimd",
+    "lines": 966,
+    "ok": true,
+    "compile": {
+      "wall_s": 59.79,
+      "user_s": 57.9,
+      "sys_s": 1.85,
+      "rss_mb": 5167.6
+    },
+    "olean_bytes": 1850072,
+    "warnings_or_msgs": "",
+    "replay": {
+      "import_ms": 184,
+      "replay_ms": 50482,
+      "kernel_consts": 266,
+      "lcnf_unsafe_rec": 9,
+      "axioms": "[Quot.sound, propext]"
+    },
+    "verified_theorems": [
+      "F2SimdCert.checkF2Linear1_sound",
+      "F2SimdCert.checkF2Bilinear_sound",
+      "F2SimdCert.pclmulqdq64_karatsuba_eq_schoolbook",
+      "F2SimdCert.pclmulqdq64_comm",
+      "F2SimdCert.vpshufb128_gf256_mul_0x9d_eq",
+      "F2SimdCert.crc64_ecma_pclmulqdq_karatsuba_eq_schoolbook"
+    ]
+  }
+}

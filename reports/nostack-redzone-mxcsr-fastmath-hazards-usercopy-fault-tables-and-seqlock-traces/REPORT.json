@@ -1,0 +1,103 @@
+{
+  "topics": [
+    "rust/inline-asm",
+    "isa/x86-64",
+    "isa/simd",
+    "ffi/linking",
+    "llvm/codegen",
+    "rustc/codegen",
+    "security/constant-time",
+    "systems/os-kernels",
+    "systems/concurrency-weak-memory",
+    "minirust/memory",
+    "verification/equivalence",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "rustc 1.99.1",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rustc 1.102.0-nightly",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 (bundled with rustc 1.99.1)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "LLVM 23.1.5 (bundled with rustc 1.102.0-nightly)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+        "version": "23.1.5"
+      }
+    },
+    {
+      "name": "GCC 15.2.0",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+        "version": "15.2.0"
+      }
+    },
+    {
+      "name": "Linux kernel",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "Fuchsia and Starnix",
+      "identity": {
+        "repository": "fuchsia.googlesource.com/fuchsia",
+        "revision": "fd31be1516bd2906c5b46be6c3ca3aa1adb162c0"
+      }
+    },
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Intel Data Operand Independent Timing (DOIT) ISA Guidance",
+      "identity": {
+        "document_id": "768873 / 759656",
+        "updated": "2026-11-13 / 2026-02-23",
+        "url": "https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/best-practices/data-operand-independent-timing-isa-guidance.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

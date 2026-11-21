@@ -1,0 +1,109 @@
+{
+  "topics": [
+    "anneal/trusted-boundary",
+    "compilers/dwarf-cfi",
+    "compilers/unwind-tables",
+    "ffi/abi",
+    "isa/x86-64",
+    "lean/mechanization",
+    "llvm/codegen",
+    "llvm/mc-layer",
+    "rust/calling-conventions",
+    "rust/inline-asm",
+    "rustc/abi",
+    "rustc/codegen",
+    "security/assembler-directives",
+    "systems/object-formats",
+    "verification/refinement"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "commit_date": "2026-10-13",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust compiler (1.100.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0",
+        "commit_date": "2026-11-09",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly",
+        "commit_date": "2026-11-11",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+        "commit_date": "2026-11-17"
+      }
+    },
+    {
+      "name": "LLVM (rust-lang/llvm-project 23.1.1)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "LLVM (rust-lang/llvm-project 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+        "version": "23.1.5"
+      }
+    },
+    {
+      "name": "GCC, G++, libgcc_s, and libstdc++ toolchain (Debian x86_64-linux-gnu)",
+      "identity": {
+        "package": "gcc / g++ (Debian 15.2.0-14)",
+        "version": "15.2.0",
+        "target": "x86_64-linux-gnu",
+        "binutils": "GNU Binutils for Debian 2.47",
+        "llvm_dwarfdump": "Debian LLVM 21.1.8"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal verification framework (trusted boundary and operational semantics)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "DWARF Call Frame Information, System V AMD64, and Itanium EH ABI specifications",
+      "identity": {
+        "dwarf": "DWARF Debugging Information Format Version 4 (2010) & Version 5 (2017), Section 6.4",
+        "psabi": "System V Application Binary Interface AMD64 Architecture Processor Supplement",
+        "itanium_eh": "Itanium C++ ABI: Exception Handling (Level I Base ABI & Level II C++ ABI)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

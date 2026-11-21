@@ -1,0 +1,2712 @@
+{
+  "differential_sanity": {
+    "status": "DIFF_OK checks=all"
+  },
+  "mir_vs_obj_stability": {
+    "matrix": [
+      {
+        "config": "opt2",
+        "gpr_count": 17,
+        "insn_count": 110,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "3ceaaefad948fb2f",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "c560d0d2d1e1e31e",
+        "obj_size_bytes": 425,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "fd73186a86693e86",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 9,
+        "insn_count": 91,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "0bdce47a9ca7e790",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "60dd0213b091b9fd",
+        "obj_size_bytes": 337,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "fd22c9aac03e5dc0",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 7,
+        "insn_count": 51,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "ba56798f6f082584",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "6f6ffc954ea34809",
+        "obj_size_bytes": 177,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "ac4d0863b5881165",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 21,
+        "insn_count": 241,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8a14c081fe75b3bb",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "41fbadc08f7b5f8c",
+        "obj_size_bytes": 981,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "32a0ff5d79ee5da2",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 17,
+        "insn_count": 110,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "3ceaaefad948fb2f",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "c560d0d2d1e1e31e",
+        "obj_size_bytes": 425,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "fd73186a86693e86",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 9,
+        "insn_count": 91,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "0bdce47a9ca7e790",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "60dd0213b091b9fd",
+        "obj_size_bytes": 337,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "fd22c9aac03e5dc0",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 7,
+        "insn_count": 51,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "ba56798f6f082584",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "6f6ffc954ea34809",
+        "obj_size_bytes": 177,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "ac4d0863b5881165",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 21,
+        "insn_count": 241,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8a14c081fe75b3bb",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "41fbadc08f7b5f8c",
+        "obj_size_bytes": 981,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "32a0ff5d79ee5da2",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 18,
+        "insn_count": 139,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "0ef0cd1066d585a6",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "a973ef4dbb61f16a",
+        "obj_size_bytes": 564,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "645d7a4a43cadf3e",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 8,
+        "insn_count": 90,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "345a991df23e6437",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "a0beaebc8030439d",
+        "obj_size_bytes": 333,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "c30905c3be4553a4",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 7,
+        "insn_count": 53,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "ef748c7ee6fcf2a2",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "bad805681c01cb60",
+        "obj_size_bytes": 177,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "ac4d0863b5881165",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 21,
+        "insn_count": 266,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "ec8da61129bd55bb",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "2016d8c44f7c7c26",
+        "obj_size_bytes": 1109,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "4b628beb175b3c07",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 9,
+        "insn_count": 61,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "ea83375efe20aef3",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "f13f6d642caf8e4f",
+        "obj_size_bytes": 255,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "4b06686505ffe42b",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 17,
+        "insn_count": 110,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "3ceaaefad948fb2f",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "c560d0d2d1e1e31e",
+        "obj_size_bytes": 425,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "fd73186a86693e86",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 9,
+        "insn_count": 91,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "0bdce47a9ca7e790",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "60dd0213b091b9fd",
+        "obj_size_bytes": 337,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "fd22c9aac03e5dc0",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 7,
+        "insn_count": 51,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "ba56798f6f082584",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "6f6ffc954ea34809",
+        "obj_size_bytes": 177,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "ac4d0863b5881165",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 21,
+        "insn_count": 241,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8a14c081fe75b3bb",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "41fbadc08f7b5f8c",
+        "obj_size_bytes": 981,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "32a0ff5d79ee5da2",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.98.0-nightly",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 14,
+        "insn_count": 114,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "9ff6b84704e8b1b4",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "04943fdbde2f2d2f",
+        "obj_size_bytes": 461,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "1d63361f9116e305",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 9,
+        "insn_count": 91,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "3fcf922dc1a1214b",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "c4647d92844db730",
+        "obj_size_bytes": 322,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "f9a6f5fad6f86038",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 7,
+        "insn_count": 52,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "457893f59a10ac68",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "af46a5a5ea609276",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 23,
+        "insn_count": 247,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8ae54fc6afd46dcc",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "dc2502cedbc321ba",
+        "obj_size_bytes": 1012,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "6eef4811448d7106",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 14,
+        "insn_count": 116,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "38241469614a19ad",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "1a843a8dfee55309",
+        "obj_size_bytes": 456,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "4522ebd74c85f235",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 9,
+        "insn_count": 95,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "180737a3b583df74",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "033488d8512ea7c1",
+        "obj_size_bytes": 334,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "7f0dec4fcb99a6ad",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 7,
+        "insn_count": 52,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "457893f59a10ac68",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "af46a5a5ea609276",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 23,
+        "insn_count": 247,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8ae54fc6afd46dcc",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "dc2502cedbc321ba",
+        "obj_size_bytes": 1012,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "6eef4811448d7106",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 16,
+        "insn_count": 137,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "d828e2acd15f410e",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "a29c15a6cc45a949",
+        "obj_size_bytes": 580,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "d59b2e849fa14f93",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 8,
+        "insn_count": 94,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "18c6d2c577b45610",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "d822f9f227944106",
+        "obj_size_bytes": 330,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "1fe8c934488910b6",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 7,
+        "insn_count": 54,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "885962bf9097210b",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "e20f19cae66acab4",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 23,
+        "insn_count": 270,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "2bd190d3c656c7b0",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "db3c5688e647ea86",
+        "obj_size_bytes": 1124,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "4c38e4f8237db0e9",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 9,
+        "insn_count": 61,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "ea83375efe20aef3",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "f13f6d642caf8e4f",
+        "obj_size_bytes": 255,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "4b06686505ffe42b",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 14,
+        "insn_count": 116,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "38241469614a19ad",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "1a843a8dfee55309",
+        "obj_size_bytes": 456,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "4522ebd74c85f235",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 9,
+        "insn_count": 95,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "180737a3b583df74",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "033488d8512ea7c1",
+        "obj_size_bytes": 334,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "7f0dec4fcb99a6ad",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 7,
+        "insn_count": 52,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "457893f59a10ac68",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "af46a5a5ea609276",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 23,
+        "insn_count": 247,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8ae54fc6afd46dcc",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "dc2502cedbc321ba",
+        "obj_size_bytes": 1012,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "6eef4811448d7106",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.99.1",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 14,
+        "insn_count": 114,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "9ff6b84704e8b1b4",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "04943fdbde2f2d2f",
+        "obj_size_bytes": 461,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "1d63361f9116e305",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 9,
+        "insn_count": 91,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "3fcf922dc1a1214b",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "c4647d92844db730",
+        "obj_size_bytes": 322,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "f9a6f5fad6f86038",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 7,
+        "insn_count": 52,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "457893f59a10ac68",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "af46a5a5ea609276",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 23,
+        "insn_count": 247,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8ae54fc6afd46dcc",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "dc2502cedbc321ba",
+        "obj_size_bytes": 1012,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "6eef4811448d7106",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 14,
+        "insn_count": 116,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "38241469614a19ad",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "1a843a8dfee55309",
+        "obj_size_bytes": 456,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "4522ebd74c85f235",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 9,
+        "insn_count": 95,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "180737a3b583df74",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "033488d8512ea7c1",
+        "obj_size_bytes": 334,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "7f0dec4fcb99a6ad",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 7,
+        "insn_count": 52,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "457893f59a10ac68",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "af46a5a5ea609276",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 23,
+        "insn_count": 247,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8ae54fc6afd46dcc",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "dc2502cedbc321ba",
+        "obj_size_bytes": 1012,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "6eef4811448d7106",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 16,
+        "insn_count": 137,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "d828e2acd15f410e",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "a29c15a6cc45a949",
+        "obj_size_bytes": 580,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "d59b2e849fa14f93",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 8,
+        "insn_count": 94,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "18c6d2c577b45610",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "d822f9f227944106",
+        "obj_size_bytes": 330,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "1fe8c934488910b6",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 7,
+        "insn_count": 54,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "885962bf9097210b",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "e20f19cae66acab4",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 23,
+        "insn_count": 270,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "2bd190d3c656c7b0",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "db3c5688e647ea86",
+        "obj_size_bytes": 1124,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "4c38e4f8237db0e9",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 9,
+        "insn_count": 61,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "ea83375efe20aef3",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "f13f6d642caf8e4f",
+        "obj_size_bytes": 255,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "4b06686505ffe42b",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 14,
+        "insn_count": 116,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "38241469614a19ad",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "1a843a8dfee55309",
+        "obj_size_bytes": 456,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "4522ebd74c85f235",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 9,
+        "insn_count": 95,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "180737a3b583df74",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "033488d8512ea7c1",
+        "obj_size_bytes": 334,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "7f0dec4fcb99a6ad",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 7,
+        "insn_count": 52,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "457893f59a10ac68",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "af46a5a5ea609276",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 23,
+        "insn_count": 247,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8ae54fc6afd46dcc",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "dc2502cedbc321ba",
+        "obj_size_bytes": 1012,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "6eef4811448d7106",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.100.0",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 14,
+        "insn_count": 114,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "9ff6b84704e8b1b4",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "04943fdbde2f2d2f",
+        "obj_size_bytes": 461,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "1d63361f9116e305",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 9,
+        "insn_count": 91,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "3fcf922dc1a1214b",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "311392a7728d6f01",
+        "obj_size_bytes": 322,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "f9a6f5fad6f86038",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 7,
+        "insn_count": 52,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "457893f59a10ac68",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "af46a5a5ea609276",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 23,
+        "insn_count": 247,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8ae54fc6afd46dcc",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "dc2502cedbc321ba",
+        "obj_size_bytes": 1012,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "6eef4811448d7106",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt2",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 14,
+        "insn_count": 116,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "38241469614a19ad",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "1a843a8dfee55309",
+        "obj_size_bytes": 456,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "4522ebd74c85f235",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 9,
+        "insn_count": 95,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "180737a3b583df74",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "45a8a88e70c33022",
+        "obj_size_bytes": 334,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "7f0dec4fcb99a6ad",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 7,
+        "insn_count": 52,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "457893f59a10ac68",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "af46a5a5ea609276",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 23,
+        "insn_count": 247,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8ae54fc6afd46dcc",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "dc2502cedbc321ba",
+        "obj_size_bytes": 1012,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "6eef4811448d7106",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 16,
+        "insn_count": 137,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "d828e2acd15f410e",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "a29c15a6cc45a949",
+        "obj_size_bytes": 580,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "d59b2e849fa14f93",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 8,
+        "insn_count": 94,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "18c6d2c577b45610",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "cd24d465cb4a3377",
+        "obj_size_bytes": 330,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "1fe8c934488910b6",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 7,
+        "insn_count": 54,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "885962bf9097210b",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "e20f19cae66acab4",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 23,
+        "insn_count": 270,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "2bd190d3c656c7b0",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "db3c5688e647ea86",
+        "obj_size_bytes": 1124,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "4c38e4f8237db0e9",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3_x86_64_v3",
+        "gpr_count": 9,
+        "insn_count": 61,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "ea83375efe20aef3",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "f13f6d642caf8e4f",
+        "obj_size_bytes": 255,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "4b06686505ffe42b",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 14,
+        "insn_count": 116,
+        "kernel": "adler32_avx2",
+        "mnemonic_seq_sha256": "38241469614a19ad",
+        "obj_reloc_count": 2,
+        "obj_sha256_16": "1a843a8dfee55309",
+        "obj_size_bytes": 456,
+        "postcleanup_mir_hash": "83de9d4475b86502",
+        "reg_seq_sha256": "4522ebd74c85f235",
+        "rip_const_refs": 2,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "8467f3c4f99032a4",
+        "xmm_regs": [
+          "xmm0",
+          "xmm3",
+          "xmm4",
+          "xmm5"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 9,
+        "insn_count": 95,
+        "kernel": "memchr_avx2",
+        "mnemonic_seq_sha256": "180737a3b583df74",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "45a8a88e70c33022",
+        "obj_size_bytes": 334,
+        "postcleanup_mir_hash": "cf156f5eacfda3d2",
+        "reg_seq_sha256": "7f0dec4fcb99a6ad",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "3d0c66c7cf1db39f",
+        "xmm_regs": [
+          "xmm0"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 7,
+        "insn_count": 52,
+        "kernel": "utf8_range_avx2",
+        "mnemonic_seq_sha256": "457893f59a10ac68",
+        "obj_reloc_count": 3,
+        "obj_sha256_16": "af46a5a5ea609276",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "86cfd14de002bb91",
+        "reg_seq_sha256": "23b4f5b9db2b3b44",
+        "rip_const_refs": 3,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "0490fd44f199472b",
+        "xmm_regs": [],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm2",
+          "ymm3",
+          "ymm4"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 23,
+        "insn_count": 247,
+        "kernel": "dot_maddubs_avx2",
+        "mnemonic_seq_sha256": "8ae54fc6afd46dcc",
+        "obj_reloc_count": 14,
+        "obj_sha256_16": "dc2502cedbc321ba",
+        "obj_size_bytes": 1012,
+        "postcleanup_mir_hash": "d22772c212e754ab",
+        "reg_seq_sha256": "6eef4811448d7106",
+        "rip_const_refs": 14,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "b0d2dbede38d6436",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm10",
+          "xmm11",
+          "xmm12",
+          "xmm13",
+          "xmm2",
+          "xmm3",
+          "xmm6",
+          "xmm7",
+          "xmm8",
+          "xmm9"
+        ],
+        "ymm_regs": [
+          "ymm0",
+          "ymm1",
+          "ymm10",
+          "ymm12",
+          "ymm2",
+          "ymm3",
+          "ymm4",
+          "ymm5",
+          "ymm6",
+          "ymm7",
+          "ymm8",
+          "ymm9"
+        ]
+      },
+      {
+        "config": "opt3_caller_perturb",
+        "gpr_count": 8,
+        "insn_count": 45,
+        "kernel": "clmul_fold_avx2",
+        "mnemonic_seq_sha256": "2cc90921ecd5146c",
+        "obj_reloc_count": 0,
+        "obj_sha256_16": "79ce7a313c618412",
+        "obj_size_bytes": 191,
+        "postcleanup_mir_hash": "27cc4b91ebc3399c",
+        "reg_seq_sha256": "2149703e363705a3",
+        "rip_const_refs": 0,
+        "rsp_mem_refs": 0,
+        "toolchain": "1.102.0-nightly",
+        "unfolded_stdarch_mir_hash": "609ca7307807dba2",
+        "xmm_regs": [
+          "xmm0",
+          "xmm1",
+          "xmm2"
+        ],
+        "ymm_regs": []
+      }
+    ],
+    "summary_by_kernel": {
+      "adler32_avx2": {
+        "distinct_mnemonic_schedules": 5,
+        "distinct_obj_byte_hashes": 5,
+        "distinct_postcleanup_mir_hashes": 1,
+        "distinct_regalloc_sequences": 5,
+        "distinct_unfolded_stdarch_mir_hashes": 1,
+        "insn_count_min_max": [
+          110,
+          139
+        ],
+        "obj_bytes_min_max": [
+          425,
+          580
+        ],
+        "reloc_count_min_max": [
+          2,
+          2
+        ],
+        "rsp_refs_min_max": [
+          0,
+          0
+        ],
+        "total_cells": 16,
+        "within_toolchain_mir_drift_count": 0,
+        "within_toolchain_obj_drift_count": 4
+      },
+      "clmul_fold_avx2": {
+        "distinct_mnemonic_schedules": 2,
+        "distinct_obj_byte_hashes": 2,
+        "distinct_postcleanup_mir_hashes": 1,
+        "distinct_regalloc_sequences": 2,
+        "distinct_unfolded_stdarch_mir_hashes": 1,
+        "insn_count_min_max": [
+          45,
+          61
+        ],
+        "obj_bytes_min_max": [
+          191,
+          255
+        ],
+        "reloc_count_min_max": [
+          0,
+          0
+        ],
+        "rsp_refs_min_max": [
+          0,
+          0
+        ],
+        "total_cells": 16,
+        "within_toolchain_mir_drift_count": 0,
+        "within_toolchain_obj_drift_count": 4
+      },
+      "dot_maddubs_avx2": {
+        "distinct_mnemonic_schedules": 4,
+        "distinct_obj_byte_hashes": 4,
+        "distinct_postcleanup_mir_hashes": 1,
+        "distinct_regalloc_sequences": 4,
+        "distinct_unfolded_stdarch_mir_hashes": 1,
+        "insn_count_min_max": [
+          241,
+          270
+        ],
+        "obj_bytes_min_max": [
+          981,
+          1124
+        ],
+        "reloc_count_min_max": [
+          14,
+          14
+        ],
+        "rsp_refs_min_max": [
+          0,
+          0
+        ],
+        "total_cells": 16,
+        "within_toolchain_mir_drift_count": 0,
+        "within_toolchain_obj_drift_count": 4
+      },
+      "memchr_avx2": {
+        "distinct_mnemonic_schedules": 5,
+        "distinct_obj_byte_hashes": 8,
+        "distinct_postcleanup_mir_hashes": 1,
+        "distinct_regalloc_sequences": 5,
+        "distinct_unfolded_stdarch_mir_hashes": 1,
+        "insn_count_min_max": [
+          90,
+          95
+        ],
+        "obj_bytes_min_max": [
+          322,
+          337
+        ],
+        "reloc_count_min_max": [
+          0,
+          0
+        ],
+        "rsp_refs_min_max": [
+          0,
+          0
+        ],
+        "total_cells": 16,
+        "within_toolchain_mir_drift_count": 0,
+        "within_toolchain_obj_drift_count": 4
+      },
+      "utf8_range_avx2": {
+        "distinct_mnemonic_schedules": 4,
+        "distinct_obj_byte_hashes": 4,
+        "distinct_postcleanup_mir_hashes": 1,
+        "distinct_regalloc_sequences": 2,
+        "distinct_unfolded_stdarch_mir_hashes": 1,
+        "insn_count_min_max": [
+          51,
+          54
+        ],
+        "obj_bytes_min_max": [
+          177,
+          191
+        ],
+        "reloc_count_min_max": [
+          3,
+          3
+        ],
+        "rsp_refs_min_max": [
+          0,
+          0
+        ],
+        "total_cells": 16,
+        "within_toolchain_mir_drift_count": 0,
+        "within_toolchain_obj_drift_count": 4
+      }
+    },
+    "toolchains": {
+      "1.100.0": {
+        "LLVM version": "23.1.5",
+        "binary": "rustc",
+        "commit-date": "2026-11-09",
+        "commit-hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "host": "x86_64-unknown-linux-gnu",
+        "release": "1.100.0"
+      },
+      "1.102.0-nightly": {
+        "LLVM version": "23.1.5",
+        "binary": "rustc",
+        "commit-date": "2026-11-11",
+        "commit-hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "host": "x86_64-unknown-linux-gnu",
+        "release": "1.102.0-nightly"
+      },
+      "1.98.0-nightly": {
+        "LLVM version": "22.1.6",
+        "binary": "rustc",
+        "commit-date": "2026-05-31",
+        "commit-hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "host": "x86_64-unknown-linux-gnu",
+        "release": "1.98.0-nightly"
+      },
+      "1.99.1": {
+        "LLVM version": "23.1.1",
+        "binary": "rustc",
+        "commit-date": "2026-10-13",
+        "commit-hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "host": "x86_64-unknown-linux-gnu",
+        "release": "1.99.1"
+      }
+    }
+  },
+  "stdarch_and_crate_pareto": {
+    "crates_scanned": [
+      {
+        "crate": "zlib-rs-0.6.8",
+        "git_sha1": "0254e07204884bfc902d6ebb68c8b703d0ea49cf",
+        "non_x86_asm_sites": 8,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 228,
+        "x86_unique_intrinsics": 51
+      },
+      {
+        "crate": "memchr-2.8.3",
+        "git_sha1": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 14,
+        "x86_unique_intrinsics": 14
+      },
+      {
+        "crate": "simdutf8-0.1.5",
+        "git_sha1": "87ee8d9d20b849eae1974a82b248ee6fe7491bcc",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 38,
+        "x86_unique_intrinsics": 30
+      },
+      {
+        "crate": "crc32fast-1.5.5",
+        "git_sha1": "8a93d2a70c00ab3e72beda42014b18fad8e496ea",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 84,
+        "x86_unique_intrinsics": 27
+      },
+      {
+        "crate": "simd-adler32-0.3.10",
+        "git_sha1": "d93164f98d7fe2daf883f2e1bec82778dd26199a",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 104,
+        "x86_unique_intrinsics": 37
+      },
+      {
+        "crate": "blake3-1.8.7",
+        "git_sha1": "f3149ec5bb5449af877ba20377a11008ff499fa2",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 218,
+        "x86_unique_intrinsics": 38
+      },
+      {
+        "crate": "aho-corasick-1.1.5",
+        "git_sha1": "5178060ce73d91938f8582d0360e3be031380440",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 88,
+        "x86_unique_intrinsics": 26
+      },
+      {
+        "crate": "bytecount-0.6.9",
+        "git_sha1": "f06647f90a45ab302d9423dbe85019d595abf8c2",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 63,
+        "x86_unique_intrinsics": 19
+      },
+      {
+        "crate": "hashbrown-0.17.1",
+        "git_sha1": "c62a63a61b7caf2de8f9ecb7b06a66b0ab6bdf3d",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 11,
+        "x86_unique_intrinsics": 9
+      },
+      {
+        "crate": "sha2-0.11.1",
+        "git_sha1": "138dc5a05b93f8e49cda177fc6cfd7cc43673e5d",
+        "non_x86_asm_sites": 6,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 48,
+        "x86_unique_intrinsics": 22
+      },
+      {
+        "crate": "chacha20-0.10.2",
+        "git_sha1": "6b236b758a0279f64d777797514813b2cb572c8b",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 232,
+        "x86_unique_intrinsics": 44
+      },
+      {
+        "crate": "aes-0.9.4",
+        "git_sha1": "9a84f2f8b581f62bcd00e16b5e11a2f6251916ee",
+        "non_x86_asm_sites": 0,
+        "x86_asm_sites": 0,
+        "x86_stdarch_call_sites": 99,
+        "x86_unique_intrinsics": 29
+      }
+    ],
+    "llvm_leaf_sites": 148,
+    "portable_simd_sites": 786,
+    "pure_mir_sites": 293,
+    "ranked_llvm_families": [
+      [
+        "llvm_family:pclmulqdq",
+        38
+      ],
+      [
+        "llvm_family:aesni",
+        30
+      ],
+      [
+        "llvm_family:pshufb",
+        21
+      ],
+      [
+        "llvm_family:psadbw",
+        15
+      ],
+      [
+        "llvm_family:vperm",
+        9
+      ],
+      [
+        "llvm_family:pternlog",
+        8
+      ],
+      [
+        "llvm_family:pmaddwd",
+        8
+      ],
+      [
+        "llvm_family:pmaddubsw",
+        6
+      ],
+      [
+        "llvm_family:llvm.prefetch.p0",
+        5
+      ],
+      [
+        "llvm_family:vpdpbusd",
+        3
+      ],
+      [
+        "llvm_family:llvm.x86.sha256rnds2",
+        2
+      ],
+      [
+        "llvm_family:llvm.x86.avx512.permvar.si.512",
+        1
+      ],
+      [
+        "llvm_family:llvm.x86.sha256msg1",
+        1
+      ],
+      [
+        "llvm_family:llvm.x86.sha256msg2",
+        1
+      ]
+    ],
+    "stdarch_199_x86_fn_count": 6064,
+    "stdarch_199_x86_llvm_link_count": 1052,
+    "total_x86_stdarch_sites": 1227,
+    "unique_portable_simd_ops_used": [
+      "simd_add",
+      "simd_and",
+      "simd_bitmask",
+      "simd_eq",
+      "simd_extract",
+      "simd_funnel_shl",
+      "simd_gt",
+      "simd_lt",
+      "simd_or",
+      "simd_reduce_or",
+      "simd_saturating_sub",
+      "simd_shl",
+      "simd_shr",
+      "simd_shuffle",
+      "simd_sub",
+      "simd_xor"
+    ],
+    "unique_x86_stdarch_fns_used": 167,
+    "zero_llvm_intrinsic_pct": 87.94,
+    "zero_llvm_intrinsic_sites": 1079
+  }
+}

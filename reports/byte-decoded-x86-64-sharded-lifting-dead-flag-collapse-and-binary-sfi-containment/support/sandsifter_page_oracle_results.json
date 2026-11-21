@@ -1,0 +1,2208 @@
+{
+  "host_cpu": {
+    "kernel": "Linux-7.1.6-1rodete1-amd64-x86_64-with-glibc2.43",
+    "vendor_id": "GenuineIntel",
+    "cpu_family": "6",
+    "model": "106",
+    "model_name": "Intel(R) Xeon(R) CPU @ 2.60GHz",
+    "stepping": "6",
+    "key_isa_flags": "sse2 avx avx2 avx512f bmi1 bmi2 abm fsgsbase ibrs_enhanced"
+  },
+  "toolchains": {
+    "gcc": "gcc (Debian 15.2.0-14) 15.2.0",
+    "llvm_mc": "Debian LLVM version 21.1.8 Optimized build.",
+    "objdump": "GNU objdump (GNU Binutils for Debian) 2.47",
+    "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+  },
+  "summary": {
+    "total_specimens": 48,
+    "silicon_ok_exec": 36,
+    "silicon_fault_ud": 9,
+    "silicon_fault_gp0_overlong": 2,
+    "silicon_fault_gp0_ring3_priv": 1,
+    "arch_decode_fault_specimens": 11,
+    "lean_decodeX64_exact_matches": 48,
+    "llvm_mc_arch_decode_fault_false_accepts": 11,
+    "objdump_arch_decode_fault_false_accepts": 11
+  },
+  "specimens": [
+    {
+      "name": "len_1b_nop",
+      "category": "length_limit",
+      "hex": "90",
+      "byte_len": 1,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 1,
+        "boundary_L": 1,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 1,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 2,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 1,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nop"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "nop"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "len_3b_nop",
+      "category": "length_limit",
+      "hex": "0f1f00",
+      "byte_len": 3,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 3,
+        "boundary_L": 3,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 3,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 4,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 3,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nopl\t(%rax)"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "nop    DWORD PTR [rax]"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "len_7b_nop",
+      "category": "length_limit",
+      "hex": "0f1f8000000000",
+      "byte_len": 7,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 7,
+        "boundary_L": 7,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 7,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 8,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 7,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nopl\t(%rax)"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "nop    DWORD PTR [rax+0x0]"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "len_11b_gcc_align_nop",
+      "category": "length_limit",
+      "hex": "66662e0f1f840000000000",
+      "byte_len": 11,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 11,
+        "boundary_L": 11,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 11,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 12,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 11,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nopw\t%cs:(%rax,%rax)"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "data16 cs nop WORD PTR [rax+rax*1+0x0]",
+          "7:\t00 00 00 00"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "len_15b_max_legal_nop",
+      "category": "length_limit",
+      "hex": "666666666666666666666666666690",
+      "byte_len": 15,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 15,
+        "boundary_L": 15,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 15,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 16,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 15,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nop"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16",
+          "7:\t66 66 66 66 66 66 66"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "len_16b_overlong_nop_gp0",
+      "category": "length_limit",
+      "hex": "66666666666666666666666666666690",
+      "byte_len": 16,
+      "silicon": {
+        "verdict": "FAULT_GP0",
+        "hw_decode_len": 16,
+        "boundary_L": 16,
+        "boundary_trapno": 13,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 13,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_GP0",
+        "decode_len": 16,
+        "detail": "gpLenExceeded"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nop"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16",
+          "7:\t66 66 66 66 66 66 66"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "len_15pfx_plus_int3_gp0",
+      "category": "length_limit",
+      "hex": "666666666666666666666666666666",
+      "byte_len": 15,
+      "silicon": {
+        "verdict": "FAULT_GP0",
+        "hw_decode_len": 16,
+        "boundary_L": 16,
+        "boundary_trapno": 13,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 13,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_GP0",
+        "decode_len": 16,
+        "detail": "gpLenExceeded"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "data16"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16 data16",
+          "7:\t66 66 66 66 66 66 66"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "cet_endbr64",
+      "category": "cet_hint_nop",
+      "hex": "f30f1efa",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.endbr64"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "endbr64"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "endbr64"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "cet_endbr32",
+      "category": "cet_hint_nop",
+      "hex": "f30f1efb",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "endbr32"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "endbr32"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "hint_nop_0f1efa_not_cli",
+      "category": "cet_hint_nop",
+      "hex": "0f1efa",
+      "byte_len": 3,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 3,
+        "boundary_L": 3,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 3,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 4,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 3,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "cli"
+        ],
+        "diagnostics": [
+          "<stdin>:1:1: warning: invalid instruction encoding"
+        ]
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "nop    edx"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "priv_cli_ring3_gp0",
+      "category": "cet_hint_nop",
+      "hex": "fa",
+      "byte_len": 1,
+      "silicon": {
+        "verdict": "FAULT_GP0",
+        "hw_decode_len": 1,
+        "boundary_L": 1,
+        "boundary_trapno": 13,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 13,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_GP0",
+        "decode_len": 1,
+        "detail": "gpRing3Priv"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": true,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "cli"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "cli"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "cet_notrack_jmp_rax",
+      "category": "cet_hint_nop",
+      "hex": "3effe0",
+      "byte_len": 3,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 3,
+        "boundary_L": 3,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 3,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 4,
+        "post_rax": "0x7f89baebeff2",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 3,
+        "detail": "ByteX86.X64Instr.jmpReg (ByteX86.Reg.rax)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "jmpq\t*%rax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "notrack jmp rax"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "lock_add_mem_legal",
+      "category": "lock_legality",
+      "hex": "f0480107",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x2a",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x12a",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.lockAdd64 (ByteX86.MemAddr.baseDisp (ByteX86.Reg.rdi) none 0x0000000000000000#64) (ByteX86.Reg.rax)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "lock",
+          "addq\t%rax, (%rdi)"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "lock add QWORD PTR [rdi],rax"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "lock_add_imm_mem_legal",
+      "category": "lock_legality",
+      "hex": "f048830705",
+      "byte_len": 5,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 5,
+        "boundary_L": 5,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 5,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 6,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x105",
+        "post_efl6": "0x004"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 5,
+        "detail": "ByteX86.X64Instr.lockAddImm64"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "lock",
+          "addq\t$5, (%rdi)"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "lock add QWORD PTR [rdi],0x5"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "lock_cmpxchg_mem_legal",
+      "category": "lock_legality",
+      "hex": "f0480fb137",
+      "byte_len": 5,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 5,
+        "boundary_L": 5,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 5,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 6,
+        "post_rax": "0x100",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x777",
+        "post_efl6": "0x044"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 5,
+        "detail": "ByteX86.X64Instr.lockCmpxchg64 (ByteX86.MemAddr.baseDisp (ByteX86.Reg.rdi) none 0x0000000000000000#64) (ByteX86.Reg.rsi)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "lock",
+          "cmpxchgq\t%rsi, (%rdi)"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "lock cmpxchg QWORD PTR [rdi],rsi"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "lock_nop_illegal_ud",
+      "category": "lock_legality",
+      "hex": "f090",
+      "byte_len": 2,
+      "silicon": {
+        "verdict": "FAULT_UD",
+        "hw_decode_len": 2,
+        "boundary_L": 2,
+        "boundary_trapno": 6,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 6,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_UD",
+        "decode_len": 0,
+        "detail": "udIllegalLock"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "lock",
+          "nop"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "lock nop"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "lock_add_reg_dst_ud",
+      "category": "lock_legality",
+      "hex": "f04801f0",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "FAULT_UD",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 6,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 6,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_UD",
+        "decode_len": 0,
+        "detail": "udIllegalLock"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "lock",
+          "addq\t%rsi, %rax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "lock add rax,rsi"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "lock_mov_load_ud",
+      "category": "lock_legality",
+      "hex": "f0488b07",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "FAULT_UD",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 6,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 6,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_UD",
+        "decode_len": 0,
+        "detail": "udIllegalLock"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "lock",
+          "movq\t(%rdi), %rax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "lock mov rax,QWORD PTR [rdi]"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "lock_mov_store_ud",
+      "category": "lock_legality",
+      "hex": "f0488907",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "FAULT_UD",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 6,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 6,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_UD",
+        "decode_len": 0,
+        "detail": "udIllegalLock"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "lock",
+          "movq\t%rax, (%rdi)"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "lock mov QWORD PTR [rdi],rax"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "rex_40_nop",
+      "category": "rex_precedence",
+      "hex": "4090",
+      "byte_len": 2,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 2,
+        "boundary_L": 2,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 2,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 3,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 2,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nop"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "rex nop"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "rex_48_nop",
+      "category": "rex_precedence",
+      "hex": "4890",
+      "byte_len": 2,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 2,
+        "boundary_L": 2,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 2,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 3,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 2,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nop"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "rex.W nop"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "rex_41_xchg_eax_r8d",
+      "category": "rex_precedence",
+      "hex": "4190",
+      "byte_len": 2,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 2,
+        "boundary_L": 2,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 2,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 3,
+        "post_rax": "0x88888888",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x22222222",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 2,
+        "detail": "ByteX86.X64Instr.xchg32 (ByteX86.Reg.r8) (ByteX86.Reg.rax)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "xchgl\t%r8d, %eax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "xchg   r8d,eax"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "rex_49_xchg_rax_r8",
+      "category": "rex_precedence",
+      "hex": "4990",
+      "byte_len": 2,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 2,
+        "boundary_L": 2,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 2,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 3,
+        "post_rax": "0x7777777788888888",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x1111111122222222",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 2,
+        "detail": "ByteX86.X64Instr.xchg64 (ByteX86.Reg.r8) (ByteX86.Reg.rax)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "xchgq\t%r8, %rax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "xchg   r8,rax"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "rex_41_40_last_rex_wins_nop",
+      "category": "rex_precedence",
+      "hex": "414090",
+      "byte_len": 3,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 3,
+        "boundary_L": 3,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 3,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 4,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 3,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nop"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "rex.B",
+          "rex nop"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "rex_40_41_last_rex_wins_xchg",
+      "category": "rex_precedence",
+      "hex": "404190",
+      "byte_len": 3,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 3,
+        "boundary_L": 3,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 3,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 4,
+        "post_rax": "0x88888888",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x22222222",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 3,
+        "detail": "ByteX86.X64Instr.xchg32 (ByteX86.Reg.r8) (ByteX86.Reg.rax)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "xchgl\t%r8d, %eax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "rex",
+          "xchg   r8d,eax"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "rex_41_66_nullified_by_legacy",
+      "category": "rex_precedence",
+      "hex": "416690",
+      "byte_len": 3,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 3,
+        "boundary_L": 3,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 3,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 4,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 3,
+        "detail": "ByteX86.X64Instr.nop"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "nop"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "rex.B",
+          "xchg   ax,ax"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "rex_66_41_xchg_ax_r8w",
+      "category": "rex_precedence",
+      "hex": "664190",
+      "byte_len": 3,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 3,
+        "boundary_L": 3,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 3,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 4,
+        "post_rax": "0x1111111122228888",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788882222",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 3,
+        "detail": "ByteX86.X64Instr.xchg16 (ByteX86.Reg.r8) (ByteX86.Reg.rax)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "xchgw\t%r8w, %ax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "xchg   r8w,ax"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "rex_48_67_nullified_add32",
+      "category": "rex_precedence",
+      "hex": "486701f0",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x5",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x004"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.aluRR32 (ByteX86.AluOp.add) (ByteX86.Reg.rax) (ByteX86.Reg.rsi)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "addr32\t\taddl\t%esi, %eax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "rex.W",
+          "addr32 add eax,esi"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "rex_67_48_active_add64",
+      "category": "rex_precedence",
+      "hex": "674801f0",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x300000005",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x004"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.aluRR64 (ByteX86.AluOp.add) (ByteX86.Reg.rax) (ByteX86.Reg.rsi)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "addr32\t\taddq\t%rsi, %rax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "addr32 add rax,rsi"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "vex_bare_vzeroupper_ok",
+      "category": "vex_prefix_ud",
+      "hex": "c5f877",
+      "byte_len": 3,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 3,
+        "boundary_L": 3,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 3,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 4,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 3,
+        "detail": "ByteX86.X64Instr.vzeroupper"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "vzeroupper"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "vzeroupper"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "vex_cs_2e_prefix_ok",
+      "category": "vex_prefix_ud",
+      "hex": "2ec5f877",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.vzeroupper"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "vzeroupper"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "cs vzeroupper"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "vex_addr32_67_prefix_ok",
+      "category": "vex_prefix_ud",
+      "hex": "67c5f877",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.vzeroupper"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "addr32\t\tvzeroupper"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "addr32 vzeroupper"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "vex_66_prefix_ud",
+      "category": "vex_prefix_ud",
+      "hex": "66c5f877",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "FAULT_UD",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 6,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 6,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_UD",
+        "decode_len": 0,
+        "detail": "udIllegalVexPrefix"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "vzeroupper"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "data16 vzeroupper"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "vex_f2_prefix_ud",
+      "category": "vex_prefix_ud",
+      "hex": "f2c5f877",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "FAULT_UD",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 6,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 6,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_UD",
+        "decode_len": 0,
+        "detail": "udIllegalVexPrefix"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "repne\t\tvzeroupper"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "repnz vzeroupper"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "vex_f3_prefix_ud",
+      "category": "vex_prefix_ud",
+      "hex": "f3c5f877",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "FAULT_UD",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 6,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 6,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_UD",
+        "decode_len": 0,
+        "detail": "udIllegalVexPrefix"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "rep\t\tvzeroupper"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "repz vzeroupper"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "vex_rex_48_prefix_ud",
+      "category": "vex_prefix_ud",
+      "hex": "48c5f877",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "FAULT_UD",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 6,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 6,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_UD",
+        "decode_len": 0,
+        "detail": "udIllegalVexPrefix"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "vzeroupper"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "rex.W vzeroupper"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "vex_lock_f0_prefix_ud",
+      "category": "vex_prefix_ud",
+      "hex": "f0c5f877",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "FAULT_UD",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 6,
+        "boundary_err": 0,
+        "boundary_rip_delta": 0,
+        "exec_L17_trapno": 6,
+        "exec_L17_rip_delta": 0,
+        "post_rax": "0x1111111122222222",
+        "post_rdx": "0x3333333344444444",
+        "post_r8": "0x7777777788888888",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "FAULT_UD",
+        "decode_len": 0,
+        "detail": "udIllegalVexPrefix"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": true,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "lock",
+          "vzeroupper"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "lock vzeroupper"
+        ]
+      },
+      "llvm_mc_silent_false_accept": true,
+      "objdump_silent_false_accept": true
+    },
+    {
+      "name": "bsf_zero_fl0",
+      "category": "flags_and_bmi",
+      "hex": "480fbcd1",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x11",
+        "post_rdx": "0xdeadbeefcafebabe",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x044"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.bsf64 (ByteX86.Reg.rdx) (ByteX86.Reg.rcx)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "bsfq\t%rcx, %rdx"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "bsf    rdx,rcx"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "bsf_zero_fl1",
+      "category": "flags_and_bmi",
+      "hex": "480fbcd1",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x11",
+        "post_rdx": "0xdeadbeefcafebabe",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x044"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.bsf64 (ByteX86.Reg.rdx) (ByteX86.Reg.rcx)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "bsfq\t%rcx, %rdx"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "bsf    rdx,rcx"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "tzcnt_zero_fl0",
+      "category": "flags_and_bmi",
+      "hex": "f3480fbcd1",
+      "byte_len": 5,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 5,
+        "boundary_L": 5,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 5,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 6,
+        "post_rax": "0x11",
+        "post_rdx": "0x40",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x001"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 5,
+        "detail": "ByteX86.X64Instr.tzcnt64 (ByteX86.Reg.rdx) (ByteX86.Reg.rcx)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "tzcntq\t%rcx, %rdx"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "tzcnt  rdx,rcx"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "tzcnt_zero_fl1",
+      "category": "flags_and_bmi",
+      "hex": "f3480fbcd1",
+      "byte_len": 5,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 5,
+        "boundary_L": 5,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 5,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 6,
+        "post_rax": "0x11",
+        "post_rdx": "0x40",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x001"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 5,
+        "detail": "ByteX86.X64Instr.tzcnt64 (ByteX86.Reg.rdx) (ByteX86.Reg.rcx)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "tzcntq\t%rcx, %rdx"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "tzcnt  rdx,rcx"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "bsf_bit7_nonzero",
+      "category": "flags_and_bmi",
+      "hex": "480fbcd1",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x11",
+        "post_rdx": "0x7",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.bsf64 (ByteX86.Reg.rdx) (ByteX86.Reg.rcx)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "bsfq\t%rcx, %rdx"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "bsf    rdx,rcx"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "tzcnt_bit7_nonzero",
+      "category": "flags_and_bmi",
+      "hex": "f3480fbcd1",
+      "byte_len": 5,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 5,
+        "boundary_L": 5,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 5,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 6,
+        "post_rax": "0x11",
+        "post_rdx": "0x7",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 5,
+        "detail": "ByteX86.X64Instr.tzcnt64 (ByteX86.Reg.rdx) (ByteX86.Reg.rcx)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "tzcntq\t%rcx, %rdx"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "tzcnt  rdx,rcx"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "imul_zero_result_zf0_pf1",
+      "category": "flags_and_bmi",
+      "hex": "480fafc6",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x0",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x004"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.imulRR64 (ByteX86.Reg.rax) (ByteX86.Reg.rsi)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "imulq\t%rsi, %rax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "imul   rax,rsi"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "imul_overflow_cf1_of1",
+      "category": "flags_and_bmi",
+      "hex": "480fafc6",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x0",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x805"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.imulRR64 (ByteX86.Reg.rax) (ByteX86.Reg.rsi)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "imulq\t%rsi, %rax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "imul   rax,rsi"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "xor_zero_clears_af",
+      "category": "flags_and_bmi",
+      "hex": "4831f0",
+      "byte_len": 3,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 3,
+        "boundary_L": 3,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 3,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 4,
+        "post_rax": "0x0",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x044"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 3,
+        "detail": "ByteX86.X64Instr.aluRR64 (ByteX86.AluOp.xor) (ByteX86.Reg.rax) (ByteX86.Reg.rsi)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "xorq\t%rsi, %rax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "xor    rax,rsi"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "shl_cnt2_of_cf",
+      "category": "flags_and_bmi",
+      "hex": "48c1e002",
+      "byte_len": 4,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 4,
+        "boundary_L": 4,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 4,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 5,
+        "post_rax": "0x4",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x801"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 4,
+        "detail": "ByteX86.X64Instr.shiftImm64 (ByteX86.ShiftOp.shl) (ByteX86.Reg.rax) 2"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "shlq\t$2, %rax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "shl    rax,0x2"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    },
+    {
+      "name": "sfi_movl_eax_eax_zext32",
+      "category": "sfi_zext",
+      "hex": "89c0",
+      "byte_len": 2,
+      "silicon": {
+        "verdict": "OK_EXEC",
+        "hw_decode_len": 2,
+        "boundary_L": 2,
+        "boundary_trapno": 14,
+        "boundary_err": 20,
+        "boundary_rip_delta": 2,
+        "exec_L17_trapno": 3,
+        "exec_L17_rip_delta": 3,
+        "post_rax": "0x28",
+        "post_rdx": "0x0",
+        "post_r8": "0x0",
+        "post_mem0": "0x100",
+        "post_efl6": "0x000"
+      },
+      "lean_decodeX64": {
+        "verdict": "OK_EXEC",
+        "decode_len": 2,
+        "detail": "ByteX86.X64Instr.movRR32 (ByteX86.Reg.rax) (ByteX86.Reg.rax)"
+      },
+      "lean_matches_silicon": true,
+      "is_arch_decode_fault": false,
+      "is_ring3_priv_trap": false,
+      "llvm_mc": {
+        "rc": 0,
+        "insns": [
+          "movl\t%eax, %eax"
+        ],
+        "diagnostics": []
+      },
+      "objdump": {
+        "rc": 0,
+        "insns": [
+          "0000000000000000 <.data>:",
+          "mov    eax,eax"
+        ]
+      },
+      "llvm_mc_silent_false_accept": false,
+      "objdump_silent_false_accept": false
+    }
+  ]
+}

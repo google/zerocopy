@@ -1,0 +1,664 @@
+{
+  "probe_1_self_attesting_bindings": {
+    "1.99.1": {
+      "attested_sites": [
+        {
+          "byte_len": 28,
+          "descriptor": "abcd_h=ah|abcd_r=rax|rb=sil|x=xmm2|y=ymm1|z=zmm0|k=k1|explicit=r10",
+          "disasm": "mov ah, 127 ; add sil, 1 ; vpaddd xmm2, xmm2, xmm2 ; vpaddd ymm1, ymm1, ymm1 ; vpaddq zmm0, zmm0, zmm0 ; kmovw k1, ecx ; add r10, 1",
+          "hex": "b47f4080c601c5e9fed2c5f5fec962f1fd48d4c0c5f892c94983c201",
+          "reloc_targets": [],
+          "section": ".text.all_reg_classes",
+          "site_id": 301,
+          "span": [
+            27,
+            55
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rcx|1=rdx",
+          "disasm": "sub rcx, rdx",
+          "hex": "4829d1",
+          "reloc_targets": [],
+          "section": ".text.caller_pressure",
+          "site_id": 101,
+          "span": [
+            15,
+            18
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rdx|1=rsi",
+          "disasm": "sub rdx, rsi",
+          "hex": "4829f2",
+          "reloc_targets": [],
+          "section": ".text.caller_pressure",
+          "site_id": 101,
+          "span": [
+            29,
+            32
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rsi",
+          "disasm": "sub rax, rsi",
+          "hex": "4829f0",
+          "reloc_targets": [],
+          "section": ".text.caller_simple",
+          "site_id": 101,
+          "span": [
+            3,
+            6
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 13,
+          "descriptor": "0=rcx|imm=7|lbl_txt=.LBB5_2",
+          "disasm": "cmp rcx, 7 ; je 10 ; lea rcx, [rip]",
+          "hex": "4883f907740a488d0d00000000",
+          "reloc_targets": [
+            {
+              "resolved_offset": 0,
+              "symbol_or_section": ".text._RINvCsbDhGz0KjQic_2p114generic_calleemEB2_"
+            },
+            {
+              "resolved_offset": 24,
+              "symbol_or_section": ".text.goto_caller_u32"
+            }
+          ],
+          "section": ".text.goto_caller_u32",
+          "site_id": 201,
+          "span": [
+            8,
+            21
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 13,
+          "descriptor": "0=rcx|imm=13|lbl_txt=.LBB6_2",
+          "disasm": "cmp rcx, 13 ; je 10 ; lea rcx, [rip]",
+          "hex": "4883f90d740a488d0d00000000",
+          "reloc_targets": [
+            {
+              "resolved_offset": 0,
+              "symbol_or_section": ".text._RINvCsbDhGz0KjQic_2p114generic_calleeAyj5_EB2_"
+            },
+            {
+              "resolved_offset": 24,
+              "symbol_or_section": ".text.goto_caller_u64_arr"
+            }
+          ],
+          "section": ".text.goto_caller_u64_arr",
+          "site_id": 201,
+          "span": [
+            8,
+            21
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rsi",
+          "disasm": "sub rsi, rax",
+          "hex": "4829c6",
+          "reloc_targets": [],
+          "section": ".text.swapped_sub_bug",
+          "site_id": 102,
+          "span": [
+            3,
+            6
+          ],
+          "verdict": "REJECT_MISMATCH(expected='sub rax, rsi', actual='sub rsi, rax')"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rdx",
+          "disasm": "sub rax, rdx",
+          "hex": "4829d0",
+          "reloc_targets": [],
+          "section": ".text.tail_cloned",
+          "site_id": 101,
+          "span": [
+            7,
+            10
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rcx",
+          "disasm": "sub rax, rcx",
+          "hex": "4829c8",
+          "reloc_targets": [],
+          "section": ".text.tail_cloned",
+          "site_id": 101,
+          "span": [
+            11,
+            14
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rcx",
+          "disasm": "sub rax, rcx",
+          "hex": "4829c8",
+          "reloc_targets": [],
+          "section": ".text.unrolled_4x",
+          "site_id": 101,
+          "span": [
+            10,
+            13
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rdx",
+          "disasm": "sub rax, rdx",
+          "hex": "4829d0",
+          "reloc_targets": [],
+          "section": ".text.unrolled_4x",
+          "site_id": 101,
+          "span": [
+            13,
+            16
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rcx",
+          "disasm": "sub rax, rcx",
+          "hex": "4829c8",
+          "reloc_targets": [],
+          "section": ".text.unrolled_4x",
+          "site_id": 101,
+          "span": [
+            20,
+            23
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rcx",
+          "disasm": "sub rax, rcx",
+          "hex": "4829c8",
+          "reloc_targets": [],
+          "section": ".text.unrolled_4x",
+          "site_id": 101,
+          "span": [
+            27,
+            30
+          ],
+          "verdict": "PASS"
+        }
+      ],
+      "spoof_matrix": {
+        "nonce_uid_unrolled_4x_exposed_all_10_bytes": [
+          {
+            "byte_len": 10,
+            "descriptor": "9f4a2c81d70e3b56|uid=0|0=rax|1=rdi|2=rax",
+            "hex": "48c707adde00004829c8",
+            "span": [
+              6,
+              16
+            ]
+          },
+          {
+            "byte_len": 10,
+            "descriptor": "9f4a2c81d70e3b56|uid=1|0=rax|1=rdi|2=rax",
+            "hex": "48c707adde00004829c8",
+            "span": [
+              20,
+              30
+            ]
+          },
+          {
+            "byte_len": 10,
+            "descriptor": "9f4a2c81d70e3b56|uid=2|0=rax|1=rdi|2=rax",
+            "hex": "48c707adde00004829c8",
+            "span": [
+              34,
+              44
+            ]
+          },
+          {
+            "byte_len": 10,
+            "descriptor": "9f4a2c81d70e3b56|uid=3|0=rax|1=rdi|2=rax",
+            "hex": "48c707adde00004829c8",
+            "span": [
+              48,
+              58
+            ]
+          }
+        ],
+        "numeric_9996_spoof_hidden_bytes": 10,
+        "sym_quote_in_asciz_rejected": true,
+        "sym_quote_in_quad_reloc_preserved": false
+      }
+    },
+    "nightly": {
+      "attested_sites": [
+        {
+          "byte_len": 28,
+          "descriptor": "abcd_h=ah|abcd_r=rax|rb=sil|x=xmm0|y=ymm2|z=zmm1|k=k1|explicit=r10",
+          "disasm": "mov ah, 127 ; add sil, 1 ; vpaddd xmm0, xmm0, xmm0 ; vpaddd ymm2, ymm2, ymm2 ; vpaddq zmm1, zmm1, zmm1 ; kmovw k1, ecx ; add r10, 1",
+          "hex": "b47f4080c601c5f9fec0c5edfed262f1f548d4c9c5f892c94983c201",
+          "reloc_targets": [],
+          "section": ".text.all_reg_classes",
+          "site_id": 301,
+          "span": [
+            23,
+            51
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rcx|1=rdx",
+          "disasm": "sub rcx, rdx",
+          "hex": "4829d1",
+          "reloc_targets": [],
+          "section": ".text.caller_pressure",
+          "site_id": 101,
+          "span": [
+            15,
+            18
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rdx|1=rsi",
+          "disasm": "sub rdx, rsi",
+          "hex": "4829f2",
+          "reloc_targets": [],
+          "section": ".text.caller_pressure",
+          "site_id": 101,
+          "span": [
+            29,
+            32
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rsi",
+          "disasm": "sub rax, rsi",
+          "hex": "4829f0",
+          "reloc_targets": [],
+          "section": ".text.caller_simple",
+          "site_id": 101,
+          "span": [
+            3,
+            6
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 13,
+          "descriptor": "0=rcx|imm=7|lbl_txt=.LBB5_2",
+          "disasm": "cmp rcx, 7 ; je 10 ; lea rcx, [rip]",
+          "hex": "4883f907740a488d0d00000000",
+          "reloc_targets": [
+            {
+              "resolved_offset": 0,
+              "symbol_or_section": ".text._RINvCs2n1krc98atS_2p114generic_calleemEB2_"
+            },
+            {
+              "resolved_offset": 24,
+              "symbol_or_section": ".text.goto_caller_u32"
+            }
+          ],
+          "section": ".text.goto_caller_u32",
+          "site_id": 201,
+          "span": [
+            8,
+            21
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 13,
+          "descriptor": "0=rcx|imm=13|lbl_txt=.LBB6_2",
+          "disasm": "cmp rcx, 13 ; je 10 ; lea rcx, [rip]",
+          "hex": "4883f90d740a488d0d00000000",
+          "reloc_targets": [
+            {
+              "resolved_offset": 0,
+              "symbol_or_section": ".text._RINvCs2n1krc98atS_2p114generic_calleeAyj5_EB2_"
+            },
+            {
+              "resolved_offset": 24,
+              "symbol_or_section": ".text.goto_caller_u64_arr"
+            }
+          ],
+          "section": ".text.goto_caller_u64_arr",
+          "site_id": 201,
+          "span": [
+            8,
+            21
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rsi",
+          "disasm": "sub rsi, rax",
+          "hex": "4829c6",
+          "reloc_targets": [],
+          "section": ".text.swapped_sub_bug",
+          "site_id": 102,
+          "span": [
+            3,
+            6
+          ],
+          "verdict": "REJECT_MISMATCH(expected='sub rax, rsi', actual='sub rsi, rax')"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rdx",
+          "disasm": "sub rax, rdx",
+          "hex": "4829d0",
+          "reloc_targets": [],
+          "section": ".text.tail_cloned",
+          "site_id": 101,
+          "span": [
+            7,
+            10
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rcx",
+          "disasm": "sub rax, rcx",
+          "hex": "4829c8",
+          "reloc_targets": [],
+          "section": ".text.tail_cloned",
+          "site_id": 101,
+          "span": [
+            11,
+            14
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 7,
+          "descriptor": "0=rax|const_ptr=CONST_PTR_TARGET+4",
+          "disasm": "lea rax, [rip]",
+          "hex": "488d0500000000",
+          "reloc_targets": [],
+          "section": ".text.test_const_ptr_site",
+          "site_id": 501,
+          "span": [
+            0,
+            7
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rcx",
+          "disasm": "sub rax, rcx",
+          "hex": "4829c8",
+          "reloc_targets": [],
+          "section": ".text.unrolled_4x",
+          "site_id": 101,
+          "span": [
+            10,
+            13
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rdx",
+          "disasm": "sub rax, rdx",
+          "hex": "4829d0",
+          "reloc_targets": [],
+          "section": ".text.unrolled_4x",
+          "site_id": 101,
+          "span": [
+            13,
+            16
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rcx",
+          "disasm": "sub rax, rcx",
+          "hex": "4829c8",
+          "reloc_targets": [],
+          "section": ".text.unrolled_4x",
+          "site_id": 101,
+          "span": [
+            20,
+            23
+          ],
+          "verdict": "PASS"
+        },
+        {
+          "byte_len": 3,
+          "descriptor": "0=rax|1=rcx",
+          "disasm": "sub rax, rcx",
+          "hex": "4829c8",
+          "reloc_targets": [],
+          "section": ".text.unrolled_4x",
+          "site_id": 101,
+          "span": [
+            27,
+            30
+          ],
+          "verdict": "PASS"
+        }
+      ],
+      "spoof_matrix": {
+        "nonce_uid_unrolled_4x_exposed_all_10_bytes": [
+          {
+            "byte_len": 10,
+            "descriptor": "9f4a2c81d70e3b56|uid=0|0=rax|1=rdi|2=rax",
+            "hex": "48c707adde00004829c8",
+            "span": [
+              6,
+              16
+            ]
+          },
+          {
+            "byte_len": 10,
+            "descriptor": "9f4a2c81d70e3b56|uid=1|0=rax|1=rdi|2=rax",
+            "hex": "48c707adde00004829c8",
+            "span": [
+              20,
+              30
+            ]
+          },
+          {
+            "byte_len": 10,
+            "descriptor": "9f4a2c81d70e3b56|uid=2|0=rax|1=rdi|2=rax",
+            "hex": "48c707adde00004829c8",
+            "span": [
+              34,
+              44
+            ]
+          },
+          {
+            "byte_len": 10,
+            "descriptor": "9f4a2c81d70e3b56|uid=3|0=rax|1=rdi|2=rax",
+            "hex": "48c707adde00004829c8",
+            "span": [
+              48,
+              58
+            ]
+          }
+        ],
+        "numeric_9996_spoof_hidden_bytes": 10,
+        "sym_quote_in_asciz_rejected": true,
+        "sym_quote_in_quad_reloc_preserved": false
+      }
+    }
+  },
+  "probe_2_get_inline_asm_length_invariance": {
+    "aarch64": {
+      "N_1200": {
+        "multiline_pushsection": {
+          "attested_records": 1200,
+          "entry_branch": "tbnz_plus_b_relaxed",
+          "sha256_16": "7b691e929a185a60",
+          "text_len": 4896
+        },
+        "two_stmt_macro": {
+          "attested_records": 1200,
+          "entry_branch": "tbz_direct",
+          "sha256_16": "002f8b70b1b5c96c",
+          "text_len": 4892
+        },
+        "uninstrumented": {
+          "attested_records": 0,
+          "entry_branch": "tbz_direct",
+          "sha256_16": "002f8b70b1b5c96c",
+          "text_len": 4892
+        },
+        "zero_sep_site_macro": {
+          "attested_records": 1200,
+          "entry_branch": "tbz_direct",
+          "sha256_16": "002f8b70b1b5c96c",
+          "text_len": 4892
+        }
+      },
+      "N_5000": {
+        "multiline_pushsection": {
+          "attested_records": 5000,
+          "entry_branch": "tbnz_plus_b_relaxed",
+          "sha256_16": "6e06b4438d5fc120",
+          "text_len": 20096
+        },
+        "two_stmt_macro": {
+          "attested_records": 5000,
+          "entry_branch": "tbnz_plus_b_relaxed",
+          "sha256_16": "6e06b4438d5fc120",
+          "text_len": 20096
+        },
+        "uninstrumented": {
+          "attested_records": 0,
+          "entry_branch": "tbz_direct",
+          "sha256_16": "f9a7a2a218a4cb14",
+          "text_len": 20092
+        },
+        "zero_sep_site_macro": {
+          "attested_records": 5000,
+          "entry_branch": "tbz_direct",
+          "sha256_16": "f9a7a2a218a4cb14",
+          "text_len": 20092
+        }
+      }
+    },
+    "x86_64": {
+      "1.99.1": {
+        "exact_byte_parity_all_modes": true,
+        "modes": {
+          "multiline_pushsection": {
+            ".text.inline_caller": {
+              "len": 93,
+              "sha256_16": "d2fc79e0991fbe2f"
+            },
+            ".text.true_rel8": {
+              "len": 159,
+              "sha256_16": "706a762c24d602ab"
+            },
+            ".text.unroll_16": {
+              "len": 115,
+              "sha256_16": "ea1b97376a8c9d7f"
+            }
+          },
+          "single_macro": {
+            ".text.inline_caller": {
+              "len": 93,
+              "sha256_16": "d2fc79e0991fbe2f"
+            },
+            ".text.true_rel8": {
+              "len": 159,
+              "sha256_16": "706a762c24d602ab"
+            },
+            ".text.unroll_16": {
+              "len": 115,
+              "sha256_16": "ea1b97376a8c9d7f"
+            }
+          },
+          "uninstrumented": {
+            ".text.inline_caller": {
+              "len": 93,
+              "sha256_16": "d2fc79e0991fbe2f"
+            },
+            ".text.true_rel8": {
+              "len": 159,
+              "sha256_16": "706a762c24d602ab"
+            },
+            ".text.unroll_16": {
+              "len": 115,
+              "sha256_16": "ea1b97376a8c9d7f"
+            }
+          }
+        }
+      },
+      "nightly": {
+        "exact_byte_parity_all_modes": true,
+        "modes": {
+          "multiline_pushsection": {
+            ".text.inline_caller": {
+              "len": 93,
+              "sha256_16": "d2fc79e0991fbe2f"
+            },
+            ".text.true_rel8": {
+              "len": 159,
+              "sha256_16": "706a762c24d602ab"
+            },
+            ".text.unroll_16": {
+              "len": 115,
+              "sha256_16": "ea1b97376a8c9d7f"
+            }
+          },
+          "single_macro": {
+            ".text.inline_caller": {
+              "len": 93,
+              "sha256_16": "d2fc79e0991fbe2f"
+            },
+            ".text.true_rel8": {
+              "len": 159,
+              "sha256_16": "706a762c24d602ab"
+            },
+            ".text.unroll_16": {
+              "len": 115,
+              "sha256_16": "ea1b97376a8c9d7f"
+            }
+          },
+          "uninstrumented": {
+            ".text.inline_caller": {
+              "len": 93,
+              "sha256_16": "d2fc79e0991fbe2f"
+            },
+            ".text.true_rel8": {
+              "len": 159,
+              "sha256_16": "706a762c24d602ab"
+            },
+            ".text.unroll_16": {
+              "len": 115,
+              "sha256_16": "ea1b97376a8c9d7f"
+            }
+          }
+        }
+      }
+    }
+  }
+}

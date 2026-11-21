@@ -1,0 +1,320 @@
+{
+  "host_solvers_in_path": {
+    "z3": false,
+    "cvc5": false,
+    "cadical": false,
+    "bitwuzla": false,
+    "kissat": false,
+    "drat-trim": false,
+    "lrat-trim": false
+  },
+  "bundled_cadical_version": "2.1.2",
+  "bv_simd_tseitin_lib": {
+    "compile": {
+      "wall_s": 12.96,
+      "user_s": 13.22,
+      "sys_s": 0.24,
+      "rss_mb": 470.74
+    },
+    "olean_bytes": 7464280,
+    "replay": {
+      "import_ms": 482,
+      "replay_ms": 1356,
+      "kernel_consts": 1007,
+      "lcnf_unsafe_rec": 42,
+      "axioms": "[Quot.sound, Classical.choice, propext]"
+    }
+  },
+  "harvested_vcs": [
+    {
+      "name": "swar_mask_non_eq_sat_probe",
+      "status": "SAT",
+      "aig_gates": 733,
+      "cnf_clauses": 2003,
+      "cadical_ms": 141,
+      "sample_lits": 732,
+      "packed_lean_bytes": 0
+    },
+    {
+      "name": "swar_has_zero_byte_64",
+      "status": "UNSAT",
+      "aig_gates": 719,
+      "cnf_clauses_total": 1961,
+      "cnf_clauses_core": 672,
+      "lrat_total": 189,
+      "lrat_rup": 94,
+      "lrat_rat": 0,
+      "lrat_del": 94,
+      "max_recycled_slot": 673,
+      "cadical_ms": 92,
+      "trim_ms": 1,
+      "total_harvest_ms": 146,
+      "packed_lean_bytes": 43562
+    },
+    {
+      "name": "bmi2_blsi_blsr_64",
+      "status": "UNSAT",
+      "aig_gates": 2193,
+      "cnf_clauses_total": 6383,
+      "cnf_clauses_core": 4710,
+      "lrat_total": 2506,
+      "lrat_rup": 1256,
+      "lrat_rat": 0,
+      "lrat_del": 1249,
+      "max_recycled_slot": 4711,
+      "cadical_ms": 150,
+      "trim_ms": 4,
+      "total_harvest_ms": 617,
+      "packed_lean_bytes": 326200
+    },
+    {
+      "name": "bmi2_blsmsk_64",
+      "status": "UNSAT",
+      "aig_gates": 1451,
+      "cnf_clauses_total": 4157,
+      "cnf_clauses_core": 2766,
+      "lrat_total": 659,
+      "lrat_rup": 329,
+      "lrat_rat": 0,
+      "lrat_del": 329,
+      "max_recycled_slot": 2767,
+      "cadical_ms": 157,
+      "trim_ms": 1,
+      "total_harvest_ms": 455,
+      "packed_lean_bytes": 185029
+    },
+    {
+      "name": "bmi2_bzhi64_comp",
+      "status": "UNSAT",
+      "aig_gates": 2823,
+      "cnf_clauses_total": 7889,
+      "cnf_clauses_core": 6478,
+      "lrat_total": 4701,
+      "lrat_rup": 2575,
+      "lrat_rat": 0,
+      "lrat_del": 2125,
+      "max_recycled_slot": 6504,
+      "cadical_ms": 215,
+      "trim_ms": 18,
+      "total_harvest_ms": 3934,
+      "packed_lean_bytes": 1535261
+    },
+    {
+      "name": "x86_sub_signed_64",
+      "status": "UNSAT",
+      "aig_gates": 2553,
+      "cnf_clauses_total": 7271,
+      "cnf_clauses_core": 4978,
+      "lrat_total": 14958,
+      "lrat_rup": 8291,
+      "lrat_rat": 0,
+      "lrat_del": 6666,
+      "max_recycled_slot": 5181,
+      "cadical_ms": 241,
+      "trim_ms": 20,
+      "total_harvest_ms": 1218,
+      "packed_lean_bytes": 896025
+    },
+    {
+      "name": "x86_sub_unsigned_64",
+      "status": "UNSAT",
+      "aig_gates": 2536,
+      "cnf_clauses_total": 7220,
+      "cnf_clauses_core": 4929,
+      "lrat_total": 13402,
+      "lrat_rup": 7453,
+      "lrat_rat": 0,
+      "lrat_del": 5948,
+      "max_recycled_slot": 5336,
+      "cadical_ms": 254,
+      "trim_ms": 15,
+      "total_harvest_ms": 1379,
+      "packed_lean_bytes": 946957
+    },
+    {
+      "name": "x86_xor_pf_64",
+      "status": "UNSAT",
+      "aig_gates": 391,
+      "cnf_clauses_total": 785,
+      "cnf_clauses_core": 276,
+      "lrat_total": 703,
+      "lrat_rup": 430,
+      "lrat_rat": 0,
+      "lrat_del": 272,
+      "max_recycled_slot": 312,
+      "cadical_ms": 79,
+      "trim_ms": 2,
+      "total_harvest_ms": 165,
+      "packed_lean_bytes": 74559
+    },
+    {
+      "name": "ssse3_vpmaddubsw_64_lane_and_sat",
+      "status": "UNSAT",
+      "aig_gates": 12070,
+      "cnf_clauses_total": 35822,
+      "cnf_clauses_core": 1630,
+      "lrat_total": 1283,
+      "lrat_rup": 742,
+      "lrat_rat": 0,
+      "lrat_del": 540,
+      "max_recycled_slot": 1654,
+      "cadical_ms": 141,
+      "trim_ms": 3,
+      "total_harvest_ms": 1296,
+      "packed_lean_bytes": 476860
+    },
+    {
+      "name": "vpaddsw_lane16_comm_and_sat",
+      "status": "UNSAT",
+      "aig_gates": 660,
+      "cnf_clauses_total": 1880,
+      "cnf_clauses_core": 1603,
+      "lrat_total": 1088,
+      "lrat_rup": 603,
+      "lrat_rat": 0,
+      "lrat_del": 484,
+      "max_recycled_slot": 1606,
+      "cadical_ms": 152,
+      "trim_ms": 2,
+      "total_harvest_ms": 344,
+      "packed_lean_bytes": 127423
+    },
+    {
+      "name": "avx2_vpaddsw_256_monolithic_probe",
+      "status": "UNSAT",
+      "aig_gates": 10545,
+      "cnf_clauses_total": 30095,
+      "cnf_clauses_core": 25534,
+      "lrat_total": 76306,
+      "lrat_rup": 39414,
+      "lrat_rat": 0,
+      "lrat_del": 36891,
+      "max_recycled_slot": 25559,
+      "cadical_ms": 696,
+      "trim_ms": 112,
+      "total_harvest_ms": 5155,
+      "packed_lean_bytes": 3120431
+    }
+  ],
+  "per_vc_verification": {
+    "swar_has_zero_byte_64": {
+      "status": "OK",
+      "source_bytes": 45186,
+      "compile": {
+        "wall_s": 14.64,
+        "user_s": 13.79,
+        "sys_s": 0.84,
+        "rss_mb": 2193.17
+      },
+      "olean_bytes": 415328,
+      "replay": {
+        "import_ms": 496,
+        "replay_ms": 14724,
+        "kernel_consts": 7,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[Quot.sound, Classical.choice, propext]"
+      }
+    },
+    "bmi2_blsi_blsr_64": {
+      "status": "FAIL",
+      "source_bytes": 326831,
+      "diagnostic": "VC_bmi2_blsi_blsr_64.lean:19:136: error: (kernel) application type mismatch\n  id (Eq.refl true)\nargument has type\n  true = true\nbut function has type\n  decide"
+    },
+    "bmi2_blsmsk_64": {
+      "status": "TIMEOUT_GT_75S",
+      "source_bytes": 185619
+    },
+    "bmi2_bzhi64_comp": {
+      "status": "TIMEOUT_GT_75S",
+      "source_bytes": 1535890
+    },
+    "x86_sub_signed_64": {
+      "status": "TIMEOUT_GT_75S",
+      "source_bytes": 896625
+    },
+    "x86_sub_unsigned_64": {
+      "status": "TIMEOUT_GT_75S",
+      "source_bytes": 947558
+    },
+    "x86_xor_pf_64": {
+      "status": "OK",
+      "source_bytes": 75060,
+      "compile": {
+        "wall_s": 14.96,
+        "user_s": 13.85,
+        "sys_s": 1.09,
+        "rss_mb": 2087.62
+      },
+      "olean_bytes": 618592,
+      "replay": {
+        "import_ms": 552,
+        "replay_ms": 12175,
+        "kernel_consts": 6,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[Quot.sound, Classical.choice, propext]"
+      }
+    },
+    "ssse3_vpmaddubsw_64_lane_and_sat": {
+      "status": "TIMEOUT_GT_75S",
+      "source_bytes": 478170
+    },
+    "vpaddsw_lane16_comm_and_sat": {
+      "status": "OK",
+      "source_bytes": 128951,
+      "compile": {
+        "wall_s": 36.7,
+        "user_s": 27.32,
+        "sys_s": 9.3,
+        "rss_mb": 4295.39
+      },
+      "olean_bytes": 1046744,
+      "replay": {
+        "import_ms": 585,
+        "replay_ms": 30533,
+        "kernel_consts": 8,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[Quot.sound, Classical.choice, propext]"
+      }
+    }
+  },
+  "compact_canaries_module": {
+    "source_bytes": 174006,
+    "compile": {
+      "wall_s": 37.91,
+      "user_s": 36.72,
+      "sys_s": 1.18,
+      "rss_mb": 4300.22
+    },
+    "olean_bytes": 1383200,
+    "replay": {
+      "import_ms": 430,
+      "replay_ms": 40197,
+      "kernel_consts": 15,
+      "lcnf_unsafe_rec": 0,
+      "axioms": "[Quot.sound, Classical.choice, propext]"
+    }
+  },
+  "monolithic_7mb_antipattern_observation": {
+    "monolithic_packed_bytes": 7140000,
+    "monolithic_raw_ast_bytes": 23100000,
+    "naive_256bit_vpaddsw_packed_lrat_bytes": 2320243,
+    "observed_rss_gb": 15.8,
+    "observed_wall_min": 12.0,
+    "resolution": "Per-VC module decomposition + 16-bit lane LRAT with 256-bit SIMD congruence lifting (`simdMapBinary16_comm`)"
+  },
+  "bv_decide_axiom_probe": "'swar_via_bv_decide' depends on axioms: [propext,\n Classical.choice,\n Quot.sound,\n swar_via_bv_decide._native.bv_decide.ax_1_5]",
+  "standard_tactic_failures_on_swar64": {
+    "omega": {
+      "returncode": 1,
+      "diagnostic": "/tmp/tmpew06nfea/Fail_omega.lean:1:220: error: omega could not prove the goal:\nNo usable constraints found. You may need to unfold definitions so `omega` can see linear arithmetic facts about `Nat` and `Int`, which may also involve multiplication, division, and modular remainder by constants."
+    },
+    "bv_omega": {
+      "returncode": 1,
+      "diagnostic": "/tmp/tmpew06nfea/Fail_bv_omega.lean:1:220: error: omega could not prove the goal:\nNo usable constraints found. You may need to unfold definitions so `omega` can see linear arithmetic facts about `Nat` and `Int`, which may also involve multiplication, division, and modular remainder by constants."
+    },
+    "grind": {
+      "returncode": 1,
+      "diagnostic": "/tmp/tmpew06nfea/Fail_grind.lean:1:220: error: `grind` failed\ncase grind.1.1\nx : BitVec 64\nh :\n  (\u00acx - 72340172838076673 &&& ~~~x &&& 9259542123273814144 = 0) =\n    (~~~((x &&& 9187201950435737471) + 9187201950435737471 ||| x ||| 9187201950435737471) = 0)"
+    }
+  }
+}

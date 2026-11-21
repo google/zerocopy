@@ -1,0 +1,47 @@
+{
+  "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "target": "aarch64-unknown-linux-gnu",
+  "qemu": "qemu-aarch64 version 11.1.2 (Debian 1:11.1.2+ds-2)",
+  "qemu_binary_sha256": "8ba579d46040c9d40c5786b4df58d7a17663c8fbd51968be84716682f758eb59",
+  "linux_aarch64_SEGV_MTESERR_const": 9,
+  "cases": {
+    "mte_16b_aligned_neon_memchr_matrix": {
+      "faulted": false,
+      "checks_passed": 3856
+    },
+    "fault_32b_ldp_trailing_granule_mismatch": {
+      "faulted": true,
+      "si_signo": 11,
+      "si_code": 9,
+      "fault_offset": 16,
+      "fault_ptr_tag": 1
+    },
+    "fault_32b_ldp_leading_granule_mismatch": {
+      "faulted": true,
+      "si_signo": 11,
+      "si_code": 9,
+      "fault_offset": 0,
+      "fault_ptr_tag": 2
+    },
+    "fault_16b_unaligned_ldr_crossing_granule": {
+      "faulted": true,
+      "si_signo": 11,
+      "si_code": 9,
+      "fault_offset": 16,
+      "fault_ptr_tag": 1
+    },
+    "fault_48bit_mask_strips_mte_tag": {
+      "faulted": true,
+      "si_signo": 11,
+      "si_code": 9,
+      "fault_offset": 0,
+      "fault_ptr_tag": 0
+    },
+    "sve_ldff1b_prot_none_vs_qemu_user_sve_mte_gap": {
+      "faulted": false,
+      "sve_vl_bytes": 64,
+      "ldff1b_valid_bytes_before_prot_none": 16,
+      "qemu_user_ldff1b_bytes_on_mismatched_mte_tag": 64
+    }
+  }
+}

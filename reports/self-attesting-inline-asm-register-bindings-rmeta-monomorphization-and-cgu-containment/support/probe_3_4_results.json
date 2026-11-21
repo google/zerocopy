@@ -1,0 +1,222 @@
+{
+  "probe_3_cgu_pure_rust_containment": {
+    "1.99.1": {
+      "cfi_sections_debug_frame": {
+        "catch_unwind_aborted": true,
+        "cgu_has_eh_frame": false,
+        "exit_code": -6
+      },
+      "macro_xorq_streamer_matrix": {
+        "mc_asm_streamer_ias": 9,
+        "mc_asm_streamer_no_ias": 7,
+        "mc_object_streamer": 9
+      },
+      "mc_object_streamer_symbol_hijacks": {
+        "a_pure_rust_auth_elf_bind": 2,
+        "a_pure_rust_auth_runtime_val": 999,
+        "a_pure_victim_elf_type": 10,
+        "a_pure_victim_runtime_val": 7777,
+        "symver_alias_created": true
+      },
+      "mode_switch_matrix": {
+        "code16": {
+          "mc_asm_streamer_rejected_64bit_insn": true,
+          "mc_object_streamer_pure_val": 47
+        },
+        "code32": {
+          "mc_asm_streamer_rejected_64bit_insn": true,
+          "mc_object_streamer_pure_val": 47
+        }
+      },
+      "trailing_prefix_bleed": {
+        "section_hex": {
+          ".text.victim_41": "41b878563412c3",
+          ".text.victim_64": "64488b07c3",
+          ".text.victim_66": "66b878563412c3",
+          ".text.victim_f0": "f0488d0437c3"
+        },
+        "victim_66_corrupted_low16": "0x566a",
+        "victim_f0_sigill_rc": -4
+      },
+      "unbalanced_section": {
+        "inlined_caller_text_hex": "",
+        "rodata_trap_hex": "c3488d4763c3",
+        "sibling_text_hex": "488d472ac3"
+      }
+    },
+    "nightly": {
+      "cfi_sections_debug_frame": {
+        "catch_unwind_aborted": true,
+        "cgu_has_eh_frame": false,
+        "exit_code": -6
+      },
+      "macro_xorq_streamer_matrix": {
+        "mc_asm_streamer_ias": 9,
+        "mc_asm_streamer_no_ias": 7,
+        "mc_object_streamer": 9
+      },
+      "mc_object_streamer_symbol_hijacks": {
+        "a_pure_rust_auth_elf_bind": 2,
+        "a_pure_rust_auth_runtime_val": 999,
+        "a_pure_victim_elf_type": 10,
+        "a_pure_victim_runtime_val": 7777,
+        "symver_alias_created": true
+      },
+      "mode_switch_matrix": {
+        "code16": {
+          "mc_asm_streamer_rejected_64bit_insn": true,
+          "mc_object_streamer_pure_val": 47
+        },
+        "code32": {
+          "mc_asm_streamer_rejected_64bit_insn": true,
+          "mc_object_streamer_pure_val": 47
+        }
+      },
+      "trailing_prefix_bleed": {
+        "section_hex": {
+          ".text.victim_41": "41b878563412c3",
+          ".text.victim_64": "64488b07c3",
+          ".text.victim_66": "66b878563412c3",
+          ".text.victim_f0": "f0488d0437c3"
+        },
+        "victim_66_corrupted_low16": "0x566a",
+        "victim_f0_sigill_rc": -4
+      },
+      "unbalanced_section": {
+        "inlined_caller_text_hex": "",
+        "rodata_trap_hex": "c3488d4763c3",
+        "sibling_text_hex": "488d472ac3"
+      }
+    }
+  },
+  "probe_4_rmeta_and_postlink_relaxations": {
+    "aarch64_thunk_qemu": {
+      "far_gt_128mib": {
+        "exit_code": 42,
+        "output": "VAL=000000000000008e X16=0000000010000000"
+      },
+      "near_lt_128mib": {
+        "exit_code": 0,
+        "output": "VAL=000000000000008e X16=1122334455667788"
+      },
+      "shared_object_sha256_16": "95165eb4c0777329"
+    },
+    "cross_crate_rmeta": {
+      "1.99.1": {
+        "downstream_attested_sites_total": 4,
+        "downstream_hijacked_sites_caught_by_opcode_mismatch": 4,
+        "downstream_runtime_20_minus_5": {
+          "generic_sub": 25,
+          "inline_always_sub": 25,
+          "inline_sub": 25,
+          "never_inline_sub": 15,
+          "unannotated_pub_sub": 25
+        },
+        "upstream_rlib_descs": [
+          "kind=never_inline|0=rax|1=rsi"
+        ]
+      },
+      "nightly": {
+        "downstream_attested_sites_total": 4,
+        "downstream_hijacked_sites_caught_by_opcode_mismatch": 4,
+        "downstream_runtime_20_minus_5": {
+          "generic_sub": 25,
+          "inline_always_sub": 25,
+          "inline_sub": 25,
+          "never_inline_sub": 15,
+          "unannotated_pub_sub": 25
+        },
+        "upstream_rlib_descs": [
+          "kind=never_inline|0=rax|1=rsi"
+        ]
+      }
+    },
+    "x86_64_relaxations": {
+      "1.99.1": {
+        "default_gotpcrel": {
+          "ld_bfd_pie": {
+            "got_relaxed_to_lea": true,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          },
+          "ld_bfd_pie_norelax": {
+            "got_relaxed_to_lea": false,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          },
+          "prelink_got_reloc_type": 9,
+          "rust_lld_pie": {
+            "got_relaxed_to_lea": false,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          },
+          "rust_lld_pie_norelax": {
+            "got_relaxed_to_lea": false,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          }
+        }
+      },
+      "nightly": {
+        "default_gotpcrel": {
+          "ld_bfd_pie": {
+            "got_relaxed_to_lea": true,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          },
+          "ld_bfd_pie_norelax": {
+            "got_relaxed_to_lea": false,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          },
+          "prelink_got_reloc_type": 9,
+          "rust_lld_pie": {
+            "got_relaxed_to_lea": false,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          },
+          "rust_lld_pie_norelax": {
+            "got_relaxed_to_lea": false,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          }
+        },
+        "relax_elf_relocs_rex_gotpcrelx": {
+          "ld_bfd_pie": {
+            "got_relaxed_to_lea": true,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          },
+          "ld_bfd_pie_norelax": {
+            "got_relaxed_to_lea": false,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          },
+          "prelink_got_reloc_type": 42,
+          "rust_lld_pie": {
+            "got_relaxed_to_lea": true,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          },
+          "rust_lld_pie_norelax": {
+            "got_relaxed_to_lea": false,
+            "got_val": "0xfeedface",
+            "zf_r12": 0,
+            "zf_rax": 1
+          }
+        }
+      }
+    }
+  }
+}

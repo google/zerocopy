@@ -1,0 +1,115 @@
+{
+  "topics": [
+    "isa/x86-64",
+    "isa/decoding",
+    "isa/rflags",
+    "verification/machine-code",
+    "verification/lifting",
+    "verification/sfi",
+    "verification/stack-separation",
+    "anneal/tcb",
+    "lean/kernel-scaling",
+    "compilers/gcc",
+    "ffi/c-archives",
+    "security/sandboxing"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lightweight Fault Isolation (LFI) binary verifier",
+      "identity": {
+        "repository": "lfi-project/lfi-verifier",
+        "revision": "8c3c47983572039b138f8fa15c12231f2655bbef"
+      }
+    },
+    {
+      "name": "Sandsifter x86 processor fuzzer and page-boundary length oracle",
+      "identity": {
+        "repository": "xoreaxeaxeax/sandsifter",
+        "revision": "8375e6123d093629e3e4437d7903839fd0742c2a"
+      }
+    },
+    {
+      "name": "Intel X86 Encoder Decoder (XED)",
+      "identity": {
+        "repository": "intelxed/xed",
+        "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+      }
+    },
+    {
+      "name": "AWS s2n-bignum HOL Light x86-64 formal verification suite",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "280a220986a0bc6249248187717a771153d073db"
+      }
+    },
+    {
+      "name": "ACL2 x86isa formal x86-64 machine model",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "f040a8db474f68e11b5fa980c99b7c1f7be28e54"
+      }
+    },
+    {
+      "name": "GCC C compiler toolchain",
+      "identity": {
+        "package": "Debian gcc 15.2.0-14",
+        "target": "x86_64-linux-gnu",
+        "version": "15.2.0"
+      }
+    },
+    {
+      "name": "LLVM machine-code disassembler (llvm-mc)",
+      "identity": {
+        "package": "Debian llvm 21.1.8",
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "21.1.8"
+      }
+    },
+    {
+      "name": "GNU Binutils objdump and readelf",
+      "identity": {
+        "package": "Debian binutils 2.47",
+        "target": "x86_64-linux-gnu",
+        "version": "2.47"
+      }
+    },
+    {
+      "name": "Intel Xeon Ice Lake-SP x86-64 processor and Linux trap delivery",
+      "identity": {
+        "cpu": "GenuineIntel Family 6 Model 106 Stepping 6 (Intel Xeon @ 2.60GHz)",
+        "kernel": "Linux 7.1.6-1rodete1-amd64 x86_64"
+      }
+    },
+    {
+      "name": "Intel 64 and IA-32 Architectures Software Developer's Manual",
+      "identity": {
+        "document_number": "325462-087US",
+        "edition": "2025",
+        "publisher": "Intel Corporation"
+      }
+    },
+    {
+      "name": "System V Application Binary Interface AMD64 Architecture Processor Supplement",
+      "identity": {
+        "specification": "psABI x86-64",
+        "version": "1.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

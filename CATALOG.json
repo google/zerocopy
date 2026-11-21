@@ -63,6 +63,96 @@
         "verification/fixed-point-dsp"
       ]
     },
+    "aarch64-pac-mte-tbi-provenance-sve-clobbers-and-outlined-atomics-ffi-seams": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+            "version": "1.101.0-nightly (2026-09-29)"
+          },
+          "name": "rustc 1.101.0-nightly"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM, rust-lld, and compiler-rt"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "release": "2026Q3",
+            "repository": "ARM-software/abi-aa",
+            "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+          },
+          "name": "Application Binary Interface for the Arm 64-bit Architecture"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+          },
+          "name": "Linux kernel AArch64 Tagged Address, MTE, and Pointer Authentication ABI"
+        },
+        {
+          "identity": {
+            "artifact": "qemu-aarch64",
+            "package_version": "1:11.1.2+ds-2",
+            "version": "11.1.2"
+          },
+          "name": "QEMU AArch64 user-mode emulator"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Rust-to-Lean verifier"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/inline-asm",
+        "ffi",
+        "isa/aarch64",
+        "isa/x86-64",
+        "lean/mechanization",
+        "llvm/codegen",
+        "rust/atomics",
+        "rust/calling-conventions",
+        "rust/inline-asm",
+        "rustc/codegen",
+        "security",
+        "systems/object-formats",
+        "verification/isa-semantics"
+      ]
+    },
     "abi-cross-testing-matrix-rustc-llvm-cranelift-gcc-clang": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -13659,6 +13749,121 @@
         "security/seccomp-bpf",
         "systems/bubblewrap",
         "tooling/ci"
+      ]
+    },
+    "byte-decoded-x86-64-sharded-lifting-dead-flag-collapse-and-binary-sfi-containment": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "repository": "lfi-project/lfi-verifier",
+            "revision": "8c3c47983572039b138f8fa15c12231f2655bbef"
+          },
+          "name": "Lightweight Fault Isolation (LFI) binary verifier"
+        },
+        {
+          "identity": {
+            "repository": "xoreaxeaxeax/sandsifter",
+            "revision": "8375e6123d093629e3e4437d7903839fd0742c2a"
+          },
+          "name": "Sandsifter x86 processor fuzzer and page-boundary length oracle"
+        },
+        {
+          "identity": {
+            "repository": "intelxed/xed",
+            "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+          },
+          "name": "Intel X86 Encoder Decoder (XED)"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "280a220986a0bc6249248187717a771153d073db"
+          },
+          "name": "AWS s2n-bignum HOL Light x86-64 formal verification suite"
+        },
+        {
+          "identity": {
+            "repository": "acl2/acl2",
+            "revision": "f040a8db474f68e11b5fa980c99b7c1f7be28e54"
+          },
+          "name": "ACL2 x86isa formal x86-64 machine model"
+        },
+        {
+          "identity": {
+            "package": "Debian gcc 15.2.0-14",
+            "target": "x86_64-linux-gnu",
+            "version": "15.2.0"
+          },
+          "name": "GCC C compiler toolchain"
+        },
+        {
+          "identity": {
+            "package": "Debian llvm 21.1.8",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "21.1.8"
+          },
+          "name": "LLVM machine-code disassembler (llvm-mc)"
+        },
+        {
+          "identity": {
+            "package": "Debian binutils 2.47",
+            "target": "x86_64-linux-gnu",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils objdump and readelf"
+        },
+        {
+          "identity": {
+            "cpu": "GenuineIntel Family 6 Model 106 Stepping 6 (Intel Xeon @ 2.60GHz)",
+            "kernel": "Linux 7.1.6-1rodete1-amd64 x86_64"
+          },
+          "name": "Intel Xeon Ice Lake-SP x86-64 processor and Linux trap delivery"
+        },
+        {
+          "identity": {
+            "document_number": "325462-087US",
+            "edition": "2025",
+            "publisher": "Intel Corporation"
+          },
+          "name": "Intel 64 and IA-32 Architectures Software Developer's Manual"
+        },
+        {
+          "identity": {
+            "specification": "psABI x86-64",
+            "version": "1.0"
+          },
+          "name": "System V Application Binary Interface AMD64 Architecture Processor Supplement"
+        }
+      ],
+      "topics": [
+        "isa/x86-64",
+        "isa/decoding",
+        "isa/rflags",
+        "verification/machine-code",
+        "verification/lifting",
+        "verification/sfi",
+        "verification/stack-separation",
+        "anneal/tcb",
+        "lean/kernel-scaling",
+        "compilers/gcc",
+        "ffi/c-archives",
+        "security/sandboxing"
       ]
     },
     "byte-level-separation-logic-typed-points-to-and-transmute-view-changes": {
@@ -29239,6 +29444,115 @@
         "verification/decimal128-scale-widening-joins"
       ]
     },
+    "dwarf-eh-frame-unwinding-semantics-may-unwind-asm-and-cfi-poisoning": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (1.99.1)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-09",
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.100.0"
+          },
+          "name": "Rust compiler (1.100.0)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-11",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-17",
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM (rust-lang/llvm-project 23.1.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+            "version": "23.1.5"
+          },
+          "name": "LLVM (rust-lang/llvm-project 23.1.5)"
+        },
+        {
+          "identity": {
+            "binutils": "GNU Binutils for Debian 2.47",
+            "llvm_dwarfdump": "Debian LLVM 21.1.8",
+            "package": "gcc / g++ (Debian 15.2.0-14)",
+            "target": "x86_64-linux-gnu",
+            "version": "15.2.0"
+          },
+          "name": "GCC, G++, libgcc_s, and libstdc++ toolchain (Debian x86_64-linux-gnu)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verification framework (trusted boundary and operational semantics)"
+        },
+        {
+          "identity": {
+            "dwarf": "DWARF Debugging Information Format Version 4 (2010) & Version 5 (2017), Section 6.4",
+            "itanium_eh": "Itanium C++ ABI: Exception Handling (Level I Base ABI & Level II C++ ABI)",
+            "psabi": "System V Application Binary Interface AMD64 Architecture Processor Supplement"
+          },
+          "name": "DWARF Call Frame Information, System V AMD64, and Itanium EH ABI specifications"
+        }
+      ],
+      "topics": [
+        "anneal/trusted-boundary",
+        "compilers/dwarf-cfi",
+        "compilers/unwind-tables",
+        "ffi/abi",
+        "isa/x86-64",
+        "lean/mechanization",
+        "llvm/codegen",
+        "llvm/mc-layer",
+        "rust/calling-conventions",
+        "rust/inline-asm",
+        "rustc/abi",
+        "rustc/codegen",
+        "security/assembler-directives",
+        "systems/object-formats",
+        "verification/refinement"
+      ]
+    },
     "dynamic-binary-translation-cross-isa-tso-emulation-and-smc-jits": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -36788,6 +37102,48 @@
         "verification",
         "verification/probing-security",
         "compilers"
+      ]
+    },
+    "gmp-bitset-lrat-tseitin-bitblasting-and-f2-linear-simd-certificates-in-lean4": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, kernel, compiler, and BVDecide/LRAT infrastructure"
+        },
+        {
+          "identity": {
+            "artifact": "lean-4.34.1-linux-x86_64",
+            "cadical_sha256": "8e92f427cfb72072fc605ec6d5f641443c35921b29c39ab2f027776cd533afce",
+            "cadical_version": "2.1.2",
+            "lean_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "version": "v4.34.1"
+          },
+          "name": "Lean v4.34.1 Linux x86_64 toolchain binaries (lean and bundled CaDiCaL SAT solver)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal repository (Pass-1 TrustedBoundary auditor, foundation-lock, and PureLift)"
+        }
+      ],
+      "topics": [
+        "lean/kernel-evaluation",
+        "lean/kernel-replay",
+        "lean/bv-decide",
+        "lean/proof-scaling",
+        "smt/lrat-certificates",
+        "verification/bitblasting",
+        "verification/machine-code",
+        "isa/x86-64",
+        "isa/simd",
+        "anneal/trust-boundary"
       ]
     },
     "gnss-osnma-spoofing-strapdown-kalman-covariance-and-acasx-advisories": {
@@ -60467,6 +60823,109 @@
         "domains/cyber-physical"
       ]
     },
+    "nostack-redzone-mxcsr-fastmath-hazards-usercopy-fault-tables-and-seqlock-traces": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc 1.102.0-nightly"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 (bundled with rustc 1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+            "version": "23.1.5"
+          },
+          "name": "LLVM 23.1.5 (bundled with rustc 1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+            "version": "15.2.0"
+          },
+          "name": "GCC 15.2.0"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux kernel"
+        },
+        {
+          "identity": {
+            "repository": "fuchsia.googlesource.com/fuchsia",
+            "revision": "fd31be1516bd2906c5b46be6c3ca3aa1adb162c0"
+          },
+          "name": "Fuchsia and Starnix"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "document_id": "768873 / 759656",
+            "updated": "2026-11-13 / 2026-02-23",
+            "url": "https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/best-practices/data-operand-independent-timing-isa-guidance.html"
+          },
+          "name": "Intel Data Operand Independent Timing (DOIT) ISA Guidance"
+        }
+      ],
+      "topics": [
+        "rust/inline-asm",
+        "isa/x86-64",
+        "isa/simd",
+        "ffi/linking",
+        "llvm/codegen",
+        "rustc/codegen",
+        "security/constant-time",
+        "systems/os-kernels",
+        "systems/concurrency-weak-memory",
+        "minirust/memory",
+        "verification/equivalence",
+        "lean/mechanization"
+      ]
+    },
     "object-files-linkers-loaders-and-separate-compilation-history": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -62876,6 +63335,108 @@
         "ffi/versioning",
         "cargo/resolver",
         "rust/semver"
+      ]
+    },
+    "page-aligned-simd-overreads-demonic-granules-and-early-exit-search-equivalence": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "63b8d2fd94ba3b1a80023dae7139949dd5be6b78"
+          },
+          "name": "LLVM compiler infrastructure"
+        },
+        {
+          "identity": {
+            "repository": "bminor/glibc",
+            "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+          },
+          "name": "GNU C Library (glibc)"
+        },
+        {
+          "identity": {
+            "repository": "BurntSushi/memchr",
+            "revision": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+            "version": "2.8.3"
+          },
+          "name": "memchr crate"
+        },
+        {
+          "identity": {
+            "repository": "simdutf/simdutf",
+            "revision": "177945073a2e44f6ef252aa2b9cf1ecb8e4d2ab0"
+          },
+          "name": "simdutf library"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verifier"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+          },
+          "name": "Linux kernel (AArch64 MTE and Tagged Address ABI)"
+        },
+        {
+          "identity": {
+            "artifact": "qemu-aarch64",
+            "package_version": "1:11.1.2+ds-2",
+            "sha256": "8ba579d46040c9d40c5786b4df58d7a17663c8fbd51968be84716682f758eb59"
+          },
+          "name": "QEMU AArch64 user-mode emulator"
+        }
+      ],
+      "topics": [
+        "anneal/memory-model",
+        "compilers/sanitizer-instrumentation",
+        "isa/aarch64",
+        "isa/x86-64",
+        "lean/mechanization",
+        "llvm/passes",
+        "rust/inline-asm",
+        "rust/simd",
+        "rustc/codegen",
+        "security/constant-time",
+        "verification/loop-alignment",
+        "verification/memory-models",
+        "verification/relational-equivalence"
       ]
     },
     "pagedattention-kv-prefix-sharing-speculative-sampling-and-bpe-healing": {
@@ -86037,6 +86598,89 @@
         "verification/selector-overlap-determinism"
       ]
     },
+    "self-attesting-inline-asm-register-bindings-rmeta-monomorphization-and-cgu-containment": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (1.99.1)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-11",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM and rust-lld 23.1.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+            "version": "23.1.5"
+          },
+          "name": "LLVM and rust-lld 23.1.5"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "package": "GNU Binutils for Debian",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils (ld.bfd and readelf)"
+        },
+        {
+          "identity": {
+            "package": "Debian clang 19.1.7 / llvm-mc, llvm-objdump 21.1.8",
+            "version": "clang 19.1.7 / llvm-tools 21.1.8"
+          },
+          "name": "Clang 19 and LLVM 21 binutils"
+        },
+        {
+          "identity": {
+            "package": "Debian qemu-user 1:11.1.2+ds-2",
+            "tool": "qemu-aarch64",
+            "version": "11.1.2"
+          },
+          "name": "QEMU user-mode AArch64 emulator"
+        }
+      ],
+      "topics": [
+        "isa/aarch64",
+        "isa/x86-64",
+        "lean/mechanization",
+        "llvm/lld",
+        "llvm/mc-layer",
+        "rust/inline-asm",
+        "rustc/codegen",
+        "rustc/monomorphization",
+        "rustc/rmeta",
+        "security/assembler-directives",
+        "systems/elf-linker-instruction-relaxation",
+        "verification/inline-asm-soundness"
+      ]
+    },
     "self-referential-unpin-coroutine-field-slicing-and-sroa": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -103486,6 +104130,179 @@
         "lean/zero-knowledge-proof-checking",
         "smt/zero-knowledge-proof-checking",
         "domains/machine-learning"
+      ]
+    },
+    "zero-tcb-verified-asm-macros-and-core-arch-mir-equivalence-stability": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "llvm_version": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc (1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.1",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc (1.99.1)"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.5",
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rustc (1.100.0)"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.5",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "trifectatechfoundation/zlib-rs",
+            "revision": "0254e07204884bfc902d6ebb68c8b703d0ea49cf",
+            "version": "0.6.8"
+          },
+          "name": "zlib-rs"
+        },
+        {
+          "identity": {
+            "repository": "BurntSushi/memchr",
+            "revision": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+            "version": "2.8.3"
+          },
+          "name": "memchr"
+        },
+        {
+          "identity": {
+            "repository": "rusticstuff/simdutf8",
+            "revision": "87ee8d9d20b849eae1974a82b248ee6fe7491bcc",
+            "version": "0.1.5"
+          },
+          "name": "simdutf8"
+        },
+        {
+          "identity": {
+            "repository": "srijs/rust-crc32fast",
+            "revision": "8a93d2a70c00ab3e72beda42014b18fad8e496ea",
+            "version": "1.5.5"
+          },
+          "name": "crc32fast"
+        },
+        {
+          "identity": {
+            "repository": "mcountryman/simd-adler32",
+            "revision": "d93164f98d7fe2daf883f2e1bec82778dd26199a",
+            "version": "0.3.10"
+          },
+          "name": "simd-adler32"
+        },
+        {
+          "identity": {
+            "repository": "BLAKE3-team/BLAKE3",
+            "revision": "f3149ec5bb5449af877ba20377a11008ff499fa2",
+            "version": "1.8.7"
+          },
+          "name": "blake3"
+        },
+        {
+          "identity": {
+            "repository": "BurntSushi/aho-corasick",
+            "revision": "5178060ce73d91938f8582d0360e3be031380440",
+            "version": "1.1.5"
+          },
+          "name": "aho-corasick"
+        },
+        {
+          "identity": {
+            "repository": "llogiq/bytecount",
+            "revision": "f06647f90a45ab302d9423dbe85019d595abf8c2",
+            "version": "0.6.9"
+          },
+          "name": "bytecount"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/hashbrown",
+            "revision": "c62a63a61b7caf2de8f9ecb7b06a66b0ab6bdf3d",
+            "version": "0.17.1"
+          },
+          "name": "hashbrown"
+        },
+        {
+          "identity": {
+            "repository": "RustCrypto/hashes",
+            "revision": "138dc5a05b93f8e49cda177fc6cfd7cc43673e5d",
+            "version": "sha2-0.11.1"
+          },
+          "name": "sha2"
+        },
+        {
+          "identity": {
+            "repository": "RustCrypto/stream-ciphers",
+            "revision": "6b236b758a0279f64d777797514813b2cb572c8b",
+            "version": "chacha20-0.10.2"
+          },
+          "name": "chacha20"
+        },
+        {
+          "identity": {
+            "repository": "RustCrypto/block-ciphers",
+            "revision": "9a84f2f8b581f62bcd00e16b5e11a2f6251916ee",
+            "version": "aes-0.9.4"
+          },
+          "name": "aes"
+        },
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/isa",
+        "anneal/mir",
+        "isa/x86_64",
+        "lean/certificates",
+        "llvm/codegen",
+        "rust/inline-asm",
+        "rust/proc-macros",
+        "rustc/mir",
+        "rustc/stdarch",
+        "security/constant-time",
+        "verification/equivalence"
       ]
     },
     "zerocopy-byte-apis-cross-target-layout-and-packet-certificates": {

@@ -1,0 +1,355 @@
+{
+  "lean_version": "leanprover/lean4:v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "modules": {
+    "AsmMirBase": {
+      "authored_loc": 599,
+      "auto_hint_cert_bytes": 0,
+      "auto_hint_cert_loc": 0,
+      "compile_rss_mb": 233.9,
+      "compile_wall_ms": 2162.66,
+      "file_bytes": 28675,
+      "olean_bytes": 2937000,
+      "total_noncomment_loc": 599
+    },
+    "HintObj_CtLookup8": {
+      "authored_loc": 27,
+      "auto_hint_cert_bytes": 387,
+      "auto_hint_cert_loc": 7,
+      "compile_rss_mb": 219.65,
+      "compile_wall_ms": 926.43,
+      "file_bytes": 2136,
+      "olean_bytes": 45984,
+      "total_noncomment_loc": 34
+    },
+    "HintObj_DotMaddubs": {
+      "authored_loc": 22,
+      "auto_hint_cert_bytes": 454,
+      "auto_hint_cert_loc": 8,
+      "compile_rss_mb": 242.86,
+      "compile_wall_ms": 811.33,
+      "file_bytes": 1685,
+      "olean_bytes": 36760,
+      "total_noncomment_loc": 30
+    },
+    "HintObj_MulxMac4": {
+      "authored_loc": 30,
+      "auto_hint_cert_bytes": 319,
+      "auto_hint_cert_loc": 7,
+      "compile_rss_mb": 220.39,
+      "compile_wall_ms": 548.46,
+      "file_bytes": 2047,
+      "olean_bytes": 32896,
+      "total_noncomment_loc": 37
+    },
+    "IsaLemmas": {
+      "authored_loc": 347,
+      "auto_hint_cert_bytes": 0,
+      "auto_hint_cert_loc": 0,
+      "compile_rss_mb": 209.54,
+      "compile_wall_ms": 1230.06,
+      "file_bytes": 18387,
+      "olean_bytes": 893264,
+      "total_noncomment_loc": 347
+    },
+    "MirTwin_CtLookup8": {
+      "authored_loc": 64,
+      "auto_hint_cert_bytes": 0,
+      "auto_hint_cert_loc": 0,
+      "compile_rss_mb": 192.27,
+      "compile_wall_ms": 324.63,
+      "file_bytes": 3142,
+      "olean_bytes": 391968,
+      "total_noncomment_loc": 64
+    },
+    "MirTwin_DotMaddubs": {
+      "authored_loc": 28,
+      "auto_hint_cert_bytes": 0,
+      "auto_hint_cert_loc": 0,
+      "compile_rss_mb": 185.03,
+      "compile_wall_ms": 173.32,
+      "file_bytes": 1503,
+      "olean_bytes": 77256,
+      "total_noncomment_loc": 28
+    },
+    "MirTwin_MulxMac4": {
+      "authored_loc": 74,
+      "auto_hint_cert_bytes": 0,
+      "auto_hint_cert_loc": 0,
+      "compile_rss_mb": 199.06,
+      "compile_wall_ms": 760.23,
+      "file_bytes": 4273,
+      "olean_bytes": 419056,
+      "total_noncomment_loc": 74
+    },
+    "RawObj_CtLookup8": {
+      "authored_loc": 187,
+      "auto_hint_cert_bytes": 0,
+      "auto_hint_cert_loc": 0,
+      "compile_rss_mb": 217.6,
+      "compile_wall_ms": 1074.31,
+      "file_bytes": 11930,
+      "olean_bytes": 460560,
+      "total_noncomment_loc": 187
+    },
+    "RawObj_DotMaddubs": {
+      "authored_loc": 312,
+      "auto_hint_cert_bytes": 0,
+      "auto_hint_cert_loc": 0,
+      "compile_rss_mb": 259.64,
+      "compile_wall_ms": 2077.2,
+      "file_bytes": 19143,
+      "olean_bytes": 649768,
+      "total_noncomment_loc": 312
+    },
+    "RawObj_MulxMac4": {
+      "authored_loc": 269,
+      "auto_hint_cert_bytes": 0,
+      "auto_hint_cert_loc": 0,
+      "compile_rss_mb": 270.37,
+      "compile_wall_ms": 3795.36,
+      "file_bytes": 15629,
+      "olean_bytes": 878432,
+      "total_noncomment_loc": 269
+    },
+    "UntrustedHints": {
+      "authored_loc": 969,
+      "auto_hint_cert_bytes": 0,
+      "auto_hint_cert_loc": 0,
+      "compile_rss_mb": 343.32,
+      "compile_wall_ms": 7615.57,
+      "file_bytes": 56952,
+      "olean_bytes": 4041440,
+      "total_noncomment_loc": 969
+    }
+  },
+  "private_kernel_replay": [
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "IsaLemmas",
+      "import_ms": 80.568,
+      "module": "RawObj_MulxMac4",
+      "replay_ms": 1008.968,
+      "replayed_consts": 40,
+      "tag": "raw_obj",
+      "theorem": "LockedObligations.verify_mulx_mac4_obj",
+      "type_hash": 3141945142,
+      "type_hints": 0,
+      "val_hints": 0
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "UntrustedHints",
+      "import_ms": 97.848,
+      "module": "HintObj_MulxMac4",
+      "replay_ms": 177.48,
+      "replayed_consts": 2,
+      "tag": "hint_obj_per_kernel",
+      "theorem": "LockedObligations.verify_mulx_mac4_obj",
+      "type_hash": 3141945142,
+      "type_hints": 0,
+      "val_hints": 3
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "IsaLemmas",
+      "import_ms": 116.625,
+      "module": "HintObj_MulxMac4",
+      "replay_ms": 1444.767,
+      "replayed_consts": 197,
+      "tag": "hint_obj_incl_lib",
+      "theorem": "LockedObligations.verify_mulx_mac4_obj",
+      "type_hash": 3141945142,
+      "type_hints": 0,
+      "val_hints": 3
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "IsaLemmas",
+      "import_ms": 85.619,
+      "module": "MirTwin_MulxMac4",
+      "replay_ms": 232.19,
+      "replayed_consts": 9,
+      "tag": "mir_twin",
+      "theorem": "LockedObligations.verify_mulx_mac4_mir_twin",
+      "type_hash": 633573412,
+      "type_hints": 0,
+      "val_hints": 0
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "IsaLemmas",
+      "import_ms": 81.348,
+      "module": "RawObj_DotMaddubs",
+      "replay_ms": 422.669,
+      "replayed_consts": 17,
+      "tag": "raw_obj",
+      "theorem": "LockedObligations.verify_dot_maddubs_obj",
+      "type_hash": 1412219475,
+      "type_hints": 0,
+      "val_hints": 0
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "UntrustedHints",
+      "import_ms": 80.181,
+      "module": "HintObj_DotMaddubs",
+      "replay_ms": 386.5,
+      "replayed_consts": 2,
+      "tag": "hint_obj_per_kernel",
+      "theorem": "LockedObligations.verify_dot_maddubs_obj",
+      "type_hash": 1412219475,
+      "type_hints": 0,
+      "val_hints": 3
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "IsaLemmas",
+      "import_ms": 100.608,
+      "module": "HintObj_DotMaddubs",
+      "replay_ms": 1715.265,
+      "replayed_consts": 197,
+      "tag": "hint_obj_incl_lib",
+      "theorem": "LockedObligations.verify_dot_maddubs_obj",
+      "type_hash": 1412219475,
+      "type_hints": 0,
+      "val_hints": 3
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "IsaLemmas",
+      "import_ms": 77.831,
+      "module": "MirTwin_DotMaddubs",
+      "replay_ms": 22.146,
+      "replayed_consts": 7,
+      "tag": "mir_twin",
+      "theorem": "LockedObligations.verify_dot_maddubs_mir_twin",
+      "type_hash": 4214809948,
+      "type_hints": 0,
+      "val_hints": 0
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "IsaLemmas",
+      "import_ms": 103.716,
+      "module": "RawObj_CtLookup8",
+      "replay_ms": 211.556,
+      "replayed_consts": 5,
+      "tag": "raw_obj",
+      "theorem": "LockedObligations.verify_ct_lookup8_obj",
+      "type_hash": 1865847794,
+      "type_hints": 0,
+      "val_hints": 0
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "IsaLemmas",
+      "import_ms": 76.671,
+      "module": "RawObj_CtLookup8",
+      "replay_ms": 187.255,
+      "replayed_consts": 5,
+      "tag": "raw_obj_2safety",
+      "theorem": "LockedObligations.verify_ct_lookup8_2safety",
+      "type_hash": 1937795748,
+      "type_hints": 0,
+      "val_hints": 0
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "UntrustedHints",
+      "import_ms": 80.78,
+      "module": "HintObj_CtLookup8",
+      "replay_ms": 409.969,
+      "replayed_consts": 3,
+      "tag": "hint_obj_per_kernel",
+      "theorem": "LockedObligations.verify_ct_lookup8_obj",
+      "type_hash": 1865847794,
+      "type_hints": 0,
+      "val_hints": 3
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "UntrustedHints",
+      "import_ms": 138.825,
+      "module": "HintObj_CtLookup8",
+      "replay_ms": 454.205,
+      "replayed_consts": 3,
+      "tag": "hint_obj_2safety",
+      "theorem": "LockedObligations.verify_ct_lookup8_2safety",
+      "type_hash": 1937795748,
+      "type_hints": 0,
+      "val_hints": 3
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "IsaLemmas",
+      "import_ms": 87.719,
+      "module": "HintObj_CtLookup8",
+      "replay_ms": 1595.047,
+      "replayed_consts": 198,
+      "tag": "hint_obj_incl_lib",
+      "theorem": "LockedObligations.verify_ct_lookup8_obj",
+      "type_hash": 1865847794,
+      "type_hints": 0,
+      "val_hints": 3
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "base": "AsmMirBase",
+      "import_ms": 78.68,
+      "module": "MirTwin_CtLookup8",
+      "replay_ms": 49.071,
+      "replayed_consts": 7,
+      "tag": "mir_twin",
+      "theorem": "LockedObligations.verify_ct_lookup8_mir_twin",
+      "type_hash": 2712900349,
+      "type_hints": 0,
+      "val_hints": 0
+    }
+  ]
+}

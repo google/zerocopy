@@ -1,0 +1,739 @@
+{
+  "seam1_nostack_redzone": {
+    "1.99.1": {
+      "default_redzone": {
+        "runtime": {
+          "push_pop": [
+            "0x1122334455667788",
+            "0xdeadbeefcafebabe",
+            0
+          ],
+          "pushfq": [
+            "0x1122334455667788",
+            "0x0000000000000246",
+            0
+          ],
+          "call": [
+            "0x1122334455667788",
+            "0x000055b5b87f4da5",
+            0
+          ],
+          "without_nostack": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ]
+        },
+        "asm_snippets": {
+          "victim_nostack_push_pop": "victim_nostack_push_pop:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tmovq\t%rsi, -16(%rsp)\n\tmovq\t%rdx, -8(%rsp)\n\t#APP\n\n\tmovq\t%rsp, %rdi\n\tpushq\t%r8\n\tpopq\t%rsi\n\tmovq\t%rsp, %rdx\n\n\t#NO_APP\n\tandl\t$1, %ecx\n\tmovq\t-16(%rsp,%rcx,8), %rsi\n\txorl\t$1, %ecx\n\tmovq\t-16(%rsp,%rcx,8), %rcx\n\txorq\t%rdx, %rdi\n\tmovq\t%rsi, (%rax)\n\tmovq\t%rcx, 8(%rax)\n\tmovq\t%rdi, 16(%rax)\n\tretq\n.Lfunc_end7:",
+          "safe_with_stack_option": "safe_with_stack_option:\n\t.cfi_startproc\n\tsubq\t$24, %rsp\n\t.cfi_def_cfa_offset 32\n\tmovq\t%rdi, %rax\n\tmovq\t%rsi, 8(%rsp)\n\tmovq\t%rdx, 16(%rsp)\n\t#APP\n\n\tmovq\t%rsp, %rdi\n\tpushq\t%r8\n\tpopq\t%rsi\n\tmovq\t%rsp, %rdx\n\n\t#NO_APP\n\tandl\t$1, %ecx\n\tmovq\t8(%rsp,%rcx,8), %rsi\n\txorl\t$1, %ecx\n\tmovq\t8(%rsp,%rcx,8), %rcx\n\txorq\t%rdx, %rdi\n\tmovq\t%rsi, (%rax)\n\tmovq\t%rcx, 8(%rax)\n\tmovq\t%rdi, 16(%rax)\n\taddq\t$24, %rsp\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end5:"
+        }
+      },
+      "no_redzone": {
+        "runtime": {
+          "push_pop": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ],
+          "pushfq": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ],
+          "call": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ],
+          "without_nostack": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ]
+        },
+        "asm_snippets": {
+          "victim_nostack_push_pop": "victim_nostack_push_pop:\n\t.cfi_startproc\n\tsubq\t$16, %rsp\n\t.cfi_def_cfa_offset 24\n\tmovq\t%rdi, %rax\n\tmovq\t%rsi, (%rsp)\n\tmovq\t%rdx, 8(%rsp)\n\t#APP\n\n\tmovq\t%rsp, %rdi\n\tpushq\t%r8\n\tpopq\t%rsi\n\tmovq\t%rsp, %rdx\n\n\t#NO_APP\n\tandl\t$1, %ecx\n\tmovq\t(%rsp,%rcx,8), %rsi\n\txorl\t$1, %ecx\n\tmovq\t(%rsp,%rcx,8), %rcx\n\txorq\t%rdx, %rdi\n\tmovq\t%rsi, (%rax)\n\tmovq\t%rcx, 8(%rax)\n\tmovq\t%rdi, 16(%rax)\n\taddq\t$16, %rsp\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end7:",
+          "safe_with_stack_option": "safe_with_stack_option:\n\t.cfi_startproc\n\tsubq\t$24, %rsp\n\t.cfi_def_cfa_offset 32\n\tmovq\t%rdi, %rax\n\tmovq\t%rsi, 8(%rsp)\n\tmovq\t%rdx, 16(%rsp)\n\t#APP\n\n\tmovq\t%rsp, %rdi\n\tpushq\t%r8\n\tpopq\t%rsi\n\tmovq\t%rsp, %rdx\n\n\t#NO_APP\n\tandl\t$1, %ecx\n\tmovq\t8(%rsp,%rcx,8), %rsi\n\txorl\t$1, %ecx\n\tmovq\t8(%rsp,%rcx,8), %rcx\n\txorq\t%rdx, %rdi\n\tmovq\t%rsi, (%rax)\n\tmovq\t%rcx, 8(%rax)\n\tmovq\t%rdi, 16(%rax)\n\taddq\t$24, %rsp\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end5:"
+        }
+      }
+    },
+    "1.102.0-nightly": {
+      "default_redzone": {
+        "runtime": {
+          "push_pop": [
+            "0x1122334455667788",
+            "0xdeadbeefcafebabe",
+            0
+          ],
+          "pushfq": [
+            "0x1122334455667788",
+            "0x0000000000000246",
+            0
+          ],
+          "call": [
+            "0x1122334455667788",
+            "0x0000558bb3809ff5",
+            0
+          ],
+          "without_nostack": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ]
+        },
+        "asm_snippets": {
+          "victim_nostack_push_pop": "victim_nostack_push_pop:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tmovq\t%rsi, -16(%rsp)\n\tmovq\t%rdx, -8(%rsp)\n\t#APP\n\n\tmovq\t%rsp, %rdi\n\tpushq\t%r8\n\tpopq\t%rsi\n\tmovq\t%rsp, %rdx\n\n\t#NO_APP\n\tandl\t$1, %ecx\n\tmovq\t-16(%rsp,%rcx,8), %rsi\n\txorl\t$1, %ecx\n\tmovq\t-16(%rsp,%rcx,8), %rcx\n\txorq\t%rdx, %rdi\n\tmovq\t%rsi, (%rax)\n\tmovq\t%rcx, 8(%rax)\n\tmovq\t%rdi, 16(%rax)\n\tretq\n.Lfunc_end7:",
+          "safe_with_stack_option": "safe_with_stack_option:\n\t.cfi_startproc\n\tsubq\t$24, %rsp\n\t.cfi_def_cfa_offset 32\n\tmovq\t%rdi, %rax\n\tmovq\t%rsi, 8(%rsp)\n\tmovq\t%rdx, 16(%rsp)\n\t#APP\n\n\tmovq\t%rsp, %rdi\n\tpushq\t%r8\n\tpopq\t%rsi\n\tmovq\t%rsp, %rdx\n\n\t#NO_APP\n\tandl\t$1, %ecx\n\tmovq\t8(%rsp,%rcx,8), %rsi\n\txorl\t$1, %ecx\n\tmovq\t8(%rsp,%rcx,8), %rcx\n\txorq\t%rdx, %rdi\n\tmovq\t%rsi, (%rax)\n\tmovq\t%rcx, 8(%rax)\n\tmovq\t%rdi, 16(%rax)\n\taddq\t$24, %rsp\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end5:"
+        }
+      },
+      "no_redzone": {
+        "runtime": {
+          "push_pop": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ],
+          "pushfq": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ],
+          "call": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ],
+          "without_nostack": [
+            "0x1122334455667788",
+            "0x99aabbccddeeff00",
+            0
+          ]
+        },
+        "asm_snippets": {
+          "victim_nostack_push_pop": "victim_nostack_push_pop:\n\t.cfi_startproc\n\tsubq\t$16, %rsp\n\t.cfi_def_cfa_offset 24\n\tmovq\t%rdi, %rax\n\tmovq\t%rsi, (%rsp)\n\tmovq\t%rdx, 8(%rsp)\n\t#APP\n\n\tmovq\t%rsp, %rdi\n\tpushq\t%r8\n\tpopq\t%rsi\n\tmovq\t%rsp, %rdx\n\n\t#NO_APP\n\tandl\t$1, %ecx\n\tmovq\t(%rsp,%rcx,8), %rsi\n\txorl\t$1, %ecx\n\tmovq\t(%rsp,%rcx,8), %rcx\n\txorq\t%rdx, %rdi\n\tmovq\t%rsi, (%rax)\n\tmovq\t%rcx, 8(%rax)\n\tmovq\t%rdi, 16(%rax)\n\taddq\t$16, %rsp\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end7:",
+          "safe_with_stack_option": "safe_with_stack_option:\n\t.cfi_startproc\n\tsubq\t$24, %rsp\n\t.cfi_def_cfa_offset 32\n\tmovq\t%rdi, %rax\n\tmovq\t%rsi, 8(%rsp)\n\tmovq\t%rdx, 16(%rsp)\n\t#APP\n\n\tmovq\t%rsp, %rdi\n\tpushq\t%r8\n\tpopq\t%rsi\n\tmovq\t%rsp, %rdx\n\n\t#NO_APP\n\tandl\t$1, %ecx\n\tmovq\t8(%rsp,%rcx,8), %rsi\n\txorl\t$1, %ecx\n\tmovq\t8(%rsp,%rcx,8), %rcx\n\txorq\t%rdx, %rdi\n\tmovq\t%rsi, (%rax)\n\tmovq\t%rcx, 8(%rax)\n\tmovq\t%rdi, 16(%rax)\n\taddq\t$24, %rsp\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end5:"
+        }
+      }
+    }
+  },
+  "seam2_mxcsr_fastmath_and_fp": {
+    "rustc_mxcsr_clobber_register": {
+      "1.99.1": {
+        "returncode": 1,
+        "stderr_first_line": "error: invalid register `mxcsr`: unknown register"
+      },
+      "1.102.0-nightly": {
+        "returncode": 1,
+        "stderr_first_line": "error: invalid register `mxcsr`: unknown register"
+      }
+    },
+    "llvm_ir_preserves_flags_constraints": [
+      "%1 = tail call float asm sideeffect inteldialect \"addss ${0:x}, ${2:x}\", \"=&x,0,x\"(float %0, float %y) #1, !srcloc !5",
+      "%1 = tail call float asm sideeffect inteldialect \"addss ${0:x}, ${2:x}\", \"=&x,0,x,~{dirflag},~{fpsr},~{flags}\"(float %0, float %y) #1, !srcloc !7"
+    ],
+    "hardware_mxcsr_sticky_transitions": {
+      "init": "0x1f80",
+      "inexact_pe": "0x1fa0",
+      "invalid_ie": "0x1f81",
+      "denorm_de": "0x1fa2",
+      "divzero_ze": "0x1f84",
+      "overflow_oe_pe": "0x1fa8",
+      "underflow_ue_pe": "0x1fb0"
+    },
+    "crtfastmath_ffi_poisoning": {
+      "1_pure_rustc_clean": {
+        "mxcsr_at_main": "0x1f80",
+        "rt_sum": "0x00400000",
+        "rt_scaled": "0x00200000",
+        "ct_sum": "0x00400000",
+        "ct_scaled": "0x00200000"
+      },
+      "2_exec_link_ffast_math": {
+        "mxcsr_at_main": "0x9fc0",
+        "rt_sum": "0x00000000",
+        "rt_scaled": "0x00000000",
+        "ct_sum": "0x00400000",
+        "ct_scaled": "0x00200000"
+      },
+      "3_shared_so_ffast_math": {
+        "mxcsr_at_main": "0x1f80",
+        "rt_sum": "0x00400000",
+        "rt_scaled": "0x00200000",
+        "ct_sum": "0x00400000",
+        "ct_scaled": "0x00200000"
+      },
+      "3_shared_so_has_set_fast_math_sym": false,
+      "4_shared_so_mdaz_ftz": {
+        "mxcsr_at_main": "0x9fc0",
+        "rt_sum": "0x00000000",
+        "rt_scaled": "0x00000000",
+        "ct_sum": "0x00400000",
+        "ct_scaled": "0x00200000"
+      },
+      "4_shared_so_has_set_fast_math_sym": true
+    },
+    "fp_minmax_fma_corners": {
+      "1.99.1_baseline_sse2": {
+        "data": {
+          "minmax": [
+            {
+              "case": "neg0_pos0",
+              "a": "0x80000000",
+              "b": "0x00000000",
+              "rust_min": "0x00000000",
+              "rust_max": "0x00000000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x00000000",
+              "hw_vminss_flags": "0x00",
+              "hw_vmaxss": "0x00000000",
+              "hw_vmaxss_flags": "0x00"
+            },
+            {
+              "case": "pos0_neg0",
+              "a": "0x00000000",
+              "b": "0x80000000",
+              "rust_min": "0x80000000",
+              "rust_max": "0x80000000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x80000000",
+              "hw_vminss_flags": "0x00",
+              "hw_vmaxss": "0x80000000",
+              "hw_vmaxss_flags": "0x00"
+            },
+            {
+              "case": "qnan1_one",
+              "a": "0x7fc00001",
+              "b": "0x3f800000",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x3f800000",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x3f800000",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "one_qnan1",
+              "a": "0x3f800000",
+              "b": "0x7fc00001",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x7fc00001",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7fc00001",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "qnan1_qnan2",
+              "a": "0x7fc00001",
+              "b": "0x7fc00002",
+              "rust_min": "0x7fc00001",
+              "rust_max": "0x7fc00001",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x7fc00002",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7fc00002",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "snan1_one",
+              "a": "0x7f800001",
+              "b": "0x3f800000",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x3f800000",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x3f800000",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "one_snan1",
+              "a": "0x3f800000",
+              "b": "0x7f800001",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x7f800001",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7f800001",
+              "hw_vmaxss_flags": "0x01"
+            }
+          ],
+          "fma": [
+            {
+              "case": "cancellation_diff_squares",
+              "rust_mul_add": "0xa8800000",
+              "rust_sep_mul_add": "0x00000000",
+              "hw_vfmadd213ss": "0xa8800000",
+              "hw_flags": "0x00"
+            },
+            {
+              "case": "double_rounding_1ulp_flip",
+              "rust_mul_add": "0x3f800004",
+              "rust_sep_mul_add": "0x3f800003",
+              "hw_vfmadd213ss": "0x3f800004",
+              "hw_flags": "0x20"
+            },
+            {
+              "case": "qnan_a_b_c",
+              "rust_mul_add": "0x7fc00001",
+              "rust_sep_mul_add": "0x7fc00001",
+              "hw_vfmadd213ss": "0x7fc00001",
+              "hw_flags": "0x00"
+            },
+            {
+              "case": "snan_a_b_c",
+              "rust_mul_add": "0x7fc00001",
+              "rust_sep_mul_add": "0x7fc00001",
+              "hw_vfmadd213ss": "0x7fc00001",
+              "hw_flags": "0x01"
+            },
+            {
+              "case": "inf_mul_zero_plus_one",
+              "rust_mul_add": "0xffc00000",
+              "rust_sep_mul_add": "0xffc00000",
+              "hw_vfmadd213ss": "0xffc00000",
+              "hw_flags": "0x01"
+            }
+          ]
+        },
+        "asm": {
+          "rust_min": "rust_min:\n\t.cfi_startproc\n\tmovaps\t%xmm1, %xmm2\n\tcmpunordss\t%xmm1, %xmm2\n\tmovaps\t%xmm2, %xmm3\n\tandps\t%xmm0, %xmm3\n\tminss\t%xmm1, %xmm0\n\tandnps\t%xmm0, %xmm2\n\torps\t%xmm3, %xmm2\n\tmovd\t%xmm2, %eax\n\tretq\n.Lfunc_end12:",
+          "rust_max": "rust_max:\n\t.cfi_startproc\n\tmovaps\t%xmm1, %xmm2\n\tcmpunordss\t%xmm1, %xmm2\n\tmovaps\t%xmm2, %xmm3\n\tandps\t%xmm0, %xmm3\n\tmaxss\t%xmm1, %xmm0\n\tandnps\t%xmm0, %xmm2\n\torps\t%xmm3, %xmm2\n\tmovd\t%xmm2, %eax\n\tretq\n.Lfunc_end10:",
+          "rust_minimum": "NOT_FOUND",
+          "rust_mul_add": "rust_mul_add:\n\t.cfi_startproc\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 16\n\tcallq\t*fmaf@GOTPCREL(%rip)\n\tmovd\t%xmm0, %eax\n\tpopq\t%rcx\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end13:"
+        }
+      },
+      "1.99.1_target_fma": {
+        "data": {
+          "minmax": [
+            {
+              "case": "neg0_pos0",
+              "a": "0x80000000",
+              "b": "0x00000000",
+              "rust_min": "0x00000000",
+              "rust_max": "0x00000000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x00000000",
+              "hw_vminss_flags": "0x00",
+              "hw_vmaxss": "0x00000000",
+              "hw_vmaxss_flags": "0x00"
+            },
+            {
+              "case": "pos0_neg0",
+              "a": "0x00000000",
+              "b": "0x80000000",
+              "rust_min": "0x80000000",
+              "rust_max": "0x80000000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x80000000",
+              "hw_vminss_flags": "0x00",
+              "hw_vmaxss": "0x80000000",
+              "hw_vmaxss_flags": "0x00"
+            },
+            {
+              "case": "qnan1_one",
+              "a": "0x7fc00001",
+              "b": "0x3f800000",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x3f800000",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x3f800000",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "one_qnan1",
+              "a": "0x3f800000",
+              "b": "0x7fc00001",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x7fc00001",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7fc00001",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "qnan1_qnan2",
+              "a": "0x7fc00001",
+              "b": "0x7fc00002",
+              "rust_min": "0x7fc00001",
+              "rust_max": "0x7fc00001",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x7fc00002",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7fc00002",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "snan1_one",
+              "a": "0x7f800001",
+              "b": "0x3f800000",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x3f800000",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x3f800000",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "one_snan1",
+              "a": "0x3f800000",
+              "b": "0x7f800001",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0xffffffff",
+              "rust_maximum": "0xffffffff",
+              "hw_vminss": "0x7f800001",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7f800001",
+              "hw_vmaxss_flags": "0x01"
+            }
+          ],
+          "fma": [
+            {
+              "case": "cancellation_diff_squares",
+              "rust_mul_add": "0xa8800000",
+              "rust_sep_mul_add": "0x00000000",
+              "hw_vfmadd213ss": "0xa8800000",
+              "hw_flags": "0x00"
+            },
+            {
+              "case": "double_rounding_1ulp_flip",
+              "rust_mul_add": "0x3f800004",
+              "rust_sep_mul_add": "0x3f800003",
+              "hw_vfmadd213ss": "0x3f800004",
+              "hw_flags": "0x20"
+            },
+            {
+              "case": "qnan_a_b_c",
+              "rust_mul_add": "0x7fc00001",
+              "rust_sep_mul_add": "0x7fc00001",
+              "hw_vfmadd213ss": "0x7fc00001",
+              "hw_flags": "0x00"
+            },
+            {
+              "case": "snan_a_b_c",
+              "rust_mul_add": "0x7fc00001",
+              "rust_sep_mul_add": "0x7fc00001",
+              "hw_vfmadd213ss": "0x7fc00001",
+              "hw_flags": "0x01"
+            },
+            {
+              "case": "inf_mul_zero_plus_one",
+              "rust_mul_add": "0xffc00000",
+              "rust_sep_mul_add": "0xffc00000",
+              "hw_vfmadd213ss": "0xffc00000",
+              "hw_flags": "0x01"
+            }
+          ]
+        },
+        "asm": {
+          "rust_min": "rust_min:\n\t.cfi_startproc\n\tvminss\t%xmm1, %xmm0, %xmm2\n\tvcmpunordss\t%xmm1, %xmm1, %xmm1\n\tvblendvps\t%xmm1, %xmm0, %xmm2, %xmm0\n\tvextractps\t$0, %xmm0, %eax\n\tretq\n.Lfunc_end12:",
+          "rust_max": "rust_max:\n\t.cfi_startproc\n\tvmaxss\t%xmm1, %xmm0, %xmm2\n\tvcmpunordss\t%xmm1, %xmm1, %xmm1\n\tvblendvps\t%xmm1, %xmm0, %xmm2, %xmm0\n\tvextractps\t$0, %xmm0, %eax\n\tretq\n.Lfunc_end10:",
+          "rust_minimum": "NOT_FOUND",
+          "rust_mul_add": "rust_mul_add:\n\t.cfi_startproc\n\tvfmadd213ss\t%xmm2, %xmm1, %xmm0\n\tvmovd\t%xmm0, %eax\n\tretq\n.Lfunc_end13:"
+        }
+      },
+      "1.102.0-nightly_baseline_sse2": {
+        "data": {
+          "minmax": [
+            {
+              "case": "neg0_pos0",
+              "a": "0x80000000",
+              "b": "0x00000000",
+              "rust_min": "0x00000000",
+              "rust_max": "0x00000000",
+              "rust_minimum": "0x80000000",
+              "rust_maximum": "0x00000000",
+              "hw_vminss": "0x00000000",
+              "hw_vminss_flags": "0x00",
+              "hw_vmaxss": "0x00000000",
+              "hw_vmaxss_flags": "0x00"
+            },
+            {
+              "case": "pos0_neg0",
+              "a": "0x00000000",
+              "b": "0x80000000",
+              "rust_min": "0x80000000",
+              "rust_max": "0x80000000",
+              "rust_minimum": "0x80000000",
+              "rust_maximum": "0x00000000",
+              "hw_vminss": "0x80000000",
+              "hw_vminss_flags": "0x00",
+              "hw_vmaxss": "0x80000000",
+              "hw_vmaxss_flags": "0x00"
+            },
+            {
+              "case": "qnan1_one",
+              "a": "0x7fc00001",
+              "b": "0x3f800000",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0x7fc00001",
+              "rust_maximum": "0x7fc00001",
+              "hw_vminss": "0x3f800000",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x3f800000",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "one_qnan1",
+              "a": "0x3f800000",
+              "b": "0x7fc00001",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0x7fc00001",
+              "rust_maximum": "0x7fc00001",
+              "hw_vminss": "0x7fc00001",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7fc00001",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "qnan1_qnan2",
+              "a": "0x7fc00001",
+              "b": "0x7fc00002",
+              "rust_min": "0x7fc00001",
+              "rust_max": "0x7fc00001",
+              "rust_minimum": "0x7fc00001",
+              "rust_maximum": "0x7fc00001",
+              "hw_vminss": "0x7fc00002",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7fc00002",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "snan1_one",
+              "a": "0x7f800001",
+              "b": "0x3f800000",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0x7f800001",
+              "rust_maximum": "0x7f800001",
+              "hw_vminss": "0x3f800000",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x3f800000",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "one_snan1",
+              "a": "0x3f800000",
+              "b": "0x7f800001",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0x7f800001",
+              "rust_maximum": "0x7f800001",
+              "hw_vminss": "0x7f800001",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7f800001",
+              "hw_vmaxss_flags": "0x01"
+            }
+          ],
+          "fma": [
+            {
+              "case": "cancellation_diff_squares",
+              "rust_mul_add": "0xa8800000",
+              "rust_sep_mul_add": "0x00000000",
+              "hw_vfmadd213ss": "0xa8800000",
+              "hw_flags": "0x00"
+            },
+            {
+              "case": "double_rounding_1ulp_flip",
+              "rust_mul_add": "0x3f800004",
+              "rust_sep_mul_add": "0x3f800003",
+              "hw_vfmadd213ss": "0x3f800004",
+              "hw_flags": "0x20"
+            },
+            {
+              "case": "qnan_a_b_c",
+              "rust_mul_add": "0x7fc00001",
+              "rust_sep_mul_add": "0x7fc00001",
+              "hw_vfmadd213ss": "0x7fc00001",
+              "hw_flags": "0x00"
+            },
+            {
+              "case": "snan_a_b_c",
+              "rust_mul_add": "0x7fc00001",
+              "rust_sep_mul_add": "0x7fc00001",
+              "hw_vfmadd213ss": "0x7fc00001",
+              "hw_flags": "0x01"
+            },
+            {
+              "case": "inf_mul_zero_plus_one",
+              "rust_mul_add": "0xffc00000",
+              "rust_sep_mul_add": "0xffc00000",
+              "hw_vfmadd213ss": "0xffc00000",
+              "hw_flags": "0x01"
+            }
+          ]
+        },
+        "asm": {
+          "rust_min": "rust_min:\n\t.cfi_startproc\n\tmovaps\t%xmm1, %xmm2\n\tcmpunordss\t%xmm1, %xmm2\n\tmovaps\t%xmm2, %xmm3\n\tandps\t%xmm0, %xmm3\n\tminss\t%xmm1, %xmm0\n\tandnps\t%xmm0, %xmm2\n\torps\t%xmm3, %xmm2\n\tmovd\t%xmm2, %eax\n\tretq\n.Lfunc_end12:",
+          "rust_max": "rust_max:\n\t.cfi_startproc\n\tmovaps\t%xmm1, %xmm2\n\tcmpunordss\t%xmm1, %xmm2\n\tmovaps\t%xmm2, %xmm3\n\tandps\t%xmm0, %xmm3\n\tmaxss\t%xmm1, %xmm0\n\tandnps\t%xmm0, %xmm2\n\torps\t%xmm3, %xmm2\n\tmovd\t%xmm2, %eax\n\tretq\n.Lfunc_end10:",
+          "rust_minimum": "rust_minimum:\n\t.cfi_startproc\n\tmovaps\t%xmm0, %xmm2\n\tcmpunordss\t%xmm0, %xmm2\n\tmovaps\t%xmm2, %xmm3\n\tandps\t%xmm0, %xmm3\n\tmovaps\t%xmm0, %xmm4\n\tminss\t%xmm1, %xmm4\n\tandps\t.LCPI13_0(%rip), %xmm0\n\torps\t%xmm4, %xmm0\n\tandnps\t%xmm0, %xmm2\n\torps\t%xmm3, %xmm2\n\tmovd\t%xmm2, %eax\n\tretq\n.Lfunc_end13:",
+          "rust_mul_add": "rust_mul_add:\n\t.cfi_startproc\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 16\n\tcallq\t*fmaf@GOTPCREL(%rip)\n\tmovd\t%xmm0, %eax\n\tpopq\t%rcx\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end14:"
+        }
+      },
+      "1.102.0-nightly_target_fma": {
+        "data": {
+          "minmax": [
+            {
+              "case": "neg0_pos0",
+              "a": "0x80000000",
+              "b": "0x00000000",
+              "rust_min": "0x00000000",
+              "rust_max": "0x00000000",
+              "rust_minimum": "0x80000000",
+              "rust_maximum": "0x00000000",
+              "hw_vminss": "0x00000000",
+              "hw_vminss_flags": "0x00",
+              "hw_vmaxss": "0x00000000",
+              "hw_vmaxss_flags": "0x00"
+            },
+            {
+              "case": "pos0_neg0",
+              "a": "0x00000000",
+              "b": "0x80000000",
+              "rust_min": "0x80000000",
+              "rust_max": "0x80000000",
+              "rust_minimum": "0x80000000",
+              "rust_maximum": "0x00000000",
+              "hw_vminss": "0x80000000",
+              "hw_vminss_flags": "0x00",
+              "hw_vmaxss": "0x80000000",
+              "hw_vmaxss_flags": "0x00"
+            },
+            {
+              "case": "qnan1_one",
+              "a": "0x7fc00001",
+              "b": "0x3f800000",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0x7fc00001",
+              "rust_maximum": "0x7fc00001",
+              "hw_vminss": "0x3f800000",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x3f800000",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "one_qnan1",
+              "a": "0x3f800000",
+              "b": "0x7fc00001",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0x7fc00001",
+              "rust_maximum": "0x7fc00001",
+              "hw_vminss": "0x7fc00001",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7fc00001",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "qnan1_qnan2",
+              "a": "0x7fc00001",
+              "b": "0x7fc00002",
+              "rust_min": "0x7fc00001",
+              "rust_max": "0x7fc00001",
+              "rust_minimum": "0x7fc00001",
+              "rust_maximum": "0x7fc00001",
+              "hw_vminss": "0x7fc00002",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7fc00002",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "snan1_one",
+              "a": "0x7f800001",
+              "b": "0x3f800000",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0x7f800001",
+              "rust_maximum": "0x7f800001",
+              "hw_vminss": "0x3f800000",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x3f800000",
+              "hw_vmaxss_flags": "0x01"
+            },
+            {
+              "case": "one_snan1",
+              "a": "0x3f800000",
+              "b": "0x7f800001",
+              "rust_min": "0x3f800000",
+              "rust_max": "0x3f800000",
+              "rust_minimum": "0x7f800001",
+              "rust_maximum": "0x7f800001",
+              "hw_vminss": "0x7f800001",
+              "hw_vminss_flags": "0x01",
+              "hw_vmaxss": "0x7f800001",
+              "hw_vmaxss_flags": "0x01"
+            }
+          ],
+          "fma": [
+            {
+              "case": "cancellation_diff_squares",
+              "rust_mul_add": "0xa8800000",
+              "rust_sep_mul_add": "0x00000000",
+              "hw_vfmadd213ss": "0xa8800000",
+              "hw_flags": "0x00"
+            },
+            {
+              "case": "double_rounding_1ulp_flip",
+              "rust_mul_add": "0x3f800004",
+              "rust_sep_mul_add": "0x3f800003",
+              "hw_vfmadd213ss": "0x3f800004",
+              "hw_flags": "0x20"
+            },
+            {
+              "case": "qnan_a_b_c",
+              "rust_mul_add": "0x7fc00001",
+              "rust_sep_mul_add": "0x7fc00001",
+              "hw_vfmadd213ss": "0x7fc00001",
+              "hw_flags": "0x00"
+            },
+            {
+              "case": "snan_a_b_c",
+              "rust_mul_add": "0x7fc00001",
+              "rust_sep_mul_add": "0x7fc00001",
+              "hw_vfmadd213ss": "0x7fc00001",
+              "hw_flags": "0x01"
+            },
+            {
+              "case": "inf_mul_zero_plus_one",
+              "rust_mul_add": "0xffc00000",
+              "rust_sep_mul_add": "0xffc00000",
+              "hw_vfmadd213ss": "0xffc00000",
+              "hw_flags": "0x01"
+            }
+          ]
+        },
+        "asm": {
+          "rust_min": "rust_min:\n\t.cfi_startproc\n\tvminss\t%xmm1, %xmm0, %xmm2\n\tvcmpunordss\t%xmm1, %xmm1, %xmm1\n\tvblendvps\t%xmm1, %xmm0, %xmm2, %xmm0\n\tvextractps\t$0, %xmm0, %eax\n\tretq\n.Lfunc_end12:",
+          "rust_max": "rust_max:\n\t.cfi_startproc\n\tvmaxss\t%xmm1, %xmm0, %xmm2\n\tvcmpunordss\t%xmm1, %xmm1, %xmm1\n\tvblendvps\t%xmm1, %xmm0, %xmm2, %xmm0\n\tvextractps\t$0, %xmm0, %eax\n\tretq\n.Lfunc_end10:",
+          "rust_minimum": "rust_minimum:\n\t.cfi_startproc\n\tvminss\t%xmm1, %xmm0, %xmm1\n\tvandps\t.LCPI13_0(%rip), %xmm0, %xmm2\n\tvorps\t%xmm1, %xmm2, %xmm1\n\tvcmpunordss\t%xmm0, %xmm0, %xmm2\n\tvblendvps\t%xmm2, %xmm0, %xmm1, %xmm0\n\tvextractps\t$0, %xmm0, %eax\n\tretq\n.Lfunc_end13:",
+          "rust_mul_add": "rust_mul_add:\n\t.cfi_startproc\n\tvfmadd213ss\t%xmm2, %xmm1, %xmm0\n\tvmovd\t%xmm0, %eax\n\tretq\n.Lfunc_end14:"
+        }
+      }
+    }
+  }
+}

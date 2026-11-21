@@ -1,0 +1,176 @@
+{
+  "sat_cdcl_crossover": [
+    {
+      "width": 8,
+      "aig_gates": 400,
+      "cnf_clauses": 1182,
+      "bitblast_ms": 3,
+      "cadical_ms": 913,
+      "trim_ms": 173,
+      "lrat_total_actions": 47634,
+      "lrat_rup_steps": 30606,
+      "status": "UNSAT"
+    },
+    {
+      "width": 12,
+      "aig_gates": 878,
+      "cnf_clauses": 2608,
+      "bitblast_ms": 7,
+      "cadical_ms": 1780,
+      "trim_ms": 205,
+      "lrat_total_actions": 65951,
+      "lrat_rup_steps": 41270,
+      "status": "UNSAT"
+    },
+    {
+      "width": 16,
+      "aig_gates": 1540,
+      "cnf_clauses": 4586,
+      "bitblast_ms": 17,
+      "cadical_ms": 6502,
+      "trim_ms": 1078,
+      "lrat_total_actions": 310209,
+      "lrat_rup_steps": 196876,
+      "status": "UNSAT"
+    },
+    {
+      "width": 20,
+      "aig_gates": 2386,
+      "cnf_clauses": 7116,
+      "bitblast_ms": 18,
+      "cadical_ms": 16304,
+      "trim_ms": 2126,
+      "lrat_total_actions": 578453,
+      "lrat_rup_steps": 365898,
+      "status": "UNSAT"
+    },
+    {
+      "width": 24,
+      "aig_gates": 3416,
+      "cnf_clauses": 10198,
+      "bitblast_ms": 39,
+      "cadical_ms": 20275,
+      "status": "TIMEOUT"
+    },
+    {
+      "width": 32,
+      "aig_gates": 6028,
+      "cnf_clauses": 18018,
+      "bitblast_ms": 61,
+      "status": "SKIPPED_AFTER_SMALLER_TIMEOUT"
+    },
+    {
+      "width": 64,
+      "aig_gates": 23836,
+      "cnf_clauses": 71378,
+      "bitblast_ms": 452,
+      "status": "SKIPPED_AFTER_SMALLER_TIMEOUT"
+    },
+    {
+      "task": "crc64_const_clmul",
+      "aig_gates": 9388,
+      "cnf_clauses": 28098,
+      "cadical_ms": 20206,
+      "status": "TIMEOUT"
+    }
+  ],
+  "f2_bilinear_gmp_basis": [
+    {
+      "width": 8,
+      "basis_evals": 64,
+      "compile": {
+        "wall_s": 0.3,
+        "user_s": 0.23,
+        "sys_s": 0.07,
+        "rss_mb": 281.43
+      },
+      "olean_bytes": 24872
+    },
+    {
+      "width": 12,
+      "basis_evals": 144,
+      "compile": {
+        "wall_s": 0.51,
+        "user_s": 0.44,
+        "sys_s": 0.07,
+        "rss_mb": 309.52
+      },
+      "olean_bytes": 24872
+    },
+    {
+      "width": 16,
+      "basis_evals": 256,
+      "compile": {
+        "wall_s": 0.9,
+        "user_s": 0.79,
+        "sys_s": 0.11,
+        "rss_mb": 358.65
+      },
+      "olean_bytes": 24888
+    },
+    {
+      "width": 20,
+      "basis_evals": 400,
+      "compile": {
+        "wall_s": 1.5,
+        "user_s": 1.41,
+        "sys_s": 0.08,
+        "rss_mb": 443.55
+      },
+      "olean_bytes": 24888
+    },
+    {
+      "width": 24,
+      "basis_evals": 576,
+      "compile": {
+        "wall_s": 2.81,
+        "user_s": 2.63,
+        "sys_s": 0.14,
+        "rss_mb": 556.8
+      },
+      "olean_bytes": 24888
+    },
+    {
+      "width": 32,
+      "basis_evals": 1024,
+      "compile": {
+        "wall_s": 6.39,
+        "user_s": 5.89,
+        "sys_s": 0.49,
+        "rss_mb": 948.38
+      },
+      "olean_bytes": 24904
+    },
+    {
+      "width": 64,
+      "basis_evals": 4096,
+      "compile": {
+        "wall_s": 36.42,
+        "user_s": 33.66,
+        "sys_s": 2.72,
+        "rss_mb": 5110.43
+      },
+      "olean_bytes": 24920
+    }
+  ],
+  "f2_unary_linear_gmp_basis": {
+    "crc64_const_clmul_64": {
+      "compile": {
+        "wall_s": 1.03,
+        "user_s": 0.94,
+        "sys_s": 0.09,
+        "rss_mb": 371.92
+      },
+      "olean_bytes": 10656
+    },
+    "vpshufb128_gf256_mul_0x9d": {
+      "compile": {
+        "wall_s": 6.1,
+        "user_s": 5.65,
+        "sys_s": 0.41,
+        "rss_mb": 791.39
+      },
+      "olean_bytes": 10896
+    }
+  }
+}

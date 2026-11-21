@@ -1,0 +1,621 @@
+{
+  "pass1_gmp_lrat_library_strict_audit": {
+    "import_ms": 64,
+    "replay_ms": 26,
+    "kernel_consts": 231,
+    "lcnf_unsafe_rec": 0,
+    "axioms": "[]",
+    "olean_bytes": 906408
+  },
+  "legacy_lrat_bench_library_audit": {
+    "import_ms": 103,
+    "replay_ms": 51,
+    "kernel_consts": 527,
+    "lcnf_unsafe_rec": 44,
+    "axioms": "[]",
+    "olean_bytes": 1589480
+  },
+  "rfl_vs_decide_kernel": [
+    {
+      "label": "gmp_oct3_rfl_250",
+      "status": "OK",
+      "source_bytes": 16575,
+      "compile": {
+        "wall_s": 3.07,
+        "user_s": 2.99,
+        "sys_s": 0.08,
+        "rss_mb": 328.16
+      },
+      "olean_bytes": 23928,
+      "replay": {
+        "import_ms": 80,
+        "replay_ms": 865,
+        "kernel_consts": 1,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 2.06,
+          "user_s": 1.67,
+          "sys_s": 0.44,
+          "rss_mb": 1789.03
+        }
+      },
+      "n_steps": 250,
+      "max_recycled_slot": 320
+    },
+    {
+      "label": "gmp_oct3_rfl_500",
+      "status": "OK",
+      "source_bytes": 32078,
+      "compile": {
+        "wall_s": 6.79,
+        "user_s": 6.65,
+        "sys_s": 0.13,
+        "rss_mb": 550.65
+      },
+      "olean_bytes": 39552,
+      "replay": {
+        "import_ms": 66,
+        "replay_ms": 1837,
+        "kernel_consts": 1,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 3.09,
+          "user_s": 2.56,
+          "sys_s": 0.56,
+          "rss_mb": 1958.4
+        }
+      },
+      "n_steps": 500,
+      "max_recycled_slot": 386
+    },
+    {
+      "label": "gmp_oct3_rfl_750",
+      "status": "OK",
+      "source_bytes": 47909,
+      "compile": {
+        "wall_s": 10.64,
+        "user_s": 10.45,
+        "sys_s": 0.19,
+        "rss_mb": 788.18
+      },
+      "olean_bytes": 55832,
+      "replay": {
+        "import_ms": 62,
+        "replay_ms": 2768,
+        "kernel_consts": 1,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 3.92,
+          "user_s": 3.42,
+          "sys_s": 0.53,
+          "rss_mb": 2150.36
+        }
+      },
+      "n_steps": 750,
+      "max_recycled_slot": 386
+    },
+    {
+      "label": "gmp_oct3_rfl_1000",
+      "status": "OK",
+      "source_bytes": 63718,
+      "compile": {
+        "wall_s": 14.47,
+        "user_s": 14.19,
+        "sys_s": 0.28,
+        "rss_mb": 1021.57
+      },
+      "olean_bytes": 71856,
+      "replay": {
+        "import_ms": 61,
+        "replay_ms": 3688,
+        "kernel_consts": 1,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 4.93,
+          "user_s": 4.39,
+          "sys_s": 0.58,
+          "rss_mb": 2332.24
+        }
+      },
+      "n_steps": 1000,
+      "max_recycled_slot": 386
+    },
+    {
+      "label": "gmp_oct3_rfl_1500",
+      "status": "FAIL",
+      "source_bytes": 95335,
+      "compile": {
+        "wall_s": 21.95,
+        "user_s": 21.59,
+        "sys_s": 0.36,
+        "rss_mb": 1498.48
+      },
+      "diagnostic": "/tmp/tmpq2j1ygzz/M_rfl_1500.lean:5:8: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n",
+      "n_steps": 1500,
+      "max_recycled_slot": 386
+    }
+  ],
+  "olean_ast_vs_gmp_stream": [
+    {
+      "label": "gmp_quad8_raw_ast_250",
+      "status": "OK",
+      "source_bytes": 22750,
+      "compile": {
+        "wall_s": 1.99,
+        "user_s": 1.93,
+        "sys_s": 0.05,
+        "rss_mb": 358.5
+      },
+      "olean_bytes": 217360,
+      "replay": {
+        "import_ms": 90,
+        "replay_ms": 1265,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 2.6,
+          "user_s": 2.11,
+          "sys_s": 0.53,
+          "rss_mb": 1837.5
+        }
+      },
+      "n_steps": 250
+    },
+    {
+      "label": "gmp_quad8_raw_ast_1000",
+      "status": "FAIL",
+      "source_bytes": 85094,
+      "compile": {
+        "wall_s": 4.76,
+        "user_s": 4.76,
+        "sys_s": 0.08,
+        "rss_mb": 468.71
+      },
+      "diagnostic": "/tmp/tmpawql8650/M_ast_1000.lean:5:27824: error: elaboration function for `\u00abterm%[_|_]\u00bb` has not been implemented\n  %[72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100,\n    101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123,\n    124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134 | List.nil\u271d]",
+      "n_steps": 1000
+    }
+  ],
+  "scaling_matrix_250_to_15000": [
+    {
+      "label": "gmp_db16_bitpaged_250",
+      "status": "OK",
+      "source_bytes": 16595,
+      "compile": {
+        "wall_s": 1.31,
+        "user_s": 1.25,
+        "sys_s": 0.05,
+        "rss_mb": 279.28
+      },
+      "olean_bytes": 25112,
+      "replay": {
+        "import_ms": 64,
+        "replay_ms": 1334,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 2.96,
+          "user_s": 2.38,
+          "sys_s": 0.62,
+          "rss_mb": 1773.19
+        }
+      },
+      "checker": "gmp_db16_bitpaged",
+      "n_steps": 250,
+      "max_slot": 320
+    },
+    {
+      "label": "gmp_oct3_recycled_250",
+      "status": "OK",
+      "source_bytes": 16589,
+      "compile": {
+        "wall_s": 0.94,
+        "user_s": 0.88,
+        "sys_s": 0.05,
+        "rss_mb": 284.96
+      },
+      "olean_bytes": 24944,
+      "replay": {
+        "import_ms": 62,
+        "replay_ms": 849,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 2.22,
+          "user_s": 1.78,
+          "sys_s": 0.48,
+          "rss_mb": 1780.9
+        }
+      },
+      "checker": "gmp_oct3_recycled",
+      "n_steps": 250,
+      "max_slot": 320
+    },
+    {
+      "label": "gmp_quad8_unrecycled_250",
+      "status": "OK",
+      "source_bytes": 32013,
+      "compile": {
+        "wall_s": 1.74,
+        "user_s": 1.67,
+        "sys_s": 0.07,
+        "rss_mb": 368.59
+      },
+      "olean_bytes": 32912,
+      "replay": {
+        "import_ms": 124,
+        "replay_ms": 1824,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 3.52,
+          "user_s": 2.89,
+          "sys_s": 0.66,
+          "rss_mb": 1874.85
+        }
+      },
+      "checker": "gmp_quad8_unrecycled",
+      "n_steps": 250
+    },
+    {
+      "label": "trie_bool_depth15_250",
+      "status": "OK",
+      "source_bytes": 32053,
+      "compile": {
+        "wall_s": 7.96,
+        "user_s": 7.66,
+        "sys_s": 0.28,
+        "rss_mb": 1119.39
+      },
+      "olean_bytes": 33736,
+      "replay": {
+        "import_ms": 91,
+        "replay_ms": 6524,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 8.08,
+          "user_s": 7.29,
+          "sys_s": 0.83,
+          "rss_mb": 2625.1
+        }
+      },
+      "checker": "trie_bool_depth15",
+      "n_steps": 250
+    },
+    {
+      "label": "list_assoc_250",
+      "status": "OK",
+      "source_bytes": 32050,
+      "compile": {
+        "wall_s": 27.47,
+        "user_s": 22.82,
+        "sys_s": 4.62,
+        "rss_mb": 3318.17
+      },
+      "olean_bytes": 33568,
+      "replay": {
+        "import_ms": 94,
+        "replay_ms": 22491,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 23.97,
+          "user_s": 21.73,
+          "sys_s": 2.27,
+          "rss_mb": 4824.4
+        }
+      },
+      "checker": "list_assoc",
+      "n_steps": 250
+    },
+    {
+      "label": "gmp_db16_bitpaged_1000",
+      "status": "OK",
+      "source_bytes": 63738,
+      "compile": {
+        "wall_s": 8.73,
+        "user_s": 8.53,
+        "sys_s": 0.19,
+        "rss_mb": 792.86
+      },
+      "olean_bytes": 73040,
+      "replay": {
+        "import_ms": 77,
+        "replay_ms": 8958,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 10.44,
+          "user_s": 9.64,
+          "sys_s": 0.82,
+          "rss_mb": 2280.83
+        }
+      },
+      "checker": "gmp_db16_bitpaged",
+      "n_steps": 1000,
+      "max_slot": 386
+    },
+    {
+      "label": "gmp_oct3_recycled_1000",
+      "status": "OK",
+      "source_bytes": 63732,
+      "compile": {
+        "wall_s": 3.93,
+        "user_s": 3.77,
+        "sys_s": 0.16,
+        "rss_mb": 837.51
+      },
+      "olean_bytes": 72872,
+      "replay": {
+        "import_ms": 64,
+        "replay_ms": 4213,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 5.45,
+          "user_s": 4.94,
+          "sys_s": 0.56,
+          "rss_mb": 2334.92
+        }
+      },
+      "checker": "gmp_oct3_recycled",
+      "n_steps": 1000,
+      "max_slot": 386
+    },
+    {
+      "label": "gmp_quad8_unrecycled_1000",
+      "status": "OK",
+      "source_bytes": 123240,
+      "compile": {
+        "wall_s": 7.84,
+        "user_s": 7.6,
+        "sys_s": 0.24,
+        "rss_mb": 1222.5
+      },
+      "olean_bytes": 102048,
+      "replay": {
+        "import_ms": 136,
+        "replay_ms": 8933,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 10.37,
+          "user_s": 9.3,
+          "sys_s": 1.1,
+          "rss_mb": 2723.52
+        }
+      },
+      "checker": "gmp_quad8_unrecycled",
+      "n_steps": 1000
+    },
+    {
+      "label": "trie_bool_depth15_1000",
+      "status": "OK",
+      "source_bytes": 123280,
+      "compile": {
+        "wall_s": 29.89,
+        "user_s": 28.49,
+        "sys_s": 1.39,
+        "rss_mb": 4216.93
+      },
+      "olean_bytes": 102872,
+      "replay": {
+        "import_ms": 126,
+        "replay_ms": 28603,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 30.2,
+          "user_s": 28.31,
+          "sys_s": 1.89,
+          "rss_mb": 5710.21
+        }
+      },
+      "checker": "trie_bool_depth15",
+      "n_steps": 1000
+    },
+    {
+      "label": "list_assoc_1000",
+      "status": "TIMEOUT_GT_60S",
+      "source_bytes": 123277,
+      "checker": "list_assoc",
+      "n_steps": 1000
+    },
+    {
+      "label": "gmp_db16_bitpaged_5000",
+      "status": "TIMEOUT_GT_120S",
+      "source_bytes": 316762,
+      "checker": "gmp_db16_bitpaged",
+      "n_steps": 5000,
+      "max_slot": 386
+    },
+    {
+      "label": "gmp_oct3_recycled_5000",
+      "status": "OK",
+      "source_bytes": 316756,
+      "compile": {
+        "wall_s": 42.05,
+        "user_s": 41.26,
+        "sys_s": 0.77,
+        "rss_mb": 3860.21
+      },
+      "olean_bytes": 330280,
+      "replay": {
+        "import_ms": 95,
+        "replay_ms": 40792,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 42.07,
+          "user_s": 40.83,
+          "sys_s": 1.26,
+          "rss_mb": 5355.85
+        }
+      },
+      "checker": "gmp_oct3_recycled",
+      "n_steps": 5000,
+      "max_slot": 386
+    },
+    {
+      "label": "gmp_quad8_unrecycled_5000",
+      "status": "OK",
+      "source_bytes": 612580,
+      "compile": {
+        "wall_s": 41.32,
+        "user_s": 40.11,
+        "sys_s": 1.18,
+        "rss_mb": 6370.61
+      },
+      "olean_bytes": 472480,
+      "replay": {
+        "import_ms": 87,
+        "replay_ms": 41196,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 42.44,
+          "user_s": 40.63,
+          "sys_s": 1.83,
+          "rss_mb": 7864.18
+        }
+      },
+      "checker": "gmp_quad8_unrecycled",
+      "n_steps": 5000
+    },
+    {
+      "label": "trie_bool_depth15_5000",
+      "status": "TIMEOUT_GT_60S",
+      "source_bytes": 612620,
+      "checker": "trie_bool_depth15",
+      "n_steps": 5000
+    },
+    {
+      "checker": "list_assoc",
+      "n_steps": 5000,
+      "status": "SKIPPED_AFTER_PRIOR_TIMEOUT_OR_GT_45S"
+    },
+    {
+      "label": "gmp_db16_bitpaged_15000",
+      "status": "TIMEOUT_GT_120S",
+      "source_bytes": 949025,
+      "checker": "gmp_db16_bitpaged",
+      "n_steps": 15000,
+      "max_slot": 386
+    },
+    {
+      "label": "gmp_oct3_recycled_15000",
+      "status": "TIMEOUT_GT_180S",
+      "source_bytes": 949019,
+      "compile": {},
+      "diagnostic": "Timed out after 180s (cgroup v2 snapshot: anon+shmem=7811M, current=7829M, memory.max=16384M)",
+      "checker": "gmp_oct3_recycled",
+      "n_steps": 15000,
+      "max_slot": 386
+    },
+    {
+      "label": "gmp_quad8_unrecycled_15000",
+      "status": "TIMEOUT_GT_75S",
+      "source_bytes": 1835419,
+      "checker": "gmp_quad8_unrecycled",
+      "n_steps": 15000
+    },
+    {
+      "checker": "trie_bool_depth15",
+      "n_steps": 15000,
+      "status": "SKIPPED_AFTER_PRIOR_TIMEOUT_OR_GT_45S"
+    },
+    {
+      "checker": "list_assoc",
+      "n_steps": 15000,
+      "status": "SKIPPED_AFTER_PRIOR_TIMEOUT_OR_GT_45S"
+    }
+  ],
+  "array_boundary_probes": [
+    {
+      "label": "array_nvars_1024_5",
+      "checker": "array_flat",
+      "n_steps": 5,
+      "num_vars": 1024,
+      "status": "FAIL",
+      "compile": {
+        "wall_s": 0.39,
+        "user_s": 0.34,
+        "sys_s": 0.04,
+        "rss_mb": 176.88
+      },
+      "diagnostic": "M_a1024.lean:5:3635: error: (kernel) application type mismatch\n  id (Eq.refl true)\nargument has type\n  true = true"
+    },
+    {
+      "label": "array_nvars_520_25",
+      "status": "OK",
+      "source_bytes": 5242,
+      "compile": {
+        "wall_s": 16.19,
+        "user_s": 15.68,
+        "sys_s": 0.5,
+        "rss_mb": 3416.57
+      },
+      "olean_bytes": 77576,
+      "replay": {
+        "import_ms": 144,
+        "replay_ms": 16592,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 18.03,
+          "user_s": 16.49,
+          "sys_s": 1.54,
+          "rss_mb": 4932.95
+        }
+      },
+      "checker": "array_flat",
+      "n_steps": 25,
+      "num_vars": 520
+    },
+    {
+      "label": "array_nvars_500_25",
+      "status": "OK",
+      "source_bytes": 5242,
+      "compile": {
+        "wall_s": 15.48,
+        "user_s": 14.84,
+        "sys_s": 0.64,
+        "rss_mb": 3414.62
+      },
+      "olean_bytes": 77576,
+      "replay": {
+        "import_ms": 88,
+        "replay_ms": 16677,
+        "kernel_consts": 2,
+        "lcnf_unsafe_rec": 0,
+        "axioms": "[propext]",
+        "process_tstat": {
+          "wall_s": 18.03,
+          "user_s": 16.78,
+          "sys_s": 1.27,
+          "rss_mb": 4932.76
+        }
+      },
+      "checker": "array_flat",
+      "n_steps": 25,
+      "num_vars": 500
+    }
+  ]
+}

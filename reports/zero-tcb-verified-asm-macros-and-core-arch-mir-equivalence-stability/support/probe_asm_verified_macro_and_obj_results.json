@@ -1,0 +1,1224 @@
+{
+  "differential_execution": "ASM_VERIFIED_DIFF_OK",
+  "elf_symbols": {
+    "ct_lookup8_cmov_asm_raw_naked": {
+      "bytes_list": [
+        49,
+        192,
+        76,
+        139,
+        7,
+        72,
+        131,
+        254,
+        0,
+        73,
+        15,
+        68,
+        192,
+        76,
+        139,
+        71,
+        8,
+        72,
+        131,
+        254,
+        1,
+        73,
+        15,
+        68,
+        192,
+        76,
+        139,
+        71,
+        16,
+        72,
+        131,
+        254,
+        2,
+        73,
+        15,
+        68,
+        192,
+        76,
+        139,
+        71,
+        24,
+        72,
+        131,
+        254,
+        3,
+        73,
+        15,
+        68,
+        192,
+        76,
+        139,
+        71,
+        32,
+        72,
+        131,
+        254,
+        4,
+        73,
+        15,
+        68,
+        192,
+        76,
+        139,
+        71,
+        40,
+        72,
+        131,
+        254,
+        5,
+        73,
+        15,
+        68,
+        192,
+        76,
+        139,
+        71,
+        48,
+        72,
+        131,
+        254,
+        6,
+        73,
+        15,
+        68,
+        192,
+        76,
+        139,
+        71,
+        56,
+        72,
+        131,
+        254,
+        7,
+        73,
+        15,
+        68,
+        192,
+        195
+      ],
+      "insn_count": 26,
+      "insns": [
+        {
+          "asm": "xor    eax,eax",
+          "bytes_hex": "31c0",
+          "len": 2,
+          "offset": 0
+        },
+        {
+          "asm": "mov    r8,QWORD PTR [rdi]",
+          "bytes_hex": "4c8b07",
+          "len": 3,
+          "offset": 2
+        },
+        {
+          "asm": "cmp    rsi,0x0",
+          "bytes_hex": "4883fe00",
+          "len": 4,
+          "offset": 5
+        },
+        {
+          "asm": "cmove  rax,r8",
+          "bytes_hex": "490f44c0",
+          "len": 4,
+          "offset": 9
+        },
+        {
+          "asm": "mov    r8,QWORD PTR [rdi+0x8]",
+          "bytes_hex": "4c8b4708",
+          "len": 4,
+          "offset": 13
+        },
+        {
+          "asm": "cmp    rsi,0x1",
+          "bytes_hex": "4883fe01",
+          "len": 4,
+          "offset": 17
+        },
+        {
+          "asm": "cmove  rax,r8",
+          "bytes_hex": "490f44c0",
+          "len": 4,
+          "offset": 21
+        },
+        {
+          "asm": "mov    r8,QWORD PTR [rdi+0x10]",
+          "bytes_hex": "4c8b4710",
+          "len": 4,
+          "offset": 25
+        },
+        {
+          "asm": "cmp    rsi,0x2",
+          "bytes_hex": "4883fe02",
+          "len": 4,
+          "offset": 29
+        },
+        {
+          "asm": "cmove  rax,r8",
+          "bytes_hex": "490f44c0",
+          "len": 4,
+          "offset": 33
+        },
+        {
+          "asm": "mov    r8,QWORD PTR [rdi+0x18]",
+          "bytes_hex": "4c8b4718",
+          "len": 4,
+          "offset": 37
+        },
+        {
+          "asm": "cmp    rsi,0x3",
+          "bytes_hex": "4883fe03",
+          "len": 4,
+          "offset": 41
+        },
+        {
+          "asm": "cmove  rax,r8",
+          "bytes_hex": "490f44c0",
+          "len": 4,
+          "offset": 45
+        },
+        {
+          "asm": "mov    r8,QWORD PTR [rdi+0x20]",
+          "bytes_hex": "4c8b4720",
+          "len": 4,
+          "offset": 49
+        },
+        {
+          "asm": "cmp    rsi,0x4",
+          "bytes_hex": "4883fe04",
+          "len": 4,
+          "offset": 53
+        },
+        {
+          "asm": "cmove  rax,r8",
+          "bytes_hex": "490f44c0",
+          "len": 4,
+          "offset": 57
+        },
+        {
+          "asm": "mov    r8,QWORD PTR [rdi+0x28]",
+          "bytes_hex": "4c8b4728",
+          "len": 4,
+          "offset": 61
+        },
+        {
+          "asm": "cmp    rsi,0x5",
+          "bytes_hex": "4883fe05",
+          "len": 4,
+          "offset": 65
+        },
+        {
+          "asm": "cmove  rax,r8",
+          "bytes_hex": "490f44c0",
+          "len": 4,
+          "offset": 69
+        },
+        {
+          "asm": "mov    r8,QWORD PTR [rdi+0x30]",
+          "bytes_hex": "4c8b4730",
+          "len": 4,
+          "offset": 73
+        },
+        {
+          "asm": "cmp    rsi,0x6",
+          "bytes_hex": "4883fe06",
+          "len": 4,
+          "offset": 77
+        },
+        {
+          "asm": "cmove  rax,r8",
+          "bytes_hex": "490f44c0",
+          "len": 4,
+          "offset": 81
+        },
+        {
+          "asm": "mov    r8,QWORD PTR [rdi+0x38]",
+          "bytes_hex": "4c8b4738",
+          "len": 4,
+          "offset": 85
+        },
+        {
+          "asm": "cmp    rsi,0x7",
+          "bytes_hex": "4883fe07",
+          "len": 4,
+          "offset": 89
+        },
+        {
+          "asm": "cmove  rax,r8",
+          "bytes_hex": "490f44c0",
+          "len": 4,
+          "offset": 93
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 97
+        }
+      ],
+      "sha256": "878fff952e7a1f34d3d46f4fd60c750112f3fbb18f5ea9977b43469645a36dcf",
+      "size_bytes": 98
+    },
+    "ct_lookup8_naive_rust": {
+      "bytes_list": [
+        72,
+        131,
+        254,
+        7,
+        119,
+        55,
+        72,
+        141,
+        5,
+        0,
+        0,
+        0,
+        0,
+        72,
+        99,
+        12,
+        176,
+        72,
+        1,
+        193,
+        255,
+        225,
+        72,
+        139,
+        7,
+        195,
+        72,
+        139,
+        71,
+        32,
+        195,
+        72,
+        139,
+        71,
+        16,
+        195,
+        72,
+        139,
+        71,
+        24,
+        195,
+        72,
+        139,
+        71,
+        56,
+        195,
+        72,
+        139,
+        71,
+        8,
+        195,
+        72,
+        139,
+        71,
+        40,
+        195,
+        72,
+        139,
+        71,
+        48,
+        195,
+        49,
+        192,
+        195
+      ],
+      "insn_count": 24,
+      "insns": [
+        {
+          "asm": "cmp    rsi,0x7",
+          "bytes_hex": "4883fe07",
+          "len": 4,
+          "offset": 0
+        },
+        {
+          "asm": "ja     3d <ct_lookup8_naive_rust+0x3d>",
+          "bytes_hex": "7737",
+          "len": 2,
+          "offset": 4
+        },
+        {
+          "asm": "lea    rax,[rip+0x0]",
+          "bytes_hex": "488d0500000000",
+          "len": 7,
+          "offset": 6
+        },
+        {
+          "asm": "movsxd rcx,DWORD PTR [rax+rsi*4]",
+          "bytes_hex": "48630cb0",
+          "len": 4,
+          "offset": 13
+        },
+        {
+          "asm": "add    rcx,rax",
+          "bytes_hex": "4801c1",
+          "len": 3,
+          "offset": 17
+        },
+        {
+          "asm": "jmp    rcx",
+          "bytes_hex": "ffe1",
+          "len": 2,
+          "offset": 20
+        },
+        {
+          "asm": "mov    rax,QWORD PTR [rdi]",
+          "bytes_hex": "488b07",
+          "len": 3,
+          "offset": 22
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 25
+        },
+        {
+          "asm": "mov    rax,QWORD PTR [rdi+0x20]",
+          "bytes_hex": "488b4720",
+          "len": 4,
+          "offset": 26
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 30
+        },
+        {
+          "asm": "mov    rax,QWORD PTR [rdi+0x10]",
+          "bytes_hex": "488b4710",
+          "len": 4,
+          "offset": 31
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 35
+        },
+        {
+          "asm": "mov    rax,QWORD PTR [rdi+0x18]",
+          "bytes_hex": "488b4718",
+          "len": 4,
+          "offset": 36
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 40
+        },
+        {
+          "asm": "mov    rax,QWORD PTR [rdi+0x38]",
+          "bytes_hex": "488b4738",
+          "len": 4,
+          "offset": 41
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 45
+        },
+        {
+          "asm": "mov    rax,QWORD PTR [rdi+0x8]",
+          "bytes_hex": "488b4708",
+          "len": 4,
+          "offset": 46
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 50
+        },
+        {
+          "asm": "mov    rax,QWORD PTR [rdi+0x28]",
+          "bytes_hex": "488b4728",
+          "len": 4,
+          "offset": 51
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 55
+        },
+        {
+          "asm": "mov    rax,QWORD PTR [rdi+0x30]",
+          "bytes_hex": "488b4730",
+          "len": 4,
+          "offset": 56
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 60
+        },
+        {
+          "asm": "xor    eax,eax",
+          "bytes_hex": "31c0",
+          "len": 2,
+          "offset": 61
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 63
+        }
+      ],
+      "sha256": "f9c60f78bb7c77569e3880e6c5c6b86c4712ea76b1ea6cd947ed70a60bfe0d9b",
+      "size_bytes": 64
+    },
+    "dot_maddubs_unroll2_asm_raw_naked": {
+      "bytes_list": [
+        197,
+        253,
+        239,
+        192,
+        197,
+        245,
+        239,
+        201,
+        72,
+        133,
+        210,
+        116,
+        72,
+        197,
+        237,
+        118,
+        210,
+        197,
+        237,
+        113,
+        210,
+        15,
+        72,
+        193,
+        226,
+        6,
+        49,
+        201,
+        197,
+        254,
+        111,
+        28,
+        15,
+        197,
+        254,
+        111,
+        36,
+        14,
+        196,
+        226,
+        101,
+        4,
+        220,
+        197,
+        229,
+        245,
+        218,
+        197,
+        253,
+        254,
+        195,
+        197,
+        254,
+        111,
+        108,
+        15,
+        32,
+        197,
+        254,
+        111,
+        116,
+        14,
+        32,
+        196,
+        226,
+        85,
+        4,
+        238,
+        197,
+        213,
+        245,
+        234,
+        197,
+        245,
+        254,
+        205,
+        72,
+        131,
+        193,
+        64,
+        72,
+        57,
+        209,
+        114,
+        199,
+        197,
+        253,
+        254,
+        193,
+        196,
+        227,
+        125,
+        57,
+        193,
+        1,
+        197,
+        249,
+        254,
+        193,
+        197,
+        249,
+        112,
+        200,
+        78,
+        197,
+        249,
+        254,
+        193,
+        197,
+        249,
+        112,
+        200,
+        177,
+        197,
+        249,
+        254,
+        193,
+        197,
+        249,
+        126,
+        192,
+        197,
+        248,
+        119,
+        195
+      ],
+      "insn_count": 31,
+      "insns": [
+        {
+          "asm": "vpxor  ymm0,ymm0,ymm0",
+          "bytes_hex": "c5fdefc0",
+          "len": 4,
+          "offset": 0
+        },
+        {
+          "asm": "vpxor  ymm1,ymm1,ymm1",
+          "bytes_hex": "c5f5efc9",
+          "len": 4,
+          "offset": 4
+        },
+        {
+          "asm": "test   rdx,rdx",
+          "bytes_hex": "4885d2",
+          "len": 3,
+          "offset": 8
+        },
+        {
+          "asm": "je     55 <dot_maddubs_unroll2_asm_raw_naked+0x55>",
+          "bytes_hex": "7448",
+          "len": 2,
+          "offset": 11
+        },
+        {
+          "asm": "vpcmpeqd ymm2,ymm2,ymm2",
+          "bytes_hex": "c5ed76d2",
+          "len": 4,
+          "offset": 13
+        },
+        {
+          "asm": "vpsrlw ymm2,ymm2,0xf",
+          "bytes_hex": "c5ed71d20f",
+          "len": 5,
+          "offset": 17
+        },
+        {
+          "asm": "shl    rdx,0x6",
+          "bytes_hex": "48c1e206",
+          "len": 4,
+          "offset": 22
+        },
+        {
+          "asm": "xor    ecx,ecx",
+          "bytes_hex": "31c9",
+          "len": 2,
+          "offset": 26
+        },
+        {
+          "asm": "vmovdqu ymm3,YMMWORD PTR [rdi+rcx*1]",
+          "bytes_hex": "c5fe6f1c0f",
+          "len": 5,
+          "offset": 28
+        },
+        {
+          "asm": "vmovdqu ymm4,YMMWORD PTR [rsi+rcx*1]",
+          "bytes_hex": "c5fe6f240e",
+          "len": 5,
+          "offset": 33
+        },
+        {
+          "asm": "vpmaddubsw ymm3,ymm3,ymm4",
+          "bytes_hex": "c4e26504dc",
+          "len": 5,
+          "offset": 38
+        },
+        {
+          "asm": "vpmaddwd ymm3,ymm3,ymm2",
+          "bytes_hex": "c5e5f5da",
+          "len": 4,
+          "offset": 43
+        },
+        {
+          "asm": "vpaddd ymm0,ymm0,ymm3",
+          "bytes_hex": "c5fdfec3",
+          "len": 4,
+          "offset": 47
+        },
+        {
+          "asm": "vmovdqu ymm5,YMMWORD PTR [rdi+rcx*1+0x20]",
+          "bytes_hex": "c5fe6f6c0f20",
+          "len": 6,
+          "offset": 51
+        },
+        {
+          "asm": "vmovdqu ymm6,YMMWORD PTR [rsi+rcx*1+0x20]",
+          "bytes_hex": "c5fe6f740e20",
+          "len": 6,
+          "offset": 57
+        },
+        {
+          "asm": "vpmaddubsw ymm5,ymm5,ymm6",
+          "bytes_hex": "c4e25504ee",
+          "len": 5,
+          "offset": 63
+        },
+        {
+          "asm": "vpmaddwd ymm5,ymm5,ymm2",
+          "bytes_hex": "c5d5f5ea",
+          "len": 4,
+          "offset": 68
+        },
+        {
+          "asm": "vpaddd ymm1,ymm1,ymm5",
+          "bytes_hex": "c5f5fecd",
+          "len": 4,
+          "offset": 72
+        },
+        {
+          "asm": "add    rcx,0x40",
+          "bytes_hex": "4883c140",
+          "len": 4,
+          "offset": 76
+        },
+        {
+          "asm": "cmp    rcx,rdx",
+          "bytes_hex": "4839d1",
+          "len": 3,
+          "offset": 80
+        },
+        {
+          "asm": "jb     1c <dot_maddubs_unroll2_asm_raw_naked+0x1c>",
+          "bytes_hex": "72c7",
+          "len": 2,
+          "offset": 83
+        },
+        {
+          "asm": "vpaddd ymm0,ymm0,ymm1",
+          "bytes_hex": "c5fdfec1",
+          "len": 4,
+          "offset": 85
+        },
+        {
+          "asm": "vextracti128 xmm1,ymm0,0x1",
+          "bytes_hex": "c4e37d39c101",
+          "len": 6,
+          "offset": 89
+        },
+        {
+          "asm": "vpaddd xmm0,xmm0,xmm1",
+          "bytes_hex": "c5f9fec1",
+          "len": 4,
+          "offset": 95
+        },
+        {
+          "asm": "vpshufd xmm1,xmm0,0x4e",
+          "bytes_hex": "c5f970c84e",
+          "len": 5,
+          "offset": 99
+        },
+        {
+          "asm": "vpaddd xmm0,xmm0,xmm1",
+          "bytes_hex": "c5f9fec1",
+          "len": 4,
+          "offset": 104
+        },
+        {
+          "asm": "vpshufd xmm1,xmm0,0xb1",
+          "bytes_hex": "c5f970c8b1",
+          "len": 5,
+          "offset": 108
+        },
+        {
+          "asm": "vpaddd xmm0,xmm0,xmm1",
+          "bytes_hex": "c5f9fec1",
+          "len": 4,
+          "offset": 113
+        },
+        {
+          "asm": "vmovd  eax,xmm0",
+          "bytes_hex": "c5f97ec0",
+          "len": 4,
+          "offset": 117
+        },
+        {
+          "asm": "vzeroupper",
+          "bytes_hex": "c5f877",
+          "len": 3,
+          "offset": 121
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 124
+        }
+      ],
+      "sha256": "687c2b8c82cf7753114db508518dfd3be2cc599d3e593050155a5ce10b0742e6",
+      "size_bytes": 125
+    },
+    "mulx_adcx_adox_mac4_asm_raw_naked": {
+      "bytes_list": [
+        49,
+        201,
+        49,
+        192,
+        196,
+        98,
+        187,
+        246,
+        14,
+        102,
+        76,
+        15,
+        56,
+        246,
+        7,
+        76,
+        137,
+        7,
+        196,
+        98,
+        187,
+        246,
+        86,
+        8,
+        102,
+        77,
+        15,
+        56,
+        246,
+        200,
+        243,
+        76,
+        15,
+        56,
+        246,
+        79,
+        8,
+        76,
+        137,
+        79,
+        8,
+        196,
+        98,
+        187,
+        246,
+        94,
+        16,
+        102,
+        77,
+        15,
+        56,
+        246,
+        208,
+        243,
+        76,
+        15,
+        56,
+        246,
+        87,
+        16,
+        76,
+        137,
+        87,
+        16,
+        196,
+        98,
+        187,
+        246,
+        78,
+        24,
+        102,
+        77,
+        15,
+        56,
+        246,
+        216,
+        243,
+        76,
+        15,
+        56,
+        246,
+        95,
+        24,
+        76,
+        137,
+        95,
+        24,
+        102,
+        73,
+        15,
+        56,
+        246,
+        193,
+        243,
+        72,
+        15,
+        56,
+        246,
+        193,
+        195
+      ],
+      "insn_count": 20,
+      "insns": [
+        {
+          "asm": "xor    ecx,ecx",
+          "bytes_hex": "31c9",
+          "len": 2,
+          "offset": 0
+        },
+        {
+          "asm": "xor    eax,eax",
+          "bytes_hex": "31c0",
+          "len": 2,
+          "offset": 2
+        },
+        {
+          "asm": "mulx   r9,r8,QWORD PTR [rsi]",
+          "bytes_hex": "c462bbf60e",
+          "len": 5,
+          "offset": 4
+        },
+        {
+          "asm": "adcx   r8,QWORD PTR [rdi]",
+          "bytes_hex": "664c0f38f607",
+          "len": 6,
+          "offset": 9
+        },
+        {
+          "asm": "mov    QWORD PTR [rdi],r8",
+          "bytes_hex": "4c8907",
+          "len": 3,
+          "offset": 15
+        },
+        {
+          "asm": "mulx   r10,r8,QWORD PTR [rsi+0x8]",
+          "bytes_hex": "c462bbf65608",
+          "len": 6,
+          "offset": 18
+        },
+        {
+          "asm": "adcx   r9,r8",
+          "bytes_hex": "664d0f38f6c8",
+          "len": 6,
+          "offset": 24
+        },
+        {
+          "asm": "adox   r9,QWORD PTR [rdi+0x8]",
+          "bytes_hex": "f34c0f38f64f08",
+          "len": 7,
+          "offset": 30
+        },
+        {
+          "asm": "mov    QWORD PTR [rdi+0x8],r9",
+          "bytes_hex": "4c894f08",
+          "len": 4,
+          "offset": 37
+        },
+        {
+          "asm": "mulx   r11,r8,QWORD PTR [rsi+0x10]",
+          "bytes_hex": "c462bbf65e10",
+          "len": 6,
+          "offset": 41
+        },
+        {
+          "asm": "adcx   r10,r8",
+          "bytes_hex": "664d0f38f6d0",
+          "len": 6,
+          "offset": 47
+        },
+        {
+          "asm": "adox   r10,QWORD PTR [rdi+0x10]",
+          "bytes_hex": "f34c0f38f65710",
+          "len": 7,
+          "offset": 53
+        },
+        {
+          "asm": "mov    QWORD PTR [rdi+0x10],r10",
+          "bytes_hex": "4c895710",
+          "len": 4,
+          "offset": 60
+        },
+        {
+          "asm": "mulx   r9,r8,QWORD PTR [rsi+0x18]",
+          "bytes_hex": "c462bbf64e18",
+          "len": 6,
+          "offset": 64
+        },
+        {
+          "asm": "adcx   r11,r8",
+          "bytes_hex": "664d0f38f6d8",
+          "len": 6,
+          "offset": 70
+        },
+        {
+          "asm": "adox   r11,QWORD PTR [rdi+0x18]",
+          "bytes_hex": "f34c0f38f65f18",
+          "len": 7,
+          "offset": 76
+        },
+        {
+          "asm": "mov    QWORD PTR [rdi+0x18],r11",
+          "bytes_hex": "4c895f18",
+          "len": 4,
+          "offset": 83
+        },
+        {
+          "asm": "adcx   rax,r9",
+          "bytes_hex": "66490f38f6c1",
+          "len": 6,
+          "offset": 87
+        },
+        {
+          "asm": "adox   rax,rcx",
+          "bytes_hex": "f3480f38f6c1",
+          "len": 6,
+          "offset": 93
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 99
+        }
+      ],
+      "sha256": "69eb8ffe8219a54e880efe7b75befce2a63e525d66d00068f40c1e3da61668e3",
+      "size_bytes": 100
+    },
+    "mulx_adcx_adox_mac4_core_arch": {
+      "bytes_list": [
+        83,
+        196,
+        226,
+        187,
+        246,
+        14,
+        196,
+        98,
+        171,
+        246,
+        78,
+        8,
+        196,
+        98,
+        227,
+        246,
+        94,
+        16,
+        196,
+        226,
+        235,
+        246,
+        70,
+        24,
+        76,
+        1,
+        7,
+        73,
+        17,
+        202,
+        76,
+        17,
+        203,
+        76,
+        17,
+        218,
+        72,
+        131,
+        208,
+        0,
+        76,
+        1,
+        87,
+        8,
+        72,
+        17,
+        95,
+        16,
+        72,
+        17,
+        87,
+        24,
+        72,
+        131,
+        208,
+        0,
+        91,
+        195
+      ],
+      "insn_count": 16,
+      "insns": [
+        {
+          "asm": "push   rbx",
+          "bytes_hex": "53",
+          "len": 1,
+          "offset": 0
+        },
+        {
+          "asm": "mulx   rcx,r8,QWORD PTR [rsi]",
+          "bytes_hex": "c4e2bbf60e",
+          "len": 5,
+          "offset": 1
+        },
+        {
+          "asm": "mulx   r9,r10,QWORD PTR [rsi+0x8]",
+          "bytes_hex": "c462abf64e08",
+          "len": 6,
+          "offset": 6
+        },
+        {
+          "asm": "mulx   r11,rbx,QWORD PTR [rsi+0x10]",
+          "bytes_hex": "c462e3f65e10",
+          "len": 6,
+          "offset": 12
+        },
+        {
+          "asm": "mulx   rax,rdx,QWORD PTR [rsi+0x18]",
+          "bytes_hex": "c4e2ebf64618",
+          "len": 6,
+          "offset": 18
+        },
+        {
+          "asm": "add    QWORD PTR [rdi],r8",
+          "bytes_hex": "4c0107",
+          "len": 3,
+          "offset": 24
+        },
+        {
+          "asm": "adc    r10,rcx",
+          "bytes_hex": "4911ca",
+          "len": 3,
+          "offset": 27
+        },
+        {
+          "asm": "adc    rbx,r9",
+          "bytes_hex": "4c11cb",
+          "len": 3,
+          "offset": 30
+        },
+        {
+          "asm": "adc    rdx,r11",
+          "bytes_hex": "4c11da",
+          "len": 3,
+          "offset": 33
+        },
+        {
+          "asm": "adc    rax,0x0",
+          "bytes_hex": "4883d000",
+          "len": 4,
+          "offset": 36
+        },
+        {
+          "asm": "add    QWORD PTR [rdi+0x8],r10",
+          "bytes_hex": "4c015708",
+          "len": 4,
+          "offset": 40
+        },
+        {
+          "asm": "adc    QWORD PTR [rdi+0x10],rbx",
+          "bytes_hex": "48115f10",
+          "len": 4,
+          "offset": 44
+        },
+        {
+          "asm": "adc    QWORD PTR [rdi+0x18],rdx",
+          "bytes_hex": "48115718",
+          "len": 4,
+          "offset": 48
+        },
+        {
+          "asm": "adc    rax,0x0",
+          "bytes_hex": "4883d000",
+          "len": 4,
+          "offset": 52
+        },
+        {
+          "asm": "pop    rbx",
+          "bytes_hex": "5b",
+          "len": 1,
+          "offset": 56
+        },
+        {
+          "asm": "ret",
+          "bytes_hex": "c3",
+          "len": 1,
+          "offset": 57
+        }
+      ],
+      "sha256": "88448b13a42b9f9897178c8b3d43d5c03a6a8ad64c9a3ca6b276c87dc274ca4c",
+      "size_bytes": 58
+    }
+  },
+  "negative_footgun_gates": [
+    {
+      "case": "F1_missing_target_feature_on_avx2_clobber",
+      "diagnostic": "error: [asm_verified!] Footgun F1 (missing `target_feature = \"avx\"/\"avx2\"` for `ymm0` at line 0)",
+      "rc": 1
+    },
+    {
+      "case": "F2_missing_vzeroupper_before_ret",
+      "diagnostic": "error: [asm_verified!] Footgun F2 (dirty upper YMM/ZMM state): `ret` at line 2 must be immediately preceded by `vzeroupper`",
+      "rc": 1
+    },
+    {
+      "case": "F3_masm_binary_literal_and_numeric_label",
+      "diagnostic": "error: [asm_verified!] Footgun F3 (x86 Intel-syntax binary literal / numeric label `0b1010` at line 0): use `0x...` hex or decimal",
+      "rc": 1
+    },
+    {
+      "case": "F4_dangerous_section_or_byte_directive",
+      "diagnostic": "error: [asm_verified!] Footgun F4 (forbidden assembler directive at line 0): `.byte 0x0f, 0x0b`",
+      "rc": 1
+    },
+    {
+      "case": "F5_clobber_aliases_live_input_or_callee_saved",
+      "diagnostic": "error: [asm_verified!] Footgun F5 (early-clobber / input aliasing): clobber `rsi` aliases live input `rsi`",
+      "rc": 1
+    }
+  ]
+}

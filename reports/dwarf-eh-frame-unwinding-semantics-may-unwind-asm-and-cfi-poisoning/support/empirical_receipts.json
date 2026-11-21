@@ -1,0 +1,864 @@
+{
+  "eh_frame_and_lsda_census": {
+    "rust_sysroot_rlibs": {
+      "cfa_registers": {
+        "RBP": 4359,
+        "RSP": 3116
+      },
+      "expression_examples": [],
+      "opcodes": {
+        "DW_CFA_GNU_args_size": 361,
+        "DW_CFA_advance_loc": 20902,
+        "DW_CFA_advance_loc1": 1903,
+        "DW_CFA_advance_loc2": 881,
+        "DW_CFA_def_cfa": 5067,
+        "DW_CFA_def_cfa_offset": 14265,
+        "DW_CFA_def_cfa_register": 2408,
+        "DW_CFA_nop": 12065,
+        "DW_CFA_offset": 12845,
+        "DW_CFA_restore": 405
+      },
+      "rlibs_scanned": [
+        "libaddr2line",
+        "libadler2",
+        "liballoc",
+        "libcfg_if",
+        "libcompiler_builtins",
+        "libcore",
+        "libgetopts",
+        "libgimli",
+        "libhashbrown",
+        "liblibc",
+        "libmemchr",
+        "libminiz_oxide",
+        "libobject",
+        "libpanic_abort",
+        "libpanic_unwind",
+        "libproc_macro",
+        "libprofiler_builtins",
+        "librustc_demangle",
+        "librustc_literal_escaper",
+        "librustc_public",
+        "librustc_public_bridge",
+        "librustc_std_workspace_alloc",
+        "librustc_std_workspace_core",
+        "librustc_std_workspace_std",
+        "libstd",
+        "libstd_detect",
+        "libsysroot",
+        "libtest",
+        "libtikv_jemalloc_sys",
+        "libunwind"
+      ],
+      "toolchain": "rustc 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+      "total_cies": 315,
+      "total_fdes": 5079
+    },
+    "synthetic_profiles": {
+      "gcc_O2_default": {
+        "augmentations": {
+          "zR": 1
+        },
+        "cfa_registers": {
+          "R10": 2,
+          "RBP": 1,
+          "RSP": 3
+        },
+        "cie_count": 1,
+        "expression_examples": [
+          "DW_CFA_expression: RBP DW_OP_breg6 RBP+0",
+          "DW_CFA_expression: R12 DW_OP_breg6 RBP-8",
+          "DW_CFA_def_cfa_expression: DW_OP_breg6 RBP-16, DW_OP_deref",
+          "DW_CFA_expression: RBX DW_OP_breg6 RBP-24"
+        ],
+        "fde_count": 5,
+        "lsda_sections": [],
+        "opcodes": {
+          "DW_CFA_advance_loc": 27,
+          "DW_CFA_def_cfa": 5,
+          "DW_CFA_def_cfa_expression": 1,
+          "DW_CFA_def_cfa_offset": 18,
+          "DW_CFA_def_cfa_register": 1,
+          "DW_CFA_expression": 3,
+          "DW_CFA_nop": 18,
+          "DW_CFA_offset": 5
+        }
+      },
+      "gcc_O3_hardened_exc": {
+        "augmentations": {
+          "zPLR": 1,
+          "zR": 1
+        },
+        "cfa_registers": {
+          "R10": 2,
+          "R11": 1,
+          "RBP": 3,
+          "RSP": 6
+        },
+        "cie_count": 2,
+        "expression_examples": [
+          "DW_CFA_expression: RBP DW_OP_breg6 RBP+0",
+          "DW_CFA_def_cfa_expression: DW_OP_breg6 RBP-8, DW_OP_deref",
+          "DW_CFA_expression: RBX DW_OP_breg6 RBP-16"
+        ],
+        "fde_count": 6,
+        "lsda_sections": [
+          {
+            "actions_sample": [],
+            "call_sites": [
+              {
+                "action": 0,
+                "len": 5,
+                "lpad": 122,
+                "start": 64
+              },
+              {
+                "action": 0,
+                "len": 5,
+                "lpad": 0,
+                "start": 88
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table",
+            "size_bytes": 20,
+            "ttype_base_off": null,
+            "ttype_enc": "0xff"
+          }
+        ],
+        "opcodes": {
+          "DW_CFA_GNU_args_size": 1,
+          "DW_CFA_advance_loc": 25,
+          "DW_CFA_advance_loc1": 3,
+          "DW_CFA_def_cfa": 9,
+          "DW_CFA_def_cfa_expression": 1,
+          "DW_CFA_def_cfa_offset": 10,
+          "DW_CFA_def_cfa_register": 3,
+          "DW_CFA_expression": 2,
+          "DW_CFA_nop": 13,
+          "DW_CFA_offset": 9,
+          "DW_CFA_remember_state": 4,
+          "DW_CFA_restore_state": 4
+        }
+      },
+      "gcc_Os_hardened_exc": {
+        "augmentations": {
+          "zPLR": 1,
+          "zR": 1
+        },
+        "cfa_registers": {
+          "R10": 2,
+          "R11": 1,
+          "RBP": 2,
+          "RSP": 6
+        },
+        "cie_count": 2,
+        "expression_examples": [
+          "DW_CFA_expression: RBP DW_OP_breg6 RBP+0",
+          "DW_CFA_expression: R12 DW_OP_breg6 RBP-8",
+          "DW_CFA_def_cfa_expression: DW_OP_breg6 RBP-16, DW_OP_deref",
+          "DW_CFA_expression: RBX DW_OP_breg6 RBP-24"
+        ],
+        "fde_count": 5,
+        "lsda_sections": [
+          {
+            "actions_sample": [],
+            "call_sites": [
+              {
+                "action": 0,
+                "len": 5,
+                "lpad": 90,
+                "start": 51
+              },
+              {
+                "action": 0,
+                "len": 45,
+                "lpad": 0,
+                "start": 74
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table",
+            "size_bytes": 12,
+            "ttype_base_off": null,
+            "ttype_enc": "0xff"
+          }
+        ],
+        "opcodes": {
+          "DW_CFA_GNU_args_size": 1,
+          "DW_CFA_advance_loc": 29,
+          "DW_CFA_advance_loc1": 1,
+          "DW_CFA_def_cfa": 8,
+          "DW_CFA_def_cfa_expression": 1,
+          "DW_CFA_def_cfa_offset": 14,
+          "DW_CFA_def_cfa_register": 3,
+          "DW_CFA_expression": 3,
+          "DW_CFA_nop": 12,
+          "DW_CFA_offset": 10,
+          "DW_CFA_remember_state": 1,
+          "DW_CFA_restore_state": 1
+        }
+      },
+      "gpp_O2_hardened_exc": {
+        "augmentations": {
+          "zPLR": 1
+        },
+        "cfa_registers": {
+          "RBP": 2,
+          "RSP": 2
+        },
+        "cie_count": 1,
+        "expression_examples": [],
+        "fde_count": 4,
+        "lsda_sections": [
+          {
+            "actions_sample": [
+              {
+                "byte_offset_1based": 1,
+                "next_action": 0,
+                "ttype_filter": 0
+              },
+              {
+                "byte_offset_1based": 3,
+                "next_action": -3,
+                "ttype_filter": 2
+              },
+              {
+                "byte_offset_1based": 5,
+                "next_action": -3,
+                "ttype_filter": 1
+              },
+              {
+                "byte_offset_1based": 7,
+                "next_action": 0,
+                "ttype_filter": 3
+              }
+            ],
+            "call_sites": [
+              {
+                "action": 5,
+                "len": 18,
+                "lpad": 93,
+                "start": 44
+              },
+              {
+                "action": 7,
+                "len": 5,
+                "lpad": 117,
+                "start": 67
+              },
+              {
+                "action": 7,
+                "len": 5,
+                "lpad": 108,
+                "start": 77
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table",
+            "size_bytes": 108,
+            "ttype_base_off": 37,
+            "ttype_enc": "0x9b"
+          }
+        ],
+        "opcodes": {
+          "DW_CFA_GNU_args_size": 2,
+          "DW_CFA_advance_loc": 10,
+          "DW_CFA_def_cfa": 3,
+          "DW_CFA_def_cfa_offset": 4,
+          "DW_CFA_def_cfa_register": 1,
+          "DW_CFA_nop": 12,
+          "DW_CFA_offset": 9,
+          "DW_CFA_remember_state": 2,
+          "DW_CFA_restore_state": 2
+        }
+      },
+      "rustc_1_102_nightly_O3_avx2": {
+        "augmentations": {
+          "zPLR": 1
+        },
+        "cfa_registers": {
+          "R11": 1,
+          "RBP": 2,
+          "RSP": 3
+        },
+        "cie_count": 1,
+        "expression_examples": [],
+        "fde_count": 4,
+        "lsda_sections": [
+          {
+            "actions_sample": [
+              {
+                "byte_offset_1based": 1,
+                "next_action": 0,
+                "ttype_filter": -1
+              },
+              {
+                "byte_offset_1based": 3,
+                "next_action": 0,
+                "ttype_filter": 0
+              },
+              {
+                "byte_offset_1based": 5,
+                "next_action": -3,
+                "ttype_filter": 1
+              },
+              {
+                "byte_offset_1based": 7,
+                "next_action": 0,
+                "ttype_filter": 0
+              }
+            ],
+            "call_sites": [
+              {
+                "action": 5,
+                "len": 16,
+                "lpad": 85,
+                "start": 45
+              },
+              {
+                "action": 1,
+                "len": 9,
+                "lpad": 196,
+                "start": 99
+              },
+              {
+                "action": 0,
+                "len": 5,
+                "lpad": 163,
+                "start": 127
+              },
+              {
+                "action": 0,
+                "len": 70,
+                "lpad": 0,
+                "start": 132
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table.rust_catch_and_10args",
+            "size_bytes": 40,
+            "ttype_base_off": 33,
+            "ttype_enc": "0x9b"
+          },
+          {
+            "actions_sample": [
+              {
+                "byte_offset_1based": 1,
+                "next_action": 0,
+                "ttype_filter": -1
+              },
+              {
+                "byte_offset_1based": 3,
+                "next_action": 0,
+                "ttype_filter": 0
+              },
+              {
+                "byte_offset_1based": 5,
+                "next_action": 0,
+                "ttype_filter": 0
+              }
+            ],
+            "call_sites": [
+              {
+                "action": 1,
+                "len": 6,
+                "lpad": 9,
+                "start": 1
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table.rust_extern_c_filter_boundary",
+            "size_bytes": 16,
+            "ttype_base_off": 9,
+            "ttype_enc": "0x9b"
+          },
+          {
+            "actions_sample": [],
+            "call_sites": [
+              {
+                "action": 0,
+                "len": 68,
+                "lpad": 0,
+                "start": 0
+              },
+              {
+                "action": 0,
+                "len": 16,
+                "lpad": 119,
+                "start": 68
+              },
+              {
+                "action": 0,
+                "len": 57,
+                "lpad": 0,
+                "start": 84
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table.rust_huge_stack_probe_loop",
+            "size_bytes": 16,
+            "ttype_base_off": null,
+            "ttype_enc": "0xff"
+          },
+          {
+            "actions_sample": [],
+            "call_sites": [
+              {
+                "action": 0,
+                "len": 19,
+                "lpad": 136,
+                "start": 90
+              },
+              {
+                "action": 0,
+                "len": 49,
+                "lpad": 0,
+                "start": 109
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table.rust_overaligned_64_with_drop",
+            "size_bytes": 16,
+            "ttype_base_off": null,
+            "ttype_enc": "0xff"
+          }
+        ],
+        "opcodes": {
+          "DW_CFA_GNU_args_size": 7,
+          "DW_CFA_advance_loc": 32,
+          "DW_CFA_advance_loc1": 2,
+          "DW_CFA_def_cfa": 3,
+          "DW_CFA_def_cfa_offset": 24,
+          "DW_CFA_def_cfa_register": 3,
+          "DW_CFA_nop": 8,
+          "DW_CFA_offset": 6
+        }
+      },
+      "rustc_1_99_1_O2_avx2": {
+        "augmentations": {
+          "zPLR": 1
+        },
+        "cfa_registers": {
+          "R11": 1,
+          "RBP": 2,
+          "RSP": 3
+        },
+        "cie_count": 1,
+        "expression_examples": [],
+        "fde_count": 4,
+        "lsda_sections": [
+          {
+            "actions_sample": [
+              {
+                "byte_offset_1based": 1,
+                "next_action": 0,
+                "ttype_filter": -1
+              },
+              {
+                "byte_offset_1based": 3,
+                "next_action": 0,
+                "ttype_filter": 0
+              },
+              {
+                "byte_offset_1based": 5,
+                "next_action": -3,
+                "ttype_filter": 1
+              },
+              {
+                "byte_offset_1based": 7,
+                "next_action": 0,
+                "ttype_filter": 0
+              }
+            ],
+            "call_sites": [
+              {
+                "action": 5,
+                "len": 16,
+                "lpad": 85,
+                "start": 45
+              },
+              {
+                "action": 1,
+                "len": 9,
+                "lpad": 196,
+                "start": 99
+              },
+              {
+                "action": 0,
+                "len": 5,
+                "lpad": 163,
+                "start": 127
+              },
+              {
+                "action": 0,
+                "len": 70,
+                "lpad": 0,
+                "start": 132
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table.rust_catch_and_10args",
+            "size_bytes": 40,
+            "ttype_base_off": 33,
+            "ttype_enc": "0x9b"
+          },
+          {
+            "actions_sample": [
+              {
+                "byte_offset_1based": 1,
+                "next_action": 0,
+                "ttype_filter": -1
+              },
+              {
+                "byte_offset_1based": 3,
+                "next_action": 0,
+                "ttype_filter": 0
+              },
+              {
+                "byte_offset_1based": 5,
+                "next_action": 0,
+                "ttype_filter": 0
+              }
+            ],
+            "call_sites": [
+              {
+                "action": 1,
+                "len": 6,
+                "lpad": 9,
+                "start": 1
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table.rust_extern_c_filter_boundary",
+            "size_bytes": 16,
+            "ttype_base_off": 9,
+            "ttype_enc": "0x9b"
+          },
+          {
+            "actions_sample": [],
+            "call_sites": [
+              {
+                "action": 0,
+                "len": 68,
+                "lpad": 0,
+                "start": 0
+              },
+              {
+                "action": 0,
+                "len": 16,
+                "lpad": 119,
+                "start": 68
+              },
+              {
+                "action": 0,
+                "len": 57,
+                "lpad": 0,
+                "start": 84
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table.rust_huge_stack_probe_loop",
+            "size_bytes": 16,
+            "ttype_base_off": null,
+            "ttype_enc": "0xff"
+          },
+          {
+            "actions_sample": [],
+            "call_sites": [
+              {
+                "action": 0,
+                "len": 19,
+                "lpad": 136,
+                "start": 90
+              },
+              {
+                "action": 0,
+                "len": 49,
+                "lpad": 0,
+                "start": 109
+              }
+            ],
+            "cs_enc": "0x01",
+            "lpstart_enc": "0xff",
+            "section": ".gcc_except_table.rust_overaligned_64_with_drop",
+            "size_bytes": 16,
+            "ttype_base_off": null,
+            "ttype_enc": "0xff"
+          }
+        ],
+        "opcodes": {
+          "DW_CFA_GNU_args_size": 7,
+          "DW_CFA_advance_loc": 32,
+          "DW_CFA_advance_loc1": 2,
+          "DW_CFA_def_cfa": 3,
+          "DW_CFA_def_cfa_offset": 24,
+          "DW_CFA_def_cfa_register": 3,
+          "DW_CFA_nop": 8,
+          "DW_CFA_offset": 6
+        }
+      }
+    },
+    "system_dso_spotcheck": {
+      "libc.so.6": {
+        "augmentations": {
+          "zPLR": 1,
+          "zR": 1,
+          "zRS": 1
+        },
+        "cfa_registers": {
+          "R10": 2,
+          "R11": 1,
+          "RBP": 69,
+          "RDI": 3,
+          "RDX": 1,
+          "RSP": 68
+        },
+        "cie_count": 3,
+        "expression_examples": [
+          "DW_CFA_def_cfa_expression: DW_OP_breg7 RSP+8, DW_OP_breg16 RIP+0, DW_OP_lit15, DW_OP_and, DW_OP_lit11, DW_OP_ge, DW_OP_lit3, DW_OP_shl, DW_OP_plus",
+          "DW_CFA_def_cfa_expression: DW_OP_breg7 RSP+160, DW_OP_deref",
+          "DW_CFA_expression: R8 DW_OP_breg7 RSP+40",
+          "DW_CFA_expression: R9 DW_OP_breg7 RSP+48",
+          "DW_CFA_expression: R10 DW_OP_breg7 RSP+56",
+          "DW_CFA_expression: R11 DW_OP_breg7 RSP+64",
+          "DW_CFA_expression: R12 DW_OP_breg7 RSP+72",
+          "DW_CFA_expression: R13 DW_OP_breg7 RSP+80",
+          "DW_CFA_expression: R14 DW_OP_breg7 RSP+88",
+          "DW_CFA_expression: R15 DW_OP_breg7 RSP+96",
+          "DW_CFA_expression: RDI DW_OP_breg7 RSP+104",
+          "DW_CFA_expression: RSI DW_OP_breg7 RSP+112"
+        ],
+        "fde_count": 3919,
+        "opcodes": {
+          "DW_CFA_GNU_args_size": 4,
+          "DW_CFA_advance_loc": 17934,
+          "DW_CFA_advance_loc1": 1347,
+          "DW_CFA_advance_loc2": 478,
+          "DW_CFA_def_cfa": 79,
+          "DW_CFA_def_cfa_expression": 3,
+          "DW_CFA_def_cfa_offset": 17469,
+          "DW_CFA_def_cfa_register": 65,
+          "DW_CFA_expression": 23,
+          "DW_CFA_nop": 8017,
+          "DW_CFA_offset": 5984,
+          "DW_CFA_offset_extended_sf": 20,
+          "DW_CFA_register": 12,
+          "DW_CFA_remember_state": 2027,
+          "DW_CFA_restore": 366,
+          "DW_CFA_restore_state": 2027,
+          "DW_CFA_undefined": 2
+        }
+      },
+      "libgcc_s.so.1": {
+        "augmentations": {
+          "zR": 1
+        },
+        "cfa_registers": {
+          "RBP": 18,
+          "RCX": 4,
+          "RSP": 17
+        },
+        "cie_count": 1,
+        "expression_examples": [
+          "DW_CFA_def_cfa_expression: DW_OP_breg7 RSP+8, DW_OP_breg16 RIP+0, DW_OP_lit15, DW_OP_and, DW_OP_lit11, DW_OP_ge, DW_OP_lit3, DW_OP_shl, DW_OP_plus"
+        ],
+        "fde_count": 270,
+        "opcodes": {
+          "DW_CFA_advance_loc": 1147,
+          "DW_CFA_advance_loc1": 173,
+          "DW_CFA_advance_loc2": 75,
+          "DW_CFA_def_cfa": 25,
+          "DW_CFA_def_cfa_expression": 1,
+          "DW_CFA_def_cfa_offset": 810,
+          "DW_CFA_def_cfa_register": 14,
+          "DW_CFA_nop": 870,
+          "DW_CFA_offset": 593,
+          "DW_CFA_register": 4,
+          "DW_CFA_remember_state": 243,
+          "DW_CFA_restore": 214,
+          "DW_CFA_restore_state": 243
+        }
+      },
+      "libstdc++.so.6": {
+        "augmentations": {
+          "zPLR": 1,
+          "zR": 1
+        },
+        "cfa_registers": {
+          "RBP": 152,
+          "RSP": 178
+        },
+        "cie_count": 2,
+        "expression_examples": [
+          "DW_CFA_def_cfa_expression: DW_OP_breg7 RSP+8, DW_OP_breg16 RIP+0, DW_OP_lit15, DW_OP_and, DW_OP_lit11, DW_OP_ge, DW_OP_lit3, DW_OP_shl, DW_OP_plus"
+        ],
+        "fde_count": 5343,
+        "opcodes": {
+          "DW_CFA_GNU_args_size": 179,
+          "DW_CFA_advance_loc": 23089,
+          "DW_CFA_advance_loc1": 2514,
+          "DW_CFA_advance_loc2": 678,
+          "DW_CFA_def_cfa": 205,
+          "DW_CFA_def_cfa_expression": 1,
+          "DW_CFA_def_cfa_offset": 16484,
+          "DW_CFA_def_cfa_register": 125,
+          "DW_CFA_nop": 10352,
+          "DW_CFA_offset": 11543,
+          "DW_CFA_remember_state": 2810,
+          "DW_CFA_restore": 3725,
+          "DW_CFA_restore_state": 2810
+        }
+      }
+    }
+  },
+  "lean4_mechanization_receipt": {
+    "axioms_ceiling": [
+      "propext",
+      "Quot.sound"
+    ],
+    "compile_wall_sec": 3.23,
+    "file": "support/DwarfEhFrameUnwindProbe.lean",
+    "fresh_kernel_replay_wall_sec": 69.415,
+    "lean_version": "4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+    "lines": 1310,
+    "olean_bytes": 2912896,
+    "replay_summary": "REPLAY_OK new_consts=775 type_hints=0 type_cfi=0 val_hints=3"
+  },
+  "poc_a_may_unwind": {
+    "a1_normal": {
+      "rc": 0,
+      "stdout": "ok=1000/1000"
+    },
+    "a1_panic": {
+      "rc": -6,
+      "stdout": ""
+    },
+    "a2_panic": {
+      "rc": 0,
+      "stdout": "caught=true corrupted=true vals=[\n    0x1111111111111111,\n    0x2222222222222222,\n    0x7777777777777777,\n    0x4444444444444444,\n    0x5555555555555555,\n]"
+    },
+    "a3_panic": {
+      "rc": 0,
+      "stdout": "caught=true corrupted=false"
+    },
+    "a4_sp_mod_16": {
+      "rc": 0,
+      "stdout": "sp_mod_16=8"
+    },
+    "shrinkwrap_by_opt_level": {
+      "O0": {
+        "sp_mod_16": 0
+      },
+      "O1": {
+        "sp_mod_16": 8
+      },
+      "O2": {
+        "sp_mod_16": 8
+      },
+      "O2_disable_shrink_wrap": {
+        "sp_mod_16": 0
+      },
+      "O3": {
+        "sp_mod_16": 8
+      }
+    }
+  },
+  "poc_b_non_may_unwind_fde_poisoning": {
+    "b1_panic": {
+      "rc": -6,
+      "stdout": ""
+    },
+    "b2_unexecuted_panic": {
+      "rc": -6,
+      "stdout": ""
+    },
+    "b3_undefined_rip": {
+      "rc": -6,
+      "stdout": ""
+    },
+    "b5_escape_r12": {
+      "rc": 0,
+      "stdout": "caught=true corrupted=true leaked_rip=0x00005613f164e3d2"
+    },
+    "b6_personality": {
+      "rc": 0,
+      "stdout": "caught=true drops=0"
+    },
+    "b7_lsda": {
+      "rc": 0,
+      "stdout": "caught=true drops=0"
+    }
+  },
+  "poc_c_cross_language_c_and_cpp": {
+    "c_qsort_callback": {
+      "default_O2": {
+        "normal": "caught=false rdrops=2 ccleanup=1",
+        "panic_rc": 0,
+        "panic_stdout": "caught=true rdrops=2 ccleanup=0"
+      },
+      "fexceptions": {
+        "normal": "caught=false rdrops=2 ccleanup=1",
+        "panic_rc": 0,
+        "panic_stdout": "caught=true rdrops=2 ccleanup=1"
+      },
+      "no_uw_tables": {
+        "normal": "caught=false rdrops=2 ccleanup=1",
+        "panic_rc": -6,
+        "panic_stdout": ""
+      }
+    },
+    "cpp_throw_into_rust_panic_abort": {
+      "c_nounwind_no_drop": {
+        "rc": -6,
+        "stdout": ""
+      },
+      "c_nounwind_with_drop": {
+        "rc": -6,
+        "stdout": ""
+      },
+      "c_unwind_normal": {
+        "rc": 0,
+        "stdout": "returned=11 rust_drops=1 cpp_drops=1"
+      },
+      "c_unwind_throw": {
+        "rc": -6,
+        "stdout": ""
+      }
+    },
+    "cpp_throw_into_rust_panic_unwind": {
+      "c_nounwind_no_drop": {
+        "rc": -6,
+        "stdout": ""
+      },
+      "c_nounwind_with_drop": {
+        "rc": -6,
+        "stdout": ""
+      },
+      "c_unwind_normal": {
+        "rc": 0,
+        "stdout": "returned=11 rust_drops=1 cpp_drops=1"
+      },
+      "c_unwind_throw": {
+        "rc": 0,
+        "stdout": "caught_cpp=77 rust_drops=1 cpp_drops=1"
+      }
+    }
+  },
+  "toolchains": {
+    "g++": "g++ (Debian 15.2.0-14) 15.2.0",
+    "gcc": "gcc (Debian 15.2.0-14) 15.2.0",
+    "nightly": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+    "stable": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1"
+  }
+}

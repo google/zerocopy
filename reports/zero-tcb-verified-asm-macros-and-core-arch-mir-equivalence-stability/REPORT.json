@@ -1,0 +1,173 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/isa",
+    "anneal/mir",
+    "isa/x86_64",
+    "lean/certificates",
+    "llvm/codegen",
+    "rust/inline-asm",
+    "rust/proc-macros",
+    "rustc/mir",
+    "rustc/stdarch",
+    "security/constant-time",
+    "verification/equivalence"
+  ],
+  "subjects": [
+    {
+      "name": "rustc (1.98.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly",
+        "llvm_version": "22.1.6"
+      }
+    },
+    {
+      "name": "rustc (1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "llvm_version": "23.1.1"
+      }
+    },
+    {
+      "name": "rustc (1.100.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0",
+        "llvm_version": "23.1.5"
+      }
+    },
+    {
+      "name": "rustc (1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly",
+        "llvm_version": "23.1.5"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "zlib-rs",
+      "identity": {
+        "repository": "trifectatechfoundation/zlib-rs",
+        "revision": "0254e07204884bfc902d6ebb68c8b703d0ea49cf",
+        "version": "0.6.8"
+      }
+    },
+    {
+      "name": "memchr",
+      "identity": {
+        "repository": "BurntSushi/memchr",
+        "revision": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+        "version": "2.8.3"
+      }
+    },
+    {
+      "name": "simdutf8",
+      "identity": {
+        "repository": "rusticstuff/simdutf8",
+        "revision": "87ee8d9d20b849eae1974a82b248ee6fe7491bcc",
+        "version": "0.1.5"
+      }
+    },
+    {
+      "name": "crc32fast",
+      "identity": {
+        "repository": "srijs/rust-crc32fast",
+        "revision": "8a93d2a70c00ab3e72beda42014b18fad8e496ea",
+        "version": "1.5.5"
+      }
+    },
+    {
+      "name": "simd-adler32",
+      "identity": {
+        "repository": "mcountryman/simd-adler32",
+        "revision": "d93164f98d7fe2daf883f2e1bec82778dd26199a",
+        "version": "0.3.10"
+      }
+    },
+    {
+      "name": "blake3",
+      "identity": {
+        "repository": "BLAKE3-team/BLAKE3",
+        "revision": "f3149ec5bb5449af877ba20377a11008ff499fa2",
+        "version": "1.8.7"
+      }
+    },
+    {
+      "name": "aho-corasick",
+      "identity": {
+        "repository": "BurntSushi/aho-corasick",
+        "revision": "5178060ce73d91938f8582d0360e3be031380440",
+        "version": "1.1.5"
+      }
+    },
+    {
+      "name": "bytecount",
+      "identity": {
+        "repository": "llogiq/bytecount",
+        "revision": "f06647f90a45ab302d9423dbe85019d595abf8c2",
+        "version": "0.6.9"
+      }
+    },
+    {
+      "name": "hashbrown",
+      "identity": {
+        "repository": "rust-lang/hashbrown",
+        "revision": "c62a63a61b7caf2de8f9ecb7b06a66b0ab6bdf3d",
+        "version": "0.17.1"
+      }
+    },
+    {
+      "name": "sha2",
+      "identity": {
+        "repository": "RustCrypto/hashes",
+        "revision": "138dc5a05b93f8e49cda177fc6cfd7cc43673e5d",
+        "version": "sha2-0.11.1"
+      }
+    },
+    {
+      "name": "chacha20",
+      "identity": {
+        "repository": "RustCrypto/stream-ciphers",
+        "revision": "6b236b758a0279f64d777797514813b2cb572c8b",
+        "version": "chacha20-0.10.2"
+      }
+    },
+    {
+      "name": "aes",
+      "identity": {
+        "repository": "RustCrypto/block-ciphers",
+        "revision": "9a84f2f8b581f62bcd00e16b5e11a2f6251916ee",
+        "version": "aes-0.9.4"
+      }
+    },
+    {
+      "name": "rav1d",
+      "identity": {
+        "repository": "memorysafety/rav1d",
+        "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

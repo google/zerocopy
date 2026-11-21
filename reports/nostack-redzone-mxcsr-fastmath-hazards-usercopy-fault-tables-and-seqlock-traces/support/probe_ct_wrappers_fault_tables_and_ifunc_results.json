@@ -1,0 +1,180 @@
+{
+  "seam3_ct_wrappers_and_black_box": {
+    "nightly_runtime_post_cleanup_mir_black_box": "// MIR for `inspect_black_box_u8` after runtime-post-cleanup\n\nfn inspect_black_box_u8(_1: u8) -> u8 {\n    debug secret => _1;\n    let mut _0: u8;\n    let mut _2: u8;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = std::hint::black_box::<u8>(move _2) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}",
+    "1.99.1": {
+      "runtime": {
+        "blackbox_redzone_secret_leaked_at_rsp_minus_9": true,
+        "naked_redzone_secret_leaked": false,
+        "sanity": [
+          10,
+          20,
+          20
+        ]
+      },
+      "optimized_mir_black_box": "fn inspect_black_box_u8(_1: u8) -> u8 {\n    debug secret => _1;\n    let mut _0: u8;\n    scope 1 (inlined std::hint::black_box::<u8>) {\n    }\n\n    bb0: {\n        _0 = std::intrinsics::black_box::<u8>(move _1) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}",
+      "llvm_ir_black_box": "define dso_local noundef i8 @inspect_black_box_u8(i8 noundef %secret) unnamed_addr #4 !guid !30 {\nstart:\n  %_0 = alloca [1 x i8], align 1\n  store i8 %secret, ptr %_0, align 1\n  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_0) #13, !srcloc !10\n  %0 = load i8, ptr %_0, align 1, !noundef !12\n  ret i8 %0\n}",
+      "functions": {
+        "inspect_black_box_u8": {
+          "cond_jumps": [],
+          "has_rsp_mem_access": true,
+          "asm": "inspect_black_box_u8:\n\t.cfi_startproc\n\tmovb\t%dil, -1(%rsp)\n\tleaq\t-1(%rsp), %rax\n\t#APP\n\t#NO_APP\n\tmovzbl\t-1(%rsp), %eax\n\tretq\n.Lfunc_end11:"
+        },
+        "ct_wrapper_plain_and": {
+          "cond_jumps": [],
+          "has_rsp_mem_access": false,
+          "asm": "ct_wrapper_plain_and:\n\t.cfi_startproc\n\tmovq\t%rdx, %rax\n\tandl\t%esi, %edi\n\t#APP\n\n\ttestq\t%rdi, %rdi\n\tcmovneq\t%rcx, %rax\n\n\t#NO_APP\n\tretq\n.Lfunc_end9:"
+        },
+        "ct_wrapper_blackbox_and_leak": {
+          "cond_jumps": [
+            "jne\t.LBB8_1"
+          ],
+          "has_rsp_mem_access": true,
+          "asm": "ct_wrapper_blackbox_and_leak:\n\t.cfi_startproc\n\tmovq\t%rdx, %rax\n\tmovb\t%dil, -1(%rsp)\n\tleaq\t-1(%rsp), %rdx\n\t#APP\n\t#NO_APP\n\tcmpb\t$1, -1(%rsp)\n\tjne\t.LBB8_1\n\tmovb\t%sil, -2(%rsp)\n\tleaq\t-2(%rsp), %rdx\n\t#APP\n\t#NO_APP\n\tmovzbl\t-2(%rsp), %edx\n\t#APP\n\n\ttestq\t%rdx, %rdx\n\tcmovneq\t%rcx, %rax\n\n\t#NO_APP\n\tretq\n.LBB8_1:\n\txorl\t%edx, %edx\n\t#APP\n\n\ttestq\t%rdx, %rdx\n\tcmovneq\t%rcx, %rax\n\n\t#NO_APP\n\tretq\n.Lfunc_end8:"
+        },
+        "ct_wrapper_volatile_choice": {
+          "cond_jumps": [],
+          "has_rsp_mem_access": false,
+          "asm": "ct_wrapper_volatile_choice:\n\t.cfi_startproc\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 32\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\tmovq\t%rdx, %rbx\n\tmovq\t%rsi, %r14\n\tcallq\t_RNvCs8Y8uAeG2Bs5_8ct_probe19volatile_barrier_u8\n\tmovzbl\t%al, %eax\n\t#APP\n\n\ttestq\t%rax, %rax\n\tcmovneq\t%rbx, %r14\n\n\t#NO_APP\n\tmovq\t%r14, %rax\n\taddq\t$8, %rsp\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end10:"
+        },
+        "loop_rust_select_cmov_converted": {
+          "cond_jumps": [
+            "je\t.LBB13_6",
+            "je\t.LBB13_6",
+            "je\t.LBB13_4",
+            "jne\t.LBB13_2"
+          ],
+          "has_rsp_mem_access": false,
+          "asm": "loop_rust_select_cmov_converted:\n\t.cfi_startproc\n\tcmpq\t%rsi, %rcx\n\tcmovbq\t%rcx, %rsi\n\tcmpq\t%rsi, %r9\n\tcmovbq\t%r9, %rsi\n\txorl\t%eax, %eax\n\ttestq\t%rsi, %rsi\n\tje\t.LBB13_6\n\tmovabsq\t$-7046029254386353131, %rcx\n\tmovabsq\t$-4658895280553007687, %r9\n\tmovabsq\t$-7723592293110705685, %r10\n\txorl\t%r11d, %r11d\n\tjmp\t.LBB13_2\n\t.p2align\t4\n.LBB13_4:\n\taddq\t(%r8,%r11,8), %rax\n\tincq\t%r11\n\tcmpq\t%r11, %rsi\n\tje\t.LBB13_6\n.LBB13_2:\n\tcmpb\t$0, (%rdi,%r11)\n\tje\t.LBB13_4\n\timulq\t%rcx, %rax\n\taddq\t(%rdx,%r11,8), %rax\n\trolq\t$17, %rax\n\timulq\t%r9, %rax\n\trolq\t$33, %rax\n\timulq\t%r10, %rax\n\tincq\t%r11\n\tcmpq\t%r11, %rsi\n\tjne\t.LBB13_2\n.LBB13_6:\n\tretq\n.Lfunc_end13:"
+        },
+        "loop_asm_cmov_preserved": {
+          "cond_jumps": [
+            "je\t.LBB12_1",
+            "jne\t.LBB12_4"
+          ],
+          "has_rsp_mem_access": false,
+          "asm": "loop_asm_cmov_preserved:\n\t.cfi_startproc\n\tcmpq\t%rsi, %rcx\n\tcmovbq\t%rcx, %rsi\n\tcmpq\t%rsi, %r9\n\tcmovbq\t%r9, %rsi\n\ttestq\t%rsi, %rsi\n\tje\t.LBB12_1\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\txorl\t%r11d, %r11d\n\tmovabsq\t$-7046029254386353131, %rcx\n\tmovabsq\t$-4658895280553007687, %r9\n\tmovabsq\t$-7723592293110705685, %r10\n\txorl\t%ebx, %ebx\n\tmovq\t%r11, %rax\n\t.p2align\t4\n.LBB12_4:\n\timulq\t%rcx, %rax\n\taddq\t(%rdx,%rbx,8), %rax\n\taddq\t(%r8,%rbx,8), %r11\n\tmovzbl\t(%rdi,%rbx), %r14d\n\tincq\t%rbx\n\trolq\t$17, %rax\n\timulq\t%r9, %rax\n\trolq\t$33, %rax\n\timulq\t%r10, %rax\n\t#APP\n\n\ttestq\t%r14, %r14\n\tcmoveq\t%r11, %rax\n\n\t#NO_APP\n\tmovq\t%rax, %r11\n\tcmpq\t%rbx, %rsi\n\tjne\t.LBB12_4\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\t.cfi_restore %rbx\n\t.cfi_restore %r14\n\tretq\n.LBB12_1:\n\txorl\t%eax, %eax\n\tretq\n.Lfunc_end12:"
+        },
+        "ct_select_naked": {
+          "cond_jumps": [],
+          "has_rsp_mem_access": false,
+          "asm": "ct_select_naked:\n\tmovq\t%rsi, %rax\n\ttestq\t%rdi, %rdi\n\tcmovneq\t%rdx, %rax\n\tretq\n.Lfunc_end_ct_select_naked:\n.Ltmp0:"
+        }
+      }
+    },
+    "1.102.0-nightly": {
+      "runtime": {
+        "blackbox_redzone_secret_leaked_at_rsp_minus_9": true,
+        "naked_redzone_secret_leaked": false,
+        "sanity": [
+          10,
+          20,
+          20
+        ]
+      },
+      "optimized_mir_black_box": "fn inspect_black_box_u8(_1: u8) -> u8 {\n    debug secret => _1;\n    let mut _0: u8;\n    scope 1 (inlined std::hint::black_box::<u8>) {\n    }\n\n    bb0: {\n        _0 = std::intrinsics::black_box::<u8>(move _1) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}",
+      "llvm_ir_black_box": "define dso_local noundef i8 @inspect_black_box_u8(i8 noundef %secret) unnamed_addr #4 !guid !30 {\nstart:\n  %_0 = alloca [1 x i8], align 1\n  store i8 %secret, ptr %_0, align 1\n  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_0) #12, !srcloc !10\n  %0 = load i8, ptr %_0, align 1, !noundef !12\n  ret i8 %0\n}",
+      "functions": {
+        "inspect_black_box_u8": {
+          "cond_jumps": [],
+          "has_rsp_mem_access": true,
+          "asm": "inspect_black_box_u8:\n\t.cfi_startproc\n\tmovb\t%dil, -1(%rsp)\n\tleaq\t-1(%rsp), %rax\n\t#APP\n\t#NO_APP\n\tmovzbl\t-1(%rsp), %eax\n\tretq\n.Lfunc_end11:"
+        },
+        "ct_wrapper_plain_and": {
+          "cond_jumps": [],
+          "has_rsp_mem_access": false,
+          "asm": "ct_wrapper_plain_and:\n\t.cfi_startproc\n\tmovq\t%rdx, %rax\n\tandl\t%esi, %edi\n\t#APP\n\n\ttestq\t%rdi, %rdi\n\tcmovneq\t%rcx, %rax\n\n\t#NO_APP\n\tretq\n.Lfunc_end9:"
+        },
+        "ct_wrapper_blackbox_and_leak": {
+          "cond_jumps": [
+            "jne\t.LBB8_1"
+          ],
+          "has_rsp_mem_access": true,
+          "asm": "ct_wrapper_blackbox_and_leak:\n\t.cfi_startproc\n\tmovq\t%rdx, %rax\n\tmovb\t%dil, -1(%rsp)\n\tleaq\t-1(%rsp), %rdx\n\t#APP\n\t#NO_APP\n\tcmpb\t$1, -1(%rsp)\n\tjne\t.LBB8_1\n\tmovb\t%sil, -2(%rsp)\n\tleaq\t-2(%rsp), %rdx\n\t#APP\n\t#NO_APP\n\tmovzbl\t-2(%rsp), %edx\n\t#APP\n\n\ttestq\t%rdx, %rdx\n\tcmovneq\t%rcx, %rax\n\n\t#NO_APP\n\tretq\n.LBB8_1:\n\txorl\t%edx, %edx\n\t#APP\n\n\ttestq\t%rdx, %rdx\n\tcmovneq\t%rcx, %rax\n\n\t#NO_APP\n\tretq\n.Lfunc_end8:"
+        },
+        "ct_wrapper_volatile_choice": {
+          "cond_jumps": [],
+          "has_rsp_mem_access": false,
+          "asm": "ct_wrapper_volatile_choice:\n\t.cfi_startproc\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 32\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\tmovq\t%rdx, %rbx\n\tmovq\t%rsi, %r14\n\tcallq\t_RNvCs72fx4GI0Kp7_8ct_probe19volatile_barrier_u8\n\tmovzbl\t%al, %eax\n\t#APP\n\n\ttestq\t%rax, %rax\n\tcmovneq\t%rbx, %r14\n\n\t#NO_APP\n\tmovq\t%r14, %rax\n\taddq\t$8, %rsp\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end10:"
+        },
+        "loop_rust_select_cmov_converted": {
+          "cond_jumps": [
+            "je\t.LBB13_6",
+            "je\t.LBB13_6",
+            "je\t.LBB13_4",
+            "jne\t.LBB13_2"
+          ],
+          "has_rsp_mem_access": false,
+          "asm": "loop_rust_select_cmov_converted:\n\t.cfi_startproc\n\tcmpq\t%rcx, %rsi\n\tcmovbq\t%rsi, %rcx\n\tcmpq\t%r9, %rcx\n\tcmovaeq\t%r9, %rcx\n\txorl\t%eax, %eax\n\ttestq\t%rcx, %rcx\n\tje\t.LBB13_6\n\tmovabsq\t$-7046029254386353131, %rsi\n\tmovabsq\t$-4658895280553007687, %r9\n\tmovabsq\t$-7723592293110705685, %r10\n\txorl\t%r11d, %r11d\n\tjmp\t.LBB13_2\n\t.p2align\t4\n.LBB13_4:\n\taddq\t(%r8,%r11,8), %rax\n\tincq\t%r11\n\tcmpq\t%r11, %rcx\n\tje\t.LBB13_6\n.LBB13_2:\n\tcmpb\t$0, (%rdi,%r11)\n\tje\t.LBB13_4\n\timulq\t%rsi, %rax\n\taddq\t(%rdx,%r11,8), %rax\n\trolq\t$17, %rax\n\timulq\t%r9, %rax\n\trolq\t$33, %rax\n\timulq\t%r10, %rax\n\tincq\t%r11\n\tcmpq\t%r11, %rcx\n\tjne\t.LBB13_2\n.LBB13_6:\n\tretq\n.Lfunc_end13:"
+        },
+        "loop_asm_cmov_preserved": {
+          "cond_jumps": [
+            "je\t.LBB12_1",
+            "jne\t.LBB12_4"
+          ],
+          "has_rsp_mem_access": false,
+          "asm": "loop_asm_cmov_preserved:\n\t.cfi_startproc\n\tcmpq\t%rcx, %rsi\n\tcmovbq\t%rsi, %rcx\n\tcmpq\t%r9, %rcx\n\tcmovaeq\t%r9, %rcx\n\ttestq\t%rcx, %rcx\n\tje\t.LBB12_1\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\txorl\t%r11d, %r11d\n\tmovabsq\t$-7046029254386353131, %rsi\n\tmovabsq\t$-4658895280553007687, %r9\n\tmovabsq\t$-7723592293110705685, %r10\n\txorl\t%ebx, %ebx\n\tmovq\t%r11, %rax\n\t.p2align\t4\n.LBB12_4:\n\timulq\t%rsi, %rax\n\taddq\t(%rdx,%rbx,8), %rax\n\taddq\t(%r8,%rbx,8), %r11\n\tmovzbl\t(%rdi,%rbx), %r14d\n\tincq\t%rbx\n\trolq\t$17, %rax\n\timulq\t%r9, %rax\n\trolq\t$33, %rax\n\timulq\t%r10, %rax\n\t#APP\n\n\ttestq\t%r14, %r14\n\tcmoveq\t%r11, %rax\n\n\t#NO_APP\n\tmovq\t%rax, %r11\n\tcmpq\t%rbx, %rcx\n\tjne\t.LBB12_4\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\t.cfi_restore %rbx\n\t.cfi_restore %r14\n\tretq\n.LBB12_1:\n\txorl\t%eax, %eax\n\tretq\n.Lfunc_end12:"
+        },
+        "ct_select_naked": {
+          "cond_jumps": [],
+          "has_rsp_mem_access": false,
+          "asm": "ct_select_naked:\n\tmovq\t%rsi, %rax\n\ttestq\t%rdi, %rdi\n\tcmovneq\t%rdx, %rax\n\tretq\n.Lfunc_end_ct_select_naked:\n.Ltmp0:"
+        }
+      }
+    }
+  },
+  "seam4_usercopy_fault_tables_and_ifunc": {
+    "runtime": {
+      "starnix_range": {
+        "req": 32,
+        "valid": 19,
+        "rem": 13,
+        "overlay_kind": 1,
+        "prefix_written_exact": true,
+        "tail_untouched": true,
+        "fault_at_guard_page_offset": 0
+      },
+      "linux_ex_table": {
+        "req": 32,
+        "valid": 19,
+        "rem": 13,
+        "overlay_kind": 2,
+        "prefix_written_exact": true,
+        "tail_untouched": true,
+        "fault_at_guard_page_offset": 0,
+        "ex_table_entries": 1
+      },
+      "target_clones_sum": 136
+    },
+    "ifunc_symbols": [
+      "4: 00000000000029b0    35 FUNC    LOCAL  DEFAULT   13 sum_u32_clones.default",
+      "9: 0000000000002aa0   148 FUNC    LOCAL  DEFAULT   13 sum_u32_clones.avx2",
+      "10: 0000000000002b40   160 FUNC    LOCAL  DEFAULT   13 sum_u32_clones.avx512f",
+      "23: 0000000000001520  4960 FUNC    LOCAL  DEFAULT   13 __cpu_indicator_init",
+      "33: 0000000000002be0    59 IFUNC   GLOBAL DEFAULT   13 sum_u32_clones",
+      "55: 0000000000002be0    59 FUNC    WEAK   DEFAULT   13 sum_u32_clones.resolver"
+    ],
+    "irelative_relocations": [
+      "0000000000005010  0000000000000025 R_X86_64_IRELATIVE                        2be0"
+    ],
+    "resolver_disasm": "/tmp/tmprp2wzun7/overlay_ifunc:     file format elf64-x86-64\n\n\nDisassembly of section .init:\n\nDisassembly of section .plt:\n\nDisassembly of section .plt.got:\n\nDisassembly of section .text:\n\n0000000000002be0 <sum_u32_clones.resolver>:\n    2be0:\t48 83 ec 08          \tsub    $0x8,%rsp\n    2be4:\te8 37 e9 ff ff       \tcall   1520 <__cpu_indicator_init>\n    2be9:\t48 8d 05 a0 24 00 00 \tlea    0x24a0(%rip),%rax        # 5090 <__cpu_model>\n    2bf0:\t8b 40 0c             \tmov    0xc(%rax),%eax\n    2bf3:\tf6 c4 80             \ttest   $0x80,%ah\n    2bf6:\t74 0c                \tje     2c04 <sum_u32_clones.resolver+0x24>\n    2bf8:\t48 8d 05 41 ff ff ff \tlea    -0xbf(%rip),%rax        # 2b40 <sum_u32_clones.avx512f>\n    2bff:\t48 83 c4 08          \tadd    $0x8,%rsp\n    2c03:\tc3                   \tret\n    2c04:\tf6 c4 04             \ttest   $0x4,%ah\n    2c07:\t74 09                \tje     2c12 <sum_u32_clones.resolver+0x32>\n    2c09:\t48 8d 05 90 fe ff ff \tlea    -0x170(%rip),%rax        # 2aa0 <sum_u32_clones.avx2>\n    2c10:\teb ed                \tjmp    2bff <sum_u32_clones.resolver+0x1f>\n    2c12:\t48 8d 05 97 fd ff ff \tlea    -0x269(%rip),%rax        # 29b0 <sum_u32_clones.default>\n    2c19:\teb e4                \tjmp    2bff <sum_u32_clones.resolver+0x1f>\n\nDisassembly of section .fini:",
+    "cpu_indicator_init_xgetbv_slice": [
+      "1c0d:\t31 c0                \txor    %eax,%eax",
+      "1c0f:\tc3                   \tret",
+      "1c10:\t31 c9                \txor    %ecx,%ecx",
+      "1c12:\t0f 01 d0             \txgetbv",
+      "1c15:\t89 c2                \tmov    %eax,%edx",
+      "1c17:\tf7 d2                \tnot    %edx",
+      "1c19:\t80 e2 06             \tand    $0x6,%dl",
+      "1c1c:\t0f 84 04 07 00 00    \tje     2326 <__cpu_indicator_init+0xe06>",
+      "1c22:\t45 31 f6             \txor    %r14d,%r14d",
+      "1c25:\t45 31 d2             \txor    %r10d,%r10d",
+      "1c28:\t89 c2                \tmov    %eax,%edx",
+      "1c2a:\t45 31 e4             \txor    %r12d,%r12d",
+      "1c2d:\tf7 d2                \tnot    %edx",
+      "1c2f:\t81 e2 00 00 06 00    \tand    $0x60000,%edx",
+      "1c35:\t41 0f 94 c4          \tsete   %r12b",
+      "1c39:\tc1 e8 13             \tshr    $0x13,%eax",
+      "1c3c:\t41 89 c1             \tmov    %eax,%r9d"
+    ]
+  }
+}

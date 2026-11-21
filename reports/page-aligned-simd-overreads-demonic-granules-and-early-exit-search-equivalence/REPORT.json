@@ -1,0 +1,102 @@
+{
+  "topics": [
+    "anneal/memory-model",
+    "compilers/sanitizer-instrumentation",
+    "isa/aarch64",
+    "isa/x86-64",
+    "lean/mechanization",
+    "llvm/passes",
+    "rust/inline-asm",
+    "rust/simd",
+    "rustc/codegen",
+    "security/constant-time",
+    "verification/loop-alignment",
+    "verification/memory-models",
+    "verification/relational-equivalence"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "63b8d2fd94ba3b1a80023dae7139949dd5be6b78"
+      }
+    },
+    {
+      "name": "GNU C Library (glibc)",
+      "identity": {
+        "repository": "bminor/glibc",
+        "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+      }
+    },
+    {
+      "name": "memchr crate",
+      "identity": {
+        "repository": "BurntSushi/memchr",
+        "revision": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+        "version": "2.8.3"
+      }
+    },
+    {
+      "name": "simdutf library",
+      "identity": {
+        "repository": "simdutf/simdutf",
+        "revision": "177945073a2e44f6ef252aa2b9cf1ecb8e4d2ab0"
+      }
+    },
+    {
+      "name": "Anneal verifier",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Linux kernel (AArch64 MTE and Tagged Address ABI)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+      }
+    },
+    {
+      "name": "QEMU AArch64 user-mode emulator",
+      "identity": {
+        "artifact": "qemu-aarch64",
+        "package_version": "1:11.1.2+ds-2",
+        "sha256": "8ba579d46040c9d40c5786b4df58d7a17663c8fbd51968be84716682f758eb59"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

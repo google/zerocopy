@@ -1,0 +1,350 @@
+{
+  "asm_feature_and_constraint_matrix": {
+    "+1.99.1": {
+      "baseline_out_p0_ffr_clobber": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "tail call void asm sideeffect alignstack \"nop\", \"~{p0},~{ffr},~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_out_z0_clobber": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call <2 x i64> asm sideeffect alignstack \"nop\", \"=&{q0},~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_out_z0_typed_u64": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call i64 asm sideeffect alignstack \"movi v0.2d, #0\", \"=&{d0},~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_pac_hint_space": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "tail call void asm sideeffect alignstack \"paciasp\\0A autiasp\", \"~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_raw_pac_arch_extension": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%1 = tail call i64 asm sideeffect alignstack \".arch_extension pauth\\0A pacia ${0}, ${2}\\0A autia ${0}, ${2}\", \"=&r,0,r,~{cc},~{memory}\"(i64 %0, i64 %m) #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_raw_pac_no_directive": {
+        "errors": [
+          "error: instruction requires: pauth",
+          "error: aborting due to 1 previous error"
+        ],
+        "llvm_ir_asm_calls": [
+          "%1 = tail call i64 asm sideeffect alignstack \"pacia ${0}, ${2}\", \"=&r,0,r,~{cc},~{memory}\"(i64 %0, i64 %m) #1, !srcloc !5"
+        ],
+        "returncode": 1
+      },
+      "baseline_raw_sme_arch_extension": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call <2 x i64> asm sideeffect alignstack \".arch_extension sme\\0A smstart\\0A smstop\", \"=&{q0},~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_raw_sve_arch_extension": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call { i64, <2 x i64> } asm sideeffect alignstack \".arch_extension sve\\0A incb ${0}\\0A ptrue p0.b\\0A dup z0.d, #1\", \"=&r,=&{q0},0,~{p0},~{cc},~{memory}\"(i64 0) #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_raw_sve_no_directive": {
+        "errors": [
+          "error: instruction requires: sve or sme",
+          "error: aborting due to 1 previous error"
+        ],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call i64 asm sideeffect alignstack \"incb ${0}\", \"=&r,0,~{cc},~{memory}\"(i64 0) #1, !srcloc !5"
+        ],
+        "returncode": 1
+      },
+      "baseline_z0_modifier_z": {
+        "errors": [
+          "error: invalid asm template modifier `z` for this register class",
+          "error: aborting due to 1 previous error"
+        ],
+        "llvm_ir_asm_calls": [],
+        "returncode": 1
+      },
+      "preserves_flags_omitted_vs_enabled": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "tail call void asm sideeffect alignstack \"nop\", \"~{cc},~{memory}\"() #1, !srcloc !5",
+          "tail call void asm sideeffect alignstack \"nop\", \"~{memory}\"() #1, !srcloc !7"
+        ],
+        "returncode": 0
+      },
+      "sve_out_p0_typed": {
+        "errors": [
+          "error: register class `preg` can only be used as a clobber, not as an input or output",
+          "error: type `u16` cannot be used with this register class",
+          "error: aborting due to 2 previous errors"
+        ],
+        "llvm_ir_asm_calls": [],
+        "returncode": 1
+      }
+    },
+    "+nightly-2026-09-30": {
+      "baseline_out_p0_ffr_clobber": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "tail call void asm sideeffect alignstack \"nop\", \"~{p0},~{ffr},~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_out_z0_clobber": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call <2 x i64> asm sideeffect alignstack \"nop\", \"=&{q0},~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_out_z0_typed_u64": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call i64 asm sideeffect alignstack \"movi v0.2d, #0\", \"=&{d0},~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_pac_hint_space": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "tail call void asm sideeffect alignstack \"paciasp\\0A autiasp\", \"~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_raw_pac_arch_extension": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%1 = tail call i64 asm sideeffect alignstack \".arch_extension pauth\\0A pacia ${0}, ${2}\\0A autia ${0}, ${2}\", \"=&r,0,r,~{cc},~{memory}\"(i64 %0, i64 %m) #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_raw_pac_no_directive": {
+        "errors": [
+          "error: instruction requires: pauth",
+          "error: aborting due to 1 previous error"
+        ],
+        "llvm_ir_asm_calls": [
+          "%1 = tail call i64 asm sideeffect alignstack \"pacia ${0}, ${2}\", \"=&r,0,r,~{cc},~{memory}\"(i64 %0, i64 %m) #1, !srcloc !5"
+        ],
+        "returncode": 1
+      },
+      "baseline_raw_sme_arch_extension": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call <2 x i64> asm sideeffect alignstack \".arch_extension sme\\0A smstart\\0A smstop\", \"=&{q0},~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_raw_sve_arch_extension": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call { i64, <2 x i64> } asm sideeffect alignstack \".arch_extension sve\\0A incb ${0}\\0A ptrue p0.b\\0A dup z0.d, #1\", \"=&r,=&{q0},0,~{p0},~{cc},~{memory}\"(i64 0) #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "baseline_raw_sve_no_directive": {
+        "errors": [
+          "error: instruction requires: sve or sme",
+          "error: aborting due to 1 previous error"
+        ],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call i64 asm sideeffect alignstack \"incb ${0}\", \"=&r,0,~{cc},~{memory}\"(i64 0) #1, !srcloc !5"
+        ],
+        "returncode": 1
+      },
+      "baseline_z0_modifier_z": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "%0 = tail call i64 asm sideeffect alignstack \"nop // ${0:z}\", \"=&w,~{cc},~{memory}\"() #1, !srcloc !5"
+        ],
+        "returncode": 0
+      },
+      "preserves_flags_omitted_vs_enabled": {
+        "errors": [],
+        "llvm_ir_asm_calls": [
+          "tail call void asm sideeffect alignstack \"nop\", \"~{cc},~{memory}\"() #1, !srcloc !5",
+          "tail call void asm sideeffect alignstack \"nop\", \"~{memory}\"() #1, !srcloc !7"
+        ],
+        "returncode": 0
+      },
+      "sve_out_p0_typed": {
+        "errors": [
+          "error[E0658]: register class `preg` can only be used as a clobber in stable",
+          "error: type `u16` cannot be used with this register class",
+          "error: aborting due to 2 previous errors"
+        ],
+        "llvm_ir_asm_calls": [],
+        "returncode": 1
+      }
+    }
+  },
+  "pac_mte_tbi0_live": {
+    "corrupted_autda_fpac_max": {
+      "cpu": "max",
+      "returncode": -4,
+      "values": {
+        "stage": "before_autda"
+      }
+    },
+    "corrupted_autda_fpac_neoverse_n2": {
+      "cpu": "neoverse-n2",
+      "returncode": -4,
+      "values": {
+        "stage": "before_autda"
+      }
+    },
+    "corrupted_autda_pre_fpac_epac_neoverse_v1": {
+      "cpu": "neoverse-v1",
+      "returncode": -11,
+      "values": {
+        "post_autda_xor_residual": "0x0000000000000002",
+        "pre_fpac_xpacd_bypass_val": "0x0000000000000042",
+        "stage": "before_autda"
+      }
+    },
+    "mte_sync_spatial_granule_overflow_max": {
+      "cpu": "max",
+      "returncode": -11,
+      "values": {
+        "stage": "before_mte_spatial_overflow"
+      }
+    },
+    "mte_sync_temporal_tag_mismatch_max": {
+      "cpu": "max",
+      "returncode": -11,
+      "values": {
+        "stage": "before_mte_tag0_mismatch"
+      }
+    },
+    "valid_tbi0_pacda_xpacd_mte_max": {
+      "cpu": "max",
+      "returncode": 0,
+      "values": {
+        "autda_restored_eq_tbi": "0x0000000000000001",
+        "mte_ldg_tag_nibble": "0x0000000000000005",
+        "mte_prctl_rc": "0x0000000000000000",
+        "mte_tag5_load": "0x777788889999aaaa",
+        "pacda_pac_field_nonzero": "0x0000000000000001",
+        "pacda_top_byte": "0x00000000000000a5",
+        "ptr_eq": "0x0000000000000000",
+        "raw_readback": "0xdeadbeef99990001",
+        "tbi_load": "0xcafebabe12345678",
+        "xpacd_forged_deref": "0xdeadbeef99990001"
+      }
+    }
+  },
+  "qemu_aarch64_version": "qemu-aarch64 version 11.1.2 (Debian 1:11.1.2+ds-2)",
+  "stt_tls_and_outlined_atomics_live": {
+    "outlined_atomics_and_exclusive_monitor": {
+      "qemu_returncode": 0,
+      "values": {
+        "final_cell_x": "0x0000000000000155",
+        "llsc_eq_lse": "0x0000000000000001",
+        "stxr_after_clrex": "0x0000000000000001",
+        "stxr_after_interleaved_y": "0x0000000000000001",
+        "stxr_after_nested_failed_cas": "0x0000000000000001",
+        "stxr_clean": "0x0000000000000000"
+      }
+    },
+    "stt_tls_pie_mislink": {
+      "elf64_header_bytes_0x30_0x38": "0x0038004000000000",
+      "lld_returncode": 0,
+      "qemu_returncode": 0,
+      "values": {
+        "pie_corrupted_elf_hdr_val": "0x0038004000000000",
+        "pie_offset_from_ehdr": "0x0000000000000030"
+      }
+    },
+    "stt_tls_static_mislink": {
+      "lld_returncode": 0,
+      "qemu_returncode": -11,
+      "values": {
+        "static_resolved_addr": "0x0000000000000030"
+      }
+    }
+  },
+  "sve_pcs_and_flags_live": {
+    "vl256": {
+      "returncode": 0,
+      "values": {
+        "base_pcs_callee_z8_lane0": "0x1111111111111110",
+        "base_pcs_callee_z8_lane1": "0x0000000000000000",
+        "base_pcs_callee_z8_lane2": "0x0000000000000000",
+        "compiler_sve_pcs_ret_lane3": "0x8888888888888886",
+        "fpcr_sum_before_sunk": "0x0000000000000000",
+        "fpcr_sum_during_fz1": "0x0000000000000000",
+        "fpsr_after_divzero_dzc": "0x0000000000000002",
+        "fpsr_after_uqadd_qc": "0x0000000008000000",
+        "fpsr_clean": "0x0000000000000000",
+        "fpsr_sticky_after_add": "0x0000000008000000",
+        "nzcv_5_eq_9_miscompiled": "0x00000000deadbeef",
+        "spill_lane0": "0x1111111111111110",
+        "spill_lane1": "0x2222222222222221",
+        "spill_lane3": "0x4444444444444443",
+        "spill_lane7": "0x0000000000000000",
+        "sve_pcs_d8_save_lane0": "0x1111111111111110",
+        "sve_pcs_d8_save_lane1": "0x0000000000000000",
+        "sve_pcs_d8_save_lane2": "0x0000000000000000",
+        "vl_bytes": "0x0000000000000020"
+      }
+    },
+    "vl512_default_max": {
+      "returncode": 0,
+      "values": {
+        "base_pcs_callee_z8_lane0": "0x1111111111111110",
+        "base_pcs_callee_z8_lane1": "0x0000000000000000",
+        "base_pcs_callee_z8_lane2": "0x0000000000000000",
+        "compiler_sve_pcs_ret_lane3": "0x8888888888888886",
+        "fpcr_sum_before_sunk": "0x0000000000000000",
+        "fpcr_sum_during_fz1": "0x0000000000000000",
+        "fpsr_after_divzero_dzc": "0x0000000000000002",
+        "fpsr_after_uqadd_qc": "0x0000000008000000",
+        "fpsr_clean": "0x0000000000000000",
+        "fpsr_sticky_after_add": "0x0000000008000000",
+        "nzcv_5_eq_9_miscompiled": "0x00000000deadbeef",
+        "spill_lane0": "0x1111111111111110",
+        "spill_lane1": "0x2222222222222221",
+        "spill_lane3": "0x4444444444444443",
+        "spill_lane7": "0x8888888888888887",
+        "sve_pcs_d8_save_lane0": "0x1111111111111110",
+        "sve_pcs_d8_save_lane1": "0x0000000000000000",
+        "sve_pcs_d8_save_lane2": "0x0000000000000000",
+        "vl_bytes": "0x0000000000000040"
+      }
+    }
+  },
+  "toolchains": {
+    "+1.99.1": {
+      "LLVM version": "23.1.1",
+      "binary": "rustc",
+      "commit-date": "2026-10-13",
+      "commit-hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "headline": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.99.1"
+    },
+    "+nightly-2026-09-30": {
+      "LLVM version": "23.1.1",
+      "binary": "rustc",
+      "commit-date": "2026-09-29",
+      "commit-hash": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+      "headline": "rustc 1.101.0-nightly (5c543b0b8 2026-09-29)",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.101.0-nightly"
+    }
+  }
+}

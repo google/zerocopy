@@ -1,0 +1,120 @@
+{
+  "guard_page_and_canaries": {
+    "single_page_pairs": 524224,
+    "single_page_calls": 2084608,
+    "full_grid_pairs": 532480,
+    "full_grid_calls": 1060864,
+    "page_crossing_pairs": 8256,
+    "elapsed_ms": 82.76,
+    "canary1_dangling_empty_sigsegv": true,
+    "canary1_sig": 11,
+    "canary2_page_end_empty_sigsegv": true,
+    "canary2_sig": 11,
+    "canary3_unaligned_len1_sigsegv": true,
+    "canary3_sig": 11,
+    "canary4_bsf_zero_mask_got": 0,
+    "canary4_sound_got": -1,
+    "canary5_sarx_mask_hex": "0xffff8000",
+    "compile_ms": 428.38
+  },
+  "asan_probe": {
+    "asm_stack_and_heap": {
+      "rc": 0,
+      "asan_error": ""
+    },
+    "intrinsic_stack": {
+      "rc": 1,
+      "asan_error": "==PID==ERROR: AddressSanitizer: stack-buffer-overflow on address 0xADDR at pc 0xADDR bp 0xADDR sp 0xADDR"
+    },
+    "intrinsic_heap": {
+      "rc": 1,
+      "asan_error": "==PID==ERROR: AddressSanitizer: heap-buffer-overflow on address 0xADDR at pc 0xADDR bp 0xADDR sp 0xADDR"
+    },
+    "intrinsic_nosan_calls_core": {
+      "rc": 1,
+      "asan_error": "==PID==ERROR: AddressSanitizer: stack-buffer-overflow on address 0xADDR at pc 0xADDR bp 0xADDR sp 0xADDR"
+    },
+    "deref32_nosan_direct": {
+      "rc": 0,
+      "asan_error": ""
+    },
+    "interior_granule_256b_blindspot": {
+      "rc": 0,
+      "asan_error": ""
+    }
+  },
+  "tsan_probe": {
+    "load16_sse2_has_tsan_read16_in_ir": true,
+    "load32_avx2_has_any_tsan_read_in_ir": false,
+    "sse2_16b_intrinsic": {
+      "rc": 66,
+      "tsan_race_reported": true,
+      "leaked_concurrent_hits": 0
+    },
+    "avx2_32b_intrinsic": {
+      "rc": 0,
+      "tsan_race_reported": false,
+      "leaked_concurrent_hits": 0
+    },
+    "asm_sound_32b": {
+      "rc": 0,
+      "tsan_race_reported": false,
+      "leaked_concurrent_hits": 0
+    },
+    "asm_off_by_one_32b": {
+      "rc": 0,
+      "tsan_race_reported": false,
+      "leaked_concurrent_hits": 69079
+    }
+  },
+  "llvm_cse_probe": {
+    "1.99.1": {
+      "run": {
+        "sound_pure_readonly_pair": [
+          -1,
+          -1
+        ],
+        "sound_fresh_after_mutation": -1,
+        "buggy_pure_readonly_csed_pair": [
+          -1,
+          -1
+        ],
+        "buggy_fresh_after_mutation": 16,
+        "buggy_readonly_no_pure_pair": [
+          -1,
+          16
+        ]
+      },
+      "vmovdqa_count": {
+        "caller_readonly_no_pure_buggy_pair": 2,
+        "caller_pure_readonly_sound_pair": 1,
+        "caller_pure_readonly_buggy_pair": 1
+      },
+      "pure_readonly_drops_sideeffect_in_ir": true
+    },
+    "nightly": {
+      "run": {
+        "sound_pure_readonly_pair": [
+          -1,
+          -1
+        ],
+        "sound_fresh_after_mutation": -1,
+        "buggy_pure_readonly_csed_pair": [
+          -1,
+          -1
+        ],
+        "buggy_fresh_after_mutation": 16,
+        "buggy_readonly_no_pure_pair": [
+          -1,
+          16
+        ]
+      },
+      "vmovdqa_count": {
+        "caller_readonly_no_pure_buggy_pair": 2,
+        "caller_pure_readonly_sound_pair": 1,
+        "caller_pure_readonly_buggy_pair": 1
+      },
+      "pure_readonly_drops_sideeffect_in_ir": true
+    }
+  }
+}
