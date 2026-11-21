@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/abi",
+    "compilers/verified-rustc/backend",
+    "compilers/verified-rustc/linking",
+    "isa",
+    "isa/x86-64",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc compiler, MIR drop elaboration, SSA/LLVM invoke codegen, and x86_64-unknown-linux-gnu sysroot",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (2026-05-31)"
+      }
+    },
+    {
+      "name": "Rust bundled LLVM backend and rust-lld ELF64 x86-64 linker",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+        "version": "LLVM / LLD 22.1.6"
+      }
+    },
+    {
+      "name": "Upstream LLVM 22.1.6 x86-64 frame lowering, EHStreamer LSDA emitter, and LLD ELF64 linker",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881",
+        "version": "llvmorg-22.1.6"
+      }
+    },
+    {
+      "name": "GNU Binutils ld ELF64 x86-64 linker",
+      "identity": {
+        "program": "GNU ld (GNU Binutils for Debian)",
+        "version": "2.47",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and standalone typechecking kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal trusted MIR syntax, operational semantics, and kernel boundary audit",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
