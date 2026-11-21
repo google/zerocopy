@@ -120,15 +120,19 @@
     "swarm-model-refinement": {
       "upstream_repo": "https://github.com/joshlf/skills",
       "upstream_path": "swarm-model-refinement",
-      "upstream_commit": "3bf3f345b2916f8417306ba197f779b0b4429c1d",
-      "omitted_upstream_paths": [],
-      "local_modifications": [],
+      "upstream_commit": "f0afc6cb1203fff09089112f31cc481df7f1de75",
+      "omitted_upstream_paths": [
+        "scripts/holdout-seal.py"
+      ],
+      "local_modifications": [
+        "SKILL.md: removed the relative link to omitted scripts/holdout-seal.py (keep scripts and executables out of skill roots; host-supplied holdout-seal.py or private-subagent fallback applies)."
+      ],
       "files": [
         {
           "path": "SKILL.md",
           "mode": "100644",
-          "bytes": 22461,
-          "sha256": "157092de1eabf6686a47b97c7a62e50649cfc5ec508555bc3e66e1da9f4691aa"
+          "bytes": 25535,
+          "sha256": "aedc2254c21037f4c2041d7fc788324a5cbc9a3babc47c8daeb9829cdc6736c1"
         }
       ]
     },
