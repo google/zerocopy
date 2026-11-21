@@ -1,0 +1,23 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/concurrency",
+    "verification/adequacy",
+    "verification/partial-order-reduction",
+    "verification/systematic-concurrency-testing",
+    "pl/concurrency-semantics",
+    "pl/interleaving-semantics"
+  ],
+  "subjects": [
+    {"name": "Lean 4 toolchain", "identity": {"repository": "leanprover/lean4", "version": "v4.34.1", "revision": "5045d0056413266e57c625dcd7c365b10e377c52"}},
+    {"name": "Trace theory (Mazurkiewicz, Advances in Petri Nets 1986, LNCS 255)", "identity": {"doi": "10.1007/3-540-17906-2_30"}},
+    {"name": "All from one, one for all: on model checking using representatives (Peled, CAV 1993)", "identity": {"doi": "10.1007/3-540-56922-7_34"}},
+    {"name": "Partial-Order Methods for the Verification of Concurrent Systems (Godefroid, LNCS 1032)", "identity": {"doi": "10.1007/3-540-60761-7"}},
+    {"name": "Dynamic partial-order reduction for model checking software (Flanagan, Godefroid, POPL 2005)", "identity": {"doi": "10.1145/1040305.1040315"}},
+    {"name": "Semi-commutations (Clerbout, Latteux, Information and Computation 1987)", "identity": {"doi": "10.1016/0890-5401(87)90040-X"}},
+    {"name": "The equational theory of pomsets (Gischer, TCS 1988)", "identity": {"doi": "10.1016/0304-3975(88)90124-7"}},
+    {"name": "Iterative context bounding for systematic testing of multithreaded programs (Musuvathi, Qadeer, PLDI 2007)", "identity": {"doi": "10.1145/1250734.1250785"}}
+  ],
+  "observed_at": "2026-11-21"
+}

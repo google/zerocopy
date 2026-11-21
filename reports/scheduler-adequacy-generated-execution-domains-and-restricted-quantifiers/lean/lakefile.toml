@@ -1,0 +1,5 @@
+name = "SchedAdequacy"
+defaultTargets = ["SchedAdequacy"]
+
+[[lean_lib]]
+name = "SchedAdequacy"

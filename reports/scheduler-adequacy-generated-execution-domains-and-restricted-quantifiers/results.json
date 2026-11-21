@@ -1,0 +1,586 @@
+[
+  {
+    "id": "per-step-generator-sound",
+    "lean": "Toy.SchedAdequacy.perStep_sound",
+    "lean_names": [
+      "Toy.SchedAdequacy.perStep_runs_on_length3_oracles_parA_parBC",
+      "Toy.SchedAdequacy.shuffle_pos",
+      "Toy.SchedAdequacy.shuffle_neg",
+      "Toy.SchedAdequacy.interleavings_parAB_pos",
+      "Toy.SchedAdequacy.interleavings_parA_parBC",
+      "Toy.SchedAdequacy.interleavings_seqAB_neg",
+      "Toy.SchedAdequacy.interleavings_parAB_neg_drop",
+      "Toy.SchedAdequacy.runPerStep_pos",
+      "Toy.SchedAdequacy.runPerStep_neg"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "substantive",
+    "plain_claim": "For every program p, every run produced by the per-step generator runPerStep (a fresh oracle bit at every parallel node on the path to the next action) is an interleaving of p.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Hypothesis-free; on a ∥ (b ∥ c) the run of every oracle is an interleaving (case analysis on the oracle) and all six interleavings occur.",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.perStep_adequate_parA_parBC",
+    "non_claims": [
+      "Says nothing about real schedulers, memory models (no weak memory), fairness, or infinite executions: programs are finite, terminating, straight-line, and actions are atomic labels.",
+      "This statement is about the toy step function runPerStep; it neither establishes nor refutes soundness of any other oracle-driven semantics (no relation between runPerStep and any other semantics is proved).",
+      "Does not say that different oracles produce different runs: on a ∥ (b ∥ c) the oracles [false, false, false] and [false, false, true] both produce a b c (perStep_runs_on_length3_oracles_parA_parBC).",
+      "Adequacy is about which traces occur, not how often: under a uniformly random oracle of length 3 the interleavings of a ∥ (b ∥ c) are not equally likely: of the eight oracles of length 3 on a ∥ (b ∥ c), two each produce a b c and a c b and one each produces the other four interleavings (perStep_runs_on_length3_oracles_parA_parBC)."
+    ],
+    "prior_art": [
+      "Agreement between a small-step interleaving semantics and a structural shuffle semantics of sequential and parallel composition is classical; no source was found that states it for this oracle-driven formulation.",
+      "J. L. Gischer, \"The equational theory of pomsets\", Theoretical Computer Science 61(2-3), 1988, pp. 199-224, doi:10.1016/0304-3975(88)90124-7. Series-parallel pomsets built by sequential and parallel composition; a Prog denotes such a pomset, and its linearizations correspond to the traces that Interleavings computes (correspondence not formalized here). Background for the reference semantics; it does not treat oracle-driven step functions.",
+      "J. A. Bergstra, J. W. Klop, \"Process algebra for synchronous communication\", Information and Control 60(1-3), 1984, pp. 109-137, doi:10.1016/S0019-9958(84)80025-X. Axiomatizes sequential composition and parallel merge (with left merge and communication); without communication the merge of action sequences interleaves them, which is the shuffle used by Interleavings. Background only.",
+      "J. W. de Bakker, J. I. Zucker, \"Processes and the denotational semantics of concurrency\", Information and Control 54(1-2), 1982, pp. 70-120, doi:10.1016/S0019-9958(82)91250-5. Metric denotational semantics of processes including the interleaving merge operator; background for giving parallel composition a structural interleaving meaning.",
+      "R. Gu, Z. Shao, H. Chen, X. Wu, J. Kim, V. Sjoeberg, D. Costanzo, \"CertiKOS: An extensible architecture for building certified concurrent OS kernels\", OSDI 2016, USENIX, pp. 653-669. Mechanized (Coq) verification of concurrent kernel code against machine models in which interleaving is resolved by an environment context or scheduling oracle that supplies the next thread or CPU to run; a large-scale instance of an oracle-indexed execution semantics like Gen here, without the shuffle-semantics adequacy statements of this package.",
+      "A. Hobor, A. W. Appel, F. Zappa Nardelli, \"Oracle semantics for concurrent separation logic\", ESOP 2008, LNCS 4960, Springer, pp. 353-367, doi:10.1007/978-3-540-78739-6_27. An oracle-driven operational semantics for a concurrent language; its oracles abstract the behaviour of other threads, a different notion from the scheduler-choice oracles here, cited only as an instance of oracle-parameterized concurrency semantics."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: is the per-step generator a trustworthy domain for existential claims (every run it produces is a real interleaving)?"
+  },
+  {
+    "id": "per-step-generator-complete",
+    "lean": "Toy.SchedAdequacy.perStep_complete",
+    "lean_names": [
+      "Toy.SchedAdequacy.perStep_runs_on_length3_oracles_parA_parBC",
+      "Toy.SchedAdequacy.complete_pos",
+      "Toy.SchedAdequacy.complete_neg"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "substantive",
+    "plain_claim": "For every program p, every interleaving of p (as defined structurally by Interleavings) is the run of the per-step generator runPerStep for some oracle.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Hypothesis-free; on a ∥ (b ∥ c) all six interleavings are generated (checked by evaluation).",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.perStep_adequate_parA_parBC",
+    "non_claims": [
+      "The statement asserts that an oracle exists; it exposes no oracle-construction function (the proof constructs one by induction).",
+      "Completeness is relative to the package's Interleavings (finite shuffles of finite traces); no fairness, no infinite executions, no weak memory.",
+      "Does not bound the oracle length; see per-step-generator-oracle-bound for that.",
+      "Adequacy is about which traces occur, not how often: under a uniformly random oracle of length 3 the interleavings of a ∥ (b ∥ c) are not equally likely: of the eight oracles of length 3 on a ∥ (b ∥ c), two each produce a b c and a c b and one each produces the other four interleavings (perStep_runs_on_length3_oracles_parA_parBC)."
+    ],
+    "prior_art": [
+      "Agreement between a small-step interleaving semantics and a structural shuffle semantics of sequential and parallel composition is classical; no source was found that states it for this oracle-driven formulation.",
+      "J. L. Gischer, \"The equational theory of pomsets\", Theoretical Computer Science 61(2-3), 1988, pp. 199-224, doi:10.1016/0304-3975(88)90124-7. Series-parallel pomsets built by sequential and parallel composition; a Prog denotes such a pomset, and its linearizations correspond to the traces that Interleavings computes (correspondence not formalized here). Background for the reference semantics; it does not treat oracle-driven step functions.",
+      "J. A. Bergstra, J. W. Klop, \"Process algebra for synchronous communication\", Information and Control 60(1-3), 1984, pp. 109-137, doi:10.1016/S0019-9958(84)80025-X. Axiomatizes sequential composition and parallel merge (with left merge and communication); without communication the merge of action sequences interleaves them, which is the shuffle used by Interleavings. Background only.",
+      "R. Gu, Z. Shao, H. Chen, X. Wu, J. Kim, V. Sjoeberg, D. Costanzo, \"CertiKOS: An extensible architecture for building certified concurrent OS kernels\", OSDI 2016, USENIX, pp. 653-669. Mechanized (Coq) verification of concurrent kernel code against machine models in which interleaving is resolved by an environment context or scheduling oracle that supplies the next thread or CPU to run; a large-scale instance of an oracle-indexed execution semantics like Gen here, without the shuffle-semantics adequacy statements of this package."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: is the per-step generator a trustworthy domain for universal claims (every interleaving is one of its runs)?"
+  },
+  {
+    "id": "shared-choice-generator-sound",
+    "lean": "Toy.SchedAdequacy.shared_sound",
+    "lean_names": [
+      "Toy.SchedAdequacy.shared_depends_on_parenthesization",
+      "Toy.SchedAdequacy.runShared_pos",
+      "Toy.SchedAdequacy.runShared_neg"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every program p, every run produced by the shared-choice generator runShared (one oracle bit per scheduling step, reused at every parallel node on that step's root-to-action path) is an interleaving of p.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Hypothesis-free; on a ∥ (b ∥ c) the run of every oracle is an interleaving (case analysis on the oracle).",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.sound_pos",
+    "non_claims": [
+      "Soundness says the shared-choice runs are possible interleavings; it does not say they are all of them (they are not: shared_incomplete_parA_parBC).",
+      "A universal claim proved over runShared does not transfer to all interleavings on this basis (see universal-transfer-iff-complete).",
+      "runShared reuses one bit at a parent par node and at the par nodes nested below it on the same step's path; a step enters only one component of each par node, so the bit is never given to two sibling subtrees. The package does not model evaluating sibling subtrees with one unsplit random seed.",
+      "Unlike Interleavings, the set of runs of runShared depends on how par is parenthesized and ordered: a ∥ (b ∥ c) and (a ∥ c) ∥ b have the same interleavings, but b a c is a run of runShared only on the second (shared_depends_on_parenthesization)."
+    ],
+    "prior_art": [
+      "No source found that states this specific toy semantics; restricted-but-sound schedule sets are standard in systematic testing.",
+      "M. Musuvathi and S. Qadeer, \"Iterative context bounding for systematic testing of multithreaded programs\", PLDI 2007, pp. 446-455, doi:10.1145/1250734.1250785. Explores only executions with a bounded number of preemptions: a deliberately restricted, sound but in general incomplete schedule set, so bugs found are real while absence of bugs holds only within the bound.",
+      "K. Claessen, M. H. Palka, \"Splittable pseudorandom number generators using cryptographic hashing\", Haskell Symposium 2013, ACM, pp. 47-58, doi:10.1145/2503778.2503784. Background on deriving independent choice streams for subcomputations by splitting along tree paths, as opposed to reusing one stream; runShared is a deliberately non-splitting, per-step variant."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: may bugs found by a generator that reuses one scheduler choice down nested parallel compositions be reported as real?"
+  },
+  {
+    "id": "shared-choice-incomplete-nested-par",
+    "lean": [
+      "Toy.SchedAdequacy.shared_incomplete_parA_parBC",
+      "Toy.SchedAdequacy.shared_incomplete_parA_seqParBC_D"
+    ],
+    "lean_names": [
+      "Toy.SchedAdequacy.postconditions_transfer_from_incomplete_shared"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "On the program a ∥ (b ∥ c) (distinct actions) the shared-choice generator runShared produces exactly the 4 distinct runs a b c, a c b, c a b, c b a while the program has 6 distinct interleavings, so b a c and b c a are produced by no oracle; on a ∥ ((b ∥ c) ; d) (distinct actions) runShared produces exactly 5 distinct runs while the program has 8 distinct interleavings, and b a c d is produced by no oracle. On both programs runShared is not complete.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Concrete instances; fully proved by case analysis on the first oracle bits and evaluation.",
+    "nonvacuity_witness_lean": [
+      "Toy.SchedAdequacy.shared_incomplete_parA_parBC",
+      "Toy.SchedAdequacy.shared_incomplete_parA_seqParBC_D"
+    ],
+    "positive_control_lean": [
+      "Toy.SchedAdequacy.perStep_adequate_parA_parBC",
+      "Toy.SchedAdequacy.perStep_adequate_parA_seqParBC_D"
+    ],
+    "non_claims": [
+      "Is about these two programs; the general picture for distinct labels is shared-choice-complete-iff-no-nested-par.",
+      "Counts are of distinct traces; the package's Interleavings list may contain duplicates for programs with repeated action labels (not here).",
+      "Does not claim that the missing interleavings matter for every property: for properties invariant under a trace equivalence see representative-transfer, and every final-state postcondition of Act.effPair transfers from runShared on a ∥ (b ∥ c) despite incompleteness (postconditions_transfer_from_incomplete_shared).",
+      "Because par is binary, a flat pool of three or more peer threads must be written with nested par, such as a ∥ (b ∥ c); NoNestedPar p therefore allows at most two concurrently running sequential threads in each parallel region, and such pools are outside its scope."
+    ],
+    "prior_art": [
+      "No source found; toy illustration of a semantics that reuses one scheduler choice at nested parallel compositions along a step's path.",
+      "K. Claessen, M. H. Palka, \"Splittable pseudorandom number generators using cryptographic hashing\", Haskell Symposium 2013, ACM, pp. 47-58, doi:10.1145/2503778.2503784. Background on deriving independent choice streams for subcomputations by splitting along tree paths, as opposed to reusing one stream; runShared is a deliberately non-splitting, per-step variant."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: does reusing one scheduler choice down nested parallel compositions lose interleavings on small programs?"
+  },
+  {
+    "id": "shared-choice-complete-without-nested-par",
+    "lean": "Toy.SchedAdequacy.shared_complete_of_noNestedPar",
+    "lean_names": [
+      "Toy.SchedAdequacy.noNestedPar_pos",
+      "Toy.SchedAdequacy.noNestedPar_neg"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every program p in which no parallel composition occurs inside a component of another parallel composition (NoNestedPar p), the shared-choice generator runShared is complete on p.",
+    "hypotheses": [
+      {
+        "name": "h : NoNestedPar p",
+        "purpose": "With at most one parallel node on any step's path, reusing the choice bit at nested nodes has no effect. Tight: counterexample in the class of 3-action programs with distinct labels and a nested par, namely a ∥ (b ∥ c), where the hypothesis fails and runShared is not complete (there are no other hypotheses).",
+        "tightness": "tight",
+        "counterexample": "Toy.SchedAdequacy.shared_complete_of_noNestedPar_needs_hyp"
+      }
+    ],
+    "nonvacuity_witness": "(a ; b) ∥ (c ; d) satisfies NoNestedPar, and runShared is complete on it (checked by evaluation).",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.shared_complete_parSeqAB_seqCD",
+    "non_claims": [
+      "NoNestedPar is sufficient, not necessary in general: with repeated action labels runShared can be complete on a nested program (shared_complete_iff_needs_nodup); necessity is proved only for distinct labels (shared-choice-complete-iff-no-nested-par).",
+      "Because par is binary, a flat pool of three or more peer threads must be written with nested par, such as a ∥ (b ∥ c); NoNestedPar p therefore allows at most two concurrently running sequential threads in each parallel region, and such pools are outside its scope."
+    ],
+    "prior_art": [
+      "No source found; statement about the toy semantics of this package."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: on which program shapes is the shared-choice generator nevertheless a complete domain?"
+  },
+  {
+    "id": "shared-choice-complete-iff-no-nested-par",
+    "lean": "Toy.SchedAdequacy.shared_complete_iff_noNestedPar_of_nodup",
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every program p whose action labels are pairwise distinct, the shared-choice generator runShared is complete on p iff no parallel composition of p occurs inside a component of another parallel composition.",
+    "hypotheses": [
+      {
+        "name": "hd : p.actions.Nodup",
+        "purpose": "With repeated labels a missing step sequence can produce the same trace as a generated one, so incompleteness of the step relation need not show in the trace set. Tight: counterexample in the class of 3-action nested programs with a repeated label, namely a ∥ (a ∥ a), where the labels are not distinct and the equivalence fails (runShared is complete, NoNestedPar fails).",
+        "tightness": "tight",
+        "counterexample": "Toy.SchedAdequacy.shared_complete_iff_needs_nodup"
+      }
+    ],
+    "nonvacuity_witness": "Distinct-label programs on which both sides hold ((a ; b) ∥ (c ; d)) and on which both sides fail (a ∥ (b ∥ c)).",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.shared_complete_iff_nonvacuous",
+    "non_claims": [
+      "Says nothing about programs with repeated labels beyond the sufficient direction (shared-choice-complete-without-nested-par).",
+      "The necessity direction uses that every program performs at least one visible action: Prog has no empty program (skip) and no silent steps. In an extension with a no-op thread, skip ∥ (b ∥ c) would have distinct visible labels and a nested par while runShared could still produce both b c and c b (not proved here; the package has no such constructor).",
+      "Because par is binary, a flat pool of three or more peer threads must be written with nested par, such as a ∥ (b ∥ c); NoNestedPar p therefore allows at most two concurrently running sequential threads in each parallel region, and such pools are outside its scope.",
+      "This statement concerns the toy generator runShared; it neither establishes nor refutes completeness characterizations for other ways of sharing or splitting scheduler choices (no relation between runShared and any other generator is proved)."
+    ],
+    "prior_art": [
+      "No source found; statement about the toy semantics of this package."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: exactly when (for distinct labels) does reusing one choice down nested parallel compositions make universal claims unjustified?"
+  },
+  {
+    "id": "deterministic-scheduler-single-run",
+    "lean": "Toy.SchedAdequacy.roundRobin_sound_single_run_complete_iff_unique_interleaving",
+    "lean_names": [
+      "Toy.SchedAdequacy.interleavings_nonempty",
+      "Toy.SchedAdequacy.runRoundRobin_nested_runs_left_first",
+      "Toy.SchedAdequacy.runRoundRobin_pos",
+      "Toy.SchedAdequacy.runRoundRobin_neg"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every program p: the deterministic scheduler runRoundRobin produces the same run for every oracle, that run is an interleaving of p, and runRoundRobin is complete on p iff p has exactly one distinct interleaving.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Both sides of the equivalence true on a ; b and both false on a ∥ b (fully proved).",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.roundRobin_examples",
+    "non_claims": [
+      "Reference point: records the degenerate case of a generator with a single run; its only non-definitional input is per-step soundness (perStep_sound).",
+      "runRoundRobin alternates consumed oracle bits, not threads: on (a ∥ b) ∥ (c ∥ d) it produces b a d c, running the whole left pair before the right pair (runRoundRobin_nested_runs_left_first).",
+      "Does not claim that the single run is a good representative for any property; for that see representative-transfer."
+    ],
+    "prior_art": [
+      "No specific source: given soundness, a single run covers all interleavings iff there is exactly one distinct interleaving; tier T0."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: when may a test or proof that uses a single deterministic schedule be read as covering all interleavings? (reference point)"
+  },
+  {
+    "id": "universal-transfer-iff-complete",
+    "lean": "Toy.SchedAdequacy.universal_transfer_iff_complete",
+    "lean_names": [
+      "Toy.SchedAdequacy.postconditions_transfer_from_incomplete_shared",
+      "Toy.SchedAdequacy.shared_final_value_claim_does_not_transfer",
+      "Toy.SchedAdequacy.shared_ordering_claim_does_not_transfer"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every generator gen (with any oracle type) and program p: the implication \"P holds on every run generated by gen ⇒ P holds on every interleaving of p\" holds for every trace property P iff gen is complete on p.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Both sides true for runPerStep and both sides false for runShared, on a ∥ (b ∥ c).",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.universal_transfer_nonvacuous",
+    "non_claims": [
+      "Complete gen p is the right-hand side of the equivalence, not a hypothesis; there are no hypotheses.",
+      "The direction from transfer to completeness quantifies over all trace properties P. For a restricted class of properties completeness is not needed: every postcondition on the final state of Act.effPair transfers from the incomplete runShared on a ∥ (b ∥ c) (postconditions_transfer_from_incomplete_shared); see also representative-transfer.",
+      "A particular property can transfer from an incomplete generator (postconditions_transfer_from_incomplete_shared, representative_transfer_nonvacuous); incompleteness only guarantees that some property fails to transfer.",
+      "Countermodels for an incomplete generator: the racy final value of x (x ≠ 3 on every runShared run of a ∥ (b ∥ c), x = 3 on b a c; shared_final_value_claim_does_not_transfer) and the ordering claim \"b is not first\" (shared_ordering_claim_does_not_transfer)."
+    ],
+    "prior_art": [
+      "No specific source: an elementary fact of predicate logic about restricting a quantifier to the set of generated runs (a set S of traces satisfies every property true on all of a set R iff S is contained in R, and dually), restated for generated semantics; tier T0.",
+      "M. Musuvathi and S. Qadeer, \"Iterative context bounding for systematic testing of multithreaded programs\", PLDI 2007, pp. 446-455, doi:10.1145/1250734.1250785. Explores only executions with a bounded number of preemptions: a deliberately restricted, sound but in general incomplete schedule set, so bugs found are real while absence of bugs holds only within the bound."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: which certificate licenses reading a claim proved for all runs of a generator as a claim about all interleavings?"
+  },
+  {
+    "id": "existential-transfer-iff-sound",
+    "lean": "Toy.SchedAdequacy.existential_transfer_iff_sound",
+    "lean_names": [
+      "Toy.SchedAdequacy.ignoringSeq_false_positive",
+      "Toy.SchedAdequacy.sound_neg",
+      "Toy.SchedAdequacy.runIgnoringSeq_pos",
+      "Toy.SchedAdequacy.runIgnoringSeq_neg"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every generator gen (with any oracle type) and program p: the implication \"some run generated by gen satisfies Bad ⇒ some interleaving of p satisfies Bad\" holds for every trace property Bad iff gen is sound on p.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Both sides true for runShared on a ∥ (b ∥ c) and both sides false for runIgnoringSeq on a ; b.",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.existential_transfer_nonvacuous",
+    "non_claims": [
+      "Sound gen p is the right-hand side of the equivalence, not a hypothesis; there are no hypotheses.",
+      "Soundness justifies reporting a found bug as real; it does not justify concluding absence of bugs from not finding one (that needs completeness: universal-transfer-iff-complete).",
+      "The countermodel generator runIgnoringSeq on a ; b is complete but unsound and produces the forbidden order b a (ignoringSeq_false_positive); completeness does not rescue existential claims."
+    ],
+    "prior_art": [
+      "No specific source: an elementary fact of predicate logic about restricting a quantifier to the set of generated runs (a set S of traces satisfies every property true on all of a set R iff S is contained in R, and dually), restated for generated semantics; tier T0.",
+      "M. Musuvathi and S. Qadeer, \"Iterative context bounding for systematic testing of multithreaded programs\", PLDI 2007, pp. 446-455, doi:10.1145/1250734.1250785. Explores only executions with a bounded number of preemptions: a deliberately restricted, sound but in general incomplete schedule set, so bugs found are real while absence of bugs holds only within the bound."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: which certificate licenses reporting a behaviour exhibited by some generated run as a behaviour of the program?"
+  },
+  {
+    "id": "representative-transfer",
+    "lean": "Toy.SchedAdequacy.representative_transfer",
+    "lean_names": [
+      "Toy.SchedAdequacy.traceEquiv_equivalence_of_symmetric",
+      "Toy.SchedAdequacy.traceInvariant_iff_two_sided_of_symmetric",
+      "Toy.SchedAdequacy.meetsEveryClass_iff_of_symmetric",
+      "Toy.SchedAdequacy.representative_transfer_directed",
+      "Toy.SchedAdequacy.invariant_transfer_iff_meets_every_class_directed",
+      "Toy.SchedAdequacy.reversed_reading_fails_without_symmetry",
+      "Toy.SchedAdequacy.traceInvariant_count",
+      "Toy.SchedAdequacy.finalState_eq_of_traceEquiv",
+      "Toy.SchedAdequacy.commuting_does_not_make_prefix_safety_invariant",
+      "Toy.SchedAdequacy.meetsEveryClass_without_sound",
+      "Toy.SchedAdequacy.independence_pos",
+      "Toy.SchedAdequacy.independence_neg",
+      "Toy.SchedAdequacy.traceEquiv_pos",
+      "Toy.SchedAdequacy.traceEquiv_neg",
+      "Toy.SchedAdequacy.traceInvariant_finalState_effSwap",
+      "Toy.SchedAdequacy.traceInvariant_neg",
+      "Toy.SchedAdequacy.commuting_effSwap",
+      "Toy.SchedAdequacy.commuting_effPair",
+      "Toy.SchedAdequacy.commuting_neg"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every symmetric relation I on actions, generator gen, program p and trace property P: if P is invariant under the trace equivalence generated by I, and the trace class of every interleaving of p contains a run generated by gen, then P holding on every run generated by gen implies P holding on every interleaving of p.",
+    "hypotheses": [
+      {
+        "name": "hSym : Symmetric I",
+        "purpose": "Makes TraceEquiv I an equivalence relation (traceEquiv_equivalence_of_symmetric), so that \"trace class\" and \"invariant\" have their usual meaning (traceInvariant_iff_two_sided_of_symmetric, meetsEveryClass_iff_of_symmetric). The proof does not use it: the directed form representative_transfer_directed holds for every I. Without it the representative condition must be read from a generated run to each interleaving; read the other way the transfer fails (reversed_reading_fails_without_symmetry).",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hP : TraceInvariant I P",
+        "purpose": "P must not distinguish trace-equivalent traces. Tight: counterexample with the symmetric relation fullIndep, the generator runShared on the 3-action program a ∥ (b ∥ c) and the order-sensitive property \"b is not first\": the other hypotheses hold and the transfer fails.",
+        "tightness": "tight",
+        "counterexample": "Toy.SchedAdequacy.representative_transfer_needs_invariance"
+      },
+      {
+        "name": "hrep : MeetsEveryClass I gen p",
+        "purpose": "The trace class of every interleaving must contain a generated run (the partial-order-reduction representative condition); the generated run need not itself be an interleaving. Tight: counterexample with the symmetric relation indepOnlyAC, runShared on the 3-action program a ∥ (b ∥ c) and the property \"b is not first\", which is invariant because b commutes with nothing: the other hypotheses hold and the transfer fails.",
+        "tightness": "tight",
+        "counterexample": "Toy.SchedAdequacy.representative_transfer_needs_meets_every_class"
+      }
+    ],
+    "nonvacuity_witness": "With only b and c conflicting (indepExceptBC, symmetric), runShared meets every class of a ∥ (b ∥ c); the final state of Act.effPair, in which related actions commute, is invariant, takes one of two values on all generated runs, and indeed on all six interleavings.",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.representative_transfer_nonvacuous",
+    "non_claims": [
+      "This is the finite-trace shape of the partial-order-reduction soundness argument; it does not formalize persistent sets, sleep sets, ample sets, stuttering, LTL, or any reduction algorithm.",
+      "Invariance of a property must be established separately; the package proves it for occurrence counts (traceInvariant_count) and for final states of semantics in which related actions commute (finalState_eq_of_traceEquiv).",
+      "Commuting effects make the final state invariant, not the intermediate states: with Act.effInc, a and b commute, yet \"every prefix leaves the counter nonnegative\" holds on a b and fails on b a (commuting_does_not_make_prefix_safety_invariant). Safety properties along prefixes need a separate invariance argument.",
+      "I is a fixed relation on action labels; state-dependent (conditional) independence is not modeled.",
+      "MeetsEveryClass I gen p does not require the representatives to be interleavings: under fullIndep the constant generator constBA meets every class of a ; b although none of its runs is an interleaving (meetsEveryClass_without_sound). The transfer is one-directional: a property true on all interleavings need not hold on such runs (complete_alone_does_not_give_equivalence).",
+      "For an asymmetric relation the directed forms (representative_transfer_directed, invariant_transfer_iff_meets_every_class_directed) still hold, with TraceEquiv read as one-way rewriting from a generated run to an interleaving; they do not speak of classes, and the reverse reading fails (reversed_reading_fails_without_symmetry).",
+      "Says nothing about infinite executions or fairness."
+    ],
+    "prior_art": [
+      "D. Peled, \"All from one, one for all: on model checking using representatives\", CAV 1993, LNCS 697, Springer, pp. 409-423, doi:10.1007/3-540-56922-7_34. Uses an equivalence on executions such that each class satisfies a property entirely or not at all, and builds a reduced state graph containing at least one representative per class; the finite-trace analogue of that criterion is representative_transfer.",
+      "P. Godefroid, Partial-Order Methods for the Verification of Concurrent Systems: An Approach to the State-Explosion Problem, LNCS 1032, Springer, 1996, doi:10.1007/3-540-60761-7. Explores a reduced subset of interleavings justified by a symmetric independence relation; the representative argument formalized here is the shape of its correctness arguments (the package does not formalize persistent or sleep sets, or conditional independence).",
+      "A. Mazurkiewicz, \"Trace theory\", in Petri Nets: Applications and Relationships to Other Models of Concurrency (Advances in Petri Nets 1986, Part II), LNCS 255, Springer, 1987, pp. 279-324 (Crossref lists pp. 278-324), doi:10.1007/3-540-17906-2_30. Defines trace equivalence, for a symmetric irreflexive independence relation, as the congruence on words generated by commuting independent letters; the source of TraceEquiv for symmetric I.",
+      "C. Flanagan, P. Godefroid, \"Dynamic partial-order reduction for model checking software\", POPL 2005, ACM, pp. 110-121, doi:10.1145/1040305.1040315. Stateless model checking that explores at least one execution per Mazurkiewicz trace class of a terminating program; its correctness rests on the representative condition that MeetsEveryClass formalizes for finite traces.",
+      "P. A. Abdulla, S. Aronis, B. Jonsson, K. Sagonas, \"Optimal dynamic partial order reduction\", POPL 2014, ACM, pp. 373-384, doi:10.1145/2535838.2535845. Explores exactly one execution per trace class; an algorithm whose output satisfies MeetsEveryClass with a minimal set of representatives.",
+      "J. Brunner, \"Partial Order Reduction\", Archive of Formal Proofs, June 2018, https://isa-afp.org/entries/Partial_Order_Reduction.html. Isabelle/HOL formalization of ample-set partial-order reduction with trace theory and stuttering equivalence; a much richer mechanized treatment of the reduction side than the representative lemma here.",
+      "M. Kokologiannakis, I. Marmanis, V. Gladstein, V. Vafeiadis, \"Truly stateless, optimal dynamic partial order reduction\", Proc. ACM Program. Lang. 6(POPL), 2022, pp. 1-28, doi:10.1145/3498711. An optimal DPOR algorithm with mechanized (Coq) correctness proofs; mechanized prior art for representative-based exploration, over execution graphs rather than the toy traces here.",
+      "H. Maarand, T. Uustalu, \"Certified Foata normalization for generalized traces\", NASA Formal Methods (NFM 2018), LNCS 10811, Springer, pp. 299-314, doi:10.1007/978-3-319-77935-5_21. Mechanized (Agda) trace equivalence and normal forms; mechanized prior art for TraceEquiv.",
+      "M. Clerbout, M. Latteux, \"Semi-commutations\", Information and Computation 73(1), 1987, pp. 59-74, doi:10.1016/0890-5401(87)90040-X. Studies the non-symmetric version of partial commutation, in which adjacent letters may be rewritten in one direction only; TraceEquiv for an asymmetric I is this directed rewriting closure, which is why the directed lemmas are stated separately."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: when is checking a property only on representative schedules enough to conclude it for all interleavings?"
+  },
+  {
+    "id": "invariant-transfer-iff-meets-every-class",
+    "lean": "Toy.SchedAdequacy.invariant_transfer_iff_meets_every_class",
+    "lean_names": [
+      "Toy.SchedAdequacy.traceEquiv_equivalence_of_symmetric",
+      "Toy.SchedAdequacy.traceInvariant_iff_two_sided_of_symmetric",
+      "Toy.SchedAdequacy.meetsEveryClass_iff_of_symmetric",
+      "Toy.SchedAdequacy.invariant_transfer_iff_meets_every_class_directed",
+      "Toy.SchedAdequacy.representative_transfer_directed",
+      "Toy.SchedAdequacy.reversed_reading_fails_without_symmetry",
+      "Toy.SchedAdequacy.noninvariant_property_may_transfer",
+      "Toy.SchedAdequacy.meetsEveryClass_without_sound",
+      "Toy.SchedAdequacy.meetsEveryClass_pos",
+      "Toy.SchedAdequacy.meetsEveryClass_neg"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every symmetric relation I, generator gen and program p: every trace property invariant under the trace equivalence generated by I transfers from the runs generated by gen to all interleavings of p iff the trace class of every interleaving of p contains a run generated by gen.",
+    "hypotheses": [
+      {
+        "name": "hSym : Symmetric I",
+        "purpose": "Makes TraceEquiv I an equivalence relation (traceEquiv_equivalence_of_symmetric), so that \"trace class\" and \"invariant\" have their usual meaning (traceInvariant_iff_two_sided_of_symmetric, meetsEveryClass_iff_of_symmetric). The proof does not use it: the directed form invariant_transfer_iff_meets_every_class_directed holds for every I. Without it the representative condition must be read from a generated run to each interleaving; read the other way the transfer fails (reversed_reading_fails_without_symmetry).",
+        "tightness": "harmless"
+      }
+    ],
+    "nonvacuity_witness": "runShared on a ∥ (b ∥ c): both sides true under the symmetric relations fullIndep and indepExceptBC, both sides false under the symmetric relation indepOnlyAC.",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.invariant_transfer_nonvacuous",
+    "non_claims": [
+      "Characterizes transfer for the whole class of I-invariant properties at once; a property that is not invariant may still transfer (noninvariant_property_may_transfer).",
+      "The class of properties is fixed by I: relating more pairs of actions gives fewer invariant properties and a representative condition that is easier to meet (not proved here).",
+      "MeetsEveryClass I gen p does not require the representatives to be interleavings: under fullIndep the constant generator constBA meets every class of a ; b although none of its runs is an interleaving (meetsEveryClass_without_sound). The transfer is one-directional: a property true on all interleavings need not hold on such runs (complete_alone_does_not_give_equivalence).",
+      "For an asymmetric relation the directed forms (representative_transfer_directed, invariant_transfer_iff_meets_every_class_directed) still hold, with TraceEquiv read as one-way rewriting from a generated run to an interleaving; they do not speak of classes, and the reverse reading fails (reversed_reading_fails_without_symmetry)."
+    ],
+    "prior_art": [
+      "D. Peled, \"All from one, one for all: on model checking using representatives\", CAV 1993, LNCS 697, Springer, pp. 409-423, doi:10.1007/3-540-56922-7_34. Uses an equivalence on executions such that each class satisfies a property entirely or not at all, and builds a reduced state graph containing at least one representative per class; the finite-trace analogue of that criterion is representative_transfer.",
+      "P. Godefroid, Partial-Order Methods for the Verification of Concurrent Systems: An Approach to the State-Explosion Problem, LNCS 1032, Springer, 1996, doi:10.1007/3-540-60761-7. Explores a reduced subset of interleavings justified by a symmetric independence relation; the representative argument formalized here is the shape of its correctness arguments (the package does not formalize persistent or sleep sets, or conditional independence).",
+      "C. Flanagan, P. Godefroid, \"Dynamic partial-order reduction for model checking software\", POPL 2005, ACM, pp. 110-121, doi:10.1145/1040305.1040315. Stateless model checking that explores at least one execution per Mazurkiewicz trace class of a terminating program; its correctness rests on the representative condition that MeetsEveryClass formalizes for finite traces.",
+      "P. A. Abdulla, S. Aronis, B. Jonsson, K. Sagonas, \"Optimal dynamic partial order reduction\", POPL 2014, ACM, pp. 373-384, doi:10.1145/2535838.2535845. Explores exactly one execution per trace class; an algorithm whose output satisfies MeetsEveryClass with a minimal set of representatives."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: is the representative condition the right certificate for the whole class of properties invariant under a given independence relation?"
+  },
+  {
+    "id": "sound-generator-meets-every-class-under-full-independence",
+    "lean": "Toy.SchedAdequacy.meets_every_class_of_sound_of_full_independence",
+    "lean_names": [
+      "Toy.SchedAdequacy.symmetric_of_full_independence",
+      "Toy.SchedAdequacy.meetsEveryClass_iff_of_symmetric",
+      "Toy.SchedAdequacy.meets_every_class_unsound_permuting",
+      "Toy.SchedAdequacy.traceInvariant_iff_perm_invariant_of_full_independence",
+      "Toy.SchedAdequacy.shared_meets_every_class_of_full_independence"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "substantive",
+    "plain_claim": "For every relation I under which all distinct actions are related, every program p, and every generator gen with an inhabited oracle type: if gen is sound on p, then every interleaving of p is reachable by commuting adjacent I-related actions from some run generated by gen (I is then symmetric, so the trace class of every interleaving contains a generated run).",
+    "hypotheses": [
+      {
+        "name": "hI : ∀ x y, x ≠ y → I x y",
+        "purpose": "Under full independence any permutation is reachable by adjacent swaps. Tight: counterexample with the symmetric irreflexive relation indepOnlyAC, which leaves b unrelated to a and c, and the sound generator runShared on the 3-action program a ∥ (b ∥ c).",
+        "tightness": "tight",
+        "counterexample": "Toy.SchedAdequacy.meets_every_class_needs_full_independence"
+      },
+      {
+        "name": "hs : Sound gen p",
+        "purpose": "A generated run must be a permutation of the program's actions. Tight: counterexample in the class of action-dropping generators, namely dropAllGen (every run empty) on the 2-action program a ∥ b; an unsound generator that only reorders actions can still meet every class (meets_every_class_unsound_permuting: runIgnoringSeq on a ; b).",
+        "tightness": "tight",
+        "counterexample": "Toy.SchedAdequacy.meets_every_class_needs_sound"
+      },
+      {
+        "name": "[Nonempty O]",
+        "purpose": "There must be at least one generated run. Tight: counterexample with the uninhabited oracle type Empty (emptyGen, vacuously sound) on the 2-action program a ∥ b.",
+        "tightness": "tight",
+        "counterexample": "Toy.SchedAdequacy.meets_every_class_needs_nonempty_oracles"
+      }
+    ],
+    "nonvacuity_witness": "fullIndep, oracles exist, runShared is sound on a ∥ (b ∥ c), and it meets every class.",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.meets_every_class_full_independence_nonvacuous",
+    "non_claims": [
+      "Under full independence the invariant properties are exactly the permutation-invariant ones (traceInvariant_iff_perm_invariant_of_full_independence), so representative-transfer then applies only to properties that depend on the multiset of actions alone; for order-sensitive properties this result gives nothing.",
+      "Does not say that a sound generator meets every class under a relation that leaves some pair of distinct actions unrelated: for indepOnlyAC it fails (meets_every_class_needs_full_independence), while for indepExceptBC, which also leaves a pair unrelated, runShared still meets every class of a ∥ (b ∥ c) (shared_meets_every_class_when_only_b_c_conflict).",
+      "Soundness is more than the proof needs: it uses one run that is a permutation of the program's actions; runIgnoringSeq on a ; b is unsound and still meets every class (meets_every_class_unsound_permuting).",
+      "Symmetry of I is not assumed separately because it follows from hI (symmetric_of_full_independence).",
+      "A corollary for the shared-choice generator is proved separately: under full independence runShared meets every class of every program (shared_meets_every_class_of_full_independence)."
+    ],
+    "prior_art": [
+      "A. Mazurkiewicz, \"Trace theory\", in Petri Nets: Applications and Relationships to Other Models of Concurrency (Advances in Petri Nets 1986, Part II), LNCS 255, Springer, 1987, pp. 279-324 (Crossref lists pp. 278-324), doi:10.1007/3-540-17906-2_30. Defines trace equivalence, for a symmetric irreflexive independence relation, as the congruence on words generated by commuting independent letters; the source of TraceEquiv for symmetric I."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: when does soundness alone make a restricted generator a valid representative set?"
+  },
+  {
+    "id": "shared-choice-misses-class-when-b-conflicts-with-a-and-c",
+    "lean": "Toy.SchedAdequacy.shared_misses_class_when_b_conflicts_with_a_and_c",
+    "lean_names": [
+      "Toy.SchedAdequacy.meetsEveryClass_pos",
+      "Toy.SchedAdequacy.traceInvariant_count",
+      "Toy.SchedAdequacy.shared_depends_on_parenthesization",
+      "Toy.SchedAdequacy.shared_meets_every_class_of_full_independence"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "Under the relation indepOnlyAC, which is symmetric and irreflexive and relates only a and c (so b conflicts with both a and c), the sound shared-choice generator runShared on a ∥ (b ∥ c) produces no run that is trace-equivalent to the interleaving b a c (whose trace class also contains b c a); hence runShared does not meet every trace class of a ∥ (b ∥ c).",
+    "hypotheses": [],
+    "nonvacuity_witness": "indepOnlyAC is symmetric and irreflexive and is justified by Act.effSwap, in which the effects of a and c commute.",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.indepOnlyAC_justified",
+    "positive_control_lean": "Toy.SchedAdequacy.shared_meets_every_class_when_only_b_c_conflict",
+    "non_claims": [
+      "A conflict between the two nested actions b and c alone does not make runShared miss a class: with only b–c dependent it meets every class (shared_meets_every_class_when_only_b_c_conflict).",
+      "For this program, an exhaustive evaluation over the 8 symmetric irreflexive relations on {a, b, c} found that runShared meets every class for each of the 4 relations that relate at least two of the three pairs, and misses a class for each of the other 4 (bounded evidence, not proved here; probe support/BoundedEvidence.lean). Three of these cases are also kernel-checked theorems: indepOnlyAC misses a class (shared_misses_class_when_b_conflicts_with_a_and_c), while indepExceptBC (shared_meets_every_class_when_only_b_c_conflict) and fullIndep, which relates all three pairs (meetsEveryClass_pos), meet every class.",
+      "Is about one program and one relation.",
+      "Escape hatches: using runPerStep, which is complete (perStep_adequate_parA_parBC); checking only a property that is invariant under indepOnlyAC and already holds on b a c, such as an occurrence count (traceInvariant_count); or writing the same actions as (a ∥ c) ∥ b, for which b a c is a run of runShared (shared_depends_on_parenthesization). Whether that parenthesization misses another class instead is not proved here."
+    ],
+    "prior_art": [
+      "A. Mazurkiewicz, \"Trace theory\", in Petri Nets: Applications and Relationships to Other Models of Concurrency (Advances in Petri Nets 1986, Part II), LNCS 255, Springer, 1987, pp. 279-324 (Crossref lists pp. 278-324), doi:10.1007/3-540-17906-2_30. Defines trace equivalence, for a symmetric irreflexive independence relation, as the congruence on words generated by commuting independent letters; the source of TraceEquiv for symmetric I.",
+      "D. Peled, \"All from one, one for all: on model checking using representatives\", CAV 1993, LNCS 697, Springer, pp. 409-423, doi:10.1007/3-540-56922-7_34. Uses an equivalence on executions such that each class satisfies a property entirely or not at all, and builds a reduced state graph containing at least one representative per class; the finite-trace analogue of that criterion is representative_transfer."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: can a sound generator that reuses scheduler choices fail the representative condition, and for which dependencies?"
+  },
+  {
+    "id": "per-step-generator-oracle-bound",
+    "lean": "Toy.SchedAdequacy.perStep_oracleBounded",
+    "lean_names": [
+      "Toy.SchedAdequacy.perStep_not_oracleBounded_below_schedPoints",
+      "Toy.SchedAdequacy.perStep_oracleBounded_zero_parA_parAA",
+      "Toy.SchedAdequacy.schedPoints_examples",
+      "Toy.SchedAdequacy.oracleBounded_pos",
+      "Toy.SchedAdequacy.oracleBounded_neg"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every program p, the run of the per-step generator runPerStep on p is unchanged when the oracle is truncated to its first schedPoints p bits.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Hypothesis-free; instance on a ∥ (b ∥ c) proved by case analysis.",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.oracleBounded_schedPoints_parA_parBC",
+    "non_claims": [
+      "schedPoints p is an upper bound on the bits read. It is attained on a ∥ (b ∥ c) (two bits do not suffice, perStep_not_oracleBounded_below_schedPoints) and on a ∥ (b ∥ (c ∥ d)) (five bits do not suffice, schedPoints_spine4). With repeated labels fewer bits can suffice: on a ∥ (a ∥ a), where schedPoints = 3, no bit is needed (perStep_oracleBounded_zero_parA_parAA). An exhaustive evaluation over all 275 program shapes with 1 to 5 actions and pairwise distinct action labels found that for none of the 252 of them that contain a parallel composition (schedPoints p > 0) does truncating the oracle to its first schedPoints p - 1 bits leave every run of runPerStep unchanged (bounded evidence, not proved here; probe support/BoundedEvidence.lean). For the other 23 shapes, which have no parallel composition, schedPoints p = 0 and, with truncating natural-number subtraction, schedPoints p - 1 = 0, so that bound holds by perStep_oracleBounded itself.",
+      "schedPoints counts per-node choices, not steps: on a right-nested chain of k parallel actions it is k (k - 1) / 2 (a direct calculation from the definition, not proved here for general k; the instance k = 4, value 6, is schedPoints_spine4), and a bounded check enumerates 2^(schedPoints p + 1) - 1 oracles."
+    ],
+    "prior_art": [
+      "No source found; statement about the toy semantics of this package."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: how many scheduler choices must a bounded check enumerate to cover every run of the per-step generator?"
+  },
+  {
+    "id": "shared-choice-generator-oracle-bound",
+    "lean": [
+      "Toy.SchedAdequacy.shared_oracleBounded",
+      "Toy.SchedAdequacy.shared_oracleBounded_size_pred"
+    ],
+    "lean_names": [
+      "Toy.SchedAdequacy.oracleBounded_pos"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every program p, the run of the shared-choice generator runShared on p is unchanged when the oracle is truncated to its first schedPoints p bits, and also when it is truncated to its first size p - 1 bits.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Hypothesis-free; instances on a ∥ (b ∥ c) (case analysis) and on a ∥ (b ∥ (c ∥ d)).",
+    "nonvacuity_witness_lean": [
+      "Toy.SchedAdequacy.oracleBounded_schedPoints_parA_parBC",
+      "Toy.SchedAdequacy.schedPoints_spine4"
+    ],
+    "non_claims": [
+      "Neither bound is claimed minimal: on a ∥ (b ∥ c) two bits suffice (oracleBounded_pos), which equals size - 1 there, while schedPoints = 3.",
+      "On a ∥ (b ∥ (c ∥ d)) the linear bound size - 1 = 3 is well below schedPoints = 6 (schedPoints_spine4); the schedPoints form is kept because it is shared with runPerStep."
+    ],
+    "prior_art": [
+      "No source found; statement about the toy semantics of this package."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: how many scheduler choices must a bounded check enumerate to cover every run of the shared-choice generator?"
+  },
+  {
+    "id": "bounded-adequacy-check-correct",
+    "lean": "Toy.SchedAdequacy.check_correct_of_oracleBounded",
+    "lean_names": [
+      "Toy.SchedAdequacy.complete_of_checkComplete",
+      "Toy.SchedAdequacy.not_sound_of_checkSound",
+      "Toy.SchedAdequacy.check_on_examples",
+      "Toy.SchedAdequacy.oraclesUpTo_pos",
+      "Toy.SchedAdequacy.oraclesUpTo_neg"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every action type α with decidable equality, every generator gen with list-of-bits oracles, program p and bound n such that the run of gen on p depends only on the first n oracle bits (OracleBounded gen p n), checkComplete gen p n returns true iff gen is complete on p, and checkSound gen p n returns true iff gen is sound on p.",
+    "hypotheses": [
+      {
+        "name": "h : OracleBounded gen p n",
+        "purpose": "The check enumerates only oracles of length at most n; without the bound it can miss runs. Tight: counterexamples at bound n = 0 on the 2-action programs a ∥ b with runPerStep (complete, but checkComplete answers false) and a ; b with runIgnoringSeq (unsound, but checkSound answers true).",
+        "tightness": "tight",
+        "counterexample": "Toy.SchedAdequacy.check_needs_oracleBounded"
+      },
+      {
+        "name": "[DecidableEq α]",
+        "purpose": "Typeclass parameter of checkComplete and checkSound used to decide trace equality in lists; carries no substance.",
+        "tightness": "harmless"
+      }
+    ],
+    "nonvacuity_witness": "The bound hypothesis holds for runPerStep and runShared on a ∥ (b ∥ c) at n = schedPoints = 3, and the checks return the expected answers there.",
+    "nonvacuity_witness_lean": "Toy.SchedAdequacy.check_correct_nonvacuous",
+    "non_claims": [
+      "The answers true for checkComplete and false for checkSound are correct without any bound (complete_of_checkComplete, not_sound_of_checkSound); only the other two answers can be wrong without the bound (check_needs_oracleBounded).",
+      "Combined with per-step-generator-oracle-bound and shared-choice-generator-oracle-bound this decides completeness and soundness of runPerStep and runShared on any given program (executed on three programs in check_on_examples); it is not a general decision procedure for arbitrary generators.",
+      "oraclesUpTo n enumerates all 2^(n+1) - 1 bit lists of length at most n; with n = schedPoints p this is exponential in schedPoints p, which grows quadratically along right-nested chains of parallel actions (not proved here for general chains; the 4-action instance is schedPoints_spine4). For runShared the bound size p - 1 (shared_oracleBounded_size_pred) can be used instead."
+    ],
+    "prior_art": [
+      "No source found; statement about the toy semantics of this package."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: can adequacy of a generator on one given program be certified mechanically, and under which hypothesis?"
+  },
+  {
+    "id": "claims-equivalent-iff-complete-and-sound",
+    "lean": [
+      "Toy.SchedAdequacy.universal_claims_equiv_iff_complete_and_sound",
+      "Toy.SchedAdequacy.existential_claims_equiv_iff_complete_and_sound"
+    ],
+    "lean_names": [
+      "Toy.SchedAdequacy.postconditions_transfer_from_incomplete_shared",
+      "Toy.SchedAdequacy.perStep_runs_on_length3_oracles_parA_parBC"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every generator gen (with any oracle type) and program p: (i) \"P holds on every run generated by gen\" is equivalent to \"P holds on every interleaving of p\" for every trace property P iff gen is both complete and sound on p; and (ii) \"some run generated by gen satisfies Bad\" is equivalent to \"some interleaving of p satisfies Bad\" for every trace property Bad iff gen is both complete and sound on p.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Both sides of both equivalences true for runPerStep on a ∥ (b ∥ c); both sides false for the complete but unsound runIgnoringSeq on a ; b and for the sound but incomplete runShared on a ∥ (b ∥ c).",
+    "nonvacuity_witness_lean": [
+      "Toy.SchedAdequacy.claims_equiv_nonvacuous",
+      "Toy.SchedAdequacy.complete_alone_does_not_give_equivalence",
+      "Toy.SchedAdequacy.sound_alone_does_not_give_equivalence"
+    ],
+    "non_claims": [
+      "The equivalences are per program p; adequacy on one program says nothing about another.",
+      "Complete gen p and Sound gen p are the right-hand side, not hypotheses, and neither alone suffices: runIgnoringSeq on a ; b is complete and both equivalences fail (complete_alone_does_not_give_equivalence); runShared on a ∥ (b ∥ c) is sound and both fail (sound_alone_does_not_give_equivalence).",
+      "A one-directional use needs only one of the two: concluding a claim about all interleavings from all generated runs needs completeness (universal-transfer-iff-complete); reporting a found behaviour as real needs soundness (existential-transfer-iff-sound).",
+      "For a restricted class of properties a universal claim can transfer without completeness: every final-state postcondition of Act.effPair (from (0, 0)) transfers from the incomplete runShared on a ∥ (b ∥ c) (postconditions_transfer_from_incomplete_shared). This is one proved instance, not a theorem about postconditions of every state semantics.",
+      "Adequacy is about which traces occur, not how often: under a uniformly random oracle of length 3 the interleavings of a ∥ (b ∥ c) are not equally likely: of the eight oracles of length 3 on a ∥ (b ∥ c), two each produce a b c and a c b and one each produces the other four interleavings (perStep_runs_on_length3_oracles_parA_parBC).",
+      "That a plain claim \"for every interleaving\" over a generated semantics should cite an adequacy theorem, or else name the generator, is a design consequence argued in prose (derived, modeling bridge), not a theorem."
+    ],
+    "prior_art": [
+      "No specific source: an elementary fact of predicate logic about restricting a quantifier to the set of generated runs (a set S of traces satisfies every property true on all of a set R iff S is contained in R, and dually), restated for generated semantics; tier T0."
+    ],
+    "design_question": "A claim about a concurrent program that says \"for every schedule\" or \"on every interleaving\" usually quantifies over the runs produced by a generated semantics (a step function driven by a scheduler oracle). Which certificate must accompany such a claim so that its plain-language reading is justified? This card: when may \"for every run of gen\" and \"for every interleaving\" (and the existential forms) be used interchangeably?"
+  }
+]

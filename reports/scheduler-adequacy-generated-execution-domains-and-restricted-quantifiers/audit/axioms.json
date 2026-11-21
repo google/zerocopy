@@ -1,0 +1,846 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.SchedAdequacy.Act": [],
+    "Toy.SchedAdequacy.Act.a": [],
+    "Toy.SchedAdequacy.Act.a.elim": [],
+    "Toy.SchedAdequacy.Act.a.sizeOf_spec": [],
+    "Toy.SchedAdequacy.Act.b": [],
+    "Toy.SchedAdequacy.Act.b.elim": [],
+    "Toy.SchedAdequacy.Act.b.sizeOf_spec": [],
+    "Toy.SchedAdequacy.Act.c": [],
+    "Toy.SchedAdequacy.Act.c.elim": [],
+    "Toy.SchedAdequacy.Act.c.sizeOf_spec": [],
+    "Toy.SchedAdequacy.Act.casesOn": [],
+    "Toy.SchedAdequacy.Act.ctorElim": [],
+    "Toy.SchedAdequacy.Act.ctorElimType": [],
+    "Toy.SchedAdequacy.Act.ctorIdx": [],
+    "Toy.SchedAdequacy.Act.d": [],
+    "Toy.SchedAdequacy.Act.d.elim": [],
+    "Toy.SchedAdequacy.Act.d.sizeOf_spec": [],
+    "Toy.SchedAdequacy.Act.eff": [],
+    "Toy.SchedAdequacy.Act.effInc": [],
+    "Toy.SchedAdequacy.Act.effInc.eq_1": [],
+    "Toy.SchedAdequacy.Act.effInc.eq_2": [],
+    "Toy.SchedAdequacy.Act.effInc.eq_3": [],
+    "Toy.SchedAdequacy.Act.effInc.eq_4": [],
+    "Toy.SchedAdequacy.Act.effPair": [],
+    "Toy.SchedAdequacy.Act.effPair.eq_1": [],
+    "Toy.SchedAdequacy.Act.effPair.eq_2": [],
+    "Toy.SchedAdequacy.Act.effPair.eq_3": [],
+    "Toy.SchedAdequacy.Act.effPair.eq_4": [],
+    "Toy.SchedAdequacy.Act.effSwap": [],
+    "Toy.SchedAdequacy.Act.noConfusion": [],
+    "Toy.SchedAdequacy.Act.noConfusionType": [],
+    "Toy.SchedAdequacy.Act.ofNat": [],
+    "Toy.SchedAdequacy.Act.ofNat_ctorIdx": [],
+    "Toy.SchedAdequacy.Act.rec": [],
+    "Toy.SchedAdequacy.Act.recOn": [],
+    "Toy.SchedAdequacy.BitsOK": [],
+    "Toy.SchedAdequacy.BitsOK.eq_1": [],
+    "Toy.SchedAdequacy.BitsOK.eq_2": [],
+    "Toy.SchedAdequacy.BitsOK.match_1": [],
+    "Toy.SchedAdequacy.Commuting": [],
+    "Toy.SchedAdequacy.Complete": [],
+    "Toy.SchedAdequacy.Gen": [],
+    "Toy.SchedAdequacy.Interleavings": [],
+    "Toy.SchedAdequacy.Interleavings.eq_1": [],
+    "Toy.SchedAdequacy.Interleavings.eq_2": [],
+    "Toy.SchedAdequacy.Interleavings.eq_3": [],
+    "Toy.SchedAdequacy.Interleavings.eq_def": [],
+    "Toy.SchedAdequacy.Irreflexive": [],
+    "Toy.SchedAdequacy.MeetsEveryClass": [],
+    "Toy.SchedAdequacy.NoNestedPar": [],
+    "Toy.SchedAdequacy.NoNestedPar.eq_1": [],
+    "Toy.SchedAdequacy.NoNestedPar.eq_2": [],
+    "Toy.SchedAdequacy.NoNestedPar.eq_3": [],
+    "Toy.SchedAdequacy.NoNestedPar.eq_def": [],
+    "Toy.SchedAdequacy.Oracle": [],
+    "Toy.SchedAdequacy.OracleBounded": [],
+    "Toy.SchedAdequacy.Prog": [],
+    "Toy.SchedAdequacy.Prog.act": [],
+    "Toy.SchedAdequacy.Prog.act.elim": [],
+    "Toy.SchedAdequacy.Prog.act.inj": [],
+    "Toy.SchedAdequacy.Prog.act.injEq": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.Prog.act.noConfusion": [],
+    "Toy.SchedAdequacy.Prog.act.sizeOf_spec": [],
+    "Toy.SchedAdequacy.Prog.actions": [],
+    "Toy.SchedAdequacy.Prog.actions.eq_1": [],
+    "Toy.SchedAdequacy.Prog.actions.eq_2": [],
+    "Toy.SchedAdequacy.Prog.actions.eq_3": [],
+    "Toy.SchedAdequacy.Prog.actions.eq_def": [],
+    "Toy.SchedAdequacy.Prog.below": [],
+    "Toy.SchedAdequacy.Prog.brecOn": [],
+    "Toy.SchedAdequacy.Prog.brecOn.eq": [],
+    "Toy.SchedAdequacy.Prog.brecOn.go": [],
+    "Toy.SchedAdequacy.Prog.casesOn": [],
+    "Toy.SchedAdequacy.Prog.ctorElim": [],
+    "Toy.SchedAdequacy.Prog.ctorElimType": [],
+    "Toy.SchedAdequacy.Prog.ctorIdx": [],
+    "Toy.SchedAdequacy.Prog.hasPar": [],
+    "Toy.SchedAdequacy.Prog.hasPar.eq_1": [],
+    "Toy.SchedAdequacy.Prog.hasPar.eq_2": [],
+    "Toy.SchedAdequacy.Prog.hasPar.eq_3": [],
+    "Toy.SchedAdequacy.Prog.hasPar.eq_def": [],
+    "Toy.SchedAdequacy.Prog.noConfusion": [],
+    "Toy.SchedAdequacy.Prog.noConfusionType": [],
+    "Toy.SchedAdequacy.Prog.par": [],
+    "Toy.SchedAdequacy.Prog.par.elim": [],
+    "Toy.SchedAdequacy.Prog.par.inj": [],
+    "Toy.SchedAdequacy.Prog.par.injEq": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.Prog.par.noConfusion": [],
+    "Toy.SchedAdequacy.Prog.par.sizeOf_spec": [],
+    "Toy.SchedAdequacy.Prog.rec": [],
+    "Toy.SchedAdequacy.Prog.recOn": [],
+    "Toy.SchedAdequacy.Prog.seq": [],
+    "Toy.SchedAdequacy.Prog.seq.elim": [],
+    "Toy.SchedAdequacy.Prog.seq.inj": [],
+    "Toy.SchedAdequacy.Prog.seq.injEq": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.Prog.seq.noConfusion": [],
+    "Toy.SchedAdequacy.Prog.seq.sizeOf_spec": [],
+    "Toy.SchedAdequacy.Prog.size": [],
+    "Toy.SchedAdequacy.Prog.size.eq_1": [],
+    "Toy.SchedAdequacy.Prog.size.eq_2": [],
+    "Toy.SchedAdequacy.Prog.size.eq_3": [],
+    "Toy.SchedAdequacy.Prog.size.eq_def": [],
+    "Toy.SchedAdequacy.RestOK": [],
+    "Toy.SchedAdequacy.Sound": [],
+    "Toy.SchedAdequacy.StepOK": [],
+    "Toy.SchedAdequacy.StepOK.match_1": [],
+    "Toy.SchedAdequacy.SwapStep": [],
+    "Toy.SchedAdequacy.SwapStep.casesOn": [],
+    "Toy.SchedAdequacy.SwapStep.mk": [],
+    "Toy.SchedAdequacy.SwapStep.rec": [],
+    "Toy.SchedAdequacy.SwapStep.recOn": [],
+    "Toy.SchedAdequacy.Symmetric": [],
+    "Toy.SchedAdequacy.TraceEquiv": [],
+    "Toy.SchedAdequacy.TraceEquiv.below": [],
+    "Toy.SchedAdequacy.TraceEquiv.below.casesOn": [],
+    "Toy.SchedAdequacy.TraceEquiv.below.rec": [],
+    "Toy.SchedAdequacy.TraceEquiv.below.refl": [],
+    "Toy.SchedAdequacy.TraceEquiv.below.tail": [],
+    "Toy.SchedAdequacy.TraceEquiv.brecOn": [],
+    "Toy.SchedAdequacy.TraceEquiv.casesOn": [],
+    "Toy.SchedAdequacy.TraceEquiv.cons": [],
+    "Toy.SchedAdequacy.TraceEquiv.length_eq": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.TraceEquiv.perm": [],
+    "Toy.SchedAdequacy.TraceEquiv.rec": [],
+    "Toy.SchedAdequacy.TraceEquiv.recOn": [],
+    "Toy.SchedAdequacy.TraceEquiv.refl": [],
+    "Toy.SchedAdequacy.TraceEquiv.single": [],
+    "Toy.SchedAdequacy.TraceEquiv.swap1": [],
+    "Toy.SchedAdequacy.TraceEquiv.symm": [],
+    "Toy.SchedAdequacy.TraceEquiv.tail": [],
+    "Toy.SchedAdequacy.TraceEquiv.trans": [],
+    "Toy.SchedAdequacy.TraceInvariant": [],
+    "Toy.SchedAdequacy.actions_length": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.actions_length.match_1_1": [],
+    "Toy.SchedAdequacy.alternating": [],
+    "Toy.SchedAdequacy.append_mem_shuffle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.append_mem_shuffle.match_1_1": [],
+    "Toy.SchedAdequacy.checkComplete": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.checkSound": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.check_correct_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.check_correct_of_oracleBounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.check_needs_oracleBounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.check_on_examples": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.claims_equiv_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.commuting_does_not_make_prefix_safety_invariant": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.commuting_does_not_make_prefix_safety_invariant.match_1_1": [],
+    "Toy.SchedAdequacy.commuting_effPair": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.commuting_effSwap": [],
+    "Toy.SchedAdequacy.commuting_neg": [],
+    "Toy.SchedAdequacy.complete_alone_does_not_give_equivalence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.complete_neg": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.complete_of_checkComplete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.complete_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.cons_mem_shuffle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.constBA": [],
+    "Toy.SchedAdequacy.decNoNestedPar": [],
+    "Toy.SchedAdequacy.decNoNestedPar.match_1": [],
+    "Toy.SchedAdequacy.dropAllGen": [],
+    "Toy.SchedAdequacy.drop_succ_eq_tail_drop": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.emptyGen": [],
+    "Toy.SchedAdequacy.emptyGen.match_1": [],
+    "Toy.SchedAdequacy.existential_claims_equiv_iff_complete_and_sound": [],
+    "Toy.SchedAdequacy.existential_claims_equiv_iff_complete_and_sound.match_1_1": [],
+    "Toy.SchedAdequacy.existential_claims_equiv_iff_complete_and_sound.match_1_3": [],
+    "Toy.SchedAdequacy.existential_claims_equiv_iff_complete_and_sound.match_1_5": [],
+    "Toy.SchedAdequacy.existential_claims_equiv_iff_complete_and_sound.match_1_7": [],
+    "Toy.SchedAdequacy.existential_transfer_iff_sound": [],
+    "Toy.SchedAdequacy.existential_transfer_iff_sound.match_1_1": [],
+    "Toy.SchedAdequacy.existential_transfer_iff_sound.match_1_3": [],
+    "Toy.SchedAdequacy.existential_transfer_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.exists_interleaving_of_mem_firsts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.exists_interleaving_of_mem_firsts.match_1_1": [],
+    "Toy.SchedAdequacy.finalState": [],
+    "Toy.SchedAdequacy.finalState.eq_1": [],
+    "Toy.SchedAdequacy.finalState_eq_of_traceEquiv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.finalX": [],
+    "Toy.SchedAdequacy.firsts": [],
+    "Toy.SchedAdequacy.firsts.eq_1": [],
+    "Toy.SchedAdequacy.firsts.eq_2": [],
+    "Toy.SchedAdequacy.firsts.eq_3": [],
+    "Toy.SchedAdequacy.firsts.eq_def": [],
+    "Toy.SchedAdequacy.firsts.match_1": [],
+    "Toy.SchedAdequacy.firsts_subset_actions": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.firsts_subset_actions.match_1_1": [],
+    "Toy.SchedAdequacy.fullIndep": [],
+    "Toy.SchedAdequacy.fullIndep.eq_1": [],
+    "Toy.SchedAdequacy.generatedUpTo": [],
+    "Toy.SchedAdequacy.generatedUpTo.eq_1": [],
+    "Toy.SchedAdequacy.hasPar_of_stepShared": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.hasPar_of_stepShared.match_1_1": [],
+    "Toy.SchedAdequacy.head_eq_iff_of_traceEquiv_of_isolated": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.ignoringSeq_false_positive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.indepExceptBC": [],
+    "Toy.SchedAdequacy.indepExceptBC.eq_1": [],
+    "Toy.SchedAdequacy.indepOnlyAC": [],
+    "Toy.SchedAdequacy.indepOnlyAC.eq_1": [],
+    "Toy.SchedAdequacy.indepOnlyAC_b_isolated": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.indepOnlyAC_justified": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.independence_neg": [],
+    "Toy.SchedAdequacy.independence_pos": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.instDecidableEqAct": [],
+    "Toy.SchedAdequacy.instDecidableEqProg": [],
+    "Toy.SchedAdequacy.instDecidableEqProg.decEq": [],
+    "Toy.SchedAdequacy.instDecidableEqProg.decEq.match_1": [],
+    "Toy.SchedAdequacy.instDecidableNoNestedPar": [],
+    "Toy.SchedAdequacy.instDecidableRelActFullIndep": [],
+    "Toy.SchedAdequacy.instDecidableRelActIndepExceptBC": [],
+    "Toy.SchedAdequacy.instDecidableRelActIndepOnlyAC": [],
+    "Toy.SchedAdequacy.instReprAct": [],
+    "Toy.SchedAdequacy.instReprAct.repr": [],
+    "Toy.SchedAdequacy.instReprAct.repr.match_1": [],
+    "Toy.SchedAdequacy.instReprProg": [],
+    "Toy.SchedAdequacy.instReprProg.repr": [],
+    "Toy.SchedAdequacy.instReprProg.repr.match_1": [],
+    "Toy.SchedAdequacy.interleavings_nonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.interleavings_nonempty.match_1_1": [],
+    "Toy.SchedAdequacy.interleavings_parAB_neg_drop": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.interleavings_parAB_pos": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.interleavings_parA_parBC": [],
+    "Toy.SchedAdequacy.interleavings_seqAB_neg": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.invariant_transfer_iff_meets_every_class": [],
+    "Toy.SchedAdequacy.invariant_transfer_iff_meets_every_class_directed": [],
+    "Toy.SchedAdequacy.invariant_transfer_iff_meets_every_class_directed.match_1_1": [],
+    "Toy.SchedAdequacy.invariant_transfer_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.length_of_mem_interleavings": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.meetsEveryClass_iff_of_symmetric": [],
+    "Toy.SchedAdequacy.meetsEveryClass_iff_of_symmetric.match_1_1": [],
+    "Toy.SchedAdequacy.meetsEveryClass_iff_of_symmetric.match_1_3": [],
+    "Toy.SchedAdequacy.meetsEveryClass_neg": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.meetsEveryClass_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.meetsEveryClass_without_sound": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.meets_every_class_full_independence_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.meets_every_class_needs_full_independence": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.meets_every_class_needs_nonempty_oracles": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.meets_every_class_needs_nonempty_oracles.match_1_1": [],
+    "Toy.SchedAdequacy.meets_every_class_needs_nonempty_oracles.match_1_3": [],
+    "Toy.SchedAdequacy.meets_every_class_needs_sound": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.meets_every_class_of_sound_of_full_independence": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.meets_every_class_unsound_permuting": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.mem_interleavings_act": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.mem_interleavings_par": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.mem_interleavings_seq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.mem_oraclesUpTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.mem_shuffle_cons_left": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.mem_shuffle_cons_right": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.needsChoice": [],
+    "Toy.SchedAdequacy.needsChoice.eq_1": [],
+    "Toy.SchedAdequacy.needsChoice.eq_2": [],
+    "Toy.SchedAdequacy.needsChoice.eq_3": [],
+    "Toy.SchedAdequacy.needsChoice.eq_def": [],
+    "Toy.SchedAdequacy.nested_progress": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.nested_progress.match_1_1": [],
+    "Toy.SchedAdequacy.nil_mem_shuffle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.noNestedPar_neg": [],
+    "Toy.SchedAdequacy.noNestedPar_of_hasPar_false": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.noNestedPar_of_hasPar_false.match_1_1": [],
+    "Toy.SchedAdequacy.noNestedPar_pos": [],
+    "Toy.SchedAdequacy.nodup_of_stepShared": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.noninvariant_property_may_transfer": [],
+    "Toy.SchedAdequacy.not_complete_of_mem_firsts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.not_complete_of_not_noNestedPar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.not_complete_of_not_noNestedPar.match_1_1": [],
+    "Toy.SchedAdequacy.not_complete_of_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.not_sound_of_checkSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.oneWayAB": [],
+    "Toy.SchedAdequacy.oneWayAB_ba_stuck": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.oneWayAB_ba_traceEquiv_eq": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.oracleBounded_neg": [],
+    "Toy.SchedAdequacy.oracleBounded_pos": [],
+    "Toy.SchedAdequacy.oracleBounded_schedPoints_parA_parBC": [],
+    "Toy.SchedAdequacy.oraclesUpTo": [],
+    "Toy.SchedAdequacy.oraclesUpTo.eq_1": [],
+    "Toy.SchedAdequacy.oraclesUpTo.eq_2": [],
+    "Toy.SchedAdequacy.oraclesUpTo.eq_def": [],
+    "Toy.SchedAdequacy.oraclesUpTo.match_1": [],
+    "Toy.SchedAdequacy.oraclesUpTo_neg": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.oraclesUpTo_pos": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.parAB": [],
+    "Toy.SchedAdequacy.parAB_parCD": [],
+    "Toy.SchedAdequacy.parAC_B": [],
+    "Toy.SchedAdequacy.parA_parAA": [],
+    "Toy.SchedAdequacy.parA_parBC": [],
+    "Toy.SchedAdequacy.parA_seqParBC_D": [],
+    "Toy.SchedAdequacy.parSeqAB_seqCD": [],
+    "Toy.SchedAdequacy.perStep_adequate_parA_parBC": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.perStep_adequate_parA_seqParBC_D": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.perStep_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.perStep_exhibits_final_value_three": [],
+    "Toy.SchedAdequacy.perStep_not_oracleBounded_below_schedPoints": [],
+    "Toy.SchedAdequacy.perStep_oracleBounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.perStep_oracleBounded_zero_parA_parAA": [],
+    "Toy.SchedAdequacy.perStep_runs_on_length3_oracles_parA_parBC": [],
+    "Toy.SchedAdequacy.perStep_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.perm_actions_of_mem_interleavings": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.perm_actions_of_mem_interleavings.match_1_1": [],
+    "Toy.SchedAdequacy.perm_of_mem_shuffle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.perm_of_mem_shuffle.match_1_1": [],
+    "Toy.SchedAdequacy.postconditions_transfer_from_incomplete_shared": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.representative_transfer": [],
+    "Toy.SchedAdequacy.representative_transfer_directed": [],
+    "Toy.SchedAdequacy.representative_transfer_directed.match_1_1": [],
+    "Toy.SchedAdequacy.representative_transfer_needs_invariance": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.representative_transfer_needs_meets_every_class": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.representative_transfer_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.reversed_reading_fails_without_symmetry": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.roundRobin_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.roundRobin_oracle_irrelevant": [],
+    "Toy.SchedAdequacy.roundRobin_sound_single_run_complete_iff_unique_interleaving": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.runIgnoringSeq": [],
+    "Toy.SchedAdequacy.runIgnoringSeq_neg": [],
+    "Toy.SchedAdequacy.runIgnoringSeq_pos": [],
+    "Toy.SchedAdequacy.runPerStep": [],
+    "Toy.SchedAdequacy.runPerStepAux": [],
+    "Toy.SchedAdequacy.runPerStepAux.eq_1": [],
+    "Toy.SchedAdequacy.runPerStepAux.eq_2": [],
+    "Toy.SchedAdequacy.runPerStepAux.eq_def": [],
+    "Toy.SchedAdequacy.runPerStepAux.match_1": [],
+    "Toy.SchedAdequacy.runPerStepAux_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.runPerStepAux_complete.match_1_1": [],
+    "Toy.SchedAdequacy.runPerStepAux_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.runPerStepAux_mem.match_1_1": [],
+    "Toy.SchedAdequacy.runPerStepAux_take": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.runPerStepAux_take.match_1_1": [],
+    "Toy.SchedAdequacy.runPerStep_neg": [],
+    "Toy.SchedAdequacy.runPerStep_pos": [],
+    "Toy.SchedAdequacy.runRoundRobin": [],
+    "Toy.SchedAdequacy.runRoundRobin_neg": [],
+    "Toy.SchedAdequacy.runRoundRobin_nested_runs_left_first": [],
+    "Toy.SchedAdequacy.runRoundRobin_pos": [],
+    "Toy.SchedAdequacy.runShared": [],
+    "Toy.SchedAdequacy.runShared.eq_1": [],
+    "Toy.SchedAdequacy.runSharedAux": [],
+    "Toy.SchedAdequacy.runSharedAux_complete_noNestedPar": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.runSharedAux_complete_noNestedPar.match_1_1": [],
+    "Toy.SchedAdequacy.runSharedAux_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.runSharedAux_mem.match_1_1": [],
+    "Toy.SchedAdequacy.runSharedAux_succ": [],
+    "Toy.SchedAdequacy.runSharedAux_succ.match_1": [],
+    "Toy.SchedAdequacy.runSharedAux_take": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.runSharedAux_take.match_1_1": [],
+    "Toy.SchedAdequacy.runSharedAux_take_size": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.runSharedAux_take_size.match_1_1": [],
+    "Toy.SchedAdequacy.runShared_neg": [],
+    "Toy.SchedAdequacy.runShared_pos": [],
+    "Toy.SchedAdequacy.schedPoints": [],
+    "Toy.SchedAdequacy.schedPoints.eq_1": [],
+    "Toy.SchedAdequacy.schedPoints.eq_2": [],
+    "Toy.SchedAdequacy.schedPoints.eq_3": [],
+    "Toy.SchedAdequacy.schedPoints.eq_def": [],
+    "Toy.SchedAdequacy.schedPoints_examples": [],
+    "Toy.SchedAdequacy.schedPoints_spine4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.seqAB": [],
+    "Toy.SchedAdequacy.seqToPar": [],
+    "Toy.SchedAdequacy.sharedBit": [],
+    "Toy.SchedAdequacy.sharedBit.eq_1": [],
+    "Toy.SchedAdequacy.shared_complete_iff_needs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_complete_iff_noNestedPar_of_nodup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_complete_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_complete_of_noNestedPar": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_complete_of_noNestedPar_needs_hyp": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_complete_parSeqAB_seqCD": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_depends_on_parenthesization": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_final_value_claim_does_not_transfer": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_incomplete_parA_parBC": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_incomplete_parA_seqParBC_D": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_meets_every_class_of_full_independence": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_meets_every_class_when_only_b_c_conflict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_misses_class_when_b_conflicts_with_a_and_c": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_oracleBounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_oracleBounded_size_pred": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_ordering_claim_does_not_transfer": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shared_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shuffle": [],
+    "Toy.SchedAdequacy.shuffle.match_1": [],
+    "Toy.SchedAdequacy.shuffleAux": [],
+    "Toy.SchedAdequacy.shuffleAux.match_1": [],
+    "Toy.SchedAdequacy.shuffle_cons_cons": [],
+    "Toy.SchedAdequacy.shuffle_cons_nil": [],
+    "Toy.SchedAdequacy.shuffle_neg": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.shuffle_nil_left": [],
+    "Toy.SchedAdequacy.shuffle_nil_right": [],
+    "Toy.SchedAdequacy.shuffle_nil_right.match_1_1": [],
+    "Toy.SchedAdequacy.shuffle_pos": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.size_pos": [],
+    "Toy.SchedAdequacy.size_pos.match_1_1": [],
+    "Toy.SchedAdequacy.sound_alone_does_not_give_equivalence": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.sound_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.sound_pos": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.spine4": [],
+    "Toy.SchedAdequacy.stepOK_par_left": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepOK_par_right": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepOK_seq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepOK_seq.match_1": [],
+    "Toy.SchedAdequacy.stepPerNode": [],
+    "Toy.SchedAdequacy.stepPerNode.eq_1": [],
+    "Toy.SchedAdequacy.stepPerNode.eq_2": [],
+    "Toy.SchedAdequacy.stepPerNode.eq_3": [],
+    "Toy.SchedAdequacy.stepPerNode.eq_def": [],
+    "Toy.SchedAdequacy.stepPerNode.match_1": [],
+    "Toy.SchedAdequacy.stepPerNode.match_3": [],
+    "Toy.SchedAdequacy.stepPerNode_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepPerNode_complete.match_1_1": [],
+    "Toy.SchedAdequacy.stepPerNode_complete.match_1_4": [],
+    "Toy.SchedAdequacy.stepPerNode_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepPerNode_ok.match_1_1": [],
+    "Toy.SchedAdequacy.stepPerNode_take": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepPerNode_take.match_1_1": [],
+    "Toy.SchedAdequacy.stepShared": [],
+    "Toy.SchedAdequacy.stepShared.eq_1": [],
+    "Toy.SchedAdequacy.stepShared.eq_2": [],
+    "Toy.SchedAdequacy.stepShared.eq_3": [],
+    "Toy.SchedAdequacy.stepShared.eq_def": [],
+    "Toy.SchedAdequacy.stepShared.match_1": [],
+    "Toy.SchedAdequacy.stepShared.match_3": [],
+    "Toy.SchedAdequacy.stepShared_complete_noNestedPar": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_complete_noNestedPar.match_1_1": [],
+    "Toy.SchedAdequacy.stepShared_complete_noNestedPar.match_1_13": [],
+    "Toy.SchedAdequacy.stepShared_complete_noNestedPar.match_1_16": [],
+    "Toy.SchedAdequacy.stepShared_complete_noNestedPar.match_1_3": [],
+    "Toy.SchedAdequacy.stepShared_complete_noNestedPar.match_1_6": [],
+    "Toy.SchedAdequacy.stepShared_complete_parFree": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_complete_parFree.match_1_1": [],
+    "Toy.SchedAdequacy.stepShared_complete_parFree.match_1_11": [],
+    "Toy.SchedAdequacy.stepShared_complete_parFree.match_1_3": [],
+    "Toy.SchedAdequacy.stepShared_det": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_eq_of_needsChoice_false": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_eq_of_needsChoice_false.match_1_1": [],
+    "Toy.SchedAdequacy.stepShared_fst_mem_firsts": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_fst_mem_firsts.match_1_1": [],
+    "Toy.SchedAdequacy.stepShared_fst_ne_of_needsChoice": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_fst_ne_of_needsChoice.match_1_1": [],
+    "Toy.SchedAdequacy.stepShared_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_ok.match_1_1": [],
+    "Toy.SchedAdequacy.stepShared_par_false_fst": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_par_true_fst": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_perm_actions": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_perm_actions.match_1_1": [],
+    "Toy.SchedAdequacy.stepShared_schedPoints": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.stepShared_schedPoints.match_1_1": [],
+    "Toy.SchedAdequacy.stepShared_seq_fst": [],
+    "Toy.SchedAdequacy.stepShared_some_size": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.swapClosure_not_symmetric_example": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.symmetric_of_full_independence": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.take_headD": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.take_tail": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.traceEquiv_equivalence_of_symmetric": [],
+    "Toy.SchedAdequacy.traceEquiv_neg": [
+      "propext"
+    ],
+    "Toy.SchedAdequacy.traceEquiv_of_perm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.traceEquiv_pos": [],
+    "Toy.SchedAdequacy.traceInvariant_count": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.traceInvariant_finalState_effSwap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.traceInvariant_iff_perm_invariant_of_full_independence": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SchedAdequacy.traceInvariant_iff_two_sided_of_symmetric": [],
+    "Toy.SchedAdequacy.traceInvariant_neg": [],
+    "Toy.SchedAdequacy.universal_claims_equiv_iff_complete_and_sound": [],
+    "Toy.SchedAdequacy.universal_claims_equiv_iff_complete_and_sound.match_1_1": [],
+    "Toy.SchedAdequacy.universal_claims_equiv_iff_complete_and_sound.match_1_3": [],
+    "Toy.SchedAdequacy.universal_transfer_iff_complete": [],
+    "Toy.SchedAdequacy.universal_transfer_iff_complete.match_1_1": [],
+    "Toy.SchedAdequacy.universal_transfer_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
