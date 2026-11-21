@@ -231,13 +231,11 @@ jobs:
 
   test-and-verify:
     runs-on: ubuntu-latest
-    name: Toolchain setup, audit & smoke tests
+    name: Repository boundary audit
     needs: [build-exocrate]
     timeout-minutes: 90
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/anneal/target
-      ANNEAL_TEST_JOBS: '4'
-      ANNEAL_TEST_TIMEOUT_SECS: '120'
     steps:
       - name: Initialize test diagnostics
         working-directory: .
@@ -263,6 +261,10 @@ jobs:
 
       - name: Verify root TCB manifest
         id: manifest
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/startup.log") 2>&1
@@ -308,8 +310,232 @@ jobs:
           name: anneal-exocrate-archive
           path: anneal/target
 
+      - name: Install bubblewrap sandbox for cold vendor compilation
+        id: sandbox
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+        run: |
+          set -euo pipefail
+          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/sandbox.log") 2>&1
+          pkgs=()
+          if ! command -v bwrap >/dev/null 2>&1; then
+            pkgs+=(bubblewrap)
+          fi
+          if ! command -v zstd >/dev/null 2>&1; then
+            pkgs+=(zstd)
+          fi
+          if [ "${#pkgs[@]}" -gt 0 ]; then
+            sudo apt-get update
+            sudo apt-get install -y "${pkgs[@]}"
+          fi
+          if [ ! -f /etc/apparmor.d/bwrap ] && command -v apparmor_parser >/dev/null 2>&1; then
+            sudo tee /etc/apparmor.d/bwrap <<'PROFILE' >/dev/null
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bwrap /usr/bin/bwrap flags=(unconfined) {
+            userns,
+            include if exists <local/bwrap>
+          }
+          PROFILE
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap
+          fi
+          bwrap --unshare-all --die-with-parent --new-session --clearenv \
+            --tmpfs / --dev /dev --proc /proc \
+            --ro-bind /usr/lib /usr/lib \
+            --ro-bind-try /usr/lib64 /usr/lib64 \
+            --ro-bind-try /lib /lib \
+            --ro-bind-try /lib64 /lib64 \
+            --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
+            --ro-bind /usr/bin/true /true \
+            -- /true
+
+      - name: Extract Lean toolchain from local archive
+        id: extract_lean
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+        run: |
+          set -euo pipefail
+          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/extract-lean.log") 2>&1
+          # `anneal-audit` only invokes `lean/bin/lean` and authenticates its
+          # executable, `foundation-lock.json`, and sysroot `.olean` digests
+          # before running. End-to-end `cargo-anneal setup` installation is
+          # exercised by the parallel `installed-smoke` and `workspace-tests`
+          # jobs.
+          archive="$(readlink -f target/anneal-exocrate.tar.zst)"
+          install_root="$(mktemp -d "$RUNNER_TEMP/anneal-lean-toolchain.XXXXXX")"
+          tar --no-same-owner --zstd -xf "$archive" -C "$install_root" lean
+          test -f "$install_root/lean/bin/lean"
+          test ! -L "$install_root/lean/bin/lean"
+          printf 'ANNEAL_TEST_INSTALL_ROOT=%s\n' "$install_root" >> "$GITHUB_ENV"
+          rm -f target/anneal-exocrate.tar.zst
+
+      - name: Audit repository trusted boundary
+        id: audit
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          CI_EVENT_NAME: ${{ github.event_name }}
+          CI_REPOSITORY: ${{ github.repository }}
+          CI_REF: ${{ github.ref }}
+          MIRI_CACHE_HIT: ${{ steps.miri_olean_cache.outputs.cache-hit }}
+          MIRI_OLEAN_CACHE_DIR: ${{ runner.temp }}/anneal-miri-olean-cache
+        run: |
+          set -euo pipefail
+          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/boundary-audit.log") 2>&1
+          unset ANNEAL_MIRI_CACHE_DIR
+          audit_args=(
+            --lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean"
+            --require-correspondence
+          )
+          if [ "$CI_EVENT_NAME" = "push" ]; then
+            rm -rf "$MIRI_OLEAN_CACHE_DIR"
+            if [ "$CI_REPOSITORY" = "google/zerocopy" ] && [ "$CI_REF" = "refs/heads/main" ] && [ "$MIRI_CACHE_HIT" != "true" ]; then
+              audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
+            fi
+          elif [ "$CI_EVENT_NAME" = "pull_request" ]; then
+            audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
+          fi
+          cargo \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            run --locked -p anneal-audit -- "${audit_args[@]}"
+
+      - name: Save lean-miri closure .olean cache
+        id: save_miri_olean_cache
+        if: ${{ steps.miri_olean_cache.outputs.cache-hit != 'true' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main')) }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/anneal-miri-olean-cache
+          key: ${{ steps.miri_olean_cache.outputs.cache-primary-key }}
+
+      - name: Verify clean working tree
+        id: clean_tree
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+        run: |
+          set -euo pipefail
+          status="$(git status --porcelain --untracked-files=all)"
+          test -z "$status"
+
+      - name: Record test step results
+        working-directory: .
+        if: ${{ always() }}
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          STEP_RESULTS_JSON: ${{ toJSON(steps) }}
+          TEST_JOB_STATUS: ${{ job.status }}
+        run: |
+          mkdir -p "$ANNEAL_TEST_DIAGNOSTICS"
+          python3 -I -B - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          steps = json.loads(os.environ["STEP_RESULTS_JSON"])
+          report = {
+              "job_status": os.environ["TEST_JOB_STATUS"],
+              "steps": {
+                  name: {key: step[key] for key in ("outcome", "conclusion")}
+                  for name, step in steps.items()
+              },
+          }
+          destination = Path(os.environ["ANNEAL_TEST_DIAGNOSTICS"]) / "steps.json"
+          destination.write_text(json.dumps(report, indent=2) + "\n")
+          PY
+
+      - name: Upload failed test diagnostics
+        if: ${{ failure() || cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: anneal-test-diagnostics
+          path: ${{ env.ANNEAL_TEST_DIAGNOSTICS }}
+          if-no-files-found: warn
+          retention-days: 7
+
+  installed-smoke:
+    runs-on: ubuntu-latest
+    name: Toolchain setup, packaging & smoke tests
+    needs: [build-exocrate]
+    timeout-minutes: 90
+    env:
+      CARGO_TARGET_DIR: ${{ github.workspace }}/anneal/target
+      ANNEAL_TEST_JOBS: '4'
+      ANNEAL_TEST_TIMEOUT_SECS: '120'
+    steps:
+      - name: Initialize installed smoke diagnostics
+        working-directory: .
+        id: diagnostics
+        env:
+          CI_SOURCE_REVISION: ${{ github.sha }}
+          CI_RUNNER_OS: ${{ runner.os }}
+          CI_RUNNER_ARCH: ${{ runner.arch }}
+        run: |
+          set -euo pipefail
+          ANNEAL_TEST_DIAGNOSTICS="$RUNNER_TEMP/anneal-installed-smoke-diagnostics"
+          printf 'ANNEAL_TEST_DIAGNOSTICS=%s\n' \
+            "$ANNEAL_TEST_DIAGNOSTICS" >> "$GITHUB_ENV"
+          mkdir -p "$ANNEAL_TEST_DIAGNOSTICS"
+          printf 'event_source_revision=%s\nrunner_os=%s\nrunner_arch=%s\n' \
+            "$CI_SOURCE_REVISION" "$CI_RUNNER_OS" "$CI_RUNNER_ARCH" \
+            > "$ANNEAL_TEST_DIAGNOSTICS/context.txt"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        id: checkout
+        with:
+          persist-credentials: false
+
+      - name: Verify root TCB manifest
+        id: manifest
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+        run: |
+          set -euo pipefail
+          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/startup.log") 2>&1
+          linked_path="$(find trusted -type l -print -quit)"
+          if [ -n "$linked_path" ]; then
+            echo "symlink in Anneal trusted tree: $linked_path" >&2
+            exit 1
+          fi
+          sha256sum --check --strict trusted/root-manifest.sha256
+          for root in . "$GITHUB_WORKSPACE"; do
+            for name in .cargo rust-toolchain rust-toolchain.toml .gitmodules; do
+              path="$root/$name"
+              if [ -e "$path" ] || [ -L "$path" ]; then
+                echo "forbidden root config override: $path" >&2
+                exit 1
+              fi
+            done
+          done
+          revision="$(git rev-parse HEAD)"
+          printf 'ANNEAL_TEST_SOURCE_REVISION=%s\n' "$revision" >> "$GITHUB_ENV"
+          printf 'source_revision=%s\n' "$revision"
+
+      - name: Download exocrate toolchain archive
+        id: archive
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: anneal-exocrate-archive
+          path: anneal/target
+
       - name: Install current CLI for toolchain setup and smoke tests
         id: installed_cli
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/install-cli.log") 2>&1
@@ -317,13 +543,14 @@ jobs:
           bootstrap_target="$(mktemp -d "$RUNNER_TEMP/anneal-bootstrap-target.XXXXXX")"
           # Build the bootstrap `setup` binary outside `CARGO_TARGET_DIR` before
           # `setup` switches `RUSTC` and `RUSTFLAGS` to the extracted toolchain.
-          # Compile `sha2` and its thin traits at `opt-level = 3` (`test`
-          # inherits `profile.dev.package.*`) so hardware SHA-NI/AVX2 hashing
-          # runs at native speed without altering `anneal/Cargo.toml`.
+          # Compile `sha2` and `zstd-sys` at `opt-level = 3` (`test` inherits
+          # `profile.dev.package.*`) so SHA-256 hashing and `.tar.zst` archive
+          # extraction run at native speed without altering `anneal/Cargo.toml`.
           cargo install --locked --debug --path trusted/cargo-anneal \
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3' \
             --target-dir "$bootstrap_target" --root "$tools_root"
           rm -rf "$bootstrap_target"
           printf 'ANNEAL_TEST_CARGO_ANNEAL=%s/bin/cargo-anneal\n' \
@@ -333,6 +560,10 @@ jobs:
 
       - name: Install exocrate toolchain from local archive
         id: setup
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/setup.log") 2>&1
@@ -393,6 +624,10 @@ jobs:
 
       - name: Smoke-test the installed compiler session
         id: bootstrap
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/driver-bootstrap.log") 2>&1
@@ -412,6 +647,10 @@ jobs:
 
       - name: Install current auditor for smoke tests
         id: installed_auditor
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/install-tools.log") 2>&1
@@ -419,12 +658,17 @@ jobs:
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3' \
             --root "$ANNEAL_TEST_TOOLS_ROOT"
           printf 'ANNEAL_TEST_AUDITOR=%s/bin/anneal-audit\n' \
             "$ANNEAL_TEST_TOOLS_ROOT" >> "$GITHUB_ENV"
 
-      - name: Install bubblewrap sandbox for cold vendor compilation
+      - name: Install bubblewrap sandbox for alpha probe
         id: sandbox
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/sandbox.log") 2>&1
@@ -454,45 +698,8 @@ jobs:
             --ro-bind /usr/bin/true /true \
             -- /true
 
-      - name: Audit repository trusted boundary
-        id: audit
-        env:
-          CI_EVENT_NAME: ${{ github.event_name }}
-          CI_REPOSITORY: ${{ github.repository }}
-          CI_REF: ${{ github.ref }}
-          MIRI_CACHE_HIT: ${{ steps.miri_olean_cache.outputs.cache-hit }}
-          MIRI_OLEAN_CACHE_DIR: ${{ runner.temp }}/anneal-miri-olean-cache
-        run: |
-          set -euo pipefail
-          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/boundary-audit.log") 2>&1
-          unset ANNEAL_MIRI_CACHE_DIR
-          audit_args=(
-            --lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean"
-            --require-correspondence
-          )
-          if [ "$CI_EVENT_NAME" = "push" ]; then
-            rm -rf "$MIRI_OLEAN_CACHE_DIR"
-            if [ "$CI_REPOSITORY" = "google/zerocopy" ] && [ "$CI_REF" = "refs/heads/main" ] && [ "$MIRI_CACHE_HIT" != "true" ]; then
-              audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
-            fi
-          elif [ "$CI_EVENT_NAME" = "pull_request" ]; then
-            audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
-          fi
-          cargo \
-            --config 'profile.dev.package.cpufeatures.opt-level=3' \
-            --config 'profile.dev.package.digest.opt-level=3' \
-            --config 'profile.dev.package.sha2.opt-level=3' \
-            run --locked -p anneal-audit -- "${audit_args[@]}"
-
-      - name: Save lean-miri closure .olean cache
-        id: save_miri_olean_cache
-        if: ${{ steps.miri_olean_cache.outputs.cache-hit != 'true' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main')) }}
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ runner.temp }}/anneal-miri-olean-cache
-          key: ${{ steps.miri_olean_cache.outputs.cache-primary-key }}
-
       - name: Check the scalar alpha with the installed toolchain
+        id: alpha
         env:
           ACTIONS_CACHE_URL: ''
           ACTIONS_RESULTS_URL: ''
@@ -522,12 +729,20 @@ jobs:
 
       - name: Check crate packaging
         id: package
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/package.log") 2>&1
           cargo metadata --locked --format-version 1 --no-deps \
             > "$ANNEAL_TEST_DIAGNOSTICS/package-metadata.json"
-          cargo publish --dry-run -p cargo-anneal
+          cargo publish --dry-run -p cargo-anneal \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3'
           prepared_manifest="$(python3 -I -B - <<'PY'
           import json
           import os
@@ -553,11 +768,15 @@ jobs:
           cargo test --locked --manifest-path "$prepared_manifest" --no-run \
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
-            --config 'profile.dev.package.sha2.opt-level=3'
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3'
 
       - name: Run installed smoke suite
         id: smoke
         env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
           TMPDIR: ${{ runner.temp }}
         run: |
           set -euo pipefail
@@ -569,6 +788,7 @@ jobs:
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3' \
             -- --ignored --exact installed_smoke --list \
             > "$ANNEAL_TEST_DIAGNOSTICS/installed-smoke-selection.stdout"
           grep -Fx 'installed_smoke: test' \
@@ -577,16 +797,21 @@ jobs:
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3' \
             -- --ignored --exact installed_smoke --nocapture
 
       - name: Verify clean working tree
         id: clean_tree
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
         run: |
           set -euo pipefail
           status="$(git status --porcelain --untracked-files=all)"
           test -z "$status"
 
-      - name: Record test step results
+      - name: Record installed smoke step results
         working-directory: .
         if: ${{ always() }}
         env:
@@ -614,11 +839,11 @@ jobs:
           destination.write_text(json.dumps(report, indent=2) + "\n")
           PY
 
-      - name: Upload failed test diagnostics
+      - name: Upload failed installed smoke diagnostics
         if: ${{ failure() || cancelled() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: anneal-test-diagnostics
+          name: anneal-installed-smoke-diagnostics
           path: ${{ env.ANNEAL_TEST_DIAGNOSTICS }}
           if-no-files-found: warn
           retention-days: 7
@@ -703,6 +928,7 @@ jobs:
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3' \
             --target-dir "$bootstrap_target" --root "$tools_root"
           rm -rf "$bootstrap_target"
           printf 'ANNEAL_TEST_CARGO_ANNEAL=%s/bin/cargo-anneal\n' \
@@ -802,11 +1028,13 @@ jobs:
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3' \
             -- --root . --check
           cargo test --workspace --locked \
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
-            --config 'profile.dev.package.sha2.opt-level=3'
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3'
 
       - name: Verify clean working tree
         id: clean_tree
@@ -863,7 +1091,7 @@ jobs:
       # success in branch protection, so this aggregation must fail closed.
       if: ${{ always() }}
       runs-on: ubuntu-latest
-      needs: [static-checks, build-exocrate, test-and-verify, workspace-tests]
+      needs: [static-checks, build-exocrate, test-and-verify, installed-smoke, workspace-tests]
       steps:
         - name: Reject workflow cancellation
           if: ${{ cancelled() }}

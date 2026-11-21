@@ -7866,3 +7866,253 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
         "unexpected 1-cold cached-node cycle error: {err_cyc_cached}"
     );
 }
+
+/// Verifies Pass 1 parallel DAG compilation on a multi-branch `theory/`
+/// diamond (`Anneal.Root` -> `{Anneal.Left, Anneal.Right}` -> `Anneal`) and
+/// confirms deterministic earliest-order failure reporting when concurrent
+/// sibling modules both fail compilation.
+#[test]
+fn compiles_pass1_diamond_dag_in_parallel_and_preserves_failure_order() {
+    let fix = TempFixture::new(None);
+    let theory_dir = fix.root.join("theory/Anneal");
+    fs::create_dir_all(&theory_dir).unwrap();
+    fs::write(
+        theory_dir.join("Root.lean"),
+        "prelude\nimport Init.Core\nimport Trusted\nnamespace Anneal.Root\ndef base : Nat := 1\nend Anneal.Root\n",
+    )
+    .unwrap();
+    fs::write(
+        theory_dir.join("Left.lean"),
+        "prelude\nimport Init.Core\nimport Anneal.Root\nnamespace Anneal.Left\ndef l : Nat := Anneal.Root.base\nend Anneal.Left\n",
+    )
+    .unwrap();
+    fs::write(
+        theory_dir.join("Right.lean"),
+        "prelude\nimport Init.Core\nimport Anneal.Root\nnamespace Anneal.Right\ndef r : Nat := Anneal.Root.base\nend Anneal.Right\n",
+    )
+    .unwrap();
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        "prelude\nimport Init.Core\nimport Anneal.Left\nimport Anneal.Right\nnamespace Anneal\ndef top : Nat := Anneal.Left.l\nend Anneal\n",
+    )
+    .unwrap();
+
+    let mut ok_checker = Checker::new(&fix.root, None).unwrap();
+    ok_checker.set_require_mir_wp(false);
+    let report = ok_checker.run().unwrap();
+    assert_eq!(report.get("replay"), Some(&json!(true)));
+
+    // Both sibling leaves fail typechecking; `Anneal.Left` precedes
+    // `Anneal.Right` in sorted topological order so its failure must win.
+    fs::write(
+        theory_dir.join("Left.lean"),
+        "prelude\nimport Init.Core\nimport Anneal.Root\nnamespace Anneal.Left\ndef l : Nat := true\nend Anneal.Left\n",
+    )
+    .unwrap();
+    fs::write(
+        theory_dir.join("Right.lean"),
+        "prelude\nimport Init.Core\nimport Anneal.Root\nnamespace Anneal.Right\ndef r : Nat := false\nend Anneal.Right\n",
+    )
+    .unwrap();
+    let mut err_checker = Checker::new(&fix.root, None).unwrap();
+    err_checker.set_require_mir_wp(false);
+    let err = err_checker.run().unwrap_err();
+    assert_eq!(err.code, 2, "expected compile failure: {err}");
+    assert_eq!(err.phase, "compile-Anneal.Left", "expected earliest sibling failure, got: {err}");
+}
+
+/// Verifies that Pass 2 `"correspondence-audit"` fails closed when a compiled
+/// correspondence module imports a Pass 1 `theory/` module omitted from
+/// `CorrespondenceAudit.theory` (the transitive import closure of
+/// `correspondence/`).
+#[test]
+fn rejects_unadmitted_pass1_theory_import_in_correspondence_audit() {
+    let fix = TempFixture::new(None);
+    fs::create_dir_all(fix.root.join("theory/Anneal")).unwrap();
+    fs::write(
+        fix.root.join("theory/Anneal/Unimported.lean"),
+        "prelude\nimport Init.Core\nnamespace Anneal.Unimported\ndef hidden : Nat := 7\nend Anneal.Unimported\n",
+    )
+    .unwrap();
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        "prelude\nimport Init.Core\nimport Anneal.Unimported\n",
+    )
+    .unwrap();
+
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    checker.run().unwrap();
+
+    let stage = checker.stage().to_path_buf();
+    let src = stage.join("src/forged-unimported");
+    let theory_lib = stage.join("theory-lib");
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &theory_lib,
+        &["Anneal.Unimported"],
+        "Anneal.MirCorrespondenceProof",
+        "prelude\nimport Init.Core\nimport Anneal.Unimported\nnamespace Anneal.MirCorrespondenceProof\ndef leak : Nat := Anneal.Unimported.hidden\nend Anneal.MirCorrespondenceProof\n",
+    );
+
+    let err = checker
+        .inspect(InspectorRequest::CorrespondenceAudit {
+            search_path: vec![stage.join("lib"), theory_lib],
+            trusted: vec!["Trusted".to_string()],
+            corr_trusted: Vec::new(),
+            theory: Vec::new(),
+            corr_theory: vec!["Anneal.MirCorrespondenceProof".to_string()],
+            vendor_miri: Vec::new(),
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+        })
+        .unwrap_err();
+    assert_eq!(err.code, 1, "expected policy rejection: {err}");
+    assert_eq!(err.phase, "correspondence-audit", "unexpected phase: {err}");
+    assert!(
+        err.message.contains("foreign module Anneal.Unimported in correspondence environment"),
+        "unexpected error: {err}"
+    );
+}
+
+/// Verifies that [`Checker::run_correspondence_with_closure`] rejects Pass 2
+/// modules whose names collide with Pass 1 `theory/` or `trusted/lean/`
+/// modules (`code == 1`, `phase == "snapshot"`) before Pass 2 preflight or
+/// compilation can touch `<stage>/lib` or `<stage>/theory-lib`.
+#[test]
+fn rejects_overlapping_pass1_and_pass2_module_names() {
+    // Case 1: Pass 1 `theory/Anneal/MirCorrespondenceProof.lean` collides with
+    // Pass 2 `correspondence/Anneal/MirCorrespondenceProof.lean`.
+    {
+        let fix = TempFixture::new(None);
+        fs::create_dir_all(fix.root.join("theory/Anneal")).unwrap();
+        fs::write(
+            fix.root.join("theory/Anneal/MirCorrespondenceProof.lean"),
+            "prelude\nimport Init.Core\nnamespace Anneal.MirCorrespondenceProof\ndef decoy : Nat := 1\nend Anneal.MirCorrespondenceProof\n",
+        )
+        .unwrap();
+        fs::write(
+            fix.root.join("theory/Anneal.lean"),
+            "prelude\nimport Init.Core\nimport Anneal.MirCorrespondenceProof\n",
+        )
+        .unwrap();
+
+        let mut checker = Checker::new(&fix.root, None).unwrap();
+        checker.set_require_mir_wp(false);
+        checker.run().unwrap();
+        let pass1_olean = checker.stage().join("theory-lib/Anneal/MirCorrespondenceProof.olean");
+        let pass1_sha = sha256_file(&pass1_olean, "test").unwrap();
+
+        let vendor_dir = fix.root.join("synthetic-miri");
+        fs::create_dir_all(&vendor_dir).unwrap();
+        let corr_trusted = fix.root.join("trusted/correspondence/Trusted/Correspondence.lean");
+        let corr_proof = fix.root.join("correspondence/Anneal/MirCorrespondenceProof.lean");
+        fs::create_dir_all(corr_trusted.parent().unwrap()).unwrap();
+        fs::create_dir_all(corr_proof.parent().unwrap()).unwrap();
+        fs::write(
+            &corr_trusted,
+            "-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.Core\nnamespace Trusted.Correspondence\ndef ok : Nat := 0\nend Trusted.Correspondence\n",
+        )
+        .unwrap();
+        fs::write(
+            &corr_proof,
+            "prelude\nimport Init.Core\nimport Trusted.Correspondence\nnamespace Anneal.MirCorrespondenceProof\ndef real : Nat := Trusted.Correspondence.ok\nend Anneal.MirCorrespondenceProof\n",
+        )
+        .unwrap();
+
+        let base_tiers = BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]);
+        let err = checker
+            .run_correspondence_with_closure(
+                &base_tiers,
+                &vendor_dir,
+                "synthetic-commit",
+                &[],
+                &BTreeMap::new(),
+            )
+            .unwrap_err();
+        assert_eq!(err.code, 1, "expected policy exit 1: {err}");
+        assert_eq!(err.phase, "snapshot", "expected snapshot rejection: {err}");
+        assert!(
+            err.message.contains("overlapping module role for Anneal.MirCorrespondenceProof"),
+            "unexpected error: {err}"
+        );
+        assert_eq!(
+            sha256_file(&pass1_olean, "test").unwrap(),
+            pass1_sha,
+            "Pass 1 theory .olean must not be overwritten on collision"
+        );
+        assert!(
+            !checker.stage().join("lib/Trusted/Correspondence.olean").exists(),
+            "Pass 2 Trusted.Correspondence must not compile on collision"
+        );
+    }
+
+    // Case 2: Pass 1 `trusted/lean/Trusted/Correspondence.lean` collides with
+    // Pass 2 `trusted/correspondence/Trusted/Correspondence.lean`.
+    {
+        let fix = TempFixture::new(None);
+        fs::create_dir_all(fix.root.join("trusted/lean/Trusted")).unwrap();
+        fs::write(
+            fix.root.join("trusted/lean/Trusted/Correspondence.lean"),
+            "-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.Core\nnamespace Trusted.Correspondence\ndef decoy : Nat := 2\nend Trusted.Correspondence\n",
+        )
+        .unwrap();
+        fs::create_dir_all(fix.root.join("theory/Anneal")).unwrap();
+        fs::write(
+            fix.root.join("theory/Anneal.lean"),
+            "prelude\nimport Init.Core\nimport Trusted.Correspondence\ndef reach : Nat := Trusted.Correspondence.decoy\n",
+        )
+        .unwrap();
+
+        let mut checker = Checker::new(&fix.root, None).unwrap();
+        checker.set_require_mir_wp(false);
+        checker.run().unwrap();
+        let pass1_olean = checker.stage().join("lib/Trusted/Correspondence.olean");
+        let pass1_sha = sha256_file(&pass1_olean, "test").unwrap();
+
+        let vendor_dir = fix.root.join("synthetic-miri");
+        fs::create_dir_all(&vendor_dir).unwrap();
+        let corr_trusted = fix.root.join("trusted/correspondence/Trusted/Correspondence.lean");
+        let corr_proof = fix.root.join("correspondence/Anneal/MirCorrespondenceProof.lean");
+        fs::create_dir_all(corr_trusted.parent().unwrap()).unwrap();
+        fs::create_dir_all(corr_proof.parent().unwrap()).unwrap();
+        fs::write(
+            &corr_trusted,
+            "-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.Core\nnamespace Trusted.Correspondence\ndef real : Nat := 0\nend Trusted.Correspondence\n",
+        )
+        .unwrap();
+        fs::write(
+            &corr_proof,
+            "prelude\nimport Init.Core\nimport Trusted.Correspondence\nnamespace Anneal.MirCorrespondenceProof\ndef ok : Nat := Trusted.Correspondence.real\nend Anneal.MirCorrespondenceProof\n",
+        )
+        .unwrap();
+
+        let base_tiers = BTreeMap::from([
+            ("Trusted".to_string(), TrustTier::Vetted),
+            (
+                "Trusted.Correspondence".to_string(),
+                TrustTier::parse("candidate:mir_semantics").unwrap(),
+            ),
+        ]);
+        let err = checker
+            .run_correspondence_with_closure(
+                &base_tiers,
+                &vendor_dir,
+                "synthetic-commit",
+                &[],
+                &BTreeMap::new(),
+            )
+            .unwrap_err();
+        assert_eq!(err.code, 1, "expected policy exit 1: {err}");
+        assert_eq!(err.phase, "snapshot", "expected snapshot rejection: {err}");
+        assert!(
+            err.message.contains("overlapping module role for Trusted.Correspondence"),
+            "unexpected error: {err}"
+        );
+        assert_eq!(
+            sha256_file(&pass1_olean, "test").unwrap(),
+            pass1_sha,
+            "Pass 1 trusted .olean must not be overwritten on collision"
+        );
+    }
+}

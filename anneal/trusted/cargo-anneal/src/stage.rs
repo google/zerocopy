@@ -27,8 +27,9 @@ use serde_json::json;
 
 use crate::toolchain::{
     AdmittedToolchain, CompiledInspectorPaths, Failure, FoundationLock, ImportEdge, Json,
-    LibraryLock, ModuleArtifacts, OLEAN_PARTS, PARTS, TOOLCHAIN, default_lean_path, is_sha256_hex,
-    regular, sha256_file, stage_regular_file, verify_installed_module_record,
+    LibraryLock, ModuleArtifacts, OLEAN_PARTS, PARTS, ParallelDagPlan, TOOLCHAIN,
+    default_lean_path, is_sha256_hex, regular, run_parallel_dag, sha256_file, stage_regular_file,
+    verify_installed_module_record,
 };
 
 /// Cache key for precompiled `TrustedBoundary.olean` artifacts held in process
@@ -122,6 +123,107 @@ struct InspectorErrResponse {
 struct InspectorOkResponse {
     ok: bool,
     result: serde_json::Map<String, Json>,
+}
+
+fn check_lean_output(
+    label: &str,
+    output: Output,
+    ordinary_rejection: bool,
+) -> Result<String, Failure> {
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        // Keep both streams: a frontend error can precede a runtime failure,
+        // and dropping either stream hides that distinction.
+        let detail = format!("stdout:\n{}\nstderr:\n{}", stdout.trim(), stderr.trim());
+        let code =
+            if ordinary_rejection && reports_frontend_rejection(&output) { 1 } else { 2 };
+        return Err(Failure::new(
+            code,
+            label,
+            format!("Lean exited {:?}: {detail}", output.status.code()),
+        ));
+    }
+    String::from_utf8(output.stdout)
+        .map_err(|e| Failure::new(2, label, format!("invalid UTF-8 from Lean: {e}")))
+}
+
+fn write_setup_json_to_stage(
+    stage: &Path,
+    artifacts: &BTreeMap<String, ModuleArtifacts>,
+    module: &str,
+    imports: &[ImportEdge],
+) -> Result<PathBuf, Failure> {
+    let import_arts: BTreeMap<&str, [&[String]; 2]> =
+        artifacts.iter().map(|(k, v)| (k.as_str(), v.to_wire())).collect();
+    let setup_obj = json!({
+        "name": module,
+        "isModule": false,
+        "imports": imports,
+        "importArts": import_arts,
+        "dynlibs": [],
+        "plugins": [],
+        "options": {},
+    });
+    let setup_path = stage.join(format!("{module}.setup.json"));
+    let bytes =
+        serde_json::to_vec(&setup_obj).map_err(|e| Failure::new(2, "setup", e.to_string()))?;
+    fs::write(&setup_path, bytes).map_err(|e| Failure::new(2, "setup", e.to_string()))?;
+    Ok(setup_path)
+}
+
+fn build_lean_compile_args(
+    setup_path: &Path,
+    output: &Path,
+    src_path: &Path,
+    warn_as_err: bool,
+    target_rejection: bool,
+) -> Vec<String> {
+    let mut compile_args = vec![
+        "-j1".to_string(),
+        "-M2048".to_string(),
+        "-t0".to_string(),
+        "-DElab.async=false".to_string(),
+        "-Ddebug.skipKernelTC=false".to_string(),
+    ];
+    if target_rejection {
+        // Only compilation uses the diagnostic protocol. Inspector modes
+        // have their own explicit JSON response and failure categories.
+        compile_args.push("--json".to_string());
+    }
+    if warn_as_err {
+        compile_args.push("-DwarningAsError=true".to_string());
+    }
+    compile_args.extend([
+        "--setup".to_string(),
+        setup_path.to_string_lossy().into_owned(),
+        "-o".to_string(),
+        output.to_string_lossy().into_owned(),
+        src_path.to_string_lossy().into_owned(),
+    ]);
+    compile_args
+}
+
+fn collect_compiled_artifacts(module: &str, output: &Path) -> Result<ModuleArtifacts, Failure> {
+    let stem = output
+        .file_name()
+        .unwrap()
+        .to_string_lossy()
+        .strip_suffix("olean")
+        .unwrap()
+        .to_string();
+    let parent = output.parent().unwrap();
+    let mut available: BTreeMap<&str, String> = BTreeMap::new();
+    for part in PARTS {
+        let artifact = parent.join(format!("{stem}{part}"));
+        if fs::symlink_metadata(&artifact).is_ok() {
+            regular(&artifact, "compile")?;
+            available.insert(part, artifact.to_string_lossy().into_owned());
+        }
+    }
+    ModuleArtifacts::from_available(&available, "compile", || {
+        format!("compiler omitted output for {module}")
+    })
 }
 
 fn is_retained_environment_key(key: &str) -> bool {
@@ -504,22 +606,7 @@ impl Checker {
         let output = self
             .launch_lean_with_path(arguments, lean_path)
             .map_err(|e| Failure::new(2, label, format!("could not execute Lean: {e}")))?;
-        if !output.status.success() {
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            // Keep both streams: a frontend error can precede a runtime
-            // failure, and dropping either stream hides that distinction.
-            let detail = format!("stdout:\n{}\nstderr:\n{}", stdout.trim(), stderr.trim());
-            let code =
-                if ordinary_rejection && reports_frontend_rejection(&output) { 1 } else { 2 };
-            return Err(Failure::new(
-                code,
-                label,
-                format!("Lean exited {:?}: {detail}", output.status.code()),
-            ));
-        }
-        String::from_utf8(output.stdout)
-            .map_err(|e| Failure::new(2, label, format!("invalid UTF-8 from Lean: {e}")))
+        check_lean_output(label, output, ordinary_rejection)
     }
 
     /// Write a `<module>.setup.json` descriptor for `lean --setup`.
@@ -530,22 +617,7 @@ impl Checker {
         imports: &[ImportEdge],
     ) -> Result<PathBuf, Failure> {
         let adm = self.admitted()?;
-        let import_arts: BTreeMap<&str, [&[String]; 2]> =
-            adm.artifacts.iter().map(|(k, v)| (k.as_str(), v.to_wire())).collect();
-        let setup_obj = json!({
-            "name": module,
-            "isModule": false,
-            "imports": imports,
-            "importArts": import_arts,
-            "dynlibs": [],
-            "plugins": [],
-            "options": {},
-        });
-        let setup_path = self.stage.join(format!("{module}.setup.json"));
-        let bytes =
-            serde_json::to_vec(&setup_obj).map_err(|e| Failure::new(2, "setup", e.to_string()))?;
-        fs::write(&setup_path, bytes).map_err(|e| Failure::new(2, "setup", e.to_string()))?;
-        Ok(setup_path)
+        write_setup_json_to_stage(&self.stage, &adm.artifacts, module, imports)
     }
 
     /// Compile a single staged `.lean` source file into
@@ -568,57 +640,115 @@ impl Checker {
             fs::create_dir_all(parent)
                 .map_err(|e| Failure::operational("compile", e.to_string()))?;
         }
-        let mut compile_args = vec![
-            "-j1".to_string(),
-            "-M2048".to_string(),
-            "-t0".to_string(),
-            "-DElab.async=false".to_string(),
-            "-Ddebug.skipKernelTC=false".to_string(),
-        ];
-        if target_rejection {
-            // Only compilation uses the diagnostic protocol. Inspector modes
-            // have their own explicit JSON response and failure categories.
-            compile_args.push("--json".to_string());
-        }
-        if warn_as_err {
-            compile_args.push("-DwarningAsError=true".to_string());
-        }
-        compile_args.extend([
-            "--setup".to_string(),
-            setup_path.to_string_lossy().into_owned(),
-            "-o".to_string(),
-            output.to_string_lossy().into_owned(),
-            src_path.to_string_lossy().into_owned(),
-        ]);
+        let compile_args = build_lean_compile_args(
+            &setup_path,
+            &output,
+            src_path,
+            warn_as_err,
+            target_rejection,
+        );
         self.process_with_exit_policy(
             &format!("compile-{module}"),
             &compile_args,
             target_rejection,
         )?;
-
-        let stem = output
-            .file_name()
-            .unwrap()
-            .to_string_lossy()
-            .strip_suffix("olean")
-            .unwrap()
-            .to_string();
-        let parent = output.parent().unwrap();
-        let mut available: BTreeMap<&str, String> = BTreeMap::new();
-        for part in PARTS {
-            let artifact = parent.join(format!("{stem}{part}"));
-            if fs::symlink_metadata(&artifact).is_ok() {
-                regular(&artifact, "compile")?;
-                available.insert(part, artifact.to_string_lossy().into_owned());
-            }
-        }
-        let mod_arts = ModuleArtifacts::from_available(&available, "compile", || {
-            format!("compiler omitted output for {module}")
-        })?;
+        let mod_arts = collect_compiled_artifacts(module, &output)?;
         let adm = self.admitted_mut()?;
         adm.artifacts.insert(module.to_string(), mod_arts);
         adm.graph.insert(module.to_string(), edge_list);
         Ok(())
+    }
+
+    /// Compile a topologically ordered batch of staged `.lean` modules in
+    /// parallel along their verified import DAG across at most `max_workers`
+    /// workers, preserving deterministic earliest-order failure reporting and
+    /// serialized registration into `self.admitted`.
+    #[doc(hidden)]
+    #[allow(clippy::too_many_arguments)]
+    pub fn compile_lean_modules_parallel(
+        &mut self,
+        order: &[String],
+        sources: &BTreeMap<String, PathBuf>,
+        imports: &BTreeMap<String, Vec<ImportEdge>>,
+        lib_subdir: &str,
+        warn_as_err: bool,
+        target_rejection: bool,
+        max_workers: usize,
+    ) -> Result<(), Failure> {
+        if order.is_empty() {
+            return Ok(());
+        }
+        let _ = self.admitted()?;
+        for module in order {
+            if !sources.contains_key(module) {
+                return Err(Failure::operational(
+                    "compile",
+                    format!("missing staged source for {module}"),
+                ));
+            }
+        }
+        let plan =
+            ParallelDagPlan::from_module_order(order, imports, "preflight", "module import cycle")?;
+        self.execution_began = true;
+        self.counter += order.len();
+
+        let lean = &self.lean;
+        let stage = &self.stage;
+        let environment = &self.environment;
+        let adm = self
+            .admitted
+            .as_mut()
+            .expect("toolchain admission verified above");
+
+        run_parallel_dag(
+            &plan,
+            max_workers,
+            "compile",
+            "worker panicked during Lean compilation",
+            adm,
+            |adm, idx| {
+                let module = &order[idx];
+                let edge_list = &imports[module];
+                let src_path = &sources[module];
+                let setup_path =
+                    write_setup_json_to_stage(stage, &adm.artifacts, module, edge_list)?;
+                let output =
+                    stage.join(lib_subdir).join(format!("{}.olean", module.replace('.', "/")));
+                if let Some(parent) = output.parent() {
+                    fs::create_dir_all(parent)
+                        .map_err(|e| Failure::operational("compile", e.to_string()))?;
+                }
+                let compile_args = build_lean_compile_args(
+                    &setup_path,
+                    &output,
+                    src_path,
+                    warn_as_err,
+                    target_rejection,
+                );
+                Ok((output, compile_args))
+            },
+            |idx, (output_path, compile_args)| {
+                let module = &order[idx];
+                let label = format!("compile-{module}");
+                let output = Command::new(lean)
+                    .args(&compile_args)
+                    .current_dir(stage)
+                    .env_clear()
+                    .envs(environment)
+                    .output()
+                    .map_err(|e| {
+                        Failure::new(2, &label, format!("could not execute Lean: {e}"))
+                    })?;
+                check_lean_output(&label, output, target_rejection)?;
+                collect_compiled_artifacts(module, &output_path)
+            },
+            |adm, idx, mod_arts| {
+                let module = &order[idx];
+                adm.artifacts.insert(module.clone(), mod_arts);
+                adm.graph.insert(module.clone(), imports[module].clone());
+                Ok(())
+            },
+        )
     }
 
     /// Compile `TrustedBoundary.lean` once per

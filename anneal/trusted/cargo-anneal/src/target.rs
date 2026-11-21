@@ -22,8 +22,8 @@ use serde_json::json;
 
 use crate::stage::Checker;
 use crate::toolchain::{
-    Failure, Json, PreflightResult, is_lean_ident, is_sha256_hex, sha256_file, stage_regular_file,
-    topo_sort_modules, verify_installed_module_record,
+    Failure, Json, PreflightResult, default_compile_workers, is_lean_ident, is_sha256_hex,
+    sha256_file, stage_regular_file, topo_sort_modules, verify_installed_module_record,
 };
 
 /// The authority of a source module in a target verification request.
@@ -425,19 +425,18 @@ impl Checker {
             "target import cycle",
         )?;
         // Compilation consumes authenticated private copies and explicit
-        // imported artifacts. Target elaboration remains under the intact-host
-        // assumption; this path does not relax repository syntax admission.
-        for module in order {
-            self.execution_began = true;
-            self.compile_lean_module(
-                &module,
-                &staged[&module],
-                imports[&module].clone(),
-                "target-lib",
-                false,
-                true,
-            )?;
-        }
+        // imported artifacts across the verified module DAG. Target
+        // elaboration remains under the intact-host assumption; this path does
+        // not relax repository syntax admission.
+        self.compile_lean_modules_parallel(
+            &order,
+            &staged,
+            &imports,
+            "target-lib",
+            false,
+            true,
+            default_compile_workers(4),
+        )?;
         // Authenticate the staged bytes again after elaboration. This catches
         // accidental source changes; hostile host mutation remains excluded.
         for module in &request.modules {

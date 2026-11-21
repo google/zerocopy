@@ -18,15 +18,14 @@ use std::{
     env,
     ffi::{OsStr, OsString},
     fs, io,
-    num::NonZero,
     path::{Component, Path, PathBuf},
     process::Command,
-    sync::{Condvar, Mutex},
 };
 
 use cargo_anneal::{
-    AdmittedToolchain, Failure, ImportEdge, Json, OLEAN_PARTS, PARTS, PreflightResult,
-    TargetAuditRequest, is_lean_ident, regular, sha256_file, stage_regular_file, topo_sort_modules,
+    AdmittedToolchain, Failure, ImportEdge, Json, OLEAN_PARTS, PARTS, ParallelDagPlan,
+    PreflightResult, TargetAuditRequest, default_compile_workers, is_lean_ident, regular,
+    run_parallel_dag, sha256_file, stage_regular_file, topo_sort_modules,
 };
 use serde::Deserialize;
 use serde_json::json;
@@ -297,6 +296,7 @@ pub struct Checker {
     inner: cargo_anneal::Checker,
     modules: BTreeMap<String, PathBuf>,
     theory_modules: BTreeMap<String, PathBuf>,
+    pass1_imports: BTreeMap<String, Vec<ImportEdge>>,
     sysroot_foundation: Option<(PathBuf, Vec<String>)>,
     require_correspondence: bool,
     miri_cache_dir: Option<PathBuf>,
@@ -314,6 +314,7 @@ impl Checker {
             inner,
             modules: BTreeMap::new(),
             theory_modules: BTreeMap::new(),
+            pass1_imports: BTreeMap::new(),
             sysroot_foundation: None,
             require_correspondence: false,
             miri_cache_dir,
@@ -332,6 +333,7 @@ impl Checker {
             inner,
             modules: BTreeMap::new(),
             theory_modules: BTreeMap::new(),
+            pass1_imports: BTreeMap::new(),
             sysroot_foundation: None,
             require_correspondence: false,
             miri_cache_dir: None,
@@ -379,6 +381,7 @@ impl Checker {
     pub fn reset_stage(&mut self) -> Result<(), Failure> {
         self.modules.clear();
         self.theory_modules.clear();
+        self.pass1_imports.clear();
         self.sysroot_foundation = None;
         self.inner.reset_stage()
     }
@@ -396,6 +399,7 @@ impl Checker {
     pub fn run_target(&mut self, request: &TargetAuditRequest) -> Result<Json, Failure> {
         self.modules.clear();
         self.theory_modules.clear();
+        self.pass1_imports.clear();
         self.sysroot_foundation = None;
         self.inner.run_target(request)
     }
@@ -748,33 +752,27 @@ impl Checker {
             "Theory import cycle",
         )?;
 
-        for module in &preflight.trusted_order {
-            let edge_list = preflight.imports[module].clone();
-            let staged_src_path = self.modules[module].clone();
-            self.inner.mark_execution_began();
-            self.inner.compile_lean_module(
-                module,
-                &staged_src_path,
-                edge_list,
-                "lib",
-                false,
-                false,
-            )?;
-        }
+        self.pass1_imports = preflight.imports.clone();
+        let pass1_workers = default_compile_workers(4);
+        self.inner.compile_lean_modules_parallel(
+            &preflight.trusted_order,
+            &self.modules,
+            &preflight.imports,
+            "lib",
+            false,
+            false,
+            pass1_workers,
+        )?;
 
-        for module in &preflight.theory_order {
-            let edge_list = preflight.imports[module].clone();
-            let staged_src_path = self.theory_modules[module].clone();
-            self.inner.mark_execution_began();
-            self.inner.compile_lean_module(
-                module,
-                &staged_src_path,
-                edge_list,
-                "theory-lib",
-                true,
-                false,
-            )?;
-        }
+        self.inner.compile_lean_modules_parallel(
+            &preflight.theory_order,
+            &self.theory_modules,
+            &preflight.imports,
+            "theory-lib",
+            true,
+            false,
+            pass1_workers,
+        )?;
 
         let audit_req = InspectorRequest::Audit {
             trusted: self.modules.keys().cloned().collect(),
@@ -886,6 +884,38 @@ impl Checker {
             ));
         }
 
+        // Enforce unique module ownership across Pass 1 (`trusted/lean/`,
+        // `theory/`), Pass 2 (`trusted/correspondence/`, `correspondence/`),
+        // and pinned `vendor/lean-miri/` before preflight or staging into
+        // `lib/` and `theory-lib/`. Without this guard, narrowing
+        // `CorrespondenceAudit.theory` to imported Pass 1 `theory/` modules
+        // would omit an unimported Pass 1 collision (such as
+        // `theory/Anneal/MirCorrespondenceProof.lean`) from `baseTheory ++
+        // corrTheory` while overwriting its Pass 1 `.olean` in `theory-lib/`.
+        let vendor_module_names: BTreeSet<&str> =
+            closure_entries.iter().map(|e| e.module.as_str()).collect();
+        for module in self.modules.keys().chain(self.theory_modules.keys()) {
+            if vendor_module_names.contains(module.as_str()) {
+                return Err(Failure::policy(
+                    "snapshot",
+                    format!("overlapping module role for {module}"),
+                ));
+            }
+        }
+        for module in corr_trusted_modules.keys().chain(corr_theory_modules.keys()) {
+            let collides_with_pass1 =
+                self.modules.contains_key(module) || self.theory_modules.contains_key(module);
+            let collides_within_pass2 = corr_trusted_modules.contains_key(module)
+                && corr_theory_modules.contains_key(module);
+            let collides_with_vendor = vendor_module_names.contains(module.as_str());
+            if collides_with_pass1 || collides_within_pass2 || collides_with_vendor {
+                return Err(Failure::policy(
+                    "snapshot",
+                    format!("overlapping module role for {module}"),
+                ));
+            }
+        }
+
         // Run Phase 1 (`"preflight"`) over `trusted/correspondence/` and
         // `correspondence/` before compiling any Pass 2 module.
         let extra_trusted_allowed: BTreeSet<String> = self
@@ -963,62 +993,80 @@ impl Checker {
             ));
         }
 
+        // Importing the 160-module `Miri.Interpreter.ExecutionMachine`
+        // closure consumes ~1.7 GiB of Lean's `-M` allocator at startup,
+        // so Pass 2 uses `-M4096` rather than Pass 1's `-M2048`. Cap Pass 2
+        // concurrency at 3 workers (`3 * 4 GiB = 12 GiB` ceiling) to leave
+        // headroom on 16 GiB CI runners. Compile `Trusted.Correspondence*`
+        // first (without mounting `theory-lib`), then
+        // `Anneal.MirCorrespondence*`, each concurrently along its verified
+        // import DAG inside isolated per-module `bwrap` sandboxes.
+        let pass2_workers = default_compile_workers(3);
         let corr_trusted_src_root = stage.join("src/corr-trusted");
-        for module in &preflight.trusted_order {
-            let staged_src = &corr_trusted_modules[module];
-            let entry_rel = staged_src
-                .strip_prefix(&corr_trusted_src_root)
-                .map_err(|e| Failure::operational("compile", e.to_string()))?;
-            let entry_rel_str = entry_rel
-                .components()
-                .map(|c| c.as_os_str().to_string_lossy())
-                .collect::<Vec<_>>()
-                .join("/");
-            // Importing the 160-module `Miri.Interpreter.ExecutionMachine`
-            // closure consumes ~1.7 GiB of Lean's `-M` allocator at startup,
-            // so Pass 2 uses `-M4096` rather than Pass 1's `-M2048`.
-            self.sandbox_compile_pass2_module(&Pass2CompileSpec {
-                module,
-                src_root: &corr_trusted_src_root,
-                entry_rel_path: &entry_rel_str,
-                ro_libs: &[(&corr_trusted_lib, "/work/lib"), (&miri_lib, "/work/miri-lib")],
-                sandbox_lean_path: "/work/lib:/work/miri-lib",
-                out_lib_root: &corr_trusted_lib,
-                warning_as_error: false,
-            })?;
-        }
+        self.sandbox_compile_pass2_dag(
+            &preflight.trusted_order,
+            &corr_trusted_modules,
+            &preflight.imports,
+            &corr_trusted_src_root,
+            &[(&corr_trusted_lib, "/work/lib"), (&miri_lib, "/work/miri-lib")],
+            "/work/lib:/work/miri-lib",
+            &corr_trusted_lib,
+            false,
+            pass2_workers,
+        )?;
 
         let corr_theory_src_root = stage.join("src/corr-theory");
-        for module in &preflight.theory_order {
-            let staged_src = &corr_theory_modules[module];
-            let entry_rel = staged_src
-                .strip_prefix(&corr_theory_src_root)
-                .map_err(|e| Failure::operational("compile", e.to_string()))?;
-            let entry_rel_str = entry_rel
-                .components()
-                .map(|c| c.as_os_str().to_string_lossy())
-                .collect::<Vec<_>>()
-                .join("/");
-            self.sandbox_compile_pass2_module(&Pass2CompileSpec {
-                module,
-                src_root: &corr_theory_src_root,
-                entry_rel_path: &entry_rel_str,
-                ro_libs: &[
-                    (&corr_trusted_lib, "/work/lib"),
-                    (&corr_theory_lib, "/work/theory-lib"),
-                    (&miri_lib, "/work/miri-lib"),
-                ],
-                sandbox_lean_path: "/work/lib:/work/theory-lib:/work/miri-lib",
-                out_lib_root: &corr_theory_lib,
-                warning_as_error: true,
-            })?;
-        }
+        self.sandbox_compile_pass2_dag(
+            &preflight.theory_order,
+            &corr_theory_modules,
+            &preflight.imports,
+            &corr_theory_src_root,
+            &[
+                (&corr_trusted_lib, "/work/lib"),
+                (&corr_theory_lib, "/work/theory-lib"),
+                (&miri_lib, "/work/miri-lib"),
+            ],
+            "/work/lib:/work/theory-lib:/work/miri-lib",
+            &corr_theory_lib,
+            true,
+            pass2_workers,
+        )?;
+
+        // Pass 1 `"audit"` has already replayed every `theory/` module against
+        // the locked foundation. Pass 2 `"correspondence-audit"` only needs
+        // the Pass 1 `theory/` modules transitively imported by
+        // `correspondence/` (`corr_theory_modules`); any unexpected Pass 1
+        // `theory/` module loaded by a forged `.olean` fails closed as a
+        // foreign module in `classifyCorrModules`.
+        let corr_audit_theory: Vec<String> =
+            if !self.theory_modules.is_empty() && self.pass1_imports.is_empty() {
+                self.theory_modules.keys().cloned().collect()
+            } else {
+                let mut needed = BTreeSet::new();
+                let mut pending: Vec<String> = corr_theory_modules
+                    .keys()
+                    .flat_map(|m| preflight.imports[m].iter().map(|e| e.module.clone()))
+                    .collect();
+                while let Some(module) = pending.pop() {
+                    if !self.theory_modules.contains_key(&module)
+                        || !needed.insert(module.clone())
+                    {
+                        continue;
+                    }
+                    if let Some(edges) = self.pass1_imports.get(&module) {
+                        for edge in edges {
+                            pending.push(edge.module.clone());
+                        }
+                    }
+                }
+                needed.into_iter().collect()
+            };
 
         let corr_req = InspectorRequest::CorrespondenceAudit {
             search_path: search_dirs,
             trusted: self.modules.keys().cloned().collect(),
             corr_trusted: corr_trusted_modules.keys().cloned().collect(),
-            theory: self.theory_modules.keys().cloned().collect(),
+            theory: corr_audit_theory,
             corr_theory: corr_theory_modules.keys().cloned().collect(),
             vendor_miri: closure_entries.iter().map(|e| e.module.clone()).collect(),
             module_tiers: preflight.module_tiers,
@@ -1198,12 +1246,7 @@ impl Checker {
             return Ok(miri_lib);
         }
 
-        let workers = std::thread::available_parallelism()
-            .map(NonZero::get)
-            .unwrap_or(1)
-            .min(4)
-            .min(cold_indices.len())
-            .max(1);
+        let workers = default_compile_workers(4);
 
         // Parse only the `module`/`prelude`/`import` headers of all
         // SHA-256-verified staged closure sources (`Parser.parseHeader` in
@@ -1238,7 +1281,6 @@ impl Checker {
         }
 
         let mut seen_headers = vec![false; total_len];
-        let mut in_degree = vec![0usize; total_len];
         let mut dependents: Vec<Vec<usize>> = vec![Vec::new(); total_len];
         for header in headers_res.headers {
             let Some(&dst_idx) = idx_by_module.get(header.module.as_str()) else {
@@ -1254,7 +1296,6 @@ impl Checker {
                 ));
             }
             seen_headers[dst_idx] = true;
-            let mut unique_deps = BTreeSet::new();
             for edge in header.imports {
                 if let Some(&src_idx) = idx_by_module.get(edge.module.as_str()) {
                     if src_idx == dst_idx {
@@ -1263,22 +1304,16 @@ impl Checker {
                             format!("self-import in Miri closure module {}", header.module),
                         ));
                     }
-                    if unique_deps.insert(src_idx) {
-                        dependents[src_idx].push(dst_idx);
-                        in_degree[dst_idx] += 1;
-                    }
+                    dependents[src_idx].push(dst_idx);
                 }
             }
         }
-        let topo_order = verify_miri_dag_acyclic(&in_degree, &dependents)?;
-        let mut min_cold_descendant = vec![usize::MAX; total_len];
-        for &u in topo_order.iter().rev() {
-            let mut best = if is_cold[u] { u } else { usize::MAX };
-            for &v in &dependents[u] {
-                best = best.min(min_cold_descendant[v]);
-            }
-            min_cold_descendant[u] = best;
-        }
+        let plan = ParallelDagPlan::from_indexed_edges(
+            is_cold,
+            dependents,
+            "miri-pin",
+            "import cycle in Miri closure modules",
+        )?;
 
         let first_label = format!("compile-{}", entries[cold_indices[0]].module);
         let (bwrap, lean_prefix, sandbox_lean) =
@@ -1288,123 +1323,36 @@ impl Checker {
             let _ = self.inner.next_counter();
         }
 
-        let mut init_state = MiriDagState {
-            ready: BTreeSet::new(),
-            in_degree,
-            active_workers: 0,
-            first_error: None,
-        };
-        let mut cached_roots = Vec::new();
-        for idx in 0..total_len {
-            if init_state.in_degree[idx] == 0 {
-                if is_cold[idx] {
-                    init_state.ready.insert((min_cold_descendant[idx], idx));
-                } else {
-                    cached_roots.push(idx);
-                }
-            }
-        }
-        propagate_miri_completions(
-            cached_roots,
-            &is_cold,
-            &min_cold_descendant,
-            &dependents,
-            &mut init_state,
-        );
-        let sync = (Mutex::new(init_state), Condvar::new());
         let miri_cache_dir = self.miri_cache_dir.as_deref();
-
-        std::thread::scope(|scope| {
-            for _ in 0..workers {
-                scope.spawn(|| {
-                    let (lock, cvar) = &sync;
-                    loop {
-                        let entry_idx = {
-                            let mut state = lock.lock().unwrap_or_else(|e| e.into_inner());
-                            while let Some(&(last_min_desc, _)) = state.ready.last() {
-                                let beaten = state
-                                    .first_error
-                                    .as_ref()
-                                    .is_some_and(|(best_idx, _)| *best_idx < last_min_desc);
-                                if beaten {
-                                    state.ready.pop_last();
-                                } else {
-                                    break;
-                                }
-                            }
-                            if let Some((_, next_idx)) = state.ready.pop_first() {
-                                state.active_workers += 1;
-                                next_idx
-                            } else if state.active_workers == 0 {
-                                cvar.notify_all();
-                                break;
-                            } else {
-                                drop(cvar.wait(state).unwrap_or_else(|e| e.into_inner()));
-                                continue;
-                            }
-                        };
-
-                        let mut panic_guard = MiriWorkerPanicGuard {
-                            sync: &sync,
-                            entry_idx,
-                            armed: true,
-                        };
-                        let compile_res = compile_and_verify_cold_miri_entry(
-                            bwrap,
-                            &lean_prefix,
-                            &sandbox_lean,
-                            &miri_src_root,
-                            &miri_lib,
-                            &entries[entry_idx],
-                        );
-
-                        let mut state = lock.lock().unwrap_or_else(|e| e.into_inner());
-                        panic_guard.armed = false;
-                        state.active_workers -= 1;
-                        let min_desc = min_cold_descendant[entry_idx];
-                        let beaten = state
-                            .first_error
-                            .as_ref()
-                            .is_some_and(|(best_idx, _)| *best_idx < min_desc);
-                        match compile_res {
-                            Ok(module_out_dir) if !beaten => {
-                                // Stage and cache under the lock so dependents
-                                // see complete `.olean` files without races.
-                                match stage_and_cache_verified_miri_entry(
-                                    &miri_lib,
-                                    miri_cache_dir,
-                                    module_out_dir.path(),
-                                    &entries[entry_idx],
-                                ) {
-                                    Ok(()) => propagate_miri_completions(
-                                        vec![entry_idx],
-                                        &is_cold,
-                                        &min_cold_descendant,
-                                        &dependents,
-                                        &mut state,
-                                    ),
-                                    Err(err) => record_earliest_miri_error(
-                                        &mut state.first_error,
-                                        entry_idx,
-                                        err,
-                                    ),
-                                }
-                            }
-                            Ok(_) => {}
-                            Err(err) => {
-                                record_earliest_miri_error(&mut state.first_error, entry_idx, err);
-                            }
-                        }
-                        cvar.notify_all();
-                    }
-                });
-            }
-        });
-
-        let final_state = sync.0.into_inner().unwrap_or_else(|e| e.into_inner());
-        if let Some((_, err)) = final_state.first_error {
-            return Err(err);
-        }
+        let mut staging_guard = ();
+        run_parallel_dag(
+            &plan,
+            workers,
+            "miri-compile",
+            "worker panicked during Miri compilation",
+            &mut staging_guard,
+            |_, _| Ok(()),
+            |entry_idx, ()| {
+                compile_and_verify_cold_miri_entry(
+                    bwrap,
+                    &lean_prefix,
+                    &sandbox_lean,
+                    &miri_src_root,
+                    &miri_lib,
+                    &entries[entry_idx],
+                )
+            },
+            |_, entry_idx, module_out_dir| {
+                // Stage and cache under the lock so dependents see complete
+                // `.olean` files without races.
+                stage_and_cache_verified_miri_entry(
+                    &miri_lib,
+                    miri_cache_dir,
+                    module_out_dir.path(),
+                    &entries[entry_idx],
+                )
+            },
+        )?;
         Ok(miri_lib)
     }
 
@@ -1571,162 +1519,150 @@ impl Checker {
         }
     }
 
-    fn sandbox_compile_pass2_module(&mut self, spec: &Pass2CompileSpec<'_>) -> Result<(), Failure> {
-        let label = format!("compile-{}", spec.module);
-        let rel_olean = format!("{}.olean", spec.module.replace('.', "/"));
-        let mut out_builder = tempfile::Builder::new();
-        out_builder.prefix("anneal-pass2-out-");
-        #[cfg(unix)]
-        out_builder.permissions(fs::Permissions::from_mode(0o700));
-        let module_out_dir =
-            out_builder.tempdir().map_err(|e| Failure::operational("compile", e.to_string()))?;
-        let out_olean = module_out_dir.path().join(&rel_olean);
-        if let Some(parent) = out_olean.parent() {
-            fs::create_dir_all(parent)
+    #[allow(clippy::too_many_arguments)]
+    fn sandbox_compile_pass2_dag(
+        &mut self,
+        order: &[String],
+        staged_sources: &BTreeMap<String, PathBuf>,
+        imports: &BTreeMap<String, Vec<ImportEdge>>,
+        src_root: &Path,
+        ro_libs: &[(&Path, &str)],
+        sandbox_lean_path: &str,
+        out_lib_root: &Path,
+        warning_as_error: bool,
+        max_workers: usize,
+    ) -> Result<(), Failure> {
+        if order.is_empty() {
+            return Ok(());
+        }
+        let mut entry_rel_paths = Vec::with_capacity(order.len());
+        for module in order {
+            let Some(staged_src) = staged_sources.get(module) else {
+                return Err(Failure::operational(
+                    "compile",
+                    format!("missing staged Pass 2 source for {module}"),
+                ));
+            };
+            let entry_rel = staged_src
+                .strip_prefix(src_root)
                 .map_err(|e| Failure::operational("compile", e.to_string()))?;
+            let entry_rel_str = entry_rel
+                .components()
+                .map(|c| c.as_os_str().to_string_lossy())
+                .collect::<Vec<_>>()
+                .join("/");
+            entry_rel_paths.push(entry_rel_str);
+        }
+        let plan = ParallelDagPlan::from_module_order(
+            order,
+            imports,
+            "preflight",
+            "Pass 2 correspondence import cycle",
+        )?;
+        let first_label = format!("compile-{}", order[0]);
+        let (bwrap, lean_prefix, sandbox_lean) =
+            self.resolve_bwrap_and_sandbox_lean(&first_label)?;
+        self.inner.mark_execution_began();
+        for _ in 0..order.len() {
+            let _ = self.inner.next_counter();
         }
 
-        let (bwrap, lean_prefix, sandbox_lean) = self.resolve_bwrap_and_sandbox_lean(&label)?;
-        let args = build_bwrap_pass2_compile_args(
-            &lean_prefix,
-            &sandbox_lean,
-            spec,
-            module_out_dir.path(),
-            &rel_olean,
-        );
-        self.inner.mark_execution_began();
-        let _ = self.inner.next_counter();
-        let output = Command::new(bwrap)
-            .args(&args)
-            .current_dir(module_out_dir.path())
-            .env_clear()
-            .output()
-            .map_err(|e| {
-                Failure::new(
-                    2,
-                    &label,
-                    format!("could not execute bubblewrap sandbox {}: {e}", bwrap.display()),
-                )
-            })?;
-        if !output.status.success() {
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            let detail = if stderr.trim().is_empty() { stdout.trim() } else { stderr.trim() };
-            return Err(Failure::new(
+        let mut staging_guard = ();
+        run_parallel_dag(
+            &plan,
+            max_workers,
+            "compile",
+            "worker panicked during Pass 2 compilation",
+            &mut staging_guard,
+            |_, _| Ok(()),
+            |idx, ()| {
+                let spec = Pass2CompileSpec {
+                    module: &order[idx],
+                    src_root,
+                    entry_rel_path: &entry_rel_paths[idx],
+                    ro_libs,
+                    sandbox_lean_path,
+                    warning_as_error,
+                };
+                compile_pass2_module_in_sandbox(bwrap, &lean_prefix, &sandbox_lean, &spec)
+            },
+            |_, _idx, (rel_olean, module_out_dir)| {
+                // Stage under the mutex so downstream Pass 2 workers only ever
+                // observe complete `.olean` files.
+                let out_olean = module_out_dir.path().join(&rel_olean);
+                let staged_olean = out_lib_root.join(&rel_olean);
+                stage_regular_file(&out_olean, &staged_olean, "compile")?;
+                regular(&staged_olean, "compile")?;
+                Ok(())
+            },
+        )
+    }
+}
+
+/// Compile one Pass 2 module inside an isolated OS `bwrap` sandbox whose sole
+/// writable mount is a fresh `0o700` temporary directory, verify its `.olean`
+/// and directory output invariants, and return `(rel_olean, module_out_dir)`.
+fn compile_pass2_module_in_sandbox(
+    bwrap: &Path,
+    lean_prefix: &Path,
+    sandbox_lean: &Path,
+    spec: &Pass2CompileSpec<'_>,
+) -> Result<(String, tempfile::TempDir), Failure> {
+    let label = format!("compile-{}", spec.module);
+    let rel_olean = format!("{}.olean", spec.module.replace('.', "/"));
+    let mut out_builder = tempfile::Builder::new();
+    out_builder.prefix("anneal-pass2-out-");
+    #[cfg(unix)]
+    out_builder.permissions(fs::Permissions::from_mode(0o700));
+    let module_out_dir =
+        out_builder.tempdir().map_err(|e| Failure::operational("compile", e.to_string()))?;
+    let out_olean = module_out_dir.path().join(&rel_olean);
+    if let Some(parent) = out_olean.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|e| Failure::operational("compile", e.to_string()))?;
+    }
+
+    let args = build_bwrap_pass2_compile_args(
+        lean_prefix,
+        sandbox_lean,
+        spec,
+        module_out_dir.path(),
+        &rel_olean,
+    );
+    let output = Command::new(bwrap)
+        .args(&args)
+        .current_dir(module_out_dir.path())
+        .env_clear()
+        .output()
+        .map_err(|e| {
+            Failure::new(
                 2,
                 &label,
-                format!("sandboxed Lean exited {:?}: {detail}", output.status.code()),
-            ));
-        }
-
-        regular(&out_olean, "compile")?;
-        let expected_out_files = BTreeSet::from([rel_olean.clone()]);
-        verify_no_unexpected_sandbox_outputs_for_phase(
-            module_out_dir.path(),
-            &expected_out_files,
-            Some(&rel_olean),
-            spec.module,
-            "compile",
-            "Pass 2",
-        )?;
-
-        let staged_olean = spec.out_lib_root.join(&rel_olean);
-        stage_regular_file(&out_olean, &staged_olean, "compile")?;
-        regular(&staged_olean, "compile")?;
-        Ok(())
-    }
-}
-
-struct MiriDagState {
-    ready: BTreeSet<(usize, usize)>,
-    in_degree: Vec<usize>,
-    active_workers: usize,
-    first_error: Option<(usize, Failure)>,
-}
-
-struct MiriWorkerPanicGuard<'a> {
-    sync: &'a (Mutex<MiriDagState>, Condvar),
-    entry_idx: usize,
-    armed: bool,
-}
-
-impl Drop for MiriWorkerPanicGuard<'_> {
-    fn drop(&mut self) {
-        if self.armed {
-            let (lock, cvar) = self.sync;
-            let mut state = lock.lock().unwrap_or_else(|e| e.into_inner());
-            state.active_workers = state.active_workers.saturating_sub(1);
-            record_earliest_miri_error(
-                &mut state.first_error,
-                self.entry_idx,
-                Failure::operational("miri-compile", "worker panicked during Miri compilation"),
-            );
-            cvar.notify_all();
-        }
-    }
-}
-
-fn record_earliest_miri_error(
-    slot: &mut Option<(usize, Failure)>,
-    entry_idx: usize,
-    err: Failure,
-) {
-    if slot.as_ref().is_none_or(|(best_idx, _)| entry_idx < *best_idx) {
-        *slot = Some((entry_idx, err));
-    }
-}
-
-fn propagate_miri_completions(
-    mut newly_done: Vec<usize>,
-    is_cold: &[bool],
-    min_cold_descendant: &[usize],
-    dependents: &[Vec<usize>],
-    state: &mut MiriDagState,
-) {
-    while let Some(done_idx) = newly_done.pop() {
-        for &dep_idx in &dependents[done_idx] {
-            state.in_degree[dep_idx] -= 1;
-            if state.in_degree[dep_idx] == 0 {
-                if is_cold[dep_idx] {
-                    let min_desc = min_cold_descendant[dep_idx];
-                    let dep_beaten = state
-                        .first_error
-                        .as_ref()
-                        .is_some_and(|(best_idx, _)| *best_idx < min_desc);
-                    if !dep_beaten {
-                        state.ready.insert((min_desc, dep_idx));
-                    }
-                } else {
-                    newly_done.push(dep_idx);
-                }
-            }
-        }
-    }
-}
-
-fn verify_miri_dag_acyclic(
-    in_degree: &[usize],
-    dependents: &[Vec<usize>],
-) -> Result<Vec<usize>, Failure> {
-    let mut rem = in_degree.to_vec();
-    let mut stack: Vec<usize> = (0..rem.len()).filter(|&i| rem[i] == 0).collect();
-    let mut topo_order = Vec::with_capacity(rem.len());
-    while let Some(u) = stack.pop() {
-        topo_order.push(u);
-        for &v in &dependents[u] {
-            rem[v] -= 1;
-            if rem[v] == 0 {
-                stack.push(v);
-            }
-        }
-    }
-    if topo_order.len() != rem.len() {
-        return Err(Failure::policy(
-            "miri-pin",
-            "import cycle in Miri closure modules",
+                format!("could not execute bubblewrap sandbox {}: {e}", bwrap.display()),
+            )
+        })?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let detail = if stderr.trim().is_empty() { stdout.trim() } else { stderr.trim() };
+        return Err(Failure::new(
+            2,
+            &label,
+            format!("sandboxed Lean exited {:?}: {detail}", output.status.code()),
         ));
     }
-    Ok(topo_order)
+
+    regular(&out_olean, "compile")?;
+    let expected_out_files = BTreeSet::from([rel_olean.clone()]);
+    verify_no_unexpected_sandbox_outputs_for_phase(
+        module_out_dir.path(),
+        &expected_out_files,
+        Some(&rel_olean),
+        spec.module,
+        "compile",
+        "Pass 2",
+    )?;
+    Ok((rel_olean, module_out_dir))
 }
 
 /// Compile one cold `vendor/lean-miri` module inside an isolated OS `bwrap`
@@ -1934,7 +1870,6 @@ struct Pass2CompileSpec<'a> {
     entry_rel_path: &'a str,
     ro_libs: &'a [(&'a Path, &'a str)],
     sandbox_lean_path: &'a str,
-    out_lib_root: &'a Path,
     warning_as_error: bool,
 }
 
@@ -2684,7 +2619,6 @@ mod tests {
                 (Path::new("/tmp/stage/miri-lib"), "/work/miri-lib"),
             ],
             sandbox_lean_path: "/work/lib:/work/miri-lib",
-            out_lib_root: Path::new("/tmp/stage/lib"),
             warning_as_error: false,
         };
         let trusted_args: Vec<String> = build_bwrap_pass2_compile_args(
@@ -2711,7 +2645,6 @@ mod tests {
                 (Path::new("/tmp/stage/miri-lib"), "/work/miri-lib"),
             ],
             sandbox_lean_path: "/work/lib:/work/theory-lib:/work/miri-lib",
-            out_lib_root: Path::new("/tmp/stage/theory-lib"),
             warning_as_error: true,
         };
         let theory_args: Vec<String> = build_bwrap_pass2_compile_args(

@@ -7,12 +7,15 @@
 // those terms.
 
 //! Defines the shared Lean 4.34.1 toolchain lock schemas, artifact records,
-//! digest and path validators, and deterministic topological ordering.
+//! digest and path validators, deterministic topological ordering, and bounded
+//! parallel DAG scheduling.
 
 use std::{
     collections::{BTreeMap, BTreeSet},
     fs,
+    num::NonZero,
     path::{Component, Path, PathBuf},
+    sync::{Condvar, Mutex},
 };
 
 use serde::{Deserialize, Serialize};
@@ -485,6 +488,378 @@ pub fn topo_sort_modules(
     Ok(order)
 }
 
+/// Return a bounded worker count based on available host parallelism, capped
+/// at `cap` and never below `1`.
+#[doc(hidden)]
+pub fn default_compile_workers(cap: usize) -> usize {
+    std::thread::available_parallelism()
+        .map(NonZero::get)
+        .unwrap_or(1)
+        .min(cap.max(1))
+        .max(1)
+}
+
+/// Validated acyclic DAG plan for [`run_parallel_dag`].
+///
+/// Construction rejects duplicate/self edges, out-of-range indices, and cycles
+/// so callers cannot schedule an invalid dependency graph.
+#[doc(hidden)]
+pub struct ParallelDagPlan {
+    active: Vec<bool>,
+    in_degree: Vec<usize>,
+    dependents: Vec<Vec<usize>>,
+    min_active_descendant: Vec<usize>,
+}
+
+impl ParallelDagPlan {
+    /// Validate an indexed DAG (`0..active.len()`) whose dependency edges are
+    /// `dependents` (each `u -> v` edge means `v` waits for `u`), deriving
+    /// `in_degree` directly so edge counts cannot drift, and returning a
+    /// policy rejection with `(cycle_phase, cycle_msg)` on any cycle or
+    /// self-loop.
+    pub fn from_indexed_edges(
+        active: Vec<bool>,
+        dependents: Vec<Vec<usize>>,
+        cycle_phase: &str,
+        cycle_msg: &str,
+    ) -> Result<Self, Failure> {
+        let total_len = active.len();
+        if dependents.len() != total_len {
+            return Err(Failure::operational(
+                cycle_phase,
+                "mismatched parallel DAG dimension",
+            ));
+        }
+        let mut normalized: Vec<Vec<usize>> = Vec::with_capacity(total_len);
+        let mut in_degree = vec![0usize; total_len];
+        for (u, edges) in dependents.into_iter().enumerate() {
+            let mut unique = BTreeSet::new();
+            let mut deduped = Vec::with_capacity(edges.len());
+            for v in edges {
+                if v >= total_len {
+                    return Err(Failure::operational(
+                        cycle_phase,
+                        "out-of-range parallel DAG edge",
+                    ));
+                }
+                if v == u {
+                    return Err(Failure::policy(cycle_phase, cycle_msg));
+                }
+                if unique.insert(v) {
+                    in_degree[v] += 1;
+                    deduped.push(v);
+                }
+            }
+            normalized.push(deduped);
+        }
+        let topo_order = verify_dag_acyclic(&in_degree, &normalized, cycle_phase, cycle_msg)?;
+        let mut min_active_descendant = vec![usize::MAX; total_len];
+        for &u in topo_order.iter().rev() {
+            let mut best = if active[u] { u } else { usize::MAX };
+            for &v in &normalized[u] {
+                best = best.min(min_active_descendant[v]);
+            }
+            min_active_descendant[u] = best;
+        }
+        Ok(Self {
+            active,
+            in_degree,
+            dependents: normalized,
+            min_active_descendant,
+        })
+    }
+
+    /// Build a validated DAG plan over `order` (all nodes active) from the
+    /// verified `imports` map, ignoring imports outside `order`.
+    pub fn from_module_order(
+        order: &[String],
+        imports: &BTreeMap<String, Vec<ImportEdge>>,
+        cycle_phase: &str,
+        cycle_msg: &str,
+    ) -> Result<Self, Failure> {
+        let total_len = order.len();
+        let idx_by_module: BTreeMap<&str, usize> =
+            order.iter().enumerate().map(|(idx, m)| (m.as_str(), idx)).collect();
+        if idx_by_module.len() != total_len {
+            return Err(Failure::policy(cycle_phase, "duplicate module in compile order"));
+        }
+        let mut dependents: Vec<Vec<usize>> = vec![Vec::new(); total_len];
+        for (dst_idx, module) in order.iter().enumerate() {
+            let Some(edges) = imports.get(module) else {
+                return Err(Failure::operational(
+                    cycle_phase,
+                    format!("missing import inventory for {module}"),
+                ));
+            };
+            for edge in edges {
+                if let Some(&src_idx) = idx_by_module.get(edge.module.as_str()) {
+                    dependents[src_idx].push(dst_idx);
+                }
+            }
+        }
+        Self::from_indexed_edges(vec![true; total_len], dependents, cycle_phase, cycle_msg)
+    }
+
+    /// Count how many nodes in this plan require execution.
+    pub fn active_count(&self) -> usize {
+        self.active.iter().filter(|&&a| a).count()
+    }
+}
+
+struct DagState {
+    ready: BTreeSet<(usize, usize)>,
+    in_degree: Vec<usize>,
+    active_workers: usize,
+    first_error: Option<(usize, Failure)>,
+}
+
+struct DagWorkerPanicGuard<'sync, 's, S> {
+    sync: &'sync (Mutex<(DagState, &'s mut S)>, Condvar),
+    entry_idx: usize,
+    panic_phase: &'sync str,
+    panic_message: &'sync str,
+    armed: bool,
+}
+
+impl<S> Drop for DagWorkerPanicGuard<'_, '_, S> {
+    fn drop(&mut self) {
+        if self.armed {
+            let (lock, cvar) = self.sync;
+            let mut guard = lock.lock().unwrap_or_else(|e| e.into_inner());
+            guard.0.active_workers = guard.0.active_workers.saturating_sub(1);
+            record_earliest_dag_error(
+                &mut guard.0.first_error,
+                self.entry_idx,
+                Failure::operational(self.panic_phase, self.panic_message),
+            );
+            cvar.notify_all();
+        }
+    }
+}
+
+struct NotifyOnDrop<'a>(&'a Condvar);
+
+impl Drop for NotifyOnDrop<'_> {
+    fn drop(&mut self) {
+        self.0.notify_all();
+    }
+}
+
+fn record_earliest_dag_error(
+    slot: &mut Option<(usize, Failure)>,
+    entry_idx: usize,
+    err: Failure,
+) {
+    if slot.as_ref().is_none_or(|(best_idx, _)| entry_idx < *best_idx) {
+        *slot = Some((entry_idx, err));
+    }
+}
+
+fn propagate_dag_completions(
+    mut newly_done: Vec<usize>,
+    active: &[bool],
+    min_active_descendant: &[usize],
+    dependents: &[Vec<usize>],
+    state: &mut DagState,
+) {
+    while let Some(done_idx) = newly_done.pop() {
+        for &dep_idx in &dependents[done_idx] {
+            state.in_degree[dep_idx] -= 1;
+            if state.in_degree[dep_idx] == 0 {
+                if active[dep_idx] {
+                    let min_desc = min_active_descendant[dep_idx];
+                    let dep_beaten = state
+                        .first_error
+                        .as_ref()
+                        .is_some_and(|(best_idx, _)| *best_idx < min_desc);
+                    if !dep_beaten {
+                        state.ready.insert((min_desc, dep_idx));
+                    }
+                } else {
+                    newly_done.push(dep_idx);
+                }
+            }
+        }
+    }
+}
+
+fn verify_dag_acyclic(
+    in_degree: &[usize],
+    dependents: &[Vec<usize>],
+    cycle_phase: &str,
+    cycle_msg: &str,
+) -> Result<Vec<usize>, Failure> {
+    let mut rem = in_degree.to_vec();
+    let mut stack: Vec<usize> = (0..rem.len()).filter(|&i| rem[i] == 0).collect();
+    let mut topo_order = Vec::with_capacity(rem.len());
+    while let Some(u) = stack.pop() {
+        topo_order.push(u);
+        for &v in &dependents[u] {
+            rem[v] -= 1;
+            if rem[v] == 0 {
+                stack.push(v);
+            }
+        }
+    }
+    if topo_order.len() != rem.len() {
+        return Err(Failure::policy(cycle_phase, cycle_msg));
+    }
+    Ok(topo_order)
+}
+
+/// Execute all active nodes in `plan` across at most `max_workers` scoped
+/// threads while preserving deterministic earliest-index failure reporting.
+///
+/// For each ready node `idx`, `prepare` runs under the scheduler mutex before
+/// spawning unlocked concurrent work in `run`, and `commit` runs under the
+/// same mutex upon successful completion (unless an earlier node index has
+/// already failed) before unlocking dependent nodes.
+#[doc(hidden)]
+#[allow(clippy::too_many_arguments)]
+pub fn run_parallel_dag<S, P, T, FP, FR, FC>(
+    plan: &ParallelDagPlan,
+    max_workers: usize,
+    panic_phase: &str,
+    panic_message: &str,
+    shared: &mut S,
+    prepare: FP,
+    run: FR,
+    commit: FC,
+) -> Result<(), Failure>
+where
+    S: Send,
+    FP: Fn(&mut S, usize) -> Result<P, Failure> + Sync,
+    FR: Fn(usize, P) -> Result<T, Failure> + Sync,
+    FC: Fn(&mut S, usize, T) -> Result<(), Failure> + Sync,
+{
+    let active_count = plan.active_count();
+    if active_count == 0 {
+        return Ok(());
+    }
+    let workers = max_workers.min(active_count).max(1);
+    let total_len = plan.active.len();
+    let mut init_state = DagState {
+        ready: BTreeSet::new(),
+        in_degree: plan.in_degree.clone(),
+        active_workers: 0,
+        first_error: None,
+    };
+    let mut inactive_roots = Vec::new();
+    for idx in 0..total_len {
+        if init_state.in_degree[idx] == 0 {
+            if plan.active[idx] {
+                init_state
+                    .ready
+                    .insert((plan.min_active_descendant[idx], idx));
+            } else {
+                inactive_roots.push(idx);
+            }
+        }
+    }
+    propagate_dag_completions(
+        inactive_roots,
+        &plan.active,
+        &plan.min_active_descendant,
+        &plan.dependents,
+        &mut init_state,
+    );
+
+    let sync = (Mutex::new((init_state, shared)), Condvar::new());
+    std::thread::scope(|scope| {
+        for _ in 0..workers {
+            scope.spawn(|| {
+                let (lock, cvar) = &sync;
+                loop {
+                    let (entry_idx, prepared) = {
+                        let mut guard = lock.lock().unwrap_or_else(|e| e.into_inner());
+                        let (state, shared_ref) = &mut *guard;
+                        while let Some(&(last_min_desc, _)) = state.ready.last() {
+                            let beaten = state
+                                .first_error
+                                .as_ref()
+                                .is_some_and(|(best_idx, _)| *best_idx < last_min_desc);
+                            if beaten {
+                                state.ready.pop_last();
+                            } else {
+                                break;
+                            }
+                        }
+                        if let Some((_, next_idx)) = state.ready.pop_first() {
+                            let _notify = NotifyOnDrop(cvar);
+                            match prepare(*shared_ref, next_idx) {
+                                Ok(prep) => {
+                                    state.active_workers += 1;
+                                    (next_idx, prep)
+                                }
+                                Err(err) => {
+                                    record_earliest_dag_error(
+                                        &mut state.first_error,
+                                        next_idx,
+                                        err,
+                                    );
+                                    continue;
+                                }
+                            }
+                        } else if state.active_workers == 0 {
+                            cvar.notify_all();
+                            break;
+                        } else {
+                            drop(cvar.wait(guard).unwrap_or_else(|e| e.into_inner()));
+                            continue;
+                        }
+                    };
+
+                    let mut panic_guard = DagWorkerPanicGuard {
+                        sync: &sync,
+                        entry_idx,
+                        panic_phase,
+                        panic_message,
+                        armed: true,
+                    };
+                    let run_res = run(entry_idx, prepared);
+
+                    let mut guard = lock.lock().unwrap_or_else(|e| e.into_inner());
+                    panic_guard.armed = false;
+                    let _notify = NotifyOnDrop(cvar);
+                    let (state, shared_ref) = &mut *guard;
+                    state.active_workers -= 1;
+                    let min_desc = plan.min_active_descendant[entry_idx];
+                    let beaten = state
+                        .first_error
+                        .as_ref()
+                        .is_some_and(|(best_idx, _)| *best_idx < min_desc);
+                    match run_res {
+                        Ok(output) if !beaten => match commit(*shared_ref, entry_idx, output) {
+                            Ok(()) => propagate_dag_completions(
+                                vec![entry_idx],
+                                &plan.active,
+                                &plan.min_active_descendant,
+                                &plan.dependents,
+                                state,
+                            ),
+                            Err(err) => record_earliest_dag_error(
+                                &mut state.first_error,
+                                entry_idx,
+                                err,
+                            ),
+                        },
+                        Ok(_) => {}
+                        Err(err) => {
+                            record_earliest_dag_error(&mut state.first_error, entry_idx, err);
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+    let (final_state, _) = sync.0.into_inner().unwrap_or_else(|e| e.into_inner());
+    if let Some((_, err)) = final_state.first_error {
+        return Err(err);
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod module_order_tests {
     use super::*;
@@ -579,5 +954,266 @@ mod module_order_tests {
             .expect("module ordering thread panicked")
             .unwrap();
         assert_eq!(order, modules);
+    }
+}
+
+#[cfg(test)]
+mod parallel_dag_tests {
+    use std::sync::{
+        Arc, Barrier,
+        atomic::{AtomicUsize, Ordering},
+    };
+
+    use super::*;
+
+    #[test]
+    fn empty_and_all_inactive_plans_succeed_without_work() {
+        let empty = ParallelDagPlan::from_indexed_edges(vec![], vec![], "dag", "cycle").unwrap();
+        let mut shared = 0usize;
+        run_parallel_dag(
+            &empty,
+            4,
+            "dag",
+            "panic",
+            &mut shared,
+            |s, _| {
+                *s += 1;
+                Ok(())
+            },
+            |_, ()| Ok(()),
+            |s, _, ()| {
+                *s += 1;
+                Ok(())
+            },
+        )
+        .unwrap();
+        assert_eq!(shared, 0);
+
+        let inactive = ParallelDagPlan::from_indexed_edges(
+            vec![false, false],
+            vec![vec![1], vec![]],
+            "dag",
+            "cycle",
+        )
+        .unwrap();
+        run_parallel_dag(
+            &inactive,
+            4,
+            "dag",
+            "panic",
+            &mut shared,
+            |s, _| {
+                *s += 1;
+                Ok(())
+            },
+            |_, ()| Ok(()),
+            |s, _, ()| {
+                *s += 1;
+                Ok(())
+            },
+        )
+        .unwrap();
+        assert_eq!(shared, 0);
+    }
+
+    #[test]
+    fn rejects_cycles_self_loops_and_out_of_range_edges() {
+        let cycle = ParallelDagPlan::from_indexed_edges(
+            vec![true, true],
+            vec![vec![1], vec![0]],
+            "dag",
+            "dag cycle",
+        );
+        assert_eq!(cycle.err(), Some(Failure::policy("dag", "dag cycle")));
+
+        let self_loop = ParallelDagPlan::from_indexed_edges(
+            vec![true],
+            vec![vec![0]],
+            "dag",
+            "dag cycle",
+        );
+        assert_eq!(self_loop.err(), Some(Failure::policy("dag", "dag cycle")));
+
+        let bad_edge = ParallelDagPlan::from_indexed_edges(
+            vec![true],
+            vec![vec![5]],
+            "dag",
+            "dag cycle",
+        );
+        assert_eq!(
+            bad_edge.err(),
+            Some(Failure::operational("dag", "out-of-range parallel DAG edge"))
+        );
+    }
+
+    #[test]
+    fn executes_independent_roots_concurrently_and_orders_dependents() {
+        // 0, 1, 2 are independent roots; 3 is inactive and depends on 0 and 1;
+        // 4 depends on 3 and 2.
+        let plan = ParallelDagPlan::from_indexed_edges(
+            vec![true, true, true, false, true],
+            vec![vec![3], vec![3], vec![4], vec![4], vec![]],
+            "dag",
+            "cycle",
+        )
+        .unwrap();
+        let barrier = Arc::new(Barrier::new(3));
+        let mut committed = BTreeSet::new();
+        run_parallel_dag(
+            &plan,
+            3,
+            "dag",
+            "panic",
+            &mut committed,
+            |done, idx| {
+                if idx == 4 {
+                    assert!(done.contains(&0) && done.contains(&1) && done.contains(&2));
+                }
+                Ok(())
+            },
+            |idx, ()| {
+                if idx < 3 {
+                    // Only completes if all three roots execute simultaneously.
+                    barrier.wait();
+                }
+                Ok(idx)
+            },
+            |done, idx, val| {
+                assert_eq!(idx, val);
+                assert!(done.insert(idx));
+                Ok(())
+            },
+        )
+        .unwrap();
+        assert_eq!(committed, BTreeSet::from([0, 1, 2, 4]));
+    }
+
+    #[test]
+    fn preserves_earliest_index_failure_and_prunes_beaten_descendants() {
+        // Graph on indices 0..5 with non-topological edges `3 -> 0` and
+        // `3 -> 4`, plus independent roots `1` and `2`:
+        // - `min_active_descendant` is `[0, 1, 2, 0, 4]`, so initial
+        //   `state.ready` is `{(0, 3), (1, 1), (2, 2)}`.
+        // - With `max_workers = 2`, the first worker to lock pops `(0, 3)`,
+        //   releases the lock, and waits on `rx.recv()` inside `run(3)`. The
+        //   second worker pops `(1, 1)` and fails inside `prepare(1)` while
+        //   holding the scheduler mutex: it signals `tx` and records
+        //   `first_error = (1, "failure-1")` before releasing the mutex, so
+        //   `first_error` is already set before `run(3)` can lock to commit or
+        //   fail and before the next `state.ready` loop prunes `(2, 2)`.
+        //
+        // Case A (`run(3)` succeeds, then `run(0)` fails):
+        // - `propagate_dag_completions(3)` unlocks `0` (`min_desc = 0 <= 1`)
+        //   while `dep_beaten` prunes `4` (`min_desc = 4 > 1`).
+        // - `0` fails (`"failure-0"`), overwriting `(1, ...)` via `0 < 1`.
+        let plan = ParallelDagPlan::from_indexed_edges(
+            vec![true, true, true, true, true],
+            vec![vec![], vec![], vec![], vec![0, 4], vec![]],
+            "dag",
+            "cycle",
+        )
+        .unwrap();
+
+        let (tx_a, rx_a) = std::sync::mpsc::channel::<()>();
+        let rx_a = Mutex::new(rx_a);
+        let prepared_a: [AtomicUsize; 5] = std::array::from_fn(|_| AtomicUsize::new(0));
+        let ran_a: [AtomicUsize; 5] = std::array::from_fn(|_| AtomicUsize::new(0));
+        let mut shared = ();
+        let err_a = run_parallel_dag(
+            &plan,
+            2,
+            "dag",
+            "panic",
+            &mut shared,
+            |_, idx| {
+                prepared_a[idx].fetch_add(1, Ordering::Relaxed);
+                if idx == 1 {
+                    tx_a.send(()).unwrap();
+                    return Err(Failure::policy("dag", "failure-1"));
+                }
+                Ok(())
+            },
+            |idx, ()| {
+                ran_a[idx].fetch_add(1, Ordering::Relaxed);
+                match idx {
+                    3 => {
+                        rx_a.lock().unwrap().recv().unwrap();
+                        Ok(())
+                    }
+                    0 => Err(Failure::policy("dag", "failure-0")),
+                    _ => Ok(()),
+                }
+            },
+            |_, _, ()| Ok(()),
+        )
+        .unwrap_err();
+        assert_eq!(err_a, Failure::policy("dag", "failure-0"));
+        assert_eq!(prepared_a.map(|c| c.into_inner()), [1, 1, 0, 1, 0]);
+        assert_eq!(ran_a.map(|c| c.into_inner()), [1, 0, 0, 1, 0]);
+
+        // Case B (`run(3)` fails after `(1, "failure-1")` is recorded):
+        // Failure at index `3 > 1` must NOT overwrite `(1, "failure-1")`.
+        let (tx_b, rx_b) = std::sync::mpsc::channel::<()>();
+        let rx_b = Mutex::new(rx_b);
+        let prepared_b: [AtomicUsize; 5] = std::array::from_fn(|_| AtomicUsize::new(0));
+        let ran_b: [AtomicUsize; 5] = std::array::from_fn(|_| AtomicUsize::new(0));
+        let err_b = run_parallel_dag(
+            &plan,
+            2,
+            "dag",
+            "panic",
+            &mut shared,
+            |_, idx| {
+                prepared_b[idx].fetch_add(1, Ordering::Relaxed);
+                if idx == 1 {
+                    tx_b.send(()).unwrap();
+                    return Err(Failure::policy("dag", "failure-1"));
+                }
+                Ok(())
+            },
+            |idx, ()| {
+                ran_b[idx].fetch_add(1, Ordering::Relaxed);
+                if idx == 3 {
+                    rx_b.lock().unwrap().recv().unwrap();
+                    return Err(Failure::policy("dag", "failure-3"));
+                }
+                Ok(())
+            },
+            |_, _, ()| Ok(()),
+        )
+        .unwrap_err();
+        assert_eq!(err_b, Failure::policy("dag", "failure-1"));
+        assert_eq!(prepared_b.map(|c| c.into_inner()), [0, 1, 0, 1, 0]);
+        assert_eq!(ran_b.map(|c| c.into_inner()), [0, 0, 0, 1, 0]);
+    }
+
+    #[test]
+    fn worker_panic_unblocks_sibling_workers_without_deadlock() {
+        let plan = ParallelDagPlan::from_indexed_edges(
+            vec![true, true],
+            vec![vec![1], vec![]],
+            "dag",
+            "cycle",
+        )
+        .unwrap();
+        let mut shared = ();
+        let res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            run_parallel_dag(
+                &plan,
+                2,
+                "dag",
+                "worker panicked",
+                &mut shared,
+                |_, _| Ok(()),
+                |idx, ()| {
+                    if idx == 0 {
+                        panic!("synthetic worker panic");
+                    }
+                    Ok(())
+                },
+                |_, _, ()| Ok(()),
+            )
+        }));
+        assert!(res.is_err());
     }
 }
