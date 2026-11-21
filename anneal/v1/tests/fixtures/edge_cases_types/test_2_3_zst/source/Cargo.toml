@@ -1,9 +1,0 @@
-
-[package]
-name = "test_2_3_zst"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-
-[workspace]

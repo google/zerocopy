@@ -8,9 +8,9 @@ those terms. -->
 
 # Developing Anneal
 
-The current MIR-based implementation lives at [`anneal/`](../). See the
-[repository layout](architecture.md#repository-layout) for the current
-workspace and the roles of V1 and V2.
+The MIR-based implementation lives at [`anneal/`](../). See the
+[repository layout](architecture.md#repository-layout) for the workspace
+structure.
 
 ## Build and test the current toolchain
 
@@ -44,9 +44,8 @@ cargo run --locked -p anneal-audit -- \
   calls the [current verifier checks](../../.github/workflows/anneal-current.yml).
   The current checks build and install the archive, audit the trust boundary,
   and test the Rust workspace.
-- The [Anneal release workflow](../../.github/workflows/anneal-release.yml)
-  publishes V1. The current verifier's former standalone release and review
-  workflows live under [`anneal/.github/`](../.github) for reference.
+- The verifier's former standalone release and review workflows live under
+  [`anneal/.github/`](../.github) for reference.
 - The [Codex review guide](codex-review.md) describes review gates and the
   standalone diagnostic evaluator.
 
@@ -68,3 +67,11 @@ cargo run --locked -p anneal-audit -- \
 - [Agent instructions](../AGENTS.md) and the
   [review policy design](review-policy-design.md) describe contributor
   obligations and where the review rules belong.
+
+## Historical workspaces
+
+The earlier [V1 verifier][v1] and [V2 prototype and toolchain][v2] are
+available in the repository history with their original build instructions.
+
+[v1]: https://github.com/google/zerocopy/tree/ec75fb464cda7b18581faa83a6a82d0dfdf422d9/anneal/v1
+[v2]: https://github.com/google/zerocopy/tree/ec75fb464cda7b18581faa83a6a82d0dfdf422d9/anneal/v2

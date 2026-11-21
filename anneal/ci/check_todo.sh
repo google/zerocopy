@@ -51,7 +51,7 @@ fi
 # code we maintain.
 output=$({
   if [ "$#" -gt 0 ] || [ -z "$commits" ] || [ -n "$(git status --porcelain 2>/dev/null || true)" ]; then
-    rg -H -n -w --glob '!**/vendor/**' --glob '!v1/**' --glob '!v2/**' "$PATTERN" "$@" || true
+    rg -H -n -w --glob '!**/vendor/**' "$PATTERN" "$@" || true
   fi
 
   for commit in $commits; do
@@ -59,7 +59,7 @@ output=$({
     git log -1 --pretty=%B "$commit" 2>/dev/null \
       | rg -n -w "$PATTERN" \
       | sed "s/^/COMMIT_MESSAGE(${short_commit}):/" || true
-    git grep -I -n -w -E "$PATTERN" "$short_commit" -- "$@" ':!**/vendor/**' ':!v1/**' ':!v2/**' 2>/dev/null \
+    git grep -I -n -w -E "$PATTERN" "$short_commit" -- "$@" ':!**/vendor/**' 2>/dev/null \
       | sed "s/^${short_commit}:/${short_commit}@/" || true
   done
 })

@@ -1,3 +1,0 @@
-Invalid JSON Data
-{"reason": "compiler-artifact", "target": {"name": "test_pkg", "kind": ["lib"]}}
-Error: Charon failed with status: exit status: 101
