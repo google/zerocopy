@@ -569,7 +569,8 @@ definitions, and admitted and excluded transitions for every heap command. The e
 helper lemmas cited in this report's text are quoted here (pretty-printed by Lean; namespace
 `Toy.Sep` opened; `skip_local`, `diverge_local`, `assertAlloc_safetyMono` and `assertAlloc_frameProp`
 printed as `name : type` with `set_option pp.analyze true`, because their default signatures leave
-the state type of `skip`, `diverge` or `assertAlloc` undetermined): `skip` and `diverge` are local
+the state type of `skip`, `diverge` or `assertAlloc` undetermined; the entry preceded by a
+`-- file:lines` citation is quoted verbatim from those source lines): `skip` and `diverge` are local
 while `allocAt` is not; singletons are
 precise; `assertAlloc k` is local (R3a non-claims); `0 ↦ -` is precise (R4e non-claims); the heap
 model is right- and left-cancellative (R4d ledger scope); and a non-commutative structure has
@@ -594,7 +595,8 @@ Toy.Sep.heap_rightCancel (V : Type) : RightCancel (Heap V)
 
 Toy.Sep.heap_leftCancel (V : Type) : LeftCancel (Heap V)
 
--- source signature (Toy/Sep/Supplement.lean); instance arguments shown explicitly
+-- lean/Toy/Sep/Supplement.lean:68-72
+-- source statement, verbatim; instance arguments shown explicitly
 theorem projLeft_disjSymm_unionAssoc_unionAssocRev_not_unionComm :
     @DisjSymm Nat projLeftSepStruct ∧
     @UnionAssoc Nat projLeftSepStruct ∧
@@ -759,7 +761,7 @@ Unfolded: FrameRuleForPreciseFrames c := ∀ P Q R, Precise R → Triple P c Q �
 * **Prior art:**
   * Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof).
   * O'Hearn, P. W., Yang, H. & Reynolds, J. C., 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024: Section 9, Lemma 3: p is precise iff p * - distributes over conjunction, p * (q and r) = (p * q) and (p * r), in the store-and-heap model with p on the left; Theorem 5: the hypothetical frame rule is sound for fixed preconditions (resp. a fixed resource invariant) iff they are precise; Section 10.3, Theorem 11: soundness also holds for 'supported' preconditions or invariants with intuitionistic (closed under heap extension) postconditions. Journal version: ACM TOPLAS 31(3), Article 11, pp. 11:1-11:50, 2009, doi:10.1145/1498926.1498929; in the authors' 2008 preprint of it, Lemma 6 is the Distribution Lemma and Section 9 notes that (q * r) and (q' * r) does not imply (q and q') * r in general, with q = emp, q' = x |-> - and r = true.
-  * Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, explicitly omitting the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.
+  * Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, omitting (as the paper notes) the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.
 
 ```text
 Basis: execution (Lean kernel check)
@@ -803,7 +805,7 @@ Unfolded: isAllocTest k r h o := (h r = none ∧ o = fault) ∨ (h r ≠ none �
 * **Non-vacuity witness:** Concrete instance k = 1, r = 0. (Lean: `Toy.Sep.isAllocTest_safetyMono_and_framed_triple_fails`).
 * **Supporting lemmas cited in the non-claims** (`lean_names`; quoted under Key definitions): `Toy.Sep.assertAlloc_safetyMono`, `Toy.Sep.assertAlloc_frameProp`.
 * **Prior art:**
-  * Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, explicitly omitting the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.
+  * Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, omitting (as the paper notes) the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.
   * Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (the Frame Rule is sound for both partial and total correctness), in a store-and-heap model. Section 4.1: always choosing the smallest free address for cons would invalidate the Frame Rule (detectable with address arithmetic; without address arithmetic, invariance under location renaming could be used instead of nondeterminism); trapping memory faults would allow branching on whether a cell is active, contradicting Safety Monotonicity; in Petri nets with capacity 1 a transition with pre(t) = {a}, post(t) = {b} is enabled in {a} but not in {a, b} and violates Safety Monotonicity. Section 5.1: a command that faults when more than 3 heap cells are active and skips otherwise violates Safety Monotonicity. Section 5.2, Proposition 2: wp(C) and wlp(C) both satisfy locality for X iff C satisfies Safety and Termination Monotonicity, the Frame Property and a locality property for variables (a joint characterization with a store and termination, not a partial-correctness-only converse).
 
 ```text
@@ -1062,7 +1064,7 @@ Unfolded: RightCancel S := ∀ a b c, a ⊥ c → b ⊥ c → a ∘ c = b ∘ c 
   * Klein, G., Kolanski, R. & Boyton, A., 'Separation Algebra', Archive of Formal Proofs, May 2012, https://www.isa-afp.org/entries/Separation_Algebra.html; companion paper Klein, Kolanski & Boyton, 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22. Class sep_algebra (unit 0, commutativity, associativity, disjointness laws; no cancellativity); class cancellative_sep_algebra adds x + z = y + z ==> x ## z ==> y ## z ==> x = y, with the comment that the results on precise assertions (distributivity over separating conjunction) require it; lemma precise_distribute: precise P = (forall Q R. ((Q and R) ** P) = ((Q ** P) and (R ** P))), P on the right.
   * Coq, Verified Software Toolchain: PrincetonUniversity/VST tag v2.14 (commit e1db53a4e22ddd3f8223532ba73127b706faf1b3), file msl/predicates_sa.v, lines 78-122: Definition precise (at most one join_sub substate in P) and Lemma precise_eq, proved under Join, Perm_alg, Sep_alg and Canc_alg (the cancellation class of msl/sepalg.v, join a1 b c -> join a2 b c -> a1 = a2): precise = fun P => forall Q R, P * (Q && R) = (P * Q) && (P * R), the binary form with P on the left. Book: Appel, A. W., Dockins, R., Hobor, A., Beringer, L., Dodds, J., Stewart, G., Blazy, S. & Leroy, X., 'Program Logics for Certified Compilers', Cambridge University Press, 2014, doi:10.1017/CBO9781107256552.
   * HOL4 theory examples/separationLogic/src/separationLogicScript.sml in HOL-Theorem-Prover/HOL at commit c2b475d585febe0e718f87ab51959c0a73fc924e (Tuerk, UCAM-CL-TR-799, 2011, doi:10.48456/tr-799). IS_PRECISE___CHARACTERISATION (lines 1690-1697): assuming IS_SEPARATION_COMBINATOR f (commutativity, associativity, a unit for each element, left cancellativity), ASL_IS_PRECISE f p iff for every nonempty set X of predicates, asl_star f (BIGINTER X) p = BIGINTER (IMAGE (\x. asl_star f x p) X): the infinitary form, with the precise p on the right of *.
-  * Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, explicitly omitting the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.
+  * Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, omitting (as the paper notes) the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.
 
 ```text
 Basis: execution (Lean kernel check)
@@ -1246,7 +1248,7 @@ Ledger scope: No hypotheses: all eight statements are closed statements about th
 * **Non-vacuity witness:** OrAlg and Fork satisfy IsSepAlgebra and fail both cancellation laws (all proved). (Lean: `Toy.Sep.orAlg_isSepAlgebra`, `Toy.Sep.fork_isSepAlgebra`).
 * **Prior art:**
   * Klein, G., Kolanski, R. & Boyton, A., 'Separation Algebra', Archive of Formal Proofs, May 2012, https://www.isa-afp.org/entries/Separation_Algebra.html; companion paper Klein, Kolanski & Boyton, 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22. Class sep_algebra (unit 0, commutativity, associativity, disjointness laws; no cancellativity); class cancellative_sep_algebra adds x + z = y + z ==> x ## z ==> y ## z ==> x = y, with the comment that the results on precise assertions (distributivity over separating conjunction) require it; lemma precise_distribute: precise P = (forall Q R. ((Q and R) ** P) = ((Q ** P) and (R ** P))), P on the right.
-  * Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, explicitly omitting the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.
+  * Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', MFPS XXVII, ENTCS 276:171-190, 2011, doi:10.1016/j.entcs.2011.09.021. Definition 2.1: a separation algebra is a partial commutative monoid with unit, omitting (as the paper notes) the cancellativity required by Calcagno-O'Hearn-Yang 2007. Section 2.2: the 'command' that disposes cell 10 if it is allocated and is a no-op otherwise is not local; 'the requirement of locality rules out commands that can check if a cell is allocated in the heap other than by trying to access it and faulting if it is not allocated'. Theorem 4.1: concurrent separation logic is sound if resource invariants are precise and * is cancellative, or if the conjunction rule is not used.
   * Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Separation algebras as a join relation with functionality, commutativity, associativity and cancellation as core axioms, and possibly multiple units; positivity and disjointness are optional extra axioms.
   * Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf). Definition 1: a separation algebra is a cancellative partial commutative monoid. Definition 3: p is precise if every state has at most one substate in p. Section 2, Examples of Predicates: the two-cell disjunction l0 |-> rv0 or l1 |-> rv1 is not precise. Lemma 4: every singleton is precise; p is precise iff for all nonempty X, (meet X) * p = meet{x * p | x in X}; the remark after it says injectivity of sigma . (-) is equivalent to that distribution for singleton frames {sigma}. Section 3: a relation satisfies Safety Monotonicity and the Frame Property 'iff the frame rule is sound for it' (stated without proof).
   * Coq, Verified Software Toolchain: PrincetonUniversity/VST tag v2.14 (commit e1db53a4e22ddd3f8223532ba73127b706faf1b3), file msl/predicates_sa.v, lines 78-122: Definition precise (at most one join_sub substate in P) and Lemma precise_eq, proved under Join, Perm_alg, Sep_alg and Canc_alg (the cancellation class of msl/sepalg.v, join a1 b c -> join a2 b c -> a1 = a2): precise = fun P => forall Q R, P * (Q && R) = (P * Q) && (P * R), the binary form with P on the left. Book: Appel, A. W., Dockins, R., Hobor, A., Beringer, L., Dodds, J., Stewart, G., Blazy, S. & Leroy, X., 'Program Logics for Certified Compilers', Cambridge University Press, 2014, doi:10.1017/CBO9781107256552.
@@ -1510,7 +1512,7 @@ In a baked-in-frame logic a non-local allocator such as least-free allocation ca
 * **Plain claim:** (i) The Hoare conjunction rule holds for every command without precision or cancellativity. (ii) A local heap command can terminate from emp and have no outcome from every non-empty heap. (iii) With empty disjointness every command is local and every assertion precise, with unique frames and the distribution law; without a unit even the always-true assertion can be precise. (iv) Right- and left-handed precision and distribution coincide under symmetric disjointness and commutative union, and can differ without them, even in cancellative structures. (v) A heap command that is safe on emp and faults from some heap is not safety-monotone. (vi) Over the uninhabited value type Empty the only heap is emp, so every heap command is safety-monotone and has the frame property; the non-locality results need an inhabited value type.
 * **Design question:** Reference point: which tempting readings of R1-R4 are ruled out.
 
-**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened; `skipOnEmp_local_and_no_outcome_on_nonempty` printed as `name : type` with `set_option pp.analyze true`):
+**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened; `skipOnEmp_local_and_no_outcome_on_nonempty` printed as `name : type` with `set_option pp.analyze true`; entries preceded by a `-- file:lines` citation are quoted verbatim from those source lines):
 
 ```lean
 Toy.Sep.triple_conj.{u} {S : Type u} {P₁ P₂ Q₁ Q₂ : Assn S} {c : Cmd S} (h₁ : Triple P₁ c Q₁) (h₂ : Triple P₂ c Q₂) :
@@ -1520,19 +1522,22 @@ Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty : Local (S := Heap Nat) skipO
   skipOnEmp (V := Nat) Heap.emp (Outcome.ok Heap.emp) ∧
     ∀ (h : Heap Nat), h ≠ Heap.emp → ∀ (o : Outcome (Heap Nat)), ¬skipOnEmp h o
 
--- source signature (Toy/Sep/Boundaries.lean); instance arguments shown explicitly
+-- lean/Toy/Sep/Boundaries.lean:76-79
+-- source statement, verbatim; instance arguments shown explicitly
 theorem emptyDisj_degenerate (c : Cmd Unit) (R : Assn Unit) :
     @SafetyMono Unit emptyDisjSepStruct c ∧ @FrameProp Unit emptyDisjSepStruct c ∧
     @FrameRuleSound Unit emptyDisjSepStruct c ∧ @Precise Unit emptyDisjSepStruct R ∧
     @UniqueFrame Unit emptyDisjSepStruct R ∧ @ConjDistrib Unit emptyDisjSepStruct R
 
--- source signature (Toy/Sep/Boundaries.lean); instance arguments shown explicitly
+-- lean/Toy/Sep/Boundaries.lean:91-94
+-- source statement, verbatim; instance arguments shown explicitly
 theorem onePair_true_precise :
     @DisjSymm Nat onePairSepStruct ∧ @UnionComm Nat onePairSepStruct ∧
     @UnionAssoc Nat onePairSepStruct ∧ (¬ ∃ e, @UnitLaw Nat onePairSepStruct e) ∧
     @Precise Nat onePairSepStruct (fun _ => True)
 
--- source signature (Toy/Sep/Boundaries.lean); instance arguments shown explicitly
+-- lean/Toy/Sep/Boundaries.lean:160-165
+-- source statement, verbatim; instance arguments shown explicitly
 theorem projLeft_rightCancel_precise_not_conjDistribLeft :
     @RightCancel Nat projLeftSepStruct ∧
     @Precise Nat projLeftSepStruct (sing 0) ∧
@@ -1540,7 +1545,8 @@ theorem projLeft_rightCancel_precise_not_conjDistribLeft :
     @PreciseLeft Nat projLeftSepStruct (fun _ => True) ∧
     ¬ @Precise Nat projLeftSepStruct (fun _ => True)
 
--- source signature (Toy/Sep/Boundaries.lean); instance arguments shown explicitly
+-- lean/Toy/Sep/Boundaries.lean:181-185
+-- source statement, verbatim; instance arguments shown explicitly
 theorem projRight_leftCancel_precise_not_conjDistrib_not_preciseLeft :
     @LeftCancel Nat projRightSepStruct ∧
     @Precise Nat projRightSepStruct (fun _ => True) ∧
