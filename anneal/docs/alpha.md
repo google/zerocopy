@@ -85,9 +85,12 @@ See [crates.io Trusted Publishing](https://crates.io/docs/trusted-publishing).
    environment protections, then installs the packaged crate and runs the
    scalar checks with the downloaded archive.
 3. After qualification succeeds, approve the `anneal-release` deployment to
-   publish `cargo-anneal` to crates.io.
+   publish `cargo-anneal` to crates.io. The workflow then tags the published
+   source as `anneal-v<version>` and creates a GitHub prerelease with release
+   notes and a link to the toolchain archive.
 
 Rerun preparation to recover the PR for a published archive whose build
 inputs still match. Recovery trusts the repository's release writers to
-preserve the tag and asset provenance. If qualification fails, rerun the
-failed jobs on the push that merged the release PR.
+preserve the tag and asset provenance. If qualification or GitHub release
+publication fails, rerun the failed jobs on the push that merged the release
+PR.

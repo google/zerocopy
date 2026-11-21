@@ -1,0 +1,74 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Publish GitHub Release
+description: Ensure a source tag points to the published commit and publish its release notes
+inputs:
+  tag:
+    description: Versioned Git tag for the published source
+    required: true
+  commit:
+    description: Exact Git commit used to publish the crate
+    required: true
+  notes-file:
+    description: Path to the generated Markdown release notes
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Publish notes for the source tag
+      shell: bash
+      env:
+        GH_REPO: ${{ github.repository }}
+        RELEASE_TAG: ${{ inputs.tag }}
+        RELEASE_COMMIT: ${{ inputs.commit }}
+        NOTES_FILE: ${{ inputs.notes-file }}
+      run: |
+        set -euo pipefail
+        [[ "$RELEASE_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+        test -s "$NOTES_FILE"
+        prerelease="$(
+          cd "$GITHUB_ACTION_PATH/../.."
+          python3 -B - "$RELEASE_TAG" <<'PY'
+        import sys
+        from release_notes import parse_tag, validate_tag_name
+
+        tag = validate_tag_name(sys.argv[1], flag_name="tag")
+        _, version = parse_tag(tag)
+        print(str(version.is_prerelease).lower())
+        PY
+        )"
+        tag_ref="refs/tags/$RELEASE_TAG"
+        tagged_commit="$(git ls-remote origin "$tag_ref" "$tag_ref^{}" |
+          awk -v ref="$tag_ref" '$2 == ref {direct = $1}
+            $2 == ref "^{}" {peeled = $1} END {print peeled ? peeled : direct}')"
+        if [[ -z "$tagged_commit" ]]; then
+          git -c user.name="Google PR Creation Bot" \
+            -c user.email="github-pull-request-creation-bot@google.com" \
+              tag -a -m "Release $RELEASE_TAG" -- "$RELEASE_TAG" "$RELEASE_COMMIT"
+          git -c credential.helper= -c 'credential.helper=!gh auth git-credential' \
+            push origin "$tag_ref"
+        elif [[ "$tagged_commit" != "$RELEASE_COMMIT" ]]; then
+          echo "Source tag $RELEASE_TAG points to $tagged_commit, expected $RELEASE_COMMIT" >&2
+          exit 1
+        fi
+
+        args=(--verify-tag --title "$RELEASE_TAG" --notes-file "$NOTES_FILE")
+        if [[ "$prerelease" == true ]]; then
+          args+=(--prerelease --latest=false)
+        else
+          args+=(--latest)
+        fi
+
+        if existing="$(gh release view --json isDraft,isPrerelease -- "$RELEASE_TAG")"; then
+          jq -e --argjson prerelease "$prerelease" \
+            '.isDraft == false and .isPrerelease == $prerelease' <<< "$existing"
+        else
+          gh release create "${args[@]}" -- "$RELEASE_TAG"
+        fi
