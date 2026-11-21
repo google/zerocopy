@@ -9273,7 +9273,7 @@
         {
           "identity": {
             "repository": "google/zerocopy",
-            "revision": "e9bc37a4d2c0ad9be243f25db28ff21624d8102b"
+            "revision": "57cef100c3801df512085bf83ec29bbcaae9efae"
           },
           "name": "zerocopy crate PostCleanup PlaceMention & Optimized Assume census"
         },
