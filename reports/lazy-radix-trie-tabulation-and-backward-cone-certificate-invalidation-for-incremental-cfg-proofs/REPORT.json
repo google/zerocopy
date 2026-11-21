@@ -1,0 +1,91 @@
+{
+  "topics": [
+    "verification/proof-engineering",
+    "verification/lean4",
+    "pl/program-logics",
+    "lean/kernel",
+    "build/incremental-computation",
+    "verification/certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 C++ kernel WHNF reducer, Meta rewrite/simp congruence engine, and reducibility attributes (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean4Lean mechanized specification of the Lean 4 kernel typechecker and WHNF evaluator",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "CompCert canonical positive binary radix-2 trie (PTree) and RTL control-flow graph representation",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Rocq prover call-by-need closure reducer and opaque proof table",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "seL4 l4v GraphLang unstructured control-flow graph representation",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Dafny verification result caching and dependency checksum engine",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "8e67e29912aa81b06a8b8e288c7e3046072ea482"
+      }
+    },
+    {
+      "name": "Leino and Wuestholz (2015), Fine-Grained Caching of Verification Results",
+      "identity": {
+        "doi": "10.1007/978-3-319-21690-4_22",
+        "venue": "CAV 2015, LNCS 9206, pp. 380-397"
+      }
+    },
+    {
+      "name": "Barnett and Leino (2005), Weakest-Precondition of Unstructured Programs",
+      "identity": {
+        "doi": "10.1145/1108792.1108813",
+        "venue": "PASTE 2005, pp. 82-87"
+      }
+    },
+    {
+      "name": "Leroy (2009), A Formally Verified Compiler Back-End",
+      "identity": {
+        "doi": "10.1007/s10817-009-9155-4",
+        "venue": "Journal of Automated Reasoning 43(4):363-446"
+      }
+    },
+    {
+      "name": "Celik, Palmskog, and Gligoric (2017), iCoq: Regression Proof Selection for Large-Scale Verification Projects",
+      "identity": {
+        "doi": "10.1109/ASE.2017.8115630",
+        "venue": "ASE 2017, pp. 171-182"
+      }
+    },
+    {
+      "name": "Morrison (1968), PATRICIA—Practical Algorithm To Retrieve Information Coded in Alphanumeric",
+      "identity": {
+        "doi": "10.1145/321479.321481",
+        "venue": "Journal of the ACM 15(4):514-534"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
