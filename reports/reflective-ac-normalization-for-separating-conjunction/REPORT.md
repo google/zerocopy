@@ -61,7 +61,7 @@ See the **Non-claims** subsection at the top of **Boundaries** before applying a
 ### Reading conventions
 
 - All Lean declarations live in namespace `Toy.SepAC` across modules `Algebra`, `Syntax`, `Normalization`, `FreeMonoid`, `Entailment`, `Complexity`, and `ScopeWitnesses` under `lean/Toy/SepAC/` (`ScopeWitnesses` holds the concrete witnesses that delimit claims made in the cards, and the counterexamples and non-vacuity witnesses of the supporting-theorem ledgers).
-- Statement blocks for theorems are exact `#check` output from the compiled project (paired with `Unfolded:` blocks expanding key predicates). Recursive definitions quote the exact pattern-matching source alongside non-recursive `#print` output. Inductive types and structures are quoted with their full `#print` output, including the constructor (or field) lines. Theorems that the prose cites only by name are quoted in **Statements of theorems cited by name** at the end of **Findings**.
+- Statement blocks for theorems are exact `#check` output from the compiled project (paired with `Unfolded:` blocks expanding key predicates). Where the default output leaves an implicit argument to be inferred from the kernel type (for example the element type of `List.append` or the carrier of `Eq`), the entry is printed with `set_option pp.analyze true`, which adds the annotations (such as `(P := List Nat)`) that make the printed type re-elaborate on its own. Recursive definitions quote the exact pattern-matching source alongside non-recursive `#print` output. Inductive types and structures are quoted with their full `#print` output, including the constructor (or field) lines. Theorems that the prose cites only by name are quoted in **Statements of theorems cited by name** at the end of **Findings**.
 - Every `tight` hypothesis names a proved counterexample theorem in which all remaining hypotheses hold and the conclusion fails. Every main result has a proved non-vacuity witness; `R3b` also has a proved positive control. Where a card also relies on other Lean names that carry `Prop` hypotheses (`R1c-unit-count`, `R3b`, `R4a`, `R4b`), a **Supporting-theorem ledger** lists those hypotheses under the same rules, with a proved supporting non-vacuity witness. The one-direction theorems listed on the `-iff` cards restate one direction of the quoted equivalence; their only hypothesis is a side of that equivalence, so they have no separate ledger. No hypothesis has tightness `unknown`.
 - `Basis: execution (Lean kernel check)` denotes kernel verification under `leanprover/lean4:v4.34.1`; `Basis: derived (modeling bridge)` denotes separate reasoning connecting the toy model to real verification systems. `Basis: execution (Lean v4.34.1, probe support/KernelReductionProbe.lean)` denotes a recorded run of that preserved probe program (see **Evidence** and **Revalidation**).
 
@@ -383,7 +383,7 @@ def cancelAtoms : List Nat → List Nat → List Nat × List Nat
       (x :: xs', ys')
 ```
 
-- **Meant to capture:** Greedy left-to-right multiset cancellation computing the exact multiset differences `(leftover_xs, leftover_ys)` (`cancelAtoms_spec`, `cancelAtoms_count`, `cancelAtoms_disjoint`).
+- **Meant to capture:** Greedy left-to-right multiset cancellation computing the exact multiset differences `(leftover_xs, leftover_ys)` (`cancelAtoms_spec`, `cancelAtoms_count`, `cancelAtoms_disjoint`). In `cancelAtoms_count` the leftover multiplicity of an atom `a` is `List.count a xs - List.count a ys` (resp. `List.count a ys - List.count a xs`) with truncated `Nat` subtraction: it is `0` whenever the other list has at least as many copies of `a`, which is what makes the leftovers the multiset differences.
 - **Positive examples (proved):** `cancelAtoms_pos_example`
 - **Negative examples (proved):** `cancelAtoms_neg_example`
 
@@ -569,7 +569,7 @@ mergeSort_beq_eq_isPerm : ∀ (xs ys : List Nat),
       RightUnit sep emp → ∀ (env : Nat → P) (t : Tree), Tree.denote sep emp env t = denoteAtoms sep emp env t.atoms
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ x y z : P, sep (sep x y) z = sep x (sep y z)) →
@@ -617,7 +617,7 @@ Unfolded:
     SepAssoc sep ∧ LeftUnit sep emp ∧ RightUnit sep emp
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ (env : Nat → P) (t : Tree),
@@ -656,7 +656,7 @@ None (closed concrete witness or unconditional over its quantified parameters).
           l.atoms.isPerm r.atoms = true → Tree.denote sep emp env l = Tree.denote sep emp env r
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ x y z : P, sep (sep x y) z = sep x (sep y z)) →
@@ -709,7 +709,7 @@ Unfolded:
     SepAssoc sep ∧ SepComm sep ∧ RightUnit sep emp
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ (env : Nat → P) (l r : Tree),
@@ -757,7 +757,7 @@ unitCount_eq_not_necessary_in_fixed_model : (Tree.atom 0).unitCount ≠ ((Tree.a
     Tree.denote Nat.add 0 env (Tree.atom 0) = Tree.denote Nat.add 0 env ((Tree.atom 0).node Tree.unit)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 Soundness:
@@ -817,7 +817,7 @@ Universal converse (at Type):
           r.unitFree = true → l.atoms.isPerm r.atoms = true → Tree.denote sep emp env l = Tree.denote sep emp env r
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ x y z : P, sep (sep x y) z = sep x (sep y z)) →
@@ -880,7 +880,7 @@ Unfolded:
     SepAssoc sep ∧ SepComm sep
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ (env : Nat → P) (l r : Tree),
@@ -915,17 +915,17 @@ None (closed concrete witness or unconditional over its quantified parameters).
 - **Plain claim:** Reference point: over `(List Nat, List.append, [])`, `SepAssoc`, `RightUnit`, and `LeftUnit` all hold while `SepComm` fails, and `(atom 0 ∗ atom 1)` vs `(atom 1 ∗ atom 0)` satisfy `l.atoms.isPerm r.atoms = true`, yet their denotations at `env i = [i]` are `[0, 1] ≠ [1, 0]`.
 
 ```lean
-listAppend_tight_isPerm_sepComm : SepAssoc List.append ∧
-  RightUnit List.append [] ∧
-    LeftUnit List.append [] ∧
-      ¬SepComm List.append ∧
-        have env := fun i => [i];
+listAppend_tight_isPerm_sepComm : SepAssoc (P := List Nat) List.append ∧
+  RightUnit (P := List Nat) List.append [] ∧
+    LeftUnit (P := List Nat) List.append [] ∧
+      ¬SepComm (P := List Nat) List.append ∧
+        have env : Nat → List Nat := fun i => [i];
         have l := (Tree.atom 0).node (Tree.atom 1);
         have r := (Tree.atom 1).node (Tree.atom 0);
         l.atoms.isPerm r.atoms = true ∧ Tree.denote List.append [] env l ≠ Tree.denote List.append [] env r
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ x y z : List Nat, (x ++ y) ++ z = x ++ (y ++ z)) ∧
@@ -972,7 +972,7 @@ nonAssoc_tight_isPerm_sepAssoc : SepComm NonAssocCarrier.op ∧
   (∀ (x : P), x = a ∨ x = b) → ∀ (op : P → P → P) (e : P), SepComm op → RightUnit op e → SepAssoc op
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ x y : NonAssocCarrier, op x y = op y x) ∧
@@ -1013,7 +1013,7 @@ boolAndFalse_tight_isPerm_rightUnit : SepAssoc and ∧
       l.atoms.isPerm r.atoms = true ∧ Tree.denote and false env l ≠ Tree.denote and false env r
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ x y z : Bool, Bool.and (Bool.and x y) z = Bool.and x (Bool.and y z)) ∧
@@ -1046,7 +1046,7 @@ None (closed concrete witness or unconditional over its quantified parameters).
   Tree.denote Bag.sep Bag.emp Bag.single l = Tree.denote Bag.sep Bag.emp Bag.single r → l.atoms.isPerm r.atoms = true
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 where Bag := { count : Nat → Nat // ∃ bound, ∀ i, bound ≤ i → count i = 0 },
@@ -1093,7 +1093,7 @@ isPerm_iff_forall_acu_denote_eq : ∀ (l r : Tree),
         SepComm sep → RightUnit sep emp → ∀ (env : Nat → P), Tree.denote sep emp env l = Tree.denote sep emp env r
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (l.denote Bag.sep Bag.emp Bag.single = r.denote Bag.sep Bag.emp Bag.single ↔
@@ -1174,7 +1174,7 @@ optBag_absorbing_but_complete : (∀ (x : Option Bag), optBagSep none x = none �
         l.atoms.isPerm r.atoms = true
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 Pointwise idempotence:
@@ -1254,7 +1254,7 @@ cancelAtoms_count : ∀ (xs ys : List Nat) (a : Nat),
 cancelAtoms_disjoint : ∀ (xs ys : List Nat) (a : Nat), a ∈ (cancelAtoms xs ys).fst → ¬a ∈ (cancelAtoms xs ys).snd
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ x y z : P, sep (sep x y) z = sep x (sep y z)) →
@@ -1339,7 +1339,7 @@ Unfolded:
                 entails (Tree.denote sep emp env l) (Tree.denote sep emp env r)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 (∀ x y z : P, entails x y → entails y z → entails x z) →
@@ -1418,7 +1418,7 @@ capOne_tight_commonPerm_sepMonoRight : EntailsRefl capOneEntails ∧
 capOne_not_sepMonoRight : ¬SepMonoRight Nat.add capOneEntails
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 where capOneScore : 0 ↦ 0, 1 ↦ 1, (n+2) ↦ 0 and capOneEntails x y := capOneScore x ≤ capOneScore y:
@@ -1542,7 +1542,7 @@ cellModel_affine_cancelAtoms_converse_fails : EntailsRefl affineCellEntails ∧
                     (denoteAtoms CellModel.sep CellModel.empty env (cancelAtoms l.atoms r.atoms).snd)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 1. Linear CellModel (owned ⊬ empty): (owned ∗ owned) ⊢ owned holds (conflict ⊢ owned),
@@ -1590,7 +1590,7 @@ checkPermSort_eq_isPerm_and_size_bounds : ∀ (l r : Tree),
           l.atomCount ≤ l.size ∧ r.atomsFast.length = r.atomCount ∧ r.atomCount ≤ r.size
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 ∀ (l r : Tree),
@@ -1617,7 +1617,7 @@ None (closed concrete witness or unconditional over its quantified parameters).
 
 ### Statements of theorems cited by name
 
-Exact `#check @name` output (under `open Toy.SepAC`) for every package theorem that the text above cites by name without quoting its statement, grouped by role and sorted by name. Tightness counterexamples have the form "all other hypotheses hold and the conclusion fails" for the hypothesis named in the ledger row that cites them.
+Exact `#check @name` output (under `open Toy.SepAC`; with `set_option pp.analyze true` for the entries described under **Reading conventions**) for every package theorem that the text above cites by name without quoting its statement, grouped by role and sorted by name. Tightness counterexamples have the form "all other hypotheses hold and the conclusion fails" for the hypothesis named in the ledger row that cites them.
 
 #### Tightness counterexamples
 
@@ -1633,22 +1633,22 @@ bag_tight_denote_eq : have l := Tree.atom 0;
 have r := Tree.atom 1;
 Tree.denote Bag.sep Bag.emp Bag.single l ≠ Tree.denote Bag.sep Bag.emp Bag.single r ∧ l.atoms.isPerm r.atoms = false
 
-boolAndFalse_tight_bientails_cancelAtoms_rightUnit : EntailsTrans Eq ∧
+boolAndFalse_tight_bientails_cancelAtoms_rightUnit : EntailsTrans (P := Bool) Eq ∧
   SepAssocBientails and Eq ∧
     SepCommBientails and Eq ∧
       SepMonoRight and Eq ∧
-        have env := fun x => true;
+        have env : Nat → Bool := fun x => true;
         have l := Tree.atom 0;
         have r := (Tree.atom 0).node Tree.unit;
         denoteAtoms and false env (cancelAtoms l.atoms r.atoms).fst =
             denoteAtoms and false env (cancelAtoms l.atoms r.atoms).snd ∧
           Tree.denote and false env l ≠ Tree.denote and false env r
 
-boolAndFalse_tight_bientails_commonPerm_rightUnit : EntailsTrans Eq ∧
+boolAndFalse_tight_bientails_commonPerm_rightUnit : EntailsTrans (P := Bool) Eq ∧
   SepAssocBientails and Eq ∧
     SepCommBientails and Eq ∧
       SepMonoRight and Eq ∧
-        have env := fun x => true;
+        have env : Nat → Bool := fun x => true;
         have l := Tree.atom 0;
         have r := (Tree.atom 0).node Tree.unit;
         l.atoms.Perm ([0] ++ []) ∧
@@ -1748,28 +1748,28 @@ capOne_tight_bientails_commonPerm_sepMonoRight : EntailsTrans capOneEntails ∧
               capOneEntails (denoteAtoms Nat.add 0 env []) (denoteAtoms Nat.add 0 env [0]) ∧
                 ¬capOneEntails (Tree.denote Nat.add 0 env l) (Tree.denote Nat.add 0 env r)
 
-leftProj_tight_flattening_leftUnit : SepAssoc leftProj ∧
+leftProj_tight_flattening_leftUnit : SepAssoc (P := Bool) leftProj ∧
   RightUnit leftProj false ∧
-    have env := fun x => true;
+    have env : Nat → Bool := fun x => true;
     have t := Tree.unit.node (Tree.atom 0);
     Tree.denote leftProj false env t ≠ denoteAtoms leftProj false env t.atoms
 
-listAppend_tight_bientails_cancelAtoms_sepComm : EntailsTrans Eq ∧
-  SepAssocBientails List.append Eq ∧
-    RightUnitBientails List.append [] Eq ∧
-      SepMonoRight List.append Eq ∧
-        have env := fun i => [i];
+listAppend_tight_bientails_cancelAtoms_sepComm : EntailsTrans (P := List Nat) Eq ∧
+  SepAssocBientails (P := List Nat) List.append Eq ∧
+    RightUnitBientails (P := List Nat) List.append [] Eq ∧
+      SepMonoRight (P := List Nat) List.append Eq ∧
+        have env : Nat → List Nat := fun i => [i];
         have l := (Tree.atom 0).node (Tree.atom 1);
         have r := (Tree.atom 1).node (Tree.atom 0);
         denoteAtoms List.append [] env (cancelAtoms l.atoms r.atoms).fst =
             denoteAtoms List.append [] env (cancelAtoms l.atoms r.atoms).snd ∧
           Tree.denote List.append [] env l ≠ Tree.denote List.append [] env r
 
-listAppend_tight_bientails_commonPerm_sepComm : EntailsTrans Eq ∧
-  SepAssocBientails List.append Eq ∧
-    RightUnitBientails List.append [] Eq ∧
-      SepMonoRight List.append Eq ∧
-        have env := fun i => [i];
+listAppend_tight_bientails_commonPerm_sepComm : EntailsTrans (P := List Nat) Eq ∧
+  SepAssocBientails (P := List Nat) List.append Eq ∧
+    RightUnitBientails (P := List Nat) List.append [] Eq ∧
+      SepMonoRight (P := List Nat) List.append Eq ∧
+        have env : Nat → List Nat := fun i => [i];
         have l := (Tree.atom 0).node (Tree.atom 1);
         have r := (Tree.atom 1).node (Tree.atom 0);
         l.atoms.Perm ([0, 1] ++ []) ∧
@@ -1777,20 +1777,20 @@ listAppend_tight_bientails_commonPerm_sepComm : EntailsTrans Eq ∧
             denoteAtoms List.append [] env [] = denoteAtoms List.append [] env [] ∧
               Tree.denote List.append [] env l ≠ Tree.denote List.append [] env r
 
-listAppend_tight_cancelAtoms_sepComm : SepAssoc List.append ∧
-  RightUnit List.append [] ∧
-    SepMonoRight List.append Eq ∧
-      have env := fun i => [i];
+listAppend_tight_cancelAtoms_sepComm : SepAssoc (P := List Nat) List.append ∧
+  RightUnit (P := List Nat) List.append [] ∧
+    SepMonoRight (P := List Nat) List.append Eq ∧
+      have env : Nat → List Nat := fun i => [i];
       have l := (Tree.atom 0).node (Tree.atom 1);
       have r := (Tree.atom 1).node (Tree.atom 0);
       denoteAtoms List.append [] env (cancelAtoms l.atoms r.atoms).fst =
           denoteAtoms List.append [] env (cancelAtoms l.atoms r.atoms).snd ∧
         Tree.denote List.append [] env l ≠ Tree.denote List.append [] env r
 
-listAppend_tight_commonPerm_sepComm : SepAssoc List.append ∧
-  RightUnit List.append [] ∧
-    SepMonoRight List.append Eq ∧
-      have env := fun i => [i];
+listAppend_tight_commonPerm_sepComm : SepAssoc (P := List Nat) List.append ∧
+  RightUnit (P := List Nat) List.append [] ∧
+    SepMonoRight (P := List Nat) List.append Eq ∧
+      have env : Nat → List Nat := fun i => [i];
       have l := (Tree.atom 0).node (Tree.atom 1);
       have r := (Tree.atom 1).node (Tree.atom 0);
       l.atoms.Perm ([0, 1] ++ []) ∧
@@ -1798,15 +1798,15 @@ listAppend_tight_commonPerm_sepComm : SepAssoc List.append ∧
           denoteAtoms List.append [] env [] = denoteAtoms List.append [] env [] ∧
             Tree.denote List.append [] env l ≠ Tree.denote List.append [] env r
 
-listAppend_tight_unitCount_sepComm : SepAssoc List.append ∧
-  have env := fun i => [i];
+listAppend_tight_unitCount_sepComm : SepAssoc (P := List Nat) List.append ∧
+  have env : Nat → List Nat := fun i => [i];
   have l := (Tree.atom 0).node (Tree.atom 1);
   have r := (Tree.atom 1).node (Tree.atom 0);
   l.unitCount = r.unitCount ∧
     l.atoms.isPerm r.atoms = true ∧ Tree.denote List.append [] env l ≠ Tree.denote List.append [] env r
 
-listAppend_tight_unitFree_sepComm : SepAssoc List.append ∧
-  have env := fun i => [i];
+listAppend_tight_unitFree_sepComm : SepAssoc (P := List Nat) List.append ∧
+  have env : Nat → List Nat := fun i => [i];
   have l := (Tree.atom 0).node (Tree.atom 1);
   have r := (Tree.atom 1).node (Tree.atom 0);
   l.unitFree = true ∧
@@ -1911,11 +1911,11 @@ natAdd_tight_commonPerm_rightPerm : SepAssoc Nat.add ∧
             (denoteAtoms Nat.add 0 env [0]).le (denoteAtoms Nat.add 0 env [0]) ∧
               ¬(Tree.denote Nat.add 0 env l).le (Tree.denote Nat.add 0 env r)
 
-nonAssoc_tight_bientails_cancelAtoms_sepAssoc : EntailsTrans Eq ∧
+nonAssoc_tight_bientails_cancelAtoms_sepAssoc : EntailsTrans (P := NonAssocCarrier) Eq ∧
   SepCommBientails NonAssocCarrier.op Eq ∧
     RightUnitBientails NonAssocCarrier.op NonAssocCarrier.emp Eq ∧
       SepMonoRight NonAssocCarrier.op Eq ∧
-        have env := fun i => if (i == 0) = true then NonAssocCarrier.a else NonAssocCarrier.b;
+        have env : Nat → NonAssocCarrier := fun i => if (i == 0) = true then NonAssocCarrier.a else NonAssocCarrier.b;
         have l := ((Tree.atom 0).node (Tree.atom 0)).node (Tree.atom 1);
         have r := (Tree.atom 0).node ((Tree.atom 0).node (Tree.atom 1));
         denoteAtoms NonAssocCarrier.op NonAssocCarrier.emp env (cancelAtoms l.atoms r.atoms).fst =
@@ -1923,11 +1923,11 @@ nonAssoc_tight_bientails_cancelAtoms_sepAssoc : EntailsTrans Eq ∧
           Tree.denote NonAssocCarrier.op NonAssocCarrier.emp env l ≠
             Tree.denote NonAssocCarrier.op NonAssocCarrier.emp env r
 
-nonAssoc_tight_bientails_commonPerm_sepAssoc : EntailsTrans Eq ∧
+nonAssoc_tight_bientails_commonPerm_sepAssoc : EntailsTrans (P := NonAssocCarrier) Eq ∧
   SepCommBientails NonAssocCarrier.op Eq ∧
     RightUnitBientails NonAssocCarrier.op NonAssocCarrier.emp Eq ∧
       SepMonoRight NonAssocCarrier.op Eq ∧
-        have env := fun i => if (i == 0) = true then NonAssocCarrier.a else NonAssocCarrier.b;
+        have env : Nat → NonAssocCarrier := fun i => if (i == 0) = true then NonAssocCarrier.a else NonAssocCarrier.b;
         have l := ((Tree.atom 0).node (Tree.atom 0)).node (Tree.atom 1);
         have r := (Tree.atom 0).node ((Tree.atom 0).node (Tree.atom 1));
         l.atoms.Perm ([0, 0, 1] ++ []) ∧
@@ -1987,9 +1987,9 @@ nonAssoc_tight_unitFree_sepAssoc : SepComm NonAssocCarrier.op ∧
         Tree.denote NonAssocCarrier.op NonAssocCarrier.emp env l ≠
           Tree.denote NonAssocCarrier.op NonAssocCarrier.emp env r
 
-rightProj_tight_flattening_rightUnit : SepAssoc rightProj ∧
+rightProj_tight_flattening_rightUnit : SepAssoc (P := Bool) rightProj ∧
   LeftUnit rightProj false ∧
-    have env := fun x => true;
+    have env : Nat → Bool := fun x => true;
     have t := Tree.atom 0;
     Tree.denote rightProj false env t ≠ denoteAtoms rightProj false env t.atoms
 
@@ -2108,8 +2108,9 @@ checkPermSort_nonvacuous : have l := ((Tree.atom 2).node Tree.unit).node (Tree.a
 have r := (Tree.atom 0).node (Tree.atom 2);
 l ≠ r ∧ checkPermSort l r = true ∧ l.atomCount < l.size
 
-denote_eq_denoteAtoms_of_assoc_units_nonvacuous : SepAssoc List.append ∧
-  LeftUnit List.append [] ∧ RightUnit List.append [] ∧ ¬SepComm List.append
+denote_eq_denoteAtoms_of_assoc_units_nonvacuous : SepAssoc (P := List Nat) List.append ∧
+  LeftUnit (P := List Nat) List.append [] ∧
+    RightUnit (P := List Nat) List.append [] ∧ ¬SepComm (P := List Nat) List.append
 
 idempotent_bool_acu_incomplete : SepAssoc or ∧
   SepComm or ∧
@@ -2279,15 +2280,15 @@ leftProj_not_leftUnit : ¬LeftUnit leftProj false
 
 leftProj_rightUnit : RightUnit leftProj false
 
-listAppend_leftUnit : LeftUnit List.append []
+listAppend_leftUnit : LeftUnit (P := List Nat) List.append []
 
-listAppend_not_commBientails_eq : ¬SepCommBientails List.append Eq
+listAppend_not_commBientails_eq : ¬SepCommBientails (P := List Nat) List.append Eq
 
-listAppend_not_sepComm : ¬SepComm List.append
+listAppend_not_sepComm : ¬SepComm (P := List Nat) List.append
 
-listAppend_rightUnit : RightUnit List.append []
+listAppend_rightUnit : RightUnit (P := List Nat) List.append []
 
-listAppend_sepAssoc : SepAssoc List.append
+listAppend_sepAssoc : SepAssoc (P := List Nat) List.append
 
 natAdd_le_sepMonoLeft : SepMonoLeft Nat.add Nat.le
 
@@ -2340,7 +2341,7 @@ twoCellModel_affineEntails : AffineEntails TwoCellModel.empty TwoCellModel.entai
 
 **Package-wide boundaries:**
 
-- **Toy abstraction only:** No theorem establishes properties of a production separation-logic verifier or tactic without an external modeling bridge connecting that logic's connectives, equality/entailment relation, and reification pipeline to `Toy.SepAC`.
+- **Toy abstraction:** The theorems are about `Toy.SepAC`; they neither establish nor refute the corresponding claims about a production separation-logic verifier or tactic, and no theorem establishes properties of one without an external modeling bridge connecting that logic's connectives, equality/entailment relation, and reification pipeline to `Toy.SepAC`.
 - **No reification or alias unification:** All theorems take already-reified `Tree` values and environments `env : Nat → P`; matching `Tree.denote` to a source AST and unifying definitionally equal atoms lie outside the formalization.
 - **Sufficiency-only entailment cancellation:** Only the equational theorems (`R1a-iff`, `R1b-iff`, `R1c-iff`, `R3a-iff`) yield `↔` algebraic characterizations. Entailment frame cancellation (`R4a`, `R4b`) gives sufficient conditions only (`Toy.SepAC.totalRelation_cancel_sound_without_laws`).
 - **No formal cost semantics and no novelty claims:** Complexity statements (`R5`) are informal counts supported by proved structural size bounds (`atomCount ≤ size`) and a kernel-reducibility execution observation (probe `support/KernelReductionProbe.lean`); no result claims novelty.
@@ -2600,7 +2601,7 @@ None. All 18 results (`R1a`–`R5`), their 3 supplementary theorems (`unitCount_
 | `Toy.SepAC.unitCount_eq_and_isPerm_of_forall_ac_denote_eq` | R1c-unit-count result | `Classical.choice`, `Quot.sound`, `propext` | `694ca54ab532382a71ca07b8569805c88ca10689d9344c5eaa726776366f7f5c` | `25698eb3ec35e1de130b0066c821d25de8735716abbe69a93cdf27b1e87ef30c` (18) |
 | `Toy.SepAC.unitCount_eq_not_necessary_in_fixed_model` | R1c-unit-count result; R1c-unit-count supporting counterexample | none | `89d8b98648844510450d3130213855a161739792aeef04bb823ca57da3a6b908` | `199edb03274f0f1ed84ca9e0a0cae9f79860bc4d1f77a4d97d0b410d9f654547` (14) |
 
-**Kernel-reduction probe (2026-11-20).** `support/KernelReductionProbe.lean` elaborates four closed Boolean terms (`([2, 0] : List Nat).isPerm [0, 2]`, `Lean.Data.AC.sort [3, 1, 2] == [1, 2, 3]`, `([3, 1, 2] : List Nat).mergeSort (fun a b => decide (a ≤ b)) == [1, 2, 3]`, and `checkPermSort ((atom 2 ∗ unit) ∗ atom 0) (atom 0 ∗ atom 2)`) and asks the Lean `v4.34.1` kernel directly, without elaborator unfolding heuristics, whether `Lean.Kernel.whnf` reduces each term to `Bool.true` and whether `Lean.Kernel.isDefEq` accepts it as definitionally equal to `true` (the check behind accepting `Eq.refl true` as a proof of `t = true`). It fails with an error if any answer differs from the expected answer recorded in the file. Run from `lean/` after `lake build` with `lake env lean ../support/KernelReductionProbe.lean`; recorded output:
+**Kernel-reduction probe (2026-11-20).** `support/KernelReductionProbe.lean` elaborates four closed Boolean terms (`([2, 0] : List Nat).isPerm [0, 2]`, `Lean.Data.AC.sort [3, 1, 2] == [1, 2, 3]`, `([3, 1, 2] : List Nat).mergeSort (fun a b => decide (a ≤ b)) == [1, 2, 3]`, and `checkPermSort ((atom 2 ∗ unit) ∗ atom 0) (atom 0 ∗ atom 2)`) and asks the Lean `v4.34.1` kernel directly, without the elaborator's reduction heuristics, whether `Lean.Kernel.whnf` reduces each term to `Bool.true` and whether `Lean.Kernel.isDefEq` accepts it as definitionally equal to `true` (the check behind accepting `Eq.refl true` as a proof of `t = true`). It fails with an error if any answer differs from the expected answer recorded in the file. Run from `lean/` after `lake build` with `lake env lean ../support/KernelReductionProbe.lean`; recorded output:
 
 ```text
 KERNEL_PROBE List.isPerm: kernel whnf = true: true; kernel isDefEq with true: true; kernel exception: false; expected: true; as expected
