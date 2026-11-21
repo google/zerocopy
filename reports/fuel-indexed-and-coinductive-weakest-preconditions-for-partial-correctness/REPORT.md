@@ -163,9 +163,11 @@ inductive AllRunsEventually (S : System σ) (P : σ → Prop) : σ → Prop
 Unfolded once: `wpStep S Q X s` is `(S.terminal s → Q s) ∧ (¬ S.terminal s → (∃ t, S.step s t) ∧ ∀ t, S.step s t → X t)`; `wpGfp S Q s` is `∃ X, (∀ t, X t → wpStep S Q X t) ∧ X s` (some invariant contains `s`); `wpLfp S Q s` is `∀ X, (∀ t, wpStep S Q X t → X t) → X s`; `RunEndOk S Q t` is `(S.terminal t → Q t) ∧ (¬ S.terminal t → ∃ u, S.step t u)`. Hierarchy of the branching hypotheses (all proved): `Deterministic S → FinitelyBranching S` (`finitelyBranching_of_deterministic`, classical) and `FinitelyBranching S → FinitelyBranchingFrom S s` (`finitelyBranchingFrom_of_finitelyBranching`); both implications are strict (`spinOrExitSys_finitelyBranching_not_deterministic`; `finitelyBranchingFrom_pos_countdown_count` with `finitelyBranching_neg_countdown`, all quoted under Boundaries). The two implications, from `section Basic` of `ToyFuelWP.Defs` (so `S` is an implicit argument):
 
 ```lean
+-- lean/ToyFuelWP/Defs.lean:372
 -- ToyFuelWP.Defs
 theorem finitelyBranching_of_deterministic (h : Deterministic S) : FinitelyBranching S
 
+-- lean/ToyFuelWP/Defs.lean:366-367
 -- ToyFuelWP.Defs
 theorem finitelyBranchingFrom_of_finitelyBranching (h : FinitelyBranching S) (s : σ) :
     FinitelyBranchingFrom S s
@@ -174,21 +176,29 @@ theorem finitelyBranchingFrom_of_finitelyBranching (h : FinitelyBranching S) (s 
 Every core definition has proved positive and negative examples in `ToyFuelWP.Examples`. Four such pairs, verbatim (the toy systems are quoted in the next subsection):
 
 ```lean
+-- lean/ToyFuelWP/Examples.lean:123
 -- ToyFuelWP.Examples
 theorem wpGfp_pos_loop_false : wpGfp loopSys (fun _ => False) ()
 
+-- lean/ToyFuelWP/Examples.lean:147
 theorem wpGfp_neg_error_far : ¬ wpGfp downToStuckSys (fun _ => True) 1000
 
+-- lean/ToyFuelWP/Examples.lean:156
 theorem wpLfp_pos_countdown : wpLfp countdownSys (fun _ => True) .start
 
+-- lean/ToyFuelWP/Examples.lean:159
 theorem wpLfp_neg_loop : ¬ wpLfp loopSys (fun _ => True) ()
 
+-- lean/ToyFuelWP/Examples.lean:301
 theorem deterministic_pos_termBranch : Deterministic termBranchSys
 
+-- lean/ToyFuelWP/Examples.lean:304
 theorem deterministic_neg_spinOrExit : ¬ Deterministic spinOrExitSys
 
+-- lean/ToyFuelWP/Examples.lean:230
 theorem alwaysDiverges_pos_spinOrOut : AlwaysDiverges spinOrOutSys .spin
 
+-- lean/ToyFuelWP/Examples.lean:243
 theorem alwaysDiverges_neg_error : ¬ AlwaysDiverges downToStuckSys 0
 ```
 
@@ -322,14 +332,17 @@ always, ⇐ under (local) finite branching (with a per-state fuel, by classical 
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Statements.lean:28-29
 -- ToyFuelWP.Statements
 theorem wpFuel_of_wpGfp (S : System σ) (Q : σ → Prop) (s : σ) (h : wpGfp S Q s) (n : Nat) :
     wpFuel S n Q s
 
+-- lean/ToyFuelWP/Statements.lean:37-38
 -- ToyFuelWP.Statements
 theorem wpGfp_of_forall_wpFuel (S : System σ) (Q : σ → Prop) (s : σ)
     (h : ∀ n, wpFuel S n Q s) : wpGfp S Q s
 
+-- lean/ToyFuelWP/Statements.lean:46-47
 -- ToyFuelWP.Statements
 theorem forall_wpFuel_iff_wpGfp (S : System σ) (Q : σ → Prop) (s : σ) :
     (∀ n, wpFuel S n Q s) ↔ wpGfp S Q s
@@ -363,16 +376,19 @@ theorem forall_wpFuel_iff_wpGfp (S : System σ) (Q : σ → Prop) (s : σ) :
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:34-35
 -- ToyFuelWP.Counterexamples
 theorem stuckSys_not_wpGfp_not_wpFuel_one :
     ¬ wpGfp stuckSys (fun _ => True) () ∧ ¬ wpFuel stuckSys 1 (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:24-27
 -- ToyFuelWP.Counterexamples
 theorem fixed_fuel_wpFuel_not_imp_wpGfp (n : Nat) :
     wpFuel downToStuckSys n (fun _ => True) n ∧
       ¬ (∀ m, wpFuel downToStuckSys m (fun _ => True) n) ∧
       ¬ wpGfp downToStuckSys (fun _ => True) n
 
+-- lean/ToyFuelWP/Counterexamples.lean:42-44
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_forall_wpFuel_and_wpGfp :
     ((∀ n, wpFuel chainSys n (fun s => s = 0) 3) ∧ wpGfp chainSys (fun s => s = 0) 3) ∧
@@ -388,6 +404,7 @@ theorem nonvacuity_forall_wpFuel_and_wpGfp :
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:24-27
 -- ToyFuelWP.Counterexamples
 theorem fixed_fuel_wpFuel_not_imp_wpGfp (n : Nat) :
     wpFuel downToStuckSys n (fun _ => True) n ∧
@@ -398,6 +415,7 @@ theorem fixed_fuel_wpFuel_not_imp_wpGfp (n : Nat) :
 - **Supporting lemma used in the proof** (context only; not part of the card's statement, no recorded hash; axioms `Quot.sound`, `propext`):
 
 ```lean
+-- lean/ToyFuelWP/Systems.lean:277
 -- ToyFuelWP.Systems
 theorem downToStuckSys_not_wpFuel : ∀ (k : Nat), ¬ wpFuel downToStuckSys (k + 1) (fun _ => True) k
 ```
@@ -422,10 +440,12 @@ theorem downToStuckSys_not_wpFuel : ∀ (k : Nat), ¬ wpFuel downToStuckSys (k +
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Statements.lean:54-55
 -- ToyFuelWP.Statements
 theorem wpFuel_antitone (S : System σ) (Q : σ → Prop) (s : σ) {n m : Nat} (hnm : n ≤ m)
     (h : wpFuel S m Q s) : wpFuel S n Q s
 
+-- lean/ToyFuelWP/Statements.lean:65-66
 -- ToyFuelWP.Statements
 theorem wpFuelTotal_monotone (S : System σ) (Q : σ → Prop) (s : σ) {n m : Nat} (hnm : n ≤ m)
     (h : wpFuelTotal S n Q s) : wpFuelTotal S m Q s
@@ -449,27 +469,33 @@ theorem wpFuelTotal_monotone (S : System σ) (Q : σ → Prop) (s : σ) {n m : N
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:53-54
 -- ToyFuelWP.Counterexamples
 theorem wpFuel_not_monotone_stuck :
     ¬ (1 ≤ 0) ∧ wpFuel stuckSys 0 (fun _ => True) () ∧ ¬ wpFuel stuckSys 1 (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:69-70
 -- ToyFuelWP.Counterexamples
 theorem wpFuel_antitone_drop_h :
     1 ≤ 2 ∧ ¬ wpFuel stuckSys 2 (fun _ => True) () ∧ ¬ wpFuel stuckSys 1 (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:60-62
 -- ToyFuelWP.Counterexamples
 theorem wpFuelTotal_not_antitone_done :
     ¬ (1 ≤ 0) ∧ wpFuelTotal doneSys 1 (fun _ => True) () ∧
       ¬ wpFuelTotal doneSys 0 (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:79-81
 -- ToyFuelWP.Counterexamples
 theorem wpFuelTotal_monotone_drop_h :
     1 ≤ 2 ∧ ¬ wpFuelTotal stuckSys 1 (fun _ => True) () ∧
       ¬ wpFuelTotal stuckSys 2 (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:104
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_wpFuel_antitone : 1 ≤ 3 ∧ wpFuel loopSys 3 (fun _ => False) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:110
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_wpFuelTotal : 4 ≤ 6 ∧ wpFuelTotal chainSys 4 (fun s => s = 0) 3
 ```
@@ -483,6 +509,7 @@ theorem nonvacuity_wpFuelTotal : 4 ≤ 6 ∧ wpFuelTotal chainSys 4 (fun s => s 
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Statements.lean:78-79
 -- ToyFuelWP.Statements
 theorem wpFuel_iff_forall_reach_lt (S : System σ) (n : Nat) (Q : σ → Prop) (s : σ) :
     wpFuel S n Q s ↔ ∀ k t, k < n → Reach S s k t → RunEndOk S Q t
@@ -505,6 +532,7 @@ theorem wpFuel_iff_forall_reach_lt (S : System σ) (n : Nat) (Q : σ → Prop) (
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:116-117
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_wpFuel_iff_forall_reach_lt :
     wpFuel downToStuckSys 3 (fun _ => True) 3 ∧ ¬ wpFuel downToStuckSys 4 (fun _ => True) 3
@@ -519,6 +547,7 @@ theorem nonvacuity_wpFuel_iff_forall_reach_lt :
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Statements.lean:97-98
 -- ToyFuelWP.Statements
 theorem wpFuelTotal_iff_wpFuel_and_no_reach (S : System σ) (n : Nat) (Q : σ → Prop) (s : σ) :
     wpFuelTotal S n Q s ↔ wpFuel S n Q s ∧ ∀ t, ¬ Reach S s n t
@@ -538,6 +567,7 @@ theorem wpFuelTotal_iff_wpFuel_and_no_reach (S : System σ) (n : Nat) (Q : σ �
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:110
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_wpFuelTotal : 4 ≤ 6 ∧ wpFuelTotal chainSys 4 (fun s => s = 0) 3
 ```
@@ -551,10 +581,12 @@ theorem nonvacuity_wpFuelTotal : 4 ≤ 6 ∧ wpFuelTotal chainSys 4 (fun s => s 
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Statements.lean:115-116
 -- ToyFuelWP.Statements
 theorem wpLfp_of_exists_wpFuelTotal (S : System σ) (Q : σ → Prop) (s : σ)
     (h : ∃ n, wpFuelTotal S n Q s) : wpLfp S Q s
 
+-- lean/ToyFuelWP/Statements.lean:125-126
 -- ToyFuelWP.Statements
 theorem wpGfp_of_wpFuelTotal (S : System σ) (n : Nat) (Q : σ → Prop) (s : σ)
     (h : wpFuelTotal S n Q s) : wpGfp S Q s
@@ -578,11 +610,13 @@ theorem wpGfp_of_wpFuelTotal (S : System σ) (n : Nat) (Q : σ → Prop) (s : σ
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:93-95
 -- ToyFuelWP.Counterexamples
 theorem stuckSys_no_total_no_partial :
     (∀ n, ¬ wpFuelTotal stuckSys n (fun _ => True) ()) ∧
       ¬ wpGfp stuckSys (fun _ => True) () ∧ ¬ wpLfp stuckSys (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:110
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_wpFuelTotal : 4 ≤ 6 ∧ wpFuelTotal chainSys 4 (fun s => s = 0) 3
 ```
@@ -596,24 +630,29 @@ theorem nonvacuity_wpFuelTotal : 4 ≤ 6 ∧ wpFuelTotal chainSys 4 (fun s => s 
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Statements.lean:157-159
 -- ToyFuelWP.Statements
 theorem exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom (S : System σ) (Q : σ → Prop)
     (s : σ) (hfb : FinitelyBranchingFrom S s) (h : wpLfp S Q s) :
     ∃ n, wpFuelTotal S n Q s
 
+-- lean/ToyFuelWP/Statements.lean:174-175
 -- ToyFuelWP.Statements
 theorem exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching (S : System σ) (Q : σ → Prop)
     (hfb : FinitelyBranching S) (s : σ) : (∃ n, wpFuelTotal S n Q s) ↔ wpLfp S Q s
 
+-- lean/ToyFuelWP/Statements.lean:182-183
 -- ToyFuelWP.Statements
 theorem exists_wpFuelTotal_iff_wpLfp_of_deterministic (S : System σ) (Q : σ → Prop)
     (hdet : Deterministic S) (s : σ) : (∃ n, wpFuelTotal S n Q s) ↔ wpLfp S Q s
 
+-- lean/ToyFuelWP/Statements.lean:190-192
 -- ToyFuelWP.Statements
 theorem exists_wpFuelTotal_iff_wpLfp_ofStepFn (next : σ → Option σ) (halted : σ → Prop)
     (Q : σ → Prop) (s : σ) :
     (∃ n, wpFuelTotal (ofStepFn next halted) n Q s) ↔ wpLfp (ofStepFn next halted) Q s
 
+-- lean/ToyFuelWP/Statements.lean:238-240
 -- ToyFuelWP.Statements
 theorem exists_wpFuelTotal_of_wpGfp_of_not_hasInfiniteRun_of_finitelyBranchingFrom
     (S : System σ) (Q : σ → Prop) (s : σ) (hfb : FinitelyBranchingFrom S s)
@@ -651,6 +690,7 @@ theorem exists_wpFuelTotal_of_wpGfp_of_not_hasInfiniteRun_of_finitelyBranchingFr
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:132-137
 -- ToyFuelWP.Counterexamples
 theorem countdown_wpLfp_without_uniform_fuel :
     ¬ FinitelyBranchingFrom countdownSys .start ∧ ¬ FinitelyBranching countdownSys ∧
@@ -659,6 +699,7 @@ theorem countdown_wpLfp_without_uniform_fuel :
       ¬ HasInfiniteRun countdownSys .start ∧
       ¬ ∃ n, wpFuelTotal countdownSys n (fun _ => True) .start
 
+-- lean/ToyFuelWP/Counterexamples.lean:162-166
 -- ToyFuelWP.Counterexamples
 theorem loop_finitelyBranching_no_total_fuel :
     FinitelyBranching loopSys ∧ FinitelyBranchingFrom loopSys () ∧
@@ -666,33 +707,39 @@ theorem loop_finitelyBranching_no_total_fuel :
       ¬ wpLfp loopSys (fun _ => True) () ∧
       ¬ ∃ n, wpFuelTotal loopSys n (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:151-154
 -- ToyFuelWP.Counterexamples
 theorem countdown_exists_wpFuelTotal_iff_wpLfp_fails :
     ¬ FinitelyBranching countdownSys ∧ ¬ Deterministic countdownSys ∧
       ¬ ((∃ n, wpFuelTotal countdownSys n (fun _ => True) .start) ↔
         wpLfp countdownSys (fun _ => True) .start)
 
+-- lean/ToyFuelWP/Counterexamples.lean:174-177
 -- ToyFuelWP.Counterexamples
 theorem stuck_finitelyBranching_no_infinite_run_no_total_fuel :
     FinitelyBranchingFrom stuckSys () ∧ ¬ HasInfiniteRun stuckSys () ∧
       ¬ wpGfp stuckSys (fun _ => True) () ∧
       ¬ ∃ n, wpFuelTotal stuckSys n (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:184-187
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom :
     (FinitelyBranchingFrom chainSys 3 ∧ wpLfp chainSys (fun s => s = 0) 3) ∧
       (FinitelyBranchingFrom countdownSys (.count 3) ∧
         wpLfp countdownSys (fun _ => True) (.count 3))
 
+-- lean/ToyFuelWP/Counterexamples.lean:193-194
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_exists_wpFuelTotal_iff_wpLfp_corollaries :
     Deterministic chainSys ∧ FinitelyBranching chainSys ∧ wpLfp chainSys (fun s => s = 0) 3
 
+-- lean/ToyFuelWP/Counterexamples.lean:445-447
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_exists_wpFuelTotal_iff_wpLfp_ofStepFn :
     Deterministic (ofStepFn predStep (fun s => s = 0)) ∧
       wpLfp (ofStepFn predStep (fun s => s = 0)) (fun s => s = 0) 3
 
+-- lean/ToyFuelWP/Counterexamples.lean:211-213
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_koenig_form :
     FinitelyBranchingFrom chainSys 3 ∧ wpGfp chainSys (fun s => s = 0) 3 ∧
@@ -708,6 +755,7 @@ theorem nonvacuity_koenig_form :
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:132-137
 -- ToyFuelWP.Counterexamples
 theorem countdown_wpLfp_without_uniform_fuel :
     ¬ FinitelyBranchingFrom countdownSys .start ∧ ¬ FinitelyBranching countdownSys ∧
@@ -741,6 +789,7 @@ theorem countdown_wpLfp_without_uniform_fuel :
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Statements.lean:198-199
 -- ToyFuelWP.Statements
 theorem wpLfp_iff_wpGfp_and_not_hasInfiniteRun (S : System σ) (Q : σ → Prop) (s : σ) :
     wpLfp S Q s ↔ wpGfp S Q s ∧ ¬ HasInfiniteRun S s
@@ -767,6 +816,7 @@ theorem wpLfp_iff_wpGfp_and_not_hasInfiniteRun (S : System σ) (Q : σ → Prop)
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:200-204
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_wpLfp_iff_wpGfp_and_not_hasInfiniteRun :
     (wpLfp countdownSys (fun _ => True) .start ∧ wpGfp countdownSys (fun _ => True) .start ∧
@@ -784,12 +834,14 @@ theorem nonvacuity_wpLfp_iff_wpGfp_and_not_hasInfiniteRun :
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Divergence.lean:112-115
 -- ToyFuelWP.Divergence
 theorem alwaysDiverges_satisfies_every_partial_wp_and_no_total_wp (S : System σ) (s : σ)
     (h : AlwaysDiverges S s) :
     (∀ n Q, wpFuel S n Q s) ∧ (∀ Q, wpGfp S Q s) ∧
       (∀ n Q, ¬ wpFuelTotal S n Q s) ∧ (∀ Q, ¬ wpLfp S Q s)
 
+-- lean/ToyFuelWP/Divergence.lean:122-124
 -- ToyFuelWP.Divergence
 theorem hasInfiniteRun_refutes_every_total_wp (S : System σ) (s : σ)
     (h : HasInfiniteRun S s) :
@@ -814,19 +866,23 @@ theorem hasInfiniteRun_refutes_every_total_wp (S : System σ) (s : σ)
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:223-225
 -- ToyFuelWP.Counterexamples
 theorem done_not_every_partial_wp :
     ¬ AlwaysDiverges doneSys () ∧ ¬ wpGfp doneSys (fun _ => False) () ∧
       ¬ wpFuel doneSys 1 (fun _ => False) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:231-233
 -- ToyFuelWP.Counterexamples
 theorem done_some_total_wp :
     ¬ HasInfiniteRun doneSys () ∧ wpLfp doneSys (fun _ => True) () ∧
       wpFuelTotal doneSys 1 (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:238
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_alwaysDiverges : AlwaysDiverges loopSys () ∧ AlwaysDiverges spinOrOutSys .spin
 
+-- lean/ToyFuelWP/Counterexamples.lean:243-244
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_hasInfiniteRun :
     HasInfiniteRun spinOrExitSys .spin ∧ ¬ AlwaysDiverges spinOrExitSys .spin
@@ -841,10 +897,12 @@ theorem nonvacuity_hasInfiniteRun :
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Divergence.lean:131-132
 -- ToyFuelWP.Divergence
 theorem wpGfp_false_iff_alwaysDiverges (S : System σ) (s : σ) :
     wpGfp S (fun _ => False) s ↔ AlwaysDiverges S s
 
+-- lean/ToyFuelWP/Divergence.lean:140-141
 -- ToyFuelWP.Divergence
 theorem forall_wpGfp_iff_alwaysDiverges (S : System σ) (s : σ) :
     (∀ Q, wpGfp S Q s) ↔ AlwaysDiverges S s
@@ -865,6 +923,7 @@ theorem forall_wpGfp_iff_alwaysDiverges (S : System σ) (s : σ) :
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:238
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_alwaysDiverges : AlwaysDiverges loopSys () ∧ AlwaysDiverges spinOrOutSys .spin
 ```
@@ -878,6 +937,7 @@ theorem nonvacuity_alwaysDiverges : AlwaysDiverges loopSys () ∧ AlwaysDiverges
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Divergence.lean:152-156
 -- ToyFuelWP.Divergence
 theorem not_partial_wp_expressible_of_alwaysDiverges_of_not (S : System σ)
     (R : σ → Prop) (s : σ) (hdiv : AlwaysDiverges S s) (hviol : ¬ R s) :
@@ -885,6 +945,7 @@ theorem not_partial_wp_expressible_of_alwaysDiverges_of_not (S : System σ)
       (¬ ∃ (n : Nat) (Q : σ → Prop), ∀ t, wpFuel S n Q t ↔ R t) ∧
       (¬ ∃ Q : σ → Prop, ∀ t, (∀ n, wpFuel S n Q t) ↔ R t)
 
+-- lean/ToyFuelWP/Divergence.lean:172-176
 -- ToyFuelWP.Divergence
 theorem allRunsEventually_not_partial_wp_of_divergent_violation (S : System σ)
     (P : σ → Prop) (s : σ) (hdiv : AlwaysDiverges S s) (hviol : ¬ AllRunsEventually S P s) :
@@ -892,6 +953,7 @@ theorem allRunsEventually_not_partial_wp_of_divergent_violation (S : System σ)
       (¬ ∃ (n : Nat) (Q : σ → Prop), ∀ t, wpFuel S n Q t ↔ AllRunsEventually S P t) ∧
       (¬ ∃ Q : σ → Prop, ∀ t, (∀ n, wpFuel S n Q t) ↔ AllRunsEventually S P t)
 
+-- lean/ToyFuelWP/Divergence.lean:209-214
 -- ToyFuelWP.Divergence
 theorem allRunsEventually_isOut_not_partial_wp_expressible :
     (¬ ∃ Q : LO → Prop, ∀ s, wpGfp spinOrOutSys Q s ↔ AllRunsEventually spinOrOutSys isOut s) ∧
@@ -900,6 +962,7 @@ theorem allRunsEventually_isOut_not_partial_wp_expressible :
       (¬ ∃ Q : LO → Prop,
         ∀ s, (∀ n, wpFuel spinOrOutSys n Q s) ↔ AllRunsEventually spinOrOutSys isOut s)
 
+-- lean/ToyFuelWP/Divergence.lean:306-312
 -- ToyFuelWP.Divergence
 theorem startSpinOutSys_allRunsEventually_not_partial_wp_expressible :
     (¬ ∃ Q : LO3 → Prop,
@@ -932,6 +995,7 @@ theorem startSpinOutSys_allRunsEventually_not_partial_wp_expressible :
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:254-259
 -- ToyFuelWP.Counterexamples
 theorem done_allRunsEventually_false_expressible :
     ¬ AlwaysDiverges doneSys () ∧ ¬ AllRunsEventually doneSys (fun _ => False) () ∧
@@ -940,6 +1004,7 @@ theorem done_allRunsEventually_false_expressible :
       (∀ t, (∀ n, wpFuel doneSys n (fun _ => False) t) ↔
         AllRunsEventually doneSys (fun _ => False) t)
 
+-- lean/ToyFuelWP/Counterexamples.lean:280-285
 -- ToyFuelWP.Counterexamples
 theorem loop_allRunsEventually_true_expressible :
     AlwaysDiverges loopSys () ∧ AllRunsEventually loopSys (fun _ => True) () ∧
@@ -948,31 +1013,37 @@ theorem loop_allRunsEventually_true_expressible :
       (∀ t, (∀ n, wpFuel loopSys n (fun _ => True) t) ↔
         AllRunsEventually loopSys (fun _ => True) t)
 
+-- lean/ToyFuelWP/Counterexamples.lean:301-304
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_divergent_violation :
     (AlwaysDiverges spinOrOutSys .spin ∧ ¬ AllRunsEventually spinOrOutSys isOut .spin) ∧
       (AlwaysDiverges startSpinOutSys .spin ∧
         ¬ AllRunsEventually startSpinOutSys isOut3 .spin)
 
+-- lean/ToyFuelWP/Counterexamples.lean:311-314
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_allRunsEventually_isOut_nontrivial :
     (AllRunsEventually spinOrOutSys isOut .out ∧ ¬ AllRunsEventually spinOrOutSys isOut .spin) ∧
       (¬ isOut3 .start ∧ AllRunsEventually startSpinOutSys isOut3 .start ∧
         ¬ AllRunsEventually startSpinOutSys isOut3 .spin)
 
+-- lean/ToyFuelWP/Divergence.lean:238-240
 -- ToyFuelWP.Divergence
 theorem spinOrOutSys_spin_every_partial_wp_but_never_outputs :
     (∀ n Q, wpFuel spinOrOutSys n Q .spin) ∧ (∀ Q, wpGfp spinOrOutSys Q .spin) ∧
       ¬ AllRunsEventually spinOrOutSys isOut .spin
 
+-- lean/ToyFuelWP/Boundaries.lean:80-81
 -- ToyFuelWP.Boundaries
 theorem allRunsEventually_isOut_iff_not_wpGfp_false (s : LO) :
     AllRunsEventually spinOrOutSys isOut s ↔ ¬ wpGfp spinOrOutSys (fun _ => False) s
 
+-- lean/ToyFuelWP/Boundaries.lean:208-209
 -- ToyFuelWP.Boundaries
 theorem startSpinOutSys_wpGfp_iff_allRunsEventually_off_spin (s : LO3) (hs : s ≠ .spin) :
     wpGfp startSpinOutSys isOut3 s ↔ AllRunsEventually startSpinOutSys isOut3 s
 
+-- lean/ToyFuelWP/Divergence.lean:225-226
 -- ToyFuelWP.Divergence
 theorem allRunsEventually_isOut_iff_wpLfp_isOut (s : LO) :
     wpLfp spinOrOutSys isOut s ↔ AllRunsEventually spinOrOutSys isOut s
@@ -987,14 +1058,17 @@ theorem allRunsEventually_isOut_iff_wpLfp_isOut (s : LO) :
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Statements.lean:249-250
 -- ToyFuelWP.Statements
 theorem wpGfp_adequacy (S : System σ) (Q : σ → Prop) (s : σ) (h : wpGfp S Q s) :
     ∀ k t, Reach S s k t → RunEndOk S Q t
 
+-- lean/ToyFuelWP/Statements.lean:258-259
 -- ToyFuelWP.Statements
 theorem wpGfp_of_forall_reach_runEndOk (S : System σ) (Q : σ → Prop) (s : σ)
     (h : ∀ k t, Reach S s k t → RunEndOk S Q t) : wpGfp S Q s
 
+-- lean/ToyFuelWP/Statements.lean:267-268
 -- ToyFuelWP.Statements
 theorem wpGfp_iff_forall_reach_runEndOk (S : System σ) (Q : σ → Prop) (s : σ) :
     wpGfp S Q s ↔ ∀ k t, Reach S s k t → RunEndOk S Q t
@@ -1016,16 +1090,19 @@ theorem wpGfp_iff_forall_reach_runEndOk (S : System σ) (Q : σ → Prop) (s : �
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:331-333
 -- ToyFuelWP.Counterexamples
 theorem wpGfp_adequacy_drop_h :
     ¬ wpGfp stuckSys (fun _ => True) () ∧
       ¬ (∀ k t, Reach stuckSys () k t → RunEndOk stuckSys (fun _ => True) t)
 
+-- lean/ToyFuelWP/Counterexamples.lean:340-342
 -- ToyFuelWP.Counterexamples
 theorem wpGfp_of_forall_reach_runEndOk_drop_h :
     ¬ (∀ k t, Reach stuckSys () k t → RunEndOk stuckSys (fun _ => True) t) ∧
       ¬ wpGfp stuckSys (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:359-365
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_adequacy :
     (wpGfp chainSys (fun s => s = 0) 3 ∧
@@ -1045,20 +1122,24 @@ theorem nonvacuity_adequacy :
 - **Lean statement:**
 
 ```lean
+-- lean/ToyFuelWP/Defs.lean:256-257
 -- ToyFuelWP.Defs
 theorem wpGfp_unfold (S : System σ) (Q : σ → Prop) (s : σ) :
     wpGfp S Q s ↔ wpStep S Q (wpGfp S Q) s
 
+-- lean/ToyFuelWP/Defs.lean:251-252
 -- ToyFuelWP.Defs, section Basic: `variable {S : System σ} {Q : σ → Prop}`, so S and Q
 -- are implicit arguments (full type: ∀ {σ : Type u} {S : System σ} {Q X : σ → Prop},
 -- PostFixed S Q X → ∀ {s : σ}, X s → wpGfp S Q s)
 theorem wpGfp_coinduction {X : σ → Prop} (hX : PostFixed S Q X) {s : σ} (hs : X s) :
     wpGfp S Q s
 
+-- lean/ToyFuelWP/Defs.lean:277-278
 -- ToyFuelWP.Defs
 theorem wpLfp_unfold (S : System σ) (Q : σ → Prop) (s : σ) :
     wpLfp S Q s ↔ wpStep S Q (wpLfp S Q) s
 
+-- lean/ToyFuelWP/Defs.lean:272-273
 -- ToyFuelWP.Defs, section Basic: `variable {S : System σ} {Q : σ → Prop}`, so S and Q
 -- are implicit arguments (full type: ∀ {σ : Type u} {S : System σ} {Q X : σ → Prop},
 -- PreFixed S Q X → ∀ {s : σ}, wpLfp S Q s → X s)
@@ -1087,34 +1168,41 @@ theorem wpLfp_induction {X : σ → Prop} (hX : PreFixed S Q X) {s : σ} (hs : w
 - **Statements of the counterexamples, witnesses and controls named on this card:**
 
 ```lean
+-- lean/ToyFuelWP/Counterexamples.lean:376-378
 -- ToyFuelWP.Counterexamples
 theorem wpGfp_coinduction_drop_hX :
     (fun _ : Unit => True) () ∧ ¬ PostFixed stuckSys (fun _ => True) (fun _ => True) ∧
       ¬ wpGfp stuckSys (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:385-387
 -- ToyFuelWP.Counterexamples
 theorem wpGfp_coinduction_drop_hs :
     PostFixed stuckSys (fun _ => True) (fun _ => False) ∧ ¬ (fun _ : Unit => False) () ∧
       ¬ wpGfp stuckSys (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:394-396
 -- ToyFuelWP.Counterexamples
 theorem wpLfp_induction_drop_hX :
     wpLfp doneSys (fun _ => True) () ∧ ¬ PreFixed doneSys (fun _ => True) (fun _ => False) ∧
       ¬ (fun _ : Unit => False) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:403-405
 -- ToyFuelWP.Counterexamples
 theorem wpLfp_induction_drop_hs :
     PreFixed loopSys (fun _ => True) (fun _ => False) ∧ ¬ wpLfp loopSys (fun _ => True) () ∧
       ¬ (fun _ : Unit => False) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:412-414
 -- ToyFuelWP.Counterexamples
 theorem nonvacuity_coinduction_induction :
     (PostFixed loopSys (fun _ => False) (fun _ => True) ∧ (fun _ : Unit => True) ()) ∧
       (PreFixed spinOrOutSys isOut isOut ∧ wpLfp spinOrOutSys isOut .out)
 
+-- lean/ToyFuelWP/Examples.lean:123
 -- ToyFuelWP.Examples
 theorem wpGfp_pos_loop_false : wpGfp loopSys (fun _ => False) ()
 
+-- lean/ToyFuelWP/Examples.lean:152
 -- ToyFuelWP.Examples
 theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 ```
@@ -1135,14 +1223,14 @@ theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 - Does not relate wpFuel to interaction-tree equivalences, the delay monad, step-indexed logical relations, Lean's partial_fixpoint or Lean's coinductive predicates; the coinductive side here is a greatest fixpoint of predicates on states, written impredicatively.
 - Fuel counts steps of this abstract relation plus one final check; a concrete interpreter that counts fuel differently (per loop iteration, per call) is related only through a re-indexing argument that is not given here.
 - Relies on two conventions: terminal states halt (edges leaving them are ignored) and stuck states are errors that every weakest precondition rejects. A framework in which stuck states are allowed (blocking assumptions) or terminal states may continue needs different statements.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **2. `fixed-fuel-does-not-give-partial-correctness`**
 
 - The counterexample state depends on n. It does not show a state satisfying wpFuel at every fuel but failing wpGfp; no such state exists (partial-fuel-equals-gfp).
 - Uses an infinite-state system (downToStuckSys on Nat) with arbitrarily long error-free prefixes; it does not rule out that a single fixed fuel suffices on finite-state or bounded-depth systems (not formalized here).
 - The failure is an error (stuck state), not a postcondition violation; a postcondition violation at distance n behaves the same way but is not separately stated.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **3. `fuel-monotonicity-opposite-directions`**
 
@@ -1150,7 +1238,7 @@ theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 - Monotonicity in fuel is not monotonicity in the postcondition; the latter is not stated here.
 - Does not say the fuel transformers stabilise at a finite fuel; they need not (fixed-fuel-does-not-give-partial-correctness, unbounded-choice-no-uniform-fuel).
 - The statements are about these two transformers with base cases True and False; a fuel semantics with another base case (for example 'out of fuel is an error' in a partial setting) is not covered.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **4. `partial-fuel-n-reading`**
 
@@ -1158,7 +1246,7 @@ theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 - At fuel 0, wpFuel S 0 Q s is identically True and checks nothing — not even whether s itself is stuck or violates Q (wpFuel_pos_zero_stuck); checking the initial state alone needs fuel 1 (one unit of fuel per step plus one final check).
 - Does not say anything about termination: diverging states satisfy wpFuel at every fuel.
 - Relies on two conventions: terminal states halt (edges leaving them are ignored) and stuck states are errors that every weakest precondition rejects. A framework in which stuck states are allowed (blocking assumptions) or terminal states may continue needs different statements.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **5. `total-fuel-n-reading`**
 
@@ -1167,14 +1255,14 @@ theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 - The bound is on steps of this abstract relation; it is not a bound on any concrete cost measure.
 - Does not give a way to compute the least sufficient fuel.
 - Relies on two conventions: terminal states halt (edges leaving them are ignored) and stuck states are errors that every weakest precondition rejects. A framework in which stuck states are allowed (blocking assumptions) or terminal states may continue needs different statements.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **6. `total-fuel-sound-for-lfp`**
 
 - The converse of the first statement needs finite branching (total-fuel-complete-under-finite-branching) and fails without it (unbounded-choice-no-uniform-fuel).
 - The converse of the second statement fails outright: wpGfp does not imply wpFuelTotal at any fuel (loopSys, loop_finitelyBranching_no_total_fuel).
 - Relies on wpFuelTotal, wpLfp and wpGfp sharing the same one-step operator wpStep (demonic choice, terminal states halt, stuck states are errors). In a framework whose total and partial modes treat stuck states differently (for example stuck states blocking, or miraculous, in the partial mode only), total correctness need not imply partial correctness in this form.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **7. `total-fuel-complete-under-finite-branching`**
 
@@ -1185,14 +1273,14 @@ theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 - Gives no explicit or computable fuel bound.
 - In the König form, termination of every run is assumed, not established; the theorem does not help to prove termination.
 - Deterministic constrains only non-terminal states (edges leaving terminal states are ignored, deterministic_pos_termBranch). A concrete interpreter is covered only if it is faithfully modeled as such a system with the same notion of terminal and stuck states.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **8. `unbounded-choice-no-uniform-fuel`**
 
 - Shows only that natural-number fuel (∃ n : Nat, wpFuelTotal n) fails to capture total correctness of countdownSys; total correctness of countdownSys is still expressed by the least fixpoint wpLfp (proved here, countdownSys_start_wpLfp), and could be proved with ordinal-indexed fuel or well-founded induction (not formalized here).
 - Requires genuinely infinite branching (a choice from all of Nat); bounded-width nondeterminism, such as choosing an arbitrary fixed-width machine integer, is finitely branching, and then total correctness does give a fuel bound per initial state (total-fuel-complete-under-finite-branching).
 - Does not say the partial-correctness side fails: partial correctness of this state is still equivalent to wpFuel at every fuel (partial-fuel-equals-gfp).
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **9. `total-equals-partial-plus-termination`**
 
@@ -1200,7 +1288,7 @@ theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 - Relies on demonic quantification over all successors and on stuck states being errors rejected by wpGfp. Under angelic nondeterminism total correctness would need only one terminating run rather than the absence of every infinite run, and if stuck states were blocking or miraculous, wpGfp ∧ ¬ HasInfiniteRun would admit stuck states; neither variant is covered.
 - Only the forward direction is constructive; the backward direction needs at least Markov's principle (see logic).
 - Says nothing about fairness or other liveness properties.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **10. `divergence-satisfies-every-partial-wp-and-no-total-wp`**
 
@@ -1209,13 +1297,13 @@ theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 - An infinite run is sufficient, not necessary, for failing every total weakest precondition: a reachable stuck state also suffices.
 - Does not say partial correctness is useless; it says partial correctness carries no information about termination.
 - All weakest preconditions here quantify over every successor (demonic nondeterminism); nothing is said about angelic (exists-a-successor) transformers.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **11. `wpgfp-false-is-divergence`**
 
 - Characterizes must-divergence without getting stuck (AlwaysDiverges), not may-divergence (HasInfiniteRun): a nondeterministic state with both a diverging run and a halting run (spinOrExitSys at spin, alwaysDiverges_neg_spinOrExit) fails wpGfp False.
 - Here 'diverges' includes 'never gets stuck': stuck states are safety errors rejected by wpGfp, so a state that never halts because it gets stuck fails wpGfp False. This differs from calculi in which the liberal precondition of a non-terminating or miraculous command for false is true.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **12. `positive-partial-wp-cannot-reject-divergent-state`**
 
@@ -1227,7 +1315,7 @@ theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 - Expressibility is over postconditions on the same state space and the same system. It does not exclude encoding a liveness property as a partial-correctness weakest precondition of a modified system (for example one instrumented with a counter or prophecy that turns bounded liveness into safety).
 - Does not say AllRunsEventually is never a partial-correctness weakest precondition: on systems without an always-diverging violating state it may coincide with one (loop_allRunsEventually_true_expressible, done_allRunsEventually_false_expressible).
 - Does not cover angelic ('some run eventually') liveness, fairness, or output events on traces.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **13. `gfp-adequacy`**
 
@@ -1236,13 +1324,13 @@ theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 - Adequacy is about finite run prefixes; it says nothing about infinite runs (which are unconstrained) or about termination.
 - Relative to the abstract relation only; adequacy for a concrete language requires that its operational semantics is the system used here.
 - Relies on two conventions: terminal states halt (edges leaving them are ignored) and stuck states are errors that every weakest precondition rejects. A framework in which stuck states are allowed (blocking assumptions) or terminal states may continue needs different statements.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 **14. `fixpoint-definitions-adequate`**
 
 - Does not assert uniqueness of the fixed point of wpStep S Q: whenever a state can diverge, wpLfp S Q and wpGfp S Q are distinct fixed points (loopSys_wpLfp_ne_wpGfp).
 - Reference point justifying the definitions; no general fixpoint theory is developed.
-- Toy model only: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
+- Toy model: an abstract small-step relation with terminal states; no program syntax, heap, concurrency, probabilistic choice, I/O events or traces. These theorems neither establish nor refute the corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or verification framework (such as an Iris-style program logic). Transfer to a concrete semantics requires a separate modeling argument that this package does not provide.
 
 ### Boundaries common to all cards
 
@@ -1270,6 +1358,7 @@ The law of the excluded miracle invoked under Applicability, in the contrast wit
 11) and under Evidence is the following theorem; it depends on no axioms:
 
 ```lean
+-- lean/ToyFuelWP/Boundaries.lean:39
 -- ToyFuelWP.Boundaries
 theorem wpLfp_excluded_miracle (S : System σ) (s : σ) : ¬ wpLfp S (fun _ => False) s
 ```
@@ -1305,33 +1394,41 @@ results are defeated by unbounded branching (`countdown_wpLfp_without_uniform_fu
 Statements of the results backing the non-claims, escape hatches and `logic` entries:
 
 ```lean
+-- lean/ToyFuelWP/Boundaries.lean:326-328
 -- ToyFuelWP.Boundaries
 theorem fanToStuckSys_angelic_forall_fuel_not_gfp :
     (∀ n, wpFuelAngelic fanToStuckSys n (fun _ => True) .start) ∧
       ¬ wpGfpAngelic fanToStuckSys (fun _ => True) .start
 
+-- lean/ToyFuelWP/Counterexamples.lean:24-27
 -- ToyFuelWP.Counterexamples
 theorem fixed_fuel_wpFuel_not_imp_wpGfp (n : Nat) :
     wpFuel downToStuckSys n (fun _ => True) n ∧
       ¬ (∀ m, wpFuel downToStuckSys m (fun _ => True) n) ∧
       ¬ wpGfp downToStuckSys (fun _ => True) n
 
+-- lean/ToyFuelWP/Examples.lean:91
 -- ToyFuelWP.Examples
 theorem wpFuelTotal_neg_chain_short : ¬ wpFuelTotal chainSys 3 (fun s => s = 0) 3
 
+-- lean/ToyFuelWP/Examples.lean:152
 -- ToyFuelWP.Examples
 theorem wpLfp_pos_chain : wpLfp chainSys (fun s => s = 0) 3
 
+-- lean/ToyFuelWP/Examples.lean:56
 -- ToyFuelWP.Examples
 theorem wpFuel_pos_zero_stuck : wpFuel stuckSys 0 (fun _ => False) ()
 
+-- lean/ToyFuelWP/Boundaries.lean:65-66
 -- ToyFuelWP.Boundaries
 theorem wpFuelTotal_propSys_one_iff_not_not (P : Prop) :
     wpFuelTotal (propSys P) 1 (fun _ => True) () ↔ ¬¬ P
 
+-- lean/ToyFuelWP/Examples.lean:84
 -- ToyFuelWP.Examples
 theorem wpFuelTotal_neg_zero_done : ¬ wpFuelTotal doneSys 0 (fun _ => True) ()
 
+-- lean/ToyFuelWP/Counterexamples.lean:162-166
 -- ToyFuelWP.Counterexamples
 theorem loop_finitelyBranching_no_total_fuel :
     FinitelyBranching loopSys ∧ FinitelyBranchingFrom loopSys () ∧
@@ -1339,37 +1436,45 @@ theorem loop_finitelyBranching_no_total_fuel :
       ¬ wpLfp loopSys (fun _ => True) () ∧
       ¬ ∃ n, wpFuelTotal loopSys n (fun _ => True) ()
 
+-- lean/ToyFuelWP/Boundaries.lean:235-237
 -- ToyFuelWP.Boundaries
 theorem chainSys_fuel_per_state_not_uniform :
     (∀ k, ∃ n, wpFuelTotal chainSys n (fun s => s = 0) k) ∧
       ¬ ∃ n, ∀ k, wpFuelTotal chainSys n (fun s => s = 0) k
 
+-- lean/ToyFuelWP/Examples.lean:301
 -- ToyFuelWP.Examples
 theorem deterministic_pos_termBranch : Deterministic termBranchSys
 
+-- lean/ToyFuelWP/Examples.lean:279-280
 -- ToyFuelWP.Examples
 theorem finitelyBranchingFrom_pos_countdown_count :
     FinitelyBranchingFrom countdownSys (.count 3)
 
+-- lean/ToyFuelWP/Examples.lean:294
 -- ToyFuelWP.Examples
 theorem finitelyBranching_neg_countdown : ¬ FinitelyBranching countdownSys
 
+-- lean/ToyFuelWP/Examples.lean:315-316
 -- ToyFuelWP.Examples
 theorem spinOrExitSys_finitelyBranching_not_deterministic :
     FinitelyBranching spinOrExitSys ∧ ¬ Deterministic spinOrExitSys
 
+-- lean/ToyFuelWP/Constructivity.lean:231-234
 -- ToyFuelWP.Constructivity
 theorem lpo_of_exists_wpFuelTotal_of_wpLfp_of_finitelyBranchingFrom
     (H : ∀ {σ : Type} (S : System σ) (Q : σ → Prop) (s : σ),
       FinitelyBranchingFrom S s → wpLfp S Q s → ∃ n, wpFuelTotal S n Q s) :
     LimitedPrincipleOfOmniscience
 
+-- lean/ToyFuelWP/Constructivity.lean:242-245
 -- ToyFuelWP.Constructivity
 theorem lpo_of_exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching
     (H : ∀ {σ : Type} (S : System σ) (Q : σ → Prop),
       FinitelyBranching S → ∀ s, (∃ n, wpFuelTotal S n Q s) ↔ wpLfp S Q s) :
     LimitedPrincipleOfOmniscience
 
+-- lean/ToyFuelWP/Constructivity.lean:254-258
 -- ToyFuelWP.Constructivity
 theorem lpo_of_koenig_form
     (H : ∀ {σ : Type} (S : System σ) (Q : σ → Prop) (s : σ),
@@ -1377,47 +1482,57 @@ theorem lpo_of_koenig_form
         ∃ n, wpFuelTotal S n Q s) :
     LimitedPrincipleOfOmniscience
 
+-- lean/ToyFuelWP/Constructivity.lean:357-360
 -- ToyFuelWP.Constructivity
 theorem exists_wpFuelTotal_of_wpLfp_of_deterministic_of_decidable_terminal {σ : Type u}
     (S : System σ) (Q : σ → Prop) (hdet : Deterministic S)
     (hdec : ∀ t, S.terminal t ∨ ¬ S.terminal t) (s : σ) (h : wpLfp S Q s) :
     ∃ n, wpFuelTotal S n Q s
 
+-- lean/ToyFuelWP/Systems.lean:336
 -- ToyFuelWP.Systems
 theorem countdownSys_start_wpLfp : wpLfp countdownSys (fun _ => True) .start
 
+-- lean/ToyFuelWP/Constructivity.lean:327-328
 -- ToyFuelWP.Constructivity
 theorem wpGfp_and_not_hasInfiniteRun_of_wpLfp {σ : Type u} (S : System σ) (Q : σ → Prop)
     (s : σ) (h : wpLfp S Q s) : wpGfp S Q s ∧ ¬ HasInfiniteRun S s
 
+-- lean/ToyFuelWP/Constructivity.lean:300-303
 -- ToyFuelWP.Constructivity
 theorem markov_of_wpLfp_iff_wpGfp_and_not_hasInfiniteRun
     (H : ∀ {σ : Type} (S : System σ) (Q : σ → Prop) (s : σ),
       wpLfp S Q s ↔ wpGfp S Q s ∧ ¬ HasInfiniteRun S s) :
     MarkovPrinciple
 
+-- lean/ToyFuelWP/Boundaries.lean:139-141
 -- ToyFuelWP.Boundaries
 theorem spinOrExitSys_conjugate_ne_wpLfp :
     ¬ Deterministic spinOrExitSys ∧ (∀ t, ¬ Stuck spinOrExitSys t) ∧
       ¬ wpGfp spinOrExitSys (fun t => ¬ isOut t) .spin ∧ ¬ wpLfp spinOrExitSys isOut .spin
 
+-- lean/ToyFuelWP/Examples.lean:235
 -- ToyFuelWP.Examples
 theorem alwaysDiverges_neg_spinOrExit : ¬ AlwaysDiverges spinOrExitSys .spin
 
+-- lean/ToyFuelWP/Boundaries.lean:80-81
 -- ToyFuelWP.Boundaries
 theorem allRunsEventually_isOut_iff_not_wpGfp_false (s : LO) :
     AllRunsEventually spinOrOutSys isOut s ↔ ¬ wpGfp spinOrOutSys (fun _ => False) s
 
+-- lean/ToyFuelWP/Boundaries.lean:129-131
 -- ToyFuelWP.Boundaries
 theorem not_wpGfp_not_iff_wpLfp_of_deterministic_of_not_stuck (S : System σ) (Q : σ → Prop)
     (hdet : Deterministic S) (hns : ∀ t, ¬ Stuck S t) (s : σ) :
     ¬ wpGfp S (fun t => ¬ Q t) s ↔ wpLfp S Q s
 
+-- lean/ToyFuelWP/Boundaries.lean:155-157
 -- ToyFuelWP.Boundaries
 theorem stuckSys_conjugate_ne_wpLfp :
     Deterministic stuckSys ∧ Stuck stuckSys () ∧
       ¬ wpGfp stuckSys (fun _ => ¬ True) () ∧ ¬ wpLfp stuckSys (fun _ => True) ()
 
+-- lean/ToyFuelWP/Boundaries.lean:173-181
 -- ToyFuelWP.Boundaries
 theorem spinOrEmitLoopSys_allRunsEventually_not_wp_expressible :
     (AllRunsEventually spinOrEmitLoopSys isOut .out ∧
@@ -1429,28 +1544,34 @@ theorem spinOrEmitLoopSys_allRunsEventually_not_wp_expressible :
       (¬ ∃ (n : Nat) (Q : LO → Prop),
         ∀ s, wpFuelTotal spinOrEmitLoopSys n Q s ↔ AllRunsEventually spinOrEmitLoopSys isOut s)
 
+-- lean/ToyFuelWP/Boundaries.lean:208-209
 -- ToyFuelWP.Boundaries
 theorem startSpinOutSys_wpGfp_iff_allRunsEventually_off_spin (s : LO3) (hs : s ≠ .spin) :
     wpGfp startSpinOutSys isOut3 s ↔ AllRunsEventually startSpinOutSys isOut3 s
 
+-- lean/ToyFuelWP/Divergence.lean:225-226
 -- ToyFuelWP.Divergence
 theorem allRunsEventually_isOut_iff_wpLfp_isOut (s : LO) :
     wpLfp spinOrOutSys isOut s ↔ AllRunsEventually spinOrOutSys isOut s
 
+-- lean/ToyFuelWP/Constructivity.lean:339-342
 -- ToyFuelWP.Constructivity
 theorem em_of_disjunctive_adequacy
     (H : ∀ (S : System Unit) (Q : Unit → Prop) (s : Unit), wpGfp S Q s →
       ∀ k t, Reach S s k t → (S.terminal t ∧ Q t) ∨ (¬ S.terminal t ∧ CanStep S t)) :
     ∀ P : Prop, P ∨ ¬ P
 
+-- lean/ToyFuelWP/Defs.lean:313-314
 -- ToyFuelWP.Defs
 theorem runEndOk_iff_or (S : System σ) (Q : σ → Prop) (t : σ) :
     RunEndOk S Q t ↔ (S.terminal t ∧ Q t) ∨ (¬ S.terminal t ∧ CanStep S t)
 
+-- lean/ToyFuelWP/Defs.lean:336-337
 -- ToyFuelWP.Defs
 theorem runEndOk_iff_not_stuck (S : System σ) (Q : σ → Prop) (t : σ) :
     RunEndOk S Q t ↔ (S.terminal t → Q t) ∧ ¬ Stuck S t
 
+-- lean/ToyFuelWP/Counterexamples.lean:420-421
 -- ToyFuelWP.Counterexamples
 theorem loopSys_wpLfp_ne_wpGfp :
     wpGfp loopSys (fun _ => True) () ∧ ¬ wpLfp loopSys (fun _ => True) ()
@@ -1727,5 +1848,5 @@ Both commands must print nothing (a match inside a comment would need manual ins
 `leanprover/lean4:v4.34.1` with only the listed axioms, and that their statements and the definitions they depend on
 are byte-for-byte (at the level of Lean `repr`) the ones recorded here. It does not re-establish the modeling bridge
 to any real system or the prior-art records. After a toolchain change, the `repr` text, and hence the hashes, may
-change even if the mathematics is unchanged; then compare the pretty-printed statements under Findings instead.
+change even if the mathematics is unchanged; then compare the statements quoted under Findings (verbatim from the cited source lines) instead.
 
