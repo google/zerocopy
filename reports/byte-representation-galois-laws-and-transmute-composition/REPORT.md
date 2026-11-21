@@ -47,9 +47,9 @@ The non-claims of every result are listed first under **Boundaries**; they rule 
 
 ## Findings
 
-### Definitions (unfolded)
+### Definitions (unfolded, prose)
 
-```lean
+```text
 class Definedness (α : Type) where le : α → α → Prop          -- notation x ⊑ y
 
 inductive AByte (D : Type) | uninit | init (d : D)
@@ -85,11 +85,11 @@ transmute ra rb a  := rb.decode (ra.encode a)                            -- same
 TransmuteTotal ra rb := ∀ a, ∃ b, transmute ra rb a = some b
 ```
 
-Products with explicit field offsets (`Product.lean`; a `Layout` fixes offsets in any order and
+Products with explicit field offsets (prose; `Product.lean`; a `Layout` fixes offsets in any order and
 without alignment, e.g. the layout chosen by `repr(C)`, `repr(packed)`, or by the compiler for
 `repr(Rust)`; overlapping ranges are allowed by the definition but do not model unions):
 
-```lean
+```text
 structure Layout (n k : Nat) where size : Fin k → Nat; off : Fin k → Nat; fits : ∀ j, off j + size j ≤ n
 L.InField j i := off j ≤ i ∧ i < off j + size j
 L.owner i     := first j (in index order) with L.InField j i, if any
@@ -100,9 +100,9 @@ prodDecode L r x := some (fun j => vⱼ) if every field j decodes its slice x[of
 prodRep L r := ⟨prodEncode L r, prodDecode L r⟩ : Rep (Bytes D n) ((j : Fin k) → V j)
 ```
 
-Provenance (`Provenance.lean`), with `PBytes β P n := Bytes (β × Option P) n` (flat order: provenance is data):
+Provenance (prose; `Provenance.lean`), with `PBytes β P n := Bytes (β × Option P) n` (flat order: provenance is data):
 
-```lean
+```text
 intEncode x       := [init (x[i], none)]ᵢ              -- integers: Vector β n
 ptrEncode (a, q)  := [init (a[i], q)]ᵢ                 -- pointers: Vector β n × Option P
 intDecodeStrip x  := if x fully initialized then some [x[i].1.1]ᵢ else none     -- forgets provenance
@@ -139,6 +139,7 @@ In the unfolded statements below, `Mono r`, `DE r`, `EL r` abbreviate `r.DecodeM
 - **Plain claim:** For a representation in fixed-length abstract-byte vectors (pointwise definedness order, flat order on decoding results), DecodeMono, DecodeEncode and EncodeLeast hold together exactly when encode v ⊑ bytes ⟺ decode bytes = some v for all v and bytes. Equivalently (Rep.lowerAdjoint_iff_galois_liftEncode), extending encode to Option V by none ↦ all-uninit gives a Galois connection with decode.
 
 ```lean
+-- lean/ToyRepr/Galois.lean:39-40
 theorem threeLaws_iff_lowerAdjoint {D V : Type} {n : Nat} (r : Rep (Bytes D n) V) :
     (r.DecodeMono ∧ r.DecodeEncode ∧ r.EncodeLeast) ↔ r.LowerAdjoint
 ```
@@ -174,6 +175,7 @@ Hypothesis ledger: no hypotheses beyond the objects quantified over.
 - **Plain claim:** If r satisfies DecodeEncode and EncodeLeast, an encoder e satisfies both laws against r's decoder if and only if e = r.encode; i.e. encode v is the unique ⊑-least byte vector that decodes to v, and DecodeMono is not needed for this.
 
 ```lean
+-- lean/ToyRepr/Galois.lean:72-75
 theorem encode_eq_iff_decodeEncode_encodeLeast {D V : Type} {n : Nat} (r : Rep (Bytes D n) V)
     (hDE : r.DecodeEncode) (hEL : r.EncodeLeast) (e : V → Bytes D n) :
     ((⟨e, r.decode⟩ : Rep (Bytes D n) V).DecodeEncode ∧
@@ -214,6 +216,7 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** If r satisfies DecodeMono, DecodeEncode and EncodeLeast, a decoder d makes (r.encode, d) satisfy all three laws if and only if d = r.decode; with all three laws the encoder determines the decoder.
 
 ```lean
+-- lean/ToyRepr/Galois.lean:116-121
 theorem decode_eq_iff_threeLaws {D V : Type} {n : Nat} (r : Rep (Bytes D n) V)
     (hM : r.DecodeMono) (hDE : r.DecodeEncode) (hEL : r.EncodeLeast)
     (d : Bytes D n → Option V) :
@@ -222,9 +225,9 @@ theorem decode_eq_iff_threeLaws {D V : Type} {n : Nat} (r : Rep (Bytes D n) V)
       (⟨r.encode, d⟩ : Rep (Bytes D n) V).EncodeLeast) ↔ d = r.decode
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 Mono r → DE r → EL r → ∀ d, (Mono ⟨r.encode, d⟩ ∧ DE ⟨r.encode, d⟩ ∧ EL ⟨r.encode, d⟩) ↔ d = r.decode
 ```
 
@@ -255,14 +258,15 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** Under DecodeEncode and EncodeLeast, if overwriting byte i never changes the decoding (decode ignores byte i), then byte i of every encoding is uninit.
 
 ```lean
+-- lean/ToyRepr/Galois.lean:183-185
 theorem encode_getElem_eq_uninit_of_decodeEncode_encodeLeast_of_decodeIgnores {D V : Type} {n : Nat} (r : Rep (Bytes D n) V)
     (hDE : r.DecodeEncode) (hEL : r.EncodeLeast) (i : Nat) (hi : i < n)
     (hIgn : r.DecodeIgnores i hi) (v : V) : (r.encode v)[i] = .uninit
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 DE r → EL r → (∀ x b, r.decode (x.set i b) = r.decode x) → ∀ v, (r.encode v)[i] = uninit
 ```
 
@@ -293,14 +297,15 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** Under DecodeMono, DecodeEncode and EncodeLeast, if byte i is uninit in every encoding, then decode ignores byte i; so for a lawful representation the ignored bytes are exactly the bytes that every encoding leaves uninit.
 
 ```lean
+-- lean/ToyRepr/Galois.lean:224-226
 theorem decodeIgnores_of_threeLaws_of_encode_getElem_eq_uninit {D V : Type} {n : Nat} (r : Rep (Bytes D n) V)
     (hM : r.DecodeMono) (hDE : r.DecodeEncode) (hEL : r.EncodeLeast) (i : Nat) (hi : i < n)
     (hU : ∀ v : V, (r.encode v)[i] = .uninit) : r.DecodeIgnores i hi
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 Mono r → DE r → EL r → (∀ v, (r.encode v)[i] = uninit) → ∀ x b, r.decode (x.set i b) = r.decode x
 ```
 
@@ -332,14 +337,15 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** In any carrier with any definedness relation, DecodeMono (flat value order) and DecodeEncode imply that encode v ⊑ encode w only if v = w: distinct values have incomparable encodings.
 
 ```lean
+-- lean/ToyRepr/Galois.lean:338-340
 theorem eq_of_encode_le_encode_of_decodeMono_decodeEncode {α V : Type} [Definedness α]
     (r : Rep α V) (hM : r.DecodeMono) (hDE : r.DecodeEncode) :
     ∀ v w : V, r.encode v ⊑ r.encode w → v = w
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 [any carrier α, any relation ⊑ on α] Mono r → DE r → ∀ v w, r.encode v ⊑ r.encode w → v = w
 ```
 
@@ -367,14 +373,15 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** For representations of equal size, if no encoding of A contains an uninit byte (IntoBytes A) and every fully initialized byte vector decodes as B (FromBytes B), then transmute A→B (decode_B after encode_A) never fails; no representation law is needed.
 
 ```lean
+-- lean/ToyRepr/Transmute.lean:31-33
 theorem transmuteTotal_of_intoBytes_of_fromBytes {D A B : Type} {n : Nat}
     (ra : Rep (Bytes D n) A) (rb : Rep (Bytes D n) B)
     (hA : ra.IntoBytes) (hB : rb.FromBytes) : TransmuteTotal ra rb
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 (∀ a i, (ra.encode a)[i] ≠ uninit) → (∀ x, (∀ i, x[i] ≠ uninit) → ∃ b, rb.decode x = some b) →
 ∀ a, ∃ b, rb.decode (ra.encode a) = some b
 ```
@@ -405,6 +412,7 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** For equal-size representations rb of B and ra of A: if transmute B→A is total, A is IntoBytes and satisfies EncodeLeast, and B satisfies DecodeEncode, then for every b, transmuting b to A and the result back to B returns b (B→A→B is lossless). By R2a, totality of B→A holds in particular when B is IntoBytes and A is FromBytes; FromBytes B and the other laws are not needed.
 
 ```lean
+-- lean/ToyRepr/Transmute.lean:66-70
 theorem transmute_bab_roundtrip_of_total_of_intoBytes_encodeLeast_decodeEncode {D A B : Type}
     {n : Nat} (rb : Rep (Bytes D n) B) (ra : Rep (Bytes D n) A)
     (htot : TransmuteTotal rb ra) (hIB_A : ra.IntoBytes) (hEL_A : ra.EncodeLeast)
@@ -412,9 +420,9 @@ theorem transmute_bab_roundtrip_of_total_of_intoBytes_encodeLeast_decodeEncode {
     ∀ b : B, (transmute rb ra b).bind (transmute ra rb) = some b
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 TransmuteTotal rb ra → IntoBytes ra → EL ra → DE rb →
 ∀ b, (ra.decode (rb.encode b)).bind (fun a => rb.decode (ra.encode a)) = some b
 -- TransmuteTotal rb ra := ∀ b, ∃ a, ra.decode (rb.encode b) = some a  (holds if IntoBytes rb ∧ FromBytes ra, R2a)
@@ -447,15 +455,16 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** For equal-size representations, if transmute A→B is total and the middle type B satisfies EncodeLeast and IntoBytes, then transmuting A→B and then B→C equals transmuting A→C, for every a; nothing is assumed about C.
 
 ```lean
+-- lean/ToyRepr/Transmute.lean:238-241
 theorem transmute_comp_of_total_of_encodeLeast_of_intoBytes {D A B C : Type} {n : Nat}
     (ra : Rep (Bytes D n) A) (rb : Rep (Bytes D n) B) (rc : Rep (Bytes D n) C)
     (htot : TransmuteTotal ra rb) (hEL : rb.EncodeLeast) (hIB : rb.IntoBytes) :
     ∀ a : A, (transmute ra rb a).bind (transmute rb rc) = transmute ra rc a
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 (∀ a, ∃ b, rb.decode (ra.encode a) = some b) → EL rb → IntoBytes rb →
 ∀ a, (rb.decode (ra.encode a)).bind (fun b => rc.decode (rb.encode b)) = rc.decode (ra.encode a)
 ```
@@ -487,14 +496,15 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** For the explicit product construction prodRep (fields at given offsets, padding uninit, each field decoded from its own range), if every field satisfies DecodeMono then so does the product, for any layout, even with overlapping fields.
 
 ```lean
+-- lean/ToyRepr/Product.lean:253-255
 theorem prodRep_decodeMono_of_fields (L : Layout n k)
     (r : (j : Fin k) → Rep (Bytes D (L.size j)) (V j))
     (hM : ∀ j, (r j).DecodeMono) : (prodRep L r).DecodeMono
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 (∀ j, Mono (r j)) → Mono (prodRep L r)
 ```
 
@@ -523,14 +533,15 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** For prodRep, if every field satisfies DecodeEncode and the field byte ranges are pairwise disjoint, then the product satisfies DecodeEncode.
 
 ```lean
+-- lean/ToyRepr/Product.lean:272-274
 theorem prodRep_decodeEncode_of_fields_of_disjoint (L : Layout n k)
     (r : (j : Fin k) → Rep (Bytes D (L.size j)) (V j))
     (hDE : ∀ j, (r j).DecodeEncode) (hD : L.Disjoint) : (prodRep L r).DecodeEncode
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 (∀ j, DE (r j)) → (∀ j ≠ j', ∀ i, ¬ (i ∈ [off j, off j + size j) ∧ i ∈ [off j', off j' + size j'))) → DE (prodRep L r)
 ```
 
@@ -560,14 +571,15 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** For prodRep, if every field satisfies EncodeLeast then so does the product, for any layout, even with overlapping fields.
 
 ```lean
+-- lean/ToyRepr/Product.lean:284-286
 theorem prodRep_encodeLeast_of_fields (L : Layout n k)
     (r : (j : Fin k) → Rep (Bytes D (L.size j)) (V j))
     (hEL : ∀ j, (r j).EncodeLeast) : (prodRep L r).EncodeLeast
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 (∀ j, EL (r j)) → EL (prodRep L r)
 ```
 
@@ -595,14 +607,15 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** For prodRep, if every field is IntoBytes and the fields cover every byte (no padding), the product is IntoBytes.
 
 ```lean
+-- lean/ToyRepr/Product.lean:306-308
 theorem prodRep_intoBytes_of_fields_of_covering (L : Layout n k)
     (r : (j : Fin k) → Rep (Bytes D (L.size j)) (V j))
     (hIB : ∀ j, (r j).IntoBytes) (hC : L.Covering) : (prodRep L r).IntoBytes
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 (∀ j, IntoBytes (r j)) → (∀ i < n, ∃ j, i ∈ [off j, off j + size j)) → IntoBytes (prodRep L r)
 ```
 
@@ -630,14 +643,15 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** For prodRep, if every field is FromBytes then the product is FromBytes, for any layout.
 
 ```lean
+-- lean/ToyRepr/Product.lean:321-323
 theorem prodRep_fromBytes_of_fields (L : Layout n k)
     (r : (j : Fin k) → Rep (Bytes D (L.size j)) (V j))
     (hFB : ∀ j, (r j).FromBytes) : (prodRep L r).FromBytes
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 (∀ j, FromBytes (r j)) → FromBytes (prodRep L r)
 ```
 
@@ -664,6 +678,7 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** In any carrier, transmute A→B is total iff every encoding of an A value lies in B's validity set (decodes as B). (Reference point for R5b and R5c.)
 
 ```lean
+-- lean/ToyRepr/Transmute.lean:286-287
 theorem transmuteTotal_iff_image_subset_valid {α A B : Type} (ra : Rep α A) (rb : Rep α B) :
     TransmuteTotal ra rb ↔ ∀ x : α, ra.Image x → rb.Valid x
 ```
@@ -692,15 +707,16 @@ Hypothesis ledger: no hypotheses beyond the objects quantified over.
 - **Plain claim:** In any carrier with any definedness relation, if A satisfies DecodeEncode and EncodeLeast and B satisfies DecodeMono, then transmute A→B is total iff every byte vector valid for A (including partially uninitialized ones) is valid for B.
 
 ```lean
+-- lean/ToyRepr/Transmute.lean:306-309
 theorem transmuteTotal_iff_valid_subset_of_laws {α A B : Type} [Definedness α]
     (ra : Rep α A) (rb : Rep α B)
     (hDE_A : ra.DecodeEncode) (hEL_A : ra.EncodeLeast) (hM_B : rb.DecodeMono) :
     TransmuteTotal ra rb ↔ ∀ x : α, ra.Valid x → rb.Valid x
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 DE ra → EL ra → Mono rb →
 ((∀ a, ∃ b, rb.decode (ra.encode a) = some b) ↔ ∀ x, (∃ a, ra.decode x = some a) → ∃ b, rb.decode x = some b)
 ```
@@ -733,15 +749,16 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** For equal-size byte representations, if A is IntoBytes and satisfies DecodeEncode and EncodeLeast, then transmute A→B is total iff every fully initialized byte pattern valid for A is valid for B; no law on B is needed, and without IntoBytes A the criterion can hold while every transmute fails.
 
 ```lean
+-- lean/ToyRepr/Transmute.lean:363-366
 theorem transmuteTotal_iff_initValid_subset_of_intoBytes_decodeEncode_encodeLeast {D A B : Type} {n : Nat}
     (ra : Rep (Bytes D n) A) (rb : Rep (Bytes D n) B)
     (hIB_A : ra.IntoBytes) (hDE_A : ra.DecodeEncode) (hEL_A : ra.EncodeLeast) :
     TransmuteTotal ra rb ↔ ∀ ds : Vector D n, ra.InitValid ds → rb.InitValid ds
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 IntoBytes ra → DE ra → EL ra →
 ((∀ a, ∃ b, rb.decode (ra.encode a) = some b) ↔
  ∀ ds : Vector D n, (∃ a, ra.decode (ds.map init) = some a) → ∃ b, rb.decode (ds.map init) = some b)
@@ -775,6 +792,7 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** With provenance-carrying bytes and the canonical encoders (integers without provenance, pointers tagging every byte with their provenance), at any size n + 1 >= 1, for any integer and pointer decoders that both satisfy DecodeEncode, integer x transmutes to the pointer (x, none) and back to x.
 
 ```lean
+-- lean/ToyRepr/Provenance.lean:827-836
 theorem int_ptr_int_roundtrip_of_decodeEncode {β P : Type} {n : Nat}
     (di : PBytes β P (n + 1) → Option (Vector β (n + 1)))
     (dp : PBytes β P (n + 1) → Option (Vector β (n + 1) × Option P))
@@ -822,6 +840,7 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** At any pointer size n + 1 >= 1, with the provenance-stripping integer decoder and any pointer decoder satisfying DecodeEncode (canonical encoders), the pointer (a, some p) transmutes to the integer a, which transmutes back to (a, none), and (a, none) differs from (a, some p).
 
 ```lean
+-- lean/ToyRepr/Provenance.lean:881-889
 theorem ptr_intStrip_ptr_roundtrip_drops_provenance_of_decodeEncode {β P : Type} {n : Nat}
     (dp : PBytes β P (n + 1) → Option (Vector β (n + 1) × Option P))
     (hDEp : (⟨ptrEncode, dp⟩ : Rep (PBytes β P (n + 1)) (Vector β (n + 1) × Option P)).DecodeEncode)
@@ -833,9 +852,9 @@ theorem ptr_intStrip_ptr_roundtrip_drops_provenance_of_decodeEncode {β P : Type
     ((a, none) : Vector β (n + 1) × Option P) ≠ (a, some p)
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 -- sizes n + 1 ≥ 1
 (∀ p, dp (ptrEncode p) = some p) → ∀ a p,
 intDecodeStrip (ptrEncode (a, some p)) = some a ∧ dp (intEncode a) = some (a, none) ∧ (a, none) ≠ (a, some p)
@@ -868,15 +887,16 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** If bytes carry provenance ordered as plain data (init (b,q) ⊑ init (b',q') only when equal), a byte value and a provenance exist, and n ≥ 1, then no decoder for the canonical (provenance-free) integer encoder satisfies both EncodeLeast and FromBytes over provenance-carrying bytes.
 
 ```lean
+-- lean/ToyRepr/Provenance.lean:937-940
 theorem no_int_decoder_encodeLeast_fromBytes_of_provenance {β P : Type} {n : Nat}
     (b0 : β) (p0 : P) (hn : 0 < n) (d : PBytes β P n → Option (Vector β n)) :
     ¬ ((⟨intEncode, d⟩ : Rep (PBytes β P n) (Vector β n)).EncodeLeast ∧
        (⟨intEncode, d⟩ : Rep (PBytes β P n) (Vector β n)).FromBytes)
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 β inhabited (b0) → P inhabited (p0) → 0 < n → ∀ d,
 ¬ ((∀ x v, d x = some v → intEncode v ⊑ x) ∧ (∀ x, (∀ i, x[i] ≠ uninit) → ∃ v, d x = some v))
 -- ⊑ is the flat order on AByte (β × Option P): init (b, q) ⊑ init (b', q') ↔ (b, q) = (b', q')
@@ -913,15 +933,16 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** If adding provenance makes a byte more defined (MiniRust's byte order), pointer values have optional provenance (Vector β (n + 1) × Option P, size n + 1 >= 1), and some byte value and some provenance exist, then no decoder for the canonical pointer encoder satisfies both DecodeMono with the flat value order and DecodeEncode.
 
 ```lean
+-- lean/ToyRepr/Provenance.lean:1070-1073
 theorem no_optProvPtr_decoder_decodeMono_decodeEncode_of_provInc {β P : Type} {n : Nat}
     (b0 : β) (p0 : P) (d : PBytesInc β P (n + 1) → Option (Vector β (n + 1) × Option P)) :
     ¬ ((⟨ptrEncodeInc, d⟩ : Rep (PBytesInc β P (n + 1)) (Vector β (n + 1) × Option P)).DecodeMono ∧
        (⟨ptrEncodeInc, d⟩ : Rep (PBytesInc β P (n + 1)) (Vector β (n + 1) × Option P)).DecodeEncode)
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 -- sizes n + 1 ≥ 1; pointer values Vector β (n + 1) × Option P (optional provenance)
 β inhabited (b0) → P inhabited (p0) → ∀ d,
 ¬ ((∀ x y, x ⊑ y → d x ⊑ d y) ∧ (∀ p, d (ptrEncodeInc p) = some p))
@@ -957,6 +978,7 @@ Each counterexample theorem states that a concrete instance satisfies all the ot
 - **Plain claim:** When adding provenance increases definedness, R3's conclusion fails even though all three representations satisfy all three laws: with A = C = pointers that always carry provenance and B = provenance-stripping integers (size 1, provenance Unit), A→B is total and B's encodings are fully initialized, yet A→B→C fails at (#v[0], ()) while A→C returns (#v[0], ()).
 
 ```lean
+-- lean/ToyRepr/Provenance.lean:1192-1208
 theorem transmute_comp_fails_of_provInc :
     ((reqProvPtrRepInc : Rep (PBytesInc Byte Unit 1) (Vector Byte 1 × Unit)).DecodeMono ∧
       (reqProvPtrRepInc : Rep (PBytesInc Byte Unit 1) (Vector Byte 1 × Unit)).DecodeEncode ∧
@@ -976,9 +998,9 @@ theorem transmute_comp_fails_of_provInc :
         reqProvPtrRepInc (#v[0], ()) = some (#v[0], ())
 ```
 
-Unfolded:
+Unfolded (prose):
 
-```lean
+```text
 -- A = C = reqProvPtrRepInc (values Vector Byte 1 × Unit), B = intStripRepInc, over PBytesInc Byte Unit 1
 (Mono A ∧ DE A ∧ EL A) ∧ (Mono B ∧ DE B ∧ EL B) ∧ (∀ x, B.encode x fully initialized) ∧ TransmuteTotal A B ∧
 (A → B → C) (#v[0], ()) = none ∧ (A → C) (#v[0], ()) = some (#v[0], ())
