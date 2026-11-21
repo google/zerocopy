@@ -1,0 +1,76 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "file_name": "RemoveZstsSroaAndRefPropSoundness.lean",
+  "file_bytes": 196548,
+  "file_lines": 4330,
+  "file_sha256": "9442846936aa6df76e9e55fb98cd00af08c9493a3574bbae2a9785b34d346558",
+  "flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "main_exit_code": 0,
+  "main_stderr": "",
+  "axiom_audit_exit_code": 0,
+  "env_unsafe_decl_count": 0,
+  "forbidden_token_counts": {
+    "sorry": 0,
+    "admit": 0,
+    "omega": 0,
+    "bv_decide": 0,
+    "native_decide": 0,
+    "partial_def": 0,
+    "unsafe_rec": 0,
+    "classical_choice": 0,
+    "axiom_decl": 0,
+    "implemented_by": 0,
+    "extern_attr": 0
+  },
+  "axioms_by_theorem": {
+    "RemoveZstsSroaAndRefPropSoundness.miri_default_args_suppress_checkAlignment_and_run_removeZsts": [],
+    "RemoveZstsSroaAndRefPropSoundness.miri_force_enable_checkAlignment_restores_pass": [],
+    "RemoveZstsSroaAndRefPropSoundness.null_unit_load_and_store_valid": [],
+    "RemoveZstsSroaAndRefPropSoundness.dangling_aligned64_zst_load_and_store_valid": [],
+    "RemoveZstsSroaAndRefPropSoundness.sroa_maybeDangling_exclusion_necessary": [],
+    "RemoveZstsSroaAndRefPropSoundness.ce2_refprop_into_storage_dead_target_dangling_ub": [],
+    "RemoveZstsSroaAndRefPropSoundness.ce3_partial_mut_refprop_interleaving_aliasing_unsound": [],
+    "RemoveZstsSroaAndRefPropSoundness.any_init_ptr_zst_align_one_valid": [
+      "propext"
+    ],
+    "RemoveZstsSroaAndRefPropSoundness.removeZstsStmt_forward_codegen_refinement": [
+      "propext"
+    ],
+    "RemoveZstsSroaAndRefPropSoundness.removeZsts_indirect_align_one_bidirectional_iff": [
+      "propext"
+    ],
+    "RemoveZstsSroaAndRefPropSoundness.removeZstsCertifiedStmt_bidirectional_equivalence": [
+      "propext"
+    ],
+    "RemoveZstsSroaAndRefPropSoundness.ce1_remove_zsts_erases_misaligned_align64_zst_ub": [
+      "propext"
+    ],
+    "RemoveZstsSroaAndRefPropSoundness.sroaFlattenStmt_exact_bisimulation": [
+      "propext",
+      "Quot.sound"
+    ],
+    "RemoveZstsSroaAndRefPropSoundness.sroaFlattenProg_exact_bisimulation": [
+      "propext",
+      "Quot.sound"
+    ],
+    "RemoveZstsSroaAndRefPropSoundness.refProp_shared_exact_bisimulation": [
+      "propext",
+      "Quot.sound"
+    ],
+    "RemoveZstsSroaAndRefPropSoundness.refProp_mut_step_bisimulation": [
+      "propext",
+      "Quot.sound"
+    ],
+    "RemoveZstsSroaAndRefPropSoundness.refProp_mut_all_or_nothing_exact_bisimulation": [
+      "propext",
+      "Quot.sound"
+    ]
+  },
+  "forbidden_axioms_found": [],
+  "all_checks_passed": true
+}

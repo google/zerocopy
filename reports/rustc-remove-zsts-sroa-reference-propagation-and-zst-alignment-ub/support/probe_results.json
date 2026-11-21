@@ -1,0 +1,919 @@
+{
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "part_a_miri_zst_ub_erasure_matrix": {
+    "surface_null_unit_read_black_box": {
+      "before_RemoveZsts_mir": "// MIR for `main` before RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: *const ();\n    let _3: ();\n    let mut _4: ();\n    scope 1 {\n        debug p => _1;\n        let _2: ();\n        scope 2 {\n            debug v => _2;\n        }\n    }\n\n    bb0: {\n        _1 = null::<()>() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = copy (*_1);\n        _4 = copy _2;\n        _3 = std::hint::black_box::<()>(move _4) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _0 = const ();\n        return;\n    }\n}\n",
+      "after_RemoveZsts_mir": "// MIR for `main` after RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: *const ();\n    let _3: ();\n    let mut _4: ();\n    scope 1 {\n        debug p => _1;\n        let _2: ();\n        scope 2 {\n            debug v => const ();\n        }\n    }\n\n    bb0: {\n        _1 = null::<()>() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        nop;\n        nop;\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        nop;\n        return;\n    }\n}\n",
+      "modes": {
+        "miri_opt0_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt0_plus_RemoveZsts": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt1_default_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_with_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_force_enable_CheckAlignment": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "native_opt1_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "diag_head": []
+        }
+      }
+    },
+    "surface_null_unit_write": {
+      "before_RemoveZsts_mir": "// MIR for `main` before RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: *mut ();\n    scope 1 {\n        debug p => _1;\n    }\n\n    bb0: {\n        _1 = null_mut::<()>() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        (*_1) = ();\n        _0 = const ();\n        return;\n    }\n}\n",
+      "after_RemoveZsts_mir": "// MIR for `main` after RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: *mut ();\n    scope 1 {\n        debug p => _1;\n    }\n\n    bb0: {\n        _1 = null_mut::<()>() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        nop;\n        nop;\n        return;\n    }\n}\n",
+      "modes": {
+        "miri_opt0_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt0_plus_RemoveZsts": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt1_default_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_with_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_force_enable_CheckAlignment": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "native_opt1_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "diag_head": []
+        }
+      }
+    },
+    "surface_null_align64_zst_read": {
+      "before_RemoveZsts_mir": "// MIR for `main` before RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: *const Aligned64Zst;\n    let _3: Aligned64Zst;\n    let mut _4: Aligned64Zst;\n    scope 1 {\n        debug p => _1;\n        let _2: Aligned64Zst;\n        scope 2 {\n            debug v => _2;\n        }\n    }\n\n    bb0: {\n        _1 = null::<Aligned64Zst>() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = copy (*_1);\n        _4 = copy _2;\n        _3 = std::hint::black_box::<Aligned64Zst>(move _4) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _0 = const ();\n        return;\n    }\n}\n",
+      "after_RemoveZsts_mir": "// MIR for `main` after RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: *const Aligned64Zst;\n    let _3: Aligned64Zst;\n    let mut _4: Aligned64Zst;\n    scope 1 {\n        debug p => _1;\n        let _2: Aligned64Zst;\n        scope 2 {\n            debug v => const Aligned64Zst;\n        }\n    }\n\n    bb0: {\n        _1 = null::<Aligned64Zst>() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        nop;\n        nop;\n        _3 = std::hint::black_box::<Aligned64Zst>(const Aligned64Zst) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        nop;\n        return;\n    }\n}\n",
+      "modes": {
+        "miri_opt0_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt0_plus_RemoveZsts": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt1_default_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_with_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_force_enable_CheckAlignment": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "native_opt1_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "diag_head": []
+        }
+      }
+    },
+    "surface_dangling_align64_zst_read": {
+      "before_RemoveZsts_mir": "// MIR for `main` before RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: *const Aligned64Zst;\n    let mut _2: *mut Aligned64Zst;\n    let mut _3: std::ptr::NonNull<Aligned64Zst>;\n    let _5: Aligned64Zst;\n    let mut _6: Aligned64Zst;\n    scope 1 {\n        debug p => _1;\n        let _4: Aligned64Zst;\n        scope 2 {\n            debug v => _4;\n        }\n    }\n\n    bb0: {\n        _3 = NonNull::<Aligned64Zst>::dangling() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = NonNull::<Aligned64Zst>::as_ptr(move _3) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _1 = move _2 as *const Aligned64Zst (PtrToPtr);\n        _4 = copy (*_1);\n        _6 = copy _4;\n        _5 = std::hint::black_box::<Aligned64Zst>(move _6) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _0 = const ();\n        return;\n    }\n}\n",
+      "after_RemoveZsts_mir": "// MIR for `main` after RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: *const Aligned64Zst;\n    let mut _2: *mut Aligned64Zst;\n    let mut _3: std::ptr::NonNull<Aligned64Zst>;\n    let _5: Aligned64Zst;\n    let mut _6: Aligned64Zst;\n    scope 1 {\n        debug p => _1;\n        let _4: Aligned64Zst;\n        scope 2 {\n            debug v => const Aligned64Zst;\n        }\n    }\n\n    bb0: {\n        _3 = NonNull::<Aligned64Zst>::dangling() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = NonNull::<Aligned64Zst>::as_ptr(move _3) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _1 = move _2 as *const Aligned64Zst (PtrToPtr);\n        nop;\n        nop;\n        _5 = std::hint::black_box::<Aligned64Zst>(const Aligned64Zst) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        nop;\n        return;\n    }\n}\n",
+      "modes": {
+        "miri_opt0_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt0_plus_RemoveZsts": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt1_default_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_with_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_force_enable_CheckAlignment": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "native_opt1_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "diag_head": []
+        }
+      }
+    },
+    "surface_misaligned_align64_zst_write": {
+      "before_RemoveZsts_mir": "// MIR for `main` before RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: [u64; 16];\n    let mut _3: *mut u8;\n    let mut _4: *const u8;\n    let mut _5: *const u8;\n    let mut _6: *const u64;\n    let mut _7: &[u64];\n    let mut _8: &[u64; 16];\n    let mut _9: Aligned64Zst;\n    scope 1 {\n        debug buf => _1;\n        let _2: *mut Aligned64Zst;\n        scope 2 {\n            debug misaligned => _2;\n        }\n    }\n\n    bb0: {\n        _1 = [const 0_u64; 16];\n        _8 = &_1;\n        _7 = move _8 as &[u64] (PointerCoercion(Unsize, Implicit));\n        _6 = core::slice::<impl [u64]>::as_ptr(move _7) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _5 = std::ptr::const_ptr::<impl *const u64>::cast::<u8>(move _6) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _4 = std::ptr::const_ptr::<impl *const u8>::add(move _5, const 1_usize) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _3 = std::ptr::const_ptr::<impl *const u8>::cast_mut(move _4) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        _2 = std::ptr::mut_ptr::<impl *mut u8>::cast::<Aligned64Zst>(move _3) -> [return: bb5, unwind continue];\n    }\n\n    bb5: {\n        _9 = Aligned64Zst;\n        (*_2) = move _9;\n        _0 = const ();\n        return;\n    }\n}\n",
+      "after_RemoveZsts_mir": "// MIR for `main` after RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: [u64; 16];\n    let mut _3: *mut u8;\n    let mut _4: *const u8;\n    let mut _5: *const u8;\n    let mut _6: *const u64;\n    let mut _7: &[u64];\n    let mut _8: &[u64; 16];\n    let mut _9: Aligned64Zst;\n    scope 1 {\n        debug buf => _1;\n        let _2: *mut Aligned64Zst;\n        scope 2 {\n            debug misaligned => _2;\n        }\n    }\n\n    bb0: {\n        _1 = [const 0_u64; 16];\n        _8 = &_1;\n        _7 = move _8 as &[u64] (PointerCoercion(Unsize, Implicit));\n        _6 = core::slice::<impl [u64]>::as_ptr(move _7) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _5 = std::ptr::const_ptr::<impl *const u64>::cast::<u8>(move _6) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _4 = std::ptr::const_ptr::<impl *const u8>::add(move _5, const 1_usize) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _3 = std::ptr::const_ptr::<impl *const u8>::cast_mut(move _4) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        _2 = std::ptr::mut_ptr::<impl *mut u8>::cast::<Aligned64Zst>(move _3) -> [return: bb5, unwind continue];\n    }\n\n    bb5: {\n        nop;\n        nop;\n        nop;\n        return;\n    }\n}\n",
+      "modes": {
+        "miri_opt0_preserve_ub": {
+          "rc": 1,
+          "ub_or_panic_caught": true,
+          "miri_opt_warning_emitted": false,
+          "diag_head": [
+            "error: Undefined Behavior: accessing memory based on pointer with alignment 1, but alignment 64 is required",
+            " --> <SPEC_DIR>/surface_misaligned_align64_zst_write.rs:7:14",
+            "  |",
+            "7 |     unsafe { *misaligned = Aligned64Zst; }",
+            "  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+          ]
+        },
+        "miri_opt0_plus_RemoveZsts": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt1_default_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_with_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_force_enable_CheckAlignment": {
+          "rc": 1,
+          "ub_or_panic_caught": true,
+          "miri_opt_warning_emitted": true,
+          "diag_head": [
+            "thread 'main' (<TID>) panicked at <SPEC_DIR>/surface_misaligned_align64_zst_write.rs:7:14:",
+            "misaligned pointer dereference: address must be a multiple of 0x40 but is 0x20b41",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+            "note: in Miri, you may have to set `MIRIFLAGS=-Zmiri-env-forward=RUST_BACKTRACE` for the environment variable to have an effect",
+            "thread caused non-unwinding panic. aborting."
+          ]
+        },
+        "native_opt1_ub_checks_yes": {
+          "rc": -6,
+          "ub_or_panic_caught": true,
+          "diag_head": [
+            "thread 'main' (<TID>) panicked at <SPEC_DIR>/surface_misaligned_align64_zst_write.rs:7:14:",
+            "misaligned pointer dereference: address must be a multiple of 0x40 but is <ADDR>",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+            "thread caused non-unwinding panic. aborting."
+          ]
+        }
+      }
+    },
+    "surface_misaligned_align64_zst_read": {
+      "before_RemoveZsts_mir": "// MIR for `main` before RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: [u64; 16];\n    let mut _3: *const u8;\n    let mut _4: *const u8;\n    let mut _5: *const u64;\n    let mut _6: &[u64];\n    let mut _7: &[u64; 16];\n    let _9: Aligned64Zst;\n    let mut _10: Aligned64Zst;\n    scope 1 {\n        debug buf => _1;\n        let _2: *const Aligned64Zst;\n        scope 2 {\n            debug misaligned => _2;\n            let _8: Aligned64Zst;\n            scope 3 {\n                debug v => _8;\n            }\n        }\n    }\n\n    bb0: {\n        _1 = [const 0_u64; 16];\n        _7 = &_1;\n        _6 = move _7 as &[u64] (PointerCoercion(Unsize, Implicit));\n        _5 = core::slice::<impl [u64]>::as_ptr(move _6) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _4 = std::ptr::const_ptr::<impl *const u64>::cast::<u8>(move _5) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _3 = std::ptr::const_ptr::<impl *const u8>::add(move _4, const 1_usize) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _2 = std::ptr::const_ptr::<impl *const u8>::cast::<Aligned64Zst>(move _3) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        _8 = copy (*_2);\n        _10 = copy _8;\n        _9 = std::hint::black_box::<Aligned64Zst>(move _10) -> [return: bb5, unwind continue];\n    }\n\n    bb5: {\n        _0 = const ();\n        return;\n    }\n}\n",
+      "after_RemoveZsts_mir": "// MIR for `main` after RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: [u64; 16];\n    let mut _3: *const u8;\n    let mut _4: *const u8;\n    let mut _5: *const u64;\n    let mut _6: &[u64];\n    let mut _7: &[u64; 16];\n    let _9: Aligned64Zst;\n    let mut _10: Aligned64Zst;\n    scope 1 {\n        debug buf => _1;\n        let _2: *const Aligned64Zst;\n        scope 2 {\n            debug misaligned => _2;\n            let _8: Aligned64Zst;\n            scope 3 {\n                debug v => const Aligned64Zst;\n            }\n        }\n    }\n\n    bb0: {\n        _1 = [const 0_u64; 16];\n        _7 = &_1;\n        _6 = move _7 as &[u64] (PointerCoercion(Unsize, Implicit));\n        _5 = core::slice::<impl [u64]>::as_ptr(move _6) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _4 = std::ptr::const_ptr::<impl *const u64>::cast::<u8>(move _5) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _3 = std::ptr::const_ptr::<impl *const u8>::add(move _4, const 1_usize) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _2 = std::ptr::const_ptr::<impl *const u8>::cast::<Aligned64Zst>(move _3) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        nop;\n        nop;\n        _9 = std::hint::black_box::<Aligned64Zst>(const Aligned64Zst) -> [return: bb5, unwind continue];\n    }\n\n    bb5: {\n        nop;\n        return;\n    }\n}\n",
+      "modes": {
+        "miri_opt0_preserve_ub": {
+          "rc": 1,
+          "ub_or_panic_caught": true,
+          "miri_opt_warning_emitted": false,
+          "diag_head": [
+            "error: Undefined Behavior: accessing memory based on pointer with alignment 1, but alignment 64 is required",
+            " --> <SPEC_DIR>/surface_misaligned_align64_zst_read.rs:8:36",
+            "  |",
+            "8 |     let v: Aligned64Zst = unsafe { *misaligned };",
+            "  |                                    ^^^^^^^^^^^ Undefined Behavior occurred here"
+          ]
+        },
+        "miri_opt0_plus_RemoveZsts": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt1_default_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_with_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_force_enable_CheckAlignment": {
+          "rc": 1,
+          "ub_or_panic_caught": true,
+          "miri_opt_warning_emitted": true,
+          "diag_head": [
+            "thread 'main' (<TID>) panicked at <SPEC_DIR>/surface_misaligned_align64_zst_read.rs:8:36:",
+            "misaligned pointer dereference: address must be a multiple of 0x40 but is 0x20b41",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+            "note: in Miri, you may have to set `MIRIFLAGS=-Zmiri-env-forward=RUST_BACKTRACE` for the environment variable to have an effect",
+            "thread caused non-unwinding panic. aborting."
+          ]
+        },
+        "native_opt1_ub_checks_yes": {
+          "rc": -6,
+          "ub_or_panic_caught": true,
+          "diag_head": [
+            "thread 'main' (<TID>) panicked at <SPEC_DIR>/surface_misaligned_align64_zst_read.rs:8:36:",
+            "misaligned pointer dereference: address must be a multiple of 0x40 but is <ADDR>",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+            "thread caused non-unwinding panic. aborting."
+          ]
+        }
+      }
+    },
+    "surface_misaligned_align64_zst_place_mention": {
+      "before_RemoveZsts_mir": "// MIR for `main` before RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: [u64; 16];\n    let mut _3: *const u8;\n    let mut _4: *const u8;\n    let mut _5: *const u64;\n    let mut _6: &[u64];\n    let mut _7: &[u64; 16];\n    scope 1 {\n        debug buf => _1;\n        let _2: *const Aligned64Zst;\n        scope 2 {\n            debug misaligned => _2;\n            scope 3 {\n            }\n        }\n    }\n\n    bb0: {\n        _1 = [const 0_u64; 16];\n        _7 = &_1;\n        _6 = move _7 as &[u64] (PointerCoercion(Unsize, Implicit));\n        _5 = core::slice::<impl [u64]>::as_ptr(move _6) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _4 = std::ptr::const_ptr::<impl *const u64>::cast::<u8>(move _5) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _3 = std::ptr::const_ptr::<impl *const u8>::add(move _4, const 1_usize) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _2 = std::ptr::const_ptr::<impl *const u8>::cast::<Aligned64Zst>(move _3) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        PlaceMention((*_2));\n        _0 = const ();\n        return;\n    }\n}\n",
+      "after_RemoveZsts_mir": "// MIR for `main` after RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: [u64; 16];\n    let mut _3: *const u8;\n    let mut _4: *const u8;\n    let mut _5: *const u64;\n    let mut _6: &[u64];\n    let mut _7: &[u64; 16];\n    scope 1 {\n        debug buf => _1;\n        let _2: *const Aligned64Zst;\n        scope 2 {\n            debug misaligned => _2;\n            scope 3 {\n            }\n        }\n    }\n\n    bb0: {\n        _1 = [const 0_u64; 16];\n        _7 = &_1;\n        _6 = move _7 as &[u64] (PointerCoercion(Unsize, Implicit));\n        _5 = core::slice::<impl [u64]>::as_ptr(move _6) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _4 = std::ptr::const_ptr::<impl *const u64>::cast::<u8>(move _5) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _3 = std::ptr::const_ptr::<impl *const u8>::add(move _4, const 1_usize) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _2 = std::ptr::const_ptr::<impl *const u8>::cast::<Aligned64Zst>(move _3) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        nop;\n        nop;\n        return;\n    }\n}\n",
+      "modes": {
+        "miri_opt0_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt0_plus_RemoveZsts": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_opt1_default_preserve_ub": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_with_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "miri_opt1_force_enable_CheckAlignment": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "miri_opt_warning_emitted": true,
+          "diag_head": []
+        },
+        "native_opt1_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "diag_head": []
+        }
+      }
+    },
+    "surface_uninit_ptr_to_zst_write": {
+      "before_RemoveZsts_mir": "// MIR for `main` before RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: std::mem::MaybeUninit<*mut ()>;\n    let mut _3: std::mem::MaybeUninit<*mut ()>;\n    scope 1 {\n        debug uninit_ptr => _1;\n        let _2: *mut ();\n        scope 2 {\n            debug p => _2;\n        }\n    }\n\n    bb0: {\n        _1 = MaybeUninit::<*mut ()>::uninit() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _3 = copy _1;\n        _2 = MaybeUninit::<*mut ()>::assume_init(move _3) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        (*_2) = ();\n        _0 = const ();\n        return;\n    }\n}\n",
+      "after_RemoveZsts_mir": "// MIR for `main` after RemoveZsts\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: std::mem::MaybeUninit<*mut ()>;\n    let mut _3: std::mem::MaybeUninit<*mut ()>;\n    scope 1 {\n        debug uninit_ptr => _1;\n        let _2: *mut ();\n        scope 2 {\n            debug p => _2;\n        }\n    }\n\n    bb0: {\n        _1 = MaybeUninit::<*mut ()>::uninit() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _3 = copy _1;\n        _2 = MaybeUninit::<*mut ()>::assume_init(move _3) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        nop;\n        nop;\n        return;\n    }\n}\n",
+      "modes": {
+        "miri_opt0_preserve_ub": {
+          "rc": 1,
+          "ub_or_panic_caught": true,
+          "miri_opt_warning_emitted": false,
+          "diag_head": [
+            "error: Undefined Behavior: reading memory at alloc154[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory",
+            " --> <SPEC_DIR>/surface_uninit_ptr_to_zst_write.rs:5:31",
+            "  |",
+            "5 |     let p: *mut () = unsafe { uninit_ptr.assume_init() };",
+            "  |                               ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+          ]
+        },
+        "miri_opt0_plus_RemoveZsts": {
+          "rc": 1,
+          "ub_or_panic_caught": true,
+          "miri_opt_warning_emitted": false,
+          "diag_head": [
+            "error: Undefined Behavior: reading memory at alloc154[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory",
+            " --> <SPEC_DIR>/surface_uninit_ptr_to_zst_write.rs:5:31",
+            "  |",
+            "5 |     let p: *mut () = unsafe { uninit_ptr.assume_init() };",
+            "  |                               ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+          ]
+        },
+        "miri_opt1_default_preserve_ub": {
+          "rc": 1,
+          "ub_or_panic_caught": true,
+          "miri_opt_warning_emitted": true,
+          "diag_head": [
+            "error: Undefined Behavior: reading memory at alloc153[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory",
+            " --> <SPEC_DIR>/surface_uninit_ptr_to_zst_write.rs:5:31",
+            "  |",
+            "5 |     let p: *mut () = unsafe { uninit_ptr.assume_init() };",
+            "  |                               ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+          ]
+        },
+        "miri_opt1_with_ub_checks_yes": {
+          "rc": 1,
+          "ub_or_panic_caught": true,
+          "miri_opt_warning_emitted": true,
+          "diag_head": [
+            "error: Undefined Behavior: reading memory at alloc153[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory",
+            " --> <SPEC_DIR>/surface_uninit_ptr_to_zst_write.rs:5:31",
+            "  |",
+            "5 |     let p: *mut () = unsafe { uninit_ptr.assume_init() };",
+            "  |                               ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+          ]
+        },
+        "miri_opt1_force_enable_CheckAlignment": {
+          "rc": 1,
+          "ub_or_panic_caught": true,
+          "miri_opt_warning_emitted": true,
+          "diag_head": [
+            "error: Undefined Behavior: reading memory at alloc153[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory",
+            " --> <SPEC_DIR>/surface_uninit_ptr_to_zst_write.rs:5:31",
+            "  |",
+            "5 |     let p: *mut () = unsafe { uninit_ptr.assume_init() };",
+            "  |                               ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+          ]
+        },
+        "native_opt1_ub_checks_yes": {
+          "rc": 0,
+          "ub_or_panic_caught": false,
+          "diag_head": []
+        }
+      }
+    }
+  },
+  "part_b_refprop_and_sroa_mir_litmus": {
+    "refprop_anon_borrow_unlocks_sroa": {
+      "before_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 2,
+        "direct_local_field_projections": 0,
+        "deref_projections": 2,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 2,
+        "direct_local_field_projections": 2,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_ScalarReplacementOfAggregates": {
+        "projection_free": true,
+        "ref_free": true,
+        "pure_unprojected_noref": true,
+        "field_projections": 0,
+        "direct_local_field_projections": 0,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "refprop_changed_mir": true,
+      "sroa_changed_mir": true,
+      "final_sroa_after_mir": "// MIR for `refprop_anon_borrow_unlocks_sroa` after ScalarReplacementOfAggregates\n\nfn refprop_anon_borrow_unlocks_sroa(_1: u64, _2: u64) -> u64 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u64;\n    let _3: Pair;\n    let mut _4: u64;\n    let mut _5: u64;\n    let mut _6: u64;\n    let mut _7: &Pair;\n    let mut _8: u64;\n    let mut _9: &Pair;\n    let _10: u64;\n    let _11: u64;\n    scope 1 {\n        debug ((p: Pair).0: u64) => _10;\n        debug ((p: Pair).1: u64) => _11;\n        scope 2 (inlined core::num::<impl u64>::wrapping_add) {\n        }\n    }\n\n    bb0: {\n        StorageLive(_10);\n        StorageLive(_11);\n        nop;\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _10 = move _4;\n        _11 = move _5;\n        nop;\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_6);\n        _6 = copy _10;\n        StorageLive(_8);\n        _8 = copy _11;\n        _0 = Add(copy _6, copy _8);\n        StorageDead(_8);\n        StorageDead(_6);\n        StorageDead(_10);\n        StorageDead(_11);\n        nop;\n        return;\n    }\n}\n"
+    },
+    "refprop_named_borrow_blocked_by_debuginfo": {
+      "before_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 2,
+        "direct_local_field_projections": 0,
+        "deref_projections": 2,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 2,
+        "direct_local_field_projections": 2,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_ScalarReplacementOfAggregates": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 2,
+        "direct_local_field_projections": 2,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "refprop_changed_mir": true,
+      "sroa_changed_mir": false,
+      "final_sroa_after_mir": "// MIR for `refprop_named_borrow_blocked_by_debuginfo` after ScalarReplacementOfAggregates\n\nfn refprop_named_borrow_blocked_by_debuginfo(_1: u64, _2: u64) -> u64 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u64;\n    let _3: Pair;\n    let mut _4: u64;\n    let mut _5: u64;\n    let mut _7: u64;\n    let mut _8: u64;\n    scope 1 {\n        debug p => _3;\n        let _6: &Pair;\n        scope 2 {\n            debug r => _6;\n            scope 3 (inlined core::num::<impl u64>::wrapping_add) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = Pair(move _4, move _5);\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_6);\n        _6 = &_3;\n        StorageLive(_7);\n        _7 = copy (_3.0: u64);\n        StorageLive(_8);\n        _8 = copy (_3.1: u64);\n        _0 = Add(copy _7, copy _8);\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageDead(_6);\n        StorageDead(_3);\n        return;\n    }\n}\n"
+    },
+    "refprop_mut_fully_replaced": {
+      "before_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": false,
+        "pure_unprojected_noref": false,
+        "field_projections": 0,
+        "direct_local_field_projections": 0,
+        "deref_projections": 4,
+        "other_projections": 0,
+        "ref_rvalues": 1,
+        "zst_const_ops": 0
+      },
+      "after_ReferencePropagation": {
+        "projection_free": true,
+        "ref_free": false,
+        "pure_unprojected_noref": false,
+        "field_projections": 0,
+        "direct_local_field_projections": 0,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 1,
+        "zst_const_ops": 0
+      },
+      "after_ScalarReplacementOfAggregates": {
+        "projection_free": true,
+        "ref_free": false,
+        "pure_unprojected_noref": false,
+        "field_projections": 0,
+        "direct_local_field_projections": 0,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 1,
+        "zst_const_ops": 0
+      },
+      "refprop_changed_mir": true,
+      "sroa_changed_mir": false,
+      "final_sroa_after_mir": "// MIR for `refprop_mut_fully_replaced` after ScalarReplacementOfAggregates\n\nfn refprop_mut_fully_replaced(_1: u64) -> u64 {\n    debug x => _1;\n    let mut _0: u64;\n    let mut _2: u64;\n    let mut _4: u64;\n    let mut _5: u64;\n    let mut _7: u64;\n    let mut _8: u64;\n    let mut _9: u64;\n    let mut _10: u64;\n    scope 1 {\n        debug slot => _2;\n        let _3: &mut u64;\n        scope 2 {\n            debug r => _3;\n            let _6: &mut u64;\n            scope 3 {\n                debug r2 => _3;\n                scope 5 (inlined core::num::<impl u64>::wrapping_mul) {\n                }\n            }\n            scope 4 (inlined core::num::<impl u64>::wrapping_add) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _3 = &mut _2;\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _2;\n        StorageLive(_9);\n        _9 = const 10_u64;\n        _4 = Add(copy _5, copy _9);\n        StorageDead(_9);\n        StorageDead(_5);\n        _2 = move _4;\n        StorageDead(_4);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = copy _2;\n        StorageLive(_10);\n        _10 = const 2_u64;\n        _7 = Mul(copy _8, copy _10);\n        StorageDead(_10);\n        StorageDead(_8);\n        _2 = move _7;\n        StorageDead(_7);\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n}\n"
+    },
+    "refprop_mut_escaped_blocks_partial": {
+      "before_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": false,
+        "pure_unprojected_noref": false,
+        "field_projections": 0,
+        "direct_local_field_projections": 0,
+        "deref_projections": 3,
+        "other_projections": 0,
+        "ref_rvalues": 2,
+        "zst_const_ops": 0
+      },
+      "after_ReferencePropagation": {
+        "projection_free": true,
+        "ref_free": false,
+        "pure_unprojected_noref": false,
+        "field_projections": 0,
+        "direct_local_field_projections": 0,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 2,
+        "zst_const_ops": 0
+      },
+      "after_ScalarReplacementOfAggregates": {
+        "projection_free": true,
+        "ref_free": false,
+        "pure_unprojected_noref": false,
+        "field_projections": 0,
+        "direct_local_field_projections": 0,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 2,
+        "zst_const_ops": 0
+      },
+      "refprop_changed_mir": true,
+      "sroa_changed_mir": false,
+      "final_sroa_after_mir": "// MIR for `refprop_mut_escaped_blocks_partial` after ScalarReplacementOfAggregates\n\nfn refprop_mut_escaped_blocks_partial(_1: u64, _2: fn(*mut u64)) -> u64 {\n    debug x => _1;\n    debug sink => _2;\n    let mut _0: u64;\n    let mut _3: u64;\n    let mut _5: u64;\n    let mut _6: u64;\n    let _8: ();\n    let mut _9: fn(*mut u64);\n    let mut _10: *mut u64;\n    let mut _11: u64;\n    scope 1 {\n        debug slot => _3;\n        let _4: &mut u64;\n        scope 2 {\n            debug r => _4;\n            let _7: *mut u64;\n            scope 3 {\n                debug raw => _7;\n            }\n            scope 4 (inlined core::num::<impl u64>::wrapping_add) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_3);\n        _3 = copy _1;\n        StorageLive(_4);\n        _4 = &mut _3;\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = copy _3;\n        StorageLive(_11);\n        _11 = const 1_u64;\n        _5 = Add(copy _6, copy _11);\n        StorageDead(_11);\n        StorageDead(_6);\n        _3 = move _5;\n        StorageDead(_5);\n        StorageLive(_7);\n        _7 = &raw mut _3;\n        StorageLive(_9);\n        _9 = copy _2;\n        StorageLive(_10);\n        _10 = copy _7;\n        _8 = copy _9(copy _10) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_10);\n        StorageDead(_9);\n        _0 = copy _3;\n        StorageDead(_7);\n        StorageDead(_4);\n        StorageDead(_3);\n        return;\n    }\n}\n"
+    },
+    "sroa_multi_iter_nested_and_move": {
+      "before_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 5,
+        "direct_local_field_projections": 3,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 5,
+        "direct_local_field_projections": 3,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_ScalarReplacementOfAggregates": {
+        "projection_free": true,
+        "ref_free": true,
+        "pure_unprojected_noref": true,
+        "field_projections": 0,
+        "direct_local_field_projections": 0,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "refprop_changed_mir": false,
+      "sroa_changed_mir": true,
+      "final_sroa_after_mir": "// MIR for `sroa_multi_iter_nested_and_move` after ScalarReplacementOfAggregates\n\nfn sroa_multi_iter_nested_and_move(_1: u64, _2: u64, _3: u64) -> u64 {\n    debug x => _1;\n    debug y => _2;\n    debug z => _3;\n    let mut _0: u64;\n    let _4: Outer;\n    let mut _5: Inner;\n    let mut _6: u64;\n    let mut _7: u64;\n    let mut _8: u64;\n    let mut _10: u64;\n    let mut _11: u64;\n    let mut _12: u64;\n    let mut _13: u64;\n    let _16: Inner;\n    let _17: u64;\n    let _20: u64;\n    let _21: u64;\n    let mut _22: u64;\n    let mut _23: u64;\n    scope 1 {\n        debug (((a: Outer).0: Inner).0: u64) => _20;\n        debug (((a: Outer).0: Inner).1: u64) => _21;\n        debug ((a: Outer).1: u64) => _17;\n        let _9: Outer;\n        let _14: Inner;\n        let _15: u64;\n        let _18: u64;\n        let _19: u64;\n        scope 2 {\n            debug (((b: Outer).0: Inner).0: u64) => _18;\n            debug (((b: Outer).0: Inner).1: u64) => _19;\n            debug ((b: Outer).1: u64) => _15;\n            scope 3 (inlined core::num::<impl u64>::wrapping_add) {\n            }\n            scope 4 (inlined core::num::<impl u64>::wrapping_add) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_20);\n        StorageLive(_21);\n        nop;\n        StorageLive(_17);\n        nop;\n        StorageLive(_22);\n        StorageLive(_23);\n        nop;\n        StorageLive(_6);\n        _6 = copy _1;\n        StorageLive(_7);\n        _7 = copy _2;\n        _22 = move _6;\n        _23 = move _7;\n        nop;\n        StorageDead(_7);\n        StorageDead(_6);\n        StorageLive(_8);\n        _8 = copy _3;\n        _20 = move _22;\n        _21 = move _23;\n        nop;\n        _17 = move _8;\n        nop;\n        StorageDead(_8);\n        StorageDead(_22);\n        StorageDead(_23);\n        nop;\n        StorageLive(_18);\n        StorageLive(_19);\n        nop;\n        StorageLive(_15);\n        nop;\n        _18 = copy _20;\n        _19 = copy _21;\n        nop;\n        _15 = copy _17;\n        nop;\n        StorageLive(_10);\n        StorageLive(_11);\n        _11 = copy _18;\n        StorageLive(_12);\n        _12 = copy _19;\n        _10 = Add(copy _11, copy _12);\n        StorageDead(_12);\n        StorageDead(_11);\n        StorageLive(_13);\n        _13 = copy _15;\n        _0 = Add(copy _10, copy _13);\n        StorageDead(_13);\n        StorageDead(_10);\n        StorageDead(_18);\n        StorageDead(_19);\n        nop;\n        StorageDead(_15);\n        nop;\n        StorageDead(_20);\n        StorageDead(_21);\n        nop;\n        StorageDead(_17);\n        nop;\n        return;\n    }\n}\n"
+    },
+    "sroa_excluded_union_and_enum": {
+      "before_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 2,
+        "direct_local_field_projections": 1,
+        "deref_projections": 0,
+        "other_projections": 1,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 2,
+        "direct_local_field_projections": 1,
+        "deref_projections": 0,
+        "other_projections": 1,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_ScalarReplacementOfAggregates": {
+        "projection_free": false,
+        "ref_free": true,
+        "pure_unprojected_noref": false,
+        "field_projections": 2,
+        "direct_local_field_projections": 1,
+        "deref_projections": 0,
+        "other_projections": 1,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "refprop_changed_mir": false,
+      "sroa_changed_mir": false,
+      "final_sroa_after_mir": "// MIR for `sroa_excluded_union_and_enum` after ScalarReplacementOfAggregates\n\nfn sroa_excluded_union_and_enum(_1: u64) -> u64 {\n    debug v => _1;\n    let mut _0: u64;\n    let _2: WordOrBytes;\n    let mut _3: u64;\n    let mut _5: u64;\n    let mut _6: u32;\n    let mut _7: isize;\n    scope 1 {\n        debug u => _2;\n        let _4: TagOrVal;\n        scope 2 {\n            debug e => _4;\n            let _8: u64;\n            scope 3 {\n                debug n => _8;\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        _2 = WordOrBytes { word: move _3 };\n        StorageDead(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = copy (_2.1: u32);\n        _5 = move _6 as u64 (IntToInt);\n        StorageDead(_6);\n        _4 = TagOrVal::Val(move _5);\n        StorageDead(_5);\n        _7 = discriminant(_4);\n        switchInt(move _7) -> [0: bb3, 1: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        StorageLive(_8);\n        _8 = copy ((_4 as Val).0: u64);\n        _0 = copy _8;\n        StorageDead(_8);\n        goto -> bb4;\n    }\n\n    bb3: {\n        _0 = const 0_u64;\n        goto -> bb4;\n    }\n\n    bb4: {\n        StorageDead(_4);\n        StorageDead(_2);\n        return;\n    }\n}\n"
+    },
+    "sroa_excluded_address_taken": {
+      "before_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": false,
+        "pure_unprojected_noref": false,
+        "field_projections": 2,
+        "direct_local_field_projections": 2,
+        "deref_projections": 1,
+        "other_projections": 0,
+        "ref_rvalues": 1,
+        "zst_const_ops": 0
+      },
+      "after_ReferencePropagation": {
+        "projection_free": false,
+        "ref_free": false,
+        "pure_unprojected_noref": false,
+        "field_projections": 3,
+        "direct_local_field_projections": 3,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 1,
+        "zst_const_ops": 0
+      },
+      "after_ScalarReplacementOfAggregates": {
+        "projection_free": false,
+        "ref_free": false,
+        "pure_unprojected_noref": false,
+        "field_projections": 3,
+        "direct_local_field_projections": 3,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 1,
+        "zst_const_ops": 0
+      },
+      "refprop_changed_mir": true,
+      "sroa_changed_mir": false,
+      "final_sroa_after_mir": "// MIR for `sroa_excluded_address_taken` after ScalarReplacementOfAggregates\n\nfn sroa_excluded_address_taken(_1: u64, _2: u64) -> u64 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u64;\n    let _3: Pair;\n    let mut _4: u64;\n    let mut _5: u64;\n    let mut _8: u64;\n    let mut _9: u64;\n    scope 1 {\n        debug p => _3;\n        let _6: *const u64;\n        scope 2 {\n            debug raw_first => _6;\n            let _7: u64;\n            scope 3 {\n                debug first => _7;\n                scope 4 (inlined core::num::<impl u64>::wrapping_add) {\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = Pair(move _4, move _5);\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_6);\n        _6 = &raw const (_3.0: u64);\n        StorageLive(_7);\n        _7 = copy (_3.0: u64);\n        StorageLive(_8);\n        _8 = copy _7;\n        StorageLive(_9);\n        _9 = copy (_3.1: u64);\n        _0 = Add(copy _8, copy _9);\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageDead(_6);\n        StorageDead(_3);\n        return;\n    }\n}\n"
+    }
+  },
+  "part_c_zerocopy_mir_pass_census": {
+    "zerocopy_package_version": "0.8.64",
+    "zerocopy_git_revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+    "extra_cfgs": [
+      "--cfg",
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "RemoveZsts": {
+      "bodies_modified_by_pass": 3199,
+      "bodies_modified_pct": 71.47,
+      "before": {
+        "bodies": 4476,
+        "projection_free_bodies": 2725,
+        "ref_free_bodies": 3937,
+        "pure_unprojected_noref_bodies": 2721,
+        "field_projections": 5290,
+        "direct_local_field_projections": 2607,
+        "deref_projections": 2386,
+        "other_projections": 1307,
+        "ref_rvalues": 988,
+        "zst_const_ops": 3721
+      },
+      "after": {
+        "bodies": 4476,
+        "projection_free_bodies": 2735,
+        "ref_free_bodies": 3937,
+        "pure_unprojected_noref_bodies": 2731,
+        "field_projections": 4749,
+        "direct_local_field_projections": 2607,
+        "deref_projections": 2380,
+        "other_projections": 769,
+        "ref_rvalues": 988,
+        "zst_const_ops": 1001
+      },
+      "delta": {
+        "bodies": 0,
+        "projection_free_bodies": 10,
+        "ref_free_bodies": 0,
+        "pure_unprojected_noref_bodies": 10,
+        "field_projections": -541,
+        "direct_local_field_projections": 0,
+        "deref_projections": -6,
+        "other_projections": -538,
+        "ref_rvalues": 0,
+        "zst_const_ops": -2720
+      },
+      "after_pure_unprojected_noref_pct": 61.01
+    },
+    "ReferencePropagation": {
+      "bodies_modified_by_pass": 825,
+      "bodies_modified_pct": 18.43,
+      "before": {
+        "bodies": 4476,
+        "projection_free_bodies": 2735,
+        "ref_free_bodies": 3937,
+        "pure_unprojected_noref_bodies": 2731,
+        "field_projections": 4747,
+        "direct_local_field_projections": 2607,
+        "deref_projections": 2452,
+        "other_projections": 767,
+        "ref_rvalues": 988,
+        "zst_const_ops": 1000
+      },
+      "after": {
+        "bodies": 4476,
+        "projection_free_bodies": 2735,
+        "ref_free_bodies": 3944,
+        "pure_unprojected_noref_bodies": 2731,
+        "field_projections": 4696,
+        "direct_local_field_projections": 3050,
+        "deref_projections": 1807,
+        "other_projections": 751,
+        "ref_rvalues": 965,
+        "zst_const_ops": 1000
+      },
+      "delta": {
+        "bodies": 0,
+        "projection_free_bodies": 0,
+        "ref_free_bodies": 7,
+        "pure_unprojected_noref_bodies": 0,
+        "field_projections": -51,
+        "direct_local_field_projections": 443,
+        "deref_projections": -645,
+        "other_projections": -16,
+        "ref_rvalues": -23,
+        "zst_const_ops": 0
+      },
+      "after_pure_unprojected_noref_pct": 61.01
+    },
+    "ScalarReplacementOfAggregates": {
+      "bodies_modified_by_pass": 837,
+      "bodies_modified_pct": 18.7,
+      "before": {
+        "bodies": 4476,
+        "projection_free_bodies": 2735,
+        "ref_free_bodies": 3944,
+        "pure_unprojected_noref_bodies": 2731,
+        "field_projections": 4696,
+        "direct_local_field_projections": 3050,
+        "deref_projections": 1807,
+        "other_projections": 751,
+        "ref_rvalues": 965,
+        "zst_const_ops": 1000
+      },
+      "after": {
+        "bodies": 4476,
+        "projection_free_bodies": 2736,
+        "ref_free_bodies": 3944,
+        "pure_unprojected_noref_bodies": 2732,
+        "field_projections": 5206,
+        "direct_local_field_projections": 2430,
+        "deref_projections": 1975,
+        "other_projections": 951,
+        "ref_rvalues": 965,
+        "zst_const_ops": 1000
+      },
+      "delta": {
+        "bodies": 0,
+        "projection_free_bodies": 1,
+        "ref_free_bodies": 0,
+        "pure_unprojected_noref_bodies": 1,
+        "field_projections": 510,
+        "direct_local_field_projections": -620,
+        "deref_projections": 168,
+        "other_projections": 200,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_pure_unprojected_noref_pct": 61.04
+    },
+    "SimplifyLocals_before_const_prop": {
+      "bodies_modified_by_pass": 1569,
+      "bodies_modified_pct": 35.05,
+      "before": {
+        "bodies": 4476,
+        "projection_free_bodies": 2736,
+        "ref_free_bodies": 3944,
+        "pure_unprojected_noref_bodies": 2732,
+        "field_projections": 5206,
+        "direct_local_field_projections": 2430,
+        "deref_projections": 1975,
+        "other_projections": 951,
+        "ref_rvalues": 965,
+        "zst_const_ops": 1000
+      },
+      "after": {
+        "bodies": 4476,
+        "projection_free_bodies": 2746,
+        "ref_free_bodies": 3944,
+        "pure_unprojected_noref_bodies": 2742,
+        "field_projections": 4024,
+        "direct_local_field_projections": 1701,
+        "deref_projections": 1795,
+        "other_projections": 899,
+        "ref_rvalues": 965,
+        "zst_const_ops": 955
+      },
+      "delta": {
+        "bodies": 0,
+        "projection_free_bodies": 10,
+        "ref_free_bodies": 0,
+        "pure_unprojected_noref_bodies": 10,
+        "field_projections": -1182,
+        "direct_local_field_projections": -729,
+        "deref_projections": -180,
+        "other_projections": -52,
+        "ref_rvalues": 0,
+        "zst_const_ops": -45
+      },
+      "after_pure_unprojected_noref_pct": 61.26
+    },
+    "DeadStoreElimination_initial": {
+      "bodies_modified_by_pass": 249,
+      "bodies_modified_pct": 5.56,
+      "before": {
+        "bodies": 4476,
+        "projection_free_bodies": 2746,
+        "ref_free_bodies": 3944,
+        "pure_unprojected_noref_bodies": 2742,
+        "field_projections": 4024,
+        "direct_local_field_projections": 1701,
+        "deref_projections": 1795,
+        "other_projections": 899,
+        "ref_rvalues": 965,
+        "zst_const_ops": 955
+      },
+      "after": {
+        "bodies": 4476,
+        "projection_free_bodies": 2746,
+        "ref_free_bodies": 3944,
+        "pure_unprojected_noref_bodies": 2742,
+        "field_projections": 4013,
+        "direct_local_field_projections": 1699,
+        "deref_projections": 1793,
+        "other_projections": 896,
+        "ref_rvalues": 965,
+        "zst_const_ops": 955
+      },
+      "delta": {
+        "bodies": 0,
+        "projection_free_bodies": 0,
+        "ref_free_bodies": 0,
+        "pure_unprojected_noref_bodies": 0,
+        "field_projections": -11,
+        "direct_local_field_projections": -2,
+        "deref_projections": -2,
+        "other_projections": -3,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_pure_unprojected_noref_pct": 61.26
+    },
+    "SimplifyLocals_final": {
+      "bodies_modified_by_pass": 760,
+      "bodies_modified_pct": 16.98,
+      "before": {
+        "bodies": 4476,
+        "projection_free_bodies": 2746,
+        "ref_free_bodies": 3944,
+        "pure_unprojected_noref_bodies": 2742,
+        "field_projections": 3691,
+        "direct_local_field_projections": 1637,
+        "deref_projections": 1771,
+        "other_projections": 822,
+        "ref_rvalues": 964,
+        "zst_const_ops": 805
+      },
+      "after": {
+        "bodies": 4476,
+        "projection_free_bodies": 2746,
+        "ref_free_bodies": 3944,
+        "pure_unprojected_noref_bodies": 2742,
+        "field_projections": 3691,
+        "direct_local_field_projections": 1637,
+        "deref_projections": 1771,
+        "other_projections": 822,
+        "ref_rvalues": 964,
+        "zst_const_ops": 805
+      },
+      "delta": {
+        "bodies": 0,
+        "projection_free_bodies": 0,
+        "ref_free_bodies": 0,
+        "pure_unprojected_noref_bodies": 0,
+        "field_projections": 0,
+        "direct_local_field_projections": 0,
+        "deref_projections": 0,
+        "other_projections": 0,
+        "ref_rvalues": 0,
+        "zst_const_ops": 0
+      },
+      "after_pure_unprojected_noref_pct": 61.26
+    }
+  }
+}
