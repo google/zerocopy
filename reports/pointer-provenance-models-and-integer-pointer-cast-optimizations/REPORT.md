@@ -2,7 +2,7 @@
 
 ## Summary
 
-This package is a small, fully executable Lean 4 semantics of a byte-addressed heap with three treatments of pointer provenance: **flat** (pointers are plain addresses), **strict** (every pointer carries the allocation it was derived from; an integer-to-pointer cast yields a pointer without provenance), and **exposed** (as strict, but an integer-to-pointer cast angelically picks the provenance of an *exposed*, live allocation whose closed range `[base, base + size]` contains the address). Over this semantics it states and kernel-checks 26 results about which integer/pointer optimizations are refinements in which model. Every result is a statement about this toy model only; any connection to C, LLVM IR, Rust, MiniRust, or a particular compiler is a separate, explicitly labeled modeling-bridge argument (see **Applicability** and the `Basis: derived (modeling bridge)` lines under **Findings**).
+This package is a small, fully executable Lean 4 semantics of a byte-addressed heap with three treatments of pointer provenance: **flat** (pointers are plain addresses), **strict** (every pointer carries the allocation it was derived from; an integer-to-pointer cast yields a pointer without provenance), and **exposed** (as strict, but an integer-to-pointer cast angelically picks the provenance of an *exposed*, live allocation whose closed range `[base, base + size]` contains the address). Over this semantics it states and kernel-checks 26 results about which integer/pointer optimizations are refinements in which model. Every result is a statement about this toy model; these theorems neither establish nor refute the corresponding claims about C, LLVM IR, Rust, MiniRust, or a particular compiler, and any connection to them is a separate, explicitly labeled modeling-bridge argument (see **Applicability** and the `Basis: derived (modeling bridge)` lines under **Findings**).
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -66,6 +66,7 @@ Known gaps between the toy and any real language or IR (each one can change an a
 `lean/ToyProv/Basic.lean` (namespace `Toy.Prov`):
 
 ```lean
+-- lean/ToyProv/Basic.lean:38-395
 /-- Allocation identifiers: index of the allocation in `St.blocks` (allocation order). -/
 abbrev AllocId := Nat
 /-- Byte addresses. -/
@@ -429,6 +430,7 @@ instance (m : Model) (tgt src : Prog) : Decidable (Refines m tgt src) := by
 `lean/ToyProv/Transform.lean` (namespace `Toy.Prov`):
 
 ```lean
+-- lean/ToyProv/Transform.lean:15-233
 /-- UB-free states reachable by running `pre` from `init` (all resolutions of nondeterminism). -/
 def after (m : Model) (pre : Prog) : List St :=
   (exec m pre init).filterMap id
@@ -713,6 +715,7 @@ Tiers: T0 = known result restated in this vocabulary; T1 = folklore or informal 
 Lean statement (`R1a`):
 
 ```lean
+-- lean/ToyProv/OnePast.lean:23-24
 -- onePast_ptrEq_adjacent_start  (ToyProv/OnePast.lean:23)
 theorem onePast_ptrEq_adjacent_start (m : Model) (n₁ n₂ : Nat) (h₁ : n₁ ≠ 0) (h₂ : n₂ ≠ 0) :
     beh m (onePastProgN n₁ n₂) = [.done [1]]
@@ -742,6 +745,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** The two-byte instance onePastProg (n1 = n2 = 2), used again by R1b. Lean: `onePast_ptrEq_adjacent_start_all_models`.
 
 ```lean
+-- lean/ToyProv/OnePast.lean:38-39
 -- onePast_ptrEq_adjacent_start_all_models  (ToyProv/OnePast.lean:38)
 theorem onePast_ptrEq_adjacent_start_all_models (m : Model) :
     (2 : Nat) ≠ 0 ∧ (2 : Nat) ≠ 0 ∧ beh m onePastProg = [.done [1]]
@@ -764,19 +768,23 @@ theorem onePast_ptrEq_adjacent_start_all_models (m : Model) :
 Lean statements (`R1b`):
 
 ```lean
+-- lean/ToyProv/OnePast.lean:60-62
 -- substAddrEq_counterexample_strict  (ToyProv/OnePast.lean:60)
 theorem substAddrEq_counterexample_strict :
     SubstAddrEq .strict r1Src r1Tgt ∧ ¬ Refines .strict r1Tgt r1Src ∧
       beh .strict r1Src = [.done [1, 7]] ∧ beh .strict r1Tgt = [.ub]
 
+-- lean/ToyProv/OnePast.lean:66-68
 -- substAddrEq_counterexample_exposed  (ToyProv/OnePast.lean:66)
 theorem substAddrEq_counterexample_exposed :
     SubstAddrEq .exposed r1Src r1Tgt ∧ ¬ Refines .exposed r1Tgt r1Src ∧
       beh .exposed r1Src = [.done [1, 7]] ∧ beh .exposed r1Tgt = [.ub]
 
+-- lean/ToyProv/OnePast.lean:71
 -- substAddrEq_not_sound_strict  (ToyProv/OnePast.lean:71)
 theorem substAddrEq_not_sound_strict : ¬ Sound .strict SubstAddrEq
 
+-- lean/ToyProv/OnePast.lean:74
 -- substAddrEq_not_sound_exposed  (ToyProv/OnePast.lean:74)
 theorem substAddrEq_not_sound_exposed : ¬ Sound .exposed SubstAddrEq
 ```
@@ -805,6 +813,7 @@ Hypothesis ledger: none — the statement is a closed, fully evaluated instance.
 - **Positive control** (a nearby setting where the negative conclusion fails): `substAddrEq_example_refines_flat`.
 
 ```lean
+-- lean/ToyProv/OnePast.lean:79-81
 -- substAddrEq_example_refines_flat  (ToyProv/OnePast.lean:79)
 theorem substAddrEq_example_refines_flat :
     SubstAddrEq .flat r1Src r1Tgt ∧ Refines .flat r1Tgt r1Src ∧ beh .flat r1Tgt = beh .flat r1Src ∧
@@ -827,6 +836,7 @@ theorem substAddrEq_example_refines_flat :
 Lean statement (`R1c`):
 
 ```lean
+-- lean/ToyProv/OnePast.lean:91
 -- substAddrEqInBounds_sound  (ToyProv/OnePast.lean:91)
 theorem substAddrEqInBounds_sound (m : Model) : Sound m SubstAddrEqInBounds
 ```
@@ -850,6 +860,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** q := A and p := (A + 1) - 1: equal addresses, both in bounds, in strict and exposed. Lean: `substAddrEqInBounds_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/OnePast.lean:193-198
 -- substAddrEqInBounds_nonvacuous  (ToyProv/OnePast.lean:193)
 theorem substAddrEqInBounds_nonvacuous :
     SubstAddrEqInBounds .strict (r1cPreNV ++ .store 1 3 :: [.load 4 .int 0, .obs 4])
@@ -874,19 +885,23 @@ theorem substAddrEqInBounds_nonvacuous :
 Lean statements (`R2a`):
 
 ```lean
+-- lean/ToyProv/IntEq.lean:36-38
 -- substIntEq_counterexample_strict  (ToyProv/IntEq.lean:36)
 theorem substIntEq_counterexample_strict :
     SubstIntEq .strict r2Src r2Tgt ∧ ¬ Refines .strict r2Tgt r2Src ∧
       beh .strict r2Src = [.done [1, 7]] ∧ beh .strict r2Tgt = [.ub]
 
+-- lean/ToyProv/IntEq.lean:43-45
 -- substIntEq_counterexample_exposed  (ToyProv/IntEq.lean:43)
 theorem substIntEq_counterexample_exposed :
     SubstIntEq .exposed r2Src r2Tgt ∧ ¬ Refines .exposed r2Tgt r2Src ∧
       beh .exposed r2Src = [.done [1, 7]] ∧ beh .exposed r2Tgt = [.ub]
 
+-- lean/ToyProv/IntEq.lean:48
 -- substIntEq_not_sound_strict  (ToyProv/IntEq.lean:48)
 theorem substIntEq_not_sound_strict : ¬ Sound .strict SubstIntEq
 
+-- lean/ToyProv/IntEq.lean:51
 -- substIntEq_not_sound_exposed  (ToyProv/IntEq.lean:51)
 theorem substIntEq_not_sound_exposed : ¬ Sound .exposed SubstIntEq
 ```
@@ -914,6 +929,7 @@ Hypothesis ledger: none — the statement is a closed, fully evaluated instance.
 - **Positive control** (a nearby setting where the negative conclusion fails): `substIntEq_example_refines_flat`.
 
 ```lean
+-- lean/ToyProv/IntEq.lean:55-57
 -- substIntEq_example_refines_flat  (ToyProv/IntEq.lean:55)
 theorem substIntEq_example_refines_flat :
     SubstIntEq .flat r2Src r2Tgt ∧ Refines .flat r2Tgt r2Src ∧
@@ -937,6 +953,7 @@ theorem substIntEq_example_refines_flat :
 Lean statement (`R2b`):
 
 ```lean
+-- lean/ToyProv/IntEq.lean:101-105
 -- int2ptrToCopy_refines_exposed_of_intIsAddrOf_of_candSubProv  (ToyProv/IntEq.lean:101)
 theorem int2ptrToCopy_refines_exposed_of_intIsAddrOf_of_candSubProv
     (pre post : Prog) (d k p : Reg)
@@ -962,6 +979,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** After k := ptr2int A, A is the only candidate for its own address and the fold preserves the output [5]. The case with no candidate (A not exposed, so `candidates` is empty) is witnessed by `int2ptrToCopy_refines_exposed_no_candidate_example`, quoted below with its programs. Lean: `int2ptrToCopy_refines_exposed_nonvacuous`, `int2ptrToCopy_refines_exposed_no_candidate_example`.
 
 ```lean
+-- lean/ToyProv/IntEq.lean:209-214
 -- int2ptrToCopy_refines_exposed_nonvacuous  (ToyProv/IntEq.lean:209)
 theorem int2ptrToCopy_refines_exposed_nonvacuous :
     AllAfter .exposed r2bPreNV (intIsAddrOfC 1 0) ∧ AllAfter .exposed r2bPreNV (candSubProvC 0) ∧
@@ -972,14 +990,15 @@ theorem int2ptrToCopy_refines_exposed_nonvacuous :
 ```
 
 ```lean
--- ToyProv/IntEq.lean
+-- lean/ToyProv/IntEq.lean:217-219
 /-- A (unexposed, at 16), B, C; `k := 16`; `q := int2ptr k` (no candidate, so no provenance) is
 stored into B. -/
 def r2bPreTorn : Prog := [.alloc 0 2, .alloc 1 2, .alloc 2 2, .const 3 16, .int2ptr 4 3, .store 1 4]
--- ToyProv/IntEq.lean
+-- lean/ToyProv/IntEq.lean:220-221
 /-- Store `d` into C, copy B's first byte over C's first byte, load C at integer type. -/
 def r2bPostTorn : Prog := [.store 2 5, .memcpy 2 1 1, .load 6 .int 2, .obs 6]
 
+-- lean/ToyProv/IntEq.lean:227-232
 -- int2ptrToCopy_refines_exposed_no_candidate_example  (ToyProv/IntEq.lean:227)
 theorem int2ptrToCopy_refines_exposed_no_candidate_example :
     AllAfter .exposed r2bPreTorn (intIsAddrOfC 3 0) ∧ AllAfter .exposed r2bPreTorn (candSubProvC 0) ∧
@@ -1008,11 +1027,13 @@ theorem int2ptrToCopy_refines_exposed_no_candidate_example :
 Lean statements (`R2c`):
 
 ```lean
+-- lean/ToyProv/IntEq.lean:67-69
 -- substSameVal_beh_eq  (ToyProv/IntEq.lean:67)
 theorem substSameVal_beh_eq (m : Model) (pre post : Prog) (i : Instr) (q p : Reg)
     (h : AllAfter m pre (sameValC p q)) :
     beh m (pre ++ i.substUse q p :: post) = beh m (pre ++ i :: post)
 
+-- lean/ToyProv/IntEq.lean:77
 -- substSameVal_sound  (ToyProv/IntEq.lean:77)
 theorem substSameVal_sound (m : Model) : Sound m SubstSameVal
 ```
@@ -1038,6 +1059,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** Integer substitution iq -> ip after ip := (int)(A+2), iq := (int)B in the exposed model. Lean: `substSameVal_int_boundary_example`.
 
 ```lean
+-- lean/ToyProv/IntEq.lean:86-89
 -- substSameVal_int_boundary_example  (ToyProv/IntEq.lean:86)
 theorem substSameVal_int_boundary_example :
     SubstSameVal .exposed (r2cPre ++ .int2ptr 5 4 :: r2cPost) (r2cPre ++ (Instr.int2ptr 5 4).substUse 4 3 :: r2cPost) ∧
@@ -1060,6 +1082,7 @@ theorem substSameVal_int_boundary_example :
 Lean statement (`R3a`):
 
 ```lean
+-- lean/ToyProv/RoundTrip.lean:23-27
 -- int2ptrToCopy_beh_eq_exposed_of_intIsAddrOf_of_candEqProv  (ToyProv/RoundTrip.lean:23)
 theorem int2ptrToCopy_beh_eq_exposed_of_intIsAddrOf_of_candEqProv
     (pre post : Prog) (d k p : Reg)
@@ -1089,6 +1112,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** After k := ptr2int A with only A exposed; both programs output [5]. Lean: `int2ptrToCopy_beh_eq_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/RoundTrip.lean:100-102
 -- int2ptrToCopy_beh_eq_nonvacuous  (ToyProv/RoundTrip.lean:100)
 theorem int2ptrToCopy_beh_eq_nonvacuous :
     AllAfter .exposed r2bPreNV (intIsAddrOfC 1 0) ∧ AllAfter .exposed r2bPreNV (candEqProvC 0) ∧
@@ -1113,6 +1137,7 @@ theorem int2ptrToCopy_beh_eq_nonvacuous :
 Lean statements (`R3b`):
 
 ```lean
+-- lean/ToyProv/RoundTrip.lean:56-61
 -- roundTrip_fold_counterexample_exposed_boundary  (ToyProv/RoundTrip.lean:56)
 theorem roundTrip_fold_counterexample_exposed_boundary :
     Int2ptrToCopy .exposed (r2bPreRT ++ .int2ptr 4 3 :: r2bPostRT) (r2bPreRT ++ .copy 4 2 :: r2bPostRT) ∧
@@ -1121,9 +1146,11 @@ theorem roundTrip_fold_counterexample_exposed_boundary :
       beh .exposed (r2bPreRT ++ .int2ptr 4 3 :: r2bPostRT) = [.done [7]] ∧
       beh .exposed (r2bPreRT ++ .copy 4 2 :: r2bPostRT) = [.ub]
 
+-- lean/ToyProv/RoundTrip.lean:64
 -- int2ptrToCopy_not_sound_exposed  (ToyProv/RoundTrip.lean:64)
 theorem int2ptrToCopy_not_sound_exposed : ¬ Sound .exposed Int2ptrToCopy
 
+-- lean/ToyProv/RoundTrip.lean:87-93
 -- roundTrip_fold_counterexample_exposed_base_pointer  (ToyProv/RoundTrip.lean:87)
 theorem roundTrip_fold_counterexample_exposed_base_pointer :
     Int2ptrToCopy .exposed (r3PreBase ++ .int2ptr 4 3 :: r3PostBase) (r3PreBase ++ .copy 4 1 :: r3PostBase) ∧
@@ -1157,6 +1184,7 @@ Hypothesis ledger: none — the statement is a closed, fully evaluated instance.
 - **Positive control** (a nearby setting where the negative conclusion fails): `roundTrip_fold_boundary_flat_strict`.
 
 ```lean
+-- lean/ToyProv/RoundTrip.lean:70-74
 -- roundTrip_fold_boundary_flat_strict  (ToyProv/RoundTrip.lean:70)
 theorem roundTrip_fold_boundary_flat_strict :
     Int2ptrToCopy .flat (r2bPreRT ++ .int2ptr 4 3 :: r2bPostRT) (r2bPreRT ++ .copy 4 2 :: r2bPostRT) ∧
@@ -1181,6 +1209,7 @@ theorem roundTrip_fold_boundary_flat_strict :
 Lean statements (`R3c`):
 
 ```lean
+-- lean/ToyProv/RoundTrip.lean:114-118
 -- roundTrip_counterexample_strict  (ToyProv/RoundTrip.lean:114)
 theorem roundTrip_counterexample_strict :
     CopyToInt2ptr .strict (r3Pre ++ .copy 2 0 :: r3Post) (r3Pre ++ .int2ptr 2 1 :: r3Post) ∧
@@ -1188,6 +1217,7 @@ theorem roundTrip_counterexample_strict :
       beh .strict (r3Pre ++ .copy 2 0 :: r3Post) = [.done [7]] ∧
       beh .strict (r3Pre ++ .int2ptr 2 1 :: r3Post) = [.ub]
 
+-- lean/ToyProv/RoundTrip.lean:121
 -- copyToInt2ptr_not_sound_strict  (ToyProv/RoundTrip.lean:121)
 theorem copyToInt2ptr_not_sound_strict : ¬ Sound .strict CopyToInt2ptr
 ```
@@ -1207,6 +1237,7 @@ Hypothesis ledger: none — the statement is a closed, fully evaluated instance.
 - **Positive control** (a nearby setting where the negative conclusion fails): `roundTrip_example_exposed`.
 
 ```lean
+-- lean/ToyProv/RoundTrip.lean:126-127
 -- roundTrip_example_exposed  (ToyProv/RoundTrip.lean:126)
 theorem roundTrip_example_exposed :
     beh .exposed (r3Pre ++ .int2ptr 2 1 :: r3Post) = beh .exposed (r3Pre ++ .copy 2 0 :: r3Post)
@@ -1228,6 +1259,7 @@ theorem roundTrip_example_exposed :
 Lean statements (`R4a`):
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:27-31
 -- forwardAcrossCast_counterexample  (ToyProv/Forwarding.lean:27)
 theorem forwardAcrossCast_counterexample :
     ForwardAcrossCast .exposed r4Src r4Tgt ∧ ¬ Refines .exposed r4Tgt r4Src ∧
@@ -1235,12 +1267,15 @@ theorem forwardAcrossCast_counterexample :
       ForwardAcrossCast .flat r4Src r4Tgt ∧ ¬ Refines .flat r4Tgt r4Src ∧
       beh .flat r4Src = [.done [9]] ∧ beh .flat r4Tgt = [.done [5]]
 
+-- lean/ToyProv/Forwarding.lean:37
 -- forwardAcrossCast_not_sound_exposed  (ToyProv/Forwarding.lean:37)
 theorem forwardAcrossCast_not_sound_exposed : ¬ Sound .exposed ForwardAcrossCast
 
+-- lean/ToyProv/Forwarding.lean:40
 -- forwardAcrossCast_not_sound_flat  (ToyProv/Forwarding.lean:40)
 theorem forwardAcrossCast_not_sound_flat : ¬ Sound .flat ForwardAcrossCast
 
+-- lean/ToyProv/Forwarding.lean:50-54
 -- forwardAcrossCast_counterexample_guessed_address  (ToyProv/Forwarding.lean:50)
 theorem forwardAcrossCast_counterexample_guessed_address :
     ForwardAcrossCast .exposed (r4PreGuess ++ [.int2ptr 5 2, .store 0 3, .store 5 4, .load 6 .int 0] ++ [.obs 6])
@@ -1248,6 +1283,7 @@ theorem forwardAcrossCast_counterexample_guessed_address :
       ¬ Refines .exposed (r4PreGuess ++ [.int2ptr 5 2, .store 0 3, .store 5 4, .copy 6 3] ++ [.obs 6])
         (r4PreGuess ++ [.int2ptr 5 2, .store 0 3, .store 5 4, .load 6 .int 0] ++ [.obs 6])
 
+-- lean/ToyProv/Forwarding.lean:160-161
 -- forwardAcrossCast_strict_src_ub  (ToyProv/Forwarding.lean:160)
 theorem forwardAcrossCast_strict_src_ub (src tgt : Prog) (h : ForwardAcrossCast .strict src tgt) :
     beh .strict src = [.ub] ∧ beh .strict tgt = [.ub]
@@ -1282,11 +1318,12 @@ Hypothesis ledger (per statement):
 | `h : ForwardAcrossCast .strict src tgt (forwardAcrossCast_strict_src_ub)` | Restricts `src`, `tgt` to pairs that match the cast window in the strict model; without it the programs are arbitrary. | tight | `forwardAcrossCast_strict_src_ub_h_needed` (ToyProv/LedgerWitnesses.lean:32). Witness class: a closed two-instruction program without casts, `src = tgt = constObsProg`, which is defined in strict (outputs `[1]`) and does not match the window. |
 
 ```lean
--- ToyProv/LedgerWitnesses.lean
+-- lean/ToyProv/LedgerWitnesses.lean:21-23
 /-- A two-instruction program: write the integer 1 into register 0 and output it. It contains no
 cast, so it matches neither `ForwardAcrossCast` nor `DSEAcrossCast`. -/
 def constObsProg : Prog := [.const 0 1, .obs 0]
 
+-- lean/ToyProv/LedgerWitnesses.lean:32-34
 -- forwardAcrossCast_strict_src_ub_h_needed  (ToyProv/LedgerWitnesses.lean:32)
 theorem forwardAcrossCast_strict_src_ub_h_needed :
     ¬ ForwardAcrossCast .strict constObsProg constObsProg ∧
@@ -1298,6 +1335,7 @@ What is vacuous: the hypothesis `h` is satisfiable (the non-vacuity witness belo
 - **Non-vacuity witness:** For the closed statements: r4Src / r4Tgt satisfy ForwardAcrossCast in the exposed and flat models, where both sources are defined (`forwardAcrossCast_counterexample`). For `forwardAcrossCast_strict_src_ub`: the same pair satisfies its hypothesis `h` (`ForwardAcrossCast .strict r4Src r4Tgt`), and both sides are UB in strict, as the theorem says (`forwardAcrossCast_example_refines_strict`). Lean: `forwardAcrossCast_counterexample`, `forwardAcrossCast_example_refines_strict`.
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:60-62
 -- forwardAcrossCast_example_refines_strict  (ToyProv/Forwarding.lean:60)
 theorem forwardAcrossCast_example_refines_strict :
     ForwardAcrossCast .strict r4Src r4Tgt ∧ Refines .strict r4Tgt r4Src ∧
@@ -1307,6 +1345,7 @@ theorem forwardAcrossCast_example_refines_strict :
 - **Positive control** (a nearby setting where the negative conclusion fails): `forwardLoad_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:379-382
 -- forwardLoad_nonvacuous  (ToyProv/Forwarding.lean:379)
 theorem forwardLoad_nonvacuous :
     AllAfter .exposed r4cPreNV (provNeC 5 0) ∧ AllAfter .exposed r4cPreNV (isIntC 3) ∧
@@ -1331,6 +1370,7 @@ theorem forwardLoad_nonvacuous :
 Lean statements (`R4b`):
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:76-80
 -- dseAcrossCast_counterexample  (ToyProv/Forwarding.lean:76)
 theorem dseAcrossCast_counterexample :
     DSEAcrossCast .exposed r4dSrc r4dTgt ∧ ¬ Refines .exposed r4dTgt r4dSrc ∧
@@ -1338,12 +1378,15 @@ theorem dseAcrossCast_counterexample :
       DSEAcrossCast .flat r4dSrc r4dTgt ∧ ¬ Refines .flat r4dTgt r4dSrc ∧
       beh .flat r4dSrc = [.done [5]] ∧ beh .flat r4dTgt = [.done [1]]
 
+-- lean/ToyProv/Forwarding.lean:86
 -- dseAcrossCast_not_sound_exposed  (ToyProv/Forwarding.lean:86)
 theorem dseAcrossCast_not_sound_exposed : ¬ Sound .exposed DSEAcrossCast
 
+-- lean/ToyProv/Forwarding.lean:89
 -- dseAcrossCast_not_sound_flat  (ToyProv/Forwarding.lean:89)
 theorem dseAcrossCast_not_sound_flat : ¬ Sound .flat DSEAcrossCast
 
+-- lean/ToyProv/Forwarding.lean:181-182
 -- dseAcrossCast_strict_src_ub  (ToyProv/Forwarding.lean:181)
 theorem dseAcrossCast_strict_src_ub (src tgt : Prog) (h : DSEAcrossCast .strict src tgt) :
     beh .strict src = [.ub] ∧ beh .strict tgt = [.ub]
@@ -1375,6 +1418,7 @@ Hypothesis ledger (per statement):
 | `h : DSEAcrossCast .strict src tgt (dseAcrossCast_strict_src_ub)` | Restricts `src`, `tgt` to pairs that match the cast window in the strict model; without it the programs are arbitrary. | tight | `dseAcrossCast_strict_src_ub_h_needed` (ToyProv/LedgerWitnesses.lean:46). Witness class: a closed two-instruction program without casts, `src = tgt = constObsProg` (quoted under R4a), which is defined in strict (outputs `[1]`) and does not match the window. |
 
 ```lean
+-- lean/ToyProv/LedgerWitnesses.lean:46-48
 -- dseAcrossCast_strict_src_ub_h_needed  (ToyProv/LedgerWitnesses.lean:46)
 theorem dseAcrossCast_strict_src_ub_h_needed :
     ¬ DSEAcrossCast .strict constObsProg constObsProg ∧
@@ -1386,6 +1430,7 @@ What is vacuous: the hypothesis `h` is satisfiable (the non-vacuity witness belo
 - **Non-vacuity witness:** For the closed statements: r4dSrc / r4dTgt satisfy DSEAcrossCast in the exposed and flat models, where both sources are defined (`dseAcrossCast_counterexample`). For `dseAcrossCast_strict_src_ub`: the same pair satisfies its hypothesis `h` (`DSEAcrossCast .strict r4dSrc r4dTgt`), and both sides are UB in strict, as the theorem says (`dseAcrossCast_example_refines_strict`). Lean: `dseAcrossCast_counterexample`, `dseAcrossCast_example_refines_strict`.
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:95-97
 -- dseAcrossCast_example_refines_strict  (ToyProv/Forwarding.lean:95)
 theorem dseAcrossCast_example_refines_strict :
     DSEAcrossCast .strict r4dSrc r4dTgt ∧ Refines .strict r4dTgt r4dSrc ∧
@@ -1395,6 +1440,7 @@ theorem dseAcrossCast_example_refines_strict :
 - **Positive control** (a nearby setting where the negative conclusion fails): `dse_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:762-765
 -- dse_nonvacuous  (ToyProv/Forwarding.lean:762)
 theorem dse_nonvacuous :
     AllAfter .exposed r4dPreNV (provNeC 5 0) ∧ (6 : Reg) ≠ 0 ∧
@@ -1417,6 +1463,7 @@ theorem dse_nonvacuous :
 Lean statement (`R4c`):
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:236-241
 -- forwardLoad_refines_exposed_of_provNe_of_isInt  (ToyProv/Forwarding.lean:236)
 theorem forwardLoad_refines_exposed_of_provNe_of_isInt
     (pre post : Prog) (a v r w x : Reg)
@@ -1444,6 +1491,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** r := int2ptr (int)B with A never exposed; both programs output [5]. Lean: `forwardLoad_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:379-382
 -- forwardLoad_nonvacuous  (ToyProv/Forwarding.lean:379)
 theorem forwardLoad_nonvacuous :
     AllAfter .exposed r4cPreNV (provNeC 5 0) ∧ AllAfter .exposed r4cPreNV (isIntC 3) ∧
@@ -1467,6 +1515,7 @@ theorem forwardLoad_nonvacuous :
 Lean statement (`R4d`):
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:506-511
 -- dse_refines_exposed_of_provNe_of_ne  (ToyProv/Forwarding.lean:506)
 theorem dse_refines_exposed_of_provNe_of_ne
     (pre post : Prog) (a v r x w : Reg) (ty : Ty)
@@ -1495,6 +1544,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** r := int2ptr (int)B, A never exposed, B initialised; both programs output [1]. Lean: `dse_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:762-765
 -- dse_nonvacuous  (ToyProv/Forwarding.lean:762)
 theorem dse_nonvacuous :
     AllAfter .exposed r4dPreNV (provNeC 5 0) ∧ (6 : Reg) ≠ 0 ∧
@@ -1518,15 +1568,18 @@ theorem dse_nonvacuous :
 Lean statements (`R4e`):
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:774-776
 -- int2ptr_exposed_result  (ToyProv/Forwarding.lean:774)
 theorem int2ptr_exposed_result (s : St) (d k : Reg) (a : Nat) (hk : s.regs k = some (.int a)) :
     ∀ o ∈ step .exposed s (.int2ptr d k), ∃ x, o = some (s.setReg d (.ptr x)) ∧ x.addr = a ∧
       ∀ A, x.prov = some A → A ∈ candidates s a ∧ A ∈ s.exposed
 
+-- lean/ToyProv/Forwarding.lean:804-805
 -- int2ptr_strict_result  (ToyProv/Forwarding.lean:804)
 theorem int2ptr_strict_result (s : St) (d k : Reg) (a : Nat) (hk : s.regs k = some (.int a)) :
     step .strict s (.int2ptr d k) = [some (s.setReg d (.ptr ⟨none, a⟩))]
 
+-- lean/ToyProv/Forwarding.lean:830-833
 -- int2ptr_result_provNe_of_not_exposed  (ToyProv/Forwarding.lean:830)
 theorem int2ptr_result_provNe_of_not_exposed (s : St) (d k a : Reg) (n : Nat) (y : Ptr) (A : AllocId)
     (hk : s.regs k = some (.int n)) (ha : s.regs a = some (.ptr y)) (hA : y.prov = some A)
@@ -1569,11 +1622,13 @@ Hypothesis ledger:
 - **Non-vacuity witness:** After A, B adjacent and both exposed, register 3 holds 18 and the exposed cast has two successors; for the consequence, in the state after alloc A; alloc B; k := (int)B (A never exposed), all five hypotheses hold for d = 5, k = 2, a = 0, y = A's pointer, and every successor of the cast satisfies provNeC 5 0. Lean: `int2ptr_result_nonvacuous`, `int2ptr_result_provNe_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Forwarding.lean:821-823
 -- int2ptr_result_nonvacuous  (ToyProv/Forwarding.lean:821)
 theorem int2ptr_result_nonvacuous :
     r4eState.regs 3 = some (.int 18) ∧ (step .exposed r4eState (.int2ptr 5 3)).length = 2 ∧
       (step .strict r4eState (.int2ptr 5 3)).length = 1
 
+-- lean/ToyProv/Forwarding.lean:845-848
 -- int2ptr_result_provNe_nonvacuous  (ToyProv/Forwarding.lean:845)
 theorem int2ptr_result_provNe_nonvacuous :
     r4cState.regs 2 = some (.int 18) ∧ r4cState.regs 0 = some (.ptr ⟨some 0, 16⟩) ∧
@@ -1597,16 +1652,19 @@ theorem int2ptr_result_provNe_nonvacuous :
 Lean statements (`R5a`):
 
 ```lean
+-- lean/ToyProv/Bytes.lean:105-108
 -- load_int_of_ptrFrags  (ToyProv/Bytes.lean:105)
 theorem load_int_of_ptrFrags (m : Model) (s : St) (d r : Reg) (x p : Ptr)
     (hr : s.regs r = some (.ptr x)) (hacc : canAccess m s x 2 = true)
     (h0 : s.mem x.addr = .ptrFrag p 0) (h1 : s.mem (x.addr + 1) = .ptrFrag p 1) :
     step m s (.load d .int r) = [some ((s.setReg d (.int p.addr)).expose p.prov.toList)]
 
+-- lean/ToyProv/Bytes.lean:28-29
 -- decodeInt_ptrFrags  (ToyProv/Bytes.lean:28)
 theorem decodeInt_ptrFrags (p : Ptr) :
     decodeInt (.ptrFrag p 0) (.ptrFrag p 1) = some (p.addr, p.prov.toList)
 
+-- lean/ToyProv/Bytes.lean:353-355
 -- byteLoadAsInt_strict_strips_exposed_exposes  (ToyProv/Bytes.lean:353)
 theorem byteLoadAsInt_strict_strips_exposed_exposes :
     beh .strict r5aProg = [.ub] ∧ beh .exposed r5aProg = [.done [7]] ∧
@@ -1652,6 +1710,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** r5State: B holds the pointer A and is accessible; program-level: r5aProg, r5aGuess, r5aGuessAfterLoad. Lean: `load_int_of_ptrFrags_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Bytes.lean:157-159
 -- load_int_of_ptrFrags_nonvacuous  (ToyProv/Bytes.lean:157)
 theorem load_int_of_ptrFrags_nonvacuous :
     r5State.regs 1 = some (.ptr ⟨some 1, 18⟩) ∧ canAccess .exposed r5State ⟨some 1, 18⟩ 2 = true ∧
@@ -1677,22 +1736,26 @@ theorem load_int_of_ptrFrags_nonvacuous :
 Lean statements (`R5b`):
 
 ```lean
+-- lean/ToyProv/Bytes.lean:89-92
 -- memcpy_copies_abstract_bytes  (ToyProv/Bytes.lean:89)
 theorem memcpy_copies_abstract_bytes (m : Model) (s s' : St) (d r : Reg) (n : Nat) (x y : Ptr)
     (hd : s.regs d = some (.ptr x)) (hr : s.regs r = some (.ptr y))
     (hs : some s' ∈ step m s (.memcpy d r n)) :
     ∀ i < n, s'.mem (x.addr + i) = s.mem (y.addr + i)
 
+-- lean/ToyProv/Bytes.lean:133-136
 -- memcpy_frame  (ToyProv/Bytes.lean:133)
 theorem memcpy_frame (m : Model) (s s' : St) (d r : Reg) (n : Nat) (x y : Ptr)
     (hd : s.regs d = some (.ptr x)) (hr : s.regs r = some (.ptr y))
     (hs : some s' ∈ step m s (.memcpy d r n)) :
     ∀ z, z < x.addr ∨ x.addr + n ≤ z → s'.mem z = s.mem z
 
+-- lean/ToyProv/Bytes.lean:366-367
 -- memcpy_preserves_provenance_example  (ToyProv/Bytes.lean:366)
 theorem memcpy_preserves_provenance_example :
     beh .strict r5bProg = [.done [7]] ∧ beh .exposed r5bProg = [.done [7]]
 
+-- lean/ToyProv/Bytes.lean:397-399
 -- intRoundTrip_out_of_range_example  (ToyProv/Bytes.lean:397)
 theorem intRoundTrip_out_of_range_example :
     beh .strict r5cOutCopy = [.done [7]] ∧ beh .exposed r5cOutCopy = [.done [7]] ∧
@@ -1744,11 +1807,12 @@ Hypothesis ledger (per statement; `memcpy_preserves_provenance_example` and `int
 The three `memcpy_copies_*_needed` witnesses establish tightness for `memcpy_copies_abstract_bytes` only; `memcpy_copies_hr_needed` and `memcpy_copies_hs_needed` satisfy `memcpy_frame`'s conclusion, so they say nothing about `memcpy_frame`, whose ledger rows cite their own witnesses.
 
 ```lean
--- ToyProv/LedgerWitnesses.lean
+-- lean/ToyProv/LedgerWitnesses.lean:70-72
 /-- `r5State` with B's two bytes written over A (at 16) instead of C: not the successor of
 `memcpy C B 2`. -/
 def r5WrongDst : St := { r5State with mem := writeBytes r5State.mem 16 (readBytes r5State.mem 18 2) }
 
+-- lean/ToyProv/LedgerWitnesses.lean:61-65
 -- memcpy_frame_hd_needed  (ToyProv/LedgerWitnesses.lean:61)
 theorem memcpy_frame_hd_needed :
     r5State.regs 1 = some (.ptr ⟨some 1, 18⟩) ∧ some r5Succ ∈ step .exposed r5State (.memcpy 2 1 2) ∧
@@ -1756,12 +1820,14 @@ theorem memcpy_frame_hd_needed :
       ¬ (∀ z, z < (⟨some 0, 16⟩ : Ptr).addr ∨ (⟨some 0, 16⟩ : Ptr).addr + 2 ≤ z →
           r5Succ.mem z = r5State.mem z)
 
+-- lean/ToyProv/LedgerWitnesses.lean:78-81
 -- memcpy_frame_hs_needed  (ToyProv/LedgerWitnesses.lean:78)
 theorem memcpy_frame_hs_needed :
     r5State.regs 2 = some (.ptr ⟨some 2, 20⟩) ∧ r5State.regs 1 = some (.ptr ⟨some 1, 18⟩) ∧
       ¬ (∀ z, z < (⟨some 2, 20⟩ : Ptr).addr ∨ (⟨some 2, 20⟩ : Ptr).addr + 2 ≤ z →
           r5WrongDst.mem z = r5State.mem z)
 
+-- lean/ToyProv/LedgerWitnesses.lean:89-91
 -- memcpy_frame_of_hd_hs  (ToyProv/LedgerWitnesses.lean:89)
 theorem memcpy_frame_of_hd_hs (m : Model) (s s' : St) (d r : Reg) (n : Nat) (x : Ptr)
     (hd : s.regs d = some (.ptr x)) (hs : some s' ∈ step m s (.memcpy d r n)) :
@@ -1771,6 +1837,7 @@ theorem memcpy_frame_of_hd_hs (m : Model) (s s' : St) (d r : Reg) (n : Nat) (x :
 - **Non-vacuity witness:** r5State: memcpy C B 2 has the successor r5Succ in every model; program level: r5bProg defined in strict and exposed. Lean: `memcpy_copies_abstract_bytes_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Bytes.lean:243-245
 -- memcpy_copies_abstract_bytes_nonvacuous  (ToyProv/Bytes.lean:243)
 theorem memcpy_copies_abstract_bytes_nonvacuous (m : Model) :
     r5State.regs 2 = some (.ptr ⟨some 2, 20⟩) ∧ r5State.regs 1 = some (.ptr ⟨some 1, 18⟩) ∧
@@ -1795,24 +1862,29 @@ theorem memcpy_copies_abstract_bytes_nonvacuous (m : Model) :
 Lean statements (`R5c`):
 
 ```lean
+-- lean/ToyProv/Bytes.lean:115-118
 -- load_ptr_of_intFrags  (ToyProv/Bytes.lean:115)
 theorem load_ptr_of_intFrags (m : Model) (s : St) (d r : Reg) (x : Ptr) (n : Nat)
     (hr : s.regs r = some (.ptr x)) (hacc : canAccess m s x 2 = true)
     (h0 : s.mem x.addr = .intFrag n 0) (h1 : s.mem (x.addr + 1) = .intFrag n 1) :
     step m s (.load d .ptr r) = castToPtr m s d n
 
+-- lean/ToyProv/Bytes.lean:39
 -- decodePtr_intFrags  (ToyProv/Bytes.lean:39)
 theorem decodePtr_intFrags (n : Nat) : decodePtr (.intFrag n 0) (.intFrag n 1) = some (.inr n)
 
+-- lean/ToyProv/Bytes.lean:380-381
 -- intRoundTrip_in_range_example  (ToyProv/Bytes.lean:380)
 theorem intRoundTrip_in_range_example :
     beh .strict r5cProg = [.ub] ∧ beh .exposed r5cProg = [.done [7]]
 
+-- lean/ToyProv/Bytes.lean:397-399
 -- intRoundTrip_out_of_range_example  (ToyProv/Bytes.lean:397)
 theorem intRoundTrip_out_of_range_example :
     beh .strict r5cOutCopy = [.done [7]] ∧ beh .exposed r5cOutCopy = [.done [7]] ∧
       beh .strict r5cOutInt = [.ub] ∧ beh .exposed r5cOutInt = [.ub]
 
+-- lean/ToyProv/Bytes.lean:414-416
 -- intRoundTrip_boundary_example  (ToyProv/Bytes.lean:414)
 theorem intRoundTrip_boundary_example :
     beh .exposed r5cBndCopy = [.ub] ∧ beh .exposed r5cBndInt = [.done [7]] ∧
@@ -1869,6 +1941,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** r5IntState: B holds the integer 16 (A's exposed address); program level: r5cProg, r5cOutInt, r5cBndInt. Lean: `load_ptr_of_intFrags_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Bytes.lean:285-288
 -- load_ptr_of_intFrags_nonvacuous  (ToyProv/Bytes.lean:285)
 theorem load_ptr_of_intFrags_nonvacuous :
     r5IntState.regs 1 = some (.ptr ⟨some 1, 18⟩) ∧ canAccess .exposed r5IntState ⟨some 1, 18⟩ 2 = true ∧
@@ -1892,6 +1965,7 @@ theorem load_ptr_of_intFrags_nonvacuous :
 Lean statement (`R6a`):
 
 ```lean
+-- lean/ToyProv/Ordering.lean:53
 -- exposed_semRefines_strict  (ToyProv/Ordering.lean:53)
 theorem exposed_semRefines_strict (P : Prog) : SemRefines .exposed .strict P
 ```
@@ -1914,6 +1988,7 @@ Hypothesis ledger: none — the statement is universally quantified with no side
 - **Non-vacuity witness:** No hypotheses; the ordering is strict (R6d). Lean: `model_orderings_strict`.
 
 ```lean
+-- lean/ToyProv/Ordering.lean:131-135
 -- model_orderings_strict  (ToyProv/Ordering.lean:131)
 theorem model_orderings_strict :
     beh .exposed r6StrictUB = [.done [7]] ∧ beh .strict r6StrictUB = [.ub] ∧
@@ -1939,6 +2014,7 @@ theorem model_orderings_strict :
 Lean statement (`R6b`):
 
 ```lean
+-- lean/ToyProv/Ordering.lean:83
 -- flat_semRefines_exposed  (ToyProv/Ordering.lean:83)
 theorem flat_semRefines_exposed (P : Prog) : SemRefines .flat .exposed P
 ```
@@ -1961,6 +2037,7 @@ Hypothesis ledger: none — the statement is universally quantified with no side
 - **Non-vacuity witness:** No hypotheses; the ordering is strict (R6d). Lean: `model_orderings_strict`.
 
 ```lean
+-- lean/ToyProv/Ordering.lean:131-135
 -- model_orderings_strict  (ToyProv/Ordering.lean:131)
 theorem model_orderings_strict :
     beh .exposed r6StrictUB = [.done [7]] ∧ beh .strict r6StrictUB = [.ub] ∧
@@ -1985,6 +2062,7 @@ theorem model_orderings_strict :
 Lean statement (`R6c`):
 
 ```lean
+-- lean/ToyProv/Erasure.lean:504-505
 -- exposed_beh_elements_equal  (ToyProv/Erasure.lean:504)
 theorem exposed_beh_elements_equal (P : Prog) :
     ∀ o₁ ∈ beh .exposed P, ∀ o₂ ∈ beh .exposed P, o₁ = o₂
@@ -2004,21 +2082,24 @@ Hypothesis ledger: none — the statement is universally quantified with no side
 - **Non-vacuity witness:** angelicProg (quoted below) has two executions, one UB and one outputting [7] (`ex_runs_two_resolutions`), and the single behaviour [7] (`ex_beh_angelic_pos`); dupBehProg has two equal behaviours (`exposed_beh_may_repeat`). Lean: `exposed_beh_may_repeat`, `ex_runs_two_resolutions`, `ex_beh_angelic_pos`.
 
 ```lean
+-- lean/ToyProv/Ordering.lean:118-119
 -- exposed_beh_may_repeat  (ToyProv/Ordering.lean:118)
 theorem exposed_beh_may_repeat :
     beh .exposed dupBehProg = [.done [18], .done [18]] ∧ beh .strict dupBehProg = [.done [18]]
 ```
 
 ```lean
--- ToyProv/Examples.lean
+-- lean/ToyProv/Examples.lean:86-89
 /-- In `exposed`, `int2ptr 18` with both A and B exposed has two resolutions: storing through
 the A-resolution (one past A's end) is UB, through the B-resolution it is defined. -/
 def angelicProg : Prog :=
   [.alloc 0 2, .alloc 1 2, .ptr2int 2 0, .ptr2int 3 1, .int2ptr 4 3, .const 5 7, .store 4 5, .obs 5]
 
+-- lean/ToyProv/Examples.lean:90
 -- ex_runs_two_resolutions  (ToyProv/Examples.lean:90)
 theorem ex_runs_two_resolutions : runs .exposed angelicProg = [.ub, .done [7]]
 
+-- lean/ToyProv/Examples.lean:92
 -- ex_beh_angelic_pos  (ToyProv/Examples.lean:92)
 theorem ex_beh_angelic_pos : beh .exposed angelicProg = [.done [7]]
 ```
@@ -2038,6 +2119,7 @@ theorem ex_beh_angelic_pos : beh .exposed angelicProg = [.done [7]]
 Lean statement (`R6d`):
 
 ```lean
+-- lean/ToyProv/Ordering.lean:131-135
 -- model_orderings_strict  (ToyProv/Ordering.lean:131)
 theorem model_orderings_strict :
     beh .exposed r6StrictUB = [.done [7]] ∧ beh .strict r6StrictUB = [.ub] ∧
@@ -2076,21 +2158,25 @@ Hypothesis ledger: none — the statement has no hypotheses.
 Lean statements (`R6e`):
 
 ```lean
+-- lean/ToyProv/Ordering.lean:172-174
 -- refines_exposed_of_refines_strict_of_src_semRefines  (ToyProv/Ordering.lean:172)
 theorem refines_exposed_of_refines_strict_of_src_semRefines (tgt src : Prog)
     (h : Refines .strict tgt src) (hsrc : SemRefines .strict .exposed src) :
     Refines .exposed tgt src
 
+-- lean/ToyProv/Ordering.lean:180-182
 -- refines_strict_of_refines_exposed_of_tgt_semRefines  (ToyProv/Ordering.lean:180)
 theorem refines_strict_of_refines_exposed_of_tgt_semRefines (tgt src : Prog)
     (h : Refines .exposed tgt src) (htgt : SemRefines .strict .exposed tgt) :
     Refines .strict tgt src
 
+-- lean/ToyProv/Ordering.lean:143-145
 -- refines_exposed_of_refines_strict_core  (ToyProv/Ordering.lean:143)
 theorem refines_exposed_of_refines_strict_core (tgt src : Prog)
     (h : Refines .strict tgt src) (hsrc : SemRefines .strict .exposed src)
     (hord : SemRefines .exposed .strict tgt) : Refines .exposed tgt src
 
+-- lean/ToyProv/Ordering.lean:157-159
 -- refines_strict_of_refines_exposed_core  (ToyProv/Ordering.lean:157)
 theorem refines_strict_of_refines_exposed_core (tgt src : Prog)
     (h : Refines .exposed tgt src) (htgt : SemRefines .strict .exposed tgt)
@@ -2119,6 +2205,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** A cast-free substitution pair (and dupBehProg, whose behaviour lists differ in length but satisfy the SemRefines hypotheses). Lean: `transfer_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Ordering.lean:215-219
 -- transfer_nonvacuous  (ToyProv/Ordering.lean:215)
 theorem transfer_nonvacuous :
     Refines .strict r6dTgt r6dSrc ∧ SemRefines .strict .exposed r6dSrc ∧
@@ -2130,6 +2217,7 @@ theorem transfer_nonvacuous :
 Supporting declarations cited in this card's prose (quoted). They are listed in this card's `corollaries_lean` field in `results.json`: `support/revalidate.py` checks that they exist, their axioms are recorded in `audit/axioms.json` (as for every declaration of the library), and no statement hash is recorded for them.
 
 ```lean
+-- lean/ToyProv/Ordering.lean:225-227
 -- transfer_hyp_weaker_than_list_eq  (ToyProv/Ordering.lean:225)
 theorem transfer_hyp_weaker_than_list_eq :
     SemRefines .strict .exposed dupBehProg ∧ SemRefines .exposed .strict dupBehProg ∧
@@ -2151,6 +2239,7 @@ theorem transfer_hyp_weaker_than_list_eq :
 Lean statement (`R6f`):
 
 ```lean
+-- lean/ToyProv/Ordering.lean:387-391
 -- copyToInt2ptr_refines_exposed_of_intIsAddrOf_of_provIsCand  (ToyProv/Ordering.lean:387)
 theorem copyToInt2ptr_refines_exposed_of_intIsAddrOf_of_provIsCand
     (pre post : Prog) (d k p : Reg)
@@ -2178,6 +2267,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** After k := ptr2int A. Lean: `copyToInt2ptr_refines_exposed_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Ordering.lean:484-486
 -- copyToInt2ptr_refines_exposed_nonvacuous  (ToyProv/Ordering.lean:484)
 theorem copyToInt2ptr_refines_exposed_nonvacuous :
     AllAfter .exposed r3Pre (intIsAddrOfC 1 0) ∧ AllAfter .exposed r3Pre (provIsCandC 0) ∧
@@ -2201,95 +2291,124 @@ theorem copyToInt2ptr_refines_exposed_nonvacuous :
 Lean statements (`R6g`):
 
 ```lean
+-- lean/ToyProv/FlatInv.lean:301
 -- substAddrEq_sound_flat  (ToyProv/FlatInv.lean:301)
 theorem substAddrEq_sound_flat : Sound .flat SubstAddrEq
 
+-- lean/ToyProv/OnePast.lean:71
 -- substAddrEq_not_sound_strict  (ToyProv/OnePast.lean:71)
 theorem substAddrEq_not_sound_strict : ¬ Sound .strict SubstAddrEq
 
+-- lean/ToyProv/OnePast.lean:74
 -- substAddrEq_not_sound_exposed  (ToyProv/OnePast.lean:74)
 theorem substAddrEq_not_sound_exposed : ¬ Sound .exposed SubstAddrEq
 
+-- lean/ToyProv/Ordering.lean:527
 -- substAddrEqInBounds_sound_all  (ToyProv/Ordering.lean:527)
 theorem substAddrEqInBounds_sound_all : ∀ m, Sound m SubstAddrEqInBounds
 
+-- lean/ToyProv/Ordering.lean:235
 -- substIntEq_sound_flat  (ToyProv/Ordering.lean:235)
 theorem substIntEq_sound_flat : Sound .flat SubstIntEq
 
+-- lean/ToyProv/IntEq.lean:48
 -- substIntEq_not_sound_strict  (ToyProv/IntEq.lean:48)
 theorem substIntEq_not_sound_strict : ¬ Sound .strict SubstIntEq
 
+-- lean/ToyProv/IntEq.lean:51
 -- substIntEq_not_sound_exposed  (ToyProv/IntEq.lean:51)
 theorem substIntEq_not_sound_exposed : ¬ Sound .exposed SubstIntEq
 
+-- lean/ToyProv/IntEq.lean:77
 -- substSameVal_sound  (ToyProv/IntEq.lean:77)
 theorem substSameVal_sound (m : Model) : Sound m SubstSameVal
 
+-- lean/ToyProv/Ordering.lean:244
 -- int2ptrToCopy_sound_flat  (ToyProv/Ordering.lean:244)
 theorem int2ptrToCopy_sound_flat : Sound .flat Int2ptrToCopy
 
+-- lean/ToyProv/Ordering.lean:271
 -- int2ptrToCopy_sound_strict  (ToyProv/Ordering.lean:271)
 theorem int2ptrToCopy_sound_strict : Sound .strict Int2ptrToCopy
 
+-- lean/ToyProv/RoundTrip.lean:64
 -- int2ptrToCopy_not_sound_exposed  (ToyProv/RoundTrip.lean:64)
 theorem int2ptrToCopy_not_sound_exposed : ¬ Sound .exposed Int2ptrToCopy
 
+-- lean/ToyProv/Ordering.lean:346
 -- copyToInt2ptr_sound_flat  (ToyProv/Ordering.lean:346)
 theorem copyToInt2ptr_sound_flat : Sound .flat CopyToInt2ptr
 
+-- lean/ToyProv/RoundTrip.lean:121
 -- copyToInt2ptr_not_sound_strict  (ToyProv/RoundTrip.lean:121)
 theorem copyToInt2ptr_not_sound_strict : ¬ Sound .strict CopyToInt2ptr
 
+-- lean/ToyProv/Ordering.lean:380
 -- copyToInt2ptr_not_sound_exposed  (ToyProv/Ordering.lean:380)
 theorem copyToInt2ptr_not_sound_exposed : ¬ Sound .exposed CopyToInt2ptr
 
+-- lean/ToyProv/Ordering.lean:577
 -- copyToInt2ptrIfCand_sound_flat  (ToyProv/Ordering.lean:577)
 theorem copyToInt2ptrIfCand_sound_flat : Sound .flat CopyToInt2ptrIfCand
 
+-- lean/ToyProv/Ordering.lean:590
 -- copyToInt2ptrIfCand_not_sound_strict  (ToyProv/Ordering.lean:590)
 theorem copyToInt2ptrIfCand_not_sound_strict : ¬ Sound .strict CopyToInt2ptrIfCand
 
+-- lean/ToyProv/Ordering.lean:531
 -- copyToInt2ptrIfCand_sound_exposed  (ToyProv/Ordering.lean:531)
 theorem copyToInt2ptrIfCand_sound_exposed : Sound .exposed CopyToInt2ptrIfCand
 
+-- lean/ToyProv/Ordering.lean:490
 -- dropUnusedPtr2int_sound_flat  (ToyProv/Ordering.lean:490)
 theorem dropUnusedPtr2int_sound_flat : Sound .flat DropUnusedPtr2int
 
+-- lean/ToyProv/Ordering.lean:494
 -- dropUnusedPtr2int_sound_strict  (ToyProv/Ordering.lean:494)
 theorem dropUnusedPtr2int_sound_strict : Sound .strict DropUnusedPtr2int
 
+-- lean/ToyProv/Ordering.lean:507
 -- dropUnusedPtr2int_not_sound_exposed  (ToyProv/Ordering.lean:507)
 theorem dropUnusedPtr2int_not_sound_exposed : ¬ Sound .exposed DropUnusedPtr2int
 
+-- lean/ToyProv/Forwarding.lean:40
 -- forwardAcrossCast_not_sound_flat  (ToyProv/Forwarding.lean:40)
 theorem forwardAcrossCast_not_sound_flat : ¬ Sound .flat ForwardAcrossCast
 
+-- lean/ToyProv/Ordering.lean:512
 -- forwardAcrossCast_sound_strict  (ToyProv/Ordering.lean:512)
 theorem forwardAcrossCast_sound_strict : Sound .strict ForwardAcrossCast
 
+-- lean/ToyProv/Forwarding.lean:37
 -- forwardAcrossCast_not_sound_exposed  (ToyProv/Forwarding.lean:37)
 theorem forwardAcrossCast_not_sound_exposed : ¬ Sound .exposed ForwardAcrossCast
 
+-- lean/ToyProv/Forwarding.lean:89
 -- dseAcrossCast_not_sound_flat  (ToyProv/Forwarding.lean:89)
 theorem dseAcrossCast_not_sound_flat : ¬ Sound .flat DSEAcrossCast
 
+-- lean/ToyProv/Ordering.lean:520
 -- dseAcrossCast_sound_strict  (ToyProv/Ordering.lean:520)
 theorem dseAcrossCast_sound_strict : Sound .strict DSEAcrossCast
 
+-- lean/ToyProv/Forwarding.lean:86
 -- dseAcrossCast_not_sound_exposed  (ToyProv/Forwarding.lean:86)
 theorem dseAcrossCast_not_sound_exposed : ¬ Sound .exposed DSEAcrossCast
 
+-- lean/ToyProv/Ordering.lean:666-669
 -- soundness_table_vacuous_cells  (ToyProv/Ordering.lean:666)
 theorem soundness_table_vacuous_cells :
     (∀ src tgt, CopyToInt2ptrIfCand .flat src tgt → beh .flat src = [.ub]) ∧
     (∀ src tgt, ForwardAcrossCast .strict src tgt → beh .strict src = [.ub]) ∧
     (∀ src tgt, DSEAcrossCast .strict src tgt → beh .strict src = [.ub])
 
+-- lean/ToyProv/Ordering.lean:596-598
 -- soundness_does_not_transfer_either_way  (ToyProv/Ordering.lean:596)
 theorem soundness_does_not_transfer_either_way :
     (Sound .strict DropUnusedPtr2int ∧ ¬ Sound .exposed DropUnusedPtr2int) ∧
       (Sound .exposed CopyToInt2ptrIfCand ∧ ¬ Sound .strict CopyToInt2ptrIfCand)
 
+-- lean/ToyProv/Ordering.lean:605-611
 -- refines_does_not_transfer_either_way  (ToyProv/Ordering.lean:605)
 theorem refines_does_not_transfer_either_way :
     (DropUnusedPtr2int .strict ([.alloc 0 2] ++ .ptr2int 1 0 :: r6PostP) ([.alloc 0 2] ++ r6PostP) ∧
@@ -2382,6 +2501,7 @@ Hypothesis ledger: none — the statement has no hypotheses.
 - **Non-vacuity witness:** Each ✗ entry is witnessed by a concrete pair satisfying the transformation's side conditions. Each ✓ entry except the three vacuous ones is inhabited by a concrete pair in the relation whose source is defined in that model, with its output evaluated (soundness_table_nonvacuous). The three vacuous ✓ entries (CopyToInt2ptrIfCand in flat, ForwardAcrossCast and DSEAcrossCast in strict) are inhabited only by pairs whose source is UB (soundness_table_vacuous_cells). The non-transfer pairs are evaluated in refines_does_not_transfer_either_way. Lean: `soundness_table_nonvacuous`, `refines_does_not_transfer_either_way`.
 
 ```lean
+-- lean/ToyProv/Ordering.lean:626-644
 -- soundness_table_nonvacuous  (ToyProv/Ordering.lean:626)
 theorem soundness_table_nonvacuous :
     (SubstAddrEq .flat r1Src r1Tgt ∧ beh .flat r1Src = [.done [1, 7]]) ∧
@@ -2407,11 +2527,13 @@ theorem soundness_table_nonvacuous :
 Supporting declarations cited in this card's prose (quoted). They are listed in this card's `corollaries_lean` field in `results.json`: `support/revalidate.py` checks that they exist, their axioms are recorded in `audit/axioms.json` (as for every declaration of the library), and no statement hash is recorded for them.
 
 ```lean
+-- lean/ToyProv/Ordering.lean:539-541
 -- copyToInt2ptrIfCand_flat_src_ub  (ToyProv/Ordering.lean:539)
 theorem copyToInt2ptrIfCand_flat_src_ub (src tgt : Prog)
     (h : CopyToInt2ptrIfCand .flat src tgt) :
     beh .flat src = [.ub] ∧ beh .flat tgt = [.ub]
 
+-- lean/ToyProv/Ordering.lean:567-568
 -- not_copyToInt2ptrIfCand_flat_r3  (ToyProv/Ordering.lean:567)
 theorem not_copyToInt2ptrIfCand_flat_r3 :
     ¬ CopyToInt2ptrIfCand .flat (r3Pre ++ .copy 2 0 :: r3Post) (r3Pre ++ .int2ptr 2 1 :: r3Post)
@@ -2436,6 +2558,7 @@ theorem not_copyToInt2ptrIfCand_flat_r3 :
 Lean statements (`R7a`):
 
 ```lean
+-- lean/ToyProv/EqProvDecode.lean:101-106
 -- EqProvDecode.decodeEq_not_monotone  (ToyProv/EqProvDecode.lean:101)
 theorem decodeEq_not_monotone :
     AByteLE (.ptrFrag ⟨none, 16⟩ 1) (.ptrFrag ⟨some 0, 16⟩ 1) ∧
@@ -2444,11 +2567,13 @@ theorem decodeEq_not_monotone :
       decodePtrEq (.ptrFrag ⟨none, 16⟩ 0) (.ptrFrag ⟨none, 16⟩ 1) = some (.inl ⟨none, 16⟩) ∧
       decodePtrEq (.ptrFrag ⟨none, 16⟩ 0) (.ptrFrag ⟨some 0, 16⟩ 1) = none
 
+-- lean/ToyProv/EqProvDecode.lean:121-123
 -- EqProvDecode.eqProvDecode_exposed_not_semRefines_strict  (ToyProv/EqProvDecode.lean:121)
 theorem eqProvDecode_exposed_not_semRefines_strict :
     behE .strict tornProg = [.done [16]] ∧ behE .exposed tornProg = [.ub] ∧
       ¬ SemRefinesE .exposed .strict tornProg
 
+-- lean/ToyProv/EqProvDecode.lean:137-143
 -- EqProvDecode.eqProvDecode_fold_not_refinement  (ToyProv/EqProvDecode.lean:137)
 theorem eqProvDecode_fold_not_refinement :
     AllAfterE .strict foldPre (intIsAddrOfC 3 0) ∧
@@ -2458,6 +2583,7 @@ theorem eqProvDecode_fold_not_refinement :
       AllAfterE .exposed foldPre (intIsAddrOfC 3 0) ∧ AllAfterE .exposed foldPre (candSubProvC 0) ∧
       ¬ RefinesE .exposed (foldPre ++ .copy 5 0 :: foldPost) (foldPre ++ .int2ptr 5 3 :: foldPost)
 
+-- lean/ToyProv/EqProvDecode.lean:148-154
 -- EqProvDecode.eqProvDecode_transfer_fails  (ToyProv/EqProvDecode.lean:148)
 theorem eqProvDecode_transfer_fails :
     (RefinesE .strict tornProg [.const 0 16, .obs 0] ∧
@@ -2467,6 +2593,7 @@ theorem eqProvDecode_transfer_fails :
         behE .strict [.const 0 99, .obs 0] = behE .exposed [.const 0 99, .obs 0] ∧
         ¬ RefinesE .strict [.const 0 99, .obs 0] tornProg)
 
+-- lean/ToyProv/EqProvDecode.lean:179-186
 -- EqProvDecode.eqProvDecode_ptr_load_variants  (ToyProv/EqProvDecode.lean:179)
 theorem eqProvDecode_ptr_load_variants :
     behE .strict tornProgPtr = [.done [16]] ∧ behE .exposed tornProgPtr = [.ub] ∧
@@ -2594,6 +2721,7 @@ Hypothesis ledger: none — the statement is a closed, fully evaluated instance.
 - **Positive control** (a nearby setting where the negative conclusion fails): `EqProvDecode.mainDecode_same_programs_ok`.
 
 ```lean
+-- lean/ToyProv/EqProvDecode.lean:160-166
 -- EqProvDecode.mainDecode_same_programs_ok  (ToyProv/EqProvDecode.lean:160)
 theorem mainDecode_same_programs_ok :
     beh .strict tornProg = [.done [16]] ∧ beh .exposed tornProg = [.done [16]] ∧
@@ -2607,6 +2735,7 @@ theorem mainDecode_same_programs_ok :
 Supporting declarations cited in this card's prose (quoted). They are listed in this card's `corollaries_lean` field in `results.json`: `support/revalidate.py` checks that they exist, their axioms are recorded in `audit/axioms.json` (as for every declaration of the library), and no statement hash is recorded for them.
 
 ```lean
+-- lean/ToyProv/EqProvDecode.lean:58-59
 -- EqProvDecode.stepE_eq_step_of_not_load  (ToyProv/EqProvDecode.lean:58)
 theorem stepE_eq_step_of_not_load (m : Model) (s : St) (i : Instr)
     (h : ∀ d ty p, i ≠ .load d ty p) : stepE m s i = step m s i
@@ -2626,11 +2755,13 @@ theorem stepE_eq_step_of_not_load (m : Model) (s : St) (i : Instr)
 Lean statements (`R7b`):
 
 ```lean
+-- lean/ToyProv/Monotone.lean:91-93
 -- decodeInt_mono  (ToyProv/Monotone.lean:91)
 theorem decodeInt_mono {b₀ b₁ c₀ c₁ : AByte} (h₀ : AByteLE b₀ c₀) (h₁ : AByteLE b₁ c₁)
     {n : Nat} {ps : List AllocId} (h : decodeInt b₀ b₁ = some (n, ps)) :
     ∃ ps', decodeInt c₀ c₁ = some (n, ps') ∧ ∀ x ∈ ps, x ∈ ps'
 
+-- lean/ToyProv/Monotone.lean:118-121
 -- decodePtr_mono  (ToyProv/Monotone.lean:118)
 theorem decodePtr_mono {b₀ b₁ c₀ c₁ : AByte} (h₀ : AByteLE b₀ c₀) (h₁ : AByteLE b₁ c₁) :
     (∀ n, decodePtr b₀ b₁ = some (.inr n) → decodePtr c₀ c₁ = some (.inr n)) ∧
@@ -2669,6 +2800,7 @@ Hypothesis ledger:
 - **Non-vacuity witness:** A provenance-less fragment below the same fragment with provenance; both decodings of the smaller pair defined. Lean: `decode_mono_nonvacuous`.
 
 ```lean
+-- lean/ToyProv/Monotone.lean:183-187
 -- decode_mono_nonvacuous  (ToyProv/Monotone.lean:183)
 theorem decode_mono_nonvacuous :
     AByteLE (.ptrFrag ⟨none, 16⟩ 0) (.ptrFrag ⟨none, 16⟩ 0) ∧
