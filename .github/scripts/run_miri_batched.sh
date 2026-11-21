@@ -161,11 +161,14 @@ jq -n \
         else . end
       | ($entry.value["binary-path"] // error("missing binary-path")) as $bin
       | ($entry.value.cwd // $default_cwd) as $cwd
+      | if (([$entry.key, $bin, $cwd, $plat] | any(contains("\u0000") or contains("\t") or contains("\n") or contains("\r")))) then
+          error("invalid control character in suite metadata for \($entry.key)")
+        else . end
       | ([ $entry.value.testcases | to_entries[]
            | select((.value.ignored // false) == false)
            | if ((.value["filter-match"].status // "matches") != "matches") then
                error("unexpected filter mismatch on non-ignored test: \(.key)")
-             elif (.key == "" or (.key | contains("\u0000"))) then
+             elif (.key == "" or (.key | contains("\u0000")) or (.key | contains("\u001e")) or (.key | contains("\n")) or (.key | contains("\r"))) then
                error("invalid test name in suite \($entry.key)")
              else .key end ] | sort) as $active
       | if ($active | length) == 0 then
@@ -191,7 +194,9 @@ jq -n \
           | if ($fast | length) == 0 then
               .
             else
-              (if ($fast | length) >= ($workers * 8) then $workers else 1 end) as $nb
+              (if ($fast | length) >= ($workers * 12) then ($workers * 3)
+               elif ($fast | length) >= ($workers * 4) then $workers
+               else 1 end) as $nb
               | .fast += [
                   range(0; $nb) as $k
                   | [ range($k; ($fast | length); $nb) | $fast[.] ] as $chunk
@@ -229,6 +234,30 @@ if ! jq -e '([.[] | .suite as $s | .tests[] | "\($s)\u0000\(.)"] | length == (un
   exit 1
 fi
 
+# Pre-materialize per-batch metadata and test lists in two single-pass `jq`
+# calls rather than spawning `jq`/`grep`/`sed` subprocesses inside per-batch
+# Bash loops.
+mkdir -p "$WORK_DIR/buckets"
+mapfile -t BUCKET_META < <(
+  jq -r '.[] | [.suite, .binary_path, .cwd, .build_platform, (.tests | length | tostring)] | join("\t")' "$WORK_DIR/plan.json"
+)
+if [[ "${#BUCKET_META[@]}" -ne "$BUCKET_COUNT" ]]; then
+  echo "error: bucket metadata count (${#BUCKET_META[@]}) != BUCKET_COUNT ($BUCKET_COUNT)" >&2
+  exit 1
+fi
+
+{
+  extract_idx=0
+  while IFS= read -r -d $'\x1e' record; do
+    printf '%s' "$record" > "$WORK_DIR/buckets/${extract_idx}.tests"
+    extract_idx=$((extract_idx + 1))
+  done
+  if [[ "$extract_idx" -ne "$BUCKET_COUNT" ]]; then
+    echo "error: extracted $extract_idx batch test lists, expected $BUCKET_COUNT" >&2
+    exit 1
+  fi
+} < <(jq -j '.[] | (.tests | map(. + "\n") | add) + "\u001e"' "$WORK_DIR/plan.json")
+
 summary_msg="Running $TOTAL_DISCOVERED Miri tests across $BUCKET_COUNT batches with $WORKERS workers"
 echo "$summary_msg"
 if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
@@ -237,14 +266,11 @@ fi
 
 run_bucket() {
   local idx="$1"
-  local bin_path cwd build_platform expected log_file rc_file rc
+  local suite bin_path cwd build_platform expected log_file rc_file rc
   local -a tests
 
-  bin_path="$(jq -r --argjson i "$idx" '.[$i].binary_path' "$WORK_DIR/plan.json")"
-  cwd="$(jq -r --argjson i "$idx" '.[$i].cwd' "$WORK_DIR/plan.json")"
-  build_platform="$(jq -r --argjson i "$idx" '.[$i].build_platform' "$WORK_DIR/plan.json")"
-  expected="$(jq -r --argjson i "$idx" '.[$i].tests | length' "$WORK_DIR/plan.json")"
-  mapfile -d '' -t tests < <(jq -j --argjson i "$idx" '.[$i].tests[] | . + "\u0000"' "$WORK_DIR/plan.json")
+  IFS=$'\t' read -r suite bin_path cwd build_platform expected <<< "${BUCKET_META[$idx]}"
+  mapfile -t tests < "$WORK_DIR/buckets/${idx}.tests"
 
   if [[ "${#tests[@]}" -ne "$expected" || "$expected" -le 0 ]]; then
     echo "error: failed to load test list for batch $idx (got ${#tests[@]}, expected $expected)" >&2
@@ -302,8 +328,7 @@ failures=0
 total_passed=0
 
 for ((idx = 0; idx < BUCKET_COUNT; idx++)); do
-  suite="$(jq -r --argjson i "$idx" '.[$i].suite' "$WORK_DIR/plan.json")"
-  expected="$(jq -r --argjson i "$idx" '.[$i].tests | length' "$WORK_DIR/plan.json")"
+  IFS=$'\t' read -r suite _ _ _ expected <<< "${BUCKET_META[$idx]}"
   log_file="$WORK_DIR/results/${idx}.log"
   rc_file="$WORK_DIR/results/${idx}.rc"
 
@@ -324,8 +349,15 @@ for ((idx = 0; idx < BUCKET_COUNT; idx++)); do
     continue
   fi
 
-  result_lines="$(grep -E '^test result: ok\. [0-9]+ passed; 0 failed; 0 ignored; 0 measured; [0-9]+ filtered out;' "$log_file" || true)"
-  line_count="$(printf '%s\n' "$result_lines" | grep -c '^test result:' || true)"
+  line_count=0
+  passed=""
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^test\ result:\ ok\.\ ([0-9]+)\ passed\;\ 0\ failed\;\ 0\ ignored\;\ 0\ measured\;\ [0-9]+\ filtered\ out\; ]]; then
+      line_count=$((line_count + 1))
+      passed="${BASH_REMATCH[1]}"
+    fi
+  done < "$log_file"
+
   if [[ "$line_count" -ne 1 ]]; then
     echo "::error::Miri batch $idx ($suite) produced unexpected libtest summary (matches=$line_count)"
     cat "$log_file"
@@ -333,7 +365,6 @@ for ((idx = 0; idx < BUCKET_COUNT; idx++)); do
     continue
   fi
 
-  passed="$(printf '%s\n' "$result_lines" | sed -n 's/^test result: ok\. \([0-9][0-9]*\) passed;.*/\1/p')"
   if [[ -z "$passed" || "$passed" -ne "$expected" ]]; then
     echo "::error::Miri batch $idx ($suite) passed $passed tests, expected $expected"
     cat "$log_file"
