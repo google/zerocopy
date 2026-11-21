@@ -482,7 +482,7 @@ theorem pickFirst_eqCong_counterexample :
 - **Lean:** `Toy.DirCC.Dup.dup_vs_let_hashcons_counterexample`
 - **Kind:** counterexample
 - **Tier:** T1 — LLVM's freeze semantics already forbids duplicating freeze; this mechanizes the hash-consing consequence for a toy freeze over poison.
-- **Plain claim:** With x poison, `let a := frz x; a + a` inlines to `frz x + frz x`; hash-consing that term merges the two identical frz nodes into one table node, and the table cannot produce the outcome 1 while `frz x + frz x` read as a tree (independent choices) can. So reading the merged node back as the duplicated tree asserts a false refinement: `frz x + frz x` does not refine `let a := frz x; a + a`. The converse refinement holds, so merging itself only removes nondeterminism.
+- **Plain claim:** With x poison, `let a := frz x; a + a` inlines to `frz x + frz x`; hash-consing that term merges the two identical frz nodes into one table node, and the table cannot produce the outcome 1 while `frz x + frz x` read as a tree (independent choices) can. So reading the merged node back as the duplicated tree asserts a false refinement: `frz x + frz x` does not refine `let a := frz x; a + a`. For this pair the converse refinement holds in every environment: `let a := frz x; a + a` refines `frz x + frz x` (`Refines letProg dupProg`, the last conjunct of `dup_vs_let_hashcons_counterexample`).
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
@@ -855,7 +855,7 @@ Each item is known not to apply or was not examined, as stated in the item itsel
 
 #### `hash-consing-nondeterministic-node-false-refinement`
 
-- It does not show that hash-consing (merging) freeze nodes is wrong as a compilation step: merging removes nondeterminism, and the merged program refines the duplicated one (Refines letProg dupProg). The failure is identifying the two, i.e. reading the merged node back as the duplicated tree.
+- It does not show that hash-consing (merging) freeze nodes is wrong as a compilation step: for this pair the shared program refines the duplicated one (Refines letProg dupProg). The failure is identifying the two, i.e. reading the merged node back as the duplicated tree.
 - No e-graph rebuild, e-class merging or e-matching is modelled; 'e-graph' here means a hash-consed node table.
 - The language has only variables, literals, add, freeze over poison, and let; no undef, UB, memory or bit widths.
 - Argument order: Dup.Refines tgt src takes the target program first ('tgt refines src'), whereas Dup.ValLe, OLe and Model.le take the source first.

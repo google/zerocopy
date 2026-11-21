@@ -23,7 +23,7 @@ Results:
   `frz x + frz x`, whose hash-consed table merges the two `frz` nodes; reading that table
   back as the duplicated tree asserts that `frz x + frz x` refines `let a := frz x; a + a`,
   which is false (the former can produce `1` when `x` is poison). The converse refinement
-  holds: merging only removes nondeterminism.
+  holds for this pair (`refines_letProg_dupProg`).
 * `hashcons_inline_sound_of_uniqueTags`: if every `frz` occurrence of the source program
   carries a distinct tag, the hash-consed table of the inlined program has exactly the
   intended outcomes. It factors through `hcSem_iff_tagSem_of_letFree_wellTagged` and
@@ -970,8 +970,8 @@ refinement.** `let a := frz x; a + a` inlines to `frz x + frz x`; that term's ha
 table merges the two `frz` nodes into one; the table's semantics cannot produce `1` when `x`
 is poison, while the duplicated tree (read with independent choices) can; so reading the
 merged node back as the duplicated tree asserts that `frz x + frz x` refines
-`let a := frz x; a + a`, which is false. The other direction is a true refinement: merging
-removes nondeterminism. -/
+`let a := frz x; a + a`, which is false. The other direction is a true refinement for this
+pair (`refines_letProg_dupProg`). -/
 theorem dup_vs_let_hashcons_counterexample :
     inline letProg = dupProg ∧
     hashcons [] dupProg = ([.var 0, .frz 0 0, .add 1 1], 2) ∧
