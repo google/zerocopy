@@ -1,0 +1,602 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.MagicDiv.ExactCriterion": [],
+    "Toy.MagicDiv.MulShiftCorrect": [],
+    "Toy.MagicDiv.SignedRange": [],
+    "Toy.MagicDiv.allBelow": [],
+    "Toy.MagicDiv.allBelow_iff": [
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDiv": [],
+    "Toy.MagicDiv.biasDivBV": [
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDivBVMasked": [
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDivBVMasked_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDivBV_neg_example": [
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDivBV_pos_example": [
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDivBV_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDivMasked": [],
+    "Toy.MagicDiv.biasDivMasked_eq_tdiv_of_pos_of_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDivMasked_k_zero_failures": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDivMasked_neg_examples": [
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDivMasked_pos_examples": [
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDiv_eq_tdiv_of_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.biasDiv_neg_example": [],
+    "Toy.MagicDiv.biasDiv_pos_examples": [],
+    "Toy.MagicDiv.biasMasked_eq_of_pos_of_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.biasSum": [],
+    "Toy.MagicDiv.biasSumMasked": [],
+    "Toy.MagicDiv.biasSum_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.biasSum_neg_example": [],
+    "Toy.MagicDiv.bitvec_sdiv_intMin_negOne_wraps": [
+      "propext"
+    ],
+    "Toy.MagicDiv.boundaryCheck": [],
+    "Toy.MagicDiv.boundaryCheck_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.ce_biasDivBVMasked_u8_k_eight": [
+      "propext"
+    ],
+    "Toy.MagicDiv.ce_biasDivBVMasked_u8_k_zero": [
+      "propext"
+    ],
+    "Toy.MagicDiv.ce_biasDivBV_sdiv_k7": [
+      "propext"
+    ],
+    "Toy.MagicDiv.ce_biasDivBV_width": [
+      "propext"
+    ],
+    "Toy.MagicDiv.ce_biasDivMasked_hk": [],
+    "Toy.MagicDiv.ce_biasDivMasked_hx": [],
+    "Toy.MagicDiv.ce_biasDivMasked_k_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.ce_biasDivMasked_k_zero.match_1_5": [],
+    "Toy.MagicDiv.ce_biasDiv_hk": [],
+    "Toy.MagicDiv.ce_biasDiv_hx": [],
+    "Toy.MagicDiv.ce_ceilDiv_succ_premise": [],
+    "Toy.MagicDiv.ce_directRem_hhi": [],
+    "Toy.MagicDiv.ce_directRem_hlo": [],
+    "Toy.MagicDiv.ce_directRem_input_range": [],
+    "Toy.MagicDiv.ce_directRem_quotient_valid_multiplier": [],
+    "Toy.MagicDiv.ce_exactCriterion_d_zero": [],
+    "Toy.MagicDiv.ce_exactCriterion_hdN": [],
+    "Toy.MagicDiv.ce_exactCriterion_u8_d_256": [],
+    "Toy.MagicDiv.ce_exactCriterion_u8_d_zero": [],
+    "Toy.MagicDiv.ce_exists_ceilDiv_hdN": [],
+    "Toy.MagicDiv.ce_fixupQuot_correct_h": [],
+    "Toy.MagicDiv.ce_fixupQuot_correct_hl": [],
+    "Toy.MagicDiv.ce_fixupQuot_correct_hm": [],
+    "Toy.MagicDiv.ce_fixupQuot_correct_input_range": [],
+    "Toy.MagicDiv.ce_fixupQuot_eq_wide_hl": [],
+    "Toy.MagicDiv.ce_fixupQuot_eq_wide_hm": [],
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_d_one": [],
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_input_range": [],
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u16_div7_x_range": [],
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u8_d_one": [],
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u8_d_one_canonical": [],
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u8_x_range": [],
+    "Toy.MagicDiv.ce_minimal_shift_u8_div7_input_range": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.ce_minimal_shift_u8_div7_s_bound": [],
+    "Toy.MagicDiv.ce_no_single_word_u8_div7_m_bound": [],
+    "Toy.MagicDiv.ce_rem_correct": [],
+    "Toy.MagicDiv.ce_rem_input_range": [],
+    "Toy.MagicDiv.ce_sandwich_hhi": [],
+    "Toy.MagicDiv.ce_sandwich_hlo": [],
+    "Toy.MagicDiv.ce_sandwich_input_range": [],
+    "Toy.MagicDiv.ce_sdiv_hhi": [],
+    "Toy.MagicDiv.ce_sdiv_hlo": [],
+    "Toy.MagicDiv.ce_sdiv_range": [],
+    "Toy.MagicDiv.ce_signedMagic_d_zero": [],
+    "Toy.MagicDiv.ce_single_word_hN": [],
+    "Toy.MagicDiv.ce_single_word_hdN": [],
+    "Toy.MagicDiv.ce_srem_hhi": [],
+    "Toy.MagicDiv.ce_srem_hlo": [],
+    "Toy.MagicDiv.ce_srem_range": [],
+    "Toy.MagicDiv.ce_srem_uncorrected_sign": [],
+    "Toy.MagicDiv.ce_tdiv_signedRange_hx": [],
+    "Toy.MagicDiv.ce_two_pow_le": [],
+    "Toy.MagicDiv.ce_uncorr_hhi": [],
+    "Toy.MagicDiv.ce_uncorr_hlo": [],
+    "Toy.MagicDiv.ce_uncorr_neg": [],
+    "Toy.MagicDiv.ce_uncorr_range": [],
+    "Toy.MagicDiv.ce_unsignedMagic_ge_two_pow_d_zero": [],
+    "Toy.MagicDiv.ce_unsignedMagic_low_d_zero": [],
+    "Toy.MagicDiv.ce_unsignedMagic_low_hd": [],
+    "Toy.MagicDiv.ce_unsignedMagic_lt_two_pow_succ": [],
+    "Toy.MagicDiv.ce_unsignedMagic_sandwich_d_zero": [],
+    "Toy.MagicDiv.ceilDiv": [],
+    "Toy.MagicDiv.ceilDiv.eq_1": [],
+    "Toy.MagicDiv.ceilDiv_le_of_le_mul": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.ceilDiv_lt_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.ceilDiv_mul_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.ceilDiv_neg_example": [],
+    "Toy.MagicDiv.ceilDiv_pos_examples": [],
+    "Toy.MagicDiv.ceilDiv_succ_leaves_single_word_u8_div3": [],
+    "Toy.MagicDiv.checkAll8": [],
+    "Toy.MagicDiv.checkAll8_eq_true": [],
+    "Toy.MagicDiv.clog2": [],
+    "Toy.MagicDiv.clog2.eq_1": [],
+    "Toy.MagicDiv.clog2_le_of_le_two_pow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.clog2_neg_examples": [],
+    "Toy.MagicDiv.clog2_pos_examples": [],
+    "Toy.MagicDiv.clog2_two_pow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.correctB": [],
+    "Toy.MagicDiv.correctB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.count_no_single_word_u8": [],
+    "Toy.MagicDiv.count_single_word_u8": [],
+    "Toy.MagicDiv.count_single_word_u8_directRem_fails": [],
+    "Toy.MagicDiv.directRem": [],
+    "Toy.MagicDiv.directRemB": [],
+    "Toy.MagicDiv.directRemB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.directRem_eq_mod_of_sandwich": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.directRem_neg_example": [],
+    "Toy.MagicDiv.directRem_pos_example": [],
+    "Toy.MagicDiv.div_eq_of_bounds": [
+      "propext"
+    ],
+    "Toy.MagicDiv.exactCriterion_neg_examples": [],
+    "Toy.MagicDiv.exactCriterion_of_between": [],
+    "Toy.MagicDiv.exactCriterion_pos_examples": [],
+    "Toy.MagicDiv.exists_mulShiftCorrect_iff_ceilDiv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.exists_mulShiftCorrect_iff_ceilDiv.match_1_1": [],
+    "Toy.MagicDiv.exists_mulShiftCorrect_iff_ceilDiv_d_zero": [
+      "propext"
+    ],
+    "Toy.MagicDiv.fixupCheck": [],
+    "Toy.MagicDiv.fixupCheck_u16_div7": [],
+    "Toy.MagicDiv.fixupCheck_u8": [],
+    "Toy.MagicDiv.fixupQuot": [],
+    "Toy.MagicDiv.fixupQuot_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.fixupQuot_eq_wide": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.fixupQuot_neg_example": [],
+    "Toy.MagicDiv.fixupQuot_pos_examples": [],
+    "Toy.MagicDiv.fixupQuot_shift_eq_width": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.fixupQuot_shift_lt_width": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.fixupQuot_shift_lt_width_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.fixupQuot_shift_width_u8_d300": [],
+    "Toy.MagicDiv.fixupQuot_unsignedMagic_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.fixupQuot_unsignedMagic_u16_div7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.fixupQuot_unsignedMagic_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.instDecidableExactCriterion": [],
+    "Toy.MagicDiv.instDecidableMulShiftCorrect": [],
+    "Toy.MagicDiv.instDecidableSignedRange": [],
+    "Toy.MagicDiv.intCast_two_pow": [],
+    "Toy.MagicDiv.int_shiftRight_eq_tdiv_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.int_shiftRight_examples": [],
+    "Toy.MagicDiv.int_shiftRight_tdiv_examples": [],
+    "Toy.MagicDiv.lastFullBlockEnd": [],
+    "Toy.MagicDiv.lastFullBlockEnd_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.lastFullBlockEnd_neg_example": [],
+    "Toy.MagicDiv.lastFullBlockEnd_pos_example": [],
+    "Toy.MagicDiv.le_ceilDiv_mul": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.le_two_pow_clog2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.lsrN": [],
+    "Toy.MagicDiv.lsrN.eq_1": [],
+    "Toy.MagicDiv.lsrN_neg_example": [],
+    "Toy.MagicDiv.lsrN_neg_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.lsrN_pos_examples": [],
+    "Toy.MagicDiv.lsrN_zero": [
+      "propext"
+    ],
+    "Toy.MagicDiv.lt_succ_div_mul": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.magic_neg_examples": [],
+    "Toy.MagicDiv.magic_pos_examples": [],
+    "Toy.MagicDiv.minimal_shift_u8_div7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShiftCorrect_ceilDiv_add": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShiftCorrect_ceilDiv_of_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShiftCorrect_ceilDiv_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShiftCorrect_iff_exactCriterion": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShiftCorrect_iff_exactCriterion_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShiftCorrect_iff_of_two_pow_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShiftCorrect_neg_examples": [],
+    "Toy.MagicDiv.mulShiftCorrect_of_between": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShiftCorrect_of_sandwich": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShiftCorrect_pos_examples": [],
+    "Toy.MagicDiv.mulShiftCorrect_u32_div641_shift32": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShift_mono": [
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShift_rem_eq_mod_of_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShift_rem_eq_mod_of_sandwich": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.mulShift_u8_div7_below_209": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.natCast_mul_shiftRight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.neg_ediv_of_bounds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.no_single_word_multiplier_u8_div7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.not_exactCriterion_of_mul_lt": [],
+    "Toy.MagicDiv.not_exactCriterion_of_mul_lt.match_1_1": [],
+    "Toy.MagicDiv.not_exactCriterion_of_upper": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.not_mulShiftCorrect_div_one_of_width_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.not_mulShiftCorrect_of_gt_at": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.not_mulShiftCorrect_of_mul_lt": [
+      "propext"
+    ],
+    "Toy.MagicDiv.nv_biasDiv": [],
+    "Toy.MagicDiv.nv_biasDivBV_u8": [],
+    "Toy.MagicDiv.nv_ceilDiv_succ_u8_div7": [],
+    "Toy.MagicDiv.nv_evaluated_instances": [],
+    "Toy.MagicDiv.nv_exact_u8": [],
+    "Toy.MagicDiv.nv_exact_u8_div7": [],
+    "Toy.MagicDiv.nv_fixupQuot_correct_u8_div7": [],
+    "Toy.MagicDiv.nv_fixupQuot_unsignedMagic": [],
+    "Toy.MagicDiv.nv_int_shiftRight": [],
+    "Toy.MagicDiv.nv_mulShift_rem": [],
+    "Toy.MagicDiv.nv_no_single_word_u8_div7": [],
+    "Toy.MagicDiv.nv_sandwich_u32_div7": [],
+    "Toy.MagicDiv.nv_sdivMagicUncorrected": [],
+    "Toy.MagicDiv.nv_signedMagic_sandwich_div7": [],
+    "Toy.MagicDiv.nv_signed_sandwich_i32_div7": [],
+    "Toy.MagicDiv.nv_single_word_u8_div7": [],
+    "Toy.MagicDiv.nv_sremMagic_both_signs": [],
+    "Toy.MagicDiv.nv_tdiv_signedRange": [],
+    "Toy.MagicDiv.nv_unsignedMagic_bounds": [],
+    "Toy.MagicDiv.nv_unsignedMagic_sandwich_div7": [],
+    "Toy.MagicDiv.one_le_clog2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.pc_div7_u8_nine_bit_multiplier": [],
+    "Toy.MagicDiv.pc_single_word_shift_fits": [],
+    "Toy.MagicDiv.pos_of_two_pow_le_mul": [],
+    "Toy.MagicDiv.robison_multiply_add_u8_div7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.sandwich_iff_directRem_bound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.sandwich_not_necessary_u8_div35": [],
+    "Toy.MagicDiv.sdivMagic": [],
+    "Toy.MagicDiv.sdivMagic.eq_1": [],
+    "Toy.MagicDiv.sdivMagicUncorrected": [],
+    "Toy.MagicDiv.sdivMagicUncorrected_eq_sdivMagic_sub_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.sdivMagicUncorrected_eq_tdiv_sub_one_of_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.sdivMagicUncorrected_pos_examples": [],
+    "Toy.MagicDiv.sdivMagic_eq_tdiv_of_sandwich": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.sdivMagic_neg_examples": [],
+    "Toy.MagicDiv.sdivMagic_pos_examples": [],
+    "Toy.MagicDiv.shiftRight_pred_of_signedRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.signedMagic": [],
+    "Toy.MagicDiv.signedMagic_neg_example": [],
+    "Toy.MagicDiv.signedMagic_not_minimal_i8_div3": [],
+    "Toy.MagicDiv.signedMagic_one_one": [],
+    "Toy.MagicDiv.signedMagic_pos_examples": [],
+    "Toy.MagicDiv.signedMagic_sandwich": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.signedRange_iff_of_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.signedRange_iff_toInt_ofInt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.signedRange_neg_examples": [],
+    "Toy.MagicDiv.signedRange_pos_examples": [],
+    "Toy.MagicDiv.signedRange_zero_examples": [],
+    "Toy.MagicDiv.signedRange_zero_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.signed_neg_bounds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.signed_sandwich_not_necessary_i8_div35": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.singleWordMagic": [],
+    "Toy.MagicDiv.singleWordMagic.eq_1": [],
+    "Toy.MagicDiv.singleWordMagic_lt_two_pow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.singleWordMagic_zero_right": [
+      "propext"
+    ],
+    "Toy.MagicDiv.singleWordShift": [],
+    "Toy.MagicDiv.singleWordShift.eq_1": [],
+    "Toy.MagicDiv.singleWordShift_neg_example": [],
+    "Toy.MagicDiv.singleWordShift_not_minimal_u8_div9": [],
+    "Toy.MagicDiv.singleWordShift_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.singleWord_correct_of_two_pow_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.single_word_multiplier_exists_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.sremMagic": [],
+    "Toy.MagicDiv.sremMagic_eq_tmod_and_sign": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.sremMagic_neg_example": [],
+    "Toy.MagicDiv.sremMagic_pos_examples": [],
+    "Toy.MagicDiv.succ_le_clog2_of_two_pow_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.tdiv_signedRange_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.two_pow_le_mul_of_correct": [
+      "propext"
+    ],
+    "Toy.MagicDiv.two_pow_pred_clog2_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.two_pow_pred_lt_signedMagic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.two_pow_pred_lt_singleWordMagic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.uncorrected_ne_fdiv_at_negative_multiple": [],
+    "Toy.MagicDiv.unsignedMagic": [],
+    "Toy.MagicDiv.unsignedMagic.eq_1": [],
+    "Toy.MagicDiv.unsignedMagic_eq_two_pow_add_low": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.unsignedMagic_ge_two_pow_of_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.unsignedMagic_le_two_pow_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.unsignedMagic_lt_two_pow_succ_above_examples": [],
+    "Toy.MagicDiv.unsignedMagic_lt_two_pow_succ_converse_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.unsignedMagic_lt_two_pow_succ_of_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.unsignedMagic_sandwich": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.unsignedMagic_two_pow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.unsignedMagic_two_pow_succ_add_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MagicDiv.unsignedMagic_zero_right": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

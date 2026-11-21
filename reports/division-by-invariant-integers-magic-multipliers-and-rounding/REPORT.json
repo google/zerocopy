@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "compilers/division-by-constant",
+    "compilers/strength-reduction",
+    "compilers/integer-arithmetic"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Division by Invariant Integers using Multiplication (Granlund and Montgomery, PLDI 1994)",
+      "identity": {
+        "doi": "10.1145/178243.178249"
+      }
+    },
+    {
+      "name": "Faster Remainder by Direct Computation: Applications to Compilers and Software Libraries (Lemire, Kaser and Kurz, 2019)",
+      "identity": {
+        "doi": "10.1002/spe.2689",
+        "arxiv": "1902.01961v3"
+      }
+    },
+    {
+      "name": "Integer Division by Constants: Optimal Bounds (Lemire, Bartlett and Kaser, 2021)",
+      "identity": {
+        "doi": "10.1016/j.heliyon.2021.e07442",
+        "arxiv": "2012.12369v3"
+      }
+    },
+    {
+      "name": "LLVM division-by-constant magic-number computation",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "c312bf3fa94430185410c06c502abd9953f838fa",
+        "path": "llvm/lib/Support/DivisionByConstantInfo.cpp"
+      }
+    },
+    {
+      "name": "CompCert",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "5e4ef44c57b22cdc2e1893770843fd693a5f82e1"
+      }
+    },
+    {
+      "name": "Hacker's Delight companion code",
+      "identity": {
+        "repository": "hcs0/Hackers-Delight",
+        "revision": "2bcb559da638a97f429c19889e6fd7d8601fd5d2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

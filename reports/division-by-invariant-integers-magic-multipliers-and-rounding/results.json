@@ -1,0 +1,1014 @@
+[
+  {
+    "id": "mulShiftCorrect_of_sandwich",
+    "lean": "Toy.MagicDiv.mulShiftCorrect_of_sandwich",
+    "lean_names": [
+      "Toy.MagicDiv.MulShiftCorrect",
+      "Toy.MagicDiv.ceilDiv",
+      "Toy.MagicDiv.ceilDiv_neg_example",
+      "Toy.MagicDiv.ceilDiv_pos_examples",
+      "Toy.MagicDiv.le_ceilDiv_mul",
+      "Toy.MagicDiv.mulShiftCorrect_neg_examples",
+      "Toy.MagicDiv.mulShiftCorrect_pos_examples",
+      "Toy.MagicDiv.pos_of_two_pow_le_mul",
+      "Toy.MagicDiv.sandwich_not_necessary_u8_div35"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: Granlund-Montgomery Theorem 4.2, already mechanized in Coq (CompCert Zdiv_mul_pos); restated without the redundant d != 0 hypothesis.",
+    "plain_claim": "For all N, l, d, m with 2^(N+l) <= m*d <= 2^(N+l) + 2^l: (x*m) >>> (N+l) = x / d (floor division) for every unsigned N-bit input x < 2^N. No separate d >= 1 hypothesis is needed because the lower bound forces it.",
+    "hypotheses": [
+      {
+        "name": "hlo: 2^(N+l) <= m*d",
+        "purpose": "The approximation m/2^(N+l) of 1/d must not undershoot (otherwise the result is 0 at x = d); it also forces d >= 1 (pos_of_two_pow_le_mul).",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_sandwich_hlo",
+        "witness_class": "an instance with N = 1, l = 0, d = 1, m = 1 (fails at x = 1)"
+      },
+      {
+        "name": "hhi: m*d <= 2^(N+l) + 2^l",
+        "purpose": "Bounds the overshoot e = m*d - 2^(N+l) by 2^l so that x*e < 2^(N+l) for all x < 2^N.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_sandwich_hhi",
+        "witness_class": "an instance with N = 8, l = 2, d = 7, m = 147 (fails at x = 209)"
+      },
+      {
+        "name": "input range x < 2^N (inside MulShiftCorrect)",
+        "purpose": "The overshoot grows with x; the first out-of-range input can already fail.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_sandwich_input_range",
+        "witness_class": "an instance with N = 1, l = 0, d = 3, m = 1 (fails at x = 2)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "N = 32, l = 3, d = 7, m = ceil(2^35/7) = 4908534053 (m*7 - 2^35 = 3 <= 2^3), x = 200 < 2^32.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_sandwich_u32_div7",
+    "non_claims": [
+      "The sandwich is sufficient, not necessary: sandwich_not_necessary_u8_div35 is a correct multiplier (N = 8, d = 35, l = 5, m = 235) with m*d - 2^(N+l) = 33 > 2^l. The necessary and sufficient condition is mulShiftCorrect_iff_exactCriterion.",
+      "Multiplication is exact on unbounded naturals; the result says nothing about how x*m is formed on an N-bit machine (a multiply-high is needed, and m may need N + 1 bits; see the card unsignedMagic_bounds).",
+      "Stated for unsigned inputs x < 2^N; this card neither establishes nor refutes claims about signed inputs (for signed division see sdivMagic_eq_tdiv_of_sandwich).",
+      "It does not pick l or m; existence is unsignedMagic_sandwich, and the ceiling multiplier ceilDiv (2^(N+l)) d satisfies hlo automatically (le_ceilDiv_mul).",
+      "It addresses division of arbitrary x. When d is known to divide x (exact division), Granlund and Montgomery (Section 9) use a single low-half multiplication by the inverse of the odd part of d modulo 2^N instead; that method is not modelled here (not proved here)."
+    ],
+    "prior_art": [
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Theorem 4.2: if d != 0 and 2^(N+l) <= m*d <= 2^(N+l) + 2^l then floor(n/d) = floor(m*n/2^(N+l)) for every integer 0 <= n < 2^N.",
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file backend/SelectDivproof.v: Lemma Zdiv_mul_pos (Coq proof over Z of Granlund-Montgomery Theorem 4.2, with d > 0); file backend/SelectDiv.vp: divu_mul_params requires 0 <= m < Int.modulus (2^32) in addition to 2^(32+p) <= m*d <= 2^(32+p) + 2^p, so it rejects multipliers of 2^32 or more and the add-and-shift fixup is not used there.",
+      "Daniel Lemire, Owen Kaser, Nathan Kurz, 'Faster Remainder by Direct Computation: Applications to Compilers and Software Libraries', Software: Practice and Experience 49(6):953-970, 2019, DOI 10.1002/spe.2689; arXiv:1902.01961v3. Algorithm 1 (Granlund-Montgomery-Warren, d in [1, 2^N)): line 4 handles powers of two; line 6, for d not a power of two, uses L = floor(log2 d) (which equals ceil(log2 d) - 1 for such d, whereas floor(log2 d) = ceil(log2 d) when d is a power of two) and c = ceil(2^(N+L)/d) and tests c*(2^N - (2^N mod d) - 1) < (2^N div d)*2^(N+L) (then c < 2^N); line 9 pre-shifts even d; line 12 uses L = ceil(log2 d), c = ceil(2^(N+L)/d) > 2^N, c = 2^N + c', and the add-and-shift quotient.",
+      "D. J. Magenheimer, L. Peters, K. W. Pettis, D. Zuras, 'Integer Multiplication and Division on the HP Precision Architecture', IEEE Transactions on Computers 37(8):980-990, 1988, DOI 10.1109/12.2248. Granlund and Montgomery cite the earlier ASPLOS II version (SIGPLAN Notices 22(10):90-99, 1987, DOI 10.1145/36205.36189) as giving the foundation of the general reciprocal approach (content not consulted here).",
+      "R. Alverson, 'Integer Division Using Reciprocals', Proceedings of the 10th IEEE Symposium on Computer Arithmetic (ARITH-10), pp. 186-190, 1991, DOI 10.1109/ARITH.1991.145558. Integer division by multiplication with a reciprocal whose multiplier is computed in floating point (as described by Granlund and Montgomery, Sections 1 and 7; content not consulted here).",
+      "D. Cavagnino and A. E. Werbrouck, 'Efficient Algorithms for Integer Division by Constants Using Multiplication', The Computer Journal 51(4):470-480 (published online 2007), DOI 10.1093/comjnl/bxm082. Cited by Lemire, Bartlett and Kaser as refining Granlund and Montgomery's choice of multiplier and shift, and by Lemire, Kaser and Kurz as the basis of Warren's observation that Granlund and Montgomery choose a slightly suboptimal number of fractional bits for some divisors (content not consulted here)."
+    ],
+    "design_question": "Which (multiplier, shift) pairs are guaranteed to compute unsigned N-bit floor division by a constant d?"
+  },
+  {
+    "id": "unsignedMagic_sandwich",
+    "lean": "Toy.MagicDiv.unsignedMagic_sandwich",
+    "lean_names": [
+      "Toy.MagicDiv.clog2",
+      "Toy.MagicDiv.clog2_neg_examples",
+      "Toy.MagicDiv.clog2_pos_examples",
+      "Toy.MagicDiv.magic_neg_examples",
+      "Toy.MagicDiv.magic_pos_examples",
+      "Toy.MagicDiv.pc_single_word_shift_fits",
+      "Toy.MagicDiv.unsignedMagic",
+      "Toy.MagicDiv.unsignedMagic_lt_two_pow_succ_above_examples",
+      "Toy.MagicDiv.unsignedMagic_lt_two_pow_succ_converse_fails",
+      "Toy.MagicDiv.unsignedMagic_two_pow",
+      "Toy.MagicDiv.unsignedMagic_two_pow_succ_add_one",
+      "Toy.MagicDiv.unsignedMagic_zero_right"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: the choice l = ceil(log2 d) of Granlund-Montgomery Figure 4.1 (with the ceiling instead of floor + 1) and of Lemire-Kaser-Kurz Algorithm 1.",
+    "plain_claim": "For every N and every d >= 1, the multiplier m = unsignedMagic N d = ceil(2^(N + clog2 d)/d), with l = clog2 d = ceil(log2 d), satisfies 2^(N+l) <= m*d <= 2^(N+l) + 2^l (so, by mulShiftCorrect_of_sandwich, it is correct for all N-bit inputs at shift N + clog2 d).",
+    "hypotheses": [
+      {
+        "name": "hd: 0 < d",
+        "purpose": "For d = 0 the ceiling multiplier is 0 and the lower bound 2^(N+l) <= 0 fails.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_unsignedMagic_sandwich_d_zero",
+        "witness_class": "an instance with N = 0, d = 0"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 32, d = 7: unsignedMagic 32 7 = 2^32 + 613566757.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_unsignedMagic_sandwich_div7",
+    "non_claims": [
+      "It does not say how many bits the multiplier needs ('fits in b bits' below means 'is below 2^b'); card unsignedMagic_bounds does. For every N, N = 0 included, and every d >= 1, 2^N <= unsignedMagic N d, so the multiplier does not fit in N bits (unsignedMagic_ge_two_pow_of_pos); at d = 0, which this card excludes, it is 0 for every N (unsignedMagic_zero_right). For every N and every d <= 2^(N+1), d = 0 included, unsignedMagic N d < 2^(N+1), so it fits in N + 1 bits (unsignedMagic_lt_two_pow_succ_of_le). The bound d <= 2^(N+1) is tight at every N (d = 2^(N+1) + 1 gives exactly 2^(N+1): unsignedMagic_two_pow_succ_add_one) but is sufficient, not necessary: every power of two d = 2^k gives exactly 2^N (unsignedMagic_two_pow), so d = 2^k with k >= N + 2 exceeds 2^(N+1) and still fits in N + 1 bits (unsignedMagic_lt_two_pow_succ_converse_fails), and so do some divisors above 2^(N+1) that are not powers of two (N = 1, d = 6; N = 8, d = 768; N = 32, d = 3*2^32: unsignedMagic_lt_two_pow_succ_above_examples).",
+      "Shift N + clog2 d is not the minimal correct shift in general (for N = 8, d = 3 shift 9 works with multiplier 171 < 2^8; see pc_single_word_shift_fits and exists_mulShiftCorrect_iff_ceilDiv).",
+      "Granlund and Montgomery's Figure 4.1 uses floor(2^(N+l)/d) + 1 rather than the ceiling; for d >= 1 the two are equal when d does not divide 2^(N+l) and differ by 1 when it does (derived, not proved here)."
+    ],
+    "prior_art": [
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 4.1 (for 1 <= d < 2^N): l = ceil(log2 d), m' = floor(2^N*(2^l - d)/d) + 1, sh1 = min(l, 1), sh2 = max(l - 1, 0), t1 = MULUH(m', n), q = SRL(t1 + SRL(n - t1, sh1), sh2); the explanation sets m = m' + 2^N = floor(2^(N+l)/d) + 1 and checks Theorem 4.2's hypothesis.",
+      "Daniel Lemire, Owen Kaser, Nathan Kurz, 'Faster Remainder by Direct Computation: Applications to Compilers and Software Libraries', Software: Practice and Experience 49(6):953-970, 2019, DOI 10.1002/spe.2689; arXiv:1902.01961v3. Algorithm 1 (Granlund-Montgomery-Warren, d in [1, 2^N)): line 4 handles powers of two; line 6, for d not a power of two, uses L = floor(log2 d) (which equals ceil(log2 d) - 1 for such d, whereas floor(log2 d) = ceil(log2 d) when d is a power of two) and c = ceil(2^(N+L)/d) and tests c*(2^N - (2^N mod d) - 1) < (2^N div d)*2^(N+L) (then c < 2^N); line 9 pre-shifts even d; line 12 uses L = ceil(log2 d), c = ceil(2^(N+L)/d) > 2^N, c = 2^N + c', and the add-and-shift quotient.",
+      "Henry S. Warren, Jr., Hacker's Delight, 2nd edition, Addison-Wesley, 2012 (electronic ISBN 9780133084993), Chapter 10 'Integer Division By Constants', sections 10-8 'Unsigned Division', 10-9 'Unsigned Division by Divisors >= 1' and 10-10 'Incorporation into a Compiler (Unsigned)' (section titles from the publisher's table of contents; the book text was not consulted)."
+    ],
+    "design_question": "Does a correct (multiplier, shift) pair exist for every divisor d >= 1, and which one does the textbook construction pick?"
+  },
+  {
+    "id": "unsignedMagic_bounds",
+    "lean": [
+      "Toy.MagicDiv.unsignedMagic_ge_two_pow_of_pos",
+      "Toy.MagicDiv.unsignedMagic_lt_two_pow_succ_of_le",
+      "Toy.MagicDiv.unsignedMagic_eq_two_pow_add_low"
+    ],
+    "lean_names": [
+      "Toy.MagicDiv.fixupQuot_shift_eq_width",
+      "Toy.MagicDiv.mulShift_u8_div7_below_209",
+      "Toy.MagicDiv.robison_multiply_add_u8_div7"
+    ],
+    "kind": "theorem",
+    "tier": "T2",
+    "tier_note": "T2: the textbook size bounds (Granlund-Montgomery Section 4: the low part fits in N bits for 1 <= d < 2^N; Figure 6.2 corollary) restated for the ceiling multiplier with the tight divisor bound d <= 2^(N+1) and tightness counterexamples.",
+    "plain_claim": "For every N (N = 0 included) and every d: (a) if d >= 1, then 2^N <= unsignedMagic N d, so the textbook multiplier at shift N + clog2 d does not fit in N bits (is not below 2^N); (b) if d <= 2^(N+1) (d = 0 included), then unsignedMagic N d < 2^(N+1), so it fits in N + 1 bits; (c) if 1 <= d <= 2^(N+1), then unsignedMagic N d = 2^N + m' with m' = unsignedMagic N d - 2^N < 2^N, so its low part fits in N bits.",
+    "hypotheses": [
+      {
+        "name": "hd0: 0 < d (parts a and c)",
+        "purpose": "For d = 0 the multiplier is 0 for every N (unsignedMagic_zero_right): it is below 2^N, and 0 is not 2^N + (0 - 2^N) = 2^N.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MagicDiv.ce_unsignedMagic_ge_two_pow_d_zero",
+          "Toy.MagicDiv.ce_unsignedMagic_low_d_zero"
+        ],
+        "witness_class": "instances with d = 0 (N = 8 for part a, N = 0 for part c)"
+      },
+      {
+        "name": "hd: d <= 2^(N+1) (parts b and c)",
+        "purpose": "For larger d the multiplier can reach 2^(N+1) (N = 0, d = 3 gives 2), and then the low part 2^N is not below 2^N. At every N, d = 2^(N+1) + 1 gives exactly 2^(N+1) (unsignedMagic_two_pow_succ_add_one). The hypothesis is sufficient, not necessary, for both parts: every power of two above 2^(N+1) gives exactly 2^N (unsignedMagic_two_pow; for part b, unsignedMagic_lt_two_pow_succ_converse_fails), which satisfies both conclusions.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MagicDiv.ce_unsignedMagic_lt_two_pow_succ",
+          "Toy.MagicDiv.ce_unsignedMagic_low_hd"
+        ],
+        "witness_class": "an instance with N = 0, d = 3"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 32, d = 7 (0 < 7 <= 2^33).",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_unsignedMagic_bounds",
+    "non_claims": [
+      "Part (a) does not say that no N-bit multiplier exists for d: at the shift one lower, N + clog2 d - 1, an N-bit multiplier may exist (pc_single_word_shift_fits for N = 8, d = 3) or not (no_single_word_multiplier_u8_div7 for N = 8, d = 7); the exact condition is single_word_multiplier_exists_iff.",
+      "Ways to avoid an (N+1)-bit multiplier that this card does not cover: a lower shift (single_word_multiplier_exists_iff), the add-and-shift fixup (fixupQuot_unsignedMagic_correct), an N-bit multiply-add (robison_multiply_add_u8_div7 for N = 8, d = 7; Robison 2005 in general, not proved here), a narrower dividend range (mulShift_u8_div7_below_209), pre-shifting even divisors (not proved here), and powers of two, where a shift suffices (not proved here).",
+      "Part (c) gives a low part below 2^N for 2^N < d <= 2^(N+1) as well, but the fixup that uses it then shifts by clog2 d - 1 = N, the full word width (fixupQuot_shift_eq_width).",
+      "Beyond d <= 2^(N+1) it does not characterize which divisors reach 2^(N+1). Proved facts on both sides: at every N, d = 2^(N+1) + 1 reaches it (unsignedMagic_two_pow_succ_add_one); every power of two d = 2^k, including k >= N + 2, gives exactly 2^N (unsignedMagic_two_pow, unsignedMagic_lt_two_pow_succ_converse_fails); and some divisors above 2^(N+1) that are not powers of two stay below 2^(N+1) (unsignedMagic_lt_two_pow_succ_above_examples, for N = 1, 8, 32)."
+    ],
+    "prior_art": [
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 4.1 (for 1 <= d < 2^N): l = ceil(log2 d), m' = floor(2^N*(2^l - d)/d) + 1, sh1 = min(l, 1), sh2 = max(l - 1, 0), t1 = MULUH(m', n), q = SRL(t1 + SRL(n - t1, sh1), sh2); the explanation sets m = m' + 2^N = floor(2^(N+l)/d) + 1 and checks Theorem 4.2's hypothesis.",
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 6.2 (CHOOSE_MULTIPLIER, 1 <= d < 2^N) and its corollary: 'If d <= 2^prec, then m < 2^(N+shpost) * (1 + 2^(1-l))/d <= 2^(N+shpost-l+1). Hence m fits in max(prec, N - l) + 1 bits (unsigned).'",
+      "Daniel Lemire, Owen Kaser, Nathan Kurz, 'Faster Remainder by Direct Computation: Applications to Compilers and Software Libraries', Software: Practice and Experience 49(6):953-970, 2019, DOI 10.1002/spe.2689; arXiv:1902.01961v3. Algorithm 1 (Granlund-Montgomery-Warren, d in [1, 2^N)): line 4 handles powers of two; line 6, for d not a power of two, uses L = floor(log2 d) (which equals ceil(log2 d) - 1 for such d, whereas floor(log2 d) = ceil(log2 d) when d is a power of two) and c = ceil(2^(N+L)/d) and tests c*(2^N - (2^N mod d) - 1) < (2^N div d)*2^(N+L) (then c < 2^N); line 9 pre-shifts even d; line 12 uses L = ceil(log2 d), c = ceil(2^(N+L)/d) > 2^N, c = 2^N + c', and the add-and-shift quotient. Line 12 asserts c > 2^N in a branch that line 4 has already restricted to divisors that are not powers of two (for d = 2^K, c = 2^N)."
+    ],
+    "design_question": "How many bits does the textbook multiplier need, and when does its low part fit in an N-bit register?"
+  },
+  {
+    "id": "single_word_multiplier_exists_iff",
+    "lean": [
+      "Toy.MagicDiv.single_word_multiplier_exists_iff",
+      "Toy.MagicDiv.singleWordMagic_lt_two_pow"
+    ],
+    "lean_names": [
+      "Toy.MagicDiv.allBelow",
+      "Toy.MagicDiv.allBelow_iff",
+      "Toy.MagicDiv.correctB",
+      "Toy.MagicDiv.correctB_iff",
+      "Toy.MagicDiv.count_no_single_word_u8",
+      "Toy.MagicDiv.mulShiftCorrect_u32_div641_shift32",
+      "Toy.MagicDiv.not_mulShiftCorrect_div_one_of_width_le",
+      "Toy.MagicDiv.singleWordMagic",
+      "Toy.MagicDiv.singleWordMagic_zero_right",
+      "Toy.MagicDiv.singleWordShift",
+      "Toy.MagicDiv.singleWordShift_neg_example",
+      "Toy.MagicDiv.singleWordShift_not_minimal_u8_div9",
+      "Toy.MagicDiv.singleWordShift_one",
+      "Toy.MagicDiv.two_pow_pred_lt_singleWordMagic"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_note": "T1: Lemire-Kaser-Kurz Algorithm 1 (line 6) tests exactly this candidate and LLVM's IsAdd records the same distinction; the equivalence with 'some N-bit multiplier at some shift' over all multipliers and shifts is not stated as a theorem in the sources consulted.",
+    "plain_claim": "For every N and every d (no hypotheses): some multiplier m < 2^N with some shift s satisfies (x*m) >>> s = x / d for all x < 2^N if and only if the candidate m* = singleWordMagic N d = ceil(2^(N + clog2 d - 1)/d) satisfies it at shift s* = singleWordShift N d = N + clog2 d - 1 (truncated subtraction: s* = 0 when N = 0 and d <= 1). Moreover, if N >= 1 and d <= 2^N, then m* < 2^N.",
+    "hypotheses": [
+      {
+        "name": "hN: 1 <= N (hypothesis of singleWordMagic_lt_two_pow, not of single_word_multiplier_exists_iff)",
+        "purpose": "At N = 0 the candidate for d = 1 is 1, not below 2^0.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_single_word_hN",
+        "witness_class": "an instance with N = 0, d = 1"
+      },
+      {
+        "name": "hdN: d <= 2^N (hypothesis of singleWordMagic_lt_two_pow, not of single_word_multiplier_exists_iff)",
+        "purpose": "For N = 1, d = 3 the candidate is 2, not below 2^1.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_single_word_hdN",
+        "witness_class": "an instance with N = 1, d = 3"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "N = 8, d = 7 (1 <= 8, 7 <= 2^8): the right-hand side is false (no_single_word_multiplier_u8_div7); N = 8, d = 3: it is true (pc_single_word_shift_fits). The equivalence itself has no hypotheses.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_single_word_u8_div7",
+    "non_claims": [
+      "The equivalence is informative for 1 <= d < 2^N; when N = 0, d = 0, or d >= 2^N, both sides hold (the left side with m = 0), so it carries no information there.",
+      "s* = N + clog2 d - 1 is the largest shift whose ceiling multiplier is below 2^N, not the smallest correct shift: for N = 8, d = 9, s* = 11 (m* = 228) while (57, 9) is correct (singleWordShift_not_minimal_u8_div9); for N = 32, d = 641, s* = 41 while (6700417, 32) is correct and needs no shift after a 32-bit multiply-high (mulShiftCorrect_u32_div641_shift32).",
+      "The existential does not require s >= N: for d = 1 and N >= 1, s* = N - 1 < N (singleWordShift_one; at N = 0, s* = 0 = N), which is not a multiply-high followed by a shift; for d = 1 and N >= 1, no m < 2^N is correct at any s >= N (not_mulShiftCorrect_div_one_of_width_le).",
+      "For a non-power-of-two d with 1 <= d < 2^N, 2^(N-1) < m* (two_pow_pred_lt_singleWordMagic) and m* < 2^N (singleWordMagic_lt_two_pow, which applies because 1 <= d < 2^N forces N >= 1), so m* read as a signed N-bit value is negative and a signed multiply-high would misinterpret it (machine encoding not modelled here). The bound needs d >= 1: at d = 0, m* = 0 for every N (singleWordMagic_zero_right).",
+      "The card is stated for the plain multiply-shift form (x*m) >>> s; it neither establishes nor refutes claims about other instruction sequences. Pre-shifting an even dividend and N-bit multiply-add forms can avoid the (N+1)-bit fixup when the right-hand side is false (robison_multiply_add_u8_div7 for N = 8, d = 7; Robison 2005 and Lemire-Bartlett-Kaser Section 6 in general, not proved here).",
+      "For N = 8 exactly 55 of the 255 divisors 1 <= d <= 255 have an incorrect candidate (count_no_single_word_u8, which counts the d with correctB 8 d m* s* = false; correctB_iff identifies correctB N d m s = true with MulShiftCorrect N d m s), hence, by this card's equivalence, no 8-bit multiplier at any shift.",
+      "It is not by itself a cheap test; combine it with mulShiftCorrect_iff_exactCriterion at s = s*."
+    ],
+    "prior_art": [
+      "Daniel Lemire, Owen Kaser, Nathan Kurz, 'Faster Remainder by Direct Computation: Applications to Compilers and Software Libraries', Software: Practice and Experience 49(6):953-970, 2019, DOI 10.1002/spe.2689; arXiv:1902.01961v3. Algorithm 1 (Granlund-Montgomery-Warren, d in [1, 2^N)): line 4 handles powers of two; line 6, for d not a power of two, uses L = floor(log2 d) (which equals ceil(log2 d) - 1 for such d, whereas floor(log2 d) = ceil(log2 d) when d is a power of two) and c = ceil(2^(N+L)/d) and tests c*(2^N - (2^N mod d) - 1) < (2^N div d)*2^(N+L) (then c < 2^N); line 9 pre-shifts even d; line 12 uses L = ceil(log2 d), c = ceil(2^(N+L)/d) > 2^N, c = 2^N + c', and the add-and-shift quotient.",
+      "Daniel Lemire, Colin Bartlett, Owen Kaser, 'Integer Division by Constants: Optimal Bounds', Heliyon 7(6):e07442, 2021, DOI 10.1016/j.heliyon.2021.e07442; arXiv:2012.12369v3. Section 6 ('Complementarity'), Proposition 3: for d > 0 not a power of two, N + 1 a power of two and m = 2^floor(log2 d)*(N + 1), either c = ceiling(m/d) gives floor(n/d) = floor(c*n/m) for all n in [0, N], or c = floor(m/d) gives floor(n/d) = floor((c*n + c)/m); footnote: 'This result is not novel', citing Robison.",
+      "Arch D. Robison, 'N-Bit Unsigned Division via N-Bit Multiply-Add', 17th IEEE Symposium on Computer Arithmetic (ARITH-17), pp. 131-139, 2005, DOI 10.1109/ARITH.2005.31. The paper reduces any n-bit unsigned division to the upper n bits of an n-bit multiply-add followed by one shift, choosing between rounding the reciprocal up (multiply-shift) and down (multiply-add); its Theorem 8 shows the multiplier is below 2^n.",
+      "Hacker's Delight companion code, repository hcs0/Hackers-Delight, commit 2bcb559da638a97f429c19889e6fd7d8601fd5d2, file magicu.c.txt: nc = -1 - (-d)%d (in 32-bit unsigned arithmetic, 2^32 - 1 - (2^32 mod d)) and the loop condition q1 < delta || (q1 == delta && r1 == 0) with delta = d - 1 - r2; file magicgu.py.txt: nc = ((nmax + 1)//d)*d - 1 and the test 2**p > nc*(d - 1 - (2**p - 1)%d).",
+      "LLVM, repository llvm/llvm-project, commit c312bf3fa94430185410c06c502abd9953f838fa, file llvm/lib/Support/DivisionByConstantInfo.cpp: UnsignedDivisionByConstantInfo::get computes NC, 'the largest dividend such that NC.urem(D) == D-1', and increases the exponent P until the loop condition Q1 < Delta || (Q1 == Delta && R1 == 0) fails, i.e. until 2^P > NC*Delta with Delta = Magic*D - 2^P; it sets IsAdd when the magic number needs an extra bit and then lowers PostShift by one. Basis: source inspection; nothing here is a formal model of this code.",
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 4.2 and the examples after it: for 32-bit unsigned division by 7 the multiplier exceeds 2^32 and the add-and-shift sequence of Figure 4.1 is used; for even divisors a pre-shift can avoid it."
+    ],
+    "design_question": "When does division of an N-bit integer by d admit a multiplier that fits in N bits, and which single candidate must be tested?"
+  },
+  {
+    "id": "fixupQuot_eq_wide",
+    "lean": [
+      "Toy.MagicDiv.fixupQuot_eq_wide",
+      "Toy.MagicDiv.fixupQuot_correct"
+    ],
+    "lean_names": [
+      "Toy.MagicDiv.fixupQuot",
+      "Toy.MagicDiv.fixupQuot_neg_example",
+      "Toy.MagicDiv.fixupQuot_pos_examples"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: Granlund-Montgomery Figure 4.1 and equation (4.5).",
+    "plain_claim": "For l >= 1 and m' <= 2^N, the add-and-shift sequence fixupQuot N m' l x = (t + ((x - t) >>> 1)) >>> (l - 1) with t = (x*m') >>> N equals (x*(2^N + m')) >>> (N + l) for every natural number x. Consequently, if moreover (x*(2^N + m')) >>> (N + l) = x / d for every x < 2^N, then fixupQuot N m' l x = x / d for every x < 2^N.",
+    "hypotheses": [
+      {
+        "name": "hl: 1 <= l (both)",
+        "purpose": "At l = 0 the final shift l - 1 truncates to 0 and the halving step is not undone.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MagicDiv.ce_fixupQuot_eq_wide_hl",
+          "Toy.MagicDiv.ce_fixupQuot_correct_hl"
+        ],
+        "witness_class": "instances with N = 1, m' = 0, l = 0 (x = 1; for fixupQuot_correct d = 1)"
+      },
+      {
+        "name": "hm': m' <= 2^N (both)",
+        "purpose": "Ensures t <= x, so x - t is exact and t + (x - t)/2 = (x + t)/2.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MagicDiv.ce_fixupQuot_eq_wide_hm",
+          "Toy.MagicDiv.ce_fixupQuot_correct_hm"
+        ],
+        "witness_class": "instances with m' > 2^N (N = 0, m' = 2, l = 1, x = 1; N = 1, d = 1, m' = 4, l = 1)"
+      },
+      {
+        "name": "h: MulShiftCorrect N d (2^N + m') (N + l) (hypothesis of fixupQuot_correct, not of fixupQuot_eq_wide)",
+        "purpose": "The fixup equals the wide multiply-shift for every x (fixupQuot_eq_wide); it cannot repair a wrong multiplier.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_fixupQuot_correct_h",
+        "witness_class": "an instance with N = 1, d = 1, m' = 0, l = 1"
+      },
+      {
+        "name": "input range x < 2^N (hypothesis of fixupQuot_correct, not of fixupQuot_eq_wide)",
+        "purpose": "Correctness of the wide multiply-shift is assumed for N-bit inputs x < 2^N; nothing is assumed about larger x.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_fixupQuot_correct_input_range",
+        "witness_class": "an instance with N = 1, d = 3, m' = 1, l = 2 (fails at x = 8)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 8, d = 7, m' = 37 (multiplier 293), l = 3, x = 200.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_fixupQuot_correct_u8_div7",
+    "non_claims": [
+      "No machine-level claim: x*m' is a 2N-bit product; that t, x - t, (x - t) >>> 1, the sum, and the result stay below 2^N for x, m' < 2^N is derived, not proved here. An N-bit register needs m' < 2^N, which is stronger than m' <= 2^N.",
+      "The final shift l - 1 must be below N on a machine whose shifts are not total; this card does not constrain it (see fixupQuot_unsignedMagic_correct for the textbook multiplier).",
+      "fixupQuot_correct is a one-line consequence of fixupQuot_eq_wide; the substance is the identity."
+    ],
+    "prior_art": [
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 4.1 (for 1 <= d < 2^N): l = ceil(log2 d), m' = floor(2^N*(2^l - d)/d) + 1, sh1 = min(l, 1), sh2 = max(l - 1, 0), t1 = MULUH(m', n), q = SRL(t1 + SRL(n - t1, sh1), sh2); the explanation sets m = m' + 2^N = floor(2^(N+l)/d) + 1 and checks Theorem 4.2's hypothesis. Equation (4.5) reduces q to floor((t1 + n)/2^l) using 0 <= t1 <= n.",
+      "LLVM, repository llvm/llvm-project, commit c312bf3fa94430185410c06c502abd9953f838fa, file llvm/lib/Support/DivisionByConstantInfo.cpp: UnsignedDivisionByConstantInfo::get computes NC, 'the largest dividend such that NC.urem(D) == D-1', and increases the exponent P until the loop condition Q1 < Delta || (Q1 == Delta && R1 == 0) fails, i.e. until 2^P > NC*Delta with Delta = Magic*D - 2^P; it sets IsAdd when the magic number needs an extra bit and then lowers PostShift by one. Basis: source inspection; nothing here is a formal model of this code.",
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file backend/SelectDivproof.v: Lemma Zdiv_mul_pos (Coq proof over Z of Granlund-Montgomery Theorem 4.2, with d > 0); file backend/SelectDiv.vp: divu_mul_params requires 0 <= m < Int.modulus (2^32) in addition to 2^(32+p) <= m*d <= 2^(32+p) + 2^p, so it rejects multipliers of 2^32 or more and the add-and-shift fixup is not used there."
+    ],
+    "design_question": "How can a multiplier that needs N + 1 bits be applied with N-bit operations, and what does that sequence compute?"
+  },
+  {
+    "id": "fixupQuot_unsignedMagic_correct",
+    "lean": "Toy.MagicDiv.fixupQuot_unsignedMagic_correct",
+    "lean_names": [
+      "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u16_div7_x_range",
+      "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u8_d_one_canonical",
+      "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u8_x_range",
+      "Toy.MagicDiv.fixupQuot_shift_lt_width",
+      "Toy.MagicDiv.fixupQuot_shift_lt_width_iff",
+      "Toy.MagicDiv.fixupQuot_shift_width_u8_d300",
+      "Toy.MagicDiv.fixupQuot_unsignedMagic_u16_div7",
+      "Toy.MagicDiv.fixupQuot_unsignedMagic_u8",
+      "Toy.MagicDiv.nv_evaluated_instances",
+      "Toy.MagicDiv.succ_le_clog2_of_two_pow_lt"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: Granlund-Montgomery Figure 4.1 with the ceiling multiplier; here without the d < 2^N restriction.",
+    "plain_claim": "For every N and every d >= 2 (no upper bound on d), the add-and-shift sequence with m' = unsignedMagic N d - 2^N and l = clog2 d computes x / d for every x < 2^N.",
+    "hypotheses": [
+      {
+        "name": "hd: 2 <= d",
+        "purpose": "At d = 1, l = clog2 1 = 0 and the fixup's halving is not undone.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_d_one",
+        "witness_class": "an instance with N = 1, d = 1 (fails at x = 1)"
+      },
+      {
+        "name": "input range x < 2^N",
+        "purpose": "Correctness is stated for N-bit inputs x < 2^N; beyond them the sequence can fail.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_input_range",
+        "witness_class": "an instance with N = 0, d = 3 (fails at x = 2)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 8, d = 7, x = 200.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_fixupQuot_unsignedMagic",
+    "non_claims": [
+      "Among d >= 2, the final shift clog2 d - 1 is below the word width N if and only if d <= 2^N (fixupQuot_shift_lt_width_iff, which combines fixupQuot_shift_lt_width with succ_le_clog2_of_two_pow_lt). For 2^N < d <= 2^(N+1) the final shift is clog2 d - 1 = N (fixupQuot_shift_eq_width; e.g. fixupQuot_shift_width_u8_d300). A right shift by N is undefined behavior in C and C++ when N is at least the width of the promoted left operand (for example N = 32 or 64 when int is 32 bits; a uint8_t operand is promoted to int, so a shift by 8 is defined there and gives 0), poison in LLVM IR at every width iN, an overflow in Rust at every width uN (a panic in debug builds), and reduced modulo N (to a shift by 0) by 32- and 64-bit register shifts on x86, AArch64 and RISC-V (Modeling bridge, item 4; derived, not proved here). This card's equality relies on Lean's total shift there.",
+      "For d > 2^(N+1) the low part m' can equal 2^N and then does not fit in N bits: at every N, d = 2^(N+1) + 1 gives m' = 2^N (unsignedMagic_two_pow_succ_add_one); part (b) of card unsignedMagic_bounds is tight.",
+      "It does not say the fixup is needed: when single_word_multiplier_exists_iff holds an N-bit multiplier suffices.",
+      "Evaluated instances fixupQuot_unsignedMagic_u8 (N = 8, 2 <= d <= 255) and fixupQuot_unsignedMagic_u16_div7 (N = 16, d = 7) are kernel evaluations of special cases; their hypothesis ledgers are listed separately."
+    ],
+    "prior_art": [
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 4.1 (for 1 <= d < 2^N): l = ceil(log2 d), m' = floor(2^N*(2^l - d)/d) + 1, sh1 = min(l, 1), sh2 = max(l - 1, 0), t1 = MULUH(m', n), q = SRL(t1 + SRL(n - t1, sh1), sh2); the explanation sets m = m' + 2^N = floor(2^(N+l)/d) + 1 and checks Theorem 4.2's hypothesis.",
+      "Daniel Lemire, Owen Kaser, Nathan Kurz, 'Faster Remainder by Direct Computation: Applications to Compilers and Software Libraries', Software: Practice and Experience 49(6):953-970, 2019, DOI 10.1002/spe.2689; arXiv:1902.01961v3. Algorithm 1 (Granlund-Montgomery-Warren, d in [1, 2^N)): line 4 handles powers of two; line 6, for d not a power of two, uses L = floor(log2 d) (which equals ceil(log2 d) - 1 for such d, whereas floor(log2 d) = ceil(log2 d) when d is a power of two) and c = ceil(2^(N+L)/d) and tests c*(2^N - (2^N mod d) - 1) < (2^N div d)*2^(N+L) (then c < 2^N); line 9 pre-shifts even d; line 12 uses L = ceil(log2 d), c = ceil(2^(N+L)/d) > 2^N, c = 2^N + c', and the add-and-shift quotient."
+    ],
+    "design_question": "Is the textbook (N+1)-bit multiplier always usable through the add-and-shift fixup, and for which divisors are all its shift counts below the word width?"
+  },
+  {
+    "id": "no_single_word_multiplier_u8_div7",
+    "lean": [
+      "Toy.MagicDiv.no_single_word_multiplier_u8_div7",
+      "Toy.MagicDiv.minimal_shift_u8_div7"
+    ],
+    "lean_names": [
+      "Toy.MagicDiv.not_mulShiftCorrect_of_gt_at",
+      "Toy.MagicDiv.not_mulShiftCorrect_of_mul_lt"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_note": "T0: the example magicgu(255, 7) of the Hacker's Delight companion code, proved for all multipliers below 2^8 and all shifts.",
+    "plain_claim": "For N = 8 and d = 7: for every multiplier m < 2^8 and every shift s (unbounded), (x*m) >>> s = x / 7 fails for some x < 2^8; and for every shift s <= 10 and every multiplier m (unbounded) it fails, while (m, s) = (293, 11) is correct for all x < 2^8.",
+    "hypotheses": [
+      {
+        "name": "hm: m < 2^8 (no_single_word_multiplier_u8_div7)",
+        "purpose": "With a 9-bit multiplier the division is possible.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_no_single_word_u8_div7_m_bound",
+        "witness_class": "an instance with m = 293 (correct at s = 11)"
+      },
+      {
+        "name": "hs: s <= 10 (minimal_shift_u8_div7, first conjunct)",
+        "purpose": "At shift 11 the multiplier 293 is correct.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_minimal_shift_u8_div7_s_bound",
+        "witness_class": "an instance with s = 11 (m = 293)"
+      },
+      {
+        "name": "input range x < 2^8 (inside MulShiftCorrect 8 7 293 11, the second conjunct of minimal_shift_u8_div7)",
+        "purpose": "The second conjunct is a ground fact about the pair (293, 11) at shift s = 11, and its inner input range x < 2^8 is bounded: the pair computes x / 7 for every x < 685 and fails at x = 685 (ce_minimal_shift_u8_div7_input_range).",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_minimal_shift_u8_div7_input_range",
+        "witness_class": "an instance with x = 685 (for the pair (293, 11), which is correct for every x < 685)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "m = 147 < 2^8; s = 10 <= 10.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_no_single_word_u8_div7",
+    "positive_control_lean": "Toy.MagicDiv.pc_div7_u8_nine_bit_multiplier",
+    "non_claims": [
+      "It is stated for one instance (N = 8, d = 7) and the plain multiply-shift form with an exact product; this card neither establishes nor refutes claims about other N, other d, or other instruction sequences (escape hatches proved separately are listed next). For other divisors see single_word_multiplier_exists_iff (for N = 8, 55 of the 255 divisors 1 <= d <= 255 have no 8-bit multiplier at any shift: count_no_single_word_u8, read through correctB_iff and single_word_multiplier_exists_iff).",
+      "Escape hatches that defeat it: an 8-bit multiply-add, (x*146 + 146) >>> 10 = x / 7 for all x < 2^8 (robison_multiply_add_u8_div7); a narrower dividend range, (x*147) >>> 10 = x / 7 for all x < 209, failing at 209 (mulShift_u8_div7_below_209); a multiplier operand of at least 9 bits, (293, 11) (pc_div7_u8_nine_bit_multiplier); the add-and-shift fixup (fixupQuot_unsignedMagic_correct).",
+      "No claim about the cost of these alternatives."
+    ],
+    "prior_art": [
+      "Hacker's Delight companion code, repository hcs0/Hackers-Delight, commit 2bcb559da638a97f429c19889e6fd7d8601fd5d2, file magicgu.py.txt, lines 14-15: 'Example: magicgu(255, 7) is a 9-bit number, but magicgu(200, 7) is an 8-bit number.'",
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 4.2 and the examples after it: for 32-bit unsigned division by 7 the multiplier exceeds 2^32 and the add-and-shift sequence of Figure 4.1 is used; for even divisors a pre-shift can avoid it.",
+      "Arch D. Robison, 'N-Bit Unsigned Division via N-Bit Multiply-Add', 17th IEEE Symposium on Computer Arithmetic (ARITH-17), pp. 131-139, 2005, DOI 10.1109/ARITH.2005.31. The paper reduces any n-bit unsigned division to the upper n bits of an n-bit multiply-add followed by one shift, choosing between rounding the reciprocal up (multiply-shift) and down (multiply-add); its Theorem 8 shows the multiplier is below 2^n."
+    ],
+    "design_question": "Is there a concrete divisor for which no N-bit multiplier works at any shift, so that the fixup or another form is unavoidable?"
+  },
+  {
+    "id": "mulShiftCorrect_iff_exactCriterion",
+    "lean": [
+      "Toy.MagicDiv.mulShiftCorrect_iff_exactCriterion",
+      "Toy.MagicDiv.mulShiftCorrect_iff_of_two_pow_le"
+    ],
+    "lean_names": [
+      "Toy.MagicDiv.ExactCriterion",
+      "Toy.MagicDiv.ce_directRem_quotient_valid_multiplier",
+      "Toy.MagicDiv.ce_exactCriterion_u8_d_256",
+      "Toy.MagicDiv.ce_exactCriterion_u8_d_zero",
+      "Toy.MagicDiv.exactCriterion_neg_examples",
+      "Toy.MagicDiv.exactCriterion_pos_examples",
+      "Toy.MagicDiv.lastFullBlockEnd",
+      "Toy.MagicDiv.lastFullBlockEnd_neg_example",
+      "Toy.MagicDiv.lastFullBlockEnd_pos_example",
+      "Toy.MagicDiv.mulShiftCorrect_iff_exactCriterion_u8"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_note": "T0: Lemire-Bartlett-Kaser Theorem 1 specialized to power-of-two denominators (part a), and the zero-quotient regime 2^N <= d (part b), which that theorem excludes.",
+    "plain_claim": "(a) For 1 <= d < 2^N and every m, s: (x*m) >>> s = x / d for all x < 2^N if and only if 2^s <= m*d and nc*(m*d - 2^s) < 2^s, where nc = lastFullBlockEnd N d = 2^N - (2^N mod d) - 1. (b) For 2^N <= d and every m, s: it holds if and only if (2^N - 1)*m < 2^s.",
+    "hypotheses": [
+      {
+        "name": "hd: 0 < d (part a)",
+        "purpose": "At d = 0 every quotient is 0 by convention, so m = 0 is junk-correct while 2^s <= 0 fails.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_exactCriterion_d_zero",
+        "witness_class": "an instance with N = 1, d = 0, m = 0, s = 0"
+      },
+      {
+        "name": "hdN: d < 2^N (part a)",
+        "purpose": "For d >= 2^N every N-bit quotient is 0 and the lower bound 2^s <= m*d is not necessary.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_exactCriterion_hdN",
+        "witness_class": "an instance with N = 1, d = 2, m = 0, s = 0"
+      },
+      {
+        "name": "hdN: 2^N <= d (part b)",
+        "purpose": "Below 2^N some quotients are positive and the criterion of part (a) applies instead.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_two_pow_le",
+        "witness_class": "an instance with N = 1, d = 1, m = 2, s = 1"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "Part (a): N = 8, d = 7; part (b): N = 8, d = 300.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_exact_u8",
+    "non_claims": [
+      "Exact products are assumed; nothing about the word size of m or of the product (m may exceed 2^N).",
+      "A pair (m, s) satisfying this criterion computes the quotient but need not compute the remainder directly: ce_directRem_quotient_valid_multiplier (N = 8, d = 35, m = 235, s = 13, x = 255). The remainder x - d*q is always correct (mulShift_rem_eq_mod_of_correct).",
+      "The evaluated instance mulShiftCorrect_iff_exactCriterion_u8 (N = 8, 1 <= d <= 255, s <= 16, every m) is a special case; its hypothesis ledger is listed separately.",
+      "That LLVM's unsigned search stops at the first shift satisfying the upper half of this criterion for the ceiling multiplier is a modeling-bridge statement from source inspection, not proved here."
+    ],
+    "prior_art": [
+      "Daniel Lemire, Colin Bartlett, Owen Kaser, 'Integer Division by Constants: Optimal Bounds', Heliyon 7(6):e07442, 2021, DOI 10.1016/j.heliyon.2021.e07442; arXiv:2012.12369v3. Theorem 1 (for an integer divisor d > 0 and numerators n in [0, N] with N >= d): floor(n/d) = floor(c*n/m) for all such n iff 1/d <= c/m < (1 + 1/(N - remainder(N + 1, d)))/d. With m = 2^s and N = 2^N' - 1 this is part (a) of the criterion; it assumes N >= d and so does not cover part (b) (2^N' <= d).",
+      "Hacker's Delight companion code, repository hcs0/Hackers-Delight, commit 2bcb559da638a97f429c19889e6fd7d8601fd5d2, file magicu.c.txt: nc = -1 - (-d)%d (in 32-bit unsigned arithmetic, 2^32 - 1 - (2^32 mod d)) and the loop condition q1 < delta || (q1 == delta && r1 == 0) with delta = d - 1 - r2; file magicgu.py.txt: nc = ((nmax + 1)//d)*d - 1 and the test 2**p > nc*(d - 1 - (2**p - 1)%d).",
+      "LLVM, repository llvm/llvm-project, commit c312bf3fa94430185410c06c502abd9953f838fa, file llvm/lib/Support/DivisionByConstantInfo.cpp: UnsignedDivisionByConstantInfo::get computes NC, 'the largest dividend such that NC.urem(D) == D-1', and increases the exponent P until the loop condition Q1 < Delta || (Q1 == Delta && R1 == 0) fails, i.e. until 2^P > NC*Delta with Delta = Magic*D - 2^P; it sets IsAdd when the magic number needs an extra bit and then lowers PostShift by one. Basis: source inspection; nothing here is a formal model of this code."
+    ],
+    "design_question": "Exactly which (multiplier, shift) pairs compute unsigned N-bit floor division by a constant d?"
+  },
+  {
+    "id": "exists_mulShiftCorrect_iff_ceilDiv",
+    "lean": "Toy.MagicDiv.exists_mulShiftCorrect_iff_ceilDiv",
+    "lean_names": [
+      "Toy.MagicDiv.ceilDiv_le_of_le_mul",
+      "Toy.MagicDiv.exists_mulShiftCorrect_iff_ceilDiv_d_zero",
+      "Toy.MagicDiv.two_pow_le_mul_of_correct"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_note": "T0: derived explicitly in Lemire-Bartlett-Kaser Section 4.1 (smallest c is ceiling(m/d)).",
+    "plain_claim": "For 1 <= d < 2^N and every shift s: some multiplier m satisfies (x*m) >>> s = x / d for all x < 2^N if and only if the ceiling multiplier ceil(2^s/d) does.",
+    "hypotheses": [
+      {
+        "name": "hd: 0 < d",
+        "purpose": "Excludes the degenerate divisor; at d = 0 the conclusion still holds by Lean's x / 0 = 0 convention (exists_mulShiftCorrect_iff_ceilDiv_d_zero).",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hdN: d < 2^N",
+        "purpose": "For N = 1, d = 2, s = 0 the multiplier 0 is correct but the ceiling multiplier 1 is not.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_exists_ceilDiv_hdN",
+        "witness_class": "an instance with N = 1, d = 2, s = 0"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 8, d = 7.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_exact_u8_div7",
+    "non_claims": [
+      "It does not say the ceiling multiplier is below 2^N, nor which shift to use; the minimal correct shift is the least s at which the right-hand side holds (upward closure: mulShiftCorrect_ceilDiv_succ).",
+      "Every correct multiplier at shift s is at least ceil(2^s/d) (two_pow_le_mul_of_correct with ceilDiv_le_of_le_mul), so the ceiling multiplier is the smallest correct one; this is a supporting fact, not a separate card."
+    ],
+    "prior_art": [
+      "Daniel Lemire, Colin Bartlett, Owen Kaser, 'Integer Division by Constants: Optimal Bounds', Heliyon 7(6):e07442, 2021, DOI 10.1016/j.heliyon.2021.e07442; arXiv:2012.12369v3. Section 4.1, paragraph after Remark 1: for fixed m, 'if c is to be as small as possible, we must have that c = ceiling(m/d)'.",
+      "Hacker's Delight companion code, repository hcs0/Hackers-Delight, commit 2bcb559da638a97f429c19889e6fd7d8601fd5d2, file magicu.c.txt: nc = -1 - (-d)%d (in 32-bit unsigned arithmetic, 2^32 - 1 - (2^32 mod d)) and the loop condition q1 < delta || (q1 == delta && r1 == 0) with delta = d - 1 - r2; file magicgu.py.txt: nc = ((nmax + 1)//d)*d - 1 and the test 2**p > nc*(d - 1 - (2**p - 1)%d)."
+    ],
+    "design_question": "Given a shift, which multiplier should be tried?"
+  },
+  {
+    "id": "mulShiftCorrect_ceilDiv_succ",
+    "lean": "Toy.MagicDiv.mulShiftCorrect_ceilDiv_succ",
+    "lean_names": [
+      "Toy.MagicDiv.ceilDiv_succ_leaves_single_word_u8_div3"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_note": "T1: implicit in the shift searches of Warren's magicu and LLVM, which stop at the first working shift; not stated as a theorem in the sources consulted.",
+    "plain_claim": "For every N, d and s: if the ceiling multiplier ceil(2^s/d) is correct at shift s for all x < 2^N, then the ceiling multiplier ceil(2^(s+1)/d) is correct at shift s + 1.",
+    "hypotheses": [
+      {
+        "name": "h: MulShiftCorrect N d (ceilDiv (2^s) d) s",
+        "purpose": "Without the premise the conclusion can fail.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_ceilDiv_succ_premise",
+        "witness_class": "an instance with N = 8, d = 7, s = 9"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 8, d = 7, s = 11.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_ceilDiv_succ_u8_div7",
+    "non_claims": [
+      "Upward closure does not preserve a single-word multiplier size: for N = 8, d = 3, ceil(2^9/3) = 171 < 2^8 is correct at shift 9, while ceil(2^10/3) = 342 >= 2^8 (ceilDiv_succ_leaves_single_word_u8_div3).",
+      "It is stated for the ceiling multipliers ceil(2^s/d) and ceil(2^(s+1)/d) with the power-of-two denominators 2^s and 2^(s+1); this card neither establishes nor refutes the corresponding upward closure for other multipliers (such as floor(2^s/d) + 1) or other denominators."
+    ],
+    "prior_art": [
+      "LLVM, repository llvm/llvm-project, commit c312bf3fa94430185410c06c502abd9953f838fa, file llvm/lib/Support/DivisionByConstantInfo.cpp: UnsignedDivisionByConstantInfo::get computes NC, 'the largest dividend such that NC.urem(D) == D-1', and increases the exponent P until the loop condition Q1 < Delta || (Q1 == Delta && R1 == 0) fails, i.e. until 2^P > NC*Delta with Delta = Magic*D - 2^P; it sets IsAdd when the magic number needs an extra bit and then lowers PostShift by one. Basis: source inspection; nothing here is a formal model of this code.",
+      "Hacker's Delight companion code, repository hcs0/Hackers-Delight, commit 2bcb559da638a97f429c19889e6fd7d8601fd5d2, file magicu.c.txt: nc = -1 - (-d)%d (in 32-bit unsigned arithmetic, 2^32 - 1 - (2^32 mod d)) and the loop condition q1 < delta || (q1 == delta && r1 == 0) with delta = d - 1 - r2; file magicgu.py.txt: nc = ((nmax + 1)//d)*d - 1 and the test 2**p > nc*(d - 1 - (2**p - 1)%d)."
+    ],
+    "design_question": "Can the minimal correct shift be found by increasing the shift until the ceiling multiplier works?"
+  },
+  {
+    "id": "sdivMagic_eq_tdiv_of_sandwich",
+    "lean": "Toy.MagicDiv.sdivMagic_eq_tdiv_of_sandwich",
+    "lean_names": [
+      "Toy.MagicDiv.SignedRange",
+      "Toy.MagicDiv.sdivMagic_neg_examples",
+      "Toy.MagicDiv.sdivMagic_pos_examples",
+      "Toy.MagicDiv.signedMagic",
+      "Toy.MagicDiv.signedMagic_neg_example",
+      "Toy.MagicDiv.signedMagic_pos_examples",
+      "Toy.MagicDiv.signedRange_iff_of_pos",
+      "Toy.MagicDiv.signedRange_iff_toInt_ofInt",
+      "Toy.MagicDiv.signedRange_neg_examples",
+      "Toy.MagicDiv.signedRange_pos_examples",
+      "Toy.MagicDiv.signedRange_zero_examples",
+      "Toy.MagicDiv.signed_sandwich_not_necessary_i8_div35",
+      "Toy.MagicDiv.two_pow_pred_lt_signedMagic"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: Granlund-Montgomery Theorem 5.1 for d > 0, mechanized in Coq (CompCert Zquot_mul).",
+    "plain_claim": "For all N, l, d, m (d, m natural numbers; N - 1 is truncated subtraction, so (N-1)+l = l at N = 0) with 2^((N-1)+l) < m*d <= 2^((N-1)+l) + 2^l: for every signed N-bit x (-2^N <= 2x < 2^N), ((x*m) >>> ((N-1)+l)) + (1 if x < 0 else 0) = Int.tdiv x d, with the exact integer product and the flooring arithmetic shift.",
+    "hypotheses": [
+      {
+        "name": "hlo: 2^((N-1)+l) < m*d (strict)",
+        "purpose": "Negative multiples of d need a strictly positive overshoot; equality fails at x = -d.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_sdiv_hlo",
+        "witness_class": "an instance with N = 8, l = 1, d = 2, m = 128 (fails at x = -2)"
+      },
+      {
+        "name": "hhi: m*d <= 2^((N-1)+l) + 2^l",
+        "purpose": "Bounds the overshoot as in the unsigned case, for |x| <= 2^(N-1).",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_sdiv_hhi",
+        "witness_class": "an instance with N = 8, l = 2, d = 7, m = 74 (fails at x = -125)"
+      },
+      {
+        "name": "hx: SignedRange N x",
+        "purpose": "The overshoot grows with |x|.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_sdiv_range",
+        "witness_class": "an instance with N = 1, l = 0, d = 1, m = 2 (fails at x = 1 and at x = -2)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "N = 32, l = 3, d = 7, m = signedMagic 32 7 = 2454267027 (m*7 - 2^34 = 5 <= 2^3), x = -7.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_signed_sandwich_i32_div7",
+    "non_claims": [
+      "Stated for natural-number divisors d (d >= 1 is forced by hlo); this card neither establishes nor refutes claims about negative divisors. For d < 0 use Int.tdiv x (-d) = -(Int.tdiv x d) (core Int.tdiv_neg): negate the output quotient. Granlund and Montgomery warn against rewriting the quotient as TRUNC((-n)/|d|), which fails for n = -2^(N-1); that machine-level failure is not modelled here.",
+      "The sandwich is sufficient, not necessary: for N = 8, d = 35, (m, shift) = (59, 11) violates hhi (59*35 = 2065 > 2^11 + 2^4) and is correct for every signed 8-bit x (signed_sandwich_not_necessary_i8_div35).",
+      "Stated with exact integer arithmetic; this card neither establishes nor refutes claims about fixed-width machine arithmetic. The machine encoding is not modelled: a signed multiply-high reads the multiplier as a signed N-bit value and divides by 2^N; multipliers produced by signedMagic always exceed 2^(N-1) (two_pow_pred_lt_signedMagic), so that encoding uses m - 2^N and adds x back (derived, not proved here).",
+      "The overflow case x = -2^(N-1), d = -1 is outside this card (d > 0); see tdiv_signedRange_iff."
+    ],
+    "prior_art": [
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Theorem 5.1: if d != 0 and 0 < m*|d| - 2^(N+l-1) <= 2^l, then for -2^(N-1) <= n <= 2^(N-1) - 1 and q0 = floor(m*n/2^(N+l-1)), TRUNC(n/d) = q0 for n >= 0, d > 0 and 1 + q0 for n < 0, d > 0 (with sign changes for d < 0). Section 5 also warns: 'When d < 0, avoid rewriting the quotient as TRUNC((-n)/|d|), which fails for n = -2^(N-1).'",
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 5.1: l = max(ceil(log2 |d|), 1), m = 1 + floor(2^(N+l-1)/|d|), m0 = m - 2^N, q0 = n + MULSH(m0, n), q0 = SRA(q0, l - 1) - XSIGN(n).",
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file backend/SelectDivproof.v: Lemma Zquot_mul (Coq proof over Z of Granlund-Montgomery Theorem 5.1 for d > 0, strict lower bound, -2^N <= n < 2^N) and Theorem divs_mul_shift_2 (32-bit: for m >= 2^31 the quotient is computed with mulhs x m plus x); backend/SelectDiv.vp: divs_mul_params checks 2^(32+p) < m*d <= 2^(32+p) + 2^(p+1).",
+      "LLVM, repository llvm/llvm-project, commit c312bf3fa94430185410c06c502abd9953f838fa, file llvm/lib/Support/DivisionByConstantInfo.cpp: SignedDivisionByConstantInfo::get implements Warren's signed search with ANC = T - 1 - T.urem(|D|), T = 2^(W-1) + (D >>> (W-1)); re-running its loop for W = 8 and D = 2..127 gives pairs violating the sandwich hhi of sdivMagic_eq_tdiv_of_sandwich for 28 of the 126 divisors (D = 35: Magic = 59, total shift 11), all of which are nevertheless correct (source inspection and a re-implementation of the loop; not formalized)."
+    ],
+    "design_question": "Which multipliers compute signed N-bit division by a positive constant d, rounding toward zero?"
+  },
+  {
+    "id": "sdivMagicUncorrected_eq_tdiv_sub_one_of_neg",
+    "lean": "Toy.MagicDiv.sdivMagicUncorrected_eq_tdiv_sub_one_of_neg",
+    "lean_names": [
+      "Toy.MagicDiv.sdivMagicUncorrected",
+      "Toy.MagicDiv.sdivMagicUncorrected_eq_sdivMagic_sub_one",
+      "Toy.MagicDiv.sdivMagicUncorrected_pos_examples",
+      "Toy.MagicDiv.uncorrected_ne_fdiv_at_negative_multiple"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: the q0 = TRUNC(n/d) - 1 case of Granlund-Montgomery Theorem 5.1.",
+    "plain_claim": "For all N, l and natural numbers d, m (N - 1 is truncated subtraction, so (N-1)+l = l at N = 0), under the same bounds 2^((N-1)+l) < m*d <= 2^((N-1)+l) + 2^l, for every signed N-bit x with x < 0, omitting the negative-dividend correction gives (x*m) >>> ((N-1)+l) = Int.tdiv x d - 1.",
+    "hypotheses": [
+      {
+        "name": "hlo: 2^((N-1)+l) < m*d (strict)",
+        "purpose": "As for sdivMagic_eq_tdiv_of_sandwich.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_uncorr_hlo",
+        "witness_class": "an instance with N = 8, l = 1, d = 2, m = 128 (fails at x = -2)"
+      },
+      {
+        "name": "hhi: m*d <= 2^((N-1)+l) + 2^l",
+        "purpose": "As for sdivMagic_eq_tdiv_of_sandwich.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_uncorr_hhi",
+        "witness_class": "an instance with N = 8, l = 2, d = 7, m = 74 (fails at x = -125)"
+      },
+      {
+        "name": "hx: SignedRange N x",
+        "purpose": "As for sdivMagic_eq_tdiv_of_sandwich.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_uncorr_range",
+        "witness_class": "an instance with N = 1, l = 0, d = 1, m = 2 (fails at x = -2)"
+      },
+      {
+        "name": "hneg: x < 0",
+        "purpose": "For x >= 0 the uncorrected sequence is already Int.tdiv x d.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_uncorr_neg",
+        "witness_class": "an instance with N = 8, l = 2, d = 3, m = 171 (fails at x = 0)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 32, l = 3, d = 7, m = 2454267027, x = -7.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_sdivMagicUncorrected",
+    "non_claims": [
+      "The uncorrected sequence does not round toward negative infinity: it equals floor division on negative non-multiples of d but is one below it on negative multiples (uncorrected_ne_fdiv_at_negative_multiple: N = 8, d = 3, m = 171, shift 9 maps -3 to -2, while Int.fdiv (-3) 3 = Int.tdiv (-3) 3 = -1).",
+      "Floor-rounding signed division by a constant does have its own multiply-based sequence (Granlund and Montgomery, Section 6); it is not modelled here.",
+      "It is a two-line corollary of sdivMagic_eq_tdiv_of_sandwich (sdivMagicUncorrected_eq_sdivMagic_sub_one)."
+    ],
+    "prior_art": [
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Theorem 5.1: if d != 0 and 0 < m*|d| - 2^(N+l-1) <= 2^l, then for -2^(N-1) <= n <= 2^(N-1) - 1 and q0 = floor(m*n/2^(N+l-1)), TRUNC(n/d) = q0 for n >= 0, d > 0 and 1 + q0 for n < 0, d > 0 (with sign changes for d < 0). Section 5 also warns: 'When d < 0, avoid rewriting the quotient as TRUNC((-n)/|d|), which fails for n = -2^(N-1).'",
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file backend/SelectDivproof.v: Lemma Zquot_mul (Coq proof over Z of Granlund-Montgomery Theorem 5.1 for d > 0, strict lower bound, -2^N <= n < 2^N) and Theorem divs_mul_shift_2 (32-bit: for m >= 2^31 the quotient is computed with mulhs x m plus x); backend/SelectDiv.vp: divs_mul_params checks 2^(32+p) < m*d <= 2^(32+p) + 2^(p+1).",
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Section 6 (quotient rounded towards -infinity), equation (6.3) and Figure 6.1: for constant d > 0, floor(n/d) = EOR(nsign, TRUNC(EOR(nsign, n)/d)) with nsign = XSIGN(n), computed with one unsigned multiply-high."
+    ],
+    "design_question": "What does the signed sequence compute if the negative-dividend correction is omitted?"
+  },
+  {
+    "id": "tdiv_signedRange_iff",
+    "lean": "Toy.MagicDiv.tdiv_signedRange_iff",
+    "lean_names": [
+      "Toy.MagicDiv.bitvec_sdiv_intMin_negOne_wraps",
+      "Toy.MagicDiv.signedRange_zero_iff"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_note": "T0: mechanized for bit vectors in the Lean 4 core library (BitVec.sdivOverflow_eq and related lemmas); stated here for Int.tdiv with an arbitrary integer divisor.",
+    "plain_claim": "For every N, every signed N-bit x (-2^N <= 2x < 2^N; for N = 0 this is x = 0) and every integer d: Int.tdiv x d is again a signed N-bit value if and only if not (x = -2^(N-1) and d = -1), where N - 1 is truncated subtraction (at N = 0 the excluded case reads x = -1, which the signed 0-bit range {0} does not contain).",
+    "hypotheses": [
+      {
+        "name": "hx: SignedRange N x",
+        "purpose": "Out-of-range dividends give out-of-range quotients already for d = 1.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_tdiv_signedRange_hx",
+        "witness_class": "an instance with N = 8, x = 128, d = 1"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 8, x = -128.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_tdiv_signedRange",
+    "non_claims": [
+      "It is about the mathematical quotient Int.tdiv. Core BitVec.sdiv wraps (-2^(N-1)) / (-1) to -2^(N-1) (bitvec_sdiv_intMin_negOne_wraps, at N = 8); what particular languages or instruction sets do in that case was not examined.",
+      "At N = 0 the signed range is {0} (signedRange_zero_iff), so the excluded case does not arise: the right-hand side's -2^(N-1) uses truncated subtraction (N - 1 = 0 at N = 0, so it reads -1 there), and x = 0 is not -1."
+    ],
+    "prior_art": [
+      "Lean 4 core library, toolchain leanprover/lean4:v4.34.1: BitVec.sdivOverflow_eq (Init/Data/BitVec/Bitblast.lean:1321), BitVec.toInt_sdiv_of_ne_or_ne (line 1578), BitVec.intMin_sdiv_neg_one (line 1648), and Int.natAbs_tdiv_le_natAbs (Init/Data/Int/DivMod/Lemmas.lean:1593) mechanize the bit-vector form of the overflow characterization.",
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). 'Overflow detection. The quotient n/d overflows if n = -2^(N-1) and d = -1. The algorithm in Figure 5.1 returns -2^(N-1).'"
+    ],
+    "design_question": "Which signed N-bit divisions overflow, so that a lowering must treat them specially?"
+  },
+  {
+    "id": "signedMagic_sandwich",
+    "lean": "Toy.MagicDiv.signedMagic_sandwich",
+    "lean_names": [
+      "Toy.MagicDiv.one_le_clog2",
+      "Toy.MagicDiv.signedMagic_not_minimal_i8_div3",
+      "Toy.MagicDiv.signedMagic_one_one"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: Granlund-Montgomery Figure 5.1's multiplier (with l = clog2 d instead of max(clog2 d, 1)).",
+    "plain_claim": "For every N and every d >= 1 (N - 1 is truncated subtraction, so (N-1) + clog2 d = clog2 d at N = 0), signedMagic N d = floor(2^((N-1) + clog2 d)/d) + 1 satisfies 2^((N-1)+l) < m*d <= 2^((N-1)+l) + 2^l with l = clog2 d (so sdivMagic_eq_tdiv_of_sandwich applies).",
+    "hypotheses": [
+      {
+        "name": "hd: 0 < d",
+        "purpose": "For d = 0 the strict lower bound fails.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_signedMagic_d_zero",
+        "witness_class": "an instance with N = 8, d = 0"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 32, d = 7: signedMagic 32 7 = 2454267027.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_signedMagic_sandwich_div7",
+    "non_claims": [
+      "signedMagic N d > 2^(N-1) for every d >= 1 (two_pow_pred_lt_signedMagic): read as a signed N-bit value it is never positive, and at N = 1, d = 1 it is 2 = 2^N (signedMagic_one_one).",
+      "At d = 1 its shift (N-1) + clog2 1 is N - 1, which is below N for N >= 1 (at N = 0 it is 0 = N); Granlund and Montgomery use l = max(ceil(log2 d), 1) instead; with clog2 d in place of ceil(log2 d), max(clog2 d, 1) equals clog2 d for d >= 2 (1 <= clog2 d: one_le_clog2) and is 1 rather than clog2 1 = 0 at d = 1 (signedMagic_one_one).",
+      "It is neither shift-minimal nor size-minimal: for N = 8, d = 3, signedMagic 8 3 = 171 at shift 9, while m = 86 < 2^7 satisfies the signed sandwich at shift 8 (signedMagic_not_minimal_i8_div3)."
+    ],
+    "prior_art": [
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 5.1: l = max(ceil(log2 |d|), 1), m = 1 + floor(2^(N+l-1)/|d|), m0 = m - 2^N, q0 = n + MULSH(m0, n), q0 = SRA(q0, l - 1) - XSIGN(n).",
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file backend/SelectDivproof.v: Lemma Zquot_mul (Coq proof over Z of Granlund-Montgomery Theorem 5.1 for d > 0, strict lower bound, -2^N <= n < 2^N) and Theorem divs_mul_shift_2 (32-bit: for m >= 2^31 the quotient is computed with mulhs x m plus x); backend/SelectDiv.vp: divs_mul_params checks 2^(32+p) < m*d <= 2^(32+p) + 2^(p+1).",
+      "Henry S. Warren, Jr., Hacker's Delight, 2nd edition, Addison-Wesley, 2012 (electronic ISBN 9780133084993), Chapter 10 'Integer Division By Constants', sections 10-1 'Signed Division by a Known Power of 2' and 10-3 to 10-6 on signed division (section titles from the publisher's table of contents; the book text was not consulted)."
+    ],
+    "design_question": "Does a signed multiplier exist for every positive divisor, and which one does the textbook construction pick?"
+  },
+  {
+    "id": "int_shiftRight_eq_tdiv_iff",
+    "lean": "Toy.MagicDiv.int_shiftRight_eq_tdiv_iff",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_note": "T0: an instance of the Lean 4 core lemmas Int.shiftRight_eq_div_pow and Int.tdiv_eq_ediv (also CompCert Zbits Zquot_Zdiv).",
+    "plain_claim": "For every integer x and every k (no hypotheses): the arithmetic shift x >>> k equals Int.tdiv x (2^k) if and only if x >= 0 or 2^k divides x.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses; both truth values occur: -1 >>> 1 = -1 but Int.tdiv (-1) 2 = 0, and -8 >>> 2 = -2 = Int.tdiv (-8) 4.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_int_shiftRight",
+    "non_claims": [
+      "It does not say how to compute Int.tdiv x (2^k) with shifts; that is biasDiv_eq_tdiv_of_lt.",
+      "Exact integers; no word size."
+    ],
+    "prior_art": [
+      "Lean 4 core library, toolchain leanprover/lean4:v4.34.1: Int.shiftRight_eq_div_pow (Init/Data/Int/Bitwise/Lemmas.lean:44) and Int.tdiv_eq_ediv (Init/Data/Int/DivMod/Lemmas.lean:223: a.tdiv b = a / b + if 0 <= a or b divides a then 0 else sign b); the card is their instance at b = 2^k.",
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file lib/Zbits.v: Lemma Zquot_Zdiv (line 933: for y > 0, Z.quot x y = if x < 0 then (x + y - 1)/y else x/y) and Lemma Zdiv_shift (line 948).",
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 5.2 (signed TRUNC(n/d) for constant d != 0) handles |d| = 1 in a separate first branch and, for |d| = 2^l, issues q = SRA(n + SRL(SRA(n, l - 1), N - l), l), then negates q if d < 0; Table 3.1 restricts SLL, SRA and SRL shift counts to 0 <= n <= N - 1. (The paper uses this bias sequence; it does not state the characterization of this card.)"
+    ],
+    "design_question": "When may signed division by 2^k be replaced by a plain arithmetic shift?"
+  },
+  {
+    "id": "biasDiv_eq_tdiv_of_lt",
+    "lean": [
+      "Toy.MagicDiv.biasDiv_eq_tdiv_of_lt",
+      "Toy.MagicDiv.biasDivMasked_eq_tdiv_of_pos_of_lt"
+    ],
+    "lean_names": [
+      "Toy.MagicDiv.biasDiv",
+      "Toy.MagicDiv.biasDivMasked",
+      "Toy.MagicDiv.biasDivMasked_k_zero_failures",
+      "Toy.MagicDiv.biasDivMasked_neg_examples",
+      "Toy.MagicDiv.biasDivMasked_pos_examples",
+      "Toy.MagicDiv.biasDiv_neg_example",
+      "Toy.MagicDiv.biasDiv_pos_examples",
+      "Toy.MagicDiv.biasSum",
+      "Toy.MagicDiv.biasSumMasked",
+      "Toy.MagicDiv.biasSum_neg_example",
+      "Toy.MagicDiv.lsrN",
+      "Toy.MagicDiv.lsrN_neg_example",
+      "Toy.MagicDiv.lsrN_pos_examples"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: Granlund-Montgomery Figure 5.2's power-of-two branch; the wrapping word-size-generic version is CompCert's shrx_shr_2.",
+    "plain_claim": "(a) With Lean's total shifts (a logical shift of an N-bit pattern by N or more gives 0): for every k < N (so N >= 1, and N - 1 and N - k involve no truncation) and every signed N-bit x, the biased dividend x + ((x >>> (N-1)) >>>_logical (N-k)) stays in the signed N-bit range and biasDiv N k x = Int.tdiv x (2^k); at k = 0 this relies on the logical shift by the full width N returning 0. (b) With every shift count reduced modulo N (as by instructions that reduce the count modulo the operand width): for every 1 <= k < N and every signed N-bit x, the same two conclusions hold for biasSumMasked and biasDivMasked (what fails at k = 0 is listed under the non-claims).",
+    "hypotheses": [
+      {
+        "name": "hk1: 1 <= k (part b; not a hypothesis of part a)",
+        "purpose": "At k = 0 the count N - 0 = N is reduced to 0, so the whole mask 2^N - 1 is added.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_biasDivMasked_k_zero",
+        "witness_class": "every N >= 1 with k = 0, x = -1 (result 2^N - 2)"
+      },
+      {
+        "name": "hk: k < N (both)",
+        "purpose": "For k = N the biased dividend leaves the signed range (it would wrap on an N-bit machine).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MagicDiv.ce_biasDiv_hk",
+          "Toy.MagicDiv.ce_biasDivMasked_hk"
+        ],
+        "witness_class": "an instance with N = 2, k = 2, x = -1"
+      },
+      {
+        "name": "hx: SignedRange N x (both)",
+        "purpose": "Out-of-range dividends leave the range already before the shift.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MagicDiv.ce_biasDiv_hx",
+          "Toy.MagicDiv.ce_biasDivMasked_hx"
+        ],
+        "witness_class": "an instance with N = 8, k = 1, x = 128"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 8, k = 2 (1 <= 2 < 8), x = -7.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_biasDiv",
+    "non_claims": [
+      "Part (a) at k = 0 is an artifact of total shifts. In C and C++ a shift count at least the width of the promoted operand is undefined behavior, in LLVM IR it yields poison, and instruction sets that reduce the count modulo the width compute part (b)'s sequence, whose quotient is wrong at k = 0 (biasDivMasked_k_zero_failures). On such targets use 1 <= k < N and treat division by 1 separately.",
+      "Part (b) needs 1 <= k. At k = 0 and x = -1: for every N >= 1 the quotient equation biasDivMasked N 0 (-1) = Int.tdiv (-1) (2^0) fails; for every N >= 2 the biased sum also leaves the signed N-bit range; at N = 1 the biased sum stays in the signed 1-bit range for every signed 1-bit x, so the range conclusion holds there and the quotient equation fails (biasDivMasked_k_zero_failures). The tightness counterexample ce_biasDivMasked_k_zero states that the conjunction of the two conclusions fails, for every N >= 1.",
+      "The sum is exact (no wrap-around); the no-overflow conjunct shows the N-bit sum would not wrap. Wrapping arithmetic is checked on BitVec 8 (biasDivBV_u8).",
+      "Stated for the positive divisors 2^k; this card neither establishes nor refutes claims about the bias-and-shift sequence for d = -2^k (in exact arithmetic, Int.tdiv x (-(2^k)) = -(Int.tdiv x (2^k)) by core Int.tdiv_neg, so negating the quotient handles that divisor)."
+    ],
+    "prior_art": [
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 5.2 (signed TRUNC(n/d) for constant d != 0) handles |d| = 1 in a separate first branch and, for |d| = 2^l, issues q = SRA(n + SRL(SRA(n, l - 1), N - l), l), then negates q if d < 0; Table 3.1 restricts SLL, SRA and SRL shift counts to 0 <= n <= N - 1.",
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file lib/Integers.v (word-size-generic functor Make): Theorem shrx_shr (line 2362) and Theorem shrx_shr_2 (line 2403): for y < zwordsize - 1, shrx x y = shr (add x (shru (shr x (repr (zwordsize - 1))) (sub iwordsize y))) y, with wrapping add.",
+      "Henry S. Warren, Jr., Hacker's Delight, 2nd edition, Addison-Wesley, 2012 (electronic ISBN 9780133084993), Chapter 10 'Integer Division By Constants', sections 10-1 'Signed Division by a Known Power of 2' and 10-3 to 10-6 on signed division (section titles from the publisher's table of contents; the book text was not consulted)."
+    ],
+    "design_question": "How is signed division by 2^k computed with shifts and an add, and which shift amounts are valid on machines whose shifts are not total?"
+  },
+  {
+    "id": "biasDivBV_u8",
+    "lean": [
+      "Toy.MagicDiv.biasDivBV_u8",
+      "Toy.MagicDiv.biasDivBVMasked_u8"
+    ],
+    "lean_names": [
+      "Toy.MagicDiv.biasDivBV",
+      "Toy.MagicDiv.biasDivBVMasked",
+      "Toy.MagicDiv.biasDivBV_neg_example",
+      "Toy.MagicDiv.biasDivBV_pos_example"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: an evaluated 8-bit instance of CompCert's word-size-generic shrx_shr_2 on core BitVec.",
+    "plain_claim": "On core BitVec 8 with wrapping addition: (a) with BitVec's total shifts, for every k < 8 and every x, (biasDivBV k x).toInt = Int.tdiv x.toInt (2^k), and for every k <= 6, biasDivBV k x = BitVec.sdiv x (BitVec.ofNat 8 (2^k)); at k = 0 this relies on the logical shift by 8 returning 0. (b) With all three shift counts reduced modulo 8, (biasDivBVMasked k x).toInt = Int.tdiv x.toInt (2^k) for every 1 <= k < 8 and every x.",
+    "hypotheses": [
+      {
+        "name": "k < 8 (biasDivBV_u8, first conjunct)",
+        "purpose": "At k = 8 the bias 255 wraps the sum.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_biasDivBV_width",
+        "witness_class": "an instance with k = 8, x = -1"
+      },
+      {
+        "name": "k <= 6 (biasDivBV_u8, second conjunct)",
+        "purpose": "At k = 7, BitVec.ofNat 8 128 is the signed value -128.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_biasDivBV_sdiv_k7",
+        "witness_class": "an instance with k = 7, x = -128"
+      },
+      {
+        "name": "1 <= k (biasDivBVMasked_u8)",
+        "purpose": "At k = 0 the reduced count 0 adds the whole mask.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_biasDivBVMasked_u8_k_zero",
+        "witness_class": "an instance with k = 0, x = -1"
+      },
+      {
+        "name": "k < 8 (biasDivBVMasked_u8)",
+        "purpose": "At k = 8 the reduced counts are 7, 0, 0.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_biasDivBVMasked_u8_k_eight",
+        "witness_class": "an instance with k = 8, x = -1"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "k = 2 (1 <= 2 < 8, 2 <= 6).",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_biasDivBV_u8",
+    "non_claims": [
+      "Evaluated on BitVec 8 (all 256 inputs, by kernel evaluation); this card neither establishes nor refutes claims at other BitVec widths. The general-width statement, in exact arithmetic, is biasDiv_eq_tdiv_of_lt.",
+      "Part (a) at k = 0 relies on total shifts; see biasDiv_eq_tdiv_of_lt for the machine reading."
+    ],
+    "prior_art": [
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file lib/Integers.v (word-size-generic functor Make): Theorem shrx_shr (line 2362) and Theorem shrx_shr_2 (line 2403): for y < zwordsize - 1, shrx x y = shr (add x (shru (shr x (repr (zwordsize - 1))) (sub iwordsize y))) y, with wrapping add.",
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Figure 5.2 (signed TRUNC(n/d) for constant d != 0) handles |d| = 1 in a separate first branch and, for |d| = 2^l, issues q = SRA(n + SRL(SRA(n, l - 1), N - l), l), then negates q if d < 0; Table 3.1 restricts SLL, SRA and SRL shift counts to 0 <= n <= N - 1."
+    ],
+    "design_question": "Does the bias-and-shift sequence survive wrap-around arithmetic on a real bit-vector type, and with which shift semantics?"
+  },
+  {
+    "id": "mulShift_rem_eq_mod_of_correct",
+    "lean": "Toy.MagicDiv.mulShift_rem_eq_mod_of_correct",
+    "lean_names": [
+      "Toy.MagicDiv.mulShift_rem_eq_mod_of_sandwich"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: the conventional remainder n - (n div d)*d (Lemire-Kaser-Kurz Section 1; CompCert modu_divu).",
+    "plain_claim": "For all N, d, m, s: if (x*m) >>> s = x / d for every x < 2^N, then x - d*((x*m) >>> s) = x mod d for every x < 2^N (in particular under the sandwich bounds: mulShift_rem_eq_mod_of_sandwich).",
+    "hypotheses": [
+      {
+        "name": "h: MulShiftCorrect N d m s",
+        "purpose": "The remainder formula is derived from the quotient; with a wrong quotient it can be wrong.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_rem_correct",
+        "witness_class": "an instance with N = 1, d = 1, m = 0, s = 0 (fails at x = 1)"
+      },
+      {
+        "name": "input range x < 2^N",
+        "purpose": "The quotient is assumed correct for N-bit inputs x < 2^N; nothing is assumed about larger x.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_rem_input_range",
+        "witness_class": "an instance with N = 1, d = 3, m = 1, s = 1 (fails at x = 2)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 8, d = 7, (m, s) = (293, 11), x = 200.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_mulShift_rem",
+    "non_claims": [
+      "Unlike directRem_eq_mod_of_sandwich, this works for every quotient-correct pair, including single-word multipliers outside the sandwich.",
+      "Natural-number subtraction is exact here because d*q <= x; no machine-width claim."
+    ],
+    "prior_art": [
+      "Daniel Lemire, Owen Kaser, Nathan Kurz, 'Faster Remainder by Direct Computation: Applications to Compilers and Software Libraries', Software: Practice and Experience 49(6):953-970, 2019, DOI 10.1002/spe.2689; arXiv:1902.01961v3. Section 1 (Introduction): the conventional remainder 'n mod d = n - (n div d) * d' after computing the quotient by multiplication and shift.",
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file lib/Integers.v: Theorem modu_divu (line 966) and Theorem mods_divs (line 990), remainder as x - (x/y)*y; file backend/SelectDivproof.v: Theorem eval_moduimm (line 574) and Theorem eval_modsimm (line 694)."
+    ],
+    "design_question": "Can the remainder always be recovered from a correct multiply-shift quotient?"
+  },
+  {
+    "id": "sremMagic_eq_tmod_and_sign",
+    "lean": "Toy.MagicDiv.sremMagic_eq_tmod_and_sign",
+    "lean_names": [
+      "Toy.MagicDiv.ce_srem_uncorrected_sign",
+      "Toy.MagicDiv.sdivMagic",
+      "Toy.MagicDiv.sremMagic",
+      "Toy.MagicDiv.sremMagic_neg_example",
+      "Toy.MagicDiv.sremMagic_pos_examples"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: Lean 4 core Int.tmod lemmas combined with sdivMagic_eq_tdiv_of_sandwich (CompCert mods_divs and eval_modsimm for the machine version).",
+    "plain_claim": "For all N, l and natural numbers d, m (N - 1 is truncated subtraction, so (N-1)+l = l at N = 0), under 2^((N-1)+l) < m*d <= 2^((N-1)+l) + 2^l, for every signed N-bit x: x - d*sdivMagic m ((N-1)+l) x = Int.tmod x d; it lies in [0, d) when x >= 0 and in (-d, 0] when x < 0.",
+    "hypotheses": [
+      {
+        "name": "hlo: 2^((N-1)+l) < m*d (strict)",
+        "purpose": "As for sdivMagic_eq_tdiv_of_sandwich.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_srem_hlo",
+        "witness_class": "an instance with N = 8, l = 1, d = 2, m = 128, x = -2"
+      },
+      {
+        "name": "hhi: m*d <= 2^((N-1)+l) + 2^l",
+        "purpose": "As for sdivMagic_eq_tdiv_of_sandwich.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_srem_hhi",
+        "witness_class": "an instance with N = 8, l = 2, d = 7, m = 74, x = -125"
+      },
+      {
+        "name": "hx: SignedRange N x",
+        "purpose": "As for sdivMagic_eq_tdiv_of_sandwich.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_srem_range",
+        "witness_class": "an instance with N = 1, l = 0, d = 1, m = 2, x = 1"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "N = 32, l = 3, d = 7, m = 2454267027, x = 7 and x = -7.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_sremMagic_both_signs",
+    "non_claims": [
+      "Stated for natural-number divisors d (d >= 1 is forced by hlo); this card neither establishes nor refutes claims about negative divisors. For a negative divisor the truncated remainder is unchanged: Int.tmod x (-d) = Int.tmod x d (core Int.tmod_neg); it is not negated as the quotient is.",
+      "Using the uncorrected quotient gives a wrongly signed remainder (ce_srem_uncorrected_sign).",
+      "Hardware or language behavior of x % (-1) at x = -2^(N-1) was not examined."
+    ],
+    "prior_art": [
+      "Lean 4 core library, toolchain leanprover/lean4:v4.34.1: Int.tmod_def (Init/Data/Int/DivMod/Lemmas.lean:372), Int.tmod_nonneg (1393), Int.tmod_neg (1396), Int.tmod_lt_of_pos (1403), Int.lt_tmod_of_pos (1409).",
+      "CompCert, repository AbsInt/CompCert, commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, file lib/Integers.v: Theorem modu_divu (line 966) and Theorem mods_divs (line 990), remainder as x - (x/y)*y; file backend/SelectDivproof.v: Theorem eval_moduimm (line 574) and Theorem eval_modsimm (line 694).",
+      "Torbj\u00f6rn Granlund and Peter L. Montgomery, 'Division by Invariant Integers using Multiplication', Proceedings of the ACM SIGPLAN 1994 Conference on Programming Language Design and Implementation (PLDI '94), pp. 61-72, 1994, DOI 10.1145/178243.178249 (also printed in SIGPLAN Notices 29(6):61-72, DOI 10.1145/773473.178249). Theorem 5.1: if d != 0 and 0 < m*|d| - 2^(N+l-1) <= 2^l, then for -2^(N-1) <= n <= 2^(N-1) - 1 and q0 = floor(m*n/2^(N+l-1)), TRUNC(n/d) = q0 for n >= 0, d > 0 and 1 + q0 for n < 0, d > 0 (with sign changes for d < 0). Section 5 also warns: 'When d < 0, avoid rewriting the quotient as TRUNC((-n)/|d|), which fails for n = -2^(N-1).'"
+    ],
+    "design_question": "Is the signed remainder obtained from the corrected quotient the truncated remainder, with the dividend's sign?"
+  },
+  {
+    "id": "directRem_eq_mod_of_sandwich",
+    "lean": "Toy.MagicDiv.directRem_eq_mod_of_sandwich",
+    "lean_names": [
+      "Toy.MagicDiv.count_single_word_u8",
+      "Toy.MagicDiv.count_single_word_u8_directRem_fails",
+      "Toy.MagicDiv.directRem",
+      "Toy.MagicDiv.directRemB",
+      "Toy.MagicDiv.directRemB_iff",
+      "Toy.MagicDiv.directRem_neg_example",
+      "Toy.MagicDiv.directRem_pos_example",
+      "Toy.MagicDiv.sandwich_iff_directRem_bound"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_note": "T0: Lemire-Kaser-Kurz Theorem 1, here without their d < 2^N hypothesis.",
+    "plain_claim": "For all N, l, d, m with 2^(N+l) <= m*d <= 2^(N+l) + 2^l: the remainder can be computed without the quotient, (((x*m) mod 2^(N+l)) * d) >>> (N+l) = x mod d, for every x < 2^N (no d < 2^N hypothesis).",
+    "hypotheses": [
+      {
+        "name": "hlo: 2^(N+l) <= m*d",
+        "purpose": "As for mulShiftCorrect_of_sandwich.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_directRem_hlo",
+        "witness_class": "an instance with N = 2, l = 0, d = 2, m = 1 (fails at x = 1)"
+      },
+      {
+        "name": "hhi: m*d <= 2^(N+l) + 2^l",
+        "purpose": "Bounds the overshoot so that x*(m*d - 2^(N+l)) < 2^(N+l).",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_directRem_hhi",
+        "witness_class": "an instance with N = 8, l = 2, d = 7, m = 147 (fails at x = 205)"
+      },
+      {
+        "name": "input range x < 2^N",
+        "purpose": "As for mulShiftCorrect_of_sandwich.",
+        "tightness": "tight",
+        "counterexample": "Toy.MagicDiv.ce_directRem_input_range",
+        "witness_class": "an instance with N = 1, l = 0, d = 3, m = 1 (fails at x = 2)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "N = 32, l = 3, d = 7, m = 4908534053, x = 200.",
+    "nonvacuity_witness_lean": "Toy.MagicDiv.nv_sandwich_u32_div7",
+    "non_claims": [
+      "A multiplier that is correct for the quotient need not compute the remainder directly: for N = 8, d = 35, the single-word pair (m, s) = (235, 13) satisfies MulShiftCorrect 8 35 235 13, yet directRem 13 35 235 255 = 11 != 10 = 255 mod 35 (ce_directRem_quotient_valid_multiplier); among the 200 divisors 1 <= d <= 255 whose single-word candidate is quotient-correct (count_single_word_u8), 42 fail directRem with that candidate (count_single_word_u8_directRem_fails; its Boolean checkers are read through correctB_iff and directRemB_iff).",
+      "For shifts N + l with l < N and N >= 1, the sandwich bounds are equivalent to 2^(N+l) <= m*d and (2^N - 1)*(m*d - 2^(N+l)) < 2^(N+l) (sandwich_iff_directRem_bound), the bound of Lemire, Bartlett and Kaser's Theorem 2 for N-bit inputs; that theorem's necessity direction is not formalized here.",
+      "Stated for unsigned inputs x < 2^N; this card neither establishes nor refutes claims about signed inputs (for example, whether directRem applied to the bit patterns of negative signed dividends gives Int.tmod).",
+      "No machine-width claim: (x*m) mod 2^(N+l) has N + l bits and its product with d more."
+    ],
+    "prior_art": [
+      "Daniel Lemire, Owen Kaser, Nathan Kurz, 'Faster Remainder by Direct Computation: Applications to Compilers and Software Libraries', Software: Practice and Experience 49(6):953-970, 2019, DOI 10.1002/spe.2689; arXiv:1902.01961v3. Theorem 1: for d in [1, 2^N) and 2^(N+L) <= c*d <= 2^(N+L) + 2^L, n mod d = (((c*n) mod 2^(N+L))*d) div 2^(N+L) for all n in [0, 2^N).",
+      "Daniel Lemire, Colin Bartlett, Owen Kaser, 'Integer Division by Constants: Optimal Bounds', Heliyon 7(6):e07442, 2021, DOI 10.1016/j.heliyon.2021.e07442; arXiv:2012.12369v3. Theorem 2 (d > 0, numerators n in [0, N] with N >= d): floor(n/d) = floor(c*n/m) AND remainder(n, d) = floor(remainder(c*n, m)*d/m) for all such n iff 1/d <= c/m < (1 + 1/N)/d; it is an exact characterization of simultaneous quotient and direct-remainder correctness. Remark 2 compares it with the sufficient bound of Lemire, Kaser and Kurz (Theorem 1) and shows the two can differ (N = 10, d = 5, m = 2^5) but coincide when m = N + 1 >= 3.",
+      "Daniel Lemire, Owen Kaser, Nathan Kurz, 'Faster Remainder by Direct Computation: Applications to Compilers and Software Libraries', Software: Practice and Experience 49(6):953-970, 2019, DOI 10.1002/spe.2689; arXiv:1902.01961v3. Theorem 2 (signed direct remainder): for d in [1, 2^(N-1)) and 2^(N-1+L) < c*d < 2^(N-1+L) + 2^L (both strict), with mu = floor((lsb_(N-1+L)(c*n)*d)/2^(N-1+L)), n mod d = mu for n in [0, 2^(N-1)) and n mod d = mu - d + 1 for n in [-2^(N-1), 0), where mod is the truncating remainder. (not formalized here)."
+    ],
+    "design_question": "Can the remainder be computed directly from the low bits of x*m, and which multipliers allow it?"
+  }
+]

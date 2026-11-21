@@ -1,0 +1,1105 @@
+{
+  "statements": {
+    "Toy.MagicDiv.ExactCriterion": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "868abb6b8074587c902e2fe20404f62ca8939f06001138c7ab4618360802075e"
+    },
+    "Toy.MagicDiv.MulShiftCorrect": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "868abb6b8074587c902e2fe20404f62ca8939f06001138c7ab4618360802075e"
+    },
+    "Toy.MagicDiv.SignedRange": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "44f1ba5afd657ae1f443327e3152e59207199ee258f4174d4f144bf051199b5a"
+    },
+    "Toy.MagicDiv.allBelow": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "78b7a7df3b120ccb8b06030afb8e607fd3215001f3598890898a04fecdce1202"
+    },
+    "Toy.MagicDiv.allBelow_iff": {
+      "closure_sha256": "90649a88c0f03e0eff7bb0e77ecabf62c15153a081a9d5fdc484a35005fd7ae2",
+      "closure_size": 1,
+      "statement_sha256": "d420a48166d1bff8d6cd7d09c1e3332a08ac1d56e9df6f241b4d30b9cdda9d9d"
+    },
+    "Toy.MagicDiv.biasDiv": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "75a45a7ea89bc298b95be7f01c790e80a909afe789be31f09994c06b4defae06"
+    },
+    "Toy.MagicDiv.biasDivBV": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "9c845670e567d10cf1e1787c25910df128bdb6c5371beb9496caf7e0f42a8f7e"
+    },
+    "Toy.MagicDiv.biasDivBVMasked": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "9c845670e567d10cf1e1787c25910df128bdb6c5371beb9496caf7e0f42a8f7e"
+    },
+    "Toy.MagicDiv.biasDivBVMasked_u8": {
+      "closure_sha256": "0ddf220e983573480e9e87caa040c1c2a8bf88a972516648b87cc48008ca016e",
+      "closure_size": 1,
+      "statement_sha256": "6309caac0bf326719476a158df00d48347c5f6fa3c66a9f0cb0f056fd333021e"
+    },
+    "Toy.MagicDiv.biasDivBV_neg_example": {
+      "closure_sha256": "63830447004e4a346273b678280d4c9b1c9010ce615329f8f16270f2f72e0c6c",
+      "closure_size": 1,
+      "statement_sha256": "1eb4dc99f43f0cecc6b596057780a0a17e9c0642fabc5c8b3d35fa0127fc36c3"
+    },
+    "Toy.MagicDiv.biasDivBV_pos_example": {
+      "closure_sha256": "63830447004e4a346273b678280d4c9b1c9010ce615329f8f16270f2f72e0c6c",
+      "closure_size": 1,
+      "statement_sha256": "a294d54c937c747c09618d052ffa81be6f0f628e4a375407f02566d6eb72b61e"
+    },
+    "Toy.MagicDiv.biasDivBV_u8": {
+      "closure_sha256": "63830447004e4a346273b678280d4c9b1c9010ce615329f8f16270f2f72e0c6c",
+      "closure_size": 1,
+      "statement_sha256": "8255a992e346144eb258222188679203adac35ed833226f22ef775b6c537c0c3"
+    },
+    "Toy.MagicDiv.biasDivMasked": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "75a45a7ea89bc298b95be7f01c790e80a909afe789be31f09994c06b4defae06"
+    },
+    "Toy.MagicDiv.biasDivMasked_eq_tdiv_of_pos_of_lt": {
+      "closure_sha256": "cd94f221d604d7b9fb7bc4470810c6c405fb763fe070a757ff4d61656f00352a",
+      "closure_size": 4,
+      "statement_sha256": "73608427abb05d9ef1b3b2fcea3964fb21e5c8cdde311b1c0ccf6a579dcf8628"
+    },
+    "Toy.MagicDiv.biasDivMasked_k_zero_failures": {
+      "closure_sha256": "cd94f221d604d7b9fb7bc4470810c6c405fb763fe070a757ff4d61656f00352a",
+      "closure_size": 4,
+      "statement_sha256": "f47b25183dbf7e1959f8771cb823ba9fe70b9c3aea99818489731ca41871a78b"
+    },
+    "Toy.MagicDiv.biasDivMasked_neg_examples": {
+      "closure_sha256": "8f8698d49b6034fc374f17147d07207ae713ea0d6cfacb4c73ba39addac325db",
+      "closure_size": 4,
+      "statement_sha256": "7642842e186da133b3815c392729ffd2da9128bb2d341bffcc530609c68c5a68"
+    },
+    "Toy.MagicDiv.biasDivMasked_pos_examples": {
+      "closure_sha256": "8f8698d49b6034fc374f17147d07207ae713ea0d6cfacb4c73ba39addac325db",
+      "closure_size": 4,
+      "statement_sha256": "e4d218a5ffe960d4252593a5e5813691d1ab91b2ebc10384ba13e0a503b9fbdc"
+    },
+    "Toy.MagicDiv.biasDiv_eq_tdiv_of_lt": {
+      "closure_sha256": "25197ef46f7306d0002d175d4a9e9680c0ff016fa3009fff6a6c5b15a81073da",
+      "closure_size": 4,
+      "statement_sha256": "98665846976823b0c0246119bc9ce8ec4b8a6467baac5302956faba8938ed093"
+    },
+    "Toy.MagicDiv.biasDiv_neg_example": {
+      "closure_sha256": "e0c766207d2bb270c6da2cc2b8738e4d9bf5c19de89bd59b6a975609bd5f63b2",
+      "closure_size": 3,
+      "statement_sha256": "db9dca07346b705850db58e748b19967b711ddebb4d3fdfd7677f054a64d961c"
+    },
+    "Toy.MagicDiv.biasDiv_pos_examples": {
+      "closure_sha256": "e0c766207d2bb270c6da2cc2b8738e4d9bf5c19de89bd59b6a975609bd5f63b2",
+      "closure_size": 3,
+      "statement_sha256": "42e2acc6fbc1faafc31933cb6834ee4e376898e1c97377400bf281f19854e570"
+    },
+    "Toy.MagicDiv.biasSum": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "75a45a7ea89bc298b95be7f01c790e80a909afe789be31f09994c06b4defae06"
+    },
+    "Toy.MagicDiv.biasSumMasked": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "75a45a7ea89bc298b95be7f01c790e80a909afe789be31f09994c06b4defae06"
+    },
+    "Toy.MagicDiv.biasSum_neg_example": {
+      "closure_sha256": "163809439b0d98a5dfeab139efaf1f8ae6893eff533d1d8aefdf93af35dae094",
+      "closure_size": 2,
+      "statement_sha256": "2f1030dc673fb24a2781a8ad4b3c090d37fdd4835c52282d6ec84821ede7e91f"
+    },
+    "Toy.MagicDiv.bitvec_sdiv_intMin_negOne_wraps": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "0e4bd69e8efca1ec219664cb58a2470902f42ea0786013678c2954b7e1fc7d95"
+    },
+    "Toy.MagicDiv.ce_biasDivBVMasked_u8_k_eight": {
+      "closure_sha256": "0ddf220e983573480e9e87caa040c1c2a8bf88a972516648b87cc48008ca016e",
+      "closure_size": 1,
+      "statement_sha256": "e22f7db4c50d3a345debcd1e47ee622077fd5be0be9d1dfc787d217c705062f3"
+    },
+    "Toy.MagicDiv.ce_biasDivBVMasked_u8_k_zero": {
+      "closure_sha256": "0ddf220e983573480e9e87caa040c1c2a8bf88a972516648b87cc48008ca016e",
+      "closure_size": 1,
+      "statement_sha256": "aacfae8e362e297d7bdc0943a26502ce06eb332d530d80b9be3f6553eeca971e"
+    },
+    "Toy.MagicDiv.ce_biasDivBV_sdiv_k7": {
+      "closure_sha256": "63830447004e4a346273b678280d4c9b1c9010ce615329f8f16270f2f72e0c6c",
+      "closure_size": 1,
+      "statement_sha256": "609ea21712ff726b528dd3d12f2632e433a780eed4ea023107110754135f2271"
+    },
+    "Toy.MagicDiv.ce_biasDivBV_width": {
+      "closure_sha256": "63830447004e4a346273b678280d4c9b1c9010ce615329f8f16270f2f72e0c6c",
+      "closure_size": 1,
+      "statement_sha256": "c2bb696e3587df7d18c6b41f2f9cf4a1f33dabcbdbb2c11b05b0fd86b2cf20fd"
+    },
+    "Toy.MagicDiv.ce_biasDivMasked_hk": {
+      "closure_sha256": "cd94f221d604d7b9fb7bc4470810c6c405fb763fe070a757ff4d61656f00352a",
+      "closure_size": 4,
+      "statement_sha256": "1a8d3b7e8e1314fd97255a90bc5293fb2ff252244be3db05244c99c40063e278"
+    },
+    "Toy.MagicDiv.ce_biasDivMasked_hx": {
+      "closure_sha256": "cd94f221d604d7b9fb7bc4470810c6c405fb763fe070a757ff4d61656f00352a",
+      "closure_size": 4,
+      "statement_sha256": "0744da27807901f19a342a33b2dd46b7d66af9d6a068146d5800feadaee75112"
+    },
+    "Toy.MagicDiv.ce_biasDivMasked_k_zero": {
+      "closure_sha256": "cd94f221d604d7b9fb7bc4470810c6c405fb763fe070a757ff4d61656f00352a",
+      "closure_size": 4,
+      "statement_sha256": "2de92d4789f3d40c8a0c262817014834d99736776a05d82731f2a10ec9a536c5"
+    },
+    "Toy.MagicDiv.ce_biasDiv_hk": {
+      "closure_sha256": "25197ef46f7306d0002d175d4a9e9680c0ff016fa3009fff6a6c5b15a81073da",
+      "closure_size": 4,
+      "statement_sha256": "ee31d17559edbd77eb6a283d4e066d708fbf067e009caad24fdfa03eff3801a4"
+    },
+    "Toy.MagicDiv.ce_biasDiv_hx": {
+      "closure_sha256": "25197ef46f7306d0002d175d4a9e9680c0ff016fa3009fff6a6c5b15a81073da",
+      "closure_size": 4,
+      "statement_sha256": "d36b1ae93ecdc36112faf88051c25cc5a8a86622cd995efbdc8f05d76bd69ddf"
+    },
+    "Toy.MagicDiv.ce_ceilDiv_succ_premise": {
+      "closure_sha256": "ddc2ee3af60ba428839fe973d4594d581696df9502fd159d5dd7e84d9c69fc0d",
+      "closure_size": 2,
+      "statement_sha256": "2721b65ad14652dd047d2c1f4fec271f73c4e3decacbe1dcc76e37f01611b01e"
+    },
+    "Toy.MagicDiv.ce_directRem_hhi": {
+      "closure_sha256": "2f9d8b923b32013363801826b88acba864c7c7e402af022a26aa772fe72461f2",
+      "closure_size": 1,
+      "statement_sha256": "77638a3874f9ad205b6322f650a58d75aaaff4802f15d77f1d3f376c3f5c5631"
+    },
+    "Toy.MagicDiv.ce_directRem_hlo": {
+      "closure_sha256": "2f9d8b923b32013363801826b88acba864c7c7e402af022a26aa772fe72461f2",
+      "closure_size": 1,
+      "statement_sha256": "c44def73e5988bb6d5968bff401dedf4e0ea4446057e54b1b3f52352f64760ee"
+    },
+    "Toy.MagicDiv.ce_directRem_input_range": {
+      "closure_sha256": "2f9d8b923b32013363801826b88acba864c7c7e402af022a26aa772fe72461f2",
+      "closure_size": 1,
+      "statement_sha256": "19e89b949fea3f056ada5d69060a72f8e3485c083eda733da06beadf25ce7cd2"
+    },
+    "Toy.MagicDiv.ce_directRem_quotient_valid_multiplier": {
+      "closure_sha256": "8df63a68c19ae45158b5802ac6bd66e63cdbe5be815277543204d94be4390f24",
+      "closure_size": 6,
+      "statement_sha256": "e7a7f7842afeb151a58fb7645febf741bd97e18e1bb1b3edd79161e4ddd25dcc"
+    },
+    "Toy.MagicDiv.ce_exactCriterion_d_zero": {
+      "closure_sha256": "660ad0cc48e85176c51b5ad14eb0dc75b1e849ac6b9128eb2157bb418647ca11",
+      "closure_size": 3,
+      "statement_sha256": "9daf2aab5db84e1762cb977365df57b6cb50ff00edc1fcb269a876f9a111fa3b"
+    },
+    "Toy.MagicDiv.ce_exactCriterion_hdN": {
+      "closure_sha256": "660ad0cc48e85176c51b5ad14eb0dc75b1e849ac6b9128eb2157bb418647ca11",
+      "closure_size": 3,
+      "statement_sha256": "86f9cfc8773242201991861e3c939b14ba2d212894f8a4c5e8e07d2e8211f4b2"
+    },
+    "Toy.MagicDiv.ce_exactCriterion_u8_d_256": {
+      "closure_sha256": "660ad0cc48e85176c51b5ad14eb0dc75b1e849ac6b9128eb2157bb418647ca11",
+      "closure_size": 3,
+      "statement_sha256": "a8ffaa59628a28462cd19fe9f41266771d770646fbb9a6cd87dd5f2a1f19a2c8"
+    },
+    "Toy.MagicDiv.ce_exactCriterion_u8_d_zero": {
+      "closure_sha256": "660ad0cc48e85176c51b5ad14eb0dc75b1e849ac6b9128eb2157bb418647ca11",
+      "closure_size": 3,
+      "statement_sha256": "cdcfc3f44e1a8fbcbe45f9a454b35c21c3888cef18027a16bb8d3db44d863c20"
+    },
+    "Toy.MagicDiv.ce_exists_ceilDiv_hdN": {
+      "closure_sha256": "ddc2ee3af60ba428839fe973d4594d581696df9502fd159d5dd7e84d9c69fc0d",
+      "closure_size": 2,
+      "statement_sha256": "32193a7a521b63be57db85ecbec8aaabe6b11b054d7df89466b4f4f60e29f433"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_correct_h": {
+      "closure_sha256": "b66cfefaa98855b9e4411f9360048497d0449715d2d528924c41467d883c9161",
+      "closure_size": 1,
+      "statement_sha256": "72660144eaf07728b0f4a57826d8181a2e490ec38af90a9b3a236ee96f62187f"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_correct_hl": {
+      "closure_sha256": "651a196c9bff2175025f09eecfdad5a5433d5a325abbb83fd6f5cd65b270b57d",
+      "closure_size": 2,
+      "statement_sha256": "8ee972edce3b2577627fa6a32197e7990b651f4a1c6c767ca6c8277d9f785026"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_correct_hm": {
+      "closure_sha256": "651a196c9bff2175025f09eecfdad5a5433d5a325abbb83fd6f5cd65b270b57d",
+      "closure_size": 2,
+      "statement_sha256": "be33c8ae4fde433df872a36c5957131b3fe290d00870042a0bfd978885916ce6"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_correct_input_range": {
+      "closure_sha256": "651a196c9bff2175025f09eecfdad5a5433d5a325abbb83fd6f5cd65b270b57d",
+      "closure_size": 2,
+      "statement_sha256": "f73c43d0c78163afe2210fe2731d6b8be4d8a73ac2d7e5bbed83019a5c1d987d"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_eq_wide_hl": {
+      "closure_sha256": "b66cfefaa98855b9e4411f9360048497d0449715d2d528924c41467d883c9161",
+      "closure_size": 1,
+      "statement_sha256": "aca71706971a0d6bce0f75351c4c5f7b6c02c84065df3d7e698455b54f8052fb"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_eq_wide_hm": {
+      "closure_sha256": "b66cfefaa98855b9e4411f9360048497d0449715d2d528924c41467d883c9161",
+      "closure_size": 1,
+      "statement_sha256": "7227532b937a26eae4021aa62065f3ea240fec30b8574c927dd0813665f7564f"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_d_one": {
+      "closure_sha256": "e5f1e1d279216aa35c59ae45ef88ea1a00a84c3b8722c50eaf261bcd1a26fc7e",
+      "closure_size": 4,
+      "statement_sha256": "000f17c5debc1643b9eee1ea412df6d0fd9e156f09f7a1e7ce3c864bd6f4bb6f"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_input_range": {
+      "closure_sha256": "e5f1e1d279216aa35c59ae45ef88ea1a00a84c3b8722c50eaf261bcd1a26fc7e",
+      "closure_size": 4,
+      "statement_sha256": "2669885a6c22abb5688313c484054aee70d72b6b5862e0d6f83b6e293dbf34aa"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u16_div7_x_range": {
+      "closure_sha256": "e5f1e1d279216aa35c59ae45ef88ea1a00a84c3b8722c50eaf261bcd1a26fc7e",
+      "closure_size": 4,
+      "statement_sha256": "e115cf868ea3fe004f9fb8711dc3a18359e26fd345c70f17829ce26121ec9de6"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u8_d_one_canonical": {
+      "closure_sha256": "e5f1e1d279216aa35c59ae45ef88ea1a00a84c3b8722c50eaf261bcd1a26fc7e",
+      "closure_size": 4,
+      "statement_sha256": "ef4399d6218d6b9536e0510be57f2f78b6092087772543a77f883d892001a6e2"
+    },
+    "Toy.MagicDiv.ce_fixupQuot_unsignedMagic_u8_x_range": {
+      "closure_sha256": "e5f1e1d279216aa35c59ae45ef88ea1a00a84c3b8722c50eaf261bcd1a26fc7e",
+      "closure_size": 4,
+      "statement_sha256": "4f05004deacedb00ff8e3596d1e045e37ff36237771ffd323ea0a41a46278f9c"
+    },
+    "Toy.MagicDiv.ce_minimal_shift_u8_div7_input_range": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "fdd05113a1c8922e3026a1a6e91f18f0aba1d7dd1d2a5e08e45a407dd12348d6"
+    },
+    "Toy.MagicDiv.ce_minimal_shift_u8_div7_s_bound": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "295e0f1931f99eb0415b3f4fde529d35c23aa76bad684dc6b75a724d72de90a0"
+    },
+    "Toy.MagicDiv.ce_no_single_word_u8_div7_m_bound": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "6869ce7c0547b5896ad424d7eb31c63fcf82be5ec15187b46ec80f0211a7ba28"
+    },
+    "Toy.MagicDiv.ce_rem_correct": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "f832b471d74f736a9d396d750fdee5fd7f37cc4631d869617f90eddd0cec2c3b"
+    },
+    "Toy.MagicDiv.ce_rem_input_range": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "0680dd1a283561b98887bb88dd1cbb554a4a02bbc5c88efc923c8b019032fccc"
+    },
+    "Toy.MagicDiv.ce_sandwich_hhi": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "126bf15b2781c3d0e744182f7efab6ff0df42639c09bd0a9a7678253a828394f"
+    },
+    "Toy.MagicDiv.ce_sandwich_hlo": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "d01c49114a8982e9bd48abe40cac5edaaf07fa845772dd053be2e5774b2d663e"
+    },
+    "Toy.MagicDiv.ce_sandwich_input_range": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "7b97d3f15918c3ff14070da4a0ff092a8bef13254410709e71765361ebee80dd"
+    },
+    "Toy.MagicDiv.ce_sdiv_hhi": {
+      "closure_sha256": "53480c3781894c34e2be13ba88f61f5fdc21620cf56e8e8db5ca604a9a5606f4",
+      "closure_size": 2,
+      "statement_sha256": "d7e624a577744bc8a9c97fb769c46c2ca2181c6e72c825dbbb2c3320f2d79fcf"
+    },
+    "Toy.MagicDiv.ce_sdiv_hlo": {
+      "closure_sha256": "53480c3781894c34e2be13ba88f61f5fdc21620cf56e8e8db5ca604a9a5606f4",
+      "closure_size": 2,
+      "statement_sha256": "3625c1ea4f45cf29d2852767d02b6de20e6eda7863558fc87ab5ca6d06861896"
+    },
+    "Toy.MagicDiv.ce_sdiv_range": {
+      "closure_sha256": "47d0b0a7c4cf51460ced7ec29ddff7b76c8459a93f706636c41f83f9101db3b9",
+      "closure_size": 1,
+      "statement_sha256": "0c22bdcf8d48de74adb320807424c9781626631fa807ef0ce5c0e94365352bbd"
+    },
+    "Toy.MagicDiv.ce_signedMagic_d_zero": {
+      "closure_sha256": "5ac87a04d8095d426edad9ececa6378f2ca069ef0e66997e0ba3b89a309acb4c",
+      "closure_size": 2,
+      "statement_sha256": "d6faed1b8c68c56a7b137dcae1e2d53a89c99bc7f28c3ffe0826c070315f8a96"
+    },
+    "Toy.MagicDiv.ce_single_word_hN": {
+      "closure_sha256": "f42cff25440951c26a88a2542ce3c181934d0cc8282e7d48e138174e2beb9b9e",
+      "closure_size": 4,
+      "statement_sha256": "3d44d38bb76a61cda5fcae4006f2ec08bae1883f3111ea361d827601d84583a5"
+    },
+    "Toy.MagicDiv.ce_single_word_hdN": {
+      "closure_sha256": "f42cff25440951c26a88a2542ce3c181934d0cc8282e7d48e138174e2beb9b9e",
+      "closure_size": 4,
+      "statement_sha256": "43609f67f144c2c82671e097a1614b7cc86ee8dad3b24249edee886f11b989a4"
+    },
+    "Toy.MagicDiv.ce_srem_hhi": {
+      "closure_sha256": "06bbd1c1d6bf407f617a4300bf3c548615c6e9fb5f025e0c6c81814eb7f85a97",
+      "closure_size": 3,
+      "statement_sha256": "fbec9dbe23b6238291fd172da5af309a39bd9d786979184aa4cbcb7c4a38e9b4"
+    },
+    "Toy.MagicDiv.ce_srem_hlo": {
+      "closure_sha256": "06bbd1c1d6bf407f617a4300bf3c548615c6e9fb5f025e0c6c81814eb7f85a97",
+      "closure_size": 3,
+      "statement_sha256": "77a7281cb8655e99141a109ebbca285dcdef340659a0b807dfe9e3ada29b4540"
+    },
+    "Toy.MagicDiv.ce_srem_range": {
+      "closure_sha256": "8bd9fbb8059d165aa32c8fbdfd3a2996ef44de68b38f689f0ae9e38936e01fcb",
+      "closure_size": 2,
+      "statement_sha256": "d5b673e0fec6286e50c0fe9df7a3ce64133ae2f359fd04ef9322cd1cdd22dbfd"
+    },
+    "Toy.MagicDiv.ce_srem_uncorrected_sign": {
+      "closure_sha256": "789d09d4b19d01cfea6fd17368a35b5f52bc00139834db84dd1644b859e23c02",
+      "closure_size": 1,
+      "statement_sha256": "89425b4209da327e51b7ccbf3df059eccbc37a1f36229aac1eaec9a986795717"
+    },
+    "Toy.MagicDiv.ce_tdiv_signedRange_hx": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "0700d513537c629eb85dae7eee763b1799762cc3eb0bc87ed227de4f1bf9d652"
+    },
+    "Toy.MagicDiv.ce_two_pow_le": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "1cf2d3aa60bc7b206ccbd9236abade704cf06a80868af65a271be0dd4f480c27"
+    },
+    "Toy.MagicDiv.ce_uncorr_hhi": {
+      "closure_sha256": "85fa77043fa85bfb93d680c85c5b2fd9dffb9ed4bfa862bb7982b58095191df7",
+      "closure_size": 2,
+      "statement_sha256": "e9d393c3eca79063abb9428e25019c03068aef4785b145d902bc746943f0cacb"
+    },
+    "Toy.MagicDiv.ce_uncorr_hlo": {
+      "closure_sha256": "85fa77043fa85bfb93d680c85c5b2fd9dffb9ed4bfa862bb7982b58095191df7",
+      "closure_size": 2,
+      "statement_sha256": "0dddf7168d183a70b50111302d017f1c4bcb286e6217a90e66fec0eef501442f"
+    },
+    "Toy.MagicDiv.ce_uncorr_neg": {
+      "closure_sha256": "85fa77043fa85bfb93d680c85c5b2fd9dffb9ed4bfa862bb7982b58095191df7",
+      "closure_size": 2,
+      "statement_sha256": "f55b47eae1f06f3b1307f3d63def699a5c3c3fe5bd9e440c3b43a4f5da6c285b"
+    },
+    "Toy.MagicDiv.ce_uncorr_range": {
+      "closure_sha256": "789d09d4b19d01cfea6fd17368a35b5f52bc00139834db84dd1644b859e23c02",
+      "closure_size": 1,
+      "statement_sha256": "434edbf752ebe0f946dc0cde9482186bf04e113fa260173a43527a833ffcc143"
+    },
+    "Toy.MagicDiv.ce_unsignedMagic_ge_two_pow_d_zero": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "7e414c969b87fe49dd26fa19710fa92da16832362cbb0fbbfecbc76622863bb0"
+    },
+    "Toy.MagicDiv.ce_unsignedMagic_low_d_zero": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "9cf1c12a333ee1ae0693feacc1d99eb122029b2e949270320bcf7317f66396eb"
+    },
+    "Toy.MagicDiv.ce_unsignedMagic_low_hd": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "eba5e014f10d8b188596c8ac1be835c8ec97d77c274f0b152bbb1e9f0ddc6508"
+    },
+    "Toy.MagicDiv.ce_unsignedMagic_lt_two_pow_succ": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "31fdc4c65a77865e03d2ede611e685beda9dc51d0c5d0fd9e42bdd33bbc898bd"
+    },
+    "Toy.MagicDiv.ce_unsignedMagic_sandwich_d_zero": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "159695db316f206ba15bb5e0eb1a98988315096250f749cbe3fdef6ccbdbe0cc"
+    },
+    "Toy.MagicDiv.ceilDiv": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "481f0060f2f380f36cc958d245a5fdb9f5bc3554271d8070964a26c347c832a8"
+    },
+    "Toy.MagicDiv.ceilDiv_le_of_le_mul": {
+      "closure_sha256": "4f56e9b6ade16689ca7890a92b5056f309cb31303d6efcbcd790065b2ab6e13f",
+      "closure_size": 1,
+      "statement_sha256": "2716aeb5b1dfa2a48c4d44819378941de3573adb4e1d893ca396114746abc39b"
+    },
+    "Toy.MagicDiv.ceilDiv_neg_example": {
+      "closure_sha256": "4f56e9b6ade16689ca7890a92b5056f309cb31303d6efcbcd790065b2ab6e13f",
+      "closure_size": 1,
+      "statement_sha256": "699477c5dd9086fd9e73cabc92cb03b2d1d551fe49b491404eddcf7d18744459"
+    },
+    "Toy.MagicDiv.ceilDiv_pos_examples": {
+      "closure_sha256": "4f56e9b6ade16689ca7890a92b5056f309cb31303d6efcbcd790065b2ab6e13f",
+      "closure_size": 1,
+      "statement_sha256": "a080984a859903cc35def6ca1fa162dc48a5e4c5152efd1a443f1e9d3004d56a"
+    },
+    "Toy.MagicDiv.ceilDiv_succ_leaves_single_word_u8_div3": {
+      "closure_sha256": "ddc2ee3af60ba428839fe973d4594d581696df9502fd159d5dd7e84d9c69fc0d",
+      "closure_size": 2,
+      "statement_sha256": "98601db2f20fdaaff218bda6e2a4ac1f187f530397f827a9cf0991e8bb15b654"
+    },
+    "Toy.MagicDiv.clog2": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "57d9f15e0e19cb13841e2eade77ec4269dfa46ea06c3932b6019faa6c5096e11"
+    },
+    "Toy.MagicDiv.clog2_neg_examples": {
+      "closure_sha256": "fc70e1c376ecec941e89c06339c491e93dde37ffd550b7a5bfba2707ad9cfa9a",
+      "closure_size": 1,
+      "statement_sha256": "11b81dc585b2c24e4f0b40c862b959645b6c87df70347115bc10253f010bfa33"
+    },
+    "Toy.MagicDiv.clog2_pos_examples": {
+      "closure_sha256": "fc70e1c376ecec941e89c06339c491e93dde37ffd550b7a5bfba2707ad9cfa9a",
+      "closure_size": 1,
+      "statement_sha256": "3be00e61b86945fe75f2dad206f956b73da3e5a87138d9dff6f14246098afd92"
+    },
+    "Toy.MagicDiv.correctB": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "21d0de6002e84ce4d012ad414f862ae57aaa134e63c3017a42a8ae61fb8ca692"
+    },
+    "Toy.MagicDiv.correctB_iff": {
+      "closure_sha256": "214ba0f1480f1732b0cf9744c37e5ddd35642b1e13ebae9d07e15cf5616247c3",
+      "closure_size": 3,
+      "statement_sha256": "8cfadf48205fab294df60e0f58def05d979d58c7d8325a9a9f9eb9a253907d26"
+    },
+    "Toy.MagicDiv.count_no_single_word_u8": {
+      "closure_sha256": "8e4232e90deee2d88f1c2275745869ff64a131ddeba78536ddcb3e9b88706161",
+      "closure_size": 6,
+      "statement_sha256": "cb1d4c93746e411c40d3bd2db8feb3cbd513b95e7bc4efa4ae43f800232d2e71"
+    },
+    "Toy.MagicDiv.count_single_word_u8": {
+      "closure_sha256": "8e4232e90deee2d88f1c2275745869ff64a131ddeba78536ddcb3e9b88706161",
+      "closure_size": 6,
+      "statement_sha256": "3986545baa38b0e4a2ac9eb2597cb04994aa0cc23bd5354be80ac5fb0ba7dc81"
+    },
+    "Toy.MagicDiv.count_single_word_u8_directRem_fails": {
+      "closure_sha256": "aabaaff89218117176b45c30670e90f7f7d233419a869e5d6952c49861feb59c",
+      "closure_size": 8,
+      "statement_sha256": "a3818a395c4a77f9e0ed449e3464d615c96a487b90b397eb38ce2507260f71ed"
+    },
+    "Toy.MagicDiv.directRem": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "2f88cc0f4fc1b9a6b8877fe15657029736673d3d9f71d61387213e74ec89a07a"
+    },
+    "Toy.MagicDiv.directRemB": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "0fd4bd1a0e128b02bc5945e702082920f506105f670b03f72a24d4b6dbd63459"
+    },
+    "Toy.MagicDiv.directRemB_iff": {
+      "closure_sha256": "acc1b1de6d99a04fc2142d6a2c759583f818747cf2ccef2c62c9a084509f22bd",
+      "closure_size": 3,
+      "statement_sha256": "adb6baffe4d823cfbc5fe6763b5e8637776fffb3d4a2cda11e9f10f746452043"
+    },
+    "Toy.MagicDiv.directRem_eq_mod_of_sandwich": {
+      "closure_sha256": "2f9d8b923b32013363801826b88acba864c7c7e402af022a26aa772fe72461f2",
+      "closure_size": 1,
+      "statement_sha256": "c26c1664a71ced43b751b086bb4ea339cfd9427ee493ec0ccbd0adc70f3c82c2"
+    },
+    "Toy.MagicDiv.directRem_neg_example": {
+      "closure_sha256": "2f9d8b923b32013363801826b88acba864c7c7e402af022a26aa772fe72461f2",
+      "closure_size": 1,
+      "statement_sha256": "94b63da8ff307d86861757f4966824ae8ecf01f7bcb9805777b87f51331e06bc"
+    },
+    "Toy.MagicDiv.directRem_pos_example": {
+      "closure_sha256": "2f9d8b923b32013363801826b88acba864c7c7e402af022a26aa772fe72461f2",
+      "closure_size": 1,
+      "statement_sha256": "e7e3cde3f2123aec86caf986f07f0022f9450cdcfa27feb1a2399cf347856ca2"
+    },
+    "Toy.MagicDiv.exactCriterion_neg_examples": {
+      "closure_sha256": "b03cd57f0919cd22b96b9665263486524a4a5d5c8d56cc87520e0200668782fd",
+      "closure_size": 2,
+      "statement_sha256": "d73f0750e173c8be632444d56fdc45ed350c8e9c5dfad482c74e0d273038d2ba"
+    },
+    "Toy.MagicDiv.exactCriterion_pos_examples": {
+      "closure_sha256": "b03cd57f0919cd22b96b9665263486524a4a5d5c8d56cc87520e0200668782fd",
+      "closure_size": 2,
+      "statement_sha256": "381775dfd46b3ae47ec03a199e4e9acfc91d71249990ec41b9abebe57515ba17"
+    },
+    "Toy.MagicDiv.exists_mulShiftCorrect_iff_ceilDiv": {
+      "closure_sha256": "ddc2ee3af60ba428839fe973d4594d581696df9502fd159d5dd7e84d9c69fc0d",
+      "closure_size": 2,
+      "statement_sha256": "a43f01c48b84b0e3aa0eebfdf2beab9b23890fd352688cf659482ffbc16edc0a"
+    },
+    "Toy.MagicDiv.exists_mulShiftCorrect_iff_ceilDiv_d_zero": {
+      "closure_sha256": "ddc2ee3af60ba428839fe973d4594d581696df9502fd159d5dd7e84d9c69fc0d",
+      "closure_size": 2,
+      "statement_sha256": "693c5d9a56ed3cbd10e7617d9039a66fd53b5262895f4fd0c63bc0de5d217466"
+    },
+    "Toy.MagicDiv.fixupQuot": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "0e18d0e90cdcdf5e3b869bac5369f3c2f4e61adccd92c1a6cb7f3e96b8bc5e7f"
+    },
+    "Toy.MagicDiv.fixupQuot_correct": {
+      "closure_sha256": "651a196c9bff2175025f09eecfdad5a5433d5a325abbb83fd6f5cd65b270b57d",
+      "closure_size": 2,
+      "statement_sha256": "22ed1dc67f78b4787170201b1a04d3d66382241b621d3e8542d22363d76c3125"
+    },
+    "Toy.MagicDiv.fixupQuot_eq_wide": {
+      "closure_sha256": "b66cfefaa98855b9e4411f9360048497d0449715d2d528924c41467d883c9161",
+      "closure_size": 1,
+      "statement_sha256": "1e6841884023fdae0e1a74d482e859b03c81a48ec57306a180ff20119d9223f0"
+    },
+    "Toy.MagicDiv.fixupQuot_neg_example": {
+      "closure_sha256": "b66cfefaa98855b9e4411f9360048497d0449715d2d528924c41467d883c9161",
+      "closure_size": 1,
+      "statement_sha256": "4b483e99165cd85a9d4e599dac9dd210f294b622591d44dc7cf8aae8c2378120"
+    },
+    "Toy.MagicDiv.fixupQuot_pos_examples": {
+      "closure_sha256": "b66cfefaa98855b9e4411f9360048497d0449715d2d528924c41467d883c9161",
+      "closure_size": 1,
+      "statement_sha256": "f352144ada0fcb67169a74a5b572eb307681d7615ff33ad4fb399e3d1d2b21c7"
+    },
+    "Toy.MagicDiv.fixupQuot_shift_eq_width": {
+      "closure_sha256": "fc70e1c376ecec941e89c06339c491e93dde37ffd550b7a5bfba2707ad9cfa9a",
+      "closure_size": 1,
+      "statement_sha256": "76c48239627de441bd3f367c42ba518705f5fc94383d41c63b9cabb53410a3cf"
+    },
+    "Toy.MagicDiv.fixupQuot_shift_lt_width": {
+      "closure_sha256": "fc70e1c376ecec941e89c06339c491e93dde37ffd550b7a5bfba2707ad9cfa9a",
+      "closure_size": 1,
+      "statement_sha256": "f8227fd770eb5dbb26f975e222574776e29fe27c99c570439fb2e6260874b637"
+    },
+    "Toy.MagicDiv.fixupQuot_shift_lt_width_iff": {
+      "closure_sha256": "fc70e1c376ecec941e89c06339c491e93dde37ffd550b7a5bfba2707ad9cfa9a",
+      "closure_size": 1,
+      "statement_sha256": "255afdb3f8ea7bd370f9fcf20ae26682f101925fe52248ff2341d5e56cc4996d"
+    },
+    "Toy.MagicDiv.fixupQuot_shift_width_u8_d300": {
+      "closure_sha256": "fc70e1c376ecec941e89c06339c491e93dde37ffd550b7a5bfba2707ad9cfa9a",
+      "closure_size": 1,
+      "statement_sha256": "412a5a6aeae31d374acfd7980b88cde7001f2d413cf31b09d1a6e7a021126db8"
+    },
+    "Toy.MagicDiv.fixupQuot_unsignedMagic_correct": {
+      "closure_sha256": "e5f1e1d279216aa35c59ae45ef88ea1a00a84c3b8722c50eaf261bcd1a26fc7e",
+      "closure_size": 4,
+      "statement_sha256": "18404efa641f91ae0fba4a6180b95707d20d69083eb0bbc24c9a6cb304f851f0"
+    },
+    "Toy.MagicDiv.fixupQuot_unsignedMagic_u16_div7": {
+      "closure_sha256": "e5f1e1d279216aa35c59ae45ef88ea1a00a84c3b8722c50eaf261bcd1a26fc7e",
+      "closure_size": 4,
+      "statement_sha256": "871c09deb87d6b2857faca74ceac00351c2233b8f06059dde9a993a15947ad6b"
+    },
+    "Toy.MagicDiv.fixupQuot_unsignedMagic_u8": {
+      "closure_sha256": "e5f1e1d279216aa35c59ae45ef88ea1a00a84c3b8722c50eaf261bcd1a26fc7e",
+      "closure_size": 4,
+      "statement_sha256": "62fd7d1130b43b19100098c81468cc0df84cf2d32de6d05c785f52e1c7dcdd23"
+    },
+    "Toy.MagicDiv.int_shiftRight_eq_tdiv_iff": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "4c56175263d6e8790d25250f4bd1e9491d048efd36628dfef690c46daf21d60c"
+    },
+    "Toy.MagicDiv.lastFullBlockEnd": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "89d358c33069524cef5266c160ae7d5b1cf43b1b2b10526b0483f2468efc9327"
+    },
+    "Toy.MagicDiv.lastFullBlockEnd_neg_example": {
+      "closure_sha256": "d8980f5d908dbb285d1ab812ee01aeada7effccd6d28c74177e48cbeed67f354",
+      "closure_size": 1,
+      "statement_sha256": "b19dc2c7d59a373bbbb75314a82d9eb43d20619d235c5eb3a8003a8775dac123"
+    },
+    "Toy.MagicDiv.lastFullBlockEnd_pos_example": {
+      "closure_sha256": "d8980f5d908dbb285d1ab812ee01aeada7effccd6d28c74177e48cbeed67f354",
+      "closure_size": 1,
+      "statement_sha256": "0dc339cb6294ee3a8c0983c6d3c122e36f683997df740b0e3dd8fe85c1534c4d"
+    },
+    "Toy.MagicDiv.le_ceilDiv_mul": {
+      "closure_sha256": "4f56e9b6ade16689ca7890a92b5056f309cb31303d6efcbcd790065b2ab6e13f",
+      "closure_size": 1,
+      "statement_sha256": "d273e9949f1faf02b66ecda3f28fdd1b7e1eca47c06e3e53eb3ab0d81d8eb3b7"
+    },
+    "Toy.MagicDiv.lsrN": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "1ac855b5dc2b16b545a392740d6aa68d1d81fea7445db7d0ce8b077e00c21b2a"
+    },
+    "Toy.MagicDiv.lsrN_neg_example": {
+      "closure_sha256": "995392a103b216cd5f0927332328c69a414b1033aa5ea7f31a4c97d5dab562f0",
+      "closure_size": 1,
+      "statement_sha256": "f6a933027052c57ad7121263c42e665bc6aa33a898410e70bc198ae1e4336610"
+    },
+    "Toy.MagicDiv.lsrN_pos_examples": {
+      "closure_sha256": "995392a103b216cd5f0927332328c69a414b1033aa5ea7f31a4c97d5dab562f0",
+      "closure_size": 1,
+      "statement_sha256": "f80bd170b0b80ec68ebbd6461bde46b0474ea0941725c2fdbd072ce96dfa4377"
+    },
+    "Toy.MagicDiv.magic_neg_examples": {
+      "closure_sha256": "b0f7399479c8bcd99b7f3bd7c16d886afd06c7874656173cad2394fc140699a7",
+      "closure_size": 5,
+      "statement_sha256": "3a69a83efe57952872fd8a801f86a82451e6f909806e47069a6ecea9a25adee1"
+    },
+    "Toy.MagicDiv.magic_pos_examples": {
+      "closure_sha256": "b0f7399479c8bcd99b7f3bd7c16d886afd06c7874656173cad2394fc140699a7",
+      "closure_size": 5,
+      "statement_sha256": "314bfb385ba82c7ffa48a2d7de3aa1dace365e5f9eee748b8fbf56cc6d379f7a"
+    },
+    "Toy.MagicDiv.minimal_shift_u8_div7": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "2961e0e8c5d7f566115734b6b34fd404b772d411117c067046410fd80d9e865f"
+    },
+    "Toy.MagicDiv.mulShiftCorrect_ceilDiv_succ": {
+      "closure_sha256": "ddc2ee3af60ba428839fe973d4594d581696df9502fd159d5dd7e84d9c69fc0d",
+      "closure_size": 2,
+      "statement_sha256": "9ce5171aabf0f463b6eb4c2fe6356ec6136c07c8ba156a3f233328006379de2d"
+    },
+    "Toy.MagicDiv.mulShiftCorrect_iff_exactCriterion": {
+      "closure_sha256": "660ad0cc48e85176c51b5ad14eb0dc75b1e849ac6b9128eb2157bb418647ca11",
+      "closure_size": 3,
+      "statement_sha256": "ed5d7196b91dad5fcfe672700e962fd979db1e51caac36c675c9bb4817d54f36"
+    },
+    "Toy.MagicDiv.mulShiftCorrect_iff_exactCriterion_u8": {
+      "closure_sha256": "660ad0cc48e85176c51b5ad14eb0dc75b1e849ac6b9128eb2157bb418647ca11",
+      "closure_size": 3,
+      "statement_sha256": "7afe40dfde83173bcd3b88b530ef81f095446511b62225562779cab3af252f69"
+    },
+    "Toy.MagicDiv.mulShiftCorrect_iff_of_two_pow_le": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "bf7ff3745ae71adec285f696986ffdd82a30c65fcc6058024ca53a5efc81bcb3"
+    },
+    "Toy.MagicDiv.mulShiftCorrect_neg_examples": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "7e8c0fd7e7f78f38e6848512232f31f0f53b2819c6ec76e4cfc25ef44c0b05a6"
+    },
+    "Toy.MagicDiv.mulShiftCorrect_of_sandwich": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "b8f5c8e6c730dbe520eda9498a62fc8bc3aedec8df411a497c708850ef7fa6ec"
+    },
+    "Toy.MagicDiv.mulShiftCorrect_pos_examples": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "9d0edffd8f94f94d895dd7a6e7bb940e57aaadbef5d5021ade7331a6f18a9c2b"
+    },
+    "Toy.MagicDiv.mulShiftCorrect_u32_div641_shift32": {
+      "closure_sha256": "37055a21f3a5cca10baeba12a3090140e03aef32b95f625c40dffc875ce729de",
+      "closure_size": 3,
+      "statement_sha256": "bab38630f152f44187fd4ada730af3d6be6d90f7805e3132b54eac55107cf7ca"
+    },
+    "Toy.MagicDiv.mulShift_rem_eq_mod_of_correct": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "8174954189b320be88515310e8f0a4f0fa01085583fc2fda6baec8fd37b04cdd"
+    },
+    "Toy.MagicDiv.mulShift_rem_eq_mod_of_sandwich": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "048545a3851e96274f2cc4738937c1d77593b8edd6db1a9155d6b331fb6a6039"
+    },
+    "Toy.MagicDiv.mulShift_u8_div7_below_209": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "72066a3bdefa991e800c56e3f2a4f073177cf24b40d7e5a3c651b2f451f3db63"
+    },
+    "Toy.MagicDiv.no_single_word_multiplier_u8_div7": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "fa43b1e628a57cd4e92a19157af034618551f7a1b591d2227bc8897460302c4e"
+    },
+    "Toy.MagicDiv.not_mulShiftCorrect_div_one_of_width_le": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "db32ddb2f39415c7ca59f44ad3c32cd3913e63b44253873338f1550d89e644bf"
+    },
+    "Toy.MagicDiv.not_mulShiftCorrect_of_gt_at": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "809b1e41ac2b27699987e913d944625436e4e293b27ca7a8c5ec3f078f651638"
+    },
+    "Toy.MagicDiv.not_mulShiftCorrect_of_mul_lt": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "852a136ee2905b137187f34fa5eb51da9b33cff939cd5ebda26f02d57d200693"
+    },
+    "Toy.MagicDiv.nv_biasDiv": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "d8a19ea8a756f5026f599c57880b9c880dc9d31475cc75626407700af8f33f59"
+    },
+    "Toy.MagicDiv.nv_biasDivBV_u8": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "48e94448992c95ce69349f00899d0c46ec87e175872e127c98dd2c1523b80372"
+    },
+    "Toy.MagicDiv.nv_ceilDiv_succ_u8_div7": {
+      "closure_sha256": "ddc2ee3af60ba428839fe973d4594d581696df9502fd159d5dd7e84d9c69fc0d",
+      "closure_size": 2,
+      "statement_sha256": "40b2952755851530c03d850e417ffd245d795d750c49a3acc71a24a197c7374c"
+    },
+    "Toy.MagicDiv.nv_evaluated_instances": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "0954d23678eea697be9b62082604f77abed8cec3bcd0777411c268e3e01e0f2e"
+    },
+    "Toy.MagicDiv.nv_exact_u8": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "33111e1536b0a28782b4634012918c9e23af4c21fef5d9570f9721ecee0f01e0"
+    },
+    "Toy.MagicDiv.nv_exact_u8_div7": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "47c6ffae1351ac7e97f5b00eb8d1d9e434ef8803e8ba6ace370f84c7d61a62c0"
+    },
+    "Toy.MagicDiv.nv_fixupQuot_correct_u8_div7": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "6430902910e54b196f9c24570bb1027cee13b53993d3c10d04c2752d845722f9"
+    },
+    "Toy.MagicDiv.nv_fixupQuot_unsignedMagic": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "37e73ba43260f59408ee140fc3a4fcac78fdfa1b7383fa4e55591f961e7ffc78"
+    },
+    "Toy.MagicDiv.nv_int_shiftRight": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "ee69eb5dae92a1de171b95e464310271c2cac985fc3a94972f16f91bee7b4841"
+    },
+    "Toy.MagicDiv.nv_mulShift_rem": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "c5d1dacc5ac76bbf5d491816d0885b94b17f913b9df54e19460a864d97356ebf"
+    },
+    "Toy.MagicDiv.nv_no_single_word_u8_div7": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "6d09f36cf463a92e8dad192803ae162ee22559027fcc842eebd4037638c0e26d"
+    },
+    "Toy.MagicDiv.nv_sandwich_u32_div7": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "6219562849201b2aea0eba1fc94375d5f2ef0179e425c812a0ef757cb955e708"
+    },
+    "Toy.MagicDiv.nv_sdivMagicUncorrected": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "11166bf121c6e679c2bf63d0f69acbe461ad0f4f194bbce7d2c04519463db8e2"
+    },
+    "Toy.MagicDiv.nv_signedMagic_sandwich_div7": {
+      "closure_sha256": "5ac87a04d8095d426edad9ececa6378f2ca069ef0e66997e0ba3b89a309acb4c",
+      "closure_size": 2,
+      "statement_sha256": "4b8755109762aa501459c8fbcafb5895b32d56576da7b78cf25dfa018f8f3948"
+    },
+    "Toy.MagicDiv.nv_signed_sandwich_i32_div7": {
+      "closure_sha256": "728ffa7a87ef1fb96d0b681f19c97a0a25308723d9aaad5ef4b2a2783994654d",
+      "closure_size": 3,
+      "statement_sha256": "398a81fcf72b9c852fec783abbed6de54e884c4d859ae27a74fcfd8d2e105734"
+    },
+    "Toy.MagicDiv.nv_single_word_u8_div7": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "370aa1041be874e3ea4b67053866d371d6e0a46449391a6938f1a5090b949a5e"
+    },
+    "Toy.MagicDiv.nv_sremMagic_both_signs": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "36b2315d521fb431ee4b8282db2c208cd92c3935a041ae7fc63352ca867ef2d0"
+    },
+    "Toy.MagicDiv.nv_tdiv_signedRange": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "7d81404e8d1a64e6c65557f4a4e43a4c0ee8912fe9d1f1a900011e249be154ca"
+    },
+    "Toy.MagicDiv.nv_unsignedMagic_bounds": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "04763b5dacb93ab3ab96562dd7c15cf82765ae03a9ea64d313ae84a2827d4086"
+    },
+    "Toy.MagicDiv.nv_unsignedMagic_sandwich_div7": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "6b4392fdb50d2116163d6f2e835462d20d1c4d965638cf9dfe90101e327ac548"
+    },
+    "Toy.MagicDiv.one_le_clog2": {
+      "closure_sha256": "fc70e1c376ecec941e89c06339c491e93dde37ffd550b7a5bfba2707ad9cfa9a",
+      "closure_size": 1,
+      "statement_sha256": "2e2424b86841e314464a458c3d2858813be716fd6a1c0b9f4a807035820d9dac"
+    },
+    "Toy.MagicDiv.pc_div7_u8_nine_bit_multiplier": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "4ff31d6f8b7b6e417d4632ae1a5435c2b11cafc7962f283c9aa895635bcf5187"
+    },
+    "Toy.MagicDiv.pc_single_word_shift_fits": {
+      "closure_sha256": "7c81305cf419666eb848f7bb054eecd305c251d33be4ba3686d9923974cb13d6",
+      "closure_size": 5,
+      "statement_sha256": "ea3a72583522e7ae3d97f7632409e4512a80a50bc5ccb53745b98cbfc184f8a3"
+    },
+    "Toy.MagicDiv.pos_of_two_pow_le_mul": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "6e8752ac164a8b96d14bede159d20ca253720fe1480f94d486ed19b63c4aa34c"
+    },
+    "Toy.MagicDiv.robison_multiply_add_u8_div7": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "4ad41341e85df87d443d793a8352c7358a12dbf2ca1045f249c96d9858aef1f2"
+    },
+    "Toy.MagicDiv.sandwich_iff_directRem_bound": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "c670f79ace7a64226da375f75f7f897b89e640b112117b2b3ddd70ef2bb21e54"
+    },
+    "Toy.MagicDiv.sandwich_not_necessary_u8_div35": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "d40a32bd5dbb1c716b8e9749d594e4e8833cb4189005192afd3fd6ae38d86de4"
+    },
+    "Toy.MagicDiv.sdivMagic": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "d717c0f9cf64387a67e6e798afeffae58cc29046a534ba4559ca78c0b47e83cb"
+    },
+    "Toy.MagicDiv.sdivMagicUncorrected": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "d717c0f9cf64387a67e6e798afeffae58cc29046a534ba4559ca78c0b47e83cb"
+    },
+    "Toy.MagicDiv.sdivMagicUncorrected_eq_sdivMagic_sub_one": {
+      "closure_sha256": "f1fc2b24226f2bb5c6e720d28b503c9c2606d2fe196732afa3d7b7fad3e34c6d",
+      "closure_size": 2,
+      "statement_sha256": "f87766b084545d4de9b0ee3b22da274bf3494fbd6943e0f58e8f9f90efe06b4e"
+    },
+    "Toy.MagicDiv.sdivMagicUncorrected_eq_tdiv_sub_one_of_neg": {
+      "closure_sha256": "85fa77043fa85bfb93d680c85c5b2fd9dffb9ed4bfa862bb7982b58095191df7",
+      "closure_size": 2,
+      "statement_sha256": "10d8fafc26b22907ee7ebd8cc3117dc188eb2cf1bce85335791ad3bef498b96e"
+    },
+    "Toy.MagicDiv.sdivMagicUncorrected_pos_examples": {
+      "closure_sha256": "789d09d4b19d01cfea6fd17368a35b5f52bc00139834db84dd1644b859e23c02",
+      "closure_size": 1,
+      "statement_sha256": "c8bc69552ca00fa0aa318548382dc34a1e5f1c130b0d91d9041e957a13a92f32"
+    },
+    "Toy.MagicDiv.sdivMagic_eq_tdiv_of_sandwich": {
+      "closure_sha256": "53480c3781894c34e2be13ba88f61f5fdc21620cf56e8e8db5ca604a9a5606f4",
+      "closure_size": 2,
+      "statement_sha256": "54175ff7fde1dc4b2e1f8fbd48f763f685b5438a5a3b75b8f201b8eb6d548223"
+    },
+    "Toy.MagicDiv.sdivMagic_neg_examples": {
+      "closure_sha256": "f1fc2b24226f2bb5c6e720d28b503c9c2606d2fe196732afa3d7b7fad3e34c6d",
+      "closure_size": 2,
+      "statement_sha256": "3cbea6ce86d2735b7b66c67729fe26ad0e2aa9b5ae94755d974715d871e07d4b"
+    },
+    "Toy.MagicDiv.sdivMagic_pos_examples": {
+      "closure_sha256": "47d0b0a7c4cf51460ced7ec29ddff7b76c8459a93f706636c41f83f9101db3b9",
+      "closure_size": 1,
+      "statement_sha256": "3c38dfc96d24994fe8f96c2e7472913e2725183a20cd599054825e7344e95b80"
+    },
+    "Toy.MagicDiv.signedMagic": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "89d358c33069524cef5266c160ae7d5b1cf43b1b2b10526b0483f2468efc9327"
+    },
+    "Toy.MagicDiv.signedMagic_neg_example": {
+      "closure_sha256": "5ac87a04d8095d426edad9ececa6378f2ca069ef0e66997e0ba3b89a309acb4c",
+      "closure_size": 2,
+      "statement_sha256": "cb0f59840690b53b8d382429eecdc6f9cf4e0eebd887db3c8e301f1b6f3559d4"
+    },
+    "Toy.MagicDiv.signedMagic_not_minimal_i8_div3": {
+      "closure_sha256": "5ac87a04d8095d426edad9ececa6378f2ca069ef0e66997e0ba3b89a309acb4c",
+      "closure_size": 2,
+      "statement_sha256": "f511a026f8ced52be8774df33ac7590af7ed44aac07ba2be8a078ce060d9de0c"
+    },
+    "Toy.MagicDiv.signedMagic_one_one": {
+      "closure_sha256": "5ac87a04d8095d426edad9ececa6378f2ca069ef0e66997e0ba3b89a309acb4c",
+      "closure_size": 2,
+      "statement_sha256": "1fc4f256957fc464bfe23c87074e6bb36a4a1813c15d68f2d1eafadacee556b4"
+    },
+    "Toy.MagicDiv.signedMagic_pos_examples": {
+      "closure_sha256": "5ac87a04d8095d426edad9ececa6378f2ca069ef0e66997e0ba3b89a309acb4c",
+      "closure_size": 2,
+      "statement_sha256": "ef75fea34323fe3a480fe6eb19af7a548e903d60db11261d1c9686fff688f2a3"
+    },
+    "Toy.MagicDiv.signedMagic_sandwich": {
+      "closure_sha256": "5ac87a04d8095d426edad9ececa6378f2ca069ef0e66997e0ba3b89a309acb4c",
+      "closure_size": 2,
+      "statement_sha256": "25950942928487aab87105e824d4f838fca17b8befcb097a69b3d2b3f753cd9d"
+    },
+    "Toy.MagicDiv.signedRange_iff_of_pos": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "dda3ea3235bf3db0a7cc2853d3541c289a44e199aa839f303a86495fdaf7371a"
+    },
+    "Toy.MagicDiv.signedRange_iff_toInt_ofInt": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "7bffb9d6d8557fad2741420268f7afcdb98c8364b066a9e2682a7c4d188e0357"
+    },
+    "Toy.MagicDiv.signedRange_neg_examples": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "751118fc0b91225581a75f69249b1d86650728e7ad7cbe91f1e5ec98fe94f3ac"
+    },
+    "Toy.MagicDiv.signedRange_pos_examples": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "39e6a73de6d75d5a5b3c8db4dcc98115b7d2efce19ef7aa6a56de6c6f964c609"
+    },
+    "Toy.MagicDiv.signedRange_zero_examples": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "1cc03b8655a298416a66cf62dedb698c196839f33e59975f93b63240a4e98727"
+    },
+    "Toy.MagicDiv.signedRange_zero_iff": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "83b47558f815a4335b011b5150b5dec0d225a2a2b4e7234bf7d162320fbb84de"
+    },
+    "Toy.MagicDiv.signed_sandwich_not_necessary_i8_div35": {
+      "closure_sha256": "53480c3781894c34e2be13ba88f61f5fdc21620cf56e8e8db5ca604a9a5606f4",
+      "closure_size": 2,
+      "statement_sha256": "315b2600f44334116f6e396e2df1ab9cbf37a4a5cc5960446f2aef6a59f6b7be"
+    },
+    "Toy.MagicDiv.singleWordMagic": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "89d358c33069524cef5266c160ae7d5b1cf43b1b2b10526b0483f2468efc9327"
+    },
+    "Toy.MagicDiv.singleWordMagic_lt_two_pow": {
+      "closure_sha256": "f42cff25440951c26a88a2542ce3c181934d0cc8282e7d48e138174e2beb9b9e",
+      "closure_size": 4,
+      "statement_sha256": "4bcfdc3a6731d85845222a82637cb4767fbf59bb1e5e5db255ce62dd7777788d"
+    },
+    "Toy.MagicDiv.singleWordMagic_zero_right": {
+      "closure_sha256": "f42cff25440951c26a88a2542ce3c181934d0cc8282e7d48e138174e2beb9b9e",
+      "closure_size": 4,
+      "statement_sha256": "5613f3c4e1eb3fd5f463729622cb7a4081c03850df70b6583e8ed3fc550eb287"
+    },
+    "Toy.MagicDiv.singleWordShift": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "89d358c33069524cef5266c160ae7d5b1cf43b1b2b10526b0483f2468efc9327"
+    },
+    "Toy.MagicDiv.singleWordShift_neg_example": {
+      "closure_sha256": "08e89b3a532d0d51185844b26a3193ef558adb80c3f1d1f1c8be0c012656b97b",
+      "closure_size": 2,
+      "statement_sha256": "390254d1c9bc8105ee1704a526a0fdc10e5adf08b689c17aa541c8fc9bdd3b97"
+    },
+    "Toy.MagicDiv.singleWordShift_not_minimal_u8_div9": {
+      "closure_sha256": "7c81305cf419666eb848f7bb054eecd305c251d33be4ba3686d9923974cb13d6",
+      "closure_size": 5,
+      "statement_sha256": "0323562f6b6a034116421d52c1be10e0edb42de979a264e220ca6a4ec1af6aca"
+    },
+    "Toy.MagicDiv.singleWordShift_one": {
+      "closure_sha256": "08e89b3a532d0d51185844b26a3193ef558adb80c3f1d1f1c8be0c012656b97b",
+      "closure_size": 2,
+      "statement_sha256": "968c8fd28573d7c433407f49ec656528ef443a97695f855af8c4214379a5a0d7"
+    },
+    "Toy.MagicDiv.single_word_multiplier_exists_iff": {
+      "closure_sha256": "7c81305cf419666eb848f7bb054eecd305c251d33be4ba3686d9923974cb13d6",
+      "closure_size": 5,
+      "statement_sha256": "ded1fad19b72af126e1e6ca758c7ea6f4178f59a0a67068474c213cd281fe8b2"
+    },
+    "Toy.MagicDiv.sremMagic": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "7640538a2cc1e77d42fd9fb65f215a7d0d58f3cd3271bff288bccc4edea57e68"
+    },
+    "Toy.MagicDiv.sremMagic_eq_tmod_and_sign": {
+      "closure_sha256": "06bbd1c1d6bf407f617a4300bf3c548615c6e9fb5f025e0c6c81814eb7f85a97",
+      "closure_size": 3,
+      "statement_sha256": "4c243747a260bffab2d40a2c4c15bd79f8427b5986ced5fd1cab10d30bc441ec"
+    },
+    "Toy.MagicDiv.sremMagic_neg_example": {
+      "closure_sha256": "8bd9fbb8059d165aa32c8fbdfd3a2996ef44de68b38f689f0ae9e38936e01fcb",
+      "closure_size": 2,
+      "statement_sha256": "709486a9e10b63a9cf2810b2e0e2bbd90141c01e71df738c711b6891c921aefc"
+    },
+    "Toy.MagicDiv.sremMagic_pos_examples": {
+      "closure_sha256": "8bd9fbb8059d165aa32c8fbdfd3a2996ef44de68b38f689f0ae9e38936e01fcb",
+      "closure_size": 2,
+      "statement_sha256": "3fbd47356b02b8682fea698e9a789564c505c13b39f354d0c9820b923b68807e"
+    },
+    "Toy.MagicDiv.succ_le_clog2_of_two_pow_lt": {
+      "closure_sha256": "fc70e1c376ecec941e89c06339c491e93dde37ffd550b7a5bfba2707ad9cfa9a",
+      "closure_size": 1,
+      "statement_sha256": "2231945b769bb707d9e8244a2a19fd69ed322469f94711c767317b2f10486485"
+    },
+    "Toy.MagicDiv.tdiv_signedRange_iff": {
+      "closure_sha256": "64b2c1b756c2b4291994b4dd72ddb5e69416630b3482c06e9af71e6ff16b6cc5",
+      "closure_size": 1,
+      "statement_sha256": "c246da26624dce033c3c2d920b1cb8f6ccb37406be6e0a4724eb798f65013111"
+    },
+    "Toy.MagicDiv.two_pow_le_mul_of_correct": {
+      "closure_sha256": "239638794d05a78400a184733b2444262e70466839b7123715ab3bc63eb4e606",
+      "closure_size": 1,
+      "statement_sha256": "c154bf567919e640ad4e3c6d02fa75fa7eaa51ea3552b3a169ed95ffc8c005b6"
+    },
+    "Toy.MagicDiv.two_pow_pred_lt_signedMagic": {
+      "closure_sha256": "5ac87a04d8095d426edad9ececa6378f2ca069ef0e66997e0ba3b89a309acb4c",
+      "closure_size": 2,
+      "statement_sha256": "832af3667ecab9e4bd5134f7416df80ac20b7ded00be8d0e4c711db2b8aec3aa"
+    },
+    "Toy.MagicDiv.two_pow_pred_lt_singleWordMagic": {
+      "closure_sha256": "f42cff25440951c26a88a2542ce3c181934d0cc8282e7d48e138174e2beb9b9e",
+      "closure_size": 4,
+      "statement_sha256": "b806e4dfd9f99ffd1b7a06606be3048b449f02463378b6f9057b590bd1068e45"
+    },
+    "Toy.MagicDiv.uncorrected_ne_fdiv_at_negative_multiple": {
+      "closure_sha256": "85fa77043fa85bfb93d680c85c5b2fd9dffb9ed4bfa862bb7982b58095191df7",
+      "closure_size": 2,
+      "statement_sha256": "e06062dee9d85bfbae06529b0b9e3f266a5edc4d1531e8a500c15277abad0ecf"
+    },
+    "Toy.MagicDiv.unsignedMagic": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "89d358c33069524cef5266c160ae7d5b1cf43b1b2b10526b0483f2468efc9327"
+    },
+    "Toy.MagicDiv.unsignedMagic_eq_two_pow_add_low": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "ca26ad4728a621b9951f3d3e96890e69e2af7126070a9ba63481e46aa7d4c6fa"
+    },
+    "Toy.MagicDiv.unsignedMagic_ge_two_pow_of_pos": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "c6cca047820ef21e88bfe4cf59f994bd2acc59127281333e0dc3f9f2256a45e7"
+    },
+    "Toy.MagicDiv.unsignedMagic_lt_two_pow_succ_above_examples": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "1164cc77e5dd53cb925800bc2f677f48ae575072578b970c4a47437c0f4646d7"
+    },
+    "Toy.MagicDiv.unsignedMagic_lt_two_pow_succ_converse_fails": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "636a119e424971832ae47916de9bde03f1e357592a378a25fde36d5d89766dd1"
+    },
+    "Toy.MagicDiv.unsignedMagic_lt_two_pow_succ_of_le": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "37abb640d0a7aeebf7353e589236ae8dfbd5e9b29569d031c84396cee6ac7917"
+    },
+    "Toy.MagicDiv.unsignedMagic_sandwich": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "3cc920d65b8be2908df60bcebc796ee4e1474acc7353b785743938d8e752eccb"
+    },
+    "Toy.MagicDiv.unsignedMagic_two_pow": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "ca44ff546b16b2b834d3e48c8caf90c48a536899f03acc384950a1b7c88e239d"
+    },
+    "Toy.MagicDiv.unsignedMagic_two_pow_succ_add_one": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "b6b700128c91578defc08d7b5dd18c249fc0f3c625ef492da8f97000a4523cda"
+    },
+    "Toy.MagicDiv.unsignedMagic_zero_right": {
+      "closure_sha256": "f3632b6d81782585f6f06cf7e52b9980974f172959a31389f3f9a9e8cf131e0d",
+      "closure_size": 3,
+      "statement_sha256": "e7b43ee20b4808721443ad1e2923627c4b4432ff3430030e1ecc3055ec0892e0"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
