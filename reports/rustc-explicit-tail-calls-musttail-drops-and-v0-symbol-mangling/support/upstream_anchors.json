@@ -1,0 +1,874 @@
+{
+  "repository": "rust-lang/rust",
+  "commits": [
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+    "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+  ],
+  "anchors": [
+    {
+      "path": "compiler/rustc_middle/src/mir/syntax.rs",
+      "anchor": "    /// Tail call.",
+      "what": "TerminatorKind::TailCall definition and doc comment",
+      "region_lines": 29,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 823,
+          "region_sha256_16": "9eaa5a569a8d9593",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 812,
+          "region_sha256_16": "9eaa5a569a8d9593",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 812,
+          "region_sha256_16": "9eaa5a569a8d9593",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_middle/src/mir/terminator.rs",
+      "anchor": "| TailCall { .. }",
+      "what": "TailCall listed among terminators without successors",
+      "region_lines": 2,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 538,
+          "region_sha256_16": "4b23e9ce6a4e95fe",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 554,
+          "region_sha256_16": "4b23e9ce6a4e95fe",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 554,
+          "region_sha256_16": "4b23e9ce6a4e95fe",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_hir_typeck/src/expr.rs",
+      "anchor": "fn check_expr_become(",
+      "what": "type check of `become`: return type must match without coercion",
+      "region_lines": 25,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 905,
+          "region_sha256_16": "f177312a59568713",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 947,
+          "region_sha256_16": "f177312a59568713",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 942,
+          "region_sha256_16": "f177312a59568713",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_build/src/check_tail_calls.rs",
+      "anchor": "if caller_sig.abi() != callee_sig.abi() {",
+      "what": "caller/callee ABI equality check",
+      "region_lines": 3,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 134,
+          "region_sha256_16": "e3a2b65b873fd1ce",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 132,
+          "region_sha256_16": "e3a2b65b873fd1ce",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 132,
+          "region_sha256_16": "e3a2b65b873fd1ce",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_build/src/check_tail_calls.rs",
+      "anchor": "if !callee_sig.abi().supports_guaranteed_tail_call() {",
+      "what": "ABI must support guaranteed tail calls",
+      "region_lines": 3,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 138,
+          "region_sha256_16": "2ab1e5efc40243b7",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 136,
+          "region_sha256_16": "2ab1e5efc40243b7",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 136,
+          "region_sha256_16": "2ab1e5efc40243b7",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_build/src/check_tail_calls.rs",
+      "anchor": "if caller_sig.inputs_and_output != callee_sig.inputs_and_output",
+      "what": "caller/callee signature equality check (first three lines)",
+      "region_lines": 3,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 150,
+          "region_sha256_16": "ad51ad14c97eba36",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 148,
+          "region_sha256_16": "f05cc218ea757b29",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 148,
+          "region_sha256_16": "f05cc218ea757b29",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_build/src/check_tail_calls.rs",
+      "anchor": "`become` is not allowed in closures",
+      "what": "closure rejection diagnostic",
+      "region_lines": 1,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 202,
+          "region_sha256_16": "f948a10b6526b58d",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 208,
+          "region_sha256_16": "c4d913dc2ad9a689",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 208,
+          "region_sha256_16": "c4d913dc2ad9a689",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_abi/src/extern_abi.rs",
+      "anchor": "pub fn supports_guaranteed_tail_call(self) -> bool {",
+      "what": "per-ABI tail-call support table",
+      "region_lines": 45,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 316,
+          "region_sha256_16": "92f0a10d454ff15d",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 321,
+          "region_sha256_16": "f00bd3a4c8f2f019",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 335,
+          "region_sha256_16": "f00bd3a4c8f2f019",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_abi/src/extern_abi.rs",
+      "anchor": "    RustTail,",
+      "what": "`extern \"tail\"` ABI variant (absent before it was introduced)",
+      "region_lines": 1,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": null,
+          "region_sha256_16": null,
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 55,
+          "region_sha256_16": "7c76020f5c1a7794",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 55,
+          "region_sha256_16": "7c76020f5c1a7794",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_feature/src/unstable.rs",
+      "anchor": "explicit_tail_calls,",
+      "what": "feature gate status of explicit_tail_calls",
+      "region_lines": 1,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 534,
+          "region_sha256_16": "c97beb5acc384178",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 523,
+          "region_sha256_16": "c97beb5acc384178",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 521,
+          "region_sha256_16": "c97beb5acc384178",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_feature/src/unstable.rs",
+      "anchor": "rust_tail_cc,",
+      "what": "feature gate of the `extern \"tail\"` ABI (absent before it was introduced)",
+      "region_lines": 1,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": null,
+          "region_sha256_16": null,
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 731,
+          "region_sha256_16": "83fb891791217922",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 731,
+          "region_sha256_16": "83fb891791217922",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_build/src/builder/expr/stmt.rs",
+      "anchor": "ExprKind::Become { value } => {",
+      "what": "MIR building of `become`",
+      "region_lines": 37,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 107,
+          "region_sha256_16": "9cd1cda48267871c",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 107,
+          "region_sha256_16": "9cd1cda48267871c",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 107,
+          "region_sha256_16": "9cd1cda48267871c",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_build/src/builder/scope.rs",
+      "anchor": "pub(crate) fn break_for_tail_call(",
+      "what": "scheduling of the caller's drops before the tail call",
+      "region_lines": 109,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 1095,
+          "region_sha256_16": "9c1a5bbb186f1303",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 1090,
+          "region_sha256_16": "b09145ef5045e705",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 1090,
+          "region_sha256_16": "b09145ef5045e705",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_build/src/builder/scope.rs",
+      "anchor": "assert!(local.index() > self.arg_count);",
+      "what": "StorageDead is only emitted for non-argument locals",
+      "region_lines": 1,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 1192,
+          "region_sha256_16": "05c47ca5c48dbd79",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 1186,
+          "region_sha256_16": "05c47ca5c48dbd79",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 1186,
+          "region_sha256_16": "05c47ca5c48dbd79",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_borrowck/src/lib.rs",
+      "anchor": "TerminatorKind::TailCall { func, args, fn_span: _ } => {",
+      "what": "borrow check: tail call consumes its operands",
+      "region_lines": 6,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 923,
+          "region_sha256_16": "69473155a2a349cd",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 929,
+          "region_sha256_16": "69473155a2a349cd",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 929,
+          "region_sha256_16": "69473155a2a349cd",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_borrowck/src/lib.rs",
+      "anchor": "| TerminatorKind::TailCall { .. }",
+      "what": "borrow check: tail call invalidates locals like a return",
+      "region_lines": 2,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 1010,
+          "region_sha256_16": "8769912a01750593",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 1015,
+          "region_sha256_16": "8769912a01750593",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 1015,
+          "region_sha256_16": "8769912a01750593",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_transform/src/inline.rs",
+      "anchor": "} else if let TerminatorKind::TailCall { .. } = term.kind {",
+      "what": "MIR inliner refuses callee bodies containing a tail call",
+      "region_lines": 4,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 445,
+          "region_sha256_16": "f0c5acc5f3f9f880",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 428,
+          "region_sha256_16": "f0c5acc5f3f9f880",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 429,
+          "region_sha256_16": "f0c5acc5f3f9f880",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_transform/src/inline.rs",
+      "anchor": "// FIXME(explicit_tail_calls): figure out if we can inline tail calls",
+      "what": "MIR inliner only considers `Call` terminators as call sites",
+      "region_lines": 2,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 555,
+          "region_sha256_16": "55cb2fd9f3bc08b0",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 538,
+          "region_sha256_16": "55cb2fd9f3bc08b0",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 539,
+          "region_sha256_16": "55cb2fd9f3bc08b0",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_transform/src/inline.rs",
+      "anchor": "check_inline::is_inline_valid_on_body(tcx, callee_body)?;",
+      "what": "per-call-site use of the body validity check",
+      "region_lines": 1,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 640,
+          "region_sha256_16": "54d118df1ac856d7",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 625,
+          "region_sha256_16": "54d118df1ac856d7",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 635,
+          "region_sha256_16": "54d118df1ac856d7",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_mir_transform/src/check_inline.rs",
+      "anchor": "pub(super) fn is_inline_valid_on_body",
+      "what": "body validity check shared with #[rustc_force_inline]",
+      "region_lines": 14,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 73,
+          "region_sha256_16": "4eb3f1fa6497a9c7",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 72,
+          "region_sha256_16": "4eb3f1fa6497a9c7",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 72,
+          "region_sha256_16": "4eb3f1fa6497a9c7",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_codegen_ssa/src/mir/block.rs",
+      "anchor": "if kind == CallKind::Tail {",
+      "what": "codegen dispatches tail calls to the backend's tail_call",
+      "region_lines": 4,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 234,
+          "region_sha256_16": "25c56d3ea313542f",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 255,
+          "region_sha256_16": "9fcdc766302b623a",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 257,
+          "region_sha256_16": "9fcdc766302b623a",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_codegen_ssa/src/mir/block.rs",
+      "anchor": "let mut tail_call_temporaries = vec![];",
+      "what": "indirect arguments are copied through temporaries for tail calls",
+      "region_lines": 1,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 1206,
+          "region_sha256_16": "06b49895e6ac17de",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 1282,
+          "region_sha256_16": "06b49895e6ac17de",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 1285,
+          "region_sha256_16": "06b49895e6ac17de",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_codegen_ssa/src/mir/block.rs",
+      "anchor": "mir::TerminatorKind::TailCall { ref func, ref args, fn_span } => self",
+      "what": "codegen of the TailCall terminator",
+      "region_lines": 13,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 1638,
+          "region_sha256_16": "cc88593e34e5f7de",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 1769,
+          "region_sha256_16": "cc88593e34e5f7de",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 1772,
+          "region_sha256_16": "cc88593e34e5f7de",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_codegen_llvm/src/builder.rs",
+      "anchor": "fn tail_call(",
+      "what": "LLVM backend tail_call entry",
+      "region_lines": 1,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 1443,
+          "region_sha256_16": "10882b6cf59bf526",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 1497,
+          "region_sha256_16": "10882b6cf59bf526",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 1496,
+          "region_sha256_16": "10882b6cf59bf526",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_codegen_llvm/src/builder.rs",
+      "anchor": "llvm::LLVMSetTailCallKind(call, llvm::TailCallKind::MustTail);",
+      "what": "call marked musttail, followed by ret",
+      "region_lines": 6,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 1455,
+          "region_sha256_16": "e1c2fd6fb868bf1c",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 1518,
+          "region_sha256_16": "edce0092aca62879",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 1517,
+          "region_sha256_16": "edce0092aca62879",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_const_eval/src/interpret/call.rs",
+      "anchor": "pub(super) fn init_fn_tail_call(",
+      "what": "interpreter: pop the frame, push the callee with the popped return continuation",
+      "region_lines": 52,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 816,
+          "region_sha256_16": "079f170502c823eb",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 1027,
+          "region_sha256_16": "85c9b27c6a39dd88",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 1027,
+          "region_sha256_16": "85c9b27c6a39dd88",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_const_eval/src/interpret/step.rs",
+      "anchor": "TailCall { ref func, ref args, fn_span: _ } => {",
+      "what": "interpreter: asserts the frame index is unchanged by a tail call",
+      "region_lines": 20,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 578,
+          "region_sha256_16": "97cff92ef8bbc0e1",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 632,
+          "region_sha256_16": "97cff92ef8bbc0e1",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 632,
+          "region_sha256_16": "97cff92ef8bbc0e1",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_session/src/config.rs",
+      "anchor": "pub fn get_symbol_mangling_version(&self)",
+      "what": "default symbol mangling version",
+      "region_lines": 3,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 1473,
+          "region_sha256_16": "2a1bc2162bcd2fe8",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 1608,
+          "region_sha256_16": "2a1bc2162bcd2fe8",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 1608,
+          "region_sha256_16": "2a1bc2162bcd2fe8",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_session/src/config.rs",
+      "anchor": "// Check for unstable values of `-C symbol-mangling-version`.",
+      "what": "which mangling versions need -Z unstable-options",
+      "region_lines": 26,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 2500,
+          "region_sha256_16": "507e2db8842f9e47",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 2879,
+          "region_sha256_16": "507e2db8842f9e47",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 2916,
+          "region_sha256_16": "507e2db8842f9e47",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_symbol_mangling/src/lib.rs",
+      "anchor": "SymbolManglingVersion::V0 => v0::mangle(tcx, instance, instantiating_crate, false),",
+      "what": "dispatch to the v0 mangler",
+      "region_lines": 1,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 310,
+          "region_sha256_16": "d5931f817e2d9976",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 349,
+          "region_sha256_16": "eee91d36046a0c6c",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 349,
+          "region_sha256_16": "eee91d36046a0c6c",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+      "anchor": "fn print_backref(&mut self, i: usize)",
+      "what": "backreference emission",
+      "region_lines": 5,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 231,
+          "region_sha256_16": "346dab5167f4597f",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 307,
+          "region_sha256_16": "346dab5167f4597f",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 307,
+          "region_sha256_16": "346dab5167f4597f",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+      "anchor": "if let Some(&i) = self.types.get(&ty) {",
+      "what": "type cache lookup before printing a type",
+      "region_lines": 4,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 482,
+          "region_sha256_16": "1e37d3924c1af1df",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 558,
+          "region_sha256_16": "1e37d3924c1af1df",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 558,
+          "region_sha256_16": "1e37d3924c1af1df",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+      "anchor": "self.types.insert(ty, start);",
+      "what": "type cache insertion keyed by start offset",
+      "region_lines": 1,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 606,
+          "region_sha256_16": "1ac2a3b507ec77bc",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 694,
+          "region_sha256_16": "1ac2a3b507ec77bc",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 697,
+          "region_sha256_16": "1ac2a3b507ec77bc",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+      "anchor": "if let Some(&i) = self.paths.get(&(def_id, args)) {",
+      "what": "path cache lookup",
+      "region_lines": 4,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 296,
+          "region_sha256_16": "cc1913d20fce9240",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 372,
+          "region_sha256_16": "cc1913d20fce9240",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 372,
+          "region_sha256_16": "cc1913d20fce9240",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_symbol_mangling/src/legacy.rs",
+      "anchor": "fn get_symbol_hash<",
+      "what": "legacy mangling: what the hash covers",
+      "region_lines": 57,
+      "identical_across_commits": false,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 115,
+          "region_sha256_16": "e95d3e1a2420c6a7",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 125,
+          "region_sha256_16": "5540864967258ac8",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 125,
+          "region_sha256_16": "5540864967258ac8",
+          "file_available": true
+        }
+      }
+    },
+    {
+      "path": "compiler/rustc_symbol_mangling/src/legacy.rs",
+      "anchor": "fn finish(mut self, hash: Hash64)",
+      "what": "legacy mangling: `17h` + 16 hex digits suffix",
+      "region_lines": 6,
+      "identical_across_commits": true,
+      "commits": {
+        "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+          "line": 207,
+          "region_sha256_16": "b30e372a10180389",
+          "file_available": true
+        },
+        "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+          "line": 232,
+          "region_sha256_16": "b30e372a10180389",
+          "file_available": true
+        },
+        "c7d5ba59d8e11ee2e2204b173458eec4cb41c973": {
+          "line": 232,
+          "region_sha256_16": "b30e372a10180389",
+          "file_available": true
+        }
+      }
+    }
+  ]
+}

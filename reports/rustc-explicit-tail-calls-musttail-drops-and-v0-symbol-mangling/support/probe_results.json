@@ -1,0 +1,1186 @@
+{
+  "schema": "tail-call-and-mangling-probe/1",
+  "tools": {
+    "rustc_version_verbose": [
+      "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+      "binary: rustc",
+      "commit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "commit-date: 2026-05-31",
+      "host: x86_64-unknown-linux-gnu",
+      "release: 1.98.0-nightly",
+      "LLVM version: 22.1.6"
+    ],
+    "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "llvm_nm_version": [
+      "llvm-nm, compatible with GNU nm",
+      "LLVM (http://llvm.org/):",
+      "LLVM version 22.1.6-rust-1.98.0-nightly",
+      "Optimized build."
+    ],
+    "os": "Linux",
+    "machine": "x86_64"
+  },
+  "parameters": {
+    "steps": 250000,
+    "miri_steps": 250000,
+    "max_depth": 10,
+    "edition": "2024"
+  },
+  "tail_recursion": {
+    "build_become_o0": {
+      "cmd": "rustc --edition 2024 -C opt-level=0 tail_recursion.rs -o tr_become_o0",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "build_become_o3": {
+      "cmd": "rustc --edition 2024 -C opt-level=3 tail_recursion.rs -o tr_become_o3",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "build_plain_o0": {
+      "cmd": "rustc --edition 2024 -C opt-level=0 --cfg plain_call tail_recursion.rs -o tr_plain_o0",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "build_plain_o3": {
+      "cmd": "rustc --edition 2024 -C opt-level=3 --cfg plain_call tail_recursion.rs -o tr_plain_o3",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "run_become_o0_1MiB": {
+      "cmd": "./tr_become_o0 250000 1048576",
+      "returncode": 0,
+      "stdout": [
+        "MODE=become STEPS=250000 RESULT=250000 WITNESS=stack_bytes WITNESS_SPAN=0"
+      ],
+      "stderr": []
+    },
+    "run_become_o0_64KiB": {
+      "cmd": "./tr_become_o0 250000 65536",
+      "returncode": 0,
+      "stdout": [
+        "MODE=become STEPS=250000 RESULT=250000 WITNESS=stack_bytes WITNESS_SPAN=0"
+      ],
+      "stderr": []
+    },
+    "run_become_o3_1MiB": {
+      "cmd": "./tr_become_o3 250000 1048576",
+      "returncode": 0,
+      "stdout": [
+        "MODE=become STEPS=250000 RESULT=250000 WITNESS=stack_bytes WITNESS_SPAN=0"
+      ],
+      "stderr": []
+    },
+    "run_plain_o0_2000_steps_1MiB": {
+      "cmd": "./tr_plain_o0 2000 1048576",
+      "returncode": 0,
+      "stdout": [
+        "MODE=plain_call STEPS=2000 RESULT=2000 WITNESS=stack_bytes WITNESS_SPAN=96000"
+      ],
+      "stderr": []
+    },
+    "run_plain_o0_1MiB": {
+      "cmd": "./tr_plain_o0 250000 1048576",
+      "returncode": -6,
+      "stdout": [],
+      "stderr": [
+        "thread '<unknown>' (<tid>) has overflowed its stack",
+        "fatal runtime error: stack overflow, aborting"
+      ]
+    },
+    "run_plain_o3_1MiB": {
+      "cmd": "./tr_plain_o3 250000 1048576",
+      "returncode": 0,
+      "stdout": [
+        "MODE=plain_call STEPS=250000 RESULT=250000 WITNESS=stack_bytes WITNESS_SPAN=0"
+      ],
+      "stderr": []
+    },
+    "note_plain_o3": "The ordinary-call build at opt-level=3 is recorded but not asserted: whether LLVM turns an ordinary call in tail position into a jump is an optimization outcome, not a language guarantee.",
+    "emit_llvm_ir_o0": {
+      "cmd": "rustc --edition 2024 -C opt-level=0 --emit=llvm-ir tail_recursion.rs -o tr.ll",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "llvm_ir_musttail_lines": [
+      "%0 = musttail call i64 @_RNvCsa5WcuybjbLm_14tail_recursion9even_step(i64 %_6.0, i64 %_8.0) #29",
+      "%0 = musttail call i64 @_RNvCsa5WcuybjbLm_14tail_recursion8odd_step(i64 %_6.0, i64 %_8.0) #29"
+    ],
+    "llvm_ir_musttail_followed_by_ret": 2,
+    "emit_asm_o0": {
+      "cmd": "rustc --edition 2024 -C opt-level=0 --emit=asm tail_recursion.rs -o tr.s",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "asm_transfers_to_even_or_odd_step": [
+      "callq _RNvCsa5WcuybjbLm_14tail_recursion9even_step",
+      "jmp _RNvCsa5WcuybjbLm_14tail_recursion9even_step",
+      "jmp _RNvCsa5WcuybjbLm_14tail_recursion8odd_step"
+    ],
+    "target_arch": "x86_64",
+    "miri": {
+      "status": "ran",
+      "become": {
+        "cmd": "miri --sysroot <miri-sysroot> --edition 2024 tail_recursion.rs -- 250000 1048576",
+        "returncode": 0,
+        "stdout": [
+          "MODE=become STEPS=250000 RESULT=250000 WITNESS=miri_frames WITNESS_SPAN=0"
+        ],
+        "stderr": []
+      },
+      "plain_call_2000_steps": {
+        "cmd": "miri --sysroot <miri-sysroot> --edition 2024 --cfg plain_call tail_recursion.rs -- 2000 1048576",
+        "returncode": 0,
+        "stdout": [
+          "MODE=plain_call STEPS=2000 RESULT=2000 WITNESS=miri_frames WITNESS_SPAN=2000"
+        ],
+        "stderr": []
+      }
+    }
+  },
+  "drop_order": {
+    "build_o0": {
+      "cmd": "rustc --edition 2024 -C opt-level=0 drop_order.rs -o drop_o0",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "build_o3": {
+      "cmd": "rustc --edition 2024 -C opt-level=3 drop_order.rs -o drop_o3",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "run_native_o0": {
+      "cmd": "./drop_o0",
+      "returncode": 0,
+      "stdout": [
+        "S1_BECOME R=142 DROP_ORDER_LOG=2193",
+        "S1_PLAIN R=142 DROP_ORDER_LOG=9321",
+        "S2_BECOME R=7 DROP_ORDER_LOG=54321976",
+        "S2_PLAIN R=7 DROP_ORDER_LOG=97654321",
+        "S3_BECOME_FORWARD R=105 DROP_ORDER_LOG=291"
+      ],
+      "stderr": []
+    },
+    "run_native_o3": {
+      "cmd": "./drop_o3",
+      "returncode": 0,
+      "stdout": [
+        "S1_BECOME R=142 DROP_ORDER_LOG=2193",
+        "S1_PLAIN R=142 DROP_ORDER_LOG=9321",
+        "S2_BECOME R=7 DROP_ORDER_LOG=54321976",
+        "S2_PLAIN R=7 DROP_ORDER_LOG=97654321",
+        "S3_BECOME_FORWARD R=105 DROP_ORDER_LOG=291"
+      ],
+      "stderr": []
+    },
+    "run_miri": {
+      "cmd": "miri --sysroot <miri-sysroot> --edition 2024 drop_order.rs",
+      "returncode": 0,
+      "stdout": [
+        "S1_BECOME R=142 DROP_ORDER_LOG=2193",
+        "S1_PLAIN R=142 DROP_ORDER_LOG=9321",
+        "S2_BECOME R=7 DROP_ORDER_LOG=54321976",
+        "S2_PLAIN R=7 DROP_ORDER_LOG=97654321",
+        "S3_BECOME_FORWARD R=105 DROP_ORDER_LOG=291"
+      ],
+      "stderr": []
+    },
+    "logs": {
+      "native_o0": {
+        "S1_BECOME": 2193,
+        "S1_PLAIN": 9321,
+        "S2_BECOME": 54321976,
+        "S2_PLAIN": 97654321,
+        "S3_BECOME_FORWARD": 291
+      },
+      "native_o3": {
+        "S1_BECOME": 2193,
+        "S1_PLAIN": 9321,
+        "S2_BECOME": 54321976,
+        "S2_PLAIN": 97654321,
+        "S3_BECOME_FORWARD": 291
+      },
+      "miri": {
+        "S1_BECOME": 2193,
+        "S1_PLAIN": 9321,
+        "S2_BECOME": 54321976,
+        "S2_PLAIN": 97654321,
+        "S3_BECOME_FORWARD": 291
+      }
+    },
+    "dump_mir": {
+      "cmd": "rustc --edition 2024 -C opt-level=0 -Z dump-mir=tail_caller -Z dump-mir-dir=mirdump --emit=mir drop_order.rs -o drop_order.mir",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "mir": {
+      "tail_caller.built.after": {
+        "normal_path_events": [
+          "drop(_3)",
+          "StorageDead(_3)",
+          "drop(_1)",
+          "tailcall callee(move _6, move _7)"
+        ],
+        "text": [
+          "// MIR for `tail_caller` after built",
+          "",
+          "fn tail_caller(_1: Guard, _2: u64) -> u64 {",
+          "    debug param_guard => _1;",
+          "    debug x => _2;",
+          "    let mut _0: u64;",
+          "    let _3: Guard;",
+          "    let mut _4: &Guard;",
+          "    let mut _5: !;",
+          "    let mut _6: Guard;",
+          "    let mut _7: u64;",
+          "    scope 1 {",
+          "        debug _local_guard => _3;",
+          "        scope 2 {",
+          "        }",
+          "    }",
+          "",
+          "    bb0: {",
+          "        StorageLive(_3);",
+          "        _3 = Guard(const 2_u64);",
+          "        FakeRead(ForLet(None), _3);",
+          "        StorageLive(_4);",
+          "        _4 = &_1;",
+          "        PlaceMention(_4);",
+          "        StorageDead(_4);",
+          "        StorageLive(_5);",
+          "        StorageLive(_6);",
+          "        _6 = Guard(const 3_u64);",
+          "        StorageLive(_7);",
+          "        _7 = copy _2;",
+          "        drop(_3) -> [return: bb2, unwind: bb9];",
+          "    }",
+          "",
+          "    bb1: {",
+          "        FakeRead(ForMatchedPlace(None), _4);",
+          "        unreachable;",
+          "    }",
+          "",
+          "    bb2: {",
+          "        StorageDead(_3);",
+          "        drop(_1) -> [return: bb3, unwind: bb8];",
+          "    }",
+          "",
+          "    bb3: {",
+          "        tailcall callee(move _6, move _7);",
+          "    }",
+          "",
+          "    bb4: {",
+          "        StorageDead(_7);",
+          "        StorageDead(_6);",
+          "        unreachable;",
+          "    }",
+          "",
+          "    bb5: {",
+          "        StorageDead(_5);",
+          "        drop(_3) -> [return: bb6, unwind: bb10];",
+          "    }",
+          "",
+          "    bb6: {",
+          "        StorageDead(_3);",
+          "        drop(_1) -> [return: bb7, unwind: bb11];",
+          "    }",
+          "",
+          "    bb7: {",
+          "        return;",
+          "    }",
+          "",
+          "    bb8 (cleanup): {",
+          "        drop(_6) -> [return: bb11, unwind terminate(cleanup)];",
+          "    }",
+          "",
+          "    bb9 (cleanup): {",
+          "        drop(_6) -> [return: bb10, unwind terminate(cleanup)];",
+          "    }",
+          "",
+          "    bb10 (cleanup): {",
+          "        drop(_1) -> [return: bb11, unwind terminate(cleanup)];",
+          "    }",
+          "",
+          "    bb11 (cleanup): {",
+          "        resume;",
+          "    }",
+          "}"
+        ]
+      },
+      "tail_caller.ElaborateDrops.after": {
+        "normal_path_events": [
+          "drop(_3)",
+          "StorageDead(_3)",
+          "drop(_1)",
+          "tailcall callee(move _6, move _7)"
+        ],
+        "text": [
+          "// MIR for `tail_caller` after ElaborateDrops",
+          "",
+          "fn tail_caller(_1: Guard, _2: u64) -> u64 {",
+          "    debug param_guard => _1;",
+          "    debug x => _2;",
+          "    let mut _0: u64;",
+          "    let _3: Guard;",
+          "    let mut _4: &Guard;",
+          "    let mut _5: !;",
+          "    let mut _6: Guard;",
+          "    let mut _7: u64;",
+          "    scope 1 {",
+          "        debug _local_guard => _3;",
+          "        scope 2 {",
+          "        }",
+          "    }",
+          "",
+          "    bb0: {",
+          "        StorageLive(_3);",
+          "        _3 = Guard(const 2_u64);",
+          "        StorageLive(_4);",
+          "        _4 = &_1;",
+          "        PlaceMention(_4);",
+          "        StorageDead(_4);",
+          "        StorageLive(_5);",
+          "        StorageLive(_6);",
+          "        _6 = Guard(const 3_u64);",
+          "        StorageLive(_7);",
+          "        _7 = copy _2;",
+          "        drop(_3) -> [return: bb1, unwind: bb4];",
+          "    }",
+          "",
+          "    bb1: {",
+          "        StorageDead(_3);",
+          "        drop(_1) -> [return: bb2, unwind: bb3];",
+          "    }",
+          "",
+          "    bb2: {",
+          "        tailcall callee(move _6, move _7);",
+          "    }",
+          "",
+          "    bb3 (cleanup): {",
+          "        drop(_6) -> [return: bb6, unwind terminate(cleanup)];",
+          "    }",
+          "",
+          "    bb4 (cleanup): {",
+          "        drop(_6) -> [return: bb5, unwind terminate(cleanup)];",
+          "    }",
+          "",
+          "    bb5 (cleanup): {",
+          "        drop(_1) -> [return: bb6, unwind terminate(cleanup)];",
+          "    }",
+          "",
+          "    bb6 (cleanup): {",
+          "        resume;",
+          "    }",
+          "}"
+        ]
+      },
+      "tail_caller2.built.after": {
+        "normal_path_events": [
+          "drop(_9)",
+          "StorageDead(_9)",
+          "drop(_8)",
+          "StorageDead(_8)",
+          "drop(_7)",
+          "StorageDead(_7)",
+          "drop(_2)",
+          "drop(_1)",
+          "tailcall callee2(move _11, move _12, move _13)"
+        ],
+        "normal_path_events_by_source_name": [
+          "drop(_c)",
+          "StorageDead(_c)",
+          "drop(_b)",
+          "StorageDead(_b)",
+          "drop(_a)",
+          "StorageDead(_a)",
+          "drop(p2)",
+          "drop(p1)",
+          "tailcall callee2(move _11, move _12, move _13)"
+        ]
+      },
+      "tail_caller2.ElaborateDrops.after": {
+        "normal_path_events": [
+          "drop(_9)",
+          "StorageDead(_9)",
+          "drop(_8)",
+          "StorageDead(_8)",
+          "drop(_7)",
+          "StorageDead(_7)",
+          "drop(_2)",
+          "drop(_1)",
+          "tailcall callee2(move _11, move _12, move _13)"
+        ]
+      },
+      "tail_caller2.debug_names": {
+        "_1": "p1",
+        "_2": "p2",
+        "_3": "x",
+        "_7": "_a",
+        "_8": "_b",
+        "_9": "_c"
+      }
+    }
+  },
+  "rejections": {
+    "reject_borrow_local": {
+      "cmd": "rustc --edition 2024 reject_borrow_local.rs -o reject_borrow_local.out",
+      "returncode": 1,
+      "stdout": [],
+      "stderr": [
+        "error[E0597]: `local` does not live long enough",
+        "  --> reject_borrow_local.rs:12:23",
+        "   |",
+        "11 |     let local = *x + 1;",
+        "   |         ----- binding `local` declared here",
+        "12 |     become callee_ref(&local)",
+        "   |                       ^^^^^^- `local` dropped here while still borrowed",
+        "   |                       |",
+        "   |                       borrowed value does not live long enough",
+        "error: aborting due to 1 previous error",
+        "For more information about this error, try `rustc --explain E0597`."
+      ]
+    },
+    "reject_borrow_param": {
+      "cmd": "rustc --edition 2024 reject_borrow_param.rs -o reject_borrow_param.out",
+      "returncode": 1,
+      "stdout": [],
+      "stderr": [
+        "error[E0597]: `v` does not live long enough",
+        "  --> reject_borrow_param.rs:10:23",
+        "   |",
+        " 9 | fn caller(_r: &u64, v: u64) -> u64 {",
+        "   |                     - binding `v` declared here",
+        "10 |     become callee_ref(&v, 0)",
+        "   |                       ^^   - `v` dropped here while still borrowed",
+        "   |                       |",
+        "   |                       borrowed value does not live long enough",
+        "error: aborting due to 1 previous error",
+        "For more information about this error, try `rustc --explain E0597`."
+      ]
+    },
+    "reject_signature": {
+      "cmd": "rustc --edition 2024 reject_signature.rs -o reject_signature.out",
+      "returncode": 1,
+      "stdout": [],
+      "stderr": [
+        "error: mismatched signatures",
+        "  --> reject_signature.rs:10:5",
+        "   |",
+        "10 |     become narrow(x as u32)",
+        "   |     ^^^^^^^^^^^^^^^^^^^^^^^",
+        "   |",
+        "   = note: `become` requires caller and callee to have matching signatures",
+        "   = note: caller signature: `fn(u64) -> u64`",
+        "   = note: callee signature: `fn(u32) -> u64`",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "reject_abi": {
+      "cmd": "rustc --edition 2024 reject_abi.rs -o reject_abi.out",
+      "returncode": 1,
+      "stdout": [],
+      "stderr": [
+        "error: mismatched function ABIs",
+        "  --> reject_abi.rs:10:5",
+        "   |",
+        "10 |     become c_callee(x)",
+        "   |     ^^^^^^^^^^^^^^^^^^",
+        "   |",
+        "   = note: `become` requires caller and callee to have the same ABI",
+        "   = note: caller ABI is `\"Rust\"`, while callee ABI is `\"C\"`",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "reject_closure": {
+      "cmd": "rustc --edition 2024 reject_closure.rs -o reject_closure.out",
+      "returncode": 1,
+      "stdout": [],
+      "stderr": [
+        "error: `become` is not allowed in closures",
+        "  --> reject_closure.rs:10:31",
+        "   |",
+        "10 |     let f = |x: u64| -> u64 { become leaf(x) };",
+        "   |                               ^^^^^^^^^^^^^^",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "reject_feature_gate": {
+      "cmd": "rustc --edition 2024 reject_feature_gate.rs -o reject_feature_gate.out",
+      "returncode": 1,
+      "stdout": [],
+      "stderr": [
+        "error[E0658]: `become` expression is experimental",
+        " --> reject_feature_gate.rs:7:5",
+        "  |",
+        "7 |     become leaf(x)",
+        "  |     ^^^^^^^^^^^^^^",
+        "  |",
+        "  = note: see issue #112788 <https://github.com/rust-lang/rust/issues/112788> for more information",
+        "  = help: add `#![feature(explicit_tail_calls)]` to the crate attributes to enable",
+        "  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date",
+        "error: aborting due to 1 previous error",
+        "For more information about this error, try `rustc --explain E0658`."
+      ]
+    },
+    "reject_force_inline": {
+      "cmd": "rustc --edition 2024 reject_force_inline.rs -o reject_force_inline.out",
+      "returncode": 1,
+      "stdout": [],
+      "stderr": [
+        "error: `forced` is incompatible with `#[rustc_force_inline]`",
+        "  --> reject_force_inline.rs:13:1",
+        "   |",
+        "13 | #[rustc_force_inline]",
+        "   | ^^^^^^^^^^^^^^^^^^^^^",
+        "14 | pub fn forced(x: u64) -> u64 {",
+        "   | ---------------------------- `forced` defined here",
+        "   |",
+        "   = note: incompatible due to: can't inline functions with tail calls",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "accept_borrow_plain_call": {
+      "build": {
+        "cmd": "rustc --edition 2024 accept_borrow_plain_call.rs -o accept_plain",
+        "returncode": 0,
+        "stdout": [],
+        "stderr": []
+      },
+      "run": {
+        "cmd": "./accept_plain",
+        "returncode": 0,
+        "stdout": [
+          "ACCEPTED_PLAIN_CALL_RESULT=2"
+        ],
+        "stderr": []
+      }
+    },
+    "reject_borrow_local_built_mir": {
+      "debug_names": {
+        "_1": "x",
+        "_2": "local"
+      },
+      "block_performing_the_tail_call": [
+        "bb1: {",
+        "_2 = move (_4.0: u64);",
+        "StorageDead(_3);",
+        "FakeRead(ForLet(None), _2);",
+        "StorageLive(_5);",
+        "StorageLive(_6);",
+        "StorageLive(_7);",
+        "_7 = &_2;",
+        "_6 = &(*_7);",
+        "tailcall callee_ref(move _6);"
+      ]
+    }
+  },
+  "inline_refusal": {
+    "emit_mir_o3": {
+      "cmd": "rustc --edition 2024 -C opt-level=3 --emit=mir inline_refusal.rs -o inline.mir",
+      "returncode": 0,
+      "stdout": [],
+      "stderr": []
+    },
+    "mir_caller_of_become": [
+      "fn caller_of_become(_1: u64) -> u64 {",
+      "    debug x => _1;",
+      "    let mut _0: u64;",
+      "    let mut _2: u64;",
+      "    scope 1 (inlined core::num::<impl u64>::wrapping_add) {",
+      "    }",
+      "",
+      "    bb0: {",
+      "        StorageLive(_2);",
+      "        _2 = helper_become(move _1) -> [return: bb1, unwind continue];",
+      "    }",
+      "",
+      "    bb1: {",
+      "        _0 = Add(copy _2, const 1_u64);",
+      "        StorageDead(_2);",
+      "        return;",
+      "    }",
+      "}"
+    ],
+    "mir_caller_of_plain": [
+      "fn caller_of_plain(_1: u64) -> u64 {",
+      "    debug x => _1;",
+      "    let mut _0: u64;",
+      "    let mut _2: u64;",
+      "    scope 1 (inlined helper_plain) {",
+      "    }",
+      "    scope 2 (inlined core::num::<impl u64>::wrapping_add) {",
+      "    }",
+      "",
+      "    bb0: {",
+      "        StorageLive(_2);",
+      "        _2 = leaf(move _1) -> [return: bb1, unwind continue];",
+      "    }",
+      "",
+      "    bb1: {",
+      "        _0 = Add(copy _2, const 1_u64);",
+      "        StorageDead(_2);",
+      "        return;",
+      "    }",
+      "}"
+    ],
+    "llvm": {
+      "opt_level_0": {
+        "build": {
+          "cmd": "rustc --edition 2024 -C opt-level=0 -Z merge-functions=disabled --emit=llvm-ir inline_refusal.rs -o inline_o0.ll",
+          "returncode": 0,
+          "stdout": [],
+          "stderr": []
+        },
+        "caller_of_become_call_lines": [
+          "; call inline_refusal::leaf",
+          "%0 = call i64 @_RNvCs86I53smU7R2_14inline_refusal4leaf(i64 %x) #3"
+        ],
+        "musttail_anywhere_in_module": false,
+        "helper_become_defined_in_module": false
+      },
+      "opt_level_3": {
+        "build": {
+          "cmd": "rustc --edition 2024 -C opt-level=3 -Z merge-functions=disabled --emit=llvm-ir inline_refusal.rs -o inline_o3.ll",
+          "returncode": 0,
+          "stdout": [],
+          "stderr": []
+        },
+        "caller_of_become_call_lines": [
+          "; call inline_refusal::leaf",
+          "%0 = tail call noundef i64 @_RNvCs86I53smU7R2_14inline_refusal4leaf(i64 noundef %x) #3"
+        ],
+        "musttail_anywhere_in_module": false,
+        "helper_become_defined_in_module": false
+      },
+      "opt_level_3_default_function_merging": {
+        "build": {
+          "cmd": "rustc --edition 2024 -C opt-level=3 --emit=llvm-ir inline_refusal.rs -o inline_o3_merged.ll",
+          "returncode": 0,
+          "stdout": [],
+          "stderr": []
+        },
+        "lines_naming_caller_of_become": [
+          "@_RNvCs86I53smU7R2_14inline_refusal16caller_of_become = unnamed_addr alias i64 (i64), ptr @_RNvCs86I53smU7R2_14inline_refusal15caller_of_plain"
+        ]
+      }
+    },
+    "note_llvm": "Recorded, not asserted: what LLVM's own inliner does with the `#[inline(always)]` helper after the MIR inliner declined it."
+  },
+  "mangling": {
+    "crate_name": "mangling_scale",
+    "generic_item": "touch_gen::<D_depth>",
+    "type_family": "D0 = u64; D(n+1) = Pair<Dn, Dn>",
+    "status": "ran",
+    "depth_scaling": [
+      {
+        "depth": 1,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairyyEEB2_",
+        "default_bytes": 63,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairyyEEB2_",
+        "v0_bytes": 63,
+        "v0_demangled_bytes": 59,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 2,
+        "v0_backreference_count": 2,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17hefdd7095eb7f7e17E",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::hefdd7095eb7f7e17"
+      },
+      {
+        "depth": 2,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_yyEBR_EEB2_",
+        "default_bytes": 71,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_yyEBR_EEB2_",
+        "v0_bytes": 71,
+        "v0_demangled_bytes": 113,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 4,
+        "v0_backreference_count": 4,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17he2ef882913bc1371E",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::he2ef882913bc1371"
+      },
+      {
+        "depth": 3,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_yyEBV_EBR_EEB2_",
+        "default_bytes": 79,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_yyEBV_EBR_EEB2_",
+        "v0_bytes": 79,
+        "v0_demangled_bytes": 221,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 8,
+        "v0_backreference_count": 6,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17h4850637622061fecE",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::h4850637622061fec"
+      },
+      {
+        "depth": 4,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_yyEBZ_EBV_EBR_EEB2_",
+        "default_bytes": 87,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_yyEBZ_EBV_EBR_EEB2_",
+        "v0_bytes": 87,
+        "v0_demangled_bytes": 437,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 16,
+        "v0_backreference_count": 8,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17h241aa9927c887862E",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::h241aa9927c887862"
+      },
+      {
+        "depth": 5,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_yyEB13_EBZ_EBV_EBR_EEB2_",
+        "default_bytes": 96,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_yyEB13_EBZ_EBV_EBR_EEB2_",
+        "v0_bytes": 96,
+        "v0_demangled_bytes": 869,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 32,
+        "v0_backreference_count": 10,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17h43eb4d646cbc357dE",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::h43eb4d646cbc357d"
+      },
+      {
+        "depth": 6,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_yyEB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "default_bytes": 105,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_yyEB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "v0_bytes": 105,
+        "v0_demangled_bytes": 1733,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 64,
+        "v0_backreference_count": 12,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17h496ff7fdd5bb2109E",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::h496ff7fdd5bb2109"
+      },
+      {
+        "depth": 7,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_IBH_yyEB1b_EB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "default_bytes": 114,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_IBH_yyEB1b_EB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "v0_bytes": 114,
+        "v0_demangled_bytes": 3461,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 128,
+        "v0_backreference_count": 14,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17h2ae34e4bde09f405E",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::h2ae34e4bde09f405"
+      },
+      {
+        "depth": 8,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_IBH_IBH_yyEB1f_EB1b_EB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "default_bytes": 123,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_IBH_IBH_yyEB1f_EB1b_EB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "v0_bytes": 123,
+        "v0_demangled_bytes": 6917,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 256,
+        "v0_backreference_count": 16,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17h40d6d6a4eab86438E",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::h40d6d6a4eab86438"
+      },
+      {
+        "depth": 9,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_IBH_IBH_IBH_yyEB1j_EB1f_EB1b_EB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "default_bytes": 132,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_IBH_IBH_IBH_yyEB1j_EB1f_EB1b_EB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "v0_bytes": 132,
+        "v0_demangled_bytes": 13829,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 512,
+        "v0_backreference_count": 18,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17hea73c775f0125f39E",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::hea73c775f0125f39"
+      },
+      {
+        "depth": 10,
+        "default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_IBH_IBH_IBH_IBH_yyEB1n_EB1j_EB1f_EB1b_EB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "default_bytes": 141,
+        "v0_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairIBH_IBH_IBH_IBH_IBH_IBH_IBH_IBH_IBH_yyEB1n_EB1j_EB1f_EB1b_EB17_EB13_EBZ_EBV_EBR_EEB2_",
+        "v0_bytes": 141,
+        "v0_demangled_bytes": 27653,
+        "v0_demangled_equals_fully_expanded_type": true,
+        "v0_demangled_u64_leaves": 1024,
+        "v0_backreference_count": 20,
+        "legacy_symbol": "_ZN14mangling_scale9touch_gen17h0f4971fdcb2f5b9fE",
+        "legacy_bytes": 49,
+        "legacy_demangled_bytes": 44,
+        "legacy_demangled": "mangling_scale::touch_gen::h0f4971fdcb2f5b9f"
+      }
+    ],
+    "v0_bytes_increment_per_level": [
+      8,
+      8,
+      8,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "v0_demangled_bytes_ratio_per_level": [
+      1.915,
+      1.956,
+      1.977,
+      1.989,
+      1.994,
+      1.997,
+      1.999,
+      1.999,
+      2.0
+    ],
+    "v0_mean_bytes_per_level": 8.667,
+    "legacy_without_unstable_options": {
+      "cmd": "rustc --edition 2024 --crate-name mangling_scale --emit=obj -C symbol-mangling-version=legacy ms_gate.rs -o ms_gate.o",
+      "returncode": 1,
+      "stdout": [],
+      "stderr": [
+        "error: `-C symbol-mangling-version=legacy` requires `-Z unstable-options`"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "name": "become_o0_completes_all_steps_in_64KiB_with_zero_stack_span",
+      "passed": true,
+      "observed": {
+        "steps": 250000,
+        "result": 250000,
+        "stack_span_bytes": 0
+      }
+    },
+    {
+      "name": "plain_call_o0_stack_grows_with_step_count",
+      "passed": true,
+      "observed": {
+        "steps": 2000,
+        "stack_span_bytes": 96000,
+        "bytes_per_step": 48.0
+      }
+    },
+    {
+      "name": "plain_call_o0_overflows_1MiB_at_full_step_count",
+      "passed": true,
+      "observed": {
+        "returncode": -6,
+        "stderr": [
+          "thread '<unknown>' (<tid>) has overflowed its stack",
+          "fatal runtime error: stack overflow, aborting"
+        ]
+      }
+    },
+    {
+      "name": "two_musttail_calls_each_immediately_followed_by_ret",
+      "passed": true,
+      "observed": {
+        "musttail_lines": 2,
+        "followed_by_ret": 2
+      }
+    },
+    {
+      "name": "miri_become_frame_count_constant_over_all_steps",
+      "passed": true,
+      "observed": {
+        "steps": 250000,
+        "result": "250000",
+        "frame_span": "0"
+      }
+    },
+    {
+      "name": "miri_plain_call_frame_count_grows_one_per_step",
+      "passed": true,
+      "observed": {
+        "steps": 2000,
+        "frame_span": "2000"
+      }
+    },
+    {
+      "name": "drop_logs_identical_across_all_executors",
+      "passed": true,
+      "observed": {
+        "executors": [
+          "miri",
+          "native_o0",
+          "native_o3"
+        ],
+        "logs": {
+          "S1_BECOME": 2193,
+          "S1_PLAIN": 9321,
+          "S2_BECOME": 54321976,
+          "S2_PLAIN": 97654321,
+          "S3_BECOME_FORWARD": 291
+        }
+      }
+    },
+    {
+      "name": "become_and_plain_call_orders_differ",
+      "passed": true,
+      "observed": {
+        "s1": [
+          2193,
+          9321
+        ],
+        "s2": [
+          54321976,
+          97654321
+        ]
+      }
+    },
+    {
+      "name": "become_runs_caller_drops_before_callee_body",
+      "passed": true,
+      "observed": {
+        "position_of_callee_body_digit": {
+          "S1_BECOME": 2,
+          "S2_BECOME": 5,
+          "S1_PLAIN": 0,
+          "S2_PLAIN": 0
+        }
+      }
+    },
+    {
+      "name": "built_mir_places_all_caller_drops_before_tailcall_in_reverse_declaration_order",
+      "passed": true,
+      "observed": {
+        "normal_path_events_by_source_name": [
+          "drop(_c)",
+          "StorageDead(_c)",
+          "drop(_b)",
+          "StorageDead(_b)",
+          "drop(_a)",
+          "StorageDead(_a)",
+          "drop(p2)",
+          "drop(p1)",
+          "tailcall callee2(move _11, move _12, move _13)"
+        ]
+      }
+    },
+    {
+      "name": "built_mir_storage_dead_covers_locals_but_not_parameters",
+      "passed": true,
+      "observed": {
+        "storage_dead_events_by_source_name": [
+          "StorageDead(_c)",
+          "StorageDead(_b)",
+          "StorageDead(_a)"
+        ]
+      }
+    },
+    {
+      "name": "reject_borrow_local_is_rejected",
+      "passed": true,
+      "observed": {
+        "returncode": 1,
+        "first_diagnostic_line": "error[E0597]: `local` does not live long enough"
+      }
+    },
+    {
+      "name": "reject_borrow_param_is_rejected",
+      "passed": true,
+      "observed": {
+        "returncode": 1,
+        "first_diagnostic_line": "error[E0597]: `v` does not live long enough"
+      }
+    },
+    {
+      "name": "reject_signature_is_rejected",
+      "passed": true,
+      "observed": {
+        "returncode": 1,
+        "first_diagnostic_line": "error: mismatched signatures"
+      }
+    },
+    {
+      "name": "reject_abi_is_rejected",
+      "passed": true,
+      "observed": {
+        "returncode": 1,
+        "first_diagnostic_line": "error: mismatched function ABIs"
+      }
+    },
+    {
+      "name": "reject_closure_is_rejected",
+      "passed": true,
+      "observed": {
+        "returncode": 1,
+        "first_diagnostic_line": "error: `become` is not allowed in closures"
+      }
+    },
+    {
+      "name": "reject_feature_gate_is_rejected",
+      "passed": true,
+      "observed": {
+        "returncode": 1,
+        "first_diagnostic_line": "error[E0658]: `become` expression is experimental"
+      }
+    },
+    {
+      "name": "reject_force_inline_is_rejected",
+      "passed": true,
+      "observed": {
+        "returncode": 1,
+        "first_diagnostic_line": "error: `forced` is incompatible with `#[rustc_force_inline]`"
+      }
+    },
+    {
+      "name": "same_borrow_is_accepted_with_an_ordinary_call",
+      "passed": true,
+      "observed": {
+        "build_returncode": 0,
+        "stdout": [
+          "ACCEPTED_PLAIN_CALL_RESULT=2"
+        ]
+      }
+    },
+    {
+      "name": "no_storage_dead_precedes_tailcall_for_a_local_without_destructor",
+      "passed": true,
+      "observed": {
+        "borrowed_local": "_2",
+        "statements_before_tailcall": [
+          "bb1: {",
+          "_2 = move (_4.0: u64);",
+          "StorageDead(_3);",
+          "FakeRead(ForLet(None), _2);",
+          "StorageLive(_5);",
+          "StorageLive(_6);",
+          "StorageLive(_7);",
+          "_7 = &_2;",
+          "_6 = &(*_7);"
+        ]
+      }
+    },
+    {
+      "name": "mir_inliner_keeps_call_to_helper_with_tail_call",
+      "passed": true,
+      "observed": {
+        "calls_helper": true,
+        "inlined_scope": false
+      }
+    },
+    {
+      "name": "mir_inliner_inlines_identical_helper_without_tail_call",
+      "passed": true,
+      "observed": {
+        "calls_helper": false,
+        "inlined_scope": true
+      }
+    },
+    {
+      "name": "default_mangling_equals_explicit_v0_at_every_depth",
+      "passed": true,
+      "observed": {
+        "first_default_symbol": "_RINvCs6tOw9BmjSZ7_14mangling_scale9touch_genINtB2_4PairyyEEB2_"
+      }
+    },
+    {
+      "name": "legacy_symbol_length_constant_and_names_distinct",
+      "passed": true,
+      "observed": {
+        "legacy_bytes": [
+          49,
+          49,
+          49,
+          49,
+          49,
+          49,
+          49,
+          49,
+          49,
+          49
+        ]
+      }
+    },
+    {
+      "name": "legacy_demangled_name_carries_no_type_arguments",
+      "passed": true,
+      "observed": {
+        "first": "mangling_scale::touch_gen::hefdd7095eb7f7e17",
+        "last": "mangling_scale::touch_gen::h0f4971fdcb2f5b9f"
+      }
+    },
+    {
+      "name": "v0_demangles_to_the_fully_expanded_type_at_every_depth",
+      "passed": true,
+      "observed": {
+        "u64_leaves": [
+          2,
+          4,
+          8,
+          16,
+          32,
+          64,
+          128,
+          256,
+          512,
+          1024
+        ]
+      }
+    },
+    {
+      "name": "v0_leaves_double_per_level_while_symbol_grows_by_a_bounded_increment",
+      "passed": true,
+      "observed": {
+        "v0_bytes": [
+          63,
+          71,
+          79,
+          87,
+          96,
+          105,
+          114,
+          123,
+          132,
+          141
+        ],
+        "increments": [
+          8,
+          8,
+          8,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9
+        ]
+      }
+    },
+    {
+      "name": "legacy_requires_z_unstable_options",
+      "passed": true,
+      "observed": {
+        "returncode": 1,
+        "stderr": [
+          "error: `-C symbol-mangling-version=legacy` requires `-Z unstable-options`"
+        ]
+      }
+    }
+  ],
+  "all_checks_passed": true
+}

@@ -1,0 +1,29 @@
+$ lean --version
+Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+$ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true TailCallDropOrderAndV0Mangling.lean
+'TailCallMangle.become_frame_reuse_and_lifo_drops' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.become_preserves_depth' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.scopeWalk_eq_lifo' depends on axioms: [propext]
+'TailCallMangle.run_depth_le' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.tail_loop_depth_const' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.call_loop_depth_linear' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.inline_configurations' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.halts_deterministic' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.naive_inline_of_tailcall_unsound' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.step_fresh' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.ce1_dangling_stack_borrow_across_tailcall_frame_reuse_ub' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.run_fresh' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.ce1_instance' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.naive_inline_instance' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.tail_loop_never_grows' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.ce2_post_tailcall_caller_drop_violates_tail_position_and_order' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.scenario_logs' depends on axioms: [propext, Quot.sound]
+'TailCallMangle.decode_encode' depends on axioms: [propext]
+'TailCallMangle.encodeV0Dag_injective' depends on axioms: [propext]
+'TailCallMangle.encodeV0Dag_length_le' depends on axioms: [propext]
+'TailCallMangle.ce3_naive_tree_mangling_exponential_vs_v0_dag_linear' depends on axioms: [propext]
+'TailCallMangle.digest_mangling_not_injective' does not depend on any axioms
+'TailCallMangle.digest_mangling_has_no_decoder' does not depend on any axioms
+'TailCallMangle.tower_bound_is_tight' depends on axioms: [propext]
+'TailCallMangle.digest64_mangling_collides' does not depend on any axioms
+exit status: 0
