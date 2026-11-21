@@ -1,0 +1,1535 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Ssa.Acyclic": [],
+    "Toy.Ssa.AgreeOffTemp": [],
+    "Toy.Ssa.AllReachable": [],
+    "Toy.Ssa.Cfg": [],
+    "Toy.Ssa.Cfg.casesOn": [],
+    "Toy.Ssa.Cfg.ctorIdx": [],
+    "Toy.Ssa.Cfg.edge": [],
+    "Toy.Ssa.Cfg.entry": [],
+    "Toy.Ssa.Cfg.mk": [],
+    "Toy.Ssa.Cfg.mk.inj": [],
+    "Toy.Ssa.Cfg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Ssa.Cfg.mk.noConfusion": [],
+    "Toy.Ssa.Cfg.mk.sizeOf_spec": [],
+    "Toy.Ssa.Cfg.noConfusion": [],
+    "Toy.Ssa.Cfg.noConfusionType": [],
+    "Toy.Ssa.Cfg.ofEdges": [],
+    "Toy.Ssa.Cfg.rec": [],
+    "Toy.Ssa.Cfg.recOn": [],
+    "Toy.Ssa.Clear": [],
+    "Toy.Ssa.Clear.below": [],
+    "Toy.Ssa.Clear.below.casesOn": [],
+    "Toy.Ssa.Clear.below.here": [],
+    "Toy.Ssa.Clear.below.rec": [],
+    "Toy.Ssa.Clear.below.step": [],
+    "Toy.Ssa.Clear.brecOn": [],
+    "Toy.Ssa.Clear.casesOn": [],
+    "Toy.Ssa.Clear.exists_walk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Clear.here": [],
+    "Toy.Ssa.Clear.rec": [],
+    "Toy.Ssa.Clear.recOn": [],
+    "Toy.Ssa.Clear.step": [],
+    "Toy.Ssa.Converge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.CopyMode": [],
+    "Toy.Ssa.CopyMode.casesOn": [],
+    "Toy.Ssa.CopyMode.ctorElim": [],
+    "Toy.Ssa.CopyMode.ctorElimType": [],
+    "Toy.Ssa.CopyMode.ctorIdx": [],
+    "Toy.Ssa.CopyMode.noConfusion": [],
+    "Toy.Ssa.CopyMode.noConfusionType": [],
+    "Toy.Ssa.CopyMode.parallel": [],
+    "Toy.Ssa.CopyMode.parallel.elim": [],
+    "Toy.Ssa.CopyMode.parallel.sizeOf_spec": [],
+    "Toy.Ssa.CopyMode.rec": [],
+    "Toy.Ssa.CopyMode.recOn": [],
+    "Toy.Ssa.CopyMode.sequential": [],
+    "Toy.Ssa.CopyMode.sequential.elim": [],
+    "Toy.Ssa.CopyMode.sequential.sizeOf_spec": [],
+    "Toy.Ssa.DF": [],
+    "Toy.Ssa.Dom": [],
+    "Toy.Ssa.EntryNoPreds": [],
+    "Toy.Ssa.EntryNoReachablePreds": [],
+    "Toy.Ssa.Exp": [],
+    "Toy.Ssa.Exp.add": [],
+    "Toy.Ssa.Exp.add.elim": [],
+    "Toy.Ssa.Exp.add.inj": [],
+    "Toy.Ssa.Exp.add.injEq": [
+      "propext"
+    ],
+    "Toy.Ssa.Exp.add.noConfusion": [],
+    "Toy.Ssa.Exp.add.sizeOf_spec": [],
+    "Toy.Ssa.Exp.below": [],
+    "Toy.Ssa.Exp.brecOn": [],
+    "Toy.Ssa.Exp.brecOn.eq": [],
+    "Toy.Ssa.Exp.brecOn.go": [],
+    "Toy.Ssa.Exp.casesOn": [],
+    "Toy.Ssa.Exp.ctorElim": [],
+    "Toy.Ssa.Exp.ctorElimType": [],
+    "Toy.Ssa.Exp.ctorIdx": [],
+    "Toy.Ssa.Exp.eval": [],
+    "Toy.Ssa.Exp.eval.eq_1": [],
+    "Toy.Ssa.Exp.eval.eq_2": [],
+    "Toy.Ssa.Exp.eval.eq_3": [],
+    "Toy.Ssa.Exp.eval.eq_def": [],
+    "Toy.Ssa.Exp.lit": [],
+    "Toy.Ssa.Exp.lit.elim": [],
+    "Toy.Ssa.Exp.lit.inj": [],
+    "Toy.Ssa.Exp.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Ssa.Exp.lit.noConfusion": [],
+    "Toy.Ssa.Exp.lit.sizeOf_spec": [],
+    "Toy.Ssa.Exp.noConfusion": [],
+    "Toy.Ssa.Exp.noConfusionType": [],
+    "Toy.Ssa.Exp.rec": [],
+    "Toy.Ssa.Exp.recOn": [],
+    "Toy.Ssa.Exp.var": [],
+    "Toy.Ssa.Exp.var.elim": [],
+    "Toy.Ssa.Exp.var.inj": [],
+    "Toy.Ssa.Exp.var.injEq": [
+      "propext"
+    ],
+    "Toy.Ssa.Exp.var.noConfusion": [],
+    "Toy.Ssa.Exp.var.sizeOf_spec": [],
+    "Toy.Ssa.IDF": [],
+    "Toy.Ssa.IDF.base": [],
+    "Toy.Ssa.IDF.below": [],
+    "Toy.Ssa.IDF.below.base": [],
+    "Toy.Ssa.IDF.below.casesOn": [],
+    "Toy.Ssa.IDF.below.rec": [],
+    "Toy.Ssa.IDF.below.step": [],
+    "Toy.Ssa.IDF.brecOn": [],
+    "Toy.Ssa.IDF.casesOn": [],
+    "Toy.Ssa.IDF.mono": [],
+    "Toy.Ssa.IDF.rec": [],
+    "Toy.Ssa.IDF.recOn": [],
+    "Toy.Ssa.IDF.step": [],
+    "Toy.Ssa.InJoin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.InJoinPre": [],
+    "Toy.Ssa.InJoinPre.mono": [],
+    "Toy.Ssa.Instr": [],
+    "Toy.Ssa.Instr.assign": [],
+    "Toy.Ssa.Instr.assign.elim": [],
+    "Toy.Ssa.Instr.assign.inj": [],
+    "Toy.Ssa.Instr.assign.injEq": [
+      "propext"
+    ],
+    "Toy.Ssa.Instr.assign.noConfusion": [],
+    "Toy.Ssa.Instr.assign.sizeOf_spec": [],
+    "Toy.Ssa.Instr.casesOn": [],
+    "Toy.Ssa.Instr.ctorElim": [],
+    "Toy.Ssa.Instr.ctorElimType": [],
+    "Toy.Ssa.Instr.ctorIdx": [],
+    "Toy.Ssa.Instr.dests": [],
+    "Toy.Ssa.Instr.dests.eq_1": [],
+    "Toy.Ssa.Instr.dests.eq_2": [],
+    "Toy.Ssa.Instr.dests.match_1": [],
+    "Toy.Ssa.Instr.exec": [],
+    "Toy.Ssa.Instr.exec.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Ssa.Instr.exec.eq_1": [],
+    "Toy.Ssa.Instr.exec.eq_2": [],
+    "Toy.Ssa.Instr.exec.match_1": [],
+    "Toy.Ssa.Instr.noConfusion": [],
+    "Toy.Ssa.Instr.noConfusionType": [],
+    "Toy.Ssa.Instr.pcopy": [],
+    "Toy.Ssa.Instr.pcopy.elim": [],
+    "Toy.Ssa.Instr.pcopy.inj": [],
+    "Toy.Ssa.Instr.pcopy.injEq": [
+      "propext"
+    ],
+    "Toy.Ssa.Instr.pcopy.noConfusion": [],
+    "Toy.Ssa.Instr.pcopy.sizeOf_spec": [],
+    "Toy.Ssa.Instr.rec": [],
+    "Toy.Ssa.Instr.recOn": [],
+    "Toy.Ssa.NearestSDomDef": [],
+    "Toy.Ssa.NoCriticalEdges": [],
+    "Toy.Ssa.PhiPredsSingleSucc": [],
+    "Toy.Ssa.PhisOnlyAtJoins": [],
+    "Toy.Ssa.PreWalk": [],
+    "Toy.Ssa.PreWalk.append": [],
+    "Toy.Ssa.PreWalk.first_visit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.PreWalk.head_mem": [
+      "propext"
+    ],
+    "Toy.Ssa.PreWalk.length_pos": [
+      "propext"
+    ],
+    "Toy.Ssa.Prog": [],
+    "Toy.Ssa.Prog.atTop": [],
+    "Toy.Ssa.Prog.atTop.eq_1": [],
+    "Toy.Ssa.Prog.atTop_append_singleton": [
+      "propext"
+    ],
+    "Toy.Ssa.Prog.body": [],
+    "Toy.Ssa.Prog.casesOn": [],
+    "Toy.Ssa.Prog.cfg": [],
+    "Toy.Ssa.Prog.ctorIdx": [],
+    "Toy.Ssa.Prog.mk": [],
+    "Toy.Ssa.Prog.mk.inj": [],
+    "Toy.Ssa.Prog.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Ssa.Prog.mk.noConfusion": [],
+    "Toy.Ssa.Prog.mk.sizeOf_spec": [],
+    "Toy.Ssa.Prog.noConfusion": [],
+    "Toy.Ssa.Prog.noConfusionType": [],
+    "Toy.Ssa.Prog.rec": [],
+    "Toy.Ssa.Prog.recOn": [],
+    "Toy.Ssa.Prog.run": [],
+    "Toy.Ssa.Prog.run.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Ssa.Prog.run.match_1": [],
+    "Toy.Ssa.Prog.run_append_singleton": [],
+    "Toy.Ssa.Reachable": [],
+    "Toy.Ssa.Reachable.of_dom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Reachable.of_edge": [],
+    "Toy.Ssa.ReachesTop": [],
+    "Toy.Ssa.ReachesTop.exists_walk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.SDom": [],
+    "Toy.Ssa.SName": [],
+    "Toy.Ssa.SeqSafe": [],
+    "Toy.Ssa.SeqSafe.eq_1": [],
+    "Toy.Ssa.SeqSafe.eq_2": [],
+    "Toy.Ssa.SeqSafe.eq_def": [],
+    "Toy.Ssa.SeqSafe.instDecidable": [
+      "propext"
+    ],
+    "Toy.Ssa.SeqSafe.instDecidable.match_3": [],
+    "Toy.Ssa.SeqSafe.match_1": [],
+    "Toy.Ssa.SingleReachingDef": [],
+    "Toy.Ssa.SingleReachingDefAll": [],
+    "Toy.Ssa.Src": [],
+    "Toy.Ssa.Src.body": [],
+    "Toy.Ssa.Src.casesOn": [],
+    "Toy.Ssa.Src.cfg": [],
+    "Toy.Ssa.Src.ctorIdx": [],
+    "Toy.Ssa.Src.defPts": [],
+    "Toy.Ssa.Src.mk": [],
+    "Toy.Ssa.Src.mk.inj": [],
+    "Toy.Ssa.Src.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Ssa.Src.mk.noConfusion": [],
+    "Toy.Ssa.Src.mk.sizeOf_spec": [],
+    "Toy.Ssa.Src.noConfusion": [],
+    "Toy.Ssa.Src.noConfusionType": [],
+    "Toy.Ssa.Src.rec": [],
+    "Toy.Ssa.Src.recOn": [],
+    "Toy.Ssa.Src.toProg": [],
+    "Toy.Ssa.SsaProg": [],
+    "Toy.Ssa.SsaProg.SingleAssignment": [],
+    "Toy.Ssa.SsaProg.atTop": [
+      "propext"
+    ],
+    "Toy.Ssa.SsaProg.atTop.match_1": [
+      "propext"
+    ],
+    "Toy.Ssa.SsaProg.atTop_append_pair": [
+      "propext"
+    ],
+    "Toy.Ssa.SsaProg.atTop_singleton": [
+      "propext"
+    ],
+    "Toy.Ssa.SsaProg.atTop_snoc": [
+      "propext"
+    ],
+    "Toy.Ssa.SsaProg.body": [],
+    "Toy.Ssa.SsaProg.casesOn": [],
+    "Toy.Ssa.SsaProg.cfg": [],
+    "Toy.Ssa.SsaProg.ctorIdx": [],
+    "Toy.Ssa.SsaProg.defsAt": [],
+    "Toy.Ssa.SsaProg.enter": [],
+    "Toy.Ssa.SsaProg.enter.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Ssa.SsaProg.enter.eq_1": [],
+    "Toy.Ssa.SsaProg.mk": [],
+    "Toy.Ssa.SsaProg.mk.inj": [],
+    "Toy.Ssa.SsaProg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Ssa.SsaProg.mk.noConfusion": [],
+    "Toy.Ssa.SsaProg.mk.sizeOf_spec": [],
+    "Toy.Ssa.SsaProg.noConfusion": [],
+    "Toy.Ssa.SsaProg.noConfusionType": [],
+    "Toy.Ssa.SsaProg.phiMoves": [],
+    "Toy.Ssa.SsaProg.phiMoves.eq_1": [],
+    "Toy.Ssa.SsaProg.phis": [],
+    "Toy.Ssa.SsaProg.rec": [],
+    "Toy.Ssa.SsaProg.recOn": [],
+    "Toy.Ssa.SsaProg.run": [],
+    "Toy.Ssa.SsaProg.run.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Ssa.SsaProg.run.match_1": [],
+    "Toy.Ssa.SsaProg.runFrom": [],
+    "Toy.Ssa.SsaProg.runFrom.match_1": [],
+    "Toy.Ssa.SsaProg.runFrom_append_pair": [],
+    "Toy.Ssa.SsaProg.run_append_pair": [],
+    "Toy.Ssa.SsaProg.run_singleton": [],
+    "Toy.Ssa.SsaProg.run_snoc": [
+      "propext"
+    ],
+    "Toy.Ssa.Walk": [],
+    "Toy.Ssa.Walk.append": [],
+    "Toy.Ssa.Walk.append_edge": [],
+    "Toy.Ssa.Walk.append_of_edge": [],
+    "Toy.Ssa.Walk.below": [],
+    "Toy.Ssa.Walk.below.casesOn": [],
+    "Toy.Ssa.Walk.below.cons": [],
+    "Toy.Ssa.Walk.below.rec": [],
+    "Toy.Ssa.Walk.below.single": [],
+    "Toy.Ssa.Walk.brecOn": [],
+    "Toy.Ssa.Walk.casesOn": [],
+    "Toy.Ssa.Walk.cons": [],
+    "Toy.Ssa.Walk.edge_getElem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Walk.edge_penultimate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Walk.eq_dropLast_append": [
+      "propext"
+    ],
+    "Toy.Ssa.Walk.first_hit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Walk.getElem_last": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Walk.getElem_zero": [
+      "propext"
+    ],
+    "Toy.Ssa.Walk.head_mem": [
+      "propext"
+    ],
+    "Toy.Ssa.Walk.last_hit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Walk.last_mem": [
+      "propext"
+    ],
+    "Toy.Ssa.Walk.length_pos": [
+      "propext"
+    ],
+    "Toy.Ssa.Walk.prefix_pre": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Walk.prefix_to": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Walk.rec": [],
+    "Toy.Ssa.Walk.recOn": [],
+    "Toy.Ssa.Walk.single": [],
+    "Toy.Ssa.Walk.single_or_snoc": [],
+    "Toy.Ssa.Walk.snoc_induction": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.Walk.suffix_from": [
+      "propext"
+    ],
+    "Toy.Ssa.Walk.suffix_sub": [
+      "propext"
+    ],
+    "Toy.Ssa.Walk.take_succ": [
+      "propext"
+    ],
+    "Toy.Ssa.acyclicEntryPredCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.acyclicEntryPredSrc": [
+      "propext"
+    ],
+    "Toy.Ssa.acyclicEntryPredSrc_hidom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.acyclicEntryPredSrc_hphi": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.acyclicEntryPred_props": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.acyclic_diamond": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.acyclic_of_rank": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.allReachable_chain3": [
+      "propext"
+    ],
+    "Toy.Ssa.allReachable_diamond": [
+      "propext"
+    ],
+    "Toy.Ssa.allReachable_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Ssa.avoidSet": [],
+    "Toy.Ssa.avoidSet.eq_1": [],
+    "Toy.Ssa.backToEntry2": [
+      "propext"
+    ],
+    "Toy.Ssa.branchPhiCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.branchPhiSsa": [
+      "propext"
+    ],
+    "Toy.Ssa.chain3": [
+      "propext"
+    ],
+    "Toy.Ssa.chainPhiAB": [
+      "propext"
+    ],
+    "Toy.Ssa.chainPhiBA": [
+      "propext"
+    ],
+    "Toy.Ssa.chainPhiBA_sequential_exact": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.chainPhi_order_matters": [
+      "propext"
+    ],
+    "Toy.Ssa.chainSrc": [
+      "propext"
+    ],
+    "Toy.Ssa.clearSet": [],
+    "Toy.Ssa.clear_closed": [],
+    "Toy.Ssa.converge_two_preds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.copyInstrs": [],
+    "Toy.Ssa.copyInstrs.eq_1": [],
+    "Toy.Ssa.copyInstrs.eq_2": [],
+    "Toy.Ssa.copyInstrs.match_1": [],
+    "Toy.Ssa.dfCheck": [],
+    "Toy.Ssa.dfCheck.eq_1": [],
+    "Toy.Ssa.df_entry_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.df_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.df_loop_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.df_of_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.df_preWalks_of_allReachable_of_entryNoPreds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.diamond": [
+      "propext"
+    ],
+    "Toy.Ssa.diamondIdom": [
+      "propext"
+    ],
+    "Toy.Ssa.diamondPhi": [
+      "propext"
+    ],
+    "Toy.Ssa.diamondPhi.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.diamondPhiSpurious": [
+      "propext"
+    ],
+    "Toy.Ssa.diamondPhiSpurious.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.diamondPhiSpurious_hidom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc": [
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc_assigns_only_zero": [
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc_defPts_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc_defPts_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc_hidom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc_hphi": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc_hphi_cover": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc_hphi_within": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.diamondSrc_hvars": [
+      "propext"
+    ],
+    "Toy.Ssa.domCheck": [],
+    "Toy.Ssa.domCheck.eq_1": [],
+    "Toy.Ssa.dom_antisymm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.dom_chain_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.dom_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.dom_iff_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.dom_of_cert": [
+      "propext"
+    ],
+    "Toy.Ssa.dom_of_domCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.dom_of_walk_avoid": [
+      "propext"
+    ],
+    "Toy.Ssa.dom_pred_of_sdom": [
+      "propext"
+    ],
+    "Toy.Ssa.dom_refl": [
+      "propext"
+    ],
+    "Toy.Ssa.dupCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.dupPhiSsa": [
+      "propext"
+    ],
+    "Toy.Ssa.dupPhiSsa.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.dupPhi_sequential_wrong": [
+      "propext"
+    ],
+    "Toy.Ssa.entryCycle2": [
+      "propext"
+    ],
+    "Toy.Ssa.entryLoop1": [
+      "propext"
+    ],
+    "Toy.Ssa.entryLoopSrc": [
+      "propext"
+    ],
+    "Toy.Ssa.entryLoopSrc.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.entryNoPreds_diamond": [
+      "propext"
+    ],
+    "Toy.Ssa.entryNoReachablePreds_diamond": [
+      "propext"
+    ],
+    "Toy.Ssa.entryNoReachablePreds_of_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.entryNoReachablePreds_of_acyclic.match_1_1": [],
+    "Toy.Ssa.entryNoReachablePreds_of_entryNoPreds": [],
+    "Toy.Ssa.entry_dom": [
+      "propext"
+    ],
+    "Toy.Ssa.envAfter": [],
+    "Toy.Ssa.envAfter.eq_1": [],
+    "Toy.Ssa.envAfter.match_1": [],
+    "Toy.Ssa.epIdom": [
+      "propext"
+    ],
+    "Toy.Ssa.epIdom.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.epPhi": [
+      "propext"
+    ],
+    "Toy.Ssa.epPhi.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.execBody": [],
+    "Toy.Ssa.execBody.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Ssa.execBody.eq_1": [],
+    "Toy.Ssa.execBody_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.execBody_cons": [],
+    "Toy.Ssa.execBody_flatMap_parallel_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.execBody_nil": [],
+    "Toy.Ssa.execBody_outCopies_parallel_eq_enter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.execBody_outCopies_sequential_eq_parallel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.execBody_sequential_eq_parCopy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.execBody_sequential_eq_parCopy.match_1_1": [],
+    "Toy.Ssa.execBody_sequential_hyps_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Ssa.execBody_sequential_needs_seqSafe": [
+      "propext"
+    ],
+    "Toy.Ssa.existsUnique_hyps_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.existsUnique_needs_allReachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.existsUnique_needs_entry_mem": [
+      "propext"
+    ],
+    "Toy.Ssa.existsUnique_needs_ne_entry": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.existsUnique_needs_not_idf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.existsUnique_reachesTop_of_allReachable_of_entry_mem_of_not_idf_of_ne_entry": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.exists_reachesTop_hyps_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Ssa.exists_reachesTop_needs_entry_mem": [
+      "propext"
+    ],
+    "Toy.Ssa.exists_reachesTop_needs_ne_entry": [
+      "propext"
+    ],
+    "Toy.Ssa.exists_reachesTop_needs_reachable": [
+      "propext"
+    ],
+    "Toy.Ssa.exists_reachesTop_needs_reachable.match_1_1": [
+      "propext"
+    ],
+    "Toy.Ssa.exists_reachesTop_of_entry_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.exists_walk_avoid_of_dom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.extra_phi_srd_without_joinClosed_when_entryPred": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.idfSubsetCheck": [],
+    "Toy.Ssa.idfSubsetCheck.eq_1": [],
+    "Toy.Ssa.idf_entry_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.idf_iterates_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.idf_subset_of_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.idf_union_idf_subset": [],
+    "Toy.Ssa.inJoinPre_of_insert_join": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.inJoinPre_of_join_point": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.inJoin_cycle_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.inJoin_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.inJoin_iff_preWalks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.inJoin_two_preds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.instReprExp": [],
+    "Toy.Ssa.instReprExp.repr": [],
+    "Toy.Ssa.instReprExp.repr.match_1": [],
+    "Toy.Ssa.isWalkB": [],
+    "Toy.Ssa.isWalkB.eq_1": [],
+    "Toy.Ssa.isWalkB.eq_2": [],
+    "Toy.Ssa.isWalkB.eq_3": [],
+    "Toy.Ssa.isWalkB.eq_def": [],
+    "Toy.Ssa.isWalkB.match_1": [],
+    "Toy.Ssa.isolated2": [
+      "propext"
+    ],
+    "Toy.Ssa.iteratedDF_subset_join_needs_allReachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.iteratedDF_subset_join_needs_entryNoPreds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.iteratedDF_subset_join_needs_entry_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.iteratedDF_subset_join_of_allReachable_of_entryNoPreds_of_entry_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.joinClosed_diamond_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.joinClosed_needs_singleReachingDef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.joinClosed_needs_singleReachingDefAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.joinClosed_of_entryNoPreds_of_singleReachingDef": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.joinClosed_of_singleReachingDefAll": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.joinClosed_of_singleReachingDefAll.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_eq_iteratedDF_of_allReachable_of_entryNoPreds_of_entry_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_iteratedDF_full_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_iteratedDF_hyps_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Ssa.join_placement_nonempty_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_subset_iteratedDF_needs_allReachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_subset_iteratedDF_of_allReachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_subset_iteratedDF_of_allReachable.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_subset_needs_singleReachingDef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_subset_of_entryNoPreds_of_singleReachingDef": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_subset_of_entryNoPreds_of_singleReachingDef.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_union_join_genuine_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_union_join_premise_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.join_union_join_subset_join": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ladder5": [
+      "propext"
+    ],
+    "Toy.Ssa.lastDef": [],
+    "Toy.Ssa.lastDefAux": [],
+    "Toy.Ssa.lastDefAux.eq_1": [],
+    "Toy.Ssa.lastDefAux.eq_2": [],
+    "Toy.Ssa.lastDefAux.eq_def": [],
+    "Toy.Ssa.lastDefAux.match_1": [],
+    "Toy.Ssa.lastDefAux_eq_none": [
+      "propext"
+    ],
+    "Toy.Ssa.lastDefAux_eq_none.match_1_1": [],
+    "Toy.Ssa.lastDefAux_or": [
+      "propext"
+    ],
+    "Toy.Ssa.lastDefAux_or.match_1_1": [],
+    "Toy.Ssa.lastDef_eq_none": [
+      "propext"
+    ],
+    "Toy.Ssa.liveOutName": [],
+    "Toy.Ssa.liveOutName_of_def": [
+      "propext"
+    ],
+    "Toy.Ssa.liveOutName_of_not_def": [
+      "propext"
+    ],
+    "Toy.Ssa.loop4": [
+      "propext"
+    ],
+    "Toy.Ssa.loopIdom": [
+      "propext"
+    ],
+    "Toy.Ssa.loopPhi": [
+      "propext"
+    ],
+    "Toy.Ssa.loopSrc": [
+      "propext"
+    ],
+    "Toy.Ssa.loopUnreach5": [
+      "propext"
+    ],
+    "Toy.Ssa.loopUnreachSrc": [
+      "propext"
+    ],
+    "Toy.Ssa.loopUnreachSrc_defPts_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.loopUnreachSrc_defPts_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.loopUnreachSrc_hidom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.loopUnreachSrc_hphi": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.lostCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.lostCopy_naive_miscompiles": [
+      "propext"
+    ],
+    "Toy.Ssa.lostCopy_split_fixes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.lostCopy_split_two_iterations": [
+      "propext"
+    ],
+    "Toy.Ssa.lostLoopPrefix_walk": [
+      "propext"
+    ],
+    "Toy.Ssa.lostLoopWalk": [
+      "propext"
+    ],
+    "Toy.Ssa.lostLoopWalk_walk": [
+      "propext"
+    ],
+    "Toy.Ssa.lostNoExitCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.lostNoExitSsa": [
+      "propext"
+    ],
+    "Toy.Ssa.lostSource": [
+      "propext"
+    ],
+    "Toy.Ssa.lostSplitCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.lostSplitPrefix_walk": [
+      "propext"
+    ],
+    "Toy.Ssa.lostSplitSsa": [
+      "propext"
+    ],
+    "Toy.Ssa.lostSplitSsa.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.lostSplitWalk": [
+      "propext"
+    ],
+    "Toy.Ssa.lostSplitWalk_walk": [
+      "propext"
+    ],
+    "Toy.Ssa.lostSsa": [
+      "propext"
+    ],
+    "Toy.Ssa.lostSsa.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.lostWalk": [
+      "propext"
+    ],
+    "Toy.Ssa.lostWalk_walk": [
+      "propext"
+    ],
+    "Toy.Ssa.luIdom": [
+      "propext"
+    ],
+    "Toy.Ssa.luIdom.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.luPhi": [
+      "propext"
+    ],
+    "Toy.Ssa.luPhi.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.mem_of_walk_closed": [
+      "propext"
+    ],
+    "Toy.Ssa.mem_succs": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa": [],
+    "Toy.Ssa.naiveOutOfSsa_body": [],
+    "Toy.Ssa.naiveOutOfSsa_hyps_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_needs_parallel": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_needs_phiPredsSingleSucc": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_needs_walk": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_noCriticalEdges_needs_noCriticalEdges": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_noCriticalEdges_needs_parallel": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_noCriticalEdges_needs_phisOnlyAtJoins": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_parallel_eq_of_noCriticalEdges_of_phisOnlyAtJoins": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_parallel_eq_of_phiPredsSingleSucc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_parallel_run_eq_outCopies": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_run_needs_exit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_sequential_eq_of_phiPredsSingleSucc_of_seqSafe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_sequential_hyps_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_sequential_needs_phiPredsSingleSucc": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_sequential_needs_seqSafe": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_sequential_needs_walk": [
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_sequential_run_eq_parallel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.naiveOutOfSsa_sequential_run_needs_exit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.nearestSDomDef_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.noCriticalEdges_lostSplitCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.noCriticalEdges_swapCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.notDFCheck": [],
+    "Toy.Ssa.notDFCheck.eq_1": [],
+    "Toy.Ssa.notRTCheck": [],
+    "Toy.Ssa.notRTCheck.eq_1": [],
+    "Toy.Ssa.not_acyclic_loop4": [
+      "propext"
+    ],
+    "Toy.Ssa.not_allReachable_isolated2": [
+      "propext"
+    ],
+    "Toy.Ssa.not_converge_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_df_entry": [
+      "propext"
+    ],
+    "Toy.Ssa.not_df_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_df_ladder_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_df_of_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_dom_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_dom_of_avoidSet": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_dom_of_walk": [],
+    "Toy.Ssa.not_entryNoPreds_backToEntry2": [
+      "propext"
+    ],
+    "Toy.Ssa.not_idf_diamond_01_at_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_idf_entry": [
+      "propext"
+    ],
+    "Toy.Ssa.not_idf_example": [
+      "propext"
+    ],
+    "Toy.Ssa.not_inJoin_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_nearestSDomDef_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_noCriticalEdges_lostCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.not_phiPredsSingleSucc_lostSsa": [
+      "propext"
+    ],
+    "Toy.Ssa.not_reachesTop_entry_of_entryNoPreds": [
+      "propext"
+    ],
+    "Toy.Ssa.not_reachesTop_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_reachesTop_of_cert": [
+      "propext"
+    ],
+    "Toy.Ssa.not_reachesTop_of_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.not_sdom_self_example": [
+      "propext"
+    ],
+    "Toy.Ssa.not_srd_example": [
+      "propext"
+    ],
+    "Toy.Ssa.not_walk_example": [
+      "propext"
+    ],
+    "Toy.Ssa.not_walk_of_closed": [],
+    "Toy.Ssa.outCopies": [],
+    "Toy.Ssa.outCopies.eq_1": [],
+    "Toy.Ssa.outName": [],
+    "Toy.Ssa.outName.match_1": [],
+    "Toy.Ssa.outName_block": [],
+    "Toy.Ssa.parCopy": [],
+    "Toy.Ssa.parCopy.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Ssa.parCopy.eq_1": [],
+    "Toy.Ssa.parCopy.match_1": [],
+    "Toy.Ssa.parCopy_cons": [
+      "propext"
+    ],
+    "Toy.Ssa.parCopy_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.parCopy_of_not_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.phiPredsSingleSucc_lostSplitSsa": [
+      "propext"
+    ],
+    "Toy.Ssa.phiPredsSingleSucc_of_noCriticalEdges": [],
+    "Toy.Ssa.phiPredsSingleSucc_swapSsaAB": [
+      "propext"
+    ],
+    "Toy.Ssa.phisOnlyAtJoins_lostSsa": [
+      "propext"
+    ],
+    "Toy.Ssa.phisOnlyAtJoins_swapSsaAB": [
+      "propext"
+    ],
+    "Toy.Ssa.reachAvoid": [],
+    "Toy.Ssa.reachAvoid.eq_1": [],
+    "Toy.Ssa.reachAvoid.eq_2": [],
+    "Toy.Ssa.reachAvoid.eq_def": [],
+    "Toy.Ssa.reachAvoid.match_1": [],
+    "Toy.Ssa.reachesTop_at_phi_block_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.reachesTop_example": [
+      "propext"
+    ],
+    "Toy.Ssa.reachesTop_iff_hyps_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.reachesTop_iff_nearestSDomDef_of_allReachable_of_not_idf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.reachesTop_iff_needs_allReachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.reachesTop_mem_of_walk": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.renameBody": [],
+    "Toy.Ssa.renameBody.eq_1": [],
+    "Toy.Ssa.renameBody.eq_2": [],
+    "Toy.Ssa.renameBody.eq_def": [],
+    "Toy.Ssa.renameBody.match_1": [],
+    "Toy.Ssa.renameBody_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.renameBody_correct.match_1_1": [],
+    "Toy.Ssa.renameBody_dests": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.renameBody_dests.match_1_1": [],
+    "Toy.Ssa.renameExp": [],
+    "Toy.Ssa.renameExp.eq_1": [],
+    "Toy.Ssa.renameExp.eq_2": [],
+    "Toy.Ssa.renameExp.eq_3": [],
+    "Toy.Ssa.renameExp.eq_def": [],
+    "Toy.Ssa.renameExp.match_1": [],
+    "Toy.Ssa.renameExp_eval": [],
+    "Toy.Ssa.renameExp_eval.match_1_1": [],
+    "Toy.Ssa.sdom_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.selfLoop2": [
+      "propext"
+    ],
+    "Toy.Ssa.singleReachingDefAll_needs_joinClosed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.singleReachingDefAll_of_joinClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.singleReachingDef_at_iteratedDF_of_allReachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.singleReachingDef_at_join": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.singleReachingDef_needs_joinClosed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.singleReachingDef_of_joinClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.srdAll_hyps_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.srdAll_iff_srd_of_entryNoPreds": [
+      "propext"
+    ],
+    "Toy.Ssa.srdCheck": [],
+    "Toy.Ssa.srdCheck.eq_1": [],
+    "Toy.Ssa.srd_at_most_one_example": [
+      "propext"
+    ],
+    "Toy.Ssa.srd_entry_exemption_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.srd_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.srd_hyps_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.srd_iteratedDF_needs_allReachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.srd_join_needs_entryNoPreds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.srd_not_monotone_diamond": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.srd_not_monotone_diamond.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.srd_of_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct": [],
+    "Toy.Ssa.ssaConstruct.eq_1": [],
+    "Toy.Ssa.ssaConstruct_acyclic_corollary_needs_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_cyclic_unreach_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_defsAt_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_diamond_example": [
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_enter_other": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_enter_phi": [
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_entryPred_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_hyps_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_loop_example": [
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_needs_entryNoReachablePreds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_needs_hinit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_needs_hvars": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_needs_nearestSDomDef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_needs_phi_cover": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_needs_phi_within": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_needs_walk_from_entry": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_preserves_values_of_acyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_preserves_values_of_entryNoReachablePreds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_preserves_values_of_entryNoReachablePreds.match_1_2": [
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_singleAssignment_needs_nodup": [
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_singleAssignment_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.ssaConstruct_singleAssignment_of_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.stepAvoid": [],
+    "Toy.Ssa.stepAvoid.eq_1": [],
+    "Toy.Ssa.strict_subset_of_join_two_defs_diamond": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.strict_subset_of_join_two_defs_loop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.succs": [],
+    "Toy.Ssa.succs.eq_1": [],
+    "Toy.Ssa.succs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.swapCfg": [
+      "propext"
+    ],
+    "Toy.Ssa.swapSsaAB": [
+      "propext"
+    ],
+    "Toy.Ssa.swapSsaBA": [
+      "propext"
+    ],
+    "Toy.Ssa.swapTempProg": [
+      "propext"
+    ],
+    "Toy.Ssa.swapTempProg.eq_1": [
+      "propext"
+    ],
+    "Toy.Ssa.swapTemp_block_agree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.swapTemp_run_agree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.swapWalk": [
+      "propext"
+    ],
+    "Toy.Ssa.swapWalk_walk": [
+      "propext"
+    ],
+    "Toy.Ssa.swap_parallel_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.swap_sequential_either_order_wrong": [
+      "propext"
+    ],
+    "Toy.Ssa.swap_temp_hyps_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Ssa.swap_temp_needs_ne_temp": [
+      "propext"
+    ],
+    "Toy.Ssa.swap_temp_needs_walk": [
+      "propext"
+    ],
+    "Toy.Ssa.swap_temp_one_trip": [
+      "propext"
+    ],
+    "Toy.Ssa.swap_temp_sequence_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.topName": [],
+    "Toy.Ssa.unreachJoin4": [
+      "propext"
+    ],
+    "Toy.Ssa.unreachLoop2": [
+      "propext"
+    ],
+    "Toy.Ssa.upd": [],
+    "Toy.Ssa.upd.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Ssa.upd.eq_1": [],
+    "Toy.Ssa.upd_apply": [],
+    "Toy.Ssa.walk_clear_or_reachesTop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.walk_example": [
+      "propext"
+    ],
+    "Toy.Ssa.walk_of_isWalkB": [
+      "propext"
+    ],
+    "Toy.Ssa.walk_of_isWalkB.match_1_1": [],
+    "Toy.Ssa.walk_of_mem_reachAvoid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ssa.walk_of_mem_reachAvoid.match_1_1": [],
+    "Toy.Ssa.windmill_sequential_no_temp": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

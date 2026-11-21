@@ -88838,6 +88838,66 @@
         "domains/storage-engines"
       ]
     },
+    "ssa-phi-placement-dominance-frontiers-and-out-of-ssa-copy-problems": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/115372.115320"
+          },
+          "name": "Efficiently Computing Static Single Assignment Form and the Control Dependence Graph"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/151333.151337"
+          },
+          "name": "The Transitive Closure of Control Dependence: The Iterated Join"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8"
+          },
+          "name": "Practical Improvements to the Construction and Destruction of Static Single Assignment Form"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/765568.765573"
+          },
+          "name": "Algorithms for computing the static single assignment form"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-007-9096-8"
+          },
+          "name": "Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CGO.2009.19"
+          },
+          "name": "Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/ssa",
+        "compilers/ssa-construction",
+        "compilers/out-of-ssa",
+        "compilers/dominance-frontiers",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "verification/formalized-results"
+      ]
+    },
     "stabilizer-tableau-pauli-frames-lattice-surgery-and-blossom-decoding": {
       "observed_at": "2026-11-19",
       "subjects": [

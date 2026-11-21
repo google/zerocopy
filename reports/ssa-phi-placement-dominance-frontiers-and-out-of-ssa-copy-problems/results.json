@@ -1,0 +1,1294 @@
+[
+ {
+  "id": "join-subset-iterated-df-of-all-reachable",
+  "lean": "Toy.Ssa.join_subset_iteratedDF_of_allReachable",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Cytron et al. Lemma 6, restated over semantic dominance and index-based convergence.",
+  "plain_claim": "In a finite CFG in which every node is reachable from the entry, for every set S of nodes, every join node of S (a node at which two nonnull walks starting at two distinct nodes of S converge in Cytron et al.'s sense) lies in the iterated dominance frontier DF+(S).",
+  "statement": "AllReachable G -> forall z, InJoin G S z -> IDF G S z",
+  "hypotheses": [
+   {
+    "name": "hreach : AllReachable G",
+    "purpose": "Dominance is vacuous at unreachable nodes, which removes them from dominance frontiers.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.join_subset_iteratedDF_needs_allReachable",
+    "counterexample_class": "a 4-node CFG whose join node and both start nodes are unreachable"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Diamond 0->1->3, 0->2->3 with S = {0, 1}: all nodes reachable and 3 is a join node of S.",
+  "nonvacuity_witness_lean": "Toy.Ssa.join_iteratedDF_full_nonvacuous",
+  "non_claims": [
+   "Does not say DF+(S) is contained in J(S); the package proves that inclusion under the additional hypotheses that S contains the entry and no edge enters the entry (iterated-df-subset-join-of-entry-mem), each tight there.",
+   "Says nothing about CFGs with unreachable nodes, where the inclusion fails (Toy.Ssa.join_subset_iteratedDF_needs_allReachable).",
+   "The CFG is a simple directed graph (edge : Fin n -> Fin n -> Bool): parallel edges between the same two blocks (such as switch arms with one target) are collapsed.",
+   "Dominance is the semantic all-walks notion; no dominator-tree algorithm is modeled or verified."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320. Section 2 defines convergence of nonnull paths by (1) X0 != Y0, (2) XJ = Z = YK, (3) Xj = Yk implies j = J or k = K, and assumes every node is on a path from Entry; Lemma 6: for any set S of CFG nodes, J(S) is contained in DF+(S); Lemma 7: if Entry is in S then DF(S) is contained in J(S); Theorem 2: J+(S) = DF+(S), which 'depends on the fact that Entry is in S'.",
+   "Ullrich, Lohner. \"Verified Construction of Static Single Assignment Form.\" Archive of Formal Proofs, February 2016 (Isabelle/HOL session Formal_SSA). Mechanizes Braun et al.'s construction (semantic equivalence; minimal SSA for reducible CFGs). Its theory Minimality defines Cytron's index-based path convergence (pathsConverge), proves it equivalent to disjointness of the paths without their last nodes (lemma pathsConverge'), defines necessaryPhi, and proves that a phi is present at a convergence point of two definitions reaching a use (lemmas convergence_prop, convergence_prop'). It does not formalize dominance frontiers or DF+."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.AllReachable",
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.Cfg.ofEdges",
+   "Toy.Ssa.Converge",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.Dom",
+   "Toy.Ssa.IDF",
+   "Toy.Ssa.InJoin",
+   "Toy.Ssa.SDom",
+   "Toy.Ssa.allReachable_diamond",
+   "Toy.Ssa.df_example",
+   "Toy.Ssa.df_loop_example",
+   "Toy.Ssa.dom_chain_example",
+   "Toy.Ssa.dom_example",
+   "Toy.Ssa.idf_iterates_example",
+   "Toy.Ssa.inJoin_cycle_example",
+   "Toy.Ssa.inJoin_example",
+   "Toy.Ssa.not_allReachable_isolated2",
+   "Toy.Ssa.not_converge_example",
+   "Toy.Ssa.not_df_example",
+   "Toy.Ssa.not_df_ladder_example",
+   "Toy.Ssa.not_dom_example",
+   "Toy.Ssa.not_idf_example",
+   "Toy.Ssa.not_inJoin_example",
+   "Toy.Ssa.not_sdom_self_example",
+   "Toy.Ssa.sdom_example",
+   "Toy.Ssa.unreachJoin4"
+  ]
+ },
+ {
+  "id": "iterated-df-subset-join-of-entry-mem",
+  "lean": "Toy.Ssa.iteratedDF_subset_join_of_allReachable_of_entryNoPreds_of_entry_mem",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Cytron et al. Lemma 7 iterated as in their Theorem 2, with the no-edge-into-entry condition made explicit.",
+  "plain_claim": "In a finite CFG in which every node is reachable from the entry and no edge enters the entry, for every set S of nodes that contains the entry, every node of the iterated dominance frontier DF+(S) is a join node of S.",
+  "statement": "AllReachable G -> EntryNoPreds G -> S G.entry -> forall z, IDF G S z -> InJoin G S z",
+  "hypotheses": [
+   {
+    "name": "hreach : AllReachable G",
+    "purpose": "Vacuous dominance at unreachable nodes puts single-predecessor nodes into DF.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.iteratedDF_subset_join_needs_allReachable",
+    "counterexample_class": "a 2-node CFG with an unreachable self-loop"
+   },
+   {
+    "name": "hnp : EntryNoPreds G",
+    "purpose": "With an edge into the entry, the entry is in its own dominance frontier but is not a join node.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.iteratedDF_subset_join_needs_entryNoPreds",
+    "counterexample_class": "the 1-node CFG with a self-loop on the entry"
+   },
+   {
+    "name": "hS : S G.entry",
+    "purpose": "A single definition inside a loop has the loop header in DF+ but no second definition to join with.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.iteratedDF_subset_join_needs_entry_mem",
+    "counterexample_class": "the 2-node CFG 0 -> 1 with a self-loop on 1"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Diamond with S = {0, 1}: 3 is in DF+(S).",
+  "nonvacuity_witness_lean": "Toy.Ssa.join_iteratedDF_full_nonvacuous",
+  "non_claims": [
+   "Does not apply when S omits the entry (Toy.Ssa.iteratedDF_subset_join_needs_entry_mem).",
+   "Does not cover CFGs with an edge into the entry or with unreachable nodes.",
+   "The CFG is a simple directed graph (edge : Fin n -> Fin n -> Bool): parallel edges between the same two blocks (such as switch arms with one target) are collapsed.",
+   "Dominance is the semantic all-walks notion; no dominator-tree algorithm is modeled or verified."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320. Section 2 defines convergence of nonnull paths by (1) X0 != Y0, (2) XJ = Z = YK, (3) Xj = Yk implies j = J or k = K, and assumes every node is on a path from Entry; Lemma 6: for any set S of CFG nodes, J(S) is contained in DF+(S); Lemma 7: if Entry is in S then DF(S) is contained in J(S); Theorem 2: J+(S) = DF+(S), which 'depends on the fact that Entry is in S'.",
+   "Bilardi, Pingali. \"Algorithms for computing the static single assignment form.\" J. ACM 50(3):375-425, 2003. DOI 10.1145/765568.765573. Definition 1.1 defines J(S) only for sets S containing START (paths u ->+ v and w ->+ v from distinct u, w in S intersecting only at v) and notes J(S u J(S)) = J(S), crediting Weiss (1992), so that 'the phi-assignments in the nodes J(S) are sufficient'; Theorem 2.2 (for {START} within S) expresses J(S) through the merge relation."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.AllReachable",
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.Converge",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.EntryNoPreds",
+   "Toy.Ssa.IDF",
+   "Toy.Ssa.InJoin",
+   "Toy.Ssa.PreWalk",
+   "Toy.Ssa.df_preWalks_of_allReachable_of_entryNoPreds",
+   "Toy.Ssa.entryLoop1",
+   "Toy.Ssa.entryNoPreds_diamond",
+   "Toy.Ssa.inJoinPre_of_insert_join",
+   "Toy.Ssa.not_entryNoPreds_backToEntry2",
+   "Toy.Ssa.selfLoop2",
+   "Toy.Ssa.unreachLoop2"
+  ]
+ },
+ {
+  "id": "join-eq-iterated-df-of-entry-mem",
+  "lean": "Toy.Ssa.join_eq_iteratedDF_of_allReachable_of_entryNoPreds_of_entry_mem",
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Cytron et al. Theorem 2 (J+(S) = DF+(S) when Entry is in S) combined with J(S u J(S)) = J(S); derived here from the two inclusions.",
+  "plain_claim": "In a finite CFG in which every node is reachable from the entry and no edge enters the entry, for every set S of nodes that contains the entry, the join set J(S) equals the iterated dominance frontier DF+(S).",
+  "statement": "AllReachable G -> EntryNoPreds G -> S G.entry -> forall z, InJoin G S z <-> IDF G S z",
+  "hypotheses": [
+   {
+    "name": "hreach : AllReachable G",
+    "purpose": "As for both inclusions.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.iteratedDF_subset_join_needs_allReachable",
+    "counterexample_class": "a 2-node CFG with an unreachable self-loop (S contains the entry, no edge enters the entry)"
+   },
+   {
+    "name": "hnp : EntryNoPreds G",
+    "purpose": "As for DF+(S) within J(S).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.iteratedDF_subset_join_needs_entryNoPreds",
+    "counterexample_class": "the 1-node CFG with a self-loop on the entry"
+   },
+   {
+    "name": "hS : S G.entry",
+    "purpose": "As for DF+(S) within J(S).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.iteratedDF_subset_join_needs_entry_mem",
+    "counterexample_class": "the 2-node CFG 0 -> 1 with a self-loop on 1"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Diamond with S = {0, 1}: J(S) = DF+(S) = {3}.",
+  "nonvacuity_witness_lean": "Toy.Ssa.join_iteratedDF_full_nonvacuous",
+  "non_claims": [
+   "States equality of node sets; it says nothing about the cost of computing either set.",
+   "Not claimed when S omits the entry: for such S the package proves J(S) within DF+(S) given reachability (join-subset-iterated-df-of-all-reachable), and DF+(S) within J(S) fails on the 2-node CFG 0 -> 1 with a self-loop on 1 (Toy.Ssa.iteratedDF_subset_join_needs_entry_mem).",
+   "Characterizes unpruned placement; liveness-pruned SSA (as computed by an iterated dominance frontier restricted to live-in blocks) places phis on a subset of DF+(S), omitting blocks where the variable is dead, and is not covered.",
+   "The CFG is a simple directed graph (edge : Fin n -> Fin n -> Bool): parallel edges between the same two blocks (such as switch arms with one target) are collapsed."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320. Section 2 defines convergence of nonnull paths by (1) X0 != Y0, (2) XJ = Z = YK, (3) Xj = Yk implies j = J or k = K, and assumes every node is on a path from Entry; Lemma 6: for any set S of CFG nodes, J(S) is contained in DF+(S); Lemma 7: if Entry is in S then DF(S) is contained in J(S); Theorem 2: J+(S) = DF+(S), which 'depends on the fact that Entry is in S'.",
+   "Bilardi, Pingali. \"Algorithms for computing the static single assignment form.\" J. ACM 50(3):375-425, 2003. DOI 10.1145/765568.765573. Definition 1.1 defines J(S) only for sets S containing START (paths u ->+ v and w ->+ v from distinct u, w in S intersecting only at v) and notes J(S u J(S)) = J(S), crediting Weiss (1992), so that 'the phi-assignments in the nodes J(S) are sufficient'; Theorem 2.2 (for {START} within S) expresses J(S) through the merge relation.",
+   "Rastello, Bouchez Tichadou (eds.). SSA-based Compiler Design. Springer, 2022. DOI 10.1007/978-3-030-80515-9. Textbook treatment of phi placement, renaming, and SSA destruction."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.AllReachable",
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.EntryNoPreds",
+   "Toy.Ssa.IDF",
+   "Toy.Ssa.InJoin"
+  ]
+ },
+ {
+  "id": "join-union-join-subset-join",
+  "lean": "Toy.Ssa.join_union_join_subset_join",
+  "kind": "theorem",
+  "tier": "T2",
+  "tier_justification": "Bilardi and Pingali define J(S) only for sets S containing START and state J(S u J(S)) = J(S) there (crediting Weiss 1992); stated here for every finite CFG and every S, with no reachability, entry, or START-membership hypothesis.",
+  "plain_claim": "In every finite CFG and for every set S of nodes, J(S u J(S)) is contained in J(S): a node at which walks from two distinct nodes of S or of J(S) converge is already a join node of S.",
+  "statement": "forall z, InJoin G (fun x => S x \\/ InJoin G S x) z -> InJoin G S z",
+  "hypotheses": [],
+  "depth": "substantive",
+  "nonvacuity_witness": "ladder5 with S = {0, 2}: 3 is in J(S) but not in S, and 4 is in J(S u J(S)) via the start nodes 0 (in S) and 3 (in J(S)).",
+  "nonvacuity_witness_lean": "Toy.Ssa.join_union_join_genuine_nonvacuous",
+  "non_claims": [
+   "Does not say J(S) is computed by any particular algorithm.",
+   "Convergence is Cytron et al.'s index-based condition; its equivalence with disjointness of the two walks without their last nodes is proved here as the auxiliary lemma Toy.Ssa.inJoin_iff_preWalks (used in the proof, not a separate card; the Isabelle Formal_SSA development proves the same equivalence as lemma pathsConverge'). Bilardi and Pingali's 'intersecting only at v' (paths) is not formalized.",
+   "The CFG is a simple directed graph (edge : Fin n -> Fin n -> Bool): parallel edges between the same two blocks (such as switch arms with one target) are collapsed."
+  ],
+  "prior_art": [
+   "Bilardi, Pingali. \"Algorithms for computing the static single assignment form.\" J. ACM 50(3):375-425, 2003. DOI 10.1145/765568.765573. Definition 1.1 defines J(S) only for sets S containing START (paths u ->+ v and w ->+ v from distinct u, w in S intersecting only at v) and notes J(S u J(S)) = J(S), crediting Weiss (1992), so that 'the phi-assignments in the nodes J(S) are sufficient'; Theorem 2.2 (for {START} within S) expresses J(S) through the merge relation.",
+   "Weiss. \"The transitive closure of control dependence: the iterated join.\" ACM LOPLAS 1(2):178-190, 1992. DOI 10.1145/151333.151337. Credited by Bilardi and Pingali (2003) with J(S u J(S)) = J(S); no statement about the hypotheses under which Weiss proves it is made here.",
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320.",
+   "Ullrich, Lohner. \"Verified Construction of Static Single Assignment Form.\" Archive of Formal Proofs, February 2016 (Isabelle/HOL session Formal_SSA). Mechanizes Braun et al.'s construction (semantic equivalence; minimal SSA for reducible CFGs). Its theory Minimality defines Cytron's index-based path convergence (pathsConverge), proves it equivalent to disjointness of the paths without their last nodes (lemma pathsConverge'), defines necessaryPhi, and proves that a phi is present at a convergence point of two definitions reaching a use (lemmas convergence_prop, convergence_prop'). It does not formalize dominance frontiers or DF+."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.Converge",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.InJoin",
+   "Toy.Ssa.InJoinPre",
+   "Toy.Ssa.Walk",
+   "Toy.Ssa.backToEntry2",
+   "Toy.Ssa.inJoinPre_of_join_point",
+   "Toy.Ssa.inJoin_iff_preWalks",
+   "Toy.Ssa.ladder5",
+   "Toy.Ssa.not_walk_example",
+   "Toy.Ssa.walk_example"
+  ]
+ },
+ {
+  "id": "single-reaching-def-of-join-closed",
+  "lean": [
+   "Toy.Ssa.singleReachingDef_of_joinClosed",
+   "Toy.Ssa.singleReachingDefAll_of_joinClosed"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "The rationale behind Cytron et al.'s iterated join and Bilardi-Pingali's sufficiency of J(S) (placements closed under joins) made precise for per-block reaching definitions.",
+  "plain_claim": "In every finite CFG, for definition blocks D and a phi placement P with J(D u P) contained in P (join closure), at the top of every block without a phi, the entry included, at most one definition point of D u P reaches (singleReachingDefAll_of_joinClosed); in particular this holds at every non-entry block without a phi (singleReachingDef_of_joinClosed).",
+  "statement": "(forall z, InJoin G (D \\/ P) z -> P z) -> SingleReachingDef G D P   (and the same for SingleReachingDefAll, which does not exempt the entry)",
+  "hypotheses": [
+   {
+    "name": "hclosed : forall z, InJoin G (fun w => D w \\/ P w) z -> P z (premise of both bundled theorems)",
+    "purpose": "Without join closure two definitions converge at a block without a phi.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ssa.singleReachingDef_needs_joinClosed",
+     "Toy.Ssa.singleReachingDefAll_needs_joinClosed"
+    ],
+    "counterexample_class": "the diamond with D = {0, 1} and P empty (both conclusions fail)"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Diamond with D = {0, 1}, P = {3}: J(D u P) = {3}.",
+  "nonvacuity_witness_lean": "Toy.Ssa.joinClosed_diamond_example",
+  "non_claims": [
+   "'Single reaching definition' means at most one: SingleReachingDef holds vacuously at blocks reached by no definition (Toy.Ssa.srd_at_most_one_example); existence is proved when the entry is a definition point (exists-reaches-top-of-entry-mem) and fails without it on the 3-node chain with D = P = empty (Toy.Ssa.exists_reachesTop_needs_entry_mem).",
+   "Reaching definitions are per block (the value leaving a definition block); the order of instructions inside a block and the liveness of upward-exposed uses are not modeled.",
+   "Does not say a join-closed placement is minimal; extra join-closed phis are allowed.",
+   "The CFG is a simple directed graph (edge : Fin n -> Fin n -> Bool): parallel edges between the same two blocks (such as switch arms with one target) are collapsed."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320.",
+   "Bilardi, Pingali. \"Algorithms for computing the static single assignment form.\" J. ACM 50(3):375-425, 2003. DOI 10.1145/765568.765573. Definition 1.1 defines J(S) only for sets S containing START (paths u ->+ v and w ->+ v from distinct u, w in S intersecting only at v) and notes J(S u J(S)) = J(S), crediting Weiss (1992), so that 'the phi-assignments in the nodes J(S) are sufficient'; Theorem 2.2 (for {START} within S) expresses J(S) through the merge relation.",
+   "Ullrich, Lohner. \"Verified Construction of Static Single Assignment Form.\" Archive of Formal Proofs, February 2016 (Isabelle/HOL session Formal_SSA). Mechanizes Braun et al.'s construction (semantic equivalence; minimal SSA for reducible CFGs). Its theory Minimality defines Cytron's index-based path convergence (pathsConverge), proves it equivalent to disjointness of the paths without their last nodes (lemma pathsConverge'), defines necessaryPhi, and proves that a phi is present at a convergence point of two definitions reaching a use (lemmas convergence_prop, convergence_prop'). It does not formalize dominance frontiers or DF+."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.Clear",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.InJoin",
+   "Toy.Ssa.ReachesTop",
+   "Toy.Ssa.SingleReachingDef",
+   "Toy.Ssa.SingleReachingDefAll",
+   "Toy.Ssa.chain3",
+   "Toy.Ssa.diamond",
+   "Toy.Ssa.exists_reachesTop_needs_entry_mem",
+   "Toy.Ssa.not_reachesTop_example",
+   "Toy.Ssa.not_srd_example",
+   "Toy.Ssa.reachesTop_example",
+   "Toy.Ssa.srd_at_most_one_example",
+   "Toy.Ssa.srd_example"
+  ]
+ },
+ {
+  "id": "join-closed-of-single-reaching-def",
+  "lean": [
+   "Toy.Ssa.joinClosed_of_entryNoPreds_of_singleReachingDef",
+   "Toy.Ssa.joinClosed_of_singleReachingDefAll"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Converse of the previous result: phis are needed wherever definitions converge (folklore; here under EntryNoPreds, or without it for SingleReachingDefAll), made precise.",
+  "plain_claim": "In a finite CFG with no edge into the entry, if at the top of every non-entry block without a phi at most one definition point of D u P reaches, then J(D u P) is contained in P (joinClosed_of_entryNoPreds_of_singleReachingDef). In every finite CFG, if at the top of every block without a phi, the entry included, at most one definition point of D u P reaches (SingleReachingDefAll), then J(D u P) is contained in P (joinClosed_of_singleReachingDefAll).",
+  "statement": "EntryNoPreds G -> SingleReachingDef G D P -> forall z, InJoin G (D \\/ P) z -> P z   (and SingleReachingDefAll G D P -> ..., no CFG hypothesis)",
+  "hypotheses": [
+   {
+    "name": "hnp : EntryNoPreds G (for SingleReachingDef; dropped in joinClosed_of_singleReachingDefAll)",
+    "purpose": "SingleReachingDef exempts the entry; with an edge into the entry, the entry can be a join node of D u P that carries no phi.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.srd_join_needs_entryNoPreds",
+    "counterexample_class": "a 2-node CFG with a self-loop on the entry and an edge back into it"
+   },
+   {
+    "name": "h : SingleReachingDef G D P (in joinClosed_of_singleReachingDefAll: h : SingleReachingDefAll G D P)",
+    "purpose": "The premise of the implication.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ssa.joinClosed_needs_singleReachingDef",
+     "Toy.Ssa.joinClosed_needs_singleReachingDefAll"
+    ],
+    "counterexample_class": "the diamond with D = {0, 1} and P empty (for both bundled theorems)"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Diamond with D = {0, 1}, P = {3}: EntryNoPreds and SingleReachingDef hold, and so does SingleReachingDefAll.",
+  "nonvacuity_witness_lean": [
+   "Toy.Ssa.srd_hyps_nonvacuous",
+   "Toy.Ssa.srdAll_hyps_nonvacuous"
+  ],
+  "non_claims": [
+   "'Single reaching definition' means at most one: SingleReachingDef holds vacuously at blocks reached by no definition (Toy.Ssa.srd_at_most_one_example); existence is proved when the entry is a definition point (exists-reaches-top-of-entry-mem) and fails without it on the 3-node chain with D = P = empty (Toy.Ssa.exists_reachesTop_needs_entry_mem).",
+   "SingleReachingDef exempts the entry block: when edges enter the entry, two definitions can reach its top while SingleReachingDef holds (Toy.Ssa.srd_entry_exemption_example); the exemption-free SingleReachingDefAll fails there.",
+   "SingleReachingDef G D P is not monotone in P: on the diamond with D = {0}, J(D) is empty and contained in P = {1}, yet the extra phi at 1 makes two definitions reach 3 (Toy.Ssa.srd_not_monotone_diamond); extra phis preserve SingleReachingDef whenever the placement stays join-closed (J(D u P) within P; single-reaching-def-of-join-closed), and under EntryNoPreds (or for SingleReachingDefAll) only then (join-closed-of-single-reaching-def); without EntryNoPreds an extra phi can satisfy SingleReachingDef while the placement is not join-closed (Toy.Ssa.extra_phi_srd_without_joinClosed_when_entryPred).",
+   "The CFG is a simple directed graph (edge : Fin n -> Fin n -> Bool): parallel edges between the same two blocks (such as switch arms with one target) are collapsed."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320.",
+   "Ullrich, Lohner. \"Verified Construction of Static Single Assignment Form.\" Archive of Formal Proofs, February 2016 (Isabelle/HOL session Formal_SSA). Mechanizes Braun et al.'s construction (semantic equivalence; minimal SSA for reducible CFGs). Its theory Minimality defines Cytron's index-based path convergence (pathsConverge), proves it equivalent to disjointness of the paths without their last nodes (lemma pathsConverge'), defines necessaryPhi, and proves that a phi is present at a convergence point of two definitions reaching a use (lemmas convergence_prop, convergence_prop'). It does not formalize dominance frontiers or DF+."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.EntryNoPreds",
+   "Toy.Ssa.InJoin",
+   "Toy.Ssa.SingleReachingDef",
+   "Toy.Ssa.SingleReachingDefAll",
+   "Toy.Ssa.diamond",
+   "Toy.Ssa.entryCycle2",
+   "Toy.Ssa.exists_reachesTop_needs_entry_mem",
+   "Toy.Ssa.extra_phi_srd_without_joinClosed_when_entryPred",
+   "Toy.Ssa.srd_at_most_one_example",
+   "Toy.Ssa.srd_entry_exemption_example",
+   "Toy.Ssa.srd_not_monotone_diamond"
+  ]
+ },
+ {
+  "id": "single-reaching-def-at-join",
+  "lean": "Toy.Ssa.singleReachingDef_at_join",
+  "kind": "theorem",
+  "tier": "T2",
+  "tier_justification": "Bilardi-Pingali's 'the phi-assignments in the nodes J(S) are sufficient', stated for sets containing START; here for every finite CFG and every D (derived from join closure).",
+  "plain_claim": "In every finite CFG and for every set D of definition blocks, placing phis at J(D) leaves at most one definition point of D u J(D) reaching the top of every non-entry block without a phi.",
+  "statement": "SingleReachingDef G D (InJoin G D)",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Diamond with D = {0, 1}: J(D) = {3} is nonempty.",
+  "nonvacuity_witness_lean": "Toy.Ssa.join_placement_nonempty_example",
+  "non_claims": [
+   "Does not say J(D) is computable by dominance frontiers in every CFG: the package proves J(D) = DF+(D) under reachability, the entry in D, and no edge into the entry (join-eq-iterated-df-of-entry-mem), each hypothesis tight there.",
+   "'Single reaching definition' means at most one: SingleReachingDef holds vacuously at blocks reached by no definition (Toy.Ssa.srd_at_most_one_example); existence is proved when the entry is a definition point (exists-reaches-top-of-entry-mem) and fails without it on the 3-node chain with D = P = empty (Toy.Ssa.exists_reachesTop_needs_entry_mem).",
+   "SingleReachingDef G D P is not monotone in P: on the diamond with D = {0}, J(D) is empty and contained in P = {1}, yet the extra phi at 1 makes two definitions reach 3 (Toy.Ssa.srd_not_monotone_diamond); extra phis preserve SingleReachingDef whenever the placement stays join-closed (J(D u P) within P; single-reaching-def-of-join-closed), and under EntryNoPreds (or for SingleReachingDefAll) only then (join-closed-of-single-reaching-def); without EntryNoPreds an extra phi can satisfy SingleReachingDef while the placement is not join-closed (Toy.Ssa.extra_phi_srd_without_joinClosed_when_entryPred).",
+   "Reaching definitions are per block (the value leaving a definition block); the order of instructions inside a block and the liveness of upward-exposed uses are not modeled."
+  ],
+  "prior_art": [
+   "Bilardi, Pingali. \"Algorithms for computing the static single assignment form.\" J. ACM 50(3):375-425, 2003. DOI 10.1145/765568.765573. Definition 1.1 defines J(S) only for sets S containing START (paths u ->+ v and w ->+ v from distinct u, w in S intersecting only at v) and notes J(S u J(S)) = J(S), crediting Weiss (1992), so that 'the phi-assignments in the nodes J(S) are sufficient'; Theorem 2.2 (for {START} within S) expresses J(S) through the merge relation.",
+   "Weiss. \"The transitive closure of control dependence: the iterated join.\" ACM LOPLAS 1(2):178-190, 1992. DOI 10.1145/151333.151337. Credited by Bilardi and Pingali (2003) with J(S u J(S)) = J(S); no statement about the hypotheses under which Weiss proves it is made here."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.EntryNoPreds",
+   "Toy.Ssa.InJoin",
+   "Toy.Ssa.ReachesTop",
+   "Toy.Ssa.SingleReachingDef",
+   "Toy.Ssa.SingleReachingDefAll",
+   "Toy.Ssa.diamond",
+   "Toy.Ssa.exists_reachesTop_needs_entry_mem",
+   "Toy.Ssa.extra_phi_srd_without_joinClosed_when_entryPred",
+   "Toy.Ssa.srd_at_most_one_example",
+   "Toy.Ssa.srd_not_monotone_diamond"
+  ]
+ },
+ {
+  "id": "single-reaching-def-at-iterated-df-of-all-reachable",
+  "lean": "Toy.Ssa.singleReachingDef_at_iteratedDF_of_allReachable",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Cytron et al.: phi placement at DF+ is correct; derived here from J within DF+ and join closure.",
+  "plain_claim": "In a finite CFG in which every node is reachable from the entry, for every set D of definition blocks, placing phis at DF+(D) leaves at most one definition point of D u DF+(D) reaching the top of every non-entry block without a phi.",
+  "statement": "AllReachable G -> SingleReachingDef G D (IDF G D)",
+  "hypotheses": [
+   {
+    "name": "hreach : AllReachable G",
+    "purpose": "DF+ misses joins of unreachable nodes.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.srd_iteratedDF_needs_allReachable",
+    "counterexample_class": "a 4-node CFG with an unreachable join"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Diamond (all nodes reachable).",
+  "nonvacuity_witness_lean": "Toy.Ssa.allReachable_nonvacuous",
+  "non_claims": [
+   "Does not claim DF+(D) is the smallest correct placement (minimality is join-subset-of-single-reaching-def).",
+   "The theorem needs no entry hypothesis because SingleReachingDef exempts the entry block; SSA construction (ssa-construct-preserves-values) assumes that no reachable block has an edge into the entry, a hypothesis that is tight there (Toy.Ssa.ssaConstruct_needs_entryNoReachablePreds); adding a fresh pre-entry block is the usual way to meet it (not proved here).",
+   "SingleReachingDef exempts the entry block: when edges enter the entry, two definitions can reach its top while SingleReachingDef holds (Toy.Ssa.srd_entry_exemption_example); the exemption-free SingleReachingDefAll fails there.",
+   "Characterizes unpruned placement; liveness-pruned SSA (as computed by an iterated dominance frontier restricted to live-in blocks) places phis on a subset of DF+(S), omitting blocks where the variable is dead, and is not covered.",
+   "'Single reaching definition' means at most one: SingleReachingDef holds vacuously at blocks reached by no definition (Toy.Ssa.srd_at_most_one_example); existence is proved when the entry is a definition point (exists-reaches-top-of-entry-mem) and fails without it on the 3-node chain with D = P = empty (Toy.Ssa.exists_reachesTop_needs_entry_mem)."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320. Section 2 defines convergence of nonnull paths by (1) X0 != Y0, (2) XJ = Z = YK, (3) Xj = Yk implies j = J or k = K, and assumes every node is on a path from Entry; Lemma 6: for any set S of CFG nodes, J(S) is contained in DF+(S); Lemma 7: if Entry is in S then DF(S) is contained in J(S); Theorem 2: J+(S) = DF+(S), which 'depends on the fact that Entry is in S'."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.AllReachable",
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.Exp",
+   "Toy.Ssa.IDF",
+   "Toy.Ssa.Instr",
+   "Toy.Ssa.SingleReachingDef",
+   "Toy.Ssa.SingleReachingDefAll",
+   "Toy.Ssa.entryLoopSrc",
+   "Toy.Ssa.exists_reachesTop_needs_entry_mem",
+   "Toy.Ssa.lastDef",
+   "Toy.Ssa.lastDefAux",
+   "Toy.Ssa.outName",
+   "Toy.Ssa.renameBody",
+   "Toy.Ssa.renameExp",
+   "Toy.Ssa.srd_at_most_one_example",
+   "Toy.Ssa.srd_entry_exemption_example",
+   "Toy.Ssa.ssaConstruct_needs_entryNoReachablePreds"
+  ]
+ },
+ {
+  "id": "exists-reaches-top-of-entry-mem",
+  "lean": "Toy.Ssa.exists_reachesTop_of_entry_mem",
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore (the entry carries every variable's initial value) made precise.",
+  "plain_claim": "In every finite CFG, if the entry is a definition point, then for every placement P some definition point of D u P reaches the top of every reachable non-entry block.",
+  "statement": "D G.entry -> Reachable G b -> b != G.entry -> exists u, ReachesTop G (D \\/ P) u b",
+  "hypotheses": [
+   {
+    "name": "hD : D G.entry",
+    "purpose": "Without the entry's initial definition nothing need reach.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.exists_reachesTop_needs_entry_mem",
+    "counterexample_class": "the 3-node chain with D = P = empty"
+   },
+   {
+    "name": "hb : Reachable G b",
+    "purpose": "An unreachable block is reached by nothing.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.exists_reachesTop_needs_reachable",
+    "counterexample_class": "the 2-node CFG with no edges"
+   },
+   {
+    "name": "hbe : b != G.entry",
+    "purpose": "With no edge into the entry, nothing reaches the entry's top.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.exists_reachesTop_needs_ne_entry",
+    "counterexample_class": "the diamond"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Diamond with D = {0, 1}, b = 3.",
+  "nonvacuity_witness_lean": "Toy.Ssa.exists_reachesTop_hyps_nonvacuous",
+  "non_claims": [
+   "Models variables with an implicit initial definition at the entry; a compiler that gives uninitialized variables an undefined value along definition-free paths (instead of an initial definition at the entry) corresponds (as a modeling remark) to D without the entry, where existence of a reaching definition can fail (Toy.Ssa.exists_reachesTop_needs_entry_mem).",
+   "Reaching definitions are per block (the value leaving a definition block); the order of instructions inside a block and the liveness of upward-exposed uses are not modeled."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.Reachable",
+   "Toy.Ssa.ReachesTop",
+   "Toy.Ssa.diamond",
+   "Toy.Ssa.isolated2"
+  ]
+ },
+ {
+  "id": "exists-unique-reaches-top-at-iterated-df",
+  "lean": "Toy.Ssa.existsUnique_reachesTop_of_allReachable_of_entry_mem_of_not_idf_of_ne_entry",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Cytron et al.'s correctness of DF+ placement in its exactly-one form; derived from the two previous results.",
+  "plain_claim": "In a finite CFG in which every node is reachable from the entry, for definition blocks D containing the entry, at the top of every non-entry block outside DF+(D) exactly one definition point of D u DF+(D) reaches.",
+  "statement": "AllReachable G -> D G.entry -> not IDF G D b -> b != G.entry -> exists u, ReachesTop G (D \\/ IDF G D) u b /\\ forall v, ReachesTop G (D \\/ IDF G D) v b -> v = u",
+  "hypotheses": [
+   {
+    "name": "hreach : AllReachable G",
+    "purpose": "As for the at-most-one part.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.existsUnique_needs_allReachable",
+    "counterexample_class": "a 4-node CFG with an unreachable join"
+   },
+   {
+    "name": "hD : D G.entry",
+    "purpose": "As for existence.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.existsUnique_needs_entry_mem",
+    "counterexample_class": "the 3-node chain with D empty"
+   },
+   {
+    "name": "hb : not IDF G D b",
+    "purpose": "At a phi block two definitions reach its top.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.existsUnique_needs_not_idf",
+    "counterexample_class": "the diamond with D = {0, 1}, b = 3"
+   },
+   {
+    "name": "hbe : b != G.entry",
+    "purpose": "Nothing reaches the entry's top.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.existsUnique_needs_ne_entry",
+    "counterexample_class": "the diamond, b = 0"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Diamond with D = {0, 1}, b = 1.",
+  "nonvacuity_witness_lean": "Toy.Ssa.existsUnique_hyps_nonvacuous",
+  "non_claims": [
+   "Reaching definitions are per block (the value leaving a definition block); the order of instructions inside a block and the liveness of upward-exposed uses are not modeled.",
+   "Characterizes unpruned placement; liveness-pruned SSA (as computed by an iterated dominance frontier restricted to live-in blocks) places phis on a subset of DF+(S), omitting blocks where the variable is dead, and is not covered.",
+   "Uniqueness is among block-level definition points; intra-block definitions are handled by renaming (ssa-construct-preserves-values)."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.AllReachable",
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.IDF",
+   "Toy.Ssa.ReachesTop",
+   "Toy.Ssa.diamond"
+  ]
+ },
+ {
+  "id": "reaches-top-iff-nearest-sdom-def-at-iterated-df",
+  "lean": "Toy.Ssa.reachesTop_iff_nearestSDomDef_of_allReachable_of_not_idf",
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "The correctness argument of dominator-tree renaming in Cytron et al. Section 5 (a use is renamed to the nearest dominating definition), restated over reaching definitions.",
+  "plain_claim": "In a finite CFG in which every node is reachable from the entry, for every set D of definition blocks, every block b outside DF+(D), and every block u, u reaches the top of b as a definition point of D u DF+(D) if and only if u is the nearest definition point of D u DF+(D) strictly dominating b (both sides require u to lie in D u DF+(D)).",
+  "statement": "AllReachable G -> not IDF G D b -> (ReachesTop G (D \\/ IDF G D) u b <-> NearestSDomDef G (D \\/ IDF G D) b u)",
+  "hypotheses": [
+   {
+    "name": "hreach : AllReachable G",
+    "purpose": "At an unreachable block dominance is vacuous while nothing reaches.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.reachesTop_iff_needs_allReachable",
+    "counterexample_class": "the 2-node CFG with no edges"
+   },
+   {
+    "name": "hb : not IDF G D b",
+    "purpose": "At a phi block a non-dominating definition reaches.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.reachesTop_at_phi_block_example",
+    "counterexample_class": "the diamond with D = {0, 1}, b = 3"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Diamond with D = {0, 1}, b = 1.",
+  "nonvacuity_witness_lean": "Toy.Ssa.reachesTop_iff_hyps_nonvacuous",
+  "non_claims": [
+   "The entry need not be in D and b may be the entry: both sides are then empty when nothing strictly dominates b.",
+   "Says nothing about the stack-based renaming algorithm; the renaming source is declarative.",
+   "Reaching definitions are per block (the value leaving a definition block); the order of instructions inside a block and the liveness of upward-exposed uses are not modeled."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320. Section 5.2: Lemma 8 (each new variable is the target of exactly one assignment), Lemma 9 (for an edge X -> Y such that Y has no phi for V, TopAfter(V, X) = TopAfter(V, idom(Y))), Lemma 10 (along every control path the renamed variables agree with the original ones).",
+   "Ullrich, Lohner. \"Verified Construction of Static Single Assignment Form.\" Archive of Formal Proofs, February 2016 (Isabelle/HOL session Formal_SSA). Mechanizes Braun et al.'s construction (semantic equivalence; minimal SSA for reducible CFGs). Its theory Minimality defines Cytron's index-based path convergence (pathsConverge), proves it equivalent to disjointness of the paths without their last nodes (lemma pathsConverge'), defines necessaryPhi, and proves that a phi is present at a convergence point of two definitions reaching a use (lemmas convergence_prop, convergence_prop'). It does not formalize dominance frontiers or DF+."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.AllReachable",
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.IDF",
+   "Toy.Ssa.NearestSDomDef",
+   "Toy.Ssa.ReachesTop",
+   "Toy.Ssa.diamond",
+   "Toy.Ssa.nearestSDomDef_example",
+   "Toy.Ssa.not_nearestSDomDef_example"
+  ]
+ },
+ {
+  "id": "join-subset-of-single-reaching-def",
+  "lean": "Toy.Ssa.join_subset_of_entryNoPreds_of_singleReachingDef",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Minimality of Cytron et al.'s placement (a phi is necessary at every convergence point of two definitions); mechanized for an SSA graph locale in Formal_SSA (lemma convergence_prop').",
+  "plain_claim": "In a finite CFG with no edge into the entry, every phi placement P under which at most one definition point of D u P reaches the top of every non-entry block without a phi contains J(D).",
+  "statement": "EntryNoPreds G -> SingleReachingDef G D P -> forall z, InJoin G D z -> P z",
+  "hypotheses": [
+   {
+    "name": "hnp : EntryNoPreds G",
+    "purpose": "The entry can be a join node but is exempt from SingleReachingDef.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.srd_join_needs_entryNoPreds",
+    "counterexample_class": "a 2-node CFG with a self-loop on the entry and an edge back into it"
+   },
+   {
+    "name": "h : SingleReachingDef G D P",
+    "purpose": "The premise of the implication.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.join_subset_needs_singleReachingDef",
+    "counterexample_class": "the diamond with D = {0, 1} and P empty"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Diamond with D = {0, 1}, P = {3}.",
+  "nonvacuity_witness_lean": "Toy.Ssa.srd_hyps_nonvacuous",
+  "examples_lean": [
+   "Toy.Ssa.strict_subset_of_join_two_defs_diamond",
+   "Toy.Ssa.strict_subset_of_join_two_defs_loop"
+  ],
+  "non_claims": [
+   "Under EntryNoPreds, J(D) within P is necessary for SingleReachingDef (this result) but not sufficient: P must also be join-closed for the new phi definitions (Toy.Ssa.srd_not_monotone_diamond).",
+   "'Single reaching definition' means at most one: SingleReachingDef holds vacuously at blocks reached by no definition (Toy.Ssa.srd_at_most_one_example); existence is proved when the entry is a definition point (exists-reaches-top-of-entry-mem) and fails without it on the 3-node chain with D = P = empty (Toy.Ssa.exists_reachesTop_needs_entry_mem).",
+   "SingleReachingDef exempts the entry block: when edges enter the entry, two definitions can reach its top while SingleReachingDef holds (Toy.Ssa.srd_entry_exemption_example); the exemption-free SingleReachingDefAll fails there.",
+   "Characterizes unpruned placement; liveness-pruned SSA (as computed by an iterated dominance frontier restricted to live-in blocks) places phis on a subset of DF+(S), omitting blocks where the variable is dead, and is not covered."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320.",
+   "Ullrich, Lohner. \"Verified Construction of Static Single Assignment Form.\" Archive of Formal Proofs, February 2016 (Isabelle/HOL session Formal_SSA). Mechanizes Braun et al.'s construction (semantic equivalence; minimal SSA for reducible CFGs). Its theory Minimality defines Cytron's index-based path convergence (pathsConverge), proves it equivalent to disjointness of the paths without their last nodes (lemma pathsConverge'), defines necessaryPhi, and proves that a phi is present at a convergence point of two definitions reaching a use (lemmas convergence_prop, convergence_prop'). It does not formalize dominance frontiers or DF+."
+  ],
+  "design_question": "Where must an SSA builder place phi-functions so that every use has exactly one reaching definition, and is the iterated dominance frontier exactly that set (and under which CFG conditions)?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.EntryNoPreds",
+   "Toy.Ssa.InJoin",
+   "Toy.Ssa.SingleReachingDef",
+   "Toy.Ssa.SingleReachingDefAll",
+   "Toy.Ssa.diamond",
+   "Toy.Ssa.exists_reachesTop_needs_entry_mem",
+   "Toy.Ssa.loop4",
+   "Toy.Ssa.srd_at_most_one_example",
+   "Toy.Ssa.srd_entry_exemption_example",
+   "Toy.Ssa.srd_not_monotone_diamond",
+   "Toy.Ssa.strict_subset_of_join_two_defs_diamond",
+   "Toy.Ssa.strict_subset_of_join_two_defs_loop"
+  ]
+ },
+ {
+  "id": "ssa-construct-preserves-values",
+  "lean": [
+   "Toy.Ssa.ssaConstruct_preserves_values_of_entryNoReachablePreds",
+   "Toy.Ssa.ssaConstruct_preserves_values_of_acyclic"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Semantic correctness of SSA construction is known and mechanized in other formalisms for other construction algorithms (Formal_SSA for Braun et al.'s algorithm; Vellvm for a phi-everywhere-then-prune pass) and argued on paper by Cytron et al. (Section 5.2; the edge step of the proof here is their Lemma 9); restated here for DF+ placement plus declarative dominator-tree renaming.",
+  "plain_claim": "For a source program in which no block reachable from the entry has an edge into the entry, whose assigned variables all lie in vars, with a phi placement equal to DF+ of each variable's definition points (entry included) and a renaming source that picks, at every reachable non-entry block without a phi for x, the nearest strictly dominating definition point of x (phis included), and an SSA initial store that holds each variable's initial value in its entry name: on every walk from the entry with last block b, (1) on entry to b every variable's source value equals the value of the SSA name the construction reads for an upward-exposed use at b, and (2) after b's body every variable's source value equals the value of its live-out SSA name at b. The acyclic corollary replaces the entry hypothesis by acyclicity.",
+  "statement": "EntryNoReachablePreds S.cfg -> hvars -> hphi_cover -> hphi_within -> hidom -> hinit -> Walk S.cfg S.cfg.entry b path -> S.toProg.atTop sigma path x = (ssaConstruct S vars phi idom).atTop sigma' path (topName S phi idom x b) /\\ S.toProg.run sigma path x = (ssaConstruct S vars phi idom).run sigma' path (liveOutName S phi idom x b)",
+  "hypotheses": [
+   {
+    "name": "hnp : EntryNoReachablePreds S.cfg (replaced by hacyc : Acyclic S.cfg in ssaConstruct_preserves_values_of_acyclic)",
+    "purpose": "The construction never puts phis at the entry; a reachable edge back into the entry needs one.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.ssaConstruct_needs_entryNoReachablePreds",
+    "counterexample_class": "the 1-node CFG with a self-loop on the entry"
+   },
+   {
+    "name": "hacyc : Acyclic S.cfg (premise of ssaConstruct_preserves_values_of_acyclic, in place of hnp)",
+    "purpose": "Acyclicity implies EntryNoReachablePreds (Toy.Ssa.entryNoReachablePreds_of_acyclic); the entry self-loop program, which is not acyclic, satisfies every other hypothesis of the corollary and its conclusion fails.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.ssaConstruct_acyclic_corollary_needs_acyclic",
+    "counterexample_class": "the 1-node CFG with a self-loop on the entry"
+   },
+   {
+    "name": "hvars : forall b x e, (x, e) in S.body b -> x in vars",
+    "purpose": "Phis are emitted only for variables in vars.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.ssaConstruct_needs_hvars",
+    "counterexample_class": "the diamond program with vars = []"
+   },
+   {
+    "name": "hphi_cover : forall x b, IDF S.cfg (S.defPts x) b -> phi x b = true",
+    "purpose": "A missing phi at a join leaves a stale value.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.ssaConstruct_needs_phi_cover",
+    "counterexample_class": "the diamond program with no phis"
+   },
+   {
+    "name": "hphi_within : forall x b, phi x b = true -> IDF S.cfg (S.defPts x) b",
+    "purpose": "topName reads a phi name for every phi x b, but phis are emitted only for x in vars; a spurious phi for a variable outside vars is read uninitialized.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.ssaConstruct_needs_phi_within",
+    "counterexample_class": "the diamond program with a spurious phi for a variable outside vars"
+   },
+   {
+    "name": "hidom : forall x b, Reachable S.cfg b -> b != S.cfg.entry -> phi x b = false -> NearestSDomDef S.cfg (fun d => S.defPts x d \\/ phi x d = true) b (idom x b)",
+    "purpose": "Renaming must read the nearest dominating definition.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.ssaConstruct_needs_nearestSDomDef",
+    "counterexample_class": "the 3-node chain program renamed to the entry value"
+   },
+   {
+    "name": "hinit : forall x, sigma' (x, S.cfg.entry, 0) = sigma x",
+    "purpose": "The SSA entry names hold the initial values.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.ssaConstruct_needs_hinit",
+    "counterexample_class": "the diamond program with entry names initialized to 5"
+   },
+   {
+    "name": "hw : Walk S.cfg S.cfg.entry b path",
+    "purpose": "Executions start at the entry.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.ssaConstruct_needs_walk_from_entry",
+    "counterexample_class": "the diamond program on the null walk at 3"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Diamond program (x := x + 1 in block 1, phi at 3); a while loop with an unreachable block and renaming through the loop-header phi; an acyclic CFG whose entry has an unreachable predecessor (EntryNoPreds fails).",
+  "nonvacuity_witness_lean": [
+   "Toy.Ssa.ssaConstruct_hyps_nonvacuous",
+   "Toy.Ssa.ssaConstruct_cyclic_unreach_nonvacuous",
+   "Toy.Ssa.ssaConstruct_entryPred_nonvacuous"
+  ],
+  "non_claims": [
+   "Static single assignment of the output is a separate result (ssa-construct-single-assignment); strictness (every use dominated by its definition) is not stated or proved here.",
+   "The hypothesis hnp allows edges into the entry from unreachable blocks and from no reachable block; in an acyclic CFG every edge into the entry comes from an unreachable block (Toy.Ssa.entryNoReachablePreds_of_acyclic), which is why the acyclic corollary needs no entry hypothesis.",
+   "The tightness witness for hphi_within uses a variable outside vars (Toy.Ssa.ssaConstruct_needs_phi_within); whether extra phis for variables in vars (for example maximal placement at every non-entry block) also preserve values is not established here (not proved here).",
+   "Liveness-pruned placements, which drop phis inside DF+ for dead variables, violate hphi_cover and are not covered; neither are copy folding or later SSA optimizations.",
+   "Branch conditions are not modeled: every walk is an execution; a procedure exit is observed through conclusion (2) at the last block of a walk; there is no separate exit semantics.",
+   "Existence, for an arbitrary program, of a renaming source satisfying hidom is not proved here (not proved here); the non-vacuity witnesses exhibit one on concrete programs, including one with an unreachable block.",
+   "Not a model of LLVM mem2reg, Cranelift, or rustc; any such connection is a separate derived (modeling bridge) claim."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320. Section 5.2: Lemma 8 (each new variable is the target of exactly one assignment), Lemma 9 (for an edge X -> Y such that Y has no phi for V, TopAfter(V, X) = TopAfter(V, idom(Y))), Lemma 10 (along every control path the renamed variables agree with the original ones).",
+   "Ullrich, Lohner. \"Verified Construction of Static Single Assignment Form.\" Archive of Formal Proofs, February 2016 (Isabelle/HOL session Formal_SSA). Mechanizes Braun et al.'s construction (semantic equivalence; minimal SSA for reducible CFGs). Its theory Minimality defines Cytron's index-based path convergence (pathsConverge), proves it equivalent to disjointness of the paths without their last nodes (lemma pathsConverge'), defines necessaryPhi, and proves that a phi is present at a convergence point of two definitions reaching a use (lemmas convergence_prop, convergence_prop'). It does not formalize dominance frontiers or DF+.",
+   "Buchwald, Lohner, Ullrich. \"Verified Construction of Static Single Assignment Form.\" CC 2016, pp. 67-76. DOI 10.1145/2892208.2892211. Paper accompanying the Formal_SSA development.",
+   "Braun, Buchwald, Hack, Leissa, Mallon, Zwinkau. \"Simple and Efficient Construction of Static Single Assignment Form.\" CC 2013, LNCS 7791:102-122. DOI 10.1007/978-3-642-37051-9_6. On-the-fly construction without dominance frontiers.",
+   "Zhao, Nagarakatte, Martin, Zdancewic. \"Formal verification of SSA-based optimizations for LLVM.\" PLDI 2013, pp. 175-186. DOI 10.1145/2491956.2462164. The verified pass vmem2reg inserts phi-nodes for a promotable allocation at the beginning of every block and then removes redundant ones by verified micro-transformations (source for this description: J. Zhao, \"Formalizing an SSA-based Compiler for Verified Advanced Program Transformations\", PhD dissertation, University of Pennsylvania, 2013, Chapter 8). It does not mechanize phi placement at DF+ or J(S) = DF+(S).",
+   "Barthe, Demange, Pichardie. \"Formal verification of an SSA-based middle-end for CompCert.\" ACM TOPLAS 36(1), Article 4, 2014. DOI 10.1145/2579080. SSA generation by an untrusted builder checked by a verified validator; Section 8 verifies conversion out of SSA on normalized CFGs (critical edges removed, phis at join points), for phi-blocks whose sequential and parallel readings agree."
+  ],
+  "design_question": "Does phi placement at the iterated dominance frontier plus dominator-tree renaming produce an SSA program that computes the same values as the source, and which hypotheses on the CFG, the placement, and the renaming does that need?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Acyclic",
+   "Toy.Ssa.DF",
+   "Toy.Ssa.EntryNoPreds",
+   "Toy.Ssa.EntryNoReachablePreds",
+   "Toy.Ssa.Exp.eval",
+   "Toy.Ssa.IDF",
+   "Toy.Ssa.Instr.exec",
+   "Toy.Ssa.NearestSDomDef",
+   "Toy.Ssa.Prog.run",
+   "Toy.Ssa.Reachable",
+   "Toy.Ssa.SName",
+   "Toy.Ssa.Src",
+   "Toy.Ssa.Src.defPts",
+   "Toy.Ssa.Src.toProg",
+   "Toy.Ssa.SsaProg.enter",
+   "Toy.Ssa.SsaProg.phiMoves",
+   "Toy.Ssa.SsaProg.run",
+   "Toy.Ssa.SsaProg.runFrom",
+   "Toy.Ssa.Walk",
+   "Toy.Ssa.acyclicEntryPredCfg",
+   "Toy.Ssa.acyclicEntryPredSrc",
+   "Toy.Ssa.acyclic_diamond",
+   "Toy.Ssa.chainSrc",
+   "Toy.Ssa.diamond",
+   "Toy.Ssa.diamondIdom",
+   "Toy.Ssa.diamondPhi",
+   "Toy.Ssa.diamondPhiSpurious",
+   "Toy.Ssa.diamondSrc",
+   "Toy.Ssa.entryNoReachablePreds_diamond",
+   "Toy.Ssa.entryNoReachablePreds_of_acyclic",
+   "Toy.Ssa.epIdom",
+   "Toy.Ssa.epPhi",
+   "Toy.Ssa.liveOutName",
+   "Toy.Ssa.loopUnreach5",
+   "Toy.Ssa.loopUnreachSrc",
+   "Toy.Ssa.luIdom",
+   "Toy.Ssa.luPhi",
+   "Toy.Ssa.not_acyclic_loop4",
+   "Toy.Ssa.ssaConstruct",
+   "Toy.Ssa.topName",
+   "Toy.Ssa.upd"
+  ]
+ },
+ {
+  "id": "ssa-construct-single-assignment",
+  "lean": "Toy.Ssa.ssaConstruct_singleAssignment_of_nodup",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Cytron et al. Lemma 8 (each new variable is the target of exactly one assignment), restated for this construction.",
+  "plain_claim": "For every source program, placement, and renaming source, if the list vars has no duplicates then the constructed program is in static single-assignment form (every SSA name has at most one static definition, a phi destination or an instruction destination), and no phi or instruction defines an entry name (x, entry, 0).",
+  "statement": "vars.Nodup -> (ssaConstruct S vars phi idom).SingleAssignment /\\ forall b x, (x, S.cfg.entry, 0) not in (ssaConstruct S vars phi idom).defsAt b",
+  "hypotheses": [
+   {
+    "name": "hnd : vars.Nodup",
+    "purpose": "A duplicated variable gets two phis with the same destination.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.ssaConstruct_singleAssignment_needs_nodup",
+    "counterexample_class": "the diamond program with vars = [0, 0]"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Diamond program with vars = [0].",
+  "nonvacuity_witness_lean": "Toy.Ssa.ssaConstruct_singleAssignment_nonvacuous",
+  "non_claims": [
+   "States syntactic single assignment; strictness (each use dominated by its definition) is not stated.",
+   "Holds for every placement and renaming source, so it says nothing about value preservation (ssa-construct-preserves-values)."
+  ],
+  "prior_art": [
+   "Cytron, Ferrante, Rosen, Wegman, Zadeck. \"Efficiently computing static single assignment form and the control dependence graph.\" ACM TOPLAS 13(4):451-490, 1991. DOI 10.1145/115372.115320. Section 5.2: Lemma 8 (each new variable is the target of exactly one assignment), Lemma 9 (for an edge X -> Y such that Y has no phi for V, TopAfter(V, X) = TopAfter(V, idom(Y))), Lemma 10 (along every control path the renamed variables agree with the original ones)."
+  ],
+  "design_question": "Does phi placement at the iterated dominance frontier plus dominator-tree renaming produce an SSA program that computes the same values as the source, and which hypotheses on the CFG, the placement, and the renaming does that need?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Instr.dests",
+   "Toy.Ssa.SName",
+   "Toy.Ssa.Src",
+   "Toy.Ssa.SsaProg",
+   "Toy.Ssa.SsaProg.SingleAssignment",
+   "Toy.Ssa.SsaProg.defsAt",
+   "Toy.Ssa.diamond",
+   "Toy.Ssa.ssaConstruct"
+  ]
+ },
+ {
+  "id": "naive-out-of-ssa-parallel-eq-of-phi-preds-single-succ",
+  "lean": "Toy.Ssa.naiveOutOfSsa_parallel_eq_of_phiPredsSingleSucc",
+  "kind": "theorem",
+  "tier": "T2",
+  "tier_justification": "Known informally (Briggs et al.); mechanized for normalized CFGs (no critical edges, phis at join points) in CompCertSSA (Barthe et al.; Demange and Fernandez de Retana). Stated here with parallel copies on unnormalized CFGs under the weaker condition PhiPredsSingleSucc (critical edges into phi-free blocks allowed).",
+  "plain_claim": "For every SSA program in which every predecessor of a block carrying phis has that block as its only successor, the naive translation with parallel copies satisfies, along every walk with last block b: (a) on entry to b (after b's phis in the SSA program) the two stores are equal on all variables, and (b) if no successor of b carries phis, the stores are also equal after b's body.",
+  "statement": "PhiPredsSingleSucc P -> Walk P.cfg a b path -> (naiveOutOfSsa .parallel P).atTop sigma path = P.atTop sigma path /\\ ((forall c, P.cfg.edge b c = true -> P.phis c = []) -> (naiveOutOfSsa .parallel P).run sigma path = P.run sigma path)",
+  "hypotheses": [
+   {
+    "name": "h : PhiPredsSingleSucc P",
+    "purpose": "Copies for a phi block also run on the other branches of a branching predecessor.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_needs_phiPredsSingleSucc",
+    "counterexample_class": "the lost-copy loop (critical back edge)"
+   },
+   {
+    "name": "mode = .parallel",
+    "purpose": "Sequential copies break when a phi reads another phi's destination.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_needs_parallel",
+    "counterexample_class": "the swap loop"
+   },
+   {
+    "name": "hw : Walk P.cfg a b path",
+    "purpose": "On a non-walk, copies for a real successor are visible elsewhere.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_needs_walk",
+    "counterexample_class": "the swap CFG on the non-walk [0, 3]"
+   },
+   {
+    "name": "hexit : forall c, P.cfg.edge b c = true -> P.phis c = [] (premise of conclusion (b) only)",
+    "purpose": "At the end of a block with a phi-carrying successor the naive translation has already run that successor's copies.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_run_needs_exit",
+    "counterexample_class": "the 2-node lost-copy loop without an exit block"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The swap loop (back edge split by a latch) on a walk ending at its exit block.",
+  "nonvacuity_witness_lean": "Toy.Ssa.naiveOutOfSsa_hyps_nonvacuous",
+  "non_claims": [
+   "Returns, halts, and exceptional exits must be modeled as edges to an explicit exit block: conclusion (b) is stated for the end of a block none of whose successors carries phis, and without an exit edge the naive translation's store at the end of a phi-predecessor differs (Toy.Ssa.naiveOutOfSsa_run_needs_exit; the exact relation, Toy.Ssa.naiveOutOfSsa_parallel_run_eq_outCopies, states that under PhiPredsSingleSucc, along every walk with last block b, the parallel naive translation's store at the end of b equals the SSA program's store there followed by outCopies .parallel P b, the copies appended to b).",
+   "Relaxing full-store equality to live variables would excuse phis at single-predecessor blocks whose destinations are dead on the other branch (not proved here), but not critical edges: lostSsa is already strict SSA with x2 live at the exit and still miscompiles (Toy.Ssa.lostCopy_naive_miscompiles); approaches that avoid edge splitting, such as conventional SSA (non-interfering phi-related live ranges) or saving live phi destinations in temporaries, are not formalized here (not proved here).",
+   "Assumes a simple CFG and omits branch instructions: parallel edges from p to b with different phi operands, and terminators at the end of p that read variables overwritten by the appended copies, are not modeled.",
+   "The naive translation appends the copies for all successors of p one after another; under PhiPredsSingleSucc all but at most one of them are empty.",
+   "A machine without a parallel-copy instruction executes a parallel copy as a sequence of moves (treated by naive-out-of-ssa-sequential-eq-of-seq-safe and swap-temp-sequence-correct); register allocation and coalescing are not covered."
+  ],
+  "prior_art": [
+   "Briggs, Cooper, Harvey, Simpson. \"Practical improvements to the construction and destruction of static single assignment form.\" Software: Practice and Experience 28(8):859-881, 1998. DOI 10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8. Critical edge: from a block with several successors to a block with several predecessors; the lost-copy problem 'can only occur when copies are folded and one or more critical back-edges are present' (Figure 10, fixed by splitting the critical edge or, in their Figure 11, by saving live phi destinations in temporaries); the swap problem (Figure 12) and the ordering of copies when a phi reads another phi's destination (Figure 13).",
+   "Barthe, Demange, Pichardie. \"Formal verification of an SSA-based middle-end for CompCert.\" ACM TOPLAS 36(1), Article 4, 2014. DOI 10.1145/2579080. SSA generation by an untrusted builder checked by a verified validator; Section 8 verifies conversion out of SSA on normalized CFGs (critical edges removed, phis at join points), for phi-blocks whose sequential and parallel readings agree.",
+   "Demange, Fernandez de Retana. \"Mechanizing conventional SSA for a verified destruction with coalescing.\" CC 2016, pp. 77-87. DOI 10.1145/2892208.2892222. Mechanized SSA destruction in CompCertSSA via conventional SSA and parallel copies.",
+   "Sreedhar, Ju, Gillies, Santhanam. \"Translating out of static single assignment form.\" SAS 1999, LNCS 1694:194-210. DOI 10.1007/3-540-48294-6_13. Conventional SSA (CSSA): phi-related variables with non-interfering live ranges, eliminated without edge splitting.",
+   "Rastello, Bouchez Tichadou (eds.). SSA-based Compiler Design. Springer, 2022. DOI 10.1007/978-3-030-80515-9. Textbook treatment of phi placement, renaming, and SSA destruction."
+  ],
+  "design_question": "When is replacing phi-functions by copies at the end of predecessor blocks a correct out-of-SSA translation, and which conditions (parallel copy semantics, edge splitting, exit modeling) are exactly needed?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.CopyMode",
+   "Toy.Ssa.PhiPredsSingleSucc",
+   "Toy.Ssa.SsaProg",
+   "Toy.Ssa.SsaProg.atTop",
+   "Toy.Ssa.Walk",
+   "Toy.Ssa.lostCopy_naive_miscompiles",
+   "Toy.Ssa.lostSsa",
+   "Toy.Ssa.naiveOutOfSsa",
+   "Toy.Ssa.naiveOutOfSsa_parallel_run_eq_outCopies",
+   "Toy.Ssa.not_phiPredsSingleSucc_lostSsa",
+   "Toy.Ssa.outCopies",
+   "Toy.Ssa.phiPredsSingleSucc_swapSsaAB",
+   "Toy.Ssa.succs"
+  ]
+ },
+ {
+  "id": "naive-out-of-ssa-parallel-eq-of-no-critical-edges",
+  "lean": "Toy.Ssa.naiveOutOfSsa_parallel_eq_of_noCriticalEdges_of_phisOnlyAtJoins",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "The standard recipe (split critical edges, phis at join points, parallel copies): textbook, and mechanized for normalized CFGs in CompCertSSA; derived here from the previous result.",
+  "plain_claim": "For every SSA program whose CFG has no critical edges and whose phis occur only at blocks with two distinct predecessors, the naive translation with parallel copies satisfies conclusions (a) and (b) of naive-out-of-ssa-parallel-eq-of-phi-preds-single-succ along every walk.",
+  "statement": "NoCriticalEdges P.cfg -> PhisOnlyAtJoins P -> Walk P.cfg a b path -> (same conclusion as naive-out-of-ssa-parallel-eq-of-phi-preds-single-succ)",
+  "hypotheses": [
+   {
+    "name": "hce : NoCriticalEdges P.cfg",
+    "purpose": "Lost copy.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_noCriticalEdges_needs_noCriticalEdges",
+    "counterexample_class": "the lost-copy loop"
+   },
+   {
+    "name": "hj : PhisOnlyAtJoins P",
+    "purpose": "A phi at a single-predecessor block below a branch runs its copy on the other branch.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_noCriticalEdges_needs_phisOnlyAtJoins",
+    "counterexample_class": "a 3-node branch with a phi at a single-predecessor block"
+   },
+   {
+    "name": "mode = .parallel",
+    "purpose": "Swap.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_noCriticalEdges_needs_parallel",
+    "counterexample_class": "the swap loop"
+   },
+   {
+    "name": "hw : Walk P.cfg a b path",
+    "purpose": "As above.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_needs_walk",
+    "counterexample_class": "the swap CFG on the non-walk [0, 3]"
+   },
+   {
+    "name": "hexit : forall c, P.cfg.edge b c = true -> P.phis c = [] (premise of conclusion (b) only)",
+    "purpose": "At the end of a block with a phi-carrying successor the naive translation has already run that successor's copies.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_run_needs_exit",
+    "counterexample_class": "the 2-node lost-copy loop without an exit block"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The swap loop on a walk ending at its exit block.",
+  "nonvacuity_witness_lean": "Toy.Ssa.naiveOutOfSsa_hyps_nonvacuous",
+  "non_claims": [
+   "Without PhisOnlyAtJoins the statement as commonly phrased is false in this full-store sense (Toy.Ssa.naiveOutOfSsa_noCriticalEdges_needs_phisOnlyAtJoins).",
+   "Does not say critical edges can always be split in a real compiler; indirect branches and values defined by branch instructions are known obstacles in practice (not proved here).",
+   "Returns, halts, and exceptional exits must be modeled as edges to an explicit exit block: conclusion (b) is stated for the end of a block none of whose successors carries phis, and without an exit edge the naive translation's store at the end of a phi-predecessor differs (Toy.Ssa.naiveOutOfSsa_run_needs_exit; the exact relation, Toy.Ssa.naiveOutOfSsa_parallel_run_eq_outCopies, states that under PhiPredsSingleSucc, along every walk with last block b, the parallel naive translation's store at the end of b equals the SSA program's store there followed by outCopies .parallel P b, the copies appended to b).",
+   "Relaxing full-store equality to live variables would excuse phis at single-predecessor blocks whose destinations are dead on the other branch (not proved here), but not critical edges: lostSsa is already strict SSA with x2 live at the exit and still miscompiles (Toy.Ssa.lostCopy_naive_miscompiles); approaches that avoid edge splitting, such as conventional SSA (non-interfering phi-related live ranges) or saving live phi destinations in temporaries, are not formalized here (not proved here).",
+   "Assumes a simple CFG and omits branch instructions: parallel edges from p to b with different phi operands, and terminators at the end of p that read variables overwritten by the appended copies, are not modeled."
+  ],
+  "prior_art": [
+   "Briggs, Cooper, Harvey, Simpson. \"Practical improvements to the construction and destruction of static single assignment form.\" Software: Practice and Experience 28(8):859-881, 1998. DOI 10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8. Critical edge: from a block with several successors to a block with several predecessors; the lost-copy problem 'can only occur when copies are folded and one or more critical back-edges are present' (Figure 10, fixed by splitting the critical edge or, in their Figure 11, by saving live phi destinations in temporaries); the swap problem (Figure 12) and the ordering of copies when a phi reads another phi's destination (Figure 13).",
+   "Barthe, Demange, Pichardie. \"Formal verification of an SSA-based middle-end for CompCert.\" ACM TOPLAS 36(1), Article 4, 2014. DOI 10.1145/2579080. SSA generation by an untrusted builder checked by a verified validator; Section 8 verifies conversion out of SSA on normalized CFGs (critical edges removed, phis at join points), for phi-blocks whose sequential and parallel readings agree.",
+   "Demange, Fernandez de Retana. \"Mechanizing conventional SSA for a verified destruction with coalescing.\" CC 2016, pp. 77-87. DOI 10.1145/2892208.2892222. Mechanized SSA destruction in CompCertSSA via conventional SSA and parallel copies.",
+   "Rastello, Bouchez Tichadou (eds.). SSA-based Compiler Design. Springer, 2022. DOI 10.1007/978-3-030-80515-9. Textbook treatment of phi placement, renaming, and SSA destruction."
+  ],
+  "design_question": "When is replacing phi-functions by copies at the end of predecessor blocks a correct out-of-SSA translation, and which conditions (parallel copy semantics, edge splitting, exit modeling) are exactly needed?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.NoCriticalEdges",
+   "Toy.Ssa.PhiPredsSingleSucc",
+   "Toy.Ssa.PhisOnlyAtJoins",
+   "Toy.Ssa.SsaProg",
+   "Toy.Ssa.Walk",
+   "Toy.Ssa.branchPhiCfg",
+   "Toy.Ssa.branchPhiSsa",
+   "Toy.Ssa.lostCopy_naive_miscompiles",
+   "Toy.Ssa.lostSsa",
+   "Toy.Ssa.naiveOutOfSsa",
+   "Toy.Ssa.naiveOutOfSsa_parallel_run_eq_outCopies",
+   "Toy.Ssa.noCriticalEdges_lostSplitCfg",
+   "Toy.Ssa.noCriticalEdges_swapCfg",
+   "Toy.Ssa.not_noCriticalEdges_lostCfg",
+   "Toy.Ssa.outCopies",
+   "Toy.Ssa.phisOnlyAtJoins_swapSsaAB"
+  ]
+ },
+ {
+  "id": "naive-out-of-ssa-sequential-eq-of-seq-safe",
+  "lean": [
+   "Toy.Ssa.naiveOutOfSsa_sequential_eq_of_phiPredsSingleSucc_of_seqSafe",
+   "Toy.Ssa.execBody_sequential_eq_parCopy"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "The ordering condition for sequential copies (Briggs et al. Figure 13; parallel-move sequentialization) made precise for the naive translation.",
+  "plain_claim": "For every SSA program in which every predecessor of a block carrying phis has that block as its only successor and in which, for every pair of blocks (p, b) (including non-edges, since SsaProg.phis supplies total operand functions), no phi destination of b is the destination or the p-operand of a later phi of b (SeqSafe (P.phiMoves p b)), the naive translation with sequential copies in phi order satisfies conclusions (a) and (b) of the parallel theorem along every walk. At the level of one move list: SeqSafe moves executed one at a time have the effect of the parallel copy.",
+  "statement": "PhiPredsSingleSucc P -> (forall p b, SeqSafe (P.phiMoves p b)) -> Walk P.cfg a b path -> (naiveOutOfSsa .sequential P).atTop sigma path = P.atTop sigma path /\\ (exit -> run equality); SeqSafe ms -> execBody (copyInstrs .sequential ms) sigma = parCopy ms sigma",
+  "hypotheses": [
+   {
+    "name": "h : PhiPredsSingleSucc P (premise of naiveOutOfSsa_sequential_eq_of_phiPredsSingleSucc_of_seqSafe)",
+    "purpose": "As for parallel copies.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_sequential_needs_phiPredsSingleSucc",
+    "counterexample_class": "the lost-copy loop (one phi, so SeqSafe holds)"
+   },
+   {
+    "name": "hs : forall p b, SeqSafe (P.phiMoves p b) (in execBody_sequential_eq_parCopy: SeqSafe ms for the single move list ms)",
+    "purpose": "A destination read or rewritten by a later copy is clobbered. The hypothesis ranges over every pair of blocks (p, b), including pairs that are not CFG edges; a version restricted to CFG edges is not proved here.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ssa.naiveOutOfSsa_sequential_needs_seqSafe",
+     "Toy.Ssa.execBody_sequential_needs_seqSafe"
+    ],
+    "counterexample_class": "the swap CFG with header phis a2 = phi(a1, c1), b2 = phi(b1, a2) in this order; for execBody_sequential_eq_parCopy, the 2-move swap list [(0, 1), (1, 0)] from the identity store"
+   },
+   {
+    "name": "hw : Walk P.cfg a b path (premise of naiveOutOfSsa_sequential_eq_of_phiPredsSingleSucc_of_seqSafe)",
+    "purpose": "As for parallel copies.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_sequential_needs_walk",
+    "counterexample_class": "the swap CFG on the non-walk [0, 3]"
+   },
+   {
+    "name": "hexit : forall c, P.cfg.edge b c = true -> P.phis c = [] (premise of conclusion (b) of naiveOutOfSsa_sequential_eq_of_phiPredsSingleSucc_of_seqSafe)",
+    "purpose": "As for parallel copies.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.naiveOutOfSsa_sequential_run_needs_exit",
+    "counterexample_class": "the 2-node lost-copy loop without an exit block"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The swap CFG with header phis in order [b2, a2] on a walk through the back edge to the exit. For execBody_sequential_eq_parCopy: the move list [(2, 1), (1, 0)], in which the second move overwrites the source of the first, is SeqSafe.",
+  "nonvacuity_witness_lean": [
+   "Toy.Ssa.naiveOutOfSsa_sequential_hyps_nonvacuous",
+   "Toy.Ssa.execBody_sequential_hyps_nonvacuous"
+  ],
+  "non_claims": [
+   "The hypothesis hs is not guarded by P.cfg.edge p b = true: it requires SeqSafe (P.phiMoves p b) for every pair of blocks (p, b), including pairs that are not CFG edges, for which SsaProg.phis still supplies operands (SsaProg.phis b : List (V × (Fin n → V)) gives each phi a total operand function). Whether the conclusion still holds when hs is restricted to CFG edges (P.cfg.edge p b = true) is not established here (not proved here).",
+   "SeqSafe is a sufficient condition; whether a weaker condition suffices (for example, when the values of the reordered copies happen to coincide) is not examined (not proved here).",
+   "Distinct phi destinations are part of SeqSafe and cannot be dropped: two phis for the same destination give the first operand under parallel copies but the last under sequential copies (Toy.Ssa.dupPhi_sequential_wrong).",
+   "A phi order can be SeqSafe even when another order of the same phis is not (Toy.Ssa.chainPhi_order_matters); cyclic copies such as the swap admit no SeqSafe order, because the first move of any order writes a source of a later move (not proved here as a general theorem; the swap list [(0, 1), (1, 0)] is shown not SeqSafe in Toy.Ssa.execBody_sequential_needs_seqSafe).",
+   "Returns, halts, and exceptional exits must be modeled as edges to an explicit exit block: conclusion (b) is stated for the end of a block none of whose successors carries phis, and without an exit edge the naive translation's store at the end of a phi-predecessor differs (Toy.Ssa.naiveOutOfSsa_run_needs_exit for parallel copies and Toy.Ssa.naiveOutOfSsa_sequential_run_needs_exit for sequential copies; the exact relation, Toy.Ssa.naiveOutOfSsa_parallel_run_eq_outCopies, states that under PhiPredsSingleSucc, along every walk with last block b, the parallel naive translation's store at the end of b equals the SSA program's store there followed by outCopies .parallel P b, the copies appended to b)."
+  ],
+  "prior_art": [
+   "Briggs, Cooper, Harvey, Simpson. \"Practical improvements to the construction and destruction of static single assignment form.\" Software: Practice and Experience 28(8):859-881, 1998. DOI 10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8. Critical edge: from a block with several successors to a block with several predecessors; the lost-copy problem 'can only occur when copies are folded and one or more critical back-edges are present' (Figure 10, fixed by splitting the critical edge or, in their Figure 11, by saving live phi destinations in temporaries); the swap problem (Figure 12) and the ordering of copies when a phi reads another phi's destination (Figure 13).",
+   "Rideau, Serpette, Leroy. \"Tilting at windmills with Coq: formal verification of a compilation algorithm for parallel moves.\" J. Automated Reasoning 40(4):307-326, 2008. DOI 10.1007/s10817-007-9096-8. Verified sequentialization of parallel moves using a temporary.",
+   "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125. DOI 10.1109/CGO.2009.19 (research report version HAL inria-00349925). Section III-C, Algorithm 1 sequentializes a parallel copy using one extra fresh variable n shared by all cycles, emitting at most one additional copy per circuit with no outgoing tree edge and none for a circuit that has one (example: a->b, b->c, c->a, c->d becomes d = c, c = a, a = b, b = d)."
+  ],
+  "design_question": "When is replacing phi-functions by copies at the end of predecessor blocks a correct out-of-SSA translation, and which conditions (parallel copy semantics, edge splitting, exit modeling) are exactly needed?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.PhiPredsSingleSucc",
+   "Toy.Ssa.SeqSafe",
+   "Toy.Ssa.SsaProg",
+   "Toy.Ssa.Walk",
+   "Toy.Ssa.chainPhiAB",
+   "Toy.Ssa.chainPhiBA",
+   "Toy.Ssa.chainPhi_order_matters",
+   "Toy.Ssa.copyInstrs",
+   "Toy.Ssa.dupCfg",
+   "Toy.Ssa.dupPhiSsa",
+   "Toy.Ssa.dupPhi_sequential_wrong",
+   "Toy.Ssa.execBody",
+   "Toy.Ssa.naiveOutOfSsa",
+   "Toy.Ssa.naiveOutOfSsa_parallel_run_eq_outCopies",
+   "Toy.Ssa.naiveOutOfSsa_run_needs_exit",
+   "Toy.Ssa.outCopies",
+   "Toy.Ssa.parCopy"
+  ]
+ },
+ {
+  "id": "naive-out-of-ssa-block-end-needs-exit-edge",
+  "lean": "Toy.Ssa.naiveOutOfSsa_run_needs_exit",
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Briggs et al.'s lost-copy loop with the return left implicit; a concrete kernel-checked instance.",
+  "plain_claim": "On the lost-copy loop 0 -> 1, 1 -> 1 without an exit block (the return of x2 at the end of block 1 not modeled as an edge), every predecessor of the phi block has a single successor, no edge is critical, and the block-entry stores agree on the walk [0, 1, 1], but at the end of block 1 the naive translation with parallel copies has x2 = 3 while the SSA program has x2 = 2.",
+  "statement": "PhiPredsSingleSucc lostNoExitSsa /\\ NoCriticalEdges lostNoExitCfg /\\ PhisOnlyAtJoins lostNoExitSsa /\\ Walk lostNoExitCfg 0 1 [0,1,1] /\\ not (forall c, lostNoExitCfg.edge 1 c = true -> lostNoExitSsa.phis c = []) /\\ (naiveOutOfSsa .parallel lostNoExitSsa).atTop 0 [0,1,1] = lostNoExitSsa.atTop 0 [0,1,1] /\\ (naiveOutOfSsa .parallel lostNoExitSsa).run 0 [0,1,1] 1 = 3 /\\ lostNoExitSsa.run 0 [0,1,1] 1 = 2",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Concrete instance (the statement is the instance).",
+  "non_claims": [
+   "Does not say the naive translation is wrong once the return is modeled as an edge to an exit block: then the loop block has two successors, the back edge is critical, and the result is the ordinary lost-copy problem (lost-copy-naive-miscompiles), fixed by edge splitting (lost-copy-split-fixes).",
+   "One concrete program and walk."
+  ],
+  "prior_art": [
+   "Briggs, Cooper, Harvey, Simpson. \"Practical improvements to the construction and destruction of static single assignment form.\" Software: Practice and Experience 28(8):859-881, 1998. DOI 10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8. Critical edge: from a block with several successors to a block with several predecessors; the lost-copy problem 'can only occur when copies are folded and one or more critical back-edges are present' (Figure 10, fixed by splitting the critical edge or, in their Figure 11, by saving live phi destinations in temporaries); the swap problem (Figure 12) and the ordering of copies when a phi reads another phi's destination (Figure 13)."
+  ],
+  "design_question": "When is replacing phi-functions by copies at the end of predecessor blocks a correct out-of-SSA translation, and which conditions (parallel copy semantics, edge splitting, exit modeling) are exactly needed?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.NoCriticalEdges",
+   "Toy.Ssa.PhiPredsSingleSucc",
+   "Toy.Ssa.PhisOnlyAtJoins",
+   "Toy.Ssa.Walk",
+   "Toy.Ssa.lostNoExitCfg",
+   "Toy.Ssa.lostNoExitSsa",
+   "Toy.Ssa.naiveOutOfSsa"
+  ]
+ },
+ {
+  "id": "swap-sequential-either-order-wrong",
+  "lean": "Toy.Ssa.swap_sequential_either_order_wrong",
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Briggs et al.'s swap problem as a concrete kernel-checked instance.",
+  "plain_claim": "On the swap loop (a1 := 1, b1 := 2; header phis a2 = phi(a1, b2), b2 = phi(b1, a2); back edge split by a latch block), after one back-edge traversal the SSA program has (a2, b2) = (2, 1), while the naive translation with sequential copies gives (2, 2) in phi order [a2, b2] and (1, 1) in phi order [b2, a2].",
+  "statement": "(swapSsaAB.atTop 0 swapWalk 2, swapSsaAB.atTop 0 swapWalk 3) = (2, 1) /\\ (swapSsaBA ...) = (2, 1) /\\ ((naiveOutOfSsa .sequential swapSsaAB).atTop 0 swapWalk 2, ... 3) = (2, 2) /\\ ((naiveOutOfSsa .sequential swapSsaBA).atTop 0 swapWalk 2, ... 3) = (1, 1), with swapWalk = [0, 1, 2, 1] and variables a1 = 0, b1 = 1, a2 = 2, b2 = 3",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Concrete instance.",
+  "positive_control_lean": [
+   "Toy.Ssa.swap_parallel_correct",
+   "Toy.Ssa.swap_temp_sequence_correct"
+  ],
+  "non_claims": [
+   "Sequential copies in phi order do realize the parallel copy of one move list when no destination in the list is the destination or the source of a later move (SeqSafe, Toy.Ssa.execBody_sequential_eq_parCopy); combined with PhiPredsSingleSucc, SeqSafe of the phi moves for every pair of blocks (p, b), including pairs that are not CFG edges, makes the sequential naive translation exact (naive-out-of-ssa-sequential-eq-of-seq-safe). Without distinct destinations this fails (Toy.Ssa.dupPhi_sequential_wrong), and without PhiPredsSingleSucc it fails even with a single phi, whose moves are SeqSafe for every pair of blocks (Toy.Ssa.naiveOutOfSsa_sequential_needs_phiPredsSingleSucc).",
+   "Does not imply that every cyclic copy needs a temporary: on one instance where a cycle vertex also feeds a destination outside the cycle, (a2, b2, c2) := (b2, a2, a2), three plain assignments suffice (Toy.Ssa.windmill_sequential_no_temp); hardware exchange instructions are not modeled.",
+   "With a1 = b1 both orders would give the right values, so the failure depends on the input values (not proved here)."
+  ],
+  "prior_art": [
+   "Briggs, Cooper, Harvey, Simpson. \"Practical improvements to the construction and destruction of static single assignment form.\" Software: Practice and Experience 28(8):859-881, 1998. DOI 10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8. Critical edge: from a block with several successors to a block with several predecessors; the lost-copy problem 'can only occur when copies are folded and one or more critical back-edges are present' (Figure 10, fixed by splitting the critical edge or, in their Figure 11, by saving live phi destinations in temporaries); the swap problem (Figure 12) and the ordering of copies when a phi reads another phi's destination (Figure 13).",
+   "Barthe, Demange, Pichardie. \"Formal verification of an SSA-based middle-end for CompCert.\" ACM TOPLAS 36(1), Article 4, 2014. DOI 10.1145/2579080. SSA generation by an untrusted builder checked by a verified validator; Section 8 verifies conversion out of SSA on normalized CFGs (critical edges removed, phis at join points), for phi-blocks whose sequential and parallel readings agree.",
+   "Rideau, Serpette, Leroy. \"Tilting at windmills with Coq: formal verification of a compilation algorithm for parallel moves.\" J. Automated Reasoning 40(4):307-326, 2008. DOI 10.1007/s10817-007-9096-8. Verified sequentialization of parallel moves using a temporary.",
+   "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125. DOI 10.1109/CGO.2009.19 (research report version HAL inria-00349925). Section III-C, Algorithm 1 sequentializes a parallel copy using one extra fresh variable n shared by all cycles, emitting at most one additional copy per circuit with no outgoing tree edge and none for a circuit that has one (example: a->b, b->c, c->a, c->d becomes d = c, c = a, a = b, b = d)."
+  ],
+  "design_question": "When is replacing phi-functions by copies at the end of predecessor blocks a correct out-of-SSA translation, and which conditions (parallel copy semantics, edge splitting, exit modeling) are exactly needed?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.PhiPredsSingleSucc",
+   "Toy.Ssa.SeqSafe",
+   "Toy.Ssa.SsaProg",
+   "Toy.Ssa.SsaProg.atTop",
+   "Toy.Ssa.dupPhi_sequential_wrong",
+   "Toy.Ssa.execBody_sequential_eq_parCopy",
+   "Toy.Ssa.naiveOutOfSsa",
+   "Toy.Ssa.naiveOutOfSsa_sequential_needs_phiPredsSingleSucc",
+   "Toy.Ssa.swapCfg",
+   "Toy.Ssa.swapSsaAB",
+   "Toy.Ssa.swapSsaBA",
+   "Toy.Ssa.swapWalk",
+   "Toy.Ssa.windmill_sequential_no_temp"
+  ]
+ },
+ {
+  "id": "swap-temp-sequence-correct",
+  "lean": "Toy.Ssa.swap_temp_sequence_correct",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Breaking a copy cycle with one temporary (Briggs et al.; Rideau et al.; Boissinot et al.'s Algorithm 1) on the swap loop.",
+  "plain_claim": "On every walk of the swap CFG, the out-of-SSA program swapTempProg (block 0: a1 := 1; b1 := 2; a2 := a1; b2 := b1; latch block 2: t := a2; a2 := b2; b2 := t) agrees with the swap SSA program on entry to the last block on every variable other than the temporary t.",
+  "statement": "Walk swapCfg a b path -> x != 4 -> swapTempProg.atTop sigma path x = swapSsaAB.atTop sigma path x   (t = 4)",
+  "hypotheses": [
+   {
+    "name": "hw : Walk swapCfg a b path",
+    "purpose": "On a non-walk the entry copies are visible at the exit.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.swap_temp_needs_walk",
+    "counterexample_class": "the swap CFG on the non-walk [0, 3]"
+   },
+   {
+    "name": "hx : x != 4",
+    "purpose": "The temporary itself differs.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ssa.swap_temp_needs_ne_temp",
+    "counterexample_class": "the swap loop after one trip, x = 4"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "One loop trip [0, 1, 2, 1], observed variable a2 = 2.",
+  "nonvacuity_witness_lean": "Toy.Ssa.swap_temp_hyps_nonvacuous",
+  "non_claims": [
+   "One fixed program; general parallel-copy sequentialization is not restated here.",
+   "Correctness relies on the temporary t never being read by the SSA program; a temporary live across the edge would be clobbered (not proved here).",
+   "On one instance, a copy cycle with an outgoing tree copy, (a2, b2, c2) := (b2, a2, a2), is realized by three plain assignments without a temporary (Toy.Ssa.windmill_sequential_no_temp)."
+  ],
+  "prior_art": [
+   "Briggs, Cooper, Harvey, Simpson. \"Practical improvements to the construction and destruction of static single assignment form.\" Software: Practice and Experience 28(8):859-881, 1998. DOI 10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8. Critical edge: from a block with several successors to a block with several predecessors; the lost-copy problem 'can only occur when copies are folded and one or more critical back-edges are present' (Figure 10, fixed by splitting the critical edge or, in their Figure 11, by saving live phi destinations in temporaries); the swap problem (Figure 12) and the ordering of copies when a phi reads another phi's destination (Figure 13).",
+   "Rideau, Serpette, Leroy. \"Tilting at windmills with Coq: formal verification of a compilation algorithm for parallel moves.\" J. Automated Reasoning 40(4):307-326, 2008. DOI 10.1007/s10817-007-9096-8. Verified sequentialization of parallel moves using a temporary.",
+   "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125. DOI 10.1109/CGO.2009.19 (research report version HAL inria-00349925). Section III-C, Algorithm 1 sequentializes a parallel copy using one extra fresh variable n shared by all cycles, emitting at most one additional copy per circuit with no outgoing tree edge and none for a circuit that has one (example: a->b, b->c, c->a, c->d becomes d = c, c = a, a = b, b = d)."
+  ],
+  "design_question": "When is replacing phi-functions by copies at the end of predecessor blocks a correct out-of-SSA translation, and which conditions (parallel copy semantics, edge splitting, exit modeling) are exactly needed?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Prog",
+   "Toy.Ssa.Prog.atTop",
+   "Toy.Ssa.SsaProg",
+   "Toy.Ssa.SsaProg.atTop",
+   "Toy.Ssa.Walk",
+   "Toy.Ssa.swapCfg",
+   "Toy.Ssa.swapSsaAB",
+   "Toy.Ssa.swapTempProg",
+   "Toy.Ssa.windmill_sequential_no_temp"
+  ]
+ },
+ {
+  "id": "lost-copy-naive-miscompiles",
+  "lean": "Toy.Ssa.lostCopy_naive_miscompiles",
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Briggs et al. Figure 10 as a concrete kernel-checked instance.",
+  "plain_claim": "On Briggs et al.'s lost-copy loop (CFG 0 -> 1, 1 -> 1, 1 -> 2; x1 := 1; x2 = phi(x1, x3); x3 := x2 + 1; the exit reads x2), on the walk [0, 1, 1, 2] the source returns 2 and the SSA program has x2 = 2 at the exit, but the naive translation has x2 = 3 with parallel copies and with sequential copies.",
+  "statement": "lostSource.atTop 0 lostWalk 1 = 2 /\\ lostSsa.atTop 0 lostWalk 1 = 2 /\\ (naiveOutOfSsa .parallel lostSsa).atTop 0 lostWalk 1 = 3 /\\ (naiveOutOfSsa .sequential lostSsa).atTop 0 lostWalk 1 = 3, with lostWalk = [0, 1, 1, 2] and variables x1 = 0, x2 = 1, x3 = 2",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Concrete instance.",
+  "positive_control_lean": "Toy.Ssa.lostCopy_split_fixes",
+  "non_claims": [
+   "The miscompilation is exhibited on one program with a critical back edge and a folded copy, and splitting that edge removes it (lost-copy-split-fixes); it is not a claim that every critical edge causes one, and which features of the program are necessary for it is not examined (not proved here).",
+   "lostSsa is already strict SSA and x2 is live at the exit, so liveness alone does not excuse the critical edge; splitting it is one fix (lost-copy-split-fixes); conventional SSA and saving the live phi destination in a temporary are fixes described in the literature (Sreedhar et al.; Briggs et al., Figure 11) and are not formalized here (not proved here)."
+  ],
+  "prior_art": [
+   "Briggs, Cooper, Harvey, Simpson. \"Practical improvements to the construction and destruction of static single assignment form.\" Software: Practice and Experience 28(8):859-881, 1998. DOI 10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8. Critical edge: from a block with several successors to a block with several predecessors; the lost-copy problem 'can only occur when copies are folded and one or more critical back-edges are present' (Figure 10, fixed by splitting the critical edge or, in their Figure 11, by saving live phi destinations in temporaries); the swap problem (Figure 12) and the ordering of copies when a phi reads another phi's destination (Figure 13).",
+   "Sreedhar, Ju, Gillies, Santhanam. \"Translating out of static single assignment form.\" SAS 1999, LNCS 1694:194-210. DOI 10.1007/3-540-48294-6_13. Conventional SSA (CSSA): phi-related variables with non-interfering live ranges, eliminated without edge splitting.",
+   "Demange, Fernandez de Retana. \"Mechanizing conventional SSA for a verified destruction with coalescing.\" CC 2016, pp. 77-87. DOI 10.1145/2892208.2892222. Mechanized SSA destruction in CompCertSSA via conventional SSA and parallel copies."
+  ],
+  "design_question": "When is replacing phi-functions by copies at the end of predecessor blocks a correct out-of-SSA translation, and which conditions (parallel copy semantics, edge splitting, exit modeling) are exactly needed?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Prog",
+   "Toy.Ssa.Prog.atTop",
+   "Toy.Ssa.SsaProg",
+   "Toy.Ssa.SsaProg.atTop",
+   "Toy.Ssa.lostCfg",
+   "Toy.Ssa.lostSource",
+   "Toy.Ssa.lostSsa",
+   "Toy.Ssa.lostWalk",
+   "Toy.Ssa.naiveOutOfSsa"
+  ]
+ },
+ {
+  "id": "lost-copy-split-fixes",
+  "lean": "Toy.Ssa.lostCopy_split_fixes",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Briggs et al.'s fix (split the critical edge) for their Figure 10.",
+  "plain_claim": "For every number k of back-edge traversals (the loop body runs k + 1 >= 1 times) and every initial store, the naive parallel-copy translation of the lost-copy program on the CFG with the critical edge 1 -> 1 split by a new block 3 reaches the exit with the same store as the SSA program on the original CFG.",
+  "statement": "(naiveOutOfSsa .parallel lostSplitSsa).atTop sigma (lostSplitWalk k) = lostSsa.atTop sigma (lostLoopWalk k), lostLoopWalk k = [0, 1] ++ replicate k 1 ++ [2], lostSplitWalk k = [0, 1] ++ (replicate k [3, 1]).flatten ++ [2]",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Both compared lists are walks for every k (lostLoopWalk_walk, lostSplitWalk_walk).",
+  "nonvacuity_witness_lean": [
+   "Toy.Ssa.lostSplitWalk_walk",
+   "Toy.Ssa.lostLoopWalk_walk"
+  ],
+  "non_claims": [
+   "One concrete CFG; a general edge-splitting transformation over arbitrary Cfg n is not formalized.",
+   "The compared walks have the shape entry, k + 1 loop-body runs, exit; walks bypassing the loop do not exist in this CFG, and partial walks ending inside the loop are not stated.",
+   "Other fixes described in the literature, conventional SSA and saving the live phi destination in a temporary, are not formalized here (not proved here)."
+  ],
+  "prior_art": [
+   "Briggs, Cooper, Harvey, Simpson. \"Practical improvements to the construction and destruction of static single assignment form.\" Software: Practice and Experience 28(8):859-881, 1998. DOI 10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8. Critical edge: from a block with several successors to a block with several predecessors; the lost-copy problem 'can only occur when copies are folded and one or more critical back-edges are present' (Figure 10, fixed by splitting the critical edge or, in their Figure 11, by saving live phi destinations in temporaries); the swap problem (Figure 12) and the ordering of copies when a phi reads another phi's destination (Figure 13)."
+  ],
+  "design_question": "When is replacing phi-functions by copies at the end of predecessor blocks a correct out-of-SSA translation, and which conditions (parallel copy semantics, edge splitting, exit modeling) are exactly needed?",
+  "proof_status": "proved (kernel-checked; axioms at most propext, Classical.choice, Quot.sound)",
+  "evidence_role": "execution (Lean kernel check)",
+  "lean_names": [
+   "Toy.Ssa.Cfg",
+   "Toy.Ssa.lostCfg",
+   "Toy.Ssa.lostLoopWalk",
+   "Toy.Ssa.lostSplitCfg",
+   "Toy.Ssa.lostSplitSsa",
+   "Toy.Ssa.lostSplitWalk",
+   "Toy.Ssa.lostSsa",
+   "Toy.Ssa.naiveOutOfSsa"
+  ]
+ }
+]
