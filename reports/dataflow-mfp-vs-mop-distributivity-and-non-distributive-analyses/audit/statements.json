@@ -1,0 +1,480 @@
+{
+  "statements": {
+    "Toy.Dataflow.Lat.acc_of_heightLe": {
+      "closure_sha256": "6893b53c969e347ee559f5ada89a856c9f8dd5e0e03e7ffdbf7d6a68d668704b",
+      "closure_size": 6,
+      "statement_sha256": "101c0b26a0906ca9961750b4d72cd00f306ad432d7ba4e36df4de894743c6f73"
+    },
+    "Toy.Dataflow.acc_strictly_weaker_than_heightLe": {
+      "closure_sha256": "738cdf5b1edae727298301ea8266e2dfafda6b725f375ee74e5f01d981ece2c4",
+      "closure_size": 31,
+      "statement_sha256": "40e919095c66d65a50870b0ba8777e480d9e76248cb3da72fa52ff89a3ec7b8a"
+    },
+    "Toy.Dataflow.assignXYZ_monotone": {
+      "closure_sha256": "d8d0492c7e62ddcf78c633d9295a22a98ec650765c8391390c1b1f0f605df7b6",
+      "closure_size": 24,
+      "statement_sha256": "1dfbcf810355925a47543392477634d867e86a33f63c3826a7e8177968c8dd70"
+    },
+    "Toy.Dataflow.assignXYZ_not_distributive": {
+      "closure_sha256": "a9ea9292d07ce00bd2fe219a74a7e2f792bde7f273eab8290d4d3838c2dd9b47",
+      "closure_size": 24,
+      "statement_sha256": "cd15712e780e555096f22a283a70df1d77b77c6a745f8027eeae9c82913d6f55"
+    },
+    "Toy.Dataflow.assignYZ_distributive": {
+      "closure_sha256": "fc3b2533cd64af5cfc41f82b71485da19d73f00244ca6e8750bcea93215c1252",
+      "closure_size": 20,
+      "statement_sha256": "b5c6dfef0016a313df443f9a0b410d1a84ef960a25e82afa03503be89ac1004f"
+    },
+    "Toy.Dataflow.assignYZ_not_strict": {
+      "closure_sha256": "691b3803ee2a3498dbf022fd393b0588674806b5885b992c6382564d7762830a",
+      "closure_size": 20,
+      "statement_sha256": "357b2e4119c2d58fa31687149ba74b5b78dfd34650ba212d009994db63065f04"
+    },
+    "Toy.Dataflow.cfg_empty_carrier_empty": {
+      "closure_sha256": "69fbf1525732dfedfeae060302176db89ddb100c5438495fb1fefc5a1215e449",
+      "closure_size": 2,
+      "statement_sha256": "62abd3b21b2eb40e4dcdd4aca72fbdbed1fe740b7975656f41076d664bafb741"
+    },
+    "Toy.Dataflow.cfg_zero_empty": {
+      "closure_sha256": "69fbf1525732dfedfeae060302176db89ddb100c5438495fb1fefc5a1215e449",
+      "closure_size": 2,
+      "statement_sha256": "8ce9f22e46fe5725606d0e5de758221d6d13c3c1bd1fb2f74cac0bf4b3408095"
+    },
+    "Toy.Dataflow.copyBit0_distributive": {
+      "closure_sha256": "b53907215b65c05d7a94867315f16f723da2f35046a3cd80242ebcac1ff2ed96",
+      "closure_size": 7,
+      "statement_sha256": "b043133f79528b4346f12237734cb856e848a6f24a6c8da63401195618883656"
+    },
+    "Toy.Dataflow.copyBit0_not_genKill": {
+      "closure_sha256": "1cdf0b848c10160255cde494083d4a8798dc7d510655c76ebd946bdab7ce2a7f",
+      "closure_size": 3,
+      "statement_sha256": "b8406b8a956896154d4fa961c114deb47c18859e634334ae358472726648185f"
+    },
+    "Toy.Dataflow.copyXY_distributive": {
+      "closure_sha256": "9113bc22df44fd98422f392d519cb67d9b5ec1f7f27e7804c26f78b714d7699b",
+      "closure_size": 20,
+      "statement_sha256": "996c44443645df6c1920d276a0115c875aa9dfcbbfc52759b6fcbe4b4e473542"
+    },
+    "Toy.Dataflow.cpDiamond_exists_isLeastSolution_mfp_x_top_ne_mop_x_const3": {
+      "closure_sha256": "8bf248fad33fd4e4a3cd32cf777b172e71b4c46bf9d3feeed6b290b2178e443d",
+      "closure_size": 50,
+      "statement_sha256": "77c83c0a7215e8ce770e52aa46948a1b943df66ec98e7766af20fb37f72cd906"
+    },
+    "Toy.Dataflow.cpDiamond_isLeastSolution": {
+      "closure_sha256": "58788ca5c30bde5678455e176af1bf5ae4675bec2f32179d511adaaaae339ffd",
+      "closure_size": 37,
+      "statement_sha256": "171581a9f4429710b57c5a8d3e8b94a8f0a28f1fedb06dcc8a3c5f5fda7f9dab"
+    },
+    "Toy.Dataflow.cpDiamond_mfp_needs_least": {
+      "closure_sha256": "8bf248fad33fd4e4a3cd32cf777b172e71b4c46bf9d3feeed6b290b2178e443d",
+      "closure_size": 50,
+      "statement_sha256": "d91416bda0b965dd22c7de983d91b3328e515ddd9b83f3d526a0ef0549a25281"
+    },
+    "Toy.Dataflow.cpDiamond_mfp_x_top_ne_mop_x_const3": {
+      "closure_sha256": "8bf248fad33fd4e4a3cd32cf777b172e71b4c46bf9d3feeed6b290b2178e443d",
+      "closure_size": 50,
+      "statement_sha256": "99209095dda24720a079fef1d9cf51f0f74539c2ab51ebe5bb98488b9ec223ef"
+    },
+    "Toy.Dataflow.cpDiamond_sameBranches_exact": {
+      "closure_sha256": "28f691309d7190411ea4e174833d2b1fd5f06a10ef359599f924d215af414505",
+      "closure_size": 49,
+      "statement_sha256": "377a72b34c44dfc16fbeff88755f66055ae33e092e413a0fe1f28a6855847514"
+    },
+    "Toy.Dataflow.cyclic_exactness_on_unboundedChainsLat": {
+      "closure_sha256": "fab3256be9b5589c2cff8f3b8b43674f1ddcbbf5c169c10b8a71679c87e21df8",
+      "closure_size": 61,
+      "statement_sha256": "4c226c4db5023109a9819c5128e33e4cfcfc589bdb496087740d90412e7d7e41"
+    },
+    "Toy.Dataflow.diamondExact_const_mem_needs_monotone": {
+      "closure_sha256": "a90e19cde1ad3d2a6bf535f74227b4d8de0462c6d0dab2d3dc91356ee5dccb26",
+      "closure_size": 55,
+      "statement_sha256": "936113403ce7bebefea0a70d20272ad36c5be7c1be94ac96911d956c914f4357"
+    },
+    "Toy.Dataflow.diamondExact_const_mem_nonvacuous": {
+      "closure_sha256": "51332d7e44c82ea93fca29551bfcbb026fccd511a46896a5b5cb86d9288df1a2",
+      "closure_size": 67,
+      "statement_sha256": "4c10127e743dadcbe8a22f161cdefe74a9c68ef73dcc43b6a3945ed372bd404a"
+    },
+    "Toy.Dataflow.diamondExact_const_needs_nonempty_init": {
+      "closure_sha256": "5a3d58cf23be85bc07a27fab07d739a250a6d8cbc210f3e17df328bf8cc34b0f",
+      "closure_size": 62,
+      "statement_sha256": "09485d6cfb01598678b7ffb775c4a429d378430bf493637a820b0daa2665714d"
+    },
+    "Toy.Dataflow.diamondExact_iff_distributiveOnRealizable_of_monotone": {
+      "closure_sha256": "7e50572f8f64b82fd4bf5cbb0ba601993c72b39dc65493b12e4e759557d784c2",
+      "closure_size": 40,
+      "statement_sha256": "eecba70c180b95b5e4b641acfc6e1eb4d646218b1b284e60a0143cc9bd976819"
+    },
+    "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty": {
+      "closure_sha256": "3a0f3b49fe0116c9741ae12c64f81dc88ca7b076c8f65081478f294a3f6d56b5",
+      "closure_size": 41,
+      "statement_sha256": "5f1e7b0bfe90ebfcd768be99bdf408598ace5bc47783766c411bec13c8c88f81"
+    },
+    "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty": {
+      "closure_sha256": "74aa6579670d1286b2153c4f37bc5759d0cc16dd3613a090c344db762c915b9a",
+      "closure_size": 40,
+      "statement_sha256": "f4605bbccb895a62c23d3f56c716d464a94232996f41f6ece593ba5b88dbebac"
+    },
+    "Toy.Dataflow.diamondExact_iff_nonvacuous": {
+      "closure_sha256": "5f81cee132f0b9ceeb843fe50a9e4704a0d402f90b784b036a4042a2d3bc1a10",
+      "closure_size": 63,
+      "statement_sha256": "1555ea365fcc6441f60ae87cb92fd7a5588df5f112901708899d1d0f8f4530f3"
+    },
+    "Toy.Dataflow.diamondExact_needs_distributiveOnRealizable": {
+      "closure_sha256": "c61fbceb27ba66f8ac7c1820b7384668c8a3a542a25cb8734242d960a0895d4f",
+      "closure_size": 61,
+      "statement_sha256": "07f23e771ca88ad3d42724f8659b024c462fd82dea0456d3cfd2b96305ef914e"
+    },
+    "Toy.Dataflow.diamondExact_needs_monotone": {
+      "closure_sha256": "a2cefeb3f82db40793abb768c58851e5e1e939c9e32215e88e555deaf75a719e",
+      "closure_size": 42,
+      "statement_sha256": "461bad8356aad240a300f7e37bc4338c686a3451cf0fea44d8f9d579d3e3a9cd"
+    },
+    "Toy.Dataflow.diamondExact_not_exact_on_two_step_branches": {
+      "closure_sha256": "d1d87ec363622e09ca3ac381acf642e3bfa01bed7ec5ee0208e49d289cd34679",
+      "closure_size": 67,
+      "statement_sha256": "89fbf053c6bf23b4f6490eeba8dbc3ef66b2863aec05355fe63b66fb65ee06b7"
+    },
+    "Toy.Dataflow.diamondExact_of_distributiveOnRealizable": {
+      "closure_sha256": "1c25fa166c4a63145b37bc6f3edf8e6be523500359efa904d19239b4424d3b5c",
+      "closure_size": 39,
+      "statement_sha256": "ba1ba5bf09db65fc5d806da5706aa0f3c8daf1f36aba302c4cfc9404ea6e332c"
+    },
+    "Toy.Dataflow.diamondExact_singleton_of_not_distributive": {
+      "closure_sha256": "5a3d58cf23be85bc07a27fab07d739a250a6d8cbc210f3e17df328bf8cc34b0f",
+      "closure_size": 62,
+      "statement_sha256": "bca5dfd59deda938ba484819e263da5c864c4b11430e3e8895b4020a25473533"
+    },
+    "Toy.Dataflow.diamond_entry_id_matters": {
+      "closure_sha256": "4abf2dd5f89797f2706d634e88cebf6d6d4d726b971676d6cf62af430f9ab781",
+      "closure_size": 38,
+      "statement_sha256": "4aebf16513ba9c55d63a7499a9b8dd4b3a8cef4b488b03f41ece191f8dbe4bd9"
+    },
+    "Toy.Dataflow.distributiveOnRealizable_of_diamondExact_of_monotone": {
+      "closure_sha256": "7e50572f8f64b82fd4bf5cbb0ba601993c72b39dc65493b12e4e759557d784c2",
+      "closure_size": 40,
+      "statement_sha256": "303940d3cf5c2090c9a0b0631d35d6177c12bde9fac6b2984d98d3e489260ef7"
+    },
+    "Toy.Dataflow.distributive_of_monotone_of_total": {
+      "closure_sha256": "ab7a998bedc612f0fbfcd00ea2334bc667f405787e9da605f00615e2aed311f3",
+      "closure_size": 14,
+      "statement_sha256": "d31980b50ce00fe5dd02a96e7ce1b628b7ff797523de05fe89b1b11cf671909e"
+    },
+    "Toy.Dataflow.exactness_corollaries_combined_counterexample": {
+      "closure_sha256": "b0c10d29fe51411a14ca93ca11b085411dccfcdeb6b67b8d9a6be403a0220598",
+      "closure_size": 48,
+      "statement_sha256": "bf922dc87b66e299ec29686b14d9672c003996882e656c6c54adee66838df459"
+    },
+    "Toy.Dataflow.exactness_corollaries_need_allReachable_or_strict": {
+      "closure_sha256": "c8e247cfbb59f46723f0d1fad5fb668e1c76973df18090ebfe9ce09c31a10824",
+      "closure_size": 37,
+      "statement_sha256": "f6713425fe0ee29648064b1672cda1593660140cd7684d14685a7fd5a8438e4d"
+    },
+    "Toy.Dataflow.exactness_holds_on_unboundedChainsLat": {
+      "closure_sha256": "814680f29e14b681e2f4fbb27b8414d7262673be3f07fa4ded5fc6f50387c7b2",
+      "closure_size": 47,
+      "statement_sha256": "a044f419eef61751a864adf1f660a5e9344a1dc92bcb4fb7c41ba1a75b72a211"
+    },
+    "Toy.Dataflow.exactness_needs_acc": {
+      "closure_sha256": "e1a359bb8dbce205ddf20c8464a10c2458ff145fff6f219b6e1754b3cfa63845",
+      "closure_size": 60,
+      "statement_sha256": "3e278176811c3a2137c44e64eb2bd952d21eb76a90016d1a53a129246352c5ce"
+    },
+    "Toy.Dataflow.exactness_needs_distributive": {
+      "closure_sha256": "fc7e489d3258399be30b8f798d91d19e22ffb0d40ad317b179db786285d9cfec",
+      "closure_size": 67,
+      "statement_sha256": "9374b856766782d7c1318033c9bb0715fdd97cb099eacd0f742c07e85ba48999"
+    },
+    "Toy.Dataflow.exactness_needs_least": {
+      "closure_sha256": "117eb3facdab3da2ad7ef30661ae648f6bd42da895cab583ebf9678fcdae3fbd",
+      "closure_size": 47,
+      "statement_sha256": "48c43300b18d0871e61635b832126023baf378fc76bc92bf87c54d15b854ec4a"
+    },
+    "Toy.Dataflow.exactness_needs_unreachableStrict": {
+      "closure_sha256": "29ffb80d2c6a7ce54a84f7987667d13a8e0905eedd953d9ba752e42701a55ab8",
+      "closure_size": 47,
+      "statement_sha256": "b599264c42f70ab1e276524abbf124cf9bdde2dacecb26dc95d44cc1bdaaa87d"
+    },
+    "Toy.Dataflow.exactness_nonvacuous": {
+      "closure_sha256": "c6ce2a1985ac249a76daf2f9e123e19a7417a26ec68bc1e2e3a7b2d45b23b39c",
+      "closure_size": 36,
+      "statement_sha256": "77b8e0bbc9382cce298c8ad03b27dc14aa854a80a5ed6510cb75ba96d49c2efd"
+    },
+    "Toy.Dataflow.exists_exactness_combined_counterexamples": {
+      "closure_sha256": "6269b6cf2c8f75354e14a6fbb3d51f87eccc62f1a64656a5da7873355c14f3f4",
+      "closure_size": 88,
+      "statement_sha256": "7052a632b35e9b995ab5d5d86307e7938cd647198aed9f2cf56d5594907ec401"
+    },
+    "Toy.Dataflow.exists_exactness_counterexamples": {
+      "closure_sha256": "53418b1fca5dc417bff1d329b8593815c1e9121994402d230b18e3cc72147488",
+      "closure_size": 77,
+      "statement_sha256": "5de5a1eca93b155c5d1bfd01a2dec51fa5d13fe6a1b9d7ecfa0fb26e1151cc0e"
+    },
+    "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict": {
+      "closure_sha256": "0a75a7ccfc25334ebec11f37857fd168d5313a0023cd55683db44c54c77152c2",
+      "closure_size": 40,
+      "statement_sha256": "4b3f958881ef1c331ba111ace1657fd2a219fa720a774c3d40002fa584df181f"
+    },
+    "Toy.Dataflow.exists_isLeastSolution_counterexamples": {
+      "closure_sha256": "7d675a5d12439bff07d99b9f18be9b55f772796be4d436fbb604a5dd766a853e",
+      "closure_size": 29,
+      "statement_sha256": "0890e0d7c8c2f50198d7e97fe33301bb5c373d2070c516b0b85ef30a38dbeb6d"
+    },
+    "Toy.Dataflow.exists_isLeastSolution_of_monotone_of_acc": {
+      "closure_sha256": "35d8459efa17512f5156c25b0cd3009ef6b65425c73a793beb0c6d4495e46c14",
+      "closure_size": 23,
+      "statement_sha256": "5f9ac64b724c184e44f4d5483b86aacf242d1cac1ec5f2122987a76afd3fa871"
+    },
+    "Toy.Dataflow.exists_isMOPAt_of_acc": {
+      "closure_sha256": "4ea980e58663e4ac9898d1f2f9a0d0332ab181d7e30031fd37b4429673f8ee8d",
+      "closure_size": 35,
+      "statement_sha256": "f6ec422bcd1f7f588aaa1ee42b2dc4ad5dfcb18cce4b2062cb58d1fcc1d2d0c4"
+    },
+    "Toy.Dataflow.genKill_distributive": {
+      "closure_sha256": "d4c8591b252490e3f36c54581ac63ea9e3f81eae52cbaa247354402ecc4fa158",
+      "closure_size": 6,
+      "statement_sha256": "2bbfff89a1c62a1d7507ca32a8f453c55587e5894b7ed5c89a2e97b2004f65c3"
+    },
+    "Toy.Dataflow.genKill_distributive_must": {
+      "closure_sha256": "afbd2679394331194bb3105b4926a7ecd7f2dc0f5a17267dce3d0f9e5afba196",
+      "closure_size": 6,
+      "statement_sha256": "b5eaf6ed2f53479bfa6fadb1fed7b32108741f40a27830d93d1ebb2333fb2bb6"
+    },
+    "Toy.Dataflow.genKill_exactness_needs_genKill_form": {
+      "closure_sha256": "e379b551c019f9f779a69303acac5fb90cefff158524dc7b53e05e568ef3189e",
+      "closure_size": 48,
+      "statement_sha256": "a92abee12f2ee064f71e385abed6a6c3bbc92245fd2a3e97bfbd148efc26937d"
+    },
+    "Toy.Dataflow.genKill_exactness_needs_unreachable_gen_empty": {
+      "closure_sha256": "5c2bc08ce12acf87030973f3759940d3c622d77d71ed2344966cd3d8eb4efd25",
+      "closure_size": 34,
+      "statement_sha256": "a620028a9ff93a4bba36c4d9332c74cb16094e0152685ff440a4e6021d7ee1ed"
+    },
+    "Toy.Dataflow.genKill_exactness_nonvacuous": {
+      "closure_sha256": "281961e2b6c30608884d3b596d8f9e16496e5e15b3b186ce4ccf48f76fef03d0",
+      "closure_size": 22,
+      "statement_sha256": "b9a558e49f82a4a006972a64814a9c4a8cee1373df4b4364c186683b2c482b72"
+    },
+    "Toy.Dataflow.genKill_exists_exactness_combined_counterexamples": {
+      "closure_sha256": "036ad1697c22299b076edc20cdf8b4936c2ec6ae2d4a8c0dac18216546cb62f0",
+      "closure_size": 39,
+      "statement_sha256": "9ac68d305df694dd3128e3797eecfd2cf2af457e57ecdc22407b15099a3a8cf1"
+    },
+    "Toy.Dataflow.genKill_exists_isLeastSolution_and_isMOPAt_of_unreachable_gen_empty": {
+      "closure_sha256": "7ad14318386eb936f7412c4719cca48204da88126729206c67dce1cabb2c5bda",
+      "closure_size": 29,
+      "statement_sha256": "c2c2f44c7564b5962eecd11a7616b052b29ae125082521a4f25de361962be67e"
+    },
+    "Toy.Dataflow.genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty": {
+      "closure_sha256": "7ad14318386eb936f7412c4719cca48204da88126729206c67dce1cabb2c5bda",
+      "closure_size": 29,
+      "statement_sha256": "5406457875e9ba0cf08327f1fe474cb68f197d72abb0635dea137c6dc57f5726"
+    },
+    "Toy.Dataflow.genKill_killOnly_strict_may_not_must": {
+      "closure_sha256": "14dec96e788582d782c159bdbfbef36309ff93bdcdf549a1f3df42668e64f7b4",
+      "closure_size": 7,
+      "statement_sha256": "2b02adb0abda6b007e9071d9fbe8978e4e2531fc96ce15d3b1bf0390275e30b2"
+    },
+    "Toy.Dataflow.genKill_must_strict_nonempty_kill_nonvacuous": {
+      "closure_sha256": "ea2f80b01465325726cf729b155f05fad97a4e41d0d1ff441e38b888eef8b5d7",
+      "closure_size": 8,
+      "statement_sha256": "274d8c998a7cc8a67ee3ce302d19239ce56bc26255af26b19b3b7ec155a063b9"
+    },
+    "Toy.Dataflow.genKill_strict_iff": {
+      "closure_sha256": "06c6b2813d09bca6fd7fec344df87b0b2ad4b54d46ff258d53bb7c3aa58e1eca",
+      "closure_size": 6,
+      "statement_sha256": "7ede1eb6e9f3b33111ac0c162226c9373c7139920bbfdb48a9d573a0abff54a8"
+    },
+    "Toy.Dataflow.genKill_strict_must_iff": {
+      "closure_sha256": "61a719f4b5a07abdd19c4a52c2bed323918121c3800e66532ff31d31d737fef0",
+      "closure_size": 6,
+      "statement_sha256": "1d24dace13056061d7429e9227264edc250d2ab6ba188ce59c1d85698c2772e1"
+    },
+    "Toy.Dataflow.isEquationSolution_of_isLeastSolution_of_monotone": {
+      "closure_sha256": "29d8e2619b7b874124aea834ea294f236ed00647747f6af0e2c3d6c4abd4fc93",
+      "closure_size": 26,
+      "statement_sha256": "1ad9f75ebb721e48162a3b999f59158a2fb3d19915c7e25bb7a99910b09d08e1"
+    },
+    "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable": {
+      "closure_sha256": "8f5adc376abada1ca5b35467d8bf138ae6875b84291de786ed871d764b98dcf3",
+      "closure_size": 40,
+      "statement_sha256": "34bf47237c79b5d0ad61cd269adced53d07ffb3302cfebac875ebc9ed73b1ac3"
+    },
+    "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict": {
+      "closure_sha256": "6d772f203e0c5dd2f4118cc54a7f7940d45bce8d7ee97679dd0b0b4a718c32eb",
+      "closure_size": 39,
+      "statement_sha256": "5411f772696fa73f429c57ae9150dba79634c9f9610ffb4c162938277d631c20"
+    },
+    "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict": {
+      "closure_sha256": "0a75a7ccfc25334ebec11f37857fd168d5313a0023cd55683db44c54c77152c2",
+      "closure_size": 40,
+      "statement_sha256": "76d95eb94cd3fa252e1c1137dc878d2caf128f81afe423ab8e09deb3b2eb7279"
+    },
+    "Toy.Dataflow.kildall_acc_has_no_uniform_fuel": {
+      "closure_sha256": "9255dd2b6dc3519bd099b04b3c66fe73376657ae753c791f32fcb10c9ec0c230",
+      "closure_size": 50,
+      "statement_sha256": "920acced5d9f22533c5db95cb07d9fcbaa51de7962ae6a9ee686b832ce290d0c"
+    },
+    "Toy.Dataflow.kildall_decidableRel_irrelevant": {
+      "closure_sha256": "67015ca26737015cc9c492093ab3d5e4f6bef42b15af6e0e9a9c083696194a5c",
+      "closure_size": 21,
+      "statement_sha256": "a62fc33a4363ed30bd49cacb9e3c7453b4f781622efe40c760b5bd80090c8d70"
+    },
+    "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe": {
+      "closure_sha256": "04c3d1d0bc9818614aa0686963d0ef240b6eca49b4fe40e52f60ea9e637e795f",
+      "closure_size": 33,
+      "statement_sha256": "9bc50c9f030729decc99973944f53e31d736068e07e9aa56592c8c1709a8d412"
+    },
+    "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe": {
+      "closure_sha256": "5698c609d662d1a4658d9377a9e27c09d467e519aa666d686dc9b5ee0ed95e29",
+      "closure_size": 50,
+      "statement_sha256": "89b8e87149c3a5c67dda88118b1eb153ac1da52cc28d9c6e2bb6d5b7290259cc"
+    },
+    "Toy.Dataflow.kildall_fuel_bound_attained": {
+      "closure_sha256": "136f8a766a5d512778d1b8368fb280a82e1138ddffd0b6d60758e5fddb1b6eb7",
+      "closure_size": 37,
+      "statement_sha256": "c179e5c20b378fe00ed8c31ede1ad7d6cb74a45cdaf185f6e2e55ed7bb18e8c3"
+    },
+    "Toy.Dataflow.kildall_isLeastSolution_of_monotone_of_eq_some": {
+      "closure_sha256": "1bb72af78cf79a92c536ef757654048bb08c43d432f70e6adca3128f78d18c2c",
+      "closure_size": 31,
+      "statement_sha256": "ea4fd91671db938f86e6b82f37a51a33c1249c88a483652aef90c8b88b70fc88"
+    },
+    "Toy.Dataflow.kildall_isMOPAt_counterexamples": {
+      "closure_sha256": "bedfa07cb4b17aa3375154ad041870bf66d894a7fae7dcd53bb6820234b03a75",
+      "closure_size": 108,
+      "statement_sha256": "0d3ec83735ef84410e9127ef53fee22acfb08f13e00a6c01987b9f31a2892a1e"
+    },
+    "Toy.Dataflow.kildall_isMOPAt_nonvacuous": {
+      "closure_sha256": "3811228202e4d0cd8afe69f866b6f9905a7fc49f34b8ea7748d888eeae6930bf",
+      "closure_size": 58,
+      "statement_sha256": "b692f7636bd0cf68679189d1556be62f5245d62c386a7b8e779d4dbc72ab19a7"
+    },
+    "Toy.Dataflow.kildall_isSolution_of_eq_some": {
+      "closure_sha256": "1ecba79abdeacf7d52e66a3d0e5409a125651f6fcf3fc862c5f817224955b9d9",
+      "closure_size": 29,
+      "statement_sha256": "7e3d29140ddc5946c0dc6b3130489fc77b44c73148e913981325f2710cd90104"
+    },
+    "Toy.Dataflow.kildall_isSome_of_heightLe": {
+      "closure_sha256": "9b4884055def7ab554efdea090341ad6388e773af016a261495515e189904197",
+      "closure_size": 30,
+      "statement_sha256": "4d3246f3e6455aa00d3fe62d1036b6897356aed6732dace589829014a8db854f"
+    },
+    "Toy.Dataflow.kildall_needs_eq_some": {
+      "closure_sha256": "f61dba05fcb937ed79bae169af681c11b6ac772d92f4fa924091bbf4a080e8cd",
+      "closure_size": 39,
+      "statement_sha256": "91f79e4fb24377bf7aad079bea8e1fbb5c3a3571f1b9e248235ffe7952654d64"
+    },
+    "Toy.Dataflow.kildall_needs_heightLe": {
+      "closure_sha256": "c01de3b235a4e025087239baac087daa4a943a21fed8e9fac40483286d7fb1b2",
+      "closure_size": 42,
+      "statement_sha256": "0ec14b210b912ff6f153789dc070eab837cda34e88eb7340201e05fffef9d17d"
+    },
+    "Toy.Dataflow.kildall_needs_monotone": {
+      "closure_sha256": "2869c31c300800533e0751d985688a770f2e5a7dd30965a83b642fe1e28543e5",
+      "closure_size": 38,
+      "statement_sha256": "fa80baf7e0dc3ad537231168f5cd43e957ef8647acad42facdc97938cd200a09"
+    },
+    "Toy.Dataflow.kildall_nonvacuous": {
+      "closure_sha256": "34f06e1d85c11db640cf5c6973ed5e87d129ae82c34f28433294edc3a0f96940",
+      "closure_size": 39,
+      "statement_sha256": "124b977ff17e80d8281edca6a455475a98e655669c8663a0e7b9ce902ba2485a"
+    },
+    "Toy.Dataflow.monotone_of_diamondExact_of_acc_of_const_mem_of_nonempty": {
+      "closure_sha256": "83b782ef12bf70486f00d5a1cb0a641406c9f64f1a4b788f94764a44104ee4a4",
+      "closure_size": 41,
+      "statement_sha256": "b02a35fdd1997cd49527926f468aded5b921ee6c433560521e6179dcc10a4aa5"
+    },
+    "Toy.Dataflow.monotone_of_distributive": {
+      "closure_sha256": "ab7a998bedc612f0fbfcd00ea2334bc667f405787e9da605f00615e2aed311f3",
+      "closure_size": 14,
+      "statement_sha256": "017e864d1a10e435eaba4e0c6127ec249a87d79676657e7f434e26107c3973c4"
+    },
+    "Toy.Dataflow.mop_le_of_isSolution_of_monotone": {
+      "closure_sha256": "3fe6352cf884b3193028cb6eac3f38cdf6bdba24a3fb48235cdd38648945376f",
+      "closure_size": 27,
+      "statement_sha256": "77aaae32e6d0ad8de7bc74804d3db9279fa398a6ffe4d41c268b65dfb4546dfd"
+    },
+    "Toy.Dataflow.notCFG_isLeastSolution_not_isEquationSolution": {
+      "closure_sha256": "d987bc11f1c3754be0952db9ed10100c0e87800a093e39f1e7273e66aa692c66",
+      "closure_size": 22,
+      "statement_sha256": "b9e07acc5da06c969f5da020fff8a82db78b68d8c8d4f7e68c783dba7a7e153a"
+    },
+    "Toy.Dataflow.omegaLat_monotone_distributive": {
+      "closure_sha256": "ec58ef01c11a77a3dbde55aad8db50525f1d3485c79b8bfe720dfb960ef7c928",
+      "closure_size": 20,
+      "statement_sha256": "a9932432d5dc6fec7adb7ae9bc4ed52bfb6bda4ba4b970e0bbb680bb71089994"
+    },
+    "Toy.Dataflow.omegaLat_total": {
+      "closure_sha256": "0459fc7821fd76612a22d56124a0adf47bef9fb98e1dd5c977d3edd528746e26",
+      "closure_size": 17,
+      "statement_sha256": "f1f540e77d8227a253f90f6e3bfc886fb4ed3301850d7db84a7f63f5fd0cedeb"
+    },
+    "Toy.Dataflow.soundness_needs_isMOPAt": {
+      "closure_sha256": "d8a79e07f8a75707ecd8749d11fa44d9d3882e3ef3911809b8a80a35669e93ac",
+      "closure_size": 34,
+      "statement_sha256": "4922ec2b971e7a68911c69138f2a8ce8bea9232e683829b43146dc830059c68a"
+    },
+    "Toy.Dataflow.soundness_needs_leTrans": {
+      "closure_sha256": "fdd54f5fc299c59ef8b58a45aea5fafa2107bde3d10c44a9af1aa443004f1b68",
+      "closure_size": 31,
+      "statement_sha256": "679ba3823f44f3242bea97363173f0110c3e9e1456b00abfcd99d25244912363"
+    },
+    "Toy.Dataflow.soundness_needs_monotone": {
+      "closure_sha256": "933d0dbaf6ef88946b5ae5ce50f39787cc84d96d2a03bd4bceeb3250a408bd7c",
+      "closure_size": 32,
+      "statement_sha256": "e5aa82fe018ca4f62d14917470d029742a0e950948269e5f401b0d974f2bb5ce"
+    },
+    "Toy.Dataflow.soundness_needs_solution": {
+      "closure_sha256": "d8a79e07f8a75707ecd8749d11fa44d9d3882e3ef3911809b8a80a35669e93ac",
+      "closure_size": 34,
+      "statement_sha256": "ad57fb4ed32fc67afa0b327daab761e94a9231d083abcce06a724776a964e94b"
+    },
+    "Toy.Dataflow.soundness_nonvacuous": {
+      "closure_sha256": "d8a79e07f8a75707ecd8749d11fa44d9d3882e3ef3911809b8a80a35669e93ac",
+      "closure_size": 34,
+      "statement_sha256": "37829b314cd7e370e10a6a529955439e00ba80e77b0e1b107db74003c99d2322"
+    },
+    "Toy.Dataflow.stepMid_distributive": {
+      "closure_sha256": "1d5f9a532d722bfc91e8e8575be87b57f03433f2ed866892bf6b516f9578c2b4",
+      "closure_size": 22,
+      "statement_sha256": "53ddf43691b9a2c275e103336203f2cbd751f89e4560b372dcd1b2afde2a8637"
+    },
+    "Toy.Dataflow.strict_and_genKill_exactness_needs_least": {
+      "closure_sha256": "c1dffe61d4177d583222d30cddf917dfe28b6df76a2f824d7b2a301490465ea2",
+      "closure_size": 43,
+      "statement_sha256": "9942e47f1257d8df21e35b87db2fd10469e7af4e1c6b9d5f58f40565f5f6fc8d"
+    },
+    "Toy.Dataflow.strict_exactness_needs_acc": {
+      "closure_sha256": "7c3f5a879da3a34a2becff8f554dd36b08411e03d70161d25d59621a85a01cac",
+      "closure_size": 60,
+      "statement_sha256": "95a4ed477c9404f96abfe9549317b4bd069b06ef362980b56c3272f05ebb6804"
+    },
+    "Toy.Dataflow.strict_exactness_needs_distributive": {
+      "closure_sha256": "9c52c198eaee7fe14aa9ee3cecca5f410d86e8c09ad4c39b3ec22e0b4fc9acf3",
+      "closure_size": 52,
+      "statement_sha256": "fd228f5f1a51107938c159293f08e96bcb202deeead925615cc6b242b73353e5"
+    },
+    "Toy.Dataflow.strict_exactness_nonvacuous": {
+      "closure_sha256": "50dc449161b7d9734e8c9cb44308114af04488c07cb531d1cccad4ee655ab192",
+      "closure_size": 34,
+      "statement_sha256": "5d0b3f3417588107bab75f4239910e4cd4ac70985bd15d75697bac3c9265d765"
+    },
+    "Toy.Dataflow.ugCFG_isMOPAt_two_empty": {
+      "closure_sha256": "f7b84c9d77ae2379d56fddc2f25b1ddb76987c7dcb9e86775e3b32eae1306a46",
+      "closure_size": 30,
+      "statement_sha256": "62916cc927c674c0b2909393a18a136a5520ea8d17dff1d1bede4b4b7386d1d1"
+    },
+    "Toy.Dataflow.unreachableStrict_strictly_between_nonvacuous": {
+      "closure_sha256": "11463b2eb023759699e6d5de8f2bfe6142fd9747d51e195f12c4617d02f4bdb3",
+      "closure_size": 35,
+      "statement_sha256": "95d0df567581f2578cf508f56ab018ca5a7bfcd7ed4edfeb088f567663cea2f9"
+    },
+    "Toy.Dataflow.walk_val_le_of_isSolution_of_monotone": {
+      "closure_sha256": "a7a7b066a095a59ee3620a430e2d26e9d4cf7781cec24ab1e0355767e4bf5677",
+      "closure_size": 23,
+      "statement_sha256": "bf7ad11adf3606bb3dc05b123d3db64024eb46f2733f818dad5df6a046fa6033"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

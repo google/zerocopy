@@ -1,0 +1,1744 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Dataflow.AllReachable": [],
+    "Toy.Dataflow.CFG": [],
+    "Toy.Dataflow.CFG.casesOn": [],
+    "Toy.Dataflow.CFG.ctorIdx": [],
+    "Toy.Dataflow.CFG.edges": [],
+    "Toy.Dataflow.CFG.entry": [],
+    "Toy.Dataflow.CFG.f": [],
+    "Toy.Dataflow.CFG.init": [],
+    "Toy.Dataflow.CFG.mk": [],
+    "Toy.Dataflow.CFG.mk.inj": [],
+    "Toy.Dataflow.CFG.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Dataflow.CFG.mk.noConfusion": [],
+    "Toy.Dataflow.CFG.mk.sizeOf_spec": [],
+    "Toy.Dataflow.CFG.noConfusion": [],
+    "Toy.Dataflow.CFG.noConfusionType": [],
+    "Toy.Dataflow.CFG.rec": [],
+    "Toy.Dataflow.CFG.recOn": [],
+    "Toy.Dataflow.DiamondExact": [
+      "propext"
+    ],
+    "Toy.Dataflow.Distributive": [],
+    "Toy.Dataflow.DistributiveOnRealizable": [],
+    "Toy.Dataflow.Flat": [],
+    "Toy.Dataflow.Flat.add": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.add.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.add.eq_2": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.add.eq_3": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.add.eq_4": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.add.eq_5": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.add.eq_6": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.add.match_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.add_mono": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.bot": [],
+    "Toy.Dataflow.Flat.bot.elim": [],
+    "Toy.Dataflow.Flat.bot.sizeOf_spec": [],
+    "Toy.Dataflow.Flat.bot_le": [],
+    "Toy.Dataflow.Flat.casesOn": [],
+    "Toy.Dataflow.Flat.const": [],
+    "Toy.Dataflow.Flat.const.elim": [],
+    "Toy.Dataflow.Flat.const.inj": [],
+    "Toy.Dataflow.Flat.const.injEq": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.const.noConfusion": [],
+    "Toy.Dataflow.Flat.const.sizeOf_spec": [],
+    "Toy.Dataflow.Flat.ctorElim": [],
+    "Toy.Dataflow.Flat.ctorElimType": [],
+    "Toy.Dataflow.Flat.ctorIdx": [],
+    "Toy.Dataflow.Flat.instDecidableLe": [],
+    "Toy.Dataflow.Flat.join": [],
+    "Toy.Dataflow.Flat.join.eq_1": [],
+    "Toy.Dataflow.Flat.join.eq_2": [],
+    "Toy.Dataflow.Flat.join.eq_3": [],
+    "Toy.Dataflow.Flat.join.eq_4": [],
+    "Toy.Dataflow.Flat.join.eq_5": [],
+    "Toy.Dataflow.Flat.join.match_1": [],
+    "Toy.Dataflow.Flat.join_le_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.le": [],
+    "Toy.Dataflow.Flat.le.eq_1": [],
+    "Toy.Dataflow.Flat.le_antisymm": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.le_refl": [],
+    "Toy.Dataflow.Flat.le_trans": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.noConfusion": [],
+    "Toy.Dataflow.Flat.noConfusionType": [],
+    "Toy.Dataflow.Flat.rank": [],
+    "Toy.Dataflow.Flat.rank.eq_1": [],
+    "Toy.Dataflow.Flat.rank.eq_2": [],
+    "Toy.Dataflow.Flat.rank.eq_3": [],
+    "Toy.Dataflow.Flat.rank_le": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.rank_le_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.rank_lt": [
+      "propext"
+    ],
+    "Toy.Dataflow.Flat.rec": [],
+    "Toy.Dataflow.Flat.recOn": [],
+    "Toy.Dataflow.Flat.top": [],
+    "Toy.Dataflow.Flat.top.elim": [],
+    "Toy.Dataflow.Flat.top.sizeOf_spec": [],
+    "Toy.Dataflow.IsEquationSolution": [],
+    "Toy.Dataflow.IsLeastSolution": [],
+    "Toy.Dataflow.IsLeastSolution.unique": [
+      "Quot.sound"
+    ],
+    "Toy.Dataflow.IsMOPAt": [],
+    "Toy.Dataflow.IsMOPAt.unique": [],
+    "Toy.Dataflow.IsSolution": [],
+    "Toy.Dataflow.KildallInv": [],
+    "Toy.Dataflow.KildallSolInv": [],
+    "Toy.Dataflow.Lat": [],
+    "Toy.Dataflow.Lat.AscendingChainCondition": [],
+    "Toy.Dataflow.Lat.BotLe": [],
+    "Toy.Dataflow.Lat.HeightLe": [],
+    "Toy.Dataflow.Lat.IsJSL": [],
+    "Toy.Dataflow.Lat.IsJSL.antisymm": [],
+    "Toy.Dataflow.Lat.IsJSL.bot_le": [],
+    "Toy.Dataflow.Lat.IsJSL.casesOn": [],
+    "Toy.Dataflow.Lat.IsJSL.join_le_iff": [],
+    "Toy.Dataflow.Lat.IsJSL.mk": [],
+    "Toy.Dataflow.Lat.IsJSL.rec": [],
+    "Toy.Dataflow.Lat.IsJSL.recOn": [],
+    "Toy.Dataflow.Lat.IsJSL.refl": [],
+    "Toy.Dataflow.Lat.IsJSL.trans": [],
+    "Toy.Dataflow.Lat.IsLUB": [],
+    "Toy.Dataflow.Lat.IsLUB.unique": [],
+    "Toy.Dataflow.Lat.IsUB": [],
+    "Toy.Dataflow.Lat.JoinLeIff": [],
+    "Toy.Dataflow.Lat.LeAntisymm": [],
+    "Toy.Dataflow.Lat.LeRefl": [],
+    "Toy.Dataflow.Lat.LeTrans": [],
+    "Toy.Dataflow.Lat.acc_of_heightLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.Lat.bot": [],
+    "Toy.Dataflow.Lat.casesOn": [],
+    "Toy.Dataflow.Lat.ctorIdx": [],
+    "Toy.Dataflow.Lat.heightLe_of_rank": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.Lat.isLUB_empty": [],
+    "Toy.Dataflow.Lat.isLUB_pair": [],
+    "Toy.Dataflow.Lat.isLUB_singleton": [],
+    "Toy.Dataflow.Lat.join": [],
+    "Toy.Dataflow.Lat.joinList": [],
+    "Toy.Dataflow.Lat.joinList.eq_1": [],
+    "Toy.Dataflow.Lat.joinList.eq_2": [],
+    "Toy.Dataflow.Lat.joinList.eq_def": [],
+    "Toy.Dataflow.Lat.joinList.match_1": [],
+    "Toy.Dataflow.Lat.joinList_le_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.Lat.join_bot": [],
+    "Toy.Dataflow.Lat.join_eq_right_of_le": [],
+    "Toy.Dataflow.Lat.join_le": [],
+    "Toy.Dataflow.Lat.join_self": [],
+    "Toy.Dataflow.Lat.le": [],
+    "Toy.Dataflow.Lat.leTrans_of_leRefl_leAntisymm_joinLeIff": [],
+    "Toy.Dataflow.Lat.le_join_left": [],
+    "Toy.Dataflow.Lat.le_join_right": [],
+    "Toy.Dataflow.Lat.lt": [],
+    "Toy.Dataflow.Lat.lt.eq_1": [],
+    "Toy.Dataflow.Lat.mk": [],
+    "Toy.Dataflow.Lat.mk.inj": [],
+    "Toy.Dataflow.Lat.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Dataflow.Lat.mk.noConfusion": [],
+    "Toy.Dataflow.Lat.mk.sizeOf_spec": [],
+    "Toy.Dataflow.Lat.noConfusion": [],
+    "Toy.Dataflow.Lat.noConfusionType": [],
+    "Toy.Dataflow.Lat.rec": [],
+    "Toy.Dataflow.Lat.recOn": [],
+    "Toy.Dataflow.Monotone": [],
+    "Toy.Dataflow.OmegaTwo": [],
+    "Toy.Dataflow.OmegaTwo.casesOn": [],
+    "Toy.Dataflow.OmegaTwo.ctorElim": [],
+    "Toy.Dataflow.OmegaTwo.ctorElimType": [],
+    "Toy.Dataflow.OmegaTwo.ctorIdx": [],
+    "Toy.Dataflow.OmegaTwo.fin": [],
+    "Toy.Dataflow.OmegaTwo.fin.elim": [],
+    "Toy.Dataflow.OmegaTwo.fin.inj": [],
+    "Toy.Dataflow.OmegaTwo.fin.injEq": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.fin.noConfusion": [],
+    "Toy.Dataflow.OmegaTwo.fin.sizeOf_spec": [],
+    "Toy.Dataflow.OmegaTwo.join": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.join.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.join.eq_2": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.join.eq_3": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.join.eq_4": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.join.eq_5": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.join.match_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.le": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.le.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.le.eq_2": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.le.eq_3": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.le.eq_4": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.le.eq_5": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.le.eq_6": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.le.match_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.OmegaTwo.noConfusion": [],
+    "Toy.Dataflow.OmegaTwo.noConfusionType": [],
+    "Toy.Dataflow.OmegaTwo.omega": [],
+    "Toy.Dataflow.OmegaTwo.omega.elim": [],
+    "Toy.Dataflow.OmegaTwo.omega.sizeOf_spec": [],
+    "Toy.Dataflow.OmegaTwo.omega1": [],
+    "Toy.Dataflow.OmegaTwo.omega1.elim": [],
+    "Toy.Dataflow.OmegaTwo.omega1.sizeOf_spec": [],
+    "Toy.Dataflow.OmegaTwo.rec": [],
+    "Toy.Dataflow.OmegaTwo.recOn": [],
+    "Toy.Dataflow.OmegaTwo.succ": [],
+    "Toy.Dataflow.OmegaTwo.succ.eq_1": [],
+    "Toy.Dataflow.OmegaTwo.succ.eq_2": [],
+    "Toy.Dataflow.OmegaTwo.succ.eq_3": [],
+    "Toy.Dataflow.OmegaTwo.succ.match_1": [],
+    "Toy.Dataflow.OmegaTwo.succStrict": [],
+    "Toy.Dataflow.OmegaTwo.succStrict.eq_1": [],
+    "Toy.Dataflow.OmegaTwo.succStrict.eq_2": [],
+    "Toy.Dataflow.OmegaTwo.succStrict.eq_3": [],
+    "Toy.Dataflow.OmegaTwo.succStrict.eq_4": [],
+    "Toy.Dataflow.OmegaTwo.succStrict.match_1": [],
+    "Toy.Dataflow.Reachable": [],
+    "Toy.Dataflow.St": [],
+    "Toy.Dataflow.St.casesOn": [],
+    "Toy.Dataflow.St.ctorIdx": [],
+    "Toy.Dataflow.St.mk": [],
+    "Toy.Dataflow.St.mk.inj": [],
+    "Toy.Dataflow.St.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Dataflow.St.mk.noConfusion": [],
+    "Toy.Dataflow.St.mk.sizeOf_spec": [],
+    "Toy.Dataflow.St.noConfusion": [],
+    "Toy.Dataflow.St.noConfusionType": [],
+    "Toy.Dataflow.St.rec": [],
+    "Toy.Dataflow.St.recOn": [],
+    "Toy.Dataflow.St.x": [],
+    "Toy.Dataflow.St.y": [],
+    "Toy.Dataflow.St.z": [],
+    "Toy.Dataflow.Strict": [],
+    "Toy.Dataflow.Strict.eq_1": [],
+    "Toy.Dataflow.UnboundedChains": [],
+    "Toy.Dataflow.UnboundedChains.bot": [],
+    "Toy.Dataflow.UnboundedChains.bot.elim": [],
+    "Toy.Dataflow.UnboundedChains.bot.sizeOf_spec": [],
+    "Toy.Dataflow.UnboundedChains.casesOn": [],
+    "Toy.Dataflow.UnboundedChains.ctorElim": [],
+    "Toy.Dataflow.UnboundedChains.ctorElimType": [],
+    "Toy.Dataflow.UnboundedChains.ctorIdx": [],
+    "Toy.Dataflow.UnboundedChains.join": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.join.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.join.eq_2": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.join.eq_3": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.join.eq_4": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.join.eq_5": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.join.match_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.le": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.le.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.le.eq_2": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.le.eq_3": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.le.eq_4": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.le.match_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.mid": [],
+    "Toy.Dataflow.UnboundedChains.mid.elim": [],
+    "Toy.Dataflow.UnboundedChains.mid.inj": [],
+    "Toy.Dataflow.UnboundedChains.mid.injEq": [
+      "propext"
+    ],
+    "Toy.Dataflow.UnboundedChains.mid.noConfusion": [],
+    "Toy.Dataflow.UnboundedChains.mid.sizeOf_spec": [],
+    "Toy.Dataflow.UnboundedChains.noConfusion": [],
+    "Toy.Dataflow.UnboundedChains.noConfusionType": [],
+    "Toy.Dataflow.UnboundedChains.rec": [],
+    "Toy.Dataflow.UnboundedChains.recOn": [],
+    "Toy.Dataflow.UnboundedChains.rem": [],
+    "Toy.Dataflow.UnboundedChains.rem.eq_1": [],
+    "Toy.Dataflow.UnboundedChains.rem.eq_2": [],
+    "Toy.Dataflow.UnboundedChains.rem.eq_3": [],
+    "Toy.Dataflow.UnboundedChains.rem.match_1": [],
+    "Toy.Dataflow.UnboundedChains.top": [],
+    "Toy.Dataflow.UnboundedChains.top.elim": [],
+    "Toy.Dataflow.UnboundedChains.top.sizeOf_spec": [],
+    "Toy.Dataflow.UnreachableStrict": [],
+    "Toy.Dataflow.Walk": [],
+    "Toy.Dataflow.Walk.below": [],
+    "Toy.Dataflow.Walk.brecOn": [],
+    "Toy.Dataflow.Walk.brecOn.eq": [],
+    "Toy.Dataflow.Walk.brecOn.go": [],
+    "Toy.Dataflow.Walk.casesOn": [],
+    "Toy.Dataflow.Walk.ctorElim": [],
+    "Toy.Dataflow.Walk.ctorElimType": [],
+    "Toy.Dataflow.Walk.ctorIdx": [],
+    "Toy.Dataflow.Walk.nil": [],
+    "Toy.Dataflow.Walk.nil.elim": [],
+    "Toy.Dataflow.Walk.nil.sizeOf_spec": [],
+    "Toy.Dataflow.Walk.noConfusion": [],
+    "Toy.Dataflow.Walk.noConfusionType": [],
+    "Toy.Dataflow.Walk.nodes": [],
+    "Toy.Dataflow.Walk.pre": [],
+    "Toy.Dataflow.Walk.pre.eq_1": [],
+    "Toy.Dataflow.Walk.pre.eq_2": [],
+    "Toy.Dataflow.Walk.pre.eq_def": [],
+    "Toy.Dataflow.Walk.rec": [],
+    "Toy.Dataflow.Walk.recOn": [],
+    "Toy.Dataflow.Walk.snoc": [],
+    "Toy.Dataflow.Walk.snoc.congr_simp": [],
+    "Toy.Dataflow.Walk.snoc.elim": [],
+    "Toy.Dataflow.Walk.snoc.inj": [],
+    "Toy.Dataflow.Walk.snoc.injEq": [
+      "propext"
+    ],
+    "Toy.Dataflow.Walk.snoc.noConfusion": [],
+    "Toy.Dataflow.Walk.snoc.sizeOf_spec": [],
+    "Toy.Dataflow.Walk.val": [],
+    "Toy.Dataflow.Walk.val.eq_1": [],
+    "Toy.Dataflow.Walk.val.eq_2": [],
+    "Toy.Dataflow.Walk.val.eq_def": [],
+    "Toy.Dataflow.Walk.val.match_1": [],
+    "Toy.Dataflow.Walk.val_eq_foldl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.WithBotInt": [],
+    "Toy.Dataflow.WithBotInt.bot": [],
+    "Toy.Dataflow.WithBotInt.bot.elim": [],
+    "Toy.Dataflow.WithBotInt.bot.sizeOf_spec": [],
+    "Toy.Dataflow.WithBotInt.casesOn": [],
+    "Toy.Dataflow.WithBotInt.ctorElim": [],
+    "Toy.Dataflow.WithBotInt.ctorElimType": [],
+    "Toy.Dataflow.WithBotInt.ctorIdx": [],
+    "Toy.Dataflow.WithBotInt.join": [],
+    "Toy.Dataflow.WithBotInt.join.eq_1": [],
+    "Toy.Dataflow.WithBotInt.join.eq_2": [],
+    "Toy.Dataflow.WithBotInt.join.eq_3": [],
+    "Toy.Dataflow.WithBotInt.join.match_1": [],
+    "Toy.Dataflow.WithBotInt.le": [],
+    "Toy.Dataflow.WithBotInt.le.eq_1": [],
+    "Toy.Dataflow.WithBotInt.le.eq_2": [],
+    "Toy.Dataflow.WithBotInt.le.eq_3": [],
+    "Toy.Dataflow.WithBotInt.le.match_1": [],
+    "Toy.Dataflow.WithBotInt.noConfusion": [],
+    "Toy.Dataflow.WithBotInt.noConfusionType": [],
+    "Toy.Dataflow.WithBotInt.rec": [],
+    "Toy.Dataflow.WithBotInt.recOn": [],
+    "Toy.Dataflow.WithBotInt.val": [],
+    "Toy.Dataflow.WithBotInt.val.elim": [],
+    "Toy.Dataflow.WithBotInt.val.inj": [],
+    "Toy.Dataflow.WithBotInt.val.injEq": [
+      "propext"
+    ],
+    "Toy.Dataflow.WithBotInt.val.noConfusion": [],
+    "Toy.Dataflow.WithBotInt.val.sizeOf_spec": [],
+    "Toy.Dataflow.acc_strictly_weaker_than_heightLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.apply_joinList_le": [],
+    "Toy.Dataflow.assignXYZ": [
+      "propext"
+    ],
+    "Toy.Dataflow.assignXYZ.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.assignXYZ_monotone": [
+      "propext"
+    ],
+    "Toy.Dataflow.assignXYZ_not_distributive": [
+      "propext"
+    ],
+    "Toy.Dataflow.assignYZ": [],
+    "Toy.Dataflow.assignYZ.eq_1": [],
+    "Toy.Dataflow.assignYZ_distributive": [
+      "propext"
+    ],
+    "Toy.Dataflow.assignYZ_monotone": [],
+    "Toy.Dataflow.assignYZ_not_strict": [
+      "propext"
+    ],
+    "Toy.Dataflow.bbDiamond": [
+      "propext"
+    ],
+    "Toy.Dataflow.bbSol": [
+      "propext"
+    ],
+    "Toy.Dataflow.bbSol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.boolLat": [],
+    "Toy.Dataflow.boolLat.eq_1": [],
+    "Toy.Dataflow.boolLat_acc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.boolLat_heightLe_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.boolLat_heightLe_one.match_1_1": [],
+    "Toy.Dataflow.boolLat_isJSL": [],
+    "Toy.Dataflow.boolLat_not_heightLe_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.bothBits": [
+      "propext"
+    ],
+    "Toy.Dataflow.bothBits.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.bothBits_monotone": [
+      "propext"
+    ],
+    "Toy.Dataflow.bothBits_not_distributive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.bv3F": [
+      "propext"
+    ],
+    "Toy.Dataflow.bv3F.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.bv3Family": [
+      "propext"
+    ],
+    "Toy.Dataflow.bv3G": [
+      "propext"
+    ],
+    "Toy.Dataflow.bv3G.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.bv3H": [
+      "propext"
+    ],
+    "Toy.Dataflow.bv3H.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.bvLat": [],
+    "Toy.Dataflow.bvLat.eq_1": [],
+    "Toy.Dataflow.bvLat_acc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.bvLat_heightLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.bvLat_isJSL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.bvLat_le_dec": [],
+    "Toy.Dataflow.bvMustLat": [],
+    "Toy.Dataflow.bvMustLat.eq_1": [],
+    "Toy.Dataflow.bvMustLat_isJSL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cfg_empty_carrier_empty": [],
+    "Toy.Dataflow.cfg_zero_empty": [],
+    "Toy.Dataflow.const_true_not_strict": [
+      "propext"
+    ],
+    "Toy.Dataflow.copyBit0": [
+      "propext"
+    ],
+    "Toy.Dataflow.copyBit0.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.copyBit0_distributive": [
+      "propext"
+    ],
+    "Toy.Dataflow.copyBit0_not_genKill": [
+      "propext"
+    ],
+    "Toy.Dataflow.copyXY": [],
+    "Toy.Dataflow.copyXY.eq_1": [],
+    "Toy.Dataflow.copyXY_distributive": [
+      "propext"
+    ],
+    "Toy.Dataflow.countP_le_of_imp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.countP_lt_of_imp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cpDiamond": [
+      "propext"
+    ],
+    "Toy.Dataflow.cpDiamond_exists_isLeastSolution_mfp_x_top_ne_mop_x_const3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cpDiamond_isLeastSolution": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cpDiamond_mfp_needs_least": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cpDiamond_mfp_x_top_ne_mop_x_const3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cpDiamond_sameBranches_exact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cpFamily": [
+      "propext"
+    ],
+    "Toy.Dataflow.cpLat": [],
+    "Toy.Dataflow.cpLat.eq_1": [],
+    "Toy.Dataflow.cpLat_acc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cpLat_heightLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cpLat_isJSL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.cyclic_exactness_on_unboundedChainsLat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2Sol": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2Sol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2Sol_isLeastSolution_of_monotone": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2Sol_isLeastSolution_of_monotone.match_1_2": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_edges_mem": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_entry": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_f0": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_f1": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_f2": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_f3": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_f4": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_f5": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_init": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond2_pathVals_six": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_const_mem_needs_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_const_mem_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_const_needs_nonempty_init": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_const_needs_nonempty_init.match_1_1": [],
+    "Toy.Dataflow.diamondExact_iff_distributiveOnRealizable_of_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_needs_distributiveOnRealizable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_needs_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_not_exact_on_two_step_branches": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_of_distributiveOnRealizable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondExact_singleton_of_not_distributive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamondMOP": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamondMOP.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamondSol": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamondSol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamondSol_isLeastSolution_of_monotone": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamondSol_isLeastSolution_of_monotone.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamondSol_isSolution": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamondWithEntry": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamondWithEntry.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_allReachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_edges_mem": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_entry": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_entry_id_matters": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_f0": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_f1": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_f2": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_f3": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_init": [
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_isLeastSolution_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_isMOPAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_isMOPAt_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_pathVals_four": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_pathVals_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_pathVals_three": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_pathVals_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.diamond_pathVals_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.distributiveOnRealizable_of_diamondExact_of_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.distributiveOnRealizable_singleton": [],
+    "Toy.Dataflow.distributive_of_monotone_of_total": [],
+    "Toy.Dataflow.drain_selfLoop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.drain_selfLoop.match_1_1": [],
+    "Toy.Dataflow.eqRHS": [],
+    "Toy.Dataflow.eqRHS.eq_1": [],
+    "Toy.Dataflow.eqRHS_le_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.eqRHS_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exactness_corollaries_combined_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exactness_corollaries_need_allReachable_or_strict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exactness_holds_on_unboundedChainsLat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exactness_needs_acc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exactness_needs_distributive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exactness_needs_least": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exactness_needs_unreachableStrict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exactness_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exists_exactness_combined_counterexamples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exists_exactness_counterexamples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exists_exactness_counterexamples.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.exists_exactness_counterexamples.match_1_3": [
+      "propext"
+    ],
+    "Toy.Dataflow.exists_exactness_counterexamples.match_1_5": [
+      "propext"
+    ],
+    "Toy.Dataflow.exists_exactness_counterexamples.match_1_7": [
+      "propext"
+    ],
+    "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exists_isLeastSolution_counterexamples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exists_isLeastSolution_counterexamples.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.exists_isLeastSolution_of_monotone_of_acc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exists_isMOPAt_of_acc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exists_isMOPAt_of_acc.match_1_1": [],
+    "Toy.Dataflow.exists_list_isLUB": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exists_rank_of_heightLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.exists_rank_of_heightLe.match_1_2": [],
+    "Toy.Dataflow.filter_false_nil": [
+      "propext"
+    ],
+    "Toy.Dataflow.fin4PreLat": [
+      "propext"
+    ],
+    "Toy.Dataflow.fin4PreLat.match_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.fin4PreLat.match_3": [
+      "propext"
+    ],
+    "Toy.Dataflow.fin4PreLat_law_profile": [
+      "propext"
+    ],
+    "Toy.Dataflow.fin4_cases": [
+      "propext"
+    ],
+    "Toy.Dataflow.fin5_cases": [
+      "propext"
+    ],
+    "Toy.Dataflow.fin7_cases": [
+      "propext"
+    ],
+    "Toy.Dataflow.finChainLat": [],
+    "Toy.Dataflow.finChainLat.eq_1": [],
+    "Toy.Dataflow.finChainLat_heightLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.finChainLat_heightLe.match_1_1": [],
+    "Toy.Dataflow.finChainLat_isJSL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.finChainLat_isJSL.match_1_2": [],
+    "Toy.Dataflow.flatLat": [],
+    "Toy.Dataflow.flatLat_isJSL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.flat_const_incomparable": [],
+    "Toy.Dataflow.genKill": [],
+    "Toy.Dataflow.genKill.eq_1": [],
+    "Toy.Dataflow.genKill_distributive": [
+      "Quot.sound"
+    ],
+    "Toy.Dataflow.genKill_distributive_must": [
+      "Quot.sound"
+    ],
+    "Toy.Dataflow.genKill_exactness_needs_genKill_form": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.genKill_exactness_needs_unreachable_gen_empty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.genKill_exactness_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Dataflow.genKill_exists_exactness_combined_counterexamples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.genKill_exists_isLeastSolution_and_isMOPAt_of_unreachable_gen_empty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.genKill_gen_not_strict": [
+      "propext"
+    ],
+    "Toy.Dataflow.genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.genKill_killOnly_strict": [
+      "Quot.sound"
+    ],
+    "Toy.Dataflow.genKill_killOnly_strict_may_not_must": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.genKill_must_strict_nonempty_kill_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.genKill_strict_iff": [],
+    "Toy.Dataflow.genKill_strict_must_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.greatestLe": [],
+    "Toy.Dataflow.greatestLe.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Dataflow.greatestLe.eq_1": [],
+    "Toy.Dataflow.greatestLe.eq_2": [],
+    "Toy.Dataflow.greatestLe.eq_def": [],
+    "Toy.Dataflow.greatestLe.match_1": [],
+    "Toy.Dataflow.greatestLe_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.greatestLe_spec": [],
+    "Toy.Dataflow.idNotFamily": [],
+    "Toy.Dataflow.idNot_viol1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.idNot_viol2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.id_monotone_distributive_strict": [],
+    "Toy.Dataflow.instDecidableEqFlat": [],
+    "Toy.Dataflow.instDecidableEqFlat.decEq": [],
+    "Toy.Dataflow.instDecidableEqFlat.decEq.match_1": [],
+    "Toy.Dataflow.instDecidableEqOmegaTwo": [],
+    "Toy.Dataflow.instDecidableEqOmegaTwo.decEq": [],
+    "Toy.Dataflow.instDecidableEqOmegaTwo.decEq.match_1": [],
+    "Toy.Dataflow.instDecidableEqSt": [],
+    "Toy.Dataflow.instDecidableEqSt.decEq": [],
+    "Toy.Dataflow.instDecidableEqSt.decEq.match_1": [],
+    "Toy.Dataflow.instDecidableEqUnboundedChains": [],
+    "Toy.Dataflow.instDecidableEqUnboundedChains.decEq": [],
+    "Toy.Dataflow.instDecidableEqUnboundedChains.decEq.match_1": [],
+    "Toy.Dataflow.instDecidableEqWithBotInt": [],
+    "Toy.Dataflow.instDecidableEqWithBotInt.decEq": [],
+    "Toy.Dataflow.instDecidableEqWithBotInt.decEq.match_1": [],
+    "Toy.Dataflow.instDecidableLeBoolBoolLat": [],
+    "Toy.Dataflow.instDecidableLeBoolNotReflLat": [],
+    "Toy.Dataflow.instDecidableLeFinOfNatNatFin4PreLat": [
+      "propext"
+    ],
+    "Toy.Dataflow.instDecidableLeFinOfNatNatFin4PreLat.match_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.instDecidableLeFinOfNatNatNotTransLat": [
+      "propext"
+    ],
+    "Toy.Dataflow.instDecidableLeStCpLat": [],
+    "Toy.Dataflow.instDecidableRelFinHAddNatOfNatLeFinChainLat": [],
+    "Toy.Dataflow.instDecidableRelNatLeNatMaxLat": [],
+    "Toy.Dataflow.instDecidableRelUnboundedChainsLeUnboundedChainsLat": [
+      "propext"
+    ],
+    "Toy.Dataflow.instDecidableRelUnboundedChainsLeUnboundedChainsLat.match_3": [],
+    "Toy.Dataflow.instDecidableRelUnitLeUnitLat": [],
+    "Toy.Dataflow.instReprFlat": [
+      "propext"
+    ],
+    "Toy.Dataflow.instReprFlat.repr": [
+      "propext"
+    ],
+    "Toy.Dataflow.instReprFlat.repr.match_1": [],
+    "Toy.Dataflow.instReprSt": [
+      "propext"
+    ],
+    "Toy.Dataflow.instReprSt.repr": [
+      "propext"
+    ],
+    "Toy.Dataflow.isEquationSolution_of_isLeastSolution_of_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.isMOPAt_bot_of_not_reachable": [],
+    "Toy.Dataflow.isMOPAt_bot_of_not_reachable.match_1_1": [],
+    "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.isSolution_iff_eqRHS_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.joinList_le": [],
+    "Toy.Dataflow.kildall": [],
+    "Toy.Dataflow.kildallInit": [],
+    "Toy.Dataflow.kildallInit.eq_1": [],
+    "Toy.Dataflow.kildallInv_init": [
+      "propext"
+    ],
+    "Toy.Dataflow.kildallLoop": [],
+    "Toy.Dataflow.kildallLoop.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Dataflow.kildallLoop.eq_1": [],
+    "Toy.Dataflow.kildallLoop.eq_2": [],
+    "Toy.Dataflow.kildallLoop.eq_3": [],
+    "Toy.Dataflow.kildallLoop.eq_def": [],
+    "Toy.Dataflow.kildallLoop.match_1": [],
+    "Toy.Dataflow.kildallLoop_isLeastSolution": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildallLoop_isSolution": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildallLoop_isSome_of_kpot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildallLoop_selfLoops_suffix": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildallLoop_selfLoops_suffix.match_1_1": [],
+    "Toy.Dataflow.kildallLoop_stepMid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildallLoop_stepMid.match_1_1": [],
+    "Toy.Dataflow.kildallLoop_succCFG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_acc_has_no_uniform_fuel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_decidableRel_irrelevant": [
+      "Quot.sound"
+    ],
+    "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_fuel_bound_attained": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_isLeastSolution_of_monotone_of_eq_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_isMOPAt_counterexamples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_isMOPAt_counterexamples.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_isMOPAt_counterexamples.match_1_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_isMOPAt_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_isSolution_of_eq_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_isSome_of_heightLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_needs_eq_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_needs_heightLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_needs_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_needs_monotone.match_1_2": [
+      "propext"
+    ],
+    "Toy.Dataflow.kildall_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.kpot": [],
+    "Toy.Dataflow.kpot.eq_1": [],
+    "Toy.Dataflow.le_greatestLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.lgGen": [],
+    "Toy.Dataflow.lgGen.eq_1": [],
+    "Toy.Dataflow.lgKill": [
+      "propext"
+    ],
+    "Toy.Dataflow.loopGK": [
+      "propext"
+    ],
+    "Toy.Dataflow.loopGK.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.loopGKSol": [
+      "propext"
+    ],
+    "Toy.Dataflow.loopGKSol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.loopGK_allReachable": [
+      "propext"
+    ],
+    "Toy.Dataflow.loopGK_full_not_isLeastSolution": [
+      "propext"
+    ],
+    "Toy.Dataflow.loopGK_isLeastSolution": [
+      "propext"
+    ],
+    "Toy.Dataflow.loopGK_isMOPAt_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.mem_succs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.midStrictCFG": [
+      "propext"
+    ],
+    "Toy.Dataflow.midStrictCFG.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.midStrictSol": [
+      "propext"
+    ],
+    "Toy.Dataflow.midStrictSol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.monotone_of_diamondExact_of_acc_of_const_mem_of_nonempty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.monotone_of_distributive": [],
+    "Toy.Dataflow.mop_le_of_isSolution_of_monotone": [],
+    "Toy.Dataflow.mop_le_of_isSolution_of_monotone.match_1_1": [],
+    "Toy.Dataflow.natMaxLat": [],
+    "Toy.Dataflow.natMaxLat.eq_1": [],
+    "Toy.Dataflow.natMaxLat_isJSL": [
+      "propext"
+    ],
+    "Toy.Dataflow.natMaxLat_not_acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.natMaxLat_not_heightLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.no_lat_violates_only_leTrans": [],
+    "Toy.Dataflow.notAntisymmLat": [],
+    "Toy.Dataflow.notAntisymmLat.eq_1": [],
+    "Toy.Dataflow.notAntisymmLat_law_profile": [
+      "propext"
+    ],
+    "Toy.Dataflow.notAntisymmLat_not_leAntisymm": [],
+    "Toy.Dataflow.notBotLat": [],
+    "Toy.Dataflow.notBotLat.eq_1": [],
+    "Toy.Dataflow.notBotLat_law_profile": [
+      "propext"
+    ],
+    "Toy.Dataflow.notBotLat_not_botLe": [
+      "propext"
+    ],
+    "Toy.Dataflow.notCFG": [
+      "propext"
+    ],
+    "Toy.Dataflow.notCFG.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.notCFG_isLeastSolution_not_isEquationSolution": [
+      "propext"
+    ],
+    "Toy.Dataflow.notJoinLat": [],
+    "Toy.Dataflow.notJoinLat.eq_1": [],
+    "Toy.Dataflow.notJoinLat_law_profile": [
+      "propext"
+    ],
+    "Toy.Dataflow.notJoinLat_not_joinLeIff": [
+      "propext"
+    ],
+    "Toy.Dataflow.notReflLat": [],
+    "Toy.Dataflow.notReflLat.eq_1": [],
+    "Toy.Dataflow.notReflLat_law_profile": [
+      "propext"
+    ],
+    "Toy.Dataflow.notReflLat_not_leRefl": [
+      "propext"
+    ],
+    "Toy.Dataflow.notSol": [
+      "propext"
+    ],
+    "Toy.Dataflow.notSol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.notTransCFG": [
+      "propext"
+    ],
+    "Toy.Dataflow.notTransLat": [
+      "propext"
+    ],
+    "Toy.Dataflow.notTransLat.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.notTransLat_law_profile": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.notTransLat_not_leTrans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.not_not_distributive": [],
+    "Toy.Dataflow.not_not_monotone": [],
+    "Toy.Dataflow.omegaCFG": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaCFG.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaCFG_allReachable": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaCFG_pathVals_one": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaCFG_walk_val_fin": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaLat": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaLat.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaLat_isJSL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.omegaLat_monotone_distributive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.omegaLat_not_acc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.omegaLat_total": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.omegaSol": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaSol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaStrictCFG": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaStrictCFG.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaStrictCFG_pathVals_one": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaStrictCFG_walk_val_fin": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaStrictSol": [
+      "propext"
+    ],
+    "Toy.Dataflow.omegaStrictSol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.omega_succStrict_distributive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.omega_succ_distributive": [
+      "propext"
+    ],
+    "Toy.Dataflow.pathVals": [],
+    "Toy.Dataflow.pathVals_iff": [],
+    "Toy.Dataflow.pathVals_init": [],
+    "Toy.Dataflow.pathVals_step": [],
+    "Toy.Dataflow.popcount": [],
+    "Toy.Dataflow.popcount.eq_1": [],
+    "Toy.Dataflow.popcount_le": [
+      "propext"
+    ],
+    "Toy.Dataflow.popcount_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.propagate": [],
+    "Toy.Dataflow.propagate.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Dataflow.propagate.eq_1": [],
+    "Toy.Dataflow.propagate.eq_2": [],
+    "Toy.Dataflow.propagate.eq_def": [],
+    "Toy.Dataflow.propagate.match_1": [],
+    "Toy.Dataflow.propagate_kpot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.propagate_spec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.pwLat": [],
+    "Toy.Dataflow.pwLat.eq_1": [],
+    "Toy.Dataflow.pwLat_acc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.pwLat_acc.match_1_1": [],
+    "Toy.Dataflow.pwLat_isJSL": [
+      "Quot.sound"
+    ],
+    "Toy.Dataflow.reachable_iff_exists_pathVals": [],
+    "Toy.Dataflow.reachable_iff_exists_pathVals.match_1_1": [],
+    "Toy.Dataflow.reachable_iff_exists_pathVals.match_1_3": [],
+    "Toy.Dataflow.satSucc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.satSucc.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.satSucc_distributive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.satSucc_monotone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.selfLoopsCFG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.selfLoopsCFG.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.setY": [],
+    "Toy.Dataflow.setY.eq_1": [],
+    "Toy.Dataflow.setY_distributive": [
+      "propext"
+    ],
+    "Toy.Dataflow.setZ": [],
+    "Toy.Dataflow.setZ.eq_1": [],
+    "Toy.Dataflow.setZ_distributive": [
+      "propext"
+    ],
+    "Toy.Dataflow.soundness_needs_isMOPAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.soundness_needs_leTrans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.soundness_needs_leTrans.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.soundness_needs_monotone": [
+      "propext"
+    ],
+    "Toy.Dataflow.soundness_needs_solution": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.soundness_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.stepMid": [],
+    "Toy.Dataflow.stepMid.eq_1": [],
+    "Toy.Dataflow.stepMid.eq_2": [],
+    "Toy.Dataflow.stepMid.eq_3": [],
+    "Toy.Dataflow.stepMid.match_1": [],
+    "Toy.Dataflow.stepMidCFG": [
+      "propext"
+    ],
+    "Toy.Dataflow.stepMid_distributive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.stepMid_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.strictBBDiamond": [
+      "propext"
+    ],
+    "Toy.Dataflow.strictBBSol": [
+      "propext"
+    ],
+    "Toy.Dataflow.strictBBSol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.strictLoopGK": [
+      "propext"
+    ],
+    "Toy.Dataflow.strictLoopGK.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.strictLoopGKSol": [],
+    "Toy.Dataflow.strict_and_genKill_exactness_needs_least": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.strict_and_genKill_exactness_needs_least.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.strict_exactness_needs_acc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.strict_exactness_needs_distributive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.strict_exactness_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.succCFG": [
+      "propext"
+    ],
+    "Toy.Dataflow.succCFG.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.succs": [],
+    "Toy.Dataflow.succs.eq_1": [],
+    "Toy.Dataflow.succs_selfLoopsCFG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.succs_selfLoopsCFG_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.succs_selfLoopsCFG_aux.match_1_1": [],
+    "Toy.Dataflow.sum_map_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.sum_map_le_mul": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.sum_map_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.twoStepFamily": [
+      "propext"
+    ],
+    "Toy.Dataflow.ugCFG": [
+      "propext"
+    ],
+    "Toy.Dataflow.ugCFG.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.ugCFG_isMOPAt_two_empty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.ugCFG_not_reachable_one": [
+      "propext"
+    ],
+    "Toy.Dataflow.ugCFG_pathVals_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.ugCFG_pathVals_zero": [
+      "propext"
+    ],
+    "Toy.Dataflow.ugGen": [
+      "propext"
+    ],
+    "Toy.Dataflow.ugGen.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.ugKill": [],
+    "Toy.Dataflow.ugKill.eq_1": [],
+    "Toy.Dataflow.ugSol": [
+      "propext"
+    ],
+    "Toy.Dataflow.ugSol.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.unboundedChainsLat": [
+      "propext"
+    ],
+    "Toy.Dataflow.unboundedChainsLat.eq_1": [
+      "propext"
+    ],
+    "Toy.Dataflow.unboundedChainsLat_acc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.unboundedChainsLat_isJSL": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.unboundedChainsLat_not_heightLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.unitLat": [],
+    "Toy.Dataflow.unitLat_heightLe_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.unitLat_isJSL": [],
+    "Toy.Dataflow.unreachableStrict_of_allReachable": [],
+    "Toy.Dataflow.unreachableStrict_of_strict": [],
+    "Toy.Dataflow.unreachableStrict_strictly_between_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.upd": [],
+    "Toy.Dataflow.upd.eq_1": [],
+    "Toy.Dataflow.walk_val_le_of_isSolution_of_monotone": [],
+    "Toy.Dataflow.wbNeg": [],
+    "Toy.Dataflow.wbNeg.eq_1": [],
+    "Toy.Dataflow.wbNeg.eq_2": [],
+    "Toy.Dataflow.wbNeg.match_1": [],
+    "Toy.Dataflow.wbNegFamily": [],
+    "Toy.Dataflow.wf_exists_minimal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.withBotIntLat": [],
+    "Toy.Dataflow.withBotIntLat.eq_1": [],
+    "Toy.Dataflow.withBotIntLat_isJSL": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dataflow.withBotIntLat_not_acc": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

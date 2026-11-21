@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/dataflow-analysis",
+    "compilers/monotone-frameworks",
+    "pl/abstract-interpretation",
+    "pl/static-analysis",
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/static-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "A unified approach to global program optimization (Kildall, POPL 1973)",
+      "identity": {
+        "doi": "10.1145/512927.512945"
+      }
+    },
+    {
+      "name": "Monotone data flow analysis frameworks (Kam and Ullman, Acta Informatica 1977)",
+      "identity": {
+        "doi": "10.1007/BF00290339"
+      }
+    },
+    {
+      "name": "Principles of Program Analysis (Nielson, Nielson and Hankin, 1999)",
+      "identity": {
+        "doi": "10.1007/978-3-662-03811-6",
+        "isbn": "978-3-540-65410-0"
+      }
+    },
+    {
+      "name": "Introduction to Lattices and Order, 2nd edition (Davey and Priestley, 2002)",
+      "identity": {
+        "doi": "10.1017/CBO9780511809088"
+      }
+    },
+    {
+      "name": "Constructive versions of Tarski's fixed point theorems (Cousot and Cousot, Pacific J. Math. 1979)",
+      "identity": {
+        "doi": "10.2140/pjm.1979.82.43"
+      }
+    },
+    {
+      "name": "CompCert dataflow solver (backend/Kildall.v)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "path": "backend/Kildall.v"
+      }
+    },
+    {
+      "name": "rustc MIR dataflow framework",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+        "path": "compiler/rustc_mir_dataflow/src/framework"
+      }
+    },
+    {
+      "name": "LLVM sparse conditional constant propagation solver",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "25b1c803e1e1504f6dc11f7afd68e65ad3ee5964",
+        "path": "llvm/lib/Transforms/Utils/SCCPSolver.cpp"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

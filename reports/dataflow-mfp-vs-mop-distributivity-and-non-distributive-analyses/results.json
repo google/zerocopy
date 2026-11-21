@@ -1,0 +1,1034 @@
+[
+  {
+    "id": "mop-le-solution-soundness",
+    "lean": [
+      "Toy.Dataflow.walk_val_le_of_isSolution_of_monotone",
+      "Toy.Dataflow.mop_le_of_isSolution_of_monotone"
+    ],
+    "lean_names": [
+      "Toy.Dataflow.exactness_needs_distributive",
+      "Toy.Dataflow.exists_isMOPAt_of_acc",
+      "Toy.Dataflow.isEquationSolution_of_isLeastSolution_of_monotone",
+      "Toy.Dataflow.notCFG_isLeastSolution_not_isEquationSolution"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Textbook soundness of the MFP solution for monotone frameworks (Nielson-Nielson-Hankin, Section 2.4; slide 79 of the authors' Chapter 2 transparencies), restated in this vocabulary and strengthened from 'the least solution' to 'every solution' and from a partial order to any transitive relation.",
+    "plain_claim": "On a finite CFG whose transfer functions are all monotone, and for any transitive binary relation L.le (reflexivity and antisymmetry are not assumed), the value of every path from the entry to a node v is L.le-below x v for every solution x of the dataflow inequations (init ≤ x entry and f u (x u) ≤ x w for each edge u → w); hence if m is a least upper bound of all path values at v (the MOP value), then m ≤ x v, in particular for the least solution (MFP). This relates solutions of the abstract inequations to the join over syntactic CFG paths; no concrete program semantics is involved.",
+    "hypotheses": [
+      {
+        "name": "htrans : L.LeTrans",
+        "purpose": "Chains the per-edge inequations along a path. The only law assumed of L.le (reflexivity and antisymmetry are not used).",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.soundness_needs_leTrans",
+        "witness_class": "soundness_needs_leTrans: the 3-node path CFG notTransCFG (0 → 1 → 2, identity transfers) over the 3-element carrier Fin 3 with the non-transitive relation notTransLat; the identity assignment is a solution, the MOP value at node 2 is 0, 0 is not below x 2 = 2, and some walk value is not below x 2.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.walk_val_le_of_isSolution_of_monotone": [
+            "Toy.Dataflow.soundness_needs_leTrans"
+          ],
+          "Toy.Dataflow.mop_le_of_isSolution_of_monotone": [
+            "Toy.Dataflow.soundness_needs_leTrans"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.walk_val_le_of_isSolution_of_monotone",
+          "Toy.Dataflow.mop_le_of_isSolution_of_monotone"
+        ]
+      },
+      {
+        "name": "hmono : ∀ u, Monotone L (G.f u)",
+        "purpose": "Pushes the inductive bound p.val ≤ x u through f u.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.soundness_needs_monotone",
+        "witness_class": "soundness_needs_monotone: the 2-node CFG notCFG (self-loop at the entry and an edge 0 → 1, every transfer is negation) over boolLat; even the least solution notSol fails the bound at node 1 (MOP value true), and some walk value is not below notSol 1.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.walk_val_le_of_isSolution_of_monotone": [
+            "Toy.Dataflow.soundness_needs_monotone"
+          ],
+          "Toy.Dataflow.mop_le_of_isSolution_of_monotone": [
+            "Toy.Dataflow.soundness_needs_monotone"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.walk_val_le_of_isSolution_of_monotone",
+          "Toy.Dataflow.mop_le_of_isSolution_of_monotone"
+        ]
+      },
+      {
+        "name": "hx : IsSolution L G x",
+        "purpose": "The bound is only claimed for solutions of the inequations.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.soundness_needs_solution",
+        "witness_class": "soundness_needs_solution: the 2-node gen/kill loop loopGK over 2-bit vectors bvLat 2 with the assignment x = ∅ everywhere, which is not a solution; the MOP value at node 1 and some walk value are not below x 1.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.walk_val_le_of_isSolution_of_monotone": [
+            "Toy.Dataflow.soundness_needs_solution"
+          ],
+          "Toy.Dataflow.mop_le_of_isSolution_of_monotone": [
+            "Toy.Dataflow.soundness_needs_solution"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.walk_val_le_of_isSolution_of_monotone",
+          "Toy.Dataflow.mop_le_of_isSolution_of_monotone"
+        ]
+      },
+      {
+        "name": "hm : IsMOPAt L G v m",
+        "purpose": "Identifies m as the least upper bound of the path values at v; only its leastness is used.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.soundness_needs_isMOPAt",
+        "witness_class": "soundness_needs_isMOPAt: loopGK over bvLat 2 with the least solution loopGKSol and the value m = full set at node 0, which is not the MOP value there and is not below loopGKSol 0.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.mop_le_of_isSolution_of_monotone": [
+            "Toy.Dataflow.soundness_needs_isMOPAt"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.mop_le_of_isSolution_of_monotone"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction on the path, then the universal property of the least upper bound.",
+    "nonvacuity_witness": "The gen/kill loop 0 → 1, 1 → 1 on 2-bit vectors (node 0 gens bit 0; node 1 gens bit 1 and kills bit 0) with its least solution (∅ at node 0, {0,1} at node 1) and MOP {0,1} at node 1.",
+    "nonvacuity_witness_lean": "Toy.Dataflow.soundness_nonvacuous",
+    "non_claims": [
+      "It does not say MFP equals MOP; equality can fail for monotone but non-distributive transfers (exactness_needs_distributive) and without the further side conditions of mfp-eq-mop-exactness.",
+      "It does not assert that an MOP value exists: it is conditional on a least upper bound m of the path values (which exists under the ascending chain condition, exists_isMOPAt_of_acc).",
+      "It does not assert that a solution or a least solution exists, nor that any algorithm computes one (see mfp-eq-mop-exactness for existence under the ascending chain condition and kildall-computes-mfp for an algorithm).",
+      "Without monotonicity the bound fails even for the least solution (soundness_needs_monotone); without transitivity it fails even for a solution of a two-edge path (soundness_needs_leTrans).",
+      "It does not establish semantic soundness with respect to any concrete operational semantics: `MOP ≤ x` only relates solutions of the abstract inequations to syntactic compositions of the given transfer functions `G.f`, without proving that `G.f` soundly abstracts concrete program execution.",
+      "`MOP` ranges over all syntactically valid CFG walks `Walk G v`, including dynamically infeasible branch combinations; `MFP = MOP` therefore does not mean exactness with respect to feasible runtime executions (a join over only the feasible paths).",
+      "`IsLeastSolution` specifies the least solution of the dataflow inequations (the least pre-fixpoint), which satisfies the dataflow equations with equality when transfer functions are monotone, but need not be a fixed point of the equations when monotonicity fails (for instance, `notCFG` has unique least inequation solution `(true, false)` while `x 0 = false ⊔ !x 0` has no fixed point). Lean: `isEquationSolution_of_isLeastSolution_of_monotone`, `notCFG_isLeastSolution_not_isEquationSolution`.",
+      "`x v` and `IsMOPAt L G v` represent pre-transfer facts at node entry (`MFP◦` and `MOP◦`), because `G.f u` is applied only along outgoing edges `(u, w) ∈ G.edges`; at any sink or return node `v` with zero outgoing edges, `G.f v` is completely unconstrained and ignored unless a synthetic exit edge `(v, exit)` is added.",
+      "It concerns a toy forward analysis on an explicit edge list with transfer functions applied on leaving a node; applying it to a real compiler analysis is a separate modeling argument."
+    ],
+    "prior_art": [
+      "J. B. Kam and J. D. Ullman, \"Monotone data flow analysis frameworks\", Acta Informatica 7(3):305-317, 1977, doi:10.1007/BF00290339. The abstract states that the maximal fixed point solution exists for every instance of every monotone framework and is obtained by Kildall's algorithm; that whenever a framework is monotone but not distributive there are instances in which the meet-over-all-paths solution differs from the maximal fixed point; and that no algorithm computes the meet-over-all-paths solution for monotone frameworks in general. These statements concern monotone frameworks in general (meet-semilattice orientation); this card cites only the abstract, and attributes to the paper no statement about any particular framework such as constant propagation.",
+      "F. Nielson, H. R. Nielson, C. Hankin, Principles of Program Analysis, Springer, 1999 (corrected 2nd printing 2005), doi:10.1007/978-3-662-03811-6, ISBN 978-3-540-65410-0. Chapter 2: Section 2.3 'Monotone Frameworks' (2.3.3 'A Non-distributive Example'), Section 2.4 'Equation Solving' (2.4.1 'The MFP Solution', 2.4.2 'The MOP Solution'); worklist algorithms in Section 6.1. The authors' Chapter 2 transparencies (May 2005), slide 79, state a lemma for the MFP and MOP solutions of an instance of a monotone framework: 'MFP◦ ⊒ MOP◦ and MFP• ⊒ MOP•', and 'If the framework is distributive and if path◦(ℓ) ≠ ∅ for all ℓ in E and F then: MFP◦ = MOP◦ and MFP• = MOP•' (join orientation; MFP◦/MFP• and MOP◦/MOP• are the pre- and post-transfer solutions).",
+      "G. A. Kildall, \"A unified approach to global program optimization\", Conference Record of the ACM Symposium on Principles of Programming Languages (POPL 1973), pp. 194-206, doi:10.1145/512927.512945 (public-domain archival copy: handle 10945/42162). Works over a finite meet-semilattice with transfer functions having the 'homomorphism property' f(N, x ^ y) = f(N, x) ^ f(N, y) (distributivity, in the dual orientation); Algorithm A is a worklist algorithm; Theorem 1 states that it terminates; Theorem 2 relates the final pool at each node N to the values propagated along all paths from entry nodes to N. Exact bounds and formulas of the paper are not quoted here."
+    ],
+    "design_question": "When does the fixed point a worklist dataflow solver computes (MFP) equal the join-over-all-paths specification (MOP), when is it only a sound over-approximation, which property of the transfer functions decides it, and which side conditions (finite height, strictness at unreachable nodes, monotonicity, worklist seeding) do textbook statements assume?"
+  },
+  {
+    "id": "mfp-eq-mop-exactness",
+    "lean": [
+      "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict",
+      "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable",
+      "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict",
+      "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict",
+      "Toy.Dataflow.exists_isLeastSolution_of_monotone_of_acc"
+    ],
+    "lean_names": [
+      "Toy.Dataflow.acc_strictly_weaker_than_heightLe",
+      "Toy.Dataflow.cfg_empty_carrier_empty",
+      "Toy.Dataflow.cfg_zero_empty",
+      "Toy.Dataflow.kildall_acc_has_no_uniform_fuel",
+      "Toy.Dataflow.kildall_isSome_of_heightLe",
+      "Toy.Dataflow.monotone_of_distributive",
+      "Toy.Dataflow.stepMid_distributive"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The distributive case MFP = MOP is classical (Kildall; Kam-Ullman; Nielson-Nielson-Hankin, Section 2.4), but no mechanized MFP = MOP statement was found. The statement here makes the side conditions explicit: the ascending chain condition, and strictness only at unreachable nodes, which covers both the 'all nodes reachable' form (Nielson-Nielson-Hankin) and the 'all transfers strict' form.",
+    "plain_claim": "In a join-semilattice with bottom satisfying the ascending chain condition (ACC), if every transfer function distributes over binary joins and every node unreachable from the entry has a strict transfer function (f u ⊥ = ⊥), then the dataflow inequations have a least solution, and for every least solution x and every node v, x v is a least upper bound of the values of all paths from the entry to v (MFP = MOP). Two corollaries replace the unreachable-node condition by 'every node is reachable' or by 'every transfer function is strict'. Separately, under ACC the inequations have a least solution whenever every transfer function is monotone.",
+    "hypotheses": [
+      {
+        "name": "hL : L.IsJSL",
+        "purpose": "Partial order, binary least upper bounds, bottom: used to form finite joins and compare them. The intended setting; not weakened further here.",
+        "tightness": "harmless",
+        "applies_to": [
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict",
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable",
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict",
+          "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict",
+          "Toy.Dataflow.exists_isLeastSolution_of_monotone_of_acc"
+        ]
+      },
+      {
+        "name": "hacc : L.AscendingChainCondition",
+        "purpose": "Makes the (possibly infinite) set of path values at each node have a least upper bound that is a finite join of path values, to which binary distributivity applies; gives existence of the least solution.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.exactness_needs_acc",
+          "Toy.Dataflow.strict_exactness_needs_acc",
+          "Toy.Dataflow.exists_exactness_counterexamples",
+          "Toy.Dataflow.exists_isLeastSolution_counterexamples",
+          "Toy.Dataflow.exists_exactness_combined_counterexamples"
+        ],
+        "witness_class": "exactness_needs_acc (unreachable-strict and all-reachable forms): the 2-node CFG omegaCFG (0 → 1, loop 1 → 1 with the successor transfer) over the chain omegaLat = 0 < 1 < 2 < ⋯ < ω < ω+1, all nodes reachable; strict_exactness_needs_acc (all-strict form): the analogous strict loop omegaStrictCFG over omegaLat; exists_exactness_combined_counterexamples, first conjunct (existence form): omegaCFG over omegaLat; exists_isLeastSolution_counterexamples, first conjunct (exists_isLeastSolution_of_monotone_of_acc): the 1-node successor self-loop succCFG over natMaxLat (natural numbers under max), which has no least solution. exactness_needs_acc and strict_exactness_needs_acc fix one least solution and refute the conclusion at node 1; exists_exactness_counterexamples supplies only the failing existential conclusion and is used together with exactness_needs_acc.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict": [
+            "Toy.Dataflow.exactness_needs_acc"
+          ],
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable": [
+            "Toy.Dataflow.exactness_needs_acc"
+          ],
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict": [
+            "Toy.Dataflow.strict_exactness_needs_acc"
+          ],
+          "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict": [
+            "Toy.Dataflow.exactness_needs_acc",
+            "Toy.Dataflow.exists_exactness_counterexamples",
+            "Toy.Dataflow.exists_exactness_combined_counterexamples"
+          ],
+          "Toy.Dataflow.exists_isLeastSolution_of_monotone_of_acc": [
+            "Toy.Dataflow.exists_isLeastSolution_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict",
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable",
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict",
+          "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict",
+          "Toy.Dataflow.exists_isLeastSolution_of_monotone_of_acc"
+        ]
+      },
+      {
+        "name": "hdist : ∀ u, Distributive L (G.f u)",
+        "purpose": "Lets each transfer function commute with the finite join of path values at its source; implies monotonicity (monotone_of_distributive).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.exactness_needs_distributive",
+          "Toy.Dataflow.strict_exactness_needs_distributive",
+          "Toy.Dataflow.exists_exactness_counterexamples",
+          "Toy.Dataflow.exists_exactness_combined_counterexamples"
+        ],
+        "witness_class": "exactness_needs_distributive (unreachable-strict and all-reachable forms): the 5-node constant-propagation diamond cpDiamond ⟨⊤, ⊤, ⊤⟩ over cpLat, all nodes reachable, monotone but not distributive transfers; strict_exactness_needs_distributive (all-strict form): the 5-node diamond strictBBDiamond over bvLat 2 with strict, monotone, non-distributive transfers; exists_exactness_combined_counterexamples, second conjunct (existence form): cpDiamond ⟨⊤, ⊤, ⊤⟩ over cpLat. exists_exactness_counterexamples supplies only the failing existential conclusion and is used together with exactness_needs_distributive.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict": [
+            "Toy.Dataflow.exactness_needs_distributive"
+          ],
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable": [
+            "Toy.Dataflow.exactness_needs_distributive"
+          ],
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict": [
+            "Toy.Dataflow.strict_exactness_needs_distributive"
+          ],
+          "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict": [
+            "Toy.Dataflow.exactness_needs_distributive",
+            "Toy.Dataflow.exists_exactness_counterexamples",
+            "Toy.Dataflow.exists_exactness_combined_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict",
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable",
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict",
+          "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict"
+        ]
+      },
+      {
+        "name": "hstrict : UnreachableStrict L G",
+        "purpose": "At an unreachable node the MOP value is ⊥; a non-strict transfer there injects f u ⊥ into its successors, which no path from the entry accounts for.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.exactness_needs_unreachableStrict",
+          "Toy.Dataflow.exists_exactness_counterexamples",
+          "Toy.Dataflow.exists_exactness_combined_counterexamples"
+        ],
+        "witness_class": "exactness_needs_unreachableStrict: the acyclic 3-node gen/kill CFG ugCFG over 1-bit vectors bvLat 1 (edges 0 → 2 and 1 → 2; node 1 has no incoming edge and gen set {0}); node 2 is reachable and the least solution ugSol is not MOP at node 2; exists_exactness_combined_counterexamples, third conjunct (existence form): ugCFG over bvLat 1. exists_exactness_counterexamples supplies only the failing existential conclusion and is used together with exactness_needs_unreachableStrict.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict": [
+            "Toy.Dataflow.exactness_needs_unreachableStrict"
+          ],
+          "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict": [
+            "Toy.Dataflow.exactness_needs_unreachableStrict",
+            "Toy.Dataflow.exists_exactness_counterexamples",
+            "Toy.Dataflow.exists_exactness_combined_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict",
+          "Toy.Dataflow.exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict"
+        ]
+      },
+      {
+        "name": "hreach : AllReachable G",
+        "purpose": "Every node is reachable, so UnreachableStrict holds vacuously.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.exactness_needs_unreachableStrict",
+          "Toy.Dataflow.exactness_corollaries_need_allReachable_or_strict",
+          "Toy.Dataflow.exactness_corollaries_combined_counterexample"
+        ],
+        "witness_class": "exactness_corollaries_combined_counterexample: ugCFG over bvLat 1; hL, hacc and hdist hold, not every node is reachable, the least solution ugSol is not MOP at node 2. The same facts are split over exactness_needs_unreachableStrict (hL, hacc, hdist) and exactness_corollaries_need_allReachable_or_strict (the rest).",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable": [
+            "Toy.Dataflow.exactness_needs_unreachableStrict",
+            "Toy.Dataflow.exactness_corollaries_need_allReachable_or_strict",
+            "Toy.Dataflow.exactness_corollaries_combined_counterexample"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable"
+        ]
+      },
+      {
+        "name": "hstrict : ∀ u, Strict L (G.f u)",
+        "purpose": "Every transfer is strict, so UnreachableStrict holds.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.exactness_needs_unreachableStrict",
+          "Toy.Dataflow.exactness_corollaries_need_allReachable_or_strict",
+          "Toy.Dataflow.exactness_corollaries_combined_counterexample"
+        ],
+        "witness_class": "exactness_corollaries_combined_counterexample: ugCFG over bvLat 1; hL, hacc and hdist hold, not every transfer is strict, the least solution ugSol is not MOP at node 2. The same facts are split over exactness_needs_unreachableStrict (hL, hacc, hdist) and exactness_corollaries_need_allReachable_or_strict (the rest).",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict": [
+            "Toy.Dataflow.exactness_needs_unreachableStrict",
+            "Toy.Dataflow.exactness_corollaries_need_allReachable_or_strict",
+            "Toy.Dataflow.exactness_corollaries_combined_counterexample"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict"
+        ]
+      },
+      {
+        "name": "hx : IsLeastSolution L G x",
+        "purpose": "The claim is about least solutions; larger solutions over-approximate MOP.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.exactness_needs_least",
+          "Toy.Dataflow.strict_and_genKill_exactness_needs_least"
+        ],
+        "witness_class": "exactness_needs_least (unreachable-strict and all-reachable forms): loopGK over bvLat 2 with the solution x = full set everywhere, which is not least and not MOP at node 0; strict_and_genKill_exactness_needs_least (all-strict form): the 1-node gen/kill self-loop with gen = kill = ∅ over bvLat 1 (every transfer strict, all nodes reachable) with the solution x = full set, which is not least and not MOP at node 0.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict": [
+            "Toy.Dataflow.exactness_needs_least"
+          ],
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable": [
+            "Toy.Dataflow.exactness_needs_least"
+          ],
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict": [
+            "Toy.Dataflow.strict_and_genKill_exactness_needs_least"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict",
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_allReachable",
+          "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_strict"
+        ]
+      },
+      {
+        "name": "hmono : ∀ u, Monotone L (G.f u)",
+        "purpose": "Existence of the least solution without distributivity.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.exists_isLeastSolution_counterexamples",
+        "witness_class": "exists_isLeastSolution_counterexamples, second conjunct: the 5-node diamond over boolLat with initial value false, branch transfers id and negation and join transfer negation (diamond false id not not); boolLat satisfies the lattice laws and the ascending chain condition, the transfers are not all monotone, and no least solution exists.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.exists_isLeastSolution_of_monotone_of_acc": [
+            "Toy.Dataflow.exists_isLeastSolution_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.exists_isLeastSolution_of_monotone_of_acc"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Needs the ascending-chain argument that every set has a least upper bound attained by a finite join (maximal-element extraction from well-foundedness), distributivity over finite joins, construction of the MOP assignment as a solution, soundness for the reverse inequality, and, for existence, well-foundedness of the pointwise order on assignments.",
+    "nonvacuity_witness": "The gen/kill loop 0 → 1, 1 → 1 on 2-bit vectors (all nodes reachable); a strict gen/kill loop (all transfers strict); a CFG with an unreachable strict node and a reachable non-strict node (covered by neither corollary); and a lattice with ACC but no finite height. The existence form also holds, with all its hypotheses, on the one-node self-loop stepMidCFG m over unboundedChainsLat (ascending chain condition, no finite height) for every m (cyclic_exactness_on_unboundedChainsLat).",
+    "nonvacuity_witness_lean": [
+      "Toy.Dataflow.exactness_nonvacuous",
+      "Toy.Dataflow.strict_exactness_nonvacuous",
+      "Toy.Dataflow.unreachableStrict_strictly_between_nonvacuous",
+      "Toy.Dataflow.exactness_holds_on_unboundedChainsLat",
+      "Toy.Dataflow.cyclic_exactness_on_unboundedChainsLat"
+    ],
+    "non_claims": [
+      "Reachability of v alone is not enough: exactness_needs_unreachableStrict has a reachable node where MFP ≠ MOP because an unreachable predecessor with a non-empty gen set feeds it (no cycle is involved).",
+      "The unreachable-node condition is proved sufficient; it is not shown to be necessary. An unreachable non-strict node with no successors, or whose contribution is already present, plausibly does no harm (not proved here). No exact characterization of the unreachable-node condition is claimed.",
+      "Not established here: a local form of the unreachable-node condition. The package does not prove that strictness is needed only at unreachable nodes from which `v` can be reached; `UnreachableStrict` constrains every unreachable node.",
+      "Distributivity and the ascending chain condition are not replaceable by monotonicity alone or by 'every monotone map on a chain is distributive': exactness_needs_distributive has monotone, non-distributive transfers where MFP ≠ MOP, and exactness_needs_acc is a chain lattice without the ascending chain condition where MFP ≠ MOP.",
+      "`AscendingChainCondition` (sufficient for `mfp-eq-mop-exactness`) is strictly weaker than uniform finite height `HeightLe h` (assumed by the uniform fuel bound in `kildall_isSome_of_heightLe`; under the ascending chain condition alone no uniform fuel bound exists, `kildall_acc_has_no_uniform_fuel`); neither theorem models widening (`∇`) or narrowing (`Δ`) operators used on infinite-height domains. Lean: `acc_strictly_weaker_than_heightLe`, `exactness_holds_on_unboundedChainsLat`, `kildall_acc_has_no_uniform_fuel`.",
+      "It says nothing about how MFP is computed; termination and the fuel bound are in kildall-computes-mfp, and the end-to-end statement is kildall-computes-mop.",
+      "The undecidability of MOP for general monotone frameworks (Kam-Ullman) and for constant propagation (Nielson-Nielson-Hankin) is not formalized here.",
+      "It does not establish semantic soundness with respect to any concrete operational semantics: `MOP ≤ x` only relates solutions of the abstract inequations to syntactic compositions of the given transfer functions `G.f`, without proving that `G.f` soundly abstracts concrete program execution.",
+      "`MOP` ranges over all syntactically valid CFG walks `Walk G v`, including dynamically infeasible branch combinations; `MFP = MOP` therefore does not mean exactness with respect to feasible runtime executions (a join over only the feasible paths).",
+      "`x v` and `IsMOPAt L G v` represent pre-transfer facts at node entry (`MFP◦` and `MOP◦`), because `G.f u` is applied only along outgoing edges `(u, w) ∈ G.edges`; at any sink or return node `v` with zero outgoing edges, `G.f v` is completely unconstrained and ignored unless a synthetic exit edge `(v, exit)` is added.",
+      "`CFG` applies a single node-indexed transfer `G.f u` along every outgoing edge of `u` and assumes a single entry node `G.entry` (`n ≥ 1`); branch-sensitive edge transfers `(u, w) ↦ f_{u,w}` and multi-entry graphs require edge-splitting or a synthetic super-entry node."
+    ],
+    "prior_art": [
+      "G. A. Kildall, \"A unified approach to global program optimization\", Conference Record of the ACM Symposium on Principles of Programming Languages (POPL 1973), pp. 194-206, doi:10.1145/512927.512945 (public-domain archival copy: handle 10945/42162). Works over a finite meet-semilattice with transfer functions having the 'homomorphism property' f(N, x ^ y) = f(N, x) ^ f(N, y) (distributivity, in the dual orientation); Algorithm A is a worklist algorithm; Theorem 1 states that it terminates; Theorem 2 relates the final pool at each node N to the values propagated along all paths from entry nodes to N. Exact bounds and formulas of the paper are not quoted here.",
+      "J. B. Kam and J. D. Ullman, \"Monotone data flow analysis frameworks\", Acta Informatica 7(3):305-317, 1977, doi:10.1007/BF00290339. The abstract states that the maximal fixed point solution exists for every instance of every monotone framework and is obtained by Kildall's algorithm; that whenever a framework is monotone but not distributive there are instances in which the meet-over-all-paths solution differs from the maximal fixed point; and that no algorithm computes the meet-over-all-paths solution for monotone frameworks in general. These statements concern monotone frameworks in general (meet-semilattice orientation); this card cites only the abstract, and attributes to the paper no statement about any particular framework such as constant propagation.",
+      "F. Nielson, H. R. Nielson, C. Hankin, Principles of Program Analysis, Springer, 1999 (corrected 2nd printing 2005), doi:10.1007/978-3-662-03811-6, ISBN 978-3-540-65410-0. Chapter 2: Section 2.3 'Monotone Frameworks' (2.3.3 'A Non-distributive Example'), Section 2.4 'Equation Solving' (2.4.1 'The MFP Solution', 2.4.2 'The MOP Solution'); worklist algorithms in Section 6.1. The authors' Chapter 2 transparencies (May 2005), slide 79, state a lemma for the MFP and MOP solutions of an instance of a monotone framework: 'MFP◦ ⊒ MOP◦ and MFP• ⊒ MOP•', and 'If the framework is distributive and if path◦(ℓ) ≠ ∅ for all ℓ in E and F then: MFP◦ = MOP◦ and MFP• = MOP•' (join orientation; MFP◦/MFP• and MOP◦/MOP• are the pre- and post-transfer solutions).",
+      "T. J. Marlowe and B. G. Ryder, \"Properties of data flow frameworks: a unified model\", Acta Informatica 28(2):121-163, 1990, doi:10.1007/BF01237234. A unified classification of data flow framework properties (distributivity, monotonicity and related conditions).",
+      "CompCert, file backend/Kildall.v, repository AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (last change to the file: 4710ec093ddea8e6eb86ad519df61c59b654e861). Module Dataflow_Solver: fixpoint seeds the worklist with the entry point only and proves fixpoint_solution (every edge inequation holds) under the hypothesis 'forall n, L.eq (transf n L.bot) L.bot'; fixpoint_allnodes starts with every node at L.bot and every node on the worklist and proves fixpoint_allnodes_solution without that hypothesis; fixpoint_nodeset_solution proves that a solver seeded with a given set of nodes satisfies the inequations at every program point reachable from those nodes; fixpoint_entry and fixpoint_invariant are also proved. No least-solution or MOP statement is proved, monotonicity of transfer functions is never assumed, and iteration is bounded by fuel (PrimIter), returning None when fuel is exhausted.",
+      "Y. Bertot, B. Grégoire, X. Leroy, \"A structured approach to proving compiler optimizations based on dataflow analysis\", Types for Proofs and Programs (TYPES 2004), LNCS 3839, pp. 66-81, Springer, 2006, doi:10.1007/11617990_5. Coq proofs of dataflow-based optimizations in the line of work leading to CompCert's dataflow solver.",
+      "A search of the Archive of Formal Proofs (static-analysis and Kildall entries), Coq/Rocq developments (rocq-archive/kildall, CompCert), Lean mathlib (Order.FixedPoints) and Agda sources, and web searches pairing 'meet over all paths'/MOP/MFP with Coq, Isabelle, Agda and Lean, found mechanized least-fixpoint (MFP) solvers but no mechanized MFP = MOP statement; this is not proof of absence."
+    ],
+    "design_question": "When does the fixed point a worklist dataflow solver computes (MFP) equal the join-over-all-paths specification (MOP), when is it only a sound over-approximation, which property of the transfer functions decides it, and which side conditions (finite height, strictness at unreachable nodes, monotonicity, worklist seeding) do textbook statements assume?"
+  },
+  {
+    "id": "diamond-exactness-characterization",
+    "lean": [
+      "Toy.Dataflow.diamondExact_iff_distributiveOnRealizable_of_monotone",
+      "Toy.Dataflow.diamondExact_of_distributiveOnRealizable",
+      "Toy.Dataflow.distributiveOnRealizable_of_diamondExact_of_monotone",
+      "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty",
+      "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty"
+    ],
+    "lean_names": [
+      "Toy.Dataflow.diamondExact_not_exact_on_two_step_branches",
+      "Toy.Dataflow.diamond_entry_id_matters",
+      "Toy.Dataflow.isEquationSolution_of_isLeastSolution_of_monotone",
+      "Toy.Dataflow.monotone_of_diamondExact_of_acc_of_const_mem_of_nonempty",
+      "Toy.Dataflow.notCFG_isLeastSolution_not_isEquationSolution"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "That monotone non-distributive frameworks have instances with MOP ≠ MFP is due to Kam and Ullman (abstract). The exact diamond characterization here (the quantifier over realizable pairs, the role of monotonicity, the constant-closed corollaries) is not claimed to appear there; no mechanization was found.",
+    "plain_claim": "In a join-semilattice with bottom L (L.IsJSL), consider the five-node diamond CFG: an entry node with initial value a ∈ I and transfer id, two single-node branches with transfers g, h ∈ F, a join node with transfer f ∈ F, and an exit node. (i) If every f ∈ F distributes over every realizable pair (g a, h a) with g, h ∈ F and a ∈ I, then on every such diamond every least solution equals MOP at every node (without a monotonicity hypothesis). (ii) Conversely, if every member of F is monotone and every such diamond is exact, then F distributes over every realizable pair. (iii) If F contains every constant function, I is non-empty, and either every member of F is monotone or L satisfies the ascending chain condition, then exactness on all such diamonds is equivalent to full distributivity of every member of F (in the ascending-chain case, exactness on all such diamonds forces every member of F to be monotone: monotone_of_diamondExact_of_acc_of_const_mem_of_nonempty). The entry transfer is fixed to id whatever F is.",
+    "hypotheses": [
+      {
+        "name": "hL : L.IsJSL",
+        "purpose": "Lattice laws for least upper bounds and uniqueness of least solutions and of MOP values. The intended setting; not weakened further here.",
+        "tightness": "harmless",
+        "applies_to": [
+          "Toy.Dataflow.diamondExact_iff_distributiveOnRealizable_of_monotone",
+          "Toy.Dataflow.diamondExact_of_distributiveOnRealizable",
+          "Toy.Dataflow.distributiveOnRealizable_of_diamondExact_of_monotone",
+          "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty",
+          "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty"
+        ]
+      },
+      {
+        "name": "hmono : ∀ φ, F φ → Monotone L φ",
+        "purpose": "Guarantees that each diamond built from F has a least solution, so that exactness can be tested at each realizable pair.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.diamondExact_needs_monotone",
+          "Toy.Dataflow.diamondExact_const_mem_needs_monotone"
+        ],
+        "witness_class": "diamondExact_needs_monotone (the two realizable-pair theorems that assume hmono): 5-node diamonds over boolLat with the family idNotFamily = {id, negation} and initial values {false}; DiamondExact holds and DistributiveOnRealizable fails. diamondExact_const_mem_needs_monotone (monotone constant-closed corollary): 5-node diamonds over withBotIntLat (integers with an added bottom; no ascending chain condition) with the family wbNegFamily (all constants and negation) and all initial values; hconst and hI hold, DiamondExact holds, and not every member is distributive.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.diamondExact_iff_distributiveOnRealizable_of_monotone": [
+            "Toy.Dataflow.diamondExact_needs_monotone"
+          ],
+          "Toy.Dataflow.distributiveOnRealizable_of_diamondExact_of_monotone": [
+            "Toy.Dataflow.diamondExact_needs_monotone"
+          ],
+          "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty": [
+            "Toy.Dataflow.diamondExact_const_mem_needs_monotone"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.diamondExact_iff_distributiveOnRealizable_of_monotone",
+          "Toy.Dataflow.distributiveOnRealizable_of_diamondExact_of_monotone",
+          "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty"
+        ]
+      },
+      {
+        "name": "hacc : L.AscendingChainCondition",
+        "purpose": "Lets exactness on all diamonds force monotonicity of a constant-closed family (a non-monotone member has a maximal witness u < v with f u ≰ f v).",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.diamondExact_const_mem_needs_monotone",
+        "witness_class": "diamondExact_const_mem_needs_monotone: withBotIntLat with wbNegFamily and all initial values; the lattice laws, hconst and hI hold, the ascending chain condition fails, DiamondExact holds, and not every member is distributive.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty": [
+            "Toy.Dataflow.diamondExact_const_mem_needs_monotone"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty"
+        ]
+      },
+      {
+        "name": "hconst : ∀ b, F (fun _ => b)",
+        "purpose": "Makes every pair realizable, turning the realizable-pair condition into full distributivity.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.diamondExact_singleton_of_not_distributive",
+        "witness_class": "diamondExact_singleton_of_not_distributive: 5-node diamonds over cpLat with the one-element family {assignXYZ} (x := y + z) and all initial values; hL, hacc, hmono and hI hold, the family contains no constant function, DiamondExact holds, and assignXYZ is not distributive.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty": [
+            "Toy.Dataflow.diamondExact_singleton_of_not_distributive"
+          ],
+          "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty": [
+            "Toy.Dataflow.diamondExact_singleton_of_not_distributive"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty",
+          "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty"
+        ]
+      },
+      {
+        "name": "hI : ∃ a, I a",
+        "purpose": "With no initial values every diamond condition is vacuous.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.diamondExact_const_needs_nonempty_init",
+        "witness_class": "diamondExact_const_needs_nonempty_init: cpLat with the family of all constants together with assignXYZ and the empty set of initial values; hL, hacc, hmono and hconst hold, DiamondExact holds vacuously, and not every member is distributive.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty": [
+            "Toy.Dataflow.diamondExact_const_needs_nonempty_init"
+          ],
+          "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty": [
+            "Toy.Dataflow.diamondExact_const_needs_nonempty_init"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty",
+          "Toy.Dataflow.diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty"
+        ]
+      },
+      {
+        "name": "hd : DistributiveOnRealizable L I F",
+        "purpose": "The sufficient condition of direction (i).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.diamondExact_iff_nonvacuous",
+          "Toy.Dataflow.diamondExact_needs_distributiveOnRealizable"
+        ],
+        "witness_class": "diamondExact_needs_distributiveOnRealizable: cpLat with the family cpFamily = {y := 1; z := 2, y := 2; z := 1, x := y + z} and all initial values; hL holds, DistributiveOnRealizable fails, DiamondExact fails. diamondExact_iff_nonvacuous proves hL and the failure of DiamondExact on the same instance (the failure of DistributiveOnRealizable then follows from diamondExact_of_distributiveOnRealizable).",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.diamondExact_of_distributiveOnRealizable": [
+            "Toy.Dataflow.diamondExact_iff_nonvacuous",
+            "Toy.Dataflow.diamondExact_needs_distributiveOnRealizable"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.diamondExact_of_distributiveOnRealizable"
+        ]
+      },
+      {
+        "name": "he : DiamondExact L I F",
+        "purpose": "The premise of direction (ii).",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.diamondExact_const_mem_nonvacuous",
+        "witness_class": "diamondExact_const_mem_nonvacuous, second conjunct: cpLat with the family of all constants together with cpFamily and all initial values; hL and hmono hold, DiamondExact fails, DistributiveOnRealizable fails.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.distributiveOnRealizable_of_diamondExact_of_monotone": [
+            "Toy.Dataflow.diamondExact_const_mem_nonvacuous"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.distributiveOnRealizable_of_diamondExact_of_monotone"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Explicit enumeration of the path values of the five-node diamond and of its least solution; MFP and MOP can only differ at the exit node. The ascending-chain form adds a maximal-element argument (monotone_of_diamondExact_of_acc_of_const_mem_of_nonempty).",
+    "nonvacuity_witness": "Gen/kill functions on 1-bit vectors with all initial values (monotone, constant-closed family; both sides true), and the constant-propagation family {y:=1;z:=2, y:=2;z:=1, x:=y+z}, also with all constants added (monotone family; both sides false).",
+    "nonvacuity_witness_lean": [
+      "Toy.Dataflow.diamondExact_iff_nonvacuous",
+      "Toy.Dataflow.diamondExact_const_mem_nonvacuous"
+    ],
+    "positive_control_lean": "Toy.Dataflow.diamondExact_singleton_of_not_distributive",
+    "non_claims": [
+      "Exactness on diamonds is not exactness on all CFGs: the characterization is for the specific five-node diamond shape. A family exact on all diamonds is not shown to be exact on CFGs with loops or with more than two merging paths.",
+      "`DiamondExact L I F` does not imply `MFP = MOP` even on two-path acyclic CFGs (DAGs) with two sequential transfers per branch: for single-variable assignments `F = {y := 1, z := 2, y := 2, z := 1, x := y + z}` from `I = {⟨⊤, ⊤, ⊤⟩}`, every one-step diamond is exact, yet the seven-node two-path DAG executing `y := 1; z := 2` vs `y := 2; z := 1` before `x := y + z` has `MFP ≠ MOP` (`diamondExact_not_exact_on_two_step_branches`; this `F` is not closed under composition). No sufficient condition for exactness on larger CFGs (such as closure of `F` under composition and joins) is claimed.",
+      "The entry transfer of the diamond is always id, even when id ∉ F; DiamondExact is not the same as exactness on diamonds all of whose transfers come from F (diamond_entry_id_matters gives a monotone family on 3-bit vectors for which the two notions differ).",
+      "'Distributive over all pairs' is sufficient but not necessary for diamond exactness: the one-element family {x := y + z} is exact on every diamond built from it although its member is not distributive (diamondExact_singleton_of_not_distributive).",
+      "Without monotone members, diamond exactness can hold vacuously because the offending diamonds have no least solution (diamondExact_needs_monotone for direction (ii); diamondExact_const_mem_needs_monotone for the constant-closed corollary on a lattice without the ascending chain condition).",
+      "`IsLeastSolution` specifies the least solution of the dataflow inequations (the least pre-fixpoint), which satisfies the dataflow equations with equality when transfer functions are monotone, but need not be a fixed point of the equations when monotonicity fails (for instance, `notCFG` has unique least inequation solution `(true, false)` while `x 0 = false ⊔ !x 0` has no fixed point). Lean: `isEquationSolution_of_isLeastSolution_of_monotone`, `notCFG_isLeastSolution_not_isEquationSolution`."
+    ],
+    "prior_art": [
+      "J. B. Kam and J. D. Ullman, \"Monotone data flow analysis frameworks\", Acta Informatica 7(3):305-317, 1977, doi:10.1007/BF00290339. The abstract states that the maximal fixed point solution exists for every instance of every monotone framework and is obtained by Kildall's algorithm; that whenever a framework is monotone but not distributive there are instances in which the meet-over-all-paths solution differs from the maximal fixed point; and that no algorithm computes the meet-over-all-paths solution for monotone frameworks in general. These statements concern monotone frameworks in general (meet-semilattice orientation); this card cites only the abstract, and attributes to the paper no statement about any particular framework such as constant propagation.",
+      "F. Nielson, H. R. Nielson, C. Hankin, Principles of Program Analysis, Springer, 1999 (corrected 2nd printing 2005), doi:10.1007/978-3-662-03811-6, ISBN 978-3-540-65410-0. Chapter 2: Section 2.3 'Monotone Frameworks' (2.3.3 'A Non-distributive Example'), Section 2.4 'Equation Solving' (2.4.1 'The MFP Solution', 2.4.2 'The MOP Solution'); worklist algorithms in Section 6.1. The authors' Chapter 2 transparencies (May 2005), slide 79, state a lemma for the MFP and MOP solutions of an instance of a monotone framework: 'MFP◦ ⊒ MOP◦ and MFP• ⊒ MOP•', and 'If the framework is distributive and if path◦(ℓ) ≠ ∅ for all ℓ in E and F then: MFP◦ = MOP◦ and MFP• = MOP•' (join orientation; MFP◦/MFP• and MOP◦/MOP• are the pre- and post-transfer solutions)."
+    ],
+    "design_question": "When does the fixed point a worklist dataflow solver computes (MFP) equal the join-over-all-paths specification (MOP), when is it only a sound over-approximation, which property of the transfer functions decides it, and which side conditions (finite height, strictness at unreachable nodes, monotonicity, worklist seeding) do textbook statements assume?"
+  },
+  {
+    "id": "constant-propagation-not-exact",
+    "lean": [
+      "Toy.Dataflow.cpDiamond_mfp_x_top_ne_mop_x_const3",
+      "Toy.Dataflow.cpDiamond_exists_isLeastSolution_mfp_x_top_ne_mop_x_const3",
+      "Toy.Dataflow.assignXYZ_not_distributive"
+    ],
+    "lean_names": [
+      "Toy.Dataflow.assignXYZ_monotone",
+      "Toy.Dataflow.assignYZ_distributive",
+      "Toy.Dataflow.assignYZ_not_strict",
+      "Toy.Dataflow.copyXY_distributive"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The standard example that constant propagation is a monotone but non-distributive framework (Nielson-Nielson-Hankin, Section 2.3.3), restated and checked in this vocabulary.",
+    "plain_claim": "In the unsmashed pointwise flat constant-propagation lattice over variables x, y, z, for the program whose two branches are 'y := 1; z := 2' and 'y := 2; z := 1' followed by 'x := y + z': for every entry state a, the diamond has a least solution, and every least solution x has x 4 = (x = ⊤, y = ⊤, z = ⊤) after the assignment, while the MOP value there is (x = 3, y = ⊤, z = ⊤), so MFP ≠ MOP; the transfer of 'x := y + z' is monotone (assignXYZ_monotone) but not distributive (assignXYZ_not_distributive).",
+    "hypotheses": [
+      {
+        "name": "hx : IsLeastSolution cpLat (cpDiamond a) x",
+        "purpose": "The statement describes least solutions; the existential form cpDiamond_exists_isLeastSolution_mfp_x_top_ne_mop_x_const3 shows one exists.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.cpDiamond_mfp_needs_least",
+        "witness_class": "cpDiamond_mfp_needs_least: for every entry state a, on cpDiamond a the assignment constantly equal to ⟨x = 3, y = ⊤, z = ⊤⟩ is not a least solution, and the conclusion fails for it.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.cpDiamond_mfp_x_top_ne_mop_x_const3": [
+            "Toy.Dataflow.cpDiamond_mfp_needs_least"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.cpDiamond_mfp_x_top_ne_mop_x_const3"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Direct computation using the diamond lemmas.",
+    "nonvacuity_witness": "A least solution exists for every entry state (cpDiamond_isLeastSolution), so the statement is not vacuous.",
+    "nonvacuity_witness_lean": [
+      "Toy.Dataflow.cpDiamond_isLeastSolution",
+      "Toy.Dataflow.cpDiamond_exists_isLeastSolution_mfp_x_top_ne_mop_x_const3"
+    ],
+    "positive_control_lean": "Toy.Dataflow.cpDiamond_sameBranches_exact",
+    "non_claims": [
+      "It does not show that constant propagation is imprecise on every program; with identical branches the same analysis is exact (cpDiamond_sameBranches_exact).",
+      "It does not show undecidability of MOP for constant propagation. That result is stated and proved in Nielson-Nielson-Hankin (Section 2.4.2; slide 81 of the authors' Chapter 2 transparencies) by encoding the Modified Post Correspondence Problem, and Reif and Lewis (POPL 1977) show that many natural global flow problems over integer arithmetic are unsolvable. Kam and Ullman (1977) state undecidability of MOP for monotone frameworks in general. None of these results is formalized here.",
+      "`cpLat` is the unsmashed product `Flat³`, with a bottom in each variable; it is not the lattice `(Var → Z^⊤)_⊥` of Nielson-Nielson-Hankin, which adds a single bottom for unreachable code and makes assignment transfers strict. In `cpLat` constant assignments are not strict (`assignYZ_not_strict`), and because `⊥` is the identity of `Flat.join` (`Flat.join (.const c) .bot = .const c`), a variable whose entry value is unknown should be `.top` at the entry (as in the textbook entry value `λx.⊤`), not `.bot`. The theorems here hold for every entry state.",
+      "Escape hatches that defeat this precision loss include: (a) relational abstract domains (such as affine equalities `y + z = 3`, octagons, or polyhedra) that preserve linear relationships across joins; (b) disjunctive (powerset) completion of `St`; and (c) restricting constant propagation to constant and copy assignments (`x := c` and `x := y`) without binary arithmetic transfers, which are distributive (`assignYZ_distributive`, `copyXY_distributive`). None of (a)-(c) is formalized here.",
+      "The flat lattice uses strict abstract addition (⊥ + _ = ⊥) and no conditional-branch pruning; it does not model sparse conditional constant propagation or any specific compiler pass.",
+      "All nodes of the diamond are reachable, so the example does not exercise the unreachable-node side condition of mfp-eq-mop-exactness.",
+      "`MOP` ranges over all syntactically valid CFG walks `Walk G v`, including dynamically infeasible branch combinations; `MFP = MOP` therefore does not mean exactness with respect to feasible runtime executions (a join over only the feasible paths).",
+      "`x v` and `IsMOPAt L G v` represent pre-transfer facts at node entry (`MFP◦` and `MOP◦`), because `G.f u` is applied only along outgoing edges `(u, w) ∈ G.edges`; at any sink or return node `v` with zero outgoing edges, `G.f v` is completely unconstrained and ignored unless a synthetic exit edge `(v, exit)` is added."
+    ],
+    "prior_art": [
+      "F. Nielson, H. R. Nielson, C. Hankin, Principles of Program Analysis, Springer, 1999 (corrected 2nd printing 2005), doi:10.1007/978-3-662-03811-6, Section 2.3.3. In the authors' Chapter 2 transparencies (May 2005) the constant-propagation lattice is ((Var → Z^⊤)_⊥, ⊑): a single added bottom element ⊥ for the whole state, with per-variable values in Z ∪ {⊤} and no per-variable bottom (slides 67-68); the extremal (entry) value is λx.⊤ (slide 70); the transfer function of an assignment maps ⊥ to ⊥ (slide 71); constant propagation is shown not distributive using y := x * x (slide 72); and slide 81 states the lemma 'The MOP solution for Constant Propagation is undecidable', proved by encoding the Modified Post Correspondence Problem.",
+      "J. H. Reif and H. R. Lewis, \"Symbolic evaluation and the global value graph\", POPL 1977, pp. 104-118, doi:10.1145/512950.512961. The abstract states that, with expressions interpreted over integer arithmetic, many natural global flow problems are unsolvable.",
+      "J. B. Kam and J. D. Ullman, \"Monotone data flow analysis frameworks\", Acta Informatica 7(3):305-317, 1977, doi:10.1007/BF00290339. The abstract states that the maximal fixed point solution exists for every instance of every monotone framework and is obtained by Kildall's algorithm; that whenever a framework is monotone but not distributive there are instances in which the meet-over-all-paths solution differs from the maximal fixed point; and that no algorithm computes the meet-over-all-paths solution for monotone frameworks in general. These statements concern monotone frameworks in general (meet-semilattice orientation); this card cites only the abstract, and attributes to the paper no statement about any particular framework such as constant propagation."
+    ],
+    "design_question": "When does the fixed point a worklist dataflow solver computes (MFP) equal the join-over-all-paths specification (MOP), when is it only a sound over-approximation, which property of the transfer functions decides it, and which side conditions (finite height, strictness at unreachable nodes, monotonicity, worklist seeding) do textbook statements assume?"
+  },
+  {
+    "id": "gen-kill-distributive-and-exact",
+    "lean": [
+      "Toy.Dataflow.genKill_distributive",
+      "Toy.Dataflow.genKill_strict_iff",
+      "Toy.Dataflow.genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty",
+      "Toy.Dataflow.genKill_exists_isLeastSolution_and_isMOPAt_of_unreachable_gen_empty",
+      "Toy.Dataflow.genKill_distributive_must",
+      "Toy.Dataflow.genKill_strict_must_iff"
+    ],
+    "lean_names": [
+      "Toy.Dataflow.copyBit0_distributive",
+      "Toy.Dataflow.copyBit0_not_genKill",
+      "Toy.Dataflow.genKill_killOnly_strict_may_not_must"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Classical: bit-vector (gen/kill) frameworks are distributive (Nielson-Nielson-Hankin, Chapter 2), hence MFP = MOP under the exactness side conditions.",
+    "plain_claim": "On the powerset lattice of Fin k (bit vectors, inclusion, union), every gen/kill transfer f a = (a \\ kill) ∪ gen distributes over union and is strict exactly when gen = ∅; consequently, for a CFG all of whose transfers are gen/kill and in which every node unreachable from the entry has an empty gen set, a least solution exists and every least solution equals MOP at every node. In the dual must orientation (reverse inclusion, intersection, full set as bottom) gen/kill transfers distribute over intersection and are strict exactly when kill ⊆ gen.",
+    "hypotheses": [
+      {
+        "name": "hG : ∀ u, G.f u = genKill (gen u) (kill u)",
+        "purpose": "Supplies distributivity of every transfer.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.genKill_exactness_needs_genKill_form",
+          "Toy.Dataflow.exists_exactness_counterexamples",
+          "Toy.Dataflow.genKill_exists_exactness_combined_counterexamples"
+        ],
+        "witness_class": "genKill_exactness_needs_genKill_form: the 5-node diamond bbDiamond over bvLat 2 (all nodes reachable, so hgen holds for every gen; monotone transfers; the join-node transfer bothBits is not a gen/kill transfer; the least solution bbSol is not MOP at node 4); genKill_exists_exactness_combined_counterexamples, first conjunct (existence form): bbDiamond over bvLat 2 for every choice of gen and kill. exists_exactness_counterexamples supplies only the failing existential conclusion and is used together with genKill_exactness_needs_genKill_form.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty": [
+            "Toy.Dataflow.genKill_exactness_needs_genKill_form"
+          ],
+          "Toy.Dataflow.genKill_exists_isLeastSolution_and_isMOPAt_of_unreachable_gen_empty": [
+            "Toy.Dataflow.genKill_exactness_needs_genKill_form",
+            "Toy.Dataflow.exists_exactness_counterexamples",
+            "Toy.Dataflow.genKill_exists_exactness_combined_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty",
+          "Toy.Dataflow.genKill_exists_isLeastSolution_and_isMOPAt_of_unreachable_gen_empty"
+        ]
+      },
+      {
+        "name": "hgen : ∀ u, ¬ Reachable G u → gen u = fun _ => false",
+        "purpose": "Strictness at unreachable nodes (gen = ∅ iff strict, in the may orientation).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Dataflow.genKill_exactness_needs_unreachable_gen_empty",
+          "Toy.Dataflow.exists_exactness_counterexamples",
+          "Toy.Dataflow.genKill_exists_exactness_combined_counterexamples"
+        ],
+        "witness_class": "genKill_exactness_needs_unreachable_gen_empty: ugCFG over bvLat 1 with gen/kill sets ugGen/ugKill (hG holds; the unreachable node 1 has gen set {0}; the least solution ugSol is not MOP at node 2); genKill_exists_exactness_combined_counterexamples, second conjunct (existence form): ugCFG over bvLat 1. exists_exactness_counterexamples supplies only the failing existential conclusion and is used together with genKill_exactness_needs_unreachable_gen_empty.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty": [
+            "Toy.Dataflow.genKill_exactness_needs_unreachable_gen_empty"
+          ],
+          "Toy.Dataflow.genKill_exists_isLeastSolution_and_isMOPAt_of_unreachable_gen_empty": [
+            "Toy.Dataflow.genKill_exactness_needs_unreachable_gen_empty",
+            "Toy.Dataflow.exists_exactness_counterexamples",
+            "Toy.Dataflow.genKill_exists_exactness_combined_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty",
+          "Toy.Dataflow.genKill_exists_isLeastSolution_and_isMOPAt_of_unreachable_gen_empty"
+        ]
+      },
+      {
+        "name": "hx : IsLeastSolution (bvLat k) G x",
+        "purpose": "The claim is about least solutions.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.strict_and_genKill_exactness_needs_least",
+        "witness_class": "strict_and_genKill_exactness_needs_least: the 1-node gen/kill self-loop with gen = kill = ∅ over bvLat 1 (hG and hgen hold) with the solution x = full set, which is not least and not MOP at node 0.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty": [
+            "Toy.Dataflow.strict_and_genKill_exactness_needs_least"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Distributivity and strictness are bitwise case analyses (definitional); the exactness statements instantiate mfp-eq-mop-exactness with the height bound k of the bit-vector lattice (proved via a popcount rank).",
+    "nonvacuity_witness": "The gen/kill loop 0 → 1, 1 → 1 on 2-bit vectors (all nodes reachable) with its least solution. For the must orientation, gen = kill = {0} on 2-bit vectors gives a distributive, strict transfer with a non-empty kill set (genKill_must_strict_nonempty_kill_nonvacuous).",
+    "nonvacuity_witness_lean": [
+      "Toy.Dataflow.genKill_exactness_nonvacuous",
+      "Toy.Dataflow.genKill_must_strict_nonempty_kill_nonvacuous"
+    ],
+    "non_claims": [
+      "Gen/kill form is sufficient, not necessary, for distributivity: copyBit0 is distributive (copyBit0_distributive) but not gen/kill (copyBit0_not_genKill).",
+      "The `gen = ∅` unreachable-node condition is specific to the union (`may`-analysis, `⊆`, bottom `∅`) orientation of `bvLat k`. For dual `must` bit-vector analyses ordered by `⊇` with intersection `∩` as join and the full set as bottom (such as available expressions), strictness at unreachable nodes flips to `kill \\ gen = ∅` (empty net kill set), not `gen = ∅`. Lean: `bvMustLat`, `genKill_distributive_must`, `genKill_strict_must_iff`, `genKill_killOnly_strict_may_not_must`.",
+      "It covers forward analyses on the given edge list; backward analyses (e.g. liveness) correspond to running it on the reversed CFG, which is not formalized here.",
+      "Reachability of a node alone does not give exactness there when an unreachable node with non-empty gen feeds it (genKill_exactness_needs_unreachable_gen_empty).",
+      "`MOP` ranges over all syntactically valid CFG walks `Walk G v`, including dynamically infeasible branch combinations; `MFP = MOP` therefore does not mean exactness with respect to feasible runtime executions (a join over only the feasible paths).",
+      "`x v` and `IsMOPAt L G v` represent pre-transfer facts at node entry (`MFP◦` and `MOP◦`), because `G.f u` is applied only along outgoing edges `(u, w) ∈ G.edges`; at any sink or return node `v` with zero outgoing edges, `G.f v` is completely unconstrained and ignored unless a synthetic exit edge `(v, exit)` is added."
+    ],
+    "prior_art": [
+      "F. Nielson, H. R. Nielson, C. Hankin, Principles of Program Analysis, Springer, 1999 (corrected 2nd printing 2005), doi:10.1007/978-3-662-03811-6, ISBN 978-3-540-65410-0. Chapter 2: Section 2.3 'Monotone Frameworks' (2.3.3 'A Non-distributive Example'), Section 2.4 'Equation Solving' (2.4.1 'The MFP Solution', 2.4.2 'The MOP Solution'); worklist algorithms in Section 6.1. The authors' Chapter 2 transparencies (May 2005), slide 79, state a lemma for the MFP and MOP solutions of an instance of a monotone framework: 'MFP◦ ⊒ MOP◦ and MFP• ⊒ MOP•', and 'If the framework is distributive and if path◦(ℓ) ≠ ∅ for all ℓ in E and F then: MFP◦ = MOP◦ and MFP• = MOP•' (join orientation; MFP◦/MFP• and MOP◦/MOP• are the pre- and post-transfer solutions).",
+      "G. A. Kildall, \"A unified approach to global program optimization\", Conference Record of the ACM Symposium on Principles of Programming Languages (POPL 1973), pp. 194-206, doi:10.1145/512927.512945 (public-domain archival copy: handle 10945/42162). Works over a finite meet-semilattice with transfer functions having the 'homomorphism property' f(N, x ^ y) = f(N, x) ^ f(N, y) (distributivity, in the dual orientation); Algorithm A is a worklist algorithm; Theorem 1 states that it terminates; Theorem 2 relates the final pool at each node N to the values propagated along all paths from entry nodes to N. Exact bounds and formulas of the paper are not quoted here."
+    ],
+    "design_question": "When does the fixed point a worklist dataflow solver computes (MFP) equal the join-over-all-paths specification (MOP), when is it only a sound over-approximation, which property of the transfer functions decides it, and which side conditions (finite height, strictness at unreachable nodes, monotonicity, worklist seeding) do textbook statements assume?"
+  },
+  {
+    "id": "kildall-computes-mfp",
+    "lean": [
+      "Toy.Dataflow.kildall_isLeastSolution_of_monotone_of_eq_some",
+      "Toy.Dataflow.kildall_isSolution_of_eq_some",
+      "Toy.Dataflow.kildall_isSome_of_heightLe",
+      "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe"
+    ],
+    "lean_names": [
+      "Toy.Dataflow.acc_strictly_weaker_than_heightLe",
+      "Toy.Dataflow.exactness_holds_on_unboundedChainsLat",
+      "Toy.Dataflow.exactness_needs_unreachableStrict",
+      "Toy.Dataflow.exists_isLeastSolution_of_monotone_of_acc",
+      "Toy.Dataflow.isEquationSolution_of_isLeastSolution_of_monotone",
+      "Toy.Dataflow.kildall_acc_has_no_uniform_fuel",
+      "Toy.Dataflow.kildall_decidableRel_irrelevant",
+      "Toy.Dataflow.notCFG_isLeastSolution_not_isEquationSolution"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Kildall's Theorem 1 (termination) and the least-fixed-point property of the worklist result are classical, and least-ness of a Kildall-style iteration is mechanized in Isabelle (JinjaThreads, kildall_properties) and Coq (rocq-archive/kildall, monotone_step_imp_kildall_dfa). Restated with an explicit fuel bound n * (h + 1) + 1 and with the solution property separated from monotonicity.",
+    "plain_claim": "For a join-semilattice with bottom L (L.IsJSL) with a decidable order test, the fuel-bounded worklist solver kildall L G fuel (start with init at the entry and ⊥ elsewhere, all nodes on the worklist; popping u joins f u (x u) into each successor whose value it does not already lie below and pushes that successor; one unit of fuel per pop) satisfies: whenever it returns some x, x is a solution of the inequations (for any transfer functions) and, if the transfers are monotone, the least solution; on a lattice of height at most h it returns some value whenever fuel ≥ n * (h + 1) + 1, with or without monotonicity; together, with monotone transfers and that fuel, it returns some x and x is the least solution (MFP). The fuel bound is attained for every n ≥ 1 and h ≥ 0 (kildall_fuel_bound_attained: on a CFG of n nodes, each with a self-loop, with monotone transfers over a chain of height h, fuel n * (h + 1) returns none).",
+    "hypotheses": [
+      {
+        "name": "[DecidableRel L.le]",
+        "purpose": "Data needed to run the solver (the order test in propagate), not a property of L: every relation has a classical instance (Classical.decRel), so it excludes no lattice.",
+        "tightness": "harmless",
+        "applies_to": [
+          "Toy.Dataflow.kildall_isLeastSolution_of_monotone_of_eq_some",
+          "Toy.Dataflow.kildall_isSolution_of_eq_some",
+          "Toy.Dataflow.kildall_isSome_of_heightLe",
+          "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe"
+        ]
+      },
+      {
+        "name": "hL : L.IsJSL",
+        "purpose": "Joins are upper bounds (invariant x ≤ every solution, strict increase on update). The intended setting; not weakened further here.",
+        "tightness": "harmless",
+        "applies_to": [
+          "Toy.Dataflow.kildall_isLeastSolution_of_monotone_of_eq_some",
+          "Toy.Dataflow.kildall_isSolution_of_eq_some",
+          "Toy.Dataflow.kildall_isSome_of_heightLe",
+          "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe"
+        ]
+      },
+      {
+        "name": "hmono : ∀ u, Monotone L (G.f u)",
+        "purpose": "Keeps the iterate below every solution.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.kildall_needs_monotone",
+        "witness_class": "kildall_needs_monotone: the 2-node CFG notCFG over boolLat (height 1) with fuel 10 ≥ 2 * (1 + 1) + 1; the solver returns x with (x 0, x 1) = (true, true), a solution that is not least, and no output of the solver at that fuel is a least solution.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.kildall_isLeastSolution_of_monotone_of_eq_some": [
+            "Toy.Dataflow.kildall_needs_monotone"
+          ],
+          "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe": [
+            "Toy.Dataflow.kildall_needs_monotone"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.kildall_isLeastSolution_of_monotone_of_eq_some",
+          "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe"
+        ]
+      },
+      {
+        "name": "h : kildall L G fuel = some x",
+        "purpose": "The statement is about the solver's output.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.kildall_needs_eq_some",
+        "witness_class": "kildall_needs_eq_some: loopGK over bvLat 2 (monotone transfers) at fuel 7; the full-set assignment is not the solver's output and is not least; the empty assignment is not the solver's output and is not a solution.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.kildall_isLeastSolution_of_monotone_of_eq_some": [
+            "Toy.Dataflow.kildall_needs_eq_some"
+          ],
+          "Toy.Dataflow.kildall_isSolution_of_eq_some": [
+            "Toy.Dataflow.kildall_needs_eq_some"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.kildall_isLeastSolution_of_monotone_of_eq_some",
+          "Toy.Dataflow.kildall_isSolution_of_eq_some"
+        ]
+      },
+      {
+        "name": "hh : L.HeightLe h",
+        "purpose": "Bounds the number of strict increases per node by h.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.kildall_needs_heightLe",
+        "witness_class": "kildall_needs_heightLe: the 1-node successor self-loop succCFG over natMaxLat (monotone and distributive transfer, all nodes reachable, no ascending chain condition, no height bound); the solver returns none for every fuel.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.kildall_isSome_of_heightLe": [
+            "Toy.Dataflow.kildall_needs_heightLe"
+          ],
+          "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe": [
+            "Toy.Dataflow.kildall_needs_heightLe"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.kildall_isSome_of_heightLe",
+          "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe"
+        ]
+      },
+      {
+        "name": "hfuel : n * (h + 1) + 1 ≤ fuel",
+        "purpose": "At most n initial pops plus n * h pushes, plus one final step.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.kildall_fuel_bound_attained",
+        "witness_class": "kildall_fuel_bound_attained: for every m and h, the CFG selfLoopsCFG m h of n = m + 1 nodes, each with a self-loop, over the chain finChainLat h of height h, with monotone transfers; fuel n * (h + 1) returns none and fuel n * (h + 1) + 1 returns some value.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.kildall_isSome_of_heightLe": [
+            "Toy.Dataflow.kildall_fuel_bound_attained"
+          ],
+          "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe": [
+            "Toy.Dataflow.kildall_fuel_bound_attained"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.kildall_isSome_of_heightLe",
+          "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Partial correctness needs a three-part worklist invariant preserved by edge propagation (two parts suffice for the solution property); termination needs a rank function built from the height bound (longest strict chain ending at each element) and a potential argument (worklist length plus remaining rank headroom).",
+    "nonvacuity_witness": "The gen/kill loop on 2-bit vectors with fuel 7 = 2 * (2 + 1) + 1; the solver returns ∅ at node 0 and {0,1} at node 1 (checked by evaluation).",
+    "nonvacuity_witness_lean": "Toy.Dataflow.kildall_nonvacuous",
+    "non_claims": [
+      "The fuel bound n * (h + 1) + 1 is attained for every n ≥ 1 and h ≥ 0 (kildall_fuel_bound_attained: n self-loops on a chain of height h), but it is a bound on worklist pops for this node-indexed solver, not an asymptotic complexity bound for efficient implementations.",
+      "One unit of `fuel` in `kildall` pays for popping one node `u` and running `propagate` across all entries of `succs G u`; thus `fuel ≥ n * (h + 1) + 1` bounds outer worklist pops rather than individual edge propagations (`O(|G.edges|)` join and order checks per pop, including duplicate edges).",
+      "The ascending chain condition alone gives no uniform fuel bound (kildall_acc_has_no_uniform_fuel), although it suffices for the existence of the least solution (exists_isLeastSolution_of_monotone_of_acc).",
+      "All-nodes worklist seeding vs entry-only seeding trades global inequation satisfaction against unreachable-code isolation: seeding all nodes (`kildall`) guarantees a global `IsSolution` without strictness (even without monotonicity, `kildall_isSolution_of_eq_some`) but allows non-strict unreachable nodes to over-approximate reachable nodes (`exactness_needs_unreachableStrict`), whereas seeding only the entry avoids unreachable-node propagation and solves the reachable-subgraph inequations (as in CompCert's `fixpoint_nodeset_solution`) at the cost of violating inequations on edges out of unreachable nodes when transfers are non-strict (not proved here). Entry-only seeding is not formalized here.",
+      "Without monotone transfers the solver can return a solution that is not least (kildall_needs_monotone); termination and the solution property do not need monotonicity.",
+      "It says nothing about MOP; see kildall-computes-mop for the end-to-end statement under distributivity and the exactness side conditions.",
+      "`IsLeastSolution` specifies the least solution of the dataflow inequations (the least pre-fixpoint), which satisfies the dataflow equations with equality when transfer functions are monotone, but need not be a fixed point of the equations when monotonicity fails (for instance, `notCFG` has unique least inequation solution `(true, false)` while `x 0 = false ⊔ !x 0` has no fixed point). Lean: `isEquationSolution_of_isLeastSolution_of_monotone`, `notCFG_isLeastSolution_not_isEquationSolution`.",
+      "`AscendingChainCondition` (sufficient for `mfp-eq-mop-exactness`) is strictly weaker than uniform finite height `HeightLe h` (assumed by the uniform fuel bound in `kildall_isSome_of_heightLe`; under the ascending chain condition alone no uniform fuel bound exists, `kildall_acc_has_no_uniform_fuel`); neither theorem models widening (`∇`) or narrowing (`Δ`) operators used on infinite-height domains. Lean: `acc_strictly_weaker_than_heightLe`, `exactness_holds_on_unboundedChainsLat`, `kildall_acc_has_no_uniform_fuel`.",
+      "It is a specification-level algorithm over lists and functions, not a verified efficient implementation."
+    ],
+    "prior_art": [
+      "G. A. Kildall, \"A unified approach to global program optimization\", Conference Record of the ACM Symposium on Principles of Programming Languages (POPL 1973), pp. 194-206, doi:10.1145/512927.512945 (public-domain archival copy: handle 10945/42162). Works over a finite meet-semilattice with transfer functions having the 'homomorphism property' f(N, x ^ y) = f(N, x) ^ f(N, y) (distributivity, in the dual orientation); Algorithm A is a worklist algorithm; Theorem 1 states that it terminates; Theorem 2 relates the final pool at each node N to the values propagated along all paths from entry nodes to N. Exact bounds and formulas of the paper are not quoted here.",
+      "J. B. Kam and J. D. Ullman, \"Monotone data flow analysis frameworks\", Acta Informatica 7(3):305-317, 1977, doi:10.1007/BF00290339. The abstract states that the maximal fixed point solution exists for every instance of every monotone framework and is obtained by Kildall's algorithm; that whenever a framework is monotone but not distributive there are instances in which the meet-over-all-paths solution differs from the maximal fixed point; and that no algorithm computes the meet-over-all-paths solution for monotone frameworks in general. These statements concern monotone frameworks in general (meet-semilattice orientation); this card cites only the abstract, and attributes to the paper no statement about any particular framework such as constant propagation.",
+      "F. Nielson, H. R. Nielson, C. Hankin, Principles of Program Analysis, Springer, 1999 (corrected 2nd printing 2005), doi:10.1007/978-3-662-03811-6, ISBN 978-3-540-65410-0. Chapter 2: Section 2.3 'Monotone Frameworks' (2.3.3 'A Non-distributive Example'), Section 2.4 'Equation Solving' (2.4.1 'The MFP Solution', 2.4.2 'The MOP Solution'); worklist algorithms in Section 6.1. The authors' Chapter 2 transparencies (May 2005), slide 79, state a lemma for the MFP and MOP solutions of an instance of a monotone framework: 'MFP◦ ⊒ MOP◦ and MFP• ⊒ MOP•', and 'If the framework is distributive and if path◦(ℓ) ≠ ∅ for all ℓ in E and F then: MFP◦ = MOP◦ and MFP• = MOP•' (join orientation; MFP◦/MFP• and MOP◦/MOP• are the pre- and post-transfer solutions).",
+      "A. Lochbihler, \"Jinja with Threads\", Archive of Formal Proofs, December 2007, https://www.isa-afp.org/entries/JinjaThreads.html. Theory JinjaThreads/DFA/Kildall.thy (authors T. Nipkow, G. Klein, A. Lochbihler) proves lemma kildall_properties: assuming a semilattice, the ascending chain condition (acc), type preservation, monotone and bounded step functions, the result of kildall is stable, above the start state, and below every stable state above the start state (the least stable state above the start); lemma iter_properties is the corresponding worklist-iteration statement. There is no notion of paths or MOP.",
+      "G. Klein and T. Nipkow, \"Verified bytecode verifiers\", Theoretical Computer Science 298(3):583-626, 2003. Isabelle/HOL verification of a Kildall-style dataflow bytecode verifier.",
+      "S. Coupet-Grimal and W. Delobel, \"A Uniform and Certified Approach for Two Static Analyses\", Types for Proofs and Programs (TYPES 2004), LNCS 3839, pp. 115-137, Springer, 2006; Coq development https://github.com/rocq-archive/kildall (commit 87422e1815e22a3f4821b29a1fd7a7f385667b91). File kildall/kildall_dfa.v proves monotone_step_imp_kildall_dfa: for a monotone step function, Kildall's algorithm is a data flow analyser in the sense of kildall/dfa.v (Is_data_flow_analyser: the result is stable, above the start vector, and below every stable vector above the start vector), over a well-founded semilattice. There is no notion of paths or MOP.",
+      "D. Cachera, T. Jensen, D. Pichardie, V. Rusu, \"Extracting a data flow analyser in constructive logic\", Theoretical Computer Science 342(1):56-78, 2005 (preliminary version at ESOP 2004). A Coq lattice library and a least-fixpoint data flow analyser extracted from a constructive proof.",
+      "CompCert, file backend/Kildall.v, repository AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (last change to the file: 4710ec093ddea8e6eb86ad519df61c59b654e861). Module Dataflow_Solver: fixpoint seeds the worklist with the entry point only and proves fixpoint_solution (every edge inequation holds) under the hypothesis 'forall n, L.eq (transf n L.bot) L.bot'; fixpoint_allnodes starts with every node at L.bot and every node on the worklist and proves fixpoint_allnodes_solution without that hypothesis; fixpoint_nodeset_solution proves that a solver seeded with a given set of nodes satisfies the inequations at every program point reachable from those nodes; fixpoint_entry and fixpoint_invariant are also proved. No least-solution or MOP statement is proved, monotonicity of transfer functions is never assumed, and iteration is bounded by fuel (PrimIter), returning None when fuel is exhausted.",
+      "Y. Bertot, B. Grégoire, X. Leroy, \"A structured approach to proving compiler optimizations based on dataflow analysis\", Types for Proofs and Programs (TYPES 2004), LNCS 3839, pp. 66-81, Springer, 2006, doi:10.1007/11617990_5. Coq proofs of dataflow-based optimizations in the line of work leading to CompCert's dataflow solver."
+    ],
+    "design_question": "When does the fixed point a worklist dataflow solver computes (MFP) equal the join-over-all-paths specification (MOP), when is it only a sound over-approximation, which property of the transfer functions decides it, and which side conditions (finite height, strictness at unreachable nodes, monotonicity, worklist seeding) do textbook statements assume?"
+  },
+  {
+    "id": "kildall-computes-mop",
+    "lean": "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe",
+    "lean_names": [
+      "Toy.Dataflow.Lat.acc_of_heightLe",
+      "Toy.Dataflow.exactness_needs_unreachableStrict",
+      "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict",
+      "Toy.Dataflow.kildall_acc_has_no_uniform_fuel",
+      "Toy.Dataflow.kildall_decidableRel_irrelevant",
+      "Toy.Dataflow.kildall_eq_some_isLeastSolution_of_monotone_of_heightLe",
+      "Toy.Dataflow.kildall_isSolution_of_eq_some",
+      "Toy.Dataflow.monotone_of_distributive"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The composition 'Kildall's algorithm computes MOP for distributive frameworks' is classical (Kildall, Theorem 2; Kam-Ullman), but no mechanized solver-computes-MOP statement was found. The statement makes the side conditions explicit (finite height, strictness at unreachable nodes).",
+    "plain_claim": "For distributive transfer functions on a join-semilattice with bottom of height at most h with a decidable order test, if every node unreachable from the entry has a strict transfer function, then with fuel ≥ n * (h + 1) + 1 the worklist solver kildall returns some x, x is the least solution of the inequations, and x v is the MOP value (the least upper bound of all path values) at every node v.",
+    "hypotheses": [
+      {
+        "name": "[DecidableRel L.le]",
+        "purpose": "Data needed to run the solver, not a property of L (every relation has a classical instance).",
+        "tightness": "harmless",
+        "applies_to": [
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe"
+        ]
+      },
+      {
+        "name": "hL : L.IsJSL",
+        "purpose": "Lattice laws. The intended setting; not weakened further here.",
+        "tightness": "harmless",
+        "applies_to": [
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe"
+        ]
+      },
+      {
+        "name": "hdist : ∀ u, Distributive L (G.f u)",
+        "purpose": "Exactness of the least solution; implies (monotone_of_distributive) the monotonicity used for least-ness.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.kildall_isMOPAt_counterexamples",
+        "witness_class": "kildall_isMOPAt_counterexamples, first conjunct: cpDiamond ⟨⊤, ⊤, ⊤⟩ over cpLat (height 6, fuel 36 ≥ 5 * (6 + 1) + 1, all nodes reachable); the transfers are not all distributive, and no output of the solver at fuel 36 is a least solution equal to MOP at every node.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe": [
+            "Toy.Dataflow.kildall_isMOPAt_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe"
+        ]
+      },
+      {
+        "name": "hstrict : UnreachableStrict L G",
+        "purpose": "Exactness at nodes fed by unreachable nodes.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.kildall_isMOPAt_counterexamples",
+        "witness_class": "kildall_isMOPAt_counterexamples, second conjunct: ugCFG over bvLat 1 (height 1, fuel 7 ≥ 3 * (1 + 1) + 1, distributive transfers); UnreachableStrict fails, and the conclusion fails.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe": [
+            "Toy.Dataflow.kildall_isMOPAt_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe"
+        ]
+      },
+      {
+        "name": "hh : L.HeightLe h",
+        "purpose": "Termination (and, via Lat.acc_of_heightLe, the ascending chain condition for exactness).",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.kildall_isMOPAt_counterexamples",
+        "witness_class": "kildall_isMOPAt_counterexamples, third conjunct: succCFG over natMaxLat (distributive transfer, all nodes reachable, no height bound); the conclusion fails for every fuel.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe": [
+            "Toy.Dataflow.kildall_isMOPAt_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe"
+        ]
+      },
+      {
+        "name": "hfuel : n * (h + 1) + 1 ≤ fuel",
+        "purpose": "Enough fuel to terminate.",
+        "tightness": "tight",
+        "counterexample": "Toy.Dataflow.kildall_isMOPAt_counterexamples",
+        "witness_class": "kildall_isMOPAt_counterexamples, fourth conjunct: for every h, selfLoopsCFG 0 h (one node with a self-loop) over finChainLat h (height h, distributive transfer, all nodes reachable); at fuel 1 * (h + 1), which is below 1 * (h + 1) + 1, the conclusion fails.",
+        "counterexample_by_theorem": {
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe": [
+            "Toy.Dataflow.kildall_isMOPAt_counterexamples"
+          ]
+        },
+        "applies_to": [
+          "Toy.Dataflow.kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Composition of kildall_eq_some_isLeastSolution_of_monotone_of_heightLe and isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict via monotone_of_distributive and Lat.acc_of_heightLe.",
+    "nonvacuity_witness": "The gen/kill loop on 2-bit vectors with fuel 7: the solver's result is the least solution and the MOP value at both nodes.",
+    "nonvacuity_witness_lean": "Toy.Dataflow.kildall_isMOPAt_nonvacuous",
+    "non_claims": [
+      "Finite height is assumed for termination; under the ascending chain condition alone MFP = MOP still holds (mfp-eq-mop-exactness) but no uniform fuel bound exists (kildall_acc_has_no_uniform_fuel).",
+      "All-nodes worklist seeding vs entry-only seeding trades global inequation satisfaction against unreachable-code isolation: seeding all nodes (`kildall`) guarantees a global `IsSolution` without strictness (even without monotonicity, `kildall_isSolution_of_eq_some`) but allows non-strict unreachable nodes to over-approximate reachable nodes (`exactness_needs_unreachableStrict`), whereas seeding only the entry avoids unreachable-node propagation and solves the reachable-subgraph inequations (as in CompCert's `fixpoint_nodeset_solution`) at the cost of violating inequations on edges out of unreachable nodes when transfers are non-strict (not proved here). Entry-only seeding is not formalized here.",
+      "One unit of `fuel` in `kildall` pays for popping one node `u` and running `propagate` across all entries of `succs G u`; thus `fuel ≥ n * (h + 1) + 1` bounds outer worklist pops rather than individual edge propagations (`O(|G.edges|)` join and order checks per pop, including duplicate edges).",
+      "It does not establish semantic soundness with respect to any concrete operational semantics: `MOP ≤ x` only relates solutions of the abstract inequations to syntactic compositions of the given transfer functions `G.f`, without proving that `G.f` soundly abstracts concrete program execution.",
+      "`MOP` ranges over all syntactically valid CFG walks `Walk G v`, including dynamically infeasible branch combinations; `MFP = MOP` therefore does not mean exactness with respect to feasible runtime executions (a join over only the feasible paths).",
+      "`x v` and `IsMOPAt L G v` represent pre-transfer facts at node entry (`MFP◦` and `MOP◦`), because `G.f u` is applied only along outgoing edges `(u, w) ∈ G.edges`; at any sink or return node `v` with zero outgoing edges, `G.f v` is completely unconstrained and ignored unless a synthetic exit edge `(v, exit)` is added.",
+      "`CFG` applies a single node-indexed transfer `G.f u` along every outgoing edge of `u` and assumes a single entry node `G.entry` (`n ≥ 1`); branch-sensitive edge transfers `(u, w) ↦ f_{u,w}` and multi-entry graphs require edge-splitting or a synthetic super-entry node."
+    ],
+    "prior_art": [
+      "G. A. Kildall, \"A unified approach to global program optimization\", Conference Record of the ACM Symposium on Principles of Programming Languages (POPL 1973), pp. 194-206, doi:10.1145/512927.512945 (public-domain archival copy: handle 10945/42162). Works over a finite meet-semilattice with transfer functions having the 'homomorphism property' f(N, x ^ y) = f(N, x) ^ f(N, y) (distributivity, in the dual orientation); Algorithm A is a worklist algorithm; Theorem 1 states that it terminates; Theorem 2 relates the final pool at each node N to the values propagated along all paths from entry nodes to N. Exact bounds and formulas of the paper are not quoted here.",
+      "J. B. Kam and J. D. Ullman, \"Monotone data flow analysis frameworks\", Acta Informatica 7(3):305-317, 1977, doi:10.1007/BF00290339. The abstract states that the maximal fixed point solution exists for every instance of every monotone framework and is obtained by Kildall's algorithm; that whenever a framework is monotone but not distributive there are instances in which the meet-over-all-paths solution differs from the maximal fixed point; and that no algorithm computes the meet-over-all-paths solution for monotone frameworks in general. These statements concern monotone frameworks in general (meet-semilattice orientation); this card cites only the abstract, and attributes to the paper no statement about any particular framework such as constant propagation.",
+      "F. Nielson, H. R. Nielson, C. Hankin, Principles of Program Analysis, Springer, 1999 (corrected 2nd printing 2005), doi:10.1007/978-3-662-03811-6, ISBN 978-3-540-65410-0. Chapter 2: Section 2.3 'Monotone Frameworks' (2.3.3 'A Non-distributive Example'), Section 2.4 'Equation Solving' (2.4.1 'The MFP Solution', 2.4.2 'The MOP Solution'); worklist algorithms in Section 6.1. The authors' Chapter 2 transparencies (May 2005), slide 79, state a lemma for the MFP and MOP solutions of an instance of a monotone framework: 'MFP◦ ⊒ MOP◦ and MFP• ⊒ MOP•', and 'If the framework is distributive and if path◦(ℓ) ≠ ∅ for all ℓ in E and F then: MFP◦ = MOP◦ and MFP• = MOP•' (join orientation; MFP◦/MFP• and MOP◦/MOP• are the pre- and post-transfer solutions).",
+      "A search of the Archive of Formal Proofs (static-analysis and Kildall entries), Coq/Rocq developments (rocq-archive/kildall, CompCert), Lean mathlib (Order.FixedPoints) and Agda sources, and web searches pairing 'meet over all paths'/MOP/MFP with Coq, Isabelle, Agda and Lean, found mechanized least-fixpoint (MFP) solvers but no mechanized MFP = MOP statement; this is not proof of absence."
+    ],
+    "design_question": "When does the fixed point a worklist dataflow solver computes (MFP) equal the join-over-all-paths specification (MOP), when is it only a sound over-approximation, which property of the transfer functions decides it, and which side conditions (finite height, strictness at unreachable nodes, monotonicity, worklist seeding) do textbook statements assume?"
+  },
+  {
+    "id": "reachable-node-not-exact-unreachable-gen",
+    "lean": "Toy.Dataflow.exactness_needs_unreachableStrict",
+    "lean_names": [
+      "Toy.Dataflow.isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict",
+      "Toy.Dataflow.kildall_isSolution_of_eq_some",
+      "Toy.Dataflow.ugCFG_isMOPAt_two_empty"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Prior statements exclude the situation by assuming that every node has a path from the entry (Nielson-Nielson-Hankin) or that all transfers are strict (CompCert's fixpoint_solution); the explicit three-node acyclic counterexample, in which the affected node is itself reachable, is what is made precise and checked here.",
+    "plain_claim": "With gen/kill (distributive) transfers on 1-bit vectors, there is a three-node CFG (entry 0 → 2, and an unreachable node 1 with no incoming edge, gen = {0}, and an edge 1 → 2) in which node 2 is reachable from the entry, yet the least solution at node 2 is {0} while MOP there is ∅ (ugCFG_isMOPAt_two_empty).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Finite computation of the least solution and of the path values.",
+    "nonvacuity_witness": "The instance itself (all listed properties are proved).",
+    "nonvacuity_witness_lean": "Toy.Dataflow.exactness_needs_unreachableStrict",
+    "non_claims": [
+      "It does not show that unreachable nodes always break exactness: when every unreachable node has a strict transfer, the least solution equals MOP (isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict); in this instance the MOP value at node 2 is ∅ (ugCFG_isMOPAt_two_empty). That a non-strict unreachable node without edges into the rest of the graph is also harmless is plausible but not proved here.",
+      "Not established here: a local form of the unreachable-node condition. The package does not prove that strictness is needed only at unreachable nodes from which `v` can be reached; `UnreachableStrict` constrains every unreachable node.",
+      "It does not involve a cycle; an unreachable cycle is not needed for the failure.",
+      "It does not concern the computed fixpoint of a solver seeded only from the entry, which would not propagate from node 1 (not proved here; entry-only seeding is not formalized).",
+      "All-nodes worklist seeding vs entry-only seeding trades global inequation satisfaction against unreachable-code isolation: seeding all nodes (`kildall`) guarantees a global `IsSolution` without strictness (even without monotonicity, `kildall_isSolution_of_eq_some`) but allows non-strict unreachable nodes to over-approximate reachable nodes (`exactness_needs_unreachableStrict`), whereas seeding only the entry avoids unreachable-node propagation and solves the reachable-subgraph inequations (as in CompCert's `fixpoint_nodeset_solution`) at the cost of violating inequations on edges out of unreachable nodes when transfers are non-strict (not proved here). Entry-only seeding is not formalized here."
+    ],
+    "prior_art": [
+      "F. Nielson, H. R. Nielson, C. Hankin, Principles of Program Analysis, Springer, 1999 (corrected 2nd printing 2005), doi:10.1007/978-3-662-03811-6, ISBN 978-3-540-65410-0. Chapter 2: Section 2.3 'Monotone Frameworks' (2.3.3 'A Non-distributive Example'), Section 2.4 'Equation Solving' (2.4.1 'The MFP Solution', 2.4.2 'The MOP Solution'); worklist algorithms in Section 6.1. The authors' Chapter 2 transparencies (May 2005), slide 79, state a lemma for the MFP and MOP solutions of an instance of a monotone framework: 'MFP◦ ⊒ MOP◦ and MFP• ⊒ MOP•', and 'If the framework is distributive and if path◦(ℓ) ≠ ∅ for all ℓ in E and F then: MFP◦ = MOP◦ and MFP• = MOP•' (join orientation; MFP◦/MFP• and MOP◦/MOP• are the pre- and post-transfer solutions).",
+      "CompCert, file backend/Kildall.v, repository AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (last change to the file: 4710ec093ddea8e6eb86ad519df61c59b654e861). Module Dataflow_Solver: fixpoint seeds the worklist with the entry point only and proves fixpoint_solution (every edge inequation holds) under the hypothesis 'forall n, L.eq (transf n L.bot) L.bot'; fixpoint_allnodes starts with every node at L.bot and every node on the worklist and proves fixpoint_allnodes_solution without that hypothesis; fixpoint_nodeset_solution proves that a solver seeded with a given set of nodes satisfies the inequations at every program point reachable from those nodes; fixpoint_entry and fixpoint_invariant are also proved. No least-solution or MOP statement is proved, monotonicity of transfer functions is never assumed, and iteration is bounded by fuel (PrimIter), returning None when fuel is exhausted.",
+      "Y. Bertot, B. Grégoire, X. Leroy, \"A structured approach to proving compiler optimizations based on dataflow analysis\", Types for Proofs and Programs (TYPES 2004), LNCS 3839, pp. 66-81, Springer, 2006, doi:10.1007/11617990_5. Coq proofs of dataflow-based optimizations in the line of work leading to CompCert's dataflow solver."
+    ],
+    "design_question": "When does the fixed point a worklist dataflow solver computes (MFP) equal the join-over-all-paths specification (MOP), when is it only a sound over-approximation, which property of the transfer functions decides it, and which side conditions (finite height, strictness at unreachable nodes, monotonicity, worklist seeding) do textbook statements assume?"
+  },
+  {
+    "id": "exactness-needs-acc",
+    "lean": "Toy.Dataflow.exactness_needs_acc",
+    "lean_names": [
+      "Toy.Dataflow.acc_strictly_weaker_than_heightLe",
+      "Toy.Dataflow.distributive_of_monotone_of_total",
+      "Toy.Dataflow.kildall_acc_has_no_uniform_fuel",
+      "Toy.Dataflow.kildall_isSome_of_heightLe",
+      "Toy.Dataflow.kildall_needs_heightLe",
+      "Toy.Dataflow.omegaLat_monotone_distributive",
+      "Toy.Dataflow.omegaLat_total"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "An instance of the classical fact that the join of the iterates f^k(⊥) is the least fixed point for continuous maps but not, in general, for maps that are merely monotone (Davey-Priestley, Chapter 8; transfinite iteration in Cousot-Cousot 1979): on the loop, MOP is the join of the iterates and MFP is the least fixed point.",
+    "plain_claim": "On the chain 0 < 1 < 2 < ⋯ < ω < ω+1, which violates the ascending chain condition and on which every monotone map is distributive (omegaLat_monotone_distributive), the CFG 0 → 1 with a loop 1 → 1 whose transfer is the successor map (k ↦ k+1, ω ↦ ω+1) has all nodes reachable, distributive transfers, and least solution ω+1 at node 1, while MOP there (the least upper bound of the path values 0, 1, 2, …) is ω.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Path values are exactly the finite elements; the least solution is forced by the loop inequation.",
+    "nonvacuity_witness": "The instance itself.",
+    "nonvacuity_witness_lean": "Toy.Dataflow.exactness_needs_acc",
+    "positive_control_lean": [
+      "Toy.Dataflow.cyclic_exactness_on_unboundedChainsLat",
+      "Toy.Dataflow.exactness_holds_on_unboundedChainsLat"
+    ],
+    "non_claims": [
+      "It does not show that infinite-height lattices always break exactness; ACC suffices, and lattices with ACC can have unbounded height (acc_strictly_weaker_than_heightLe, exactness_holds_on_unboundedChainsLat). A transfer that is continuous at the limit (here, mapping ω to ω) would not produce this gap (not proved here).",
+      "A variant with all transfers strict is strict_exactness_needs_acc.",
+      "It does not concern termination of a solver (non-termination on this lattice is not proved here; kildall_needs_heightLe proves that the solver returns none for every fuel on the successor self-loop succCFG over natMaxLat).",
+      "`AscendingChainCondition` (sufficient for `mfp-eq-mop-exactness`) is strictly weaker than uniform finite height `HeightLe h` (assumed by the uniform fuel bound in `kildall_isSome_of_heightLe`; under the ascending chain condition alone no uniform fuel bound exists, `kildall_acc_has_no_uniform_fuel`); neither theorem models widening (`∇`) or narrowing (`Δ`) operators used on infinite-height domains. Lean: `acc_strictly_weaker_than_heightLe`, `exactness_holds_on_unboundedChainsLat`, `kildall_acc_has_no_uniform_fuel`."
+    ],
+    "prior_art": [
+      "B. A. Davey and H. A. Priestley, Introduction to Lattices and Order, 2nd ed., Cambridge University Press, 2002, Chapter 8 'CPOs and fixpoint theorems' (Section 8.3 'Fixpoint theorems'): the least fixed point is the join of the iterates f^k(⊥) for continuous maps; monotonicity alone does not guarantee this.",
+      "P. Cousot and R. Cousot, \"Constructive versions of Tarski's fixed point theorems\", Pacific Journal of Mathematics 82(1):43-57, 1979. Least fixed points of monotone (not necessarily continuous) maps are reached by transfinite iteration sequences, which can extend beyond ω."
+    ],
+    "design_question": "When does the fixed point a worklist dataflow solver computes (MFP) equal the join-over-all-paths specification (MOP), when is it only a sound over-approximation, which property of the transfer functions decides it, and which side conditions (finite height, strictness at unreachable nodes, monotonicity, worklist seeding) do textbook statements assume?"
+  }
+]

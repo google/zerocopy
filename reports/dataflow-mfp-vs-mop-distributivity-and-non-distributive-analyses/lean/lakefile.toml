@@ -1,0 +1,6 @@
+name = "dataflow_mfp_vs_mop"
+version = "0.1.0"
+defaultTargets = ["ToyDataflow"]
+
+[[lean_lib]]
+name = "ToyDataflow"
