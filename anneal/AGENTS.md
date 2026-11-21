@@ -31,6 +31,9 @@ preserve [`META_PRINCIPLES.md`](META_PRINCIPLES.md),
   Check docs in every PR. Add or update affected docs, examples, and links in
   that PR. Follow project instructions for generated docs.
   <!-- /docs-author -->
+- [Credit external work](README.md#acknowledgments) in the same PR if it
+  offered substantial, distinctive help. Name the creators, link the
+  work, and say what it contributed.
 - **File headers:** Add the Fuchsia copyright and license header to new
   source, script, workflow, and documentation files. Manually check it
   against [`PRINCIPLES.md`](PRINCIPLES.md) or
@@ -425,16 +428,14 @@ updated dependency, check provenance, pinned checksums, and transitives.
 
 ## Technical reference corpus
 
-- Before repeating broad research, consult the orphan
-  [`reference`](https://github.com/google/zerocopy/tree/reference) branch if
-  accessible. Follow its
-  [`AGENTS.md`](https://github.com/google/zerocopy/blob/reference/AGENTS.md),
-  filter `CATALOG.json` programmatically, and check each `reports/<package>/`
-  report's `REPORT.json`, `Applicability`, and `Boundaries` against Anneal's
-  pins. Quote and cite authoritative primary upstream sources in `trusted/`.
-- Consider [`reference-research`](https://github.com/google/zerocopy/blob/reference/skills/reference-research/SKILL.md)
-  when design or soundness depends on undocumented behavior absent from the
-  catalog, or after uncovering expensive-to-recover findings. Obtain explicit
-  user approval before running it or pushing to `google/zerocopy`. Give the
-  questions or findings and ask the user to choose planning only or execution
-  and publication.
+- Before repeating broad research, consult the orphan `reference` branch if
+  accessible and follow its
+  [`AGENTS.md`](https://github.com/google/zerocopy/blob/reference/AGENTS.md).
+  Filter `CATALOG.json` programmatically and check each report's `REPORT.json`,
+  `Applicability`, and `Boundaries` against Anneal's pins. In `trusted/`, quote
+  and cite authoritative primary upstream sources.
+- Consider `reference-research` when design or soundness depends on
+  undocumented behavior absent from the catalog, or for findings costly to
+  recover. Present the questions or findings and ask the user to choose
+  planning only or execution and publication. Get explicit approval before
+  running the skill or pushing to `google/zerocopy`.

@@ -221,3 +221,71 @@ Choose the `--agent` value for your host. Commit the installed skill to share
 it with teammates and agents working in fresh checkouts.
 
 [gh-skill]: https://cli.github.com/manual/gh_skill_install
+
+## Acknowledgments
+
+Anneal builds on decades of work and research in formal verification and the
+study of programming languages, among other fields. It is only possible thanks
+to the work of countless researchers and software engineers. Some of the most
+significant influences are listed here, but this list is far from exhaustive.
+
+- Son Ho and Jonathan Protzenko's [Aeneas] inspired PureLift's translation of
+  Rust borrows and updates into pure computations. Early Anneal used Aeneas
+  to translate Rust into Lean and [Charon] to extract Rust programs for
+  analysis. Charon is by Son Ho, Guillaume Boisseau, Lucas Franceschino, Yoann
+  Prak, Aymeric Fromherz, and Jonathan Protzenko. Son Ho, Aymeric Fromherz, and
+  Jonathan Protzenko's [work on symbolic borrow checking][symbolic-borrows]
+  informed Anneal's study of the semantics behind this translation.
+- PureLift uses lawful bidirectional lenses. J. Nathan Foster, Michael B.
+  Greenwald, Jonathan T. Moore, Benjamin C. Pierce, and Alan Schmitt developed
+  these foundations in [Combinators for Bidirectional Tree
+  Transformations][tree-lenses].
+- Anneal's proof-lifting experiments drew on Magnus O. Myreen, Michael J. C.
+  Gordon, and Konrad Slind's [decompilation into logic][decompilation] to
+  reason about one basic block at a time. [Tree Borrows][tree-borrows] by
+  Neven Villani, Johannes Hostert, Derek Dreyer, and Ralf Jung guided
+  experiments on how to account for mutable borrow permissions.
+- Anneal's MIR correspondence proofs use a pinned, patched copy of
+  [lean-miri]. Yuichi Nishiwaki's port builds on the Rust compiler's MIR
+  interpreter and the work of the [Miri developers and contributors][Miri].
+  Ralf Jung's [MiniRust] and the Rust Unsafe Code
+  Guidelines contributors' [discussion of moved values][ucg-moves] helped
+  inform Anneal's treatment of moves. Xavier Leroy and the [CompCert]
+  contributors' work on simulation proofs provided a comparison for how
+  Anneal relates its model to its reference semantics.
+- [Lean 4], by Leonardo de Moura, Sebastian Ullrich, and the Lean
+  contributors, checks Anneal's proofs. Lean's environment and declaration
+  replay code guided the design of Anneal's auditor.
+- The Rust contributors' [compiler source][rustc] and [Rust Reference]
+  guided Anneal's MIR capture and model of Rust behavior. The earlier
+  memory model also drew on the [standard library documentation][rust-std].
+  The LLVM contributors' [language reference][llvm-linkage] guided Anneal's
+  treatment of Rust's linkage attributes.
+- Early design work drew on
+  [research into security risks in Rust][rust-security] by Xiaoye Zheng,
+  Zhiyuan Wan, Yun Zhang, Rui Chang, and David Lo. Lars Bergstrom's
+  [Rust Nation UK talk][rust-nation], Jeff Vander Stoep's
+  [Android delivery data][android-rust], and Hongliang Tian's
+  [account of the Asterinas kernel][asterinas] gave the early design concrete
+  examples of Rust development and the work involved in writing unsafe code.
+
+[Aeneas]: https://arxiv.org/abs/2206.07185
+[Charon]: https://link.springer.com/chapter/10.1007/978-3-031-98685-7_18
+[symbolic-borrows]: https://arxiv.org/abs/2404.02680
+[tree-lenses]: https://doi.org/10.1145/1232420.1232424
+[decompilation]: https://www.cl.cam.ac.uk/~mom22/decompilation/fmcad12.pdf
+[tree-borrows]: https://iris-project.org/pdfs/2025-pldi-treeborrows.pdf
+[lean-miri]: https://github.com/proofs-rs/lean-miri
+[Miri]: https://github.com/rust-lang/miri
+[MiniRust]: https://github.com/minirust/minirust
+[ucg-moves]: https://github.com/rust-lang/unsafe-code-guidelines/issues/188
+[CompCert]: https://compcert.org/
+[Lean 4]: https://lean-lang.org/papers/lean4.pdf
+[rustc]: https://github.com/rust-lang/rust/tree/main/compiler
+[Rust Reference]: https://doc.rust-lang.org/reference/
+[rust-std]: https://doc.rust-lang.org/std/
+[llvm-linkage]: https://llvm.org/docs/LangRef.html#linkage-types
+[rust-security]: https://arxiv.org/abs/2308.15046
+[rust-nation]: https://www.youtube.com/watch?v=QrrH2lcl9ew
+[android-rust]: https://blog.google/security/rust-in-android-move-fast-fix-things/
+[asterinas]: https://asterinas.github.io/2025/06/04/kernel-memory-safety-mission-accomplished.html
