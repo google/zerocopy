@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "lean/kernel",
+    "verification/audit",
+    "build/reproducibility",
+    "lake/artifact-cache",
+    "security/trust-boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 kernel, CollectAxioms, Replay, declaration elaborator, and Lake artifact cache",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "lean4checker fresh kernel replay verifier",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "nanoda_lib clean-room safe-Rust external Lean 4 kernel checker",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "0.4.32"
+      }
+    },
+    {
+      "name": "lean4export NDJSON v3.1.0 declaration exporter",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "comparator sandboxed challenge-solution statement and kernel auditor",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "Mathlib4 lake exe cache .ltar artifact cache client",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rocq Prover .vo/.vos/.vok object loader and coqchk standalone verifier",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "Berghofer and Nipkow (TPHOLs 2000) — Proof Terms for Simply Typed Higher Order Logic",
+      "identity": {
+        "doi": "10.1007/3-540-44659-1_3",
+        "venue": "TPHOLs 2000, LNCS 1869, pp. 38-52"
+      }
+    },
+    {
+      "name": "Wenzel (2025) — The Isabelle System Manual (session heap images and fresh builds)",
+      "identity": {
+        "release": "Isabelle2025",
+        "url": "https://isabelle.in.tum.de/dist/Isabelle2025/doc/system.pdf"
+      }
+    },
+    {
+      "name": "Pollack (1998) — How to Believe a Machine-Checked Proof",
+      "identity": {
+        "doi": "10.1093/oso/9780198501275.003.0013",
+        "report_doi": "10.7146/brics.v4i18.18945"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
