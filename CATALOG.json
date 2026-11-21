@@ -40221,9 +40221,10 @@
           "identity": {
             "endpoints": "https://github.com, https://api.github.com, https://ghcr.io",
             "probed_ghcr_manifest": "ghcr.io/oras-project/oras@sha256:30eaf40bfe09d8faa412beb8aec13226f819f2168121ad63ce18301d5af9a3c5",
-            "probed_release_asset": "BurntSushi/ripgrep@14.1.1 (sha256:4cf9f2741e6c465ffdb7c26f38056a59e2a2544b51f7cc128ef28337eeae4d8e)"
+            "probed_release_asset": "BurntSushi/ripgrep@14.1.1 (sha256:4cf9f2741e6c465ffdb7c26f38056a59e2a2544b51f7cc128ef28337eeae4d8e)",
+            "probed_workflow_runs": "sigstore/rekor#44909334042, sigstore/cosign#44857194408, google/zerocopy#44932035473"
           },
-          "name": "GitHub Releases and GHCR Live Endpoints"
+          "name": "GitHub Releases, REST Actions Runs, and GHCR Live Endpoints"
         }
       ],
       "topics": [
