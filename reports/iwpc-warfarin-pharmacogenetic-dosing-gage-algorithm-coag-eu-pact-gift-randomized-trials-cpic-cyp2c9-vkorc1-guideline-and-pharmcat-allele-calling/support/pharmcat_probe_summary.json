@@ -1,0 +1,1436 @@
+{
+ "01_reference": {
+  "rc": 0,
+  "wall": "0:03.42",
+  "max_rss_kb": 766656,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [
+       "Normal Metabolizer"
+      ],
+      "activityScore": "2.0"
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     176
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "02_s2_s3_unphased": {
+  "rc": 0,
+  "wall": "0:03.05",
+  "max_rss_kb": 897828,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*2/*3",
+      "phenotypes": [
+       "Poor Metabolizer"
+      ],
+      "activityScore": "0.5"
+     }
+    ],
+    "messages": []
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*2/*3"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "03_s2_s3_phased_trans": {
+  "rc": 0,
+  "wall": "0:02.60",
+  "max_rss_kb": 861584,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*2/*3",
+      "phenotypes": [
+       "Poor Metabolizer"
+      ],
+      "activityScore": "0.5"
+     }
+    ],
+    "messages": []
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*2/*3"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "04_s2_s3_phased_cis": {
+  "rc": 0,
+  "wall": "0:02.63",
+  "max_rss_kb": 752264,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "Unknown/Unknown",
+      "phenotypes": [
+       "No Result"
+      ],
+      "activityScore": "No Result"
+     }
+    ],
+    "messages": []
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [],
+    "scores": [],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "05_s1_s3_row_deleted": {
+  "rc": 0,
+  "wall": "0:02.95",
+  "max_rss_kb": 759252,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "missing-variants",
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [
+       "Normal Metabolizer"
+      ],
+      "activityScore": "2.0"
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     174
+    ],
+    "missingPositions": [
+     "rs1057910"
+    ],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 1
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "06_s3_het_gt_missing": {
+  "rc": 0,
+  "wall": "0:03.08",
+  "max_rss_kb": 770156,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "missing-variants",
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [
+       "Normal Metabolizer"
+      ],
+      "activityScore": "2.0"
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     174
+    ],
+    "missingPositions": [
+     "rs1057910"
+    ],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 1
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "07_s3_partial_ref": {
+  "rc": 0,
+  "wall": "0:03.27",
+  "max_rss_kb": 1192688,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "missing-variants",
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [
+       "Normal Metabolizer"
+      ],
+      "activityScore": "2.0"
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     174
+    ],
+    "missingPositions": [
+     "rs1057910"
+    ],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 1
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "08_s3_partial_alt": {
+  "rc": 0,
+  "wall": "0:02.93",
+  "max_rss_kb": 835688,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "missing-variants",
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "Unknown/Unknown",
+      "phenotypes": [
+       "No Result"
+      ],
+      "activityScore": "No Result"
+     }
+    ],
+    "messages": []
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [],
+    "scores": [],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "09_s2_plus_s18_2nd_unphased": {
+  "rc": 0,
+  "wall": "0:02.69",
+  "max_rss_kb": 777544,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "Unknown/Unknown",
+      "phenotypes": [
+       "No Result"
+      ],
+      "activityScore": "No Result"
+     }
+    ],
+    "messages": []
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [],
+    "scores": [],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "10_s8_het": {
+  "rc": 0,
+  "wall": "0:03.37",
+  "max_rss_kb": 849224,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*8",
+      "phenotypes": [
+       "Intermediate Metabolizer"
+      ],
+      "activityScore": "1.5"
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*1/*8"
+    ],
+    "scores": [
+     89
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "11_s27_het": {
+  "rc": 0,
+  "wall": "0:03.33",
+  "max_rss_kb": 749208,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*27",
+      "phenotypes": [
+       "Indeterminate"
+      ],
+      "activityScore": "n/a"
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*1/*27"
+    ],
+    "scores": [
+     89
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "12_vkorc1_AA_cyp4f2_s3_cyp2c_AG": {
+  "rc": 0,
+  "wall": "0:03.36",
+  "max_rss_kb": 884672,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [
+       "Normal Metabolizer"
+      ],
+      "activityScore": "2.0"
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 variant (T)/rs9923231 variant (T)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*3",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     176
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/A"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*3"
+    ],
+    "scores": [
+     21
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 variant (T)/rs9923231 variant (T)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "13_vkorc1_row_deleted": {
+  "rc": 0,
+  "wall": "0:02.95",
+  "max_rss_kb": 753172,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [
+       "Normal Metabolizer"
+      ],
+      "activityScore": "2.0"
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "Unknown/Unknown",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     176
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [],
+    "scores": [],
+    "missingPositions": [
+     "rs9923231"
+    ],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 2
+   }
+  }
+ },
+ "14_s2_hom_s3_het_unphased": {
+  "rc": 0,
+  "wall": "0:03.23",
+  "max_rss_kb": 755416,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "Unknown/Unknown",
+      "phenotypes": [
+       "No Result"
+      ],
+      "activityScore": "No Result"
+     }
+    ],
+    "messages": []
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [],
+    "scores": [],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "15_s2_s5_unphased": {
+  "rc": 0,
+  "wall": "0:03.19",
+  "max_rss_kb": 778688,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*2/*5",
+      "phenotypes": [
+       "Intermediate Metabolizer"
+      ],
+      "activityScore": "1.0"
+     }
+    ],
+    "messages": []
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*2/*5"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ },
+ "16_s80_het_no_phenotype_entry": {
+  "rc": 0,
+  "wall": "0:03.10",
+  "max_rss_kb": 830780,
+  "calls": {
+   "CPIC.warfarin.messages": [
+    "pcat-cpic-warfarin-1-flowchart",
+    "pcat-cpic-warfarin-2-vkorc1"
+   ],
+   "CYP2C9.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*80",
+      "phenotypes": [
+       "Indeterminate"
+      ],
+      "activityScore": "n/a"
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "VKORC1.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "rs9923231 reference (C)/rs9923231 reference (C)",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": []
+   },
+   "CYP4F2.phenotype": {
+    "recommendationDiplotypes": [
+     {
+      "label": "*1/*1",
+      "phenotypes": [],
+      "activityScore": null
+     }
+    ],
+    "messages": [
+     "reference-allele"
+    ]
+   },
+   "CYP2C9.match": {
+    "diplotypes": [
+     "*1/*80"
+    ],
+    "scores": [
+     89
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [
+     [
+      "rs12777823",
+      "G/G"
+     ]
+    ],
+    "uncallableHaplotypes_count": 0
+   },
+   "CYP4F2.match": {
+    "diplotypes": [
+     "*1/*1"
+    ],
+    "scores": [
+     40
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   },
+   "VKORC1.match": {
+    "diplotypes": [
+     "rs9923231 reference (C)/rs9923231 reference (C)"
+    ],
+    "scores": [
+     2
+    ],
+    "missingPositions": [],
+    "missingAmp1Positions": [],
+    "warnings": [],
+    "variantsOfInterest": [],
+    "uncallableHaplotypes_count": 0
+   }
+  }
+ }
+}

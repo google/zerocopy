@@ -1,0 +1,72 @@
+{
+ "per_patient": {
+  "A_overshoot": {
+   "rosendaal_2-3_d0-28": 67.3,
+   "rosendaal_2-3_d4-28": 79.5,
+   "rosendaal_2-3_d4-28_carry": 81.2,
+   "rosendaal_2-3_d4-28_gap>14_excluded": 79.5,
+   "rosendaal_1.8-3.2_d4-28": 86.4,
+   "daily_grid_rounded_2-3_d4-28": 82.6,
+   "fraction_of_tests_2-3_d4-28": 80.0
+  },
+  "B_oscillating": {
+   "rosendaal_2-3_d0-28": 55.7,
+   "rosendaal_2-3_d4-28": 63.5,
+   "rosendaal_2-3_d4-28_carry": 63.5,
+   "rosendaal_2-3_d4-28_gap>14_excluded": 63.5,
+   "rosendaal_1.8-3.2_d4-28": 84.0,
+   "daily_grid_rounded_2-3_d4-28": 70.8,
+   "fraction_of_tests_2-3_d4-28": 66.7
+  },
+  "C_sparse_gap": {
+   "rosendaal_2-3_d0-28": 84.5,
+   "rosendaal_2-3_d4-28": 98.6,
+   "rosendaal_2-3_d4-28_carry": 98.6,
+   "rosendaal_2-3_d4-28_gap>14_excluded": 83.3,
+   "rosendaal_1.8-3.2_d4-28": 100.0,
+   "daily_grid_rounded_2-3_d4-28": 95.8,
+   "fraction_of_tests_2-3_d4-28": 50.0
+  },
+  "D_borderline": {
+   "rosendaal_2-3_d0-28": 37.9,
+   "rosendaal_2-3_d4-28": 44.2,
+   "rosendaal_2-3_d4-28_carry": 44.2,
+   "rosendaal_2-3_d4-28_gap>14_excluded": 44.2,
+   "rosendaal_1.8-3.2_d4-28": 100.0,
+   "daily_grid_rounded_2-3_d4-28": 50.0,
+   "fraction_of_tests_2-3_d4-28": 16.7
+  }
+ },
+ "cohort_n500_seed20261121": {
+  "rosendaal_2-3_d0-28": {
+   "cohort_mean_ttr_pct": 51.98,
+   "mean_abs_diff_vs_rosendaal_2-3_d4-28_pp": 6.42,
+   "share_patients_diff_gt_10pp": 22.8
+  },
+  "rosendaal_2-3_d4-28": {
+   "cohort_mean_ttr_pct": 57.05,
+   "mean_abs_diff_vs_rosendaal_2-3_d4-28_pp": 0.0,
+   "share_patients_diff_gt_10pp": 0.0
+  },
+  "rosendaal_2-3_d4-28_carry": {
+   "cohort_mean_ttr_pct": 57.05,
+   "mean_abs_diff_vs_rosendaal_2-3_d4-28_pp": 0.0,
+   "share_patients_diff_gt_10pp": 0.0
+  },
+  "rosendaal_2-3_d4-28_gap>14_excluded": {
+   "cohort_mean_ttr_pct": 58.02,
+   "mean_abs_diff_vs_rosendaal_2-3_d4-28_pp": 1.51,
+   "share_patients_diff_gt_10pp": 4.2
+  },
+  "rosendaal_1.8-3.2_d4-28": {
+   "cohort_mean_ttr_pct": 73.83,
+   "mean_abs_diff_vs_rosendaal_2-3_d4-28_pp": 16.77,
+   "share_patients_diff_gt_10pp": 52.4
+  },
+  "fraction_of_tests_2-3_d4-28": {
+   "cohort_mean_ttr_pct": 59.36,
+   "mean_abs_diff_vs_rosendaal_2-3_d4-28_pp": 10.21,
+   "share_patients_diff_gt_10pp": 44.4
+  }
+ }
+}

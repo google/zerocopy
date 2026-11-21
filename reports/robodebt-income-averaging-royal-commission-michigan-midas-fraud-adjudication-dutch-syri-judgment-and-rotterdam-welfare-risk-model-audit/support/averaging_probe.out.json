@@ -1,0 +1,24 @@
+{
+ "parameters": {
+  "max_rate": 528.7,
+  "free_area": 104.0,
+  "upper_threshold": 254.0,
+  "taper_1": 0.5,
+  "taper_2": 0.6
+ },
+ "worked_example": {
+  "averaged_fortnightly_income": 692.31,
+  "debt_averaged": 5407.75,
+  "debt_actual": 0.0,
+  "debt_averaged_plus_10pct_fee": 5948.53
+ },
+ "cohort": {
+  "people": 2000,
+  "with_averaged_debt": 1515,
+  "false_debts_actual_zero": 1242,
+  "overstated_debts": 1470,
+  "understated_vs_actual": 81,
+  "sum_averaged_debt": 3650884.38,
+  "sum_actual_debt": 162313.35
+ }
+}

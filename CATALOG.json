@@ -46524,6 +46524,100 @@
         "rust/memory-safety"
       ]
     },
+    "iwpc-warfarin-pharmacogenetic-dosing-gage-algorithm-coag-eu-pact-gift-randomized-trials-cpic-cyp2c9-vkorc1-guideline-and-pharmcat-allele-calling": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "PharmGKB/PharmCAT",
+            "revision": "8e6f81b9372da54f9281d452cd171253c6a8974f"
+          },
+          "name": "PharmCAT source (pinned)"
+        },
+        {
+          "identity": {
+            "artifact": "pharmcat-3.4.0-all.jar",
+            "repository": "PharmGKB/PharmCAT",
+            "revision": "41f21b71886b961b24a00344ef2dad2387aaa0c9",
+            "sha256": "9317ef632bf6c9786ff0d9d455d4c9f6d2882ebd66ad7256b4ae958ddf454741",
+            "version": "v3.4.0"
+          },
+          "name": "PharmCAT v3.4.0 release (executed jar)"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMoa0809329"
+          },
+          "name": "IWPC 2009 warfarin dose estimation (NEJM)"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/clpt.2008.10"
+          },
+          "name": "Gage et al. 2008 pharmacogenetic warfarin dose equation (Clin Pharmacol Ther)"
+        },
+        {
+          "identity": {
+            "doi": "10.1182/blood-2015-02-627042"
+          },
+          "name": "Limdi et al. 2015 race and warfarin genetic dose effects (Blood)"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMoa1310669"
+          },
+          "name": "COAG trial, Kimmel et al. 2013 (NEJM)"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMoa1311386"
+          },
+          "name": "EU-PACT warfarin trial, Pirmohamed et al. 2013 (NEJM)"
+        },
+        {
+          "identity": {
+            "doi": "10.1001/jama.2017.11469"
+          },
+          "name": "GIFT trial, Gage et al. 2017 (JAMA)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/cpt.668"
+          },
+          "name": "CPIC guideline for pharmacogenetics-guided warfarin dosing, 2017 update"
+        },
+        {
+          "identity": {
+            "doi": "10.1055/s-0038-1651587"
+          },
+          "name": "Rosendaal et al. 1993 linear-interpolation time in therapeutic range method"
+        },
+        {
+          "identity": {
+            "doi": "10.19102/icrm.2018.091203"
+          },
+          "name": "Siddiqui et al. 2018 comparison of TTR calculation methods"
+        },
+        {
+          "identity": {
+            "doi": "10.1023/b:thro.0000011377.78585.63"
+          },
+          "name": "Schmitt et al. 2003 comparison of TTR measures (abstract)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/cpt.1568"
+          },
+          "name": "PharmCAT paper, Sangkuhl et al. 2020 (Clin Pharmacol Ther)"
+        }
+      ],
+      "topics": [
+        "domains/anticoagulant-dose-prediction",
+        "domains/pharmacogenomic-clinical-decision-support",
+        "verification/dosing-algorithm-trial-evidence-and-ancestry-performance",
+        "tooling/pharmacogenomic-allele-calling"
+      ]
+    },
     "jasmin-s2n-bignum-cslib-and-verified-cryptographic-assembly": {
       "observed_at": "2026-10-29",
       "subjects": [
@@ -76061,6 +76155,117 @@
         "compilers/escape-analysis-correctness",
         "pl/origin-and-loan-liveness",
         "compilers/storage-deadness-under-aliasing"
+      ]
+    },
+    "robodebt-income-averaging-royal-commission-michigan-midas-fraud-adjudication-dutch-syri-judgment-and-rotterdam-welfare-risk-model-audit": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Lighthouse-Reports/suspicion_machine",
+            "revision": "3afc105b04ff3dcdcacbfa5ab39d9cc089264845"
+          },
+          "name": "Suspicion Machine audit repository with Rotterdam's released model code (Lighthouse Reports)"
+        },
+        {
+          "identity": {
+            "date": "2023-07-07",
+            "isbn": "978-1-921241-58-1",
+            "url": "https://robodebt.royalcommission.gov.au/publications/report"
+          },
+          "name": "Report of the Royal Commission into the Robodebt Scheme"
+        },
+        {
+          "identity": {
+            "url": "https://guides.dss.gov.au/social-security-guide/5/2/1/20"
+          },
+          "name": "DSS Social Security Guide 5.2.1.20 (historical single unemployment benefit rates)"
+        },
+        {
+          "identity": {
+            "url": "https://guides.dss.gov.au/social-security-guide/4/10/2"
+          },
+          "name": "DSS Social Security Guide 4.10.2 (historical unemployment benefit income test)"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/1037969X18815913"
+          },
+          "name": "Carney 2019, Robo-debt illegality (Alternative Law Journal)"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/1467-8500.12479"
+          },
+          "name": "Whiteford 2021, Debt by design (Australian Journal of Public Administration)"
+        },
+        {
+          "identity": {
+            "citation": "912 F.3d 887",
+            "date": "2019-01-03",
+            "docket": "18-1295/18-1296"
+          },
+          "name": "Cahoo v. SAS Analytics Inc. (6th Cir. 2019)"
+        },
+        {
+          "identity": {
+            "court": "Michigan Supreme Court",
+            "date": "2022-07-26",
+            "docket": "160813"
+          },
+          "name": "Bauserman v. Unemployment Insurance Agency (Michigan Supreme Court 2022)"
+        },
+        {
+          "identity": {
+            "date": "2020-02-05",
+            "ecli": "ECLI:NL:RBDHA:2020:1878",
+            "original_ecli": "ECLI:NL:RBDHA:2020:865"
+          },
+          "name": "NJCM et al. v. State of the Netherlands (SyRI), District Court of The Hague"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/13882627211031257"
+          },
+          "name": "van Bekkum and Zuiderveen Borgesius 2021, Digital welfare fraud detection and the Dutch SyRI judgment"
+        },
+        {
+          "identity": {
+            "date": "2020-07-17",
+            "reference": "z2018-22445",
+            "url": "https://www.autoriteitpersoonsgegevens.nl/uploads/imported/onderzoek_belastingdienst_kinderopvangtoeslag.pdf"
+          },
+          "name": "Autoriteit Persoonsgegevens report on nationality processing in childcare allowance"
+        },
+        {
+          "identity": {
+            "date": "2020-12-17",
+            "title": "Ongekend onrecht (Unprecedented injustice)",
+            "url": "https://www.houseofrepresentatives.nl/sites/default/files/atoms/files/verslag_pok_definitief-en-gb.docx.pdf"
+          },
+          "name": "Ongekend onrecht, Parliamentary Inquiry Committee on Childcare Allowance (English translation)"
+        },
+        {
+          "identity": {
+            "date": "2021-10-25",
+            "index": "EUR 35/4686/2021",
+            "url": "https://www.amnesty.org/en/documents/eur35/4686/2021/en/"
+          },
+          "name": "Amnesty International, Xenophobic Machines"
+        },
+        {
+          "identity": {
+            "date": "2023-03-06",
+            "url": "https://www.lighthousereports.com/methodology/suspicion-machine/"
+          },
+          "name": "Lighthouse Reports, How we evaluated bias in Rotterdam's suspicion machine (methodology)"
+        }
+      ],
+      "topics": [
+        "domains/automated-welfare-debt-determination",
+        "domains/benefit-fraud-risk-scoring",
+        "verification/algorithmic-administrative-decision-audits",
+        "tooling/welfare-risk-model-reconstruction"
       ]
     },
     "rothermel-elmfire-level-sets-nist-fds-les-and-flexpart-plume-dispersion": {

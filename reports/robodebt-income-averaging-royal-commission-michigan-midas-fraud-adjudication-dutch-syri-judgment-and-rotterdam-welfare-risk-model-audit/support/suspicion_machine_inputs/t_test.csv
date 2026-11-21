@@ -1,0 +1,21 @@
+"",".y.","group1","group2","n1","n2","p","p.signif","p.adj","p.adj.signif","data_type"
+"1","Ja","IV: 
+persoon_geslacht_vrouw: 0
+","IV: 
+persoon_geslacht_vrouw: 1
+",7310,5335,0.000156,"***",0.000156,"***","real"
+"2","Ja","IV: 
+persoon_geslacht_vrouw: 0
+","IV: 
+persoon_geslacht_vrouw: 1
+",12645,12645,2.14e-24,"****",2.14e-24,"****","real_conditional"
+"3","Ja","IV: 
+persoon_geslacht_vrouw: 0
+","IV: 
+persoon_geslacht_vrouw: 1
+",6542,6103,0.0664,"ns",0.0664,"ns","synth"
+"4","Ja","IV: 
+persoon_geslacht_vrouw: 0
+","IV: 
+persoon_geslacht_vrouw: 1
+",12508,12508,1e-07,"****",1e-07,"****","synth_conditional"

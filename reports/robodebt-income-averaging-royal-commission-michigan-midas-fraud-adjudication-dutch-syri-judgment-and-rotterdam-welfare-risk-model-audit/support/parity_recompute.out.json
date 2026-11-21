@@ -1,0 +1,135 @@
+{
+ "real": {
+  "groups": [
+   "persoon_geslacht_vrouw: 0",
+   "persoon_geslacht_vrouw: 1"
+  ],
+  "n": [
+   7310,
+   5335
+  ],
+  "mean": [
+   0.485,
+   0.495
+  ],
+  "sd": [
+   0.149,
+   0.159
+  ],
+  "share_above_threshold": [
+   0.0906,
+   0.113
+  ],
+  "t_at_rounded_values": 3.623,
+  "df": 12643,
+  "p_at_rounded_values": 0.000293,
+  "p_range_from_mean_rounding": [
+   6.79e-05,
+   0.00112
+  ],
+  "p_published": 0.000156
+ },
+ "real_conditional": {
+  "groups": [
+   "persoon_geslacht_vrouw: 0",
+   "persoon_geslacht_vrouw: 1"
+  ],
+  "n": [
+   12645,
+   12645
+  ],
+  "mean": [
+   0.483,
+   0.502
+  ],
+  "sd": [
+   0.152,
+   0.152
+  ],
+  "share_above_threshold": [
+   0.0905,
+   0.1136
+  ],
+  "t_at_rounded_values": 9.939,
+  "df": 25288,
+  "p_at_rounded_values": 3.1e-23,
+  "p_range_from_mean_rounding": [
+   1.45e-25,
+   5.07e-21
+  ],
+  "p_published": 2.14e-24
+ },
+ "synth": {
+  "groups": [
+   "persoon_geslacht_vrouw: 0",
+   "persoon_geslacht_vrouw: 1"
+  ],
+  "n": [
+   6542,
+   6103
+  ],
+  "mean": [
+   0.611,
+   0.613
+  ],
+  "sd": [
+   0.086,
+   0.084
+  ],
+  "share_above_threshold": [
+   0.1013,
+   0.0986
+  ],
+  "t_at_rounded_values": 1.322,
+  "df": 12643,
+  "p_at_rounded_values": 0.186,
+  "p_range_from_mean_rounding": [
+   0.0475,
+   0.509
+  ],
+  "p_published": 0.0664
+ },
+ "synth_conditional": {
+  "groups": [
+   "persoon_geslacht_vrouw: 0",
+   "persoon_geslacht_vrouw: 1"
+  ],
+  "n": [
+   12508,
+   12508
+  ],
+  "mean": [
+   0.609,
+   0.615
+  ],
+  "sd": [
+   0.085,
+   0.085
+  ],
+  "share_above_threshold": [
+   0.0931,
+   0.1102
+  ],
+  "t_at_rounded_values": 5.582,
+  "df": 25014,
+  "p_at_rounded_values": 2.4e-08,
+  "p_range_from_mean_rounding": [
+   7.52e-11,
+   3.31e-06
+  ],
+  "p_published": 1e-07
+ },
+ "synth_data_csv": {
+  "rows": 12645,
+  "columns": 315,
+  "persoon_geslacht_vrouw_counts": {
+   "0": 6542,
+   "1": 6103
+  },
+  "persoon_leeftijd_bij_onderzoek_min_mean_max": [
+   19.0,
+   49.29,
+   67.0
+  ]
+ }
+}

@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "domains/automated-welfare-debt-determination",
+    "domains/benefit-fraud-risk-scoring",
+    "verification/algorithmic-administrative-decision-audits",
+    "tooling/welfare-risk-model-reconstruction"
+  ],
+  "subjects": [
+    {
+      "name": "Suspicion Machine audit repository with Rotterdam's released model code (Lighthouse Reports)",
+      "identity": {
+        "repository": "Lighthouse-Reports/suspicion_machine",
+        "revision": "3afc105b04ff3dcdcacbfa5ab39d9cc089264845"
+      }
+    },
+    {
+      "name": "Report of the Royal Commission into the Robodebt Scheme",
+      "identity": {
+        "isbn": "978-1-921241-58-1",
+        "date": "2023-07-07",
+        "url": "https://robodebt.royalcommission.gov.au/publications/report"
+      }
+    },
+    {
+      "name": "DSS Social Security Guide 5.2.1.20 (historical single unemployment benefit rates)",
+      "identity": {
+        "url": "https://guides.dss.gov.au/social-security-guide/5/2/1/20"
+      }
+    },
+    {
+      "name": "DSS Social Security Guide 4.10.2 (historical unemployment benefit income test)",
+      "identity": {
+        "url": "https://guides.dss.gov.au/social-security-guide/4/10/2"
+      }
+    },
+    {
+      "name": "Carney 2019, Robo-debt illegality (Alternative Law Journal)",
+      "identity": {
+        "doi": "10.1177/1037969X18815913"
+      }
+    },
+    {
+      "name": "Whiteford 2021, Debt by design (Australian Journal of Public Administration)",
+      "identity": {
+        "doi": "10.1111/1467-8500.12479"
+      }
+    },
+    {
+      "name": "Cahoo v. SAS Analytics Inc. (6th Cir. 2019)",
+      "identity": {
+        "citation": "912 F.3d 887",
+        "docket": "18-1295/18-1296",
+        "date": "2019-01-03"
+      }
+    },
+    {
+      "name": "Bauserman v. Unemployment Insurance Agency (Michigan Supreme Court 2022)",
+      "identity": {
+        "court": "Michigan Supreme Court",
+        "docket": "160813",
+        "date": "2022-07-26"
+      }
+    },
+    {
+      "name": "NJCM et al. v. State of the Netherlands (SyRI), District Court of The Hague",
+      "identity": {
+        "ecli": "ECLI:NL:RBDHA:2020:1878",
+        "original_ecli": "ECLI:NL:RBDHA:2020:865",
+        "date": "2020-02-05"
+      }
+    },
+    {
+      "name": "van Bekkum and Zuiderveen Borgesius 2021, Digital welfare fraud detection and the Dutch SyRI judgment",
+      "identity": {
+        "doi": "10.1177/13882627211031257"
+      }
+    },
+    {
+      "name": "Autoriteit Persoonsgegevens report on nationality processing in childcare allowance",
+      "identity": {
+        "reference": "z2018-22445",
+        "date": "2020-07-17",
+        "url": "https://www.autoriteitpersoonsgegevens.nl/uploads/imported/onderzoek_belastingdienst_kinderopvangtoeslag.pdf"
+      }
+    },
+    {
+      "name": "Ongekend onrecht, Parliamentary Inquiry Committee on Childcare Allowance (English translation)",
+      "identity": {
+        "title": "Ongekend onrecht (Unprecedented injustice)",
+        "date": "2020-12-17",
+        "url": "https://www.houseofrepresentatives.nl/sites/default/files/atoms/files/verslag_pok_definitief-en-gb.docx.pdf"
+      }
+    },
+    {
+      "name": "Amnesty International, Xenophobic Machines",
+      "identity": {
+        "index": "EUR 35/4686/2021",
+        "date": "2021-10-25",
+        "url": "https://www.amnesty.org/en/documents/eur35/4686/2021/en/"
+      }
+    },
+    {
+      "name": "Lighthouse Reports, How we evaluated bias in Rotterdam's suspicion machine (methodology)",
+      "identity": {
+        "url": "https://www.lighthousereports.com/methodology/suspicion-machine/",
+        "date": "2023-03-06"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

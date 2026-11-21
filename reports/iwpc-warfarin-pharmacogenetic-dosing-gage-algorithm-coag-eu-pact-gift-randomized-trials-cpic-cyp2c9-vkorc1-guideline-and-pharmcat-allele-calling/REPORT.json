@@ -1,0 +1,94 @@
+{
+  "topics": [
+    "domains/anticoagulant-dose-prediction",
+    "domains/pharmacogenomic-clinical-decision-support",
+    "verification/dosing-algorithm-trial-evidence-and-ancestry-performance",
+    "tooling/pharmacogenomic-allele-calling"
+  ],
+  "subjects": [
+    {
+      "name": "PharmCAT source (pinned)",
+      "identity": {
+        "repository": "PharmGKB/PharmCAT",
+        "revision": "8e6f81b9372da54f9281d452cd171253c6a8974f"
+      }
+    },
+    {
+      "name": "PharmCAT v3.4.0 release (executed jar)",
+      "identity": {
+        "repository": "PharmGKB/PharmCAT",
+        "revision": "41f21b71886b961b24a00344ef2dad2387aaa0c9",
+        "version": "v3.4.0",
+        "artifact": "pharmcat-3.4.0-all.jar",
+        "sha256": "9317ef632bf6c9786ff0d9d455d4c9f6d2882ebd66ad7256b4ae958ddf454741"
+      }
+    },
+    {
+      "name": "IWPC 2009 warfarin dose estimation (NEJM)",
+      "identity": {
+        "doi": "10.1056/NEJMoa0809329"
+      }
+    },
+    {
+      "name": "Gage et al. 2008 pharmacogenetic warfarin dose equation (Clin Pharmacol Ther)",
+      "identity": {
+        "doi": "10.1038/clpt.2008.10"
+      }
+    },
+    {
+      "name": "Limdi et al. 2015 race and warfarin genetic dose effects (Blood)",
+      "identity": {
+        "doi": "10.1182/blood-2015-02-627042"
+      }
+    },
+    {
+      "name": "COAG trial, Kimmel et al. 2013 (NEJM)",
+      "identity": {
+        "doi": "10.1056/NEJMoa1310669"
+      }
+    },
+    {
+      "name": "EU-PACT warfarin trial, Pirmohamed et al. 2013 (NEJM)",
+      "identity": {
+        "doi": "10.1056/NEJMoa1311386"
+      }
+    },
+    {
+      "name": "GIFT trial, Gage et al. 2017 (JAMA)",
+      "identity": {
+        "doi": "10.1001/jama.2017.11469"
+      }
+    },
+    {
+      "name": "CPIC guideline for pharmacogenetics-guided warfarin dosing, 2017 update",
+      "identity": {
+        "doi": "10.1002/cpt.668"
+      }
+    },
+    {
+      "name": "Rosendaal et al. 1993 linear-interpolation time in therapeutic range method",
+      "identity": {
+        "doi": "10.1055/s-0038-1651587"
+      }
+    },
+    {
+      "name": "Siddiqui et al. 2018 comparison of TTR calculation methods",
+      "identity": {
+        "doi": "10.19102/icrm.2018.091203"
+      }
+    },
+    {
+      "name": "Schmitt et al. 2003 comparison of TTR measures (abstract)",
+      "identity": {
+        "doi": "10.1023/b:thro.0000011377.78585.63"
+      }
+    },
+    {
+      "name": "PharmCAT paper, Sangkuhl et al. 2020 (Clin Pharmacol Ther)",
+      "identity": {
+        "doi": "10.1002/cpt.1568"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

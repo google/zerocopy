@@ -1,0 +1,704 @@
+{
+ "n_rows": 72,
+ "ratio_gage_over_iwpc_min_max": [
+  0.915,
+  4.493
+ ],
+ "rows_differing_by_more_than_20pct": 19,
+ "largest_divergences": [
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AA",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 1.4,
+   "gage_pg_mg_wk": 6.5,
+   "ratio_gage_over_iwpc": 4.493
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AA",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 2.6,
+   "gage_pg_mg_wk": 7.9,
+   "ratio_gage_over_iwpc": 3.031
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AG",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 4.1,
+   "gage_pg_mg_wk": 9.0,
+   "ratio_gage_over_iwpc": 2.173
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AG",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 6.0,
+   "gage_pg_mg_wk": 10.9,
+   "ratio_gage_over_iwpc": 1.826
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AA",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 6.0,
+   "gage_pg_mg_wk": 10.0,
+   "ratio_gage_over_iwpc": 1.665
+  }
+ ],
+ "per_profile": {
+  "P1_65y_170cm_75kg_white": {
+   "iwpc_clinical_mg_wk": 30.5,
+   "iwpc_pg_min_max": [
+    6.0,
+    41.9
+   ],
+   "gage_pg_min_max": [
+    10.0,
+    42.5
+   ],
+   "bsa_m2": 1.864
+  },
+  "P2_45y_160cm_60kg_asian": {
+   "iwpc_clinical_mg_wk": 25.4,
+   "iwpc_pg_min_max": [
+    6.7,
+    43.7
+   ],
+   "gage_pg_min_max": [
+    10.4,
+    44.4
+   ],
+   "bsa_m2": 1.622
+  },
+  "P3_55y_178cm_95kg_black": {
+   "iwpc_clinical_mg_wk": 42.8,
+   "iwpc_pg_min_max": [
+    7.6,
+    46.0
+   ],
+   "gage_pg_min_max": [
+    11.0,
+    46.9
+   ],
+   "bsa_m2": 2.13
+  },
+  "P4_80y_165cm_65kg_white_amiodarone": {
+   "iwpc_clinical_mg_wk": 18.1,
+   "iwpc_pg_min_max": [
+    1.4,
+    27.4
+   ],
+   "gage_pg_min_max": [
+    6.5,
+    27.6
+   ],
+   "bsa_m2": 1.716
+  }
+ },
+ "coding_sensitivity": {
+  "P1_AG_c9_as_1_1": 31.4,
+  "P1_AG_c9_as_unknown": 29.0,
+  "P1_AG_c9_as_1_2_(same_decrease_class)": 25.9,
+  "P1_vk_AA_1_1": 22.8,
+  "P1_vk_unknown_1_1": 35.9,
+  "P1_vk_GG_1_1": 41.9
+ },
+ "age_coding": {
+  "59": {
+   "iwpc_pg": 34.44,
+   "gage_pg": 32.12
+  },
+  "60": {
+   "iwpc_pg": 31.44,
+   "gage_pg": 31.88
+  },
+  "69": {
+   "iwpc_pg": 31.44,
+   "gage_pg": 29.81
+  },
+  "70": {
+   "iwpc_pg": 28.58,
+   "gage_pg": 29.59
+  }
+ },
+ "grid": [
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 41.9,
+   "gage_pg_mg_wk": 42.5,
+   "ratio_gage_over_iwpc": 1.013
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 35.4,
+   "gage_pg_mg_wk": 34.5,
+   "ratio_gage_over_iwpc": 0.974
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 30.7,
+   "gage_pg_mg_wk": 28.4,
+   "ratio_gage_over_iwpc": 0.927
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "GG",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 29.3,
+   "gage_pg_mg_wk": 28.1,
+   "ratio_gage_over_iwpc": 0.958
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "GG",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 20.7,
+   "gage_pg_mg_wk": 23.1,
+   "ratio_gage_over_iwpc": 1.115
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "GG",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 17.2,
+   "gage_pg_mg_wk": 19.0,
+   "ratio_gage_over_iwpc": 1.109
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 31.4,
+   "gage_pg_mg_wk": 30.7,
+   "ratio_gage_over_iwpc": 0.977
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 25.9,
+   "gage_pg_mg_wk": 25.0,
+   "ratio_gage_over_iwpc": 0.966
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 21.8,
+   "gage_pg_mg_wk": 20.6,
+   "ratio_gage_over_iwpc": 0.943
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AG",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 20.7,
+   "gage_pg_mg_wk": 20.3,
+   "ratio_gage_over_iwpc": 0.983
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AG",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 13.6,
+   "gage_pg_mg_wk": 16.7,
+   "ratio_gage_over_iwpc": 1.231
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AG",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 10.7,
+   "gage_pg_mg_wk": 13.8,
+   "ratio_gage_over_iwpc": 1.284
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 22.8,
+   "gage_pg_mg_wk": 22.2,
+   "ratio_gage_over_iwpc": 0.973
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 18.1,
+   "gage_pg_mg_wk": 18.1,
+   "ratio_gage_over_iwpc": 0.997
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 14.8,
+   "gage_pg_mg_wk": 14.9,
+   "ratio_gage_over_iwpc": 1.008
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AA",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 13.8,
+   "gage_pg_mg_wk": 14.7,
+   "ratio_gage_over_iwpc": 1.064
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AA",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 8.2,
+   "gage_pg_mg_wk": 12.1,
+   "ratio_gage_over_iwpc": 1.483
+  },
+  {
+   "profile": "P1_65y_170cm_75kg_white",
+   "VKORC1": "AA",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 6.0,
+   "gage_pg_mg_wk": 10.0,
+   "ratio_gage_over_iwpc": 1.665
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 43.7,
+   "gage_pg_mg_wk": 44.4,
+   "ratio_gage_over_iwpc": 1.016
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 37.1,
+   "gage_pg_mg_wk": 36.1,
+   "ratio_gage_over_iwpc": 0.974
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 32.2,
+   "gage_pg_mg_wk": 29.7,
+   "ratio_gage_over_iwpc": 0.924
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "GG",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 30.8,
+   "gage_pg_mg_wk": 29.4,
+   "ratio_gage_over_iwpc": 0.954
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "GG",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 22.0,
+   "gage_pg_mg_wk": 24.2,
+   "ratio_gage_over_iwpc": 1.1
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "GG",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 18.3,
+   "gage_pg_mg_wk": 19.9,
+   "ratio_gage_over_iwpc": 1.088
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 33.0,
+   "gage_pg_mg_wk": 32.1,
+   "ratio_gage_over_iwpc": 0.974
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 27.3,
+   "gage_pg_mg_wk": 26.1,
+   "ratio_gage_over_iwpc": 0.958
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 23.1,
+   "gage_pg_mg_wk": 21.5,
+   "ratio_gage_over_iwpc": 0.931
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AG",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 21.9,
+   "gage_pg_mg_wk": 21.2,
+   "ratio_gage_over_iwpc": 0.97
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AG",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 14.6,
+   "gage_pg_mg_wk": 17.5,
+   "ratio_gage_over_iwpc": 1.198
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AG",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 11.6,
+   "gage_pg_mg_wk": 14.4,
+   "ratio_gage_over_iwpc": 1.239
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 24.1,
+   "gage_pg_mg_wk": 23.2,
+   "ratio_gage_over_iwpc": 0.963
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 19.3,
+   "gage_pg_mg_wk": 18.9,
+   "ratio_gage_over_iwpc": 0.98
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 15.8,
+   "gage_pg_mg_wk": 15.6,
+   "ratio_gage_over_iwpc": 0.984
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AA",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 14.8,
+   "gage_pg_mg_wk": 15.4,
+   "ratio_gage_over_iwpc": 1.037
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AA",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 8.9,
+   "gage_pg_mg_wk": 12.7,
+   "ratio_gage_over_iwpc": 1.414
+  },
+  {
+   "profile": "P2_45y_160cm_60kg_asian",
+   "VKORC1": "AA",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 6.7,
+   "gage_pg_mg_wk": 10.4,
+   "ratio_gage_over_iwpc": 1.565
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 46.0,
+   "gage_pg_mg_wk": 46.9,
+   "ratio_gage_over_iwpc": 1.019
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 39.2,
+   "gage_pg_mg_wk": 38.1,
+   "ratio_gage_over_iwpc": 0.972
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 34.2,
+   "gage_pg_mg_wk": 31.4,
+   "ratio_gage_over_iwpc": 0.918
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "GG",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 32.8,
+   "gage_pg_mg_wk": 31.0,
+   "ratio_gage_over_iwpc": 0.947
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "GG",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 23.7,
+   "gage_pg_mg_wk": 25.6,
+   "ratio_gage_over_iwpc": 1.079
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "GG",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 19.8,
+   "gage_pg_mg_wk": 21.0,
+   "ratio_gage_over_iwpc": 1.06
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 35.0,
+   "gage_pg_mg_wk": 33.9,
+   "ratio_gage_over_iwpc": 0.969
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 29.1,
+   "gage_pg_mg_wk": 27.6,
+   "ratio_gage_over_iwpc": 0.947
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 24.8,
+   "gage_pg_mg_wk": 22.7,
+   "ratio_gage_over_iwpc": 0.915
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AG",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 23.6,
+   "gage_pg_mg_wk": 22.4,
+   "ratio_gage_over_iwpc": 0.952
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AG",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 16.0,
+   "gage_pg_mg_wk": 18.5,
+   "ratio_gage_over_iwpc": 1.157
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AG",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 12.9,
+   "gage_pg_mg_wk": 15.2,
+   "ratio_gage_over_iwpc": 1.183
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 25.9,
+   "gage_pg_mg_wk": 24.5,
+   "ratio_gage_over_iwpc": 0.948
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 20.9,
+   "gage_pg_mg_wk": 20.0,
+   "ratio_gage_over_iwpc": 0.957
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 17.2,
+   "gage_pg_mg_wk": 16.4,
+   "ratio_gage_over_iwpc": 0.953
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AA",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 16.2,
+   "gage_pg_mg_wk": 16.2,
+   "ratio_gage_over_iwpc": 1.001
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AA",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 10.0,
+   "gage_pg_mg_wk": 13.4,
+   "ratio_gage_over_iwpc": 1.332
+  },
+  {
+   "profile": "P3_55y_178cm_95kg_black",
+   "VKORC1": "AA",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 7.6,
+   "gage_pg_mg_wk": 11.0,
+   "ratio_gage_over_iwpc": 1.448
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 27.4,
+   "gage_pg_mg_wk": 27.6,
+   "ratio_gage_over_iwpc": 1.01
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 22.2,
+   "gage_pg_mg_wk": 22.5,
+   "ratio_gage_over_iwpc": 1.014
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "GG",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 18.4,
+   "gage_pg_mg_wk": 18.5,
+   "ratio_gage_over_iwpc": 1.004
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "GG",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 17.4,
+   "gage_pg_mg_wk": 18.3,
+   "ratio_gage_over_iwpc": 1.052
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "GG",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 11.0,
+   "gage_pg_mg_wk": 15.1,
+   "ratio_gage_over_iwpc": 1.375
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "GG",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 8.4,
+   "gage_pg_mg_wk": 12.4,
+   "ratio_gage_over_iwpc": 1.475
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 19.0,
+   "gage_pg_mg_wk": 20.0,
+   "ratio_gage_over_iwpc": 1.051
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 14.8,
+   "gage_pg_mg_wk": 16.3,
+   "ratio_gage_over_iwpc": 1.102
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AG",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 11.7,
+   "gage_pg_mg_wk": 13.4,
+   "ratio_gage_over_iwpc": 1.14
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AG",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 10.9,
+   "gage_pg_mg_wk": 13.2,
+   "ratio_gage_over_iwpc": 1.214
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AG",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 6.0,
+   "gage_pg_mg_wk": 10.9,
+   "ratio_gage_over_iwpc": 1.826
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AG",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 4.1,
+   "gage_pg_mg_wk": 9.0,
+   "ratio_gage_over_iwpc": 2.173
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*1",
+   "iwpc_pg_mg_wk": 12.5,
+   "gage_pg_mg_wk": 14.5,
+   "ratio_gage_over_iwpc": 1.159
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*2",
+   "iwpc_pg_mg_wk": 9.1,
+   "gage_pg_mg_wk": 11.8,
+   "ratio_gage_over_iwpc": 1.297
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AA",
+   "CYP2C9": "*1/*3",
+   "iwpc_pg_mg_wk": 6.7,
+   "gage_pg_mg_wk": 9.7,
+   "ratio_gage_over_iwpc": 1.436
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AA",
+   "CYP2C9": "*2/*2",
+   "iwpc_pg_mg_wk": 6.1,
+   "gage_pg_mg_wk": 9.6,
+   "ratio_gage_over_iwpc": 1.567
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AA",
+   "CYP2C9": "*2/*3",
+   "iwpc_pg_mg_wk": 2.6,
+   "gage_pg_mg_wk": 7.9,
+   "ratio_gage_over_iwpc": 3.031
+  },
+  {
+   "profile": "P4_80y_165cm_65kg_white_amiodarone",
+   "VKORC1": "AA",
+   "CYP2C9": "*3/*3",
+   "iwpc_pg_mg_wk": 1.4,
+   "gage_pg_mg_wk": 6.5,
+   "ratio_gage_over_iwpc": 4.493
+  }
+ ]
+}
