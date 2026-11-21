@@ -1036,7 +1036,7 @@ These match the ledgers: results 1 and 2 and `refinedBy_wp_iff` use no `Classica
 
 ### Statements of all referenced declarations, as printed by Lean
 
-Output of `#check @name` (with `open Toy.PredTrans`) on the built library, for every declaration named in the `lean`, `corollaries_lean`, `nonvacuity_witness_lean` and `positive_control_lean` fields and the hypothesis `counterexample` fields of `results.json` (main results, counterexamples, witnesses, controls, corollaries), unedited. The declarations in the `scope_witnesses_lean` fields are printed in the next subsection.
+Output of `#check @name` (with `open Toy.PredTrans`) on the built library, for every declaration named in the `lean`, `corollaries_lean`, `nonvacuity_witness_lean` and `positive_control_lean` fields and the hypothesis `counterexample` fields of `results.json` (main results, counterexamples, witnesses, controls, corollaries), unedited, with two exceptions. First, the 24 entries whose default output, when re-elaborated, leaves the state type of a polymorphic definition (such as `abortT`, `angelic`, `havocR` or `skipR`) undetermined are printed with `set_option pp.analyze true`, which adds the omitted type arguments and binder types (such as `(σ := Unit)` or `fun (s : Bool) …`). Second, the statements of `conjAll_arbitrary_sort` and `conjNonempty_arbitrary_sort` are quoted from the source after the listing. The declarations in the `scope_witnesses_lean` fields are printed in the next subsection.
 
 ```lean
 @conjAll_iff_eq_wlp_relOf : ∀ {σ : Type u_1} (T : Transformer σ), ConjAll T ↔ T = wlp (relOf T)
@@ -1075,13 +1075,16 @@ eventually_finitary_laws_not_relational : Monotone eventually ∧
   ContinuumState σ → ∀ {T : Transformer σ}, ConjBin T → OmegaContinuous T → ConjNonempty T
 @conjNonempty_of_conjBin_of_dirContinuous : ∀ {σ : Type u_1} {T : Transformer σ},
   ConjBin T → DirContinuous T → ConjNonempty T
-abortT_conjNonempty_not_wlp : ConjNonempty abortT ∧ Strict abortT ∧ ¬∃ R, abortT = wlp R
+abortT_conjNonempty_not_wlp : ConjNonempty (σ := Unit) abortT ∧
+  Strict (σ := Unit) abortT ∧ ¬∃ (R : Rel Unit), abortT = wlp R
 wp_predR_posP_conjNonempty_not_wlp : ConjNonempty (wp predR posP) ∧ ¬∃ R, wp predR posP = wlp R
 conjAll_wlp_stepR_and_not_conjAll_eventually : ConjAll (wlp stepR) ∧ ¬ConjAll eventually
-@relOf_wlp_skipR : ∀ {σ : Type u_1}, relOf (wlp skipR) = skipR
-angelic_laws_not_wp : Monotone angelic ∧
-  Strict angelic ∧ TopPreserving angelic ∧ OmegaContinuous angelic ∧ ¬∃ R term, angelic = wp R term
-negT_not_monotone_not_wp : ¬Monotone negT ∧ ¬∃ R term, negT = wp R term
+@relOf_wlp_skipR : ∀ {σ : Type u_1}, Eq.{u_1 + 1} (α := Rel σ) (relOf (wlp skipR)) skipR
+angelic_laws_not_wp : Monotone (σ := Bool) angelic ∧
+  Strict (σ := Bool) angelic ∧
+    TopPreserving (σ := Bool) angelic ∧
+      OmegaContinuous (σ := Bool) angelic ∧ ¬∃ (R : Rel Bool), ∃ (term : Pred Bool), angelic = wp R term
+negT_not_monotone_not_wp : ¬Monotone (σ := Unit) negT ∧ ¬∃ (R : Rel Unit), ∃ (term : Pred Unit), negT = wp R term
 wp_same_with_different_relations : wp (fun s s' => posP s → predR s s') posP = wp predR posP ∧
   (fun s s' => posP s → predR s s') ≠ predR
 lem_of_relOf_wp_of_chaosNormal : (∀ (R : Rel Unit) (term : Pred Unit), ChaosNormal R term → relOf (wp R term) = R) →
@@ -1098,7 +1101,7 @@ strict_wp_both_sides_occur : (Strict (wp predR posP) ∧ TotalOn predR posP) ∧
   ¬Strict (wp predR fun x => True) ∧ ¬TotalOn predR fun x => True
 omegaContinuous_wp_partial_infinite_image_outside_term : OmegaContinuous (wp zeroHavocR posP) ∧
   (∀ (s : Nat), posP s → FiniteImage zeroHavocR s) ∧ ¬FiniteImage zeroHavocR 0
-omegaContinuous_wp_with_infinite_image_outside_term : OmegaContinuous (wp havocR fun x => False) ∧
+omegaContinuous_wp_with_infinite_image_outside_term : OmegaContinuous (σ := Nat) (wp havocR fun x => False) ∧
   ∀ (s : Nat), ¬FiniteImage havocR s
 not_continuous_on_arbitrary_families_stepR_canonical : (∀ (s : Nat), True → FiniteImage stepR s) ∧
   OmegaContinuous (wp stepR fun x => True) ∧
@@ -1109,7 +1112,7 @@ lpo_of_finiteImage_imp_omegaContinuous_wp : (∀ (R : Rel Unit) (term : Pred Uni
   ∀ (f : Nat → Bool), (∃ k, f k = true) ∨ ∀ (k : Nat), f k = false
 omegaContinuous_wp_both_sides_occur : (OmegaContinuous (wp stepR fun x => True) ∧
     ∀ (s : Nat), True → FiniteImage stepR s) ∧
-  ¬OmegaContinuous (wp havocR fun x => True) ∧ ¬∀ (s : Nat), True → FiniteImage havocR s
+  ¬OmegaContinuous (σ := Nat) (wp havocR fun x => True) ∧ ¬∀ (s : Nat), True → FiniteImage havocR s
 omegaContinuous_wp_partial_both_sides_occur : (OmegaContinuous (wp zeroHavocR posP) ∧
     ∀ (s : Nat), posP s → FiniteImage zeroHavocR s) ∧
   ¬OmegaContinuous (wp havocR posP) ∧ ¬∀ (s : Nat), posP s → FiniteImage havocR s
@@ -1121,14 +1124,17 @@ eventually_conjList : ∀ (l : List (Pred Nat)) (s : Nat),
   eventually (fun t => ∀ (Q : Pred Nat), Q ∈ l → Q t) s ↔ ∀ (Q : Pred Nat), Q ∈ l → eventually Q s
 fromN_eq_wlp : ∀ (N : Nat), fromN N = wlp fun x s' => N ≤ s'
 eventually_iff_exists_fromN : ∀ (Q : Pred Nat) (s : Nat), eventually Q s ↔ ∃ N, fromN N Q s
-refinedBy_wp_without_global_relation_inclusion : RefinedBy (wp emptyR fun x => False) (wp havocR fun x => True) ∧
+refinedBy_wp_without_global_relation_inclusion : RefinedBy (σ := Unit) (wp emptyR fun x => False)
+    (wp havocR fun x => True) ∧
   ¬∀ (s s' : Unit), havocR s s' → emptyR s s'
-relation_inclusion_without_term_inclusion_not_refinedBy : (ChaosNormal havocR fun x => True) ∧
-  (ChaosNormal havocR fun x => False) ∧
-    (∀ (s s' : Unit), havocR s s' → havocR s s') ∧ ¬RefinedBy (wp havocR fun x => True) (wp havocR fun x => False)
-refinedBy_wp_global_inclusion_needs_chaosNormal : (¬ChaosNormal emptyR fun x => False) ∧
-  RefinedBy (wp emptyR fun x => False) (wp havocR fun x => True) ∧
-    ¬((∀ (s : Unit), (fun x => False) s → (fun x => True) s) ∧ ∀ (s s' : Unit), havocR s s' → emptyR s s')
+relation_inclusion_without_term_inclusion_not_refinedBy : (ChaosNormal (σ := Unit) havocR fun x => True) ∧
+  (ChaosNormal (σ := Unit) havocR fun x => False) ∧
+    (∀ (s s' : Unit), havocR s s' → havocR s s') ∧
+      ¬RefinedBy (σ := Unit) (wp havocR fun x => True) (wp havocR fun x => False)
+refinedBy_wp_global_inclusion_needs_chaosNormal : (¬ChaosNormal (σ := Unit) emptyR fun x => False) ∧
+  RefinedBy (σ := Unit) (wp emptyR fun x => False) (wp havocR fun x => True) ∧
+    ¬((∀ (s : Unit), (fun (x : Unit) => False) s → (fun (x : Unit) => True) s) ∧
+        ∀ (s s' : Unit), havocR s s' → emptyR s s')
 lem_of_refinedBy_wp_iff_of_chaosNormal : (∀ {R₁ R₂ : Rel Unit} {t₁ t₂ : Pred Unit},
     ChaosNormal R₁ t₁ →
       (RefinedBy (wp R₁ t₁) (wp R₂ t₂) ↔ (∀ (s : Unit), t₁ s → t₂ s) ∧ ∀ (s s' : Unit), R₂ s s' → R₁ s s')) →
@@ -1143,7 +1149,7 @@ refinedBy_wp_partial_both_sides_occur : (RefinedBy (wp predR posP) (wp predR fun
 refinedBy_wp_chaosNormal_partial_nonvacuous : ChaosNormal (fun s s' => posP s → predR s s') posP ∧
   RefinedBy (wp (fun s s' => posP s → predR s s') posP) (wp predR fun x => True) ∧
     (∀ (s : Nat), posP s → (fun x => True) s) ∧ ∀ (s s' : Nat), predR s s' → (fun s s' => posP s → predR s s') s s'
-wp_comp_first_term_wrong : (wp (comp skipR skipR) fun x => True) ≠ fun Q =>
+wp_comp_first_term_wrong : Ne (α := Transformer Unit) (wp (comp skipR skipR) fun x => True) fun Q =>
   wp skipR (fun x => True) (wp skipR (fun x => False) Q)
 wp_comp_conj_term_wrong : (wp (comp stepR skipR) fun s => True ∧ s = 0) ≠ fun Q =>
   wp stepR (fun x => True) (wp skipR (fun s => s = 0) Q)
@@ -1151,27 +1157,31 @@ wp_union_disj_term_wrong : ¬∀ (Q : Pred Unit) (s : Unit),
     wp (union skipR skipR) (fun s => (fun x => True) s ∨ (fun x => False) s) Q s ↔
       wp skipR (fun x => True) Q s ∧ wp skipR (fun x => False) Q s
 wp_comp_example : wp (comp stepR predR) (seqTerm stepR (fun x => True) posP) (fun n => n ≤ 1) 0
-negT_not_monotone_not_angelicDemonic : ¬Monotone negT ∧ ¬∃ A, negT = angelicDemonic A
-not_upClosed_not_recovered_by_multirelOf : (¬UpClosed fun s P => P = fun t => t = s) ∧
-  multirelOf (angelicDemonic fun s P => P = fun t => t = s) ≠ fun s P => P = fun t => t = s
+negT_not_monotone_not_angelicDemonic : ¬Monotone (σ := Unit) negT ∧
+  ¬∃ (A : Unit → Pred Unit → Prop), negT = angelicDemonic A
+not_upClosed_not_recovered_by_multirelOf : (¬UpClosed fun (s : Bool) P => P = fun t => t = s) ∧
+  Ne (α := Bool → Pred Bool → Prop) (multirelOf (angelicDemonic fun s P => P = fun t => t = s)) fun s P =>
+    P = fun t => t = s
 monotone_angelicDemonic_both_sides_occur : (Monotone eventually ∧ eventually = angelicDemonic (multirelOf eventually)) ∧
-  ¬Monotone negT ∧ negT ≠ angelicDemonic (multirelOf negT)
-multirelOf_angelicDemonic_both_sides_occur : ((UpClosed fun s P => P s) ∧
-    multirelOf (angelicDemonic fun s P => P s) = fun s P => P s) ∧
-  (¬UpClosed fun s P => P = fun t => t = s) ∧
-    multirelOf (angelicDemonic fun s P => P = fun t => t = s) ≠ fun s P => P = fun t => t = s
+  ¬Monotone (σ := Unit) negT ∧ Ne (α := Transformer Unit) negT (angelicDemonic (multirelOf negT))
+multirelOf_angelicDemonic_both_sides_occur : ((UpClosed fun (s : Bool) P => P s) ∧
+    Eq (α := Bool → Pred Bool → Prop) (multirelOf (angelicDemonic fun s P => P s)) fun s P => P s) ∧
+  (¬UpClosed fun (s : Bool) P => P = fun t => t = s) ∧
+    Ne (α := Bool → Pred Bool → Prop) (multirelOf (angelicDemonic fun s P => P = fun t => t = s)) fun s P =>
+      P = fun t => t = s
 eventually_eq_angelicDemonic : eventually = angelicDemonic fun x P => ∃ N, P = fun n => N ≤ n
 @wp_eq_angelicDemonic : ∀ {σ : Type u_1} (R : Rel σ) (term : Pred σ),
   wp R term = angelicDemonic fun s P => term s ∧ P = R s
-angelic_finiteState_monotone_not_conjNonempty : FiniteState Bool ∧ Monotone angelic ∧ ¬ConjNonempty angelic
+angelic_finiteState_monotone_not_conjNonempty : FiniteState Bool ∧
+  Monotone (σ := Bool) angelic ∧ ¬ConjNonempty (σ := Bool) angelic
 lem_of_conjNonempty_of_conjBin_of_finiteState : (FiniteState Unit →
     ∀ {T : Transformer Unit}, ConjBin T → ConjNonempty T) →
   ∀ (B : Prop), B ∨ ¬B
-finiteState_conjBin_nonvacuous : FiniteState Bool ∧ ConjBin (wlp skipR)
+finiteState_conjBin_nonvacuous : FiniteState Bool ∧ ConjBin (σ := Bool) (wlp skipR)
 angelic_continuum_omegaContinuous_not_conjNonempty : ContinuumState Bool ∧
-  Monotone angelic ∧ OmegaContinuous angelic ∧ ¬ConjNonempty angelic
+  Monotone (σ := Bool) angelic ∧ OmegaContinuous (σ := Bool) angelic ∧ ¬ConjNonempty (σ := Bool) angelic
 angelic_countable_omegaContinuous_not_conjNonempty : CountableState Bool ∧
-  Monotone angelic ∧ OmegaContinuous angelic ∧ ¬ConjNonempty angelic
+  Monotone (σ := Bool) angelic ∧ OmegaContinuous (σ := Bool) angelic ∧ ¬ConjNonempty (σ := Bool) angelic
 eventually_continuum_conjBin_not_conjNonempty : ContinuumState Nat ∧ ConjBin eventually ∧ ¬ConjNonempty eventually
 eventually_countable_conjBin_not_conjNonempty : CountableState Nat ∧ ConjBin eventually ∧ ¬ConjNonempty eventually
 lem_of_conjNonempty_of_conjBin_of_omegaContinuous_of_continuumState : (ContinuumState Unit →
@@ -1181,21 +1191,22 @@ lem_of_conjNonempty_of_conjBin_of_omegaContinuous_of_countable : (CountableState
     ∀ {T : Transformer Unit}, ConjBin T → OmegaContinuous T → ConjNonempty T) →
   ∀ (B : Prop), B ∨ ¬B
 continuum_conjBin_omegaContinuous_nonvacuous : ContinuumState (Nat → Bool) ∧
-  ¬CountableState (Nat → Bool) ∧ ConjBin (wp skipR fun x => True) ∧ OmegaContinuous (wp skipR fun x => True)
+  ¬CountableState (Nat → Bool) ∧
+    ConjBin (σ := Nat → Bool) (wp skipR fun x => True) ∧ OmegaContinuous (σ := Nat → Bool) (wp skipR fun x => True)
 countable_conjBin_omegaContinuous_nonvacuous : CountableState Nat ∧ ConjBin (wlp stepR) ∧ OmegaContinuous (wlp stepR)
-angelic_dirContinuous_monotone_not_conjNonempty : Monotone angelic ∧ DirContinuous angelic ∧ ¬ConjNonempty angelic
+angelic_dirContinuous_monotone_not_conjNonempty : Monotone (σ := Bool) angelic ∧
+  DirContinuous (σ := Bool) angelic ∧ ¬ConjNonempty (σ := Bool) angelic
 lem_of_conjNonempty_of_conjBin_of_dirContinuous : (∀ {T : Transformer Unit},
     ConjBin T → DirContinuous T → ConjNonempty T) →
   ∀ (B : Prop), B ∨ ¬B
 conjBin_dirContinuous_nonvacuous_beyond_continuum : ¬ContinuumState ((Nat → Bool) → Bool) ∧
-  ConjBin (wp skipR fun x => True) ∧ DirContinuous (wp skipR fun x => True)
+  ConjBin (σ := (Nat → Bool) → Bool) (wp skipR fun x => True) ∧
+    DirContinuous (σ := (Nat → Bool) → Bool) (wp skipR fun x => True)
 @wlp_injective : ∀ {σ : Type u_1} {R R' : Rel σ}, wlp R = wlp R' → R = R'
 @conjAll_iff_exists_unique_wlp : ∀ {σ : Type u_1} (T : Transformer σ),
   ConjAll T ↔ ∃ R, T = wlp R ∧ ∀ (R' : Rel σ), T = wlp R' → R' = R
 @conjAll_iff_set : ∀ {σ : Type u_1} (T : Transformer σ),
   ConjAll T ↔ ∀ (F : Pred σ → Prop) (s : σ), T (fun t => ∀ (Q : Pred σ), F Q → Q t) s ↔ ∀ (Q : Pred σ), F Q → T Q s
-@conjAll_arbitrary_sort : ∀ {σ : Type u_1} {T : Transformer σ},
-  ConjAll T → ∀ (ι : Sort u_2) (Q : ι → Pred σ) (s : σ), T (fun t => ∀ (i : ι), Q i t) s ↔ ∀ (i : ι), T (Q i) s
 @relOf_iff_not_avoids_of_monotone : ∀ {σ : Type u_1} {T : Transformer σ},
   Monotone T → ∀ (s s' : σ), relOf T s s' ↔ ¬T (fun t => t ≠ s') s
 @conjNonempty_iff_exists_wp : ∀ {σ : Type u_1} (T : Transformer σ), ConjNonempty T ↔ ∃ R term, T = wp R term
@@ -1211,9 +1222,6 @@ conjBin_dirContinuous_nonvacuous_beyond_continuum : ¬ContinuumState ((Nat → B
   ConjNonempty T ↔
     ∀ (F : Pred σ → Prop),
       (∃ Q, F Q) → ∀ (s : σ), T (fun t => ∀ (Q : Pred σ), F Q → Q t) s ↔ ∀ (Q : Pred σ), F Q → T Q s
-@conjNonempty_arbitrary_sort : ∀ {σ : Type u_1} {T : Transformer σ},
-  ConjNonempty T →
-    ∀ (ι : Sort u_2) (Q : ι → Pred σ), Nonempty ι → ∀ (s : σ), T (fun t => ∀ (i : ι), Q i t) s ↔ ∀ (i : ι), T (Q i) s
 @chaosNormal_relOf_termOf_of_monotone : ∀ {σ : Type u_1} {T : Transformer σ},
   Monotone T → ChaosNormal (relOf T) (termOf T)
 @termOf_wp : ∀ {σ : Type u_1} (R : Rel σ) (term : Pred σ), termOf (wp R term) = term
@@ -1240,16 +1248,17 @@ eventually_ne_wlp : ∀ (R : Rel Nat), eventually ≠ wlp R
 @refinedBy_wlp_iff : ∀ {σ : Type u_1} (R₁ R₂ : Rel σ), RefinedBy (wlp R₁) (wlp R₂) ↔ ∀ (s s' : σ), R₂ s s' → R₁ s s'
 @wlp_iUnion : ∀ {σ : Type u_1} {ι : Sort u_2} (R : ι → Rel σ) (Q : Pred σ) (s : σ),
   wlp (fun s s' => ∃ i, R i s s') Q s ↔ ∀ (i : ι), wlp (R i) Q s
-@wp_skipR_true : ∀ {σ : Type u_1}, (wp skipR fun x => True) = fun Q => Q
+@wp_skipR_true : ∀ {σ : Type u_1}, Eq.{u_1 + 1} (α := Transformer σ) (wp skipR fun x => True) fun Q => Q
 @wlp_emptyR : ∀ {σ : Type u_1} (Q : Pred σ) (s : σ), wlp emptyR Q s
 @seqTerm_eq_wp : ∀ {σ : Type u_1} (R₁ : Rel σ) (t₁ t₂ : Pred σ), seqTerm R₁ t₁ t₂ = wp R₁ t₁ t₂
 @monotone_angelicDemonic : ∀ {σ : Type u_1} (A : σ → Pred σ → Prop), Monotone (angelicDemonic A)
 @monotone_iff_exists_angelicDemonic : ∀ {σ : Type u_1} (T : Transformer σ), Monotone T ↔ ∃ A, T = angelicDemonic A
 @upClosed_multirelOf_iff : ∀ {σ : Type u_1} (T : Transformer σ), UpClosed (multirelOf T) ↔ Monotone T
-angelicDemonic_not_injective : ∃ A A', A ≠ A' ∧ angelicDemonic A = angelicDemonic A'
-upClosed_not_unique_among_all : (UpClosed fun s P => P s) ∧
-  (¬UpClosed fun s P => P = fun t => t = s) ∧
-    (angelicDemonic fun s P => P s) = angelicDemonic fun s P => P = fun t => t = s
+angelicDemonic_not_injective : ∃ (A : Bool → Pred Bool → Prop),
+  ∃ (A' : Bool → Pred Bool → Prop), A ≠ A' ∧ angelicDemonic A = angelicDemonic A'
+upClosed_not_unique_among_all : (UpClosed fun (s : Bool) P => P s) ∧
+  (¬UpClosed fun (s : Bool) P => P = fun t => t = s) ∧
+    Eq (α := Transformer Bool) (angelicDemonic fun s P => P s) (angelicDemonic fun s P => P = fun t => t = s)
 @kernel_established_of_list : ∀ {σ : Type u_1} {T : Transformer σ},
   ConjBin T →
     ∀ (s : σ) (l : List σ),
@@ -1267,6 +1276,20 @@ nat_to_bool_uncountable_conjBin_omegaContinuous_conjNonempty : ¬CountableState 
 @omegaContinuous_of_dirContinuous : ∀ {σ : Type u_1} {T : Transformer σ}, DirContinuous T → OmegaContinuous T
 @finiteImage_on_term_of_dirContinuous_wp : ∀ {σ : Type u_1} {R : Rel σ} {term : Pred σ},
   DirContinuous (wp R term) → ∀ (s : σ), term s → FiniteImage R s
+```
+
+The statements of `conjAll_arbitrary_sort` and `conjNonempty_arbitrary_sort`, quoted from the source (in `namespace Toy.PredTrans` with `universe u` and `variable {σ : Type u}`):
+
+```lean
+-- lean/ToyPredTrans/Basic.lean:129-131
+theorem conjAll_arbitrary_sort.{v} {T : Transformer σ} (h : ConjAll T)
+    (ι : Sort v) (Q : ι → Pred σ) (s : σ) :
+    T (fun t => ∀ i, Q i t) s ↔ ∀ i, T (Q i) s
+
+-- lean/ToyPredTrans/Basic.lean:145-147
+theorem conjNonempty_arbitrary_sort.{v} {T : Transformer σ} (h : ConjNonempty T)
+    (ι : Sort v) (Q : ι → Pred σ) (hι : Nonempty ι) (s : σ) :
+    T (fun t => ∀ i, Q i t) s ↔ ∀ i, T (Q i) s
 ```
 
 ### Statements of the scope witnesses cited in the non-claims, as printed by Lean
@@ -1288,22 +1311,23 @@ These 12 theorems are the proved scope witnesses cited in parentheses in the non
 | `relational_criterion_fails_off_wp` | result 6, non-claim 3 | `Quot.sound`, `propext` |
 | `termOf_wlp_emptyR_no_outcome` | result 2, non-claim 2; result 3, non-claim 2 | none |
 
-Output of `#check @name` (with `open Toy.PredTrans`) on the built library, unedited.
+Output of `#check @name` (with `open Toy.PredTrans`) on the built library, unedited, except that the 5 entries whose default output leaves the state type undetermined on re-elaboration are printed with `set_option pp.analyze true`, as in the previous subsection.
 
 ```lean
-abortT_finiteState_conjBin_not_conjAll : FiniteState Unit ∧ ConjBin abortT ∧ ¬ConjAll abortT
-chaosNormal_not_preserved_by_comp : (ChaosNormal havocR fun x => False) ∧
-  (ChaosNormal emptyR fun x => True) ∧ ¬ChaosNormal (comp havocR emptyR) (seqTerm havocR (fun x => False) fun x => True)
+abortT_finiteState_conjBin_not_conjAll : FiniteState Unit ∧ ConjBin (σ := Unit) abortT ∧ ¬ConjAll (σ := Unit) abortT
+chaosNormal_not_preserved_by_comp : (ChaosNormal (σ := Unit) havocR fun x => False) ∧
+  (ChaosNormal (σ := Unit) emptyR fun x => True) ∧
+    ¬ChaosNormal (σ := Unit) (comp havocR emptyR) (seqTerm havocR (fun x => False) fun x => True)
 constT_conjNonempty_not_strict_not_topPreserving : ConjNonempty (constT fun b => b = true) ∧
   ¬Strict (constT fun b => b = true) ∧ ¬TopPreserving (constT fun b => b = true)
-@dirContinuous_negT : ∀ {σ : Type u_1}, DirContinuous negT
-havocR_nat_conjAll_strict_not_omegaContinuous : ConjAll (wlp havocR) ∧
-  Strict (wlp havocR) ∧ ¬OmegaContinuous (wlp havocR)
+@dirContinuous_negT : ∀ {σ : Type u_1}, DirContinuous.{u_1} (σ := σ) negT
+havocR_nat_conjAll_strict_not_omegaContinuous : ConjAll (σ := Nat) (wlp havocR) ∧
+  Strict (σ := Nat) (wlp havocR) ∧ ¬OmegaContinuous (σ := Nat) (wlp havocR)
 not_disjBin_eventually : eventually (fun n => n % 2 = 0 ∨ n % 2 = 1) 0 ∧
   ¬eventually (fun n => n % 2 = 0) 0 ∧ ¬eventually (fun n => n % 2 = 1) 0
 not_disjBin_wlp_stepR : wlp stepR (fun n => n = 1 ∨ n = 2) 0 ∧
   ¬wlp stepR (fun n => n = 1) 0 ∧ ¬wlp stepR (fun n => n = 2) 0
-omegaContinuous_negT_not_monotone : OmegaContinuous negT ∧ ¬Monotone negT
+omegaContinuous_negT_not_monotone : OmegaContinuous (σ := Unit) negT ∧ ¬Monotone (σ := Unit) negT
 @omegaContinuous_wp_emptyR : ∀ {σ : Type u_1} (term : Pred σ), OmegaContinuous (wp emptyR term)
 relOf_eventually_finite_not_conjNonempty : (∀ (s : Nat), FiniteImage (relOf eventually) s) ∧ ¬ConjNonempty eventually
 relational_criterion_fails_off_wp : (∀ (s : Nat), termOf (wlp emptyR) s → termOf eventually s) ∧
