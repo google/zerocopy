@@ -1,0 +1,232 @@
+# Hobbit probe run
+# date: 2026-11-21T04:39:08Z
+# subject: LaifsV1/Hobbit 63bc51532a6173066fff1cb2d28e0b4998fe459a, built with 'make' (ocamlbuild)
+# toolchain: OCaml 5.4.0, menhir, version 20260122, ocamlbuild 0.16.1, Z3 4.13.3 (built from source with OCaml bindings)
+# host: x86-64 Linux, 96 vCPU Intel(R) Xeon(R) CPU @ 2.60GHz, runs sequential under nice
+# per-run timeout: 150 s; times and peak RSS from /usr/bin/time -f '%e %M'
+== Hobbit benchmark programs (default bound 6, default up-to techniques)
+equiv/hector-pitts-stark.bils                args=[] verdict=inconclusive wall_s=0.04 maxrss_kB=32128
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+equiv/hector-thamsborg.bils                  args=[] verdict=inconclusive wall_s=0.07 maxrss_kB=33872
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+equiv/syteci-well-bracket-state.bils         args=[] verdict=inconclusive wall_s=0.07 maxrss_kB=34420
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+equiv/meyer-sieber-e1.bils                   args=[] verdict=equivalent wall_s=0.01 maxrss_kB=31432
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. The bound was not exceeded - the terms are indeed equivalent!
+equiv/syteci-call-lock.bils                  args=[] verdict=inconclusive wall_s=3.49 maxrss_kB=48588
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However, up-to reentry failed so equivalences may be unsound.
+    | ***Retrying with up-to reentry call-skipping off***
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+equiv/counter.bils                           args=[] verdict=equivalent wall_s=0.02 maxrss_kB=39888
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. The bound was not exceeded - the terms are indeed equivalent!
+equiv/cell-ho.bils                           args=[] verdict=equivalent wall_s=0.01 maxrss_kB=38340
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. The bound was not exceeded - the terms are indeed equivalent!
+equiv/hector-scope-extrusion-2-3.bils        args=[] verdict=equivalent wall_s=0.01 maxrss_kB=31480
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. The bound was not exceeded - the terms are indeed equivalent!
+inequiv/hector-snapback.bils                 args=[] verdict=inequivalent wall_s=0.03 maxrss_kB=31436
+    | ****************
+    | Bisimulation failed! Failing trace:
+    | -pr_ret _idx_1_->
+    | -op_call _idx_1_ (af6 : (unit->unit) -> unit )->
+    | -pr_call (af6 : (unit->unit) -> unit ) _idx_1_->
+    | -op_ret ()->
+    | -pr_ret ()->
+    | -op_call _idx_1_ ()->
+    | -[ entering RHS=bot ]->
+    | -pr_ret ()->
+    | -[ only LHS terminates ]->
+inequiv/hector-stark-tricky.bils             args=[] verdict=inequivalent wall_s=0.02 maxrss_kB=30936
+    | ****************
+    | Bisimulation failed! Failing trace:
+    | -pr_ret _idx_1_->
+    | -op_call _idx_1_ (af4 : int -> int )->
+    | -pr_call (af4 : int -> int ) 1->
+    | -op_call _idx_1_ (af4 : int -> int )->
+    | -[ entering RHS=bot (tried: 
+    | -pr_call (af4 : int -> int ) 1->) ]->
+    | -pr_call (af4 : int -> int ) 2->
+    | -op_ret (ac12 : int)->
+    | -pr_ret (ac12 : int)->
+    | -op_ret (ac19 : int)->
+    | -pr_ret (ac19 : int)->
+    | -[ only LHS terminates ]->
+inequiv/hector-scope-extrusion-1-2.bils      args=[] verdict=inequivalent wall_s=0.02 maxrss_kB=38408
+    | ****************
+    | Bisimulation failed! Failing trace:
+    | -pr_ret _idx_1_->
+    | -op_call _idx_1_ (af8 : (int->int) -> int )->
+    | -pr_call (af8 : (int->int) -> int ) _idx_1_->
+    | -op_call _idx_1_ (ac17 : int)->
+    | -pr_ret (ac17 : int)->
+    | -op_call _idx_1_ (ac23 : int)->
+    | -[ entering RHS=bot (tried: 
+    | -pr_ret (ac23 : int)->) ]->
+    | -pr_ret (w28 : int)->
+    | -op_ret (ac30 : int)->
+    | -pr_ret (ac30 : int)->
+    | -[ only LHS terminates ]->
+    | Symbolic Environment:
+    |  (w_28 = (ac_23 - 1))
+    | Satisfying Assignment:
+    | (define-fun ac_23 () Int
+    |   0)
+    | (define-fun w_28 () Int
+    |   (- 1))
+inequiv/meyer-sieber-ineq.bils               args=[] verdict=inconclusive wall_s=0.01 maxrss_kB=32272
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+== Same equivalences with all up-to techniques off (-u '')
+equiv/hector-pitts-stark.bils                args=[-u ] verdict=inconclusive wall_s=0.01 maxrss_kB=32256
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+equiv/hector-pitts-stark.bils                args=[-u  -b 12] verdict=inconclusive wall_s=0.02 maxrss_kB=33052
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 12. However the bound was exceeded in some plays.
+equiv/hector-thamsborg.bils                  args=[-u ] verdict=inconclusive wall_s=0.06 maxrss_kB=33956
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+equiv/hector-thamsborg.bils                  args=[-u  -b 12] verdict=timeout wall_s=150.02 maxrss_kB=163496
+    | ****************
+equiv/meyer-sieber-e1.bils                   args=[-u ] verdict=inconclusive wall_s=0.06 maxrss_kB=33004
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+equiv/meyer-sieber-e1.bils                   args=[-u  -b 12] verdict=inconclusive wall_s=104.71 maxrss_kB=1165712
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 12. However the bound was exceeded in some plays.
+equiv/syteci-call-lock.bils                  args=[-u ] verdict=inconclusive wall_s=45.90 maxrss_kB=125504
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+equiv/syteci-call-lock.bils                  args=[-u  -b 12] verdict=timeout wall_s=150.04 maxrss_kB=511828
+    | ****************
+== Probes written for this report (support/probes/)
+probes/p1-callback-escape.bils               args=[] verdict=inequivalent wall_s=0.01 maxrss_kB=30744
+    | ****************
+    | Bisimulation failed! Failing trace:
+    | -pr_ret _idx_1_->
+    | -op_call _idx_1_ (af6 : (unit->int) -> unit )->
+    | -pr_call (af6 : (unit->int) -> unit ) _idx_1_->
+    | -op_ret ()->
+    | -pr_ret ()->
+    | -op_call _idx_1_ ()->
+    | -[ entering RHS=bot (tried: 
+    | -pr_ret 0->) ]->
+    | -pr_ret 1->
+    | -[ only LHS terminates ]->
+probes/p2-callback-revoked.bils              args=[] verdict=equivalent wall_s=0.01 maxrss_kB=30588
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. The bound was not exceeded - the terms are indeed equivalent!
+probes/p3-call-twice-innocence.bils          args=[] verdict=inequivalent wall_s=0.01 maxrss_kB=36096
+    | ****************
+    | Bisimulation failed! Failing trace:
+    | -pr_ret _idx_1_->
+    | -op_call _idx_1_ (af2 : int -> int )->
+    | -pr_call (af2 : int -> int ) 0->
+    | -op_ret (ac5 : int)->
+    | -[ entering LHS=bot (tried: 
+    | -pr_call (af2 : int -> int ) 0->) ]->
+    | -pr_ret (w6 : int)->
+    | -[ only RHS terminates ]->
+probes/p4-call-once-vs-twice.bils            args=[] verdict=inequivalent wall_s=0.01 maxrss_kB=30652
+    | ****************
+    | Bisimulation failed! Failing trace:
+    | -pr_ret _idx_1_->
+    | -op_call _idx_1_ (af2 : unit -> unit )->
+    | -pr_call (af2 : unit -> unit ) ()->
+    | -op_ret ()->
+    | -[ entering LHS=bot (tried: 
+    | -pr_call (af2 : unit -> unit ) ()->) ]->
+    | -pr_ret 0->
+    | -[ only RHS terminates ]->
+probes/p5b-local-counter-with-invariant.bils args=[] verdict=equivalent wall_s=0.03 maxrss_kB=35960
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. The bound was not exceeded - the terms are indeed equivalent!
+probes/p5-local-counter-vs-const.bils        args=[] verdict=inconclusive wall_s=0.02 maxrss_kB=31496
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+probes/p6-shared-counter-observable.bils     args=[] verdict=inequivalent wall_s=0.01 maxrss_kB=31408
+    | ****************
+    | Bisimulation failed! Failing trace:
+    | -pr_ret _idx_1_->
+    | -op_call _idx_1_ ()->
+    | -pr_ret 1->
+    | -op_call _idx_1_ ()->
+    | -[ entering RHS=bot (tried: 
+    | -pr_ret 1->) ]->
+    | -pr_ret 2->
+    | -[ only LHS terminates ]->
+probes/p7-deferred-divergence-hos.bils       args=[] verdict=inconclusive wall_s=0.02 maxrss_kB=31076
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+== Probe p2 with larger bounds and with up-to techniques off
+probes/p2-callback-revoked.bils              args=[-b 12] verdict=equivalent wall_s=0.01 maxrss_kB=31440
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 12. The bound was not exceeded - the terms are indeed equivalent!
+probes/p2-callback-revoked.bils              args=[-u  -b 6] verdict=inconclusive wall_s=0.30 maxrss_kB=34416
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+probes/p5-local-counter-vs-const.bils        args=[-u ] verdict=inconclusive wall_s=0.06 maxrss_kB=32184
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+probes/p5-local-counter-vs-const.bils        args=[-b 12] verdict=inconclusive wall_s=0.01 maxrss_kB=30960
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 12. However the bound was exceeded in some plays.
+probes/p5-local-counter-vs-const.bils        args=[-b 24] verdict=inconclusive wall_s=0.01 maxrss_kB=31476
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 24. However the bound was exceeded in some plays.
+probes/p5b-local-counter-with-invariant.bils args=[-u ngsrialfue] verdict=inconclusive wall_s=0.02 maxrss_kB=29164
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 6. However the bound was exceeded in some plays.
+== Benchmarks at the larger bounds listed in the repository's run-tests.sh SPECIAL_BOUNDS
+equiv/syteci-call-lock.bils                  args=[-b 10] verdict=inconclusive wall_s=114.28 maxrss_kB=338588
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 10. However, up-to reentry failed so equivalences may be unsound.
+    | ***Retrying with up-to reentry call-skipping off***
+    | END! Nothing more to explore; no difference was found between the terms with bound = 10. However the bound was exceeded in some plays.
+inequiv/meyer-sieber-ineq.bils               args=[-b 8] verdict=inequivalent wall_s=0.01 maxrss_kB=31476
+    | ****************
+    | Bisimulation failed! Failing trace:
+    | -pr_ret _idx_1_->
+    | -op_call _idx_1_ (af6 : (unit->unit) -> unit )->
+    | -pr_call (af6 : (unit->unit) -> unit ) _idx_1_->
+    | -op_call _idx_1_ ()->
+    | -pr_ret ()->
+    | -op_call _idx_1_ ()->
+    | -pr_ret ()->
+    | -op_call _idx_1_ ()->
+    | -pr_ret ()->
+    | -op_call _idx_1_ ()->
+    | -pr_ret ()->
+    | -op_call _idx_1_ ()->
+    | -pr_ret ()->
+    | -op_call _idx_1_ ()->
+    | -pr_ret ()->
+    | -op_ret ()->
+    | -[ entering LHS=bot ]->
+    | -pr_ret ()->
+    | -[ only RHS terminates ]->
+== Well-bracketing-dependent equivalences at larger bounds (default up-to techniques)
+equiv/hector-pitts-stark.bils                args=[-b 12] verdict=inconclusive wall_s=0.02 maxrss_kB=33000
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 12. However the bound was exceeded in some plays.
+equiv/hector-pitts-stark.bils                args=[-b 24] verdict=inconclusive wall_s=0.03 maxrss_kB=33764
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 24. However the bound was exceeded in some plays.
+equiv/hector-thamsborg.bils                  args=[-b 12] verdict=inconclusive wall_s=23.64 maxrss_kB=138948
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 12. However the bound was exceeded in some plays.
+equiv/hector-thamsborg.bils                  args=[-b 24] verdict=timeout wall_s=150.03 maxrss_kB=429332
+    | ****************
+probes/p7-deferred-divergence-hos.bils       args=[-b 12] verdict=inconclusive wall_s=0.06 maxrss_kB=32088
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 12. However the bound was exceeded in some plays.
+probes/p7-deferred-divergence-hos.bils       args=[-b 24] verdict=inconclusive wall_s=0.23 maxrss_kB=33780
+    | ****************
+    | END! Nothing more to explore; no difference was found between the terms with bound = 24. However the bound was exceeded in some plays.

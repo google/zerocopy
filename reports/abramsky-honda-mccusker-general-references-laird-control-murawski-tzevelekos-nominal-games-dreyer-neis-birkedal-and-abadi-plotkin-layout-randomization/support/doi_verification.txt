@@ -1,0 +1,19 @@
+# Crossref lookups, 2026-11-21T04:59:26Z
+ok	10.1006/inco.2000.2930	Full Abstraction for PCF	Information and Computation	2000	vol=163	issue=2	pages=409-470
+ok	10.1006/inco.2000.2917	On Full Abstraction for PCF: I, II, and III	Information and Computation	2000	vol=163	issue=2	pages=285-408
+ok	10.1016/S1571-0661(05)80398-6	Linearity, Sharing and State: a fully abstract game semantics for Idealized Algol with active expressions	Electronic Notes in Theoretical Computer Science	1996	vol=3	issue=	pages=2-14
+ok	10.1109/LICS.1997.614931	Full abstraction for functional languages with control	Proceedings of Twelfth Annual IEEE Symposium on Logic in Computer Science		vol=	issue=	pages=58-67
+ok	10.1109/LICS.1998.705669	A fully abstract game semantics for general references	Proceedings. Thirteenth Annual IEEE Symposium on Logic in Computer Science (Cat. No.98CB36226)		vol=	issue=	pages=334-344
+ok	10.1007/3-540-57182-5_8	Observable properties of higher order functions that dynamically create local names, or: What's new?	Lecture Notes in Computer Science	1993	vol=	issue=	pages=122-141
+ok	10.1561/2500000017	Nominal Game Semantics	Foundations and Trends® in Programming Languages	2016	vol=2	issue=4	pages=191-269
+ok	10.1145/1111037.1111050	Small bisimulations for reasoning about higher-order imperative programs	Conference record of the 33rd ACM SIGPLAN-SIGACT symposium on Principles of programming languages	2006	vol=	issue=	pages=141-152
+ok	10.1145/1863543.1863566	The impact of higher-order state and control effects on local relational reasoning	Proceedings of the 15th ACM SIGPLAN international conference on Functional programming	2010	vol=	issue=	pages=143-156
+ok	10.1017/S095679681200024X	The impact of higher-order state and control effects on local relational reasoning	Journal of Functional Programming	2012	vol=22	issue=4-5	pages=477-528
+ok	10.1007/978-3-030-99527-0_10	From Bounded Checking to Verification of Equivalence via Symbolic Up-to Techniques	Lecture Notes in Computer Science	2022	vol=	issue=	pages=178-195
+ok	10.1109/CSF.2011.18	Local Memory via Layout Randomization	2011 IEEE 24th Computer Security Foundations Symposium	2011	vol=	issue=	pages=161-174
+ok	10.1145/2240276.2240279	On Protection by Layout Randomization	ACM Transactions on Information and System Security	2012	vol=15	issue=2	pages=1-29
+ok	10.1109/CSF.2010.30	On Protection by Layout Randomization	2010 23rd IEEE Computer Security Foundations Symposium	2010	vol=	issue=	pages=337-351
+ok	10.1145/73560.73577	Towards fully abstract semantics for local variables	Proceedings of the 15th ACM SIGPLAN-SIGACT symposium on Principles of programming languages  - POPL '88	1988	vol=	issue=	pages=191-203
+ok	10.1007/978-3-642-58622-4_1	Game Semantics	Computational Logic	1999	vol=	issue=	pages=1-55
+ok	10.1109/LICS.2011.31	Game Semantics for Good General References	2011 IEEE 26th Annual Symposium on Logic in Computer Science	2011	vol=	issue=	pages=75-84
+ok	10.1007/978-3-642-31585-5_30	Algorithmic Games for Full Ground References	Lecture Notes in Computer Science	2012	vol=	issue=	pages=312-324

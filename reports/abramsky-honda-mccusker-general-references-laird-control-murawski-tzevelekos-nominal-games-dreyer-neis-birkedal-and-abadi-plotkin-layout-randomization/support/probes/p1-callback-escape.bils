@@ -1,0 +1,5 @@
+# Equivalent only if the context cannot keep the callback after f returns.
+# A context with higher-order state can store g and call it later, seeing 1 vs 0.
+fun f -> ref x = 0 in f (fun u -> !x); x := 1; ()
+|||_((unit -> int) -> unit) -> unit
+fun f -> f (fun u -> 0); ()

@@ -1,0 +1,40 @@
+== WBGT: approximations minus thermofeel Liljegren (deg C); synthetic inputs, p = 1013.25 hPa
+-- scenario night (ssrd=0 W/m2, fdir=0, cos(sza)=0); Liljegren NaN count: 0 / 100
+   sWBGT       RH 10-30%: diff min   4.66  median   5.11  max   7.33
+   sWBGT       RH 50-50%: diff min   4.59  median   6.13  max  10.58
+   sWBGT       RH 70-90%: diff min   4.83  median   8.66  max  19.27
+   sWBGT       heat-force level differs from Liljegren at 68 / 100 points (max |level diff| 3)
+   ESI         RH 10-30%: diff min   0.34  median   1.43  max   2.23
+   ESI         RH 50-50%: diff min   0.39  median   0.61  max   0.67
+   ESI         RH 70-90%: diff min   0.40  median   1.13  max   2.86
+   ESI         heat-force level differs from Liljegren at 55 / 100 points (max |level diff| 2)
+   Stull+globe RH 10-30%: diff min   0.22  median   0.61  max   0.93
+   Stull+globe RH 50-50%: diff min   0.27  median   0.46  max   0.53
+   Stull+globe RH 70-90%: diff min  -0.27  median   0.11  max   0.32
+   Stull+globe heat-force level differs from Liljegren at 25 / 100 points (max |level diff| 1)
+   spot Ta=35 RH=70 v10=1: Liljegren 31.52  sWBGT 39.20  ESI 32.45  Stull+globe 31.68
+   spot Ta=40 RH=10 v10=1: Liljegren 24.47  sWBGT 29.51  ESI 26.33  Stull+globe 24.96
+   spot Ta=30 RH=90 v10=0.5: Liljegren 28.91  sWBGT 35.91  ESI 30.05  Stull+globe 29.04
+-- scenario sun800 (ssrd=800 W/m2, fdir=0.8, cos(sza)=0.85); Liljegren NaN count: 0 / 100
+   sWBGT       RH 10-30%: diff min  -3.92  median  -0.39  max   4.08
+   sWBGT       RH 50-50%: diff min  -3.57  median   1.30  max   7.52
+   sWBGT       RH 70-90%: diff min  -2.97  median   3.87  max  16.42
+   sWBGT       heat-force level differs from Liljegren at 33 / 100 points (max |level diff| 2)
+   ESI         RH 10-30%: diff min  -5.26  median  -2.06  max   0.76
+   ESI         RH 50-50%: diff min  -5.29  median  -2.34  max  -0.08
+   ESI         RH 70-90%: diff min  -5.07  median  -1.20  max   2.34
+   ESI         heat-force level differs from Liljegren at 40 / 100 points (max |level diff| 3)
+   spot Ta=35 RH=70 v10=1: Liljegren 37.22  sWBGT 39.20  ESI 34.78
+   spot Ta=40 RH=10 v10=1: Liljegren 31.04  sWBGT 29.51  ESI 28.66
+   spot Ta=30 RH=90 v10=0.5: Liljegren 35.96  sWBGT 35.91  ESI 32.38
+-- wind_scaling at Ta=35 RH=50 v10=2 sun800: liljegren-profile 33.195  brode-log-profile 33.240  diff 0.046
+
+== UTCI: thermofeel calculate_utci vs pythermalcomfort utci (deg C); synthetic grid
+grid points: 1440; same vapour pressure fed to both: max |diff| = 1.46e-11 C
+pythermalcomfort default (limit_inputs=True) NaN at 180 / 1440 points (vapour pressure > 5 kPa or other limits)
+thermofeel td_k path vs e=Hardy_es(Td): max |diff| = 0.013 C (median 0.0015)
+   vapour pressure ratio (td path / Hardy_es(T)*RH): min 0.9748 max 1.0029
+   out-of-range Ta=30 Tr=30 v=0.1 RH=50: ptc default nan  ptc unlimited 30.30  thermofeel 30.30
+   out-of-range Ta=30 Tr=30 v=25 RH=50: ptc default nan  ptc unlimited 39.37  thermofeel 39.37
+   out-of-range Ta=55 Tr=55 v=1 RH=20: ptc default nan  ptc unlimited 55.32  thermofeel 55.32
+   out-of-range Ta=40 Tr=40 v=1 RH=90: ptc default nan  ptc unlimited 72.59  thermofeel 72.59

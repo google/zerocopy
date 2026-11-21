@@ -111,6 +111,136 @@
         "systems/object-formats"
       ]
     },
+    "abramsky-honda-mccusker-general-references-laird-control-murawski-tzevelekos-nominal-games-dreyer-neis-birkedal-and-abadi-plotkin-layout-randomization": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "LaifsV1/Hobbit",
+            "revision": "63bc51532a6173066fff1cb2d28e0b4998fe459a"
+          },
+          "name": "Hobbit higher-order bounded bisimulation tool"
+        },
+        {
+          "identity": {
+            "arxiv": "1311.6125",
+            "doi": "10.1006/inco.2000.2930",
+            "version": "read as arXiv 1311.6125v2"
+          },
+          "name": "Abramsky, Jagadeesan and Malacaria, Full Abstraction for PCF"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/inco.2000.2917",
+            "url": "https://ora.ox.ac.uk/objects/uuid:63c54392-39f3-46f1-8a68-e6ff0ec90218"
+          },
+          "name": "Hyland and Ong, On Full Abstraction for PCF: I, II, and III"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S1571-0661(05)80398-6",
+            "url": "https://www.cs.ox.ac.uk/people/samson.abramsky/lss.ps.gz",
+            "version": "read as the ENTCS extended abstract"
+          },
+          "name": "Abramsky and McCusker, Linearity, Sharing and State (Idealized Algol with active expressions)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-58622-4_1",
+            "url": "https://www.cs.ox.ac.uk/people/samson.abramsky/mdorf97.ps.gz",
+            "version": "read as author preprint"
+          },
+          "name": "Abramsky and McCusker, Game Semantics (Marktoberdorf lecture notes)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.1998.705669",
+            "url": "https://www.cs.ox.ac.uk/people/samson.abramsky/lics98.ps.gz",
+            "version": "read as author preprint"
+          },
+          "name": "Abramsky, Honda and McCusker, A Fully Abstract Game Semantics for General References"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-57182-5_8",
+            "url": "https://homepages.inf.ed.ac.uk/stark/obspho-mfcs.pdf"
+          },
+          "name": "Pitts and Stark, Observable Properties of Higher Order Functions that Dynamically Create Local Names, or: What's new?"
+        },
+        {
+          "identity": {
+            "doi": "10.1561/2500000017",
+            "url": "https://www.cs.ox.ac.uk/andrzej.murawski/papers/ftpl16.pdf"
+          },
+          "name": "Murawski and Tzevelekos, Nominal Game Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.2011.31",
+            "url": "https://www.cs.ox.ac.uk/andrzej.murawski/papers/lics11.pdf"
+          },
+          "name": "Murawski and Tzevelekos, Game Semantics for Good General References"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-31585-5_30",
+            "url": "https://www.cs.ox.ac.uk/andrzej.murawski/papers/icalp12.pdf"
+          },
+          "name": "Murawski and Tzevelekos, Algorithmic Games for Full Ground References"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1111037.1111050",
+            "url": "https://www.scss.tcd.ie/Vasileios.Koutavas/publications/dissertation.pdf",
+            "version": "read as Koutavas, PhD dissertation, Northeastern University, 2008, chapters 3-4"
+          },
+          "name": "Koutavas and Wand, Small Bisimulations for Reasoning About Higher-Order Imperative Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S095679681200024X",
+            "url": "https://people.mpi-sws.org/~dreyer/papers/stslr/journal.pdf"
+          },
+          "name": "Dreyer, Neis and Birkedal, The Impact of Higher-Order State and Control Effects on Local Relational Reasoning (journal version)"
+        },
+        {
+          "identity": {
+            "arxiv": "2105.02541",
+            "doi": "10.1007/978-3-030-99527-0_10",
+            "version": "read as the accepted manuscript in the Trinity College Dublin repository"
+          },
+          "name": "Koutavas, Lin and Tzevelekos, From Bounded Checking to Verification of Equivalence via Symbolic Up-to Techniques"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF.2011.18",
+            "url": "https://fpl.cs.depaul.edu/jriely/papers/2011-layout.pdf"
+          },
+          "name": "Jagadeesan, Pitcher, Rathke and Riely, Local Memory via Layout Randomization"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2240276.2240279",
+            "url": "https://homepages.inf.ed.ac.uk/gdp/publications/paper-journal-short.pdf",
+            "version": "read as author preprint"
+          },
+          "name": "Abadi and Plotkin, On Protection by Layout Randomization (journal version)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF.2010.30",
+            "url": "https://conferences.computer.org/sp/pdfs/csf/2010/2010-abadi-protection.pdf"
+          },
+          "name": "Abadi and Plotkin, On Protection by Layout Randomization (CSF 2010)"
+        }
+      ],
+      "topics": [
+        "pl/fully-abstract-game-semantics",
+        "verification/context-feature-extension-and-equivalence",
+        "security/memory-layout-observability-in-full-abstraction",
+        "tooling/bounded-program-equivalence-checking"
+      ]
+    },
     "acausal-dae-languages-structural-variability-and-operadic-composition": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -72805,6 +72935,135 @@
         "domains/structural-fire-dynamics",
         "domains/atmospheric-plume-dispersion",
         "verification/fire-and-plume-regime-limits"
+      ]
+    },
+    "rothfusz-heat-index-regression-lu-romps-extension-liljegren-wbgt-utci-operational-procedure-thermofeel-and-heat-health-warning-evaluation": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "pythermalcomfort/pythermalcomfort",
+            "revision": "a0e7ae2a9a0178f24b33fdd75f06f27e9f00ba76",
+            "version": "4.8.1"
+          },
+          "name": "pythermalcomfort (heat_index_rothfusz, heat_index_lu, utci, wbgt, esi models)"
+        },
+        {
+          "identity": {
+            "repository": "ecmwf/thermofeel",
+            "revision": "53437e0e47fb428c452d0f418b68fb46ba802a22",
+            "version": "2.3.0"
+          },
+          "name": "thermofeel (heat index, UTCI, Liljegren WBGT and WBGT approximations)"
+        },
+        {
+          "identity": {
+            "repository": "geanders/weathermetrics",
+            "revision": "429ee9a4410c6c0c00d209a32ae8e52a0edfa4cc"
+          },
+          "name": "weathermetrics R package (heat.index, heat.index.algorithm)"
+        },
+        {
+          "identity": {
+            "repository": "Unidata/MetPy",
+            "revision": "5edfa0186fb0d01ef6d29319c6c2a496a888fb28"
+          },
+          "name": "MetPy (metpy.calc.heat_index)"
+        },
+        {
+          "identity": {
+            "standard": "NWS Southern Region Technical Attachment SR 90-23 (1 July 1990)",
+            "url": "https://www.weather.gov/media/ffc/ta_htindx.PDF"
+          },
+          "name": "Rothfusz 1990, The Heat Index Equation, NWS Southern Region Technical Attachment SR 90-23"
+        },
+        {
+          "identity": {
+            "url": "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml",
+            "version": "page content as accessed 2026-11-21"
+          },
+          "name": "NWS Weather Prediction Center, The Heat Index Equation (operational algorithm text)"
+        },
+        {
+          "identity": {
+            "url": "https://www.weather.gov/ama/heatindex",
+            "version": "page content as accessed 2026-11-21"
+          },
+          "name": "NWS Amarillo forecast office heat index page (risk classification table)"
+        },
+        {
+          "identity": {
+            "url": "http://www.bom.gov.au/info/thermal_stress/",
+            "version": "page content as accessed 2026-11-21"
+          },
+          "name": "Australian Bureau of Meteorology, thermal stress page (simplified WBGT approximation)"
+        },
+        {
+          "identity": {
+            "doi": "10.1289/ehp.1206273"
+          },
+          "name": "Anderson, Bell and Peng 2013, Methods to calculate the heat index as an exposure metric in environmental health research"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/JAMC-D-22-0021.1"
+          },
+          "name": "Lu and Romps 2022, Extending the heat index"
+        },
+        {
+          "identity": {
+            "doi": "10.1088/1748-9326/ac8945"
+          },
+          "name": "Romps and Lu 2022, Chronically underestimated: a reassessment of US heat waves using the extended heat index"
+        },
+        {
+          "identity": {
+            "doi": "10.1080/15459620802310770"
+          },
+          "name": "Liljegren, Carhart, Lawday, Tschopp and Sharp 2008, Modeling the wet bulb globe temperature using standard meteorological measurements"
+        },
+        {
+          "identity": {
+            "doi": "10.1029/2021EF002334"
+          },
+          "name": "Kong and Huber 2022, Explicit calculations of wet-bulb globe temperature compared with approximations"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/JAMC-D-11-0143.1"
+          },
+          "name": "Stull 2011, Wet-bulb temperature from relative humidity and air temperature"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s00484-011-0454-1"
+          },
+          "name": "Broede et al. 2012, Deriving the operational procedure for the Universal Thermal Climate Index (UTCI)"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/BAMS-85-8-1067"
+          },
+          "name": "Ebi, Teisberg, Kalkstein, Robinson and Weiher 2004, Heat watch/warning systems save lives: Philadelphia 1995-98"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s00038-013-0465-2"
+          },
+          "name": "Toloo, FitzGerald, Aitken, Verrall and Tong 2013, Evaluating the effectiveness of heat warning systems: systematic review"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.envint.2021.106834"
+          },
+          "name": "Weinberger et al. 2021, Heat warnings, mortality, and hospital admissions among older adults in the United States"
+        }
+      ],
+      "topics": [
+        "domains/heat-stress-index-computation",
+        "domains/heat-health-warning-systems",
+        "verification/heat-index-implementation-divergence",
+        "tooling/open-thermal-comfort-libraries"
       ]
     },
     "rowan-red-green-csts-tree-sitter-glr-recovery-and-hyperscan-teddy-automata": {

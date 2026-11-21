@@ -1,0 +1,129 @@
+{
+  "topics": [
+    "domains/heat-stress-index-computation",
+    "domains/heat-health-warning-systems",
+    "verification/heat-index-implementation-divergence",
+    "tooling/open-thermal-comfort-libraries"
+  ],
+  "subjects": [
+    {
+      "name": "pythermalcomfort (heat_index_rothfusz, heat_index_lu, utci, wbgt, esi models)",
+      "identity": {
+        "repository": "pythermalcomfort/pythermalcomfort",
+        "revision": "a0e7ae2a9a0178f24b33fdd75f06f27e9f00ba76",
+        "version": "4.8.1"
+      }
+    },
+    {
+      "name": "thermofeel (heat index, UTCI, Liljegren WBGT and WBGT approximations)",
+      "identity": {
+        "repository": "ecmwf/thermofeel",
+        "revision": "53437e0e47fb428c452d0f418b68fb46ba802a22",
+        "version": "2.3.0"
+      }
+    },
+    {
+      "name": "weathermetrics R package (heat.index, heat.index.algorithm)",
+      "identity": {
+        "repository": "geanders/weathermetrics",
+        "revision": "429ee9a4410c6c0c00d209a32ae8e52a0edfa4cc"
+      }
+    },
+    {
+      "name": "MetPy (metpy.calc.heat_index)",
+      "identity": {
+        "repository": "Unidata/MetPy",
+        "revision": "5edfa0186fb0d01ef6d29319c6c2a496a888fb28"
+      }
+    },
+    {
+      "name": "Rothfusz 1990, The Heat Index Equation, NWS Southern Region Technical Attachment SR 90-23",
+      "identity": {
+        "standard": "NWS Southern Region Technical Attachment SR 90-23 (1 July 1990)",
+        "url": "https://www.weather.gov/media/ffc/ta_htindx.PDF"
+      }
+    },
+    {
+      "name": "NWS Weather Prediction Center, The Heat Index Equation (operational algorithm text)",
+      "identity": {
+        "url": "https://www.wpc.ncep.noaa.gov/html/heatindex_equation.shtml",
+        "version": "page content as accessed 2026-11-21"
+      }
+    },
+    {
+      "name": "NWS Amarillo forecast office heat index page (risk classification table)",
+      "identity": {
+        "url": "https://www.weather.gov/ama/heatindex",
+        "version": "page content as accessed 2026-11-21"
+      }
+    },
+    {
+      "name": "Australian Bureau of Meteorology, thermal stress page (simplified WBGT approximation)",
+      "identity": {
+        "url": "http://www.bom.gov.au/info/thermal_stress/",
+        "version": "page content as accessed 2026-11-21"
+      }
+    },
+    {
+      "name": "Anderson, Bell and Peng 2013, Methods to calculate the heat index as an exposure metric in environmental health research",
+      "identity": {
+        "doi": "10.1289/ehp.1206273"
+      }
+    },
+    {
+      "name": "Lu and Romps 2022, Extending the heat index",
+      "identity": {
+        "doi": "10.1175/JAMC-D-22-0021.1"
+      }
+    },
+    {
+      "name": "Romps and Lu 2022, Chronically underestimated: a reassessment of US heat waves using the extended heat index",
+      "identity": {
+        "doi": "10.1088/1748-9326/ac8945"
+      }
+    },
+    {
+      "name": "Liljegren, Carhart, Lawday, Tschopp and Sharp 2008, Modeling the wet bulb globe temperature using standard meteorological measurements",
+      "identity": {
+        "doi": "10.1080/15459620802310770"
+      }
+    },
+    {
+      "name": "Kong and Huber 2022, Explicit calculations of wet-bulb globe temperature compared with approximations",
+      "identity": {
+        "doi": "10.1029/2021EF002334"
+      }
+    },
+    {
+      "name": "Stull 2011, Wet-bulb temperature from relative humidity and air temperature",
+      "identity": {
+        "doi": "10.1175/JAMC-D-11-0143.1"
+      }
+    },
+    {
+      "name": "Broede et al. 2012, Deriving the operational procedure for the Universal Thermal Climate Index (UTCI)",
+      "identity": {
+        "doi": "10.1007/s00484-011-0454-1"
+      }
+    },
+    {
+      "name": "Ebi, Teisberg, Kalkstein, Robinson and Weiher 2004, Heat watch/warning systems save lives: Philadelphia 1995-98",
+      "identity": {
+        "doi": "10.1175/BAMS-85-8-1067"
+      }
+    },
+    {
+      "name": "Toloo, FitzGerald, Aitken, Verrall and Tong 2013, Evaluating the effectiveness of heat warning systems: systematic review",
+      "identity": {
+        "doi": "10.1007/s00038-013-0465-2"
+      }
+    },
+    {
+      "name": "Weinberger et al. 2021, Heat warnings, mortality, and hospital admissions among older adults in the United States",
+      "identity": {
+        "doi": "10.1016/j.envint.2021.106834"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

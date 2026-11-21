@@ -1,0 +1,4 @@
+# A private counter that is never read back is unobservable.
+fun u -> ref c = 0 in (fun v -> c := !c + 1; 7)
+|||_(unit -> (unit -> int))
+fun u -> (fun v -> 7)

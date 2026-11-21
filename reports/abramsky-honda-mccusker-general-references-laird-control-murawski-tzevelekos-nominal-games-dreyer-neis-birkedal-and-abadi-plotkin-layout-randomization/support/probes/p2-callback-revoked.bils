@@ -1,0 +1,5 @@
+# Same as p1, but each side revokes its callback when f returns:
+# later calls diverge on both sides, so retention no longer distinguishes them.
+fun f -> ref x = 0 in ref live = true in f (fun u -> if !live then !x else _bot_); live := false; x := 1; ()
+|||_((unit -> int) -> unit) -> unit
+fun f -> ref live = true in f (fun u -> if !live then 0 else _bot_); live := false; ()

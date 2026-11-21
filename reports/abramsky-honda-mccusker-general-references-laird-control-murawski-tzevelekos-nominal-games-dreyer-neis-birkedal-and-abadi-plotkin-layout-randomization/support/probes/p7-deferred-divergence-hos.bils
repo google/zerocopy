@@ -1,0 +1,7 @@
+# "Deferred divergence", higher-order-state version (Dreyer-Neis-Birkedal JFP 2012,
+# Sec. 5.2, after Bohr). Stated there to hold without call/cc even with
+# higher-order state, and to fail with call/cc.
+ref x = false in ref y = false in
+fun f -> f (fun u -> if !x then _bot_ else y := true); if !y then _bot_ else x := true
+|||_((unit -> unit) -> unit) -> unit
+fun f -> f (fun u -> _bot_)

@@ -1,0 +1,5 @@
+# p5 with a user-supplied state invariant (up-to generalisation): the value of c
+# is abstracted to an arbitrary integer w, which makes the state space finite.
+fun u -> ref c = 0 in (fun v {w | c as w | true} -> c := !c + 1; 7)
+|||_(unit -> (unit -> int))
+fun u -> (fun v -> 7)

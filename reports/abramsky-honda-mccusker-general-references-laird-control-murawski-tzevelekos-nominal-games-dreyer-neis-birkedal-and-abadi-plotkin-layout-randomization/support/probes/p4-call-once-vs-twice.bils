@@ -1,0 +1,4 @@
+# Pure contexts cannot count calls if results are discarded; stateful contexts can.
+fun f -> f (); f (); 0
+|||_((unit -> unit) -> int)
+fun f -> f (); 0

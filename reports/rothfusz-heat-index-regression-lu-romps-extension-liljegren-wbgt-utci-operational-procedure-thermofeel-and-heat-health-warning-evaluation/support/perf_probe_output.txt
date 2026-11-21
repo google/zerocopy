@@ -1,0 +1,21 @@
+import pythermalcomfort+thermofeel+metpy: 12.95 s
+ptc heat_index_rothfusz (scalar)   first call 0.052 s, second call 0.000299 s
+ptc heat_index_lu (scalar)         first call 0.000 s, second call 0.000124 s
+ptc utci (scalar)                  first call 0.001 s, second call 0.000481 s
+ptc heat_index_rothfusz            n=1000000  best of 3: 0.0448 s  = 45 ns/point
+thermofeel heat_index_simplified   n=1000000  best of 3: 0.0627 s  = 63 ns/point
+thermofeel heat_index_adjusted     n=1000000  best of 3: 0.1079 s  = 108 ns/point
+metpy heat_index                   n=1000000  best of 3: 0.1161 s  = 116 ns/point
+ptc utci                           n=1000000  best of 3: 0.4590 s  = 459 ns/point
+thermofeel calculate_utci          n=1000000  best of 3: 0.7605 s  = 761 ns/point
+thermofeel wbgt_liljegren (sun)    n=100000   best of 3: 0.5799 s  = 5799 ns/point
+ptc heat_index_lu                  n=20000    best of 3: 1.8786 s  = 93930 ns/point
+	User time (seconds): 36.71
+	System time (seconds): 1.27
+	Percent of CPU this job got: 142%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:26.68
+	Maximum resident set size (kbytes): 698020
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 339124
+	Voluntary context switches: 209
+	Involuntary context switches: 4630

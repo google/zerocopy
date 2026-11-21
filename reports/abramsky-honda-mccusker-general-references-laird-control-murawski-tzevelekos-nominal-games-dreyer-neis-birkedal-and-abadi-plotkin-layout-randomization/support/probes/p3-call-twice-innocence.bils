@@ -1,0 +1,5 @@
+# Equivalent for pure (innocent) contexts: f 0 returns the same value twice.
+# A stateful context can answer the two calls differently.
+fun f -> f 0 + f 0
+|||_((int -> int) -> int)
+fun f -> 2 * (f 0)

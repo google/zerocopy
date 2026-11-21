@@ -1,0 +1,4 @@
+# A counter shared across all calls and returned is observable.
+ref c = 0 in (fun v -> c := !c + 1; !c)
+|||_(unit -> int)
+ref c = 0 in (fun v -> 1)

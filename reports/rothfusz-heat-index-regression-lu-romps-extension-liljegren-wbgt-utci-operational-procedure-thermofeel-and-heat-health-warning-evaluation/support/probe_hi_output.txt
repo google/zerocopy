@@ -1,0 +1,78 @@
+grid: T 70..125 F step 0.5 (111), RH 0..100 % step 1 (101), 11211 points
+
+[1] Celsius-coefficient Rothfusz (pythermalcomfort, no limit) vs Fahrenheit Rothfusz:
+    max |diff| = 0.0000 F
+
+[2] Pairwise max |diff| (F) over grid points where both are finite:
+    nws_literal            vs wm_translit            max   2.252 at T=79.0F RH=93%  n_diff>0.05=185
+    nws_literal            vs metpy                  max   2.252 at T=79.0F RH=93%  n_diff>0.05=216
+    nws_literal            vs thermofeel_adjusted    max   0.000 at T=110.5F RH=99%  n_diff>0.05=0
+    nws_literal            vs thermofeel_simplified  max   9.433 at T=70.0F RH=100%  n_diff>0.05=3042
+    nws_literal            vs ptc_rothfusz_nolimit   max   9.433 at T=70.0F RH=100%  n_diff>0.05=3042
+    nws_literal            vs ptc_lu                 max 116.970 at T=125.0F RH=100%  n_diff>0.05=10841
+    wm_translit            vs metpy                  max   1.365 at T=81.0F RH=0%  n_diff>0.05=31
+    wm_translit            vs thermofeel_adjusted    max   2.252 at T=79.0F RH=93%  n_diff>0.05=185
+    wm_translit            vs thermofeel_simplified  max   9.433 at T=70.0F RH=100%  n_diff>0.05=2857
+    wm_translit            vs ptc_rothfusz_nolimit   max   9.433 at T=70.0F RH=100%  n_diff>0.05=2857
+    wm_translit            vs ptc_lu                 max 116.970 at T=125.0F RH=100%  n_diff>0.05=10840
+    metpy                  vs thermofeel_adjusted    max   2.252 at T=79.0F RH=93%  n_diff>0.05=213
+    metpy                  vs thermofeel_simplified  max   9.433 at T=70.0F RH=100%  n_diff>0.05=2865
+    metpy                  vs ptc_rothfusz_nolimit   max   9.433 at T=70.0F RH=100%  n_diff>0.05=2865
+    metpy                  vs ptc_lu                 max 116.970 at T=125.0F RH=100%  n_diff>0.05=10840
+    thermofeel_adjusted    vs thermofeel_simplified  max   9.433 at T=70.0F RH=100%  n_diff>0.05=2959
+    thermofeel_adjusted    vs ptc_rothfusz_nolimit   max   9.433 at T=70.0F RH=100%  n_diff>0.05=2959
+    thermofeel_adjusted    vs ptc_lu                 max 116.970 at T=125.0F RH=100%  n_diff>0.05=10748
+    thermofeel_simplified  vs ptc_rothfusz_nolimit   max   0.000 at T=124.0F RH=89%  n_diff>0.05=0
+    thermofeel_simplified  vs ptc_lu                 max 116.970 at T=125.0F RH=100%  n_diff>0.05=10939
+    ptc_rothfusz_nolimit   vs ptc_lu                 max 116.970 at T=125.0F RH=100%  n_diff>0.05=10939
+
+[3] Switch-rule disagreement region (simple formula vs regression):
+    nws_literal vs wm_translit: 185 points differ by >0.05F; T range 77.0..80.5 F, RH range 16..100 %, max 2.252 F
+    wm_translit vs metpy: 31 points differ by >0.05F; T range 80.0..81.0 F, RH range 0..12 %, max 1.365 F
+    nws_literal vs metpy: 216 points differ by >0.05F; T range 77.0..81.0 F, RH range 0..100 %, max 2.252 F
+    thermofeel_adjusted vs nws_literal: no point differs by >0.05F
+
+[4] Spot values (F):
+    T= 80.0 RH=  5  nws_literal=77.94  wm_translit=77.94  metpy=77.25  thermofeel_adjusted=77.94  thermofeel_simplified=77.93  ptc_rothfusz_nolimit=77.93  ptc_lu=76.16  ptc_rothfusz_default=nan
+    T= 80.0 RH= 13  nws_literal=78.31  wm_translit=78.31  metpy=78.31  thermofeel_adjusted=78.31  thermofeel_simplified=78.24  ptc_rothfusz_nolimit=78.24  ptc_lu=77.11  ptc_rothfusz_default=nan
+    T= 81.0 RH= 40  nws_literal=80.65  wm_translit=80.65  metpy=80.65  thermofeel_adjusted=80.65  thermofeel_simplified=80.65  ptc_rothfusz_nolimit=80.65  ptc_lu=80.53  ptc_rothfusz_default=80.65
+    T= 85.0 RH= 90  nws_literal=101.78  wm_translit=101.78  metpy=101.78  thermofeel_adjusted=101.78  thermofeel_simplified=101.58  ptc_rothfusz_nolimit=101.58  ptc_lu=101.39  ptc_rothfusz_default=101.58
+    T= 96.0 RH= 65  nws_literal=121.03  wm_translit=121.03  metpy=121.03  thermofeel_adjusted=121.03  thermofeel_simplified=121.03  ptc_rothfusz_nolimit=121.03  ptc_lu=140.27  ptc_rothfusz_default=121.03
+    T=100.0 RH= 15  nws_literal=95.85  wm_translit=95.85  metpy=95.85  thermofeel_adjusted=95.85  thermofeel_simplified=95.85  ptc_rothfusz_nolimit=95.85  ptc_lu=96.15  ptc_rothfusz_default=95.85
+    T=100.0 RH= 55  nws_literal=123.64  wm_translit=123.64  metpy=123.64  thermofeel_adjusted=123.64  thermofeel_simplified=123.64  ptc_rothfusz_nolimit=123.64  ptc_lu=140.70  ptc_rothfusz_default=123.64
+    T=110.0 RH= 40  nws_literal=135.66  wm_translit=135.66  metpy=135.66  thermofeel_adjusted=135.66  thermofeel_simplified=135.66  ptc_rothfusz_nolimit=135.66  ptc_lu=148.37  ptc_rothfusz_default=135.66
+    T=115.0 RH= 60  nws_literal=196.60  wm_translit=196.60  metpy=196.60  thermofeel_adjusted=196.60  thermofeel_simplified=196.60  ptc_rothfusz_nolimit=196.60  ptc_lu=200.06  ptc_rothfusz_default=196.60
+    T=120.0 RH= 80  nws_literal=295.10  wm_translit=295.10  metpy=295.10  thermofeel_adjusted=295.10  thermofeel_simplified=295.10  ptc_rothfusz_nolimit=295.10  ptc_lu=258.19  ptc_rothfusz_default=295.10
+    T= 70.0 RH= 50  nws_literal=69.05  wm_translit=69.05  metpy=69.05  thermofeel_adjusted=69.05  thermofeel_simplified=76.93  ptc_rothfusz_nolimit=76.93  ptc_lu=68.67  ptc_rothfusz_default=nan
+    T= 90.0 RH=  0  nws_literal=83.92  wm_translit=83.92  metpy=83.92  thermofeel_adjusted=nan  thermofeel_simplified=86.65  ptc_rothfusz_nolimit=86.65  ptc_lu=84.05  ptc_rothfusz_default=86.65
+
+[5] Category disagreement vs nws_literal under the NWS office table (count of grid points):
+    nws_literal            differs from nws_literal category at     0 / 11211 finite points
+    wm_translit            differs from nws_literal category at    87 / 11211 finite points
+    metpy                  differs from nws_literal category at    87 / 11211 finite points
+    thermofeel_adjusted    differs from nws_literal category at     0 / 11100 finite points
+    thermofeel_simplified  differs from nws_literal category at   202 / 11211 finite points
+    ptc_rothfusz_nolimit   differs from nws_literal category at   202 / 11211 finite points
+    ptc_lu                 differs from nws_literal category at   685 / 11211 finite points
+
+[6] Same function (nws_literal), NWS office table vs pythermalcomfort category edges:
+    differing points: 703 / 11211
+    HI in [103.0, 105.8] F: 303 points (NWS level [np.int64(3)] vs pythermalcomfort level [np.int64(2)])
+    HI in [125.0, 129.2] F: 236 points (NWS level [np.int64(4)] vs pythermalcomfort level [np.int64(3)])
+
+[7] Extended heat index (pythermalcomfort heat_index_lu) minus nws_literal (F), by T band, RH>=50%:
+    T in [80,90): min -1.72  max 28.87  mean 3.10
+    T in [90,100): min -1.43  max 23.81  mean 12.56
+    T in [100,110): min -34.43  max 17.55  mean 5.20
+    T in [110,125): min -116.97  max 12.99  mean -25.30
+
+[7b] Same difference restricted to the NWS chart domain T 80..110 F, RH 40..100 %:
+    max 28.87 F at T=85.5 RH=100 (nws 109.7, lu 138.6); min -36.58 F at T=110.0 RH=100 (nws 278.2, lu 241.6)
+    ... and NWS HI <= 137 F: max 28.87 F at T=85.5 RH=100; min -1.72 F
+    Celsius-vs-Fahrenheit Rothfusz max |diff| = 2.456e-05 F
+
+[8] Cool-weather behaviour (T = 0..60 F, RH 0..100):
+    ptc_rothfusz_nolimit - T: max 426.5 F (at T=0 RH=95)
+    ptc_rothfusz_default: NaN at 1281 / 1281 points
+    thermofeel_simplified - T: max |diff| 0.000 F
+    ptc_lu - T: min -7.33 max 0.79 F
