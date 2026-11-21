@@ -1,0 +1,738 @@
+{
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "miri_version": "miri 0.1.0 (3ef0c22cdb 2026-11-11)",
+  "miri_preserve_ub_matrix": {
+    "surface_null_deref_named_binding": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                                 ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                                 ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                                 ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                                 ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                                 ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                                 ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      }
+    },
+    "surface_unchecked_add_overflow_named_binding": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: arithmetic overflow in `unchecked_add`",
+          "  |                                 ^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: arithmetic overflow in `unchecked_add`",
+          "  |                                 ^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: arithmetic overflow in `unchecked_add`",
+          "  |                                 ^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: arithmetic overflow in `unchecked_add`",
+          "  |                                 ^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: arithmetic overflow in `unchecked_add`",
+          "  |                                 ^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: arithmetic overflow in `unchecked_add`",
+          "  |                                 ^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      }
+    },
+    "surface_dangling_discriminant_named_binding": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: constructing invalid value of type &std::option::Option<std::num::NonZero<u32>>: encountered a null reference",
+          "  |                                                                 ^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: constructing invalid value of type &std::option::Option<std::num::NonZero<u32>>: encountered a null reference",
+          "  |                                                                 ^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: constructing invalid value of type &std::option::Option<std::num::NonZero<u32>>: encountered a null reference",
+          "  |                                                                 ^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: constructing invalid value of type &std::option::Option<std::num::NonZero<u32>>: encountered a null reference",
+          "  |                                                                 ^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: constructing invalid value of type &std::option::Option<std::num::NonZero<u32>>: encountered a null reference",
+          "  |                                                                 ^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: constructing invalid value of type &std::option::Option<std::num::NonZero<u32>>: encountered a null reference",
+          "  |                                                                 ^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      }
+    },
+    "surface_null_deref_unnamed_temp_no_debuginfo": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                  ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                  ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                  ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                  ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                  ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                  ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      }
+    },
+    "surface_unchecked_div_zero_unnamed_temp": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      }
+    },
+    "surface_null_deref_bitor_unnamed_temp": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                 ^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                 ^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                 ^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                 ^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                 ^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                 ^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      }
+    },
+    "surface_tiny_fn_unchecked_div_zero_strip_debuginfo": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "  |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      }
+    },
+    "surface_tiny_fn_null_deref_strip_debuginfo": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                            ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                            ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                            ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                            ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "  |                            ^^ Undefined Behavior occurred here",
+          "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      }
+    },
+    "custom_mir_div_zero_dead_local": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: dividing by zero",
+          "   |             ^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      }
+    },
+    "custom_mir_null_deref_dead_local": {
+      "opt0_baseline": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 1,
+        "ub_detected": true,
+        "diagnostic_head": [
+          "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer",
+          "   |             ^^^^^^^^^ Undefined Behavior occurred here",
+          "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "preserve_ub_plus_SimplifyLocals": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+SimplifyLocals-final",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      },
+      "preserve_ub_plus_DSE": {
+        "flags": "-Zmir-opt-level=0 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no -Zmir-enable-passes=+DeadStoreElimination-final",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      },
+      "preserve_ub_opt1": {
+        "flags": "-Zmir-opt-level=1 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      },
+      "preserve_ub_opt2": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Cdebuginfo=0 -Zub-checks=no",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      },
+      "preserve_ub_opt2_strip_tiny_debuginfo": {
+        "flags": "-Zmir-opt-level=2 -Zmir-preserve-ub=yes -Zmir-strip-debuginfo=locals-in-tiny-functions -Zub-checks=no",
+        "rc": 0,
+        "ub_detected": false,
+        "diagnostic_head": []
+      }
+    }
+  },
+  "zerocopy_post_simplifycfg_tail_census": {
+    "SimplifyCfg-final": {
+      "before": {
+        "bodies": 4302,
+        "locals": 17037,
+        "assigns": 12983,
+        "copy_move_assigns": 320,
+        "storage_ops": 14463,
+        "bbs": 11513
+      },
+      "after": {
+        "bodies": 4302,
+        "locals": 17037,
+        "assigns": 12916,
+        "copy_move_assigns": 307,
+        "storage_ops": 14343,
+        "bbs": 11317
+      },
+      "delta_locals": 0,
+      "delta_assigns": -67,
+      "delta_copy_move_assigns": -13,
+      "delta_storage_ops": -120
+    },
+    "CopyProp": {
+      "before": {
+        "bodies": 4302,
+        "locals": 17037,
+        "assigns": 12916,
+        "copy_move_assigns": 307,
+        "storage_ops": 14343,
+        "bbs": 11317
+      },
+      "after": {
+        "bodies": 4302,
+        "locals": 17037,
+        "assigns": 12778,
+        "copy_move_assigns": 174,
+        "storage_ops": 14044,
+        "bbs": 11317
+      },
+      "delta_locals": 0,
+      "delta_assigns": -138,
+      "delta_copy_move_assigns": -133,
+      "delta_storage_ops": -299
+    },
+    "DeadStoreElimination-final": {
+      "before": {
+        "bodies": 4302,
+        "locals": 17037,
+        "assigns": 12778,
+        "copy_move_assigns": 174,
+        "storage_ops": 14044,
+        "bbs": 11317
+      },
+      "after": {
+        "bodies": 4302,
+        "locals": 17037,
+        "assigns": 12772,
+        "copy_move_assigns": 174,
+        "storage_ops": 14030,
+        "bbs": 11317
+      },
+      "delta_locals": 0,
+      "delta_assigns": -6,
+      "delta_copy_move_assigns": 0,
+      "delta_storage_ops": -14
+    },
+    "DestinationPropagation": {
+      "before": {
+        "bodies": 4302,
+        "locals": 17037,
+        "assigns": 12772,
+        "copy_move_assigns": 174,
+        "storage_ops": 14030,
+        "bbs": 11317
+      },
+      "after": {
+        "bodies": 4302,
+        "locals": 17037,
+        "assigns": 12714,
+        "copy_move_assigns": 116,
+        "storage_ops": 13855,
+        "bbs": 11317
+      },
+      "delta_locals": 0,
+      "delta_assigns": -58,
+      "delta_copy_move_assigns": -58,
+      "delta_storage_ops": -175
+    },
+    "SimplifyLocals-final": {
+      "before": {
+        "bodies": 4302,
+        "locals": 17037,
+        "assigns": 12714,
+        "copy_move_assigns": 116,
+        "storage_ops": 13855,
+        "bbs": 11317
+      },
+      "after": {
+        "bodies": 4302,
+        "locals": 16768,
+        "assigns": 12714,
+        "copy_move_assigns": 116,
+        "storage_ops": 13839,
+        "bbs": 11317
+      },
+      "delta_locals": -269,
+      "delta_assigns": 0,
+      "delta_copy_move_assigns": 0,
+      "delta_storage_ops": -16
+    }
+  }
+}
