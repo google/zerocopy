@@ -1,0 +1,6 @@
+M1 NaN comparison            minimal counterexample: nan                          wall=0.025s
+M2 empty collection          minimal counterexample: []                           wall=0.006s
+M3 short-circuit absence     minimal counterexample: {}                           wall=0.006s
+M4 operator association      minimal counterexample: (False, True)                wall=0.009s
+M5 prefix match (random text) minimal counterexample: no counterexample (NoSuchExample) wall=1.731s
+M5 prefix match (grammar)    minimal counterexample: 'a: mean;'                   wall=1.346s

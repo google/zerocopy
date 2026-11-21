@@ -1,0 +1,60 @@
+{"counts": {"FALSE_ACCEPT": 273, "FALSE_REJECT": 6, "agree": 1764, "run": 2043, "skipped_incompatible": 196}, "dialect": "2019", "files": 69, "format_mode": "tags", "optional": false, "seconds": 0.09}
+  FALSE_ACCEPT   30  format-date-time.json
+  FALSE_ACCEPT   25  format-duration.json
+  FALSE_ACCEPT   29  format-email.json
+  FALSE_ACCEPT   37  format-hostname.json
+  FALSE_ACCEPT    6  format-idn-email.json
+  FALSE_ACCEPT    5  format-idn-hostname.json
+  FALSE_ACCEPT   10  format-iri-reference.json
+  FALSE_ACCEPT   15  format-iri.json
+  FALSE_ACCEPT   12  format-json-pointer.json
+  FALSE_ACCEPT   14  format-relative-json-pointer.json
+  FALSE_ACCEPT   28  format-time.json
+  FALSE_ACCEPT   14  format-uri-reference.json
+  FALSE_ACCEPT   21  format-uri-template.json
+  FALSE_ACCEPT   27  format-uri.json
+  FALSE_REJECT    5  format-idn-hostname.json
+  FALSE_REJECT    1  vocabulary.json
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time past leap second, UTC | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time with leap second on a wrong minute, UTC | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time with leap second on a wrong hour, UTC | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid day in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid offset in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid closing Z after time-zone offset | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid hour in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid minute in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid offset minute in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | only RFC3339 not all of ISO 8601 are valid | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid non-padded month dates | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid non-padded day dates | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid non-ASCII '৪' (a Bengali 4) in date portion | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid non-ASCII '৪' (a Bengali 4) in time portion | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid extended year | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | a numeric offset without minutes is invalid | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | hour 24 is invalid even with a leap second | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | a trailing newline is invalid | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time string without seconds | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time string with trailing content after the offset | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid minute in date-time string, with a numeric offset | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time string with 30 days in February (leap) | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | 2021 is not a leap year | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | century year 0100 is not a leap year | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | century year 2100 is not a leap year | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | a second fraction with no digits | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | a comma decimal separator with a time-offset | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | leading whitespace before a valid date-time | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | trailing whitespace after a valid date-time | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | an invalid duration string | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | must start with P | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | no elements present | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | no time elements present | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | no date or time elements present | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | elements out of order | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | missing time separator | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | time element in the date position | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | weeks cannot be combined with other units | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | invalid non-ASCII '২' (a Bengali 2) | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | element without unit | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | fractional duration is not allowed by RFC 3339 ABNF | 
+    FALSE_ACCEPT | format-duration.json | validation of duration strings | leading whitespace is invalid | 

@@ -1,0 +1,6 @@
+$ python3  -c 'from isla.three_valued_truth import ThreeValuedTruth as T; bool(T.unknown()); not T.unknown()'
+bool(UNKNOWN) raised AssertionError
+not UNKNOWN raised AssertionError
+$ python3 -O -c 'from isla.three_valued_truth import ThreeValuedTruth as T; bool(T.unknown()); not T.unknown()'
+bool(UNKNOWN) = True
+not UNKNOWN = False

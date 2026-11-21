@@ -1,0 +1,187 @@
+{
+  "topics": [
+    "verification/fail-open-input-validator-testing",
+    "tooling/cross-implementation-validator-conformance",
+    "domains/scientific-and-clinical-data-format-validation",
+    "security/grammar-and-constraint-based-input-generation"
+  ],
+  "subjects": [
+    {
+      "name": "JSON Schema Test Suite",
+      "identity": {
+        "repository": "json-schema-org/JSON-Schema-Test-Suite",
+        "revision": "e2a68a15cd490750fd6b95e604e4054d7d978d1f"
+      }
+    },
+    {
+      "name": "Bowtie JSON Schema meta-validator harness",
+      "identity": {
+        "repository": "bowtie-json-schema/bowtie",
+        "revision": "7efa389ea00a409ab5402135a828b97e84061b52"
+      }
+    },
+    {
+      "name": "python-jsonschema",
+      "identity": {
+        "repository": "python-jsonschema/jsonschema",
+        "revision": "64b62de5df4ec52d7679c770427329e86a22c395"
+      }
+    },
+    {
+      "name": "ajv JSON Schema validator",
+      "identity": {
+        "repository": "ajv-validator/ajv",
+        "revision": "0fba0b8e649909613cfce0999b149cd08f4a4987",
+        "version": "v8.20.0"
+      }
+    },
+    {
+      "name": "Bowtie js-ajv harness image",
+      "identity": {
+        "artifact": "ghcr.io/bowtie-json-schema/js-ajv",
+        "sha256": "ea0f71070f9ac77e5b08a57ed76ee6999cb3f8a5e8894b0ca37b8660df80357f"
+      }
+    },
+    {
+      "name": "Bowtie python-jsonschema harness image",
+      "identity": {
+        "artifact": "ghcr.io/bowtie-json-schema/python-jsonschema",
+        "sha256": "bff076a43a8c1535cb916f6e7766af7126a1b967b724373eb266e50cc2a4f6bf"
+      }
+    },
+    {
+      "name": "JSON Schema 2020-12 core and validation specifications (source)",
+      "identity": {
+        "repository": "json-schema-org/json-schema-spec",
+        "revision": "add836e705c9a07434c467b6b90946ba45258a73",
+        "version": "draft-bhutton-json-schema-01 / draft-bhutton-json-schema-validation-01"
+      }
+    },
+    {
+      "name": "dicom-validator (DICOM IOD validator)",
+      "identity": {
+        "repository": "pydicom/dicom-validator",
+        "revision": "4c10bc6d1e10ae72c1e6dd1e163bc74739e3e8ae"
+      }
+    },
+    {
+      "name": "IOOS compliance-checker (CF checks)",
+      "identity": {
+        "repository": "ioos/compliance-checker",
+        "revision": "b25b86dfe58fd18a1db3e35f3c495837790408dc"
+      }
+    },
+    {
+      "name": "CF metadata conventions (source)",
+      "identity": {
+        "repository": "cf-convention/cf-conventions",
+        "revision": "2805580ad312cd940aa03537b25fa1809781f35b"
+      }
+    },
+    {
+      "name": "ISLa input specification language and solver",
+      "identity": {
+        "repository": "rindPHI/isla",
+        "revision": "1a04b7833d2960cffe037fb88826111769fefbeb"
+      }
+    },
+    {
+      "name": "Hypothesis property-based testing library",
+      "identity": {
+        "repository": "HypothesisWorks/hypothesis",
+        "revision": "9a15ddde58248954d62f97e6265c8bf99c25bd54"
+      }
+    },
+    {
+      "name": "Prometheus documentation (alerting rules, PromQL functions)",
+      "identity": {
+        "repository": "prometheus/prometheus",
+        "revision": "06170caaea449ce139982c9ca9ddb5bf499ad488"
+      }
+    },
+    {
+      "name": "Prometheus promtool release",
+      "identity": {
+        "repository": "prometheus/prometheus",
+        "revision": "e2e28adeee2c5883d000fc82aca6008cfbf7e96d",
+        "version": "v3.16.0",
+        "artifact": "prometheus-3.16.0.linux-amd64.tar.gz",
+        "sha256": "68727009472a2c02e1ff7f062fd5b3e637285bffc8fc2d340c76fb449d6e0f34"
+      }
+    },
+    {
+      "name": "Hatton: The T experiments: errors in scientific software",
+      "identity": {
+        "doi": "10.1109/99.609829"
+      }
+    },
+    {
+      "name": "Claessen, Hughes: QuickCheck",
+      "identity": {
+        "doi": "10.1145/351240.351266"
+      }
+    },
+    {
+      "name": "Godefroid, Kiezun, Levin: Grammar-based whitebox fuzzing",
+      "identity": {
+        "doi": "10.1145/1375581.1375607"
+      }
+    },
+    {
+      "name": "Kanewala, Bieman: Testing scientific software: a systematic literature review",
+      "identity": {
+        "doi": "10.1016/j.infsof.2014.05.006"
+      }
+    },
+    {
+      "name": "Petsios et al.: NEZHA: efficient domain-independent differential testing",
+      "identity": {
+        "doi": "10.1109/SP.2017.27"
+      }
+    },
+    {
+      "name": "Hassell et al.: A data model of the Climate and Forecast metadata conventions (CF-1.6)",
+      "identity": {
+        "doi": "10.5194/gmd-10-4619-2017"
+      }
+    },
+    {
+      "name": "Havrikov, Zeller: Systematically covering input structure",
+      "identity": {
+        "doi": "10.1109/ASE.2019.00027"
+      }
+    },
+    {
+      "name": "MacIver, Hatfield-Dodds et al.: Hypothesis: a new approach to property-based testing",
+      "identity": {
+        "doi": "10.21105/joss.01891"
+      }
+    },
+    {
+      "name": "Steinhoefel, Zeller: Input invariants",
+      "identity": {
+        "doi": "10.1145/3540250.3549139"
+      }
+    },
+    {
+      "name": "Goldstein et al.: Property-based testing in practice",
+      "identity": {
+        "doi": "10.1145/3597503.3639581"
+      }
+    },
+    {
+      "name": "Ziemann, Eren, El-Osta: Gene name errors are widespread in the scientific literature",
+      "identity": {
+        "doi": "10.1186/s13059-016-1044-7"
+      }
+    },
+    {
+      "name": "McKeeman: Differential testing for software",
+      "identity": {
+        "venue": "Digital Technical Journal 10(1):100-107",
+        "year": "1998"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

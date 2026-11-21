@@ -1,0 +1,60 @@
+{"counts": {"FALSE_ACCEPT": 147, "agree": 1071, "run": 1218, "skipped_incompatible": 350}, "dialect": "6", "files": 69, "format_mode": "tags", "optional": false, "seconds": 0.04}
+  FALSE_ACCEPT   30  format-date-time.json
+  FALSE_ACCEPT   29  format-email.json
+  FALSE_ACCEPT   14  format-hostname.json
+  FALSE_ACCEPT   12  format-json-pointer.json
+  FALSE_ACCEPT   14  format-uri-reference.json
+  FALSE_ACCEPT   21  format-uri-template.json
+  FALSE_ACCEPT   27  format-uri.json
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time past leap second, UTC | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time with leap second on a wrong minute, UTC | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time with leap second on a wrong hour, UTC | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid day in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid offset in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid closing Z after time-zone offset | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid hour in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid minute in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid offset minute in date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time string | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | only RFC3339 not all of ISO 8601 are valid | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid non-padded month dates | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid non-padded day dates | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid non-ASCII '৪' (a Bengali 4) in date portion | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid non-ASCII '৪' (a Bengali 4) in time portion | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | invalid extended year | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | a numeric offset without minutes is invalid | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | hour 24 is invalid even with a leap second | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | a trailing newline is invalid | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time string without seconds | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time string with trailing content after the offset | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid minute in date-time string, with a numeric offset | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | an invalid date-time string with 30 days in February (leap) | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | 2021 is not a leap year | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | century year 0100 is not a leap year | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | century year 2100 is not a leap year | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | a second fraction with no digits | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | a comma decimal separator with a time-offset | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | leading whitespace before a valid date-time | 
+    FALSE_ACCEPT | format-date-time.json | validation of date-time strings | trailing whitespace after a valid date-time | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | dot before local part is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | dot after local part is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | two subsequent dots inside local part are not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | two email addresses is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | full "From" header is invalid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | local part is required | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | domain is required | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | unquoted space in local part is invalid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | a non-ASCII character in the local part is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | a non-ASCII character in the domain is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | a non-ASCII character in a quoted pair is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | a trailing line feed is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | a trailing carriage return is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | a tab in the local part is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | a delete character in the local part is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | an unescaped double quote in an unquoted local part is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | text after the closing double quote in the local part is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | an unclosed double quote in the local part is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | two unquoted @ signs are not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | a backslash-escaped @ in an unquoted local part is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | an address literal in the local part position is not valid | 
+    FALSE_ACCEPT | format-email.json | validation of e-mail addresses | a domain starting with a dot is not valid | 

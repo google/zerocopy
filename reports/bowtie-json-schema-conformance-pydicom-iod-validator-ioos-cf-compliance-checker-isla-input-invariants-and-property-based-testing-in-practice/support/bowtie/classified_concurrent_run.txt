@@ -1,0 +1,13 @@
+bowtie 2026.11.5.dev10+g7efa389ea dialect https://json-schema.org/draft/2020-12/schema cases 409 tests 1319
+implementation                           version                      agree FALSE_ACCEPT FALSE_REJECT ERRORED SKIPPED errored_cases
+cpp-blaze                                5eeef87e                      1319            0            0       0       0     0
+dotnet-jsonschema-net                    9.7.0                         1319            0            0       0       0     0
+go-jsonschema                            v6.0.2                        1319            0            0       0       0     0
+java-networknt-json-schema-validator     3.0.6                          142            0            0    1177       0   365
+js-ajv                                   8.20.0                          49            0            0    1270       0   393
+python-jsonschema                        4.26.1.dev207+g64b62de5d      1309            0            1       9       0     3
+ruby-json_schemer                        2.5.0                         1319            0            0       0       0     0
+rust-boon                                0.6.1                         1319            0            0       0       0     0
+rust-jsonschema                          0.47.0                        1319            0            0       0       0     0
+
+FALSE_ACCEPT by case description (top 6 per implementation):

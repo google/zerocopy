@@ -12891,6 +12891,193 @@
         "verification/liveness"
       ]
     },
+    "bowtie-json-schema-conformance-pydicom-iod-validator-ioos-cf-compliance-checker-isla-input-invariants-and-property-based-testing-in-practice": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "json-schema-org/JSON-Schema-Test-Suite",
+            "revision": "e2a68a15cd490750fd6b95e604e4054d7d978d1f"
+          },
+          "name": "JSON Schema Test Suite"
+        },
+        {
+          "identity": {
+            "repository": "bowtie-json-schema/bowtie",
+            "revision": "7efa389ea00a409ab5402135a828b97e84061b52"
+          },
+          "name": "Bowtie JSON Schema meta-validator harness"
+        },
+        {
+          "identity": {
+            "repository": "python-jsonschema/jsonschema",
+            "revision": "64b62de5df4ec52d7679c770427329e86a22c395"
+          },
+          "name": "python-jsonschema"
+        },
+        {
+          "identity": {
+            "repository": "ajv-validator/ajv",
+            "revision": "0fba0b8e649909613cfce0999b149cd08f4a4987",
+            "version": "v8.20.0"
+          },
+          "name": "ajv JSON Schema validator"
+        },
+        {
+          "identity": {
+            "artifact": "ghcr.io/bowtie-json-schema/js-ajv",
+            "sha256": "ea0f71070f9ac77e5b08a57ed76ee6999cb3f8a5e8894b0ca37b8660df80357f"
+          },
+          "name": "Bowtie js-ajv harness image"
+        },
+        {
+          "identity": {
+            "artifact": "ghcr.io/bowtie-json-schema/python-jsonschema",
+            "sha256": "bff076a43a8c1535cb916f6e7766af7126a1b967b724373eb266e50cc2a4f6bf"
+          },
+          "name": "Bowtie python-jsonschema harness image"
+        },
+        {
+          "identity": {
+            "repository": "json-schema-org/json-schema-spec",
+            "revision": "add836e705c9a07434c467b6b90946ba45258a73",
+            "version": "draft-bhutton-json-schema-01 / draft-bhutton-json-schema-validation-01"
+          },
+          "name": "JSON Schema 2020-12 core and validation specifications (source)"
+        },
+        {
+          "identity": {
+            "repository": "pydicom/dicom-validator",
+            "revision": "4c10bc6d1e10ae72c1e6dd1e163bc74739e3e8ae"
+          },
+          "name": "dicom-validator (DICOM IOD validator)"
+        },
+        {
+          "identity": {
+            "repository": "ioos/compliance-checker",
+            "revision": "b25b86dfe58fd18a1db3e35f3c495837790408dc"
+          },
+          "name": "IOOS compliance-checker (CF checks)"
+        },
+        {
+          "identity": {
+            "repository": "cf-convention/cf-conventions",
+            "revision": "2805580ad312cd940aa03537b25fa1809781f35b"
+          },
+          "name": "CF metadata conventions (source)"
+        },
+        {
+          "identity": {
+            "repository": "rindPHI/isla",
+            "revision": "1a04b7833d2960cffe037fb88826111769fefbeb"
+          },
+          "name": "ISLa input specification language and solver"
+        },
+        {
+          "identity": {
+            "repository": "HypothesisWorks/hypothesis",
+            "revision": "9a15ddde58248954d62f97e6265c8bf99c25bd54"
+          },
+          "name": "Hypothesis property-based testing library"
+        },
+        {
+          "identity": {
+            "repository": "prometheus/prometheus",
+            "revision": "06170caaea449ce139982c9ca9ddb5bf499ad488"
+          },
+          "name": "Prometheus documentation (alerting rules, PromQL functions)"
+        },
+        {
+          "identity": {
+            "artifact": "prometheus-3.16.0.linux-amd64.tar.gz",
+            "repository": "prometheus/prometheus",
+            "revision": "e2e28adeee2c5883d000fc82aca6008cfbf7e96d",
+            "sha256": "68727009472a2c02e1ff7f062fd5b3e637285bffc8fc2d340c76fb449d6e0f34",
+            "version": "v3.16.0"
+          },
+          "name": "Prometheus promtool release"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/99.609829"
+          },
+          "name": "Hatton: The T experiments: errors in scientific software"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/351240.351266"
+          },
+          "name": "Claessen, Hughes: QuickCheck"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1375581.1375607"
+          },
+          "name": "Godefroid, Kiezun, Levin: Grammar-based whitebox fuzzing"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.infsof.2014.05.006"
+          },
+          "name": "Kanewala, Bieman: Testing scientific software: a systematic literature review"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2017.27"
+          },
+          "name": "Petsios et al.: NEZHA: efficient domain-independent differential testing"
+        },
+        {
+          "identity": {
+            "doi": "10.5194/gmd-10-4619-2017"
+          },
+          "name": "Hassell et al.: A data model of the Climate and Forecast metadata conventions (CF-1.6)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ASE.2019.00027"
+          },
+          "name": "Havrikov, Zeller: Systematically covering input structure"
+        },
+        {
+          "identity": {
+            "doi": "10.21105/joss.01891"
+          },
+          "name": "MacIver, Hatfield-Dodds et al.: Hypothesis: a new approach to property-based testing"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3540250.3549139"
+          },
+          "name": "Steinhoefel, Zeller: Input invariants"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3597503.3639581"
+          },
+          "name": "Goldstein et al.: Property-based testing in practice"
+        },
+        {
+          "identity": {
+            "doi": "10.1186/s13059-016-1044-7"
+          },
+          "name": "Ziemann, Eren, El-Osta: Gene name errors are widespread in the scientific literature"
+        },
+        {
+          "identity": {
+            "venue": "Digital Technical Journal 10(1):100-107",
+            "year": "1998"
+          },
+          "name": "McKeeman: Differential testing for software"
+        }
+      ],
+      "topics": [
+        "verification/fail-open-input-validator-testing",
+        "tooling/cross-implementation-validator-conformance",
+        "domains/scientific-and-clinical-data-format-validation",
+        "security/grammar-and-constraint-based-input-generation"
+      ]
+    },
     "branch-relaxation-fixpoints-and-unwind-table-frame-restoration": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -42364,6 +42551,106 @@
         "security/covert-channels",
         "pl/type-systems",
         "pl/operational-semantics"
+      ]
+    },
+    "inoue-seki-yagi-garbage-cell-detection-free-me-cherem-rugina-uniqueness-deallocation-shaham-drag-hertz-berger-oracular-frees-and-mercury-ctgc": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Mercury-Language/mercury",
+            "revision": "305d2b1bafebc99247340f2ac3d0e300e516bd2e"
+          },
+          "name": "Mercury compiler (compile-time garbage collection and structure reuse)"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "d7fbd868e418c3766423fcb8ffb12655c5c5d58d"
+          },
+          "name": "Go toolchain (escape analysis and runtimefreegc compiler-inserted frees)"
+        },
+        {
+          "identity": {
+            "path": "docs/users_guide/profiling.rst",
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "GHC user's guide, biographical heap profiling (GitHub mirror)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/48022.48025"
+          },
+          "name": "Inoue, Seki, Yagi: Analysis of functional programs to detect run-time garbage cells"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-45635-X_15"
+          },
+          "name": "Mazur, Ross, Janssens, Bruynooghe: Practical aspects for a working compile time garbage collection system for Mercury"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-44898-5_27"
+          },
+          "name": "Shaham, Yahav, Kolodner, Sagiv: Establishing local temporal heap safety properties with applications to compile-time memory management"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1094811.1094836"
+          },
+          "name": "Hertz, Berger: Quantifying the performance of garbage collection vs. explicit memory management"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1133981.1134024"
+          },
+          "name": "Guyer, McKinley, Frampton: Free-Me"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1133956.1133975"
+          },
+          "name": "Cherem, Rugina: Compile-time deallocation of individual objects"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1296907.1296923"
+          },
+          "name": "Cherem, Rugina: Uniqueness inference for compile-time object deallocation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/362422.362430"
+          },
+          "name": "Shaham, Kolodner, Sagiv: On effectiveness of GC in Java"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512429.512437"
+          },
+          "name": "Shaham, Kolodner, Sagiv: Estimating the impact of heap liveness information on space consumption in Java"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/232627.232633"
+          },
+          "name": "Roejemo, Runciman: Lag, drag, void and use"
+        },
+        {
+          "identity": {
+            "arxiv": "cs/0611093",
+            "version": "v2"
+          },
+          "name": "Karkare, Sanyal, Khedker: Effectiveness of garbage collection in MIT/GNU Scheme"
+        }
+      ],
+      "topics": [
+        "compilers/compile-time-individual-object-deallocation",
+        "verification/temporal-heap-safety-for-inserted-frees",
+        "runtimes/oracular-release-versus-collection-measurement",
+        "pl/structure-reuse-in-declarative-languages"
       ]
     },
     "institution-comorphisms-heterogeneous-logics-and-trace-relating-compilation": {

@@ -1,0 +1,24 @@
+groups:
+- name: absent-data-probe
+  rules:
+  # A1: plain threshold on the series itself.
+  - alert: QueueTooDeep
+    expr: queue_depth{job="ingest"} > 100
+  # A2: explicit absence guard.
+  - alert: QueueMetricAbsent
+    expr: absent(queue_depth{job="ingest"})
+  # A3: absence over a window.
+  - alert: QueueMetricAbsentOverTime
+    expr: absent_over_time(queue_depth{job="ingest"}[10m])
+  # A4: error ratio; when traffic stops the ratio is 0/0.
+  - alert: ErrorRatioHigh
+    expr: rate(errors_total{job="ingest"}[5m]) / rate(requests_total{job="ingest"}[5m]) > 0.05
+  # A5: too few healthy instances, unguarded count.
+  - alert: TooFewInstances
+    expr: count(up{job="ingest"} == 1) < 2
+  # A6: same, guarded with `or vector(0)`.
+  - alert: TooFewInstancesGuarded
+    expr: (count(up{job="ingest"} == 1) or vector(0)) < 2
+  # A7: target-down check that needs the `up` series to exist.
+  - alert: TargetDown
+    expr: up{job="ingest"} == 0

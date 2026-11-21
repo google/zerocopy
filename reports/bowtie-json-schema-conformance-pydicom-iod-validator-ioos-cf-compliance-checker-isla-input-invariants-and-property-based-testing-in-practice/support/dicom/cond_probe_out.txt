@@ -1,0 +1,5 @@
+{"text": "Required if VOI LUT Sequence (0028,3010) is not present.", "type": "MU", "tag": "(0028,3010)", "operator": "-", "values": []}
+{"text": "Required if the image is reconstructed from a system with multiple X-Ray sources and Multi", "type": "U", "tag": null, "operator": null, "values": []}
+{"text": "Required if Multi-energy CT Acquisition (0018,9361) is YES or the Patient is an animal.", "type": "MU", "tag": "(0018,9361)", "operator": "=", "values": ["YES"]}
+{"text": "Required if the Patient is an animal.", "type": "U", "tag": null, "operator": null, "values": []}
+{"text": "", "type": "U", "tag": null, "operator": null, "values": []}

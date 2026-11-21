@@ -1,0 +1,3 @@
+Running Compliance Checker on the datasets from: ['nc/03_valid_range_three_elements.nc']
+WARNING: The following exceptions occurred during the cf:1.8 checker (possibly indicate compliance checker issues):
+cf:1.8.check_fill_value_outside_valid_range: too many values to unpack (expected 2)

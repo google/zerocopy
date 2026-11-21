@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "compilers/compile-time-individual-object-deallocation",
+    "verification/temporal-heap-safety-for-inserted-frees",
+    "runtimes/oracular-release-versus-collection-measurement",
+    "pl/structure-reuse-in-declarative-languages"
+  ],
+  "subjects": [
+    {
+      "name": "Mercury compiler (compile-time garbage collection and structure reuse)",
+      "identity": {
+        "repository": "Mercury-Language/mercury",
+        "revision": "305d2b1bafebc99247340f2ac3d0e300e516bd2e"
+      }
+    },
+    {
+      "name": "Go toolchain (escape analysis and runtimefreegc compiler-inserted frees)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "d7fbd868e418c3766423fcb8ffb12655c5c5d58d"
+      }
+    },
+    {
+      "name": "GHC user's guide, biographical heap profiling (GitHub mirror)",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d",
+        "path": "docs/users_guide/profiling.rst"
+      }
+    },
+    {
+      "name": "Inoue, Seki, Yagi: Analysis of functional programs to detect run-time garbage cells",
+      "identity": {
+        "doi": "10.1145/48022.48025"
+      }
+    },
+    {
+      "name": "Mazur, Ross, Janssens, Bruynooghe: Practical aspects for a working compile time garbage collection system for Mercury",
+      "identity": {
+        "doi": "10.1007/3-540-45635-X_15"
+      }
+    },
+    {
+      "name": "Shaham, Yahav, Kolodner, Sagiv: Establishing local temporal heap safety properties with applications to compile-time memory management",
+      "identity": {
+        "doi": "10.1007/3-540-44898-5_27"
+      }
+    },
+    {
+      "name": "Hertz, Berger: Quantifying the performance of garbage collection vs. explicit memory management",
+      "identity": {
+        "doi": "10.1145/1094811.1094836"
+      }
+    },
+    {
+      "name": "Guyer, McKinley, Frampton: Free-Me",
+      "identity": {
+        "doi": "10.1145/1133981.1134024"
+      }
+    },
+    {
+      "name": "Cherem, Rugina: Compile-time deallocation of individual objects",
+      "identity": {
+        "doi": "10.1145/1133956.1133975"
+      }
+    },
+    {
+      "name": "Cherem, Rugina: Uniqueness inference for compile-time object deallocation",
+      "identity": {
+        "doi": "10.1145/1296907.1296923"
+      }
+    },
+    {
+      "name": "Shaham, Kolodner, Sagiv: On effectiveness of GC in Java",
+      "identity": {
+        "doi": "10.1145/362422.362430"
+      }
+    },
+    {
+      "name": "Shaham, Kolodner, Sagiv: Estimating the impact of heap liveness information on space consumption in Java",
+      "identity": {
+        "doi": "10.1145/512429.512437"
+      }
+    },
+    {
+      "name": "Roejemo, Runciman: Lag, drag, void and use",
+      "identity": {
+        "doi": "10.1145/232627.232633"
+      }
+    },
+    {
+      "name": "Karkare, Sanyal, Khedker: Effectiveness of garbage collection in MIT/GNU Scheme",
+      "identity": {
+        "arxiv": "cs/0611093",
+        "version": "v2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

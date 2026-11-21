@@ -1,0 +1,50 @@
+## 00_baseline.nc: exit=1 scored=52/53 wall=0.48s errors=0
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 01_fill_inside_valid_min_only.nc: exit=1 scored=56/57 wall=0.56s errors=0
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 02_fill_inside_valid_range.nc: exit=1 scored=56/58 wall=0.53s errors=0
+    [medium] §2.5 Variables: v:_FillValue (5.0) should be outside the range specified by valid_range (0.0, 400.0)
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 03_valid_range_three_elements.nc: exit=2 scored=56/57 wall=0.64s errors=0
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 04_valid_range_nan_bound.nc: exit=1 scored=56/58 wall=0.48s errors=0
+    [medium] §2.5 Variables: v:_FillValue (-999.0) should be outside the range specified by valid_range (nan, 400.0)
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 05_fill_nan_with_valid_range.nc: exit=1 scored=57/58 wall=0.57s errors=0
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 06_flag_meanings_whitespace_only_empty_values.nc: exit=1 scored=52/53 wall=0.46s errors=0
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 07_flag_meanings_whitespace_one_value.nc: exit=1 scored=51/53 wall=0.52s errors=0
+    [high] §3.5 Flags: v's flag_meanings and flag_values should have the same number of elements.
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 08_units_unparseable.nc: exit=1 scored=47/49 wall=0.47s errors=0
+    [high] §3.1 Units: units for v, "kelvinish" are not recognized by UDUNITS
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 09_units_incompatible_with_standard_name.nc: exit=1 scored=51/53 wall=0.53s errors=0
+    [high] §3.1 Units: Units "m s-1" for variable v must be convertible to canonical units "K"
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 10_coordinates_attr_missing_var.nc: exit=1 scored=55/60 wall=0.59s errors=0
+    [high] §5 Coordinate Systems: v's auxiliary coordinate specified by the coordinates attribute, lat, is not a variable in this dataset
+    [high] §5 Coordinate Systems: v's auxiliary coordinate specified by the coordinates attribute, lon, is not a variable in this dataset
+    [high] §5 Coordinate Systems: The 'coordinates' attribute of variable 'v' references non-existent variable 'lat'.
+    [high] §5 Coordinate Systems: The 'coordinates' attribute of variable 'v' references non-existent variable 'lon'.
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 11_cell_methods_trailing_garbage.nc: exit=1 scored=56/57 wall=0.52s errors=0
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 12_calendar_unknown.nc: exit=1 scored=50/53 wall=0.70s errors=0
+    [high] §4.4 Time Coordinate: For nonstandard calendar on variable time, attribute month_lengths must be supplied as a 12-element integer array
+    [medium] §2.6 Attributes: §2.6.2 global attribute title should exist and be a non-empty string
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 13_time_units_invalid_date.nc: exit=2 scored=50/52 wall=0.54s errors=0
+    [medium] §2.6 Attributes: §2.6.2 global attribute title should exist and be a non-empty string
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 14_no_conventions_attr.nc: exit=1 scored=50/52 wall=0.77s errors=0
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+    [medium] §2.6 Attributes: §2.6.1 Conventions field is not present
+## 15_standard_name_unknown.nc: exit=1 scored=47/49 wall=0.52s errors=0
+    [high] §3.3 Standard Name: standard_name air_temperature_of_mars is not defined in Standard Name Table v95. Possible close match(es): ['air_temperature_anomaly', 'air_temperature', 'air_temperature_threshold']
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string
+## 16_time_values_nonmonotonic_nan.nc: exit=1 scored=49/52 wall=0.50s errors=0
+    [high] §1.2 Terminology: Coordinate variable "time" must be strictly monotonic
+    [medium] §2.6 Attributes: §2.6.2 global attribute title should exist and be a non-empty string
+    [medium] §2.6 Attributes: §2.6.2 global attribute history should exist and be a non-empty string

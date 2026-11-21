@@ -1,0 +1,12 @@
+== list traverse then hold
+   liveness             peak_bytes=  32000 byte_ticks=  32000000 mean_drag_ticks=     0.0
+   reachability         peak_bytes=  32000 byte_ticks= 112016000 mean_drag_ticks=  2500.5
+   scope                peak_bytes=  32000 byte_ticks= 112016000 mean_drag_ticks=  2500.5
+   gc every 100         peak_bytes=  32000 byte_ticks= 112016000 mean_drag_ticks=  2500.5
+   gc every 1000        peak_bytes=  32000 byte_ticks= 112016000 mean_drag_ticks=  2500.5
+== loop temporary, function-scoped
+   liveness             peak_bytes=     64 byte_ticks=         0 mean_drag_ticks=     0.0
+   reachability         peak_bytes=    128 byte_ticks=     64000 mean_drag_ticks=     1.0
+   scope                peak_bytes=  64000 byte_ticks=  96032000 mean_drag_ticks=  1500.5
+   gc every 100         peak_bytes=   6464 byte_ticks=   3232000 mean_drag_ticks=    50.5
+   gc every 1000        peak_bytes=  64000 byte_ticks=  32032000 mean_drag_ticks=   500.5

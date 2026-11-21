@@ -1,0 +1,5 @@
+bowtie 2026.11.5.dev10+g7efa389ea dialect https://json-schema.org/draft/2020-12/schema cases 409 tests 1319
+implementation                           version                      agree FALSE_ACCEPT FALSE_REJECT ERRORED SKIPPED errored_cases
+java-networknt-json-schema-validator     3.0.6                         1319            0            0       0       0     0
+
+FALSE_ACCEPT by case description (top 6 per implementation):

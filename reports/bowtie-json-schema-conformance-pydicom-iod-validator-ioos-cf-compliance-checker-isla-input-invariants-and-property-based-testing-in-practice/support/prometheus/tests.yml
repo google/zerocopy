@@ -1,0 +1,86 @@
+# Run: promtool test rules tests.yml
+# Scenario: every series is scraped each minute for 10 minutes, then the job
+# disappears (staleness markers), as when a target is removed or the exporter dies.
+# Each alert_rule_test asserts the alerts actually firing at that time; an empty
+# exp_alerts asserts silence. All expectations below were written to match what
+# promtool reports, so the file documents behaviour rather than desired behaviour.
+rule_files:
+  - rules.yml
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'queue_depth{job="ingest", instance="a"}'
+        values: '500x10 stale'
+      - series: 'up{job="ingest", instance="a"}'
+        values: '1x10 stale'
+      - series: 'up{job="ingest", instance="b"}'
+        values: '1x10 stale'
+      - series: 'errors_total{job="ingest", instance="a"}'
+        values: '0+10x10 stale'
+      - series: 'requests_total{job="ingest", instance="a"}'
+        values: '0+20x10 stale'
+    alert_rule_test:
+      # t=5m: data present, queue deep, error ratio 0.5.
+      - eval_time: 5m
+        alertname: QueueTooDeep
+        exp_alerts:
+          - exp_labels: {job: ingest, instance: a}
+      - eval_time: 5m
+        alertname: ErrorRatioHigh
+        exp_alerts:
+          - exp_labels: {job: ingest, instance: a}
+      - eval_time: 5m
+        alertname: QueueMetricAbsent
+        exp_alerts: []
+      - eval_time: 5m
+        alertname: TooFewInstances
+        exp_alerts: []
+      # t=15m: everything stale. Threshold, ratio, count and up==0 rules are silent.
+      - eval_time: 15m
+        alertname: QueueTooDeep
+        exp_alerts: []
+      - eval_time: 15m
+        alertname: ErrorRatioHigh
+        exp_alerts: []
+      - eval_time: 15m
+        alertname: TooFewInstances
+        exp_alerts: []
+      - eval_time: 15m
+        alertname: TargetDown
+        exp_alerts: []
+      # Guards fire.
+      - eval_time: 15m
+        alertname: QueueMetricAbsent
+        exp_alerts:
+          - exp_labels: {job: ingest}
+      - eval_time: 15m
+        alertname: TooFewInstancesGuarded
+        exp_alerts:
+          - exp_labels: {}
+      # absent_over_time needs the whole 10m window empty: silent at 15m, firing at 21m.
+      - eval_time: 15m
+        alertname: QueueMetricAbsentOverTime
+        exp_alerts: []
+      - eval_time: 21m
+        alertname: QueueMetricAbsentOverTime
+        exp_alerts:
+          - exp_labels: {job: ingest}
+  - interval: 1m
+    # Traffic stops but series stay present with flat counters: ratio is 0/0 = NaN.
+    input_series:
+      - series: 'errors_total{job="ingest", instance="a"}'
+        values: '0+10x10 100x20'
+      - series: 'requests_total{job="ingest", instance="a"}'
+        values: '0+20x10 200x20'
+    promql_expr_test:
+      # x != bool x is 1 only when x is NaN.
+      - expr: rate(errors_total{job="ingest"}[5m]) / rate(requests_total{job="ingest"}[5m]) != bool rate(errors_total{job="ingest"}[5m]) / rate(requests_total{job="ingest"}[5m])
+        eval_time: 25m
+        exp_samples:
+          - labels: '{job="ingest", instance="a"}'
+            value: 1
+    alert_rule_test:
+      - eval_time: 25m
+        alertname: ErrorRatioHigh
+        exp_alerts: []
