@@ -1,0 +1,1214 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.WrapNiche.A0": [
+      "propext"
+    ],
+    "Toy.WrapNiche.AffineNiche": [],
+    "Toy.WrapNiche.AffineNiche.casesOn": [],
+    "Toy.WrapNiche.AffineNiche.ctorIdx": [],
+    "Toy.WrapNiche.AffineNiche.first": [],
+    "Toy.WrapNiche.AffineNiche.last": [],
+    "Toy.WrapNiche.AffineNiche.mk": [],
+    "Toy.WrapNiche.AffineNiche.mk.inj": [],
+    "Toy.WrapNiche.AffineNiche.mk.injEq": [
+      "propext"
+    ],
+    "Toy.WrapNiche.AffineNiche.mk.noConfusion": [],
+    "Toy.WrapNiche.AffineNiche.mk.sizeOf_spec": [],
+    "Toy.WrapNiche.AffineNiche.nicheStart": [],
+    "Toy.WrapNiche.AffineNiche.noConfusion": [],
+    "Toy.WrapNiche.AffineNiche.noConfusionType": [],
+    "Toy.WrapNiche.AffineNiche.rec": [],
+    "Toy.WrapNiche.AffineNiche.recOn": [],
+    "Toy.WrapNiche.AffineNiche.span": [],
+    "Toy.WrapNiche.AffineNiche.tagInterval": [],
+    "Toy.WrapNiche.AffineNiche.tagOf": [],
+    "Toy.WrapNiche.AffineNiche.tagOf.eq_1": [],
+    "Toy.WrapNiche.Ag": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Bytes": [],
+    "Toy.WrapNiche.Covers": [],
+    "Toy.WrapNiche.E1": [],
+    "Toy.WrapNiche.E2": [],
+    "Toy.WrapNiche.EnumSpec": [],
+    "Toy.WrapNiche.EnumSpec.Live": [],
+    "Toy.WrapNiche.EnumSpec.casesOn": [],
+    "Toy.WrapNiche.EnumSpec.ctorIdx": [],
+    "Toy.WrapNiche.EnumSpec.inh": [],
+    "Toy.WrapNiche.EnumSpec.k": [],
+    "Toy.WrapNiche.EnumSpec.mk": [],
+    "Toy.WrapNiche.EnumSpec.mk.inj": [],
+    "Toy.WrapNiche.EnumSpec.mk.injEq": [
+      "propext"
+    ],
+    "Toy.WrapNiche.EnumSpec.mk.noConfusion": [],
+    "Toy.WrapNiche.EnumSpec.mk.sizeOf_spec": [],
+    "Toy.WrapNiche.EnumSpec.noConfusion": [],
+    "Toy.WrapNiche.EnumSpec.noConfusionType": [],
+    "Toy.WrapNiche.EnumSpec.rec": [],
+    "Toy.WrapNiche.EnumSpec.recOn": [],
+    "Toy.WrapNiche.EnumSpec.u": [],
+    "Toy.WrapNiche.ExactFor": [],
+    "Toy.WrapNiche.FieldClass": [],
+    "Toy.WrapNiche.FieldClass.casesOn": [],
+    "Toy.WrapNiche.FieldClass.ctorElim": [],
+    "Toy.WrapNiche.FieldClass.ctorElimType": [],
+    "Toy.WrapNiche.FieldClass.ctorIdx": [],
+    "Toy.WrapNiche.FieldClass.deadTag": [],
+    "Toy.WrapNiche.FieldClass.deadTag.elim": [],
+    "Toy.WrapNiche.FieldClass.deadTag.sizeOf_spec": [],
+    "Toy.WrapNiche.FieldClass.liveTag": [],
+    "Toy.WrapNiche.FieldClass.liveTag.elim": [],
+    "Toy.WrapNiche.FieldClass.liveTag.sizeOf_spec": [],
+    "Toy.WrapNiche.FieldClass.noConfusion": [],
+    "Toy.WrapNiche.FieldClass.noConfusionType": [],
+    "Toy.WrapNiche.FieldClass.ofNat": [],
+    "Toy.WrapNiche.FieldClass.ofNat_ctorIdx": [],
+    "Toy.WrapNiche.FieldClass.rec": [],
+    "Toy.WrapNiche.FieldClass.recOn": [],
+    "Toy.WrapNiche.FieldClass.unusedNiche": [],
+    "Toy.WrapNiche.FieldClass.unusedNiche.elim": [],
+    "Toy.WrapNiche.FieldClass.unusedNiche.sizeOf_spec": [],
+    "Toy.WrapNiche.FieldClass.valid": [],
+    "Toy.WrapNiche.FieldClass.valid.elim": [],
+    "Toy.WrapNiche.FieldClass.valid.sizeOf_spec": [],
+    "Toy.WrapNiche.GenVal": [],
+    "Toy.WrapNiche.Imported.Canonical": [],
+    "Toy.WrapNiche.Imported.Counting.mem_of_nodup_of_length_ge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.Counting.nodup_length_le_of_subset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.Counting.nodup_map_of_injOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.Counting.numValid_add_numInvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.Counting.valList": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.Counting.valList.eq_1": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.Counting.valList_length": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.Counting.valList_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.DecEnc": [],
+    "Toy.WrapNiche.Imported.DecSomeTransparent": [],
+    "Toy.WrapNiche.Imported.ExtEnum": [],
+    "Toy.WrapNiche.Imported.FromBytes": [],
+    "Toy.WrapNiche.Imported.IsNiche": [],
+    "Toy.WrapNiche.Imported.Lawful": [],
+    "Toy.WrapNiche.Imported.Layout": [],
+    "Toy.WrapNiche.Imported.Layout.casesOn": [],
+    "Toy.WrapNiche.Imported.Layout.comap": [],
+    "Toy.WrapNiche.Imported.Layout.comap.eq_1": [],
+    "Toy.WrapNiche.Imported.Layout.ctorIdx": [],
+    "Toy.WrapNiche.Imported.Layout.dec": [],
+    "Toy.WrapNiche.Imported.Layout.enc": [],
+    "Toy.WrapNiche.Imported.Layout.ext": [],
+    "Toy.WrapNiche.Imported.Layout.ext.match_1": [],
+    "Toy.WrapNiche.Imported.Layout.ext_iff": [],
+    "Toy.WrapNiche.Imported.Layout.mk": [],
+    "Toy.WrapNiche.Imported.Layout.mk.inj": [],
+    "Toy.WrapNiche.Imported.Layout.mk.injEq": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.Layout.mk.noConfusion": [],
+    "Toy.WrapNiche.Imported.Layout.mk.sizeOf_spec": [],
+    "Toy.WrapNiche.Imported.Layout.noConfusion": [],
+    "Toy.WrapNiche.Imported.Layout.noConfusionType": [],
+    "Toy.WrapNiche.Imported.Layout.rec": [],
+    "Toy.WrapNiche.Imported.Layout.recOn": [],
+    "Toy.WrapNiche.Imported.NichePinned": [],
+    "Toy.WrapNiche.Imported.NonePinned": [],
+    "Toy.WrapNiche.Imported.Opt": [],
+    "Toy.WrapNiche.Imported.Pat": [],
+    "Toy.WrapNiche.Imported.SomeTransparent": [],
+    "Toy.WrapNiche.Imported.Val": [],
+    "Toy.WrapNiche.Imported.Validity": [],
+    "Toy.WrapNiche.Imported.allV": [],
+    "Toy.WrapNiche.Imported.boolV": [],
+    "Toy.WrapNiche.Imported.byteAt": [],
+    "Toy.WrapNiche.Imported.byteAt.eq_1": [],
+    "Toy.WrapNiche.Imported.canonical_of_forall_pat": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.comap_canonical": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.comap_decEnc": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.comap_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.countP_val_eq_zero_finRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.decForallOption": [],
+    "Toy.WrapNiche.Imported.decForallOption.match_1": [],
+    "Toy.WrapNiche.Imported.decForallOption.match_3": [],
+    "Toy.WrapNiche.Imported.decForallSum": [],
+    "Toy.WrapNiche.Imported.decForallSum.match_1": [],
+    "Toy.WrapNiche.Imported.decForallSum.match_3": [],
+    "Toy.WrapNiche.Imported.decForallVal": [],
+    "Toy.WrapNiche.Imported.decSomeTransparent_of_someTransparent_of_decEnc": [],
+    "Toy.WrapNiche.Imported.div_div_256": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.enc_injective_of_decEnc": [],
+    "Toy.WrapNiche.Imported.eq_nonZeroV_of_only_niche_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.eq_zeroPat_iff_bytes_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.ext1ToOpt": [],
+    "Toy.WrapNiche.Imported.ext1ToOpt.match_1": [],
+    "Toy.WrapNiche.Imported.ext1ToOpt_optToExt1": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.firstNiches": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.firstNiches.eq_1": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.firstNiches_injective_and_isNiche_of_le_numInvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.fromBytes_of_forall_pat": [],
+    "Toy.WrapNiche.Imported.geTwoV": [],
+    "Toy.WrapNiche.Imported.instDecidableIsNiche": [],
+    "Toy.WrapNiche.Imported.instNeZeroPatCard": [],
+    "Toy.WrapNiche.Imported.invalidPats": [],
+    "Toy.WrapNiche.Imported.invalidPats.eq_1": [],
+    "Toy.WrapNiche.Imported.isNiche_enc_none_of_decSomeTransparent_of_decEnc": [],
+    "Toy.WrapNiche.Imported.isNiche_nonZeroV_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.le_numInvalid_iff_exists_lawful_layout_iff_lawful_nicheLayoutK_firstNiches": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.le_numInvalid_of_decEnc_of_size_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.nicheLayout": [],
+    "Toy.WrapNiche.Imported.nicheLayout.eq_1": [],
+    "Toy.WrapNiche.Imported.nicheLayout.match_1": [],
+    "Toy.WrapNiche.Imported.nicheLayoutK": [],
+    "Toy.WrapNiche.Imported.nicheLayoutK.eq_1": [],
+    "Toy.WrapNiche.Imported.nicheLayoutK.match_1": [],
+    "Toy.WrapNiche.Imported.nicheLayoutK.match_3": [],
+    "Toy.WrapNiche.Imported.nicheLayoutK_lawful_iff_injective_and_isNiche": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.nicheLayout_canonical": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.nicheLayout_decEnc_of_isNiche": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.nicheLayout_decSomeTransparent_of_isNiche": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.nicheLayout_lawful_iff_isNiche": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.nicheLayout_someTransparent": [],
+    "Toy.WrapNiche.Imported.nodup_getElem_inj": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.nonZeroV": [],
+    "Toy.WrapNiche.Imported.numInvalid": [],
+    "Toy.WrapNiche.Imported.numInvalid_le_one_of_only_niche_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.numInvalid_nonZeroV": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.optToExt1": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.optToExt1_ext1ToOpt": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.opt_opt_nonZero_no_decEnc_layout_in_payload_size": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.opt_opt_nonZero_no_decEnc_layout_in_payload_size.match_1_1": [],
+    "Toy.WrapNiche.Imported.opt_opt_nonZero_no_decEnc_layout_in_payload_size.match_1_3": [],
+    "Toy.WrapNiche.Imported.opt_opt_nonZero_no_decEnc_layout_in_payload_size.match_1_5": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.pat_card_pos": [],
+    "Toy.WrapNiche.Imported.payloadLayout": [],
+    "Toy.WrapNiche.Imported.payloadLayout.eq_1": [],
+    "Toy.WrapNiche.Imported.payloadLayout_lawful": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.someTransparent_iff_decSomeTransparent_of_lawful": [],
+    "Toy.WrapNiche.Imported.someTransparent_of_decSomeTransparent_of_canonical": [],
+    "Toy.WrapNiche.Imported.tag_dec_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.tag_enc_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.taggedLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.taggedLayout.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.taggedLayout.match_1": [],
+    "Toy.WrapNiche.Imported.taggedLayout_canonical": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.taggedLayout_decEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.taggedLayout_lawful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.taggedLooseLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.taggedLooseLayout.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.taggedLooseLayout_decEnc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.Imported.zeroPat": [],
+    "Toy.WrapNiche.Imported.zeroPat.eq_1": [],
+    "Toy.WrapNiche.IsHull": [],
+    "Toy.WrapNiche.IsWrapIntervalSet": [],
+    "Toy.WrapNiche.LevelsReserveNiches": [],
+    "Toy.WrapNiche.LiveInRange": [],
+    "Toy.WrapNiche.Lop": [
+      "propext"
+    ],
+    "Toy.WrapNiche.LopAll": [
+      "propext"
+    ],
+    "Toy.WrapNiche.LopFar": [
+      "propext"
+    ],
+    "Toy.WrapNiche.LopNone": [
+      "propext"
+    ],
+    "Toy.WrapNiche.LopWide": [],
+    "Toy.WrapNiche.Op": [],
+    "Toy.WrapNiche.Op.casesOn": [],
+    "Toy.WrapNiche.Op.ctorElim": [],
+    "Toy.WrapNiche.Op.ctorElimType": [],
+    "Toy.WrapNiche.Op.ctorIdx": [],
+    "Toy.WrapNiche.Op.noConfusion": [],
+    "Toy.WrapNiche.Op.noConfusionType": [],
+    "Toy.WrapNiche.Op.readDisc": [],
+    "Toy.WrapNiche.Op.readDisc.elim": [],
+    "Toy.WrapNiche.Op.readDisc.sizeOf_spec": [],
+    "Toy.WrapNiche.Op.rec": [],
+    "Toy.WrapNiche.Op.recOn": [],
+    "Toy.WrapNiche.Op.setDisc": [],
+    "Toy.WrapNiche.Op.setDisc.elim": [],
+    "Toy.WrapNiche.Op.setDisc.inj": [],
+    "Toy.WrapNiche.Op.setDisc.injEq": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Op.setDisc.noConfusion": [],
+    "Toy.WrapNiche.Op.setDisc.sizeOf_spec": [],
+    "Toy.WrapNiche.Op.write": [],
+    "Toy.WrapNiche.Op.write.elim": [],
+    "Toy.WrapNiche.Op.write.inj": [],
+    "Toy.WrapNiche.Op.write.injEq": [
+      "propext"
+    ],
+    "Toy.WrapNiche.Op.write.noConfusion": [],
+    "Toy.WrapNiche.Op.write.sizeOf_spec": [],
+    "Toy.WrapNiche.OpLayout": [],
+    "Toy.WrapNiche.OpLayout.A": [],
+    "Toy.WrapNiche.OpLayout.DisjointFromNiche": [],
+    "Toy.WrapNiche.OpLayout.E": [],
+    "Toy.WrapNiche.OpLayout.Encodable": [],
+    "Toy.WrapNiche.OpLayout.V": [],
+    "Toy.WrapNiche.OpLayout.casesOn": [],
+    "Toy.WrapNiche.OpLayout.ctorIdx": [],
+    "Toy.WrapNiche.OpLayout.instDecidableDisjointFromNiche": [],
+    "Toy.WrapNiche.OpLayout.instDecidableEncodable": [],
+    "Toy.WrapNiche.OpLayout.mk": [],
+    "Toy.WrapNiche.OpLayout.mk.inj": [],
+    "Toy.WrapNiche.OpLayout.mk.injEq": [
+      "propext"
+    ],
+    "Toy.WrapNiche.OpLayout.mk.noConfusion": [],
+    "Toy.WrapNiche.OpLayout.mk.sizeOf_spec": [],
+    "Toy.WrapNiche.OpLayout.no": [],
+    "Toy.WrapNiche.OpLayout.noConfusion": [],
+    "Toy.WrapNiche.OpLayout.noConfusionType": [],
+    "Toy.WrapNiche.OpLayout.nw": [],
+    "Toy.WrapNiche.OpLayout.readDisc": [
+      "propext"
+    ],
+    "Toy.WrapNiche.OpLayout.readDisc.match_1": [],
+    "Toy.WrapNiche.OpLayout.readDisc.match_3": [],
+    "Toy.WrapNiche.OpLayout.readNiche": [
+      "propext"
+    ],
+    "Toy.WrapNiche.OpLayout.rec": [],
+    "Toy.WrapNiche.OpLayout.recOn": [],
+    "Toy.WrapNiche.OpLayout.writeNiche": [
+      "propext"
+    ],
+    "Toy.WrapNiche.RotTagsInvalid": [],
+    "Toy.WrapNiche.Sem": [],
+    "Toy.WrapNiche.Sem.casesOn": [],
+    "Toy.WrapNiche.Sem.ctorElim": [],
+    "Toy.WrapNiche.Sem.ctorElimType": [],
+    "Toy.WrapNiche.Sem.ctorIdx": [],
+    "Toy.WrapNiche.Sem.erased": [],
+    "Toy.WrapNiche.Sem.erased.elim": [],
+    "Toy.WrapNiche.Sem.erased.sizeOf_spec": [],
+    "Toy.WrapNiche.Sem.noConfusion": [],
+    "Toy.WrapNiche.Sem.noConfusionType": [],
+    "Toy.WrapNiche.Sem.ofNat": [],
+    "Toy.WrapNiche.Sem.ofNat_ctorIdx": [],
+    "Toy.WrapNiche.Sem.operational": [],
+    "Toy.WrapNiche.Sem.operational.elim": [],
+    "Toy.WrapNiche.Sem.operational.sizeOf_spec": [],
+    "Toy.WrapNiche.Sem.rec": [],
+    "Toy.WrapNiche.Sem.recOn": [],
+    "Toy.WrapNiche.Side": [],
+    "Toy.WrapNiche.Side.casesOn": [],
+    "Toy.WrapNiche.Side.ctorElim": [],
+    "Toy.WrapNiche.Side.ctorElimType": [],
+    "Toy.WrapNiche.Side.ctorIdx": [],
+    "Toy.WrapNiche.Side.high": [],
+    "Toy.WrapNiche.Side.high.elim": [],
+    "Toy.WrapNiche.Side.high.sizeOf_spec": [],
+    "Toy.WrapNiche.Side.low": [],
+    "Toy.WrapNiche.Side.low.elim": [],
+    "Toy.WrapNiche.Side.low.sizeOf_spec": [],
+    "Toy.WrapNiche.Side.noConfusion": [],
+    "Toy.WrapNiche.Side.noConfusionType": [],
+    "Toy.WrapNiche.Side.ofNat": [],
+    "Toy.WrapNiche.Side.ofNat_ctorIdx": [],
+    "Toy.WrapNiche.Side.rec": [],
+    "Toy.WrapNiche.Side.recOn": [],
+    "Toy.WrapNiche.TagsDisjoint": [],
+    "Toy.WrapNiche.V0": [],
+    "Toy.WrapNiche.V01": [],
+    "Toy.WrapNiche.V02": [],
+    "Toy.WrapNiche.Vlow": [],
+    "Toy.WrapNiche.Vlt254": [],
+    "Toy.WrapNiche.Vmid": [],
+    "Toy.WrapNiche.WrapInterval": [],
+    "Toy.WrapNiche.WrapInterval.Mem": [],
+    "Toy.WrapNiche.WrapInterval.casesOn": [],
+    "Toy.WrapNiche.WrapInterval.compl": [],
+    "Toy.WrapNiche.WrapInterval.ctorIdx": [],
+    "Toy.WrapNiche.WrapInterval.e": [],
+    "Toy.WrapNiche.WrapInterval.instDecidableMem": [],
+    "Toy.WrapNiche.WrapInterval.mk": [],
+    "Toy.WrapNiche.WrapInterval.mk.inj": [],
+    "Toy.WrapNiche.WrapInterval.mk.injEq": [
+      "propext"
+    ],
+    "Toy.WrapNiche.WrapInterval.mk.noConfusion": [],
+    "Toy.WrapNiche.WrapInterval.mk.sizeOf_spec": [],
+    "Toy.WrapNiche.WrapInterval.noConfusion": [],
+    "Toy.WrapNiche.WrapInterval.noConfusionType": [],
+    "Toy.WrapNiche.WrapInterval.rec": [],
+    "Toy.WrapNiche.WrapInterval.recOn": [],
+    "Toy.WrapNiche.WrapInterval.s": [],
+    "Toy.WrapNiche.WrapInterval.size": [],
+    "Toy.WrapNiche.adjNiche": [],
+    "Toy.WrapNiche.affineLayout": [],
+    "Toy.WrapNiche.affineLayout.eq_1": [],
+    "Toy.WrapNiche.affineLayout.match_1": [],
+    "Toy.WrapNiche.affineLayout_eq_nicheLayoutK_affineTags": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.affineLayout_lawful_iff_span_lt_and_tagsDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.affineTags": [],
+    "Toy.WrapNiche.affineTags.eq_1": [],
+    "Toy.WrapNiche.cex_affineLayout_lawful_overlap": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_affineLayout_lawful_span": [],
+    "Toy.WrapNiche.cex_classify_valid_iff_and_decodeIdx_hdisj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_classify_valid_iff_and_decodeIdx_hspan": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_compl_mem_iff_not_mem_of_size_lt_hI": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_exists_tagsDisjoint_iff_span_succ_le_hH": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_exists_tagsDisjoint_iff_span_succ_le_hne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_extend_spec_hI": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_folklore_dead_slot": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_folklore_erasure_not_equivalent": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_folklore_fit_depends_on_untagged_position": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_folklore_fragmented_capacity_lt_nichesCount": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_folklore_nonadjacent_reservation_fragments": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_folklore_payload_write_setDisc_noncommuting": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_folklore_signedTestI8_127_128": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_folklore_unsignedTest_255_0": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_genLayout_dec_isSome_iff_classify_hspan": [],
+    "Toy.WrapNiche.cex_genLayout_lawful_hdisj": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_genLayout_lawful_hdisj_deadSlot": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_genLayout_lawful_hlive": [],
+    "Toy.WrapNiche.cex_genLayout_lawful_hspan": [],
+    "Toy.WrapNiche.cex_naturalSpan_hH": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_naturalSpan_hcap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_naturalSpan_hk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_naturalSpan_hne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_nicheLayout_adjNiche_lawful_hI": [],
+    "Toy.WrapNiche.cex_not_exactFor_originTest_wrapSub_one_of_two_le_hM": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_rotDecodeIdx_hdisj": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_rotDecodeIdx_hkM": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_rotDecodeIdx_hu": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_run_fields_then_setDisc_hdisj": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_run_fields_then_setDisc_hfit": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_run_fields_then_setDisc_hin": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_run_fields_then_setDisc_hpw": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_run_fields_then_setDisc_hspan": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_run_fields_then_setDisc_hws": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_run_write_setDisc_comm_hdis": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_setDisc_operational_untagged_isSome_iff_hdisj": [
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_sub_size_eq_nichesCount_iff_isWrapIntervalSet_hH": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.cex_sub_size_le_nichesCount_and_eq_iff_of_covers_hcov": [
+      "propext"
+    ],
+    "Toy.WrapNiche.classify": [],
+    "Toy.WrapNiche.classify_valid_iff_and_decodeIdx_of_span_lt_of_tagsDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.compl_mem_iff_not_mem_of_size_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.decExistsWrapInterval": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.decExistsWrapInterval.match_1": [],
+    "Toy.WrapNiche.decExistsWrapInterval.match_3": [],
+    "Toy.WrapNiche.decForallLive": [],
+    "Toy.WrapNiche.decForallWrapInterval": [],
+    "Toy.WrapNiche.decodeIdx": [],
+    "Toy.WrapNiche.ex_affine": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_affineLayout_neg": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_affineLayout_pos": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_bytes": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_classify": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_compl": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_covers_neg": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_covers_pos": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_decodeIdx": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_disjointFromNiche": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_encodable": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_exactFor_neg": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_exactFor_pos": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_extend": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_extend_full": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_genLayout_lawful_span_eq_card": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_genLayout_neg": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_genLayout_pos": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_intervalV": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_intervalV_nonZero": [],
+    "Toy.WrapNiche.ex_isHull_neg": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_isHull_pos": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_isWrapIntervalSet_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_isWrapIntervalSet_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_levelsReserveNiches_neg": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_levelsReserveNiches_pos": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_liveInRange_neg": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_liveInRange_pos": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_live_neg": [],
+    "Toy.WrapNiche.ex_live_pos": [],
+    "Toy.WrapNiche.ex_live_u_ge_k": [],
+    "Toy.WrapNiche.ex_mem_neg": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_mem_pos": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_naturalSpan": [],
+    "Toy.WrapNiche.ex_nest_past_capacity": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_nichesCount": [],
+    "Toy.WrapNiche.ex_offset": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_readDisc": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_readDisc_unusedNiche": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_readNiche": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_rotTagsInvalid_neg": [],
+    "Toy.WrapNiche.ex_rotTagsInvalid_pos": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_rotated": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_run": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_run_write_oob": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_setDisc": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_setDisc_oob": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_setDisc_untagged_uninhabited": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_size": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_tagInterval_collapses": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_tagsDisjoint_neg": [],
+    "Toy.WrapNiche.ex_tagsDisjoint_pos": [],
+    "Toy.WrapNiche.ex_tests": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_toI8": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_twoBranchTest": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_wrapAdd": [
+      "propext"
+    ],
+    "Toy.WrapNiche.ex_wrapSub": [
+      "propext"
+    ],
+    "Toy.WrapNiche.exists_lawful_extEnum_intervalV_iff_le_sub_size": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.exists_rotTagsInvalid_iff_sub_one_le_sub_size_of_nonempty_of_isHull": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.exists_tagsDisjoint_iff_span_succ_le_sub_size_of_nonempty_of_isHull": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.exists_tagsDisjoint_naturalSpan_iff_of_nonempty_of_isHull": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.exists_tagsDisjoint_naturalSpan_iff_untagged_first_or_last_of_nonempty_of_isHull_of_sub_size_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.extend": [],
+    "Toy.WrapNiche.extend_spec_of_size_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.genLayout": [],
+    "Toy.WrapNiche.genLayout.eq_1": [],
+    "Toy.WrapNiche.genLayout.match_1": [],
+    "Toy.WrapNiche.genLayout_canonical": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.genLayout_dec_isSome_iff_classify_of_span_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.genLayout_lawful_of_span_lt_of_tagsDisjoint_of_liveInRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.instDecidableCovers": [],
+    "Toy.WrapNiche.instDecidableEqAffineNiche": [],
+    "Toy.WrapNiche.instDecidableEqAffineNiche.decEq": [],
+    "Toy.WrapNiche.instDecidableEqAffineNiche.decEq.match_1": [],
+    "Toy.WrapNiche.instDecidableEqFieldClass": [],
+    "Toy.WrapNiche.instDecidableEqSem": [],
+    "Toy.WrapNiche.instDecidableEqSide": [],
+    "Toy.WrapNiche.instDecidableEqWrapInterval": [],
+    "Toy.WrapNiche.instDecidableEqWrapInterval.decEq": [],
+    "Toy.WrapNiche.instDecidableEqWrapInterval.decEq.match_1": [],
+    "Toy.WrapNiche.instDecidableExactFor": [],
+    "Toy.WrapNiche.instDecidableIsHull": [],
+    "Toy.WrapNiche.instDecidableIsWrapIntervalSet": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.instDecidableLevelsReserveNiches": [],
+    "Toy.WrapNiche.instDecidableLive": [],
+    "Toy.WrapNiche.instDecidableLiveInRange": [],
+    "Toy.WrapNiche.instDecidableOriginTest": [],
+    "Toy.WrapNiche.instDecidableRotTagsInvalid": [],
+    "Toy.WrapNiche.instDecidableSignedTestI8": [],
+    "Toy.WrapNiche.instDecidableSubTest": [],
+    "Toy.WrapNiche.instDecidableTagsDisjoint": [],
+    "Toy.WrapNiche.instDecidableTwoBranchTest": [],
+    "Toy.WrapNiche.instDecidableUnsignedTest": [],
+    "Toy.WrapNiche.instReprAffineNiche": [],
+    "Toy.WrapNiche.instReprAffineNiche.repr": [],
+    "Toy.WrapNiche.instReprFieldClass": [],
+    "Toy.WrapNiche.instReprFieldClass.repr": [],
+    "Toy.WrapNiche.instReprFieldClass.repr.match_1": [],
+    "Toy.WrapNiche.instReprSem": [],
+    "Toy.WrapNiche.instReprSem.repr": [],
+    "Toy.WrapNiche.instReprSem.repr.match_1": [],
+    "Toy.WrapNiche.instReprSide": [],
+    "Toy.WrapNiche.instReprSide.repr": [],
+    "Toy.WrapNiche.instReprSide.repr.match_1": [],
+    "Toy.WrapNiche.instReprWrapInterval": [],
+    "Toy.WrapNiche.instReprWrapInterval.repr": [],
+    "Toy.WrapNiche.intervalV": [],
+    "Toy.WrapNiche.intervalV.eq_1": [],
+    "Toy.WrapNiche.leBytes": [],
+    "Toy.WrapNiche.leBytes.eq_1": [],
+    "Toy.WrapNiche.leBytes_length": [
+      "propext"
+    ],
+    "Toy.WrapNiche.leVal": [],
+    "Toy.WrapNiche.leVal.eq_1": [],
+    "Toy.WrapNiche.leVal_leBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.levelsReserveNiches_iff_length_le_and_nest_size": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.list_count_offset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.mapM_id_map_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.mem_iff_offset_le_offset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.naturalFirst": [],
+    "Toy.WrapNiche.naturalFirst_naturalLast_spec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.naturalLast": [],
+    "Toy.WrapNiche.naturalSpan": [],
+    "Toy.WrapNiche.naturalSpan_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.nest": [],
+    "Toy.WrapNiche.nest.eq_1": [],
+    "Toy.WrapNiche.nest.eq_2": [],
+    "Toy.WrapNiche.nest.eq_def": [],
+    "Toy.WrapNiche.nest.match_1": [],
+    "Toy.WrapNiche.nicheLayout_adjNiche_lawful_and_accepts_extend_of_size_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.nicheLayout_adjNiche_lawful_and_accepts_extend_of_size_lt.match_1_1": [],
+    "Toy.WrapNiche.nichesCount": [],
+    "Toy.WrapNiche.nichesCount_eq_numInvalid": [],
+    "Toy.WrapNiche.nichesCount_intervalV": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.not_exactFor_originTest_wrapSub_one_of_two_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_affineLayout_eq_nicheLayoutK_affineTags": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_affineLayout_lawful_iff_span_lt_and_tagsDisjoint": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_classify_valid_iff_and_decodeIdx_of_span_lt_of_tagsDisjoint": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_compl_mem_iff_not_mem_of_size_lt": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_exists_lawful_extEnum_intervalV": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_exists_tagsDisjoint_iff_span_succ_le_sub_size_of_isHull": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_exists_tagsDisjoint_naturalSpan_iff_untagged_first_or_last": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_extend_spec_of_size_lt": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_genLayout_dec_isSome_iff_classify_of_span_lt": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_genLayout_lawful_of_span_lt_of_tagsDisjoint_of_liveInRange": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_levelsReserveNiches_iff_length_le_and_nest_size": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_mem_iff_offset_le_offset": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_nicheLayout_adjNiche_lawful": [],
+    "Toy.WrapNiche.nv_nichesCount_intervalV": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_not_exactFor_originTest_wrapSub_one_of_two_le": [],
+    "Toy.WrapNiche.nv_originTest_exactFor_iff_offset_le": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_rotDecodeIdx_exact": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_run_erased_eq_some_of_run_operational_eq_some": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_run_fields_then_setDisc_readDisc_of_disjoint": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_run_write_setDisc_comm_of_disjointFromNiche": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_setDisc_operational_untagged_isSome_iff": [
+      "propext"
+    ],
+    "Toy.WrapNiche.nv_sub_size_le_nichesCount_and_eq_iff_of_covers": [
+      "propext"
+    ],
+    "Toy.WrapNiche.offset": [],
+    "Toy.WrapNiche.offset_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.offset_lt": [],
+    "Toy.WrapNiche.offset_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.offset_shift": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.offset_wrapAdd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.offset_wrapAdd_of_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.offset_wrapSub_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.offset_zero": [
+      "propext"
+    ],
+    "Toy.WrapNiche.originTest": [],
+    "Toy.WrapNiche.originTest_exactFor_iff_offset_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.pc_complTest_exactFor_fin8": [],
+    "Toy.WrapNiche.pc_signed_and_unsigned_exact_elsewhere": [
+      "propext"
+    ],
+    "Toy.WrapNiche.pc_subTest_exactFor_all_fin8": [],
+    "Toy.WrapNiche.pc_twoBranchTest_exactFor": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.pos_of_fin": [],
+    "Toy.WrapNiche.range_succ_eq_cons": [
+      "propext"
+    ],
+    "Toy.WrapNiche.readBytes": [
+      "propext"
+    ],
+    "Toy.WrapNiche.readBytes_writeBytes_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.readBytes_writeBytes_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.readNiche_writeNiche": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.rotDecodeIdx": [],
+    "Toy.WrapNiche.rotDecodeIdx_exact_of_lt_of_le_succ_of_rotTagsInvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.rotIdx": [],
+    "Toy.WrapNiche.rotTag": [],
+    "Toy.WrapNiche.rotTagsInvalid_iff_tagsDisjoint_sub_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.run": [
+      "propext"
+    ],
+    "Toy.WrapNiche.run.eq_1": [
+      "propext"
+    ],
+    "Toy.WrapNiche.run.eq_2": [
+      "propext"
+    ],
+    "Toy.WrapNiche.run.eq_def": [
+      "propext"
+    ],
+    "Toy.WrapNiche.run.match_1": [],
+    "Toy.WrapNiche.run_append": [
+      "propext"
+    ],
+    "Toy.WrapNiche.run_erased_eq_some_of_run_operational_eq_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.run_fields_then_setDisc_readDisc_of_disjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.run_write_setDisc_comm_of_disjointFromNiche": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.run_writesOf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.setDisc": [
+      "propext"
+    ],
+    "Toy.WrapNiche.setDisc_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.setDisc_operational_untagged_isSome_iff_of_tagsDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.setDisc_writeBytes_comm_of_disjointFromNiche": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.signedTestI8": [],
+    "Toy.WrapNiche.signedTestI8_iff_originTest_128": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.stepOp": [
+      "propext"
+    ],
+    "Toy.WrapNiche.stepOp.eq_1": [
+      "propext"
+    ],
+    "Toy.WrapNiche.stepOp.eq_2": [
+      "propext"
+    ],
+    "Toy.WrapNiche.stepOp.eq_3": [
+      "propext"
+    ],
+    "Toy.WrapNiche.stepOp.match_1": [],
+    "Toy.WrapNiche.subTest": [],
+    "Toy.WrapNiche.subTest_iff_originTest_start": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.sub_size_eq_nichesCount_iff_isWrapIntervalSet_of_isHull": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.sub_size_eq_nichesCount_iff_isWrapIntervalSet_of_isHull.match_1_1": [],
+    "Toy.WrapNiche.sub_size_le_nichesCount_and_eq_iff_of_covers": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.toI8": [],
+    "Toy.WrapNiche.twoBranchTest": [],
+    "Toy.WrapNiche.uninit3": [],
+    "Toy.WrapNiche.unsignedTest": [],
+    "Toy.WrapNiche.unsignedTest_iff_originTest_zero": [
+      "propext"
+    ],
+    "Toy.WrapNiche.wrapAdd": [],
+    "Toy.WrapNiche.wrapAdd_add": [
+      "propext"
+    ],
+    "Toy.WrapNiche.wrapAdd_offset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.wrapSub": [],
+    "Toy.WrapNiche.writeBytes": [
+      "propext"
+    ],
+    "Toy.WrapNiche.writeBytes.eq_1": [
+      "propext"
+    ],
+    "Toy.WrapNiche.writeBytes_comm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.writeBytes_getD": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.writeBytes_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.writeNiche_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.WrapNiche.writesOf": [],
+    "Toy.WrapNiche.writesOf.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

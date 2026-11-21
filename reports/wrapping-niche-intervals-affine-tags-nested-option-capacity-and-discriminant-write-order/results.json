@@ -1,0 +1,1128 @@
+[
+ {
+  "id": "R1.1",
+  "lean": "Toy.WrapNiche.mem_iff_offset_le_offset",
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For every M, every wrapping interval [s, e] of Fin M (membership `WrapInterval.Mem` defined by cases: s..=e if s <= e, else s..=M-1 followed by 0..=e) and every value x, x is a member iff (x - s) mod M <= (e - s) mod M, where each wrapping difference is computed in Nat as (x + (M - s)) % M (floor modulo; M - s does not truncate since s < M); there is no hypothesis (for M = 0, Fin 0 is empty and the statement is vacuous).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "M = 256, [255, 0], x = 0 (a wrapping interval).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_mem_iff_offset_le_offset",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "Membership is the model's case-split definition (`WrapInterval.Mem`); the result does not show that any compiler implements its range checks with this subtraction.",
+   "Every `WrapInterval` is non-empty (it contains s); the empty set is not representable, so nothing is claimed about empty validity ranges.",
+   "`offset` is computed in Nat as (x + (M - s)) % M; nothing is claimed about fixed-width machine subtraction beyond this arithmetic."
+  ],
+  "prior_art": [
+   "Graeme Gange, Jorge A. Navas, Peter Schachte, Harald Søndergaard and Peter J. Stuckey, \"Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss\", ACM Transactions on Programming Languages and Systems 37(1), Article 1, January 2015, DOI 10.1145/2651360 (consulted in the authors' copy at https://jorgenavas.github.io/papers/ACM-TOPLAS-wrapped.pdf; formulas paraphrased): the wrapped-interval (w-interval) domain over w-bit integers. Section 3.1 defines the relative order b ≤_a c iff (b - a) mod 2^w ≤ (c - a) mod 2^w and notes that the unsigned order (a = 0) and the signed order (a = 2^(w-1)) disagree across hemispheres; the same section (Definition 3.1 and the definitions after it) gives the meaning of a delimited interval by the same case split as `WrapInterval.Mem`, its cardinality (y - x) mod 2^w + 1, and its complement [y + 1, x - 1]; Section 3.2 tests membership as e ≤_x y — the single-subtraction test — and shows that w-intervals ordered by inclusion are not a lattice (two incomparable minimal upper bounds of equal cardinality); Section 3.3 gives a minimal-upper-bound algorithm (Fig. 5) that returns the complement of the largest uncovered gap. Unlike the toy, w-intervals include an empty element and a single full element.",
+   "Henry S. Warren, Jr., Hacker's Delight, 2nd edition, Addison-Wesley, 2012, Section 4-1 \"Checking Bounds of Integers\": the machine-integer range check a ≤ x ≤ b as one unsigned comparison of the wrapping differences x - a and b - a (the non-wrapping case of the single-subtraction test).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:8-16 (documentation): \"Inclusive wrap-around range of valid values, that is, if start > end, it represents `start..=MAX`, followed by `0..=end`.\" (lines 8-9) and \"This is intended specifically to mirror LLVM’s `!range` metadata semantics.\" (line 16).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:55-63 and 147-195 (source): `WrappingRange::contains` (lines 55-63, documented \"Returns `true` if `v` is contained in the range.\", line 55) tests membership by cases, `if self.start <= self.end { self.start <= v && v <= self.end } else { self.start <= v || v <= self.end }` (lines 58-62, line breaks collapsed) — the case split of `WrapInterval.Mem` and the two branches of `twoBranchTest` at origin 0; `smallest_range_containing` (lines 147-195) \"Returns a `WrappingRange` that contains all of the values from the iterator, when they're treated as values `size` wide.\" (lines 147-148) by choosing the narrowest of the non-wraparound range and the wraparound candidates between consecutive sorted values (lines 176-194) — a computation of an interval hull in the sense of `IsHull`, which the toy characterizes semantically instead.",
+   "llvm/llvm-project@3623fe661ae35c6c80ac221f14d85be76aa870f1 (tag llvmorg-21.1.0) llvm/docs/LangRef.rst:7334-7371 (normative for LLVM IR), `range` metadata: \"The pair ``a,b`` represents the range ``[a,b)``.\" (line 7346), \"The range is allowed to wrap.\" (line 7348), and \"The range should not represent the full or empty set. That is, ``a!=b``.\" (lines 7349-7350). LLVM ranges are half-open and a list of pairs may describe a union of ranges; the toy's intervals are inclusive single ranges like rustc's WrappingRange.",
+   "llvm/llvm-project@3623fe661ae35c6c80ac221f14d85be76aa870f1 (tag llvmorg-21.1.0) llvm/lib/IR/ConstantRange.cpp:517-524 and 1939-1945 (source): `ConstantRange::contains(const APInt &V)` tests membership in a half-open wrapping range by cases (\"return Lower.ule(V) && V.ult(Upper);\" when the range does not wrap, line 522, and \"return Lower.ule(V) || V.ult(Upper);\" otherwise, line 523); `ConstantRange::inverse()` returns \"ConstantRange(Upper, Lower)\" for a range that is neither full nor empty (line 1944) — the half-open counterpart of `WrapInterval.compl`.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2002-2033 (documentation): TagEncoding::Niche docs, quoted: \"For a variant with variant index `i`, such that `i != untagged_variant`, the tag is set to `(i - niche_variants.start).wrapping_add(niche_start)` (this is wrapping arithmetic using the type of the niche field, cf. the [`tag_for_variant`](../rustc_const_eval/interpret/struct.InterpCx.html#method.tag_for_variant) query implementation). To recover the variant index `i` from a `tag`, the above formula has to be reversed, i.e. `i = tag.wrapping_sub(niche_start) + niche_variants.start`. If `i` ends up outside `niche_variants`, the tag must have encoded the `untagged_variant`.\" (lib.rs:2008-2015); \"Other variants that are not `untagged_variant` and that are outside the `niche_variants` range cannot be represented; they must be uninhabited. Nonetheless, uninhabited variants can also fall into the range of `niche_variants`.\" (lib.rs:2022-2024); and \"This range *may* contain `untagged_variant` or uninhabited variants; these are then just \"dead values\" and not used to encode anything.\" (lib.rs:2027-2028)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.WrapInterval",
+   "Toy.WrapNiche.WrapInterval.Mem",
+   "Toy.WrapNiche.offset",
+   "Toy.WrapNiche.subTest",
+   "Toy.WrapNiche.twoBranchTest",
+   "Toy.WrapNiche.IsHull",
+   "Toy.WrapNiche.WrapInterval.compl",
+   "Toy.WrapNiche.Bytes",
+   "Toy.WrapNiche.Imported.IsNiche",
+   "Toy.WrapNiche.Imported.Opt",
+   "Toy.WrapNiche.Imported.Pat",
+   "Toy.WrapNiche.Imported.Val",
+   "Toy.WrapNiche.Imported.Validity",
+   "Toy.WrapNiche.Imported.allV",
+   "Toy.WrapNiche.Imported.firstNiches",
+   "Toy.WrapNiche.Imported.nicheLayoutK_lawful_iff_injective_and_isNiche",
+   "Toy.WrapNiche.Imported.nonZeroV",
+   "Toy.WrapNiche.Imported.pat_card_pos",
+   "Toy.WrapNiche.LopAll",
+   "Toy.WrapNiche.V0",
+   "Toy.WrapNiche.V01",
+   "Toy.WrapNiche.V02",
+   "Toy.WrapNiche.Vlow",
+   "Toy.WrapNiche.Vlt254",
+   "Toy.WrapNiche.Vmid",
+   "Toy.WrapNiche.ex_affineLayout_neg",
+   "Toy.WrapNiche.ex_affineLayout_pos",
+   "Toy.WrapNiche.ex_compl",
+   "Toy.WrapNiche.ex_covers_neg",
+   "Toy.WrapNiche.ex_covers_pos",
+   "Toy.WrapNiche.ex_disjointFromNiche",
+   "Toy.WrapNiche.ex_encodable",
+   "Toy.WrapNiche.ex_exactFor_neg",
+   "Toy.WrapNiche.ex_exactFor_pos",
+   "Toy.WrapNiche.ex_genLayout_neg",
+   "Toy.WrapNiche.ex_genLayout_pos",
+   "Toy.WrapNiche.ex_intervalV",
+   "Toy.WrapNiche.ex_isHull_neg",
+   "Toy.WrapNiche.ex_isHull_pos",
+   "Toy.WrapNiche.ex_isWrapIntervalSet_pos",
+   "Toy.WrapNiche.ex_levelsReserveNiches_neg",
+   "Toy.WrapNiche.ex_levelsReserveNiches_pos",
+   "Toy.WrapNiche.ex_live_neg",
+   "Toy.WrapNiche.ex_live_pos",
+   "Toy.WrapNiche.ex_mem_neg",
+   "Toy.WrapNiche.ex_mem_pos",
+   "Toy.WrapNiche.ex_offset",
+   "Toy.WrapNiche.ex_readDisc",
+   "Toy.WrapNiche.ex_readNiche",
+   "Toy.WrapNiche.ex_rotTagsInvalid_neg",
+   "Toy.WrapNiche.ex_rotTagsInvalid_pos",
+   "Toy.WrapNiche.ex_run",
+   "Toy.WrapNiche.ex_size",
+   "Toy.WrapNiche.ex_tagsDisjoint_neg",
+   "Toy.WrapNiche.ex_tagsDisjoint_pos",
+   "Toy.WrapNiche.ex_tests",
+   "Toy.WrapNiche.ex_twoBranchTest",
+   "Toy.WrapNiche.leVal",
+   "Toy.WrapNiche.offset_self",
+   "Toy.WrapNiche.pos_of_fin",
+   "Toy.WrapNiche.uninit3"
+  ],
+  "design_question": "When is a niche decoder's single wrapping subtraction exact, including intervals that wrap at the unsigned or the signed boundary?",
+  "tier_note": "T0: re-derivation; the membership test of wrapped intervals is published (Gange et al. 2015, Section 3.2) and the single-subtraction range check is textbook (Warren 2012, Section 4-1).",
+  "depth_note": "a case split on s <= e and x < s, closed by linear arithmetic."
+ },
+ {
+  "id": "R1.2",
+  "lean": "Toy.WrapNiche.compl_mem_iff_not_mem_of_size_lt",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For a wrapping interval [s, e] of Fin M that is not full (hypothesis: its size ((e - s) mod M) + 1 is less than M), the wrapping interval [e + 1, s - 1] (both ends computed with wrapping arithmetic) contains exactly the non-members of [s, e].",
+  "hypotheses": [
+   {
+    "name": "hI : I.size < M",
+    "purpose": "Excludes the full interval, whose complement is empty and not representable; [e + 1, s - 1] is then again the full interval.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_compl_mem_iff_not_mem_of_size_lt_hI",
+    "witness_class": "an instance with M = 4 (the full interval [0, 3])"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "M = 256, [255, 0] (size 2).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_compl_mem_iff_not_mem_of_size_lt",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "For M = 1 every interval is full, so the hypothesis excludes M = 1 entirely.",
+   "Nothing is claimed about how a real layout engine represents a full range."
+  ],
+  "prior_art": [
+   "Graeme Gange, Jorge A. Navas, Peter Schachte, Harald Søndergaard and Peter J. Stuckey, \"Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss\", ACM Transactions on Programming Languages and Systems 37(1), Article 1, January 2015, DOI 10.1145/2651360 (consulted in the authors' copy at https://jorgenavas.github.io/papers/ACM-TOPLAS-wrapped.pdf; formulas paraphrased): the wrapped-interval (w-interval) domain over w-bit integers. Section 3.1 defines the relative order b ≤_a c iff (b - a) mod 2^w ≤ (c - a) mod 2^w and notes that the unsigned order (a = 0) and the signed order (a = 2^(w-1)) disagree across hemispheres; the same section (Definition 3.1 and the definitions after it) gives the meaning of a delimited interval by the same case split as `WrapInterval.Mem`, its cardinality (y - x) mod 2^w + 1, and its complement [y + 1, x - 1]; Section 3.2 tests membership as e ≤_x y — the single-subtraction test — and shows that w-intervals ordered by inclusion are not a lattice (two incomparable minimal upper bounds of equal cardinality); Section 3.3 gives a minimal-upper-bound algorithm (Fig. 5) that returns the complement of the largest uncovered gap. Unlike the toy, w-intervals include an empty element and a single full element.",
+   "llvm/llvm-project@3623fe661ae35c6c80ac221f14d85be76aa870f1 (tag llvmorg-21.1.0) llvm/lib/IR/ConstantRange.cpp:517-524 and 1939-1945 (source): `ConstantRange::contains(const APInt &V)` tests membership in a half-open wrapping range by cases (\"return Lower.ule(V) && V.ult(Upper);\" when the range does not wrap, line 522, and \"return Lower.ule(V) || V.ult(Upper);\" otherwise, line 523); `ConstantRange::inverse()` returns \"ConstantRange(Upper, Lower)\" for a range that is neither full nor empty (line 1944) — the half-open counterpart of `WrapInterval.compl`.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:8-16 (documentation): \"Inclusive wrap-around range of valid values, that is, if start > end, it represents `start..=MAX`, followed by `0..=end`.\" (lines 8-9) and \"This is intended specifically to mirror LLVM’s `!range` metadata semantics.\" (line 16).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2075-2087 (source comment in Niche::reserve): \"Extend the range of valid values being reserved by moving either `v.start` or `v.end` bound.\" (line 2075-2076)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.WrapInterval.compl",
+   "Toy.WrapNiche.WrapInterval.size",
+   "Toy.WrapNiche.wrapAdd",
+   "Toy.WrapNiche.wrapSub",
+   "Toy.WrapNiche.WrapInterval.Mem",
+   "Toy.WrapNiche.ex_wrapAdd",
+   "Toy.WrapNiche.ex_wrapSub"
+  ],
+  "design_question": "When is a niche decoder's single wrapping subtraction exact, including intervals that wrap at the unsigned or the signed boundary?",
+  "tier_note": "T0: re-derivation; the complement [e + 1, s - 1] of a non-full wrapped interval is published (Gange et al. 2015, Section 3.1).",
+  "depth_note": "offset arithmetic after rewriting both memberships with R1.1."
+ },
+ {
+  "id": "R1.3",
+  "lean": "Toy.WrapNiche.originTest_exactFor_iff_offset_le",
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For every origin o and wrapping interval [s, e] of Fin M, the conjunctive comparison test `originTest o` ('offset(o, s) <= offset(o, x) <= offset(o, e)', offsets being wrapping distances from o) agrees with membership for every x iff (s - o) mod M <= (e - o) mod M, i.e. iff the interval does not wrap past o. Origin 0 is the unsigned test s <= x <= e (`unsignedTest_iff_originTest_zero`, every M); for M = 256, origin 128 is the signed test on i8 readings (`signedTestI8_iff_originTest_128`, proved for M = 256; other widths are not stated).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "M = 8, origin 0, [2, 5].",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_originTest_exactFor_iff_offset_le",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "The folklore refutations are concrete: the unsigned test fails on [255, 0] mod 256 (`cex_folklore_unsignedTest_255_0`) and the i8 signed test fails on [127, 128] mod 256 (`cex_folklore_signedTestI8_127_128`). Each fixed test is exact on other wrapping intervals (`pc_signed_and_unsigned_exact_elsewhere`).",
+   "The classification is for the conjunctive test `originTest o`. A two-branch test at a fixed origin (`twoBranchTest`) is exact for every interval (`pc_twoBranchTest_exactFor`); table lookups are not examined.",
+   "The signed reading is stated for 8-bit fields (`toI8`, `signedTestI8`); the corresponding equivalence for other widths 2^w with origin 2^(w-1) is not stated (not proved here)."
+  ],
+  "prior_art": [
+   "Graeme Gange, Jorge A. Navas, Peter Schachte, Harald Søndergaard and Peter J. Stuckey, \"Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss\", ACM Transactions on Programming Languages and Systems 37(1), Article 1, January 2015, DOI 10.1145/2651360 (consulted in the authors' copy at https://jorgenavas.github.io/papers/ACM-TOPLAS-wrapped.pdf; formulas paraphrased): the wrapped-interval (w-interval) domain over w-bit integers. Section 3.1 defines the relative order b ≤_a c iff (b - a) mod 2^w ≤ (c - a) mod 2^w and notes that the unsigned order (a = 0) and the signed order (a = 2^(w-1)) disagree across hemispheres; the same section (Definition 3.1 and the definitions after it) gives the meaning of a delimited interval by the same case split as `WrapInterval.Mem`, its cardinality (y - x) mod 2^w + 1, and its complement [y + 1, x - 1]; Section 3.2 tests membership as e ≤_x y — the single-subtraction test — and shows that w-intervals ordered by inclusion are not a lattice (two incomparable minimal upper bounds of equal cardinality); Section 3.3 gives a minimal-upper-bound algorithm (Fig. 5) that returns the complement of the largest uncovered gap. Unlike the toy, w-intervals include an empty element and a single full element.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:8-16 (documentation): \"Inclusive wrap-around range of valid values, that is, if start > end, it represents `start..=MAX`, followed by `0..=end`.\" (lines 8-9) and \"This is intended specifically to mirror LLVM’s `!range` metadata semantics.\" (line 16).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:55-63 and 147-195 (source): `WrappingRange::contains` (lines 55-63, documented \"Returns `true` if `v` is contained in the range.\", line 55) tests membership by cases, `if self.start <= self.end { self.start <= v && v <= self.end } else { self.start <= v || v <= self.end }` (lines 58-62, line breaks collapsed) — the case split of `WrapInterval.Mem` and the two branches of `twoBranchTest` at origin 0; `smallest_range_containing` (lines 147-195) \"Returns a `WrappingRange` that contains all of the values from the iterator, when they're treated as values `size` wide.\" (lines 147-148) by choosing the narrowest of the non-wraparound range and the wraparound candidates between consecutive sorted values (lines 176-194) — a computation of an interval hull in the sense of `IsHull`, which the toy characterizes semantically instead.",
+   "llvm/llvm-project@3623fe661ae35c6c80ac221f14d85be76aa870f1 (tag llvmorg-21.1.0) llvm/docs/LangRef.rst:7334-7371 (normative for LLVM IR), `range` metadata: \"The pair ``a,b`` represents the range ``[a,b)``.\" (line 7346), \"The range is allowed to wrap.\" (line 7348), and \"The range should not represent the full or empty set. That is, ``a!=b``.\" (lines 7349-7350). LLVM ranges are half-open and a list of pairs may describe a union of ranges; the toy's intervals are inclusive single ranges like rustc's WrappingRange."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.originTest",
+   "Toy.WrapNiche.ExactFor",
+   "Toy.WrapNiche.unsignedTest",
+   "Toy.WrapNiche.signedTestI8",
+   "Toy.WrapNiche.toI8",
+   "Toy.WrapNiche.offset_zero",
+   "Toy.WrapNiche.unsignedTest_iff_originTest_zero",
+   "Toy.WrapNiche.signedTestI8_iff_originTest_128",
+   "Toy.WrapNiche.cex_folklore_unsignedTest_255_0",
+   "Toy.WrapNiche.cex_folklore_signedTestI8_127_128",
+   "Toy.WrapNiche.pc_signed_and_unsigned_exact_elsewhere",
+   "Toy.WrapNiche.twoBranchTest",
+   "Toy.WrapNiche.pc_twoBranchTest_exactFor",
+   "Toy.WrapNiche.WrapInterval.Mem",
+   "Toy.WrapNiche.IsHull",
+   "Toy.WrapNiche.ex_toI8"
+  ],
+  "design_question": "When is a niche decoder's single wrapping subtraction exact, including intervals that wrap at the unsigned or the signed boundary?",
+  "tier_note": "T0: re-derivation; the origin-relative order and the disagreement of the unsigned and signed orders across hemispheres are published (Gange et al. 2015, Section 3.1); this card restates them for an arbitrary origin.",
+  "depth_note": "offset arithmetic via the change-of-origin identity for offsets."
+ },
+ {
+  "id": "R1.4",
+  "lean": "Toy.WrapNiche.not_exactFor_originTest_wrapSub_one_of_two_le",
+  "kind": "impossibility",
+  "tier": "T0",
+  "plain_claim": "For M >= 2 and every origin o of Fin M, the conjunctive fixed-origin comparison test `originTest o` ('offset(o, s) <= offset(o, x) <= offset(o, e)') is not exact for the two-element wrapping interval [o - 1, o] (o - 1 computed with wrapping arithmetic); hence for M >= 2 no single fixed origin makes this conjunctive test exact for every interval.",
+  "hypotheses": [
+   {
+    "name": "hM : 2 ≤ M",
+    "purpose": "For M = 1 there is a single interval, [0, 0], and the test at origin 0 is exact for it.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_not_exactFor_originTest_wrapSub_one_of_two_le_hM",
+    "witness_class": "an instance with M = 1"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "M = 256 (any origin).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_not_exactFor_originTest_wrapSub_one_of_two_le",
+  "positive_control_lean": [
+   "Toy.WrapNiche.pc_twoBranchTest_exactFor",
+   "Toy.WrapNiche.pc_complTest_exactFor_fin8",
+   "Toy.WrapNiche.pc_subTest_exactFor_all_fin8",
+   "Toy.WrapNiche.cex_not_exactFor_originTest_wrapSub_one_of_two_le_hM"
+  ],
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "The witness interval is exposed: [o - 1, o]. The result says nothing about intervals that do not wrap past o, for which the fixed test is exact (`originTest_exactFor_iff_offset_le`).",
+   "Escape hatch (a second branch): the test at the same fixed origin that uses `originTest o` when the interval does not wrap past o and the disjunction offset(o, s) <= offset(o, x) or offset(o, x) <= offset(o, e) otherwise (`twoBranchTest`) is exact for every interval, every M and every origin (`pc_twoBranchTest_exactFor`). At origin 0 its branches are the two cases of `WrapInterval.Mem`, the shape of rustc's `WrappingRange::contains` (prior art).",
+   "Escape hatch (a negated complement): the fixed-origin test applied to the interval when it does not wrap past o, and the negated fixed-origin test applied to [e + 1, s - 1] otherwise, is exact for every origin and every interval of Fin 8 (`pc_complTest_exactFor_fin8`, a bounded check); the statement for general M is not proved here.",
+   "Escape hatch (an origin that depends on the interval): with the interval's own start as origin the test is the single-subtraction test (`subTest_iff_originTest_start`), exact for every interval (`mem_iff_offset_le_offset`; `pc_subTest_exactFor_all_fin8` checks M = 8).",
+   "Escape hatch (dropping hM): for M = 1 the only interval [0, 0] is tested exactly (`cex_not_exactFor_originTest_wrapSub_one_of_two_le_hM`)."
+  ],
+  "prior_art": [
+   "Graeme Gange, Jorge A. Navas, Peter Schachte, Harald Søndergaard and Peter J. Stuckey, \"Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss\", ACM Transactions on Programming Languages and Systems 37(1), Article 1, January 2015, DOI 10.1145/2651360 (consulted in the authors' copy at https://jorgenavas.github.io/papers/ACM-TOPLAS-wrapped.pdf; formulas paraphrased): the wrapped-interval (w-interval) domain over w-bit integers. Section 3.1 defines the relative order b ≤_a c iff (b - a) mod 2^w ≤ (c - a) mod 2^w and notes that the unsigned order (a = 0) and the signed order (a = 2^(w-1)) disagree across hemispheres; the same section (Definition 3.1 and the definitions after it) gives the meaning of a delimited interval by the same case split as `WrapInterval.Mem`, its cardinality (y - x) mod 2^w + 1, and its complement [y + 1, x - 1]; Section 3.2 tests membership as e ≤_x y — the single-subtraction test — and shows that w-intervals ordered by inclusion are not a lattice (two incomparable minimal upper bounds of equal cardinality); Section 3.3 gives a minimal-upper-bound algorithm (Fig. 5) that returns the complement of the largest uncovered gap. Unlike the toy, w-intervals include an empty element and a single full element.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:8-16 (documentation): \"Inclusive wrap-around range of valid values, that is, if start > end, it represents `start..=MAX`, followed by `0..=end`.\" (lines 8-9) and \"This is intended specifically to mirror LLVM’s `!range` metadata semantics.\" (line 16).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:55-63 and 147-195 (source): `WrappingRange::contains` (lines 55-63, documented \"Returns `true` if `v` is contained in the range.\", line 55) tests membership by cases, `if self.start <= self.end { self.start <= v && v <= self.end } else { self.start <= v || v <= self.end }` (lines 58-62, line breaks collapsed) — the case split of `WrapInterval.Mem` and the two branches of `twoBranchTest` at origin 0; `smallest_range_containing` (lines 147-195) \"Returns a `WrappingRange` that contains all of the values from the iterator, when they're treated as values `size` wide.\" (lines 147-148) by choosing the narrowest of the non-wraparound range and the wraparound candidates between consecutive sorted values (lines 176-194) — a computation of an interval hull in the sense of `IsHull`, which the toy characterizes semantically instead.",
+   "llvm/llvm-project@3623fe661ae35c6c80ac221f14d85be76aa870f1 (tag llvmorg-21.1.0) llvm/docs/LangRef.rst:7334-7371 (normative for LLVM IR), `range` metadata: \"The pair ``a,b`` represents the range ``[a,b)``.\" (line 7346), \"The range is allowed to wrap.\" (line 7348), and \"The range should not represent the full or empty set. That is, ``a!=b``.\" (lines 7349-7350). LLVM ranges are half-open and a list of pairs may describe a union of ranges; the toy's intervals are inclusive single ranges like rustc's WrappingRange."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.originTest",
+   "Toy.WrapNiche.ExactFor",
+   "Toy.WrapNiche.wrapSub",
+   "Toy.WrapNiche.twoBranchTest",
+   "Toy.WrapNiche.originTest_exactFor_iff_offset_le",
+   "Toy.WrapNiche.pc_twoBranchTest_exactFor",
+   "Toy.WrapNiche.WrapInterval.Mem",
+   "Toy.WrapNiche.pc_complTest_exactFor_fin8",
+   "Toy.WrapNiche.subTest_iff_originTest_start",
+   "Toy.WrapNiche.mem_iff_offset_le_offset",
+   "Toy.WrapNiche.pc_subTest_exactFor_all_fin8",
+   "Toy.WrapNiche.cex_not_exactFor_originTest_wrapSub_one_of_two_le_hM",
+   "Toy.WrapNiche.IsHull"
+  ],
+  "design_question": "When is a niche decoder's single wrapping subtraction exact, including intervals that wrap at the unsigned or the signed boundary?",
+  "tier_note": "T0: re-derivation; an immediate consequence of R1.3, itself a restatement of published facts (Gange et al. 2015, Section 3.1).",
+  "depth_note": "R1.3 instantiated at the interval [o - 1, o]."
+ },
+ {
+  "id": "R2.1",
+  "lean": "Toy.WrapNiche.affineLayout_eq_nicheLayoutK_affineTags",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every payload validity set V on n-byte patterns and every affine encoding A (relative index r <= span gets tag (nicheStart + r) mod 256^n), the layout `affineLayout V A`, whose decoder performs one wrapping subtraction rel = (x - nicheStart) mod 256^n and returns relative index rel if rel <= span (else the payload if valid), is equal, as a layout, to the imported lookup layout `nicheLayoutK V (affineTags A)`; there is no hypothesis (when tags collide, both decoders return the least matching relative index).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "n = 1, V = 1..=253, A = (first 0, span 2, nicheStart 254) (tags 254, 255, 0); also span 300 (colliding tags), checked pointwise.",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_affineLayout_eq_nicheLayoutK_affineTags",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "Equality of decoders is not lawfulness: lawfulness needs span < 256^n and invalid tags (`affineLayout_lawful_iff_span_lt_and_tagsDisjoint`).",
+   "The value type is the imported `ExtEnum (span + 1) V`: every slot of the niche range is a live dataless variant; dead slots are covered by the `genLayout` results instead.",
+   "Variants of `affineLayout` are named by their relative index r, so `A.first` is not used by this layout and variant-index offsetting is not exercised here; it is exercised by `decodeIdx` and `genLayout` (R2.3-R2.5)."
+  ],
+  "prior_art": [
+   "google/zerocopy branch reference, package enum-niche-layout-guarantees-and-validity-invariants, published at 00c8f874bf1e70c933b7a2ea2572a76c1baa7327 (Lean sources unchanged at the latest correction f9bee82a6d3f8bb6698b4c9e716138018db94d4d), lean/Toy/Niche/Results.lean:251-300: theorem nicheLayoutK_lawful_iff_injective_and_isNiche (k-variant niche filling is lawful iff the tag map is injective and every tag is a niche). Copied with its proof into lean/Toy/WrapNiche/Imported/Results.lean.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2002-2033 (documentation): TagEncoding::Niche docs, quoted: \"For a variant with variant index `i`, such that `i != untagged_variant`, the tag is set to `(i - niche_variants.start).wrapping_add(niche_start)` (this is wrapping arithmetic using the type of the niche field, cf. the [`tag_for_variant`](../rustc_const_eval/interpret/struct.InterpCx.html#method.tag_for_variant) query implementation). To recover the variant index `i` from a `tag`, the above formula has to be reversed, i.e. `i = tag.wrapping_sub(niche_start) + niche_variants.start`. If `i` ends up outside `niche_variants`, the tag must have encoded the `untagged_variant`.\" (lib.rs:2008-2015); \"Other variants that are not `untagged_variant` and that are outside the `niche_variants` range cannot be represented; they must be uninhabited. Nonetheless, uninhabited variants can also fall into the range of `niche_variants`.\" (lib.rs:2022-2024); and \"This range *may* contain `untagged_variant` or uninhabited variants; these are then just \"dead values\" and not used to encode anything.\" (lib.rs:2027-2028).",
+   "Novelty search (2026-11-21, web search for mechanized Coq, Lean or Isabelle treatments of Rust enum niche layouts, wrapped intervals and discriminant decoding): the wrapped-interval facts of groups 1, 3 and 5 are published (Gange et al. 2015, cited on those cards) but no mechanization of them, and no treatment of the affine niche decoder with dead slots, contiguous-capacity loss against the niche count, declaration-order dependence, adjacent-reservation nesting or SetDiscriminant write order, was found; the closest artifacts are the rustc sources cited here, the MiniRust specification (decision-tree encoding, not affine) and the imported package (extensional tag maps)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.affineLayout",
+   "Toy.WrapNiche.affineTags",
+   "Toy.WrapNiche.AffineNiche",
+   "Toy.WrapNiche.AffineNiche.tagOf",
+   "Toy.WrapNiche.Imported.nicheLayoutK",
+   "Toy.WrapNiche.Imported.ExtEnum",
+   "Toy.WrapNiche.Imported.Layout",
+   "Toy.WrapNiche.affineLayout_lawful_iff_span_lt_and_tagsDisjoint",
+   "Toy.WrapNiche.genLayout",
+   "Toy.WrapNiche.decodeIdx",
+   "Toy.WrapNiche.A0",
+   "Toy.WrapNiche.AffineNiche.last",
+   "Toy.WrapNiche.Ag",
+   "Toy.WrapNiche.ex_affine",
+   "Toy.WrapNiche.ex_decodeIdx",
+   "Toy.WrapNiche.ex_liveInRange_neg",
+   "Toy.WrapNiche.ex_tagInterval_collapses"
+  ],
+  "design_question": "When does the affine tag formula with the one-subtraction decoder give a lawful enum layout, and what happens to field values in the niche range that encode no variant?",
+  "tier_note": "T1: folklore made precise; the affine encoding and its decoder are documented engineering (prior art); no mechanized statement was found (novelty search).",
+  "depth_note": "pointwise decoder equality; `List.find?` on `List.finRange` returns the offset when it is at most span."
+ },
+ {
+  "id": "R2.2",
+  "lean": "Toy.WrapNiche.affineLayout_lawful_iff_span_lt_and_tagsDisjoint",
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For every payload validity set V on n-byte patterns and every affine encoding A, the dead-slot-free single-subtraction layout `affineLayout V A` satisfies both round-trip laws (`DecEnc` and `Canonical`) iff span < 256^n and each of the span + 1 tags (nicheStart + r) mod 256^n, r <= span, is invalid for V.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "n = 1, V = 1..=253, tags 254, 255, 0 (both sides hold).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_affineLayout_lawful_iff_span_lt_and_tagsDisjoint",
+  "positive_control_lean": [
+   "Toy.WrapNiche.cex_affineLayout_lawful_overlap",
+   "Toy.WrapNiche.cex_affineLayout_lawful_span"
+  ],
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "Each conjunct of the right side is needed for this shape: an overlap with the valid set makes a valid payload decode as a niche variant (`cex_affineLayout_lawful_overlap`), and span = 256 with no valid value makes two tags coincide (`cex_affineLayout_lawful_span`).",
+   "The equivalence is for the dead-slot-free shape. With dead slots (`genLayout`), span < 256^n is no longer necessary for lawfulness (`ex_genLayout_lawful_span_eq_card`: span 256, n = 1).",
+   "`A.first` is not used by `affineLayout` (see R2.1).",
+   "Whether a disjoint placement exists for a given V and span is a separate question (`exists_tagsDisjoint_iff_span_succ_le_sub_size_of_nonempty_of_isHull`)."
+  ],
+  "prior_art": [
+   "google/zerocopy branch reference, package enum-niche-layout-guarantees-and-validity-invariants, published at 00c8f874bf1e70c933b7a2ea2572a76c1baa7327 (Lean sources unchanged at the latest correction f9bee82a6d3f8bb6698b4c9e716138018db94d4d), lean/Toy/Niche/Results.lean:251-300: theorem nicheLayoutK_lawful_iff_injective_and_isNiche (k-variant niche filling is lawful iff the tag map is injective and every tag is a niche). Copied with its proof into lean/Toy/WrapNiche/Imported/Results.lean.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2002-2033 (documentation): TagEncoding::Niche docs, quoted: \"For a variant with variant index `i`, such that `i != untagged_variant`, the tag is set to `(i - niche_variants.start).wrapping_add(niche_start)` (this is wrapping arithmetic using the type of the niche field, cf. the [`tag_for_variant`](../rustc_const_eval/interpret/struct.InterpCx.html#method.tag_for_variant) query implementation). To recover the variant index `i` from a `tag`, the above formula has to be reversed, i.e. `i = tag.wrapping_sub(niche_start) + niche_variants.start`. If `i` ends up outside `niche_variants`, the tag must have encoded the `untagged_variant`.\" (lib.rs:2008-2015); \"Other variants that are not `untagged_variant` and that are outside the `niche_variants` range cannot be represented; they must be uninhabited. Nonetheless, uninhabited variants can also fall into the range of `niche_variants`.\" (lib.rs:2022-2024); and \"This range *may* contain `untagged_variant` or uninhabited variants; these are then just \"dead values\" and not used to encode anything.\" (lib.rs:2027-2028).",
+   "Novelty search (2026-11-21, web search for mechanized Coq, Lean or Isabelle treatments of Rust enum niche layouts, wrapped intervals and discriminant decoding): the wrapped-interval facts of groups 1, 3 and 5 are published (Gange et al. 2015, cited on those cards) but no mechanization of them, and no treatment of the affine niche decoder with dead slots, contiguous-capacity loss against the niche count, declaration-order dependence, adjacent-reservation nesting or SetDiscriminant write order, was found; the closest artifacts are the rustc sources cited here, the MiniRust specification (decision-tree encoding, not affine) and the imported package (extensional tag maps)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.affineLayout",
+   "Toy.WrapNiche.TagsDisjoint",
+   "Toy.WrapNiche.Imported.Lawful",
+   "Toy.WrapNiche.Imported.DecEnc",
+   "Toy.WrapNiche.Imported.Canonical",
+   "Toy.WrapNiche.cex_affineLayout_lawful_overlap",
+   "Toy.WrapNiche.cex_affineLayout_lawful_span",
+   "Toy.WrapNiche.genLayout",
+   "Toy.WrapNiche.ex_genLayout_lawful_span_eq_card",
+   "Toy.WrapNiche.exists_tagsDisjoint_iff_span_succ_le_sub_size_of_nonempty_of_isHull"
+  ],
+  "design_question": "When does the affine tag formula with the one-subtraction decoder give a lawful enum layout, and what happens to field values in the niche range that encode no variant?",
+  "tier_note": "T1: folklore made precise (as R2.1).",
+  "depth_note": "R2.1 and the imported characterization of lawful lookup layouts; injectivity of the affine tags is span < 256^n."
+ },
+ {
+  "id": "R2.3",
+  "lean": "Toy.WrapNiche.classify_valid_iff_and_decodeIdx_of_span_lt_of_tagsDisjoint",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For an enum shape E, an affine encoding A over Fin M with span < M, every tag of the niche range invalid for V (hypotheses), and every field value x (`classify` puts x into one of four classes: `liveTag` or `deadTag` if x lies in the tag interval, according to whether the variant index first + offset(nicheStart, x) of its slot is live, and otherwise `valid` or `unusedNiche` according to whether V x holds): x is classified `valid` iff V x holds; the single-subtraction decoder `decodeIdx` returns the untagged variant u on `valid` and on `unusedNiche` values; on the tag of relative index r <= span it returns first + r (whether that index is live, u, or uninhabited), the tag lying in the tag interval; and every value classified `liveTag` or `deadTag` is the tag of some relative index r <= span, on which `decodeIdx` returns first + r.",
+  "hypotheses": [
+   {
+    "name": "hspan : A.span < M",
+    "purpose": "Makes tags of distinct relative indices distinct and makes the tag interval the set of tags.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_classify_valid_iff_and_decodeIdx_hspan",
+    "witness_class": "an instance with M = 2, span = 2"
+   },
+   {
+    "name": "hdisj : TagsDisjoint V A.nicheStart A.span",
+    "purpose": "Used by the first conjunct: without it a valid value can lie in the tag interval and be classified liveTag.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_classify_valid_iff_and_decodeIdx_hdisj",
+    "witness_class": "an instance with M = 8, every value valid"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "M = 8, A = (first 0, span 2, nicheStart 5), V = 0..=4.",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_classify_valid_iff_and_decodeIdx_of_span_lt_of_tagsDisjoint",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "All four classes occur in one instance (`ex_classify`: valid 0..=249, tags 253, 254, 255 with 254 a dead slot, 251 an unused niche). A three-way partition (valid, live tag, dead slot) therefore misses the unused niches; the three classes cover the field when the tag interval and the valid set together cover it (not stated as a theorem here).",
+   "`decodeIdx` is the index-only decoder; it never rejects. On a dead slot it returns first + r, which is u or an index that is uninhabited or >= k; whether that is undefined behaviour is a property of the checked decoder (`genLayout_dec_isSome_iff_classify_of_span_lt`), not of `decodeIdx`.",
+   "The folklore 'every tag in the niche interval encodes a variant' is refuted by `cex_folklore_dead_slot`.",
+   "The proof of the second to fifth conjuncts does not use hdisj (they hold without it; not stated as a separate theorem); the first conjunct uses it."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2002-2033 (documentation): TagEncoding::Niche docs, quoted: \"For a variant with variant index `i`, such that `i != untagged_variant`, the tag is set to `(i - niche_variants.start).wrapping_add(niche_start)` (this is wrapping arithmetic using the type of the niche field, cf. the [`tag_for_variant`](../rustc_const_eval/interpret/struct.InterpCx.html#method.tag_for_variant) query implementation). To recover the variant index `i` from a `tag`, the above formula has to be reversed, i.e. `i = tag.wrapping_sub(niche_start) + niche_variants.start`. If `i` ends up outside `niche_variants`, the tag must have encoded the `untagged_variant`.\" (lib.rs:2008-2015); \"Other variants that are not `untagged_variant` and that are outside the `niche_variants` range cannot be represented; they must be uninhabited. Nonetheless, uninhabited variants can also fall into the range of `niche_variants`.\" (lib.rs:2022-2024); and \"This range *may* contain `untagged_variant` or uninhabited variants; these are then just \"dead values\" and not used to encode anything.\" (lib.rs:2027-2028).",
+   "https://github.com/rust-lang/rust/pull/133681 (merged 2024-12-04, merge commit 6e87eb58ede97cce4bd1e392694f88a2a2936e84), \"improve TagEncoding::Niche docs, sanity check, and UB checks\": \"Turns out the `niche_variants` range can actually contain the `untagged_variant`. We should report this as UB in Miri, so this PR implements that.\"",
+   "Novelty search (2026-11-21, web search for mechanized Coq, Lean or Isabelle treatments of Rust enum niche layouts, wrapped intervals and discriminant decoding): the wrapped-interval facts of groups 1, 3 and 5 are published (Gange et al. 2015, cited on those cards) but no mechanization of them, and no treatment of the affine niche decoder with dead slots, contiguous-capacity loss against the niche count, declaration-order dependence, adjacent-reservation nesting or SetDiscriminant write order, was found; the closest artifacts are the rustc sources cited here, the MiniRust specification (decision-tree encoding, not affine) and the imported package (extensional tag maps)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.classify",
+   "Toy.WrapNiche.FieldClass",
+   "Toy.WrapNiche.decodeIdx",
+   "Toy.WrapNiche.EnumSpec",
+   "Toy.WrapNiche.EnumSpec.Live",
+   "Toy.WrapNiche.AffineNiche.tagInterval",
+   "Toy.WrapNiche.TagsDisjoint",
+   "Toy.WrapNiche.ex_classify",
+   "Toy.WrapNiche.genLayout_dec_isSome_iff_classify_of_span_lt",
+   "Toy.WrapNiche.cex_folklore_dead_slot",
+   "Toy.WrapNiche.E1",
+   "Toy.WrapNiche.E2"
+  ],
+  "design_question": "When does the affine tag formula with the one-subtraction decoder give a lawful enum layout, and what happens to field values in the niche range that encode no variant?",
+  "tier_note": "T1: folklore made precise (as R2.1).",
+  "depth_note": "case analysis on membership in the tag interval after R1.1."
+ },
+ {
+  "id": "R2.4",
+  "lean": "Toy.WrapNiche.genLayout_dec_isSome_iff_classify_of_span_lt",
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For an enum shape E, an affine encoding A on n-byte patterns with span < 256^n (hypothesis), a payload validity set V and every field value x (`classify` puts x into one of four classes: `liveTag` or `deadTag` if x lies in the tag interval, according to whether the variant index first + offset(nicheStart, x) of its slot is live, and otherwise `valid` or `unusedNiche` according to whether V x holds), the checked decoder of `genLayout E A V` accepts x iff x is classified `valid` or `liveTag`; values at dead slots and unused niches are rejected.",
+  "hypotheses": [
+   {
+    "name": "hspan : A.span < 256 ^ n",
+    "purpose": "Makes semantic membership in the tag interval coincide with the decoder's test rel <= span.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_genLayout_dec_isSome_iff_classify_hspan",
+    "witness_class": "an instance with n = 1, span = 256"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "n = 1, A = (first 0, span 2, nicheStart 253).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_genLayout_dec_isSome_iff_classify_of_span_lt",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "Acceptance is not lawfulness. A sufficient condition for lawfulness is `genLayout_lawful_of_span_lt_of_tagsDisjoint_of_liveInRange`, which adds hdisj and hlive to hspan; each of its hypotheses is tight in the witness class recorded in its ledger, but necessity for lawfulness in general is not proved here, and span < 256^n is not necessary for lawfulness (`ex_genLayout_lawful_span_eq_card`).",
+   "There is no tag condition here. Without one, a valid payload value inside the tag interval is classified `liveTag` or `deadTag`, not `valid`: the checked decoder then decodes it as a dataless variant or rejects it (`cex_genLayout_lawful_hdisj`, `cex_genLayout_lawful_hdisj_deadSlot`).",
+   "The correspondence between the checked decoder and the interpreter behaviour described in the source comments cited below is a derived (modeling bridge) claim, not a proved relation; the toy's validity set V plays the role of the niche scalar's valid range, which in rustc is a single wrapping range."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_const_eval/src/interpret/discriminant.rs:187-200 and 210-215 (source comments): \"The untagged variant can be in the niche range, but even then it is not a valid encoding. Codegen inserts an `assume` here so we really have to make this UB.\" (lines 188-190); \"Ensure the tag is in its layout range. Codegen adds range metadata on the discriminant load so we really have to make this UB.\" (lines 195-196); \"Reading the discriminant of an uninhabited variant is UB.\" (line 210).",
+   "https://github.com/rust-lang/rust/pull/133681 (merged 2024-12-04, merge commit 6e87eb58ede97cce4bd1e392694f88a2a2936e84), \"improve TagEncoding::Niche docs, sanity check, and UB checks\": \"Turns out the `niche_variants` range can actually contain the `untagged_variant`. We should report this as UB in Miri, so this PR implements that.\"",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2002-2033 (documentation): TagEncoding::Niche docs, quoted: \"For a variant with variant index `i`, such that `i != untagged_variant`, the tag is set to `(i - niche_variants.start).wrapping_add(niche_start)` (this is wrapping arithmetic using the type of the niche field, cf. the [`tag_for_variant`](../rustc_const_eval/interpret/struct.InterpCx.html#method.tag_for_variant) query implementation). To recover the variant index `i` from a `tag`, the above formula has to be reversed, i.e. `i = tag.wrapping_sub(niche_start) + niche_variants.start`. If `i` ends up outside `niche_variants`, the tag must have encoded the `untagged_variant`.\" (lib.rs:2008-2015); \"Other variants that are not `untagged_variant` and that are outside the `niche_variants` range cannot be represented; they must be uninhabited. Nonetheless, uninhabited variants can also fall into the range of `niche_variants`.\" (lib.rs:2022-2024); and \"This range *may* contain `untagged_variant` or uninhabited variants; these are then just \"dead values\" and not used to encode anything.\" (lib.rs:2027-2028)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.genLayout",
+   "Toy.WrapNiche.classify",
+   "Toy.WrapNiche.GenVal",
+   "Toy.WrapNiche.genLayout_lawful_of_span_lt_of_tagsDisjoint_of_liveInRange",
+   "Toy.WrapNiche.cex_genLayout_lawful_hdisj",
+   "Toy.WrapNiche.cex_genLayout_lawful_hdisj_deadSlot"
+  ],
+  "design_question": "When does the affine tag formula with the one-subtraction decoder give a lawful enum layout, and what happens to field values in the niche range that encode no variant?",
+  "tier_note": "T1: folklore made precise; the checked decoder follows documented interpreter behaviour (prior art).",
+  "depth_note": "the decoder and `classify` have the same case tree once R1.1 identifies the two membership tests."
+ },
+ {
+  "id": "R2.5",
+  "lean": "Toy.WrapNiche.genLayout_lawful_of_span_lt_of_tagsDisjoint_of_liveInRange",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For an enum shape E (k variants, untagged variant u, inhabitedness flags; every variant other than u is dataless), an affine encoding A on n-byte patterns and a payload validity set V: if span < 256^n, every tag of the niche range is invalid for V, and every live variant (inhabited, other than u, index < k) lies in [first, first + span], then `genLayout E A V` satisfies both round-trip laws, even when the niche range contains u or uninhabited variants (dead slots).",
+  "hypotheses": [
+   {
+    "name": "hspan : A.span < 256 ^ n",
+    "purpose": "Distinct live variants get distinct tags.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_genLayout_lawful_hspan",
+    "witness_class": "an instance with n = 1, span = 256"
+   },
+   {
+    "name": "hdisj : TagsDisjoint V A.nicheStart A.span",
+    "purpose": "No valid payload value is a tag, at a live slot or at a dead slot.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_genLayout_lawful_hdisj",
+    "witness_class": "an instance with n = 1, every value valid"
+   },
+   {
+    "name": "hlive : LiveInRange E A",
+    "purpose": "Every live variant is encodable.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_genLayout_lawful_hlive",
+    "witness_class": "an instance with n = 1, range [1, 2] missing live variant 0"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "n = 1, E = (k 3, u 1, all inhabited), A = (first 0, span 2, nicheStart 253) so tag 254 is the dead slot of u, V = 0..=252.",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_genLayout_lawful_of_span_lt_of_tagsDisjoint_of_liveInRange",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "A sufficient condition. Each hypothesis is tight (it has a counterexample in which the others hold), but span < 256^n is not necessary for lawfulness: with no valid value and the slot at relative index 256 dead, span 256 is lawful for n = 1 (`ex_genLayout_lawful_span_eq_card`).",
+   "Valid payload values may not occupy dead slots either: a valid value at the dead slot of u is rejected by the checked decoder and the layout is not lawful (`cex_genLayout_lawful_hdisj_deadSlot`).",
+   "The dead slot wastes a tag value; the capacity consequences are stated in group 3 and group 4.",
+   "Every variant other than u is dataless in `genLayout`; rustc's niche-filling layout also admits such variants with fields placed before or after the niche field (prior art, derived (modeling bridge)), which are not modelled here.",
+   "Discriminants are the variant indices, as rustc's layout sanity check requires for niche-encoded enums (prior art, derived (modeling bridge)); explicit discriminants are not modelled.",
+   "`EnumSpec` does not require u < k: for u >= k every index below k is a candidate dataless variant (`ex_live_u_ge_k`); the theorem holds for such shapes too."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2002-2033 (documentation): TagEncoding::Niche docs, quoted: \"For a variant with variant index `i`, such that `i != untagged_variant`, the tag is set to `(i - niche_variants.start).wrapping_add(niche_start)` (this is wrapping arithmetic using the type of the niche field, cf. the [`tag_for_variant`](../rustc_const_eval/interpret/struct.InterpCx.html#method.tag_for_variant) query implementation). To recover the variant index `i` from a `tag`, the above formula has to be reversed, i.e. `i = tag.wrapping_sub(niche_start) + niche_variants.start`. If `i` ends up outside `niche_variants`, the tag must have encoded the `untagged_variant`.\" (lib.rs:2008-2015); \"Other variants that are not `untagged_variant` and that are outside the `niche_variants` range cannot be represented; they must be uninhabited. Nonetheless, uninhabited variants can also fall into the range of `niche_variants`.\" (lib.rs:2022-2024); and \"This range *may* contain `untagged_variant` or uninhabited variants; these are then just \"dead values\" and not used to encode anything.\" (lib.rs:2027-2028).",
+   "https://github.com/rust-lang/rust/pull/133681 (merged 2024-12-04, merge commit 6e87eb58ede97cce4bd1e392694f88a2a2936e84), \"improve TagEncoding::Niche docs, sanity check, and UB checks\": \"Turns out the `niche_variants` range can actually contain the `untagged_variant`. We should report this as UB in Miri, so this PR implements that.\"",
+   "google/zerocopy branch reference, package enum-niche-layout-guarantees-and-validity-invariants, published at 00c8f874bf1e70c933b7a2ea2572a76c1baa7327 (Lean sources unchanged at the latest correction f9bee82a6d3f8bb6698b4c9e716138018db94d4d), lean/Toy/Niche/Results.lean:251-300: theorem nicheLayoutK_lawful_iff_injective_and_isNiche (k-variant niche filling is lawful iff the tag map is injective and every tag is a niche). Copied with its proof into lean/Toy/WrapNiche/Imported/Results.lean.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/layout.rs:652-680 (source): in the niche-filling layout computation every variant other than the largest one is checked to fit either before the niche (\"// This variant will fit before the niche.\", line 660) or after it (\"// Determine if it'll fit after the niche.\", line 664), with its field offsets shifted (lines 673-675); such variants may therefore carry fields outside the niche field. `genLayout` models every variant other than `u` as dataless; the operational model (group 6) does not tie field bytes to variants.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_ty_utils/src/layout/invariant.rs:300-323 (source): `layout_sanity_check` for `TagEncoding::Niche` asserts that every inhabited variant is the untagged variant or lies in `niche_variants` (line 308) and reports a bug if a variant's discriminant differs from its index (\"// Ensure that for niche encoded tags the discriminant coincides with the variant index.\", line 311). The toy identifies discriminants with variant indices throughout."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.genLayout",
+   "Toy.WrapNiche.LiveInRange",
+   "Toy.WrapNiche.EnumSpec",
+   "Toy.WrapNiche.EnumSpec.Live",
+   "Toy.WrapNiche.TagsDisjoint",
+   "Toy.WrapNiche.GenVal",
+   "Toy.WrapNiche.Imported.Canonical",
+   "Toy.WrapNiche.genLayout_canonical",
+   "Toy.WrapNiche.Imported.DecEnc",
+   "Toy.WrapNiche.ex_genLayout_lawful_span_eq_card",
+   "Toy.WrapNiche.cex_genLayout_lawful_hdisj_deadSlot",
+   "Toy.WrapNiche.ex_live_u_ge_k",
+   "Toy.WrapNiche.ex_liveInRange_pos"
+  ],
+  "design_question": "When does the affine tag formula with the one-subtraction decoder give a lawful enum layout, and what happens to field values in the niche range that encode no variant?",
+  "tier_note": "T1: folklore made precise; dead values in the niche range are documented (prior art).",
+  "depth_note": "`Canonical` holds for every `genLayout` (`genLayout_canonical`, a proof lemma); `DecEnc` is a direct case split."
+ },
+ {
+  "id": "R3.1",
+  "lean": "Toy.WrapNiche.exists_tagsDisjoint_iff_span_succ_le_sub_size_of_nonempty_of_isHull",
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For a validity set V on Fin M with at least one valid value and an interval hull H of V (a smallest wrapping interval containing every valid value), and every span: some placement of span + 1 contiguous tags ns, ..., ns + span (wrapping) avoids every valid value iff span + 1 <= M - H.size (H.size <= M, so this subtraction does not truncate).",
+  "hypotheses": [
+   {
+    "name": "hne : ∃ x, V x = true",
+    "purpose": "With no valid value the hull is a singleton yet every value can be a tag.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_exists_tagsDisjoint_iff_span_succ_le_hne",
+    "witness_class": "an instance with M = 4, V empty, span = 3"
+   },
+   {
+    "name": "hH : IsHull V H",
+    "purpose": "A covering interval that is not smallest understates the capacity.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_exists_tagsDisjoint_iff_span_succ_le_hH",
+    "witness_class": "an instance with M = 4, V = {0}, H = [0, 1]"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "M = 4, V = {0, 1}, H = [0, 1].",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_exists_tagsDisjoint_iff_span_succ_le_sub_size_of_isHull",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "Contiguity is a modeling choice that mirrors the affine encoding; layouts with non-contiguous tags (the imported lookup layout) can exceed this capacity (`cex_folklore_fragmented_capacity_lt_nichesCount`).",
+   "`TagsDisjoint` does not require the tags to be distinct. Under hne the theorem itself forces span + 1 <= M - H.size <= M - 1, so the tags are distinct; for the empty validity set `TagsDisjoint` holds for every span, including span >= M where tags repeat (`cex_genLayout_lawful_hspan` contains `TagsDisjoint (fun _ => false) 0 256` for M = 256), so dropping hne does not give an unbounded lawful capacity (lawfulness is R2.2).",
+   "The existence of an interval hull for every V on Fin M with M > 0 is not proved here; rustc computes one (`smallest_range_containing`, prior art).",
+   "A single niche field is modelled: payloads with several fields (where another field's niches could be used), and wrappers that hide niches, are not modelled.",
+   "Nothing is claimed about which placement a layout engine chooses; rustc reserves values adjacent to the valid range (source comment cited), which is one of the disjoint placements when V is an interval."
+  ],
+  "prior_art": [
+   "Graeme Gange, Jorge A. Navas, Peter Schachte, Harald Søndergaard and Peter J. Stuckey, \"Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss\", ACM Transactions on Programming Languages and Systems 37(1), Article 1, January 2015, DOI 10.1145/2651360 (consulted in the authors' copy at https://jorgenavas.github.io/papers/ACM-TOPLAS-wrapped.pdf; formulas paraphrased): the wrapped-interval (w-interval) domain over w-bit integers. Section 3.1 defines the relative order b ≤_a c iff (b - a) mod 2^w ≤ (c - a) mod 2^w and notes that the unsigned order (a = 0) and the signed order (a = 2^(w-1)) disagree across hemispheres; the same section (Definition 3.1 and the definitions after it) gives the meaning of a delimited interval by the same case split as `WrapInterval.Mem`, its cardinality (y - x) mod 2^w + 1, and its complement [y + 1, x - 1]; Section 3.2 tests membership as e ≤_x y — the single-subtraction test — and shows that w-intervals ordered by inclusion are not a lattice (two incomparable minimal upper bounds of equal cardinality); Section 3.3 gives a minimal-upper-bound algorithm (Fig. 5) that returns the complement of the largest uncovered gap. Unlike the toy, w-intervals include an empty element and a single full element.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:55-63 and 147-195 (source): `WrappingRange::contains` (lines 55-63, documented \"Returns `true` if `v` is contained in the range.\", line 55) tests membership by cases, `if self.start <= self.end { self.start <= v && v <= self.end } else { self.start <= v || v <= self.end }` (lines 58-62, line breaks collapsed) — the case split of `WrapInterval.Mem` and the two branches of `twoBranchTest` at origin 0; `smallest_range_containing` (lines 147-195) \"Returns a `WrappingRange` that contains all of the values from the iterator, when they're treated as values `size` wide.\" (lines 147-148) by choosing the narrowest of the non-wraparound range and the wraparound candidates between consecutive sorted values (lines 176-194) — a computation of an interval hull in the sense of `IsHull`, which the toy characterizes semantically instead.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2075-2087 (source comment in Niche::reserve): \"Extend the range of valid values being reserved by moving either `v.start` or `v.end` bound.\" (line 2075-2076).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/layout.rs:636-643 (source, read for orientation; no claim of this package relies on it): niche_variants runs from the first to the last variant that needs a discriminant, and count = last - first + 1 values are reserved.",
+   "google/zerocopy branch reference, package enum-niche-layout-guarantees-and-validity-invariants, published at 00c8f874bf1e70c933b7a2ea2572a76c1baa7327 (Lean sources unchanged at the latest correction f9bee82a6d3f8bb6698b4c9e716138018db94d4d), lean/Toy/Niche/Results.lean:335-346: theorem le_numInvalid_iff_exists_lawful_layout_iff_lawful_nicheLayoutK_firstNiches (k dataless variants fit in the payload's bytes under some lawful layout iff k <= numInvalid V). Copied with its proof into lean/Toy/WrapNiche/Imported/Results.lean.",
+   "Novelty search (2026-11-21, web search for mechanized Coq, Lean or Isabelle treatments of Rust enum niche layouts, wrapped intervals and discriminant decoding): the wrapped-interval facts of groups 1, 3 and 5 are published (Gange et al. 2015, cited on those cards) but no mechanization of them, and no treatment of the affine niche decoder with dead slots, contiguous-capacity loss against the niche count, declaration-order dependence, adjacent-reservation nesting or SetDiscriminant write order, was found; the closest artifacts are the rustc sources cited here, the MiniRust specification (decision-tree encoding, not affine) and the imported package (extensional tag maps)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.IsHull",
+   "Toy.WrapNiche.Covers",
+   "Toy.WrapNiche.TagsDisjoint",
+   "Toy.WrapNiche.WrapInterval.size",
+   "Toy.WrapNiche.cex_folklore_fragmented_capacity_lt_nichesCount",
+   "Toy.WrapNiche.cex_genLayout_lawful_hspan",
+   "Toy.WrapNiche.WrapInterval.Mem",
+   "Toy.WrapNiche.twoBranchTest"
+  ],
+  "design_question": "How much capacity do contiguity of the tag range (and a reserved slot for the untagged variant) cost compared with the unconstrained niche count? (When the untagged variant lies inside the niche range its slot is counted in the span; see group 4.)",
+  "tier_note": "T1: folklore made precise; hulls of wrapped intervals are published (Gange et al. 2015) and computed by rustc (prior art), but the capacity statement was not found mechanized or stated.",
+  "depth_note": "both directions construct intervals (the tag interval and its complement, or the complement of the hull) and use minimality of the hull."
+ },
+ {
+  "id": "R3.2",
+  "lean": "Toy.WrapNiche.sub_size_le_nichesCount_and_eq_iff_of_covers",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For a validity set V on Fin M and every wrapping interval H that covers V (every valid value is a member of H; H need not be smallest), the number M - H.size of values outside H (H.size <= M, so no truncation) is at most the number of invalid values of V (for M = 256^n this count is the imported `numInvalid`, the unconstrained capacity, by `nichesCount_eq_numInvalid`), with equality iff every member of H is valid.",
+  "hypotheses": [
+   {
+    "name": "hcov : Covers H V",
+    "purpose": "An interval that misses a valid value can have more values outside it than V has niches.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_sub_size_le_nichesCount_and_eq_iff_of_covers_hcov",
+    "witness_class": "an instance with M = 4, V = {0, 1}, H = [0, 0]"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "M = 4, V = {0, 2}, H = [0, 2] (a hull; 1 value outside, 2 niches) and H = [0, 3] (covering, not a hull).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_sub_size_le_nichesCount_and_eq_iff_of_covers",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "For an interval hull H of a V with at least one valid value, M - H.size is the contiguous capacity of R3.1 (span + 1 <= M - H.size); for the empty validity set it is not (`cex_exists_tagsDisjoint_iff_span_succ_le_hne`: M = 4, M - H.size = 3, yet four contiguous tags fit).",
+   "For an interval hull H, equality holds iff V is itself the member set of a wrapping interval (`sub_size_eq_nichesCount_iff_isWrapIntervalSet_of_isHull`); there the minimality half of `IsHull` is tight, witnessed on M = 4, V = {0, 1}, H = [0, 2] by `cex_sub_size_eq_nichesCount_iff_isWrapIntervalSet_hH`; whether it is needed for other instances is not claimed (not proved here).",
+   "Strictness for fragmented validity is `cex_folklore_fragmented_capacity_lt_nichesCount` (M = 4, V = {0, 2}); the cost of u's slot inside the range is `cex_folklore_fit_depends_on_untagged_position`.",
+   "For the empty validity set both sides of the equivalence are false (H is non-empty)."
+  ],
+  "prior_art": [
+   "Graeme Gange, Jorge A. Navas, Peter Schachte, Harald Søndergaard and Peter J. Stuckey, \"Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss\", ACM Transactions on Programming Languages and Systems 37(1), Article 1, January 2015, DOI 10.1145/2651360 (consulted in the authors' copy at https://jorgenavas.github.io/papers/ACM-TOPLAS-wrapped.pdf; formulas paraphrased): the wrapped-interval (w-interval) domain over w-bit integers. Section 3.1 defines the relative order b ≤_a c iff (b - a) mod 2^w ≤ (c - a) mod 2^w and notes that the unsigned order (a = 0) and the signed order (a = 2^(w-1)) disagree across hemispheres; the same section (Definition 3.1 and the definitions after it) gives the meaning of a delimited interval by the same case split as `WrapInterval.Mem`, its cardinality (y - x) mod 2^w + 1, and its complement [y + 1, x - 1]; Section 3.2 tests membership as e ≤_x y — the single-subtraction test — and shows that w-intervals ordered by inclusion are not a lattice (two incomparable minimal upper bounds of equal cardinality); Section 3.3 gives a minimal-upper-bound algorithm (Fig. 5) that returns the complement of the largest uncovered gap. Unlike the toy, w-intervals include an empty element and a single full element.",
+   "google/zerocopy branch reference, package enum-niche-layout-guarantees-and-validity-invariants, published at 00c8f874bf1e70c933b7a2ea2572a76c1baa7327 (Lean sources unchanged at the latest correction f9bee82a6d3f8bb6698b4c9e716138018db94d4d), lean/Toy/Niche/Results.lean:335-346: theorem le_numInvalid_iff_exists_lawful_layout_iff_lawful_nicheLayoutK_firstNiches (k dataless variants fit in the payload's bytes under some lawful layout iff k <= numInvalid V). Copied with its proof into lean/Toy/WrapNiche/Imported/Results.lean."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.nichesCount",
+   "Toy.WrapNiche.nichesCount_eq_numInvalid",
+   "Toy.WrapNiche.Covers",
+   "Toy.WrapNiche.Imported.numInvalid",
+   "Toy.WrapNiche.IsWrapIntervalSet",
+   "Toy.WrapNiche.cex_exists_tagsDisjoint_iff_span_succ_le_hne",
+   "Toy.WrapNiche.sub_size_eq_nichesCount_iff_isWrapIntervalSet_of_isHull",
+   "Toy.WrapNiche.IsHull",
+   "Toy.WrapNiche.cex_sub_size_eq_nichesCount_iff_isWrapIntervalSet_hH",
+   "Toy.WrapNiche.cex_folklore_fragmented_capacity_lt_nichesCount",
+   "Toy.WrapNiche.cex_folklore_fit_depends_on_untagged_position",
+   "Toy.WrapNiche.WrapInterval.Mem",
+   "Toy.WrapNiche.ex_isWrapIntervalSet_neg",
+   "Toy.WrapNiche.ex_nichesCount"
+  ],
+  "design_question": "How much capacity do contiguity of the tag range (and a reserved slot for the untagged variant) cost compared with the unconstrained niche count? (When the untagged variant lies inside the niche range its slot is counted in the span; see group 4.)",
+  "tier_note": "T0: re-derivation; a counting corollary of R3.3 (the cardinality of a wrapped interval, Gange et al. 2015, Section 3.1).",
+  "depth_note": "R3.3 and the imported duplicate-free list counting lemmas."
+ },
+ {
+  "id": "R3.3",
+  "lean": "Toy.WrapNiche.nichesCount_intervalV",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every wrapping interval I of Fin M, the validity set `intervalV I` whose valid values are exactly the members of I has M - I.size invalid values (I.size <= M, so no truncation).",
+  "hypotheses": [],
+  "depth": "substantive",
+  "nonvacuity_witness": "M = 4, I = [3, 1].",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_nichesCount_intervalV",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "A counting lemma; it says nothing about layouts by itself."
+  ],
+  "prior_art": [
+   "Graeme Gange, Jorge A. Navas, Peter Schachte, Harald Søndergaard and Peter J. Stuckey, \"Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss\", ACM Transactions on Programming Languages and Systems 37(1), Article 1, January 2015, DOI 10.1145/2651360 (consulted in the authors' copy at https://jorgenavas.github.io/papers/ACM-TOPLAS-wrapped.pdf; formulas paraphrased): the wrapped-interval (w-interval) domain over w-bit integers. Section 3.1 defines the relative order b ≤_a c iff (b - a) mod 2^w ≤ (c - a) mod 2^w and notes that the unsigned order (a = 0) and the signed order (a = 2^(w-1)) disagree across hemispheres; the same section (Definition 3.1 and the definitions after it) gives the meaning of a delimited interval by the same case split as `WrapInterval.Mem`, its cardinality (y - x) mod 2^w + 1, and its complement [y + 1, x - 1]; Section 3.2 tests membership as e ≤_x y — the single-subtraction test — and shows that w-intervals ordered by inclusion are not a lattice (two incomparable minimal upper bounds of equal cardinality); Section 3.3 gives a minimal-upper-bound algorithm (Fig. 5) that returns the complement of the largest uncovered gap. Unlike the toy, w-intervals include an empty element and a single full element.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:8-16 (documentation): \"Inclusive wrap-around range of valid values, that is, if start > end, it represents `start..=MAX`, followed by `0..=end`.\" (lines 8-9) and \"This is intended specifically to mirror LLVM’s `!range` metadata semantics.\" (line 16)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.intervalV",
+   "Toy.WrapNiche.nichesCount",
+   "Toy.WrapNiche.WrapInterval.Mem"
+  ],
+  "design_question": "How much capacity do contiguity of the tag range (and a reserved slot for the untagged variant) cost compared with the unconstrained niche count? (When the untagged variant lies inside the niche range its slot is counted in the span; see group 4.)",
+  "tier_note": "T0: re-derivation; the cardinality of a wrapped interval is published (Gange et al. 2015, Section 3.1).",
+  "depth_note": "a counting argument: the members of I are in bijection with the offsets 0..(e - s) mod M, counted with duplicate-free lists."
+ },
+ {
+  "id": "R4.1",
+  "lean": "Toy.WrapNiche.exists_tagsDisjoint_naturalSpan_iff_untagged_first_or_last_of_nonempty_of_isHull_of_sub_size_eq",
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For a validity set V on Fin M with at least one valid value, an interval hull H of V, k >= 2, and exactly k - 1 values outside H (M - H.size = k - 1; under k >= 2 the truncated subtraction k - 1 does not truncate), and for every natural number u: some start ns makes the naturalSpan k u + 1 contiguous tags ns, ..., ns + naturalSpan k u (wrapping) all invalid for V iff u = 0 or u = k - 1. Here naturalSpan k u = naturalLast k u - naturalFirst u; for u < k it is the span of the smallest index range containing every index of 0..k-1 other than u (`naturalFirst_naturalLast_spec`), i.e. of the niche range when the k - 1 variants other than u all need a tag.",
+  "hypotheses": [
+   {
+    "name": "hne : ∃ x, V x = true",
+    "purpose": "Without a valid value every placement fits.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_naturalSpan_hne",
+    "witness_class": "an instance with M = 3, V empty, k = 3, u = 1"
+   },
+   {
+    "name": "hH : IsHull V H",
+    "purpose": "A covering interval that is not smallest misstates the capacity.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_naturalSpan_hH",
+    "witness_class": "an instance with M = 4, V = {0}, H = [0, 1], k = 3, u = 1"
+   },
+   {
+    "name": "hk : 2 ≤ k",
+    "purpose": "For k = 1 the natural span is 0 by truncated subtraction yet still needs one niche.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_naturalSpan_hk",
+    "witness_class": "an instance with M = 2, every value valid, k = 1, u = 0"
+   },
+   {
+    "name": "hcap : M - H.size = k - 1",
+    "purpose": "The exact-capacity boundary; with one more value outside H the middle position also fits.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_naturalSpan_hcap",
+    "witness_class": "an instance with M = 4, V = {0}, k = 3, u = 1, M - H.size = 3"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "M = 4, V = {0, 1}, H = [0, 1], k = 3.",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_exists_tagsDisjoint_naturalSpan_iff_untagged_first_or_last",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "Off the boundary hcap the answer is different and does not single out the ends: for every capacity, the natural range fits iff M - H.size >= k - 1 when u = 0 or u = k - 1 and M - H.size >= k otherwise (`exists_tagsDisjoint_naturalSpan_iff_of_nonempty_of_isHull`, k >= 2). So with M - H.size >= k every u fits, including middle positions (`cex_naturalSpan_hcap` is an instance), and with M - H.size < k - 1 no u fits, not even u = 0 or u = k - 1.",
+   "u is unconstrained: for u >= k the right side is false (u = 0 and u = k - 1 both fail since k >= 2), so by this theorem the left side is false too. For k = 2 there is no middle index (0 < u < 1 is empty) and the theorem says that both u = 0 and u = 1 fit.",
+   "The theorem is about contiguous tag placements (`TagsDisjoint`) of span `naturalSpan k u`; deriving from it that no affine encoding satisfying `LiveInRange` fits needs `naturalFirst_naturalLast_spec` and monotonicity of `TagsDisjoint` in the span, and is not stated as a theorem here (not proved here).",
+   "Other encodings behave differently: the rotated encoding fits for every u under the same capacity condition k - 1 <= M - H.size (R4.2 and `exists_rotTagsInvalid_iff_sub_one_le_sub_size_of_nonempty_of_isHull`), and an unconstrained lookup layout can fit where the natural range does not (`cex_folklore_fit_depends_on_untagged_position`, n = 1, valid 0..=253, k = 3; it also refutes 'niche fit depends only on the multiset of variant layouts' for the natural range).",
+   "`naturalSpan` assumes every dataless variant is inhabited; uninhabited variants at the ends shrink the range and are not covered.",
+   "The public issue cited below reports a size difference for a 255-variant enum; this card does not claim to explain rustc's behaviour on that example (derived (modeling bridge) at most)."
+  ],
+  "prior_art": [
+   "https://github.com/rust-lang/rust/issues/117238 (issue, open when checked on 2026-11-21), \"Enum size depends on ordering of members\": a 255-variant enum whose one bool-carrying variant is 7th has size 2, the same enum with that variant last has size 1 (rustc 1.73.0); \"I expected these to have the same size.  The two enums differ only in the placement of the `(bool)`-carrying member.\" (two spaces after the first sentence in the source)",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/layout.rs:636-643 (source, read for orientation; no claim of this package relies on it): niche_variants runs from the first to the last variant that needs a discriminant, and count = last - first + 1 values are reserved.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2002-2033 (documentation): TagEncoding::Niche docs, quoted: \"For a variant with variant index `i`, such that `i != untagged_variant`, the tag is set to `(i - niche_variants.start).wrapping_add(niche_start)` (this is wrapping arithmetic using the type of the niche field, cf. the [`tag_for_variant`](../rustc_const_eval/interpret/struct.InterpCx.html#method.tag_for_variant) query implementation). To recover the variant index `i` from a `tag`, the above formula has to be reversed, i.e. `i = tag.wrapping_sub(niche_start) + niche_variants.start`. If `i` ends up outside `niche_variants`, the tag must have encoded the `untagged_variant`.\" (lib.rs:2008-2015); \"Other variants that are not `untagged_variant` and that are outside the `niche_variants` range cannot be represented; they must be uninhabited. Nonetheless, uninhabited variants can also fall into the range of `niche_variants`.\" (lib.rs:2022-2024); and \"This range *may* contain `untagged_variant` or uninhabited variants; these are then just \"dead values\" and not used to encode anything.\" (lib.rs:2027-2028).",
+   "Novelty search (2026-11-21, web search for mechanized Coq, Lean or Isabelle treatments of Rust enum niche layouts, wrapped intervals and discriminant decoding): the wrapped-interval facts of groups 1, 3 and 5 are published (Gange et al. 2015, cited on those cards) but no mechanization of them, and no treatment of the affine niche decoder with dead slots, contiguous-capacity loss against the niche count, declaration-order dependence, adjacent-reservation nesting or SetDiscriminant write order, was found; the closest artifacts are the rustc sources cited here, the MiniRust specification (decision-tree encoding, not affine) and the imported package (extensional tag maps)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.naturalSpan",
+   "Toy.WrapNiche.naturalFirst",
+   "Toy.WrapNiche.naturalLast",
+   "Toy.WrapNiche.naturalFirst_naturalLast_spec",
+   "Toy.WrapNiche.naturalSpan_eq",
+   "Toy.WrapNiche.TagsDisjoint",
+   "Toy.WrapNiche.IsHull",
+   "Toy.WrapNiche.exists_tagsDisjoint_naturalSpan_iff_of_nonempty_of_isHull",
+   "Toy.WrapNiche.cex_naturalSpan_hcap",
+   "Toy.WrapNiche.LiveInRange",
+   "Toy.WrapNiche.exists_rotTagsInvalid_iff_sub_one_le_sub_size_of_nonempty_of_isHull",
+   "Toy.WrapNiche.cex_folklore_fit_depends_on_untagged_position",
+   "Toy.WrapNiche.ex_naturalSpan"
+  ],
+  "design_question": "Does niche fit depend on declaration order, and does a cyclic renumbering starting after the untagged variant remove the dependence?",
+  "tier_note": "T1: folklore made precise; the order dependence is reported publicly (prior art) but no mechanized statement was found.",
+  "depth_note": "R3.1 with `naturalSpan_eq`."
+ },
+ {
+  "id": "R4.2",
+  "lean": "Toy.WrapNiche.rotDecodeIdx_exact_of_lt_of_le_succ_of_rotTagsInvalid",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For the rotated encoding (variant i gets tag ns + `rotIdx k u i`, where `rotIdx k u i` = (i - (u + 1)) mod k is computed in Nat as (i + k - (u + 1) % k) % k with floor modulo, the subtraction not truncating since (u + 1) % k < k, so the variants after u come first), with u < k, k <= M + 1, and V invalid at the rotated tag ns + r (wrapping addition) for each of the exactly k - 1 indices r with r + 1 < k (`RotTagsInvalid V k ns`; for k = 1 there is no such index and this hypothesis holds trivially): the rotated decoder `rotDecodeIdx` (one wrapping subtraction rel = (x - ns) mod M, then, if rel + 1 < k, the extra modular step (rel + u + 1) mod k, else u) recovers every variant i < k, i != u, from its rotated tag, and decodes every valid value to u.",
+  "hypotheses": [
+   {
+    "name": "hu : u < k",
+    "purpose": "With u >= k the rotation misplaces a variant.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_rotDecodeIdx_hu",
+    "witness_class": "an instance with M = 2, k = 2, u = 2"
+   },
+   {
+    "name": "hkM : k ≤ M + 1",
+    "purpose": "Otherwise two rotated tags coincide.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_rotDecodeIdx_hkM",
+    "witness_class": "an instance with M = 2, k = 4, u = 3"
+   },
+   {
+    "name": "hdisj : RotTagsInvalid V k ns",
+    "purpose": "Used by the second conjunct: a valid value equal to a rotated tag decodes as that variant.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_rotDecodeIdx_hdisj",
+    "witness_class": "an instance with M = 4, k = 2, u = 0, every value valid"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "M = 256, k = 3, u = 1, ns = 254, V = 0..=253; and M = 2, k = 1, u = 0, every value valid.",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_rotDecodeIdx_exact",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "For k >= 2, `RotTagsInvalid V k ns` is `TagsDisjoint V ns (k - 2)` (`rotTagsInvalid_iff_tagsDisjoint_sub_two`): the rotated range has span k - 2 for every position of u. For a payload with a valid value and an interval hull H, a start making all rotated tags invalid exists iff k - 1 <= M - H.size, for every k (truncated subtraction k - 1; trivial for k <= 1) and independently of u (`exists_rotTagsInvalid_iff_sub_one_le_sub_size_of_nonempty_of_isHull`).",
+   "`rotDecodeIdx` is an unchecked, index-only decoder: no lawful `Layout` is constructed for the rotated encoding (unlike R2.2 and R2.5), unused niches decode to u, and uninhabited variants and dead slots are not modelled.",
+   "The theorem assumes hdisj for both conjuncts. The proof of the first conjunct does not use hdisj (so that conjunct holds without it; it is not stated as a separate theorem); the second conjunct uses it.",
+   "The cited pull request is a closed, unmerged proposal and is not normative; as described there it rotates when u lies inside the range, whereas this model rotates always. No claim is made about its code.",
+   "The cost of the extra modular step in generated code is not examined."
+  ],
+  "prior_art": [
+   "https://github.com/rust-lang/rust/pull/131684 (closed unmerged on 2024-12-10; an unmerged proposal, not normative), \"make enum size not depend on the order of variants\": \"I fixed the off-by-one error by allocating discriminant starting from the variant after the untagged variant and wrapping around to the first variant when it reaches the last variant.\", \"This is only applied when the `untagged_variant` is contained in the `niche_variants` wasting one value from the niche range.\", and \"It adds one arithmetic instruction in the general case and no additional branch instruction.\"",
+   "https://github.com/rust-lang/rust/issues/117238 (issue, open when checked on 2026-11-21), \"Enum size depends on ordering of members\": a 255-variant enum whose one bool-carrying variant is 7th has size 2, the same enum with that variant last has size 1 (rustc 1.73.0); \"I expected these to have the same size.  The two enums differ only in the placement of the `(bool)`-carrying member.\" (two spaces after the first sentence in the source)",
+   "Novelty search (2026-11-21, web search for mechanized Coq, Lean or Isabelle treatments of Rust enum niche layouts, wrapped intervals and discriminant decoding): the wrapped-interval facts of groups 1, 3 and 5 are published (Gange et al. 2015, cited on those cards) but no mechanization of them, and no treatment of the affine niche decoder with dead slots, contiguous-capacity loss against the niche count, declaration-order dependence, adjacent-reservation nesting or SetDiscriminant write order, was found; the closest artifacts are the rustc sources cited here, the MiniRust specification (decision-tree encoding, not affine) and the imported package (extensional tag maps)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.rotIdx",
+   "Toy.WrapNiche.rotTag",
+   "Toy.WrapNiche.rotDecodeIdx",
+   "Toy.WrapNiche.RotTagsInvalid",
+   "Toy.WrapNiche.TagsDisjoint",
+   "Toy.WrapNiche.rotTagsInvalid_iff_tagsDisjoint_sub_two",
+   "Toy.WrapNiche.exists_rotTagsInvalid_iff_sub_one_le_sub_size_of_nonempty_of_isHull",
+   "Toy.WrapNiche.Imported.Layout",
+   "Toy.WrapNiche.ex_rotated"
+  ],
+  "design_question": "Does niche fit depend on declaration order, and does a cyclic renumbering starting after the untagged variant remove the dependence?",
+  "tier_note": "T1: folklore made precise; the rotation was proposed publicly (prior art, unmerged) but no mechanized statement was found.",
+  "depth_note": "modular arithmetic on rotated indices."
+ },
+ {
+  "id": "R5.1",
+  "lean": "Toy.WrapNiche.extend_spec_of_size_lt",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For a non-full wrapping interval I of Fin M (hypothesis: size < M) and either side, the adjacent value (e + 1 or s - 1, wrapping) is not a member of I, the extended interval contains exactly the members of I and that value, and its size is I.size + 1; this holds at the wrap point (for example [250, 255] extends upward to [250, 0], `ex_extend`).",
+  "hypotheses": [
+   {
+    "name": "hI : I.size < M",
+    "purpose": "For a full interval the adjacent value is already a member.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_extend_spec_hI",
+    "witness_class": "an instance with M = 4 (the full interval [0, 3])"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "M = 4, I = [1, 1].",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_extend_spec_of_size_lt",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "For a full interval (I.size = M), `extend` wraps past the opposite end and collapses to a singleton (`ex_extend_full`: `extend [0, 3] .high = [0, 0]` in Fin 4, size 1).",
+   "Which side a layout engine picks is not modelled; both sides are covered."
+  ],
+  "prior_art": [
+   "Graeme Gange, Jorge A. Navas, Peter Schachte, Harald Søndergaard and Peter J. Stuckey, \"Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss\", ACM Transactions on Programming Languages and Systems 37(1), Article 1, January 2015, DOI 10.1145/2651360 (consulted in the authors' copy at https://jorgenavas.github.io/papers/ACM-TOPLAS-wrapped.pdf; formulas paraphrased): the wrapped-interval (w-interval) domain over w-bit integers. Section 3.1 defines the relative order b ≤_a c iff (b - a) mod 2^w ≤ (c - a) mod 2^w and notes that the unsigned order (a = 0) and the signed order (a = 2^(w-1)) disagree across hemispheres; the same section (Definition 3.1 and the definitions after it) gives the meaning of a delimited interval by the same case split as `WrapInterval.Mem`, its cardinality (y - x) mod 2^w + 1, and its complement [y + 1, x - 1]; Section 3.2 tests membership as e ≤_x y — the single-subtraction test — and shows that w-intervals ordered by inclusion are not a lattice (two incomparable minimal upper bounds of equal cardinality); Section 3.3 gives a minimal-upper-bound algorithm (Fig. 5) that returns the complement of the largest uncovered gap. Unlike the toy, w-intervals include an empty element and a single full element.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2075-2087 (source comment in Niche::reserve): \"Extend the range of valid values being reserved by moving either `v.start` or `v.end` bound.\" (line 2075-2076).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/wrapping_range.rs:8-16 (documentation): \"Inclusive wrap-around range of valid values, that is, if start > end, it represents `start..=MAX`, followed by `0..=end`.\" (lines 8-9) and \"This is intended specifically to mirror LLVM’s `!range` metadata semantics.\" (line 16)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.adjNiche",
+   "Toy.WrapNiche.extend",
+   "Toy.WrapNiche.Side",
+   "Toy.WrapNiche.ex_extend",
+   "Toy.WrapNiche.ex_extend_full",
+   "Toy.WrapNiche.WrapInterval.Mem"
+  ],
+  "design_question": "How do nested Option levels compose when each reserves a value next to the current valid interval?",
+  "tier_note": "T0: re-derivation; membership and cardinality of wrapped intervals are published (Gange et al. 2015, Section 3.1).",
+  "depth_note": "offset arithmetic after R1.1."
+ },
+ {
+  "id": "R5.2",
+  "lean": "Toy.WrapNiche.nicheLayout_adjNiche_lawful_and_accepts_extend_of_size_lt",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For a non-full valid interval I of n-byte patterns (hypothesis: size < 256^n) and either side d, the one-level niche-filled Option layout that puts None on the adjacent value is lawful, and the patterns it accepts are exactly the members of `extend I d` (again a wrapping interval).",
+  "hypotheses": [
+   {
+    "name": "hI : I.size < 256 ^ n",
+    "purpose": "For the full range the reserved value is valid and the layout is not lawful.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_nicheLayout_adjNiche_lawful_hI",
+    "witness_class": "an instance with n = 1 (the full range [0, 255])"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "n = 1, I = [1, 255] (the NonZero range).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_nicheLayout_adjNiche_lawful",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "Lawfulness is via the imported `nicheLayout_lawful_iff_isNiche`; this card adds the intervalness of the accepted set.",
+   "A single niche field whose valid set is a wrapping interval is modelled; other payload shapes are not."
+  ],
+  "prior_art": [
+   "google/zerocopy branch reference, package enum-niche-layout-guarantees-and-validity-invariants, published at 00c8f874bf1e70c933b7a2ea2572a76c1baa7327 (Lean sources unchanged at the latest correction f9bee82a6d3f8bb6698b4c9e716138018db94d4d), lean/Toy/Niche/Results.lean:43-51: theorem nicheLayout_lawful_iff_isNiche (one-variant niche filling with None -> q is lawful iff q is a niche). Copied with its proof into lean/Toy/WrapNiche/Imported/Results.lean.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2075-2087 (source comment in Niche::reserve): \"Extend the range of valid values being reserved by moving either `v.start` or `v.end` bound.\" (line 2075-2076)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.Imported.nicheLayout",
+   "Toy.WrapNiche.intervalV",
+   "Toy.WrapNiche.adjNiche",
+   "Toy.WrapNiche.extend",
+   "Toy.WrapNiche.Imported.nicheLayout_lawful_iff_isNiche"
+  ],
+  "design_question": "How do nested Option levels compose when each reserves a value next to the current valid interval?",
+  "tier_note": "T1: folklore made precise; adjacent reservation is documented engineering (prior art).",
+  "depth_note": "R5.1 and the imported characterization of lawful niche-filled layouts."
+ },
+ {
+  "id": "R5.3",
+  "lean": "Toy.WrapNiche.levelsReserveNiches_iff_length_le_and_nest_size",
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For every innermost valid interval R0 of Fin M and every list of side choices, adjacent reservation reserves an invalid value at every one of the sides.length levels iff sides.length <= M - R0.size (truncation-free since R0.size <= M), whatever sides are chosen; in that case the final valid interval has size R0.size + sides.length.",
+  "hypotheses": [],
+  "depth": "substantive",
+  "nonvacuity_witness": "M = 4, R0 = [1, 1], three levels, all-low and all-high.",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_levelsReserveNiches_iff_length_le_and_nest_size",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "The levels are modelled at the validity-set level; the per-level layout is the imported niche-filled layout (`nicheLayout_adjNiche_lawful_and_accepts_extend_of_size_lt`).",
+   "Adjacent reservation is one strategy; the bound for arbitrary layouts of the flattened enum is `exists_lawful_extEnum_intervalV_iff_le_sub_size`. A non-adjacent reservation can be lawful for one level yet fragment the valid set and lose contiguous capacity (`cex_folklore_nonadjacent_reservation_fragments`: over [0, 1] in Fin 8, reserving 4 gives {0, 1, 4}, which is not an interval set (`IsWrapIntervalSet`) and has hull [0, 4]; four contiguous tags then no longer fit, whereas after adjacent reservation five do; both sets have five niches).",
+   "Past capacity the second conjunct says nothing; `nest` then wraps and collapses rather than saturating (`ex_nest_past_capacity`: over [1, 1] in Fin 4, four upward levels end at the singleton [1, 1], size 1, not 5).",
+   "The innermost valid set is a non-empty wrapping interval R0 of a single niche field. Validity sets that are not one wrapping interval (with internal holes), the empty validity set (an uninhabited payload), payloads with several fields (where another field's niches could be used), and wrappers that hide niches are not modelled."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/lib.rs:2075-2087 (source comment in Niche::reserve): \"Extend the range of valid values being reserved by moving either `v.start` or `v.end` bound.\" (line 2075-2076).",
+   "google/zerocopy branch reference, package enum-niche-layout-guarantees-and-validity-invariants, published at 00c8f874bf1e70c933b7a2ea2572a76c1baa7327 (Lean sources unchanged at the latest correction f9bee82a6d3f8bb6698b4c9e716138018db94d4d), lean/Toy/Niche/Results.lean:351-372: theorem opt_opt_nonZero_no_decEnc_layout_in_payload_size (two-level Option over an n-byte NonZero payload has no decode-after-encode layout in n bytes). Copied with its proof into lean/Toy/WrapNiche/Imported/Results.lean."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.LevelsReserveNiches",
+   "Toy.WrapNiche.nest",
+   "Toy.WrapNiche.adjNiche",
+   "Toy.WrapNiche.Side",
+   "Toy.WrapNiche.nicheLayout_adjNiche_lawful_and_accepts_extend_of_size_lt",
+   "Toy.WrapNiche.exists_lawful_extEnum_intervalV_iff_le_sub_size",
+   "Toy.WrapNiche.cex_folklore_nonadjacent_reservation_fragments",
+   "Toy.WrapNiche.IsWrapIntervalSet",
+   "Toy.WrapNiche.ex_nest_past_capacity"
+  ],
+  "design_question": "How do nested Option levels compose when each reserves a value next to the current valid interval?",
+  "tier_note": "T1: folklore made precise; adjacent reservation is documented engineering (prior art); the composition over levels was not found stated or mechanized.",
+  "depth_note": "an induction on the list of sides carrying the size invariant through R5.1."
+ },
+ {
+  "id": "R5.4",
+  "lean": "Toy.WrapNiche.exists_lawful_extEnum_intervalV_iff_le_sub_size",
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For every valid interval R0 of n-byte patterns and every j, an enum with j dataless variants over the payload whose valid values are R0 has some lawful layout in the payload's n bytes (any layout, adjacent reservation or not) iff j <= 256^n - R0.size.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "n = 1, R0 = [1, 255], j = 1 (lawful layout exhibited via the imported cardinality theorem).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_exists_lawful_extEnum_intervalV",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "`ExtEnum j V` flattens j levels of Option into j dataless variants; the bijection with nested Option is not stated here (the imported two-level impossibility `opt_opt_nonZero_no_decEnc_layout_in_payload_size` proves its j = 2 instance for NonZero; `ex_intervalV_nonZero` identifies the NonZero validity with `intervalV [1, 255]`).",
+   "The statement is about `Lawful` layouts of exactly the payload size n. Layouts that satisfy `DecEnc` without being required to be `Canonical`, or have a size m <= n, are covered by the imported `le_numInvalid_of_decEnc_of_size_le` (not restated as a theorem of this package).",
+   "A corollary of the imported cardinality theorem and `nichesCount_intervalV`.",
+   "The same payload-shape limits as R5.3 apply (a single niche field whose valid set is a non-empty wrapping interval)."
+  ],
+  "prior_art": [
+   "google/zerocopy branch reference, package enum-niche-layout-guarantees-and-validity-invariants, published at 00c8f874bf1e70c933b7a2ea2572a76c1baa7327 (Lean sources unchanged at the latest correction f9bee82a6d3f8bb6698b4c9e716138018db94d4d), lean/Toy/Niche/Results.lean:335-346: theorem le_numInvalid_iff_exists_lawful_layout_iff_lawful_nicheLayoutK_firstNiches (k dataless variants fit in the payload's bytes under some lawful layout iff k <= numInvalid V). Copied with its proof into lean/Toy/WrapNiche/Imported/Results.lean.",
+   "google/zerocopy branch reference, package enum-niche-layout-guarantees-and-validity-invariants, published at 00c8f874bf1e70c933b7a2ea2572a76c1baa7327 (Lean sources unchanged at the latest correction f9bee82a6d3f8bb6698b4c9e716138018db94d4d), lean/Toy/Niche/Results.lean:351-372: theorem opt_opt_nonZero_no_decEnc_layout_in_payload_size (two-level Option over an n-byte NonZero payload has no decode-after-encode layout in n bytes). Copied with its proof into lean/Toy/WrapNiche/Imported/Results.lean."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.Imported.ExtEnum",
+   "Toy.WrapNiche.intervalV",
+   "Toy.WrapNiche.nichesCount_intervalV",
+   "Toy.WrapNiche.Imported.le_numInvalid_iff_exists_lawful_layout_iff_lawful_nicheLayoutK_firstNiches",
+   "Toy.WrapNiche.Imported.opt_opt_nonZero_no_decEnc_layout_in_payload_size",
+   "Toy.WrapNiche.ex_intervalV_nonZero",
+   "Toy.WrapNiche.Imported.Lawful",
+   "Toy.WrapNiche.Imported.DecEnc",
+   "Toy.WrapNiche.Imported.Canonical",
+   "Toy.WrapNiche.Imported.le_numInvalid_of_decEnc_of_size_le"
+  ],
+  "design_question": "How do nested Option levels compose when each reserves a value next to the current valid interval?",
+  "tier_note": "T0: re-derivation; a corollary of the imported cardinality theorem and R3.3.",
+  "depth_note": "the imported cardinality theorem rewritten with R3.3."
+ },
+ {
+  "id": "R6.1",
+  "lean": "Toy.WrapNiche.setDisc_operational_untagged_isSome_iff_of_tagsDisjoint",
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For a toy operational layout whose tags are all invalid for the niche-field validity (hypothesis): operational `SetDiscriminant u`, which reads the discriminant with the checked reader `OpLayout.readDisc` (the checked decoder of `genLayout`; for span < 256^nw it rejects dead slots and unused niches, `genLayout_dec_isSome_iff_classify_of_span_lt`) and is undefined behaviour unless the result is u, is free of undefined behaviour on a place iff the place's niche field lies inside the place (for nw >= 1; for nw = 0 there is no byte to check), is initialized, and holds a valid value; in particular, after writing a value x into a niche field that lies inside the place, it is free of undefined behaviour iff x is valid.",
+  "hypotheses": [
+   {
+    "name": "hdisj : TagsDisjoint L.V L.A.nicheStart L.A.span",
+    "purpose": "A valid value that is also a tag reads as a niche variant.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_setDisc_operational_untagged_isSome_iff_hdisj",
+    "witness_class": "an instance with a one-byte niche field, every value valid"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The layout Lop (1-byte niche at offset 1, tags 253/254/255, valid 0..=252).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_setDisc_operational_untagged_isSome_iff",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "Write order under `Sem.operational`: by the first conjunct, SetDiscriminant u is defined exactly when the niche field already holds a valid value; so from uninitialized niche bytes or from a niche tag (invalid under hdisj) 'SetDiscriminant u; write payload' is undefined behaviour while 'write payload; SetDiscriminant u' is defined (instance: `cex_folklore_payload_write_setDisc_noncommuting`), and if the niche field already holds a valid value SetDiscriminant u is defined before any write. Writes disjoint from the niche field commute with SetDiscriminant u (`run_write_setDisc_comm_of_disjointFromNiche`). Under `Sem.erased` SetDiscriminant u performs no check.",
+   "The checked `readDisc` rejects unused niches and dead slots; under a lenient reader that returned u for every value outside the tag interval, the 'iff x is valid' form would fail for unused niches (not proved here).",
+   "`L.V` is the validity of the niche field alone; it stands in for the niche scalar's valid range, which in rustc is a single wrapping range. Operational `SetDiscriminant u` reads the niche field alone, not the validity of other fields of the untagged variant's payload. The niche field is read little-endian from provenance-free bytes; big-endian targets and pointer-valued niches are not modelled.",
+   "If the untagged variant is uninhabited (no niche value is valid), operational SetDiscriminant u is undefined behaviour on every place while erased SetDiscriminant u is a no-op (`ex_setDisc_untagged_uninhabited`); rustc rejects uninhabited variants before it treats the untagged variant (prior art, derived (modeling bridge)).",
+   "In this toy model a `write` that does not fit in the place, a tag write into a niche field that does not lie inside the place, and a discriminant read of a niche field that does not lie inside the place (for nw >= 1; for nw = 0 there is no byte to check) are undefined behaviour (`ex_run_write_oob`, `ex_setDisc_oob`); nothing is claimed about how Rust, Miri or MiniRust treat out-of-bounds accesses beyond the in-bounds requirement quoted in the prior art."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_const_eval/src/interpret/discriminant.rs:15-44 (documentation and source comments): \"If the variant is uninhabited, this is UB.\" (line 17); for the untagged variant: \"No need to write the tag here, because an untagged variant is implicitly encoded. For `Niche`-optimized enums, this works by simply by having a value that is outside the niche variants. But what if the data stored here does not actually encode this variant? That would be bad! So let's double-check...\" (lines 33-37), followed by a read of the discriminant and InvalidNichedEnumVariantWritten if it differs (lines 38-41).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_const_eval/src/interpret/discriminant.rs:187-200 and 210-215 (source comments): \"The untagged variant can be in the niche range, but even then it is not a valid encoding. Codegen inserts an `assume` here so we really have to make this UB.\" (lines 188-190); \"Ensure the tag is in its layout range. Codegen adds range metadata on the discriminant load so we really have to make this UB.\" (lines 195-196); \"Reading the discriminant of an uninhabited variant is UB.\" (line 210).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/interpret/error.rs:426-427 (documentation): \"Trying to set discriminant to the niched variant, but the value does not match.\" InvalidNichedEnumVariantWritten { enum_ty: Ty<'tcx> },",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:357-361 (documentation): \"Write the discriminant for a variant to the enum Place.\" and \"This does not necessarily write to the entire place; instead, it writes to the minimum set of bytes as required by the layout for the type.\"",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_const_eval/src/interpret/discriminant.rs:246-257 and 290-297 (source): `tag_for_variant` raises `UninhabitedEnumVariantWritten` for an uninhabited variant (lines 255-257) before it returns no tag for the untagged variant (lines 290-297); and rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_codegen_ssa/src/mir/place.rs:254-273 and 499-527 (source): `codegen_set_discr` emits `bx.abort()` for an uninhabited variant (lines 262-266), stores the tag for a tagged variant (lines 267-270) and does nothing for `Ok(None)` (line 271), which `codegen_tag_value` returns for the untagged variant of a niche encoding (lines 504 and 524-526). `Sem.erased` mirrors the no-write case (no check, no write) but not the uninhabited-variant abort: erased `SetDiscriminant u` is a no-op even when the untagged variant has no valid value (`ex_setDisc_untagged_uninhabited`). derived (modeling bridge)."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.setDisc",
+   "Toy.WrapNiche.OpLayout",
+   "Toy.WrapNiche.OpLayout.readNiche",
+   "Toy.WrapNiche.OpLayout.writeNiche",
+   "Toy.WrapNiche.OpLayout.readDisc",
+   "Toy.WrapNiche.Sem",
+   "Toy.WrapNiche.cex_folklore_payload_write_setDisc_noncommuting",
+   "Toy.WrapNiche.run_write_setDisc_comm_of_disjointFromNiche",
+   "Toy.WrapNiche.ex_setDisc_untagged_uninhabited",
+   "Toy.WrapNiche.ex_run_write_oob",
+   "Toy.WrapNiche.ex_setDisc_oob",
+   "Toy.WrapNiche.Lop",
+   "Toy.WrapNiche.LopFar",
+   "Toy.WrapNiche.LopNone",
+   "Toy.WrapNiche.LopWide",
+   "Toy.WrapNiche.ex_readDisc_unusedNiche",
+   "Toy.WrapNiche.ex_setDisc"
+  ],
+  "design_question": "How do payload writes interact with a SetDiscriminant that checks the untagged variant (as the interpreter does) versus one that writes nothing and checks nothing?",
+  "tier_note": "T1: folklore made precise; the interpreter double-check is documented (prior art).",
+  "depth_note": "unfolding the checked reader; the second conjunct uses the little-endian round trip of the niche field."
+ },
+ {
+  "id": "R6.2",
+  "lean": "Toy.WrapNiche.run_erased_eq_some_of_run_operational_eq_some",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every toy operational layout, every program of field writes, SetDiscriminant and discriminant reads, and every start state: if the program runs without undefined behaviour under the operational semantics, it produces the same place and the same read results under the erased semantics (`SetDiscriminant u` as a no-op); there is no hypothesis (in both semantics a `write` that does not fit in the place, a tag write into a niche field that does not lie inside the place, and a discriminant read of a niche field that does not lie inside the place (for nw >= 1; for nw = 0 there is no byte to check) are undefined behaviour).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Lop, program [write payload 5; SetDiscriminant 1; read].",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_run_erased_eq_some_of_run_operational_eq_some",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "Not an equivalence: operational SetDiscriminant u on uninitialized bytes is undefined behaviour while the erased one is a no-op (`cex_folklore_erasure_not_equivalent`); with an uninhabited untagged variant the two differ on every place (`ex_setDisc_untagged_uninhabited`).",
+   "The refinement is stated for this concrete pair of semantics; no general refinement framework is proved.",
+   "Out-of-bounds writes and tag writes are undefined behaviour in both semantics alike, so they do not separate them. In this toy model a `write` that does not fit in the place, a tag write into a niche field that does not lie inside the place, and a discriminant read of a niche field that does not lie inside the place (for nw >= 1; for nw = 0 there is no byte to check) are undefined behaviour (`ex_run_write_oob`, `ex_setDisc_oob`); nothing is claimed about how Rust, Miri or MiniRust treat out-of-bounds accesses beyond the in-bounds requirement quoted in the prior art."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_const_eval/src/interpret/discriminant.rs:15-44 (documentation and source comments): \"If the variant is uninhabited, this is UB.\" (line 17); for the untagged variant: \"No need to write the tag here, because an untagged variant is implicitly encoded. For `Niche`-optimized enums, this works by simply by having a value that is outside the niche variants. But what if the data stored here does not actually encode this variant? That would be bad! So let's double-check...\" (lines 33-37), followed by a read of the discriminant and InvalidNichedEnumVariantWritten if it differs (lines 38-41).",
+   "minirust/minirust@063d784186d3252bee242217f218223205c0b568 spec/lang/step/statements.md:61-85 (specification): `Statement::SetDiscriminant` looks up the variant's `tagger` (lines 69-73) and stores its entries through `encode_discriminant(accessor, tagger)` (line 82) at offsets checked by `ptr_offset_inbounds` (line 78); it reads nothing from the place. With an empty `tagger` it writes nothing and checks nothing, which corresponds to `Sem.erased` rather than to `Sem.operational`.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_const_eval/src/interpret/discriminant.rs:246-257 and 290-297 (source): `tag_for_variant` raises `UninhabitedEnumVariantWritten` for an uninhabited variant (lines 255-257) before it returns no tag for the untagged variant (lines 290-297); and rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_codegen_ssa/src/mir/place.rs:254-273 and 499-527 (source): `codegen_set_discr` emits `bx.abort()` for an uninhabited variant (lines 262-266), stores the tag for a tagged variant (lines 267-270) and does nothing for `Ok(None)` (line 271), which `codegen_tag_value` returns for the untagged variant of a niche encoding (lines 504 and 524-526). `Sem.erased` mirrors the no-write case (no check, no write) but not the uninhabited-variant abort: erased `SetDiscriminant u` is a no-op even when the untagged variant has no valid value (`ex_setDisc_untagged_uninhabited`). derived (modeling bridge).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:357-361 (documentation): \"Write the discriminant for a variant to the enum Place.\" and \"This does not necessarily write to the entire place; instead, it writes to the minimum set of bytes as required by the layout for the type.\""
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.run",
+   "Toy.WrapNiche.stepOp",
+   "Toy.WrapNiche.Op",
+   "Toy.WrapNiche.Sem",
+   "Toy.WrapNiche.cex_folklore_erasure_not_equivalent",
+   "Toy.WrapNiche.ex_setDisc_untagged_uninhabited",
+   "Toy.WrapNiche.ex_run_write_oob",
+   "Toy.WrapNiche.ex_setDisc_oob"
+  ],
+  "design_question": "How do payload writes interact with a SetDiscriminant that checks the untagged variant (as the interpreter does) versus one that writes nothing and checks nothing?",
+  "tier_note": "T1: folklore made precise (as R6.1).",
+  "depth_note": "induction on the program; by definition the two semantics differ at SetDiscriminant u and nowhere else."
+ },
+ {
+  "id": "R6.3",
+  "lean": "Toy.WrapNiche.run_write_setDisc_comm_of_disjointFromNiche",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every toy operational layout, both semantics, every variant v (including the untagged one) and every state: if the byte range of a `write` operation does not overlap the niche field (hypothesis), the programs 'write; SetDiscriminant v' and 'SetDiscriminant v; write' give the same result, undefined behaviour included (a write that does not fit in the place is undefined behaviour in both orders).",
+  "hypotheses": [
+   {
+    "name": "hdis : L.DisjointFromNiche off bs.length",
+    "purpose": "A write over the niche byte after SetDiscriminant clobbers the tag (the value then reads as another variant).",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_run_write_setDisc_comm_hdis",
+    "witness_class": "an instance with a one-byte niche field and a one-byte write over it"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Lop, write [9] at byte 0.",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_run_write_setDisc_comm_of_disjointFromNiche",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "The statement covers the untagged variant too: no restriction to dataless variants is needed.",
+   "Writes that overlap the niche field do not commute in general: with a tag (`cex_run_write_setDisc_comm_hdis`) and with operational SetDiscriminant u (`cex_folklore_payload_write_setDisc_noncommuting`).",
+   "`DisjointFromNiche` is conservative: an empty write strictly inside the niche field is rejected although it overlaps nothing.",
+   "Aliasing, borrows and concurrency are not modelled; a place is a single byte list.",
+   "In this toy model a `write` that does not fit in the place, a tag write into a niche field that does not lie inside the place, and a discriminant read of a niche field that does not lie inside the place (for nw >= 1; for nw = 0 there is no byte to check) are undefined behaviour (`ex_run_write_oob`, `ex_setDisc_oob`); nothing is claimed about how Rust, Miri or MiniRust treat out-of-bounds accesses beyond the in-bounds requirement quoted in the prior art."
+  ],
+  "prior_art": [
+   "minirust/minirust@063d784186d3252bee242217f218223205c0b568 spec/lang/types.md:101-126 and spec/lang/step/statements.md:61-85 (specification): enums carry a per-variant `tagger` (\"MUST NOT touch any bytes written by the actual type of the variant and vice versa.\", types.md:105-106) and a `Discriminator` decision tree over ranges of tag values; SetDiscriminant writes the variant's tagger entries. An extensional decision-tree encoding, not the affine one modelled here.",
+   "minirust/minirust@063d784186d3252bee242217f218223205c0b568 spec/lang/step/statements.md:61-85 (specification): `Statement::SetDiscriminant` looks up the variant's `tagger` (lines 69-73) and stores its entries through `encode_discriminant(accessor, tagger)` (line 82) at offsets checked by `ptr_offset_inbounds` (line 78); it reads nothing from the place. With an empty `tagger` it writes nothing and checks nothing, which corresponds to `Sem.erased` rather than to `Sem.operational`.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:357-361 (documentation): \"Write the discriminant for a variant to the enum Place.\" and \"This does not necessarily write to the entire place; instead, it writes to the minimum set of bytes as required by the layout for the type.\""
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.writeBytes",
+   "Toy.WrapNiche.OpLayout.DisjointFromNiche",
+   "Toy.WrapNiche.setDisc",
+   "Toy.WrapNiche.run",
+   "Toy.WrapNiche.Op",
+   "Toy.WrapNiche.cex_run_write_setDisc_comm_hdis",
+   "Toy.WrapNiche.cex_folklore_payload_write_setDisc_noncommuting",
+   "Toy.WrapNiche.ex_run_write_oob",
+   "Toy.WrapNiche.ex_setDisc_oob",
+   "Toy.WrapNiche.ex_bytes"
+  ],
+  "design_question": "How do payload writes interact with a SetDiscriminant that checks the untagged variant (as the interpreter does) versus one that writes nothing and checks nothing?",
+  "tier_note": "T1: folklore made precise; the no-overlap discipline between tag and fields is specified in MiniRust (prior art).",
+  "depth_note": "frame lemmas for disjoint byte ranges; SetDiscriminant keeps the length of the place."
+ },
+ {
+  "id": "R6.4",
+  "lean": "Toy.WrapNiche.run_fields_then_setDisc_readDisc_of_disjoint",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For a toy operational layout and a place, if the niche field lies inside the place, span < 256^nw, every tag is invalid for the niche-field validity, and the field writes ws lie inside the place, are pairwise disjoint and do not overlap the niche field (hypotheses), then under both semantics: for every encodable variant v other than u (`Encodable`: live and in the niche range), 'field writes; SetDiscriminant v; read discriminant' is defined, reads v, leaves v's tag in the niche field and every field write in ws readable as written; and for every valid niche value x, 'field writes; write x to the niche field; SetDiscriminant u; read discriminant' is defined, reads u, leaves x in the niche field and every field write in ws readable as written.",
+  "hypotheses": [
+   {
+    "name": "hfit : L.no + L.nw ≤ p.length",
+    "purpose": "Without it the tag write of SetDiscriminant v (and the niche write) is out of bounds, which is undefined behaviour.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_run_fields_then_setDisc_hfit",
+    "witness_class": "an instance with a three-byte place and the niche byte at offset 5"
+   },
+   {
+    "name": "hspan : L.A.span < 256 ^ L.nw",
+    "purpose": "Without it two variants can share a tag, so a tag reads back as another variant.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_run_fields_then_setDisc_hspan",
+    "witness_class": "an instance with a one-byte niche field and 257 live variants"
+   },
+   {
+    "name": "hdisj : TagsDisjoint L.V L.A.nicheStart L.A.span",
+    "purpose": "Used by the second conjunct: without it a valid niche value can be a tag and does not read as u.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_run_fields_then_setDisc_hdisj",
+    "witness_class": "an instance with a one-byte niche field, every value valid"
+   },
+   {
+    "name": "hin : ∀ w ∈ ws, w.1 + w.2.length ≤ p.length",
+    "purpose": "Without it a field write is out of bounds, which is undefined behaviour.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_run_fields_then_setDisc_hin",
+    "witness_class": "an instance with a two-byte write at offset 2 of a three-byte place"
+   },
+   {
+    "name": "hpw : ws.Pairwise (fun a b => a.1 + a.2.length ≤ b.1 ∨ b.1 + b.2.length ≤ a.1)",
+    "purpose": "Without it a later overlapping write overwrites an earlier field.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_run_fields_then_setDisc_hpw",
+    "witness_class": "an instance with two different one-byte writes to byte 0"
+   },
+   {
+    "name": "hws : ∀ w ∈ ws, L.DisjointFromNiche w.1 w.2.length",
+    "purpose": "Without it the tag write overwrites a field that overlaps the niche field.",
+    "tightness": "tight",
+    "counterexample": "Toy.WrapNiche.cex_run_fields_then_setDisc_hws",
+    "witness_class": "an instance with a one-byte write to the niche byte"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Lop, three uninitialized bytes, field writes at bytes 0 and 2 (with Encodable 0 and a valid niche value 0).",
+  "nonvacuity_witness_lean": "Toy.WrapNiche.nv_run_fields_then_setDisc_readDisc_of_disjoint",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's layout code, its generated code or its interpreter. Model–system relation: none proved.",
+   "A sufficient condition. Each hypothesis is tight in the instance class recorded in its ledger entry; none is claimed necessary in general (for example identical overlapping writes, or empty writes, would not break the conclusion; not proved here).",
+   "Write order: writes disjoint from the niche field commute with SetDiscriminant v for every v, including u (`run_write_setDisc_comm_of_disjointFromNiche`). Under `Sem.operational` and when every tag is invalid, SetDiscriminant u is defined exactly when the niche field already holds a valid value (R6.1, first conjunct): starting from uninitialized niche bytes or from a niche tag the valid value has to be written first (instance: `cex_folklore_payload_write_setDisc_noncommuting`), whereas a niche field that already holds a valid value needs no prior write. Under `Sem.erased` SetDiscriminant u performs no check.",
+   "The operational model does not tie field bytes to variants: the writes ws may stand for fields of v placed outside the niche field (rustc's niche-filling layout admits such fields, prior art, derived (modeling bridge)) or for the payload fields of u; `genLayout` (group 2), by contrast, models the variants other than u as dataless.",
+   "Field contents are bytes; no typed validity of the fields is modelled.",
+   "`L.V` is the validity of the niche field alone; it stands in for the niche scalar's valid range, which in rustc is a single wrapping range. Operational `SetDiscriminant u` reads the niche field alone, not the validity of other fields of the untagged variant's payload. The niche field is read little-endian from provenance-free bytes; big-endian targets and pointer-valued niches are not modelled.",
+   "In this toy model a `write` that does not fit in the place, a tag write into a niche field that does not lie inside the place, and a discriminant read of a niche field that does not lie inside the place (for nw >= 1; for nw = 0 there is no byte to check) are undefined behaviour (`ex_run_write_oob`, `ex_setDisc_oob`); nothing is claimed about how Rust, Miri or MiniRust treat out-of-bounds accesses beyond the in-bounds requirement quoted in the prior art."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_const_eval/src/interpret/discriminant.rs:15-44 (documentation and source comments): \"If the variant is uninhabited, this is UB.\" (line 17); for the untagged variant: \"No need to write the tag here, because an untagged variant is implicitly encoded. For `Niche`-optimized enums, this works by simply by having a value that is outside the niche variants. But what if the data stored here does not actually encode this variant? That would be bad! So let's double-check...\" (lines 33-37), followed by a read of the discriminant and InvalidNichedEnumVariantWritten if it differs (lines 38-41).",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:357-361 (documentation): \"Write the discriminant for a variant to the enum Place.\" and \"This does not necessarily write to the entire place; instead, it writes to the minimum set of bytes as required by the layout for the type.\"",
+   "minirust/minirust@063d784186d3252bee242217f218223205c0b568 spec/lang/types.md:101-126 and spec/lang/step/statements.md:61-85 (specification): enums carry a per-variant `tagger` (\"MUST NOT touch any bytes written by the actual type of the variant and vice versa.\", types.md:105-106) and a `Discriminator` decision tree over ranges of tag values; SetDiscriminant writes the variant's tagger entries. An extensional decision-tree encoding, not the affine one modelled here.",
+   "minirust/minirust@063d784186d3252bee242217f218223205c0b568 spec/lang/step/statements.md:61-85 (specification): `Statement::SetDiscriminant` looks up the variant's `tagger` (lines 69-73) and stores its entries through `encode_discriminant(accessor, tagger)` (line 82) at offsets checked by `ptr_offset_inbounds` (line 78); it reads nothing from the place. With an empty `tagger` it writes nothing and checks nothing, which corresponds to `Sem.erased` rather than to `Sem.operational`.",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_abi/src/layout.rs:652-680 (source): in the niche-filling layout computation every variant other than the largest one is checked to fit either before the niche (\"// This variant will fit before the niche.\", line 660) or after it (\"// Determine if it'll fit after the niche.\", line 664), with its field offsets shifted (lines 673-675); such variants may therefore carry fields outside the niche field. `genLayout` models every variant other than `u` as dataless; the operational model (group 6) does not tie field bytes to variants."
+  ],
+  "lean_names": [
+   "Toy.WrapNiche.run",
+   "Toy.WrapNiche.writesOf",
+   "Toy.WrapNiche.readBytes",
+   "Toy.WrapNiche.leBytes",
+   "Toy.WrapNiche.OpLayout.Encodable",
+   "Toy.WrapNiche.OpLayout.DisjointFromNiche",
+   "Toy.WrapNiche.OpLayout.readNiche",
+   "Toy.WrapNiche.Sem",
+   "Toy.WrapNiche.run_write_setDisc_comm_of_disjointFromNiche",
+   "Toy.WrapNiche.cex_folklore_payload_write_setDisc_noncommuting",
+   "Toy.WrapNiche.genLayout",
+   "Toy.WrapNiche.ex_run_write_oob",
+   "Toy.WrapNiche.ex_setDisc_oob"
+  ],
+  "design_question": "How do payload writes interact with a SetDiscriminant that checks the untagged variant (as the interpreter does) versus one that writes nothing and checks nothing?",
+  "tier_note": "T1: folklore made precise (as R6.1).",
+  "depth_note": "composition of the frame lemmas over a list of pairwise disjoint writes, with the little-endian round trip of the niche field."
+ }
+]

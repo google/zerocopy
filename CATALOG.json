@@ -109921,6 +109921,66 @@
         "isa/constant-time-curves"
       ]
     },
+    "wrapping-niche-intervals-affine-tags-nested-option-capacity-and-discriminant-write-order": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2651360"
+          },
+          "name": "Interval Analysis and Machine Arithmetic: Why Signedness Ignorance Is Bliss (Gange, Navas, Schachte, S\u00f8ndergaard, Stuckey, TOPLAS 2015)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc enum layout, niche encoding and discriminant sources"
+        },
+        {
+          "identity": {
+            "path": "src/type-layout.md",
+            "repository": "rust-lang/reference",
+            "revision": "956d1bd03d2a8934fc5041ecb04b33e55159c655"
+          },
+          "name": "The Rust Reference, type layout"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+            "version": "llvmorg-21.1.0"
+          },
+          "name": "LLVM range metadata and ConstantRange"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "pl/enum-layout",
+        "pl/niche-optimization",
+        "pl/validity-invariants",
+        "pl/operational-semantics",
+        "compilers/type-layout",
+        "compilers/discriminant-encoding",
+        "verification/wrapped-intervals"
+      ]
+    },
     "x509-pki-path-validation-asn1-frankencerts-dnssec-and-tls-state-machines": {
       "observed_at": "2026-11-19",
       "subjects": [
