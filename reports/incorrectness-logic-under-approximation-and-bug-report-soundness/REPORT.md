@@ -49,6 +49,11 @@ triggered in a real deployment (it may be latent), that bounded exploration can 
 safety (a larger bound or a loop-free program changes that), or that anything here is a statement
 about a production analyzer or verifier (every theorem is about the toy semantics; the bridge to
 real tools is a separately labeled, derived claim).
+Model–system relation: none proved (the soundness results relate the package's own proof rules and
+analyses to its own toy semantics). These are statements about the toy model; they neither establish
+nor refute the corresponding claims about real bug finders and verifiers (tools based on incorrectness
+logic or incorrectness separation logic, bounded model checkers, symbolic executors, Hoare-logic
+verifiers, abstract interpreters).
 
 This package belongs to a library of formalized results whose documentation rule is that no
 result may be read more broadly than its statement deserves. Here that rule is also the subject
