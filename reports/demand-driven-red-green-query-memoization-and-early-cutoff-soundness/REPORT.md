@@ -22,7 +22,7 @@ The hypotheses above are each shown necessary by a kernel-checked counterexample
 
 ### What the theorems are about
 
-All theorems are statements about the Lean definitions in `lean/Toy/RedGreen/*.lean` (quoted under **Findings**, *Core definitions*), and about nothing else. The model is a **generic toy model**, deliberately small:
+All theorems are statements about the Lean definitions in `lean/Toy/RedGreen/*.lean` (quoted under **Findings**, *Core definitions*); they neither establish nor refute the corresponding claims about rustc's dependency graph, Salsa or Shake, and the `derived (modeling bridge)` paragraphs under **Findings** argue the connection separately. The model is a **generic toy model**, deliberately small:
 
 * keys are queries `Q` or inputs `I` (`Key Q I := Q ⊕ I`); values `V` and fingerprints `F` are arbitrary types (`DecidableEq Q`, `DecidableEq F`);
 * a query's code is a `Prog`, an inductive tree of `fetch k (fun v => …)` nodes ending in `ret v` or `panic`. Being inductive, the tree is well-founded: every path from the root is finite. It need not be finite, however: a `fetch` node has one subtree for each value of `V`, so when `V` is infinite (for example `Nat`) the tree can branch infinitely and its paths need not have a common length bound. The set and order of fetched keys can depend on fetched values (dynamic dependencies); code is deterministic by construction;
@@ -336,10 +336,12 @@ def AgreesWithEval {Q I V F : Type} [DecidableEq Q] [DecidableEq F] (cfg : Confi
 The execution log, from `lean/Toy/RedGreen/ExecLog.lean`. The instrumented state `LDB` pairs a working database with the log of executed queries; `checkDepsX`, `markGreenX`, `execX` and `fetchX` are `checkDeps`, `markGreen`, `exec` and `fetch` on that state, with the same control flow:
 
 ```lean
+-- lean/Toy/RedGreen/ExecLog.lean:23-25
 /-- State of the instrumented algorithm: the working database and the log of
 executed queries, oldest first. -/
 abbrev LDB (Q I V F : Type) := DB Q I V F × List Q
 
+-- lean/Toy/RedGreen/ExecLog.lean:27-40
 /-- `checkDeps` on the instrumented state (same control flow; the log is
 threaded through the fetcher). -/
 def checkDepsX {Q I V F : Type} [DecidableEq F] (cutoff stopAtRed : Bool) (fp : V → F)
@@ -355,6 +357,7 @@ def checkDepsX {Q I V F : Type} [DecidableEq F] (cutoff stopAtRed : Bool) (fp : 
     | (.panic, s₁) => (.panic, s₁)
     | (.stuck, s₁) => (.stuck, s₁)
 
+-- lean/Toy/RedGreen/ExecLog.lean:42-49
 /-- `markGreen` on the instrumented state. -/
 def markGreenX {Q I V F : Type} [DecidableEq F] (cfg : Config) (fp : V → F)
     (f : LDB Q I V F → Key Q I → Out V × LDB Q I V F) (s : LDB Q I V F)
@@ -364,6 +367,7 @@ def markGreenX {Q I V F : Type} [DecidableEq F] (cfg : Config) (fp : V → F)
   | .reversed => checkDepsX cfg.cutoff true fp f s deps.reverse false
   | .exhaustive => checkDepsX cfg.cutoff false fp f s deps false
 
+-- lean/Toy/RedGreen/ExecLog.lean:51-59
 /-- `exec` on the instrumented state: appends `q` to the log before running
 `q`'s code. -/
 def execX {Q I V F : Type} [DecidableEq Q] (rules : Rules Q I V) (fp : V → F)
@@ -374,6 +378,7 @@ def execX {Q I V F : Type} [DecidableEq Q] (rules : Rules Q I V) (fp : V → F)
   | (.panic, _, s₁) => (.panic, s₁)
   | (.stuck, _, s₁) => (.stuck, s₁)
 
+-- lean/Toy/RedGreen/ExecLog.lean:61-75
 /-- `fetch` on the instrumented state (same control flow as `fetch`). -/
 def fetchX {Q I V F : Type} [DecidableEq Q] [DecidableEq F] (cfg : Config) (rules : Rules Q I V)
     (fp : V → F) (inp : I → V) : Nat → LDB Q I V F → Key Q I → Out V × LDB Q I V F
@@ -390,12 +395,14 @@ def fetchX {Q I V F : Type} [DecidableEq Q] [DecidableEq F] (cfg : Config) (rule
       | (.stuck, s₁) => (.stuck, s₁)
     | .none => execX rules fp (fetchX cfg rules fp inp n) s q
 
+-- lean/Toy/RedGreen/ExecLog.lean:77-81
 /-- The queries executed (code started, in order) by
 `fetch cfg rules fp inp n db k`. -/
 def execLog {Q I V F : Type} [DecidableEq Q] [DecidableEq F] (cfg : Config) (rules : Rules Q I V)
     (fp : V → F) (inp : I → V) (n : Nat) (db : DB Q I V F) (k : Key Q I) : List Q :=
   (fetchX cfg rules fp inp n (db, []) k).2.2
 
+-- lean/Toy/RedGreen/ExecLog.lean:208-215
 /-- **Adequacy of the instrumentation.**  The instrumented fetch has exactly
 the outcome and working database of `fetch`, and appends `execLog` to the
 incoming log. -/
@@ -411,6 +418,7 @@ theorem fetchX_eq [DecidableEq Q] [DecidableEq F] (cfg : Config) (rules : Rules 
 From `lean/Toy/RedGreen/Examples.lean` (proofs of the `odb…` facts are by `decide`). Inputs are `x` and `y` (`inpXY a b` is the state `x = a, y = b`), values and fingerprints are `Nat`, and `fpId` is the identity.
 
 ```lean
+-- lean/Toy/RedGreen/Examples.lean:35-69
 /-! ## Key types, fingerprints, input states -/
 
 /-- Query keys of examples D and C. -/
@@ -447,6 +455,7 @@ def inpXY (a b : Nat) : IK → Nat
   | .x => a
   | .y => b
 
+-- lean/Toy/RedGreen/Examples.lean:12-20
 /-- Generic constructor of a consistent database: execute every query from
 scratch in state `inp` (fuel `n`) and record its trace and result; queries that
 panic or run out of fuel get no entry. -/
@@ -457,6 +466,7 @@ def recordAll {Q I V F : Type} (rules : Rules Q I V) (fp : V → F) (inp : I →
     | (.panic, _) => none
     | (.stuck, _) => none
 
+-- lean/Toy/RedGreen/Examples.lean:73-80
 /-- `guard` tests whether `x ≠ 0`; `risky` divides by `x` and panics when
 `x = 0`; `top` fetches `guard`, and only if it is `1` fetches `risky`.  In a
 state with `x = 0`, `risky` is a dead dependency of `top`. -/
@@ -466,6 +476,7 @@ def rulesD : Rules QK IK Nat
   | .top => .fetch (.inl .guard) fun g =>
       if g = 0 then .ret 0 else .fetch (.inl .risky) fun r => .ret r
 
+-- lean/Toy/RedGreen/Examples.lean:84-102
 /-- Like `rulesD`, but when `x = 0` the query `risky` fetches `top` instead of
 panicking.  The code contains the cycle `top → risky → top`, yet in every state
 at most one direction is live: `top` fetches `risky` only when `x ≠ 0`, and
@@ -486,6 +497,7 @@ def odbD : OldDB QK IK Nat Nat := recordAll rulesD fpId oldD 10
 /-- Database recorded from scratch in the old state of example C. -/
 def odbC : OldDB QK IK Nat Nat := recordAll rulesC fpId oldD 10
 
+-- lean/Toy/RedGreen/Examples.lean:112-122
 /-- `a` reads `x` but always returns `0`; `top` returns `a + y`.  When only `x`
 changes, `a` must be re-executed but reproduces its old value, so `top`'s
 recorded dependencies are all unchanged. -/
@@ -498,20 +510,26 @@ def oldK : IK → Nat := inpXY 1 2
 def newK : IK → Nat := inpXY 3 2
 def odbK : OldDB Q3 IK Nat Nat := recordAll rulesK fpId oldK 10
 
+-- lean/Toy/RedGreen/Examples.lean:124
 theorem odbK_top : odbK .top = some ⟨[(.inl .a, 0), (.inr .y, 2)], 2⟩
+-- lean/Toy/RedGreen/Examples.lean:125
 theorem odbK_a : odbK .a = some ⟨[(.inr .x, 1)], 0⟩
 ```
 
 The recorded entries of example K as they appear in the start database, used by card 9, from `lean/Toy/RedGreen/Minimal.lean` (proofs by `decide`):
 
 ```lean
+-- lean/Toy/RedGreen/Minimal.lean:275-276
 /-- The recorded entry of `top` in example K. -/
 def eK : Entry Q3 IK Nat Nat := ⟨[(.inl .a, 0), (.inr .y, 2)], 2⟩
 
+-- lean/Toy/RedGreen/Minimal.lean:278-279
 /-- The recorded entry of `a` in example K. -/
 def eKa : Entry Q3 IK Nat Nat := ⟨[(.inr .x, 1)], 0⟩
 
+-- lean/Toy/RedGreen/Minimal.lean:281
 theorem start_odbK_top : start odbK .top = .old eK
+-- lean/Toy/RedGreen/Minimal.lean:282
 theorem start_odbK_a : start odbK .a = .old eKa
 ```
 
@@ -528,6 +546,7 @@ The remaining concrete instances (the rule sets, input states, fingerprint funct
 `Toy/RedGreen/Soundness.lean` — `Toy.RedGreen.fetch_agrees_with_eval_of_ordered_replay`:
 
 ```lean
+-- lean/Toy/RedGreen/Soundness.lean:409-419
 /-- **Agreement of ordered red-green replay (first demand).**  With ordered
 replay (early cutoff on or off), collision-free fingerprints, the same query
 code as the one that produced the database, and a database consistent with
@@ -544,6 +563,7 @@ theorem fetch_agrees_with_eval_of_ordered_replay (cfg : Config) (hord : cfg.repl
 `Toy/RedGreen/Soundness.lean` — `Toy.RedGreen.fetch_agrees_with_eval_during_revision_of_ordered_replay`:
 
 ```lean
+-- lean/Toy/RedGreen/Soundness.lean:425-434
 /-- **Agreement during a whole revision.**  Under the same hypotheses, every
 fetch made from a working database reachable from the start of the revision
 by earlier fetches (of any keys, with any fuel) agrees with from-scratch
@@ -559,6 +579,7 @@ theorem fetch_agrees_with_eval_during_revision_of_ordered_replay (cfg : Config)
 `Toy/RedGreen/Soundness.lean` — `Toy.RedGreen.fetch_eventually_eq_eval_during_revision_of_ordered_replay`:
 
 ```lean
+-- lean/Toy/RedGreen/Soundness.lean:441-451
 /-- **Eventual equality during a whole revision.**  Under the same hypotheses,
 for every working database reachable from the start of the revision (in
 particular the start database itself, `Reachable.refl`), for all sufficiently
@@ -575,6 +596,7 @@ theorem fetch_eventually_eq_eval_during_revision_of_ordered_replay (cfg : Config
 `Toy/RedGreen/Soundness.lean` — `Toy.RedGreen.fetch_eventually_finishes_during_revision_of_terminates`:
 
 ```lean
+-- lean/Toy/RedGreen/Soundness.lean:456-466
 /-- **Termination transfer during a whole revision.**  Under the same
 hypotheses, if `k` terminates from scratch in the new state, then for every
 working database reachable from the start of the revision the incremental
@@ -591,6 +613,7 @@ theorem fetch_eventually_finishes_during_revision_of_terminates (cfg : Config)
 `Toy/RedGreen/Soundness.lean` — `Toy.RedGreen.fetch_simulation_invariant`:
 
 ```lean
+-- lean/Toy/RedGreen/Soundness.lean:272-287
 /-- **Main simulation invariant.**  For ordered replay (with or without early
 cutoff) and collision-free fingerprints, one incremental fetch from a working
 database satisfying `Inv` (old slots consistent with the old state, done
@@ -657,6 +680,7 @@ Basis: derived (modeling bridge) — the correspondence of `markGreen` with `Rep
 `Toy/RedGreen/Soundness.lean` — `Toy.RedGreen.early_cutoff_agrees_with_reexecution_of_ordered_replay`:
 
 ```lean
+-- lean/Toy/RedGreen/Soundness.lean:480-501
 /-- **Early cutoff agrees with full re-execution (reference corollary of
 `incremental-fetch-agrees`).**  With ordered replay, collision-free
 fingerprints, the same query code as the one that produced the database, and
@@ -717,6 +741,7 @@ Basis: derived (modeling bridge) — Salsa's backdating compares values (`fp = i
 `Toy/RedGreen/ValueSound.lean` — `Toy.RedGreen.fetch_value_sound_of_any_replay`:
 
 ```lean
+-- lean/Toy/RedGreen/ValueSound.lean:319-333
 /-- **Value soundness for every replay order (card
 `every-replay-order-is-value-sound`).**  For any configuration — recorded,
 reversed or all-edges replay, early cutoff on or off — collision-free
@@ -771,6 +796,7 @@ Basis: derived (modeling bridge) — this is consistent with the rustc-dev-guide
 `Toy/RedGreen/Replay.lean` — `Toy.RedGreen.reversed_replay_executes_dead_dependency_and_panics`:
 
 ```lean
+-- lean/Toy/RedGreen/Replay.lean:28-41
 /-- **Out-of-order replay executes a dead dependency that panics.**  In example
 D all hypotheses of `fetch_agrees_with_eval_of_ordered_replay` other than
 ordered replay hold (same code, identity fingerprints, a database recorded
@@ -790,6 +816,7 @@ theorem reversed_replay_executes_dead_dependency_and_panics (c : Bool) :
 `Toy/RedGreen/Replay.lean` — `Toy.RedGreen.exhaustive_replay_executes_dead_dependency_and_panics`:
 
 ```lean
+-- lean/Toy/RedGreen/Replay.lean:47-58
 /-- **Checking all recorded dependencies executes a dead dependency that
 panics.**  Same instance as `reversed_replay_executes_dead_dependency_and_panics`,
 with exhaustive replay (every recorded dependency is checked even after
@@ -807,6 +834,7 @@ theorem exhaustive_replay_executes_dead_dependency_and_panics (c : Bool) :
 `Toy/RedGreen/Replay.lean` — `Toy.RedGreen.reversed_replay_diverges_on_dead_code_cycle`:
 
 ```lean
+-- lean/Toy/RedGreen/Replay.lean:157-175
 /-- **Out-of-order replay diverges on a dead code-level cycle.**  In example C
 the code contains the cycle `top → risky → top`, but it is live in neither
 state: every query terminates in the old and in the new state, and from
@@ -831,6 +859,7 @@ theorem reversed_replay_diverges_on_dead_code_cycle (c : Bool) :
 `Toy/RedGreen/Replay.lean` — `Toy.RedGreen.exhaustive_replay_diverges_on_dead_code_cycle`:
 
 ```lean
+-- lean/Toy/RedGreen/Replay.lean:182-195
 /-- **Checking all recorded dependencies diverges on a dead code-level
 cycle.**  Same instance, exhaustive replay: the incremental fetch of `top` is
 `stuck` at every fuel (early cutoff on or off). -/
@@ -858,6 +887,7 @@ Hypothesis ledger: none (a counterexample card: its theorems are hypothesis-free
 `Toy/RedGreen/Replay.lean` — `Toy.RedGreen.ordered_replay_returns_from_scratch_value_on_dead_dependency`:
 
 ```lean
+-- lean/Toy/RedGreen/Replay.lean:225-232
 /-- **Positive control.**  On the same two instances, ordered replay (early
 cutoff on or off) returns the from-scratch value `0`, and in example D leaves
 the dead dependency `risky` untouched. -/
@@ -889,6 +919,7 @@ Basis: derived (modeling bridge) — the rustc-dev-guide states the in-order req
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.fp_collision_reuses_stale_result`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:27-41
 /-- **A fingerprint collision reuses a stale result.**  Example H: `top`
 returns input `x`, which changes from `1` to `3`; parity fingerprints collide
 on `1` and `3`.  Ordered replay (early cutoff on or off), the same code, a
@@ -909,6 +940,7 @@ theorem fp_collision_reuses_stale_result (c : Bool) :
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.fp_collision_breaks_early_cutoff`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:49-65
 /-- **A collision on a re-executed query breaks early cutoff.**  Example S:
 input fingerprints do not collide (`1 ↦ 1`, `2 ↦ 2`) but `a`'s old and new
 results `11`, `12` collide under `fpSat`.  All other hypotheses of
@@ -931,6 +963,7 @@ theorem fp_collision_breaks_early_cutoff :
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.fp_collision_diverges_although_new_state_terminates`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:95-116
 /-- **A fingerprint collision can make the incremental fetch diverge although
 the new state terminates.**  Under parity fingerprints the change `x : 1 → 3`
 is invisible, so `top` replays its old trace and fetches `a`, which in the new
@@ -958,6 +991,7 @@ theorem fp_collision_diverges_although_new_state_terminates (c : Bool) :
 `Toy/RedGreen/Minimal.lean` — `Toy.RedGreen.fp_collision_reexecutes_query_with_unchanged_recorded_dependencies`:
 
 ```lean
+-- lean/Toy/RedGreen/Minimal.lean:418-429
 /-- **Collision-freedom is needed.**  Example F: `fpCollide13` collides on `1`
 and `3`.  Every other hypothesis holds for `q = top` (its recorded dependency
 `b ↦ 30` is unchanged in the new state), yet fetching `top` executes it: the
@@ -999,6 +1033,7 @@ Basis: derived (modeling bridge) — the rustc-dev-guide names fingerprint colli
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.ambient_dependent_code_matches_no_from_scratch_eval`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:137-158
 /-- **An untracked parameter change makes the incremental result match
 neither rule set.**  Example N: the query code depends on a revision-wide
 parameter that is not a tracked input (`0` when the database was recorded, `1`
@@ -1026,6 +1061,7 @@ theorem ambient_dependent_code_matches_no_from_scratch_eval (c : Bool) :
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.ambient_dependent_code_breaks_early_cutoff`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:181-197
 /-- **An untracked parameter change breaks early cutoff.**  Example M: `top`
 returns `a + noise`; the database was recorded by `rulesM 0`, the revision runs
 `rulesM 1`.  All other hypotheses of
@@ -1048,6 +1084,7 @@ theorem ambient_dependent_code_breaks_early_cutoff :
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.untracked_code_change_diverges_although_new_state_terminates`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:224-245
 /-- **A code change between revisions can make the incremental fetch diverge
 although the new state terminates.**  The database was recorded by
 `rulesOldLoop` (`top` returns `a`); the current code `rulesNewLoop` has
@@ -1097,6 +1134,7 @@ Basis: execution (Lean kernel check) — every theorem named in this card is acc
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.inconsistent_db_reuses_wrong_result`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:258-272
 /-- **An inconsistent database reuses a wrong result.**  Example B: the entry
 for `top` has the right trace but the wrong result `99`, so `odbB` is
 consistent with no input state.  Ordered replay (early cutoff on or off),
@@ -1117,6 +1155,7 @@ theorem inconsistent_db_reuses_wrong_result (c : Bool) :
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.inconsistent_db_breaks_early_cutoff`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:279-292
 /-- **An inconsistent database breaks early cutoff.**  Same database, input
 `x : 1 → 3`: `a` is re-executed and reproduces its fingerprint, so with early
 cutoff the wrong recorded `99` is reused; without it `top` is re-executed and
@@ -1136,6 +1175,7 @@ theorem inconsistent_db_breaks_early_cutoff :
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.inconsistent_db_diverges_although_new_state_terminates`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:307-324
 /-- **An inconsistent database can make the incremental fetch diverge although
 the new state terminates.**  Every entry of `odbLoop` records `top` as its only
 dependency (no input state produces such entries for `rulesZ`, whose queries
@@ -1159,6 +1199,7 @@ theorem inconsistent_db_diverges_although_new_state_terminates (c : Bool) :
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.stale_done_slot_returns_wrong_result`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:387-404
 /-- **Reachability is needed: a stale `done` slot returns a wrong result.**
 The working database `staleDbD` violates `Inv` (a `done` slot holds an entry
 valid only in the old state) and is therefore not reachable from `start odbD`
@@ -1182,6 +1223,7 @@ theorem stale_done_slot_returns_wrong_result (c : Bool) :
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.unreachable_db_diverges_although_new_state_terminates`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:427-444
 /-- **Reachability is needed: an unreachable working database can make the
 fetch diverge.**  Starting from the empty (hence consistent) database, the
 working database `loopDb` (an `old` slot for every query, recording `top` as
@@ -1227,6 +1269,7 @@ Basis: execution (Lean kernel check) — every theorem named in this card is acc
 `Toy/RedGreen/Necessity.lean` — `Toy.RedGreen.cyclic_new_state_both_diverge`:
 
 ```lean
+-- lean/Toy/RedGreen/Necessity.lean:356-374
 /-- **A cyclic new state makes both sides diverge, and agreement still
 holds.**  Example L: `top` fetches itself when `x = 0`.  The database is
 recorded from scratch in the old state (`x = 1`, where `top` terminates);
@@ -1275,6 +1318,7 @@ Basis: derived (modeling bridge) — systems with cycle detection or fixpoint re
 `Toy/RedGreen/Minimal.lean` — `Toy.RedGreen.early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps`:
 
 ```lean
+-- lean/Toy/RedGreen/Minimal.lean:247-263
 /-- **Early cutoff never executes a cached query whose recorded dependencies
 are unchanged.**  For any replay order with early cutoff, collision-free
 fingerprints, and a working database `db₀` satisfying `Inv`: if query `q`
@@ -1297,6 +1341,7 @@ theorem early_cutoff_never_executes_cached_query_with_unchanged_recorded_deps
 `Toy/RedGreen/Minimal.lean` — `Toy.RedGreen.no_cutoff_reexecutes_query_with_unchanged_recorded_dependencies`:
 
 ```lean
+-- lean/Toy/RedGreen/Minimal.lean:324-333
 /-- **Early cutoff is needed.**  Example K with early cutoff off (ordered
 replay): every other hypothesis holds for `q = top`, and fetching `top`
 executes it (its slot becomes `done … true`), because its dependency `a` was
@@ -1312,6 +1357,7 @@ theorem no_cutoff_reexecutes_query_with_unchanged_recorded_dependencies :
 `Toy/RedGreen/Minimal.lean` — `Toy.RedGreen.early_cutoff_reexecutes_query_whose_value_is_unchanged`:
 
 ```lean
+-- lean/Toy/RedGreen/Minimal.lean:336-348
 /-- **Unchanged recorded dependencies are needed — and an unchanged value is
 not enough.**  In example K, take `q = a` with its entry `eKa`: every other
 hypothesis holds, `a`'s recorded dependency `x` changed (`1 → 3`), and fetching
