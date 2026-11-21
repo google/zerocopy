@@ -10,8 +10,12 @@ decoding) are separate hypotheses. The results separate what Rust's *documented*
 for `Option<NonZero*>` (same size as the payload; `None` is all zero bytes; the transmute
 `t -> Some(t)`) imply in the model from what a payload's validity invariant alone does not
 imply (for `bool`-like payloads nothing selects `None`'s byte pattern), and count how many
-extra dataless variants fit in the payload's size (exactly `numInvalid V`). Every theorem
-below is about the model; each connection to Rust is a separately labeled modeling bridge.
+extra dataless variants fit in the payload's size (exactly `numInvalid V`).
+Model–system relation: none proved. Every theorem below is a statement about the model; it
+neither establishes nor refutes the corresponding claims about Rust's option-like enum
+layouts (as laid out by rustc and as documented in `core::option` and `core::result`) or
+about zerocopy's byte-conversion traits; each connection to Rust is a separately labeled
+modeling bridge.
 
 Results (each sentence is the result's plain-language claim, stating its hypotheses):
 
@@ -831,7 +835,7 @@ not a proof. The quoted documentation text is reproduced in `lean/support/README
 * The two conjuncts have different minimal hypotheses: FromBytes does not use the None component of hpin (opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc), the second conjunct is dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_of_numInvalid_le_one_of_decEnc; each tightness counterexample falsifies one conjunct. This theorem is their conjunction. Its depth is shallow, not definitional: both conjuncts rest on the counting argument of opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc, and the same convention labels dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_of_numInvalid_le_one_of_decEnc shallow.
 * Does not say what a nonzero pattern decodes to.
 * Does not establish zerocopy's IntoBytes or Unaligned: the model has no uninitialized or padding bytes and no alignment (Option<NonZeroU32> has alignment 4); IntoBytes for Option<NonZero*> additionally needs that none of its values contains uninitialized bytes.
-* Does not apply to user-defined option-like enums, enums with explicit repr(C)/repr(u*)/repr(i*), or Option<UnsafeCell<NonZero*>>, for which NichePinned is not documented (or false). For Result<T, E> with a 1-ZST, core::result documents the size component of NichePinned but not its None component (zero bytes <-> the dataless variant); for Result<NonZero*, ()> that component follows only inside the model, from the t -> Ok(t) transmute and decode-after-encode (nonePinned_zero_of_nonZero_of_decSomeTransparent_of_decEnc).
+* Does not apply to user-defined option-like enums, enums with explicit repr(C)/repr(u*)/repr(i*), or Option<UnsafeCell<NonZero*>>, for which NichePinned is not documented (or false). For Result<T, E> with a 1-ZST, core::result documents the size component of NichePinned but not its None component (zero bytes <-> the dataless variant); for Result<NonZero*, ()> that component is derived inside the model, from the t -> Ok(t) transmute and decode-after-encode (nonePinned_zero_of_nonZero_of_decSomeTransparent_of_decEnc), and this neither establishes nor refutes that Rust's Result<NonZero*, ()> puts the dataless variant on the zero pattern.
 * Says nothing about payloads with more than one invalid pattern (references, Box, NonNull, fn pointers, bool).
 * The model has no uninitialized bytes, no pointer provenance, no alignment, no padding and no safety invariants; payload values are identified with their unique byte patterns.
 
