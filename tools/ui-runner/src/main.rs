@@ -85,14 +85,24 @@ fn main() {
         .normalize_stderr
         .push((sysroot.as_path().into(), b"$RUSTUP_TOOLCHAIN".to_vec()));
 
-    config.stderr_filter(&workspace_root.display().to_string(), "$$WORKSPACE");
+    // Match these paths as `Path`s rather than via `stderr_filter`, which
+    // compiles its argument as a regex: the backslashes in a Windows path would
+    // be parsed as (invalid) escape sequences. A `Path` is matched exactly, and
+    // has Windows separators and `\\?\` prefixes normalized.
+    let mut path_filters = vec![(workspace_root.clone(), &b"$WORKSPACE"[..])];
     if let Ok(canonical) = std::fs::canonicalize(&workspace_root) {
-        config.stderr_filter(&canonical.display().to_string(), "$$WORKSPACE");
+        path_filters.push((canonical, b"$WORKSPACE"));
     }
-
-    config.stderr_filter(&tests_dir.display().to_string(), "$$DIR");
+    path_filters.push((tests_dir.clone(), b"$DIR"));
     if let Ok(canonical) = std::fs::canonicalize(&tests_dir) {
-        config.stderr_filter(&canonical.display().to_string(), "$$DIR");
+        path_filters.push((canonical, b"$DIR"));
+    }
+    for (path, replacement) in path_filters {
+        config
+            .comment_defaults
+            .base()
+            .normalize_stderr
+            .push((path.as_path().into(), replacement.to_vec()));
     }
 
     if env::args().any(|arg| arg == "--bless") || env::var("BLESS").is_ok() {
