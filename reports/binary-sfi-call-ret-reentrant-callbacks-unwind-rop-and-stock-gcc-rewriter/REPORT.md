@@ -85,7 +85,9 @@ studied in isolation:
    `v4.34.1` kernel (`3,811 ms` fresh replay of `15` constants) and runs at
    **`3,381.28 MiB/s`** vs. **`3,640.63 MiB/s`** native `-O2` (**`+7.67%`
    overhead**, `92.9%` of native throughput) inside a live `4 GiB + 2 * 64 KiB
-   PROT_NONE` Linux `mmap` arena.
+   `PROT_NONE` Linux `mmap` arena.
+
+> **Prefix-Decoding Errata (`FS:`/`GS:`, `0x67`, `0x66`):** In `support/PicMultiFnSfi.lean`, `scanPrefixes` accepted `0x64` (`FS:`), `0x65` (`GS:`), `0x67` (`addr32`), and `0x66` (`op16`) as flat/ignored legacy prefixes under a `fsBase = gsBase = 0` model. On stock Linux processes where `IA32_FS_BASE` (`%fs` TLS) is non-zero, `64 4f 89 04 2e` (`mov %r8, %fs:(%r14,%r13,1)`) passes unpatched `checkSfiPicMultiFn` yet writes outside the `4 GiB` arena envelope; similarly `0x67` truncates effective addresses to 32 bits and `0x66` causes Intel-vs-disassembler `rel16` branch-length desynchronization. Corpus package `x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing` (`PicMultiFnSfiV2.lean`, `sfi_gcc_rewriter_v2.py`) repairs all four prefix classes, adds `--canary-mode=arena_guarded` for `-fstack-protector-strong`, and proves `checkSfiPicMultiFnV2_sound` over all `(fsBase, gsBase : BitVec 64)`.
 
 ## Applicability
 
@@ -348,6 +350,8 @@ solving four real `-O2` code-generation subtleties:
 | `64`-bit OOB offset `0x1_0002_0080`, corrupted return slot, & mid-stream `panic!()` | Unprotected | Confined to `r14 + 0x20080`, confined to Portal `0`, & caught cleanly (`guest_sp = 0xF0000` restored) | `3 / 3` live containment checks passed |
 | Lean `v4.34.1` kernel certificate (`StockGccWorkloadCert`) | N/A | `checkSfiPicMultiFn 2048 stockGccWorkloadImg = true := rfl` (`15` replayed constants in `3,811 ms`) | `0` `sorry`, axioms `{propext, Quot.sound, Classical.choice}` |
 
+*Errata note on legacy prefixes and `-fstack-protector-strong`:* `PicMultiFnSfi.decodeX64` above models flat zero segment bases and unprefixed 64-bit addressing, so `checkSfiPicMultiFn` does not reject `0x64` (`FS:`), `0x65` (`GS:`), `0x67` (`addr32`), or `0x66` (`op16`) branch encodings, and `sfi_gcc_rewriter.py` targeted `-fno-stack-protector` input. For production Ring-3 Linux sandboxing with non-zero `%fs`/`%gs` bases and `-fstack-protector-strong` stack canaries, use `PicMultiFnSfiV2` and `sfi_gcc_rewriter_v2.py` in corpus package `x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing`.
+
 ## Boundaries
 
 The scope of this report is bounded explicitly across the four negative-space
@@ -358,6 +362,7 @@ categories:
   - **Zero-based `and reg32, mask; jmp reg64` indirect branches on Linux:** Proven to jump into `[0, 65536)` and fault whenever `codeBase >= vm.mmap_min_addr` (`legacy_abs32_indirect_jmp_null_page_fault`).
   - **Guest-stack DWARF `.eh_frame` expressions (`DW_CFA_def_cfa_expression` / `DW_CFA_expression`) or `-fno-unwind-tables` frames without a host-anchored Jump-Over FDE:** Proven and demonstrated live to cause Phase-2 control/CSR corruption (`rc = 42`, `r12` clobber) or Phase-1 `_URC_END_OF_STACK` process abort (`error 5`, `SIGABRT`).
   - **Co-locating mutable and immutable zero-copy slices on one `4,096`-byte `PROT_WRITE` page, holding Rust `&[u8]`/`&mut [u8]` across writable SFI calls, or backing `SfiArena` with `Box<[u8]>`:** Proven and demonstrated under Linux `7.1.6` + Miri `0.1.0 -Zmiri-tree-borrows` to cause sub-page write bleed or `Tree Borrows` Undefined Behavior.
+  - **Flat-segment (`fsBase = gsBase = 0`) decoding of `0x64`/`0x65` (`FS:`/`GS:`), `0x67` (`addr32`), or `0x66` (`op16`) inside untrusted SFI bundles:** Unpatched `PicMultiFnSfi.lean` silently ignored `0x64`/`0x65`/`0x67`, allowing `64 4f 89 04 2e` (`mov %r8, %fs:(%r14,%r13,1)`) to escape the `4 GiB` arena on stock glibc Linux threads; repaired in `x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing` (`PicMultiFnSfiV2.lean`).
 - **Unsupported (handled fail-closed by `checkSfiPicMultiFn` or `sfi_gcc_rewriter.py`):**
   - **SIMD/AVX2/FPU/string/atomic memory opcodes and read-modify-write memory ALU ops** (`vmovdqu`, `rep movsb`, `lock cmpxchg`, `addq %rax, (%rdi)`) in `PicMultiFnSfi.decodeX64` and `sfi_gcc_rewriter.py`: compiling with `-fno-tree-vectorize` avoids vector emission for scalar C workloads, and any unhandled instruction fails closed at rewrite time or is rejected (`DecodeFault.unsupported` -> `false`) by `checkSfiPicMultiFn`.
   - **Arbitrary indirect function-pointer calls across multiple external host functions without a dispatch index:** Portal `1` funnels untrusted hostcalls through a single host-controlled `ctx.hostcall_fn` entry point (which can multiplex tagged operations safely on the Rust side).

@@ -1,0 +1,823 @@
+{
+  "emitted_lean_modules": {
+    "VendorArm64Ref/Decode.lean": {
+      "bytes": 28553,
+      "lines": 655,
+      "sha256": "f6c99b7de419bcbd2bf366e538a490e2e3938536b0731836cdad7c5cba7ad7a2"
+    },
+    "VendorArm64Ref/Machine.lean": {
+      "bytes": 3776,
+      "lines": 97,
+      "sha256": "7ddd43a87b810f9f1a507529dfe1e7423d0d160f624d349cd0405f12c86e2b94"
+    },
+    "VendorArm64Ref/SemanticsNeon.lean": {
+      "bytes": 37020,
+      "lines": 832,
+      "sha256": "30c23c039499fc0b22ab79691de6f2ebc215b656400ad98874b7e179b91bbc59"
+    },
+    "VendorArm64Ref/SemanticsScalar.lean": {
+      "bytes": 22195,
+      "lines": 559,
+      "sha256": "b28e3189aee04d32cb3b1897677511da1af2edca3da4b1a68160f2f1ba9f6ede"
+    },
+    "VendorArm64Ref/Types.lean": {
+      "bytes": 11386,
+      "lines": 313,
+      "sha256": "3a492f4cdbf593e462b423e6a024a989ba061a93b5773c7d5f8e65fe9d61b773"
+    }
+  },
+  "opcode_slice": [
+    {
+      "asl_iclass": "addsub_imm_shift_ext",
+      "group": "gp_alu",
+      "opcode": "ADD",
+      "s2n_ctor": "arm_ADD",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "addsub_imm_shift_ext",
+      "group": "gp_alu",
+      "opcode": "ADDS",
+      "s2n_ctor": "arm_ADDS",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "addsub_imm_shift_ext",
+      "group": "gp_alu",
+      "opcode": "SUB",
+      "s2n_ctor": "arm_SUB",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "addsub_imm_shift_ext",
+      "group": "gp_alu",
+      "opcode": "SUBS",
+      "s2n_ctor": "arm_SUBS",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "addsub_carry",
+      "group": "gp_alu",
+      "opcode": "ADC",
+      "s2n_ctor": "arm_ADC",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "addsub_carry",
+      "group": "gp_alu",
+      "opcode": "ADCS",
+      "s2n_ctor": "arm_ADCS",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "addsub_carry",
+      "group": "gp_alu",
+      "opcode": "SBC",
+      "s2n_ctor": "arm_SBC",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "addsub_carry",
+      "group": "gp_alu",
+      "opcode": "SBCS",
+      "s2n_ctor": "arm_SBCS",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "log_imm_shift",
+      "group": "gp_bit_shift",
+      "opcode": "AND",
+      "s2n_ctor": "arm_AND",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "log_imm_shift",
+      "group": "gp_bit_shift",
+      "opcode": "ANDS",
+      "s2n_ctor": "arm_ANDS",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "log_imm_shift",
+      "group": "gp_bit_shift",
+      "opcode": "ORR",
+      "s2n_ctor": "arm_ORR",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "log_shift",
+      "group": "gp_bit_shift",
+      "opcode": "ORN",
+      "s2n_ctor": "arm_ORN",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "log_imm_shift",
+      "group": "gp_bit_shift",
+      "opcode": "EOR",
+      "s2n_ctor": "arm_EOR",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "log_shift",
+      "group": "gp_bit_shift",
+      "opcode": "EON",
+      "s2n_ctor": "arm_EON",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "log_shift",
+      "group": "gp_bit_shift",
+      "opcode": "BIC",
+      "s2n_ctor": "arm_BIC",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "log_shift",
+      "group": "gp_bit_shift",
+      "opcode": "BICS",
+      "s2n_ctor": "arm_BICS",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "movewide",
+      "group": "gp_bit_shift",
+      "opcode": "MOVZ",
+      "s2n_ctor": "arm_MOVZ",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "movewide",
+      "group": "gp_bit_shift",
+      "opcode": "MOVN",
+      "s2n_ctor": "arm_MOVN",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "movewide",
+      "group": "gp_bit_shift",
+      "opcode": "MOVK",
+      "s2n_ctor": "arm_MOVK",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "bitfield",
+      "group": "gp_bit_shift",
+      "opcode": "UBFM",
+      "s2n_ctor": "arm_UBFM",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "bitfield",
+      "group": "gp_bit_shift",
+      "opcode": "SBFM",
+      "s2n_ctor": "arm_SBFM",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "bitfield",
+      "group": "gp_bit_shift",
+      "opcode": "BFM",
+      "s2n_ctor": "arm_BFM",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "extract",
+      "group": "gp_bit_shift",
+      "opcode": "EXTR",
+      "s2n_ctor": "arm_EXTR",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_2src",
+      "group": "gp_bit_shift",
+      "opcode": "LSLV",
+      "s2n_ctor": "arm_LSLV",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_2src",
+      "group": "gp_bit_shift",
+      "opcode": "LSRV",
+      "s2n_ctor": "arm_LSRV",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_2src",
+      "group": "gp_bit_shift",
+      "opcode": "ASRV",
+      "s2n_ctor": "arm_ASRV",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_2src",
+      "group": "gp_bit_shift",
+      "opcode": "RORV",
+      "s2n_ctor": "arm_RORV",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_1src",
+      "group": "gp_mul_div_cond",
+      "opcode": "CLZ",
+      "s2n_ctor": "arm_CLZ",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_1src",
+      "group": "gp_mul_div_cond",
+      "opcode": "REV",
+      "s2n_ctor": "arm_REV",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_3src",
+      "group": "gp_mul_div_cond",
+      "opcode": "MADD",
+      "s2n_ctor": "arm_MADD",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_3src",
+      "group": "gp_mul_div_cond",
+      "opcode": "MSUB",
+      "s2n_ctor": "arm_MSUB",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_3src",
+      "group": "gp_mul_div_cond",
+      "opcode": "SMULH",
+      "s2n_ctor": "arm_SMULH",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_3src",
+      "group": "gp_mul_div_cond",
+      "opcode": "UMULH",
+      "s2n_ctor": "arm_UMULH",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_3src",
+      "group": "gp_mul_div_cond",
+      "opcode": "UMADDL",
+      "s2n_ctor": "arm_UMADDL",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_3src",
+      "group": "gp_mul_div_cond",
+      "opcode": "UMSUBL",
+      "s2n_ctor": "arm_UMSUBL",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "dp_2src_div",
+      "group": "gp_mul_div_cond",
+      "opcode": "UDIV",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "dp_2src_div",
+      "group": "gp_mul_div_cond",
+      "opcode": "SDIV",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "condsel",
+      "group": "gp_mul_div_cond",
+      "opcode": "CSEL",
+      "s2n_ctor": "arm_CSEL",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "condsel",
+      "group": "gp_mul_div_cond",
+      "opcode": "CSINC",
+      "s2n_ctor": "arm_CSINC",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "condsel",
+      "group": "gp_mul_div_cond",
+      "opcode": "CSINV",
+      "s2n_ctor": "arm_CSINV",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "condsel",
+      "group": "gp_mul_div_cond",
+      "opcode": "CSNEG",
+      "s2n_ctor": "arm_CSNEG",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "condcmp",
+      "group": "gp_mul_div_cond",
+      "opcode": "CCMP",
+      "s2n_ctor": "arm_CCMP",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "condcmp",
+      "group": "gp_mul_div_cond",
+      "opcode": "CCMN",
+      "s2n_ctor": "arm_CCMN",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "pcreladdr",
+      "group": "pc_branch_sys",
+      "opcode": "ADR",
+      "s2n_ctor": "arm_ADR",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "pcreladdr",
+      "group": "pc_branch_sys",
+      "opcode": "ADRP",
+      "s2n_ctor": "arm_ADRP",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "branch_imm",
+      "group": "pc_branch_sys",
+      "opcode": "B",
+      "s2n_ctor": "arm_B",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "branch_imm",
+      "group": "pc_branch_sys",
+      "opcode": "BL",
+      "s2n_ctor": "arm_BL",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "condbranch",
+      "group": "pc_branch_sys",
+      "opcode": "Bcond",
+      "s2n_ctor": "arm_Bcond",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "compbranch",
+      "group": "pc_branch_sys",
+      "opcode": "CBZ",
+      "s2n_ctor": "arm_CBZ",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "compbranch",
+      "group": "pc_branch_sys",
+      "opcode": "CBNZ",
+      "s2n_ctor": "arm_CBNZ",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "testbranch",
+      "group": "pc_branch_sys",
+      "opcode": "TBZ",
+      "s2n_ctor": "arm_TBZ",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "testbranch",
+      "group": "pc_branch_sys",
+      "opcode": "TBNZ",
+      "s2n_ctor": "arm_TBNZ",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "branch_reg",
+      "group": "pc_branch_sys",
+      "opcode": "RET",
+      "s2n_ctor": "arm_RET",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "hints",
+      "group": "pc_branch_sys",
+      "opcode": "NOP",
+      "s2n_ctor": "arm_NOP",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "hints_bti",
+      "group": "pc_branch_sys",
+      "opcode": "BTI",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "perm_undef",
+      "group": "pc_branch_sys",
+      "opcode": "UDF",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "ldst_imm_reg",
+      "group": "mem_atomic",
+      "opcode": "LDR",
+      "s2n_ctor": "arm_LDR",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldst_imm_reg",
+      "group": "mem_atomic",
+      "opcode": "STR",
+      "s2n_ctor": "arm_STR",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldst_imm_reg",
+      "group": "mem_atomic",
+      "opcode": "LDRB",
+      "s2n_ctor": "arm_LDRB",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldst_imm_reg",
+      "group": "mem_atomic",
+      "opcode": "STRB",
+      "s2n_ctor": "arm_STRB",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldst_imm_reg",
+      "group": "mem_atomic",
+      "opcode": "LDRH",
+      "s2n_ctor": "arm_LDRH",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldst_imm_reg",
+      "group": "mem_atomic",
+      "opcode": "STRH",
+      "s2n_ctor": "arm_STRH",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldst_imm_reg",
+      "group": "mem_atomic",
+      "opcode": "LDRSB",
+      "s2n_ctor": "arm_LDRSB",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldst_imm_reg",
+      "group": "mem_atomic",
+      "opcode": "LDRSH",
+      "s2n_ctor": "arm_LDRSH",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldstpair",
+      "group": "mem_atomic",
+      "opcode": "LDP",
+      "s2n_ctor": "arm_LDP",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldstpair",
+      "group": "mem_atomic",
+      "opcode": "STP",
+      "s2n_ctor": "arm_STP",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldstexcl_lar",
+      "group": "mem_atomic",
+      "opcode": "LDAR",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "ldstexcl_slr",
+      "group": "mem_atomic",
+      "opcode": "STLR",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "ldstexcl",
+      "group": "mem_atomic",
+      "opcode": "LDAXR",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "ldstexcl",
+      "group": "mem_atomic",
+      "opcode": "STLXR",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "barriers_clrex",
+      "group": "mem_atomic",
+      "opcode": "CLREX",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "dp_2src_crc32",
+      "group": "crc32",
+      "opcode": "CRC32_BHWX",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "dp_2src_crc32c",
+      "group": "crc32",
+      "opcode": "CRC32C_BHWX",
+      "s2n_ctor": null,
+      "s2n_decode": false
+    },
+    {
+      "asl_iclass": "asimdimm_copy",
+      "group": "neon_move",
+      "opcode": "MOVI_DUP_FMOV_UMOV_INS",
+      "s2n_ctor": "arm_MOVI",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "ldst_simd",
+      "group": "neon_move",
+      "opcode": "LDR_STR_LDP_STP_SIMD",
+      "s2n_ctor": "arm_LDR",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "asimdsame_arith",
+      "group": "neon_alu",
+      "opcode": "ADD_SUB_SAT_VEC",
+      "s2n_ctor": "arm_ADD_VEC",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "asimdsame_logic",
+      "group": "neon_alu",
+      "opcode": "AND_BIC_ORR_EOR_BSL_BIT_BIF_VEC",
+      "s2n_ctor": "arm_AND_VEC",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "asimdsame_cmp",
+      "group": "neon_cmp",
+      "opcode": "CMEQ_CMGT_CMHI_CMGE_CMLT0_VEC",
+      "s2n_ctor": "arm_CMGT_VEC",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "asimdshf_var",
+      "group": "neon_shift",
+      "opcode": "SHL_USHR_SSHR_USHL_SSHL_VEC",
+      "s2n_ctor": "arm_USHL_VEC",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "asimdmisc_perm",
+      "group": "neon_perm",
+      "opcode": "REV64_EXT_TBL1_CNT_VEC",
+      "s2n_ctor": "arm_REV64_VEC",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "asimdall",
+      "group": "neon_reduce",
+      "opcode": "ADDP_UADDLP_UADDLV_ADDV_UMAXV_UMINV",
+      "s2n_ctor": "arm_UADDLV",
+      "s2n_decode": true
+    },
+    {
+      "asl_iclass": "crypto_aes_sha",
+      "group": "neon_crypto",
+      "opcode": "PMUL_PMULL_AES_SHA256_SHA512",
+      "s2n_ctor": "arm_AESE",
+      "s2n_decode": true
+    }
+  ],
+  "upstream": {
+    "decode_ml_bitmatch_arm_count": 228,
+    "decode_ml_distinct_arm_target_count": 221,
+    "instruction_ml_arm_semantic_def_count": 229,
+    "opcode_slice_entry_count": 82,
+    "raw_s2n_source_verified_gaps": {
+      "assigns_entirety_defs": [
+        {
+          "def": "arm_LDR",
+          "line": 2945
+        },
+        {
+          "def": "arm_STR",
+          "line": 2960
+        },
+        {
+          "def": "arm_LDRB",
+          "line": 2975
+        },
+        {
+          "def": "arm_STRB",
+          "line": 2989
+        },
+        {
+          "def": "arm_LDRH",
+          "line": 3003
+        },
+        {
+          "def": "arm_STRH",
+          "line": 3017
+        },
+        {
+          "def": "arm_LDRSB",
+          "line": 3031
+        },
+        {
+          "def": "arm_LDRSH",
+          "line": 3045
+        },
+        {
+          "def": "arm_LDP",
+          "line": 3069
+        },
+        {
+          "def": "arm_STP",
+          "line": 3088
+        },
+        {
+          "def": "arm_LDP4",
+          "line": 3108
+        },
+        {
+          "def": "arm_STP4",
+          "line": 3137
+        },
+        {
+          "def": "arm_LD2",
+          "line": 3252
+        },
+        {
+          "def": "arm_ST2",
+          "line": 3293
+        },
+        {
+          "def": "arm_LD1R",
+          "line": 3323
+        },
+        {
+          "def": "arm_LD3",
+          "line": 3357
+        },
+        {
+          "def": "arm_ST3",
+          "line": 3380
+        },
+        {
+          "def": "arm_LDP3",
+          "line": 3405
+        },
+        {
+          "def": "arm_STP3",
+          "line": 3429
+        },
+        {
+          "def": "arm_LD1_LANE",
+          "line": 3454
+        },
+        {
+          "def": "arm_ST1_LANE",
+          "line": 3482
+        }
+      ],
+      "assigns_entirety_on_unpredictable_ldst_count": 21,
+      "omits_cmeq_uqadd_uqsub_sshl_bsl_addp_uminv": true,
+      "omits_ldar_stlr_ldaxr_stlxr_clrex_crc32_udiv_sdiv_udf": true,
+      "partial_neon_64bit_q0_rejections": [
+        {
+          "line": 1036,
+          "source": "if ~q then NONE // datasize = 64 is unsupported yet"
+        },
+        {
+          "line": 1044,
+          "source": "if ~q then NONE // datasize = 64 is unsupported yet"
+        },
+        {
+          "line": 1321,
+          "source": "if ~q then NONE // datasize = 128 is unsupported yet"
+        },
+        {
+          "line": 1530,
+          "source": "if ~q then NONE // datasize = 64 is unsupported yet"
+        },
+        {
+          "line": 1537,
+          "source": "if ~q then NONE // datasize = 64 is unsupported yet"
+        }
+      ],
+      "pc_minus_4_compensation_defs": [
+        {
+          "def": "arm_ADR",
+          "line": 748
+        },
+        {
+          "def": "arm_ADRP",
+          "line": 753
+        },
+        {
+          "def": "arm_B",
+          "line": 802
+        },
+        {
+          "def": "arm_BL",
+          "line": 877
+        },
+        {
+          "def": "arm_BL_ABSOLUTE",
+          "line": 886
+        },
+        {
+          "def": "arm_Bcond",
+          "line": 898
+        },
+        {
+          "def": "arm_CBNZ",
+          "line": 907
+        },
+        {
+          "def": "arm_CBZ",
+          "line": 916
+        },
+        {
+          "def": "arm_TBNZ",
+          "line": 930
+        },
+        {
+          "def": "arm_TBZ",
+          "line": 939
+        },
+        {
+          "def": "arm_RET",
+          "line": 1395
+        }
+      ],
+      "pre_increment_pc_plus_4_in_arm_ml": true,
+      "umov_rejects_byte_and_half_lanes_line_1494": true
+    },
+    "s2n_commit": "d4518712d040485efe621caba1c723a07fbc549e",
+    "verified_blobs": {
+      "arm.ml": {
+        "git_blob_sha1": "8084bff141e0b0acd81f7b38705990cb3c6b6cfa",
+        "sha256": "9b941504b20707f5494ac7c0eff32763b3063ca28acf6c23fc01c6bdba329aa9",
+        "size_bytes": 67256,
+        "upstream_path": "arm/proofs/arm.ml"
+      },
+      "common_aes.ml": {
+        "git_blob_sha1": "520c48a50f87d7669e42cc154d120c1fae024f29",
+        "sha256": "157fcb948e7bd2cb054d13a8cd70034b39319db94db1fbf43720c44942e59b33",
+        "size_bytes": 21668,
+        "upstream_path": "common/aes.ml"
+      },
+      "decode.ml": {
+        "git_blob_sha1": "d71476c172132a05ea5130eee00017e1b5e5dd66",
+        "sha256": "5971467994ebb7fcb1666c9f6922086b8823c98cda5daaff1f523da3fd4fd34a",
+        "size_bytes": 111754,
+        "upstream_path": "arm/proofs/decode.ml"
+      },
+      "instruction.ml": {
+        "git_blob_sha1": "ef9be01f4e078ed0c58da94861c57335046f803e",
+        "sha256": "1f0cabebd2b546a894d4d689d70fbbae7eda893c6408edad0ee62d75b531a7ef",
+        "size_bytes": 181272,
+        "upstream_path": "arm/proofs/instruction.ml"
+      },
+      "neon_helper.ml": {
+        "git_blob_sha1": "afa2e916317034cb833026f698356014d8f6f0d9",
+        "sha256": "878525eff5403eaa3e96eed93aec4de16bf24e362230afcf1a5e67ffb52dbef6",
+        "size_bytes": 39686,
+        "upstream_path": "arm/proofs/neon_helper.ml"
+      },
+      "sha256.ml": {
+        "git_blob_sha1": "a4a56982f38ca626f23ef4fe7538c3a1e1122307",
+        "sha256": "1cbcac61209414a635f75b9b5f672c2c6f60e6c9599b7cc38f9905a56f777df2",
+        "size_bytes": 12501,
+        "upstream_path": "arm/proofs/sha256.ml"
+      },
+      "sha512.ml": {
+        "git_blob_sha1": "918a24d3caf47a5cf64a2a24efde0010ee4f03c4",
+        "sha256": "0896d34cb8545bc699d08c3d7936d6fa8b45abcdf63f2c820df626b1e7dbb09c",
+        "size_bytes": 11550,
+        "upstream_path": "arm/proofs/sha512.ml"
+      },
+      "simulator_iclasses.ml": {
+        "git_blob_sha1": "281b03c2cc1f571b04663d1ddfc9cd08de2cff3a",
+        "sha256": "31141a73a4e768054f1bb09f10dd8819767cbacdbd86807c236b611612c0d246",
+        "size_bytes": 29160,
+        "upstream_path": "arm/proofs/simulator_iclasses.ml"
+      }
+    }
+  }
+}

@@ -1,0 +1,1879 @@
+{
+  "gc_relax_icf_composition": {
+    "manifest_rewritten_count": 10,
+    "riscv64gc_gc_relax_icf_outcomes": {
+      "ld.mold_2.42.1": {
+        "icf_folded_twins": true,
+        "live_accepted_count": 5,
+        "live_span_lengths": [
+          4,
+          2,
+          4,
+          10,
+          6
+        ],
+        "live_va_diffs_match_add_sub_span_len": true,
+        "qemu_rc": 0,
+        "tombstoned_count": 5,
+        "total_emitted_records": 10,
+        "twin_a_va": "0x201300",
+        "twin_b_va": null
+      },
+      "rust-lld_21.1.8": {
+        "icf_folded_twins": true,
+        "live_accepted_count": 5,
+        "live_span_lengths": [
+          4,
+          2,
+          4,
+          10,
+          6
+        ],
+        "live_va_diffs_match_add_sub_span_len": true,
+        "qemu_rc": 0,
+        "tombstoned_count": 5,
+        "total_emitted_records": 10,
+        "twin_a_va": "0x11200",
+        "twin_b_va": "0x11200"
+      },
+      "rust-lld_23.1.1": {
+        "icf_folded_twins": true,
+        "live_accepted_count": 5,
+        "live_span_lengths": [
+          4,
+          2,
+          4,
+          10,
+          6
+        ],
+        "live_va_diffs_match_add_sub_span_len": true,
+        "qemu_rc": 0,
+        "tombstoned_count": 5,
+        "total_emitted_records": 10,
+        "twin_a_va": "0x11200",
+        "twin_b_va": "0x11200"
+      },
+      "rust-lld_23.1.5": {
+        "icf_folded_twins": true,
+        "live_accepted_count": 5,
+        "live_span_lengths": [
+          4,
+          2,
+          4,
+          10,
+          6
+        ],
+        "live_va_diffs_match_add_sub_span_len": true,
+        "qemu_rc": 0,
+        "tombstoned_count": 5,
+        "total_emitted_records": 10,
+        "twin_a_va": "0x11200",
+        "twin_b_va": "0x11200"
+      }
+    },
+    "unannotated_icf_leader_probe": {
+      "rust_follower_live_sym_va": "0x201120",
+      "surviving_debug_records": 0,
+      "unannotated_absorption_detected_by_sym_coverage_gate": true
+    }
+  },
+  "gc_sections_fracture_and_tombstone_matrix": {
+    "isa_linker_matrix": {
+      "aarch64": {
+        "ld.mold_2.42.1": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=x0|in1=x1",
+              "end_va": "0xc",
+              "in_exec_pt_load": false,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x4",
+              "va_diff": 8
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|out0=x0",
+              "end_va": "0x210218",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "000080d2",
+              "span_len_field": 4,
+              "start_va": "0x210214",
+              "va_diff": 4
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=x0|in1=x1",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|out0=x0",
+              "end_va": "0x210218",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "000080d2",
+              "span_len_field": 4,
+              "start_va": "0x210214",
+              "va_diff": 4
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_21.1.8": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=x0|in1=x1",
+              "end_va": "0xc",
+              "in_exec_pt_load": false,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x4",
+              "va_diff": 8
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|out0=x0",
+              "end_va": "0x210128",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "000080d2",
+              "span_len_field": 4,
+              "start_va": "0x210124",
+              "va_diff": 4
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=x0|in1=x1",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|out0=x0",
+              "end_va": "0x210128",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "000080d2",
+              "span_len_field": 4,
+              "start_va": "0x210124",
+              "va_diff": 4
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_23.1.1": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=x0|in1=x1",
+              "end_va": "0xc",
+              "in_exec_pt_load": false,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x4",
+              "va_diff": 8
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|out0=x0",
+              "end_va": "0x210128",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "000080d2",
+              "span_len_field": 4,
+              "start_va": "0x210124",
+              "va_diff": 4
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=x0|in1=x1",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|out0=x0",
+              "end_va": "0x210128",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "000080d2",
+              "span_len_field": 4,
+              "start_va": "0x210124",
+              "va_diff": 4
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_23.1.5": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=x0|in1=x1",
+              "end_va": "0xc",
+              "in_exec_pt_load": false,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x4",
+              "va_diff": 8
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|out0=x0",
+              "end_va": "0x210128",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "000080d2",
+              "span_len_field": 4,
+              "start_va": "0x210124",
+              "va_diff": 4
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=x0|in1=x1",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|out0=x0",
+              "end_va": "0x210128",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "000080d2",
+              "span_len_field": 4,
+              "start_va": "0x210124",
+              "va_diff": 4
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        }
+      },
+      "riscv64gc_norelax": {
+        "ld.mold_2.42.1": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x20121e",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "97000000e780a0ff",
+              "span_len_field": 8,
+              "start_va": "0x201216",
+              "va_diff": 8
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x20121e",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "97000000e780a0ff",
+              "span_len_field": 8,
+              "start_va": "0x201216",
+              "va_diff": 8
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_21.1.8": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112e",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "97000000e780a0ff",
+              "span_len_field": 8,
+              "start_va": "0x11126",
+              "va_diff": 8
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112e",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "97000000e780a0ff",
+              "span_len_field": 8,
+              "start_va": "0x11126",
+              "va_diff": 8
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_23.1.1": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112e",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "97000000e780a0ff",
+              "span_len_field": 8,
+              "start_va": "0x11126",
+              "va_diff": 8
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112e",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "97000000e780a0ff",
+              "span_len_field": 8,
+              "start_va": "0x11126",
+              "va_diff": 8
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_23.1.5": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112e",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "97000000e780a0ff",
+              "span_len_field": 8,
+              "start_va": "0x11126",
+              "va_diff": 8
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 8,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112e",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "97000000e780a0ff",
+              "span_len_field": 8,
+              "start_va": "0x11126",
+              "va_diff": 8
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        }
+      },
+      "riscv64gc_relax": {
+        "ld.mold_2.42.1": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 0,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x20121a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "eff0bfff",
+              "span_len_field": 4,
+              "start_va": "0x201216",
+              "va_diff": 4
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 0,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x20121a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "eff0bfff",
+              "span_len_field": 4,
+              "start_va": "0x201216",
+              "va_diff": 4
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_21.1.8": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 0,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "eff0bfff",
+              "span_len_field": 4,
+              "start_va": "0x11126",
+              "va_diff": 4
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 0,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "eff0bfff",
+              "span_len_field": 4,
+              "start_va": "0x11126",
+              "va_diff": 4
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_23.1.1": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 0,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "eff0bfff",
+              "span_len_field": 4,
+              "start_va": "0x11126",
+              "va_diff": 4
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 0,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "eff0bfff",
+              "span_len_field": 4,
+              "start_va": "0x11126",
+              "va_diff": 4
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_23.1.5": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 0,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "eff0bfff",
+              "span_len_field": 4,
+              "start_va": "0x11126",
+              "va_diff": 4
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|clob=ra",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 0,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|clob=ra",
+              "end_va": "0x1112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "eff0bfff",
+              "span_len_field": 4,
+              "start_va": "0x11126",
+              "va_diff": 4
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        }
+      },
+      "x86_64": {
+        "ld.bfd_2.47": {
+          "anneal_asm_sites_bytes": 0,
+          "anneal_asm_sites_records": [],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x40100a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x401007",
+              "va_diff": 3
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "ld.mold_2.42.1": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x7",
+              "in_exec_pt_load": false,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x4",
+              "va_diff": 3
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20121a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201217",
+              "va_diff": 3
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20121a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201217",
+              "va_diff": 3
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_21.1.8": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x7",
+              "in_exec_pt_load": false,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x4",
+              "va_diff": 3
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201127",
+              "va_diff": 3
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201127",
+              "va_diff": 3
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_23.1.1": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x7",
+              "in_exec_pt_load": false,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x4",
+              "va_diff": 3
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201127",
+              "va_diff": 3
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201127",
+              "va_diff": 3
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_23.1.5": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x7",
+              "in_exec_pt_load": false,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x4",
+              "va_diff": 3
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201127",
+              "va_diff": 3
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x0",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x0",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201127",
+              "va_diff": 3
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        },
+        "rust-lld_23.1.5_z_uint64_max": {
+          "anneal_asm_sites_bytes": 112,
+          "anneal_asm_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0x7",
+              "in_exec_pt_load": false,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0x4",
+              "va_diff": 3
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201127",
+              "va_diff": 3
+            }
+          ],
+          "debug_anneal_sites_bytes": 112,
+          "debug_anneal_sites_in_pt_load": false,
+          "debug_anneal_sites_records": [
+            {
+              "accepted_live": false,
+              "desc": "n0|site=1111|inout0=rdi|in1=rsi",
+              "end_va": "0xffffffffffffffff",
+              "in_exec_pt_load": false,
+              "is_tombstone": true,
+              "relocs": [],
+              "site_id": 4369,
+              "slice_hex": "",
+              "span_len_field": 3,
+              "start_va": "0xffffffffffffffff",
+              "va_diff": 0
+            },
+            {
+              "accepted_live": true,
+              "desc": "n0|site=2222|inout0=rdi",
+              "end_va": "0x20112a",
+              "in_exec_pt_load": true,
+              "is_tombstone": false,
+              "relocs": [],
+              "site_id": 8738,
+              "slice_hex": "4831ff",
+              "span_len_field": 3,
+              "start_va": "0x201127",
+              "va_diff": 3
+            }
+          ],
+          "debug_live_accepted_ids": [
+            8738
+          ]
+        }
+      }
+    },
+    "post_verify_objcopy_strip_clean": true,
+    "shf_link_order": {
+      "directional_label_invalid_sym_err": true,
+      "directional_label_llvm_mc_rc": 1,
+      "mold_ignores_nonalloc_shf_link_order_gc": true,
+      "mold_retained_phantom_span": [
+        "0x1",
+        "0x5"
+      ],
+      "named_L_label_dup_err": true,
+      "named_L_label_unroll_rc": 1
+    }
+  },
+  "lto_cross_isa_text_parity": {
+    "1.99.1": {
+      "aarch64_N5000": {
+        "fat": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 5000,
+          "off": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "off": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 5000,
+          "off": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "thin": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 5000,
+          "off": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "tombstoned_dead_sites": 1
+        }
+      },
+      "riscv64gc_N900": {
+        "fat": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 900,
+          "off": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "off": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 900,
+          "off": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "thin": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 900,
+          "off": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "tombstoned_dead_sites": 1
+        }
+      },
+      "x86_64_N35": {
+        "fat": {
+          "debug_tombstone_cr": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 35,
+          "off": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "off": {
+          "debug_tombstone_cr": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 35,
+          "off": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "thin": {
+          "debug_tombstone_cr": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 35,
+          "off": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "tombstoned_dead_sites": 1
+        }
+      }
+    },
+    "nightly": {
+      "aarch64_N5000": {
+        "fat": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 5000,
+          "off": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "off": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 5000,
+          "off": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "thin": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 5000,
+          "off": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "tombstoned_dead_sites": 1
+        }
+      },
+      "riscv64gc_N900": {
+        "fat": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 900,
+          "off": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "off": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 900,
+          "off": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "thin": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 900,
+          "off": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "tombstoned_dead_sites": 1
+        }
+      },
+      "x86_64_N35": {
+        "fat": {
+          "debug_tombstone_cr": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 35,
+          "off": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "off": {
+          "debug_tombstone_cr": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 35,
+          "off": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "thin": {
+          "debug_tombstone_cr": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 35,
+          "off": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "tombstoned_dead_sites": 1
+        }
+      }
+    },
+    "nightly-2026-06-01": {
+      "aarch64_N5000": {
+        "fat": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 5000,
+          "off": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "off": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 5000,
+          "off": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "thin": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 5000,
+          "off": {
+            "head8_hex": "6071023621040091",
+            "sha256_16": "49f465c24c436c2d",
+            "text_bytes": 20020
+          },
+          "tombstoned_dead_sites": 1
+        }
+      },
+      "riscv64gc_N900": {
+        "fat": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 900,
+          "off": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "off": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 900,
+          "off": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "thin": {
+          "debug_tombstone_cr": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 900,
+          "off": {
+            "head8_hex": "6308057085058505",
+            "sha256_16": "e2612ad493252f3b",
+            "text_bytes": 1812
+          },
+          "tombstoned_dead_sites": 1
+        }
+      },
+      "x86_64_N35": {
+        "fat": {
+          "debug_tombstone_cr": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 35,
+          "off": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "off": {
+          "debug_tombstone_cr": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 35,
+          "off": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "tombstoned_dead_sites": 1
+        },
+        "thin": {
+          "debug_tombstone_cr": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "exact_sha256_parity": true,
+          "expected_live_matched": true,
+          "live_attested_sites": 35,
+          "off": {
+            "head8_hex": "4889f04885ff7401",
+            "sha256_16": "7c10a51c64871f96",
+            "text_bytes": 150
+          },
+          "tombstoned_dead_sites": 1
+        }
+      }
+    }
+  },
+  "stdarch_extern_queries_and_writeeflags": {
+    "extern_queries_capture_and_parity": {
+      "1.99.1": {
+        "dual_query_captured_all_7_stdarch_expansions": true,
+        "dual_query_exact_text_sha256_parity": true,
+        "local_only_missed_all_stdarch": true,
+        "no_double_wrapping_of_upstream_rmeta": true,
+        "runs": {
+          "dual_query_v2": {
+            "core_stdarch_live_records": 7,
+            "exec_rc": 0,
+            "live_records_total": 9,
+            "manifest_foreign_core_sites": [
+              "core::std::arch::x86_64::_mm_stream_si64",
+              "core::std::arch::x86_64::__readeflags",
+              "core::std::arch::x86_64::__cpuid_count",
+              "core::std::arch::x86_64::__writeeflags",
+              "core::std::arch::x86_64::_bittestandset64",
+              "core::std::arch::x86_64::_mm256_stream_si256"
+            ],
+            "text_bytes": 239281,
+            "text_sha256_16": "2f2e238f410ba356",
+            "tombstoned_dead_records": 1,
+            "upstream_rmeta_nonce_preserved_records": 1
+          },
+          "local_only": {
+            "core_stdarch_live_records": 0,
+            "exec_rc": 0,
+            "live_records_total": 3,
+            "manifest_foreign_core_sites": [],
+            "text_bytes": 239281,
+            "text_sha256_16": "2f2e238f410ba356",
+            "tombstoned_dead_records": 0,
+            "upstream_rmeta_nonce_preserved_records": 1
+          },
+          "off": {
+            "core_stdarch_live_records": 0,
+            "exec_rc": 0,
+            "live_records_total": 0,
+            "manifest_foreign_core_sites": [],
+            "text_bytes": 239281,
+            "text_sha256_16": "2f2e238f410ba356",
+            "tombstoned_dead_records": 0,
+            "upstream_rmeta_nonce_preserved_records": 0
+          }
+        },
+        "rustc_default_gc_bfd_strips_non_debug_anneal_sites_to_zero": true
+      },
+      "nightly": {
+        "dual_query_captured_all_7_stdarch_expansions": true,
+        "dual_query_exact_text_sha256_parity": true,
+        "local_only_missed_all_stdarch": true,
+        "no_double_wrapping_of_upstream_rmeta": true,
+        "runs": {
+          "dual_query_v2": {
+            "core_stdarch_live_records": 7,
+            "exec_rc": 0,
+            "live_records_total": 9,
+            "manifest_foreign_core_sites": [
+              "core::std::arch::x86_64::__readeflags",
+              "core::std::arch::x86_64::_bittestandset64",
+              "core::std::arch::x86_64::__writeeflags",
+              "core::std::arch::x86_64::_mm_stream_si64",
+              "core::std::arch::x86_64::_mm256_stream_si256",
+              "core::std::arch::x86_64::__cpuid_count"
+            ],
+            "text_bytes": 239345,
+            "text_sha256_16": "5e5536281dd5b040",
+            "tombstoned_dead_records": 1,
+            "upstream_rmeta_nonce_preserved_records": 1
+          },
+          "local_only": {
+            "core_stdarch_live_records": 0,
+            "exec_rc": 0,
+            "live_records_total": 3,
+            "manifest_foreign_core_sites": [],
+            "text_bytes": 239345,
+            "text_sha256_16": "5e5536281dd5b040",
+            "tombstoned_dead_records": 0,
+            "upstream_rmeta_nonce_preserved_records": 1
+          },
+          "off": {
+            "core_stdarch_live_records": 0,
+            "exec_rc": 0,
+            "live_records_total": 0,
+            "manifest_foreign_core_sites": [],
+            "text_bytes": 239345,
+            "text_sha256_16": "5e5536281dd5b040",
+            "tombstoned_dead_records": 0,
+            "upstream_rmeta_nonce_preserved_records": 0
+          }
+        },
+        "rustc_default_gc_bfd_strips_non_debug_anneal_sites_to_zero": true
+      },
+      "nightly-2026-06-01": {
+        "dual_query_captured_all_7_stdarch_expansions": true,
+        "dual_query_exact_text_sha256_parity": true,
+        "local_only_missed_all_stdarch": true,
+        "no_double_wrapping_of_upstream_rmeta": true,
+        "runs": {
+          "dual_query_v2": {
+            "core_stdarch_live_records": 7,
+            "exec_rc": 0,
+            "live_records_total": 9,
+            "manifest_foreign_core_sites": [
+              "core::std::arch::x86_64::_mm256_stream_si256",
+              "core::std::arch::x86_64::__writeeflags",
+              "core::std::arch::x86_64::__readeflags",
+              "core::std::arch::x86_64::_bittestandset64",
+              "core::std::arch::x86_64::_mm_stream_si64",
+              "core::std::arch::x86_64::__cpuid_count"
+            ],
+            "text_bytes": 248570,
+            "text_sha256_16": "7f268e0262a3b09a",
+            "tombstoned_dead_records": 1,
+            "upstream_rmeta_nonce_preserved_records": 1
+          },
+          "local_only": {
+            "core_stdarch_live_records": 0,
+            "exec_rc": 0,
+            "live_records_total": 3,
+            "manifest_foreign_core_sites": [],
+            "text_bytes": 248570,
+            "text_sha256_16": "7f268e0262a3b09a",
+            "tombstoned_dead_records": 0,
+            "upstream_rmeta_nonce_preserved_records": 1
+          },
+          "off": {
+            "core_stdarch_live_records": 0,
+            "exec_rc": 0,
+            "live_records_total": 0,
+            "manifest_foreign_core_sites": [],
+            "text_bytes": 248570,
+            "text_sha256_16": "7f268e0262a3b09a",
+            "tombstoned_dead_records": 0,
+            "upstream_rmeta_nonce_preserved_records": 0
+          }
+        },
+        "rustc_default_gc_bfd_strips_non_debug_anneal_sites_to_zero": true
+      }
+    },
+    "stdarch_census": {
+      "1.99.1": {
+        "all_marked_inline": true,
+        "arm_shared_sites": 4,
+        "by_arch_dir": {
+          "arm_shared": 4,
+          "loongarch64": 1,
+          "loongarch_shared": 2,
+          "riscv64": 5,
+          "riscv_shared": 146,
+          "x86": 34,
+          "x86_64": 5
+        },
+        "riscv_total_sites": 151,
+        "total_stdarch_sites": 197,
+        "x86_plus_x86_64_sites": 39
+      },
+      "nightly": {
+        "all_marked_inline": true,
+        "arm_shared_sites": 4,
+        "by_arch_dir": {
+          "arm_shared": 4,
+          "loongarch64": 1,
+          "loongarch_shared": 2,
+          "riscv64": 5,
+          "riscv_shared": 146,
+          "x86": 34,
+          "x86_64": 5
+        },
+        "riscv_total_sites": 151,
+        "total_stdarch_sites": 197,
+        "x86_plus_x86_64_sites": 39
+      },
+      "nightly-2026-06-01": {
+        "all_marked_inline": true,
+        "arm_shared_sites": 4,
+        "by_arch_dir": {
+          "arm_shared": 4,
+          "loongarch64": 1,
+          "loongarch_shared": 2,
+          "riscv64": 5,
+          "riscv_shared": 146,
+          "x86": 34,
+          "x86_64": 5
+        },
+        "riscv_total_sites": 151,
+        "total_stdarch_sites": 197,
+        "x86_plus_x86_64_sites": 39
+      }
+    }
+  }
+}

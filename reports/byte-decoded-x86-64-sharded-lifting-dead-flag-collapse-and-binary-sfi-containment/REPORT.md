@@ -73,6 +73,8 @@ architectural collapses plus a loop-invariant-free second verification mode:
    CPU** (**`63.90 s` parallel critical path**, `0.306 s` top composition,
    `136,684 ms` private kernel replay).
 
+> **Prefix-Decoding Errata (`FS:`/`GS:`, `0x67`, `0x66`):** `ByteX86.decodeX64` (`support/ByteX86Base.lean`) scanned `0x64` (`FS:`), `0x65` (`GS:`), and `0x67` (`addr32`) as no-op legacy prefixes under a flat `fsBase = gsBase = 0` address calculation, and omitted `0x66` (`op16`) `±2`-byte `%rsp` adjustments on `PUSH`/`POP`/`LEAVE`. Consequently, `%fs:0x28` stack-canary reads (`-fstack-protector-strong` / `-Z stack-protector=all`) would mis-decode as flat `[0x28]`, `0x67` memory instructions would ignore 32-bit effective-address truncation, and `64`/`65` stores would bypass `ByteX86Sfi.checkSfiObject` on Linux threads with non-zero `%fs`/`%gs`. Corpus package `x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing` (`RealX64PrefixSem.lean`, `StackCanaryLiftV2.lean`, `PicMultiFnSfiV2.lean`, `ByteX86Pass2CorrespondenceV2.lean`) repairs all four prefix families and mechanizes `PrivateStackCanarySep` lifting over arbitrary `(fsBase, gsBase : BitVec 64)`.
+
 ## Applicability
 
 The findings in this report govern the design and scaling of machine-code
@@ -193,7 +195,7 @@ Three immediate TCB rules follow from these hardware observations:
    unsound; `stepPrefix` (`ByteX86Base.lean:356–363`) resets `rex := none`
    whenever any legacy prefix (`0xF0, 0xF2, 0xF3, 0x66, 0x67, 0x2E, 0x3E, ...`)
    is scanned after a `REX` byte, and `parseExactBody` rejects VEX (`0xC4`/`0xC5`)
-   whenever `ps.has66 || ps.rep != .none || ps.rex.isSome || ps.hasLock`.
+   whenever `ps.has66 || ps.rep != .none || ps.rex.isSome || ps.hasLock`. *(Errata: `stepPrefix` in `ByteX86Base.lean` did not propagate `0x64`/`0x65` `FS:`/`GS:` segment overrides, `0x67` `addr32` effective-address truncation, or `0x66` `d64` `PUSH`/`POP`/`LEAVE` operand-size overrides (`REX.W` precedence: `66 48 50` = 8B push vs. `48 66 50` = 2B push) into `X64Instr`; see corpus package `x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing` for the repaired silicon-certified prefix semantics.)*
 3. **Deterministic `ZF = (result == 0)` models for `IMUL` are unsound on real
    Intel hardware.** On `rax = 0, rsi = 7`, `imul rax, rsi` writes `0` to `rax`
    while leaving `ZF = 0` (`efl6 = 0x004`) on Ice Lake-SP. Theorem
@@ -627,7 +629,7 @@ Verification Architecture** over a single shared x86-64 decoder and machine TCB
     validation and `vzeroupper`), string instructions (`rep movsb`/`stosb`),
     `syscall`, segment-base (`%fs`/`%gs`) TLS loads, and sub-64-bit memory stores
     other than the modeled 32/64-bit forms are unsupported in the prototype and
-    require incremental `candidate:<feature>` opcode additions.
+    require incremental `candidate:<feature>` opcode additions. *(Errata: in `ByteX86Base.lean`, `0x64` (`FS:`), `0x65` (`GS:`), and `0x67` (`addr32`) were accepted as ignored prefixes by `stepPrefix` rather than rejected with `.fault .unsupported`, so `%fs:0x28` canary loads and `%fs:` SFI stores decoded as flat 64-bit accesses instead of failing closed; `x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing` models `fsBase`/`gsBase`, `0x67`, and `0x66` explicitly and rejects them in `checkSfiPicMultiFnV2`.)*
   - `PrivateStackSep` (`collapseOneInstr`) rejects functions that pass `&local`
     to an external callee or store an `rsp`-derived pointer into memory/GPRs
     (exposed stack frames); exposed frames require explicit Kripke region or

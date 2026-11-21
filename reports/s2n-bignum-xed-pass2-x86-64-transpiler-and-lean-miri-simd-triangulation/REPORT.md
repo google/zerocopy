@@ -87,6 +87,8 @@ yields four empirically and mechanically verified results:
    `vxorps xmm0, xmm0, xmm0` and `_mm256_permute2x128_si256::<0x81>` $\to$
    `vextractf128 xmm0, ymm0, 0x1`).
 
+> **Prefix-Decoding Errata (`hasSegOr67` Correlated Blind Spot):** In `support/VendorX86Ref/Decode.lean`, `scanPrefixes` collapsed `{0x2E, 0x36, 0x3E, 0x26, 0x64, 0x65, 0x67}` into an unused boolean `hasSegOr67`, omitted `fsBase`/`gsBase` from `MachineState`, and omitted `0x66` (`op16`) on `d32` `01/89/8B/8D/B8/0F B1` and `d64` `50/58`. Because `support/ByteX86Pass2Correspondence.lean` shared `VendorX86Ref.decodeRef` and flat-segment addressing, `VendorX86Ref.Step ⊆ ByteX86.Step` passed while both models diverged from silicon on `84 / 318` (`26.42%`) valid Cartesian prefix vectors. Corpus package `x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing` (`VendorX86RefV2`, `ByteX86Pass2CorrespondenceV2`) repairs all prefix classes, achieves `352 / 352` (`100.0%`) kernel-certified silicon + `intelxed` agreement, and proves `VendorX86RefV2.Step ⊆ ByteX86V2.Step` over all `(fsBase, gsBase : BitVec 64)`.
+
 ## Applicability
 
 These findings govern the relationship among the eleven concrete subjects
@@ -489,7 +491,7 @@ for `joshlf/anneal`:
    includes `undefGpr : BitVec 64` alongside `undefFlags` (`BSF`/`BSR` on zero),
    and require every `trusted/lean` x86-64 opcode addition to discharge both a
    live silicon page-boundary/state vector and a `VendorX86Ref.Step ⊆
-   ByteX86.Step` case.
+   ByteX86.Step` case. *(Errata: when both models share a decoder helper such as `scanPrefixes`, Pass-2 forward simulation alone cannot catch a shared prefix projection bug (`hasSegOr67`); pair Pass-2 simulation with a Cartesian `(prefix-ordering × opcode-class)` silicon + `intelxed` differential sweep as mechanized in `VendorX86RefV2` / `ByteX86Pass2CorrespondenceV2` under corpus package `x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing`.)*
 
 ## Boundaries
 
@@ -512,7 +514,7 @@ for `joshlf/anneal`:
 - **System, privileged, x87, MMX, and segment-base instructions (`unsupported`):**
   `VendorX86Ref` targets 64-bit Ring-3 user-space computation (`CS.L = 1, CS.D =
   0`, flat zero segment bases); privileged instructions (`CLI` ->
-  `.fault .gp0Privilege`), x87/MMX, and unmapped opcodes fail closed.
+  `.fault .gp0Privilege`), x87/MMX, and unmapped opcodes fail closed. *(Errata: `VendorX86Ref.Decode.scanPrefixes` accepted `0x64` (`FS:`), `0x65` (`GS:`), and `0x67` (`addr32`) without failing closed or applying `fsBase`/`gsBase`/32-bit truncation, and omitted `0x66` `op16` on `PUSH`/`POP` and `MOV`/ALU opcodes; repaired in `VendorX86RefV2` under corpus package `x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing`.)*
 - **Direct MIR `simd_*` lowering without `stdarch` guards (`known not to
   apply`):** As proved by the three counterexamples in Section 3 of
   `support/SimdTriangulation24.lean`, raw MIR `#[rustc_intrinsic]` `simd_shl`,

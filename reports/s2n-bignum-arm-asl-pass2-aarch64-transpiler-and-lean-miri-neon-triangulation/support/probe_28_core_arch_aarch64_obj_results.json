@@ -1,0 +1,368 @@
+{
+  "companion_count": 9,
+  "cross_toolchain_word_identical": true,
+  "function_count": 34,
+  "functions": {
+    "p01_vaddq_u8": {
+      "insns": [
+        "add v0.16b, v1.16b, v0.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e208420",
+        "0xd65f03c0"
+      ]
+    },
+    "p02_vsubq_u8": {
+      "insns": [
+        "sub v0.16b, v0.16b, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e218400",
+        "0xd65f03c0"
+      ]
+    },
+    "p03_vandq_u8": {
+      "insns": [
+        "and v0.16b, v1.16b, v0.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e201c20",
+        "0xd65f03c0"
+      ]
+    },
+    "p04_vorrq_u8": {
+      "insns": [
+        "orr v0.16b, v1.16b, v0.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4ea01c20",
+        "0xd65f03c0"
+      ]
+    },
+    "p05_veorq_u8": {
+      "insns": [
+        "eor v0.16b, v1.16b, v0.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e201c20",
+        "0xd65f03c0"
+      ]
+    },
+    "p06_vceqq_u8": {
+      "insns": [
+        "cmeq v0.16b, v0.16b, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e218c00",
+        "0xd65f03c0"
+      ]
+    },
+    "p07_vcgtq_u8": {
+      "insns": [
+        "cmhi v0.16b, v0.16b, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e213400",
+        "0xd65f03c0"
+      ]
+    },
+    "p08_vcltq_s8": {
+      "insns": [
+        "cmgt v0.16b, v1.16b, v0.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e203420",
+        "0xd65f03c0"
+      ]
+    },
+    "p09_vqaddq_u8": {
+      "insns": [
+        "uqadd v0.16b, v0.16b, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e210c00",
+        "0xd65f03c0"
+      ]
+    },
+    "p10_vqsubq_u8": {
+      "insns": [
+        "uqsub v0.16b, v0.16b, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e212c00",
+        "0xd65f03c0"
+      ]
+    },
+    "p11_vshlq_u8": {
+      "insns": [
+        "ushl v0.16b, v0.16b, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e214400",
+        "0xd65f03c0"
+      ]
+    },
+    "p11b_vshlq_s8": {
+      "insns": [
+        "sshl v0.16b, v0.16b, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e214400",
+        "0xd65f03c0"
+      ]
+    },
+    "p12_vshlq_n_u32_7": {
+      "insns": [
+        "shl v0.4s, v0.4s, #0x7",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4f275400",
+        "0xd65f03c0"
+      ]
+    },
+    "p12b_vshrq_n_u32_7": {
+      "insns": [
+        "ushr v0.4s, v0.4s, #0x7",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6f390400",
+        "0xd65f03c0"
+      ]
+    },
+    "p12c_vshrq_n_u32_32": {
+      "insns": [
+        "movi v0.2d, #0000000000000000",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6f00e400",
+        "0xd65f03c0"
+      ]
+    },
+    "p12d_vshrq_n_s32_32": {
+      "insns": [
+        "cmlt v0.4s, v0.4s, #0",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4ea0a800",
+        "0xd65f03c0"
+      ]
+    },
+    "p13_vqtbl1q_u8": {
+      "insns": [
+        "tbl v0.16b, { v0.16b }, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e010000",
+        "0xd65f03c0"
+      ]
+    },
+    "p14_vpaddq_u8": {
+      "insns": [
+        "addp v0.16b, v0.16b, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e21bc00",
+        "0xd65f03c0"
+      ]
+    },
+    "p15_vpaddlq_u8": {
+      "insns": [
+        "uaddlp v0.8h, v0.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e202800",
+        "0xd65f03c0"
+      ]
+    },
+    "p16_vaddlvq_u8": {
+      "insns": [
+        "uaddlv h0, v0.16b",
+        "fmov w0, s0",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e303800",
+        "0x1e260000",
+        "0xd65f03c0"
+      ]
+    },
+    "p17_vmaxvq_u8": {
+      "insns": [
+        "umaxv b0, v0.16b",
+        "fmov w0, s0",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e30a800",
+        "0x1e260000",
+        "0xd65f03c0"
+      ]
+    },
+    "p17b_vminvq_u8": {
+      "insns": [
+        "uminv b0, v0.16b",
+        "fmov w0, s0",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e31a800",
+        "0x1e260000",
+        "0xd65f03c0"
+      ]
+    },
+    "p18_vrev64q_u8": {
+      "insns": [
+        "rev64 v0.16b, v0.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e200800",
+        "0xd65f03c0"
+      ]
+    },
+    "p18b_vrev64_u8": {
+      "insns": [
+        "rev64 v0.8b, v0.8b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x0e200800",
+        "0xd65f03c0"
+      ]
+    },
+    "p19_vextq_u8_5": {
+      "insns": [
+        "ext v0.16b, v0.16b, v1.16b, #0x5",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e012800",
+        "0xd65f03c0"
+      ]
+    },
+    "p20_vbslq_u8": {
+      "insns": [
+        "bsl v0.16b, v1.16b, v2.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x6e621c20",
+        "0xd65f03c0"
+      ]
+    },
+    "p21_vcntq_u8": {
+      "insns": [
+        "cnt v0.16b, v0.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e205800",
+        "0xd65f03c0"
+      ]
+    },
+    "p22_vmull_p8": {
+      "insns": [
+        "pmull v0.8h, v0.8b, v1.8b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x0e21e000",
+        "0xd65f03c0"
+      ]
+    },
+    "p22b_vmull_p64": {
+      "insns": [
+        "fmov d0, x1",
+        "fmov d1, x0",
+        "pmull v0.1q, v1.1d, v0.1d",
+        "mov x1, v0.d[1]",
+        "fmov x0, d0",
+        "ret"
+      ],
+      "words_hex": [
+        "0x9e670020",
+        "0x9e670001",
+        "0x0ee0e020",
+        "0x4e183c01",
+        "0x9e660000",
+        "0xd65f03c0"
+      ]
+    },
+    "p23_vaeseq_u8": {
+      "insns": [
+        "aese v0.16b, v1.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e284820",
+        "0xd65f03c0"
+      ]
+    },
+    "p23b_vaesmcq_u8": {
+      "insns": [
+        "aesmc v0.16b, v0.16b",
+        "ret"
+      ],
+      "words_hex": [
+        "0x4e286800",
+        "0xd65f03c0"
+      ]
+    },
+    "p24_vsha512hq_u64": {
+      "insns": [
+        "sha512h q0, q1, v2.2d",
+        "ret"
+      ],
+      "words_hex": [
+        "0xce628020",
+        "0xd65f03c0"
+      ]
+    },
+    "p24b_vsha512su0q_u64": {
+      "insns": [
+        "sha512su0 v0.2d, v1.2d",
+        "ret"
+      ],
+      "words_hex": [
+        "0xcec08020",
+        "0xd65f03c0"
+      ]
+    },
+    "p25_crc32cd": {
+      "insns": [
+        "crc32cx w0, w0, x1",
+        "ret"
+      ],
+      "words_hex": [
+        "0x9ac15c00",
+        "0xd65f03c0"
+      ]
+    }
+  },
+  "primary_primitive_count": 25,
+  "qemu_differential_returncode": 0,
+  "toolchains": {
+    "1.99.1": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "nightly-2026-01-25": "rustc 1.95.0-nightly (f134bbc78 2026-01-24)",
+    "nightly-2026-09-30": "rustc 1.101.0-nightly (5c543b0b8 2026-09-29)"
+  }
+}

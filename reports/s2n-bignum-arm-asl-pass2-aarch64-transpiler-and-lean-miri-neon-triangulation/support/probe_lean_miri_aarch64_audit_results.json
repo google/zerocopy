@@ -1,0 +1,293 @@
+{
+  "coverage_audit": {
+    "crate_benchmark": {
+      "covered_after_ext_pct": 100.0,
+      "covered_after_ext_sites": 661,
+      "covered_before_pct": 88.35,
+      "covered_before_sites": 584,
+      "crate_count": 12,
+      "distinct_called_intrinsics": 101,
+      "per_crate": {
+        "aes-0.9.4": {
+          "covered_after": 44,
+          "covered_before": 20,
+          "distinct_intrinsics": 12,
+          "total_sites": 44
+        },
+        "aho-corasick-1.1.5": {
+          "covered_after": 37,
+          "covered_before": 37,
+          "distinct_intrinsics": 13,
+          "total_sites": 37
+        },
+        "blake3-1.8.7": {
+          "covered_after": 0,
+          "covered_before": 0,
+          "distinct_intrinsics": 0,
+          "total_sites": 0
+        },
+        "bytecount-0.6.9": {
+          "covered_after": 62,
+          "covered_before": 57,
+          "distinct_intrinsics": 7,
+          "total_sites": 62
+        },
+        "chacha20-0.10.2": {
+          "covered_after": 40,
+          "covered_before": 40,
+          "distinct_intrinsics": 20,
+          "total_sites": 40
+        },
+        "crc32fast-1.5.5": {
+          "covered_after": 38,
+          "covered_before": 38,
+          "distinct_intrinsics": 15,
+          "total_sites": 38
+        },
+        "hashbrown-0.17.1": {
+          "covered_after": 19,
+          "covered_before": 19,
+          "distinct_intrinsics": 10,
+          "total_sites": 19
+        },
+        "memchr-2.8.3": {
+          "covered_after": 17,
+          "covered_before": 17,
+          "distinct_intrinsics": 13,
+          "total_sites": 17
+        },
+        "sha2-0.11.1": {
+          "covered_after": 203,
+          "covered_before": 155,
+          "distinct_intrinsics": 20,
+          "total_sites": 203
+        },
+        "simd-adler32-0.3.10": {
+          "covered_after": 55,
+          "covered_before": 55,
+          "distinct_intrinsics": 20,
+          "total_sites": 55
+        },
+        "simdutf8-0.1.5": {
+          "covered_after": 17,
+          "covered_before": 17,
+          "distinct_intrinsics": 13,
+          "total_sites": 17
+        },
+        "zlib-rs-0.6.8": {
+          "covered_after": 129,
+          "covered_before": 129,
+          "distinct_intrinsics": 32,
+          "total_sites": 129
+        }
+      },
+      "previously_unsupported_breakdown": [
+        {
+          "closed_by_ext": true,
+          "intrinsic": "vaddlvq_u8",
+          "llvm_links": [
+            "llvm.aarch64.neon.uaddlv.i32.v16i8"
+          ],
+          "sites": 5
+        },
+        {
+          "closed_by_ext": true,
+          "intrinsic": "vaesdq_u8",
+          "llvm_links": [
+            "llvm.aarch64.crypto.aesd"
+          ],
+          "sites": 6
+        },
+        {
+          "closed_by_ext": true,
+          "intrinsic": "vaeseq_u8",
+          "llvm_links": [
+            "llvm.aarch64.crypto.aese"
+          ],
+          "sites": 7
+        },
+        {
+          "closed_by_ext": true,
+          "intrinsic": "vaesimcq_u8",
+          "llvm_links": [
+            "llvm.aarch64.crypto.aesimc"
+          ],
+          "sites": 6
+        },
+        {
+          "closed_by_ext": true,
+          "intrinsic": "vaesmcq_u8",
+          "llvm_links": [
+            "llvm.aarch64.crypto.aesmc"
+          ],
+          "sites": 5
+        },
+        {
+          "closed_by_ext": true,
+          "intrinsic": "vsha512h2q_u64",
+          "llvm_links": [
+            "llvm.aarch64.crypto.sha512h2"
+          ],
+          "sites": 16
+        },
+        {
+          "closed_by_ext": true,
+          "intrinsic": "vsha512hq_u64",
+          "llvm_links": [
+            "llvm.aarch64.crypto.sha512h"
+          ],
+          "sites": 16
+        },
+        {
+          "closed_by_ext": true,
+          "intrinsic": "vsha512su0q_u64",
+          "llvm_links": [
+            "llvm.aarch64.crypto.sha512su0"
+          ],
+          "sites": 8
+        },
+        {
+          "closed_by_ext": true,
+          "intrinsic": "vsha512su1q_u64",
+          "llvm_links": [
+            "llvm.aarch64.crypto.sha512su1"
+          ],
+          "sites": 8
+        }
+      ],
+      "pure_portable_simd_sites": 494,
+      "remaining_after_ext": [],
+      "total_aarch64_sites": 661,
+      "unsupported_before_pct": 11.65,
+      "unsupported_before_sites": 77
+    },
+    "ext_supported_llvm_aarch64_count": 51,
+    "stdarch_distinct_llvm_aarch64_all": 2655,
+    "stdarch_distinct_llvm_aarch64_non_sve": 940,
+    "stdarch_non_sve_supported_after_ext": 68,
+    "stdarch_non_sve_supported_before": 35,
+    "stdarch_pub_fn_count": 9841,
+    "toolchain": "1.99.1"
+  },
+  "intrinsic_aarch64_ext_lean_audit": {
+    "compile_ms": 2710.85,
+    "olean_bytes": 2352568,
+    "private_kernel_replay": {
+      "axiom_consts": [],
+      "delta_consts": 204,
+      "forbidden_refs": [],
+      "load_private_ms": 182,
+      "opaque_consts": [],
+      "partial_consts": [],
+      "replay_ms": 165,
+      "transitive_axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "unsafe_consts": []
+    },
+    "zero_warnings_and_errors": true
+  },
+  "qemu_aarch64_fips_and_neon_crosscheck": {
+    "qemu_returncode": 0,
+    "vectors": {
+      "fips180_4_sha512_abc_ab": "0xcc417349ae204131ddaf35a193617aba",
+      "fips180_4_sha512_abc_gh": "0x2a9ac94fa54ca49f454d4423643ce80e",
+      "fips197_aes128_ct": "0x320b6a19978511dcfb09dc021d842539",
+      "fips197_aes128_recovered_pt": "0x340737e0a29831318d305a88a8f64332",
+      "neon_ext_assertions_passed": "0x00000000000000000000000000000001"
+    }
+  },
+  "source_scans": {
+    "Miri/Interpreter/IntrinsicArchitecture.lean": {
+      "bytes": 17724,
+      "constructs": {
+        "admit": 0,
+        "axiom": 0,
+        "bv_decide": 0,
+        "by_tactic_blocks": 0,
+        "csimp_attr": 0,
+        "extern_attr": 0,
+        "implemented_by_attr": 0,
+        "native_decide": 0,
+        "opaque": 0,
+        "partial": 0,
+        "set_option": 0,
+        "sorry": 0,
+        "unsafe": 0
+      },
+      "lines": 308,
+      "sha256": "1e72e78105ca488782fe0563c0ac51313b211b2a22485b1d71a62cb84cabc261",
+      "top_level_decls": 28
+    },
+    "Miri/Interpreter/IntrinsicCrypto.lean": {
+      "bytes": 2785,
+      "constructs": {
+        "admit": 0,
+        "axiom": 0,
+        "bv_decide": 0,
+        "by_tactic_blocks": 0,
+        "csimp_attr": 0,
+        "extern_attr": 0,
+        "implemented_by_attr": 0,
+        "native_decide": 0,
+        "opaque": 0,
+        "partial": 0,
+        "set_option": 0,
+        "sorry": 0,
+        "unsafe": 0
+      },
+      "lines": 64,
+      "sha256": "c5b347cc23d1a79816b143eb217117c2dd8199f8287ad80be3a8dc56eaf39120",
+      "top_level_decls": 11
+    },
+    "Miri/Interpreter/IntrinsicSimd.lean": {
+      "bytes": 34477,
+      "constructs": {
+        "admit": 0,
+        "axiom": 0,
+        "bv_decide": 0,
+        "by_tactic_blocks": 0,
+        "csimp_attr": 0,
+        "extern_attr": 0,
+        "implemented_by_attr": 0,
+        "native_decide": 0,
+        "opaque": 0,
+        "partial": 0,
+        "set_option": 0,
+        "sorry": 0,
+        "unsafe": 0
+      },
+      "lines": 531,
+      "sha256": "6b2a0b825aca285822fcfde26b56b43fadbece17972eb6cfcd35b662d6b769b6",
+      "top_level_decls": 33
+    },
+    "support/IntrinsicAarch64Ext.lean": {
+      "bytes": 35099,
+      "constructs": {
+        "admit": 0,
+        "axiom": 0,
+        "bv_decide": 0,
+        "by_tactic_blocks": 0,
+        "csimp_attr": 0,
+        "extern_attr": 0,
+        "implemented_by_attr": 0,
+        "native_decide": 0,
+        "opaque": 0,
+        "partial": 0,
+        "set_option": 0,
+        "sorry": 0,
+        "unsafe": 0
+      },
+      "lines": 691,
+      "sha256": "e636f2f73abcdf072bd365a9f222499ade5caa2bdf210be13bdba1276f4ecf38",
+      "top_level_decls": 122
+    }
+  },
+  "upstream_pin": {
+    "commit": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a",
+    "lean_toolchain": null,
+    "pinned_module_count": 0,
+    "repository": "https://github.com/proofs-rs/lean-miri.git"
+  }
+}

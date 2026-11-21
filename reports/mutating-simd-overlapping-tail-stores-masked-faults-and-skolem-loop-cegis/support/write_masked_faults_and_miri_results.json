@@ -1,0 +1,553 @@
+{
+  "toolchains": {
+    "rustc_stable": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "rustc_nightly": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+    "miri": "miri 0.1.0 (3ef0c22cdb 2026-11-11)",
+    "host_arch": "x86_64-unknown-linux-gnu (Intel Xeon Ice Lake-SP @ 2.60GHz, avx2+avx512vl+avx512bw)"
+  },
+  "x86_64_silicon_oracle": {
+    "cases": [
+      {
+        "case": "vpmaskmovd_straddle_ro_inactive0",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vpmaskmovd_straddle_prot_none_inactive0",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vpmaskmovd_lsb1_msb0_on_prot_none",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vpmaskmovd_mask0_prot_read",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vpmaskmovd_mask0_prot_none",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vpmaskmovd_mask0_unmapped",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vpmaskmovd_mask0_noncanonical",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vpmaskmovd_active_lane1_prot_read",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 8196
+      },
+      {
+        "case": "vpmaskmovd_active_lane0_noncanonical",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 128,
+        "rel_addr": "0x0"
+      },
+      {
+        "case": "vpmaskmovq_straddle_prot_none_inactive0",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vpmaskmovq_mask0_noncanonical",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqu8_straddle_ro_inactive0",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqu8_straddle_prot_none_inactive0",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqu8_k0_prot_read",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqu8_k0_prot_none",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqu8_k0_unmapped",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqu8_k0_noncanonical",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqu16_straddle_prot_none_inactive0",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqu16_k0_noncanonical",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqa32_k0_misaligned_prot_none",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqa32_k0_misaligned_rw",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovdqa32_k1_misaligned_rw",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 128,
+        "rel_addr": "0x0"
+      },
+      {
+        "case": "maskmovdqu_mask0_rw",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "maskmovdqu_mask0_prot_read",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 8200
+      },
+      {
+        "case": "maskmovdqu_mask0_prot_none",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 16392
+      },
+      {
+        "case": "maskmovdqu_mask0_unmapped",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 1,
+        "rel_addr": 20488
+      },
+      {
+        "case": "maskmovdqu_mask0_noncanonical",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 128,
+        "rel_addr": "0x0"
+      },
+      {
+        "case": "maskmovdqu_straddle_ro_inactive0",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 8192
+      },
+      {
+        "case": "maskmovdqu_straddle_prot_none_inactive0",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 16384
+      },
+      {
+        "case": "vmaskmovdqu_vex_mask0_prot_read",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 8200
+      },
+      {
+        "case": "vmaskmovdqu_vex_mask0_prot_none",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 16392
+      },
+      {
+        "case": "vmaskmovdqu_vex_mask0_noncanonical",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 128,
+        "rel_addr": "0x0"
+      },
+      {
+        "case": "vmaskmovdqu_vex_straddle_prot_none_inactive0",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 16384
+      },
+      {
+        "case": "vmovntdq_aligned_rw",
+        "faulted": false,
+        "sig": 0,
+        "si_code": 0,
+        "rel_addr": null
+      },
+      {
+        "case": "vmovntdq_misaligned_rw",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 128,
+        "rel_addr": "0x0"
+      },
+      {
+        "case": "vmovntdq_prot_read",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 8192
+      },
+      {
+        "case": "vmovntdq_prot_none",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 16384
+      },
+      {
+        "case": "vmovntdq_noncanonical",
+        "faulted": true,
+        "sig": 11,
+        "si_code": 128,
+        "rel_addr": "0x0"
+      }
+    ],
+    "rmw_concurrent_tearing": {
+      "atomic_increments": 200000,
+      "lost_updates": 197797,
+      "observed_regressions": 70711
+    },
+    "compile_ms": 379.06,
+    "run_ms": 13.73
+  },
+  "aarch64_qemu_oracle": {
+    "qemu_version": "qemu-aarch64 version 11.1.2 (Debian 1:11.1.2+ds-2)",
+    "qemu_sha256": "8ba579d46040c9d40c5786b4df58d7a17663c8fbd51968be84716682f758eb59",
+    "cases": {
+      "sve_st1b_pfalse_prot_none": {
+        "faulted": false,
+        "note": "sve_st1b_pfalse_prot_none"
+      },
+      "sve_st1b_straddle_ro_inactive0": {
+        "faulted": false,
+        "note": "sve_st1b_straddle_ro_inactive0"
+      },
+      "sve_st1b_straddle_prot_none_inactive0": {
+        "faulted": false,
+        "note": "sve_st1b_straddle_prot_none_inactive0"
+      },
+      "neon_32b_stp_mte_granule_mismatch": {
+        "faulted": true,
+        "sig": 11,
+        "si_code": 9,
+        "rel_addr": 16,
+        "ptr_tag": 1
+      },
+      "sve_st1b_mte_tag_mismatch_qemu_user_gap": {
+        "faulted": false,
+        "note": "qemu_user_sve_st1b_mte_unchecked"
+      },
+      "neon_16b_str_straddle_prot_read": {
+        "faulted": true,
+        "sig": 11,
+        "si_code": 2,
+        "rel_addr": 4096,
+        "ptr_tag": 0
+      }
+    }
+  },
+  "simd_masked_store_codegen": {
+    "rustc_1.99.1": {
+      "avx2_only": {
+        "mstore_u8x16": {
+          "conditional_branches": 31,
+          "bit_tests": 31,
+          "scalar_lane_extract_stores": 16,
+          "vpmovmskb": 1,
+          "hardware_masked_stores": []
+        },
+        "mstore_u8x32": {
+          "conditional_branches": 63,
+          "bit_tests": 63,
+          "scalar_lane_extract_stores": 32,
+          "vpmovmskb": 1,
+          "hardware_masked_stores": []
+        },
+        "mstore_u16x16": {
+          "conditional_branches": 31,
+          "bit_tests": 31,
+          "scalar_lane_extract_stores": 16,
+          "vpmovmskb": 1,
+          "hardware_masked_stores": []
+        },
+        "mstore_u32x8": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vpmaskmovd %ymm1, %ymm0, (%rsi)"
+          ]
+        },
+        "mstore_u64x4": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vpmaskmovq %ymm1, %ymm0, (%rsi)"
+          ]
+        }
+      },
+      "avx512vl_bw": {
+        "mstore_u8x16": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu8 %xmm0, (%rsi) {%k1}"
+          ]
+        },
+        "mstore_u8x32": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu8 %ymm0, (%rsi) {%k1}"
+          ]
+        },
+        "mstore_u16x16": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu16 %ymm0, (%rsi) {%k1}"
+          ]
+        },
+        "mstore_u32x8": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu32 %ymm0, (%rsi) {%k1}"
+          ]
+        },
+        "mstore_u64x4": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu64 %ymm0, (%rsi) {%k1}"
+          ]
+        }
+      }
+    },
+    "rustc_nightly": {
+      "avx2_only": {
+        "mstore_u8x16": {
+          "conditional_branches": 31,
+          "bit_tests": 31,
+          "scalar_lane_extract_stores": 16,
+          "vpmovmskb": 1,
+          "hardware_masked_stores": []
+        },
+        "mstore_u8x32": {
+          "conditional_branches": 63,
+          "bit_tests": 63,
+          "scalar_lane_extract_stores": 32,
+          "vpmovmskb": 1,
+          "hardware_masked_stores": []
+        },
+        "mstore_u16x16": {
+          "conditional_branches": 31,
+          "bit_tests": 31,
+          "scalar_lane_extract_stores": 16,
+          "vpmovmskb": 1,
+          "hardware_masked_stores": []
+        },
+        "mstore_u32x8": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vpmaskmovd %ymm1, %ymm0, (%rsi)"
+          ]
+        },
+        "mstore_u64x4": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vpmaskmovq %ymm1, %ymm0, (%rsi)"
+          ]
+        }
+      },
+      "avx512vl_bw": {
+        "mstore_u8x16": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu8 %xmm1, (%rdi) {%k1}"
+          ]
+        },
+        "mstore_u8x32": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu8 %ymm0, (%rsi) {%k1}"
+          ]
+        },
+        "mstore_u16x16": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu16 %ymm0, (%rsi) {%k1}"
+          ]
+        },
+        "mstore_u32x8": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu32 %ymm0, (%rsi) {%k1}"
+          ]
+        },
+        "mstore_u64x4": {
+          "conditional_branches": 0,
+          "bit_tests": 0,
+          "scalar_lane_extract_stores": 0,
+          "vpmovmskb": 0,
+          "hardware_masked_stores": [
+            "vmovdqu64 %ymm0, (%rsi) {%k1}"
+          ]
+        }
+      }
+    }
+  },
+  "miri_borrows_and_tail_suite": {
+    "tree_borrows": {
+      "exact_16b_alloc_oob": {
+        "rc": 1,
+        "diagnostic": "error: Undefined Behavior: memory access failed: attempting to access 32 bytes, but got allocN which is only 16 bytes from the end of the allocation"
+      },
+      "padded_32b_subslice_reborrow": {
+        "rc": 0,
+        "diagnostic": "ok"
+      },
+      "ub_same_alloc_sibling_strong_protector": {
+        "rc": 1,
+        "diagnostic": "error: Undefined Behavior: write access through <tag> at allocN[0x10] is forbidden"
+      },
+      "sibling_frozen_read_after_rmw": {
+        "rc": 1,
+        "diagnostic": "error: Undefined Behavior: read access through <tag> at allocN[0x10] is forbidden"
+      },
+      "sibling_active_mut_read_after_rmw": {
+        "rc": 1,
+        "diagnostic": "error: Undefined Behavior: read access through <tag> at allocN[0x10] is forbidden"
+      },
+      "ub_simd_masked_store_misaligned_mask_zero": {
+        "rc": 1,
+        "diagnostic": "error: Undefined Behavior: accessing memory with alignment 1, but alignment 16 is required"
+      },
+      "sound_vpmaskmovd_tail_oob_disabled": {
+        "rc": 0,
+        "diagnostic": "ok"
+      },
+      "miri_unsupported_maskmovdqu_mask0": {
+        "rc": 1,
+        "diagnostic": "error: unsupported operation: can't call LLVM intrinsic `llvm.x86.sse2.maskmov.dqu` on architecture `x86_64`"
+      },
+      "trichotomy_all_modes_under_tree_borrows": {
+        "rc": 0,
+        "diagnostic": "ok"
+      }
+    },
+    "stacked_borrows": {
+      "exact_16b_alloc_oob": {
+        "rc": 1,
+        "diagnostic": "error: Undefined Behavior: memory access failed: attempting to access 32 bytes, but got allocN which is only 16 bytes from the end of the allocation"
+      },
+      "padded_32b_subslice_reborrow": {
+        "rc": 1,
+        "diagnostic": "error: Undefined Behavior: attempting a read access using <tag> at allocN[0x10], but that tag does not exist in the borrow stack for this location"
+      }
+    }
+  }
+}

@@ -1,0 +1,600 @@
+{
+  "toolchains": {
+    "gcc": "gcc (Debian 15.2.0-14) 15.2.0",
+    "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+    "cadical": "2.1.2",
+    "rustc": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+  },
+  "compiled_object_image_verification": {
+    "c_ffi_kernels_O2": {
+      "text_bytes": 596,
+      "sha256": "bb836e8198d70ef859f1e0737f62020f52dcce76490d37015b65b3981cad0028",
+      "matches_lean_compiled_image": true
+    },
+    "c_ffi_kernels_O3_avx2": {
+      "text_bytes": 1546,
+      "sha256": "81bb350b37ad5a3a4c4752aed882c9cbc1ae284cf345779e5eb6865963e9a60b",
+      "matches_lean_compiled_image": true
+    },
+    "c_ffi_bugs_O2": {
+      "text_bytes": 438,
+      "sha256": "7f14346be7f80992b0783b1f173e27e4d27f912d6e6d22d4fcbed37e910b238e",
+      "matches_lean_compiled_image": true
+    }
+  },
+  "kernels_proved_equivalent": 12,
+  "kernels_total": 12,
+  "manual_invariant_loc_in_auto_certs": 0,
+  "bugs_refuted_kernel_and_hardware": 4,
+  "kernel_equivalence_and_lrat_summary": [
+    {
+      "id": "c_fnv1a64_o2",
+      "unit": "c_ffi_kernels_O2",
+      "func": "c_fnv1a64",
+      "entry": "0x0#64",
+      "stride": 1,
+      "max_stack": 0,
+      "schedule_kind": "counterless_pointer_bump",
+      "lean_thm": "UntrustedCObjScalarLoops.prove_c_fnv1a64_o2",
+      "cfg": {
+        "insn_count": 18,
+        "text_bytes": 80,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 2,
+        "killed_flag_sites": 4
+      },
+      "lrat": {
+        "solve_ms": 2.45,
+        "cnf_vars": 124,
+        "total_cnf_clauses": 312,
+        "core_cnf_clauses": 256,
+        "raw_rup_steps": 189,
+        "trimmed_rup_steps": 188,
+        "max_recycled_slot": 259,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_adler32_chunk_o2",
+      "unit": "c_ffi_kernels_O2",
+      "func": "c_adler32_chunk",
+      "entry": "0x50#64",
+      "stride": 1,
+      "max_stack": 0,
+      "schedule_kind": "counterless_pointer_bump_barrett",
+      "lean_thm": "UntrustedCObjScalarLoops.prove_c_adler32_chunk_o2",
+      "cfg": {
+        "insn_count": 33,
+        "text_bytes": 128,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 2,
+        "killed_flag_sites": 15
+      },
+      "lrat": {
+        "solve_ms": 2.67,
+        "cnf_vars": 310,
+        "total_cnf_clauses": 984,
+        "core_cnf_clauses": 319,
+        "raw_rup_steps": 185,
+        "trimmed_rup_steps": 152,
+        "max_recycled_slot": 320,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_checksum_rol_u8_o2",
+      "unit": "c_ffi_kernels_O2",
+      "func": "c_checksum_rol_u8",
+      "entry": "0xd0#64",
+      "stride": 1,
+      "max_stack": 0,
+      "schedule_kind": "counterless_pointer_bump_rol32",
+      "lean_thm": "UntrustedCObjScalarLoops.prove_c_checksum_rol_o2",
+      "cfg": {
+        "insn_count": 16,
+        "text_bytes": 48,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 2,
+        "killed_flag_sites": 6
+      },
+      "lrat": {
+        "solve_ms": 2.2,
+        "cnf_vars": 100,
+        "total_cnf_clauses": 192,
+        "core_cnf_clauses": 169,
+        "raw_rup_steps": 163,
+        "trimmed_rup_steps": 158,
+        "max_recycled_slot": 172,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_ascii_tolower_o2",
+      "unit": "c_ffi_kernels_O2",
+      "func": "c_ascii_tolower",
+      "entry": "0x100#64",
+      "stride": 1,
+      "max_stack": 0,
+      "schedule_kind": "counterless_pointer_bump_mut",
+      "lean_thm": "UntrustedCObjMutLoops.prove_c_ascii_tolower_o2",
+      "cfg": {
+        "insn_count": 17,
+        "text_bytes": 64,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 3,
+        "killed_flag_sites": 3
+      },
+      "lrat": {
+        "solve_ms": 2.62,
+        "cnf_vars": 165,
+        "total_cnf_clauses": 504,
+        "core_cnf_clauses": 334,
+        "raw_rup_steps": 191,
+        "trimmed_rup_steps": 175,
+        "max_recycled_slot": 336,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_dot_u8_u16_o2",
+      "unit": "c_ffi_kernels_O2",
+      "func": "c_dot_u8_u16",
+      "entry": "0x140#64",
+      "stride": 16,
+      "max_stack": 0,
+      "schedule_kind": "indexed_sse2_16_plus_scalar_tail",
+      "lean_thm": "UntrustedCObjDotSimd.prove_c_dot_u8_u16_o2",
+      "cfg": {
+        "insn_count": 64,
+        "text_bytes": 240,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 5,
+        "killed_flag_sites": 9
+      },
+      "lrat": {
+        "solve_ms": 2.35,
+        "cnf_vars": 116,
+        "total_cnf_clauses": 192,
+        "core_cnf_clauses": 169,
+        "raw_rup_steps": 163,
+        "trimmed_rup_steps": 158,
+        "max_recycled_slot": 172,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_xor_stream_o2",
+      "unit": "c_ffi_kernels_O2",
+      "func": "c_xor_stream",
+      "entry": "0x230#64",
+      "stride": 1,
+      "max_stack": 0,
+      "schedule_kind": "indexed_scalar_mut",
+      "lean_thm": "UntrustedCObjMutLoops.prove_c_xor_stream_o2",
+      "cfg": {
+        "insn_count": 13,
+        "text_bytes": 36,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 2,
+        "killed_flag_sites": 3
+      },
+      "lrat": {
+        "solve_ms": 2.4,
+        "cnf_vars": 116,
+        "total_cnf_clauses": 312,
+        "core_cnf_clauses": 256,
+        "raw_rup_steps": 189,
+        "trimmed_rup_steps": 188,
+        "max_recycled_slot": 259,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_fnv1a64_o3",
+      "unit": "c_ffi_kernels_O3_avx2",
+      "func": "c_fnv1a64",
+      "entry": "0x0#64",
+      "stride": 1,
+      "max_stack": 0,
+      "schedule_kind": "counterless_pointer_bump",
+      "lean_thm": "UntrustedCObjScalarLoops.prove_c_fnv1a64_o3",
+      "cfg": {
+        "insn_count": 18,
+        "text_bytes": 80,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 2,
+        "killed_flag_sites": 4
+      },
+      "lrat": {
+        "solve_ms": 2.54,
+        "cnf_vars": 124,
+        "total_cnf_clauses": 312,
+        "core_cnf_clauses": 256,
+        "raw_rup_steps": 189,
+        "trimmed_rup_steps": 188,
+        "max_recycled_slot": 259,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_adler32_chunk_o3",
+      "unit": "c_ffi_kernels_O3_avx2",
+      "func": "c_adler32_chunk",
+      "entry": "0x50#64",
+      "stride": 1,
+      "max_stack": 0,
+      "schedule_kind": "counterless_pointer_bump_barrett",
+      "lean_thm": "UntrustedCObjScalarLoops.prove_c_adler32_chunk_o3",
+      "cfg": {
+        "insn_count": 33,
+        "text_bytes": 128,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 2,
+        "killed_flag_sites": 15
+      },
+      "lrat": {
+        "solve_ms": 2.72,
+        "cnf_vars": 310,
+        "total_cnf_clauses": 984,
+        "core_cnf_clauses": 319,
+        "raw_rup_steps": 185,
+        "trimmed_rup_steps": 152,
+        "max_recycled_slot": 320,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_checksum_rol_u8_o3",
+      "unit": "c_ffi_kernels_O3_avx2",
+      "func": "c_checksum_rol_u8",
+      "entry": "0xd0#64",
+      "stride": 1,
+      "max_stack": 0,
+      "schedule_kind": "counterless_pointer_bump_rol32",
+      "lean_thm": "UntrustedCObjScalarLoops.prove_c_checksum_rol_o3",
+      "cfg": {
+        "insn_count": 16,
+        "text_bytes": 48,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 2,
+        "killed_flag_sites": 6
+      },
+      "lrat": {
+        "solve_ms": 2.34,
+        "cnf_vars": 100,
+        "total_cnf_clauses": 192,
+        "core_cnf_clauses": 169,
+        "raw_rup_steps": 163,
+        "trimmed_rup_steps": 158,
+        "max_recycled_slot": 172,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_ascii_tolower_o3",
+      "unit": "c_ffi_kernels_O3_avx2",
+      "func": "c_ascii_tolower",
+      "entry": "0x100#64",
+      "stride": 1,
+      "max_stack": 0,
+      "schedule_kind": "counterless_pointer_bump_mut",
+      "lean_thm": "UntrustedCObjMutLoops.prove_c_ascii_tolower_o3",
+      "cfg": {
+        "insn_count": 17,
+        "text_bytes": 64,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 3,
+        "killed_flag_sites": 3
+      },
+      "lrat": {
+        "solve_ms": 2.57,
+        "cnf_vars": 165,
+        "total_cnf_clauses": 504,
+        "core_cnf_clauses": 334,
+        "raw_rup_steps": 191,
+        "trimmed_rup_steps": 175,
+        "max_recycled_slot": 336,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_dot_u8_u16_o3_avx2",
+      "unit": "c_ffi_kernels_O3_avx2",
+      "func": "c_dot_u8_u16",
+      "entry": "0x140#64",
+      "stride": 32,
+      "max_stack": 0,
+      "schedule_kind": "cascading_avx2_32_16_8_unrolled7",
+      "lean_thm": "UntrustedCObjDotAvx2.prove_c_dot_u8_u16_o3_avx2",
+      "cfg": {
+        "insn_count": 183,
+        "text_bytes": 784,
+        "max_neg_sp_delta": 0,
+        "shrink_wrapped_stack": false,
+        "push_sites": 0,
+        "leave_sites": 0,
+        "live_flag_branches": 14,
+        "killed_flag_sites": 26
+      },
+      "lrat": {
+        "solve_ms": 2.87,
+        "cnf_vars": 252,
+        "total_cnf_clauses": 818,
+        "core_cnf_clauses": 423,
+        "raw_rup_steps": 273,
+        "trimmed_rup_steps": 235,
+        "max_recycled_slot": 424,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    },
+    {
+      "id": "c_xor_stream_o3_avx2",
+      "unit": "c_ffi_kernels_O3_avx2",
+      "func": "c_xor_stream",
+      "entry": "0x450#64",
+      "stride": 32,
+      "max_stack": 16,
+      "schedule_kind": "alias_guarded_avx2_32_16_shrinkwrap8_unrolled7",
+      "lean_thm": "UntrustedCObjXorAvx2.prove_c_xor_stream_o3_avx2",
+      "cfg": {
+        "insn_count": 117,
+        "text_bytes": 442,
+        "max_neg_sp_delta": 16,
+        "shrink_wrapped_stack": true,
+        "push_sites": 2,
+        "leave_sites": 1,
+        "live_flag_branches": 16,
+        "killed_flag_sites": 22
+      },
+      "lrat": {
+        "solve_ms": 3.46,
+        "cnf_vars": 318,
+        "total_cnf_clauses": 975,
+        "core_cnf_clauses": 330,
+        "raw_rup_steps": 194,
+        "trimmed_rup_steps": 147,
+        "max_recycled_slot": 334,
+        "o_depth": 4,
+        "hypotheses_non_vacuous": true
+      }
+    }
+  ],
+  "bug_sat_counterexamples": [
+    {
+      "cadical_exit": 10,
+      "solve_ms": 1.88,
+      "cnf_vars": 141,
+      "cnf_clauses": 326,
+      "witness": {
+        "len": 2147483648,
+        "b0": 17,
+        "b_last": 34
+      },
+      "bug_id": "bug1_int_len_endpoints",
+      "c_func": "c_bug1_int_len_endpoints",
+      "lean_refutation": "UntrustedCObjBugRefutations.refute_bug1_int_len_endpoints",
+      "c_return_u64": 0,
+      "rust_return_u64": 51
+    },
+    {
+      "cadical_exit": 10,
+      "solve_ms": 1.79,
+      "cnf_vars": 9,
+      "cnf_clauses": 2,
+      "witness": {
+        "byte": 128
+      },
+      "bug_id": "bug2_signed_char_fnv1a",
+      "c_func": "c_bug2_signed_char_fnv1a",
+      "lean_refutation": "UntrustedCObjBugRefutations.refute_bug2_signed_char_fnv1a",
+      "c_return_u64_hex": "0x509c0cb379fdec5f",
+      "rust_return_u64_hex": "0xaf643d4c8602915f"
+    },
+    {
+      "cadical_exit": 10,
+      "solve_ms": 1.7,
+      "cnf_vars": 55,
+      "cnf_clauses": 109,
+      "witness": {
+        "len": 0,
+        "key": 255,
+        "sentinel": 255
+      },
+      "bug_id": "bug3_off_by_one_xor",
+      "c_func": "c_bug3_off_by_one_xor",
+      "lean_refutation": "UntrustedCObjBugRefutations.refute_bug3_off_by_one_xor",
+      "corrupted_oob_byte": 0
+    },
+    {
+      "cadical_exit": 10,
+      "solve_ms": 1.9,
+      "cnf_vars": 127,
+      "cnf_clauses": 205,
+      "witness": {
+        "rbx_in_lo32": 0,
+        "rax_val": 0
+      },
+      "bug_id": "bug4_asm_clobber_abi",
+      "c_func": "c_bug4_asm_clobber_abi",
+      "lean_refutation": "UntrustedCObjBugRefutations.refute_bug4_asm_clobber_abi",
+      "rbx_clobbered_to": "0xdeadbeefcafebabe",
+      "upper_ymm0_dirty_after_ret": true
+    }
+  ],
+  "rust_hardware_bug_reproducers": {
+    "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+    "tests_passed": 4,
+    "tests_failed": 0,
+    "test_names": [
+      "repro_bug1_int_len_truncation_2gib",
+      "repro_bug2_signed_char_sign_extension",
+      "repro_bug3_off_by_one_canary_and_guard_page_sigsegv",
+      "repro_bug4_callee_saved_and_upper_ymm_clobber"
+    ],
+    "elapsed_ms": 12.09
+  },
+  "lean_cold_compile_and_replay": {
+    "module_count": 27,
+    "max_module_bytes": 123264,
+    "max_module_compile_sec": 13.138,
+    "total_compile_sec": 157.795,
+    "modules": {
+      "VendorX86GccRef": {
+        "bytes": 74886,
+        "compile_sec": 6.137
+      },
+      "ByteX86Gcc": {
+        "bytes": 102113,
+        "compile_sec": 9.418
+      },
+      "ByteX86GccDecodeBase": {
+        "bytes": 33503,
+        "compile_sec": 11.138
+      },
+      "ByteX86GccDecodePass2": {
+        "bytes": 16807,
+        "compile_sec": 6.976
+      },
+      "ByteX86GccPass2": {
+        "bytes": 32935,
+        "compile_sec": 3.66
+      },
+      "RustFfiSpecs": {
+        "bytes": 13755,
+        "compile_sec": 0.59
+      },
+      "CompiledCObjImages": {
+        "bytes": 29408,
+        "compile_sec": 1.676
+      },
+      "UntrustedCObjHints": {
+        "bytes": 93182,
+        "compile_sec": 6.571
+      },
+      "UntrustedCObjBlockDecodes": {
+        "bytes": 34173,
+        "compile_sec": 6.058
+      },
+      "UntrustedCObjScalarLoops": {
+        "bytes": 58404,
+        "compile_sec": 6.398
+      },
+      "UntrustedCObjMutLoops": {
+        "bytes": 41983,
+        "compile_sec": 3.641
+      },
+      "UntrustedCObjBugRefutations": {
+        "bytes": 29687,
+        "compile_sec": 3.077
+      },
+      "UntrustedCObjSimdHelpers": {
+        "bytes": 69297,
+        "compile_sec": 5.426
+      },
+      "UntrustedCObjXorAvx2Tail": {
+        "bytes": 81324,
+        "compile_sec": 9.033
+      },
+      "UntrustedCObjXorAvx2": {
+        "bytes": 49870,
+        "compile_sec": 4.819
+      },
+      "UntrustedCObjDotSimd": {
+        "bytes": 73078,
+        "compile_sec": 7.325
+      },
+      "UntrustedCObjDotAvx2Tail": {
+        "bytes": 123264,
+        "compile_sec": 13.138
+      },
+      "UntrustedCObjDotAvx2": {
+        "bytes": 58673,
+        "compile_sec": 5.271
+      },
+      "AutoCertFnv1a": {
+        "bytes": 21454,
+        "compile_sec": 5.058
+      },
+      "AutoCertAdler32": {
+        "bytes": 22055,
+        "compile_sec": 5.513
+      },
+      "AutoCertChecksumRol": {
+        "bytes": 18191,
+        "compile_sec": 4.507
+      },
+      "AutoCertAsciiTolower": {
+        "bytes": 23863,
+        "compile_sec": 6.079
+      },
+      "AutoCertDotO2": {
+        "bytes": 18163,
+        "compile_sec": 4.911
+      },
+      "AutoCertXorO2": {
+        "bytes": 21460,
+        "compile_sec": 5.162
+      },
+      "AutoCertDotAvx2": {
+        "bytes": 29799,
+        "compile_sec": 8.198
+      },
+      "AutoCertXorAvx2": {
+        "bytes": 26896,
+        "compile_sec": 7.512
+      },
+      "AutoCObjCegisCerts": {
+        "bytes": 6940,
+        "compile_sec": 0.503
+      }
+    },
+    "umbrella_theorem_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "umbrella_print_axioms_raw": "'AutoCObjCegisCerts.all_12_c_objs_equiv_and_4_bugs_refuted' depends on axioms: [propext, Classical.choice, Quot.sound]",
+    "private_kernel_replay": "modules=27 consts=5679 replay_ms=28290 unsafe_or_partial=0 opaque=0 declared_axioms=0 unsafe_rec=0"
+  }
+}

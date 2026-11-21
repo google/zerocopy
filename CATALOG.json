@@ -22380,6 +22380,70 @@
         "aeneas/loops-termination"
       ]
     },
+    "compiled-c-object-to-rust-equivalence-via-bytex86-and-pointer-bump-cegis": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "9a5248796bf632e9ca737f8e707978dc87f8d5aeedb7dd17a75c4e262d0855c0",
+            "package": "gcc-15",
+            "target": "x86_64-linux-gnu",
+            "version": "15.2.0-14"
+          },
+          "name": "GCC x86-64 C compiler (Debian 15.2.0-14)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, kernel, compiler, and replay interface"
+        },
+        {
+          "identity": {
+            "artifact": "lean-4.34.1-linux-x86_64",
+            "cadical_sha256": "8e92f427cfb72072fc605ec6d5f641443c35921b29c39ab2f027776cd533afce",
+            "cadical_version": "2.1.2",
+            "lean_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "version": "v4.34.1"
+          },
+          "name": "Lean v4.34.1 Linux x86_64 toolchain archive (lean and bundled CaDiCaL SAT solver)"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.5",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verification framework and Pass-1 trust boundary"
+        }
+      ],
+      "topics": [
+        "anneal/isa",
+        "anneal/theory",
+        "compilers/gcc",
+        "ffi/c-rust-equivalence",
+        "isa/simd",
+        "isa/x86-64",
+        "lean/certificates",
+        "lean/kernel-evaluation",
+        "lean/kernel-replay",
+        "rust/ffi",
+        "smt/lrat-certificates",
+        "verification/counterexample-synthesis",
+        "verification/equivalence",
+        "verification/invariants"
+      ]
+    },
     "compiled-columnar-query-engines-vectorized-pipelines-and-simd-codecs": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -63404,6 +63468,89 @@
         "lean/mechanization"
       ]
     },
+    "mutating-simd-overlapping-tail-stores-masked-faults-and-skolem-loop-cegis": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "llvm_version": "23.1.1",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler and core library (1.99.1)"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.5",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler and Miri interpreter (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "Mechanized Miri Tree Borrows and SIMD intrinsics model (lean-miri)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, kernel, compiler, and replay interface"
+        },
+        {
+          "identity": {
+            "artifact": "lean-4.34.1-linux-x86_64",
+            "cadical_sha256": "8e92f427cfb72072fc605ec6d5f641443c35921b29c39ab2f027776cd533afce",
+            "cadical_version": "2.1.2",
+            "lean_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "version": "v4.34.1"
+          },
+          "name": "Lean v4.34.1 Linux x86_64 toolchain archive (lean and bundled CaDiCaL SAT solver)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verification framework and Pass-1 trust boundary"
+        },
+        {
+          "identity": {
+            "artifact": "qemu-aarch64",
+            "package_version": "1:11.1.2+ds-2",
+            "sha256": "8ba579d46040c9d40c5786b4df58d7a17663c8fbd51968be84716682f758eb59"
+          },
+          "name": "QEMU AArch64 user-mode emulator"
+        }
+      ],
+      "topics": [
+        "anneal/isa",
+        "anneal/memory-model",
+        "anneal/theory",
+        "isa/aarch64",
+        "isa/simd",
+        "isa/x86-64",
+        "lean/certificates",
+        "lean/kernel-replay",
+        "llvm/passes",
+        "rust/inline-asm",
+        "rust/simd",
+        "rustc/codegen",
+        "security/constant-time",
+        "smt/lrat-certificates",
+        "verification/counterexample-synthesis",
+        "verification/invariants",
+        "verification/memory-models",
+        "verification/relational-equivalence"
+      ]
+    },
     "mutation-resilient-polarity-safe-ir-portable-pgo": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -71116,6 +71263,152 @@
         "systems/hlc-uncertainty-windows",
         "verification/isolation-antidependency-graphs",
         "smt/dependency-cycles"
+      ]
+    },
+    "postlink-gc-sections-debug-tombstone-attestation-and-speccone-pointee-closure": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-05-31",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust compiler (1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (1.99.1)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-11",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-01-24",
+            "repository": "rust-lang/rust",
+            "revision": "f134bbc78dac04a17324341a8d4a15a6930d81a7",
+            "version": "1.95.0-nightly"
+          },
+          "name": "Rust compiler (1.95.0-nightly supplying rust-lld 21.1.8)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "00d23d10dc48c6bb9d57ba96d4a748d85d77d0c7",
+            "version": "21.1.8"
+          },
+          "name": "LLVM and rust-lld 21.1.8"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM and rust-lld 23.1.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+            "version": "23.1.5"
+          },
+          "name": "LLVM and rust-lld 23.1.5"
+        },
+        {
+          "identity": {
+            "package": "GNU Binutils for Debian",
+            "tool": "ld.bfd",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils (ld.bfd and readelf)"
+        },
+        {
+          "identity": {
+            "package": "Debian mold 2.42.1",
+            "repository": "rui314/mold",
+            "tool": "ld.mold",
+            "version": "2.42.1"
+          },
+          "name": "mold linker"
+        },
+        {
+          "identity": {
+            "package": "Debian llvm-21-tools",
+            "repository": "llvm/llvm-project",
+            "revision": "85a90d119deb25b518867cd37d62c7b93b575a6f",
+            "version": "21.1.8"
+          },
+          "name": "LLVM 21 CLI tools (llvm-mc and llvm-objcopy)"
+        },
+        {
+          "identity": {
+            "package": "Debian qemu-user 1:11.1.2+ds-2",
+            "tool": "qemu-riscv64",
+            "version": "11.1.2"
+          },
+          "name": "QEMU user-mode RISC-V 64-bit emulator"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+            "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+          },
+          "name": "RISC-V ELF psABI Specification"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Rust verifier"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "anneal/inline-asm",
+        "anneal/rustc-capture",
+        "anneal/spec-cone",
+        "isa/aarch64",
+        "isa/riscv64",
+        "isa/x86-64",
+        "lean/mechanization",
+        "llvm/icf",
+        "llvm/lld",
+        "llvm/lto",
+        "llvm/mc-layer",
+        "rust/inline-asm",
+        "rust/stdarch",
+        "rustc/codegen",
+        "rustc/driver",
+        "rustc/layout-abi",
+        "rustc/mir",
+        "rustc/tyctxt",
+        "security/assembler-directives",
+        "systems/elf-gc-sections",
+        "systems/elf-linker-instruction-relaxation",
+        "verification/inline-asm-soundness",
+        "verification/non-interference"
       ]
     },
     "power-em-side-channel-physics-dpa-cpa-screaming-channels-and-sifa": {
@@ -92037,6 +92330,118 @@
         "verification/concurrency"
       ]
     },
+    "s2n-bignum-arm-asl-pass2-aarch64-transpiler-and-lean-miri-neon-triangulation": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri formal MIR and AArch64 NEON/Crypto intrinsic interpreter"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "d4518712d040485efe621caba1c723a07fbc549e"
+          },
+          "name": "AWS s2n-bignum HOL Light AArch64 formal verification suite"
+        },
+        {
+          "identity": {
+            "document_number": "DDI 0487",
+            "edition": "L.a",
+            "publisher": "Arm Limited"
+          },
+          "name": "Arm Architecture Reference Manual for A-profile architecture"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.1",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "target": "aarch64-unknown-linux-gnu",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler and core::arch standard library (stable 1.99.1)"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.1",
+            "repository": "rust-lang/rust",
+            "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+            "target": "aarch64-unknown-linux-gnu",
+            "version": "1.101.0-nightly"
+          },
+          "name": "Rust compiler and core::arch standard library (nightly 1.101.0)"
+        },
+        {
+          "identity": {
+            "llvm_version": "21.1.8",
+            "repository": "rust-lang/rust",
+            "revision": "f134bbc78dac04a17324341a8d4a15a6930d81a7",
+            "target": "aarch64-unknown-linux-gnu",
+            "version": "1.95.0-nightly"
+          },
+          "name": "Rust compiler and core::arch standard library (nightly 1.95.0)"
+        },
+        {
+          "identity": {
+            "artifact": "qemu-aarch64",
+            "package_version": "1:11.1.2+ds-2",
+            "version": "11.1.2"
+          },
+          "name": "QEMU AArch64 user-mode emulator"
+        },
+        {
+          "identity": {
+            "package": "Debian llvm 21.1.8",
+            "target": "aarch64-unknown-linux-gnu",
+            "version": "21.1.8"
+          },
+          "name": "LLVM machine-code disassembler and object tools (llvm-mc, llvm-objdump)"
+        },
+        {
+          "identity": {
+            "fips_180_4": "FIPS PUB 180-4 (August 2015)",
+            "fips_197": "FIPS PUB 197-upd1 (May 2023)",
+            "publisher": "National Institute of Standards and Technology"
+          },
+          "name": "NIST FIPS 197 Advanced Encryption Standard and FIPS 180-4 Secure Hash Standard"
+        }
+      ],
+      "topics": [
+        "isa/aarch64",
+        "isa/decoding",
+        "isa/simd",
+        "isa/neon",
+        "verification/machine-code",
+        "verification/correspondence",
+        "verification/simd",
+        "anneal/tcb",
+        "anneal/pass-2",
+        "lean/kernel-replay",
+        "lean/transpilation",
+        "rustc/intrinsics",
+        "rust/core-arch",
+        "llvm/aarch64-backend"
+      ]
+    },
     "s2n-bignum-xed-pass2-x86-64-transpiler-and-lean-miri-simd-triangulation": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -112762,6 +113167,123 @@
         "lean/mechanization",
         "kraken",
         "verification/isa-refinement"
+      ]
+    },
+    "x86-64-fs-gs-segment-sfi-escape-addr32-opsize-decoding-and-pass2-prefix-fuzzing": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "d4518712d040485efe621caba1c723a07fbc549e"
+          },
+          "name": "AWS s2n-bignum HOL Light x86-64 formal verification suite"
+        },
+        {
+          "identity": {
+            "repository": "intelxed/xed",
+            "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+          },
+          "name": "Intel X86 Encoder Decoder (XED)"
+        },
+        {
+          "identity": {
+            "repository": "lfi-project/lfi-verifier",
+            "revision": "8c3c47983572039b138f8fa15c12231f2655bbef"
+          },
+          "name": "Lightweight Fault Isolation (LFI) binary verifier"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.5",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "package": "Debian gcc 15.2.0-14",
+            "target": "x86_64-linux-gnu",
+            "version": "15.2.0"
+          },
+          "name": "GCC C compiler toolchain"
+        },
+        {
+          "identity": {
+            "package": "Debian llvm 21.1.8",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "21.1.8"
+          },
+          "name": "LLVM machine-code disassembler (llvm-mc)"
+        },
+        {
+          "identity": {
+            "package": "Debian binutils 2.47",
+            "target": "x86_64-linux-gnu",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils assembler, objdump, and readelf"
+        },
+        {
+          "identity": {
+            "cpu": "GenuineIntel Family 6 Model 106 Stepping 6 (Intel Xeon @ 2.60GHz)",
+            "features": "fsgsbase avx2 avx512f avx512vl bmi1 bmi2",
+            "kernel": "Linux 7.1.6-1rodete1-amd64 x86_64"
+          },
+          "name": "Intel Xeon Ice Lake-SP x86-64 processor and Linux trap delivery"
+        },
+        {
+          "identity": {
+            "document_number": "325462-087US",
+            "edition": "2025",
+            "publisher": "Intel Corporation"
+          },
+          "name": "Intel 64 and IA-32 Architectures Software Developer's Manual"
+        },
+        {
+          "identity": {
+            "specification": "psABI x86-64",
+            "version": "1.0"
+          },
+          "name": "System V Application Binary Interface AMD64 Architecture Processor Supplement"
+        }
+      ],
+      "topics": [
+        "anneal/pass-2",
+        "anneal/tcb",
+        "compilers/gcc",
+        "compilers/stack-protector",
+        "isa/decoding",
+        "isa/prefixes",
+        "isa/segments",
+        "isa/simd",
+        "isa/x86-64",
+        "lean/kernel-replay",
+        "rustc/codegen",
+        "security/sandboxing",
+        "verification/correspondence",
+        "verification/lifting",
+        "verification/machine-code",
+        "verification/sfi",
+        "verification/stack-separation"
       ]
     },
     "x86-avx512-short-loop-regression-and-vector-width-profitability": {

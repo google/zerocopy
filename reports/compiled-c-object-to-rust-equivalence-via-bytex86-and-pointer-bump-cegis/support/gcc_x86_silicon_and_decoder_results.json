@@ -1,0 +1,288 @@
+{
+  "compiler": "gcc (Debian 15.2.0-14) 15.2.0",
+  "object_functions_audited": 16,
+  "total_object_instructions_decoded": 656,
+  "total_object_text_bytes": 2580,
+  "baseline_32_64_vex_only_failed_functions": 16,
+  "baseline_32_64_vex_only_failure_rate_pct": 100.0,
+  "bytex86gcc_and_vendorx86gccref_decoded_functions": 16,
+  "bytex86gcc_and_vendorx86gccref_decode_rate_pct": 100.0,
+  "gap_feature_instruction_counts": {
+    "legacy_non_vex_sse2": 67,
+    "multibyte_0f1f_nop": 46,
+    "movzx_movsx_subword": 40,
+    "subreg8_byte_op": 20,
+    "imul_3op_imm": 4,
+    "rol_ror_rotate": 2,
+    "lea_non64_operand_size": 2,
+    "subreg8_high_byte_ah_bh": 1,
+    "leave64_epilogue": 1,
+    "movsxd_32_to_64": 1
+  },
+  "silicon_vectors_total": 68,
+  "silicon_vectors_matched_lean_kernel": 68,
+  "silicon_agreement_pct": 100.0,
+  "lean_module_metrics": {
+    "VendorX86GccRef": {
+      "bytes": 74886,
+      "compile_sec": 6.918
+    },
+    "ByteX86Gcc": {
+      "bytes": 102113,
+      "compile_sec": 9.524
+    },
+    "ByteX86GccDecodeBase": {
+      "bytes": 33503,
+      "compile_sec": 12.481
+    },
+    "ByteX86GccDecodePass2": {
+      "bytes": 16807,
+      "compile_sec": 6.701
+    },
+    "ByteX86GccPass2": {
+      "bytes": 32935,
+      "compile_sec": 3.491
+    }
+  },
+  "silicon_check_compile_sec": 19.169,
+  "private_kernel_replay": "consts=3970 replay_ms=2391 unsafe_or_partial=0 axioms=0",
+  "object_function_breakdown": [
+    {
+      "unit": "c_ffi_kernels_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_fnv1a64",
+      "total_bytes": 80,
+      "insn_count": 18,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_adler32_chunk",
+      "total_bytes": 128,
+      "insn_count": 33,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "imul_3op_imm",
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_checksum_rol_u8",
+      "total_bytes": 48,
+      "insn_count": 16,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop",
+        "rol_ror_rotate"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_ascii_tolower",
+      "total_bytes": 64,
+      "insn_count": 17,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "lea_non64_operand_size",
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop",
+        "subreg8_byte_op"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_dot_u8_u16",
+      "total_bytes": 240,
+      "insn_count": 64,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "legacy_non_vex_sse2",
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_xor_stream",
+      "total_bytes": 36,
+      "insn_count": 13,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop",
+        "subreg8_byte_op"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O3_avx2",
+      "flags": "-O3 -mavx2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_fnv1a64",
+      "total_bytes": 80,
+      "insn_count": 18,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O3_avx2",
+      "flags": "-O3 -mavx2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_adler32_chunk",
+      "total_bytes": 128,
+      "insn_count": 33,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "imul_3op_imm",
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O3_avx2",
+      "flags": "-O3 -mavx2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_checksum_rol_u8",
+      "total_bytes": 48,
+      "insn_count": 16,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop",
+        "rol_ror_rotate"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O3_avx2",
+      "flags": "-O3 -mavx2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_ascii_tolower",
+      "total_bytes": 64,
+      "insn_count": 17,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "lea_non64_operand_size",
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop",
+        "subreg8_byte_op"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O3_avx2",
+      "flags": "-O3 -mavx2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_dot_u8_u16",
+      "total_bytes": 784,
+      "insn_count": 183,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop",
+        "subreg8_byte_op"
+      ]
+    },
+    {
+      "unit": "c_ffi_kernels_O3_avx2",
+      "flags": "-O3 -mavx2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_xor_stream",
+      "total_bytes": 442,
+      "insn_count": 117,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "leave64_epilogue",
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop",
+        "subreg8_byte_op",
+        "subreg8_high_byte_ah_bh"
+      ]
+    },
+    {
+      "unit": "c_ffi_bugs_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_bug1_int_len_endpoints",
+      "total_bytes": 32,
+      "insn_count": 10,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "movsxd_32_to_64",
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop"
+      ]
+    },
+    {
+      "unit": "c_ffi_bugs_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_bug2_signed_char_fnv1a",
+      "total_bytes": 80,
+      "insn_count": 18,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop"
+      ]
+    },
+    {
+      "unit": "c_ffi_bugs_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_bug3_off_by_one_xor",
+      "total_bytes": 48,
+      "insn_count": 14,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop",
+        "subreg8_byte_op"
+      ]
+    },
+    {
+      "unit": "c_ffi_bugs_O2",
+      "flags": "-O2 -fno-stack-protector -fno-asynchronous-unwind-tables",
+      "name": "c_bug4_asm_clobber_abi",
+      "total_bytes": 278,
+      "insn_count": 69,
+      "baseline_32_64_vex_fails": true,
+      "baseline_gap_features": [
+        "legacy_non_vex_sse2",
+        "movzx_movsx_subword",
+        "multibyte_0f1f_nop"
+      ]
+    }
+  ],
+  "notable_silicon_observations": {
+    "rex_nullification_40_2e_88_df": {
+      "rax": 1229801703532086340,
+      "rcx": 6148933456521300104,
+      "rdx": 11068065209510513868,
+      "rbx": 15987196962499680858,
+      "rsi": 72623859790383013,
+      "rdi": 579005069656919612,
+      "r8": 14627333964952502399,
+      "r9": 16045690981097406592,
+      "y0_u256": 3630912288645472445584134723231062203003805238775308843342514481891726533137
+    },
+    "rex_active_2e_40_88_df": {
+      "rax": 1229801703532086340,
+      "rcx": 6148933456521300104,
+      "rdx": 11068065209510513868,
+      "rbx": 15987196962499662426,
+      "rsi": 72623859790383013,
+      "rdi": 579005069656919642,
+      "r8": 14627333964952502399,
+      "r9": 16045690981097406592,
+      "y0_u256": 3630912288645472445584134723231062203003805238775308843342514481891726533137
+    },
+    "legacy_pxor_preserves_hi128_y0": "0x8070605efbeadde04030201bebafeca00000000000000000000000000000000",
+    "vex128_vpxor_zeroes_hi128_y0": "0x0",
+    "nop_16b_gp0_trapno": 13,
+    "lock_nop_ud_trapno": 6
+  }
+}

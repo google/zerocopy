@@ -1,0 +1,163 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "modules": {
+    "IntrinsicAarch64Ext.lean": {
+      "compile_ms": 2821.78,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 327472,
+      "olean_bytes": 2352568,
+      "source_bytes": 35099,
+      "source_lines": 691,
+      "source_sha256": "e636f2f73abcdf072bd365a9f222499ade5caa2bdf210be13bdba1276f4ecf38",
+      "zero_warnings_and_errors": true
+    },
+    "NeonTriangulation24.lean": {
+      "compile_ms": 8774.58,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 433560,
+      "olean_bytes": 4386592,
+      "source_bytes": 13082,
+      "source_lines": 218,
+      "source_sha256": "2df881f43afd9bbfbf25ef4d847103370cc474916efbb6fac3b6f241a00da4ae",
+      "zero_warnings_and_errors": true
+    },
+    "NeonTriangulationCore.lean": {
+      "compile_ms": 7171.99,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 451620,
+      "olean_bytes": 1087696,
+      "source_bytes": 45904,
+      "source_lines": 738,
+      "source_sha256": "c0012c2bbbe8d75b80ac795a4e1e09c66aeb93874bb0b4b148ec92dbb28a19c8",
+      "zero_warnings_and_errors": true
+    },
+    "QemuCheck224.lean": {
+      "compile_ms": 35282.69,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 386756,
+      "olean_bytes": 2888808,
+      "source_bytes": 118477,
+      "source_lines": 572,
+      "source_sha256": "5eb52fe7ada9db32e25bb39a80879e542586ff7038842a771f51fe41ea21d54b",
+      "zero_warnings_and_errors": true
+    },
+    "VendorArm64Ref/Decode.lean": {
+      "compile_ms": 1465.49,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 307760,
+      "olean_bytes": 1404400,
+      "source_bytes": 28553,
+      "source_lines": 655,
+      "source_sha256": "f6c99b7de419bcbd2bf366e538a490e2e3938536b0731836cdad7c5cba7ad7a2",
+      "zero_warnings_and_errors": true
+    },
+    "VendorArm64Ref/Machine.lean": {
+      "compile_ms": 360.64,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 290336,
+      "olean_bytes": 133696,
+      "source_bytes": 3776,
+      "source_lines": 97,
+      "source_sha256": "7ddd43a87b810f9f1a507529dfe1e7423d0d160f624d349cd0405f12c86e2b94",
+      "zero_warnings_and_errors": true
+    },
+    "VendorArm64Ref/SemanticsNeon.lean": {
+      "compile_ms": 2121.08,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 330728,
+      "olean_bytes": 2253488,
+      "source_bytes": 37020,
+      "source_lines": 832,
+      "source_sha256": "30c23c039499fc0b22ab79691de6f2ebc215b656400ad98874b7e179b91bbc59",
+      "zero_warnings_and_errors": true
+    },
+    "VendorArm64Ref/SemanticsScalar.lean": {
+      "compile_ms": 1071.9,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 305192,
+      "olean_bytes": 1140128,
+      "source_bytes": 22195,
+      "source_lines": 559,
+      "source_sha256": "b28e3189aee04d32cb3b1897677511da1af2edca3da4b1a68160f2f1ba9f6ede",
+      "zero_warnings_and_errors": true
+    },
+    "VendorArm64Ref/Types.lean": {
+      "compile_ms": 3784.26,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 384856,
+      "olean_bytes": 6121568,
+      "source_bytes": 11386,
+      "source_lines": 313,
+      "source_sha256": "3a492f4cdbf593e462b423e6a024a989ba061a93b5773c7d5f8e65fe9d61b773",
+      "zero_warnings_and_errors": true
+    },
+    "WordArm64Pass2Correspondence.lean": {
+      "compile_ms": 5219.22,
+      "forbidden_source_tokens": [],
+      "maxrss_kb": 358572,
+      "olean_bytes": 3330400,
+      "source_bytes": 31154,
+      "source_lines": 669,
+      "source_sha256": "8d8ffd2b25dea5edb42aa6d5af33fa68be4a80c5afc1865dfaf1fae3c07153c4",
+      "zero_warnings_and_errors": true
+    }
+  },
+  "private_kernel_replay": {
+    "all": {
+      "axiom_consts": [],
+      "delta_consts": 3356,
+      "forbidden_refs": [],
+      "load_private_ms": 182,
+      "maxrss_kb": 2106684,
+      "opaque_consts": [],
+      "partial_consts": [],
+      "per_module_const_counts": {
+        "IntrinsicAarch64Ext": 204,
+        "NeonTriangulation24": 390,
+        "NeonTriangulationCore": 242,
+        "QemuCheck224": 485,
+        "VendorArm64Ref.Decode": 32,
+        "VendorArm64Ref.Machine": 25,
+        "VendorArm64Ref.SemanticsNeon": 76,
+        "VendorArm64Ref.SemanticsScalar": 45,
+        "VendorArm64Ref.Types": 1500,
+        "WordArm64Pass2Correspondence": 357
+      },
+      "replay_ms": 13525,
+      "transitive_axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "unsafe_consts": [],
+      "vmhwm_kb": 2106684,
+      "wall_ms": 15872.02
+    },
+    "pass2": {
+      "delta_consts": 357,
+      "load_private_ms": 180,
+      "maxrss_kb": 2152852,
+      "replay_ms": 991,
+      "transitive_axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "vmhwm_kb": 2157184,
+      "wall_ms": 3163.01
+    },
+    "vendor": {
+      "delta_consts": 1678,
+      "load_private_ms": 200,
+      "maxrss_kb": 1973684,
+      "replay_ms": 489,
+      "transitive_axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "vmhwm_kb": 1976648,
+      "wall_ms": 2817.5
+    }
+  },
+  "total_compile_ms": 68073.63,
+  "total_olean_bytes": 25099344
+}

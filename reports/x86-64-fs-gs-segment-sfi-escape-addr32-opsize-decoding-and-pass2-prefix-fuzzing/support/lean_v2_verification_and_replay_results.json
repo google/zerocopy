@@ -1,0 +1,477 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "elab_flags": [
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-j1",
+    "-M4096"
+  ],
+  "max_source_bytes_budget": 150000,
+  "max_compile_wall_s_budget": 15.0,
+  "gcc_canary_sfi_text_2048b_sha256": "505b6e816f8b04574442b3d3a17ed2ba6b327b2bbf2198e97d53b664b5f517aa",
+  "silicon_cartesian_vectors_certified_in_lean_kernel": 352,
+  "modules": {
+    "RealX64PrefixSem.lean": {
+      "source_bytes": 70486,
+      "source_lines": 1582,
+      "wall_s": 6.0569,
+      "cpu_s": 5.8,
+      "rss_mb": 394.26
+    },
+    "PicMultiFnSfiV2.lean": {
+      "source_bytes": 90002,
+      "source_lines": 1608,
+      "wall_s": 11.5929,
+      "cpu_s": 11.26,
+      "rss_mb": 426.26
+    },
+    "StackCanaryLiftV2.lean": {
+      "source_bytes": 63573,
+      "source_lines": 888,
+      "wall_s": 4.9702,
+      "cpu_s": 4.89,
+      "rss_mb": 398.46
+    },
+    "VendorX86RefV2/Types.lean": {
+      "source_bytes": 16318,
+      "source_lines": 403,
+      "wall_s": 4.6817,
+      "cpu_s": 4.42,
+      "rss_mb": 379.92
+    },
+    "VendorX86RefV2/Decode.lean": {
+      "source_bytes": 38608,
+      "source_lines": 756,
+      "wall_s": 2.0238,
+      "cpu_s": 1.79,
+      "rss_mb": 320.0
+    },
+    "VendorX86RefV2/SemanticsScalar.lean": {
+      "source_bytes": 25861,
+      "source_lines": 623,
+      "wall_s": 1.524,
+      "cpu_s": 1.23,
+      "rss_mb": 302.07
+    },
+    "VendorX86RefV2/SemanticsSimd.lean": {
+      "source_bytes": 25849,
+      "source_lines": 424,
+      "wall_s": 1.7301,
+      "cpu_s": 1.34,
+      "rss_mb": 307.66
+    },
+    "VendorX86RefV2/Machine.lean": {
+      "source_bytes": 3241,
+      "source_lines": 76,
+      "wall_s": 0.5667,
+      "cpu_s": 0.29,
+      "rss_mb": 284.37
+    },
+    "ByteX86Pass2CorrespondenceV2.lean": {
+      "source_bytes": 64492,
+      "source_lines": 1347,
+      "wall_s": 5.1755,
+      "cpu_s": 5.0,
+      "rss_mb": 380.8
+    },
+    "StockGccCanaryShard0.lean (generated in tmpdir)": {
+      "source_bytes": 6600,
+      "source_lines": 75,
+      "wall_s": 7.6508,
+      "cpu_s": 7.4,
+      "rss_mb": 663.34
+    },
+    "StockGccCanaryShard1.lean (generated in tmpdir)": {
+      "source_bytes": 6603,
+      "source_lines": 75,
+      "wall_s": 9.7464,
+      "cpu_s": 9.55,
+      "rss_mb": 778.91
+    },
+    "StockGccCanaryWorkloadCertV2.lean (generated in tmpdir)": {
+      "source_bytes": 2533,
+      "source_lines": 55,
+      "wall_s": 0.6357,
+      "cpu_s": 0.36,
+      "rss_mb": 277.29
+    },
+    "SiliconCartesian352Shard0.lean (generated in tmpdir)": {
+      "source_bytes": 42699,
+      "source_lines": 189,
+      "wall_s": 8.7733,
+      "cpu_s": 8.55,
+      "rss_mb": 621.41
+    },
+    "SiliconCartesian352Shard1.lean (generated in tmpdir)": {
+      "source_bytes": 38809,
+      "source_lines": 189,
+      "wall_s": 7.8023,
+      "cpu_s": 7.54,
+      "rss_mb": 603.38
+    },
+    "SiliconCartesian352Shard2.lean (generated in tmpdir)": {
+      "source_bytes": 39589,
+      "source_lines": 189,
+      "wall_s": 8.7621,
+      "cpu_s": 8.53,
+      "rss_mb": 630.7
+    },
+    "SiliconCartesian352Shard3.lean (generated in tmpdir)": {
+      "source_bytes": 41922,
+      "source_lines": 189,
+      "wall_s": 8.9403,
+      "cpu_s": 8.6,
+      "rss_mb": 629.9
+    },
+    "SiliconCartesian352Shard4.lean (generated in tmpdir)": {
+      "source_bytes": 39558,
+      "source_lines": 186,
+      "wall_s": 8.425,
+      "cpu_s": 8.26,
+      "rss_mb": 634.16
+    },
+    "SiliconCartesian352Cert.lean (generated in tmpdir)": {
+      "source_bytes": 643,
+      "source_lines": 12,
+      "wall_s": 0.4452,
+      "cpu_s": 0.25,
+      "rss_mb": 274.71
+    }
+  },
+  "replay_audit": {
+    "trust_level": 0,
+    "plugins": [],
+    "load_exts": false,
+    "visibility_level": "private",
+    "wall_s": 23.3134,
+    "cpu_s": 23.12,
+    "rss_mb": 3787.47,
+    "allowed_axioms_ceiling": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "audited_theorem_count": 30,
+    "replayed_roots": [
+      {
+        "root_module": "RealX64PrefixSem",
+        "import_ms": 227,
+        "fresh_kernel_replay_ms": 438,
+        "replayed_constants": 1214,
+        "non_base_modules_replayed": [
+          "RealX64PrefixSem"
+        ]
+      },
+      {
+        "root_module": "PicMultiFnSfiV2",
+        "import_ms": 216,
+        "fresh_kernel_replay_ms": 999,
+        "replayed_constants": 1457,
+        "non_base_modules_replayed": [
+          "RealX64PrefixSem",
+          "PicMultiFnSfiV2"
+        ]
+      },
+      {
+        "root_module": "StackCanaryLiftV2",
+        "import_ms": 241,
+        "fresh_kernel_replay_ms": 1579,
+        "replayed_constants": 1250,
+        "non_base_modules_replayed": [
+          "RealX64PrefixSem",
+          "StackCanaryLiftV2"
+        ]
+      },
+      {
+        "root_module": "ByteX86Pass2CorrespondenceV2",
+        "import_ms": 232,
+        "fresh_kernel_replay_ms": 1112,
+        "replayed_constants": 2284,
+        "non_base_modules_replayed": [
+          "VendorX86RefV2.Types",
+          "VendorX86RefV2.Decode",
+          "VendorX86RefV2.SemanticsScalar",
+          "VendorX86RefV2.SemanticsSimd",
+          "VendorX86RefV2.Machine",
+          "ByteX86Pass2CorrespondenceV2"
+        ]
+      },
+      {
+        "root_module": "StockGccCanaryWorkloadCertV2",
+        "import_ms": 221,
+        "fresh_kernel_replay_ms": 4955,
+        "replayed_constants": 1468,
+        "non_base_modules_replayed": [
+          "RealX64PrefixSem",
+          "PicMultiFnSfiV2",
+          "StockGccCanaryShard0",
+          "StockGccCanaryShard1",
+          "StockGccCanaryWorkloadCertV2"
+        ]
+      },
+      {
+        "root_module": "SiliconCartesian352Cert",
+        "import_ms": 260,
+        "fresh_kernel_replay_ms": 8259,
+        "replayed_constants": 2012,
+        "non_base_modules_replayed": [
+          "VendorX86RefV2.Types",
+          "VendorX86RefV2.Decode",
+          "VendorX86RefV2.SemanticsScalar",
+          "VendorX86RefV2.SemanticsSimd",
+          "VendorX86RefV2.Machine",
+          "SiliconCartesian352Shard0",
+          "SiliconCartesian352Shard1",
+          "SiliconCartesian352Shard2",
+          "SiliconCartesian352Shard3",
+          "SiliconCartesian352Shard4",
+          "SiliconCartesian352Cert"
+        ]
+      }
+    ],
+    "audited_theorems": [
+      {
+        "root_module": "RealX64PrefixSem",
+        "theorem": "RealX64PrefixSem.decodeX64V2_len_bounds",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "RealX64PrefixSem",
+        "theorem": "RealX64PrefixSem.decodeX64V2_prefix_invariant",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "RealX64PrefixSem",
+        "theorem": "RealX64PrefixSem.unpatched_decoder_blinds_sfi_to_fs_prefix",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "RealX64PrefixSem",
+        "theorem": "RealX64PrefixSem.fs_escape_overwrites_outside_arena_on_realX64",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "RealX64PrefixSem",
+        "theorem": "RealX64PrefixSem.gs_escape_overwrites_outside_arena_on_realX64",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "RealX64PrefixSem",
+        "theorem": "RealX64PrefixSem.null_cs_2e_preserves_fs_while_lea_ignores_fs",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "RealX64PrefixSem",
+        "theorem": "RealX64PrefixSem.addr32_load_and_lock_cmpxchg_truncate_ea",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "RealX64PrefixSem",
+        "theorem": "RealX64PrefixSem.op16_push_rex_precedence_and_imm16_len",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "PicMultiFnSfiV2",
+        "theorem": "PicMultiFnSfiV2.checkSfiPicMultiFnV2_rejects_fs_escape",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "PicMultiFnSfiV2",
+        "theorem": "PicMultiFnSfiV2.checkSfiPicMultiFnV2_rejects_gs_escape",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "PicMultiFnSfiV2",
+        "theorem": "PicMultiFnSfiV2.checkSfiPicMultiFnV2_rejects_addr32_store",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "PicMultiFnSfiV2",
+        "theorem": "PicMultiFnSfiV2.checkSfiPicMultiFnV2_rejects_op16_push",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "PicMultiFnSfiV2",
+        "theorem": "PicMultiFnSfiV2.checkSfiPicMultiFnV2_rejects_op16_jmp",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "PicMultiFnSfiV2",
+        "theorem": "PicMultiFnSfiV2.checkSfiPicMultiFnV2_sound",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "StackCanaryLiftV2",
+        "theorem": "StackCanaryLiftV2.unpatched_fs28_flat_mismodel_counterexample",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "StackCanaryLiftV2",
+        "theorem": "StackCanaryLiftV2.gcc_hash2_canary_verified",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "StackCanaryLiftV2",
+        "theorem": "StackCanaryLiftV2.rust_unexposed_canary_verified",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "StackCanaryLiftV2",
+        "theorem": "StackCanaryLiftV2.xor_fs28_canary_verified",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "StackCanaryLiftV2",
+        "theorem": "StackCanaryLiftV2.gcc_hash2_canary_corrupted_traps_to_stack_chk_fail",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "ByteX86Pass2CorrespondenceV2",
+        "theorem": "VendorX86RefV2.finishLen_le_15",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "ByteX86Pass2CorrespondenceV2",
+        "theorem": "VendorX86RefV2.decodeRef_window16_invariant",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "ByteX86Pass2CorrespondenceV2",
+        "theorem": "VendorX86RefV2.execStepsN_implies_stepsN",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "ByteX86Pass2CorrespondenceV2",
+        "theorem": "ByteX86V2.vendorX86RefV2_step_sub_byteX86V2_step",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "ByteX86Pass2CorrespondenceV2",
+        "theorem": "ByteX86V2.vendorX86RefV2_stepsN_sub_byteX86V2_stepsN",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "ByteX86Pass2CorrespondenceV2",
+        "theorem": "ByteX86V2.blind_pass2_vacuous_simulation",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "ByteX86Pass2CorrespondenceV2",
+        "theorem": "ByteX86V2.pass2_shared_scanPrefixes_blind_spot_counterexample",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "ByteX86Pass2CorrespondenceV2",
+        "theorem": "ByteX86V2.tcb_fs_0x28_canary_load_and_xor",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "StockGccCanaryWorkloadCertV2",
+        "theorem": "StockGccCanaryWorkloadCertV2.stockGccCanaryWorkload2048_verified",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "StockGccCanaryWorkloadCertV2",
+        "theorem": "StockGccCanaryWorkloadCertV2.stockGccCanaryWorkload2048_sfi_sound",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "root_module": "SiliconCartesian352Cert",
+        "theorem": "SiliconCartesian352Cert.cartesianAll352_silicon_verified",
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,629 @@
+{
+  "positive_loops_synthesized": 6,
+  "manual_invariant_loc_total": 0,
+  "ripple_borrow_order_transducer_lrat": {
+    "solve_ms": 2.66,
+    "trim_ms": 0.56,
+    "total_cnf_clauses": 165,
+    "core_cnf_clauses": 95,
+    "raw_rup_steps": 39,
+    "trimmed_rup_steps": 36,
+    "rat_steps": 0,
+    "max_recycled_slot": 96,
+    "o_depth": 5,
+    "init_leaves": 4,
+    "step_leaves": 9
+  },
+  "positive_loops": [
+    {
+      "slug": "VpshufbNibbleLut",
+      "module": "AutoLoop_VpshufbNibbleLut",
+      "theorems": [
+        "LockedMutatingObligations.verify_vpshufb_nibble_lut",
+        "LockedMutatingObligations.verify_vpshufb_hex_ascii"
+      ],
+      "inferred_schedule": {
+        "simd_stride": 32,
+        "tail_mode": ".overlapDisjoint",
+        "requires_idempotence": false,
+        "has_short_scalar_loop": false,
+        "lane_empirically_idempotent": false
+      },
+      "cegis_64bit_pruning": {
+        "pruned_clause": "cursor <= 64 [coincidental micro-trace bound]",
+        "triage": "Class II (unreachable non-inductive trace artifact on 64-bit Skolem StepVC)",
+        "sat_calls": 45,
+        "shrink_ms": 214.6,
+        "witness_64bit": {
+          "cursor": 64,
+          "cursor_next": 96,
+          "len": 97
+        },
+        "missing_suffix_ablation": null
+      },
+      "monolithic_64bit_skolem_vc": {
+        "solve_ms": 353.3,
+        "trim_ms": 692.81,
+        "total_cnf_clauses": 9083,
+        "core_cnf_clauses": 6708,
+        "raw_rup_steps": 63043,
+        "trimmed_rup_steps": 21851,
+        "rat_steps": 0,
+        "cnf_vars": 2922,
+        "aig_gates": 2681
+      },
+      "condensed_8bit_skolem_vc": {
+        "solve_ms": 5.3,
+        "trim_ms": 5.68,
+        "total_cnf_clauses": 1467,
+        "core_cnf_clauses": 850,
+        "raw_rup_steps": 445,
+        "trimmed_rup_steps": 305,
+        "rat_steps": 0,
+        "max_recycled_slot": 851,
+        "o_depth": 5,
+        "init_leaves": 36,
+        "step_leaves": 77,
+        "cnf_vars": 514,
+        "aig_gates": 441
+      },
+      "factored_total_rup_steps": 341,
+      "rup_compression_ratio": 64.08,
+      "emitted_lean_bytes": 55133,
+      "total_synth_ms": 1317.44
+    },
+    {
+      "slug": "Avx2AsciiTolowerInplace",
+      "module": "AutoLoop_Avx2AsciiTolowerInplace",
+      "theorems": [
+        "LockedMutatingObligations.verify_avx2_ascii_tolower_inplace"
+      ],
+      "inferred_schedule": {
+        "simd_stride": 32,
+        "tail_mode": ".overlapInplaceUnbuffered",
+        "requires_idempotence": true,
+        "has_short_scalar_loop": false,
+        "lane_empirically_idempotent": true
+      },
+      "cegis_64bit_pruning": {
+        "pruned_clause": "cursor <= 64 [coincidental micro-trace bound]",
+        "triage": "Class II (unreachable non-inductive trace artifact on 64-bit Skolem StepVC)",
+        "sat_calls": 45,
+        "shrink_ms": 215.46,
+        "witness_64bit": {
+          "cursor": 64,
+          "cursor_next": 96,
+          "len": 97
+        },
+        "missing_suffix_ablation": {
+          "omitted_clause": "unwritten_inplace_suffix: (buf + cursor <= q < buf + len) -> mem[q] == mem0[q]",
+          "status": "SAT_NON_INDUCTIVE (exit 10)",
+          "solve_ms": 182.37,
+          "witness": {
+            "buf": 0,
+            "len": 33,
+            "q": 0,
+            "mem0_q": 0,
+            "corrupted_mem_q": 1
+          }
+        }
+      },
+      "monolithic_64bit_skolem_vc": {
+        "solve_ms": 343.27,
+        "trim_ms": 423.41,
+        "total_cnf_clauses": 8936,
+        "core_cnf_clauses": 6358,
+        "raw_rup_steps": 59177,
+        "trimmed_rup_steps": 16606,
+        "rat_steps": 0,
+        "cnf_vars": 2875,
+        "aig_gates": 2634
+      },
+      "condensed_8bit_skolem_vc": {
+        "solve_ms": 5.57,
+        "trim_ms": 5.52,
+        "total_cnf_clauses": 1320,
+        "core_cnf_clauses": 783,
+        "raw_rup_steps": 351,
+        "trimmed_rup_steps": 239,
+        "rat_steps": 0,
+        "max_recycled_slot": 784,
+        "o_depth": 5,
+        "init_leaves": 33,
+        "step_leaves": 60,
+        "cnf_vars": 467,
+        "aig_gates": 394
+      },
+      "factored_total_rup_steps": 275,
+      "rup_compression_ratio": 60.39,
+      "emitted_lean_bytes": 50397,
+      "total_synth_ms": 1221.14
+    },
+    {
+      "slug": "DisjointXorOverlapTail",
+      "module": "AutoLoop_DisjointXorOverlapTail",
+      "theorems": [
+        "LockedMutatingObligations.verify_disjoint_xor_overlap_tail"
+      ],
+      "inferred_schedule": {
+        "simd_stride": 32,
+        "tail_mode": ".overlapDisjoint",
+        "requires_idempotence": false,
+        "has_short_scalar_loop": false,
+        "lane_empirically_idempotent": false
+      },
+      "cegis_64bit_pruning": {
+        "pruned_clause": "cursor <= 64 [coincidental micro-trace bound]",
+        "triage": "Class II (unreachable non-inductive trace artifact on 64-bit Skolem StepVC)",
+        "sat_calls": 45,
+        "shrink_ms": 242.61,
+        "witness_64bit": {
+          "cursor": 64,
+          "cursor_next": 96,
+          "len": 97
+        },
+        "missing_suffix_ablation": null
+      },
+      "monolithic_64bit_skolem_vc": {
+        "solve_ms": 450.43,
+        "trim_ms": 414.0,
+        "total_cnf_clauses": 8989,
+        "core_cnf_clauses": 6440,
+        "raw_rup_steps": 49064,
+        "trimmed_rup_steps": 14474,
+        "rat_steps": 0,
+        "cnf_vars": 2888,
+        "aig_gates": 2647
+      },
+      "condensed_8bit_skolem_vc": {
+        "solve_ms": 5.24,
+        "trim_ms": 9.5,
+        "total_cnf_clauses": 1373,
+        "core_cnf_clauses": 818,
+        "raw_rup_steps": 396,
+        "trimmed_rup_steps": 287,
+        "rat_steps": 0,
+        "max_recycled_slot": 819,
+        "o_depth": 5,
+        "init_leaves": 35,
+        "step_leaves": 72,
+        "cnf_vars": 480,
+        "aig_gates": 407
+      },
+      "factored_total_rup_steps": 323,
+      "rup_compression_ratio": 44.81,
+      "emitted_lean_bytes": 52033,
+      "total_synth_ms": 1163.7
+    },
+    {
+      "slug": "PreloadedInplaceXorTail",
+      "module": "AutoLoop_PreloadedInplaceXorTail",
+      "theorems": [
+        "LockedMutatingObligations.verify_preloaded_inplace_xor_tail"
+      ],
+      "inferred_schedule": {
+        "simd_stride": 32,
+        "tail_mode": ".overlapInplacePreloaded",
+        "requires_idempotence": false,
+        "has_short_scalar_loop": false,
+        "lane_empirically_idempotent": false
+      },
+      "cegis_64bit_pruning": {
+        "pruned_clause": "cursor <= 64 [coincidental micro-trace bound]",
+        "triage": "Class II (unreachable non-inductive trace artifact on 64-bit Skolem StepVC)",
+        "sat_calls": 45,
+        "shrink_ms": 352.13,
+        "witness_64bit": {
+          "cursor": 64,
+          "cursor_next": 96,
+          "len": 97
+        },
+        "missing_suffix_ablation": {
+          "omitted_clause": "unwritten_inplace_suffix: (buf + cursor <= q < buf + len) -> mem[q] == mem0[q]",
+          "status": "SAT_NON_INDUCTIVE (exit 10)",
+          "solve_ms": 181.0,
+          "witness": {
+            "buf": 0,
+            "len": 33,
+            "q": 0,
+            "mem0_q": 0,
+            "corrupted_mem_q": 1
+          }
+        }
+      },
+      "monolithic_64bit_skolem_vc": {
+        "solve_ms": 295.64,
+        "trim_ms": 213.81,
+        "total_cnf_clauses": 9026,
+        "core_cnf_clauses": 6536,
+        "raw_rup_steps": 30329,
+        "trimmed_rup_steps": 9852,
+        "rat_steps": 0,
+        "cnf_vars": 2898,
+        "aig_gates": 2657
+      },
+      "condensed_8bit_skolem_vc": {
+        "solve_ms": 4.57,
+        "trim_ms": 5.04,
+        "total_cnf_clauses": 1410,
+        "core_cnf_clauses": 917,
+        "raw_rup_steps": 355,
+        "trimmed_rup_steps": 285,
+        "rat_steps": 0,
+        "max_recycled_slot": 918,
+        "o_depth": 5,
+        "init_leaves": 39,
+        "step_leaves": 72,
+        "cnf_vars": 490,
+        "aig_gates": 417
+      },
+      "factored_total_rup_steps": 321,
+      "rup_compression_ratio": 30.69,
+      "emitted_lean_bytes": 52559,
+      "total_synth_ms": 1084.65
+    },
+    {
+      "slug": "VpmaskmovdFaultSuppressingTail",
+      "module": "AutoLoop_VpmaskmovdFaultSuppressingTail",
+      "theorems": [
+        "LockedMutatingObligations.verify_vpmaskmovd_fault_suppressing_tail"
+      ],
+      "inferred_schedule": {
+        "simd_stride": 32,
+        "tail_mode": ".maskedVpmaskmovd",
+        "requires_idempotence": false,
+        "has_short_scalar_loop": false,
+        "lane_empirically_idempotent": false
+      },
+      "cegis_64bit_pruning": {
+        "pruned_clause": "cursor <= 64 [coincidental micro-trace bound]",
+        "triage": "Class II (unreachable non-inductive trace artifact on 64-bit Skolem StepVC)",
+        "sat_calls": 45,
+        "shrink_ms": 213.68,
+        "witness_64bit": {
+          "cursor": 64,
+          "cursor_next": 96,
+          "len": 97
+        },
+        "missing_suffix_ablation": null
+      },
+      "monolithic_64bit_skolem_vc": {
+        "solve_ms": 17.33,
+        "trim_ms": 9.14,
+        "total_cnf_clauses": 6284,
+        "core_cnf_clauses": 2925,
+        "raw_rup_steps": 1401,
+        "trimmed_rup_steps": 925,
+        "rat_steps": 0,
+        "cnf_vars": 2089,
+        "aig_gates": 1847
+      },
+      "condensed_8bit_skolem_vc": {
+        "solve_ms": 3.88,
+        "trim_ms": 3.75,
+        "total_cnf_clauses": 1132,
+        "core_cnf_clauses": 578,
+        "raw_rup_steps": 358,
+        "trimmed_rup_steps": 228,
+        "rat_steps": 0,
+        "max_recycled_slot": 579,
+        "o_depth": 5,
+        "init_leaves": 25,
+        "step_leaves": 57,
+        "cnf_vars": 409,
+        "aig_gates": 335
+      },
+      "factored_total_rup_steps": 264,
+      "rup_compression_ratio": 3.5,
+      "emitted_lean_bytes": 36691,
+      "total_synth_ms": 257.9
+    },
+    {
+      "slug": "ScalarEpilogueShortDispatch",
+      "module": "AutoLoop_ScalarEpilogueShortDispatch",
+      "theorems": [
+        "LockedMutatingObligations.verify_scalar_epilogue_short_dispatch"
+      ],
+      "inferred_schedule": {
+        "simd_stride": 32,
+        "tail_mode": ".shortScalarPlusOverlap",
+        "requires_idempotence": false,
+        "has_short_scalar_loop": true,
+        "lane_empirically_idempotent": false
+      },
+      "cegis_64bit_pruning": {
+        "pruned_clause": "cursor <= 64 [coincidental micro-trace bound]",
+        "triage": "Class II (unreachable non-inductive trace artifact on 64-bit Skolem StepVC)",
+        "sat_calls": 45,
+        "shrink_ms": 220.43,
+        "witness_64bit": {
+          "cursor": 64,
+          "cursor_next": 96,
+          "len": 97
+        },
+        "missing_suffix_ablation": null
+      },
+      "monolithic_64bit_skolem_vc": {
+        "solve_ms": 641.4,
+        "trim_ms": 518.98,
+        "total_cnf_clauses": 12813,
+        "core_cnf_clauses": 8529,
+        "raw_rup_steps": 29783,
+        "trimmed_rup_steps": 8887,
+        "rat_steps": 0,
+        "cnf_vars": 4038,
+        "aig_gates": 3796
+      },
+      "condensed_8bit_skolem_vc": {
+        "solve_ms": 3.6,
+        "trim_ms": 3.11,
+        "total_cnf_clauses": 957,
+        "core_cnf_clauses": 367,
+        "raw_rup_steps": 259,
+        "trimmed_rup_steps": 165,
+        "rat_steps": 0,
+        "max_recycled_slot": 368,
+        "o_depth": 5,
+        "init_leaves": 16,
+        "step_leaves": 41,
+        "cnf_vars": 322,
+        "aig_gates": 284
+      },
+      "factored_total_rup_steps": 451,
+      "rup_compression_ratio": 19.71,
+      "emitted_lean_bytes": 67716,
+      "total_synth_ms": 1450.52
+    }
+  ],
+  "refuted_bugs_count": 6,
+  "refuted_bugs": [
+    {
+      "id": "bug01_inplace_xor_unbuffered_overlap",
+      "description": "In-place non-idempotent xor_stream with unbuffered [len - 32 .. len) overlapping tail double-XORs [len - 32 .. 32)",
+      "sat_calls": 17,
+      "shrink_ms": 48.14,
+      "minimal_witness": {
+        "buf": 0,
+        "len": 33,
+        "q": 1,
+        "key": 1,
+        "mem0_q": 0,
+        "len32_aligned_check": "UNSAT (exit 20 in 2.05 ms)"
+      }
+    },
+    {
+      "id": "bug02_unguarded_len_lt_32_wraparound_fault",
+      "description": "Missing len < 32 guard wraps (len - 32) mod 2^64 to 0xffffffffffffffe1 (-31 B before slice base)",
+      "sat_calls": 7,
+      "shrink_ms": 46.34,
+      "minimal_witness": {
+        "len": 1,
+        "wrapped_tail_offset_u64": "0xffffffffffffffe1",
+        "signed_pre_base_offset": -31
+      }
+    },
+    {
+      "id": "bug03_maskmovdqu_zero_mask_fault",
+      "description": "SSE2 MASKMOVDQU / VEX VMASKMOVDQU faults on PROT_READ / PROT_NONE even when active_bytes == 0 (all-zero mask)",
+      "sat_calls": 3,
+      "shrink_ms": 6.03,
+      "minimal_witness": {
+        "active_bytes": 0,
+        "mask_hex": "0x00000000000000000000000000000000",
+        "unwritable_byte_offset": 0
+      }
+    },
+    {
+      "id": "bug04_vpshufb_bit7_unmasked_lut_zeroing",
+      "description": "Unmasked vpshufb zeroes lane whenever input bit 7 (0x80) is set instead of indexing lut[b & 0x0F]",
+      "sat_calls": 19,
+      "shrink_ms": 64.63,
+      "minimal_witness": {
+        "input_byte": 128,
+        "input_hex": "0x80",
+        "lut_0": 1,
+        "expected_lut_val": 1,
+        "actual_vpshufb_val": 0
+      }
+    },
+    {
+      "id": "bug05_aligned_rmw_slack_writeback_clobber",
+      "description": "Aligned 32B vmovdqa RMW slack-writeback overwrites adjacent sibling field / concurrent atomic increment at offset 1",
+      "sat_calls": 12,
+      "shrink_ms": 27.02,
+      "minimal_witness": {
+        "slice_len": 1,
+        "clobbered_offset": 1,
+        "sibling_delta": 1,
+        "mem0_sibling": 0
+      }
+    },
+    {
+      "id": "bug06_rep_movsb_missing_cld_df1",
+      "description": "Inline asm! rep movsb without cld under DF=1 decrements rdi/rsi (hidden at len=1, caught at minimal len=2)",
+      "sat_calls": 22,
+      "shrink_ms": 176.57,
+      "minimal_witness": {
+        "df": true,
+        "len": 2,
+        "dst": 2,
+        "src": 5,
+        "mismatch_addr_q": 1,
+        "mem0": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "len1_single_byte_check": "UNSAT (exit 20 in 1.60 ms)"
+      }
+    }
+  ],
+  "rust_silicon_repro_suite": {
+    "source_file": "support/generated_mutating_bug_repros.rs",
+    "source_bytes": 8622,
+    "rustc_compile_ms": 164.13,
+    "silicon_exec_ms": 9.76,
+    "test_summary": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+  },
+  "lean_kernel_audit": {
+    "compile_stats": {
+      "WriteMaskedFaultsAndTailTrichotomy": {
+        "source_bytes": 48990,
+        "olean_bytes": 2332096,
+        "compile_ms": 3140.16
+      },
+      "SkolemMutatingBase": {
+        "source_bytes": 15719,
+        "olean_bytes": 629768,
+        "compile_ms": 664.9
+      },
+      "UntrustedSkolemCegisHints": {
+        "source_bytes": 63086,
+        "olean_bytes": 6141056,
+        "compile_ms": 10465.87
+      },
+      "RefuteMutatingSimd6": {
+        "source_bytes": 5694,
+        "olean_bytes": 71528,
+        "compile_ms": 479.69
+      },
+      "AutoLoop_VpshufbNibbleLut": {
+        "source_bytes": 55133,
+        "olean_bytes": 485112,
+        "compile_ms": 9910.64
+      },
+      "AutoLoop_Avx2AsciiTolowerInplace": {
+        "source_bytes": 50397,
+        "olean_bytes": 407320,
+        "compile_ms": 9830.37
+      },
+      "AutoLoop_DisjointXorOverlapTail": {
+        "source_bytes": 52033,
+        "olean_bytes": 457328,
+        "compile_ms": 9872.76
+      },
+      "AutoLoop_PreloadedInplaceXorTail": {
+        "source_bytes": 52559,
+        "olean_bytes": 470416,
+        "compile_ms": 9826.83
+      },
+      "AutoLoop_VpmaskmovdFaultSuppressingTail": {
+        "source_bytes": 36691,
+        "olean_bytes": 364184,
+        "compile_ms": 6258.62
+      },
+      "AutoLoop_ScalarEpilogueShortDispatch": {
+        "source_bytes": 67716,
+        "olean_bytes": 556632,
+        "compile_ms": 12517.14
+      }
+    },
+    "trichotomy_cold_replay": {
+      "replayed_constants": 528,
+      "unsafe_rec_constants": 0,
+      "replay_ms": 719.89
+    },
+    "base_hints_cold_replay": {
+      "replayed_constants": 697,
+      "unsafe_rec_constants": 0,
+      "replay_ms": 3338.97,
+      "import_ms": 71.85
+    },
+    "per_module_private_replay": {
+      "AutoLoop_VpshufbNibbleLut": {
+        "replayed_constants": 4,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 2,
+        "import_ms": 76.84,
+        "replay_ms": 4209.3,
+        "transitive_axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_Avx2AsciiTolowerInplace": {
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 1,
+        "import_ms": 74.06,
+        "replay_ms": 3977.87,
+        "transitive_axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_DisjointXorOverlapTail": {
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 1,
+        "import_ms": 72.95,
+        "replay_ms": 4116.9,
+        "transitive_axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_PreloadedInplaceXorTail": {
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 1,
+        "import_ms": 72.87,
+        "replay_ms": 4216.81,
+        "transitive_axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_VpmaskmovdFaultSuppressingTail": {
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 1,
+        "import_ms": 75.81,
+        "replay_ms": 2623.0,
+        "transitive_axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_ScalarEpilogueShortDispatch": {
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 1,
+        "import_ms": 73.33,
+        "replay_ms": 4993.65,
+        "transitive_axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "RefuteMutatingSimd6": {
+        "replayed_constants": 11,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 0,
+        "import_ms": 59.81,
+        "replay_ms": 6.95,
+        "transitive_axioms": [
+          "propext"
+        ]
+      }
+    }
+  }
+}
