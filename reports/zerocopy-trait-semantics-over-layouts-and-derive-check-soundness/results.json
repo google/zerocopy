@@ -258,7 +258,7 @@
     "prior_art": [
       "zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): FromBytes derive analysis 'The maximum number of discriminants must be used (so that every possible bit pattern is a valid one)' (zerocopy/src/lib.rs:4135-4136)."
     ],
-    "design_question": "What exactly must hold for a fieldless enum to be FromBytes?",
+    "design_question": "What exactly must hold for a fieldless enum to be SemFromBytes?",
     "tier_justification": "T1: documented informally (zerocopy/src/lib.rs:4135-4136)."
   },
   {
@@ -289,7 +289,7 @@
     "nonvacuity_witness_lean": "Toy.Zc.nv_fieldless_full_u8",
     "non_claims": [
       "The check's soundness depends on the compiler rejecting duplicate or out-of-range discriminants; the derive itself does not check this.",
-      "Does not claim that the count check (enumVariantCountOK) is necessary for FromBytes: it rejects repr(C) and 32/64-bit primitive representations outright (matching zerocopy-derive's u8/i8/u16/i16 cap), although R3a characterizes FromBytes for every primitive width; and for data-carrying enums, or without distinct representable discriminants, the variant count does not determine FromBytes.",
+      "Does not claim that the count check (enumVariantCountOK) is necessary for SemFromBytes: it rejects repr(C) and 32/64-bit primitive representations outright (matching zerocopy-derive's u8/i8/u16/i16 cap), although R3a characterizes SemFromBytes for every primitive width; and for data-carrying enums, or without distinct representable discriminants, the variant count does not determine SemFromBytes.",
       "Does not cover enums with #[repr(..., align(N))] (not in the model's AST), repr(C) enums whose discriminants need a tag other than the 4-byte i32-range tag, or repr(Rust) enums (niches).",
       "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
     ],
@@ -558,7 +558,7 @@
     "nonvacuity_witness_lean": "Toy.Zc.nv_union_intoBytes",
     "non_claims": [
       "The union value model is 'written through one field'. Values produced by successive writes through different fields (e.g. write b: u16, then overwrite a: u8) are not distinct values of the model (union_decode_encode_forgets_bytes). The claim is relative to this value model; it is sound for Rust only under guarantees Rust has not made: either union bit validity forbids uninit at bytes initialized in every valid value of every field, or (zerocopy issue 1792, rust-lang/unsafe-code-guidelines issue 533) it is never safe to construct a union value other than from its fields, typed copies of a union preserve every byte written at a position that is not padding in all fields, and IntoBytes carries a library safety invariant that values are only constructed from fields.",
-      "Holds only for the written-through-one-field value model; under a permissive union validity that admits uninitialized bytes no union of nonzero size is IntoBytes (R4d). Rust has not settled union validity.",
+      "Proved for the written-through-one-field value model; under a permissive union validity that admits uninitialized bytes it fails: no union of nonzero size is IntoBytes there (R4d). Rust has not settled union validity.",
       "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
     ],
     "prior_art": [

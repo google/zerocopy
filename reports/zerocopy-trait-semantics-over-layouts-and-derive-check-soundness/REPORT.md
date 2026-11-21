@@ -9,7 +9,7 @@ This package is a Lean 4 model, checked by the Lean kernel and using no Mathlib,
 * the checks performed by `zerocopy-derive`;
 * zerocopy's slice-DST metadata validation (`validate_cast_and_convert_metadata`).
 
-Every result below is proved without `sorry`, and its axioms are among `propext`, `Classical.choice` and `Quot.sound`. The results are statements about this toy model. Each connection to zerocopy or rustc is a separate claim, labelled `derived (modeling bridge)` under Findings, and is argued from cited source lines, not proved.
+Every result below is proved without `sorry`, and its axioms are among `propext`, `Classical.choice` and `Quot.sound`. The results are statements about this toy model. Model–system relation: none proved (the derive-check theorems relate the model's transcriptions of zerocopy-derive's checks to the model's own byte-level predicates; no theorem relates the model to zerocopy's or rustc's source). The kernel-checked theorems neither establish nor refute the corresponding claims about zerocopy v0.8.63, `zerocopy-derive` or rustc. Each connection to zerocopy or rustc is a separate claim, labelled `derived (modeling bridge)` under Findings, and is argued from cited source lines, not proved.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -983,7 +983,7 @@ theorem fieldless_enum_fromBytes_iff_every_tag_is_discriminant (t : IntTy)
 - **Non-vacuity witness:** repr(u8) enum with 256 fieldless variants 0..255. (`Toy.Zc.nv_fieldless_full_u8`)
 - **Prior art:**
   - zerocopy v0.8.63 (google/zerocopy, commit c55af491426ef53f35fb8c6e83f220fa07712e66): FromBytes derive analysis 'The maximum number of discriminants must be used (so that every possible bit pattern is a valid one)' (zerocopy/src/lib.rs:4135-4136).
-- **Design question:** What exactly must hold for a fieldless enum to be FromBytes?
+- **Design question:** What exactly must hold for a fieldless enum to be SemFromBytes?
 - **Non-claims:** see Boundaries, R3a.
 
 Basis: execution (Lean kernel check)
@@ -1883,7 +1883,7 @@ Basis: execution (Lean kernel check)
 **R3b-enum-variant-count-check-sound** (`Toy.Zc.enum_variant_count_check_sound`):
 
 * The check's soundness depends on the compiler rejecting duplicate or out-of-range discriminants; the derive itself does not check this.
-* Does not claim that the count check (enumVariantCountOK) is necessary for FromBytes: it rejects repr(C) and 32/64-bit primitive representations outright (matching zerocopy-derive's u8/i8/u16/i16 cap), although R3a characterizes FromBytes for every primitive width; and for data-carrying enums, or without distinct representable discriminants, the variant count does not determine FromBytes.
+* Does not claim that the count check (enumVariantCountOK) is necessary for SemFromBytes: it rejects repr(C) and 32/64-bit primitive representations outright (matching zerocopy-derive's u8/i8/u16/i16 cap), although R3a characterizes SemFromBytes for every primitive width; and for data-carrying enums, or without distinct representable discriminants, the variant count does not determine SemFromBytes.
 * Does not cover enums with #[repr(..., align(N))] (not in the model's AST), repr(C) enums whose discriminants need a tag other than the 4-byte i32-range tag, or repr(Rust) enums (niches).
 * Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact.
 
@@ -1928,7 +1928,7 @@ Basis: execution (Lean kernel check)
 **R4a-union-intoBytes-iff-full-size-fields** (`Toy.Zc.union_intoBytes_iff_fields_intoBytes_full_size_of_inhabited`):
 
 * The union value model is 'written through one field'. Values produced by successive writes through different fields (e.g. write b: u16, then overwrite a: u8) are not distinct values of the model (union_decode_encode_forgets_bytes). The claim is relative to this value model; it is sound for Rust only under guarantees Rust has not made: either union bit validity forbids uninit at bytes initialized in every valid value of every field, or (zerocopy issue 1792, rust-lang/unsafe-code-guidelines issue 533) it is never safe to construct a union value other than from its fields, typed copies of a union preserve every byte written at a position that is not padding in all fields, and IntoBytes carries a library safety invariant that values are only constructed from fields.
-* Holds only for the written-through-one-field value model; under a permissive union validity that admits uninitialized bytes no union of nonzero size is IntoBytes (R4d). Rust has not settled union validity.
+* Proved for the written-through-one-field value model; under a permissive union validity that admits uninitialized bytes it fails: no union of nonzero size is IntoBytes there (R4d). Rust has not settled union validity.
 * Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact.
 
 **R4b-union-intoBytes-derive-sound** (`Toy.Zc.union_intoBytes_of_fields_of_padding_check`):

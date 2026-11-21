@@ -816,7 +816,7 @@ theorem enum_variant_count_check_sound (r : EnumRepr) (vs : List (DiscrSyn × Li
   codes_cover r vs hwf (count_check_len r vs hc)
 
 /-- **R3c.** Soundness of the enum `FromBytes` derive's semantic conditions, data-carrying case:
-distinct representable discriminants, the count check, and `FromBytes` fields imply `FromBytes`. -/
+distinct representable discriminants, the count check, and `SemFromBytes` fields imply `SemFromBytes`. -/
 theorem enum_fromBytes_of_count_check (r : EnumRepr) (vs : List (DiscrSyn × List Desc))
     (hwf : discrsWF r (vs.map Prod.fst) = true) (hc : enumVariantCountOK r vs = true)
     (hF : ∀ v ∈ vs, ∀ f ∈ v.2, SemFromBytes f) :
@@ -1584,7 +1584,7 @@ compiler evaluates to `0`), the remaining 255 implicit (discriminants `1, …, 2
 def nonLiteralZeroFullU8 : List (DiscrSyn × List Desc) :=
   (.other 0, []) :: List.replicate 255 (.implicit, [])
 
-/-- **The `FromBytes` derive rejects a `FromBytes` enum because it runs `find_zero_variant`.** The
+/-- **The `FromBytes` derive rejects a `SemFromBytes` enum because it runs `find_zero_variant`.** The
 enum `nonLiteralZeroFullU8` is well-formed, passes the variant-count check, and is semantically
 `FromBytes` (by R3c) and `FromZeros` (by R3d), but `find_zero_variant` cannot see the non-literal
 zero discriminant (it returns `Err(true)`), so the modeled `FromZeros` check, which the `FromBytes`
