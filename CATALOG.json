@@ -78079,6 +78079,534 @@
         "anneal/forward-compatibility"
       ]
     },
+    "rust-repo-complete-layout-crate-dag-and-bootstrap-architecture": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-18",
+            "repository": "rust-lang/rust",
+            "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly compiler, standard library, and bootstrap tree"
+        },
+        {
+          "identity": {
+            "release_date": "2026-10-15",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 release compiler and standard library baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/backtrace-rs",
+            "revision": "d902726a1dcdc1e1c66f73d1162181b5423c645b",
+            "submodule_path": "library/backtrace"
+          },
+          "name": "library/backtrace submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/book",
+            "revision": "2771df165f092a4fbb9f46b5b2e7450f19010adb",
+            "submodule_path": "src/doc/book"
+          },
+          "name": "src/doc/book submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/edition-guide",
+            "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f",
+            "submodule_path": "src/doc/edition-guide"
+          },
+          "name": "src/doc/edition-guide submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-embedded/book",
+            "revision": "637b4a0244e16ec391a60184ae0c86b550ffc24b",
+            "submodule_path": "src/doc/embedded-book"
+          },
+          "name": "src/doc/embedded-book submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/nomicon",
+            "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6",
+            "submodule_path": "src/doc/nomicon"
+          },
+          "name": "src/doc/nomicon submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+            "submodule_path": "src/doc/reference"
+          },
+          "name": "src/doc/reference submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-by-example",
+            "revision": "dcc14f912bf8790792a2df082eddc82ab2539229",
+            "submodule_path": "src/doc/rust-by-example"
+          },
+          "name": "src/doc/rust-by-example submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/gcc",
+            "revision": "e1c6e07b095d091177376a163da44039475e05e3",
+            "submodule_path": "src/gcc"
+          },
+          "name": "src/gcc submodule (libgccjit fork)"
+        },
+        {
+          "identity": {
+            "branch": "rustc/23.1-2026-07-22",
+            "repository": "rust-lang/llvm-project",
+            "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380",
+            "submodule_path": "src/llvm-project"
+          },
+          "name": "src/llvm-project submodule (LLVM 23.1 branch)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20",
+            "submodule_path": "src/tools/cargo"
+          },
+          "name": "src/tools/cargo submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/enzyme",
+            "revision": "9cff5a8afebc22748bb36c135dfe5a09dd1047f3",
+            "submodule_path": "src/tools/enzyme"
+          },
+          "name": "src/tools/enzyme submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-perf",
+            "revision": "15d95905429e577d5a710b17c49e04b4451c263b",
+            "submodule_path": "src/tools/rustc-perf"
+          },
+          "name": "src/tools/rustc-perf submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/tpde",
+            "revision": "050927ee81dc11a9e599fa2524ff0eef16daf51a",
+            "submodule_path": "src/tpde"
+          },
+          "name": "src/tpde submodule (TPDE backend)"
+        }
+      ],
+      "topics": [
+        "build",
+        "build/bootstrapping",
+        "cargo",
+        "cargo/workspaces",
+        "compilers",
+        "compilers/bootstrapping",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/rustc-internals",
+        "llvm",
+        "rust",
+        "rust/standard-library",
+        "rustc",
+        "rustc/architecture",
+        "rustc/bootstrap",
+        "rustc/codegen",
+        "rustc/compiletest",
+        "rustc/queries",
+        "tooling",
+        "verification",
+        "verification/compiler-verification"
+      ]
+    },
+    "rust-repo-governance-ci-tidy-merge-queue-and-change-acceptance": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-18",
+            "repository": "rust-lang/rust",
+            "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly repository, CI workflows, citool, tidy, and stability gates"
+        },
+        {
+          "identity": {
+            "release_date": "2026-10-15",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 release repository baseline"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-20",
+            "repository": "rust-lang/team",
+            "revision": "35cec6a5bc4f65f1082edea0766c296da8f242c6"
+          },
+          "name": "Rust Team roster, permissions, and repository branch rulesets"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-20",
+            "repository": "rust-lang/bors",
+            "revision": "831b87d59302caac5c76f52a7414f10f52c33bb2"
+          },
+          "name": "Bors merge queue, rollup builder, EC2 JIT runner manager, and post-merge unroller"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-18",
+            "repository": "rust-lang/triagebot",
+            "revision": "61d3c27be1f4d2c81939987d43734b1565ca3683"
+          },
+          "name": "Triagebot PR assignment, autolabeling, commit checks, and MCP handler"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-09-24",
+            "repository": "rust-lang/rfcbot-rs",
+            "revision": "abc6e319b90c6cac93d6505e115ad70fe3d40ed3"
+          },
+          "name": "rfcbot Final Comment Period (FCP) consensus engine"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/compiler-team",
+            "revision": "6cf981d16c1852074b397eee544adc3d1a7eb6b6"
+          },
+          "name": "Rust Compiler Team Major Change Proposal (MCP) tracker configuration"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/libs-team",
+            "revision": "56dd8ca2e2aa2c097d8b8010da6fef790a5ec97c"
+          },
+          "name": "Rust Library Team API Change Proposal (ACP) tracker configuration"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/std-dev-guide",
+            "revision": "65992ee338636eb0e1b56154b726e9435370b899"
+          },
+          "name": "Rust Standard Library Developer Guide feature lifecycle specification"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-10",
+            "repository": "rust-lang/rfcs",
+            "revision": "7677feddd580f356f780cb7123aeda6a3708275a"
+          },
+          "name": "Rust RFC repository (governance, target tier policy, and editions)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-13",
+            "repository": "rust-lang/crater",
+            "revision": "abaa949414a8b9457858f0fc1a6ed97824cb9120"
+          },
+          "name": "Crater ecosystem regression runner and craterbot command interface"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-28",
+            "repository": "rust-lang/rustc-perf",
+            "revision": "15d95905429e577d5a710b17c49e04b4451c263b",
+            "submodule_path": "src/tools/rustc-perf"
+          },
+          "name": "rustc-perf benchmark suite and rust-timer bot"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-20",
+            "repository": "rust-lang/gcc",
+            "revision": "e1c6e07b095d091177376a163da44039475e05e3",
+            "submodule_path": "src/gcc"
+          },
+          "name": "src/gcc libgccjit submodule synchronized with rustc_codegen_gcc"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-10",
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+            "submodule_path": "src/doc/reference"
+          },
+          "name": "The Rust Reference submodule gated by stabilization PRs"
+        }
+      ],
+      "topics": [
+        "build",
+        "build/ci",
+        "cargo",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "compilers/verified-rustc/rustc-internals",
+        "rust",
+        "rust/editions",
+        "rust/governance",
+        "rust/stability",
+        "rustc",
+        "rustc/architecture",
+        "rustc/ci",
+        "rustc/feature-gates",
+        "rustc/target-tiers",
+        "rustc/tidy",
+        "tooling",
+        "vcs",
+        "verification"
+      ]
+    },
+    "rust-repo-submodule-subtree-rolls-stage0-bumps-and-release-nightly-pipeline": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-18",
+            "repository": "rust-lang/rust",
+            "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly compiler, standard library, bootstrap, and dist tree"
+        },
+        {
+          "identity": {
+            "release_date": "2026-10-15",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 point-release merge commit on stable"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-12",
+            "repository": "rust-lang/rust",
+            "revision": "d1e0df558f7375eecf223b2a01cdacb6898c64f1",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 version-bump commit"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-06",
+            "repository": "rust-lang/rust",
+            "revision": "3416a824041cc6d3fcb6834950458d1f2e32437e",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0 version-bump commit on main after 1.101.0 beta branch"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-10",
+            "repository": "rust-lang/rust",
+            "revision": "325b278b7790437fe2b09c70da93559801e8ec91"
+          },
+          "name": "Rust main stage0 bump to 1.101.0-beta.1"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-10",
+            "repository": "rust-lang/rust",
+            "revision": "bbcdfd90a3f81ca2a5f6d69b943a6ff0d8582102",
+            "version": "1.101.0-beta.1"
+          },
+          "name": "Rust 1.101.0-beta.1 stage0 bootstrap compiler pinned at 412be32a6a18"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-09",
+            "repository": "rust-lang/rust",
+            "revision": "ac8310ba643a3796cbe77d2e06944d7c8513999f",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust nightly stage0 rustfmt build pinned at 412be32a6a18"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-08-18",
+            "repository": "rust-lang/rust",
+            "revision": "88d9e12ae178fab0fb5cc050a94da85685d449ea",
+            "version": "1.98.0"
+          },
+          "name": "Rust 1.98.0 stable stage0 compiler pinned by Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-22",
+            "repository": "rust-lang/promote-release",
+            "revision": "9407dc9fe0a529c6d55b66ad54f75531eb34e51a"
+          },
+          "name": "Rust release promotion, signing, recompression, and train-branching service"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-18",
+            "repository": "rust-lang/josh-sync",
+            "revision": "8ce49808a529d3df3283fcdc7eceff1d034578b3"
+          },
+          "name": "rustc-josh-sync bidirectional Git subtree synchronization CLI"
+        },
+        {
+          "identity": {
+            "branch": "rustc/23.1-2026-07-22",
+            "repository": "rust-lang/llvm-project",
+            "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380",
+            "submodule_path": "src/llvm-project"
+          },
+          "name": "src/llvm-project submodule (rustc/23.1-2026-07-22 branch)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "submodule_path": "src/llvm-project",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/gcc",
+            "revision": "e1c6e07b095d091177376a163da44039475e05e3",
+            "submodule_path": "src/gcc"
+          },
+          "name": "src/gcc submodule (libgccjit fork)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/tpde",
+            "revision": "050927ee81dc11a9e599fa2524ff0eef16daf51a",
+            "submodule_path": "src/tpde"
+          },
+          "name": "src/tpde submodule (TPDE fast LLVM-IR compiler backend)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/enzyme",
+            "revision": "9cff5a8afebc22748bb36c135dfe5a09dd1047f3",
+            "submodule_path": "src/tools/enzyme"
+          },
+          "name": "src/tools/enzyme submodule (LLVM automatic differentiation plugin)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20",
+            "submodule_path": "src/tools/cargo"
+          },
+          "name": "src/tools/cargo submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-perf",
+            "revision": "15d95905429e577d5a710b17c49e04b4451c263b",
+            "submodule_path": "src/tools/rustc-perf"
+          },
+          "name": "src/tools/rustc-perf submodule (PGO/BOLT training collector)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/backtrace-rs",
+            "revision": "d902726a1dcdc1e1c66f73d1162181b5423c645b",
+            "submodule_path": "library/backtrace"
+          },
+          "name": "library/backtrace submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/book",
+            "revision": "2771df165f092a4fbb9f46b5b2e7450f19010adb",
+            "submodule_path": "src/doc/book"
+          },
+          "name": "src/doc/book submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/edition-guide",
+            "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f",
+            "submodule_path": "src/doc/edition-guide"
+          },
+          "name": "src/doc/edition-guide submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-embedded/book",
+            "revision": "637b4a0244e16ec391a60184ae0c86b550ffc24b",
+            "submodule_path": "src/doc/embedded-book"
+          },
+          "name": "src/doc/embedded-book submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/nomicon",
+            "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6",
+            "submodule_path": "src/doc/nomicon"
+          },
+          "name": "src/doc/nomicon submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+            "submodule_path": "src/doc/reference"
+          },
+          "name": "src/doc/reference submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-by-example",
+            "revision": "dcc14f912bf8790792a2df082eddc82ab2539229",
+            "submodule_path": "src/doc/rust-by-example"
+          },
+          "name": "src/doc/rust-by-example submodule"
+        }
+      ],
+      "topics": [
+        "build",
+        "build/bootstrapping",
+        "build/packaging",
+        "build/pgo",
+        "build/release-engineering",
+        "cargo",
+        "compilers",
+        "compilers/bootstrapping",
+        "compilers/verified-rustc",
+        "llvm",
+        "rust",
+        "rustc",
+        "rustc/bootstrap",
+        "rustc/codegen",
+        "security",
+        "security/supply-chain",
+        "tooling",
+        "vcs",
+        "vcs/josh-subtree",
+        "vcs/submodules",
+        "verification"
+      ]
+    },
     "rust-safe-byte-kernel-bounds-check-elimination-and-autovectorization-idioms": {
       "observed_at": "2026-11-17",
       "subjects": [
@@ -81168,6 +81696,77 @@
         "rustc/codegen",
         "rustc/driver",
         "rustc/metadata"
+      ]
+    },
+    "rustc-frontend-typeck-borrowck-macro-and-metadata-completeness-contract": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-18",
+            "repository": "rust-lang/rust",
+            "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly compiler, proc_macro, and rustdoc-json-types source snapshot"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-11",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly installed rustc and rustdoc execution toolchain"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 release compiler and rustdoc baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+            "submodule_path": "src/doc/reference"
+          },
+          "name": "The Rust Reference (src/doc/reference submodule)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/edition-guide",
+            "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f",
+            "submodule_path": "src/doc/edition-guide"
+          },
+          "name": "The Rust Edition Guide (src/doc/edition-guide submodule)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/contract",
+        "compilers/verified-rustc/rustc-internals",
+        "rust",
+        "rust/editions",
+        "rust/macros",
+        "rustc",
+        "rustc/attributes",
+        "rustc/borrowck",
+        "rustc/diagnostics",
+        "rustc/frontend",
+        "rustc/lints",
+        "rustc/metadata",
+        "rustc/polonius",
+        "rustc/proc-macro",
+        "rustc/rustdoc-json",
+        "rustc/traits",
+        "rustc/typeck",
+        "tooling",
+        "verification"
       ]
     },
     "rustc-inline-assembly-specification-llvm-lowering-and-assembler-syntax": {

@@ -1,0 +1,141 @@
+{
+  "topics": [
+    "build",
+    "build/ci",
+    "cargo",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/program-planning",
+    "compilers/verified-rustc/rustc-internals",
+    "rust",
+    "rust/editions",
+    "rust/governance",
+    "rust/stability",
+    "rustc",
+    "rustc/architecture",
+    "rustc/ci",
+    "rustc/feature-gates",
+    "rustc/target-tiers",
+    "rustc/tidy",
+    "tooling",
+    "vcs",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.102.0-nightly repository, CI workflows, citool, tidy, and stability gates",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+        "version": "1.102.0-nightly",
+        "commit_date": "2026-11-18"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 release repository baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "release_date": "2026-10-15"
+      }
+    },
+    {
+      "name": "Rust Team roster, permissions, and repository branch rulesets",
+      "identity": {
+        "repository": "rust-lang/team",
+        "revision": "35cec6a5bc4f65f1082edea0766c296da8f242c6",
+        "commit_date": "2026-11-20"
+      }
+    },
+    {
+      "name": "Bors merge queue, rollup builder, EC2 JIT runner manager, and post-merge unroller",
+      "identity": {
+        "repository": "rust-lang/bors",
+        "revision": "831b87d59302caac5c76f52a7414f10f52c33bb2",
+        "commit_date": "2026-11-20"
+      }
+    },
+    {
+      "name": "Triagebot PR assignment, autolabeling, commit checks, and MCP handler",
+      "identity": {
+        "repository": "rust-lang/triagebot",
+        "revision": "61d3c27be1f4d2c81939987d43734b1565ca3683",
+        "commit_date": "2026-11-18"
+      }
+    },
+    {
+      "name": "rfcbot Final Comment Period (FCP) consensus engine",
+      "identity": {
+        "repository": "rust-lang/rfcbot-rs",
+        "revision": "abc6e319b90c6cac93d6505e115ad70fe3d40ed3",
+        "commit_date": "2026-09-24"
+      }
+    },
+    {
+      "name": "Rust Compiler Team Major Change Proposal (MCP) tracker configuration",
+      "identity": {
+        "repository": "rust-lang/compiler-team",
+        "revision": "6cf981d16c1852074b397eee544adc3d1a7eb6b6"
+      }
+    },
+    {
+      "name": "Rust Library Team API Change Proposal (ACP) tracker configuration",
+      "identity": {
+        "repository": "rust-lang/libs-team",
+        "revision": "56dd8ca2e2aa2c097d8b8010da6fef790a5ec97c"
+      }
+    },
+    {
+      "name": "Rust Standard Library Developer Guide feature lifecycle specification",
+      "identity": {
+        "repository": "rust-lang/std-dev-guide",
+        "revision": "65992ee338636eb0e1b56154b726e9435370b899"
+      }
+    },
+    {
+      "name": "Rust RFC repository (governance, target tier policy, and editions)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "7677feddd580f356f780cb7123aeda6a3708275a",
+        "commit_date": "2026-11-10"
+      }
+    },
+    {
+      "name": "Crater ecosystem regression runner and craterbot command interface",
+      "identity": {
+        "repository": "rust-lang/crater",
+        "revision": "abaa949414a8b9457858f0fc1a6ed97824cb9120",
+        "commit_date": "2026-11-13"
+      }
+    },
+    {
+      "name": "rustc-perf benchmark suite and rust-timer bot",
+      "identity": {
+        "repository": "rust-lang/rustc-perf",
+        "revision": "15d95905429e577d5a710b17c49e04b4451c263b",
+        "submodule_path": "src/tools/rustc-perf",
+        "commit_date": "2026-10-28"
+      }
+    },
+    {
+      "name": "src/gcc libgccjit submodule synchronized with rustc_codegen_gcc",
+      "identity": {
+        "repository": "rust-lang/gcc",
+        "revision": "e1c6e07b095d091177376a163da44039475e05e3",
+        "submodule_path": "src/gcc",
+        "commit_date": "2026-10-20"
+      }
+    },
+    {
+      "name": "The Rust Reference submodule gated by stabilization PRs",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+        "submodule_path": "src/doc/reference",
+        "commit_date": "2026-11-10"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

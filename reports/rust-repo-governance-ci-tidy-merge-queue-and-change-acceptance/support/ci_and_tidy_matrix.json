@@ -1,0 +1,3521 @@
+{
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "412be32a6a189d9a28922beee178bc0abee9d492"
+  },
+  "triagebot": {
+    "line_count": 2094,
+    "top_level_sections_count": 22,
+    "top_level_sections": [
+      "relabel",
+      "review-submitted",
+      "review-requested",
+      "backport",
+      "ping",
+      "prioritize",
+      "autolabel",
+      "notify-zulip",
+      "mentions",
+      "assign",
+      "pr-tracking",
+      "no-merges",
+      "github-releases",
+      "shortcut",
+      "transfer",
+      "note",
+      "behind-upstream",
+      "issue-links",
+      "concern",
+      "range-diff",
+      "review-changes-since",
+      "view-all-comments-link"
+    ],
+    "relabel": {
+      "allow_unauthenticated_count": 30,
+      "allow_unauthenticated": [
+        "A-*",
+        "B-*",
+        "C-*",
+        "D-*",
+        "E-*",
+        "F-*",
+        "I-*",
+        "L-*",
+        "NLL-*",
+        "O-*",
+        "PG-*",
+        "S-*",
+        "T-*",
+        "WG-*",
+        "-Z*",
+        "beta-nominated",
+        "CI-spurious-*",
+        "const-hack",
+        "llm-assisted",
+        "llvm-*",
+        "needs-fcp",
+        "relnotes",
+        "release-blog-post",
+        "requires-*",
+        "regression-*",
+        "rla-*",
+        "perf-*",
+        "AsyncAwait-OnDeck",
+        "needs-triage",
+        "has-merge-commits"
+      ],
+      "extra_keys": [
+        "to-beta",
+        "to-stable"
+      ]
+    },
+    "autolabel": {
+      "total_rules": 86,
+      "by_prefix": {
+        "A": 49,
+        "F": 2,
+        "I": 1,
+        "O": 17,
+        "PG": 1,
+        "S": 2,
+        "T": 12,
+        "WG": 1,
+        "needs": 1
+      },
+      "trigger_field_counts": {
+        "exclude_labels": 6,
+        "new_pr": 1,
+        "trigger_files": 80,
+        "trigger_labels": 7
+      },
+      "new_pr_rules": [
+        {
+          "label": "S-waiting-on-review",
+          "exclude_labels": []
+        }
+      ]
+    },
+    "assign": {
+      "warn_non_default_branch": {
+        "enable": true,
+        "exceptions": [
+          {
+            "title": "[beta",
+            "branch": "beta"
+          },
+          {
+            "title": "[stable",
+            "branch": "stable"
+          }
+        ]
+      },
+      "contributing_url": "https://rustc-dev-guide.rust-lang.org/getting-started.html",
+      "llm_policy_url": "https://forge.rust-lang.org/policies/llm-usage.html",
+      "adhoc_groups_count": 20,
+      "adhoc_group_entry_counts": {
+        "codegen": 5,
+        "diagnostics": 5,
+        "infra-ci": 5,
+        "parser": 4,
+        "lexer": 3,
+        "mir": 3,
+        "mir-opt": 3,
+        "style-team": 3,
+        "arena": 2,
+        "borrowck": 2,
+        "compiler_leads": 2,
+        "debugger_visualizer": 2,
+        "debuginfo": 2,
+        "fallback": 2,
+        "ast_lowering": 1,
+        "compiletest": 1,
+        "dep-bumps": 1,
+        "docs": 1,
+        "incremental": 1,
+        "query-system": 1
+      },
+      "owners_path_count": 110,
+      "owners_by_top_path": {
+        ".github": 2,
+        "Cargo.lock": 1,
+        "Cargo.toml": 1,
+        "compiler": 30,
+        "library": 12,
+        "src": 42,
+        "tests": 22
+      }
+    },
+    "mentions": {
+      "total_rules": 133,
+      "by_type": {
+        "content": 4,
+        "filename": 129
+      },
+      "notable_rules": [
+        {
+          "target": "Cargo.lock",
+          "type": "filename",
+          "cc": [],
+          "has_message": true
+        },
+        {
+          "target": "compiler/rustc_codegen_cranelift",
+          "type": "filename",
+          "cc": [
+            "@bjorn3"
+          ],
+          "has_message": true
+        },
+        {
+          "target": "compiler/rustc_codegen_gcc",
+          "type": "filename",
+          "cc": [
+            "@antoyo",
+            "@GuillaumeGomez"
+          ],
+          "has_message": true
+        },
+        {
+          "target": "library/Cargo.lock",
+          "type": "filename",
+          "cc": [],
+          "has_message": true
+        },
+        {
+          "target": "src/tools/cargo",
+          "type": "filename",
+          "cc": [
+            "@weihanglo"
+          ],
+          "has_message": false
+        }
+      ]
+    },
+    "ping_groups_count": 13,
+    "ping_groups": [
+      {
+        "name": "apple",
+        "aliases": [
+          "ios",
+          "macos",
+          "tvos",
+          "visionos",
+          "watchos"
+        ],
+        "label": "O-apple"
+      },
+      {
+        "name": "arm",
+        "aliases": [],
+        "label": "O-ARM"
+      },
+      {
+        "name": "arm-maintainers",
+        "aliases": [],
+        "label": "O-ARM"
+      },
+      {
+        "name": "emscripten",
+        "aliases": [],
+        "label": "O-emscripten"
+      },
+      {
+        "name": "fuchsia",
+        "aliases": [],
+        "label": "O-fuchsia"
+      },
+      {
+        "name": "gpu-target",
+        "aliases": [],
+        "label": null
+      },
+      {
+        "name": "loongarch",
+        "aliases": [],
+        "label": "O-loongarch"
+      },
+      {
+        "name": "relnotes-interest-group",
+        "aliases": [],
+        "label": null
+      },
+      {
+        "name": "risc-v",
+        "aliases": [],
+        "label": "O-riscv"
+      },
+      {
+        "name": "rust-for-linux",
+        "aliases": [
+          "rfl"
+        ],
+        "label": "A-rust-for-linux"
+      },
+      {
+        "name": "wasi",
+        "aliases": [],
+        "label": "O-wasi"
+      },
+      {
+        "name": "wasm",
+        "aliases": [
+          "webassembly"
+        ],
+        "label": "O-wasm"
+      },
+      {
+        "name": "windows",
+        "aliases": [],
+        "label": "O-windows"
+      }
+    ],
+    "notify_zulip_count": 25,
+    "notify_zulip_rules": [
+      {
+        "label": "A-edition-2021",
+        "subkey": null,
+        "zulip_stream": 268952,
+        "required_labels": [
+          "C-bug"
+        ]
+      },
+      {
+        "label": "A-edition-2024",
+        "subkey": null,
+        "zulip_stream": 268952,
+        "required_labels": [
+          "C-bug"
+        ]
+      },
+      {
+        "label": "I-libs-nominated",
+        "subkey": null,
+        "zulip_stream": 639962,
+        "required_labels": []
+      },
+      {
+        "label": "I-prioritize",
+        "subkey": null,
+        "zulip_stream": 245100,
+        "required_labels": []
+      },
+      {
+        "label": "I-types-nominated",
+        "subkey": null,
+        "zulip_stream": 326866,
+        "required_labels": []
+      },
+      {
+        "label": "beta-accepted",
+        "subkey": "bootstrap",
+        "zulip_stream": 507486,
+        "required_labels": [
+          "T-bootstrap"
+        ]
+      },
+      {
+        "label": "beta-accepted",
+        "subkey": "compiler",
+        "zulip_stream": 474880,
+        "required_labels": [
+          "T-compiler"
+        ]
+      },
+      {
+        "label": "beta-accepted",
+        "subkey": "libs",
+        "zulip_stream": 542373,
+        "required_labels": [
+          "T-libs"
+        ]
+      },
+      {
+        "label": "beta-accepted",
+        "subkey": "rustdoc",
+        "zulip_stream": 266220,
+        "required_labels": [
+          "T-rustdoc"
+        ]
+      },
+      {
+        "label": "beta-accepted",
+        "subkey": "rustfmt",
+        "zulip_stream": 621384,
+        "required_labels": [
+          "T-rustfmt"
+        ]
+      },
+      {
+        "label": "beta-nominated",
+        "subkey": "bootstrap",
+        "zulip_stream": 507486,
+        "required_labels": [
+          "T-bootstrap"
+        ]
+      },
+      {
+        "label": "beta-nominated",
+        "subkey": "compiler",
+        "zulip_stream": 474880,
+        "required_labels": [
+          "T-compiler"
+        ]
+      },
+      {
+        "label": "beta-nominated",
+        "subkey": "libs",
+        "zulip_stream": 542373,
+        "required_labels": [
+          "T-libs"
+        ]
+      },
+      {
+        "label": "beta-nominated",
+        "subkey": "rustdoc",
+        "zulip_stream": 266220,
+        "required_labels": [
+          "T-rustdoc"
+        ]
+      },
+      {
+        "label": "beta-nominated",
+        "subkey": "rustfmt",
+        "zulip_stream": 621384,
+        "required_labels": [
+          "T-rustfmt"
+        ]
+      },
+      {
+        "label": "stable-accepted",
+        "subkey": "bootstrap",
+        "zulip_stream": 507486,
+        "required_labels": [
+          "T-bootstrap"
+        ]
+      },
+      {
+        "label": "stable-accepted",
+        "subkey": "compiler",
+        "zulip_stream": 474880,
+        "required_labels": [
+          "T-compiler"
+        ]
+      },
+      {
+        "label": "stable-accepted",
+        "subkey": "libs",
+        "zulip_stream": 542373,
+        "required_labels": [
+          "T-libs"
+        ]
+      },
+      {
+        "label": "stable-accepted",
+        "subkey": "rustdoc",
+        "zulip_stream": 266220,
+        "required_labels": [
+          "T-rustdoc"
+        ]
+      },
+      {
+        "label": "stable-accepted",
+        "subkey": "rustfmt",
+        "zulip_stream": 621384,
+        "required_labels": [
+          "T-rustfmt"
+        ]
+      },
+      {
+        "label": "stable-nominated",
+        "subkey": "bootstrap",
+        "zulip_stream": 507486,
+        "required_labels": [
+          "T-bootstrap"
+        ]
+      },
+      {
+        "label": "stable-nominated",
+        "subkey": "compiler",
+        "zulip_stream": 474880,
+        "required_labels": [
+          "T-compiler"
+        ]
+      },
+      {
+        "label": "stable-nominated",
+        "subkey": "libs",
+        "zulip_stream": 542373,
+        "required_labels": [
+          "T-libs"
+        ]
+      },
+      {
+        "label": "stable-nominated",
+        "subkey": "rustdoc",
+        "zulip_stream": 266220,
+        "required_labels": [
+          "T-rustdoc"
+        ]
+      },
+      {
+        "label": "stable-nominated",
+        "subkey": "rustfmt",
+        "zulip_stream": 621384,
+        "required_labels": [
+          "T-rustfmt"
+        ]
+      }
+    ],
+    "no_merges": {
+      "exclude_titles": [
+        "Rollup of",
+        "subtree update",
+        "Subtree update",
+        "subtree sync",
+        "Subtree sync"
+      ],
+      "labels": [
+        "has-merge-commits",
+        "S-waiting-on-author"
+      ]
+    },
+    "behind_upstream": {
+      "days-threshold": 28
+    },
+    "concern": {
+      "labels": [
+        "S-waiting-on-concerns"
+      ]
+    },
+    "backport": {
+      "t-compiler-beta-backport": [
+        "required-pr-labels",
+        "required-issue-label",
+        "add-labels"
+      ]
+    },
+    "review_submitted": {
+      "reviewed_label": "S-waiting-on-author",
+      "review_labels": [
+        "S-waiting-on-review"
+      ]
+    },
+    "review_requested": {
+      "remove_labels": [
+        "S-waiting-on-author"
+      ],
+      "add_labels": [
+        "S-waiting-on-review"
+      ]
+    },
+    "github_releases": {
+      "format": "rustc",
+      "project-name": "Rust",
+      "changelog-path": "RELEASES.md",
+      "changelog-branch": "main"
+    }
+  },
+  "bors": {
+    "line_count": 107,
+    "timeout_seconds": 21600,
+    "min_ci_time_seconds": 600,
+    "merge_queue_enabled": true,
+    "report_merge_conflicts": true,
+    "labels_blocking_approval_count": 24,
+    "labels_blocking_approval": [
+      "final-comment-period",
+      "proposed-final-comment-period",
+      "disposition-close",
+      "disposition-postpone",
+      "S-waiting-on-ACP",
+      "S-waiting-on-concerns",
+      "S-waiting-on-crater",
+      "S-waiting-on-fcp",
+      "S-waiting-on-MCP",
+      "S-waiting-on-t-lang",
+      "S-waiting-on-t-compiler",
+      "S-waiting-on-t-libs",
+      "S-waiting-on-t-types",
+      "S-waiting-on-t-opsem",
+      "S-waiting-on-t-rustdoc",
+      "S-waiting-on-t-rustdoc-frontend",
+      "S-waiting-on-t-clippy",
+      "S-blocked",
+      "needs-crater",
+      "needs-rfc",
+      "needs-fcp",
+      "needs-acp",
+      "needs-mcp",
+      "needs-reference-pr"
+    ],
+    "label_triggers": {
+      "approved": [
+        "+S-waiting-on-bors",
+        "-S-blocked",
+        "-S-waiting-on-author",
+        "-S-waiting-on-crater",
+        "-S-waiting-on-review",
+        "-S-waiting-on-team"
+      ],
+      "unapproved": [
+        "+S-waiting-on-author",
+        "-S-blocked",
+        "-S-waiting-on-bors",
+        "-S-waiting-on-crater",
+        "-S-waiting-on-review",
+        "-S-waiting-on-team"
+      ],
+      "try_failed": [
+        "+S-waiting-on-author",
+        "-S-waiting-on-review",
+        "-S-waiting-on-crater"
+      ],
+      "auto_build_succeeded": [
+        "+merged-by-bors",
+        "-S-waiting-on-bors"
+      ],
+      "auto_build_failed": [
+        "+S-waiting-on-review",
+        "-S-blocked",
+        "-S-waiting-on-bors",
+        "-S-waiting-on-author",
+        "-S-waiting-on-crater",
+        "-S-waiting-on-team"
+      ]
+    },
+    "ec2_runners": {
+      "runner_group_id": 8,
+      "label_prefix": "ec2",
+      "region": "us-east-2",
+      "images": {
+        "x86_64ami": "latest-gha-runner-ami",
+        "arm64ami": "latest-gha-runner-ami-arm64"
+      },
+      "jit_runner": "organization",
+      "allowed_instances": [
+        "m8a.2xlarge",
+        "c8a.4xlarge",
+        "c8a.8xlarge",
+        "c8a.12xlarge",
+        "m9g.2xlarge",
+        "c9g.4xlarge",
+        "c9g.8xlarge",
+        "c9g.12xlarge"
+      ]
+    },
+    "unroll_enabled": true
+  },
+  "ci_architecture": {
+    "jobs_yml_lines": 862,
+    "workflows": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/ghcr.yml",
+      ".github/workflows/post-merge.yml"
+    ],
+    "citool_modules": [
+      "src/ci/citool/src/analysis.rs",
+      "src/ci/citool/src/cpu_usage.rs",
+      "src/ci/citool/src/datadog.rs",
+      "src/ci/citool/src/github.rs",
+      "src/ci/citool/src/jobs.rs",
+      "src/ci/citool/src/jobs/tests.rs",
+      "src/ci/citool/src/main.rs",
+      "src/ci/citool/src/metrics.rs",
+      "src/ci/citool/src/test_dashboard.rs",
+      "src/ci/citool/src/utils.rs"
+    ],
+    "runner_anchors_count": 13,
+    "counts": {
+      "pr_jobs": 11,
+      "try_default_jobs": 2,
+      "auto_yaml_explicit_jobs": 84,
+      "auto_pr_autoregistered_jobs": 6,
+      "auto_pr_overridden_jobs": 5,
+      "auto_effective_total_jobs": 90,
+      "auto_nightly_channel_jobs": 90,
+      "auto_beta_channel_jobs": 89,
+      "auto_stable_channel_jobs": 89,
+      "optional_jobs": 3,
+      "max_custom_try_jobs_without_nolimit": 20
+    },
+    "pr_overridden_in_auto": [
+      "test-pr-check-1",
+      "test-pr-check-2",
+      "test-tidy",
+      "test-x86_64-gnu-miri",
+      "test-x86_64-gnu-tools"
+    ],
+    "pr_autoregistered_into_auto": [
+      "test-aarch64-gnu-llvm-22-1",
+      "test-aarch64-gnu-llvm-22-2",
+      "test-x86_64-gnu-gcc",
+      "test-x86_64-gnu-gcc-core-tests",
+      "test-x86_64-gnu-llvm-22",
+      "test-x86_64-gnu-next-trait-solver-polonius"
+    ],
+    "auto_by_runner_family": {
+      "aws-ec2-graviton-aarch64-linux": 1,
+      "aws-ec2-zen5-x86_64-linux": 2,
+      "gha-macos-arm64": 7,
+      "gha-ubuntu-aarch64-linux": 5,
+      "gha-ubuntu-x86_64-linux": 57,
+      "gha-windows-aarch64": 4,
+      "gha-windows-x86_64": 14
+    },
+    "auto_by_kind": {
+      "dist": 43,
+      "optional-test": 1,
+      "test": 46
+    },
+    "auto_channel_restricted_jobs": [
+      {
+        "name": "test-x86_64-gnu-stable",
+        "only_on_channel": "nightly"
+      }
+    ],
+    "pr_jobs": [
+      {
+        "name": "test-pr-check-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-pr-check-1",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-pr-check-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-pr-check-2",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-tidy",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-tidy",
+        "only_on_channel": null,
+        "continue_on_error": true,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-llvm-22",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-llvm-22",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-gnu-llvm-22-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04-arm",
+        "runner_family": "gha-ubuntu-aarch64-linux",
+        "image": "test-aarch64-gnu-llvm-22",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-gnu-llvm-22-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04-arm",
+        "runner_family": "gha-ubuntu-aarch64-linux",
+        "image": "test-aarch64-gnu-llvm-22",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-tools",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-tools",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-miri",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-miri",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-gcc",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-gcc",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": "llvm,gcc",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-gcc-core-tests",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-gcc-core-tests",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": "gcc",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-next-trait-solver-polonius",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-next-trait-solver-polonius",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": "llvm",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      }
+    ],
+    "try_default_jobs": [
+      {
+        "name": "dist-x86_64-linux-quick",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ec2-x86_64ami-c8a.8xlarge-x64-linux-$github.run_id-$github.run_attempt",
+        "runner_family": "aws-ec2-zen5-x86_64-linux",
+        "image": "dist-x86_64-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-aarch64-linux-quick",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ec2-arm64ami-c9g.4xlarge-aarch64-linux-$github.run_id-$github.run_attempt",
+        "runner_family": "aws-ec2-graviton-aarch64-linux",
+        "image": "dist-aarch64-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      }
+    ],
+    "auto_effective_jobs": [
+      {
+        "name": "dist-aarch64-apple",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "macos-15",
+        "runner_family": "gha-macos-arm64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-aarch64-freebsd",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04-arm",
+        "runner_family": "gha-ubuntu-aarch64-linux",
+        "image": "dist-aarch64-freebsd",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-aarch64-linux",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ec2-arm64ami-c9g.4xlarge-aarch64-linux-$github.run_id-$github.run_attempt",
+        "runner_family": "aws-ec2-graviton-aarch64-linux",
+        "image": "dist-aarch64-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-aarch64-llvm-mingw",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "windows-11-arm",
+        "runner_family": "gha-windows-aarch64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-aarch64-msvc",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "windows-11-arm",
+        "runner_family": "gha-windows-aarch64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-android",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-android",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-apple-various",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "macos-15",
+        "runner_family": "gha-macos-arm64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-arm-linux-gnueabi",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-arm-linux-gnueabi",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-arm-linux-musl",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-arm-linux-musl",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-armhf-linux",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-armhf-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-armv7-linux",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-armv7-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-i586-gnu-i586-i686-musl",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-i586-gnu-i586-i686-musl",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-i686-linux",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-i686-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-i686-mingw",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-i686-msvc",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-loongarch64-linux",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-loongarch64-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-loongarch64-musl",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-loongarch64-musl",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-ohos-aarch64",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-ohos-aarch64",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-ohos-armv7",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-ohos-armv7",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-ohos-x86_64",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-ohos-x86_64",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-powerpc-linux",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-powerpc-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-powerpc64-linux-gnu",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-powerpc64-linux-gnu",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-powerpc64-linux-musl",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-powerpc64-linux-musl",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-powerpc64le-linux-gnu",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-powerpc64le-linux-gnu",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-powerpc64le-linux-musl",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-powerpc64le-linux-musl",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-riscv64-linux-gnu",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-riscv64-linux-gnu",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-riscv64-linux-musl",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-riscv64-linux-musl",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-s390x-linux",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-s390x-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-sparcv9-solaris",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-sparcv9-solaris",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-various-1",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-various-1",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-various-2",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-various-2",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-apple",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "macos-15",
+        "runner_family": "gha-macos-arm64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-freebsd",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-x86_64-freebsd",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-illumos",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-x86_64-illumos",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-linux",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ec2-x86_64ami-c8a.4xlarge-x64-linux-$github.run_id-$github.run_attempt",
+        "runner_family": "aws-ec2-zen5-x86_64-linux",
+        "image": "dist-x86_64-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-linux-alt",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ec2-x86_64ami-m8a.2xlarge-x64-linux-$github.run_id-$github.run_attempt",
+        "runner_family": "aws-ec2-zen5-x86_64-linux",
+        "image": "dist-x86_64-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-llvm-mingw",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-mingw",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-msvc",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "windows-2025-8core-32gb",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-msvc-alt",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-musl",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-x86_64-musl",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-netbsd",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-x86_64-netbsd",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-solaris",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "dist-x86_64-solaris",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "optional-test-x86_64-gnu-autodiff",
+        "kind": "test",
+        "optional_prefix": true,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "optional-test-x86_64-gnu-autodiff",
+        "only_on_channel": null,
+        "continue_on_error": true,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-apple-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "macos-15",
+        "runner_family": "gha-macos-arm64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-apple-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "macos-15",
+        "runner_family": "gha-macos-arm64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-apple-macos-26-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "macos-26",
+        "runner_family": "gha-macos-arm64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-apple-macos-26-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "macos-26",
+        "runner_family": "gha-macos-arm64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-gnu",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04-arm",
+        "runner_family": "gha-ubuntu-aarch64-linux",
+        "image": "test-aarch64-gnu",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-gnu-debug",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04-arm",
+        "runner_family": "gha-ubuntu-aarch64-linux",
+        "image": "test-aarch64-gnu-debug",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-gnu-llvm-22-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04-arm",
+        "runner_family": "gha-ubuntu-aarch64-linux",
+        "image": "test-aarch64-gnu-llvm-22",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-gnu-llvm-22-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04-arm",
+        "runner_family": "gha-ubuntu-aarch64-linux",
+        "image": "test-aarch64-gnu-llvm-22",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-msvc-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-11-arm",
+        "runner_family": "gha-windows-aarch64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-aarch64-msvc-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-11-arm",
+        "runner_family": "gha-windows-aarch64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-arm-android",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-arm-android",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-armhf-gnu",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-armhf-gnu",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-i686-gnu-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-i686-gnu",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-i686-gnu-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-i686-gnu",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-i686-gnu-nopt-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-i686-gnu-nopt",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-i686-gnu-nopt-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-i686-gnu-nopt",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-i686-msvc",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-pr-check-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-pr-check-1",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-pr-check-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-pr-check-2",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-tidy",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-tidy",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-various",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-various",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-aux",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-aux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-debug",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-debug",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-distcheck",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-distcheck",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-gcc",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-gcc",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": "llvm,gcc",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-gcc-core-tests",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-gcc-core-tests",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": "gcc",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-llvm-22",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-llvm-22",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-llvm-22-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-llvm-22",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-llvm-22-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-llvm-22",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-llvm-22-3",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-llvm-22",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-miri",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-miri",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-next-trait-solver-polonius",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-next-trait-solver-polonius",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": "llvm",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-nopt",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-nopt",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-parallel-frontend",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-parallel-frontend",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-stable",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu",
+        "only_on_channel": "nightly",
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-stdlib-semver-check",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-stdlib-semver-check",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-gnu-tools",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-gnu-tools",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-mingw-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-mingw-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-msvc-1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-msvc-2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-msvc-ext1",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-msvc-ext2",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-msvc-ext3",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "windows-2025",
+        "runner_family": "gha-windows-x86_64",
+        "image": null,
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "test-x86_64-rust-for-linux",
+        "kind": "test",
+        "optional_prefix": false,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-x86_64-rust-for-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      }
+    ],
+    "optional_jobs": [
+      {
+        "name": "dist-aarch64-linux-quick",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ec2-arm64ami-c9g.4xlarge-aarch64-linux-$github.run_id-$github.run_attempt",
+        "runner_family": "aws-ec2-graviton-aarch64-linux",
+        "image": "dist-aarch64-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "dist-x86_64-linux-quick",
+        "kind": "dist",
+        "optional_prefix": false,
+        "os": "ec2-x86_64ami-c8a.8xlarge-x64-linux-$github.run_id-$github.run_attempt",
+        "runner_family": "aws-ec2-zen5-x86_64-linux",
+        "image": "dist-x86_64-linux",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": false,
+        "codegen_backends": "llvm,cranelift",
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      },
+      {
+        "name": "optional-test-pr-check-1",
+        "kind": "test",
+        "optional_prefix": true,
+        "os": "ubuntu-24.04",
+        "runner_family": "gha-ubuntu-x86_64-linux",
+        "image": "test-pr-check-1",
+        "only_on_channel": null,
+        "continue_on_error": false,
+        "codebuild": false,
+        "free_disk": true,
+        "codegen_backends": null,
+        "deploy": false,
+        "deploy_alt": false,
+        "no_download_ci_llvm": false
+      }
+    ],
+    "docker": {
+      "host_dockerfile_counts": {
+        "host-aarch64": 5,
+        "host-x86_64": 57
+      },
+      "host_dockerfiles": {
+        "host-aarch64": [
+          "dist-aarch64-freebsd",
+          "dist-aarch64-linux",
+          "test-aarch64-gnu",
+          "test-aarch64-gnu-debug",
+          "test-aarch64-gnu-llvm-22"
+        ],
+        "host-x86_64": [
+          "dist-android",
+          "dist-arm-linux-gnueabi",
+          "dist-arm-linux-musl",
+          "dist-armhf-linux",
+          "dist-armv7-linux",
+          "dist-i586-gnu-i586-i686-musl",
+          "dist-i686-linux",
+          "dist-loongarch64-linux",
+          "dist-loongarch64-musl",
+          "dist-mips-linux",
+          "dist-mips64-linux",
+          "dist-mips64el-linux",
+          "dist-mipsel-linux",
+          "dist-ohos-aarch64",
+          "dist-ohos-armv7",
+          "dist-ohos-x86_64",
+          "dist-powerpc-linux",
+          "dist-powerpc64-linux-gnu",
+          "dist-powerpc64-linux-musl",
+          "dist-powerpc64le-linux-gnu",
+          "dist-powerpc64le-linux-musl",
+          "dist-riscv64-linux-gnu",
+          "dist-riscv64-linux-musl",
+          "dist-s390x-linux",
+          "dist-sparcv9-solaris",
+          "dist-various-1",
+          "dist-various-2",
+          "dist-x86_64-freebsd",
+          "dist-x86_64-illumos",
+          "dist-x86_64-linux",
+          "dist-x86_64-musl",
+          "dist-x86_64-netbsd",
+          "dist-x86_64-solaris",
+          "optional-test-x86_64-gnu-autodiff",
+          "test-arm-android",
+          "test-armhf-gnu",
+          "test-i686-gnu",
+          "test-i686-gnu-nopt",
+          "test-pr-check-1",
+          "test-pr-check-2",
+          "test-tidy",
+          "test-various",
+          "test-x86_64-fuchsia",
+          "test-x86_64-gnu",
+          "test-x86_64-gnu-aux",
+          "test-x86_64-gnu-debug",
+          "test-x86_64-gnu-distcheck",
+          "test-x86_64-gnu-gcc",
+          "test-x86_64-gnu-gcc-core-tests",
+          "test-x86_64-gnu-llvm-22",
+          "test-x86_64-gnu-miri",
+          "test-x86_64-gnu-next-trait-solver-polonius",
+          "test-x86_64-gnu-nopt",
+          "test-x86_64-gnu-parallel-frontend",
+          "test-x86_64-gnu-stdlib-semver-check",
+          "test-x86_64-gnu-tools",
+          "test-x86_64-rust-for-linux"
+        ]
+      },
+      "shared_scripts_count": 49
+    }
+  },
+  "tidy_and_audits": {
+    "tidy_rs_files_total": 46,
+    "tidy_non_test_rs_files": 40,
+    "tidy_check_entrypoints_count": 32,
+    "main_rs_spawned_check_invocations": 43,
+    "main_rs_check_histogram": {
+      "alphabetical": 6,
+      "bins": 1,
+      "codegen": 1,
+      "debug_artifacts": 1,
+      "deps": 1,
+      "edition": 3,
+      "error_codes": 1,
+      "extdeps": 1,
+      "extra_checks": 1,
+      "features": 1,
+      "filenames": 1,
+      "gcc_submodule": 1,
+      "known_bug": 1,
+      "mir_opt_tests": 1,
+      "pal": 1,
+      "rustdoc_css_themes": 1,
+      "rustdoc_gui_tests": 1,
+      "rustdoc_html_tests": 1,
+      "rustdoc_json": 1,
+      "rustdoc_templates": 1,
+      "style": 4,
+      "target_policy": 1,
+      "target_specific_tests": 1,
+      "tests_placement": 1,
+      "tests_revision_unpaired_stdout_stderr": 1,
+      "triagebot": 1,
+      "ui_tests": 1,
+      "unit_tests": 3,
+      "unknown_revision": 1,
+      "unstable_book": 1,
+      "x_version": 1
+    },
+    "modules": [
+      {
+        "module_path": "alphabetical.rs",
+        "lines": 351,
+        "bytes": 12412,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": true,
+        "doc_summary": "Checks that a list of items is in alphabetical order Use the following marker in the code: ```rust tidy-alphabetical-start fn aaa() {} fn eee() {} fn z() {} tidy-alphabetical-end ``` Numeric sequences are parsed as `u64` values, so each seq"
+      },
+      {
+        "module_path": "alphabetical/tests.rs",
+        "lines": 564,
+        "bytes": 11597,
+        "is_unit_test_module": true,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "arg_parser.rs",
+        "lines": 105,
+        "bytes": 3893,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": false,
+        "supports_bless": true,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "arg_parser/tests.rs",
+        "lines": 214,
+        "bytes": 6251,
+        "is_unit_test_module": true,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "bins.rs",
+        "lines": 168,
+        "bytes": 6097,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that there are no binaries checked into the source tree by accident. In the past we've accidentally checked in test binaries and such which add a huge amount of bloat to the Git history, so it's good to just ensure we d"
+      },
+      {
+        "module_path": "codegen.rs",
+        "lines": 60,
+        "bytes": 1846,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check for codegen backend T-O-D-O policy."
+      },
+      {
+        "module_path": "debug_artifacts.rs",
+        "lines": 28,
+        "bytes": 942,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to prevent creation of unnecessary debug artifacts while running tests."
+      },
+      {
+        "module_path": "deps.rs",
+        "lines": 1057,
+        "bytes": 33804,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": true,
+        "doc_summary": "Checks the licenses of third-party dependencies."
+      },
+      {
+        "module_path": "diagnostics.rs",
+        "lines": 369,
+        "bytes": 10109,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": false,
+        "supports_bless": true,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "edition.rs",
+        "lines": 34,
+        "bytes": 1296,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that crate `edition` is '2021' or '2024'."
+      },
+      {
+        "module_path": "error_codes.rs",
+        "lines": 361,
+        "bytes": 13965,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure error codes are properly documented and tested. Overview of check: 1. We create a list of error codes used by the compiler. Error codes are extracted from `compiler/rustc_error_codes/src/lib.rs`. 2. We check that the er"
+      },
+      {
+        "module_path": "extdeps.rs",
+        "lines": 54,
+        "bytes": 1801,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Check for external package sources. Allow only vendorable packages."
+      },
+      {
+        "module_path": "extra_checks/mod.rs",
+        "lines": 1139,
+        "bytes": 36415,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": true,
+        "doc_summary": "Optional checks for file types other than Rust source Handles python tool version management via a virtual environment in `build/venv`. # Functional outline 1. Run tidy with an extra option: `--extra-checks=py,shell`, `--extra-checks=py:lin"
+      },
+      {
+        "module_path": "extra_checks/rustdoc_js.rs",
+        "lines": 123,
+        "bytes": 3735,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": false,
+        "supports_bless": true,
+        "doc_summary": "Tidy check specific to the Javascript file that make up the static part of the generated rustdoc site."
+      },
+      {
+        "module_path": "extra_checks/tests.rs",
+        "lines": 86,
+        "bytes": 2607,
+        "is_unit_test_module": true,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "features.rs",
+        "lines": 628,
+        "bytes": 22760,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that unstable features are all in order. This check will ensure properties like: * All stability attributes look reasonably well formed. * The set of library features is disjoint from the set of language features. * Lib"
+      },
+      {
+        "module_path": "features/tests.rs",
+        "lines": 64,
+        "bytes": 2095,
+        "is_unit_test_module": true,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "features/version.rs",
+        "lines": 60,
+        "bytes": 1600,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "features/version/tests.rs",
+        "lines": 38,
+        "bytes": 1206,
+        "is_unit_test_module": true,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "filenames.rs",
+        "lines": 40,
+        "bytes": 1501,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that there are no filenames containing forbidden characters checked into the source tree by accident: - Non-UTF8 filenames - Control characters such as CR or TAB - Filenames containing \":\" as they are not supported on W"
+      },
+      {
+        "module_path": "gcc_submodule.rs",
+        "lines": 57,
+        "bytes": 2328,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that the commit SHA of the `src/gcc` submodule is the same as the required GCC version of the GCC codegen backend."
+      },
+      {
+        "module_path": "iter_header.rs",
+        "lines": 33,
+        "bytes": 1358,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "known_bug.rs",
+        "lines": 30,
+        "bytes": 1137,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that tests inside 'tests/crashes' have a '@known-bug' directive."
+      },
+      {
+        "module_path": "lib.rs",
+        "lines": 175,
+        "bytes": 4892,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": "Library used by tidy and other tools. This library contains the tidy lints and exposes it to be used by tools."
+      },
+      {
+        "module_path": "main.rs",
+        "lines": 170,
+        "bytes": 6052,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": "Tidy checks source code in this repository. This program runs all of the various tidy checks for style, cleanliness, etc. This is run by default on `./x.py test` and as part of the auto builders. The tidy checks can be executed with `./x.py"
+      },
+      {
+        "module_path": "mir_opt_tests.rs",
+        "lines": 83,
+        "bytes": 2773,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": true,
+        "doc_summary": "Tidy check to ensure that mir opt directories do not have stale files or dashes in file names"
+      },
+      {
+        "module_path": "pal.rs",
+        "lines": 221,
+        "bytes": 8154,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to enforce rules about platform-specific code in std. This is intended to maintain existing standards of code organization in hopes that the standard library will continue to be refactored to isolate platform-specific bits, makin"
+      },
+      {
+        "module_path": "rustdoc_css_themes.rs",
+        "lines": 103,
+        "bytes": 4202,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to make sure light and dark themes are synchronized between JS-controlled rustdoc.css and noscript.css"
+      },
+      {
+        "module_path": "rustdoc_gui_tests.rs",
+        "lines": 33,
+        "bytes": 1132,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that rustdoc GUI tests start with a small description."
+      },
+      {
+        "module_path": "rustdoc_html_tests.rs",
+        "lines": 77,
+        "bytes": 3102,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that rustdoc GUI tests start with a small description."
+      },
+      {
+        "module_path": "rustdoc_json.rs",
+        "lines": 80,
+        "bytes": 3374,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that `FORMAT_VERSION` was correctly updated if `rustdoc-json-types` was updated as well."
+      },
+      {
+        "module_path": "rustdoc_templates.rs",
+        "lines": 91,
+        "bytes": 4006,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that rustdoc templates didn't forget a `{# #}` to strip extra whitespace characters."
+      },
+      {
+        "module_path": "style.rs",
+        "lines": 709,
+        "bytes": 27495,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to enforce various stylistic guidelines on the Rust codebase. Example checks are: * No lines over 100 characters (in non-Rust files). * No files with over 3000 lines (in non-Rust files). * No tabs. * No trailing whitespace. * No "
+      },
+      {
+        "module_path": "style/directive.rs",
+        "lines": 348,
+        "bytes": 11354,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "style/tests.rs",
+        "lines": 111,
+        "bytes": 2968,
+        "is_unit_test_module": true,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "target_policy.rs",
+        "lines": 64,
+        "bytes": 2298,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tests for target tier policy compliance. As of writing, only checks that sanity-check assembly test for targets doesn't miss any targets."
+      },
+      {
+        "module_path": "target_specific_tests.rs",
+        "lines": 138,
+        "bytes": 6127,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure that all target specific tests (those that require a `--target` flag) also require the pre-requisite LLVM components to run."
+      },
+      {
+        "module_path": "tests_placement.rs",
+        "lines": 18,
+        "bytes": 516,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "tests_revision_unpaired_stdout_stderr.rs",
+        "lines": 153,
+        "bytes": 5955,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Checks that there are no unpaired `.stderr` or `.stdout` for a test with and without revisions."
+      },
+      {
+        "module_path": "triagebot.rs",
+        "lines": 176,
+        "bytes": 6288,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure paths mentioned in triagebot.toml exist in the project."
+      },
+      {
+        "module_path": "ui_tests.rs",
+        "lines": 311,
+        "bytes": 13375,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": true,
+        "doc_summary": "Tidy check to ensure below in UI test directories: - there are no stray `.stderr` files"
+      },
+      {
+        "module_path": "unit_tests.rs",
+        "lines": 107,
+        "bytes": 4363,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Tidy check to ensure `#[test]` and `#[bench]` are not used directly inside of the standard library. `core` and `alloc` cannot be tested directly due to duplicating lang items. All tests and benchmarks must be written externally in `{coretes"
+      },
+      {
+        "module_path": "unknown_revision.rs",
+        "lines": 115,
+        "bytes": 4539,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": "Checks that test revision names appearing in header directives and error annotations have actually been declared in `revisions`."
+      },
+      {
+        "module_path": "unstable_book.rs",
+        "lines": 144,
+        "bytes": 5811,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "walk.rs",
+        "lines": 108,
+        "bytes": 3026,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": false,
+        "supports_bless": false,
+        "doc_summary": ""
+      },
+      {
+        "module_path": "x_version.rs",
+        "lines": 72,
+        "bytes": 2769,
+        "is_unit_test_module": false,
+        "has_check_entrypoint": true,
+        "supports_bless": false,
+        "doc_summary": ""
+      }
+    ],
+    "style_ignore_directives": [
+      "linelength",
+      "filelength",
+      "all",
+      "cr",
+      "undocumented-unsafe",
+      "tab",
+      "end-whitespace",
+      "trailing-newlines",
+      "leading-newlines",
+      "copyright",
+      "dbg",
+      "odd-backticks",
+      "t-o-d-o"
+    ],
+    "legacy_ui_issues_txt_entries": 2976,
+    "deps_audit": {
+      "workspaces_checked_count": 11,
+      "workspaces_checked": [
+        ".",
+        "library",
+        "library/stdarch",
+        "compiler/rustc_codegen_cranelift",
+        "compiler/rustc_codegen_gcc",
+        "src/bootstrap",
+        "src/tools/cargo",
+        "src/tools/rust-analyzer",
+        "src/tools/rustbook",
+        "src/tools/rustc-perf",
+        "tests/run-make-cargo/uefi-qemu/uefi_qemu_test"
+      ],
+      "allowed_runtime_and_all_licenses_count": 25,
+      "allowed_runtime_and_all_licenses": [
+        "(MIT OR Apache-2.0) AND MIT",
+        "0BSD OR MIT OR Apache-2.0",
+        "Apache-2.0 / MIT",
+        "Apache-2.0 OR ISC OR MIT",
+        "Apache-2.0 OR MIT",
+        "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+        "Apache-2.0/MIT",
+        "BSD-2-Clause OR Apache-2.0 OR MIT",
+        "BSD-2-Clause OR MIT OR Apache-2.0",
+        "BSD-3-Clause/MIT",
+        "CC0-1.0 OR MIT-0 OR Apache-2.0",
+        "ISC",
+        "MIT / Apache-2.0",
+        "MIT AND (MIT OR Apache-2.0)",
+        "MIT AND Apache-2.0 WITH LLVM-exception AND (MIT OR Apache-2.0)",
+        "MIT OR Apache-2.0 OR BSD-1-Clause",
+        "MIT OR Apache-2.0 OR LGPL-2.1-or-later",
+        "MIT OR Apache-2.0 OR Zlib",
+        "MIT OR Apache-2.0",
+        "MIT OR Zlib OR Apache-2.0",
+        "MIT",
+        "MIT/Apache-2.0",
+        "Unlicense OR MIT",
+        "Unlicense/MIT",
+        "Zlib"
+      ],
+      "allowed_tools_only_licenses_count": 17,
+      "allowed_tools_only_licenses": [
+        "(Apache-2.0 OR MIT) AND BSD-3-Clause",
+        "(MIT OR Apache-2.0) AND Unicode-3.0",
+        "(MIT OR Apache-2.0) AND Unicode-DFS-2016",
+        "0BSD",
+        "Apache-2.0 AND ISC",
+        "Apache-2.0 OR BSL-1.0",
+        "Apache-2.0 OR GPL-2.0-only",
+        "Apache-2.0 WITH LLVM-exception",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "CC0-1.0 OR Apache-2.0 OR Apache-2.0 WITH LLVM-exception",
+        "CC0-1.0",
+        "Unicode-3.0",
+        "Unicode-DFS-2016",
+        "Zlib OR Apache-2.0 OR MIT",
+        "Zlib"
+      ],
+      "permitted_rustc_dependencies_count": 211,
+      "permitted_stdlib_dependencies_count": 34,
+      "permitted_cranelift_dependencies_count": 64
+    },
+    "reuse_and_license_metadata": {
+      "reuse_toml_lines": 219,
+      "reuse_annotations_count": 21,
+      "reuse_spdx_counts": {
+        "Apache-2.0 WITH LLVM-exception AND (Apache-2.0 OR MIT)": 2,
+        "BSD-2-Clause AND (MIT OR Apache-2.0)": 1,
+        "GCC-exception-3.1": 1,
+        "GPL-2.0-only": 1,
+        "GPL-3.0-or-later": 1,
+        "ISC": 1,
+        "MIT": 3,
+        "MIT OR Apache-2.0": 5,
+        "MIT OR Apache-2.0 OR CC-BY-SA-4.0": 1,
+        "NCSA AND Apache-2.0 WITH LLVM-exception": 1,
+        "OFL-1.1": 3,
+        "Unicode-3.0": 1
+      },
+      "license_metadata_json_lines": 290,
+      "license_metadata_json_bytes": 9334
+    },
+    "target_tiers": {
+      "rustc_target_spec_files_count": 340,
+      "platform_support_documented_total": 340,
+      "by_tier_section": {
+        "Tier 1 with Host Tools": 7,
+        "Tier 1 without Host Tools": 1,
+        "Tier 2 with Host Tools": 27,
+        "Tier 2 without Host Tools": 85,
+        "Tier 3": 220
+      },
+      "tier_1_with_host_tools": [
+        "aarch64-apple-darwin",
+        "aarch64-pc-windows-msvc",
+        "aarch64-unknown-linux-gnu",
+        "i686-unknown-linux-gnu",
+        "x86_64-pc-windows-gnu",
+        "x86_64-pc-windows-msvc",
+        "x86_64-unknown-linux-gnu"
+      ]
+    }
+  },
+  "stability_and_editions": {
+    "rustc_feature_counts": {
+      "accepted_lang_features": 214,
+      "unstable_lang_features_total": 266,
+      "unstable_lang_by_status": {
+        "incomplete": 41,
+        "internal": 33,
+        "unstable": 192
+      },
+      "removed_lang_features": 109,
+      "incompatible_feature_pairs": 1,
+      "gated_cfgs": 18,
+      "builtin_attributes": 199
+    },
+    "editions": {
+      "all_editions": [
+        "Edition2015",
+        "Edition2018",
+        "Edition2021",
+        "Edition2024",
+        "EditionFuture"
+      ],
+      "default_edition": "2015",
+      "latest_stable_edition": "2024",
+      "unstable_edition": "future"
+    },
+    "library_stability_attribute_occurrences": {
+      "stable_attr": 18783,
+      "unstable_attr": 14007,
+      "rustc_const_stable": 973,
+      "rustc_const_unstable": 4546,
+      "rustc_allow_const_fn_unstable": 56,
+      "allow_internal_unstable": 81,
+      "staged_api_occurrences": 13
+    }
+  },
+  "external_governance": {
+    "pinned_revisions": {
+      "rust-lang/team": "35cec6a5bc4f65f1082edea0766c296da8f242c6",
+      "rust-lang/bors": "831b87d59302caac5c76f52a7414f10f52c33bb2",
+      "rust-lang/triagebot": "61d3c27be1f4d2c81939987d43734b1565ca3683",
+      "rust-lang/rfcbot-rs": "abc6e319b90c6cac93d6505e115ad70fe3d40ed3",
+      "rust-lang/compiler-team": "6cf981d16c1852074b397eee544adc3d1a7eb6b6",
+      "rust-lang/libs-team": "56dd8ca2e2aa2c097d8b8010da6fef790a5ec97c"
+    },
+    "team_roster_summary": {
+      "teams_toml_count": 227,
+      "people_toml_count": 689,
+      "teams_by_kind": {
+        "marker-team": 56,
+        "project-group": 22,
+        "team": 96,
+        "working-group": 53
+      },
+      "top_level_teams": [
+        "compiler",
+        "devtools",
+        "infra",
+        "lang",
+        "launching-pad",
+        "libs",
+        "mods"
+      ],
+      "rfcbot_enabled_teams_count": 34,
+      "rfcbot_enabled_teams": [
+        {
+          "team": "bootstrap",
+          "label": "T-bootstrap",
+          "ping": "rust-lang/bootstrap",
+          "members_count": 6,
+          "excluded_count": 0
+        },
+        {
+          "team": "cargo",
+          "label": "T-cargo",
+          "ping": "rust-lang/cargo",
+          "members_count": 8,
+          "excluded_count": 0
+        },
+        {
+          "team": "community-localization",
+          "label": "T-localization",
+          "ping": "rust-lang/localization",
+          "members_count": 0,
+          "excluded_count": 0
+        },
+        {
+          "team": "compiler-fcp",
+          "label": "T-compiler",
+          "ping": "rust-lang/compiler-fcp",
+          "members_count": 11,
+          "excluded_count": 0
+        },
+        {
+          "team": "content",
+          "label": "T-content",
+          "ping": "rust-lang/content",
+          "members_count": 8,
+          "excluded_count": 0
+        },
+        {
+          "team": "crates-io",
+          "label": "T-crates-io",
+          "ping": "rust-lang/crates-io",
+          "members_count": 6,
+          "excluded_count": 0
+        },
+        {
+          "team": "devtools",
+          "label": "T-dev-tools",
+          "ping": "rust-lang/dev-tools",
+          "members_count": 3,
+          "excluded_count": 0
+        },
+        {
+          "team": "docs",
+          "label": "T-doc",
+          "ping": "rust-lang/docs",
+          "members_count": 0,
+          "excluded_count": 0
+        },
+        {
+          "team": "docs-rs",
+          "label": "T-docs-rs",
+          "ping": "rust-lang/docs-rs",
+          "members_count": 2,
+          "excluded_count": 0
+        },
+        {
+          "team": "edition",
+          "label": "T-edition",
+          "ping": "rust-lang/edition",
+          "members_count": 4,
+          "excluded_count": 0
+        },
+        {
+          "team": "fls",
+          "label": "T-fls",
+          "ping": "rust-lang/fls",
+          "members_count": 5,
+          "excluded_count": 0
+        },
+        {
+          "team": "funding",
+          "label": "T-funding",
+          "ping": "rust-lang/funding",
+          "members_count": 4,
+          "excluded_count": 0
+        },
+        {
+          "team": "goals",
+          "label": "T-goals",
+          "ping": "rust-lang/goals",
+          "members_count": 5,
+          "excluded_count": 0
+        },
+        {
+          "team": "ides",
+          "label": "T-IDEs",
+          "ping": "rust-lang/ides",
+          "members_count": 0,
+          "excluded_count": 0
+        },
+        {
+          "team": "infra",
+          "label": "T-infra",
+          "ping": "rust-lang/infra",
+          "members_count": 8,
+          "excluded_count": 0
+        },
+        {
+          "team": "interim-leadership-chat",
+          "label": "T-interim-leadership-chat",
+          "ping": "rust-lang/interim-leadership-chat",
+          "members_count": 0,
+          "excluded_count": 0
+        },
+        {
+          "team": "lang",
+          "label": "T-lang",
+          "ping": "rust-lang/lang",
+          "members_count": 5,
+          "excluded_count": 0
+        },
+        {
+          "team": "leadership-council",
+          "label": "T-leadership-council",
+          "ping": "rust-lang/leadership-council",
+          "members_count": 7,
+          "excluded_count": 0
+        },
+        {
+          "team": "libs-api",
+          "label": "T-libs-api",
+          "ping": "rust-lang/libs-api",
+          "members_count": 0,
+          "excluded_count": 0
+        },
+        {
+          "team": "libs-fcp",
+          "label": "T-libs",
+          "ping": "rust-lang/libs",
+          "members_count": 7,
+          "excluded_count": 0
+        },
+        {
+          "team": "llm-policy",
+          "label": "T-llm-policy",
+          "ping": "rust-lang/llm-policy",
+          "members_count": 4,
+          "excluded_count": 0
+        },
+        {
+          "team": "mdbook",
+          "label": "T-mdbook",
+          "ping": "rust-lang/mdbook",
+          "members_count": 4,
+          "excluded_count": 0
+        },
+        {
+          "team": "mentorship",
+          "label": "T-mentorship",
+          "ping": "rust-lang/mentorship",
+          "members_count": 2,
+          "excluded_count": 0
+        },
+        {
+          "team": "mods",
+          "label": "T-moderation",
+          "ping": "rust-lang/moderation",
+          "members_count": 3,
+          "excluded_count": 0
+        },
+        {
+          "team": "opsem",
+          "label": "T-opsem",
+          "ping": "rust-lang/opsem",
+          "members_count": 5,
+          "excluded_count": 0
+        },
+        {
+          "team": "release",
+          "label": "T-release",
+          "ping": "rust-lang/release",
+          "members_count": 6,
+          "excluded_count": 0
+        },
+        {
+          "team": "rustdoc",
+          "label": "T-rustdoc",
+          "ping": "rust-lang/rustdoc",
+          "members_count": 8,
+          "excluded_count": 0
+        },
+        {
+          "team": "rustdoc-frontend",
+          "label": "T-rustdoc-frontend",
+          "ping": "rust-lang/rustdoc-frontend",
+          "members_count": 4,
+          "excluded_count": 0
+        },
+        {
+          "team": "rustdoc-internals",
+          "label": "T-rustdoc-internals",
+          "ping": "rust-lang/rustdoc-internals",
+          "members_count": 8,
+          "excluded_count": 0
+        },
+        {
+          "team": "rustdoc-json-backend",
+          "label": "T-rustdoc-json-backend",
+          "ping": "rust-lang/rustdoc-json-backend",
+          "members_count": 2,
+          "excluded_count": 0
+        },
+        {
+          "team": "spec",
+          "label": "T-spec",
+          "ping": "rust-lang/spec",
+          "members_count": 3,
+          "excluded_count": 0
+        },
+        {
+          "team": "style",
+          "label": "T-style",
+          "ping": "rust-lang/style",
+          "members_count": 3,
+          "excluded_count": 0
+        },
+        {
+          "team": "testing-devex",
+          "label": "T-testing-devex",
+          "ping": "rust-lang/testing-devex",
+          "members_count": 5,
+          "excluded_count": 0
+        },
+        {
+          "team": "types-fcp",
+          "label": "T-types",
+          "ping": "rust-lang/types-fcp",
+          "members_count": 5,
+          "excluded_count": 0
+        }
+      ],
+      "bors_rust_review_teams": [
+        "bootstrap",
+        "cargo",
+        "clippy",
+        "compiler",
+        "docs",
+        "edition",
+        "infra",
+        "lang",
+        "libs",
+        "program",
+        "project-rustc-public",
+        "release",
+        "rust-analyzer",
+        "rustc-dev-guide (leads)",
+        "rustdoc",
+        "rustdoc-frontend",
+        "rustdoc-internals",
+        "rustdoc-json-backend",
+        "rustfmt",
+        "style",
+        "types"
+      ],
+      "bors_rust_try_teams": [
+        "fuchsia",
+        "incr-comp",
+        "lang-advisors",
+        "mentees",
+        "miri",
+        "rust-for-linux",
+        "trusted-contributors",
+        "wg-allocators",
+        "wg-binary-size",
+        "wg-compiler-performance",
+        "wg-mir-opt",
+        "wg-parallel-rustc"
+      ],
+      "perf_permission_teams": [
+        "bootstrap",
+        "cargo",
+        "clippy",
+        "compiler",
+        "edition",
+        "incr-comp",
+        "infra",
+        "lang",
+        "lang-advisors",
+        "libs",
+        "mentees",
+        "miri",
+        "program",
+        "release",
+        "rust-analyzer",
+        "rustdoc",
+        "rustdoc-frontend",
+        "rustdoc-internals",
+        "rustdoc-json-backend",
+        "trusted-contributors",
+        "types",
+        "wg-allocators",
+        "wg-binary-size",
+        "wg-compiler-performance",
+        "wg-gcc-backend",
+        "wg-mir-opt",
+        "wg-parallel-rustc",
+        "wg-self-profile"
+      ],
+      "crater_permission_teams": [
+        "cargo",
+        "clippy",
+        "compiler",
+        "edition",
+        "infra",
+        "lang",
+        "lang-advisors",
+        "libs",
+        "program",
+        "release",
+        "rust-analyzer",
+        "rustdoc",
+        "types"
+      ],
+      "individual_permission_grants": {
+        "bors_rust_review": 0,
+        "bors_rust_try": 1,
+        "perf": 1,
+        "crater": 0
+      }
+    },
+    "rust_repo_governance_rulesets": {
+      "bots": [
+        "bors",
+        "craterbot",
+        "forking-renovate",
+        "log-analyzer",
+        "rustbot",
+        "rfcbot",
+        "rust-timer",
+        "datadog"
+      ],
+      "access_teams": {
+        "bootstrap": "write",
+        "cargo": "write",
+        "clippy": "write",
+        "compiler": "write",
+        "compiler-ops": "triage",
+        "infra": "write",
+        "lang": "write",
+        "lang-ops": "write",
+        "libs": "write",
+        "mods-venue": "write",
+        "opsem": "write",
+        "project-exploit-mitigations": "write",
+        "project-rustc-public": "write",
+        "release": "write",
+        "rustdoc": "write",
+        "rustfmt": "write",
+        "rustup": "write",
+        "rust-analyzer": "write",
+        "style": "write",
+        "types": "write",
+        "triage": "write"
+      },
+      "rulesets_count": 16,
+      "ruleset_patterns": [
+        "main",
+        "main",
+        "stable",
+        "stable",
+        "stable",
+        "beta",
+        "beta",
+        "beta",
+        "*",
+        "*/**/*",
+        "automation/bors/try",
+        "automation/bors/try-merge",
+        "automation/bors/auto",
+        "automation/bors/auto-merge",
+        "automation/bors/try-perf",
+        "automation/bors/try-perf-merge"
+      ],
+      "environments": {
+        "bors": {
+          "branches": [
+            "automation/bors/auto",
+            "automation/bors/try",
+            "automation/bors/try-perf"
+          ]
+        },
+        "publish-crates-io": {
+          "branches": [
+            "main"
+          ]
+        }
+      }
+    },
+    "fcp_mechanics_verified": {
+      "source_file": "rust-lang/rfcbot-rs:src/github/nag.rs",
+      "dispositions": [
+        "merge",
+        "close",
+        "postpone"
+      ],
+      "quorum_predicate": "num_active_concerns == 0 && (num_outstanding_reviews < num_complete_reviews) && (num_outstanding_reviews < 3)",
+      "max_non_voting_holdouts": 2,
+      "strict_majority_required": true,
+      "comment_period_days": 10,
+      "concern_during_fcp_resets_clock": true,
+      "concern_resolvable_only_by_initiator": true
+    },
+    "mcp_mechanics_verified": {
+      "config_repo": "rust-lang/compiler-team:triagebot.toml",
+      "handler_source": "rust-lang/triagebot:src/handlers/major_change.rs",
+      "enabling_label_default": "major-change",
+      "second_command": "@rustbot second",
+      "second_label": "final-comment-period",
+      "concerns_label": "has-concerns",
+      "waiting_period_days": 10,
+      "auto_closing": true,
+      "creates_tracking_issue_in_rust_repo": true
+    }
+  }
+}

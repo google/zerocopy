@@ -1,0 +1,158 @@
+{
+  "topics": [
+    "build",
+    "build/bootstrapping",
+    "cargo",
+    "cargo/workspaces",
+    "compilers",
+    "compilers/bootstrapping",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/rustc-internals",
+    "llvm",
+    "rust",
+    "rust/standard-library",
+    "rustc",
+    "rustc/architecture",
+    "rustc/bootstrap",
+    "rustc/codegen",
+    "rustc/compiletest",
+    "rustc/queries",
+    "tooling",
+    "verification",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.102.0-nightly compiler, standard library, and bootstrap tree",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+        "version": "1.102.0-nightly",
+        "commit_date": "2026-11-18"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 release compiler and standard library baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "release_date": "2026-10-15"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 LLVM 23.1.1 submodule baseline",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "library/backtrace submodule",
+      "identity": {
+        "repository": "rust-lang/backtrace-rs",
+        "revision": "d902726a1dcdc1e1c66f73d1162181b5423c645b",
+        "submodule_path": "library/backtrace"
+      }
+    },
+    {
+      "name": "src/doc/book submodule",
+      "identity": {
+        "repository": "rust-lang/book",
+        "revision": "2771df165f092a4fbb9f46b5b2e7450f19010adb",
+        "submodule_path": "src/doc/book"
+      }
+    },
+    {
+      "name": "src/doc/edition-guide submodule",
+      "identity": {
+        "repository": "rust-lang/edition-guide",
+        "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f",
+        "submodule_path": "src/doc/edition-guide"
+      }
+    },
+    {
+      "name": "src/doc/embedded-book submodule",
+      "identity": {
+        "repository": "rust-embedded/book",
+        "revision": "637b4a0244e16ec391a60184ae0c86b550ffc24b",
+        "submodule_path": "src/doc/embedded-book"
+      }
+    },
+    {
+      "name": "src/doc/nomicon submodule",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6",
+        "submodule_path": "src/doc/nomicon"
+      }
+    },
+    {
+      "name": "src/doc/reference submodule",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+        "submodule_path": "src/doc/reference"
+      }
+    },
+    {
+      "name": "src/doc/rust-by-example submodule",
+      "identity": {
+        "repository": "rust-lang/rust-by-example",
+        "revision": "dcc14f912bf8790792a2df082eddc82ab2539229",
+        "submodule_path": "src/doc/rust-by-example"
+      }
+    },
+    {
+      "name": "src/gcc submodule (libgccjit fork)",
+      "identity": {
+        "repository": "rust-lang/gcc",
+        "revision": "e1c6e07b095d091177376a163da44039475e05e3",
+        "submodule_path": "src/gcc"
+      }
+    },
+    {
+      "name": "src/llvm-project submodule (LLVM 23.1 branch)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380",
+        "submodule_path": "src/llvm-project",
+        "branch": "rustc/23.1-2026-07-22"
+      }
+    },
+    {
+      "name": "src/tools/cargo submodule",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20",
+        "submodule_path": "src/tools/cargo"
+      }
+    },
+    {
+      "name": "src/tools/enzyme submodule",
+      "identity": {
+        "repository": "rust-lang/enzyme",
+        "revision": "9cff5a8afebc22748bb36c135dfe5a09dd1047f3",
+        "submodule_path": "src/tools/enzyme"
+      }
+    },
+    {
+      "name": "src/tools/rustc-perf submodule",
+      "identity": {
+        "repository": "rust-lang/rustc-perf",
+        "revision": "15d95905429e577d5a710b17c49e04b4451c263b",
+        "submodule_path": "src/tools/rustc-perf"
+      }
+    },
+    {
+      "name": "src/tpde submodule (TPDE backend)",
+      "identity": {
+        "repository": "rust-lang/tpde",
+        "revision": "050927ee81dc11a9e599fa2524ff0eef16daf51a",
+        "submodule_path": "src/tpde"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

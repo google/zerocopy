@@ -1,0 +1,6429 @@
+{
+  "repository": "rust-lang/rust",
+  "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+  "commit_date": "2026-11-18T12:20:09Z",
+  "commit_subject": "Auto merge of #166141 - JonathanBrouwer:rollup-ZQcXVqU, r=JonathanBrouwer",
+  "in_tree_version": "1.102.0",
+  "stage0_metadata": {
+    "dist_server": "https://static.rust-lang.org",
+    "artifacts_server": "https://ci-artifacts.rust-lang.org/rustc-builds",
+    "artifacts_with_llvm_assertions_server": "https://ci-artifacts.rust-lang.org/rustc-builds-alt",
+    "git_merge_commit_email": "bors@rust-lang.org",
+    "nightly_branch": "main",
+    "compiler_channel_manifest_hash": "bc1c6b4a0a9f8b7004b236851654f3e42855b301e500632792a5dcbaad99bd87",
+    "compiler_git_commit_hash": "bbcdfd90a3f81ca2a5f6d69b943a6ff0d8582102",
+    "compiler_date": "2026-11-10",
+    "compiler_version": "beta",
+    "rustfmt_channel_manifest_hash": "c2986ce080bf1c0e2b96a20d8e704ab33fdd95f1e347f75e0e6ace780909620c",
+    "rustfmt_git_commit_hash": "ac8310ba643a3796cbe77d2e06944d7c8513999f",
+    "rustfmt_date": "2026-11-10",
+    "rustfmt_version": "nightly"
+  },
+  "top_level": {
+    "total_root_entries": 38,
+    "root_file_count": 32,
+    "root_dir_count": 6,
+    "total_tracked_blobs": 64687,
+    "total_submodules": 13,
+    "root_files": [
+      {
+        "name": ".clang-format",
+        "mode": "100644",
+        "bytes": 20,
+        "raw_lines": 1,
+        "approx_sloc": 1
+      },
+      {
+        "name": ".editorconfig",
+        "mode": "100644",
+        "bytes": 983,
+        "raw_lines": 44,
+        "approx_sloc": 27
+      },
+      {
+        "name": ".git-blame-ignore-revs",
+        "mode": "100644",
+        "bytes": 1332,
+        "raw_lines": 38,
+        "approx_sloc": 18
+      },
+      {
+        "name": ".gitattributes",
+        "mode": "100644",
+        "bytes": 449,
+        "raw_lines": 18,
+        "approx_sloc": 4
+      },
+      {
+        "name": ".gitignore",
+        "mode": "100644",
+        "bytes": 1657,
+        "raw_lines": 107,
+        "approx_sloc": 74
+      },
+      {
+        "name": ".gitmodules",
+        "mode": "100644",
+        "bytes": 1609,
+        "raw_lines": 53,
+        "approx_sloc": 53
+      },
+      {
+        "name": ".ignore",
+        "mode": "100644",
+        "bytes": 132,
+        "raw_lines": 3,
+        "approx_sloc": 2
+      },
+      {
+        "name": ".mailmap",
+        "mode": "100644",
+        "bytes": 40702,
+        "raw_lines": 754,
+        "approx_sloc": 746
+      },
+      {
+        "name": "AGENTS.md",
+        "mode": "100644",
+        "bytes": 13848,
+        "raw_lines": 265,
+        "approx_sloc": 204
+      },
+      {
+        "name": "CODE_OF_CONDUCT.md",
+        "mode": "100644",
+        "bytes": 131,
+        "raw_lines": 3,
+        "approx_sloc": 1
+      },
+      {
+        "name": "CONTRIBUTING.md",
+        "mode": "100644",
+        "bytes": 3114,
+        "raw_lines": 59,
+        "approx_sloc": 42
+      },
+      {
+        "name": "COPYRIGHT",
+        "mode": "100644",
+        "bytes": 1571,
+        "raw_lines": 34,
+        "approx_sloc": 23
+      },
+      {
+        "name": "Cargo.lock",
+        "mode": "100644",
+        "bytes": 155534,
+        "raw_lines": 6989,
+        "approx_sloc": 6343
+      },
+      {
+        "name": "Cargo.toml",
+        "mode": "100644",
+        "bytes": 2831,
+        "raw_lines": 89,
+        "approx_sloc": 69
+      },
+      {
+        "name": "INSTALL.md",
+        "mode": "100644",
+        "bytes": 11367,
+        "raw_lines": 310,
+        "approx_sloc": 213
+      },
+      {
+        "name": "LICENSE-APACHE",
+        "mode": "100644",
+        "bytes": 9723,
+        "raw_lines": 176,
+        "approx_sloc": 150
+      },
+      {
+        "name": "LICENSE-MIT",
+        "mode": "100644",
+        "bytes": 1068,
+        "raw_lines": 25,
+        "approx_sloc": 22
+      },
+      {
+        "name": "README.md",
+        "mode": "100644",
+        "bytes": 3304,
+        "raw_lines": 79,
+        "approx_sloc": 53
+      },
+      {
+        "name": "RELEASES.md",
+        "mode": "100644",
+        "bytes": 944545,
+        "raw_lines": 16566,
+        "approx_sloc": 12303
+      },
+      {
+        "name": "REUSE.toml",
+        "mode": "100644",
+        "bytes": 6610,
+        "raw_lines": 219,
+        "approx_sloc": 186
+      },
+      {
+        "name": "bootstrap.example.toml",
+        "mode": "100644",
+        "bytes": 55543,
+        "raw_lines": 1237,
+        "approx_sloc": 207
+      },
+      {
+        "name": "configure",
+        "mode": "100755",
+        "bytes": 296,
+        "raw_lines": 18,
+        "approx_sloc": 15
+      },
+      {
+        "name": "license-metadata.json",
+        "mode": "100644",
+        "bytes": 9334,
+        "raw_lines": 290,
+        "approx_sloc": 290
+      },
+      {
+        "name": "package.json",
+        "mode": "100644",
+        "bytes": 140,
+        "raw_lines": 8,
+        "approx_sloc": 8
+      },
+      {
+        "name": "rust-bors.toml",
+        "mode": "100644",
+        "bytes": 2708,
+        "raw_lines": 107,
+        "approx_sloc": 84
+      },
+      {
+        "name": "rustfmt.toml",
+        "mode": "100644",
+        "bytes": 2347,
+        "raw_lines": 58,
+        "approx_sloc": 48
+      },
+      {
+        "name": "triagebot.toml",
+        "mode": "100644",
+        "bytes": 63492,
+        "raw_lines": 2094,
+        "approx_sloc": 1697
+      },
+      {
+        "name": "typos.toml",
+        "mode": "100644",
+        "bytes": 4263,
+        "raw_lines": 109,
+        "approx_sloc": 73
+      },
+      {
+        "name": "x",
+        "mode": "100755",
+        "bytes": 1696,
+        "raw_lines": 55,
+        "approx_sloc": 35
+      },
+      {
+        "name": "x.ps1",
+        "mode": "100755",
+        "bytes": 1391,
+        "raw_lines": 45,
+        "approx_sloc": 30
+      },
+      {
+        "name": "x.py",
+        "mode": "100755",
+        "bytes": 2007,
+        "raw_lines": 53,
+        "approx_sloc": 32
+      },
+      {
+        "name": "yarn.lock",
+        "mode": "100644",
+        "bytes": 38355,
+        "raw_lines": 939,
+        "approx_sloc": 796
+      }
+    ],
+    "root_dirs": [
+      {
+        "name": ".github",
+        "mode": "040000",
+        "blobs": 18,
+        "submodules": 0,
+        "bytes": 47029,
+        "source_files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "LICENSES",
+        "mode": "040000",
+        "blobs": 12,
+        "submodules": 0,
+        "bytes": 97855,
+        "source_files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "compiler",
+        "mode": "040000",
+        "blobs": 2995,
+        "submodules": 0,
+        "bytes": 36101016,
+        "source_files": 2273,
+        "raw_lines": 899826,
+        "approx_sloc": 681153
+      },
+      {
+        "name": "library",
+        "mode": "040000",
+        "blobs": 2399,
+        "submodules": 1,
+        "bytes": 57637344,
+        "source_files": 2118,
+        "raw_lines": 1153390,
+        "approx_sloc": 812646
+      },
+      {
+        "name": "src",
+        "mode": "040000",
+        "blobs": 13687,
+        "submodules": 12,
+        "bytes": 78129568,
+        "source_files": 8085,
+        "raw_lines": 1333249,
+        "approx_sloc": 1038708
+      },
+      {
+        "name": "tests",
+        "mode": "040000",
+        "blobs": 45544,
+        "submodules": 0,
+        "bytes": 58803803,
+        "source_files": 27837,
+        "raw_lines": 856987,
+        "approx_sloc": 532175
+      }
+    ],
+    "src_subdirs": [
+      {
+        "name": "README.md",
+        "blobs": 1,
+        "submodules": 0,
+        "bytes": 335,
+        "source_files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "bootstrap",
+        "blobs": 169,
+        "submodules": 0,
+        "bytes": 2018907,
+        "source_files": 88,
+        "raw_lines": 49490,
+        "approx_sloc": 37323
+      },
+      {
+        "name": "build_helper",
+        "blobs": 14,
+        "submodules": 0,
+        "bytes": 45235,
+        "source_files": 12,
+        "raw_lines": 1276,
+        "approx_sloc": 895
+      },
+      {
+        "name": "ci",
+        "blobs": 200,
+        "submodules": 0,
+        "bytes": 596082,
+        "source_files": 97,
+        "raw_lines": 8264,
+        "approx_sloc": 6001
+      },
+      {
+        "name": "doc",
+        "blobs": 756,
+        "submodules": 6,
+        "bytes": 16008034,
+        "source_files": 13,
+        "raw_lines": 1308,
+        "approx_sloc": 1105
+      },
+      {
+        "name": "etc",
+        "blobs": 65,
+        "submodules": 0,
+        "bytes": 3219685,
+        "source_files": 26,
+        "raw_lines": 17868,
+        "approx_sloc": 15684
+      },
+      {
+        "name": "gcc",
+        "blobs": 0,
+        "submodules": 1,
+        "bytes": 0,
+        "source_files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "librustdoc",
+        "blobs": 165,
+        "submodules": 0,
+        "bytes": 4177472,
+        "source_files": 113,
+        "raw_lines": 64373,
+        "approx_sloc": 51257
+      },
+      {
+        "name": "llvm-project",
+        "blobs": 0,
+        "submodules": 1,
+        "bytes": 0,
+        "source_files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "rustc-std-workspace",
+        "blobs": 7,
+        "submodules": 0,
+        "bytes": 1461,
+        "source_files": 3,
+        "raw_lines": 7,
+        "approx_sloc": 7
+      },
+      {
+        "name": "rustdoc-json-types",
+        "blobs": 4,
+        "submodules": 0,
+        "bytes": 85038,
+        "source_files": 2,
+        "raw_lines": 2033,
+        "approx_sloc": 890
+      },
+      {
+        "name": "shim_utils",
+        "blobs": 5,
+        "submodules": 0,
+        "bytes": 10298,
+        "source_files": 3,
+        "raw_lines": 270,
+        "approx_sloc": 188
+      },
+      {
+        "name": "stage0",
+        "blobs": 1,
+        "submodules": 0,
+        "bytes": 73591,
+        "source_files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "tools",
+        "blobs": 12299,
+        "submodules": 3,
+        "bytes": 51893422,
+        "source_files": 7728,
+        "raw_lines": 1188360,
+        "approx_sloc": 925358
+      },
+      {
+        "name": "tpde",
+        "blobs": 0,
+        "submodules": 1,
+        "bytes": 0,
+        "source_files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "version",
+        "blobs": 1,
+        "submodules": 0,
+        "bytes": 8,
+        "source_files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      }
+    ],
+    "cargo_toml_total": 391,
+    "cargo_lock_total": 63,
+    "workspaces": [
+      {
+        "path": "Cargo.toml",
+        "has_package": false,
+        "resolver": "2",
+        "members_count": 45,
+        "members": [
+          "compiler/rustc",
+          "src/build_helper",
+          "src/rustc-std-workspace/rustc-std-workspace-alloc",
+          "src/rustc-std-workspace/rustc-std-workspace-core",
+          "src/rustc-std-workspace/rustc-std-workspace-std",
+          "src/rustdoc-json-types",
+          "src/shim_utils",
+          "src/tools/build-manifest",
+          "src/tools/bump-stage0",
+          "src/tools/cargotest",
+          "src/tools/clippy",
+          "src/tools/clippy/clippy_dev",
+          "src/tools/collect-license-metadata",
+          "src/tools/compiletest",
+          "src/tools/coverage-dump",
+          "src/tools/features-status-dump",
+          "src/tools/generate-copyright",
+          "src/tools/generate-windows-sys",
+          "src/tools/html-checker",
+          "src/tools/jsondocck",
+          "src/tools/jsondoclint",
+          "src/tools/linkchecker",
+          "src/tools/lint-docs",
+          "src/tools/lld-wrapper",
+          "src/tools/llvm-bitcode-linker",
+          "src/tools/miri",
+          "src/tools/miri/cargo-miri",
+          "src/tools/miropt-test-tools",
+          "src/tools/opt-dist",
+          "src/tools/remote-test-client",
+          "src/tools/remote-test-server",
+          "src/tools/replace-version-placeholder",
+          "src/tools/run-make-support",
+          "src/tools/rust-installer",
+          "src/tools/rustdoc",
+          "src/tools/rustdoc-gui-test",
+          "src/tools/rustdoc-themes",
+          "src/tools/rustfmt",
+          "src/tools/test-float-parse",
+          "src/tools/tidy",
+          "src/tools/tier-check",
+          "src/tools/unicode-table-generator",
+          "src/tools/unstable-book-gen",
+          "src/tools/wasm-component-ld",
+          "src/tools/x"
+        ],
+        "exclude": [
+          "build",
+          "compiler/rustc_codegen_cranelift",
+          "compiler/rustc_codegen_gcc",
+          "src/bootstrap",
+          "tests/rustdoc-gui",
+          "obj"
+        ],
+        "patch_crates_io": []
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/build_system/asm-tester/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "library/Cargo.toml",
+        "has_package": false,
+        "resolver": "1",
+        "members_count": 4,
+        "members": [
+          "std",
+          "sysroot",
+          "coretests",
+          "alloctests"
+        ],
+        "exclude": [
+          "stdarch",
+          "windows_link"
+        ],
+        "patch_crates_io": [
+          "rustc-std-workspace-core",
+          "rustc-std-workspace-alloc",
+          "rustc-std-workspace-std",
+          "windows-sys"
+        ]
+      },
+      {
+        "path": "library/compiler-builtins/Cargo.toml",
+        "has_package": false,
+        "resolver": "2",
+        "members_count": 12,
+        "members": [
+          "builtins-shim",
+          "builtins-test",
+          "crates/api-list-common",
+          "crates/libm-macros",
+          "crates/musl-math-sys",
+          "crates/panic-handler",
+          "crates/symcheck",
+          "crates/sysbench",
+          "crates/update-api-list",
+          "crates/util",
+          "libm",
+          "libm-test"
+        ],
+        "exclude": [
+          "builtins-test-intrinsics",
+          "compiler-builtins"
+        ],
+        "patch_crates_io": []
+      },
+      {
+        "path": "library/portable-simd/Cargo.toml",
+        "has_package": false,
+        "resolver": "1",
+        "members_count": 3,
+        "members": [
+          "crates/core_simd",
+          "crates/std_float",
+          "crates/test_helpers"
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "library/stdarch/Cargo.toml",
+        "has_package": false,
+        "resolver": "3",
+        "members_count": 2,
+        "members": [
+          "crates/*",
+          "examples"
+        ],
+        "exclude": [
+          "crates/wasm-assert-instr-tests",
+          "rust_programs"
+        ],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/ci/citool/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/clippy_test_deps/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/cargo_common_metadata/fail/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/cargo_common_metadata/fail_publish/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/cargo_common_metadata/fail_publish_true/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/cargo_common_metadata/pass/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/cargo_common_metadata/pass_publish_empty/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/cargo_common_metadata/pass_publish_false/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/feature_name/fail/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/feature_name/pass/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/lint_groups_priority/fail/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/module_style/segment_with_mod_name_10271_11916/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 1,
+        "members": [
+          "foo/bar"
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/multiple_crate_versions/12145_with_dashes/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/multiple_crate_versions/12176_allow_duplicate_crates/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/multiple_crate_versions/5041_allow_dev_build/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/multiple_crate_versions/fail/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/multiple_crate_versions/pass/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/wildcard_dependencies/fail/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/wildcard_dependencies/pass/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/clippy/tests/workspace_test/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 3,
+        "members": [
+          "subcrate",
+          "module_style/pass_no_mod_with_dep_in_subdir",
+          "module_style/pass_mod_with_dep_in_subdir"
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/miri/miri-script/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/miri/test-cargo-miri/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 4,
+        "members": [
+          "subcrate",
+          "issue-1567",
+          "exported-symbol-dep",
+          "test-local-crate-detection"
+        ],
+        "exclude": [
+          "no-std-smoke"
+        ],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/miri/tests/deps/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 1,
+        "members": [
+          "cross-crate-items"
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/rust-analyzer/Cargo.toml",
+        "has_package": false,
+        "resolver": "2",
+        "members_count": 4,
+        "members": [
+          "xtask/",
+          "lib/*",
+          "lib/ungrammar/ungrammar2json",
+          "crates/*"
+        ],
+        "exclude": [
+          "crates/proc-macro-srv/proc-macro-test/imp"
+        ],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/rust-analyzer/crates/proc-macro-srv/proc-macro-test/imp/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/rust-analyzer/crates/syntax/fuzz/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 1,
+        "members": [
+          "."
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/rustbook/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 1,
+        "members": [
+          "../error_index_generator"
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/rustfmt/ci/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/rustfmt/tests/cargo-fmt/source/divergent-crate-dir-names/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 1,
+        "members": [
+          "dependency-dir-name"
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/rustfmt/tests/cargo-fmt/source/issues_6517/Cargo.toml",
+        "has_package": false,
+        "resolver": null,
+        "members_count": 2,
+        "members": [
+          "inner_bin",
+          "inner_lib"
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/rustfmt/tests/cargo-fmt/source/workspaces/path-dep-above/e/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "src/tools/rustfmt/tests/cargo-fmt/source/workspaces/path-dep-above/ws/Cargo.toml",
+        "has_package": false,
+        "resolver": null,
+        "members_count": 2,
+        "members": [
+          "a",
+          "b"
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "tests/run-make-cargo/rustdoc-scrape-examples-duplicated-calls/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "tests/run-make-cargo/same-crate-name-and-macro-name/consumer/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "tests/run-make-cargo/same-crate-name-and-macro-name/mylib_v1/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "tests/run-make-cargo/same-crate-name-and-macro-name/mylib_v2/Cargo.toml",
+        "has_package": true,
+        "resolver": null,
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "tests/run-make-cargo/sanitizer-cfi-build-std-clang/Cargo.toml",
+        "has_package": false,
+        "resolver": "2",
+        "members_count": 8,
+        "members": [
+          "invalid-branch-target-abort",
+          "indirect-arity-mismatch-abort",
+          "indirect-pointee-type-mismatch-abort",
+          "indirect-return-type-mismatch-abort",
+          "indirect-type-qualifier-mismatch-abort",
+          "indirect-type-mismatch-abort",
+          "cross-lang-cfi-types-crate-abort",
+          "cross-lang-cfi-types-crate-not-abort"
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "tests/run-make-cargo/sanitizer-cfi-build-std-clang/cross-lang-integer-normalization-abort/Cargo.toml",
+        "has_package": true,
+        "resolver": "2",
+        "members_count": 1,
+        "members": [
+          "."
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "tests/run-make-cargo/sanitizer-cfi-build-std-clang/cross-lang-integer-normalization-not-abort/Cargo.toml",
+        "has_package": true,
+        "resolver": "2",
+        "members_count": 1,
+        "members": [
+          "."
+        ],
+        "exclude": [],
+        "patch_crates_io": []
+      },
+      {
+        "path": "tests/run-make-cargo/uefi-qemu/uefi_qemu_test/Cargo.toml",
+        "has_package": true,
+        "resolver": "2",
+        "members_count": 0,
+        "members": [],
+        "exclude": [],
+        "patch_crates_io": []
+      }
+    ],
+    "cargo_locks": [
+      {
+        "path": "Cargo.lock",
+        "package_count": 644
+      },
+      {
+        "path": "compiler/rustc_codegen_cranelift/Cargo.lock",
+        "package_count": 68
+      },
+      {
+        "path": "compiler/rustc_codegen_cranelift/build_system/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/Cargo.lock",
+        "package_count": 39
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/build_system/Cargo.lock",
+        "package_count": 2
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/build_system/asm-tester/Cargo.lock",
+        "package_count": 59
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/tests/cross_lang_lto/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/tests/hello-world/Cargo.lock",
+        "package_count": 2
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/tests/hello-world/mylib/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "library/Cargo.lock",
+        "package_count": 50
+      },
+      {
+        "path": "library/compiler-builtins/Cargo.lock",
+        "package_count": 170
+      },
+      {
+        "path": "library/compiler-builtins/builtins-test-intrinsics/Cargo.lock",
+        "package_count": 10
+      },
+      {
+        "path": "library/portable-simd/Cargo.lock",
+        "package_count": 64
+      },
+      {
+        "path": "library/stdarch/Cargo.lock",
+        "package_count": 131
+      },
+      {
+        "path": "src/bootstrap/Cargo.lock",
+        "package_count": 121
+      },
+      {
+        "path": "src/ci/citool/Cargo.lock",
+        "package_count": 154
+      },
+      {
+        "path": "src/doc/rustc-dev-guide/ci/date-check/Cargo.lock",
+        "package_count": 39
+      },
+      {
+        "path": "src/doc/rustc-dev-guide/ci/sembr/Cargo.lock",
+        "package_count": 40
+      },
+      {
+        "path": "src/tools/clippy/clippy_test_deps/Cargo.lock",
+        "package_count": 50
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/multiple_crate_versions/fail/Cargo.lock",
+        "package_count": 6
+      },
+      {
+        "path": "src/tools/miri/Cargo.lock",
+        "package_count": 224
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/backtraces/Cargo.lock",
+        "package_count": 12
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/big-allocs/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/mse/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/range-iteration/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/serde1/Cargo.lock",
+        "package_count": 12
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/serde2/Cargo.lock",
+        "package_count": 12
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/slice-chunked/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/slice-get-unchecked/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/string-replace/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/unicode/Cargo.lock",
+        "package_count": 2
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/zip-equal/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "src/tools/miri/cargo-miri/Cargo.lock",
+        "package_count": 52
+      },
+      {
+        "path": "src/tools/miri/miri-script/Cargo.lock",
+        "package_count": 80
+      },
+      {
+        "path": "src/tools/miri/test-cargo-miri/Cargo.lock",
+        "package_count": 18
+      },
+      {
+        "path": "src/tools/miri/test-cargo-miri/no-std-smoke/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "src/tools/miri/tests/deps/Cargo.lock",
+        "package_count": 56
+      },
+      {
+        "path": "src/tools/rust-analyzer/Cargo.lock",
+        "package_count": 369
+      },
+      {
+        "path": "src/tools/rust-analyzer/crates/proc-macro-srv/proc-macro-test/imp/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "src/tools/rustbook/Cargo.lock",
+        "package_count": 221
+      },
+      {
+        "path": "src/tools/rustfmt/Cargo.lock",
+        "package_count": 121
+      },
+      {
+        "path": "src/tools/rustfmt/check_diff/Cargo.lock",
+        "package_count": 79
+      },
+      {
+        "path": "src/tools/rustfmt/ci/Cargo.lock",
+        "package_count": 18
+      },
+      {
+        "path": "src/tools/rustfmt/config_proc_macro/Cargo.lock",
+        "package_count": 7
+      },
+      {
+        "path": "src/tools/rustfmt/tests/config/issue_4660/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/run-make-cargo/sanitizer-cfi-build-std-clang/Cargo.lock",
+        "package_count": 9
+      },
+      {
+        "path": "tests/run-make-cargo/sanitizer-cfi-build-std-clang/cross-lang-integer-normalization-abort/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/run-make-cargo/sanitizer-cfi-build-std-clang/cross-lang-integer-normalization-not-abort/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/run-make-cargo/thumb-none-qemu/example/Cargo.lock",
+        "package_count": 23
+      },
+      {
+        "path": "tests/run-make-cargo/uefi-qemu/uefi_qemu_test/Cargo.lock",
+        "package_count": 2
+      },
+      {
+        "path": "tests/rustdoc-gui/src/extend_css/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/huge_logo/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/lib2/Cargo.lock",
+        "package_count": 3
+      },
+      {
+        "path": "tests/rustdoc-gui/src/lib2/implementors/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/link_to_definition/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/macro_expansion/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/proc_macro_test/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/scrape_examples/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/scrape_examples_ice/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/settings/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/staged_api/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/test_docs/Cargo.lock",
+        "package_count": 1
+      },
+      {
+        "path": "tests/rustdoc-gui/src/theme_css/Cargo.lock",
+        "package_count": 1
+      }
+    ]
+  },
+  "compiler": {
+    "direct_crate_count": 79,
+    "compiler_plus_rustdoc_count": 80,
+    "compiler_cargo_toml_count": 85,
+    "nested_package_count": 6,
+    "direct_compiler_raw_lines": 891726,
+    "direct_compiler_approx_sloc": 674439,
+    "librustdoc_raw_lines": 50703,
+    "librustdoc_approx_sloc": 41162,
+    "longest_chain_length": 22,
+    "longest_chain": [
+      "rustc",
+      "rustc_driver",
+      "rustc_driver_impl",
+      "rustc_interface",
+      "rustc_codegen_llvm",
+      "rustc_codegen_ssa",
+      "rustc_metadata",
+      "rustc_expand",
+      "rustc_attr_parsing",
+      "rustc_parse",
+      "rustc_session",
+      "rustc_target",
+      "rustc_abi",
+      "rustc_errors",
+      "rustc_lint_defs",
+      "rustc_ast",
+      "rustc_ast_ir",
+      "rustc_span",
+      "rustc_data_structures",
+      "rustc_index",
+      "rustc_serialize",
+      "rustc_hashes"
+    ],
+    "verification_split_totals": {
+      "diagnostic_driver_backend": {
+        "crates": 19,
+        "raw_lines": 174835,
+        "approx_sloc": 139257
+      },
+      "semantic_middle_shared": {
+        "crates": 29,
+        "raw_lines": 318099,
+        "approx_sloc": 232748
+      },
+      "frontend_only": {
+        "crates": 32,
+        "raw_lines": 449495,
+        "approx_sloc": 343596
+      }
+    },
+    "crates": [
+      {
+        "key": "librustdoc",
+        "dir": "src/librustdoc",
+        "package_name": "rustdoc",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 105,
+        "raw_lines": 50703,
+        "approx_sloc": 41162,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_data_structures",
+          "rustc_driver",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_hir",
+          "rustc_hir_analysis",
+          "rustc_hir_pretty",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_interface",
+          "rustc_lexer",
+          "rustc_lint",
+          "rustc_log",
+          "rustc_macros",
+          "rustc_metadata",
+          "rustc_middle",
+          "rustc_parse",
+          "rustc_passes",
+          "rustc_resolve",
+          "rustc_serialize",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target",
+          "rustc_trait_selection"
+        ],
+        "out_degree": 0,
+        "in_degree": 0,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 0,
+        "topological_depth": 0,
+        "architectural_layer": "L10: Driver, Public MIR & Rustdoc",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc",
+        "dir": "compiler/rustc",
+        "package_name": "rustc-main",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 79,
+        "approx_sloc": 36,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_codegen_ssa",
+          "rustc_driver",
+          "rustc_driver_impl",
+          "rustc_public",
+          "rustc_public_bridge",
+          "rustc_windows_rc"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 6,
+        "in_degree": 0,
+        "transitive_deps_count": 76,
+        "transitive_dependents_count": 0,
+        "topological_depth": 21,
+        "architectural_layer": "L10: Driver, Public MIR & Rustdoc",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_abi",
+        "dir": "compiler/rustc_abi",
+        "package_name": "rustc_abi",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 13,
+        "raw_lines": 6602,
+        "approx_sloc": 4644,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_error_messages",
+          "rustc_errors",
+          "rustc_hashes",
+          "rustc_index",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 8,
+        "in_degree": 33,
+        "transitive_deps_count": 18,
+        "transitive_dependents_count": 48,
+        "topological_depth": 9,
+        "architectural_layer": "L7: ABI, Target, TyCtxt & MIR Middle",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_arena",
+        "dir": "compiler/rustc_arena",
+        "package_name": "rustc_arena",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 984,
+        "approx_sloc": 651,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 10,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 60,
+        "topological_depth": 0,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_ast",
+        "dir": "compiler/rustc_ast",
+        "package_name": "rustc_ast",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 25,
+        "raw_lines": 11982,
+        "approx_sloc": 8460,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast_ir",
+          "rustc_data_structures",
+          "rustc_index",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 6,
+        "in_degree": 31,
+        "transitive_deps_count": 12,
+        "transitive_dependents_count": 52,
+        "topological_depth": 6,
+        "architectural_layer": "L2: Lexing, Parsing & AST",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_ast_ir",
+        "dir": "compiler/rustc_ast_ir",
+        "package_name": "rustc_ast_ir",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 417,
+        "approx_sloc": 347,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 4,
+        "in_degree": 3,
+        "transitive_deps_count": 11,
+        "transitive_dependents_count": 53,
+        "topological_depth": 5,
+        "architectural_layer": "L2: Lexing, Parsing & AST",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_ast_lowering",
+        "dir": "compiler/rustc_ast_lowering",
+        "package_name": "rustc_ast_lowering",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 17,
+        "raw_lines": 14523,
+        "approx_sloc": 11838,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_session",
+          "rustc_span",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 14,
+        "in_degree": 2,
+        "transitive_deps_count": 34,
+        "transitive_dependents_count": 5,
+        "topological_depth": 14,
+        "architectural_layer": "L4: Name Resolution & HIR Lowering",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_ast_passes",
+        "dir": "compiler/rustc_ast_passes",
+        "package_name": "rustc_ast_passes",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 5,
+        "raw_lines": 4512,
+        "approx_sloc": 3846,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_session",
+          "rustc_span",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 13,
+        "in_degree": 1,
+        "transitive_deps_count": 29,
+        "transitive_dependents_count": 4,
+        "topological_depth": 14,
+        "architectural_layer": "L2: Lexing, Parsing & AST",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_ast_pretty",
+        "dir": "compiler/rustc_ast_pretty",
+        "package_name": "rustc_ast_pretty",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 9,
+        "raw_lines": 5626,
+        "approx_sloc": 4509,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast",
+          "rustc_lexer",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 3,
+        "in_degree": 11,
+        "transitive_deps_count": 13,
+        "transitive_dependents_count": 44,
+        "topological_depth": 7,
+        "architectural_layer": "L2: Lexing, Parsing & AST",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_attr_ir",
+        "dir": "compiler/rustc_attr_ir",
+        "package_name": "rustc_attr_ir",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 14,
+        "raw_lines": 4917,
+        "approx_sloc": 3196,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_data_structures",
+          "rustc_error_messages",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span",
+          "rustc_structures"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 10,
+        "in_degree": 32,
+        "transitive_deps_count": 21,
+        "transitive_dependents_count": 42,
+        "topological_depth": 10,
+        "architectural_layer": "L3: Attributes & Macro Expansion",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_attr_parsing",
+        "dir": "compiler/rustc_attr_parsing",
+        "package_name": "rustc_attr_parsing",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 66,
+        "raw_lines": 17292,
+        "approx_sloc": 14398,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_lexer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_parse",
+          "rustc_parse_format",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 16,
+        "in_degree": 10,
+        "transitive_deps_count": 28,
+        "transitive_dependents_count": 16,
+        "topological_depth": 13,
+        "architectural_layer": "L3: Attributes & Macro Expansion",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_borrowck",
+        "dir": "compiler/rustc_borrowck",
+        "package_name": "rustc_borrowck",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 62,
+        "raw_lines": 36847,
+        "approx_sloc": 27757,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_graphviz",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_lexer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_mir_dataflow",
+          "rustc_session",
+          "rustc_span",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 16,
+        "in_degree": 1,
+        "transitive_deps_count": 36,
+        "transitive_dependents_count": 4,
+        "topological_depth": 15,
+        "architectural_layer": "L6: THIR, Borrowck & MIR Dataflow",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_builtin_macros",
+        "dir": "compiler/rustc_builtin_macros",
+        "package_name": "rustc_builtin_macros",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 56,
+        "raw_lines": 14315,
+        "approx_sloc": 11394,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_expand",
+          "rustc_feature",
+          "rustc_index",
+          "rustc_lexer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_parse",
+          "rustc_parse_format",
+          "rustc_proc_macro",
+          "rustc_session",
+          "rustc_span",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 18,
+        "in_degree": 1,
+        "transitive_deps_count": 32,
+        "transitive_dependents_count": 4,
+        "topological_depth": 15,
+        "architectural_layer": "L3: Attributes & Macro Expansion",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_codegen_cranelift",
+        "dir": "compiler/rustc_codegen_cranelift",
+        "package_name": "rustc_codegen_cranelift",
+        "edition": "2024",
+        "crate_types": [
+          "dylib"
+        ],
+        "files": 63,
+        "raw_lines": 20411,
+        "approx_sloc": 16835,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_codegen_ssa",
+          "rustc_const_eval",
+          "rustc_data_structures",
+          "rustc_driver",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_log",
+          "rustc_middle",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_symbol_mangling",
+          "rustc_target"
+        ],
+        "out_degree": 0,
+        "in_degree": 0,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 0,
+        "topological_depth": 0,
+        "architectural_layer": "L9: Monomorphization, SSA & Backends",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_codegen_gcc",
+        "dir": "compiler/rustc_codegen_gcc",
+        "package_name": "rustc_codegen_gcc",
+        "edition": "2024",
+        "crate_types": [
+          "dylib"
+        ],
+        "files": 120,
+        "raw_lines": 33220,
+        "approx_sloc": 28163,
+        "cpp_raw_lines": 186,
+        "internal_deps": [],
+        "rustc_private_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_codegen_ssa",
+          "rustc_data_structures",
+          "rustc_driver",
+          "rustc_errors",
+          "rustc_fs_util",
+          "rustc_hir",
+          "rustc_interface",
+          "rustc_log",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_session",
+          "rustc_span",
+          "rustc_symbol_mangling",
+          "rustc_target",
+          "rustc_type_ir"
+        ],
+        "out_degree": 0,
+        "in_degree": 0,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 0,
+        "topological_depth": 0,
+        "architectural_layer": "L9: Monomorphization, SSA & Backends",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_codegen_llvm",
+        "dir": "compiler/rustc_codegen_llvm",
+        "package_name": "rustc_codegen_llvm",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 59,
+        "raw_lines": 31929,
+        "approx_sloc": 24627,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_codegen_ssa",
+          "rustc_crate_store",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_fs_util",
+          "rustc_hashes",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_llvm",
+          "rustc_macros",
+          "rustc_metadata",
+          "rustc_middle",
+          "rustc_sanitizers",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_symbol_mangling",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 22,
+        "in_degree": 1,
+        "transitive_deps_count": 47,
+        "transitive_dependents_count": 4,
+        "topological_depth": 17,
+        "architectural_layer": "L9: Monomorphization, SSA & Backends",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_codegen_ssa",
+        "dir": "compiler/rustc_codegen_ssa",
+        "package_name": "rustc_codegen_ssa",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 57,
+        "raw_lines": 30971,
+        "approx_sloc": 23078,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_arena",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_crate_store",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_fs_util",
+          "rustc_hashes",
+          "rustc_hir",
+          "rustc_incremental",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_metadata",
+          "rustc_middle",
+          "rustc_serialize",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_symbol_mangling",
+          "rustc_target",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 24,
+        "in_degree": 4,
+        "transitive_deps_count": 44,
+        "transitive_dependents_count": 5,
+        "topological_depth": 16,
+        "architectural_layer": "L9: Monomorphization, SSA & Backends",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_const_eval",
+        "dir": "compiler/rustc_const_eval",
+        "package_name": "rustc_const_eval",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 45,
+        "raw_lines": 22729,
+        "approx_sloc": 16863,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_hir_pretty",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_mir_dataflow",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 18,
+        "in_degree": 3,
+        "transitive_deps_count": 37,
+        "transitive_dependents_count": 5,
+        "topological_depth": 15,
+        "architectural_layer": "L7: ABI, Target, TyCtxt & MIR Middle",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_crate_store",
+        "dir": "compiler/rustc_crate_store",
+        "package_name": "rustc_crate_store",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 275,
+        "approx_sloc": 183,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_hir_id",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span",
+          "rustc_structures"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 8,
+        "in_degree": 9,
+        "transitive_deps_count": 22,
+        "transitive_dependents_count": 35,
+        "topological_depth": 11,
+        "architectural_layer": "L8: Metadata, Incremental & Query Engine",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_data_structures",
+        "dir": "compiler/rustc_data_structures",
+        "package_name": "rustc_data_structures",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 75,
+        "raw_lines": 15116,
+        "approx_sloc": 10120,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_arena",
+          "rustc_graphviz",
+          "rustc_hashes",
+          "rustc_index",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_thread_pool"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 7,
+        "in_degree": 51,
+        "transitive_deps_count": 8,
+        "transitive_dependents_count": 59,
+        "topological_depth": 3,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_driver",
+        "dir": "compiler/rustc_driver",
+        "package_name": "rustc_driver",
+        "edition": "2024",
+        "crate_types": [
+          "dylib"
+        ],
+        "files": 2,
+        "raw_lines": 26,
+        "approx_sloc": 19,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_driver_impl",
+          "rustc_windows_rc"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 2,
+        "in_degree": 1,
+        "transitive_deps_count": 75,
+        "transitive_dependents_count": 1,
+        "topological_depth": 20,
+        "architectural_layer": "L10: Driver, Public MIR & Rustdoc",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_driver_impl",
+        "dir": "compiler/rustc_driver_impl",
+        "package_name": "rustc_driver_impl",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 8,
+        "raw_lines": 2727,
+        "approx_sloc": 2072,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_codegen_ssa",
+          "rustc_const_eval",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_expand",
+          "rustc_feature",
+          "rustc_hir",
+          "rustc_hir_analysis",
+          "rustc_hir_pretty",
+          "rustc_index",
+          "rustc_interface",
+          "rustc_lexer",
+          "rustc_lint",
+          "rustc_lint_defs",
+          "rustc_log",
+          "rustc_macros",
+          "rustc_metadata",
+          "rustc_middle",
+          "rustc_mir_build",
+          "rustc_parse",
+          "rustc_public",
+          "rustc_resolve",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 29,
+        "in_degree": 2,
+        "transitive_deps_count": 73,
+        "transitive_dependents_count": 2,
+        "topological_depth": 19,
+        "architectural_layer": "L10: Driver, Public MIR & Rustdoc",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_error_codes",
+        "dir": "compiler/rustc_error_codes",
+        "package_name": "rustc_error_codes",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 1,
+        "raw_lines": 691,
+        "approx_sloc": 527,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 1,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 50,
+        "topological_depth": 0,
+        "architectural_layer": "L1: Span, Session & Diagnostics",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_error_messages",
+        "dir": "compiler/rustc_error_messages",
+        "package_name": "rustc_error_messages",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 459,
+        "approx_sloc": 331,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 4,
+        "in_degree": 8,
+        "transitive_deps_count": 11,
+        "transitive_dependents_count": 52,
+        "topological_depth": 5,
+        "architectural_layer": "L1: Span, Session & Diagnostics",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_errors",
+        "dir": "compiler/rustc_errors",
+        "package_name": "rustc_errors",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 18,
+        "raw_lines": 7259,
+        "approx_sloc": 5376,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast",
+          "rustc_data_structures",
+          "rustc_error_codes",
+          "rustc_error_messages",
+          "rustc_hashes",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 10,
+        "in_degree": 33,
+        "transitive_deps_count": 17,
+        "transitive_dependents_count": 49,
+        "topological_depth": 8,
+        "architectural_layer": "L1: Span, Session & Diagnostics",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_expand",
+        "dir": "compiler/rustc_expand",
+        "package_name": "rustc_expand",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 19,
+        "raw_lines": 13654,
+        "approx_sloc": 10674,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_hir",
+          "rustc_lexer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_parse",
+          "rustc_proc_macro",
+          "rustc_serialize",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 17,
+        "in_degree": 6,
+        "transitive_deps_count": 31,
+        "transitive_dependents_count": 10,
+        "topological_depth": 14,
+        "architectural_layer": "L3: Attributes & Macro Expansion",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_expand_queries",
+        "dir": "compiler/rustc_expand_queries",
+        "package_name": "rustc_expand_queries",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 95,
+        "approx_sloc": 65,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast",
+          "rustc_expand",
+          "rustc_middle",
+          "rustc_proc_macro",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 5,
+        "in_degree": 1,
+        "transitive_deps_count": 36,
+        "transitive_dependents_count": 4,
+        "topological_depth": 15,
+        "architectural_layer": "L3: Attributes & Macro Expansion",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_feature",
+        "dir": "compiler/rustc_feature",
+        "package_name": "rustc_feature",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 6,
+        "raw_lines": 2266,
+        "approx_sloc": 1326,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_macros",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 3,
+        "in_degree": 15,
+        "transitive_deps_count": 11,
+        "transitive_dependents_count": 41,
+        "topological_depth": 5,
+        "architectural_layer": "L1: Span, Session & Diagnostics",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_fs_util",
+        "dir": "compiler/rustc_fs_util",
+        "package_name": "rustc_fs_util",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 1,
+        "raw_lines": 142,
+        "approx_sloc": 99,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 7,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 44,
+        "topological_depth": 0,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_graphviz",
+        "dir": "compiler/rustc_graphviz",
+        "package_name": "rustc_graphviz",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 1079,
+        "approx_sloc": 579,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 5,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 60,
+        "topological_depth": 0,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_hashes",
+        "dir": "compiler/rustc_hashes",
+        "package_name": "rustc_hashes",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 1,
+        "raw_lines": 131,
+        "approx_sloc": 89,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 15,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 62,
+        "topological_depth": 0,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_hir",
+        "dir": "compiler/rustc_hir",
+        "package_name": "rustc_hir",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 10,
+        "raw_lines": 8441,
+        "approx_sloc": 5941,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_arena",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_error_messages",
+          "rustc_errors",
+          "rustc_hir_id",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 14,
+        "in_degree": 31,
+        "transitive_deps_count": 24,
+        "transitive_dependents_count": 38,
+        "topological_depth": 11,
+        "architectural_layer": "L4: Name Resolution & HIR Lowering",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_hir_analysis",
+        "dir": "compiler/rustc_hir_analysis",
+        "package_name": "rustc_hir_analysis",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 53,
+        "raw_lines": 41020,
+        "approx_sloc": 32116,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_arena",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 18,
+        "in_degree": 3,
+        "transitive_deps_count": 35,
+        "transitive_dependents_count": 5,
+        "topological_depth": 15,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_hir_id",
+        "dir": "compiler/rustc_hir_id",
+        "package_name": "rustc_hir_id",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 4,
+        "raw_lines": 871,
+        "approx_sloc": 589,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_hashes",
+          "rustc_index",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 6,
+        "in_degree": 3,
+        "transitive_deps_count": 11,
+        "transitive_dependents_count": 51,
+        "topological_depth": 5,
+        "architectural_layer": "L4: Name Resolution & HIR Lowering",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_hir_pretty",
+        "dir": "compiler/rustc_hir_pretty",
+        "package_name": "rustc_hir_pretty",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 1,
+        "raw_lines": 2759,
+        "approx_sloc": 2467,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_attr_ir",
+          "rustc_hir",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 6,
+        "in_degree": 5,
+        "transitive_deps_count": 25,
+        "transitive_dependents_count": 13,
+        "topological_depth": 12,
+        "architectural_layer": "L4: Name Resolution & HIR Lowering",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_hir_typeck",
+        "dir": "compiler/rustc_hir_typeck",
+        "package_name": "rustc_hir_typeck",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 40,
+        "raw_lines": 50633,
+        "approx_sloc": 39563,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_hir_analysis",
+          "rustc_hir_pretty",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_lint",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_session",
+          "rustc_span",
+          "rustc_target",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 18,
+        "in_degree": 1,
+        "transitive_deps_count": 42,
+        "transitive_dependents_count": 4,
+        "topological_depth": 16,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_incremental",
+        "dir": "compiler/rustc_incremental",
+        "package_name": "rustc_incremental",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 12,
+        "raw_lines": 2671,
+        "approx_sloc": 1854,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_fs_util",
+          "rustc_graphviz",
+          "rustc_hashes",
+          "rustc_hir",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_serialize",
+          "rustc_session",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 12,
+        "in_degree": 2,
+        "transitive_deps_count": 31,
+        "transitive_dependents_count": 6,
+        "topological_depth": 13,
+        "architectural_layer": "L8: Metadata, Incremental & Query Engine",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_index",
+        "dir": "compiler/rustc_index",
+        "package_name": "rustc_index",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 9,
+        "raw_lines": 4152,
+        "approx_sloc": 3122,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_index_macros",
+          "rustc_macros",
+          "rustc_serialize"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 3,
+        "in_degree": 32,
+        "transitive_deps_count": 4,
+        "transitive_dependents_count": 60,
+        "topological_depth": 2,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_index_macros",
+        "dir": "compiler/rustc_index_macros",
+        "package_name": "rustc_index_macros",
+        "edition": "2024",
+        "crate_types": [
+          "proc-macro"
+        ],
+        "files": 2,
+        "raw_lines": 450,
+        "approx_sloc": 329,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 1,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 61,
+        "topological_depth": 0,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_infer",
+        "dir": "compiler/rustc_infer",
+        "package_name": "rustc_infer",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 39,
+        "raw_lines": 13543,
+        "approx_sloc": 9371,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_span",
+          "rustc_type_ir"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 8,
+        "in_degree": 10,
+        "transitive_deps_count": 31,
+        "transitive_dependents_count": 18,
+        "topological_depth": 13,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_interface",
+        "dir": "compiler/rustc_interface",
+        "package_name": "rustc_interface",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 9,
+        "raw_lines": 4346,
+        "approx_sloc": 3440,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast",
+          "rustc_ast_lowering",
+          "rustc_ast_passes",
+          "rustc_ast_pretty",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_borrowck",
+          "rustc_builtin_macros",
+          "rustc_codegen_llvm",
+          "rustc_codegen_ssa",
+          "rustc_const_eval",
+          "rustc_crate_store",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_expand",
+          "rustc_expand_queries",
+          "rustc_feature",
+          "rustc_fs_util",
+          "rustc_hir",
+          "rustc_hir_analysis",
+          "rustc_hir_typeck",
+          "rustc_incremental",
+          "rustc_lint",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_metadata",
+          "rustc_middle",
+          "rustc_mir_build",
+          "rustc_mir_dataflow",
+          "rustc_mir_transform",
+          "rustc_monomorphize",
+          "rustc_parse",
+          "rustc_passes",
+          "rustc_privacy",
+          "rustc_query_impl",
+          "rustc_resolve",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_symbol_mangling",
+          "rustc_target",
+          "rustc_thread_pool",
+          "rustc_trait_selection",
+          "rustc_traits",
+          "rustc_ty_utils"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 45,
+        "in_degree": 1,
+        "transitive_deps_count": 69,
+        "transitive_dependents_count": 3,
+        "topological_depth": 18,
+        "architectural_layer": "L10: Driver, Public MIR & Rustdoc",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_lexer",
+        "dir": "compiler/rustc_lexer",
+        "package_name": "rustc_lexer",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 1666,
+        "approx_sloc": 1143,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 9,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 60,
+        "topological_depth": 0,
+        "architectural_layer": "L2: Lexing, Parsing & AST",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_lint",
+        "dir": "compiler/rustc_lint",
+        "package_name": "rustc_lint",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 62,
+        "raw_lines": 26146,
+        "approx_sloc": 18867,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_hashes",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_parse_format",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_symbol_mangling",
+          "rustc_target",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 22,
+        "in_degree": 3,
+        "transitive_deps_count": 39,
+        "transitive_dependents_count": 5,
+        "topological_depth": 15,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_lint_defs",
+        "dir": "compiler/rustc_lint_defs",
+        "package_name": "rustc_lint_defs",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 6883,
+        "approx_sloc": 1659,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast",
+          "rustc_data_structures",
+          "rustc_error_messages",
+          "rustc_hir_id",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 7,
+        "in_degree": 28,
+        "transitive_deps_count": 15,
+        "transitive_dependents_count": 50,
+        "topological_depth": 7,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_llvm",
+        "dir": "compiler/rustc_llvm",
+        "package_name": "rustc_llvm",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 10,
+        "raw_lines": 5120,
+        "approx_sloc": 3977,
+        "cpp_raw_lines": 4339,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 1,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 5,
+        "topological_depth": 0,
+        "architectural_layer": "L9: Monomorphization, SSA & Backends",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_log",
+        "dir": "compiler/rustc_log",
+        "package_name": "rustc_log",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 1,
+        "raw_lines": 377,
+        "approx_sloc": 279,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 1,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 3,
+        "topological_depth": 0,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_macros",
+        "dir": "compiler/rustc_macros",
+        "package_name": "rustc_macros",
+        "edition": "2024",
+        "crate_types": [
+          "proc-macro"
+        ],
+        "files": 22,
+        "raw_lines": 4659,
+        "approx_sloc": 3627,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 50,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 61,
+        "topological_depth": 0,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_metadata",
+        "dir": "compiler/rustc_metadata",
+        "package_name": "rustc_metadata",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 17,
+        "raw_lines": 12578,
+        "approx_sloc": 9604,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_crate_store",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_expand",
+          "rustc_feature",
+          "rustc_fs_util",
+          "rustc_hashes",
+          "rustc_hir",
+          "rustc_hir_pretty",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_proc_macro",
+          "rustc_serialize",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 23,
+        "in_degree": 5,
+        "transitive_deps_count": 37,
+        "transitive_dependents_count": 7,
+        "topological_depth": 15,
+        "architectural_layer": "L8: Metadata, Incremental & Query Engine",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_middle",
+        "dir": "compiler/rustc_middle",
+        "package_name": "rustc_middle",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 139,
+        "raw_lines": 66574,
+        "approx_sloc": 46012,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_arena",
+          "rustc_ast",
+          "rustc_ast_ir",
+          "rustc_attr_ir",
+          "rustc_crate_store",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_graphviz",
+          "rustc_hashes",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target",
+          "rustc_thread_pool",
+          "rustc_type_ir"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 22,
+        "in_degree": 32,
+        "transitive_deps_count": 30,
+        "transitive_dependents_count": 34,
+        "topological_depth": 12,
+        "architectural_layer": "L7: ABI, Target, TyCtxt & MIR Middle",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_mir_build",
+        "dir": "compiler/rustc_mir_build",
+        "package_name": "rustc_mir_build",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 39,
+        "raw_lines": 23282,
+        "approx_sloc": 17553,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_arena",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_pattern_analysis",
+          "rustc_span",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 15,
+        "in_degree": 2,
+        "transitive_deps_count": 36,
+        "transitive_dependents_count": 4,
+        "topological_depth": 15,
+        "architectural_layer": "L6: THIR, Borrowck & MIR Dataflow",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_mir_dataflow",
+        "dir": "compiler/rustc_mir_dataflow",
+        "package_name": "rustc_mir_dataflow",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 26,
+        "raw_lines": 7849,
+        "approx_sloc": 5666,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_graphviz",
+          "rustc_index",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 9,
+        "in_degree": 4,
+        "transitive_deps_count": 31,
+        "transitive_dependents_count": 7,
+        "topological_depth": 13,
+        "architectural_layer": "L6: THIR, Borrowck & MIR Dataflow",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_mir_transform",
+        "dir": "compiler/rustc_mir_transform",
+        "package_name": "rustc_mir_transform",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 97,
+        "raw_lines": 36833,
+        "approx_sloc": 27044,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_arena",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_const_eval",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_mir_dataflow",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 19,
+        "in_degree": 1,
+        "transitive_deps_count": 38,
+        "transitive_dependents_count": 4,
+        "topological_depth": 16,
+        "architectural_layer": "L7: ABI, Target, TyCtxt & MIR Middle",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_monomorphize",
+        "dir": "compiler/rustc_monomorphize",
+        "package_name": "rustc_monomorphize",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 12,
+        "raw_lines": 4914,
+        "approx_sloc": 3507,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_serialize",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_symbol_mangling",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 16,
+        "in_degree": 1,
+        "transitive_deps_count": 32,
+        "transitive_dependents_count": 4,
+        "topological_depth": 14,
+        "architectural_layer": "L9: Monomorphization, SSA & Backends",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_next_trait_solver",
+        "dir": "compiler/rustc_next_trait_solver",
+        "package_name": "rustc_next_trait_solver",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 25,
+        "raw_lines": 12856,
+        "approx_sloc": 9561,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_index",
+          "rustc_macros",
+          "rustc_type_ir",
+          "rustc_type_ir_macros"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 5,
+        "in_degree": 1,
+        "transitive_deps_count": 21,
+        "transitive_dependents_count": 18,
+        "topological_depth": 11,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_parse",
+        "dir": "compiler/rustc_parse",
+        "package_name": "rustc_parse",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 26,
+        "raw_lines": 33105,
+        "approx_sloc": 26882,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_index",
+          "rustc_lexer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_session",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 11,
+        "in_degree": 5,
+        "transitive_deps_count": 25,
+        "transitive_dependents_count": 17,
+        "topological_depth": 12,
+        "architectural_layer": "L2: Lexing, Parsing & AST",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_parse_format",
+        "dir": "compiler/rustc_parse_format",
+        "package_name": "rustc_parse_format",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 1649,
+        "approx_sloc": 1382,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_lexer"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 1,
+        "in_degree": 3,
+        "transitive_deps_count": 1,
+        "transitive_dependents_count": 17,
+        "topological_depth": 1,
+        "architectural_layer": "L2: Lexing, Parsing & AST",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_passes",
+        "dir": "compiler/rustc_passes",
+        "package_name": "rustc_passes",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 20,
+        "raw_lines": 8745,
+        "approx_sloc": 7101,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_ast_lowering",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_privacy",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 19,
+        "in_degree": 1,
+        "transitive_deps_count": 41,
+        "transitive_dependents_count": 4,
+        "topological_depth": 15,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_pattern_analysis",
+        "dir": "compiler/rustc_pattern_analysis",
+        "package_name": "rustc_pattern_analysis",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 14,
+        "raw_lines": 6001,
+        "approx_sloc": 3720,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_arena",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 9,
+        "in_degree": 1,
+        "transitive_deps_count": 31,
+        "transitive_dependents_count": 5,
+        "topological_depth": 13,
+        "architectural_layer": "L6: THIR, Borrowck & MIR Dataflow",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_privacy",
+        "dir": "compiler/rustc_privacy",
+        "package_name": "rustc_privacy",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 2,
+        "raw_lines": 2016,
+        "approx_sloc": 1625,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_span",
+          "rustc_ty_walk"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 10,
+        "in_degree": 2,
+        "transitive_deps_count": 32,
+        "transitive_dependents_count": 5,
+        "topological_depth": 14,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_proc_macro",
+        "dir": "compiler/rustc_proc_macro",
+        "package_name": "rustc_proc_macro",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 4,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 11,
+        "topological_depth": 0,
+        "architectural_layer": "L3: Attributes & Macro Expansion",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_public",
+        "dir": "compiler/rustc_public",
+        "package_name": "rustc_public",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 29,
+        "raw_lines": 11531,
+        "approx_sloc": 8935,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_crate_store",
+          "rustc_hir",
+          "rustc_middle",
+          "rustc_public_bridge",
+          "rustc_span",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 7,
+        "in_degree": 2,
+        "transitive_deps_count": 33,
+        "transitive_dependents_count": 3,
+        "topological_depth": 14,
+        "architectural_layer": "L10: Driver, Public MIR & Rustdoc",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_public_bridge",
+        "dir": "compiler/rustc_public_bridge",
+        "package_name": "rustc_public_bridge",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 7,
+        "raw_lines": 1419,
+        "approx_sloc": 1050,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_attr_ir",
+          "rustc_crate_store",
+          "rustc_data_structures",
+          "rustc_hir",
+          "rustc_hir_pretty",
+          "rustc_middle",
+          "rustc_span",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 9,
+        "in_degree": 2,
+        "transitive_deps_count": 32,
+        "transitive_dependents_count": 4,
+        "topological_depth": 13,
+        "architectural_layer": "L10: Driver, Public MIR & Rustdoc",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_query_impl",
+        "dir": "compiler/rustc_query_impl",
+        "package_name": "rustc_query_impl",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 9,
+        "raw_lines": 2689,
+        "approx_sloc": 2027,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_serialize",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_thread_pool"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 9,
+        "in_degree": 1,
+        "transitive_deps_count": 31,
+        "transitive_dependents_count": 4,
+        "topological_depth": 13,
+        "architectural_layer": "L8: Metadata, Incremental & Query Engine",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_resolve",
+        "dir": "compiler/rustc_resolve",
+        "package_name": "rustc_resolve",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 16,
+        "raw_lines": 30891,
+        "approx_sloc": 25177,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_arena",
+          "rustc_ast",
+          "rustc_ast_pretty",
+          "rustc_attr_ir",
+          "rustc_attr_parsing",
+          "rustc_crate_store",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_expand",
+          "rustc_feature",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_metadata",
+          "rustc_middle",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 19,
+        "in_degree": 2,
+        "transitive_deps_count": 38,
+        "transitive_dependents_count": 4,
+        "topological_depth": 16,
+        "architectural_layer": "L4: Name Resolution & HIR Lowering",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_sanitizers",
+        "dir": "compiler/rustc_sanitizers",
+        "package_name": "rustc_sanitizers",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 10,
+        "raw_lines": 2246,
+        "approx_sloc": 1467,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_hir",
+          "rustc_middle",
+          "rustc_span",
+          "rustc_target",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 8,
+        "in_degree": 1,
+        "transitive_deps_count": 35,
+        "transitive_dependents_count": 5,
+        "topological_depth": 15,
+        "architectural_layer": "L9: Monomorphization, SSA & Backends",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_serialize",
+        "dir": "compiler/rustc_serialize",
+        "package_name": "rustc_serialize",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 8,
+        "raw_lines": 2123,
+        "approx_sloc": 1628,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_hashes"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 1,
+        "in_degree": 24,
+        "transitive_deps_count": 1,
+        "transitive_dependents_count": 61,
+        "topological_depth": 1,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_session",
+        "dir": "compiler/rustc_session",
+        "package_name": "rustc_session",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 20,
+        "raw_lines": 12530,
+        "approx_sloc": 9652,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_feature",
+          "rustc_fs_util",
+          "rustc_hashes",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 13,
+        "in_degree": 25,
+        "transitive_deps_count": 23,
+        "transitive_dependents_count": 40,
+        "topological_depth": 11,
+        "architectural_layer": "L1: Span, Session & Diagnostics",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_span",
+        "dir": "compiler/rustc_span",
+        "package_name": "rustc_span",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 18,
+        "raw_lines": 12585,
+        "approx_sloc": 9366,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_arena",
+          "rustc_data_structures",
+          "rustc_hashes",
+          "rustc_index",
+          "rustc_lexer",
+          "rustc_macros",
+          "rustc_serialize"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 7,
+        "in_degree": 55,
+        "transitive_deps_count": 10,
+        "transitive_dependents_count": 58,
+        "topological_depth": 4,
+        "architectural_layer": "L1: Span, Session & Diagnostics",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_structures",
+        "dir": "compiler/rustc_structures",
+        "package_name": "rustc_structures",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 8,
+        "raw_lines": 606,
+        "approx_sloc": 485,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_error_messages",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 5,
+        "in_degree": 22,
+        "transitive_deps_count": 12,
+        "transitive_dependents_count": 46,
+        "topological_depth": 6,
+        "architectural_layer": "L1: Span, Session & Diagnostics",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_symbol_mangling",
+        "dir": "compiler/rustc_symbol_mangling",
+        "package_name": "rustc_symbol_mangling",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 6,
+        "raw_lines": 2356,
+        "approx_sloc": 1650,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_hashes",
+          "rustc_hir",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_session",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 9,
+        "in_degree": 5,
+        "transitive_deps_count": 31,
+        "transitive_dependents_count": 9,
+        "topological_depth": 13,
+        "architectural_layer": "L9: Monomorphization, SSA & Backends",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_target",
+        "dir": "compiler/rustc_target",
+        "package_name": "rustc_target",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 446,
+        "raw_lines": 31604,
+        "approx_sloc": 25535,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_data_structures",
+          "rustc_error_messages",
+          "rustc_fs_util",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span",
+          "rustc_structures"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 8,
+        "in_degree": 23,
+        "transitive_deps_count": 21,
+        "transitive_dependents_count": 43,
+        "topological_depth": 10,
+        "architectural_layer": "L7: ABI, Target, TyCtxt & MIR Middle",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_thread_pool",
+        "dir": "compiler/rustc_thread_pool",
+        "package_name": "rustc_thread_pool",
+        "edition": "2021",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 34,
+        "raw_lines": 7745,
+        "approx_sloc": 4668,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 4,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 60,
+        "topological_depth": 0,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "diagnostic_driver_backend"
+      },
+      {
+        "key": "rustc_trait_selection",
+        "dir": "compiler/rustc_trait_selection",
+        "package_name": "rustc_trait_selection",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 72,
+        "raw_lines": 51827,
+        "approx_sloc": 40952,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast",
+          "rustc_attr_ir",
+          "rustc_crate_store",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_lint_defs",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_next_trait_solver",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_transmute"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 17,
+        "in_degree": 13,
+        "transitive_deps_count": 34,
+        "transitive_dependents_count": 17,
+        "topological_depth": 14,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_traits",
+        "dir": "compiler/rustc_traits",
+        "package_name": "rustc_traits",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 9,
+        "raw_lines": 703,
+        "approx_sloc": 562,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_data_structures",
+          "rustc_infer",
+          "rustc_middle",
+          "rustc_span",
+          "rustc_trait_selection"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 5,
+        "in_degree": 1,
+        "transitive_deps_count": 35,
+        "transitive_dependents_count": 4,
+        "topological_depth": 15,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_transmute",
+        "dir": "compiler/rustc_transmute",
+        "package_name": "rustc_transmute",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 9,
+        "raw_lines": 2655,
+        "approx_sloc": 2055,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_middle",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 5,
+        "in_degree": 1,
+        "transitive_deps_count": 31,
+        "transitive_dependents_count": 18,
+        "topological_depth": 13,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_ty_utils",
+        "dir": "compiler/rustc_ty_utils",
+        "package_name": "rustc_ty_utils",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 16,
+        "raw_lines": 5460,
+        "approx_sloc": 4304,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_attr_ir",
+          "rustc_data_structures",
+          "rustc_errors",
+          "rustc_hashes",
+          "rustc_hir",
+          "rustc_index",
+          "rustc_infer",
+          "rustc_macros",
+          "rustc_middle",
+          "rustc_session",
+          "rustc_span",
+          "rustc_structures",
+          "rustc_target",
+          "rustc_trait_selection",
+          "rustc_ty_walk"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 16,
+        "in_degree": 1,
+        "transitive_deps_count": 36,
+        "transitive_dependents_count": 4,
+        "topological_depth": 15,
+        "architectural_layer": "L7: ABI, Target, TyCtxt & MIR Middle",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_ty_walk",
+        "dir": "compiler/rustc_ty_walk",
+        "package_name": "rustc_ty_walk",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 1,
+        "raw_lines": 159,
+        "approx_sloc": 136,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_hir",
+          "rustc_middle",
+          "rustc_span"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 3,
+        "in_degree": 2,
+        "transitive_deps_count": 31,
+        "transitive_dependents_count": 7,
+        "topological_depth": 13,
+        "architectural_layer": "L5: Types, Traits & HIR Analysis",
+        "verification_split": "frontend_only"
+      },
+      {
+        "key": "rustc_type_ir",
+        "dir": "compiler/rustc_type_ir",
+        "package_name": "rustc_type_ir",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 52,
+        "raw_lines": 20562,
+        "approx_sloc": 14238,
+        "cpp_raw_lines": 0,
+        "internal_deps": [
+          "rustc_abi",
+          "rustc_ast_ir",
+          "rustc_data_structures",
+          "rustc_error_messages",
+          "rustc_index",
+          "rustc_macros",
+          "rustc_serialize",
+          "rustc_span",
+          "rustc_type_ir_macros"
+        ],
+        "rustc_private_deps": [],
+        "out_degree": 9,
+        "in_degree": 3,
+        "transitive_deps_count": 20,
+        "transitive_dependents_count": 36,
+        "topological_depth": 10,
+        "architectural_layer": "L7: ABI, Target, TyCtxt & MIR Middle",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_type_ir_macros",
+        "dir": "compiler/rustc_type_ir_macros",
+        "package_name": "rustc_type_ir_macros",
+        "edition": "2024",
+        "crate_types": [
+          "proc-macro"
+        ],
+        "files": 1,
+        "raw_lines": 483,
+        "approx_sloc": 358,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 2,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 37,
+        "topological_depth": 0,
+        "architectural_layer": "L7: ABI, Target, TyCtxt & MIR Middle",
+        "verification_split": "semantic_middle_shared"
+      },
+      {
+        "key": "rustc_windows_rc",
+        "dir": "compiler/rustc_windows_rc",
+        "package_name": "rustc_windows_rc",
+        "edition": "2024",
+        "crate_types": [
+          "rlib"
+        ],
+        "files": 1,
+        "raw_lines": 137,
+        "approx_sloc": 91,
+        "cpp_raw_lines": 0,
+        "internal_deps": [],
+        "rustc_private_deps": [],
+        "out_degree": 0,
+        "in_degree": 2,
+        "transitive_deps_count": 0,
+        "transitive_dependents_count": 2,
+        "topological_depth": 0,
+        "architectural_layer": "L0: Foundation & Data Structures",
+        "verification_split": "diagnostic_driver_backend"
+      }
+    ],
+    "nested_packages": [
+      {
+        "manifest": "compiler/rustc_codegen_cranelift/build_system/Cargo.toml",
+        "package_name": "y",
+        "files": 13,
+        "raw_lines": 2264,
+        "approx_sloc": 1920
+      },
+      {
+        "manifest": "compiler/rustc_codegen_gcc/build_system/Cargo.toml",
+        "package_name": "y",
+        "files": 18,
+        "raw_lines": 4792,
+        "approx_sloc": 3993
+      },
+      {
+        "manifest": "compiler/rustc_codegen_gcc/build_system/asm-tester/Cargo.toml",
+        "package_name": "asm-tester",
+        "files": 1,
+        "raw_lines": 66,
+        "approx_sloc": 57
+      },
+      {
+        "manifest": "compiler/rustc_codegen_gcc/tests/cross_lang_lto/Cargo.toml",
+        "package_name": "cross_lang_lto",
+        "files": 1,
+        "raw_lines": 18,
+        "approx_sloc": 8
+      },
+      {
+        "manifest": "compiler/rustc_codegen_gcc/tests/hello-world/Cargo.toml",
+        "package_name": "hello_world",
+        "files": 1,
+        "raw_lines": 5,
+        "approx_sloc": 4
+      },
+      {
+        "manifest": "compiler/rustc_codegen_gcc/tests/hello-world/mylib/Cargo.toml",
+        "package_name": "mylib",
+        "files": 1,
+        "raw_lines": 7,
+        "approx_sloc": 7
+      }
+    ]
+  },
+  "queries": {
+    "query_count": 330,
+    "non_query_count": 8,
+    "non_queries": [
+      {
+        "name": "Null",
+        "line": 2867
+      },
+      {
+        "name": "Red",
+        "line": 2879
+      },
+      {
+        "name": "SideEffect",
+        "line": 2891
+      },
+      {
+        "name": "AnonZeroDeps",
+        "line": 2897
+      },
+      {
+        "name": "TraitSelect",
+        "line": 2904
+      },
+      {
+        "name": "CompileCodegenUnit",
+        "line": 2906
+      },
+      {
+        "name": "CompileMonoItem",
+        "line": 2912
+      },
+      {
+        "name": "Metadata",
+        "line": 2914
+      }
+    ],
+    "modifier_counts": {
+      "arena_cache": 53,
+      "cache_on_disk": 58,
+      "depth_limit": 2,
+      "eval_always": 38,
+      "feedable": 27,
+      "handle_cycle_error": 5,
+      "no_force": 2,
+      "no_hash": 10,
+      "separate_provide_extern": 119,
+      "desc": 330,
+      "returns_error_guaranteed": 23
+    },
+    "provider_crates_count": 24,
+    "providers_by_crate": [
+      {
+        "crate": "librustdoc",
+        "local_query_count": 3,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "lint_mod",
+          "typeck_root",
+          "used_trait_imports"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_ast_lowering",
+        "local_query_count": 3,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "index_ast",
+          "lower_to_hir",
+          "resolve_type_relative_delegations"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_borrowck",
+        "local_query_count": 2,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "mir_borrowck",
+          "mir_borrowck_implied_outlives_bounds"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_codegen_ssa",
+        "local_query_count": 16,
+        "extern_query_count": 2,
+        "sample_local_queries": [
+          "all_rust_target_features",
+          "asm_target_features",
+          "codegen_fn_attrs",
+          "exported_generic_symbols",
+          "exported_non_generic_symbols",
+          "implied_target_features",
+          "inherited_align",
+          "is_reachable_non_generic",
+          "is_unreachable_local_definition",
+          "reachable_non_generics",
+          "sanitizer_settings_for",
+          "should_inherit_track_caller"
+        ],
+        "sample_extern_queries": [
+          "is_reachable_non_generic",
+          "upstream_monomorphizations_for"
+        ]
+      },
+      {
+        "crate": "rustc_const_eval",
+        "local_query_count": 9,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "check_validity_requirement",
+          "constness",
+          "eval_static_initializer",
+          "eval_to_allocation_raw",
+          "eval_to_const_value_raw",
+          "eval_to_valtree",
+          "is_promotable_const_fn",
+          "tag_for_variant",
+          "valtree_to_const_val"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_driver_impl",
+        "local_query_count": 1,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "trimmed_def_paths"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_expand_queries",
+        "local_query_count": 1,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "derive_macro_expansion"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_hir_analysis",
+        "local_query_count": 64,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "adt_async_destructor",
+          "adt_def",
+          "adt_destructor",
+          "anon_const_kind",
+          "check_coroutine_obligations",
+          "check_potentially_region_dependent_goals",
+          "check_type_wf",
+          "check_unused_traits",
+          "check_well_formed",
+          "clauses_of",
+          "coerce_unsized_info",
+          "coherent_trait"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_hir_typeck",
+        "local_query_count": 5,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "check_offloads",
+          "check_transmutes",
+          "method_autoderef_steps",
+          "typeck_root",
+          "used_trait_imports"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_interface",
+        "local_query_count": 8,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "analysis",
+          "early_lint_checks",
+          "env_var_os",
+          "get_lang_items",
+          "proc_macro_decls_static",
+          "resolutions",
+          "resolver_for_lowering_raw",
+          "stripped_cfg_items"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_lint",
+        "local_query_count": 6,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "check_expectations",
+          "clashing_extern_declarations",
+          "lint_expectations",
+          "lint_mod",
+          "shallow_lint_levels_on",
+          "skippable_lints"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_metadata",
+        "local_query_count": 18,
+        "extern_query_count": 117,
+        "sample_local_queries": [
+          "alloc_error_handler_kind",
+          "allocator_kind",
+          "crate_name_with_rename",
+          "crates",
+          "dependency_formats",
+          "doc_link_resolutions",
+          "doc_link_traits_in_scope",
+          "duplicate_crate_names",
+          "externally_implementable_items",
+          "foreign_modules",
+          "has_alloc_error_handler",
+          "has_global_allocator"
+        ],
+        "sample_extern_queries": [
+          "adt_async_destructor",
+          "adt_def",
+          "adt_destructor",
+          "anon_const_kind",
+          "args_known_to_outlive_alias_params",
+          "associated_item",
+          "associated_item_def_ids",
+          "associated_types_for_impl_traits_in_trait_or_impl",
+          "assumed_wf_types_for_rpitit",
+          "asyncness",
+          "attrs_for_def",
+          "canonical_symbols"
+        ]
+      },
+      {
+        "crate": "rustc_middle",
+        "local_query_count": 33,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "all_local_trait_impls",
+          "closure_typeinfo",
+          "crate_hash",
+          "def_ident_span",
+          "def_span",
+          "doc_notable_trait",
+          "erase_and_anonymize_regions_ty",
+          "expn_that_defined",
+          "fn_arg_idents",
+          "has_panic_handler",
+          "hir_attr_map",
+          "hir_crate_items"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_mir_build",
+        "local_query_count": 6,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "check_match",
+          "check_tail_calls",
+          "check_unsafety",
+          "closure_saved_names_of_captured_variables",
+          "lit_to_const",
+          "thir_body"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_mir_transform",
+        "local_query_count": 23,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "check_liveness",
+          "coroutine_by_move_body_def_id",
+          "coverage_attr_on",
+          "coverage_codegen_info",
+          "cross_crate_inlinable",
+          "deduced_param_attrs",
+          "has_ffi_unwind_calls",
+          "is_eligible_for_coverage",
+          "is_mir_available",
+          "mir_built",
+          "mir_callgraph_cyclic",
+          "mir_const_qualif"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_monomorphize",
+        "local_query_count": 6,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "check_mono_item",
+          "codegen_unit",
+          "collect_and_partition_mono_items",
+          "is_codegened_item",
+          "items_of_instance",
+          "size_estimate"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_parse_format",
+        "local_query_count": 1,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "ty_span"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_passes",
+        "local_query_count": 23,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "all_canonical_symbols",
+          "all_diagnostic_items",
+          "all_fake_doc_items",
+          "canonical_symbols",
+          "check_externally_implementable_items",
+          "check_mod_attrs",
+          "check_mod_deathness",
+          "check_mod_unstable_api_usage",
+          "debugger_visualizers",
+          "diagnostic_items",
+          "entry_fn",
+          "exportable_items"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_privacy",
+        "local_query_count": 3,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "check_mod_privacy",
+          "check_private_in_public",
+          "effective_visibilities"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_resolve",
+        "local_query_count": 2,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "registered_attr_tools",
+          "registered_lint_tools"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_symbol_mangling",
+        "local_query_count": 1,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "symbol_name"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_trait_selection",
+        "local_query_count": 16,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "args_known_to_outlive_alias_params",
+          "dyn_compatibility_violations",
+          "evaluate_root_goal_for_proof_tree_raw",
+          "first_method_vtable_slot",
+          "generics_require_sized_self",
+          "hir_owner",
+          "instantiate_and_check_impossible_clauses",
+          "is_dyn_compatible",
+          "is_impossible_associated_item",
+          "live_args_for_alias_from_outlives_bounds",
+          "own_existential_vtable_entries",
+          "specialization_enabled_in"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_traits",
+        "local_query_count": 16,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "adt_dtorck_constraint",
+          "codegen_select_candidate",
+          "coroutine_hidden_types",
+          "dropck_outlives",
+          "evaluate_obligation",
+          "implied_outlives_bounds",
+          "normalize_canonicalized_free_alias",
+          "normalize_canonicalized_inherent_projection",
+          "normalize_canonicalized_projection",
+          "try_normalize_generic_arg_after_erasing_regions",
+          "type_op_ascribe_user_type",
+          "type_op_normalize_clause"
+        ],
+        "sample_extern_queries": []
+      },
+      {
+        "crate": "rustc_ty_utils",
+        "local_query_count": 40,
+        "extern_query_count": 0,
+        "sample_local_queries": [
+          "adt_async_drop_tys",
+          "adt_drop_tys",
+          "adt_significant_drop_tys",
+          "adt_sizedness_constraint",
+          "associated_item",
+          "associated_item_def_ids",
+          "associated_items",
+          "associated_types_for_impl_traits_in_trait_or_impl",
+          "assumed_wf_types",
+          "assumed_wf_types_for_rpitit",
+          "asyncness",
+          "check_representability"
+        ],
+        "sample_extern_queries": []
+      }
+    ],
+    "unprovided_or_feed_only_queries": [
+      {
+        "name": "def_kind",
+        "modifiers": [
+          "feedable",
+          "separate_provide_extern"
+        ],
+        "fed_in": [
+          "rustc_middle",
+          "rustc_resolve"
+        ]
+      },
+      {
+        "name": "attrs_for_def",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "rendered_const",
+        "modifiers": [
+          "arena_cache",
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "impl_parent",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "dylib_dependency_formats",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "is_profiler_runtime",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "panic_in_drop_strategy",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "is_no_builtins",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "symbol_mangling_version",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "extern_crate",
+        "modifiers": [
+          "eval_always",
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "default_field",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "upstream_monomorphizations_for",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "crate_host_hash",
+        "modifiers": [
+          "eval_always",
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "extra_filename",
+        "modifiers": [
+          "eval_always",
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "crate_extern_paths",
+        "modifiers": [
+          "eval_always",
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "implementations_of_trait",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "visibility",
+        "modifiers": [
+          "feedable",
+          "separate_provide_extern"
+        ],
+        "fed_in": [
+          "rustc_middle",
+          "rustc_resolve"
+        ]
+      },
+      {
+        "name": "crate_dep_kind",
+        "modifiers": [
+          "eval_always",
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "crate_name",
+        "modifiers": [
+          "feedable",
+          "separate_provide_extern"
+        ],
+        "fed_in": [
+          "rustc_interface"
+        ]
+      },
+      {
+        "name": "module_children",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "num_extern_def_ids",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "defined_lang_items",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "missing_lang_items",
+        "modifiers": [
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "missing_extern_crate_item",
+        "modifiers": [
+          "eval_always",
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "used_crate_source",
+        "modifiers": [
+          "arena_cache",
+          "eval_always",
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "used_crate_source_flags",
+        "modifiers": [
+          "eval_always",
+          "separate_provide_extern"
+        ],
+        "fed_in": []
+      },
+      {
+        "name": "output_filenames",
+        "modifiers": [
+          "arena_cache",
+          "feedable"
+        ],
+        "fed_in": [
+          "rustc_interface"
+        ]
+      },
+      {
+        "name": "features_query",
+        "modifiers": [
+          "feedable"
+        ],
+        "fed_in": [
+          "rustc_interface"
+        ]
+      },
+      {
+        "name": "crate_for_resolver",
+        "modifiers": [
+          "feedable",
+          "no_hash"
+        ],
+        "fed_in": [
+          "rustc_interface"
+        ]
+      },
+      {
+        "name": "limits",
+        "modifiers": [
+          "feedable"
+        ],
+        "fed_in": [
+          "rustc_interface"
+        ]
+      }
+    ]
+  },
+  "library": {
+    "non_file_entry_count": 24,
+    "crate_tree_count": 22,
+    "submodule_count": 1,
+    "non_cargo_dir_count": 1,
+    "cargo_toml_count": 51,
+    "total_raw_lines": 1125313,
+    "total_approx_sloc": 794386,
+    "entries": [
+      {
+        "name": "alloc",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "alloc"
+        ],
+        "files": 97,
+        "raw_lines": 70010,
+        "approx_sloc": 34359,
+        "path_deps": [
+          "compiler_builtins",
+          "core"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 181,
+        "sample_features": [
+          "alloc_io",
+          "alloc_slice_into_array",
+          "allocator_ext",
+          "allocator_internals",
+          "allow_internal_unstable",
+          "arc_raw_get_strong",
+          "array_into_iter_constructors",
+          "ascii_char",
+          "ascii_char_variants",
+          "async_fn_traits"
+        ]
+      },
+      {
+        "name": "alloctests",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "alloctests"
+        ],
+        "files": 63,
+        "raw_lines": 24902,
+        "approx_sloc": 19764,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 92,
+        "sample_features": [
+          "alloc_error_hook",
+          "alloc_io",
+          "allocator_ext",
+          "array_into_iter_constructors",
+          "binary_heap_drain_sorted",
+          "binary_heap_into_iter_sorted",
+          "binary_heap_pop_if",
+          "borrowed_buf_init",
+          "buf_read_has_data_left",
+          "byte_str"
+        ]
+      },
+      {
+        "name": "backtrace",
+        "entry_type": "submodule",
+        "submodule_sha": "d902726a1dcdc1e1c66f73d1162181b5423c645b",
+        "cargo_toml_count": 0,
+        "packages": [],
+        "files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 0,
+        "sample_features": []
+      },
+      {
+        "name": "compiler-builtins",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 15,
+        "packages": [
+          "compiler_builtins",
+          "builtins-test-intrinsics",
+          "builtins-test",
+          "compiler_builtins",
+          "api-list-common",
+          "libm-macros",
+          "musl-math-sys",
+          "panic-handler",
+          "symcheck",
+          "sysbench",
+          "update-api-list",
+          "util",
+          "libm-test",
+          "libm"
+        ],
+        "files": 328,
+        "raw_lines": 56510,
+        "approx_sloc": 42123,
+        "path_deps": [
+          "compiler_builtins",
+          "core",
+          "panic-handler"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 17,
+        "sample_features": [
+          "abi_custom",
+          "asm_experimental_arch",
+          "cfg_target_has_atomic",
+          "compiler_builtins",
+          "compiler_builtins_lib",
+          "complex_numbers",
+          "core_intrinsics",
+          "decl_macro",
+          "f128",
+          "f16"
+        ]
+      },
+      {
+        "name": "core",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "core"
+        ],
+        "files": 295,
+        "raw_lines": 178134,
+        "approx_sloc": 75621,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 271,
+        "sample_features": [
+          "aarch64_unstable_target_feature",
+          "abort_immediate",
+          "addr_parse_ascii",
+          "addr_unspecified_from",
+          "adt_const_params",
+          "align_to_uninit_mut",
+          "allow_internal_unsafe",
+          "allow_internal_unstable",
+          "arbitrary_self_types",
+          "arbitrary_self_types_pointers"
+        ]
+      },
+      {
+        "name": "coretests",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "coretests"
+        ],
+        "files": 181,
+        "raw_lines": 43269,
+        "approx_sloc": 36340,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 135,
+        "sample_features": [
+          "abort_immediate",
+          "array_ptr_get",
+          "array_try_from_fn",
+          "array_try_map",
+          "ascii_char",
+          "ascii_char_variants",
+          "async_iter_from_iter",
+          "async_iterator",
+          "atomic_volatile",
+          "borrowed_buf_init"
+        ]
+      },
+      {
+        "name": "hashbrown",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "hashbrown"
+        ],
+        "files": 39,
+        "raw_lines": 25285,
+        "approx_sloc": 12515,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 0,
+        "sample_features": []
+      },
+      {
+        "name": "panic_abort",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "panic_abort"
+        ],
+        "files": 3,
+        "raw_lines": 124,
+        "approx_sloc": 90,
+        "path_deps": [
+          "alloc",
+          "core"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 4,
+        "sample_features": [
+          "panic_runtime",
+          "rustc_attrs",
+          "staged_api",
+          "std_internals"
+        ]
+      },
+      {
+        "name": "panic_unwind",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "panic_unwind"
+        ],
+        "files": 5,
+        "raw_lines": 549,
+        "approx_sloc": 273,
+        "path_deps": [
+          "alloc",
+          "core",
+          "unwind"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 6,
+        "sample_features": [
+          "core_intrinsics",
+          "panic_runtime",
+          "panic_unwind",
+          "rustc_attrs",
+          "staged_api",
+          "std_internals"
+        ]
+      },
+      {
+        "name": "portable-simd",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 4,
+        "packages": [
+          "core_simd",
+          "std_float",
+          "test_helpers"
+        ],
+        "files": 80,
+        "raw_lines": 10697,
+        "approx_sloc": 7291,
+        "path_deps": [
+          "core_simd",
+          "std_float",
+          "test_helpers"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 12,
+        "sample_features": [
+          "cfg_target_has_reliable_f16_f128",
+          "convert_float_to_int",
+          "core_intrinsics",
+          "decl_macro",
+          "f16",
+          "impl_restriction",
+          "portable_simd",
+          "prelude_import",
+          "ptr_metadata",
+          "repr_simd"
+        ]
+      },
+      {
+        "name": "proc_macro",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "proc_macro"
+        ],
+        "files": 17,
+        "raw_lines": 5083,
+        "approx_sloc": 3630,
+        "path_deps": [
+          "core",
+          "std"
+        ],
+        "rustc_dep_of_std_crates": [
+          "rustc-literal-escaper"
+        ],
+        "unstable_feature_count": 11,
+        "sample_features": [
+          "allow_internal_unstable",
+          "decl_macro",
+          "extend_one",
+          "f16",
+          "negative_impls",
+          "panic_can_unwind",
+          "proc_macro_totokens",
+          "restricted_std",
+          "rustc_attrs",
+          "rustdoc_internals"
+        ]
+      },
+      {
+        "name": "profiler_builtins",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "profiler_builtins"
+        ],
+        "files": 2,
+        "raw_lines": 130,
+        "approx_sloc": 100,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 3,
+        "sample_features": [
+          "no_core",
+          "profiler_runtime",
+          "staged_api"
+        ]
+      },
+      {
+        "name": "rtstartup",
+        "entry_type": "non_cargo_dir",
+        "submodule_sha": null,
+        "cargo_toml_count": 0,
+        "packages": [],
+        "files": 2,
+        "raw_lines": 155,
+        "approx_sloc": 90,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 3,
+        "sample_features": [
+          "auto_traits",
+          "lang_items",
+          "no_core"
+        ]
+      },
+      {
+        "name": "rustc-std-workspace-alloc",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "rustc-std-workspace-alloc"
+        ],
+        "files": 1,
+        "raw_lines": 9,
+        "approx_sloc": 4,
+        "path_deps": [
+          "alloc"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 1,
+        "sample_features": [
+          "no_core"
+        ]
+      },
+      {
+        "name": "rustc-std-workspace-core",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "rustc-std-workspace-core"
+        ],
+        "files": 1,
+        "raw_lines": 8,
+        "approx_sloc": 4,
+        "path_deps": [
+          "compiler_builtins",
+          "core"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 1,
+        "sample_features": [
+          "no_core"
+        ]
+      },
+      {
+        "name": "rustc-std-workspace-std",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "rustc-std-workspace-std"
+        ],
+        "files": 1,
+        "raw_lines": 2,
+        "approx_sloc": 2,
+        "path_deps": [
+          "std"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 1,
+        "sample_features": [
+          "restricted_std"
+        ]
+      },
+      {
+        "name": "std",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "std"
+        ],
+        "files": 706,
+        "raw_lines": 167154,
+        "approx_sloc": 100590,
+        "path_deps": [
+          "alloc",
+          "core",
+          "panic_abort",
+          "panic_unwind",
+          "std_detect",
+          "unwind",
+          "windows-link"
+        ],
+        "rustc_dep_of_std_crates": [
+          "cfg-if",
+          "dlmalloc",
+          "fortanix-sgx-abi",
+          "hashbrown",
+          "hermit-abi",
+          "libc",
+          "moto-rt",
+          "r-efi",
+          "r-efi-alloc",
+          "rustc-demangle",
+          "vex-sdk",
+          "wasip1",
+          "wasip2",
+          "wasip3"
+        ],
+        "unstable_feature_count": 210,
+        "sample_features": [
+          "alloc_error_handler",
+          "alloc_error_hook",
+          "alloc_io",
+          "allocator_ext",
+          "allocator_internals",
+          "allow_internal_unsafe",
+          "allow_internal_unstable",
+          "asm_experimental_arch",
+          "async_iterator",
+          "autodiff"
+        ]
+      },
+      {
+        "name": "std_detect",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "std_detect"
+        ],
+        "files": 44,
+        "raw_lines": 5291,
+        "approx_sloc": 3501,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 10,
+        "sample_features": [
+          "allow_internal_unstable",
+          "clflushopt_target_feature",
+          "doc_cfg",
+          "movdir64b_target_feature",
+          "movdiri_target_feature",
+          "movrs_target_feature",
+          "staged_api",
+          "stdarch_internal",
+          "x86_amx_intrinsics",
+          "xop_target_feature"
+        ]
+      },
+      {
+        "name": "stdarch",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 12,
+        "packages": [
+          "assert-instr-macro",
+          "core_arch",
+          "intrinsic-test",
+          "simd-test-macro",
+          "stdarch-gen-arm",
+          "stdarch-gen-common",
+          "stdarch-gen-hexagon",
+          "stdarch-gen-loongarch",
+          "stdarch-test",
+          "stdarch-verify",
+          "stdarch_examples"
+        ],
+        "files": 215,
+        "raw_lines": 529901,
+        "approx_sloc": 451525,
+        "path_deps": [
+          "assert-instr-macro",
+          "core_arch",
+          "simd-test-macro",
+          "stdarch-gen-common",
+          "stdarch-test"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 43,
+        "sample_features": [
+          "aarch64_unstable_target_feature",
+          "allow_internal_unstable",
+          "arm_target_feature",
+          "asm_experimental_arch",
+          "avx10_target_feature",
+          "cfg_target_has_reliable_f16b",
+          "clflushopt_target_feature",
+          "const_cmp",
+          "const_eval_select",
+          "const_trait_impl"
+        ]
+      },
+      {
+        "name": "sysroot",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "sysroot"
+        ],
+        "files": 1,
+        "raw_lines": 1,
+        "approx_sloc": 0,
+        "path_deps": [
+          "proc_macro",
+          "profiler_builtins",
+          "std",
+          "test"
+        ],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 0,
+        "sample_features": []
+      },
+      {
+        "name": "test",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "test"
+        ],
+        "files": 31,
+        "raw_lines": 7427,
+        "approx_sloc": 6047,
+        "path_deps": [
+          "core",
+          "std"
+        ],
+        "rustc_dep_of_std_crates": [
+          "getopts"
+        ],
+        "unstable_feature_count": 8,
+        "sample_features": [
+          "file_buffered",
+          "internal_output_capture",
+          "io_const_error",
+          "panic_can_unwind",
+          "process_exitcode_internals",
+          "rustdoc_internals",
+          "staged_api",
+          "thread_spawn_hook"
+        ]
+      },
+      {
+        "name": "unwind",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "unwind"
+        ],
+        "files": 4,
+        "raw_lines": 618,
+        "approx_sloc": 476,
+        "path_deps": [
+          "core"
+        ],
+        "rustc_dep_of_std_crates": [
+          "libc",
+          "unwinding"
+        ],
+        "unstable_feature_count": 2,
+        "sample_features": [
+          "link_cfg",
+          "staged_api"
+        ]
+      },
+      {
+        "name": "windows-sys",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "windows-sys"
+        ],
+        "files": 1,
+        "raw_lines": 1,
+        "approx_sloc": 1,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 0,
+        "sample_features": []
+      },
+      {
+        "name": "windows_link",
+        "entry_type": "crate_tree",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "packages": [
+          "windows-link"
+        ],
+        "files": 1,
+        "raw_lines": 53,
+        "approx_sloc": 40,
+        "path_deps": [],
+        "rustc_dep_of_std_crates": [],
+        "unstable_feature_count": 2,
+        "sample_features": [
+          "decl_macro",
+          "no_core"
+        ]
+      }
+    ]
+  },
+  "tools_and_submodules": {
+    "tools_entry_count": 47,
+    "tools_role_counts": {
+      "build_and_bootstrap": 6,
+      "documentation": 8,
+      "linker_and_binary_wrapper": 3,
+      "linter_formatter_ide_subtree": 4,
+      "release_and_dist": 4,
+      "standalone_script": 2,
+      "submodule": 3,
+      "test_harness": 13,
+      "tidy_and_compliance": 4
+    },
+    "tools": [
+      {
+        "name": "build-manifest",
+        "entry_type": "directory",
+        "role": "release_and_dist",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 5,
+        "raw_lines": 1186,
+        "approx_sloc": 979
+      },
+      {
+        "name": "bump-stage0",
+        "entry_type": "directory",
+        "role": "build_and_bootstrap",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 311,
+        "approx_sloc": 252
+      },
+      {
+        "name": "cargo",
+        "entry_type": "submodule",
+        "role": "submodule",
+        "submodule_sha": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20",
+        "cargo_toml_count": 0,
+        "files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "cargotest",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 226,
+        "approx_sloc": 188
+      },
+      {
+        "name": "cherry-pick.sh",
+        "entry_type": "script",
+        "role": "standalone_script",
+        "submodule_sha": null,
+        "cargo_toml_count": 0,
+        "files": 1,
+        "raw_lines": 34,
+        "approx_sloc": 29
+      },
+      {
+        "name": "clippy",
+        "entry_type": "directory",
+        "role": "linter_formatter_ide_subtree",
+        "submodule_sha": null,
+        "cargo_toml_count": 71,
+        "files": 2392,
+        "raw_lines": 301806,
+        "approx_sloc": 213999
+      },
+      {
+        "name": "collect-license-metadata",
+        "entry_type": "directory",
+        "role": "tidy_and_compliance",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 6,
+        "raw_lines": 769,
+        "approx_sloc": 585
+      },
+      {
+        "name": "compiletest",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 54,
+        "raw_lines": 15949,
+        "approx_sloc": 11823
+      },
+      {
+        "name": "coverage-dump",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 8,
+        "raw_lines": 803,
+        "approx_sloc": 604
+      },
+      {
+        "name": "enzyme",
+        "entry_type": "submodule",
+        "role": "submodule",
+        "submodule_sha": "9cff5a8afebc22748bb36c135dfe5a09dd1047f3",
+        "cargo_toml_count": 0,
+        "files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "error_index_generator",
+        "entry_type": "directory",
+        "role": "documentation",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 3,
+        "raw_lines": 222,
+        "approx_sloc": 183
+      },
+      {
+        "name": "features-status-dump",
+        "entry_type": "directory",
+        "role": "documentation",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 54,
+        "approx_sloc": 44
+      },
+      {
+        "name": "generate-copyright",
+        "entry_type": "directory",
+        "role": "tidy_and_compliance",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 2,
+        "raw_lines": 392,
+        "approx_sloc": 303
+      },
+      {
+        "name": "generate-windows-sys",
+        "entry_type": "directory",
+        "role": "build_and_bootstrap",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 68,
+        "approx_sloc": 58
+      },
+      {
+        "name": "html-checker",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 128,
+        "approx_sloc": 103
+      },
+      {
+        "name": "jsondocck",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 5,
+        "raw_lines": 615,
+        "approx_sloc": 479
+      },
+      {
+        "name": "jsondoclint",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 6,
+        "raw_lines": 1387,
+        "approx_sloc": 1217
+      },
+      {
+        "name": "libcxx-version",
+        "entry_type": "directory",
+        "role": "build_and_bootstrap",
+        "submodule_sha": null,
+        "cargo_toml_count": 0,
+        "files": 1,
+        "raw_lines": 26,
+        "approx_sloc": 12
+      },
+      {
+        "name": "linkchecker",
+        "entry_type": "directory",
+        "role": "documentation",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 3,
+        "raw_lines": 989,
+        "approx_sloc": 770
+      },
+      {
+        "name": "lint-docs",
+        "entry_type": "directory",
+        "role": "documentation",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 3,
+        "raw_lines": 971,
+        "approx_sloc": 834
+      },
+      {
+        "name": "lld-wrapper",
+        "entry_type": "directory",
+        "role": "linker_and_binary_wrapper",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 111,
+        "approx_sloc": 76
+      },
+      {
+        "name": "llvm-bitcode-linker",
+        "entry_type": "directory",
+        "role": "linker_and_binary_wrapper",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 5,
+        "raw_lines": 348,
+        "approx_sloc": 257
+      },
+      {
+        "name": "miri",
+        "entry_type": "directory",
+        "role": "linter_formatter_ide_subtree",
+        "submodule_sha": null,
+        "cargo_toml_count": 28,
+        "files": 1497,
+        "raw_lines": 135340,
+        "approx_sloc": 96344
+      },
+      {
+        "name": "miropt-test-tools",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 135,
+        "approx_sloc": 113
+      },
+      {
+        "name": "nix-dev-shell",
+        "entry_type": "directory",
+        "role": "build_and_bootstrap",
+        "submodule_sha": null,
+        "cargo_toml_count": 0,
+        "files": 1,
+        "raw_lines": 50,
+        "approx_sloc": 33
+      },
+      {
+        "name": "opt-dist",
+        "entry_type": "directory",
+        "role": "release_and_dist",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 11,
+        "raw_lines": 2202,
+        "approx_sloc": 1681
+      },
+      {
+        "name": "publish_toolstate.py",
+        "entry_type": "script",
+        "role": "standalone_script",
+        "submodule_sha": null,
+        "cargo_toml_count": 0,
+        "files": 1,
+        "raw_lines": 325,
+        "approx_sloc": 260
+      },
+      {
+        "name": "remote-test-client",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 2,
+        "raw_lines": 475,
+        "approx_sloc": 389
+      },
+      {
+        "name": "remote-test-server",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 413,
+        "approx_sloc": 303
+      },
+      {
+        "name": "replace-version-placeholder",
+        "entry_type": "directory",
+        "role": "release_and_dist",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 36,
+        "approx_sloc": 31
+      },
+      {
+        "name": "run-make-support",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 33,
+        "raw_lines": 4203,
+        "approx_sloc": 2921
+      },
+      {
+        "name": "rust-analyzer",
+        "entry_type": "directory",
+        "role": "linter_formatter_ide_subtree",
+        "submodule_sha": null,
+        "cargo_toml_count": 50,
+        "files": 1513,
+        "raw_lines": 596238,
+        "approx_sloc": 497213
+      },
+      {
+        "name": "rust-installer",
+        "entry_type": "directory",
+        "role": "release_and_dist",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 14,
+        "raw_lines": 3409,
+        "approx_sloc": 2717
+      },
+      {
+        "name": "rustbook",
+        "entry_type": "directory",
+        "role": "documentation",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 186,
+        "approx_sloc": 144
+      },
+      {
+        "name": "rustc-perf",
+        "entry_type": "submodule",
+        "role": "submodule",
+        "submodule_sha": "15d95905429e577d5a710b17c49e04b4451c263b",
+        "cargo_toml_count": 0,
+        "files": 0,
+        "raw_lines": 0,
+        "approx_sloc": 0
+      },
+      {
+        "name": "rustdoc-gui-test",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 2,
+        "raw_lines": 190,
+        "approx_sloc": 161
+      },
+      {
+        "name": "rustdoc-js",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 0,
+        "files": 2,
+        "raw_lines": 760,
+        "approx_sloc": 691
+      },
+      {
+        "name": "rustdoc-themes",
+        "entry_type": "directory",
+        "role": "documentation",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 62,
+        "approx_sloc": 56
+      },
+      {
+        "name": "rustdoc",
+        "entry_type": "directory",
+        "role": "documentation",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 13,
+        "approx_sloc": 7
+      },
+      {
+        "name": "rustfmt",
+        "entry_type": "directory",
+        "role": "linter_formatter_ide_subtree",
+        "submodule_sha": null,
+        "cargo_toml_count": 20,
+        "files": 2072,
+        "raw_lines": 104013,
+        "approx_sloc": 78825
+      },
+      {
+        "name": "test-float-parse",
+        "entry_type": "directory",
+        "role": "test_harness",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 16,
+        "raw_lines": 2316,
+        "approx_sloc": 1682
+      },
+      {
+        "name": "tidy",
+        "entry_type": "directory",
+        "role": "tidy_and_compliance",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 46,
+        "raw_lines": 9270,
+        "approx_sloc": 7277
+      },
+      {
+        "name": "tier-check",
+        "entry_type": "directory",
+        "role": "tidy_and_compliance",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 70,
+        "approx_sloc": 59
+      },
+      {
+        "name": "unicode-table-generator",
+        "entry_type": "directory",
+        "role": "build_and_bootstrap",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 8,
+        "raw_lines": 1911,
+        "approx_sloc": 1372
+      },
+      {
+        "name": "unstable-book-gen",
+        "entry_type": "directory",
+        "role": "documentation",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 203,
+        "approx_sloc": 177
+      },
+      {
+        "name": "wasm-component-ld",
+        "entry_type": "directory",
+        "role": "linker_and_binary_wrapper",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 9,
+        "approx_sloc": 1
+      },
+      {
+        "name": "x",
+        "entry_type": "directory",
+        "role": "build_and_bootstrap",
+        "submodule_sha": null,
+        "cargo_toml_count": 1,
+        "files": 1,
+        "raw_lines": 136,
+        "approx_sloc": 106
+      }
+    ],
+    "submodule_count": 13,
+    "submodules": [
+      {
+        "path": "library/backtrace",
+        "revision": "d902726a1dcdc1e1c66f73d1162181b5423c645b",
+        "url": "https://github.com/rust-lang/backtrace-rs.git",
+        "github_repo": "rust-lang/backtrace-rs",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/doc/book",
+        "revision": "2771df165f092a4fbb9f46b5b2e7450f19010adb",
+        "url": "https://github.com/rust-lang/book.git",
+        "github_repo": "rust-lang/book",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/doc/edition-guide",
+        "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f",
+        "url": "https://github.com/rust-lang/edition-guide.git",
+        "github_repo": "rust-lang/edition-guide",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/doc/embedded-book",
+        "revision": "637b4a0244e16ec391a60184ae0c86b550ffc24b",
+        "url": "https://github.com/rust-embedded/book.git",
+        "github_repo": "rust-embedded/book",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/doc/nomicon",
+        "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6",
+        "url": "https://github.com/rust-lang/nomicon.git",
+        "github_repo": "rust-lang/nomicon",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/doc/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+        "url": "https://github.com/rust-lang/reference.git",
+        "github_repo": "rust-lang/reference",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/doc/rust-by-example",
+        "revision": "dcc14f912bf8790792a2df082eddc82ab2539229",
+        "url": "https://github.com/rust-lang/rust-by-example.git",
+        "github_repo": "rust-lang/rust-by-example",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/gcc",
+        "revision": "e1c6e07b095d091177376a163da44039475e05e3",
+        "url": "https://github.com/rust-lang/gcc.git",
+        "github_repo": "rust-lang/gcc",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/llvm-project",
+        "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380",
+        "url": "https://github.com/rust-lang/llvm-project.git",
+        "github_repo": "rust-lang/llvm-project",
+        "branch": "rustc/23.1-2026-07-22",
+        "shallow": true
+      },
+      {
+        "path": "src/tools/cargo",
+        "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20",
+        "url": "https://github.com/rust-lang/cargo.git",
+        "github_repo": "rust-lang/cargo",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/tools/enzyme",
+        "revision": "9cff5a8afebc22748bb36c135dfe5a09dd1047f3",
+        "url": "https://github.com/rust-lang/enzyme.git",
+        "github_repo": "rust-lang/enzyme",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/tools/rustc-perf",
+        "revision": "15d95905429e577d5a710b17c49e04b4451c263b",
+        "url": "https://github.com/rust-lang/rustc-perf.git",
+        "github_repo": "rust-lang/rustc-perf",
+        "branch": null,
+        "shallow": true
+      },
+      {
+        "path": "src/tpde",
+        "revision": "050927ee81dc11a9e599fa2524ff0eef16daf51a",
+        "url": "https://github.com/rust-lang/tpde.git",
+        "github_repo": "rust-lang/tpde",
+        "branch": null,
+        "shallow": true
+      }
+    ]
+  },
+  "bootstrap": {
+    "files": 88,
+    "raw_lines": 49490,
+    "approx_sloc": 37561,
+    "build_step_modules": {
+      "check.rs": {
+        "raw_lines": 932,
+        "approx_sloc": 673,
+        "direct_step_impls": [
+          "PrepareRustcRmetaSysroot",
+          "PrepareStdRmetaSysroot"
+        ],
+        "command_line_step_impls": [
+          "CraneliftCodegenBackend",
+          "GccCodegenBackend",
+          "Rustc",
+          "Std"
+        ],
+        "macro_generated_steps": []
+      },
+      "clean.rs": {
+        "raw_lines": 262,
+        "approx_sloc": 193,
+        "direct_step_impls": [],
+        "command_line_step_impls": [
+          "CleanAll"
+        ],
+        "macro_generated_steps": []
+      },
+      "clippy.rs": {
+        "raw_lines": 678,
+        "approx_sloc": 550,
+        "direct_step_impls": [],
+        "command_line_step_impls": [
+          "CI",
+          "CodegenGcc",
+          "Rustc",
+          "Std"
+        ],
+        "macro_generated_steps": []
+      },
+      "compile.rs": {
+        "raw_lines": 2979,
+        "approx_sloc": 1976,
+        "direct_step_impls": [
+          "RustcLink",
+          "StdLink",
+          "Sysroot"
+        ],
+        "command_line_step_impls": [
+          "Assemble",
+          "CraneliftCodegenBackend",
+          "GccCodegenBackend",
+          "Rustc",
+          "StartupObjects",
+          "Std"
+        ],
+        "macro_generated_steps": []
+      },
+      "dist.rs": {
+        "raw_lines": 3289,
+        "approx_sloc": 2446,
+        "direct_step_impls": [
+          "DebuggerScripts"
+        ],
+        "command_line_step_impls": [
+          "Analysis",
+          "Bootstrap",
+          "BuildManifest",
+          "Cargo",
+          "Clippy",
+          "CraneliftCodegenBackend",
+          "Docs",
+          "Enzyme",
+          "Extended",
+          "Gcc",
+          "GccCodegenBackend",
+          "GccDev",
+          "JsonDocs",
+          "LlvmBitcodeLinker",
+          "LlvmTools",
+          "Mingw",
+          "Miri",
+          "Offload",
+          "PlainSourceTarball",
+          "PlainSourceTarballGpl",
+          "ReproducibleArtifacts",
+          "RustAnalyzer",
+          "RustDev",
+          "Rustc",
+          "RustcDev",
+          "RustcDocs",
+          "Rustfmt",
+          "Src",
+          "Std"
+        ],
+        "macro_generated_steps": []
+      },
+      "doc.rs": {
+        "raw_lines": 1789,
+        "approx_sloc": 1333,
+        "direct_step_impls": [
+          "RustbookSrc",
+          "SharedAssets"
+        ],
+        "command_line_step_impls": [
+          "CompilerWithTools",
+          "ErrorIndex",
+          "Reference",
+          "Releases",
+          "Rustc",
+          "RustcBook",
+          "Standalone",
+          "Std",
+          "TheBook",
+          "UnstableBook",
+          "UnstableBookGen"
+        ],
+        "macro_generated_steps": []
+      },
+      "format.rs": {
+        "raw_lines": 377,
+        "approx_sloc": 280,
+        "direct_step_impls": [
+          "InternalRustfmt"
+        ],
+        "command_line_step_impls": [],
+        "macro_generated_steps": []
+      },
+      "gcc.rs": {
+        "raw_lines": 384,
+        "approx_sloc": 275,
+        "direct_step_impls": [],
+        "command_line_step_impls": [
+          "Gcc"
+        ],
+        "macro_generated_steps": []
+      },
+      "install.rs": {
+        "raw_lines": 343,
+        "approx_sloc": 284,
+        "direct_step_impls": [],
+        "command_line_step_impls": [
+          "Src"
+        ],
+        "macro_generated_steps": []
+      },
+      "llvm.rs": {
+        "raw_lines": 2491,
+        "approx_sloc": 1770,
+        "direct_step_impls": [
+          "FileCheck",
+          "LlvmFromCi"
+        ],
+        "command_line_step_impls": [
+          "CrtBeginEnd",
+          "Enzyme",
+          "Libunwind",
+          "Lld",
+          "Llvm",
+          "OmpOffload",
+          "RustOffload",
+          "Sanitizers",
+          "Tpde"
+        ],
+        "macro_generated_steps": []
+      },
+      "mod.rs": {
+        "raw_lines": 18,
+        "approx_sloc": 18,
+        "direct_step_impls": [],
+        "command_line_step_impls": [],
+        "macro_generated_steps": []
+      },
+      "perf.rs": {
+        "raw_lines": 282,
+        "approx_sloc": 227,
+        "direct_step_impls": [],
+        "command_line_step_impls": [],
+        "macro_generated_steps": []
+      },
+      "run.rs": {
+        "raw_lines": 556,
+        "approx_sloc": 404,
+        "direct_step_impls": [],
+        "command_line_step_impls": [
+          "BuildManifest",
+          "BumpStage0",
+          "CollectLicenseMetadata",
+          "CoverageDump",
+          "CyclicStep",
+          "FeaturesStatusDump",
+          "GenerateCompletions",
+          "GenerateCopyright",
+          "GenerateHelp",
+          "GenerateWindowsSys",
+          "Miri",
+          "ReplaceVersionPlaceholder",
+          "Rustfmt",
+          "UnicodeTableGenerator"
+        ],
+        "macro_generated_steps": []
+      },
+      "setup.rs": {
+        "raw_lines": 768,
+        "approx_sloc": 631,
+        "direct_step_impls": [],
+        "command_line_step_impls": [
+          "Editor",
+          "Hook",
+          "Link",
+          "Profile"
+        ],
+        "macro_generated_steps": []
+      },
+      "setup/tests.rs": {
+        "raw_lines": 50,
+        "approx_sloc": 41,
+        "direct_step_impls": [],
+        "command_line_step_impls": [],
+        "macro_generated_steps": []
+      },
+      "synthetic_targets.rs": {
+        "raw_lines": 71,
+        "approx_sloc": 45,
+        "direct_step_impls": [
+          "MirOptPanicAbortSyntheticTarget"
+        ],
+        "command_line_step_impls": [],
+        "macro_generated_steps": []
+      },
+      "test.rs": {
+        "raw_lines": 5112,
+        "approx_sloc": 3749,
+        "direct_step_impls": [
+          "BookTest",
+          "Compiletest",
+          "RemoteCopyLibs"
+        ],
+        "command_line_step_impls": [
+          "Bootstrap",
+          "BootstrapPy",
+          "Cargo",
+          "CargoMiri",
+          "Cargotest",
+          "Clippy",
+          "CodegenCranelift",
+          "CodegenGCC",
+          "CollectLicenseMetadata",
+          "CompilerBuiltins",
+          "CompiletestTest",
+          "Coverage",
+          "CoverageModeAlias",
+          "Crate",
+          "CrateBootstrap",
+          "CrateBuildHelper",
+          "CrateLibrustc",
+          "CrateRunMakeSupport",
+          "CrateRustdoc",
+          "CrateRustdocJsonTypes",
+          "Distcheck",
+          "ErrorIndex",
+          "HtmlCheck",
+          "IntrinsicTest",
+          "Linkcheck",
+          "LintDocs",
+          "MirOpt",
+          "Miri",
+          "Priroda",
+          "RemoteTestClientTests",
+          "RustAnalyzer",
+          "RustInstaller",
+          "RustdocGUI",
+          "RustdocJSNotStd",
+          "RustdocJSStd",
+          "RustdocTheme",
+          "Rustfmt",
+          "StdSemverCheck",
+          "StdarchGenCheck",
+          "StdarchVerify",
+          "TestFloatParse",
+          "TestHelpers",
+          "Tidy",
+          "TierCheck"
+        ],
+        "macro_generated_steps": [
+          "AssemblyGcc",
+          "AssemblyLlvm",
+          "BuildStd",
+          "CodegenLlvm",
+          "CodegenUnits",
+          "CoverageRunRustdoc",
+          "Crashes",
+          "Debuginfo",
+          "Incremental",
+          "Pretty",
+          "RunMake",
+          "RunMakeCargo",
+          "RustdocHtml",
+          "RustdocJson",
+          "RustdocUi",
+          "Ui",
+          "UiFullDeps"
+        ]
+      },
+      "test/compiletest.rs": {
+        "raw_lines": 71,
+        "approx_sloc": 50,
+        "direct_step_impls": [],
+        "command_line_step_impls": [],
+        "macro_generated_steps": []
+      },
+      "test/failed_tests.rs": {
+        "raw_lines": 106,
+        "approx_sloc": 81,
+        "direct_step_impls": [
+          "SetupFailedTestsFile"
+        ],
+        "command_line_step_impls": [],
+        "macro_generated_steps": []
+      },
+      "tool.rs": {
+        "raw_lines": 1683,
+        "approx_sloc": 1259,
+        "direct_step_impls": [
+          "LibcxxVersionTool",
+          "ToolBuild"
+        ],
+        "command_line_step_impls": [
+          "BuildManifest",
+          "Cargo",
+          "ErrorIndex",
+          "LldWrapper",
+          "LlvmBitcodeLinker",
+          "RemoteTestServer",
+          "RustAnalyzer",
+          "RustAnalyzerProcMacroSrv",
+          "RustcPerf",
+          "Rustdoc",
+          "WasmComponentLd"
+        ],
+        "macro_generated_steps": []
+      },
+      "toolstate.rs": {
+        "raw_lines": 460,
+        "approx_sloc": 296,
+        "direct_step_impls": [],
+        "command_line_step_impls": [
+          "ToolStateCheck"
+        ],
+        "macro_generated_steps": []
+      },
+      "vendor.rs": {
+        "raw_lines": 184,
+        "approx_sloc": 120,
+        "direct_step_impls": [],
+        "command_line_step_impls": [
+          "Vendor"
+        ],
+        "macro_generated_steps": []
+      }
+    }
+  },
+  "tests": {
+    "directory_count": 23,
+    "compiletest_suite_count": 22,
+    "total_tracked_files": 45544,
+    "directories": [
+      {
+        "name": "assembly-gcc",
+        "role": "compiletest_suite",
+        "total_files": 1,
+        "rs_files": 1,
+        "stderr_files": 0
+      },
+      {
+        "name": "assembly-llvm",
+        "role": "compiletest_suite",
+        "total_files": 185,
+        "rs_files": 185,
+        "stderr_files": 0
+      },
+      {
+        "name": "auxiliary",
+        "role": "shared_auxiliary",
+        "total_files": 3,
+        "rs_files": 2,
+        "stderr_files": 0
+      },
+      {
+        "name": "build-std",
+        "role": "compiletest_suite",
+        "total_files": 1,
+        "rs_files": 1,
+        "stderr_files": 0
+      },
+      {
+        "name": "codegen-llvm",
+        "role": "compiletest_suite",
+        "total_files": 905,
+        "rs_files": 889,
+        "stderr_files": 0
+      },
+      {
+        "name": "codegen-units",
+        "role": "compiletest_suite",
+        "total_files": 54,
+        "rs_files": 53,
+        "stderr_files": 0
+      },
+      {
+        "name": "coverage-run-rustdoc",
+        "role": "compiletest_suite",
+        "total_files": 3,
+        "rs_files": 2,
+        "stderr_files": 0
+      },
+      {
+        "name": "coverage",
+        "role": "compiletest_suite",
+        "total_files": 347,
+        "rs_files": 117,
+        "stderr_files": 0
+      },
+      {
+        "name": "crashes",
+        "role": "compiletest_suite",
+        "total_files": 148,
+        "rs_files": 147,
+        "stderr_files": 0
+      },
+      {
+        "name": "debuginfo",
+        "role": "compiletest_suite",
+        "total_files": 203,
+        "rs_files": 177,
+        "stderr_files": 0
+      },
+      {
+        "name": "incremental",
+        "role": "compiletest_suite",
+        "total_files": 218,
+        "rs_files": 218,
+        "stderr_files": 0
+      },
+      {
+        "name": "mir-opt",
+        "role": "compiletest_suite",
+        "total_files": 1819,
+        "rs_files": 424,
+        "stderr_files": 0
+      },
+      {
+        "name": "pretty",
+        "role": "compiletest_suite",
+        "total_files": 166,
+        "rs_files": 118,
+        "stderr_files": 0
+      },
+      {
+        "name": "run-make-cargo",
+        "role": "compiletest_suite",
+        "total_files": 108,
+        "rs_files": 48,
+        "stderr_files": 0
+      },
+      {
+        "name": "run-make",
+        "role": "compiletest_suite",
+        "total_files": 1674,
+        "rs_files": 1404,
+        "stderr_files": 24
+      },
+      {
+        "name": "rustdoc-gui",
+        "role": "compiletest_suite",
+        "total_files": 217,
+        "rs_files": 29,
+        "stderr_files": 0
+      },
+      {
+        "name": "rustdoc-html",
+        "role": "compiletest_suite",
+        "total_files": 1089,
+        "rs_files": 1020,
+        "stderr_files": 0
+      },
+      {
+        "name": "rustdoc-js-std",
+        "role": "compiletest_suite",
+        "total_files": 69,
+        "rs_files": 0,
+        "stderr_files": 0
+      },
+      {
+        "name": "rustdoc-js",
+        "role": "compiletest_suite",
+        "total_files": 172,
+        "rs_files": 91,
+        "stderr_files": 0
+      },
+      {
+        "name": "rustdoc-json",
+        "role": "compiletest_suite",
+        "total_files": 210,
+        "rs_files": 209,
+        "stderr_files": 0
+      },
+      {
+        "name": "rustdoc-ui",
+        "role": "compiletest_suite",
+        "total_files": 870,
+        "rs_files": 480,
+        "stderr_files": 245
+      },
+      {
+        "name": "ui-fulldeps",
+        "role": "compiletest_suite",
+        "total_files": 125,
+        "rs_files": 89,
+        "stderr_files": 28
+      },
+      {
+        "name": "ui",
+        "role": "compiletest_suite",
+        "total_files": 36956,
+        "rs_files": 21862,
+        "stderr_files": 14049
+      }
+    ]
+  }
+}

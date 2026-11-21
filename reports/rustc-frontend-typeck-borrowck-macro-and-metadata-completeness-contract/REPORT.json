@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/contract",
+    "compilers/verified-rustc/rustc-internals",
+    "rust",
+    "rust/editions",
+    "rust/macros",
+    "rustc",
+    "rustc/attributes",
+    "rustc/borrowck",
+    "rustc/diagnostics",
+    "rustc/frontend",
+    "rustc/lints",
+    "rustc/metadata",
+    "rustc/polonius",
+    "rustc/proc-macro",
+    "rustc/rustdoc-json",
+    "rustc/traits",
+    "rustc/typeck",
+    "tooling",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.102.0-nightly compiler, proc_macro, and rustdoc-json-types source snapshot",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+        "version": "1.102.0-nightly",
+        "commit_date": "2026-11-18"
+      }
+    },
+    {
+      "name": "Rust 1.102.0-nightly installed rustc and rustdoc execution toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly",
+        "commit_date": "2026-11-11"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 release compiler and rustdoc baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "commit_date": "2026-10-13"
+      }
+    },
+    {
+      "name": "The Rust Reference (src/doc/reference submodule)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+        "submodule_path": "src/doc/reference"
+      }
+    },
+    {
+      "name": "The Rust Edition Guide (src/doc/edition-guide submodule)",
+      "identity": {
+        "repository": "rust-lang/edition-guide",
+        "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f",
+        "submodule_path": "src/doc/edition-guide"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,1722 @@
+{
+  "schema": "rustc-release-and-roll-mechanics/1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+    "version": "1.102.0",
+    "channel": "nightly",
+    "libgccjit_version": "e1c6e07b095d091177376a163da44039475e05e3",
+    "download_ci_llvm_stamp": "Change this file to make users of the `download-ci-llvm` configuration download\na new version of LLVM from CI, even if the LLVM submodule hasn\u2019t changed.\n\nLast change is for: https://github.com/rust-lang/rust/pull/164134"
+  },
+  "submodules": {
+    "count": 13,
+    "entries": [
+      {
+        "path": "library/backtrace",
+        "url": "https://github.com/rust-lang/backtrace-rs.git",
+        "commit": "d902726a1dcdc1e1c66f73d1162181b5423c645b",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": null
+      },
+      {
+        "path": "src/doc/book",
+        "url": "https://github.com/rust-lang/book.git",
+        "commit": "2771df165f092a4fbb9f46b5b2e7450f19010adb",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": "stable (book)"
+      },
+      {
+        "path": "src/doc/edition-guide",
+        "url": "https://github.com/rust-lang/edition-guide.git",
+        "commit": "ab8544aeed7b792984366aa122ac19bd47ad9a2f",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": "stable (edition-guide)"
+      },
+      {
+        "path": "src/doc/embedded-book",
+        "url": "https://github.com/rust-embedded/book.git",
+        "commit": "637b4a0244e16ec391a60184ae0c86b550ffc24b",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": "nightly (embedded-book)"
+      },
+      {
+        "path": "src/doc/nomicon",
+        "url": "https://github.com/rust-lang/nomicon.git",
+        "commit": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": "stable (nomicon)"
+      },
+      {
+        "path": "src/doc/reference",
+        "url": "https://github.com/rust-lang/reference.git",
+        "commit": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": "stable (reference)"
+      },
+      {
+        "path": "src/doc/rust-by-example",
+        "url": "https://github.com/rust-lang/rust-by-example.git",
+        "commit": "dcc14f912bf8790792a2df082eddc82ab2539229",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": "stable (rust-by-example)"
+      },
+      {
+        "path": "src/gcc",
+        "url": "https://github.com/rust-lang/gcc.git",
+        "commit": "e1c6e07b095d091177376a163da44039475e05e3",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": null
+      },
+      {
+        "path": "src/llvm-project",
+        "url": "https://github.com/rust-lang/llvm-project.git",
+        "commit": "08ec928a5bd1866f4008c8ad216166ca685fd380",
+        "shallow": true,
+        "branch": "rustc/23.1-2026-07-22",
+        "toolstate_role": null
+      },
+      {
+        "path": "src/tools/cargo",
+        "url": "https://github.com/rust-lang/cargo.git",
+        "commit": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": null
+      },
+      {
+        "path": "src/tools/enzyme",
+        "url": "https://github.com/rust-lang/enzyme.git",
+        "commit": "9cff5a8afebc22748bb36c135dfe5a09dd1047f3",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": null
+      },
+      {
+        "path": "src/tools/rustc-perf",
+        "url": "https://github.com/rust-lang/rustc-perf.git",
+        "commit": "15d95905429e577d5a710b17c49e04b4451c263b",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": null
+      },
+      {
+        "path": "src/tpde",
+        "url": "https://github.com/rust-lang/tpde.git",
+        "commit": "050927ee81dc11a9e599fa2524ff0eef16daf51a",
+        "shallow": true,
+        "branch": null,
+        "toolstate_role": null
+      }
+    ],
+    "llvm_wrapper": {
+      "file_count": 8,
+      "total_version_guards": 29,
+      "guard_tally_by_predicate": {
+        "GE(23,0)": 12,
+        "GE(24,0)": 13,
+        "LT(24,0)": 4
+      },
+      "files": [
+        {
+          "path": "compiler/rustc_llvm/llvm-wrapper/CoverageMappingWrapper.cpp",
+          "line_count": 217,
+          "guard_count": 0,
+          "guards": []
+        },
+        {
+          "path": "compiler/rustc_llvm/llvm-wrapper/LLVMWrapper.h",
+          "line_count": 54,
+          "guard_count": 0,
+          "guards": []
+        },
+        {
+          "path": "compiler/rustc_llvm/llvm-wrapper/Linker.cpp",
+          "line_count": 43,
+          "guard_count": 0,
+          "guards": []
+        },
+        {
+          "path": "compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp",
+          "line_count": 1710,
+          "guard_count": 26,
+          "guards": [
+            {
+              "line": 26,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 51,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 66,
+              "macro": "LLVM_VERSION_LT",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 207,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 296,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 306,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 316,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 330,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 337,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 378,
+              "macro": "LLVM_VERSION_LT",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 428,
+              "macro": "LLVM_VERSION_LT",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 458,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 551,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 593,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 622,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 634,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 651,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 663,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 786,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 805,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 1078,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 1248,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 1259,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 1618,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                24,
+                0
+              ]
+            },
+            {
+              "line": 1634,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 1690,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "path": "compiler/rustc_llvm/llvm-wrapper/RustWrapper.cpp",
+          "line_count": 1941,
+          "guard_count": 3,
+          "guards": [
+            {
+              "line": 444,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 664,
+              "macro": "LLVM_VERSION_GE",
+              "version": [
+                23,
+                0
+              ]
+            },
+            {
+              "line": 1369,
+              "macro": "LLVM_VERSION_LT",
+              "version": [
+                24,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "path": "compiler/rustc_llvm/llvm-wrapper/SuppressLLVMWarnings.h",
+          "line_count": 17,
+          "guard_count": 0,
+          "guards": []
+        },
+        {
+          "path": "compiler/rustc_llvm/llvm-wrapper/SymbolWrapper.cpp",
+          "line_count": 182,
+          "guard_count": 0,
+          "guards": []
+        },
+        {
+          "path": "compiler/rustc_llvm/llvm-wrapper/offload/OffloadWrapper.cpp",
+          "line_count": 175,
+          "guard_count": 0,
+          "guards": []
+        }
+      ],
+      "required_llvm_components": [
+        "ipo",
+        "bitreader",
+        "bitwriter",
+        "linker",
+        "asmparser",
+        "lto",
+        "coverage",
+        "instrumentation"
+      ],
+      "optional_llvm_components": [
+        "x86",
+        "arm",
+        "aarch64",
+        "amdgpu",
+        "avr",
+        "loongarch",
+        "m68k",
+        "csky",
+        "mips",
+        "powerpc",
+        "systemz",
+        "webassembly",
+        "msp430",
+        "sparc",
+        "nvptx",
+        "hexagon",
+        "riscv",
+        "xtensa",
+        "bpf"
+      ]
+    },
+    "ci_llvm": {
+      "minimum_supported_llvm_major": null,
+      "invalidation_paths": [
+        "src/llvm-project",
+        "src/bootstrap/download-ci-llvm-stamp",
+        "src/version"
+      ],
+      "supported_triples_count": 30,
+      "supported_triples": [
+        {
+          "triple": "aarch64-unknown-linux-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "aarch64-apple-darwin",
+          "assertions_available": false
+        },
+        {
+          "triple": "aarch64-pc-windows-msvc",
+          "assertions_available": false
+        },
+        {
+          "triple": "i686-pc-windows-msvc",
+          "assertions_available": false
+        },
+        {
+          "triple": "i686-unknown-linux-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "x86_64-unknown-linux-gnu",
+          "assertions_available": true
+        },
+        {
+          "triple": "x86_64-apple-darwin",
+          "assertions_available": true
+        },
+        {
+          "triple": "x86_64-pc-windows-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "x86_64-pc-windows-msvc",
+          "assertions_available": true
+        },
+        {
+          "triple": "aarch64-unknown-linux-musl",
+          "assertions_available": false
+        },
+        {
+          "triple": "aarch64-pc-windows-gnullvm",
+          "assertions_available": false
+        },
+        {
+          "triple": "arm-unknown-linux-gnueabi",
+          "assertions_available": false
+        },
+        {
+          "triple": "arm-unknown-linux-gnueabihf",
+          "assertions_available": false
+        },
+        {
+          "triple": "armv7-unknown-linux-gnueabihf",
+          "assertions_available": false
+        },
+        {
+          "triple": "i686-pc-windows-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "loongarch64-unknown-linux-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "loongarch64-unknown-linux-musl",
+          "assertions_available": false
+        },
+        {
+          "triple": "powerpc-unknown-linux-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "powerpc64-unknown-linux-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "powerpc64-unknown-linux-musl",
+          "assertions_available": false
+        },
+        {
+          "triple": "powerpc64le-unknown-linux-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "powerpc64le-unknown-linux-musl",
+          "assertions_available": false
+        },
+        {
+          "triple": "riscv64gc-unknown-linux-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "riscv64gc-unknown-linux-musl",
+          "assertions_available": false
+        },
+        {
+          "triple": "s390x-unknown-linux-gnu",
+          "assertions_available": false
+        },
+        {
+          "triple": "x86_64-pc-windows-gnullvm",
+          "assertions_available": false
+        },
+        {
+          "triple": "x86_64-unknown-freebsd",
+          "assertions_available": false
+        },
+        {
+          "triple": "x86_64-unknown-illumos",
+          "assertions_available": false
+        },
+        {
+          "triple": "x86_64-unknown-linux-musl",
+          "assertions_available": false
+        },
+        {
+          "triple": "x86_64-unknown-netbsd",
+          "assertions_available": false
+        }
+      ],
+      "assertions_supported_triples": [
+        "x86_64-unknown-linux-gnu",
+        "x86_64-apple-darwin",
+        "x86_64-pc-windows-msvc"
+      ]
+    },
+    "toolstate": {
+      "release_cycle_days": 42,
+      "final_week_gate_days": 35,
+      "stable_books": [
+        {
+          "name": "book",
+          "path": "src/doc/book"
+        },
+        {
+          "name": "nomicon",
+          "path": "src/doc/nomicon"
+        },
+        {
+          "name": "reference",
+          "path": "src/doc/reference"
+        },
+        {
+          "name": "rust-by-example",
+          "path": "src/doc/rust-by-example"
+        },
+        {
+          "name": "edition-guide",
+          "path": "src/doc/edition-guide"
+        }
+      ],
+      "nightly_books": [
+        {
+          "name": "embedded-book",
+          "path": "src/doc/embedded-book"
+        }
+      ]
+    }
+  },
+  "subtrees_and_locks": {
+    "josh_subtree_count": 11,
+    "subtrees": [
+      {
+        "subtree_dir": "compiler/rustc_codegen_cranelift",
+        "config_path": "compiler/rustc_codegen_cranelift/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "rustc_codegen_cranelift",
+        "configured_path": null,
+        "filter_version": 2,
+        "pull_mode": "Nightly",
+        "has_custom_filter": true,
+        "historical_prefix_splice_count": 1,
+        "post_pull_commands": [],
+        "rust_version_file": "compiler/rustc_codegen_cranelift/rust-version",
+        "rust_version_head_exists": true,
+        "rust_toolchain": {
+          "channel": "nightly-2026-10-23",
+          "components": [
+            "rust-src",
+            "rustc-dev",
+            "llvm-tools",
+            "rustfmt"
+          ],
+          "profile": "minimal"
+        }
+      },
+      {
+        "subtree_dir": "compiler/rustc_codegen_gcc",
+        "config_path": "compiler/rustc_codegen_gcc/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "rustc_codegen_gcc",
+        "configured_path": null,
+        "filter_version": 2,
+        "pull_mode": "Nightly",
+        "has_custom_filter": true,
+        "historical_prefix_splice_count": 1,
+        "post_pull_commands": [],
+        "rust_version_file": null,
+        "rust_version_head_exists": false,
+        "rust_toolchain": {
+          "channel": "nightly-2026-11-13",
+          "components": [
+            "rust-src",
+            "rustc-dev",
+            "llvm-tools-preview"
+          ],
+          "profile": null
+        }
+      },
+      {
+        "subtree_dir": "library/compiler-builtins",
+        "config_path": "library/compiler-builtins/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "compiler-builtins",
+        "configured_path": "library/compiler-builtins",
+        "filter_version": 1,
+        "pull_mode": "Latest",
+        "has_custom_filter": false,
+        "historical_prefix_splice_count": 0,
+        "post_pull_commands": [],
+        "rust_version_file": "library/compiler-builtins/rust-version",
+        "rust_version_head_exists": true,
+        "rust_toolchain": null
+      },
+      {
+        "subtree_dir": "library/hashbrown",
+        "config_path": "library/hashbrown/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "hashbrown",
+        "configured_path": "library/hashbrown",
+        "filter_version": 2,
+        "pull_mode": "Latest",
+        "has_custom_filter": false,
+        "historical_prefix_splice_count": 0,
+        "post_pull_commands": [],
+        "rust_version_file": "library/hashbrown/rust-version",
+        "rust_version_head_exists": true,
+        "rust_toolchain": null
+      },
+      {
+        "subtree_dir": "library/portable-simd",
+        "config_path": "library/portable-simd/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "portable-simd",
+        "configured_path": null,
+        "filter_version": 2,
+        "pull_mode": "Nightly",
+        "has_custom_filter": true,
+        "historical_prefix_splice_count": 1,
+        "post_pull_commands": [],
+        "rust_version_file": null,
+        "rust_version_head_exists": false,
+        "rust_toolchain": {
+          "channel": "nightly-2026-11-02",
+          "components": [
+            "rustfmt",
+            "clippy",
+            "miri",
+            "rust-src"
+          ],
+          "profile": null
+        }
+      },
+      {
+        "subtree_dir": "library/stdarch",
+        "config_path": "library/stdarch/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "stdarch",
+        "configured_path": "library/stdarch",
+        "filter_version": 1,
+        "pull_mode": "Latest",
+        "has_custom_filter": false,
+        "historical_prefix_splice_count": 0,
+        "post_pull_commands": [
+          [
+            "cargo",
+            "fmt"
+          ]
+        ],
+        "rust_version_file": "library/stdarch/rust-version",
+        "rust_version_head_exists": true,
+        "rust_toolchain": null
+      },
+      {
+        "subtree_dir": "src/doc/rustc-dev-guide",
+        "config_path": "src/doc/rustc-dev-guide/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "rustc-dev-guide",
+        "configured_path": "src/doc/rustc-dev-guide",
+        "filter_version": 1,
+        "pull_mode": "Latest",
+        "has_custom_filter": false,
+        "historical_prefix_splice_count": 0,
+        "post_pull_commands": [],
+        "rust_version_file": "src/doc/rustc-dev-guide/rust-version",
+        "rust_version_head_exists": true,
+        "rust_toolchain": null
+      },
+      {
+        "subtree_dir": "src/tools/clippy",
+        "config_path": "src/tools/clippy/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "rust-clippy",
+        "configured_path": null,
+        "filter_version": 2,
+        "pull_mode": "Nightly",
+        "has_custom_filter": true,
+        "historical_prefix_splice_count": 1,
+        "post_pull_commands": [
+          [
+            "cargo",
+            "dev",
+            "sync",
+            "update_nightly"
+          ]
+        ],
+        "rust_version_file": null,
+        "rust_version_head_exists": false,
+        "rust_toolchain": {
+          "channel": "nightly-2026-11-17",
+          "components": [
+            "cargo",
+            "llvm-tools",
+            "rust-src",
+            "rust-std",
+            "rustc",
+            "rustc-dev",
+            "rustfmt"
+          ],
+          "profile": "minimal"
+        }
+      },
+      {
+        "subtree_dir": "src/tools/miri",
+        "config_path": "src/tools/miri/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "miri",
+        "configured_path": null,
+        "filter_version": 1,
+        "pull_mode": "Latest",
+        "has_custom_filter": true,
+        "historical_prefix_splice_count": 1,
+        "post_pull_commands": [],
+        "rust_version_file": "src/tools/miri/rust-version",
+        "rust_version_head_exists": true,
+        "rust_toolchain": null
+      },
+      {
+        "subtree_dir": "src/tools/rust-analyzer",
+        "config_path": "src/tools/rust-analyzer/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "rust-analyzer",
+        "configured_path": null,
+        "filter_version": 1,
+        "pull_mode": "Latest",
+        "has_custom_filter": true,
+        "historical_prefix_splice_count": 1,
+        "post_pull_commands": [
+          [
+            "cargo",
+            "fmt"
+          ]
+        ],
+        "rust_version_file": "src/tools/rust-analyzer/rust-version",
+        "rust_version_head_exists": true,
+        "rust_toolchain": null
+      },
+      {
+        "subtree_dir": "src/tools/rustfmt",
+        "config_path": "src/tools/rustfmt/josh-sync.toml",
+        "org": "rust-lang",
+        "repo": "rustfmt",
+        "configured_path": null,
+        "filter_version": 2,
+        "pull_mode": "Nightly",
+        "has_custom_filter": true,
+        "historical_prefix_splice_count": 1,
+        "post_pull_commands": [],
+        "rust_version_file": null,
+        "rust_version_head_exists": false,
+        "rust_toolchain": {
+          "channel": "nightly-2026-11-02",
+          "components": [
+            "llvm-tools",
+            "rustc-dev"
+          ],
+          "profile": null
+        }
+      }
+    ],
+    "cargo_locks": [
+      {
+        "path": "Cargo.lock",
+        "package_count": 644,
+        "git_source_count": 0
+      },
+      {
+        "path": "compiler/rustc_codegen_cranelift/Cargo.lock",
+        "package_count": 68,
+        "git_source_count": 0
+      },
+      {
+        "path": "compiler/rustc_codegen_cranelift/build_system/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/Cargo.lock",
+        "package_count": 39,
+        "git_source_count": 0
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/build_system/Cargo.lock",
+        "package_count": 2,
+        "git_source_count": 0
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/build_system/asm-tester/Cargo.lock",
+        "package_count": 59,
+        "git_source_count": 0
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/tests/cross_lang_lto/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/tests/hello-world/Cargo.lock",
+        "package_count": 2,
+        "git_source_count": 0
+      },
+      {
+        "path": "compiler/rustc_codegen_gcc/tests/hello-world/mylib/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "library/Cargo.lock",
+        "package_count": 50,
+        "git_source_count": 0
+      },
+      {
+        "path": "library/compiler-builtins/Cargo.lock",
+        "package_count": 170,
+        "git_source_count": 0
+      },
+      {
+        "path": "library/compiler-builtins/builtins-test-intrinsics/Cargo.lock",
+        "package_count": 10,
+        "git_source_count": 3
+      },
+      {
+        "path": "library/portable-simd/Cargo.lock",
+        "package_count": 64,
+        "git_source_count": 0
+      },
+      {
+        "path": "library/stdarch/Cargo.lock",
+        "package_count": 131,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/bootstrap/Cargo.lock",
+        "package_count": 121,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/ci/citool/Cargo.lock",
+        "package_count": 154,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/doc/rustc-dev-guide/ci/date-check/Cargo.lock",
+        "package_count": 39,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/doc/rustc-dev-guide/ci/sembr/Cargo.lock",
+        "package_count": 40,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/clippy/clippy_test_deps/Cargo.lock",
+        "package_count": 50,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/clippy/tests/ui-cargo/multiple_crate_versions/fail/Cargo.lock",
+        "package_count": 6,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/Cargo.lock",
+        "package_count": 224,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/backtraces/Cargo.lock",
+        "package_count": 12,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/big-allocs/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/mse/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/range-iteration/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/serde1/Cargo.lock",
+        "package_count": 12,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/serde2/Cargo.lock",
+        "package_count": 12,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/slice-chunked/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/slice-get-unchecked/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/string-replace/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/unicode/Cargo.lock",
+        "package_count": 2,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/bench-cargo-miri/zip-equal/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/cargo-miri/Cargo.lock",
+        "package_count": 52,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/miri-script/Cargo.lock",
+        "package_count": 80,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/test-cargo-miri/Cargo.lock",
+        "package_count": 18,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/test-cargo-miri/no-std-smoke/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/miri/tests/deps/Cargo.lock",
+        "package_count": 56,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/rust-analyzer/Cargo.lock",
+        "package_count": 369,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/rust-analyzer/crates/proc-macro-srv/proc-macro-test/imp/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/rustbook/Cargo.lock",
+        "package_count": 221,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/rustfmt/Cargo.lock",
+        "package_count": 121,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/rustfmt/check_diff/Cargo.lock",
+        "package_count": 79,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/rustfmt/ci/Cargo.lock",
+        "package_count": 18,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/rustfmt/config_proc_macro/Cargo.lock",
+        "package_count": 7,
+        "git_source_count": 0
+      },
+      {
+        "path": "src/tools/rustfmt/tests/config/issue_4660/Cargo.lock",
+        "package_count": 1,
+        "git_source_count": 0
+      }
+    ],
+    "reuse_annotations_count": 21,
+    "tidy_checked_workspaces": [
+      ".",
+      "library",
+      "library/stdarch",
+      "compiler/rustc_codegen_cranelift",
+      "compiler/rustc_codegen_gcc",
+      "src/bootstrap",
+      "src/tools/cargo",
+      "src/tools/miri/test-cargo-miri",
+      "src/tools/miri/test_dependencies",
+      "src/tools/rust-analyzer",
+      "src/tools/rustbook",
+      "src/tools/rustc-perf",
+      "tests/run-make-cargo/uefi-qemu/uefi_qemu_test"
+    ]
+  },
+  "stage0": {
+    "config": {
+      "dist_server": "https://static.rust-lang.org",
+      "artifacts_server": "https://ci-artifacts.rust-lang.org/rustc-builds",
+      "artifacts_with_llvm_assertions_server": "https://ci-artifacts.rust-lang.org/rustc-builds-alt",
+      "git_merge_commit_email": "bors@rust-lang.org",
+      "nightly_branch": "main"
+    },
+    "compiler": {
+      "channel_manifest_hash": "bc1c6b4a0a9f8b7004b236851654f3e42855b301e500632792a5dcbaad99bd87",
+      "git_commit_hash": "bbcdfd90a3f81ca2a5f6d69b943a6ff0d8582102",
+      "date": "2026-11-10",
+      "version": "beta"
+    },
+    "rustfmt": {
+      "channel_manifest_hash": "c2986ce080bf1c0e2b96a20d8e704ab33fdd95f1e347f75e0e6ace780909620c",
+      "git_commit_hash": "ac8310ba643a3796cbe77d2e06944d7c8513999f",
+      "date": "2026-11-10",
+      "version": "nightly"
+    },
+    "checksums_total": 576,
+    "checksums_by_category": {
+      "rustc_compiler": 64,
+      "rust-std": 238,
+      "cargo": 64,
+      "clippy-preview": 64,
+      "rustfmt-preview": 64,
+      "rustc_for_rustfmt": 64,
+      "rustc-src": 4,
+      "installer-msi": 10,
+      "installer-pkg": 4,
+      "other": 0
+    },
+    "rustc_host_triples_xz_count": 32,
+    "rustc_host_triples_xz": [
+      "aarch64-apple-darwin",
+      "aarch64-pc-windows-gnullvm",
+      "aarch64-pc-windows-msvc",
+      "aarch64-unknown-freebsd",
+      "aarch64-unknown-linux-gnu",
+      "aarch64-unknown-linux-musl",
+      "aarch64-unknown-linux-ohos",
+      "arm-unknown-linux-gnueabi",
+      "arm-unknown-linux-gnueabihf",
+      "armv7-unknown-linux-gnueabihf",
+      "i686-unknown-linux-gnu",
+      "loongarch64-unknown-linux-gnu",
+      "loongarch64-unknown-linux-musl",
+      "powerpc-unknown-linux-gnu",
+      "powerpc64-unknown-linux-gnu",
+      "powerpc64-unknown-linux-musl",
+      "powerpc64le-unknown-linux-gnu",
+      "powerpc64le-unknown-linux-musl",
+      "riscv64gc-unknown-linux-gnu",
+      "riscv64gc-unknown-linux-musl",
+      "s390x-unknown-linux-gnu",
+      "sparcv9-sun-solaris",
+      "x86_64-apple-darwin",
+      "x86_64-pc-solaris",
+      "x86_64-pc-windows-gnu",
+      "x86_64-pc-windows-gnullvm",
+      "x86_64-pc-windows-msvc",
+      "x86_64-unknown-freebsd",
+      "x86_64-unknown-illumos",
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-linux-musl",
+      "x86_64-unknown-netbsd"
+    ],
+    "rust_std_target_triples_xz_count": 119,
+    "rustfmt_host_triples_xz_count": 32,
+    "cfg_bootstrap_occurrences": [
+      {
+        "path": "compiler/rustc_data_structures/src/lib.rs",
+        "line": 13,
+        "kind": "active_cfg",
+        "snippet": "#![cfg_attr(bootstrap, feature(pattern_type_macro))]"
+      },
+      {
+        "path": "compiler/rustc_data_structures/src/lib.rs",
+        "line": 14,
+        "kind": "active_cfg",
+        "snippet": "#![cfg_attr(bootstrap, feature(ptr_alignment_type))]"
+      },
+      {
+        "path": "compiler/rustc_index_macros/src/lib.rs",
+        "line": 44,
+        "kind": "active_cfg",
+        "snippet": "pattern_type_macro, // cfg(bootstrap) FIXME: remove on bump"
+      },
+      {
+        "path": "compiler/rustc_middle/src/lib.rs",
+        "line": 30,
+        "kind": "active_cfg",
+        "snippet": "#![cfg_attr(bootstrap, feature(ptr_alignment_type))]"
+      },
+      {
+        "path": "library/compiler-builtins/compiler-builtins/CHANGELOG.md",
+        "line": 29,
+        "kind": "active_cfg",
+        "snippet": "- Remove cfg(bootstrap)"
+      },
+      {
+        "path": "library/compiler-builtins/compiler-builtins/CHANGELOG.md",
+        "line": 59,
+        "kind": "active_cfg",
+        "snippet": "- use `#[cfg(bootstrap)]` for rustc sync"
+      },
+      {
+        "path": "library/proc_macro/Cargo.toml",
+        "line": 19,
+        "kind": "check-cfg",
+        "snippet": "unexpected_cfgs = { level = \"warn\", check-cfg = ['cfg(bootstrap)'] }"
+      },
+      {
+        "path": "src/bootstrap/src/utils/helpers/tests.rs",
+        "line": 49,
+        "kind": "check-cfg",
+        "snippet": "assert_eq!(check_cfg_arg(\"bootstrap\", None), \"--check-cfg=cfg(bootstrap)\");"
+      }
+    ]
+  },
+  "opt_dist": {
+    "rustc_pgo_crates": [
+      "externs",
+      "ctfe-stress-5",
+      "cargo-0.87.1",
+      "token-stream-stress",
+      "enum-stress",
+      "tuple-stress",
+      "diesel-2.2.10",
+      "bitmaps-3.2.1",
+      "serde-1.0.219-new-solver"
+    ],
+    "backend_pgo_crates": [
+      "syn-2.0.101",
+      "cargo-0.87.1",
+      "serde-1.0.219",
+      "ripgrep-14.1.1",
+      "regex-automata-0.4.8",
+      "clap_derive-4.5.32",
+      "hyper-1.6.0"
+    ],
+    "pipeline_timer_sections": [
+      "Stage 2 (LLVM PGO)",
+      "Stage 3 (BOLT)",
+      "Stage 5 (final build)",
+      "Run tests"
+    ],
+    "bolt_optimize_flags": [
+      "-data",
+      "-o",
+      "-reorder-blocks=ext-tsp",
+      "-reorder-functions=cdsort",
+      "-split-functions",
+      "-split-strategy={split_strategy}",
+      "-split-all-cold",
+      "-jump-tables=move",
+      "-icf=all",
+      "-update-debug-sections",
+      "-dyno-stats"
+    ],
+    "dist_smoke_test_paths": [
+      "tests/assembly-llvm",
+      "tests/codegen-llvm",
+      "tests/codegen-units",
+      "tests/incremental",
+      "tests/mir-opt",
+      "tests/pretty",
+      "tests/run-make/glibc-symbols-x86_64-unknown-linux-gnu",
+      "tests/run-make/rust-lld-x86_64-unknown-linux-gnu-dist",
+      "tests/ui",
+      "tests/crashes",
+      "tests/rustdoc-html"
+    ],
+    "ci_platform_optimization_matrix": [
+      {
+        "job": "dist-x86_64-linux",
+        "host_triple": "x86_64-unknown-linux-gnu",
+        "uses_opt_dist": true,
+        "rustc_and_tools_pgo": true,
+        "llvm_pgo": true,
+        "shared_llvm": true,
+        "llvm_and_rustc_bolt": true,
+        "rust_lto": "thin",
+        "codegen_units": 1,
+        "jemalloc": true
+      },
+      {
+        "job": "dist-aarch64-linux",
+        "host_triple": "aarch64-unknown-linux-gnu",
+        "uses_opt_dist": true,
+        "rustc_and_tools_pgo": true,
+        "llvm_pgo": true,
+        "shared_llvm": true,
+        "llvm_and_rustc_bolt": false,
+        "rust_lto": "thin",
+        "codegen_units": 1,
+        "jemalloc": true
+      },
+      {
+        "job": "dist-x86_64-msvc",
+        "host_triple": "x86_64-pc-windows-msvc",
+        "uses_opt_dist": false,
+        "rustc_and_tools_pgo": true,
+        "llvm_pgo": true,
+        "shared_llvm": false,
+        "llvm_and_rustc_bolt": false,
+        "rust_lto": "off (default release)",
+        "codegen_units": 1,
+        "jemalloc": false
+      },
+      {
+        "job": "dist-aarch64-msvc",
+        "host_triple": "aarch64-pc-windows-msvc",
+        "uses_opt_dist": false,
+        "rustc_and_tools_pgo": false,
+        "llvm_pgo": false,
+        "shared_llvm": false,
+        "llvm_and_rustc_bolt": false,
+        "rust_lto": "off (default release)",
+        "codegen_units": 1,
+        "jemalloc": false
+      },
+      {
+        "job": "dist-x86_64-apple",
+        "host_triple": "x86_64-apple-darwin",
+        "uses_opt_dist": false,
+        "rustc_and_tools_pgo": false,
+        "llvm_pgo": false,
+        "shared_llvm": true,
+        "llvm_and_rustc_bolt": false,
+        "rust_lto": "thin",
+        "codegen_units": 1,
+        "jemalloc": true
+      },
+      {
+        "job": "dist-aarch64-apple",
+        "host_triple": "aarch64-apple-darwin",
+        "uses_opt_dist": false,
+        "rustc_and_tools_pgo": false,
+        "llvm_pgo": false,
+        "shared_llvm": true,
+        "llvm_and_rustc_bolt": false,
+        "rust_lto": "thin",
+        "codegen_units": 1,
+        "jemalloc": true
+      }
+    ]
+  },
+  "dist_and_manifest": {
+    "dist_step_impl_count": 30,
+    "dist_steps": [
+      {
+        "struct_name": "Docs",
+        "trait": "CommandLineStep",
+        "impl_line": 96,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "builder.config.docs"
+      },
+      {
+        "struct_name": "JsonDocs",
+        "trait": "CommandLineStep",
+        "impl_line": 148,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "builder.config.docs"
+      },
+      {
+        "struct_name": "RustcDocs",
+        "trait": "CommandLineStep",
+        "impl_line": 199,
+        "output_type": "GeneratedTarball",
+        "is_default_step_expr": "builder.config.compiler_docs"
+      },
+      {
+        "struct_name": "Mingw",
+        "trait": "CommandLineStep",
+        "impl_line": 456,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "true"
+      },
+      {
+        "struct_name": "Rustc",
+        "trait": "CommandLineStep",
+        "impl_line": 511,
+        "output_type": "GeneratedTarball",
+        "is_default_step_expr": "true"
+      },
+      {
+        "struct_name": "DebuggerScripts",
+        "trait": "Step",
+        "impl_line": 737,
+        "output_type": "()",
+        "is_default_step_expr": "false"
+      },
+      {
+        "struct_name": "Std",
+        "trait": "CommandLineStep",
+        "impl_line": 887,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "true"
+      },
+      {
+        "struct_name": "RustcDev",
+        "trait": "CommandLineStep",
+        "impl_line": 952,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "true"
+      },
+      {
+        "struct_name": "Analysis",
+        "trait": "CommandLineStep",
+        "impl_line": 1020,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "should_build_extended_tool(builder, \"analysis\")"
+      },
+      {
+        "struct_name": "Src",
+        "trait": "CommandLineStep",
+        "impl_line": 1194,
+        "output_type": "GeneratedTarball",
+        "is_default_step_expr": "true"
+      },
+      {
+        "struct_name": "PlainSourceTarball",
+        "trait": "CommandLineStep",
+        "impl_line": 1269,
+        "output_type": "GeneratedTarball",
+        "is_default_step_expr": "builder.config.rust_dist_src"
+      },
+      {
+        "struct_name": "PlainSourceTarballGpl",
+        "trait": "CommandLineStep",
+        "impl_line": 1319,
+        "output_type": "GeneratedTarball",
+        "is_default_step_expr": "builder.config.rust_dist_src"
+      },
+      {
+        "struct_name": "Cargo",
+        "trait": "CommandLineStep",
+        "impl_line": 1456,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "should_build_extended_tool(builder, \"cargo\")"
+      },
+      {
+        "struct_name": "RustAnalyzer",
+        "trait": "CommandLineStep",
+        "impl_line": 1516,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "should_build_extended_tool(builder, \"rust-analyzer\")"
+      },
+      {
+        "struct_name": "Clippy",
+        "trait": "CommandLineStep",
+        "impl_line": 1561,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "should_build_extended_tool(builder, \"clippy\")"
+      },
+      {
+        "struct_name": "Miri",
+        "trait": "CommandLineStep",
+        "impl_line": 1609,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "should_build_extended_tool(builder, \"miri\")"
+      },
+      {
+        "struct_name": "CraneliftCodegenBackend",
+        "trait": "CommandLineStep",
+        "impl_line": 1659,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "// We only want to build the cranelift backend in `x dist` if the backend was enabled\n        // in rust.codegen-backends.\n        // Sadly, we don't have access to the actual target for which we're disting clif here..\n        // So we just use the host target.\n        builder\n            .config\n            .enabled_codegen_backends(builder.host_target)\n            .contains(&CodegenBackendKind::Cranelift)"
+      },
+      {
+        "struct_name": "GccCodegenBackend",
+        "trait": "CommandLineStep",
+        "impl_line": 1733,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "// We only want to build the gcc backend in `x dist` if the backend was enabled\n        // in rust.codegen-backends.\n        // Sadly, we don't have access to the actual target for which we're disting gcc here..\n        // So we just use the host target.\n        builder\n            .config\n            .enabled_codegen_backends(builder.host_target)\n            .contains(&CodegenBackendKind::Gcc)"
+      },
+      {
+        "struct_name": "Rustfmt",
+        "trait": "CommandLineStep",
+        "impl_line": 1837,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "should_build_extended_tool(builder, \"rustfmt\")"
+      },
+      {
+        "struct_name": "Extended",
+        "trait": "CommandLineStep",
+        "impl_line": 1881,
+        "output_type": "()",
+        "is_default_step_expr": "builder.config.extended"
+      },
+      {
+        "struct_name": "LlvmTools",
+        "trait": "CommandLineStep",
+        "impl_line": 2665,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "should_build_extended_tool(builder, \"llvm-tools\")"
+      },
+      {
+        "struct_name": "LlvmBitcodeLinker",
+        "trait": "CommandLineStep",
+        "impl_line": 2767,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "should_build_extended_tool(builder, \"llvm-bitcode-linker\")"
+      },
+      {
+        "struct_name": "Enzyme",
+        "trait": "CommandLineStep",
+        "impl_line": 2816,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "builder.config.llvm_enzyme"
+      },
+      {
+        "struct_name": "Offload",
+        "trait": "CommandLineStep",
+        "impl_line": 2862,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "builder.config.llvm_offload"
+      },
+      {
+        "struct_name": "RustDev",
+        "trait": "CommandLineStep",
+        "impl_line": 2926,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "true"
+      },
+      {
+        "struct_name": "Bootstrap",
+        "trait": "CommandLineStep",
+        "impl_line": 3039,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "false"
+      },
+      {
+        "struct_name": "BuildManifest",
+        "trait": "CommandLineStep",
+        "impl_line": 3083,
+        "output_type": "GeneratedTarball",
+        "is_default_step_expr": "false"
+      },
+      {
+        "struct_name": "ReproducibleArtifacts",
+        "trait": "CommandLineStep",
+        "impl_line": 3123,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "true"
+      },
+      {
+        "struct_name": "GccDev",
+        "trait": "CommandLineStep",
+        "impl_line": 3179,
+        "output_type": "GeneratedTarball",
+        "is_default_step_expr": "false"
+      },
+      {
+        "struct_name": "Gcc",
+        "trait": "CommandLineStep",
+        "impl_line": 3214,
+        "output_type": "Option<GeneratedTarball>",
+        "is_default_step_expr": "false"
+      }
+    ],
+    "llvm_tools_bundled": [
+      "llvm-cov",
+      "llvm-nm",
+      "llvm-objcopy",
+      "llvm-objdump",
+      "llvm-profdata",
+      "llvm-readobj",
+      "llvm-size",
+      "llvm-strip",
+      "llvm-ar",
+      "llvm-as",
+      "llvm-dis",
+      "llvm-link",
+      "llc",
+      "opt",
+      "llubi"
+    ],
+    "lld_binaries": [
+      "ld.lld",
+      "ld64.lld",
+      "lld-link",
+      "wasm-ld"
+    ],
+    "rust_installer": {
+      "format_version": 3,
+      "deterministic_tar_mtime_unix": null
+    },
+    "build_manifest": {
+      "manifest_version": null,
+      "pkg_type_count": 23,
+      "pkg_types": [
+        {
+          "variant": "Rust",
+          "manifest_pkg_base": "rust",
+          "is_preview": false
+        },
+        {
+          "variant": "RustSrc",
+          "manifest_pkg_base": "rust-src",
+          "is_preview": false
+        },
+        {
+          "variant": "Rustc",
+          "manifest_pkg_base": "rustc",
+          "is_preview": false
+        },
+        {
+          "variant": "RustcDev",
+          "manifest_pkg_base": "rustc-dev",
+          "is_preview": false
+        },
+        {
+          "variant": "RustcDocs",
+          "manifest_pkg_base": "rustc-docs",
+          "is_preview": false
+        },
+        {
+          "variant": "ReproducibleArtifacts",
+          "manifest_pkg_base": "reproducible-artifacts",
+          "is_preview": false
+        },
+        {
+          "variant": "RustMingw",
+          "manifest_pkg_base": "rust-mingw",
+          "is_preview": false
+        },
+        {
+          "variant": "RustStd",
+          "manifest_pkg_base": "rust-std",
+          "is_preview": false
+        },
+        {
+          "variant": "Cargo",
+          "manifest_pkg_base": "cargo",
+          "is_preview": false
+        },
+        {
+          "variant": "HtmlDocs",
+          "manifest_pkg_base": "rust-docs",
+          "is_preview": false
+        },
+        {
+          "variant": "RustAnalysis",
+          "manifest_pkg_base": "rust-analysis",
+          "is_preview": false
+        },
+        {
+          "variant": "RustAnalyzer",
+          "manifest_pkg_base": "rust-analyzer",
+          "is_preview": true
+        },
+        {
+          "variant": "Clippy",
+          "manifest_pkg_base": "clippy",
+          "is_preview": true
+        },
+        {
+          "variant": "Rustfmt",
+          "manifest_pkg_base": "rustfmt",
+          "is_preview": true
+        },
+        {
+          "variant": "LlvmTools",
+          "manifest_pkg_base": "llvm-tools",
+          "is_preview": true
+        },
+        {
+          "variant": "Miri",
+          "manifest_pkg_base": "miri",
+          "is_preview": true
+        },
+        {
+          "variant": "JsonDocs",
+          "manifest_pkg_base": "rust-docs-json",
+          "is_preview": true
+        },
+        {
+          "variant": "RustcCodegenCranelift",
+          "manifest_pkg_base": "rustc-codegen-cranelift",
+          "is_preview": true
+        },
+        {
+          "variant": "LlvmBitcodeLinker",
+          "manifest_pkg_base": "llvm-bitcode-linker",
+          "is_preview": true
+        },
+        {
+          "variant": "RustcCodegenGcc",
+          "manifest_pkg_base": "rustc-codegen-gcc",
+          "is_preview": true
+        },
+        {
+          "variant": "Gcc",
+          "manifest_pkg_base": "gcc",
+          "is_preview": true
+        },
+        {
+          "variant": "Enzyme",
+          "manifest_pkg_base": "enzyme",
+          "is_preview": true
+        },
+        {
+          "variant": "Offload",
+          "manifest_pkg_base": "offload",
+          "is_preview": true
+        }
+      ],
+      "nightly_only_variants": [
+        "Miri",
+        "JsonDocs",
+        "RustcCodegenCranelift",
+        "RustcCodegenGcc",
+        "Gcc",
+        "Enzyme",
+        "Offload"
+      ],
+      "docs_fallback_mappings": [
+        {
+          "requested_target": "-apple-",
+          "fallback_doc_target": "aarch64-apple-darwin"
+        },
+        {
+          "requested_target": "aarch64",
+          "fallback_doc_target": "aarch64-unknown-linux-gnu"
+        },
+        {
+          "requested_target": "arm-",
+          "fallback_doc_target": "aarch64-unknown-linux-gnu"
+        }
+      ]
+    }
+  }
+}
