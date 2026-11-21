@@ -29,7 +29,7 @@ Lexicographic measures:
 
 Auxiliary lemma (not a headline result): **ramsey**, the infinite Ramsey theorem for pairs with finitely many colours, proved because the forward direction of closure-iff-sct is proved from it.
 
-What these results do **not** show is listed first under **Boundaries** (non-claims per result), followed by escape hatches and refuted candidate statements. In particular: every result is about the size-change abstraction, and says something about a real program only through a separate proof that the program's calls respect the graphs.
+What these results do **not** show is listed first under **Boundaries** (non-claims per result), followed by escape hatches and refuted candidate statements. In particular: every result is about the size-change abstraction, and says something about a real program only through a separate proof that the program's calls respect the graphs. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about real programs or real termination checkers (Agda's termination checker, Isabelle/HOL's `size_change`, the ACL2 CCG analysis). `closure-criterion-sound-model` transfers termination to any call relation on the model's states whose calls respect the graphs (`StepRespects`), but no real program's call relation is formalized here, so `StepRespects` is never established for one; the agreement theorems of `Toy.SCT.Infinite` relate the package's own two models.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
