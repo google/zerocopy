@@ -53,6 +53,8 @@ derivation may invent, and a textbook verification-condition generator. It conta
     premise, `[true] while true do x := x - 1 [true]` is derivable (variant `x`), yet the loop never
     terminates, so the triple is not valid in total correctness.
 
+Model–system relation: none proved (the soundness and completeness results relate the package's own
+proof systems `Deriv L` and `TDeriv` and VC generator `vcgen` to its own semantics `Valid` and `TValid`).
 Every result concerns this toy model; these theorems neither establish nor refute the
 corresponding claims about real program verifiers, SMT solvers or intermediate verification
 languages (the modeling bridge under **Applicability** argues the connection separately). What
