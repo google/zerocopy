@@ -1,0 +1,17 @@
+pycba version: 1.0.2
+simple span L=20.0: create_ils(step=0.1) wall 0.069 s for 201 analyses
+  simple M IL at a=10.0: n=201 max|err|=1.332e-15 at x=3.6000 (pycba 1.800000, closed form 1.800000); max|ref|=5.000000
+  simple M IL at a=6.0: n=201 max|err|=1.499e-15 at x=0.1000 (pycba 0.070000, closed form 0.070000); max|ref|=4.200000
+  simple M IL at a=7.33: n=201 max|err|=4.410e-02 at x=7.4000 (pycba 4.662000, closed form 4.617900); max|ref|=4.624550
+  simple R IL at A: n=201 max|err|=3.331e-16 at x=2.9000 (pycba 0.855000, closed form 0.855000); max|ref|=1.000000
+  section used for poi=7.33: x=7.400000 (results grid spacing 0.200000)
+two-span M IL at interior support B (poi=L): n=401 max|err|=6.661e-16 at x=4.7000 (pycba -1.110111, closed form -1.110111); max|ref|=1.924453
+  min ordinate pycba -1.924453 at x=11.500; closed form -L/(6*sqrt(3)) = -1.924501 at x=L/sqrt(3)=11.547
+two-span M IL at a=0.4L in span AB: n=401 max|err|=1.332e-15 at x=2.1000 (pycba 1.052315, closed form 1.052315); max|ref|=4.128000
+HL-93 truck on simple span L=20.0: resultant 325.0 kN at 5.7554 m behind front axle; absolute max moment (resultant theorem) 1246.6050 kN.m; fine-grid brute force 1246.6023 kN.m
+  run_vehicle(step=1.0): 30 positions, envelope max M 1243.6150 (error -2.9900, -0.240%), wall 0.044 s, python peak traced alloc 0.3 MB
+  run_vehicle(step=0.5): 58 positions, envelope max M 1243.6150 (error -2.9900, -0.240%), wall 0.084 s, python peak traced alloc 0.6 MB
+  run_vehicle(step=0.25): 115 positions, envelope max M 1243.6600 (error -2.9450, -0.236%), wall 0.174 s, python peak traced alloc 1.2 MB
+  run_vehicle(step=0.1): 287 positions, envelope max M 1246.5200 (error -0.0850, -0.007%), wall 0.412 s, python peak traced alloc 3.0 MB
+  run_vehicle(step=0.05): 573 positions, envelope max M 1246.5200 (error -0.0850, -0.007%), wall 0.850 s, python peak traced alloc 5.9 MB
+wall_s=7.58 maxrss_kb=131232

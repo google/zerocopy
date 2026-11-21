@@ -1,0 +1,129 @@
+{
+  "topics": [
+    "domains/air-quality-index-computation",
+    "domains/wildfire-smoke-public-alerting",
+    "verification/low-cost-sensor-correction-and-category-agreement",
+    "tooling/open-air-quality-index-implementations"
+  ],
+  "subjects": [
+    {
+      "name": "python-aqi",
+      "identity": {
+        "repository": "hrbonz/python-aqi",
+        "revision": "8206df05b009a48f8ce4a9a4a1a3cf70143ffc82",
+        "version": "1.1.0"
+      }
+    },
+    {
+      "name": "con2aqi (read-only GitHub mirror of the CRAN package archive)",
+      "identity": {
+        "repository": "cran/con2aqi",
+        "revision": "5fc7a0901481f0c217d3cd598903532327353925",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "name": "EPA ozone NowCast code and white paper",
+      "identity": {
+        "repository": "USEPA/O3-Nowcast",
+        "revision": "5d3c32c04eeaae3a1ca1bc487c311ca7bf46bf6f"
+      }
+    },
+    {
+      "name": "EPA Fire and Smoke Map sensor AQI category agreement analysis",
+      "identity": {
+        "repository": "USEPA/FASM-sensor-AQI-analysis",
+        "revision": "58a880131e4106d5faca68c1021f65f6e04b0a1a"
+      }
+    },
+    {
+      "name": "AirMonitor R package (PM NowCast used by the agreement analysis)",
+      "identity": {
+        "repository": "MazamaScience/AirMonitor",
+        "revision": "decb3d7a8039f73a65ce33bf736e6cb1a4356b28",
+        "version": "0.4.7"
+      }
+    },
+    {
+      "name": "EPA Technical Assistance Document for the Reporting of Daily Air Quality (AQI), 2018",
+      "identity": {
+        "standard": "EPA-454/B-18-007",
+        "version": "September 2018",
+        "sha256": "173f8d8668e37bc477290b84d13b905f07235815aca4875cfa78cff712646449"
+      }
+    },
+    {
+      "name": "EPA Technical Assistance Document for the Reporting of Daily Air Quality (AQI), 2024",
+      "identity": {
+        "standard": "EPA-454/B-24-002",
+        "version": "May 2024",
+        "sha256": "2c5bd330b956ca8cdbd1c92dbd62ecfb77052ee0794efbd4604b3d2c190ae290"
+      }
+    },
+    {
+      "name": "EPA Technical Assistance Document for the Reporting of Daily Air Quality (AQI), 2026",
+      "identity": {
+        "standard": "EPA-403/B-26-003",
+        "version": "May 2026",
+        "sha256": "b69de26a0f3d4603572595fc8b49be8fd157fd0faaaab023410bb13b4b6e5e0c"
+      }
+    },
+    {
+      "name": "Reconsideration of the National Ambient Air Quality Standards for Particulate Matter, final rule",
+      "identity": {
+        "standard": "89 FR 16202",
+        "version": "2024-03-06, FR Doc 2024-02637, effective 2024-05-06",
+        "url": "https://www.govinfo.gov/content/pkg/FR-2024-03-06/html/2024-02637.htm"
+      }
+    },
+    {
+      "name": "Barkjohn, Gantt and Clements 2021, US-wide PurpleAir correction",
+      "identity": {
+        "doi": "10.5194/amt-14-4617-2021"
+      }
+    },
+    {
+      "name": "Barkjohn, Holder, Frederick and Clements 2022, PurpleAir correction for extreme smoke",
+      "identity": {
+        "doi": "10.3390/s22249669"
+      }
+    },
+    {
+      "name": "Holder et al. 2020, field evaluation of low-cost PM sensors in wildfire smoke",
+      "identity": {
+        "doi": "10.3390/s20174796"
+      }
+    },
+    {
+      "name": "Stieb et al. 2008, multipollutant Air Quality Health Index",
+      "identity": {
+        "doi": "10.3155/1047-3289.58.3.435"
+      }
+    },
+    {
+      "name": "Plaia and Ruggieri 2011, air quality indices review",
+      "identity": {
+        "doi": "10.1007/s11157-010-9227-2"
+      }
+    },
+    {
+      "name": "Perlmutt and Cromar 2019, respiratory risk of EPA AQI versus health-based indices",
+      "identity": {
+        "doi": "10.1016/j.atmosenv.2019.01.011"
+      }
+    },
+    {
+      "name": "Cromar et al. 2020, AQI as a risk communication tool in California",
+      "identity": {
+        "doi": "10.1371/journal.pone.0242031"
+      }
+    },
+    {
+      "name": "Mirabelli, Ebelt and Damon 2020, AQI and air quality awareness",
+      "identity": {
+        "doi": "10.1016/j.envres.2020.109185"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

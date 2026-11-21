@@ -1,0 +1,109 @@
+{
+  "topics": [
+    "domains/pulse-oximetry-measurement-accuracy",
+    "domains/occult-hypoxemia-and-oxygen-therapy-eligibility",
+    "verification/oximeter-calibration-and-accuracy-testing",
+    "tooling/open-oximetry-datasets-and-algorithms"
+  ],
+  "subjects": [
+    {
+      "name": "MAX30102_by_RF firmware (Maxim reference SpO2 algorithm with bug fix, and replacement algorithm)",
+      "identity": {
+        "repository": "aromring/MAX30102_by_RF",
+        "revision": "553ba61952012ad6e895532bb2bfda0e790a3beb"
+      }
+    },
+    {
+      "name": "BOLD blood-gas and oximetry linked dataset curation pipeline",
+      "identity": {
+        "repository": "joamats/pulse-ox-dataset",
+        "revision": "3d1bf60cef708148742ee13f06025994a073b6df"
+      }
+    },
+    {
+      "name": "ISO 80601-2-61 pulse oximeter equipment standard (second edition; front matter and FDA recognition record only)",
+      "identity": {
+        "standard": "ISO 80601-2-61:2017",
+        "version": "Second edition 2017-12, corrected version 2018-02"
+      }
+    },
+    {
+      "name": "ISO 80601-2-61 pulse oximeter equipment standard (third edition; front matter only)",
+      "identity": {
+        "standard": "ISO 80601-2-61:2026",
+        "version": "Third edition 2026-04"
+      }
+    },
+    {
+      "name": "US FDA guidance: Pulse Oximeters - Premarket Notification Submissions [510(k)s]",
+      "identity": {
+        "url": "https://www.fda.gov/media/72470/download",
+        "version": "Final guidance issued March 4, 2013",
+        "docket": "FDA-2007-D-0205"
+      }
+    },
+    {
+      "name": "US FDA draft guidance: Pulse Oximeters for Medical Purposes - Non-Clinical and Clinical Performance Testing, Labeling, and Premarket Submission Recommendations",
+      "identity": {
+        "url": "https://www.fda.gov/media/184896/download",
+        "version": "Draft issued January 7, 2025",
+        "docket": "FDA-2023-N-4976"
+      }
+    },
+    {
+      "name": "Racial Bias in Pulse Oximetry Measurement (Sjoding et al.)",
+      "identity": {
+        "doi": "10.1056/NEJMc2029240"
+      }
+    },
+    {
+      "name": "Discrepancies Between Pulse Oximetry and Arterial Oxygen Saturation by Race and Ethnicity (Wong et al.)",
+      "identity": {
+        "doi": "10.1001/jamanetworkopen.2021.31674"
+      }
+    },
+    {
+      "name": "Racial and Ethnic Discrepancy in Pulse Oximetry and Delayed Identification of Treatment Eligibility (Fawzy et al.)",
+      "identity": {
+        "doi": "10.1001/jamainternmed.2022.1906"
+      }
+    },
+    {
+      "name": "Effects of Skin Pigmentation on Pulse Oximeter Accuracy at Low Saturation (Bickler et al.)",
+      "identity": {
+        "doi": "10.1097/00000542-200504000-00004"
+      }
+    },
+    {
+      "name": "Dark Skin Decreases the Accuracy of Pulse Oximeters at Low Oxygen Saturation (Feiner et al.)",
+      "identity": {
+        "doi": "10.1213/01.ane.0000285988.35174.d9"
+      }
+    },
+    {
+      "name": "Reliability of Pulse Oximetry in Titrating Supplemental Oxygen Therapy in Ventilator-Dependent Patients (Jubran and Tobin)",
+      "identity": {
+        "doi": "10.1378/chest.97.6.1420"
+      }
+    },
+    {
+      "name": "British Thoracic Society guideline for oxygen use in adults (guideline-group summary)",
+      "identity": {
+        "doi": "10.1136/bmjresp-2016-000170"
+      }
+    },
+    {
+      "name": "Oxygen therapy for acutely ill medical patients: a clinical practice guideline (Siemieniuk et al.)",
+      "identity": {
+        "doi": "10.1136/bmj.k4169"
+      }
+    },
+    {
+      "name": "BOLD: Blood-gas and Oximetry Linked Dataset (Matos et al.)",
+      "identity": {
+        "doi": "10.1038/s41597-024-03225-z"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

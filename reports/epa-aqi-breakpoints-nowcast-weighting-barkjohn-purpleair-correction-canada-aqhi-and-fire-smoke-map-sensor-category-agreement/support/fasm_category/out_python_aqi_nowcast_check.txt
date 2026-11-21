@@ -1,0 +1,3 @@
+python-aqi nowcast, AirNow forum example (oldest first): 28.40980136763269293389775317
+negative reading in window -> OutOfRangeError pm25: -0.5 is not covered by the algorithm (valid range is 0 to Infinity)
+to_nowcast_aqi example: 87

@@ -1,0 +1,13 @@
+### CML_HEAP_SIZE=16 CML_STACK_SIZE=1 stack3 1000
+1000
+EXIT=0 MAXRSS_KB=3800 WALL_S=0.00
+### shell_status=0
+### CML_HEAP_SIZE=16 CML_STACK_SIZE=1 stack3 10000000
+Program exited with nonzero exit code.
+Command exited with non-zero status 2
+EXIT=2 MAXRSS_KB=4532 WALL_S=0.00
+### shell_status=2
+### CML_HEAP_SIZE=16 CML_STACK_SIZE=1024 stack3 10000000
+10000000
+EXIT=0 MAXRSS_KB=241108 WALL_S=0.10
+### shell_status=0

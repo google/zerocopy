@@ -1,0 +1,13 @@
+port vs R on 300 sensors: identical cells 266400 of 266400; max|diff| 0
+vectorized port vs R on 300 sensors: identical cells 266400 of 266400
+all sensors: 7809 hours: 888 valid NowCast sensor-hours: 5806623
+FASM category != TAD category: 109
+NowCast exactly 35.5: 82
+NowCast exactly 55.5: 24
+NowCast exactly 125.5: 3
+NowCast exactly 225.5: 0
+TAD category counts (1..6): [5160574, 618915, 7162, 4064, 759, 15149]
+sensor-hours with NowCast >= 225.5: 15149  >= 1000: 14841
+sensors with any NowCast >= 1000: 58
+negative NowCast sensor-hours: 113004
+wall_s=9.80 maxrss_kb=418856

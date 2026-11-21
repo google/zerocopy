@@ -1,0 +1,138 @@
+{
+  "topics": [
+    "security/temporal-safety-against-untrusted-contexts",
+    "verification/full-abstraction-under-capability-disciplined-contexts",
+    "pl/linear-and-local-capability-type-systems",
+    "systems/capability-revocation-cost"
+  ],
+  "subjects": [
+    {
+      "name": "MS-Wasm artifact index (README)",
+      "identity": {
+        "repository": "PLSysSec/ms-wasm",
+        "revision": "b7cd1a0b2d875b317a2b637d7b4d3c764216e758"
+      }
+    },
+    {
+      "name": "MSWasm JIT compiler (GraalWasm fork)",
+      "identity": {
+        "repository": "PLSysSec/mswasm-graal",
+        "revision": "9668dbbdbc14a325d60277477ffaac99484388cc"
+      }
+    },
+    {
+      "name": "Cerise capability machine with directed and uninitialized capabilities (Coq/Iris)",
+      "identity": {
+        "repository": "logsem/cerise-stack-monotone",
+        "revision": "dff1909f6abc6de99c28d8f12e903b98dd76fb41"
+      }
+    },
+    {
+      "name": "Cerise capability machine with local and uninitialized capabilities (Coq/Iris)",
+      "identity": {
+        "repository": "logsem/cerise-stack",
+        "revision": "f68111362730aff998798d63c7d6a0a7176eff44"
+      }
+    },
+    {
+      "name": "RichWasm artifact (Coq type-safety proofs and compilers)",
+      "identity": {
+        "repository": "RichWasm/RichWasm-artifact",
+        "revision": "62c4bbcd67f4613304b3ae5bc6a85a901c2e9c8d"
+      }
+    },
+    {
+      "name": "CheriBSD kernel revocation service",
+      "identity": {
+        "repository": "CTSRD-CHERI/cheribsd",
+        "revision": "88f39900c32928d807dba245fba138808c666f34",
+        "path": "sys/kern/kern_cheri_revoke.c"
+      }
+    },
+    {
+      "name": "MSWasm: Soundly Enforcing Memory-Safe Execution of Unsafe Code",
+      "identity": {
+        "doi": "10.1145/3571208",
+        "venue": "PACMPL 7 (POPL 2023)"
+      }
+    },
+    {
+      "name": "Linear Capabilities for Fully Abstract Compilation of Separation-Logic-Verified Code",
+      "identity": {
+        "doi": "10.1145/3341688",
+        "venue": "PACMPL 3 (ICFP 2019)"
+      }
+    },
+    {
+      "name": "Linear capabilities for fully abstract compilation of separation-logic-verified code (extended version)",
+      "identity": {
+        "doi": "10.1017/s0956796821000022",
+        "venue": "Journal of Functional Programming 31 (2021)"
+      }
+    },
+    {
+      "name": "Reasoning About a Machine with Local Capabilities (conference version)",
+      "identity": {
+        "doi": "10.1007/978-3-319-89884-1_17",
+        "venue": "ESOP 2018, LNCS, pp. 475-501"
+      }
+    },
+    {
+      "name": "Reasoning About a Machine with Local Capabilities: Provably Safe Stack and Return Pointer Management (journal version)",
+      "identity": {
+        "doi": "10.1145/3363519",
+        "venue": "ACM TOPLAS 42(1)"
+      }
+    },
+    {
+      "name": "StkTokens: Enforcing Well-Bracketed Control Flow and Stack Encapsulation Using Linear Capabilities",
+      "identity": {
+        "doi": "10.1145/3290332",
+        "venue": "PACMPL 3 (POPL 2019)"
+      }
+    },
+    {
+      "name": "Efficient and Provable Local Capability Revocation Using Uninitialized Capabilities",
+      "identity": {
+        "doi": "10.1145/3434287",
+        "venue": "PACMPL 5 (POPL 2021)"
+      }
+    },
+    {
+      "name": "Le temps des cerises: efficient temporal stack safety on capability machines using directed capabilities",
+      "identity": {
+        "doi": "10.1145/3527318",
+        "venue": "PACMPL 6 (OOPSLA 2022)"
+      }
+    },
+    {
+      "name": "RichWasm: Bringing Safe, Fine-Grained, Shared-Memory Interoperability Down to WebAssembly",
+      "identity": {
+        "doi": "10.1145/3656444",
+        "venue": "PACMPL 8 (PLDI 2024)"
+      }
+    },
+    {
+      "name": "CHERIvoke: Characterising Pointer Revocation Using CHERI Capabilities for Temporal Memory Safety",
+      "identity": {
+        "doi": "10.1145/3352460.3358288",
+        "venue": "MICRO 2019"
+      }
+    },
+    {
+      "name": "Cornucopia: Temporal Safety for CHERI Heaps",
+      "identity": {
+        "doi": "10.1109/SP40000.2020.00098",
+        "venue": "IEEE S&P 2020"
+      }
+    },
+    {
+      "name": "Robust and Compositional Verification of Object Capability Patterns",
+      "identity": {
+        "doi": "10.1145/3133913",
+        "venue": "PACMPL 1 (OOPSLA 2017)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

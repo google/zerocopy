@@ -1,0 +1,103 @@
+{
+  "topics": [
+    "verification/probabilistic-guarantees-of-schedule-search",
+    "tooling/controlled-scheduler-testing-harnesses",
+    "systems/concurrency-bug-depth-empirics",
+    "security/property-based-noninterference-testing"
+  ],
+  "subjects": [
+    {
+      "name": "Shuttle concurrency testing library (PctScheduler, RandomScheduler, UrwRandomScheduler)",
+      "identity": {
+        "repository": "awslabs/shuttle",
+        "revision": "72bdbdb612c2311905c84bbc73d59f12a5b17e43"
+      }
+    },
+    {
+      "name": "Coyote systematic testing framework (PrioritizationStrategy, DelayBoundingStrategy, portfolio)",
+      "identity": {
+        "repository": "microsoft/coyote",
+        "revision": "0c51dc58cc34cdefa24dcfabf3439e5e0ec77309"
+      }
+    },
+    {
+      "name": "SCTBench benchmark suite and harness",
+      "identity": {
+        "repository": "mc-imperial/sctbench",
+        "revision": "d59ab26ddaedcd575ffb6a1f5e9711f7d6d2d9f2"
+      }
+    },
+    {
+      "name": "A Randomized Scheduler with Probabilistic Guarantees of Finding Bugs (PCT)",
+      "identity": {
+        "doi": "10.1145/1736020.1736040",
+        "venue": "ASPLOS 2010"
+      }
+    },
+    {
+      "name": "Randomized Testing of Distributed Systems with Probabilistic Guarantees (PCTCP)",
+      "identity": {
+        "doi": "10.1145/3276530",
+        "venue": "PACMPL 2(OOPSLA), 2018"
+      }
+    },
+    {
+      "name": "Learning from Mistakes: A Comprehensive Study on Real World Concurrency Bug Characteristics",
+      "identity": {
+        "doi": "10.1145/1346281.1346323",
+        "venue": "ASPLOS 2008"
+      }
+    },
+    {
+      "name": "TaxDC: A Taxonomy of Non-Deterministic Concurrency Bugs in Datacenter Distributed Systems",
+      "identity": {
+        "doi": "10.1145/2872362.2872374",
+        "venue": "ASPLOS 2016"
+      }
+    },
+    {
+      "name": "Concurrency Testing Using Controlled Schedulers: An Empirical Study",
+      "identity": {
+        "doi": "10.1145/2858651",
+        "venue": "ACM Transactions on Parallel Computing 2(4), 2016"
+      }
+    },
+    {
+      "name": "Delay-Bounded Scheduling",
+      "identity": {
+        "doi": "10.1145/1926385.1926432",
+        "venue": "POPL 2011"
+      }
+    },
+    {
+      "name": "Testing Noninterference, Quickly",
+      "identity": {
+        "doi": "10.1017/S0956796816000058",
+        "arxiv": "1409.0393v2",
+        "venue": "Journal of Functional Programming 26, e4, 2016"
+      }
+    },
+    {
+      "name": "Partial Order Aware Concurrency Sampling (POS)",
+      "identity": {
+        "doi": "10.1007/978-3-319-96142-2_20",
+        "venue": "CAV 2018"
+      }
+    },
+    {
+      "name": "Effective Concurrency Testing for Distributed Systems (Morpheus)",
+      "identity": {
+        "doi": "10.1145/3373376.3378484",
+        "venue": "ASPLOS 2020"
+      }
+    },
+    {
+      "name": "Selectively Uniform Concurrency Testing (SURW)",
+      "identity": {
+        "doi": "10.1145/3669940.3707214",
+        "venue": "ASPLOS 2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

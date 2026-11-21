@@ -1,0 +1,19 @@
+('Good', 'Moderate') 30 grid points, range ('9.1', '12')
+('Unhealthy', 'VeryUnhealthy') 250 grid points, range ('125.5', '150.4')
+('VeryUnhealthy', 'Hazardous') 250 grid points, range ('225.5', '250.4')
+9.1 old 38 new 51
+35.4 old 100 new 100
+55.4 old 150 new 150
+125.4 old 187 new 200
+125.5 old 187 new 201
+150.4 old 200 new 226
+225.4 old 275 new 300
+225.5 old 275 new 301
+250.4 old 300 new 351
+325.4 old 375 new 500
+350.4 old 400 new 550
+500.4 old 500 new 849
+pm10 425 old 301 new 301
+pm10 504 old 400 new 389
+pm10 505 old 401 new 390
+pm10 604 old 500 new 500

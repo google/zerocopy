@@ -1,0 +1,45 @@
+=== variant upd
+upstream-format parse NA count: 336 of 336 
+rows: 336  non-NA: 333  max NA run: 2 
+Warning messages:
+1: In as.cls(x) : NAs introduced by coercion
+2: In as.cls(x) : NAs introduced by coercion
+3: In as.cls(x) : NAs introduced by coercion
+class of rolling 8-h mean vector with fill='NA': numeric  is.na count: 7 
+GetNowcast ERROR: unused argument (rolling.mean.data = rolling.mean.data) 
+Warning messages:
+1: In as.cls(x) : NAs introduced by coercion
+2: In as.cls(x) : NAs introduced by coercion
+3: In as.cls(x) : NAs introduced by coercion
+elapsed_s: 0.158 
+wall_s=0.50 maxrss_kb=80524
+=== variant orig
+upstream-format parse NA count: 336 of 336 
+rows: 336  non-NA: 333  max NA run: 2 
+Warning messages:
+1: In as.cls(x) : NAs introduced by coercion
+2: In as.cls(x) : NAs introduced by coercion
+3: In as.cls(x) : NAs introduced by coercion
+class of rolling 8-h mean vector with fill='NA': numeric  is.na count: 7 
+NULL
+[1] "Nowcast generated through the PLS method."
+Warning messages:
+1: In as.cls(x) : NAs introduced by coercion
+2: In as.cls(x) : NAs introduced by coercion
+3: In as.cls(x) : NAs introduced by coercion
+4: In imputeTS::na.ma(data) : na.ma will be replaced by na_ma.
+    Functionality stays the same.
+    The new function name better fits modern R code style guidelines.
+    Please adjust your code accordingly.
+NowCast: 19.58449091  MethodID: 2  Message: Nowcast generated through the PLS method. 
+elapsed_s: 1.496 
+training rows: 238  mvr ncomp used: 96  method: kernelpls 
+last-row PLS(all comps): 19.58449091  OLS: 19.58449091  max|diff| over rows: 2.06e-13 
+ncomp=1 last-row prediction=30.1167
+ncomp=2 last-row prediction=23.0834
+ncomp=3 last-row prediction=21.5492
+ncomp=5 last-row prediction=20.9481
+ncomp=10 last-row prediction=19.7687
+ncomp=20 last-row prediction=19.6469
+surrogate 0.85*last+4.5 = 16.4   last hourly value: 14 
+wall_s=2.11 maxrss_kb=236732

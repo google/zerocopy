@@ -1,0 +1,21 @@
+
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+
+Attaching package: ‘pls’
+
+The following object is masked from ‘package:stats’:
+
+    loadings
+
+Error in source("RunNowcast_local_v2.r") : 
+  RunNowcast_local_v2.r:18:2: unexpected ')'
+17: return(nowcast.res[[what.2.get]])
+18: })
+     ^
+Execution halted
+Command exited with non-zero status 1

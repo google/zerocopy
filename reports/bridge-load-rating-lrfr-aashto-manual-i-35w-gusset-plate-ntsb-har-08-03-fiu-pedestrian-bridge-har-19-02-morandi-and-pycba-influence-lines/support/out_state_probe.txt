@@ -1,0 +1,12 @@
+(a) first create_ils(step=0.5): len(x)= 21  len(eta)= 21
+    second create_ils(step=0.5): len(x)= 42  len(eta)= 21
+(b) L=10, step=0.6 -> npts = round(10/0.6)+1 = 18 ; last pos = 10.2
+    pos=9.00 pycba=0.500000 closed-form(on-beam)=0.500000
+    pos=9.60 pycba=0.200000 closed-form(on-beam)=0.200000
+    pos=10.20 pycba=0.000000 closed-form(on-beam)=-0.100000
+(c) POI 3.33 on L=10 simple span, M IL peak ordinate (closed form a(L-a)/L = 2.22111)
+    npts=10: section used x=3.0000, max ordinate 2.10000
+    npts=20: section used x=3.5000, max ordinate 2.27500
+    npts=100: section used x=3.3000, max ordinate 2.21100
+    npts=1000: section used x=3.3300, max ordinate 2.22111
+wall_s=2.30 maxrss_kb=187140

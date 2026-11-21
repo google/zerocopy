@@ -1,0 +1,5 @@
+reference (closed-form ILs, 200001 grid + kink truck positions): min M_B = -571.5525 kN.m at front=34.566; max M(0.4L) = 963.7915 kN.m at front=16.600
+pycba run_vehicle(step=0.5): 98 positions in 0.066 s; Mmin at x=20.000: -571.5231 (ref -571.5525, err +0.0294); Mmax at x=8.000: 962.5032 (ref 963.7915, err -1.2883)
+pycba run_vehicle(step=0.1): 487 positions in 0.289 s; Mmin at x=20.000: -571.5445 (ref -571.5525, err +0.0081); Mmax at x=8.000: 963.7915 (ref 963.7915, err +0.0000)
+pycba run_vehicle(step=0.02): 2431 positions in 1.531 s; Mmin at x=20.000: -571.5523 (ref -571.5525, err +0.0002); Mmax at x=8.000: 963.7915 (ref 963.7915, err +0.0000)
+wall_s=2.89 maxrss_kb=175180

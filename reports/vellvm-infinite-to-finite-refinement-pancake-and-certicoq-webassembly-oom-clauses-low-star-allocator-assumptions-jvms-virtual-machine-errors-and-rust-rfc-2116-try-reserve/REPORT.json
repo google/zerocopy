@@ -1,0 +1,171 @@
+{
+  "topics": [
+    "verification/allocation-failure-in-compiler-refinement-statements",
+    "pl/resource-exhaustion-in-language-specifications",
+    "compilers/infinite-to-finite-memory-refinement",
+    "runtimes/fallible-allocation-interfaces"
+  ],
+  "subjects": [
+    {
+      "name": "Vellvm (formal semantics of LLVM IR), infinite-to-finite refinement",
+      "identity": {
+        "repository": "vellvm/vellvm",
+        "revision": "7f0610c38d829b79bf6e867edf410c9e6f928f98"
+      }
+    },
+    {
+      "name": "CakeML compiler and Pancake proofs",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "CakeML bootstrapped compiler release (executed)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "16bdb1aaaab64a6ac66504ad2e9f0ed6146060e9",
+        "version": "v3671",
+        "artifact": "cake-x64-64.tar.gz",
+        "sha256": "e3edd113497bf7fce443e69c70f09c3df1942849251c86ce8e44e6327ade0d3d"
+      }
+    },
+    {
+      "name": "CertiRocq (formerly CertiCoq) extraction compiler, Clight and Wasm backends, C runtime",
+      "identity": {
+        "repository": "CertiRocq/certirocq",
+        "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+      }
+    },
+    {
+      "name": "Oeuf Gallina-to-CompCert compiler",
+      "identity": {
+        "repository": "uwplse/oeuf",
+        "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f"
+      }
+    },
+    {
+      "name": "CompCert memory model and malloc semantics",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Low* library (LowStar.Monotonic.Buffer)",
+      "identity": {
+        "repository": "FStarLang/lowstar",
+        "revision": "b45e92ee4f55472b26456ec0d0dd6bfe952b6e11"
+      }
+    },
+    {
+      "name": "F* repository tree (checked for absence of the Low* buffer library)",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "fc1776afe592ed8eef352c6610614a70d77b3b66"
+      }
+    },
+    {
+      "name": "KaRaMeL C runtime header",
+      "identity": {
+        "repository": "FStarLang/karamel",
+        "revision": "6bd5918c7c518adbb973f75f23cdd0900acb7526"
+      }
+    },
+    {
+      "name": "Rust RFC 2116 (fallible collection allocation)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "path": "text/2116-alloc-me-maybe.md"
+      }
+    },
+    {
+      "name": "Rust standard library allocation-error path (source read and rustc executed)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly"
+      }
+    },
+    {
+      "name": "GHC runtime system and AsyncException",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+      }
+    },
+    {
+      "name": "OpenJDK 27.0.1 HotSpot and java.nio sources",
+      "identity": {
+        "repository": "openjdk/jdk27u",
+        "revision": "d0ae11687ce2623829506888c0305af509d57f4c",
+        "version": "jdk-27.0.1-ga"
+      }
+    },
+    {
+      "name": "WebAssembly core specification source",
+      "identity": {
+        "repository": "WebAssembly/spec",
+        "revision": "6fca707686ed4f36a1e30ec2ae7d3dd32b276704"
+      }
+    },
+    {
+      "name": "The Java Virtual Machine Specification, Java SE 27 Edition, chapter 6",
+      "identity": {
+        "standard": "JVMS SE 27",
+        "url": "https://docs.oracle.com/javase/specs/jvms/se27/html/jvms-6.html"
+      }
+    },
+    {
+      "name": "The Java Language Specification, Java SE 27 Edition, chapter 11",
+      "identity": {
+        "standard": "JLS SE 27",
+        "url": "https://docs.oracle.com/javase/specs/jls/se27/html/jls-11.html"
+      }
+    },
+    {
+      "name": "C standard working drafts (C11 N1570; C23 N3220)",
+      "identity": {
+        "standard": "ISO/IEC 9899",
+        "version": "N1570 and N3220 working drafts",
+        "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf"
+      }
+    },
+    {
+      "name": "C++ standard working draft N4950",
+      "identity": {
+        "standard": "ISO/IEC 14882",
+        "version": "N4950",
+        "url": "https://timsong-cpp.github.io/cppwp/n4950/"
+      }
+    },
+    {
+      "name": "Beck et al., A Two-Phase Infinite/Finite Low-Level Memory Model",
+      "identity": {
+        "doi": "10.1145/3674652",
+        "arxiv": "2404.16143"
+      }
+    },
+    {
+      "name": "Neis et al., Pilsner: a compositionally verified compiler for a higher-order imperative language",
+      "identity": {
+        "doi": "10.1145/2784731.2784764"
+      }
+    },
+    {
+      "name": "Protzenko et al., Verified low-level programming embedded in F*",
+      "identity": {
+        "doi": "10.1145/3110261",
+        "arxiv": "1703.00053"
+      }
+    },
+    {
+      "name": "Marlow et al., Asynchronous exceptions in Haskell",
+      "identity": {
+        "doi": "10.1145/378795.378858"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,9 @@
+== logsem_cerise-stack-monotone
+TOTAL {'Admitted.': 0, 'admit.': 0, 'Axiom': 0, 'Parameter': 0, 'Conjecture': 0, 'Hypothesis': 0} files: 141 newline-count: 68634
+== logsem_cerise-stack
+TOTAL {'Admitted.': 0, 'admit.': 0, 'Axiom': 0, 'Parameter': 0, 'Conjecture': 0, 'Hypothesis': 0} files: 73 newline-count: 38861
+== RichWasm_RichWasm-artifact
+theories/functions.v {'Admitted.': 0, 'admit.': 0, 'Axiom': 0, 'Parameter': 1, 'Conjecture': 0, 'Hypothesis': 0}
+theories/memory.v {'Admitted.': 0, 'admit.': 0, 'Axiom': 0, 'Parameter': 29, 'Conjecture': 0, 'Hypothesis': 0}
+theories/typing.v {'Admitted.': 0, 'admit.': 0, 'Axiom': 5, 'Parameter': 0, 'Conjecture': 0, 'Hypothesis': 0}
+TOTAL {'Admitted.': 0, 'admit.': 0, 'Axiom': 5, 'Parameter': 30, 'Conjecture': 0, 'Hypothesis': 0} files: 23 newline-count: 96989

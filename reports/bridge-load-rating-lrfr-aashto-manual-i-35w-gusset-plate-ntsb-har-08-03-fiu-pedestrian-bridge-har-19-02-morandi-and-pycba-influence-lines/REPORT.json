@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "domains/highway-bridge-load-rating",
+    "domains/structural-collapse-investigations",
+    "verification/design-calculation-independent-checking",
+    "tooling/open-beam-and-influence-line-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "pycba (Python continuous beam analysis)",
+      "identity": {
+        "repository": "ccaprani/pycba",
+        "revision": "329aa6e8ce3474eae812501c31520025e9afdaa4",
+        "version": "1.0.2"
+      }
+    },
+    {
+      "name": "NTSB Highway Accident Report, Collapse of I-35W Highway Bridge, Minneapolis, Minnesota, August 1, 2007",
+      "identity": {
+        "standard": "NTSB/HAR-08/03",
+        "version": "adopted 2008-11-14",
+        "url": "https://www.ntsb.gov/investigations/AccidentReports/Reports/HAR0803.pdf"
+      }
+    },
+    {
+      "name": "NTSB Safety Recommendation letter to AASHTO, H-08-20 through H-08-25",
+      "identity": {
+        "standard": "NTSB H-08-20 through H-08-25",
+        "version": "2008-11-21",
+        "url": "https://www.ntsb.gov/safety/safety-recs/recletters/H08_20_25.pdf"
+      }
+    },
+    {
+      "name": "NTSB Highway Accident Report, Pedestrian Bridge Collapse Over SW 8th Street, Miami, Florida, March 15, 2018",
+      "identity": {
+        "standard": "NTSB/HAR-19/02",
+        "url": "https://www.ntsb.gov/investigations/AccidentReports/Reports/HAR1902.pdf"
+      }
+    },
+    {
+      "name": "NTSB report digest for the Miami pedestrian bridge collapse",
+      "identity": {
+        "standard": "NTSB/SPC-20/02",
+        "url": "https://www.ntsb.gov/investigations/AccidentReports/Reports/SPC2002.pdf"
+      }
+    },
+    {
+      "name": "FHWA Load Rating Guidance and Examples for Bolted and Riveted Gusset Plates in Truss Bridges",
+      "identity": {
+        "standard": "FHWA-IF-09-014",
+        "version": "2009-02-01",
+        "url": "https://rosap.ntl.bts.gov/view/dot/49981"
+      }
+    },
+    {
+      "name": "FHWA Technical Advisory, Load-carrying Capacity Considerations of Gusset Plates in Non-load-path-redundant Steel Truss Bridges",
+      "identity": {
+        "standard": "FHWA T 5140.29",
+        "version": "2008-01-15",
+        "url": "https://www.fhwa.dot.gov/bridge/t514029.cfm"
+      }
+    },
+    {
+      "name": "Wisconsin DOT Bridge Manual, Chapter 45 Bridge Rating (secondary source for AASHTO MBE LRFR equations)",
+      "identity": {
+        "standard": "WisDOT Bridge Manual Chapter 45",
+        "version": "July 2026",
+        "url": "https://wisconsindot.gov/dtsdManuals/strct/manuals/bridge/ch45.pdf"
+      }
+    },
+    {
+      "name": "FHWA/NHI Course 130092 Load and Resistance Factor Rating of Highway Bridges, course slides",
+      "identity": {
+        "standard": "NHI Course 130092",
+        "version": "April 2008",
+        "url": "https://wsdot.wa.gov/eesc/bridge/user_content/lrfrclassnotes.pdf"
+      }
+    },
+    {
+      "name": "Nowak 1995, Calibration of LRFD Bridge Code",
+      "identity": {
+        "doi": "10.1061/(ASCE)0733-9445(1995)121:8(1245)"
+      }
+    },
+    {
+      "name": "Minervino, Sivakumar, Moses, Mertz and Edberg 2004, New AASHTO Guide Manual for LRFR of Highway Bridges",
+      "identity": {
+        "doi": "10.1061/(ASCE)1084-0702(2004)9:1(43)"
+      }
+    },
+    {
+      "name": "Hao 2010, I-35W Bridge Collapse",
+      "identity": {
+        "doi": "10.1061/(ASCE)BE.1943-5592.0000090"
+      }
+    },
+    {
+      "name": "Liao, Okazaki, Ballarini, Schultz and Galambos 2011, Nonlinear finite-element analysis of critical gusset plates in the I-35W bridge",
+      "identity": {
+        "doi": "10.1061/(ASCE)ST.1943-541X.0000269"
+      }
+    },
+    {
+      "name": "Calvi et al. 2019, Once upon a Time in Italy: The Tale of the Morandi Bridge",
+      "identity": {
+        "doi": "10.1080/10168664.2018.1558033"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

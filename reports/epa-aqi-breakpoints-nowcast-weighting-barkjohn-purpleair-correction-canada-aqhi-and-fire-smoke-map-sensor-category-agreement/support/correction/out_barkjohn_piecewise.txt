@@ -1,0 +1,9 @@
+RH=20%: blend weight at 570 = 0.0080, at 611- = 1.0084; jump at 570 = +0.488, jump at 611 = -0.638 ug/m3; corrected(570)=303.19, corrected(611)=400.12
+RH=50%: blend weight at 570 = 0.0080, at 611- = 1.0084; jump at 570 = +0.508, jump at 611 = -0.660 ug/m3; corrected(570)=300.63, corrected(611)=400.12
+RH=80%: blend weight at 570 = 0.0080, at 611- = 1.0084; jump at 570 = +0.529, jump at 611 = -0.681 ug/m3; corrected(570)=298.06, corrected(611)=400.12
+US-wide at PA=0, RH=100: -2.87
+PA=100: US-wide(RH50)=53.8  extended(RH50)=53.8
+PA=300: US-wide(RH50)=158.6  extended(RH50)=158.6
+PA=570: US-wide(RH50)=300.1  extended(RH50)=300.6
+PA=611: US-wide(RH50)=321.6  extended(RH50)=400.1
+PA=1000: US-wide(RH50)=525.4  extended(RH50)=816.4

@@ -1,0 +1,3 @@
+fun deep n = if n = 0 then 0 else 1 + deep (n - 1);
+fun main () = let val n = Option.valOf (Int.fromString (List.hd (CommandLine.arguments ()))) in print (Int.toString (deep n) ^ "\n") end;
+main ();

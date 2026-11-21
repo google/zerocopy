@@ -1,0 +1,118 @@
+('con2aqi vs ref_new', 'co') {'n': 1519, 'ref=NEG impl=int': 1, 'agree': 371, 'value_diff': 1138, 'tie_diff': 4, 'category_diff': 10, 'ref=int impl=ERROR:Please confirm that the unit of CO is ppm!': 5}
+('con2aqi vs ref_new', 'no2') {'n': 6154, 'ref=NEG impl=int': 1, 'agree': 2400, 'value_diff': 3746, 'category_diff': 10, 'tie_diff': 2, 'ref=int impl=ERROR:Please confirm that the unit of SO2 is ppb!': 5}
+('con2aqi vs ref_new', 'o3_1h') {'n': 1819, 'ref=NEG impl=int': 1, 'ref=NA impl=int': 375, 'agree': 364, 'value_diff': 1074, 'category_diff': 6, 'ref=int impl=ERROR:Please confirm that the unit of OZONE is ppm!': 5}
+('con2aqi vs ref_new', 'o3_8h') {'n': 607, 'ref=NEG impl=int': 1, 'agree': 111, 'value_diff': 474, 'category_diff': 5, 'tie_diff': 16, 'ref=int impl=ERROR:Please confirm that the unit of OZONE is ppm!': 2, 'both_nonint': 3}
+('con2aqi vs ref_new', 'pm10') {'n': 1819, 'ref=NEG impl=int': 1, 'agree': 305, 'value_diff': 1508, 'category_diff': 10, 'ref=int impl=ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!': 5}
+('con2aqi vs ref_new', 'pm25') {'n': 15019, 'ref=NEG impl=int': 1, 'agree': 505, 'value_diff': 14508, 'category_diff': 1588, 'ref=int impl=ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!': 5}
+('con2aqi vs ref_new', 'so2') {'n': 3019, 'ref=NEG impl=int': 1, 'agree': 847, 'value_diff': 2166, 'category_diff': 10, 'ref=int impl=ERROR:Please confirm that the unit of SO2 is ppb!': 5}
+('con2aqi vs ref_old', 'co') {'n': 1519, 'ref=NEG impl=int': 1, 'agree': 371, 'value_diff': 1138, 'tie_diff': 4, 'ref=int impl=ERROR:Please confirm that the unit of CO is ppm!': 2, 'both_nonint': 3}
+('con2aqi vs ref_old', 'no2') {'n': 6154, 'ref=NEG impl=int': 1, 'agree': 2400, 'value_diff': 3746, 'tie_diff': 2, 'ref=int impl=ERROR:Please confirm that the unit of SO2 is ppb!': 2, 'both_nonint': 3}
+('con2aqi vs ref_old', 'o3_1h') {'n': 1819, 'ref=NEG impl=int': 1, 'ref=NA impl=int': 375, 'agree': 364, 'value_diff': 1074, 'ref=int impl=ERROR:Please confirm that the unit of OZONE is ppm!': 2, 'both_nonint': 3}
+('con2aqi vs ref_old', 'o3_8h') {'n': 607, 'ref=NEG impl=int': 1, 'agree': 111, 'value_diff': 474, 'tie_diff': 16, 'ref=int impl=ERROR:Please confirm that the unit of OZONE is ppm!': 2, 'both_nonint': 3}
+('con2aqi vs ref_old', 'pm10') {'n': 1819, 'ref=NEG impl=int': 1, 'agree': 440, 'value_diff': 1373, 'ref=int impl=ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!': 2, 'both_nonint': 3}
+('con2aqi vs ref_old', 'pm25') {'n': 15019, 'ref=NEG impl=int': 1, 'agree': 6805, 'value_diff': 8208, 'ref=int impl=ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!': 2, 'both_nonint': 3}
+('con2aqi vs ref_old', 'so2') {'n': 3019, 'ref=NEG impl=int': 1, 'agree': 847, 'value_diff': 2166, 'ref=int impl=ERROR:Please confirm that the unit of SO2 is ppb!': 2, 'both_nonint': 3}
+('py2015 vs ref_old', 'co') {'n': 1519, 'both_nonint': 4, 'agree': 1509, 'tie_diff': 6}
+('py2015 vs ref_old', 'no2') {'n': 6154, 'both_nonint': 4, 'agree': 6150}
+('py2015 vs ref_old', 'o3_1h') {'n': 1819, 'both_nonint': 379, 'agree': 1440}
+('py2015 vs ref_old', 'o3_8h') {'n': 607, 'both_nonint': 4, 'agree': 588, 'tie_diff': 15}
+('py2015 vs ref_old', 'pm10') {'n': 1819, 'both_nonint': 4, 'agree': 1815}
+('py2015 vs ref_old', 'pm25') {'n': 15019, 'both_nonint': 4, 'agree': 15000, 'tie_diff': 15}
+('py2015 vs ref_old', 'so2') {'n': 3019, 'both_nonint': 4, 'agree': 3015}
+('py2015_x vs ref_old', 'co') {'n': 1519, 'both_nonint': 1, 'agree': 1509, 'tie_diff': 6, 'ref=BEYOND impl=int': 3}
+('py2015_x vs ref_old', 'no2') {'n': 6154, 'both_nonint': 1, 'agree': 6150, 'ref=BEYOND impl=int': 3}
+('py2015_x vs ref_old', 'o3_1h') {'n': 1819, 'both_nonint': 376, 'agree': 1440, 'ref=BEYOND impl=int': 3}
+('py2015_x vs ref_old', 'o3_8h') {'n': 607, 'both_nonint': 4, 'agree': 588, 'tie_diff': 15}
+('py2015_x vs ref_old', 'pm10') {'n': 1819, 'both_nonint': 1, 'agree': 1815, 'ref=BEYOND impl=int': 3}
+('py2015_x vs ref_old', 'pm25') {'n': 15019, 'both_nonint': 1, 'agree': 15000, 'tie_diff': 15, 'ref=BEYOND impl=int': 3}
+('py2015_x vs ref_old', 'so2') {'n': 3019, 'both_nonint': 1, 'agree': 3015, 'ref=BEYOND impl=int': 3}
+('py2024 vs ref_new', 'co') {'n': 1519, 'both_nonint': 1, 'agree': 1509, 'tie_diff': 6, 'ref=int impl=OutOfRangeError': 3}
+('py2024 vs ref_new', 'no2') {'n': 6154, 'both_nonint': 1, 'agree': 6150, 'ref=int impl=OutOfRangeError': 3}
+('py2024 vs ref_new', 'o3_1h') {'n': 1819, 'both_nonint': 376, 'agree': 1440, 'ref=int impl=OutOfRangeError': 3}
+('py2024 vs ref_new', 'o3_8h') {'n': 607, 'both_nonint': 4, 'agree': 588, 'tie_diff': 15}
+('py2024 vs ref_new', 'pm10') {'n': 1819, 'both_nonint': 1, 'agree': 1815, 'ref=int impl=OutOfRangeError': 3}
+('py2024 vs ref_new', 'pm25') {'n': 15019, 'both_nonint': 1, 'agree': 9765, 'ref=int impl=OutOfRangeError': 5253}
+('py2024 vs ref_new', 'so2') {'n': 3019, 'both_nonint': 1, 'agree': 3015, 'ref=int impl=OutOfRangeError': 3}
+('py2024_x vs ref_new', 'co') {'n': 1519, 'both_nonint': 1, 'agree': 1512, 'tie_diff': 6}
+('py2024_x vs ref_new', 'no2') {'n': 6154, 'both_nonint': 1, 'agree': 6153}
+('py2024_x vs ref_new', 'o3_1h') {'n': 1819, 'both_nonint': 376, 'agree': 1443}
+('py2024_x vs ref_new', 'o3_8h') {'n': 607, 'both_nonint': 4, 'agree': 588, 'tie_diff': 15}
+('py2024_x vs ref_new', 'pm10') {'n': 1819, 'both_nonint': 1, 'agree': 1818}
+('py2024_x vs ref_new', 'pm25') {'n': 15019, 'both_nonint': 1, 'agree': 15018}
+('py2024_x vs ref_new', 'so2') {'n': 3019, 'both_nonint': 1, 'agree': 3018}
+
+(('con2aqi vs ref_new', 'co'), 'ref=NEG impl=int') [('-0.1', 'NEG', '-1')]
+(('con2aqi vs ref_new', 'co'), 'ref=int impl=ERROR:Please confirm that the unit of CO is ppm!') [('50.45', '500', 'ERROR:Please confirm that the unit of CO is ppm!'), ('50.499', '500', 'ERROR:Please confirm that the unit of CO is ppm!'), ('50.5', '501', 'ERROR:Please confirm that the unit of CO is ppm!'), ('75.6', '752', 'ERROR:Please confirm that the unit of CO is ppm!')]
+(('con2aqi vs ref_new', 'co'), 'tie_diff') [('1.15', '13', '14'), ('1.199', '13', '14'), ('3.35', '38', '39'), ('3.399', '38', '39')]
+(('con2aqi vs ref_new', 'co'), 'value_diff') [('0.05', '0', '1'), ('0.099', '0', '2'), ('0.1', '1', '2'), ('0.15', '1', '2'), ('0.199', '1', '3'), ('0.2', '2', '3')]
+(('con2aqi vs ref_new', 'no2'), 'ref=NEG impl=int') [('-1', 'NEG', '0')]
+(('con2aqi vs ref_new', 'no2'), 'ref=int impl=ERROR:Please confirm that the unit of SO2 is ppb!') [('2049.5', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!'), ('2049.99', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!'), ('2050', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!'), ('3073.5', '755', 'ERROR:Please confirm that the unit of SO2 is ppb!')]
+(('con2aqi vs ref_new', 'no2'), 'tie_diff') [('77.5', '76', '77'), ('77.99', '76', '77')]
+(('con2aqi vs ref_new', 'no2'), 'value_diff') [('0.5', '0', '1'), ('0.99', '0', '1'), ('1.5', '1', '2'), ('1.99', '1', '2'), ('2.5', '2', '3'), ('2.99', '2', '3')]
+(('con2aqi vs ref_new', 'o3_1h'), 'ref=NA impl=int') [('0', 'NA', '51'), ('0.0005', 'NA', '52'), ('0.00099', 'NA', '52'), ('0.001', 'NA', '52')]
+(('con2aqi vs ref_new', 'o3_1h'), 'ref=NEG impl=int') [('-0.001', 'NEG', '50')]
+(('con2aqi vs ref_new', 'o3_1h'), 'ref=int impl=ERROR:Please confirm that the unit of OZONE is ppm!') [('0.6045', '500', 'ERROR:Please confirm that the unit of OZONE is ppm!'), ('0.60499', '500', 'ERROR:Please confirm that the unit of OZONE is ppm!'), ('0.605', '501', 'ERROR:Please confirm that the unit of OZONE is ppm!'), ('0.906', '802', 'ERROR:Please confirm that the unit of OZONE is ppm!')]
+(('con2aqi vs ref_new', 'o3_1h'), 'value_diff') [('0.1255', '101', '102'), ('0.12599', '101', '103'), ('0.126', '102', '103'), ('0.1265', '102', '103'), ('0.12699', '102', '104'), ('0.1275', '104', '105')]
+(('con2aqi vs ref_new', 'o3_8h'), 'ref=NEG impl=int') [('-0.001', 'NEG', '0')]
+(('con2aqi vs ref_new', 'o3_8h'), 'ref=int impl=ERROR:Please confirm that the unit of OZONE is ppm!') [('0.2005', '300', 'ERROR:Please confirm that the unit of OZONE is ppm!'), ('0.20099', '300', 'ERROR:Please confirm that the unit of OZONE is ppm!')]
+(('con2aqi vs ref_new', 'o3_8h'), 'tie_diff') [('0.0725', '105', '107'), ('0.07299', '105', '108'), ('0.0745', '112', '114'), ('0.07499', '112', '115'), ('0.0765', '119', '121'), ('0.07699', '119', '122')]
+(('con2aqi vs ref_new', 'o3_8h'), 'value_diff') [('0.0005', '0', '1'), ('0.00099', '0', '1'), ('0.0015', '1', '2'), ('0.00199', '1', '2'), ('0.0025', '2', '3'), ('0.00299', '2', '3')]
+(('con2aqi vs ref_new', 'pm10'), 'ref=NEG impl=int') [('-1', 'NEG', '0')]
+(('con2aqi vs ref_new', 'pm10'), 'ref=int impl=ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!') [('604.5', '500', 'ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!'), ('604.99', '500', 'ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!'), ('605', '501', 'ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!'), ('906', '836', 'ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!')]
+(('con2aqi vs ref_new', 'pm10'), 'value_diff') [('0.5', '0', '1'), ('0.99', '0', '1'), ('1.5', '1', '2'), ('1.99', '1', '2'), ('2.5', '2', '3'), ('2.99', '2', '3')]
+(('con2aqi vs ref_new', 'pm25'), 'ref=NEG impl=int') [('-0.1', 'NEG', '0')]
+(('con2aqi vs ref_new', 'pm25'), 'ref=int impl=ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!') [('500.45', '849', 'ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!'), ('500.499', '849', 'ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!'), ('500.5', '849', 'ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!'), ('750.6', '1347', 'ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!')]
+(('con2aqi vs ref_new', 'pm25'), 'value_diff') [('0.05', '0', '1'), ('0.099', '0', '1'), ('0.25', '1', '2'), ('0.299', '1', '2'), ('0.499', '2', '3'), ('0.7', '4', '3')]
+(('con2aqi vs ref_new', 'so2'), 'ref=NEG impl=int') [('-1', 'NEG', '-1')]
+(('con2aqi vs ref_new', 'so2'), 'ref=int impl=ERROR:Please confirm that the unit of SO2 is ppb!') [('1004.5', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!'), ('1004.99', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!'), ('1005', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!'), ('1506', '750', 'ERROR:Please confirm that the unit of SO2 is ppb!')]
+(('con2aqi vs ref_new', 'so2'), 'value_diff') [('0.5', '0', '1'), ('0.99', '0', '2'), ('1', '1', '2'), ('1.5', '1', '3'), ('1.99', '1', '3'), ('2.5', '3', '4')]
+(('con2aqi vs ref_old', 'co'), 'ref=NEG impl=int') [('-0.1', 'NEG', '-1')]
+(('con2aqi vs ref_old', 'co'), 'ref=int impl=ERROR:Please confirm that the unit of CO is ppm!') [('50.45', '500', 'ERROR:Please confirm that the unit of CO is ppm!'), ('50.499', '500', 'ERROR:Please confirm that the unit of CO is ppm!')]
+(('con2aqi vs ref_old', 'co'), 'tie_diff') [('1.15', '13', '14'), ('1.199', '13', '14'), ('3.35', '38', '39'), ('3.399', '38', '39')]
+(('con2aqi vs ref_old', 'co'), 'value_diff') [('0.05', '0', '1'), ('0.099', '0', '2'), ('0.1', '1', '2'), ('0.15', '1', '2'), ('0.199', '1', '3'), ('0.2', '2', '3')]
+(('con2aqi vs ref_old', 'no2'), 'ref=NEG impl=int') [('-1', 'NEG', '0')]
+(('con2aqi vs ref_old', 'no2'), 'ref=int impl=ERROR:Please confirm that the unit of SO2 is ppb!') [('2049.5', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!'), ('2049.99', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!')]
+(('con2aqi vs ref_old', 'no2'), 'tie_diff') [('77.5', '76', '77'), ('77.99', '76', '77')]
+(('con2aqi vs ref_old', 'no2'), 'value_diff') [('0.5', '0', '1'), ('0.99', '0', '1'), ('1.5', '1', '2'), ('1.99', '1', '2'), ('2.5', '2', '3'), ('2.99', '2', '3')]
+(('con2aqi vs ref_old', 'o3_1h'), 'ref=NA impl=int') [('0', 'NA', '51'), ('0.0005', 'NA', '52'), ('0.00099', 'NA', '52'), ('0.001', 'NA', '52')]
+(('con2aqi vs ref_old', 'o3_1h'), 'ref=NEG impl=int') [('-0.001', 'NEG', '50')]
+(('con2aqi vs ref_old', 'o3_1h'), 'ref=int impl=ERROR:Please confirm that the unit of OZONE is ppm!') [('0.6045', '500', 'ERROR:Please confirm that the unit of OZONE is ppm!'), ('0.60499', '500', 'ERROR:Please confirm that the unit of OZONE is ppm!')]
+(('con2aqi vs ref_old', 'o3_1h'), 'value_diff') [('0.1255', '101', '102'), ('0.12599', '101', '103'), ('0.126', '102', '103'), ('0.1265', '102', '103'), ('0.12699', '102', '104'), ('0.1275', '104', '105')]
+(('con2aqi vs ref_old', 'o3_8h'), 'ref=NEG impl=int') [('-0.001', 'NEG', '0')]
+(('con2aqi vs ref_old', 'o3_8h'), 'ref=int impl=ERROR:Please confirm that the unit of OZONE is ppm!') [('0.2005', '300', 'ERROR:Please confirm that the unit of OZONE is ppm!'), ('0.20099', '300', 'ERROR:Please confirm that the unit of OZONE is ppm!')]
+(('con2aqi vs ref_old', 'o3_8h'), 'tie_diff') [('0.0725', '105', '107'), ('0.07299', '105', '108'), ('0.0745', '112', '114'), ('0.07499', '112', '115'), ('0.0765', '119', '121'), ('0.07699', '119', '122')]
+(('con2aqi vs ref_old', 'o3_8h'), 'value_diff') [('0.0005', '0', '1'), ('0.00099', '0', '1'), ('0.0015', '1', '2'), ('0.00199', '1', '2'), ('0.0025', '2', '3'), ('0.00299', '2', '3')]
+(('con2aqi vs ref_old', 'pm10'), 'ref=NEG impl=int') [('-1', 'NEG', '0')]
+(('con2aqi vs ref_old', 'pm10'), 'ref=int impl=ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!') [('604.5', '500', 'ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!'), ('604.99', '500', 'ERROR:Please confirm that the unit of PM10 is microgram per cubic metres!')]
+(('con2aqi vs ref_old', 'pm10'), 'value_diff') [('0.5', '0', '1'), ('0.99', '0', '1'), ('1.5', '1', '2'), ('1.99', '1', '2'), ('2.5', '2', '3'), ('2.99', '2', '3')]
+(('con2aqi vs ref_old', 'pm25'), 'ref=NEG impl=int') [('-0.1', 'NEG', '0')]
+(('con2aqi vs ref_old', 'pm25'), 'ref=int impl=ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!') [('500.45', '500', 'ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!'), ('500.499', '500', 'ERROR:Please confirm that the unit of PM2.5 is microgram per cubic metres!')]
+(('con2aqi vs ref_old', 'pm25'), 'value_diff') [('0.05', '0', '1'), ('0.099', '0', '1'), ('0.1', '0', '1'), ('0.15', '0', '1'), ('0.199', '0', '1'), ('0.25', '1', '2')]
+(('con2aqi vs ref_old', 'so2'), 'ref=NEG impl=int') [('-1', 'NEG', '-1')]
+(('con2aqi vs ref_old', 'so2'), 'ref=int impl=ERROR:Please confirm that the unit of SO2 is ppb!') [('1004.5', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!'), ('1004.99', '500', 'ERROR:Please confirm that the unit of SO2 is ppb!')]
+(('con2aqi vs ref_old', 'so2'), 'value_diff') [('0.5', '0', '1'), ('0.99', '0', '2'), ('1', '1', '2'), ('1.5', '1', '3'), ('1.99', '1', '3'), ('2.5', '3', '4')]
+(('py2015 vs ref_old', 'co'), 'tie_diff') [('1.1', '13', '12'), ('1.15', '13', '12'), ('1.199', '13', '12'), ('3.3', '38', '37'), ('3.35', '38', '37'), ('3.399', '38', '37')]
+(('py2015 vs ref_old', 'o3_8h'), 'tie_diff') [('0.072', '105', '104'), ('0.0725', '105', '104'), ('0.07299', '105', '104'), ('0.076', '119', '118'), ('0.0765', '119', '118'), ('0.07699', '119', '118')]
+(('py2015 vs ref_old', 'pm25'), 'tie_diff') [('0.6', '3', '2'), ('0.65', '3', '2'), ('0.699', '3', '2'), ('3', '13', '12'), ('3.05', '13', '12'), ('3.099', '13', '12')]
+(('py2015_x vs ref_old', 'co'), 'ref=BEYOND impl=int') [('50.5', 'BEYOND', '501'), ('75.6', 'BEYOND', '752'), ('100.8', 'BEYOND', '1004')]
+(('py2015_x vs ref_old', 'co'), 'tie_diff') [('1.1', '13', '12'), ('1.15', '13', '12'), ('1.199', '13', '12'), ('3.3', '38', '37'), ('3.35', '38', '37'), ('3.399', '38', '37')]
+(('py2015_x vs ref_old', 'no2'), 'ref=BEYOND impl=int') [('2050', 'BEYOND', '500'), ('3073.5', 'BEYOND', '754'), ('4098', 'BEYOND', '1008')]
+(('py2015_x vs ref_old', 'o3_1h'), 'ref=BEYOND impl=int') [('0.605', 'BEYOND', '501'), ('0.906', 'BEYOND', '802'), ('1.208', 'BEYOND', '1104')]
+(('py2015_x vs ref_old', 'o3_8h'), 'tie_diff') [('0.072', '105', '104'), ('0.0725', '105', '104'), ('0.07299', '105', '104'), ('0.076', '119', '118'), ('0.0765', '119', '118'), ('0.07699', '119', '118')]
+(('py2015_x vs ref_old', 'pm10'), 'ref=BEYOND impl=int') [('605', 'BEYOND', '501'), ('906', 'BEYOND', '802'), ('1208', 'BEYOND', '1104')]
+(('py2015_x vs ref_old', 'pm25'), 'ref=BEYOND impl=int') [('500.5', 'BEYOND', '500'), ('750.6', 'BEYOND', '665'), ('1000.8', 'BEYOND', '830')]
+(('py2015_x vs ref_old', 'pm25'), 'tie_diff') [('0.6', '3', '2'), ('0.65', '3', '2'), ('0.699', '3', '2'), ('3', '13', '12'), ('3.05', '13', '12'), ('3.099', '13', '12')]
+(('py2015_x vs ref_old', 'so2'), 'ref=BEYOND impl=int') [('1005', 'BEYOND', '500'), ('1506', 'BEYOND', '750'), ('2008', 'BEYOND', '999')]
+(('py2024 vs ref_new', 'co'), 'ref=int impl=OutOfRangeError') [('50.5', '501', 'OutOfRangeError'), ('75.6', '752', 'OutOfRangeError'), ('100.8', '1004', 'OutOfRangeError')]
+(('py2024 vs ref_new', 'co'), 'tie_diff') [('1.1', '13', '12'), ('1.15', '13', '12'), ('1.199', '13', '12'), ('3.3', '38', '37'), ('3.35', '38', '37'), ('3.399', '38', '37')]
+(('py2024 vs ref_new', 'no2'), 'ref=int impl=OutOfRangeError') [('2050', '500', 'OutOfRangeError'), ('3073.5', '755', 'OutOfRangeError'), ('4098', '1010', 'OutOfRangeError')]
+(('py2024 vs ref_new', 'o3_1h'), 'ref=int impl=OutOfRangeError') [('0.605', '501', 'OutOfRangeError'), ('0.906', '802', 'OutOfRangeError'), ('1.208', '1104', 'OutOfRangeError')]
+(('py2024 vs ref_new', 'o3_8h'), 'tie_diff') [('0.072', '105', '104'), ('0.0725', '105', '104'), ('0.07299', '105', '104'), ('0.076', '119', '118'), ('0.0765', '119', '118'), ('0.07699', '119', '118')]
+(('py2024 vs ref_new', 'pm10'), 'ref=int impl=OutOfRangeError') [('605', '501', 'OutOfRangeError'), ('906', '836', 'OutOfRangeError'), ('1208', '1171', 'OutOfRangeError')]
+(('py2024 vs ref_new', 'pm25'), 'ref=int impl=OutOfRangeError') [('325.5', '500', 'OutOfRangeError'), ('325.55', '500', 'OutOfRangeError'), ('325.599', '500', 'OutOfRangeError'), ('325.6', '500', 'OutOfRangeError')]
+(('py2024 vs ref_new', 'so2'), 'ref=int impl=OutOfRangeError') [('1005', '500', 'OutOfRangeError'), ('1506', '750', 'OutOfRangeError'), ('2008', '1001', 'OutOfRangeError')]
+(('py2024_x vs ref_new', 'co'), 'tie_diff') [('1.1', '13', '12'), ('1.15', '13', '12'), ('1.199', '13', '12'), ('3.3', '38', '37'), ('3.35', '38', '37'), ('3.399', '38', '37')]
+(('py2024_x vs ref_new', 'o3_8h'), 'tie_diff') [('0.072', '105', '104'), ('0.0725', '105', '104'), ('0.07299', '105', '104'), ('0.076', '119', '118'), ('0.0765', '119', '118'), ('0.07699', '119', '118')]
+
+exact .5 ties in reference (old table): {'pm25': 30, 'co': 6, 'so2': 3, 'no2': 6, 'o3_8h': 24}
+exact .5 ties in reference (2024 table): {'co': 6, 'so2': 3, 'no2': 6, 'o3_8h': 24}

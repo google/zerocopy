@@ -13450,6 +13450,117 @@
         "verification/abstract-interpretation"
       ]
     },
+    "bridge-load-rating-lrfr-aashto-manual-i-35w-gusset-plate-ntsb-har-08-03-fiu-pedestrian-bridge-har-19-02-morandi-and-pycba-influence-lines": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "ccaprani/pycba",
+            "revision": "329aa6e8ce3474eae812501c31520025e9afdaa4",
+            "version": "1.0.2"
+          },
+          "name": "pycba (Python continuous beam analysis)"
+        },
+        {
+          "identity": {
+            "standard": "NTSB/HAR-08/03",
+            "url": "https://www.ntsb.gov/investigations/AccidentReports/Reports/HAR0803.pdf",
+            "version": "adopted 2008-11-14"
+          },
+          "name": "NTSB Highway Accident Report, Collapse of I-35W Highway Bridge, Minneapolis, Minnesota, August 1, 2007"
+        },
+        {
+          "identity": {
+            "standard": "NTSB H-08-20 through H-08-25",
+            "url": "https://www.ntsb.gov/safety/safety-recs/recletters/H08_20_25.pdf",
+            "version": "2008-11-21"
+          },
+          "name": "NTSB Safety Recommendation letter to AASHTO, H-08-20 through H-08-25"
+        },
+        {
+          "identity": {
+            "standard": "NTSB/HAR-19/02",
+            "url": "https://www.ntsb.gov/investigations/AccidentReports/Reports/HAR1902.pdf"
+          },
+          "name": "NTSB Highway Accident Report, Pedestrian Bridge Collapse Over SW 8th Street, Miami, Florida, March 15, 2018"
+        },
+        {
+          "identity": {
+            "standard": "NTSB/SPC-20/02",
+            "url": "https://www.ntsb.gov/investigations/AccidentReports/Reports/SPC2002.pdf"
+          },
+          "name": "NTSB report digest for the Miami pedestrian bridge collapse"
+        },
+        {
+          "identity": {
+            "standard": "FHWA-IF-09-014",
+            "url": "https://rosap.ntl.bts.gov/view/dot/49981",
+            "version": "2009-02-01"
+          },
+          "name": "FHWA Load Rating Guidance and Examples for Bolted and Riveted Gusset Plates in Truss Bridges"
+        },
+        {
+          "identity": {
+            "standard": "FHWA T 5140.29",
+            "url": "https://www.fhwa.dot.gov/bridge/t514029.cfm",
+            "version": "2008-01-15"
+          },
+          "name": "FHWA Technical Advisory, Load-carrying Capacity Considerations of Gusset Plates in Non-load-path-redundant Steel Truss Bridges"
+        },
+        {
+          "identity": {
+            "standard": "WisDOT Bridge Manual Chapter 45",
+            "url": "https://wisconsindot.gov/dtsdManuals/strct/manuals/bridge/ch45.pdf",
+            "version": "July 2026"
+          },
+          "name": "Wisconsin DOT Bridge Manual, Chapter 45 Bridge Rating (secondary source for AASHTO MBE LRFR equations)"
+        },
+        {
+          "identity": {
+            "standard": "NHI Course 130092",
+            "url": "https://wsdot.wa.gov/eesc/bridge/user_content/lrfrclassnotes.pdf",
+            "version": "April 2008"
+          },
+          "name": "FHWA/NHI Course 130092 Load and Resistance Factor Rating of Highway Bridges, course slides"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)0733-9445(1995)121:8(1245)"
+          },
+          "name": "Nowak 1995, Calibration of LRFD Bridge Code"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)1084-0702(2004)9:1(43)"
+          },
+          "name": "Minervino, Sivakumar, Moses, Mertz and Edberg 2004, New AASHTO Guide Manual for LRFR of Highway Bridges"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)BE.1943-5592.0000090"
+          },
+          "name": "Hao 2010, I-35W Bridge Collapse"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)ST.1943-541X.0000269"
+          },
+          "name": "Liao, Okazaki, Ballarini, Schultz and Galambos 2011, Nonlinear finite-element analysis of critical gusset plates in the I-35W bridge"
+        },
+        {
+          "identity": {
+            "doi": "10.1080/10168664.2018.1558033"
+          },
+          "name": "Calvi et al. 2019, Once upon a Time in Italy: The Tale of the Morandi Bridge"
+        }
+      ],
+      "topics": [
+        "domains/highway-bridge-load-rating",
+        "domains/structural-collapse-investigations",
+        "verification/design-calculation-independent-checking",
+        "tooling/open-beam-and-influence-line-analysis"
+      ]
+    },
     "browser-site-isolation-v8-heap-sandboxes-and-webidl-membrane-security": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -31105,6 +31216,135 @@
         "llvm/adjoint-aliasing",
         "security/homomorphic-noise",
         "verification/nan-propagation"
+      ]
+    },
+    "epa-aqi-breakpoints-nowcast-weighting-barkjohn-purpleair-correction-canada-aqhi-and-fire-smoke-map-sensor-category-agreement": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "hrbonz/python-aqi",
+            "revision": "8206df05b009a48f8ce4a9a4a1a3cf70143ffc82",
+            "version": "1.1.0"
+          },
+          "name": "python-aqi"
+        },
+        {
+          "identity": {
+            "repository": "cran/con2aqi",
+            "revision": "5fc7a0901481f0c217d3cd598903532327353925",
+            "version": "0.1.0"
+          },
+          "name": "con2aqi (read-only GitHub mirror of the CRAN package archive)"
+        },
+        {
+          "identity": {
+            "repository": "USEPA/O3-Nowcast",
+            "revision": "5d3c32c04eeaae3a1ca1bc487c311ca7bf46bf6f"
+          },
+          "name": "EPA ozone NowCast code and white paper"
+        },
+        {
+          "identity": {
+            "repository": "USEPA/FASM-sensor-AQI-analysis",
+            "revision": "58a880131e4106d5faca68c1021f65f6e04b0a1a"
+          },
+          "name": "EPA Fire and Smoke Map sensor AQI category agreement analysis"
+        },
+        {
+          "identity": {
+            "repository": "MazamaScience/AirMonitor",
+            "revision": "decb3d7a8039f73a65ce33bf736e6cb1a4356b28",
+            "version": "0.4.7"
+          },
+          "name": "AirMonitor R package (PM NowCast used by the agreement analysis)"
+        },
+        {
+          "identity": {
+            "sha256": "173f8d8668e37bc477290b84d13b905f07235815aca4875cfa78cff712646449",
+            "standard": "EPA-454/B-18-007",
+            "version": "September 2018"
+          },
+          "name": "EPA Technical Assistance Document for the Reporting of Daily Air Quality (AQI), 2018"
+        },
+        {
+          "identity": {
+            "sha256": "2c5bd330b956ca8cdbd1c92dbd62ecfb77052ee0794efbd4604b3d2c190ae290",
+            "standard": "EPA-454/B-24-002",
+            "version": "May 2024"
+          },
+          "name": "EPA Technical Assistance Document for the Reporting of Daily Air Quality (AQI), 2024"
+        },
+        {
+          "identity": {
+            "sha256": "b69de26a0f3d4603572595fc8b49be8fd157fd0faaaab023410bb13b4b6e5e0c",
+            "standard": "EPA-403/B-26-003",
+            "version": "May 2026"
+          },
+          "name": "EPA Technical Assistance Document for the Reporting of Daily Air Quality (AQI), 2026"
+        },
+        {
+          "identity": {
+            "standard": "89 FR 16202",
+            "url": "https://www.govinfo.gov/content/pkg/FR-2024-03-06/html/2024-02637.htm",
+            "version": "2024-03-06, FR Doc 2024-02637, effective 2024-05-06"
+          },
+          "name": "Reconsideration of the National Ambient Air Quality Standards for Particulate Matter, final rule"
+        },
+        {
+          "identity": {
+            "doi": "10.5194/amt-14-4617-2021"
+          },
+          "name": "Barkjohn, Gantt and Clements 2021, US-wide PurpleAir correction"
+        },
+        {
+          "identity": {
+            "doi": "10.3390/s22249669"
+          },
+          "name": "Barkjohn, Holder, Frederick and Clements 2022, PurpleAir correction for extreme smoke"
+        },
+        {
+          "identity": {
+            "doi": "10.3390/s20174796"
+          },
+          "name": "Holder et al. 2020, field evaluation of low-cost PM sensors in wildfire smoke"
+        },
+        {
+          "identity": {
+            "doi": "10.3155/1047-3289.58.3.435"
+          },
+          "name": "Stieb et al. 2008, multipollutant Air Quality Health Index"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s11157-010-9227-2"
+          },
+          "name": "Plaia and Ruggieri 2011, air quality indices review"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.atmosenv.2019.01.011"
+          },
+          "name": "Perlmutt and Cromar 2019, respiratory risk of EPA AQI versus health-based indices"
+        },
+        {
+          "identity": {
+            "doi": "10.1371/journal.pone.0242031"
+          },
+          "name": "Cromar et al. 2020, AQI as a risk communication tool in California"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.envres.2020.109185"
+          },
+          "name": "Mirabelli, Ebelt and Damon 2020, AQI and air quality awareness"
+        }
+      ],
+      "topics": [
+        "domains/air-quality-index-computation",
+        "domains/wildfire-smoke-public-alerting",
+        "verification/low-cost-sensor-correction-and-category-agreement",
+        "tooling/open-air-quality-index-implementations"
       ]
     },
     "epic-sepsis-external-validation-news2-trews-tripod-calibration-and-mimic-sepsis3-cohort-derivation": {
@@ -58144,6 +58384,144 @@
         "compilers/codegen"
       ]
     },
+    "mswasm-colored-memory-safety-van-strydonck-linear-capabilities-georges-uninitialized-capabilities-skorstengaard-local-capabilities-richwasm-and-cherivoke-sweeping-revocation": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "PLSysSec/ms-wasm",
+            "revision": "b7cd1a0b2d875b317a2b637d7b4d3c764216e758"
+          },
+          "name": "MS-Wasm artifact index (README)"
+        },
+        {
+          "identity": {
+            "repository": "PLSysSec/mswasm-graal",
+            "revision": "9668dbbdbc14a325d60277477ffaac99484388cc"
+          },
+          "name": "MSWasm JIT compiler (GraalWasm fork)"
+        },
+        {
+          "identity": {
+            "repository": "logsem/cerise-stack-monotone",
+            "revision": "dff1909f6abc6de99c28d8f12e903b98dd76fb41"
+          },
+          "name": "Cerise capability machine with directed and uninitialized capabilities (Coq/Iris)"
+        },
+        {
+          "identity": {
+            "repository": "logsem/cerise-stack",
+            "revision": "f68111362730aff998798d63c7d6a0a7176eff44"
+          },
+          "name": "Cerise capability machine with local and uninitialized capabilities (Coq/Iris)"
+        },
+        {
+          "identity": {
+            "repository": "RichWasm/RichWasm-artifact",
+            "revision": "62c4bbcd67f4613304b3ae5bc6a85a901c2e9c8d"
+          },
+          "name": "RichWasm artifact (Coq type-safety proofs and compilers)"
+        },
+        {
+          "identity": {
+            "path": "sys/kern/kern_cheri_revoke.c",
+            "repository": "CTSRD-CHERI/cheribsd",
+            "revision": "88f39900c32928d807dba245fba138808c666f34"
+          },
+          "name": "CheriBSD kernel revocation service"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571208",
+            "venue": "PACMPL 7 (POPL 2023)"
+          },
+          "name": "MSWasm: Soundly Enforcing Memory-Safe Execution of Unsafe Code"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341688",
+            "venue": "PACMPL 3 (ICFP 2019)"
+          },
+          "name": "Linear Capabilities for Fully Abstract Compilation of Separation-Logic-Verified Code"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/s0956796821000022",
+            "venue": "Journal of Functional Programming 31 (2021)"
+          },
+          "name": "Linear capabilities for fully abstract compilation of separation-logic-verified code (extended version)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-89884-1_17",
+            "venue": "ESOP 2018, LNCS, pp. 475-501"
+          },
+          "name": "Reasoning About a Machine with Local Capabilities (conference version)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3363519",
+            "venue": "ACM TOPLAS 42(1)"
+          },
+          "name": "Reasoning About a Machine with Local Capabilities: Provably Safe Stack and Return Pointer Management (journal version)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290332",
+            "venue": "PACMPL 3 (POPL 2019)"
+          },
+          "name": "StkTokens: Enforcing Well-Bracketed Control Flow and Stack Encapsulation Using Linear Capabilities"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434287",
+            "venue": "PACMPL 5 (POPL 2021)"
+          },
+          "name": "Efficient and Provable Local Capability Revocation Using Uninitialized Capabilities"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3527318",
+            "venue": "PACMPL 6 (OOPSLA 2022)"
+          },
+          "name": "Le temps des cerises: efficient temporal stack safety on capability machines using directed capabilities"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656444",
+            "venue": "PACMPL 8 (PLDI 2024)"
+          },
+          "name": "RichWasm: Bringing Safe, Fine-Grained, Shared-Memory Interoperability Down to WebAssembly"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3352460.3358288",
+            "venue": "MICRO 2019"
+          },
+          "name": "CHERIvoke: Characterising Pointer Revocation Using CHERI Capabilities for Temporal Memory Safety"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00098",
+            "venue": "IEEE S&P 2020"
+          },
+          "name": "Cornucopia: Temporal Safety for CHERI Heaps"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133913",
+            "venue": "PACMPL 1 (OOPSLA 2017)"
+          },
+          "name": "Robust and Compositional Verification of Object Capability Patterns"
+        }
+      ],
+      "topics": [
+        "security/temporal-safety-against-untrusted-contexts",
+        "verification/full-abstraction-under-capability-disciplined-contexts",
+        "pl/linear-and-local-capability-type-systems",
+        "systems/capability-revocation-cost"
+      ]
+    },
     "mte-lam-upper-address-tags-libmpk-pitfalls-and-gofetch-prefetching": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -64152,6 +64530,109 @@
         "verification/survey"
       ]
     },
+    "pct-probabilistic-bug-depth-pctcp-distributed-testing-lu-park-seo-zhou-bug-characteristics-taxdc-sctbench-schedule-bounding-and-hritcu-noninterference-generators": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "awslabs/shuttle",
+            "revision": "72bdbdb612c2311905c84bbc73d59f12a5b17e43"
+          },
+          "name": "Shuttle concurrency testing library (PctScheduler, RandomScheduler, UrwRandomScheduler)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/coyote",
+            "revision": "0c51dc58cc34cdefa24dcfabf3439e5e0ec77309"
+          },
+          "name": "Coyote systematic testing framework (PrioritizationStrategy, DelayBoundingStrategy, portfolio)"
+        },
+        {
+          "identity": {
+            "repository": "mc-imperial/sctbench",
+            "revision": "d59ab26ddaedcd575ffb6a1f5e9711f7d6d2d9f2"
+          },
+          "name": "SCTBench benchmark suite and harness"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1736020.1736040",
+            "venue": "ASPLOS 2010"
+          },
+          "name": "A Randomized Scheduler with Probabilistic Guarantees of Finding Bugs (PCT)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3276530",
+            "venue": "PACMPL 2(OOPSLA), 2018"
+          },
+          "name": "Randomized Testing of Distributed Systems with Probabilistic Guarantees (PCTCP)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1346281.1346323",
+            "venue": "ASPLOS 2008"
+          },
+          "name": "Learning from Mistakes: A Comprehensive Study on Real World Concurrency Bug Characteristics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2872362.2872374",
+            "venue": "ASPLOS 2016"
+          },
+          "name": "TaxDC: A Taxonomy of Non-Deterministic Concurrency Bugs in Datacenter Distributed Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2858651",
+            "venue": "ACM Transactions on Parallel Computing 2(4), 2016"
+          },
+          "name": "Concurrency Testing Using Controlled Schedulers: An Empirical Study"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926432",
+            "venue": "POPL 2011"
+          },
+          "name": "Delay-Bounded Scheduling"
+        },
+        {
+          "identity": {
+            "arxiv": "1409.0393v2",
+            "doi": "10.1017/S0956796816000058",
+            "venue": "Journal of Functional Programming 26, e4, 2016"
+          },
+          "name": "Testing Noninterference, Quickly"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-96142-2_20",
+            "venue": "CAV 2018"
+          },
+          "name": "Partial Order Aware Concurrency Sampling (POS)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3373376.3378484",
+            "venue": "ASPLOS 2020"
+          },
+          "name": "Effective Concurrency Testing for Distributed Systems (Morpheus)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3669940.3707214",
+            "venue": "ASPLOS 2025"
+          },
+          "name": "Selectively Uniform Concurrency Testing (SURW)"
+        }
+      ],
+      "topics": [
+        "verification/probabilistic-guarantees-of-schedule-search",
+        "tooling/controlled-scheduler-testing-harnesses",
+        "systems/concurrency-bug-depth-empirics",
+        "security/property-based-noninterference-testing"
+      ]
+    },
     "performance-models-and-microarchitectural-tuning-data": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -69348,6 +69829,115 @@
         "tooling/pseudo-tested-method-detection",
         "verification/assertion-tolerance-adequacy",
         "domains/scientific-software-test-sensitivity"
+      ]
+    },
+    "pulse-oximetry-skin-pigmentation-bias-sjoding-occult-hypoxemia-bold-blood-gas-linked-dataset-iso-80601-2-61-accuracy-testing-and-fda-premarket-guidance": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "aromring/MAX30102_by_RF",
+            "revision": "553ba61952012ad6e895532bb2bfda0e790a3beb"
+          },
+          "name": "MAX30102_by_RF firmware (Maxim reference SpO2 algorithm with bug fix, and replacement algorithm)"
+        },
+        {
+          "identity": {
+            "repository": "joamats/pulse-ox-dataset",
+            "revision": "3d1bf60cef708148742ee13f06025994a073b6df"
+          },
+          "name": "BOLD blood-gas and oximetry linked dataset curation pipeline"
+        },
+        {
+          "identity": {
+            "standard": "ISO 80601-2-61:2017",
+            "version": "Second edition 2017-12, corrected version 2018-02"
+          },
+          "name": "ISO 80601-2-61 pulse oximeter equipment standard (second edition; front matter and FDA recognition record only)"
+        },
+        {
+          "identity": {
+            "standard": "ISO 80601-2-61:2026",
+            "version": "Third edition 2026-04"
+          },
+          "name": "ISO 80601-2-61 pulse oximeter equipment standard (third edition; front matter only)"
+        },
+        {
+          "identity": {
+            "docket": "FDA-2007-D-0205",
+            "url": "https://www.fda.gov/media/72470/download",
+            "version": "Final guidance issued March 4, 2013"
+          },
+          "name": "US FDA guidance: Pulse Oximeters - Premarket Notification Submissions [510(k)s]"
+        },
+        {
+          "identity": {
+            "docket": "FDA-2023-N-4976",
+            "url": "https://www.fda.gov/media/184896/download",
+            "version": "Draft issued January 7, 2025"
+          },
+          "name": "US FDA draft guidance: Pulse Oximeters for Medical Purposes - Non-Clinical and Clinical Performance Testing, Labeling, and Premarket Submission Recommendations"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMc2029240"
+          },
+          "name": "Racial Bias in Pulse Oximetry Measurement (Sjoding et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1001/jamanetworkopen.2021.31674"
+          },
+          "name": "Discrepancies Between Pulse Oximetry and Arterial Oxygen Saturation by Race and Ethnicity (Wong et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1001/jamainternmed.2022.1906"
+          },
+          "name": "Racial and Ethnic Discrepancy in Pulse Oximetry and Delayed Identification of Treatment Eligibility (Fawzy et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1097/00000542-200504000-00004"
+          },
+          "name": "Effects of Skin Pigmentation on Pulse Oximeter Accuracy at Low Saturation (Bickler et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1213/01.ane.0000285988.35174.d9"
+          },
+          "name": "Dark Skin Decreases the Accuracy of Pulse Oximeters at Low Oxygen Saturation (Feiner et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1378/chest.97.6.1420"
+          },
+          "name": "Reliability of Pulse Oximetry in Titrating Supplemental Oxygen Therapy in Ventilator-Dependent Patients (Jubran and Tobin)"
+        },
+        {
+          "identity": {
+            "doi": "10.1136/bmjresp-2016-000170"
+          },
+          "name": "British Thoracic Society guideline for oxygen use in adults (guideline-group summary)"
+        },
+        {
+          "identity": {
+            "doi": "10.1136/bmj.k4169"
+          },
+          "name": "Oxygen therapy for acutely ill medical patients: a clinical practice guideline (Siemieniuk et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/s41597-024-03225-z"
+          },
+          "name": "BOLD: Blood-gas and Oximetry Linked Dataset (Matos et al.)"
+        }
+      ],
+      "topics": [
+        "domains/pulse-oximetry-measurement-accuracy",
+        "domains/occult-hypoxemia-and-oxygen-therapy-eligibility",
+        "verification/oximeter-calibration-and-accuracy-testing",
+        "tooling/open-oximetry-datasets-and-algorithms"
       ]
     },
     "pybamm-electrochemical-bms-lithium-plating-and-grid-forming-inverters": {
@@ -99292,6 +99882,177 @@
         "llvm/lowering",
         "rust/simd",
         "compilers/vectorization"
+      ]
+    },
+    "vellvm-infinite-to-finite-refinement-pancake-and-certicoq-webassembly-oom-clauses-low-star-allocator-assumptions-jvms-virtual-machine-errors-and-rust-rfc-2116-try-reserve": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "vellvm/vellvm",
+            "revision": "7f0610c38d829b79bf6e867edf410c9e6f928f98"
+          },
+          "name": "Vellvm (formal semantics of LLVM IR), infinite-to-finite refinement"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML compiler and Pancake proofs"
+        },
+        {
+          "identity": {
+            "artifact": "cake-x64-64.tar.gz",
+            "repository": "CakeML/cakeml",
+            "revision": "16bdb1aaaab64a6ac66504ad2e9f0ed6146060e9",
+            "sha256": "e3edd113497bf7fce443e69c70f09c3df1942849251c86ce8e44e6327ade0d3d",
+            "version": "v3671"
+          },
+          "name": "CakeML bootstrapped compiler release (executed)"
+        },
+        {
+          "identity": {
+            "repository": "CertiRocq/certirocq",
+            "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+          },
+          "name": "CertiRocq (formerly CertiCoq) extraction compiler, Clight and Wasm backends, C runtime"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/oeuf",
+            "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f"
+          },
+          "name": "Oeuf Gallina-to-CompCert compiler"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert memory model and malloc semantics"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/lowstar",
+            "revision": "b45e92ee4f55472b26456ec0d0dd6bfe952b6e11"
+          },
+          "name": "Low* library (LowStar.Monotonic.Buffer)"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/FStar",
+            "revision": "fc1776afe592ed8eef352c6610614a70d77b3b66"
+          },
+          "name": "F* repository tree (checked for absence of the Low* buffer library)"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/karamel",
+            "revision": "6bd5918c7c518adbb973f75f23cdd0900acb7526"
+          },
+          "name": "KaRaMeL C runtime header"
+        },
+        {
+          "identity": {
+            "path": "text/2116-alloc-me-maybe.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 2116 (fallible collection allocation)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly"
+          },
+          "name": "Rust standard library allocation-error path (source read and rustc executed)"
+        },
+        {
+          "identity": {
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "GHC runtime system and AsyncException"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk27u",
+            "revision": "d0ae11687ce2623829506888c0305af509d57f4c",
+            "version": "jdk-27.0.1-ga"
+          },
+          "name": "OpenJDK 27.0.1 HotSpot and java.nio sources"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/spec",
+            "revision": "6fca707686ed4f36a1e30ec2ae7d3dd32b276704"
+          },
+          "name": "WebAssembly core specification source"
+        },
+        {
+          "identity": {
+            "standard": "JVMS SE 27",
+            "url": "https://docs.oracle.com/javase/specs/jvms/se27/html/jvms-6.html"
+          },
+          "name": "The Java Virtual Machine Specification, Java SE 27 Edition, chapter 6"
+        },
+        {
+          "identity": {
+            "standard": "JLS SE 27",
+            "url": "https://docs.oracle.com/javase/specs/jls/se27/html/jls-11.html"
+          },
+          "name": "The Java Language Specification, Java SE 27 Edition, chapter 11"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 9899",
+            "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf",
+            "version": "N1570 and N3220 working drafts"
+          },
+          "name": "C standard working drafts (C11 N1570; C23 N3220)"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 14882",
+            "url": "https://timsong-cpp.github.io/cppwp/n4950/",
+            "version": "N4950"
+          },
+          "name": "C++ standard working draft N4950"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.16143",
+            "doi": "10.1145/3674652"
+          },
+          "name": "Beck et al., A Two-Phase Infinite/Finite Low-Level Memory Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2784731.2784764"
+          },
+          "name": "Neis et al., Pilsner: a compositionally verified compiler for a higher-order imperative language"
+        },
+        {
+          "identity": {
+            "arxiv": "1703.00053",
+            "doi": "10.1145/3110261"
+          },
+          "name": "Protzenko et al., Verified low-level programming embedded in F*"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/378795.378858"
+          },
+          "name": "Marlow et al., Asynchronous exceptions in Haskell"
+        }
+      ],
+      "topics": [
+        "verification/allocation-failure-in-compiler-refinement-statements",
+        "pl/resource-exhaustion-in-language-specifications",
+        "compilers/infinite-to-finite-memory-refinement",
+        "runtimes/fallible-allocation-interfaces"
       ]
     },
     "vendor-intrinsic-specifications-stdarch-verification-and-lean-generation": {

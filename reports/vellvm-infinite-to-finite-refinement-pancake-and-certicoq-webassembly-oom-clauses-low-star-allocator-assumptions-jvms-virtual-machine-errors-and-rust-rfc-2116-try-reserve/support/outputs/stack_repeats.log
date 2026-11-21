@@ -1,0 +1,9 @@
+Xss=256k run=1: SOE depth=1844 message=null
+Xss=1m run=1: SOE depth=21025 message=null
+Xss=4m run=1: SOE depth=97634 message=null
+Xss=256k run=2: SOE depth=1844 message=null
+Xss=1m run=2: SOE depth=19435 message=null
+Xss=4m run=2: SOE depth=211215 message=null
+Xss=256k run=3: SOE depth=1898 message=null
+Xss=1m run=3: SOE depth=20935 message=null
+Xss=4m run=3: SOE depth=98330 message=null

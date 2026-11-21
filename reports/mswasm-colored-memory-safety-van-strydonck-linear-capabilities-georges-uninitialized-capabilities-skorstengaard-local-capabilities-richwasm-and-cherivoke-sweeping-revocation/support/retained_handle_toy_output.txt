@@ -1,0 +1,7 @@
+plain linear memory (integer handle)             PERMITTED       42
+unique segment ids (formal MSWasm rule)          FAULTS/REVOKED  H-Load premise fails: segment id not allocated
+linear capability (move-only)                    EXCLUDED        linear capability cannot be duplicated (move-only)
+pointer/capability split (L3/RichWasm-style)     EXCLUDED        load needs Cap rho_a; none in scope after free
+uninitialized stack capability                   FAULTS/REVOKED  LoadU requires b <= a' < a
+quarantine + sweeping revocation                 FAULTS/REVOKED  capability tag cleared by sweep
+random 8-bit segment keys: 413/100000 trials PERMITTED (expected about 1/255 = 0.003922; observed 0.004130)

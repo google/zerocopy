@@ -1,0 +1,16 @@
+sensors: 300  hours: 888  nowcast_elapsed_s: 2.19 
+valid NowCast sensor-hours: 215774 
+FASM category != TAD category: 8 
+NowCast exactly 35.5 : 7 
+NowCast exactly 55.5 : 1 
+NowCast exactly 125.5 : 0 
+NowCast exactly 225.5 : 0 
+    TAD
+FASM      1      2      3      4      5      6
+   1 165791      0      0      0      0      0
+   2      0  46534      7      0      0      0
+   3      0      0    830      1      0      0
+   4      0      0      0    613      0      0
+   5      0      0      0      0    120      0
+   6      0      0      0      0      0   1878
+wall_s=12.45 maxrss_kb=381876

@@ -1,0 +1,119 @@
+### java -XX:-UsePerfData -XX:+UseSerialGC -XX:ActiveProcessorCount=2 -XX:CICompilerCount=2 -cp /tmp/oomprobe/probes/java/classes -Xmx32m OomProbe heap
+Picked up _JAVA_OPTIONS: -XX:UseAVX=2
+OOME message="Java heap space" retained_MiB=29 maxMemory=33488896
+CONTINUED elapsed_ms=42
+EXIT=0 MAXRSS_KB=70192 WALL_S=0.07
+### shell_status=0
+
+### java -XX:-UsePerfData -XX:+UseSerialGC -XX:ActiveProcessorCount=2 -XX:CICompilerCount=2 -cp /tmp/oomprobe/probes/java/classes -Xmx64m OomProbe heap
+Picked up _JAVA_OPTIONS: -XX:UseAVX=2
+OOME message="Java heap space" retained_MiB=59 maxMemory=67043328
+CONTINUED elapsed_ms=75
+EXIT=0 MAXRSS_KB=105756 WALL_S=0.10
+### shell_status=0
+
+### java -XX:-UsePerfData -XX:+UseSerialGC -XX:ActiveProcessorCount=2 -XX:CICompilerCount=2 -cp /tmp/oomprobe/probes/java/classes -Xmx64m OomProbe arraysize
+Picked up _JAVA_OPTIONS: -XX:UseAVX=2
+OOME message="Requested array size exceeds VM limit"
+CONTINUED elapsed_ms=6
+EXIT=0 MAXRSS_KB=44480 WALL_S=0.03
+### shell_status=0
+
+### java -XX:-UsePerfData -XX:+UseSerialGC -XX:ActiveProcessorCount=2 -XX:CICompilerCount=2 -cp /tmp/oomprobe/probes/java/classes -Xmx32m -Xss256k OomProbe stack
+Picked up _JAVA_OPTIONS: -XX:UseAVX=2
+SOE depth=1844 message=null
+CONTINUED elapsed_ms=8
+EXIT=0 MAXRSS_KB=43444 WALL_S=0.03
+### shell_status=0
+
+### java -XX:-UsePerfData -XX:+UseSerialGC -XX:ActiveProcessorCount=2 -XX:CICompilerCount=2 -cp /tmp/oomprobe/probes/java/classes -Xmx32m -Xss1m OomProbe stack
+Picked up _JAVA_OPTIONS: -XX:UseAVX=2
+SOE depth=18936 message=null
+CONTINUED elapsed_ms=9
+EXIT=0 MAXRSS_KB=44436 WALL_S=0.03
+### shell_status=0
+
+### java -XX:-UsePerfData -XX:+UseSerialGC -XX:ActiveProcessorCount=2 -XX:CICompilerCount=2 -cp /tmp/oomprobe/probes/java/classes -Xmx32m -Xss4m OomProbe stack
+Picked up _JAVA_OPTIONS: -XX:UseAVX=2
+SOE depth=194511 message=null
+CONTINUED elapsed_ms=44
+EXIT=0 MAXRSS_KB=62048 WALL_S=0.07
+### shell_status=0
+
+### java -XX:-UsePerfData -XX:+UseSerialGC -XX:ActiveProcessorCount=2 -XX:CICompilerCount=2 -cp /tmp/oomprobe/probes/java/classes -Xmx32m -XX:MaxDirectMemorySize=8m OomProbe direct
+Picked up _JAVA_OPTIONS: -XX:UseAVX=2
+OOME message="Cannot reserve 1048576 bytes of direct buffer memory (allocated: 8388608, limit: 8388608)" retained_MiB=8
+CONTINUED elapsed_ms=545
+EXIT=0 MAXRSS_KB=52296 WALL_S=0.58
+### shell_status=0
+
+### /tmp/oomprobe/probes/rust/oom_probe push
+cap_bytes=32 live=584
+cap_bytes=64 live=616
+cap_bytes=128 live=680
+cap_bytes=256 live=808
+cap_bytes=512 live=1064
+cap_bytes=1024 live=1576
+cap_bytes=2048 live=2600
+cap_bytes=4096 live=4648
+cap_bytes=8192 live=8744
+cap_bytes=16384 live=16936
+cap_bytes=32768 live=33320
+cap_bytes=65536 live=66088
+cap_bytes=131072 live=131624
+cap_bytes=262144 live=262696
+cap_bytes=524288 live=524840
+memory allocation of 1048576 bytes failed
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Command terminated by signal 6
+EXIT=0 MAXRSS_KB=2372 WALL_S=0.11
+### shell_status=134
+
+### /tmp/oomprobe/probes/rust/oom_probe try
+try_reserve Err: memory allocation failed because the memory allocator returned an error kind=AllocError { layout: Layout { size: 1048576, align: 8 (1 << 3) }, non_exhaustive: () } len_bytes=524288 live=524839 refused=1
+CONTINUED len=65536
+EXIT=0 MAXRSS_KB=2352 WALL_S=0.00
+### shell_status=0
+
+### /tmp/oomprobe/probes/rust/oom_probe overflow
+try_reserve(usize::MAX) Err: memory allocation failed because the computed capacity exceeded the collection's maximum kind=CapacityOverflow
+CONTINUED refused=0
+EXIT=0 MAXRSS_KB=1600 WALL_S=0.00
+### shell_status=0
+
+### /tmp/oomprobe/probes/rust/oom_probe hook
+
+thread 'main' (2195388) panicked at /tmp/oomprobe/probes/rust/oom_probe.rs:83:46:
+alloc error hook: 1048576 bytes
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+catch_unwind returned is_err=true live=612
+CONTINUED
+EXIT=0 MAXRSS_KB=2368 WALL_S=0.00
+### shell_status=0
+
+### /tmp/oomprobe/probes/rust/oom_probe vecmacro
+memory allocation of 2097152 bytes failed
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Command terminated by signal 6
+EXIT=0 MAXRSS_KB=1548 WALL_S=0.09
+### shell_status=134
+
+### /tmp/oomprobe/probes/c/oom_probe malloc
+malloc returned NULL after 15 x 16 MiB
+CONTINUED
+EXIT=0 MAXRSS_KB=248720 WALL_S=0.05
+### shell_status=0
+
+### /tmp/oomprobe/probes/c/oom_probe new
+new threw std::bad_alloc (what=std::bad_alloc) after 15 x 16 MiB
+CONTINUED
+EXIT=0 MAXRSS_KB=249060 WALL_S=0.05
+### shell_status=0
+
+### /tmp/oomprobe/probes/c/oom_probe nothrow
+nothrow new returned nullptr after 15 x 16 MiB
+CONTINUED
+EXIT=0 MAXRSS_KB=248744 WALL_S=0.06
+### shell_status=0
+
+DONE

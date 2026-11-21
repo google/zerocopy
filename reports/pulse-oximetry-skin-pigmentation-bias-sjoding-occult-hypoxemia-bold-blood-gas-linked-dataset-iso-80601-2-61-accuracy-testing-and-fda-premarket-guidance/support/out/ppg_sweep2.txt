@@ -1,0 +1,16 @@
+first_batch maxim spo2=94.336 valid=1 hr=71 hr_valid=1 | rf spo2=94.121 valid=1 hr=71 hr_valid=1 correl=1.000
+R=0.700 PI=0.0300 sd=0.0 drift=0.00 hr=72 dc_ir=230000 f(R)=94.013 | maxim valid=5/5 mae=0.258238 neg=0 | rf valid=5/5 mae=0.104293 neg=0
+first_batch maxim spo2=94.336 valid=1 hr=71 hr_valid=1 | rf spo2=94.194 valid=1 hr=71 hr_valid=1 correl=1.000
+R=0.700 PI=0.0500 sd=0.0 drift=0.00 hr=72 dc_ir=230000 f(R)=94.013 | maxim valid=5/5 mae=0.322797 neg=0 | rf valid=5/5 mae=0.175168 neg=0
+first_batch maxim spo2=-999.000 valid=0 hr=71 hr_valid=1 | rf spo2=94.267 valid=1 hr=71 hr_valid=1 correl=1.000
+R=0.700 PI=0.0700 sd=0.0 drift=0.00 hr=72 dc_ir=230000 f(R)=94.013 | maxim valid=0/5 mae=n/a neg=0 | rf valid=5/5 mae=0.246372 neg=0
+first_batch maxim spo2=94.336 valid=1 hr=71 hr_valid=1 | rf spo2=94.378 valid=1 hr=71 hr_valid=1 correl=1.000
+R=0.700 PI=0.1000 sd=0.0 drift=0.00 hr=72 dc_ir=131500 f(R)=94.013 | maxim valid=5/5 mae=0.193679 neg=0 | rf valid=5/5 mae=0.354065 neg=0
+first_batch maxim spo2=94.336 valid=1 hr=71 hr_valid=1 | rf spo2=94.566 valid=1 hr=71 hr_valid=1 correl=1.000
+R=0.700 PI=0.1500 sd=0.0 drift=0.00 hr=72 dc_ir=131500 f(R)=94.013 | maxim valid=5/5 mae=0.322797 neg=0 | rf valid=5/5 mae=0.536345 neg=0
+first_batch maxim spo2=2.165 valid=1 hr=71 hr_valid=1 | rf spo2=-0.602 valid=1 hr=71 hr_valid=1 correl=1.000
+R=1.815 PI=0.0200 sd=0.0 drift=0.00 hr=72 dc_ir=131500 f(R)=1.500 | maxim valid=5/5 mae=0.664943 neg=0 | rf valid=5/5 mae=2.036272 neg=5
+first_batch maxim spo2=0.833 valid=1 hr=71 hr_valid=1 | rf spo2=-1.281 valid=1 hr=71 hr_valid=1 correl=1.000
+R=1.820 PI=0.0200 sd=0.0 drift=0.00 hr=72 dc_ir=131500 f(R)=0.833 | maxim valid=5/5 mae=0.266428 neg=0 | rf valid=5/5 mae=2.047593 neg=5
+first_batch maxim spo2=94.336 valid=1 hr=71 hr_valid=1 | rf spo2=94.377 valid=1 hr=71 hr_valid=1 correl=1.000
+R=0.700 PI=0.1000 sd=0.0 drift=0.00 hr=72 dc_ir=60000 f(R)=94.013 | maxim valid=5/5 mae=0.193679 neg=0 | rf valid=5/5 mae=0.352504 neg=0
