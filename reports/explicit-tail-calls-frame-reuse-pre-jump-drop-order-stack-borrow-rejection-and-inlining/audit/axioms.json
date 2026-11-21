@@ -1,0 +1,3747 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.TailCall.AtTailCall": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.args_eq": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.fn_eq": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.instr_eq": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.no_pendingRet": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.not_unwinding": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.AtTailCall.stack_eq": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFree": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFree.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFree.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.Inv1": [],
+    "Toy.TailCall.CallFreeProof.Inv1.eq_1": [],
+    "Toy.TailCall.CallFreeProof.Inv2": [],
+    "Toy.TailCall.CallFreeProof.Inv2.eq_1": [],
+    "Toy.TailCall.CallFreeProof.bumpTail_running'": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.callFree_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.dropList_meta": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.evalOp_meta": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.evalOps_meta": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.foldl_clear_meta": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.frameReuse_maxDepth": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.inv1_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.inv2_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.preJump_maxDepth": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.push_running'": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.run_inv": [
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.start_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CallFreeProof.step_halted_meta": [
+      "propext"
+    ],
+    "Toy.TailCall.Conf": [],
+    "Toy.TailCall.Conf.casesOn": [],
+    "Toy.TailCall.Conf.ctorElim": [],
+    "Toy.TailCall.Conf.ctorElimType": [],
+    "Toy.TailCall.Conf.ctorIdx": [],
+    "Toy.TailCall.Conf.halted": [],
+    "Toy.TailCall.Conf.halted.elim": [],
+    "Toy.TailCall.Conf.halted.inj": [],
+    "Toy.TailCall.Conf.halted.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Conf.halted.noConfusion": [],
+    "Toy.TailCall.Conf.halted.sizeOf_spec": [],
+    "Toy.TailCall.Conf.noConfusion": [],
+    "Toy.TailCall.Conf.noConfusionType": [],
+    "Toy.TailCall.Conf.rec": [],
+    "Toy.TailCall.Conf.recOn": [],
+    "Toy.TailCall.Conf.running": [],
+    "Toy.TailCall.Conf.running.elim": [],
+    "Toy.TailCall.Conf.running.inj": [],
+    "Toy.TailCall.Conf.running.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Conf.running.noConfusion": [],
+    "Toy.TailCall.Conf.running.sizeOf_spec": [],
+    "Toy.TailCall.Cont": [],
+    "Toy.TailCall.Cont.casesOn": [],
+    "Toy.TailCall.Cont.ctorElim": [],
+    "Toy.TailCall.Cont.ctorElimType": [],
+    "Toy.TailCall.Cont.ctorIdx": [],
+    "Toy.TailCall.Cont.noConfusion": [],
+    "Toy.TailCall.Cont.noConfusionType": [],
+    "Toy.TailCall.Cont.rec": [],
+    "Toy.TailCall.Cont.recOn": [],
+    "Toy.TailCall.Cont.store": [],
+    "Toy.TailCall.Cont.store.elim": [],
+    "Toy.TailCall.Cont.store.inj": [],
+    "Toy.TailCall.Cont.store.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Cont.store.noConfusion": [],
+    "Toy.TailCall.Cont.store.sizeOf_spec": [],
+    "Toy.TailCall.Cont.thenReturn": [],
+    "Toy.TailCall.Cont.thenReturn.elim": [],
+    "Toy.TailCall.Cont.thenReturn.sizeOf_spec": [],
+    "Toy.TailCall.CountUpProof.callReturn_iter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.callReturn_runsTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.downState": [],
+    "Toy.TailCall.CountUpProof.downState.eq_1": [],
+    "Toy.TailCall.CountUpProof.downState.eq_2": [],
+    "Toy.TailCall.CountUpProof.down_callReturn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.down_preJump": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.final": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.first_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.frameReuse_iter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.frameReuse_loop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.frameReuse_runsTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.mainFr": [],
+    "Toy.TailCall.CountUpProof.mainFr.eq_1": [],
+    "Toy.TailCall.CountUpProof.mainRecv": [],
+    "Toy.TailCall.CountUpProof.mainRecv.eq_1": [],
+    "Toy.TailCall.CountUpProof.preJump_iter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.preJump_runsTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.range3_eq": [],
+    "Toy.TailCall.CountUpProof.recFr": [],
+    "Toy.TailCall.CountUpProof.recFr.eq_1": [],
+    "Toy.TailCall.CountUpProof.start_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.up": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.CountUpProof.upState": [],
+    "Toy.TailCall.CountUpProof.upState.eq_1": [],
+    "Toy.TailCall.CountUpProof.waitFr": [],
+    "Toy.TailCall.CountUpProof.waitFr.eq_1": [],
+    "Toy.TailCall.CountUpProof.waits": [],
+    "Toy.TailCall.CountUpProof.waits.eq_1": [],
+    "Toy.TailCall.CountUpProof.waits.eq_2": [],
+    "Toy.TailCall.CountUpProof.waits.eq_def": [],
+    "Toy.TailCall.CountUpProof.waits.match_1": [],
+    "Toy.TailCall.CountUpProof.waits_length": [
+      "propext"
+    ],
+    "Toy.TailCall.DropEnd": [],
+    "Toy.TailCall.DropEnd.abort": [],
+    "Toy.TailCall.DropEnd.abort.elim": [],
+    "Toy.TailCall.DropEnd.abort.sizeOf_spec": [],
+    "Toy.TailCall.DropEnd.casesOn": [],
+    "Toy.TailCall.DropEnd.ctorElim": [],
+    "Toy.TailCall.DropEnd.ctorElimType": [],
+    "Toy.TailCall.DropEnd.ctorIdx": [],
+    "Toy.TailCall.DropEnd.noConfusion": [],
+    "Toy.TailCall.DropEnd.noConfusionType": [],
+    "Toy.TailCall.DropEnd.ofNat": [],
+    "Toy.TailCall.DropEnd.ofNat_ctorIdx": [],
+    "Toy.TailCall.DropEnd.ok": [],
+    "Toy.TailCall.DropEnd.ok.elim": [],
+    "Toy.TailCall.DropEnd.ok.sizeOf_spec": [],
+    "Toy.TailCall.DropEnd.rec": [],
+    "Toy.TailCall.DropEnd.recOn": [],
+    "Toy.TailCall.DropEnd.unwind": [],
+    "Toy.TailCall.DropEnd.unwind.elim": [],
+    "Toy.TailCall.DropEnd.unwind.sizeOf_spec": [],
+    "Toy.TailCall.DtorKind": [],
+    "Toy.TailCall.DtorKind.casesOn": [],
+    "Toy.TailCall.DtorKind.ctorElim": [],
+    "Toy.TailCall.DtorKind.ctorElimType": [],
+    "Toy.TailCall.DtorKind.ctorIdx": [],
+    "Toy.TailCall.DtorKind.noConfusion": [],
+    "Toy.TailCall.DtorKind.noConfusionType": [],
+    "Toy.TailCall.DtorKind.none": [],
+    "Toy.TailCall.DtorKind.none.elim": [],
+    "Toy.TailCall.DtorKind.none.sizeOf_spec": [],
+    "Toy.TailCall.DtorKind.ofNat": [],
+    "Toy.TailCall.DtorKind.ofNat_ctorIdx": [],
+    "Toy.TailCall.DtorKind.panics": [],
+    "Toy.TailCall.DtorKind.panics.elim": [],
+    "Toy.TailCall.DtorKind.panics.sizeOf_spec": [],
+    "Toy.TailCall.DtorKind.quiet": [],
+    "Toy.TailCall.DtorKind.quiet.elim": [],
+    "Toy.TailCall.DtorKind.quiet.sizeOf_spec": [],
+    "Toy.TailCall.DtorKind.rec": [],
+    "Toy.TailCall.DtorKind.recOn": [],
+    "Toy.TailCall.EntryOk": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeCheckAccepts": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeCheckAccepts.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeCheckFn": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeCheckFn.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeCheckFn.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Guard": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.down": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.fresh": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.guard": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.order": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.untainted": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Inv.wf": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.NoPtr": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.S": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.S.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.S_chain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.S_chain.match_1_1": [],
+    "Toy.TailCall.EscapeProof.S_infl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.S_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.S_length.match_1_1": [],
+    "Toy.TailCall.EscapeProof.S_stable": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.S_stable.match_1_1": [],
+    "Toy.TailCall.EscapeProof.S_succ": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.SafeVal": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.Untainted": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.WF": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.bumpTail_running": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.clear_get": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.clear_vals": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.cnt": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.cnt.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.cnt.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.cnt.eq_def": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.cnt.match_1": [],
+    "Toy.TailCall.EscapeProof.cnt_le_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.cnt_le_self.match_1_1": [],
+    "Toy.TailCall.EscapeProof.cnt_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.cnt_mono.match_1_1": [],
+    "Toy.TailCall.EscapeProof.cnt_strict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.cnt_strict.match_1_1": [],
+    "Toy.TailCall.EscapeProof.dropList_frame": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.evalOp_frame": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.evalOp_noPtr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.evalOp_noPtr.match_1_13": [],
+    "Toy.TailCall.EscapeProof.evalOp_untainted": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.evalOps_frame": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.evalOps_noPtr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.evalOps_untainted": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.ext_getD": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.findFrame_cons_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.findFrame_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.foldl_clear_frame": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.getD_ge": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.get_cases": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.get_noPtr": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.hall_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.hall_guard": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_congr": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_deliver": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_doReturn": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_pop": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_push": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_push.match_1_9": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_run": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_run.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_start": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_top": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.inv_top_same": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.noStackBorrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.pairwise_split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.safe_eval": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.safe_evals": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.safe_ret": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.taintStep_getD": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.taintStep_getD.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.taintStep_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.taint_assign": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.taint_call": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.taint_fix": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.untainted_congr": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.write_get": [
+      "propext"
+    ],
+    "Toy.TailCall.EscapeProof.write_vals": [
+      "propext"
+    ],
+    "Toy.TailCall.Event": [],
+    "Toy.TailCall.Event.casesOn": [],
+    "Toy.TailCall.Event.ctorElim": [],
+    "Toy.TailCall.Event.ctorElimType": [],
+    "Toy.TailCall.Event.ctorIdx": [],
+    "Toy.TailCall.Event.drop": [],
+    "Toy.TailCall.Event.drop.elim": [],
+    "Toy.TailCall.Event.drop.inj": [],
+    "Toy.TailCall.Event.drop.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Event.drop.noConfusion": [],
+    "Toy.TailCall.Event.drop.sizeOf_spec": [],
+    "Toy.TailCall.Event.noConfusion": [],
+    "Toy.TailCall.Event.noConfusionType": [],
+    "Toy.TailCall.Event.out": [],
+    "Toy.TailCall.Event.out.elim": [],
+    "Toy.TailCall.Event.out.inj": [],
+    "Toy.TailCall.Event.out.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Event.out.noConfusion": [],
+    "Toy.TailCall.Event.out.sizeOf_spec": [],
+    "Toy.TailCall.Event.rec": [],
+    "Toy.TailCall.Event.recOn": [],
+    "Toy.TailCall.Fn": [],
+    "Toy.TailCall.Fn.casesOn": [],
+    "Toy.TailCall.Fn.code": [],
+    "Toy.TailCall.Fn.ctorIdx": [],
+    "Toy.TailCall.Fn.dtor": [
+      "propext"
+    ],
+    "Toy.TailCall.Fn.dtor.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Fn.dtors": [],
+    "Toy.TailCall.Fn.mk": [],
+    "Toy.TailCall.Fn.mk.inj": [],
+    "Toy.TailCall.Fn.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Fn.mk.noConfusion": [],
+    "Toy.TailCall.Fn.mk.sizeOf_spec": [],
+    "Toy.TailCall.Fn.nParams": [],
+    "Toy.TailCall.Fn.nSlots": [],
+    "Toy.TailCall.Fn.nSlots.eq_1": [],
+    "Toy.TailCall.Fn.noConfusion": [],
+    "Toy.TailCall.Fn.noConfusionType": [],
+    "Toy.TailCall.Fn.rec": [],
+    "Toy.TailCall.Fn.recOn": [],
+    "Toy.TailCall.FnId": [],
+    "Toy.TailCall.Frame": [],
+    "Toy.TailCall.Frame.casesOn": [],
+    "Toy.TailCall.Frame.clear": [],
+    "Toy.TailCall.Frame.clear.eq_1": [],
+    "Toy.TailCall.Frame.cont": [],
+    "Toy.TailCall.Frame.ctorIdx": [],
+    "Toy.TailCall.Frame.fid": [],
+    "Toy.TailCall.Frame.fn": [],
+    "Toy.TailCall.Frame.get": [
+      "propext"
+    ],
+    "Toy.TailCall.Frame.get.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Frame.isLive": [
+      "propext"
+    ],
+    "Toy.TailCall.Frame.isLive.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Frame.kill": [],
+    "Toy.TailCall.Frame.kill.eq_1": [],
+    "Toy.TailCall.Frame.live": [],
+    "Toy.TailCall.Frame.mk": [],
+    "Toy.TailCall.Frame.mk.inj": [],
+    "Toy.TailCall.Frame.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Frame.mk.noConfusion": [],
+    "Toy.TailCall.Frame.mk.sizeOf_spec": [],
+    "Toy.TailCall.Frame.noConfusion": [],
+    "Toy.TailCall.Frame.noConfusionType": [],
+    "Toy.TailCall.Frame.pc": [],
+    "Toy.TailCall.Frame.pendingRet": [],
+    "Toy.TailCall.Frame.rec": [],
+    "Toy.TailCall.Frame.recOn": [],
+    "Toy.TailCall.Frame.vals": [],
+    "Toy.TailCall.Frame.write": [],
+    "Toy.TailCall.Frame.write.eq_1": [],
+    "Toy.TailCall.Instr": [],
+    "Toy.TailCall.Instr.assign": [],
+    "Toy.TailCall.Instr.assign.elim": [],
+    "Toy.TailCall.Instr.assign.inj": [],
+    "Toy.TailCall.Instr.assign.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Instr.assign.noConfusion": [],
+    "Toy.TailCall.Instr.assign.sizeOf_spec": [],
+    "Toy.TailCall.Instr.branchLt": [],
+    "Toy.TailCall.Instr.branchLt.elim": [],
+    "Toy.TailCall.Instr.branchLt.inj": [],
+    "Toy.TailCall.Instr.branchLt.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Instr.branchLt.noConfusion": [],
+    "Toy.TailCall.Instr.branchLt.sizeOf_spec": [],
+    "Toy.TailCall.Instr.call": [],
+    "Toy.TailCall.Instr.call.elim": [],
+    "Toy.TailCall.Instr.call.inj": [],
+    "Toy.TailCall.Instr.call.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Instr.call.noConfusion": [],
+    "Toy.TailCall.Instr.call.sizeOf_spec": [],
+    "Toy.TailCall.Instr.casesOn": [],
+    "Toy.TailCall.Instr.ctorElim": [],
+    "Toy.TailCall.Instr.ctorElimType": [],
+    "Toy.TailCall.Instr.ctorIdx": [],
+    "Toy.TailCall.Instr.dropSlots": [],
+    "Toy.TailCall.Instr.dropSlots.elim": [],
+    "Toy.TailCall.Instr.dropSlots.inj": [],
+    "Toy.TailCall.Instr.dropSlots.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Instr.dropSlots.noConfusion": [],
+    "Toy.TailCall.Instr.dropSlots.sizeOf_spec": [],
+    "Toy.TailCall.Instr.emit": [],
+    "Toy.TailCall.Instr.emit.elim": [],
+    "Toy.TailCall.Instr.emit.inj": [],
+    "Toy.TailCall.Instr.emit.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Instr.emit.noConfusion": [],
+    "Toy.TailCall.Instr.emit.sizeOf_spec": [],
+    "Toy.TailCall.Instr.goto": [],
+    "Toy.TailCall.Instr.goto.elim": [],
+    "Toy.TailCall.Instr.goto.inj": [],
+    "Toy.TailCall.Instr.goto.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Instr.goto.noConfusion": [],
+    "Toy.TailCall.Instr.goto.sizeOf_spec": [],
+    "Toy.TailCall.Instr.noConfusion": [],
+    "Toy.TailCall.Instr.noConfusionType": [],
+    "Toy.TailCall.Instr.panic": [],
+    "Toy.TailCall.Instr.panic.elim": [],
+    "Toy.TailCall.Instr.panic.sizeOf_spec": [],
+    "Toy.TailCall.Instr.rec": [],
+    "Toy.TailCall.Instr.recOn": [],
+    "Toy.TailCall.Instr.reset": [],
+    "Toy.TailCall.Instr.reset.elim": [],
+    "Toy.TailCall.Instr.reset.inj": [],
+    "Toy.TailCall.Instr.reset.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Instr.reset.noConfusion": [],
+    "Toy.TailCall.Instr.reset.sizeOf_spec": [],
+    "Toy.TailCall.Instr.ret": [],
+    "Toy.TailCall.Instr.ret.elim": [],
+    "Toy.TailCall.Instr.ret.inj": [],
+    "Toy.TailCall.Instr.ret.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Instr.ret.noConfusion": [],
+    "Toy.TailCall.Instr.ret.sizeOf_spec": [],
+    "Toy.TailCall.Instr.tailCall": [],
+    "Toy.TailCall.Instr.tailCall.elim": [],
+    "Toy.TailCall.Instr.tailCall.inj": [],
+    "Toy.TailCall.Instr.tailCall.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Instr.tailCall.noConfusion": [],
+    "Toy.TailCall.Instr.tailCall.sizeOf_spec": [],
+    "Toy.TailCall.Layout.Cleanup": [],
+    "Toy.TailCall.Layout.Cleanup.calleePops": [],
+    "Toy.TailCall.Layout.Cleanup.calleePops.elim": [],
+    "Toy.TailCall.Layout.Cleanup.calleePops.sizeOf_spec": [],
+    "Toy.TailCall.Layout.Cleanup.callerPops": [],
+    "Toy.TailCall.Layout.Cleanup.callerPops.elim": [],
+    "Toy.TailCall.Layout.Cleanup.callerPops.sizeOf_spec": [],
+    "Toy.TailCall.Layout.Cleanup.casesOn": [],
+    "Toy.TailCall.Layout.Cleanup.ctorElim": [],
+    "Toy.TailCall.Layout.Cleanup.ctorElimType": [],
+    "Toy.TailCall.Layout.Cleanup.ctorIdx": [],
+    "Toy.TailCall.Layout.Cleanup.noConfusion": [],
+    "Toy.TailCall.Layout.Cleanup.noConfusionType": [],
+    "Toy.TailCall.Layout.Cleanup.ofNat": [],
+    "Toy.TailCall.Layout.Cleanup.ofNat_ctorIdx": [],
+    "Toy.TailCall.Layout.Cleanup.rec": [],
+    "Toy.TailCall.Layout.Cleanup.recOn": [],
+    "Toy.TailCall.Layout.Mem": [],
+    "Toy.TailCall.Layout.ReuseSound": [],
+    "Toy.TailCall.Layout.ReuseSoundAt": [],
+    "Toy.TailCall.Layout.Sig": [],
+    "Toy.TailCall.Layout.Sig.areaSize": [],
+    "Toy.TailCall.Layout.Sig.areaSize.eq_1": [],
+    "Toy.TailCall.Layout.Sig.callerLoc": [],
+    "Toy.TailCall.Layout.Sig.casesOn": [],
+    "Toy.TailCall.Layout.Sig.ctorIdx": [],
+    "Toy.TailCall.Layout.Sig.explicit": [],
+    "Toy.TailCall.Layout.Sig.mk": [],
+    "Toy.TailCall.Layout.Sig.mk.inj": [],
+    "Toy.TailCall.Layout.Sig.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Layout.Sig.mk.noConfusion": [],
+    "Toy.TailCall.Layout.Sig.mk.sizeOf_spec": [],
+    "Toy.TailCall.Layout.Sig.noConfusion": [],
+    "Toy.TailCall.Layout.Sig.noConfusionType": [],
+    "Toy.TailCall.Layout.Sig.rec": [],
+    "Toy.TailCall.Layout.Sig.recOn": [],
+    "Toy.TailCall.Layout.areaSize_examples": [],
+    "Toy.TailCall.Layout.instDecidableEqCleanup": [],
+    "Toy.TailCall.Layout.instDecidableEqSig": [],
+    "Toy.TailCall.Layout.instDecidableEqSig.decEq": [],
+    "Toy.TailCall.Layout.instDecidableEqSig.decEq.match_1": [],
+    "Toy.TailCall.Layout.instReprCleanup": [],
+    "Toy.TailCall.Layout.instReprCleanup.repr": [],
+    "Toy.TailCall.Layout.instReprCleanup.repr.match_1": [],
+    "Toy.TailCall.Layout.instReprSig": [
+      "propext"
+    ],
+    "Toy.TailCall.Layout.instReprSig.repr": [
+      "propext"
+    ],
+    "Toy.TailCall.Layout.not_reuseSound_calleePops_2_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Layout.not_reuseSound_callerPops_1_2": [
+      "propext"
+    ],
+    "Toy.TailCall.Layout.readArgs": [],
+    "Toy.TailCall.Layout.readArgs.eq_1": [],
+    "Toy.TailCall.Layout.readArgs.eq_2": [],
+    "Toy.TailCall.Layout.readArgs.eq_def": [],
+    "Toy.TailCall.Layout.readArgs.match_1": [],
+    "Toy.TailCall.Layout.readArgs_reuseWrite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.readArgs_reuseWriteAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.readArgs_writeArgs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSoundAt_calleePops_callerLoc_relocated": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSoundAt_calleePops_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSoundAt_calleePops_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSoundAt_callerPops_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSoundAt_callerPops_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSoundAt_zero_iff": [
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSoundAt_zero_iff.match_1_5": [],
+    "Toy.TailCall.Layout.reuseSoundAt_zero_iff.match_1_7": [],
+    "Toy.TailCall.Layout.reuseSound_calleePops_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSound_calleePops_1_1.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSound_calleePops_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSound_calleePops_without_sigCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSound_callerPops_2_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSound_callerPops_2_1.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSound_callerPops_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSound_of_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseSound_of_sigCheckFull": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.reuseWrite": [],
+    "Toy.TailCall.Layout.reuseWrite.eq_1": [],
+    "Toy.TailCall.Layout.reuseWriteAt": [],
+    "Toy.TailCall.Layout.reuseWriteAt.eq_1": [],
+    "Toy.TailCall.Layout.sigCheckExplicit": [],
+    "Toy.TailCall.Layout.sigCheckExplicit_callerLoc_depends_on_cleanup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.Layout.sigCheckExplicit_examples": [],
+    "Toy.TailCall.Layout.sigCheckExplicit_insufficient_calleeLoc": [
+      "propext"
+    ],
+    "Toy.TailCall.Layout.sigCheckFull": [],
+    "Toy.TailCall.Layout.sigCheckFull.eq_1": [],
+    "Toy.TailCall.Layout.sigCheckFull_examples": [],
+    "Toy.TailCall.Layout.sigCheckFull_nonvacuous": [],
+    "Toy.TailCall.Layout.spAfterReturn": [],
+    "Toy.TailCall.Layout.spAfterReturn.eq_1": [],
+    "Toy.TailCall.Layout.spAfterReturn.eq_2": [],
+    "Toy.TailCall.Layout.spAfterReturnAt": [],
+    "Toy.TailCall.Layout.spAfterReturnAt.eq_1": [],
+    "Toy.TailCall.Layout.spAfterReturnAt.eq_2": [],
+    "Toy.TailCall.Layout.writeArgs": [],
+    "Toy.TailCall.Layout.writeArgs.eq_1": [],
+    "Toy.TailCall.Layout.writeArgs.eq_2": [],
+    "Toy.TailCall.Layout.writeArgs.eq_def": [],
+    "Toy.TailCall.Layout.writeArgs.match_1": [],
+    "Toy.TailCall.Layout.writeArgs_eq_of_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.P": [],
+    "Toy.TailCall.MutualRecProof.P.eq_1": [],
+    "Toy.TailCall.MutualRecProof.cFr": [],
+    "Toy.TailCall.MutualRecProof.cFr.eq_1": [],
+    "Toy.TailCall.MutualRecProof.cInl": [],
+    "Toy.TailCall.MutualRecProof.cInl.eq_1": [],
+    "Toy.TailCall.MutualRecProof.downState": [],
+    "Toy.TailCall.MutualRecProof.downState.eq_1": [],
+    "Toy.TailCall.MutualRecProof.downState.eq_2": [],
+    "Toy.TailCall.MutualRecProof.iFr": [],
+    "Toy.TailCall.MutualRecProof.iFr.eq_1": [],
+    "Toy.TailCall.MutualRecProof.iWait": [],
+    "Toy.TailCall.MutualRecProof.iWait.eq_1": [],
+    "Toy.TailCall.MutualRecProof.iWaits": [],
+    "Toy.TailCall.MutualRecProof.iWaits.eq_1": [],
+    "Toy.TailCall.MutualRecProof.iWaits.eq_2": [],
+    "Toy.TailCall.MutualRecProof.iWaits.eq_def": [],
+    "Toy.TailCall.MutualRecProof.iWaits.match_1": [],
+    "Toy.TailCall.MutualRecProof.iWaits_length": [
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.inl_down": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.inl_first": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.inl_iter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.inl_iter_overflow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.inl_overflow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.inl_runsTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.inl_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.inl_up": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.inlineTailSite_eq": [
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.mainFr": [],
+    "Toy.TailCall.MutualRecProof.mainFr.eq_1": [],
+    "Toy.TailCall.MutualRecProof.mainRecv": [],
+    "Toy.TailCall.MutualRecProof.mainRecv.eq_1": [],
+    "Toy.TailCall.MutualRecProof.orig_end": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.orig_first": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.orig_iter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.orig_runsTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.orig_up": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.range1_eq": [],
+    "Toy.TailCall.MutualRecProof.range2_eq": [],
+    "Toy.TailCall.MutualRecProof.range7_eq": [],
+    "Toy.TailCall.MutualRecProof.start_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.MutualRecProof.upState": [],
+    "Toy.TailCall.MutualRecProof.upState.eq_1": [],
+    "Toy.TailCall.NoStackBorrow": [
+      "propext"
+    ],
+    "Toy.TailCall.Observes": [
+      "propext"
+    ],
+    "Toy.TailCall.Operand": [],
+    "Toy.TailCall.Operand.addrOf": [],
+    "Toy.TailCall.Operand.addrOf.elim": [],
+    "Toy.TailCall.Operand.addrOf.inj": [],
+    "Toy.TailCall.Operand.addrOf.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Operand.addrOf.noConfusion": [],
+    "Toy.TailCall.Operand.addrOf.sizeOf_spec": [],
+    "Toy.TailCall.Operand.casesOn": [],
+    "Toy.TailCall.Operand.const": [],
+    "Toy.TailCall.Operand.const.elim": [],
+    "Toy.TailCall.Operand.const.inj": [],
+    "Toy.TailCall.Operand.const.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Operand.const.noConfusion": [],
+    "Toy.TailCall.Operand.const.sizeOf_spec": [],
+    "Toy.TailCall.Operand.copy": [],
+    "Toy.TailCall.Operand.copy.elim": [],
+    "Toy.TailCall.Operand.copy.inj": [],
+    "Toy.TailCall.Operand.copy.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Operand.copy.noConfusion": [],
+    "Toy.TailCall.Operand.copy.sizeOf_spec": [],
+    "Toy.TailCall.Operand.ctorElim": [],
+    "Toy.TailCall.Operand.ctorElimType": [],
+    "Toy.TailCall.Operand.ctorIdx": [],
+    "Toy.TailCall.Operand.deref": [],
+    "Toy.TailCall.Operand.deref.elim": [],
+    "Toy.TailCall.Operand.deref.inj": [],
+    "Toy.TailCall.Operand.deref.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Operand.deref.noConfusion": [],
+    "Toy.TailCall.Operand.deref.sizeOf_spec": [],
+    "Toy.TailCall.Operand.move": [],
+    "Toy.TailCall.Operand.move.elim": [],
+    "Toy.TailCall.Operand.move.inj": [],
+    "Toy.TailCall.Operand.move.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Operand.move.noConfusion": [],
+    "Toy.TailCall.Operand.move.sizeOf_spec": [],
+    "Toy.TailCall.Operand.noConfusion": [],
+    "Toy.TailCall.Operand.noConfusionType": [],
+    "Toy.TailCall.Operand.rec": [],
+    "Toy.TailCall.Operand.recOn": [],
+    "Toy.TailCall.Operand.succ": [],
+    "Toy.TailCall.Operand.succ.elim": [],
+    "Toy.TailCall.Operand.succ.inj": [],
+    "Toy.TailCall.Operand.succ.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Operand.succ.noConfusion": [],
+    "Toy.TailCall.Operand.succ.sizeOf_spec": [],
+    "Toy.TailCall.Outcome": [],
+    "Toy.TailCall.Outcome.aborted": [],
+    "Toy.TailCall.Outcome.aborted.elim": [],
+    "Toy.TailCall.Outcome.aborted.sizeOf_spec": [],
+    "Toy.TailCall.Outcome.casesOn": [],
+    "Toy.TailCall.Outcome.ctorElim": [],
+    "Toy.TailCall.Outcome.ctorElimType": [],
+    "Toy.TailCall.Outcome.ctorIdx": [],
+    "Toy.TailCall.Outcome.noConfusion": [],
+    "Toy.TailCall.Outcome.noConfusionType": [],
+    "Toy.TailCall.Outcome.panicked": [],
+    "Toy.TailCall.Outcome.panicked.elim": [],
+    "Toy.TailCall.Outcome.panicked.sizeOf_spec": [],
+    "Toy.TailCall.Outcome.rec": [],
+    "Toy.TailCall.Outcome.recOn": [],
+    "Toy.TailCall.Outcome.returned": [],
+    "Toy.TailCall.Outcome.returned.elim": [],
+    "Toy.TailCall.Outcome.returned.inj": [],
+    "Toy.TailCall.Outcome.returned.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Outcome.returned.noConfusion": [],
+    "Toy.TailCall.Outcome.returned.sizeOf_spec": [],
+    "Toy.TailCall.Outcome.stackOverflow": [],
+    "Toy.TailCall.Outcome.stackOverflow.elim": [],
+    "Toy.TailCall.Outcome.stackOverflow.sizeOf_spec": [],
+    "Toy.TailCall.Outcome.ub": [],
+    "Toy.TailCall.Outcome.ub.elim": [],
+    "Toy.TailCall.Outcome.ub.sizeOf_spec": [],
+    "Toy.TailCall.Prog": [],
+    "Toy.TailCall.Prog.casesOn": [],
+    "Toy.TailCall.Prog.ctorIdx": [],
+    "Toy.TailCall.Prog.fns": [],
+    "Toy.TailCall.Prog.mk": [],
+    "Toy.TailCall.Prog.mk.inj": [],
+    "Toy.TailCall.Prog.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Prog.mk.noConfusion": [],
+    "Toy.TailCall.Prog.mk.sizeOf_spec": [],
+    "Toy.TailCall.Prog.noConfusion": [],
+    "Toy.TailCall.Prog.noConfusionType": [],
+    "Toy.TailCall.Prog.rec": [],
+    "Toy.TailCall.Prog.recOn": [],
+    "Toy.TailCall.Reaches": [
+      "propext"
+    ],
+    "Toy.TailCall.Reaches.refl": [
+      "propext"
+    ],
+    "Toy.TailCall.Reaches.step": [
+      "propext"
+    ],
+    "Toy.TailCall.Reaches.trans": [
+      "propext"
+    ],
+    "Toy.TailCall.Result": [],
+    "Toy.TailCall.Result.casesOn": [],
+    "Toy.TailCall.Result.ctorIdx": [],
+    "Toy.TailCall.Result.events": [],
+    "Toy.TailCall.Result.maxDepth": [],
+    "Toy.TailCall.Result.mk": [],
+    "Toy.TailCall.Result.mk.inj": [],
+    "Toy.TailCall.Result.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Result.mk.noConfusion": [],
+    "Toy.TailCall.Result.mk.sizeOf_spec": [],
+    "Toy.TailCall.Result.noConfusion": [],
+    "Toy.TailCall.Result.noConfusionType": [],
+    "Toy.TailCall.Result.outcome": [],
+    "Toy.TailCall.Result.rec": [],
+    "Toy.TailCall.Result.recOn": [],
+    "Toy.TailCall.Result.tailCalls": [],
+    "Toy.TailCall.ReuseProof.Core": [],
+    "Toy.TailCall.ReuseProof.Core.casesOn": [],
+    "Toy.TailCall.ReuseProof.Core.ev": [],
+    "Toy.TailCall.ReuseProof.Core.mk": [],
+    "Toy.TailCall.ReuseProof.Core.nf": [],
+    "Toy.TailCall.ReuseProof.Core.rec": [],
+    "Toy.TailCall.ReuseProof.Core.recOn": [],
+    "Toy.TailCall.ReuseProof.Core.stk": [],
+    "Toy.TailCall.ReuseProof.Core.uw": [],
+    "Toy.TailCall.ReuseProof.Match": [],
+    "Toy.TailCall.ReuseProof.PInv": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.down": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.fin": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.fresh": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.guard": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.order": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PInv.wf": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.PSafe": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.Reach": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.args_noBorrow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.bump_push_none": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.bwd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.clears_pending": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.clears_pending.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.core_refl": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.deliver_congr": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.equiv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.evalOp_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.evalOps_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.evalOps_eq.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.filter_keep_fin": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.filter_keep_keep": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.find?_filter_of": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.find?_filter_of.match_1_1": [],
+    "Toy.TailCall.ReuseProof.findFrame_filter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.fwd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.fwd.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.keep": [],
+    "Toy.TailCall.ReuseProof.keep.eq_1": [],
+    "Toy.TailCall.ReuseProof.match_bump": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.match_deliver": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.match_deliver.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.match_doReturn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.match_halted": [],
+    "Toy.TailCall.ReuseProof.match_push": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.match_run": [],
+    "Toy.TailCall.ReuseProof.match_unwind": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.match_unwind.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.mem_pendingDrops'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.never_so": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.overflows_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.phall_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.phall_guard": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_congr": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_deliver": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_doReturn": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_pop": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_push": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_push.match_1_5": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_reach": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_reach.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_start": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_top": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.pinv_top_same": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.psafe_eval": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.psafe_evals": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.psafe_ret": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.push_none": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.reach_run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.reach_start": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.run_det": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.run_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.run_none.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.run_none_ne_so": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.run_none_ne_so.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.run_one": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.run_succ_last": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.run_succ_last.match_1": [],
+    "Toy.TailCall.ReuseProof.sim_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.start_shape": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.step_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.step_none_ne_so": [
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.step_unw": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.ReuseProof.transfer": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.RunsTo": [
+      "propext"
+    ],
+    "Toy.TailCall.Sem": [],
+    "Toy.TailCall.Sem.callReturn": [],
+    "Toy.TailCall.Sem.callReturn.elim": [],
+    "Toy.TailCall.Sem.callReturn.sizeOf_spec": [],
+    "Toy.TailCall.Sem.casesOn": [],
+    "Toy.TailCall.Sem.ctorElim": [],
+    "Toy.TailCall.Sem.ctorElimType": [],
+    "Toy.TailCall.Sem.ctorIdx": [],
+    "Toy.TailCall.Sem.frameReuse": [],
+    "Toy.TailCall.Sem.frameReuse.elim": [],
+    "Toy.TailCall.Sem.frameReuse.sizeOf_spec": [],
+    "Toy.TailCall.Sem.noConfusion": [],
+    "Toy.TailCall.Sem.noConfusionType": [],
+    "Toy.TailCall.Sem.ofNat": [],
+    "Toy.TailCall.Sem.ofNat_ctorIdx": [],
+    "Toy.TailCall.Sem.popFirst": [],
+    "Toy.TailCall.Sem.popFirst.elim": [],
+    "Toy.TailCall.Sem.popFirst.sizeOf_spec": [],
+    "Toy.TailCall.Sem.preJump": [],
+    "Toy.TailCall.Sem.preJump.elim": [],
+    "Toy.TailCall.Sem.preJump.sizeOf_spec": [],
+    "Toy.TailCall.Sem.rec": [],
+    "Toy.TailCall.Sem.recOn": [],
+    "Toy.TailCall.Slot": [],
+    "Toy.TailCall.SpliceMode": [],
+    "Toy.TailCall.SpliceMode.casesOn": [],
+    "Toy.TailCall.SpliceMode.corrected": [],
+    "Toy.TailCall.SpliceMode.corrected.elim": [],
+    "Toy.TailCall.SpliceMode.corrected.sizeOf_spec": [],
+    "Toy.TailCall.SpliceMode.ctorElim": [],
+    "Toy.TailCall.SpliceMode.ctorElimType": [],
+    "Toy.TailCall.SpliceMode.ctorIdx": [],
+    "Toy.TailCall.SpliceMode.naive": [],
+    "Toy.TailCall.SpliceMode.naive.elim": [],
+    "Toy.TailCall.SpliceMode.naive.sizeOf_spec": [],
+    "Toy.TailCall.SpliceMode.noConfusion": [],
+    "Toy.TailCall.SpliceMode.noConfusionType": [],
+    "Toy.TailCall.SpliceMode.ofNat": [],
+    "Toy.TailCall.SpliceMode.ofNat_ctorIdx": [],
+    "Toy.TailCall.SpliceMode.rec": [],
+    "Toy.TailCall.SpliceMode.recOn": [],
+    "Toy.TailCall.SpliceProof.Below": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.below": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.below.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.below.inl": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.below.nil": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.below.plain": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.below.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.brecOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.congr_rho": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.congr_rho.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.congr_rho.match_1_7": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.inl": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.length_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.length_le.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.length_le.match_1_9": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.nil": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.plain": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Below.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Bounded": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Bounded.congr": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Bounded.mono": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Bounded.write": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.clear": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.clear_out": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.congr": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.congr_rho": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.foldl_clear": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.foldl_clear.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.foldl_clear_out": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.foldl_clear_out.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.get": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.kill": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.kill_out": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.kills": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.kills.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.kills_out": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.kills_out.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.len": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.live": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.toV": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.transfer": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.write": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Emb.write_out": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.EmbV": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.bA": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.bB": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.code": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.code0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.fnC": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.fnG": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.fnM": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.hB": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.hI": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.ha": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.hb": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.hc": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.hpc": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.hr": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.local": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.look": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.lookR": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.pw": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.toPlain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlCtx.vals": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.clearG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.clearsG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.clearsG.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.congr": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.congr_rho": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.dropListG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.dtorG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.embC": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.embG": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.fidC": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.fidG": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.fnC": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.fnG": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.fnM": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.killG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.killOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.killT": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.killsG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.killsG.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.killsT": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.killsT.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.lenC": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.lenG": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.llen'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.owfC": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.owfG": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.ret'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.vlen'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.writeG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.InlRel.writeT": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Look": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Match": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.OWF": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.OWF.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.OWF.llen": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.OWF.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.OWF.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.OWF.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.OWF.ret": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.OWF.wf": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.bA": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.bB": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.doReturn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.hB": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.hP": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.ha": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.hb": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.hr": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.local": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.look": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.pw": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainCtx.vals": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.clear": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.clears": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.clears.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.congr": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.congr_rho": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.dropList": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.dtor": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.emb": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.ext": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.fid": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.filter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.fn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.fnS": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.kill": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.killOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.kills": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.kills.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.llen'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.owf": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.pending": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.ret'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.wf'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PlainRel.write": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PtrLt": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.PtrLt.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.ev": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.freshA": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.freshB": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.orderB": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.top": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.RelAt.uw": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.K": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.K.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.L": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.L.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.args": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.assignTemps_getElem?": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.assignTemps_getElem?.match_1_1": [],
+    "Toy.TailCall.SpliceProof.Site.assignTemps_length": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.assignTemps_length.match_1_1": [],
+    "Toy.TailCall.SpliceProof.Site.block_fit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.c": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.c'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.c'_code": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.c'_dtor_c": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.c'_dtor_g": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.c'_dtor_hi": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.c'_dtors": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.c'_nParams": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.c'_nSlots": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.ci": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.ci_lt": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.code_L": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.code_body": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.code_k": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.code_lt": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.code_pro": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.ctorIdx": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.dst": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.fnS": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.fnS.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.fnS_dtor": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.fnS_g": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.fnS_nParams": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.fnS_nSlots_ge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.fn_ci": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.g": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.gStart": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.gStart.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.gf": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.hc": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.hdst": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.hg": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.hgci": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.hk": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.hlen": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.hpar": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.inline_eq": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.k": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.k_lt": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.maxTailArity_ge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.maxTailArity_ge.match_1_1": [],
+    "Toy.TailCall.SpliceProof.Site.mk": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.mk.inj": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.mk.noConfusion": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.mk.sizeOf_spec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.nC": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.nC.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.nG": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.nG.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.nT": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.nT.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.next": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.noConfusion": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.noConfusionType": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.p": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.p'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.p'.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.p'_ci": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.p'_fns": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.p'_ne": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.padBlock_getElem?": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.padBlock_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.renCont": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.renCont.match_1": [],
+    "Toy.TailCall.SpliceProof.Site.spliceBody_getElem?": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Site.spliceBody_getElem?.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.StoreOK": [],
+    "Toy.TailCall.SpliceProof.T_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Top": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Top.casesOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Top.inl": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Top.plain": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Top.rec": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.Top.recOn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.below_find": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.below_find.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.below_find.match_1_8": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.below_nil_iff": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.below_top": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.below_top.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.bounded_head": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.clear_cont": [],
+    "Toy.TailCall.SpliceProof.clear_fid": [],
+    "Toy.TailCall.SpliceProof.clear_fn": [],
+    "Toy.TailCall.SpliceProof.clear_live_length": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.clear_pc": [],
+    "Toy.TailCall.SpliceProof.clear_pendingRet": [],
+    "Toy.TailCall.SpliceProof.clear_vals_length": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.dropList_append_true": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.dropList_append_true.match_1_1": [],
+    "Toy.TailCall.SpliceProof.dropList_shape": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.dropList_sim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.dropList_sim.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.dropList_true_ne_ok": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.dropList_true_ne_ok.match_1_1": [],
+    "Toy.TailCall.SpliceProof.dropped_g": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOp_move_lt": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOp_ptrLt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOp_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOps_length": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOps_length.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOps_moves": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOps_moves.match_1_1": [],
+    "Toy.TailCall.SpliceProof.evalOps_ptrLt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOps_ptrLt.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOps_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.evalOps_sim.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_10": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_3": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_4": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_5": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_6": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_7": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_8": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.eq_9": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.match_1": [],
+    "Toy.TailCall.SpliceProof.execI.match_10": [],
+    "Toy.TailCall.SpliceProof.execI.match_3": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.execI.match_6": [],
+    "Toy.TailCall.SpliceProof.execI.match_8": [],
+    "Toy.TailCall.SpliceProof.filter_gslots": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.filter_lt": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.filter_renamed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.findFrame_cons_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.foldl_clear_fields": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.foldl_clear_fields.match_1_1": [],
+    "Toy.TailCall.SpliceProof.foldl_clear_get": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.foldl_clear_get.match_1_1": [],
+    "Toy.TailCall.SpliceProof.foldl_clear_isLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.foldl_clear_isLive.match_1_1": [],
+    "Toy.TailCall.SpliceProof.foldl_kill_fields": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.foldl_kill_fields.match_1_1": [],
+    "Toy.TailCall.SpliceProof.foldl_kill_get": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.foldl_kill_isLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.foldl_kill_isLive.match_1_1": [],
+    "Toy.TailCall.SpliceProof.fresh_head": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.fwd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.getD_append_replicate": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.getD_map'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.getD_replicate": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.get_clear": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.get_kill": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.get_of_ge": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.get_write": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.inline_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.isLive_clear": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.isLive_kill": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.isLive_of_ge": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.isLive_write": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.ite_pc": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf_cont": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf_fid": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf_fn": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf_live_length": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf_pc": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf_pendingRet": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.killOf_vals": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.kill_cont": [],
+    "Toy.TailCall.SpliceProof.kill_fid": [],
+    "Toy.TailCall.SpliceProof.kill_fn": [],
+    "Toy.TailCall.SpliceProof.kill_live_length": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.kill_pc": [],
+    "Toy.TailCall.SpliceProof.kill_pendingRet": [],
+    "Toy.TailCall.SpliceProof.kill_vals": [],
+    "Toy.TailCall.SpliceProof.look_congr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.look_inl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.look_plain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.lt_mid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.lt_off": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.map_add_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.map_renOp_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_bump": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_bump_left": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_deliver": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_halt": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_halted": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_push": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_running": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_so": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_ub": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_unwStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.match_unwindBelow": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.mem_pendingDrops_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.out_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.overflows_mono'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.pairwise_head": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.pendingDrops_ext": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.pendingDrops_merged": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.plain_after_drop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.plain_of_inl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.preserves": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.preserves_site": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.ptrLt_get": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.ptrLt_mono": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.range_reverse_split": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.relAt_below": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.relAt_inl": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.relAt_plain": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.renOp_zero": [],
+    "Toy.TailCall.SpliceProof.run_assignTemps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.run_assignTemps.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.run_det'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.run_one'": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.run_succ": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.rv": [],
+    "Toy.TailCall.SpliceProof.rv.eq_1": [],
+    "Toy.TailCall.SpliceProof.rv.eq_2": [],
+    "Toy.TailCall.SpliceProof.rv.eq_3": [],
+    "Toy.TailCall.SpliceProof.rv.match_1": [],
+    "Toy.TailCall.SpliceProof.rv_congr": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.rv_int": [],
+    "Toy.TailCall.SpliceProof.rv_obs": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.rv_undef": [],
+    "Toy.TailCall.SpliceProof.sim_inl_ret": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.sim_inl_simple": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.sim_inl_tail": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.sim_inl_unw": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.sim_instr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.sim_plain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.sim_site": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.sim_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.step_code_none": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.step_exec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.step_fn_none": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.step_unw": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.tail_code": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.top_cases": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.unwStep": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.unwStep.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.unwStep.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.unwStep.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.unwStep.match_4": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.write_cont": [],
+    "Toy.TailCall.SpliceProof.write_fid": [],
+    "Toy.TailCall.SpliceProof.write_fn": [],
+    "Toy.TailCall.SpliceProof.write_live_length": [
+      "propext"
+    ],
+    "Toy.TailCall.SpliceProof.write_pc": [],
+    "Toy.TailCall.SpliceProof.write_pendingRet": [],
+    "Toy.TailCall.SpliceProof.write_vals_length": [
+      "propext"
+    ],
+    "Toy.TailCall.State": [],
+    "Toy.TailCall.State.casesOn": [],
+    "Toy.TailCall.State.ctorIdx": [],
+    "Toy.TailCall.State.empty": [],
+    "Toy.TailCall.State.empty.eq_1": [],
+    "Toy.TailCall.State.events": [],
+    "Toy.TailCall.State.halt": [],
+    "Toy.TailCall.State.halt.eq_1": [],
+    "Toy.TailCall.State.maxDepth": [],
+    "Toy.TailCall.State.mk": [],
+    "Toy.TailCall.State.mk.inj": [],
+    "Toy.TailCall.State.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.State.mk.noConfusion": [],
+    "Toy.TailCall.State.mk.sizeOf_spec": [],
+    "Toy.TailCall.State.nextFid": [],
+    "Toy.TailCall.State.noConfusion": [],
+    "Toy.TailCall.State.noConfusionType": [],
+    "Toy.TailCall.State.rec": [],
+    "Toy.TailCall.State.recOn": [],
+    "Toy.TailCall.State.stack": [],
+    "Toy.TailCall.State.tailCalls": [],
+    "Toy.TailCall.State.unwinding": [],
+    "Toy.TailCall.Val": [],
+    "Toy.TailCall.Val.casesOn": [],
+    "Toy.TailCall.Val.ctorElim": [],
+    "Toy.TailCall.Val.ctorElimType": [],
+    "Toy.TailCall.Val.ctorIdx": [],
+    "Toy.TailCall.Val.int": [],
+    "Toy.TailCall.Val.int.elim": [],
+    "Toy.TailCall.Val.int.inj": [],
+    "Toy.TailCall.Val.int.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.int.noConfusion": [],
+    "Toy.TailCall.Val.int.sizeOf_spec": [],
+    "Toy.TailCall.Val.noConfusion": [],
+    "Toy.TailCall.Val.noConfusionType": [],
+    "Toy.TailCall.Val.obs": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.obs.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.obs.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.obs.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.pointsInto": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.pointsInto.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.pointsInto.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.pointsInto.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.ptr": [],
+    "Toy.TailCall.Val.ptr.elim": [],
+    "Toy.TailCall.Val.ptr.inj": [],
+    "Toy.TailCall.Val.ptr.injEq": [
+      "propext"
+    ],
+    "Toy.TailCall.Val.ptr.noConfusion": [],
+    "Toy.TailCall.Val.ptr.sizeOf_spec": [],
+    "Toy.TailCall.Val.rec": [],
+    "Toy.TailCall.Val.recOn": [],
+    "Toy.TailCall.Val.undef": [],
+    "Toy.TailCall.Val.undef.elim": [],
+    "Toy.TailCall.Val.undef.sizeOf_spec": [],
+    "Toy.TailCall.allRunning": [
+      "propext"
+    ],
+    "Toy.TailCall.allRunning.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.allRunning.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.allRunning.eq_3": [
+      "propext"
+    ],
+    "Toy.TailCall.allRunning.eq_def": [
+      "propext"
+    ],
+    "Toy.TailCall.allRunning.match_1": [],
+    "Toy.TailCall.allRunning_sound": [
+      "propext"
+    ],
+    "Toy.TailCall.assignTemps": [],
+    "Toy.TailCall.assignTemps.eq_1": [],
+    "Toy.TailCall.assignTemps.eq_2": [],
+    "Toy.TailCall.assignTemps.eq_def": [],
+    "Toy.TailCall.assignTemps.match_1": [],
+    "Toy.TailCall.atTailCall_panicFin": [
+      "propext"
+    ],
+    "Toy.TailCall.badArgTailFrame": [],
+    "Toy.TailCall.badArgTailProg": [],
+    "Toy.TailCall.badArgTailState": [],
+    "Toy.TailCall.borrowProg": [],
+    "Toy.TailCall.borrowProg_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.borrowProg_preJump": [
+      "propext"
+    ],
+    "Toy.TailCall.bumpTail": [
+      "propext"
+    ],
+    "Toy.TailCall.bumpTail.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.bumpTail.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.bumpTail.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.callFree_chain3": [
+      "propext"
+    ],
+    "Toy.TailCall.callFree_frameReuse_maxDepth_of_entryOk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.callFree_needed_frameReuse_countUp3": [
+      "propext"
+    ],
+    "Toy.TailCall.callFree_needed_preJump_countUp3": [
+      "propext"
+    ],
+    "Toy.TailCall.callFree_nonvacuous_chain3": [
+      "propext"
+    ],
+    "Toy.TailCall.callFree_preJump_maxDepth_of_entryOk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.chain3": [],
+    "Toy.TailCall.chain3_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.chain3_popFirst": [
+      "propext"
+    ],
+    "Toy.TailCall.chain3_preJump": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedCallSiteSplice_converse_false": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedCallSiteSplice_preserves_frameReuse_of_ne_ub_of_ne_stackOverflow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.correctedSplice_converse_fails_borrowProg": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedSplice_converse_fails_plainCall": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedSplice_masks_borrow_ub_borrowProg": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedSplice_nonvacuous_inlEx2": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedSplice_overflow_not_preserved_plainCall": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedSplice_raw_values_differ_ptrRetProg": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedSplice_raw_values_differ_ptrRetProg.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedSplice_tailCalls_differ_inlEx2": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedSplice_ub_not_preserved_danglingRet": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedTailSiteSplice_mutualRec3": [
+      "propext"
+    ],
+    "Toy.TailCall.correctedTailSiteSplice_mutualRec_overflows_any_slack": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.correctedTailSiteSplice_mutualRec_runsTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.correctedTailSiteSplice_overflows_mutualRec3": [
+      "propext"
+    ],
+    "Toy.TailCall.countUp": [],
+    "Toy.TailCall.countUp.eq_1": [],
+    "Toy.TailCall.countUp3_bound0_overflows": [
+      "propext"
+    ],
+    "Toy.TailCall.countUp3_bound4_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.countUp3_bound4_preJump": [
+      "propext"
+    ],
+    "Toy.TailCall.countUp3_callReturn": [
+      "propext"
+    ],
+    "Toy.TailCall.countUp3_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.countUp3_preJump": [
+      "propext"
+    ],
+    "Toy.TailCall.countUp_callReturn_runsTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.countUp_frameReuse_runsTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.countUp_preJump_runsTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.danglingRet": [],
+    "Toy.TailCall.deadEscape": [],
+    "Toy.TailCall.deliver": [
+      "propext"
+    ],
+    "Toy.TailCall.deliver.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.deliver.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.deliver.match_1": [],
+    "Toy.TailCall.desugarTailSite": [
+      "propext"
+    ],
+    "Toy.TailCall.desugarTailSite.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.desugarTailSite_mutualRec3": [
+      "propext"
+    ],
+    "Toy.TailCall.desugaredCallPc": [],
+    "Toy.TailCall.doReturn": [
+      "propext"
+    ],
+    "Toy.TailCall.doReturn.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.doTailCall": [
+      "propext"
+    ],
+    "Toy.TailCall.doTailCall.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.doTailCall.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.doTailCall.eq_3": [
+      "propext"
+    ],
+    "Toy.TailCall.doTailCall.eq_4": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList.eq_def": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList.match_1": [],
+    "Toy.TailCall.dropList_abort_leaves_pending": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList_clears_pending_nonvacuous": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList_clears_pending_of_ne_abort": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.dropList_clears_pending_of_ne_abort.match_1_1": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList_kills_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.dropList_kills_mem.match_1_1": [],
+    "Toy.TailCall.dropList_kills_mem.match_1_6": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList_kills_mem.match_1_8": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList_no_panics": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList_no_panics.match_1_4": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList_one_panic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.dropList_one_panic.match_1_4": [
+      "propext"
+    ],
+    "Toy.TailCall.dropList_one_panic.match_1_7": [
+      "propext"
+    ],
+    "Toy.TailCall.dtorProg": [],
+    "Toy.TailCall.dtorProg_callReturn": [
+      "propext"
+    ],
+    "Toy.TailCall.dtorProg_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.dtorProg_popFirst": [
+      "propext"
+    ],
+    "Toy.TailCall.dtorProg_preJump": [
+      "propext"
+    ],
+    "Toy.TailCall.emptyProg": [],
+    "Toy.TailCall.entryOk_chain3": [
+      "propext"
+    ],
+    "Toy.TailCall.entryOk_needed_emptyProg": [
+      "propext"
+    ],
+    "Toy.TailCall.entryOk_needed_paramEntryProg": [
+      "propext"
+    ],
+    "Toy.TailCall.escapeCheck_accepts_countUp3": [
+      "propext"
+    ],
+    "Toy.TailCall.escapeCheck_accepts_dtorProg": [
+      "propext"
+    ],
+    "Toy.TailCall.escapeCheck_incomplete_deadEscape": [
+      "propext"
+    ],
+    "Toy.TailCall.escapeCheck_needed_borrowProg": [
+      "propext"
+    ],
+    "Toy.TailCall.escapeCheck_rejects_borrowProg": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOp": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOp.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOp.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOp.eq_3": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOp.eq_4": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOp.eq_5": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOp.eq_6": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOp.match_1": [],
+    "Toy.TailCall.evalOp.match_3": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOps": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOps.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOps.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOps.eq_def": [
+      "propext"
+    ],
+    "Toy.TailCall.evalOps.match_1": [],
+    "Toy.TailCall.evalOps.match_3": [],
+    "Toy.TailCall.evalOps.match_5": [],
+    "Toy.TailCall.finalizationEvents": [
+      "propext"
+    ],
+    "Toy.TailCall.finalizationEvents.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.finalization_fails_at_other_instr": [
+      "propext"
+    ],
+    "Toy.TailCall.finalizes_then_push_fails_when_args_ub": [
+      "propext"
+    ],
+    "Toy.TailCall.finalizes_then_push_fails_when_unwinding": [
+      "propext"
+    ],
+    "Toy.TailCall.finalizes_then_push_fails_with_panic": [
+      "propext"
+    ],
+    "Toy.TailCall.finalizes_then_push_fails_with_pendingRet": [
+      "propext"
+    ],
+    "Toy.TailCall.finalizes_then_push_nonvacuous": [
+      "propext"
+    ],
+    "Toy.TailCall.findFrame": [],
+    "Toy.TailCall.findFrame.eq_1": [],
+    "Toy.TailCall.frameReuse_finalization_unique_panic_drops_rest_then_unwinds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_finalization_unique_panic_drops_rest_then_unwinds.match_1_2": [
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_iff_preJump_fails_borrowProg": [
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_iff_preJump_nonvacuous_dtorProg": [
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_ne_callReturn_dtorProg": [
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_observes_iff_preJump_of_noStackBorrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_observes_of_preJump_of_ne_stackOverflow_of_noStackBorrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_of_preJump_fails_borrowProg": [
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_of_preJump_fails_for_overflow_countUp3": [
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_of_preJump_nonvacuous_countUp3": [
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_tailCall_finalizes_then_push_of_noPanic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.frameReuse_tailCall_finalizes_then_push_of_noPanic.match_1_2": [
+      "propext"
+    ],
+    "Toy.TailCall.ignorePtrProg": [],
+    "Toy.TailCall.ignorePtrProg_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.ignorePtrProg_preJump": [
+      "propext"
+    ],
+    "Toy.TailCall.inlEx": [],
+    "Toy.TailCall.inlEx2": [],
+    "Toy.TailCall.inlEx_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.inlEx_naive_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.inlineCallSite": [
+      "propext"
+    ],
+    "Toy.TailCall.inlineCallSite.match_1": [],
+    "Toy.TailCall.inlineCallSite.match_3": [
+      "propext"
+    ],
+    "Toy.TailCall.inlineCallSite_corrected_inlEx": [
+      "propext"
+    ],
+    "Toy.TailCall.inlineCallSite_nonCall_unchanged": [
+      "propext"
+    ],
+    "Toy.TailCall.inlineCallSite_self_unchanged": [
+      "propext"
+    ],
+    "Toy.TailCall.inlineTailSite": [
+      "propext"
+    ],
+    "Toy.TailCall.inlineTailSite_nonTail_unchanged": [
+      "propext"
+    ],
+    "Toy.TailCall.instDecidableEqConf": [],
+    "Toy.TailCall.instDecidableEqConf.decEq": [],
+    "Toy.TailCall.instDecidableEqConf.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqCont": [],
+    "Toy.TailCall.instDecidableEqCont.decEq": [],
+    "Toy.TailCall.instDecidableEqCont.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqDropEnd": [],
+    "Toy.TailCall.instDecidableEqDtorKind": [],
+    "Toy.TailCall.instDecidableEqEvent": [],
+    "Toy.TailCall.instDecidableEqEvent.decEq": [],
+    "Toy.TailCall.instDecidableEqEvent.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqFn": [],
+    "Toy.TailCall.instDecidableEqFn.decEq": [],
+    "Toy.TailCall.instDecidableEqFn.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqFrame": [],
+    "Toy.TailCall.instDecidableEqFrame.decEq": [],
+    "Toy.TailCall.instDecidableEqFrame.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqInstr": [],
+    "Toy.TailCall.instDecidableEqInstr.decEq": [],
+    "Toy.TailCall.instDecidableEqInstr.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqOperand": [],
+    "Toy.TailCall.instDecidableEqOperand.decEq": [],
+    "Toy.TailCall.instDecidableEqOperand.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqOutcome": [],
+    "Toy.TailCall.instDecidableEqOutcome.decEq": [],
+    "Toy.TailCall.instDecidableEqOutcome.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqProg": [],
+    "Toy.TailCall.instDecidableEqProg.decEq": [],
+    "Toy.TailCall.instDecidableEqProg.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqResult": [],
+    "Toy.TailCall.instDecidableEqResult.decEq": [],
+    "Toy.TailCall.instDecidableEqResult.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqSem": [],
+    "Toy.TailCall.instDecidableEqSpliceMode": [],
+    "Toy.TailCall.instDecidableEqState": [],
+    "Toy.TailCall.instDecidableEqState.decEq": [],
+    "Toy.TailCall.instDecidableEqState.decEq.match_1": [],
+    "Toy.TailCall.instDecidableEqVal": [],
+    "Toy.TailCall.instDecidableEqVal.decEq": [],
+    "Toy.TailCall.instDecidableEqVal.decEq.match_1": [],
+    "Toy.TailCall.instReprConf": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprConf.repr": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprConf.repr.match_1": [],
+    "Toy.TailCall.instReprCont": [],
+    "Toy.TailCall.instReprCont.repr": [],
+    "Toy.TailCall.instReprCont.repr.match_1": [],
+    "Toy.TailCall.instReprDropEnd": [],
+    "Toy.TailCall.instReprDropEnd.repr": [],
+    "Toy.TailCall.instReprDropEnd.repr.match_1": [],
+    "Toy.TailCall.instReprDtorKind": [],
+    "Toy.TailCall.instReprDtorKind.repr": [],
+    "Toy.TailCall.instReprDtorKind.repr.match_1": [],
+    "Toy.TailCall.instReprEvent": [],
+    "Toy.TailCall.instReprEvent.repr": [],
+    "Toy.TailCall.instReprEvent.repr.match_1": [],
+    "Toy.TailCall.instReprFn": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprFn.repr": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprFrame": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprFrame.repr": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprInstr": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprInstr.repr": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprInstr.repr.match_1": [],
+    "Toy.TailCall.instReprOperand": [],
+    "Toy.TailCall.instReprOperand.repr": [],
+    "Toy.TailCall.instReprOperand.repr.match_1": [],
+    "Toy.TailCall.instReprOutcome": [],
+    "Toy.TailCall.instReprOutcome.repr": [],
+    "Toy.TailCall.instReprOutcome.repr.match_1": [],
+    "Toy.TailCall.instReprProg": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprProg.repr": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprResult": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprResult.repr": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprSem": [],
+    "Toy.TailCall.instReprSem.repr": [],
+    "Toy.TailCall.instReprSem.repr.match_1": [],
+    "Toy.TailCall.instReprSpliceMode": [],
+    "Toy.TailCall.instReprSpliceMode.repr": [],
+    "Toy.TailCall.instReprSpliceMode.repr.match_1": [],
+    "Toy.TailCall.instReprState": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprState.repr": [
+      "propext"
+    ],
+    "Toy.TailCall.instReprVal": [],
+    "Toy.TailCall.instReprVal.repr": [],
+    "Toy.TailCall.instReprVal.repr.match_1": [],
+    "Toy.TailCall.maxTailArity": [
+      "propext"
+    ],
+    "Toy.TailCall.maxTailArity.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.maxTailArity.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.maxTailArity.eq_3": [
+      "propext"
+    ],
+    "Toy.TailCall.maxTailArity.eq_def": [
+      "propext"
+    ],
+    "Toy.TailCall.maxTailArity.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.mem_pendingDrops_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.mutualRec": [],
+    "Toy.TailCall.mutualRec.eq_1": [],
+    "Toy.TailCall.mutualRec3_correctedTailSite_bound3": [
+      "propext"
+    ],
+    "Toy.TailCall.mutualRec3_frameReuse_bound3": [
+      "propext"
+    ],
+    "Toy.TailCall.naiveSplice_changes_events_inlEx": [
+      "propext"
+    ],
+    "Toy.TailCall.naiveTailSiteSplice_within_bound_mutualRec3": [
+      "propext"
+    ],
+    "Toy.TailCall.noStackBorrow_countUp3": [
+      "propext"
+    ],
+    "Toy.TailCall.noStackBorrow_deadEscape": [
+      "propext"
+    ],
+    "Toy.TailCall.noStackBorrow_dtorProg": [
+      "propext"
+    ],
+    "Toy.TailCall.noStackBorrow_not_necessary_ignorePtrProg": [
+      "propext"
+    ],
+    "Toy.TailCall.noStackBorrow_of_allRunning": [
+      "propext"
+    ],
+    "Toy.TailCall.noStackBorrow_of_escapeCheckAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.not_atTailCall_wrongInstr": [
+      "propext"
+    ],
+    "Toy.TailCall.not_callFree_countUp3": [
+      "propext"
+    ],
+    "Toy.TailCall.not_entryOk_emptyProg": [
+      "propext"
+    ],
+    "Toy.TailCall.not_noStackBorrow_borrowProg": [
+      "propext"
+    ],
+    "Toy.TailCall.not_observes_dtorProg_frameReuse_callReturnTrace": [
+      "propext"
+    ],
+    "Toy.TailCall.observes_iff_of_runsTo": [
+      "propext"
+    ],
+    "Toy.TailCall.opTainted": [
+      "propext"
+    ],
+    "Toy.TailCall.opTainted.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.opTainted.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.opTainted.eq_3": [
+      "propext"
+    ],
+    "Toy.TailCall.opTainted.eq_4": [
+      "propext"
+    ],
+    "Toy.TailCall.opTainted.eq_5": [
+      "propext"
+    ],
+    "Toy.TailCall.opTainted.eq_6": [
+      "propext"
+    ],
+    "Toy.TailCall.opTainted.match_1": [],
+    "Toy.TailCall.orderDemo": [],
+    "Toy.TailCall.orderDemo_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.overflows": [],
+    "Toy.TailCall.overflows.eq_1": [],
+    "Toy.TailCall.overflows.eq_2": [],
+    "Toy.TailCall.overflows.match_1": [],
+    "Toy.TailCall.padBlock": [],
+    "Toy.TailCall.padBlock.eq_1": [],
+    "Toy.TailCall.panicFin": [],
+    "Toy.TailCall.panicFinFrame": [],
+    "Toy.TailCall.panicFinFrame.eq_1": [],
+    "Toy.TailCall.panicFinFrameRet": [],
+    "Toy.TailCall.panicFinNoTail": [],
+    "Toy.TailCall.panicFinOnePanicNoTail": [],
+    "Toy.TailCall.panicFinRest": [],
+    "Toy.TailCall.panicFinState": [],
+    "Toy.TailCall.panicFinState_reached": [
+      "propext"
+    ],
+    "Toy.TailCall.panicFinT": [],
+    "Toy.TailCall.panicFinTNoTail": [],
+    "Toy.TailCall.panicFinTOnePanicNoTail": [],
+    "Toy.TailCall.panicFin_frameReuse": [
+      "propext"
+    ],
+    "Toy.TailCall.panicMoveProg": [],
+    "Toy.TailCall.panicMoveT": [],
+    "Toy.TailCall.panic_drops_rest_fails_at_other_instr": [
+      "propext"
+    ],
+    "Toy.TailCall.panic_drops_rest_fails_when_args_ub": [
+      "propext"
+    ],
+    "Toy.TailCall.panic_drops_rest_fails_when_unwinding": [
+      "propext"
+    ],
+    "Toy.TailCall.panic_drops_rest_fails_with_pendingRet": [
+      "propext"
+    ],
+    "Toy.TailCall.panic_drops_rest_fails_with_two_panics": [
+      "propext"
+    ],
+    "Toy.TailCall.panic_drops_rest_fails_with_zero_panics": [
+      "propext"
+    ],
+    "Toy.TailCall.panic_drops_rest_nonvacuous": [
+      "propext"
+    ],
+    "Toy.TailCall.panickingPending": [
+      "propext"
+    ],
+    "Toy.TailCall.paramEntryProg": [],
+    "Toy.TailCall.paramEntryProg.eq_1": [],
+    "Toy.TailCall.paramEntryProg_bound0_ub": [
+      "propext"
+    ],
+    "Toy.TailCall.pendingDrops": [
+      "propext"
+    ],
+    "Toy.TailCall.pendingDrops.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.pendingDrops_orderDemo": [
+      "propext"
+    ],
+    "Toy.TailCall.pendingDrops_pairwise_gt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.pendingDrops_skips_no_dtor": [
+      "propext"
+    ],
+    "Toy.TailCall.plainCall": [],
+    "Toy.TailCall.popFirst_agrees_without_pending_drops_chain3": [
+      "propext"
+    ],
+    "Toy.TailCall.popFirst_ub_with_pending_drop_dtorProg": [
+      "propext"
+    ],
+    "Toy.TailCall.ptrRetProg": [],
+    "Toy.TailCall.push": [
+      "propext"
+    ],
+    "Toy.TailCall.push.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.push.match_1": [],
+    "Toy.TailCall.renOp": [],
+    "Toy.TailCall.renOp.eq_1": [],
+    "Toy.TailCall.renOp.eq_2": [],
+    "Toy.TailCall.renOp.eq_3": [],
+    "Toy.TailCall.renOp.eq_4": [],
+    "Toy.TailCall.renOp.eq_5": [],
+    "Toy.TailCall.renOp.eq_6": [],
+    "Toy.TailCall.renOp.match_1": [],
+    "Toy.TailCall.run": [
+      "propext"
+    ],
+    "Toy.TailCall.run.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.run.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.run.eq_3": [
+      "propext"
+    ],
+    "Toy.TailCall.run.eq_def": [
+      "propext"
+    ],
+    "Toy.TailCall.run.match_1": [],
+    "Toy.TailCall.run_add": [
+      "propext"
+    ],
+    "Toy.TailCall.run_add.match_1_1": [],
+    "Toy.TailCall.run_halted": [
+      "propext"
+    ],
+    "Toy.TailCall.run_mono": [
+      "propext"
+    ],
+    "Toy.TailCall.runsTo_bound0_of_entryOk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TailCall.runsTo_of_reaches": [
+      "propext"
+    ],
+    "Toy.TailCall.runsTo_unique": [
+      "propext"
+    ],
+    "Toy.TailCall.selfCallProg": [],
+    "Toy.TailCall.spliceBody": [],
+    "Toy.TailCall.spliceBody.eq_1": [],
+    "Toy.TailCall.spliceBody.eq_2": [],
+    "Toy.TailCall.spliceBody.eq_def": [],
+    "Toy.TailCall.spliceBody.match_1": [],
+    "Toy.TailCall.spliceFn": [
+      "propext"
+    ],
+    "Toy.TailCall.spliceInstr": [],
+    "Toy.TailCall.spliceInstr.eq_1": [],
+    "Toy.TailCall.spliceInstr.eq_10": [],
+    "Toy.TailCall.spliceInstr.eq_11": [],
+    "Toy.TailCall.spliceInstr.eq_2": [],
+    "Toy.TailCall.spliceInstr.eq_3": [],
+    "Toy.TailCall.spliceInstr.eq_4": [],
+    "Toy.TailCall.spliceInstr.eq_5": [],
+    "Toy.TailCall.spliceInstr.eq_6": [],
+    "Toy.TailCall.spliceInstr.eq_7": [],
+    "Toy.TailCall.spliceInstr.eq_8": [],
+    "Toy.TailCall.spliceInstr.eq_9": [],
+    "Toy.TailCall.spliceInstr.match_1": [],
+    "Toy.TailCall.start": [
+      "propext"
+    ],
+    "Toy.TailCall.start.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.step": [
+      "propext"
+    ],
+    "Toy.TailCall.step.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.step.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.step.match_4": [],
+    "Toy.TailCall.step.match_6": [],
+    "Toy.TailCall.tailCallBorrowsFrame": [
+      "propext"
+    ],
+    "Toy.TailCall.tailCallBorrowsFrame.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.tailCallBorrowsFrame.match_1": [],
+    "Toy.TailCall.tailCallBorrowsFrame.match_3": [
+      "propext"
+    ],
+    "Toy.TailCall.tailCallBorrowsFrame.match_7": [],
+    "Toy.TailCall.tailCallBorrowsFrame.match_9": [],
+    "Toy.TailCall.taint": [
+      "propext"
+    ],
+    "Toy.TailCall.taintStep": [
+      "propext"
+    ],
+    "Toy.TailCall.taintStep.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.taintStep.match_1": [
+      "propext"
+    ],
+    "Toy.TailCall.unwindBelow": [
+      "propext"
+    ],
+    "Toy.TailCall.unwindBelow.eq_1": [
+      "propext"
+    ],
+    "Toy.TailCall.unwindBelow.eq_2": [
+      "propext"
+    ],
+    "Toy.TailCall.unwindBelow.match_1": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

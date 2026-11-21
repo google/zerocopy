@@ -1,0 +1,1003 @@
+[
+  {
+    "id": "R1",
+    "lean": "Toy.TailCall.frameReuse_observes_iff_preJump_of_noStackBorrow",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise: deallocating a frame before the tail call is known to be safe when no pointer into it reaches the callee (CompCert `Tailcall.v` documentation, LLVM `musttail` documentation), and tail calls without destructors are mechanized in Stack-Aware CompCert and CakeML; a mechanized statement combining pre-jump destructor finalization with this equivalence was not found in a web search)",
+    "plain_claim": "For every toy program `p` satisfying `NoStackBorrow p` (in the unbounded `preJump` run of `p`, no executed `tailCall` passes an argument value that is a pointer into the current frame), and for every outcome `o` and event trace `es`, the unbounded `frameReuse` run of `p` halts with `o` and `es` if and only if the unbounded `preJump` run of `p` does.",
+    "hypotheses": [
+      {
+        "name": "hnb : NoStackBorrow p",
+        "purpose": "frame reuse removes the current frame before the callee runs; a callee loading through a pointer into it is `ub` under `frameReuse` but reads a live slot under `preJump`",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.frameReuse_iff_preJump_fails_borrowProg",
+        "witness_class": "a three-function program with one tail call passing `addrOf` of a local"
+      }
+    ],
+    "depth": "substantive",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "`dtorProg` satisfies `NoStackBorrow` and both semantics return 0 with trace `[drop 7, out 1]`.",
+    "nonvacuity_witness_lean": "Toy.TailCall.frameReuse_iff_preJump_nonvacuous_dtorProg",
+    "non_claims": [
+      "Compares halted runs (outcome and finite trace). Infinite traces of non-halting runs are not compared, beyond the consequence of the equivalence that one run halts exactly when the other does.",
+      "Unbounded stack (`D = none`). Under a bound the two semantics differ (`frameReuse_of_preJump_fails_for_overflow_countUp3`); the bounded transfer is card R3.",
+      "Does not relate `frameReuse` to `callReturn`: they differ even under the hypothesis (card R2).",
+      "`NoStackBorrow` is sufficient, not necessary: in `ignorePtrProg` a pointer into the current frame is passed but never loaded through, so `NoStackBorrow` fails, yet the two semantics have the same outcomes and traces (`noStackBorrow_not_necessary_ignorePtrProg`).",
+      "`NoStackBorrow` is a dynamic property of the unbounded `preJump` run; it is not a static check. A sound static check is card R8.",
+      "`preJump` keeps finalized frames on the stack, and the machine does not flag a load from a dropped slot (`Frame.kill` clears the drop flag and keeps the value); it imposes no arity or signature relation between a function and the callee of its tail call (a mismatch is `ub` at `push`).",
+      "Destructors are atomic events (`DtorKind`): running one pushes no frame, executes no instruction and reads or writes no slot, so destructors that call functions (raising the peak depth during finalization) or that access their own slot through `&mut self` are not modelled (the `popFirst` variant of card R19 models that access and nothing else).",
+      "The toy has no heap, no stores through pointers, no borrow checker and no catching of panics.",
+      "Frame identities are unobservable by construction: `Val.obs` maps pointers and `undef` to `0`, and events and final results record `Val.obs` values and no frame identities.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "W. D. Clinger, \"Proper Tail Recursion and Space Efficiency\", PLDI 1998, pp. 174-185, doi:10.1145/277650.277719 (space-efficiency formulation of proper tail calls; no destructors, no inlining)",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:810-825 (documentation of `TailCall`: pop of the current stack frame, then a call with the return address of the current caller) and :829-833 (arguments are owned by the callee) [documentation; used in the modeling bridge]",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Tailcall.v:17-28 (the documentation says an `Icall` can be turned into an `Itailcall` if the caller's stack block is empty, and explains that otherwise a pointer into it may have been passed to the callee) and :80-98 (`transf_instr`, `transf_function`); backend/Tailcallproof.v:600-601 (`transf_program_correct`: forward simulation RTL -> RTL)",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Cminor.v:468-475 (`step_tailcall` frees the stack block before entering the callee)",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/docs/LangRef.rst:12593-12637 (`musttail`: no unbounded stack growth in recursive cycles; \"Both markers imply that the callee does not access allocas from the caller\"; ABI attributes and caller/callee prototypes must match unless the convention is `swifttailcc` or `tailcc`) [documentation; used in the modeling bridge]",
+      "Y. Wang, P. Wilke, Z. Shao, \"An Abstract Stack Based Approach to Verified Compositional Compilation to Machine Code\", Proc. ACM Program. Lang. 3 (POPL), Article 62, 2019, doi:10.1145/3290375 (Stack-Aware CompCert: a bounded abstract stack, mechanized through tail-call recognition and inlining; no destructors) [bibliographic record checked; publisher text not fetched]",
+      "J. Clements, M. Felleisen, \"A Tail-Recursive Machine with Stack Inspection\", ACM TOPLAS 26(6), 2004, pp. 1029-1052, doi:10.1145/1034774.1034778 (an abstract machine combining proper tail calls with frame-attached information; no destructors) [bibliographic record checked; publisher text not fetched]",
+      "Y. K. Tan, M. O. Myreen, R. Kumar, A. Fox, S. Owens, M. Norrish, \"A New Verified Compiler Backend for CakeML\", ICFP 2016, pp. 60-73, doi:10.1145/2951913.2951924 (a verified backend with explicit stack frames, tail calls and exception unwinding; no destructors) [bibliographic record checked; publisher text not fetched]",
+      "rust-lang/rfcs#3407 \"Explicit Tail Calls\" (open, unmerged proposal; cited in prose, not normative) and rust-lang/rust#112788 (open tracking issue; cited in prose)"
+    ],
+    "design_question": "Q1: relative to what reference semantics is frame reuse a refinement, given that locals and parameters are finalized before the jump?",
+    "lean_names": [
+      "Toy.TailCall.Conf",
+      "Toy.TailCall.Cont",
+      "Toy.TailCall.DropEnd",
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.Event",
+      "Toy.TailCall.Fn",
+      "Toy.TailCall.Fn.dtor",
+      "Toy.TailCall.Fn.nSlots",
+      "Toy.TailCall.FnId",
+      "Toy.TailCall.Frame",
+      "Toy.TailCall.Frame.clear",
+      "Toy.TailCall.Frame.get",
+      "Toy.TailCall.Frame.isLive",
+      "Toy.TailCall.Frame.kill",
+      "Toy.TailCall.Frame.write",
+      "Toy.TailCall.Instr",
+      "Toy.TailCall.Layout.areaSize_examples",
+      "Toy.TailCall.Layout.not_reuseSound_calleePops_2_1",
+      "Toy.TailCall.Layout.not_reuseSound_callerPops_1_2",
+      "Toy.TailCall.Layout.sigCheckExplicit_examples",
+      "Toy.TailCall.Layout.sigCheckFull_examples",
+      "Toy.TailCall.NoStackBorrow",
+      "Toy.TailCall.Observes",
+      "Toy.TailCall.Operand",
+      "Toy.TailCall.Outcome",
+      "Toy.TailCall.Prog",
+      "Toy.TailCall.Result",
+      "Toy.TailCall.RunsTo",
+      "Toy.TailCall.Sem",
+      "Toy.TailCall.Slot",
+      "Toy.TailCall.State",
+      "Toy.TailCall.State.empty",
+      "Toy.TailCall.State.halt",
+      "Toy.TailCall.Val",
+      "Toy.TailCall.Val.obs",
+      "Toy.TailCall.atTailCall_panicFin",
+      "Toy.TailCall.callFree_chain3",
+      "Toy.TailCall.danglingRet",
+      "Toy.TailCall.deliver",
+      "Toy.TailCall.desugarTailSite_mutualRec3",
+      "Toy.TailCall.doReturn",
+      "Toy.TailCall.dtorProg",
+      "Toy.TailCall.dtorProg_callReturn",
+      "Toy.TailCall.dtorProg_frameReuse",
+      "Toy.TailCall.dtorProg_popFirst",
+      "Toy.TailCall.dtorProg_preJump",
+      "Toy.TailCall.emptyProg",
+      "Toy.TailCall.entryOk_chain3",
+      "Toy.TailCall.escapeCheck_rejects_borrowProg",
+      "Toy.TailCall.evalOps",
+      "Toy.TailCall.findFrame",
+      "Toy.TailCall.frameReuse_of_preJump_fails_for_overflow_countUp3",
+      "Toy.TailCall.ignorePtrProg",
+      "Toy.TailCall.inlineCallSite_corrected_inlEx",
+      "Toy.TailCall.inlineTailSite_nonTail_unchanged",
+      "Toy.TailCall.noStackBorrow_deadEscape",
+      "Toy.TailCall.noStackBorrow_dtorProg",
+      "Toy.TailCall.noStackBorrow_not_necessary_ignorePtrProg",
+      "Toy.TailCall.not_atTailCall_wrongInstr",
+      "Toy.TailCall.not_callFree_countUp3",
+      "Toy.TailCall.not_entryOk_emptyProg",
+      "Toy.TailCall.not_noStackBorrow_borrowProg",
+      "Toy.TailCall.not_observes_dtorProg_frameReuse_callReturnTrace",
+      "Toy.TailCall.observes_iff_of_runsTo",
+      "Toy.TailCall.orderDemo",
+      "Toy.TailCall.overflows",
+      "Toy.TailCall.panicFinFrame",
+      "Toy.TailCall.panicFinRest",
+      "Toy.TailCall.panicFinState",
+      "Toy.TailCall.panicFinT",
+      "Toy.TailCall.pendingDrops_skips_no_dtor",
+      "Toy.TailCall.plainCall",
+      "Toy.TailCall.ptrRetProg",
+      "Toy.TailCall.push",
+      "Toy.TailCall.run",
+      "Toy.TailCall.run_halted",
+      "Toy.TailCall.run_mono",
+      "Toy.TailCall.runsTo_unique",
+      "Toy.TailCall.selfCallProg",
+      "Toy.TailCall.start",
+      "Toy.TailCall.tailCallBorrowsFrame"
+    ]
+  },
+  {
+    "id": "R2",
+    "lean": "Toy.TailCall.frameReuse_ne_callReturn_dtorProg",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise: running the caller's destructors before the callee is the documented pre-jump order; the observable difference from call-then-return with a destructor-carrying local was not found mechanized)",
+    "plain_claim": "There is a toy program, `dtorProg`, that satisfies `NoStackBorrow` and whose unbounded `callReturn` run returns 0 with trace `[out 1, drop 7]` while its unbounded `frameReuse` run returns 0 with trace `[drop 7, out 1]`; so `frameReuse` does not refine `callReturn` on event traces even when no stack borrow is passed.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "(counterexample; the instance is the witness)",
+    "nonvacuity_witness_lean": "Toy.TailCall.frameReuse_ne_callReturn_dtorProg",
+    "non_claims": [
+      "One concrete program; it shows that the equivalence of card R1 cannot be stated against `callReturn`.",
+      "On programs whose frames own no value with a destructor at their tail calls, `frameReuse` and `callReturn` may agree on traces; that is not proved here.",
+      "Destructors are atomic events (`DtorKind`): running one pushes no frame, executes no instruction and reads or writes no slot, so destructors that call functions (raising the peak depth during finalization) or that access their own slot through `&mut self` are not modelled (the `popFirst` variant of card R19 models that access and nothing else).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:810-825 (documentation of `TailCall`: pop of the current stack frame, then a call with the return address of the current caller) and :829-833 (arguments are owned by the callee) [documentation; used in the modeling bridge]",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/drop-order.rs:7-39 (asserts that `tail_recursive` records 0..128 ascending and `simply_recursive` records it descending) and :41-60 (all locals of the current frame dropped before the callee's) [test; used in the modeling bridge]",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) clang/include/clang/Basic/AttrDocs.td:616-643 (`[[clang::musttail]]`: \"Any variables in scope, including all arguments to the function and the return value must be trivially destructible\"; matching argument counts and similar types) [documentation; cited in prose]",
+      "T. Ramananandro, G. Dos Reis, X. Leroy, \"A Mechanized Semantics for C++ Object Construction and Destruction, with Applications to Resource Management\", POPL 2012, doi:10.1145/2103621.2103718 (mechanized reverse-order destruction; no tail calls) [bibliographic record checked; publisher text not fetched]",
+      "rust-lang/rfcs#3407 \"Explicit Tail Calls\" (open, unmerged proposal; cited in prose, not normative) and rust-lang/rust#112788 (open tracking issue; cited in prose)"
+    ],
+    "design_question": "Q1: relative to what reference semantics is frame reuse a refinement, given that locals and parameters are finalized before the jump?",
+    "lean_names": [
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.NoStackBorrow",
+      "Toy.TailCall.dtorProg"
+    ]
+  },
+  {
+    "id": "R3",
+    "lean": "Toy.TailCall.frameReuse_observes_of_preJump_of_ne_stackOverflow_of_noStackBorrow",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise: deallocating a frame before the tail call is known to be safe when no pointer into it reaches the callee (CompCert `Tailcall.v` documentation, LLVM `musttail` documentation), and tail calls without destructors are mechanized in Stack-Aware CompCert and CakeML; a mechanized statement combining pre-jump destructor finalization with this bounded transfer was not found in a web search)",
+    "plain_claim": "For every toy program `p` satisfying `NoStackBorrow p` (a property of the unbounded `preJump` run of `p`), every stack bound `D` (including `none`), and every outcome `o` other than `stackOverflow` with trace `es`: if the `D`-bounded `preJump` run of `p` halts with `o` and `es`, then the `D`-bounded `frameReuse` run of `p` halts with `o` and `es`.",
+    "hypotheses": [
+      {
+        "name": "hnb : NoStackBorrow p",
+        "purpose": "as in R1: without it a popped slot can be loaded",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.frameReuse_of_preJump_fails_borrowProg",
+        "witness_class": "a three-function program, `D = none`"
+      },
+      {
+        "name": "hso : o ≠ .stackOverflow",
+        "purpose": "the bounded `preJump` run may overflow where `frameReuse` does not",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.frameReuse_of_preJump_fails_for_overflow_countUp3",
+        "witness_class": "`countUp 3` with bound `some 4`"
+      }
+    ],
+    "depth": "substantive",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "`countUp 3` satisfies `NoStackBorrow`; with bound `some 5` its `preJump` run returns 0 with trace `[drop 0, drop 1, drop 2]`.",
+    "nonvacuity_witness_lean": "Toy.TailCall.frameReuse_of_preJump_nonvacuous_countUp3",
+    "non_claims": [
+      "One direction: `frameReuse` may halt normally where `preJump` overflows. With bound `some 4`, `countUp 3` overflows under `preJump` while `frameReuse` does not halt with that overflow (`frameReuse_of_preJump_fails_for_overflow_countUp3`); `frameReuse` returns 0 there (`countUp3_bound4_frameReuse`). The converse transfer is not claimed.",
+      "`NoStackBorrow` is evaluated on the unbounded `preJump` run, not on the bounded one.",
+      "Degenerate bound: with `D = some 0`, for a program satisfying `EntryOk p` (whose entry function exists and takes no parameters) the initial push overflows under every semantics (`runsTo_bound0_of_entryOk`; instance `countUp3_bound0_overflows`), so for such a program the statement has no premise with an outcome other than `stackOverflow`. For a program violating `EntryOk` it can have one: `paramEntryProg` (entry function with exactly 1 parameter) halts with `ub` under both semantics at `D = some 0`, because `push` checks the arity before the bound (`paramEntryProg_bound0_ub`).",
+      "Compares halted runs; bounded runs that do not halt are not compared.",
+      "Depth is counted in frames, not bytes; frame sizes are not modelled in this machine.",
+      "The non-claims of card R1 apply here too. In particular, `NoStackBorrow` is sufficient, not necessary: in `ignorePtrProg` a pointer into the current frame is passed but never loaded through, so `NoStackBorrow` fails, yet the unbounded runs of both semantics have the same outcome and trace (`noStackBorrow_not_necessary_ignorePtrProg`; shown for `D = none`, other bounds are not examined). `preJump` keeps finalized frames on the stack and the machine does not flag a load from a dropped slot; the machine imposes no arity or signature relation between a function and the callee of its tail call (a mismatch is `ub` at `push`).",
+      "Destructors are atomic events (`DtorKind`): running one pushes no frame, executes no instruction and reads or writes no slot, so destructors that call functions (raising the peak depth during finalization) or that access their own slot through `&mut self` are not modelled (the `popFirst` variant of card R19 models that access and nothing else).",
+      "The toy has no heap, no stores through pointers, no borrow checker and no catching of panics.",
+      "Frame identities are unobservable by construction: `Val.obs` maps pointers and `undef` to `0`, and events and final results record `Val.obs` values and no frame identities.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "W. D. Clinger, \"Proper Tail Recursion and Space Efficiency\", PLDI 1998, pp. 174-185, doi:10.1145/277650.277719 (space-efficiency formulation of proper tail calls; no destructors, no inlining)",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/docs/LangRef.rst:12593-12637 (`musttail`: no unbounded stack growth in recursive cycles; \"Both markers imply that the callee does not access allocas from the caller\"; ABI attributes and caller/callee prototypes must match unless the convention is `swifttailcc` or `tailcc`) [documentation; used in the modeling bridge]",
+      "Y. Wang, P. Wilke, Z. Shao, \"An Abstract Stack Based Approach to Verified Compositional Compilation to Machine Code\", Proc. ACM Program. Lang. 3 (POPL), Article 62, 2019, doi:10.1145/3290375 (Stack-Aware CompCert: a bounded abstract stack, mechanized through tail-call recognition and inlining; no destructors) [bibliographic record checked; publisher text not fetched]",
+      "Q. Carbonneaux, J. Hoffmann, T. Ramananandro, Z. Shao, \"End-to-End Verification of Stack-Space Bounds for C Programs\", PLDI 2014, pp. 270-281, doi:10.1145/2594291.2594301 (stack-bound preservation through a verified compiler; no explicit tail calls or destructors)"
+    ],
+    "design_question": "Q1: relative to what reference semantics is frame reuse a refinement, given that locals and parameters are finalized before the jump?",
+    "lean_names": [
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.EntryOk",
+      "Toy.TailCall.NoStackBorrow",
+      "Toy.TailCall.Val.obs",
+      "Toy.TailCall.countUp",
+      "Toy.TailCall.countUp3_bound0_overflows",
+      "Toy.TailCall.countUp3_bound4_frameReuse",
+      "Toy.TailCall.ignorePtrProg",
+      "Toy.TailCall.noStackBorrow_not_necessary_ignorePtrProg",
+      "Toy.TailCall.paramEntryProg",
+      "Toy.TailCall.paramEntryProg_bound0_ub",
+      "Toy.TailCall.push",
+      "Toy.TailCall.runsTo_bound0_of_entryOk"
+    ]
+  },
+  {
+    "id": "R4",
+    "lean": [
+      "Toy.TailCall.countUp_frameReuse_runsTo",
+      "Toy.TailCall.countUp_preJump_runsTo",
+      "Toy.TailCall.countUp_callReturn_runsTo"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise: the ascending/descending drop orders are asserted by the rustc UI test `drop-order.rs`; exact depth and trace equations for a self-tail-recursive family were not found mechanized)",
+    "plain_claim": "For every `N`, the self-tail-recursive toy program `countUp N` (the entry calls `rec 0`; `rec n` returns 0 when `n ≥ N`, and otherwise owns a local with value `n` whose destructor emits `drop n` and tail-calls `rec (n + 1)`) returns 0 with exactly `N` tail-call jumps under each of the three unbounded semantics `frameReuse`, `preJump` and `callReturn`, with: `frameReuse` — trace `drop 0, …, drop (N-1)` and maximum depth exactly 2; `preJump` — the same trace and maximum depth exactly `N + 2`; `callReturn` — trace `drop (N-1), …, drop 0` and maximum depth exactly `N + 2` (each trace is `[]` when `N = 0`; the Lean terms use `List.range N`, so no truncated subtraction occurs).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "Instances `N = 3` are kernel-checked: `countUp3_frameReuse`, `countUp3_preJump`, `countUp3_callReturn`.",
+    "nonvacuity_witness_lean": [
+      "Toy.TailCall.countUp3_frameReuse",
+      "Toy.TailCall.countUp3_preJump",
+      "Toy.TailCall.countUp3_callReturn"
+    ],
+    "non_claims": [
+      "One specific program family; \"ascending\" and \"descending\" refer to the labels `n`, which increase with recursion depth (the outermost frame owns `drop 0`). With labels decreasing in depth the words swap.",
+      "Depth counts frames (the entry frame included); the value 2 includes the entry frame that called `rec`.",
+      "The `popFirst` variant is not covered (it is `ub` on this family whenever `N > 0`, by the mechanism of card R19; not proved here).",
+      "General tail-call chains are card R5; programs with both calls and tail calls are not covered beyond this family.",
+      "Destructors are atomic events (`DtorKind`): running one pushes no frame, executes no instruction and reads or writes no slot, so destructors that call functions (raising the peak depth during finalization) or that access their own slot through `&mut self` are not modelled (the `popFirst` variant of card R19 models that access and nothing else).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/drop-order.rs:7-39 (asserts that `tail_recursive` records 0..128 ascending and `simply_recursive` records it descending) and :41-60 (all locals of the current frame dropped before the callee's) [test; used in the modeling bridge]",
+      "W. D. Clinger, \"Proper Tail Recursion and Space Efficiency\", PLDI 1998, pp. 174-185, doi:10.1145/277650.277719 (space-efficiency formulation of proper tail calls; no destructors, no inlining)"
+    ],
+    "design_question": "Q1: relative to what reference semantics is frame reuse a refinement, given that locals and parameters are finalized before the jump?",
+    "lean_names": [
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.countUp"
+    ]
+  },
+  {
+    "id": "R5",
+    "lean": [
+      "Toy.TailCall.callFree_frameReuse_maxDepth_of_entryOk",
+      "Toy.TailCall.callFree_preJump_maxDepth_of_entryOk"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: constant stack for chains of proper tail calls versus linear growth when frames are kept is the classical space property of Steele and Clinger, restated for this machine)",
+    "plain_claim": "For every call-free toy program (`CallFree p`: no `call` instruction in any function of `p`, reachable or not) whose entry function exists and takes no parameters (`EntryOk p`), every halted unbounded `frameReuse` run has maximum depth exactly 1, and every halted unbounded `preJump` run has maximum depth equal to its number of tail-call jumps plus 1.",
+    "hypotheses": [
+      {
+        "name": "hcf : CallFree p = true",
+        "purpose": "a `call` keeps a frame below the chain, adding depth that is not a tail call",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.TailCall.callFree_needed_frameReuse_countUp3",
+          "Toy.TailCall.callFree_needed_preJump_countUp3"
+        ],
+        "witness_class": "`countUp 3`, whose entry calls `rec`"
+      },
+      {
+        "name": "hentry : EntryOk p",
+        "purpose": "without an entry frame the run halts at depth 0",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.TailCall.entryOk_needed_emptyProg",
+          "Toy.TailCall.entryOk_needed_paramEntryProg"
+        ],
+        "witness_class": "the empty program (no entry function), and a one-function program whose entry function takes one parameter"
+      }
+    ],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "`chain3` (main → f₁ → f₂, two tail calls) satisfies both hypotheses; `frameReuse` depth 1, `preJump` depth 3 with 2 jumps.",
+    "nonvacuity_witness_lean": "Toy.TailCall.callFree_nonvacuous_chain3",
+    "non_claims": [
+      "A \"jump\" is a tail call whose callee frame was pushed (`bumpTail`); tail calls interrupted by a destructor panic, an overflow or `ub` are not counted.",
+      "Unbounded runs (`D = none`) that halt; non-halting chains are not covered.",
+      "`CallFree` is syntactic over all functions, so a program with an unreachable `call` is excluded although its runs may be chains of tail calls.",
+      "Programs mixing `call` and `tailCall` are not bounded by this result (`countUp 3` reaches depth 2 under `frameReuse`).",
+      "`r.tailCalls` is not claimed equal across `frameReuse` and `preJump` runs of the same program.",
+      "Depth in frames, not bytes.",
+      "Destructors are atomic events (`DtorKind`): running one pushes no frame, executes no instruction and reads or writes no slot, so destructors that call functions (raising the peak depth during finalization) or that access their own slot through `&mut self` are not modelled (the `popFirst` variant of card R19 models that access and nothing else).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "W. D. Clinger, \"Proper Tail Recursion and Space Efficiency\", PLDI 1998, pp. 174-185, doi:10.1145/277650.277719 (space-efficiency formulation of proper tail calls; no destructors, no inlining)",
+      "G. L. Steele Jr., \"Debunking the 'Expensive Procedure Call' Myth, or, Procedure Call Implementations Considered Harmful, or, LAMBDA: The Ultimate GOTO\", Proceedings of the 1977 annual conference (ACM '77), pp. 153-162, doi:10.1145/800179.810196 (tail calls compiled as jumps)",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/docs/LangRef.rst:12593-12637 (`musttail`: no unbounded stack growth in recursive cycles; \"Both markers imply that the callee does not access allocas from the caller\"; ABI attributes and caller/callee prototypes must match unless the convention is `swifttailcc` or `tailcc`) [documentation; used in the modeling bridge]",
+      "J. Clements, M. Felleisen, \"A Tail-Recursive Machine with Stack Inspection\", ACM TOPLAS 26(6), 2004, pp. 1029-1052, doi:10.1145/1034774.1034778 (an abstract machine combining proper tail calls with frame-attached information; no destructors) [bibliographic record checked; publisher text not fetched]"
+    ],
+    "design_question": "Q1: relative to what reference semantics is frame reuse a refinement, given that locals and parameters are finalized before the jump?",
+    "lean_names": [
+      "Toy.TailCall.CallFree",
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.EntryOk",
+      "Toy.TailCall.bumpTail",
+      "Toy.TailCall.chain3",
+      "Toy.TailCall.countUp"
+    ]
+  },
+  {
+    "id": "R6",
+    "lean": [
+      "Toy.TailCall.mem_pendingDrops_iff",
+      "Toy.TailCall.pendingDrops_pairwise_gt"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: a definitional characterization of the toy's finalization list; reverse declaration order is the usual destruction order, mechanized for C++ by Ramananandro et al.)",
+    "plain_claim": "For every function `fn` and frame `fr`, a slot `s` is in `pendingDrops fn fr` exactly when `s < fr.vals.length`, the drop flag of `s` is set (`fr.isLive s = true`), and the destructor kind of `s` is not `none`; and `pendingDrops fn fr` lists slots in strictly decreasing order.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "`pendingDrops_orderDemo` (slots 4, 2, 1, 0; slot 3 moved) and the full run `orderDemo_frameReuse`.",
+    "nonvacuity_witness_lean": [
+      "Toy.TailCall.pendingDrops_orderDemo",
+      "Toy.TailCall.orderDemo_frameReuse"
+    ],
+    "non_claims": [
+      "In the machine, parameters occupy the lowest slots and `move` clears a slot's drop flag (`evalOp`), so in a run the list puts locals before parameters and omits moved-from slots (instance: `orderDemo_frameReuse`); these operational facts are not part of this result.",
+      "Characterizes the toy's finalization order; it does not state the parameter drop order of any real language.",
+      "Drop flags are set by `assign` and `call` results and cleared by `move`, drops and `reset`; partial moves and nested places are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/drop-order.rs:7-39 (asserts that `tail_recursive` records 0..128 ascending and `simply_recursive` records it descending) and :41-60 (all locals of the current frame dropped before the callee's) [test; used in the modeling bridge]",
+      "T. Ramananandro, G. Dos Reis, X. Leroy, \"A Mechanized Semantics for C++ Object Construction and Destruction, with Applications to Resource Management\", POPL 2012, doi:10.1145/2103621.2103718 (mechanized reverse-order destruction; no tail calls) [bibliographic record checked; publisher text not fetched]"
+    ],
+    "design_question": "Q5: what does pre-jump finalization guarantee when a destructor panics, and why must the frame stay until finalization ends?",
+    "lean_names": [
+      "Toy.TailCall.evalOp",
+      "Toy.TailCall.pendingDrops"
+    ]
+  },
+  {
+    "id": "R7",
+    "lean": "Toy.TailCall.frameReuse_iff_preJump_fails_borrowProg",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: the hazard is documented in CompCert's `Tailcall.v` and LLVM's `musttail` rules; this is its instance in the toy)",
+    "plain_claim": "Without `NoStackBorrow` the equivalence of R1 fails: in `borrowProg` (`t` does `become reader(&local)` and `reader` loads through its argument) `NoStackBorrow` does not hold, the unbounded `preJump` run returns 5 with an empty trace, the unbounded `frameReuse` run halts with `ub` and an empty trace, and the two runs do not have the same outcomes and traces.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "(counterexample; the instance is the witness)",
+    "nonvacuity_witness_lean": "Toy.TailCall.frameReuse_iff_preJump_fails_borrowProg",
+    "non_claims": [
+      "The local has no destructor, so the difference is the frame's removal alone; with a destructor the `preJump` run would also load a dropped slot, which the toy does not flag.",
+      "Shows that the hypothesis of R1 cannot be dropped; it does not show that every pointer-passing program breaks the equivalence (card R1 non-claims: `noStackBorrow_not_necessary_ignorePtrProg`).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/ctfe-arg-bad-borrow.rs:4-10 and ctfe-arg-bad-borrow.stderr:1-11 (`become takes_borrow(&local)` rejected with E0597, \"`local` dropped here while still borrowed\") [test; used in the modeling bridge]",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Tailcall.v:17-28 (the documentation says an `Icall` can be turned into an `Itailcall` if the caller's stack block is empty, and explains that otherwise a pointer into it may have been passed to the callee) and :80-98 (`transf_instr`, `transf_function`); backend/Tailcallproof.v:600-601 (`transf_program_correct`: forward simulation RTL -> RTL)",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/docs/LangRef.rst:12593-12637 (`musttail`: no unbounded stack growth in recursive cycles; \"Both markers imply that the callee does not access allocas from the caller\"; ABI attributes and caller/callee prototypes must match unless the convention is `swifttailcc` or `tailcc`) [documentation; used in the modeling bridge]"
+    ],
+    "design_question": "Q2: when must borrows of the current frame be rejected?",
+    "lean_names": [
+      "Toy.TailCall.NoStackBorrow",
+      "Toy.TailCall.borrowProg",
+      "Toy.TailCall.noStackBorrow_not_necessary_ignorePtrProg"
+    ]
+  },
+  {
+    "id": "R8",
+    "lean": "Toy.TailCall.noStackBorrow_of_escapeCheckAccepts",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise: escape analysis guarding tail calls is standard compiler practice; a soundness proof of such a check against a tail-call semantics with frame identities was not found mechanized)",
+    "plain_claim": "For every toy program `p`, if the flow-insensitive escape check accepts `p` (`EscapeCheckAccepts p = true`: in every function, no `tailCall` argument is an `addrOf` operand or reads a slot that may hold an `addrOf`-derived value, where taint flows through `assign` and through `call` results with a tainted argument), then `p` satisfies `NoStackBorrow`.",
+    "hypotheses": [
+      {
+        "name": "hacc : EscapeCheckAccepts p = true",
+        "purpose": "the verdict whose soundness is claimed",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.escapeCheck_needed_borrowProg",
+        "witness_class": "`borrowProg`, which the check rejects and which violates `NoStackBorrow`"
+      }
+    ],
+    "depth": "substantive",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "The check accepts `dtorProg` and `countUp 3`.",
+    "nonvacuity_witness_lean": [
+      "Toy.TailCall.escapeCheck_accepts_dtorProg",
+      "Toy.TailCall.escapeCheck_accepts_countUp3"
+    ],
+    "non_claims": [
+      "Not complete: card R9.",
+      "The check is intra-procedural: a `call` taints its destination slot and no other slot. Its soundness relies on the toy having no stores through pointers (so no out-parameters), no heap or global state and no compound values; it is not offered as an analysis for a language that has them.",
+      "`taint` runs `nSlots + 1` rounds of an inflationary step; the proof shows that the result is a fixpoint of `taintStep` (in the proof-support module `EscapeProof.lean`, not cited as a result); that it is the least fixpoint is not proved, and the result is about `taint` as defined.",
+      "Not a model of Rust's borrow checker; the toy has no lifetimes or references, just frame-identified pointers.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/ctfe-arg-bad-borrow.rs:4-10 and ctfe-arg-bad-borrow.stderr:1-11 (`become takes_borrow(&local)` rejected with E0597, \"`local` dropped here while still borrowed\") [test; used in the modeling bridge]",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Tailcall.v:17-28 (the documentation says an `Icall` can be turned into an `Itailcall` if the caller's stack block is empty, and explains that otherwise a pointer into it may have been passed to the callee) and :80-98 (`transf_instr`, `transf_function`); backend/Tailcallproof.v:600-601 (`transf_program_correct`: forward simulation RTL -> RTL)",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/docs/LangRef.rst:12593-12637 (`musttail`: no unbounded stack growth in recursive cycles; \"Both markers imply that the callee does not access allocas from the caller\"; ABI attributes and caller/callee prototypes must match unless the convention is `swifttailcc` or `tailcc`) [documentation; used in the modeling bridge]"
+    ],
+    "design_question": "Q2: when must borrows of the current frame be rejected?",
+    "lean_names": [
+      "Toy.TailCall.EscapeCheckAccepts",
+      "Toy.TailCall.EscapeCheckFn",
+      "Toy.TailCall.NoStackBorrow",
+      "Toy.TailCall.Val.pointsInto",
+      "Toy.TailCall.allRunning",
+      "Toy.TailCall.allRunning_sound",
+      "Toy.TailCall.borrowProg",
+      "Toy.TailCall.countUp",
+      "Toy.TailCall.dtorProg",
+      "Toy.TailCall.noStackBorrow_of_allRunning",
+      "Toy.TailCall.opTainted",
+      "Toy.TailCall.taint",
+      "Toy.TailCall.taintStep"
+    ]
+  },
+  {
+    "id": "R9",
+    "lean": "Toy.TailCall.escapeCheck_incomplete_deadEscape",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: incompleteness of flow-insensitive analyses is textbook; this is its instance for the toy check)",
+    "plain_claim": "The escape check is incomplete: it rejects `deadEscape` (an address is stored in a slot and overwritten with 0 before the tail call passes that slot), although `deadEscape` satisfies `NoStackBorrow`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "(counterexample; the instance is the witness)",
+    "nonvacuity_witness_lean": "Toy.TailCall.escapeCheck_incomplete_deadEscape",
+    "non_claims": [
+      "Says nothing about how often such rejections occur, or about flow-sensitive checks.",
+      "Other sources of incompleteness exist (for instance a borrowing tail call in unreachable code, or `succ`, which taints its result although it never yields a pointer); they are not proved here.",
+      "Whether `NoStackBorrow` is decidable is not addressed here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/ctfe-arg-bad-borrow.rs:4-10 and ctfe-arg-bad-borrow.stderr:1-11 (`become takes_borrow(&local)` rejected with E0597, \"`local` dropped here while still borrowed\") [test; used in the modeling bridge]"
+    ],
+    "design_question": "Q2: when must borrows of the current frame be rejected?",
+    "lean_names": [
+      "Toy.TailCall.NoStackBorrow",
+      "Toy.TailCall.deadEscape"
+    ]
+  },
+  {
+    "id": "R10",
+    "lean": [
+      "Toy.TailCall.Layout.reuseSound_callerPops_iff",
+      "Toy.TailCall.Layout.reuseSound_calleePops_iff"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: textbook calling-convention reasoning about argument areas at a fixed frame boundary, restated in a layout toy)",
+    "plain_claim": "In the layout toy, at a fixed frame boundary `b` (no return-address relocation and no stack-pointer adjustment before the jump), for all incoming-area sizes `inG` (current function) and `inH` (callee): frame reuse is sound under caller cleanup iff `inH ≤ inG`, and sound under callee cleanup iff `inH = inG` (`ReuseSound`: for every memory, frame base `b` and list of exactly `inH` argument cells, no cell below `b - inG` changes, the callee reads back its arguments from `[b - inH, b)`, and the caller sees stack pointer `b - inG` after the return).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "`reuseSound_callerPops_2_1` and `reuseSound_calleePops_1_1`.",
+    "nonvacuity_witness_lean": [
+      "Toy.TailCall.Layout.reuseSound_callerPops_2_1",
+      "Toy.TailCall.Layout.reuseSound_calleePops_1_1"
+    ],
+    "non_claims": [
+      "The fixed boundary is a modelling choice. Callee-cleanup conventions that relocate the return address and adjust the stack pointer before the jump escape the `inH = inG` condition: with the boundary moved by `inH - inG` cells, frame reuse is sound under callee cleanup for all sizes, including `inH > inG` (card R20, `reuseSoundAt_calleePops_iff`).",
+      "The second condition of `ReuseSound` holds for all sizes (`readArgs_reuseWrite`): the arguments are already-evaluated numbers, so copying arguments in place out of the current function's own incoming area, where an overlapping write can clobber an argument not yet read, is not modelled.",
+      "The third condition is fixed by `spAfterReturn`, which stipulates each convention's stack pointer after the return; under callee cleanup the `→` direction follows from it alone.",
+      "A separate layout model; no relation to the frame-stack machine is proved.",
+      "Addresses are integers (no wrap-around, no truncated subtraction); area sizes 0 are allowed and covered.",
+      "Register-passed arguments, per-argument types and alignment, the return-address slot itself and variadic functions are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Conventions.v:143-155 (`tailcall_possible`: all arguments passed in registers, i.e. no stack-argument area)",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_build/src/check_tail_calls.rs:134-136 (ABI equality check) and :150-163 (signature equality check, skipped when the callee ABI is `RustTail`) [source; used in the modeling bridge]",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/signature-mismatch.rs:4-14 and signature-mismatch.stderr:1-19 (`become` between `fn(())` and `fn()` rejected: \"mismatched signatures\") [test; cited in prose]",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/docs/LangRef.rst:498-501 (`swifttailcc`: \"the callee pops the argument area of the stack so that mandatory tail calls are possible as in ``tailcc``\") and :12626-12637 (prototype matching is required for `musttail` unless the convention is `swifttailcc` or `tailcc`) [documentation; used in the modeling bridge]"
+    ],
+    "design_question": "Q3: what signature or argument-area compatibility does frame reuse need?",
+    "lean_names": [
+      "Toy.TailCall.Layout.Cleanup",
+      "Toy.TailCall.Layout.Mem",
+      "Toy.TailCall.Layout.ReuseSound",
+      "Toy.TailCall.Layout.ReuseSoundAt",
+      "Toy.TailCall.Layout.Sig",
+      "Toy.TailCall.Layout.Sig.areaSize",
+      "Toy.TailCall.Layout.readArgs",
+      "Toy.TailCall.Layout.readArgs_reuseWrite",
+      "Toy.TailCall.Layout.readArgs_writeArgs",
+      "Toy.TailCall.Layout.reuseSoundAt_calleePops_iff",
+      "Toy.TailCall.Layout.reuseWrite",
+      "Toy.TailCall.Layout.reuseWriteAt",
+      "Toy.TailCall.Layout.spAfterReturn",
+      "Toy.TailCall.Layout.writeArgs",
+      "Toy.TailCall.Layout.writeArgs_eq_of_lt"
+    ]
+  },
+  {
+    "id": "R11",
+    "lean": "Toy.TailCall.Layout.reuseSound_of_sigCheckFull",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: a direct corollary of card R10)",
+    "plain_claim": "In the layout toy, at a fixed frame boundary, for all signatures `g` and `h`: if `sigCheckFull g h = true` (equal explicit parameters and equal hidden caller-location parameter), then frame reuse is sound for their incoming-area sizes under either cleanup convention.",
+    "hypotheses": [
+      {
+        "name": "hchk : sigCheckFull g h = true",
+        "purpose": "equal signatures give equal areas",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.Layout.sigCheckExplicit_insufficient_calleeLoc",
+        "witness_class": "`g = ⟨[1], false⟩`, `h = ⟨[1], true⟩`, under either convention"
+      }
+    ],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "`sigCheckFull ⟨[1, 2], true⟩ ⟨[1, 2], true⟩ = true`.",
+    "nonvacuity_witness_lean": "Toy.TailCall.Layout.sigCheckFull_nonvacuous",
+    "non_claims": [
+      "A shallow corollary of card R10 (equal signatures have equal areas).",
+      "`sigCheckFull` is sufficient, not necessary, under either convention: under caller cleanup a smaller callee area is enough (`sigCheckExplicit_callerLoc_depends_on_cleanup`), and under callee cleanup equal areas are enough even when explicit parameters differ (`reuseSound_calleePops_without_sigCheck`: `⟨[2], false⟩` and `⟨[1], true⟩`).",
+      "The toy check accepts a caller and a callee that both take the hidden parameter; rustc rejects every `become` from a `#[track_caller]` function, including that case (Findings, modeling bridge B4). The toy check is not a model of rustc's check.",
+      "A hidden parameter is modelled as one trailing stack cell; a hidden parameter passed in a register, or one that shifts the positions of explicit parameters, is not modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_build/src/check_tail_calls.rs:134-136 (ABI equality check) and :150-163 (signature equality check, skipped when the callee ABI is `RustTail`) [source; used in the modeling bridge]",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_build/src/check_tail_calls.rs:165-185 (comment: `#[track_caller]` adds a location argument; a `#[track_caller]` caller is rejected because THIR can be polymorphic, so allowing just the resolvable `#[track_caller]` callees would make changing `track_caller`-ness a breaking change; the callee's `track_caller`-ness is not checked, mostly for those reasons and also because the shim generated for coercing the function to an `fn()` pointer can always be tail-called) and :394-405 (the error \"a function marked with `#[track_caller]` cannot perform a tail-call\") [source; used in the modeling bridge]",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/caller_is_track_caller.rs:4-14 and caller_is_track_caller.stderr:1-11 (`become` from a `#[track_caller]` function is rejected both when the callee lacks the attribute (`a -> b`) and when it has it (`c -> a`)) [test; used in the modeling bridge]",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/signature-mismatch.rs:4-14 and signature-mismatch.stderr:1-19 (`become` between `fn(())` and `fn()` rejected: \"mismatched signatures\") [test; cited in prose]"
+    ],
+    "design_question": "Q3: what signature or argument-area compatibility does frame reuse need?",
+    "lean_names": [
+      "Toy.TailCall.Layout.reuseSound_calleePops_without_sigCheck",
+      "Toy.TailCall.Layout.sigCheckExplicit_callerLoc_depends_on_cleanup",
+      "Toy.TailCall.Layout.sigCheckFull"
+    ]
+  },
+  {
+    "id": "R12",
+    "lean": "Toy.TailCall.Layout.sigCheckExplicit_insufficient_calleeLoc",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: an instance of card R10)",
+    "plain_claim": "In the layout toy, at a fixed frame boundary, comparing explicit parameters is not enough: for `g = ⟨[1], false⟩` and `h = ⟨[1], true⟩`, `sigCheckExplicit g h = true` and `sigCheckFull g h = false`, and frame reuse is unsound for their area sizes (exactly 1 and exactly 2) under both cleanup conventions (the callee's extra cell overwrites the caller's frame).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "(counterexample; the instance is the witness)",
+    "nonvacuity_witness_lean": "Toy.TailCall.Layout.sigCheckExplicit_insufficient_calleeLoc",
+    "non_claims": [
+      "An instance of card R10 at a fixed boundary; under callee cleanup with return-address relocation the same areas are compatible (card R20).",
+      "A hidden parameter is modelled as one trailing stack cell; a hidden parameter passed in a register, or one that shifts the positions of explicit parameters, is not modelled.",
+      "rustc rejects `become` from a `#[track_caller]` function and does not check the callee's `track_caller`-ness; its source comment gives as one reason that the shim generated for coercing the function to an `fn()` pointer can always be tail-called (Findings, modeling bridge B4). This card says nothing about rustc's handling of such callees.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_build/src/check_tail_calls.rs:165-185 (comment: `#[track_caller]` adds a location argument; a `#[track_caller]` caller is rejected because THIR can be polymorphic, so allowing just the resolvable `#[track_caller]` callees would make changing `track_caller`-ness a breaking change; the callee's `track_caller`-ness is not checked, mostly for those reasons and also because the shim generated for coercing the function to an `fn()` pointer can always be tail-called) and :394-405 (the error \"a function marked with `#[track_caller]` cannot perform a tail-call\") [source; used in the modeling bridge]",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/caller_is_track_caller.rs:4-14 and caller_is_track_caller.stderr:1-11 (`become` from a `#[track_caller]` function is rejected both when the callee lacks the attribute (`a -> b`) and when it has it (`c -> a`)) [test; used in the modeling bridge]"
+    ],
+    "design_question": "Q3: what signature or argument-area compatibility does frame reuse need?",
+    "lean_names": [
+      "Toy.TailCall.Layout.sigCheckExplicit",
+      "Toy.TailCall.Layout.sigCheckFull"
+    ]
+  },
+  {
+    "id": "R13",
+    "lean": "Toy.TailCall.Layout.sigCheckExplicit_callerLoc_depends_on_cleanup",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: an instance of card R10)",
+    "plain_claim": "In the layout toy, at a fixed frame boundary, when the current function has the hidden caller-location parameter and the callee lacks it (`g = ⟨[1], true⟩`, `h = ⟨[1], false⟩`), `sigCheckExplicit g h = true` and `sigCheckFull g h = false`, and frame reuse is sound under caller cleanup and unsound under callee cleanup.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "(counterexample; the instance is the witness)",
+    "nonvacuity_witness_lean": "Toy.TailCall.Layout.sigCheckExplicit_callerLoc_depends_on_cleanup",
+    "non_claims": [
+      "The toy says nothing about which convention rustc uses; rustc rejects this case regardless (a `#[track_caller]` caller cannot perform a tail call; Findings, modeling bridge B4).",
+      "A hidden parameter is modelled as one trailing stack cell; a hidden parameter passed in a register, or one that shifts the positions of explicit parameters, is not modelled.",
+      "The fixed boundary is a modelling choice: under callee cleanup with the return address relocated by `δ = -1` cells, the same pair of areas (exactly 2 cells for `g`, exactly 1 for `h`) is compatible (`reuseSoundAt_calleePops_callerLoc_relocated`; card R20, `reuseSoundAt_calleePops_iff`).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_build/src/check_tail_calls.rs:165-185 (comment: `#[track_caller]` adds a location argument; a `#[track_caller]` caller is rejected because THIR can be polymorphic, so allowing just the resolvable `#[track_caller]` callees would make changing `track_caller`-ness a breaking change; the callee's `track_caller`-ness is not checked, mostly for those reasons and also because the shim generated for coercing the function to an `fn()` pointer can always be tail-called) and :394-405 (the error \"a function marked with `#[track_caller]` cannot perform a tail-call\") [source; used in the modeling bridge]",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/caller_is_track_caller.rs:4-14 and caller_is_track_caller.stderr:1-11 (`become` from a `#[track_caller]` function is rejected both when the callee lacks the attribute (`a -> b`) and when it has it (`c -> a`)) [test; used in the modeling bridge]"
+    ],
+    "design_question": "Q3: what signature or argument-area compatibility does frame reuse need?",
+    "lean_names": [
+      "Toy.TailCall.Layout.reuseSoundAt_calleePops_callerLoc_relocated",
+      "Toy.TailCall.Layout.reuseSoundAt_calleePops_iff",
+      "Toy.TailCall.Layout.sigCheckExplicit",
+      "Toy.TailCall.Layout.sigCheckFull"
+    ]
+  },
+  {
+    "id": "R14",
+    "lean": "Toy.TailCall.naiveSplice_changes_events_inlEx",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise: CompCert's inliner turns an `Itailcall` in an inlined body into an `Icall` to the return point, and LLVM reduces the strength of inlined tail calls; the toy adds a destructor-carrying caller frame whose finalization the kept tail call would trigger)",
+    "plain_claim": "The naive splice, which keeps the callee's `tailCall`, changes behaviour at a `call` site: in `inlEx` (`main` owns 9, calls `g`, then emits `out 2`; `g` tail-calls `h`, which emits `out 1`) the unbounded `frameReuse` run returns 0 with trace `[out 1, out 2, drop 9]`, while after `inlineCallSite .naive inlEx 0 1` it returns 0 with trace `[drop 9, out 1]`: the kept `tailCall` finalizes and pops `main`'s frame, so `main`'s continuation is lost.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "(counterexample; the instance is the witness)",
+    "nonvacuity_witness_lean": "Toy.TailCall.naiveSplice_changes_events_inlEx",
+    "non_claims": [
+      "About a `call` site. At a tail site keeping the tail call is the appropriate splice (CompCert keeps `Itailcall` when `ctx.(retinfo)` is `None`); in the toy one instance is kernel-checked (`naiveTailSiteSplice_within_bound_mutualRec3`, card R16).",
+      "Destructors are atomic events (`DtorKind`): running one pushes no frame, executes no instruction and reads or writes no slot, so destructors that call functions (raising the peak depth during finalization) or that access their own slot through `&mut self` are not modelled (the `popFirst` variant of card R19 models that access and nothing else).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/inline.rs:429-432 (the inliner returns Err(\"can't inline functions with tail calls\") with a FIXME) and :539 (FIXME: \"figure out if we can inline tail calls\") [source; used in the modeling bridge]",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Inlining.v:352-356 (an `Itailcall` in the body of an inlined function that cannot itself be inlined \"must be turned into an [Icall] instruction that branches to the return point of the inlined function\"), :385-399 (`expand_instr`: the `Itailcall` case keeps `Itailcall` when `ctx.(retinfo)` is `None`, emits `Icall ... rreg rpc` when it is `Some (rpc, rreg)`, and inlines a tail callee with `inline_tail_function`, :324-333); backend/Inliningproof.v:1321-1322 (`transf_program_correct`: forward simulation); driver/Compiler.v:123-125 (Inlining runs after Tail calls). No destructors; no frame bound.",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/lib/Transforms/Utils/InlineFunction.cpp:2594-2613 (comment and code reducing the strength of inlined tail calls: \"f -> musttail g -> musttail f  ==>  f -> musttail f\" keeps `musttail` to avoid unbounded stack growth for mutually recursive `f` and `g`, while \"f -> g -> musttail f  ==>  f -> f\") [source comment; used in the modeling bridge]"
+    ],
+    "design_question": "Q4: why is call-site inlining of a function containing tail calls not the Call/Return splice?",
+    "lean_names": [
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.inlEx",
+      "Toy.TailCall.inlineCallSite",
+      "Toy.TailCall.naiveTailSiteSplice_within_bound_mutualRec3"
+    ]
+  },
+  {
+    "id": "R15",
+    "lean": "Toy.TailCall.correctedCallSiteSplice_preserves_frameReuse_of_ne_ub_of_ne_stackOverflow",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise: CompCert mechanizes the `Itailcall`-to-`Icall` conversion inside inlined bodies by forward simulation, without destructors and without a frame bound; a statement with pre-jump destructor finalization and a frame bound was not found mechanized)",
+    "plain_claim": "For every toy program `p`, call site (function `ci`, pc `k`), stack bound `D` (including `none`), outcome `o` that is neither `ub` nor `stackOverflow`, and trace `es`: if the `D`-bounded `frameReuse` run of `p` halts with `o` and `es`, then so does the `D`-bounded `frameReuse` run of `inlineCallSite .corrected p ci k` (the callee's `tailCall h args` rewritten to: arguments into fresh temporaries, `dropSlots` of the callee's slots in reverse declaration order, then `call h` with the call site's destination slot `dst` and continuation pc `next`).",
+    "hypotheses": [
+      {
+        "name": "hub : o ≠ .ub",
+        "purpose": "inlining can turn `ub` into defined behaviour",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.correctedSplice_ub_not_preserved_danglingRet",
+        "witness_class": "a two-function program whose callee returns the address of its own local"
+      },
+      {
+        "name": "hso : o ≠ .stackOverflow",
+        "purpose": "inlining removes a frame push, so an overflow can disappear",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.correctedSplice_overflow_not_preserved_plainCall",
+        "witness_class": "a two-function program with bound `some 1`"
+      }
+    ],
+    "depth": "substantive",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "`inlEx2` (callee with a moved parameter and a local with a destructor) returns 4 with the same trace before and after the splice, unbounded and with bound `some 2`; the outcome is neither `ub` nor `stackOverflow` and the splice changes the program.",
+    "nonvacuity_witness_lean": "Toy.TailCall.correctedSplice_nonvacuous_inlEx2",
+    "non_claims": [
+      "One direction: the converse is false (`correctedCallSiteSplice_converse_false`). Unbounded, the corrected splice of `borrowProg` returns 5 with an empty trace while `borrowProg` does not (`correctedSplice_converse_fails_borrowProg`; it halts with `ub`, `correctedSplice_masks_borrow_ub_borrowProg`); with bound `some 1`, the corrected splice of `plainCall` returns 0 with trace `[out 1]` while `plainCall` does not (`correctedSplice_converse_fails_plainCall`; it overflows, `correctedSplice_overflow_not_preserved_plainCall`). The tightness counterexamples `correctedSplice_ub_not_preserved_danglingRet` and `correctedSplice_overflow_not_preserved_plainCall` show that the statement fails without `hub` or without `hso`; their statements do not expose the outcome of the spliced program, so they do not by themselves refute the converse.",
+      "`o ≠ ub` excludes more than dangling returns: a callee whose own tail call passes a pointer into the callee's frame (`ub` under `frameReuse`) returns normally after the splice (`correctedSplice_masks_borrow_ub_borrowProg`).",
+      "Comparisons go through `Val.obs`, which maps pointers to `0`: raw values can differ after inlining (`correctedSplice_raw_values_differ_ptrRetProg`: `ptr 1 0` before, `ptr 0 1` after) while `Observes` agrees. No version of the statement that compares raw values instead of `Val.obs` values is formalized; such a version is expected to fail because frame numbering changes (not proved here).",
+      "A self-call (`g = ci`) or a site that is not a well-formed `call` leaves the program unchanged (`inlineCallSite_self_unchanged`, `inlineCallSite_nonCall_unchanged`); for those the statement is trivial.",
+      "Tail-call counters are not preserved: the unbounded run of `inlEx2` executes exactly 1 tail-call jump and that of its corrected splice none, with the same outcome, trace and maximum depth (`correctedSplice_tailCalls_differ_inlEx2`); `Observes` ignores the counter.",
+      "Stated for `frameReuse`; `callReturn` and `preJump` are not covered.",
+      "Depth is counted in frames: the spliced function has more slots, so on a machine with a fixed byte budget per stack the splice could overflow where the original does not; frame sizes are not modelled.",
+      "Tail sites are card R16.",
+      "Destructors are atomic events (`DtorKind`): running one pushes no frame, executes no instruction and reads or writes no slot, so destructors that call functions (raising the peak depth during finalization) or that access their own slot through `&mut self` are not modelled (the `popFirst` variant of card R19 models that access and nothing else).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/inline.rs:429-432 (the inliner returns Err(\"can't inline functions with tail calls\") with a FIXME) and :539 (FIXME: \"figure out if we can inline tail calls\") [source; used in the modeling bridge]",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Inlining.v:352-356 (an `Itailcall` in the body of an inlined function that cannot itself be inlined \"must be turned into an [Icall] instruction that branches to the return point of the inlined function\"), :385-399 (`expand_instr`: the `Itailcall` case keeps `Itailcall` when `ctx.(retinfo)` is `None`, emits `Icall ... rreg rpc` when it is `Some (rpc, rreg)`, and inlines a tail callee with `inline_tail_function`, :324-333); backend/Inliningproof.v:1321-1322 (`transf_program_correct`: forward simulation); driver/Compiler.v:123-125 (Inlining runs after Tail calls). No destructors; no frame bound.",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/lib/Transforms/Utils/InlineFunction.cpp:2594-2613 (comment and code reducing the strength of inlined tail calls: \"f -> musttail g -> musttail f  ==>  f -> musttail f\" keeps `musttail` to avoid unbounded stack growth for mutually recursive `f` and `g`, while \"f -> g -> musttail f  ==>  f -> f\") [source comment; used in the modeling bridge]",
+      "Q. Carbonneaux, J. Hoffmann, T. Ramananandro, Z. Shao, \"End-to-End Verification of Stack-Space Bounds for C Programs\", PLDI 2014, pp. 270-281, doi:10.1145/2594291.2594301 (stack-bound preservation through a verified compiler; no explicit tail calls or destructors)",
+      "Y. Wang, P. Wilke, Z. Shao, \"An Abstract Stack Based Approach to Verified Compositional Compilation to Machine Code\", Proc. ACM Program. Lang. 3 (POPL), Article 62, 2019, doi:10.1145/3290375 (Stack-Aware CompCert: a bounded abstract stack, mechanized through tail-call recognition and inlining; no destructors) [bibliographic record checked; publisher text not fetched]",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Tailcall.v:17-28 (the documentation says an `Icall` can be turned into an `Itailcall` if the caller's stack block is empty, and explains that otherwise a pointer into it may have been passed to the callee) and :80-98 (`transf_instr`, `transf_function`); backend/Tailcallproof.v:600-601 (`transf_program_correct`: forward simulation RTL -> RTL)"
+    ],
+    "design_question": "Q4: why is call-site inlining of a function containing tail calls not the Call/Return splice?",
+    "lean_names": [
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.Observes",
+      "Toy.TailCall.SpliceMode",
+      "Toy.TailCall.Val.obs",
+      "Toy.TailCall.assignTemps",
+      "Toy.TailCall.correctedCallSiteSplice_converse_false",
+      "Toy.TailCall.correctedSplice_converse_fails_borrowProg",
+      "Toy.TailCall.correctedSplice_converse_fails_plainCall",
+      "Toy.TailCall.correctedSplice_masks_borrow_ub_borrowProg",
+      "Toy.TailCall.correctedSplice_raw_values_differ_ptrRetProg",
+      "Toy.TailCall.correctedSplice_tailCalls_differ_inlEx2",
+      "Toy.TailCall.desugarTailSite",
+      "Toy.TailCall.desugaredCallPc",
+      "Toy.TailCall.inlEx2",
+      "Toy.TailCall.inlineCallSite",
+      "Toy.TailCall.inlineCallSite_nonCall_unchanged",
+      "Toy.TailCall.inlineCallSite_self_unchanged",
+      "Toy.TailCall.maxTailArity",
+      "Toy.TailCall.padBlock",
+      "Toy.TailCall.renOp",
+      "Toy.TailCall.spliceBody",
+      "Toy.TailCall.spliceFn",
+      "Toy.TailCall.spliceInstr"
+    ]
+  },
+  {
+    "id": "R16",
+    "lean": [
+      "Toy.TailCall.correctedTailSiteSplice_mutualRec_runsTo",
+      "Toy.TailCall.correctedTailSiteSplice_mutualRec_overflows_any_slack"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: LLVM's inliner documents that inlining `g` into `f -> musttail g -> musttail f` must keep `musttail` to avoid unbounded stack growth; this is the toy instance with explicit depth equations)",
+    "plain_claim": "For every `N`, the unbounded `frameReuse` run of `mutualRec N` (mutual tail recursion `c ↔ g`, exactly `N` rounds of the pair, no destructors) returns 0 with empty trace, maximum depth exactly 2 and exactly `2 * N` jumps, while the unbounded `frameReuse` run of `inlineTailSite .corrected (mutualRec N) 1 1` (`g` spliced into `c`'s tail site after rewriting that tail call into its pre-jump reading as code) returns 0 with empty trace, maximum depth exactly `N + 2` and no jumps; and for every `C`, under stack bound `some (2 + C)` the `frameReuse` run of `mutualRec (C + 1)` returns 0 with empty trace while that of its corrected tail-site splice halts with `stackOverflow` and empty trace.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "Instance `N = 3` (`correctedTailSiteSplice_mutualRec3`) and the bounded instance `correctedTailSiteSplice_overflows_mutualRec3` (bound `some 3`: the original returns, the spliced program overflows).",
+    "nonvacuity_witness_lean": [
+      "Toy.TailCall.correctedTailSiteSplice_mutualRec3",
+      "Toy.TailCall.correctedTailSiteSplice_overflows_mutualRec3"
+    ],
+    "positive_control_lean": "Toy.TailCall.naiveTailSiteSplice_within_bound_mutualRec3",
+    "non_claims": [
+      "About the corrected (call-site) splice applied at a tail site. It does not show that tail-site inlining is impossible: a splice that keeps `g`'s tail call stays within bound `some 3` on `mutualRec 3` (`naiveTailSiteSplice_within_bound_mutualRec3`, one instance; no general theorem about a tail-preserving splice is stated). CompCert and LLVM keep the tail call at tail sites (Findings, modeling bridge B5).",
+      "One program family, without destructors: the interaction of tail-site inlining with finalization or unwinding is not tested.",
+      "Depth in frames, not bytes.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/inline.rs:429-432 (the inliner returns Err(\"can't inline functions with tail calls\") with a FIXME) and :539 (FIXME: \"figure out if we can inline tail calls\") [source; used in the modeling bridge]",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/lib/Transforms/Utils/InlineFunction.cpp:2594-2613 (comment and code reducing the strength of inlined tail calls: \"f -> musttail g -> musttail f  ==>  f -> musttail f\" keeps `musttail` to avoid unbounded stack growth for mutually recursive `f` and `g`, while \"f -> g -> musttail f  ==>  f -> f\") [source comment; used in the modeling bridge]",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Inlining.v:352-356 (an `Itailcall` in the body of an inlined function that cannot itself be inlined \"must be turned into an [Icall] instruction that branches to the return point of the inlined function\"), :385-399 (`expand_instr`: the `Itailcall` case keeps `Itailcall` when `ctx.(retinfo)` is `None`, emits `Icall ... rreg rpc` when it is `Some (rpc, rreg)`, and inlines a tail callee with `inline_tail_function`, :324-333); backend/Inliningproof.v:1321-1322 (`transf_program_correct`: forward simulation); driver/Compiler.v:123-125 (Inlining runs after Tail calls). No destructors; no frame bound.",
+      "W. D. Clinger, \"Proper Tail Recursion and Space Efficiency\", PLDI 1998, pp. 174-185, doi:10.1145/277650.277719 (space-efficiency formulation of proper tail calls; no destructors, no inlining)",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/docs/LangRef.rst:12593-12637 (`musttail`: no unbounded stack growth in recursive cycles; \"Both markers imply that the callee does not access allocas from the caller\"; ABI attributes and caller/callee prototypes must match unless the convention is `swifttailcc` or `tailcc`) [documentation; used in the modeling bridge]"
+    ],
+    "design_question": "Q4: why is call-site inlining of a function containing tail calls not the Call/Return splice?",
+    "lean_names": [
+      "Toy.TailCall.inlineTailSite",
+      "Toy.TailCall.mutualRec"
+    ]
+  },
+  {
+    "id": "R17",
+    "lean": [
+      "Toy.TailCall.dropList_clears_pending_of_ne_abort",
+      "Toy.TailCall.frameReuse_tailCall_finalizes_then_push_of_noPanic"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise, as a reference point: the one-step effect of pre-jump finalization stated for the toy; definitional)",
+    "plain_claim": "(a) For every function `fn` and frame `fr`, if finalizing `fr`'s pending slots does not abort, no pending drop remains in the resulting frame; (b) for every state `st` about to execute `tailCall f args` under `frameReuse` (any bound `D`) — not unwinding, with no pending return, and with the arguments evaluating without `ub` to values `vs` and evaluated frame `fr1` — if no pending destructor of `fr1` panics, the step emits `finalizationEvents fn fr1` (one `drop` per pending slot, in `pendingDrops` order), then performs `push` of `f` with `vs` onto the frames below the current one (the current frame is no longer on the stack), and, if that push succeeds, increments the tail-call counter (`bumpTail`).",
+    "hypotheses": [
+      {
+        "name": "hna : (dropList fn fr (pendingDrops fn fr) false).2.2 ≠ .abort",
+        "purpose": "an aborting finalization stops before the remaining slots",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.dropList_abort_leaves_pending",
+        "witness_class": "a frame with two panicking destructors",
+        "theorem": "(a)"
+      },
+      {
+        "name": "hat.not_unwinding : st.unwinding = false",
+        "purpose": "field of `AtTailCall`; while unwinding, the step drops and pops instead of executing the tail call",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.finalizes_then_push_fails_when_unwinding",
+        "witness_class": "the `panicFin` state with `unwinding := true`",
+        "theorem": "(b)"
+      },
+      {
+        "name": "hat.no_pendingRet : fr.pendingRet = none",
+        "purpose": "field of `AtTailCall`; a frame with a pending return returns instead",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.finalizes_then_push_fails_with_pendingRet",
+        "witness_class": "the `panicFin` frame with a pending return value",
+        "theorem": "(b)"
+      },
+      {
+        "name": "hat.args_eq : evalOps rest fr args = some (vs, fr1)",
+        "purpose": "field of `AtTailCall`; if argument evaluation is `ub`, the step halts with `ub` before any drop",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.finalizes_then_push_fails_when_args_ub",
+        "witness_class": "a two-function program (`badArgTailProg`) whose tail-call argument loads through an integer",
+        "theorem": "(b)"
+      },
+      {
+        "name": "hat.stack_eq, hat.fn_eq, hat.instr_eq",
+        "purpose": "fields of `AtTailCall`, taken jointly; they identify the instruction being executed as `tailCall f args` in frame `fr` of function `fn`",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.finalization_fails_at_other_instr",
+        "witness_class": "the `panicFin` state at a `panic` instruction (`instr_eq` fails, the other fields hold)",
+        "theorem": "(b)"
+      },
+      {
+        "name": "hnp : panickingPending fn fr1 = []",
+        "purpose": "a panicking destructor starts unwinding instead of the push",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.finalizes_then_push_fails_with_panic",
+        "witness_class": "the `panicFin` state with one panicking destructor",
+        "theorem": "(b)"
+      }
+    ],
+    "depth": "definitional",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "An all-quiet three-slot frame for (a); the all-quiet `panicFin` state for (b).",
+    "nonvacuity_witness_lean": [
+      "Toy.TailCall.dropList_clears_pending_nonvacuous",
+      "Toy.TailCall.finalizes_then_push_nonvacuous"
+    ],
+    "non_claims": [
+      "A one-step statement; whole-run exactly-once destruction is not stated.",
+      "Whether the push succeeds (callee exists, arity, bound) is left to `push`; the theorem fixes the step's result, not its success.",
+      "A definitional unfolding of `step`, `doTailCall` and `dropList`, kept as a reference point for the design question.",
+      "Destructors are atomic events (`DtorKind`): running one pushes no frame, executes no instruction and reads or writes no slot, so destructors that call functions (raising the peak depth during finalization) or that access their own slot through `&mut self` are not modelled (the `popFirst` variant of card R19 models that access and nothing else).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:810-825 (documentation of `TailCall`: pop of the current stack frame, then a call with the return address of the current caller) and :829-833 (arguments are owned by the callee) [documentation; used in the modeling bridge]",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Cminor.v:468-475 (`step_tailcall` frees the stack block before entering the callee)"
+    ],
+    "design_question": "Q5: what does pre-jump finalization guarantee when a destructor panics, and why must the frame stay until finalization ends?",
+    "lean_names": [
+      "Toy.TailCall.AtTailCall",
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.badArgTailProg",
+      "Toy.TailCall.bumpTail",
+      "Toy.TailCall.doTailCall",
+      "Toy.TailCall.dropList",
+      "Toy.TailCall.evalOps",
+      "Toy.TailCall.finalizationEvents",
+      "Toy.TailCall.panicFin",
+      "Toy.TailCall.panickingPending",
+      "Toy.TailCall.pendingDrops",
+      "Toy.TailCall.push",
+      "Toy.TailCall.step"
+    ]
+  },
+  {
+    "id": "R18",
+    "lean": "Toy.TailCall.frameReuse_finalization_unique_panic_drops_rest_then_unwinds",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise, as a reference point: unwinding through pre-jump finalization stated for one step; definitional)",
+    "plain_claim": "For every state `st` about to execute `tailCall f args` under `frameReuse` (any bound `D`) — not unwinding, with no pending return, and with the arguments evaluating without `ub` to evaluated frame `fr1` — if exactly one pending destructor of `fr1` panics, the step still emits one `drop` per slot pending in `fr1` (slots moved into the arguments are no longer pending), in `pendingDrops` order, removes the frame, and continues unwinding with the frames below (`unwindBelow`: the original caller's cleanup, or outcome `panicked` if there is none); the already-evaluated argument values are discarded without a `drop` event.",
+    "hypotheses": [
+      {
+        "name": "hat.not_unwinding : st.unwinding = false",
+        "purpose": "field of `AtTailCall`; while unwinding, a panicking destructor aborts",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.panic_drops_rest_fails_when_unwinding",
+        "witness_class": "the `panicFin` state with `unwinding := true`"
+      },
+      {
+        "name": "hat.no_pendingRet : fr.pendingRet = none",
+        "purpose": "field of `AtTailCall`; a frame with a pending return returns, dropping slots moved into the arguments too",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.panic_drops_rest_fails_with_pendingRet",
+        "witness_class": "a frame with a pending return whose tail call moves a slot"
+      },
+      {
+        "name": "hat.args_eq : evalOps rest fr args = some (vs, fr1)",
+        "purpose": "field of `AtTailCall`; if argument evaluation is `ub`, the step halts with `ub` before any drop",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.panic_drops_rest_fails_when_args_ub",
+        "witness_class": "a two-function program (`badArgTailProg`) whose tail-call argument loads through an integer"
+      },
+      {
+        "name": "hat.stack_eq, hat.fn_eq, hat.instr_eq",
+        "purpose": "fields of `AtTailCall`, taken jointly; they identify the instruction being executed",
+        "tightness": "tight",
+        "counterexample": "Toy.TailCall.panic_drops_rest_fails_at_other_instr",
+        "witness_class": "the `panicFin` state in the three-function program `panicFinOnePanicNoTail` (its function `t` is `panicFinTOnePanicNoTail`), whose instruction at the frame's `pc` is `panic` and which has exactly one panicking pending destructor (`instr_eq` fails; `hone` and the other fields hold)"
+      },
+      {
+        "name": "hone : (panickingPending fn fr1).length = 1",
+        "purpose": "exactly one: with none the step pushes the callee; with two the second panic (while unwinding) aborts",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.TailCall.panic_drops_rest_fails_with_zero_panics",
+          "Toy.TailCall.panic_drops_rest_fails_with_two_panics"
+        ],
+        "witness_class": "the `panicFin` state with zero, and with two, panicking destructors"
+      }
+    ],
+    "depth": "definitional",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "`panicFin` with one panicking destructor: events `[drop 3, drop 2, drop 1]`.",
+    "nonvacuity_witness_lean": "Toy.TailCall.panic_drops_rest_nonvacuous",
+    "non_claims": [
+      "\"Each slot once\" is about this step; the frame is removed, so no later step can drop its slots, but a whole-run statement is not given.",
+      "Argument values already evaluated when the destructor panics are discarded without a drop event (a leak in the toy); real behaviour for such values is not examined.",
+      "The abort-on-second-panic rule is a modelling choice.",
+      "A definitional unfolding of `step`, `doTailCall` and `dropList`, kept as a reference point for the design question.",
+      "Destructors are atomic events (`DtorKind`): running one pushes no frame, executes no instruction and reads or writes no slot, so destructors that call functions (raising the peak depth during finalization) or that access their own slot through `&mut self` are not modelled (the `popFirst` variant of card R19 models that access and nothing else).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:810-825 (documentation of `TailCall`: pop of the current stack frame, then a call with the return address of the current caller) and :829-833 (arguments are owned by the callee) [documentation; used in the modeling bridge]"
+    ],
+    "design_question": "Q5: what does pre-jump finalization guarantee when a destructor panics, and why must the frame stay until finalization ends?",
+    "lean_names": [
+      "Toy.TailCall.AtTailCall",
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.badArgTailProg",
+      "Toy.TailCall.doTailCall",
+      "Toy.TailCall.dropList",
+      "Toy.TailCall.evalOps",
+      "Toy.TailCall.panicFin",
+      "Toy.TailCall.panicFinOnePanicNoTail",
+      "Toy.TailCall.panicFinTOnePanicNoTail",
+      "Toy.TailCall.panickingPending",
+      "Toy.TailCall.pendingDrops",
+      "Toy.TailCall.step",
+      "Toy.TailCall.unwindBelow"
+    ]
+  },
+  {
+    "id": "R19",
+    "lean": "Toy.TailCall.popFirst_ub_with_pending_drop_dtorProg",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "T0 (re-derivation: running a destructor on storage that has been deallocated is a use after free; instance in the toy)",
+    "plain_claim": "In the toy, where a destructor reaches its slot through the frame's identity (as a `deref` does, the counterpart of `Drop::drop(&mut self)`), removing the frame before its pending destructors run makes running them `ub`: for `dtorProg` the unbounded `frameReuse` run returns 0 with trace `[drop 7, out 1]`, while the `popFirst` run halts with `ub` and an empty trace.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "(counterexample; the instance is the witness)",
+    "nonvacuity_witness_lean": "Toy.TailCall.popFirst_ub_with_pending_drop_dtorProg",
+    "positive_control_lean": "Toy.TailCall.popFirst_agrees_without_pending_drops_chain3",
+    "non_claims": [
+      "`popFirst` is a constructed incorrect variant; this is not a claim about any implementation.",
+      "Under `popFirst` the one destructor effect modelled is the access to its own slot; elsewhere destructors are atomic events (`DtorKind`) that read no slot.",
+      "When no destructor is pending at a tail call, `popFirst` and `frameReuse` coincide (positive control `popFirst_agrees_without_pending_drops_chain3`, one instance).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:810-825 (documentation of `TailCall`: pop of the current stack frame, then a call with the return address of the current caller) and :829-833 (arguments are owned by the callee) [documentation; used in the modeling bridge]",
+      "AbsInt/CompCert v3.16 (a4ad87b17898cf7b7c8638c32ad694a15f7c0032) backend/Cminor.v:468-475 (`step_tailcall` frees the stack block before entering the callee)"
+    ],
+    "design_question": "Q5: what does pre-jump finalization guarantee when a destructor panics, and why must the frame stay until finalization ends?",
+    "lean_names": [
+      "Toy.TailCall.DtorKind",
+      "Toy.TailCall.dtorProg"
+    ]
+  },
+  {
+    "id": "R20",
+    "lean": [
+      "Toy.TailCall.Layout.reuseSoundAt_zero_iff",
+      "Toy.TailCall.Layout.reuseSoundAt_calleePops_iff",
+      "Toy.TailCall.Layout.reuseSoundAt_callerPops_iff"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_rationale": "T1 (folklore made precise: LLVM documents that the callee popping the argument area makes mandatory tail calls possible and that `musttail` under `swifttailcc`/`tailcc` does not require matching prototypes; a statement relating cleanup convention, boundary relocation and argument areas was not found mechanized)",
+    "plain_claim": "In the layout toy with the boundary moved by `δ` cells before the jump (callee area at `[b + δ - inH, b + δ)`), for all `δ`, `inG` and `inH`: `δ = 0` gives exactly the fixed-boundary `ReuseSound`; under callee cleanup frame reuse is sound iff `δ = inH - inG` (integer subtraction), so a suitable relocation exists for all area sizes; under caller cleanup it is sound iff `δ = 0` and `inH ≤ inG`, so relocation does not help.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "proof_status": "kernel-checked",
+    "nonvacuity_witness": "Under callee cleanup, `inG = 1`, `inH = 2`: unsound at the fixed boundary, sound with `δ = 1`; under caller cleanup, `δ = 0`, `inG = 2`, `inH = 1`.",
+    "nonvacuity_witness_lean": [
+      "Toy.TailCall.Layout.reuseSoundAt_calleePops_nonvacuous",
+      "Toy.TailCall.Layout.reuseSoundAt_callerPops_nonvacuous"
+    ],
+    "non_claims": [
+      "Writing the relocated return address, and the cost of the extra moves, are not modelled.",
+      "The second condition holds for all sizes and relocations (`readArgs_reuseWriteAt`); overlapping in-place argument copies are not modelled.",
+      "Says nothing about which convention rustc or LLVM uses for a given ABI; the LLVM and rustc texts of the modeling bridge (Findings) are quoted as documentation and source text (including test files), not as execution evidence establishing which calling convention either compiler lowers a given ABI to.",
+      "Register-passed arguments, per-argument types and alignment are not modelled.",
+      "The third condition is fixed by `spAfterReturnAt`, which stipulates each convention's stack pointer after the return; under callee cleanup the `→` direction of `reuseSoundAt_calleePops_iff` follows from it alone, and under caller cleanup so does `δ = 0`.",
+      "A separate layout model; no relation to the frame-stack machine is proved.",
+      "Addresses and `δ` are integers (no wrap-around, no truncated subtraction); area sizes 0 are allowed and covered.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or any other compiler."
+    ],
+    "prior_art": [
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/docs/LangRef.rst:498-501 (`swifttailcc`: \"the callee pops the argument area of the stack so that mandatory tail calls are possible as in ``tailcc``\") and :12626-12637 (prototype matching is required for `musttail` unless the convention is `swifttailcc` or `tailcc`) [documentation; used in the modeling bridge]",
+      "llvm/llvm-project llvmorg-19.1.0 (a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4) llvm/docs/LangRef.rst:12593-12637 (`musttail`: no unbounded stack growth in recursive cycles; \"Both markers imply that the callee does not access allocas from the caller\"; ABI attributes and caller/callee prototypes must match unless the convention is `swifttailcc` or `tailcc`) [documentation; used in the modeling bridge]",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe tests/ui/explicit-tail-calls/signature-mismatch.rs:28-34 (comment: \"tailcc does not need the signatures to match, but only tailcc can tail call tailcc.\") [test; used in the modeling bridge]",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_build/src/check_tail_calls.rs:134-136 (ABI equality check) and :150-163 (signature equality check, skipped when the callee ABI is `RustTail`) [source; used in the modeling bridge]"
+    ],
+    "design_question": "Q3: what signature or argument-area compatibility does frame reuse need?",
+    "lean_names": [
+      "Toy.TailCall.Layout.ReuseSound",
+      "Toy.TailCall.Layout.readArgs_reuseWriteAt",
+      "Toy.TailCall.Layout.spAfterReturnAt"
+    ]
+  }
+]

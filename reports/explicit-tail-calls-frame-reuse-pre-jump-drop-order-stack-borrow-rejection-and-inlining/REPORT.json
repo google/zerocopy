@@ -1,0 +1,89 @@
+{
+  "topics": [
+    "verification",
+    "verification/formalized-results",
+    "lean",
+    "lean/mechanization",
+    "compilers",
+    "compilers/tail-calls",
+    "compilers/inlining",
+    "rust/explicit-tail-calls",
+    "pl/semantics"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "rustc (explicit tail calls: MIR TailCall, check_tail_calls, MIR inliner, UI tests)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+      }
+    },
+    {
+      "name": "CompCert (Tailcall and Inlining passes)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "version": "v3.16",
+        "revision": "a4ad87b17898cf7b7c8638c32ad694a15f7c0032"
+      }
+    },
+    {
+      "name": "LLVM (musttail semantics and inliner)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "version": "llvmorg-19.1.0",
+        "revision": "a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4"
+      }
+    },
+    {
+      "name": "Debunking the 'Expensive Procedure Call' Myth, or, Procedure Call Implementations Considered Harmful, or, LAMBDA: The Ultimate GOTO",
+      "identity": {
+        "doi": "10.1145/800179.810196"
+      }
+    },
+    {
+      "name": "Proper Tail Recursion and Space Efficiency",
+      "identity": {
+        "doi": "10.1145/277650.277719"
+      }
+    },
+    {
+      "name": "A Tail-Recursive Machine with Stack Inspection",
+      "identity": {
+        "doi": "10.1145/1034774.1034778"
+      }
+    },
+    {
+      "name": "A Mechanized Semantics for C++ Object Construction and Destruction, with Applications to Resource Management",
+      "identity": {
+        "doi": "10.1145/2103621.2103718"
+      }
+    },
+    {
+      "name": "End-to-End Verification of Stack-Space Bounds for C Programs",
+      "identity": {
+        "doi": "10.1145/2594291.2594301"
+      }
+    },
+    {
+      "name": "A New Verified Compiler Backend for CakeML",
+      "identity": {
+        "doi": "10.1145/2951913.2951924"
+      }
+    },
+    {
+      "name": "An Abstract Stack Based Approach to Verified Compositional Compilation to Machine Code",
+      "identity": {
+        "doi": "10.1145/3290375"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

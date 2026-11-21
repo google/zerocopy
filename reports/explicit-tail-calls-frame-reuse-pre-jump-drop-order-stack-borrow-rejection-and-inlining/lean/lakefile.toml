@@ -1,0 +1,5 @@
+name = "toy_tail_call"
+defaultTargets = ["ToyTailCall"]
+
+[[lean_lib]]
+name = "ToyTailCall"
