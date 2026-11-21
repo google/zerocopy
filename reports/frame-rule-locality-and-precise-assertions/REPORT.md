@@ -567,23 +567,26 @@ counterexamples of R6a.
 `Toy/Sep/Examples.lean` proves intended positive and negative examples for each of these
 definitions, and admitted and excluded transitions for every heap command. The examples and
 helper lemmas cited in this report's text are quoted here (pretty-printed by Lean; namespace
-`Toy.Sep` opened): `skip` and `diverge` are local while `allocAt` is not; singletons are
+`Toy.Sep` opened; `skip_local`, `diverge_local`, `assertAlloc_safetyMono` and `assertAlloc_frameProp`
+printed as `name : type` with `set_option pp.analyze true`, because their default signatures leave
+the state type of `skip`, `diverge` or `assertAlloc` undetermined): `skip` and `diverge` are local
+while `allocAt` is not; singletons are
 precise; `assertAlloc k` is local (R3a non-claims); `0 ↦ -` is precise (R4e non-claims); the heap
 model is right- and left-cancellative (R4d ledger scope); and a non-commutative structure has
 `DisjSymm`, `UnionAssoc` and `UnionAssocRev` (R6a ledger).
 
 ```lean
-Toy.Sep.skip_local.{u_1} {S : Type u_1} [SepStruct S] : Local skip
+Toy.Sep.skip_local.{u_1} : ∀ {S : Type u_1} [inst : SepStruct S], Local.{u_1} (S := S) skip
 
-Toy.Sep.diverge_local.{u_1} {S : Type u_1} [SepStruct S] : Local diverge
+Toy.Sep.diverge_local.{u_1} : ∀ {S : Type u_1} [inst : SepStruct S], Local.{u_1} (S := S) diverge
 
 Toy.Sep.allocAt_not_local : ¬Local (allocAt 0 1)
 
 Toy.Sep.sing_precise.{u_1} {S : Type u_1} [SepStruct S] (x : S) : Precise (sing x)
 
-Toy.Sep.assertAlloc_safetyMono {V : Type} (k : Nat) : SafetyMono (assertAlloc k)
+Toy.Sep.assertAlloc_safetyMono : ∀ {V : Type} (k : Nat), SafetyMono (S := Heap V) (assertAlloc k)
 
-Toy.Sep.assertAlloc_frameProp {V : Type} (k : Nat) : FrameProp (assertAlloc k)
+Toy.Sep.assertAlloc_frameProp : ∀ {V : Type} (k : Nat), FrameProp (S := Heap V) (assertAlloc k)
 
 Toy.Sep.ptAny_precise (k : Nat) : Precise (ptAny k)
 
@@ -957,15 +960,13 @@ Any allocator whose chosen address is predictable from some base heap and that s
 * **Plain claim:** For non-fault-avoiding partial-correctness triples the frame rule fails even for a local command: {emp} assertAlloc 0 {false} holds vacuously (every run faults), but adding the frame 0 |-> 1 produces a normal run.
 * **Design question:** What must triples mean for the frame rule to be sound? They must exclude faults.
 
-**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened):
+**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened; `assertAlloc_local_and_framed_weakTriple_fails` printed as `name : type` with `set_option pp.analyze true`):
 
 ```lean
-Toy.Sep.assertAlloc_local_and_framed_weakTriple_fails :
-  SafetyMono (assertAlloc 0) ∧
-    FrameProp (assertAlloc 0) ∧
-      (WeakTriple (sing Heap.emp) (assertAlloc 0) fun x => False) ∧
-        ¬WeakTriple (sep (sing Heap.emp) (sing (Heap.pt 0 1))) (assertAlloc 0)
-            (sep (fun x => False) (sing (Heap.pt 0 1)))
+Toy.Sep.assertAlloc_local_and_framed_weakTriple_fails : SafetyMono (S := Heap Nat) (assertAlloc 0) ∧
+  FrameProp (S := Heap Nat) (assertAlloc 0) ∧
+    (WeakTriple (S := Heap Nat) (sing Heap.emp) (assertAlloc 0) fun x => False) ∧
+      ¬WeakTriple (sep (sing Heap.emp) (sing (Heap.pt 0 1))) (assertAlloc 0) (sep (fun x => False) (sing (Heap.pt 0 1)))
 ```
 
 Unfolded: WeakTriple P c Q := ∀ h, P h → ∀ h', c h (ok h') → Q h' (faults allowed); assertAlloc k h o := (h k = none ∧ o = fault) ∨ (h k ≠ none ∧ o = ok h).
@@ -1166,14 +1167,15 @@ For logics whose state model is the standard finite-heap model, 'precise' (at mo
 
 ```lean
 Toy.Sep.oneCell_conjDistrib_fails :
-  sep (sing (Heap.pt 0 1)) oneCell (union (Heap.pt 0 1) (Heap.pt 1 2)) ∧
-    sep (sing (Heap.pt 1 2)) oneCell (union (Heap.pt 0 1) (Heap.pt 1 2)) ∧
-      ¬sep (conj (sing (Heap.pt 0 1)) (sing (Heap.pt 1 2))) oneCell (union (Heap.pt 0 1) (Heap.pt 1 2))
+  sep (sing (Heap.pt 0 1)) oneCell (SepStruct.union (Heap.pt 0 1) (Heap.pt 1 2)) ∧
+    sep (sing (Heap.pt 1 2)) oneCell (SepStruct.union (Heap.pt 0 1) (Heap.pt 1 2)) ∧
+      ¬sep (conj (sing (Heap.pt 0 1)) (sing (Heap.pt 1 2))) oneCell (SepStruct.union (Heap.pt 0 1) (Heap.pt 1 2))
 
 Toy.Sep.someCellAllocated_conjDistrib_fails :
-  sep (sing (Heap.pt 0 1)) someCellAllocated (union (Heap.pt 0 1) (Heap.pt 1 2)) ∧
-    sep (sing (Heap.pt 1 2)) someCellAllocated (union (Heap.pt 0 1) (Heap.pt 1 2)) ∧
-      ¬sep (conj (sing (Heap.pt 0 1)) (sing (Heap.pt 1 2))) someCellAllocated (union (Heap.pt 0 1) (Heap.pt 1 2))
+  sep (sing (Heap.pt 0 1)) someCellAllocated (SepStruct.union (Heap.pt 0 1) (Heap.pt 1 2)) ∧
+    sep (sing (Heap.pt 1 2)) someCellAllocated (SepStruct.union (Heap.pt 0 1) (Heap.pt 1 2)) ∧
+      ¬sep (conj (sing (Heap.pt 0 1)) (sing (Heap.pt 1 2))) someCellAllocated
+          (SepStruct.union (Heap.pt 0 1) (Heap.pt 1 2))
 
 Toy.Sep.oneCell_not_precise : ¬Precise oneCell
 
@@ -1211,10 +1213,11 @@ Existentially quantified single-cell or nonemptiness assertions cannot be used w
 * **Plain claim:** In partial commutative monoids with a unit that are not cancellative (IsSepAlgebra without RightCancel or LeftCancel; separation algebras in the sense of Gotsman-Berdine-Cook 2011 and the Isabelle AFP class sep_algebra, but not in the cancellative sense of Calcagno-O'Hearn-Yang 2007 and Dockins-Hobor-Appel 2009), neither precision nor the distribution law implies the other: in OrAlg the frame {true} is precise but does not distribute; in Fork the frame {a, b} distributes but is not precise.
 * **Design question:** Can a resource model without cancellativity (e.g. idempotent permissions) keep 'precise frames give the distribution law'? Not in general.
 
-**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened):
+**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened; `orAlg_true_precise_and_not_conjDistrib` with `set_option pp.structureInstanceTypes true`):
 
 ```lean
-Toy.Sep.orAlg_true_precise_and_not_conjDistrib : Precise (sing { bit := true }) ∧ ¬ConjDistrib (sing { bit := true })
+Toy.Sep.orAlg_true_precise_and_not_conjDistrib :
+  Precise (sing { bit := true : OrAlg }) ∧ ¬ConjDistrib (sing { bit := true : OrAlg })
 
 Toy.Sep.forkR_conjDistrib_and_not_precise : ConjDistrib forkR ∧ ¬Precise forkR
 
@@ -1308,10 +1311,10 @@ In commutative state models only one cancellation law needs to be checked.
 * **Plain claim:** In the heap model, lookup [r] := [k], mutation [k] := v, allocation at a nondeterministically chosen fresh address without recording it (alloc v) or recording it in cell r (allocInto r v, with heap values in Nat so that an address fits in a cell), and deallocation free k are each safety-monotone and have the frame property. lookup, mutate, alloc and free are stated for every value type V.
 * **Design question:** Which primitive heap operations can a frame-rule logic admit? All the standard ones, provided allocation is nondeterministic.
 
-**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened):
+**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened; `lookup_safetyMono_and_frameProp` and `free_safetyMono_and_frameProp` printed as `name : type` with `set_option pp.analyze true`):
 
 ```lean
-Toy.Sep.lookup_safetyMono_and_frameProp {V : Type} (k r : Nat) : SafetyMono (lookup k r) ∧ FrameProp (lookup k r)
+Toy.Sep.lookup_safetyMono_and_frameProp : ∀ {V : Type} (k r : Nat), SafetyMono (S := Heap V) (lookup k r) ∧ FrameProp (S := Heap V) (lookup k r)
 
 Toy.Sep.mutate_safetyMono_and_frameProp {V : Type} (k : Nat) (v : V) : SafetyMono (mutate k v) ∧ FrameProp (mutate k v)
 
@@ -1319,7 +1322,7 @@ Toy.Sep.alloc_safetyMono_and_frameProp {V : Type} (v : V) : SafetyMono (alloc v)
 
 Toy.Sep.allocInto_safetyMono_and_frameProp (r v : Nat) : SafetyMono (allocInto r v) ∧ FrameProp (allocInto r v)
 
-Toy.Sep.free_safetyMono_and_frameProp {V : Type} (k : Nat) : SafetyMono (free k) ∧ FrameProp (free k)
+Toy.Sep.free_safetyMono_and_frameProp : ∀ {V : Type} (k : Nat), SafetyMono (S := Heap V) (free k) ∧ FrameProp (S := Heap V) (free k)
 ```
 
 Unfolded: lookup k r h o := ((h k = none ∨ h r = none) ∧ o = fault) ∨ (h k ≠ none ∧ h r ≠ none ∧ o = ok h[r ↦ h k]); mutate k v h o := (h k = none ∧ o = fault) ∨ (h k ≠ none ∧ o = ok h[k ↦ v]); alloc v h o := ∃ k, h k = none ∧ o = ok h[k ↦ v]; allocInto r v h o := (h r = none ∧ o = fault) ∨ (h r ≠ none ∧ ∃ k, h k = none ∧ o = ok h[k ↦ v][r ↦ k]); free k h o := (h k = none ∧ o = fault) ∨ (h k ≠ none ∧ o = ok h[k ↦ none]).
@@ -1507,16 +1510,15 @@ In a baked-in-frame logic a non-local allocator such as least-free allocation ca
 * **Plain claim:** (i) The Hoare conjunction rule holds for every command without precision or cancellativity. (ii) A local heap command can terminate from emp and have no outcome from every non-empty heap. (iii) With empty disjointness every command is local and every assertion precise, with unique frames and the distribution law; without a unit even the always-true assertion can be precise. (iv) Right- and left-handed precision and distribution coincide under symmetric disjointness and commutative union, and can differ without them, even in cancellative structures. (v) A heap command that is safe on emp and faults from some heap is not safety-monotone. (vi) Over the uninhabited value type Empty the only heap is emp, so every heap command is safety-monotone and has the frame property; the non-locality results need an inhabited value type.
 * **Design question:** Reference point: which tempting readings of R1-R4 are ruled out.
 
-**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened):
+**Lean statement(s)** (pretty-printed by Lean; namespace `Toy.Sep` opened; `skipOnEmp_local_and_no_outcome_on_nonempty` printed as `name : type` with `set_option pp.analyze true`):
 
 ```lean
 Toy.Sep.triple_conj.{u} {S : Type u} {P₁ P₂ Q₁ Q₂ : Assn S} {c : Cmd S} (h₁ : Triple P₁ c Q₁) (h₂ : Triple P₂ c Q₂) :
   Triple (conj P₁ P₂) c (conj Q₁ Q₂)
 
-Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty :
-  Local skipOnEmp ∧
-    skipOnEmp Heap.emp (Outcome.ok Heap.emp) ∧
-      ∀ (h : Heap Nat), h ≠ Heap.emp → ∀ (o : Outcome (Heap Nat)), ¬skipOnEmp h o
+Toy.Sep.skipOnEmp_local_and_no_outcome_on_nonempty : Local (S := Heap Nat) skipOnEmp ∧
+  skipOnEmp (V := Nat) Heap.emp (Outcome.ok Heap.emp) ∧
+    ∀ (h : Heap Nat), h ≠ Heap.emp → ∀ (o : Outcome (Heap Nat)), ¬skipOnEmp h o
 
 -- source signature (Toy/Sep/Boundaries.lean); instance arguments shown explicitly
 theorem emptyDisj_degenerate (c : Cmd Unit) (R : Assn Unit) :
