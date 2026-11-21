@@ -1,0 +1,451 @@
+{
+  "probe": "rustc_mir_inlining_call_splicing_and_incremental_policy",
+  "observed_at": "2026-11-21",
+  "toolchains": {
+    "rustc_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+  },
+  "part1_policy_and_incremental_matrix": {
+    "configs": [
+      {
+        "config": "o0_non_incremental",
+        "flags": [
+          "-C",
+          "opt-level=0"
+        ],
+        "force_inline_pass_ran": true,
+        "normal_inline_pass_ran": false,
+        "inlined_callees": {
+          "force_callee": true,
+          "hinted_callee": false,
+          "generic_callee": false,
+          "unmarked_leaf_callee": false
+        },
+        "remaining_call_terminators": [
+          "core::num::<impl u32>::wrapping_add",
+          "generic_callee::<u32>",
+          "unmarked_leaf_callee",
+          "hinted_callee"
+        ]
+      },
+      {
+        "config": "o1_non_incremental",
+        "flags": [
+          "-C",
+          "opt-level=1"
+        ],
+        "force_inline_pass_ran": true,
+        "normal_inline_pass_ran": false,
+        "inlined_callees": {
+          "force_callee": true,
+          "hinted_callee": false,
+          "generic_callee": false,
+          "unmarked_leaf_callee": false
+        },
+        "remaining_call_terminators": [
+          "core::num::<impl u32>::wrapping_add",
+          "generic_callee::<u32>",
+          "unmarked_leaf_callee",
+          "hinted_callee"
+        ]
+      },
+      {
+        "config": "os_non_incremental",
+        "flags": [
+          "-C",
+          "opt-level=s"
+        ],
+        "force_inline_pass_ran": true,
+        "normal_inline_pass_ran": false,
+        "inlined_callees": {
+          "force_callee": true,
+          "hinted_callee": false,
+          "generic_callee": false,
+          "unmarked_leaf_callee": false
+        },
+        "remaining_call_terminators": [
+          "core::num::<impl u32>::wrapping_add",
+          "generic_callee::<u32>",
+          "unmarked_leaf_callee",
+          "hinted_callee"
+        ]
+      },
+      {
+        "config": "o2_incremental_default",
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-Cincremental=<DIR>"
+        ],
+        "force_inline_pass_ran": true,
+        "normal_inline_pass_ran": false,
+        "inlined_callees": {
+          "force_callee": true,
+          "hinted_callee": false,
+          "generic_callee": false,
+          "unmarked_leaf_callee": false
+        },
+        "remaining_call_terminators": [
+          "core::num::<impl u32>::wrapping_add",
+          "generic_callee::<u32>",
+          "unmarked_leaf_callee",
+          "hinted_callee"
+        ]
+      },
+      {
+        "config": "o2_incremental_plus_z_inline_mir",
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-Z",
+          "inline-mir=yes",
+          "-Cincremental=<DIR>"
+        ],
+        "force_inline_pass_ran": true,
+        "normal_inline_pass_ran": true,
+        "inlined_callees": {
+          "force_callee": true,
+          "hinted_callee": true,
+          "generic_callee": true,
+          "unmarked_leaf_callee": false
+        },
+        "remaining_call_terminators": [
+          "unmarked_leaf_callee"
+        ]
+      },
+      {
+        "config": "o2_incremental_plus_z_inline_mir_and_xcrate_always",
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-Z",
+          "inline-mir=yes",
+          "-Z",
+          "cross-crate-inline-threshold=always",
+          "-Cincremental=<DIR>"
+        ],
+        "force_inline_pass_ran": true,
+        "normal_inline_pass_ran": true,
+        "inlined_callees": {
+          "force_callee": true,
+          "hinted_callee": true,
+          "generic_callee": true,
+          "unmarked_leaf_callee": true
+        },
+        "remaining_call_terminators": []
+      },
+      {
+        "config": "o2_non_incremental",
+        "flags": [
+          "-C",
+          "opt-level=2"
+        ],
+        "force_inline_pass_ran": true,
+        "normal_inline_pass_ran": true,
+        "inlined_callees": {
+          "force_callee": true,
+          "hinted_callee": true,
+          "generic_callee": true,
+          "unmarked_leaf_callee": true
+        },
+        "remaining_call_terminators": []
+      }
+    ]
+  },
+  "part2_zerocopy_crate_census": {
+    "subject": {
+      "repository": "google/zerocopy",
+      "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+      "version": "0.8.64",
+      "features": [
+        "alloc",
+        "simd"
+      ],
+      "build_rs_cfgs": [
+        "--cfg=no_zerocopy_allocator_api_1_100_0"
+      ]
+    },
+    "rustc_1_98_0_nightly_non_incremental_o2": {
+      "before_force_inline": {
+        "bodies": 4588,
+        "call_free_bodies": 2594,
+        "call_free_pct": 56.54,
+        "total_call_terminators": 5781
+      },
+      "before_inline": {
+        "bodies": 4586,
+        "call_free_bodies": 2594,
+        "call_free_pct": 56.56,
+        "total_call_terminators": 5779
+      },
+      "after_inline": {
+        "bodies": 4586,
+        "call_free_bodies": 3270,
+        "call_free_pct": 71.3,
+        "total_call_terminators": 3206
+      },
+      "newly_call_free_bodies": 676,
+      "eliminated_call_terminators": 2573,
+      "eliminated_call_terminators_pct": 44.52,
+      "bodies_in_force_inline_but_skipped_by_inline": [
+        "ops-function-FnMut-call_mut",
+        "ops-function-FnOnce-call_once"
+      ]
+    },
+    "rustc_1_98_0_nightly_incremental_o2": {
+      "before_force_inline": {
+        "bodies": 4465,
+        "call_free_bodies": 2533,
+        "call_free_pct": 56.73,
+        "total_call_terminators": 5719
+      },
+      "after_force_inline": {
+        "bodies": 4465,
+        "call_free_bodies": 2533,
+        "call_free_pct": 56.73,
+        "total_call_terminators": 5719
+      },
+      "before_inline": {
+        "bodies": 0,
+        "call_free_bodies": 0,
+        "call_free_pct": 0.0,
+        "total_call_terminators": 0
+      },
+      "newly_call_free_bodies_from_inline": 0,
+      "eliminated_call_terminators_from_inline": 0,
+      "unmarked_bodies_omitted_from_optimized_mir_encoding_count": 123,
+      "sample_omitted_unmarked_bodies": [
+        "impls-_#29-{impl#0}-only_derive_is_allowed_to_implement_this_trait-f",
+        "impls-_#29-{impl#0}-only_derive_is_allowed_to_implement_this_trait-is_trait",
+        "impls-_#30-{impl#0}-only_derive_is_allowed_to_implement_this_trait-f",
+        "impls-_#30-{impl#0}-only_derive_is_allowed_to_implement_this_trait-is_trait",
+        "impls-_#31-{impl#0}-only_derive_is_allowed_to_implement_this_trait-f",
+        "impls-_#31-{impl#0}-only_derive_is_allowed_to_implement_this_trait-is_trait",
+        "impls-_#32-{impl#0}-only_derive_is_allowed_to_implement_this_trait-f",
+        "impls-_#32-{impl#0}-only_derive_is_allowed_to_implement_this_trait-is_trait",
+        "impls-_#33-{impl#0}-only_derive_is_allowed_to_implement_this_trait-f",
+        "impls-_#33-{impl#0}-only_derive_is_allowed_to_implement_this_trait-is_trait",
+        "impls-_#34-{impl#0}-only_derive_is_allowed_to_implement_this_trait-f",
+        "impls-_#34-{impl#0}-only_derive_is_allowed_to_implement_this_trait-is_trait"
+      ]
+    },
+    "rustc_1_102_0_nightly_comparison_baseline": {
+      "rustc_revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "before_inline": {
+        "bodies": 4302,
+        "call_free_bodies": 2440,
+        "call_free_pct": 56.72,
+        "total_call_terminators": 5446
+      },
+      "after_inline": {
+        "bodies": 4302,
+        "call_free_bodies": 3064,
+        "call_free_pct": 71.22,
+        "total_call_terminators": 2955
+      },
+      "newly_call_free_bodies": 624,
+      "eliminated_call_terminators": 2491,
+      "eliminated_call_terminators_pct": 45.74
+    }
+  },
+  "part3_splicing_lifo_cleanup_and_dest_bug": {
+    "lifo_cleanup_drop_ordering": {
+      "native_o0_stdout": "VAL=42 OK_LIFO=321 CAUGHT_ERR=true PANIC_LIFO=321",
+      "native_o2_inlined_stdout": "VAL=42 OK_LIFO=321 CAUGHT_ERR=true PANIC_LIFO=321",
+      "miri_tree_borrows_no_inline_rc": 0,
+      "miri_tree_borrows_with_inline_rc": 0,
+      "default_threshold_100_inline_always_cost_cap": {
+        "middle_callee_inlined_inner_calls": [
+          "inner_callee"
+        ],
+        "outer_caller_retained_middle_due_to_landingpad_cost": [
+          "middle_callee"
+        ]
+      },
+      "outer_before_calls": [
+        "middle_callee"
+      ],
+      "outer_after_calls": [
+        "std::rt::panic_fmt"
+      ],
+      "inlined_scopes_present": true,
+      "outer_before_mir": "// MIR for `outer_caller` before Inline\n\nfn outer_caller(_1: &Cell<u64>, _2: bool, _3: u64) -> u64 {\n    debug log => _1;\n    debug should_panic => _2;\n    debug x => _3;\n    let mut _0: u64;\n    let _4: Guard<'_>;\n    let mut _5: &std::cell::Cell<u64>;\n    let mut _6: u64;\n    let mut _7: &std::cell::Cell<u64>;\n    let mut _8: bool;\n    let mut _9: u64;\n    let mut _10: u64;\n    scope 1 {\n        debug _g_outer => _4;\n    }\n\n    bb0: {\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        _4 = Guard::<'_>(move _5, const 1_u64);\n        StorageDead(_5);\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_8);\n        _8 = copy _2;\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _3;\n        _9 = Add(move _10, const 1_u64);\n        StorageDead(_10);\n        _6 = middle_callee(move _7, move _8, move _9) -> [return: bb1, unwind: bb3];\n    }\n\n    bb1: {\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_7);\n        _0 = Add(move _6, const 1_u64);\n        StorageDead(_6);\n        drop(_4) -> [return: bb2, unwind: bb4];\n    }\n\n    bb2: {\n        StorageDead(_4);\n        return;\n    }\n\n    bb3 (cleanup): {\n        drop(_4) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb4 (cleanup): {\n        resume;\n    }\n}\n",
+      "outer_after_mir": "// MIR for `outer_caller` after Inline\n\nfn outer_caller(_1: &Cell<u64>, _2: bool, _3: u64) -> u64 {\n    debug log => _1;\n    debug should_panic => _2;\n    debug x => _3;\n    let mut _0: u64;\n    let _4: Guard<'_>;\n    let mut _5: &std::cell::Cell<u64>;\n    let mut _6: u64;\n    let mut _7: &std::cell::Cell<u64>;\n    let mut _8: bool;\n    let mut _9: u64;\n    let mut _10: u64;\n    scope 1 {\n        debug _g_outer => _4;\n        scope 2 (inlined middle_callee) {\n            let _11: Guard<'_>;\n            scope 3 {\n                scope 4 {\n                }\n                scope 5 (inlined inner_callee) {\n                    let _12: Guard<'_>;\n                    let _13: !;\n                    let mut _14: std::fmt::Arguments<'_>;\n                    let mut _15: &str;\n                    scope 6 {\n                        scope 7 (inlined Arguments::<'_>::from_str) {\n                            let mut _16: std::ptr::NonNull<u8>;\n                            let mut _17: *const u8;\n                            let mut _18: std::ptr::NonNull<core::fmt::rt::Argument<'_>>;\n                            let mut _19: usize;\n                            let mut _20: usize;\n                            let mut _21: usize;\n                            scope 8 (inlined core::str::<impl str>::as_ptr) {\n                                let mut _22: *const str;\n                            }\n                            scope 9 (inlined core::str::<impl str>::len) {\n                                let _23: &[u8];\n                                scope 10 (inlined core::str::<impl str>::as_bytes) {\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        _4 = Guard::<'_>(move _5, const 1_u64);\n        StorageDead(_5);\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_8);\n        _8 = copy _2;\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _3;\n        _9 = Add(move _10, const 1_u64);\n        StorageDead(_10);\n        StorageLive(_13);\n        StorageLive(_11);\n        _11 = Guard::<'_>(copy _7, const 2_u64);\n        StorageLive(_12);\n        _12 = Guard::<'_>(copy _7, const 3_u64);\n        switchInt(copy _8) -> [0: bb7, otherwise: bb6];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        return;\n    }\n\n    bb2 (cleanup): {\n        drop(_4) -> [return: bb3, unwind terminate(cleanup)];\n    }\n\n    bb3 (cleanup): {\n        resume;\n    }\n\n    bb4: {\n        StorageDead(_11);\n        StorageDead(_13);\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_7);\n        _0 = Add(move _6, const 1_u64);\n        StorageDead(_6);\n        drop(_4) -> [return: bb1, unwind: bb3];\n    }\n\n    bb5 (cleanup): {\n        drop(_11) -> [return: bb2, unwind terminate(cleanup)];\n    }\n\n    bb6: {\n        StorageLive(_14);\n        StorageLive(_15);\n        _15 = const \"boom\";\n        StorageLive(_16);\n        StorageLive(_17);\n        StorageLive(_22);\n        _22 = &raw const (*_15);\n        _17 = copy _22 as *const u8 (PtrToPtr);\n        StorageDead(_22);\n        _16 = copy _17 as std::ptr::NonNull<u8> (Transmute);\n        StorageDead(_17);\n        StorageLive(_18);\n        StorageLive(_19);\n        StorageLive(_20);\n        StorageLive(_21);\n        StorageLive(_23);\n        _23 = const \"boom\" as &[u8] (Transmute);\n        _21 = PtrMetadata(copy _23);\n        StorageDead(_23);\n        _20 = Shl(move _21, const 1_i32);\n        StorageDead(_21);\n        _19 = BitOr(move _20, const 1_usize);\n        StorageDead(_20);\n        _18 = move _19 as std::ptr::NonNull<core::fmt::rt::Argument<'_>> (Transmute);\n        StorageDead(_19);\n        _14 = Arguments::<'_> { template: move _16, args: move _18 };\n        StorageDead(_18);\n        StorageDead(_16);\n        StorageDead(_15);\n        _13 = std::rt::panic_fmt(move _14) -> bb9;\n    }\n\n    bb7: {\n        drop(_12) -> [return: bb8, unwind: bb5];\n    }\n\n    bb8: {\n        StorageDead(_12);\n        _6 = Add(const 40_u64, copy _9);\n        drop(_11) -> [return: bb4, unwind: bb2];\n    }\n\n    bb9 (cleanup): {\n        drop(_12) -> [return: bb5, unwind terminate(cleanup)];\n    }\n}\n\nalloc1 (size: 4, align: 1) {\n    62 6f 6f 6d                                     \u2502 boom\n}\n"
+    },
+    "unstable_offset_destination_retag_bug_1_98_0_nightly": {
+      "miri_without_inline_rc": 0,
+      "miri_with_inline_rc": 1,
+      "miri_with_inline_ub_diagnostic": "error: Undefined Behavior: constructing invalid value of type &mut core::convert::Infallible: encountered a reference pointing to uninhabited type core::convert::Infallible\n  --> <TMP_WORK>/uninhabited_dest_ub.rs:30:23\n   |\n30 |             Call(*p = diverge_unwind(), ReturnTo(bb1), UnwindContinue())\n   |                       ^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: caller_uninhabited_dest\n               at <TMP_WORK>/uninhabited_dest_ub.rs:30:23: 30:39\n           1: main::try_fn\n               at <TMP_WORK>/uninhabited_dest_ub.rs:40:9: 40:73\n           2: main\n               at <TMP_WORK>/uninhabited_dest_ub.rs:43:27: 43:98\n           3: lang_start::<()>\n               at <TMP_WORK>/uninhabited_dest_ub.rs:17:13: 17:19\n\nerror: aborting due to 1 previous error",
+      "spliced_mir_after_inline": "// MIR for `caller_uninhabited_dest` after Inline\n\nfn caller_uninhabited_dest(_1: *mut Infallible) -> () {\n    let mut _0: ();\n    let mut _2: &mut core::convert::Infallible;\n    let mut _3: core::convert::Infallible;\n    scope 1 (inlined diverge_unwind) {\n        let mut _4: !;\n        let mut _5: *mut u8;\n        scope 2 (inlined null_mut::<u8>) {\n            let mut _6: *mut ();\n            scope 3 (inlined without_provenance_mut::<()>) {\n            }\n            scope 4 (inlined core::ptr::from_raw_parts_mut::<u8, ()>) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = &mut (*_1);\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = const 0_usize as *mut () (Transmute);\n        _5 = copy _6 as *mut u8 (PtrToPtr);\n        _4 = miri_start_unwind(move _5) -> unwind continue;\n    }\n}\n"
+    }
+  },
+  "part4_rejections_and_depth_limits": {
+    "force_inline_diagnostics": [
+      {
+        "case": "def_lint_cold",
+        "returncode": 1,
+        "error_headline": "error: `cold_forced` is incompatible with `#[rustc_force_inline]`",
+        "stderr_excerpt": "error: `cold_forced` is incompatible with `#[rustc_force_inline]`\n --> <TMP_WORK>/p4_def_lint_cold.rs:3:1\n  |\n3 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n4 | #[cold]\n5 | pub fn cold_forced(x: u32) -> u32 { x + 1 }\n  | --------------------------------- `cold_forced` defined here\n  |\n  = note: incompatible due to: cold"
+      },
+      {
+        "case": "def_lint_c_variadic",
+        "returncode": 1,
+        "error_headline": "error: `variadic_forced` is incompatible with `#[rustc_force_inline]`",
+        "stderr_excerpt": "error: `variadic_forced` is incompatible with `#[rustc_force_inline]`\n --> <TMP_WORK>/p4_def_lint_c_variadic.rs:3:1\n  |\n3 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n4 | pub unsafe extern \"C\" fn variadic_forced(x: u32, mut _ap: ...) -> u32 { x }\n  | --------------------------------------------------------------------- `variadic_forced` defined here\n  |\n  = note: incompatible due to: C variadic\n"
+      },
+      {
+        "case": "def_lint_rustc_no_mir_inline",
+        "returncode": 1,
+        "error_headline": "error: `blocked_forced` is incompatible with `#[rustc_force_inline]`",
+        "stderr_excerpt": "error: `blocked_forced` is incompatible with `#[rustc_force_inline]`\n --> <TMP_WORK>/p4_def_lint_rustc_no_mir_inline.rs:3:1\n  |\n3 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n4 | #[rustc_no_mir_inline]\n5 | pub fn blocked_forced(x: u32) -> u32 { x + 1 }\n  | ------------------------------------ `blocked_forced` defined here\n  |\n  = note: incompatible due to: #[rustc_no_mir_inline]"
+      },
+      {
+        "case": "callsite_target_feature_baseline_caller",
+        "returncode": 1,
+        "error_headline": "error: `avx2_forced` could not be inlined into `baseline_caller` but is required to be inlined",
+        "stderr_excerpt": "error: `avx2_forced` could not be inlined into `baseline_caller` but is required to be inlined\n --> <TMP_WORK>/p4_callsite_target_feature_baseline_caller.rs:8:14\n  |\n8 |     unsafe { avx2_forced(x) }\n  |              ^^^^^^^^^^^^^^ ...`avx2_forced` called here\n  |\n  = note: could not be inlined due to: incompatible target features\n\nerror: aborting due to 1 previous error\n"
+      },
+      {
+        "case": "callsite_target_feature_avx512f_superset_caller",
+        "returncode": 1,
+        "error_headline": "error: `avx2_forced` could not be inlined into `avx512_superset_caller` but is required to be inlined",
+        "stderr_excerpt": "error: `avx2_forced` could not be inlined into `avx512_superset_caller` but is required to be inlined\n --> <TMP_WORK>/p4_callsite_target_feature_avx512f_superset_caller.rs:9:5\n  |\n9 |     avx2_forced(x)\n  |     ^^^^^^^^^^^^^^ ...`avx2_forced` called here\n  |\n  = note: could not be inlined due to: incompatible target features\n\nerror: aborting due to 1 previous error\n"
+      },
+      {
+        "case": "callsite_target_feature_equal_avx2_caller",
+        "returncode": 0,
+        "error_headline": "",
+        "stderr_excerpt": ""
+      },
+      {
+        "case": "callsite_unsized_argument",
+        "returncode": 1,
+        "error_headline": "error: `unsized_forced` could not be inlined into `pass_unsized` but is required to be inlined",
+        "stderr_excerpt": "error: `unsized_forced` could not be inlined into `pass_unsized` but is required to be inlined\n --> <TMP_WORK>/p4_callsite_unsized_argument.rs:7:5\n  |\n7 |     unsized_forced(*b)\n  |     ^^^^^^^^^^^^^^^^^^ ...`unsized_forced` called here\n  |\n  = note: could not be inlined due to: call has unsized argument\n\nerror: aborting due to 1 previous error\n"
+      },
+      {
+        "case": "callsite_mutual_recursion_cycle",
+        "returncode": 1,
+        "error_headline": "error: `pong` could not be inlined into `ping` but is required to be inlined",
+        "stderr_excerpt": "error: `pong` could not be inlined into `ping` but is required to be inlined\n --> <TMP_WORK>/p4_callsite_mutual_recursion_cycle.rs:5:28\n  |\n5 |     if n == 0 { 0 } else { pong(n - 1) }\n  |                            ^^^^^^^^^^^ ...`pong` called here\n  |\n  = note: could not be inlined due to: caller might be reachable from callee\n\nerror: `ping` could not be inlined into `pong` but is required to be inlined\n --> <TMP_WORK>/p4_callsite_mutual_recursion_cycle.rs:9:28"
+      }
+    ],
+    "history_depth_limit_20_probe": {
+      "entry": "chain_entry_24 -> step_24::<Impl> -> ... (trait-gated top-down chain)",
+      "remaining_calls_after_inline": [
+        "<Impl as Step20>::run"
+      ]
+    },
+    "top_down_depth_limit_5_probe": {
+      "entry": "top_down_entry_7 -> td_7::<TdImpl> -> 2x td_6::<TdImpl> -> ...",
+      "remaining_calls_count": 4,
+      "distinct_remaining_callees": [
+        "td_5::<TdImpl>"
+      ]
+    }
+  },
+  "part5_cross_crate_rmeta_availability": {
+    "cross_crate_modes": [
+      {
+        "upstream_mode": "upstream_o2_non_incremental",
+        "upstream_flags": [
+          "-C",
+          "opt-level=2"
+        ],
+        "downstream_inlined_into_consume_all": {
+          "pub_generic": true,
+          "pub_inline": true,
+          "pub_unmarked_small_leaf": true,
+          "pub_unmarked_with_call": false,
+          "pub_inline_never_generic": false
+        },
+        "remaining_calls_in_downstream": [
+          "pub_unmarked_with_call",
+          "pub_inline_never_generic::<u32>"
+        ]
+      },
+      {
+        "upstream_mode": "upstream_o2_incremental",
+        "upstream_flags": [
+          "-C",
+          "opt-level=2",
+          "-Cincremental=<DIR>"
+        ],
+        "downstream_inlined_into_consume_all": {
+          "pub_generic": true,
+          "pub_inline": true,
+          "pub_unmarked_small_leaf": false,
+          "pub_unmarked_with_call": false,
+          "pub_inline_never_generic": false
+        },
+        "remaining_calls_in_downstream": [
+          "pub_unmarked_small_leaf",
+          "pub_unmarked_with_call",
+          "pub_inline_never_generic::<u32>"
+        ]
+      },
+      {
+        "upstream_mode": "upstream_o0_non_incremental",
+        "upstream_flags": [
+          "-C",
+          "opt-level=0"
+        ],
+        "downstream_inlined_into_consume_all": {
+          "pub_generic": true,
+          "pub_inline": true,
+          "pub_unmarked_small_leaf": false,
+          "pub_unmarked_with_call": false,
+          "pub_inline_never_generic": false
+        },
+        "remaining_calls_in_downstream": [
+          "pub_unmarked_small_leaf",
+          "pub_unmarked_with_call",
+          "pub_inline_never_generic::<u32>"
+        ]
+      },
+      {
+        "upstream_mode": "upstream_o0_always_encode_mir",
+        "upstream_flags": [
+          "-C",
+          "opt-level=0",
+          "-Z",
+          "always-encode-mir"
+        ],
+        "downstream_inlined_into_consume_all": {
+          "pub_generic": true,
+          "pub_inline": true,
+          "pub_unmarked_small_leaf": false,
+          "pub_unmarked_with_call": false,
+          "pub_inline_never_generic": false
+        },
+        "remaining_calls_in_downstream": [
+          "pub_unmarked_small_leaf",
+          "pub_unmarked_with_call",
+          "pub_inline_never_generic::<u32>"
+        ]
+      },
+      {
+        "upstream_mode": "upstream_o0_always_encode_mir_and_xcrate_always",
+        "upstream_flags": [
+          "-C",
+          "opt-level=0",
+          "-Z",
+          "always-encode-mir",
+          "-Z",
+          "cross-crate-inline-threshold=always"
+        ],
+        "downstream_inlined_into_consume_all": {
+          "pub_generic": true,
+          "pub_inline": true,
+          "pub_unmarked_small_leaf": true,
+          "pub_unmarked_with_call": true,
+          "pub_inline_never_generic": false
+        },
+        "remaining_calls_in_downstream": [
+          "upstream_provider::opaque_leaf",
+          "pub_inline_never_generic::<u32>"
+        ]
+      }
+    ]
+  }
+}
