@@ -41,7 +41,7 @@ machinery over `Trusted.MirAst` and `Trusted.MirSemantics`:
    wpFaultProg`).
 2. **Width-Parametric Bitvector, Scalar, and Operator Adequacy:** Exact modular
    characterization and idempotence of `truncateBits`, totality and
-   well-formedness of `truncateScalar`, all 19 Pass 1 non-vacuity and
+   well-formedness of `truncateScalar`, all 20 Pass 1 non-vacuity and
    parameter-boundary canaries, and width/signedness-parametric operator
    totality across all six `IntWidth` variants.
 3. **Lawful Type Equality and `checkVal` / `ValidEntryArgs` Inversion:**
@@ -129,5 +129,8 @@ theorem canary_negative_ub_enum_invalid_tag_and_uninit_anneal : CanaryNegativeUb
 
 theorem canary_crate_and_body_verified_anneal : CanaryCrateAndBodyVerifiedAnnealClaim :=
   canary_crate_and_body_verified_anneal_base
+
+theorem canary_memory_lifecycle_anneal : CanaryMemoryLifecycleAnnealClaim :=
+  canary_memory_lifecycle_anneal_base
 
 end Anneal.MirWp

@@ -106,7 +106,7 @@ theorem canary_D7c_binop_move_then_move_ub_base :
 
 /-- `D8` (Self-move `_1 = move _1` preserves initialized value):
 `_1 = move _1; _0 = copy _1; return` reads `42` from `_1`, deinitializes `_1`
-to `.live none`, and then writes `42` back into `_1`, so the subsequent
+to `.immediate none`, and then writes `42` back into `_1`, so the subsequent
 `_0 = copy _1` succeeds and returns `42`. -/
 theorem canary_D8_self_move_ok_base : CanaryD8SelfMoveOkClaim := by
   have h_wp : wpProg progSelfMoveD8 3 queryU32_42
@@ -127,7 +127,7 @@ theorem canary_D8_self_move_ok_base : CanaryD8SelfMoveOkClaim := by
 
 /-- `D9` (Move of 0-Byte ZST `MirTy.unit` Remains Initialized):
 `_2 = move _1; _0 = copy _1; return` where `_1 : ()` sets `_1` to
-`liveUninitSlot .unit = .live (some .unit)`, so subsequent `_0 = copy _1`
+`liveUninitSlot .unit = .immediate (some .unit)`, so subsequent `_0 = copy _1`
 succeeds and returns `.unit`. -/
 theorem canary_D9_move_unit_zst_ok_base : CanaryD9MoveUnitZstOkClaim := by
   have h_wp : wpProg progMoveUnitZstD9 3 queryEmpty

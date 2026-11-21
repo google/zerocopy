@@ -211,15 +211,29 @@ private theorem discriminantTypesValid_stmt {body : Body} {bb : BasicBlock}
   rw [h_adm, ite_true_eq] at h_st_ok
   exact MirTy.eq_of_beq h_st_ok
 
+/-- Under `SlotsMatchTys`, replacing a local's value never deallocates:
+`deallocateLocal` only acts on `.indirect` slots. -/
+theorem deallocateLocal_eq_ok_of_slotsMatchTys {tys : List MirTy}
+    {slots : List LocalSlot} {i : Nat} {slot : LocalSlot} {ty : MirTy}
+    (amem : MemoryState)
+    (h_inv : SlotsMatchTys tys slots)
+    (h_ty : MirSemantics.getElem? tys i = some ty)
+    (h_sl : MirSemantics.getElem? slots i = some slot) :
+    deallocateLocal amem slot = .ok amem := by
+  cases slot with
+  | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+  | dead => rfl
+  | immediate _ => rfl
+
 theorem evalStatement_step_inv {body : Body} {bb : BasicBlock}
-    {f : FrameState} {callerMem : CallerMemory} {stmt : StatementKind}
-    {s' : State}
+    {f : FrameState} {amem : MemoryState} {callerMem : CallerMemory}
+    {stmt : StatementKind} {s' : State}
     (h_bb : MirSemantics.getElem? body.basicBlocks f.blockIdx = some bb)
     (h_st : MirSemantics.getElem? bb.statements f.stmtIdx = some stmt)
     (h_inv : SlotsMatchTys body.locals f.locals)
-    (h_step : evalStatement body f callerMem stmt = .step s') :
+    (h_step : evalStatement body f amem callerMem stmt = .step s') :
     ∃ f' : FrameState,
-      s' = { frames := [f'], callerMem := callerMem } ∧
+      s' = { frames := [f'], callerMem := callerMem, mem := amem } ∧
       f'.defId = f.defId ∧
       SlotsMatchTys body.locals f'.locals ∧
       FramePcInBounds body f' := by
@@ -242,11 +256,19 @@ theorem evalStatement_step_inv {body : Body} {bb : BasicBlock}
     | some localTy =>
       rw [h_ty] at h_step
       dsimp only at h_step
+      cases h_old : MirSemantics.getElem? f.locals localId with
+      | none => rw [h_old] at h_step; cases h_step
+      | some old =>
+      rw [h_old] at h_step
+      dsimp only at h_step
       cases h_set :
           MirSemantics.setElem? f.locals localId (liveUninitSlot localTy) with
       | none => rw [h_set] at h_step; cases h_step
       | some locals' =>
         rw [h_set] at h_step
+        dsimp only at h_step
+        rw [deallocateLocal_eq_ok_of_slotsMatchTys amem h_inv h_ty h_old]
+          at h_step
         injection h_step with h_eq
         refine ⟨{ f with stmtIdx := f.stmtIdx + 1, locals := locals' },
           h_eq.symm, rfl,
@@ -256,14 +278,21 @@ theorem evalStatement_step_inv {body : Body} {bb : BasicBlock}
   | storageDead localId =>
     dsimp only [evalStatement] at h_step
     cases h0 : Nat.beq localId 0 <;> rw [h0] at h_step
-    · cases h_set : MirSemantics.setElem? f.locals localId .dead with
+    · cases h_old : MirSemantics.getElem? f.locals localId with
+      | none => rw [h_old] at h_step; cases h_step
+      | some old =>
+      rw [h_old] at h_step
+      dsimp only at h_step
+      cases h_set : MirSemantics.setElem? f.locals localId .dead with
       | none => rw [h_set] at h_step; cases h_step
       | some locals' =>
         rw [h_set] at h_step
-        injection h_step with h_eq
-        let ⟨_, h_sl⟩ := getElem?_some_of_setElem?_some h_set
         let ⟨localTy, h_ty⟩ := getElem?_some_of_length_eq
-          (SlotsMatchTys.length_eq h_inv) h_sl
+          (SlotsMatchTys.length_eq h_inv) h_old
+        dsimp only at h_step
+        rw [deallocateLocal_eq_ok_of_slotsMatchTys amem h_inv h_ty h_old]
+          at h_step
+        injection h_step with h_eq
         refine ⟨{ f with stmtIdx := f.stmtIdx + 1, locals := locals' },
           h_eq.symm, rfl,
           SlotsMatchTys.setElem? h_inv h_ty (slot' := .dead) trivial h_set,
@@ -278,30 +307,35 @@ theorem evalStatement_step_inv {body : Body} {bb : BasicBlock}
       | some dstTy =>
         rw [h_ty] at h_step
         dsimp only at h_step
-        cases h_rv : evalRvalue body.locals f.locals dstTy rvalue with
+        cases h_rv : evalRvalue body.locals f.locals amem dstTy rvalue with
         | error _ => rw [h_rv] at h_step; cases h_step
         | ok res =>
           rw [h_rv] at h_step
-          cases res with | mk val localsAfterRval =>
+          cases res with | mk val rest =>
+          cases rest with | mk localsAfterRval memAfterRval =>
           dsimp only at h_step
-          cases h_wr : writePlace localsAfterRval dst.localId dstTy val with
+          cases h_wr : writePlace localsAfterRval memAfterRval dst.localId dstTy
+              val with
           | error _ => rw [h_wr] at h_step; cases h_step
-          | ok localsAfterWrite =>
+          | ok pair =>
+            cases pair with | mk localsAfterWrite memAfterWrite =>
             rw [h_wr] at h_step
             injection h_step with h_eq
-            have h_inv₁ := evalRvalue_slotsMatchTys h_inv h_rv
-            have h_inv₂ := writePlace_slotsMatchTys h_inv₁ h_ty h_wr
+            let ⟨h_inv₁, h_m₁⟩ := evalRvalue_slotsMatchTys h_inv h_rv
+            let ⟨h_inv₂, h_m₂⟩ := writePlace_slotsMatchTys h_inv₁ h_ty h_wr
+            rw [h_m₂, h_m₁] at h_eq
             refine ⟨{ f with
                 stmtIdx := f.stmtIdx + 1, locals := localsAfterWrite },
               h_eq.symm, rfl, h_inv₂, h_pc' localsAfterWrite⟩
   | unsupported => cases h_step
 
 theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
-    {f : FrameState} {callerMem : CallerMemory} {s' : State}
+    {f : FrameState} {amem : MemoryState} {callerMem : CallerMemory}
+    {s' : State}
     (h_inv : SlotsMatchTys body.locals f.locals)
-    (h_step : evalTerminator body bb f callerMem = .step s') :
+    (h_step : evalTerminator body bb f amem callerMem = .step s') :
     ∃ f' : FrameState,
-      s' = { frames := [f'], callerMem := callerMem } ∧
+      s' = { frames := [f'], callerMem := callerMem, mem := amem } ∧
       f'.defId = f.defId ∧
       SlotsMatchTys body.locals f'.locals ∧
       FramePcInBounds body f' := by
@@ -323,19 +357,25 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
         rw [h_sl] at h_step
         cases s with
         | dead => cases h_step
-        | live o => cases o <;> cases h_step
+        | immediate o => cases o <;> cases h_step
+        | indirect _ =>
+          let ⟨_, h_ty⟩ := getElem?_some_of_length_eq
+            (SlotsMatchTys.length_eq h_inv) h_sl
+          exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
     · cases h_step
   | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
   | unsupported =>
     cases h_step
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h_step
-    cases h_d : evalPrimitiveOperand body.locals f.locals discr with
+    cases h_d : evalPrimitiveOperand body.locals f.locals amem discr with
     | error _ => rw [h_d] at h_step; cases h_step
     | ok res =>
       rw [h_d] at h_step
-      cases res with | mk discrVal localsAfterDiscr =>
-      have h_inv₁ := evalPrimitiveOperand_slotsMatchTys h_inv h_d
+      cases res with | mk discrVal rest =>
+      cases rest with | mk localsAfterDiscr memAfterDiscr =>
+      let ⟨h_inv₁, h_m₁⟩ := evalPrimitiveOperand_slotsMatchTys h_inv h_d
+      rw [h_m₁] at h_step
       dsimp only at h_step
       cases discrVal with
       | scalar sv =>
@@ -363,7 +403,7 @@ theorem evalStep_step_inv {p : Program} {c : Choice} {s s' : State}
     (h_inv : SlotsMatchTys body.locals f.locals)
     (h_step : evalStep p c s = .step s') :
     ∃ f' : FrameState,
-      s' = { frames := [f'], callerMem := s.callerMem } ∧
+      s' = { frames := [f'], callerMem := s.callerMem, mem := s.mem } ∧
       f'.defId = f.defId ∧
       SlotsMatchTys body.locals f'.locals ∧
       FramePcInBounds body f' := by
@@ -425,14 +465,16 @@ private theorem currentFrame_mkSimState' (rp : RefProg) (defId : DefId)
           retPlace mem ctrl cm) := rfl
 
 private theorem deallocateLocal_slot_pure (rp : RefProg) (ty : MirTy)
-    (slot : LocalSlot) (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
+    (slot : LocalSlot) (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_sm : SlotMatchesTy ty slot) :
     (match slotToMiriLocalValue ty slot with
      | .live (.indirect place) =>
        (refStorageHooks rp.types).deallocateStack place.ptr st
      | _ => EStateM.Result.ok () st) = .ok () st := by
   cases slot with
   | dead => rfl
-  | live optVal => cases optVal <;> rfl
+  | immediate optVal => cases optVal <;> rfl
+  | indirect _ => exact False.elim h_sm
 
 private theorem storageLiveDyn_ref_eq (rp : RefProg)
     (defId : DefId) (rbody : RefBody) (body : Body)
@@ -518,7 +560,8 @@ private theorem storageLiveDyn_ref_eq (rp : RefProg)
     rw [eStateM_bind_ok h_scf]
     cases slot with
     | dead => rfl
-    | live optVal => cases optVal <;> rfl
+    | immediate optVal => cases optVal <;> rfl
+    | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
 
 private theorem storageDead_ref_eq (rp : RefProg)
     (defId : DefId) (rbody : RefBody) (body : Body)
@@ -588,7 +631,8 @@ private theorem storageDead_ref_eq (rp : RefProg)
       rw [eStateM_bind_ok h_scf]
       cases slot with
       | dead => rfl
-      | live optVal => cases optVal <;> rfl
+      | immediate optVal => cases optVal <;> rfl
+      | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
 
 private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
     (defId : DefId) (rbody : RefBody) (body : Body) (f : FrameState)
@@ -596,7 +640,8 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
-    (cm : CallerMemory) (rstmt : RefStatementKind) (stmt : StatementKind)
+    (cm : CallerMemory) (amem : MemoryState) (rstmt : RefStatementKind)
+    (stmt : StatementKind)
     (h_bdec : decodeBody rp.types rbody = some body)
     (h_arg : Nat.blt body.argumentCount body.locals.length = true)
     (h_supp : body.locals.all isSupportedScalarOrUnitTy = true)
@@ -616,14 +661,14 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
     let res := Miri.Interpreter.Step.evalStatement
       (Miri.Interpreter.ExecutionMachine.stepHooks (refExecutionConfig rp) refLimits)
       c (toMiriStatement rp.types rstmt) st
-    match evalStatement body f cm stmt with
+    match evalStatement body f amem cm stmt with
     | .fault k =>
       ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
     | .done _ => False
     | .step s' =>
       ∃ slots',
         s' = { frames := [{ f with stmtIdx := f.stmtIdx + 1, locals := slots' }],
-               callerMem := cm } ∧
+               callerMem := cm, mem := amem } ∧
         res = (mkSimState rp defId rbody f.blockIdx f.stmtIdx body.locals slots'
           retPlace mem ctrl cm, .ok ()) := by
   intro st res
@@ -651,6 +696,10 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
       dsimp only
       rw [h_ty] at h_sl
       dsimp only at h_sl
+      let ⟨old, h_old⟩ := getElem?_some_of_length_eq
+        (SlotsMatchTys.length_eq h_inv).symm h_ty
+      rw [h_old]
+      dsimp only
       cases h_set : MirSemantics.setElem? f.locals localId (liveUninitSlot localTy) with
       | none =>
         rw [h_set] at h_sl
@@ -659,6 +708,8 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
         exact ⟨err, st', rfl, h_fk⟩
       | some slots' =>
         rw [h_set] at h_sl
+        dsimp only
+        rw [deallocateLocal_eq_ok_of_slotsMatchTys amem h_inv h_ty h_old]
         rw [h_sl]
         exact ⟨slots', rfl, rfl⟩
   | storageDead localId =>
@@ -681,16 +732,34 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
     | false =>
       rw [h0] at h_sd
       dsimp only [ite_false_eq] at h_sd
-      cases h_set : MirSemantics.setElem? f.locals localId .dead with
+      cases h_old : MirSemantics.getElem? f.locals localId with
       | none =>
+        have h_set : MirSemantics.setElem? f.locals localId .dead = none := by
+          cases h_s : MirSemantics.setElem? f.locals localId .dead with
+          | none => rfl
+          | some _ =>
+            let ⟨_, h_g⟩ := getElem?_some_of_setElem?_some h_s
+            rw [h_old] at h_g; cases h_g
         rw [h_set] at h_sd
         let ⟨err, st', h_err, h_fk⟩ := h_sd
         rw [h_err]
         exact ⟨err, st', rfl, h_fk⟩
-      | some slots' =>
-        rw [h_set] at h_sd
-        rw [h_sd]
-        exact ⟨slots', rfl, rfl⟩
+      | some old =>
+        dsimp only
+        let ⟨oldTy, h_oty⟩ := getElem?_some_of_length_eq
+          (SlotsMatchTys.length_eq h_inv) h_old
+        cases h_set : MirSemantics.setElem? f.locals localId .dead with
+        | none =>
+          rw [h_set] at h_sd
+          let ⟨err, st', h_err, h_fk⟩ := h_sd
+          rw [h_err]
+          exact ⟨err, st', rfl, h_fk⟩
+        | some slots' =>
+          rw [h_set] at h_sd
+          dsimp only
+          rw [deallocateLocal_eq_ok_of_slotsMatchTys amem h_inv h_oty h_old]
+          rw [h_sd]
+          exact ⟨slots', rfl, rfl⟩
   | assign rdst rrv =>
     dsimp only [decodeStmt, optMap2] at h_st_dec
     cases h_pl : decodePlace rp.types rdst with
@@ -702,7 +771,7 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
         rw [h_pl, h_rv] at h_st_dec
         injection h_st_dec with h_eq; subst h_eq
         have h_ev := evalRvalueIntoPlace_ref_eq rp c defId rbody body f.blockIdx
-          f.stmtIdx f.locals retPlace mem ctrl cm rdst dst rrv rv h_bdec h_supp
+          f.stmtIdx f.locals amem retPlace mem ctrl cm rdst dst rrv rv h_bdec h_supp
           h_inv h_pl h_rv (fun src ety dstTy h_eq_rv =>
             h_discr_ty dst src ety dstTy (by rw [h_eq_rv]))
         have h_res :
@@ -734,32 +803,40 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
             dsimp only
             rw [h_dty] at h_ev
             dsimp only at h_ev
-            cases h_er : evalRvalue body.locals f.locals dstTy rv with
+            cases h_er : evalRvalue body.locals f.locals amem dstTy rv with
             | error k =>
               rw [h_er] at h_ev
               let ⟨err, st', h_err, h_fk⟩ := h_ev
               rw [h_err]
               exact ⟨err, st', rfl, h_fk⟩
-            | ok pair =>
-              cases pair with
-              | mk val localsAfterRval =>
+            | ok triple =>
+              cases triple with
+              | mk val rest =>
+              cases rest with
+              | mk localsAfterRval memAfterRval =>
                 dsimp only
                 rw [h_er] at h_ev
                 dsimp only at h_ev
-                cases h_wp : writePlace localsAfterRval dst.localId dstTy val with
+                cases h_wp : writePlace localsAfterRval memAfterRval dst.localId
+                    dstTy val with
                 | error k =>
                   rw [h_wp] at h_ev
                   let ⟨err, st', h_err, h_fk⟩ := h_ev
                   rw [h_err]
                   exact ⟨err, st', rfl, h_fk⟩
-                | ok slots' =>
+                | ok pair =>
+                  cases pair with
+                  | mk slots' amem' =>
                   rw [h_wp] at h_ev
                   rw [h_ev]
-                  exact ⟨slots', rfl, rfl⟩
+                  let ⟨h_inv₁, h_m₁⟩ := evalRvalue_slotsMatchTys h_inv h_er
+                  let ⟨_, h_m₂⟩ := writePlace_slotsMatchTys h_inv₁ h_dty h_wp
+                  refine ⟨slots', ?_, rfl⟩
+                  rw [h_m₂, h_m₁]
   | unsupported =>
     injection h_st_dec with h_eq; subst h_eq
     have h_ev := evalRvalueIntoPlace_ref_eq rp c defId rbody body f.blockIdx
-      f.stmtIdx f.locals retPlace mem ctrl cm ⟨0, []⟩ ⟨0, []⟩ .unsupported
+      f.stmtIdx f.locals amem retPlace mem ctrl cm ⟨0, []⟩ ⟨0, []⟩ .unsupported
       .unsupported h_bdec h_supp h_inv rfl rfl (fun _ _ _ h => by cases h)
     have h_res :
         res = Miri.Interpreter.MachineHooks.run
@@ -788,7 +865,7 @@ private theorem placeMachine_localToOp_live (rp : RefProg) (c : Choice)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
     (cm : CallerMemory) (id : LocalId) (ty : MirTy) (optVal : Option Val)
     (h_ty : MirSemantics.getElem? bodyLocals id = some ty)
-    (h_sl : MirSemantics.getElem? slots id = some (.live optVal)) :
+    (h_sl : MirSemantics.getElem? slots id = some (.immediate optVal)) :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
       retPlace mem ctrl cm
     Miri.Interpreter.PlaceMachine.localToOp (refExecCfg rp).compiler c id st =
@@ -798,7 +875,7 @@ private theorem placeMachine_localToOp_live (rp : RefProg) (c : Choice)
   have h_cf := currentFrame_mkSimState' rp defId rbody blockIdx stmtIdx
     bodyLocals slots retPlace mem ctrl cm
   have h_gl := mkSimFrame_getLocal_some rp defId rbody blockIdx stmtIdx
-    bodyLocals slots retPlace id ty (.live optVal) h_ty h_sl
+    bodyLocals slots retPlace id ty (.immediate optVal) h_ty h_sl
   have h_go := mkSimFrame_getLocalOperand_live rp defId rbody blockIdx stmtIdx
     bodyLocals slots retPlace id ty optVal h_ty h_sl
   have h_sz : (refLocalLayoutForTy rp.types ty).layout.isSized = true :=
@@ -888,7 +965,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
-    (cm : CallerMemory)
+    (cm : CallerMemory) (amem : MemoryState)
     (h_bdec : decodeBody rp.types rbody = some body)
     (h_rbb : MirSemantics.getElem? rbody.basicBlocks f.blockIdx = some rbb)
     (h_rbb_dec : decodeBasicBlock rp.types rbb = some bb)
@@ -902,7 +979,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
     let res := (Miri.Interpreter.ExecutionMachine.stepHooks
       (refExecutionConfig rp) refLimits).terminator c
       (toMiriTerminator rp.types .return_) st
-    match evalTerminator body bb f cm with
+    match evalTerminator body bb f amem cm with
     | .fault k =>
       ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
     | .done (.returned ⟨v, cm'⟩) =>
@@ -915,7 +992,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
     | .step s' =>
       ∃ tgt slots',
         s' = { frames := [{ f with blockIdx := tgt, stmtIdx := 0, locals := slots' }],
-               callerMem := cm } ∧
+               callerMem := cm, mem := amem } ∧
         res = (mkSimState rp defId rbody tgt 0 body.locals slots'
           retPlace mem ctrl cm, .ok ()) := by
   intro st res
@@ -943,7 +1020,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
   cases h_cl : bb.cleanup with
   | true =>
     have h_rcl : rbb.cleanup = true := h_cl_eq.trans h_cl
-    have h_ev_t : evalTerminator body bb f cm = .fault .unsupported := by
+    have h_ev_t : evalTerminator body bb f amem cm = .fault .unsupported := by
       dsimp only [evalTerminator]; rw [← h_bb_term, h_cl]; rfl
     rw [h_ev_t]
     have h_err :
@@ -965,8 +1042,10 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
     have h_rcl : rbb.cleanup = false := h_cl_eq.trans h_cl
     let ⟨slot₀, h_sl₀⟩ := getElem?_some_of_length_eq h_len.symm h_ret_ty
     cases slot₀ with
+    | indirect _ =>
+      exact False.elim (SlotsMatchTys.not_indirect h_inv h_ret_ty h_sl₀)
     | dead =>
-      have h_ev_t : evalTerminator body bb f cm = .fault .undefined := by
+      have h_ev_t : evalTerminator body bb f amem cm = .fault .undefined := by
         dsimp only [evalTerminator]
         rw [← h_bb_term]
         dsimp only
@@ -994,7 +1073,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
         rw [h_rcl, h_ro']
         rfl
       exact ⟨_, _, h_err, rfl⟩
-    | live optVal =>
+    | immediate optVal =>
       have h_ro := placeMachine_localToOp_live rp c defId rbody f.blockIdx f.stmtIdx
         body.locals f.locals retPlace mem ctrl cm 0 retTy optVal h_ret_ty h_sl₀
       let ⟨stPop, h_pop, h_pop_fr, h_pop_mem, h_pop_dr, h_pop_pmd, h_pop_cm⟩ :=
@@ -1079,7 +1158,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
       have h_sm := SlotsMatchTys.getElem? h_inv h_ret_ty h_sl₀
       cases optVal with
       | none =>
-        have h_ev_t : evalTerminator body bb f cm = .fault .undefined := by
+        have h_ev_t : evalTerminator body bb f amem cm = .fault .undefined := by
           dsimp only [evalTerminator]
           rw [← h_bb_term]
           dsimp only
@@ -1089,7 +1168,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
           h_init h_pop_mem h_pop_dr h_pop_pmd h_sm h_ret_supp h_ret_res
         exact ⟨_, _, h_step_copy_err _ _ h_ub, rfl⟩
       | some v =>
-        have h_ev_t : evalTerminator body bb f cm = .done (.returned ⟨v, cm⟩) := by
+        have h_ev_t : evalTerminator body bb f amem cm = .done (.returned ⟨v, cm⟩) := by
           dsimp only [evalTerminator]
           rw [← h_bb_term]
           dsimp only
@@ -1769,7 +1848,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
-    (cm : CallerMemory)
+    (cm : CallerMemory) (amem : MemoryState)
     (h_bdec : decodeBody rp.types rbody = some body)
     (h_rbb : MirSemantics.getElem? rbody.basicBlocks f.blockIdx = some rbb)
     (h_rbb_dec : decodeBasicBlock rp.types rbb = some bb)
@@ -1782,7 +1861,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     let res := (Miri.Interpreter.ExecutionMachine.stepHooks
       (refExecutionConfig rp) refLimits).terminator c
       (toMiriTerminator rp.types rbb.terminator) st
-    match evalTerminator body bb f cm with
+    match evalTerminator body bb f amem cm with
     | .fault k =>
       ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
     | .done (.returned ⟨v, cm'⟩) =>
@@ -1795,7 +1874,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     | .step s' =>
       ∃ tgt slots',
         s' = { frames := [{ f with blockIdx := tgt, stmtIdx := 0, locals := slots' }],
-               callerMem := cm } ∧
+               callerMem := cm, mem := amem } ∧
         res = (mkSimState rp defId rbody tgt 0 body.locals slots'
           retPlace mem ctrl cm, .ok ()) := by
   intro st
@@ -1810,7 +1889,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     exact ⟨target, f.locals, rfl, rfl⟩
   | return_ =>
     exact returnFromCurrentFrame_ref_eq rp c defId rbody body rbb bb f retTy
-      retPlace mem ctrl cm h_bdec h_rbb h_rbb_dec h_rt h_ret_ty h_init
+      retPlace mem ctrl cm amem h_bdec h_rbb h_rbb_dec h_rt h_ret_ty h_init
       h_supp h_inv
   | unreachable =>
     intro res
@@ -1873,10 +1952,10 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
       rw [← h_eq]
       dsimp only
       have h_evD := evalPrimitiveOperand_ref_eq rp c defId rbody f.blockIdx
-        f.stmtIdx body.locals f.locals retPlace mem ctrl cm
+        f.stmtIdx body.locals f.locals amem retPlace mem ctrl cm
         (Miri.Interpreter.OperandPath.instruction "discriminant")
         rdiscr discr none h_inv h_d
-      cases h_pD : evalPrimitiveOperand body.locals f.locals discr with
+      cases h_pD : evalPrimitiveOperand body.locals f.locals amem discr with
       | error k =>
         rw [h_pD] at h_evD
         dsimp only
@@ -1901,7 +1980,11 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
         rw [h_err']
       | ok pair =>
         cases pair with
-        | mk discrVal slotsAfterDiscr =>
+        | mk discrVal rest =>
+        cases rest with
+        | mk slotsAfterDiscr amemAfterDiscr =>
+          have h_amem : amemAfterDiscr = amem :=
+            (evalPrimitiveOperand_slotsMatchTys h_inv h_pD).2
           rw [h_pD] at h_evD
           dsimp only
           let ⟨discrTy, h_dcv, h_dpr, h_okD⟩ := h_evD
@@ -2160,7 +2243,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
               rw [h_sw] at h_loop
               dsimp only
               rw [h_loop]
-              exact ⟨tgt, slotsAfterDiscr, rfl, rfl⟩
+              exact ⟨tgt, slotsAfterDiscr, by rw [h_amem], rfl⟩
           | inr h_rest =>
             cases h_rest with
             | inl h_b =>
@@ -2180,7 +2263,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
                 rw [h_sw] at h_loop
                 dsimp only
                 rw [h_loop]
-                exact ⟨tgt, slotsAfterDiscr, rfl, rfl⟩
+                exact ⟨tgt, slotsAfterDiscr, by rw [h_amem], rfl⟩
             | inr h_rest2 =>
               cases h_rest2 with
               | inl h_u => rw [h_u.1] at h_dpr; cases h_dpr
@@ -2205,8 +2288,8 @@ private theorem evalRefStep_of_err (rp : RefProg) (c : Choice) (rs : RefState)
 a simulated state computes exactly the lifted $M_{\text{anneal}}$ step. -/
 theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
   intro rp p s rs f body rbody h_dec h_sim hs h_body h_rbody h_lt c
-  let ⟨f_sim, rf, retTy, mem, ctrl, _, hs_sim, h_defId, h_ert, h_rty, h_init,
-    h_ctrl, h_miri, h_fsim⟩ := h_sim
+  let ⟨f_sim, rf, retTy, mem, ctrl, _, hs_sim, _, h_defId, h_ert, h_rty,
+    h_init, h_ctrl, h_miri, h_fsim⟩ := h_sim
   rw [hs] at hs_sim
   injection hs_sim with hf_eq
   subst hf_eq
@@ -2292,7 +2375,7 @@ theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
       let ⟨rstmt, h_rstmt, h_rstmt_dec⟩ :=
         (mapOption_getElem? h_stmts_dec f.stmtIdx).2 stmt h_st
       have h_evS := step_evalStatement_ref_eq rp c f.defId rbody body f
-        rs.retPlace mem ctrl s.callerMem rstmt stmt h_bdec h_arg h_supp h_inv
+        rs.retPlace mem ctrl s.callerMem s.mem rstmt stmt h_bdec h_arg h_supp h_inv
         h_rstmt_dec (fun dst src ety dstTy h_st_eq =>
           discriminantTypesValid_stmt h_dv h_bb (by rw [← h_st_eq]; exact h_st)
             src ety dstTy rfl)
@@ -2339,7 +2422,7 @@ theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
         dsimp only [Option.map]
         rw [h_ev_ok]
         rfl
-      have h_evalStep_stmt : evalStep p c s = evalStatement body f s.callerMem stmt := by
+      have h_evalStep_stmt : evalStep p c s = evalStatement body f s.mem s.callerMem stmt := by
         dsimp only [evalStep]
         rw [hs]
         dsimp only
@@ -2349,7 +2432,7 @@ theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
         dsimp only
         rw [h_st]
       rw [h_evalStep_stmt]
-      cases h_es : evalStatement body f s.callerMem stmt with
+      cases h_es : evalStatement body f s.mem s.callerMem stmt with
       | fault k =>
         rw [h_es] at h_evS
         let ⟨err, st', h_err, h_fk⟩ := h_evS
@@ -2428,9 +2511,9 @@ theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
         rw [h_bt]
         rfl
       have h_evT := evalTerminator_ref_eq rp c f.defId rbody body rbb bb f retTy
-        rs.retPlace mem (advanceRefControl ctrl) s.callerMem h_bdec h_rbb
+        rs.retPlace mem (advanceRefControl ctrl) s.callerMem s.mem h_bdec h_rbb
         h_rbb_dec h_ret_ty h_init h_supp h_inv
-      have h_evalStep_term : evalStep p c s = evalTerminator body bb f s.callerMem := by
+      have h_evalStep_term : evalStep p c s = evalTerminator body bb f s.mem s.callerMem := by
         dsimp only [evalStep]
         rw [hs]
         dsimp only
@@ -2443,7 +2526,7 @@ theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
         rw [h_beq_len]
         rfl
       rw [h_evalStep_term]
-      cases h_et : evalTerminator body bb f s.callerMem with
+      cases h_et : evalTerminator body bb f s.mem s.callerMem with
       | fault k =>
         rw [h_et] at h_evT
         let ⟨err, st', h_err, h_fk⟩ := h_evT

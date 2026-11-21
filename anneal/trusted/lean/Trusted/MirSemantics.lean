@@ -14,6 +14,9 @@ import Trusted.MirAst
 import Trusted.MirModel
 import Trusted.MirSemantics.Ops
 import Trusted.MirSemantics.Enum
+import Trusted.MirSemantics.Layout
+import Trusted.MirSemantics.Memory
+import Trusted.MirSemantics.Bytes
 import Trusted.MirSemantics.State
 import Trusted.MirSemantics.Step
 import Trusted.MirSemantics.Boundary
@@ -36,7 +39,7 @@ and `FaultEquivalenceClaim` in `Trusted.Correspondence`, the per-body,
 program, proof-unit, and crate verification judgments (`BodyStaticAdmitted`,
 `BodyVerified`, `Specs`, `Crate`, `ProgramVerified`, `CrateTheorem`, and
 `UnitTheorem`), and the Pass 1 audited claim propositions (`WpSoundnessClaim`,
-`WpFaultSoundnessClaim`, and the 19 `Canary*Claim` propositions).
+`WpFaultSoundnessClaim`, and the 20 `Canary*Claim` propositions).
 
 Human comprehension is therefore the primary design requirement for every
 definition in this module:
@@ -160,8 +163,8 @@ Key semantic correspondence points:
    bytes in memory. Consequently, any live `.unit` or admitted `.zeroSized`
    1-variant `.enum` local slot (at frame entry, after `StorageLive`, or after
    `Operand.move`) remains inhabited by its unique value:
-   `liveUninitSlot .unit = .live (some .unit)`, and
-   `liveUninitSlot (.enum ety) = .live (some (.enumVal ety 0))` whenever
+   `liveUninitSlot .unit = .immediate (some .unit)`, and
+   `liveUninitSlot (.enum ety) = .immediate (some (.enumVal ety 0))` whenever
    `isZstEnumTy ety`.
 
 4. **Explicit arithmetic applications:**
@@ -182,6 +185,14 @@ Key semantic correspondence points:
    non-recursive value definitions calling `noncomputable` helpers require it
    transitively, and `TrustedBoundary.inspectNodeKind` forbids
    `noncomputable section`.
+
+6. **Byte-level memory and indirect locals (`Trusted.MirSemantics.Layout`,
+   `Trusted.MirSemantics.Memory`, `Trusted.MirSemantics.Bytes`):**
+   `State.mem` holds stack allocations, and `LocalSlot.indirect` locals read
+   and write their bytes there, as `rustc` does after `force_allocation`.
+   Profile version 1 has no statement that forces an allocation, so
+   `CanaryMemoryLifecycleAnnealClaim` applies `forceAllocation` between steps
+   to exercise these rules.
 -/
 
 /-!
@@ -547,6 +558,113 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       }
     } ∧
   ¬ UnitTheorem canaryValidCrate
+
+/-- The four big-endian bytes of `0x01020304u32` (`profileTargetEndian`). -/
+noncomputable def canaryBytes01020304 : List AllocByte :=
+  [.init 1 none, .init 2 none, .init 3 none, .init 4 none]
+
+/-- Trusted claim for `Anneal.MirWp.canary_memory_lifecycle_anneal`, which
+exercises `.indirect` locals and `MemoryState` on `progMemLifecycle`
+(`StorageLive(_2); _2 = copy _1; _0 = copy _2; StorageDead(_2); return`) and
+`progMemUninitRead` (`StorageLive(_1); _0 = copy _1; return`):
+1. Without `forceAllocation`, `progMemLifecycle` returns its argument
+   `0x01020304`.
+2. Moving the initialized `_2` into memory after `_2 = copy _1` allocates a
+   fresh stack allocation with id `2` (id `1` is the reserved return place),
+   stores the value's big-endian bytes (`canaryBytes01020304`), reads them back
+   in `_0 = copy _2`, deallocates the allocation at `StorageDead(_2)` (so a
+   later read through the old place faults with `.undefined`), and returns
+   `0x01020304`.
+3. Moving the uninitialized `_2` into memory right after `StorageLive(_2)`
+   allocates four uninitialized bytes; `_2 = copy _1` then writes the value's
+   bytes through the place, and execution returns `0x01020304`.
+4. Moving the uninitialized `_1` of `progMemUninitRead` into memory and then
+   reading it (`_0 = copy _1`) faults with `.undefined`, as does reading it
+   after its allocation is deallocated.
+5. On `progMemIndirectOps` (`_0 = move _1; StorageLive(_1); return`), with
+   `_1` (allocation `2`) and `_0` (allocation `3`) moved into memory first:
+   `_0 = move _1` copies the bytes into `_0`'s allocation and deinitializes
+   `_1`'s bytes; `StorageLive(_1)` deallocates `_1`'s allocation; and
+   `return` reads the result from `_0`'s allocation.
+6. On `progEnumExplicitReprU8` (`_1 = const ReprU8::B; _0 =
+   discriminant(_1)`), with `_1` moved into memory after the assignment, the
+   tag byte `20` is stored in allocation `2`, `discriminant(_1)` reads it
+   back, `StorageDead(_1)` deallocates it, and execution returns `20u8`.
+7. Type checks precede memory reads: copying a `bool` `.indirect` local into
+   a `u32` (`progMemIllTypedUse`) and applying `Not` to an enum `.indirect`
+   local (`progMemNonPrimitiveUnOp`) fault with `.unsupported` even after
+   the local's allocation is deallocated. -/
+def CanaryMemoryLifecycleAnnealClaim : Prop :=
+  PositiveCanaryClaim progMemLifecycle queryMemLifecycle
+    (u32Val 16909060) ∧
+  (∃ (s₀ s₁ s₂ s₃ s₄ s₅ : State) (place : MemPlace),
+    initState progMemLifecycle queryMemLifecycle = .ok s₀ ∧
+    evalStep progMemLifecycle 0 s₀ = .step s₁ ∧
+    evalStep progMemLifecycle 0 s₁ = .step s₂ ∧
+    forceAllocation progMemLifecycle s₂ 2 = .ok (s₃, place) ∧
+    place = ⟨2, 0⟩ ∧
+    readBytes s₃.mem place 4 2 = .ok canaryBytes01020304 ∧
+    evalStep progMemLifecycle 0 s₃ = .step s₄ ∧
+    evalStep progMemLifecycle 0 s₄ = .step s₅ ∧
+    readBytes s₅.mem place 4 2 = .error .undefined ∧
+    evalStep progMemLifecycle 0 s₅ =
+      .done (.returned ⟨u32Val 16909060, ⟨[]⟩⟩)) ∧
+  (∃ (t₀ t₁ t₂ t₃ t₄ t₅ : State) (place : MemPlace),
+    initState progMemLifecycle queryMemLifecycle = .ok t₀ ∧
+    evalStep progMemLifecycle 0 t₀ = .step t₁ ∧
+    forceAllocation progMemLifecycle t₁ 2 = .ok (t₂, place) ∧
+    readBytes t₂.mem place 4 2 = .ok (List.replicate 4 .uninit) ∧
+    evalStep progMemLifecycle 0 t₂ = .step t₃ ∧
+    readBytes t₃.mem place 4 2 = .ok canaryBytes01020304 ∧
+    evalStep progMemLifecycle 0 t₃ = .step t₄ ∧
+    evalStep progMemLifecycle 0 t₄ = .step t₅ ∧
+    evalStep progMemLifecycle 0 t₅ =
+      .done (.returned ⟨u32Val 16909060, ⟨[]⟩⟩)) ∧
+  (∃ (u₀ u₁ u₂ : State) (place : MemPlace) (m : MemoryState),
+    initState progMemUninitRead queryEmpty = .ok u₀ ∧
+    evalStep progMemUninitRead 0 u₀ = .step u₁ ∧
+    forceAllocation progMemUninitRead u₁ 1 = .ok (u₂, place) ∧
+    evalStep progMemUninitRead 0 u₂ = .fault .undefined ∧
+    deallocateStack u₂.mem place = .ok m ∧
+    evalStep progMemUninitRead 0 { u₂ with mem := m } = .fault .undefined) ∧
+  (∃ (v₀ v₁ v₂ v₃ v₄ : State),
+    initState progMemIndirectOps queryMemLifecycle = .ok v₀ ∧
+    forceAllocation progMemIndirectOps v₀ 1 = .ok (v₁, ⟨2, 0⟩) ∧
+    forceAllocation progMemIndirectOps v₁ 0 = .ok (v₂, ⟨3, 0⟩) ∧
+    readBytes v₂.mem ⟨2, 0⟩ 4 2 = .ok canaryBytes01020304 ∧
+    readBytes v₂.mem ⟨3, 0⟩ 4 2 = .ok (List.replicate 4 .uninit) ∧
+    evalStep progMemIndirectOps 0 v₂ = .step v₃ ∧
+    readBytes v₃.mem ⟨2, 0⟩ 4 2 = .ok (List.replicate 4 .uninit) ∧
+    readBytes v₃.mem ⟨3, 0⟩ 4 2 = .ok canaryBytes01020304 ∧
+    evalStep progMemIndirectOps 0 v₃ = .step v₄ ∧
+    readBytes v₄.mem ⟨2, 0⟩ 4 2 = .error .undefined ∧
+    evalStep progMemIndirectOps 0 v₄ =
+      .done (.returned ⟨u32Val 16909060, ⟨[]⟩⟩)) ∧
+  (∃ (d₀ d₁ d₂ d₃ d₄ d₅ : State),
+    initState progEnumExplicitReprU8 queryEmpty = .ok d₀ ∧
+    evalStep progEnumExplicitReprU8 0 d₀ = .step d₁ ∧
+    evalStep progEnumExplicitReprU8 0 d₁ = .step d₂ ∧
+    forceAllocation progEnumExplicitReprU8 d₂ 1 = .ok (d₃, ⟨2, 0⟩) ∧
+    readBytes d₃.mem ⟨2, 0⟩ 1 0 = .ok [.init 20 none] ∧
+    evalStep progEnumExplicitReprU8 0 d₃ = .step d₄ ∧
+    evalStep progEnumExplicitReprU8 0 d₄ = .step d₅ ∧
+    readBytes d₅.mem ⟨2, 0⟩ 1 0 = .error .undefined ∧
+    evalStep progEnumExplicitReprU8 0 d₅ =
+      .done (.returned ⟨u8Val 20, ⟨[]⟩⟩)) ∧
+  (∃ (w₀ w₁ w₂ : State) (place : MemPlace) (m : MemoryState),
+    initState progMemIllTypedUse queryEmpty = .ok w₀ ∧
+    evalStep progMemIllTypedUse 0 w₀ = .step w₁ ∧
+    forceAllocation progMemIllTypedUse w₁ 1 = .ok (w₂, place) ∧
+    deallocateStack w₂.mem place = .ok m ∧
+    evalStep progMemIllTypedUse 0 { w₂ with mem := m } =
+      .fault .unsupported) ∧
+  (∃ (x₀ x₁ x₂ : State) (place : MemPlace) (m : MemoryState),
+    initState progMemNonPrimitiveUnOp queryEmpty = .ok x₀ ∧
+    evalStep progMemNonPrimitiveUnOp 0 x₀ = .step x₁ ∧
+    forceAllocation progMemNonPrimitiveUnOp x₁ 1 = .ok (x₂, place) ∧
+    deallocateStack x₂.mem place = .ok m ∧
+    evalStep progMemNonPrimitiveUnOp 0 { x₂ with mem := m } =
+      .fault .unsupported)
 
 end Trusted.MirSemantics
 

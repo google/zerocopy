@@ -1061,14 +1061,17 @@ theorem slotToMiriLocalValue_inj {ty : MirTy} {s₁ s₂ : LocalSlot}
     (h_eq : slotToMiriLocalValue ty s₁ = slotToMiriLocalValue ty s₂) :
     s₁ = s₂ := by
   cases s₁ with
+  | indirect _ => exact False.elim h₁
   | dead =>
     cases s₂ with
     | dead => rfl
-    | live opt₂ => cases opt₂ <;> cases h_eq
-  | live opt₁ =>
+    | immediate opt₂ => cases opt₂ <;> cases h_eq
+    | indirect _ => exact False.elim h₂
+  | immediate opt₁ =>
     cases s₂ with
+    | indirect _ => exact False.elim h₂
     | dead => cases opt₁ <;> cases h_eq
-    | live opt₂ =>
+    | immediate opt₂ =>
       cases opt₁ with
       | none =>
         cases opt₂ with
@@ -1321,9 +1324,9 @@ end MiriEquiv
 theorem state_unique_of_simulationInv_base :
     StateUniqueOfSimulationInvClaim := by
   intro rp p s₁ s₂ rs h₁ h₂
-  let ⟨f₁, rf₁, retTy₁, mem₁, ctrl₁, _, hs₁, _, _, _, _, _, hmiri₁,
+  let ⟨f₁, rf₁, retTy₁, mem₁, ctrl₁, _, hs₁, hm₁, _, _, _, _, _, hmiri₁,
     hframe₁⟩ := h₁
-  let ⟨f₂, rf₂, retTy₂, mem₂, ctrl₂, _, hs₂, _, _, _, _, _, hmiri₂,
+  let ⟨f₂, rf₂, retTy₂, mem₂, ctrl₂, _, hs₂, hm₂, _, _, _, _, _, hmiri₂,
     hframe₂⟩ := h₂
   rw [hmiri₁] at hmiri₂
   dsimp only [mkRefMiriState] at hmiri₂
@@ -1363,7 +1366,7 @@ theorem state_unique_of_simulationInv_base :
     rw [h_def, h_blk, h_stmt, h_slots]
   subst h_f
   cases s₁; cases s₂
-  dsimp only at hs₁ hs₂ h_cm
-  rw [hs₁, hs₂, h_cm]
+  dsimp only at hs₁ hs₂ h_cm hm₁ hm₂
+  rw [hs₁, hs₂, h_cm, hm₁, hm₂]
 
 end Anneal.MirCorrespondence

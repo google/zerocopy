@@ -332,10 +332,11 @@ noncomputable def refIsSupportedLocalTy : MirTy → Bool
 /-- Independent $M_{\text{ref}}$ initial live slot for `ty` (inhabited for
 0-byte ZSTs `.unit` and admitted `.zeroSized` 1-variant enums). -/
 noncomputable def refLiveUninitSlot : MirTy → LocalSlot
-  | .unit => .live (some .unit)
+  | .unit => .immediate (some .unit)
   | .enum ety =>
-    if refIsZstEnumTy ety then .live (some (.enumVal ety 0)) else .live none
-  | _ => .live none
+    if refIsZstEnumTy ety then .immediate (some (.enumVal ety 0))
+    else .immediate none
+  | _ => .immediate none
 
 /-! ## Canonical Type-Table Resolution and `Miri.ABI.LayoutData` -/
 
@@ -761,13 +762,31 @@ noncomputable def valToMiriImmediate :
       | none => .uninit
   | _, _ => .uninit
 
+/-- Encode an $M_{\text{anneal}}$ `MemPlace` into the real
+`Miri.Interpreter.MemPlace` of a sized local's stack allocation: a pointer at
+byte offset `place.offset` whose provenance is allocation `place.allocId` with
+the root tag `BorTag.one` (the tag `PlaceMachine.allocateStackRaw` gives every
+stack allocation while borrow tracking is disabled, as in `mkRefMiriState`),
+no unsized metadata, and no misalignment. An allocation id of `0`, which no
+`MemoryState` produces, encodes as a pointer without provenance. -/
+noncomputable def memPlaceToMiri (place : MemPlace) :
+    Miri.Interpreter.MemPlace Miri.Memory.Provenance :=
+  let prov : Option Miri.Memory.Provenance :=
+    match Miri.Memory.AllocId.ofUInt64 (UInt64.ofNat place.allocId) with
+    | some id => some (.concrete id Miri.Memory.BorTag.one)
+    | none => none
+  ⟨⟨Miri.ABI.Size.ofBytes (UInt64.ofNat place.offset), prov⟩, .none, none⟩
+
 /-- Encode a `LocalSlot` at type `ty` into a real
-`Miri.Interpreter.LocalValue Miri.Memory.Provenance`. -/
+`Miri.Interpreter.LocalValue Miri.Memory.Provenance`, one constructor to one
+constructor: `.dead` to `.dead`, `.immediate` to `.live (.immediate _)`, and
+`.indirect` to `.live (.indirect _)`. -/
 noncomputable def slotToMiriLocalValue (ty : MirTy) :
     LocalSlot → Miri.Interpreter.LocalValue Miri.Memory.Provenance
   | .dead => .dead
-  | .live none => .live (.immediate .uninit)
-  | .live (some v) => .live (.immediate (valToMiriImmediate ty v))
+  | .immediate none => .live (.immediate .uninit)
+  | .immediate (some v) => .live (.immediate (valToMiriImmediate ty v))
+  | .indirect place => .live (.indirect (memPlaceToMiri place))
 
 /-- Construct a pre-cached `Miri.Interpreter.LocalState Provenance LocalLayout`
 for a `(ty, slot)` pair. -/
@@ -908,7 +927,7 @@ noncomputable def initRefLocalsLoop (types : List MirTy) (rbody : RefBody)
           refLiveUninitSlot ty
         else if Nat.ble idx rbody.argumentCount then
           match MirSemantics.getElem? args (idx - 1) with
-          | some v => .live (some v)
+          | some v => .immediate (some v)
           | none => .dead
         else if refHasStorageAnnotation rbody idx then
           .dead
