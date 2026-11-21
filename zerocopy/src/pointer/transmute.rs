@@ -135,9 +135,12 @@ pub enum BecauseMutationCompatible {}
 //     - Aliasing is `Shared`, `Src: Immutable`, and `Dst: Immutable`, in which
 //       case no mutation is possible via either `Ptr`
 //   - Since the underlying cast is size-preserving, `dst` addresses the same
-//     referent as `src`. By `Dst: TransmuteFrom<Src, SV, DV>`, the set of
-//     `DV`-valid referents of `dst` is a superset of the set of `SV`-valid
-//     referents of `src`.
+//     referent as `src`. By `Dst: TransmuteFrom<Src, SV, DV>` - which option
+//     (b) of the `MutationCompatible` safety contract guarantees at this
+//     impl's own `SV` and `DV`, and which the `BecauseSharedCompatible`
+//     implementation enforces in its `where` clause - the set of `DV`-valid
+//     referents of `dst` is a superset of the set of `SV`-valid referents of
+//     `src`.
 // - Preserve source validity: Since the underlying cast is size-preserving,
 //   `dst` addresses the same referent as `src`. By
 //   `Src: TransmuteFrom<Dst, DV, SV>`, the set of `DV`-valid referents of `dst`
@@ -187,10 +190,19 @@ where
 /// # Safety
 ///
 /// At least one of the following must hold:
-/// - `Src: Read<A, _>` and `Self: Read<A, _>`
-/// - `Self: SharedCompatible<Src>`, and, for some `V`:
-///   - `Self: TransmuteFrom<Src, V, V>`
-///   - `Src: TransmuteFrom<Self, V, V>`
+/// - (a) `Src: Read<A, _>` and `Self: Read<A, _>`
+/// - (b) `Self: SharedCompatible<Src>`, and, *at this trait's own `SV` and
+///   `DV`*:
+///   - `Self: TransmuteFrom<Src, SV, DV>`
+///   - `Src: TransmuteFrom<Self, DV, SV>`
+///
+/// The `TransmuteFrom` bounds in option (b) must hold at `SV` and `DV`
+/// themselves - not merely at some existentially-quantified validity `V`.
+/// `zerocopy` provides unconditional blanket `TransmuteFrom` impls at `Uninit`
+/// and `Initialized`, so reciprocal bounds at a single `V` hold for every pair
+/// of types and would leave option (b) conveying nothing beyond `Self:
+/// SharedCompatible<Src>`. Bounds at the trait's own `SV` and `DV` are what
+/// consumers of this trait rely on to relate the two referents' bit validity.
 pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
 
 #[allow(missing_copy_implementations, missing_debug_implementations)]
@@ -219,7 +231,8 @@ pub unsafe trait SharedCompatible<T: ?Sized> {}
 unsafe impl<T: ?Sized> SharedCompatible<T> for T {}
 
 // SAFETY: `Dst: SharedCompatible<Src> + TransmuteFrom<Src, SV, DV>`, and `Src:
-// TransmuteFrom<Dst, DV, SV>`.
+// TransmuteFrom<Dst, DV, SV>`, both at this impl's own `SV` and `DV` - i.e.
+// exactly option (b) of the `MutationCompatible` safety contract.
 unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity>
     MutationCompatible<Src, A, SV, DV, BecauseSharedCompatible> for Dst
 where
@@ -499,7 +512,10 @@ impl<T> SizeEq<MaybeUninit<T>> for T {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::pointer::cast::Project as _;
+    use crate::pointer::{
+        cast::{CastExact, CastSizedExact, Project as _},
+        invariant::{Initialized, Safe, Uninit, Validity},
+    };
 
     fn test_size_eq<Src, Dst: SizeEq<Src>>(mut src: Src) {
         let _: *mut Dst =
@@ -526,5 +542,123 @@ mod tests {
 
         // T: ?Sized => UnsafeCell<T> => T => Cell<T>
         test_size_eq::<UnsafeCell<u8>, Cell<u8>>(UnsafeCell::new(0u8));
+    }
+
+    /// A test-only model of the formulation of `MutationCompatible` option
+    /// (b) whose reciprocal `TransmuteFrom` bounds are taken at a single,
+    /// impl-selected validity `V` rather than at the trait's own `SV` and
+    /// `DV`.
+    ///
+    /// # Safety
+    ///
+    /// At the validity `V` fixed by the impl:
+    /// - `Self: SharedCompatible<Src>`
+    /// - `Self: TransmuteFrom<Src, V, V>`
+    /// - `Src: TransmuteFrom<Self, V, V>`
+    ///
+    /// A witness of this shape establishes everything that formulation
+    /// demanded of a `MutationCompatible` implementor, and strictly less than
+    /// option (b) requires: these obligations hold unconditionally via the
+    /// blanket `TransmuteFrom` impls. This trait exists so that the tests
+    /// below can exhibit such witnesses without asserting a false safety
+    /// claim about the production `MutationCompatible` trait.
+    unsafe trait VacuousOptionB<Src: ?Sized, V> {}
+
+    // SAFETY: `ManuallyDrop<UnsafeCell<u8>>: SharedCompatible<UnsafeCell<u8>>`
+    // is provided by the in-crate `SharedCompatible` impl for `ManuallyDrop`,
+    // and the two reciprocal `TransmuteFrom<_, Uninit, Uninit>` bounds hold
+    // unconditionally via the `V => Uninit` blanket impl. Together these are
+    // exactly this trait's contract at `V = Uninit`.
+    unsafe impl VacuousOptionB<UnsafeCell<u8>, Uninit> for ManuallyDrop<UnsafeCell<u8>>
+    where
+        ManuallyDrop<UnsafeCell<u8>>: SharedCompatible<UnsafeCell<u8>>,
+        ManuallyDrop<UnsafeCell<u8>>: TransmuteFrom<UnsafeCell<u8>, Uninit, Uninit>,
+        UnsafeCell<u8>: TransmuteFrom<ManuallyDrop<UnsafeCell<u8>>, Uninit, Uninit>,
+    {
+    }
+
+    #[test]
+    fn mutation_compatible_option_b_validity_pinning() {
+        // Part 1: reciprocal `TransmuteFrom<_, V, V>` bounds at a single
+        // validity `V` hold for arbitrary `Src`/`Dst`, and would therefore
+        // convey no information if option (b) were phrased in terms of them.
+        // They are discharged by the unconditional `Uninit`/`Uninit` and
+        // `Initialized`/`Initialized` blanket impls.
+        fn unpinned_bounds_are_vacuous<Src, Dst>()
+        where
+            Src: ?Sized,
+            Dst: ?Sized,
+        {
+            fn assert_transmute_from<S, D, V>()
+            where
+                S: ?Sized,
+                D: ?Sized,
+                D: TransmuteFrom<S, V, V>,
+            {
+            }
+
+            assert_transmute_from::<Src, Dst, Uninit>();
+            assert_transmute_from::<Dst, Src, Uninit>();
+            assert_transmute_from::<Src, Dst, Initialized>();
+            assert_transmute_from::<Dst, Src, Initialized>();
+        }
+
+        unpinned_bounds_are_vacuous::<u8, bool>();
+        unpinned_bounds_are_vacuous::<MaybeUninit<u8>, bool>();
+
+        // Part 2: everything an implementor of the unpinned formulation of
+        // option (b) had to prove - modeled by `VacuousOptionB` - plus the
+        // only structural bound the blanket `TryTransmuteFromPtr` impl places
+        // on a cast, holds for a cast whose forward bound at the trait's own
+        // validities has no implementation:
+        //
+        //     ManuallyDrop<UnsafeCell<u8>>: TransmuteFrom<UnsafeCell<u8>,
+        //         Uninit, Safe>
+        //
+        // Both referent types permit interior mutation and neither is
+        // `Immutable`, so option (a) is unavailable under `Shared` aliasing
+        // and the unpinned option (b) is the only route. The destination
+        // validity half of the blanket impl's safety proof cites
+        // `Dst: TransmuteFrom<Src, SV, DV>`, which none of these obligations
+        // establishes (regression test for #3763).
+        fn assert_vacuous_witness_obligations<Src, Dst, SV, DV, C, V>()
+        where
+            Src: ?Sized,
+            Dst: ?Sized,
+            SV: Validity,
+            DV: Validity,
+            C: CastExact<Src, Dst>,
+            Src: TransmuteFrom<Dst, DV, SV>,
+            Dst: VacuousOptionB<Src, V>,
+        {
+        }
+
+        assert_vacuous_witness_obligations::<
+            UnsafeCell<u8>,
+            ManuallyDrop<UnsafeCell<u8>>,
+            Uninit,
+            Safe,
+            CastSizedExact,
+            Uninit,
+        >();
+
+        // Part 3: option (b) as documented pins its bounds to `SV` and `DV`.
+        // Those bounds hold for well-formed casts...
+        fn assert_pinned_bounds<Src, Dst, SV, DV>()
+        where
+            Src: ?Sized,
+            Dst: ?Sized,
+            Dst: TransmuteFrom<Src, SV, DV>,
+            Src: TransmuteFrom<Dst, DV, SV>,
+        {
+        }
+
+        assert_pinned_bounds::<MaybeUninit<u8>, u8, Uninit, Uninit>();
+        assert_pinned_bounds::<u8, crate::wrappers::Unalign<u8>, Safe, Safe>();
+
+        // ...and have no implementation for the cast in Part 2, which is what
+        // makes them meaningful. (A compiling test cannot assert the absence
+        // of a trait implementation; the comment on Part 2 records the
+        // absence.)
     }
 }
