@@ -1,0 +1,6011 @@
+{
+  "schema": "rustc-feature-completeness-qualification-matrix/1",
+  "subject_rust_revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+  "baseline_1_99_1_revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "live_nightly_host_revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+  "extraction_elapsed_seconds": 18.158,
+  "compiler_surfaces": {
+    "top_level_getopts": {
+      "total": 39,
+      "standard_help_count": 26,
+      "verbose_only_count": 13,
+      "stable_count": 34,
+      "unstable_count": 5,
+      "delta_vs_1_99_1": 1,
+      "flags": [
+        {
+          "primary": "crate-type",
+          "short": "",
+          "long": "crate-type",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "help",
+          "short": "h",
+          "long": "help",
+          "stability": "Stable",
+          "kind": "Flag",
+          "verbose_only": false
+        },
+        {
+          "primary": "cfg",
+          "short": "",
+          "long": "cfg",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "check-cfg",
+          "short": "",
+          "long": "check-cfg",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "L",
+          "short": "L",
+          "long": "",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "l",
+          "short": "l",
+          "long": "",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "crate-name",
+          "short": "",
+          "long": "crate-name",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": false
+        },
+        {
+          "primary": "edition",
+          "short": "",
+          "long": "edition",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": false
+        },
+        {
+          "primary": "emit",
+          "short": "",
+          "long": "emit",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "print",
+          "short": "",
+          "long": "print",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "g",
+          "short": "g",
+          "long": "",
+          "stability": "Stable",
+          "kind": "FlagMulti",
+          "verbose_only": false
+        },
+        {
+          "primary": "O",
+          "short": "O",
+          "long": "",
+          "stability": "Stable",
+          "kind": "FlagMulti",
+          "verbose_only": false
+        },
+        {
+          "primary": "o",
+          "short": "o",
+          "long": "",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": false
+        },
+        {
+          "primary": "out-dir",
+          "short": "",
+          "long": "out-dir",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": false
+        },
+        {
+          "primary": "explain",
+          "short": "",
+          "long": "explain",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": false
+        },
+        {
+          "primary": "test",
+          "short": "",
+          "long": "test",
+          "stability": "Stable",
+          "kind": "Flag",
+          "verbose_only": false
+        },
+        {
+          "primary": "target",
+          "short": "",
+          "long": "target",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": false
+        },
+        {
+          "primary": "allow",
+          "short": "A",
+          "long": "allow",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "warn",
+          "short": "W",
+          "long": "warn",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "force-warn",
+          "short": "",
+          "long": "force-warn",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "deny",
+          "short": "D",
+          "long": "deny",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "forbid",
+          "short": "F",
+          "long": "forbid",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "cap-lints",
+          "short": "",
+          "long": "cap-lints",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "codegen",
+          "short": "C",
+          "long": "codegen",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": false
+        },
+        {
+          "primary": "version",
+          "short": "V",
+          "long": "version",
+          "stability": "Stable",
+          "kind": "Flag",
+          "verbose_only": false
+        },
+        {
+          "primary": "verbose",
+          "short": "v",
+          "long": "verbose",
+          "stability": "Stable",
+          "kind": "Flag",
+          "verbose_only": false
+        },
+        {
+          "primary": "extern",
+          "short": "",
+          "long": "extern",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": true
+        },
+        {
+          "primary": "sysroot",
+          "short": "",
+          "long": "sysroot",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": true
+        },
+        {
+          "primary": "Z",
+          "short": "Z",
+          "long": "",
+          "stability": "Unstable",
+          "kind": "Multi",
+          "verbose_only": true
+        },
+        {
+          "primary": "error-format",
+          "short": "",
+          "long": "error-format",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": true
+        },
+        {
+          "primary": "json",
+          "short": "",
+          "long": "json",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": true
+        },
+        {
+          "primary": "color",
+          "short": "",
+          "long": "color",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": true
+        },
+        {
+          "primary": "diagnostic-width",
+          "short": "",
+          "long": "diagnostic-width",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": true
+        },
+        {
+          "primary": "remap-path-prefix",
+          "short": "",
+          "long": "remap-path-prefix",
+          "stability": "Stable",
+          "kind": "Multi",
+          "verbose_only": true
+        },
+        {
+          "primary": "remap-path-scope",
+          "short": "",
+          "long": "remap-path-scope",
+          "stability": "Stable",
+          "kind": "Opt",
+          "verbose_only": true
+        },
+        {
+          "primary": "jobs",
+          "short": "j",
+          "long": "jobs",
+          "stability": "Unstable",
+          "kind": "Opt",
+          "verbose_only": true
+        },
+        {
+          "primary": "jobs-frontend",
+          "short": "",
+          "long": "jobs-frontend",
+          "stability": "Unstable",
+          "kind": "Opt",
+          "verbose_only": true
+        },
+        {
+          "primary": "jobs-backend",
+          "short": "",
+          "long": "jobs-backend",
+          "stability": "Unstable",
+          "kind": "Opt",
+          "verbose_only": true
+        },
+        {
+          "primary": "jobs-linker",
+          "short": "",
+          "long": "jobs-linker",
+          "stability": "Unstable",
+          "kind": "Opt",
+          "verbose_only": true
+        }
+      ]
+    },
+    "codegen_options_C": {
+      "total": 56,
+      "active_count": 52,
+      "removed_count": 4,
+      "target_modifiers_count": 2,
+      "llvm_specific_count": 9,
+      "delta_vs_1_99_1": 2,
+      "options": [
+        {
+          "ident": "ar",
+          "cli_flag": "ar",
+          "rust_type": "()",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": true,
+          "llvm_specific": false
+        },
+        {
+          "ident": "code_model",
+          "cli_flag": "code-model",
+          "rust_type": "Option<CodeModel>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "codegen_units",
+          "cli_flag": "codegen-units",
+          "rust_type": "Option<usize>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "collapse_macro_debuginfo",
+          "cli_flag": "collapse-macro-debuginfo",
+          "rust_type": "CollapseMacroDebuginfo",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "control_flow_guard",
+          "cli_flag": "control-flow-guard",
+          "rust_type": "CFGuard",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "debug_assertions",
+          "cli_flag": "debug-assertions",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "debuginfo",
+          "cli_flag": "debuginfo",
+          "rust_type": "DebugInfo",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "default_linker_libraries",
+          "cli_flag": "default-linker-libraries",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dlltool",
+          "cli_flag": "dlltool",
+          "rust_type": "Option<PathBuf>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dwarf_version",
+          "cli_flag": "dwarf-version",
+          "rust_type": "Option<u32>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "embed_bitcode",
+          "cli_flag": "embed-bitcode",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "embed_metadata",
+          "cli_flag": "embed-metadata",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "extra_filename",
+          "cli_flag": "extra-filename",
+          "rust_type": "String",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "force_frame_pointers",
+          "cli_flag": "force-frame-pointers",
+          "rust_type": "FramePointer",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "force_unwind_tables",
+          "cli_flag": "force-unwind-tables",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "help",
+          "cli_flag": "help",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "incremental",
+          "cli_flag": "incremental",
+          "rust_type": "Option<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "inline_threshold",
+          "cli_flag": "inline-threshold",
+          "rust_type": "()",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": true,
+          "llvm_specific": false
+        },
+        {
+          "ident": "instrument_coverage",
+          "cli_flag": "instrument-coverage",
+          "rust_type": "InstrumentCoverage",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "jump_tables",
+          "cli_flag": "jump-tables",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "link_arg",
+          "cli_flag": "link-arg",
+          "rust_type": "()",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "link_args",
+          "cli_flag": "link-args",
+          "rust_type": "Vec<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "link_dead_code",
+          "cli_flag": "link-dead-code",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "link_self_contained",
+          "cli_flag": "link-self-contained",
+          "rust_type": "LinkSelfContained",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "linker",
+          "cli_flag": "linker",
+          "rust_type": "Option<PathBuf>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "linker_features",
+          "cli_flag": "linker-features",
+          "rust_type": "LinkerFeaturesCli",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "linker_flavor",
+          "cli_flag": "linker-flavor",
+          "rust_type": "Option<LinkerFlavorCli>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "linker_plugin_lto",
+          "cli_flag": "linker-plugin-lto",
+          "rust_type": "LinkerPluginLto",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "llvm_args",
+          "cli_flag": "llvm-args",
+          "rust_type": "Vec<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "lto",
+          "cli_flag": "lto",
+          "rust_type": "LtoCli",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "metadata",
+          "cli_flag": "metadata",
+          "rust_type": "Vec<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_prepopulate_passes",
+          "cli_flag": "no-prepopulate-passes",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "no_redzone",
+          "cli_flag": "no-redzone",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "no_stack_check",
+          "cli_flag": "no-stack-check",
+          "rust_type": "()",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": true,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_vectorize_loops",
+          "cli_flag": "no-vectorize-loops",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_vectorize_slp",
+          "cli_flag": "no-vectorize-slp",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "opt_level",
+          "cli_flag": "opt-level",
+          "rust_type": "String",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "overflow_checks",
+          "cli_flag": "overflow-checks",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "panic",
+          "cli_flag": "panic",
+          "rust_type": "Option<PanicStrategy>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "passes",
+          "cli_flag": "passes",
+          "rust_type": "Vec<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "prefer_dynamic",
+          "cli_flag": "prefer-dynamic",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "profile_generate",
+          "cli_flag": "profile-generate",
+          "rust_type": "SwitchWithOptPath",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "profile_sample_use",
+          "cli_flag": "profile-sample-use",
+          "rust_type": "Option<PathBuf>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "profile_use",
+          "cli_flag": "profile-use",
+          "rust_type": "Option<PathBuf>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "relocation_model",
+          "cli_flag": "relocation-model",
+          "rust_type": "Option<RelocModel>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "relro_level",
+          "cli_flag": "relro-level",
+          "rust_type": "Option<RelroLevel>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "remark",
+          "cli_flag": "remark",
+          "rust_type": "Passes",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "rpath",
+          "cli_flag": "rpath",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "save_temps",
+          "cli_flag": "save-temps",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "soft_float",
+          "cli_flag": "soft-float",
+          "rust_type": "()",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": true,
+          "llvm_specific": true
+        },
+        {
+          "ident": "split_debuginfo",
+          "cli_flag": "split-debuginfo",
+          "rust_type": "Option<SplitDebuginfo>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "strip",
+          "cli_flag": "strip",
+          "rust_type": "Strip",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "symbol_mangling_version",
+          "cli_flag": "symbol-mangling-version",
+          "rust_type": "Option<SymbolManglingVersion>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "target_cpu",
+          "cli_flag": "target-cpu",
+          "rust_type": "Option<String>",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "target_feature",
+          "cli_flag": "target-feature",
+          "rust_type": "String",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "unsafe_allow_abi_mismatch",
+          "cli_flag": "unsafe-allow-abi-mismatch",
+          "rust_type": "Vec<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        }
+      ]
+    },
+    "unstable_options_Z": {
+      "total": 243,
+      "active_count": 243,
+      "removed_count": 0,
+      "target_modifiers_count": 13,
+      "llvm_specific_count": 21,
+      "delta_vs_1_99_1": 5,
+      "options": [
+        {
+          "ident": "allow_features",
+          "cli_flag": "allow-features",
+          "rust_type": "Option<Vec<String>>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "allow_partial_mitigations",
+          "cli_flag": "allow-partial-mitigations",
+          "rust_type": "()",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "always_encode_mir",
+          "cli_flag": "always-encode-mir",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "annotate_moves",
+          "cli_flag": "annotate-moves",
+          "rust_type": "AnnotateMoves",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "assert_incr_state",
+          "cli_flag": "assert-incr-state",
+          "rust_type": "Option<IncrementalStateAssertion>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "assume_incomplete_release",
+          "cli_flag": "assume-incomplete-release",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "assumptions_on_binders",
+          "cli_flag": "assumptions-on-binders",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "async_panic",
+          "cli_flag": "async-panic",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "autodiff",
+          "cli_flag": "autodiff",
+          "rust_type": "Vec<crate::config::AutoDiff>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "autodiff_post_passes",
+          "cli_flag": "autodiff-post-passes",
+          "rust_type": "Option<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "binary_dep_depinfo",
+          "cli_flag": "binary-dep-depinfo",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "box_noalias",
+          "cli_flag": "box-noalias",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "branch_protection",
+          "cli_flag": "branch-protection",
+          "rust_type": "Option<BranchProtection>",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "build_sdylib_interface",
+          "cli_flag": "build-sdylib-interface",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "cache_proc_macros",
+          "cli_flag": "cache-proc-macros",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "cf_protection",
+          "cli_flag": "cf-protection",
+          "rust_type": "CFProtection",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "check_cfg_all_expected",
+          "cli_flag": "check-cfg-all-expected",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "checksum_hash_algorithm",
+          "cli_flag": "checksum-hash-algorithm",
+          "rust_type": "Option<SourceFileHashAlgorithm>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "codegen_backend",
+          "cli_flag": "codegen-backend",
+          "rust_type": "Option<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "codegen_emit_retag",
+          "cli_flag": "codegen-emit-retag",
+          "rust_type": "Option<CodegenRetagOptions>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "codegen_source_order",
+          "cli_flag": "codegen-source-order",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "contract_checks",
+          "cli_flag": "contract-checks",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "coverage_options",
+          "cli_flag": "coverage-options",
+          "rust_type": "CoverageOptions",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "crate_attr",
+          "cli_flag": "crate-attr",
+          "rust_type": "Vec<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "cross_crate_inline_threshold",
+          "cli_flag": "cross-crate-inline-threshold",
+          "rust_type": "InliningThreshold",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "debug_info_type_line_numbers",
+          "cli_flag": "debug-info-type-line-numbers",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "debuginfo_compression",
+          "cli_flag": "debuginfo-compression",
+          "rust_type": "DebugInfoCompression",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "debuginfo_for_profiling",
+          "cli_flag": "debuginfo-for-profiling",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "deduplicate_diagnostics",
+          "cli_flag": "deduplicate-diagnostics",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "default_visibility",
+          "cli_flag": "default-visibility",
+          "rust_type": "Option<SymbolVisibility>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "deny_partial_mitigations",
+          "cli_flag": "deny-partial-mitigations",
+          "rust_type": "()",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dep_info_omit_d_target",
+          "cli_flag": "dep-info-omit-d-target",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "direct_access_external_data",
+          "cli_flag": "direct-access-external-data",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "disable_fast_paths",
+          "cli_flag": "disable-fast-paths",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "disable_incr_comp_backend_caching",
+          "cli_flag": "disable-incr-comp-backend-caching",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "disable_param_env_normalization_hack",
+          "cli_flag": "disable-param-env-normalization-hack",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dual_proc_macros",
+          "cli_flag": "dual-proc-macros",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dump_dep_graph",
+          "cli_flag": "dump-dep-graph",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dump_mir",
+          "cli_flag": "dump-mir",
+          "rust_type": "Option<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dump_mir_dataflow",
+          "cli_flag": "dump-mir-dataflow",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dump_mir_dir",
+          "cli_flag": "dump-mir-dir",
+          "rust_type": "String",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dump_mir_exclude_alloc_bytes",
+          "cli_flag": "dump-mir-exclude-alloc-bytes",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dump_mir_exclude_pass_number",
+          "cli_flag": "dump-mir-exclude-pass-number",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dump_mir_graphviz",
+          "cli_flag": "dump-mir-graphviz",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dump_mono_stats",
+          "cli_flag": "dump-mono-stats",
+          "rust_type": "SwitchWithOptPath",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dump_mono_stats_format",
+          "cli_flag": "dump-mono-stats-format",
+          "rust_type": "DumpMonoStatsFormat",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dwarf_version",
+          "cli_flag": "dwarf-version",
+          "rust_type": "Option<u32>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "dylib_lto",
+          "cli_flag": "dylib-lto",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "eagerly_emit_delayed_bugs",
+          "cli_flag": "eagerly-emit-delayed-bugs",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "ehcont_guard",
+          "cli_flag": "ehcont-guard",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "embed_metadata",
+          "cli_flag": "embed-metadata",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "embed_source",
+          "cli_flag": "embed-source",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "emit_stack_sizes",
+          "cli_flag": "emit-stack-sizes",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "enforce_type_length_limit",
+          "cli_flag": "enforce-type-length-limit",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "experimental_default_bounds",
+          "cli_flag": "experimental-default-bounds",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "export_executable_symbols",
+          "cli_flag": "export-executable-symbols",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "external_clangrt",
+          "cli_flag": "external-clangrt",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "extra_const_ub_checks",
+          "cli_flag": "extra-const-ub-checks",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "fewer_names",
+          "cli_flag": "fewer-names",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "fixed_x18",
+          "cli_flag": "fixed-x18",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "flatten_format_args",
+          "cli_flag": "flatten-format-args",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "fmt_debug",
+          "cli_flag": "fmt-debug",
+          "rust_type": "FmtDebug",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "force_intrinsic_fallback",
+          "cli_flag": "force-intrinsic-fallback",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "force_unstable_if_unmarked",
+          "cli_flag": "force-unstable-if-unmarked",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "function_return",
+          "cli_flag": "function-return",
+          "rust_type": "FunctionReturn",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "function_sections",
+          "cli_flag": "function-sections",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "future_incompat_test",
+          "cli_flag": "future-incompat-test",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "graphviz_dark_mode",
+          "cli_flag": "graphviz-dark-mode",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "graphviz_font",
+          "cli_flag": "graphviz-font",
+          "rust_type": "String",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "has_thread_local",
+          "cli_flag": "has-thread-local",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "help",
+          "cli_flag": "help",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "higher_ranked_assumptions",
+          "cli_flag": "higher-ranked-assumptions",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "hint_mostly_unused",
+          "cli_flag": "hint-mostly-unused",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "hint_msrv",
+          "cli_flag": "hint-msrv",
+          "rust_type": "Option<RustcVersion>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "human_readable_cgu_names",
+          "cli_flag": "human-readable-cgu-names",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "identify_regions",
+          "cli_flag": "identify-regions",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "ignore_directory_in_diagnostics_source_blocks",
+          "cli_flag": "ignore-directory-in-diagnostics-source-blocks",
+          "rust_type": "Vec<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "implicit_sysroot_deps",
+          "cli_flag": "implicit-sysroot-deps",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "incremental_ignore_spans",
+          "cli_flag": "incremental-ignore-spans",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "incremental_info",
+          "cli_flag": "incremental-info",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "incremental_verify_ich",
+          "cli_flag": "incremental-verify-ich",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "indirect_branch_cs_prefix",
+          "cli_flag": "indirect-branch-cs-prefix",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "inline_llvm",
+          "cli_flag": "inline-llvm",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "inline_mir",
+          "cli_flag": "inline-mir",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "inline_mir_forwarder_threshold",
+          "cli_flag": "inline-mir-forwarder-threshold",
+          "rust_type": "Option<usize>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "inline_mir_hint_threshold",
+          "cli_flag": "inline-mir-hint-threshold",
+          "rust_type": "Option<usize>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "inline_mir_preserve_debug",
+          "cli_flag": "inline-mir-preserve-debug",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "inline_mir_threshold",
+          "cli_flag": "inline-mir-threshold",
+          "rust_type": "Option<usize>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "input_stats",
+          "cli_flag": "input-stats",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "instrument_mcount",
+          "cli_flag": "instrument-mcount",
+          "rust_type": "InstrumentMcount",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "instrument_xray",
+          "cli_flag": "instrument-xray",
+          "rust_type": "Option<InstrumentXRay>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "internal_testing_features",
+          "cli_flag": "internal-testing-features",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "large_data_threshold",
+          "cli_flag": "large-data-threshold",
+          "rust_type": "Option<u64>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "layout_seed",
+          "cli_flag": "layout-seed",
+          "rust_type": "Option<u64>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "link_directives",
+          "cli_flag": "link-directives",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "link_native_libraries",
+          "cli_flag": "link-native-libraries",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "link_only",
+          "cli_flag": "link-only",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "lint_llvm_ir",
+          "cli_flag": "lint-llvm-ir",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "lint_mir",
+          "cli_flag": "lint-mir",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "llvm_module_flag",
+          "cli_flag": "llvm-module-flag",
+          "rust_type": "Vec<(String, u32, String)>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "llvm_plugins",
+          "cli_flag": "llvm-plugins",
+          "rust_type": "Vec<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "llvm_target_feature",
+          "cli_flag": "llvm-target-feature",
+          "rust_type": "String",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "llvm_time_trace",
+          "cli_flag": "llvm-time-trace",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "llvm_writable",
+          "cli_flag": "llvm-writable",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "location_detail",
+          "cli_flag": "location-detail",
+          "rust_type": "LocationDetail",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "ls",
+          "cli_flag": "ls",
+          "rust_type": "Vec<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "macro_backtrace",
+          "cli_flag": "macro-backtrace",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "macro_stats",
+          "cli_flag": "macro-stats",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "maximal_hir_to_mir_coverage",
+          "cli_flag": "maximal-hir-to-mir-coverage",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "merge_functions",
+          "cli_flag": "merge-functions",
+          "rust_type": "Option<MergeFunctions>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "meta_stats",
+          "cli_flag": "meta-stats",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "metadata_crate_hash",
+          "cli_flag": "metadata-crate-hash",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "metrics_dir",
+          "cli_flag": "metrics-dir",
+          "rust_type": "Option<PathBuf>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "min_function_alignment",
+          "cli_flag": "min-function-alignment",
+          "rust_type": "Option<Align>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "min_recursion_limit",
+          "cli_flag": "min-recursion-limit",
+          "rust_type": "Option<usize>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "mir_enable_passes",
+          "cli_flag": "mir-enable-passes",
+          "rust_type": "Vec<(String, bool)>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "mir_include_spans",
+          "cli_flag": "mir-include-spans",
+          "rust_type": "MirIncludeSpans",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "mir_move_elimination",
+          "cli_flag": "mir-move-elimination",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "mir_opt_bisect_limit",
+          "cli_flag": "mir-opt-bisect-limit",
+          "rust_type": "Option<usize>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "mir_opt_level",
+          "cli_flag": "mir-opt-level",
+          "rust_type": "Option<usize>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "mir_preserve_ub",
+          "cli_flag": "mir-preserve-ub",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "mir_strip_debuginfo",
+          "cli_flag": "mir-strip-debuginfo",
+          "rust_type": "MirStripDebugInfo",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "move_size_limit",
+          "cli_flag": "move-size-limit",
+          "rust_type": "Option<usize>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "namespaced_crates",
+          "cli_flag": "namespaced-crates",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "next_solver",
+          "cli_flag": "next-solver",
+          "rust_type": "NextSolverConfig",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "next_solver_overflow_fcw_limit",
+          "cli_flag": "next-solver-overflow-fcw-limit",
+          "rust_type": "Option<usize>",
+          "tracking": "TRACKED_NO_CRATE_HASH",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "nll_facts",
+          "cli_flag": "nll-facts",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "nll_facts_dir",
+          "cli_flag": "nll-facts-dir",
+          "rust_type": "String",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_analysis",
+          "cli_flag": "no-analysis",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_codegen",
+          "cli_flag": "no-codegen",
+          "rust_type": "bool",
+          "tracking": "TRACKED_NO_CRATE_HASH",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_generate_arange_section",
+          "cli_flag": "no-generate-arange-section",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_implied_bounds_compat",
+          "cli_flag": "no-implied-bounds-compat",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_leak_check",
+          "cli_flag": "no-leak-check",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_link",
+          "cli_flag": "no-link",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_parallel_backend",
+          "cli_flag": "no-parallel-backend",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_profiler_runtime",
+          "cli_flag": "no-profiler-runtime",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_steal_thir",
+          "cli_flag": "no-steal-thir",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_trait_vptr",
+          "cli_flag": "no-trait-vptr",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "no_unique_section_names",
+          "cli_flag": "no-unique-section-names",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "normalize_docs",
+          "cli_flag": "normalize-docs",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "offload",
+          "cli_flag": "offload",
+          "rust_type": "Vec<crate::config::Offload>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "on_broken_pipe",
+          "cli_flag": "on-broken-pipe",
+          "rust_type": "OnBrokenPipe",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "osx_rpath_install_name",
+          "cli_flag": "osx-rpath-install-name",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "pack_coroutine_layout",
+          "cli_flag": "pack-coroutine-layout",
+          "rust_type": "PackCoroutineLayout",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "packed_bundled_libs",
+          "cli_flag": "packed-bundled-libs",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "packed_stack",
+          "cli_flag": "packed-stack",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "panic_abort_tests",
+          "cli_flag": "panic-abort-tests",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "panic_in_drop",
+          "cli_flag": "panic-in-drop",
+          "rust_type": "PanicStrategy",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "parse_crate_root_only",
+          "cli_flag": "parse-crate-root-only",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "patchable_function_entry",
+          "cli_flag": "patchable-function-entry",
+          "rust_type": "PatchableFunctionEntry",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "plt",
+          "cli_flag": "plt",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "pointer_authentication",
+          "cli_flag": "pointer-authentication",
+          "rust_type": "Vec<(PointerAuthOption, bool)>",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "polonius",
+          "cli_flag": "polonius",
+          "rust_type": "Polonius",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "pre_link_arg",
+          "cli_flag": "pre-link-arg",
+          "rust_type": "()",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "pre_link_args",
+          "cli_flag": "pre-link-args",
+          "rust_type": "Vec<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "precise_enum_drop_elaboration",
+          "cli_flag": "precise-enum-drop-elaboration",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "print_codegen_stats",
+          "cli_flag": "print-codegen-stats",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "print_codegen_stats_json",
+          "cli_flag": "print-codegen-stats-json",
+          "rust_type": "Option<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "print_llvm_passes",
+          "cli_flag": "print-llvm-passes",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "print_mono_items",
+          "cli_flag": "print-mono-items",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "print_type_sizes",
+          "cli_flag": "print-type-sizes",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "proc_macro_backtrace",
+          "cli_flag": "proc-macro-backtrace",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "proc_macro_execution_strategy",
+          "cli_flag": "proc-macro-execution-strategy",
+          "rust_type": "ProcMacroExecutionStrategy",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "profile_closures",
+          "cli_flag": "profile-closures",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "profiler_runtime",
+          "cli_flag": "profiler-runtime",
+          "rust_type": "String",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "query_dep_graph",
+          "cli_flag": "query-dep-graph",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "randomize_layout",
+          "cli_flag": "randomize-layout",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "reg_struct_return",
+          "cli_flag": "reg-struct-return",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "regparm",
+          "cli_flag": "regparm",
+          "rust_type": "Option<u32>",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "relax_elf_relocations",
+          "cli_flag": "relax-elf-relocations",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "remap_cwd_prefix",
+          "cli_flag": "remap-cwd-prefix",
+          "rust_type": "Option<PathBuf>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "remark_dir",
+          "cli_flag": "remark-dir",
+          "rust_type": "Option<PathBuf>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "renormalize_rigid_aliases",
+          "cli_flag": "renormalize-rigid-aliases",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "retpoline",
+          "cli_flag": "retpoline",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "retpoline_external_thunk",
+          "cli_flag": "retpoline-external-thunk",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer",
+          "cli_flag": "sanitizer",
+          "rust_type": "SanitizerSet",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_ignorelist",
+          "cli_flag": "sanitizer-ignorelist",
+          "rust_type": "Vec<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_cfi_canonical_jump_tables",
+          "cli_flag": "sanitizer-cfi-canonical-jump-tables",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_cfi_generalize_pointers",
+          "cli_flag": "sanitizer-cfi-generalize-pointers",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_cfi_normalize_integers",
+          "cli_flag": "sanitizer-cfi-normalize-integers",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_cfi_diag",
+          "cli_flag": "sanitizer-cfi-diag",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_cfi_recover",
+          "cli_flag": "sanitizer-cfi-recover",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_cfi_minimal_runtime",
+          "cli_flag": "sanitizer-cfi-minimal-runtime",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_dataflow_abilist",
+          "cli_flag": "sanitizer-dataflow-abilist",
+          "rust_type": "Vec<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_kcfi_arity",
+          "cli_flag": "sanitizer-kcfi-arity",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_memory_track_origins",
+          "cli_flag": "sanitizer-memory-track-origins",
+          "rust_type": "usize",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "sanitizer_recover",
+          "cli_flag": "sanitizer-recover",
+          "rust_type": "SanitizerSet",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "self_profile",
+          "cli_flag": "self-profile",
+          "rust_type": "SwitchWithOptPath",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "self_profile_counter",
+          "cli_flag": "self-profile-counter",
+          "rust_type": "String",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "self_profile_events",
+          "cli_flag": "self-profile-events",
+          "rust_type": "Option<Vec<String>>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "share_generics",
+          "cli_flag": "share-generics",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "shell_argfiles",
+          "cli_flag": "shell-argfiles",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "simulate_remapped_rust_src_base",
+          "cli_flag": "simulate-remapped-rust-src-base",
+          "rust_type": "Option<PathBuf>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "small_data_threshold",
+          "cli_flag": "small-data-threshold",
+          "rust_type": "Option<usize>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "span_debug",
+          "cli_flag": "span-debug",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "span_free_formats",
+          "cli_flag": "span-free-formats",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "split_dwarf_inlining",
+          "cli_flag": "split-dwarf-inlining",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "split_dwarf_kind",
+          "cli_flag": "split-dwarf-kind",
+          "rust_type": "SplitDwarfKind",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "split_dwarf_out_dir",
+          "cli_flag": "split-dwarf-out-dir",
+          "rust_type": "Option<PathBuf>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "split_lto_unit",
+          "cli_flag": "split-lto-unit",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "src_hash_algorithm",
+          "cli_flag": "src-hash-algorithm",
+          "rust_type": "Option<SourceFileHashAlgorithm>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "stack_protector",
+          "cli_flag": "stack-protector",
+          "rust_type": "StackProtector",
+          "tracking": "TRACKED",
+          "target_modifier": true,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "staticlib_allow_rdylib_deps",
+          "cli_flag": "staticlib-allow-rdylib-deps",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "staticlib_hide_internal_symbols",
+          "cli_flag": "staticlib-hide-internal-symbols",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "staticlib_rename_internal_symbols",
+          "cli_flag": "staticlib-rename-internal-symbols",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "staticlib_prefer_dynamic",
+          "cli_flag": "staticlib-prefer-dynamic",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "strict_init_checks",
+          "cli_flag": "strict-init-checks",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "teach",
+          "cli_flag": "teach",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "temps_dir",
+          "cli_flag": "temps-dir",
+          "rust_type": "Option<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "terminal_urls",
+          "cli_flag": "terminal-urls",
+          "rust_type": "TerminalUrl",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "thinlto",
+          "cli_flag": "thinlto",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "threads",
+          "cli_flag": "threads",
+          "rust_type": "Option<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "time_llvm_passes",
+          "cli_flag": "time-llvm-passes",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "time_passes",
+          "cli_flag": "time-passes",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "time_passes_format",
+          "cli_flag": "time-passes-format",
+          "rust_type": "TimePassesFormat",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "tiny_const_eval_limit",
+          "cli_flag": "tiny-const-eval-limit",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "tls_model",
+          "cli_flag": "tls-model",
+          "rust_type": "Option<TlsModel>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "llvm_tpde",
+          "cli_flag": "llvm-tpde",
+          "rust_type": "Option<LlvmTpde>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "trace_macros",
+          "cli_flag": "trace-macros",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "track_diagnostics",
+          "cli_flag": "track-diagnostics",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "translate_remapped_path_to_local_path",
+          "cli_flag": "translate-remapped-path-to-local-path",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "trap_unreachable",
+          "cli_flag": "trap-unreachable",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "treat_err_as_bug",
+          "cli_flag": "treat-err-as-bug",
+          "rust_type": "Option<NonZero<usize>>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "trim_diagnostic_paths",
+          "cli_flag": "trim-diagnostic-paths",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "tune_cpu",
+          "cli_flag": "tune-cpu",
+          "rust_type": "Option<String>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "ub_checks",
+          "cli_flag": "ub-checks",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "ui_testing",
+          "cli_flag": "ui-testing",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "uninit_const_chunk_threshold",
+          "cli_flag": "uninit-const-chunk-threshold",
+          "rust_type": "usize",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "unleash_the_miri_inside_of_you",
+          "cli_flag": "unleash-the-miri-inside-of-you",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "unpretty",
+          "cli_flag": "unpretty",
+          "rust_type": "Option<String>",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "unsound_mir_opts",
+          "cli_flag": "unsound-mir-opts",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "unstable_options",
+          "cli_flag": "unstable-options",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "use_ctors_section",
+          "cli_flag": "use-ctors-section",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "use_sync_unwind",
+          "cli_flag": "use-sync-unwind",
+          "rust_type": "Option<bool>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "validate_mir",
+          "cli_flag": "validate-mir",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "verbose_asm",
+          "cli_flag": "verbose-asm",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "verbose_internals",
+          "cli_flag": "verbose-internals",
+          "rust_type": "bool",
+          "tracking": "TRACKED_NO_CRATE_HASH",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "verify_llvm_ir",
+          "cli_flag": "verify-llvm-ir",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": true
+        },
+        {
+          "ident": "virtual_function_elimination",
+          "cli_flag": "virtual-function-elimination",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "wasi_exec_model",
+          "cli_flag": "wasi-exec-model",
+          "rust_type": "Option<WasiExecModel>",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "wasm_c_abi",
+          "cli_flag": "wasm-c-abi",
+          "rust_type": "()",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "wasm_proc_macros",
+          "cli_flag": "wasm-proc-macros",
+          "rust_type": "bool",
+          "tracking": "TRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        },
+        {
+          "ident": "write_long_types_to_disk",
+          "cli_flag": "write-long-types-to-disk",
+          "rust_type": "bool",
+          "tracking": "UNTRACKED",
+          "target_modifier": false,
+          "is_removed": false,
+          "llvm_specific": false
+        }
+      ]
+    },
+    "print_kinds": {
+      "total": 27,
+      "stable_count": 18,
+      "unstable_count": 9,
+      "by_category": {
+        "Target": 14,
+        "Codegen": 8,
+        "Crate": 3,
+        "Linker": 2
+      },
+      "by_producer": {
+        "Frontend (rustc_session/rustc_target)": 17,
+        "Backend (CodegenBackend)": 2,
+        "Hybrid (Session + CodegenBackend::target_config)": 2,
+        "Backend (CodegenBackend::print)": 3,
+        "Backend (rustc_codegen_ssa::back::link)": 1,
+        "Backend (CodegenBackend::print_cpus)": 1,
+        "Backend (CodegenBackend::print_target_features)": 1
+      },
+      "delta_vs_1_99_1": 6,
+      "kinds": [
+        {
+          "variant": "AllTargetSpecsJson",
+          "cli_name": "all-target-specs-json",
+          "category": "Target",
+          "stable": false,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "BackendHasMnemonic",
+          "cli_name": "backend-has-mnemonic",
+          "category": "Codegen",
+          "stable": false,
+          "producer": "Backend (CodegenBackend)"
+        },
+        {
+          "variant": "BackendHasZstd",
+          "cli_name": "backend-has-zstd",
+          "category": "Codegen",
+          "stable": false,
+          "producer": "Backend (CodegenBackend)"
+        },
+        {
+          "variant": "CallingConventions",
+          "cli_name": "calling-conventions",
+          "category": "Codegen",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "Cfg",
+          "cli_name": "cfg",
+          "category": "Target",
+          "stable": true,
+          "producer": "Hybrid (Session + CodegenBackend::target_config)"
+        },
+        {
+          "variant": "CheckCfg",
+          "cli_name": "check-cfg",
+          "category": "Target",
+          "stable": false,
+          "producer": "Hybrid (Session + CodegenBackend::target_config)"
+        },
+        {
+          "variant": "CodeModels",
+          "cli_name": "code-models",
+          "category": "Codegen",
+          "stable": true,
+          "producer": "Backend (CodegenBackend::print)"
+        },
+        {
+          "variant": "CrateName",
+          "cli_name": "crate-name",
+          "category": "Crate",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "CrateRootLintLevels",
+          "cli_name": "crate-root-lint-levels",
+          "category": "Crate",
+          "stable": false,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "DeploymentTarget",
+          "cli_name": "deployment-target",
+          "category": "Target",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "FileNames",
+          "cli_name": "file-names",
+          "category": "Crate",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "HostTuple",
+          "cli_name": "host-tuple",
+          "category": "Target",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "LinkArgs",
+          "cli_name": "link-args",
+          "category": "Linker",
+          "stable": true,
+          "producer": "Backend (rustc_codegen_ssa::back::link)"
+        },
+        {
+          "variant": "NativeStaticLibs",
+          "cli_name": "native-static-libs",
+          "category": "Linker",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "RelocationModels",
+          "cli_name": "relocation-models",
+          "category": "Codegen",
+          "stable": true,
+          "producer": "Backend (CodegenBackend::print)"
+        },
+        {
+          "variant": "SplitDebuginfo",
+          "cli_name": "split-debuginfo",
+          "category": "Codegen",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "StackProtectorStrategies",
+          "cli_name": "stack-protector-strategies",
+          "category": "Codegen",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "SupportedCrateTypes",
+          "cli_name": "supported-crate-types",
+          "category": "Target",
+          "stable": false,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "Sysroot",
+          "cli_name": "sysroot",
+          "category": "Target",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "TargetCPUs",
+          "cli_name": "target-cpus",
+          "category": "Target",
+          "stable": true,
+          "producer": "Backend (CodegenBackend::print_cpus)"
+        },
+        {
+          "variant": "TargetFeatures",
+          "cli_name": "target-features",
+          "category": "Target",
+          "stable": true,
+          "producer": "Backend (CodegenBackend::print_target_features)"
+        },
+        {
+          "variant": "TargetLibdir",
+          "cli_name": "target-libdir",
+          "category": "Target",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "TargetList",
+          "cli_name": "target-list",
+          "category": "Target",
+          "stable": true,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "TargetSpecJson",
+          "cli_name": "target-spec-json",
+          "category": "Target",
+          "stable": false,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "TargetSpecJsonSchema",
+          "cli_name": "target-spec-json-schema",
+          "category": "Target",
+          "stable": false,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        },
+        {
+          "variant": "TlsModels",
+          "cli_name": "tls-models",
+          "category": "Codegen",
+          "stable": true,
+          "producer": "Backend (CodegenBackend::print)"
+        },
+        {
+          "variant": "WasmProcMacroTuple",
+          "cli_name": "wasm-proc-macro-tuple",
+          "category": "Target",
+          "stable": false,
+          "producer": "Frontend (rustc_session/rustc_target)"
+        }
+      ]
+    },
+    "emit_output_types": {
+      "total": 9,
+      "llvm_only_count": 3,
+      "backend_agnostic_count": 6,
+      "types": [
+        {
+          "variant": "Assembly",
+          "shorthand": "asm",
+          "extension": "s",
+          "is_text": true,
+          "llvm_only": false
+        },
+        {
+          "variant": "Bitcode",
+          "shorthand": "llvm-bc",
+          "extension": "bc",
+          "is_text": false,
+          "llvm_only": true
+        },
+        {
+          "variant": "DepInfo",
+          "shorthand": "dep-info",
+          "extension": "d",
+          "is_text": true,
+          "llvm_only": false
+        },
+        {
+          "variant": "Exe",
+          "shorthand": "link",
+          "extension": "",
+          "is_text": false,
+          "llvm_only": false
+        },
+        {
+          "variant": "LlvmAssembly",
+          "shorthand": "llvm-ir",
+          "extension": "ll",
+          "is_text": true,
+          "llvm_only": true
+        },
+        {
+          "variant": "Metadata",
+          "shorthand": "metadata",
+          "extension": "rmeta",
+          "is_text": false,
+          "llvm_only": false
+        },
+        {
+          "variant": "Mir",
+          "shorthand": "mir",
+          "extension": "mir",
+          "is_text": true,
+          "llvm_only": false
+        },
+        {
+          "variant": "Object",
+          "shorthand": "obj",
+          "extension": "o",
+          "is_text": false,
+          "llvm_only": false
+        },
+        {
+          "variant": "ThinLinkBitcode",
+          "shorthand": "thin-link-bitcode",
+          "extension": "indexing.o",
+          "is_text": false,
+          "llvm_only": true
+        }
+      ]
+    },
+    "crate_types": {
+      "enum_variants_count": 7,
+      "cli_tokens_count": 8,
+      "stable_cli_tokens": [
+        "bin",
+        "lib",
+        "rlib",
+        "dylib",
+        "cdylib",
+        "staticlib",
+        "proc-macro"
+      ],
+      "unstable_cli_tokens": [
+        "sdylib"
+      ],
+      "has_metadata_variants": [
+        "Rlib",
+        "Dylib",
+        "ProcMacro"
+      ],
+      "variants": [
+        "Executable",
+        "Dylib",
+        "Rlib",
+        "StaticLib",
+        "Cdylib",
+        "ProcMacro",
+        "Sdylib"
+      ],
+      "cli_tokens": [
+        "bin",
+        "lib",
+        "rlib",
+        "dylib",
+        "cdylib",
+        "staticlib",
+        "proc-macro",
+        "sdylib"
+      ],
+      "source_defined_in_rustc_structures": true
+    },
+    "error_format_and_json": {
+      "error_formats_count": 6,
+      "error_formats": [
+        "human",
+        "json",
+        "pretty-json",
+        "short",
+        "human-no-graphics",
+        "human-unicode"
+      ],
+      "json_subflags_count": 9,
+      "json_subflags": [
+        "diagnostic-short",
+        "diagnostic-no-graphics",
+        "diagnostic-unicode",
+        "diagnostic-rendered-ansi",
+        "artifacts",
+        "timings",
+        "unused-externs",
+        "unused-externs-silent",
+        "future-incompat"
+      ]
+    },
+    "debuginfo_coverage_lto_sanitizers": {
+      "debuginfo_levels": [
+        "None (0)",
+        "LineDirectivesOnly",
+        "LineTablesOnly (1)",
+        "Limited",
+        "Full (2)"
+      ],
+      "debuginfo_compression": [
+        "None",
+        "Zlib",
+        "Zstd"
+      ],
+      "split_debuginfo_modes": [
+        "Off",
+        "Packed",
+        "Unpacked"
+      ],
+      "split_dwarf_kinds": [
+        "Single",
+        "Split"
+      ],
+      "instrument_coverage_modes": [
+        "No",
+        "Yes"
+      ],
+      "lto_semantic_variants": [
+        "No",
+        "Thin",
+        "ThinLocal",
+        "Fat"
+      ],
+      "lto_cli_variants": [
+        "No",
+        "Yes",
+        "NoParam",
+        "Thin",
+        "Fat",
+        "Unspecified"
+      ],
+      "sanitizers_count": 14,
+      "sanitizer_mutually_exclusive_pairs": 31,
+      "sanitizers": [
+        {
+          "const_name": "ADDRESS",
+          "cli_name": "address"
+        },
+        {
+          "const_name": "LEAK",
+          "cli_name": "leak"
+        },
+        {
+          "const_name": "MEMORY",
+          "cli_name": "memory"
+        },
+        {
+          "const_name": "THREAD",
+          "cli_name": "thread"
+        },
+        {
+          "const_name": "HWADDRESS",
+          "cli_name": "hwaddress"
+        },
+        {
+          "const_name": "CFI",
+          "cli_name": "cfi"
+        },
+        {
+          "const_name": "MEMTAG",
+          "cli_name": "memtag"
+        },
+        {
+          "const_name": "SHADOWCALLSTACK",
+          "cli_name": "shadow-call-stack"
+        },
+        {
+          "const_name": "KCFI",
+          "cli_name": "kcfi"
+        },
+        {
+          "const_name": "KERNELADDRESS",
+          "cli_name": "kernel-address"
+        },
+        {
+          "const_name": "KERNELHWADDRESS",
+          "cli_name": "kernel-hwaddress"
+        },
+        {
+          "const_name": "SAFESTACK",
+          "cli_name": "safestack"
+        },
+        {
+          "const_name": "DATAFLOW",
+          "cli_name": "dataflow"
+        },
+        {
+          "const_name": "REALTIME",
+          "cli_name": "realtime"
+        }
+      ]
+    },
+    "builtin_targets": {
+      "total_builtin_targets": 340,
+      "rustc_1_99_1_target_count": 331,
+      "rustc_nightly_host_target_count": 336,
+      "added_since_1_99_1": [
+        "aarch64-unknown-hyperlight",
+        "aarch64-unknown-qtee",
+        "aarch64-unknown-serenity",
+        "i686-unknown-none",
+        "powerpc64-sony-ps3",
+        "wasm32-none-component",
+        "wasm64-unknown-emscripten",
+        "x86_64-unknown-hyperlight",
+        "x86_64-unknown-serenity"
+      ],
+      "removed_since_1_99_1": [],
+      "added_between_3ef0c22cd_and_412be32a6a18": [
+        "aarch64-unknown-serenity",
+        "i686-unknown-none",
+        "wasm64-unknown-emscripten",
+        "x86_64-unknown-serenity"
+      ],
+      "live_json_cross_checked_targets": 336,
+      "live_json_mismatches": [],
+      "by_tier": {
+        "Tier 1 (with host tools)": 8,
+        "Tier 2 (cross-compiled std/core)": 87,
+        "Tier 2 (with host tools)": 25,
+        "Tier 3": 212,
+        "Internal / Unspecified Tier Metadata": 8
+      },
+      "tier1_triples": [
+        "x86_64-unknown-linux-gnu",
+        "i686-unknown-linux-gnu",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-apple-darwin",
+        "x86_64-pc-windows-gnu",
+        "aarch64-pc-windows-msvc",
+        "x86_64-pc-windows-msvc",
+        "i686-pc-windows-msvc"
+      ],
+      "tier2_with_host_tools_count": 25,
+      "by_binary_format": {
+        "Elf": 281,
+        "Xcoff": 1,
+        "MachO": 24,
+        "Coff": 24,
+        "Wasm": 10
+      },
+      "by_panic_strategy": {
+        "Unwind": 212,
+        "Abort": 128
+      },
+      "by_pointer_width": {
+        "64": 161,
+        "32": 177,
+        "16": 2
+      },
+      "by_arch": {
+        "arm": 75,
+        "aarch64": 58,
+        "x86_64": 51,
+        "x86": 27,
+        "riscv32": 21,
+        "riscv64": 18,
+        "mips": 12,
+        "powerpc64": 11,
+        "powerpc": 10,
+        "wasm32": 9,
+        "xtensa": 6,
+        "loongarch64": 5,
+        "mips64": 5,
+        "sparc64": 5,
+        "hexagon": 3,
+        "s390x": 3,
+        "bpf": 2,
+        "csky": 2,
+        "loongarch32": 2,
+        "m68k": 2,
+        "mips32r6": 2,
+        "mips64r6": 2,
+        "sparc": 2,
+        "wasm64": 2,
+        "amdgpu": 1,
+        "arm64ec": 1,
+        "avr": 1,
+        "msp430": 1,
+        "nvptx64": 1
+      },
+      "supported_sanitizer_target_frequencies": {
+        "address": 54,
+        "thread": 33,
+        "cfi": 27,
+        "leak": 23,
+        "memory": 19,
+        "kcfi": 16,
+        "kernel-address": 16,
+        "kernel-hwaddress": 8,
+        "realtime": 8,
+        "hwaddress": 5,
+        "shadow-call-stack": 5,
+        "memtag": 4,
+        "dataflow": 3,
+        "safestack": 3
+      }
+    },
+    "rustc_intrinsics": {
+      "total_declarations": 265,
+      "must_be_overridden_bodyless_count": 210,
+      "with_default_fallback_mir_body_count": 55,
+      "custom_mir_dialect_helpers_count": 0,
+      "const_callable_count": 187,
+      "nounwind_count": 238,
+      "const_stable_indirect_count": 65,
+      "by_category": {
+        "gpu": 2,
+        "atomic": 17,
+        "control_layout_and_runtime": 59,
+        "integer_and_bit": 33,
+        "memory_and_pointer": 23,
+        "float_math": 29,
+        "ctfe_and_reflection": 22,
+        "simd_fixed": 75,
+        "simd_scalable": 5
+      },
+      "typeck_intrinsic_sym_refs_count": 268,
+      "sample_bodyless_intrinsics": [
+        "gpu_launch_sized_workgroup_mem",
+        "amdgpu_dispatch_ptr",
+        "atomic_cxchg",
+        "atomic_cxchgweak",
+        "atomic_load",
+        "atomic_store",
+        "atomic_xchg",
+        "atomic_xadd",
+        "atomic_xsub",
+        "atomic_and",
+        "atomic_nand",
+        "atomic_or",
+        "atomic_xor",
+        "atomic_max",
+        "atomic_min",
+        "atomic_umin",
+        "atomic_umax",
+        "atomic_fence",
+        "atomic_singlethreadfence",
+        "breakpoint",
+        "rustc_peek",
+        "abort_immediate",
+        "unreachable",
+        "assert_inhabited",
+        "assert_zero_valid",
+        "assert_mem_uninitialized_valid",
+        "caller_location",
+        "forget",
+        "transmute",
+        "transmute_unchecked",
+        "needs_drop",
+        "offset",
+        "arith_offset",
+        "slice_get_unchecked",
+        "ptr_mask",
+        "volatile_copy_nonoverlapping_memory",
+        "volatile_copy_memory",
+        "volatile_set_memory",
+        "volatile_load",
+        "volatile_store"
+      ],
+      "fallback_body_intrinsics": [
+        "prefetch_read_data",
+        "prefetch_write_data",
+        "prefetch_read_instruction",
+        "prefetch_write_instruction",
+        "resumable_breakpoint",
+        "codeview_annotation",
+        "assume",
+        "cold_path",
+        "select_unpredictable",
+        "sqrt",
+        "powi",
+        "sin",
+        "cos",
+        "powf",
+        "exp",
+        "exp2",
+        "log",
+        "log10",
+        "log2",
+        "fma",
+        "fmuladd",
+        "floor",
+        "ceil",
+        "trunc",
+        "round_ties_even",
+        "round",
+        "integer_min",
+        "integer_max",
+        "disjoint_bitor",
+        "carrying_mul_add",
+        "rotate_left",
+        "rotate_right",
+        "unchecked_funnel_shl",
+        "unchecked_funnel_shr",
+        "carryless_mul",
+        "ptr_guaranteed_cmp",
+        "is_val_statically_known",
+        "typed_swap_nonoverlapping",
+        "ub_checks",
+        "overflow_checks",
+        "const_allocate",
+        "const_deallocate",
+        "const_make_global",
+        "contract_check_requires",
+        "contract_check_ensures",
+        "minimum_number_nsz",
+        "maximum_number_nsz",
+        "minimum",
+        "maximum",
+        "fabs",
+        "copysign",
+        "va_copy",
+        "va_end",
+        "return_address",
+        "type_id_eq"
+      ]
+    },
+    "stdarch_llvm_link_bindings": {
+      "total_link_name_llvm_bindings": 8448,
+      "unique_llvm_intrinsic_names": 8171,
+      "by_isa_total_bindings": {
+        "aarch64": 2889,
+        "hexagon": 1853,
+        "x86": 1125,
+        "loongarch": 918,
+        "arm": 643,
+        "mips": 527,
+        "s390": 160,
+        "ppc": 109,
+        "generic_llvm": 71,
+        "amdgcn": 53,
+        "wasm": 46,
+        "riscv": 41,
+        "nvvm": 13
+      },
+      "by_isa_unique_intrinsics": {
+        "aarch64": 2681,
+        "hexagon": 1853,
+        "x86": 1121,
+        "loongarch": 918,
+        "arm": 591,
+        "mips": 527,
+        "s390": 160,
+        "ppc": 108,
+        "generic_llvm": 59,
+        "amdgcn": 53,
+        "wasm": 46,
+        "riscv": 41,
+        "nvvm": 13
+      }
+    },
+    "extern_abi": {
+      "enum_variants_count": 30,
+      "all_variants_string_tokens_count": 40,
+      "paired_unwind_bool_variants_count": 10,
+      "fixed_unwind_variants_count": 20,
+      "tokens": [
+        {
+          "variant": "C",
+          "abi_string": "C",
+          "unwind_param": false
+        },
+        {
+          "variant": "C",
+          "abi_string": "C-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "Rust",
+          "abi_string": "Rust",
+          "unwind_param": null
+        },
+        {
+          "variant": "Swift",
+          "abi_string": "Swift",
+          "unwind_param": null
+        },
+        {
+          "variant": "Aapcs",
+          "abi_string": "aapcs",
+          "unwind_param": false
+        },
+        {
+          "variant": "Aapcs",
+          "abi_string": "aapcs-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "AvrInterrupt",
+          "abi_string": "avr-interrupt",
+          "unwind_param": null
+        },
+        {
+          "variant": "AvrNonBlockingInterrupt",
+          "abi_string": "avr-non-blocking-interrupt",
+          "unwind_param": null
+        },
+        {
+          "variant": "Cdecl",
+          "abi_string": "cdecl",
+          "unwind_param": false
+        },
+        {
+          "variant": "Cdecl",
+          "abi_string": "cdecl-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "CmseNonSecureCall",
+          "abi_string": "cmse-nonsecure-call",
+          "unwind_param": null
+        },
+        {
+          "variant": "CmseNonSecureEntry",
+          "abi_string": "cmse-nonsecure-entry",
+          "unwind_param": null
+        },
+        {
+          "variant": "Custom",
+          "abi_string": "custom",
+          "unwind_param": null
+        },
+        {
+          "variant": "EfiApi",
+          "abi_string": "efiapi",
+          "unwind_param": null
+        },
+        {
+          "variant": "Fastcall",
+          "abi_string": "fastcall",
+          "unwind_param": false
+        },
+        {
+          "variant": "Fastcall",
+          "abi_string": "fastcall-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "GpuKernel",
+          "abi_string": "gpu-kernel",
+          "unwind_param": null
+        },
+        {
+          "variant": "LlvmIntrinsic",
+          "abi_string": "llvm-intrinsic",
+          "unwind_param": null
+        },
+        {
+          "variant": "Msp430Interrupt",
+          "abi_string": "msp430-interrupt",
+          "unwind_param": null
+        },
+        {
+          "variant": "PtxKernel",
+          "abi_string": "ptx-kernel",
+          "unwind_param": null
+        },
+        {
+          "variant": "RiscvInterruptM",
+          "abi_string": "riscv-interrupt-m",
+          "unwind_param": null
+        },
+        {
+          "variant": "RiscvInterruptS",
+          "abi_string": "riscv-interrupt-s",
+          "unwind_param": null
+        },
+        {
+          "variant": "RustCall",
+          "abi_string": "rust-call",
+          "unwind_param": null
+        },
+        {
+          "variant": "RustCold",
+          "abi_string": "rust-cold",
+          "unwind_param": null
+        },
+        {
+          "variant": "RustInvalid",
+          "abi_string": "rust-invalid",
+          "unwind_param": null
+        },
+        {
+          "variant": "RustPreserveNone",
+          "abi_string": "rust-preserve-none",
+          "unwind_param": null
+        },
+        {
+          "variant": "Stdcall",
+          "abi_string": "stdcall",
+          "unwind_param": false
+        },
+        {
+          "variant": "Stdcall",
+          "abi_string": "stdcall-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "System",
+          "abi_string": "system",
+          "unwind_param": false
+        },
+        {
+          "variant": "System",
+          "abi_string": "system-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "SysV64",
+          "abi_string": "sysv64",
+          "unwind_param": false
+        },
+        {
+          "variant": "SysV64",
+          "abi_string": "sysv64-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "RustTail",
+          "abi_string": "tail",
+          "unwind_param": null
+        },
+        {
+          "variant": "Thiscall",
+          "abi_string": "thiscall",
+          "unwind_param": false
+        },
+        {
+          "variant": "Thiscall",
+          "abi_string": "thiscall-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "Vectorcall",
+          "abi_string": "vectorcall",
+          "unwind_param": false
+        },
+        {
+          "variant": "Vectorcall",
+          "abi_string": "vectorcall-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "Win64",
+          "abi_string": "win64",
+          "unwind_param": false
+        },
+        {
+          "variant": "Win64",
+          "abi_string": "win64-unwind",
+          "unwind_param": true
+        },
+        {
+          "variant": "X86Interrupt",
+          "abi_string": "x86-interrupt",
+          "unwind_param": null
+        }
+      ]
+    },
+    "inline_asm": {
+      "inline_asm_arch_variants_count": 28,
+      "inline_asm_arch_variants": [
+        "X86",
+        "X86_64",
+        "Arm",
+        "AArch64",
+        "Arm64EC",
+        "RiscV32",
+        "RiscV64",
+        "Nvptx64",
+        "Amdgpu",
+        "Hexagon",
+        "LoongArch32",
+        "LoongArch64",
+        "Mips",
+        "Mips64",
+        "PowerPC",
+        "PowerPC64",
+        "S390x",
+        "Sparc",
+        "Sparc64",
+        "SpirV",
+        "Wasm32",
+        "Wasm64",
+        "Xtensa",
+        "Bpf",
+        "Avr",
+        "Msp430",
+        "M68k",
+        "CSKY"
+      ],
+      "isa_modules_count": 20,
+      "total_register_classes_across_isas": 83,
+      "total_defined_registers_across_isas": 1243,
+      "isa_breakdown": [
+        {
+          "isa_module": "aarch64",
+          "reg_classes_count": 5,
+          "reg_classes": [
+            "reg",
+            "vreg",
+            "vreg_low16",
+            "preg",
+            "ffr"
+          ],
+          "defined_registers_count": 78,
+          "reserved_error_rules_count": 4
+        },
+        {
+          "isa_module": "amdgpu",
+          "reg_classes_count": 0,
+          "reg_classes": [],
+          "defined_registers_count": 0,
+          "reserved_error_rules_count": 0
+        },
+        {
+          "isa_module": "arm",
+          "reg_classes_count": 9,
+          "reg_classes": [
+            "reg",
+            "sreg",
+            "sreg_low16",
+            "dreg",
+            "dreg_low16",
+            "dreg_low8",
+            "qreg",
+            "qreg_low8",
+            "qreg_low4"
+          ],
+          "defined_registers_count": 93,
+          "reserved_error_rules_count": 3
+        },
+        {
+          "isa_module": "avr",
+          "reg_classes_count": 5,
+          "reg_classes": [
+            "reg",
+            "reg_upper",
+            "reg_pair",
+            "reg_iw",
+            "reg_ptr"
+          ],
+          "defined_registers_count": 42,
+          "reserved_error_rules_count": 3
+        },
+        {
+          "isa_module": "bpf",
+          "reg_classes_count": 2,
+          "reg_classes": [
+            "reg",
+            "wreg"
+          ],
+          "defined_registers_count": 20,
+          "reserved_error_rules_count": 1
+        },
+        {
+          "isa_module": "csky",
+          "reg_classes_count": 2,
+          "reg_classes": [
+            "reg",
+            "freg"
+          ],
+          "defined_registers_count": 54,
+          "reserved_error_rules_count": 7
+        },
+        {
+          "isa_module": "hexagon",
+          "reg_classes_count": 6,
+          "reg_classes": [
+            "reg",
+            "reg_pair",
+            "preg",
+            "vreg",
+            "vreg_pair",
+            "qreg"
+          ],
+          "defined_registers_count": 97,
+          "reserved_error_rules_count": 7
+        },
+        {
+          "isa_module": "loongarch",
+          "reg_classes_count": 4,
+          "reg_classes": [
+            "reg",
+            "freg",
+            "vreg",
+            "xreg"
+          ],
+          "defined_registers_count": 122,
+          "reserved_error_rules_count": 6
+        },
+        {
+          "isa_module": "m68k",
+          "reg_classes_count": 3,
+          "reg_classes": [
+            "reg",
+            "reg_addr",
+            "reg_data"
+          ],
+          "defined_registers_count": 12,
+          "reserved_error_rules_count": 4
+        },
+        {
+          "isa_module": "mips",
+          "reg_classes_count": 3,
+          "reg_classes": [
+            "reg",
+            "freg",
+            "wreg"
+          ],
+          "defined_registers_count": 88,
+          "reserved_error_rules_count": 8
+        },
+        {
+          "isa_module": "msp430",
+          "reg_classes_count": 1,
+          "reg_classes": [
+            "reg"
+          ],
+          "defined_registers_count": 11,
+          "reserved_error_rules_count": 5
+        },
+        {
+          "isa_module": "nvptx",
+          "reg_classes_count": 3,
+          "reg_classes": [
+            "reg16",
+            "reg32",
+            "reg64"
+          ],
+          "defined_registers_count": 0,
+          "reserved_error_rules_count": 0
+        },
+        {
+          "isa_module": "powerpc",
+          "reg_classes_count": 10,
+          "reg_classes": [
+            "reg",
+            "reg_nonzero",
+            "freg",
+            "vreg",
+            "vsreg",
+            "cr",
+            "ctr",
+            "lr",
+            "xer",
+            "spe_acc"
+          ],
+          "defined_registers_count": 169,
+          "reserved_error_rules_count": 5
+        },
+        {
+          "isa_module": "riscv",
+          "reg_classes_count": 3,
+          "reg_classes": [
+            "reg",
+            "freg",
+            "vreg"
+          ],
+          "defined_registers_count": 90,
+          "reserved_error_rules_count": 6
+        },
+        {
+          "isa_module": "s390x",
+          "reg_classes_count": 5,
+          "reg_classes": [
+            "reg",
+            "reg_addr",
+            "freg",
+            "vreg",
+            "areg"
+          ],
+          "defined_registers_count": 76,
+          "reserved_error_rules_count": 4
+        },
+        {
+          "isa_module": "sparc",
+          "reg_classes_count": 5,
+          "reg_classes": [
+            "reg",
+            "freg",
+            "dreg",
+            "qreg",
+            "yreg"
+          ],
+          "defined_registers_count": 106,
+          "reserved_error_rules_count": 6
+        },
+        {
+          "isa_module": "spirv",
+          "reg_classes_count": 1,
+          "reg_classes": [
+            "reg"
+          ],
+          "defined_registers_count": 0,
+          "reserved_error_rules_count": 0
+        },
+        {
+          "isa_module": "wasm",
+          "reg_classes_count": 1,
+          "reg_classes": [
+            "local"
+          ],
+          "defined_registers_count": 0,
+          "reserved_error_rules_count": 0
+        },
+        {
+          "isa_module": "x86",
+          "reg_classes_count": 11,
+          "reg_classes": [
+            "reg",
+            "reg_abcd",
+            "reg_byte",
+            "xmm_reg",
+            "ymm_reg",
+            "zmm_reg",
+            "kreg",
+            "kreg0",
+            "mmx_reg",
+            "x87_reg",
+            "tmm_reg"
+          ],
+          "defined_registers_count": 128,
+          "reserved_error_rules_count": 3
+        },
+        {
+          "isa_module": "xtensa",
+          "reg_classes_count": 4,
+          "reg_classes": [
+            "reg",
+            "freg",
+            "sreg",
+            "breg"
+          ],
+          "defined_registers_count": 57,
+          "reserved_error_rules_count": 2
+        }
+      ]
+    },
+    "instance_and_shim_kinds": {
+      "instance_kind_variants_count": 5,
+      "instance_kind_variants": [
+        "Item",
+        "Intrinsic",
+        "LlvmIntrinsic",
+        "Virtual",
+        "Shim"
+      ],
+      "backend_magic_no_callable_mir_variants": [
+        "Intrinsic",
+        "LlvmIntrinsic",
+        "Virtual"
+      ],
+      "shim_kind_variants_count": 13,
+      "shim_kind_variants": [
+        "VTable",
+        "Reify",
+        "FnPtr",
+        "ClosureOnce",
+        "ConstructCoroutineInClosure",
+        "ThreadLocal",
+        "FutureDropPoll",
+        "DropGlue",
+        "Clone",
+        "FnAddrAsPtr",
+        "FnPtrFromPtr",
+        "AsyncDropGlueCtor",
+        "AsyncDropGlue"
+      ],
+      "shim_kind_delta_vs_1_99_1": {
+        "1_99_1_count": 12,
+        "412be32a6a18_count": 13,
+        "removed": [
+          "FnPtrAddr"
+        ],
+        "added": [
+          "FnAddrAsPtr",
+          "FnPtrFromPtr"
+        ]
+      },
+      "reify_reason_variants": [
+        "FnPtr",
+        "Vtable"
+      ]
+    },
+    "rustc_public_stable_mir": {
+      "rs_files_count": 36,
+      "sloc": 9988,
+      "public_functions_count": 406,
+      "public_types_and_traits_count": 191
+    }
+  },
+  "harnesses": {
+    "compiletest_suites": {
+      "suite_count_412be32a6a18": 22,
+      "suite_count_1_99_1": 21,
+      "newly_added_suites": [
+        "assembly-gcc"
+      ],
+      "total_test_entrypoints_412be32a6a18": 25437,
+      "total_test_entrypoints_1_99_1": 24545,
+      "delta_entrypoints_vs_1_99_1": 892,
+      "total_expanded_revision_variants": 29226,
+      "pipeline_tier_totals": {
+        "gcc-asm-specific": 1,
+        "llvm-specific": 1576,
+        "backend-codegen": 5690,
+        "ice": 145,
+        "mir-only": 423,
+        "frontend-only": 15816,
+        "rustdoc": 1786
+      },
+      "ignore_backends_directive_counts": {
+        "gcc": 579,
+        "llvm": 1
+      },
+      "reference_directive_occurrences": 410,
+      "reference_annotated_test_files": 236,
+      "top_30_directives": [
+        [
+          "compile-flags",
+          7956
+        ],
+        [
+          "check-pass",
+          4341
+        ],
+        [
+          "has",
+          4248
+        ],
+        [
+          "run-pass",
+          3863
+        ],
+        [
+          "edition",
+          2792
+        ],
+        [
+          "revisions",
+          2680
+        ],
+        [
+          "gdb-command",
+          1761
+        ],
+        [
+          "needs-llvm-components",
+          1635
+        ],
+        [
+          "aux-build",
+          1449
+        ],
+        [
+          "lldb-command",
+          1366
+        ],
+        [
+          "gdb-check",
+          1272
+        ],
+        [
+          "is",
+          1011
+        ],
+        [
+          "lldb-check",
+          949
+        ],
+        [
+          "cdb-check",
+          829
+        ],
+        [
+          "run-rustfix",
+          746
+        ],
+        [
+          "ignore-compare-mode-next-solver",
+          657
+        ],
+        [
+          "build-pass",
+          630
+        ],
+        [
+          "ignore-backends",
+          580
+        ],
+        [
+          "cdb-command",
+          479
+        ],
+        [
+          "count",
+          470
+        ],
+        [
+          "add-minicore",
+          461
+        ],
+        [
+          "ignore-cross-compile",
+          417
+        ],
+        [
+          "reference",
+          410
+        ],
+        [
+          "normalize-stderr",
+          394
+        ],
+        [
+          "known-bug",
+          325
+        ],
+        [
+          "proc-macro",
+          296
+        ],
+        [
+          "check-fail",
+          266
+        ],
+        [
+          "normalize-stdout",
+          251
+        ],
+        [
+          "error-pattern",
+          249
+        ],
+        [
+          "matches",
+          247
+        ]
+      ],
+      "clif_lto_substring_collateral_backend_tests_count": 5,
+      "clif_lto_substring_collateral_sample": [
+        "tests/incremental/thinlto/cgu_invalidated_via_import.rs",
+        "tests/incremental/thinlto/cgu_keeps_identical_fn.rs",
+        "tests/incremental/thinlto/independent_cgus_dont_affect_each_other.rs",
+        "tests/ui/mir/simplify-branch-same.rs",
+        "tests/ui/reachable/artificial-block.rs"
+      ],
+      "gcc_exclusion_list_line_counts": {
+        "failing-ui-tests.txt": 25,
+        "failing-ui-tests12.txt": 47,
+        "failing-ui-tests-without-128bit-integers.txt": 1,
+        "failing-run-make-tests.txt": 16,
+        "failing-lto-tests.txt": 5,
+        "failing-ice-tests.txt": 47
+      },
+      "by_suite": {
+        "assembly-gcc": {
+          "mode": "assembly",
+          "files_412be32a6a18": 1,
+          "files_1_99_1": 0,
+          "delta_vs_1_99_1": 1,
+          "expanded_revision_variants": 4,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 1,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 1,
+          "gcc_kept": 1,
+          "gcc_skipped": 0,
+          "clif_reasons": {
+            "suite-not-executed": 1
+          },
+          "gcc_reasons": {}
+        },
+        "assembly-llvm": {
+          "mode": "assembly",
+          "files_412be32a6a18": 182,
+          "files_1_99_1": 163,
+          "delta_vs_1_99_1": 19,
+          "expanded_revision_variants": 842,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 182,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 1,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 182,
+          "gcc_kept": 0,
+          "gcc_skipped": 182,
+          "clif_reasons": {
+            "suite-not-executed": 182
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 182
+          }
+        },
+        "build-std": {
+          "mode": "run-make",
+          "files_412be32a6a18": 1,
+          "files_1_99_1": 1,
+          "delta_vs_1_99_1": 0,
+          "expanded_revision_variants": 1,
+          "frontend_only": 0,
+          "backend_codegen": 1,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 1,
+          "gcc_kept": 0,
+          "gcc_skipped": 1,
+          "clif_reasons": {
+            "suite-not-executed": 1
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 1
+          }
+        },
+        "codegen-llvm": {
+          "mode": "codegen",
+          "files_412be32a6a18": 875,
+          "files_1_99_1": 801,
+          "delta_vs_1_99_1": 74,
+          "expanded_revision_variants": 1329,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 875,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 875,
+          "gcc_kept": 0,
+          "gcc_skipped": 875,
+          "clif_reasons": {
+            "suite-not-executed": 875
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 875
+          }
+        },
+        "codegen-units": {
+          "mode": "codegen-units",
+          "files_412be32a6a18": 46,
+          "files_1_99_1": 46,
+          "delta_vs_1_99_1": 0,
+          "expanded_revision_variants": 46,
+          "frontend_only": 0,
+          "backend_codegen": 46,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 46,
+          "clif_skipped": 0,
+          "gcc_kept": 0,
+          "gcc_skipped": 46,
+          "clif_reasons": {},
+          "gcc_reasons": {
+            "suite-not-executed": 46
+          }
+        },
+        "coverage": {
+          "mode": "coverage-map+coverage-run",
+          "files_412be32a6a18": 108,
+          "files_1_99_1": 98,
+          "delta_vs_1_99_1": 10,
+          "expanded_revision_variants": 122,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 108,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 108,
+          "gcc_kept": 0,
+          "gcc_skipped": 108,
+          "clif_reasons": {
+            "suite-not-executed": 108
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 108
+          }
+        },
+        "coverage-run-rustdoc": {
+          "mode": "coverage-run-rustdoc",
+          "files_412be32a6a18": 1,
+          "files_1_99_1": 1,
+          "delta_vs_1_99_1": 0,
+          "expanded_revision_variants": 1,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 1,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 1,
+          "gcc_kept": 0,
+          "gcc_skipped": 1,
+          "clif_reasons": {
+            "suite-not-executed": 1
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 1
+          }
+        },
+        "crashes": {
+          "mode": "crashes",
+          "files_412be32a6a18": 145,
+          "files_1_99_1": 179,
+          "delta_vs_1_99_1": -34,
+          "expanded_revision_variants": 146,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 145,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 145,
+          "gcc_kept": 0,
+          "gcc_skipped": 145,
+          "clif_reasons": {
+            "suite-not-executed": 145
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 145
+          }
+        },
+        "debuginfo": {
+          "mode": "debuginfo",
+          "files_412be32a6a18": 172,
+          "files_1_99_1": 169,
+          "delta_vs_1_99_1": 3,
+          "expanded_revision_variants": 188,
+          "frontend_only": 0,
+          "backend_codegen": 172,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 172,
+          "gcc_kept": 0,
+          "gcc_skipped": 172,
+          "clif_reasons": {
+            "suite-not-executed": 172
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 172
+          }
+        },
+        "incremental": {
+          "mode": "incremental",
+          "files_412be32a6a18": 180,
+          "files_1_99_1": 180,
+          "delta_vs_1_99_1": 0,
+          "expanded_revision_variants": 458,
+          "frontend_only": 0,
+          "backend_codegen": 178,
+          "llvm_specific": 2,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 169,
+          "clif_skipped": 11,
+          "gcc_kept": 0,
+          "gcc_skipped": 180,
+          "clif_reasons": {
+            "explicit:bugs in the test suite": 1,
+            "explicit:exotic linkages": 2,
+            "rg:lto-flag": 3,
+            "rg:should-fail": 2,
+            "rg:lto-substring-collateral": 3
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 180
+          }
+        },
+        "mir-opt": {
+          "mode": "mir-opt",
+          "files_412be32a6a18": 423,
+          "files_1_99_1": 400,
+          "delta_vs_1_99_1": 23,
+          "expanded_revision_variants": 433,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 423,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 423,
+          "gcc_kept": 0,
+          "gcc_skipped": 423,
+          "clif_reasons": {
+            "suite-not-executed": 423
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 423
+          }
+        },
+        "pretty": {
+          "mode": "pretty",
+          "files_412be32a6a18": 116,
+          "files_1_99_1": 113,
+          "delta_vs_1_99_1": 3,
+          "expanded_revision_variants": 118,
+          "frontend_only": 116,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 116,
+          "gcc_kept": 0,
+          "gcc_skipped": 116,
+          "clif_reasons": {
+            "suite-not-executed": 116
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 116
+          }
+        },
+        "run-make": {
+          "mode": "run-make",
+          "files_412be32a6a18": 551,
+          "files_1_99_1": 519,
+          "delta_vs_1_99_1": 32,
+          "expanded_revision_variants": 551,
+          "frontend_only": 0,
+          "backend_codegen": 375,
+          "llvm_specific": 176,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 480,
+          "clif_skipped": 71,
+          "gcc_kept": 551,
+          "gcc_skipped": 0,
+          "clif_reasons": {
+            "explicit:requires asm, llvm-ir and/or llvm-bc emit support": 16,
+            "explicit:variadic arguments": 1,
+            "explicit:requires LTO": 19,
+            "explicit:backend specific tests": 9,
+            "explicit:should work when using ./x.py test the way it is intended": 9,
+            "explicit:genuine bugs": 5,
+            "explicit:misc unimplemented things": 6,
+            "explicit:exotic linkages": 1,
+            "explicit:giving different but possibly correct results": 3,
+            "explicit:bugs in the test suite": 2
+          },
+          "gcc_reasons": {}
+        },
+        "run-make-cargo": {
+          "mode": "run-make",
+          "files_412be32a6a18": 15,
+          "files_1_99_1": 14,
+          "delta_vs_1_99_1": 1,
+          "expanded_revision_variants": 15,
+          "frontend_only": 0,
+          "backend_codegen": 10,
+          "llvm_specific": 5,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 11,
+          "clif_skipped": 4,
+          "gcc_kept": 15,
+          "gcc_skipped": 0,
+          "clif_reasons": {
+            "explicit:should work when using ./x.py test the way it is intended": 4
+          },
+          "gcc_reasons": {}
+        },
+        "rustdoc-gui": {
+          "mode": "rustdoc-gui",
+          "files_412be32a6a18": 156,
+          "files_1_99_1": 146,
+          "delta_vs_1_99_1": 10,
+          "expanded_revision_variants": 156,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 156,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 156,
+          "gcc_kept": 0,
+          "gcc_skipped": 156,
+          "clif_reasons": {
+            "suite-not-executed": 156
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 156
+          }
+        },
+        "rustdoc-html": {
+          "mode": "rustdoc-html",
+          "files_412be32a6a18": 827,
+          "files_1_99_1": 837,
+          "delta_vs_1_99_1": -10,
+          "expanded_revision_variants": 827,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 827,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 827,
+          "gcc_kept": 0,
+          "gcc_skipped": 827,
+          "clif_reasons": {
+            "suite-not-executed": 827
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 827
+          }
+        },
+        "rustdoc-js": {
+          "mode": "js-doc-test",
+          "files_412be32a6a18": 81,
+          "files_1_99_1": 78,
+          "delta_vs_1_99_1": 3,
+          "expanded_revision_variants": 82,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 81,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 81,
+          "gcc_kept": 0,
+          "gcc_skipped": 81,
+          "clif_reasons": {
+            "suite-not-executed": 81
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 81
+          }
+        },
+        "rustdoc-js-std": {
+          "mode": "js-doc-test",
+          "files_412be32a6a18": 69,
+          "files_1_99_1": 68,
+          "delta_vs_1_99_1": 1,
+          "expanded_revision_variants": 69,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 69,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 69,
+          "gcc_kept": 0,
+          "gcc_skipped": 69,
+          "clif_reasons": {
+            "suite-not-executed": 69
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 69
+          }
+        },
+        "rustdoc-json": {
+          "mode": "rustdoc-json",
+          "files_412be32a6a18": 201,
+          "files_1_99_1": 194,
+          "delta_vs_1_99_1": 7,
+          "expanded_revision_variants": 201,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 201,
+          "ice": 0,
+          "explicit_check_pass": 0,
+          "explicit_build_pass": 0,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 0,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 201,
+          "gcc_kept": 0,
+          "gcc_skipped": 201,
+          "clif_reasons": {
+            "suite-not-executed": 201
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 201
+          }
+        },
+        "rustdoc-ui": {
+          "mode": "ui",
+          "files_412be32a6a18": 452,
+          "files_1_99_1": 390,
+          "delta_vs_1_99_1": 62,
+          "expanded_revision_variants": 487,
+          "frontend_only": 0,
+          "backend_codegen": 0,
+          "llvm_specific": 0,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 452,
+          "ice": 0,
+          "explicit_check_pass": 220,
+          "explicit_build_pass": 4,
+          "explicit_run_pass": 0,
+          "explicit_check_fail": 6,
+          "explicit_build_fail": 0,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 452,
+          "gcc_kept": 0,
+          "gcc_skipped": 452,
+          "clif_reasons": {
+            "suite-not-executed": 452
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 452
+          }
+        },
+        "ui": {
+          "mode": "ui",
+          "files_412be32a6a18": 20752,
+          "files_1_99_1": 20072,
+          "delta_vs_1_99_1": 680,
+          "expanded_revision_variants": 23064,
+          "frontend_only": 15671,
+          "backend_codegen": 4856,
+          "llvm_specific": 225,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 4008,
+          "explicit_build_pass": 604,
+          "explicit_run_pass": 3787,
+          "explicit_check_fail": 245,
+          "explicit_build_fail": 244,
+          "explicit_run_fail": 183,
+          "clif_kept": 8115,
+          "clif_skipped": 12637,
+          "gcc_kept": 20083,
+          "gcc_skipped": 669,
+          "clif_reasons": {
+            "rg:ui-err-or-build-run-fail-or-llvm-args": 12347,
+            "explicit:giving different but possibly correct results": 4,
+            "explicit:variadic arguments": 12,
+            "explicit:backend specific tests": 5,
+            "rg:lto-flag": 39,
+            "explicit:inline assembly features": 7,
+            "explicit:genuine bugs": 1,
+            "explicit:misc unimplemented things": 126,
+            "explicit:optimization tests": 5,
+            "explicit:bugs in the test suite": 17,
+            "explicit:should work when using ./x.py test the way it is intended": 4,
+            "rg:should-fail": 5,
+            "explicit:coverage instrumentation": 6,
+            "explicit:requires asm, llvm-ir and/or llvm-bc emit support": 3,
+            "explicit:exotic linkages": 1,
+            "explicit:requires LTO": 25,
+            "rg:lto-substring-collateral": 2,
+            "explicit:vendor intrinsics": 28
+          },
+          "gcc_reasons": {
+            "wholesale-dir:abi": 99,
+            "list:failing-ui-tests.txt": 23,
+            "filter:non-thin-lto": 68,
+            "list:failing-ui-tests12.txt": 41,
+            "list:failing-ice-tests.txt": 40,
+            "wholesale-dir:extern": 71,
+            "list:failing-lto-tests.txt+failing-ice-tests.txt": 4,
+            "list:failing-ui-tests.txt+failing-ice-tests.txt": 2,
+            "list:failing-lto-tests.txt": 1,
+            "wholesale-dir:proc-macro": 249,
+            "list:failing-ui-tests12.txt+failing-ice-tests.txt": 1,
+            "list:failing-ui-tests-without-128bit-integers.txt": 1,
+            "wholesale-dir:threads-sendsync": 69
+          }
+        },
+        "ui-fulldeps": {
+          "mode": "ui",
+          "files_412be32a6a18": 83,
+          "files_1_99_1": 76,
+          "delta_vs_1_99_1": 7,
+          "expanded_revision_variants": 86,
+          "frontend_only": 29,
+          "backend_codegen": 52,
+          "llvm_specific": 2,
+          "gcc_asm_specific": 0,
+          "mir_only": 0,
+          "rustdoc": 0,
+          "ice": 0,
+          "explicit_check_pass": 4,
+          "explicit_build_pass": 1,
+          "explicit_run_pass": 51,
+          "explicit_check_fail": 5,
+          "explicit_build_fail": 1,
+          "explicit_run_fail": 0,
+          "clif_kept": 0,
+          "clif_skipped": 83,
+          "gcc_kept": 0,
+          "gcc_skipped": 83,
+          "clif_reasons": {
+            "suite-not-executed": 83
+          },
+          "gcc_reasons": {
+            "suite-not-executed": 83
+          }
+        }
+      }
+    },
+    "stdlib_suites": {
+      "total_test_functions": 4390,
+      "total_doctest_blocks": 5279,
+      "by_crate": {
+        "coretests": {
+          "rs_files": 181,
+          "unit_and_integration_test_fns": 1514,
+          "rustdoc_doctest_blocks": 0
+        },
+        "alloctests": {
+          "rs_files": 63,
+          "unit_and_integration_test_fns": 966,
+          "rustdoc_doctest_blocks": 0
+        },
+        "std": {
+          "rs_files": 705,
+          "unit_and_integration_test_fns": 989,
+          "rustdoc_doctest_blocks": 1184
+        },
+        "compiler-builtins": {
+          "rs_files": 296,
+          "unit_and_integration_test_fns": 312,
+          "rustdoc_doctest_blocks": 2
+        },
+        "portable-simd": {
+          "rs_files": 80,
+          "unit_and_integration_test_fns": 44,
+          "rustdoc_doctest_blocks": 61
+        },
+        "stdarch": {
+          "rs_files": 215,
+          "unit_and_integration_test_fns": 161,
+          "rustdoc_doctest_blocks": 31
+        },
+        "test": {
+          "rs_files": 31,
+          "unit_and_integration_test_fns": 55,
+          "rustdoc_doctest_blocks": 0
+        },
+        "std_detect": {
+          "rs_files": 44,
+          "unit_and_integration_test_fns": 36,
+          "rustdoc_doctest_blocks": 0
+        },
+        "alloc": {
+          "rs_files": 97,
+          "unit_and_integration_test_fns": 313,
+          "rustdoc_doctest_blocks": 981
+        },
+        "core": {
+          "rs_files": 295,
+          "unit_and_integration_test_fns": 0,
+          "rustdoc_doctest_blocks": 3019
+        },
+        "proc_macro": {
+          "rs_files": 17,
+          "unit_and_integration_test_fns": 0,
+          "rustdoc_doctest_blocks": 1
+        },
+        "panic_unwind": {
+          "rs_files": 5,
+          "unit_and_integration_test_fns": 0,
+          "rustdoc_doctest_blocks": 0
+        }
+      }
+    },
+    "tool_and_integration_suites": {
+      "cargotest": {
+        "pinned_crate_suites_count": 6,
+        "pinned_crate_names": [
+          "iron",
+          "ripgrep",
+          "tokei",
+          "xsv",
+          "stylo",
+          "diesel"
+        ]
+      },
+      "miri_tests": {
+        "total_rs_entrypoints": 1236,
+        "by_category": {
+          "deps": 2,
+          "fail-dep": 108,
+          "fail": 557,
+          "genmc": 69,
+          "many-seeds": 2,
+          "native-lib": 15,
+          "panic": 13,
+          "pass-dep": 79,
+          "pass": 382,
+          "ui.rs": 1,
+          "utils": 8
+        }
+      },
+      "clippy_tests": {
+        "total_rs_entrypoints": 1508,
+        "by_category": {
+          "check-fmt.rs": 1,
+          "compile-test.rs": 1,
+          "config-consistency.rs": 1,
+          "config-metadata.rs": 1,
+          "dogfood.rs": 1,
+          "example_integration_test": 2,
+          "explain.rs": 1,
+          "integration.rs": 1,
+          "lint-attributes-organization.rs": 1,
+          "lint-page.rs": 1,
+          "lint_message_convention.rs": 1,
+          "missing-test-files.rs": 1,
+          "no-profile-in-cargo-toml.rs": 1,
+          "symbols-used.rs": 1,
+          "test_utils": 1,
+          "ui-cargo": 91,
+          "ui-internal": 15,
+          "ui-toml": 127,
+          "ui": 1238,
+          "versioncheck.rs": 1,
+          "workspace.rs": 1,
+          "workspace_test": 19
+        }
+      },
+      "rustfmt_tests": {
+        "total_rs_files": 1976
+      }
+    },
+    "external_qualification_harnesses": {
+      "abi_cafe": {
+        "repository": "Gankra/abi-cafe",
+        "revision": "94d38030419eb00a1ba80e5e2b4d763dcee58db4",
+        "total_blobs": 129,
+        "normal_kdl_tests": 3,
+        "procgen_kdl_suites": 36,
+        "procgen_categories": {
+          "array": 3,
+          "enum": 2,
+          "fancy": 1,
+          "primitive": 17,
+          "pun": 1,
+          "ref": 1,
+          "struct": 6,
+          "tagged": 3,
+          "union": 2
+        },
+        "rust_src_files": 25
+      },
+      "fls": {
+        "repository": "rust-lang/fls",
+        "revision": "bca860e8dab52715effdd49a792347b262f5e539",
+        "rst_files_count": 29,
+        "normative_chapters_with_dp_count": 25,
+        "total_dp_paragraph_ids": 4110,
+        "delta_dp_vs_fls_1_99_tag": 96,
+        "dp_by_chapter": {
+          "src/associated-items.rst": 38,
+          "src/attributes.rst": 388,
+          "src/background.rst": 6,
+          "src/concurrency.rst": 29,
+          "src/entities-and-resolution.rst": 365,
+          "src/exceptions-and-errors.rst": 14,
+          "src/expressions.rst": 936,
+          "src/ffi.rst": 48,
+          "src/functions.rst": 60,
+          "src/general.rst": 80,
+          "src/generics.rst": 82,
+          "src/implementations.rst": 48,
+          "src/inline-assembly.rst": 321,
+          "src/items.rst": 2,
+          "src/lexical-elements.rst": 195,
+          "src/licenses.rst": 46,
+          "src/macros.rst": 188,
+          "src/ownership-and-deconstruction.rst": 160,
+          "src/patterns.rst": 270,
+          "src/program-structure-and-compilation.rst": 43,
+          "src/statements.rst": 33,
+          "src/types-and-traits.rst": 667,
+          "src/undefined-behavior.rst": 1,
+          "src/unsafety.rst": 11,
+          "src/values.rst": 79
+        }
+      },
+      "rustlantis": {
+        "repository": "cbeuw/rustlantis",
+        "revision": "2be7c5a6763831dc0f908f0e05723ebbbc2a62cc",
+        "total_blobs": 45,
+        "workspace_crates": [
+          "abi",
+          "config",
+          "difftest",
+          "generate",
+          "mir",
+          "rangemap"
+        ],
+        "rs_files": 24
+      },
+      "ferrocene": {
+        "repository": "ferrocene/ferrocene",
+        "revision": "fef61e63733cf86e31b1cb0da3271058a8673f1c",
+        "ferrocene_subtree_blobs": 1403,
+        "qualification_tools": [
+          "automations-common",
+          "backport",
+          "blanket",
+          "diff-upstream",
+          "document-signatures",
+          "fix-merge",
+          "generate-tarball",
+          "pull-subtrees",
+          "pull-upstream",
+          "self-test",
+          "symbol-report",
+          "traceability-matrix"
+        ],
+        "qualification_doc_books": [
+          "breadcrumbs",
+          "document-list",
+          "evaluation-plan",
+          "evaluation-report",
+          "index",
+          "internal-procedures",
+          "library-certification",
+          "public-docs-warning",
+          "qnx7-manual",
+          "qnx8-manual",
+          "qualification-plan",
+          "qualification-report",
+          "release-notes",
+          "rhivos-manual",
+          "safety-manual",
+          "specification",
+          "sphinx-shared-resources",
+          "user-manual"
+        ]
+      },
+      "crater": {
+        "repository": "rust-lang/crater",
+        "revision": "abaa949414a8b9457858f0fc1a6ed97824cb9120",
+        "total_blobs": 218,
+        "src_rs_files": 72,
+        "local_crate_fixtures_count": 17,
+        "local_crate_fixtures": [
+          "beta-faulty-deps",
+          "beta-fixed",
+          "beta-regression",
+          "broken-cargotoml",
+          "build-fail",
+          "build-pass",
+          "clippy-warn",
+          "docs-rs-features",
+          "error-code",
+          "faulty-deps",
+          "ice-regression",
+          "memory-hungry",
+          "missing-examples",
+          "network-access",
+          "outdated-lockfile",
+          "test-fail",
+          "yanked-deps"
+        ]
+      }
+    }
+  },
+  "surface_to_harness_matrix": [
+    {
+      "surface_id": "S01_CLI_GETOPTS_ERROR_JSON_PRINT",
+      "surface_name": "Top-Level getopts CLI, --error-format, --json, and --print Queries",
+      "inventory_412be32a6a18": "39 getopts flags, 6 error formats, 9 --json subflags, 27 PrintKind variants",
+      "mode_a_owner": "Candidate Driver + Candidate Backend (all 27 PrintKind variants)",
+      "mode_b_owner": "Upstream rustc_driver (17 Frontend PrintKinds + CLI/JSON) + Candidate CodegenBackend (8 Backend + 2 Hybrid PrintKinds)",
+      "upstream_harnesses": [
+        "tests/ui (20752 files)",
+        "tests/run-make (551 recipes)",
+        "tests/run-make-cargo (15 recipes)",
+        "src/tools/cargotest (6 real workspaces)"
+      ],
+      "external_harnesses": [
+        "Tier 1 --print differential probe (target-cpus, target-features, code/reloc/tls-models, cfg)",
+        "rust-lang/crater check-only + build-only Cargo JSON protocol sweep"
+      ],
+      "required_oracle": "Exact stdout/JSON schema + exit code (0/1/101) parity; non-empty backend --print tables"
+    },
+    {
+      "surface_id": "S02_FRONTEND_TYPECK_BORROWCK_MACROS_RMETA",
+      "surface_name": "Lexing, Editions (2015..Future), Macros/proc_macro, Typeck, Trait Solver, Borrowck, .rmeta",
+      "inventory_412be32a6a18": "5 Editions, 589 feature gates, 202 attribute paths, 233 LangItems, 292 lints, 518 error codes, 31 proc_macro::bridge RPCs, .rmeta v12",
+      "mode_a_owner": "Candidate Frontend + Metadata Encoder/Decoder (0 frontend skips permitted)",
+      "mode_b_owner": "Upstream rustc Frontend (verified via driver identity; proc-macro host dylibs linked by backend)",
+      "upstream_harnesses": [
+        "tests/ui frontend-only (15671 files)",
+        "tests/ui-fulldeps (83 files)",
+        "tests/pretty (116 files)",
+        "tests/crashes (145 ICE guards)",
+        "src/tools/clippy/tests (1508 files)"
+      ],
+      "external_harnesses": [
+        "rust-lang/fls (4110 :dp: paragraph IDs) + ferrocene traceability-matrix",
+        "rust-lang/crater check-only (~550k crates)"
+      ],
+      "required_oracle": "check-pass / check-fail diagnostic span parity + cross-crate .rmeta roundtrip"
+    },
+    {
+      "surface_id": "S03_BUILTIN_TARGETS_AND_OBJECT_FORMATS",
+      "surface_name": "Built-In Target Specifications, DataLayouts, Relocations, and Crate Types",
+      "inventory_412be32a6a18": "340 built-in targets (8 Tier 1, 25 Tier 2 host, ELF=281, MachO=24, COFF=24, Wasm=10, XCOFF=1), 7 CrateTypes, 9 OutputTypes",
+      "mode_a_owner": "Candidate Target Registry + Object/Archive/Linker Driver",
+      "mode_b_owner": "Upstream Target Registry + Candidate Object Emitter & Linker Integration",
+      "upstream_harnesses": [
+        "tests/build-std (1 suite)",
+        "tests/run-make (375 backend-agnostic recipes)",
+        "tests/codegen-units (46 files)",
+        "compiletest remote-test-client / remote-test-server QEMU target matrix"
+      ],
+      "external_harnesses": [
+        "ferrocene/ferrocene self-test + QEMU/target qualification runners",
+        "stage0 -> stage1 -> stage2 -> stage3 cross/host binary fixed-point bootstrap"
+      ],
+      "required_oracle": "build-pass + run-pass across all qualified target triples and all 8 --crate-type tokens"
+    },
+    {
+      "surface_id": "S04_RUSTC_INTRINSICS_AND_STDARCH_SIMD",
+      "surface_name": "#[rustc_intrinsic] Operations and stdarch Vendor SIMD Intrinsics",
+      "inventory_412be32a6a18": "265 #[rustc_intrinsic] declarations (210 mandatory backend-lowered, 55 with default MIR fallback) + 8448 stdarch llvm.* bindings (8171 unique)",
+      "mode_a_owner": "Candidate Intrinsic Typechecker + CTFE + Codegen Lowerer",
+      "mode_b_owner": "Candidate CodegenBackend (Intrinsic + LlvmIntrinsic lowering; 0 silent scalar traps)",
+      "upstream_harnesses": [
+        "library/coretests (1514 #[test] fns)",
+        "library/stdarch (161 #[test] fns)",
+        "library/portable-simd (44 #[test] fns)",
+        "library/compiler-builtins (312 #[test] fns)",
+        "src/tools/miri/tests (1236 files)"
+      ],
+      "external_harnesses": [
+        "cbeuw/rustlantis custom-MIR intrinsic & checked-arithmetic differential fuzzer"
+      ],
+      "required_oracle": "run-pass bit-exact execution against Miri and reference hardware/QEMU"
+    },
+    {
+      "surface_id": "S05_EXTERN_ABI_UNWINDING_AND_C_VARIADICS",
+      "surface_name": "ExternAbi Calling Conventions, C-unwind Foreign Exceptions, and C-Variadics",
+      "inventory_412be32a6a18": "30 ExternAbi enum variants / 40 ABI string tokens (10 paired unwind=false/true)",
+      "mode_a_owner": "Candidate FnAbi Layout/Classification Engine + Call/Unwind Frame Lowerer",
+      "mode_b_owner": "Upstream FnAbi Computation + Candidate Call/Prologue/Epilogue/LSDA Lowerer",
+      "upstream_harnesses": [
+        "tests/ui backend-codegen (4856 files incl. tests/ui/abi, c-variadic, panics)",
+        "library/std (989 #[test] fns) + panic_unwind"
+      ],
+      "external_harnesses": [
+        "Gankra/abi-cafe (3 normal + 36 procgen KDL suites: rustc_calls_cand, cand_calls_rustc, cand_calls_cc, cc_calls_cand)",
+        "Cross-language C++ <-> Rust extern \"C-unwind\" / extern \"C\" / i128 5-mode matrix"
+      ],
+      "required_oracle": "Paired cross-compiler link-and-run execution + RAII Drop / C++ destructor count parity"
+    },
+    {
+      "surface_id": "S06_INLINE_ASM_NAKED_AND_GLOBAL_ASM",
+      "surface_name": "asm!, global_asm!, and #[unsafe(naked)] Across InlineAsmArch ISAs",
+      "inventory_412be32a6a18": "28 InlineAsmArch variants across 20 ISA modules (83 register classes, 1243 register defs)",
+      "mode_a_owner": "Candidate Template/Constraint Validator + Integrated Assembler / Object Encoder",
+      "mode_b_owner": "Upstream HIR/MIR asm! Validator + Candidate Register Constraint Allocator & Assembler",
+      "upstream_harnesses": [
+        "tests/ui/asm/* (incl. goto, label-operand, may_unwind, sym, naked-functions)",
+        "tests/assembly-llvm (182 files, target-equivalent binary checks)",
+        "tests/assembly-gcc (1 files)",
+        "library/std_detect (36 #[test] fns)"
+      ],
+      "external_harnesses": [
+        "ferrocene inline-assembly FLS chapter (321 :dp: paragraphs in src/inline-assembly.rst)"
+      ],
+      "required_oracle": "run-pass execution (including asm goto and may_unwind landing pads) + ELF/COFF symbol table audit"
+    },
+    {
+      "surface_id": "S07_MONOMORPHIZATION_INSTANCE_AND_SHIMS",
+      "surface_name": "Monomorphization Collector, InstanceKind, ShimKind, and VTables",
+      "inventory_412be32a6a18": "5 InstanceKind variants + 13 ShimKind variants + 2 ReifyReason variants (FnPtr, Vtable)",
+      "mode_a_owner": "Candidate Monomorphization Collector + Shim MIR Builder + VTable/Virtual Dispatch Lowerer",
+      "mode_b_owner": "Upstream Collector & make_shim (13 ShimKinds) + Candidate Virtual/VTable/Reify(KCFI)/ThreadLocal Lowerer",
+      "upstream_harnesses": [
+        "tests/codegen-units (46 files)",
+        "tests/mir-opt (423 files)",
+        "library/alloctests (966 #[test] fns)",
+        "tests/ui/async-await/async-drop/* & dyn-compatibility / trait-upcasting suites"
+      ],
+      "external_harnesses": [
+        "cbeuw/rustlantis multi-block/call differential fuzzing",
+        "stage0 -> stage1 -> stage2 -> stage3 self-hosting over rustc (~715k SLOC)"
+      ],
+      "required_oracle": "MONO_ITEM partitioning parity + run-pass execution of dyn upcasting, async drop, and TLS shims"
+    },
+    {
+      "surface_id": "S08_DEBUGINFO_COVERAGE_SANITIZERS_LTO_INCREMENTAL",
+      "surface_name": "Debuginfo (DWARF/CodeView), Coverage, Sanitizers, LTO, Incremental, and StableMIR",
+      "inventory_412be32a6a18": "5 DebugInfo levels, 3 SplitDebuginfo modes, InstrumentCoverage, 14 SanitizerSet bitflags, 4 Lto modes, 56 -C & 243 -Z options, rustc_public (9988 SLOC)",
+      "mode_a_owner": "Candidate End-to-End Pipeline (DWARF/PDB, coverage maps, sanitizers, Thin/Fat LTO, incr dep-graph)",
+      "mode_b_owner": "Upstream Incr Dep-Graph & StableMIR Bridge + Candidate Debuginfo/LTO/Sanitizer Codegen",
+      "upstream_harnesses": [
+        "tests/debuginfo (172 debugger scripts: gdb, lldb, cdb)",
+        "tests/incremental (180 multi-revision crates)",
+        "tests/coverage (108 files) + coverage-run-rustdoc (1)",
+        "tests/ui/sanitizer/* & tests/ui/lto/* & tests/ui-fulldeps/rustc_public/*"
+      ],
+      "external_harnesses": [
+        "ferrocene/tools/blanket MC/DC & source coverage verifier",
+        "rust-lang/crater build-and-test campaign with 2x flake-isolated retry"
+      ],
+      "required_oracle": "Debugger breakpoint/variable inspection pass + #[rustc_clean]/#[rustc_dirty] + sanitizer trap tests"
+    },
+    {
+      "surface_id": "S09_RUSTDOC_AND_ECOSYSTEM_TOOLING",
+      "surface_name": "Rustdoc (HTML, JSON v61, Doctests, JS/GUI) and Workspace Tooling",
+      "inventory_412be32a6a18": "6 rustdoc compiletest suites (1786 files) + 5279 library/ doctests",
+      "mode_a_owner": "Candidate rustdoc Driver + Doctest Compiler/Runner",
+      "mode_b_owner": "Upstream rustdoc + Candidate CodegenBackend compiling & linking runnable doctest binaries",
+      "upstream_harnesses": [
+        "tests/rustdoc-html (827), rustdoc-ui (452), rustdoc-json (201), rustdoc-gui (156), rustdoc-js (81), rustdoc-js-std (69)",
+        "library/* doctests (5279 runnable blocks)"
+      ],
+      "external_harnesses": [
+        "rust-lang/crater --mode=rustdoc ecosystem run"
+      ],
+      "required_oracle": "htmldocck + jsondocck/jsondoclint + run-pass execution of compiled doctests"
+    }
+  ],
+  "skip_list_soundness_auditor": {
+    "allowed_buckets_mode_a": [
+      "gcc-asm-heuristic-only",
+      "llvm-cli-pass-flag-only",
+      "llvm-ir-text-only",
+      "non-target-arch-or-os-gated"
+    ],
+    "allowed_buckets_mode_b": [
+      "frontend-delegated-to-upstream-rustc-driver",
+      "gcc-asm-heuristic-only",
+      "llvm-cli-pass-flag-only",
+      "llvm-ir-text-only",
+      "mir-opt-upstream-middle-end-only",
+      "non-target-arch-or-os-gated",
+      "rustdoc-frontend-only"
+    ],
+    "clif_kept_across_all_22_suites": 8821,
+    "clif_skipped_across_all_22_suites": 16616,
+    "gcc_kept_across_all_22_suites": 20650,
+    "gcc_skipped_across_all_22_suites": 4787,
+    "evaluations": [
+      {
+        "name": "Mode A Standalone Compiler Qualification Baseline",
+        "mode": "Mode A",
+        "verdict": "PASS",
+        "executed_count": 23860,
+        "skipped_total": 1577,
+        "accounted_total": 25437,
+        "expected_total": 25437,
+        "violations": []
+      },
+      {
+        "name": "Mode B Drop-In Codegen Backend Qualification Baseline",
+        "mode": "Mode B",
+        "verdict": "PASS",
+        "executed_count": 5835,
+        "skipped_total": 19602,
+        "accounted_total": 25437,
+        "expected_total": 25437,
+        "violations": []
+      },
+      {
+        "name": "Upstream rustc_codegen_cranelift (test_rustc_tests.sh)",
+        "mode": "Mode B",
+        "verdict": "FAIL",
+        "executed_count": 8821,
+        "skipped_total": 16616,
+        "accounted_total": 25437,
+        "expected_total": 25437,
+        "violations": [
+          "UNAUTHORIZED_SKIP_BUCKET (Mode B): bucket='unclassified-shell-rm-and-unrun-suites' count=16616",
+          "WILDCARD_DELETION_LOOPHOLE: regex/substring `rm` deletion detected outside AST/directive parser",
+          "WHOLESALE_SUBDIR_EXCLUSION: entire `tests/ui/<subdir>` directory excluded without per-test deviation"
+        ]
+      },
+      {
+        "name": "Upstream rustc_codegen_gcc (build_system/src/test.rs)",
+        "mode": "Mode B",
+        "verdict": "FAIL",
+        "executed_count": 20650,
+        "skipped_total": 4787,
+        "accounted_total": 25437,
+        "expected_total": 25437,
+        "violations": [
+          "UNAUTHORIZED_SKIP_BUCKET (Mode B): bucket='failing-txt-and-unrun-suites' count=4787",
+          "WHOLESALE_SUBDIR_EXCLUSION: entire `tests/ui/<subdir>` directory excluded without per-test deviation"
+        ]
+      },
+      {
+        "name": "Synthetic Loophole Probe 1: Mode A Skipping Frontend Diagnostics",
+        "mode": "Mode A",
+        "verdict": "FAIL",
+        "executed_count": 8044,
+        "skipped_total": 17393,
+        "accounted_total": 25437,
+        "expected_total": 25437,
+        "violations": [
+          "UNAUTHORIZED_SKIP_BUCKET (Mode A): bucket='frontend-delegated-to-upstream-rustc-driver' count=15816"
+        ]
+      },
+      {
+        "name": "Synthetic Loophole Probe 2: Vacuous --pass=check Downgrade on run-pass",
+        "mode": "Mode B",
+        "verdict": "FAIL",
+        "executed_count": 5835,
+        "skipped_total": 19602,
+        "accounted_total": 25437,
+        "expected_total": 25437,
+        "violations": [
+          "VACUOUS_CHECK_PASS_DOWNGRADE: 3859 `run-pass`/`build-pass` tests downgraded to `check-pass`"
+        ]
+      },
+      {
+        "name": "Synthetic Loophole Probe 3: Silent Unaccounted Test Drop",
+        "mode": "Mode A",
+        "verdict": "FAIL",
+        "executed_count": 23843,
+        "skipped_total": 1577,
+        "accounted_total": 25420,
+        "expected_total": 25437,
+        "violations": [
+          "MASS_CONSERVATION_VIOLATION: accounted=25420 != expected_total=25437 (delta=17 silently dropped tests)"
+        ]
+      }
+    ]
+  },
+  "live_execution_probes": {
+    "rustc_1_99_1_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+    "rustc_nightly_llvm_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+    "rustc_nightly_cranelift_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nCranelift version: 0.137.0",
+    "gpp_version": "g++ (Debian 15.2.0-14) 15.2.0",
+    "backend_print_differential": {
+      "calling-conventions": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 40,
+        "llvm_sample": [
+          "C",
+          "C-unwind",
+          "Rust",
+          "Swift",
+          "aapcs"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 40,
+        "cranelift_sample": [
+          "C",
+          "C-unwind",
+          "Rust",
+          "Swift",
+          "aapcs"
+        ]
+      },
+      "code-models": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 6,
+        "llvm_sample": [
+          "Available code models:",
+          "    tiny",
+          "    small",
+          "    kernel",
+          "    medium"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 0,
+        "cranelift_sample": []
+      },
+      "relocation-models": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 9,
+        "llvm_sample": [
+          "Available relocation models:",
+          "    static",
+          "    pic",
+          "    pie",
+          "    dynamic-no-pic"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 0,
+        "cranelift_sample": []
+      },
+      "tls-models": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 6,
+        "llvm_sample": [
+          "Available TLS models:",
+          "    global-dynamic",
+          "    local-dynamic",
+          "    initial-exec",
+          "    local-exec"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 0,
+        "cranelift_sample": []
+      },
+      "stack-protector-strategies": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 16,
+        "llvm_sample": [
+          "Available stack protector strategies:",
+          "    all",
+          "        Generate stack canaries in all functions.",
+          "    strong",
+          "        Generate stack canaries in a function if it either:"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 0,
+        "cranelift_sample": []
+      },
+      "split-debuginfo": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 3,
+        "llvm_sample": [
+          "off",
+          "packed",
+          "unpacked"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 3,
+        "cranelift_sample": [
+          "off",
+          "packed",
+          "unpacked"
+        ]
+      },
+      "target-cpus": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 138,
+        "llvm_sample": [
+          "Available CPUs for this target:",
+          "    native                  - Select the CPU of the current host (currently icelake-server).",
+          "    alderlake",
+          "    amdfam10",
+          "    arrowlake"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 0,
+        "cranelift_sample": []
+      },
+      "target-features": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 237,
+        "llvm_sample": [
+          "Features supported by rustc for this target:",
+          "    adx                             - Support ADX instructions.",
+          "    aes                             - Enable AES instructions.",
+          "    amx-avx512                      - Support AMX-AVX512 instructions.",
+          "    amx-bf16                        - Support AMX-BF16 instructions."
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 0,
+        "cranelift_sample": []
+      },
+      "host-tuple": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 1,
+        "llvm_sample": [
+          "x86_64-unknown-linux-gnu"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 1,
+        "cranelift_sample": [
+          "x86_64-unknown-linux-gnu"
+        ]
+      },
+      "supported-crate-types": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 7,
+        "llvm_sample": [
+          "bin",
+          "cdylib",
+          "dylib",
+          "lib",
+          "proc-macro"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 7,
+        "cranelift_sample": [
+          "bin",
+          "cdylib",
+          "dylib",
+          "lib",
+          "proc-macro"
+        ]
+      },
+      "backend-has-zstd": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 1,
+        "llvm_sample": [
+          "true"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 1,
+        "cranelift_sample": [
+          "false"
+        ]
+      },
+      "backend-has-mnemonic:ret": {
+        "llvm_rc": 0,
+        "llvm_nonempty_lines": 1,
+        "llvm_sample": [
+          "true"
+        ],
+        "cranelift_rc": 0,
+        "cranelift_nonempty_lines": 1,
+        "cranelift_sample": [
+          "true"
+        ]
+      }
+    },
+    "cross_lang_c_unwind_and_i128_abi_matrix": {
+      "llvm_panic_unwind_O2": {
+        "compile_rc": 0,
+        "compile_stderr_first_line": "warning: `cpp_throw_42_nounwind_import` redeclares `cpp_throw_42` with a different signature",
+        "modes": {
+          "cpp_through_rust": {
+            "rc": 0,
+            "stdout": "RC=142 RUST_DROPS=1",
+            "stderr_first_line": ""
+          },
+          "catch_unwind_on_cpp": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "fatal runtime error: Rust cannot catch foreign exceptions, aborting"
+          },
+          "extern_c_nounwind_throw": {
+            "rc": 0,
+            "stdout": "RC=142 RUST_DROPS=0",
+            "stderr_first_line": ""
+          },
+          "extern_c_def_abort_barrier": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3788226) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:"
+          },
+          "rust_panic_through_cpp": {
+            "rc": 0,
+            "stdout": "CAUGHT=true CPP_DTORS=1",
+            "stderr_first_line": "thread 'main' (3788302) panicked at /tmp/tmphbmiumej/main.rs:55:5:"
+          },
+          "i128_abi": {
+            "rc": 0,
+            "stdout": "RUST_SZ=48 RUST_AL=16 CPP_SZ=48 CPP_AL=16 MATCH=true",
+            "stderr_first_line": ""
+          }
+        }
+      },
+      "llvm_panic_abort_O2": {
+        "compile_rc": 0,
+        "compile_stderr_first_line": "warning: `cpp_throw_42_nounwind_import` redeclares `cpp_throw_42` with a different signature",
+        "modes": {
+          "cpp_through_rust": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3788499) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:"
+          },
+          "catch_unwind_on_cpp": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3788667) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:"
+          },
+          "extern_c_nounwind_throw": {
+            "rc": 0,
+            "stdout": "RC=142 RUST_DROPS=0",
+            "stderr_first_line": ""
+          },
+          "extern_c_def_abort_barrier": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3788840) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:"
+          },
+          "rust_panic_through_cpp": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3789066) panicked at /tmp/tmphbmiumej/main.rs:55:5:"
+          },
+          "i128_abi": {
+            "rc": 0,
+            "stdout": "RUST_SZ=48 RUST_AL=16 CPP_SZ=48 CPP_AL=16 MATCH=true",
+            "stderr_first_line": ""
+          }
+        }
+      },
+      "llvm_panic_abort_no_uwtable_O2": {
+        "compile_rc": 0,
+        "compile_stderr_first_line": "warning: `cpp_throw_42_nounwind_import` redeclares `cpp_throw_42` with a different signature",
+        "modes": {
+          "cpp_through_rust": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3789530) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:"
+          },
+          "catch_unwind_on_cpp": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "terminate called after throwing an instance of 'CppEx'"
+          },
+          "extern_c_nounwind_throw": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "terminate called after throwing an instance of 'CppEx'"
+          },
+          "extern_c_def_abort_barrier": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3789708) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:"
+          },
+          "rust_panic_through_cpp": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3789832) panicked at /tmp/tmphbmiumej/main.rs:55:5:"
+          },
+          "i128_abi": {
+            "rc": 0,
+            "stdout": "RUST_SZ=48 RUST_AL=16 CPP_SZ=48 CPP_AL=16 MATCH=true",
+            "stderr_first_line": ""
+          }
+        }
+      },
+      "cranelift_default_O2": {
+        "compile_rc": 0,
+        "compile_stderr_first_line": "warning: `cpp_throw_42_nounwind_import` redeclares `cpp_throw_42` with a different signature",
+        "modes": {
+          "cpp_through_rust": {
+            "rc": 0,
+            "stdout": "RC=142 RUST_DROPS=0",
+            "stderr_first_line": ""
+          },
+          "catch_unwind_on_cpp": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3790680) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/panic_abort/src/lib.rs:28:5:"
+          },
+          "extern_c_nounwind_throw": {
+            "rc": 0,
+            "stdout": "RC=142 RUST_DROPS=0",
+            "stderr_first_line": ""
+          },
+          "extern_c_def_abort_barrier": {
+            "rc": 0,
+            "stdout": "RC=142 RUST_DROPS=0",
+            "stderr_first_line": ""
+          },
+          "rust_panic_through_cpp": {
+            "rc": -6,
+            "stdout": "",
+            "stderr_first_line": "thread 'main' (3791245) panicked at /tmp/tmphbmiumej/main.rs:55:5:"
+          },
+          "i128_abi": {
+            "rc": 0,
+            "stdout": "RUST_SZ=48 RUST_AL=16 CPP_SZ=48 CPP_AL=16 MATCH=true",
+            "stderr_first_line": ""
+          }
+        }
+      }
+    },
+    "vacuous_check_pass_canary": {
+      "emit_metadata_check_rc": 0,
+      "link_executable_build_rc": 1,
+      "demonstrates_check_pass_blindness_to_backend_and_link_defects": true
+    }
+  }
+}

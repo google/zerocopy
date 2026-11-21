@@ -1,0 +1,104 @@
+{
+  "topics": [
+    "build",
+    "build/benchmarking",
+    "cargo",
+    "cargo/pipelining",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/validation",
+    "lean",
+    "llvm",
+    "llvm/codegen",
+    "rustc",
+    "rustc/codegen",
+    "rustc/incremental",
+    "rustc/performance",
+    "rustc/query-system",
+    "rustc/self-profile",
+    "systems",
+    "systems/perf-events",
+    "tooling",
+    "tooling/profiling",
+    "verification",
+    "verification/performance-metrics"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler upstream snapshot (rustc_data_structures::profiling, jobserver, rustc_metadata, rustc_codegen_llvm, and TPDE integration)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "412be32a6a189d9a28922beee178bc0abee9d492"
+      }
+    },
+    {
+      "name": "Rust 1.102.0-nightly compiler toolchain (live-profiled nightly subject)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 release compiler toolchain (live-profiled stable baseline subject)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rustc-perf compiler and runtime benchmark collector, database, and triage site",
+      "identity": {
+        "repository": "rust-lang/rustc-perf",
+        "revision": "15d95905429e577d5a710b17c49e04b4451c263b"
+      }
+    },
+    {
+      "name": "measureme, decodeme, and analyzeme self-profile v9 binary event-stream library",
+      "identity": {
+        "repository": "rust-lang/measureme",
+        "revision": "5ac839c602b59eee9c908b3b35b6d6c0cd1c42f7",
+        "version": "12.0.3"
+      }
+    },
+    {
+      "name": "TPDE and TPDE-LLVM single-pass x86-64/AArch64 compiler backend submodule",
+      "identity": {
+        "repository": "rust-lang/tpde",
+        "revision": "050927ee81dc11a9e599fa2524ff0eef16daf51a"
+      }
+    },
+    {
+      "name": "Rust LLVM 23.1 fork submodule (upstream snapshot)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 LLVM 23.1.1 submodule",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Cargo package manager and pipelined unit-graph scheduler submodule",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 kernel proof checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

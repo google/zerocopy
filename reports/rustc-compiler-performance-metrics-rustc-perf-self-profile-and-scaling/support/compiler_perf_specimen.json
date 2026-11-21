@@ -1,0 +1,2735 @@
+{
+  "schema": "rustc-compiler-perf-metrics-specimen/1",
+  "observed_at": "2026-11-21",
+  "host": {
+    "os": "Linux",
+    "kernel_release": "7.1.6-1rodete1-amd64",
+    "arch": "x86_64",
+    "logical_cpus": 96,
+    "cpu_model": "Intel(R) Xeon(R) CPU @ 2.60GHz",
+    "valgrind_version": "valgrind-3.25.1"
+  },
+  "toolchains": {
+    "stable_1_99_1": {
+      "selector": "+1.99.1",
+      "sysroot": "<SYSROOT_STABLE>",
+      "rustc_bin": "<SYSROOT_STABLE>/bin/rustc",
+      "cargo_bin": "<SYSROOT_STABLE>/bin/cargo",
+      "headline": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "binary": "rustc",
+      "commit-hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "commit-date": "2026-10-13",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.99.1",
+      "LLVM version": "23.1.1"
+    },
+    "nightly_1_102_0": {
+      "selector": "+nightly",
+      "sysroot": "<SYSROOT_NIGHTLY>",
+      "rustc_bin": "<SYSROOT_NIGHTLY>/bin/rustc",
+      "cargo_bin": "<SYSROOT_NIGHTLY>/bin/cargo",
+      "headline": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+      "binary": "rustc",
+      "commit-hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "commit-date": "2026-11-11",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.102.0-nightly",
+      "LLVM version": "23.1.5"
+    }
+  },
+  "probe_1_determinism_perf_and_cachegrind": {
+    "perf_event_paranoid": 2,
+    "toolchains": {
+      "stable_1_99_1": {
+        "perf_event_open_5_runs": {
+          "wall_ms_runs": [
+            106.251,
+            108.643,
+            115.794,
+            106.68,
+            108.98
+          ],
+          "wall_ms_median": 108.643,
+          "wall_ms_cv_pct": 3.5106,
+          "task_clock_ms_runs": [
+            110.057,
+            114.223,
+            122.454,
+            111.02,
+            114.876
+          ],
+          "task_clock_ms_median": 114.223,
+          "task_clock_ms_cv_pct": 4.2628,
+          "page_faults_runs": [
+            5200,
+            5197,
+            5193,
+            5194,
+            5185
+          ],
+          "page_faults_cv_pct": 0.1084,
+          "max_rss_kib_median": 162432,
+          "sample_counts_run0": {
+            "cpu-clock:u": 109997364,
+            "task-clock:u": 110057155,
+            "page-faults:u": 5200,
+            "context-switches:u": 0,
+            "cpu-migrations:u": 0,
+            "minor-faults:u": 5200,
+            "major-faults:u": 0
+          },
+          "unavailable_pmu_events": {
+            "instructions:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "cycles:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "cache-references:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "cache-misses:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "branches:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "branch-misses:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            }
+          }
+        },
+        "cachegrind_3_runs": {
+          "cache_geometry": [
+            "I1 cache:         32768 B, 64 B, 8-way associative",
+            "D1 cache:         49152 B, 64 B, 12-way associative",
+            "LL cache:         58720256 B, 64 B, 14-way associative"
+          ],
+          "Ir_runs": [
+            288643124,
+            288337960,
+            288813144
+          ],
+          "Ir_median": 288643124,
+          "Ir_cv_pct": 0.083429,
+          "Ir_max_min_ppm": 1646.268,
+          "CEst_runs": [
+            464353704,
+            464264700,
+            466797194
+          ],
+          "CEst_median": 464353704,
+          "CEst_cv_pct": 0.308969,
+          "events_run0": {
+            "Ir": 288643124,
+            "I1mr": 4206507,
+            "ILmr": 196906,
+            "Dr": 77474232,
+            "D1mr": 1928658,
+            "DLmr": 141679,
+            "Dw": 40907231,
+            "D1mw": 868081,
+            "DLmw": 263291,
+            "Bc": 49414775,
+            "Bcm": 3994653,
+            "Bi": 1810761,
+            "Bim": 554399
+          },
+          "derived_run0": {
+            "L1_misses_total": 7003246,
+            "LL_misses_total": 601876,
+            "branch_mispredicts_total": 4549052,
+            "cycle_estimate_CEst": 464353704,
+            "l1_miss_rate_per_1k_insns": 24.2626,
+            "ll_miss_rate_per_1k_insns": 2.0852,
+            "branch_mispredict_pct": 8.8804
+          },
+          "valgrind_slowdown_vs_native_wall": 358.98,
+          "cg_annotate_preview": [
+            "Invocation:       /usr/bin/cg_annotate --auto=no --show-percs=yes --threshold=2.0 /tmp/tmpaqwq4dwb/cgout_stable_1_99_1_0",
+            "Command:          <SYSROOT_STABLE>/bin/rustc --crate-name perf_subject --crate-type=rlib --edition=2021 -C opt-level=2 /tmp/tmpaqwq4dwb/lib.rs -o /tmp/tmpaqwq4dwb/cg_stable_1_99_1_0.rlib",
+            "Events recorded:  Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim",
+            "Events shown:     Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim",
+            "Event sort order: Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim",
+            "Threshold:        2.0%",
+            "Annotation:       off",
+            "Ir__________________ I1mr______________ ILmr____________ Dr_________________ D1mr______________ DLmr____________ Dw_________________ D1mw____________ DLmw____________ Bc_________________ Bcm_______________ Bi________________ Bim_____________ ",
+            "288,643,124 (100.0%) 4,206,507 (100.0%) 196,906 (100.0%) 77,474,232 (100.0%) 1,928,658 (100.0%) 141,679 (100.0%) 40,907,231 (100.0%) 868,081 (100.0%) 263,291 (100.0%) 49,414,775 (100.0%) 3,994,653 (100.0%) 1,810,761 (100.0%) 554,399 (100.0%)  PROGRAM TOTALS",
+            "  Ir________________________ I1mr____________________ ILmr__________________ Dr_______________________ D1mr____________________ DLmr_________________ Dw_______________________ D1mw__________________ DLmw__________________ Bc_______________________ Bcm_____________________ Bi______________________ Bim___________________  file:function",
+            "< 268,913,331 (93.2%, 93.2%) 4,152,524 (98.7%, 98.7%) 194,819 (98.9%, 98.9%) 71,207,174 (91.9%, 91.9%) 1,725,387 (89.5%, 89.5%) 34,653 (24.5%, 24.5%) 34,159,254 (83.5%, 83.5%) 609,105 (70.2%, 70.2%) 129,403 (49.1%, 49.1%) 41,763,785 (84.5%, 84.5%) 3,803,359 (95.2%, 95.2%) 1,695,428 (93.6%, 93.6%) 550,222 (99.2%, 99.2%)  ???:",
+            "   12,681,660  (4.4%)           52,572  (1.2%)            376  (0.2%)         2,876,560  (3.7%)           13,494  (0.7%)             7  (0.0%)         1,196,859  (2.9%)         10,190  (1.2%)          2,368  (0.9%)         2,246,541  (4.5%)          123,592  (3.1%)           21,548  (1.2%)            666  (0.1%)           llvm::BasicAAResult::alias(llvm::MemoryLocation const&, llvm::MemoryLocation const&, llvm::AAQueryInfo&, llvm::Instruction const*)",
+            "<   6,226,079  (2.2%, 95.3%)    16,103  (0.4%, 99.1%)      23  (0.0%, 99.0%)  3,639,619  (4.7%, 96.6%)    55,228  (2.9%, 92.3%)  3,842  (2.7%, 27.2%)  3,403,949  (8.3%, 91.8%) 123,640 (14.2%, 84.4%)  49,936 (19.0%, 68.1%)  3,420,438  (6.9%, 91.4%)    81,814  (2.0%, 97.3%)         0  (0.0%, 93.6%)       0  (0.0%, 99.2%)  /build/reproducible-path/glibc-2.43/string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:",
+            "    5,971,448  (2.1%)           15,962  (0.4%)             13  (0.0%)         3,637,073  (4.7%)           54,876  (2.8%)         3,796  (2.7%)         3,401,685  (8.3%)        123,196 (14.2%)         49,521 (18.8%)         3,419,104  (6.9%)           81,518  (2.0%)                0                      0                   __memcpy_avx_unaligned_erms"
+          ]
+        }
+      },
+      "nightly_1_102_0": {
+        "perf_event_open_5_runs": {
+          "wall_ms_runs": [
+            122.281,
+            114.26,
+            232.637,
+            236.089,
+            174.135
+          ],
+          "wall_ms_median": 174.135,
+          "wall_ms_cv_pct": 33.0547,
+          "task_clock_ms_runs": [
+            122.945,
+            115.39,
+            162.804,
+            160.567,
+            153.509
+          ],
+          "task_clock_ms_median": 153.509,
+          "task_clock_ms_cv_pct": 15.5371,
+          "page_faults_runs": [
+            5599,
+            5600,
+            5489,
+            5599,
+            5599
+          ],
+          "page_faults_cv_pct": 0.8841,
+          "max_rss_kib_median": 137344,
+          "sample_counts_run0": {
+            "cpu-clock:u": 122885757,
+            "task-clock:u": 122944626,
+            "page-faults:u": 5599,
+            "context-switches:u": 0,
+            "cpu-migrations:u": 0,
+            "minor-faults:u": 5599,
+            "major-faults:u": 0
+          },
+          "unavailable_pmu_events": {
+            "instructions:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "cycles:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "cache-references:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "cache-misses:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "branches:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            },
+            "branch-misses:u": {
+              "errno": 2,
+              "strerror": "No such file or directory"
+            }
+          }
+        },
+        "cachegrind_3_runs": {
+          "cache_geometry": [
+            "I1 cache:         32768 B, 64 B, 8-way associative",
+            "D1 cache:         49152 B, 64 B, 12-way associative",
+            "LL cache:         58720256 B, 64 B, 14-way associative"
+          ],
+          "Ir_runs": [
+            287874176,
+            287890152,
+            288068742
+          ],
+          "Ir_median": 287890152,
+          "Ir_cv_pct": 0.037513,
+          "Ir_max_min_ppm": 675.872,
+          "CEst_runs": [
+            464844756,
+            464579372,
+            467044672
+          ],
+          "CEst_median": 464844756,
+          "CEst_cv_pct": 0.290716,
+          "events_run0": {
+            "Ir": 287874176,
+            "I1mr": 4266123,
+            "ILmr": 200152,
+            "Dr": 77140542,
+            "D1mr": 1945870,
+            "DLmr": 140404,
+            "Dw": 40502550,
+            "D1mw": 895350,
+            "DLmw": 260534,
+            "Bc": 48975101,
+            "Bcm": 4023707,
+            "Bi": 1803139,
+            "Bim": 555108
+          },
+          "derived_run0": {
+            "L1_misses_total": 7107343,
+            "LL_misses_total": 601090,
+            "branch_mispredicts_total": 4578815,
+            "cycle_estimate_CEst": 464844756,
+            "l1_miss_rate_per_1k_insns": 24.6891,
+            "ll_miss_rate_per_1k_insns": 2.088,
+            "branch_mispredict_pct": 9.0173
+          },
+          "valgrind_slowdown_vs_native_wall": 234.06,
+          "cg_annotate_preview": [
+            "Invocation:       /usr/bin/cg_annotate --auto=no --show-percs=yes --threshold=2.0 /tmp/tmpaqwq4dwb/cgout_nightly_1_102_0_0",
+            "Command:          <SYSROOT_NIGHTLY>/bin/rustc --crate-name perf_subject --crate-type=rlib --edition=2021 -C opt-level=2 /tmp/tmpaqwq4dwb/lib.rs -o /tmp/tmpaqwq4dwb/cg_nightly_1_102_0_0.rlib",
+            "Events recorded:  Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim",
+            "Events shown:     Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim",
+            "Event sort order: Ir I1mr ILmr Dr D1mr DLmr Dw D1mw DLmw Bc Bcm Bi Bim",
+            "Threshold:        2.0%",
+            "Annotation:       off",
+            "Ir__________________ I1mr______________ ILmr____________ Dr_________________ D1mr______________ DLmr____________ Dw_________________ D1mw____________ DLmw____________ Bc_________________ Bcm_______________ Bi________________ Bim_____________ ",
+            "287,874,176 (100.0%) 4,266,123 (100.0%) 200,152 (100.0%) 77,140,542 (100.0%) 1,945,870 (100.0%) 140,404 (100.0%) 40,502,550 (100.0%) 895,350 (100.0%) 260,534 (100.0%) 48,975,101 (100.0%) 4,023,707 (100.0%) 1,803,139 (100.0%) 555,108 (100.0%)  PROGRAM TOTALS",
+            "  Ir________________________ I1mr____________________ ILmr__________________ Dr_______________________ D1mr____________________ DLmr_________________ Dw_______________________ D1mw__________________ DLmw__________________ Bc_______________________ Bcm_____________________ Bi______________________ Bim___________________  file:function",
+            "< 268,267,002 (93.2%, 93.2%) 4,210,523 (98.7%, 98.7%) 198,048 (98.9%, 98.9%) 71,108,043 (92.2%, 92.2%) 1,746,067 (89.7%, 89.7%) 34,757 (24.8%, 24.8%) 34,015,481 (84.0%, 84.0%) 636,511 (71.1%, 71.1%) 127,459 (48.9%, 48.9%) 41,597,314 (84.9%, 84.9%) 3,831,518 (95.2%, 95.2%) 1,688,820 (93.7%, 93.7%) 550,756 (99.2%, 99.2%)  ???:",
+            "   12,549,204  (4.4%)           44,003  (1.0%)            356  (0.2%)         2,832,516  (3.7%)           14,816  (0.8%)             9  (0.0%)         1,198,908  (3.0%)         10,068  (1.1%)          2,409  (0.9%)         2,252,870  (4.6%)          151,494  (3.8%)           21,551  (1.2%)            785  (0.1%)           llvm::BasicAAResult::alias(llvm::MemoryLocation const&, llvm::MemoryLocation const&, llvm::AAQueryInfo&, llvm::Instruction const*)",
+            "<   6,166,228  (2.1%, 95.3%)    17,908  (0.4%, 99.1%)      23  (0.0%, 99.0%)  3,429,307  (4.4%, 96.6%)    53,131  (2.7%, 92.5%)  3,376  (2.4%, 27.2%)  3,180,602  (7.9%, 91.8%) 126,243 (14.1%, 85.2%)  49,587 (19.0%, 68.0%)  3,178,932  (6.5%, 91.4%)    84,451  (2.1%, 97.3%)         0  (0.0%, 93.7%)       0  (0.0%, 99.2%)  /build/reproducible-path/glibc-2.43/string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:",
+            "    5,911,515  (2.1%)           17,771  (0.4%)             13  (0.0%)         3,426,758  (4.4%)           52,783  (2.7%)         3,331  (2.4%)         3,178,335  (7.8%)        125,795 (14.0%)         49,179 (18.9%)         3,177,592  (6.5%)           84,173  (2.1%)                0                      0                   __memcpy_avx_unaligned_erms"
+          ]
+        }
+      }
+    }
+  },
+  "probe_2_internal_phases_and_self_profile": {
+    "stable_1_99_1": {
+      "time_passes_profiles": {
+        "Check": {
+          "wall_ms": 39.357,
+          "max_rss_kib": 135220,
+          "pass_count": 116,
+          "key_passes_ms": {
+            "parse_crate": 0.43,
+            "macro_expand_crate": 2.3,
+            "late_resolve_crate": 1.315,
+            "type_check_crate": 9.678,
+            "MIR_borrow_checking": 4.301,
+            "codegen_crate": 0.019,
+            "finish_ongoing_codegen": 0.037,
+            "link": 0.227,
+            "total": 31.282
+          },
+          "peak_rss_end_bytes": 138780672
+        },
+        "Debug_O0": {
+          "wall_ms": 55.678,
+          "max_rss_kib": 163432,
+          "pass_count": 125,
+          "key_passes_ms": {
+            "parse_crate": 0.56,
+            "macro_expand_crate": 2.364,
+            "late_resolve_crate": 1.384,
+            "type_check_crate": 9.638,
+            "MIR_borrow_checking": 5.345,
+            "monomorphization_collector_graph_walk": 3.88,
+            "partition_and_assert_distinct_symbols": 0.253,
+            "codegen_crate": 3.668,
+            "LLVM_passes": 8.792,
+            "finish_ongoing_codegen": 6.164,
+            "link": 0.828,
+            "total": 48.157
+          },
+          "peak_rss_end_bytes": 164753408
+        },
+        "Opt_O3": {
+          "wall_ms": 103.068,
+          "max_rss_kib": 164020,
+          "pass_count": 126,
+          "key_passes_ms": {
+            "parse_crate": 0.425,
+            "macro_expand_crate": 2.275,
+            "late_resolve_crate": 1.324,
+            "type_check_crate": 9.42,
+            "MIR_borrow_checking": 5.123,
+            "monomorphization_collector_graph_walk": 2.332,
+            "partition_and_assert_distinct_symbols": 0.163,
+            "codegen_crate": 3.308,
+            "LLVM_passes": 20.495,
+            "finish_ongoing_codegen": 50.503,
+            "link": 0.74,
+            "total": 94.826
+          },
+          "peak_rss_end_bytes": 164827136
+        }
+      },
+      "self_profile_scenarios": {
+        "Full": {
+          "format_version": 9,
+          "file_bytes": 2116912,
+          "stream_bytes": {
+            "events": 981320,
+            "string_data": 943995,
+            "string_index": 191544
+          },
+          "page_counts": {
+            "events": 4,
+            "string_data": 4,
+            "string_index": 1
+          },
+          "num_raw_events": 30666,
+          "num_virtual_index_entries": 11971,
+          "distinct_threads": 8,
+          "counter": {
+            "name": "wall-time",
+            "units": [
+              [
+                "ns",
+                1
+              ],
+              [
+                "\u03bcs",
+                1000
+              ],
+              [
+                "ms",
+                1000000
+              ],
+              [
+                "s",
+                1000000000
+              ]
+            ]
+          },
+          "event_kind_counts": {
+            "GenericActivity": 8248,
+            "ArtifactSize": 11,
+            "LLVM Pass": 5431,
+            "QueryCacheHitCount": 5143,
+            "Query": 11833
+          },
+          "artifact_sizes_bytes": {
+            "linked_artifact": 58752,
+            "cgu_instructions": 781,
+            "object_file": 34352,
+            "crate_metadata": 21762,
+            "codegen_unit_size_estimate": 958
+          },
+          "totals": {
+            "total_self_time_ms": 195.436,
+            "total_query_cache_hits": 102002,
+            "total_incr_load_ms": 0.0,
+            "total_incr_hash_ms": 0.0,
+            "distinct_labels": 614
+          },
+          "top_12_by_self_time": [
+            {
+              "label": "finish_ongoing_codegen",
+              "self_time_ms": 31.172,
+              "total_time_ms": 31.26,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_thinlto",
+              "self_time_ms": 27.217,
+              "total_time_ms": 27.362,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_passes",
+              "self_time_ms": 19.167,
+              "total_time_ms": 19.167,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_module_codegen_emit_obj",
+              "self_time_ms": 17.397,
+              "total_time_ms": 17.397,
+              "invocations": 3,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "self_profile_alloc_query_strings",
+              "self_time_ms": 6.066,
+              "total_time_ms": 11.231,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "InstCombinePass",
+              "self_time_ms": 5.497,
+              "total_time_ms": 5.873,
+              "invocations": 221,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_decode_entry_module_children",
+              "self_time_ms": 4.497,
+              "total_time_ms": 4.497,
+              "invocations": 410,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "PassManager<Function>",
+              "self_time_ms": 3.946,
+              "total_time_ms": 35.103,
+              "invocations": 248,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "typeck_root",
+              "self_time_ms": 3.38,
+              "total_time_ms": 7.501,
+              "invocations": 17,
+              "cache_hits": 154,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "DSEPass",
+              "self_time_ms": 3.146,
+              "total_time_ms": 3.243,
+              "invocations": 38,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "GVNPass",
+              "self_time_ms": 2.731,
+              "total_time_ms": 2.746,
+              "invocations": 38,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "codegen_module",
+              "self_time_ms": 2.03,
+              "total_time_ms": 2.621,
+              "invocations": 3,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            }
+          ],
+          "wall_ms": 98.859,
+          "max_rss_kib": 199436
+        },
+        "IncrFull": {
+          "format_version": 9,
+          "file_bytes": 3022001,
+          "stream_bytes": {
+            "events": 1847816,
+            "string_data": 984584,
+            "string_index": 189528
+          },
+          "page_counts": {
+            "events": 8,
+            "string_data": 4,
+            "string_index": 1
+          },
+          "num_raw_events": 57744,
+          "num_virtual_index_entries": 11845,
+          "distinct_threads": 10,
+          "counter": {
+            "name": "wall-time",
+            "units": [
+              [
+                "ns",
+                1
+              ],
+              [
+                "\u03bcs",
+                1000
+              ],
+              [
+                "ms",
+                1000000
+              ],
+              [
+                "s",
+                1000000000
+              ]
+            ]
+          },
+          "event_kind_counts": {
+            "GenericActivity": 20664,
+            "ArtifactSize": 17,
+            "LLVM Pass": 8377,
+            "QueryCacheHitCount": 5111,
+            "Query": 11705,
+            "IncrementalResultHashing": 11870
+          },
+          "artifact_sizes_bytes": {
+            "linked_artifact": 66388,
+            "work_product_index": 404,
+            "cgu_instructions": 1244,
+            "object_file": 44048,
+            "dep_graph": 533070,
+            "query_cache": 90270,
+            "crate_metadata": 19364,
+            "codegen_unit_size_estimate": 950
+          },
+          "totals": {
+            "total_self_time_ms": 251.504,
+            "total_query_cache_hits": 106076,
+            "total_incr_load_ms": 0.0,
+            "total_incr_hash_ms": 9.203,
+            "distinct_labels": 630
+          },
+          "top_12_by_self_time": [
+            {
+              "label": "LLVM_thinlto",
+              "self_time_ms": 32.905,
+              "total_time_ms": 33.204,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_module_codegen_emit_obj",
+              "self_time_ms": 26.547,
+              "total_time_ms": 26.547,
+              "invocations": 4,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_passes",
+              "self_time_ms": 18.981,
+              "total_time_ms": 18.981,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "finish_ongoing_codegen",
+              "self_time_ms": 14.753,
+              "total_time_ms": 14.904,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "incr_comp_encode_dep_graph_finish",
+              "self_time_ms": 12.765,
+              "total_time_ms": 12.765,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "self_profile_alloc_query_strings",
+              "self_time_ms": 8.072,
+              "total_time_ms": 17.789,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "InstCombinePass",
+              "self_time_ms": 8.07,
+              "total_time_ms": 8.721,
+              "invocations": 345,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "PassManager<Function>",
+              "self_time_ms": 7.074,
+              "total_time_ms": 51.682,
+              "invocations": 392,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_decode_entry_module_children",
+              "self_time_ms": 4.572,
+              "total_time_ms": 4.572,
+              "invocations": 410,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "typeck_root",
+              "self_time_ms": 3.924,
+              "total_time_ms": 10.261,
+              "invocations": 17,
+              "cache_hits": 154,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.105
+            },
+            {
+              "label": "DSEPass",
+              "self_time_ms": 3.915,
+              "total_time_ms": 3.977,
+              "invocations": 60,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "GVNPass",
+              "self_time_ms": 3.749,
+              "total_time_ms": 3.775,
+              "invocations": 60,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            }
+          ],
+          "wall_ms": 116.36,
+          "max_rss_kib": 220584,
+          "incremental_info": {
+            "total_dep_nodes": 12135,
+            "total_dep_edges": 38920,
+            "red_nodes": 1,
+            "reused_cgu_summary": null
+          }
+        },
+        "IncrUnchanged": {
+          "format_version": 9,
+          "file_bytes": 827861,
+          "stream_bytes": {
+            "events": 640968,
+            "string_data": 137572,
+            "string_index": 49288
+          },
+          "page_counts": {
+            "events": 3,
+            "string_data": 1,
+            "string_index": 1
+          },
+          "num_raw_events": 20030,
+          "num_virtual_index_entries": 3080,
+          "distinct_threads": 6,
+          "counter": {
+            "name": "wall-time",
+            "units": [
+              [
+                "ns",
+                1
+              ],
+              [
+                "\u03bcs",
+                1000
+              ],
+              [
+                "ms",
+                1000000
+              ],
+              [
+                "s",
+                1000000000
+              ]
+            ]
+          },
+          "event_kind_counts": {
+            "GenericActivity": 15059,
+            "ArtifactSize": 8,
+            "IncrementalLoadResult": 864,
+            "QueryCacheHitCount": 1070,
+            "Query": 2589,
+            "IncrementalResultHashing": 440
+          },
+          "artifact_sizes_bytes": {
+            "linked_artifact": 66388,
+            "work_product_index": 404,
+            "dep_graph": 532251,
+            "query_cache": 91218,
+            "codegen_unit_size_estimate": 950
+          },
+          "totals": {
+            "total_self_time_ms": 43.605,
+            "total_query_cache_hits": 23574,
+            "total_incr_load_ms": 1.769,
+            "total_incr_hash_ms": 0.184,
+            "distinct_labels": 211
+          },
+          "top_12_by_self_time": [
+            {
+              "label": "incr_comp_encode_dep_graph_finish",
+              "self_time_ms": 13.128,
+              "total_time_ms": 13.128,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_decode_entry_module_children",
+              "self_time_ms": 4.656,
+              "total_time_ms": 4.656,
+              "invocations": 410,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "visible_parent_map",
+              "self_time_ms": 3.278,
+              "total_time_ms": 7.492,
+              "invocations": 1,
+              "cache_hits": 143,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_thinlto",
+              "self_time_ms": 2.156,
+              "total_time_ms": 2.64,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "self_profile_alloc_query_strings",
+              "self_time_ms": 2.095,
+              "total_time_ms": 9.727,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "codegen_crate",
+              "self_time_ms": 1.369,
+              "total_time_ms": 1.48,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "incr_comp_query_cache_promotion",
+              "self_time_ms": 1.237,
+              "total_time_ms": 1.706,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_register_crate",
+              "self_time_ms": 1.222,
+              "total_time_ms": 1.87,
+              "invocations": 19,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "incr_comp_encode_dep_graph",
+              "self_time_ms": 1.077,
+              "total_time_ms": 1.077,
+              "invocations": 12114,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "items_of_instance",
+              "self_time_ms": 1.036,
+              "total_time_ms": 1.036,
+              "invocations": 0,
+              "cache_hits": 0,
+              "incr_load_ms": 1.036,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "late_resolve_crate",
+              "self_time_ms": 0.977,
+              "total_time_ms": 1.61,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "expand_crate",
+              "self_time_ms": 0.81,
+              "total_time_ms": 2.501,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            }
+          ],
+          "wall_ms": 54.951,
+          "max_rss_kib": 152360,
+          "incremental_info": {
+            "total_dep_nodes": 12114,
+            "total_dep_edges": 38899,
+            "red_nodes": 1,
+            "reused_cgu_summary": null
+          }
+        },
+        "IncrPatched": {
+          "format_version": 9,
+          "file_bytes": 1644042,
+          "stream_bytes": {
+            "events": 1023592,
+            "string_data": 506431,
+            "string_index": 113976
+          },
+          "page_counts": {
+            "events": 4,
+            "string_data": 2,
+            "string_index": 1
+          },
+          "num_raw_events": 31987,
+          "num_virtual_index_entries": 7123,
+          "distinct_threads": 7,
+          "counter": {
+            "name": "wall-time",
+            "units": [
+              [
+                "ns",
+                1
+              ],
+              [
+                "\u03bcs",
+                1000
+              ],
+              [
+                "ms",
+                1000000
+              ],
+              [
+                "s",
+                1000000000
+              ]
+            ]
+          },
+          "event_kind_counts": {
+            "GenericActivity": 17515,
+            "ArtifactSize": 11,
+            "LLVM Pass": 3952,
+            "IncrementalLoadResult": 1026,
+            "QueryCacheHitCount": 2782,
+            "Query": 6175,
+            "IncrementalResultHashing": 526
+          },
+          "artifact_sizes_bytes": {
+            "linked_artifact": 66388,
+            "work_product_index": 404,
+            "cgu_instructions": 721,
+            "object_file": 19128,
+            "dep_graph": 538003,
+            "query_cache": 96018,
+            "crate_metadata": 19364,
+            "codegen_unit_size_estimate": 950
+          },
+          "totals": {
+            "total_self_time_ms": 160.573,
+            "total_query_cache_hits": 47177,
+            "total_incr_load_ms": 1.359,
+            "total_incr_hash_ms": 0.275,
+            "distinct_labels": 592
+          },
+          "top_12_by_self_time": [
+            {
+              "label": "LLVM_thinlto",
+              "self_time_ms": 27.814,
+              "total_time_ms": 28.099,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_passes",
+              "self_time_ms": 16.351,
+              "total_time_ms": 16.351,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "finish_ongoing_codegen",
+              "self_time_ms": 16.102,
+              "total_time_ms": 16.276,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "incr_comp_encode_dep_graph_finish",
+              "self_time_ms": 12.711,
+              "total_time_ms": 12.711,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_module_codegen_emit_obj",
+              "self_time_ms": 11.054,
+              "total_time_ms": 11.054,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_decode_entry_module_children",
+              "self_time_ms": 4.495,
+              "total_time_ms": 4.495,
+              "invocations": 410,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "InstCombinePass",
+              "self_time_ms": 4.028,
+              "total_time_ms": 4.294,
+              "invocations": 161,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "self_profile_alloc_query_strings",
+              "self_time_ms": 3.811,
+              "total_time_ms": 11.183,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "visible_parent_map",
+              "self_time_ms": 3.099,
+              "total_time_ms": 7.202,
+              "invocations": 1,
+              "cache_hits": 816,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "DSEPass",
+              "self_time_ms": 2.917,
+              "total_time_ms": 2.946,
+              "invocations": 29,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "PassManager<Function>",
+              "self_time_ms": 2.351,
+              "total_time_ms": 23.991,
+              "invocations": 184,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "GVNPass",
+              "self_time_ms": 2.011,
+              "total_time_ms": 2.021,
+              "invocations": 29,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            }
+          ],
+          "wall_ms": 89.303,
+          "max_rss_kib": 202808,
+          "incremental_info": {
+            "total_dep_nodes": 12225,
+            "total_dep_edges": 39668,
+            "red_nodes": 1,
+            "reused_cgu_summary": null
+          }
+        }
+      },
+      "ir_volume_and_artifact_footprint": {
+        "mono_items_count": 27,
+        "type_size_records_count": 65,
+        "top_5_types": [
+          "print-type-size type: `DenseMatrix<8, 8>`: 512 bytes, alignment: 8 bytes",
+          "print-type-size type: `VmState`: 160 bytes, alignment: 8 bytes",
+          "print-type-size type: `DenseMatrix<4, 4>`: 128 bytes, alignment: 8 bytes",
+          "print-type-size type: `std::ops::ControlFlow<std::result::Result<std::convert::Infallible, std::collections::TryReserveError>, std::alloc::Layout>`: 24 bytes, alignment: 8 bytes",
+          "print-type-size type: `std::ops::ControlFlow<std::result::Result<std::convert::Infallible, std::collections::TryReserveError>, std::ptr::NonNull<[u8]>>`: 24 bytes, alignment: 8 bytes"
+        ],
+        "mir_file_bytes": 105585,
+        "mir_line_count": 3002,
+        "mir_basic_blocks": 153,
+        "llvm_ir_file_bytes": 129154,
+        "llvm_ir_line_count": 1080,
+        "llvm_ir_define_count": 7,
+        "llvm_bc_bytes": 19184,
+        "object_file_bytes": 27824,
+        "rmeta_bytes": 21739,
+        "rlib_bytes": 51480,
+        "dep_info_bytes": 678,
+        "incremental_session_files_bytes": {
+          "s-hod04ec13n-1f7z0lm.lock": 0,
+          "s-hod04e9yv2-1g8bvhc.lock": 0,
+          "work-products.bin": 404,
+          "metadata.rmeta": 19377,
+          "3lw94sekqf2i96aws8xrynauw.o": 19128,
+          "query-cache.bin": 91218,
+          "dep-graph.bin": 532251,
+          "ecd9me8rqhu3znxutshtu4k9d.o": 7104,
+          "4xt2ocme3m9lpcfnh4ralxtch.o": 5440,
+          "4k8p1ebw5x5t4x2x5nwu3g3bl.o": 12376,
+          "thin-lto-past-keys.bin": 268,
+          "3lw94sekqf2i96aws8xrynauw.pre-lto.bc": 12212,
+          "4k8p1ebw5x5t4x2x5nwu3g3bl.pre-lto.bc": 8376,
+          "ecd9me8rqhu3znxutshtu4k9d.pre-lto.bc": 4288,
+          "4xt2ocme3m9lpcfnh4ralxtch.pre-lto.bc": 3752
+        }
+      }
+    },
+    "nightly_1_102_0": {
+      "time_passes_profiles": {
+        "Check": {
+          "wall_ms": 43.6,
+          "max_rss_kib": 113340,
+          "pass_count": 79,
+          "key_passes_ms": {
+            "parse_crate": 0.554,
+            "macro_expand_crate": 2.315,
+            "late_resolve_crate": 1.729,
+            "type_check_crate": 9.745,
+            "codegen_crate": 0.019,
+            "finish_ongoing_codegen": 0.036,
+            "link": 0.215,
+            "total": 30.803
+          },
+          "peak_rss_end_bytes": 116502528
+        },
+        "Debug_O0": {
+          "wall_ms": 57.008,
+          "max_rss_kib": 138048,
+          "pass_count": 88,
+          "key_passes_ms": {
+            "parse_crate": 0.551,
+            "macro_expand_crate": 2.332,
+            "late_resolve_crate": 1.758,
+            "type_check_crate": 9.846,
+            "monomorphization_collector_graph_walk": 3.428,
+            "partition_and_assert_distinct_symbols": 0.246,
+            "codegen_crate": 4.098,
+            "LLVM_passes": 8.367,
+            "finish_ongoing_codegen": 6.33,
+            "link": 0.802,
+            "total": 47.946
+          },
+          "peak_rss_end_bytes": 137572352
+        },
+        "Opt_O3": {
+          "wall_ms": 117.52,
+          "max_rss_kib": 141356,
+          "pass_count": 89,
+          "key_passes_ms": {
+            "parse_crate": 0.538,
+            "macro_expand_crate": 2.459,
+            "late_resolve_crate": 1.744,
+            "type_check_crate": 9.719,
+            "monomorphization_collector_graph_walk": 1.913,
+            "partition_and_assert_distinct_symbols": 0.164,
+            "codegen_crate": 3.353,
+            "LLVM_passes": 21.574,
+            "finish_ongoing_codegen": 59.417,
+            "link": 0.818,
+            "total": 104.645
+          },
+          "peak_rss_end_bytes": 142254080
+        }
+      },
+      "self_profile_scenarios": {
+        "Full": {
+          "format_version": 9,
+          "file_bytes": 2003334,
+          "stream_bytes": {
+            "events": 953416,
+            "string_data": 863521,
+            "string_index": 186344
+          },
+          "page_counts": {
+            "events": 4,
+            "string_data": 4,
+            "string_index": 1
+          },
+          "num_raw_events": 29794,
+          "num_virtual_index_entries": 11646,
+          "distinct_threads": 8,
+          "counter": {
+            "name": "wall-time",
+            "units": [
+              [
+                "ns",
+                1
+              ],
+              [
+                "\u03bcs",
+                1000
+              ],
+              [
+                "ms",
+                1000000
+              ],
+              [
+                "s",
+                1000000000
+              ]
+            ]
+          },
+          "event_kind_counts": {
+            "GenericActivity": 8235,
+            "ArtifactSize": 11,
+            "LLVM Pass": 5187,
+            "QueryCacheHitCount": 4872,
+            "Query": 11489
+          },
+          "artifact_sizes_bytes": {
+            "linked_artifact": 56080,
+            "cgu_instructions": 784,
+            "object_file": 34272,
+            "crate_metadata": 19171,
+            "codegen_unit_size_estimate": 935
+          },
+          "totals": {
+            "total_self_time_ms": 192.313,
+            "total_query_cache_hits": 101303,
+            "total_incr_load_ms": 0.0,
+            "total_incr_hash_ms": 0.0,
+            "distinct_labels": 613
+          },
+          "top_12_by_self_time": [
+            {
+              "label": "finish_ongoing_codegen",
+              "self_time_ms": 27.293,
+              "total_time_ms": 27.382,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_thinlto",
+              "self_time_ms": 24.963,
+              "total_time_ms": 25.096,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_passes",
+              "self_time_ms": 19.362,
+              "total_time_ms": 19.362,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_module_codegen_emit_obj",
+              "self_time_ms": 17.196,
+              "total_time_ms": 17.196,
+              "invocations": 3,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "self_profile_alloc_query_strings",
+              "self_time_ms": 8.019,
+              "total_time_ms": 13.839,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "InstCombinePass",
+              "self_time_ms": 5.229,
+              "total_time_ms": 5.569,
+              "invocations": 215,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_decode_entry_module_children",
+              "self_time_ms": 4.863,
+              "total_time_ms": 4.863,
+              "invocations": 424,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "typeck_root",
+              "self_time_ms": 4.537,
+              "total_time_ms": 8.022,
+              "invocations": 17,
+              "cache_hits": 141,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "PassManager<Function>",
+              "self_time_ms": 3.793,
+              "total_time_ms": 33.17,
+              "invocations": 240,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "DSEPass",
+              "self_time_ms": 3.027,
+              "total_time_ms": 3.069,
+              "invocations": 37,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "GVNPass",
+              "self_time_ms": 2.374,
+              "total_time_ms": 2.389,
+              "invocations": 37,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "codegen_module",
+              "self_time_ms": 2.254,
+              "total_time_ms": 2.819,
+              "invocations": 3,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            }
+          ],
+          "wall_ms": 104.69,
+          "max_rss_kib": 176360
+        },
+        "IncrFull": {
+          "format_version": 9,
+          "file_bytes": 2885861,
+          "stream_bytes": {
+            "events": 1798632,
+            "string_data": 902769,
+            "string_index": 184392
+          },
+          "page_counts": {
+            "events": 7,
+            "string_data": 4,
+            "string_index": 1
+          },
+          "num_raw_events": 56207,
+          "num_virtual_index_entries": 11524,
+          "distinct_threads": 10,
+          "counter": {
+            "name": "wall-time",
+            "units": [
+              [
+                "ns",
+                1
+              ],
+              [
+                "\u03bcs",
+                1000
+              ],
+              [
+                "ms",
+                1000000
+              ],
+              [
+                "s",
+                1000000000
+              ]
+            ]
+          },
+          "event_kind_counts": {
+            "GenericActivity": 20277,
+            "ArtifactSize": 17,
+            "LLVM Pass": 8142,
+            "QueryCacheHitCount": 4873,
+            "Query": 11366,
+            "IncrementalResultHashing": 11532
+          },
+          "artifact_sizes_bytes": {
+            "linked_artifact": 64036,
+            "work_product_index": 413,
+            "cgu_instructions": 1247,
+            "object_file": 43992,
+            "dep_graph": 517910,
+            "query_cache": 72746,
+            "crate_metadata": 17070,
+            "codegen_unit_size_estimate": 931
+          },
+          "totals": {
+            "total_self_time_ms": 246.041,
+            "total_query_cache_hits": 105299,
+            "total_incr_load_ms": 0.0,
+            "total_incr_hash_ms": 9.621,
+            "distinct_labels": 628
+          },
+          "top_12_by_self_time": [
+            {
+              "label": "LLVM_thinlto",
+              "self_time_ms": 32.111,
+              "total_time_ms": 32.366,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_module_codegen_emit_obj",
+              "self_time_ms": 24.702,
+              "total_time_ms": 24.702,
+              "invocations": 4,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_passes",
+              "self_time_ms": 18.861,
+              "total_time_ms": 18.861,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "finish_ongoing_codegen",
+              "self_time_ms": 17.455,
+              "total_time_ms": 17.661,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "incr_comp_encode_dep_graph_finish",
+              "self_time_ms": 12.985,
+              "total_time_ms": 12.985,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "InstCombinePass",
+              "self_time_ms": 7.792,
+              "total_time_ms": 8.54,
+              "invocations": 339,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "PassManager<Function>",
+              "self_time_ms": 6.237,
+              "total_time_ms": 48.76,
+              "invocations": 384,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "typeck_root",
+              "self_time_ms": 5.927,
+              "total_time_ms": 11.444,
+              "invocations": 17,
+              "cache_hits": 141,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.165
+            },
+            {
+              "label": "self_profile_alloc_query_strings",
+              "self_time_ms": 5.601,
+              "total_time_ms": 14.841,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_decode_entry_module_children",
+              "self_time_ms": 4.208,
+              "total_time_ms": 4.208,
+              "invocations": 424,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "GVNPass",
+              "self_time_ms": 3.627,
+              "total_time_ms": 3.657,
+              "invocations": 59,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "DSEPass",
+              "self_time_ms": 3.612,
+              "total_time_ms": 3.677,
+              "invocations": 59,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            }
+          ],
+          "wall_ms": 122.539,
+          "max_rss_kib": 191272,
+          "incremental_info": {
+            "total_dep_nodes": 11759,
+            "total_dep_edges": 38432,
+            "red_nodes": 1,
+            "reused_cgu_summary": null
+          }
+        },
+        "IncrUnchanged": {
+          "format_version": 9,
+          "file_bytes": 862163,
+          "stream_bytes": {
+            "events": 647240,
+            "string_data": 160962,
+            "string_index": 53928
+          },
+          "page_counts": {
+            "events": 3,
+            "string_data": 1,
+            "string_index": 1
+          },
+          "num_raw_events": 20226,
+          "num_virtual_index_entries": 3370,
+          "distinct_threads": 6,
+          "counter": {
+            "name": "wall-time",
+            "units": [
+              [
+                "ns",
+                1
+              ],
+              [
+                "\u03bcs",
+                1000
+              ],
+              [
+                "ms",
+                1000000
+              ],
+              [
+                "s",
+                1000000000
+              ]
+            ]
+          },
+          "event_kind_counts": {
+            "GenericActivity": 14911,
+            "ArtifactSize": 8,
+            "IncrementalLoadResult": 876,
+            "QueryCacheHitCount": 1105,
+            "Query": 2884,
+            "IncrementalResultHashing": 442
+          },
+          "artifact_sizes_bytes": {
+            "linked_artifact": 64036,
+            "work_product_index": 413,
+            "dep_graph": 519143,
+            "query_cache": 74168,
+            "codegen_unit_size_estimate": 931
+          },
+          "totals": {
+            "total_self_time_ms": 58.567,
+            "total_query_cache_hits": 24884,
+            "total_incr_load_ms": 2.001,
+            "total_incr_hash_ms": 0.266,
+            "distinct_labels": 241
+          },
+          "top_12_by_self_time": [
+            {
+              "label": "incr_comp_query_cache_promotion",
+              "self_time_ms": 14.464,
+              "total_time_ms": 15.193,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "incr_comp_encode_dep_graph_finish",
+              "self_time_ms": 12.613,
+              "total_time_ms": 12.613,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_decode_entry_module_children",
+              "self_time_ms": 4.423,
+              "total_time_ms": 4.423,
+              "invocations": 424,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "visible_parent_map",
+              "self_time_ms": 2.985,
+              "total_time_ms": 7.179,
+              "invocations": 1,
+              "cache_hits": 202,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "self_profile_alloc_query_strings",
+              "self_time_ms": 2.669,
+              "total_time_ms": 9.999,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_thinlto",
+              "self_time_ms": 1.865,
+              "total_time_ms": 2.364,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "codegen_crate",
+              "self_time_ms": 1.41,
+              "total_time_ms": 2.698,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_register_crate",
+              "self_time_ms": 1.226,
+              "total_time_ms": 1.937,
+              "invocations": 19,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "incr_comp_encode_dep_graph",
+              "self_time_ms": 1.026,
+              "total_time_ms": 1.026,
+              "invocations": 11782,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "late_resolve_crate",
+              "self_time_ms": 1.021,
+              "total_time_ms": 1.704,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "items_of_instance",
+              "self_time_ms": 0.967,
+              "total_time_ms": 0.967,
+              "invocations": 0,
+              "cache_hits": 0,
+              "incr_load_ms": 0.967,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "expand_crate",
+              "self_time_ms": 0.943,
+              "total_time_ms": 2.634,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            }
+          ],
+          "wall_ms": 72.143,
+          "max_rss_kib": 137388,
+          "incremental_info": {
+            "total_dep_nodes": 11782,
+            "total_dep_edges": 38610,
+            "red_nodes": 1,
+            "reused_cgu_summary": null
+          }
+        },
+        "IncrPatched": {
+          "format_version": 9,
+          "file_bytes": 1616700,
+          "stream_bytes": {
+            "events": 1008328,
+            "string_data": 494257,
+            "string_index": 114072
+          },
+          "page_counts": {
+            "events": 4,
+            "string_data": 2,
+            "string_index": 1
+          },
+          "num_raw_events": 31510,
+          "num_virtual_index_entries": 7129,
+          "distinct_threads": 7,
+          "counter": {
+            "name": "wall-time",
+            "units": [
+              [
+                "ns",
+                1
+              ],
+              [
+                "\u03bcs",
+                1000
+              ],
+              [
+                "ms",
+                1000000
+              ],
+              [
+                "s",
+                1000000000
+              ]
+            ]
+          },
+          "event_kind_counts": {
+            "GenericActivity": 17139,
+            "ArtifactSize": 11,
+            "LLVM Pass": 3952,
+            "IncrementalLoadResult": 1034,
+            "QueryCacheHitCount": 2692,
+            "Query": 6159,
+            "IncrementalResultHashing": 523
+          },
+          "artifact_sizes_bytes": {
+            "linked_artifact": 64036,
+            "work_product_index": 413,
+            "cgu_instructions": 721,
+            "object_file": 19136,
+            "dep_graph": 522441,
+            "query_cache": 78920,
+            "crate_metadata": 17070,
+            "codegen_unit_size_estimate": 931
+          },
+          "totals": {
+            "total_self_time_ms": 178.355,
+            "total_query_cache_hits": 46201,
+            "total_incr_load_ms": 1.701,
+            "total_incr_hash_ms": 0.411,
+            "distinct_labels": 592
+          },
+          "top_12_by_self_time": [
+            {
+              "label": "LLVM_thinlto",
+              "self_time_ms": 30.316,
+              "total_time_ms": 30.825,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "finish_ongoing_codegen",
+              "self_time_ms": 20.452,
+              "total_time_ms": 20.621,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_passes",
+              "self_time_ms": 18.919,
+              "total_time_ms": 18.919,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "incr_comp_encode_dep_graph_finish",
+              "self_time_ms": 12.788,
+              "total_time_ms": 12.788,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "LLVM_module_codegen_emit_obj",
+              "self_time_ms": 11.985,
+              "total_time_ms": 11.985,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "self_profile_alloc_query_strings",
+              "self_time_ms": 4.565,
+              "total_time_ms": 12.181,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "InstCombinePass",
+              "self_time_ms": 4.351,
+              "total_time_ms": 4.637,
+              "invocations": 161,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "metadata_decode_entry_module_children",
+              "self_time_ms": 4.046,
+              "total_time_ms": 4.046,
+              "invocations": 424,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "visible_parent_map",
+              "self_time_ms": 3.656,
+              "total_time_ms": 7.435,
+              "invocations": 1,
+              "cache_hits": 673,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "DSEPass",
+              "self_time_ms": 2.983,
+              "total_time_ms": 3.017,
+              "invocations": 29,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "PassManager<Function>",
+              "self_time_ms": 2.654,
+              "total_time_ms": 27.057,
+              "invocations": 184,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            },
+            {
+              "label": "codegen_module",
+              "self_time_ms": 2.158,
+              "total_time_ms": 6.759,
+              "invocations": 1,
+              "cache_hits": 0,
+              "incr_load_ms": 0.0,
+              "incr_hash_ms": 0.0
+            }
+          ],
+          "wall_ms": 97.755,
+          "max_rss_kib": 180648,
+          "incremental_info": {
+            "total_dep_nodes": 11841,
+            "total_dep_edges": 39138,
+            "red_nodes": 1,
+            "reused_cgu_summary": null
+          }
+        }
+      },
+      "ir_volume_and_artifact_footprint": {
+        "mono_items_count": 25,
+        "type_size_records_count": 61,
+        "top_5_types": [
+          "print-type-size type: `DenseMatrix<8, 8>`: 512 bytes, alignment: 8 bytes",
+          "print-type-size type: `VmState`: 160 bytes, alignment: 8 bytes",
+          "print-type-size type: `DenseMatrix<4, 4>`: 128 bytes, alignment: 8 bytes",
+          "print-type-size type: `std::ops::ControlFlow<std::result::Result<!, std::collections::TryReserveError>, std::alloc::Layout>`: 24 bytes, alignment: 8 bytes",
+          "print-type-size type: `std::ops::ControlFlow<std::result::Result<!, std::collections::TryReserveError>, std::ptr::NonNull<[u8]>>`: 24 bytes, alignment: 8 bytes"
+        ],
+        "mir_file_bytes": 101634,
+        "mir_line_count": 2945,
+        "mir_basic_blocks": 153,
+        "llvm_ir_file_bytes": 128575,
+        "llvm_ir_line_count": 1077,
+        "llvm_ir_define_count": 7,
+        "llvm_bc_bytes": 19084,
+        "object_file_bytes": 27696,
+        "rmeta_bytes": 19188,
+        "rlib_bytes": 48800,
+        "dep_info_bytes": 708,
+        "incremental_session_files_bytes": {
+          "s-hod04ezgtx-0zm4k1k.lock": 0,
+          "work-products.bin": 413,
+          "metadata.rmeta": 17083,
+          "cnmcgcierr0b0vtilmjn06udg.o": 19136,
+          "egmw9doj7485xqdiklyeyy6j1.o": 5448,
+          "cmkksdraqgbu5oiaqrinakx0g.o": 7128,
+          "afgoa92sbjh8cd0uym8dedbnd.o": 12280,
+          "thin-lto-past-keys.bin": 268,
+          "cnmcgcierr0b0vtilmjn06udg.pre-lto.bc": 12212,
+          "query-cache.bin": 78920,
+          "dep-graph.bin": 522441,
+          "cmkksdraqgbu5oiaqrinakx0g.pre-lto.bc": 4300,
+          "egmw9doj7485xqdiklyeyy6j1.pre-lto.bc": 3760,
+          "afgoa92sbjh8cd0uym8dedbnd.pre-lto.bc": 8284
+        }
+      }
+    }
+  },
+  "probe_3_cargo_pipelining_and_parallel_scaling": {
+    "stable_1_99_1": {
+      "cargo_4_stage_dag_pipelining": {
+        "non_pipelined_sum_of_crates_ms": 980.34,
+        "theoretical_rmeta_critical_path_ms": 366.86,
+        "measured_pipelined_dag_wall_ms": 451.19,
+        "pipelining_speedup_vs_sequential_sum": 2.173,
+        "per_crate_timeline": [
+          {
+            "crate": "stage_a",
+            "start_offset_ms": 0.0,
+            "rmeta_ready_offset_ms": 41.05,
+            "end_offset_ms": 244.15,
+            "t_rmeta_ms": 41.05,
+            "t_total_ms": 244.15,
+            "rmeta_fraction_of_total": 0.1681
+          },
+          {
+            "crate": "stage_b",
+            "start_offset_ms": 67.9,
+            "rmeta_ready_offset_ms": 109.78,
+            "end_offset_ms": 311.71,
+            "t_rmeta_ms": 41.88,
+            "t_total_ms": 243.81,
+            "rmeta_fraction_of_total": 0.1718
+          },
+          {
+            "crate": "stage_c",
+            "start_offset_ms": 141.62,
+            "rmeta_ready_offset_ms": 184.23,
+            "end_offset_ms": 392.68,
+            "t_rmeta_ms": 42.62,
+            "t_total_ms": 251.07,
+            "rmeta_fraction_of_total": 0.1698
+          },
+          {
+            "crate": "stage_d",
+            "start_offset_ms": 209.88,
+            "rmeta_ready_offset_ms": 251.62,
+            "end_offset_ms": 451.19,
+            "t_rmeta_ms": 41.74,
+            "t_total_ms": 241.31,
+            "rmeta_fraction_of_total": 0.173
+          }
+        ]
+      },
+      "cgu_partition_scaling_O3_no_lto": {
+        "cgu_1": {
+          "wall_ms_median": 206.72,
+          "max_rss_kib_median": 129884,
+          "speedup_vs_cgu_1": 1.0
+        },
+        "cgu_4": {
+          "wall_ms_median": 92.76,
+          "max_rss_kib_median": 152916,
+          "speedup_vs_cgu_1": 2.229
+        },
+        "cgu_16": {
+          "wall_ms_median": 77.28,
+          "max_rss_kib_median": 166392,
+          "speedup_vs_cgu_1": 2.675
+        }
+      },
+      "frontend_threads_check_scaling": {
+        "threads_1": {
+          "check_wall_ms_median": 38.19,
+          "max_rss_kib_median": 109724,
+          "speedup_vs_threads_1": 1.0
+        },
+        "threads_2": {
+          "check_wall_ms_median": 46.3,
+          "max_rss_kib_median": 203216,
+          "speedup_vs_threads_1": 0.825
+        },
+        "threads_4": {
+          "check_wall_ms_median": 42.9,
+          "max_rss_kib_median": 207708,
+          "speedup_vs_threads_1": 0.89
+        },
+        "threads_8": {
+          "check_wall_ms_median": 41.52,
+          "max_rss_kib_median": 224532,
+          "speedup_vs_threads_1": 0.92
+        }
+      }
+    },
+    "nightly_1_102_0": {
+      "cargo_4_stage_dag_pipelining": {
+        "non_pipelined_sum_of_crates_ms": 1015.39,
+        "theoretical_rmeta_critical_path_ms": 393.06,
+        "measured_pipelined_dag_wall_ms": 469.15,
+        "pipelining_speedup_vs_sequential_sum": 2.164,
+        "per_crate_timeline": [
+          {
+            "crate": "stage_a",
+            "start_offset_ms": 0.0,
+            "rmeta_ready_offset_ms": 49.95,
+            "end_offset_ms": 257.23,
+            "t_rmeta_ms": 49.95,
+            "t_total_ms": 257.23,
+            "rmeta_fraction_of_total": 0.1942
+          },
+          {
+            "crate": "stage_b",
+            "start_offset_ms": 75.03,
+            "rmeta_ready_offset_ms": 119.52,
+            "end_offset_ms": 325.57,
+            "t_rmeta_ms": 44.49,
+            "t_total_ms": 250.54,
+            "rmeta_fraction_of_total": 0.1776
+          },
+          {
+            "crate": "stage_c",
+            "start_offset_ms": 145.01,
+            "rmeta_ready_offset_ms": 190.02,
+            "end_offset_ms": 399.0,
+            "t_rmeta_ms": 45.0,
+            "t_total_ms": 253.99,
+            "rmeta_fraction_of_total": 0.1772
+          },
+          {
+            "crate": "stage_d",
+            "start_offset_ms": 215.53,
+            "rmeta_ready_offset_ms": 261.13,
+            "end_offset_ms": 469.15,
+            "t_rmeta_ms": 45.6,
+            "t_total_ms": 253.62,
+            "rmeta_fraction_of_total": 0.1798
+          }
+        ]
+      },
+      "cgu_partition_scaling_O3_no_lto": {
+        "cgu_1": {
+          "wall_ms_median": 210.25,
+          "max_rss_kib_median": 115496,
+          "speedup_vs_cgu_1": 1.0
+        },
+        "cgu_4": {
+          "wall_ms_median": 98.07,
+          "max_rss_kib_median": 130772,
+          "speedup_vs_cgu_1": 2.144
+        },
+        "cgu_16": {
+          "wall_ms_median": 78.0,
+          "max_rss_kib_median": 148428,
+          "speedup_vs_cgu_1": 2.696
+        }
+      },
+      "frontend_threads_check_scaling": {
+        "threads_1": {
+          "check_wall_ms_median": 43.15,
+          "max_rss_kib_median": 92636,
+          "speedup_vs_threads_1": 1.0
+        },
+        "threads_2": {
+          "check_wall_ms_median": 48.03,
+          "max_rss_kib_median": 109628,
+          "speedup_vs_threads_1": 0.898
+        },
+        "threads_4": {
+          "check_wall_ms_median": 35.84,
+          "max_rss_kib_median": 114308,
+          "speedup_vs_threads_1": 1.204
+        },
+        "threads_8": {
+          "check_wall_ms_median": 33.26,
+          "max_rss_kib_median": 132384,
+          "speedup_vs_threads_1": 1.297
+        }
+      }
+    }
+  },
+  "probe_4_memory_footprint_and_dhat_churn": {
+    "stable_1_99_1": {
+      "Check": {
+        "dhat_file_version": 2,
+        "mode": "heap",
+        "time_unit": "instrs",
+        "t_gmax_instrs": 54491919,
+        "t_end_instrs": 55508424,
+        "total_bytes": 23834075,
+        "total_blocks": 44363,
+        "at_t_gmax_bytes": 17553645,
+        "at_t_gmax_blocks": 15009,
+        "at_t_end_bytes": 359277,
+        "at_t_end_blocks": 275,
+        "total_bytes_read": 22355021,
+        "total_bytes_written": 11542068,
+        "churn_ratio_total_over_gmax": 1.358,
+        "mean_block_size_bytes": 537.25,
+        "top_5_allocation_sites": [
+          {
+            "total_bytes": 772992,
+            "total_blocks": 55,
+            "at_tgmax_bytes": 387072,
+            "top_frames": [
+              "0xA29D7B7: rustc_middle::ty::trait_def::trait_impls_of_provider (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA29D3A2: rustc_query_impl::query_vtables::trait_impls_of::invoke_provider_fn::__rust_begin_short_backtrace (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA226A3C: rustc_query_impl::execution::try_execute_query::<rustc_middle::query::caches::DefIdCache<rustc_middle::query::erase::ErasedData<[u8; 8]>>, false> (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 618360,
+            "total_blocks": 2,
+            "at_tgmax_bytes": 412240,
+            "top_frames": [
+              "0xA6E303F: <rustc_metadata::rmeta::decoder::MetadataDecodeContext as rustc_span::SpanDecoder>::decode_syntax_context (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA6E38F6: <rustc_metadata::rmeta::decoder::MetadataDecodeContext as rustc_span::SpanDecoder>::decode_span (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA9A27DB: rustc_query_impl::query_vtables::explicit_clauses_of::invoke_provider_fn::__rust_begin_short_backtrace (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 589840,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 589840,
+            "top_frames": [
+              "0xB529A49: <rustc_middle::ty::context::CtxtInterners>::new (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xB538385: rustc_interface::interface::run_compiler::<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2} (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xB4F58E3: std::sys::backtrace::__rust_begin_short_backtrace::<rustc_interface::util::run_in_thread_with_globals<rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}, ()>::{closure#0}, ()>::{closure#0}::{closure#0}, ()> (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 262144,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 262144,
+            "top_frames": [
+              "0xA493DC4: <rustc_arena::DroplessArena>::grow (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0x5EC88F1: <rustc_trait_selection::traits::select::SelectionContext>::evaluate_trait_predicate_recursively::{closure#0}::{closure#1} (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xB1939C7: <rustc_trait_selection::traits::select::SelectionContext>::evaluate_predicate_recursively (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 256960,
+            "total_blocks": 7545,
+            "at_tgmax_bytes": 247488,
+            "top_frames": [
+              "0xA29D4DA: <alloc::raw_vec::RawVec<rustc_span::def_id::DefId>>::grow_one (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA29DA45: rustc_middle::ty::trait_def::trait_impls_of_provider (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA29D3A2: rustc_query_impl::query_vtables::trait_impls_of::invoke_provider_fn::__rust_begin_short_backtrace (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          }
+        ]
+      },
+      "Opt_O2": {
+        "dhat_file_version": 2,
+        "mode": "heap",
+        "time_unit": "instrs",
+        "t_gmax_instrs": 159846975,
+        "t_end_instrs": 289624814,
+        "total_bytes": 65613255,
+        "total_blocks": 145653,
+        "at_t_gmax_bytes": 21863771,
+        "at_t_gmax_blocks": 24213,
+        "at_t_end_bytes": 359877,
+        "at_t_end_blocks": 282,
+        "total_bytes_read": 165244477,
+        "total_bytes_written": 51263597,
+        "churn_ratio_total_over_gmax": 3.001,
+        "mean_block_size_bytes": 450.48,
+        "top_5_allocation_sites": [
+          {
+            "total_bytes": 1043856,
+            "total_blocks": 68,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x15E5C04D: llvm::ScheduleDAGSDNodes::BuildSchedUnits() (in <SYSROOT_STABLE>/lib/libLLVM.so.23.1-rust-1.99.1-stable)",
+              "0x15E5C9B4: llvm::ScheduleDAGSDNodes::BuildSchedGraph() (in <SYSROOT_STABLE>/lib/libLLVM.so.23.1-rust-1.99.1-stable)",
+              "0x15E5E3D7: (anonymous namespace)::ScheduleDAGRRList::Schedule() [clone .llvm.2539200551425014271] (in <SYSROOT_STABLE>/lib/libLLVM.so.23.1-rust-1.99.1-stable)"
+            ]
+          },
+          {
+            "total_bytes": 772992,
+            "total_blocks": 55,
+            "at_tgmax_bytes": 387072,
+            "top_frames": [
+              "0xA29D7B7: rustc_middle::ty::trait_def::trait_impls_of_provider (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA29D3A2: rustc_query_impl::query_vtables::trait_impls_of::invoke_provider_fn::__rust_begin_short_backtrace (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA226A3C: rustc_query_impl::execution::try_execute_query::<rustc_middle::query::caches::DefIdCache<rustc_middle::query::erase::ErasedData<[u8; 8]>>, false> (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 690792,
+            "total_blocks": 21,
+            "at_tgmax_bytes": 246528,
+            "top_frames": [
+              "0x15EDE051: llvm::DenseMapBase<llvm::SmallDenseMap<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, llvm::AAQueryInfo::CacheEntry, 8u, llvm::DenseMapInfo<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, void>, llvm::detail::DenseMapPair<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, llvm::AAQueryInfo::CacheEntry> >, std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, llvm::AAQueryInfo::CacheEntry, llvm::DenseMapInfo<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, void>, llvm::detail::DenseMapPair<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, llvm::AAQueryInfo::CacheEntry> >::grow(unsigned int) (in <SYSROOT_STABLE>/lib/libLLVM.so.23.1-rust-1.99.1-stable)",
+              "0x160A1E24: llvm::BasicAAResult::alias(llvm::MemoryLocation const&, llvm::MemoryLocation const&, llvm::AAQueryInfo&, llvm::Instruction const*) (in <SYSROOT_STABLE>/lib/libLLVM.so.23.1-rust-1.99.1-stable)",
+              "0x1609A337: llvm::AAResults::alias(llvm::MemoryLocation const&, llvm::MemoryLocation const&, llvm::AAQueryInfo&, llvm::Instruction const*) (in <SYSROOT_STABLE>/lib/libLLVM.so.23.1-rust-1.99.1-stable)"
+            ]
+          },
+          {
+            "total_bytes": 618360,
+            "total_blocks": 2,
+            "at_tgmax_bytes": 412240,
+            "top_frames": [
+              "0xA6E303F: <rustc_metadata::rmeta::decoder::MetadataDecodeContext as rustc_span::SpanDecoder>::decode_syntax_context (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA6E38F6: <rustc_metadata::rmeta::decoder::MetadataDecodeContext as rustc_span::SpanDecoder>::decode_span (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xA9A27DB: rustc_query_impl::query_vtables::explicit_clauses_of::invoke_provider_fn::__rust_begin_short_backtrace (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 589840,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 589840,
+            "top_frames": [
+              "0xB529A49: <rustc_middle::ty::context::CtxtInterners>::new (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xB538385: rustc_interface::interface::run_compiler::<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2} (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xB4F58E3: std::sys::backtrace::__rust_begin_short_backtrace::<rustc_interface::util::run_in_thread_with_globals<rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}, ()>::{closure#0}, ()>::{closure#0}::{closure#0}, ()> (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          }
+        ]
+      },
+      "Check_copy_mode": {
+        "dhat_file_version": 2,
+        "mode": "copy",
+        "time_unit": "instrs",
+        "t_gmax_instrs": null,
+        "t_end_instrs": 55506707,
+        "total_bytes": 4328329,
+        "total_blocks": 19973,
+        "at_t_gmax_bytes": 0,
+        "at_t_gmax_blocks": 0,
+        "at_t_end_bytes": 0,
+        "at_t_end_blocks": 0,
+        "total_bytes_read": 0,
+        "total_bytes_written": 0,
+        "churn_ratio_total_over_gmax": 4328329.0,
+        "mean_block_size_bytes": 216.71,
+        "top_5_allocation_sites": [
+          {
+            "total_bytes": 121728,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AF0061: memmove (vg_replace_strmem.c:1415)",
+              "0xB538652: rustc_interface::interface::run_compiler::<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2} (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xB4F58E3: std::sys::backtrace::__rust_begin_short_backtrace::<rustc_interface::util::run_in_thread_with_globals<rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}, ()>::{closure#0}, ()>::{closure#0}::{closure#0}, ()> (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 121720,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AF0061: memmove (vg_replace_strmem.c:1415)",
+              "0xB73A9AA: <std::sync::once::Once>::call_once_force::<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::initialize<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::get_or_init<<rustc_middle::ty::context::TyCtxt>::create_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_interface::passes::create_and_enter_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure#1}>::{closure#2}>::{closure#1}>::{closure#0}, !>::{closure#0}>::{closure#0} (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0x61BCFB8: <std::sys::sync::once::futex::Once>::call (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 119600,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AF0061: memmove (vg_replace_strmem.c:1415)",
+              "0xB53856E: rustc_interface::interface::run_compiler::<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2} (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0xB4F58E3: std::sys::backtrace::__rust_begin_short_backtrace::<rustc_interface::util::run_in_thread_with_globals<rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}, ()>::{closure#0}, ()>::{closure#0}::{closure#0}, ()> (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 119600,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AF0061: memmove (vg_replace_strmem.c:1415)",
+              "0xB73AAA0: <std::sync::once::Once>::call_once_force::<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::initialize<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::get_or_init<<rustc_middle::ty::context::TyCtxt>::create_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_interface::passes::create_and_enter_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure#1}>::{closure#2}>::{closure#1}>::{closure#0}, !>::{closure#0}>::{closure#0} (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0x61BCFB8: <std::sys::sync::once::futex::Once>::call (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          },
+          {
+            "total_bytes": 119600,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AF0061: memmove (vg_replace_strmem.c:1415)",
+              "0xB73AD2C: <std::sync::once::Once>::call_once_force::<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::initialize<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::get_or_init<<rustc_middle::ty::context::TyCtxt>::create_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_interface::passes::create_and_enter_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::run_compiler::{closure#0}::{closure#1}>::{closure#2}>::{closure#1}>::{closure#0}, !>::{closure#0}>::{closure#0} (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)",
+              "0x61BCFB8: <std::sys::sync::once::futex::Once>::call (in <SYSROOT_STABLE>/lib/librustc_driver-7ed0375ae352bd75.so)"
+            ]
+          }
+        ]
+      }
+    },
+    "nightly_1_102_0": {
+      "Check": {
+        "dhat_file_version": 2,
+        "mode": "heap",
+        "time_unit": "instrs",
+        "t_gmax_instrs": 56591325,
+        "t_end_instrs": 57632729,
+        "total_bytes": 22239417,
+        "total_blocks": 42242,
+        "at_t_gmax_bytes": 15838362,
+        "at_t_gmax_blocks": 15170,
+        "at_t_end_bytes": 352630,
+        "at_t_end_blocks": 282,
+        "total_bytes_read": 23341204,
+        "total_bytes_written": 11421021,
+        "churn_ratio_total_over_gmax": 1.404,
+        "mean_block_size_bytes": 526.48,
+        "top_5_allocation_sites": [
+          {
+            "total_bytes": 816000,
+            "total_blocks": 56,
+            "at_tgmax_bytes": 408576,
+            "top_frames": [
+              "0xA673325: rustc_middle::ty::trait_def::trait_impls_of_provider (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xA672F22: rustc_query_impl::query_vtables::trait_impls_of::invoke_provider_fn::__rust_begin_short_backtrace (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xA67A99A: rustc_query_impl::execution::try_execute_query::<rustc_middle::query::caches::DefIdCache<rustc_middle::query::erase::ErasedData<[u8; 8]>>, false> (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 589840,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 589840,
+            "top_frames": [
+              "0xB9632D7: <hashbrown::raw::RawTableInner>::fallible_with_capacity::<alloc::alloc::Global> (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xB9633BB: <rustc_middle::ty::context::CtxtInterners>::new (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xB94997A: rustc_interface::interface::run_compiler::<(), rustc_driver_impl::compiler_entrypoint::{closure#0}>::{closure#2} (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 524288,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 524288,
+            "top_frames": [
+              "0xB020BC7: <rustc_arena::DroplessArena>::grow (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xAC85D94: <rustc_mir_build::builder::matches::match_pair::InterPat>::lower_thir_pat (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xAC82F16: <rustc_mir_build::builder::matches::match_pair::InterPat>::lower_thir_pat (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 276768,
+            "total_blocks": 84,
+            "at_tgmax_bytes": 137424,
+            "top_frames": [
+              "0xA673325: rustc_middle::ty::trait_def::trait_impls_of_provider (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xA672F22: rustc_query_impl::query_vtables::trait_impls_of::invoke_provider_fn::__rust_begin_short_backtrace (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xA67A99A: rustc_query_impl::execution::try_execute_query::<rustc_middle::query::caches::DefIdCache<rustc_middle::query::erase::ErasedData<[u8; 8]>>, false> (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 262144,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 262144,
+            "top_frames": [
+              "0xB020BC7: <rustc_arena::DroplessArena>::grow (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xB378245: <rustc_next_trait_solver::solve::eval_ctxt::EvalCtxt<rustc_trait_selection::solve::delegate::SolverDelegate, rustc_middle::ty::context::TyCtxt>>::evaluate_goal_no_fast_paths (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xB35A15A: <rustc_trait_selection::traits::engine::FulfillmentEngine<rustc_trait_selection::traits::FulfillmentError> as rustc_infer::traits::engine::TraitEngine<rustc_trait_selection::traits::FulfillmentError>>::try_evaluate_obligations (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          }
+        ]
+      },
+      "Opt_O2": {
+        "dhat_file_version": 2,
+        "mode": "heap",
+        "time_unit": "instrs",
+        "t_gmax_instrs": 87560945,
+        "t_end_instrs": 291666415,
+        "total_bytes": 63019716,
+        "total_blocks": 142002,
+        "at_t_gmax_bytes": 18466315,
+        "at_t_gmax_blocks": 22721,
+        "at_t_end_bytes": 353230,
+        "at_t_end_blocks": 289,
+        "total_bytes_read": 165167905,
+        "total_bytes_written": 50690884,
+        "churn_ratio_total_over_gmax": 3.413,
+        "mean_block_size_bytes": 443.79,
+        "top_5_allocation_sites": [
+          {
+            "total_bytes": 1042800,
+            "total_blocks": 69,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x1646964D: llvm::ScheduleDAGSDNodes::BuildSchedUnits() (in <SYSROOT_NIGHTLY>/lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+              "0x16469FB4: llvm::ScheduleDAGSDNodes::BuildSchedGraph() (in <SYSROOT_NIGHTLY>/lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+              "0x1646B971: (anonymous namespace)::ScheduleDAGRRList::Schedule() [clone .llvm.13994420195255277198] (in <SYSROOT_NIGHTLY>/lib/libLLVM.so.23.1-rust-1.102.0-nightly)"
+            ]
+          },
+          {
+            "total_bytes": 816000,
+            "total_blocks": 56,
+            "at_tgmax_bytes": 408576,
+            "top_frames": [
+              "0xA673325: rustc_middle::ty::trait_def::trait_impls_of_provider (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xA672F22: rustc_query_impl::query_vtables::trait_impls_of::invoke_provider_fn::__rust_begin_short_backtrace (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xA67A99A: rustc_query_impl::execution::try_execute_query::<rustc_middle::query::caches::DefIdCache<rustc_middle::query::erase::ErasedData<[u8; 8]>>, false> (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 690792,
+            "total_blocks": 21,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x164A91B5: llvm::DenseMapBase<llvm::SmallDenseMap<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, llvm::AAQueryInfo::CacheEntry, 8u, llvm::DenseMapInfo<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, void>, llvm::detail::DenseMapPair<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, llvm::AAQueryInfo::CacheEntry> >, std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, llvm::AAQueryInfo::CacheEntry, llvm::DenseMapInfo<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, void>, llvm::detail::DenseMapPair<std::pair<llvm::AACacheLoc, llvm::AACacheLoc>, llvm::AAQueryInfo::CacheEntry> >::grow(unsigned int) (in <SYSROOT_NIGHTLY>/lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+              "0x166C10C8: llvm::BasicAAResult::alias(llvm::MemoryLocation const&, llvm::MemoryLocation const&, llvm::AAQueryInfo&, llvm::Instruction const*) (in <SYSROOT_NIGHTLY>/lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+              "0x166B99C0: llvm::AAResults::alias(llvm::MemoryLocation const&, llvm::MemoryLocation const&, llvm::AAQueryInfo&, llvm::Instruction const*) (in <SYSROOT_NIGHTLY>/lib/libLLVM.so.23.1-rust-1.102.0-nightly)"
+            ]
+          },
+          {
+            "total_bytes": 589840,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 589840,
+            "top_frames": [
+              "0xB9632D7: <hashbrown::raw::RawTableInner>::fallible_with_capacity::<alloc::alloc::Global> (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xB9633BB: <rustc_middle::ty::context::CtxtInterners>::new (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xB94997A: rustc_interface::interface::run_compiler::<(), rustc_driver_impl::compiler_entrypoint::{closure#0}>::{closure#2} (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 525312,
+            "total_blocks": 64,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x169A3176: llvm::UnrollLoop(llvm::Loop*, llvm::UnrollLoopOptions, llvm::LoopInfo*, llvm::ScalarEvolution*, llvm::DominatorTree*, llvm::AssumptionCache*, llvm::TargetTransformInfo const*, llvm::OptimizationRemarkEmitter*, bool, llvm::Loop**, llvm::AAResults*) (in <SYSROOT_NIGHTLY>/lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+              "0x168F3BA7: tryToUnrollLoop(llvm::Loop*, llvm::DominatorTree&, llvm::LoopInfo*, llvm::ScalarEvolution&, llvm::TargetTransformInfo const&, llvm::AssumptionCache&, llvm::OptimizationRemarkEmitter&, llvm::BlockFrequencyInfo*, llvm::ProfileSummaryInfo*, bool, int, bool, bool, bool, std::optional<unsigned int>, std::optional<unsigned int>, std::optional<bool>, std::optional<bool>, std::optional<bool>, std::optional<bool>, std::optional<bool>, std::optional<unsigned int>, llvm::GenericUniformityInfo<llvm::GenericSSAContext<llvm::Function> >*, llvm::AAResults*) (in <SYSROOT_NIGHTLY>/lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+              "0x168EC891: llvm::LoopFullUnrollPass::run(llvm::Loop&, llvm::AnalysisManager<llvm::Loop, llvm::LoopStandardAnalysisResults&>&, llvm::LoopStandardAnalysisResults&, llvm::LPMUpdater&) (in <SYSROOT_NIGHTLY>/lib/libLLVM.so.23.1-rust-1.102.0-nightly)"
+            ]
+          }
+        ]
+      },
+      "Check_copy_mode": {
+        "dhat_file_version": 2,
+        "mode": "copy",
+        "time_unit": "instrs",
+        "t_gmax_instrs": null,
+        "t_end_instrs": 57635755,
+        "total_bytes": 5328643,
+        "total_blocks": 26283,
+        "at_t_gmax_bytes": 0,
+        "at_t_gmax_blocks": 0,
+        "at_t_end_bytes": 0,
+        "at_t_end_blocks": 0,
+        "total_bytes_read": 0,
+        "total_bytes_written": 0,
+        "churn_ratio_total_over_gmax": 5328643.0,
+        "mean_block_size_bytes": 202.74,
+        "top_5_allocation_sites": [
+          {
+            "total_bytes": 124448,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AEF061: memmove (vg_replace_strmem.c:1415)",
+              "0xB949C39: rustc_interface::interface::run_compiler::<(), rustc_driver_impl::compiler_entrypoint::{closure#0}>::{closure#2} (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xB9CFE40: std::sys::backtrace::__rust_begin_short_backtrace::<rustc_interface::util::run_in_thread_with_globals<rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::compiler_entrypoint::{closure#0}>::{closure#2}, ()>::{closure#0}, ()>::{closure#0}::{closure#0}, ()> (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 124440,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AEF061: memmove (vg_replace_strmem.c:1415)",
+              "0xBC90D88: <std::sync::once::Once>::call_once_force::<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::initialize<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::get_or_init<<rustc_middle::ty::context::TyCtxt>::create_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_interface::passes::create_and_enter_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::compiler_entrypoint::{closure#0}::{closure#1}>::{closure#2}>::{closure#1}>::{closure#0}, !>::{closure#0}>::{closure#0} (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0x6273FC8: <std::sys::sync::once::futex::Once>::call (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 122216,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AEF061: memmove (vg_replace_strmem.c:1415)",
+              "0xB949B67: rustc_interface::interface::run_compiler::<(), rustc_driver_impl::compiler_entrypoint::{closure#0}>::{closure#2} (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0xB9CFE40: std::sys::backtrace::__rust_begin_short_backtrace::<rustc_interface::util::run_in_thread_with_globals<rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::compiler_entrypoint::{closure#0}>::{closure#2}, ()>::{closure#0}, ()>::{closure#0}::{closure#0}, ()> (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 122216,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AEF061: memmove (vg_replace_strmem.c:1415)",
+              "0xBC90E75: <std::sync::once::Once>::call_once_force::<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::initialize<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::get_or_init<<rustc_middle::ty::context::TyCtxt>::create_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_interface::passes::create_and_enter_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::compiler_entrypoint::{closure#0}::{closure#1}>::{closure#2}>::{closure#1}>::{closure#0}, !>::{closure#0}>::{closure#0} (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0x6273FC8: <std::sys::sync::once::futex::Once>::call (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          },
+          {
+            "total_bytes": 122216,
+            "total_blocks": 1,
+            "at_tgmax_bytes": 0,
+            "top_frames": [
+              "0x4AEF061: memmove (vg_replace_strmem.c:1415)",
+              "0xBC9114F: <std::sync::once::Once>::call_once_force::<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::initialize<<std::sync::once_lock::OnceLock<rustc_middle::ty::context::GlobalCtxt>>::get_or_init<<rustc_middle::ty::context::TyCtxt>::create_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_interface::passes::create_and_enter_global_ctxt<core::option::Option<rustc_interface::queries::Linker>, rustc_driver_impl::compiler_entrypoint::{closure#0}::{closure#1}>::{closure#2}>::{closure#1}>::{closure#0}, !>::{closure#0}>::{closure#0} (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)",
+              "0x6273FC8: <std::sys::sync::once::futex::Once>::call (in <SYSROOT_NIGHTLY>/lib/librustc_driver-789fff502791d0da.so)"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "probe_5_asymptotic_scaling_sweeps": {
+    "empty_crate_baseline_Ir": {
+      "check": 16337204,
+      "opt": 21646472
+    },
+    "projection_normalization_depth": {
+      "extra_flags": [
+        "--emit=metadata"
+      ],
+      "points": [
+        {
+          "N": 8,
+          "source_bytes": 454,
+          "native_wall_ms": 22.077,
+          "max_rss_kib": 109820,
+          "total_Ir": 22304124,
+          "marginal_Ir_above_empty": 5966920,
+          "marginal_Ir_per_unit_N": 745865.0
+        },
+        {
+          "N": 16,
+          "source_bytes": 550,
+          "native_wall_ms": 23.795,
+          "max_rss_kib": 107892,
+          "total_Ir": 24480457,
+          "marginal_Ir_above_empty": 8143253,
+          "marginal_Ir_per_unit_N": 508953.3
+        },
+        {
+          "N": 32,
+          "source_bytes": 742,
+          "native_wall_ms": 23.507,
+          "max_rss_kib": 108116,
+          "total_Ir": 30748395,
+          "marginal_Ir_above_empty": 14411191,
+          "marginal_Ir_per_unit_N": 450349.7
+        },
+        {
+          "N": 64,
+          "source_bytes": 1126,
+          "native_wall_ms": 26.717,
+          "max_rss_kib": 108248,
+          "total_Ir": 50622505,
+          "marginal_Ir_above_empty": 34285301,
+          "marginal_Ir_per_unit_N": 535707.8
+        }
+      ],
+      "marginal_Ir_power_law_exponent": 0.8391
+    },
+    "match_exhaustiveness_arity": {
+      "extra_flags": [
+        "--emit=metadata"
+      ],
+      "points": [
+        {
+          "N": 4,
+          "source_bytes": 295,
+          "native_wall_ms": 20.511,
+          "max_rss_kib": 98232,
+          "total_Ir": 18329387,
+          "marginal_Ir_above_empty": 1992183,
+          "marginal_Ir_per_unit_N": 498045.8
+        },
+        {
+          "N": 8,
+          "source_bytes": 595,
+          "native_wall_ms": 19.188,
+          "max_rss_kib": 98236,
+          "total_Ir": 19790211,
+          "marginal_Ir_above_empty": 3453007,
+          "marginal_Ir_per_unit_N": 431625.9
+        },
+        {
+          "N": 12,
+          "source_bytes": 998,
+          "native_wall_ms": 24.438,
+          "max_rss_kib": 100004,
+          "total_Ir": 23034888,
+          "marginal_Ir_above_empty": 6697684,
+          "marginal_Ir_per_unit_N": 558140.3
+        },
+        {
+          "N": 16,
+          "source_bytes": 1502,
+          "native_wall_ms": 26.568,
+          "max_rss_kib": 98580,
+          "total_Ir": 29069101,
+          "marginal_Ir_above_empty": 12731897,
+          "marginal_Ir_per_unit_N": 795743.6
+        }
+      ],
+      "marginal_Ir_power_law_exponent": 1.3011
+    },
+    "monomorphization_fanout": {
+      "extra_flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=1"
+      ],
+      "points": [
+        {
+          "N": 16,
+          "source_bytes": 1673,
+          "native_wall_ms": 42.766,
+          "max_rss_kib": 128068,
+          "total_Ir": 98428703,
+          "marginal_Ir_above_empty": 76782231,
+          "marginal_Ir_per_unit_N": 4798889.4
+        },
+        {
+          "N": 64,
+          "source_bytes": 6089,
+          "native_wall_ms": 77.979,
+          "max_rss_kib": 130500,
+          "total_Ir": 347948375,
+          "marginal_Ir_above_empty": 326301903,
+          "marginal_Ir_per_unit_N": 5098467.2
+        },
+        {
+          "N": 256,
+          "source_bytes": 24374,
+          "native_wall_ms": 241.015,
+          "max_rss_kib": 138248,
+          "total_Ir": 1178391190,
+          "marginal_Ir_above_empty": 1156744718,
+          "marginal_Ir_per_unit_N": 4518534.1
+        }
+      ],
+      "marginal_Ir_power_law_exponent": 0.9783
+    },
+    "single_fn_cfg_branches": {
+      "extra_flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "codegen-units=1"
+      ],
+      "points": [
+        {
+          "N": 64,
+          "source_bytes": 6646,
+          "native_wall_ms": 49.929,
+          "max_rss_kib": 128476,
+          "total_Ir": 183860287,
+          "marginal_Ir_above_empty": 162213815,
+          "marginal_Ir_per_unit_N": 2534590.9
+        },
+        {
+          "N": 256,
+          "source_bytes": 26949,
+          "native_wall_ms": 169.191,
+          "max_rss_kib": 130168,
+          "total_Ir": 805679438,
+          "marginal_Ir_above_empty": 784032966,
+          "marginal_Ir_per_unit_N": 3062628.8
+        },
+        {
+          "N": 1024,
+          "source_bytes": 109336,
+          "native_wall_ms": 795.319,
+          "max_rss_kib": 138888,
+          "total_Ir": 4809734500,
+          "marginal_Ir_above_empty": 4788088028,
+          "marginal_Ir_per_unit_N": 4675867.2
+        }
+      ],
+      "marginal_Ir_power_law_exponent": 1.2209
+    },
+    "tt_muncher_macro_tokens": {
+      "extra_flags": [
+        "--emit=metadata"
+      ],
+      "points": [
+        {
+          "N": 16,
+          "source_bytes": 223,
+          "native_wall_ms": 19.971,
+          "max_rss_kib": 103624,
+          "total_Ir": 19299761,
+          "marginal_Ir_above_empty": 2962557,
+          "marginal_Ir_per_unit_N": 185159.8
+        },
+        {
+          "N": 32,
+          "source_bytes": 255,
+          "native_wall_ms": 21.028,
+          "max_rss_kib": 101612,
+          "total_Ir": 21193013,
+          "marginal_Ir_above_empty": 4855809,
+          "marginal_Ir_per_unit_N": 151744.0
+        },
+        {
+          "N": 64,
+          "source_bytes": 319,
+          "native_wall_ms": 20.604,
+          "max_rss_kib": 101788,
+          "total_Ir": 25551916,
+          "marginal_Ir_above_empty": 9214712,
+          "marginal_Ir_per_unit_N": 143979.9
+        },
+        {
+          "N": 112,
+          "source_bytes": 415,
+          "native_wall_ms": 22.145,
+          "max_rss_kib": 101948,
+          "total_Ir": 33419326,
+          "marginal_Ir_above_empty": 17082122,
+          "marginal_Ir_per_unit_N": 152518.9
+        }
+      ],
+      "marginal_Ir_power_law_exponent": 0.8992
+    }
+  }
+}

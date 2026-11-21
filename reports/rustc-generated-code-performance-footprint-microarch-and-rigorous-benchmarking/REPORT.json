@@ -1,0 +1,80 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/benchmarking",
+    "compilers/optimization",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/performance",
+    "compilers/verified-rustc/validation",
+    "isa",
+    "isa/simd",
+    "isa/x86-64",
+    "llvm",
+    "llvm/codegen",
+    "llvm/passes",
+    "rust",
+    "rustc",
+    "rustc/codegen",
+    "rustc/mir",
+    "systems",
+    "systems/performance",
+    "tooling",
+    "verification",
+    "verification/empirical-evaluation"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler upstream source snapshot",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "412be32a6a189d9a28922beee178bc0abee9d492"
+      }
+    },
+    {
+      "name": "Rust nightly compiler toolchain (1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 release compiler toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust LLVM submodule snapshot",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 LLVM 23.1.1 submodule",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "rustc-perf compiler and runtime benchmark suite",
+      "identity": {
+        "repository": "rust-lang/rustc-perf",
+        "revision": "15d95905429e577d5a710b17c49e04b4451c263b"
+      }
+    },
+    {
+      "name": "zerocopy crate (MIR Assert and SsaRangePropagation corpus subject)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "0d0e0196aa4c95f7ccc1292a49b07a33011be371"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -82781,6 +82781,82 @@
         "verification/compiler-verification"
       ]
     },
+    "rustc-bug-compatibility-quirk-catalog-and-differential-oracle-design": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-18",
+            "repository": "rust-lang/rust",
+            "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly compiler, proc_macro, and test-suite source snapshot"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-11",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly installed rustc and miri execution toolchain"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 stable release compiler baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+            "submodule_path": "src/doc/reference"
+          },
+          "name": "The Rust Reference (src/doc/reference submodule)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/edition-guide",
+            "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f",
+            "submodule_path": "src/doc/edition-guide"
+          },
+          "name": "The Rust Edition Guide (src/doc/edition-guide submodule)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20",
+            "submodule_path": "src/tools/cargo"
+          },
+          "name": "Cargo build tool (src/tools/cargo submodule)"
+        }
+      ],
+      "topics": [
+        "cargo",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/compatibility",
+        "compilers/verified-rustc/validation",
+        "ffi",
+        "llvm",
+        "rust",
+        "rust/editions",
+        "rustc",
+        "rustc/borrowck",
+        "rustc/diagnostics",
+        "rustc/lints",
+        "rustc/mir",
+        "rustc/proc-macro",
+        "rustc/traits",
+        "tooling",
+        "verification"
+      ]
+    },
     "rustc-build-ir-and-pass-transformation-volume-statistics": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -83015,6 +83091,110 @@
         "rustc/monomorphization",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "rustc-compiler-performance-metrics-rustc-perf-self-profile-and-scaling": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "412be32a6a189d9a28922beee178bc0abee9d492"
+          },
+          "name": "Rust compiler upstream snapshot (rustc_data_structures::profiling, jobserver, rustc_metadata, rustc_codegen_llvm, and TPDE integration)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly compiler toolchain (live-profiled nightly subject)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 release compiler toolchain (live-profiled stable baseline subject)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-perf",
+            "revision": "15d95905429e577d5a710b17c49e04b4451c263b"
+          },
+          "name": "rustc-perf compiler and runtime benchmark collector, database, and triage site"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/measureme",
+            "revision": "5ac839c602b59eee9c908b3b35b6d6c0cd1c42f7",
+            "version": "12.0.3"
+          },
+          "name": "measureme, decodeme, and analyzeme self-profile v9 binary event-stream library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/tpde",
+            "revision": "050927ee81dc11a9e599fa2524ff0eef16daf51a"
+          },
+          "name": "TPDE and TPDE-LLVM single-pass x86-64/AArch64 compiler backend submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380"
+          },
+          "name": "Rust LLVM 23.1 fork submodule (upstream snapshot)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20"
+          },
+          "name": "Cargo package manager and pipelined unit-graph scheduler submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 kernel proof checker"
+        }
+      ],
+      "topics": [
+        "build",
+        "build/benchmarking",
+        "cargo",
+        "cargo/pipelining",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/validation",
+        "lean",
+        "llvm",
+        "llvm/codegen",
+        "rustc",
+        "rustc/codegen",
+        "rustc/incremental",
+        "rustc/performance",
+        "rustc/query-system",
+        "rustc/self-profile",
+        "systems",
+        "systems/perf-events",
+        "tooling",
+        "tooling/profiling",
+        "verification",
+        "verification/performance-metrics"
       ]
     },
     "rustc-compiletest-bootstrap-and-alternate-backend-test-mechanics": {
@@ -83983,6 +84163,118 @@
         "rustc/metadata"
       ]
     },
+    "rustc-feature-completeness-qualification-matrix-and-parity-harnesses": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "412be32a6a189d9a28922beee178bc0abee9d492"
+          },
+          "name": "rustc upstream snapshot (1.102.0-nightly source baseline)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc 1.99.1 release baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc 1.102.0-nightly host toolchain (LLVM 23.1.5 and Cranelift 0.137.0)"
+        },
+        {
+          "identity": {
+            "repository": "Gankra/abi-cafe",
+            "revision": "94d38030419eb00a1ba80e5e2b4d763dcee58db4"
+          },
+          "name": "abi-cafe cross-toolchain ABI differential test harness"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/fls",
+            "revision": "bca860e8dab52715effdd49a792347b262f5e539"
+          },
+          "name": "Ferrocene Language Specification (FLS upstream main)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/fls",
+            "revision": "946eacae5a4a33a89af7832178504692439e7478",
+            "version": "1.99"
+          },
+          "name": "Ferrocene Language Specification (FLS 1.99 release tag)"
+        },
+        {
+          "identity": {
+            "repository": "cbeuw/rustlantis",
+            "revision": "2be7c5a6763831dc0f908f0e05723ebbbc2a62cc"
+          },
+          "name": "rustlantis deterministic custom-MIR differential fuzzer"
+        },
+        {
+          "identity": {
+            "repository": "ferrocene/ferrocene",
+            "revision": "fef61e63733cf86e31b1cb0da3271058a8673f1c"
+          },
+          "name": "Ferrocene qualified Rust compiler and traceability tooling"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/crater",
+            "revision": "abaa949414a8b9457858f0fc1a6ed97824cb9120"
+          },
+          "name": "Crater ecosystem-scale regression runner"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustwide",
+            "revision": "864a7751581e916b4964f8f2fc755c8067d8fc03"
+          },
+          "name": "rustwide isolated container execution library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20"
+          },
+          "name": "Cargo package manager submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+          },
+          "name": "The Rust Reference submodule"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/qualification",
+        "compilers/verified-rustc",
+        "ffi",
+        "ffi/c-cpp-abi",
+        "rust",
+        "rust/calling-conventions",
+        "rust/inline-asm",
+        "rustc",
+        "rustc/abi",
+        "rustc/codegen",
+        "rustc/compiletest",
+        "rustc/intrinsics",
+        "rustc/targets",
+        "tooling",
+        "tooling/differential-testing",
+        "verification",
+        "verification/compiler-verification"
+      ]
+    },
     "rustc-frontend-typeck-borrowck-macro-and-metadata-completeness-contract": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -84052,6 +84344,86 @@
         "rustc/typeck",
         "tooling",
         "verification"
+      ]
+    },
+    "rustc-generated-code-performance-footprint-microarch-and-rigorous-benchmarking": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "412be32a6a189d9a28922beee178bc0abee9d492"
+          },
+          "name": "Rust compiler upstream source snapshot"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust nightly compiler toolchain (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 release compiler toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380"
+          },
+          "name": "Rust LLVM submodule snapshot"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-perf",
+            "revision": "15d95905429e577d5a710b17c49e04b4451c263b"
+          },
+          "name": "rustc-perf compiler and runtime benchmark suite"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "0d0e0196aa4c95f7ccc1292a49b07a33011be371"
+          },
+          "name": "zerocopy crate (MIR Assert and SsaRangePropagation corpus subject)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/benchmarking",
+        "compilers/optimization",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/performance",
+        "compilers/verified-rustc/validation",
+        "isa",
+        "isa/simd",
+        "isa/x86-64",
+        "llvm",
+        "llvm/codegen",
+        "llvm/passes",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "systems",
+        "systems/performance",
+        "tooling",
+        "verification",
+        "verification/empirical-evaluation"
       ]
     },
     "rustc-inline-asm-register-clobber-framing-and-compiler-builtins-verification": {

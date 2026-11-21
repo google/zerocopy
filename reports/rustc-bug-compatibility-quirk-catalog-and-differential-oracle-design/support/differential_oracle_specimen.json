@@ -1,0 +1,2530 @@
+{
+  "schema": "twin-rustc-differential-oracle/1",
+  "observed_date": "2026-11-21",
+  "pinned_source_census": {
+    "source_revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+    "future_incompatibility_reason_enum": {
+      "source": "compiler/rustc_lint_defs/src/lib.rs:368-448",
+      "variant_count": 7,
+      "variants": [
+        {
+          "variant": "FutureReleaseError",
+          "payload": "(ReleaseFcw)"
+        },
+        {
+          "variant": "FutureReleaseSemanticsChange",
+          "payload": "(ReleaseFcw)"
+        },
+        {
+          "variant": "EditionError",
+          "payload": "(EditionFcw)"
+        },
+        {
+          "variant": "EditionSemanticsChange",
+          "payload": "(EditionFcw)"
+        },
+        {
+          "variant": "EditionAndFutureReleaseError",
+          "payload": "(EditionFcw)"
+        },
+        {
+          "variant": "EditionAndFutureReleaseSemanticsChange",
+          "payload": "(EditionFcw)"
+        },
+        {
+          "variant": "Custom",
+          "payload": "(&'static str, ReleaseFcw)"
+        }
+      ],
+      "info_struct_fields": [
+        "pub reason: FutureIncompatibilityReason",
+        "pub explain_reason: bool = true",
+        "pub report_in_deps: bool = false"
+      ]
+    },
+    "fcw_lint_census": {
+      "total_fcw_lints": 69,
+      "by_reason_variant": {
+        "FutureReleaseError": 40,
+        "EditionError": 16,
+        "EditionSemanticsChange": 11,
+        "Custom": 2
+      },
+      "by_default_level": {
+        "Warn": 30,
+        "Deny": 20,
+        "Allow": 19
+      },
+      "report_in_deps_true_count": 21,
+      "report_in_deps_false_count": 48,
+      "lints": [
+        {
+          "ident": "ANONYMOUS_PARAMETERS",
+          "name": "anonymous_parameters",
+          "default_level": "Warn",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2018",
+          "page_slug": "trait-fn-parameters",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/builtin.rs",
+          "line": 661
+        },
+        {
+          "ident": "ELLIPSIS_INCLUSIVE_RANGE_PATTERNS",
+          "name": "ellipsis_inclusive_range_patterns",
+          "default_level": "Warn",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2021",
+          "page_slug": "warnings-promoted-to-error",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/builtin.rs",
+          "line": 1428
+        },
+        {
+          "ident": "KEYWORD_IDENTS_2018",
+          "name": "keyword_idents_2018",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2018",
+          "page_slug": "new-keywords",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/builtin.rs",
+          "line": 1551
+        },
+        {
+          "ident": "KEYWORD_IDENTS_2024",
+          "name": "keyword_idents_2024",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "gen-keyword",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/builtin.rs",
+          "line": 1595
+        },
+        {
+          "ident": "INTERNAL_EQ_TRAIT_METHOD_IMPLS",
+          "name": "internal_eq_trait_method_impls",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 152336,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/builtin.rs",
+          "line": 3015
+        },
+        {
+          "ident": "IF_LET_RESCOPE",
+          "name": "if_let_rescope",
+          "default_level": "Allow",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "temporary-if-let-scope",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/if_let_rescope.rs",
+          "line": 20
+        },
+        {
+          "ident": "IMPL_TRAIT_OVERCAPTURES",
+          "name": "impl_trait_overcaptures",
+          "default_level": "Allow",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "rpit-lifetime-capture",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/impl_trait_overcaptures.rs",
+          "line": 32
+        },
+        {
+          "ident": "EDITION_2024_EXPR_FRAGMENT_SPECIFIER",
+          "name": "edition_2024_expr_fragment_specifier",
+          "default_level": "Allow",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "macro-fragment-specifiers",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/macro_expr_fragment_specifier_2024_migration.rs",
+          "line": 13
+        },
+        {
+          "ident": "NON_FMT_PANICS",
+          "name": "non_fmt_panics",
+          "default_level": "Warn",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2021",
+          "page_slug": "panic-macro-consistency",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": false,
+          "report_in_external_macro": true,
+          "source_file": "compiler/rustc_lint/src/non_fmt_panic.rs",
+          "line": 16
+        },
+        {
+          "ident": "ARRAY_INTO_ITER",
+          "name": "array_into_iter",
+          "default_level": "Warn",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2021",
+          "page_slug": "IntoIterator-for-arrays",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/shadowed_into_iter.rs",
+          "line": 9
+        },
+        {
+          "ident": "BOXED_SLICE_INTO_ITER",
+          "name": "boxed_slice_into_iter",
+          "default_level": "Warn",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "intoiterator-box-slice",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/shadowed_into_iter.rs",
+          "line": 37
+        },
+        {
+          "ident": "STATIC_MUT_REFS",
+          "name": "static_mut_refs",
+          "default_level": "Warn",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "static-mut-references",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": false,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/static_mut_refs.rs",
+          "line": 11
+        },
+        {
+          "ident": "UNMARKED_UNCHECKED_TYPE_ALIASES",
+          "name": "unmarked_unchecked_type_aliases",
+          "default_level": "Allow",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "future",
+          "page_slug": "checked-type-aliases",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint/src/unmarked_unchecked_type_aliases.rs",
+          "line": 8
+        },
+        {
+          "ident": "FORBIDDEN_LINT_GROUPS",
+          "name": "forbidden_lint_groups",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 81670,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 173
+        },
+        {
+          "ident": "ILL_FORMED_ATTRIBUTE_INPUT",
+          "name": "ill_formed_attribute_input",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 57571,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 214
+        },
+        {
+          "ident": "CONFLICTING_REPR_HINTS",
+          "name": "conflicting_repr_hints",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 68585,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 251
+        },
+        {
+          "ident": "PUB_USE_OF_PRIVATE_EXTERN_CRATE",
+          "name": "pub_use_of_private_extern_crate",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 127909,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 1365
+        },
+        {
+          "ident": "INVALID_TYPE_PARAM_DEFAULT",
+          "name": "invalid_type_param_default",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 36887,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 1399
+        },
+        {
+          "ident": "PATTERNS_IN_FNS_WITHOUT_BODY",
+          "name": "patterns_in_fns_without_body",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 35203,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 1515
+        },
+        {
+          "ident": "LATE_BOUND_LIFETIME_ARGUMENTS",
+          "name": "late_bound_lifetime_arguments",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 42868,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 1567
+        },
+        {
+          "ident": "COHERENCE_LEAK_CHECK",
+          "name": "coherence_leak_check",
+          "default_level": "Warn",
+          "reason_variant": "Custom",
+          "issue_number": 56105,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": "the behavior may change in a future release",
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 1608
+        },
+        {
+          "ident": "RUST_2024_INCOMPATIBLE_PAT",
+          "name": "rust_2024_incompatible_pat",
+          "default_level": "Allow",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "match-ergonomics",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 1718
+        },
+        {
+          "ident": "TYVAR_BEHIND_RAW_POINTER",
+          "name": "tyvar_behind_raw_pointer",
+          "default_level": "Warn",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2018",
+          "page_slug": "tyvar-behind-raw-pointer",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 1858
+        },
+        {
+          "ident": "BARE_TRAIT_OBJECTS",
+          "name": "bare_trait_objects",
+          "default_level": "Warn",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2021",
+          "page_slug": "warnings-promoted-to-error",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 1932
+        },
+        {
+          "ident": "ABSOLUTE_PATHS_NOT_STARTING_WITH_CRATE",
+          "name": "absolute_paths_not_starting_with_crate",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2018",
+          "page_slug": "path-changes",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 1963
+        },
+        {
+          "ident": "UNSTABLE_NAME_COLLISIONS",
+          "name": "unstable_name_collisions",
+          "default_level": "Warn",
+          "reason_variant": "Custom",
+          "issue_number": 48919,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": "once this associated item is added to the standard library, \\\n             the ambiguity may cause an error or change in behavior!",
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2017
+        },
+        {
+          "ident": "PROC_MACRO_DERIVE_RESOLUTION_FALLBACK",
+          "name": "proc_macro_derive_resolution_fallback",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 83583,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2131
+        },
+        {
+          "ident": "MACRO_EXPANDED_MACRO_EXPORTS_ACCESSED_BY_ABSOLUTE_PATHS",
+          "name": "macro_expanded_macro_exports_accessed_by_absolute_paths",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 52234,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2252
+        },
+        {
+          "ident": "AMBIGUOUS_ASSOCIATED_ITEMS",
+          "name": "ambiguous_associated_items",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 57644,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2396
+        },
+        {
+          "ident": "UNSAFE_OP_IN_UNSAFE_FN",
+          "name": "unsafe_op_in_unsafe_fn",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "unsafe-op-in-unsafe-fn",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": false,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2611
+        },
+        {
+          "ident": "CONST_EVALUATABLE_UNCHECKED",
+          "name": "const_evaluatable_unchecked",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 76200,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2663
+        },
+        {
+          "ident": "UNINHABITED_STATIC",
+          "name": "uninhabited_static",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 74840,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2732
+        },
+        {
+          "ident": "SELF_CONSTRUCTOR_FROM_OUTER_ITEM",
+          "name": "self_constructor_from_outer_item",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 124186,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2885
+        },
+        {
+          "ident": "SEMICOLON_IN_EXPRESSIONS_FROM_MACROS",
+          "name": "semicolon_in_expressions_from_macros",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 79813,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2925
+        },
+        {
+          "ident": "SEMICOLON_IN_EXPRESSIONS_FROM_NON_LOCAL_MACROS",
+          "name": "semicolon_in_expressions_from_non_local_macros",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 79813,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 2971
+        },
+        {
+          "ident": "LEGACY_DERIVE_HELPERS",
+          "name": "legacy_derive_helpers",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 79202,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 3035
+        },
+        {
+          "ident": "UNSTABLE_SYNTAX_PRE_EXPANSION",
+          "name": "unstable_syntax_pre_expansion",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 154045,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 3194
+        },
+        {
+          "ident": "RUST_2021_INCOMPATIBLE_CLOSURE_CAPTURES",
+          "name": "rust_2021_incompatible_closure_captures",
+          "default_level": "Allow",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2021",
+          "page_slug": "disjoint-capture-in-closures",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": false,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 3407
+        },
+        {
+          "ident": "RUST_2021_INCOMPATIBLE_OR_PATTERNS",
+          "name": "rust_2021_incompatible_or_patterns",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2021",
+          "page_slug": "or-patterns-macro-rules",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 3540
+        },
+        {
+          "ident": "RUST_2021_PRELUDE_COLLISIONS",
+          "name": "rust_2021_prelude_collisions",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2021",
+          "page_slug": "prelude",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 3578
+        },
+        {
+          "ident": "RUST_2024_PRELUDE_COLLISIONS",
+          "name": "rust_2024_prelude_collisions",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "prelude",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 3626
+        },
+        {
+          "ident": "RUST_2021_PREFIXES_INCOMPATIBLE_SYNTAX",
+          "name": "rust_2021_prefixes_incompatible_syntax",
+          "default_level": "Allow",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2021",
+          "page_slug": "reserving-syntax",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 3665
+        },
+        {
+          "ident": "UNSUPPORTED_CALLING_CONVENTIONS",
+          "name": "unsupported_calling_conventions",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 137018,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 3702
+        },
+        {
+          "ident": "UNSUPPORTED_FN_PTR_CALLING_CONVENTIONS",
+          "name": "unsupported_fn_ptr_calling_conventions",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 130260,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 3749
+        },
+        {
+          "ident": "INVALID_MACRO_EXPORT_ARGUMENTS",
+          "name": "invalid_macro_export_arguments",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 57571,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 4266
+        },
+        {
+          "ident": "AMBIGUOUS_DERIVE_HELPERS",
+          "name": "ambiguous_derive_helpers",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 151276,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 4300
+        },
+        {
+          "ident": "AMBIGUOUS_GLOB_IMPORTS",
+          "name": "ambiguous_glob_imports",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 114095,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 4591
+        },
+        {
+          "ident": "AMBIGUOUS_GLOB_IMPORTED_TRAITS",
+          "name": "ambiguous_glob_imported_traits",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 152822,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 4626
+        },
+        {
+          "ident": "AMBIGUOUS_PANIC_IMPORTS",
+          "name": "ambiguous_panic_imports",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 147319,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 4699
+        },
+        {
+          "ident": "AMBIGUOUS_IMPORT_VISIBILITIES",
+          "name": "ambiguous_import_visibilities",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 149145,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 4735
+        },
+        {
+          "ident": "PRIVATE_MACRO_USE",
+          "name": "private_macro_use",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 120192,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 4896
+        },
+        {
+          "ident": "UNCOVERED_PARAM_IN_PROJECTION",
+          "name": "uncovered_param_in_projection",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 124559,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 4943
+        },
+        {
+          "ident": "DEPRECATED_SAFE_2024",
+          "name": "deprecated_safe_2024",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "newly-unsafe-functions",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5007
+        },
+        {
+          "ident": "MISSING_UNSAFE_ON_EXTERN",
+          "name": "missing_unsafe_on_extern",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "unsafe-extern",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5054
+        },
+        {
+          "ident": "UNSAFE_ATTR_OUTSIDE_UNSAFE",
+          "name": "unsafe_attr_outside_unsafe",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "unsafe-attributes",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5089
+        },
+        {
+          "ident": "OUT_OF_SCOPE_MACRO_CALLS",
+          "name": "out_of_scope_macro_calls",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 124535,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5129
+        },
+        {
+          "ident": "TAIL_EXPR_DROP_ORDER",
+          "name": "tail_expr_drop_order",
+          "default_level": "Allow",
+          "reason_variant": "EditionSemanticsChange",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "temporary-tail-expr-scope",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5249
+        },
+        {
+          "ident": "RUST_2024_GUARDED_STRING_INCOMPATIBLE_SYNTAX",
+          "name": "rust_2024_guarded_string_incompatible_syntax",
+          "default_level": "Allow",
+          "reason_variant": "EditionError",
+          "issue_number": null,
+          "target_edition": "2024",
+          "page_slug": "reserved-syntax",
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5325
+        },
+        {
+          "ident": "AARCH64_SOFTFLOAT_NEON",
+          "name": "aarch64_softfloat_neon",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 134375,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5364
+        },
+        {
+          "ident": "X86_SOFTFLOAT_SSE",
+          "name": "x86_softfloat_sse",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 117938,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5405
+        },
+        {
+          "ident": "REPR_C_ENUMS_LARGER_THAN_INT",
+          "name": "repr_c_enums_larger_than_int",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 124403,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5476
+        },
+        {
+          "ident": "VARARGS_WITHOUT_PATTERN",
+          "name": "varargs_without_pattern",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 145544,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5524
+        },
+        {
+          "ident": "FLOAT_LITERAL_F32_FALLBACK",
+          "name": "float_literal_f32_fallback",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 154024,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5620
+        },
+        {
+          "ident": "METHOD_CALL_ON_DIVERGING_INFER_VAR",
+          "name": "method_call_on_diverging_infer_var",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 156047,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5710
+        },
+        {
+          "ident": "RECURSION_DEPTH_EXCEEDING_LIMIT",
+          "name": "recursion_depth_exceeding_limit",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 159228,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5752
+        },
+        {
+          "ident": "UNSTABLE_IMPORTS",
+          "name": "unstable_imports",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 163160,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5864
+        },
+        {
+          "ident": "UNSAFE_PANIC_HANDLERS",
+          "name": "unsafe_panic_handlers",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 163263,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5889
+        },
+        {
+          "ident": "PARTIAL_STACK_PROTECTOR",
+          "name": "partial_stack_protector",
+          "default_level": "Warn",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 154613,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": false,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 5928
+        },
+        {
+          "ident": "NO_LINK_ATTRIBUTES",
+          "name": "no_link_attributes",
+          "default_level": "Deny",
+          "reason_variant": "FutureReleaseError",
+          "issue_number": 164032,
+          "target_edition": null,
+          "page_slug": null,
+          "custom_text": null,
+          "report_in_deps": true,
+          "explain_reason": true,
+          "report_in_external_macro": false,
+          "source_file": "compiler/rustc_lint_defs/src/builtin.rs",
+          "line": 6023
+        }
+      ]
+    },
+    "tests_crashes_census": {
+      "directory": "tests/crashes/",
+      "total_rs_files": 147
+    },
+    "known_bug_census": {
+      "total_files_with_known_bug": 316,
+      "total_directives": 325,
+      "by_top_level_suite": {
+        "ui": 170,
+        "crashes": 145,
+        "codegen-llvm": 1
+      },
+      "by_ui_subsystem_top20": {
+        "async-await": 24,
+        "impl-trait": 18,
+        "traits": 18,
+        "nll": 16,
+        "codegen": 12,
+        "generic-associated-types": 12,
+        "borrowck": 11,
+        "const-generics": 8,
+        "specialization": 7,
+        "type-alias-impl-trait": 7,
+        "coherence": 6,
+        "implied-bounds": 5,
+        "consts": 4,
+        "higher-ranked": 3,
+        "associated-types": 2,
+        "type-inference": 2,
+        "associated-inherent-types": 1,
+        "checked-type-aliases": 1,
+        "closures": 1,
+        "coroutine": 1
+      },
+      "top_25_issue_targets": {
+        "unknown": 22,
+        "#110338": 16,
+        "#107975": 12,
+        "#100041": 5,
+        "#140123": 4,
+        "trait-system-refactor-initiative#293": 4,
+        "#133119": 3,
+        "#151861": 3,
+        "#57893": 3,
+        "#110395": 3,
+        "#119786": 3,
+        "#105238": 2,
+        "#114198": 2,
+        "#114212": 2,
+        "#116519": 2,
+        "#118952": 2,
+        "#155482": 2,
+        "#130935": 2,
+        "#160979": 2,
+        "#42940": 2,
+        "#163886": 2,
+        "#133805": 2,
+        "#155151": 2,
+        "#112905": 2,
+        "#46589": 2
+      }
+    },
+    "next_solver_ui_ignore_census": {
+      "directive": "//@ ignore-compare-mode-next-solver",
+      "total_ui_files": 657,
+      "by_ui_subsystem_top20": {
+        "traits": 173,
+        "impl-trait": 100,
+        "type-alias-impl-trait": 45,
+        "higher-ranked": 26,
+        "transmute": 20,
+        "transmutability": 19,
+        "async-await": 16,
+        "any": 15,
+        "generic-associated-types": 15,
+        "coherence": 14,
+        "associated-types": 13,
+        "field_representing_types": 13,
+        "coroutine": 12,
+        "diagnostic_namespace": 12,
+        "specialization": 11,
+        "const-generics": 10,
+        "closures": 9,
+        "coercion": 8,
+        "sized-hierarchy": 7,
+        "wf": 7
+      }
+    },
+    "deterministic_layout_census": {
+      "directive": "//@ needs-deterministic-layouts",
+      "total_files": 15,
+      "by_suite": {
+        "codegen-llvm": 9,
+        "ui/async-await": 2,
+        "mir-opt": 1,
+        "ui/print_type_sizes": 1,
+        "ui/stats": 1,
+        "ui/structs-enums": 1
+      },
+      "files": [
+        "tests/codegen-llvm/array-cmp.rs",
+        "tests/codegen-llvm/issues/cows-dont-have-branches-117763.rs",
+        "tests/codegen-llvm/issues/issue-86106.rs",
+        "tests/codegen-llvm/iter-repeat-n-trivial-drop.rs",
+        "tests/codegen-llvm/lib-optimizations/append-elements.rs",
+        "tests/codegen-llvm/mem-replace-big-type.rs",
+        "tests/codegen-llvm/slice-iter-len-eq-zero.rs",
+        "tests/codegen-llvm/slice-iter-nonnull.rs",
+        "tests/codegen-llvm/vecdeque-drain.rs",
+        "tests/mir-opt/pre-codegen/issue_117368_print_invalid_constant.rs",
+        "tests/ui/async-await/future-sizes/async-awaiting-fut.rs",
+        "tests/ui/async-await/future-sizes/large-arg.rs",
+        "tests/ui/print_type_sizes/async.rs",
+        "tests/ui/stats/input-stats.rs",
+        "tests/ui/structs-enums/type-sizes.rs"
+      ]
+    },
+    "mir_preserve_ub_static_audit": {
+      "mir_transform_files_scanned": 97,
+      "mir_preserve_ub_checks": [
+        {
+          "file": "compiler/rustc_mir_transform/src/remove_place_mention.rs",
+          "line": 13,
+          "code": "PassPolicy::optional(!ctx.opts.unstable_opts.mir_preserve_ub)"
+        },
+        {
+          "file": "compiler/rustc_mir_transform/src/simplify.rs",
+          "line": 132,
+          "code": "|| tcx.sess.opts.unstable_opts.mir_preserve_ub;"
+        }
+      ],
+      "dead_rvalue_removal_sites": [
+        {
+          "file": "compiler/rustc_mir_transform/src/dead_store_elimination.rs",
+          "line": 95,
+          "code": "if let Some(destination) = MaybeTransitiveLiveLocals::can_be_removed_if_dead("
+        },
+        {
+          "file": "compiler/rustc_mir_transform/src/remove_zsts.rs",
+          "line": 121,
+          "code": "rvalue.is_safe_to_remove().then_some(place)"
+        },
+        {
+          "file": "compiler/rustc_mir_transform/src/simplify.rs",
+          "line": 581,
+          "code": "if rvalue.is_safe_to_remove() {"
+        }
+      ],
+      "gvn_has_mir_preserve_ub_check": false,
+      "dse_has_mir_preserve_ub_check": false
+    }
+  },
+  "differential_oracle_run": {
+    "toolchains": {
+      "rustc_1_99_1_vv": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+      "rustc_nightly_vv": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+      "miri_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+      "default_symbol_mangling_1_99_1": {
+        "v0_count": 606,
+        "legacy_count": 0,
+        "exported_probe_symbols": [
+          {
+            "mangling_scheme": "v0",
+            "symbol_prefix": "_RNvCs1mieHSqJ4qC_1m16mangled_probe_",
+            "size_hex": "0000000000000023"
+          }
+        ]
+      },
+      "default_symbol_mangling_nightly": {
+        "v0_count": 612,
+        "legacy_count": 0,
+        "exported_probe_symbols": [
+          {
+            "mangling_scheme": "v0",
+            "symbol_prefix": "_RNvCs7emhAfPAEOi_1m16mangled_probe_",
+            "size_hex": "0000000000000023"
+          }
+        ]
+      }
+    },
+    "summary": {
+      "total_specimens": 22,
+      "by_divergence_class": {
+        "EQUIVALENT": 9,
+        "BENIGN_UNSPECIFIED_CHOICE": 4,
+        "INTENTIONAL_BUG_FIX_OR_STRICTNESS": 4,
+        "FCW_COMPATIBILITY_DRIFT": 3,
+        "SPEC_REGRESSION_FALSE_POSITIVE": 1,
+        "SOUNDNESS_MISCOMPILATION": 1
+      },
+      "all_6_classes_exercised": true
+    },
+    "specimens": [
+      {
+        "id": "S01_repr_c_u128_abi_and_runtime_io",
+        "category": "abi_and_layout",
+        "description": "#[repr(C)] struct with u8/u128/u32, offset_of!, #[no_mangle] symbol, and runtime output across 1.99.1 vs nightly",
+        "divergence_class": "EQUIVALENT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 598,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 604,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "SZ=48 AL=16 OFF_PAYLOAD=16 OFF_TAIL=32 FN=48",
+          "cand_stdout": "SZ=48 AL=16 OFF_PAYLOAD=16 OFF_TAIL=32 FN=48",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S02_borrowck_e0382_json_span",
+        "category": "diagnostics_and_spans",
+        "description": "Use-after-move E0382 JSON error code and primary byte-span parity across 1.99.1 vs nightly",
+        "divergence_class": "EQUIVALENT",
+        "level_1_acceptance": {
+          "ref_rc": 1,
+          "cand_rc": 1,
+          "ref_outcome": "reject",
+          "cand_outcome": "reject",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [
+            "E0382"
+          ],
+          "cand_codes": [
+            "E0382"
+          ],
+          "ref_primary_spans": [
+            {
+              "byte_start": 78,
+              "byte_end": 79,
+              "line_start": 4,
+              "column_start": 16
+            }
+          ],
+          "cand_primary_spans": [
+            {
+              "byte_start": 78,
+              "byte_end": 79,
+              "line_start": 4,
+              "column_start": 16
+            }
+          ],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {},
+          "cand_symbols": {},
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": false,
+          "ref_rc": null,
+          "cand_rc": null,
+          "ref_stdout": "",
+          "cand_stdout": "",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S03_rustfix_machine_applicable_span_slice",
+        "category": "diagnostics_and_spans",
+        "description": "MachineApplicable unused_mut suggestion byte-slicing and post-fix clean compilation across 1.99.1 vs nightly",
+        "divergence_class": "EQUIVALENT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [
+            "unused_mut"
+          ],
+          "cand_codes": [
+            "unused_mut"
+          ],
+          "ref_primary_spans": [
+            {
+              "byte_start": 20,
+              "byte_end": 27,
+              "line_start": 2,
+              "column_start": 9
+            }
+          ],
+          "cand_primary_spans": [
+            {
+              "byte_start": 24,
+              "byte_end": 27,
+              "line_start": 2,
+              "column_start": 13
+            }
+          ],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": true,
+          "match": false
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 604,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 610,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "42",
+          "cand_stdout": "42",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S04_dep_info_makefile_escaping",
+        "category": "tooling_scraping",
+        "description": "Makefile .d dep-info escape_dep_filename behavior on paths with spaces, '#', and '$'",
+        "divergence_class": "EQUIVALENT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": true,
+          "ref_symbols": {
+            "v0_count": 603,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 609,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "DEP_OK",
+          "cand_stdout": "DEP_OK",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S05_cli_vv_and_print_scraping",
+        "category": "tooling_scraping",
+        "description": "rustc -vV 7-line header grammar and --print=file-names / --print=native-static-libs scraping contract",
+        "divergence_class": "EQUIVALENT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "native_static_libs_note_verified": true,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "vv_field_keys": [
+            "binary",
+            "commit-hash",
+            "commit-date",
+            "host",
+            "release",
+            "LLVM version"
+          ],
+          "staticlib_file_name": "libfoo.a",
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null
+        }
+      },
+      {
+        "id": "S06_proc_macro_tokenstream_spacing_and_invisible_group",
+        "category": "proc_macro_quirks",
+        "description": "proc_macro Spacing::Joint vs Alone and Delimiter::None invisible group AST-precedence vs to_string() flattening",
+        "divergence_class": "EQUIVALENT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "proc_macro_bridge_loaded": true,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "JOINT=+=|ALONE=+ =|MBE=9|ID=9|REBUILD=7|STR=7",
+          "cand_stdout": "JOINT=+=|ALONE=+ =|MBE=9|ID=9|REBUILD=7|STR=7",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null
+        }
+      },
+      {
+        "id": "S07_rvalue_static_promotion_boundary",
+        "category": "compatibility_shims",
+        "description": "Syntactic rvalue static promotion (&(40 + 2) and &None::<Cell<u8>>) parity across 1.99.1 vs nightly",
+        "divergence_class": "EQUIVALENT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 608,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 614,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "PROMOTED=42 NONE=true",
+          "cand_stdout": "PROMOTED=42 NONE=true",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S08_nll_two_phase_borrow_reservation",
+        "category": "compatibility_shims",
+        "description": "NLL two-phase mutable borrow reservation overlapping shared borrow (vec.push(vec.len())) + Miri Tree Borrows",
+        "divergence_class": "EQUIVALENT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 620,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 626,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "LEN=3 LAST=2",
+          "cand_stdout": "LEN=3 LAST=2",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S09_extern_c_panic_abort_barrier",
+        "category": "ffi_unwind",
+        "description": "Rust panic reaching extern \"C\" ABI boundary triggers mandatory process abort across 1.99.1 vs nightly",
+        "divergence_class": "EQUIVALENT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 595,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 601,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": -6,
+          "cand_rc": -6,
+          "ref_stdout": "",
+          "cand_stdout": "",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S10_repr_rust_layout_randomization",
+        "category": "hyrum_layout_quirks",
+        "description": "#[repr(Rust)] alignment-descending + niche layout vs -Zrandomize-layout -Zlayout-seed=42",
+        "divergence_class": "BENIGN_UNSPECIFIED_CHOICE",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 610,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 610,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "SZ=16 OPT_SZ=16 AL=8 OFF_A=10 OFF_B=0 OFF_C=8 OFF_N=11",
+          "cand_stdout": "SZ=16 OPT_SZ=16 AL=8 OFF_A=0 OFF_B=8 OFF_C=2 OFF_N=1",
+          "within_unspecified_choice_set": true,
+          "match": false
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S11_nan_payload_opt0_vs_opt3",
+        "category": "observable_backend_choices",
+        "description": "Negative quiet NaN + 0.0 preserving payload at -O0 vs canonical positive QNaN folding at -O3 (RFC 3514)",
+        "divergence_class": "BENIGN_UNSPECIFIED_CHOICE",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 606,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 598,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "NAN_BITS=0xfff8000000000001",
+          "cand_stdout": "NAN_BITS=0x7ff8000000000000",
+          "within_unspecified_choice_set": true,
+          "match": false
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S12_symbol_mangling_v0_vs_legacy",
+        "category": "tooling_scraping",
+        "description": "Internal Rust symbol mangling v0 (_R...) vs legacy (_ZN...17h...E) while #[no_mangle] and runtime I/O stay identical",
+        "divergence_class": "BENIGN_UNSPECIFIED_CHOICE",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 611,
+            "legacy_count": 0,
+            "exported_probe_symbols": [
+              {
+                "mangling_scheme": "unmangled",
+                "symbol_prefix": "oracle_exported_entry",
+                "size_hex": "0000000000000018"
+              },
+              {
+                "mangling_scheme": "v0",
+                "symbol_prefix": "_RNvCs99ND1ZpbFx2_8specimen16mangled",
+                "size_hex": "0000000000000006"
+              }
+            ]
+          },
+          "cand_symbols": {
+            "v0_count": 600,
+            "legacy_count": 11,
+            "exported_probe_symbols": [
+              {
+                "mangling_scheme": "unmangled",
+                "symbol_prefix": "oracle_exported_entry",
+                "size_hex": "0000000000000018"
+              },
+              {
+                "mangling_scheme": "legacy",
+                "symbol_prefix": "_ZN8specimen16mangled_probe_fn17h90c",
+                "size_hex": "0000000000000006"
+              }
+            ]
+          },
+          "only_unspecified_mangling_or_repr_rust": true,
+          "match": false
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "VAL=42",
+          "cand_stdout": "VAL=42",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S13_fn_pointer_icf_merging",
+        "category": "observable_backend_choices",
+        "description": "Monomorphized fn pointer address equality (id::<u32> vs id::<i32>) at -O0 vs -O3",
+        "divergence_class": "BENIGN_UNSPECIFIED_CHOICE",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 615,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 605,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "FN_MERGED=false CALLS=7,-7",
+          "cand_stdout": "FN_MERGED=true CALLS=7,-7",
+          "within_unspecified_choice_set": true,
+          "match": false
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S14_ice_117392_fixed_in_nightly",
+        "category": "known_bugs_and_ices",
+        "description": "Opaque-type relation ICE (rust-lang/rust#117392) crashing 1.99.1 with exit 101 and succeeding on nightly",
+        "divergence_class": "INTENTIONAL_BUG_FIX_OR_STRICTNESS",
+        "level_1_acceptance": {
+          "ref_rc": 101,
+          "cand_rc": 0,
+          "ref_outcome": "ice",
+          "cand_outcome": "accept",
+          "match": false
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [
+            {
+              "byte_start": 417,
+              "byte_end": 417,
+              "line_start": 23,
+              "column_start": 15
+            }
+          ],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": false
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {},
+          "cand_symbols": {},
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": false,
+          "ref_rc": null,
+          "cand_rc": null,
+          "ref_stdout": "",
+          "cand_stdout": "",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S15_next_solver_globally_vs_coherence",
+        "category": "compatibility_shims",
+        "description": "Higher-ranked opaque-type subtyping (#104779) rejected under legacy solver (1.99.1) and accepted under NextSolverConfig::Globally (nightly)",
+        "divergence_class": "INTENTIONAL_BUG_FIX_OR_STRICTNESS",
+        "level_1_acceptance": {
+          "ref_rc": 1,
+          "cand_rc": 0,
+          "ref_outcome": "reject",
+          "cand_outcome": "accept",
+          "match": false
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [
+            "dead_code"
+          ],
+          "ref_primary_spans": [
+            {
+              "byte_start": 291,
+              "byte_end": 305,
+              "line_start": 12,
+              "column_start": 15
+            },
+            {
+              "byte_start": 320,
+              "byte_end": 332,
+              "line_start": 13,
+              "column_start": 13
+            }
+          ],
+          "cand_primary_spans": [
+            {
+              "byte_start": 15,
+              "byte_end": 29,
+              "line_start": 1,
+              "column_start": 16
+            },
+            {
+              "byte_start": 50,
+              "byte_end": 53,
+              "line_start": 3,
+              "column_start": 5
+            },
+            {
+              "byte_start": 59,
+              "byte_end": 62,
+              "line_start": 4,
+              "column_start": 5
+            }
+          ],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": false
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {},
+          "cand_symbols": {},
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": false,
+          "ref_rc": null,
+          "cand_rc": null,
+          "ref_stdout": "",
+          "cand_stdout": "",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S16_gvn_div_zero_ub_erasure",
+        "category": "mir_pass_ub_erasure",
+        "description": "GVN::simplify_binary_inner folds 0_u32 / x -> 0 at x=0 without checking -Zmir-preserve-ub, while unoptimized Miri catches DivisionByZero UB",
+        "divergence_class": "INTENTIONAL_BUG_FIX_OR_STRICTNESS",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 612,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 612,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": -8,
+          "ref_stdout": "GVN_RES=0",
+          "cand_stdout": "",
+          "within_unspecified_choice_set": false,
+          "match": false
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 1,
+          "miri_ub_detected": true,
+          "miri_diagnostic": "error: Undefined Behavior: dividing by zero"
+        }
+      },
+      {
+        "id": "S17_dse_simplifylocals_strip_debuginfo_ub_erasure",
+        "category": "mir_pass_ub_erasure",
+        "description": "Rvalue::is_safe_to_remove() in DSE/SimplifyLocals erases dead null-pointer dereference UB under -Zmir-preserve-ub=yes once -Zmir-strip-debuginfo=locals-in-tiny-functions removes VarDebugInfo",
+        "divergence_class": "INTENTIONAL_BUG_FIX_OR_STRICTNESS",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 1,
+          "ref_stdout": "RAN",
+          "cand_stdout": "",
+          "miri_opt2_with_var_debuginfo_rc": 1,
+          "within_unspecified_choice_set": false,
+          "match": false
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 1,
+          "miri_ub_detected": true,
+          "miri_diagnostic": "Undefined Behavior: memory access failed: attempting to access 4 bytes, but got null pointer"
+        }
+      },
+      {
+        "id": "S18_cap_lints_allow_fcw_dependency_immunity",
+        "category": "compatibility_shims",
+        "description": "Deny-by-default Future-Incompatible Lint (conflicting_repr_hints E0566) capped to exit 0 under Cargo --cap-lints=allow while emitting --json=future-incompat",
+        "divergence_class": "FCW_COMPATIBILITY_DRIFT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 1,
+          "ref_outcome": "accept",
+          "cand_outcome": "reject",
+          "match": false
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [
+            "E0566"
+          ],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [
+            {
+              "byte_start": 7,
+              "byte_end": 8,
+              "line_start": 1,
+              "column_start": 8
+            },
+            {
+              "byte_start": 10,
+              "byte_end": 12,
+              "line_start": 1,
+              "column_start": 11
+            },
+            {
+              "byte_start": 22,
+              "byte_end": 23,
+              "line_start": 2,
+              "column_start": 8
+            },
+            {
+              "byte_start": 25,
+              "byte_end": 28,
+              "line_start": 2,
+              "column_start": 11
+            }
+          ],
+          "ref_fcw_report_count": 1,
+          "cand_fcw_report_count": 1,
+          "rustfix_verified": null,
+          "match": false
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {},
+          "cand_symbols": {},
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": false,
+          "ref_rc": null,
+          "cand_rc": null,
+          "ref_stdout": "",
+          "cand_stdout": "",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S19_edition_2021_vs_2024_drop_order_and_if_let_rescope",
+        "category": "hyrum_drop_order_quirks",
+        "description": "Observable Drop order shift between --edition=2021 and --edition=2024 on tail_expr_drop_order and if_let_rescope",
+        "divergence_class": "FCW_COMPATIBILITY_DRIFT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 719,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 719,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "DROPS=block_local,tail_temp,else_branch,if_let_temp",
+          "cand_stdout": "DROPS=tail_temp,block_local,if_let_temp,else_branch",
+          "within_unspecified_choice_set": false,
+          "match": false
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S20_rustc_bootstrap_backdoor_vs_stable",
+        "category": "compatibility_shims",
+        "description": "RUSTC_BOOTSTRAP=<crate> enabling #![feature(rustc_attrs)] on stable rustc 1.99.1 vs standard E0554 rejection",
+        "divergence_class": "FCW_COMPATIBILITY_DRIFT",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 1,
+          "ref_outcome": "accept",
+          "cand_outcome": "reject",
+          "match": false
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [
+            "internal_features"
+          ],
+          "cand_codes": [
+            "E0554",
+            "internal_features"
+          ],
+          "ref_primary_spans": [
+            {
+              "byte_start": 11,
+              "byte_end": 22,
+              "line_start": 1,
+              "column_start": 12
+            }
+          ],
+          "cand_primary_spans": [
+            {
+              "byte_start": 0,
+              "byte_end": 24,
+              "line_start": 1,
+              "column_start": 1
+            },
+            {
+              "byte_start": 11,
+              "byte_end": 22,
+              "line_start": 1,
+              "column_start": 12
+            }
+          ],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": false
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {},
+          "cand_symbols": {},
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": false,
+          "ref_rc": null,
+          "cand_rc": null,
+          "ref_stdout": "",
+          "cand_stdout": "",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": false,
+          "miri_rc": null,
+          "miri_ub_detected": null,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S21_spec_regression_false_positive_valid_rust_rejected",
+        "category": "oracle_classifier_validation",
+        "description": "Valid Miri-clean Edition 2021 Rust using `gen` identifier rejected when a candidate fails to honor Edition 2021 keyword table",
+        "divergence_class": "SPEC_REGRESSION_FALSE_POSITIVE",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 1,
+          "ref_outcome": "accept",
+          "cand_outcome": "reject",
+          "match": false
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [
+            "E0425"
+          ],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [
+            {
+              "byte_start": 20,
+              "byte_end": 23,
+              "line_start": 2,
+              "column_start": 9
+            },
+            {
+              "byte_start": 79,
+              "byte_end": 82,
+              "line_start": 3,
+              "column_start": 20
+            }
+          ],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": false
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 605,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {},
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": false,
+          "ref_rc": null,
+          "cand_rc": null,
+          "ref_stdout": "",
+          "cand_stdout": "",
+          "within_unspecified_choice_set": false,
+          "match": true
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      },
+      {
+        "id": "S22_llvm_107975_safe_rust_miscompilation",
+        "category": "known_bugs_and_ices",
+        "description": "Live rust-lang/rust#107975 safe-Rust (#![forbid(unsafe_code)]) miscompilation where (diff == 0) != (format!(\"{diff}\") == \"0\") at -Copt-level=2 despite Miri proving zero UB",
+        "divergence_class": "SOUNDNESS_MISCOMPILATION",
+        "level_1_acceptance": {
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_outcome": "accept",
+          "cand_outcome": "accept",
+          "match": true
+        },
+        "level_2_diagnostics": {
+          "ref_codes": [],
+          "cand_codes": [],
+          "ref_primary_spans": [],
+          "cand_primary_spans": [],
+          "ref_fcw_report_count": 0,
+          "cand_fcw_report_count": 0,
+          "rustfix_verified": null,
+          "match": true
+        },
+        "level_3_artifacts_abi": {
+          "dep_escaped_space_ok": null,
+          "ref_symbols": {
+            "v0_count": 630,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "cand_symbols": {
+            "v0_count": 605,
+            "legacy_count": 0,
+            "exported_probe_symbols": []
+          },
+          "only_unspecified_mangling_or_repr_rust": false,
+          "match": true
+        },
+        "level_4_runtime_io": {
+          "executed": true,
+          "ref_rc": 0,
+          "cand_rc": 0,
+          "ref_stdout": "CONSISTENT=true",
+          "cand_stdout": "CONSISTENT=false",
+          "within_unspecified_choice_set": false,
+          "match": false
+        },
+        "level_5_miri_refinement": {
+          "invoked": true,
+          "miri_rc": 0,
+          "miri_ub_detected": false,
+          "miri_diagnostic": ""
+        }
+      }
+    ]
+  },
+  "elapsed_seconds": 7.88
+}

@@ -1,0 +1,112 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/qualification",
+    "compilers/verified-rustc",
+    "ffi",
+    "ffi/c-cpp-abi",
+    "rust",
+    "rust/calling-conventions",
+    "rust/inline-asm",
+    "rustc",
+    "rustc/abi",
+    "rustc/codegen",
+    "rustc/compiletest",
+    "rustc/intrinsics",
+    "rustc/targets",
+    "tooling",
+    "tooling/differential-testing",
+    "verification",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc upstream snapshot (1.102.0-nightly source baseline)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "412be32a6a189d9a28922beee178bc0abee9d492"
+      }
+    },
+    {
+      "name": "rustc 1.99.1 release baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rustc 1.102.0-nightly host toolchain (LLVM 23.1.5 and Cranelift 0.137.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "abi-cafe cross-toolchain ABI differential test harness",
+      "identity": {
+        "repository": "Gankra/abi-cafe",
+        "revision": "94d38030419eb00a1ba80e5e2b4d763dcee58db4"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS upstream main)",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "bca860e8dab52715effdd49a792347b262f5e539"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS 1.99 release tag)",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "version": "1.99"
+      }
+    },
+    {
+      "name": "rustlantis deterministic custom-MIR differential fuzzer",
+      "identity": {
+        "repository": "cbeuw/rustlantis",
+        "revision": "2be7c5a6763831dc0f908f0e05723ebbbc2a62cc"
+      }
+    },
+    {
+      "name": "Ferrocene qualified Rust compiler and traceability tooling",
+      "identity": {
+        "repository": "ferrocene/ferrocene",
+        "revision": "fef61e63733cf86e31b1cb0da3271058a8673f1c"
+      }
+    },
+    {
+      "name": "Crater ecosystem-scale regression runner",
+      "identity": {
+        "repository": "rust-lang/crater",
+        "revision": "abaa949414a8b9457858f0fc1a6ed97824cb9120"
+      }
+    },
+    {
+      "name": "rustwide isolated container execution library",
+      "identity": {
+        "repository": "rust-lang/rustwide",
+        "revision": "864a7751581e916b4964f8f2fc755c8067d8fc03"
+      }
+    },
+    {
+      "name": "Cargo package manager submodule",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20"
+      }
+    },
+    {
+      "name": "The Rust Reference submodule",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
