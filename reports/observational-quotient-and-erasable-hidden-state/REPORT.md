@@ -234,6 +234,7 @@ Roles (each property below is proved by the named theorem; `Basis: execution (Le
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:75-80
 theorem bisim_subset_obsEq
     {I : Type v} {O : Type w} {Q : Type u}
     (M : Moore I O Q) (R : Q → Q → Prop)
@@ -273,6 +274,7 @@ theorem bisim_subset_obsEq
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:90-94
 theorem obsEq_is_greatest_bisim
     {I : Type v} {O : Type w} {Q : Type u}
     (M : Moore I O Q) :
@@ -284,7 +286,7 @@ theorem obsEq_is_greatest_bisim
 ∀ (M : Moore I O Q),
   ((∀ q₁ q₂, M.beh q₁ = M.beh q₂ → M.out q₁ = M.out q₂) ∧
    (∀ q₁ q₂, M.beh q₁ = M.beh q₂ → ∀ i, M.beh (M.step q₁ i) = M.beh (M.step q₂ i))) ∧
-  (∀ R,
+  (∀ R : Q → Q → Prop,
     ((∀ q₁ q₂, R q₁ q₂ → M.out q₁ = M.out q₂) ∧
      (∀ q₁ q₂, R q₁ q₂ → ∀ i, R (M.step q₁ i) (M.step q₂ i))) →
     ∀ q₁ q₂, R q₁ q₂ → M.beh q₁ = M.beh q₂)
@@ -308,6 +310,7 @@ theorem obsEq_is_greatest_bisim
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:105-110
 theorem hom_to_final_eq_beh
     {I : Type v} {O : Type w} {Q : Type u}
     (M : Moore I O Q) (h : Q → (List I → O))
@@ -346,6 +349,7 @@ theorem hom_to_final_eq_beh
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:119-123
 theorem finalMachine_is_final
     {I : Type v} {O : Type w} {Q : Type u}
     (M : Moore I O Q) :
@@ -379,6 +383,7 @@ theorem finalMachine_is_final
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:133-138
 theorem minimalMachine_spec
     {I : Type v} {O : Type w} {Q : Type u}
     (M : Moore I O Q) (q₀ : Q) :
@@ -413,6 +418,7 @@ theorem minimalMachine_spec
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:155-165
 theorem reachable_maps_onto_minimalMachine
     {I : Type v} {O : Type w} {Q : Type u₁} {Q' : Type u₂}
     (M : Moore I O Q) (q₀ : Q)
@@ -425,8 +431,8 @@ theorem reachable_maps_onto_minimalMachine
     Surjective φ ∧
     (∀ ψ : Q' → ReachableBeh M q₀, IsHom M' (minimalMachine M q₀) ψ → ψ = φ)
 ```
-**Key definitions unfolded:**
-```lean
+**Key definitions unfolded (prose):**
+```text
 ∀ (M : Moore I O Q) (q₀ : Q) (M' : Moore I O Q') (q₀' : Q')
   (hReach : ∀ q', ∃ w, M'.run q₀' w = q')
   (hInitBeh : M'.beh q₀' = M.beh q₀),
@@ -465,6 +471,7 @@ theorem reachable_maps_onto_minimalMachine
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:187-202
 theorem reachable_behInjective_iso
     {I : Type v} {O : Type w} {Q₁ : Type u₁} {Q₂ : Type u₂}
     (M₁ : Moore I O Q₁) (q₁ : Q₁)
@@ -525,6 +532,7 @@ theorem reachable_behInjective_iso
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:251-256
 theorem stepwise_nondependence_implies_behIgnoresHidden
     {I : Type v} {O : Type w} {A : Type u₁} {H : Type u₂}
     (M : Moore I O (A × H))
@@ -564,6 +572,7 @@ theorem stepwise_nondependence_implies_behIgnoresHidden
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:282-290
 theorem stepwise_nondependence_preserves_beh
     {I : Type v} {O : Type w} {A : Type u₁} {H : Type u₂}
     (M : Moore I O (A × H)) (h₀ : H)
@@ -609,6 +618,7 @@ theorem stepwise_nondependence_preserves_beh
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:310-314
 theorem isBisim_sameFst_iff
     {I : Type v} {O : Type w} {A : Type u₁} {H : Type u₂}
     (M : Moore I O (A × H)) :
@@ -618,7 +628,7 @@ theorem isBisim_sameFst_iff
 **Key definitions unfolded:**
 ```lean
 ∀ (M : Moore I O (A × H)),
-  (∀ a h₁ h₂, (a, h₁).1 = (a, h₂).1) ∧
+  (∀ (a : A) (h₁ h₂ : H), (a, h₁).1 = (a, h₂).1) ∧
   (((∀ p₁ p₂, p₁.1 = p₂.1 → M.out p₁ = M.out p₂) ∧
     (∀ p₁ p₂, p₁.1 = p₂.1 → ∀ i, (M.step p₁ i).1 = (M.step p₂ i).1)) ↔
    ((∀ a h₁ h₂, M.out (a, h₁) = M.out (a, h₂)) ∧
@@ -642,6 +652,7 @@ theorem isBisim_sameFst_iff
 
 **Lean statement (with `redundantTagMachine` definition quoted):**
 ```lean
+-- lean/Toy/Obs/Results.lean:336-345
 -- def redundantTagMachine : Moore Bool Bool ((Bool × Bool) × Bool) where
 --   step p i := ((!p.1.1, p.2), i)
 --   out  p   := p.1.1
@@ -676,6 +687,7 @@ theorem redundantTagMachine_erasable_despite_step_dependence :
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:374-378
 theorem behIgnoresHidden_iff_stepwise_of_obsInjectiveFst
     {I : Type v} {O : Type w} {A : Type u₁} {H : Type u₂}
     (M : Moore I O (A × H))
@@ -714,6 +726,7 @@ theorem behIgnoresHidden_iff_stepwise_of_obsInjectiveFst
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:402-405
 theorem no_leak_under_stepwise_nondependence
     {I : Type v} {O : Type w} {A : Type u₁} {H : Type u₂} :
     ¬ ∃ M : Moore I O (A × H),
@@ -745,6 +758,7 @@ theorem no_leak_under_stepwise_nondependence
 
 **Lean statement (with `delayedChannel2` definition quoted):**
 ```lean
+-- lean/Toy/Obs/Results.lean:417-429
 -- def delayedChannel2 : Moore Unit Bool ((Bool × Bool) × Bool) where
 --   step p _ := ((p.1.2, p.2), p.2)
 --   out  p   := p.1.1
@@ -782,6 +796,7 @@ theorem delayedChannel2_leaks_at_step_two :
 
 **Lean statement (with `delayedChannel` definition quoted):**
 ```lean
+-- lean/Toy/Obs/Results.lean:458-467
 -- def delayedChannel (k : Nat) : Moore Unit Bool ((Fin (k + 2) → Bool) × Bool) where
 --   step p _ := (fun j => if hlt : j.val + 1 < k + 2 then p.1 ⟨j.val + 1, hlt⟩ else p.2, p.2)
 --   out  p   := p.1 ⟨0, Nat.zero_lt_succ _⟩
@@ -818,6 +833,7 @@ theorem no_machine_independent_horizon_certifies_behIgnoresHidden (k : Nat) :
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:506-510
 theorem behIgnoresHidden_iff_erasable
     {I : Type v} {O : Type w} {A : Type u₁} {H : Type u₂}
     (M : Moore I O (A × H)) (h₀ : H) :
@@ -857,6 +873,7 @@ theorem behIgnoresHidden_iff_erasable
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:546-553
 theorem unwinding_bisim_implies_behIgnoresHidden
     {I : Type v} {O : Type w} {A : Type u₁} {H : Type u₂}
     (M : Moore I O (A × H))
@@ -899,6 +916,7 @@ theorem unwinding_bisim_implies_behIgnoresHidden
 
 **Lean statement:**
 ```lean
+-- lean/Toy/Obs/Results.lean:574-579
 theorem behIgnoresHidden_iff_exists_unwinding_bisim
     {I : Type v} {O : Type w} {A : Type u₁} {H : Type u₂}
     (M : Moore I O (A × H)) :
