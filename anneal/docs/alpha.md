@@ -54,7 +54,7 @@ configuration when comparing a result with a deployed binary. See the
 ## Install a published alpha
 
 ```sh
-cargo install --locked cargo-anneal@0.2.0-alpha.1
+cargo install --locked cargo-anneal@0.2.0-alpha.2
 cargo anneal setup
 cargo anneal verify --request /path/to/scalar/request.json
 ```
