@@ -11,8 +11,9 @@ poison is UB, and `freeze` turns poison into an arbitrary but fixed integer), an
 outcome-set refinement (target first: `RefinesU w tgt src`, `RefinesP w tgt src`) and about
 classic rewrites: changing the number of uses of a value, GVN on a branch condition, hoisting
 a branch out of a conditional ("loop unswitching"), and the laws of `freeze`. All results are
-theorems about the toy models only; none is a theorem about LLVM or Rust, and every connection
-to them is a separately labelled modeling bridge.
+theorems about the toy models; these theorems neither establish nor refute the corresponding
+claims about LLVM IR or Rust, and every connection to them is a separately labelled modeling
+bridge under **Findings**.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -389,81 +390,103 @@ def RefinesE (w : Nat) (tgt src : Expr) : Prop :=
 The predicates, relations and semantics above have proved examples that they must admit and examples they must reject; the helper functions `bind1`, `bind2`, `update`, `allBV`, `Outcome.isUB` and `PVal.lift2` are exercised through the semantics examples. The examples use two fixed width-2 environments: `ρ01` binds variable `0` to `{0, 1}` and every other variable to `{1}`; `ρP` binds variable `0` to `poison` and every other variable to `1`. A third width-2 environment, `uEmptyD`, binds variable `1` to the empty set and every other variable to `{0}`; it is not inhabited and is used only by `Toy.UB.undef_unswitch_empty_input_target_has_no_outcomes`, where its definition is quoted (see **Verbatim statements of counterexamples, witnesses, controls and supporting theorems**).
 
 ```lean
+-- lean/ToyUB/Syntax.lean:81
 theorem freeIn_example_pos : freeIn 0 (add (var 0) (const 1)) = true
 
+-- lean/ToyUB/Syntax.lean:84-85
 theorem freeIn_example_neg :
     freeIn 0 (letE 0 (const 1) (var 0)) = false ∧ freeIn 0 (var 1) = false
 
+-- lean/ToyUB/Syntax.lean:88-89
 theorem freezeFree_example_pos :
     FreezeFree (ite (var 0) (add (var 0) (var 0)) (const 0)) = true
 
+-- lean/ToyUB/Syntax.lean:92
 theorem freezeFree_example_neg : FreezeFree (add (const 1) (freeze (var 0))) = false
 
+-- lean/ToyUB/Syntax.lean:233-234
 theorem eqBit_examples :
     eqBit (1#2) (1#2) = 1#2 ∧ eqBit (1#2) (2#2) = 0#2 ∧ eqBit (0#0) (0#0) = 0#0
 
+-- lean/ToyUB/Syntax.lean:169-170
 theorem outRef_example_pos :
     OutRef (fun a b : Nat => a = b) [Outcome.ub, Outcome.val 7] [Outcome.ub]
 
+-- lean/ToyUB/Syntax.lean:174-175
 theorem outRef_example_pos_defined :
     OutRef (fun a b : Nat => a = b) [Outcome.val 1] [Outcome.val 1, Outcome.val 2]
 
+-- lean/ToyUB/Syntax.lean:180-182
 theorem outRef_example_neg :
     ¬ OutRef (fun a b : Nat => a = b) [Outcome.ub] [Outcome.val 1] ∧
     ¬ OutRef (fun a b : Nat => a = b) [Outcome.val 2] [Outcome.val 1]
 
+-- lean/ToyUB/Syntax.lean:186-188
 theorem outRef_example_empty_target :
     OutRef (fun a b : Nat => a = b) [] [Outcome.val 1] ∧
     ¬ OutRefNE (fun a b : Nat => a = b) [] [Outcome.val 1]
 
+-- lean/ToyUB/Syntax.lean:191-194
 theorem mayUB_examples :
     MayUB [Outcome.val 1, (Outcome.ub : Outcome Nat)] ∧
     ¬ MayUB [Outcome.val 1, (Outcome.val 2 : Outcome Nat)] ∧
     ¬ MayUB ([] : List (Outcome Nat))
 
+-- lean/ToyUB/Syntax.lean:198-202
 theorem leVal_examples :
     Outcome.LeVal (fun a b : Nat => a = b) (.val 1) (.val 1) ∧
     ¬ Outcome.LeVal (fun a b : Nat => a = b) (.val 1) (.val 2) ∧
     ¬ Outcome.LeVal (fun a b : Nat => a = b) .ub .ub ∧
     ¬ Outcome.LeVal (fun a b : Nat => a = b) (.val 1) .ub
 
+-- lean/ToyUB/Undef.lean:70-72
 theorem map2_example_pos :
     map2 (· + ·) (fun z : BitVec 2 => z == 0#2 || z == 1#2) (fun z => z == 0#2 || z == 1#2)
       1#2 = true
 
+-- lean/ToyUB/Undef.lean:75-76
 theorem map2_example_neg :
     map2 (· * ·) (single 2#2) (fun z : BitVec 2 => z == 0#2 || z == 1#2) 1#2 = false
 
+-- lean/ToyUB/Undef.lean:80-82
 theorem sub_examples :
     Sub (single 1#2) (fun z : BitVec 2 => z == 0#2 || z == 1#2) ∧
     ¬ Sub (fun z : BitVec 2 => z == 0#2 || z == 1#2) (single 1#2)
 
+-- lean/ToyUB/Undef.lean:85-87
 theorem hasNonzero_examples :
     HasNonzero (fun z : BitVec 2 => z == 0#2 || z == 1#2) = true ∧
     HasNonzero (single 0#2) = false
 
+-- lean/ToyUB/Undef.lean:90-91
 theorem nonempty_examples :
     Nonempty (single 1#2) ∧ ¬ Nonempty (fun _ : BitVec 2 => false)
 
+-- lean/ToyUB/Undef.lean:118-119
 theorem uInhabited_examples :
     UInhabited (fun _ => USet.single 0#2) ∧ ¬ UInhabited (fun _ => fun _ : BitVec 2 => false)
 
+-- lean/ToyUB/Undef.lean:142-145
 theorem obsU_examples :
     ObsU [.val (fun z : BitVec 2 => z == 0#2 || z == 1#2)] 1#2 ∧
     ¬ ObsU [.val (fun z : BitVec 2 => z == 0#2 || z == 1#2)] 2#2 ∧
     ¬ ObsU ([.ub] : List (Outcome (USet 2))) 0#2
 
+-- lean/ToyUB/Undef.lean:158-159
 theorem obsRefinesU_examples :
     ObsRefinesU 2 (.const 1) (.const 1) ∧ ¬ ObsRefinesU 2 (.const 2) (.const 1)
 
+-- lean/ToyUB/Undef.lean:176-178
 theorem semU_example_pos :
     ∃ o ∈ semU 2 ρ01 (.add (.var 0) (.var 0)),
       (match o with | .val A => A 1#2 | .ub => false) = true
 
+-- lean/ToyUB/Undef.lean:182-184
 theorem semU_example_neg :
     ∀ o ∈ semU 2 ρ01 (.letE 1 (.freeze (.var 0)) (.add (.var 1) (.var 1))),
       (match o with | .val A => A 1#2 | .ub => true) = false
 
+-- lean/ToyUB/Undef.lean:188-193
 theorem semU_example_branch :
     ¬ MayUB (semU 2 ρ01 (.ite (.var 0) (.const 1) (.const 2))) ∧
     (∃ o ∈ semU 2 ρ01 (.ite (.var 0) (.const 1) (.const 2)),
@@ -471,52 +494,65 @@ theorem semU_example_branch :
     (∃ o ∈ semU 2 ρ01 (.ite (.var 0) (.const 1) (.const 2)),
       Outcome.LeVal USet.Sub (.val (USet.single 2#2)) o)
 
+-- lean/ToyUB/Undef.lean:207-210
 theorem semU_ite_commits_example :
     (∀ o ∈ semU 2 ρ01 (.ite (.var 0) (.const 1) (.const 0)),
       (match o with | .val A => A 0#2 && A 1#2 | .ub => false) = false) ∧
     ¬ RefinesU 2 (.var 0) (.ite (.var 0) (.const 1) (.const 0))
 
+-- lean/ToyUB/Unswitch.lean:66-67
 theorem ubFreeU_examples :
     UBFreeU 2 (.var 0) ∧ UBFreeU 2 (.ite (.var 0) (.const 1) (.const 0)) ∧ ¬ UBFreeU 2 .ub
 
+-- lean/ToyUB/Poison.lean:53
 theorem refines_example_pos : Refines (int 3#2) poison ∧ Refines (int 3#2) (int 3#2)
 
+-- lean/ToyUB/Poison.lean:58-59
 theorem refines_example_neg : ¬ Refines (poison : PVal 2) (int 3#2) ∧
     ¬ Refines (int 1#2) (int 3#2)
 
+-- lean/ToyUB/Poison.lean:94-96
 theorem semP_example_pos :
     semP 2 ρP (.add (.var 0) (.const 1)) = [.val .poison] ∧
     semP 2 ρP (.ite (.add (.var 0) (.const 1)) (.const 1) (.const 2)) = [.ub]
 
+-- lean/ToyUB/Poison.lean:100-102
 theorem semP_example_neg :
     ¬ MayUB (semP 2 ρP (.ite (.var 1) (.var 0) (.const 2))) ∧
     (.val .poison) ∉ semP 2 ρP (.freeze (.var 0))
 
+-- lean/ToyUB/Poison.lean:105-107
 theorem semP_example_freeze :
     semP 2 ρP (.freeze (.var 0)) = [.val (.int 0#2), .val (.int 1#2), .val (.int 2#2),
       .val (.int 3#2)] ∧ semP 2 ρP (.freeze (.var 1)) = [.val (.int 1#2)]
 
+-- lean/ToyUB/Unswitch.lean:58-60
 theorem ubFreeP_examples :
     UBFreeP 2 (.var 0) ∧ UBFreeP 2 (.eq (.var 0) (.var 1)) ∧ ¬ UBFreeP 2 .ub ∧
     ¬ UBFreeP 2 (.ite (.var 0) (.const 1) (.const 0))
 
+-- lean/ToyUB/Uninit.lean:62-64
 theorem semE_examples :
     semE 2 (fun _ => some 3#2) (.add (.var 0) (.const 1)) = [.val 0#2] ∧
     semE 2 (fun _ => none) (.mul (.var 0) (.const 0)) = [.ub]
 
+-- lean/ToyUB/Uninit.lean:68-72
 theorem toPoisonEnv_examples :
     toPoisonEnv (w := 2) (fun _ => none) 0 = .poison ∧
     toPoisonEnv (w := 2) (fun _ => none) 0 ≠ .int 0#2 ∧
     toPoisonEnv (w := 2) (fun _ => some 1#2) 0 = .int 1#2 ∧
     toPoisonEnv (w := 2) (fun _ => some 1#2) 0 ≠ .poison
 
+-- lean/ToyUB/Uninit.lean:76-78
 theorem outcome_toP_examples :
     Outcome.toP (w := 2) .ub = .ub ∧ Outcome.toP (w := 2) (.val 3#2) = .val (.int 3#2) ∧
     Outcome.toP (w := 2) (.val 3#2) ≠ .val .poison
 
+-- lean/ToyUB/Uninit.lean:207-208
 theorem refinesE_examples (w : Nat) :
     RefinesE w (.var 0) (.var 0) ∧ ¬ RefinesE w (.var 0) (.const 0)
 
+-- lean/ToyUB/Uninit.lean:81-82
 theorem semE_freeze_uninit_example (w : Nat) :
     semE w (fun _ => none) (.freeze (.var 0)) = [.ub]
 ```
@@ -528,13 +564,17 @@ theorem semE_freeze_uninit_example (w : Nat) :
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.refinesU_refl`, `Toy.UB.refinesU_trans`, `Toy.UB.refinesP_refl`, `Toy.UB.refinesP_trans`.
 
 ```lean
+-- lean/ToyUB/Lemmas.lean:135
 theorem refinesU_refl (w : Nat) (e : Expr) : RefinesU w e e
 
+-- lean/ToyUB/Lemmas.lean:139-140
 theorem refinesU_trans (w : Nat) {a b c : Expr} (hab : RefinesU w a b) (hbc : RefinesU w b c) :
     RefinesU w a c
 
+-- lean/ToyUB/Lemmas.lean:144
 theorem refinesP_refl (w : Nat) (e : Expr) : RefinesP w e e
 
+-- lean/ToyUB/Lemmas.lean:148-149
 theorem refinesP_trans (w : Nat) {a b c : Expr} (hab : RefinesP w a b) (hbc : RefinesP w b c) :
     RefinesP w a c
 ```
@@ -564,15 +604,19 @@ Basis: derived (modeling bridge) — `RefinesU` and `RefinesP` have the shape of
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.refinesU_of_src_mayUB`, `Toy.UB.refinesP_of_src_mayUB`, `Toy.UB.refinesU_ub`, `Toy.UB.refinesP_ub`.
 
 ```lean
+-- lean/ToyUB/Refinement.lean:25-27
 theorem refinesU_of_src_mayUB (w : Nat) {src : Expr}
     (h : ∀ ρ : Var → USet w, UInhabited ρ → MayUB (semU w ρ src)) (tgt : Expr) :
     RefinesU w tgt src
 
+-- lean/ToyUB/Refinement.lean:32-33
 theorem refinesP_of_src_mayUB (w : Nat) {src : Expr}
     (h : ∀ ρ : Var → PVal w, MayUB (semP w ρ src)) (tgt : Expr) : RefinesP w tgt src
 
+-- lean/ToyUB/Refinement.lean:37
 theorem refinesU_ub (w : Nat) (tgt : Expr) : RefinesU w tgt .ub
 
+-- lean/ToyUB/Refinement.lean:41
 theorem refinesP_ub (w : Nat) (tgt : Expr) : RefinesP w tgt .ub
 ```
 
@@ -598,39 +642,51 @@ Basis: derived (modeling bridge) — This is the toy counterpart of Alive2's rul
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.refinesU_congr_add`, `Toy.UB.refinesU_congr_mul`, `Toy.UB.refinesU_congr_eq`, `Toy.UB.refinesU_congr_ite`, `Toy.UB.refinesU_congr_letE`, `Toy.UB.refinesU_congr_freeze`, `Toy.UB.refinesP_congr_add`, `Toy.UB.refinesP_congr_mul`, `Toy.UB.refinesP_congr_eq`, `Toy.UB.refinesP_congr_ite`, `Toy.UB.refinesP_congr_letE`, `Toy.UB.refinesP_congr_freeze`.
 
 ```lean
+-- lean/ToyUB/Refinement.lean:47-48
 theorem refinesU_congr_add (w : Nat) {a a' b b' : Expr} (ha : RefinesU w a' a)
     (hb : RefinesU w b' b) : RefinesU w (.add a' b') (.add a b)
 
+-- lean/ToyUB/Refinement.lean:54-55
 theorem refinesU_congr_mul (w : Nat) {a a' b b' : Expr} (ha : RefinesU w a' a)
     (hb : RefinesU w b' b) : RefinesU w (.mul a' b') (.mul a b)
 
+-- lean/ToyUB/Refinement.lean:61-62
 theorem refinesU_congr_eq (w : Nat) {a a' b b' : Expr} (ha : RefinesU w a' a)
     (hb : RefinesU w b' b) : RefinesU w (.eq a' b') (.eq a b)
 
+-- lean/ToyUB/Refinement.lean:68-69
 theorem refinesU_congr_ite (w : Nat) {c c' t t' e e' : Expr} (hc : RefinesU w c' c)
     (ht : RefinesU w t' t) (he : RefinesU w e' e) : RefinesU w (.ite c' t' e') (.ite c t e)
 
+-- lean/ToyUB/Refinement.lean:76-77
 theorem refinesU_congr_letE (w : Nat) (x : Var) {a a' b b' : Expr} (ha : RefinesU w a' a)
     (hb : RefinesU w b' b) : RefinesU w (.letE x a' b') (.letE x a b)
 
+-- lean/ToyUB/Refinement.lean:91-92
 theorem refinesU_congr_freeze (w : Nat) {a a' : Expr} (ha : RefinesU w a' a) :
     RefinesU w (.freeze a') (.freeze a)
 
+-- lean/ToyUB/Refinement.lean:99-100
 theorem refinesP_congr_add (w : Nat) {a a' b b' : Expr} (ha : RefinesP w a' a)
     (hb : RefinesP w b' b) : RefinesP w (.add a' b') (.add a b)
 
+-- lean/ToyUB/Refinement.lean:106-107
 theorem refinesP_congr_mul (w : Nat) {a a' b b' : Expr} (ha : RefinesP w a' a)
     (hb : RefinesP w b' b) : RefinesP w (.mul a' b') (.mul a b)
 
+-- lean/ToyUB/Refinement.lean:113-114
 theorem refinesP_congr_eq (w : Nat) {a a' b b' : Expr} (ha : RefinesP w a' a)
     (hb : RefinesP w b' b) : RefinesP w (.eq a' b') (.eq a b)
 
+-- lean/ToyUB/Refinement.lean:120-121
 theorem refinesP_congr_ite (w : Nat) {c c' t t' e e' : Expr} (hc : RefinesP w c' c)
     (ht : RefinesP w t' t) (he : RefinesP w e' e) : RefinesP w (.ite c' t' e') (.ite c t e)
 
+-- lean/ToyUB/Refinement.lean:135-136
 theorem refinesP_congr_letE (w : Nat) (x : Var) {a a' b b' : Expr} (ha : RefinesP w a' a)
     (hb : RefinesP w b' b) : RefinesP w (.letE x a' b') (.letE x a b)
 
+-- lean/ToyUB/Refinement.lean:144-145
 theorem refinesP_congr_freeze (w : Nat) {a a' : Expr} (ha : RefinesP w a' a) :
     RefinesP w (.freeze a') (.freeze a)
 ```
@@ -682,6 +738,7 @@ Basis: derived (modeling bridge) — Alive2 (Lopes et al., PLDI 2021, Section 5)
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.undef_obsRefines_not_congruence_letE`.
 
 ```lean
+-- lean/ToyUB/Refinement.lean:171-174
 theorem undef_obsRefines_not_congruence_letE (w : Nat) (hw : 1 ≤ w) (x y : Var) :
     ObsRefinesU w (.var x) (.freeze (.var x)) ∧
     ¬ ObsRefinesU w (.letE y (.var x) (.add (.var y) (.var y)))
@@ -711,9 +768,11 @@ Basis: derived (modeling bridge) — The counterexample suggests that a checker 
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.undef_rewrite_add_self_to_two_mul_sound`, `Toy.UB.poison_rewrite_add_self_to_two_mul_sound`.
 
 ```lean
+-- lean/ToyUB/Duplication.lean:31-32
 theorem undef_rewrite_add_self_to_two_mul_sound (w : Nat) (e : Expr) :
     RefinesU w (.mul (.const 2) e) (.add e e)
 
+-- lean/ToyUB/Duplication.lean:101-102
 theorem poison_rewrite_add_self_to_two_mul_sound (w : Nat) (e : Expr) :
     RefinesP w (.mul (.const 2) e) (.add e e)
 ```
@@ -741,6 +800,7 @@ Basis: derived (modeling bridge) — In LLVM, each use of an `undef` value may o
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.undef_rewrite_two_mul_to_add_self_unsound`.
 
 ```lean
+-- lean/ToyUB/Duplication.lean:64-65
 theorem undef_rewrite_two_mul_to_add_self_unsound (w : Nat) (hw : 1 ≤ w) (x : Var) :
     ¬ RefinesU w (.add (.var x) (.var x)) (.mul (.const 2) (.var x))
 ```
@@ -770,6 +830,7 @@ Basis: derived (modeling bridge) — The toy counterexample is the instance, in 
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poison_rewrite_two_mul_to_add_self_sound_of_freezeFree`.
 
 ```lean
+-- lean/ToyUB/Duplication.lean:181-182
 theorem poison_rewrite_two_mul_to_add_self_sound_of_freezeFree (w : Nat) (e : Expr)
     (he : e.FreezeFree = true) : RefinesP w (.add e e) (.mul (.const 2) e)
 ```
@@ -797,6 +858,7 @@ Basis: derived (modeling bridge) — The toy poison model gives each variable on
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poisonFreeze_rewrite_two_mul_to_add_self_unsound`.
 
 ```lean
+-- lean/ToyUB/Duplication.lean:202-204
 theorem poisonFreeze_rewrite_two_mul_to_add_self_unsound (w : Nat) (hw : 1 ≤ w) (x : Var) :
     ¬ RefinesP w (.add (.freeze (.var x)) (.freeze (.var x)))
         (.mul (.const 2) (.freeze (.var x)))
@@ -826,6 +888,7 @@ Basis: derived (modeling bridge) — The LLVM 19.1.0 Language Reference states t
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poison_gvn_sound`.
 
 ```lean
+-- lean/ToyUB/GVN.lean:50-52
 theorem poison_gvn_sound (w : Nat) (x y : Var) (t e : Expr) :
     RefinesP w (.ite (.eq (.var x) (.var y)) (.letE y (.var x) t) e)
       (.ite (.eq (.var x) (.var y)) t e)
@@ -855,6 +918,7 @@ Basis: derived (modeling bridge) — Lee et al. (PLDI 2017, Sections 3.3 and 5.1
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.undef_gvn_var_branch_distinct_vars_unsound`.
 
 ```lean
+-- lean/ToyUB/GVN.lean:95-97
 theorem undef_gvn_var_branch_distinct_vars_unsound (w : Nat) (hw : 1 ≤ w) (x y : Var) (hxy : x ≠ y) :
     ¬ RefinesU w (.ite (.eq (.var x) (.var y)) (.letE y (.var x) (.var y)) (.const 0))
         (.ite (.eq (.var x) (.var y)) (.var y) (.const 0))
@@ -885,6 +949,7 @@ Basis: derived (modeling bridge) — The toy counterexample corresponds to the o
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poison_unswitch_without_freeze_distinct_vars_unsound`.
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:75-78
 theorem poison_unswitch_without_freeze_distinct_vars_unsound (w : Nat) (c d : Var) (hcd : c ≠ d)
     (a b : Expr) (n : Nat) :
     ¬ RefinesP w (.ite (.var d) (.ite (.var c) a (.const n)) (.ite (.var c) b (.const n)))
@@ -915,10 +980,12 @@ Basis: derived (modeling bridge) — This is the toy counterpart of Lee et al. (
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.undef_unswitch_without_freeze_sound_of_ubFree`, `Toy.UB.undef_unswitch_without_freeze_sound`.
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:109-111
 theorem undef_unswitch_without_freeze_sound_of_ubFree (w : Nat) (ec ed a b e : Expr)
     (hed : UBFreeU w ed) :
     RefinesU w (.ite ed (.ite ec a e) (.ite ec b e)) (.ite ec (.ite ed a b) e)
 
+-- lean/ToyUB/Unswitch.lean:163-165
 theorem undef_unswitch_without_freeze_sound (w : Nat) (c d : Var) (a b e : Expr) :
     RefinesU w (.ite (.var d) (.ite (.var c) a e) (.ite (.var c) b e))
       (.ite (.var c) (.ite (.var d) a b) e)
@@ -947,6 +1014,7 @@ Basis: derived (modeling bridge) — Lee et al. (PLDI 2017, Section 3.3) note th
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poisonFreeze_unswitch_with_freeze_sound_of_ubFree`, `Toy.UB.poisonFreeze_unswitch_with_freeze_sound_of_fresh`.
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:319-325
 theorem poisonFreeze_unswitch_with_freeze_sound_of_ubFree (w : Nat) (ec ed : Expr) (t : Var)
     (a b e : Expr) (hed : UBFreeP w ed)
     (htc : ec.freeIn t = false) (hta : a.freeIn t = false)
@@ -955,6 +1023,7 @@ theorem poisonFreeze_unswitch_with_freeze_sound_of_ubFree (w : Nat) (ec ed : Exp
       (.letE t (.freeze ed) (.ite (.var t) (.ite ec a e) (.ite ec b e)))
       (.ite ec (.ite ed a b) e)
 
+-- lean/ToyUB/Unswitch.lean:415-420
 theorem poisonFreeze_unswitch_with_freeze_sound_of_fresh (w : Nat) (c d t : Var) (a b e : Expr)
     (htc : t ≠ c) (hta : a.freeIn t = false) (htb : b.freeIn t = false)
     (hte : e.freeIn t = false) :
@@ -991,16 +1060,20 @@ Basis: derived (modeling bridge) — This is the toy counterpart of the repair o
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poisonFreeze_freeze_eq_self_of_no_poison`, `Toy.UB.poisonFreeze_remove_freeze_sound_of_no_poison`, `Toy.UB.poisonFreeze_remove_redundant_freeze_sound`, `Toy.UB.undef_remove_redundant_freeze_sound`.
 
 ```lean
+-- lean/ToyUB/Freeze.lean:31-32
 theorem poisonFreeze_freeze_eq_self_of_no_poison (w : Nat) (ρ : Var → PVal w) (e : Expr)
     (h : Outcome.val PVal.poison ∉ semP w ρ e) : semP w ρ (.freeze e) = semP w ρ e
 
+-- lean/ToyUB/Freeze.lean:263-265
 theorem poisonFreeze_remove_freeze_sound_of_no_poison (w : Nat) (e : Expr)
     (h : ∀ ρ : Var → PVal w, Outcome.val PVal.poison ∉ semP w ρ e) :
     RefinesP w e (.freeze e)
 
+-- lean/ToyUB/Freeze.lean:272-273
 theorem poisonFreeze_remove_redundant_freeze_sound (w : Nat) (e : Expr) :
     RefinesP w (.freeze e) (.freeze (.freeze e))
 
+-- lean/ToyUB/Freeze.lean:279-280
 theorem undef_remove_redundant_freeze_sound (w : Nat) (e : Expr) :
     RefinesU w (.freeze e) (.freeze (.freeze e))
 ```
@@ -1029,8 +1102,10 @@ Basis: derived (modeling bridge) — The pointwise identity matches the LLVM 19.
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poisonFreeze_insert_freeze_sound`, `Toy.UB.undef_insert_freeze_sound`.
 
 ```lean
+-- lean/ToyUB/Freeze.lean:59
 theorem poisonFreeze_insert_freeze_sound (w : Nat) (e : Expr) : RefinesP w (.freeze e) e
 
+-- lean/ToyUB/Freeze.lean:180
 theorem undef_insert_freeze_sound (w : Nat) (e : Expr) : RefinesU w (.freeze e) e
 ```
 
@@ -1057,9 +1132,11 @@ Basis: derived (modeling bridge) — The LLVM 19.1.0 Language Reference (Poison 
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poisonFreeze_remove_freeze_unsound`, `Toy.UB.undef_remove_freeze_unsound`.
 
 ```lean
+-- lean/ToyUB/Freeze.lean:82-83
 theorem poisonFreeze_remove_freeze_unsound (w : Nat) (x : Var) :
     ¬ RefinesP w (.var x) (.freeze (.var x))
 
+-- lean/ToyUB/Freeze.lean:205-206
 theorem undef_remove_freeze_unsound (w : Nat) (hw : 1 ≤ w) (x : Var) :
     ¬ RefinesU w (.var x) (.freeze (.var x))
 ```
@@ -1088,17 +1165,20 @@ Basis: derived (modeling bridge) — In LLVM, `freeze` of undef or poison return
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poisonFreeze_let_freeze_add_self_nonempty_even`, `Toy.UB.poisonFreeze_freeze_add_freeze_all_values_of_poison`, `Toy.UB.poisonFreeze_freeze_add_freeze_can_be_odd`.
 
 ```lean
+-- lean/ToyUB/Freeze.lean:307-311
 theorem poisonFreeze_let_freeze_add_self_nonempty_even (w : Nat) (x a : Var)
     (ρ : Var → PVal w) :
     semP w ρ (.letE a (.freeze (.var x)) (.add (.var a) (.var a))) ≠ [] ∧
     ∀ o ∈ semP w ρ (.letE a (.freeze (.var x)) (.add (.var a) (.var a))),
       ∃ v : BitVec w, o = .val (.int v) ∧ v.toNat % 2 = 0
 
+-- lean/ToyUB/Freeze.lean:317-320
 theorem poisonFreeze_freeze_add_freeze_all_values_of_poison (w : Nat) (x : Var)
     (v : BitVec w) :
     Outcome.val (PVal.int v) ∈
       semP w (fun _ => .poison) (.add (.freeze (.var x)) (.freeze (.var x)))
 
+-- lean/ToyUB/Freeze.lean:114-117
 theorem poisonFreeze_freeze_add_freeze_can_be_odd (w : Nat) (hw : 1 ≤ w) (x : Var) :
     ∃ ρ : Var → PVal w, ∃ v : BitVec w,
       Outcome.val (PVal.int v) ∈ semP w ρ (.add (.freeze (.var x)) (.freeze (.var x))) ∧
@@ -1128,6 +1208,7 @@ Basis: derived (modeling bridge) — The toy facts restate the example in the LL
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poisonFreeze_duplicate_freeze_unsound`.
 
 ```lean
+-- lean/ToyUB/Freeze.lean:127-129
 theorem poisonFreeze_duplicate_freeze_unsound (w : Nat) (hw : 1 ≤ w) (x a : Var) :
     ¬ RefinesP w (.add (.freeze (.var x)) (.freeze (.var x)))
         (.letE a (.freeze (.var x)) (.add (.var a) (.var a)))
@@ -1158,6 +1239,7 @@ Basis: derived (modeling bridge) — The toy counterexample instantiates Lee et 
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poisonFreeze_merge_freeze_sound`.
 
 ```lean
+-- lean/ToyUB/Freeze.lean:158-159
 theorem poisonFreeze_merge_freeze_sound (w : Nat) (e : Expr) (a : Var) :
     RefinesP w (.letE a (.freeze e) (.add (.var a) (.var a))) (.add (.freeze e) (.freeze e))
 ```
@@ -1185,9 +1267,11 @@ Basis: derived (modeling bridge) — Lee et al. (PLDI 2017, Section 6) state tha
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.poison_refines_eagerUninit_eq`, `Toy.UB.poison_refines_eagerUninit`.
 
 ```lean
+-- lean/ToyUB/Uninit.lean:171-172
 theorem poison_refines_eagerUninit_eq (w : Nat) (ρ : Var → Option (BitVec w)) (e : Expr) :
     OutRef (fun a b => a = b) (semP w (toPoisonEnv ρ) e) ((semE w ρ e).map Outcome.toP)
 
+-- lean/ToyUB/Uninit.lean:181-182
 theorem poison_refines_eagerUninit (w : Nat) (ρ : Var → Option (BitVec w)) (e : Expr) :
     OutRef PVal.Refines (semP w (toPoisonEnv ρ) e) ((semE w ρ e).map Outcome.toP)
 ```
@@ -1218,6 +1302,7 @@ Basis: derived (modeling bridge) — The eager reading mirrors, for whole intege
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.eagerUninit_not_refines_poison`.
 
 ```lean
+-- lean/ToyUB/Uninit.lean:189-191
 theorem eagerUninit_not_refines_poison (w : Nat) :
     ¬ OutRef PVal.Refines ((semE w (fun _ => none) (.letE 1 (.var 0) (.const 0))).map Outcome.toP)
         (semP w (toPoisonEnv fun _ => none) (.letE 1 (.var 0) (.const 0)))
@@ -1245,14 +1330,18 @@ Basis: derived (modeling bridge) — With the same correspondence as the previou
 - **Lean statement** (verbatim; proofs omitted): `Toy.UB.semP_ne_nil`, `Toy.UB.semU_ne_nil`, `Toy.UB.refinesP_iff_outRefNE`, `Toy.UB.refinesU_iff_outRefNE`.
 
 ```lean
+-- lean/ToyUB/Monotone.lean:324
 theorem semP_ne_nil (w : Nat) (e : Expr) : ∀ ρ : Var → PVal w, semP w ρ e ≠ []
 
+-- lean/ToyUB/Monotone.lean:367-368
 theorem semU_ne_nil (w : Nat) (e : Expr) :
     ∀ ρ : Var → USet w, UInhabited ρ → semU w ρ e ≠ []
 
+-- lean/ToyUB/Monotone.lean:429-430
 theorem refinesP_iff_outRefNE (w : Nat) (tgt src : Expr) :
     RefinesP w tgt src ↔ ∀ ρ : Var → PVal w, OutRefNE PVal.Refines (semP w ρ tgt) (semP w ρ src)
 
+-- lean/ToyUB/Monotone.lean:435-437
 theorem refinesU_iff_outRefNE (w : Nat) (tgt src : Expr) :
     RefinesU w tgt src ↔
       ∀ ρ : Var → USet w, UInhabited ρ → OutRefNE USet.Sub (semU w ρ tgt) (semU w ρ src)
@@ -1281,6 +1370,7 @@ Every other Lean name referenced by a card, with its statement as it appears in 
 #### `Toy.UB.refinesU_trans_needs_hab` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:121-122
 theorem refinesU_trans_needs_hab :
     RefinesU 2 (.freeze (.var 0)) (.freeze (.var 0)) ∧ ¬ RefinesU 2 (.var 0) (.freeze (.var 0))
 ```
@@ -1288,6 +1378,7 @@ theorem refinesU_trans_needs_hab :
 #### `Toy.UB.refinesP_trans_needs_hab` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:131-132
 theorem refinesP_trans_needs_hab :
     RefinesP 2 (.freeze (.var 0)) (.freeze (.var 0)) ∧ ¬ RefinesP 2 (.var 0) (.freeze (.var 0))
 ```
@@ -1295,6 +1386,7 @@ theorem refinesP_trans_needs_hab :
 #### `Toy.UB.refinesU_trans_needs_hbc` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:115-116
 theorem refinesU_trans_needs_hbc :
     RefinesU 2 (.var 0) (.var 0) ∧ ¬ RefinesU 2 (.var 0) (.freeze (.var 0))
 ```
@@ -1302,6 +1394,7 @@ theorem refinesU_trans_needs_hbc :
 #### `Toy.UB.refinesP_trans_needs_hbc` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:126-127
 theorem refinesP_trans_needs_hbc :
     RefinesP 2 (.var 0) (.var 0) ∧ ¬ RefinesP 2 (.var 0) (.freeze (.var 0))
 ```
@@ -1309,6 +1402,7 @@ theorem refinesP_trans_needs_hbc :
 #### `Toy.UB.nonvacuity_refinesU_trans` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:21-23
 theorem nonvacuity_refinesU_trans :
     RefinesU 2 (.freeze (.mul (.const 2) (.var 0))) (.mul (.const 2) (.var 0)) ∧
     RefinesU 2 (.mul (.const 2) (.var 0)) (.add (.var 0) (.var 0))
@@ -1317,6 +1411,7 @@ theorem nonvacuity_refinesU_trans :
 #### `Toy.UB.nonvacuity_refinesP_trans` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:28-30
 theorem nonvacuity_refinesP_trans :
     RefinesP 2 (.freeze (.mul (.const 2) (.var 0))) (.mul (.const 2) (.var 0)) ∧
     RefinesP 2 (.mul (.const 2) (.var 0)) (.add (.var 0) (.var 0))
@@ -1325,18 +1420,21 @@ theorem nonvacuity_refinesP_trans :
 #### `Toy.UB.refinesU_of_src_mayUB_needs_mayUB` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:137
 theorem refinesU_of_src_mayUB_needs_mayUB : ¬ ∀ tgt, RefinesU 2 tgt (.freeze (.var 0))
 ```
 
 #### `Toy.UB.refinesP_of_src_mayUB_needs_mayUB` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:142
 theorem refinesP_of_src_mayUB_needs_mayUB : ¬ ∀ tgt, RefinesP 2 tgt (.freeze (.var 0))
 ```
 
 #### `Toy.UB.nonvacuity_refinesU_of_src_mayUB` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:34-35
 theorem nonvacuity_refinesU_of_src_mayUB :
     ∀ ρ : Var → USet 2, UInhabited ρ → MayUB (semU 2 ρ (.add (.var 0) .ub))
 ```
@@ -1344,6 +1442,7 @@ theorem nonvacuity_refinesU_of_src_mayUB :
 #### `Toy.UB.nonvacuity_refinesP_of_src_mayUB` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:40-41
 theorem nonvacuity_refinesP_of_src_mayUB :
     ∀ ρ : Var → PVal 2, MayUB (semP 2 ρ (.ite (.var 0) .ub .ub))
 ```
@@ -1351,6 +1450,7 @@ theorem nonvacuity_refinesP_of_src_mayUB :
 #### `Toy.UB.refinesU_congr_add_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:31-33
 theorem refinesU_congr_add_premises_tight :
     (RefinesU 2 (.const 0) (.const 0) ∧ ¬ RefinesU 2 (.add (.const 1) (.const 0)) (.add (.const 0) (.const 0))) ∧
     (RefinesU 2 (.const 0) (.const 0) ∧ ¬ RefinesU 2 (.add (.const 0) (.const 1)) (.add (.const 0) (.const 0)))
@@ -1359,6 +1459,7 @@ theorem refinesU_congr_add_premises_tight :
 #### `Toy.UB.refinesU_congr_mul_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:38-40
 theorem refinesU_congr_mul_premises_tight :
     (RefinesU 2 (.const 1) (.const 1) ∧ ¬ RefinesU 2 (.mul (.const 1) (.const 1)) (.mul (.const 0) (.const 1))) ∧
     (RefinesU 2 (.const 1) (.const 1) ∧ ¬ RefinesU 2 (.mul (.const 1) (.const 1)) (.mul (.const 1) (.const 0)))
@@ -1367,6 +1468,7 @@ theorem refinesU_congr_mul_premises_tight :
 #### `Toy.UB.refinesU_congr_eq_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:45-47
 theorem refinesU_congr_eq_premises_tight :
     (RefinesU 2 (.const 0) (.const 0) ∧ ¬ RefinesU 2 (.eq (.const 1) (.const 0)) (.eq (.const 0) (.const 0))) ∧
     (RefinesU 2 (.const 0) (.const 0) ∧ ¬ RefinesU 2 (.eq (.const 0) (.const 1)) (.eq (.const 0) (.const 0)))
@@ -1375,6 +1477,7 @@ theorem refinesU_congr_eq_premises_tight :
 #### `Toy.UB.refinesU_congr_ite_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:52-55
 theorem refinesU_congr_ite_premises_tight :
     (RefinesU 2 (.const 1) (.const 1) ∧ RefinesU 2 (.const 0) (.const 0) ∧ ¬ RefinesU 2 (.ite (.const 1) (.const 1) (.const 0)) (.ite (.const 0) (.const 1) (.const 0))) ∧
     (RefinesU 2 (.const 1) (.const 1) ∧ RefinesU 2 (.const 0) (.const 0) ∧ ¬ RefinesU 2 (.ite (.const 1) (.const 1) (.const 0)) (.ite (.const 1) (.const 0) (.const 0))) ∧
@@ -1384,6 +1487,7 @@ theorem refinesU_congr_ite_premises_tight :
 #### `Toy.UB.refinesU_congr_letE_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:60-62
 theorem refinesU_congr_letE_premises_tight :
     (RefinesU 2 (.var 0) (.var 0) ∧ ¬ RefinesU 2 (.letE 0 (.const 1) (.var 0)) (.letE 0 (.const 0) (.var 0))) ∧
     (RefinesU 2 (.const 0) (.const 0) ∧ ¬ RefinesU 2 (.letE 0 (.const 0) (.const 1)) (.letE 0 (.const 0) (.const 0)))
@@ -1392,6 +1496,7 @@ theorem refinesU_congr_letE_premises_tight :
 #### `Toy.UB.refinesU_congr_freeze_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:67-68
 theorem refinesU_congr_freeze_premises_tight :
     (¬ RefinesU 2 (.freeze (.const 1)) (.freeze (.const 0)))
 ```
@@ -1399,6 +1504,7 @@ theorem refinesU_congr_freeze_premises_tight :
 #### `Toy.UB.refinesP_congr_add_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:73-75
 theorem refinesP_congr_add_premises_tight :
     (RefinesP 2 (.const 0) (.const 0) ∧ ¬ RefinesP 2 (.add (.const 1) (.const 0)) (.add (.const 0) (.const 0))) ∧
     (RefinesP 2 (.const 0) (.const 0) ∧ ¬ RefinesP 2 (.add (.const 0) (.const 1)) (.add (.const 0) (.const 0)))
@@ -1407,6 +1513,7 @@ theorem refinesP_congr_add_premises_tight :
 #### `Toy.UB.refinesP_congr_mul_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:80-82
 theorem refinesP_congr_mul_premises_tight :
     (RefinesP 2 (.const 1) (.const 1) ∧ ¬ RefinesP 2 (.mul (.const 1) (.const 1)) (.mul (.const 0) (.const 1))) ∧
     (RefinesP 2 (.const 1) (.const 1) ∧ ¬ RefinesP 2 (.mul (.const 1) (.const 1)) (.mul (.const 1) (.const 0)))
@@ -1415,6 +1522,7 @@ theorem refinesP_congr_mul_premises_tight :
 #### `Toy.UB.refinesP_congr_eq_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:87-89
 theorem refinesP_congr_eq_premises_tight :
     (RefinesP 2 (.const 0) (.const 0) ∧ ¬ RefinesP 2 (.eq (.const 1) (.const 0)) (.eq (.const 0) (.const 0))) ∧
     (RefinesP 2 (.const 0) (.const 0) ∧ ¬ RefinesP 2 (.eq (.const 0) (.const 1)) (.eq (.const 0) (.const 0)))
@@ -1423,6 +1531,7 @@ theorem refinesP_congr_eq_premises_tight :
 #### `Toy.UB.refinesP_congr_ite_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:94-97
 theorem refinesP_congr_ite_premises_tight :
     (RefinesP 2 (.const 1) (.const 1) ∧ RefinesP 2 (.const 0) (.const 0) ∧ ¬ RefinesP 2 (.ite (.const 1) (.const 1) (.const 0)) (.ite (.const 0) (.const 1) (.const 0))) ∧
     (RefinesP 2 (.const 1) (.const 1) ∧ RefinesP 2 (.const 0) (.const 0) ∧ ¬ RefinesP 2 (.ite (.const 1) (.const 1) (.const 0)) (.ite (.const 1) (.const 0) (.const 0))) ∧
@@ -1432,6 +1541,7 @@ theorem refinesP_congr_ite_premises_tight :
 #### `Toy.UB.refinesP_congr_letE_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:102-104
 theorem refinesP_congr_letE_premises_tight :
     (RefinesP 2 (.var 0) (.var 0) ∧ ¬ RefinesP 2 (.letE 0 (.const 1) (.var 0)) (.letE 0 (.const 0) (.var 0))) ∧
     (RefinesP 2 (.const 0) (.const 0) ∧ ¬ RefinesP 2 (.letE 0 (.const 0) (.const 1)) (.letE 0 (.const 0) (.const 0)))
@@ -1440,6 +1550,7 @@ theorem refinesP_congr_letE_premises_tight :
 #### `Toy.UB.refinesP_congr_freeze_premises_tight` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:109-110
 theorem refinesP_congr_freeze_premises_tight :
     (¬ RefinesP 2 (.freeze (.const 1)) (.freeze (.const 0)))
 ```
@@ -1447,6 +1558,7 @@ theorem refinesP_congr_freeze_premises_tight :
 #### `Toy.UB.nonvacuity_refinesU_congr` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:50-52
 theorem nonvacuity_refinesU_congr :
     RefinesU 2 (.mul (.const 2) (.var 0)) (.add (.var 0) (.var 0)) ∧
     RefinesU 2 (.freeze (.var 1)) (.var 1) ∧ RefinesU 2 (.const 7) .ub
@@ -1455,6 +1567,7 @@ theorem nonvacuity_refinesU_congr :
 #### `Toy.UB.nonvacuity_refinesP_congr` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:58-60
 theorem nonvacuity_refinesP_congr :
     RefinesP 2 (.mul (.const 2) (.var 0)) (.add (.var 0) (.var 0)) ∧
     RefinesP 2 (.freeze (.var 1)) (.var 1) ∧ RefinesP 2 (.const 7) .ub
@@ -1465,6 +1578,7 @@ theorem nonvacuity_refinesP_congr :
 Monotonicity of the undef-model semantics in the environment (cited in the non-claims of result 3): if every input set of `ρ'` is a subset of the corresponding input set of `ρ`, the outcomes in `ρ'` refine those in `ρ`.
 
 ```lean
+-- lean/ToyUB/Monotone.lean:109-111
 theorem semU_mono (w : Nat) (e : Expr) :
     ∀ ρ' ρ : Var → USet w, (∀ y, USet.Sub (ρ' y) (ρ y)) →
       OutRef USet.Sub (semU w ρ' e) (semU w ρ e)
@@ -1475,6 +1589,7 @@ theorem semU_mono (w : Nat) (e : Expr) :
 Monotonicity of the poison(+freeze)-model semantics in the environment (cited in the non-claims of result 3): if every input of `ρ'` refines the corresponding input of `ρ`, the outcomes in `ρ'` refine those in `ρ`.
 
 ```lean
+-- lean/ToyUB/Monotone.lean:250-252
 theorem semP_mono (w : Nat) (e : Expr) :
     ∀ ρ' ρ : Var → PVal w, (∀ y, PVal.Refines (ρ' y) (ρ y)) →
       OutRef PVal.Refines (semP w ρ' e) (semP w ρ e)
@@ -1483,6 +1598,7 @@ theorem semP_mono (w : Nat) (e : Expr) :
 #### `Toy.UB.undef_obsRefines_not_congruence_letE_needs_width` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:154-157
 theorem undef_obsRefines_not_congruence_letE_needs_width :
     ¬ (ObsRefinesU 0 (.var 0) (.freeze (.var 0)) ∧
         ¬ ObsRefinesU 0 (.letE 1 (.var 0) (.add (.var 1) (.var 1)))
@@ -1492,6 +1608,7 @@ theorem undef_obsRefines_not_congruence_letE_needs_width :
 #### `Toy.UB.nonvacuity_undef_obsRefines_not_congruence_letE` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:68-71
 theorem nonvacuity_undef_obsRefines_not_congruence_letE :
     ObsRefinesU 2 (.var 0) (.freeze (.var 0)) ∧
     ¬ ObsRefinesU 2 (.letE 1 (.var 0) (.add (.var 1) (.var 1)))
@@ -1501,12 +1618,14 @@ theorem nonvacuity_undef_obsRefines_not_congruence_letE :
 #### `Toy.UB.nonvacuity_width_two` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:65
 theorem nonvacuity_width_two : 1 ≤ 2
 ```
 
 #### `Toy.UB.undef_obsRefines_letE_width_zero` (`lean/ToyUB/Refinement.lean`)
 
 ```lean
+-- lean/ToyUB/Refinement.lean:216-218
 theorem undef_obsRefines_letE_width_zero (x y : Var) :
     ObsRefinesU 0 (.letE y (.var x) (.add (.var y) (.var y)))
       (.letE y (.freeze (.var x)) (.add (.var y) (.var y)))
@@ -1515,6 +1634,7 @@ theorem undef_obsRefines_letE_width_zero (x y : Var) :
 #### `Toy.UB.nonvacuity_undef_rewrite_add_self_to_two_mul_sound` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:86-88
 theorem nonvacuity_undef_rewrite_add_self_to_two_mul_sound :
     RefinesU 3 (.mul (.const 2) (.ite (.var 0) (.var 1) (.freeze (.var 1))))
       (.add (.ite (.var 0) (.var 1) (.freeze (.var 1))) (.ite (.var 0) (.var 1) (.freeze (.var 1))))
@@ -1523,6 +1643,7 @@ theorem nonvacuity_undef_rewrite_add_self_to_two_mul_sound :
 #### `Toy.UB.nonvacuity_poison_rewrite_add_self_to_two_mul_sound` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:93-94
 theorem nonvacuity_poison_rewrite_add_self_to_two_mul_sound :
     RefinesP 3 (.mul (.const 2) (.freeze (.var 0))) (.add (.freeze (.var 0)) (.freeze (.var 0)))
 ```
@@ -1530,6 +1651,7 @@ theorem nonvacuity_poison_rewrite_add_self_to_two_mul_sound :
 #### `Toy.UB.undef_rewrite_two_mul_to_add_self_unsound_needs_width` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:161-162
 theorem undef_rewrite_two_mul_to_add_self_unsound_needs_width :
     ¬ ¬ RefinesU 0 (.add (.var 0) (.var 0)) (.mul (.const 2) (.var 0))
 ```
@@ -1537,6 +1659,7 @@ theorem undef_rewrite_two_mul_to_add_self_unsound_needs_width :
 #### `Toy.UB.nonvacuity_undef_rewrite_two_mul_to_add_self_unsound` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:75-76
 theorem nonvacuity_undef_rewrite_two_mul_to_add_self_unsound :
     ¬ RefinesU 2 (.add (.var 0) (.var 0)) (.mul (.const 2) (.var 0))
 ```
@@ -1544,6 +1667,7 @@ theorem nonvacuity_undef_rewrite_two_mul_to_add_self_unsound :
 #### `Toy.UB.undef_rewrite_two_mul_to_add_self_sound_width_zero` (`lean/ToyUB/Duplication.lean`)
 
 ```lean
+-- lean/ToyUB/Duplication.lean:84-85
 theorem undef_rewrite_two_mul_to_add_self_sound_width_zero (x : Var) :
     RefinesU 0 (.add (.var x) (.var x)) (.mul (.const 2) (.var x))
 ```
@@ -1551,6 +1675,7 @@ theorem undef_rewrite_two_mul_to_add_self_sound_width_zero (x : Var) :
 #### `Toy.UB.undef_rewrite_two_mul_to_let_freeze_add_self_sound` (`lean/ToyUB/Duplication.lean`)
 
 ```lean
+-- lean/ToyUB/Duplication.lean:248-249
 theorem undef_rewrite_two_mul_to_let_freeze_add_self_sound (w : Nat) (e : Expr) (a : Var) :
     RefinesU w (.letE a (.freeze e) (.add (.var a) (.var a))) (.mul (.const 2) e)
 ```
@@ -1558,6 +1683,7 @@ theorem undef_rewrite_two_mul_to_let_freeze_add_self_sound (w : Nat) (e : Expr) 
 #### `Toy.UB.undef_rewrite_two_mul_to_add_self_sound_at_singleton` (`lean/ToyUB/Duplication.lean`)
 
 ```lean
+-- lean/ToyUB/Duplication.lean:330-332
 theorem undef_rewrite_two_mul_to_add_self_sound_at_singleton (w : Nat) (x : Var)
     (ρ : Var → USet w) (v : BitVec w) (hx : ρ x = USet.single v) :
     OutRef USet.Sub (semU w ρ (.add (.var x) (.var x))) (semU w ρ (.mul (.const 2) (.var x)))
@@ -1568,6 +1694,7 @@ theorem undef_rewrite_two_mul_to_add_self_sound_at_singleton (w : Nat) (x : Var)
 Freeze-free programs are deterministic in the poison(+freeze) model (cited in the hypothesis ledger of result 7): in every environment they have exactly one outcome.
 
 ```lean
+-- lean/ToyUB/Duplication.lean:124-125
 theorem semP_freezeFree_singleton (w : Nat) (e : Expr) (he : e.FreezeFree = true) :
     ∀ ρ : Var → PVal w, ∃ o, semP w ρ e = [o]
 ```
@@ -1575,6 +1702,7 @@ theorem semP_freezeFree_singleton (w : Nat) (e : Expr) (he : e.FreezeFree = true
 #### `Toy.UB.poison_rewrite_two_mul_to_add_self_needs_freezeFree` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:220-222
 theorem poison_rewrite_two_mul_to_add_self_needs_freezeFree :
     (Expr.freeze (.var 0)).FreezeFree = false ∧
     ¬ RefinesP 2 (.add (.freeze (.var 0)) (.freeze (.var 0))) (.mul (.const 2) (.freeze (.var 0)))
@@ -1583,6 +1711,7 @@ theorem poison_rewrite_two_mul_to_add_self_needs_freezeFree :
 #### `Toy.UB.nonvacuity_freezeFree` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:99-100
 theorem nonvacuity_freezeFree :
     (Expr.ite (.var 0) (.add (.var 0) (.var 1)) .ub).FreezeFree = true
 ```
@@ -1590,6 +1719,7 @@ theorem nonvacuity_freezeFree :
 #### `Toy.UB.poisonFreeze_rewrite_two_mul_to_add_self_unsound_needs_width` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:167-169
 theorem poisonFreeze_rewrite_two_mul_to_add_self_unsound_needs_width :
     ¬ ¬ RefinesP 0 (.add (.freeze (.var 0)) (.freeze (.var 0)))
         (.mul (.const 2) (.freeze (.var 0)))
@@ -1598,6 +1728,7 @@ theorem poisonFreeze_rewrite_two_mul_to_add_self_unsound_needs_width :
 #### `Toy.UB.nonvacuity_poisonFreeze_rewrite_two_mul_to_add_self_unsound` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:80-81
 theorem nonvacuity_poisonFreeze_rewrite_two_mul_to_add_self_unsound :
     ¬ RefinesP 2 (.add (.freeze (.var 0)) (.freeze (.var 0))) (.mul (.const 2) (.freeze (.var 0)))
 ```
@@ -1605,6 +1736,7 @@ theorem nonvacuity_poisonFreeze_rewrite_two_mul_to_add_self_unsound :
 #### `Toy.UB.poisonFreeze_rewrite_two_mul_to_add_self_sound_width_zero` (`lean/ToyUB/Duplication.lean`)
 
 ```lean
+-- lean/ToyUB/Duplication.lean:234-236
 theorem poisonFreeze_rewrite_two_mul_to_add_self_sound_width_zero (x : Var) :
     RefinesP 0 (.add (.freeze (.var x)) (.freeze (.var x)))
       (.mul (.const 2) (.freeze (.var x)))
@@ -1613,6 +1745,7 @@ theorem poisonFreeze_rewrite_two_mul_to_add_self_sound_width_zero (x : Var) :
 #### `Toy.UB.poisonFreeze_rewrite_two_mul_to_let_freeze_add_self_sound` (`lean/ToyUB/Duplication.lean`)
 
 ```lean
+-- lean/ToyUB/Duplication.lean:293-294
 theorem poisonFreeze_rewrite_two_mul_to_let_freeze_add_self_sound (w : Nat) (e : Expr)
     (a : Var) : RefinesP w (.letE a (.freeze e) (.add (.var a) (.var a))) (.mul (.const 2) e)
 ```
@@ -1620,6 +1753,7 @@ theorem poisonFreeze_rewrite_two_mul_to_let_freeze_add_self_sound (w : Nat) (e :
 #### `Toy.UB.poisonFreeze_rewrite_two_mul_freeze_sound_at_int` (`lean/ToyUB/Duplication.lean`)
 
 ```lean
+-- lean/ToyUB/Duplication.lean:350-353
 theorem poisonFreeze_rewrite_two_mul_freeze_sound_at_int (w : Nat) (x : Var)
     (ρ : Var → PVal w) (v : BitVec w) (hx : ρ x = .int v) :
     OutRef PVal.Refines (semP w ρ (.add (.freeze (.var x)) (.freeze (.var x))))
@@ -1629,6 +1763,7 @@ theorem poisonFreeze_rewrite_two_mul_freeze_sound_at_int (w : Nat) (x : Var)
 #### `Toy.UB.nonvacuity_poison_gvn_sound` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:113-116
 theorem nonvacuity_poison_gvn_sound :
     RefinesP 2 (.ite (.eq (.var 0) (.var 1)) (.letE 1 (.var 0) (.add (.var 1) (.freeze (.var 1))))
         (.var 1))
@@ -1638,6 +1773,7 @@ theorem nonvacuity_poison_gvn_sound :
 #### `Toy.UB.semP_letE_var_var` (`lean/ToyUB/GVN.lean`)
 
 ```lean
+-- lean/ToyUB/GVN.lean:41-42
 theorem semP_letE_var_var (w : Nat) (ρ : Var → PVal w) (x y : Var) :
     semP w ρ (.letE y (.var x) (.var y)) = semP w ρ (.var x)
 ```
@@ -1645,6 +1781,7 @@ theorem semP_letE_var_var (w : Nat) (ρ : Var → PVal w) (x y : Var) :
 #### `Toy.UB.poisonFreeze_gvn_after_freezing_condition_unsound` (`lean/ToyUB/GVN.lean`)
 
 ```lean
+-- lean/ToyUB/GVN.lean:181-183
 theorem poisonFreeze_gvn_after_freezing_condition_unsound (w : Nat) (hw : 1 ≤ w) :
     ¬ RefinesP w (.ite (.freeze (.eq (.var 0) (.var 1))) (.letE 1 (.var 0) (.var 1)) (.const 0))
         (.ite (.freeze (.eq (.var 0) (.var 1))) (.var 1) (.const 0))
@@ -1653,6 +1790,7 @@ theorem poisonFreeze_gvn_after_freezing_condition_unsound (w : Nat) (hw : 1 ≤ 
 #### `Toy.UB.undef_gvn_var_branch_distinct_vars_unsound_needs_width` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:174-177
 theorem undef_gvn_var_branch_distinct_vars_unsound_needs_width :
     (0 : Var) ≠ 1 ∧
     ¬ ¬ RefinesU 0 (.ite (.eq (.var 0) (.var 1)) (.letE 1 (.var 0) (.var 1)) (.const 0))
@@ -1662,6 +1800,7 @@ theorem undef_gvn_var_branch_distinct_vars_unsound_needs_width :
 #### `Toy.UB.undef_gvn_var_branch_distinct_vars_unsound_needs_distinct` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:182-185
 theorem undef_gvn_var_branch_distinct_vars_unsound_needs_distinct :
     1 ≤ 2 ∧
     ¬ ¬ RefinesU 2 (.ite (.eq (.var 0) (.var 0)) (.letE 0 (.var 0) (.var 0)) (.const 0))
@@ -1671,6 +1810,7 @@ theorem undef_gvn_var_branch_distinct_vars_unsound_needs_distinct :
 #### `Toy.UB.nonvacuity_undef_gvn_instance` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:106-108
 theorem nonvacuity_undef_gvn_instance :
     ¬ RefinesU 2 (.ite (.eq (.var 0) (.var 1)) (.letE 1 (.var 0) (.var 1)) (.const 0))
         (.ite (.eq (.var 0) (.var 1)) (.var 1) (.const 0))
@@ -1679,12 +1819,14 @@ theorem nonvacuity_undef_gvn_instance :
 #### `Toy.UB.nonvacuity_undef_gvn` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:103
 theorem nonvacuity_undef_gvn : 1 ≤ 2 ∧ (0 : Var) ≠ 1
 ```
 
 #### `Toy.UB.undef_gvn_sound_width_zero` (`lean/ToyUB/GVN.lean`)
 
 ```lean
+-- lean/ToyUB/GVN.lean:136-138
 theorem undef_gvn_sound_width_zero (x y : Var) :
     RefinesU 0 (.ite (.eq (.var x) (.var y)) (.letE y (.var x) (.var y)) (.const 0))
       (.ite (.eq (.var x) (.var y)) (.var y) (.const 0))
@@ -1693,6 +1835,7 @@ theorem undef_gvn_sound_width_zero (x y : Var) :
 #### `Toy.UB.undef_gvn_sound_of_same_var` (`lean/ToyUB/GVN.lean`)
 
 ```lean
+-- lean/ToyUB/GVN.lean:154-156
 theorem undef_gvn_sound_of_same_var (w : Nat) (x : Var) :
     RefinesU w (.ite (.eq (.var x) (.var x)) (.letE x (.var x) (.var x)) (.const 0))
       (.ite (.eq (.var x) (.var x)) (.var x) (.const 0))
@@ -1701,6 +1844,7 @@ theorem undef_gvn_sound_of_same_var (w : Nat) (x : Var) :
 #### `Toy.UB.undef_gvn_sound_examples_closed_or_x_branch` (`lean/ToyUB/GVN.lean`)
 
 ```lean
+-- lean/ToyUB/GVN.lean:166-170
 theorem undef_gvn_sound_examples_closed_or_x_branch :
     RefinesU 2 (.ite (.eq (.var 0) (.var 1)) (.letE 1 (.var 0) (.const 0)) (.const 0))
       (.ite (.eq (.var 0) (.var 1)) (.const 0) (.const 0)) ∧
@@ -1711,6 +1855,7 @@ theorem undef_gvn_sound_examples_closed_or_x_branch :
 #### `Toy.UB.undef_gvn_with_frozen_operand_sound` (`lean/ToyUB/GVN.lean`)
 
 ```lean
+-- lean/ToyUB/GVN.lean:221-223
 theorem undef_gvn_with_frozen_operand_sound (w : Nat) :
     RefinesU w (.letE 2 (.freeze (.var 0)) (.ite (.eq (.var 2) (.var 1)) (.var 2) (.const 0)))
       (.ite (.eq (.var 0) (.var 1)) (.var 1) (.const 0))
@@ -1719,6 +1864,7 @@ theorem undef_gvn_with_frozen_operand_sound (w : Nat) :
 #### `Toy.UB.poison_unswitch_without_freeze_distinct_vars_unsound_needs_distinct` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:190-193
 theorem poison_unswitch_without_freeze_distinct_vars_unsound_needs_distinct :
     ¬ ¬ RefinesP 2
         (.ite (.var 2) (.ite (.var 2) (.const 1) (.const 0)) (.ite (.var 2) (.const 2) (.const 0)))
@@ -1728,6 +1874,7 @@ theorem poison_unswitch_without_freeze_distinct_vars_unsound_needs_distinct :
 #### `Toy.UB.nonvacuity_poison_unswitch_instance` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:124-127
 theorem nonvacuity_poison_unswitch_instance :
     ¬ RefinesP 2
         (.ite (.var 3) (.ite (.var 2) (.var 3) (.const 7)) (.ite (.var 2) (.add (.var 2) (.var 3)) (.const 7)))
@@ -1737,12 +1884,14 @@ theorem nonvacuity_poison_unswitch_instance :
 #### `Toy.UB.nonvacuity_poison_unswitch` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:120
 theorem nonvacuity_poison_unswitch : (2 : Var) ≠ 3
 ```
 
 #### `Toy.UB.poison_unswitch_without_freeze_sound_of_same_var` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:93-95
 theorem poison_unswitch_without_freeze_sound_of_same_var (w : Nat) (c : Var) (a b e : Expr) :
     RefinesP w (.ite (.var c) (.ite (.var c) a e) (.ite (.var c) b e))
       (.ite (.var c) (.ite (.var c) a b) e)
@@ -1751,6 +1900,7 @@ theorem poison_unswitch_without_freeze_sound_of_same_var (w : Nat) (c : Var) (a 
 #### `Toy.UB.undef_unswitch_without_freeze_needs_ubFree` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:171-174
 theorem undef_unswitch_without_freeze_needs_ubFree :
     ¬ UBFreeU 2 .ub ∧
     ¬ RefinesU 2 (.ite .ub (.ite (.const 0) (.const 0) (.const 0)) (.ite (.const 0) (.const 0) (.const 0)))
@@ -1760,6 +1910,7 @@ theorem undef_unswitch_without_freeze_needs_ubFree :
 #### `Toy.UB.nonvacuity_undef_unswitch_of_ubFree` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:133-141
 theorem nonvacuity_undef_unswitch_of_ubFree :
     UBFreeU 2 (.ite (.var 3) (.const 1) (.const 0)) ∧
     RefinesU 2
@@ -1774,6 +1925,7 @@ theorem nonvacuity_undef_unswitch_of_ubFree :
 #### `Toy.UB.nonvacuity_undef_unswitch` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:164-167
 theorem nonvacuity_undef_unswitch :
     RefinesU 2 (.ite (.var 3) (.ite (.var 2) (.var 3) (.freeze (.var 2)))
         (.ite (.var 2) (.add (.var 2) (.var 3)) (.freeze (.var 2))))
@@ -1783,6 +1935,7 @@ theorem nonvacuity_undef_unswitch :
 #### `Toy.UB.undef_unswitch_vars_outRef_all_envs` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:187-191
 theorem undef_unswitch_vars_outRef_all_envs (w : Nat) (c d : Var) (a b e : Expr)
     (ρ : Var → USet w) :
     OutRef USet.Sub
@@ -1803,6 +1956,7 @@ def uEmptyD : Var → USet 2 := fun v => if v = 1 then (fun _ => false) else USe
 With `c` = variable `0` ↦ `{0}` and `d` = variable `1` ↦ the empty set (environment `uEmptyD`), the source `if c then (if d then 2 else 3) else 1` returns `1`, the unswitched target has no outcome, and `OutRef` accepts the pair.
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:226-235
 theorem undef_unswitch_empty_input_target_has_no_outcomes :
     ¬ UInhabited uEmptyD ∧
     semU 2 uEmptyD
@@ -1818,6 +1972,7 @@ theorem undef_unswitch_empty_input_target_has_no_outcomes :
 #### `Toy.UB.ubFreeU_examples` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:66-67
 theorem ubFreeU_examples :
     UBFreeU 2 (.var 0) ∧ UBFreeU 2 (.ite (.var 0) (.const 1) (.const 0)) ∧ ¬ UBFreeU 2 .ub
 ```
@@ -1825,6 +1980,7 @@ theorem ubFreeU_examples :
 #### `Toy.UB.poisonFreeze_unswitch_with_freeze_needs_ubFree` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:427-432
 theorem poisonFreeze_unswitch_with_freeze_needs_ubFree :
     (Expr.const 0).freeIn 4 = false ∧ ¬ UBFreeP 2 .ub ∧
     ¬ RefinesP 2
@@ -1836,6 +1992,7 @@ theorem poisonFreeze_unswitch_with_freeze_needs_ubFree :
 #### `Toy.UB.poisonFreeze_unswitch_with_freeze_needs_ubFree_branch` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:441-446
 theorem poisonFreeze_unswitch_with_freeze_needs_ubFree_branch :
     (Expr.const 0).freeIn 4 = false ∧ ¬ UBFreeP 2 (.ite (.var 0) (.const 1) (.const 0)) ∧
     ¬ RefinesP 2
@@ -1847,6 +2004,7 @@ theorem poisonFreeze_unswitch_with_freeze_needs_ubFree_branch :
 #### `Toy.UB.poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_cond` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:455-461
 theorem poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_cond :
     UBFreeP 2 (.var 3) ∧ (Expr.const 1).freeIn 2 = false ∧ (Expr.const 0).freeIn 2 = false ∧
     (Expr.var 2).freeIn 2 = true ∧
@@ -1859,6 +2017,7 @@ theorem poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_cond :
 #### `Toy.UB.poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_a` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:471-476
 theorem poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_a :
     UBFreeP 2 (.var 3) ∧ (Expr.var 2).freeIn 4 = false ∧ (Expr.const 0).freeIn 4 = false ∧
     ¬ RefinesP 2
@@ -1870,6 +2029,7 @@ theorem poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_a :
 #### `Toy.UB.poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_b` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:486-491
 theorem poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_b :
     UBFreeP 2 (.var 3) ∧ (Expr.var 2).freeIn 4 = false ∧ (Expr.const 0).freeIn 4 = false ∧
     ¬ RefinesP 2
@@ -1881,6 +2041,7 @@ theorem poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_b :
 #### `Toy.UB.poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_e` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:501-506
 theorem poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_e :
     UBFreeP 2 (.var 3) ∧ (Expr.var 2).freeIn 4 = false ∧ (Expr.const 0).freeIn 4 = false ∧
     ¬ RefinesP 2
@@ -1892,6 +2053,7 @@ theorem poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_e :
 #### `Toy.UB.nonvacuity_poisonFreeze_unswitch_of_ubFree` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:148-157
 theorem nonvacuity_poisonFreeze_unswitch_of_ubFree :
     UBFreeP 2 (.eq (.var 3) (.var 5)) ∧ (Expr.eq (.var 0) (.var 1)).freeIn 4 = false ∧
     (Expr.var 3).freeIn 4 = false ∧ (Expr.add (.var 2) (.var 3)).freeIn 4 = false ∧
@@ -1907,6 +2069,7 @@ theorem nonvacuity_poisonFreeze_unswitch_of_ubFree :
 #### `Toy.UB.nonvacuity_poisonFreeze_unswitch` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:173-175
 theorem nonvacuity_poisonFreeze_unswitch :
     (4 : Var) ≠ 2 ∧ (Expr.var 3).freeIn 4 = false ∧ (Expr.add (.var 2) (.var 3)).freeIn 4 = false ∧
     (Expr.freeze (.var 2)).freeIn 4 = false
@@ -1915,6 +2078,7 @@ theorem nonvacuity_poisonFreeze_unswitch :
 #### `Toy.UB.ubFreeP_examples` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:58-60
 theorem ubFreeP_examples :
     UBFreeP 2 (.var 0) ∧ UBFreeP 2 (.eq (.var 0) (.var 1)) ∧ ¬ UBFreeP 2 .ub ∧
     ¬ UBFreeP 2 (.ite (.var 0) (.const 1) (.const 0))
@@ -1923,12 +2087,14 @@ theorem ubFreeP_examples :
 #### `Toy.UB.ubFreeP_eq_var` (`lean/ToyUB/Unswitch.lean`)
 
 ```lean
+-- lean/ToyUB/Unswitch.lean:47
 theorem ubFreeP_eq_var (w : Nat) (x y : Var) : UBFreeP w (.eq (.var x) (.var y))
 ```
 
 #### `Toy.UB.poisonFreeze_freeze_eq_self_needs_no_poison` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:227-229
 theorem poisonFreeze_freeze_eq_self_needs_no_poison :
     Outcome.val PVal.poison ∈ semP 2 (fun _ => .poison) (.var 0) ∧
     semP 2 (fun _ => .poison) (.freeze (.var 0)) ≠ semP 2 (fun _ => .poison) (.var 0)
@@ -1937,6 +2103,7 @@ theorem poisonFreeze_freeze_eq_self_needs_no_poison :
 #### `Toy.UB.poisonFreeze_remove_freeze_needs_no_poison` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:234-236
 theorem poisonFreeze_remove_freeze_needs_no_poison :
     ¬ (∀ ρ : Var → PVal 2, Outcome.val PVal.poison ∉ semP 2 ρ (.var 0)) ∧
     ¬ RefinesP 2 (.var 0) (.freeze (.var 0))
@@ -1945,6 +2112,7 @@ theorem poisonFreeze_remove_freeze_needs_no_poison :
 #### `Toy.UB.nonvacuity_freeze_eq_self` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:179-180
 theorem nonvacuity_freeze_eq_self :
     Outcome.val PVal.poison ∉ semP 2 (fun _ => .int 1#2) (.add (.var 0) (.const 1))
 ```
@@ -1952,6 +2120,7 @@ theorem nonvacuity_freeze_eq_self :
 #### `Toy.UB.nonvacuity_remove_redundant_freeze` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:216-220
 theorem nonvacuity_remove_redundant_freeze :
     RefinesP 2 (.freeze (.var 0)) (.freeze (.freeze (.var 0))) ∧
     RefinesU 2 (.freeze (.var 0)) (.freeze (.freeze (.var 0))) ∧
@@ -1962,6 +2131,7 @@ theorem nonvacuity_remove_redundant_freeze :
 #### `Toy.UB.nonvacuity_insert_freeze` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:184-186
 theorem nonvacuity_insert_freeze :
     RefinesP 2 (.freeze (.ite (.var 0) (.var 1) .ub)) (.ite (.var 0) (.var 1) .ub) ∧
     RefinesU 2 (.freeze (.ite (.var 0) (.var 1) .ub)) (.ite (.var 0) (.var 1) .ub)
@@ -1970,6 +2140,7 @@ theorem nonvacuity_insert_freeze :
 #### `Toy.UB.undef_remove_freeze_unsound_needs_width` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:197-198
 theorem undef_remove_freeze_unsound_needs_width :
     ¬ ¬ RefinesU 0 (.var 0) (.freeze (.var 0))
 ```
@@ -1977,6 +2148,7 @@ theorem undef_remove_freeze_unsound_needs_width :
 #### `Toy.UB.nonvacuity_remove_freeze_unsound` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:232-233
 theorem nonvacuity_remove_freeze_unsound :
     ¬ RefinesP 2 (.var 0) (.freeze (.var 0)) ∧ ¬ RefinesU 2 (.var 0) (.freeze (.var 0))
 ```
@@ -1984,6 +2156,7 @@ theorem nonvacuity_remove_freeze_unsound :
 #### `Toy.UB.undef_remove_freeze_sound_width_zero` (`lean/ToyUB/Freeze.lean`)
 
 ```lean
+-- lean/ToyUB/Freeze.lean:228-229
 theorem undef_remove_freeze_sound_width_zero (x : Var) :
     RefinesU 0 (.var x) (.freeze (.var x))
 ```
@@ -1991,6 +2164,7 @@ theorem undef_remove_freeze_sound_width_zero (x : Var) :
 #### `Toy.UB.poisonFreeze_freeze_add_freeze_can_be_odd_needs_width` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:203-206
 theorem poisonFreeze_freeze_add_freeze_can_be_odd_needs_width :
     ¬ ∃ ρ : Var → PVal 0, ∃ v : BitVec 0,
         Outcome.val (PVal.int v) ∈ semP 0 ρ (.add (.freeze (.var 0)) (.freeze (.var 0))) ∧
@@ -2000,6 +2174,7 @@ theorem poisonFreeze_freeze_add_freeze_can_be_odd_needs_width :
 #### `Toy.UB.nonvacuity_let_freeze_mem` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:239-243
 theorem nonvacuity_let_freeze_mem :
     Outcome.val (PVal.int 2#2) ∈ semP 2 ρP (.letE 1 (.freeze (.var 0)) (.add (.var 1) (.var 1))) ∧
     (∃ ρ : Var → PVal 2, ∃ v : BitVec 2,
@@ -2010,6 +2185,7 @@ theorem nonvacuity_let_freeze_mem :
 #### `Toy.UB.poisonFreeze_duplicate_freeze_unsound_needs_width` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:212-214
 theorem poisonFreeze_duplicate_freeze_unsound_needs_width :
     ¬ ¬ RefinesP 0 (.add (.freeze (.var 0)) (.freeze (.var 0)))
         (.letE 1 (.freeze (.var 0)) (.add (.var 1) (.var 1)))
@@ -2018,6 +2194,7 @@ theorem poisonFreeze_duplicate_freeze_unsound_needs_width :
 #### `Toy.UB.nonvacuity_duplicate_freeze_unsound` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:247-249
 theorem nonvacuity_duplicate_freeze_unsound :
     ¬ RefinesP 2 (.add (.freeze (.var 0)) (.freeze (.var 0)))
         (.letE 1 (.freeze (.var 0)) (.add (.var 1) (.var 1)))
@@ -2026,6 +2203,7 @@ theorem nonvacuity_duplicate_freeze_unsound :
 #### `Toy.UB.poisonFreeze_duplicate_freeze_sound_width_zero` (`lean/ToyUB/Freeze.lean`)
 
 ```lean
+-- lean/ToyUB/Freeze.lean:145-147
 theorem poisonFreeze_duplicate_freeze_sound_width_zero (x a : Var) :
     RefinesP 0 (.add (.freeze (.var x)) (.freeze (.var x)))
       (.letE a (.freeze (.var x)) (.add (.var a) (.var a)))
@@ -2034,6 +2212,7 @@ theorem poisonFreeze_duplicate_freeze_sound_width_zero (x a : Var) :
 #### `Toy.UB.poisonFreeze_duplicate_freeze_sound_at_int` (`lean/ToyUB/Freeze.lean`)
 
 ```lean
+-- lean/ToyUB/Freeze.lean:380-383
 theorem poisonFreeze_duplicate_freeze_sound_at_int (w : Nat) (x a : Var) (ρ : Var → PVal w)
     (v : BitVec w) (hx : ρ x = .int v) :
     OutRef PVal.Refines (semP w ρ (.add (.freeze (.var x)) (.freeze (.var x))))
@@ -2043,6 +2222,7 @@ theorem poisonFreeze_duplicate_freeze_sound_at_int (w : Nat) (x a : Var) (ρ : V
 #### `Toy.UB.poisonFreeze_duplicate_freeze_of_nonpoison_compound_unsound` (`lean/ToyUB/Tightness.lean`)
 
 ```lean
+-- lean/ToyUB/Tightness.lean:243-246
 theorem poisonFreeze_duplicate_freeze_of_nonpoison_compound_unsound :
     (∀ ρ : Var → PVal 2, Outcome.val PVal.poison ∉ semP 2 ρ (.freeze (.var 1))) ∧
     ¬ RefinesP 2 (.add (.freeze (.freeze (.var 1))) (.freeze (.freeze (.var 1))))
@@ -2052,6 +2232,7 @@ theorem poisonFreeze_duplicate_freeze_of_nonpoison_compound_unsound :
 #### `Toy.UB.nonvacuity_merge_freeze` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:190-192
 theorem nonvacuity_merge_freeze :
     RefinesP 2 (.letE 5 (.freeze (.freeze (.var 0))) (.add (.var 5) (.var 5)))
       (.add (.freeze (.freeze (.var 0))) (.freeze (.freeze (.var 0))))
@@ -2060,6 +2241,7 @@ theorem nonvacuity_merge_freeze :
 #### `Toy.UB.poisonFreeze_partial_merge_freeze_unsound` (`lean/ToyUB/Freeze.lean`)
 
 ```lean
+-- lean/ToyUB/Freeze.lean:331-334
 theorem poisonFreeze_partial_merge_freeze_unsound (w : Nat) (hw : 1 ≤ w) :
     ¬ RefinesP w
         (.letE 1 (.freeze (.var 0)) (.letE 2 (.freeze (.var 0)) (.eq (.var 1) (.var 2))))
@@ -2069,6 +2251,7 @@ theorem poisonFreeze_partial_merge_freeze_unsound (w : Nat) (hw : 1 ≤ w) :
 #### `Toy.UB.nonvacuity_poison_refines_eagerUninit_live` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:255-260
 theorem nonvacuity_poison_refines_eagerUninit_live :
     semE 2 (fun _ => none) (.letE 1 (.var 0) (.const 0)) = [.ub] ∧
     semP 2 (toPoisonEnv fun _ => none) (.letE 1 (.var 0) (.const 0)) = [.val (.int 0#2)] ∧
@@ -2080,6 +2263,7 @@ theorem nonvacuity_poison_refines_eagerUninit_live :
 #### `Toy.UB.nonvacuity_poison_refines_eagerUninit` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:197-201
 theorem nonvacuity_poison_refines_eagerUninit :
     OutRef PVal.Refines
       (semP 2 (toPoisonEnv fun v => if v = 0 then some 1#2 else none) (.ite (.var 0) (.const 3) (.var 1)))
@@ -2090,6 +2274,7 @@ theorem nonvacuity_poison_refines_eagerUninit :
 #### `Toy.UB.semE_spec` (`lean/ToyUB/Uninit.lean`)
 
 ```lean
+-- lean/ToyUB/Uninit.lean:94-96
 theorem semE_spec (w : Nat) (e : Expr) :
     ∀ ρ : Var → Option (BitVec w), semE w ρ e = [.ub] ∨
       ∃ v, semE w ρ e = [.val v] ∧ semP w (toPoisonEnv ρ) e = [.val (.int v)]
@@ -2098,6 +2283,7 @@ theorem semE_spec (w : Nat) (e : Expr) :
 #### `Toy.UB.dead_read_insertion_poison_sound_eager_unsound` (`lean/ToyUB/Uninit.lean`)
 
 ```lean
+-- lean/ToyUB/Uninit.lean:219-221
 theorem dead_read_insertion_poison_sound_eager_unsound (w : Nat) :
     RefinesP w (.letE 1 (.var 0) (.const 0)) (.const 0) ∧
     ¬ RefinesE w (.letE 1 (.var 0) (.const 0)) (.const 0)
@@ -2106,6 +2292,7 @@ theorem dead_read_insertion_poison_sound_eager_unsound (w : Nat) :
 #### `Toy.UB.mul_zero_to_branch_eager_sound_poison_unsound` (`lean/ToyUB/Uninit.lean`)
 
 ```lean
+-- lean/ToyUB/Uninit.lean:237-239
 theorem mul_zero_to_branch_eager_sound_poison_unsound (w : Nat) :
     RefinesE w (.ite (.var 0) (.const 0) (.const 0)) (.mul (.var 0) (.const 0)) ∧
     ¬ RefinesP w (.ite (.var 0) (.const 0) (.const 0)) (.mul (.var 0) (.const 0))
@@ -2114,6 +2301,7 @@ theorem mul_zero_to_branch_eager_sound_poison_unsound (w : Nat) :
 #### `Toy.UB.outRef_mono_rel` (`lean/ToyUB/Uninit.lean`)
 
 ```lean
+-- lean/ToyUB/Uninit.lean:157-158
 theorem outRef_mono_rel {V : Type} {R R' : V → V → Prop} (hR : ∀ a b, R a b → R' a b)
     {T S : List (Outcome V)} (h : OutRef R T S) : OutRef R' T S
 ```
@@ -2121,6 +2309,7 @@ theorem outRef_mono_rel {V : Type} {R R' : V → V → Prop} (hR : ∀ a b, R a 
 #### `Toy.UB.nonvacuity_semantics_total` (`lean/ToyUB/NonVacuity.lean`)
 
 ```lean
+-- lean/ToyUB/NonVacuity.lean:206-210
 theorem nonvacuity_semantics_total :
     semP 2 (fun _ => .poison) (.ite (.freeze (.var 0)) (.var 1) .ub) ≠ [] ∧
     semU 2 (fun _ => USet.single 0#2) (.ite (.freeze (.var 0)) (.var 1) .ub) ≠ [] ∧
@@ -2131,6 +2320,7 @@ theorem nonvacuity_semantics_total :
 #### `Toy.UB.uInhabited_examples` (`lean/ToyUB/Undef.lean`)
 
 ```lean
+-- lean/ToyUB/Undef.lean:118-119
 theorem uInhabited_examples :
     UInhabited (fun _ => USet.single 0#2) ∧ ¬ UInhabited (fun _ => fun _ : BitVec 2 => false)
 ```
