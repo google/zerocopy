@@ -630,7 +630,7 @@
     "non_claims": [
       "Satisfiability here is not implementability: the witness is defined by excluded middle and is in general not computable. Lean's logic does not see computability, so this does not contradict Rice-style undecidability.",
       "For decidable F and good the witness equals fun p => decide (F p ∧ good p) (classicalOracle_eq_decide).",
-      "Describes the set of satisfiers in the Boolean-function model only; which of them are implementable is not addressed (R6c relativizes to a class K).",
+      "Describes the set of satisfiers in the Boolean-function model; which of them are implementable is not addressed (R6c relativizes to a class K).",
       "Uses classical logic."
     ],
     "prior_art": [
