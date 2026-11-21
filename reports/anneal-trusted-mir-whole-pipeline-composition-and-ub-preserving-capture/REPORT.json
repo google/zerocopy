@@ -1,0 +1,88 @@
+{
+  "observed_at": "2026-11-21",
+  "subjects": [
+    {
+      "name": "Anneal Trusted.MirAst, Trusted.MirSemantics, and TrustedBoundary.lean Pass 1 TCB",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "rustc_mir_transform RemovePlaceMention, SimplifyCfg::PreOptimizations, & UnreachablePropagation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rustc 1.102.0-nightly & Miri live execution toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rustc_const_eval & MIR reference revision pinned by Anneal",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "zerocopy crate PostCleanup PlaceMention & Optimized Assume census",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "e9bc37a4d2c0ad9be243f25db28ff21624d8102b"
+      }
+    },
+    {
+      "name": "Lean 4 primary kernel and TrustedBoundary Pass 1 replay toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 cross-version kernel verification toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "lean4export NDJSON kernel declaration exporter",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe",
+        "version": "3.1.0"
+      }
+    },
+    {
+      "name": "nanoda_lib independent Rust external Lean 4 kernel typechecker",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "f55114afa24efe39e007f62d31b7e8ac4243f2a6",
+        "version": "0.4.19"
+      }
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/theory",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ]
+}
