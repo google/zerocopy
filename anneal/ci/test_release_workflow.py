@@ -6,7 +6,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-"""Check MIR release gates and the files the release workflow can propose."""
+"""Check Anneal release triggers, permissions, and source binding."""
 
 from pathlib import Path
 import unittest
@@ -14,43 +14,56 @@ import unittest
 from workflow_yaml import load_workflow_yaml
 
 
-WORKFLOW = Path(__file__).resolve().parents[2] / ".github/workflows/release.yml"
+WORKFLOWS = Path(__file__).resolve().parents[2] / ".github/workflows"
 MANIFEST = "anneal/trusted/cargo-anneal/Cargo.toml"
 
 
 class ReleaseWorkflowTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.workflow = load_workflow_yaml(WORKFLOW.read_text())
+        cls.workflow = load_workflow_yaml((WORKFLOWS / "release.yml").read_text())
+        cls.preparation = load_workflow_yaml((WORKFLOWS / "release-crate-version.yml").read_text())
         cls.jobs = cls.workflow["jobs"]
 
-    def test_mir_dispatch_requires_canonical_main(self):
+    def test_shared_manual_entry_point_routes_each_project(self):
+        choice = self.workflow["on"]["workflow_dispatch"]["inputs"]["project"]
+        self.assertEqual(choice["options"], ["zerocopy", "anneal"])
+        self.assertEqual(choice["default"], "zerocopy")
+        self.assertEqual(set(self.preparation["on"]), {"workflow_dispatch", "workflow_call"})
+        zerocopy = self.jobs["prepare-zerocopy"]
+        self.assertEqual(zerocopy["uses"], "./.github/workflows/release-crate-version.yml")
+        self.assertEqual(zerocopy["with"]["version"], "${{ inputs.version }}")
+        self.assertEqual(set(zerocopy["secrets"]), {"GOOGLE_PR_CREATION_BOT_TOKEN"})
+        caller = self.jobs["anneal-build-archive"]
+        self.assertNotIn("secrets", caller)
+        self.assertEqual(caller["permissions"], {"contents": "read"})
+        self.assertEqual(
+            " ".join(caller["if"].split()),
+            "github.event_name == 'workflow_dispatch' && inputs.project == 'anneal'"
+            " && inputs.branch == 'main' && github.ref == 'refs/heads/main'"
+            " && github.repository == 'google/zerocopy'",
+        )
+
+    def test_preparation_is_dispatched_and_publish_detection_runs_on_a_push(self):
         events = self.workflow["on"]
         self.assertEqual(set(events), {"push", "workflow_dispatch"})
         self.assertEqual(self.workflow["permissions"], {})
+        self.assertEqual(events["push"]["branches"], ["main"])
+        self.assertEqual(set(events["push"]["paths"]), {
+            "zerocopy/Cargo.toml", "zerocopy/zerocopy-derive/Cargo.toml", MANIFEST,
+        })
         self.assertEqual(
-            set(events["workflow_dispatch"]["inputs"]["track"]["options"]),
-            {"mir-prepare", "mir-publish"},
+            " ".join(self.jobs["check-anneal-release"]["if"].split()),
+            "github.event_name == 'push' && github.ref == 'refs/heads/main'"
+            " && github.repository == 'google/zerocopy'",
         )
-        for name, track in (
-            ("mir-build-archive", "mir-prepare"),
-            ("mir-qualify-package", "mir-publish"),
-        ):
-            with self.subTest(job=name):
-                self.assertEqual(
-                    " ".join(self.jobs[name]["if"].split()),
-                    "github.event_name == 'workflow_dispatch'"
-                    f" && inputs.track == '{track}'"
-                    " && github.ref == 'refs/heads/main'"
-                    " && github.repository == 'google/zerocopy'",
-                )
 
     def test_privileged_jobs_require_successful_read_only_jobs(self):
         for consumer, prerequisite, permissions in (
-            ("mir-host-archive", "mir-build-archive", {"contents": "write"}),
+            ("anneal-host-archive", "anneal-build-archive", {"contents": "write"}),
             (
-                "mir-publish-crate",
-                "mir-qualify-package",
+                "anneal-publish-crate",
+                "anneal-qualify-package",
                 {"contents": "read", "id-token": "write"},
             ),
         ):
@@ -68,14 +81,15 @@ class ReleaseWorkflowTests(unittest.TestCase):
                         self.assertNotIn("always(", step.get("if", ""))
 
     def test_publication_uses_qualified_revision_and_dedicated_environment(self):
-        publisher = self.jobs["mir-publish-crate"]
-        self.assertEqual(publisher["environment"], "anneal-mir-release")
+        publisher = self.jobs["anneal-publish-crate"]
+        self.assertEqual(publisher["environment"], "anneal-release")
         self.assertNotEqual(publisher["environment"], self.jobs["release"]["environment"])
         for name in (
-            "mir-build-archive",
-            "mir-host-archive",
-            "mir-qualify-package",
-            "mir-publish-crate",
+            "anneal-build-archive",
+            "anneal-host-archive",
+            "check-anneal-release",
+            "anneal-qualify-package",
+            "anneal-publish-crate",
         ):
             with self.subTest(job=name):
                 [checkout] = [
@@ -89,26 +103,42 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertEqual(publish, "cargo publish --locked -p cargo-anneal --registry crates-io")
 
     def test_qualification_checks_environment_and_exercises_the_packaged_cli(self):
-        qualify = self.jobs["mir-qualify-package"]
+        detect = self.jobs["check-anneal-release"]
+        [check] = [step for step in detect["steps"] if "run" in step]
+        self.assertEqual(check["env"]["BEFORE"], "${{ github.event.before }}")
+        self.assertIn('--changed-since "$BEFORE"', check["run"])
+        qualify = self.jobs["anneal-qualify-package"]
+        self.assertEqual(qualify["needs"], "check-anneal-release")
+        self.assertEqual(qualify["if"], "needs.check-anneal-release.outputs.version != ''")
         self.assertEqual(qualify["runs-on"], "ubuntu-24.04")
         steps = qualify["steps"]
         [protections, package] = [step for step in steps if "run" in step]
         self.assertNotIn("if", protections)
         self.assertNotIn("if", package)
-        self.assertIn("/environments/anneal-mir-release", protections["run"])
+        self.assertIn("/environments/anneal-release", protections["run"])
         self.assertIn("required_reviewers", protections["run"])
         self.assertIn("deployment-branch-policies", protections["run"])
         self.assertIn("--require-pinned --archive-base", package["run"])
         self.assertIn("cargo package --locked -p cargo-anneal", package["run"])
         self.assertIn("ci/probe_alpha.py", package["run"])
 
-    def test_archive_pin_pr_can_only_change_the_cli_manifest(self):
+    def test_archive_source_and_release_pr_are_bound_to_the_prepared_commit(self):
+        build = self.jobs["anneal-build-archive"]
+        host = self.jobs["anneal-host-archive"]
+        [stage] = [step["run"] for step in build["steps"] if step.get("id") == "prepare"]
+        self.assertIn('git checkout --detach "$source"', stage)
+        [recreate, upload] = [step["run"] for step in host["steps"] if "run" in step]
+        self.assertIn('test "$source" = "$SOURCE_SHA"', recreate)
+        self.assertIn('push origin "$SOURCE_SHA:refs/tags/$tag"', upload)
+        self.assertIn('--archive-base "$target" --archive-tree "$SOURCE_SHA"', upload)
         [propose] = [
-            step for step in self.jobs["mir-host-archive"]["steps"]
+            step for step in host["steps"]
             if step.get("uses", "").startswith("peter-evans/create-pull-request@")
         ]
         self.assertEqual(propose["with"]["base"], "main")
-        self.assertEqual(propose["with"]["add-paths"].splitlines(), [MANIFEST])
+        self.assertEqual(propose["with"]["add-paths"].splitlines(), [
+            MANIFEST, "anneal/Cargo.lock", "anneal/trusted/root-manifest.sha256",
+        ])
 
 
 if __name__ == "__main__":

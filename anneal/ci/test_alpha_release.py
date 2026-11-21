@@ -6,18 +6,24 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
+import hashlib
 from pathlib import Path
 import subprocess
 import tempfile
+import tomllib
 import unittest
 
-from alpha_release import MANIFEST, UNPINNED, archive, check_archive_base, pin
+from alpha_release import (
+    LOCK_PATH, MANIFEST, MANIFEST_PATH, ROOT_HASH_PATH, UNPINNED, archive,
+    archive_url, check_archive_base, pin, prepare, version_to_publish,
+)
 
 
 class AlphaReleaseTest(unittest.TestCase):
     def setUp(self):
-        self.version = "0.2.0-alpha.1"
         text = MANIFEST.read_text()
+        self.version = tomllib.loads(text)["package"]["version"]
+        self.next_version = f"0.2.0-alpha.{int(self.version.rsplit('.', 1)[1]) + 1}"
         self.text = text.replace(archive(text, self.version)[1], UNPINNED)
 
     def test_pins_only_the_archive_digest(self):
@@ -29,7 +35,7 @@ class AlphaReleaseTest(unittest.TestCase):
             pin(updated, self.version, "2" * 64)
 
     def test_rejects_wrong_version_and_digest(self):
-        for version in ("0.2.0", "0.2.0-alpha.2", "0.1.0-alpha.1"):
+        for version in ("0.2.0", self.next_version, "0.1.0-alpha.1"):
             with self.subTest(version=version), self.assertRaises(ValueError):
                 archive(self.text, version)
         for digest in (UNPINNED, "1", "g" * 64):
@@ -40,6 +46,70 @@ class AlphaReleaseTest(unittest.TestCase):
         alternate = self.text.replace("github.com", "example.com")
         with self.assertRaises(ValueError):
             archive(alternate, self.version)
+
+    def test_publish_requires_a_new_version_with_a_pin_or_completion_of_a_pin(self):
+        pinned = pin(self.text, self.version, "1" * 64)
+        next_text = self.text.replace(self.version, self.next_version)
+        next_pin = pin(next_text, self.next_version, "2" * 64)
+        self.assertEqual(version_to_publish(self.text, pinned), self.version)
+        self.assertEqual(version_to_publish(pinned, next_text), "")
+        self.assertEqual(version_to_publish(pinned, next_pin), self.next_version)
+        self.assertEqual(version_to_publish(pinned, pinned + "\n# Docs\n"), "")
+        with self.assertRaisesRegex(ValueError, "already pinned"):
+            version_to_publish(pinned, pin(self.text, self.version, "2" * 64))
+        with self.assertRaisesRegex(ValueError, "already pinned"):
+            version_to_publish(pinned, self.text)
+        with self.assertRaisesRegex(ValueError, "older"):
+            version_to_publish(next_pin, pinned)
+        with self.assertRaisesRegex(ValueError, "older"):
+            version_to_publish(next_pin, self.text)
+        historical = self.text.replace("anneal-toolchain-v", "anneal-mir-toolchain-v")
+        self.assertEqual(version_to_publish(historical, self.text), "")
+
+    def test_prepare_recreates_source_and_binds_the_release_pr_to_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+
+            def git(*args):
+                return subprocess.check_output(
+                    ["git", "-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+                     "-c", "commit.gpgSign=false", *args],
+                    cwd=repo, text=True,
+                ).strip()
+
+            git("init", "--quiet")
+            manifest = repo / MANIFEST_PATH
+            lockfile = repo / LOCK_PATH
+            root_hashes = repo / ROOT_HASH_PATH
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text(self.text)
+            lockfile.write_text(f'[[package]]\nname = "cargo-anneal"\nversion = "{self.version}"\n')
+            root_hashes.write_text(f"{hashlib.sha256(lockfile.read_bytes()).hexdigest()}  Cargo.lock\n")
+            git("add", ".")
+            git("commit", "-qm", "initial alpha")
+            base = git("rev-parse", "HEAD")
+            self.assertEqual(git("rev-parse", f"{prepare(repo, self.version)}^{{tree}}"),
+                             git("rev-parse", "HEAD^{tree}"))
+
+            paths = [MANIFEST_PATH, LOCK_PATH, ROOT_HASH_PATH]
+            source = prepare(repo, self.next_version)
+            self.assertEqual(git("rev-parse", f"{source}^"), base)
+            self.assertEqual(set(git("diff", "--cached", "--name-only").splitlines()), set(paths))
+            with self.assertRaisesRegex(ValueError, "clean checkout"):
+                prepare(repo, self.next_version)
+            git("restore", "--source=HEAD", "--staged", "--worktree", "--", *paths)
+            self.assertEqual(prepare(repo, self.next_version), source)
+            self.assertIn(archive_url(self.next_version), manifest.read_text())
+            self.assertEqual(tomllib.loads(lockfile.read_text())["package"][0]["version"],
+                             self.next_version)
+            self.assertIn(hashlib.sha256(lockfile.read_bytes()).hexdigest(), root_hashes.read_text())
+
+            manifest.write_text(pin(manifest.read_text(), self.next_version, "1" * 64))
+            git("add", MANIFEST_PATH)
+            git("commit", "-qm", "merge release PR")
+            check_archive_base(repo, source, self.next_version)
+            with self.assertRaisesRegex(ValueError, "newer alpha"):
+                prepare(repo, self.next_version)
 
     def test_pin_and_docs_can_land_without_rebuilding_the_archive(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -57,7 +127,7 @@ class AlphaReleaseTest(unittest.TestCase):
                 git("commit", "--quiet", "-m", message)
 
             git("init", "--quiet")
-            manifest = repo / "anneal/trusted/cargo-anneal/Cargo.toml"
+            manifest = repo / MANIFEST_PATH
             manifest.parent.mkdir(parents=True)
             manifest.write_text(self.text)
             flake = repo / "anneal/flake.nix"
