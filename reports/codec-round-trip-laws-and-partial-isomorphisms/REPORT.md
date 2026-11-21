@@ -69,7 +69,7 @@ One-sentence summary of each result (every Lean statement, hypothesis ledger, an
 
 ### How to read this section
 
-- Each card presents both the Lean `#check` pretty-printed signature captured from the compiled project and an unfolded elementary statement with core predicates expanded (each unfolded form is definitionally equal to the corresponding Lean theorem).
+- Each card presents the Lean `#check` pretty-printed signature captured from the compiled project, the statement quoted verbatim from the cited source lines (`-- file:lines`; proof omitted), and an unfolded elementary statement with core predicates expanded. The unfolded statements are written in theorem syntax and labelled prose; each is definitionally equal to the corresponding Lean theorem (`example : ∀ <binders>, <type> := @<name>` elaborates for each of them). Card 17 quotes its source statement without a separate unfolded form.
 - Proof-level axiom qualifiers such as *without `Classical.choice`* or *zero axioms* are not encoded in statement types; they are verified directly by the kernel axiom audit (`audit/axioms.json`, summarized on each card and tabulated in **Evidence**).
 - Every theorem carries `Basis: execution (Lean kernel check)`. Claims relating a theorem to real parsers, serializers, or optics appear on a separate `Basis: derived (modeling bridge)` line.
 - Depth labels follow one uniform criterion across all 20 cards: `definitional` means true by `rfl` / definitional unfolding alone (such as the companion identity `classicalCodec_enc`), whereas `shallow` means a short non-`rfl` proof by propositional, equality, or case-split reasoning (including Cards 2, 3, and 12).
@@ -82,6 +82,7 @@ One-sentence summary of each result (every Lean statement, hypothesis ledger, an
 Every core definition in `Toy.Codec.Defs` is reproduced in full below:
 
 ```lean
+-- lean/Toy/Codec/Defs.lean:1-361
 /-!
 # Core definitions for codec round-trip laws and partial isomorphisms
 
@@ -482,8 +483,14 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
   Toy.Codec.decEnc_imp_enc_injective.{u, v} : ∀ {A : Type u} {B : Type v} (c : Toy.Codec.Codec A B),
     Toy.Codec.DecEnc c → Function.Injective c.enc
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:69-70
+  theorem decEnc_imp_enc_injective {A : Type u} {B : Type v} (c : Codec A B)
+      (hde : DecEnc c) : Function.Injective c.enc
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem decEnc_imp_enc_injective {A : Type u} {B : Type v} (c : Codec A B)
       (hde : ∀ a : A, c.dec (c.enc a) = some a) :
       ∀ ⦃a₁ a₂ : A⦄, c.enc a₁ = c.enc a₂ → a₁ = a₂
@@ -522,8 +529,19 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
   Toy.Codec.decEqSomeIff_imp_enc_injective.{u, v} : ∀ {A : Type u} {B : Type v} (c : Toy.Codec.Codec A B),
     (∀ (b : B) (a : A), c.dec b = some a ↔ c.enc a = b) → Function.Injective c.enc
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:81-82
+  theorem lawful_iff_dec_eq_some_iff {A : Type u} {B : Type v} (c : Codec A B) :
+      (DecEnc c ∧ EncDec c) ↔ (∀ (b : B) (a : A), c.dec b = some a ↔ c.enc a = b)
+
+  -- lean/Toy/Codec/Statements.lean:91-93
+  theorem decEqSomeIff_imp_enc_injective {A : Type u} {B : Type v} (c : Codec A B)
+      (hconv : ∀ (b : B) (a : A), c.dec b = some a ↔ c.enc a = b) :
+      Function.Injective c.enc
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem lawful_iff_dec_eq_some_iff {A : Type u} {B : Type v} (c : Codec A B) :
       ((∀ a : A, c.dec (c.enc a) = some a) ∧
        (∀ (b : B) (a : A), c.dec b = some a → c.enc a = b)) ↔
@@ -565,8 +583,14 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
   Toy.Codec.lawful_iff_decEnc_and_decInj.{u, v} : ∀ {A : Type u} {B : Type v} (c : Toy.Codec.Codec A B),
     Toy.Codec.DecEnc c ∧ Toy.Codec.EncDec c ↔ Toy.Codec.DecEnc c ∧ Toy.Codec.DecInj c
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:103-104
+  theorem lawful_iff_decEnc_and_decInj {A : Type u} {B : Type v} (c : Codec A B) :
+      (DecEnc c ∧ EncDec c) ↔ (DecEnc c ∧ DecInj c)
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem lawful_iff_decEnc_and_decInj {A : Type u} {B : Type v} (c : Codec A B) :
       ((∀ a : A, c.dec (c.enc a) = some a) ∧
        (∀ (b : B) (a : A), c.dec b = some a → c.enc a = b)) ↔
@@ -598,8 +622,17 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
       Toy.Codec.DecEnc c₁ →
         Toy.Codec.EncDec c₁ → Toy.Codec.DecEnc c₂ → Toy.Codec.EncDec c₂ → c₁.dec = c₂.dec
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:113-117
+  theorem dec_unique_of_lawful {A : Type u} {B : Type v} (c₁ c₂ : Codec A B)
+      (henc : c₁.enc = c₂.enc)
+      (hde₁ : DecEnc c₁) (hed₁ : EncDec c₁)
+      (hde₂ : DecEnc c₂) (hed₂ : EncDec c₂) :
+      c₁.dec = c₂.dec
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem dec_unique_of_lawful {A : Type u} {B : Type v} (c₁ c₂ : Codec A B)
       (henc : c₁.enc = c₂.enc)
       (hde₁ : ∀ a : A, c₁.dec (c₁.enc a) = some a)
@@ -646,8 +679,28 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
     Toy.Codec.DecEnc c → Toy.Codec.EncDec c → Toy.Codec.classicalCodec c.enc = c
   Toy.Codec.classicalCodec_enc.{u, v} : ∀ {A : Type u} {B : Type v} (f : A → B), (Toy.Codec.classicalCodec f).enc = f
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:138-140
+  theorem classicalCodec_decEnc_of_injective {A : Type u} {B : Type v}
+      (f : A → B) (hf : Function.Injective f) :
+      DecEnc (classicalCodec f)
+
+  -- lean/Toy/Codec/Statements.lean:149-150
+  theorem classicalCodec_encDec {A : Type u} {B : Type v} (f : A → B) :
+      EncDec (classicalCodec f)
+
+  -- lean/Toy/Codec/Statements.lean:162-164
+  theorem classicalCodec_recover_of_lawful {A : Type u} {B : Type v} (c : Codec A B)
+      (hde : DecEnc c) (hed : EncDec c) :
+      classicalCodec c.enc = c
+
+  -- lean/Toy/Codec/Witnesses.lean:20-21
+  theorem classicalCodec_enc {A : Type u} {B : Type v} (f : A → B) :
+      (classicalCodec f).enc = f
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem classicalCodec_decEnc_of_injective {A : Type u} {B : Type v}
       (f : A → B) (hf : ∀ ⦃a₁ a₂ : A⦄, f a₁ = f a₂ → a₁ = a₂) :
       ∀ a : A, classicalDec f (f a) = some a
@@ -702,8 +755,30 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
     {B : Type v} →
       (c : Toy.Codec.Codec A B) → Toy.Codec.DecEnc c → Toy.Codec.EncDec c → Toy.Codec.FiberSplit c.enc
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:181-183
+  theorem codecOfFiberSplit_decEnc_of_injective {A : Type u} {B : Type v}
+      (f : A → B) (s : FiberSplit f) (hf : Function.Injective f) :
+      DecEnc (codecOfFiberSplit f s)
+
+  -- lean/Toy/Codec/Statements.lean:194-196
+  theorem codecOfFiberSplit_eq_of_lawful {A : Type u} {B : Type v}
+      (c : Codec A B) (hde : DecEnc c) (hed : EncDec c) (s : FiberSplit c.enc) :
+      codecOfFiberSplit c.enc s = c
+
+  -- lean/Toy/Codec/Witnesses.lean:24-25
+  theorem codecOfFiberSplit_encDec {A : Type u} {B : Type v}
+      (f : A → B) (s : FiberSplit f) : EncDec (codecOfFiberSplit f s)
+
+  -- Type of fiberSplitOfLawful (defined in Defs.lean):
+  -- ∀ {A : Type u} {B : Type v} (c : Codec A B),
+  --   (∀ a : A, c.dec (c.enc a) = some a) →
+  --   (∀ (b : B) (a : A), c.dec b = some a → c.enc a = b) →
+  --   (∀ b : B, PSum { a : A // c.enc a = b } (∀ a : A, c.enc a ≠ b))
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem codecOfFiberSplit_decEnc_of_injective {A : Type u} {B : Type v}
       (f : A → B) (s : ∀ b : B, PSum { a : A // f a = b } (∀ a : A, f a ≠ b))
       (hf : ∀ ⦃a₁ a₂ : A⦄, f a₁ = f a₂ → a₁ = a₂) :
@@ -760,8 +835,20 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
   Toy.Codec.junk_iff_not_in_image_of_lawful.{u, v} : ∀ {A : Type u} {B : Type v} (c : Toy.Codec.Codec A B),
     Toy.Codec.DecEnc c → Toy.Codec.EncDec c → ∀ (b : B), c.dec b = none ↔ ∀ (a : A), c.enc a ≠ b
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:211-213
+  theorem lawful_dec_isSome_iff_mem_range {A : Type u} {B : Type v} (c : Codec A B)
+      (hde : DecEnc c) (hed : EncDec c) :
+      ∀ b : B, (c.dec b).isSome = true ↔ ∃ a : A, c.enc a = b
+
+  -- lean/Toy/Codec/Statements.lean:225-227
+  theorem junk_iff_not_in_image_of_lawful {A : Type u} {B : Type v} (c : Codec A B)
+      (hde : DecEnc c) (hed : EncDec c) :
+      ∀ b : B, c.dec b = none ↔ ∀ a : A, c.enc a ≠ b
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem lawful_dec_isSome_iff_mem_range {A : Type u} {B : Type v} (c : Codec A B)
       (hde : ∀ a : A, c.dec (c.enc a) = some a)
       (hed : ∀ (b : B) (a : A), c.dec b = some a → c.enc a = b) :
@@ -807,8 +894,19 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
           Toy.Codec.nonCanonicalBoolCodec.dec 1 = some true ∧
             Toy.Codec.nonCanonicalBoolCodec.dec 2 = some true
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Counterexamples.lean:111-117
+  theorem decEnc_admits_malleable_codec :
+      DecEnc nonCanonicalBoolCodec ∧
+      ¬ EncDec nonCanonicalBoolCodec ∧
+      ¬ DecInj nonCanonicalBoolCodec ∧
+      (1 : Nat) ≠ 2 ∧
+      nonCanonicalBoolCodec.dec 1 = some true ∧
+      nonCanonicalBoolCodec.dec 2 = some true
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem decEnc_admits_malleable_codec :
       (∀ a : Bool, nonCanonicalBoolCodec.dec (nonCanonicalBoolCodec.enc a) = some a) ∧
       ¬ (∀ (b : Nat) (a : Bool),
@@ -844,8 +942,16 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
     ¬Toy.Codec.DecEnc Toy.Codec.alwaysFailBoolCodec ∧
       ∀ (b : Bool), Toy.Codec.alwaysFailBoolCodec.dec b = none
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Counterexamples.lean:123-126
+  theorem encDec_admits_always_failing_codec :
+      EncDec alwaysFailBoolCodec ∧
+      ¬ DecEnc alwaysFailBoolCodec ∧
+      (∀ b : Bool, alwaysFailBoolCodec.dec b = none)
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem encDec_admits_always_failing_codec :
       (∀ (b a : Bool), alwaysFailBoolCodec.dec b = some a → alwaysFailBoolCodec.enc a = b) ∧
       ¬ (∀ a : Bool, alwaysFailBoolCodec.dec (alwaysFailBoolCodec.enc a) = some a) ∧
@@ -876,8 +982,19 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
   Toy.Codec.canonicalize_encDec.{u, v} : ∀ {A : Type u} {B : Type v} [inst : DecidableEq B] (c : Toy.Codec.Codec A B),
     Toy.Codec.EncDec (Toy.Codec.canonicalize c)
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:242-244
+  theorem canonicalize_decEnc_of_decEnc {A : Type u} {B : Type v} [DecidableEq B]
+      (c : Codec A B) (hde : DecEnc c) :
+      DecEnc (canonicalize c)
+
+  -- lean/Toy/Codec/Witnesses.lean:38-39
+  theorem canonicalize_encDec {A : Type u} {B : Type v} [DecidableEq B]
+      (c : Codec A B) : EncDec (canonicalize c)
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem canonicalize_decEnc_of_decEnc {A : Type u} {B : Type v} [DecidableEq B]
       (c : Codec A B) (hde : ∀ a : A, c.dec (c.enc a) = some a) :
       ∀ a : A, (canonicalize c).dec (c.enc a) = some a
@@ -929,8 +1046,46 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
     (c₂ : Toy.Codec.Codec A₂ B₂),
     Toy.Codec.EncDec c₁ → Toy.Codec.EncDec c₂ → Toy.Codec.EncDec (Toy.Codec.Codec.sum c₁ c₂)
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:254-257
+  theorem comp_decEnc {A : Type u} {B : Type v} {C : Type w}
+      (c₁ : Codec A B) (c₂ : Codec B C)
+      (hde₁ : DecEnc c₁) (hde₂ : DecEnc c₂) :
+      DecEnc (c₁.comp c₂)
+
+  -- lean/Toy/Codec/Statements.lean:264-267
+  theorem comp_encDec {A : Type u} {B : Type v} {C : Type w}
+      (c₁ : Codec A B) (c₂ : Codec B C)
+      (hed₁ : EncDec c₁) (hed₂ : EncDec c₂) :
+      EncDec (c₁.comp c₂)
+
+  -- lean/Toy/Codec/Statements.lean:279-282
+  theorem prod_decEnc {A₁ : Type u₁} {B₁ : Type v₁} {A₂ : Type u₂} {B₂ : Type v₂}
+      (c₁ : Codec A₁ B₁) (c₂ : Codec A₂ B₂)
+      (hde₁ : DecEnc c₁) (hde₂ : DecEnc c₂) :
+      DecEnc (c₁.prod c₂)
+
+  -- lean/Toy/Codec/Statements.lean:289-292
+  theorem prod_encDec {A₁ : Type u₁} {B₁ : Type v₁} {A₂ : Type u₂} {B₂ : Type v₂}
+      (c₁ : Codec A₁ B₁) (c₂ : Codec A₂ B₂)
+      (hed₁ : EncDec c₁) (hed₂ : EncDec c₂) :
+      EncDec (c₁.prod c₂)
+
+  -- lean/Toy/Codec/Statements.lean:308-311
+  theorem sum_decEnc {A₁ : Type u₁} {B₁ : Type v₁} {A₂ : Type u₂} {B₂ : Type v₂}
+      (c₁ : Codec A₁ B₁) (c₂ : Codec A₂ B₂)
+      (hde₁ : DecEnc c₁) (hde₂ : DecEnc c₂) :
+      DecEnc (c₁.sum c₂)
+
+  -- lean/Toy/Codec/Statements.lean:322-325
+  theorem sum_encDec {A₁ : Type u₁} {B₁ : Type v₁} {A₂ : Type u₂} {B₂ : Type v₂}
+      (c₁ : Codec A₁ B₁) (c₂ : Codec A₂ B₂)
+      (hed₁ : EncDec c₁) (hed₂ : EncDec c₂) :
+      EncDec (c₁.sum c₂)
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem comp_decEnc {A : Type u} {B : Type v} {C : Type w}
       (c₁ : Codec A B) (c₂ : Codec B C)
       (hde₁ : ∀ a : A, c₁.dec (c₁.enc a) = some a)
@@ -1015,8 +1170,17 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
       ∀ (xs : List β) (a : A) (rest : List β),
         fc.decPrefix xs = some (a, rest) ↔ xs = fc.enc a ++ rest
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:344-348
+  theorem framed_lawful_iff_decPrefix_eq_some_iff {A : Type u} {β : Type v}
+      (fc : FramedCodec A β) :
+      (PrefixDecEnc fc ∧ PrefixEncDec fc) ↔
+        (∀ (xs : List β) (a : A) (rest : List β),
+          fc.decPrefix xs = some (a, rest) ↔ xs = fc.enc a ++ rest)
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem framed_lawful_iff_decPrefix_eq_some_iff {A : Type u} {β : Type v}
       (fc : FramedCodec A β) :
       ((∀ (a : A) (rest : List β), fc.decPrefix (fc.enc a ++ rest) = some (a, rest)) ∧
@@ -1048,8 +1212,15 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
   Toy.Codec.prefixDecEnc_imp_prefixFree.{u, v} : ∀ {A : Type u} {β : Type v} (fc : Toy.Codec.FramedCodec A β),
     Toy.Codec.PrefixDecEnc fc → Toy.Codec.PrefixFree fc.enc
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:357-359
+  theorem prefixDecEnc_imp_prefixFree {A : Type u} {β : Type v}
+      (fc : FramedCodec A β) (hpde : PrefixDecEnc fc) :
+      PrefixFree fc.enc
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem prefixDecEnc_imp_prefixFree {A : Type u} {β : Type v}
       (fc : FramedCodec A β)
       (hpde : ∀ (a : A) (rest : List β), fc.decPrefix (fc.enc a ++ rest) = some (a, rest)) :
@@ -1092,8 +1263,22 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
     Toy.Codec.PrefixEncDec fc₁ →
       Toy.Codec.PrefixEncDec fc₂ → Toy.Codec.PrefixEncDec (Toy.Codec.FramedCodec.seq fc₁ fc₂)
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:368-371
+  theorem seq_prefixDecEnc {A₁ : Type u₁} {A₂ : Type u₂} {β : Type v}
+      (fc₁ : FramedCodec A₁ β) (fc₂ : FramedCodec A₂ β)
+      (hpde₁ : PrefixDecEnc fc₁) (hpde₂ : PrefixDecEnc fc₂) :
+      PrefixDecEnc (fc₁.seq fc₂)
+
+  -- lean/Toy/Codec/Statements.lean:381-384
+  theorem seq_prefixEncDec {A₁ : Type u₁} {A₂ : Type u₂} {β : Type v}
+      (fc₁ : FramedCodec A₁ β) (fc₂ : FramedCodec A₂ β)
+      (hped₁ : PrefixEncDec fc₁) (hped₂ : PrefixEncDec fc₂) :
+      PrefixEncDec (fc₁.seq fc₂)
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem seq_prefixDecEnc {A₁ : Type u₁} {A₂ : Type u₂} {β : Type v}
       (fc₁ : FramedCodec A₁ β) (fc₂ : FramedCodec A₂ β)
       (hpde₁ : ∀ (a₁ : A₁) (rest : List β), fc₁.decPrefix (fc₁.enc a₁ ++ rest) = some (a₁, rest))
@@ -1145,8 +1330,20 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
   Toy.Codec.nonEmptyEnc_of_prefixDecEnc_of_ne.{u, v} : ∀ {A : Type u} {β : Type v} (fc : Toy.Codec.FramedCodec A β),
     Toy.Codec.PrefixDecEnc fc → ∀ {x y : A}, x ≠ y → Toy.Codec.NonEmptyEnc fc.enc
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:410-412
+  theorem listCodec_decEnc_iff_nonEmptyEnc_of_prefixDecEnc {A : Type u} {β : Type v}
+      (fc : FramedCodec A β) (hpde : PrefixDecEnc fc) :
+      DecEnc (listCodec fc) ↔ NonEmptyEnc fc.enc
+
+  -- lean/Toy/Codec/Witnesses.lean:158-160
+  theorem nonEmptyEnc_of_prefixDecEnc_of_ne {A : Type u} {β : Type v}
+      (fc : FramedCodec A β) (hpde : PrefixDecEnc fc) {x y : A} (hxy : x ≠ y) :
+      NonEmptyEnc fc.enc
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem listCodec_decEnc_iff_nonEmptyEnc_of_prefixDecEnc {A : Type u} {β : Type v}
       (fc : FramedCodec A β)
       (hpde : ∀ (a : A) (rest : List β), fc.decPrefix (fc.enc a ++ rest) = some (a, rest)) :
@@ -1193,8 +1390,15 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
   Toy.Codec.listCodec_encDec_of_prefixEncDec.{u, v} : ∀ {A : Type u} {β : Type v} (fc : Toy.Codec.FramedCodec A β),
     Toy.Codec.PrefixEncDec fc → Toy.Codec.EncDec (Toy.Codec.listCodec fc)
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:443-445
+  theorem listCodec_encDec_of_prefixEncDec {A : Type u} {β : Type v}
+      (fc : FramedCodec A β) (hped : PrefixEncDec fc) :
+      EncDec (listCodec fc)
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem listCodec_encDec_of_prefixEncDec {A : Type u} {β : Type v}
       (fc : FramedCodec A β)
       (hped : ∀ (xs : List β) (a : A) (rest : List β),
@@ -1238,8 +1442,9 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
                 ¬Toy.Codec.DecEnc
                     { enc := Toy.Codec.encList Toy.Codec.ambiguousCodec.enc, dec := dec }
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Counterexamples.lean:135-143
   theorem lawful_injective_nonEmpty_enc_admits_ambiguous_concat :
       DecEnc ambiguousCodec ∧
       EncDec ambiguousCodec ∧
@@ -1288,8 +1493,29 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
             (Toy.Codec.decompInvFun Toy.Codec.nonCanonicalBoolCodec) ∧
         Nonempty (Toy.Codec.Equiv Nat (Bool ⊕ Toy.Codec.Junk Toy.Codec.nonCanonicalBoolCodec))
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:486-487
+  theorem decomp_isEquiv_iff_lawful {A : Type u} {B : Type v} (c : Codec A B) :
+      IsEquiv (decompToFun c) (decompInvFun c) ↔ (DecEnc c ∧ EncDec c)
+
+  -- lean/Toy/Codec/Statements.lean:453-454
+  theorem leftInv_decomp_iff_encDec {A : Type u} {B : Type v} (c : Codec A B) :
+      LeftInv (decompToFun c) (decompInvFun c) ↔ EncDec c
+
+  -- lean/Toy/Codec/Statements.lean:467-468
+  theorem rightInv_decomp_iff_decEnc {A : Type u} {B : Type v} (c : Codec A B) :
+      RightInv (decompToFun c) (decompInvFun c) ↔ DecEnc c
+
+  -- lean/Toy/Codec/Counterexamples.lean:1058-1062
+  theorem nonCanonicalBoolCodec_not_encDec_yet_admits_equiv :
+      DecEnc nonCanonicalBoolCodec ∧
+      ¬ EncDec nonCanonicalBoolCodec ∧
+      ¬ IsEquiv (decompToFun nonCanonicalBoolCodec) (decompInvFun nonCanonicalBoolCodec) ∧
+      Nonempty (Equiv Nat (Bool ⊕ Junk nonCanonicalBoolCodec))
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem decomp_isEquiv_iff_lawful {A : Type u} {B : Type v} (c : Codec A B) :
       ((∀ b : B, decompInvFun c (decompToFun c b) = b) ∧
        (∀ x : A ⊕ { b : B // c.dec b = none }, decompToFun c (decompInvFun c x) = x)) ↔
@@ -1351,8 +1577,24 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
                         (Toy.Codec.decompToFun (Toy.Codec.codecOfSplit f g) b) =
                       Sum.map id (fun k => g (Sum.inr k)) (f b)
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:498-509
+  theorem decomp_induces_lawful_and_complement {A : Type u} {B : Type v} {C : Type w}
+      (f : B → A ⊕ C) (g : A ⊕ C → B)
+      (hl : LeftInv f g) (hr : RightInv f g) :
+      DecEnc (codecOfSplit f g) ∧
+      EncDec (codecOfSplit f g) ∧
+      (∀ k : C, (codecOfSplit f g).dec (g (Sum.inr k)) = none) ∧
+      (∀ j : Junk (codecOfSplit f g), g (Sum.inr (junkToC f g j)) = j.1) ∧
+      (∀ (k : C) (hj : (codecOfSplit f g).dec (g (Sum.inr k)) = none),
+        junkToC f g ⟨g (Sum.inr k), hj⟩ = k) ∧
+      (∀ b : B,
+        Sum.map id Subtype.val (decompToFun (codecOfSplit f g) b) =
+        Sum.map id (fun k => g (Sum.inr k)) (f b))
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem decomp_induces_lawful_and_complement
       {A : Type u} {B : Type v} {C : Type w}
       (f : B → A ⊕ C) (g : A ⊕ C → B)
@@ -1412,8 +1654,31 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
       Sum.map id (Toy.Codec.complementEquivOfCodecEq f₁ g₁ f₂ g₂ hl₁ hr₁ hl₂ hr₂ heq).toFun
         (f₁ b)
   ```
-- **Unfolded statement(s) (definitionally equal to the Lean statements):**
+- **Lean source (verbatim from the cited lines; proof omitted):**
   ```lean
+  -- lean/Toy/Codec/Statements.lean:582-589
+  theorem codecOfSplit_eq_iff_exists_intertwining_equiv
+      {A : Type u} {B : Type v} {C₁ : Type w₁} {C₂ : Type w₂}
+      (f₁ : B → A ⊕ C₁) (g₁ : A ⊕ C₁ → B)
+      (f₂ : B → A ⊕ C₂) (g₂ : A ⊕ C₂ → B)
+      (hl₁ : LeftInv f₁ g₁) (hr₁ : RightInv f₁ g₁)
+      (hl₂ : LeftInv f₂ g₂) (hr₂ : RightInv f₂ g₂) :
+      codecOfSplit f₁ g₁ = codecOfSplit f₂ g₂ ↔
+        ∃ (φ : Equiv C₁ C₂), ∀ b : B, f₂ b = Sum.map id φ.toFun (f₁ b)
+
+  -- lean/Toy/Codec/Statements.lean:548-556
+  theorem complementEquivOfCodecEq_intertwines
+      {A : Type u} {B : Type v} {C₁ : Type w₁} {C₂ : Type w₂}
+      (f₁ : B → A ⊕ C₁) (g₁ : A ⊕ C₁ → B)
+      (f₂ : B → A ⊕ C₂) (g₂ : A ⊕ C₂ → B)
+      (hl₁ : LeftInv f₁ g₁) (hr₁ : RightInv f₁ g₁)
+      (hl₂ : LeftInv f₂ g₂) (hr₂ : RightInv f₂ g₂)
+      (heq : codecOfSplit f₁ g₁ = codecOfSplit f₂ g₂) :
+      ∀ b : B, f₂ b =
+        Sum.map id (complementEquivOfCodecEq f₁ g₁ f₂ g₂ hl₁ hr₁ hl₂ hr₂ heq).toFun (f₁ b)
+  ```
+- **Unfolded statement(s) (prose; definitionally equal to the Lean statements):**
+  ```text
   theorem codecOfSplit_eq_iff_exists_intertwining_equiv
       {A : Type u} {B : Type v} {C₁ : Type w₁} {C₂ : Type w₂}
       (f₁ : B → A ⊕ C₁) (g₁ : A ⊕ C₁ → B)
