@@ -1,0 +1,1660 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Modality.AccessedBy": [],
+    "Toy.Modality.AccessedBy.eq_1": [],
+    "Toy.Modality.Alloc": [],
+    "Toy.Modality.Alloc.base": [],
+    "Toy.Modality.Alloc.casesOn": [],
+    "Toy.Modality.Alloc.contains": [],
+    "Toy.Modality.Alloc.contains_of_covers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.Alloc.covers": [],
+    "Toy.Modality.Alloc.ctorIdx": [],
+    "Toy.Modality.Alloc.id": [],
+    "Toy.Modality.Alloc.len": [],
+    "Toy.Modality.Alloc.mk": [],
+    "Toy.Modality.Alloc.mk.inj": [],
+    "Toy.Modality.Alloc.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Alloc.mk.noConfusion": [],
+    "Toy.Modality.Alloc.mk.sizeOf_spec": [],
+    "Toy.Modality.Alloc.noConfusion": [],
+    "Toy.Modality.Alloc.noConfusionType": [],
+    "Toy.Modality.Alloc.rec": [],
+    "Toy.Modality.Alloc.recOn": [],
+    "Toy.Modality.ArgInRange": [],
+    "Toy.Modality.Atom": [],
+    "Toy.Modality.Atom.aligned": [],
+    "Toy.Modality.Atom.aligned.elim": [],
+    "Toy.Modality.Atom.aligned.sizeOf_spec": [],
+    "Toy.Modality.Atom.bounded": [],
+    "Toy.Modality.Atom.bounded.elim": [],
+    "Toy.Modality.Atom.bounded.sizeOf_spec": [],
+    "Toy.Modality.Atom.casesOn": [],
+    "Toy.Modality.Atom.ctorElim": [],
+    "Toy.Modality.Atom.ctorElimType": [],
+    "Toy.Modality.Atom.ctorIdx": [],
+    "Toy.Modality.Atom.derefEntry": [],
+    "Toy.Modality.Atom.derefEntry.elim": [],
+    "Toy.Modality.Atom.derefEntry.sizeOf_spec": [],
+    "Toy.Modality.Atom.derefWhole": [],
+    "Toy.Modality.Atom.derefWhole.elim": [],
+    "Toy.Modality.Atom.derefWhole.sizeOf_spec": [],
+    "Toy.Modality.Atom.forall_iff": [],
+    "Toy.Modality.Atom.frozen": [],
+    "Toy.Modality.Atom.frozen.elim": [],
+    "Toy.Modality.Atom.frozen.sizeOf_spec": [],
+    "Toy.Modality.Atom.noConfusion": [],
+    "Toy.Modality.Atom.noConfusionType": [],
+    "Toy.Modality.Atom.nonnull": [],
+    "Toy.Modality.Atom.nonnull.elim": [],
+    "Toy.Modality.Atom.nonnull.sizeOf_spec": [],
+    "Toy.Modality.Atom.ofNat": [],
+    "Toy.Modality.Atom.ofNat_ctorIdx": [],
+    "Toy.Modality.Atom.rec": [],
+    "Toy.Modality.Atom.recOn": [],
+    "Toy.Modality.Atom.unique": [],
+    "Toy.Modality.Atom.unique.elim": [],
+    "Toy.Modality.Atom.unique.sizeOf_spec": [],
+    "Toy.Modality.Attr": [],
+    "Toy.Modality.Attr.align": [],
+    "Toy.Modality.Attr.align.elim": [],
+    "Toy.Modality.Attr.align.sizeOf_spec": [],
+    "Toy.Modality.Attr.casesOn": [],
+    "Toy.Modality.Attr.ctorElim": [],
+    "Toy.Modality.Attr.ctorElimType": [],
+    "Toy.Modality.Attr.ctorIdx": [],
+    "Toy.Modality.Attr.dereferenceable": [],
+    "Toy.Modality.Attr.dereferenceable.elim": [],
+    "Toy.Modality.Attr.dereferenceable.sizeOf_spec": [],
+    "Toy.Modality.Attr.dereferenceableOrNull": [],
+    "Toy.Modality.Attr.dereferenceableOrNull.elim": [],
+    "Toy.Modality.Attr.dereferenceableOrNull.sizeOf_spec": [],
+    "Toy.Modality.Attr.noConfusion": [],
+    "Toy.Modality.Attr.noConfusionType": [],
+    "Toy.Modality.Attr.noalias": [],
+    "Toy.Modality.Attr.noalias.elim": [],
+    "Toy.Modality.Attr.noalias.sizeOf_spec": [],
+    "Toy.Modality.Attr.nofree": [],
+    "Toy.Modality.Attr.nofree.elim": [],
+    "Toy.Modality.Attr.nofree.sizeOf_spec": [],
+    "Toy.Modality.Attr.nonnull": [],
+    "Toy.Modality.Attr.nonnull.elim": [],
+    "Toy.Modality.Attr.nonnull.sizeOf_spec": [],
+    "Toy.Modality.Attr.ofNat": [],
+    "Toy.Modality.Attr.ofNat_ctorIdx": [],
+    "Toy.Modality.Attr.readonly": [],
+    "Toy.Modality.Attr.readonly.elim": [],
+    "Toy.Modality.Attr.readonly.sizeOf_spec": [],
+    "Toy.Modality.Attr.rec": [],
+    "Toy.Modality.Attr.recOn": [],
+    "Toy.Modality.AttrDual": [],
+    "Toy.Modality.AttrDual.casesOn": [],
+    "Toy.Modality.AttrDual.ctorIdx": [],
+    "Toy.Modality.AttrDual.mk": [],
+    "Toy.Modality.AttrDual.mk.inj": [],
+    "Toy.Modality.AttrDual.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.AttrDual.mk.noConfusion": [],
+    "Toy.Modality.AttrDual.mk.sizeOf_spec": [],
+    "Toy.Modality.AttrDual.noConfusion": [],
+    "Toy.Modality.AttrDual.noConfusionType": [],
+    "Toy.Modality.AttrDual.rec": [],
+    "Toy.Modality.AttrDual.recOn": [],
+    "Toy.Modality.AttrDual.val": [],
+    "Toy.Modality.AttrSet": [],
+    "Toy.Modality.AttrSet.align": [],
+    "Toy.Modality.AttrSet.casesOn": [],
+    "Toy.Modality.AttrSet.ctorIdx": [],
+    "Toy.Modality.AttrSet.dereferenceable": [],
+    "Toy.Modality.AttrSet.dereferenceableOrNull": [],
+    "Toy.Modality.AttrSet.ext_has": [],
+    "Toy.Modality.AttrSet.has": [],
+    "Toy.Modality.AttrSet.has.eq_1": [],
+    "Toy.Modality.AttrSet.has.eq_2": [],
+    "Toy.Modality.AttrSet.has.eq_3": [],
+    "Toy.Modality.AttrSet.has.eq_4": [],
+    "Toy.Modality.AttrSet.has.eq_5": [],
+    "Toy.Modality.AttrSet.has.eq_6": [],
+    "Toy.Modality.AttrSet.has.eq_7": [],
+    "Toy.Modality.AttrSet.has_insert_self": [],
+    "Toy.Modality.AttrSet.insert": [],
+    "Toy.Modality.AttrSet.mk": [],
+    "Toy.Modality.AttrSet.mk.inj": [],
+    "Toy.Modality.AttrSet.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.AttrSet.mk.noConfusion": [],
+    "Toy.Modality.AttrSet.mk.sizeOf_spec": [],
+    "Toy.Modality.AttrSet.noConfusion": [],
+    "Toy.Modality.AttrSet.noConfusionType": [],
+    "Toy.Modality.AttrSet.noalias": [],
+    "Toy.Modality.AttrSet.nofree": [],
+    "Toy.Modality.AttrSet.nonnull": [],
+    "Toy.Modality.AttrSet.readonly": [],
+    "Toy.Modality.AttrSet.rec": [],
+    "Toy.Modality.AttrSet.recOn": [],
+    "Toy.Modality.Closed": [],
+    "Toy.Modality.Closed.eq_1": [],
+    "Toy.Modality.CompSound": [
+      "propext"
+    ],
+    "Toy.Modality.Dereferenceable": [],
+    "Toy.Modality.DereferenceableAtReturn": [],
+    "Toy.Modality.DocTy": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below.box": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below.casesOn": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below.mutRef": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below.pair": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below.raw": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below.rec": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below.ref": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below.scalar": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.below.wrap": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.box": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.brecOn": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.casesOn": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.leaf_kindBase": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.mutRef": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.pair": [],
+    "Toy.Modality.DocTy.raw": [],
+    "Toy.Modality.DocTy.rec": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.recOn": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.ref": [
+      "propext"
+    ],
+    "Toy.Modality.DocTy.scalar": [],
+    "Toy.Modality.DocTy.wrap": [],
+    "Toy.Modality.Event": [],
+    "Toy.Modality.Event.casesOn": [],
+    "Toy.Modality.Event.ctorElim": [],
+    "Toy.Modality.Event.ctorElimType": [],
+    "Toy.Modality.Event.ctorIdx": [],
+    "Toy.Modality.Event.free": [],
+    "Toy.Modality.Event.free.elim": [],
+    "Toy.Modality.Event.free.inj": [],
+    "Toy.Modality.Event.free.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Event.free.noConfusion": [],
+    "Toy.Modality.Event.free.sizeOf_spec": [],
+    "Toy.Modality.Event.noConfusion": [],
+    "Toy.Modality.Event.noConfusionType": [],
+    "Toy.Modality.Event.read": [],
+    "Toy.Modality.Event.read.elim": [],
+    "Toy.Modality.Event.read.inj": [],
+    "Toy.Modality.Event.read.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Event.read.noConfusion": [],
+    "Toy.Modality.Event.read.sizeOf_spec": [],
+    "Toy.Modality.Event.rec": [],
+    "Toy.Modality.Event.recOn": [],
+    "Toy.Modality.Event.write": [],
+    "Toy.Modality.Event.write.elim": [],
+    "Toy.Modality.Event.write.inj": [],
+    "Toy.Modality.Event.write.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Event.write.noConfusion": [],
+    "Toy.Modality.Event.write.sizeOf_spec": [],
+    "Toy.Modality.Imported.GaloisConnection": [],
+    "Toy.Modality.Imported.Pred": [],
+    "Toy.Modality.Imported.instLEPred": [],
+    "Toy.Modality.InRange": [],
+    "Toy.Modality.InRange.eq_1": [],
+    "Toy.Modality.IsNiche": [],
+    "Toy.Modality.Mod": [],
+    "Toy.Modality.Mod.aligned": [],
+    "Toy.Modality.Mod.bot": [],
+    "Toy.Modality.Mod.bot.eq_1": [],
+    "Toy.Modality.Mod.bounded": [],
+    "Toy.Modality.Mod.casesOn": [],
+    "Toy.Modality.Mod.ctorIdx": [],
+    "Toy.Modality.Mod.derefEntry": [],
+    "Toy.Modality.Mod.derefWhole": [],
+    "Toy.Modality.Mod.ext_has": [],
+    "Toy.Modality.Mod.frozen": [],
+    "Toy.Modality.Mod.has": [],
+    "Toy.Modality.Mod.has.eq_1": [],
+    "Toy.Modality.Mod.has.eq_2": [],
+    "Toy.Modality.Mod.has.eq_3": [],
+    "Toy.Modality.Mod.has.eq_4": [],
+    "Toy.Modality.Mod.has.eq_5": [],
+    "Toy.Modality.Mod.has.eq_6": [],
+    "Toy.Modality.Mod.has.eq_7": [],
+    "Toy.Modality.Mod.has_bot": [],
+    "Toy.Modality.Mod.has_inf": [],
+    "Toy.Modality.Mod.has_sup": [],
+    "Toy.Modality.Mod.has_top": [],
+    "Toy.Modality.Mod.inf": [],
+    "Toy.Modality.Mod.inf.eq_1": [],
+    "Toy.Modality.Mod.le_def": [],
+    "Toy.Modality.Mod.mk": [],
+    "Toy.Modality.Mod.mk.inj": [],
+    "Toy.Modality.Mod.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Mod.mk.noConfusion": [],
+    "Toy.Modality.Mod.mk.sizeOf_spec": [],
+    "Toy.Modality.Mod.noConfusion": [],
+    "Toy.Modality.Mod.noConfusionType": [],
+    "Toy.Modality.Mod.nonnull": [],
+    "Toy.Modality.Mod.rec": [],
+    "Toy.Modality.Mod.recOn": [],
+    "Toy.Modality.Mod.sup": [],
+    "Toy.Modality.Mod.sup.eq_1": [],
+    "Toy.Modality.Mod.top": [],
+    "Toy.Modality.Mod.unique": [],
+    "Toy.Modality.NoArgEvents": [],
+    "Toy.Modality.NotFreedDuring": [],
+    "Toy.Modality.Path": [],
+    "Toy.Modality.Policy": [],
+    "Toy.Modality.PolicyExact": [
+      "propext"
+    ],
+    "Toy.Modality.PolicySound": [
+      "propext"
+    ],
+    "Toy.Modality.Pos": [],
+    "Toy.Modality.Pos.arg": [],
+    "Toy.Modality.Pos.arg.elim": [],
+    "Toy.Modality.Pos.arg.sizeOf_spec": [],
+    "Toy.Modality.Pos.casesOn": [],
+    "Toy.Modality.Pos.ctorElim": [],
+    "Toy.Modality.Pos.ctorElimType": [],
+    "Toy.Modality.Pos.ctorIdx": [],
+    "Toy.Modality.Pos.isArg": [],
+    "Toy.Modality.Pos.isArg.eq_1": [],
+    "Toy.Modality.Pos.isArg.eq_2": [],
+    "Toy.Modality.Pos.noConfusion": [],
+    "Toy.Modality.Pos.noConfusionType": [],
+    "Toy.Modality.Pos.ofNat": [],
+    "Toy.Modality.Pos.ofNat_ctorIdx": [],
+    "Toy.Modality.Pos.rec": [],
+    "Toy.Modality.Pos.recOn": [],
+    "Toy.Modality.Pos.ret": [],
+    "Toy.Modality.Pos.ret.elim": [],
+    "Toy.Modality.Pos.ret.sizeOf_spec": [],
+    "Toy.Modality.Prog": [],
+    "Toy.Modality.Prog.asserts": [],
+    "Toy.Modality.Prog.casesOn": [],
+    "Toy.Modality.Prog.ctorIdx": [],
+    "Toy.Modality.Prog.exec": [],
+    "Toy.Modality.Prog.mk": [],
+    "Toy.Modality.Prog.mk.inj": [],
+    "Toy.Modality.Prog.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Prog.mk.noConfusion": [],
+    "Toy.Modality.Prog.mk.sizeOf_spec": [],
+    "Toy.Modality.Prog.noConfusion": [],
+    "Toy.Modality.Prog.noConfusionType": [],
+    "Toy.Modality.Prog.rec": [],
+    "Toy.Modality.Prog.recOn": [],
+    "Toy.Modality.PtrKind": [],
+    "Toy.Modality.PtrKind.box": [],
+    "Toy.Modality.PtrKind.box.elim": [],
+    "Toy.Modality.PtrKind.box.inj": [],
+    "Toy.Modality.PtrKind.box.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.PtrKind.box.noConfusion": [],
+    "Toy.Modality.PtrKind.box.sizeOf_spec": [],
+    "Toy.Modality.PtrKind.casesOn": [],
+    "Toy.Modality.PtrKind.ctorElim": [],
+    "Toy.Modality.PtrKind.ctorElimType": [],
+    "Toy.Modality.PtrKind.ctorIdx": [],
+    "Toy.Modality.PtrKind.mutRef": [],
+    "Toy.Modality.PtrKind.mutRef.elim": [],
+    "Toy.Modality.PtrKind.mutRef.inj": [],
+    "Toy.Modality.PtrKind.mutRef.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.PtrKind.mutRef.noConfusion": [],
+    "Toy.Modality.PtrKind.mutRef.sizeOf_spec": [],
+    "Toy.Modality.PtrKind.noConfusion": [],
+    "Toy.Modality.PtrKind.noConfusionType": [],
+    "Toy.Modality.PtrKind.raw": [],
+    "Toy.Modality.PtrKind.raw.elim": [],
+    "Toy.Modality.PtrKind.raw.sizeOf_spec": [],
+    "Toy.Modality.PtrKind.rec": [],
+    "Toy.Modality.PtrKind.recOn": [],
+    "Toy.Modality.PtrKind.shared": [],
+    "Toy.Modality.PtrKind.shared.elim": [],
+    "Toy.Modality.PtrKind.shared.inj": [],
+    "Toy.Modality.PtrKind.shared.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.PtrKind.shared.noConfusion": [],
+    "Toy.Modality.PtrKind.shared.sizeOf_spec": [],
+    "Toy.Modality.Refines": [
+      "propext"
+    ],
+    "Toy.Modality.Shape": [],
+    "Toy.Modality.Shape.align": [],
+    "Toy.Modality.Shape.align.eq_1": [],
+    "Toy.Modality.Shape.alignLog": [],
+    "Toy.Modality.Shape.align_pos": [],
+    "Toy.Modality.Shape.casesOn": [],
+    "Toy.Modality.Shape.ctorIdx": [],
+    "Toy.Modality.Shape.mk": [],
+    "Toy.Modality.Shape.mk.congr_simp": [],
+    "Toy.Modality.Shape.mk.inj": [],
+    "Toy.Modality.Shape.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Shape.mk.noConfusion": [],
+    "Toy.Modality.Shape.mk.sizeOf_spec": [],
+    "Toy.Modality.Shape.noConfusion": [],
+    "Toy.Modality.Shape.noConfusionType": [],
+    "Toy.Modality.Shape.rec": [],
+    "Toy.Modality.Shape.recOn": [],
+    "Toy.Modality.Shape.size": [],
+    "Toy.Modality.Shape.size_pos": [],
+    "Toy.Modality.SrcSafe": [
+      "propext"
+    ],
+    "Toy.Modality.Step": [],
+    "Toy.Modality.Step.casesOn": [],
+    "Toy.Modality.Step.ctorElim": [],
+    "Toy.Modality.Step.ctorElimType": [],
+    "Toy.Modality.Step.ctorIdx": [],
+    "Toy.Modality.Step.fst": [],
+    "Toy.Modality.Step.fst.elim": [],
+    "Toy.Modality.Step.fst.sizeOf_spec": [],
+    "Toy.Modality.Step.inner": [],
+    "Toy.Modality.Step.inner.elim": [],
+    "Toy.Modality.Step.inner.sizeOf_spec": [],
+    "Toy.Modality.Step.noConfusion": [],
+    "Toy.Modality.Step.noConfusionType": [],
+    "Toy.Modality.Step.ofNat": [],
+    "Toy.Modality.Step.ofNat_ctorIdx": [],
+    "Toy.Modality.Step.rec": [],
+    "Toy.Modality.Step.recOn": [],
+    "Toy.Modality.Step.snd": [],
+    "Toy.Modality.Step.snd.elim": [],
+    "Toy.Modality.Step.snd.sizeOf_spec": [],
+    "Toy.Modality.Tag": [],
+    "Toy.Modality.Tag.arg": [],
+    "Toy.Modality.Tag.arg.elim": [],
+    "Toy.Modality.Tag.arg.sizeOf_spec": [],
+    "Toy.Modality.Tag.casesOn": [],
+    "Toy.Modality.Tag.ctorElim": [],
+    "Toy.Modality.Tag.ctorElimType": [],
+    "Toy.Modality.Tag.ctorIdx": [],
+    "Toy.Modality.Tag.noConfusion": [],
+    "Toy.Modality.Tag.noConfusionType": [],
+    "Toy.Modality.Tag.ofNat": [],
+    "Toy.Modality.Tag.ofNat_ctorIdx": [],
+    "Toy.Modality.Tag.other": [],
+    "Toy.Modality.Tag.other.elim": [],
+    "Toy.Modality.Tag.other.sizeOf_spec": [],
+    "Toy.Modality.Tag.rec": [],
+    "Toy.Modality.Tag.recOn": [],
+    "Toy.Modality.TgtSafe": [
+      "propext"
+    ],
+    "Toy.Modality.Trace": [],
+    "Toy.Modality.Trace.addr": [],
+    "Toy.Modality.Trace.after": [],
+    "Toy.Modality.Trace.casesOn": [],
+    "Toy.Modality.Trace.ctorIdx": [],
+    "Toy.Modality.Trace.during": [],
+    "Toy.Modality.Trace.live": [],
+    "Toy.Modality.Trace.mk": [],
+    "Toy.Modality.Trace.mk.inj": [],
+    "Toy.Modality.Trace.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Trace.mk.noConfusion": [],
+    "Toy.Modality.Trace.mk.sizeOf_spec": [],
+    "Toy.Modality.Trace.noConfusion": [],
+    "Toy.Modality.Trace.noConfusionType": [],
+    "Toy.Modality.Trace.rec": [],
+    "Toy.Modality.Trace.recOn": [],
+    "Toy.Modality.TransformerSound": [],
+    "Toy.Modality.Ty": [],
+    "Toy.Modality.Ty.below": [],
+    "Toy.Modality.Ty.brecOn": [],
+    "Toy.Modality.Ty.brecOn.eq": [],
+    "Toy.Modality.Ty.brecOn.go": [],
+    "Toy.Modality.Ty.casesOn": [],
+    "Toy.Modality.Ty.ctorElim": [],
+    "Toy.Modality.Ty.ctorElimType": [],
+    "Toy.Modality.Ty.ctorIdx": [],
+    "Toy.Modality.Ty.freeze": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.freeze.match_1": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.isPtr": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.isPtr.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.isPtr.eq_2": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.isPtr.match_1": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.noConfusion": [],
+    "Toy.Modality.Ty.noConfusionType": [],
+    "Toy.Modality.Ty.pair": [],
+    "Toy.Modality.Ty.pair.elim": [],
+    "Toy.Modality.Ty.pair.inj": [],
+    "Toy.Modality.Ty.pair.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.pair.noConfusion": [],
+    "Toy.Modality.Ty.pair.sizeOf_spec": [],
+    "Toy.Modality.Ty.ptr": [],
+    "Toy.Modality.Ty.ptr.elim": [],
+    "Toy.Modality.Ty.ptr.inj": [],
+    "Toy.Modality.Ty.ptr.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.ptr.noConfusion": [],
+    "Toy.Modality.Ty.ptr.sizeOf_spec": [],
+    "Toy.Modality.Ty.rec": [],
+    "Toy.Modality.Ty.recOn": [],
+    "Toy.Modality.Ty.scalar": [],
+    "Toy.Modality.Ty.scalar.elim": [],
+    "Toy.Modality.Ty.scalar.sizeOf_spec": [],
+    "Toy.Modality.Ty.unpin": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.unpin.match_1": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.wrap": [],
+    "Toy.Modality.Ty.wrap.elim": [],
+    "Toy.Modality.Ty.wrap.inj": [],
+    "Toy.Modality.Ty.wrap.injEq": [
+      "propext"
+    ],
+    "Toy.Modality.Ty.wrap.noConfusion": [],
+    "Toy.Modality.Ty.wrap.sizeOf_spec": [],
+    "Toy.Modality.Wrap": [],
+    "Toy.Modality.Wrap.casesOn": [],
+    "Toy.Modality.Wrap.ctorElim": [],
+    "Toy.Modality.Wrap.ctorElimType": [],
+    "Toy.Modality.Wrap.ctorIdx": [],
+    "Toy.Modality.Wrap.manuallyDrop": [],
+    "Toy.Modality.Wrap.manuallyDrop.elim": [],
+    "Toy.Modality.Wrap.manuallyDrop.sizeOf_spec": [],
+    "Toy.Modality.Wrap.maybeDangling": [],
+    "Toy.Modality.Wrap.maybeDangling.elim": [],
+    "Toy.Modality.Wrap.maybeDangling.sizeOf_spec": [],
+    "Toy.Modality.Wrap.noConfusion": [],
+    "Toy.Modality.Wrap.noConfusionType": [],
+    "Toy.Modality.Wrap.ofNat": [],
+    "Toy.Modality.Wrap.ofNat_ctorIdx": [],
+    "Toy.Modality.Wrap.rec": [],
+    "Toy.Modality.Wrap.recOn": [],
+    "Toy.Modality.Wrap.relaxes": [
+      "propext"
+    ],
+    "Toy.Modality.Wrap.relaxes.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.Wrap.relaxes.eq_2": [
+      "propext"
+    ],
+    "Toy.Modality.Wrap.relaxes.eq_3": [
+      "propext"
+    ],
+    "Toy.Modality.Wrap.relaxes.match_1": [
+      "propext"
+    ],
+    "Toy.Modality.Wrap.transparent": [],
+    "Toy.Modality.Wrap.transparent.elim": [],
+    "Toy.Modality.Wrap.transparent.sizeOf_spec": [],
+    "Toy.Modality.Wrap.unsafeCell": [],
+    "Toy.Modality.Wrap.unsafeCell.elim": [],
+    "Toy.Modality.Wrap.unsafeCell.sizeOf_spec": [],
+    "Toy.Modality.Wrap.unsafePinned": [],
+    "Toy.Modality.Wrap.unsafePinned.elim": [],
+    "Toy.Modality.Wrap.unsafePinned.sizeOf_spec": [],
+    "Toy.Modality.Written": [],
+    "Toy.Modality.align_mod_align": [
+      "propext"
+    ],
+    "Toy.Modality.aligned_and_misaligned_of_nonzero_niche": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.aligned_and_misaligned_of_nonzero_niche.match_1_1": [],
+    "Toy.Modality.alphaOf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.alphaOf_has": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.alphaSet": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.alphaSet_gammaDual_galois_and_lower_eq_alphaSet_den": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.alphaSet_has": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.argInRange_of_no_arg_access": [],
+    "Toy.Modality.argInRange_tArgWrite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.arg_nofree_of_addr_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.arg_nofree_of_addr_zero.match_1_1": [],
+    "Toy.Modality.atomSat": [],
+    "Toy.Modality.atomSat.eq_1": [],
+    "Toy.Modality.atomSat.eq_2": [],
+    "Toy.Modality.atomSat.eq_3": [],
+    "Toy.Modality.atomSat.eq_4": [],
+    "Toy.Modality.atomSat.eq_5": [],
+    "Toy.Modality.atomSat.eq_6": [],
+    "Toy.Modality.atomSat.eq_7": [],
+    "Toy.Modality.atomSat.match_1": [],
+    "Toy.Modality.atomSat_tArgWrite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.atomSat_tConflict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.atomSat_tDangling": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.atomSat_tDangling.match_1_2": [],
+    "Toy.Modality.atomSat_tForeignRead": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.atomSat_tForeignRead.match_1_3": [],
+    "Toy.Modality.atomSat_tFreed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.atomSat_tFreed.match_1_3": [],
+    "Toy.Modality.atomSat_tMis": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.atomSat_tMis.match_1_2": [],
+    "Toy.Modality.atomSat_tNull": [
+      "propext"
+    ],
+    "Toy.Modality.atomSat_tNull.match_1_1": [],
+    "Toy.Modality.atomSat_tOutOfRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.atomSat_tOutOfRange.match_1_3": [],
+    "Toy.Modality.atomSat_tStar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.atomSat_tStar.match_1_3": [],
+    "Toy.Modality.attrDual_le_refl_trans": [],
+    "Toy.Modality.attrSat": [],
+    "Toy.Modality.attrSat.match_1": [],
+    "Toy.Modality.attrsNoalias": [],
+    "Toy.Modality.attrsNoalias.eq_1": [],
+    "Toy.Modality.boxTy": [
+      "propext"
+    ],
+    "Toy.Modality.boxTy.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.cex_comp_deep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.cex_comp_transformer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.cex_den_antitone_ht": [],
+    "Toy.Modality.cex_den_antitone_le": [
+      "propext"
+    ],
+    "Toy.Modality.cex_den_subset_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.cex_liftOpt_iff_isNiche": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.cex_liftOpt_noneVal": [
+      "propext"
+    ],
+    "Toy.Modality.cex_lower_sound_ht": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.cex_lower_unique_best": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.cex_lower_unique_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.cex_transformers_respect_h": [
+      "propext"
+    ],
+    "Toy.Modality.cl": [],
+    "Toy.Modality.cl.eq_1": [],
+    "Toy.Modality.clDeref": [],
+    "Toy.Modality.clDeref.eq_1": [],
+    "Toy.Modality.cl_closure_operator_and_closed_sublattice": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.cl_eq_of_den_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.cl_has": [],
+    "Toy.Modality.cl_has.match_1": [],
+    "Toy.Modality.cl_transformer_cl": [
+      "propext"
+    ],
+    "Toy.Modality.closed_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.comp": [
+      "propext"
+    ],
+    "Toy.Modality.comp.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.comp.eq_2": [
+      "propext"
+    ],
+    "Toy.Modality.comp.eq_3": [
+      "propext"
+    ],
+    "Toy.Modality.comp.eq_4": [
+      "propext"
+    ],
+    "Toy.Modality.comp.eq_5": [
+      "propext"
+    ],
+    "Toy.Modality.comp.eq_def": [
+      "propext"
+    ],
+    "Toy.Modality.compSound_const_bot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.compSound_iff_transformerSound_and_deep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.compSound_iff_transformerSound_and_deep.match_1_21": [
+      "propext"
+    ],
+    "Toy.Modality.compSound_on_docTy_not_imply_transformerSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.comp_deep_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.comp_deep_inv.match_1_19": [
+      "propext"
+    ],
+    "Toy.Modality.comp_eq_some_leaf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.comp_tRelax_deep_eq_leaf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.comp_tRelax_deep_eq_req": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.containsRelaxer": [
+      "propext"
+    ],
+    "Toy.Modality.containsRelaxer.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.containsRelaxer.eq_2": [
+      "propext"
+    ],
+    "Toy.Modality.containsRelaxer.eq_3": [
+      "propext"
+    ],
+    "Toy.Modality.containsRelaxer.eq_4": [
+      "propext"
+    ],
+    "Toy.Modality.containsRelaxer.eq_def": [
+      "propext"
+    ],
+    "Toy.Modality.containsRelaxer.match_1": [],
+    "Toy.Modality.den": [],
+    "Toy.Modality.denOpt": [],
+    "Toy.Modality.denP": [],
+    "Toy.Modality.den_antitone": [],
+    "Toy.Modality.den_bot": [
+      "propext"
+    ],
+    "Toy.Modality.den_cl_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_iff": [],
+    "Toy.Modality.den_subset_iff_le_cl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_subset_iff_le_of_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_sup_iff": [
+      "propext"
+    ],
+    "Toy.Modality.den_tDangling_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_tFreed_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_tReadAfter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_tRelax_tDangleAliased": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_tRelax_tDangling": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_tRelax_tForeignRead": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_tStar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.den_transformer_of_den": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.dereferenceableAtReturn_iff_atomSat_derefWhole": [],
+    "Toy.Modality.dereferenceable_wAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.entry_deref_of_tCell_refFull_not_sound_at_return": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_argInRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_atomSat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_attrSat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_cl": [],
+    "Toy.Modality.ex_clDeref": [],
+    "Toy.Modality.ex_closed": [],
+    "Toy.Modality.ex_compSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_comp_req": [
+      "propext"
+    ],
+    "Toy.Modality.ex_den": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_denOpt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_dereferenceable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_docTy": [
+      "propext"
+    ],
+    "Toy.Modality.ex_fieldTy_posTrans": [
+      "propext"
+    ],
+    "Toy.Modality.ex_freeze_unpin": [
+      "propext"
+    ],
+    "Toy.Modality.ex_galois_defs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_gammaSet": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_isNiche": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_kindBase": [],
+    "Toy.Modality.ex_kindRule": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_leafAt_relaxedOn": [
+      "propext"
+    ],
+    "Toy.Modality.ex_liftOpt": [],
+    "Toy.Modality.ex_lower": [],
+    "Toy.Modality.ex_mod_inf_sup": [],
+    "Toy.Modality.ex_mod_le": [],
+    "Toy.Modality.ex_noArgEvents": [
+      "propext"
+    ],
+    "Toy.Modality.ex_notFreedDuring": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_pointer_constructors": [
+      "propext"
+    ],
+    "Toy.Modality.ex_policy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_refines": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_relaxRule": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_repair_helpers": [
+      "propext"
+    ],
+    "Toy.Modality.ex_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_shape": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_shape.match_1_1": [],
+    "Toy.Modality.ex_transformerSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.ex_transformers": [],
+    "Toy.Modality.ex_wrap_relaxes": [
+      "propext"
+    ],
+    "Toy.Modality.exists_den_not_atomSat_of_not_has_cl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.exists_den_not_attrSat_of_not_has_lower": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.fieldTy": [
+      "propext"
+    ],
+    "Toy.Modality.fieldTy.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.fieldTy.eq_2": [
+      "propext"
+    ],
+    "Toy.Modality.fieldTy.eq_3": [
+      "propext"
+    ],
+    "Toy.Modality.fieldTy.eq_4": [
+      "propext"
+    ],
+    "Toy.Modality.fieldTy.eq_5": [
+      "propext"
+    ],
+    "Toy.Modality.fieldTy.eq_def": [
+      "propext"
+    ],
+    "Toy.Modality.fieldTy.match_1": [
+      "propext"
+    ],
+    "Toy.Modality.fieldTy_nil": [
+      "propext"
+    ],
+    "Toy.Modality.filterMap_fieldTy_map_fst": [
+      "propext"
+    ],
+    "Toy.Modality.gammaDual": [],
+    "Toy.Modality.gammaOf": [],
+    "Toy.Modality.gammaSet": [],
+    "Toy.Modality.inRange_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.instDecidableClosed": [],
+    "Toy.Modality.instDecidableEqAlloc": [],
+    "Toy.Modality.instDecidableEqAlloc.decEq": [],
+    "Toy.Modality.instDecidableEqAlloc.decEq.match_1": [],
+    "Toy.Modality.instDecidableEqAtom": [],
+    "Toy.Modality.instDecidableEqAttr": [],
+    "Toy.Modality.instDecidableEqAttrSet": [],
+    "Toy.Modality.instDecidableEqAttrSet.decEq": [],
+    "Toy.Modality.instDecidableEqAttrSet.decEq.match_1": [],
+    "Toy.Modality.instDecidableEqEvent": [],
+    "Toy.Modality.instDecidableEqEvent.decEq": [],
+    "Toy.Modality.instDecidableEqEvent.decEq.match_1": [],
+    "Toy.Modality.instDecidableEqMod": [],
+    "Toy.Modality.instDecidableEqMod.decEq": [],
+    "Toy.Modality.instDecidableEqMod.decEq.match_1": [],
+    "Toy.Modality.instDecidableEqPos": [],
+    "Toy.Modality.instDecidableEqPtrKind": [],
+    "Toy.Modality.instDecidableEqPtrKind.decEq": [],
+    "Toy.Modality.instDecidableEqPtrKind.decEq.match_1": [],
+    "Toy.Modality.instDecidableEqStep": [],
+    "Toy.Modality.instDecidableEqTag": [],
+    "Toy.Modality.instDecidableEqWrap": [],
+    "Toy.Modality.instDecidableLeMod": [],
+    "Toy.Modality.instLEAttrDual": [],
+    "Toy.Modality.instLEAttrSet": [],
+    "Toy.Modality.instLEMod": [],
+    "Toy.Modality.instReprAlloc": [],
+    "Toy.Modality.instReprAlloc.repr": [],
+    "Toy.Modality.instReprAtom": [],
+    "Toy.Modality.instReprAtom.repr": [],
+    "Toy.Modality.instReprAtom.repr.match_1": [],
+    "Toy.Modality.instReprAttr": [],
+    "Toy.Modality.instReprAttr.repr": [],
+    "Toy.Modality.instReprAttr.repr.match_1": [],
+    "Toy.Modality.instReprAttrSet": [],
+    "Toy.Modality.instReprAttrSet.repr": [],
+    "Toy.Modality.instReprEvent": [],
+    "Toy.Modality.instReprEvent.repr": [],
+    "Toy.Modality.instReprEvent.repr.match_1": [],
+    "Toy.Modality.instReprMod": [],
+    "Toy.Modality.instReprMod.repr": [],
+    "Toy.Modality.instReprPos": [],
+    "Toy.Modality.instReprPos.repr": [],
+    "Toy.Modality.instReprPos.repr.match_1": [],
+    "Toy.Modality.instReprPtrKind": [],
+    "Toy.Modality.instReprPtrKind.repr": [],
+    "Toy.Modality.instReprPtrKind.repr.match_1": [],
+    "Toy.Modality.instReprStep": [],
+    "Toy.Modality.instReprStep.repr": [],
+    "Toy.Modality.instReprStep.repr.match_1": [],
+    "Toy.Modality.instReprTag": [],
+    "Toy.Modality.instReprTag.repr": [],
+    "Toy.Modality.instReprTag.repr.match_1": [],
+    "Toy.Modality.instReprTrace": [
+      "propext"
+    ],
+    "Toy.Modality.instReprTrace.repr": [
+      "propext"
+    ],
+    "Toy.Modality.instReprWrap": [],
+    "Toy.Modality.instReprWrap.repr": [],
+    "Toy.Modality.instReprWrap.repr.match_1": [],
+    "Toy.Modality.kindBase": [],
+    "Toy.Modality.kindBase.eq_1": [],
+    "Toy.Modality.kindBase.eq_2": [],
+    "Toy.Modality.kindBase.eq_3": [],
+    "Toy.Modality.kindBase.eq_4": [],
+    "Toy.Modality.kindBase.eq_5": [],
+    "Toy.Modality.kindBase.eq_6": [],
+    "Toy.Modality.kindBase.eq_7": [],
+    "Toy.Modality.kindBase.match_1": [],
+    "Toy.Modality.kindBase_best": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.kindBase_ret_lowering_dereferenceable_by_kind": [
+      "propext"
+    ],
+    "Toy.Modality.kindBase_three_kinds_coincide": [],
+    "Toy.Modality.kindRule": [],
+    "Toy.Modality.kindRule.eq_1": [],
+    "Toy.Modality.kindRule.eq_2": [],
+    "Toy.Modality.kindRule.eq_3": [],
+    "Toy.Modality.kindRule.eq_4": [],
+    "Toy.Modality.kindRule.eq_5": [],
+    "Toy.Modality.kindRule.eq_6": [],
+    "Toy.Modality.kindRule.eq_7": [],
+    "Toy.Modality.kindRule.match_1": [],
+    "Toy.Modality.kindRule_iff_den": [
+      "propext"
+    ],
+    "Toy.Modality.le_tRelax_iff": [
+      "propext"
+    ],
+    "Toy.Modality.leafAt": [
+      "propext"
+    ],
+    "Toy.Modality.leafAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.leafAt.eq_2": [
+      "propext"
+    ],
+    "Toy.Modality.leafAt.eq_3": [
+      "propext"
+    ],
+    "Toy.Modality.leafAt.eq_4": [
+      "propext"
+    ],
+    "Toy.Modality.leafAt.eq_5": [
+      "propext"
+    ],
+    "Toy.Modality.leafAt.eq_def": [
+      "propext"
+    ],
+    "Toy.Modality.leafAt.match_1": [
+      "propext"
+    ],
+    "Toy.Modality.liftOpt": [],
+    "Toy.Modality.liftOpt.eq_1": [],
+    "Toy.Modality.liftOpt_best_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.liftOpt_sound_at_non_niche_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.liftOpt_sound_iff_noneVal_eq_zero_of_isNiche": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.liftOpt_sound_iff_noneVal_eq_zero_of_isNiche.match_1_1": [],
+    "Toy.Modality.liftOpt_sound_of_noneVal_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.liftOpt_unsound_at_niche_one": [
+      "propext"
+    ],
+    "Toy.Modality.lift_nonnull_dereferenceable_unsound_at_null": [
+      "propext"
+    ],
+    "Toy.Modality.lower": [],
+    "Toy.Modality.lower.eq_1": [],
+    "Toy.Modality.lower_arg_no_right_adjoint_on_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.lower_best_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.lower_dereferenceable_eq": [],
+    "Toy.Modality.lower_no_left_adjoint_and_arg_no_right_adjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.lower_ret_no_right_adjoint_of_alignLog_eq_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.lower_ret_right_adjoint_of_alignLog_ne_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.lower_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.lower_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.mem_scalarize": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.modAt": [
+      "propext"
+    ],
+    "Toy.Modality.modAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.modAt_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.modAt_eq_of_not_relaxedOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.modAt_relaxAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.modAt_retype": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.modDerefWholeOnly": [],
+    "Toy.Modality.modFrozenBounded": [],
+    "Toy.Modality.modFrozenBounded.eq_1": [],
+    "Toy.Modality.modFrozenOnly": [],
+    "Toy.Modality.modFrozenOnly.eq_1": [],
+    "Toy.Modality.modUniqueBounded": [],
+    "Toy.Modality.modUniqueBounded.eq_1": [],
+    "Toy.Modality.mod_align_of_alignLog_eq_zero": [],
+    "Toy.Modality.mod_bounded_lattice": [
+      "propext"
+    ],
+    "Toy.Modality.mutFull": [],
+    "Toy.Modality.mutFull.eq_1": [],
+    "Toy.Modality.mutFullNoBounded": [],
+    "Toy.Modality.mutRefTy": [
+      "propext"
+    ],
+    "Toy.Modality.mutRefTy.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.naivePolicy": [
+      "propext"
+    ],
+    "Toy.Modality.ne_zero_of_dereferenceable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.noArgEvents_tAt": [
+      "propext"
+    ],
+    "Toy.Modality.not_atomSat_tArgWrite_frozen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.not_atomSat_tForeignRead_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.not_atomSat_tMis_aligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.not_atomSat_tOutOfRange_bounded": [
+      "propext"
+    ],
+    "Toy.Modality.not_den_tDangleAliased": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.not_dereferenceable_of_live_nil": [
+      "propext"
+    ],
+    "Toy.Modality.not_noalias_tConflict": [
+      "propext"
+    ],
+    "Toy.Modality.not_noalias_tOutOfRange": [
+      "propext"
+    ],
+    "Toy.Modality.not_nofree_tFreed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.not_notFreedDuring_tFreed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.not_readonly_tOutOfRange": [
+      "propext"
+    ],
+    "Toy.Modality.not_ret_noalias_tReadAfter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.nv_compSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.nv_den_antitone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.nv_den_cl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.nv_den_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.nv_lower": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.nv_niche": [
+      "propext"
+    ],
+    "Toy.Modality.nv_niche_zero": [],
+    "Toy.Modality.nv_repairs": [
+      "propext"
+    ],
+    "Toy.Modality.nv_sroa": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.nv_transformers_best": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.nv_transformers_respect": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.one_mod_align_of_alignLog_ne_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.pathNestedMD": [],
+    "Toy.Modality.polarity_galois": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.policyExact_refusing_and_scalar_reshaping": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.policyExact_refusing_and_scalar_reshaping.match_1": [
+      "propext"
+    ],
+    "Toy.Modality.policySound_degenerate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.policySound_of_exact": [
+      "propext"
+    ],
+    "Toy.Modality.posTrans": [
+      "propext"
+    ],
+    "Toy.Modality.posTrans.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.posTrans.eq_2": [
+      "propext"
+    ],
+    "Toy.Modality.posTrans.eq_3": [
+      "propext"
+    ],
+    "Toy.Modality.posTrans.eq_4": [
+      "propext"
+    ],
+    "Toy.Modality.posTrans.eq_5": [
+      "propext"
+    ],
+    "Toy.Modality.posTrans.eq_def": [
+      "propext"
+    ],
+    "Toy.Modality.posTrans_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.posTrans_nil": [
+      "propext"
+    ],
+    "Toy.Modality.progDangling": [],
+    "Toy.Modality.progDangling.eq_1": [],
+    "Toy.Modality.qsMDPair": [],
+    "Toy.Modality.qsMDPair.eq_1": [],
+    "Toy.Modality.rawTy": [],
+    "Toy.Modality.rawTy.eq_1": [],
+    "Toy.Modality.refFull": [],
+    "Toy.Modality.refFull.eq_1": [],
+    "Toy.Modality.refFullNoBounded": [],
+    "Toy.Modality.refFull_arg_lowering_not_sound_at_return": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.refTy": [
+      "propext"
+    ],
+    "Toy.Modality.refTy.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.refines_scalarize_of_not_relaxedOn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.relaxAll": [],
+    "Toy.Modality.relaxAll.eq_1": [],
+    "Toy.Modality.relaxAll.eq_2": [],
+    "Toy.Modality.relaxAll.eq_3": [],
+    "Toy.Modality.relaxAll.eq_4": [],
+    "Toy.Modality.relaxAll.eq_def": [],
+    "Toy.Modality.relaxRule": [],
+    "Toy.Modality.relaxRule.eq_1": [],
+    "Toy.Modality.relaxRule_iff_den": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.relaxedOn": [
+      "propext"
+    ],
+    "Toy.Modality.relaxedOn.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.relaxedOn.eq_2": [
+      "propext"
+    ],
+    "Toy.Modality.relaxedOn.eq_3": [
+      "propext"
+    ],
+    "Toy.Modality.relaxedOn.eq_4": [
+      "propext"
+    ],
+    "Toy.Modality.relaxedOn.eq_def": [
+      "propext"
+    ],
+    "Toy.Modality.relaxedOn.match_1": [
+      "propext"
+    ],
+    "Toy.Modality.relaxedOn_eq_false_of_containsRelaxer": [
+      "propext"
+    ],
+    "Toy.Modality.repairExclude": [
+      "propext"
+    ],
+    "Toy.Modality.repairExclude.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.repairRetype": [
+      "propext"
+    ],
+    "Toy.Modality.repairRetype.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.repairStopAtRelaxer": [
+      "propext"
+    ],
+    "Toy.Modality.repairStopAtRelaxer.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.repair_policies_acceptance_hierarchy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.repairs_exact_and_retype_total": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.repairs_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.req": [
+      "propext"
+    ],
+    "Toy.Modality.req.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.reqAux": [
+      "propext"
+    ],
+    "Toy.Modality.reqAux.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.reqAux.eq_2": [
+      "propext"
+    ],
+    "Toy.Modality.reqAux.eq_3": [
+      "propext"
+    ],
+    "Toy.Modality.reqAux.eq_4": [
+      "propext"
+    ],
+    "Toy.Modality.reqAux.eq_5": [
+      "propext"
+    ],
+    "Toy.Modality.reqAux.eq_def": [
+      "propext"
+    ],
+    "Toy.Modality.reqAux.match_1": [
+      "propext"
+    ],
+    "Toy.Modality.reqAux_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.retRightAdjoint": [],
+    "Toy.Modality.retRightAdjoint.eq_1": [],
+    "Toy.Modality.retype": [
+      "propext"
+    ],
+    "Toy.Modality.retype.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.s1": [],
+    "Toy.Modality.s1.eq_1": [],
+    "Toy.Modality.s2": [],
+    "Toy.Modality.s2.eq_1": [],
+    "Toy.Modality.scalarize": [
+      "propext"
+    ],
+    "Toy.Modality.scalarize.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.scalarize_map_fst": [
+      "propext"
+    ],
+    "Toy.Modality.scalarize_refines_iff_declared_le_posMod": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.shallow_relaxer_leaves_nested_promises": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.sroa_hoist_out_of_manuallyDrop_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.stopAtRelaxer_not_relaxedOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.stronger_arg_lowerings_counterexamples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.tArgWrite": [],
+    "Toy.Modality.tArgWrite.eq_1": [],
+    "Toy.Modality.tAt": [],
+    "Toy.Modality.tAt.eq_1": [],
+    "Toy.Modality.tBox": [],
+    "Toy.Modality.tBox.eq_1": [],
+    "Toy.Modality.tCell": [],
+    "Toy.Modality.tCell.eq_1": [],
+    "Toy.Modality.tConflict": [],
+    "Toy.Modality.tConflict.eq_1": [],
+    "Toy.Modality.tDangleAliased": [],
+    "Toy.Modality.tDangleAliased.eq_1": [],
+    "Toy.Modality.tDangling": [],
+    "Toy.Modality.tDangling.eq_1": [],
+    "Toy.Modality.tForeignRead": [],
+    "Toy.Modality.tForeignRead.eq_1": [],
+    "Toy.Modality.tFreed": [],
+    "Toy.Modality.tFreed.eq_1": [],
+    "Toy.Modality.tMis": [],
+    "Toy.Modality.tMis.eq_1": [],
+    "Toy.Modality.tNull": [],
+    "Toy.Modality.tNull.eq_1": [],
+    "Toy.Modality.tOutOfRange": [],
+    "Toy.Modality.tOutOfRange.eq_1": [],
+    "Toy.Modality.tPin": [],
+    "Toy.Modality.tPin.eq_1": [],
+    "Toy.Modality.tReadAfter": [],
+    "Toy.Modality.tReadAfter.eq_1": [],
+    "Toy.Modality.tRelax": [],
+    "Toy.Modality.tRelax.eq_1": [],
+    "Toy.Modality.tRelaxExceptFrozenOnly": [],
+    "Toy.Modality.tRelax_arg_lowering_eq_ret_lowering": [
+      "propext"
+    ],
+    "Toy.Modality.tRelax_best": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.tRelax_tRelax": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.tStar": [],
+    "Toy.Modality.tStar.eq_1": [],
+    "Toy.Modality.transformerSound_iff_le_tRelax": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.transformerSound_tRelax_comp_cl_s2": [
+      "propext"
+    ],
+    "Toy.Modality.transformer_dropped_atoms_can_fail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.transformers_deflationary_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.transformers_respect_den": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Modality.tyMDPair": [
+      "propext"
+    ],
+    "Toy.Modality.tyMDPair.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.tyMDScalar": [],
+    "Toy.Modality.tyMDScalar.eq_1": [],
+    "Toy.Modality.tyNestedMD": [
+      "propext"
+    ],
+    "Toy.Modality.tyPairMD": [
+      "propext"
+    ],
+    "Toy.Modality.tyPlainPair": [
+      "propext"
+    ],
+    "Toy.Modality.wAlloc": [],
+    "Toy.Modality.wAlloc.eq_1": [],
+    "Toy.Modality.wrapTrans": [
+      "propext"
+    ],
+    "Toy.Modality.wrapTrans.eq_1": [
+      "propext"
+    ],
+    "Toy.Modality.zero_mod_align": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

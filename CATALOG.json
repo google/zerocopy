@@ -68242,6 +68242,121 @@
         "domains/nuclear-data-processing"
       ]
     },
+    "pointer-capability-modality-lattice-ir-attribute-lowering-and-sroa-monotonicity": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc ABI attribute computation, layout recursion, MIR scalar replacement of aggregates, and core MaybeDangling/ManuallyDrop sources"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "cd2a75d9d58d7bd7b59cde543684fc83c3e785d2"
+          },
+          "name": "rustc MIR scalar replacement of aggregates after the exclusion of MaybeDangling-like types (merge commit of rust-lang/rust pull 164568)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "5b10d2d74929eae78912771222c9855af97496f4",
+            "version": "llvmorg-23.1.6"
+          },
+          "name": "LLVM Language Reference Manual (llvm/docs/LangRef.md), release llvmorg-23.1.6"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs 3336 (MaybeDangling), 3467 (UnsafePinned) and 1860 (ManuallyDrop)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference, behavior considered undefined (src/behavior-considered-undefined.md)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/CBO9780511809088"
+          },
+          "name": "Introduction to Lattices and Order (2nd ed.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512950.512973"
+          },
+          "name": "Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-59830-2"
+          },
+          "name": "Formal Concept Analysis: Mathematical Foundations"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2384616.2384619"
+          },
+          "name": "Uniqueness and Reference Immutability for Safe Parallelism"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Tree Borrows"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062343"
+          },
+          "name": "Taming Undefined Behavior in LLVM"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030"
+          },
+          "name": "Alive2: Bounded Translation Validation for LLVM"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/abstract-interpretation",
+        "verification/galois-connections",
+        "compilers/llvm-parameter-attributes",
+        "compilers/scalar-replacement-of-aggregates",
+        "compilers/niche-optimization",
+        "pl/pointer-capabilities",
+        "pl/rust-aliasing",
+        "pl/maybe-dangling"
+      ]
+    },
     "pointer-provenance-models-and-integer-pointer-cast-optimizations": {
       "observed_at": "2026-11-20",
       "subjects": [

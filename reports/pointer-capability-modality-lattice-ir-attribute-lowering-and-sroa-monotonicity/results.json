@@ -1,0 +1,925 @@
+[
+ {
+  "id": "R1-lattice",
+  "lean": [
+   "Toy.Modality.mod_bounded_lattice",
+   "Toy.Modality.cl_closure_operator_and_closed_sublattice"
+  ],
+  "lean_names": [
+   "Toy.Modality.Mod",
+   "Toy.Modality.Mod.has",
+   "Toy.Modality.Mod.inf",
+   "Toy.Modality.Mod.sup",
+   "Toy.Modality.Mod.bot",
+   "Toy.Modality.Mod.top",
+   "Toy.Modality.Atom",
+   "Toy.Modality.Shape",
+   "Toy.Modality.Shape.align",
+   "Toy.Modality.cl",
+   "Toy.Modality.Closed",
+   "Toy.Modality.ex_shape",
+   "Toy.Modality.ex_mod_le",
+   "Toy.Modality.ex_mod_inf_sup",
+   "Toy.Modality.ex_cl",
+   "Toy.Modality.ex_closed"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Powerset lattices and closure operators are textbook; restated for the seven atoms and the shape-dependent closure.",
+  "plain_claim": "Modalities (sets of the seven capability atoms, `Mod`) ordered by inclusion form a bounded lattice with meet `Mod.inf`, join `Mod.sup`, least element `Mod.bot` and greatest element `Mod.top`; and (`cl_closure_operator_and_closed_sublattice`) for every pointee shape `s`, implication closure `cl s` is extensive, monotone and idempotent with closed values, and the `s`-closed modalities contain `Mod.top` and `cl s Mod.bot` and are closed under `Mod.inf` and `Mod.sup` (a sublattice).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`ex_closed` (e.g. `refFull` is closed for `s1`) and `ex_mod_inf_sup` (the meet of `refFull` and `mutFull` is computed).",
+  "nonvacuity_witness_lean": "Toy.Modality.ex_closed",
+  "non_claims": [
+   "`Mod` has 128 elements (seven Booleans); no cardinality theorem is stated.",
+   "Says nothing about traces; the semantic content is in `den_antitone`, `den_cl_iff` and `den_subset_iff_le_cl`.",
+   "When `s.alignLog = 0` (alignment 1), `Mod.bot` is not `s`-closed (`ex_closed`: `¬ Closed s1 Mod.bot`), so the `s`-closed modalities form a sublattice whose least element is `cl s Mod.bot`, not a sublattice containing `Mod.bot`.",
+   "Closure of the `s`-closed modalities under `Mod.sup` uses that every rule of `cl s` has a single premise; for closure rules with several premises, closed sets need not be closed under unions (not proved here).",
+   "The closure rules are the toy's (`derefWhole` ⇒ `derefEntry` ⇒ `nonnull`; `aligned` at alignment 1); `frozen`, `unique` and `bounded` take part in no rule; other implications a real memory model may have are not modelled.",
+   "Kernel dependency audit for `Shape.size_pos`: the proofs of `mod_bounded_lattice` and `cl_closure_operator_and_closed_sublattice` do not use it.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Order theory and abstract interpretation: Davey, Priestley, Introduction to Lattices and Order, 2nd ed., Cambridge University Press 2002, doi:10.1017/CBO9780511809088 (powerset lattices, closure operators, Galois connections); Cousot, Cousot, \"Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints\", POPL 1977, doi:10.1145/512950.512973.",
+   "Reference-capability lattices in type systems (different setting, not re-modelled): Gordon, Parkinson, Parsons, Bromfield, Duffy, \"Uniqueness and Reference Immutability for Safe Parallelism\", OOPSLA 2012, doi:10.1145/2384616.2384619."
+  ],
+  "design_question": "Is there a compositional lattice of pointer-guarantee modalities with sound per-constructor transformers?"
+ },
+ {
+  "id": "R1-antitone",
+  "lean": [
+   "Toy.Modality.den_antitone",
+   "Toy.Modality.den_sup_iff"
+  ],
+  "lean_names": [
+   "Toy.Modality.den",
+   "Toy.Modality.atomSat",
+   "Toy.Modality.Trace",
+   "Toy.Modality.Event",
+   "Toy.Modality.Tag",
+   "Toy.Modality.Alloc",
+   "Toy.Modality.Alloc.contains",
+   "Toy.Modality.Alloc.covers",
+   "Toy.Modality.InRange",
+   "Toy.Modality.AccessedBy",
+   "Toy.Modality.Written",
+   "Toy.Modality.ArgInRange",
+   "Toy.Modality.Dereferenceable",
+   "Toy.Modality.NotFreedDuring",
+   "Toy.Modality.den_bot",
+   "Toy.Modality.ex_den",
+   "Toy.Modality.ex_atomSat",
+   "Toy.Modality.ex_argInRange",
+   "Toy.Modality.ex_dereferenceable",
+   "Toy.Modality.ex_notFreedDuring",
+   "Toy.Modality.tStar",
+   "Toy.Modality.tNull",
+   "Toy.Modality.wAlloc",
+   "Toy.Modality.nv_den_antitone",
+   "Toy.Modality.cex_den_antitone_ht",
+   "Toy.Modality.cex_den_antitone_le"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Immediate from the definition of the semantics; kept as a labelled reference point.",
+  "plain_claim": "For every shape `s`, modalities `m₁ m₂` and trace `t`: if `m₁ ≤ m₂` and `t ∈ ⟦m₂⟧` (`den s m₂ t`), then `t ∈ ⟦m₁⟧`; and (`den_sup_iff`) `t ∈ ⟦Mod.sup m₁ m₂⟧` iff `t ∈ ⟦m₁⟧` and `t ∈ ⟦m₂⟧`. `den s m t` is the conjunction of the trace meanings `atomSat s a t` of the atoms `a` of `m`, with no further condition (`den_bot`: every trace is in `⟦Mod.bot⟧`).",
+  "hypotheses": [
+   {
+    "name": "h (den_antitone) : m₁ ≤ m₂",
+    "purpose": "the weaker modality's atoms are among the stronger's",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_den_antitone_le",
+    "counterexample_class": "the one-byte shape s1, m₁ = Mod.top, m₂ = Mod.bot, t = tNull"
+   },
+   {
+    "name": "ht (den_antitone) : den s m₂ t",
+    "purpose": "the trace is permitted by the stronger modality",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_den_antitone_ht",
+    "counterexample_class": "the one-byte shape s1, m₁ = refFull, m₂ = Mod.top, t = tNull"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "`nv_den_antitone`: `refFull ≤ Mod.top` and `tStar s1 ∈ ⟦Mod.top⟧`.",
+  "nonvacuity_witness_lean": "Toy.Modality.nv_den_antitone",
+  "non_claims": [
+   "A labelled reference point: both statements are one-step consequences of the definition of `den` and are subsumed by `den_subset_iff_le_cl`; they inform no design question on their own.",
+   "No well-formedness condition is built into `den`; in particular bounded provenance is the atom `bounded`, imposed exactly when the modality contains it.",
+   "The proofs of `den_antitone` and `den_sup_iff` do not use `Shape.size_pos` (kernel dependency audit).",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Immediate from the definitions; no source relied on."
+  ],
+  "design_question": "Is there a compositional lattice of pointer-guarantee modalities with sound per-constructor transformers?"
+ },
+ {
+  "id": "R1-closure",
+  "lean": "Toy.Modality.den_cl_iff",
+  "lean_names": [
+   "Toy.Modality.ne_zero_of_dereferenceable",
+   "Toy.Modality.nv_den_cl",
+   "Toy.Modality.modDerefWholeOnly"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "The implications are folklore (dereferenceable implies non-null in address space 0); stated as a semantic invariance of the closure.",
+  "plain_claim": "For every shape `s`, modality `m` and trace `t`: `t ∈ ⟦cl s m⟧` iff `t ∈ ⟦m⟧`. The atoms added by closure hold on every trace of `⟦m⟧`: `derefEntry` from `derefWhole`; `nonnull` from either deref atom, because address `0` is never inside an allocation (`Alloc.covers` requires `0 < al.base ∧ al.base ≤ a`); and `aligned` when the alignment is `1`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_den_cl`: at the non-closed modality `{derefWhole}` for `s1`, `tStar s1` is in both sides and `tNull` in neither.",
+  "nonvacuity_witness_lean": "Toy.Modality.nv_den_cl",
+  "non_claims": [
+   "The proof does not use `Shape.size_pos` (kernel dependency audit). The implication `derefEntry ⇒ nonnull` holds also for zero-length coverage, because `Alloc.covers` already excludes address `0`.",
+   "Address `0` is never inside an allocation (`Alloc.contains` and `Alloc.covers` require a positive base); this is what makes `derefEntry` imply `nonnull`. Non-zero LLVM address spaces and the `null_pointer_is_valid` function attribute, under which `dereferenceable` does not imply `nonnull` (LangRef lines 1627-1631), are not modelled.",
+   "Addresses, sizes and lengths are unbounded natural numbers: `t.addr + s.size` never wraps, and address-space size and `isize::MAX` bounds are not modelled.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "LLVM LangRef at release llvmorg-23.1.6 (llvm/llvm-project commit 5b10d2d74929eae78912771222c9855af97496f4), `llvm/docs/LangRef.md`: `align` lines 1497-1505, `noalias` lines 1512-1534 (return-value semantics, \"acts like a system memory allocation function\", lines 1528-1534), `nofree` lines 1574-1588 (line 1588: \"This is not a valid attribute for return values.\"), `nonnull` lines 1609-1618, `dereferenceable(<n>)` lines 1622-1640 (lines 1627-1631: implies `nonnull` in `addrspace(0)` except with `null_pointer_is_valid`; lines 1636-1640: dereferenceability \"at the point of the attribute (i.e. on function entry for arguments or at the point of the call for return values)\"), `dereferenceable_or_null(<n>)` lines 1644-1655, `noundef` lines 1699-1703, `readonly` lines 1797-1803 (phrased for a pointer argument: \"the function does not write through this pointer argument\") (documentation)."
+  ],
+  "design_question": "Is there a compositional lattice of pointer-guarantee modalities with sound per-constructor transformers?"
+ },
+ {
+  "id": "R1-embedding",
+  "lean": [
+   "Toy.Modality.den_subset_iff_le_cl",
+   "Toy.Modality.den_subset_iff_le_of_closed"
+  ],
+  "lean_names": [
+   "Toy.Modality.cl_eq_of_den_iff",
+   "Toy.Modality.exists_den_not_atomSat_of_not_has_cl",
+   "Toy.Modality.tMis",
+   "Toy.Modality.tDangling",
+   "Toy.Modality.tFreed",
+   "Toy.Modality.tArgWrite",
+   "Toy.Modality.tForeignRead",
+   "Toy.Modality.tOutOfRange",
+   "Toy.Modality.nv_den_subset",
+   "Toy.Modality.cex_den_subset_closed"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Order embedding of a finite capability set into trace sets via independent witnesses; folklore made precise.",
+  "plain_claim": "For every positive-size shape `s` (every `Shape` has `size_pos : 0 < size`) and modalities `m₁ m₂`: every trace of `⟦m₁⟧` is in `⟦m₂⟧` iff `m₂ ≤ cl s m₁`; and (`den_subset_iff_le_of_closed`) if `m₁` is closed for `s`, then `⟦m₁⟧ ⊆ ⟦m₂⟧` iff `m₂ ≤ m₁`. For each atom outside `cl s m₁` an explicit witness trace satisfies `m₁` and violates the atom (`tMis`, `tNull`, `tDangling`, `tFreed`, `tArgWrite`, `tForeignRead`, `tOutOfRange`).",
+  "hypotheses": [
+   {
+    "name": "h : Closed s m₁ (den_subset_iff_le_of_closed)",
+    "purpose": "lets the closure be dropped from the right-hand side",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_den_subset_closed",
+    "counterexample_class": "the one-byte shape s1, m₁ = {derefEntry}, m₂ = {nonnull}"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_den_subset`: `refFull` is closed for `s1` and both sides hold for `m₂ = tRelax refFull`.",
+  "nonvacuity_witness_lean": "Toy.Modality.nv_den_subset",
+  "non_claims": [
+   "Shapes have positive size by construction (`Shape.size_pos`, a field of `Shape`), and the proof uses it (kernel dependency audit); zero-sized pointees are not representable, and these statements neither establish nor refute the corresponding claims for them.",
+   "Deallocation is not a write: `frozen` constrains writes and not frees, so `frozen` and `derefWhole` are independent atoms; models in which a free counts as a write are not examined.",
+   "The witness traces are single-call traces of this toy; nothing is claimed about which of them a real program can produce.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Order theory and abstract interpretation: Davey, Priestley, Introduction to Lattices and Order, 2nd ed., Cambridge University Press 2002, doi:10.1017/CBO9780511809088 (powerset lattices, closure operators, Galois connections); Cousot, Cousot, \"Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints\", POPL 1977, doi:10.1145/512950.512973."
+  ],
+  "design_question": "Is there a compositional lattice of pointer-guarantee modalities with sound per-constructor transformers?"
+ },
+ {
+  "id": "R1-transformers-best",
+  "lean": [
+   "Toy.Modality.kindBase_best",
+   "Toy.Modality.tRelax_best",
+   "Toy.Modality.transformers_respect_den"
+  ],
+  "lean_names": [
+   "Toy.Modality.kindRule",
+   "Toy.Modality.relaxRule",
+   "Toy.Modality.kindBase",
+   "Toy.Modality.PtrKind",
+   "Toy.Modality.tRelax",
+   "Toy.Modality.tCell",
+   "Toy.Modality.tPin",
+   "Toy.Modality.tBox",
+   "Toy.Modality.clDeref",
+   "Toy.Modality.refFull",
+   "Toy.Modality.mutFull",
+   "Toy.Modality.kindRule_iff_den",
+   "Toy.Modality.relaxRule_iff_den",
+   "Toy.Modality.cl_transformer_cl",
+   "Toy.Modality.transformers_deflationary_closed",
+   "Toy.Modality.den_transformer_of_den",
+   "Toy.Modality.kindBase_three_kinds_coincide",
+   "Toy.Modality.ex_transformers",
+   "Toy.Modality.ex_clDeref",
+   "Toy.Modality.ex_kindBase",
+   "Toy.Modality.ex_kindRule",
+   "Toy.Modality.ex_relaxRule",
+   "Toy.Modality.nv_transformers_best",
+   "Toy.Modality.nv_transformers_respect",
+   "Toy.Modality.cex_transformers_respect_h",
+   "Toy.Modality.cl_eq_of_den_iff"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "The documented per-constructor rules, transcribed as trace predicates, with the transformers shown to be their best abstraction; folklore made precise.",
+  "plain_claim": "For every positive-size shape `s` (every `Shape` has `size_pos : 0 < size`), pointer kind `k` and modality `m'`: every trace permitted by `kindRule s k` satisfies `m'` iff `m' ≤ cl s (kindBase k)`; (`tRelax_best`) for all modalities `m m'`, every trace permitted by `relaxRule s m` satisfies `m'` iff `m' ≤ cl s (tRelax m)`; and (`transformers_respect_den`) for modalities `m₁ m₂` with `⟦m₁⟧ = ⟦m₂⟧`, each of `tRelax`, `tCell`, `tPin`, `tBox` gives modalities with equal semantics. Each transformer first adds the atoms implied by `derefWhole ⇒ derefEntry ⇒ nonnull` (`clDeref`), then drops its atoms (`tRelax` keeps `aligned` and `nonnull`; `tCell` drops `frozen`, `derefWhole`, `unique`; `tPin` drops `unique`, `derefWhole`; `tBox` drops `derefWhole`).",
+  "hypotheses": [
+   {
+    "name": "h : ∀ t, den s m₁ t ↔ den s m₂ t (transformers_respect_den)",
+    "purpose": "the two inputs are semantically equal",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_transformers_respect_h",
+    "counterexample_class": "the one-byte shape s1, m₁ = Mod.bot, m₂ = refFull"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_transformers_best`: every rule permits `tStar s1` and implies the computed modality; `nv_transformers_respect`: `{derefWhole}` and its closure for `s2` are distinct with equal semantics.",
+  "nonvacuity_witness_lean": [
+   "Toy.Modality.nv_transformers_best",
+   "Toy.Modality.nv_transformers_respect"
+  ],
+  "non_claims": [
+   "`kindRule` and `relaxRule` transcribe the documented rules in terms of the atom meanings (`kindRule_iff_den`, `relaxRule_iff_den`), so both soundness and optimality of `kindBase` and `tRelax` follow from `den_subset_iff_le_cl`; they are not validated against an independent operational semantics. `kindBase_best` and `tRelax_best` follow by unfolding these transcriptions (definitional), while `transformers_respect_den` uses `cl_eq_of_den_iff` and `den_subset_iff_le_cl` (shallow); the card's depth is therefore `shallow`.",
+   "Three pointer kinds get the same base modality `{aligned, nonnull, derefEntry, bounded}` (`kindBase_three_kinds_coincide`): shared references to non-`Freeze` pointees, mutable references to non-`Unpin` pointees and boxes of non-`Unpin` pointees. The transformers `tCell`, `tPin`, `tBox` are applied in `kindBase` to `refFull` and `mutFull`.",
+   "`bounded` (bounded provenance, `ArgInRange`) is an explicit atom: `den s m` imposes it exactly when `m` contains it. The safe pointer kinds of `kindRule` carry it and `Mod.bot` (raw pointers) and `tRelax` do not; this assignment is a modelling choice of the toy, and which Rust aliasing model guarantees bounded provenance for references is not examined.",
+   "`Mod.bot` and `kindRule s .raw` impose no condition: a raw pointer may be used outside its pointee bytes.",
+   "The toy `box` kind stands for a box with the global allocator; custom allocators (rustc's `global = false`), the `box_noalias` option, unoptimized builds (rustc computes `frozen` and `unpin` as false under `OptLevel::No`), and uninhabited pointees (`MaybeDangling<&!>`, still invalid per RFC 3336) are not modelled.",
+   "Shapes have positive size by construction (`Shape.size_pos`, a field of `Shape`), and the proof uses it (kernel dependency audit); zero-sized pointees are not representable, and these statements neither establish nor refute the corresponding claims for them.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "rustc `compiler/rustc_ty_utils/src/abi.rs` at rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 339-416 (in `arg_attrs_for_rust_scalar`, lines 321-420, whose parameter `is_return`, line 327, is `arg_idx.is_none()` at the call site, lines 589 and 602, hence true for the return value): `nonnull` from the validity range (lines 339-342); `pointee_align` (when the pointee alignment exceeds 1) and `pointee_size` are recorded at lines 346-352 for every pointer with pointee information, at argument and at return position alike (no `is_return` condition; line 352: `attrs.pointee_size = pointee.size;`); `noalias` is computed at lines 366-370 as `frozen` for shared references, `unpin` for mutable references, and `unpin && global && noalias_for_box` for boxes (line 369; `noalias_for_box` is the unstable `box_noalias` option, line 358), and is not emitted in return position (lines 371-375); `nofree` for frozen shared and `unpin` mutable references, never at return position or for boxes (lines 392-410); `readonly` for frozen shared references outside return position (lines 412-415); the comments link rust-lang/rust pull 98017 and unsafe-code-guidelines issues 326, 381 and 385. This package does not examine which LLVM attributes rustc's LLVM backend emits from these recorded fields, at argument or at return position. In `compiler/rustc_middle/src/ty/layout.rs` at the same commit, `frozen` and `unpin` are false unless optimizing (line 1051: `let optimize = tcx.sess.opts.optimize != OptLevel::No;`), `unpin` also requires `is_unsafe_unpin` (lines 1065-1067 for mutable references, 1082-1084 for boxes), and the box flag `global` is `this.ty.is_box_global(tcx)` (line 1085) (source).",
+   "rustc `compiler/rustc_middle/src/ty/layout.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 1092-1104 (`MaybeDangling` arm: recurse into field 0, then `safe: None` with line 1095 \"// Mark the pointer as raw\", `size: Size::ZERO`, and line 1100 \"// Preserve the alignment assertion! That is required even inside `MaybeDangling`.\") and lines 1132-1141 (null-niche recursion: recurse into the untagged variant only if `niche_start == 0`, relying on `dereferenceable` being added only with a non-null proof and on null being aligned for all alignments) (source).",
+   "RFC 3336 (`MaybeDangling`, merged), rust-lang/rfcs@f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07 `text/3336-maybe-dangling.md` lines 94-102 (references and boxes in `P` need not be dereferenceable or follow aliasing guarantees; they still have to be non-null and aligned, and `MaybeDangling<&!>` is still invalid; `ManuallyDrop<T>` wraps `T` in a `MaybeDangling`), lines 139-148 (aliasing and liveness rules apply when values are passed in a (nested) field of a compound type, \"but not behind pointer indirections and also not for values inside a `MaybeDangling<_>`\"), lines 172-173 (below `MaybeDangling` no memory-related attributes; `aligned` still emitted). The `MaybeDangling` tracking issue https://github.com/rust-lang/rust/issues/118166 is open (documentation).",
+   "rustc `library/core/src/mem/maybe_dangling.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 6-10 (a reference wrapped in `MaybeDangling`, including in a (nested) field, does not have to follow pointer aliasing rules or be dereferenceable) and `library/core/src/mem/manually_drop.rs` lines 156-160 (`ManuallyDrop` wraps `MaybeDangling<T>`) (documentation, source).",
+   "RFC 3467 (`UnsafePinned`, merged), rust-lang/rfcs@f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07 `text/3467-unsafe-pinned.md` line 245 (`impl<T> !Unpin for UnsafePinned<T>`) and lines 364-366 (`noalias` on mutable references is tied to `UnsafeUnpin` types).",
+   "Published package `pin-structural-projection-address-stability-and-drop-guarantee` (google/zerocopy branch `reference`, commit 383075883be4fb20e686252c4c5f8c15ad161414), card `unpin-sound-iff-pinned-fields-unpin`: the `Unpin` side of mutable references to non-`Unpin` pointees.",
+   "Published package `zerocopy-trait-semantics-over-layouts-and-derive-check-soundness` (google/zerocopy branch `reference`, commit 6249da8fcc95a6f49780588838ac00f4686187bd), card `R7a-immutable-not-byte-determined`: interior mutability (the toy `Ty.freeze`) is not determined by bytes."
+  ],
+  "design_question": "Is there a compositional lattice of pointer-guarantee modalities with sound per-constructor transformers?"
+ },
+ {
+  "id": "R1-dropped-atoms",
+  "lean": "Toy.Modality.transformer_dropped_atoms_can_fail",
+  "lean_names": [],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Explicit witnesses for the documented weakenings.",
+  "plain_claim": "For every positive-size shape `s` (every `Shape` has `size_pos : 0 < size`), explicit traces permitted by the transcribed rules violate each atom that a transformer removes from the modality it is applied to: inside a relaxing wrapper a former `refFull` pointer may dangle (`tDangling s`, failing `derefEntry` and `derefWhole`), its pointee may be written (`tArgWrite s`, failing `frozen`), and it may be used just outside the pointee (`tOutOfRange s`, failing `bounded`); a former `mutFull` pointer may be read through an unrelated pointer (`tForeignRead s`, failing `unique`); for `tCell refFull` (shared reference to a non-`Freeze` pointee) the pointee may be written (failing `frozen`) and freed (`tFreed s`, failing `derefWhole`); for `tPin mutFull` (mutable reference to a non-`Unpin` pointee) it may be read through an unrelated pointer (failing `unique`) and freed (failing `derefWhole`); for `tBox mutFull` it may be freed (failing `derefWhole`); and for `tBox (tPin mutFull)` it may be read through an unrelated pointer (failing `unique`) and freed (failing `derefWhole`).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Each conjunct exhibits its trace.",
+  "nonvacuity_witness_lean": "Toy.Modality.transformer_dropped_atoms_can_fail",
+  "non_claims": [
+   "A witness corollary of `kindBase_best` and `tRelax_best`, which already give a failing trace for every atom outside the closure; this theorem names the traces.",
+   "Atoms that a modality never had are not \"dropped\": `refFull` has no `unique` (shared references permit concurrent reads), so `tCell` removing `unique` from it changes nothing.",
+   "Shapes have positive size by construction (`Shape.size_pos`, a field of `Shape`), and the proof uses it (kernel dependency audit); zero-sized pointees are not representable, and these statements neither establish nor refute the corresponding claims for them.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "rustc `compiler/rustc_ty_utils/src/abi.rs` at rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 339-416 (in `arg_attrs_for_rust_scalar`, lines 321-420, whose parameter `is_return`, line 327, is `arg_idx.is_none()` at the call site, lines 589 and 602, hence true for the return value): `nonnull` from the validity range (lines 339-342); `pointee_align` (when the pointee alignment exceeds 1) and `pointee_size` are recorded at lines 346-352 for every pointer with pointee information, at argument and at return position alike (no `is_return` condition; line 352: `attrs.pointee_size = pointee.size;`); `noalias` is computed at lines 366-370 as `frozen` for shared references, `unpin` for mutable references, and `unpin && global && noalias_for_box` for boxes (line 369; `noalias_for_box` is the unstable `box_noalias` option, line 358), and is not emitted in return position (lines 371-375); `nofree` for frozen shared and `unpin` mutable references, never at return position or for boxes (lines 392-410); `readonly` for frozen shared references outside return position (lines 412-415); the comments link rust-lang/rust pull 98017 and unsafe-code-guidelines issues 326, 381 and 385. This package does not examine which LLVM attributes rustc's LLVM backend emits from these recorded fields, at argument or at return position. In `compiler/rustc_middle/src/ty/layout.rs` at the same commit, `frozen` and `unpin` are false unless optimizing (line 1051: `let optimize = tcx.sess.opts.optimize != OptLevel::No;`), `unpin` also requires `is_unsafe_unpin` (lines 1065-1067 for mutable references, 1082-1084 for boxes), and the box flag `global` is `this.ty.is_box_global(tcx)` (line 1085) (source).",
+   "RFC 3336 (`MaybeDangling`, merged), rust-lang/rfcs@f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07 `text/3336-maybe-dangling.md` lines 94-102 (references and boxes in `P` need not be dereferenceable or follow aliasing guarantees; they still have to be non-null and aligned, and `MaybeDangling<&!>` is still invalid; `ManuallyDrop<T>` wraps `T` in a `MaybeDangling`), lines 139-148 (aliasing and liveness rules apply when values are passed in a (nested) field of a compound type, \"but not behind pointer indirections and also not for values inside a `MaybeDangling<_>`\"), lines 172-173 (below `MaybeDangling` no memory-related attributes; `aligned` still emitted). The `MaybeDangling` tracking issue https://github.com/rust-lang/rust/issues/118166 is open (documentation)."
+  ],
+  "design_question": "Is there a compositional lattice of pointer-guarantee modalities with sound per-constructor transformers?"
+ },
+ {
+  "id": "R2-comp-iff",
+  "lean": [
+   "Toy.Modality.compSound_iff_transformerSound_and_deep",
+   "Toy.Modality.compSound_on_docTy_not_imply_transformerSound"
+  ],
+  "lean_names": [
+   "Toy.Modality.Ty",
+   "Toy.Modality.Wrap",
+   "Toy.Modality.Wrap.relaxes",
+   "Toy.Modality.Step",
+   "Toy.Modality.Path",
+   "Toy.Modality.leafAt",
+   "Toy.Modality.relaxedOn",
+   "Toy.Modality.comp",
+   "Toy.Modality.reqAux",
+   "Toy.Modality.req",
+   "Toy.Modality.TransformerSound",
+   "Toy.Modality.CompSound",
+   "Toy.Modality.Ty.isPtr",
+   "Toy.Modality.transformerSound_iff_le_tRelax",
+   "Toy.Modality.comp_deep_inv",
+   "Toy.Modality.comp_eq_some_leaf",
+   "Toy.Modality.reqAux_eq",
+   "Toy.Modality.DocTy",
+   "Toy.Modality.DocTy.leaf_kindBase",
+   "Toy.Modality.modFrozenOnly",
+   "Toy.Modality.tRelaxExceptFrozenOnly",
+   "Toy.Modality.refTy",
+   "Toy.Modality.mutRefTy",
+   "Toy.Modality.boxTy",
+   "Toy.Modality.rawTy",
+   "Toy.Modality.Ty.freeze",
+   "Toy.Modality.Ty.unpin",
+   "Toy.Modality.compSound_const_bot",
+   "Toy.Modality.ex_comp_req",
+   "Toy.Modality.ex_transformerSound",
+   "Toy.Modality.ex_compSound",
+   "Toy.Modality.ex_docTy",
+   "Toy.Modality.ex_wrap_relaxes",
+   "Toy.Modality.ex_freeze_unpin",
+   "Toy.Modality.ex_pointer_constructors",
+   "Toy.Modality.ex_leafAt_relaxedOn",
+   "Toy.Modality.nv_compSound",
+   "Toy.Modality.s1",
+   "Toy.Modality.transformerSound_tRelax_comp_cl_s2",
+   "Toy.Modality.cex_comp_deep",
+   "Toy.Modality.cex_comp_transformer"
+  ],
+  "kind": "characterization",
+  "tier": "T2",
+  "tier_justification": "The documented deep-relaxation rule as a necessary and sufficient condition over all relaxing transformers.",
+  "plain_claim": "For every relaxing transformer `T : Mod → Mod` and flag `deep`, the bottom-up computation `comp T deep` is sound against the top-down reference semantics `req` at every pointer leaf of every type — pointer leaves `Ty.ptr s m` of every positive-size shape (every `Shape` has `size_pos : 0 < size`) and every modality included — iff `T` is sound (`TransformerSound T`, equivalently `∀ m, T m ≤ tRelax m` by `transformerSound_iff_le_tRelax`) and `deep = true`. Restricted to types built from the four documented pointer constructors (`DocTy`), the \"only if\" for `T` fails (`compSound_on_docTy_not_imply_transformerSound`: with `tRelaxExceptFrozenOnly` the deep computation is sound on every `DocTy` type and the transformer is not sound).",
+  "hypotheses": [
+   {
+    "name": "TransformerSound T (right-hand side, ← direction)",
+    "purpose": "the relaxing transformer must not keep atoms `tRelax` drops",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_comp_transformer",
+    "counterexample_class": "the identity transformer with deep = true"
+   },
+   {
+    "name": "deep = true (right-hand side, ← direction)",
+    "purpose": "relaxation must reach nested pointer leaves",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_comp_deep",
+    "counterexample_class": "the documented transformer tRelax with deep = false"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_compSound`: both sides hold for `tRelax` with `deep = true`.",
+  "nonvacuity_witness_lean": "Toy.Modality.nv_compSound",
+  "non_claims": [
+   "`Ty.ptr s m` is a leaf whose pointee type is erased: `comp` and `req` model by-value nesting (pairs and wrappers) and say nothing about pointers reached behind a pointer indirection (for example the inner reference of `MaybeDangling<&&mut T>`).",
+   "`deep` compares two propagation modes, the wrapper's immediate pointer content (`deep = false`) and every by-value pointer leaf below it (`deep = true`); depth-bounded or wrapper-selective strategies are not examined.",
+   "Soundness is not precision: `fun _ => Mod.bot` is a sound transformer and its deep computation is sound (`compSound_const_bot`).",
+   "`TransformerSound` is a semantic condition: the relaxer `fun m => tRelax (cl s2 m)`, which closes for `s2` before relaxing, equals `tRelax` and is sound (`transformerSound_tRelax_comp_cl_s2`).",
+   "Once `TransformerSound T` is reduced to `∀ m, T m ≤ tRelax m`, the ← direction is a structural induction over types; the depth label is `shallow`.",
+   "No enums or unions are part of the type language.",
+   "Shapes have positive size by construction (`Shape.size_pos`, a field of `Shape`), and the proof uses it (kernel dependency audit); zero-sized pointees are not representable, and these statements neither establish nor refute the corresponding claims for them.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "RFC 3336 (`MaybeDangling`, merged), rust-lang/rfcs@f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07 `text/3336-maybe-dangling.md` lines 94-102 (references and boxes in `P` need not be dereferenceable or follow aliasing guarantees; they still have to be non-null and aligned, and `MaybeDangling<&!>` is still invalid; `ManuallyDrop<T>` wraps `T` in a `MaybeDangling`), lines 139-148 (aliasing and liveness rules apply when values are passed in a (nested) field of a compound type, \"but not behind pointer indirections and also not for values inside a `MaybeDangling<_>`\"), lines 172-173 (below `MaybeDangling` no memory-related attributes; `aligned` still emitted). The `MaybeDangling` tracking issue https://github.com/rust-lang/rust/issues/118166 is open (documentation).",
+   "rustc `library/core/src/mem/maybe_dangling.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 6-10 (a reference wrapped in `MaybeDangling`, including in a (nested) field, does not have to follow pointer aliasing rules or be dereferenceable) and `library/core/src/mem/manually_drop.rs` lines 156-160 (`ManuallyDrop` wraps `MaybeDangling<T>`) (documentation, source).",
+   "RFC 1860 (`ManuallyDrop`, merged), rust-lang/rfcs@f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07 `text/1860-manually-drop.md` lines 54-60 (the `ManuallyDrop<T>` wrapper struct).",
+   "rustc `compiler/rustc_middle/src/ty/layout.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 1092-1104 (`MaybeDangling` arm: recurse into field 0, then `safe: None` with line 1095 \"// Mark the pointer as raw\", `size: Size::ZERO`, and line 1100 \"// Preserve the alignment assertion! That is required even inside `MaybeDangling`.\") and lines 1132-1141 (null-niche recursion: recurse into the untagged variant only if `niche_start == 0`, relying on `dereferenceable` being added only with a non-null proof and on null being aligned for all alignments) (source)."
+  ],
+  "design_question": "Is there a compositional lattice of pointer-guarantee modalities with sound per-constructor transformers?"
+ },
+ {
+  "id": "R2-shallow-cex",
+  "lean": "Toy.Modality.shallow_relaxer_leaves_nested_promises",
+  "lean_names": [
+   "Toy.Modality.tyNestedMD",
+   "Toy.Modality.pathNestedMD",
+   "Toy.Modality.den_tRelax_tDangling",
+   "Toy.Modality.den_tRelax_tForeignRead"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "A concrete instance of the documented nested-field rule.",
+  "plain_claim": "For every positive-size shape `s` (every `Shape` has `size_pos : 0 < size`), in `tyNestedMD s` (`MaybeDangling<(Wrapper(&mut T), u8)>`), the shallow computation with any relaxing transformer `T` gives the nested `&mut T` leaf (path `pathNestedMD`) the full modality `mutFull` (with `derefEntry` and `unique`), while the reference requirement is `tRelax mutFull`; the dangling trace `tDangling s` and the foreign-read trace `tForeignRead s` satisfy the requirement and violate `derefEntry`, respectively `unique`.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The theorem exhibits both traces.",
+  "nonvacuity_witness_lean": "Toy.Modality.shallow_relaxer_leaves_nested_promises",
+  "non_claims": [
+   "The witness used by the `deep = true` direction of `compSound_iff_transformerSound_and_deep`, stated separately to name the type and traces.",
+   "The nesting is by value (a field of a pair inside the wrapper); pointers behind a pointer indirection are not modelled.",
+   "Shapes have positive size by construction (`Shape.size_pos`, a field of `Shape`), and the proof uses it (kernel dependency audit); zero-sized pointees are not representable, and these statements neither establish nor refute the corresponding claims for them.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "RFC 3336 (`MaybeDangling`, merged), rust-lang/rfcs@f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07 `text/3336-maybe-dangling.md` lines 94-102 (references and boxes in `P` need not be dereferenceable or follow aliasing guarantees; they still have to be non-null and aligned, and `MaybeDangling<&!>` is still invalid; `ManuallyDrop<T>` wraps `T` in a `MaybeDangling`), lines 139-148 (aliasing and liveness rules apply when values are passed in a (nested) field of a compound type, \"but not behind pointer indirections and also not for values inside a `MaybeDangling<_>`\"), lines 172-173 (below `MaybeDangling` no memory-related attributes; `aligned` still emitted). The `MaybeDangling` tracking issue https://github.com/rust-lang/rust/issues/118166 is open (documentation).",
+   "rustc `library/core/src/mem/maybe_dangling.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 6-10 (a reference wrapped in `MaybeDangling`, including in a (nested) field, does not have to follow pointer aliasing rules or be dereferenceable) and `library/core/src/mem/manually_drop.rs` lines 156-160 (`ManuallyDrop` wraps `MaybeDangling<T>`) (documentation, source)."
+  ],
+  "design_question": "Is there a compositional lattice of pointer-guarantee modalities with sound per-constructor transformers?"
+ },
+ {
+  "id": "R2-documented-exact",
+  "lean": "Toy.Modality.comp_tRelax_deep_eq_req",
+  "lean_names": [
+   "Toy.Modality.comp_tRelax_deep_eq_leaf",
+   "Toy.Modality.tRelax_tRelax"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "The documented computation coincides with the reference semantics; folklore made precise.",
+  "plain_claim": "For every type `τ` and path `p`, `comp tRelax true τ p = req τ p`: the documented deep computation equals the reference requirement at every path.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`ex_comp_req`: both sides are `some (s1, tRelax mutFull)` at the nested leaf of `tyNestedMD s1`.",
+  "nonvacuity_witness_lean": "Toy.Modality.ex_comp_req",
+  "non_claims": [
+   "Relies on `tRelax` being idempotent (`tRelax_tRelax`): `comp tRelax true` applies `tRelax` once per enclosing relaxing wrapper, while `req`, whose definition fixes the weakening to `tRelax`, applies it once when at least one relaxing wrapper encloses the leaf. `req` is not parameterized by a transformer; for a non-idempotent transformer `T`, `comp T true` would differ from a requirement that applies `T` once at nested relaxing wrappers (not proved here).",
+   "Nesting is by value; pointers behind a pointer indirection are not modelled.",
+   "The proof does not use `Shape.size_pos` (kernel dependency audit).",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "RFC 3336 (`MaybeDangling`, merged), rust-lang/rfcs@f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07 `text/3336-maybe-dangling.md` lines 94-102 (references and boxes in `P` need not be dereferenceable or follow aliasing guarantees; they still have to be non-null and aligned, and `MaybeDangling<&!>` is still invalid; `ManuallyDrop<T>` wraps `T` in a `MaybeDangling`), lines 139-148 (aliasing and liveness rules apply when values are passed in a (nested) field of a compound type, \"but not behind pointer indirections and also not for values inside a `MaybeDangling<_>`\"), lines 172-173 (below `MaybeDangling` no memory-related attributes; `aligned` still emitted). The `MaybeDangling` tracking issue https://github.com/rust-lang/rust/issues/118166 is open (documentation)."
+  ],
+  "design_question": "Is there a compositional lattice of pointer-guarantee modalities with sound per-constructor transformers?"
+ },
+ {
+  "id": "R3-lower-sound",
+  "lean": "Toy.Modality.lower_sound",
+  "lean_names": [
+   "Toy.Modality.lower",
+   "Toy.Modality.Attr",
+   "Toy.Modality.AttrSet",
+   "Toy.Modality.AttrSet.has",
+   "Toy.Modality.Pos",
+   "Toy.Modality.Pos.isArg",
+   "Toy.Modality.attrSat",
+   "Toy.Modality.gammaSet",
+   "Toy.Modality.DereferenceableAtReturn",
+   "Toy.Modality.ex_attrSat",
+   "Toy.Modality.ex_lower",
+   "Toy.Modality.ex_gammaSet",
+   "Toy.Modality.nv_lower",
+   "Toy.Modality.dereferenceableAtReturn_iff_atomSat_derefWhole",
+   "Toy.Modality.lower_dereferenceable_eq",
+   "Toy.Modality.cex_lower_sound_ht"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Each attribute condition is documented engineering; stated as one soundness theorem for call-entry modalities at both positions.",
+  "plain_claim": "For every shape `s`, position `pos` (argument or return), modality `m` and trace `t` with `t ∈ ⟦m⟧`, `t` satisfies every attribute of `lower s pos m` at `pos` (`⟦m⟧ ⊆ γ(α m)`). The modality `m` is a call-entry modality (promises about a pointer that exists at call entry, at entry and over the call); at `pos = .arg` the attributes are argument attributes (`dereferenceable` evaluated at call entry; `noalias`, `nofree` and `readonly` over the call), and at `pos = .ret` they are return-value attributes evaluated at the return point by `attrSat s .ret` on the same trace, that is, for that pointer when it is returned; `lower s .ret m` is not a lowering of a returned value's own validity invariant at the return point. From the closure `cl s m`, `lower` emits `align` from `aligned` and `nonnull` from `nonnull`; `dereferenceable` and `dereferenceable_or_null` from `derefEntry` at argument position and from `derefWhole` (covered at call entry and not freed during the call) at return position; and at argument position `noalias` from `bounded` together with `frozen` or `unique`, `nofree` from `derefWhole`, and `readonly` from `bounded` together with `frozen`.",
+  "hypotheses": [
+   {
+    "name": "ht : den s m t",
+    "purpose": "the trace is one the modality permits",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_lower_sound_ht",
+    "counterexample_class": "the one-byte shape s1, m = refFull, the trace tFreed s1"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_lower`: `tStar s1 ∈ ⟦refFull⟧`.",
+  "nonvacuity_witness_lean": "Toy.Modality.nv_lower",
+  "non_claims": [
+   "The attribute meanings are the toy's LangRef-style readings in which every violation is undefined behaviour (LLVM's `align` and `nonnull` yield poison unless combined with `noundef`).",
+   "`frozen` and `unique` constrain the pointee bytes, while argument `noalias` and `readonly` constrain every address accessed through the argument; `lower` requires `bounded` for them, and without `bounded` they are unsound (`stronger_arg_lowerings_counterexamples`, `tOutOfRange s`).",
+   "`dereferenceable` is evaluated at the point of the attribute: call entry for an argument (`Dereferenceable`) and the return point for a return value (`DereferenceableAtReturn`: covered at call entry and no containing allocation freed during the call, which is definitionally the atom `derefWhole` by `dereferenceableAtReturn_iff_atomSat_derefWhole`; hence `lower s .ret m` contains `dereferenceable` exactly when `cl s m` contains `derefWhole`, `lower_dereferenceable_eq`). Allocations created during the call are not represented, so a freshly allocated return value is not expressible.",
+   "Program points: every `Mod` is a call-entry modality of a pointer that exists at call entry (promises at call entry and over the call; see `Atom`). `lower s .ret m` is the set of return-value attributes, evaluated at the return point by `attrSat s .ret`, to which a pointer carrying the call-entry modality `m` is entitled when it is returned (for example an argument returned unchanged). It is not a lowering of the validity invariant that a returned value has at the return point, which the toy does not represent (the Rust Reference requires a reference or `Box<T>` to be non-dangling whenever it is produced, including when it is returned; see Prior art). In particular, the absence of `dereferenceable` from `lower s .ret (kindBase k)` for `k` among `.shared false`, `.mutRef false`, `.box true`, `.box false` (`kindBase_ret_lowering_dereferenceable_by_kind`) records that call-entry dereferenceability of such a pointer does not survive a free during the call (`entry_deref_of_tCell_refFull_not_sound_at_return`); it does not say that a value returned at type `&UnsafeCell<T>`, `&mut T` with `T: !Unpin`, or `Box<T>` may fail to be dereferenceable at the return point.",
+   "The toy's `lower s .ret` is not a model of the attributes rustc attaches to return values. At rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe, `arg_attrs_for_rust_scalar` records `pointee_size` for return values as for arguments (`compiler/rustc_ty_utils/src/abi.rs` lines 346-352, no `is_return` condition); this package does not examine which LLVM attributes rustc's LLVM backend emits from that field, at return position or elsewhere. These statements neither establish nor refute the corresponding claims about which attributes rustc attaches to return values.",
+   "LangRef states that `nofree` is not a valid attribute for return values (line 1588) and phrases `readonly` for a pointer argument; the toy reads both as never satisfied at return position (a modelling choice, not a LangRef rule for `readonly`). Return `noalias` is the toy reading \"no pointee byte is accessed through an unrelated pointer after the return\" of LangRef's allocation-like return semantics; no atom constrains events after the return.",
+   "Address `0` is never inside an allocation (`Alloc.contains` and `Alloc.covers` require a positive base); this is what makes `derefEntry` imply `nonnull`. Non-zero LLVM address spaces and the `null_pointer_is_valid` function attribute, under which `dereferenceable` does not imply `nonnull` (LangRef lines 1627-1631), are not modelled.",
+   "The proof does not use `Shape.size_pos` (kernel dependency audit).",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "LLVM LangRef at release llvmorg-23.1.6 (llvm/llvm-project commit 5b10d2d74929eae78912771222c9855af97496f4), `llvm/docs/LangRef.md`: `align` lines 1497-1505, `noalias` lines 1512-1534 (return-value semantics, \"acts like a system memory allocation function\", lines 1528-1534), `nofree` lines 1574-1588 (line 1588: \"This is not a valid attribute for return values.\"), `nonnull` lines 1609-1618, `dereferenceable(<n>)` lines 1622-1640 (lines 1627-1631: implies `nonnull` in `addrspace(0)` except with `null_pointer_is_valid`; lines 1636-1640: dereferenceability \"at the point of the attribute (i.e. on function entry for arguments or at the point of the call for return values)\"), `dereferenceable_or_null(<n>)` lines 1644-1655, `noundef` lines 1699-1703, `readonly` lines 1797-1803 (phrased for a pointer argument: \"the function does not write through this pointer argument\") (documentation).",
+   "rustc `compiler/rustc_ty_utils/src/abi.rs` at rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 339-416 (in `arg_attrs_for_rust_scalar`, lines 321-420, whose parameter `is_return`, line 327, is `arg_idx.is_none()` at the call site, lines 589 and 602, hence true for the return value): `nonnull` from the validity range (lines 339-342); `pointee_align` (when the pointee alignment exceeds 1) and `pointee_size` are recorded at lines 346-352 for every pointer with pointee information, at argument and at return position alike (no `is_return` condition; line 352: `attrs.pointee_size = pointee.size;`); `noalias` is computed at lines 366-370 as `frozen` for shared references, `unpin` for mutable references, and `unpin && global && noalias_for_box` for boxes (line 369; `noalias_for_box` is the unstable `box_noalias` option, line 358), and is not emitted in return position (lines 371-375); `nofree` for frozen shared and `unpin` mutable references, never at return position or for boxes (lines 392-410); `readonly` for frozen shared references outside return position (lines 412-415); the comments link rust-lang/rust pull 98017 and unsafe-code-guidelines issues 326, 381 and 385. This package does not examine which LLVM attributes rustc's LLVM backend emits from these recorded fields, at argument or at return position. In `compiler/rustc_middle/src/ty/layout.rs` at the same commit, `frozen` and `unpin` are false unless optimizing (line 1051: `let optimize = tcx.sess.opts.optimize != OptLevel::No;`), `unpin` also requires `is_unsafe_unpin` (lines 1065-1067 for mutable references, 1082-1084 for boxes), and the box flag `global` is `this.ty.is_box_global(tcx)` (line 1085) (source).",
+   "The Rust Reference at rust-lang/reference@c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, `src/behavior-considered-undefined.md`: producing an invalid value is undefined behaviour, and line 59 reads `\"Producing\" a value happens any time a value is assigned to or read from a place, passed to a function/primitive operation or returned from a function/primitive operation.`; line 152 requires a reference or `Box<T>` to be aligned and non-null and not dangling, and line 104 calls a reference dangling if not all of the bytes it points to are part of the same live allocation (documentation). This is the validity invariant of a returned reference or box at the return point, which the toy does not represent.",
+   "Formal treatments of LLVM IR semantics and attributes (not re-modelled): Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes, \"Taming Undefined Behavior in LLVM\", PLDI 2017, doi:10.1145/3062341.3062343 (poison versus immediate undefined behaviour, relevant to `align`/`nonnull` without `noundef`); Lopes, Lee, Hur, Liu, Regehr, \"Alive2: Bounded Translation Validation for LLVM\", PLDI 2021, doi:10.1145/3453483.3454030."
+  ],
+  "design_question": "Is the lowering of modalities to IR parameter attributes a sound and best abstraction?"
+ },
+ {
+  "id": "R3-lower-best",
+  "lean": [
+   "Toy.Modality.lower_best_iff",
+   "Toy.Modality.lower_unique"
+  ],
+  "lean_names": [
+   "Toy.Modality.exists_den_not_attrSat_of_not_has_lower",
+   "Toy.Modality.tConflict",
+   "Toy.Modality.tReadAfter",
+   "Toy.Modality.AttrSet.insert",
+   "Toy.Modality.AttrSet.ext_has",
+   "Toy.Modality.cex_lower_unique_best",
+   "Toy.Modality.cex_lower_unique_sound"
+  ],
+  "kind": "characterization",
+  "tier": "T2",
+  "tier_justification": "Known attribute conditions restated as a best-abstraction characterization over all attribute sets.",
+  "plain_claim": "For every positive-size shape `s` (every `Shape` has `size_pos : 0 < size`), position `pos`, modality `m` and attribute set `A`: every trace of `⟦m⟧` satisfies `A` at `pos` iff `A ≤ lower s pos m`; and (`lower_unique`) an attribute set `A` that is sound for `⟦m⟧` at `pos` and contains every attribute set sound for `⟦m⟧` at `pos` equals `lower s pos m`. The modality `m` is a call-entry modality, so at `pos = .ret` `lower s .ret m` is the largest set of return-value attributes, evaluated at the return point by `attrSat s .ret`, that the call-entry modality `m` justifies for a pointer carrying it when it is returned; it is not the best lowering of a returned value's validity invariant at the return point, which the toy does not represent.",
+  "hypotheses": [
+   {
+    "name": "hs (lower_unique) : ∀ t, den s m t → gammaSet s pos A t",
+    "purpose": "excludes over-large sets",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_lower_unique_sound",
+    "counterexample_class": "the one-byte shape s1, m = tCell refFull, A = all seven attributes"
+   },
+   {
+    "name": "hb (lower_unique) : ∀ B, (∀ t, den s m t → gammaSet s pos B t) → B ≤ A",
+    "purpose": "excludes under-large sets",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_lower_unique_best",
+    "counterexample_class": "the one-byte shape s1, m = refFull, A = the empty set"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_lower`: `A = lower s1 .arg refFull` satisfies both hypotheses of `lower_unique`.",
+  "nonvacuity_witness_lean": "Toy.Modality.nv_lower",
+  "non_claims": [
+   "'Best' is relative to the seven modelled attributes and their toy meanings.",
+   "`align` is included whenever the closure contains `aligned`, including alignment 1 where it is trivially true (LangRef lines 1497-1505: `align 1` has no effect on non-byval, non-preallocated arguments); `dereferenceable` and `dereferenceable_or_null` are both included when the deref condition holds although the first implies the second. Which attributes rustc emits, and under which conditions (for example `align` values, `dereferenceable(n)` versus `dereferenceable_or_null(n)`, `noundef`, `captures(...)`, `writable`), is neither modelled nor examined here.",
+   "At return position the best lowering never contains `noalias` (no atom constrains events after the return), `nofree` or `readonly` (never satisfied there), and contains `dereferenceable` exactly when the closure of the call-entry modality contains `derefWhole` (`lower_dereferenceable_eq`); for the base modalities of the six safe pointer kinds, `lower s .ret (kindBase k)` lacks `dereferenceable` for `k` = `.shared false`, `.mutRef false`, `.box true`, `.box false` and contains it for `.shared true`, `.mutRef true` (`kindBase_ret_lowering_dereferenceable_by_kind`).",
+   "Program points: every `Mod` is a call-entry modality of a pointer that exists at call entry (promises at call entry and over the call; see `Atom`). `lower s .ret m` is the set of return-value attributes, evaluated at the return point by `attrSat s .ret`, to which a pointer carrying the call-entry modality `m` is entitled when it is returned (for example an argument returned unchanged). It is not a lowering of the validity invariant that a returned value has at the return point, which the toy does not represent (the Rust Reference requires a reference or `Box<T>` to be non-dangling whenever it is produced, including when it is returned; see Prior art). In particular, the absence of `dereferenceable` from `lower s .ret (kindBase k)` for `k` among `.shared false`, `.mutRef false`, `.box true`, `.box false` (`kindBase_ret_lowering_dereferenceable_by_kind`) records that call-entry dereferenceability of such a pointer does not survive a free during the call (`entry_deref_of_tCell_refFull_not_sound_at_return`); it does not say that a value returned at type `&UnsafeCell<T>`, `&mut T` with `T: !Unpin`, or `Box<T>` may fail to be dereferenceable at the return point.",
+   "The toy's `lower s .ret` is not a model of the attributes rustc attaches to return values. At rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe, `arg_attrs_for_rust_scalar` records `pointee_size` for return values as for arguments (`compiler/rustc_ty_utils/src/abi.rs` lines 346-352, no `is_return` condition); this package does not examine which LLVM attributes rustc's LLVM backend emits from that field, at return position or elsewhere. These statements neither establish nor refute the corresponding claims about which attributes rustc attaches to return values.",
+   "`frozen` and `unique` constrain the pointee bytes, while argument `noalias` and `readonly` constrain every address accessed through the argument; `lower` requires `bounded` for them, and without `bounded` they are unsound (`stronger_arg_lowerings_counterexamples`, `tOutOfRange s`).",
+   "Address `0` is never inside an allocation (`Alloc.contains` and `Alloc.covers` require a positive base); this is what makes `derefEntry` imply `nonnull`. Non-zero LLVM address spaces and the `null_pointer_is_valid` function attribute, under which `dereferenceable` does not imply `nonnull` (LangRef lines 1627-1631), are not modelled.",
+   "Shapes have positive size by construction (`Shape.size_pos`, a field of `Shape`), and the proof uses it (kernel dependency audit); zero-sized pointees are not representable, and these statements neither establish nor refute the corresponding claims for them.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "LLVM LangRef at release llvmorg-23.1.6 (llvm/llvm-project commit 5b10d2d74929eae78912771222c9855af97496f4), `llvm/docs/LangRef.md`: `align` lines 1497-1505, `noalias` lines 1512-1534 (return-value semantics, \"acts like a system memory allocation function\", lines 1528-1534), `nofree` lines 1574-1588 (line 1588: \"This is not a valid attribute for return values.\"), `nonnull` lines 1609-1618, `dereferenceable(<n>)` lines 1622-1640 (lines 1627-1631: implies `nonnull` in `addrspace(0)` except with `null_pointer_is_valid`; lines 1636-1640: dereferenceability \"at the point of the attribute (i.e. on function entry for arguments or at the point of the call for return values)\"), `dereferenceable_or_null(<n>)` lines 1644-1655, `noundef` lines 1699-1703, `readonly` lines 1797-1803 (phrased for a pointer argument: \"the function does not write through this pointer argument\") (documentation).",
+   "rustc `compiler/rustc_ty_utils/src/abi.rs` at rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 339-416 (in `arg_attrs_for_rust_scalar`, lines 321-420, whose parameter `is_return`, line 327, is `arg_idx.is_none()` at the call site, lines 589 and 602, hence true for the return value): `nonnull` from the validity range (lines 339-342); `pointee_align` (when the pointee alignment exceeds 1) and `pointee_size` are recorded at lines 346-352 for every pointer with pointee information, at argument and at return position alike (no `is_return` condition; line 352: `attrs.pointee_size = pointee.size;`); `noalias` is computed at lines 366-370 as `frozen` for shared references, `unpin` for mutable references, and `unpin && global && noalias_for_box` for boxes (line 369; `noalias_for_box` is the unstable `box_noalias` option, line 358), and is not emitted in return position (lines 371-375); `nofree` for frozen shared and `unpin` mutable references, never at return position or for boxes (lines 392-410); `readonly` for frozen shared references outside return position (lines 412-415); the comments link rust-lang/rust pull 98017 and unsafe-code-guidelines issues 326, 381 and 385. This package does not examine which LLVM attributes rustc's LLVM backend emits from these recorded fields, at argument or at return position. In `compiler/rustc_middle/src/ty/layout.rs` at the same commit, `frozen` and `unpin` are false unless optimizing (line 1051: `let optimize = tcx.sess.opts.optimize != OptLevel::No;`), `unpin` also requires `is_unsafe_unpin` (lines 1065-1067 for mutable references, 1082-1084 for boxes), and the box flag `global` is `this.ty.is_box_global(tcx)` (line 1085) (source).",
+   "The Rust Reference at rust-lang/reference@c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, `src/behavior-considered-undefined.md`: producing an invalid value is undefined behaviour, and line 59 reads `\"Producing\" a value happens any time a value is assigned to or read from a place, passed to a function/primitive operation or returned from a function/primitive operation.`; line 152 requires a reference or `Box<T>` to be aligned and non-null and not dangling, and line 104 calls a reference dangling if not all of the bytes it points to are part of the same live allocation (documentation). This is the validity invariant of a returned reference or box at the return point, which the toy does not represent.",
+   "Published package `galois-connections-best-abstract-transformers-and-fixpoint-transfer` (google/zerocopy branch `reference`, commit a0dca4883c555805181f8149eafd7e65ab238991), cards `R1-gc-iff` (characterization of the Galois-connection notion, stated for a reflexive and transitive abstract order), `R2-best-sound` and `R2-best-least` (best abstract transformers): cited, not re-proved; its `GaloisConnection` and `Pred` definitions are copied into the module `Toy.Modality.Imported`.",
+   "Published package `aliasing-models-and-reference-based-optimizations` (google/zerocopy branch `reference`, commit 62e8715787fde13fecdffe87b22f5700a96af019), cards `R1a-read-elim-mut-unpassed` and `R2a-read-elim-shared-ro`: toy justifications of reference-based optimizations; used as justification for `noalias`, not re-modelled.",
+   "Semantic justifications of `noalias` for references (not re-modelled): Jung, Jourdan, Krebbers, Dreyer, \"RustBelt\", POPL 2018, doi:10.1145/3158154; Jung, Dang, Kang, Dreyer, \"Stacked Borrows\", POPL 2020, doi:10.1145/3371109; Villani, Hostert, Dreyer, Jung, \"Tree Borrows\", PLDI 2025, doi:10.1145/3735592.",
+   "Formal treatments of LLVM IR semantics and attributes (not re-modelled): Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes, \"Taming Undefined Behavior in LLVM\", PLDI 2017, doi:10.1145/3062341.3062343 (poison versus immediate undefined behaviour, relevant to `align`/`nonnull` without `noundef`); Lopes, Lee, Hur, Liu, Regehr, \"Alive2: Bounded Translation Validation for LLVM\", PLDI 2021, doi:10.1145/3453483.3454030.",
+   "Novelty search (web search for mechanized lowerings of Rust pointer guarantees to LLVM parameter attributes, best-abstraction lowerings, and SROA preconditions for relaxing wrappers) found no mechanized statement of this form; tier kept below T3."
+  ],
+  "design_question": "Is the lowering of modalities to IR parameter attributes a sound and best abstraction?"
+ },
+ {
+  "id": "R3-galois",
+  "lean": [
+   "Toy.Modality.alphaSet_gammaDual_galois_and_lower_eq_alphaSet_den",
+   "Toy.Modality.polarity_galois",
+   "Toy.Modality.lower_no_left_adjoint_and_arg_no_right_adjoint"
+  ],
+  "lean_names": [
+   "Toy.Modality.AttrDual",
+   "Toy.Modality.alphaOf",
+   "Toy.Modality.gammaOf",
+   "Toy.Modality.alphaSet",
+   "Toy.Modality.gammaDual",
+   "Toy.Modality.denP",
+   "Toy.Modality.alphaOf_has",
+   "Toy.Modality.alphaSet_has",
+   "Toy.Modality.attrDual_le_refl_trans",
+   "Toy.Modality.attrsNoalias",
+   "Toy.Modality.modFrozenBounded",
+   "Toy.Modality.modUniqueBounded",
+   "Toy.Modality.ex_galois_defs",
+   "Toy.Modality.Imported.Pred",
+   "Toy.Modality.Imported.instLEPred",
+   "Toy.Modality.Imported.GaloisConnection",
+   "Toy.Modality.lower_arg_no_right_adjoint_on_closed",
+   "Toy.Modality.retRightAdjoint",
+   "Toy.Modality.lower_ret_right_adjoint_of_alignLog_ne_zero",
+   "Toy.Modality.lower_ret_no_right_adjoint_of_alignLog_eq_zero"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "The first conjunct is the polarity Galois connection that every relation induces (textbook); the second is a corollary of `lower_best_iff`.",
+  "plain_claim": "For every relation `P` between attributes and traces, `alphaOf P` and `gammaOf P` form a Galois connection in the imported sense with the reverse-inclusion order on attribute sets (`polarity_galois`); for every positive-size shape `s` (every `Shape` has `size_pos : 0 < size`) and position `pos`, the instance `alphaSet s pos`, `gammaDual s pos` (with `P = attrSat s pos`) is therefore a Galois connection, and for every modality `m`, `lower s pos m = (alphaSet s pos (denP s m)).val`. By contrast (`lower_no_left_adjoint_and_arg_no_right_adjoint`), for every shape `s` and position `pos` there is no function `u : AttrSet → Mod` with `A ≤ lower s pos m ↔ u A ≤ m` for all `m` and `A` (no left adjoint), neither over all modalities nor over `s`-closed ones, and there is no function `u : AttrSet → Mod` with `lower s .arg m ≤ A ↔ m ≤ u A` for all `m` and `A` (no right adjoint of the argument lowering over all modalities).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`ex_galois_defs`: instances of `AttrDual`, `gammaDual`, `denP` and `alphaSet s1 .arg (denP s1 refFull) = lower s1 .arg refFull`.",
+  "nonvacuity_witness_lean": "Toy.Modality.ex_galois_defs",
+  "non_claims": [
+   "The Galois connection is between predicates on traces and attribute sets; it holds for every relation (`polarity_galois`) and carries no content specific to modalities. Between modalities and attribute sets, `lower s pos` has no left adjoint (no `u` with `A ≤ lower s pos m ↔ u A ≤ m`), over all modalities and over `s`-closed modalities, and `lower s .arg` has no right adjoint (no `u` with `lower s .arg m ≤ A ↔ m ≤ u A`) over all modalities (`lower_no_left_adjoint_and_arg_no_right_adjoint`) and over `s`-closed modalities (`lower_arg_no_right_adjoint_on_closed`). `lower s .ret` has the right adjoint `retRightAdjoint`, with `s`-closed values, when `s.alignLog ≠ 0` (`lower_ret_right_adjoint_of_alignLog_ne_zero`), and no right adjoint, over all or over `s`-closed modalities, when `s.alignLog = 0` (`lower_ret_no_right_adjoint_of_alignLog_eq_zero`). These three lemmas are auxiliary; they are not part of the card's main statement.",
+   "The cited package's characterization of Galois connections (card `R1-gc-iff`) is stated for a reflexive and transitive abstract order; the reverse-inclusion order on `AttrDual` is reflexive and transitive (`attrDual_le_refl_trans`). Monotonicity, extensivity and reductivity are not re-proved here.",
+   "Kernel dependency audit for `Shape.size_pos` (shapes have positive size by construction): the proof of `alphaSet_gammaDual_galois_and_lower_eq_alphaSet_den` uses it, so zero-sized pointees are outside their scope and these statements neither establish nor refute the corresponding claims for them; the proofs of `polarity_galois`, `lower_no_left_adjoint_and_arg_no_right_adjoint` do not use it.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Polarity Galois connections induced by a relation between objects and attributes: Ganter, Wille, Formal Concept Analysis: Mathematical Foundations, Springer 1999, doi:10.1007/978-3-642-59830-2; Davey, Priestley, Introduction to Lattices and Order, 2nd ed., Cambridge University Press 2002, doi:10.1017/CBO9780511809088.",
+   "Order theory and abstract interpretation: Davey, Priestley, Introduction to Lattices and Order, 2nd ed., Cambridge University Press 2002, doi:10.1017/CBO9780511809088 (powerset lattices, closure operators, Galois connections); Cousot, Cousot, \"Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints\", POPL 1977, doi:10.1145/512950.512973.",
+   "Published package `galois-connections-best-abstract-transformers-and-fixpoint-transfer` (google/zerocopy branch `reference`, commit a0dca4883c555805181f8149eafd7e65ab238991), cards `R1-gc-iff` (characterization of the Galois-connection notion, stated for a reflexive and transitive abstract order), `R2-best-sound` and `R2-best-least` (best abstract transformers): cited, not re-proved; its `GaloisConnection` and `Pred` definitions are copied into the module `Toy.Modality.Imported`."
+  ],
+  "design_question": "Is the lowering of modalities to IR parameter attributes a sound and best abstraction?"
+ },
+ {
+  "id": "R3-stronger-unsound",
+  "lean": "Toy.Modality.stronger_arg_lowerings_counterexamples",
+  "lean_names": [
+   "Toy.Modality.refFullNoBounded",
+   "Toy.Modality.mutFullNoBounded",
+   "Toy.Modality.not_noalias_tConflict",
+   "Toy.Modality.not_noalias_tOutOfRange",
+   "Toy.Modality.not_readonly_tOutOfRange",
+   "Toy.Modality.not_nofree_tFreed"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Concrete witnesses for documented exclusions.",
+  "plain_claim": "For every positive-size shape `s` (every `Shape` has `size_pos : 0 < size`), each listed attribute is outside `lower s .arg m` for the listed `m`, and a trace of `⟦m⟧` violates `lower s .arg m` with that attribute added: for a shared reference to a non-`Freeze` pointee (`kindBase (.shared false)`), `nofree` (`tFreed s`), `readonly` (`tArgWrite s`) and `noalias` (`tConflict s`); for a mutable reference to a non-`Unpin` pointee (`kindBase (.mutRef false)`), `noalias` (`tConflict s`) and `nofree` (`tFreed s`); for a box of an `Unpin` pointee (`kindBase (.box true)`), `nofree` (`tFreed s`); `dereferenceable` inside a relaxing wrapper (`tRelax refFull`, `tDangling s`); `noalias` and `readonly` for `refFullNoBounded` and `noalias` for `mutFullNoBounded` (`refFull` and `mutFull` without `bounded`; `tOutOfRange s`, an access through the argument just outside the pointee).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Each conjunct exhibits its trace.",
+  "nonvacuity_witness_lean": "Toy.Modality.stronger_arg_lowerings_counterexamples",
+  "non_claims": [
+   "Each conjunct is one instance; the general statement that every attribute outside `lower s pos m` fails on some trace of `⟦m⟧` is `lower_best_iff`.",
+   "The `bounded` conjuncts concern the hypothetical modalities `refFullNoBounded` and `mutFullNoBounded`, which no pointer kind of `kindBase` has.",
+   "Return position is covered by `refFull_arg_lowering_not_sound_at_return` and `entry_deref_of_tCell_refFull_not_sound_at_return`.",
+   "Shapes have positive size by construction (`Shape.size_pos`, a field of `Shape`), and the proof uses it (kernel dependency audit); zero-sized pointees are not representable, and these statements neither establish nor refute the corresponding claims for them.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "LLVM LangRef at release llvmorg-23.1.6 (llvm/llvm-project commit 5b10d2d74929eae78912771222c9855af97496f4), `llvm/docs/LangRef.md`: `align` lines 1497-1505, `noalias` lines 1512-1534 (return-value semantics, \"acts like a system memory allocation function\", lines 1528-1534), `nofree` lines 1574-1588 (line 1588: \"This is not a valid attribute for return values.\"), `nonnull` lines 1609-1618, `dereferenceable(<n>)` lines 1622-1640 (lines 1627-1631: implies `nonnull` in `addrspace(0)` except with `null_pointer_is_valid`; lines 1636-1640: dereferenceability \"at the point of the attribute (i.e. on function entry for arguments or at the point of the call for return values)\"), `dereferenceable_or_null(<n>)` lines 1644-1655, `noundef` lines 1699-1703, `readonly` lines 1797-1803 (phrased for a pointer argument: \"the function does not write through this pointer argument\") (documentation).",
+   "rustc `compiler/rustc_ty_utils/src/abi.rs` at rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 339-416 (in `arg_attrs_for_rust_scalar`, lines 321-420, whose parameter `is_return`, line 327, is `arg_idx.is_none()` at the call site, lines 589 and 602, hence true for the return value): `nonnull` from the validity range (lines 339-342); `pointee_align` (when the pointee alignment exceeds 1) and `pointee_size` are recorded at lines 346-352 for every pointer with pointee information, at argument and at return position alike (no `is_return` condition; line 352: `attrs.pointee_size = pointee.size;`); `noalias` is computed at lines 366-370 as `frozen` for shared references, `unpin` for mutable references, and `unpin && global && noalias_for_box` for boxes (line 369; `noalias_for_box` is the unstable `box_noalias` option, line 358), and is not emitted in return position (lines 371-375); `nofree` for frozen shared and `unpin` mutable references, never at return position or for boxes (lines 392-410); `readonly` for frozen shared references outside return position (lines 412-415); the comments link rust-lang/rust pull 98017 and unsafe-code-guidelines issues 326, 381 and 385. This package does not examine which LLVM attributes rustc's LLVM backend emits from these recorded fields, at argument or at return position. In `compiler/rustc_middle/src/ty/layout.rs` at the same commit, `frozen` and `unpin` are false unless optimizing (line 1051: `let optimize = tcx.sess.opts.optimize != OptLevel::No;`), `unpin` also requires `is_unsafe_unpin` (lines 1065-1067 for mutable references, 1082-1084 for boxes), and the box flag `global` is `this.ty.is_box_global(tcx)` (line 1085) (source)."
+  ],
+  "design_question": "Is the lowering of modalities to IR parameter attributes a sound and best abstraction?"
+ },
+ {
+  "id": "R3-position",
+  "lean": [
+   "Toy.Modality.refFull_arg_lowering_not_sound_at_return",
+   "Toy.Modality.entry_deref_of_tCell_refFull_not_sound_at_return"
+  ],
+  "lean_names": [
+   "Toy.Modality.tRelax_arg_lowering_eq_ret_lowering",
+   "Toy.Modality.den_tReadAfter",
+   "Toy.Modality.not_ret_noalias_tReadAfter",
+   "Toy.Modality.kindBase_ret_lowering_dereferenceable_by_kind"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Concrete witnesses that a call-entry modality entails different attributes at call entry and at the return point: argument versus return `noalias`, and call-entry dereferenceability versus dereferenceability at the return point after a free during the call. Neither witness concerns a returned value's validity invariant at the return point or the attributes rustc attaches to return values.",
+  "plain_claim": "For every positive-size shape `s` (every `Shape` has `size_pos : 0 < size`): (`refFull_arg_lowering_not_sound_at_return`) the argument lowering of the call-entry modality `refFull` contains `noalias`, `nofree` and `readonly`; the trace `tReadAfter s` (an unrelated read of the pointee after the return) is in `⟦m⟧` for every modality `m`, satisfies argument `noalias` (over the call) and violates return `noalias` (after the return), so `lower s .arg refFull` is not sound at return position; and (`entry_deref_of_tCell_refFull_not_sound_at_return`) the argument lowering of the call-entry modality `tCell refFull` contains `dereferenceable` (evaluated at call entry), and the trace `tFreed s` (the pointee allocation is freed through the pointer during the call) is in `⟦tCell refFull⟧`, satisfies `dereferenceable` at argument position (call entry) and violates the toy's return-position `dereferenceable` (`DereferenceableAtReturn`, evaluated at the return point), so `lower s .arg (tCell refFull)` is not sound at return position: a pointer that carries the call-entry modality `tCell refFull` and is returned is not entitled to return-position `dereferenceable` by that modality.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Each theorem exhibits its trace.",
+  "nonvacuity_witness_lean": "Toy.Modality.refFull_arg_lowering_not_sound_at_return",
+  "positive_control_lean": "Toy.Modality.tRelax_arg_lowering_eq_ret_lowering",
+  "non_claims": [
+   "The counterexamples concern the call-entry modalities `refFull` and `tCell refFull`; for relaxed pointers the argument and return lowerings coincide (`tRelax_arg_lowering_eq_ret_lowering`), so their argument lowering is sound at return position.",
+   "No atom constrains events after the return, so `tReadAfter s` is in `⟦m⟧` for every `m` and no modality justifies return `noalias` in this toy; the reasons rustc gives for never emitting return-position `noalias` (abi.rs lines 371-372, linking unsafe-code-guidelines issue 385) are not modelled.",
+   "`nofree` and `readonly` are never satisfied at return position (see `attrSat`), so the argument lowering of `refFull` also fails there on every trace; the counterexample does not rely on this.",
+   "Program points: every `Mod` is a call-entry modality of a pointer that exists at call entry (promises at call entry and over the call; see `Atom`). `lower s .ret m` is the set of return-value attributes, evaluated at the return point by `attrSat s .ret`, to which a pointer carrying the call-entry modality `m` is entitled when it is returned (for example an argument returned unchanged). It is not a lowering of the validity invariant that a returned value has at the return point, which the toy does not represent (the Rust Reference requires a reference or `Box<T>` to be non-dangling whenever it is produced, including when it is returned; see Prior art). In particular, the absence of `dereferenceable` from `lower s .ret (kindBase k)` for `k` among `.shared false`, `.mutRef false`, `.box true`, `.box false` (`kindBase_ret_lowering_dereferenceable_by_kind`) records that call-entry dereferenceability of such a pointer does not survive a free during the call (`entry_deref_of_tCell_refFull_not_sound_at_return`); it does not say that a value returned at type `&UnsafeCell<T>`, `&mut T` with `T: !Unpin`, or `Box<T>` may fail to be dereferenceable at the return point.",
+   "The toy's `lower s .ret` is not a model of the attributes rustc attaches to return values. At rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe, `arg_attrs_for_rust_scalar` records `pointee_size` for return values as for arguments (`compiler/rustc_ty_utils/src/abi.rs` lines 346-352, no `is_return` condition); this package does not examine which LLVM attributes rustc's LLVM backend emits from that field, at return position or elsewhere. These statements neither establish nor refute the corresponding claims about which attributes rustc attaches to return values.",
+   "Kernel dependency audit for `Shape.size_pos` (shapes have positive size by construction): the proofs of `refFull_arg_lowering_not_sound_at_return`, `entry_deref_of_tCell_refFull_not_sound_at_return` use it, so zero-sized pointees are outside their scope and these statements neither establish nor refute the corresponding claims for them; the proof of `tRelax_arg_lowering_eq_ret_lowering` does not use it.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "LLVM LangRef at release llvmorg-23.1.6 (llvm/llvm-project commit 5b10d2d74929eae78912771222c9855af97496f4), `llvm/docs/LangRef.md`: `align` lines 1497-1505, `noalias` lines 1512-1534 (return-value semantics, \"acts like a system memory allocation function\", lines 1528-1534), `nofree` lines 1574-1588 (line 1588: \"This is not a valid attribute for return values.\"), `nonnull` lines 1609-1618, `dereferenceable(<n>)` lines 1622-1640 (lines 1627-1631: implies `nonnull` in `addrspace(0)` except with `null_pointer_is_valid`; lines 1636-1640: dereferenceability \"at the point of the attribute (i.e. on function entry for arguments or at the point of the call for return values)\"), `dereferenceable_or_null(<n>)` lines 1644-1655, `noundef` lines 1699-1703, `readonly` lines 1797-1803 (phrased for a pointer argument: \"the function does not write through this pointer argument\") (documentation).",
+   "rustc `compiler/rustc_ty_utils/src/abi.rs` at rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 339-416 (in `arg_attrs_for_rust_scalar`, lines 321-420, whose parameter `is_return`, line 327, is `arg_idx.is_none()` at the call site, lines 589 and 602, hence true for the return value): `nonnull` from the validity range (lines 339-342); `pointee_align` (when the pointee alignment exceeds 1) and `pointee_size` are recorded at lines 346-352 for every pointer with pointee information, at argument and at return position alike (no `is_return` condition; line 352: `attrs.pointee_size = pointee.size;`); `noalias` is computed at lines 366-370 as `frozen` for shared references, `unpin` for mutable references, and `unpin && global && noalias_for_box` for boxes (line 369; `noalias_for_box` is the unstable `box_noalias` option, line 358), and is not emitted in return position (lines 371-375); `nofree` for frozen shared and `unpin` mutable references, never at return position or for boxes (lines 392-410); `readonly` for frozen shared references outside return position (lines 412-415); the comments link rust-lang/rust pull 98017 and unsafe-code-guidelines issues 326, 381 and 385. This package does not examine which LLVM attributes rustc's LLVM backend emits from these recorded fields, at argument or at return position. In `compiler/rustc_middle/src/ty/layout.rs` at the same commit, `frozen` and `unpin` are false unless optimizing (line 1051: `let optimize = tcx.sess.opts.optimize != OptLevel::No;`), `unpin` also requires `is_unsafe_unpin` (lines 1065-1067 for mutable references, 1082-1084 for boxes), and the box flag `global` is `this.ty.is_box_global(tcx)` (line 1085) (source).",
+   "The Rust Reference at rust-lang/reference@c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, `src/behavior-considered-undefined.md`: producing an invalid value is undefined behaviour, and line 59 reads `\"Producing\" a value happens any time a value is assigned to or read from a place, passed to a function/primitive operation or returned from a function/primitive operation.`; line 152 requires a reference or `Box<T>` to be aligned and non-null and not dangling, and line 104 calls a reference dangling if not all of the bytes it points to are part of the same live allocation (documentation). This is the validity invariant of a returned reference or box at the return point, which the toy does not represent."
+  ],
+  "design_question": "Is the lowering of modalities to IR parameter attributes a sound and best abstraction?"
+ },
+ {
+  "id": "R4-niche-sound",
+  "lean": [
+   "Toy.Modality.liftOpt_sound_of_noneVal_zero",
+   "Toy.Modality.liftOpt_best_iff"
+  ],
+  "lean_names": [
+   "Toy.Modality.liftOpt",
+   "Toy.Modality.denOpt",
+   "Toy.Modality.NoArgEvents",
+   "Toy.Modality.arg_nofree_of_addr_zero",
+   "Toy.Modality.zero_mod_align",
+   "Toy.Modality.tAt",
+   "Toy.Modality.noArgEvents_tAt",
+   "Toy.Modality.ex_noArgEvents",
+   "Toy.Modality.ex_denOpt",
+   "Toy.Modality.ex_liftOpt",
+   "Toy.Modality.nv_niche",
+   "Toy.Modality.cex_liftOpt_noneVal"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "The documented null-niche recursion, stated as soundness and optimality of the lifted lowering.",
+  "plain_claim": "For every positive-size shape `s` (every `Shape` has `size_pos : 0 < size`), payload modality `m` and trace `t` with `denOpt s 0 m t` (either `t.addr = 0` and no argument-tagged read, write or free happens during the call (`NoArgEvents`), or `t ∈ ⟦m⟧`), `t` satisfies every attribute of `liftOpt s m` at argument position; `liftOpt s m` is `lower s .arg m` without `nonnull` and `dereferenceable`, so each of `align`, `dereferenceable_or_null`, `noalias`, `nofree`, `readonly` is lifted exactly when `lower s .arg m` has it. And (`liftOpt_best_iff`) for every attribute set `A`, every trace of `denOpt s 0 m` satisfies `A` at argument position iff `A ≤ liftOpt s m`.",
+  "hypotheses": [
+   {
+    "name": "ht (liftOpt_sound_of_noneVal_zero) : denOpt s 0 m t",
+    "purpose": "the trace is a trace of the option whose None is the null value",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_liftOpt_noneVal",
+    "counterexample_class": "the two-byte shape s2, m = refFull, the None trace tAt 1 of the niche-1 encoding"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_niche`: the null `None` trace `tNull` is a trace of `denOpt s1 0 refFull`.",
+  "nonvacuity_witness_lean": "Toy.Modality.nv_niche",
+  "non_claims": [
+   "On the `None` branch, `noalias` and `readonly` use `NoArgEvents`; `nofree` holds on every trace with address `0` (`arg_nofree_of_addr_zero`), so the free clause of `NoArgEvents` is not used.",
+   "`NoArgEvents` constrains argument-tagged events during the call; `Trace` records no pointer provenance beyond the tags.",
+   "Holds also when `0` is not a niche of `m` (for example `m = Mod.bot`, where address `0` is a valid payload value).",
+   "Null is aligned for every alignment (`zero_mod_align`; alignment is `2 ^ alignLog`, never `0`).",
+   "Address `0` is never inside an allocation (`Alloc.contains` and `Alloc.covers` require a positive base); this is what makes `derefEntry` imply `nonnull`. Non-zero LLVM address spaces and the `null_pointer_is_valid` function attribute, under which `dereferenceable` does not imply `nonnull` (LangRef lines 1627-1631), are not modelled.",
+   "Kernel dependency audit for `Shape.size_pos` (shapes have positive size by construction): the proof of `liftOpt_best_iff` uses it, so zero-sized pointees are outside their scope and these statements neither establish nor refute the corresponding claims for them; the proof of `liftOpt_sound_of_noneVal_zero` does not use it.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "rustc `compiler/rustc_middle/src/ty/layout.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 1092-1104 (`MaybeDangling` arm: recurse into field 0, then `safe: None` with line 1095 \"// Mark the pointer as raw\", `size: Size::ZERO`, and line 1100 \"// Preserve the alignment assertion! That is required even inside `MaybeDangling`.\") and lines 1132-1141 (null-niche recursion: recurse into the untagged variant only if `niche_start == 0`, relying on `dereferenceable` being added only with a non-null proof and on null being aligned for all alignments) (source).",
+   "LLVM LangRef at release llvmorg-23.1.6 (llvm/llvm-project commit 5b10d2d74929eae78912771222c9855af97496f4), `llvm/docs/LangRef.md`: `align` lines 1497-1505, `noalias` lines 1512-1534 (return-value semantics, \"acts like a system memory allocation function\", lines 1528-1534), `nofree` lines 1574-1588 (line 1588: \"This is not a valid attribute for return values.\"), `nonnull` lines 1609-1618, `dereferenceable(<n>)` lines 1622-1640 (lines 1627-1631: implies `nonnull` in `addrspace(0)` except with `null_pointer_is_valid`; lines 1636-1640: dereferenceability \"at the point of the attribute (i.e. on function entry for arguments or at the point of the call for return values)\"), `dereferenceable_or_null(<n>)` lines 1644-1655, `noundef` lines 1699-1703, `readonly` lines 1797-1803 (phrased for a pointer argument: \"the function does not write through this pointer argument\") (documentation).",
+   "Published package `enum-niche-layout-guarantees-and-validity-invariants` (google/zerocopy branch `reference`, commit f9bee82a6d3f8bb6698b4c9e716138018db94d4d), cards `dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_decEnc_of_canonical` (for any layout of an option type with `None` mapped to the zero pattern (`hnone`) and both round-trip laws (`hde`, `hcan`), a pattern decodes to `None` iff it is the zero pattern) and `opt_opt_nonZero_no_decEnc_layout_in_payload_size` (for every `n`, the two-level option over the `n`-byte `NonZero` payload, modelling `Option<Option<NonZeroUN>>`, has no decode-after-encode layout in `n` bytes): source of the niche encodings; cited, not re-proved."
+  ],
+  "design_question": "When may a pointer's attributes be lifted through an Option-like enum's niche?"
+ },
+ {
+  "id": "R4-niche-iff",
+  "lean": "Toy.Modality.liftOpt_sound_iff_noneVal_eq_zero_of_isNiche",
+  "lean_names": [
+   "Toy.Modality.IsNiche",
+   "Toy.Modality.ex_isNiche",
+   "Toy.Modality.liftOpt_sound_at_non_niche_one",
+   "Toy.Modality.cex_liftOpt_iff_isNiche",
+   "Toy.Modality.aligned_and_misaligned_of_nonzero_niche"
+  ],
+  "kind": "characterization",
+  "tier": "T2",
+  "tier_justification": "The documented null-niche condition stated as necessary and sufficient for genuine niches.",
+  "plain_claim": "For every shape `s`, payload modality `m` and value `v` that is a niche of `m` (`IsNiche s m v`: no trace of `⟦m⟧` has address `v`): every trace of `denOpt s v m` satisfies `liftOpt s m` at argument position iff `v = 0`.",
+  "hypotheses": [
+   {
+    "name": "hv : IsNiche s m v",
+    "purpose": "the None encoding is not a valid payload address",
+    "tightness": "tight",
+    "counterexample": "Toy.Modality.cex_liftOpt_iff_isNiche",
+    "counterexample_class": "the one-byte shape s1, m = Mod.bot, v = 1"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_niche_zero`: `0` is a niche of `refFull` at the one-byte shape `s1` (the case `v = 0`, in which both sides of the equivalence hold); `nv_niche`: `1` is a niche of `refFull` at the two-byte shape `s2` (the case `v = 1`, in which both sides fail).",
+  "nonvacuity_witness_lean": [
+   "Toy.Modality.nv_niche_zero",
+   "Toy.Modality.nv_niche"
+  ],
+  "non_claims": [
+   "For a non-zero niche the failing attribute is `align` (a non-zero niche of `m` violates `aligned`, which is then in `liftOpt s m`); this includes payloads without `derefEntry`, such as `tRelax refFull` at `s2`, where `1` is a niche (`ex_isNiche`).",
+   "Addresses are unbounded natural numbers, so the toy has no upper-bound niches (such as addresses above `isize::MAX`): every non-zero niche `v` of `m` comes from misalignment (`aligned_and_misaligned_of_nonzero_niche`: `m.aligned = true`, `s.alignLog ≠ 0` and `v % s.align ≠ 0`).",
+   "Statements are at argument position (`gammaSet s .arg`); return position is not examined for `liftOpt`.",
+   "Non-zero niche encodings of pointers are counterfactual for the cited rustc code (the null-niche recursion requires `niche_start == 0`); they serve to show why lifting needs the null niche.",
+   "The proof does not use `Shape.size_pos` (kernel dependency audit).",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "rustc `compiler/rustc_middle/src/ty/layout.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 1092-1104 (`MaybeDangling` arm: recurse into field 0, then `safe: None` with line 1095 \"// Mark the pointer as raw\", `size: Size::ZERO`, and line 1100 \"// Preserve the alignment assertion! That is required even inside `MaybeDangling`.\") and lines 1132-1141 (null-niche recursion: recurse into the untagged variant only if `niche_start == 0`, relying on `dereferenceable` being added only with a non-null proof and on null being aligned for all alignments) (source).",
+   "Published package `enum-niche-layout-guarantees-and-validity-invariants` (google/zerocopy branch `reference`, commit f9bee82a6d3f8bb6698b4c9e716138018db94d4d), cards `dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_decEnc_of_canonical` (for any layout of an option type with `None` mapped to the zero pattern (`hnone`) and both round-trip laws (`hde`, `hcan`), a pattern decodes to `None` iff it is the zero pattern) and `opt_opt_nonZero_no_decEnc_layout_in_payload_size` (for every `n`, the two-level option over the `n`-byte `NonZero` payload, modelling `Option<Option<NonZeroUN>>`, has no decode-after-encode layout in `n` bytes): source of the niche encodings; cited, not re-proved."
+  ],
+  "design_question": "When may a pointer's attributes be lifted through an Option-like enum's niche?"
+ },
+ {
+  "id": "R4-niche-cex",
+  "lean": [
+   "Toy.Modality.liftOpt_unsound_at_niche_one",
+   "Toy.Modality.lift_nonnull_dereferenceable_unsound_at_null"
+  ],
+  "lean_names": [
+   "Toy.Modality.s2"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Concrete witnesses.",
+  "plain_claim": "For the two-byte, two-aligned shape `s2` and payload modality `refFull`, `1` is a niche of `refFull`, and with `None` encoded at `1` (a counterfactual encoding), `liftOpt s2 refFull` contains `dereferenceable_or_null` and `align` and the `None` trace `tAt 1` violates both; and (`lift_nonnull_dereferenceable_unsound_at_null`) for every shape `s` and payload modality `m`, the null `None` trace `tNull` is a trace of `denOpt s 0 m` and violates `nonnull` and `dereferenceable`.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Each theorem exhibits its trace.",
+  "nonvacuity_witness_lean": "Toy.Modality.liftOpt_unsound_at_niche_one",
+  "positive_control_lean": "Toy.Modality.liftOpt_sound_of_noneVal_zero",
+  "non_claims": [
+   "In the cited rustc code the attribute-lifting recursion requires the niche to start at zero (`niche_start == 0`), and the cited package shows that a two-level option over its `NonZero` payload has no decode-after-encode layout in the payload size; the niche-1 encoding is a toy counterfactual, not a description of rustc's `Option<Option<&u16>>`.",
+   "The proofs of `liftOpt_unsound_at_niche_one` and `lift_nonnull_dereferenceable_unsound_at_null` do not use `Shape.size_pos` (kernel dependency audit).",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "rustc `compiler/rustc_middle/src/ty/layout.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 1092-1104 (`MaybeDangling` arm: recurse into field 0, then `safe: None` with line 1095 \"// Mark the pointer as raw\", `size: Size::ZERO`, and line 1100 \"// Preserve the alignment assertion! That is required even inside `MaybeDangling`.\") and lines 1132-1141 (null-niche recursion: recurse into the untagged variant only if `niche_start == 0`, relying on `dereferenceable` being added only with a non-null proof and on null being aligned for all alignments) (source).",
+   "Published package `enum-niche-layout-guarantees-and-validity-invariants` (google/zerocopy branch `reference`, commit f9bee82a6d3f8bb6698b4c9e716138018db94d4d), cards `dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_decEnc_of_canonical` (for any layout of an option type with `None` mapped to the zero pattern (`hnone`) and both round-trip laws (`hde`, `hcan`), a pattern decodes to `None` iff it is the zero pattern) and `opt_opt_nonZero_no_decEnc_layout_in_payload_size` (for every `n`, the two-level option over the `n`-byte `NonZero` payload, modelling `Option<Option<NonZeroUN>>`, has no decode-after-encode layout in `n` bytes): source of the niche encodings; cited, not re-proved."
+  ],
+  "design_question": "When may a pointer's attributes be lifted through an Option-like enum's niche?"
+ },
+ {
+  "id": "R5-sroa-iff",
+  "lean": "Toy.Modality.scalarize_refines_iff_declared_le_posMod",
+  "lean_names": [
+   "Toy.Modality.modAt",
+   "Toy.Modality.fieldTy",
+   "Toy.Modality.wrapTrans",
+   "Toy.Modality.posTrans",
+   "Toy.Modality.Prog",
+   "Toy.Modality.SrcSafe",
+   "Toy.Modality.TgtSafe",
+   "Toy.Modality.Refines",
+   "Toy.Modality.scalarize",
+   "Toy.Modality.modAt_append",
+   "Toy.Modality.posTrans_eq",
+   "Toy.Modality.le_tRelax_iff",
+   "Toy.Modality.tDangleAliased",
+   "Toy.Modality.mem_scalarize",
+   "Toy.Modality.ex_fieldTy_posTrans",
+   "Toy.Modality.ex_refines",
+   "Toy.Modality.ex_safe",
+   "Toy.Modality.nv_sroa",
+   "Toy.Modality.tyPlainPair"
+  ],
+  "kind": "characterization",
+  "tier": "T2",
+  "tier_justification": "The SROA precondition for relaxing wrappers stated as necessary and sufficient over all programs of the toy program model.",
+  "plain_claim": "For every type `τ` (whose pointer leaves `Ty.ptr s m` have positive-size shapes: every `Shape` has `size_pos : 0 < size`) and list of field paths `qs`: replacing a local of type `τ` by one local per field path in `qs`, each with the field's declared type (`scalarize τ qs`; paths that are not fields are skipped), is a refinement for all programs (`Refines`: every assertion pattern `P.asserts` and every assignment `P.exec` of call traces to asserted leaves) iff for every `q ∈ qs` with declared field type `σ` and every pointer leaf `p'` of `σ` whose modality computed inside `σ` is `m` (`modAt σ p' = some (s, m)`), `m ≤ posTrans τ q m`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_sroa`: for `(&mut T, u8)` both sides hold.",
+  "nonvacuity_witness_lean": "Toy.Modality.nv_sroa",
+  "non_claims": [
+   "`m` is the field-local modality computed inside `σ` (it already accounts for relaxing wrappers inside `σ`), not the bare leaf modality `leafAt σ p'`.",
+   "A program is an assertion pattern plus an assignment of traces (`Prog`), with no operational semantics; temporal lifetime transitions (a pointer valid when stored and invalidated later), movement or duplication of retag points, and partially initialized or dead fields are not modelled. With this program model the proof is direct: the forward direction builds a one-program witness from the trace `tDangleAliased` and uses `modAt_append`, `posTrans_eq`, `le_tRelax_iff` and `mem_scalarize` together with two lemmas about that trace, and the reverse direction uses `modAt_append`, `mem_scalarize` and `den_antitone`; the depth label is `shallow`.",
+   "The condition is checked per field and per pointer leaf; no enums or unions are part of the type language.",
+   "Shapes have positive size by construction (`Shape.size_pos`, a field of `Shape`), and the proof uses it (kernel dependency audit); zero-sized pointees are not representable, and these statements neither establish nor refute the corresponding claims for them.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "rustc `compiler/rustc_mir_transform/src/sroa.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 67-84 (excluded types: unions, enums, SIMD, `DynMetadata`) and at cd2a75d9d58d7bd7b59cde543684fc83c3e785d2 (the merge commit of rust-lang/rust pull 164568) lines 62-85 (additionally excludes locals whose type satisfies `ty.is_like_maybe_dangling()`, lines 66-69; line 66 reads \"// Types like MaybeDangling relax validity requirements of inner references.\") (source).",
+   "https://github.com/rust-lang/rust/issues/164176 (closed; labels `I-miscompile`, `A-mir-opt`): \"ScalarReplacementOfAggregates doesn't handle ManuallyDrop/MaybeDangling\"; reports a program using `ManuallyDrop<&mut u8>` that runs under Miri without UB with the MIR inlining pass enabled and is reported as UB when the ScalarReplacementOfAggregates pass is enabled as well. Fixed by https://github.com/rust-lang/rust/pull/164568 (merged 2026-10-20, merge commit cd2a75d9d58d7bd7b59cde543684fc83c3e785d2): \"Exclude MaybeDangling like types from SROA\"; \"References inside a MaybeDangling doesn't have to satisfy any memory-depended validity properties. SROA cannot rewrite operations in terms of an inner type, which might require it.\"",
+   "RFC 3336 (`MaybeDangling`, merged), rust-lang/rfcs@f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07 `text/3336-maybe-dangling.md` lines 94-102 (references and boxes in `P` need not be dereferenceable or follow aliasing guarantees; they still have to be non-null and aligned, and `MaybeDangling<&!>` is still invalid; `ManuallyDrop<T>` wraps `T` in a `MaybeDangling`), lines 139-148 (aliasing and liveness rules apply when values are passed in a (nested) field of a compound type, \"but not behind pointer indirections and also not for values inside a `MaybeDangling<_>`\"), lines 172-173 (below `MaybeDangling` no memory-related attributes; `aligned` still emitted). The `MaybeDangling` tracking issue https://github.com/rust-lang/rust/issues/118166 is open (documentation).",
+   "rustc `library/core/src/mem/maybe_dangling.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 6-10 (a reference wrapped in `MaybeDangling`, including in a (nested) field, does not have to follow pointer aliasing rules or be dereferenceable) and `library/core/src/mem/manually_drop.rs` lines 156-160 (`ManuallyDrop` wraps `MaybeDangling<T>`) (documentation, source).",
+   "Novelty search (web search for mechanized lowerings of Rust pointer guarantees to LLVM parameter attributes, best-abstraction lowerings, and SROA preconditions for relaxing wrappers) found no mechanized statement of this form; tier kept below T3.",
+   "Refinement checking of LLVM IR transformations (not re-modelled; cited as prior art for refinement-based correctness of optimizations): Lopes, Lee, Hur, Liu, Regehr, \"Alive2: Bounded Translation Validation for LLVM\", PLDI 2021, doi:10.1145/3453483.3454030."
+  ],
+  "design_question": "Exactly when may SROA scalarize an aggregate into field-typed locals without re-attaching promises a wrapper relaxed?"
+ },
+ {
+  "id": "R5-sroa-headline",
+  "lean": "Toy.Modality.sroa_hoist_out_of_manuallyDrop_counterexample",
+  "lean_names": [
+   "Toy.Modality.tyMDPair",
+   "Toy.Modality.qsMDPair",
+   "Toy.Modality.progDangling"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "A toy rendering of a documented miscompilation pattern.",
+  "plain_claim": "For every shape `s`, scalarizing `ManuallyDrop<(&mut T, u8)>` (`tyMDPair s`) into its fields `&mut T` and `u8` (`qsMDPair`) with their declared types turns the program `progDangling s`, whose wrapped reference legally dangles, from defined into undefined: the position modality of the reference is `tRelax mutFull` while its declared modality is `mutFull`, whose argument lowering contains `dereferenceable` and `noalias` that the position modality's lowering lacks.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The theorem exhibits the program.",
+  "nonvacuity_witness_lean": "Toy.Modality.sroa_hoist_out_of_manuallyDrop_counterexample",
+  "non_claims": [
+   "rust-lang/rust#164176 independently reports a rustc SROA miscompilation involving `ManuallyDrop<&mut u8>`, whose reproducer invalidates the wrapped reference by a write through another pointer; this toy counterexample uses a dangling trace instead, and neither establishes nor refutes any claim about rustc.",
+   "The proof does not use `Shape.size_pos` (kernel dependency audit).",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "https://github.com/rust-lang/rust/issues/164176 (closed; labels `I-miscompile`, `A-mir-opt`): \"ScalarReplacementOfAggregates doesn't handle ManuallyDrop/MaybeDangling\"; reports a program using `ManuallyDrop<&mut u8>` that runs under Miri without UB with the MIR inlining pass enabled and is reported as UB when the ScalarReplacementOfAggregates pass is enabled as well. Fixed by https://github.com/rust-lang/rust/pull/164568 (merged 2026-10-20, merge commit cd2a75d9d58d7bd7b59cde543684fc83c3e785d2): \"Exclude MaybeDangling like types from SROA\"; \"References inside a MaybeDangling doesn't have to satisfy any memory-depended validity properties. SROA cannot rewrite operations in terms of an inner type, which might require it.\"",
+   "rustc `compiler/rustc_mir_transform/src/sroa.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 67-84 (excluded types: unions, enums, SIMD, `DynMetadata`) and at cd2a75d9d58d7bd7b59cde543684fc83c3e785d2 (the merge commit of rust-lang/rust pull 164568) lines 62-85 (additionally excludes locals whose type satisfies `ty.is_like_maybe_dangling()`, lines 66-69; line 66 reads \"// Types like MaybeDangling relax validity requirements of inner references.\") (source)."
+  ],
+  "design_question": "Exactly when may SROA scalarize an aggregate into field-typed locals without re-attaching promises a wrapper relaxed?"
+ },
+ {
+  "id": "R6-repairs",
+  "lean": [
+   "Toy.Modality.repairs_sound",
+   "Toy.Modality.repairs_exact_and_retype_total",
+   "Toy.Modality.repair_policies_acceptance_hierarchy"
+  ],
+  "lean_names": [
+   "Toy.Modality.containsRelaxer",
+   "Toy.Modality.relaxAll",
+   "Toy.Modality.retype",
+   "Toy.Modality.Policy",
+   "Toy.Modality.repairExclude",
+   "Toy.Modality.repairRetype",
+   "Toy.Modality.repairStopAtRelaxer",
+   "Toy.Modality.naivePolicy",
+   "Toy.Modality.PolicySound",
+   "Toy.Modality.PolicyExact",
+   "Toy.Modality.policySound_of_exact",
+   "Toy.Modality.policySound_degenerate",
+   "Toy.Modality.modAt_retype",
+   "Toy.Modality.modAt_relaxAll",
+   "Toy.Modality.modAt_eq_of_not_relaxedOn",
+   "Toy.Modality.scalarize_map_fst",
+   "Toy.Modality.filterMap_fieldTy_map_fst",
+   "Toy.Modality.refines_scalarize_of_not_relaxedOn",
+   "Toy.Modality.relaxedOn_eq_false_of_containsRelaxer",
+   "Toy.Modality.stopAtRelaxer_not_relaxedOn",
+   "Toy.Modality.tyPairMD",
+   "Toy.Modality.tyMDScalar",
+   "Toy.Modality.ex_repair_helpers",
+   "Toy.Modality.ex_policy",
+   "Toy.Modality.nv_repairs",
+   "Toy.Modality.policyExact_refusing_and_scalar_reshaping"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "The stop-at-relaxer policy mirrors the merged rustc change; the exclusion and retyping policies are toy alternatives, compared by proved acceptance inclusions.",
+  "plain_claim": "For types whose pointer leaves have positive-size shapes (every `Shape` has `size_pos : 0 < size`), the exclusion policy `repairExclude`, the retyping policy `repairRetype` and the stop-at-relaxer policy `repairStopAtRelaxer` are each sound (`PolicySound`: every scalarization they return is a refinement for all programs), and `naivePolicy` is not; (`repairs_exact_and_retype_total`) all three are exact (`PolicyExact`: whenever the policy scalarizes a type `τ` with path list `qs` (`pol τ qs = some locals`), one new local per requested field path of `τ`, in order, and every pointer leaf of a new local has exactly the modality the same leaf has in `τ`), and `repairRetype` returns a scalarization for every type and path list; (`repair_policies_acceptance_hierarchy`) whenever `repairExclude` scalarizes, `repairStopAtRelaxer` returns the same locals, and whenever `repairStopAtRelaxer` scalarizes, `repairRetype` returns the same locals, both inclusions strict (`tyPairMD s1`; `tyMDPair s1` with `qsMDPair`), and `repairStopAtRelaxer` refuses `tyMDScalar` (`ManuallyDrop<u8>`) with paths `[[.inner]]` although that scalarization is a refinement.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`nv_repairs`: all three policies scalarize `(&mut T, u8)`, and `repairRetype` scalarizes the headline type.",
+  "nonvacuity_witness_lean": "Toy.Modality.nv_repairs",
+  "non_claims": [
+   "`PolicySound` alone admits degenerate policies: always refusing and always returning no locals are sound, and the latter is not exact (`policySound_degenerate`); exactness is the separate predicate `PolicyExact`, which implies soundness (`policySound_of_exact`). `PolicyExact` holds vacuously for the always-refusing policy, and it constrains the modalities of pointer leaves (`modAt`), not the scalar structure of the new locals: a policy that retypes scalar fields as pairs of scalars and otherwise behaves like `repairRetype` is exact (`policyExact_refusing_and_scalar_reshaping`).",
+   "`repairRetype` gives each new local under a relaxing wrapper the type `relaxAll σ`, whose pointer leaves have modality `tRelax m` (alignment and non-null promises kept; `modAt_retype`, `modAt_relaxAll`). If `m` keeps neither promise, so that `tRelax m = Mod.bot` (for example a raw pointer, `m = Mod.bot`), the new leaf has the raw-pointer modality `kindBase .raw`, which is `Mod.bot` by the definition of `kindBase`. If `tRelax m ≠ Mod.bot` (for example the base modality of a shared reference, a mutable reference or a box, which keeps alignment and non-null), then `tRelax m` is not the modality of any of the four documented pointer constructors (not proved here). How a compiler would express such a type is not examined.",
+   "`repairStopAtRelaxer` is more conservative than the exact condition of `scalarize_refines_iff_declared_le_posMod`: it refuses `tyMDScalar` with paths `[[.inner]]` although that scalarization refines (`repair_policies_acceptance_hierarchy`).",
+   "The correspondence between `repairStopAtRelaxer` and the merged rustc change (which excludes locals whose type satisfies `is_like_maybe_dangling()`) is a derived modelling bridge; the exclusion and retyping policies correspond to no cited rustc code.",
+   "Kernel dependency audit for `Shape.size_pos` (shapes have positive size by construction): the proofs of `repairs_sound`, `repair_policies_acceptance_hierarchy` use it, so zero-sized pointees are outside their scope and these statements neither establish nor refute the corresponding claims for them; the proof of `repairs_exact_and_retype_total` does not use it.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc or LLVM. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "rustc `compiler/rustc_mir_transform/src/sroa.rs` at 26bfbf28f5f79dff333ce5a232f131b496ec9cfe lines 67-84 (excluded types: unions, enums, SIMD, `DynMetadata`) and at cd2a75d9d58d7bd7b59cde543684fc83c3e785d2 (the merge commit of rust-lang/rust pull 164568) lines 62-85 (additionally excludes locals whose type satisfies `ty.is_like_maybe_dangling()`, lines 66-69; line 66 reads \"// Types like MaybeDangling relax validity requirements of inner references.\") (source).",
+   "https://github.com/rust-lang/rust/issues/164176 (closed; labels `I-miscompile`, `A-mir-opt`): \"ScalarReplacementOfAggregates doesn't handle ManuallyDrop/MaybeDangling\"; reports a program using `ManuallyDrop<&mut u8>` that runs under Miri without UB with the MIR inlining pass enabled and is reported as UB when the ScalarReplacementOfAggregates pass is enabled as well. Fixed by https://github.com/rust-lang/rust/pull/164568 (merged 2026-10-20, merge commit cd2a75d9d58d7bd7b59cde543684fc83c3e785d2): \"Exclude MaybeDangling like types from SROA\"; \"References inside a MaybeDangling doesn't have to satisfy any memory-depended validity properties. SROA cannot rewrite operations in terms of an inner type, which might require it.\""
+  ],
+  "design_question": "Exactly when may SROA scalarize an aggregate into field-typed locals without re-attaching promises a wrapper relaxed?"
+ }
+]
