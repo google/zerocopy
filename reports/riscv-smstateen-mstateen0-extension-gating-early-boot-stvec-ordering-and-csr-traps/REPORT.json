@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "isa/riscv",
+    "isa/sail",
+    "systems/firmware",
+    "systems/os-kernels",
+    "verification/os-kernels"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Instruction Set Manual, Volume II: Privileged Architecture",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "3142f66fd71c7ea0326b3687072318aedab587f8"
+      }
+    },
+    {
+      "name": "Sail RISC-V Formal Architecture Specification",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "04bcb62ccab96e35b9d6ce01873851972945af6f"
+      }
+    },
+    {
+      "name": "OpenSBI RISC-V Supervisor Binary Interface Firmware",
+      "identity": {
+        "repository": "riscv-software-src/opensbi",
+        "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+      }
+    },
+    {
+      "name": "Linux Kernel RISC-V Architecture Port and KVM Hypervisor",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "QEMU RISC-V System Emulator",
+      "identity": {
+        "repository": "qemu/qemu",
+        "revision": "225d5bd4691fc75e32536428fc9a23ddb8e30784"
+      }
+    },
+    {
+      "name": "Spike RISC-V ISA Simulator",
+      "identity": {
+        "repository": "riscv-software-src/riscv-isa-sim",
+        "revision": "982f078e65ab52d5d9a91248c2178f5399df7783"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
