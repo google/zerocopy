@@ -325,13 +325,13 @@
     ],
     "kind": "counterexample",
     "tier": "T1",
-    "plain_claim": "Zero tests that ignore the dense semantics make the checker unsound: (1) an index-blind test (all coefficients sum to 0) accepts x0 - x1 and 'certifies' the satisfiable {x0 - x1 <= -1} with (1); (2) a first-match test (read only the first entry per index) accepts [(0,0),(0,1)] and 'certifies' the satisfiable {0*x0 + 1*x0 <= -1} with (1); (3) the first-match failure arises even when every input constraint is duplicate-free: for {x0 <= 0, x0 <= -1} with (0, 1) the combination is [(0,0),(0,1)] and x0 = -1 is a solution. checkFarkas rejects all three.",
+    "plain_claim": "The two zero tests below, which ignore the dense semantics, make the checker unsound: (1) an index-blind test (all coefficients sum to 0) accepts x0 - x1 and 'certifies' the satisfiable {x0 - x1 <= -1} with (1); (2) a first-match test (read only the first entry per index) accepts [(0,0),(0,1)] and 'certifies' the satisfiable {0*x0 + 1*x0 <= -1} with (1); (3) the first-match failure arises even when every input constraint is duplicate-free: for {x0 <= 0, x0 <= -1} with (0, 1) the combination is [(0,0),(0,1)] and x0 = -1 is a solution. checkFarkas rejects all three.",
     "hypotheses": [],
     "depth": "definitional",
     "nonvacuity_witness": "",
     "non_claims": [
       "Does not claim any deployed checker uses these tests; it shows why the dense semantics (R2d) is the right zero test.",
-      "Only relevant when the combined form combineLhs S cert can contain duplicate indices. Duplicate-free input constraints do not make first-match lookup safe, because combineLhs concatenates scaled premises and multiplying by 0 inserts (i, 0) entries ahead of nonzero entries for the same index; first-match lookup is sound only if the combined linear form itself is merged into a duplicate-free normal form."
+      "Both first-match witnesses have a duplicate index in the combined form combineLhs S cert (it is [(0, 0), (0, 1)]); the index-blind witness has none (x0 - x1). Duplicate-free input constraints do not make first-match lookup safe (ce_zero_test_first_match_dupfree_inputs), because combineLhs concatenates scaled premises and multiplying by 0 inserts (i, 0) entries ahead of nonzero entries for the same index. That first-match lookup becomes sound once the combined linear form is merged into a duplicate-free normal form is not proved here (the package defines no such normal form), nor is it proved that such merging is necessary."
     ],
     "prior_art": [
       "Mathlib, leanprover-community/mathlib4 commit b679ac024dccdf39b1be683d5890c072b58ae8d0, Mathlib/Tactic/Linarith/Datatypes.lean: `abbrev Linexp : Type := List (Nat × Int)`, a sparse linear form as an association list; its docstring states that some functions assume each index occurs at most once and that the list is sorted in decreasing index order, an invariant 'not enforced by the type' but preserved by the operations (Linexp.get stops at the first smaller key).",
@@ -828,7 +828,7 @@
     "lean": "Toy.Farkas.ce_noWrap_not_needed_for_wrapping_eval",
     "kind": "counterexample",
     "tier": "T0",
-    "plain_claim": "Intermediate no-wrap is not necessary for wrapping evaluation: for e = x0 + x0 - x0 (written x0 + x0 + (-1) * x0) at w = 8, in the signed reading at x0 = 100 the left-to-right partial sum 200 leaves the signed range while every other intermediate value (literals, products, other partial sums, constant, final value 100) is in range, so NoWrapS fails, yet the wrapping value of e equals its integer value 100; in the unsigned reading at x0 = 200 the partial sum 400 (and the literal -1 and the product -200) leave the unsigned range, so NoWrapU fails, yet the wrapping value equals the integer value 200. Hence comparisons of e with any in-range right-hand side transfer (R6a/R6b).",
+    "plain_claim": "Intermediate no-wrap is not necessary for wrapping evaluation: for e = x0 + x0 - x0 (written x0 + x0 + (-1) * x0) at w = 8, in the signed reading at x0 = 100 the left-to-right partial sum 200 leaves the signed range while every other intermediate value (literals, products, other partial sums, constant, final value 100) is in range, so NoWrapS fails, yet the wrapping value of e equals its integer value 100; in the unsigned reading at x0 = 200 the partial sum 400 (and the literal -1 and the product -200) leave the unsigned range, so NoWrapU fails, yet the wrapping value equals the integer value 200. Hence comparisons of e with any in-range right-hand side transfer (R6a/R6b: `bv_ule_ult_iff_int_of_inUnsignedRange`, `bv_sle_slt_iff_int_of_inSignedRange`, applied with the final-value range facts proved here).",
     "hypotheses": [],
     "depth": "definitional",
     "nonvacuity_witness": "",
