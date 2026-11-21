@@ -2,7 +2,7 @@
 
 ## Summary
 
-This package is a small, fully executable Lean 4 semantics of a byte-addressed heap with three treatments of pointer provenance: **flat** (pointers are plain addresses), **strict** (every pointer carries the allocation it was derived from; an integer-to-pointer cast yields a pointer without provenance), and **exposed** (as strict, but an integer-to-pointer cast angelically picks the provenance of an *exposed*, live allocation whose closed range `[base, base + size]` contains the address). Over this semantics it states and kernel-checks 26 results about which integer/pointer optimizations are refinements in which model. Every result is a statement about this toy model; these theorems neither establish nor refute the corresponding claims about C, LLVM IR, Rust, MiniRust, or a particular compiler, and any connection to them is a separate, explicitly labeled modeling-bridge argument (see **Applicability** and the `Basis: derived (modeling bridge)` lines under **Findings**).
+This package is a small, fully executable Lean 4 semantics of a byte-addressed heap with three treatments of pointer provenance: **flat** (pointers are plain addresses), **strict** (every pointer carries the allocation it was derived from; an integer-to-pointer cast yields a pointer without provenance), and **exposed** (as strict, but an integer-to-pointer cast angelically picks the provenance of an *exposed*, live allocation whose closed range `[base, base + size]` contains the address). Over this semantics it states and kernel-checks 26 results about which integer/pointer optimizations are refinements in which model. Model–system relation: none proved (the refinements and the monotone simulation proved here relate programs and provenance models of this package to one another, not the model to a real language or compiler). Every result is a statement about this toy model; these theorems neither establish nor refute the corresponding claims about C, LLVM IR, Rust, MiniRust, or a particular compiler, and any connection to them is a separate, explicitly labeled modeling-bridge argument (see **Applicability** and the `Basis: derived (modeling bridge)` lines under **Findings**).
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -2916,7 +2916,7 @@ Each result establishes only its Lean statement about this toy semantics. In par
 
 - Specific to the integer-typed load x := load int a; forwarding to a pointer-typed load of a stored pointer is a different statement, not made here.
 - All values have the toy's fixed two-byte width and the store and the load use the same base register a.
-- Stated for the exposed model only; the strict analogue is expected but not stated.
+- Stated for the exposed model; the strict analogue is expected but not stated (not proved either way).
 - In the flat model no pointer has provenance, so provNeC can never hold there; nothing about flat follows.
 - Does not say how a compiler establishes hne; R4e gives one sufficient criterion (a's allocation not exposed at the cast).
 - Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim.

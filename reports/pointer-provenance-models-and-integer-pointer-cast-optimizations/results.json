@@ -434,7 +434,7 @@
     "non_claims": [
       "Specific to the integer-typed load x := load int a; forwarding to a pointer-typed load of a stored pointer is a different statement, not made here.",
       "All values have the toy's fixed two-byte width and the store and the load use the same base register a.",
-      "Stated for the exposed model only; the strict analogue is expected but not stated.",
+      "Stated for the exposed model; the strict analogue is expected but not stated (not proved either way).",
       "In the flat model no pointer has provenance, so provNeC can never hold there; nothing about flat follows.",
       "Does not say how a compiler establishes hne; R4e gives one sufficient criterion (a's allocation not exposed at the cast).",
       "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
