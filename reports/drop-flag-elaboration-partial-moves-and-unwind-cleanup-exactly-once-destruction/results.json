@@ -467,7 +467,7 @@
     "kind": "counterexample",
     "tier": "T0",
     "proof_status": "proved",
-    "plain_claim": "On progJoin (init x; branch; move x on one branch; ret), which satisfies all hypotheses of R1 and whose standard elaboration is elaboration-correct, replacing only the decision for x at the join (node 3, where x is may-init and not must-init) by an unconditional drop gives, on input [true], the log [create 0, consume 0, drop 0], which violates NoDoubleDrop.",
+    "plain_claim": "On progJoin (init x; branch; move x on one branch; ret), which satisfies all hypotheses of R1 and whose standard elaboration is elaboration-correct (by R1, `stdElab_correct_of_forward_moveChecked_noNormalPathToResume`, since `MoveChecked` is `PlacesAreMovePaths ∧ MovesFromInit ∧ InitsIntoUninit`), replacing only the decision for x at the join (node 3, where x is may-init and not must-init) by an unconditional drop gives, on input [true], the log [create 0, consume 0, drop 0], which violates NoDoubleDrop.",
     "hypotheses": [],
     "depth": "definitional",
     "nonvacuity_witness": "progJoin; the theorem itself states the hypotheses of R1 for progJoin.",
@@ -475,7 +475,7 @@
     "non_claims": [
       "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
       "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
-      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked), so the failure is caused by the one changed ingredient."
+      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked; by R1, `stdElab_correct_of_forward_moveChecked_noNormalPathToResume`), so the failure is caused by the one changed ingredient."
     ],
     "prior_art": [
       "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
@@ -500,7 +500,7 @@
     "non_claims": [
       "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
       "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
-      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked), so the failure is caused by the one changed ingredient."
+      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked; by R1, `stdElab_correct_of_forward_moveChecked_noNormalPathToResume`), so the failure is caused by the one changed ingredient."
     ],
     "prior_art": [
       "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
@@ -517,7 +517,7 @@
     "kind": "counterexample",
     "tier": "T1",
     "proof_status": "proved",
-    "plain_claim": "On progCleanup (two calls sharing one cleanup node; the second call consumes x), which satisfies all hypotheses of R1 and whose standard elaboration is elaboration-correct, clearing call-argument flags only on the call's normal edge (clearArgsBeforeCall := false, everything else standard) gives, on input [false, true, false], a run that completes an unwind with log [create 0, consume 0, drop 0]: the second call consumes x and panics, and the shared cleanup still sees x's flag set. NoDoubleDrop is violated.",
+    "plain_claim": "On progCleanup (two calls sharing one cleanup node; the second call consumes x), which satisfies all hypotheses of R1 and whose standard elaboration is elaboration-correct (by R1, `stdElab_correct_of_forward_moveChecked_noNormalPathToResume`, since `MoveChecked` is `PlacesAreMovePaths ∧ MovesFromInit ∧ InitsIntoUninit`), clearing call-argument flags only on the call's normal edge (clearArgsBeforeCall := false, everything else standard) gives, on input [false, true, false], a run that completes an unwind with log [create 0, consume 0, drop 0]: the second call consumes x and panics, and the shared cleanup still sees x's flag set. NoDoubleDrop is violated.",
     "hypotheses": [],
     "depth": "definitional",
     "nonvacuity_witness": "progCleanup.",
@@ -525,7 +525,7 @@
     "non_claims": [
       "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
       "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
-      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked), so the failure is caused by the one changed ingredient."
+      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked; by R1, `stdElab_correct_of_forward_moveChecked_noNormalPathToResume`), so the failure is caused by the one changed ingredient."
     ],
     "prior_art": [
       "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
@@ -612,7 +612,7 @@
     "kind": "counterexample",
     "tier": "T0",
     "proof_status": "proved",
-    "plain_claim": "On progReinit (init x; move x; branch; re-init x on one branch; ret), which satisfies all hypotheses of R1 and whose standard elaboration is elaboration-correct, omitting only the flag update of the re-initialization at node 3 gives, on input [true], a run that returns with log [create 0, consume 0, create 1], violating NoLeak.",
+    "plain_claim": "On progReinit (init x; move x; branch; re-init x on one branch; ret), which satisfies all hypotheses of R1 and whose standard elaboration is elaboration-correct (by R1, `stdElab_correct_of_forward_moveChecked_noNormalPathToResume`, since `MoveChecked` is `PlacesAreMovePaths ∧ MovesFromInit ∧ InitsIntoUninit`), omitting only the flag update of the re-initialization at node 3 gives, on input [true], a run that returns with log [create 0, consume 0, create 1], violating NoLeak.",
     "hypotheses": [],
     "depth": "definitional",
     "nonvacuity_witness": "progReinit.",
@@ -620,7 +620,7 @@
     "non_claims": [
       "Each row shows one program and one input: it does not show that the failure mode is the only possible one for that defect, that every program in the class fails, or rank the defects.",
       "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, a C++ implementation or any real program (model–system relation: none proved). Connections to real systems are separate derived (modeling bridge) claims.",
-      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked), so the failure is caused by the one changed ingredient."
+      "The program satisfies all hypotheses of R1, and its unchanged standard elaboration is elaboration-correct on all inputs (kernel-checked; by R1, `stdElab_correct_of_forward_moveChecked_noNormalPathToResume`), so the failure is caused by the one changed ingredient."
     ],
     "prior_art": [
       "RFC 320 'Non-zeroing dynamic drop', rust-lang/rfcs f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/0320-nonzeroing-dynamic-drop.md lines 6-15 (stack-local boolean flags for 'dynamic drop obligations'), lines 99-114 (drop obligations: a Drop type is one obligation, otherwise the union of its fields'; removed when moved, consumed by a call, or at scope end), lines 116-142 (dynamic obligations at a merge point = union minus intersection of the predecessors' sets), lines 144-155 (subsection 'Stack-local drop flags'; lines 153-155: 'we do not specify the precise set of boolean flags that are injected') [design document, historical; informal]",
