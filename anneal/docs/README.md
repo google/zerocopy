@@ -67,6 +67,10 @@ cargo run --locked -p anneal-audit -- \
   layout, and compiler integration.
 - [Trust model and boundary enforcement](trust-model.md) explains the
   `trusted/` boundary, dependency pins, and repository audits.
+- [Elaborator containment and Receipt v3
+  design](elaborator-containment-design.md) covers Linux `ExecSeal` sandboxing,
+  specification preflight, two-phase target replay, and Receipt Schema v3 taint
+  accounting.
 - [MIR correspondence design](mir-correspondence-design.md) and
   [strategy](mir-correspondence-strategy.md) describe how Anneal relates its
   operational semantics to the pinned reference model.

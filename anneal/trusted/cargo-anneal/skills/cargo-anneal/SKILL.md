@@ -13,8 +13,12 @@ the requested scope and compilation. Use `cargo anneal --version` and the
 matching release's documentation for orientation. Run the intended request to
 learn whether that build can verify the user's code.
 
-Lean elaboration can execute code as the caller. Run the entire verifier in
-an isolated execution environment when working with untrusted inputs.
+On Linux, `ExecSeal` sandboxes target Lean preflight, elaboration, and audit
+by default (`linux_bwrap` or `linux_landlock_seccomp`, recorded in
+`elaboration_sandbox`), whereas Rust compilation (`rustc`) still runs as the
+caller. Run the verifier in an isolated execution environment when working with
+untrusted Rust inputs or build scripts, on non-Linux hosts, or with
+`--allow-unsandboxed-elaboration`.
 
 ## Run the project's verification
 
@@ -102,15 +106,21 @@ inspect stderr for a command-line or execution error.
   between the implementation and specification.
 
 For diagnostics, rerun with `--artifacts` and a fresh UTF-8 directory path
-under an existing parent (adding `--export-lean-lib` when compiled `.olean*`
-files should be copied to `<artifacts>/lean-lib/`, or `--lean-memory-mb <MB>`
-to adjust Lean's `-M` limit). Retained `capture/Captured.lean` shows that the
-compiler adapter produced a Lean representation of the MIR.
-`generated/Expected.lean` shows that Anneal generated the obligation. Passing
-`--allow-unpinned-lean` with `--lean <path>` admits an unpinned host Lean
-toolchain over its discovered `Init.*`/`Std.*` sysroot closure, prints a
-`TAINTED` stderr warning, and sets `taint_reasons` to `["unpinned_lean"]`. Use
-the receipt to determine the outcome.
+under an existing parent (adding `--export-lean-lib` to promote Door-1-verified
+`.olean` files to `<artifacts>/lean-lib/`, omitting authored `proof` `.olean`s
+on `proof_failed` exit `1` and exporting nothing on `tool_failed` exit `2`, or
+`--lean-memory-mb <MB>` to adjust Lean's `-M` limit). Retained
+`capture/Captured.lean` shows that the compiler adapter produced a Lean
+representation of the MIR, and `generated/Expected.lean` shows that Anneal
+generated the obligation. Receipt Schema v3 (`"schema_version": 3`) applies a
+Uniform Flag-Driven Taint Law across `--allow-unpinned-lean` (requiring
+`--lean <path>`, recording the discovered `Init.*`/`Std.*` closure in
+`unpinned_lean`), `--allow-unsandboxed-elaboration` (`"elaboration_sandbox":
+"none"`), and `--allow-sorry-in-proof` (authored `proof` modules only,
+recording `sorry_declarations`): each active flag prints a `TAINTED` stderr
+warning and adds its reason (`"sorry_in_proof"`, `"unpinned_lean"`,
+`"unsandboxed_elaboration"`) to `taint_reasons`. Use the receipt to determine
+the outcome.
 
 With exit `0` and `selected_unit_verified` or `crate_verified` (or
 `tainted_selected_unit_verified` / `tainted_crate_verified` when
@@ -118,8 +128,9 @@ With exit `0` and `selected_unit_verified` or `crate_verified` (or
 caller preconditions with the user's intent. The receipt's
 `audit.specificationClosure` identifies definitions to inspect. Report the
 property actually checked and any gap with the request, along with the verified
-scope, compilation configuration, `taint_reasons`, material assumptions, and
-deferred checks. Keep the input identities with the receipt. A successful
-receipt can be large. Read `status`, `taint_reasons`, `scope`, and
+scope, compilation configuration, `elaboration_sandbox`, `taint_reasons` (and
+`sorry_declarations` when present), material assumptions, and deferred checks.
+Keep the input identities with the receipt. A successful receipt can be large.
+Read `status`, `taint_reasons`, `elaboration_sandbox`, `scope`, and
 `configuration` first, then inspect the relevant audit entries and the
 specification itself.

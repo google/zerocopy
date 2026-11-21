@@ -22,8 +22,8 @@ use std::{
 };
 
 use cargo_anneal::{
-    Checker, TOOLCHAIN, TargetAuditRequest, TargetBindings, TargetModule, TargetRole,
-    read_regular_file_deref, read_regular_file_strict, sha256_bytes,
+    ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
+    TargetModule, TargetRole, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
 };
 use clap::{
     Args, Subcommand,
@@ -43,7 +43,65 @@ include!("bundled_resources.rs");
 
 const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 4;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
-const RECEIPT_SCHEMA_VERSION: u32 = 2;
+const RECEIPT_SCHEMA_VERSION: u32 = 3;
+
+/// Closed 3-element set of verification taint atoms projected onto Receipt
+/// Schema v3 (`taint_reasons`), sorted lexicographically by wire spelling.
+/// Variant declaration order must match lexicographical `as_str()` order.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+enum VerificationTaint {
+    SorryInProof,
+    UnpinnedLean,
+    UnsandboxedElaboration,
+}
+
+impl VerificationTaint {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::SorryInProof => "sorry_in_proof",
+            Self::UnpinnedLean => "unpinned_lean",
+            Self::UnsandboxedElaboration => "unsandboxed_elaboration",
+        }
+    }
+
+    const fn warning_banner(self) -> &'static str {
+        match self {
+            Self::SorryInProof => {
+                "WARNING: allowing `sorry` in proof modules (--allow-sorry-in-proof); \
+                 verification result is TAINTED"
+            }
+            Self::UnpinnedLean => {
+                "WARNING: running with unpinned Lean (--allow-unpinned-lean); \
+                 verification result is TAINTED"
+            }
+            Self::UnsandboxedElaboration => {
+                "WARNING: running without OS elaborator containment \
+                 (--allow-unsandboxed-elaboration); verification result is TAINTED"
+            }
+        }
+    }
+}
+
+/// Collect active taint atoms under the Uniform Flag-Driven Taint Law: every
+/// `--allow-*` relaxation flag unconditionally inserts its taint atom even when
+/// the relaxed condition did not occur on that run.
+fn active_taints(args: &VerifyArgs) -> BTreeSet<VerificationTaint> {
+    let mut taints = BTreeSet::new();
+    if args.allow_sorry_in_proof {
+        taints.insert(VerificationTaint::SorryInProof);
+    }
+    if args.allow_unpinned_lean {
+        taints.insert(VerificationTaint::UnpinnedLean);
+    }
+    if args.allow_unsandboxed_elaboration {
+        taints.insert(VerificationTaint::UnsandboxedElaboration);
+    }
+    taints
+}
+
+fn taint_reason_strings(taints: &BTreeSet<VerificationTaint>) -> Vec<&'static str> {
+    taints.iter().map(|t| t.as_str()).collect()
+}
 
 /// Arguments of the build-neutral verification command.
 #[derive(Args)]
@@ -113,6 +171,14 @@ pub struct VerifyArgs {
     /// Allow unpinned Lean with explicit `--lean` (taints receipt).
     #[arg(long, global = true)]
     allow_unpinned_lean: bool,
+    /// Disable OS-level elaborator containment (`ExecSeal`) and run Lean
+    /// unsandboxed (taints receipt).
+    #[arg(long, global = true)]
+    allow_unsandboxed_elaboration: bool,
+    /// Allow `sorry` in proof modules only, recording `sorry_declarations`
+    /// (never specifications, model, capture, or expected; taints receipt).
+    #[arg(long, global = true)]
+    allow_sorry_in_proof: bool,
     /// Explicit Lean memory limit in MiB (`-M<MB>`; `resolve-imports` enforces
     /// a 4096 MiB floor).
     #[arg(
@@ -401,8 +467,8 @@ impl Scope {
         }
     }
 
-    const fn verified_status(&self, unpinned_lean: bool) -> &'static str {
-        match (self, unpinned_lean) {
+    const fn verified_status(&self, tainted: bool) -> &'static str {
+        match (self, tainted) {
             (Self::Crate {}, false) => "crate_verified",
             (Self::SelectedUnit { .. }, false) => "selected_unit_verified",
             (Self::Crate {}, true) => "tainted_crate_verified",
@@ -515,6 +581,8 @@ fn parse_capture_receipt(bytes: &[u8]) -> Result<CaptureReceipt> {
 struct FailureReceipt<'a> {
     schema_version: u32,
     taint_reasons: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    elaboration_sandbox: Option<&'a str>,
     status: &'a str,
     phase: &'a str,
     detail: &'a str,
@@ -529,12 +597,32 @@ struct Error {
     status: &'static str,
     phase: &'static str,
     detail: String,
+    elaboration_sandbox: Option<&'static str>,
+    suppress_retention: bool,
+}
+
+impl Error {
+    const fn with_sandbox(mut self, sandbox: Option<&'static str>) -> Self {
+        self.elaboration_sandbox = sandbox;
+        self
+    }
+
+    const fn without_retention(mut self) -> Self {
+        self.suppress_retention = true;
+        self
+    }
 }
 
 type Result<T> = std::result::Result<T, Error>;
 
 fn error(status: &'static str, phase: &'static str, detail: impl ToString) -> Error {
-    Error { status, phase, detail: detail.to_string() }
+    Error {
+        status,
+        phase,
+        detail: detail.to_string(),
+        elaboration_sandbox: None,
+        suppress_retention: false,
+    }
 }
 
 fn io(phase: &'static str, failure: std::io::Error) -> Error {
@@ -1497,6 +1585,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         canonical_root: format!("Trusted.MirSemantics.{root_name}"),
         subject_declaration: "Captured.program".to_owned(),
         specification_declaration: request.proof.specification.clone(),
+        allow_sorry_in_proof: args.allow_sorry_in_proof,
         bindings: TargetBindings {
             request_sha256: request_sha256.clone(),
             capture_sha256: capture_sha256.clone(),
@@ -1512,26 +1601,51 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // a successfully executed checker rejecting a proof.
     let mut checker = Checker::new(&bundle, tools.lean.as_deref()).map_err(|e| io("audit", e))?;
     checker.set_allow_unpinned_lean(args.allow_unpinned_lean);
+    checker.set_sandbox_mode(if args.allow_unsandboxed_elaboration {
+        SandboxMode::Unsandboxed
+    } else {
+        SandboxMode::PreferBwrapOrLandlock
+    });
     checker.set_lean_memory_limit_mb(args.lean_memory_mb);
     let audit_result = checker.run_target(&audit_request);
-    let export_result = if args.export_lean_lib {
-        Some(checker.export_target_oleans(&work.join("lean-lib")))
-    } else {
-        None
+    let active_sandbox_opt = checker.active_sandbox();
+    let sandbox_label = active_sandbox_opt.map(ActiveSandbox::as_str);
+    let audit = match audit_result {
+        Ok(audit) => audit,
+        Err(e) => {
+            return Err(handle_failed_target_audit(
+                &checker,
+                work,
+                args.export_lean_lib,
+                sandbox_label,
+                e,
+            ));
+        }
     };
-    let audit = audit_result.map_err(|e| {
-        error(if e.code == 1 { "proof_failed" } else { "tool_failed" }, "audit", e.to_string())
-    })?;
-    if let Some(Err(export_err)) = export_result {
-        return Err(error("tool_failed", "export-lean-lib", export_err.message));
+    let Some(active_sandbox) = active_sandbox_opt else {
+        return Err(error("tool_failed", "sandbox", "sandbox selection did not complete"));
+    };
+    if (active_sandbox == ActiveSandbox::None) != args.allow_unsandboxed_elaboration {
+        return Err(error(
+            "tool_failed",
+            "sandbox",
+            format!(
+                "active sandbox ({}) contradicts --allow-unsandboxed-elaboration={}",
+                active_sandbox.as_str(),
+                args.allow_unsandboxed_elaboration,
+            ),
+        )
+        .with_sandbox(Some(active_sandbox.as_str())));
     }
     let proof_ms = proof_start.elapsed().as_millis();
     // Snapshot identity is checked again at the accepting boundary. Logical
     // type equality cannot authenticate unused source or configuration hashes.
     for (path, expected) in &originals {
-        let (_, actual_sha) = read_input_file(path, Some(path), symlink_policy, "binding")?;
+        let (_, actual_sha) = read_input_file(path, Some(path), symlink_policy, "binding")
+            .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
         if actual_sha != *expected {
-            return Err(error("tool_failed", "binding", "an input changed during verification"));
+            return Err(error("tool_failed", "binding", "an input changed during verification")
+                .with_sandbox(Some(active_sandbox.as_str())));
         }
     }
     let current_capture_canon = fs::canonicalize(&capture_tool_path).map_err(|e| {
@@ -1540,19 +1654,24 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             "binding",
             format!("cannot inspect {}: {e}", capture_tool_path.display()),
         )
+        .with_sandbox(Some(active_sandbox.as_str()))
     })?;
     let (_, current_capture_sha) =
         read_regular_file_strict(&current_capture_canon, Some(&current_capture_canon), "binding")
-            .map_err(|e| error("tool_failed", "binding", e.message))?;
+            .map_err(|e| {
+            error("tool_failed", "binding", e.message).with_sandbox(Some(active_sandbox.as_str()))
+        })?;
     if current_capture_sha != capture_binary_sha256 || current_capture_canon != capture {
         return Err(error(
             "tool_failed",
             "binding",
             "capture executable changed during verification",
-        ));
+        )
+        .with_sandbox(Some(active_sandbox.as_str())));
     }
-    let status = request.scope.verified_status(args.allow_unpinned_lean);
-    let taint_reasons: &[&str] = if args.allow_unpinned_lean { &["unpinned_lean"] } else { &[] };
+    let taints = active_taints(args);
+    let taint_reasons = taint_reason_strings(&taints);
+    let status = request.scope.verified_status(!taints.is_empty());
     let correspondence_provenance: Value = if args.allow_unpinned_lean {
         json!({
             "applicable": false,
@@ -1568,6 +1687,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
                 "bundle",
                 format!("corrupt bundled correspondence provenance: {e}"),
             )
+            .with_sandbox(Some(active_sandbox.as_str()))
         })?
     };
     let toolchain_identity = if args.allow_unpinned_lean {
@@ -1615,10 +1735,29 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // reports about itself identifies an unhashed component, so its integrity
     // rests on the uncompromised execution environment assumed by
     // THREAT_MODEL.md section 2.1.
+    let mut assumptions: Vec<&str> = vec![
+        "faithful pinned compiler capture",
+        "experimental pointer-free MIR semantics",
+        lean_assumption,
+        "intact compiler and verification environment",
+    ];
+    if active_sandbox == ActiveSandbox::LinuxLandlockSeccomp {
+        assumptions.push(
+            "Tier 2 Landlock + seccomp containment shares host mount and PID namespaces \
+             (metadata/symlink existence probing remains visible to the elaborator)",
+        );
+    }
+    let mut deferred: Vec<&str> = Vec::new();
+    if active_sandbox == ActiveSandbox::None {
+        deferred.push("hostile Lean elaborator effects");
+    }
+    deferred.push("complete review-surface reporting");
+    deferred.push("source-to-deployed-binary correspondence");
     let mut result = json!({
         "schema_version": RECEIPT_SCHEMA_VERSION,
         "status": status,
         "taint_reasons": taint_reasons,
+        "elaboration_sandbox": active_sandbox.as_str(),
         "experimental": true,
         "request_sha256": request_sha256,
         "capture_sha256": capture_sha256,
@@ -1635,17 +1774,8 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             "proof_and_audit": proof_ms,
             "total": start.elapsed().as_millis(),
         },
-        "assumptions": [
-            "faithful pinned compiler capture",
-            "experimental pointer-free MIR semantics",
-            lean_assumption,
-            "intact compiler and verification environment",
-        ],
-        "deferred": [
-            "hostile Lean elaborator effects",
-            "complete review-surface reporting",
-            "source-to-deployed-binary correspondence",
-        ]
+        "assumptions": assumptions,
+        "deferred": deferred
     });
     if args.allow_unpinned_lean {
         let Some(unpinned_lean) = audit.get("unpinnedLean").and_then(Value::as_object) else {
@@ -1653,7 +1783,8 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
                 "tool_failed",
                 "audit",
                 "missing audit.unpinnedLean metadata for unpinned Lean run",
-            ));
+            )
+            .with_sandbox(Some(active_sandbox.as_str())));
         };
         let required_field = |key: &str| -> Result<Value> {
             unpinned_lean.get(key).cloned().ok_or_else(|| {
@@ -1662,6 +1793,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
                     "audit",
                     format!("missing audit.unpinnedLean.{key} metadata for unpinned Lean run"),
                 )
+                .with_sandbox(Some(active_sandbox.as_str()))
             })
         };
         result.as_object_mut().unwrap().insert(
@@ -1676,8 +1808,117 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             }),
         );
     }
-    write(&work.join("result.json"), &encoded(&result)?)?;
+    if let Some(sorry_decls) = validate_sorry_declarations(&audit, args.allow_sorry_in_proof)
+        .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?
+    {
+        result
+            .as_object_mut()
+            .unwrap()
+            .insert("sorry_declarations".into(), Value::Array(sorry_decls));
+    }
+    let result_bytes =
+        encoded(&result).map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
+    finalize_passing_artifacts(work, &result_bytes, args.export_lean_lib, |dest| {
+        checker.export_target_oleans_gated(dest, true)
+    })
+    .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
     Ok(result)
+}
+
+/// Write `result.json` before promoting `lean-lib` on a passing run so a
+/// `result.json` write failure can never leave a promoted `lean-lib` behind,
+/// and remove `result.json` if `lean-lib` export subsequently fails so
+/// `tool_failed` leaves neither a success receipt nor a `lean-lib`.
+fn finalize_passing_artifacts(
+    work: &Path,
+    result_bytes: &[u8],
+    export_lean_lib: bool,
+    export: impl FnOnce(&Path) -> std::result::Result<bool, cargo_anneal::Failure>,
+) -> Result<()> {
+    let result_path = work.join("result.json");
+    if let Err(mut write_err) = write(&result_path, result_bytes) {
+        if fs::symlink_metadata(&result_path).is_ok_and(|m| m.is_file())
+            && let Err(unlink_err) = fs::remove_file(&result_path)
+        {
+            write_err.detail = format!(
+                "{}; failed to remove partial {}: {unlink_err}",
+                write_err.detail,
+                result_path.display()
+            );
+            write_err = write_err.without_retention();
+        }
+        return Err(write_err);
+    }
+    if export_lean_lib {
+        // Export authored Proof `.olean`s only after every post-audit
+        // integrity, binding, provenance, and taint guard has succeeded.
+        if let Err(export_err) = export(&work.join("lean-lib")) {
+            return match fs::remove_file(&result_path) {
+                Ok(()) => Err(error("tool_failed", "export-lean-lib", export_err.message)),
+                Err(unlink_err) => Err(error(
+                    "tool_failed",
+                    "export-lean-lib",
+                    format!(
+                        "{}; failed to roll back {}: {unlink_err}",
+                        export_err.message,
+                        result_path.display()
+                    ),
+                )
+                .without_retention()),
+            };
+        }
+    }
+    Ok(())
+}
+
+/// Validate `audit.sorryDeclarations` and cross-check it against `audit.axioms`
+/// (`sorryAx`). Returns `Ok(Some(decls))` when `--allow-sorry-in-proof` is
+/// active, `Ok(None)` when absent on a `sorry`-free proof, and
+/// `Err(tool_failed)` on missing, malformed, or inconsistent audit metadata.
+fn validate_sorry_declarations(
+    audit: &Value,
+    allow_sorry_in_proof: bool,
+) -> Result<Option<Vec<Value>>> {
+    let Some(sorry_decls) = audit.get("sorryDeclarations").and_then(Value::as_array) else {
+        return Err(error("tool_failed", "audit", "missing audit.sorryDeclarations metadata"));
+    };
+    if !sorry_decls.iter().all(Value::is_string) {
+        return Err(error("tool_failed", "audit", "malformed audit.sorryDeclarations metadata"));
+    }
+    let Some(axioms) = audit.get("axioms").and_then(Value::as_array) else {
+        return Err(error("tool_failed", "audit", "missing audit.axioms metadata"));
+    };
+    if !axioms.iter().all(Value::is_string) {
+        return Err(error("tool_failed", "audit", "malformed audit.axioms metadata"));
+    }
+    let uses_sorry_ax = axioms.iter().any(|a| a.as_str() == Some("sorryAx"));
+    if allow_sorry_in_proof {
+        if uses_sorry_ax != !sorry_decls.is_empty() {
+            return Err(error(
+                "tool_failed",
+                "audit",
+                "inconsistent audit metadata between audit.axioms (sorryAx) and \
+                 audit.sorryDeclarations",
+            ));
+        }
+        Ok(Some(sorry_decls.clone()))
+    } else {
+        if !sorry_decls.is_empty() {
+            return Err(error(
+                "tool_failed",
+                "audit",
+                "unexpected non-empty audit.sorryDeclarations without --allow-sorry-in-proof",
+            ));
+        }
+        if uses_sorry_ax {
+            return Err(error(
+                "tool_failed",
+                "audit",
+                "unexpected sorryAx in audit.axioms without --allow-sorry-in-proof",
+            ));
+        }
+        Ok(None)
+    }
 }
 
 fn verification_stage() -> std::io::Result<tempfile::TempDir> {
@@ -1699,8 +1940,31 @@ fn verification_stage() -> std::io::Result<tempfile::TempDir> {
     builder.tempdir_in(parent)
 }
 
+fn handle_failed_target_audit(
+    checker: &Checker,
+    work: &Path,
+    export_lean_lib: bool,
+    sandbox_label: Option<&'static str>,
+    err: cargo_anneal::Failure,
+) -> Error {
+    if export_lean_lib
+        && err.code == 1
+        && let Err(export_err) = checker.export_target_oleans_gated(&work.join("lean-lib"), false)
+    {
+        return error("tool_failed", "export-lean-lib", export_err.message)
+            .with_sandbox(sandbox_label);
+    }
+    error(if err.code == 1 { "proof_failed" } else { "tool_failed" }, "audit", err.to_string())
+        .with_sandbox(sandbox_label)
+}
+
+fn failure_exit_code(status: &str) -> u8 {
+    if matches!(status, "unsupported" | "proof_failed") { 1 } else { 2 }
+}
+
 fn emit_failure(
     taint_reasons: &[&str],
+    elaboration_sandbox: Option<&str>,
     status: &str,
     phase: &str,
     detail: &str,
@@ -1710,6 +1974,7 @@ fn emit_failure(
     let receipt = FailureReceipt {
         schema_version: RECEIPT_SCHEMA_VERSION,
         taint_reasons,
+        elaboration_sandbox,
         status,
         phase,
         detail,
@@ -1720,15 +1985,12 @@ fn emit_failure(
 }
 
 pub fn main(args: VerifyArgs) -> ExitCode {
-    let taint_reasons: &[&str] = if args.allow_unpinned_lean {
-        eprintln!(
-            "WARNING: running with unpinned Lean (--allow-unpinned-lean); \
-             verification result is TAINTED"
-        );
-        &["unpinned_lean"]
-    } else {
-        &[]
-    };
+    let taints = active_taints(&args);
+    for taint in &taints {
+        eprintln!("{}", taint.warning_banner());
+    }
+    let taint_vec = taint_reason_strings(&taints);
+    let taint_reasons: &[&str] = &taint_vec;
     // Receipts encode the artifact destination as JSON text. Check its exact
     // spelling before staging or retention can create evidence, so an encoding
     // failure cannot leave an export with no receipt. Carry the checked text
@@ -1739,6 +2001,7 @@ pub fn main(args: VerifyArgs) -> ExitCode {
             None => {
                 return emit_failure(
                     taint_reasons,
+                    None,
                     "tool_failed",
                     "retention",
                     "artifact destination path must be UTF-8",
@@ -1754,6 +2017,7 @@ pub fn main(args: VerifyArgs) -> ExitCode {
         Err(failure) => {
             return emit_failure(
                 taint_reasons,
+                None,
                 "tool_failed",
                 "staging",
                 &failure.to_string(),
@@ -1766,14 +2030,33 @@ pub fn main(args: VerifyArgs) -> ExitCode {
     // ones. Export failure takes precedence over the verification result:
     // the requested evidence operation has not completed successfully.
     let outcome = run(&args, stage.path());
+    if let Err(failure) = &outcome
+        && failure.suppress_retention
+    {
+        let code = failure_exit_code(failure.status);
+        return emit_failure(
+            taint_reasons,
+            failure.elaboration_sandbox,
+            failure.status,
+            failure.phase,
+            &failure.detail,
+            if artifacts.is_some() { None } else { Some(None) },
+            code,
+        );
+    }
     // Retention is create-only. A caller cannot accidentally overwrite a proof
     // package or an earlier verification receipt by choosing an existing path.
     let retained = if let Some(destination) = artifacts {
-        match retain(stage.path(), Path::new(destination)) {
+        match retain_stage(stage.path(), Path::new(destination), outcome.is_ok()) {
             Ok(()) => Some(destination),
             Err(failure) => {
+                let sandbox = match &outcome {
+                    Err(err) => err.elaboration_sandbox,
+                    Ok(res) => res.get("elaboration_sandbox").and_then(Value::as_str),
+                };
                 return emit_failure(
                     taint_reasons,
+                    sandbox,
                     "tool_failed",
                     failure.phase,
                     &failure.detail,
@@ -1794,9 +2077,10 @@ pub fn main(args: VerifyArgs) -> ExitCode {
             ExitCode::SUCCESS
         }
         Err(failure) => {
-            let code = if matches!(failure.status, "unsupported" | "proof_failed") { 1 } else { 2 };
+            let code = failure_exit_code(failure.status);
             emit_failure(
                 taint_reasons,
+                failure.elaboration_sandbox,
                 failure.status,
                 failure.phase,
                 &failure.detail,
@@ -1812,7 +2096,12 @@ pub fn main(args: VerifyArgs) -> ExitCode {
 /// Existing destinations are never changed. A failed copy removes the newly
 /// created directory; a cleanup failure identifies possibly incomplete output.
 /// Callers report success only after every file has been copied.
+#[cfg(test)]
 fn retain(source: &Path, destination: &Path) -> Result<()> {
+    retain_stage(source, destination, true)
+}
+
+fn retain_stage(source: &Path, destination: &Path, allow_success_receipt: bool) -> Result<()> {
     // Exported evidence contains the same private inputs as the stage. Set
     // the Unix mode at creation so no permissive chmod window exposes them.
     let directory = fs::DirBuilder::new();
@@ -1827,7 +2116,7 @@ fn retain(source: &Path, destination: &Path) -> Result<()> {
     // cleanup path. A caller's existing directory must never be deleted
     // merely because retention failed to claim its requested destination.
     directory.create(destination).map_err(|e| io("retention", e))?;
-    if let Err(failure) = copy_artifacts(source, destination) {
+    if let Err(failure) = copy_artifacts(source, destination, allow_success_receipt) {
         // The destination belongs to this export, so a failed copy can be
         // removed without leaving a path that blocks retry. If removal
         // fails too, report possible partial output rather than claiming
@@ -1848,12 +2137,19 @@ fn retain(source: &Path, destination: &Path) -> Result<()> {
     Ok(())
 }
 
-fn copy_artifacts(source: &Path, destination: &Path) -> Result<()> {
+fn copy_artifacts(source: &Path, destination: &Path, allow_success_receipt: bool) -> Result<()> {
     for entry in walkdir::WalkDir::new(source).min_depth(1).follow_links(false) {
         let entry = entry.map_err(|e| error("tool_failed", "retention", e))?;
         let relative = entry.path().strip_prefix(source).unwrap();
         if entry.file_type().is_symlink() {
             return Err(error("tool_failed", "retention", "unexpected staging symlink"));
+        }
+        if !allow_success_receipt && relative == Path::new("result.json") {
+            return Err(error(
+                "tool_failed",
+                "retention",
+                "refusing to retain success receipt on failed run",
+            ));
         }
         let target = destination.join(relative);
         if entry.file_type().is_dir() {
@@ -2134,24 +2430,27 @@ mod tests {
     }
 
     #[test]
-    fn failure_receipt_preserves_null_or_omitted_artifacts() {
+    fn failure_receipt_preserves_null_or_omitted_artifacts_and_sandbox() {
         let omitted: Value = serde_json::to_value(FailureReceipt {
-            schema_version: 2,
+            schema_version: RECEIPT_SCHEMA_VERSION,
             taint_reasons: &[],
+            elaboration_sandbox: None,
             status: "tool_failed",
             phase: "retention",
             detail: "bad path",
             artifacts: None,
         })
         .unwrap();
-        assert_eq!(omitted["schema_version"], 2);
+        assert_eq!(omitted["schema_version"], 3);
         assert_eq!(omitted["taint_reasons"], json!([]));
         assert!(omitted.get("tainted").is_none(), "{omitted}");
         assert!(omitted.get("artifacts").is_none(), "{omitted}");
+        assert!(omitted.get("elaboration_sandbox").is_none(), "{omitted}");
 
         let explicit_null: Value = serde_json::to_value(FailureReceipt {
-            schema_version: 2,
+            schema_version: RECEIPT_SCHEMA_VERSION,
             taint_reasons: &["unpinned_lean"],
+            elaboration_sandbox: None,
             status: "unsupported",
             phase: "capture",
             detail: "bad item",
@@ -2160,11 +2459,13 @@ mod tests {
         .unwrap();
         assert_eq!(explicit_null["taint_reasons"], json!(["unpinned_lean"]));
         assert!(explicit_null.get("unpinned_lean").is_none());
+        assert!(explicit_null.get("elaboration_sandbox").is_none());
         assert_eq!(explicit_null.get("artifacts"), Some(&Value::Null), "{explicit_null}");
 
         let retained: Value = serde_json::to_value(FailureReceipt {
-            schema_version: 2,
+            schema_version: RECEIPT_SCHEMA_VERSION,
             taint_reasons: &[],
+            elaboration_sandbox: Some("linux_bwrap"),
             status: "proof_failed",
             phase: "audit",
             detail: "mismatch",
@@ -2172,6 +2473,138 @@ mod tests {
         })
         .unwrap();
         assert_eq!(retained["artifacts"], "/tmp/evidence");
+        assert_eq!(retained["elaboration_sandbox"], "linux_bwrap");
+    }
+
+    #[test]
+    fn taint_monoid_projects_all_eight_flag_subsets_canonically() {
+        let all = [
+            VerificationTaint::SorryInProof,
+            VerificationTaint::UnpinnedLean,
+            VerificationTaint::UnsandboxedElaboration,
+        ];
+        for pair in all.windows(2) {
+            assert!(pair[0] < pair[1], "{pair:?}");
+            assert!(pair[0].as_str() < pair[1].as_str(), "{pair:?}");
+        }
+        let base = VerifyArgs {
+            request: Some(PathBuf::from("request.json")),
+            manifest_path: None,
+            proof_dir: None,
+            select: Vec::new(),
+            capture: None,
+            lean: None,
+            sysroot: None,
+            artifacts: None,
+            export_lean_lib: false,
+            allow_unpinned_lean: false,
+            allow_unsandboxed_elaboration: false,
+            allow_sorry_in_proof: false,
+            lean_memory_mb: None,
+            command: None,
+        };
+        let crate_scope = Scope::Crate {};
+        let unit_scope = Scope::SelectedUnit { roots: BTreeSet::from(["foo".to_owned()]) };
+
+        for sorry in [false, true] {
+            for unpinned in [false, true] {
+                for unsandboxed in [false, true] {
+                    let args = VerifyArgs {
+                        allow_sorry_in_proof: sorry,
+                        allow_unpinned_lean: unpinned,
+                        allow_unsandboxed_elaboration: unsandboxed,
+                        request: base.request.clone(),
+                        manifest_path: None,
+                        proof_dir: None,
+                        select: Vec::new(),
+                        capture: None,
+                        lean: None,
+                        sysroot: None,
+                        artifacts: None,
+                        export_lean_lib: false,
+                        lean_memory_mb: None,
+                        command: None,
+                    };
+                    let taints = active_taints(&args);
+                    let reasons = taint_reason_strings(&taints);
+                    let mut expected = Vec::new();
+                    if sorry {
+                        expected.push("sorry_in_proof");
+                    }
+                    if unpinned {
+                        expected.push("unpinned_lean");
+                    }
+                    if unsandboxed {
+                        expected.push("unsandboxed_elaboration");
+                    }
+                    assert_eq!(reasons, expected);
+                    let tainted = !taints.is_empty();
+                    assert_eq!(
+                        crate_scope.verified_status(tainted),
+                        if tainted { "tainted_crate_verified" } else { "crate_verified" }
+                    );
+                    assert_eq!(
+                        unit_scope.verified_status(tainted),
+                        if tainted {
+                            "tainted_selected_unit_verified"
+                        } else {
+                            "selected_unit_verified"
+                        }
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn validate_sorry_declarations_enforces_flag_and_axiom_consistency() {
+        let clean = json!({"sorryDeclarations": [], "axioms": ["propext"]});
+        assert_eq!(validate_sorry_declarations(&clean, false).unwrap(), None);
+        assert_eq!(validate_sorry_declarations(&clean, true).unwrap(), Some(Vec::new()));
+
+        let with_sorry = json!({
+            "sorryDeclarations": ["Proof.hole"],
+            "axioms": ["propext", "sorryAx"],
+        });
+        assert_eq!(
+            validate_sorry_declarations(&with_sorry, true).unwrap(),
+            Some(vec![json!("Proof.hole")])
+        );
+        let err = validate_sorry_declarations(&with_sorry, false).unwrap_err();
+        assert_eq!(err.status, "tool_failed");
+        assert_eq!(err.phase, "audit");
+        assert!(err.detail.contains("sorryDeclarations"), "{}", err.detail);
+
+        for (case, allow, expected_substr) in [
+            (json!({"axioms": []}), false, "missing audit.sorryDeclarations"),
+            (
+                json!({"sorryDeclarations": [42], "axioms": []}),
+                true,
+                "malformed audit.sorryDeclarations",
+            ),
+            (json!({"sorryDeclarations": []}), false, "missing audit.axioms"),
+            (json!({"sorryDeclarations": [], "axioms": [true]}), true, "malformed audit.axioms"),
+            (json!({"sorryDeclarations": [], "axioms": ["sorryAx"]}), false, "unexpected sorryAx"),
+            (
+                json!({"sorryDeclarations": [], "axioms": ["sorryAx"]}),
+                true,
+                "inconsistent audit metadata",
+            ),
+            (
+                json!({"sorryDeclarations": ["Proof.hole"], "axioms": ["propext"]}),
+                true,
+                "inconsistent audit metadata",
+            ),
+        ] {
+            let err = validate_sorry_declarations(&case, allow).unwrap_err();
+            assert_eq!(err.status, "tool_failed", "{case}");
+            assert_eq!(err.phase, "audit", "{case}");
+            assert!(
+                err.detail.contains(expected_substr),
+                "{case}: expected `{expected_substr}` in `{}`",
+                err.detail
+            );
+        }
     }
 
     #[test]
@@ -2367,6 +2800,8 @@ mod tests {
             artifacts: None,
             export_lean_lib: false,
             allow_unpinned_lean: false,
+            allow_unsandboxed_elaboration: false,
+            allow_sorry_in_proof: false,
             lean_memory_mb: None,
             command: None,
         };
@@ -2400,6 +2835,8 @@ mod tests {
                 artifacts: None,
                 export_lean_lib: false,
                 allow_unpinned_lean: false,
+                allow_unsandboxed_elaboration: false,
+                allow_sorry_in_proof: false,
                 lean_memory_mb: None,
                 command: None,
             };
@@ -2487,5 +2924,301 @@ mod tests {
         assert_eq!(mods1, vec!["Proof", "SpecA", "SpecB"]);
         assert_eq!(mods1, mods2);
         assert_eq!(encoded(&p1.request).unwrap(), encoded(&p2.request).unwrap());
+    }
+
+    #[test]
+    fn proof_failed_export_lean_lib_fails_closed_on_ledger_or_fs_error() {
+        let anneal_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+
+        // 1. Clean `proof_failed` (`code == 1`) with `--export-lean-lib` when
+        //    no artifacts compiled yet returns `proof_failed` (exit 1).
+        let checker_empty = Checker::new(anneal_root, Some(Path::new("/bin/sh"))).unwrap();
+        let work_empty = tempfile::tempdir().unwrap();
+        let clean_empty_err = handle_failed_target_audit(
+            &checker_empty,
+            work_empty.path(),
+            true,
+            Some("linux_bwrap"),
+            cargo_anneal::Failure::policy("headers", "header rejected"),
+        );
+        assert_eq!(clean_empty_err.status, "proof_failed");
+        assert_eq!(clean_empty_err.phase, "audit");
+        assert_eq!(clean_empty_err.elaboration_sandbox, Some("linux_bwrap"));
+        assert_eq!(failure_exit_code(clean_empty_err.status), 1);
+
+        // 2. Filesystem error during `--export-lean-lib` on `proof_failed`
+        //    (`work/lean-lib` pre-existing as a regular file) must fail closed
+        //    with `status == "tool_failed"`, `phase == "export-lean-lib"`,
+        //    exit 2.
+        let work_fs_err = tempfile::tempdir().unwrap();
+        fs::write(work_fs_err.path().join("lean-lib"), b"blocker-file").unwrap();
+        let fs_err = handle_failed_target_audit(
+            &checker_empty,
+            work_fs_err.path(),
+            true,
+            Some("linux_bwrap"),
+            cargo_anneal::Failure::policy("compile-Proof", "proof rejected"),
+        );
+        assert_eq!(fs_err.status, "tool_failed");
+        assert_eq!(fs_err.phase, "export-lean-lib");
+        assert_eq!(fs_err.elaboration_sandbox, Some("linux_bwrap"));
+        assert_eq!(failure_exit_code(fs_err.status), 2);
+
+        // 3. Unledgered `.olean` written directly into `stage/lib` (e.g. under
+        //    `--allow-unsandboxed-elaboration`) must fail closed on both
+        //    `proof_failed` and passing exports.
+        let checker_unledgered = Checker::new(anneal_root, Some(Path::new("/bin/sh"))).unwrap();
+        let lib_unledgered = checker_unledgered.stage().join("lib");
+        fs::create_dir_all(&lib_unledgered).unwrap();
+        fs::write(lib_unledgered.join("Rogue.olean"), b"rogue-bytes").unwrap();
+        let work_unledgered = tempfile::tempdir().unwrap();
+        let unledgered_err = handle_failed_target_audit(
+            &checker_unledgered,
+            work_unledgered.path(),
+            true,
+            Some("none"),
+            cargo_anneal::Failure::policy("compile-Proof", "proof rejected"),
+        );
+        assert_eq!(unledgered_err.status, "tool_failed");
+        assert_eq!(unledgered_err.phase, "export-lean-lib");
+        assert!(
+            unledgered_err.detail.contains("unledgered artifact"),
+            "unexpected detail: {}",
+            unledgered_err.detail
+        );
+        assert_eq!(failure_exit_code(unledgered_err.status), 2);
+        assert!(!work_unledgered.path().join("lean-lib").exists());
+
+        let work_unledgered_pass = tempfile::tempdir().unwrap();
+        let pass_unledgered_err = finalize_passing_artifacts(
+            work_unledgered_pass.path(),
+            b"{\"status\":\"verified\"}\n",
+            true,
+            |dest| checker_unledgered.export_target_oleans_gated(dest, true),
+        )
+        .unwrap_err();
+        assert_eq!(pass_unledgered_err.status, "tool_failed");
+        assert_eq!(pass_unledgered_err.phase, "export-lean-lib");
+        assert!(!work_unledgered_pass.path().join("result.json").exists());
+        assert!(!work_unledgered_pass.path().join("lean-lib").exists());
+
+        // 4. Real `olean_ledger` export and tampering check on `proof_failed`:
+        //    compile a valid `Spec` and a broken `Proof` via `Checker::run_target`
+        //    (producing `Err(e)` with `e.code == 1` and `Spec.olean` recorded in
+        //    `olean_ledger`), verify clean `proof_failed` exports `Spec.olean`
+        //    while gating `Proof.olean`, then tamper `stage/lib/Spec.olean` and
+        //    verify `handle_failed_target_audit` escalates to `tool_failed` /
+        //    exit 2.
+        let lean_bin = cargo_anneal::default_lean_path();
+        if lean_bin.is_file() {
+            let src_dir = tempfile::tempdir().unwrap();
+            let sources = [
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Prelude\nimport Init.Core\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n\
+                     end Trusted.MirSemantics\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\ndef Spec.specs (_ : Nat) : Prop := False\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\n\
+                     theorem Proof.verify : Expected.claim := True.intro\n",
+                ),
+            ];
+            let modules: Vec<TargetModule> = sources
+                .iter()
+                .map(|(name, role, text)| {
+                    let path = src_dir.path().join(format!("{name}.lean"));
+                    fs::write(&path, text.as_bytes()).unwrap();
+                    TargetModule {
+                        module: (*name).to_owned(),
+                        source: path,
+                        expected_sha256: sha256_bytes(text.as_bytes()),
+                        role: *role,
+                    }
+                })
+                .collect();
+
+            let mut checker_ledger = Checker::new(anneal_root, Some(&lean_bin)).unwrap();
+            let req = TargetAuditRequest {
+                modules,
+                theorem_module: "Proof".to_owned(),
+                theorem_name: "Proof.verify".to_owned(),
+                expected_module: "Expected".to_owned(),
+                expected_declaration: "Expected.claim".to_owned(),
+                canonical_root: "Trusted.MirSemantics.UnitTheorem".to_owned(),
+                subject_declaration: "Captured.program".to_owned(),
+                specification_declaration: "Spec.specs".to_owned(),
+                allow_sorry_in_proof: false,
+                bindings: TargetBindings {
+                    request_sha256: "0".repeat(64),
+                    capture_sha256: "0".repeat(64),
+                    model_manifest_sha256: "0".repeat(64),
+                    specification_manifest_sha256: "0".repeat(64),
+                },
+            };
+            let run_err = checker_ledger.run_target(&req).unwrap_err();
+            assert_eq!(run_err.code, 1, "expected policy failure, got: {run_err}");
+
+            let promoted_spec = checker_ledger.stage().join("lib/Spec.olean");
+            assert!(promoted_spec.is_file(), "expected Spec.olean after {run_err}");
+
+            let work_ok = tempfile::tempdir().unwrap();
+            let clean_err = handle_failed_target_audit(
+                &checker_ledger,
+                work_ok.path(),
+                true,
+                Some("linux_bwrap"),
+                cargo_anneal::Failure::policy("compile-Proof", "proof rejected"),
+            );
+            assert_eq!(clean_err.status, "proof_failed");
+            assert_eq!(clean_err.phase, "audit");
+            assert_eq!(failure_exit_code(clean_err.status), 1);
+            assert!(work_ok.path().join("lean-lib/Spec.olean").is_file());
+            assert!(!work_ok.path().join("lean-lib/Proof.olean").exists());
+
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                fs::set_permissions(&promoted_spec, fs::Permissions::from_mode(0o600)).unwrap();
+            }
+            fs::write(&promoted_spec, b"tampered-spec-olean").unwrap();
+
+            let work_ledger = tempfile::tempdir().unwrap();
+            let ledger_err = handle_failed_target_audit(
+                &checker_ledger,
+                work_ledger.path(),
+                true,
+                Some("linux_bwrap"),
+                run_err,
+            );
+            assert_eq!(ledger_err.status, "tool_failed");
+            assert_eq!(ledger_err.phase, "export-lean-lib");
+            assert!(
+                ledger_err.detail.contains("changed before export"),
+                "unexpected detail: {}",
+                ledger_err.detail
+            );
+            assert_eq!(failure_exit_code(ledger_err.status), 2);
+            assert!(
+                !work_ledger.path().join("lean-lib").exists(),
+                "tool_failed ledger mismatch must not leave a partial lean-lib"
+            );
+        }
+    }
+
+    #[test]
+    fn finalize_passing_artifacts_keeps_result_and_lean_lib_atomic_on_tool_failed() {
+        // 1. If `result.json` cannot be written, `export` is never invoked and
+        //    no `lean-lib` directory is created.
+        let work_write_fail = tempfile::tempdir().unwrap();
+        fs::create_dir(work_write_fail.path().join("result.json")).unwrap();
+        let mut export_called = false;
+        let err = finalize_passing_artifacts(
+            work_write_fail.path(),
+            b"{\"status\":\"verified\"}\n",
+            true,
+            |_| {
+                export_called = true;
+                Ok(true)
+            },
+        )
+        .unwrap_err();
+        assert_eq!(err.status, "tool_failed");
+        assert_eq!(err.phase, "staging");
+        assert!(!export_called, "export must not run when writing result.json fails");
+        assert!(
+            !work_write_fail.path().join("lean-lib").exists(),
+            "tool_failed must never leave a promoted lean-lib"
+        );
+
+        // 2. If `export` fails after `result.json` was written, `result.json`
+        //    is rolled back so `tool_failed` leaves neither a success receipt
+        //    nor a `lean-lib`.
+        let work_export_fail = tempfile::tempdir().unwrap();
+        let err = finalize_passing_artifacts(
+            work_export_fail.path(),
+            b"{\"status\":\"verified\"}\n",
+            true,
+            |_| Err(cargo_anneal::Failure::operational("export-lean-lib", "simulated ENOSPC")),
+        )
+        .unwrap_err();
+        assert_eq!(err.status, "tool_failed");
+        assert_eq!(err.phase, "export-lean-lib");
+        assert!(err.detail.contains("simulated ENOSPC"), "{}", err.detail);
+        assert!(
+            !work_export_fail.path().join("result.json").exists(),
+            "failed export must remove pre-written success result.json"
+        );
+        assert!(
+            !work_export_fail.path().join("lean-lib").exists(),
+            "failed export must not leave lean-lib behind"
+        );
+
+        // 3. When both succeed, both `result.json` and `lean-lib` are present.
+        let work_ok = tempfile::tempdir().unwrap();
+        finalize_passing_artifacts(work_ok.path(), b"{\"status\":\"verified\"}\n", true, |dest| {
+            fs::create_dir_all(dest).unwrap();
+            fs::write(dest.join("Proof.olean"), b"ok").unwrap();
+            Ok(true)
+        })
+        .unwrap();
+        assert_eq!(
+            fs::read(work_ok.path().join("result.json")).unwrap(),
+            b"{\"status\":\"verified\"}\n"
+        );
+        assert!(work_ok.path().join("lean-lib/Proof.olean").is_file());
+
+        // 4. If `export` fails and rolling back `result.json` also fails (for
+        //    example when the staging directory becomes read-only), the error
+        //    marks `suppress_retention` and `retain_stage(..., false)` refuses
+        //    to publish the stale success receipt.
+        #[cfg(unix)]
+        if unsafe { libc::geteuid() } != 0 {
+            use std::os::unix::fs::PermissionsExt;
+            let work_ro = tempfile::tempdir().unwrap();
+            let ro_path = work_ro.path().to_path_buf();
+            let err =
+                finalize_passing_artifacts(&ro_path, b"{\"status\":\"verified\"}\n", true, |_| {
+                    fs::set_permissions(&ro_path, fs::Permissions::from_mode(0o500)).unwrap();
+                    Err(cargo_anneal::Failure::operational("export-lean-lib", "simulated EROFS"))
+                })
+                .unwrap_err();
+            fs::set_permissions(&ro_path, fs::Permissions::from_mode(0o700)).unwrap();
+            assert_eq!(err.status, "tool_failed");
+            assert_eq!(err.phase, "export-lean-lib");
+            assert!(err.suppress_retention);
+            assert!(
+                err.detail.contains("failed to roll back"),
+                "unexpected detail: {}",
+                err.detail
+            );
+            let retain_parent = tempfile::tempdir().unwrap();
+            let retain_dest = retain_parent.path().join("retained");
+            let retain_err = retain_stage(&ro_path, &retain_dest, false).unwrap_err();
+            assert_eq!(retain_err.phase, "retention");
+            assert!(!retain_dest.exists(), "failed retention must never publish stale result.json");
+        }
     }
 }

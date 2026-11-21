@@ -24,13 +24,14 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 use crate::{
+    sandbox::set_mode,
     stage::Checker,
     toolchain::{
         AdmittedToolchain, Failure, ImportEdge, Json, PreflightResult, TOOLCHAIN,
-        compute_unpinned_foundation_closure, default_compile_workers,
-        hash_unpinned_sysroot_module, is_allowed_unpinned_sysroot_module, is_lean_ident,
-        is_sha256_hex, sha256_bytes, sha256_file, sha256_file_deref, stage_regular_file,
-        topo_sort_modules, verify_installed_module_record,
+        compute_unpinned_foundation_closure, default_compile_workers, hash_unpinned_sysroot_module,
+        is_allowed_unpinned_sysroot_module, is_lean_ident, is_sha256_hex, sha256_bytes,
+        sha256_file, sha256_file_deref, stage_regular_file, topo_sort_modules,
+        verify_installed_module_record,
     },
 };
 
@@ -138,6 +139,13 @@ pub struct TargetAuditRequest {
     pub subject_declaration: String,
     /// Exact reviewed specification declaration.
     pub specification_declaration: String,
+    /// When `true`, Phase 2 of `"target-audit"` admits `sorryAx` strictly on
+    /// outgoing edges from `TargetRole::Proof` declarations outside the
+    /// Phase 1 claim/specification closure, reporting them in
+    /// `"sorryDeclarations"`. Phase 1 always enforces the strict 3-axiom
+    /// ceiling.
+    #[serde(default)]
+    pub allow_sorry_in_proof: bool,
     /// Holds the subject identities reported with acceptance.
     pub bindings: TargetBindings,
 }
@@ -152,7 +160,7 @@ fn target_name_valid(name: &str) -> bool {
 /// Return whether `module` belongs to the bundled `Anneal` theory namespace
 /// (`Anneal` or `Anneal.*`), which authored proof modules are forbidden from
 /// naming via `reserved_proof_module`.
-fn is_bundled_theory_module(module: &str) -> bool {
+pub(crate) fn is_bundled_theory_module(module: &str) -> bool {
     module == "Anneal" || module.starts_with("Anneal.")
 }
 
@@ -209,6 +217,7 @@ struct InspectorTargetAuditRequest<'a> {
     canonical_root: &'a str,
     subject_declaration: &'a str,
     specification_declaration: &'a str,
+    allow_sorry_in_proof: bool,
     bindings: &'a TargetBindings,
 }
 
@@ -239,6 +248,7 @@ impl<'a> From<&'a TargetAuditRequest> for InspectorTargetAuditRequest<'a> {
             canonical_root: &request.canonical_root,
             subject_declaration: &request.subject_declaration,
             specification_declaration: &request.specification_declaration,
+            allow_sorry_in_proof: request.allow_sorry_in_proof,
             bindings: &request.bindings,
         }
     }
@@ -259,6 +269,63 @@ impl Checker {
             })
         };
         self.invoke_inspector("headers", &req)
+    }
+
+    /// Run batched fail-closed `"spec-preflight"` across
+    /// `TargetRole::Specification` sources against the authenticated `Init` +
+    /// `Std` parser environment (zero target `.olean`s loaded).
+    #[doc(hidden)]
+    pub fn inspect_spec_preflight(
+        &mut self,
+        sources: &[(String, PathBuf)],
+    ) -> Result<Json, Failure> {
+        self.inspect_spec_preflight_with_closures(sources, None, None)
+    }
+
+    fn inspect_spec_preflight_with_closures(
+        &mut self,
+        sources: &[(String, PathBuf)],
+        allowed_foundation: Option<&BTreeSet<String>>,
+        allowed_libraries: Option<&BTreeSet<String>>,
+    ) -> Result<Json, Failure> {
+        let req = {
+            let adm = self.admitted()?;
+            let lib_set = allowed_libraries.unwrap_or(&adm.library_modules);
+            let in_fnd = |m: &String| {
+                adm.foundation_graph.contains_key(m)
+                    && allowed_foundation.is_none_or(|fnd_set| fnd_set.contains(m))
+            };
+            let in_lib = |m: &String| lib_set.contains(m) && adm.library_modules.contains(m);
+            let arts_arr: Vec<Json> = adm
+                .artifacts
+                .iter()
+                .filter(|(k, _)| in_fnd(k) || in_lib(k))
+                .map(|(k, parts)| json!([k, parts.to_wire()]))
+                .collect();
+            let foundation: Vec<&str> =
+                adm.foundation_graph.keys().filter(|m| in_fnd(m)).map(String::as_str).collect();
+            let libraries: Vec<&str> = lib_set
+                .iter()
+                .filter(|m| adm.library_modules.contains(*m))
+                .map(String::as_str)
+                .collect();
+            let graph: BTreeMap<&str, &[ImportEdge]> = adm
+                .graph
+                .iter()
+                .filter(|(k, _)| in_fnd(k) || in_lib(k))
+                .map(|(k, v)| (k.as_str(), v.as_slice()))
+                .collect();
+            json!({
+                "mode": "spec-preflight",
+                "sysroot": adm.prefix.to_string_lossy(),
+                "artifacts": arts_arr,
+                "foundation": foundation,
+                "libraries": libraries,
+                "graph": graph,
+                "sources": sources,
+            })
+        };
+        self.invoke_inspector("spec-preflight", &req)
     }
 
     /// Run `"target-audit"` mode over compiled target artifacts.
@@ -495,10 +562,8 @@ impl Checker {
             if !is_sha256_hex(&module.expected_sha256) {
                 return Err(Failure::policy("target-input", "invalid source digest"));
             }
-            let dest = self
-                .stage
-                .join("target-src")
-                .join(format!("{}.lean", module.module.replace('.', "/")));
+            let dest =
+                self.stage.join("ro").join(format!("{}.lean", module.module.replace('.', "/")));
             stage_regular_file(&module.source, &dest, "target-input")?;
             if !sha256_file(&dest, "target-input")?.eq_ignore_ascii_case(&module.expected_sha256) {
                 return Err(Failure::policy(
@@ -506,6 +571,7 @@ impl Checker {
                     format!("source digest differs for {}", module.module),
                 ));
             }
+            set_mode(&dest, 0o444)?;
             staged.insert(module.module.clone(), dest);
             roles.insert(module.module.clone(), module.role);
         }
@@ -559,6 +625,7 @@ impl Checker {
             canonical_root: request.canonical_root.clone(),
             subject_declaration: request.subject_declaration.clone(),
             specification_declaration: request.specification_declaration.clone(),
+            allow_sorry_in_proof: request.allow_sorry_in_proof,
             bindings: request.bindings.clone(),
         };
         if self.admitted()?.unpinned {
@@ -573,7 +640,20 @@ impl Checker {
             self.admit_libraries(imports.values().flatten().map(|e| e.module.clone()))?;
         }
         for (module, edges) in &imports {
+            let has_non_meta_init = edges.iter().any(|e| e.module == "Init" && !e.is_meta);
             for edge in edges {
+                if edge.import_all || !edge.is_exported {
+                    return Err(Failure::policy(
+                        "target-import",
+                        format!("import modifiers are unsupported in {module}"),
+                    ));
+                }
+                if edge.is_meta && !(edge.module == "Init" && has_non_meta_init) {
+                    return Err(Failure::policy(
+                        "target-import",
+                        format!("meta import {} is unsupported in {module}", edge.module),
+                    ));
+                }
                 if let Some(dep) = roles.get(&edge.module) {
                     if !roles[module].allows(*dep) {
                         return Err(Failure::policy(
@@ -594,31 +674,129 @@ impl Checker {
         }
         let order =
             topo_sort_modules(staged.keys().cloned().collect(), &imports, "target import cycle")?;
+        // Run fail-closed `"spec-preflight"` across retained
+        // `TargetRole::Specification` modules, grouping strictly by each
+        // specification module's own transitive `(foundation_graph,
+        // library_modules)` import closure so neither unimported `Init.*`
+        // foundation extensions nor proof/sibling library imports can leak
+        // parser syntax or priorities into a specification's preflight AST.
+        let spec_sources: Vec<(String, PathBuf)> = staged
+            .iter()
+            .filter(|(m, _)| roles.get(*m) == Some(&TargetRole::Specification))
+            .map(|(m, p)| (m.clone(), p.clone()))
+            .collect();
+        if spec_sources.is_empty() {
+            let empty_fnd = BTreeSet::new();
+            let empty_libs = BTreeSet::new();
+            let spec_pf = self.inspect_spec_preflight_with_closures(
+                &[],
+                Some(&empty_fnd),
+                Some(&empty_libs),
+            )?;
+            if spec_pf.get("checked").and_then(Json::as_array).is_none() {
+                return Err(Failure::operational(
+                    "spec-preflight",
+                    "missing checked specification inventory",
+                ));
+            }
+        } else {
+            type ClosureKey = (BTreeSet<String>, BTreeSet<String>);
+            let spec_groups: BTreeMap<ClosureKey, Vec<(String, PathBuf)>> = {
+                let adm = self.admitted()?;
+                let mut groups: BTreeMap<ClosureKey, Vec<(String, PathBuf)>> = BTreeMap::new();
+                for (spec_mod, spec_path) in &spec_sources {
+                    let mut visited_mods: BTreeSet<String> = BTreeSet::new();
+                    let mut fnd: BTreeSet<String> = BTreeSet::new();
+                    let mut libs: BTreeSet<String> = BTreeSet::new();
+                    let mut queue: VecDeque<String> = VecDeque::from([spec_mod.clone()]);
+                    while let Some(curr) = queue.pop_front() {
+                        if !visited_mods.insert(curr.clone()) {
+                            continue;
+                        }
+                        if adm.foundation_graph.contains_key(&curr) {
+                            fnd.insert(curr.clone());
+                        } else if adm.library_modules.contains(&curr) {
+                            libs.insert(curr.clone());
+                        }
+                        let edges = imports
+                            .get(&curr)
+                            .map(Vec::as_slice)
+                            .or_else(|| adm.graph.get(&curr).map(Vec::as_slice));
+                        if let Some(edges) = edges {
+                            for edge in edges {
+                                if !visited_mods.contains(&edge.module) {
+                                    queue.push_back(edge.module.clone());
+                                }
+                            }
+                        }
+                    }
+                    groups
+                        .entry((fnd, libs))
+                        .or_default()
+                        .push((spec_mod.clone(), spec_path.clone()));
+                }
+                groups
+            };
+            let mut checked_specs: BTreeSet<String> = BTreeSet::new();
+            for ((group_fnd, group_libs), group_sources) in &spec_groups {
+                let spec_pf = self.inspect_spec_preflight_with_closures(
+                    group_sources,
+                    Some(group_fnd),
+                    Some(group_libs),
+                )?;
+                let group_checked: BTreeSet<&str> = spec_pf
+                    .get("checked")
+                    .and_then(Json::as_array)
+                    .ok_or_else(|| {
+                        Failure::operational(
+                            "spec-preflight",
+                            "missing checked specification inventory",
+                        )
+                    })?
+                    .iter()
+                    .filter_map(Json::as_str)
+                    .collect();
+                if group_checked.len() != group_sources.len()
+                    || !group_sources.iter().all(|(m, _)| group_checked.contains(m.as_str()))
+                {
+                    return Err(Failure::operational(
+                        "spec-preflight",
+                        "incomplete specification preflight inventory",
+                    ));
+                }
+                checked_specs.extend(group_checked.into_iter().map(str::to_owned));
+            }
+            if checked_specs.len() != spec_sources.len()
+                || !spec_sources.iter().all(|(m, _)| checked_specs.contains(m.as_str()))
+            {
+                return Err(Failure::operational(
+                    "spec-preflight",
+                    "incomplete specification preflight inventory",
+                ));
+            }
+        }
         // Compilation consumes authenticated private copies and explicit
-        // imported artifacts across the verified module DAG. Target
-        // elaboration remains under the intact-host assumption; this path does
-        // not relax repository syntax admission.
+        // imported artifacts across the verified module DAG inside `ExecSeal`.
+        self.compiled_roles = roles.clone();
         self.compile_lean_modules_parallel(
             &order,
             &staged,
             &imports,
-            "target-lib",
+            "lib",
             false,
             true,
             default_compile_workers(4),
         )?;
-        // Authenticate the staged bytes again after elaboration. This catches
-        // accidental source changes; hostile host mutation remains excluded.
-        for module in &filtered_request.modules {
-            if !sha256_file(&staged[&module.module], "target-input")?
-                .eq_ignore_ascii_case(&module.expected_sha256)
-            {
-                return Err(Failure::policy(
-                    "target-input",
-                    "staged source changed during elaboration",
-                ));
-            }
-        }
+        // Re-hash `stage/control/TrustedBoundary.lean`,
+        // `stage/control/TrustedBoundary.olean`, every staged source snapshot
+        // in `stage/ro/`, and every Door-1-promoted `.olean` in `stage/lib/`
+        // immediately before `"target-audit"` (`ArtifactLedger`).
+        let ledger_sources: Vec<(PathBuf, &str)> = filtered_request
+            .modules
+            .iter()
+            .map(|m| (staged[&m.module].clone(), m.expected_sha256.as_str()))
+            .collect();
+        self.verify_artifact_ledger(&ledger_sources)?;
         // Compilation success alone does not establish the exact theorem
         // type, permitted assumptions, or compiled source roles. Acceptance
         // is a separate inspection of the produced kernel declarations.
@@ -712,7 +890,7 @@ impl Checker {
         let adm = self.admitted()?;
         obj.insert("toolchain".into(), json!(adm.version));
         if adm.unpinned {
-            let current_lean_sha = sha256_file_deref(self.lean_path(), "target-provenance")
+            let current_lean_sha = sha256_file_deref(&adm.exec_lean, "target-provenance")
                 .map_err(|e| Failure::operational("target-provenance", e.message))?;
             let Some(admitted_lean_sha) = adm.lean_binary_sha256.as_deref() else {
                 return Err(Failure::operational(
@@ -862,8 +1040,10 @@ mod admission_tests {
             let root = base.join("bundle");
             let prefix = base.join("prefix");
             let lean = base.join("lean");
-            // Simulate compiling the inspector so a valid request reaches
-            // its header invocation. Status 3 makes that invocation visible.
+            // Simulate compiling the inspector through Door 1 so a valid
+            // request reaches `TrustedBoundaryEntry.lean` for `"headers"`
+            // (`exit 3`, vs `exit 4` on any unexpected invocation).
+            let marker = base.join("headers-ran.marker");
             fs::write(
                 &lean,
                 format!(
@@ -874,13 +1054,21 @@ case "$1" in
 esac
 while [ "$#" -gt 1 ]; do
     case "$1:$2" in
-        -o:*/inspector-lib/TrustedBoundary.olean) : > "$2"; exit ;;
+        -o:*/out/TrustedBoundary.olean|-o:*/inspector-compile-*/TrustedBoundary.olean)
+            printf 'olean\n' > "$2"
+            exit 0
+            ;;
+        --run:*/TrustedBoundaryEntry.lean)
+            printf 'ran\n' >> '{}'
+            exit 3
+            ;;
     esac
     shift
 done
-exit 3
+exit 4
 "#,
-                    prefix.display()
+                    prefix.display(),
+                    marker.display()
                 ),
             )
             .unwrap();
@@ -944,6 +1132,7 @@ exit 3
             let mut checker =
                 Checker::new_with_env(&self.root, Some(self.lean.as_path()), []).unwrap();
             checker.set_expected_sysroot_manifest_sha256_for_test(&self.sysroot_manifest_sha256);
+            checker.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
             checker
         }
 
@@ -976,6 +1165,7 @@ exit 3
                 canonical_root: "Trusted.MirSemantics.UnitTheorem".to_owned(),
                 subject_declaration: "Captured.program".to_owned(),
                 specification_declaration: "Spec.specs".to_owned(),
+                allow_sorry_in_proof: false,
                 bindings: TargetBindings {
                     request_sha256: digest.clone(),
                     capture_sha256: digest.clone(),
@@ -1095,6 +1285,7 @@ exit 3
         let failure = toolchain.checker().run_target(&request).unwrap_err();
         assert_eq!((failure.code, failure.phase.as_str()), (2, "headers"), "{failure}");
         assert!(failure.message.starts_with("Lean exited Some(3)"), "{failure}");
+        assert!(toolchain.base.join("headers-ran.marker").is_file());
         for module in [FOUNDATION, LIBRARY] {
             let mut shadowing = request.clone();
             shadowing.modules.push(TargetModule {
@@ -1307,6 +1498,7 @@ mod unpinned_admission_tests {
             canonical_root: "Trusted.MirSemantics.UnitTheorem".to_owned(),
             subject_declaration: "Captured.program".to_owned(),
             specification_declaration: "Spec.specs".to_owned(),
+            allow_sorry_in_proof: false,
             bindings: TargetBindings {
                 request_sha256: digest.clone(),
                 capture_sha256: digest.clone(),
@@ -1375,6 +1567,7 @@ mod unpinned_admission_tests {
         symlink(ext.join("Lake.olean"), prefix.join("lib/lean/Lake.olean")).unwrap();
         fs::write(prefix.join("lib/lean/Std.olean"), b"std").unwrap();
 
+        let marker = base.join("unpinned-headers-ran.marker");
         let lean = base.join("lean");
         fs::write(
             &lean,
@@ -1386,13 +1579,21 @@ case "$1" in
 esac
 while [ "$#" -gt 1 ]; do
     case "$1:$2" in
-        -o:*/inspector-lib/TrustedBoundary.olean) : > "$2"; exit ;;
+        -o:*/out/TrustedBoundary.olean|-o:*/inspector-compile-*/TrustedBoundary.olean)
+            printf 'olean\n' > "$2"
+            exit 0
+            ;;
+        --run:*/TrustedBoundaryEntry.lean)
+            printf 'ran\n' >> '{}'
+            exit 3
+            ;;
     esac
     shift
 done
-exit 3
+exit 4
 "#,
-                prefix.display()
+                prefix.display(),
+                marker.display()
             ),
         )
         .unwrap();
@@ -1417,10 +1618,13 @@ exit 3
 
         let mut checker = Checker::new_with_env(&root, Some(&lean), []).unwrap();
         checker.set_allow_unpinned_lean(true);
+        checker.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
         // Control: passes staging and reaches inspector (`Lean exited
         // Some(3)`).
         let control = checker.run_target(&req).unwrap_err();
         assert_eq!((control.code, control.phase.as_str()), (2, "headers"), "{control}");
+        assert!(control.message.starts_with("Lean exited Some(3)"), "{control}");
+        assert!(marker.is_file());
 
         for colliding in ["Init.Shadow", "Std.Shadow", "Lean.Shadow", "Lake", "Lake.Shadow"] {
             let mut bad = req.clone();
@@ -1493,14 +1697,21 @@ exit 3
 
         let mut checker = Checker::new(&repo_root(), Some(&wrapper_lean)).unwrap();
         checker.set_allow_unpinned_lean(true);
+        checker.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
 
-        // Reject Lean.* and Lake.* imports before compilation.
+        // Reject Lean.* and Lake.* imports at `"headers"` before compilation,
+        // and verify `admit_unpinned_sysroot` independently enforces the same
+        // Init/Std-only boundary as defense-in-depth.
         for forbidden in ["Lean.Elab", "Lake.Build"] {
             let bad_req = minimal_request(&base.join(format!("bad-{forbidden}")), Some(forbidden));
             let err = checker.run_target(&bad_req).unwrap_err();
             assert_eq!(err.code, 1, "{forbidden}: {err}");
-            assert_eq!(err.phase, "target-import", "{forbidden}: {err}");
-            assert!(err.message.contains("only Init and Std"), "{forbidden}: {err}");
+            assert_eq!(err.phase, "headers", "{forbidden}: {err}");
+            assert!(err.message.contains("disallowed sysroot import"), "{forbidden}: {err}");
+            let adm_err = checker.admit_unpinned_sysroot([forbidden.to_owned()]).unwrap_err();
+            assert_eq!(adm_err.code, 1, "{forbidden}: {adm_err}");
+            assert_eq!(adm_err.phase, "target-import", "{forbidden}: {adm_err}");
+            assert!(adm_err.message.contains("only Init and Std"), "{forbidden}: {adm_err}");
         }
 
         // Valid unpinned run with absent src/lean produces null sourceSha256 on
@@ -1529,6 +1740,117 @@ exit 3
                 identities[target_mod]
             );
         }
+    }
+
+    #[test]
+    fn live_unpinned_wrapper_launcher_rechecks_resolved_exec_lean_consistently() {
+        let real_lean = fs::canonicalize(installed_lean()).unwrap();
+        let real_lean_sha = sha256_file_deref(&real_lean, "test").unwrap();
+        let real_prefix = real_lean.parent().unwrap().parent().unwrap();
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        // Opaque wrapper launcher outside `<prefix>/bin/lean` with a host-write
+        // sentinel proving it never runs unsandboxed under `ExecSeal`.
+        let wrapper_sentinel = base.join("wrapper-ran");
+        let wrapper_lean = base.join("lean-wrapper");
+        fs::write(
+            &wrapper_lean,
+            format!(
+                "#!/bin/sh\n: > '{}'\nexec '{}' \"$@\"\n",
+                wrapper_sentinel.display(),
+                real_lean.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&wrapper_lean, fs::Permissions::from_mode(0o755)).unwrap();
+        let wrapper_sha = sha256_file_deref(&wrapper_lean, "test").unwrap();
+        assert_ne!(
+            wrapper_sha, real_lean_sha,
+            "wrapper launcher must have a distinct digest from prefix/bin/lean"
+        );
+
+        // 1. Under `PreferBwrapOrLandlock`, an opaque wrapper outside a Lean
+        //    sysroot must fail closed BEFORE spawning any child process.
+        let mut contained_wrapper = Checker::new(&repo_root(), Some(&wrapper_lean)).unwrap();
+        contained_wrapper.set_allow_unpinned_lean(true);
+        contained_wrapper.set_sandbox_mode(crate::SandboxMode::PreferBwrapOrLandlock);
+        let contained_req = minimal_request(&base.join("req-wrapper-contained"), None);
+        let contained_err = contained_wrapper.run_target(&contained_req).unwrap_err();
+        assert_eq!(contained_err.code, 2, "{contained_err}");
+        assert_eq!(contained_err.phase, "toolchain", "{contained_err}");
+        assert!(
+            !wrapper_sentinel.exists(),
+            "opaque wrapper launcher must never execute on the host under ExecSeal"
+        );
+
+        // 2. Static `elan`-layout proxy (`<elan_home>/bin/lean` +
+        //    `settings.toml` `default_toolchain`) resolves
+        //    `<elan_home>/toolchains/<tc>/bin/lean` statically without
+        //    executing the proxy binary and runs all probes inside `ExecSeal`.
+        let elan_home = base.join("elan-home");
+        let elan_sentinel = base.join("elan-proxy-ran");
+        let elan_proxy = elan_home.join("bin/lean");
+        fs::create_dir_all(elan_proxy.parent().unwrap()).unwrap();
+        fs::write(&elan_proxy, format!("#!/bin/sh\n: > '{}'\nexit 99\n", elan_sentinel.display()))
+            .unwrap();
+        fs::set_permissions(&elan_proxy, fs::Permissions::from_mode(0o755)).unwrap();
+        fs::write(
+            elan_home.join("settings.toml"),
+            "default_toolchain = \"leanprover/lean4:v4.34.1\" # comment\n\
+             [overrides]\n\"/ignored\" = \"other\"\n",
+        )
+        .unwrap();
+        let elan_tc = elan_home.join("toolchains/leanprover--lean4---v4.34.1");
+        fs::create_dir_all(elan_tc.join("bin")).unwrap();
+        symlink(&real_lean, elan_tc.join("bin/lean")).unwrap();
+        symlink(real_prefix.join("lib"), elan_tc.join("lib")).unwrap();
+
+        let mut elan_checker = Checker::new(&repo_root(), Some(&elan_proxy)).unwrap();
+        elan_checker.set_allow_unpinned_lean(true);
+        elan_checker.set_sandbox_mode(crate::SandboxMode::PreferBwrapOrLandlock);
+        let elan_req = minimal_request(&base.join("req-elan-contained"), None);
+        let elan_report = elan_checker.run_target(&elan_req).unwrap();
+        assert_eq!(elan_report["replay"], json!(true));
+        assert_eq!(elan_report["exactType"], json!(true));
+        assert_eq!(
+            elan_report["unpinnedLean"]["leanBinarySha256"].as_str(),
+            Some(real_lean_sha.as_str())
+        );
+        assert_ne!(
+            elan_checker.active_sandbox(),
+            Some(crate::ActiveSandbox::None),
+            "elan-resolved unpinned run must use active ExecSeal containment"
+        );
+        assert!(!elan_sentinel.exists(), "elan proxy binary must never execute under ExecSeal");
+
+        // 3. Under explicit `SandboxMode::Unsandboxed` (tainted receipt with
+        //    `elaboration_sandbox: "none"`), the opaque wrapper succeeds and
+        //    records `exec_lean`'s digest; switching back to contained mode on
+        //    the same `Checker` invalidates the unsandboxed admission.
+        let mut unsandboxed = Checker::new(&repo_root(), Some(&wrapper_lean)).unwrap();
+        unsandboxed.set_allow_unpinned_lean(true);
+        unsandboxed.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
+        let unsandboxed_req = minimal_request(&base.join("req-wrapper-unsandboxed"), None);
+        let report = unsandboxed.run_target(&unsandboxed_req).unwrap();
+        assert!(wrapper_sentinel.exists());
+        assert_eq!(report["replay"], json!(true));
+        assert_eq!(report["exactType"], json!(true));
+        assert_eq!(
+            report["unpinnedLean"]["leanBinarySha256"].as_str(),
+            Some(real_lean_sha.as_str()),
+            "unpinnedLean.leanBinarySha256 must match resolved exec_lean"
+        );
+
+        fs::remove_file(&wrapper_sentinel).unwrap();
+        unsandboxed.set_sandbox_mode(crate::SandboxMode::PreferBwrapOrLandlock);
+        let recheck_err = unsandboxed.tool_admission().unwrap_err();
+        assert_eq!(recheck_err.code, 2, "{recheck_err}");
+        assert_eq!(recheck_err.phase, "toolchain", "{recheck_err}");
+        assert!(
+            !wrapper_sentinel.exists(),
+            "mode switch to ExecSeal must clear cached unsandboxed admission"
+        );
     }
 
     fn nat_shadow_false_proof_request(
@@ -1851,6 +2173,171 @@ exit 3
         );
         assert!(!tampered_adm.execution_began());
     }
+
+    #[test]
+    fn live_spec_preflight_isolates_per_specification_library_closures() {
+        let lean = installed_lean();
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+
+        // `0#8` (`n#w` BitVec literal syntax) is registered by
+        // `Init.Data.BitVec.Basic` (`library-lock.json`), not `Init.Prelude`.
+        // `SpecWithBv` imports `Init.Data.BitVec.Basic`, whereas `SpecBare`
+        // imports only `Model` (`prelude`). Preflight must check `SpecBare`
+        // strictly against its own import closure and reject `0#8` at
+        // `"spec-preflight"` rather than leaking `SpecWithBv`'s parser syntax.
+        let bad_req = write_target_request(
+            &base.join("isolated-closures-bad"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Prelude\nnamespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "SpecWithBv",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\nimport Init.Data.BitVec.Basic\n\
+                     def SpecWithBv.ok : Prop := (0#8) = (0#8)\n",
+                ),
+                (
+                    "SpecBare",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def SpecBare.specs (_ : Nat) : Prop := (0#8) = (0#8)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport SpecWithBv\nimport SpecBare\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program SpecBare.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\ntheorem Proof.verify : Expected.claim := rfl\n",
+                ),
+            ],
+        );
+        let mut checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let err = checker.run_target(&bad_req).unwrap_err();
+        assert_eq!(err.code, 1, "expected policy rejection: {err}");
+        assert_eq!(err.phase, "spec-preflight", "expected spec-preflight rejection: {err}");
+        assert!(
+            err.message.contains("SpecBare"),
+            "expected SpecBare parse failure in spec-preflight, got: {err}"
+        );
+
+        // Foundation-closure isolation: infix `=` is registered by
+        // `Init.Notation` (part of `foundation_graph`), not `Init.Prelude`.
+        // Even when `Proof` imports `Init.Notation`, `SpecFoundBad` (`prelude`,
+        // importing only `Model` -> `Init.Prelude`) must be preflighted strictly
+        // against its own `{"Init.Prelude"}` foundation closure and rejected at
+        // `"spec-preflight"` rather than elaborating under `Init.Notation`.
+        let bad_fnd_req = write_target_request(
+            &base.join("isolated-fnd-closures-bad"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Prelude\nnamespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "SpecFoundBad",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def SpecFoundBad.specs (n : Nat) : Prop := n = n\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport SpecFoundBad\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program SpecFoundBad.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Init.Notation\nimport Expected\n\
+                     theorem Proof.verify : Expected.claim := rfl\n",
+                ),
+            ],
+        );
+        let mut fnd_checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let fnd_err = fnd_checker.run_target(&bad_fnd_req).unwrap_err();
+        assert_eq!(fnd_err.code, 1, "expected policy rejection: {fnd_err}");
+        assert_eq!(
+            fnd_err.phase, "spec-preflight",
+            "expected spec-preflight rejection before compilation: {fnd_err}"
+        );
+        assert!(
+            fnd_err.message.contains("SpecFoundBad"),
+            "expected SpecFoundBad parse failure in spec-preflight, got: {fnd_err}"
+        );
+
+        // Control: when `Spec` uses only `Init.Prelude` syntax (`Eq n n`) while
+        // `SpecWithBv` uses `0#8`, both distinct closure groups pass preflight
+        // and full verification succeeds.
+        let good_req = write_target_request(
+            &base.join("isolated-closures-good"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Prelude\nnamespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "SpecWithBv",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\nimport Init.Data.BitVec.Basic\n\
+                     def SpecWithBv.ok : Prop := (0#8) = (0#8)\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (n : Nat) : Prop := Eq n n\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport SpecWithBv\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\ntheorem Proof.verify : Expected.claim := rfl\n",
+                ),
+            ],
+        );
+        let mut ok_checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let report = ok_checker.run_target(&good_req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+    }
 }
 
 #[cfg(all(test, unix))]
@@ -2117,9 +2604,9 @@ mod tests {
         assert!(!sources_unimported.contains("Anneal.MirWp"), "{sources_unimported:?}");
         assert!(!sources_unimported.contains("Anneal.MirWp.Core"), "{sources_unimported:?}");
         assert!(!sources_unimported.contains("Anneal.Unused"), "{sources_unimported:?}");
-        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_unimported = base.join("export-unimported");
         assert!(checker.export_target_oleans(&export_unimported).unwrap());
         assert!(!export_unimported.join("Anneal/MirWp.olean").exists());
@@ -2209,8 +2696,8 @@ mod tests {
             .map(|a| a.as_str().unwrap())
             .collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/MirWp.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/MirWp.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_with_mir_wp = base.join("export-with-mir-wp");
         assert!(checker.export_target_oleans(&export_with_mir_wp).unwrap());
         assert!(export_with_mir_wp.join("Anneal/MirWp.olean").is_file());
@@ -2308,9 +2795,9 @@ mod tests {
         assert!(!sources_no_bv.contains("Anneal.NatBitwise"), "{sources_no_bv:?}");
         assert!(!sources_no_bv.contains("Anneal.BitVec"), "{sources_no_bv:?}");
         assert!(!sources_no_bv.contains("Anneal.Unused"), "{sources_no_bv:?}");
-        assert!(!checker.stage.join("target-lib/Anneal/NatBitwise.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/NatBitwise.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_no_bv = base.join("export-no-bv");
         assert!(checker.export_target_oleans(&export_no_bv).unwrap());
         assert!(!export_no_bv.join("Anneal/NatBitwise.olean").exists());
@@ -2398,9 +2885,9 @@ mod tests {
             .map(|a| a.as_str().unwrap())
             .collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/NatBitwise.olean").is_file());
-        assert!(checker.stage.join("target-lib/Anneal/BitVec.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/NatBitwise.olean").is_file());
+        assert!(checker.stage.join("lib/Anneal/BitVec.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_with_bv = base.join("export-with-bv");
         assert!(checker.export_target_oleans(&export_with_bv).unwrap());
         assert!(export_with_bv.join("Anneal/NatBitwise.olean").is_file());
@@ -2738,10 +3225,10 @@ mod tests {
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/NatBitwise.olean").is_file());
-        assert!(checker.stage.join("target-lib/Anneal/BitVec.olean").is_file());
-        assert!(checker.stage.join("target-lib/Anneal/BitVecArith.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/NatBitwise.olean").is_file());
+        assert!(checker.stage.join("lib/Anneal/BitVec.olean").is_file());
+        assert!(checker.stage.join("lib/Anneal/BitVecArith.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-bv-arith");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/NatBitwise.olean").is_file());
@@ -2895,18 +3382,18 @@ mod tests {
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/MirWp.olean").is_file());
-        assert!(checker.stage.join("target-lib/Anneal/NatBitwise.olean").is_file());
-        assert!(checker.stage.join("target-lib/Anneal/LoopInv.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitVecArith.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/MirWp.olean").is_file());
+        assert!(checker.stage.join("lib/Anneal/NatBitwise.olean").is_file());
+        assert!(checker.stage.join("lib/Anneal/LoopInv.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitVecArith.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-loopinv");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/MirWp.olean").is_file());
@@ -3030,16 +3517,16 @@ mod tests {
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/SpineForce.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/SpineForce.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-spineforce");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/SpineForce.olean").is_file());
@@ -3205,16 +3692,16 @@ mod tests {
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/PTree.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/PTree.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-ptree");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/PTree.olean").is_file());
@@ -3372,16 +3859,16 @@ mod tests {
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/BitTrieLrat.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-bit-trie-lrat");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/BitTrieLrat.olean").is_file());
@@ -3501,15 +3988,15 @@ mod tests {
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/LinearArith.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/LinearArith.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-linear-arith");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/LinearArith.olean").is_file());
@@ -3677,15 +4164,15 @@ mod tests {
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/InitLemmas.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/InitLemmas.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-init-lemmas");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/InitLemmas.olean").is_file());
@@ -3801,15 +4288,15 @@ mod tests {
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("target-lib/Anneal/ClassicalEm.olean").is_file());
-        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        assert!(checker.stage.join("lib/Anneal/ClassicalEm.olean").is_file());
+        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
+        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-classical-em");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/ClassicalEm.olean").is_file());

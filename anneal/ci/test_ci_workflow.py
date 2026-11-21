@@ -35,6 +35,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             "test-and-verify",
             "installed-smoke",
             "workspace-tests",
+            "sandbox-aarch64",
         ):
             steps = workflow["jobs"][job_name]["steps"]
             matches = [
@@ -469,6 +470,21 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         for parallel_job in ("installed-smoke", "workspace-tests"):
             self.assertIn(parallel_job, jobs["all-jobs-succeed"]["needs"])
             self.assertEqual(jobs[parallel_job]["needs"], ["build-exocrate"])
+        self.assertIn("sandbox-aarch64", jobs["all-jobs-succeed"]["needs"])
+        arm_job = jobs["sandbox-aarch64"]
+        arm_checkout = next(
+            step for step in arm_job["steps"]
+            if step.get("uses", "").startswith("actions/checkout@")
+        )
+        self.assertEqual(
+            arm_checkout["with"]["persist-credentials"], "false"
+        )
+        for token in (
+            "ACTIONS_CACHE_URL",
+            "ACTIONS_RESULTS_URL",
+            "ACTIONS_RUNTIME_TOKEN",
+        ):
+            self.assertEqual(arm_job.get("env", {}).get(token), "")
         ws_steps_list = jobs["workspace-tests"]["steps"]
         ws_steps = {
             step["id"]: step

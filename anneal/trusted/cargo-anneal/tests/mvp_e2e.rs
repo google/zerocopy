@@ -217,9 +217,22 @@ impl Receipt {
             self.value,
             String::from_utf8_lossy(&self.output.stderr)
         );
-        assert_eq!(self.value["schema_version"], 2, "{}: {}", self.name, self.value);
-        assert!(self.value.get("tainted").is_none(), "{}: {}", self.name, self.value);
-        assert_eq!(self.value["status"], status, "{}: {}", self.name, self.value);
+        assert_eq!(
+            self.value["schema_version"], 3,
+            "{}: {}",
+            self.name, self.value
+        );
+        assert!(
+            self.value.get("tainted").is_none(),
+            "{}: {}",
+            self.name,
+            self.value
+        );
+        assert_eq!(
+            self.value["status"], status,
+            "{}: {}",
+            self.name, self.value
+        );
         if let Some(phase) = phase {
             assert_eq!(self.value["phase"], phase, "{}: {}", self.name, self.value);
         }
@@ -841,6 +854,20 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     pass.expect(0, "selected_unit_verified", None);
     assert_eq!(pass.value["taint_reasons"], json!([]));
     assert!(pass.output.stderr.is_empty());
+    let sandbox_kind = pass.value["elaboration_sandbox"]
+        .as_str()
+        .expect("receipt includes elaboration_sandbox");
+    assert!(
+        matches!(sandbox_kind, "linux_bwrap" | "linux_landlock_seccomp"),
+        "expected active ExecSeal sandbox, got {sandbox_kind:?}"
+    );
+    assert!(
+        !pass.value["deferred"].as_array().unwrap().iter().any(|d| d
+            .as_str()
+            .is_some_and(|s| s.contains("hostile Lean elaborator"))),
+        "sandboxed run must omit hostile Lean elaborator effects from deferred: {}",
+        pass.value["deferred"]
+    );
     let lean_lib = pass_artifacts.join("lean-lib");
     assert!(lean_lib.join("Trusted/MirAst.olean").is_file());
     assert!(lean_lib.join("Anneal/MirWp.olean").is_file());
@@ -894,6 +921,10 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     failed.expect(1, "proof_failed", Some("audit"));
     assert!(fail_artifacts.join("lean-lib/Captured.olean").is_file());
     assert!(fail_artifacts.join("lean-lib/Contract.olean").is_file());
+    assert!(
+        !fail_artifacts.join("lean-lib/Proof.olean").exists(),
+        "authored proof-role .olean must not be exported on proof_failed"
+    );
 
     // 4. Early header error before target-lib exists does not fail with ENOENT.
     let header_err_link = runfiles.join("BadImportProof.lean");
@@ -966,6 +997,332 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     assert_eq!(
         u["sysroot_modules_sha256"],
         unpinned.value["audit"]["unpinnedLean"]["sysrootModulesSha256"]
+    );
+
+    // 6. Unsandboxed elaboration taint receipt + stderr warning banner.
+    let unsandboxed = fixture.execute(
+        "unsandboxed-elaboration-selected",
+        tools
+            .command()
+            .arg("--allow-unsandboxed-elaboration")
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!(
+                "Spec.Helper={}",
+                runfiles.join("Spec.Helper.lean").display()
+            ))
+            .args([
+                "--spec-decl",
+                "Contract:Contract.specs",
+                "--theorem",
+                "Spec.Helper:Spec.Helper.custom_verify",
+            ]),
+    );
+    unsandboxed.expect(0, "tainted_selected_unit_verified", None);
+    assert!(
+        String::from_utf8_lossy(&unsandboxed.output.stderr).contains("TAINTED"),
+        "expected TAINTED banner on stderr"
+    );
+    assert_eq!(
+        unsandboxed.value["taint_reasons"],
+        json!(["unsandboxed_elaboration"])
+    );
+    assert_eq!(unsandboxed.value["elaboration_sandbox"], json!("none"));
+    assert!(
+        unsandboxed.value["deferred"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|d| d
+                .as_str()
+                .is_some_and(|s| s.contains("hostile Lean elaborator"))),
+        "unsandboxed run must keep hostile Lean elaborator effects in deferred: {}",
+        unsandboxed.value["deferred"]
+    );
+    assert!(
+        unsandboxed.value.get("sorry_declarations").is_none(),
+        "sorry_declarations must be omitted without --allow-sorry-in-proof: {}",
+        unsandboxed.value
+    );
+
+    // 7. Clean proof with `--allow-sorry-in-proof` still taints the receipt
+    //    (Uniform Flag-Driven Taint Law) and emits `sorry_declarations: []`.
+    let clean_allow_sorry = fixture.execute(
+        "allow-sorry-clean-proof",
+        tools
+            .command()
+            .arg("--allow-sorry-in-proof")
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!(
+                "Spec.Helper={}",
+                runfiles.join("Spec.Helper.lean").display()
+            ))
+            .args([
+                "--spec-decl",
+                "Contract:Contract.specs",
+                "--theorem",
+                "Spec.Helper:Spec.Helper.custom_verify",
+            ]),
+    );
+    clean_allow_sorry.expect(0, "tainted_selected_unit_verified", None);
+    assert!(
+        String::from_utf8_lossy(&clean_allow_sorry.output.stderr).contains("TAINTED"),
+        "expected TAINTED banner on stderr"
+    );
+    assert_eq!(
+        clean_allow_sorry.value["taint_reasons"],
+        json!(["sorry_in_proof"])
+    );
+    assert_eq!(clean_allow_sorry.value["sorry_declarations"], json!([]));
+    assert!(matches!(
+        clean_allow_sorry.value["elaboration_sandbox"].as_str(),
+        Some("linux_bwrap" | "linux_landlock_seccomp")
+    ));
+
+    // 8. Proof with `sorry`: rejected without `--allow-sorry-in-proof` (with
+    //    `elaboration_sandbox` populated on the post-sandbox `FailureReceipt`),
+    //    admitted with `--allow-sorry-in-proof` recording `sorry_declarations`,
+    //    and combined with all 3 relaxation flags in canonical sorted order.
+    let sorry_proof = runfiles.join("SorryProof.lean");
+    fs::write(
+        &sorry_proof,
+        "prelude\n\
+         import Expected\n\
+         namespace Spec.Helper\n\
+         theorem lemma_hole : Expected.claim := sorry\n\
+         theorem custom_verify : Expected.claim := lemma_hole\n\
+         end Spec.Helper\n",
+    )
+    .unwrap();
+    let strict_sorry = fixture.execute(
+        "sorry-proof-strict-rejected",
+        tools
+            .command()
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!("Spec.Helper={}", sorry_proof.display()))
+            .args([
+                "--spec-decl",
+                "Contract:Contract.specs",
+                "--theorem",
+                "Spec.Helper:Spec.Helper.custom_verify",
+            ]),
+    );
+    strict_sorry.expect(1, "proof_failed", Some("audit"));
+    strict_sorry.expect_detail("unapproved axiom sorryAx");
+    assert_eq!(strict_sorry.value["taint_reasons"], json!([]));
+    assert!(
+        matches!(
+            strict_sorry.value["elaboration_sandbox"].as_str(),
+            Some("linux_bwrap" | "linux_landlock_seccomp")
+        ),
+        "post-sandbox failure receipt must record elaboration_sandbox: {}",
+        strict_sorry.value
+    );
+
+    let sandboxed_sorry = fixture.execute(
+        "sorry-proof-sandboxed-allow-sorry",
+        tools
+            .command()
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!("Spec.Helper={}", sorry_proof.display()))
+            .args([
+                "--spec-decl",
+                "Contract:Contract.specs",
+                "--theorem",
+                "Spec.Helper:Spec.Helper.custom_verify",
+                "--allow-sorry-in-proof",
+            ]),
+    );
+    sandboxed_sorry.expect(0, "tainted_selected_unit_verified", None);
+    assert!(
+        String::from_utf8_lossy(&sandboxed_sorry.output.stderr).contains("TAINTED"),
+        "expected TAINTED banner on stderr"
+    );
+    assert_eq!(
+        sandboxed_sorry.value["taint_reasons"],
+        json!(["sorry_in_proof"])
+    );
+    assert_eq!(
+        sandboxed_sorry.value["sorry_declarations"],
+        json!(["Spec.Helper.lemma_hole"])
+    );
+    assert!(
+        matches!(
+            sandboxed_sorry.value["elaboration_sandbox"].as_str(),
+            Some("linux_bwrap" | "linux_landlock_seccomp")
+        ),
+        "{}",
+        sandboxed_sorry.value
+    );
+
+    let all_three_taints = fixture.execute(
+        "sorry-proof-all-three-taints",
+        tools
+            .command()
+            .args([
+                "--allow-unsandboxed-elaboration",
+                "--allow-unpinned-lean",
+                "--allow-sorry-in-proof",
+            ])
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!(
+                "Contract={}",
+                runfiles.join("Contract.lean").display()
+            ))
+            .arg("--proof-file")
+            .arg(format!("Spec.Helper={}", sorry_proof.display()))
+            .args([
+                "--spec-decl",
+                "Contract:Contract.specs",
+                "--theorem",
+                "Spec.Helper:Spec.Helper.custom_verify",
+            ]),
+    );
+    all_three_taints.expect(0, "tainted_selected_unit_verified", None);
+    assert_eq!(
+        all_three_taints.value["taint_reasons"],
+        json!(["sorry_in_proof", "unpinned_lean", "unsandboxed_elaboration"])
+    );
+    assert_eq!(all_three_taints.value["elaboration_sandbox"], json!("none"));
+    assert_eq!(
+        all_three_taints.value["sorry_declarations"],
+        json!(["Spec.Helper.lemma_hole"])
+    );
+    assert!(all_three_taints.value.get("unpinned_lean").is_some());
+    assert!(
+        all_three_taints.value["deferred"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|d| d
+                .as_str()
+                .is_some_and(|s| s.contains("hostile Lean elaborator"))),
+        "{}",
+        all_three_taints.value
+    );
+
+    // 9. Specification `sorry` is STILL rejected even with
+    //    `--allow-sorry-in-proof`, and the failure receipt records both
+    //    `taint_reasons: ["sorry_in_proof"]` and `elaboration_sandbox`.
+    let sorry_spec = runfiles.join("SorryContract.lean");
+    fs::write(
+        &sorry_spec,
+        "prelude\n\
+         import Trusted.MirSemantics\n\
+         namespace Contract\n\
+         theorem bad_spec_hole : True := sorry\n\
+         def specs (_ : Trusted.MirSemantics.Program) : Prop := True\n\
+         end Contract\n",
+    )
+    .unwrap();
+    let spec_sorry_rejected = fixture.execute(
+        "sorry-spec-rejected-even-with-allow-sorry",
+        tools
+            .command()
+            .arg("--allow-sorry-in-proof")
+            .arg("rustc")
+            .arg(runfiles.join("lib.rs"))
+            .args([
+                "--crate-name",
+                "scalar",
+                "--select",
+                "zero",
+                "--source-file",
+            ])
+            .arg(runfiles.join("helper.rs"))
+            .arg("--spec-file")
+            .arg(format!("Contract={}", sorry_spec.display()))
+            .arg("--proof-file")
+            .arg(format!("Spec.Helper={}", sorry_proof.display()))
+            .args([
+                "--spec-decl",
+                "Contract:Contract.specs",
+                "--theorem",
+                "Spec.Helper:Spec.Helper.custom_verify",
+            ]),
+    );
+    spec_sorry_rejected.expect(1, "proof_failed", Some("audit"));
+    spec_sorry_rejected.expect_detail("Lean.Parser.Term.sorry");
+    assert_eq!(
+        spec_sorry_rejected.value["taint_reasons"],
+        json!(["sorry_in_proof"])
+    );
+    assert!(
+        matches!(
+            spec_sorry_rejected.value["elaboration_sandbox"].as_str(),
+            Some("linux_bwrap" | "linux_landlock_seccomp")
+        ),
+        "{}",
+        spec_sorry_rejected.value
     );
 }
 
@@ -1141,6 +1498,7 @@ fn balances_large_captured_lists_through_lean_and_target_audit() {
                 model_manifest_sha256: h.clone(),
                 specification_manifest_sha256: h,
             },
+            allow_sorry_in_proof: false,
         };
 
         let mut checker = Checker::new(&bundle_root, Some(&tools.lean)).unwrap();

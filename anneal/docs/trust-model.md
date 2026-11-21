@@ -41,6 +41,9 @@ For related architectural details, see:
   and how untrusted lowering passes in `theory/` connect to `trusted/lean/`.
 - [`docs/mir-correspondence-design.md`](mir-correspondence-design.md) for how
   Pass 2 anchors `Trusted.MirSemantics` against `vendor/lean-miri/`.
+- [`docs/elaborator-containment-design.md`](elaborator-containment-design.md)
+  for target `ExecSeal` containment, `"spec-preflight"` admission, two-phase
+  `"target-audit"` replay, and Receipt Schema v3 taint accounting.
 
 ## 1. The `trusted/` boundary and how verification stays sound
 
@@ -205,20 +208,28 @@ the boundary controls detailed below across Pass 1 (core repository
 `trusted/lean/` and `theory/`) and Pass 2 (vendored `lean-miri`,
 `trusted/correspondence/`, and `correspondence/`).
 
-The repository auditor and the target verifier share toolchain admission and
-staging code in [`trusted/cargo-anneal/`](../trusted/cargo-anneal). In pinned
+The repository auditor and the target verifier share toolchain admission,
+staging, and `ExecSeal` OS-sandboxing code
+(`trusted/cargo-anneal/src/sandbox.rs`) in
+[`trusted/cargo-anneal/`](../trusted/cargo-anneal) together with `ClaimAudit`
+in [`TrustedBoundary.lean`](../trusted/audit/TrustedBoundary.lean). In pinned
 mode, tool admission authenticates the `Init`/`Std`/`Lean` sysroot `.olean`
 companion manifest (`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`) while leaving
 sysroot `.ir`/`.ir.sig` companions outside `foundation-lock.json` unhashed
 (`lean --version` only), and the target checker additionally verifies the
 narrower imported `library-lock.json` source and companion digests (or
 dynamically discovers and records the `Init.*`/`Std.*` sysroot import closure
-when opted in with `--allow-unpinned-lean`), separately checks specification and
-proof dependencies, and replays the accepted theorem against the bound
-obligation. The target checker runs on the operator's host, so only use it with
-source and proof input you trust to elaborate there. The repository
-correspondence audit retains its existing OS isolation for the reference
-model.
+when opted in with `--allow-unpinned-lean`), enforces pre-elaboration
+declarative `"spec-preflight"` over `Specification` modules, promotes
+single-file `.olean` outputs through Door 1 with pre-audit `ArtifactLedger`
+hashing, and runs two-phase standalone `"target-audit"` kernel replay against
+the bound obligation. On Linux, target Lean preflight, compilation, and audit
+run inside `ExecSeal` (`linux_bwrap` or `linux_landlock_seccomp`, failing closed
+unless `--allow-unsandboxed-elaboration` is explicitly passed with Receipt v3
+taint), while Repository Pass 2 requires `linux_bwrap`; Rust compilation
+(`rustc`) remains under the intact-host assumption in
+[`THREAT_MODEL.md`](../THREAT_MODEL.md) Section 2.1 (see
+[`docs/elaborator-containment-design.md`](elaborator-containment-design.md)).
 
 ### Cargo workspace containment
 
@@ -391,11 +402,11 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    verifying their SHA-256 digests against `UPSTREAM_PIN.json` (and rejecting
    symlinks) or compiles the staged source synchronously with
    `-t0 -DElab.async=false -Ddebug.skipKernelTC=false` inside a per-module
-   OS-level sandbox. On Linux (including CI `ubuntu-latest`), cold vendor
-   compilation invokes `/usr/bin/bwrap` (`bubblewrap`) with
-   `--unshare-all --die-with-parent --new-session --clearenv --tmpfs /` so
-   unpreflighted compile-time metaprograms (`run_cmd`, `initialize`, custom
-   `elab`s) run in isolated user, mount, PID, IPC, UTS, and network namespaces
+   OS-level sandbox (`ExecSeal`). On Linux (including CI `ubuntu-latest`), cold
+   vendor compilation invokes `/usr/bin/bwrap` (`bubblewrap`) with
+   `--unshare-all --as-pid-1 --die-with-parent --clearenv --tmpfs /` (after
+   detaching the session via `setsid()` in `pre_exec`) so unpreflighted
+   compile-time metaprograms (`run_cmd`, `initialize`, custom `elab`s) run in isolated user, mount, PID, IPC, UTS, and network namespaces
    with zero credentials, zero network access, read-only toolchain/source/
    `miri-lib` mounts, no access to the checkout, `$HOME`, cache, or auditor
    staging root, and writes confined strictly to an isolated owner-only
