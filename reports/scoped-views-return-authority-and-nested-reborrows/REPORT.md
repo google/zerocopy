@@ -70,6 +70,9 @@ result, with its key hypotheses:
 What these results do **not** show is listed first under **Boundaries** (per result); read a
 result's non-claims before relying on it. In particular, nothing here is proved about Rust, Aeneas,
 or any real memory model: the connection to real systems is a separately labelled modeling bridge.
+Model–system relation: none proved. These are statements about the toy model; they neither establish
+nor refute the corresponding claims about Rust references, the Aeneas semantics, the prototype memory
+model described under *Modeling bridge*, or any production memory model.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
