@@ -2143,6 +2143,13 @@ def collectCorrEnv (j : Json)
         if ci.isPartial then acc else acc.insert n ci
   return (roles, repoLocals, corrLocals, vendorReplayLocals, sysrootBaseMods)
 
+/-- Initialize `Lean.searchPathRef` from `leanSysroot` and explicit staged
+directories `sp`, ignoring ambient `LEAN_PATH` (which is used only to bootstrap
+the precompiled `TrustedBoundary.olean` module). -/
+def initHermeticSearchPath (leanSysroot : System.FilePath)
+    (sp : SearchPath := ∅) : IO Unit := do
+  searchPathRef.set (sp ++ (← getBuiltinSearchPath leanSysroot))
+
 /-- Replay every non-`isPartial` `.vendorMiri` declaration from scratch onto a
 clean `baseEnv` containing strictly the authenticated `.foundation` and
 `.sysrootFoundation` modules (dropping repository and vendor directories from
@@ -2169,7 +2176,7 @@ def replayCorrAndVendor (sysrootStr : String)
     (roles : Std.HashMap Name CorrOrigin) (sysrootBaseMods : Array Name)
     (vendorReplayLocals repoLocals corrLocals : Std.HashMap Name ConstantInfo)
     (replayRepo : Bool) : IO (Nat × Nat) := do
-  initSearchPath sysrootStr
+  initHermeticSearchPath sysrootStr
   let baseEnv ← importCorrEnv sysrootBaseMods
   for m in baseEnv.header.modules do
     match roles.get? m.module with
@@ -2257,7 +2264,7 @@ def auditCorrespondence (j : Json) (sysrootStr : String)
     replayCorrAndVendor sysrootStr roles sysrootBaseMods vendorReplayLocals
       repoLocals corrLocals (!corrModSet.isEmpty)
   -- Restore the Pass 2 search path dropped during sysroot-only vendor replay.
-  initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
+  initHermeticSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
   let (miriAxioms, miriVisitedSize, corrAxioms, corrVisitedSize) ←
     verifyCorrConesAndClaims foundation allTrusted allTheory vendorMiri roles
       corrLocals corrModSet axiomPolicy
@@ -2280,7 +2287,7 @@ def run (j : Json) : IO Json := do
   let foundation ← names j "foundation"
   match mode with
   | "preflight" =>
-    initSearchPath sysrootStr
+    initHermeticSearchPath sysrootStr
     let env ← importEnv j foundation true
     validateGraph j env
     let scopedNamespaces ← collectScopedExtensionNamespaces env
@@ -2292,26 +2299,27 @@ def run (j : Json) : IO Json := do
     return Json.mkObj [("headers", .arr headers), ("graph", graph env)]
   | "correspondence-preflight" =>
     let spRaw ← field (α := Array String) j "searchPath"
-    initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
+    initHermeticSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
     preflightCorrespondence j foundation
   | "audit" =>
-    initSearchPath sysrootStr
+    initHermeticSearchPath sysrootStr
     let trusted ← names j "trusted"
     let theory ← names j "theory"
     let env ← importEnv j (foundation ++ trusted ++ theory)
     audit j env foundation trusted theory
   | "correspondence-audit" =>
     let spRaw ← field (α := Array String) j "searchPath"
-    initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
+    initHermeticSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
     auditCorrespondence j sysrootStr spRaw foundation
   | _ => throw <| IO.userError s!"unknown inspector mode {mode}"
 
 end TrustedBoundary
 
-/-- Run the inspector as
-`lean --run TrustedBoundary.lean <req.json> <res.json>`, writing a JSON
-envelope to `<res.json>` and returning exit code `0` (success), `1` (policy
-rejection), or `2` (operational failure). -/
+/-- Run the inspector via `lean --run` (either directly on
+`TrustedBoundary.lean` or through a thin `import TrustedBoundary` runner with
+precompiled `TrustedBoundary.olean`), writing a JSON envelope to `<res.json>`
+and returning exit code `0` (success), `1` (policy rejection), or `2`
+(operational failure). -/
 def main (args : List String) : IO UInt32 := do
   let [request, output] := args
     | IO.eprintln "expected request and result files"; return 2
