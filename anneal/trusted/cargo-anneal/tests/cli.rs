@@ -127,6 +127,38 @@ fn bundled_skill_is_discoverable_and_matches_the_source_file() {
 }
 
 #[test]
+fn bundled_example_matches_the_verified_fixture() {
+    let project = tempfile::tempdir().expect("create external working directory");
+    for route in [Route::Direct, Route::Cargo] {
+        let output = command(route, project.path())
+            .args(["skill", "--example"])
+            .output()
+            .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
+        assert_result(&output, 0, "cargo anneal verify --request request.json", "");
+        assert!(output.stderr.is_empty(), "{output:?}");
+        let stdout = String::from_utf8(output.stdout).expect("UTF-8 example");
+        let sections: Vec<_> = stdout.trim_end().split("\n\n## ").skip(1).collect();
+        assert_eq!(
+            sections,
+            [
+                concat!("`lib.rs`\n\n```rust\n", include_str!("fixtures/scalar/lib.rs"), "```"),
+                concat!(
+                    "`request.json`\n\n```json\n",
+                    include_str!("fixtures/scalar/request.json"),
+                    "```",
+                ),
+                concat!("`Spec.lean`\n\n```lean\n", include_str!("fixtures/scalar/Spec.lean"), "```"),
+                concat!(
+                    "`Proof.lean`\n\n```lean\n",
+                    include_str!("fixtures/scalar/Proof.lean"),
+                    "```",
+                ),
+            ],
+        );
+    }
+}
+
+#[test]
 fn malformed_arguments_fail_through_direct_and_cargo_invocation() {
     let project = tempfile::tempdir().expect("create external working directory");
     for route in [Route::Direct, Route::Cargo] {

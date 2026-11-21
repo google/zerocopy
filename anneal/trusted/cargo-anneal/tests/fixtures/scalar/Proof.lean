@@ -14,32 +14,29 @@ namespace Proof
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 
-def body : Body := Captured.program.bodies[0]
+theorem execution :
+    execProg (entryProgForBody Captured.program 0) 2 { args := [] }
+      (fun outcome => outcome = Spec.expectedReturn) := rfl
 
--- The execution certificate uses the captured body. Changing the Rust result
--- invalidates this equation and the stated property.
-theorem runs :
-    Runs body 2 [] (.scalar ⟨.i64, false, BitVec.ofNat 128 0⟩) := rfl
+theorem totalCorrectness : Spec.returnsZero Captured.program := by
+  have ⟨post, terminates, out, returned, result⟩ :=
+    wellFormed_and_spec_of_wp (entryProgForBody Captured.program 0)
+      { args := [] } 2 (fun outcome => outcome = Spec.expectedReturn)
+      (wpProg_of_execProg execution)
+  exact ⟨post, terminates, result ▸ returned⟩
 
 theorem verify : Expected.claim := by
-  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
-  · intro id selected found
-    cases id with
-    | zero =>
-        have same : body = selected := Option.some.inj found
-        subst selected
-        refine bodyVerified_of_safe found rfl (fun args valid _ => ?_)
-        cases args with
-        | nil => exact (run_initial_success runs).1
-        | cons _ _ => cases valid
-    | succ id => cases found
-  · constructor
-    · exact behavior_of_returns (body := body) rfl rfl rfl
-        (run_initial_success runs).2
-    · intro args value beh
-      let ⟨valid, returned⟩ := returns_of_behavior (body := body) rfl beh
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, totalCorrectness⟩
+  intro id body found
+  cases id with
+  | zero =>
+      have same : Captured.program.bodies[0] = body := Option.some.inj found
+      subst body
+      refine ⟨found, rfl, ?_⟩
+      intro args valid _
       cases args with
-      | nil => exact ⟨rfl, (run_result_unique runs returned).symm⟩
+      | nil => exact totalCorrectness.1.1
       | cons _ _ => cases valid
+  | succ id => cases found
 
 end Proof

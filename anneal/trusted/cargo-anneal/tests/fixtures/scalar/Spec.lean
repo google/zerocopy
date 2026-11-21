@@ -13,14 +13,15 @@ namespace Spec
 
 open Trusted.MirAst Trusted.MirSemantics
 
-noncomputable def returnsZero (program : Program) : Prop :=
-  Behavior (entryProgForBody program 0) { args := [] }
-    (.returned ⟨.scalar ⟨.i64, false, BitVec.ofNat 128 0⟩, ⟨[]⟩⟩) ∧
-  ∀ args value,
-    Behavior (entryProgForBody program 0) { args := args }
-      (.returned ⟨value, ⟨[]⟩⟩) →
-    args = [] ∧ value = .scalar ⟨.i64, false, BitVec.ofNat 128 0⟩
+def expectedReturn : TerminalOut :=
+  .returned ⟨.scalar ⟨.i64, false, BitVec.ofNat 128 0⟩, ⟨[]⟩⟩
 
-noncomputable def specs : Specs := ⟨fun _ _ => False, returnsZero⟩
+noncomputable def returnsZero (program : Program) : Prop :=
+  let entry := entryProgForBody program 0
+  let call : Query := { args := [] }
+  SatisfiesPost entry call (fun outcome => outcome = expectedReturn) ∧
+    (¬ Diverges entry call) ∧ Behavior entry call expectedReturn
+
+noncomputable def specs : Specs := ⟨fun _ _ => True, returnsZero⟩
 
 end Spec
