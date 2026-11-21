@@ -171,26 +171,31 @@ What each definition is meant to capture, with its proved adequacy examples (all
 Further proved facts about these definitions, all in `lean/ToyCT/Defs.lean` (statements quoted without proofs or doc comments):
 
 ```lean
+-- lean/ToyCT/Defs.lean:373-377
 theorem constantTime_and_traceUnique_iff {Pub Sec Out Leak : Type}
     (M : Machine Pub Sec Out Leak) :
     (ConstantTime M ∧ TraceUnique M) ↔
       (∀ pub s₁ s₂ tr₁, HasTrace M pub s₁ tr₁ →
         ∀ tr₂, (HasTrace M pub s₂ tr₂ ↔ tr₂ = tr₁))
+-- lean/ToyCT/Defs.lean:395-398
 theorem constantTime_iff_trace_eq_of_terminates_traceUnique {Pub Sec Out Leak : Type}
     {M : Machine Pub Sec Out Leak} (hTerm : Terminates M) (hUnique : TraceUnique M) :
     ConstantTime M ↔
       (∀ pub s₁ s₂ tr₁ tr₂, HasTrace M pub s₁ tr₁ → HasTrace M pub s₂ tr₂ → tr₁ = tr₂)
+-- lean/ToyCT/Defs.lean:416-420
 theorem haltAgree_of_terminates {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     {S : Machine Pub Sec SrcOut SrcLeak}
     {T : Machine Pub Sec TgtOut TgtLeak}
     (hTermS : Terminates S) (hTermT : Terminates T) :
     HaltAgree S T
+-- lean/ToyCT/Defs.lean:427-432
 theorem haltAgree_of_leakageDetermined {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     {S : Machine Pub Sec SrcOut SrcLeak}
     {T : Machine Pub Sec TgtOut TgtLeak}
     {leakMap : Pub → List SrcLeak → List TgtLeak}
     (hLD : LeakageDetermined S T leakMap) :
     HaltAgree S T
+-- lean/ToyCT/Defs.lean:444-452
 theorem leakageDetermined_of_terminates_trace_eq
     {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     {S : Machine Pub Sec SrcOut SrcLeak}
@@ -200,6 +205,7 @@ theorem leakageDetermined_of_terminates_trace_eq
     (hEq : ∀ pub sec trS trT, HasTrace S pub sec trS → HasTrace T pub sec trT →
       trT = leakMap pub trS) :
     LeakageDetermined S T leakMap
+-- lean/ToyCT/Defs.lean:542-544
 theorem hasInit_and_safe_of_det_terminates {Pub Sec Out Leak : Type}
     {S : Machine Pub Sec Out Leak} (hDet : Deterministic S) (hTerm : Terminates S) :
     HasInit S ∧ Safe S
@@ -573,6 +579,7 @@ Key trace facts. Proved as `*_hasTrace_iff` lemmas in `Machines.lean`: `branchle
 - **Plain claim:** There exist concrete transition-deterministic, terminating small-step machines `branchlessSelect` and `branchingSelect` such that `branchlessSelect` satisfies `ConstantTime`, the pair satisfies `FunctionallyCorrect` (equating halting output sets on every input), and `branchingSelect` violates `ConstantTime`.
 
 ```lean
+-- lean/ToyCT/Results.lean:16-23
 theorem functional_correctness_does_not_preserve_ct :
     Deterministic branchlessSelect ∧
     Terminates branchlessSelect ∧
@@ -583,7 +590,7 @@ theorem functional_correctness_does_not_preserve_ct :
     ¬ ConstantTime branchingSelect
 ```
 
-Unfolded key clauses:
+Unfolded key clauses (prose):
 
 ```text
   (∀ pub s₁ s₂ tr, HasTrace branchlessSelect pub s₁ tr ↔ HasTrace branchlessSelect pub s₂ tr)
@@ -597,6 +604,7 @@ Unfolded key clauses:
 - **Positive control:** `Toy.CT.branchless_lowering_preserves_ct` — lowering the same source to the straight-line machine `branchlessLowered` is deterministic, terminating, `FunctionallyCorrect`, `LeakageDetermined` under `selectToLoweredLeakMap`, and `ConstantTime`:
 
 ```lean
+-- lean/ToyCT/Results.lean:36-44
 theorem branchless_lowering_preserves_ct :
     Deterministic branchlessSelect ∧ Terminates branchlessSelect ∧
     Deterministic branchlessLowered ∧ Terminates branchlessLowered ∧
@@ -621,6 +629,7 @@ Basis: derived (modeling bridge) — `branchlessSelect` and `branchingSelect` ar
 - **Plain claim:** For all small-step machines `S` and `T` sharing public and secret input types (with possibly distinct output and leakage types) and any secret-independent trace transformer `leakMap : Pub -> List SrcLeak -> List TgtLeak`, if `LeakageDetermined S T leakMap` holds (the halting traces of `T` on every `(pub, sec)` are exactly the images under `leakMap pub` of the halting traces of `S` on `(pub, sec)`) and `S` satisfies `ConstantTime`, then `T` satisfies `ConstantTime`.
 
 ```lean
+-- lean/ToyCT/Results.lean:68-75
 theorem leakage_determined_preserves_ct
     {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     (S : Machine Pub Sec SrcOut SrcLeak)
@@ -633,7 +642,7 @@ theorem leakage_determined_preserves_ct
 
 Unfolded:
 
-```text
+```lean
 ∀ {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type} (S : Machine Pub Sec SrcOut SrcLeak)
   (T : Machine Pub Sec TgtOut TgtLeak) (leakMap : Pub → List SrcLeak → List TgtLeak),
   (∀ pub sec trT, (∃ outT, Executes T pub sec outT trT) ↔
@@ -653,22 +662,27 @@ Unfolded:
 - **Related proved facts (cited in the non-claims):**
 
 ```lean
+-- lean/ToyCT/Defs.lean:468-476
 theorem weakLeakageDetermined_preserves_ct_of_traceUnique
     {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     {S : Machine Pub Sec SrcOut SrcLeak} {T : Machine Pub Sec TgtOut TgtLeak}
     {leakMap : Pub → List SrcLeak → List TgtLeak}
     (hWeak : WeakLeakageDetermined S T leakMap) (hUniqueS : TraceUnique S)
     (hCT : ConstantTime S) : ConstantTime T
+-- lean/ToyCT/Examples.lean:359-362
 theorem weakLeakageDetermined_fails_without_traceUnique :
     WeakLeakageDetermined coinFlip nondetSecretBranchTarget (fun _ tr => tr) ∧
     ConstantTime coinFlip ∧ ¬ ConstantTime nondetSecretBranchTarget
+-- lean/ToyCT/Examples.lean:259-263
 theorem terminates_and_constantTime_unconstrained_diverging_branch :
     Terminates haltOrLeak ∧ ConstantTime haltOrLeak ∧
     (∀ sec, haltOrLeak.step (.start sec) (if sec then 1 else 0) (.loop sec)) ∧
     (∀ sec tr sf, Steps haltOrLeak (.loop sec) tr sf → ¬ haltOrLeak.halted sf ())
+-- lean/ToyCT/Examples.lean:238-240
 theorem leakyLoop_constantTime_despite_diverging_step_leak :
     ConstantTime leakyLoop ∧
     (∀ (sec : Bool) l s', leakyLoop.step sec l s' → l = if sec then 1 else 0)
+-- lean/ToyCT/Examples.lean:246-249
 theorem constantTime_not_refinement_closed :
     (∀ sec tr, HasTrace haltIfTrue () sec tr → HasTrace allHalt () sec tr) ∧
     ConstantTime allHalt ∧ ¬ ConstantTime haltIfTrue
@@ -688,6 +702,7 @@ Basis: derived (modeling bridge) — if, for a given program, the observable lea
 - **Plain claim:** For any source machine `S` satisfying `ConstantTime` and any target machine `T` satisfying `TraceUnique` (in particular any `Deterministic` target), the existence of some secret-independent trace transformer `leakMap` satisfying `LeakageDetermined S T leakMap` is equivalent to `ConstantTime T ∧ HaltAgree S T`.
 
 ```lean
+-- lean/ToyCT/Results.lean:111-118
 theorem exists_leakage_determined_iff_of_ct_traceUnique
     {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     (S : Machine Pub Sec SrcOut SrcLeak)
@@ -700,7 +715,7 @@ theorem exists_leakage_determined_iff_of_ct_traceUnique
 
 Unfolded:
 
-```text
+```lean
 (∀ pub s₁ s₂ trS, HasTrace S pub s₁ trS ↔ HasTrace S pub s₂ trS) →
 (∀ pub sec tr₁ tr₂, HasTrace T pub sec tr₁ → HasTrace T pub sec tr₂ → tr₁ = tr₂) →
 ((∃ leakMap : Pub → List SrcLeak → List TgtLeak,
@@ -717,17 +732,21 @@ Unfolded:
 The statements of the two counterexamples and of the two both-sides theorems cited below:
 
 ```lean
+-- lean/ToyCT/Results.lean:175-178
 theorem exists_ld_iff_drop_src_ct_counterexample :
     TraceUnique abortOnSecret ∧
     ¬ ((∃ leakMap, LeakageDetermined abortOnSecret abortOnSecret leakMap) ↔
         (ConstantTime abortOnSecret ∧ HaltAgree abortOnSecret abortOnSecret))
+-- lean/ToyCT/Results.lean:189-192
 theorem exists_ld_iff_drop_tgt_traceUnique_counterexample :
     ConstantTime constOneStep ∧
     ¬ ((∃ leakMap, LeakageDetermined constOneStep coinFlip leakMap) ↔
         (ConstantTime coinFlip ∧ HaltAgree constOneStep coinFlip))
+-- lean/ToyCT/Results.lean:165-167
 theorem exists_leakage_determined_iff_of_ct_traceUnique_both_sides_true :
     (∃ leakMap, LeakageDetermined branchlessSelect branchlessLowered leakMap) ∧
     (ConstantTime branchlessLowered ∧ HaltAgree branchlessSelect branchlessLowered)
+-- lean/ToyCT/Results.lean:155-158
 theorem exists_leakage_determined_iff_of_ct_traceUnique_both_sides_false :
     ConstantTime branchlessSelect ∧ TraceUnique branchingSelect ∧
     ¬ (∃ leakMap, LeakageDetermined branchlessSelect branchingSelect leakMap) ∧
@@ -749,6 +768,7 @@ Basis: derived (modeling bridge) — for one compiled program with deterministic
 - **Plain claim:** For all small-step machines `S` and `T` sharing public input, secret input, and output types, any secret-independent step leakage map `stepLeak : Pub -> SrcLeak -> List TgtLeak`, source anti-stuttering measure `measure : S.State -> Nat`, and relation `R`, if forward step simulation `StepLeakSim S T stepLeak measure R` holds together with `HasInit S`, `Safe S`, and transition determinism `Deterministic T`, then `LeakageDetermined S T (liftStepLeak stepLeak)` holds for the homomorphic trace transformer `liftStepLeak stepLeak`.
 
 ```lean
+-- lean/ToyCT/Results.lean:371-382
 theorem step_leakage_sim_det_target_implies_leakage_determined
     {Pub Sec Out SrcLeak TgtLeak : Type}
     (S : Machine Pub Sec Out SrcLeak)
@@ -763,7 +783,7 @@ theorem step_leakage_sim_det_target_implies_leakage_determined
     LeakageDetermined S T (liftStepLeak stepLeak)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 ((∀ pub sec s₀, S.init pub sec s₀ → ∃ t₀, T.init pub sec t₀ ∧ R pub sec s₀ t₀) ∧
@@ -790,27 +810,32 @@ Unfolded:
 Every listed counterexample also has `ConstantTime S` and `¬ ConstantTime T`, so each hypothesis is necessary for constant-time preservation and not only for `LeakageDetermined`. Neither `Deterministic S`, `Terminates S`, nor `OutputDeterministic T` is assumed; `Toy.CT.hasInit_and_safe_of_det_terminates` derives `HasInit S ∧ Safe S` from `Deterministic S ∧ Terminates S`. The statements of the counterexamples:
 
 ```lean
+-- lean/ToyCT/Results.lean:404-410
 theorem step_sim_drop_sim_counterexample :
     HasInit branchlessSelect ∧ Safe branchlessSelect ∧ ConstantTime branchlessSelect ∧
     Deterministic branchingSelect ∧
     ¬ LeakageDetermined branchlessSelect branchingSelect (liftStepLeak (fun _ l => [l])) ∧
     ¬ ConstantTime branchingSelect
+-- lean/ToyCT/Results.lean:477-486
 theorem unmeasured_stutter_sim_breaks_leakage_determined :
     UnmeasuredStepLeakSim silentLoopSource haltIfTrue (fun _ _ => []) (fun _ _ _ _ => True) ∧
     HasInit silentLoopSource ∧ Safe silentLoopSource ∧ Deterministic silentLoopSource ∧
     ConstantTime silentLoopSource ∧ Deterministic haltIfTrue ∧
     ¬ LeakageDetermined silentLoopSource haltIfTrue (liftStepLeak (fun _ _ => [])) ∧
     ¬ ConstantTime haltIfTrue
+-- lean/ToyCT/Results.lean:422-429
 theorem step_sim_drop_src_init_counterexample :
     StepLeakSim emptyInitMachine haltIfTrue (fun _ l => [l]) (fun _ => 0) (fun _ _ _ _ => False) ∧
     Safe emptyInitMachine ∧ ConstantTime emptyInitMachine ∧ Deterministic haltIfTrue ∧
     ¬ LeakageDetermined emptyInitMachine haltIfTrue (liftStepLeak (fun _ l => [l])) ∧
     ¬ ConstantTime haltIfTrue
+-- lean/ToyCT/Results.lean:450-457
 theorem step_sim_drop_src_safe_counterexample :
     StepLeakSim stuckMachine haltIfTrue (fun _ l => [l]) (fun _ => 0) (fun _ _ _ _ => True) ∧
     HasInit stuckMachine ∧ ConstantTime stuckMachine ∧ Deterministic haltIfTrue ∧
     ¬ LeakageDetermined stuckMachine haltIfTrue (liftStepLeak (fun _ l => [l])) ∧
     ¬ ConstantTime haltIfTrue
+-- lean/ToyCT/Results.lean:548-560
 theorem step_sim_drop_tgt_init_det_counterexample :
     StepLeakSim constOneStep secretTwoInitTarget (fun _ l => [l]) (fun _ => 0)
       (fun _ _ s t => (s = false ∧ t = TwoInitState.a) ∨ (s = true ∧ t = TwoInitState.fin)) ∧
@@ -822,6 +847,7 @@ theorem step_sim_drop_tgt_init_det_counterexample :
         secretTwoInitTarget.init pub sec s₂ → s₁ = s₂) ∧
     ¬ LeakageDetermined constOneStep secretTwoInitTarget (liftStepLeak (fun _ l => [l])) ∧
     ¬ ConstantTime secretTwoInitTarget
+-- lean/ToyCT/Results.lean:613-628
 theorem step_sim_drop_tgt_step_state_det_counterexample :
     StepLeakSim constOneStep secretForkTarget (fun _ l => [l]) (fun _ => 0)
       (fun _ sec s t =>
@@ -836,6 +862,7 @@ theorem step_sim_drop_tgt_step_state_det_counterexample :
         secretForkTarget.step s l₂ s₂ → s₁ = s₂) ∧
     ¬ LeakageDetermined constOneStep secretForkTarget (liftStepLeak (fun _ l => [l])) ∧
     ¬ ConstantTime secretForkTarget
+-- lean/ToyCT/Results.lean:688-702
 theorem step_sim_drop_tgt_halted_nostep_counterexample :
     StepLeakSim trivialHaltedMachine secretHaltOrStepTarget (fun _ l => [l]) (fun _ => 0)
       (fun _ sec _ t => t = (false, sec)) ∧
@@ -857,6 +884,7 @@ theorem step_sim_drop_tgt_halted_nostep_counterexample :
 - **Output-free generalization (proved).** The conclusion does not use output agreement. `OutputFreeStepLeakSim` is `StepLeakSim` with separate output types and a weaker halting clause:
 
 ```lean
+-- lean/ToyCT/Results.lean:216-226
 structure OutputFreeStepLeakSim {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     (S : Machine Pub Sec SrcOut SrcLeak) (T : Machine Pub Sec TgtOut TgtLeak)
     (stepLeak : Pub → SrcLeak → List TgtLeak) (measure : S.State → Nat)
@@ -867,12 +895,14 @@ structure OutputFreeStepLeakSim {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     (∃ t', Steps T t (stepLeak pub ls) t' ∧ R pub sec s' t') ∧
     (stepLeak pub ls = [] → measure s' < measure s)
 
+-- lean/ToyCT/Results.lean:229-234
 theorem StepLeakSim.toOutputFree {Pub Sec Out SrcLeak TgtLeak : Type}
     {S : Machine Pub Sec Out SrcLeak} {T : Machine Pub Sec Out TgtLeak}
     {stepLeak : Pub → SrcLeak → List TgtLeak} {measure : S.State → Nat}
     {R : Pub → Sec → S.State → T.State → Prop}
     (h : StepLeakSim S T stepLeak measure R) : OutputFreeStepLeakSim S T stepLeak measure R
 
+-- lean/ToyCT/Results.lean:337-348
 theorem outputFree_step_leakage_sim_det_target_implies_leakage_determined
     {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     (S : Machine Pub Sec SrcOut SrcLeak) (T : Machine Pub Sec TgtOut TgtLeak)
@@ -887,6 +917,7 @@ theorem outputFree_step_leakage_sim_det_target_implies_leakage_determined
 - **Related proved fact (cited in the non-claims):**
 
 ```lean
+-- lean/ToyCT/Results.lean:514-524
 theorem option_stutter_sim_breaks_ct :
     OptionStepLeakSim twoStepConstSource secretStutterTarget
       (fun _ l => [l]) twoStepMeasure optionStutterRel ∧
@@ -911,6 +942,7 @@ Basis: derived (modeling bridge) — a compiler-pass correctness proof by forwar
 - **Plain claim:** Concretely, for the program-counter selector machines `branchlessSelect` and `branchingSelect`: both are transition-deterministic and terminating; `branchlessSelect` satisfies `ConstantTime`; the pair satisfies `FunctionallyCorrect`; the pair satisfies `SecretDependentLeakageDetermined` under the secret-reading trace map `secretBranchLeakMap`; no secret-independent trace map `f` satisfies `LeakageDetermined branchlessSelect branchingSelect f`; and `branchingSelect` violates `ConstantTime`. (The general phenomenon is a separate lemma: letting the map read `Sec` makes `SecretDependentLeakageDetermined` satisfiable for every `TraceUnique` target whose halting domain agrees with the source's, `Toy.CT.exists_secretDependentLeakageDetermined_of_traceUnique_haltAgree`; it is `SecretDependentLeakageDetermined`, not `LeakageDetermined`, that becomes trivially satisfiable.)
 
 ```lean
+-- lean/ToyCT/Results.lean:747-756
 theorem secret_dependent_leak_map_breaks_ct :
     Deterministic branchlessSelect ∧
     Terminates branchlessSelect ∧
@@ -923,7 +955,7 @@ theorem secret_dependent_leak_map_breaks_ct :
     ¬ ConstantTime branchingSelect
 ```
 
-Unfolded key clauses (with `secretBranchLeakMap _ sec [0] = [0, if sec then 1 else 2]`):
+Unfolded key clauses (with `secretBranchLeakMap _ sec [0] = [0, if sec then 1 else 2]`) (prose):
 
 ```text
   (∀ pub sec trT, HasTrace branchingSelect pub sec trT ↔
@@ -940,11 +972,13 @@ Unfolded key clauses (with `secretBranchLeakMap _ sec [0] = [0, if sec then 1 el
 - **Related proved facts:**
 
 ```lean
+-- lean/ToyCT/Defs.lean:502-508
 theorem exists_secretDependentLeakageDetermined_of_traceUnique_haltAgree
     {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     {S : Machine Pub Sec SrcOut SrcLeak} {T : Machine Pub Sec TgtOut TgtLeak}
     (hUniqueT : TraceUnique T) (hHalt : HaltAgree S T) :
     ∃ m, SecretDependentLeakageDetermined S T m
+-- lean/ToyCT/Defs.lean:490-496
 theorem secretDependentLeakageDetermined_const_sec_iff
     {Pub Sec SrcOut TgtOut SrcLeak TgtLeak : Type}
     (S : Machine Pub Sec SrcOut SrcLeak) (T : Machine Pub Sec TgtOut TgtLeak)
@@ -967,6 +1001,7 @@ Basis: derived (modeling bridge) — a "leakage transformer" for a compiler pass
 - **Plain claim:** For the transition-deterministic, terminating, safe, constant-time source machine `constOneStep` and the terminating, nondeterministic target machine `nondetSecretBranchTarget` (satisfying `¬ Deterministic nondetSecretBranchTarget`), forward simulation `StepLeakSim` holds under the secret-independent identity step-leakage map `fun _ l => [l]` and zero measure together with `FunctionallyCorrect`, yet both `LeakageDetermined constOneStep nondetSecretBranchTarget (liftStepLeak (fun _ l => [l]))` and `ConstantTime nondetSecretBranchTarget` fail.
 
 ```lean
+-- lean/ToyCT/Results.lean:781-794
 theorem nondeterministic_target_sim_breaks_leakage_determined :
     StepLeakSim constOneStep nondetSecretBranchTarget
       (fun _ l => [l]) (fun _ => 0) constNondetRel ∧
@@ -983,7 +1018,7 @@ theorem nondeterministic_target_sim_breaks_leakage_determined :
     ¬ ConstantTime nondetSecretBranchTarget
 ```
 
-Unfolded key clauses: the target's halting traces are `{[0]}` for `sec = false` and `{[0], [1]}` for `sec = true`, while the source's are `{[0]}` for both, so
+Unfolded (prose) key clauses: the target's halting traces are `{[0]}` for `sec = false` and `{[0], [1]}` for `sec = true`, while the source's are `{[0]}` for both, so
 
 ```text
   ¬ (∀ pub sec trT, HasTrace nondetSecretBranchTarget pub sec trT ↔
@@ -997,6 +1032,7 @@ Unfolded key clauses: the target's halting traces are `{[0]}` for `sec = false` 
 - **Positive control:** `Toy.CT.determinized_target_sim_positive_control` — removing the `l = 1` transition gives `determinizedSecretBranchTarget` on the same state space, which with the same relation `constNondetRel` satisfies:
 
 ```lean
+-- lean/ToyCT/Results.lean:864-871
 theorem determinized_target_sim_positive_control :
     StepLeakSim constOneStep determinizedSecretBranchTarget
       (fun _ l => [l]) (fun _ => 0) constNondetRel ∧
@@ -1020,6 +1056,7 @@ Basis: derived (modeling bridge) — a forward simulation proof says nothing abo
 - **Plain claim:** For all small-step machines `M1`, `M2`, and `M3` sharing public and secret input types (with possibly distinct output and leakage types) and secret-independent trace transformers `f : Pub -> List Leak1 -> List Leak2` and `g : Pub -> List Leak2 -> List Leak3`, if `LeakageDetermined M1 M2 f` and `LeakageDetermined M2 M3 g` hold, then `LeakageDetermined M1 M3 (composeLeakMap f g)` holds for the composed transformer `composeLeakMap f g := fun pub tr1 => g pub (f pub tr1)`.
 
 ```lean
+-- lean/ToyCT/Results.lean:907-916
 theorem leakage_determined_comp
     {Pub Sec Out₁ Out₂ Out₃ Leak₁ Leak₂ Leak₃ : Type}
     (M₁ : Machine Pub Sec Out₁ Leak₁)
@@ -1034,7 +1071,7 @@ theorem leakage_determined_comp
 
 Unfolded:
 
-```text
+```lean
 (∀ pub sec tr₂, HasTrace M₂ pub sec tr₂ ↔ ∃ tr₁, HasTrace M₁ pub sec tr₁ ∧ tr₂ = f pub tr₁) →
 (∀ pub sec tr₃, HasTrace M₃ pub sec tr₃ ↔ ∃ tr₂, HasTrace M₂ pub sec tr₂ ∧ tr₃ = g pub tr₂) →
 (∀ pub sec tr₃, HasTrace M₃ pub sec tr₃ ↔ ∃ tr₁, HasTrace M₁ pub sec tr₁ ∧ tr₃ = g pub (f pub tr₁))
@@ -1046,10 +1083,12 @@ Unfolded:
 | `h₂₃ : LeakageDetermined M₂ M₃ g` | Establishes that the second pass from `M2` to `M3` is `LeakageDetermined` via secret-independent trace transformer `g`. | tight | `Toy.CT.leakage_determined_comp_drop_second_counterexample` (`M₁ = M₂ = branchlessSelect`, `M₃ = branchingSelect`, `f = g = id`) |
 
 ```lean
+-- lean/ToyCT/Results.lean:947-950
 theorem leakage_determined_comp_drop_first_counterexample :
     LeakageDetermined branchingSelect branchingSelect (fun _ tr => tr) ∧
     ¬ LeakageDetermined branchlessSelect branchingSelect
         (composeLeakMap (fun _ tr => tr) (fun _ tr => tr))
+-- lean/ToyCT/Results.lean:957-960
 theorem leakage_determined_comp_drop_second_counterexample :
     LeakageDetermined branchlessSelect branchlessSelect (fun _ tr => tr) ∧
     ¬ LeakageDetermined branchlessSelect branchingSelect
