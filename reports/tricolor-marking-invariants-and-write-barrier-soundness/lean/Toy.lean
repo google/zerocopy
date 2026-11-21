@@ -1,0 +1,10 @@
+import Toy.Tricolor.Basic
+import Toy.Tricolor.Examples
+import Toy.Tricolor.EndOfMarking
+import Toy.Tricolor.Preservation
+import Toy.Tricolor.Marking
+import Toy.Tricolor.Counterexamples
+import Toy.Tricolor.Termination
+import Toy.Tricolor.Tightness
+import Toy.Tricolor.RunExamples
+import Toy.Tricolor.Companions

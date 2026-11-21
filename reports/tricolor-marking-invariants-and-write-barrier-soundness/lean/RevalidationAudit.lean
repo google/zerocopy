@@ -1,0 +1,146 @@
+import Toy
+
+/-!
+# Axiom audit for every declaration referenced by `results.json`
+
+All 132 declarations named in its structured fields: the results (`lean`), the lemmas cited by name (`lean_names`), the non-vacuity witnesses, the positive controls and the hypothesis counterexamples.
+
+Not part of the `Toy` library target. Run from this directory after `lake build`:
+
+    lake env lean RevalidationAudit.lean
+
+Each `#print axioms` line must report no axioms or a subset of `propext`, `Classical.choice`, `Quot.sound`. Statement and definition-closure hashes are recomputed by `support/revalidate.py` (see the package's Revalidation section).
+-/
+
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_strong_of_rootsNonWhite
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_strong_of_rootsNonWhite_nonvacuous
+#print axioms Toy.Tricolor.strong_rootsNonWhite_and_not_allLiveBlack
+#print axioms Toy.Tricolor.noGrey_rootsNonWhite_and_not_allLiveBlack
+#print axioms Toy.Tricolor.noGrey_strong_and_not_allLiveBlack
+#print axioms Toy.Tricolor.greyProtected_of_live_of_white_of_weak_of_rootsProtected
+#print axioms Toy.Tricolor.greyProtected_of_live_of_white_of_weak_of_rootsProtected_nonvacuous
+#print axioms Toy.Tricolor.rootsProtected_live_white_and_not_greyProtected
+#print axioms Toy.Tricolor.weak_live_white_and_not_greyProtected
+#print axioms Toy.Tricolor.weak_rootsProtected_white_and_not_greyProtected
+#print axioms Toy.Tricolor.weak_rootsProtected_live_and_not_greyProtected
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsProtected
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsProtected_nonvacuous
+#print axioms Toy.Tricolor.weak_rootsProtected_and_not_allLiveBlack
+#print axioms Toy.Tricolor.noGrey_rootsProtected_and_not_allLiveBlack
+#print axioms Toy.Tricolor.noGrey_weak_and_not_allLiveBlack
+#print axioms Toy.Tricolor.weak_of_strong
+#print axioms Toy.Tricolor.weak_of_strong_nonvacuous
+#print axioms Toy.Tricolor.not_weak_sBlackWhite
+#print axioms Toy.Tricolor.strong_preserved_of_dijkstra
+#print axioms Toy.Tricolor.strong_preserved_of_dijkstra_nonvacuous
+#print axioms Toy.Tricolor.store_unbarriered_breaks_strong
+#print axioms Toy.Tricolor.store_yuasa_breaks_strong
+#print axioms Toy.Tricolor.dijkstra_step_from_nonStrong_not_strong
+#print axioms Toy.Tricolor.dijkstra_unisolated_alloc_breaks_strong
+#print axioms Toy.Tricolor.dijkstra_unisolated_blackAlloc_breaks_strong
+#print axioms Toy.Tricolor.weak_rootsProtected_preserved_of_yuasa_of_nonWhiteAlloc
+#print axioms Toy.Tricolor.weak_rootsProtected_preserved_of_yuasa_of_nonWhiteAlloc_nonvacuous
+#print axioms Toy.Tricolor.erase_unbarriered_breaks_weak
+#print axioms Toy.Tricolor.erase_dijkstra_breaks_weak
+#print axioms Toy.Tricolor.alloc_white_yuasa_breaks_rootsProtected
+#print axioms Toy.Tricolor.yuasa_step_from_nonWeak_not_weak
+#print axioms Toy.Tricolor.yuasa_store_without_rootsProtected_breaks_weak
+#print axioms Toy.Tricolor.yuasa_store_of_unreachable_breaks_weak
+#print axioms Toy.Tricolor.load_of_unreachable_breaks_rootsProtected
+#print axioms Toy.Tricolor.yuasa_nonWhiteAlloc_unisolated_alloc_breaks_weak
+#print axioms Toy.Tricolor.rootsProtected_alloc_iff_ne_white
+#print axioms Toy.Tricolor.rootsProtected_alloc_iff_ne_white_nonvacuous
+#print axioms Toy.Tricolor.isolated_and_not_rootsProtected_alloc_black
+#print axioms Toy.Tricolor.rootsProtected_alloc_white_of_not_isolated
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_yuasa_of_nonWhiteAlloc_run_from_initMark
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_yuasa_of_nonWhiteAlloc_run_from_initMark_nonvacuous
+#print axioms Toy.Tricolor.unbarriered_unshadedLoads_blackAlloc_run_from_initMark_not_allLiveBlack
+#print axioms Toy.Tricolor.dijkstra_unshadedLoads_run_from_initMark_leaves_live_white
+#print axioms Toy.Tricolor.yuasa_whiteAlloc_run_from_initMark_not_allLiveBlack
+#print axioms Toy.Tricolor.yuasa_run_not_from_initMark_not_allLiveBlack
+#print axioms Toy.Tricolor.yuasa_store_of_unreachable_cycle_not_allLiveBlack
+#print axioms Toy.Tricolor.yuasa_load_of_unreachable_cycle_not_allLiveBlack
+#print axioms Toy.Tricolor.yuasa_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack
+#print axioms Toy.Tricolor.yuasa_run_from_initMark_with_grey_not_allLiveBlack
+#print axioms Toy.Tricolor.unbarriered_unshadedLoads_traceLostObject_leaves_live_white
+#print axioms Toy.Tricolor.dijkstra_traceLostObject_then_scan_safe
+#print axioms Toy.Tricolor.yuasa_traceLostObject_then_scan_safe
+#print axioms Toy.Tricolor.shadeLoads_traceLostObject_then_scan_safe
+#print axioms Toy.Tricolor.traceLostObject_dijkstra_unshadedLoads_not_lost
+#print axioms Toy.Tricolor.traceLostObject_yuasa_unshadedLoads_not_lost
+#print axioms Toy.Tricolor.traceLostObject_unbarriered_shadeLoads_not_lost
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_dijkstra_run_of_rescan_of_scansOnly_run
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_dijkstra_run_of_rescan_of_scansOnly_run_nonvacuous
+#print axioms Toy.Tricolor.unbarriered_run_rescan_not_allLiveBlack
+#print axioms Toy.Tricolor.rescan_from_nonStrong_not_allLiveBlack
+#print axioms Toy.Tricolor.dijkstra_unisolated_alloc_cycle_rescan_not_allLiveBlack
+#print axioms Toy.Tricolor.dijkstra_run_without_rescan_scansOnly_not_allLiveBlack
+#print axioms Toy.Tricolor.dijkstra_rescan_then_mutator_not_allLiveBlack
+#print axioms Toy.Tricolor.dijkstra_rescan_with_grey_not_allLiveBlack
+#print axioms Toy.Tricolor.dijkstra_whiteAlloc_run_from_initMark_leaves_live_white
+#print axioms Toy.Tricolor.dijkstra_whiteAlloc_then_rescan_safe
+#print axioms Toy.Tricolor.dijkstra_shadeLoads_traceLoadLost_then_scan_safe
+#print axioms Toy.Tricolor.yuasa_traceLoadLost_then_scan_safe
+#print axioms Toy.Tricolor.strong_rootsNonWhite_preserved_of_shadeLoads_of_nonWhiteAlloc
+#print axioms Toy.Tricolor.strong_rootsNonWhite_preserved_of_shadeLoads_of_nonWhiteAlloc_nonvacuous
+#print axioms Toy.Tricolor.unshadedLoad_breaks_rootsNonWhite
+#print axioms Toy.Tricolor.shadeLoads_whiteAlloc_breaks_rootsNonWhite
+#print axioms Toy.Tricolor.shadeLoads_step_from_nonStrong_not_strong
+#print axioms Toy.Tricolor.shadeLoads_store_of_whiteRoot_breaks_strong
+#print axioms Toy.Tricolor.shadeLoads_nonWhiteAlloc_store_of_unheld_value_breaks_strong
+#print axioms Toy.Tricolor.shadeLoads_nonWhiteAlloc_unisolated_alloc_breaks_strong
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_shadeLoads_of_nonWhiteAlloc_run_from_initMark
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_shadeLoads_of_nonWhiteAlloc_run_from_initMark_nonvacuous
+#print axioms Toy.Tricolor.shadeLoads_run_not_from_initMark_not_allLiveBlack
+#print axioms Toy.Tricolor.shadeLoads_nonWhiteAlloc_unheld_store_cycle_not_allLiveBlack
+#print axioms Toy.Tricolor.shadeLoads_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack
+#print axioms Toy.Tricolor.shadeLoads_run_from_initMark_with_grey_not_allLiveBlack
+#print axioms Toy.Tricolor.length_le_markMeasure_and_le_two_mul_of_scansOnly_run
+#print axioms Toy.Tricolor.length_le_markMeasure_and_le_two_mul_of_scansOnly_run_nonvacuous
+#print axioms Toy.Tricolor.length_bound_fails_without_enabled_scans
+#print axioms Toy.Tricolor.drops_run_longer_than_markMeasure
+#print axioms Toy.Tricolor.exists_scansOnly_run_to_noGrey
+#print axioms Toy.Tricolor.exists_scansOnly_run_to_noGrey_nonvacuous
+#print axioms Toy.Tricolor.scanCount_add_markMeasure_le
+#print axioms Toy.Tricolor.scanCount_add_markMeasure_le_nonvacuous
+#print axioms Toy.Tricolor.scanCount_bound_fails_without_enabled_scans
+#print axioms Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs
+#print axioms Toy.Tricolor.infinitely_often_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs
+#print axioms Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs_nonvacuous
+#print axioms Toy.Tricolor.unenabledScans_collectorFair_never_noGrey
+#print axioms Toy.Tricolor.starvedCollector_never_noGrey
+#print axioms Toy.Tricolor.greyAllocCycle_collectorFair_never_noGrey
+#print axioms Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs
+#print axioms Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous_with_marking_work
+#print axioms Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous
+#print axioms Toy.Tricolor.floatingGarbage_yuasa_run
+#print axioms Toy.Tricolor.rootsProtected_of_rootsNonWhite
+#print axioms Toy.Tricolor.rootsNonWhite_of_rootsProtected_of_noGrey
+#print axioms Toy.Tricolor.strong_of_weak_of_noGrey
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsNonWhite
+#print axioms Toy.Tricolor.weak_and_not_strong
+#print axioms Toy.Tricolor.strong_alloc_grey
+#print axioms Toy.Tricolor.strong_alloc_black_of_successors_nonWhite
+#print axioms Toy.Tricolor.strong_store_dijkstra
+#print axioms Toy.Tricolor.strong_load
+#print axioms Toy.Tricolor.weak_rootsProtected_store
+#print axioms Toy.Tricolor.rootsNonWhite_alloc_iff_ne_white
+#print axioms Toy.Tricolor.allLiveBlack_of_noGrey_of_scansOnly_run_from_initMark
+#print axioms Toy.Tricolor.unbarriered_unshadedLoads_heldTrace_reaches_sLost
+#print axioms Toy.Tricolor.allLiveBlack_of_strong_of_rescan_of_scansOnly_run
+#print axioms Toy.Tricolor.strong_alloc_black_of_successors_held
+#print axioms Toy.Tricolor.rootsNonWhite_load_shaded
+#print axioms Toy.Tricolor.markMeasure_eq_two_mul_countWhite_add_countGrey
+#print axioms Toy.Tricolor.markMeasure_le_two_mul
+#print axioms Toy.Tricolor.markMeasure_scan_lt
+#print axioms Toy.Tricolor.scan_black_markMeasure_eq
+#print axioms Toy.Tricolor.allocWeight_needed_greyAllocCycle
+#print axioms Toy.Tricolor.greyAllocCycle_scans_exceed_two_mul_n
+#print axioms Toy.Tricolor.scanCount_add_markMeasure_le_of_allocTargetsWhite
+#print axioms Toy.Tricolor.collectorFair_antecedent_false_of_eventuallyOnlyBlackAllocs
+#print axioms Toy.Tricolor.activeOps_not_whiteTargetAllocs
+#print axioms Toy.Tricolor.collectorFair_antecedent_false_of_whiteTargetAllocs
+#print axioms Toy.Tricolor.eventually_only_white_alloc_of_whiteTargetAllocs
+#print axioms Toy.Tricolor.unenabledScans_collectorFair_not_infinitely_often_noGrey
+#print axioms Toy.Tricolor.shadeLe_erase
+#print axioms Toy.Tricolor.shadeLe_store

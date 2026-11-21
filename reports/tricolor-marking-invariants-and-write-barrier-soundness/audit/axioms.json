@@ -1,0 +1,1268 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Tricolor.AllLiveBlack": [],
+    "Toy.Tricolor.AllocTargetsWhite": [],
+    "Toy.Tricolor.AllocTargetsWhite.match_1": [],
+    "Toy.Tricolor.Barrier": [],
+    "Toy.Tricolor.Barrier.casesOn": [],
+    "Toy.Tricolor.Barrier.ctorElim": [],
+    "Toy.Tricolor.Barrier.ctorElimType": [],
+    "Toy.Tricolor.Barrier.ctorIdx": [],
+    "Toy.Tricolor.Barrier.dijkstra": [],
+    "Toy.Tricolor.Barrier.dijkstra.elim": [],
+    "Toy.Tricolor.Barrier.dijkstra.sizeOf_spec": [],
+    "Toy.Tricolor.Barrier.noConfusion": [],
+    "Toy.Tricolor.Barrier.noConfusionType": [],
+    "Toy.Tricolor.Barrier.none": [],
+    "Toy.Tricolor.Barrier.none.elim": [],
+    "Toy.Tricolor.Barrier.none.sizeOf_spec": [],
+    "Toy.Tricolor.Barrier.ofNat": [],
+    "Toy.Tricolor.Barrier.ofNat_ctorIdx": [],
+    "Toy.Tricolor.Barrier.rec": [],
+    "Toy.Tricolor.Barrier.recOn": [],
+    "Toy.Tricolor.Barrier.yuasa": [],
+    "Toy.Tricolor.Barrier.yuasa.elim": [],
+    "Toy.Tricolor.Barrier.yuasa.sizeOf_spec": [],
+    "Toy.Tricolor.CollectorFair": [
+      "propext"
+    ],
+    "Toy.Tricolor.Color": [],
+    "Toy.Tricolor.Color.black": [],
+    "Toy.Tricolor.Color.black.elim": [],
+    "Toy.Tricolor.Color.black.sizeOf_spec": [],
+    "Toy.Tricolor.Color.casesOn": [],
+    "Toy.Tricolor.Color.ctorElim": [],
+    "Toy.Tricolor.Color.ctorElimType": [],
+    "Toy.Tricolor.Color.ctorIdx": [],
+    "Toy.Tricolor.Color.grey": [],
+    "Toy.Tricolor.Color.grey.elim": [],
+    "Toy.Tricolor.Color.grey.sizeOf_spec": [],
+    "Toy.Tricolor.Color.noConfusion": [],
+    "Toy.Tricolor.Color.noConfusionType": [],
+    "Toy.Tricolor.Color.ofNat": [],
+    "Toy.Tricolor.Color.ofNat_ctorIdx": [],
+    "Toy.Tricolor.Color.rec": [],
+    "Toy.Tricolor.Color.recOn": [],
+    "Toy.Tricolor.Color.white": [],
+    "Toy.Tricolor.Color.white.elim": [],
+    "Toy.Tricolor.Color.white.sizeOf_spec": [],
+    "Toy.Tricolor.Config": [],
+    "Toy.Tricolor.Config.allocOk": [],
+    "Toy.Tricolor.Config.barrier": [],
+    "Toy.Tricolor.Config.casesOn": [],
+    "Toy.Tricolor.Config.ctorIdx": [],
+    "Toy.Tricolor.Config.mk": [],
+    "Toy.Tricolor.Config.mk.inj": [],
+    "Toy.Tricolor.Config.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Tricolor.Config.mk.noConfusion": [],
+    "Toy.Tricolor.Config.mk.sizeOf_spec": [],
+    "Toy.Tricolor.Config.noConfusion": [],
+    "Toy.Tricolor.Config.noConfusionType": [],
+    "Toy.Tricolor.Config.rec": [],
+    "Toy.Tricolor.Config.recOn": [],
+    "Toy.Tricolor.Config.shadeLoads": [],
+    "Toy.Tricolor.EventuallyOnlyBlackAllocs": [
+      "propext"
+    ],
+    "Toy.Tricolor.GreyProtected": [],
+    "Toy.Tricolor.GreyProtected.alloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.GreyProtected.below": [],
+    "Toy.Tricolor.GreyProtected.below.casesOn": [],
+    "Toy.Tricolor.GreyProtected.below.chain": [],
+    "Toy.Tricolor.GreyProtected.below.direct": [],
+    "Toy.Tricolor.GreyProtected.below.rec": [],
+    "Toy.Tricolor.GreyProtected.brecOn": [],
+    "Toy.Tricolor.GreyProtected.casesOn": [],
+    "Toy.Tricolor.GreyProtected.chain": [],
+    "Toy.Tricolor.GreyProtected.direct": [],
+    "Toy.Tricolor.GreyProtected.lift": [],
+    "Toy.Tricolor.GreyProtected.rec": [],
+    "Toy.Tricolor.GreyProtected.recOn": [],
+    "Toy.Tricolor.GreyProtected.scan": [
+      "propext"
+    ],
+    "Toy.Tricolor.GreyProtected.subset": [],
+    "Toy.Tricolor.GreyProtected.white": [],
+    "Toy.Tricolor.InfRun": [],
+    "Toy.Tricolor.InfRun.run_opsFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.Isolated": [],
+    "Toy.Tricolor.Live": [],
+    "Toy.Tricolor.Live.below": [],
+    "Toy.Tricolor.Live.below.casesOn": [],
+    "Toy.Tricolor.Live.below.rec": [],
+    "Toy.Tricolor.Live.below.root": [],
+    "Toy.Tricolor.Live.below.step": [],
+    "Toy.Tricolor.Live.brecOn": [],
+    "Toy.Tricolor.Live.casesOn": [],
+    "Toy.Tricolor.Live.rec": [],
+    "Toy.Tricolor.Live.recOn": [],
+    "Toy.Tricolor.Live.root": [],
+    "Toy.Tricolor.Live.step": [],
+    "Toy.Tricolor.Live.subset": [],
+    "Toy.Tricolor.NoGrey": [],
+    "Toy.Tricolor.Op": [],
+    "Toy.Tricolor.Op.Enabled": [],
+    "Toy.Tricolor.Op.alloc": [],
+    "Toy.Tricolor.Op.alloc.elim": [],
+    "Toy.Tricolor.Op.alloc.inj": [],
+    "Toy.Tricolor.Op.alloc.injEq": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.alloc.noConfusion": [],
+    "Toy.Tricolor.Op.alloc.sizeOf_spec": [],
+    "Toy.Tricolor.Op.allocWeight": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.allocWeight.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.allocWeight.eq_2": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.allocWeight.match_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.apply": [],
+    "Toy.Tricolor.Op.apply.eq_1": [],
+    "Toy.Tricolor.Op.apply.eq_2": [],
+    "Toy.Tricolor.Op.apply.eq_3": [],
+    "Toy.Tricolor.Op.apply.eq_4": [],
+    "Toy.Tricolor.Op.apply.eq_5": [],
+    "Toy.Tricolor.Op.apply.eq_6": [],
+    "Toy.Tricolor.Op.apply.match_1": [],
+    "Toy.Tricolor.Op.casesOn": [],
+    "Toy.Tricolor.Op.ctorElim": [],
+    "Toy.Tricolor.Op.ctorElimType": [],
+    "Toy.Tricolor.Op.ctorIdx": [],
+    "Toy.Tricolor.Op.drop": [],
+    "Toy.Tricolor.Op.drop.elim": [],
+    "Toy.Tricolor.Op.drop.inj": [],
+    "Toy.Tricolor.Op.drop.injEq": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.drop.noConfusion": [],
+    "Toy.Tricolor.Op.drop.sizeOf_spec": [],
+    "Toy.Tricolor.Op.eq_scan_of_isScan": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.erase": [],
+    "Toy.Tricolor.Op.erase.elim": [],
+    "Toy.Tricolor.Op.erase.inj": [],
+    "Toy.Tricolor.Op.erase.injEq": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.erase.noConfusion": [],
+    "Toy.Tricolor.Op.erase.sizeOf_spec": [],
+    "Toy.Tricolor.Op.isScan": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.isScan.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.isScan.eq_2": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.isScan.match_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.load": [],
+    "Toy.Tricolor.Op.load.elim": [],
+    "Toy.Tricolor.Op.load.inj": [],
+    "Toy.Tricolor.Op.load.injEq": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.load.noConfusion": [],
+    "Toy.Tricolor.Op.load.sizeOf_spec": [],
+    "Toy.Tricolor.Op.noConfusion": [],
+    "Toy.Tricolor.Op.noConfusionType": [],
+    "Toy.Tricolor.Op.rec": [],
+    "Toy.Tricolor.Op.recOn": [],
+    "Toy.Tricolor.Op.scan": [],
+    "Toy.Tricolor.Op.scan.elim": [],
+    "Toy.Tricolor.Op.scan.inj": [],
+    "Toy.Tricolor.Op.scan.injEq": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.scan.noConfusion": [],
+    "Toy.Tricolor.Op.scan.sizeOf_spec": [],
+    "Toy.Tricolor.Op.store": [],
+    "Toy.Tricolor.Op.store.elim": [],
+    "Toy.Tricolor.Op.store.inj": [],
+    "Toy.Tricolor.Op.store.injEq": [
+      "propext"
+    ],
+    "Toy.Tricolor.Op.store.noConfusion": [],
+    "Toy.Tricolor.Op.store.sizeOf_spec": [],
+    "Toy.Tricolor.RootsNonWhite": [],
+    "Toy.Tricolor.RootsProtected": [],
+    "Toy.Tricolor.Run": [],
+    "Toy.Tricolor.Run.append": [],
+    "Toy.Tricolor.Run.below": [],
+    "Toy.Tricolor.Run.below.casesOn": [],
+    "Toy.Tricolor.Run.below.cons": [],
+    "Toy.Tricolor.Run.below.nil": [],
+    "Toy.Tricolor.Run.below.rec": [],
+    "Toy.Tricolor.Run.brecOn": [],
+    "Toy.Tricolor.Run.casesOn": [],
+    "Toy.Tricolor.Run.cons": [],
+    "Toy.Tricolor.Run.eq_runOps": [],
+    "Toy.Tricolor.Run.invariant": [],
+    "Toy.Tricolor.Run.nil": [],
+    "Toy.Tricolor.Run.rec": [],
+    "Toy.Tricolor.Run.recOn": [],
+    "Toy.Tricolor.ScansOnly": [
+      "propext"
+    ],
+    "Toy.Tricolor.ScansOnly.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.ShadeLe": [],
+    "Toy.Tricolor.ShadeLe.black": [],
+    "Toy.Tricolor.ShadeLe.grey": [],
+    "Toy.Tricolor.ShadeLe.white": [],
+    "Toy.Tricolor.St": [],
+    "Toy.Tricolor.St.casesOn": [],
+    "Toy.Tricolor.St.color": [],
+    "Toy.Tricolor.St.ctorIdx": [],
+    "Toy.Tricolor.St.edge": [],
+    "Toy.Tricolor.St.ext'": [
+      "propext"
+    ],
+    "Toy.Tricolor.St.ext_of_forall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.St.mk": [],
+    "Toy.Tricolor.St.mk.inj": [],
+    "Toy.Tricolor.St.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Tricolor.St.mk.noConfusion": [],
+    "Toy.Tricolor.St.mk.sizeOf_spec": [],
+    "Toy.Tricolor.St.noConfusion": [],
+    "Toy.Tricolor.St.noConfusionType": [],
+    "Toy.Tricolor.St.rec": [],
+    "Toy.Tricolor.St.recOn": [],
+    "Toy.Tricolor.St.root": [],
+    "Toy.Tricolor.Step": [],
+    "Toy.Tricolor.Strong": [],
+    "Toy.Tricolor.Weak": [],
+    "Toy.Tricolor.WhiteTargetAllocs": [],
+    "Toy.Tricolor.activeOps": [
+      "propext"
+    ],
+    "Toy.Tricolor.activeOps.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.activeOps.eq_2": [
+      "propext"
+    ],
+    "Toy.Tricolor.activeOps_not_whiteTargetAllocs": [
+      "propext"
+    ],
+    "Toy.Tricolor.activeStates": [
+      "propext"
+    ],
+    "Toy.Tricolor.activeStates.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.activeStates.eq_2": [
+      "propext"
+    ],
+    "Toy.Tricolor.activeStates.eq_3": [
+      "propext"
+    ],
+    "Toy.Tricolor.activeStates.match_1": [],
+    "Toy.Tricolor.addEdge": [],
+    "Toy.Tricolor.addEdge.eq_1": [],
+    "Toy.Tricolor.allLiveBlack_of_closed": [],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_dijkstra_run_of_rescan_of_scansOnly_run": [
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_dijkstra_run_of_rescan_of_scansOnly_run_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_scansOnly_run_from_initMark": [
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_shadeLoads_of_nonWhiteAlloc_run_from_initMark": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_shadeLoads_of_nonWhiteAlloc_run_from_initMark_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_strong_of_rootsNonWhite": [],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_strong_of_rootsNonWhite_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsNonWhite": [],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsNonWhite_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsProtected": [],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsProtected_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_yuasa_of_nonWhiteAlloc_run_from_initMark": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_yuasa_of_nonWhiteAlloc_run_from_initMark_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_of_strong_of_rescan_of_scansOnly_run": [
+      "propext"
+    ],
+    "Toy.Tricolor.allLiveBlack_sDone": [
+      "propext"
+    ],
+    "Toy.Tricolor.alloc": [],
+    "Toy.Tricolor.alloc.eq_1": [],
+    "Toy.Tricolor.allocWeight_needed_greyAllocCycle": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.alloc_white_yuasa_breaks_rootsProtected": [
+      "propext"
+    ],
+    "Toy.Tricolor.badScanOps": [
+      "propext"
+    ],
+    "Toy.Tricolor.badScanOps.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.badScanStates": [
+      "propext"
+    ],
+    "Toy.Tricolor.blackOnly_nonWhite": [],
+    "Toy.Tricolor.black_of_nonWhite_of_noGrey": [],
+    "Toy.Tricolor.cfgD": [],
+    "Toy.Tricolor.cfgD0": [],
+    "Toy.Tricolor.cfgDW": [],
+    "Toy.Tricolor.cfgGreyAlloc": [],
+    "Toy.Tricolor.cfgN0": [],
+    "Toy.Tricolor.cfgNone": [],
+    "Toy.Tricolor.cfgU": [],
+    "Toy.Tricolor.cfgY": [],
+    "Toy.Tricolor.cfgYW": [],
+    "Toy.Tricolor.collectorFair_antecedent_false_of_eventuallyOnlyBlackAllocs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.collectorFair_antecedent_false_of_whiteTargetAllocs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.cycOp": [
+      "propext"
+    ],
+    "Toy.Tricolor.cycOps": [
+      "propext"
+    ],
+    "Toy.Tricolor.cycOps.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.cycSt": [
+      "propext"
+    ],
+    "Toy.Tricolor.cycSt.match_1": [],
+    "Toy.Tricolor.cycStates": [
+      "propext"
+    ],
+    "Toy.Tricolor.cycStates.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.cyc_grey": [
+      "propext"
+    ],
+    "Toy.Tricolor.cyc_grey.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.cyc_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.cyc_step.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.delEdge": [],
+    "Toy.Tricolor.delEdge.eq_1": [],
+    "Toy.Tricolor.dijkstra_rescan_then_mutator_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_rescan_with_grey_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_run_without_rescan_scansOnly_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_shadeLoads_traceLoadLost_then_scan_safe": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_step_from_nonStrong_not_strong": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_traceLostObject_then_scan_safe": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_unisolated_alloc_breaks_strong": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_unisolated_alloc_cycle_rescan_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_unisolated_blackAlloc_breaks_strong": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_unshadedLoads_run_from_initMark_leaves_live_white": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_whiteAlloc_run_from_initMark_leaves_live_white": [
+      "propext"
+    ],
+    "Toy.Tricolor.dijkstra_whiteAlloc_then_rescan_safe": [
+      "propext"
+    ],
+    "Toy.Tricolor.drainWithMutator": [
+      "propext"
+    ],
+    "Toy.Tricolor.drainWithMutator.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.drop": [],
+    "Toy.Tricolor.drop.eq_1": [],
+    "Toy.Tricolor.drops_run_longer_than_markMeasure": [
+      "propext"
+    ],
+    "Toy.Tricolor.erase": [],
+    "Toy.Tricolor.erase.eq_1": [],
+    "Toy.Tricolor.erase_dijkstra_breaks_weak": [
+      "propext"
+    ],
+    "Toy.Tricolor.erase_unbarriered_breaks_weak": [
+      "propext"
+    ],
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_eventually_markMeasure_antitone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous.match_1_5": [
+      "propext"
+    ],
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous_with_marking_work": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous_with_marking_work.match_1_13": [
+      "propext"
+    ],
+    "Toy.Tricolor.eventually_only_white_alloc_of_whiteTargetAllocs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.exists_scansOnly_run_to_noGrey": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.exists_scansOnly_run_to_noGrey_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.floatingGarbage_yuasa_run": [
+      "propext"
+    ],
+    "Toy.Tricolor.greyAllocCycle_collectorFair_never_noGrey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.greyAllocCycle_collectorFair_never_noGrey.match_1_6": [
+      "propext"
+    ],
+    "Toy.Tricolor.greyAllocCycle_scans_exceed_two_mul_n": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.greyProtected_of_live_of_white_of_weak_of_rootsProtected": [],
+    "Toy.Tricolor.greyProtected_of_live_of_white_of_weak_of_rootsProtected_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.hAlloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.hChain": [
+      "propext"
+    ],
+    "Toy.Tricolor.infinitely_often_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.initMark": [],
+    "Toy.Tricolor.initMark.eq_1": [],
+    "Toy.Tricolor.instDecidableEqBarrier": [],
+    "Toy.Tricolor.instDecidableEqColor": [],
+    "Toy.Tricolor.instDecidableEqOp": [],
+    "Toy.Tricolor.instDecidableEqOp.decEq": [],
+    "Toy.Tricolor.instDecidableEqOp.decEq.match_1": [],
+    "Toy.Tricolor.instDecidableIsolated": [],
+    "Toy.Tricolor.instDecidableNoGrey": [],
+    "Toy.Tricolor.instDecidableRootsNonWhite": [],
+    "Toy.Tricolor.instDecidableStrong": [],
+    "Toy.Tricolor.instReprBarrier": [],
+    "Toy.Tricolor.instReprBarrier.repr": [],
+    "Toy.Tricolor.instReprBarrier.repr.match_1": [],
+    "Toy.Tricolor.instReprColor": [],
+    "Toy.Tricolor.instReprColor.repr": [],
+    "Toy.Tricolor.instReprColor.repr.match_1": [],
+    "Toy.Tricolor.instReprOp": [],
+    "Toy.Tricolor.instReprOp.repr": [],
+    "Toy.Tricolor.instReprOp.repr.match_1": [],
+    "Toy.Tricolor.isolated_and_not_rootsProtected_alloc_black": [
+      "propext"
+    ],
+    "Toy.Tricolor.length_bound_fails_without_enabled_scans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.length_le_markMeasure_and_le_two_mul_of_scansOnly_run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.length_le_markMeasure_and_le_two_mul_of_scansOnly_run_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.length_le_markMeasure_of_scansOnly_run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.live_one_sBlackWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.live_one_sGreyWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.live_two_sChain": [
+      "propext"
+    ],
+    "Toy.Tricolor.live_zero_sWhiteRoot": [
+      "propext"
+    ],
+    "Toy.Tricolor.load": [],
+    "Toy.Tricolor.load.eq_1": [],
+    "Toy.Tricolor.load_of_unreachable_breaks_rootsProtected": [
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure": [],
+    "Toy.Tricolor.markMeasure.eq_1": [],
+    "Toy.Tricolor.markMeasure_alloc_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_alloc_le_of_white": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_alloc_lt_of_white_of_ne_white": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_eq_two_mul_countWhite_add_countGrey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_le_of_shadeLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_le_two_mul": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_lt_alloc_grey_of_black": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_lt_of_shadeLe_of_noGrey_of_grey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_scan_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_scan_lt_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.markMeasure_step_le_of_whiteTarget": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.mk": [
+      "propext"
+    ],
+    "Toy.Tricolor.nat_seq_eventually_const": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.noGrey_and_not_scan_of_step_of_markMeasure_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.noGrey_rootsNonWhite_and_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.noGrey_rootsProtected_and_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.noGrey_strong_and_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.noGrey_weak_and_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.nodup_finRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.not_allLiveBlack_sBlackWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_allLiveBlack_sGreyWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_allLiveBlack_sLoadLost": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_allLiveBlack_sLost": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_allLiveBlack_sWhiteAlloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_allLiveBlack_sWhiteRoot": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_eventually_noGrey_of_forall_not_noGrey": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_eventually_noGrey_of_forall_not_noGrey.match_1_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_greyProtected_of_noGrey": [],
+    "Toy.Tricolor.not_live_one_initMark_hAlloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_live_one_sFree": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_live_one_scan_initMark_hAlloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_run_sDone_scan_zero": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_run_traceUnheldStore": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_run_traceUnisolatedBlackAlloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_run_wrong_final_state": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_step_sGreyWhite_scan_one": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_weak_erase_sWeakNotStrong": [
+      "propext"
+    ],
+    "Toy.Tricolor.not_weak_sBlackWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.opsFrom": [],
+    "Toy.Tricolor.opsFrom.eq_1": [],
+    "Toy.Tricolor.opsFrom.eq_2": [],
+    "Toy.Tricolor.opsFrom.eq_def": [],
+    "Toy.Tricolor.opsFrom.match_1": [],
+    "Toy.Tricolor.rescan": [],
+    "Toy.Tricolor.rescan.eq_1": [],
+    "Toy.Tricolor.rescan_from_nonStrong_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.rootsNonWhite_alloc_iff_ne_white": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.rootsNonWhite_drop": [],
+    "Toy.Tricolor.rootsNonWhite_initMark": [
+      "propext"
+    ],
+    "Toy.Tricolor.rootsNonWhite_load_shaded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.rootsNonWhite_of_rootsProtected_of_noGrey": [],
+    "Toy.Tricolor.rootsNonWhite_of_shadeLe": [],
+    "Toy.Tricolor.rootsNonWhite_rescan": [],
+    "Toy.Tricolor.rootsNonWhite_scan": [
+      "propext"
+    ],
+    "Toy.Tricolor.rootsProtected_alloc_iff_ne_white": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.rootsProtected_alloc_iff_ne_white_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.rootsProtected_alloc_white_of_not_isolated": [
+      "propext"
+    ],
+    "Toy.Tricolor.rootsProtected_initMark": [
+      "propext"
+    ],
+    "Toy.Tricolor.rootsProtected_live_white_and_not_greyProtected": [
+      "propext"
+    ],
+    "Toy.Tricolor.rootsProtected_of_rootsNonWhite": [],
+    "Toy.Tricolor.rootsProtected_sBlackWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.rootsProtected_sGreyWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.rootsProtected_scan": [
+      "propext"
+    ],
+    "Toy.Tricolor.runOps": [],
+    "Toy.Tricolor.runOps.eq_1": [],
+    "Toy.Tricolor.runOps_traceLostObject_of_none_of_unshaded": [
+      "propext"
+    ],
+    "Toy.Tricolor.run_from_initMark_with_grey_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.run_sLost": [
+      "propext"
+    ],
+    "Toy.Tricolor.run_traceLoadLost": [
+      "propext"
+    ],
+    "Toy.Tricolor.run_traceLostObject": [
+      "propext"
+    ],
+    "Toy.Tricolor.run_traceWhiteAlloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.sAfterScan0": [
+      "propext"
+    ],
+    "Toy.Tricolor.sBlackWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.sBlackWhite_ne_initMark": [
+      "propext"
+    ],
+    "Toy.Tricolor.sChain": [
+      "propext"
+    ],
+    "Toy.Tricolor.sChainR": [
+      "propext"
+    ],
+    "Toy.Tricolor.sChainShaded": [
+      "propext"
+    ],
+    "Toy.Tricolor.sDone": [
+      "propext"
+    ],
+    "Toy.Tricolor.sDrainLost": [
+      "propext"
+    ],
+    "Toy.Tricolor.sFree": [
+      "propext"
+    ],
+    "Toy.Tricolor.sGreyAndBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.sGreyToOne": [
+      "propext"
+    ],
+    "Toy.Tricolor.sGreyWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.sLoadLost": [
+      "propext"
+    ],
+    "Toy.Tricolor.sLoadLost_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.sLost": [
+      "propext"
+    ],
+    "Toy.Tricolor.sLost_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.sOneBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.sOneGrey": [
+      "propext"
+    ],
+    "Toy.Tricolor.sProtectedRoot": [
+      "propext"
+    ],
+    "Toy.Tricolor.sWeakNotStrong": [
+      "propext"
+    ],
+    "Toy.Tricolor.sWhiteAlloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.sWhiteAllocY": [
+      "propext"
+    ],
+    "Toy.Tricolor.sWhiteAlloc_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.sWhiteRoot": [
+      "propext"
+    ],
+    "Toy.Tricolor.sWhiteRootFree": [
+      "propext"
+    ],
+    "Toy.Tricolor.sWhiteRootUnprotected": [
+      "propext"
+    ],
+    "Toy.Tricolor.scan": [],
+    "Toy.Tricolor.scan.eq_1": [],
+    "Toy.Tricolor.scanCount_add_markMeasure_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.scanCount_add_markMeasure_le_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.scanCount_add_markMeasure_le_of_allocTargetsWhite": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.scanCount_bound_fails_without_enabled_scans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.scan_black": [
+      "propext"
+    ],
+    "Toy.Tricolor.scan_black_markMeasure_eq": [
+      "propext"
+    ],
+    "Toy.Tricolor.scan_grey_of_grey": [
+      "propext"
+    ],
+    "Toy.Tricolor.scan_grey_of_succ": [
+      "propext"
+    ],
+    "Toy.Tricolor.scan_white_iff": [
+      "propext"
+    ],
+    "Toy.Tricolor.sevenDrops": [
+      "propext"
+    ],
+    "Toy.Tricolor.sevenDrops.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.shade": [],
+    "Toy.Tricolor.shadeLe_erase": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLe_load": [],
+    "Toy.Tricolor.shadeLe_of": [],
+    "Toy.Tricolor.shadeLe_store": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_nonWhiteAlloc_store_of_unheld_value_breaks_strong": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_nonWhiteAlloc_unheld_store_cycle_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_nonWhiteAlloc_unisolated_alloc_breaks_strong": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_run_from_initMark_with_grey_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_run_not_from_initMark_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_step_from_nonStrong_not_strong": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_store_of_whiteRoot_breaks_strong": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_traceLostObject_then_scan_safe": [
+      "propext"
+    ],
+    "Toy.Tricolor.shadeLoads_whiteAlloc_breaks_rootsNonWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.shade_cases": [],
+    "Toy.Tricolor.shade_self_ne_white": [],
+    "Toy.Tricolor.starveOps": [
+      "propext"
+    ],
+    "Toy.Tricolor.starveOps.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.starveStates": [
+      "propext"
+    ],
+    "Toy.Tricolor.starvedCollector_never_noGrey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.store": [],
+    "Toy.Tricolor.store.eq_1": [],
+    "Toy.Tricolor.store_unbarriered_breaks_strong": [
+      "propext"
+    ],
+    "Toy.Tricolor.store_yuasa_breaks_strong": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.strong_alloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_alloc_black_of_successors_held": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.strong_alloc_black_of_successors_nonWhite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.strong_alloc_grey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.strong_drop": [],
+    "Toy.Tricolor.strong_erase": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_initMark": [],
+    "Toy.Tricolor.strong_load": [],
+    "Toy.Tricolor.strong_of_shadeLe": [],
+    "Toy.Tricolor.strong_of_weak_of_noGrey": [],
+    "Toy.Tricolor.strong_preserved_of_dijkstra": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_preserved_of_dijkstra_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_rescan": [],
+    "Toy.Tricolor.strong_rescan_then_mutator_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_rescan_with_grey_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_rootsNonWhite_and_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_rootsNonWhite_of_scansOnly_run": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_rootsNonWhite_preserved_of_shadeLoads_of_nonWhiteAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.strong_rootsNonWhite_preserved_of_shadeLoads_of_nonWhiteAlloc_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_run_of_dijkstra": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_scan": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_store_dijkstra": [
+      "propext"
+    ],
+    "Toy.Tricolor.strong_store_of_nonWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.sum_map_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.sum_map_le_add_of_nodup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.sum_map_le_mul": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.sum_map_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.sum_map_weight_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.traceLoadLost": [
+      "propext"
+    ],
+    "Toy.Tricolor.traceLostObject": [
+      "propext"
+    ],
+    "Toy.Tricolor.traceLostObjectHeld": [
+      "propext"
+    ],
+    "Toy.Tricolor.traceLostObject_dijkstra_unshadedLoads_not_lost": [
+      "propext"
+    ],
+    "Toy.Tricolor.traceLostObject_unbarriered_shadeLoads_not_lost": [
+      "propext"
+    ],
+    "Toy.Tricolor.traceLostObject_yuasa_unshadedLoads_not_lost": [
+      "propext"
+    ],
+    "Toy.Tricolor.traceUnheldStore": [
+      "propext"
+    ],
+    "Toy.Tricolor.traceUnisolatedBlackAlloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.traceWhiteAlloc": [
+      "propext"
+    ],
+    "Toy.Tricolor.unbarriered_run_rescan_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.unbarriered_unshadedLoads_blackAlloc_run_from_initMark_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.unbarriered_unshadedLoads_heldTrace_reaches_sLost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.unbarriered_unshadedLoads_traceLostObject_leaves_live_white": [
+      "propext"
+    ],
+    "Toy.Tricolor.unenabledScans_collectorFair_never_noGrey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.unenabledScans_collectorFair_not_infinitely_often_noGrey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.unshadedLoad_breaks_rootsNonWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.wOps": [
+      "propext"
+    ],
+    "Toy.Tricolor.wOps.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.wStates": [
+      "propext"
+    ],
+    "Toy.Tricolor.wStates.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_and_not_strong": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_initMark": [],
+    "Toy.Tricolor.weak_live_white_and_not_greyProtected": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_of_strong": [],
+    "Toy.Tricolor.weak_of_strong_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsNonWhite_and_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_alloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_and_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_drop": [],
+    "Toy.Tricolor.weak_rootsProtected_erase_yuasa": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_live_and_not_greyProtected": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_load": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_preserved_of_yuasa_of_nonWhiteAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_preserved_of_yuasa_of_nonWhiteAlloc_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_run_of_yuasa_of_nonWhiteAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_store": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_rootsProtected_white_and_not_greyProtected": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_sGreyWhite": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_sWeakNotStrong": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_sWhiteRoot": [
+      "propext"
+    ],
+    "Toy.Tricolor.weak_scan": [
+      "propext"
+    ],
+    "Toy.Tricolor.weight": [],
+    "Toy.Tricolor.weight.eq_1": [],
+    "Toy.Tricolor.weight.eq_2": [],
+    "Toy.Tricolor.weight.eq_3": [],
+    "Toy.Tricolor.weight.match_1": [],
+    "Toy.Tricolor.weight_le_two": [],
+    "Toy.Tricolor.wtOps": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtOps.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtOps.eq_2": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtOps.eq_3": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtOps.eq_4": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtStates": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtStates.eq_1": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtStates.eq_2": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtStates.eq_3": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtStates.eq_4": [
+      "propext"
+    ],
+    "Toy.Tricolor.wtStates.match_1": [],
+    "Toy.Tricolor.yuasa_load_of_unreachable_cycle_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_nonWhiteAlloc_unisolated_alloc_breaks_weak": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_run_from_initMark_with_grey_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_run_not_from_initMark_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_step_from_nonWeak_not_weak": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_store_of_unreachable_breaks_weak": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_store_of_unreachable_cycle_not_allLiveBlack": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_store_without_rootsProtected_breaks_weak": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_traceLoadLost_then_scan_safe": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_traceLostObject_then_scan_safe": [
+      "propext"
+    ],
+    "Toy.Tricolor.yuasa_whiteAlloc_run_from_initMark_not_allLiveBlack": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

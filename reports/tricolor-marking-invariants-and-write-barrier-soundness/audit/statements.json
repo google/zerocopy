@@ -1,0 +1,665 @@
+{
+  "statements": {
+    "Toy.Tricolor.activeOps_not_whiteTargetAllocs": {
+      "closure_sha256": "8d4b25ed9cefd71980b60e4fac77c06c768a23f96388f921830d00be5896717d",
+      "closure_size": 21,
+      "statement_sha256": "32bcab4441da1700cb91d721f3a54e8773235355b12c88d099db7dfb2c2f04ed"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_dijkstra_run_of_rescan_of_scansOnly_run": {
+      "closure_sha256": "92e2411930505d735ab20a860b368f3fb6e3237e2a91ee8de947a3fd96406514",
+      "closure_size": 67,
+      "statement_sha256": "e92b4eb14d8eda08e39560de4fc99be216428683401bf030c1e6b19d4a707f76"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_dijkstra_run_of_rescan_of_scansOnly_run_nonvacuous": {
+      "closure_sha256": "997141953cbc769fe27de3e8c0af0139923fbcac52ab728a93fc77cc9f5eb89a",
+      "closure_size": 73,
+      "statement_sha256": "41c2fe3e036ba02bca8b1d928dc1ad6c1f0b2cc2b604432a059b63ec6a7ee230"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_scansOnly_run_from_initMark": {
+      "closure_sha256": "472546f91ee9deb09712583c940389e79e585cf6185e295ce0d25348ff2ff4b6",
+      "closure_size": 66,
+      "statement_sha256": "a875c0d85207f0a77132f368e1ee7bdfd28ae06ebdb0bb842794f005617cedf2"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_shadeLoads_of_nonWhiteAlloc_run_from_initMark": {
+      "closure_sha256": "cc0188b314cbc77069e976692c92a3327f9a49962214a37566dd01a033e06e56",
+      "closure_size": 61,
+      "statement_sha256": "1d41e105108c22ec02f5c3a6b8f19f430f870b715df93c004a249e439658fb58"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_shadeLoads_of_nonWhiteAlloc_run_from_initMark_nonvacuous": {
+      "closure_sha256": "8ff954f422c898edb812d46fcfff7771102eaf742954aa724f87458a9aa9be2d",
+      "closure_size": 66,
+      "statement_sha256": "e67572c086bf67dc9afdfb5d5eee6d094dacdf144eba47ba30f65c3eccbc7b38"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_strong_of_rootsNonWhite": {
+      "closure_sha256": "d7ecf6bc85c4cd97893e531b9e3c44b85becaf403cf2ff155aab9e9b6bb2f098",
+      "closure_size": 16,
+      "statement_sha256": "63416f0c81f08ec02dd2f101d2871654089a6e7aa86354b032b40fb476f35546"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_strong_of_rootsNonWhite_nonvacuous": {
+      "closure_sha256": "0b442e4129bab8b5ae6423ef13ba1e01842ead4fe9c5a012b116811430378fb2",
+      "closure_size": 14,
+      "statement_sha256": "41720e584dfe1e5fb34c0e3bf28b45a7fbd1efbef30e8a0177c97866bc789798"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsNonWhite": {
+      "closure_sha256": "555b65fccdc7011ab4d73966faff3c7e0b17c7103dfd761e5e3aea6ee9aa21bd",
+      "closure_size": 19,
+      "statement_sha256": "bdb678651e2f12fb12799aad0999a5e21979ba09c5a333f72fc33c29899f1952"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsProtected": {
+      "closure_sha256": "968366ce472f51ed64a35e5b3946d4f191c7225e64a16506053ce1e1a04c4489",
+      "closure_size": 19,
+      "statement_sha256": "68f6b6ce31d20bbfd10c3af25dba3b3e95452a79736ed5c77bfdf879a351668a"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsProtected_nonvacuous": {
+      "closure_sha256": "35f03dfbf06513c3981cb695a3697018733097ddcddafe7eb8a188b528698a36",
+      "closure_size": 17,
+      "statement_sha256": "dcf62f678fb19a4afd1e0b52510deb2fccf576830f71640c0a554f1fd60336ea"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_yuasa_of_nonWhiteAlloc_run_from_initMark": {
+      "closure_sha256": "cc0188b314cbc77069e976692c92a3327f9a49962214a37566dd01a033e06e56",
+      "closure_size": 61,
+      "statement_sha256": "11b4f5ec5f788d66f098c833a0ccd9d2ea2ff1aa2adadbad9a63b486e5c67867"
+    },
+    "Toy.Tricolor.allLiveBlack_of_noGrey_of_yuasa_of_nonWhiteAlloc_run_from_initMark_nonvacuous": {
+      "closure_sha256": "7320d11509aa14bccc50436b110bf570617a3fe7517254800352895d367defbd",
+      "closure_size": 66,
+      "statement_sha256": "bf7ebc659e3b698d26403e6a0ab48914953eba94c00d61245cc133e19c501e6a"
+    },
+    "Toy.Tricolor.allLiveBlack_of_strong_of_rescan_of_scansOnly_run": {
+      "closure_sha256": "9776501996085a1b0e99b3f4a0ee4f3a8aeb28f6bd1d8a846ede8e7011a8e7f0",
+      "closure_size": 67,
+      "statement_sha256": "f894f7ad0fa9c630b1af1a9a9b601eab4af758aa44c50db44e30f3f30c8c5abf"
+    },
+    "Toy.Tricolor.allocWeight_needed_greyAllocCycle": {
+      "closure_sha256": "48a20a0e14f15f27e104aa9e6c1ca320640f4008729aae9cbf4b49d501fa3881",
+      "closure_size": 76,
+      "statement_sha256": "c6f2381d8c57f1ab44b4130873172e140301a3d6e8c313db07d68f665562a267"
+    },
+    "Toy.Tricolor.alloc_white_yuasa_breaks_rootsProtected": {
+      "closure_sha256": "d50ea2fd726e4bef97bf7c19a450a6d6d3b4f5f431bf27c6fc9e99ae0317fc3c",
+      "closure_size": 64,
+      "statement_sha256": "9f848c66d90a703027643ed9b458a3481d77962e011fd9f2556ec95c9793b2e7"
+    },
+    "Toy.Tricolor.collectorFair_antecedent_false_of_eventuallyOnlyBlackAllocs": {
+      "closure_sha256": "6597d1d1296cb220650314f9f0e8b96c042bbe8569dbcde41744cc91d5a2f612",
+      "closure_size": 68,
+      "statement_sha256": "077edb75b5385a97ca03eecbf2de7f7a72401d27306cf713cdb96127f89cd897"
+    },
+    "Toy.Tricolor.collectorFair_antecedent_false_of_whiteTargetAllocs": {
+      "closure_sha256": "33ab6174dfa4ac2d625e6b73de9a255c9bf4aa24de6351bbd5c5a264dc9ad40a",
+      "closure_size": 63,
+      "statement_sha256": "97e939df03ec4b512c5297455504f450ea3a5688c01d0e3c03876c4c479823da"
+    },
+    "Toy.Tricolor.dijkstra_rescan_then_mutator_not_allLiveBlack": {
+      "closure_sha256": "ee623efaf151f3ee3c08382cbb19368dfc0497898c0884b612514285640bbef2",
+      "closure_size": 75,
+      "statement_sha256": "b10b54f3406a05ea19be3c9e1f0984f91cdd24215e2c30f25be680ebfa5edf1b"
+    },
+    "Toy.Tricolor.dijkstra_rescan_with_grey_not_allLiveBlack": {
+      "closure_sha256": "3f7c0037d820740274d7d9e3a392fac83d42d1de30b971133d7a130e53d9e875",
+      "closure_size": 69,
+      "statement_sha256": "8e68b2f16425a5cfaf4d802419872f893d04b16a4c10330fd3c5a58fe539d91f"
+    },
+    "Toy.Tricolor.dijkstra_run_without_rescan_scansOnly_not_allLiveBlack": {
+      "closure_sha256": "d11b45da81d04a6874799d609ba630a77a2c1ac4803fdfa5c7b0fd3e968b69f3",
+      "closure_size": 73,
+      "statement_sha256": "b9eb2bd5965a709c741b95b3629c3dd539cdab82d58ae80d768724f98316deaf"
+    },
+    "Toy.Tricolor.dijkstra_shadeLoads_traceLoadLost_then_scan_safe": {
+      "closure_sha256": "c0cbbdfe264e40bacf002ef262d2560db350be6ebb75dc02cf77ce58a26561ea",
+      "closure_size": 67,
+      "statement_sha256": "ab0916729523ea2e2a976399bc36065c615aab16e401bacbeecb4062b7b1db85"
+    },
+    "Toy.Tricolor.dijkstra_step_from_nonStrong_not_strong": {
+      "closure_sha256": "a1a759f5b96523f86b87cc56169cec5f9ee5557543485c1179b448a2e578114a",
+      "closure_size": 60,
+      "statement_sha256": "8512604b3d4fd71caf601ec8ec694de38f85131d7e4157f5f9833ac54c22b380"
+    },
+    "Toy.Tricolor.dijkstra_traceLostObject_then_scan_safe": {
+      "closure_sha256": "f45a647dcfe4f2a44c080881dff1ae842cadf9f21880ef3b473ae00c3c5c4e26",
+      "closure_size": 67,
+      "statement_sha256": "2b7a51f8231bf3e28399cdcddc7e236dc9df7df56e8cf34759c3f0324a27010e"
+    },
+    "Toy.Tricolor.dijkstra_unisolated_alloc_breaks_strong": {
+      "closure_sha256": "3e247cbab9a74fc07457dfc48147cbd5f92bdc23e78d92cff1c6e87bc3ec0511",
+      "closure_size": 59,
+      "statement_sha256": "990c1aec2105491bb38781db99a06d341d4f4e55efdc85155d38686dde809933"
+    },
+    "Toy.Tricolor.dijkstra_unisolated_alloc_cycle_rescan_not_allLiveBlack": {
+      "closure_sha256": "0baf194b71b40276485e0e50a710609d6f1ad5b73945ef467886c4f542c882e6",
+      "closure_size": 73,
+      "statement_sha256": "4b7084840eb019cf0f5164493f6c68cc8f7a3ad3ba66e81c9444f5b3e4fdaf03"
+    },
+    "Toy.Tricolor.dijkstra_unisolated_blackAlloc_breaks_strong": {
+      "closure_sha256": "e5a858a0cfaece0ad64af5e2a4f6179ab25ba1124b879ac21b23878f5f75e02c",
+      "closure_size": 59,
+      "statement_sha256": "0caae8659fd5d3f921f23ba29c95fc3112db834f71d9c0f029c089a94f73e4f2"
+    },
+    "Toy.Tricolor.dijkstra_unshadedLoads_run_from_initMark_leaves_live_white": {
+      "closure_sha256": "98317146e920b1241cd4075e15eef4a5c7bc468159e8a3a20ab19b85b35cdea9",
+      "closure_size": 67,
+      "statement_sha256": "8f2a069e8641391a8980e4de7562d294d9d49b83acabc712a621fe8895e832de"
+    },
+    "Toy.Tricolor.dijkstra_whiteAlloc_run_from_initMark_leaves_live_white": {
+      "closure_sha256": "540c8bd46a469b3ae6280ae5ea4453c8951a35017db862d1a3c0938febdf4492",
+      "closure_size": 67,
+      "statement_sha256": "4e1b1f2ebcf799c311f9469d755d4d3f2c206a38c73ae8c811d16f756c46ba8e"
+    },
+    "Toy.Tricolor.dijkstra_whiteAlloc_then_rescan_safe": {
+      "closure_sha256": "2f7d399da46c0f7cba1164c3eab0dbdf892794c50939506bd02f51615b4bb1ff",
+      "closure_size": 69,
+      "statement_sha256": "e2df25842a373fb5e52ce17d40baf87ebd6387f8f0057f7ab1a34a95484c34c7"
+    },
+    "Toy.Tricolor.drops_run_longer_than_markMeasure": {
+      "closure_sha256": "7845cf3554852fcb5d618d567bbff371b656289acad43fd00c06d23e733c31fa",
+      "closure_size": 72,
+      "statement_sha256": "807838db4e477d7a17135f4724628881718f802c6f36a53aa511c255ada12a6d"
+    },
+    "Toy.Tricolor.erase_dijkstra_breaks_weak": {
+      "closure_sha256": "b3ab76fecf9ae9be0e0d8fcf2d791fbaba224688a1fc8ebf801105108e333db5",
+      "closure_size": 64,
+      "statement_sha256": "f7e42ac730d0bb5093f3f68a5e8ac6d2276dad432c04c1bd1e45111b6941132b"
+    },
+    "Toy.Tricolor.erase_unbarriered_breaks_weak": {
+      "closure_sha256": "7f596c52c85fe977c21bccac1f5a6e445df3f221c736d3d65a20af572e5f4097",
+      "closure_size": 64,
+      "statement_sha256": "b65735ff5c80fa8b5d4e56547a9ceaa020fbab6ffc0dfb39912ea4cb679132fc"
+    },
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs": {
+      "closure_sha256": "6597d1d1296cb220650314f9f0e8b96c042bbe8569dbcde41744cc91d5a2f612",
+      "closure_size": 68,
+      "statement_sha256": "be3e11b09e9fc6a9bd07a5ed05a312ed7ecad92fa88644822f64c6594f758a2d"
+    },
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs_nonvacuous": {
+      "closure_sha256": "29cbf07a83c523675d10b8412e045001746a40fb2200d3b64bb29dd407461e11",
+      "closure_size": 75,
+      "statement_sha256": "f5b642be81d792241e86bd6ccfee38488b6a6428a798a668c013d2bb189e0a0d"
+    },
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs": {
+      "closure_sha256": "33ab6174dfa4ac2d625e6b73de9a255c9bf4aa24de6351bbd5c5a264dc9ad40a",
+      "closure_size": 63,
+      "statement_sha256": "2782a363b380f32e0c581e77e1c79baa477b686cb84dff0c1b167e6f9cc37d1b"
+    },
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous": {
+      "closure_sha256": "358e9004debe2726d90eb792c742b77b4ef220fa18409de6d3cd690e19af8276",
+      "closure_size": 74,
+      "statement_sha256": "4ba9204a2b0089c3ea7a0750ebf6217d5dbc26631d71fa1ec6afef005d96f479"
+    },
+    "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous_with_marking_work": {
+      "closure_sha256": "9c0ddd485b1f97383f8ca4ed188aa7d583f1e62c8da5e29a48be85401706318f",
+      "closure_size": 75,
+      "statement_sha256": "aea27eb200350c81b485865bf54f78312cc7970be17079990ea91a75f357e4d0"
+    },
+    "Toy.Tricolor.eventually_only_white_alloc_of_whiteTargetAllocs": {
+      "closure_sha256": "888803df86dd222d1ed5c27c77d101337a05427121cfd4962855ec1855f4865a",
+      "closure_size": 57,
+      "statement_sha256": "1855dba49947dcb175b7295f31694b565015cd0c5ee280e8010ff68de3e2da8a"
+    },
+    "Toy.Tricolor.exists_scansOnly_run_to_noGrey": {
+      "closure_sha256": "fe527dedb46746a5b455a06e27dfb7d86c140f809bf1967fdb1797e669838be1",
+      "closure_size": 64,
+      "statement_sha256": "c5f75aafed8613be0efd1c95ae022d58b04b9ee82bab6bdfbb4562661ad10b3b"
+    },
+    "Toy.Tricolor.exists_scansOnly_run_to_noGrey_nonvacuous": {
+      "closure_sha256": "0c0aa4d4b2b71c938006845ed24cf53b078a3de668eda67fe0f2586dbc635913",
+      "closure_size": 10,
+      "statement_sha256": "3205814f6bf7447421155b82dabb5688bd7955c7b2860b2ad6e32f339b9456f0"
+    },
+    "Toy.Tricolor.floatingGarbage_yuasa_run": {
+      "closure_sha256": "ba89f87be87777363b537223ae94a0e9bc7185d6e46cfcdbc698fb1a03654d32",
+      "closure_size": 65,
+      "statement_sha256": "8cea39602534f49619c6da79e53d96b386fdfce79a0bc097045025d60070c25e"
+    },
+    "Toy.Tricolor.greyAllocCycle_collectorFair_never_noGrey": {
+      "closure_sha256": "af8fda1a9c5af4cdd68dfb0edf24b56c1230aef923d627d39fec78586f0f682b",
+      "closure_size": 77,
+      "statement_sha256": "7acf826e8b13653a459673f4a0f93be892d646c669eeb2ea8d89c7501de5d529"
+    },
+    "Toy.Tricolor.greyAllocCycle_scans_exceed_two_mul_n": {
+      "closure_sha256": "a34be5693aa6a8c25ac5748da068937f3514bfcdaa7b89c81e113119c9e23352",
+      "closure_size": 73,
+      "statement_sha256": "00203e4726eb8af3c8f8013fe98dcd203bb005f8107a379bd428c859ef47671a"
+    },
+    "Toy.Tricolor.greyProtected_of_live_of_white_of_weak_of_rootsProtected": {
+      "closure_sha256": "1bf5181e244c79738512ceb924cac764dbf81aad129c11f2f55f06a3821bd5c6",
+      "closure_size": 17,
+      "statement_sha256": "d76b808e3313d1686afd1d1fe7f4fa2c56685fe13de308b317a2db8558400480"
+    },
+    "Toy.Tricolor.greyProtected_of_live_of_white_of_weak_of_rootsProtected_nonvacuous": {
+      "closure_sha256": "56f41d204027752b567a343c6afee5c81dafe241735376ae0b8a0e686794a0d9",
+      "closure_size": 19,
+      "statement_sha256": "1a67bea03536dd6b29fed267c3a2e7e2649046c0127512ec3935bbe53bbed66f"
+    },
+    "Toy.Tricolor.infinitely_often_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs": {
+      "closure_sha256": "6597d1d1296cb220650314f9f0e8b96c042bbe8569dbcde41744cc91d5a2f612",
+      "closure_size": 68,
+      "statement_sha256": "6fdd9623a5ac9074bbb1b8794d1fe2a34875b78a01bc881a8651eb3f53b48765"
+    },
+    "Toy.Tricolor.isolated_and_not_rootsProtected_alloc_black": {
+      "closure_sha256": "9b49639f1dbc9f21a0092a171af12f49def48f31eab9fc15ff3162282466fff9",
+      "closure_size": 17,
+      "statement_sha256": "ec9cc266378d7401c76c0b728416763e37e0d78b9d786fd4be064eb0d43acacd"
+    },
+    "Toy.Tricolor.length_bound_fails_without_enabled_scans": {
+      "closure_sha256": "3c29d0f4c841532c49a8d4743aedb048eb7829a867c5972ee9c77eaeac8bae9e",
+      "closure_size": 70,
+      "statement_sha256": "55f8f39b4c47bd1b0e9d95163041253bd3b8eb4eb09c4be9063c7af9b626f494"
+    },
+    "Toy.Tricolor.length_le_markMeasure_and_le_two_mul_of_scansOnly_run": {
+      "closure_sha256": "7275d67832caa1e16d538262b6ac6d4a2e552b77888bc792fd845079ecc951e0",
+      "closure_size": 66,
+      "statement_sha256": "23375dd8b779bf40d2d91ef2bc816f60a0c8c50ec3291e13e1fcfd167c2683fc"
+    },
+    "Toy.Tricolor.length_le_markMeasure_and_le_two_mul_of_scansOnly_run_nonvacuous": {
+      "closure_sha256": "bfb418f39c86142d1ad2a17e97c4d714c625405320f10efd7a1fc5bdade29e66",
+      "closure_size": 66,
+      "statement_sha256": "9f6e237ad3607e40a0ea2f2080b8bbbac7866e4e95ca990f48774628195d0c0e"
+    },
+    "Toy.Tricolor.load_of_unreachable_breaks_rootsProtected": {
+      "closure_sha256": "c5fba0e4dfdddd5679d38479c8301df29d04cc2ccdca5a93c4ce7463df372937",
+      "closure_size": 63,
+      "statement_sha256": "b11636bcd82d6e32bd627f807819884ee74c109015537ebba0a30d3be4a80343"
+    },
+    "Toy.Tricolor.markMeasure_eq_two_mul_countWhite_add_countGrey": {
+      "closure_sha256": "3c95ed1b6638c9269615d8546827013cc627679dd1f470229e38fb493316a2e4",
+      "closure_size": 16,
+      "statement_sha256": "3e92139836170e25206d5ba546f0efd5a8c2b4efd35f51a8f9e9c5c51ce008fe"
+    },
+    "Toy.Tricolor.markMeasure_le_two_mul": {
+      "closure_sha256": "666436f78fe8202d572c21c0467bfaed2b621a10f6645117ba412251a4f4799f",
+      "closure_size": 12,
+      "statement_sha256": "3dd19ded505ffd4f49e7b6a19932a826481eae04c4cf20796fe19d429332c683"
+    },
+    "Toy.Tricolor.markMeasure_scan_lt": {
+      "closure_sha256": "9497c4c10cd2e056e156d4213404c5f49870f8b8123c2b947c300e6e1f3353f9",
+      "closure_size": 19,
+      "statement_sha256": "d1390d20168076d0c5592a4156ab69bcb05cb2d508367db14352940651fc7a29"
+    },
+    "Toy.Tricolor.noGrey_rootsNonWhite_and_not_allLiveBlack": {
+      "closure_sha256": "66b8e9744235cadeb38b4d46e92f7ef1918f55c8eb9585bf71c3fdc9bc357bd7",
+      "closure_size": 17,
+      "statement_sha256": "ccd393434bc77902cc235fecee36d87abac1020fe47b4499c25ae16833ed5aac"
+    },
+    "Toy.Tricolor.noGrey_rootsProtected_and_not_allLiveBlack": {
+      "closure_sha256": "67ad0ebf03b4cff927d3cca9132937327c92a202d1a06973708d8b74083958c7",
+      "closure_size": 20,
+      "statement_sha256": "d8a27bfb360d5df395b176e2580bf93474429b5dd2dd5038f2043002c661fc31"
+    },
+    "Toy.Tricolor.noGrey_strong_and_not_allLiveBlack": {
+      "closure_sha256": "6726198e7b87d96463c87780a3511763c0202f31449f74910bd5bcedcec20cd1",
+      "closure_size": 17,
+      "statement_sha256": "d7ce6ac7465ba1c38bdf731360988b181b6e19d2a0c8daee0bec4aaa4a6bd2ed"
+    },
+    "Toy.Tricolor.noGrey_weak_and_not_allLiveBlack": {
+      "closure_sha256": "75e7c428a47fff5dd808fe1f3db15dce9f90201a8a39af281e65b164752fe0b3",
+      "closure_size": 20,
+      "statement_sha256": "991f3232eb2d6809b3b873910295e46b25fbb1c9b3a05677d7939f4cc4a17643"
+    },
+    "Toy.Tricolor.not_weak_sBlackWhite": {
+      "closure_sha256": "cd432715641059831873f8713683c76e9350524ec63fe7b143bd7c6aa09a15cc",
+      "closure_size": 14,
+      "statement_sha256": "91422f6d47ddc939f7a602beab1ccc197f2d244fe09b65128885728a11cc9579"
+    },
+    "Toy.Tricolor.rescan_from_nonStrong_not_allLiveBlack": {
+      "closure_sha256": "cca7ed231c7ddc311ff203cdcd2bf6eae34e0a15ff32142033470dccf08d4b22",
+      "closure_size": 70,
+      "statement_sha256": "156131c027f271f5ed0032599031f65423445547514f52bf0f0cb32f6d139d0f"
+    },
+    "Toy.Tricolor.rootsNonWhite_alloc_iff_ne_white": {
+      "closure_sha256": "a54037ca4c57b4ed329e93a2f3b0ebfad7fc6207aac5369dd6791f66b978b256",
+      "closure_size": 11,
+      "statement_sha256": "d011631f46a5ab2e0e6b3b01dc14d0d08853807da9763b4313444a50b4c6fae8"
+    },
+    "Toy.Tricolor.rootsNonWhite_load_shaded": {
+      "closure_sha256": "986d39bc47a93280f8662be10b922fc5970f001a2c0bbe978bd118c006a01c81",
+      "closure_size": 18,
+      "statement_sha256": "00c4252c8b3bfa6015f748a83453f1999e13476068bdb33091b600509b6c1cc9"
+    },
+    "Toy.Tricolor.rootsNonWhite_of_rootsProtected_of_noGrey": {
+      "closure_sha256": "1c8750b4fe7ccefdef981ddec5ea1deae11af2fc6b219932182c3c53ef0fc284",
+      "closure_size": 15,
+      "statement_sha256": "fce5c972b5e1bcd5b02ad62a1c44058316ef824c64987ce82d997fe268aa49ea"
+    },
+    "Toy.Tricolor.rootsProtected_alloc_iff_ne_white": {
+      "closure_sha256": "414ee36b1f81ae5c31b0d7c32679bdf620573f00ce5321e2263120a82fc859fd",
+      "closure_size": 15,
+      "statement_sha256": "8edf385cfc17f71e4d09d68f2f6130caabf9db59ce015a046ccb04dd15e1a49e"
+    },
+    "Toy.Tricolor.rootsProtected_alloc_iff_ne_white_nonvacuous": {
+      "closure_sha256": "dcf715dde4bea8999fd2bfe0864da2d473fe584fe4caf2ef5f95549ec897f9d1",
+      "closure_size": 16,
+      "statement_sha256": "e47ae619e0300ffa4711b23b8a0bfaa9b783d8e947cfde3de0b3282616a3ab7a"
+    },
+    "Toy.Tricolor.rootsProtected_alloc_white_of_not_isolated": {
+      "closure_sha256": "ee50c3e57b59dcbf483ccee6606bb87c2dd0aba2f1865858b5e11a17112603a4",
+      "closure_size": 17,
+      "statement_sha256": "f394bf0d823c30a925af88143a0d454b60ae5b5ae7cb3e799f4a649abe496ce4"
+    },
+    "Toy.Tricolor.rootsProtected_live_white_and_not_greyProtected": {
+      "closure_sha256": "164eb7faca6645154c58ac95edbca78dd04cabcdbf53903e199e5d77696f4037",
+      "closure_size": 18,
+      "statement_sha256": "fbe1759c9d878486b26cc89e00312329cb979fbe60aef4d7fcf572824237ba11"
+    },
+    "Toy.Tricolor.rootsProtected_of_rootsNonWhite": {
+      "closure_sha256": "4cafa2f5aca6c51fe9fa63d3ffbaddf13a9dc25068d098c9c4c44ae175037d8e",
+      "closure_size": 14,
+      "statement_sha256": "9ee9e4b230cd1f75448509a2fa0091c4fd997a13e1cd161c78367850ba693994"
+    },
+    "Toy.Tricolor.scanCount_add_markMeasure_le": {
+      "closure_sha256": "c8acada2d08dc3bf4282d0e33f3b4841410ab9b7e2d9d706fd03b0fbe85a21bb",
+      "closure_size": 68,
+      "statement_sha256": "35a3d81cc98e9c05056236c489ee76bc0172e97e6995f87bb8e42a18f80b003e"
+    },
+    "Toy.Tricolor.scanCount_add_markMeasure_le_nonvacuous": {
+      "closure_sha256": "aae5cd34171481fb7f667f370bef0bee089284a61166b5bfdcd16a843b3d86a1",
+      "closure_size": 69,
+      "statement_sha256": "d5b1b305ab55582433799a984c20f6ff0d1d3fc35af733636773578a772b5cc9"
+    },
+    "Toy.Tricolor.scanCount_add_markMeasure_le_of_allocTargetsWhite": {
+      "closure_sha256": "bdda1d42c769b54693295a24bbd921b9f437075ea54544f72c7a0898539d1dba",
+      "closure_size": 68,
+      "statement_sha256": "e1dd86c2415e13ca9b98f9966a50dfdf32e1cf9c5f8b5e67ca68b554a77b8259"
+    },
+    "Toy.Tricolor.scanCount_bound_fails_without_enabled_scans": {
+      "closure_sha256": "e5e16407963ea1d4a189fcbb14216d3d1a7650a2e2dd1b554773c90d47b43ac9",
+      "closure_size": 72,
+      "statement_sha256": "27db976282dd2e9f411efeb2bc8b2ad246fe866111120970c48f8aa56537bea7"
+    },
+    "Toy.Tricolor.scan_black_markMeasure_eq": {
+      "closure_sha256": "3162f4237cabc807314efe87402d5a7805ff8049d0479ea8eeb7e840278d17b4",
+      "closure_size": 21,
+      "statement_sha256": "1ef52b6e6313123e02b113619fa3ab2ac0485f5eeaef8497276bf5439c5c9d29"
+    },
+    "Toy.Tricolor.shadeLe_erase": {
+      "closure_sha256": "fb97fb01b91b1ab90039ea09861499b41b04c4a169a796f51b5297aa2c5da212",
+      "closure_size": 29,
+      "statement_sha256": "1910990029c11ed4d2c450d10df282f27c45f243b91ac1757fea28ac37af0b97"
+    },
+    "Toy.Tricolor.shadeLe_store": {
+      "closure_sha256": "008e925ab447e02155fbedb2c3e69fc25ef06d6b3c0f18d5f0593d349529105b",
+      "closure_size": 29,
+      "statement_sha256": "efc852d1c1db8c8ba634ad4d601e7745e185fa5f1690e88e656d5b1f0ed74b7e"
+    },
+    "Toy.Tricolor.shadeLoads_nonWhiteAlloc_store_of_unheld_value_breaks_strong": {
+      "closure_sha256": "c2a53c2c31730e5576aab8322233dadd1d03ba9bc3066fabb5e141ff2ddefc9c",
+      "closure_size": 60,
+      "statement_sha256": "d3dfafdf42c7a53fe63a14d2bdaa348696ce2c78fa6e0849adcd022e6cf0ed44"
+    },
+    "Toy.Tricolor.shadeLoads_nonWhiteAlloc_unheld_store_cycle_not_allLiveBlack": {
+      "closure_sha256": "71c0f8e1381a1dcc293b990d95e53e7f90c00bea37b8cabe9dcc53047d7212fc",
+      "closure_size": 67,
+      "statement_sha256": "1b13f41f9dc1fa8b6e77add22502e14ed154cc38bce809ce92995b2b1b5c2483"
+    },
+    "Toy.Tricolor.shadeLoads_nonWhiteAlloc_unisolated_alloc_breaks_strong": {
+      "closure_sha256": "c2a53c2c31730e5576aab8322233dadd1d03ba9bc3066fabb5e141ff2ddefc9c",
+      "closure_size": 60,
+      "statement_sha256": "7fc5082599b3b79fc27633dcdac77cd664110ca27558fdac907879ffa794fffb"
+    },
+    "Toy.Tricolor.shadeLoads_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack": {
+      "closure_sha256": "846608eda4a96b05d98db65d3cc8f03114503f3f56cdb5c6cd509eca0c758b0c",
+      "closure_size": 67,
+      "statement_sha256": "68f2f434d5adb0c2e87fdadf92ca394f46520afbf09f00a26d581c2b48e02638"
+    },
+    "Toy.Tricolor.shadeLoads_run_from_initMark_with_grey_not_allLiveBlack": {
+      "closure_sha256": "345eb11018c864b4171aa042f7d32e1018e350fbf03ba9613aa68aca0d1421c4",
+      "closure_size": 63,
+      "statement_sha256": "26ca719a9d53809a0df4e7c11c7802102a3fe91271698cbb66d6d49fff2c6808"
+    },
+    "Toy.Tricolor.shadeLoads_run_not_from_initMark_not_allLiveBlack": {
+      "closure_sha256": "ed61ead494473d51365b7e50fbeea26db73f29a142e987b2bd56be23ffccf611",
+      "closure_size": 64,
+      "statement_sha256": "a86299b00a198e4d1f1bcc81a1de4717c9c7ea79a09db02296ca9e6c226ddf06"
+    },
+    "Toy.Tricolor.shadeLoads_step_from_nonStrong_not_strong": {
+      "closure_sha256": "d9054e575b0b720fdcbc30d966b95d4778db9503a8827f76f5e91a2a7fb3c7f8",
+      "closure_size": 61,
+      "statement_sha256": "1421e10d57afa13ca3890cd02d8e1162d708ad44fa86f12bd9d2b8bce2fd4376"
+    },
+    "Toy.Tricolor.shadeLoads_store_of_whiteRoot_breaks_strong": {
+      "closure_sha256": "c7829de21cf1d7e31a6700ca6f3bb1b3e61e119d4e443b3980b2f414477b40e7",
+      "closure_size": 61,
+      "statement_sha256": "d6507eca1c89dd3da4954794f3daea2e731e943b7ac20397359fcb1390e18f8d"
+    },
+    "Toy.Tricolor.shadeLoads_traceLostObject_then_scan_safe": {
+      "closure_sha256": "e6c05e99d3622536ae766051d13b6966991aeaff93a17ab225214d263d47edd0",
+      "closure_size": 67,
+      "statement_sha256": "d73210c15349fc151fcae5b42bf9ca7716ad293c5f1f5eb65796a6cbba2b0f0f"
+    },
+    "Toy.Tricolor.shadeLoads_whiteAlloc_breaks_rootsNonWhite": {
+      "closure_sha256": "3bd7dfaef5314552ad35fe8cc7129b3b4ba8be261ca5421d489c2d93b330f201",
+      "closure_size": 61,
+      "statement_sha256": "cd8849e831a8b6d0dfe4c807cc5ea5bc07dc8e31ffbc3a36b4b76fb952e19397"
+    },
+    "Toy.Tricolor.starvedCollector_never_noGrey": {
+      "closure_sha256": "00dc9b0d9d736dd3744c4178752394200aceaa7da38711c11e79a98e94c0bab7",
+      "closure_size": 75,
+      "statement_sha256": "1e2d9382c196c83cd57fcff051d2b4684f340f3578e817314279ecef0c0c3b31"
+    },
+    "Toy.Tricolor.store_unbarriered_breaks_strong": {
+      "closure_sha256": "1e46902dac960065c49d4804172e2ac50079eb4f7c743f77e8d7722bb463ea35",
+      "closure_size": 60,
+      "statement_sha256": "b46ce60f2a1ce4dcc8d44b96ff61046ff1ec8cf94979e3c46c29df43e78049fe"
+    },
+    "Toy.Tricolor.store_yuasa_breaks_strong": {
+      "closure_sha256": "d412565bde7c4e13d30f6615a7ad2d62fca248743c849ccff2a0a3ae07d0f9f3",
+      "closure_size": 65,
+      "statement_sha256": "41a0cf98bfd2479ab009e28416be8fcece65b77f2c00c0024cc18c1890f34217"
+    },
+    "Toy.Tricolor.strong_alloc_black_of_successors_held": {
+      "closure_sha256": "47728987fc820ce3fd4e081c82558176e0d30c571b29b41ea408f5bace1215ac",
+      "closure_size": 12,
+      "statement_sha256": "f162b8fbd98f32399fb8f40f79ebf8f509e253a5226ec8445dd6cb110e55bb27"
+    },
+    "Toy.Tricolor.strong_alloc_black_of_successors_nonWhite": {
+      "closure_sha256": "79625d639d2fa7c1776e2c41bef8b30032ea9a6c787bc9697ca3c48ee959d199",
+      "closure_size": 11,
+      "statement_sha256": "43fb28b3eaa1e3b7e5d8e44f9cae0963a169768ab59dd76716d42f36786044a5"
+    },
+    "Toy.Tricolor.strong_alloc_grey": {
+      "closure_sha256": "79625d639d2fa7c1776e2c41bef8b30032ea9a6c787bc9697ca3c48ee959d199",
+      "closure_size": 11,
+      "statement_sha256": "2f6db1a8be2eb0277c4730661c44e3c7748c2e92da0fef6fcf60c9b96b31f3fa"
+    },
+    "Toy.Tricolor.strong_load": {
+      "closure_sha256": "52754a52827ad813bd033cac1e288bba44eaadc35dd5e41154ee997822fb70cb",
+      "closure_size": 18,
+      "statement_sha256": "eb0a47c4617a02d64648a5f98cd44519a80cf3fcf4aa6e945313482df0c6016e"
+    },
+    "Toy.Tricolor.strong_of_weak_of_noGrey": {
+      "closure_sha256": "42b8d23861a85a8de5b5da6217df5332a060453f89d6eeac20f3e7c98cadc335",
+      "closure_size": 14,
+      "statement_sha256": "1a0b5f03a34c6ea1c1c81b5bf1586a87713ba104864f62fb02cfb65e5650db80"
+    },
+    "Toy.Tricolor.strong_preserved_of_dijkstra": {
+      "closure_sha256": "6f4f11245a0ccb836f257f0951cc1ddb7f425fbee2460bb9473b403c73d0cb05",
+      "closure_size": 57,
+      "statement_sha256": "61a270b0a228c9d394d010692ebe977c9f92f9ccdfe3d0b26ea5dd887068712e"
+    },
+    "Toy.Tricolor.strong_preserved_of_dijkstra_nonvacuous": {
+      "closure_sha256": "f21d90f9e60d8e0d5218f15034200d93229736d79aeaa1f9c703f555633d8c4f",
+      "closure_size": 60,
+      "statement_sha256": "1d594945c105060823f7fc380a27fa09827a8cebf2d1788bc69c71b3ca627239"
+    },
+    "Toy.Tricolor.strong_rootsNonWhite_and_not_allLiveBlack": {
+      "closure_sha256": "e8c0080486586fd2e8b3e14eb7f34a5959e3679bd7597f6c688a37422a8b9342",
+      "closure_size": 17,
+      "statement_sha256": "f5f0001aed0063b142d7d55ff30f592123cf70e5c563f163f06ddd80dcc78eb6"
+    },
+    "Toy.Tricolor.strong_rootsNonWhite_preserved_of_shadeLoads_of_nonWhiteAlloc": {
+      "closure_sha256": "fc5e211aad55f952923a989d4962cdfc154987985e723fd133fd1a1d236921df",
+      "closure_size": 58,
+      "statement_sha256": "72e25f978aae0a933edd2b684728bca45164daa44f8528d65c81b5ad48391ac3"
+    },
+    "Toy.Tricolor.strong_rootsNonWhite_preserved_of_shadeLoads_of_nonWhiteAlloc_nonvacuous": {
+      "closure_sha256": "11198c94219372ba6c1ee42a604060b763d67b91c6a6d1335c6bef9b585a33b5",
+      "closure_size": 61,
+      "statement_sha256": "393b3d38b66ade29b2a342767ced328de8344c9be9bfedcdc93650faf54723ac"
+    },
+    "Toy.Tricolor.strong_store_dijkstra": {
+      "closure_sha256": "f6fda3ceaf37fbfdb70bc20ed54fd58610dd87e1086171134a8cb840f373b68c",
+      "closure_size": 29,
+      "statement_sha256": "f8a1d6a6c061eed32121182058df0c1f558ccf16eaa2023ac4d7a15b10899f9f"
+    },
+    "Toy.Tricolor.traceLostObject_dijkstra_unshadedLoads_not_lost": {
+      "closure_sha256": "679a3b18e1269ee8c970d8b17c8cbed8c5cea871d65398b6ea1f73a53c414a8e",
+      "closure_size": 66,
+      "statement_sha256": "225b23ebc1e38f5ec5f6445bd3cd328791253f29718e61cd858ec91996aa372e"
+    },
+    "Toy.Tricolor.traceLostObject_unbarriered_shadeLoads_not_lost": {
+      "closure_sha256": "8ff954f422c898edb812d46fcfff7771102eaf742954aa724f87458a9aa9be2d",
+      "closure_size": 66,
+      "statement_sha256": "de405365c874549378eecb44ab2e490843f9123b0714dae349034f6dcdcae9b6"
+    },
+    "Toy.Tricolor.traceLostObject_yuasa_unshadedLoads_not_lost": {
+      "closure_sha256": "7320d11509aa14bccc50436b110bf570617a3fe7517254800352895d367defbd",
+      "closure_size": 66,
+      "statement_sha256": "76dca7eb862fb5e968191c1ce6ab888c2322a1a56d83907e66ec7ddc409d23f7"
+    },
+    "Toy.Tricolor.unbarriered_run_rescan_not_allLiveBlack": {
+      "closure_sha256": "2adbc104acb835a66bed2c848efe2d7c2067e7f1208ee048cc4ed3d7b775dd7b",
+      "closure_size": 74,
+      "statement_sha256": "17586cee707e8ba87121885ae105a411e7cd5b5e0f2f6e70d3554400605ccdc9"
+    },
+    "Toy.Tricolor.unbarriered_unshadedLoads_blackAlloc_run_from_initMark_not_allLiveBlack": {
+      "closure_sha256": "cd008c5435acd223e8691bc2010329bd8d21686844fd9e9225ce3248768b0c1a",
+      "closure_size": 68,
+      "statement_sha256": "1c78912500ccbcc652cf447cbf8851980deef2750c5407188eee184eecdfeefb"
+    },
+    "Toy.Tricolor.unbarriered_unshadedLoads_heldTrace_reaches_sLost": {
+      "closure_sha256": "d385d62339b7e80256236ade8f638559af99cd47c0a46841fe0ce43a39d66993",
+      "closure_size": 67,
+      "statement_sha256": "d6d6e50495aa1d435890788014f2ebd8dea195a4f0f9767f1cae5295b658c5fd"
+    },
+    "Toy.Tricolor.unbarriered_unshadedLoads_traceLostObject_leaves_live_white": {
+      "closure_sha256": "a55385bd6d13e885a72c828a877a75977ae52935beac7a778a5d935395ec3759",
+      "closure_size": 65,
+      "statement_sha256": "345ac34be56d8727f49b46afdedbaba9240370fbcafa3e6ad9a2a593d3afc532"
+    },
+    "Toy.Tricolor.unenabledScans_collectorFair_never_noGrey": {
+      "closure_sha256": "d73d6ed2168464079848d9463ec8fc59cbfd1ab222a6f64eca29c04100979c49",
+      "closure_size": 75,
+      "statement_sha256": "d588cbec10380e61444b043365d7e4087ce6bef7417d1b8fbbb9affb2b93824c"
+    },
+    "Toy.Tricolor.unenabledScans_collectorFair_not_infinitely_often_noGrey": {
+      "closure_sha256": "d73d6ed2168464079848d9463ec8fc59cbfd1ab222a6f64eca29c04100979c49",
+      "closure_size": 75,
+      "statement_sha256": "86e9b576e6608b8efd5ec46fec59ef53e6bd8ca6ed127de3051bc36166dfd712"
+    },
+    "Toy.Tricolor.unshadedLoad_breaks_rootsNonWhite": {
+      "closure_sha256": "8e763086ac9aedbc2ef78f7ebb68a3fd9e163f93a0da131442ce5e2b6cfc5fa6",
+      "closure_size": 61,
+      "statement_sha256": "d347c64587aa86ff19f306cdc4a7aeaeee774c3293358f6c052b992e8c6b07de"
+    },
+    "Toy.Tricolor.weak_and_not_strong": {
+      "closure_sha256": "7fa72e8cae0a415c7f618b076bec4da9ae39f42350abced9dfb172ef0f16317b",
+      "closure_size": 15,
+      "statement_sha256": "10918c5693d6505a6003f4299ce88f3d350c6b19e6c7def0ee10359d03603c37"
+    },
+    "Toy.Tricolor.weak_live_white_and_not_greyProtected": {
+      "closure_sha256": "6633efad73e01d6eeaf360b2c63bb1602d06f5430eba922465475b52645ee96d",
+      "closure_size": 18,
+      "statement_sha256": "f3122cf0519abf9142346e2951c7e9e1019a07335b7e45f59accd8aa3aba38a7"
+    },
+    "Toy.Tricolor.weak_of_strong": {
+      "closure_sha256": "08ade748e58488e5dd5e56705f9ce89fdc5eeeae9c8b675cda6715207757d006",
+      "closure_size": 13,
+      "statement_sha256": "2083ad724d4f0f6ea4dbce5ccdca357b33143f28388789d645ea48c2122d938a"
+    },
+    "Toy.Tricolor.weak_of_strong_nonvacuous": {
+      "closure_sha256": "8e5c94723a5cef140d26cd64de323df12035613371003943ae76e49ac63807e5",
+      "closure_size": 11,
+      "statement_sha256": "e886c01cf1111cf5f58e297586d3c654c418b5af749725acfa8fc9538008ef6a"
+    },
+    "Toy.Tricolor.weak_rootsProtected_and_not_allLiveBlack": {
+      "closure_sha256": "2386a2d105c2b57d6aaf0f3b7740889390b0a4ecec362dcfc5486d5b026dbb08",
+      "closure_size": 20,
+      "statement_sha256": "6a3758be01c66e948395e605a8b7ad9260960466280d28854c77c65b7332f762"
+    },
+    "Toy.Tricolor.weak_rootsProtected_live_and_not_greyProtected": {
+      "closure_sha256": "6f52d37cd4b18bba1e0059c7d4c81a1f674c4ec49720796e150836889b008bf0",
+      "closure_size": 19,
+      "statement_sha256": "2ec1d38643f62275b411fe81f79f4a56149fb0f5e398eb576d8b485aca74d791"
+    },
+    "Toy.Tricolor.weak_rootsProtected_preserved_of_yuasa_of_nonWhiteAlloc": {
+      "closure_sha256": "35dddbfd45e737867351d51337687d1de32f212326e0a00deea0ccdb8d9a1e1e",
+      "closure_size": 61,
+      "statement_sha256": "2be95e8dbf2474f066608c173e7ec46f5d91dd29c540c582863704369c46c7b0"
+    },
+    "Toy.Tricolor.weak_rootsProtected_preserved_of_yuasa_of_nonWhiteAlloc_nonvacuous": {
+      "closure_sha256": "62e5c95e653e11cbfd2ac9ac67e370f130913e63cccaff8661653bce821cfb05",
+      "closure_size": 64,
+      "statement_sha256": "f9f0420707ce995882f801d1dc4f8778a3aa55e7cfae6eaf58f611da0fa1f7d6"
+    },
+    "Toy.Tricolor.weak_rootsProtected_store": {
+      "closure_sha256": "8366df27fb2b00dad572d441730dc91018fe5d5d25c13bfede28b188bd169a7e",
+      "closure_size": 36,
+      "statement_sha256": "9cbb0cc4a17857f005d45c75ff1c1fc7bb7f97f9ebd974238b10f15cad92b7f6"
+    },
+    "Toy.Tricolor.weak_rootsProtected_white_and_not_greyProtected": {
+      "closure_sha256": "5f7a78e3cdfa67251a35e93a5c53e3d465e29a88c6f35d70bae25936e7d738f0",
+      "closure_size": 16,
+      "statement_sha256": "eeddaf26318af2fd03e42ab73404c2a3394274ab8bb67482a979b1ab3723c21d"
+    },
+    "Toy.Tricolor.yuasa_load_of_unreachable_cycle_not_allLiveBlack": {
+      "closure_sha256": "ba89f87be87777363b537223ae94a0e9bc7185d6e46cfcdbc698fb1a03654d32",
+      "closure_size": 65,
+      "statement_sha256": "114a18628bcf1b4108094130b929db1aec0d5556cf8798368ff725b1e6f6b85a"
+    },
+    "Toy.Tricolor.yuasa_nonWhiteAlloc_unisolated_alloc_breaks_weak": {
+      "closure_sha256": "55406960c71c47f244f39fc534466c697352a0289337f8c65693bded098854e2",
+      "closure_size": 63,
+      "statement_sha256": "2cba078e27c52c2ee7e55f947d88c96015216fd503228036bf548642b500bcff"
+    },
+    "Toy.Tricolor.yuasa_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack": {
+      "closure_sha256": "132cf5eaeb5f4747d4fd709fdedb18e44fcf25040434cd4e75f50a6e6ce71220",
+      "closure_size": 67,
+      "statement_sha256": "28f6d9f56f352a83b2097efa02dadda14984412fb5cad1afcb6956fa86623619"
+    },
+    "Toy.Tricolor.yuasa_run_from_initMark_with_grey_not_allLiveBlack": {
+      "closure_sha256": "269af017963443ba80a78d1521cea1dbf737c606aa7aad4a32d8f3f38567aa3c",
+      "closure_size": 63,
+      "statement_sha256": "81d827f765b5c66689326bd913746649fda91c764272c1e5d239f5577c77a07a"
+    },
+    "Toy.Tricolor.yuasa_run_not_from_initMark_not_allLiveBlack": {
+      "closure_sha256": "5c891b15e1c30fcc0c63bb6a9bc9aa8ab19d4149d72dbaeba8ae127b177c65bb",
+      "closure_size": 64,
+      "statement_sha256": "34f6d198bb6fbf0266f858a603696fe9fbc2b263d0115ddbb368c38c282cc6ee"
+    },
+    "Toy.Tricolor.yuasa_step_from_nonWeak_not_weak": {
+      "closure_sha256": "f85fce465c9806a281489b9a94b4aba6428aec659ef26f3186630a38d81aed7b",
+      "closure_size": 64,
+      "statement_sha256": "37d54f0c72c9973f4ed495e7013dbd5f795e807721fcc10d1d56a96ef5df16b2"
+    },
+    "Toy.Tricolor.yuasa_store_of_unreachable_breaks_weak": {
+      "closure_sha256": "c5fba0e4dfdddd5679d38479c8301df29d04cc2ccdca5a93c4ce7463df372937",
+      "closure_size": 63,
+      "statement_sha256": "7e3ba0b84c97023829da1edfd0ece95d6dce400e763dc22fb47d2e1e70d8d716"
+    },
+    "Toy.Tricolor.yuasa_store_of_unreachable_cycle_not_allLiveBlack": {
+      "closure_sha256": "ba89f87be87777363b537223ae94a0e9bc7185d6e46cfcdbc698fb1a03654d32",
+      "closure_size": 65,
+      "statement_sha256": "c1b359696b84796362602e776d9effba8939ac159683bdac730a05cf13d4b11b"
+    },
+    "Toy.Tricolor.yuasa_store_without_rootsProtected_breaks_weak": {
+      "closure_sha256": "7d3424352bc23f36f9811ff9afea5bb5ab55930f66486828c28a518d005782f2",
+      "closure_size": 64,
+      "statement_sha256": "20f009f089c01443ec9cb13147c6e74399bf31769142fc4fac2cd50548b07660"
+    },
+    "Toy.Tricolor.yuasa_traceLoadLost_then_scan_safe": {
+      "closure_sha256": "b0aa39897fb2a48c887512ae93df6e05d205425dbfab1f90f2d6c3f28fe6f926",
+      "closure_size": 67,
+      "statement_sha256": "9e8e7d9c5af6d856e87a2c637910acb6242ef2d8e0382ae7743c16e7082a6927"
+    },
+    "Toy.Tricolor.yuasa_traceLostObject_then_scan_safe": {
+      "closure_sha256": "22e9370d15da7554a4737aab3d5e0373f8b673c8379821dda633c9c4a22c18fe",
+      "closure_size": 67,
+      "statement_sha256": "5ffa6e9bdb59033c8c199950eace557e9f41c3e88f2d20e295465088bc76c564"
+    },
+    "Toy.Tricolor.yuasa_whiteAlloc_run_from_initMark_not_allLiveBlack": {
+      "closure_sha256": "91a6f62cc6bac9b2adddde6ce0fd8e8b5271433358dad60e1727fdd971793f70",
+      "closure_size": 68,
+      "statement_sha256": "aac3e98dd8f06187c80e2eaa484de1e52d648fdb43640298cff78440d24a206b"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

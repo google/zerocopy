@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/garbage-collection",
+    "verification/invariants",
+    "runtimes/garbage-collection",
+    "runtimes/write-barriers",
+    "runtimes/tricolor-marking"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "On-the-fly garbage collection: an exercise in cooperation",
+      "identity": {"doi": "10.1145/359642.359655"}
+    },
+    {
+      "name": "On-the-fly garbage collection: an exercise in cooperation (manuscript EWD 520, E. W. Dijkstra Archive transcription)",
+      "identity": {
+        "archive_number": "EWD 520",
+        "manuscript_date": "1975-10-20",
+        "url": "https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html",
+        "limitation": "mutable web page with no revision identifier or content hash; the passages relied on are quoted verbatim in REPORT.md (Evidence)"
+      }
+    },
+    {
+      "name": "The Garbage Collection Handbook, 2nd edition",
+      "identity": {"doi": "10.1201/9781003276142"}
+    },
+    {
+      "name": "Relaxing safely: verified on-the-fly garbage collection for x86-TSO",
+      "identity": {"doi": "10.1145/2737924.2738006"}
+    },
+    {
+      "name": "Archive of Formal Proofs entry ConcurrentGC",
+      "identity": {
+        "entry_url": "https://isa-afp.org/entries/ConcurrentGC.html",
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720",
+        "path": "thys/ConcurrentGC",
+        "sha256 thys/ConcurrentGC/Global_Invariants.thy": "6bf3e80cd3e4d0bb119f471e612208bfd8dfc8f50a466cf69d2683b0bcc4d267",
+        "sha256 thys/ConcurrentGC/Global_Invariants_Lemmas.thy": "12ed3b0a24b5ada50bf7dd2ffbe5a20e29cbf0c7566592b24dd2f05336e83e5b"
+      }
+    },
+    {
+      "name": "Proposal: Eliminate STW stack re-scanning (Go design document)",
+      "identity": {
+        "repository": "golang/proposal",
+        "revision": "0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407",
+        "path": "design/17503-eliminate-rescan.md"
+      }
+    },
+    {
+      "name": "Barrier techniques for incremental tracing",
+      "identity": {"doi": "10.1145/286860.286863"}
+    },
+    {
+      "name": "Real-time garbage collection on general-purpose machines",
+      "identity": {"doi": "10.1016/0164-1212(90)90084-Y"}
+    },
+    {
+      "name": "A mechanically verified incremental garbage collector",
+      "identity": {"doi": "10.1007/BF01211305"}
+    },
+    {
+      "name": "Formal verification of an incremental garbage collector",
+      "identity": {"doi": "10.1093/logcom/13.6.815"}
+    },
+    {
+      "name": "Verifying a concurrent garbage collector with a rely-guarantee methodology",
+      "identity": {"doi": "10.1007/s10817-018-9489-x"}
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

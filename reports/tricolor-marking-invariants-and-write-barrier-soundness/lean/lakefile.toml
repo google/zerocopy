@@ -1,0 +1,6 @@
+name = "tricolor-marking-invariants-and-write-barrier-soundness"
+version = "0.1.0"
+defaultTargets = ["Toy"]
+
+[[lean_lib]]
+name = "Toy"

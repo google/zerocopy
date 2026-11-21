@@ -1,0 +1,1021 @@
+[
+  {
+    "id": "no-grey-strong-nonwhite-roots-implies-live-black",
+    "lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_strong_of_rootsNonWhite",
+    "lean_names": [
+      "Toy.Tricolor.floatingGarbage_yuasa_run"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Known: the end-of-marking argument for P1 in Dijkstra et al. ('after the collector had initialized the marking phase by shading all roots, the validity of P1 allowed us to conclude that the existence of a white reachable node implied the existence of a grey node'), restated for an explicit root set with the root condition as a hypothesis.",
+    "plain_claim": "In a state with no grey object in which the strong invariant holds (no black-to-white edge) and every root is non-white, every object reachable from the roots is black.",
+    "modeling_bridge": "derived (modeling bridge): a sweep that frees exactly the white objects of a state satisfying the conclusion frees no object reachable from the roots; sweeping is not modeled.",
+    "hypotheses": [
+      {
+        "name": "hng : NoGrey s",
+        "purpose": "Marking has terminated; a grey object may still have reachable white successors.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.strong_rootsNonWhite_and_not_allLiveBlack",
+        "witness_class": "a 2-object heap state"
+      },
+      {
+        "name": "hs : Strong s",
+        "purpose": "Propagates blackness along edges.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.noGrey_rootsNonWhite_and_not_allLiveBlack",
+        "witness_class": "a 2-object heap state"
+      },
+      {
+        "name": "hr : RootsNonWhite s",
+        "purpose": "Base case: roots are black once nothing is grey.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.noGrey_strong_and_not_allLiveBlack",
+        "witness_class": "a 1-object heap state"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "sDone: black root 0 -> black 1, unreachable white 2 (with an edge 2 -> 1); no grey object.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_strong_of_rootsNonWhite_nonvacuous",
+    "non_claims": [
+      "Says nothing about states in which a grey object remains; it is a statement about the final state.",
+      "Does not say that the strong invariant is maintained by any particular barrier (see dijkstra-barrier-preserves-strong).",
+      "The hypotheses must hold in the state in which white objects are freed. With unbarriered root writes, this package establishes RootsNonWhite by a root rescan (dijkstra-rescan-and-paused-drain-no-grey-implies-live-black) or by shaded root loads with non-white allocation (shaded-loads-nonwhite-alloc-from-root-snapshot-no-grey-implies-live-black); the strong invariant alone does not give it (noGrey_strong_and_not_allLiveBlack).",
+      "`AllLiveBlack` expresses soundness (`Live s y → s.color y = .black`), not completeness: unreachable objects that were allocated black or shaded before becoming unreachable remain black (floating garbage) until a subsequent cycle, and starting a new cycle requires resetting or flipping black marks during sweep. (Example of floating garbage: floatingGarbage_yuasa_run. Sweeping and later cycles are not modeled.)",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. P1: 'during marking there will be no edge pointing from a black node to a white one'; the roots are 'one or more fixed nodes —called “the roots”— with a constant place in memory', and the collector initializes the marking phase by shading all roots.",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsection 'The strong and weak tricolour invariants'.",
+      "Gammie, Hosking, Engelhardt. Relaxing safely: verified on-the-fly garbage collection for x86-TSO. PLDI 2015, pp. 99-109. doi:10.1145/2737924.2738006. Isabelle/HOL development: Archive of Formal Proofs, entry ConcurrentGC (2015), https://isa-afp.org/entries/ConcurrentGC.html (a safety proof of a Schism-style collector on x86-TSO; no termination proof). Its lemma reachable_blackD is the analogous end-of-marking statement for the snapshot invariant: Defines reachable_snapshot_inv (every reachable object is black or grey protected, via in_snapshot) and proves reachable_blackD (no grey references, reachable_snapshot_inv and reachability imply black), with lemmas including reachable_snapshot_inv_load (root loads) and reachable_snapshot_inv_alloc (allocation)."
+    ],
+    "design_question": "What does the strong invariant guarantee at the end of marking, and which additional condition on roots is needed?",
+    "status": "proved"
+  },
+  {
+    "id": "weak-and-roots-protected-imply-live-white-grey-protected",
+    "lean": "Toy.Tricolor.greyProtected_of_live_of_white_of_weak_of_rootsProtected",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Known: Lemmas 2 and 3 of the appendix of Clements and Hudson prove the analogous statement for the hybrid barrier's invariant; the conclusion is P2 of Dijkstra et al. for the current roots; the AFP entry ConcurrentGC mechanizes the related invariant reachable_snapshot_inv. Restated here with the root clause as an explicit hypothesis.",
+    "plain_claim": "If the weak invariant holds and every white root is grey protected, then every white object reachable from the roots is grey protected (reachable from a grey object through white objects only).",
+    "hypotheses": [
+      {
+        "name": "hw : Weak s",
+        "purpose": "Handles black predecessors on the path from a root.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.rootsProtected_live_white_and_not_greyProtected",
+        "witness_class": "a 2-object heap state"
+      },
+      {
+        "name": "hr : RootsProtected s",
+        "purpose": "Base case at the roots.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.weak_live_white_and_not_greyProtected",
+        "witness_class": "a 1-object heap state"
+      },
+      {
+        "name": "hy : Live s y",
+        "purpose": "Unreachable white objects are not constrained by the root clause.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.weak_rootsProtected_white_and_not_greyProtected",
+        "witness_class": "a 3-object heap state"
+      },
+      {
+        "name": "hwh : s.color y = .white",
+        "purpose": "Grey protection is defined for white objects only.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.weak_rootsProtected_live_and_not_greyProtected",
+        "witness_class": "a 2-object heap state"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "sWeakNotStrong, object 2: reachable through the black root 0 and protected by grey 1.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.greyProtected_of_live_of_white_of_weak_of_rootsProtected_nonvacuous",
+    "non_claims": [
+      "Grey protection may start at an unreachable grey object; the result does not say the protecting grey object is reachable.",
+      "The converse direction is not claimed: protection of reachable white objects says nothing about black-to-white edges among unreachable objects, which the weak invariant also constrains (not proved here).",
+      "Does not by itself say that any barrier preserves its hypotheses (see yuasa-nonwhite-alloc-preserves-weak-and-roots-protected).",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. P2: 'during the marking cycle (that the collector has initialized by shading all roots) there exists for each white reachable node a so-called “propagation path”, leading to it from a (not necessarily reachable) grey node, and consisting solely of edges with white targets (and, as a consequence, without black sources)'.",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). States the weak tricolor invariant, attributed to Pirinen (1998): 'Any white object pointed to by a black object is reachable from a grey object via a chain of white pointers (it is grey-protected).' Its appendix 'Proof of soundness, completeness, and boundedness' gives paper proofs for the hybrid barrier: Lemmas 2 and 3 (a white object reachable from a black object, or from a black goroutine, is grey-protected by a heap object), Theorem 1 (the hybrid write barrier satisfies the weak tricolor invariant) and Theorem 2 (marking terminates in a finite number of steps, bounded via the number of objects at the start of the cycle).",
+      "Pirinen. Barrier techniques for incremental tracing. ISMM 1998, pp. 20-25. doi:10.1145/286860.286863. Source of the weak tricolor invariant as quoted in Clements and Hudson (2016).",
+      "Gammie, Hosking, Engelhardt. Relaxing safely: verified on-the-fly garbage collection for x86-TSO. PLDI 2015, pp. 99-109. doi:10.1145/2737924.2738006. Isabelle/HOL development: Archive of Formal Proofs, entry ConcurrentGC (2015), https://isa-afp.org/entries/ConcurrentGC.html (a safety proof of a Schism-style collector on x86-TSO; no termination proof). Defines reachable_snapshot_inv (every reachable object is black or grey protected, via in_snapshot) and proves reachable_blackD (no grey references, reachable_snapshot_inv and reachability imply black), with lemmas including reachable_snapshot_inv_load (root loads) and reachable_snapshot_inv_alloc (allocation)."
+    ],
+    "design_question": "Why can a snapshot-style collector let the mutator load reachable objects into its roots, and store pointers it holds into black objects, without shading them?",
+    "status": "proved"
+  },
+  {
+    "id": "no-grey-weak-roots-protected-implies-live-black",
+    "lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsProtected",
+    "lean_names": [
+      "Toy.Tricolor.rootsProtected_of_rootsNonWhite",
+      "Toy.Tricolor.rootsNonWhite_of_rootsProtected_of_noGrey",
+      "Toy.Tricolor.strong_of_weak_of_noGrey",
+      "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsNonWhite",
+      "Toy.Tricolor.floatingGarbage_yuasa_run"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "End-of-marking form of the weak invariant for a collector that does not rescan roots, with the root clause explicit; the AFP entry ConcurrentGC mechanizes the analogous lemma reachable_blackD.",
+    "plain_claim": "In a state with no grey object in which the weak invariant holds and every white root is grey protected, every object reachable from the roots is black.",
+    "modeling_bridge": "derived (modeling bridge): a sweep that frees exactly the white objects of a state satisfying the conclusion frees no object reachable from the roots; sweeping is not modeled.",
+    "hypotheses": [
+      {
+        "name": "hng : NoGrey s",
+        "purpose": "Marking has terminated.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.weak_rootsProtected_and_not_allLiveBlack",
+        "witness_class": "a 2-object heap state"
+      },
+      {
+        "name": "hw : Weak s",
+        "purpose": "Propagation along black predecessors.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.noGrey_rootsProtected_and_not_allLiveBlack",
+        "witness_class": "a 2-object heap state"
+      },
+      {
+        "name": "hr : RootsProtected s",
+        "purpose": "Root clause.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.noGrey_weak_and_not_allLiveBlack",
+        "witness_class": "a 1-object heap state"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "sDone.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_weak_of_rootsProtected_nonvacuous",
+    "non_claims": [
+      "In every state, RootsNonWhite implies RootsProtected (rootsProtected_of_rootsNonWhite) and the strong invariant implies the weak one (weak_of_strong); in a state with no grey object, RootsProtected implies RootsNonWhite (rootsNonWhite_of_rootsProtected_of_noGrey) and the weak invariant implies the strong one (strong_of_weak_of_noGrey). So the two root conditions, and the two invariants, can differ only in a state that has a grey object. The variant with RootsNonWhite in place of RootsProtected is allLiveBlack_of_noGrey_of_weak_of_rootsNonWhite: in a state with no grey object in which the weak invariant holds and every root is non-white, every object reachable from the roots is black.",
+      "`AllLiveBlack` expresses soundness (`Live s y → s.color y = .black`), not completeness: unreachable objects that were allocated black or shaded before becoming unreachable remain black (floating garbage) until a subsequent cycle, and starting a new cycle requires resetting or flipping black marks during sweep. (Example of floating garbage: floatingGarbage_yuasa_run. Sweeping and later cycles are not modeled.)",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsections 'The strong and weak tricolour invariants' and 'Snapshot-at-the-beginning solutions'.",
+      "Gammie, Hosking, Engelhardt. Relaxing safely: verified on-the-fly garbage collection for x86-TSO. PLDI 2015, pp. 99-109. doi:10.1145/2737924.2738006. Isabelle/HOL development: Archive of Formal Proofs, entry ConcurrentGC (2015), https://isa-afp.org/entries/ConcurrentGC.html (a safety proof of a Schism-style collector on x86-TSO; no termination proof). Defines reachable_snapshot_inv (every reachable object is black or grey protected, via in_snapshot) and proves reachable_blackD (no grey references, reachable_snapshot_inv and reachability imply black), with lemmas including reachable_snapshot_inv_load (root loads) and reachable_snapshot_inv_alloc (allocation).",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). States the weak tricolor invariant, attributed to Pirinen (1998): 'Any white object pointed to by a black object is reachable from a grey object via a chain of white pointers (it is grey-protected).'"
+    ],
+    "design_question": "What must a collector that never rescans roots know about its roots at the end of marking?",
+    "status": "proved"
+  },
+  {
+    "id": "strong-implies-weak",
+    "lean": "Toy.Tricolor.weak_of_strong",
+    "lean_names": [
+      "Toy.Tricolor.weak_and_not_strong"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Immediate from the definitions; mechanized in the AFP entry ConcurrentGC ('strong_tricolour_inv s ⟹ weak_tricolour_inv s') and stated in the textbook treatment.",
+    "plain_claim": "The strong invariant implies the weak invariant.",
+    "hypotheses": [
+      {
+        "name": "hs : Strong s",
+        "purpose": "Premise.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.not_weak_sBlackWhite",
+        "witness_class": "a 2-object heap state"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "sDone, which has a black object 0 with an edge 0 -> 1 (so the implication inside Weak is exercised).",
+    "nonvacuity_witness_lean": "Toy.Tricolor.weak_of_strong_nonvacuous",
+    "non_claims": [
+      "The converse fails: weak_and_not_strong (sWeakNotStrong satisfies the weak but not the strong invariant).",
+      "Does not say that a barrier preserving the weak invariant preserves the strong one (false for the Yuasa barrier: store_yuasa_breaks_strong), nor the reverse (the Dijkstra barrier does not preserve the weak invariant from weak, non-strong states: erase_dijkstra_breaks_weak).",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Gammie, Hosking, Engelhardt. Relaxing safely: verified on-the-fly garbage collection for x86-TSO. PLDI 2015, pp. 99-109. doi:10.1145/2737924.2738006. Isabelle/HOL development: Archive of Formal Proofs, entry ConcurrentGC (2015), https://isa-afp.org/entries/ConcurrentGC.html (a safety proof of a Schism-style collector on x86-TSO; no termination proof). Defines strong_tricolour_inv, grey_protects_white and weak_tricolour_inv and proves 'strong_tricolour_inv s ⟹ weak_tricolour_inv s'.",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsection 'The strong and weak tricolour invariants'.",
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. Note 2: 'In the absence of edges from a black node to a white one, relation P2 is clearly satisfied' (P1 implies P2 in a cycle whose roots have been shaded; this is not the root-free implication from the strong to the weak invariant stated here)."
+    ],
+    "design_question": "How do the two tricolor invariants relate?",
+    "status": "proved"
+  },
+  {
+    "id": "dijkstra-barrier-preserves-strong",
+    "lean": "Toy.Tricolor.strong_preserved_of_dijkstra",
+    "lean_names": [
+      "Toy.Tricolor.strong_store_dijkstra",
+      "Toy.Tricolor.strong_load",
+      "Toy.Tricolor.strong_alloc_grey",
+      "Toy.Tricolor.strong_alloc_black_of_successors_nonWhite"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The insertion barrier of Dijkstra et al. maintaining P1 (their coarse-grained solution); restated for an explicit step relation including unbarriered root loads, root drops and allocation.",
+    "plain_claim": "For every configuration whose heap barrier is the Dijkstra insertion barrier (shade the target of every heap store), with any root-load discipline and allocation colors, every state s satisfying the strong invariant, and every successor s' of s under the generated step relation `Step cfg` (an enabled collector scan of a grey object, heap store of a pointer held in the roots, erase, root load of an object reachable from the roots, root drop, or allocation of an isolated non-root object, in any color the configuration allows), the strong invariant holds in s'.",
+    "hypotheses": [
+      {
+        "name": "hb : cfg.barrier = .dijkstra",
+        "purpose": "The stored target must be shaded.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.store_unbarriered_breaks_strong",
+          "Toy.Tricolor.store_yuasa_breaks_strong"
+        ],
+        "witness_class": "a 3-object heap state and one step"
+      },
+      {
+        "name": "hs : Strong s",
+        "purpose": "Invariant in the pre-state.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.dijkstra_step_from_nonStrong_not_strong",
+        "witness_class": "a 2-object heap state and one step"
+      },
+      {
+        "name": "hstep : Step cfg s s'",
+        "purpose": "The transition is an enabled step. Load-bearing part: an allocation takes an isolated object (no incoming or outgoing pointers). The store-value and load conditions are not used (strong_store_dijkstra, strong_load hold for every target).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.dijkstra_unisolated_alloc_breaks_strong",
+          "Toy.Tricolor.dijkstra_unisolated_blackAlloc_breaks_strong"
+        ],
+        "witness_class": "a 3-object heap state and one non-enabled allocation (white or black)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "sChainR (black root 0, grey 1, white root 2 protected by 1) with the Dijkstra store 0 -> 2.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.strong_preserved_of_dijkstra_nonvacuous",
+    "non_claims": [
+      "Preserving the strong invariant is not by itself safety: roots may become white (unshaded root loads, white allocation), so the end-of-marking theorem has the hypothesis RootsNonWhite (tight in a 1-object state), which this result does not provide (dijkstra_unshadedLoads_run_from_initMark_leaves_live_white, dijkstra_whiteAlloc_run_from_initMark_leaves_live_white).",
+      "No hypothesis on root-load shading or allocation color is needed for this invariant.",
+      "Does not cover a non-atomic barrier (shade and write as separate steps). In the final fine-grained solution of Dijkstra et al. the mutator places an edge and then, as a separate indivisible action, shades the target of the edge just placed; that interleaving is not modeled.",
+      "Allocating black without shading initial fields is covered here because `alloc` requires `Isolated s a` (no pointers into or out of the object at birth, modeling zeroed memory); its fields are populated later by separate `store` steps, whose targets the Dijkstra barrier shades. The allocation step itself runs no heap barrier, so if a runtime initializes fields of a newly allocated black object directly with pointers to white objects (e.g., constructor-time tuple allocation), black allocation can create a black-to-white edge (one step: dijkstra_unisolated_blackAlloc_breaks_strong; whole cycle with a final rescan: dijkstra_unisolated_alloc_cycle_rescan_not_allLiveBlack). For the state update alone, allocating such an object grey, or black when every initial target is already non-white, preserves the strong invariant (strong_alloc_grey, strong_alloc_black_of_successors_nonWhite); a step relation that admits such allocations is not studied here.",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping.",
+      "Any connection to a production collector (Go's hybrid barrier, a JVM or JavaScript collector) is a modeling bridge, not a consequence of this result; the result neither establishes nor refutes any claim about such collectors."
+    ],
+    "prior_art": [
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. P1: 'during marking there will be no edge pointing from a black node to a white one'; the roots are 'one or more fixed nodes —called “the roots”— with a constant place in memory', and the collector initializes the marking phase by shading all roots. The coarse-grained mutator shades the target of each edge it introduces. In the final fine-grained solution the mutator performs 'redirect for a reachable node an outgoing edge towards a reachable node' and 'shade the target of the edge just placed' as two separate indivisible subactions.",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsection 'Incremental update solutions'; Sec. 15.2 'Barrier techniques for concurrent collection' (pp. 337-344), subsection 'Grey mutator techniques'.",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). States the strong tricolor invariant: 'No black object may contain a pointer to a white object.' Describes Go 1.7's coarsened Dijkstra write barrier: stack writes have no barrier, so stacks must be 'permagrey' and are re-scanned 'with the world stopped'; it notes that 'Go already allocates black for other reasons'.",
+      "Gammie, Hosking, Engelhardt. Relaxing safely: verified on-the-fly garbage collection for x86-TSO. PLDI 2015, pp. 99-109. doi:10.1145/2737924.2738006. Isabelle/HOL development: Archive of Formal Proofs, entry ConcurrentGC (2015), https://isa-afp.org/entries/ConcurrentGC.html (a safety proof of a Schism-style collector on x86-TSO; no termination proof). Defines strong_tricolour_inv, grey_protects_white and weak_tricolour_inv and proves 'strong_tricolour_inv s ⟹ weak_tricolour_inv s'."
+    ],
+    "design_question": "Which invariant does the insertion barrier maintain, under which mutator operations?",
+    "status": "proved"
+  },
+  {
+    "id": "yuasa-nonwhite-alloc-preserves-weak-and-roots-protected",
+    "lean": "Toy.Tricolor.weak_rootsProtected_preserved_of_yuasa_of_nonWhiteAlloc",
+    "lean_names": [
+      "Toy.Tricolor.weak_rootsProtected_store"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Snapshot-at-the-beginning correctness with the weak invariant (Pirinen) and an explicit root clause. Clements and Hudson give a paper proof for the related hybrid barrier (appendix, Theorem 1); the AFP entry ConcurrentGC has mechanized lemmas for the related reachable_snapshot_inv under root loads and allocation (reachable_snapshot_inv_load, reachable_snapshot_inv_alloc).",
+    "plain_claim": "For every configuration whose heap barrier is the Yuasa deletion barrier (shade the old target of every erased pointer) and whose allocator never allocates white, with root loads shaded or not, every state s satisfying the weak invariant and its root clause (every white root is grey protected), and every successor s' of s under the generated step relation `Step cfg` (an enabled collector scan of a grey object, heap store of a pointer held in the roots, erase, root load of an object reachable from the roots, root drop, or allocation of an isolated non-root object), the weak invariant and its root clause hold in s'.",
+    "hypotheses": [
+      {
+        "name": "hb : cfg.barrier = .yuasa",
+        "purpose": "Erasing the last protecting edge must shade its target.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.erase_unbarriered_breaks_weak",
+          "Toy.Tricolor.erase_dijkstra_breaks_weak"
+        ],
+        "witness_class": "a 3-object heap state and one step"
+      },
+      {
+        "name": "halloc : ∀ c, cfg.allocOk c = true → c ≠ .white",
+        "purpose": "A white object allocated into the roots is not grey protected.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.alloc_white_yuasa_breaks_rootsProtected",
+        "witness_class": "a 2-object heap state and one step"
+      },
+      {
+        "name": "hw : Weak s",
+        "purpose": "Invariant in the pre-state.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.yuasa_step_from_nonWeak_not_weak",
+        "witness_class": "a 2-object heap state and one step"
+      },
+      {
+        "name": "hr : RootsProtected s",
+        "purpose": "Root clause; the weak invariant alone is not preserved by stores.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.yuasa_store_without_rootsProtected_breaks_weak",
+        "witness_class": "a 2-object heap state and one step"
+      },
+      {
+        "name": "hstep : Step cfg s s'",
+        "purpose": "The transition is an enabled step. Load-bearing parts: a heap store writes a pointer held in the roots (the weaker condition that the stored object is reachable suffices: for every barrier b, if the weak invariant and RootsProtected hold in s and y is reachable from the roots of s, both hold after store b s x y, by weak_rootsProtected_store), a root load takes a reachable object, and an allocation takes an isolated object.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.yuasa_store_of_unreachable_breaks_weak",
+          "Toy.Tricolor.load_of_unreachable_breaks_rootsProtected",
+          "Toy.Tricolor.yuasa_nonWhiteAlloc_unisolated_alloc_breaks_weak"
+        ],
+        "witness_class": "2- and 3-object heap states and one non-enabled step"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "sWeakNotStrong (black root 0 -> 2 protected by grey 1 -> 2) with the Yuasa erase 1 -> 2.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.weak_rootsProtected_preserved_of_yuasa_of_nonWhiteAlloc_nonvacuous",
+    "non_claims": [
+      "The weak invariant alone is not preserved by these steps: the root clause cannot be dropped (yuasa_store_without_rootsProtected_breaks_weak: a 2-object heap state and one enabled Yuasa store).",
+      "Does not say the Yuasa barrier preserves the strong invariant (it does not: store_yuasa_breaks_strong).",
+      "Allocation in grey is as safe as black here; the result does not say grey allocation is harmless for termination (see the termination results).",
+      "Overwrites are modeled as erase then store; a store into a previously null field shades nothing under this barrier.",
+      "Unshaded root loads and heap stores are covered here because `Op.Enabled` restricts both operations to objects already strongly `Live` from traced roots (a store writes a pointer held in the roots, which is live). Promoting a white object reachable only through a weak or soft reference, a finalizer queue, or an untraced native handle (`¬Live s y`) into mutator roots or heap fields can violate `RootsProtected` / `Weak` (`load_of_unreachable_breaks_rootsProtected`, `yuasa_store_of_unreachable_breaks_weak`) and requires an explicit shading barrier. (Weak references, finalizers and native handles are not modeled.)",
+      "`initMark` shades every root-referenced heap object atomically in a single step, modeling a stop-the-world root snapshot/scan (or blackening all stacks before any heap object is blackened). It does not show that a pure Yuasa deletion barrier is safe when mutator thread stacks remain unscanned (grey) while heap objects are blackened; in that setting a mutator can move a white pointer from an unscanned stack into a null field of a black heap object without shading it, requiring an additional insertion shade on grey stacks (as in Go's hybrid barrier). (That failure is not proved here; concurrent stack scanning is not modeled.)",
+      "Overwriting a pointer with `null` or bulk-clearing pointer-containing heap memory (`memclr`, slice truncation) corresponds to `erase` and must execute the Yuasa deletion barrier on every overwritten pointer; only stores into already-null fields of freshly zeroed objects omit shading. (Without the deletion barrier an erase can break the weak invariant: erase_unbarriered_breaks_weak.)",
+      "Allocating black without shading initial fields is covered here because `alloc` requires `Isolated s a` (no pointers into or out of the object at birth, modeling zeroed memory); its fields are populated later by separate enabled `store` steps, which write only pointers held in the roots and which the Yuasa barrier does not shade (a store into a null field deletes no pointer; a white stored target is grey protected by the weak invariant and its root clause: greyProtected_of_live_of_white_of_weak_of_rootsProtected). If a runtime initializes fields of a newly allocated black object directly with pointers to white objects (e.g., constructor-time tuple allocation), black allocation can leave a reachable white object unprotected (one step: yuasa_nonWhiteAlloc_unisolated_alloc_breaks_weak; whole cycle from a root snapshot: yuasa_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack). Whether shading the initial targets or allocating such objects grey restores the weak invariant is not proved here.",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping.",
+      "Any connection to a production collector (Go's hybrid barrier, a JVM or JavaScript collector) is a modeling bridge, not a consequence of this result; the result neither establishes nor refutes any claim about such collectors."
+    ],
+    "prior_art": [
+      "Yuasa. Real-time garbage collection on general-purpose machines. J. Syst. Softw. 11(3):181-198, 1990. doi:10.1016/0164-1212(90)90084-Y. The deletion (snapshot-at-the-beginning) barrier; as described by Clements and Hudson (2016), 'As originally proposed, the Yuasa barrier takes a complete snapshot of the stack before proceeding with marking.' The weak-invariant formulation used here is Pirinen's (1998), not Yuasa's.",
+      "Pirinen. Barrier techniques for incremental tracing. ISMM 1998, pp. 20-25. doi:10.1145/286860.286863. Source of the weak tricolor invariant as quoted in Clements and Hudson (2016).",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). States the weak tricolor invariant, attributed to Pirinen (1998): 'Any white object pointed to by a black object is reachable from a grey object via a chain of white pointers (it is grey-protected).' On the deletion barrier: 'The Yuasa barrier requires a STW at the beginning of marking to either scan or snapshot stacks'; 'It's sufficient to ensure all stacks are black before scanning any heap objects.' Proposes the hybrid barrier 'shade(*slot); if current stack is grey: shade(ptr)', which requires black allocation and maintains the weak but not the strong invariant. Its appendix 'Proof of soundness, completeness, and boundedness' gives paper proofs for the hybrid barrier: Lemmas 2 and 3 (a white object reachable from a black object, or from a black goroutine, is grey-protected by a heap object), Theorem 1 (the hybrid write barrier satisfies the weak tricolor invariant) and Theorem 2 (marking terminates in a finite number of steps, bounded via the number of objects at the start of the cycle).",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsections 'Allocation colour' and 'Snapshot-at-the-beginning solutions'; Sec. 15.2 'Barrier techniques for concurrent collection' (pp. 337-344), subsection 'Black mutator techniques'.",
+      "Gammie, Hosking, Engelhardt. Relaxing safely: verified on-the-fly garbage collection for x86-TSO. PLDI 2015, pp. 99-109. doi:10.1145/2737924.2738006. Isabelle/HOL development: Archive of Formal Proofs, entry ConcurrentGC (2015), https://isa-afp.org/entries/ConcurrentGC.html (a safety proof of a Schism-style collector on x86-TSO; no termination proof). Defines reachable_snapshot_inv (every reachable object is black or grey protected, via in_snapshot) and proves reachable_blackD (no grey references, reachable_snapshot_inv and reachability imply black), with lemmas including reachable_snapshot_inv_load (root loads) and reachable_snapshot_inv_alloc (allocation)."
+    ],
+    "design_question": "Which invariant does the deletion barrier maintain, and what root, load and allocation discipline does it need?",
+    "status": "proved"
+  },
+  {
+    "id": "yuasa-barrier-breaks-strong",
+    "lean": "Toy.Tricolor.store_yuasa_breaks_strong",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Standard observation (also stated for the hybrid barrier by Clements and Hudson).",
+    "plain_claim": "The Yuasa barrier does not preserve the strong invariant: in the 3-object state sChainR (black root 0, grey 1, white root 2, edges 0 -> 1 -> 2), which satisfies the strong invariant and the root clause, the enabled Yuasa store of the held pointer 2 into 0 creates a black-to-white edge while the weak invariant and its root clause still hold.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The statement is a closed concrete instance.",
+    "positive_control_lean": "Toy.Tricolor.strong_preserved_of_dijkstra_nonvacuous",
+    "non_claims": [
+      "Not a safety failure: the weak invariant and its root clause still hold in the resulting state.",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). Proposes the hybrid barrier 'shade(*slot); if current stack is grey: shade(ptr)', which requires black allocation and maintains the weak but not the strong invariant.",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsection 'The strong and weak tricolour invariants'."
+    ],
+    "design_question": "Which invariant does the deletion barrier maintain? (reference point)",
+    "status": "proved"
+  },
+  {
+    "id": "isolated-alloc-preserves-roots-protected-iff-nonwhite",
+    "lean": "Toy.Tricolor.rootsProtected_alloc_iff_ne_white",
+    "lean_names": [
+      "Toy.Tricolor.rootsNonWhite_alloc_iff_ne_white",
+      "Toy.Tricolor.strong_alloc_grey",
+      "Toy.Tricolor.strong_alloc_black_of_successors_nonWhite"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Allocation colour is a textbook topic (Handbook Sec. 15.1 'Allocation colour'); the exact condition for a collector that never rescans roots is stated here as an equivalence.",
+    "plain_claim": "If every white root is grey protected and object a is isolated, then allocating a into the roots with color c keeps every white root grey protected if and only if c is not white.",
+    "hypotheses": [
+      {
+        "name": "hr : RootsProtected s",
+        "purpose": "Other roots must already be protected; otherwise no allocation color helps.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.isolated_and_not_rootsProtected_alloc_black",
+        "witness_class": "a 2-object heap state"
+      },
+      {
+        "name": "hiso : Isolated s a",
+        "purpose": "A non-isolated object could be protected by a grey predecessor even if allocated white.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.rootsProtected_alloc_white_of_not_isolated",
+        "witness_class": "a 2-object heap state"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "sFree (black root 0, isolated white 1) with a = 1.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.rootsProtected_alloc_iff_ne_white_nonvacuous",
+    "non_claims": [
+      "Says nothing about collectors that rescan roots (for those, white allocation is safe: dijkstra-rescan-and-paused-drain-no-grey-implies-live-black).",
+      "Grey and black are both acceptable for safety; the result does not distinguish them (see the termination results).",
+      "The companion lemma rootsNonWhite_alloc_iff_ne_white is the analogue for RootsNonWhite, with different hypotheses: it assumes that every root of s is non-white (RootsNonWhite s) and has no isolation hypothesis, and states that for every object a and every color c, every root of alloc s a c is non-white if and only if c is not white.",
+      "Allocating black without shading initial fields is covered here because `alloc` requires `Isolated s a` (no pointers into or out of the object at birth, modeling zeroed memory); its fields are populated later by separate `store` steps, each subject to the configuration's heap barrier and to the store enabling condition (the stored pointer is held in the roots). If a runtime initializes fields of a newly allocated black object directly with pointers to white objects (e.g., constructor-time tuple allocation), black allocation can break the strong invariant (shadeLoads_nonWhiteAlloc_unisolated_alloc_breaks_strong, dijkstra_unisolated_blackAlloc_breaks_strong) or the weak invariant (yuasa_nonWhiteAlloc_unisolated_alloc_breaks_weak). For the strong invariant and the state update alone, allocating such an object grey, or black when every initial target is already non-white, avoids this (strong_alloc_grey, strong_alloc_black_of_successors_nonWhite); the weak-invariant analogue is not proved here.",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsection 'Allocation colour'; Chapter 16 'Concurrent mark-sweep' (pp. 349-366), Sec. 16.3 'Allocation'.",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). States that the hybrid barrier requires black allocation ('allocate-white is a common policy, but incompatible with this barrier')."
+    ],
+    "design_question": "Which allocation color does a snapshot (no rescan) collector need?",
+    "status": "proved"
+  },
+  {
+    "id": "yuasa-nonwhite-alloc-from-root-snapshot-no-grey-implies-live-black",
+    "lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_yuasa_of_nonWhiteAlloc_run_from_initMark",
+    "lean_names": [
+      "Toy.Tricolor.floatingGarbage_yuasa_run"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Whole-cycle safety of snapshot-at-the-beginning marking started by an atomic root snapshot, with no rescan, unshaded root loads and non-white allocation (Yuasa's collector snapshots the stack at the start of marking; Clements and Hudson state that the Yuasa barrier needs the stacks scanned or snapshotted at the start).",
+    "plain_claim": "For every configuration with the Yuasa barrier and an allocator that never allocates white, every initial state s₀, and every state s reached from initMark s₀ (every root shaded at once and every other object white: a stop-the-world root snapshot) by a run of the generated relation `Run cfg` (a finite sequence of enabled steps: collector scans of grey objects, heap stores of pointers held in the roots, erases, root loads of objects reachable from the roots, root drops, and allocations of isolated non-root objects), if s has no grey object then every object reachable from the roots in s is black, without a root rescan or shading of root loads.",
+    "modeling_bridge": "derived (modeling bridge): a sweep that frees exactly the white objects of a state satisfying the conclusion frees no object reachable from the roots; sweeping is not modeled.",
+    "hypotheses": [
+      {
+        "name": "hb : cfg.barrier = .yuasa",
+        "purpose": "Deletion barrier.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.unbarriered_unshadedLoads_blackAlloc_run_from_initMark_not_allLiveBlack",
+          "Toy.Tricolor.dijkstra_unshadedLoads_run_from_initMark_leaves_live_white"
+        ],
+        "witness_class": "a 3-object heap and a 4- or 6-step run"
+      },
+      {
+        "name": "halloc : ∀ c, cfg.allocOk c = true → c ≠ .white",
+        "purpose": "Non-white allocation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.yuasa_whiteAlloc_run_from_initMark_not_allLiveBlack",
+        "witness_class": "a 2-object heap and a 2-step run"
+      },
+      {
+        "name": "hrun : Run cfg (initMark s₀) ops s",
+        "purpose": "The run consists of enabled steps of `Run cfg` and starts at a root snapshot initMark s₀. Load-bearing enabling conditions inside `Run`: a heap store writes a pointer held in the roots (liveness of the stored object suffices, as in the Yuasa preservation card), a root load takes an object reachable from the roots, and an allocation takes an isolated non-root object (`Isolated s a`); dropping any one of them, with every other step enabled, leaves a reachable object white at the end of marking.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.yuasa_run_not_from_initMark_not_allLiveBlack",
+          "Toy.Tricolor.yuasa_store_of_unreachable_cycle_not_allLiveBlack",
+          "Toy.Tricolor.yuasa_load_of_unreachable_cycle_not_allLiveBlack",
+          "Toy.Tricolor.yuasa_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack"
+        ],
+        "witness_class": "an empty run from a 2-object state that is not of the form initMark s₀; or a 2-step sequence from a 2- or 3-object root snapshot in which exactly one step violates exactly one enabling condition (stored object live; loaded object reachable; isolation of an allocation)"
+      },
+      {
+        "name": "hng : NoGrey s",
+        "purpose": "Marking has terminated.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.yuasa_run_from_initMark_with_grey_not_allLiveBlack",
+        "witness_class": "an empty run from a 3-object root snapshot"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The lost-object interleaving traceLostObject under the Yuasa barrier, followed by a scan of object 2.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_yuasa_of_nonWhiteAlloc_run_from_initMark_nonvacuous",
+    "non_claims": [
+      "This is a safety statement: it does not say marking terminates (see the termination results).",
+      "`AllLiveBlack` expresses soundness (`Live s y → s.color y = .black`), not completeness: unreachable objects that were allocated black or shaded before becoming unreachable remain black (floating garbage) until a subsequent cycle, and starting a new cycle requires resetting or flipping black marks during sweep. (Example of floating garbage: floatingGarbage_yuasa_run. Sweeping and later cycles are not modeled.)",
+      "Unshaded root loads and heap stores are covered here because `Op.Enabled` restricts both operations to objects already strongly `Live` from traced roots (a store writes a pointer held in the roots, which is live). Promoting a white object reachable only through a weak or soft reference, a finalizer queue, or an untraced native handle (`¬Live s y`) into mutator roots or heap fields can violate `RootsProtected` / `Weak` (`load_of_unreachable_breaks_rootsProtected`, `yuasa_store_of_unreachable_breaks_weak`) and requires an explicit shading barrier. (Weak references, finalizers and native handles are not modeled.)",
+      "`initMark` shades every root-referenced heap object atomically in a single step, modeling a stop-the-world root snapshot/scan (or blackening all stacks before any heap object is blackened). It does not show that a pure Yuasa deletion barrier is safe when mutator thread stacks remain unscanned (grey) while heap objects are blackened; in that setting a mutator can move a white pointer from an unscanned stack into a null field of a black heap object without shading it, requiring an additional insertion shade on grey stacks (as in Go's hybrid barrier). (That failure is not proved here; concurrent stack scanning is not modeled.)",
+      "Overwriting a pointer with `null` or bulk-clearing pointer-containing heap memory (`memclr`, slice truncation) corresponds to `erase` and must execute the Yuasa deletion barrier on every overwritten pointer; only stores into already-null fields of freshly zeroed objects omit shading. (Without the deletion barrier an erase can break the weak invariant: erase_unbarriered_breaks_weak.)",
+      "Allocating black without shading initial fields is covered here because `alloc` requires `Isolated s a` (no pointers into or out of the object at birth, modeling zeroed memory); its fields are populated later by separate enabled `store` steps, which write only pointers held in the roots and which the Yuasa barrier does not shade (a store into a null field deletes no pointer; a white stored target is grey protected by the weak invariant and its root clause: greyProtected_of_live_of_white_of_weak_of_rootsProtected). If a runtime initializes fields of a newly allocated black object directly with pointers to white objects (e.g., constructor-time tuple allocation), black allocation can leave a reachable white object unprotected (one step: yuasa_nonWhiteAlloc_unisolated_alloc_breaks_weak; whole cycle from a root snapshot: yuasa_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack). Whether shading the initial targets or allocating such objects grey restores the weak invariant is not proved here.",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping.",
+      "Any connection to a production collector (Go's hybrid barrier, a JVM or JavaScript collector) is a modeling bridge, not a consequence of this result; the result neither establishes nor refutes any claim about such collectors."
+    ],
+    "prior_art": [
+      "Yuasa. Real-time garbage collection on general-purpose machines. J. Syst. Softw. 11(3):181-198, 1990. doi:10.1016/0164-1212(90)90084-Y. The deletion (snapshot-at-the-beginning) barrier; as described by Clements and Hudson (2016), 'As originally proposed, the Yuasa barrier takes a complete snapshot of the stack before proceeding with marking.' The weak-invariant formulation used here is Pirinen's (1998), not Yuasa's.",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). On the deletion barrier: 'The Yuasa barrier requires a STW at the beginning of marking to either scan or snapshot stacks'; 'It's sufficient to ensure all stacks are black before scanning any heap objects.' Proposes the hybrid barrier 'shade(*slot); if current stack is grey: shade(ptr)', which requires black allocation and maintains the weak but not the strong invariant. Its appendix 'Proof of soundness, completeness, and boundedness' gives paper proofs for the hybrid barrier: Lemmas 2 and 3 (a white object reachable from a black object, or from a black goroutine, is grey-protected by a heap object), Theorem 1 (the hybrid write barrier satisfies the weak tricolor invariant) and Theorem 2 (marking terminates in a finite number of steps, bounded via the number of objects at the start of the cycle).",
+      "Pirinen. Barrier techniques for incremental tracing. ISMM 1998, pp. 20-25. doi:10.1145/286860.286863. Source of the weak tricolor invariant as quoted in Clements and Hudson (2016).",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsection 'Snapshot-at-the-beginning solutions'; Chapter 16 'Concurrent mark-sweep' (pp. 349-366), Sec. 16.1 'Initialisation'.",
+      "Gammie, Hosking, Engelhardt. Relaxing safely: verified on-the-fly garbage collection for x86-TSO. PLDI 2015, pp. 99-109. doi:10.1145/2737924.2738006. Isabelle/HOL development: Archive of Formal Proofs, entry ConcurrentGC (2015), https://isa-afp.org/entries/ConcurrentGC.html (a safety proof of a Schism-style collector on x86-TSO; no termination proof). Defines reachable_snapshot_inv (every reachable object is black or grey protected, via in_snapshot) and proves reachable_blackD (no grey references, reachable_snapshot_inv and reachability imply black), with lemmas including reachable_snapshot_inv_load (root loads) and reachable_snapshot_inv_alloc (allocation)."
+    ],
+    "design_question": "Is a snapshot collector without root rescans safe, and under which allocation rule?",
+    "status": "proved"
+  },
+  {
+    "id": "no-barrier-unshaded-loads-leaves-live-white",
+    "lean": "Toy.Tricolor.unbarriered_unshadedLoads_traceLostObject_leaves_live_white",
+    "lean_names": [
+      "Toy.Tricolor.allLiveBlack_of_noGrey_of_scansOnly_run_from_initMark",
+      "Toy.Tricolor.unbarriered_unshadedLoads_heldTrace_reaches_sLost"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The classic lost-object interleaving (Handbook Sec. 15.1 'The lost object problem'), in a model with registers.",
+    "plain_claim": "On the heap 0 (root) -> 1 -> 2, starting from the root snapshot initMark (0 grey, 1 and 2 white), under every configuration with no heap barrier and unshaded root loads, the enabled interleaving 'scan 0; load 2 into the roots; store 2 into the black root 0; drop 2 from the roots; erase 1 -> 2; scan 1' reaches a state with no grey object in which object 2 is reachable (through the edge 0 -> 2) and white.",
+    "modeling_bridge": "derived (modeling bridge): a sweep that frees the white objects of the final state would free the reachable object; sweeping is not modeled.",
+    "hypotheses": [
+      {
+        "name": "hb : cfg.barrier = .none",
+        "purpose": "No heap barrier.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.traceLostObject_dijkstra_unshadedLoads_not_lost",
+          "Toy.Tricolor.traceLostObject_yuasa_unshadedLoads_not_lost"
+        ],
+        "witness_class": "the same 3-object heap and 6-step trace under another configuration"
+      },
+      {
+        "name": "hsh : cfg.shadeLoads = false",
+        "purpose": "No load barrier.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.traceLostObject_unbarriered_shadeLoads_not_lost",
+        "witness_class": "the same 3-object heap and 6-step trace under another configuration"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The trace is concrete; every step is enabled (2 is reachable when loaded and held in the roots when stored).",
+    "positive_control_lean": [
+      "Toy.Tricolor.dijkstra_traceLostObject_then_scan_safe",
+      "Toy.Tricolor.yuasa_traceLostObject_then_scan_safe",
+      "Toy.Tricolor.shadeLoads_traceLostObject_then_scan_safe"
+    ],
+    "non_claims": [
+      "Escape hatches that defeat this counterexample include: pausing the mutator during marking (`ScansOnly`; allLiveBlack_of_noGrey_of_scansOnly_run_from_initMark), adding a Dijkstra insertion barrier or Yuasa deletion barrier (positive controls), or using a shading load barrier (`shadeLoads = true`) with non-white allocation (shadeLoads_traceLostObject_then_scan_safe and allLiveBlack_of_noGrey_of_shadeLoads_of_nonWhiteAlloc_run_from_initMark).",
+      "Allocation colors play no role in the trace.",
+      "Does not say that every interleaving without a barrier is unsafe.",
+      "The erase in traceLostObject writes to object 1, which is reachable but not held in the roots. Under cfgN0 (no heap barrier, unshaded root loads, black-only allocation), the variant traceLostObjectHeld, which loads 1 before the erase and drops it afterwards, is an enabled run from initMark hChain to sLost, the final state of traceLostObject under cfgN0 (unbarriered_unshadedLoads_heldTrace_reaches_sLost).",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsection 'The lost object problem'."
+    ],
+    "design_question": "What goes wrong with neither a heap write barrier nor a load barrier?",
+    "status": "proved"
+  },
+  {
+    "id": "dijkstra-rescan-and-paused-drain-no-grey-implies-live-black",
+    "lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_dijkstra_run_of_rescan_of_scansOnly_run",
+    "lean_names": [
+      "Toy.Tricolor.allLiveBlack_of_strong_of_rescan_of_scansOnly_run",
+      "Toy.Tricolor.strong_store_dijkstra",
+      "Toy.Tricolor.strong_load",
+      "Toy.Tricolor.floatingGarbage_yuasa_run"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The grey-mutator discipline (Go 1.7 with stop-the-world stack re-scanning; Handbook 'Grey mutator techniques') restated: the rescan lemma allLiveBlack_of_strong_of_rescan_of_scansOnly_run (strong invariant in s, a scans-only run of `Run cfg` from rescan s to s', no grey object in s') combined with preservation of the strong invariant by every enabled step under the Dijkstra barrier along the run of `Run cfg` from initMark s₀ to s.",
+    "plain_claim": "For every configuration with the Dijkstra barrier (any allocation colors, either root-load discipline), every initial state s₀, every state s reached from initMark s₀ by a run of the generated relation `Run cfg` (a finite sequence of enabled steps: collector scans of grey objects, heap stores of pointers held in the roots, erases, root loads of objects reachable from the roots, root drops, and allocations of isolated non-root objects), and every state s' reached from rescan s (every white root greyed) by a run of `Run cfg` consisting only of collector scans (`ScansOnly`: the mutator is paused), if s' has no grey object then every object reachable from the roots in s' is black.",
+    "modeling_bridge": "derived (modeling bridge): a sweep that frees exactly the white objects of a state satisfying the conclusion frees no object reachable from the roots; sweeping is not modeled.",
+    "hypotheses": [
+      {
+        "name": "hb : cfg.barrier = .dijkstra",
+        "purpose": "Keeps the strong invariant during the concurrent run.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.unbarriered_run_rescan_not_allLiveBlack",
+        "witness_class": "a 3-object heap, a 6-step run and an empty drain"
+      },
+      {
+        "name": "hrun : Run cfg (initMark s₀) ops s",
+        "purpose": "The concurrent run consists of enabled steps of `Run cfg` and starts at a root snapshot initMark s₀. Load-bearing enabling condition inside `Run`: an allocation takes an isolated non-root object (`Isolated s a`); dropping it, with every other step enabled, leaves a reachable object white even after the rescan and drain. The store and load conditions are not used (the Dijkstra preservation lemmas strong_store_dijkstra and strong_load hold for every target).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.rescan_from_nonStrong_not_allLiveBlack",
+          "Toy.Tricolor.dijkstra_unisolated_alloc_cycle_rescan_not_allLiveBlack"
+        ],
+        "witness_class": "a 2-object state not reachable from any initMark s₀; or a 2-step sequence from a 3-object root snapshot whose allocation is not isolated, followed by a rescan and an empty drain"
+      },
+      {
+        "name": "hrem : Run cfg (rescan s) ops₂ s'",
+        "purpose": "The drain starts after the rescan.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.dijkstra_run_without_rescan_scansOnly_not_allLiveBlack",
+        "witness_class": "a 3-object heap, a 4-step run and an empty drain without rescan"
+      },
+      {
+        "name": "hscan : ScansOnly ops₂",
+        "purpose": "The drain is collector-only (mutator paused).",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.dijkstra_rescan_then_mutator_not_allLiveBlack",
+        "witness_class": "a 3-object heap and a 3-step drain with mutator steps"
+      },
+      {
+        "name": "hng : NoGrey s'",
+        "purpose": "The drain has finished.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.dijkstra_rescan_with_grey_not_allLiveBlack",
+        "witness_class": "a 3-object root snapshot and an empty drain"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "White allocation into the roots, scan of the root, rescan, scan of the allocated object.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_dijkstra_run_of_rescan_of_scansOnly_run_nonvacuous",
+    "non_claims": [
+      "Does not bound the length of the drain beyond the paused-mutator termination bound; nothing here is about pause times.",
+      "The core is the state-level lemma allLiveBlack_of_strong_of_rescan_of_scansOnly_run: for every configuration cfg, every state s satisfying the strong invariant, and every state s' reached from rescan s by a run of `Run cfg` that consists of collector scans (`ScansOnly`), if s' has no grey object then every object reachable from the roots in s' is black. Its hypotheses say nothing about how s was reached, about the heap barrier, or about the colors of the roots of s.",
+      "`AllLiveBlack` expresses soundness (`Live s y → s.color y = .black`), not completeness: unreachable objects that were allocated black or shaded before becoming unreachable remain black (floating garbage) until a subsequent cycle, and starting a new cycle requires resetting or flipping black marks during sweep. (Example of floating garbage: floatingGarbage_yuasa_run. Sweeping and later cycles are not modeled.)",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping.",
+      "Any connection to a production collector (Go's hybrid barrier, a JVM or JavaScript collector) is a modeling bridge, not a consequence of this result; the result neither establishes nor refutes any claim about such collectors."
+    ],
+    "prior_art": [
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). Describes Go 1.7's coarsened Dijkstra write barrier: stack writes have no barrier, so stacks must be 'permagrey' and are re-scanned 'with the world stopped'; it notes that 'Go already allocates black for other reasons'.",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Sec. 15.2 'Barrier techniques for concurrent collection' (pp. 337-344), subsection 'Grey mutator techniques'; Chapter 16 'Concurrent mark-sweep' (pp. 349-366), Sec. 16.2 'Termination'.",
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. The coarse-grained mutator shades the target of each edge it introduces. In the final fine-grained solution the mutator performs 'redirect for a reachable node an outgoing edge towards a reachable node' and 'shade the target of the edge just placed' as two separate indivisible subactions.",
+      "Zakowski, Cachera, Demange, Petri, Pichardie, Jagannathan, Vitek. Verifying a concurrent garbage collector with a rely-guarantee methodology. J. Autom. Reason. 63(2):489-515, 2019. doi:10.1007/s10817-018-9489-x. Coq proof of a fully concurrent mark-and-sweep collector; its conference version (ITP 2017) states the main result as safety (no reference reachable from a mutator is on the free list)."
+    ],
+    "design_question": "What makes an insertion barrier safe for every allocation color and root-load discipline?",
+    "status": "proved"
+  },
+  {
+    "id": "dijkstra-white-alloc-without-rescan-leaves-live-white",
+    "lean": "Toy.Tricolor.dijkstra_whiteAlloc_run_from_initMark_leaves_live_white",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Folklore (Handbook 'Allocation colour'; Clements and Hudson call white allocation incompatible with their no-rescan barrier).",
+    "plain_claim": "On the heap with root 0 and an isolated free object 1, starting from the root snapshot initMark (0 grey, 1 white), under the Dijkstra barrier with shaded root loads and white allocation allowed, the run 'allocate 1 white into the roots; scan 0' reaches a state with no grey object in which the root 1 is white.",
+    "modeling_bridge": "derived (modeling bridge): a sweep that frees the white objects of the final state would free the reachable object; sweeping is not modeled.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Concrete two-step run.",
+    "positive_control_lean": "Toy.Tricolor.dijkstra_whiteAlloc_then_rescan_safe",
+    "non_claims": [
+      "Escape hatches that avoid freeing the newly allocated live object under an insertion barrier are: (1) a final root `rescan` followed by a collector-only `ScansOnly` drain (positive control and `dijkstra-rescan-and-paused-drain-no-grey-implies-live-black`), (2) disallowing white allocation while also preventing unshaded white pointers from entering roots (e.g., shaded root loads, `shaded-loads-nonwhite-alloc-from-root-snapshot-no-grey-implies-live-black`, or barriered root writes, not modeled here), or (3) a fixed-root architecture in which newly allocated cells are linked only through barriered heap stores rather than unbarriered root allocation (not modeled or proved here).",
+      "The Yuasa barrier with white allocation fails in the same way (yuasa_whiteAlloc_run_from_initMark_not_allLiveBlack).",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 15 'Concurrent garbage collection' (from p. 329), Sec. 15.1 'Correctness of concurrent collection' (pp. 331-337), subsection 'Allocation colour'.",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). States that allocate-white is incompatible with the hybrid barrier."
+    ],
+    "design_question": "With an insertion barrier, when is allocating white safe?",
+    "status": "proved"
+  },
+  {
+    "id": "dijkstra-unshaded-loads-without-rescan-leaves-live-white",
+    "lean": "Toy.Tricolor.dijkstra_unshadedLoads_run_from_initMark_leaves_live_white",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The reason for 'permagrey' stacks and stop-the-world re-scanning in Clements and Hudson (Go already allocated black at the time); grey mutators under an insertion barrier need a rescan (Handbook 'Grey mutator techniques').",
+    "plain_claim": "On the heap 0 (root) -> 1 -> 2, starting from the root snapshot initMark, under the Dijkstra barrier with black-only allocation but unshaded root loads, the run 'scan 0; load 2 into the roots; erase 1 -> 2; scan 1' reaches a state with no grey object in which the root 2 is white.",
+    "modeling_bridge": "derived (modeling bridge): a sweep that frees the white objects of the final state would free the reachable object; sweeping is not modeled.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Concrete four-step run.",
+    "positive_control_lean": [
+      "Toy.Tricolor.dijkstra_shadeLoads_traceLoadLost_then_scan_safe",
+      "Toy.Tricolor.yuasa_traceLoadLost_then_scan_safe"
+    ],
+    "non_claims": [
+      "Escape hatches that prevent losing a live object moved into unshaded roots are: (1) a stop-the-world root `rescan` and `ScansOnly` drain at the end of marking (`dijkstra-rescan-and-paused-drain-no-grey-implies-live-black`), (2) a deletion or hybrid write barrier that shades overwritten heap pointers (`yuasa_traceLoadLost_then_scan_safe`; Go's hybrid barrier when stacks are scanned concurrently is not modeled here), or (3) shading pointers when they are loaded into or written to roots (`dijkstra_shadeLoads_traceLoadLost_then_scan_safe` and `shaded-loads-nonwhite-alloc-from-root-snapshot-no-grey-implies-live-black`).",
+      "Black allocation alone does not remove the need for a rescan under an insertion barrier with unshaded loads (this card: cfgD0 allocates black only).",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). Describes Go 1.7's coarsened Dijkstra write barrier: stack writes have no barrier, so stacks must be 'permagrey' and are re-scanned 'with the world stopped'; it notes that 'Go already allocates black for other reasons'.",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Sec. 15.2 'Barrier techniques for concurrent collection' (pp. 337-344), subsection 'Grey mutator techniques'."
+    ],
+    "design_question": "With an insertion barrier, is black allocation enough to avoid a root rescan?",
+    "status": "proved"
+  },
+  {
+    "id": "shaded-loads-nonwhite-alloc-preserve-strong-and-nonwhite-roots",
+    "lean": "Toy.Tricolor.strong_rootsNonWhite_preserved_of_shadeLoads_of_nonWhiteAlloc",
+    "lean_names": [
+      "Toy.Tricolor.strong_alloc_grey",
+      "Toy.Tricolor.strong_alloc_black_of_successors_nonWhite",
+      "Toy.Tricolor.strong_alloc_black_of_successors_held"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Black-mutator discipline with a load barrier (Handbook Sec. 15.2 'Black mutator techniques' and 'Load barriers'; Pirinen's result as quoted by Clements and Hudson that every black-mutator barrier other than Yuasa's requires a read barrier), restated: the load barrier alone suffices, with no heap write barrier.",
+    "plain_claim": "For every configuration with shaded root loads (a load barrier) and an allocator that never allocates white, under any heap barrier including none, every state s satisfying the strong invariant in which every root is non-white, and every successor s' of s under the generated step relation `Step cfg` (an enabled collector scan of a grey object, heap store of a pointer held in the roots, erase, root load of an object reachable from the roots, root drop, or allocation of an isolated non-root object), the strong invariant holds in s' and every root of s' is non-white.",
+    "hypotheses": [
+      {
+        "name": "hsh : cfg.shadeLoads = true",
+        "purpose": "A loaded white object would be a white root.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.unshadedLoad_breaks_rootsNonWhite",
+        "witness_class": "a 3-object heap state and one step"
+      },
+      {
+        "name": "halloc : ∀ c, cfg.allocOk c = true → c ≠ .white",
+        "purpose": "A white allocation would be a white root.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.shadeLoads_whiteAlloc_breaks_rootsNonWhite",
+        "witness_class": "a 2-object heap state and one step"
+      },
+      {
+        "name": "hs : Strong s",
+        "purpose": "Invariant in the pre-state.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.shadeLoads_step_from_nonStrong_not_strong",
+        "witness_class": "a 2-object heap state and one step"
+      },
+      {
+        "name": "hr : RootsNonWhite s",
+        "purpose": "A white root stored into a black object (no heap barrier) is a black-to-white edge.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.shadeLoads_store_of_whiteRoot_breaks_strong",
+        "witness_class": "a 2-object heap state and one step"
+      },
+      {
+        "name": "hstep : Step cfg s s'",
+        "purpose": "The transition is an enabled step. Load-bearing parts: a heap store writes a pointer held in the roots, and an allocation takes an isolated object.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.shadeLoads_nonWhiteAlloc_store_of_unheld_value_breaks_strong",
+          "Toy.Tricolor.shadeLoads_nonWhiteAlloc_unisolated_alloc_breaks_strong"
+        ],
+        "witness_class": "a 3-object heap state and one non-enabled step"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "sChainShaded (black root 0, grey 1, grey root 2) with an unbarriered store 0 -> 2 under cfgU (no heap barrier, shaded loads, black allocation).",
+    "nonvacuity_witness_lean": "Toy.Tricolor.strong_rootsNonWhite_preserved_of_shadeLoads_of_nonWhiteAlloc_nonvacuous",
+    "non_claims": [
+      "No hypothesis on the heap barrier: the result covers none, Dijkstra and Yuasa alike.",
+      "In this model no heap write barrier is needed alongside shaded loads and non-white allocation because every heap store writes a pointer the mutator holds in its roots, which `RootsNonWhite` keeps non-white. If the mutator could copy a pointer between heap fields without loading it (for example a bulk pointer copy that bypasses the load barrier), the strong invariant can break without a heap barrier (shadeLoads_nonWhiteAlloc_store_of_unheld_value_breaks_strong).",
+      "Shading root loads is a cost on every pointer load into a register or stack slot; the result does not compare costs.",
+      "Allocating black without shading initial fields is covered here because `alloc` requires `Isolated s a` (no pointers into or out of the object at birth, modeling zeroed memory); its fields are populated later by separate enabled `store` steps of root-held, hence (by `RootsNonWhite`) already non-white, pointers, so no heap write barrier is involved. If a runtime initializes fields of a newly allocated black object directly with pointers to white objects that bypass the load barrier (pointers not held in the roots), black allocation can create a black-to-white edge (shadeLoads_nonWhiteAlloc_unisolated_alloc_breaks_strong). For the state update alone, starting from a state s that satisfies the strong invariant: if also every root of s is non-white (RootsNonWhite s), allocating an object black whose initial fields point only to objects held in the roots preserves the strong invariant (strong_alloc_black_of_successors_held); allocating an object grey preserves it (strong_alloc_grey); and allocating an object black whose initial targets are all non-white preserves it (strong_alloc_black_of_successors_nonWhite); a step relation that admits such allocations is not studied here.",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping.",
+      "Any connection to a production collector (Go's hybrid barrier, a JVM or JavaScript collector) is a modeling bridge, not a consequence of this result; the result neither establishes nor refutes any claim about such collectors."
+    ],
+    "prior_art": [
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Sec. 15.2 'Barrier techniques for concurrent collection' (pp. 337-344), subsections 'Black mutator techniques', 'Completeness of barrier techniques' and 'Load barriers'.",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). Quotes Pirinen's result: 'as shown by Pirinen, all possible black mutator barriers other than the Yuasa barrier require a read barrier [Pirinen '98]'.",
+      "Pirinen. Barrier techniques for incremental tracing. ISMM 1998, pp. 20-25. doi:10.1145/286860.286863. Cited by Clements and Hudson (2016) for the result that every black-mutator barrier other than the Yuasa barrier requires a read barrier."
+    ],
+    "design_question": "What lets a collector skip both the root rescan and the heap write barrier?",
+    "status": "proved"
+  },
+  {
+    "id": "shaded-loads-nonwhite-alloc-from-root-snapshot-no-grey-implies-live-black",
+    "lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_shadeLoads_of_nonWhiteAlloc_run_from_initMark",
+    "lean_names": [
+      "Toy.Tricolor.strong_load",
+      "Toy.Tricolor.rootsNonWhite_load_shaded",
+      "Toy.Tricolor.strong_alloc_grey",
+      "Toy.Tricolor.strong_alloc_black_of_successors_nonWhite",
+      "Toy.Tricolor.strong_alloc_black_of_successors_held",
+      "Toy.Tricolor.floatingGarbage_yuasa_run"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Whole-cycle form of shaded-loads-nonwhite-alloc-preserve-strong-and-nonwhite-roots.",
+    "plain_claim": "For every configuration with shaded root loads and an allocator that never allocates white, under any heap barrier including none, every initial state s₀, and every state s reached from initMark s₀ (a stop-the-world root snapshot) by a run of the generated relation `Run cfg` (a finite sequence of enabled steps: collector scans of grey objects, heap stores of pointers held in the roots, erases, root loads of objects reachable from the roots, root drops, and allocations of isolated non-root objects), if s has no grey object then every object reachable from the roots in s is black, without a root rescan.",
+    "modeling_bridge": "derived (modeling bridge): a sweep that frees exactly the white objects of a state satisfying the conclusion frees no object reachable from the roots; sweeping is not modeled.",
+    "hypotheses": [
+      {
+        "name": "hsh : cfg.shadeLoads = true",
+        "purpose": "Load barrier.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.dijkstra_unshadedLoads_run_from_initMark_leaves_live_white",
+          "Toy.Tricolor.unbarriered_unshadedLoads_blackAlloc_run_from_initMark_not_allLiveBlack"
+        ],
+        "witness_class": "a 3-object heap and a 4- or 6-step run"
+      },
+      {
+        "name": "halloc : ∀ c, cfg.allocOk c = true → c ≠ .white",
+        "purpose": "Non-white allocation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.dijkstra_whiteAlloc_run_from_initMark_leaves_live_white",
+        "witness_class": "a 2-object heap and a 2-step run"
+      },
+      {
+        "name": "hrun : Run cfg (initMark s₀) ops s",
+        "purpose": "The run consists of enabled steps of `Run cfg` and starts at a root snapshot initMark s₀. Load-bearing enabling conditions inside `Run`: a heap store writes a pointer held in the roots (`s.root y = true`), which `RootsNonWhite` keeps non-white, and an allocation takes an isolated non-root object (`Isolated s a`); dropping either one, with every other step enabled, leaves a reachable object white at the end of marking. The reachability condition on root loads is not load-bearing here (a shaded load of any object keeps both invariants: strong_load, rootsNonWhite_load_shaded).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.shadeLoads_run_not_from_initMark_not_allLiveBlack",
+          "Toy.Tricolor.shadeLoads_nonWhiteAlloc_unheld_store_cycle_not_allLiveBlack",
+          "Toy.Tricolor.shadeLoads_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack"
+        ],
+        "witness_class": "an empty run from a 2-object state that is not of the form initMark s₀; or a 4- or 2-step sequence from a 3-object root snapshot in which exactly one step violates exactly one enabling condition (held pointer in a store; isolation of an allocation)"
+      },
+      {
+        "name": "hng : NoGrey s",
+        "purpose": "Marking has terminated.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.shadeLoads_run_from_initMark_with_grey_not_allLiveBlack",
+        "witness_class": "an empty run from a 3-object root snapshot"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The lost-object interleaving under cfgU (no heap barrier, shaded loads), followed by a scan of object 2.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.allLiveBlack_of_noGrey_of_shadeLoads_of_nonWhiteAlloc_run_from_initMark_nonvacuous",
+    "non_claims": [
+      "In this model, 'the Dijkstra barrier is safe without a rescan if new objects are allocated black or grey' is false unless root loads are also shaded (dijkstra_unshadedLoads_run_from_initMark_leaves_live_white).",
+      "In this model no heap write barrier is needed alongside shaded loads and non-white allocation because every heap store writes a pointer the mutator holds in its roots, which `RootsNonWhite` keeps non-white. If the mutator could copy a pointer between heap fields without loading it (for example a bulk pointer copy that bypasses the load barrier), the strong invariant can break without a heap barrier (one step: shadeLoads_nonWhiteAlloc_store_of_unheld_value_breaks_strong) and a reachable object can be left white at the end of marking (whole cycle from a root snapshot: shadeLoads_nonWhiteAlloc_unheld_store_cycle_not_allLiveBlack).",
+      "Allocating black without shading initial fields is covered here because `alloc` requires `Isolated s a` (no pointers into or out of the object at birth, modeling zeroed memory); its fields are populated later by separate enabled `store` steps of root-held, hence (by `RootsNonWhite`) already non-white, pointers, so no heap write barrier is involved. If a runtime initializes fields of a newly allocated black object directly with pointers to white objects that bypass the load barrier (pointers not held in the roots), black allocation can lose a reachable object (one step: shadeLoads_nonWhiteAlloc_unisolated_alloc_breaks_strong; whole cycle from a root snapshot, ending with no grey object and a reachable white object: shadeLoads_nonWhiteAlloc_unisolated_alloc_cycle_not_allLiveBlack). For the state update alone, starting from a state s that satisfies the strong invariant: if also every root of s is non-white (RootsNonWhite s), allocating an object black whose initial fields point only to objects held in the roots preserves the strong invariant (strong_alloc_black_of_successors_held); allocating an object grey preserves it (strong_alloc_grey); and allocating an object black whose initial targets are all non-white preserves it (strong_alloc_black_of_successors_nonWhite); a whole cycle whose step relation admits such allocations is not studied here.",
+      "`AllLiveBlack` expresses soundness (`Live s y → s.color y = .black`), not completeness: unreachable objects that were allocated black or shaded before becoming unreachable remain black (floating garbage) until a subsequent cycle, and starting a new cycle requires resetting or flipping black marks during sweep. (Example of floating garbage: floatingGarbage_yuasa_run. Sweeping and later cycles are not modeled.)",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping.",
+      "Any connection to a production collector (Go's hybrid barrier, a JVM or JavaScript collector) is a modeling bridge, not a consequence of this result; the result neither establishes nor refutes any claim about such collectors."
+    ],
+    "prior_art": [
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Sec. 15.2 'Barrier techniques for concurrent collection' (pp. 337-344), subsections 'Black mutator techniques' and 'Load barriers'.",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). Quotes Pirinen's result: 'as shown by Pirinen, all possible black mutator barriers other than the Yuasa barrier require a read barrier [Pirinen '98]'.",
+      "Pirinen. Barrier techniques for incremental tracing. ISMM 1998, pp. 20-25. doi:10.1145/286860.286863. Cited by Clements and Hudson (2016) for the result that every black-mutator barrier other than the Yuasa barrier requires a read barrier."
+    ],
+    "design_question": "What lets a collector skip both the root rescan and the heap write barrier?",
+    "status": "proved"
+  },
+  {
+    "id": "scans-only-run-length-at-most-mark-measure",
+    "lean": "Toy.Tricolor.length_le_markMeasure_and_le_two_mul_of_scansOnly_run",
+    "lean_names": [
+      "Toy.Tricolor.markMeasure_eq_two_mul_countWhite_add_countGrey",
+      "Toy.Tricolor.markMeasure_le_two_mul",
+      "Toy.Tricolor.markMeasure_scan_lt",
+      "Toy.Tricolor.scan_black_markMeasure_eq"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard potential argument (monotone darkening).",
+    "plain_claim": "For every configuration and every run of the generated relation `Run cfg` from a state s (enabled steps only, so every scanned object is grey) that consists only of collector scans (`ScansOnly`), the number of steps is at most markMeasure s, where markMeasure s = 2 · (number of white objects of s) + (number of grey objects of s), and at most 2 · n.",
+    "hypotheses": [
+      {
+        "name": "hrun : Run cfg s ops s'",
+        "purpose": "The steps are enabled: every scanned object is grey.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.length_bound_fails_without_enabled_scans",
+        "witness_class": "a 1-object heap state and a one-step non-enabled scan"
+      },
+      {
+        "name": "hscan : ScansOnly ops",
+        "purpose": "The mutator is paused.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.drops_run_longer_than_markMeasure",
+        "witness_class": "a 3-object heap state and seven root drops"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Two scans from sGreyWhite.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.length_le_markMeasure_and_le_two_mul_of_scansOnly_run_nonvacuous",
+    "non_claims": [
+      "markMeasure s = 2 · #white + #grey is markMeasure_eq_two_mul_countWhite_add_countGrey; markMeasure s ≤ 2 · n is markMeasure_le_two_mul.",
+      "A single scan of a grey object strictly decreases the measure (markMeasure_scan_lt; its greyness premise cannot be dropped: scanning a black object of a 3-object state leaves the measure unchanged, scan_black_markMeasure_eq).",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. 'during marking each node will darken monotonically' (their monotonicity argument for termination).",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 16 'Concurrent mark-sweep' (pp. 349-366), Sec. 16.2 'Termination'."
+    ],
+    "design_question": "How long can marking take with the mutator paused?",
+    "status": "proved"
+  },
+  {
+    "id": "scans-only-run-to-no-grey-exists",
+    "lean": "Toy.Tricolor.exists_scansOnly_run_to_noGrey",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Standard.",
+    "plain_claim": "For every configuration and every state s, the generated relation `Run cfg` has a run from s that consists only of collector scans (`ScansOnly`; each scan is enabled, i.e. scans a grey object) and reaches a state with no grey object.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Any state with a grey object, e.g. sGreyWhite.",
+    "nonvacuity_witness_lean": "Toy.Tricolor.exists_scansOnly_run_to_noGrey_nonvacuous",
+    "non_claims": [
+      "Existence of a terminating run, not safety of its final state (that needs the invariants).",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. 'during marking each node will darken monotonically' (their monotonicity argument for termination).",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 16 'Concurrent mark-sweep' (pp. 349-366), Sec. 16.2 'Termination'."
+    ],
+    "design_question": "Does marking with a paused mutator always terminate?",
+    "status": "proved"
+  },
+  {
+    "id": "scans-plus-measure-at-most-initial-plus-alloc-weight",
+    "lean": "Toy.Tricolor.scanCount_add_markMeasure_le",
+    "lean_names": [
+      "Toy.Tricolor.allocWeight_needed_greyAllocCycle",
+      "Toy.Tricolor.greyAllocCycle_scans_exceed_two_mul_n",
+      "Toy.Tricolor.scanCount_add_markMeasure_le_of_allocTargetsWhite",
+      "Toy.Tricolor.markMeasure_le_two_mul",
+      "Toy.Tricolor.shadeLe_store",
+      "Toy.Tricolor.shadeLe_erase"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore (only allocation can add marking work under target-shading barriers; Clements and Hudson's Theorem 2 bounds marking work for the hybrid barrier with black allocation); the exact accounting with an allocation surcharge for every allocation color is made precise here.",
+    "plain_claim": "For every configuration (heap barrier none, Dijkstra or Yuasa; any root-load discipline and allocation colors) and every run of the generated relation `Run cfg` from s to s' (enabled steps only, so every scanned object is grey), the number of scans in the run plus markMeasure s' is at most markMeasure s plus the sum, with multiplicity, of the weights of the run's allocation colors (white 2, grey 1, black 0).",
+    "hypotheses": [
+      {
+        "name": "hrun : Run cfg s ops s'",
+        "purpose": "The steps are enabled: every scanned object is grey.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.scanCount_bound_fails_without_enabled_scans",
+        "witness_class": "a 1-object heap state and a one-step non-enabled scan"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "One cycle (6 steps) of the grey-allocation execution, in which allocation re-colors black cells grey and the allocation term cannot be dropped from the bound for that 2-object, 6-step run (allocWeight_needed_greyAllocCycle).",
+    "nonvacuity_witness_lean": "Toy.Tricolor.scanCount_add_markMeasure_le_nonvacuous",
+    "non_claims": [
+      "Does not bound non-scan mutator steps; a mutator can run forever without letting the collector scan (starvedCollector_never_noGrey).",
+      "In a run of `Run cfg` from s in which every allocation is black, every allocation weight is 0, so this result bounds the number of scans by markMeasure s, which is at most 2 · n (markMeasure_le_two_mul). When allocation may re-color a cell that is already grey or black in the current cycle (the model's stand-in for fresh cells beyond the initial heap), the number of scans is not bounded by 2 · n: an 18-step run of `Run cfgGreyAlloc` on a 2-object heap contains 6 > 2 · 2 scans (greyAllocCycle_scans_exceed_two_mul_n). For every run of `Run cfg` from s to s' in which every allocation takes a cell that is white in the state where it happens (`AllocTargetsWhite cfg s ops`), the allocation term can be dropped for every allocation color: #scans + markMeasure s' ≤ markMeasure s (scanCount_add_markMeasure_le_of_allocTargetsWhite), and markMeasure s ≤ 2 · n (markMeasure_le_two_mul); starting from initMark, free cells are already counted at weight 2, so allocating them adds no work.",
+      "The configuration range in the plain claim, 'For every configuration (heap barrier none, Dijkstra or Yuasa; any root-load discipline and allocation colors)', is the range of `Barrier = none | dijkstra | yuasa`; under each of these barriers, every heap store and every erase leaves the color of each object unchanged or turns a white object grey (`ShadeLe`; shadeLe_store, shadeLe_erase). Write barriers that re-grey black source objects (`black → grey`), such as card-marking schemes that re-dirty a card, are not modeled; they can increase `markMeasure` on heap stores, and this bound is not claimed for them (not proved here).",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). Its appendix 'Proof of soundness, completeness, and boundedness' gives paper proofs for the hybrid barrier: Lemmas 2 and 3 (a white object reachable from a black object, or from a black goroutine, is grey-protected by a heap object), Theorem 1 (the hybrid write barrier satisfies the weak tricolor invariant) and Theorem 2 (marking terminates in a finite number of steps, bounded via the number of objects at the start of the cycle).",
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. 'during marking each node will darken monotonically' (their monotonicity argument for termination).",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 16 'Concurrent mark-sweep' (pp. 349-366), Sec. 16.2 'Termination' and Sec. 16.3 'Allocation'."
+    ],
+    "design_question": "How much collector work can a running mutator cause?",
+    "status": "proved"
+  },
+  {
+    "id": "fair-collector-eventually-black-allocs-eventually-always-no-grey",
+    "lean": [
+      "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs",
+      "Toy.Tricolor.infinitely_often_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs"
+    ],
+    "lean_names": [
+      "Toy.Tricolor.collectorFair_antecedent_false_of_eventuallyOnlyBlackAllocs"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Fairness-based termination of marking is mechanized in Coq (Coupet-Grimal and Nouvet) and Nqthm (Russinoff, for Ben-Ari's collector); restated for this model. Each of the three hypotheses is tight, with counterexamples that are infinite executions over 1- and 2-object heaps (the allocation counterexample re-colors already-marked cells mid-cycle). This does not make eventually-black allocation necessary for termination in general: the execution of the white-target-allocation card terminates with white allocation forever (eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous).",
+    "plain_claim": "For every configuration and every infinite execution (ops, st) of the generated relation `InfRun cfg` (every step ops i is enabled in st i and st (i+1) is its result, so every scanned object is grey; the step alphabet is that of a single marking phase, with no initMark, rescan or sweep step) in which the collector is weakly fair (`CollectorFair`: if from some point on a grey object exists in every state, scans happen infinitely often) and from some point on every allocation is black (`EventuallyOnlyBlackAllocs`), there is a point after which no object is ever grey and no scan occurs (in particular, states with no grey object occur infinitely often).",
+    "hypotheses": [
+      {
+        "name": "hrun : InfRun cfg ops st",
+        "purpose": "Every step is enabled (in particular every scanned object is grey).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Tricolor.unenabledScans_collectorFair_never_noGrey",
+          "Toy.Tricolor.unenabledScans_collectorFair_not_infinitely_often_noGrey"
+        ],
+        "witness_class": "an infinite execution over a 2-object heap"
+      },
+      {
+        "name": "hfair : CollectorFair ops st",
+        "purpose": "The mutator cannot starve the collector.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.starvedCollector_never_noGrey",
+        "witness_class": "an infinite execution over a 1-object heap"
+      },
+      {
+        "name": "halloc : EventuallyOnlyBlackAllocs ops",
+        "purpose": "Allocation stops adding marking work.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.greyAllocCycle_collectorFair_never_noGrey",
+        "witness_class": "a periodic infinite execution over a 2-object heap"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Scan a grey root, then allocate the free cell 1 black and drop it, forever (black allocation infinitely often).",
+    "nonvacuity_witness_lean": "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs_nonvacuous",
+    "non_claims": [
+      "This is a termination statement: it does not say the final state is safe; combine it with the safety results for correctness of the final state.",
+      "`InfRun` contains neither `initMark` nor sweep operations: the conclusion means that a single mark phase reaches `NoGrey` and remains there, not that repeated mark-sweep cycles complete. Moreover, `greyAllocCycle_collectorFair_never_noGrey` avoids `NoGrey` on a fixed `Fin 2` heap only because `Op.alloc` is permitted to re-allocate isolated black objects as grey mid-mark without sweeping; when every allocation takes a white cell, fairness alone suffices (fair-collector-white-target-allocs-eventually-always-no-grey). In a growing heap, black allocation bounds collector scan work for the current cycle (`allocWeight = 0`) but does not bound heap growth without allocation pacing (not modeled here).",
+      "In every execution satisfying all three hypotheses the antecedent of CollectorFair is false from every point on (collectorFair_antecedent_false_of_eventuallyOnlyBlackAllocs); the fairness hypothesis acts only by excluding executions such as starvedCollector_never_noGrey.",
+      "No hypothesis on the barrier is needed; every barrier here only shades.",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. 'during marking each node will darken monotonically' (their monotonicity argument for termination).",
+      "Russinoff. A mechanically verified incremental garbage collector. Formal Aspects Comput. 6(4):359-390, 1994. doi:10.1007/BF01211305. Mechanical proof (an extension of the Boyer-Moore prover, Manna-Pnueli model of concurrency) that Ben-Ari's incremental collector collects nothing but garbage (safety) and eventually collects all garbage (liveness).",
+      "Coupet-Grimal, Nouvet. Formal verification of an incremental garbage collector. J. Log. Comput. 13(6):815-833, 2003. doi:10.1093/logcom/13.6.815. Coq proof of safety and liveness properties of an incremental collector represented as an infinite transition system, using an axiomatization of LTL over co-inductive executions.",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). Its appendix 'Proof of soundness, completeness, and boundedness' gives paper proofs for the hybrid barrier: Lemmas 2 and 3 (a white object reachable from a black object, or from a black goroutine, is grey-protected by a heap object), Theorem 1 (the hybrid write barrier satisfies the weak tricolor invariant) and Theorem 2 (marking terminates in a finite number of steps, bounded via the number of objects at the start of the cycle).",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 16 'Concurrent mark-sweep' (pp. 349-366), Sec. 16.2 'Termination'."
+    ],
+    "design_question": "What fairness or allocation discipline does concurrent marking need to terminate?",
+    "status": "proved"
+  },
+  {
+    "id": "fair-collector-white-target-allocs-eventually-always-no-grey",
+    "lean": "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs",
+    "lean_names": [
+      "Toy.Tricolor.activeOps_not_whiteTargetAllocs",
+      "Toy.Tricolor.collectorFair_antecedent_false_of_whiteTargetAllocs",
+      "Toy.Tricolor.eventually_only_white_alloc_of_whiteTargetAllocs"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore (on a fixed heap, allocation of free cells cannot outpace marking within a cycle) made precise. Each hypothesis is tight, with counterexamples that are infinite executions over 1- and 2-object heaps (the allocation counterexample re-colors already-marked cells mid-cycle). This does not make white-cell allocation necessary for termination in general: the non-vacuity execution (activeOps, activeStates) of the eventually-black-allocation card satisfies all hypotheses of that card (eventually_always_noGrey_of_collectorFair_of_eventuallyOnlyBlackAllocs_nonvacuous), so from some point on no object is grey in it, yet it allocates the black cell 1 black and so does not satisfy WhiteTargetAllocs (activeOps_not_whiteTargetAllocs).",
+    "plain_claim": "For every configuration and every infinite execution (ops, st) of the generated relation `InfRun cfg` (every step ops i is enabled in st i and st (i+1) is its result, so every scanned object is grey; the step alphabet is that of a single marking phase, with no initMark, rescan or sweep step) in which the collector is weakly fair (`CollectorFair`) and every allocation, of any color, takes a cell that is white in the state where it happens (`WhiteTargetAllocs`), there is a point after which no object is ever grey and no scan occurs.",
+    "hypotheses": [
+      {
+        "name": "hrun : InfRun cfg ops st",
+        "purpose": "Every step is enabled (in particular every scanned object is grey).",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.unenabledScans_collectorFair_never_noGrey",
+        "witness_class": "an infinite execution over a 2-object heap"
+      },
+      {
+        "name": "hfair : CollectorFair ops st",
+        "purpose": "The mutator cannot starve the collector.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.starvedCollector_never_noGrey",
+        "witness_class": "an infinite execution over a 1-object heap"
+      },
+      {
+        "name": "hw : WhiteTargetAllocs ops st",
+        "purpose": "Allocation never re-colors a grey or black cell.",
+        "tightness": "tight",
+        "counterexample": "Toy.Tricolor.greyAllocCycle_collectorFair_never_noGrey",
+        "witness_class": "a periodic infinite execution over a 2-object heap"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Start with the grey root 0 and the free cells 1 and 2; allocate the white cell 1 grey (allocation adds marking work), scan 0 and 1, then allocate the white cell 2 white and drop it, forever: the initial state has a grey object, two scans occur, every allocation takes a white cell, and allocation is never eventually black-only. A second witness allocates the white cell 1 white and drops it forever, from a state with no grey object.",
+    "nonvacuity_witness_lean": [
+      "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous_with_marking_work",
+      "Toy.Tricolor.eventually_always_noGrey_of_collectorFair_of_whiteTargetAllocs_nonvacuous"
+    ],
+    "non_claims": [
+      "Termination, not safety: white allocation without a rescan can leave a reachable object white (dijkstra_whiteAlloc_run_from_initMark_leaves_live_white, yuasa_whiteAlloc_run_from_initMark_not_allLiveBlack).",
+      "Specific to a fixed heap: if allocation keeps supplying fresh cells (modeled here by re-coloring cells already marked in this cycle), this hypothesis fails and termination can fail (greyAllocCycle_collectorFair_never_noGrey).",
+      "`InfRun` contains neither `initMark` nor rescan nor sweep steps: the conclusion means that a single mark phase reaches `NoGrey` and remains there, not that repeated mark-sweep cycles complete, and not that heap occupancy stays bounded (allocation pacing is not modeled here).",
+      "In every execution satisfying all three hypotheses the antecedent of `CollectorFair` is false from every point on (collectorFair_antecedent_false_of_whiteTargetAllocs); the fairness hypothesis acts only by excluding executions such as starvedCollector_never_noGrey.",
+      "Under `InfRun` and `WhiteTargetAllocs` alone (no fairness), only finitely many allocations are grey or black: from some point on every allocation is white (eventually_only_white_alloc_of_whiteTargetAllocs). So the card covers executions with unboundedly many allocations only when, eventually, all of them are white.",
+      "Toy model: a finite Boolean pointer graph with no fields (two fields of one object that point to the same target are a single edge), a root set abstracting registers and stacks, and atomic steps (each barrier runs atomically with its write). It says nothing about multi-threaded mutators, weak memory, per-thread stacks, fine-grained interleaving of a barrier with its write, copying or moving collectors, or sweeping."
+    ],
+    "prior_art": [
+      "Dijkstra, Lamport, Martin, Scholten, Steffens. On-the-fly garbage collection: an exercise in cooperation. Commun. ACM 21(11):966-975, 1978. doi:10.1145/359642.359655. Manuscript EWD 520 (20 October 1975), E. W. Dijkstra Archive, https://www.cs.utexas.edu/~EWD/transcriptions/EWD05xx/EWD520.html. 'during marking each node will darken monotonically' (their monotonicity argument for termination).",
+      "Russinoff. A mechanically verified incremental garbage collector. Formal Aspects Comput. 6(4):359-390, 1994. doi:10.1007/BF01211305. Mechanical proof (an extension of the Boyer-Moore prover, Manna-Pnueli model of concurrency) that Ben-Ari's incremental collector collects nothing but garbage (safety) and eventually collects all garbage (liveness).",
+      "Coupet-Grimal, Nouvet. Formal verification of an incremental garbage collector. J. Log. Comput. 13(6):815-833, 2003. doi:10.1093/logcom/13.6.815. Coq proof of safety and liveness properties of an incremental collector represented as an infinite transition system, using an axiomatization of LTL over co-inductive executions.",
+      "Clements, Hudson. Proposal: Eliminate STW stack re-scanning. golang/proposal, design/17503-eliminate-rescan.md at commit 0bdeab75fa2b7e79fc41fd33f269a5ef6d92e407 (2016). Its appendix 'Proof of soundness, completeness, and boundedness' gives paper proofs for the hybrid barrier: Lemmas 2 and 3 (a white object reachable from a black object, or from a black goroutine, is grey-protected by a heap object), Theorem 1 (the hybrid write barrier satisfies the weak tricolor invariant) and Theorem 2 (marking terminates in a finite number of steps, bounded via the number of objects at the start of the cycle).",
+      "Jones, Hosking, Moss. The Garbage Collection Handbook, 2nd ed., CRC Press, 2023. doi:10.1201/9781003276142. Chapter 16 'Concurrent mark-sweep' (pp. 349-366), Sec. 16.2 'Termination'."
+    ],
+    "design_question": "Is black allocation needed for termination when allocation takes free cells of a fixed heap?",
+    "status": "proved"
+  }
+]
