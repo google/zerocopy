@@ -74032,6 +74032,90 @@
         "verification"
       ]
     },
+    "rustc-elf64-postlink-relocation-tls-relaxation-and-ehframe-ground-truth": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "rustc compiler and x86_64-unknown-linux-gnu sysroot (1.102.0-nightly baseline)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "rustc compiler and x86_64-unknown-linux-gnu sysroot (1.98.0-nightly live probe host)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "392dfff97d29b59d77e5cac6d4b6ef2585fe7117",
+            "version": "llvmorg-23.1.5"
+          },
+          "name": "LLVM and LLD ELF64 x86-64 linker (23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881",
+            "version": "llvmorg-22.1.6"
+          },
+          "name": "LLVM and LLD ELF64 x86-64 linker (22.1.6)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+            "version": "LLD 22.1.6"
+          },
+          "name": "Rust bundled rust-lld linker (LLD 22.1.6)"
+        },
+        {
+          "identity": {
+            "program": "GNU ld (GNU Binutils for Debian)",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils ld linker (x86_64-linux-gnu)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal TrustedBoundary kernel audit specification"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "compilers/verified-rustc/linking",
+        "isa",
+        "isa/x86-64",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "rust",
+        "rustc",
+        "systems",
+        "systems/elf",
+        "verification"
+      ]
+    },
     "rustc-experimental-corpora-and-harness-conventions": {
       "observed_at": "2026-11-13",
       "subjects": [
