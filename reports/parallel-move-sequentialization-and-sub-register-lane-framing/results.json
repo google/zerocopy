@@ -437,7 +437,7 @@
     "kind": "impossibility",
     "tier": "T1",
     "tier_justification": "Folklore ('a swap needs a temporary or an exchange instruction'; Rideau-Serpette-Leroy Section 1: (x1, x2) := (x2, x1) cannot operate in place), mechanized for all cycle lengths k ≥ 2 with a value-loss argument, per injective store and uniformly over all stores.",
-    "plain_claim": "Let ls be a duplicate-free cycle of length k ≥ 2 (for example a parallel swap [(a,b),(b,a)] with a ≠ b). (a) For a given injective store σ, no sequence of plain moves, over any locations, turns σ exactly (at every location) into the cycle's target. (b) Over any location type and any value type with two distinct values, no single sequence of plain moves turns every store exactly into the cycle's target.",
+    "plain_claim": "Let ls be an isolated duplicate-free cycle of length k ≥ 2, that is, the parallel move consists of exactly the cycle's moves cycleMoves ls, so its target leaves every location outside ls unchanged (for example a parallel swap [(a,b),(b,a)] with a ≠ b). (a) For a given injective store σ, no sequence of plain moves, over any locations, turns σ exactly (at every location) into the cycle's target. (b) Over any location type and any value type with two distinct values, no single sequence of plain moves turns every store exactly into the cycle's target.",
     "statement": "(a) ls.Nodup → 2 ≤ ls.length → Function.Injective σ → ∀ ms, runSeq ms σ ≠ pmove (cycleMoves ls) σ;  (a') a ≠ b → Function.Injective σ → ∀ ms, runSeq ms σ ≠ pmove [(a,b),(b,a)] σ;  (b) (a b : V) → a ≠ b → ls.Nodup → 2 ≤ ls.length → ¬ ∃ ms, ∀ σ : Loc → V, runSeq ms σ = pmove (cycleMoves ls) σ",
     "hypotheses": [
       {
