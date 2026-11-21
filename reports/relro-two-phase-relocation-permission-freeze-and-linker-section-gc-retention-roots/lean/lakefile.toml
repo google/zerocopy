@@ -1,0 +1,5 @@
+name = "toy_relro_gc"
+defaultTargets = ["ToyRelroGc"]
+
+[[lean_lib]]
+name = "ToyRelroGc"

@@ -1,0 +1,1495 @@
+{
+  "statements": {
+    "Toy.RelroGc.Acc": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.Acc.dst": {
+      "closure_sha256": "fb30db09a3bef5e3bcb639c2f203cdde265cd16377b34f558069bafa977324e7",
+      "closure_size": 4,
+      "statement_sha256": "8b8a21f170ef8a82f397cb0953dc94474c1fa3056bb471f1b80583dd5f9845c6"
+    },
+    "Toy.RelroGc.AvoidsMut": {
+      "closure_sha256": "cb15c1882adc9862c7fb30c2e484994dd974797de0ba1cd8c24dcbb66f0b1181",
+      "closure_size": 5,
+      "statement_sha256": "dc26f8a9e33e3aaf6644c45d5bf2a8e5ed2ed340051da9cb8531a90375c7080f"
+    },
+    "Toy.RelroGc.BoundsAccessesRetained": {
+      "closure_sha256": "9da75f0f9d1634be9b5307e236c18bf15c87e3593d59a0c18d13a7d224eafd69",
+      "closure_size": 11,
+      "statement_sha256": "6179da6d12fbe5a61bce9ac8b87a06a98b81b87a7602c3902ae8c3cae1c5c3eb"
+    },
+    "Toy.RelroGc.CallWorks": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "2a32bd8252d09b997b79568e4616978fbd5f5d62ed4106951ea514825b72a4e6"
+    },
+    "Toy.RelroGc.Cfg": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.Cfg.start": {
+      "closure_sha256": "43d836c6f85610e69207a4fbe1a89c51d300582d77ee889f4cdf7fd029cca98a",
+      "closure_size": 14,
+      "statement_sha256": "d19379f3b58d0208a185bf0d82a8c3c8666307563301d5576fabcf83ca7a9f31"
+    },
+    "Toy.RelroGc.CoversRelro": {
+      "closure_sha256": "cb15c1882adc9862c7fb30c2e484994dd974797de0ba1cd8c24dcbb66f0b1181",
+      "closure_size": 5,
+      "statement_sha256": "dc26f8a9e33e3aaf6644c45d5bf2a8e5ed2ed340051da9cb8531a90375c7080f"
+    },
+    "Toy.RelroGc.EagerBound": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "1713edba870a5c7e99db5c567ab399f8d1f7a8e93748432082c17dac5690eaa8"
+    },
+    "Toy.RelroGc.EagerRelroOrLazy": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "f3a08163b00e3b861ba20a9bbd342da1359adfda9cb302c02ab08583ac88c5a1"
+    },
+    "Toy.RelroGc.EagerRelroOrLazyMut": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "f3a08163b00e3b861ba20a9bbd342da1359adfda9cb302c02ab08583ac88c5a1"
+    },
+    "Toy.RelroGc.EdgeAccessesFollowEdges": {
+      "closure_sha256": "fb30db09a3bef5e3bcb639c2f203cdde265cd16377b34f558069bafa977324e7",
+      "closure_size": 4,
+      "statement_sha256": "99336562adf45927f4c17261b742d17075ba878ca87f7c5e6221cb76c6f2db39"
+    },
+    "Toy.RelroGc.Ev": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.GcIn": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.GcIn.IsRoot": {
+      "closure_sha256": "4be2507279dbd8274753c38761475a3dfec7c79fca20613cf10e57a50d82743e",
+      "closure_size": 4,
+      "statement_sha256": "95a33231496bdcb67426d8db24de62db4f27784c0c56c466fcd30d810905ebe0"
+    },
+    "Toy.RelroGc.GcIn.Live": {
+      "closure_sha256": "e5ad74fa4572e1e41ad967dd5c474b67f6fcbc85ca22618734d8e4fc2af68ed4",
+      "closure_size": 7,
+      "statement_sha256": "6d6f8154e1ac134794470851f325f0e4ce288e309baebc1871f495357b4590a6"
+    },
+    "Toy.RelroGc.GcIn.isRootB": {
+      "closure_sha256": "4be2507279dbd8274753c38761475a3dfec7c79fca20613cf10e57a50d82743e",
+      "closure_size": 4,
+      "statement_sha256": "be894379b8c7ddb90fd80d20890a108d615348c1c68cd92b9d3455ad0076f90a"
+    },
+    "Toy.RelroGc.GcIn.nameOf": {
+      "closure_sha256": "4be2507279dbd8274753c38761475a3dfec7c79fca20613cf10e57a50d82743e",
+      "closure_size": 4,
+      "statement_sha256": "ceec63494e54ca11b95a32d8a5fdfcb686518c4a5d2fc74439023114337e803b"
+    },
+    "Toy.RelroGc.GcIn.ssEdges": {
+      "closure_sha256": "e5ad74fa4572e1e41ad967dd5c474b67f6fcbc85ca22618734d8e4fc2af68ed4",
+      "closure_size": 7,
+      "statement_sha256": "b660613809e09213d82da6766d035e0e35cf45d7a5d7a59a75e89492479455f3"
+    },
+    "Toy.RelroGc.ImplicitAccessesHitRoots": {
+      "closure_sha256": "fb30db09a3bef5e3bcb639c2f203cdde265cd16377b34f558069bafa977324e7",
+      "closure_size": 4,
+      "statement_sha256": "1040acf5c9c1e2b09a64affad329e2ef26e212f63ea59396d26444f24fe7e11b"
+    },
+    "Toy.RelroGc.KeptItem": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "13a0d2a3f155229e2bb4ebbb93394a1d4d31b7f4495528174fb71a50a00377c3"
+    },
+    "Toy.RelroGc.Kind": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.LazyBound": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "1713edba870a5c7e99db5c567ab399f8d1f7a8e93748432082c17dac5690eaa8"
+    },
+    "Toy.RelroGc.LoadOk": {
+      "closure_sha256": "fb84a5f312f458d85f2699e914d491dfda7e0ee76c0d5154b7b42ae1945cd2d4",
+      "closure_size": 7,
+      "statement_sha256": "85ffe4213f8813157cb998a051b8755f40ca878cb2c120ae5a1370e94f2b1353"
+    },
+    "Toy.RelroGc.Mem": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.NoEdgeIntoName": {
+      "closure_sha256": "4be2507279dbd8274753c38761475a3dfec7c79fca20613cf10e57a50d82743e",
+      "closure_size": 4,
+      "statement_sha256": "db5789f3ef1fa1284bed1512c00728720e43188b06e798b9e182fb705e8dc1f4"
+    },
+    "Toy.RelroGc.NoMutIn": {
+      "closure_sha256": "cb15c1882adc9862c7fb30c2e484994dd974797de0ba1cd8c24dcbb66f0b1181",
+      "closure_size": 5,
+      "statement_sha256": "02c57c4d567ae93df5b52ee3080904b2197d4c973c41691487bcaa097d78d795"
+    },
+    "Toy.RelroGc.NoSharedPage": {
+      "closure_sha256": "cb15c1882adc9862c7fb30c2e484994dd974797de0ba1cd8c24dcbb66f0b1181",
+      "closure_size": 5,
+      "statement_sha256": "a6b23485f136b01036164f76afc950f0a54b8a591298c6b32b2285686af6ec23"
+    },
+    "Toy.RelroGc.Op": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.Out": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.PageGranular": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "2e33e7730e712664cedd5a618bd13a45372089e4dab3c62b2a37ae598a6e8f9c"
+    },
+    "Toy.RelroGc.Prog2": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.Prog2.CompiledPath": {
+      "closure_sha256": "aada7b33d5ed4f283a423b5bc8b38de064e4a3f1bff5bbff0b9de0854c745a8d",
+      "closure_size": 4,
+      "statement_sha256": "8f003a145607ecedbe5bba73b9c65d99e3f44e36ab8400a10105b320d7783405"
+    },
+    "Toy.RelroGc.Prog2.LinkReach": {
+      "closure_sha256": "aada7b33d5ed4f283a423b5bc8b38de064e4a3f1bff5bbff0b9de0854c745a8d",
+      "closure_size": 4,
+      "statement_sha256": "5997c3ca018834875d3d40d8a62f63e87386ba63f02d22fbfbd5bba38abb08f7"
+    },
+    "Toy.RelroGc.Prog2.SrcReach": {
+      "closure_sha256": "aada7b33d5ed4f283a423b5bc8b38de064e4a3f1bff5bbff0b9de0854c745a8d",
+      "closure_size": 4,
+      "statement_sha256": "5997c3ca018834875d3d40d8a62f63e87386ba63f02d22fbfbd5bba38abb08f7"
+    },
+    "Toy.RelroGc.Prog2.Survives": {
+      "closure_sha256": "aada7b33d5ed4f283a423b5bc8b38de064e4a3f1bff5bbff0b9de0854c745a8d",
+      "closure_size": 4,
+      "statement_sha256": "5997c3ca018834875d3d40d8a62f63e87386ba63f02d22fbfbd5bba38abb08f7"
+    },
+    "Toy.RelroGc.Prog2.compiled": {
+      "closure_sha256": "aada7b33d5ed4f283a423b5bc8b38de064e4a3f1bff5bbff0b9de0854c745a8d",
+      "closure_size": 4,
+      "statement_sha256": "24956396b4da94d0353e4e11bf940c89a105499b20499ecee4c7782ede1907be"
+    },
+    "Toy.RelroGc.Prog2.objEdges": {
+      "closure_sha256": "aada7b33d5ed4f283a423b5bc8b38de064e4a3f1bff5bbff0b9de0854c745a8d",
+      "closure_size": 4,
+      "statement_sha256": "cc274bc1458c0724a6ff8a4c7f41a96aa1390059240c0c9a8f2d3d7107788c7c"
+    },
+    "Toy.RelroGc.Prog2.objRoot": {
+      "closure_sha256": "aada7b33d5ed4f283a423b5bc8b38de064e4a3f1bff5bbff0b9de0854c745a8d",
+      "closure_size": 4,
+      "statement_sha256": "5997c3ca018834875d3d40d8a62f63e87386ba63f02d22fbfbd5bba38abb08f7"
+    },
+    "Toy.RelroGc.Prog2.objRootB": {
+      "closure_sha256": "aada7b33d5ed4f283a423b5bc8b38de064e4a3f1bff5bbff0b9de0854c745a8d",
+      "closure_size": 4,
+      "statement_sha256": "24956396b4da94d0353e4e11bf940c89a105499b20499ecee4c7782ede1907be"
+    },
+    "Toy.RelroGc.ProtAvoidsMut": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "7960ad8d7d2d8810f18fea41765c15f95bd8f3769e875639c9d7faa5982fbb3e"
+    },
+    "Toy.RelroGc.ProtCoversRelro": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "7960ad8d7d2d8810f18fea41765c15f95bd8f3769e875639c9d7faa5982fbb3e"
+    },
+    "Toy.RelroGc.Reach": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "4bbf4ddf1d0e0ef0c452f1676b3c8eb094a2ff27e4e1d188de38d9fbe880a231"
+    },
+    "Toy.RelroGc.ReachedBefore": {
+      "closure_sha256": "fb30db09a3bef5e3bcb639c2f203cdde265cd16377b34f558069bafa977324e7",
+      "closure_size": 4,
+      "statement_sha256": "8714b153269bca605a7bc21e586239a89118d2efebb0c8806ff025d32f8754b1"
+    },
+    "Toy.RelroGc.RegistryKept": {
+      "closure_sha256": "e5ad74fa4572e1e41ad967dd5c474b67f6fcbc85ca22618734d8e4fc2af68ed4",
+      "closure_size": 7,
+      "statement_sha256": "7517adeb91c36f2944cf60e9593bb0a3ccb4f914198a74e388fea0c7dc29fd21"
+    },
+    "Toy.RelroGc.Reloc": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.Reloc.AddressOnly": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "26d5d6ce4e2a120265aaa9e7b36681c6c7adbf3ebd186dd43e4ef6fd279247bd"
+    },
+    "Toy.RelroGc.Reloc.ReadsOnly": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "d38a0674db51a87952bdce8434b1d4b92428c297800257b01a1d41e278187425"
+    },
+    "Toy.RelroGc.RelocSlotsWritable": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "7960ad8d7d2d8810f18fea41765c15f95bd8f3769e875639c9d7faa5982fbb3e"
+    },
+    "Toy.RelroGc.RelroIs": {
+      "closure_sha256": "cb15c1882adc9862c7fb30c2e484994dd974797de0ba1cd8c24dcbb66f0b1181",
+      "closure_size": 5,
+      "statement_sha256": "b7ec7398df5cd4f1415de50b38c63094bbab59f74f832f81fc560f5329d15542"
+    },
+    "Toy.RelroGc.Rounding": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.RunPreserved": {
+      "closure_sha256": "9da75f0f9d1634be9b5307e236c18bf15c87e3593d59a0c18d13a7d224eafd69",
+      "closure_size": 11,
+      "statement_sha256": "6179da6d12fbe5a61bce9ac8b87a06a98b81b87a7602c3902ae8c3cae1c5c3eb"
+    },
+    "Toy.RelroGc.SSPolicy": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.Sec": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.Sec.isRoot": {
+      "closure_sha256": "706b28667cb4d8d67efba8614f296810f4bbd0eceafa6a741c409d4443bfbf72",
+      "closure_size": 2,
+      "statement_sha256": "5a68abc861ecd4c51dcf05338e38bf8ee490e9fa8f3bb6369ce197d81d5d48ae"
+    },
+    "Toy.RelroGc.St": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.StartStopUndefined": {
+      "closure_sha256": "e5ad74fa4572e1e41ad967dd5c474b67f6fcbc85ca22618734d8e4fc2af68ed4",
+      "closure_size": 7,
+      "statement_sha256": "7517adeb91c36f2944cf60e9593bb0a3ccb4f914198a74e388fea0c7dc29fd21"
+    },
+    "Toy.RelroGc.Static": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.Sym": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.SymTab": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.Trace": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.RelroGc.TwoPhaseGuarantees": {
+      "closure_sha256": "42e8b2bd7af6fe0786d6de48bfe6270813f020cc0c81e046da36344ae91cc084",
+      "closure_size": 15,
+      "statement_sha256": "d170b99684c45e8472ab8d172df05c4cfb6721710303470c5d49add8afd09612"
+    },
+    "Toy.RelroGc.WriteFaultsAfter": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "d734f99d9d50b3309a43d7bbe1cb8cf31e841c4dd69e5bc582c5951cd45f3aae"
+    },
+    "Toy.RelroGc.access_predicate_examples": {
+      "closure_sha256": "caca5d83262ae795e55731e072c7ff042527a8ccca06a6e5fa3446729dc79b84",
+      "closure_size": 31,
+      "statement_sha256": "acfc8a480132b6719c03f7727885307454c8a9498fe1f4a51f9e51caacfc5f66"
+    },
+    "Toy.RelroGc.addressOnlyOrder_nonvacuity": {
+      "closure_sha256": "b247111566a5f70ff50360240e49a972b11d571a879a8f1888fc16c8f5324d04",
+      "closure_size": 10,
+      "statement_sha256": "e37e551e7c99b20feec1c13fcd13d36b9181e58e6390d2dabb17dbb23c9da518"
+    },
+    "Toy.RelroGc.addressOnly_examples": {
+      "closure_sha256": "4d75d9467672a8e2e39707c42a610d3f0b78723c82e16fd8690831fce5b78e7b",
+      "closure_size": 9,
+      "statement_sha256": "8e49a2e397c046c3944cb24e2f4fe90976da79afb55f287c0c837f6e7d580309"
+    },
+    "Toy.RelroGc.addressOnly_first_group_same_slot_order_dependent": {
+      "closure_sha256": "01d1864eb400dcf0ab09381fefb38054b4cc7c9317c41a47f608a2c9cc47f07d",
+      "closure_size": 14,
+      "statement_sha256": "0ba92f44d291ca162ba7c72e2d885f131194c8022121cda16602a145606b62aa"
+    },
+    "Toy.RelroGc.addressOnly_same_slot_order_dependent": {
+      "closure_sha256": "3a68ac54388cdfac987c0f2900b2f310abc5ad347fa860cf02aa1ed651571297",
+      "closure_size": 13,
+      "statement_sha256": "cdea66a7a671c01459f33087ac3f84d519bd146dab93c16774d814c9ea034e77"
+    },
+    "Toy.RelroGc.alignDown": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "aa7f57129bb56534d5547b81fc8edf5392d4891a73770ab420449675fc4f94b7"
+    },
+    "Toy.RelroGc.alignUp": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "aa7f57129bb56534d5547b81fc8edf5392d4891a73770ab420449675fc4f94b7"
+    },
+    "Toy.RelroGc.alignUp_eq_self_of_mod_eq_zero": {
+      "closure_sha256": "0332a4ccc33a0f03ce631a14184463347b00584d7577e39c4b80a98e0100c156",
+      "closure_size": 1,
+      "statement_sha256": "e0d188775bbfdfe5f8471b2d3574678554924e451c9a9506ee2f6858ffaed497"
+    },
+    "Toy.RelroGc.align_examples": {
+      "closure_sha256": "baab853ae7bbb03710b0c4c65f35d38893fa89cc4559cc9a8e9597417f2eee81",
+      "closure_size": 2,
+      "statement_sha256": "29cc6b8f75cd66a5b3ba525a2bb1802fdb61364b4e446ae44f515adddf05dd31"
+    },
+    "Toy.RelroGc.applyAll": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "5417a596888500640c30cc03d4ae1aca7c49a0349a245179e4ee3c7129800faa"
+    },
+    "Toy.RelroGc.applyAll_append_perm_of_resolvers_read_no_resolver_slot": {
+      "closure_sha256": "83a5d07e0f5b962bf39e90d518b9d534eb529d90fe2bfcfad2170ddba89a501a",
+      "closure_size": 12,
+      "statement_sha256": "7446a21ab95a7cf4f901fcb273109508154c6316fef48fa1741c223cc92038e6"
+    },
+    "Toy.RelroGc.applyAll_perm_of_addressOnly_of_nodup_slots": {
+      "closure_sha256": "498f0a350ac649c654154cdfae0da6a36c2dd7107914486a1ec4a1798ee4f7a4",
+      "closure_size": 11,
+      "statement_sha256": "111354c1f0eb567629472a3b0a47eebbd4cc1a14659e8358db2b5d3704bad215"
+    },
+    "Toy.RelroGc.applyAll_perm_of_readsOnly_of_slots_outside": {
+      "closure_sha256": "595c0b0754da16ca8aa148afd0836c75199cd59790c3dd9a07c89b48f9511063",
+      "closure_size": 11,
+      "statement_sha256": "54aac58389fa2ff29f702ae0ce0145fa51b4b08e829f0861a4ea159e9d579704"
+    },
+    "Toy.RelroGc.applyReloc": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "9fdb74d26c773032dddbd517f35b5d224d9e27c6221834f41b2a6296d2830136"
+    },
+    "Toy.RelroGc.applyReloc_comm": {
+      "closure_sha256": "ab56779a62bec23f1f737794e6e28105681ea45a46158ad6ac92abad7adc91d2",
+      "closure_size": 10,
+      "statement_sha256": "2de070d2bcc3a3b87069237c3b9612846a6b9c95ba53c576dba47ebe6411814f"
+    },
+    "Toy.RelroGc.bindReloc": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "3e266ae898e17ab6a443e6db3c09b23d4f3b23b2be500619e3c39488c6852ef4"
+    },
+    "Toy.RelroGc.binding_examples": {
+      "closure_sha256": "2976dc520eca1e244912e0782b88a4b233e7fc2468baa6d30ee4730eeda29fe8",
+      "closure_size": 73,
+      "statement_sha256": "0927cf03a79b0a90217a23e8360b2a5ff09ef6c6cc456c9bac3d740ed69e11d8"
+    },
+    "Toy.RelroGc.bindings_callWorks_nonvacuity": {
+      "closure_sha256": "91fdc5b9ca3337604989d073d1885d16e433d00cbc041a3e6778b2a11af72581",
+      "closure_size": 35,
+      "statement_sha256": "ada923a8aa3fff498fe1c7c85fdb7139edadf2e036f4c5a57ea7130e3c5c5dad"
+    },
+    "Toy.RelroGc.bindings_callWorks_of_eagerRelroOrLazyMut": {
+      "closure_sha256": "963a0e0452e4385ddcabe0c33264e51aa08af4678c8767c98aede3831e2ea553",
+      "closure_size": 73,
+      "statement_sha256": "62ce60a303073fe0cd60af13a02e4a6d91b648755926921cc5a87909ce636263"
+    },
+    "Toy.RelroGc.bindings_iff_cex_call_faults": {
+      "closure_sha256": "b943d9cc78208c8f34323fc98460f8494ba1011269bedf2cf8f40574466e7b31",
+      "closure_size": 76,
+      "statement_sha256": "683026839dd05b4b195d795e3efd87fe6b168c913262f88346295bf425242b1f"
+    },
+    "Toy.RelroGc.bindings_iff_cex_eager_outside_relro": {
+      "closure_sha256": "b0a3515bae9030f0481fdfd4bf70fecd6c133ff70c87c3c7e98375f41eeef0a4",
+      "closure_size": 75,
+      "statement_sha256": "35ea1a581f622e0cd7ef2d4b44cdddac503d192bf4b0adce56f2f49bfda3359d"
+    },
+    "Toy.RelroGc.bindings_iff_cex_no_cover": {
+      "closure_sha256": "a943dcb13818bde5ff07a8512ca0841347ccb6da52f6434f5b5420c35c8a4cc8",
+      "closure_size": 76,
+      "statement_sha256": "1a443bac773d14558759365e6d08963511060bb1196ed50d7552cd6d8cbb14d0"
+    },
+    "Toy.RelroGc.bindings_nonvacuity": {
+      "closure_sha256": "e097f45cc3bc21432e26984f07cb2d816cae192360a52f3150b9bedd3a784d65",
+      "closure_size": 75,
+      "statement_sha256": "5bdfad9d1d556aa09dfb311c434511ebb3d692775623e189fc2a3639b8715484"
+    },
+    "Toy.RelroGc.bindings_writeFaultsAfter_iff_eager_of_eagerRelroOrLazy_of_callWorks": {
+      "closure_sha256": "e031532400fe688a4123be8001865a9112a642d7643d22f234ebb929a7f91716",
+      "closure_size": 73,
+      "statement_sha256": "94dc0ef64b623b4eac04c3517c2a439489336be1450d59aa88f02644a414beb3"
+    },
+    "Toy.RelroGc.callWorks_cex_cover_mut": {
+      "closure_sha256": "362e96ce654b7f619abed1023df5b45c3f792654a4bc471f3fc1aa1a119e08ba",
+      "closure_size": 76,
+      "statement_sha256": "5a5744133d27d4c989cb9211f1ff3628dec3b6b6d2349c8eeb7b976cfe6c224a"
+    },
+    "Toy.RelroGc.callWorks_cex_lazy_in_relro": {
+      "closure_sha256": "9b507aaa2fddadf3c48018b8943651e464960fd95ebf6a75236e27ac2077b29f",
+      "closure_size": 76,
+      "statement_sha256": "b2e2514509387fe13f92adf776aebe3ca929ec989edce174da8347d7a9587112"
+    },
+    "Toy.RelroGc.callWorks_cex_slot_not_writable": {
+      "closure_sha256": "62eba978c2de5da67040d48354b01d074bbfbabe5af799848adb5deb660acadd",
+      "closure_size": 76,
+      "statement_sha256": "280919fd31ae642239d611424e5e923e9ccb7fa85993d8bf0308dd3bbdff3222"
+    },
+    "Toy.RelroGc.cfgMutCovered": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.cfgMutReloc": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.cfgNoProt": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.cfgProtMut": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.cfgRelroRo": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.cfgRoMutReloc": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.cfgSlotRo": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.cfgTwoRelro": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.coarsening_cex_not_kept": {
+      "closure_sha256": "9e861734a8643f3ef6d2a4fad8e52cb962b988b8baa0dc4c4e43d9640e726e0f",
+      "closure_size": 9,
+      "statement_sha256": "22bb8c5c2c9e5c838b0c643009e794b5bedebcec5094a120f115c26d0080e262"
+    },
+    "Toy.RelroGc.coarsening_cex_refinement": {
+      "closure_sha256": "5bdd9b940335e1bcd121fd3d17cae855e58d38e60c5a0d926518cfde2267f043",
+      "closure_size": 10,
+      "statement_sha256": "1413de5803d9a3260201b5c8c65eef0b0a3846b32d830294db5c2449ff23b670"
+    },
+    "Toy.RelroGc.coarsening_nonvacuity": {
+      "closure_sha256": "5bdd9b940335e1bcd121fd3d17cae855e58d38e60c5a0d926518cfde2267f043",
+      "closure_size": 10,
+      "statement_sha256": "2b4bc6a5eb0eafdd486f7182ad47101e8ccb472731adb7d6b920c80ed6fedd34"
+    },
+    "Toy.RelroGc.compileKeeps": {
+      "closure_sha256": "f5bb185b0467333d01f14914557e6bf2c068bba3841d2ac6915bfad8679586d3",
+      "closure_size": 2,
+      "statement_sha256": "93187d5ffe2720851fc082d11ba207d28ad352034a922445a3285ad7a7407960"
+    },
+    "Toy.RelroGc.compileKept_and_srcReach_not_sufficient": {
+      "closure_sha256": "2e73d7746143f3a82ff4878fafe19325c569f3cd0be923ad90cc6c21891dcf59",
+      "closure_size": 24,
+      "statement_sha256": "de7b1d00d02b9dc02a3da204da15568e03e22679ab2e7e3d5c4f3db433c9af70"
+    },
+    "Toy.RelroGc.compiledPath_examples": {
+      "closure_sha256": "358ff0c2246a1e85174c7b220f2e90a666b2af9a0cc0b9cd106ce60a7b529c04",
+      "closure_size": 18,
+      "statement_sha256": "a10ba46aeff7c2028da0304bf20959692ac2e4d1a905de6dd7471c4fa99d99ba"
+    },
+    "Toy.RelroGc.compiled_of_linkReach": {
+      "closure_sha256": "0dbcf854709f4f19291be6b2d37cbf70ebe0aa1aa123ffc094dc464724566ae3",
+      "closure_size": 19,
+      "statement_sha256": "06923129eef118628d6708dae90bb50a0aef7e04c2187bef18b8250318cc2670"
+    },
+    "Toy.RelroGc.compilerUsed_unretained_unreachable_removed": {
+      "closure_sha256": "f462c1396e6048895f386145dbb3f3ff8f1624771413137b0a94c0fa49a480e9",
+      "closure_size": 22,
+      "statement_sha256": "d6397f0fa371a17928107f27aa8424e1ce67bc5cf1fc80dc27402b6d0e7b2790"
+    },
+    "Toy.RelroGc.conservative_cex_dead_referencer": {
+      "closure_sha256": "316a95cc9e9f8c2d2d0d117a5ef5dae801060b2e9fbc56084207ff896211830f",
+      "closure_size": 31,
+      "statement_sha256": "7f491e38f1f47356415a24dfaa1b5a06b307710d79cb791aee5e672fa93571f4"
+    },
+    "Toy.RelroGc.conservative_cex_no_reference": {
+      "closure_sha256": "b05491dec3efa5eaf5ab2ed189c92a2c991d801b0b4e8075ccf6de3f7a5df090",
+      "closure_size": 31,
+      "statement_sha256": "eb35928454d3119957b3804934db0ec87f677edaf7110c859373cc8bc0ae3104"
+    },
+    "Toy.RelroGc.conservative_registryKept_nonvacuity": {
+      "closure_sha256": "363b266fc16f2d6db8a74ce728586bca1079cee82e32e32796d1c642dac5e78a",
+      "closure_size": 30,
+      "statement_sha256": "298a2a3af4019d2e8acc917e59b13b8a1bf8708f4def26f050b9e16ef11be854"
+    },
+    "Toy.RelroGc.conservative_registryKept_of_live_reference": {
+      "closure_sha256": "dd84b1694f771bda657d6d982c1d23f103b2a1fb961516a62193257015ec197f",
+      "closure_size": 29,
+      "statement_sha256": "bdcff18f2d373eff9e765a7fdcc6f803dfed428082d12dccd0def4be85812c26"
+    },
+    "Toy.RelroGc.data_slot_cex_covered": {
+      "closure_sha256": "2cf7d320d84f1fc68e8d527864f3a5ebca43cc676e68ba773cee1a66647ee9f9",
+      "closure_size": 71,
+      "statement_sha256": "cc67f7e96ee3c58e3c5bb40e969c5c38ea741e3d8d8f76dce7d5aa38731317dc"
+    },
+    "Toy.RelroGc.data_slot_cex_load_fault": {
+      "closure_sha256": "6ac1b38bd21746da907a06173a7db65e4dcac4e849be988f23870b7368c948dc",
+      "closure_size": 71,
+      "statement_sha256": "b88daed93cf62243d24b41fe6fd3a17bf8633d732a0c5b63b8f2aa8d35716d04"
+    },
+    "Toy.RelroGc.data_slot_cex_relro_slot": {
+      "closure_sha256": "e497f475525a7866101261c5b8bd31d25fddf9b4e8e70f0e12ec33200434c28b",
+      "closure_size": 71,
+      "statement_sha256": "5e55f7bd43d2fc3a5867e28fb33b5a71e30f584b201b92ff7acf91d55a8787ed"
+    },
+    "Toy.RelroGc.downDown_avoidsMut_cex_firstPage": {
+      "closure_sha256": "f9cfe3d3712e3fad51fb53410cc804de43208e137c85349475078944a499e585",
+      "closure_size": 20,
+      "statement_sha256": "0c3540c73e159d43f1c72fb80862a319baeef5e55efc56b3e0dbc67380734e7f"
+    },
+    "Toy.RelroGc.downDown_avoidsMut_cex_relroIs": {
+      "closure_sha256": "d5efe38ce3d4ace8631ed8c41e0001ab56593555db17696c1b34bedc149df014",
+      "closure_size": 19,
+      "statement_sha256": "ee809766cb5f35a62afd2711db7f104f74eaf5e39f88d314113c075cf61a725d"
+    },
+    "Toy.RelroGc.downDown_avoidsMut_of_firstPage_noMut": {
+      "closure_sha256": "d5efe38ce3d4ace8631ed8c41e0001ab56593555db17696c1b34bedc149df014",
+      "closure_size": 19,
+      "statement_sha256": "cab6f11c0b6a9aa4e5b55040adba0ab29d17681673c4ec066980a755a8e9094d"
+    },
+    "Toy.RelroGc.downDown_coversRelro_iff_cex_empty": {
+      "closure_sha256": "56590f668b3457fa7e42918f5042215f4237e4dfd8ece7c12ce38df928f49798",
+      "closure_size": 18,
+      "statement_sha256": "79754d956d912a0a97b530bdc58abaec37696ce9196af16654b55daf5eb6fb5d"
+    },
+    "Toy.RelroGc.downDown_coversRelro_iff_cex_relroIs": {
+      "closure_sha256": "ea8bb07329a80ab888133a81f434c3bf9e13d72ce848245272dafef3aaf59de4",
+      "closure_size": 19,
+      "statement_sha256": "b6da22282aaf00387ab21160eb0932e233e36564a8d50c47376f244392f0d1f8"
+    },
+    "Toy.RelroGc.downDown_coversRelro_iff_end_aligned": {
+      "closure_sha256": "56590f668b3457fa7e42918f5042215f4237e4dfd8ece7c12ce38df928f49798",
+      "closure_size": 18,
+      "statement_sha256": "19216dad5dbd02f075918d07dfb1f4227d3b3e24dfdb9355ad01cbba20755f9f"
+    },
+    "Toy.RelroGc.downDown_unpaddedEnd_tail_write_succeeds": {
+      "closure_sha256": "fa43f49932f805e7ac800b0c798724481f0f5f7511ea674231a91a067a00a1cb",
+      "closure_size": 80,
+      "statement_sha256": "183beb59aa7119e4677f82f94b654f4a934a024dbf734c18e8da3cc9d0371b41"
+    },
+    "Toy.RelroGc.downUp_avoidsMut_iff_cex_empty": {
+      "closure_sha256": "d5efe38ce3d4ace8631ed8c41e0001ab56593555db17696c1b34bedc149df014",
+      "closure_size": 19,
+      "statement_sha256": "4dcc582744ae2db14b49cb511132e812ecfb699c51e503a782743f2171e11e04"
+    },
+    "Toy.RelroGc.downUp_avoidsMut_iff_cex_pageZero": {
+      "closure_sha256": "f9cfe3d3712e3fad51fb53410cc804de43208e137c85349475078944a499e585",
+      "closure_size": 20,
+      "statement_sha256": "bfe46dacea15bdecd49bae2fa55d4ae882200918330b98dbf6eafc404bd25dc9"
+    },
+    "Toy.RelroGc.downUp_avoidsMut_iff_cex_relroIs": {
+      "closure_sha256": "d5efe38ce3d4ace8631ed8c41e0001ab56593555db17696c1b34bedc149df014",
+      "closure_size": 19,
+      "statement_sha256": "0f2c13f99e79f9edddaeb4e83874fdabd1de4b8a98080fe2f230e10573cc8452"
+    },
+    "Toy.RelroGc.downUp_avoidsMut_iff_partialPages_noMut": {
+      "closure_sha256": "d5efe38ce3d4ace8631ed8c41e0001ab56593555db17696c1b34bedc149df014",
+      "closure_size": 19,
+      "statement_sha256": "ee97bbf9f3a49865db8dd3e0f0d3d6944961e53309146171d991bdfcd292024d"
+    },
+    "Toy.RelroGc.downUp_coversRelro": {
+      "closure_sha256": "56590f668b3457fa7e42918f5042215f4237e4dfd8ece7c12ce38df928f49798",
+      "closure_size": 18,
+      "statement_sha256": "8ad9005cfdc446616457f8faedbd0f125fb3333d873f373e220aa14286e8bf85"
+    },
+    "Toy.RelroGc.downUp_coversRelro_cex_pageZero": {
+      "closure_sha256": "ea8bb07329a80ab888133a81f434c3bf9e13d72ce848245272dafef3aaf59de4",
+      "closure_size": 19,
+      "statement_sha256": "71b0b7c001f991c78ce69920b0423f2d43840554115242ce425af99fe1723cbc"
+    },
+    "Toy.RelroGc.downUp_coversRelro_cex_relroIs": {
+      "closure_sha256": "56590f668b3457fa7e42918f5042215f4237e4dfd8ece7c12ce38df928f49798",
+      "closure_size": 18,
+      "statement_sha256": "81d4bf8cfaf91c2137f7bf1621b65f4c69622849304c655545706c408d7f9986"
+    },
+    "Toy.RelroGc.downUp_covers_avoids_iff_exists_pageGranular": {
+      "closure_sha256": "69dfd9945c7fc0ef5eb8d264828e7c50c5c5ad91b895e2af305a3528bde4b66e",
+      "closure_size": 20,
+      "statement_sha256": "f0f270b16793a33d68cb8ae973eb939e80b745911a0b4640769bf8ee251c558b"
+    },
+    "Toy.RelroGc.downUp_sharedLastPage_mut_write_faults": {
+      "closure_sha256": "11a1d434f869061ab88d8d84f79b5175a3fafbbac0cb65b86bcafc8af39b7d41",
+      "closure_size": 81,
+      "statement_sha256": "6c3d6a7db24f71c5112520eeb996170d5d8baa9364a8218f82b0ded12480cdd4"
+    },
+    "Toy.RelroGc.eagerCfg": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.eagerMutCfg": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.eagerRelroOrLazyMut_examples": {
+      "closure_sha256": "0318f47063d6870a1e1542d742d2cb9d0df30937466147512cbd0a71597aedff",
+      "closure_size": 25,
+      "statement_sha256": "47ac744f0cb1b31684876fd81243e22d78ba986334c2c131bbf605f20c5b833f"
+    },
+    "Toy.RelroGc.eagerRelroOrLazy_examples": {
+      "closure_sha256": "6ea36fa9712e5f738a22d6291b45c5afd5c4ccba6d85154735f487eaafe11920",
+      "closure_size": 26,
+      "statement_sha256": "dc28eb44bd3199fbf546ec87c6dd6ead930b0bb0450d63c20381fd85d7c84a96"
+    },
+    "Toy.RelroGc.eagerRelroOrLazy_of_eagerRelroOrLazyMut": {
+      "closure_sha256": "e9765bbce02dbf87937b16cd0d0035237e420a7d659f07fbec96c98fe9cc1320",
+      "closure_size": 23,
+      "statement_sha256": "8ded98375e27ae4c4146c98922167223dbe00864c117e51a92bbeca588747faf"
+    },
+    "Toy.RelroGc.eager_relro_callWorks_and_writeFaultsAfter": {
+      "closure_sha256": "5c8f624e9cb3329c5fa78dec0fc302432ac8f23d3875399461fbff7a8be5aead",
+      "closure_size": 73,
+      "statement_sha256": "234518b3758baf77f011cb55ba03730d3002079bd131b7768c3f4413ec81ed79"
+    },
+    "Toy.RelroGc.empty_registry_kept_and_undefined": {
+      "closure_sha256": "2d8f5984322e9c165eb5928a0d0c005f82eb56e242d478abd3c348b726e08c9b",
+      "closure_size": 32,
+      "statement_sha256": "44055bcc3105123a0482ee0d68f3d45b7255ef1e7e518858b6c7e0546d62ecc2"
+    },
+    "Toy.RelroGc.endAligned_firstPage_mut_no_pageGranular_protection": {
+      "closure_sha256": "a2a16e170641d6bb4f60b29db40cbeb5222362e06ef06bfa86e099e92bd86c2e",
+      "closure_size": 83,
+      "statement_sha256": "7ba1e187d46ef34238aea41875d9f6e265089626c24308e8ac45b51397b20a35"
+    },
+    "Toy.RelroGc.exists_pageGranular_covers_avoids_iff_noSharedPage": {
+      "closure_sha256": "72655c88127b57568069c7e5f1af5d5f1b39f02257b7efa5b28b1aaef4cb563f",
+      "closure_size": 9,
+      "statement_sha256": "438755f314fe09156a29daa0b547c2438c3db5270d861050dac3a2bd705313c5"
+    },
+    "Toy.RelroGc.exists_pageGranular_covers_avoids_iff_partialPages_noMut": {
+      "closure_sha256": "06e446c851f73c6aa70b4dec3d4240e5fec6db167dec74c701fbabeaa14cf810",
+      "closure_size": 12,
+      "statement_sha256": "e3b2b645e17c0eff4622348861fe06a27560f3228e6f1488ccb80c87962b914e"
+    },
+    "Toy.RelroGc.exists_pageGranular_iff_cex_empty": {
+      "closure_sha256": "06e446c851f73c6aa70b4dec3d4240e5fec6db167dec74c701fbabeaa14cf810",
+      "closure_size": 12,
+      "statement_sha256": "15b8bb96fd6041d7da75cf5b69ed994519f2fc305ea27e36a7c5b7d1ce71ce9f"
+    },
+    "Toy.RelroGc.exists_pageGranular_iff_cex_pageZero": {
+      "closure_sha256": "06e446c851f73c6aa70b4dec3d4240e5fec6db167dec74c701fbabeaa14cf810",
+      "closure_size": 12,
+      "statement_sha256": "bec08441633b9b49826c0cd284ad02cd88aba196f2bac65fbb6de31b453ac360"
+    },
+    "Toy.RelroGc.exists_pageGranular_iff_cex_relroIs": {
+      "closure_sha256": "4df583ef9270e366968fa28c704eadb2dd98da36bbaec332ecc02aad5e8f03df",
+      "closure_size": 13,
+      "statement_sha256": "0e2484b39ec1d779435bd082e78bb752223291d92aff0a964ebb3c667756f0d4"
+    },
+    "Toy.RelroGc.exists_valid_run_of_live": {
+      "closure_sha256": "618f30a5387be060cf66c0af12a0a9006cc15302420949ba91e2550cd34b4f3a",
+      "closure_size": 40,
+      "statement_sha256": "94927b03875446d96eadaebc6d9aed74f21236f2b9530fabe764745d8ea00867"
+    },
+    "Toy.RelroGc.gcDeadRef": {
+      "closure_sha256": "4be2507279dbd8274753c38761475a3dfec7c79fca20613cf10e57a50d82743e",
+      "closure_size": 4,
+      "statement_sha256": "a6b6987029ee46374c84f061368b007bd40ec98001e5ce6f7f89151c65548c26"
+    },
+    "Toy.RelroGc.gcEmptyReg": {
+      "closure_sha256": "4be2507279dbd8274753c38761475a3dfec7c79fca20613cf10e57a50d82743e",
+      "closure_size": 4,
+      "statement_sha256": "a6b6987029ee46374c84f061368b007bd40ec98001e5ce6f7f89151c65548c26"
+    },
+    "Toy.RelroGc.gcPair": {
+      "closure_sha256": "4be2507279dbd8274753c38761475a3dfec7c79fca20613cf10e57a50d82743e",
+      "closure_size": 4,
+      "statement_sha256": "0c5eddbe58c5410826e6a6c925c17524b63141782ff8c35a8b8be46f3152a8a8"
+    },
+    "Toy.RelroGc.gcPhantom": {
+      "closure_sha256": "4be2507279dbd8274753c38761475a3dfec7c79fca20613cf10e57a50d82743e",
+      "closure_size": 4,
+      "statement_sha256": "a6b6987029ee46374c84f061368b007bd40ec98001e5ce6f7f89151c65548c26"
+    },
+    "Toy.RelroGc.gcReg": {
+      "closure_sha256": "4be2507279dbd8274753c38761475a3dfec7c79fca20613cf10e57a50d82743e",
+      "closure_size": 4,
+      "statement_sha256": "d6ae3d7f21a021256ad5cf8312cf67c3007d88d6688edbf06a3eb46584951296"
+    },
+    "Toy.RelroGc.gcSoundness_bounds_nonvacuity": {
+      "closure_sha256": "cd7ffc5277a82e086421420eb0c1f560dc0b45352f9f36952d3df26a7193d098",
+      "closure_size": 34,
+      "statement_sha256": "aa7e7cba9a9ba45e6d1ea957e6cbc0fe07a78347bf0eb76a20491127e10ce858"
+    },
+    "Toy.RelroGc.gcSoundness_cex_bounds_access_unretained": {
+      "closure_sha256": "1b03070e24757fcf0de23d52c36ca40ae7c13b5b2c5c1fa8fe8fd241671dfa3a",
+      "closure_size": 43,
+      "statement_sha256": "bd0eb58c0b7c60968232386b7bbfc7779a226c5f98b1b738e437f3b77d5170b6"
+    },
+    "Toy.RelroGc.gcSoundness_cex_edge_access_without_edge": {
+      "closure_sha256": "acd01f098a6d8aa16f662bcd7fc87ec322cb61d2ed4070a557a1bd3a4eacf0f1",
+      "closure_size": 42,
+      "statement_sha256": "b1e74d6050c2e43713d95bc0c235b1f4c1ad36c3cb485e4e5a67993a91b2214d"
+    },
+    "Toy.RelroGc.gcSoundness_cex_implicit_access_to_nonroot": {
+      "closure_sha256": "acd01f098a6d8aa16f662bcd7fc87ec322cb61d2ed4070a557a1bd3a4eacf0f1",
+      "closure_size": 42,
+      "statement_sha256": "1399ec55d6073c530b432b1817f69890048dc90750b07d857bde94f3d8f8a66b"
+    },
+    "Toy.RelroGc.gcSoundness_nonvacuity": {
+      "closure_sha256": "33522fb4fc9c7314c4b9b4c4662373706a331669f0bc47c347773061448443a0",
+      "closure_size": 33,
+      "statement_sha256": "b527451001bb3f607bcf928fbacc7450c135a074a0e80950a377f51573190df7"
+    },
+    "Toy.RelroGc.goodCfg": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.insertAt": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "21fc51a2b7c0680b1112acf08190399557ac1c422cb2657d535a49d09e9d289c"
+    },
+    "Toy.RelroGc.itemEdges": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "36379671fe9f33b65fe131fbe91a267ba5889fc24e4524c1e62fde4c39a3261b"
+    },
+    "Toy.RelroGc.itemRoot": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "4d0bb073ea64b29daa58ca1e1a5651489320de5e9f68f4613d552b0719c0b935"
+    },
+    "Toy.RelroGc.keptItem_examples": {
+      "closure_sha256": "9e861734a8643f3ef6d2a4fad8e52cb962b988b8baa0dc4c4e43d9640e726e0f",
+      "closure_size": 9,
+      "statement_sha256": "6d7ccc7f83315f8330658fd4ba141c4eacef259db60d94b819edb632a10a33e2"
+    },
+    "Toy.RelroGc.keptItem_of_keptItem_of_coarsening": {
+      "closure_sha256": "2d1c8b5d0cdd1812c3dddb8873439dcbbf7543f45e2706f9e1ebda1ebd120024",
+      "closure_size": 6,
+      "statement_sha256": "a57ba05893d4952d61e1d31f9a5dabe92d61841d5d54b48275ece85197c24901"
+    },
+    "Toy.RelroGc.layoutMutRelro": {
+      "closure_sha256": "cb15c1882adc9862c7fb30c2e484994dd974797de0ba1cd8c24dcbb66f0b1181",
+      "closure_size": 5,
+      "statement_sha256": "b3359fa06019a8117c424f174ee8603e4146a87e6a3694f4f9c2dc93dd194c54"
+    },
+    "Toy.RelroGc.layoutRelro3": {
+      "closure_sha256": "cb15c1882adc9862c7fb30c2e484994dd974797de0ba1cd8c24dcbb66f0b1181",
+      "closure_size": 5,
+      "statement_sha256": "b3359fa06019a8117c424f174ee8603e4146a87e6a3694f4f9c2dc93dd194c54"
+    },
+    "Toy.RelroGc.layoutRelro3Mut": {
+      "closure_sha256": "cb15c1882adc9862c7fb30c2e484994dd974797de0ba1cd8c24dcbb66f0b1181",
+      "closure_size": 5,
+      "statement_sha256": "b3359fa06019a8117c424f174ee8603e4146a87e6a3694f4f9c2dc93dd194c54"
+    },
+    "Toy.RelroGc.lazyBound_not_callWorks_and_writeFaultsAfter": {
+      "closure_sha256": "fc25c81494e289ba74ee2c0dff59777e33e331380bb9f43894776eb8319f2f56",
+      "closure_size": 68,
+      "statement_sha256": "d9dae162507e4cfb1c047967fa689bca825837ebce31ec955f04f4440a8bc087"
+    },
+    "Toy.RelroGc.lazyMutCfg": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.lazyRelroCfg": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.lazy_inside_protect_writeFaultsAfter_first_call_faults": {
+      "closure_sha256": "8716b41463991e2b8a964296081a7ed1b4d6c85b920cb60b8397eb2d7577b9ad",
+      "closure_size": 69,
+      "statement_sha256": "9f698483ac4c4b4452fdba9e019ea025592ee6b012dfe09b0eb3458567eff007"
+    },
+    "Toy.RelroGc.le_alignUp": {
+      "closure_sha256": "0332a4ccc33a0f03ce631a14184463347b00584d7577e39c4b80a98e0100c156",
+      "closure_size": 1,
+      "statement_sha256": "604af58a39b62c3bf8ebfad900c12b5077300b9197457302901f992c3f4fdefc"
+    },
+    "Toy.RelroGc.linkReach_closed": {
+      "closure_sha256": "76f41b71c7678f71511df253b957c2bddc7f773930aa69aeaf96538d1fb05e3f",
+      "closure_size": 21,
+      "statement_sha256": "9d6aea3b4d1fce2a2078178e40709b507fe7e01e421a87f51a472ac69274e983"
+    },
+    "Toy.RelroGc.linkResolve": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "21ac3ad303ce38297f679c18e3e8b6fc1728592aa552472427d54f86e32bf9b6"
+    },
+    "Toy.RelroGc.linkResolve_examples": {
+      "closure_sha256": "e33d02be4c0033a43f7e7bb1504c5559c8da3c17ce4d4a4ee9e50ed6565070ff",
+      "closure_size": 28,
+      "statement_sha256": "0d1bc191116cae0791fce3034b8cfec3f0e9e58e136e2317955c0c6a9164fedd"
+    },
+    "Toy.RelroGc.linkResolved_rodata_loadOk_writeFaultsAfter_and_image": {
+      "closure_sha256": "8a63519e5ac0fc234bdb502afa985ce236d6d880391f13a0532335455d702558",
+      "closure_size": 68,
+      "statement_sha256": "d579920bb54f0e42448871ba34b4755dc2cc5f5d09fb6ce99f0e9fbc6ebf07c8"
+    },
+    "Toy.RelroGc.live_examples": {
+      "closure_sha256": "2b7d2f6c54bf60f900c1c46ca6d376100af0ced491afb6e833e77b72f6f248a4",
+      "closure_size": 29,
+      "statement_sha256": "55ddbd8af3b74acf934ed95604434818da10fed406fff1b435c0f520d96ea572"
+    },
+    "Toy.RelroGc.live_iff_exists_valid_run": {
+      "closure_sha256": "618f30a5387be060cf66c0af12a0a9006cc15302420949ba91e2550cd34b4f3a",
+      "closure_size": 40,
+      "statement_sha256": "c995c2df30d0c2a92c3386b006eb7b5441badc9f424ef308a865a372f0c44595"
+    },
+    "Toy.RelroGc.live_iff_root_or_conservative_reference_of_noEdgeIntoName": {
+      "closure_sha256": "4f6081ddba9f53182d4fe332b8ae54890730156db04b607357c8dc45846e7d99",
+      "closure_size": 29,
+      "statement_sha256": "ddb0d1209e71b14937da2b9fbf59a3fc4398efec566175316524c5f121276757"
+    },
+    "Toy.RelroGc.loadOk_twoPhase_iff": {
+      "closure_sha256": "a331b49f7119d1de5b8180de320358528ac2080a367dde21057b156419a74778",
+      "closure_size": 66,
+      "statement_sha256": "5c8b723b6d65b0c71aefac6f4dc0072842bab2fef526068e1deee4bddb02520f"
+    },
+    "Toy.RelroGc.loader_predicate_examples": {
+      "closure_sha256": "a9b0a19735c0d40420c5b1fccf11199fbde9e9cc50543bd88ea58e593a533499",
+      "closure_size": 77,
+      "statement_sha256": "874f1cc2b292347914d388a0fb597f56a261254204e00b418cde1e3021dff4df"
+    },
+    "Toy.RelroGc.mapWr": {
+      "closure_sha256": "cb15c1882adc9862c7fb30c2e484994dd974797de0ba1cd8c24dcbb66f0b1181",
+      "closure_size": 5,
+      "statement_sha256": "295dda619825535c39a08f4d779be4877b82f6152d1ad1a7f9bb8be2ea6665c8"
+    },
+    "Toy.RelroGc.mapWr_examples": {
+      "closure_sha256": "7dd3935d432deebf701b717083abdb5e6b6e7f850d29877d42ca27b2a3b31230",
+      "closure_size": 12,
+      "statement_sha256": "11388bea0055e6ca2edd68912023caad013f68826d7840ac8283acb5e387f1fd"
+    },
+    "Toy.RelroGc.mem_ssEdges_conservative": {
+      "closure_sha256": "7c3c2308e8cdc8909cb51ab426bae1cc05cefc63636e0ee968caaca019f29b88",
+      "closure_size": 15,
+      "statement_sha256": "ea1625bb44e9eb9174250737225b52a9529b48394bed11bb05d5762d17c09ee2"
+    },
+    "Toy.RelroGc.mixedCfg": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "3ce58ade0eb859cfffe0145531b48f3c640f5dc38a91324929533bff5aef8192"
+    },
+    "Toy.RelroGc.mkSec": {
+      "closure_sha256": "706b28667cb4d8d67efba8614f296810f4bbd0eceafa6a741c409d4443bfbf72",
+      "closure_size": 2,
+      "statement_sha256": "57a80656f153f8e67a009380cb45003a6252384d1644f8dc228ba6a95ecf8a91"
+    },
+    "Toy.RelroGc.noMutIn_examples": {
+      "closure_sha256": "195cdfe2d1ffd39dde7500b3e8fd87993bc76af5c9c94841f15a05d7f4d452c6",
+      "closure_size": 7,
+      "statement_sha256": "3dd0694eb5886e02da4f630ee3fa655456212aae72390d17a73064c491cba640"
+    },
+    "Toy.RelroGc.noSharedPage_examples": {
+      "closure_sha256": "8059dcab3477e7fdf973f997717520f5acbcfb79c6c02abc399400497dc24932",
+      "closure_size": 7,
+      "statement_sha256": "7c99cea5d94e8d7ecb3e6292cc59e5a375388e3dc409cd6456aae61e0659acf3"
+    },
+    "Toy.RelroGc.noSharedPage_iff_cex_empty": {
+      "closure_sha256": "7f8cba5f061a0649a14625213c9f747cdc5fb23986e1f17f5dd9ce229b9e8f50",
+      "closure_size": 10,
+      "statement_sha256": "c2d6faea023a5a3a16b1028dd752a59c49864d8ff12221758601b80ace68561b"
+    },
+    "Toy.RelroGc.noSharedPage_iff_cex_pageZero": {
+      "closure_sha256": "7f8cba5f061a0649a14625213c9f747cdc5fb23986e1f17f5dd9ce229b9e8f50",
+      "closure_size": 10,
+      "statement_sha256": "78bed6259dfb6bfde7d9e4652d2026aaf93c61544e5980b4ec0074d2f36a0784"
+    },
+    "Toy.RelroGc.noSharedPage_iff_cex_relroIs": {
+      "closure_sha256": "9ef2869077e7286f309150b812590c9edfc2988f65640cc2398b4436d5d150c3",
+      "closure_size": 11,
+      "statement_sha256": "f37e54e8f9147cd8e7e425dc55eb407c7fc9bed755a6ad6b5152fc5afb58dade"
+    },
+    "Toy.RelroGc.noSharedPage_iff_partialPages_noMut": {
+      "closure_sha256": "7f8cba5f061a0649a14625213c9f747cdc5fb23986e1f17f5dd9ce229b9e8f50",
+      "closure_size": 10,
+      "statement_sha256": "b895f01d79dcce61fa8f4104cf923688e40a2e90db31c4a03033406c2b4633cb"
+    },
+    "Toy.RelroGc.nonAddressOnly_first_group_order_dependent": {
+      "closure_sha256": "b2dff82e617962cdfe1df627cd00398b50c7a8167d5114cade78a7d7a981e74e",
+      "closure_size": 16,
+      "statement_sha256": "22c4bc37176afce1114d2856b313a9df213e2d6bfbc742493f901caff41c9884"
+    },
+    "Toy.RelroGc.noncontiguous_relro_noSharedPage_no_single_interval": {
+      "closure_sha256": "9bc5e0e57c53ca60ef13fcf9e587eddde8abbfbc774f22fc0222aac1f2f2d58c",
+      "closure_size": 9,
+      "statement_sha256": "a179a4311c1c88b0a1c0f099be505b3bb22429e61c6a91a75c7f3fa51c0ee143"
+    },
+    "Toy.RelroGc.order_cex_not_perm": {
+      "closure_sha256": "3a68ac54388cdfac987c0f2900b2f310abc5ad347fa860cf02aa1ed651571297",
+      "closure_size": 13,
+      "statement_sha256": "6910423a90e07257410ae49d5b2c407e6ad66d143e0ea2745cfb20f1c79df95e"
+    },
+    "Toy.RelroGc.pageGranular_examples": {
+      "closure_sha256": "a277a2dccff1a0f62fb0706f54e844a3ea4a7f261262363fb065c11ed46c6687",
+      "closure_size": 2,
+      "statement_sha256": "983a5f5bbf890db06b9605060745c7b7ddabdaa96f278ec1f8002ac8469f7446"
+    },
+    "Toy.RelroGc.pageRounding_nonvacuity": {
+      "closure_sha256": "785f78509530df77e7bee587da1195a3b6a1d712c7aa16be1f3290c1933da3f9",
+      "closure_size": 20,
+      "statement_sha256": "d43226fdcde023d6438af4dd1faa96ee02fd453cebee15c2ba248563a98ffdca"
+    },
+    "Toy.RelroGc.partial_relro_lazy_slot_write_redirects_call": {
+      "closure_sha256": "e1e239dbbc021ec4d6ddc8593b6c5c74f0a837ca2cfbab40bc849239384ca5bf",
+      "closure_size": 69,
+      "statement_sha256": "1ee801fbbe78a032abc9e833d3d7d1db65adb890f6f43cf211077a259ceccee2"
+    },
+    "Toy.RelroGc.phantom_section_live": {
+      "closure_sha256": "3412e098a1b06e82054d3b9353d204cc13daa73625feb02b804f84897b97c160",
+      "closure_size": 31,
+      "statement_sha256": "83fa5d73d1b7cfbf3d2ef7e4c0af841be176f4e3fa2f6539882b32c278c642ff"
+    },
+    "Toy.RelroGc.pic_data_slot_loads_and_write_succeeds": {
+      "closure_sha256": "396ace43281b9c1375df54b1f52eef176179e1ebc7cf00ebac08567d6861f76d",
+      "closure_size": 68,
+      "statement_sha256": "c2ce8741f21fee75a0abb43239d5dc20476e9b34de20d573104584e5e08fa98f"
+    },
+    "Toy.RelroGc.pic_loadOk_and_writeFaultsAfter_iff_relro": {
+      "closure_sha256": "babaeb635743872f90a810fac964873f41ad30c659c9eed2e7e7362be7041b2f",
+      "closure_size": 70,
+      "statement_sha256": "bfaf7d35e884d3cbea6a891df16005569536d41e72081a4decb85b58acc02cb4"
+    },
+    "Toy.RelroGc.pic_relro_slot_loads_and_writeFaultsAfter": {
+      "closure_sha256": "f692320951614f19a72e2c64bcb4740d715bcd0ac499fd61fabf3b25b8c5053f",
+      "closure_size": 69,
+      "statement_sha256": "c4ef3f9ea09146dd8c6cf75292662f76d4f02a34641f040de1bdd1ace8049856"
+    },
+    "Toy.RelroGc.pic_rodata_cex_link_resolved": {
+      "closure_sha256": "b90b99ac4382695f4db2f7fbd447b4536d2069ad9d7d99313656ac64aab9df2a",
+      "closure_size": 72,
+      "statement_sha256": "c1344bef6be3fe9bfb831aaf73a27eb3918614249a45e7da83243c25169cf244"
+    },
+    "Toy.RelroGc.pic_rodata_cex_relro_slot": {
+      "closure_sha256": "a60a99e97e91a2bf258d57d4cd069a8f3a55c8a73cd333d966ee7ea7fe86a7fc",
+      "closure_size": 69,
+      "statement_sha256": "c976884acf83c370bf76b160684ad1b7a997b94b055bef067d2d182b224b20c9"
+    },
+    "Toy.RelroGc.pic_rodata_slot_load_faults": {
+      "closure_sha256": "76e0cde90f7bde5f4143416ddac6a415a4ba7feb2cef3bd49164937a366b18d6",
+      "closure_size": 65,
+      "statement_sha256": "dac426ec42f670b9d6aac1dcc5b2c44e080568d065732c8ac09927cbc5feef44"
+    },
+    "Toy.RelroGc.placement_iff_cex_cover_mut": {
+      "closure_sha256": "4a665af55e230301c026e345c285702b3d913875784a2857837855612c5ad3af",
+      "closure_size": 74,
+      "statement_sha256": "e984a0ca58c9951401a4518e4760baf3d58cec9ee44ea223a727c4cd70fa0206"
+    },
+    "Toy.RelroGc.placement_iff_cex_no_cover": {
+      "closure_sha256": "6a93299149030bd7fc0e44de4381a8db78509666b13285351ac0b550a39c1834",
+      "closure_size": 75,
+      "statement_sha256": "074158b29196db63db2b197c510bf34ed07905e8af69a1120129130c9ed06e7c"
+    },
+    "Toy.RelroGc.placement_iff_cex_not_dynamic": {
+      "closure_sha256": "a2d3e543a239cd24d6e57d39a5feb9943ca340fd72549cc357685d62957f5e36",
+      "closure_size": 77,
+      "statement_sha256": "47e6b723807f6058b42a6f8db5dd213200df0fea4c17142676eda9a0283197ec"
+    },
+    "Toy.RelroGc.placement_iff_cex_other_reloc": {
+      "closure_sha256": "ebff70e73fc03f07639cc3fef7ccf6ed8c19af90320f5b37c95ca3f792d9c828",
+      "closure_size": 73,
+      "statement_sha256": "2c25914a4c2886aac0eeb9be70704ccba9deff134830d7386647a8c0352a3589"
+    },
+    "Toy.RelroGc.placement_nonvacuity": {
+      "closure_sha256": "2c9050887e45325895f26f3b0a1c1b15e733524c6b3d5e1de69fc7ec0823c9cb",
+      "closure_size": 36,
+      "statement_sha256": "117b67bbe19ca3beff127ee136974defd6afb4b348940168e3fcca8fcd110a1e"
+    },
+    "Toy.RelroGc.postLoad": {
+      "closure_sha256": "43d836c6f85610e69207a4fbe1a89c51d300582d77ee889f4cdf7fd029cca98a",
+      "closure_size": 14,
+      "statement_sha256": "89b6926d22e8b1705407e8e642e4cee322dce59629d106c8e7d7d27fd82395f0"
+    },
+    "Toy.RelroGc.precise_drops_cex_edge_into_entry": {
+      "closure_sha256": "73418e1c677f3115f7d9dc967551216ab15de18b247f97335504232fba3c0dff",
+      "closure_size": 31,
+      "statement_sha256": "437d90681d4e1aa3bde3ad7b970dd92af47c9e476be8e8b30c6dcb7f5090d67c"
+    },
+    "Toy.RelroGc.precise_drops_cex_rooted_entry": {
+      "closure_sha256": "73418e1c677f3115f7d9dc967551216ab15de18b247f97335504232fba3c0dff",
+      "closure_size": 31,
+      "statement_sha256": "86673bfd3765f82791414567d930a48d132a8d94dda4e99596dc0752a746e16c"
+    },
+    "Toy.RelroGc.precise_drops_unrooted_entries_of_noEdgeIntoName": {
+      "closure_sha256": "f44f6bcc97a01162a9fc45675dee21b22c9db514a17844f418769dfd94a09735",
+      "closure_size": 30,
+      "statement_sha256": "dd5a5c63bc3cd72219ef2b1f3a8a0a69dc8b953955cb838570f0f025c02f770a"
+    },
+    "Toy.RelroGc.protCfg": {
+      "closure_sha256": "b3674e0a76ed34e5f623750d0c20dffc179169f01adbcf6395626b24a34230d1",
+      "closure_size": 12,
+      "statement_sha256": "7a356fb184095fb7b7d9c102f092c82e4ce4d64571520b31a5ff55ceced73760"
+    },
+    "Toy.RelroGc.rAddr0": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "a2b9b39c81ddb775335091517229b06263028a9d38fcbbfc7f9617a8ec723ad7"
+    },
+    "Toy.RelroGc.rConst0": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "a2b9b39c81ddb775335091517229b06263028a9d38fcbbfc7f9617a8ec723ad7"
+    },
+    "Toy.RelroGc.rRes1": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "a2b9b39c81ddb775335091517229b06263028a9d38fcbbfc7f9617a8ec723ad7"
+    },
+    "Toy.RelroGc.rRes2of1": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "a2b9b39c81ddb775335091517229b06263028a9d38fcbbfc7f9617a8ec723ad7"
+    },
+    "Toy.RelroGc.rRes3of2": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "a2b9b39c81ddb775335091517229b06263028a9d38fcbbfc7f9617a8ec723ad7"
+    },
+    "Toy.RelroGc.rRes4of9": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "a2b9b39c81ddb775335091517229b06263028a9d38fcbbfc7f9617a8ec723ad7"
+    },
+    "Toy.RelroGc.rangeMask": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "60ef229f7f6cbcf5de1effb81f541c6e4f0953822ee4ba59fcc23ad08c4fa3d8"
+    },
+    "Toy.RelroGc.reach_of_access": {
+      "closure_sha256": "618f30a5387be060cf66c0af12a0a9006cc15302420949ba91e2550cd34b4f3a",
+      "closure_size": 40,
+      "statement_sha256": "2a255b9b9fed8dbfa67b906d0f845ec066fd8c52562cd0b989f30fb51b0bfcb8"
+    },
+    "Toy.RelroGc.reach_secEdges_map": {
+      "closure_sha256": "59743a647f7df18534ace2e241548bb5765a338534624edea01574a7836c4dd5",
+      "closure_size": 5,
+      "statement_sha256": "c84a35a7532ca0931fa864e8db3500a99f748bf9621afa95af9b6f6cec2fc485"
+    },
+    "Toy.RelroGc.readsOnly_examples": {
+      "closure_sha256": "9f434ba3e2c4519c078b380d074d48064d1e0b60ba2943dd26b0af9eefbea862",
+      "closure_size": 8,
+      "statement_sha256": "63ed25e09d1ea11dcb15098d3b55342570f7703b536e302840ea11be7d44b6b4"
+    },
+    "Toy.RelroGc.registryKept_iff_cex_edges_into_entries": {
+      "closure_sha256": "715fb0ac44f78563665c21c02b73fb23ce90f622e3ab323ab97d86361cf5aa41",
+      "closure_size": 32,
+      "statement_sha256": "12716ded2ebf09a4cef19709853888cf8eb83cf2a7316daa851e7e3a42c83c60"
+    },
+    "Toy.RelroGc.registryKept_iff_of_noEdgeIntoName": {
+      "closure_sha256": "7183ff7d17681330b4c2e32af494164bb67ddf0b74a092e73883d7463110366e",
+      "closure_size": 30,
+      "statement_sha256": "52ad545da96177c142bb4fcb21a234c7acabadab5b771b805696a24cb6985917"
+    },
+    "Toy.RelroGc.registryKept_of_entries_rooted": {
+      "closure_sha256": "dd84b1694f771bda657d6d982c1d23f103b2a1fb961516a62193257015ec197f",
+      "closure_size": 29,
+      "statement_sha256": "0897d7e4debe9cd85d57743371efe3cc4bf3e681385d0b00d0a9b5addff285fc"
+    },
+    "Toy.RelroGc.registryKept_of_entries_rooted_nonvacuity": {
+      "closure_sha256": "b2d65faedf57ce0d8d2084acf20a6b94c72d76c888cd09d12682d144185f805e",
+      "closure_size": 17,
+      "statement_sha256": "8803a6dc70724b16c43cfa040984856833100dd0df1b182fb472b305a8670f17"
+    },
+    "Toy.RelroGc.registryScan": {
+      "closure_sha256": "f7963d3fbe98420a4fd9154f290165cb7ab8b2372b1ac631f99c5732f4a63fa3",
+      "closure_size": 8,
+      "statement_sha256": "1952cc8bd13b1a981a5905c0168db4008daed9123f5f2c01ec565a8f865de3b5"
+    },
+    "Toy.RelroGc.registryScan_examples": {
+      "closure_sha256": "5f47c183919d03276c02211d910f34edcce682acf58760afe21c020bc57c3d8f",
+      "closure_size": 14,
+      "statement_sha256": "37ad650e03e2c9c896f7d1c0f12d7d93e02f50ea0bc0870f3fb05646b40b0514"
+    },
+    "Toy.RelroGc.registryScan_preserved_examples": {
+      "closure_sha256": "0070b50ae8c137ba7647d5aa7916d1cf83223fe0f357ed12e930c03fe673f4aa",
+      "closure_size": 40,
+      "statement_sha256": "5efc00a85a3cf2cd286aabd69603e63f3ea0e02592fccf6225deb7f297ef2608"
+    },
+    "Toy.RelroGc.registry_examples": {
+      "closure_sha256": "4457b02da3db4eab0fd2fdda1bf43179cf4948c69480b24eeb93a3f523fec00e",
+      "closure_size": 33,
+      "statement_sha256": "f81a0583cdc7f7558b703abb312862f759194aac8839a797a7065666ead9261e"
+    },
+    "Toy.RelroGc.registry_iff_cex_edge_into_entry": {
+      "closure_sha256": "73418e1c677f3115f7d9dc967551216ab15de18b247f97335504232fba3c0dff",
+      "closure_size": 31,
+      "statement_sha256": "1e69a0407eb3f829bcbdc6595b94326972626a1a1ea9ee451525f5573dceb6cb"
+    },
+    "Toy.RelroGc.registry_iff_cex_other_name": {
+      "closure_sha256": "73418e1c677f3115f7d9dc967551216ab15de18b247f97335504232fba3c0dff",
+      "closure_size": 31,
+      "statement_sha256": "9a043b2dd8781039595b0e9b705e2b4d23a5aeed397bf05fb75f0e9155f27761"
+    },
+    "Toy.RelroGc.registry_keep_or_retain_kept_precise": {
+      "closure_sha256": "b05491dec3efa5eaf5ab2ed189c92a2c991d801b0b4e8075ccf6de3f7a5df090",
+      "closure_size": 31,
+      "statement_sha256": "39836f09b55aad19c71fe60a8017f1f3395488c20b656bff814143ff97f74fc6"
+    },
+    "Toy.RelroGc.registry_nonvacuity": {
+      "closure_sha256": "aeb3fab250074a22c8acca111742b68857b80daaf8a504f522e6265868966e3a",
+      "closure_size": 19,
+      "statement_sha256": "b0c85562596e54432241de55b49b58c69d9d895175d6374d91aebe2258cad340"
+    },
+    "Toy.RelroGc.registry_precise_link_failure_conservative_kept": {
+      "closure_sha256": "1e366d992d619bfaf87039a6a992a52578b0f1d5ab8b8d276900b997cb3652ca",
+      "closure_size": 32,
+      "statement_sha256": "26141245ab8637aeea5ff021fef60115c1cf987ead5f9b86d57ecbb46a7c3e5f"
+    },
+    "Toy.RelroGc.registry_precise_silent_shrink": {
+      "closure_sha256": "1e366d992d619bfaf87039a6a992a52578b0f1d5ab8b8d276900b997cb3652ca",
+      "closure_size": 32,
+      "statement_sha256": "c7b7a8592ebd6dc656eec7bd6a872e76384dcd336c2c4c88fafd09d71b351594"
+    },
+    "Toy.RelroGc.relocationOrder_nonvacuity": {
+      "closure_sha256": "550fae3e50e578d6f7309a7b9039eb89d33c89ecc3512baa0dbb955c9aab9031",
+      "closure_size": 14,
+      "statement_sha256": "114d08d4523c2789d297915ed53ac83b88800aa08ce3260a7fbb7611d9aa9101"
+    },
+    "Toy.RelroGc.relroIs_examples": {
+      "closure_sha256": "f476a706708ba3da9e8b34c7e5b74c691f1d78a5e3dd0caae35d385f980645d5",
+      "closure_size": 8,
+      "statement_sha256": "d5156a6bb9d4b872fc97727a2a1470c4d9a9177431356f056cbda972a2bffc8b"
+    },
+    "Toy.RelroGc.relro_slot_cex_load_fault": {
+      "closure_sha256": "43f19978c28c702631d1e2d1850d5f2684b2c421e63ec550c204de9b8f602203",
+      "closure_size": 72,
+      "statement_sha256": "9c0c84b4d773fd4c4a75a9a90aaf098696de959f6333f3f3cf3fc83423f88f9d"
+    },
+    "Toy.RelroGc.relro_slot_cex_mut_slot": {
+      "closure_sha256": "950ee524cc3341ba7557c1d86c5a371425771c7a5c4f2058c390f37467233581",
+      "closure_size": 71,
+      "statement_sha256": "224a8f900fc652d73dfcacd99ee8e1c92d4d0e773a10b10f23dd161182a26aea"
+    },
+    "Toy.RelroGc.relro_slot_cex_no_cover": {
+      "closure_sha256": "b979204554aef3379347269b6d14e2cc382d3bb79d99485b789dcb51f7530913",
+      "closure_size": 73,
+      "statement_sha256": "ae63c3a683fcf70c8f44259dfb713fbf6354f541e9bde5c22dfe28b365dfae68"
+    },
+    "Toy.RelroGc.resolverOrder_cex_not_permA": {
+      "closure_sha256": "884af3c3654d3186576d25afe5152ad85df4bb6956776fe9687c924abe97691c",
+      "closure_size": 15,
+      "statement_sha256": "53365bd0a63194b8b6ab7a71714f2ef8001e4b694774f1791935264c79307695"
+    },
+    "Toy.RelroGc.resolverOrder_cex_not_permR": {
+      "closure_sha256": "884af3c3654d3186576d25afe5152ad85df4bb6956776fe9687c924abe97691c",
+      "closure_size": 15,
+      "statement_sha256": "cc7bb8ed1626eeabc3948891ebb5a38375924ff5397b9e1b46eaca2eaac3fc2c"
+    },
+    "Toy.RelroGc.resolver_overwrites_addressOnly_slot_order_dependent": {
+      "closure_sha256": "4501e4064ee846f1abdafb1a0de6df9f805934fdc3808c906b308f1e69300775",
+      "closure_size": 17,
+      "statement_sha256": "954fd71da1ad98385fd156d25e2b5bf585bae79f95f723e075479ddf85854f61"
+    },
+    "Toy.RelroGc.resolver_reads_unrelocated_slot_order_dependent": {
+      "closure_sha256": "ec621a80e6cdea7991b491f4d8cba9b018fd1c67045813ff83e1c88c4a5e2db4",
+      "closure_size": 15,
+      "statement_sha256": "dea99dbfddd5b556ed2d98d7ef12176a16bdafb367097944775101c68c1a33ba"
+    },
+    "Toy.RelroGc.resolvers_read_resolver_slot_order_dependent": {
+      "closure_sha256": "d38715c4080bd75b1fb5652e3f5ad5f331caae7f0e31f425b290e420f765d040",
+      "closure_size": 15,
+      "statement_sha256": "7bc3ca7ca4a452632cc9eaaf9442b07a306d73b6c96a877d5c769514d27184d5"
+    },
+    "Toy.RelroGc.resolvers_same_slot_order_dependent": {
+      "closure_sha256": "01d1864eb400dcf0ab09381fefb38054b4cc7c9317c41a47f608a2c9cc47f07d",
+      "closure_size": 14,
+      "statement_sha256": "6b2201c796f9e9c15c93a804898db39a059edf78a850d8d961cf5e154218e326"
+    },
+    "Toy.RelroGc.retained_but_compiler_dropped": {
+      "closure_sha256": "05f8110fbb2e2a91ea0a1aabbc4d41cd42ae2f50ea445dc0ec8c637ae399d468",
+      "closure_size": 22,
+      "statement_sha256": "883a2ff41f8bc2d892149810c4f90c2aeda092e0896c7abaf31145d8f495ed12"
+    },
+    "Toy.RelroGc.rooted_cex_unrooted": {
+      "closure_sha256": "b05491dec3efa5eaf5ab2ed189c92a2c991d801b0b4e8075ccf6de3f7a5df090",
+      "closure_size": 31,
+      "statement_sha256": "8edd7eaff41b828ce64c86e90cfdbda842d2a8a6f1f1c106c11ca70bc0e48202"
+    },
+    "Toy.RelroGc.roundedMask": {
+      "closure_sha256": "a6bf2215e6eaecb24a3bdd26f2ad4fbe12136ed3fc255a5edc1dec525adb6d6c",
+      "closure_size": 4,
+      "statement_sha256": "296b4a9827b4a2caa880f18a1ad76677e0fa7c94f67c9731da163d1a931682ea"
+    },
+    "Toy.RelroGc.roundedMask_downUp_pageGranular": {
+      "closure_sha256": "543019a395e77d4f98cfefa7fcea14085275a70a746bd7852fb875391e1ff8ee",
+      "closure_size": 12,
+      "statement_sha256": "69bd67270c6e3ea578134223083e1592bd09fccca22a5087d53308e44ad1c10e"
+    },
+    "Toy.RelroGc.roundedMask_empty_examples": {
+      "closure_sha256": "a971502328a8ffcdd84c36578ca7537899c5e19a1b117ffc2bb99e3f59342180",
+      "closure_size": 11,
+      "statement_sha256": "d7ae1a9cc4521e67986fb950889b270c3b97ad8e70e40398e76aaf7835622465"
+    },
+    "Toy.RelroGc.roundedMask_eq_false_of_le": {
+      "closure_sha256": "a971502328a8ffcdd84c36578ca7537899c5e19a1b117ffc2bb99e3f59342180",
+      "closure_size": 11,
+      "statement_sha256": "677713eb65e263db5ee1a91bfa0cfa0d280a77423f4b1e3634365dcc35233d86"
+    },
+    "Toy.RelroGc.roundedMask_examples": {
+      "closure_sha256": "a971502328a8ffcdd84c36578ca7537899c5e19a1b117ffc2bb99e3f59342180",
+      "closure_size": 11,
+      "statement_sha256": "d5af7e56c9b87e356da63f00b88285264f68debcd1c1256a900e742bcb11eeb6"
+    },
+    "Toy.RelroGc.runPreserved_examples": {
+      "closure_sha256": "f22d131b0b7497c3bedb049c68fc6fa6d3e5d5adfd21c5ff013bd54e1405f4d4",
+      "closure_size": 38,
+      "statement_sha256": "52d8398669b5a7a038f150d0fb461d1a1983203301d10b6e3fe59f033322a475"
+    },
+    "Toy.RelroGc.runPreserved_of_edgeAccessesFollowEdges_of_implicitAccessesHitRoots_of_boundsAccessesRetained": {
+      "closure_sha256": "bd690a392f2cda20a2fb85cecbe40112aaf92a7f55248ff177e98a72e12d4654",
+      "closure_size": 41,
+      "statement_sha256": "75ef20f38f70d6e85a3842fc0dc7b90a82424138768c6e6a11b1ddb28dc28681"
+    },
+    "Toy.RelroGc.runPreserved_registryScan_iff_registryKept": {
+      "closure_sha256": "beb08cf4f554c3707d3bcf4e088f709510104ff1e641644281d918b7ac97e9df",
+      "closure_size": 39,
+      "statement_sha256": "77321d1ef3f3ac3aefd96c62fec05bd4ea4e130d89a3b76b4e2f3dc65f61a60f"
+    },
+    "Toy.RelroGc.runT": {
+      "closure_sha256": "9f72ede4a7f0df8bc9b8711c7bc03d58b223eb6c75ca688a7413b16a15485dc2",
+      "closure_size": 27,
+      "statement_sha256": "8a8714ffae8d1cc622ba4850a307a80252b8653e6a29bfdbd3c6508f6bc9b6fa"
+    },
+    "Toy.RelroGc.sa0": {
+      "closure_sha256": "1743cc1cc1f051fee6e11039d273a23dc1b686abc76afc134f8ea9f46fd4250c",
+      "closure_size": 2,
+      "statement_sha256": "748c9225a4e5b5cb5bfd324756cb652253733aef61cd92e9b4b3c17d17452f51"
+    },
+    "Toy.RelroGc.secEdges": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "c62f88c216107c65905a9b31e1f2d297cefe2faf7822f1502d577fbaeac54bfc"
+    },
+    "Toy.RelroGc.secFine": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "01e52fc1704581a452740b56a23f83cac77adcf37ca5cafa352d4fbcfb4a071f"
+    },
+    "Toy.RelroGc.secRoot": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b16bc3bc4b3ccd7b45f680fb51a95ba57e8be164081f67d9e4767734e8a99ac2"
+    },
+    "Toy.RelroGc.secShared": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "01e52fc1704581a452740b56a23f83cac77adcf37ca5cafa352d4fbcfb4a071f"
+    },
+    "Toy.RelroGc.sec_isRoot_examples": {
+      "closure_sha256": "3af7af16f498bccb163ff9404e446dcf32a37cbcfe46b79e010b909c6883b255",
+      "closure_size": 8,
+      "statement_sha256": "87da9b47b219f855c5c58b19500b45f22c45545f3fee7db30680f9d2de6296e3"
+    },
+    "Toy.RelroGc.srcReach_examples": {
+      "closure_sha256": "9301c5a89633a29874ba341bc680f90aecc0a68a65b2d3a3983d6f19a0c21596",
+      "closure_size": 14,
+      "statement_sha256": "7dd32075d02cc0266f89df11728c775a1bba213a77e03d4ea541e66284bfe31e"
+    },
+    "Toy.RelroGc.ssEdges_examples": {
+      "closure_sha256": "67f62dbf3320207625f9b5bfcd32e1bfd682536f87f831091997fa0611cd16fd",
+      "closure_size": 17,
+      "statement_sha256": "cee34a3304c1f7cdbccb5542c51c9f48d7a61c3010a50d2dcbd724844730df08"
+    },
+    "Toy.RelroGc.stMain": {
+      "closure_sha256": "f5bb185b0467333d01f14914557e6bf2c068bba3841d2ac6915bfad8679586d3",
+      "closure_size": 2,
+      "statement_sha256": "cd47a44c149a529bea278644848d3eddefcdddd7bc18589aadce39026a07704f"
+    },
+    "Toy.RelroGc.stPlain": {
+      "closure_sha256": "f5bb185b0467333d01f14914557e6bf2c068bba3841d2ac6915bfad8679586d3",
+      "closure_size": 2,
+      "statement_sha256": "cd47a44c149a529bea278644848d3eddefcdddd7bc18589aadce39026a07704f"
+    },
+    "Toy.RelroGc.stRetainOnly": {
+      "closure_sha256": "f5bb185b0467333d01f14914557e6bf2c068bba3841d2ac6915bfad8679586d3",
+      "closure_size": 2,
+      "statement_sha256": "cd47a44c149a529bea278644848d3eddefcdddd7bc18589aadce39026a07704f"
+    },
+    "Toy.RelroGc.stUsedOnly": {
+      "closure_sha256": "f5bb185b0467333d01f14914557e6bf2c068bba3841d2ac6915bfad8679586d3",
+      "closure_size": 2,
+      "statement_sha256": "cd47a44c149a529bea278644848d3eddefcdddd7bc18589aadce39026a07704f"
+    },
+    "Toy.RelroGc.stUsedRetained": {
+      "closure_sha256": "f5bb185b0467333d01f14914557e6bf2c068bba3841d2ac6915bfad8679586d3",
+      "closure_size": 2,
+      "statement_sha256": "cd47a44c149a529bea278644848d3eddefcdddd7bc18589aadce39026a07704f"
+    },
+    "Toy.RelroGc.stepApply": {
+      "closure_sha256": "55362b7dc9ca0e3862171c94f10bd10f180ca292aa4a2e4eb9a6fde388cc9b34",
+      "closure_size": 11,
+      "statement_sha256": "405220ecc5dcc8ab5d4e289b16551fc9cf6af3f7d51efc3abb353b880e1c0437"
+    },
+    "Toy.RelroGc.stepOp": {
+      "closure_sha256": "c64806b6d311e3140ee4496d08c12c7a623050e924b81bdf7a322c67c5d196db",
+      "closure_size": 21,
+      "statement_sha256": "ce0920d3425139eee249572e4b8619f307c635d0785c03625a5c7865f62e20fc"
+    },
+    "Toy.RelroGc.stepProtect": {
+      "closure_sha256": "43d836c6f85610e69207a4fbe1a89c51d300582d77ee889f4cdf7fd029cca98a",
+      "closure_size": 14,
+      "statement_sha256": "2250fe6d1dde2a69093e8b97fc899a9614fed84a757903edf6f2cacb30b42acc"
+    },
+    "Toy.RelroGc.survives_conjunction_cex_without_lookup": {
+      "closure_sha256": "65e88eb66d21105a8737585ef85eb93b5e0a10df75776357d0f072c6b84ce6ac",
+      "closure_size": 21,
+      "statement_sha256": "3af59c0bbabca0c1f1b9d15fc3c3611f96840474ad19dcca363a0d8f4db8fd10"
+    },
+    "Toy.RelroGc.survives_iff_compileKept_and_linkReach_or_retain": {
+      "closure_sha256": "ab63ca1042cf6b3a1ce92d236766bdcf34a7da55ead080863e5dd45b2706b01d",
+      "closure_size": 20,
+      "statement_sha256": "2040ec5ea4456a6ac3249022da97c7b1dd045112cb3dec419efca5766b6c9ee4"
+    },
+    "Toy.RelroGc.survives_iff_compiledPath": {
+      "closure_sha256": "7db88ee37f893446f2785d4b9ecc534585fbc3b4188289a6a668ce0476d975e9",
+      "closure_size": 23,
+      "statement_sha256": "d01d83624c5b8af34f431fdcb4ccf2e2c5a317f579f0ab528e4f86007b87f667"
+    },
+    "Toy.RelroGc.survives_iff_linkReach": {
+      "closure_sha256": "ab63ca1042cf6b3a1ce92d236766bdcf34a7da55ead080863e5dd45b2706b01d",
+      "closure_size": 20,
+      "statement_sha256": "60172318a3053c563a90e97b857ba48121e7a397ce8d148abdbd526d985e8cf5"
+    },
+    "Toy.RelroGc.symReloc": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "3e266ae898e17ab6a443e6db3c09b23d4f3b23b2be500619e3c39488c6852ef4"
+    },
+    "Toy.RelroGc.timeline": {
+      "closure_sha256": "7d00745bc23faf960624ea2f113de613d3295ebe957ee460a852a920eff9c27c",
+      "closure_size": 19,
+      "statement_sha256": "c2b258cbec777ae622d88bfff09635b89a6dee54394d31957b4c43890a11f314"
+    },
+    "Toy.RelroGc.trace": {
+      "closure_sha256": "7453f54d9cdc28100339835bc6ba9e6b199409d805615bad844428b13b64ea72",
+      "closure_size": 25,
+      "statement_sha256": "bc0838a5d83645f6ce903583acc24e5ed2acabb1ccc130960b8a742e46ba949d"
+    },
+    "Toy.RelroGc.trace_twoPhase": {
+      "closure_sha256": "9f09707798d5e40fa47226420b72ab13ed26bebdd3e73e7447c5edc01277fbfb",
+      "closure_size": 66,
+      "statement_sha256": "250fe1c49bead68db6021c7be50175b64d5eb197944fe02ab05f140c891940d1"
+    },
+    "Toy.RelroGc.tryApplyAll": {
+      "closure_sha256": "a9b9b1928bfb0be288eb77cc99192bc8a8d4d84e552c8f8950d42bcbd6661405",
+      "closure_size": 5,
+      "statement_sha256": "c18b47f748d3d6a35713b38993ec42ced852a52881d3ff5578668fdbad9ea9bd"
+    },
+    "Toy.RelroGc.tryApplyAll_bind": {
+      "closure_sha256": "21098cc998e6be206c979817d4b62d48a9a4d486f1097e857a2706becd0f3def",
+      "closure_size": 11,
+      "statement_sha256": "ee4f07e9c29db70e73e639bce866cad8f208fdd39f7492ce533e377e9c1fe348"
+    },
+    "Toy.RelroGc.tryApplyAll_other": {
+      "closure_sha256": "0bbb09a7b627eff1973c5d72ba3d05936ee30f821b916b70e49d866907795204",
+      "closure_size": 10,
+      "statement_sha256": "9051eb200b686dd14121e2232360d5fa58d4eb540eeeab68526e8dc7ca4e8ee8"
+    },
+    "Toy.RelroGc.twoPhase": {
+      "closure_sha256": "7d00745bc23faf960624ea2f113de613d3295ebe957ee460a852a920eff9c27c",
+      "closure_size": 19,
+      "statement_sha256": "5ffb29b0371b67f70bc6111c4e9ba08c77a04a47e19b00353a1422c4344cd589"
+    },
+    "Toy.RelroGc.twoPhaseGuarantees_examples": {
+      "closure_sha256": "73312f9e2f18f6fe4f3bb72342f422bc41caf67005f21952831f1444e546051c",
+      "closure_size": 72,
+      "statement_sha256": "b823c1d0af434cce5bee18428e2332c353a810c9dde2bf974e00b38366ff33d0"
+    },
+    "Toy.RelroGc.twoPhaseGuarantees_of_slotsWritable_of_protectAfterRelocs_of_covers_of_avoids": {
+      "closure_sha256": "9b144e3130586a639f5c4b7c13db45e57cd1b6deb2d79ddef29f272d682c3c2f",
+      "closure_size": 73,
+      "statement_sha256": "88bc8b8deeeefaaabfcedfa3b6b69b98add162f3c5c7766e0e513dc24d1e1de1"
+    },
+    "Toy.RelroGc.twoPhase_cex_prot_covers_mut": {
+      "closure_sha256": "3555823376e91b95ca52ad558805ebbe907600a31f98a785bb70e26aad38f95e",
+      "closure_size": 78,
+      "statement_sha256": "ac346df7f20ecf325b1a8c70453b44419de8202e9a65a2e818515d414ca081e9"
+    },
+    "Toy.RelroGc.twoPhase_cex_prot_misses_relro": {
+      "closure_sha256": "ab19088a0a3bd8691b5e08862335c5a729172f7a05de6df8c255ba3cab4eb7db",
+      "closure_size": 78,
+      "statement_sha256": "426d0b6bebf5b09df0a0cb1f3e41fb96116644b7402825a11f7dde96b7f4dd2c"
+    },
+    "Toy.RelroGc.twoPhase_cex_protect_after_entry": {
+      "closure_sha256": "af6cef94475543f05e057e80ee2dfdadbd7bb19fdeb9e2a34c8ce48cc6e4268b",
+      "closure_size": 77,
+      "statement_sha256": "42d3c4ee94009d317ea2fba225bc12e8080e74201778f0a2eae4ca44535b89ae"
+    },
+    "Toy.RelroGc.twoPhase_cex_protect_before_last_reloc": {
+      "closure_sha256": "640b66ae735487e4cf846c068706d7ff82e9f69fd15b0f3fcbbaaee1e31f2223",
+      "closure_size": 77,
+      "statement_sha256": "ad4f37768623ee7b3e76083d6915be1e7965a1936fb55c1879835b89bf6ab761"
+    },
+    "Toy.RelroGc.twoPhase_cex_slot_not_writable": {
+      "closure_sha256": "75d4d43cc8e1cf62847900ca003cd7704515272847a406daf62a813e03210189",
+      "closure_size": 78,
+      "statement_sha256": "873bb0ea6e8e6d06ed8bd1290e060cc90d832889757739edd780cc1152f3cc4f"
+    },
+    "Toy.RelroGc.twoPhase_nonvacuity": {
+      "closure_sha256": "459ea0de1d77729f0c5c94cac7e48620a314999ac64023725f889bbeebe4a9ae",
+      "closure_size": 31,
+      "statement_sha256": "0a4ee30bfca93cffc21c36b9fe3b20f9610cdb0a39e337c9776e29ceac7a2aca"
+    },
+    "Toy.RelroGc.twoStage_examples": {
+      "closure_sha256": "b0c5faad6243cb94f11219fc5a995b0af889c82093839768b4c86e972db8d873",
+      "closure_size": 24,
+      "statement_sha256": "523a5e46ca3e644e3b2be87587ccc5f0613b815fe72dd142731c70d067133796"
+    },
+    "Toy.RelroGc.twoStage_nonvacuity": {
+      "closure_sha256": "6d0a08325ade5f8897fe1bbfa015d0aebdb9129f5fb7bca2e38560363bbd2970",
+      "closure_size": 25,
+      "statement_sha256": "02e380e92adddf8b32714e76695a08145b2216a11768ebeeb343e9079479c019"
+    },
+    "Toy.RelroGc.unreferenced_item_kept_when_sharing_live_section": {
+      "closure_sha256": "5bdd9b940335e1bcd121fd3d17cae855e58d38e60c5a0d926518cfde2267f043",
+      "closure_size": 10,
+      "statement_sha256": "78f2263cf08808928d517522ea3c482001255f210c98abc9699e5c5a6b65f22f"
+    },
+    "Toy.RelroGc.upd": {
+      "closure_sha256": "fdd79700fbe7f143e60825aa1fa91d578454c7d3e1e3ed5c219fc737b36a6baa",
+      "closure_size": 1,
+      "statement_sha256": "9ea47864dd1e33c4c7791ff96a8aa81d14143a5f4c67ada06ad40f18a1c16402"
+    },
+    "Toy.RelroGc.writeFaultsAfter_examples": {
+      "closure_sha256": "b1c5bc9222394bab783ffd86ca5567ecb2fc4a92ce19c0d6b4c3984bf31be9e2",
+      "closure_size": 69,
+      "statement_sha256": "43617ac3140b94a4f3c09cdb90247e06b1aef0802798943314c7f27952db8d7e"
+    },
+    "Toy.RelroGc.writeFaultsAfter_iff": {
+      "closure_sha256": "b0c56322f2edf5b2ad44268d7ce16177cc3eae4ecadf245715ebbd836bbf3c03",
+      "closure_size": 65,
+      "statement_sha256": "06767e1a737da1b96873a3dfcdafe828c47e8aba510a757ecfe88ee3ac2c49a5"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

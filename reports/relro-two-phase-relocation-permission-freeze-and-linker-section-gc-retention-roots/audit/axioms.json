@@ -1,0 +1,1478 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.RelroGc.Acc": [],
+    "Toy.RelroGc.Acc.bounds": [],
+    "Toy.RelroGc.Acc.bounds.elim": [],
+    "Toy.RelroGc.Acc.bounds.inj": [],
+    "Toy.RelroGc.Acc.bounds.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Acc.bounds.noConfusion": [],
+    "Toy.RelroGc.Acc.bounds.sizeOf_spec": [],
+    "Toy.RelroGc.Acc.casesOn": [],
+    "Toy.RelroGc.Acc.ctorElim": [],
+    "Toy.RelroGc.Acc.ctorElimType": [],
+    "Toy.RelroGc.Acc.ctorIdx": [],
+    "Toy.RelroGc.Acc.dst": [],
+    "Toy.RelroGc.Acc.dst.eq_1": [],
+    "Toy.RelroGc.Acc.dst.eq_2": [],
+    "Toy.RelroGc.Acc.dst.eq_3": [],
+    "Toy.RelroGc.Acc.edge": [],
+    "Toy.RelroGc.Acc.edge.elim": [],
+    "Toy.RelroGc.Acc.edge.inj": [],
+    "Toy.RelroGc.Acc.edge.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Acc.edge.noConfusion": [],
+    "Toy.RelroGc.Acc.edge.sizeOf_spec": [],
+    "Toy.RelroGc.Acc.implicit": [],
+    "Toy.RelroGc.Acc.implicit.elim": [],
+    "Toy.RelroGc.Acc.implicit.inj": [],
+    "Toy.RelroGc.Acc.implicit.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Acc.implicit.noConfusion": [],
+    "Toy.RelroGc.Acc.implicit.sizeOf_spec": [],
+    "Toy.RelroGc.Acc.noConfusion": [],
+    "Toy.RelroGc.Acc.noConfusionType": [],
+    "Toy.RelroGc.Acc.rec": [],
+    "Toy.RelroGc.Acc.recOn": [],
+    "Toy.RelroGc.AvoidsMut": [
+      "propext"
+    ],
+    "Toy.RelroGc.BoundsAccessesRetained": [
+      "propext"
+    ],
+    "Toy.RelroGc.CallWorks": [
+      "propext"
+    ],
+    "Toy.RelroGc.Cfg": [],
+    "Toy.RelroGc.Cfg.casesOn": [],
+    "Toy.RelroGc.Cfg.ctorIdx": [],
+    "Toy.RelroGc.Cfg.init": [],
+    "Toy.RelroGc.Cfg.kinds": [],
+    "Toy.RelroGc.Cfg.lazy": [],
+    "Toy.RelroGc.Cfg.mk": [],
+    "Toy.RelroGc.Cfg.mk.inj": [],
+    "Toy.RelroGc.Cfg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Cfg.mk.noConfusion": [],
+    "Toy.RelroGc.Cfg.mk.sizeOf_spec": [],
+    "Toy.RelroGc.Cfg.noConfusion": [],
+    "Toy.RelroGc.Cfg.noConfusionType": [],
+    "Toy.RelroGc.Cfg.prot": [],
+    "Toy.RelroGc.Cfg.rec": [],
+    "Toy.RelroGc.Cfg.recOn": [],
+    "Toy.RelroGc.Cfg.relocs": [],
+    "Toy.RelroGc.Cfg.start": [
+      "propext"
+    ],
+    "Toy.RelroGc.Cfg.start.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.Cfg.stub": [],
+    "Toy.RelroGc.CoversRelro": [
+      "propext"
+    ],
+    "Toy.RelroGc.EagerBound": [],
+    "Toy.RelroGc.EagerRelroOrLazy": [
+      "propext"
+    ],
+    "Toy.RelroGc.EagerRelroOrLazyMut": [
+      "propext"
+    ],
+    "Toy.RelroGc.EdgeAccessesFollowEdges": [
+      "propext"
+    ],
+    "Toy.RelroGc.Ev": [],
+    "Toy.RelroGc.Ev.apply": [],
+    "Toy.RelroGc.Ev.apply.elim": [],
+    "Toy.RelroGc.Ev.apply.inj": [],
+    "Toy.RelroGc.Ev.apply.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Ev.apply.noConfusion": [],
+    "Toy.RelroGc.Ev.apply.sizeOf_spec": [],
+    "Toy.RelroGc.Ev.casesOn": [],
+    "Toy.RelroGc.Ev.ctorElim": [],
+    "Toy.RelroGc.Ev.ctorElimType": [],
+    "Toy.RelroGc.Ev.ctorIdx": [],
+    "Toy.RelroGc.Ev.noConfusion": [],
+    "Toy.RelroGc.Ev.noConfusionType": [],
+    "Toy.RelroGc.Ev.op": [],
+    "Toy.RelroGc.Ev.op.elim": [],
+    "Toy.RelroGc.Ev.op.inj": [],
+    "Toy.RelroGc.Ev.op.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Ev.op.noConfusion": [],
+    "Toy.RelroGc.Ev.op.sizeOf_spec": [],
+    "Toy.RelroGc.Ev.protect": [],
+    "Toy.RelroGc.Ev.protect.elim": [],
+    "Toy.RelroGc.Ev.protect.sizeOf_spec": [],
+    "Toy.RelroGc.Ev.rec": [],
+    "Toy.RelroGc.Ev.recOn": [],
+    "Toy.RelroGc.GcIn": [],
+    "Toy.RelroGc.GcIn.IsRoot": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.IsRoot.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.Live": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.casesOn": [],
+    "Toy.RelroGc.GcIn.ctorIdx": [],
+    "Toy.RelroGc.GcIn.edges": [],
+    "Toy.RelroGc.GcIn.isRootB": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.isRootB.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.isRootB.match_1": [],
+    "Toy.RelroGc.GcIn.mk": [],
+    "Toy.RelroGc.GcIn.mk.inj": [],
+    "Toy.RelroGc.GcIn.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.mk.noConfusion": [],
+    "Toy.RelroGc.GcIn.mk.sizeOf_spec": [],
+    "Toy.RelroGc.GcIn.nameOf": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.nameOf.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.noConfusion": [],
+    "Toy.RelroGc.GcIn.noConfusionType": [],
+    "Toy.RelroGc.GcIn.rec": [],
+    "Toy.RelroGc.GcIn.recOn": [],
+    "Toy.RelroGc.GcIn.secs": [],
+    "Toy.RelroGc.GcIn.ss": [],
+    "Toy.RelroGc.GcIn.ssEdges": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.ssEdges.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.GcIn.ssEdges.eq_2": [
+      "propext"
+    ],
+    "Toy.RelroGc.ImplicitAccessesHitRoots": [
+      "propext"
+    ],
+    "Toy.RelroGc.KeptItem": [],
+    "Toy.RelroGc.Kind": [],
+    "Toy.RelroGc.Kind.casesOn": [],
+    "Toy.RelroGc.Kind.code": [],
+    "Toy.RelroGc.Kind.code.elim": [],
+    "Toy.RelroGc.Kind.code.sizeOf_spec": [],
+    "Toy.RelroGc.Kind.ctorElim": [],
+    "Toy.RelroGc.Kind.ctorElimType": [],
+    "Toy.RelroGc.Kind.ctorIdx": [],
+    "Toy.RelroGc.Kind.mutable": [],
+    "Toy.RelroGc.Kind.mutable.elim": [],
+    "Toy.RelroGc.Kind.mutable.sizeOf_spec": [],
+    "Toy.RelroGc.Kind.noConfusion": [],
+    "Toy.RelroGc.Kind.noConfusionType": [],
+    "Toy.RelroGc.Kind.ofNat": [],
+    "Toy.RelroGc.Kind.ofNat_ctorIdx": [],
+    "Toy.RelroGc.Kind.rec": [],
+    "Toy.RelroGc.Kind.recOn": [],
+    "Toy.RelroGc.Kind.relro": [],
+    "Toy.RelroGc.Kind.relro.elim": [],
+    "Toy.RelroGc.Kind.relro.sizeOf_spec": [],
+    "Toy.RelroGc.Kind.ro": [],
+    "Toy.RelroGc.Kind.ro.elim": [],
+    "Toy.RelroGc.Kind.ro.sizeOf_spec": [],
+    "Toy.RelroGc.LazyBound": [],
+    "Toy.RelroGc.LoadOk": [],
+    "Toy.RelroGc.LoadOk.eq_1": [],
+    "Toy.RelroGc.Mem": [],
+    "Toy.RelroGc.NoEdgeIntoName": [
+      "propext"
+    ],
+    "Toy.RelroGc.NoMutIn": [
+      "propext"
+    ],
+    "Toy.RelroGc.NoSharedPage": [
+      "propext"
+    ],
+    "Toy.RelroGc.Op": [],
+    "Toy.RelroGc.Op.call": [],
+    "Toy.RelroGc.Op.call.elim": [],
+    "Toy.RelroGc.Op.call.inj": [],
+    "Toy.RelroGc.Op.call.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Op.call.noConfusion": [],
+    "Toy.RelroGc.Op.call.sizeOf_spec": [],
+    "Toy.RelroGc.Op.casesOn": [],
+    "Toy.RelroGc.Op.ctorElim": [],
+    "Toy.RelroGc.Op.ctorElimType": [],
+    "Toy.RelroGc.Op.ctorIdx": [],
+    "Toy.RelroGc.Op.noConfusion": [],
+    "Toy.RelroGc.Op.noConfusionType": [],
+    "Toy.RelroGc.Op.rec": [],
+    "Toy.RelroGc.Op.recOn": [],
+    "Toy.RelroGc.Op.write": [],
+    "Toy.RelroGc.Op.write.elim": [],
+    "Toy.RelroGc.Op.write.inj": [],
+    "Toy.RelroGc.Op.write.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Op.write.noConfusion": [],
+    "Toy.RelroGc.Op.write.sizeOf_spec": [],
+    "Toy.RelroGc.Out": [],
+    "Toy.RelroGc.Out.casesOn": [],
+    "Toy.RelroGc.Out.ctorElim": [],
+    "Toy.RelroGc.Out.ctorElimType": [],
+    "Toy.RelroGc.Out.ctorIdx": [],
+    "Toy.RelroGc.Out.fault": [],
+    "Toy.RelroGc.Out.fault.elim": [],
+    "Toy.RelroGc.Out.fault.sizeOf_spec": [],
+    "Toy.RelroGc.Out.jump": [],
+    "Toy.RelroGc.Out.jump.elim": [],
+    "Toy.RelroGc.Out.jump.inj": [],
+    "Toy.RelroGc.Out.jump.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Out.jump.noConfusion": [],
+    "Toy.RelroGc.Out.jump.sizeOf_spec": [],
+    "Toy.RelroGc.Out.noConfusion": [],
+    "Toy.RelroGc.Out.noConfusionType": [],
+    "Toy.RelroGc.Out.ok": [],
+    "Toy.RelroGc.Out.ok.elim": [],
+    "Toy.RelroGc.Out.ok.sizeOf_spec": [],
+    "Toy.RelroGc.Out.rec": [],
+    "Toy.RelroGc.Out.recOn": [],
+    "Toy.RelroGc.PageGranular": [],
+    "Toy.RelroGc.Prog2": [],
+    "Toy.RelroGc.Prog2.CompiledPath": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.below": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.below.casesOn": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.below.rec": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.below.root": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.below.step": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.brecOn": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.casesOn": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.rec": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.recOn": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.root": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.CompiledPath.step": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.LinkReach": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.SrcReach": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.Survives": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.casesOn": [],
+    "Toy.RelroGc.Prog2.compiled": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.compiled.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.compiled.match_1": [],
+    "Toy.RelroGc.Prog2.ctorIdx": [],
+    "Toy.RelroGc.Prog2.ledges": [],
+    "Toy.RelroGc.Prog2.mk": [],
+    "Toy.RelroGc.Prog2.mk.inj": [],
+    "Toy.RelroGc.Prog2.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.mk.noConfusion": [],
+    "Toy.RelroGc.Prog2.mk.sizeOf_spec": [],
+    "Toy.RelroGc.Prog2.noConfusion": [],
+    "Toy.RelroGc.Prog2.noConfusionType": [],
+    "Toy.RelroGc.Prog2.objEdges": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.objEdges.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.objRoot": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.objRootB": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.objRootB.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.Prog2.objRootB.match_1": [],
+    "Toy.RelroGc.Prog2.rec": [],
+    "Toy.RelroGc.Prog2.recOn": [],
+    "Toy.RelroGc.Prog2.statics": [],
+    "Toy.RelroGc.ProtAvoidsMut": [
+      "propext"
+    ],
+    "Toy.RelroGc.ProtCoversRelro": [
+      "propext"
+    ],
+    "Toy.RelroGc.Reach": [],
+    "Toy.RelroGc.Reach.below": [],
+    "Toy.RelroGc.Reach.below.casesOn": [],
+    "Toy.RelroGc.Reach.below.rec": [],
+    "Toy.RelroGc.Reach.below.root": [],
+    "Toy.RelroGc.Reach.below.step": [],
+    "Toy.RelroGc.Reach.brecOn": [],
+    "Toy.RelroGc.Reach.casesOn": [],
+    "Toy.RelroGc.Reach.rec": [],
+    "Toy.RelroGc.Reach.recOn": [],
+    "Toy.RelroGc.Reach.root": [],
+    "Toy.RelroGc.Reach.step": [],
+    "Toy.RelroGc.ReachedBefore": [
+      "propext"
+    ],
+    "Toy.RelroGc.RegistryKept": [
+      "propext"
+    ],
+    "Toy.RelroGc.Reloc": [],
+    "Toy.RelroGc.Reloc.AddressOnly": [],
+    "Toy.RelroGc.Reloc.ReadsOnly": [],
+    "Toy.RelroGc.Reloc.casesOn": [],
+    "Toy.RelroGc.Reloc.ctorIdx": [],
+    "Toy.RelroGc.Reloc.mk": [],
+    "Toy.RelroGc.Reloc.mk.inj": [],
+    "Toy.RelroGc.Reloc.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Reloc.mk.noConfusion": [],
+    "Toy.RelroGc.Reloc.mk.sizeOf_spec": [],
+    "Toy.RelroGc.Reloc.noConfusion": [],
+    "Toy.RelroGc.Reloc.noConfusionType": [],
+    "Toy.RelroGc.Reloc.rec": [],
+    "Toy.RelroGc.Reloc.recOn": [],
+    "Toy.RelroGc.Reloc.slot": [],
+    "Toy.RelroGc.Reloc.val": [],
+    "Toy.RelroGc.RelocSlotsWritable": [
+      "propext"
+    ],
+    "Toy.RelroGc.RelocSlotsWritable.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.RelroIs": [
+      "propext"
+    ],
+    "Toy.RelroGc.Rounding": [],
+    "Toy.RelroGc.Rounding.casesOn": [],
+    "Toy.RelroGc.Rounding.ctorElim": [],
+    "Toy.RelroGc.Rounding.ctorElimType": [],
+    "Toy.RelroGc.Rounding.ctorIdx": [],
+    "Toy.RelroGc.Rounding.downDown": [],
+    "Toy.RelroGc.Rounding.downDown.elim": [],
+    "Toy.RelroGc.Rounding.downDown.sizeOf_spec": [],
+    "Toy.RelroGc.Rounding.downUp": [],
+    "Toy.RelroGc.Rounding.downUp.elim": [],
+    "Toy.RelroGc.Rounding.downUp.sizeOf_spec": [],
+    "Toy.RelroGc.Rounding.exact": [],
+    "Toy.RelroGc.Rounding.exact.elim": [],
+    "Toy.RelroGc.Rounding.exact.sizeOf_spec": [],
+    "Toy.RelroGc.Rounding.noConfusion": [],
+    "Toy.RelroGc.Rounding.noConfusionType": [],
+    "Toy.RelroGc.Rounding.ofNat": [],
+    "Toy.RelroGc.Rounding.ofNat_ctorIdx": [],
+    "Toy.RelroGc.Rounding.rec": [],
+    "Toy.RelroGc.Rounding.recOn": [],
+    "Toy.RelroGc.RunPreserved": [
+      "propext"
+    ],
+    "Toy.RelroGc.SSPolicy": [],
+    "Toy.RelroGc.SSPolicy.casesOn": [],
+    "Toy.RelroGc.SSPolicy.conservative": [],
+    "Toy.RelroGc.SSPolicy.conservative.elim": [],
+    "Toy.RelroGc.SSPolicy.conservative.sizeOf_spec": [],
+    "Toy.RelroGc.SSPolicy.ctorElim": [],
+    "Toy.RelroGc.SSPolicy.ctorElimType": [],
+    "Toy.RelroGc.SSPolicy.ctorIdx": [],
+    "Toy.RelroGc.SSPolicy.noConfusion": [],
+    "Toy.RelroGc.SSPolicy.noConfusionType": [],
+    "Toy.RelroGc.SSPolicy.ofNat": [],
+    "Toy.RelroGc.SSPolicy.ofNat_ctorIdx": [],
+    "Toy.RelroGc.SSPolicy.precise": [],
+    "Toy.RelroGc.SSPolicy.precise.elim": [],
+    "Toy.RelroGc.SSPolicy.precise.sizeOf_spec": [],
+    "Toy.RelroGc.SSPolicy.rec": [],
+    "Toy.RelroGc.SSPolicy.recOn": [],
+    "Toy.RelroGc.Sec": [],
+    "Toy.RelroGc.Sec.casesOn": [],
+    "Toy.RelroGc.Sec.ctorIdx": [],
+    "Toy.RelroGc.Sec.entry": [],
+    "Toy.RelroGc.Sec.exported": [],
+    "Toy.RelroGc.Sec.isRoot": [],
+    "Toy.RelroGc.Sec.keep": [],
+    "Toy.RelroGc.Sec.mk": [],
+    "Toy.RelroGc.Sec.mk.inj": [],
+    "Toy.RelroGc.Sec.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Sec.mk.noConfusion": [],
+    "Toy.RelroGc.Sec.mk.sizeOf_spec": [],
+    "Toy.RelroGc.Sec.name": [],
+    "Toy.RelroGc.Sec.noConfusion": [],
+    "Toy.RelroGc.Sec.noConfusionType": [],
+    "Toy.RelroGc.Sec.rec": [],
+    "Toy.RelroGc.Sec.recOn": [],
+    "Toy.RelroGc.Sec.retain": [],
+    "Toy.RelroGc.St": [],
+    "Toy.RelroGc.St.casesOn": [],
+    "Toy.RelroGc.St.ctorIdx": [],
+    "Toy.RelroGc.St.mem": [],
+    "Toy.RelroGc.St.mk": [],
+    "Toy.RelroGc.St.mk.inj": [],
+    "Toy.RelroGc.St.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.St.mk.noConfusion": [],
+    "Toy.RelroGc.St.mk.sizeOf_spec": [],
+    "Toy.RelroGc.St.noConfusion": [],
+    "Toy.RelroGc.St.noConfusionType": [],
+    "Toy.RelroGc.St.rec": [],
+    "Toy.RelroGc.St.recOn": [],
+    "Toy.RelroGc.St.wr": [],
+    "Toy.RelroGc.StartStopUndefined": [
+      "propext"
+    ],
+    "Toy.RelroGc.Static": [],
+    "Toy.RelroGc.Static.casesOn": [],
+    "Toy.RelroGc.Static.cref": [],
+    "Toy.RelroGc.Static.ctorIdx": [],
+    "Toy.RelroGc.Static.cused": [],
+    "Toy.RelroGc.Static.lroot": [],
+    "Toy.RelroGc.Static.mk": [],
+    "Toy.RelroGc.Static.mk.inj": [],
+    "Toy.RelroGc.Static.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Static.mk.noConfusion": [],
+    "Toy.RelroGc.Static.mk.sizeOf_spec": [],
+    "Toy.RelroGc.Static.noConfusion": [],
+    "Toy.RelroGc.Static.noConfusionType": [],
+    "Toy.RelroGc.Static.rec": [],
+    "Toy.RelroGc.Static.recOn": [],
+    "Toy.RelroGc.Static.retain": [],
+    "Toy.RelroGc.Sym": [],
+    "Toy.RelroGc.SymTab": [],
+    "Toy.RelroGc.Trace": [],
+    "Toy.RelroGc.Trace.applyOuts": [],
+    "Toy.RelroGc.Trace.casesOn": [],
+    "Toy.RelroGc.Trace.ctorIdx": [],
+    "Toy.RelroGc.Trace.memAtProtect": [],
+    "Toy.RelroGc.Trace.mk": [],
+    "Toy.RelroGc.Trace.mk.inj": [],
+    "Toy.RelroGc.Trace.mk.injEq": [
+      "propext"
+    ],
+    "Toy.RelroGc.Trace.mk.noConfusion": [],
+    "Toy.RelroGc.Trace.mk.sizeOf_spec": [],
+    "Toy.RelroGc.Trace.noConfusion": [],
+    "Toy.RelroGc.Trace.noConfusionType": [],
+    "Toy.RelroGc.Trace.opOuts": [],
+    "Toy.RelroGc.Trace.rec": [],
+    "Toy.RelroGc.Trace.recOn": [],
+    "Toy.RelroGc.TwoPhaseGuarantees": [
+      "propext"
+    ],
+    "Toy.RelroGc.WriteFaultsAfter": [
+      "propext"
+    ],
+    "Toy.RelroGc.access_predicate_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.access_predicate_examples.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.addressOnlyOrder_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.addressOnly_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.addressOnly_first_group_same_slot_order_dependent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.addressOnly_same_slot_order_dependent": [
+      "propext"
+    ],
+    "Toy.RelroGc.alignDown": [],
+    "Toy.RelroGc.alignDown.eq_1": [],
+    "Toy.RelroGc.alignDown_le": [
+      "propext"
+    ],
+    "Toy.RelroGc.alignDown_le_of_div_ge": [
+      "propext"
+    ],
+    "Toy.RelroGc.alignUp": [],
+    "Toy.RelroGc.alignUp.eq_1": [],
+    "Toy.RelroGc.alignUp_eq_self_of_mod_eq_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.align_examples": [],
+    "Toy.RelroGc.applyAll": [],
+    "Toy.RelroGc.applyAll.eq_1": [],
+    "Toy.RelroGc.applyAll_append_perm_of_resolvers_read_no_resolver_slot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.applyAll_perm_of_addressOnly_of_nodup_slots": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.applyAll_perm_of_readsOnly_of_slots_outside": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.applyReloc": [],
+    "Toy.RelroGc.applyReloc.eq_1": [],
+    "Toy.RelroGc.applyReloc_comm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.bindReloc": [],
+    "Toy.RelroGc.bindReloc.eq_1": [],
+    "Toy.RelroGc.binding_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.bindings_callWorks_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.bindings_callWorks_of_eagerRelroOrLazyMut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.bindings_iff_cex_call_faults": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.bindings_iff_cex_eager_outside_relro": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.bindings_iff_cex_no_cover": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.bindings_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.bindings_writeFaultsAfter_iff_eager_of_eagerRelroOrLazy_of_callWorks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.callWorks_cex_cover_mut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.callWorks_cex_lazy_in_relro": [
+      "propext"
+    ],
+    "Toy.RelroGc.callWorks_cex_slot_not_writable": [
+      "propext"
+    ],
+    "Toy.RelroGc.cfgMutCovered": [],
+    "Toy.RelroGc.cfgMutCovered.eq_1": [],
+    "Toy.RelroGc.cfgMutReloc": [],
+    "Toy.RelroGc.cfgMutReloc.eq_1": [],
+    "Toy.RelroGc.cfgNoProt": [],
+    "Toy.RelroGc.cfgNoProt.eq_1": [],
+    "Toy.RelroGc.cfgProtMut": [],
+    "Toy.RelroGc.cfgRelroRo": [],
+    "Toy.RelroGc.cfgRelroRo.eq_1": [],
+    "Toy.RelroGc.cfgRoMutReloc": [],
+    "Toy.RelroGc.cfgRoMutReloc.eq_1": [],
+    "Toy.RelroGc.cfgSlotRo": [],
+    "Toy.RelroGc.cfgSlotRo.eq_1": [],
+    "Toy.RelroGc.cfgTwoRelro": [],
+    "Toy.RelroGc.coarsening_cex_not_kept": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.coarsening_cex_refinement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.coarsening_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.compileKeeps": [],
+    "Toy.RelroGc.compileKeeps.eq_1": [],
+    "Toy.RelroGc.compileKept_and_srcReach_not_sufficient": [
+      "propext"
+    ],
+    "Toy.RelroGc.compileKept_and_srcReach_not_sufficient.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.compiledPath_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.compiled_of_linkReach": [
+      "propext"
+    ],
+    "Toy.RelroGc.compilerUsed_unretained_unreachable_removed": [
+      "propext"
+    ],
+    "Toy.RelroGc.compilerUsed_unretained_unreachable_removed.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.conservative_cex_dead_referencer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.conservative_cex_no_reference": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.conservative_registryKept_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.conservative_registryKept_of_live_reference": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.data_slot_cex_covered": [
+      "propext"
+    ],
+    "Toy.RelroGc.data_slot_cex_load_fault": [
+      "propext"
+    ],
+    "Toy.RelroGc.data_slot_cex_relro_slot": [
+      "propext"
+    ],
+    "Toy.RelroGc.div_eq_of_alignDown_le": [
+      "propext"
+    ],
+    "Toy.RelroGc.div_eq_of_lt_alignUp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.downDown_avoidsMut_cex_firstPage": [
+      "propext"
+    ],
+    "Toy.RelroGc.downDown_avoidsMut_cex_relroIs": [
+      "propext"
+    ],
+    "Toy.RelroGc.downDown_avoidsMut_of_firstPage_noMut": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.downDown_coversRelro_iff_cex_empty": [
+      "propext"
+    ],
+    "Toy.RelroGc.downDown_coversRelro_iff_cex_relroIs": [
+      "propext"
+    ],
+    "Toy.RelroGc.downDown_coversRelro_iff_end_aligned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.downDown_coversRelro_iff_end_aligned.match_1_10": [],
+    "Toy.RelroGc.downDown_unpaddedEnd_tail_write_succeeds": [
+      "propext"
+    ],
+    "Toy.RelroGc.downUp_avoidsMut_iff_cex_empty": [
+      "propext"
+    ],
+    "Toy.RelroGc.downUp_avoidsMut_iff_cex_pageZero": [
+      "propext"
+    ],
+    "Toy.RelroGc.downUp_avoidsMut_iff_cex_relroIs": [
+      "propext"
+    ],
+    "Toy.RelroGc.downUp_avoidsMut_iff_partialPages_noMut": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.downUp_coversRelro": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.downUp_coversRelro.match_1_1": [],
+    "Toy.RelroGc.downUp_coversRelro_cex_pageZero": [
+      "propext"
+    ],
+    "Toy.RelroGc.downUp_coversRelro_cex_relroIs": [
+      "propext"
+    ],
+    "Toy.RelroGc.downUp_covers_avoids_iff_exists_pageGranular": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.downUp_sharedLastPage_mut_write_faults": [
+      "propext"
+    ],
+    "Toy.RelroGc.eagerBound_eagerCfg": [
+      "propext"
+    ],
+    "Toy.RelroGc.eagerCfg": [],
+    "Toy.RelroGc.eagerCfg.eq_1": [],
+    "Toy.RelroGc.eagerMutCfg": [],
+    "Toy.RelroGc.eagerMutCfg.eq_1": [],
+    "Toy.RelroGc.eagerRelroOrLazyMut_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.eagerRelroOrLazyMut_lazyMutCovered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.eagerRelroOrLazyMut_mixedCfg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.eagerRelroOrLazy_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.eagerRelroOrLazy_of_eagerRelroOrLazyMut": [
+      "propext"
+    ],
+    "Toy.RelroGc.eager_relro_callWorks_and_writeFaultsAfter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.empty_registry_kept_and_undefined": [
+      "propext"
+    ],
+    "Toy.RelroGc.empty_registry_kept_and_undefined.match_1_1": [],
+    "Toy.RelroGc.endAligned_firstPage_mut_no_pageGranular_protection": [
+      "propext"
+    ],
+    "Toy.RelroGc.exists_pageGranular_covers_avoids_iff_noSharedPage": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.exists_pageGranular_covers_avoids_iff_partialPages_noMut": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.exists_pageGranular_iff_cex_empty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.exists_pageGranular_iff_cex_pageZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.exists_pageGranular_iff_cex_relroIs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.exists_valid_run_of_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.gcDeadRef": [],
+    "Toy.RelroGc.gcDeadRef.eq_1": [],
+    "Toy.RelroGc.gcEmptyReg": [],
+    "Toy.RelroGc.gcEmptyReg.eq_1": [],
+    "Toy.RelroGc.gcPair": [],
+    "Toy.RelroGc.gcPair.eq_1": [],
+    "Toy.RelroGc.gcPair_not_live_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.gcPhantom": [],
+    "Toy.RelroGc.gcPhantom.eq_1": [],
+    "Toy.RelroGc.gcReg": [],
+    "Toy.RelroGc.gcReg.eq_1": [],
+    "Toy.RelroGc.gcSoundness_bounds_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_bounds_nonvacuity.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_bounds_nonvacuity.match_1_3": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_bounds_nonvacuity.match_1_5": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_cex_bounds_access_unretained": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_cex_bounds_access_unretained.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_cex_bounds_access_unretained.match_1_3": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_cex_edge_access_without_edge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_cex_edge_access_without_edge.match_1_2": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_cex_edge_access_without_edge.match_1_4": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_cex_implicit_access_to_nonroot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_cex_implicit_access_to_nonroot.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_cex_implicit_access_to_nonroot.match_1_3": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_nonvacuity.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_nonvacuity.match_1_4": [
+      "propext"
+    ],
+    "Toy.RelroGc.gcSoundness_nonvacuity.match_1_6": [
+      "propext"
+    ],
+    "Toy.RelroGc.getElem?_append_singleton_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.goodCfg": [],
+    "Toy.RelroGc.goodCfg.eq_1": [],
+    "Toy.RelroGc.insertAt": [],
+    "Toy.RelroGc.insertAt.eq_1": [],
+    "Toy.RelroGc.instDecidableAvoidsMut": [
+      "propext"
+    ],
+    "Toy.RelroGc.instDecidableCoversRelro": [
+      "propext"
+    ],
+    "Toy.RelroGc.instDecidableEqAcc": [],
+    "Toy.RelroGc.instDecidableEqAcc.decEq": [],
+    "Toy.RelroGc.instDecidableEqAcc.decEq.match_1": [],
+    "Toy.RelroGc.instDecidableEqKind": [],
+    "Toy.RelroGc.instDecidableEqOut": [],
+    "Toy.RelroGc.instDecidableEqOut.decEq": [],
+    "Toy.RelroGc.instDecidableEqOut.decEq.match_1": [],
+    "Toy.RelroGc.instDecidableEqRounding": [],
+    "Toy.RelroGc.instDecidableEqSSPolicy": [],
+    "Toy.RelroGc.instDecidableEqSec": [],
+    "Toy.RelroGc.instDecidableEqSec.decEq": [],
+    "Toy.RelroGc.instDecidableEqSec.decEq.match_1": [],
+    "Toy.RelroGc.instDecidableEqStatic": [],
+    "Toy.RelroGc.instDecidableEqStatic.decEq": [],
+    "Toy.RelroGc.instDecidableEqStatic.decEq.match_1": [],
+    "Toy.RelroGc.instDecidableIsRoot": [
+      "propext"
+    ],
+    "Toy.RelroGc.instDecidableLoadOk": [],
+    "Toy.RelroGc.instDecidableNoEdgeIntoName": [
+      "propext"
+    ],
+    "Toy.RelroGc.instDecidableNoMutIn": [
+      "propext"
+    ],
+    "Toy.RelroGc.instDecidableNoSharedPage": [
+      "propext"
+    ],
+    "Toy.RelroGc.instDecidableProtAvoidsMut": [
+      "propext"
+    ],
+    "Toy.RelroGc.instDecidableProtCoversRelro": [
+      "propext"
+    ],
+    "Toy.RelroGc.instDecidableRelocSlotsWritable": [
+      "propext"
+    ],
+    "Toy.RelroGc.instDecidableRelroIs": [
+      "propext"
+    ],
+    "Toy.RelroGc.instReprAcc": [],
+    "Toy.RelroGc.instReprAcc.repr": [],
+    "Toy.RelroGc.instReprAcc.repr.match_1": [],
+    "Toy.RelroGc.instReprKind": [],
+    "Toy.RelroGc.instReprKind.repr": [],
+    "Toy.RelroGc.instReprKind.repr.match_1": [],
+    "Toy.RelroGc.instReprOut": [],
+    "Toy.RelroGc.instReprOut.repr": [],
+    "Toy.RelroGc.instReprOut.repr.match_1": [],
+    "Toy.RelroGc.instReprRounding": [],
+    "Toy.RelroGc.instReprRounding.repr": [],
+    "Toy.RelroGc.instReprRounding.repr.match_1": [],
+    "Toy.RelroGc.instReprSSPolicy": [],
+    "Toy.RelroGc.instReprSSPolicy.repr": [],
+    "Toy.RelroGc.instReprSSPolicy.repr.match_1": [],
+    "Toy.RelroGc.instReprSec": [],
+    "Toy.RelroGc.instReprSec.repr": [],
+    "Toy.RelroGc.instReprStatic": [],
+    "Toy.RelroGc.instReprStatic.repr": [],
+    "Toy.RelroGc.isRootB_eq_false_of_ge": [
+      "propext"
+    ],
+    "Toy.RelroGc.itemEdges": [],
+    "Toy.RelroGc.itemEdges.eq_1": [],
+    "Toy.RelroGc.itemRoot": [],
+    "Toy.RelroGc.itemRoot.eq_1": [],
+    "Toy.RelroGc.keptItem_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.keptItem_of_keptItem_of_coarsening": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.layoutMutRelro": [],
+    "Toy.RelroGc.layoutRelro3": [],
+    "Toy.RelroGc.layoutRelro3Mut": [],
+    "Toy.RelroGc.lazyBound_lazyMutCfg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.lazyBound_lazyRelroCfg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.lazyBound_not_callWorks_and_writeFaultsAfter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.lazyMutCfg": [],
+    "Toy.RelroGc.lazyMutCfg.eq_1": [],
+    "Toy.RelroGc.lazyRelroCfg": [],
+    "Toy.RelroGc.lazyRelroCfg.eq_1": [],
+    "Toy.RelroGc.lazy_inside_protect_writeFaultsAfter_first_call_faults": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.le_alignUp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.linkReach_closed": [
+      "propext"
+    ],
+    "Toy.RelroGc.linkResolve": [],
+    "Toy.RelroGc.linkResolve.eq_1": [],
+    "Toy.RelroGc.linkResolve_examples": [],
+    "Toy.RelroGc.linkResolved_cex_mut_slot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.linkResolved_rodata_loadOk_writeFaultsAfter_and_image": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.live_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.live_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.live_iff_exists_valid_run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.live_iff_root_or_conservative_reference_of_noEdgeIntoName": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.loadOk_twoPhase_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.loader_predicate_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.lt_alignUp_of_div_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.lt_of_nameOf_eq_some": [
+      "propext"
+    ],
+    "Toy.RelroGc.mapWr": [
+      "propext"
+    ],
+    "Toy.RelroGc.mapWr.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.mapWr.match_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.mapWr_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.mem_ssEdges_conservative": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.mixedCfg": [],
+    "Toy.RelroGc.mixedCfg.eq_1": [],
+    "Toy.RelroGc.mkSec": [],
+    "Toy.RelroGc.mkSec.eq_1": [],
+    "Toy.RelroGc.nameOf_gcReg_eq": [
+      "propext"
+    ],
+    "Toy.RelroGc.nameOf_gcReg_eq.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.noMutIn_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.noSharedPage_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.noSharedPage_iff_cex_empty": [
+      "propext"
+    ],
+    "Toy.RelroGc.noSharedPage_iff_cex_pageZero": [
+      "propext"
+    ],
+    "Toy.RelroGc.noSharedPage_iff_cex_relroIs": [
+      "propext"
+    ],
+    "Toy.RelroGc.noSharedPage_iff_partialPages_noMut": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.noSharedPage_iff_partialPages_noMut.match_1_7": [],
+    "Toy.RelroGc.nonAddressOnly_first_group_order_dependent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.noncontiguous_relro_noSharedPage_no_single_interval": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.not_eagerRelroOrLazyMut_lazyRelroCfg": [
+      "propext"
+    ],
+    "Toy.RelroGc.order_cex_not_perm": [
+      "propext"
+    ],
+    "Toy.RelroGc.pageGranular_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.pageRounding_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.partial_relro_lazy_slot_write_redirects_call": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.phantom_section_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.pic_data_slot_loads_and_write_succeeds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.pic_loadOk_and_writeFaultsAfter_iff_relro": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.pic_relro_slot_loads_and_writeFaultsAfter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.pic_rodata_cex_link_resolved": [
+      "propext"
+    ],
+    "Toy.RelroGc.pic_rodata_cex_relro_slot": [
+      "propext"
+    ],
+    "Toy.RelroGc.pic_rodata_slot_load_faults": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.placement_iff_cex_cover_mut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.placement_iff_cex_no_cover": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.placement_iff_cex_not_dynamic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.placement_iff_cex_other_reloc": [
+      "propext"
+    ],
+    "Toy.RelroGc.placement_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.postLoad": [
+      "propext"
+    ],
+    "Toy.RelroGc.postLoad.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.precise_drops_cex_edge_into_entry": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.precise_drops_cex_rooted_entry": [
+      "propext"
+    ],
+    "Toy.RelroGc.precise_drops_unrooted_entries_of_noEdgeIntoName": [
+      "propext"
+    ],
+    "Toy.RelroGc.protCfg": [],
+    "Toy.RelroGc.rAddr0": [],
+    "Toy.RelroGc.rConst0": [],
+    "Toy.RelroGc.rConst0.eq_1": [],
+    "Toy.RelroGc.rRes1": [],
+    "Toy.RelroGc.rRes1.eq_1": [],
+    "Toy.RelroGc.rRes2of1": [],
+    "Toy.RelroGc.rRes2of1.eq_1": [],
+    "Toy.RelroGc.rRes3of2": [],
+    "Toy.RelroGc.rRes3of2.eq_1": [],
+    "Toy.RelroGc.rRes4of9": [],
+    "Toy.RelroGc.rRes4of9.eq_1": [],
+    "Toy.RelroGc.rangeMask": [],
+    "Toy.RelroGc.rangeMask.eq_1": [],
+    "Toy.RelroGc.reach_closed": [],
+    "Toy.RelroGc.reach_of_access": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.reach_secEdges_map": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.reachedBefore_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.reachedBefore_append_end": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.readsOnly_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.registryKept_iff_cex_edges_into_entries": [
+      "propext"
+    ],
+    "Toy.RelroGc.registryKept_iff_of_noEdgeIntoName": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.registryKept_of_entries_rooted": [
+      "propext"
+    ],
+    "Toy.RelroGc.registryKept_of_entries_rooted_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.registryScan": [
+      "propext"
+    ],
+    "Toy.RelroGc.registryScan_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.registryScan_preserved_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.registry_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.registry_iff_cex_edge_into_entry": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.registry_iff_cex_other_name": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.registry_keep_or_retain_kept_precise": [
+      "propext"
+    ],
+    "Toy.RelroGc.registry_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.registry_precise_link_failure_conservative_kept": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.registry_precise_silent_shrink": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.relocationOrder_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.relroIs_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.relro_slot_cex_load_fault": [
+      "propext"
+    ],
+    "Toy.RelroGc.relro_slot_cex_mut_slot": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.relro_slot_cex_no_cover": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.resolverOrder_cex_not_permA": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.resolverOrder_cex_not_permR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.resolver_overwrites_addressOnly_slot_order_dependent": [
+      "propext"
+    ],
+    "Toy.RelroGc.resolver_reads_unrelocated_slot_order_dependent": [
+      "propext"
+    ],
+    "Toy.RelroGc.resolvers_read_resolver_slot_order_dependent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.resolvers_same_slot_order_dependent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.retained_but_compiler_dropped": [
+      "propext"
+    ],
+    "Toy.RelroGc.retained_but_compiler_dropped.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.rooted_cex_unrooted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.roundedMask": [],
+    "Toy.RelroGc.roundedMask.eq_1": [],
+    "Toy.RelroGc.roundedMask.eq_2": [],
+    "Toy.RelroGc.roundedMask.eq_3": [],
+    "Toy.RelroGc.roundedMask_downDown_pageGranular": [
+      "propext"
+    ],
+    "Toy.RelroGc.roundedMask_downUp_pageGranular": [
+      "propext"
+    ],
+    "Toy.RelroGc.roundedMask_empty_examples": [],
+    "Toy.RelroGc.roundedMask_eq_false_of_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.roundedMask_examples": [],
+    "Toy.RelroGc.runPreserved_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.runPreserved_of_edgeAccessesFollowEdges_of_implicitAccessesHitRoots_of_boundsAccessesRetained": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.runPreserved_registryScan_iff_registryKept": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.runT": [],
+    "Toy.RelroGc.runT.eq_1": [],
+    "Toy.RelroGc.runT.eq_2": [],
+    "Toy.RelroGc.runT.eq_3": [],
+    "Toy.RelroGc.runT.eq_4": [],
+    "Toy.RelroGc.runT.eq_def": [],
+    "Toy.RelroGc.runT.match_1": [],
+    "Toy.RelroGc.runT_applies": [
+      "propext"
+    ],
+    "Toy.RelroGc.runT_applies.match_1_1": [],
+    "Toy.RelroGc.runT_ops_applyOuts": [],
+    "Toy.RelroGc.runT_ops_applyOuts.match_1_1": [],
+    "Toy.RelroGc.runT_ops_memAtProtect": [],
+    "Toy.RelroGc.runT_ops_memAtProtect.match_1_1": [],
+    "Toy.RelroGc.runT_ops_write": [
+      "propext"
+    ],
+    "Toy.RelroGc.runT_ops_write.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.sa0": [],
+    "Toy.RelroGc.secEdges": [],
+    "Toy.RelroGc.secEdges.eq_1": [],
+    "Toy.RelroGc.secFine": [],
+    "Toy.RelroGc.secFine.eq_1": [],
+    "Toy.RelroGc.secRoot": [],
+    "Toy.RelroGc.secShared": [],
+    "Toy.RelroGc.secShared.eq_1": [],
+    "Toy.RelroGc.sec_isRoot_examples": [],
+    "Toy.RelroGc.srcReach_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.srcReach_examples.match_1_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.ssEdges_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.stMain": [],
+    "Toy.RelroGc.stPlain": [],
+    "Toy.RelroGc.stPlain.eq_1": [],
+    "Toy.RelroGc.stRetainOnly": [],
+    "Toy.RelroGc.stUsedOnly": [],
+    "Toy.RelroGc.stUsedRetained": [],
+    "Toy.RelroGc.stepApply": [],
+    "Toy.RelroGc.stepApply.eq_1": [],
+    "Toy.RelroGc.stepOp": [],
+    "Toy.RelroGc.stepOp.eq_1": [],
+    "Toy.RelroGc.stepOp.eq_2": [],
+    "Toy.RelroGc.stepOp.match_1": [],
+    "Toy.RelroGc.stepOp.match_3": [],
+    "Toy.RelroGc.stepOp_wr": [],
+    "Toy.RelroGc.stepProtect": [],
+    "Toy.RelroGc.stepProtect.eq_1": [],
+    "Toy.RelroGc.survives_conjunction_cex_without_lookup": [
+      "propext"
+    ],
+    "Toy.RelroGc.survives_iff_compileKept_and_linkReach_or_retain": [
+      "propext"
+    ],
+    "Toy.RelroGc.survives_iff_compiledPath": [
+      "propext"
+    ],
+    "Toy.RelroGc.survives_iff_linkReach": [
+      "propext"
+    ],
+    "Toy.RelroGc.symReloc": [],
+    "Toy.RelroGc.symReloc.eq_1": [],
+    "Toy.RelroGc.timeline": [],
+    "Toy.RelroGc.timeline.eq_1": [],
+    "Toy.RelroGc.trace": [
+      "propext"
+    ],
+    "Toy.RelroGc.trace.eq_1": [
+      "propext"
+    ],
+    "Toy.RelroGc.trace_twoPhase": [
+      "propext"
+    ],
+    "Toy.RelroGc.tryApplyAll": [],
+    "Toy.RelroGc.tryApplyAll.eq_1": [],
+    "Toy.RelroGc.tryApplyAll_bind": [
+      "propext"
+    ],
+    "Toy.RelroGc.tryApplyAll_bind.match_1_1": [],
+    "Toy.RelroGc.tryApplyAll_eq_applyAll": [
+      "propext"
+    ],
+    "Toy.RelroGc.tryApplyAll_eq_applyAll.match_1_1": [],
+    "Toy.RelroGc.tryApplyAll_other": [
+      "propext"
+    ],
+    "Toy.RelroGc.tryApplyAll_other.match_1_1": [],
+    "Toy.RelroGc.twoPhase": [],
+    "Toy.RelroGc.twoPhase.eq_1": [],
+    "Toy.RelroGc.twoPhaseGuarantees_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.twoPhaseGuarantees_of_slotsWritable_of_protectAfterRelocs_of_covers_of_avoids": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.twoPhase_cex_prot_covers_mut": [
+      "propext"
+    ],
+    "Toy.RelroGc.twoPhase_cex_prot_misses_relro": [
+      "propext"
+    ],
+    "Toy.RelroGc.twoPhase_cex_protect_after_entry": [
+      "propext"
+    ],
+    "Toy.RelroGc.twoPhase_cex_protect_before_last_reloc": [
+      "propext"
+    ],
+    "Toy.RelroGc.twoPhase_cex_slot_not_writable": [
+      "propext"
+    ],
+    "Toy.RelroGc.twoPhase_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.twoStage_examples": [
+      "propext"
+    ],
+    "Toy.RelroGc.twoStage_nonvacuity": [
+      "propext"
+    ],
+    "Toy.RelroGc.unreferenced_item_kept_when_sharing_live_section": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.upd": [],
+    "Toy.RelroGc.upd.eq_1": [],
+    "Toy.RelroGc.writeFaultsAfter_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.RelroGc.writeFaultsAfter_iff": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

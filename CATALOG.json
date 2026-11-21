@@ -74393,6 +74393,130 @@
         "compilers/linking"
       ]
     },
+    "relro-two-phase-relocation-permission-freeze-and-linker-section-gc-retention-roots": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/pgec.1966.264565"
+          },
+          "name": "Analysis of Programs for Parallel Processing (Bernstein, IEEE Transactions on Electronic Computers 1966)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/224164.224182"
+          },
+          "name": "Abstract models of memory management (Morrisett, Felleisen, Harper, FPCA 1995)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2738006"
+          },
+          "name": "Relaxing safely: verified on-the-fly garbage collection for x86-TSO (Gammie, Hosking, Engelhardt, PLDI 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2983996"
+          },
+          "name": "The missing link: explaining ELF static linking, semantically (Kell, Mulligan, Sewell, OOPSLA 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428265"
+          },
+          "name": "CompCertELF: verified separate compilation of C programs into ELF object files (Wang, Xu, Wilke, Shao, OOPSLA 2020)"
+        },
+        {
+          "identity": {
+            "repository": "https://sourceware.org/git/binutils-gdb.git",
+            "revision": "c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9",
+            "version": "binutils-2_42"
+          },
+          "name": "GNU binutils 2.42 (GNU ld manual, ld/NEWS)"
+        },
+        {
+          "identity": {
+            "repository": "https://sourceware.org/git/binutils-gdb.git",
+            "revision": "9288e0fae61b716ce75334be906283de8b18b787",
+            "version": "binutils-2_36"
+          },
+          "name": "GNU binutils 2.36 (ld/NEWS, gas/NEWS)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4",
+            "version": "llvmorg-19.1.0"
+          },
+          "name": "LLVM 19.1.0 (lld, Clang attribute documentation, LLVM LangRef, target lowering)"
+        },
+        {
+          "identity": {
+            "repository": "https://sourceware.org/git/glibc.git",
+            "revision": "3d1aed874918c466a4477af1da35983ab036690e",
+            "version": "glibc-2.40"
+          },
+          "name": "GNU C Library 2.40 (dynamic loader)"
+        },
+        {
+          "identity": {
+            "repository": "https://git.musl-libc.org/git/musl",
+            "revision": "0784374d561435f7c787a555aeab8ede699ed298",
+            "version": "v1.2.5"
+          },
+          "name": "musl libc 1.2.5 (dynamic linker)"
+        },
+        {
+          "identity": {
+            "repository": "freebsd/freebsd-src",
+            "revision": "f389e68ca980b7e053a34d9eddde89b4c2a1ee6c",
+            "version": "releng/14.1"
+          },
+          "name": "FreeBSD runtime linker (rtld-elf)"
+        },
+        {
+          "identity": {
+            "repository": "aosp-mirror/platform_bionic",
+            "revision": "e4df46f213d8d363017dce7ded5d1f2159614425",
+            "version": "android14-release"
+          },
+          "name": "Android Bionic dynamic linker"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "50bc9185c2821350f0b785d6e23a6e9dcde58466",
+            "version": "releases/gcc-11.1.0"
+          },
+          "name": "GCC 11.1.0 manual (variable attributes, optimize options)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (the used attribute, src/abi.md)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "security/relro",
+        "security/memory-protection",
+        "systems/dynamic-loading",
+        "compilers/relocations",
+        "compilers/linker-section-garbage-collection",
+        "compilers/symbol-retention"
+      ]
+    },
     "repr-c-layout-algebra-dst-tails-and-enum-tags": {
       "observed_at": "2026-11-20",
       "subjects": [

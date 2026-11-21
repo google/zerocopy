@@ -1,0 +1,1201 @@
+[
+  {
+    "id": "R1",
+    "lean": "Toy.RelroGc.twoPhaseGuarantees_of_slotsWritable_of_protectAfterRelocs_of_covers_of_avoids",
+    "lean_names": [
+      "Toy.RelroGc.timeline",
+      "Toy.RelroGc.twoPhase",
+      "Toy.RelroGc.TwoPhaseGuarantees",
+      "Toy.RelroGc.applyAll",
+      "Toy.RelroGc.goodCfg",
+      "Toy.RelroGc.twoPhaseGuarantees_examples",
+      "Toy.RelroGc.RelocSlotsWritable",
+      "Toy.RelroGc.ProtCoversRelro",
+      "Toy.RelroGc.ProtAvoidsMut",
+      "Toy.RelroGc.trace_twoPhase",
+      "Toy.RelroGc.postLoad",
+      "Toy.RelroGc.tryApplyAll",
+      "Toy.RelroGc.Cfg",
+      "Toy.RelroGc.Cfg.start",
+      "Toy.RelroGc.Ev",
+      "Toy.RelroGc.LoadOk",
+      "Toy.RelroGc.Mem",
+      "Toy.RelroGc.Op",
+      "Toy.RelroGc.Out",
+      "Toy.RelroGc.Rounding",
+      "Toy.RelroGc.St",
+      "Toy.RelroGc.Sym",
+      "Toy.RelroGc.SymTab",
+      "Toy.RelroGc.Trace",
+      "Toy.RelroGc.addressOnly_examples",
+      "Toy.RelroGc.align_examples",
+      "Toy.RelroGc.applyReloc",
+      "Toy.RelroGc.bindReloc",
+      "Toy.RelroGc.binding_examples",
+      "Toy.RelroGc.cfgProtMut",
+      "Toy.RelroGc.cfgRelroRo",
+      "Toy.RelroGc.cfgRoMutReloc",
+      "Toy.RelroGc.cfgTwoRelro",
+      "Toy.RelroGc.eagerRelroOrLazyMut_examples",
+      "Toy.RelroGc.eagerRelroOrLazy_examples",
+      "Toy.RelroGc.insertAt",
+      "Toy.RelroGc.linkResolve_examples",
+      "Toy.RelroGc.live_examples",
+      "Toy.RelroGc.loader_predicate_examples",
+      "Toy.RelroGc.mapWr_examples",
+      "Toy.RelroGc.noMutIn_examples",
+      "Toy.RelroGc.pageGranular_examples",
+      "Toy.RelroGc.readsOnly_examples",
+      "Toy.RelroGc.relroIs_examples",
+      "Toy.RelroGc.roundedMask_empty_examples",
+      "Toy.RelroGc.roundedMask_examples",
+      "Toy.RelroGc.runPreserved_examples",
+      "Toy.RelroGc.runT",
+      "Toy.RelroGc.sa0",
+      "Toy.RelroGc.ssEdges_examples",
+      "Toy.RelroGc.stepApply",
+      "Toy.RelroGc.stepOp",
+      "Toy.RelroGc.stepProtect",
+      "Toy.RelroGc.trace",
+      "Toy.RelroGc.upd",
+      "Toy.RelroGc.writeFaultsAfter_examples"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every loader input c, symbol table sa, program ops and protect position k, consider the timeline produced by `timeline c ops k` (the relocations of c in list order, then the program operations ops, with one protect event inserted at position k). If (H1) every relocated slot is mapped writable, (H2) k = c.relocs.length (protect right after the last relocation and before the first program operation), (H3) protect covers every RELRO byte, and (H4) protect covers no mutable byte, then no relocation faults, the memory at protect equals the fully relocated image applyAll sa c.relocs c.init, every program write to a RELRO byte faults, and every program write to a mutable byte succeeds.",
+    "hypotheses": [
+      {
+        "name": "hWr : RelocSlotsWritable c",
+        "purpose": "relocations write their slots while they are applied",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.twoPhase_cex_slot_not_writable",
+        "witness_class": "a toy loader input with at most two bytes and at most two relocations"
+      },
+      {
+        "name": "hOrder : k = c.relocs.length",
+        "purpose": "protect after the last relocation and before entry (two violation modes)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.RelroGc.twoPhase_cex_protect_before_last_reloc",
+          "Toy.RelroGc.twoPhase_cex_protect_after_entry"
+        ],
+        "witness_class": "a toy loader input with at most two bytes and at most two relocations"
+      },
+      {
+        "name": "hCover : ProtCoversRelro c",
+        "purpose": "every RELRO byte becomes read-only (used by the third conclusion)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.twoPhase_cex_prot_misses_relro",
+        "witness_class": "a toy loader input with at most two bytes and at most two relocations"
+      },
+      {
+        "name": "hAvoid : ProtAvoidsMut c",
+        "purpose": "mutable statics stay writable (used by the fourth conclusion)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.twoPhase_cex_prot_covers_mut",
+        "witness_class": "a toy loader input with at most two bytes and at most two relocations"
+      }
+    ],
+    "nonvacuity_witness": "goodCfg (byte 0 RELRO with one relocation, byte 1 mutable, protect covers exactly byte 0) with k = 1 satisfies all four hypotheses (twoPhase_nonvacuity); twoPhaseGuarantees_examples applies the theorem to it with ops = [write 0 5, write 1 5].",
+    "nonvacuity_witness_lean": "Toy.RelroGc.twoPhase_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "The claim is for timelines produced by the generator timeline (relocations in list order, exactly one protect event inserted at position k). Several protect calls, several objects relocated one after another, concurrent threads, and permission changes requested by the program after entry are not modeled.",
+      "Integrity here means that every program write to a RELRO byte faults. It says nothing about reads, about writes by the loader after entry (lazy binding is result R3), or about values written before protect. TwoPhaseGuarantees records the memory at protect and the outcomes of program writes; it states no invariance of memory contents across later program states, and writes by anything other than the program (debuggers, devices) are not modeled.",
+      "It does not say how a real linker decides which bytes are RELRO, nor how protect is computed from page rounding (results R4a-R4g).",
+      "The toy tracks write permission alone (mapWr, stepProtect, AvoidsMut and ProtAvoidsMut concern writability and mutable bytes); execute permission is not modeled. A real protection call requesting read-only access (such as mprotect with PROT_READ) also withholds execute permission, so covering code bytes can fault instruction fetch even where the toy's avoidance condition holds; the card neither establishes nor refutes anything about execute permission.",
+      "The countermodels show each hypothesis is tight in this toy (loader inputs of at most two bytes); they do not show that every real loader violating a hypothesis is exploitable."
+    ],
+    "prior_art": [
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1560-1563 (body of the item `relro` / `norelro`, lines 1558-1559; Texinfo markup removed): \"Create an ELF PT_GNU_RELRO segment header in the object. This specifies a memory segment that should be made read-only after relocation, if supported. Specifying common-page-size smaller than the system page size will render this protection ineffective.\" Basis: documentation.",
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/dl-reloc.c lines 353-370, function _dl_protect_relro (paraphrase of the source): start = ALIGN_DOWN(l_addr + l_relro_addr, pagesize), end = ALIGN_DOWN(l_addr + l_relro_addr + l_relro_size, pagesize), and __mprotect(start, end - start, PROT_READ) is called only if start != end; line 301 of _dl_relocate_object calls ELF_DYNAMIC_RELOCATE, and lines 348-349 then run \"if (l->l_relro_size != 0)\" / \"_dl_protect_relro (l);\". Basis: source. Derived (modeling bridge): the toy's down-down policy has the same rounding shape (both ends rounded down), and the toy's two-phase timeline has the same relocate-then-protect order for one object. The protection requested is PROT_READ, which also withholds execute permission; the toy tracks write permission alone.",
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/elf.h line 729: \"#define PT_GNU_RELRO 0x6474e552 /* Read-only after relocation */\". Basis: source. The Linux Standard Base text for PT_GNU_RELRO was not verified (the hosting site served an automated bot-check page, which was not bypassed).",
+      "S. Kell, D. P. Mulligan, P. Sewell, \"The missing link: explaining ELF static linking, semantically\", OOPSLA 2016, pp. 607-623, doi:10.1145/2983990.2983996: a Lem/Isabelle specification of static ELF linking; it states about --gc-sections \"we currently do not model it\" and restricts itself to static linking (no load-time relocation or RELRO protection).",
+      "Y. Wang, X. Xu, P. Wilke, Z. Shao, \"CompCertELF: verified separate compilation of C programs into ELF object files\", Proceedings of the ACM on Programming Languages 4 (OOPSLA), 2020, pp. 1-28, doi:10.1145/3428265 (bibliographic record verified via Crossref; described here by its title, the paper text was not re-read for this package). Mechanized ELF object generation and linking; it is cited as related mechanized work, not as covering dynamic loading, RELRO protection or section GC.",
+      "Novelty record: a bounded search (web search and Crossref, 2026-11-21) found the mechanized ELF-linking work of Kell, Mulligan and Sewell (doi:10.1145/2983990.2983996) and CompCertELF (doi:10.1145/3428265); no mechanized model of RELRO page rounding, linker GC retention roots, or compiler-then-linker retention was found. The tier is T1 (folklore made precise), not a novelty claim."
+    ],
+    "design_question": "RELRO: which load-time conditions (writability during relocation, protect placement, coverage of RELRO, non-coverage of mutable data) must a verified toolchain assume so that the program starts with the relocated image and immutable data is write-protected after entry?"
+  },
+  {
+    "id": "R2a",
+    "lean": "Toy.RelroGc.pic_rodata_slot_load_faults",
+    "lean_names": [
+      "Toy.RelroGc.cfgSlotRo",
+      "Toy.RelroGc.mapWr",
+      "Toy.RelroGc.loadOk_twoPhase_iff",
+      "Toy.RelroGc.linkResolve",
+      "Toy.RelroGc.linkResolved_rodata_loadOk_writeFaultsAfter_and_image",
+      "Toy.RelroGc.pic_rodata_cex_link_resolved"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "If a dynamic relocation r of loader input c (r ∈ c.relocs, that is, r is applied by the loader at load time) writes a byte of kind ro (.rodata), then for every symbol table sa and program ops the two-phase load of c faults.",
+    "hypotheses": [
+      {
+        "name": "hr : r ∈ c.relocs",
+        "purpose": "the relocation is applied by the loader at load time (as under PIC)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.pic_rodata_cex_link_resolved",
+        "witness_class": "a one-byte toy image after link-time resolution"
+      },
+      {
+        "name": "hk : c.kinds[r.slot]? = some .ro",
+        "purpose": "the slot is a .rodata byte (not mapped writable)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.pic_rodata_cex_relro_slot",
+        "witness_class": "a toy loader input with at most two bytes and at most two relocations"
+      }
+    ],
+    "nonvacuity_witness": "cfgSlotRo (a one-byte .rodata image with one relocation of that byte) satisfies both hypotheses (first conjunct of placement_nonvacuity).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.placement_nonvacuity",
+    "positive_control": "If the linker resolves the relocations of c into the file image under a link-time table saL (linkResolve saL c, which leaves no dynamic relocation), then for every load-time table saR a .rodata byte s loads without fault, has post-entry write protection, and the image at protect equals applyAll saL c.relocs c.init.",
+    "positive_control_lean": "Toy.RelroGc.linkResolved_rodata_loadOk_writeFaultsAfter_and_image",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "Code bytes and unmapped addresses also fault in the toy (mapWr is false for them), but this card states the .rodata case alone.",
+      "The toy has no mechanism that makes read-only pages temporarily writable during relocation (text relocations); the claim neither establishes nor refutes anything about loaders that have one.",
+      "This applies to slots written by a dynamic relocation (r ∈ c.relocs). Position-independent encodings that need no dynamic relocation (for example PC-relative offsets, matching the !C->needsDynamicRelocation() case quoted in the prior art) have no counterpart in c.relocs, so they are outside this result.",
+      "With link-time-resolved addresses (no dynamic relocation) a .rodata slot loads: see the positive control linkResolved_rodata_loadOk_writeFaultsAfter_and_image. In that theorem the load-time symbol table saR is arbitrary: linkResolve saL c bakes applyAll saL c.relocs c.init into the image and empties relocs, so loading never reads saR, and the theorem neither checks nor guarantees that load-time addresses agree with saL. Loading a link-resolved image at a different base address without relocation is not modeled."
+    ],
+    "prior_art": [
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), llvm/lib/Target/TargetLoweringObjectFile.cpp lines 297-310 in getKindForGlobal, for a constant whose initializer needs a relocation: the comment at lines 297-299 \"In static, ROPI and RWPI relocation models, the linker will resolve all addresses, so the relocation entries will actually be constants by the time the app starts up.\"; lines 302-306 return SectionKind::getReadOnly() for those relocation models or when !C->needsDynamicRelocation() (line 305); otherwise lines 308-310: \"Otherwise, the dynamic linker needs to fix it up, put it in the writable data.rel section.\" and return SectionKind::getReadOnlyWithRel(); llvm/lib/CodeGen/TargetLoweringObjectFileImpl.cpp lines 630-631 map ReadOnlyWithRel to the prefix \".data.rel.ro\" (\".ldata.rel.ro\" for large globals). Basis: source. Derived (modeling bridge): the toy's placement classification mirrors this split between constants needing no dynamic relocation and load-time-relocated constants.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1560-1563 (body of the item `relro` / `norelro`, lines 1558-1559; Texinfo markup removed): \"Create an ELF PT_GNU_RELRO segment header in the object. This specifies a memory segment that should be made read-only after relocation, if supported. Specifying common-page-size smaller than the system page size will render this protection ineffective.\" Basis: documentation."
+    ],
+    "design_question": "Where may a pointer-bearing immutable static be placed (.rodata, RELRO, .data) so that the load succeeds and the static is write-protected after entry, and how does that depend on whether addresses are known at link time?"
+  },
+  {
+    "id": "R2d",
+    "lean": "Toy.RelroGc.pic_loadOk_and_writeFaultsAfter_iff_relro",
+    "lean_names": [
+      "Toy.RelroGc.goodCfg",
+      "Toy.RelroGc.symReloc",
+      "Toy.RelroGc.mapWr",
+      "Toy.RelroGc.ProtCoversRelro",
+      "Toy.RelroGc.ProtAvoidsMut",
+      "Toy.RelroGc.writeFaultsAfter_iff",
+      "Toy.RelroGc.loadOk_twoPhase_iff",
+      "Toy.RelroGc.pic_data_slot_loads_and_write_succeeds",
+      "Toy.RelroGc.pic_relro_slot_loads_and_writeFaultsAfter",
+      "Toy.RelroGc.cfgMutReloc",
+      "Toy.RelroGc.cfgNoProt",
+      "Toy.RelroGc.cfgMutCovered",
+      "Toy.RelroGc.data_slot_cex_load_fault",
+      "Toy.RelroGc.data_slot_cex_relro_slot",
+      "Toy.RelroGc.data_slot_cex_covered",
+      "Toy.RelroGc.relro_slot_cex_load_fault",
+      "Toy.RelroGc.relro_slot_cex_mut_slot",
+      "Toy.RelroGc.relro_slot_cex_no_cover"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "Let r be a dynamic relocation of loader input c (r ∈ c.relocs) such that every other relocation of c whose slot differs from r's writes a mapped-writable slot, and let protect cover every RELRO byte (H3) and no mutable byte (H4). Then, for every symbol table sa, the two-phase load succeeds and r's slot has post-entry write protection iff r's slot is a RELRO byte.",
+    "hypotheses": [
+      {
+        "name": "hr : r ∈ c.relocs",
+        "purpose": "r is applied at load time",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.placement_iff_cex_not_dynamic",
+        "witness_class": "a one-byte toy image after link-time resolution"
+      },
+      {
+        "name": "hOthers : ∀ r' ∈ c.relocs, r'.slot ≠ r.slot → mapWr c.kinds r'.slot = true",
+        "purpose": "a fault caused by an unrelated relocation would make the load fail whatever r's placement",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.placement_iff_cex_other_reloc",
+        "witness_class": "a toy loader input with at most two bytes and at most two relocations"
+      },
+      {
+        "name": "hCover : ProtCoversRelro c",
+        "purpose": "RELRO bytes are protected",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.placement_iff_cex_no_cover",
+        "witness_class": "a toy loader input with at most two bytes and at most two relocations"
+      },
+      {
+        "name": "hAvoid : ProtAvoidsMut c",
+        "purpose": "mutable bytes are not protected; without it a covered .data slot also qualifies",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.placement_iff_cex_cover_mut",
+        "witness_class": "a toy loader input with at most two bytes and at most two relocations"
+      }
+    ],
+    "nonvacuity_witness": "goodCfg with r = symReloc 0 0 (slot 0, RELRO) satisfies all four hypotheses (third conjunct of placement_nonvacuity); here both sides hold.",
+    "nonvacuity_witness_lean": "Toy.RelroGc.placement_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "\"RELRO\" in this card is the toy kind relro together with H3 and H4; the equivalence is relative to those assumptions about protect, not a statement about which ELF sections a real linker protects.",
+      "Under link-time-resolved addresses the classification changes (.rodata loads: linkResolved_rodata_loadOk_writeFaultsAfter_and_image); the card applies to relocations applied by the loader.",
+      "This applies to slots written by a dynamic relocation (r ∈ c.relocs). Position-independent encodings that need no dynamic relocation (for example PC-relative offsets, matching the !C->needsDynamicRelocation() case quoted in the prior art) have no counterpart in c.relocs, so they are outside this result.",
+      "The one-directional auxiliary lemmas pic_data_slot_loads_and_write_succeeds (mutable slot: load succeeds, later writes succeed; hypotheses H1, H4) and pic_relro_slot_loads_and_writeFaultsAfter (RELRO slot: load succeeds, writes fault; hypotheses H1, H3) are stated for a relocated slot r.slot with r ∈ c.relocs. That membership restricts the statements to relocated slots and is harmless: their conclusions hold for every byte of the given kind (the proofs do not use it)."
+    ],
+    "prior_art": [
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), llvm/lib/Target/TargetLoweringObjectFile.cpp lines 297-310 in getKindForGlobal, for a constant whose initializer needs a relocation: the comment at lines 297-299 \"In static, ROPI and RWPI relocation models, the linker will resolve all addresses, so the relocation entries will actually be constants by the time the app starts up.\"; lines 302-306 return SectionKind::getReadOnly() for those relocation models or when !C->needsDynamicRelocation() (line 305); otherwise lines 308-310: \"Otherwise, the dynamic linker needs to fix it up, put it in the writable data.rel section.\" and return SectionKind::getReadOnlyWithRel(); llvm/lib/CodeGen/TargetLoweringObjectFileImpl.cpp lines 630-631 map ReadOnlyWithRel to the prefix \".data.rel.ro\" (\".ldata.rel.ro\" for large globals). Basis: source. Derived (modeling bridge): the toy's placement classification mirrors this split between constants needing no dynamic relocation and load-time-relocated constants.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1560-1563 (body of the item `relro` / `norelro`, lines 1558-1559; Texinfo markup removed): \"Create an ELF PT_GNU_RELRO segment header in the object. This specifies a memory segment that should be made read-only after relocation, if supported. Specifying common-page-size smaller than the system page size will render this protection ineffective.\" Basis: documentation."
+    ],
+    "design_question": "Where may a pointer-bearing immutable static be placed (.rodata, RELRO, .data) so that the load succeeds and the static is write-protected after entry, and how does that depend on whether addresses are known at link time?"
+  },
+  {
+    "id": "R3a",
+    "lean": "Toy.RelroGc.lazyBound_not_callWorks_and_writeFaultsAfter",
+    "lean_names": [
+      "Toy.RelroGc.lazyRelroCfg",
+      "Toy.RelroGc.lazyMutCfg",
+      "Toy.RelroGc.eagerCfg",
+      "Toy.RelroGc.LazyBound",
+      "Toy.RelroGc.EagerBound",
+      "Toy.RelroGc.CallWorks",
+      "Toy.RelroGc.WriteFaultsAfter",
+      "Toy.RelroGc.lazy_inside_protect_writeFaultsAfter_first_call_faults",
+      "Toy.RelroGc.partial_relro_lazy_slot_write_redirects_call",
+      "Toy.RelroGc.eager_relro_callWorks_and_writeFaultsAfter"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every loader input c (any layout, any protected range), symbol table sa, and slot x lazily bound to symbol t (x is listed as lazy with target t, initially holds the resolver stub, and no dynamic relocation writes it), it is not the case that both the call through x works (CallWorks: the one-operation program [call x], run as the sole program operation immediately after entry, loads without fault and jumps to t's address) and x has post-entry write protection.",
+    "hypotheses": [
+      {
+        "name": "h : LazyBound c x t",
+        "purpose": "the slot is bound by a write at its first use after entry",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.eager_relro_callWorks_and_writeFaultsAfter",
+        "witness_class": "a one-byte toy image with an eagerly bound RELRO slot"
+      }
+    ],
+    "nonvacuity_witness": "lazyRelroCfg: slot 0 lazily bound and placed inside the protected range (it is write-protected and the one-operation program [call 0] faults), lazy_inside_protect_writeFaultsAfter_first_call_faults; lazyMutCfg: slot 0 lazily bound outside it (the one-operation program [call 0] works and a write succeeds), partial_relro_lazy_slot_write_redirects_call.",
+    "nonvacuity_witness_lean": "Toy.RelroGc.lazy_inside_protect_writeFaultsAfter_first_call_faults",
+    "positive_control": "eagerCfg: slot 0 is not lazily bound (it is eagerly bound in RELRO); its call works and it has post-entry write protection.",
+    "positive_control_lean": "Toy.RelroGc.eager_relro_callWorks_and_writeFaultsAfter",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "It does not say lazy binding is insecure in every threat model; integrity here is the toy's per-write faulting, and the attacker is arbitrary program writes after entry.",
+      "CallWorks checks the isolated one-operation program [call x] executed immediately at entry, with no preceding program operation; later calls, re-binding and multi-operation programs are not covered.",
+      "Escape hatches not ruled out by this impossibility, none of which the toy models: (a) a loader that changes permissions around each lazy binding; (b) hardware privilege or protection-domain separation giving the resolver write access that ordinary program writes lack; (c) non-caching lazy resolution that resolves the target on each call without writing x. The toy's resolver writes x with the program's own permissions.",
+      "This impossibility concerns one lazily bound slot. It does not say that partial RELRO leaves eagerly bound slots (such as non-PLT GOT entries or .data.rel.ro) unprotected."
+    ],
+    "prior_art": [
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1479-1482 (body of the item `lazy`, line 1478): \"When generating an executable or shared library, mark it to tell the dynamic linker to defer function call resolution to the point when the function is called (lazy binding), rather than at load time. Lazy binding is the default.\"; lines 1538-1542 (body of the item `now`, line 1537): \"When generating an executable or shared library, mark it to tell the dynamic linker to resolve all symbols when the program is started, or when the shared library is loaded by dlopen, instead of deferring function call resolution to the point when the function is first called.\" Basis: documentation.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/docs/ld.lld.1 lines 853-858 (item norelro; mdoc markup removed): \"Do not indicate that portions of the object should be mapped read-only after initial relocation processing. The object will omit the PT_GNU_RELRO segment.\"; lines 867-872 (item now): \"Set the DF_BIND_NOW flag to indicate that the run-time loader should perform all relocation processing as part of object initialization. By default relocations may be performed on demand.\" Basis: documentation.",
+      "Background: F. Song (MaskRay), \"All about Global Offset Table\", 2021-08-29 (updated 2025-05), https://maskray.me/blog/2021-08-29-all-about-global-offset-table (living document, snapshot 2026-11-21, lines 704-706 and 708-710): \"With -z relro, the linker places .got into PT_GNU_RELRO. At runtime, after ld.so resolved relocations for an object, it calls mprotect(relro_start, relro_size, PROT_READ) to mark the .got region read-only. This is sometimes called \"partial RELRO\".\" and \"With -z relro -z now, the linker additionally places .got.plt into PT_GNU_RELRO. At runtime, ld.so resolves .got.plt relocations eagerly and then calls mprotect. This scheme disables lazy binding PLT. It is sometimes called \"full RELRO\".\" Basis: documentation (practitioner write-up)."
+    ],
+    "design_question": "What can RELRO guarantee for binding (GOT/PLT-like) slots under eager versus lazy binding?"
+  },
+  {
+    "id": "R3b",
+    "lean": "Toy.RelroGc.bindings_writeFaultsAfter_iff_eager_of_eagerRelroOrLazy_of_callWorks",
+    "lean_names": [
+      "Toy.RelroGc.EagerRelroOrLazy",
+      "Toy.RelroGc.EagerBound",
+      "Toy.RelroGc.LazyBound",
+      "Toy.RelroGc.CallWorks",
+      "Toy.RelroGc.mixedCfg",
+      "Toy.RelroGc.eagerMutCfg",
+      "Toy.RelroGc.lazyRelroCfg",
+      "Toy.RelroGc.eagerCfg",
+      "Toy.RelroGc.lazyBound_not_callWorks_and_writeFaultsAfter",
+      "Toy.RelroGc.ProtCoversRelro",
+      "Toy.RelroGc.eagerRelroOrLazy_of_eagerRelroOrLazyMut",
+      "Toy.RelroGc.bindings_callWorks_of_eagerRelroOrLazyMut"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every loader input c, symbol table sa and list B of bindings (x, t): if every binding in B is either eagerly bound with x a RELRO byte or lazily bound (with x anywhere), the call through every binding slot in B works (CallWorks c sa x t: the one-operation program [call x], run as the sole program operation immediately after entry, loads without fault and jumps to t's address), and protect covers every RELRO byte (H3), then every binding slot in B has post-entry write protection iff every binding in B is eagerly bound.",
+    "hypotheses": [
+      {
+        "name": "hPl : EagerRelroOrLazy c B",
+        "purpose": "eager slots sit in RELRO; lazy slots may sit anywhere",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.bindings_iff_cex_eager_outside_relro",
+        "witness_class": "a one-byte toy image with an eager slot in unprotected mutable data"
+      },
+      {
+        "name": "hCalls : ∀ b ∈ B, CallWorks c sa b.1 b.2",
+        "purpose": "the bindings function; the forward direction uses it through the lazy-binding impossibility",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.bindings_iff_cex_call_faults",
+        "witness_class": "a one-byte toy image with a lazy slot inside the protected range"
+      },
+      {
+        "name": "hCover : ProtCoversRelro c",
+        "purpose": "RELRO bytes are protected (used by the backward direction)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.bindings_iff_cex_no_cover",
+        "witness_class": "a one-byte toy image with an eager RELRO slot and an empty protected range"
+      }
+    ],
+    "nonvacuity_witness": "mixedCfg with B = [(0, 0), (1, 1)]: slot 0 eager in RELRO, slot 1 lazy in mutable data; the placement, the calls (via bindings_callWorks_of_eagerRelroOrLazyMut) and H3 hold (bindings_nonvacuity). Both sides of the equivalence are false there, as slot 1 is lazy.",
+    "nonvacuity_witness_lean": "Toy.RelroGc.bindings_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "The forward direction (protection implies eager) goes through the lazy-binding semantics, by lazyBound_not_callWorks_and_writeFaultsAfter; it uses no placement of lazy slots and no hypothesis that protect avoids mutable bytes. The backward direction uses the RELRO placement of eager slots and H3.",
+      "For a list B that mixes eager and lazy bindings, both sides are false. This does not mean that the eager slots of B lose protection: for an eager binding b of B, the theorem applied to the singleton list [b] (whose hypotheses follow from those for B) gives post-entry write protection of b's slot.",
+      "CallWorks checks the isolated one-operation program [call x] executed immediately at entry; in a multi-operation program an earlier write to a writable lazy slot can redirect even the first call through it (partial_relro_lazy_slot_write_redirects_call).",
+      "It does not state that real linkers use this placement for every binding slot; see the prior-art entries for what is documented."
+    ],
+    "prior_art": [
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1479-1482 (body of the item `lazy`, line 1478): \"When generating an executable or shared library, mark it to tell the dynamic linker to defer function call resolution to the point when the function is called (lazy binding), rather than at load time. Lazy binding is the default.\"; lines 1538-1542 (body of the item `now`, line 1537): \"When generating an executable or shared library, mark it to tell the dynamic linker to resolve all symbols when the program is started, or when the shared library is loaded by dlopen, instead of deferring function call resolution to the point when the function is first called.\" Basis: documentation.",
+      "Background: F. Song (MaskRay), \"All about Global Offset Table\", 2021-08-29 (updated 2025-05), https://maskray.me/blog/2021-08-29-all-about-global-offset-table (living document, snapshot 2026-11-21, lines 704-706 and 708-710): \"With -z relro, the linker places .got into PT_GNU_RELRO. At runtime, after ld.so resolved relocations for an object, it calls mprotect(relro_start, relro_size, PROT_READ) to mark the .got region read-only. This is sometimes called \"partial RELRO\".\" and \"With -z relro -z now, the linker additionally places .got.plt into PT_GNU_RELRO. At runtime, ld.so resolves .got.plt relocations eagerly and then calls mprotect. This scheme disables lazy binding PLT. It is sometimes called \"full RELRO\".\" Basis: documentation (practitioner write-up).",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/docs/ld.lld.1 lines 853-858 (item norelro; mdoc markup removed): \"Do not indicate that portions of the object should be mapped read-only after initial relocation processing. The object will omit the PT_GNU_RELRO segment.\"; lines 867-872 (item now): \"Set the DF_BIND_NOW flag to indicate that the run-time loader should perform all relocation processing as part of object initialization. By default relocations may be performed on demand.\" Basis: documentation."
+    ],
+    "design_question": "What can RELRO guarantee for binding (GOT/PLT-like) slots under eager versus lazy binding?"
+  },
+  {
+    "id": "R3c",
+    "lean": "Toy.RelroGc.bindings_callWorks_of_eagerRelroOrLazyMut",
+    "lean_names": [
+      "Toy.RelroGc.mixedCfg",
+      "Toy.RelroGc.EagerRelroOrLazyMut",
+      "Toy.RelroGc.RelocSlotsWritable",
+      "Toy.RelroGc.ProtAvoidsMut",
+      "Toy.RelroGc.CallWorks",
+      "Toy.RelroGc.lazyMutCfg",
+      "Toy.RelroGc.lazyRelroCfg",
+      "Toy.RelroGc.partial_relro_lazy_slot_write_redirects_call",
+      "Toy.RelroGc.tryApplyAll_bind",
+      "Toy.RelroGc.tryApplyAll_other"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every loader input c, symbol table sa and list B of bindings (x, t): if every binding in B is eagerly bound with x a RELRO byte or lazily bound with x a mutable byte, every relocated slot is mapped writable (H1), and protect covers no mutable byte (H4), then for every binding (x, t) in B the one-operation program [call x], run as the sole program operation immediately after entry, loads without fault and jumps to t's address (CallWorks).",
+    "hypotheses": [
+      {
+        "name": "hPl : EagerRelroOrLazyMut c B",
+        "purpose": "canonical placement: eager slots in RELRO, lazy slots in writable data",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.callWorks_cex_lazy_in_relro",
+        "witness_class": "a one-byte toy image with a lazy slot inside the protected range"
+      },
+      {
+        "name": "hWr : RelocSlotsWritable c",
+        "purpose": "the load does not fault",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.callWorks_cex_slot_not_writable",
+        "witness_class": "a toy loader input with at most two bytes and at most two relocations"
+      },
+      {
+        "name": "hAvoid : ProtAvoidsMut c",
+        "purpose": "lazy slots stay writable for the binding write",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.callWorks_cex_cover_mut",
+        "witness_class": "a one-byte toy image with a protected lazy mutable slot"
+      }
+    ],
+    "nonvacuity_witness": "mixedCfg with B = [(0, 0), (1, 1)] satisfies the placement, H1 and H4 (bindings_callWorks_nonvacuity).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.bindings_callWorks_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "CallWorks checks the isolated one-operation program [call x] executed immediately at entry, with no preceding program operation; later calls are not covered. In a multi-operation program an earlier write to a writable lazy slot overwrites the stub and redirects even the first call through that slot: partial_relro_lazy_slot_write_redirects_call (a write of 55 followed by a call jumps to 55).",
+      "It states that the calls work, not that the slots are protected; under the same placement the lazy slots stay writable (R3b, R3a)."
+    ],
+    "prior_art": [
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1479-1482 (body of the item `lazy`, line 1478): \"When generating an executable or shared library, mark it to tell the dynamic linker to defer function call resolution to the point when the function is called (lazy binding), rather than at load time. Lazy binding is the default.\"; lines 1538-1542 (body of the item `now`, line 1537): \"When generating an executable or shared library, mark it to tell the dynamic linker to resolve all symbols when the program is started, or when the shared library is loaded by dlopen, instead of deferring function call resolution to the point when the function is first called.\" Basis: documentation.",
+      "Background: F. Song (MaskRay), \"All about Global Offset Table\", 2021-08-29 (updated 2025-05), https://maskray.me/blog/2021-08-29-all-about-global-offset-table (living document, snapshot 2026-11-21, lines 704-706 and 708-710): \"With -z relro, the linker places .got into PT_GNU_RELRO. At runtime, after ld.so resolved relocations for an object, it calls mprotect(relro_start, relro_size, PROT_READ) to mark the .got region read-only. This is sometimes called \"partial RELRO\".\" and \"With -z relro -z now, the linker additionally places .got.plt into PT_GNU_RELRO. At runtime, ld.so resolves .got.plt relocations eagerly and then calls mprotect. This scheme disables lazy binding PLT. It is sometimes called \"full RELRO\".\" Basis: documentation (practitioner write-up)."
+    ],
+    "design_question": "What can RELRO guarantee for binding (GOT/PLT-like) slots under eager versus lazy binding?"
+  },
+  {
+    "id": "R4a",
+    "lean": "Toy.RelroGc.downDown_avoidsMut_of_firstPage_noMut",
+    "lean_names": [
+      "Toy.RelroGc.alignDown",
+      "Toy.RelroGc.roundedMask",
+      "Toy.RelroGc.rangeMask",
+      "Toy.RelroGc.RelroIs",
+      "Toy.RelroGc.NoMutIn",
+      "Toy.RelroGc.AvoidsMut",
+      "Toy.RelroGc.downDown_avoidsMut_cex_firstPage",
+      "Toy.RelroGc.endAligned_firstPage_mut_no_pageGranular_protection",
+      "Toy.RelroGc.layoutMutRelro",
+      "Toy.RelroGc.pageRounding_nonvacuity"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every page size P and layout L, if the RELRO bytes of L are exactly the range [rs, re) (rs ≤ re ≤ L.length) and no mutable byte lies in [alignDown P rs, rs) (the bytes of the page of address rs below rs, where alignDown P a = a / P * P uses floor division; for P > 0 this range is empty when rs % P = 0, for P = 0 it is [0, rs) because floor division by zero gives alignDown 0 rs = 0, and it is defined also for an empty RELRO range rs = re), then the down-down mask [alignDown P rs, alignDown P re) covers no mutable byte.",
+    "hypotheses": [
+      {
+        "name": "hR : RelroIs L rs re",
+        "purpose": "the RELRO bytes form exactly the range [rs, re) inside the image",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.downDown_avoidsMut_cex_relroIs",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      },
+      {
+        "name": "hFirst : NoMutIn L (alignDown P rs) rs",
+        "purpose": "start-of-region condition: rounding the start down covers these bytes",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.downDown_avoidsMut_cex_firstPage",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      }
+    ],
+    "nonvacuity_witness": "RELRO [0, 2) over [relro, relro, mutable] with P = 2 satisfies both hypotheses (pageRounding_nonvacuity).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.pageRounding_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "Without the first-page condition the down-down mask can cover a mutable byte below the RELRO start: downDown_avoidsMut_cex_firstPage, and concretely endAligned_firstPage_mut_no_pageGranular_protection, where a program write to that byte faults. The statement \"down-down never faults a legal write\" is false in this toy without that condition.",
+      "It does not say that down-down covers all RELRO bytes (for non-empty RELRO rs < re, coverage holds iff re % P = 0: R4b).",
+      "For P = 0, floor division gives alignDown 0 a = 0, so the mask is empty and the conclusion holds trivially; this edge carries no information.",
+      "The toy tracks write permission alone (mapWr, stepProtect, AvoidsMut and ProtAvoidsMut concern writability and mutable bytes); execute permission is not modeled. A real protection call requesting read-only access (such as mprotect with PROT_READ) also withholds execute permission, so covering code bytes can fault instruction fetch even where the toy's avoidance condition holds; the card neither establishes nor refutes anything about execute permission.",
+      "The toy has one page size P and unbounded Nat address arithmetic with no load bias. It does not model a link-time page size (common-page-size) smaller than the run-time page size, nor fixed-width wrap-around in a + P - 1 or in a load-biased address."
+    ],
+    "prior_art": [
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/dl-reloc.c lines 353-370, function _dl_protect_relro (paraphrase of the source): start = ALIGN_DOWN(l_addr + l_relro_addr, pagesize), end = ALIGN_DOWN(l_addr + l_relro_addr + l_relro_size, pagesize), and __mprotect(start, end - start, PROT_READ) is called only if start != end; line 301 of _dl_relocate_object calls ELF_DYNAMIC_RELOCATE, and lines 348-349 then run \"if (l->l_relro_size != 0)\" / \"_dl_protect_relro (l);\". Basis: source. Derived (modeling bridge): the toy's down-down policy has the same rounding shape (both ends rounded down), and the toy's two-phase timeline has the same relocate-then-protect order for one object. The protection requested is PROT_READ, which also withholds execute permission; the toy tracks write permission alone.",
+      "musl 1.2.5 (upstream repository https://git.musl-libc.org/git/musl, tag v1.2.5, commit 0784374d561435f7c787a555aeab8ede699ed298; ldso/dynlink.c at that revision is git blob 324aa85919f0fdef3156ec36774be2c55ba1d3a4), ldso/dynlink.c lines 734-735: \"dso->relro_start = ph->p_vaddr & -PAGE_SIZE;\" / \"dso->relro_end = (ph->p_vaddr + ph->p_memsz) & -PAGE_SIZE;\"; lines 1425-1427 call mprotect with PROT_READ on [relro_start, relro_end) (relative to the object's load base) under the condition on line 1425, \"head != &ldso && p->relro_start != p->relro_end\". Basis: source. Derived (modeling bridge): the same down-down rounding shape as the toy's downDown policy.",
+      "FreeBSD (freebsd/freebsd-src, branch releng/14.1 at commit f389e68ca980b7e053a34d9eddde89b4c2a1ee6c), libexec/rtld-elf/rtld.c lines 1701-1703 (digest_phdr): \"obj->relro_page = obj->relocbase + rtld_trunc_page(ph->p_vaddr);\" / \"obj->relro_size = rtld_trunc_page(ph->p_vaddr + ph->p_memsz) -\" / \"rtld_trunc_page(ph->p_vaddr);\". Basis: source. Derived (modeling bridge): the same down-down rounding shape for the objects this code path handles; other code paths (lines 2395-2397, for the dynamic linker's own image) compute the size differently and are not modeled.",
+      "Android Bionic (aosp-mirror/platform_bionic, branch android14-release at commit e4df46f213d8d363017dce7ded5d1f2159614425), linker/linker_phdr.cpp lines 899-901 (comment markers removed): \"Tricky: what happens when the relro segment does not start or end at page boundaries? We're going to be over-protective here and put every page touched by the segment as read-only.\"; lines 915-916 (code): \"ElfW(Addr) seg_page_start = PAGE_START(phdr->p_vaddr) + load_bias;\" / \"ElfW(Addr) seg_page_end   = PAGE_END(phdr->p_vaddr + phdr->p_memsz) + load_bias;\"; lines 907-914 quote a description attributed to Ian Lance Taylor (the original post was not retrieved): \"Note that the current dynamic linker code will only work correctly if the PT_GNU_RELRO segment starts on a page boundary. This is because the dynamic linker rounds the p_vaddr field down to the previous page boundary. If there is anything on the page which should not be read-only, the program is likely to fail at runtime. So in effect the linker must only emit a PT_GNU_RELRO segment if it ensures that it starts on a page boundary.\" Basis: source. Derived (modeling bridge): the toy's down-up policy has the same rounding shape (start rounded down, end rounded up), and the quoted description is the start-of-region condition of R4a, R4d and R4g.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/ELF/Writer.cpp lines 667-668 (comment in getSectionRank; comment markers removed): \"The layout for writable sections is PT_LOAD(PT_GNU_RELRO(.data.rel.ro .bss.rel.ro) | .data .bss), where | marks where page alignment happens.\" Basis: source comment. Derived (modeling bridge): with RELRO at the start of a page-aligned writable segment, the bytes of the first RELRO page below the RELRO start are not writable data of that segment, which is the situation in which the first-page condition of R4a, R4d and R4g holds.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1560-1563 (body of the item `relro` / `norelro`, lines 1558-1559; Texinfo markup removed): \"Create an ELF PT_GNU_RELRO segment header in the object. This specifies a memory segment that should be made read-only after relocation, if supported. Specifying common-page-size smaller than the system page size will render this protection ineffective.\" Basis: documentation."
+    ],
+    "design_question": "Under page-granular protection, which layouts admit RELRO protection with no spurious fault on mutable data, and what do the down-down and down-up rounding policies guarantee?"
+  },
+  {
+    "id": "R4b",
+    "lean": "Toy.RelroGc.downDown_coversRelro_iff_end_aligned",
+    "lean_names": [
+      "Toy.RelroGc.alignDown",
+      "Toy.RelroGc.roundedMask",
+      "Toy.RelroGc.RelroIs",
+      "Toy.RelroGc.CoversRelro",
+      "Toy.RelroGc.downDown_unpaddedEnd_tail_write_succeeds",
+      "Toy.RelroGc.layoutRelro3",
+      "Toy.RelroGc.pageRounding_nonvacuity"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every page size P and layout L, if the RELRO bytes of L are exactly the non-empty range [rs, re) (rs < re), then the down-down mask [alignDown P rs, alignDown P re) (ends rounded down by floor division) covers every RELRO byte iff re % P = 0 (Nat modulo, with re % 0 = re; for P = 0 both sides are false).",
+    "hypotheses": [
+      {
+        "name": "hR : RelroIs L rs re",
+        "purpose": "the RELRO bytes form exactly [rs, re)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.downDown_coversRelro_iff_cex_relroIs",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      },
+      {
+        "name": "hne : rs < re",
+        "purpose": "for an empty RELRO range the mask trivially covers all (zero) RELRO bytes",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.downDown_coversRelro_iff_cex_empty",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      }
+    ],
+    "nonvacuity_witness": "RELRO [0, 2) over [relro, relro, mutable] with P = 2 satisfies both hypotheses (pageRounding_nonvacuity; aligned end, both sides true); downDown_unpaddedEnd_tail_write_succeeds is an instance with both sides false, where a program write to the uncovered RELRO byte 2 succeeds.",
+    "nonvacuity_witness_lean": "Toy.RelroGc.pageRounding_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "It is about the down-down mask alone; whether a real linker pads the RELRO end to a page boundary is not examined here (the GNU ld documentation of DATA_SEGMENT_RELRO_END and its common-page-size warning are quoted in the prior art).",
+      "Down-down rounding of the start is covered by R4a (start-of-region condition).",
+      "The toy has one page size P and unbounded Nat address arithmetic with no load bias. It does not model a link-time page size (common-page-size) smaller than the run-time page size, nor fixed-width wrap-around in a + P - 1 or in a load-biased address."
+    ],
+    "prior_art": [
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/dl-reloc.c lines 353-370, function _dl_protect_relro (paraphrase of the source): start = ALIGN_DOWN(l_addr + l_relro_addr, pagesize), end = ALIGN_DOWN(l_addr + l_relro_addr + l_relro_size, pagesize), and __mprotect(start, end - start, PROT_READ) is called only if start != end; line 301 of _dl_relocate_object calls ELF_DYNAMIC_RELOCATE, and lines 348-349 then run \"if (l->l_relro_size != 0)\" / \"_dl_protect_relro (l);\". Basis: source. Derived (modeling bridge): the toy's down-down policy has the same rounding shape (both ends rounded down), and the toy's two-phase timeline has the same relocate-then-protect order for one object. The protection requested is PROT_READ, which also withholds execute permission; the toy tracks write permission alone.",
+      "musl 1.2.5 (upstream repository https://git.musl-libc.org/git/musl, tag v1.2.5, commit 0784374d561435f7c787a555aeab8ede699ed298; ldso/dynlink.c at that revision is git blob 324aa85919f0fdef3156ec36774be2c55ba1d3a4), ldso/dynlink.c lines 734-735: \"dso->relro_start = ph->p_vaddr & -PAGE_SIZE;\" / \"dso->relro_end = (ph->p_vaddr + ph->p_memsz) & -PAGE_SIZE;\"; lines 1425-1427 call mprotect with PROT_READ on [relro_start, relro_end) (relative to the object's load base) under the condition on line 1425, \"head != &ldso && p->relro_start != p->relro_end\". Basis: source. Derived (modeling bridge): the same down-down rounding shape as the toy's downDown policy.",
+      "FreeBSD (freebsd/freebsd-src, branch releng/14.1 at commit f389e68ca980b7e053a34d9eddde89b4c2a1ee6c), libexec/rtld-elf/rtld.c lines 1701-1703 (digest_phdr): \"obj->relro_page = obj->relocbase + rtld_trunc_page(ph->p_vaddr);\" / \"obj->relro_size = rtld_trunc_page(ph->p_vaddr + ph->p_memsz) -\" / \"rtld_trunc_page(ph->p_vaddr);\". Basis: source. Derived (modeling bridge): the same down-down rounding shape for the objects this code path handles; other code paths (lines 2395-2397, for the dynamic linker's own image) compute the size differently and are not modeled.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 7326-7335 (item DATA_SEGMENT_RELRO_END(offset, exp), lines 7324-7325; Texinfo markup removed): \"This defines the end of the PT_GNU_RELRO segment when -z relro option is used. When -z relro option is not present, DATA_SEGMENT_RELRO_END does nothing, otherwise DATA_SEGMENT_ALIGN is padded so that exp + offset is aligned to the commonpagesize argument given to DATA_SEGMENT_ALIGN. If present in the linker script, it must be placed between DATA_SEGMENT_ALIGN and DATA_SEGMENT_END. Evaluates to the second argument plus any padding needed at the end of the PT_GNU_RELRO segment due to section alignment.\" Basis: documentation. Derived (modeling bridge): padding the RELRO end to a page boundary is the layout condition re % P = 0 of R4b, with commonpagesize in the role of P.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1560-1563 (body of the item `relro` / `norelro`, lines 1558-1559; Texinfo markup removed): \"Create an ELF PT_GNU_RELRO segment header in the object. This specifies a memory segment that should be made read-only after relocation, if supported. Specifying common-page-size smaller than the system page size will render this protection ineffective.\" Basis: documentation."
+    ],
+    "design_question": "Under page-granular protection, which layouts admit RELRO protection with no spurious fault on mutable data, and what do the down-down and down-up rounding policies guarantee?"
+  },
+  {
+    "id": "R4c",
+    "lean": "Toy.RelroGc.downUp_coversRelro",
+    "lean_names": [
+      "Toy.RelroGc.alignDown",
+      "Toy.RelroGc.alignUp",
+      "Toy.RelroGc.roundedMask",
+      "Toy.RelroGc.RelroIs",
+      "Toy.RelroGc.CoversRelro",
+      "Toy.RelroGc.le_alignUp",
+      "Toy.RelroGc.roundedMask_eq_false_of_le",
+      "Toy.RelroGc.pageRounding_nonvacuity"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every page size P > 0 and layout L, if the RELRO bytes of L are exactly [rs, re), then the down-up mask covers every RELRO byte. For rs < re the down-up mask is [alignDown P rs, alignUp P re), with alignUp P a = (a + P - 1) / P * P (floor division and truncated subtraction); for rs = re there is no RELRO byte and the mask is empty (roundedMask guards the empty range).",
+    "hypotheses": [
+      {
+        "name": "hP : 0 < P",
+        "purpose": "for P = 0, alignUp 0 a = 0 and the mask is empty",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.downUp_coversRelro_cex_pageZero",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      },
+      {
+        "name": "hR : RelroIs L rs re",
+        "purpose": "the RELRO bytes form exactly [rs, re)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.downUp_coversRelro_cex_relroIs",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      }
+    ],
+    "nonvacuity_witness": "RELRO [0, 2) over [relro, relro, mutable] with P = 2 satisfies both hypotheses (pageRounding_nonvacuity).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.pageRounding_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "It does not say the down-up mask avoids mutable bytes (R4d).",
+      "The empty-range guard in roundedMask is a modeling choice: without it, rounding an empty range [rs, rs) with rs % P ≠ 0 outwards would protect the whole page of rs. Whether any real loader receives or protects an empty RELRO range is not examined.",
+      "The toy tracks write permission alone (mapWr, stepProtect, AvoidsMut and ProtAvoidsMut concern writability and mutable bytes); execute permission is not modeled. A real protection call requesting read-only access (such as mprotect with PROT_READ) also withholds execute permission, so covering code bytes can fault instruction fetch even where the toy's avoidance condition holds; the card neither establishes nor refutes anything about execute permission.",
+      "The toy has one page size P and unbounded Nat address arithmetic with no load bias. It does not model a link-time page size (common-page-size) smaller than the run-time page size, nor fixed-width wrap-around in a + P - 1 or in a load-biased address."
+    ],
+    "prior_art": [
+      "Android Bionic (aosp-mirror/platform_bionic, branch android14-release at commit e4df46f213d8d363017dce7ded5d1f2159614425), linker/linker_phdr.cpp lines 899-901 (comment markers removed): \"Tricky: what happens when the relro segment does not start or end at page boundaries? We're going to be over-protective here and put every page touched by the segment as read-only.\"; lines 915-916 (code): \"ElfW(Addr) seg_page_start = PAGE_START(phdr->p_vaddr) + load_bias;\" / \"ElfW(Addr) seg_page_end   = PAGE_END(phdr->p_vaddr + phdr->p_memsz) + load_bias;\"; lines 907-914 quote a description attributed to Ian Lance Taylor (the original post was not retrieved): \"Note that the current dynamic linker code will only work correctly if the PT_GNU_RELRO segment starts on a page boundary. This is because the dynamic linker rounds the p_vaddr field down to the previous page boundary. If there is anything on the page which should not be read-only, the program is likely to fail at runtime. So in effect the linker must only emit a PT_GNU_RELRO segment if it ensures that it starts on a page boundary.\" Basis: source. Derived (modeling bridge): the toy's down-up policy has the same rounding shape (start rounded down, end rounded up), and the quoted description is the start-of-region condition of R4a, R4d and R4g.",
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/dl-reloc.c lines 353-370, function _dl_protect_relro (paraphrase of the source): start = ALIGN_DOWN(l_addr + l_relro_addr, pagesize), end = ALIGN_DOWN(l_addr + l_relro_addr + l_relro_size, pagesize), and __mprotect(start, end - start, PROT_READ) is called only if start != end; line 301 of _dl_relocate_object calls ELF_DYNAMIC_RELOCATE, and lines 348-349 then run \"if (l->l_relro_size != 0)\" / \"_dl_protect_relro (l);\". Basis: source. Derived (modeling bridge): the toy's down-down policy has the same rounding shape (both ends rounded down), and the toy's two-phase timeline has the same relocate-then-protect order for one object. The protection requested is PROT_READ, which also withholds execute permission; the toy tracks write permission alone."
+    ],
+    "design_question": "Under page-granular protection, which layouts admit RELRO protection with no spurious fault on mutable data, and what do the down-down and down-up rounding policies guarantee?"
+  },
+  {
+    "id": "R4d",
+    "lean": "Toy.RelroGc.downUp_avoidsMut_iff_partialPages_noMut",
+    "lean_names": [
+      "Toy.RelroGc.alignDown",
+      "Toy.RelroGc.alignUp",
+      "Toy.RelroGc.roundedMask",
+      "Toy.RelroGc.RelroIs",
+      "Toy.RelroGc.NoMutIn",
+      "Toy.RelroGc.AvoidsMut",
+      "Toy.RelroGc.downUp_sharedLastPage_mut_write_faults",
+      "Toy.RelroGc.layoutRelro3Mut",
+      "Toy.RelroGc.downUp_covers_avoids_iff_exists_pageGranular",
+      "Toy.RelroGc.roundedMask_downUp_pageGranular",
+      "Toy.RelroGc.pageRounding_nonvacuity"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every page size P > 0 and layout L, if the RELRO bytes of L are exactly the non-empty range [rs, re) (rs < re), then the down-up mask [alignDown P rs, alignUp P re) covers no mutable byte iff no mutable byte lies in [alignDown P rs, rs) and none lies in [re, alignUp P re) (alignDown P a = a / P * P and alignUp P a = (a + P - 1) / P * P, by floor division and truncated subtraction).",
+    "hypotheses": [
+      {
+        "name": "hP : 0 < P",
+        "purpose": "for P = 0 the mask is empty while the left range [0, rs) can hold mutable bytes",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.downUp_avoidsMut_iff_cex_pageZero",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      },
+      {
+        "name": "hR : RelroIs L rs re",
+        "purpose": "the RELRO bytes form exactly [rs, re)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.downUp_avoidsMut_iff_cex_relroIs",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      },
+      {
+        "name": "hne : rs < re",
+        "purpose": "for an empty range the guarded mask is empty while a mutable byte can lie in [alignDown P rs, rs)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.downUp_avoidsMut_iff_cex_empty",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      }
+    ],
+    "nonvacuity_witness": "RELRO [0, 2) over [relro, relro, mutable] with P = 2 satisfies all three hypotheses (pageRounding_nonvacuity; both sides true); downUp_sharedLastPage_mut_write_faults has both sides false, where a program write to the mutable byte 3 faults.",
+    "nonvacuity_witness_lean": "Toy.RelroGc.pageRounding_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "Covering of RELRO bytes by the down-up mask is R4c. Together with R4c, R4g and roundedMask_downUp_pageGranular, the auxiliary lemma downUp_covers_avoids_iff_exists_pageGranular shows: for P > 0 and RELRO bytes exactly a non-empty range [rs, re) (RelroIs L rs re, rs < re), the single interval roundedMask .downUp P rs re covers every RELRO byte and no mutable byte iff some page-granular mask does.",
+      "The toy tracks write permission alone (mapWr, stepProtect, AvoidsMut and ProtAvoidsMut concern writability and mutable bytes); execute permission is not modeled. A real protection call requesting read-only access (such as mprotect with PROT_READ) also withholds execute permission, so covering code bytes can fault instruction fetch even where the toy's avoidance condition holds; the card neither establishes nor refutes anything about execute permission.",
+      "The toy has one page size P and unbounded Nat address arithmetic with no load bias. It does not model a link-time page size (common-page-size) smaller than the run-time page size, nor fixed-width wrap-around in a + P - 1 or in a load-biased address."
+    ],
+    "prior_art": [
+      "Android Bionic (aosp-mirror/platform_bionic, branch android14-release at commit e4df46f213d8d363017dce7ded5d1f2159614425), linker/linker_phdr.cpp lines 899-901 (comment markers removed): \"Tricky: what happens when the relro segment does not start or end at page boundaries? We're going to be over-protective here and put every page touched by the segment as read-only.\"; lines 915-916 (code): \"ElfW(Addr) seg_page_start = PAGE_START(phdr->p_vaddr) + load_bias;\" / \"ElfW(Addr) seg_page_end   = PAGE_END(phdr->p_vaddr + phdr->p_memsz) + load_bias;\"; lines 907-914 quote a description attributed to Ian Lance Taylor (the original post was not retrieved): \"Note that the current dynamic linker code will only work correctly if the PT_GNU_RELRO segment starts on a page boundary. This is because the dynamic linker rounds the p_vaddr field down to the previous page boundary. If there is anything on the page which should not be read-only, the program is likely to fail at runtime. So in effect the linker must only emit a PT_GNU_RELRO segment if it ensures that it starts on a page boundary.\" Basis: source. Derived (modeling bridge): the toy's down-up policy has the same rounding shape (start rounded down, end rounded up), and the quoted description is the start-of-region condition of R4a, R4d and R4g.",
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/dl-reloc.c lines 353-370, function _dl_protect_relro (paraphrase of the source): start = ALIGN_DOWN(l_addr + l_relro_addr, pagesize), end = ALIGN_DOWN(l_addr + l_relro_addr + l_relro_size, pagesize), and __mprotect(start, end - start, PROT_READ) is called only if start != end; line 301 of _dl_relocate_object calls ELF_DYNAMIC_RELOCATE, and lines 348-349 then run \"if (l->l_relro_size != 0)\" / \"_dl_protect_relro (l);\". Basis: source. Derived (modeling bridge): the toy's down-down policy has the same rounding shape (both ends rounded down), and the toy's two-phase timeline has the same relocate-then-protect order for one object. The protection requested is PROT_READ, which also withholds execute permission; the toy tracks write permission alone.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/ELF/Writer.cpp lines 667-668 (comment in getSectionRank; comment markers removed): \"The layout for writable sections is PT_LOAD(PT_GNU_RELRO(.data.rel.ro .bss.rel.ro) | .data .bss), where | marks where page alignment happens.\" Basis: source comment. Derived (modeling bridge): with RELRO at the start of a page-aligned writable segment, the bytes of the first RELRO page below the RELRO start are not writable data of that segment, which is the situation in which the first-page condition of R4a, R4d and R4g holds."
+    ],
+    "design_question": "Under page-granular protection, which layouts admit RELRO protection with no spurious fault on mutable data, and what do the down-down and down-up rounding policies guarantee?"
+  },
+  {
+    "id": "R4e",
+    "lean": "Toy.RelroGc.exists_pageGranular_covers_avoids_iff_noSharedPage",
+    "lean_names": [
+      "Toy.RelroGc.PageGranular",
+      "Toy.RelroGc.NoSharedPage",
+      "Toy.RelroGc.CoversRelro",
+      "Toy.RelroGc.AvoidsMut",
+      "Toy.RelroGc.layoutRelro3Mut",
+      "Toy.RelroGc.noSharedPage_examples",
+      "Toy.RelroGc.noncontiguous_relro_noSharedPage_no_single_interval",
+      "Toy.RelroGc.downUp_covers_avoids_iff_exists_pageGranular",
+      "Toy.RelroGc.rangeMask",
+      "Toy.RelroGc.Kind",
+      "Toy.RelroGc.protCfg"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every layout L and page size P (pages are the classes of equal floor quotient a / P; for P = 0 every address is on page 0), some page-granular mask covers every RELRO byte and no mutable byte iff no page holds both a RELRO byte and a mutable byte.",
+    "hypotheses": [],
+    "nonvacuity_witness": "No side-condition hypotheses (universally quantified over P : Nat and L : List Kind). noSharedPage_examples: [relro, relro, mutable] with P = 2 (both sides hold); layoutRelro3Mut with P = 2 (both sides fail).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.noSharedPage_examples",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "Page-granular masks are arbitrary unions of whole pages, not necessarily one interval. The forward direction transfers to a single protected interval: if some page-granular interval rangeMask lo hi covers RELRO and avoids mutable bytes, then NoSharedPage P L holds, since such an interval is a page-granular mask. The backward direction does not transfer: noncontiguous_relro_noSharedPage_no_single_interval proves that [relro, mutable, relro] with P = 1 satisfies NoSharedPage while no interval [lo, hi) covers both RELRO bytes without the mutable byte. For contiguous non-empty RELRO (RelroIs L rs re, rs < re) and P > 0, the single interval roundedMask .downUp P rs re suffices whenever some page-granular mask does (downUp_covers_avoids_iff_exists_pageGranular).",
+      "Bytes other than RELRO and mutable (code, .rodata) may be covered. The toy tracks write permission alone (mapWr, stepProtect, AvoidsMut and ProtAvoidsMut concern writability and mutable bytes); execute permission is not modeled. A real protection call requesting read-only access (such as mprotect with PROT_READ) also withholds execute permission, so covering code bytes can fault instruction fetch even where the toy's avoidance condition holds; the card neither establishes nor refutes anything about execute permission.",
+      "This is the separation of two sets by unions of equivalence classes, restated for pages; it is tiered T0."
+    ],
+    "prior_art": [
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/dl-reloc.c lines 353-370, function _dl_protect_relro (paraphrase of the source): start = ALIGN_DOWN(l_addr + l_relro_addr, pagesize), end = ALIGN_DOWN(l_addr + l_relro_addr + l_relro_size, pagesize), and __mprotect(start, end - start, PROT_READ) is called only if start != end; line 301 of _dl_relocate_object calls ELF_DYNAMIC_RELOCATE, and lines 348-349 then run \"if (l->l_relro_size != 0)\" / \"_dl_protect_relro (l);\". Basis: source. Derived (modeling bridge): the toy's down-down policy has the same rounding shape (both ends rounded down), and the toy's two-phase timeline has the same relocate-then-protect order for one object. The protection requested is PROT_READ, which also withholds execute permission; the toy tracks write permission alone.",
+      "Android Bionic (aosp-mirror/platform_bionic, branch android14-release at commit e4df46f213d8d363017dce7ded5d1f2159614425), linker/linker_phdr.cpp lines 899-901 (comment markers removed): \"Tricky: what happens when the relro segment does not start or end at page boundaries? We're going to be over-protective here and put every page touched by the segment as read-only.\"; lines 915-916 (code): \"ElfW(Addr) seg_page_start = PAGE_START(phdr->p_vaddr) + load_bias;\" / \"ElfW(Addr) seg_page_end   = PAGE_END(phdr->p_vaddr + phdr->p_memsz) + load_bias;\"; lines 907-914 quote a description attributed to Ian Lance Taylor (the original post was not retrieved): \"Note that the current dynamic linker code will only work correctly if the PT_GNU_RELRO segment starts on a page boundary. This is because the dynamic linker rounds the p_vaddr field down to the previous page boundary. If there is anything on the page which should not be read-only, the program is likely to fail at runtime. So in effect the linker must only emit a PT_GNU_RELRO segment if it ensures that it starts on a page boundary.\" Basis: source. Derived (modeling bridge): the toy's down-up policy has the same rounding shape (start rounded down, end rounded up), and the quoted description is the start-of-region condition of R4a, R4d and R4g.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1560-1563 (body of the item `relro` / `norelro`, lines 1558-1559; Texinfo markup removed): \"Create an ELF PT_GNU_RELRO segment header in the object. This specifies a memory segment that should be made read-only after relocation, if supported. Specifying common-page-size smaller than the system page size will render this protection ineffective.\" Basis: documentation."
+    ],
+    "design_question": "Under page-granular protection, which layouts admit RELRO protection with no spurious fault on mutable data, and what do the down-down and down-up rounding policies guarantee?"
+  },
+  {
+    "id": "R4g",
+    "lean": "Toy.RelroGc.exists_pageGranular_covers_avoids_iff_partialPages_noMut",
+    "lean_names": [
+      "Toy.RelroGc.alignDown",
+      "Toy.RelroGc.alignUp",
+      "Toy.RelroGc.alignUp_eq_self_of_mod_eq_zero",
+      "Toy.RelroGc.RelroIs",
+      "Toy.RelroGc.NoMutIn",
+      "Toy.RelroGc.PageGranular",
+      "Toy.RelroGc.CoversRelro",
+      "Toy.RelroGc.AvoidsMut",
+      "Toy.RelroGc.noSharedPage_iff_partialPages_noMut",
+      "Toy.RelroGc.exists_pageGranular_covers_avoids_iff_noSharedPage",
+      "Toy.RelroGc.endAligned_firstPage_mut_no_pageGranular_protection",
+      "Toy.RelroGc.layoutMutRelro",
+      "Toy.RelroGc.noSharedPage_iff_cex_pageZero",
+      "Toy.RelroGc.noSharedPage_iff_cex_relroIs",
+      "Toy.RelroGc.noSharedPage_iff_cex_empty",
+      "Toy.RelroGc.pageRounding_nonvacuity"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every page size P > 0 and layout L whose RELRO bytes are exactly the non-empty range [rs, re) (rs < re): some page-granular mask covers every RELRO byte and no mutable byte iff no mutable byte lies in [alignDown P rs, rs) and none lies in [re, alignUp P re) (alignDown and alignUp by floor division and truncated subtraction). When re % P = 0 the second range is empty (alignUp_eq_self_of_mod_eq_zero).",
+    "hypotheses": [
+      {
+        "name": "hP : 0 < P",
+        "purpose": "for P = 0 every address is on page 0",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.exists_pageGranular_iff_cex_pageZero",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      },
+      {
+        "name": "hR : RelroIs L rs re",
+        "purpose": "the RELRO bytes form exactly [rs, re)",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.exists_pageGranular_iff_cex_relroIs",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      },
+      {
+        "name": "hne : rs < re",
+        "purpose": "non-empty RELRO",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.exists_pageGranular_iff_cex_empty",
+        "witness_class": "a toy layout of at most four bytes with page size 0, 1 or 2"
+      }
+    ],
+    "nonvacuity_witness": "RELRO [0, 2) over [relro, relro, mutable] with P = 2 satisfies all three hypotheses (pageRounding_nonvacuity).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.pageRounding_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "The condition has two parts. \"RELRO end aligned, or the shared last page holds no mutable data\" is not sufficient: endAligned_firstPage_mut_no_pageGranular_protection has an aligned end and a clean last page, but a mutable byte on the first RELRO page, and no page-granular protection exists.",
+      "Whether real linkers ever place mutable data on the first RELRO page below the RELRO start is not examined here; the prior art quotes documentation describing that hazard and a linker layout that places RELRO at the start of a writable segment.",
+      "The proof composes R4e with the auxiliary interval lemma noSharedPage_iff_partialPages_noMut (same hypotheses).",
+      "The toy tracks write permission alone (mapWr, stepProtect, AvoidsMut and ProtAvoidsMut concern writability and mutable bytes); execute permission is not modeled. A real protection call requesting read-only access (such as mprotect with PROT_READ) also withholds execute permission, so covering code bytes can fault instruction fetch even where the toy's avoidance condition holds; the card neither establishes nor refutes anything about execute permission.",
+      "The toy has one page size P and unbounded Nat address arithmetic with no load bias. It does not model a link-time page size (common-page-size) smaller than the run-time page size, nor fixed-width wrap-around in a + P - 1 or in a load-biased address."
+    ],
+    "prior_art": [
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/dl-reloc.c lines 353-370, function _dl_protect_relro (paraphrase of the source): start = ALIGN_DOWN(l_addr + l_relro_addr, pagesize), end = ALIGN_DOWN(l_addr + l_relro_addr + l_relro_size, pagesize), and __mprotect(start, end - start, PROT_READ) is called only if start != end; line 301 of _dl_relocate_object calls ELF_DYNAMIC_RELOCATE, and lines 348-349 then run \"if (l->l_relro_size != 0)\" / \"_dl_protect_relro (l);\". Basis: source. Derived (modeling bridge): the toy's down-down policy has the same rounding shape (both ends rounded down), and the toy's two-phase timeline has the same relocate-then-protect order for one object. The protection requested is PROT_READ, which also withholds execute permission; the toy tracks write permission alone.",
+      "Android Bionic (aosp-mirror/platform_bionic, branch android14-release at commit e4df46f213d8d363017dce7ded5d1f2159614425), linker/linker_phdr.cpp lines 899-901 (comment markers removed): \"Tricky: what happens when the relro segment does not start or end at page boundaries? We're going to be over-protective here and put every page touched by the segment as read-only.\"; lines 915-916 (code): \"ElfW(Addr) seg_page_start = PAGE_START(phdr->p_vaddr) + load_bias;\" / \"ElfW(Addr) seg_page_end   = PAGE_END(phdr->p_vaddr + phdr->p_memsz) + load_bias;\"; lines 907-914 quote a description attributed to Ian Lance Taylor (the original post was not retrieved): \"Note that the current dynamic linker code will only work correctly if the PT_GNU_RELRO segment starts on a page boundary. This is because the dynamic linker rounds the p_vaddr field down to the previous page boundary. If there is anything on the page which should not be read-only, the program is likely to fail at runtime. So in effect the linker must only emit a PT_GNU_RELRO segment if it ensures that it starts on a page boundary.\" Basis: source. Derived (modeling bridge): the toy's down-up policy has the same rounding shape (start rounded down, end rounded up), and the quoted description is the start-of-region condition of R4a, R4d and R4g.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/ELF/Writer.cpp lines 667-668 (comment in getSectionRank; comment markers removed): \"The layout for writable sections is PT_LOAD(PT_GNU_RELRO(.data.rel.ro .bss.rel.ro) | .data .bss), where | marks where page alignment happens.\" Basis: source comment. Derived (modeling bridge): with RELRO at the start of a page-aligned writable segment, the bytes of the first RELRO page below the RELRO start are not writable data of that segment, which is the situation in which the first-page condition of R4a, R4d and R4g holds.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 7326-7335 (item DATA_SEGMENT_RELRO_END(offset, exp), lines 7324-7325; Texinfo markup removed): \"This defines the end of the PT_GNU_RELRO segment when -z relro option is used. When -z relro option is not present, DATA_SEGMENT_RELRO_END does nothing, otherwise DATA_SEGMENT_ALIGN is padded so that exp + offset is aligned to the commonpagesize argument given to DATA_SEGMENT_ALIGN. If present in the linker script, it must be placed between DATA_SEGMENT_ALIGN and DATA_SEGMENT_END. Evaluates to the second argument plus any padding needed at the end of the PT_GNU_RELRO segment due to section alignment.\" Basis: documentation. Derived (modeling bridge): padding the RELRO end to a page boundary is the layout condition re % P = 0 of R4b, with commonpagesize in the role of P.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 1560-1563 (body of the item `relro` / `norelro`, lines 1558-1559; Texinfo markup removed): \"Create an ELF PT_GNU_RELRO segment header in the object. This specifies a memory segment that should be made read-only after relocation, if supported. Specifying common-page-size smaller than the system page size will render this protection ineffective.\" Basis: documentation."
+    ],
+    "design_question": "Under page-granular protection, which layouts admit RELRO protection with no spurious fault on mutable data, and what do the down-down and down-up rounding policies guarantee?"
+  },
+  {
+    "id": "R5a",
+    "lean": "Toy.RelroGc.applyAll_perm_of_addressOnly_of_nodup_slots",
+    "lean_names": [
+      "Toy.RelroGc.rAddr0",
+      "Toy.RelroGc.rRes1",
+      "Toy.RelroGc.symReloc",
+      "Toy.RelroGc.applyAll",
+      "Toy.RelroGc.Reloc",
+      "Toy.RelroGc.Reloc.AddressOnly",
+      "Toy.RelroGc.applyReloc_comm",
+      "Toy.RelroGc.applyAll_perm_of_readsOnly_of_slots_outside",
+      "Toy.RelroGc.addressOnlyOrder_nonvacuity"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every symbol table sa and initial memory m: if every relocation in rs is address-only (its value depends on symbol addresses alone) and the relocations of rs write pairwise distinct slots, then for every order rs' that is a permutation of rs, applying rs' gives the same image as applying rs.",
+    "hypotheses": [
+      {
+        "name": "p : rs.Perm rs'",
+        "purpose": "the two orders apply the same relocations",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.order_cex_not_perm",
+        "witness_class": "a one-relocation toy list"
+      },
+      {
+        "name": "hA : ∀ r ∈ rs, r.AddressOnly",
+        "purpose": "values do not depend on memory",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.resolver_reads_unrelocated_slot_order_dependent",
+        "witness_class": "a two-relocation toy list"
+      },
+      {
+        "name": "hN : (rs.map Reloc.slot).Nodup",
+        "purpose": "two relocations of one slot: the last one wins",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.addressOnly_same_slot_order_dependent",
+        "witness_class": "a two-relocation toy list"
+      }
+    ],
+    "nonvacuity_witness": "[rAddr0, symReloc 2 1] and its reversal satisfy all three hypotheses (addressOnlyOrder_nonvacuity).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.addressOnlyOrder_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "It does not assert the order in which any real loader applies relocations, including IFUNC/IRELATIVE relocations.",
+      "Permissions are ignored here (applyAll); with permissions, order also matters if protect is interleaved (R1).",
+      "Relocations whose value reads the slot's previous contents (implicit addends) are not address-only and are outside this result.",
+      "This restates Bernstein-style read/write disjointness for relocations; it is tiered T0."
+    ],
+    "prior_art": [
+      "A. J. Bernstein, \"Analysis of Programs for Parallel Processing\", IEEE Transactions on Electronic Computers EC-15(5), 1966, pp. 757-763, doi:10.1109/pgec.1966.264565 (bibliographic record verified via Crossref; the paper text was not retrieved). The read-set / write-set disjointness conditions under which two program parts may be executed in either order are known as Bernstein's conditions (as described by secondary summaries). Derived: applyReloc_comm and the permutation results restate such conditions for relocations (each relocation reads its declared read set and writes one slot); this is why the order results are tiered T0.",
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/do-rel.h, function elf_dynamic_do_Rel (paraphrase of the source): the relative relocations, the first nrelative entries of a table, are applied first (lines 123-124); in the main loop entries of type ELF_MACHINE_IRELATIVE are skipped and their span recorded (lines 138-144 and 185-191), and they are applied in a second pass at the end of the same table (lines 164-175 and 211-216). Basis: source. Derived (modeling bridge): within one relocation table, resolver relocations run after the other relocations, as A ++ R does in the toy; ordering across tables and objects is not modeled.",
+      "Background: F. Song (MaskRay), \"GNU indirect function\", 2021-01-18 (updated 2026-07), https://maskray.me/blog/2021-01-18-gnu-indirect-function (living document, snapshot 2026-11-21): \"R_*_GLOB_DAT and R_*_RELATIVE relocations are resolved before R_*_IRELATIVE, so reading a variable or taking an address of a function is fine.\" Basis: documentation (practitioner write-up)."
+    ],
+    "design_question": "When may a loader model treat relocation application order as irrelevant, and which ordering discipline makes resolver (IFUNC-like) relocations order-independent?"
+  },
+  {
+    "id": "R5c",
+    "lean": "Toy.RelroGc.applyAll_append_perm_of_resolvers_read_no_resolver_slot",
+    "lean_names": [
+      "Toy.RelroGc.rAddr0",
+      "Toy.RelroGc.symReloc",
+      "Toy.RelroGc.rRes1",
+      "Toy.RelroGc.rRes3of2",
+      "Toy.RelroGc.rRes4of9",
+      "Toy.RelroGc.rRes2of1",
+      "Toy.RelroGc.rConst0",
+      "Toy.RelroGc.Reloc.ReadsOnly",
+      "Toy.RelroGc.Reloc.AddressOnly",
+      "Toy.RelroGc.applyAll_perm_of_readsOnly_of_slots_outside",
+      "Toy.RelroGc.applyAll_perm_of_addressOnly_of_nodup_slots",
+      "Toy.RelroGc.resolver_reads_unrelocated_slot_order_dependent",
+      "Toy.RelroGc.relocationOrder_nonvacuity"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every symbol table sa and initial memory m: let A be address-only relocations with pairwise distinct slots, and R resolver relocations with pairwise distinct slots, each of which reads memory only at addresses that no relocation of R writes (it may read any slot of A that no relocation of R writes, and any other memory not written by R). Then for every order produced by permuting A to A' and R to R' and applying all of A' before any of R' (A' ++ R'), the image equals that of A ++ R.",
+    "hypotheses": [
+      {
+        "name": "hA : ∀ r ∈ A, r.AddressOnly",
+        "purpose": "the first group is order-independent by itself",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.nonAddressOnly_first_group_order_dependent",
+        "witness_class": "a two-relocation toy list"
+      },
+      {
+        "name": "hNA : (A.map Reloc.slot).Nodup",
+        "purpose": "two relocations of one slot in A: the last one wins",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.addressOnly_first_group_same_slot_order_dependent",
+        "witness_class": "a two-relocation toy list"
+      },
+      {
+        "name": "hR : ∀ r ∈ R, r.ReadsOnly (fun a => a ∉ R.map Reloc.slot)",
+        "purpose": "no resolver reads a slot that a resolver writes",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.RelroGc.resolvers_read_resolver_slot_order_dependent",
+          "Toy.RelroGc.resolver_overwrites_addressOnly_slot_order_dependent"
+        ],
+        "witness_class": "toy lists of at most three relocations"
+      },
+      {
+        "name": "hNR : (R.map Reloc.slot).Nodup",
+        "purpose": "two resolvers of one slot: the last one wins",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.resolvers_same_slot_order_dependent",
+        "witness_class": "a two-relocation toy list"
+      },
+      {
+        "name": "pA : A'.Perm A",
+        "purpose": "A' applies the same relocations as A",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.resolverOrder_cex_not_permA",
+        "witness_class": "a one-relocation toy list"
+      },
+      {
+        "name": "pR : R'.Perm R",
+        "purpose": "R' applies the same relocations as R",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.resolverOrder_cex_not_permR",
+        "witness_class": "a one-relocation toy list"
+      }
+    ],
+    "nonvacuity_witness": "A = [rAddr0, symReloc 2 1], R = [rRes1, rRes3of2, rRes4of9] (resolvers reading slots 0 and 2 of A and the address 9 that no relocation writes), with A' and R' the reversals, satisfy all six hypotheses (relocationOrder_nonvacuity).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.relocationOrder_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "The order family is the one produced by permuting within each group and applying A before R; orders that interleave the groups are not covered (resolver_reads_unrelocated_slot_order_dependent exhibits an interleaved order with a different image).",
+      "It is a sufficient discipline; no necessity is claimed beyond the tightness witnesses listed in the hypothesis ledger.",
+      "Each relocation is modeled as a pure total function of the symbol table and memory that writes one slot and ignores permissions (applyAll). Resolvers with side effects, resolvers that call other resolvers, faulting resolvers, implicit-addend and copy relocations, and dependencies between relocations of different objects are not modeled.",
+      "It does not assert any real loader's ordering of IFUNC/IRELATIVE relocations; the prior art documents the within-table ordering of one loader version."
+    ],
+    "prior_art": [
+      "A. J. Bernstein, \"Analysis of Programs for Parallel Processing\", IEEE Transactions on Electronic Computers EC-15(5), 1966, pp. 757-763, doi:10.1109/pgec.1966.264565 (bibliographic record verified via Crossref; the paper text was not retrieved). The read-set / write-set disjointness conditions under which two program parts may be executed in either order are known as Bernstein's conditions (as described by secondary summaries). Derived: applyReloc_comm and the permutation results restate such conditions for relocations (each relocation reads its declared read set and writes one slot); this is why the order results are tiered T0.",
+      "glibc 2.40 (tag glibc-2.40, commit 3d1aed874918c466a4477af1da35983ab036690e), elf/do-rel.h, function elf_dynamic_do_Rel (paraphrase of the source): the relative relocations, the first nrelative entries of a table, are applied first (lines 123-124); in the main loop entries of type ELF_MACHINE_IRELATIVE are skipped and their span recorded (lines 138-144 and 185-191), and they are applied in a second pass at the end of the same table (lines 164-175 and 211-216). Basis: source. Derived (modeling bridge): within one relocation table, resolver relocations run after the other relocations, as A ++ R does in the toy; ordering across tables and objects is not modeled.",
+      "Background: F. Song (MaskRay), \"GNU indirect function\", 2021-01-18 (updated 2026-07), https://maskray.me/blog/2021-01-18-gnu-indirect-function (living document, snapshot 2026-11-21): \"R_*_GLOB_DAT and R_*_RELATIVE relocations are resolved before R_*_IRELATIVE, so reading a variable or taking an address of a function is fine.\" Basis: documentation (practitioner write-up)."
+    ],
+    "design_question": "When may a loader model treat relocation application order as irrelevant, and which ordering discipline makes resolver (IFUNC-like) relocations order-independent?"
+  },
+  {
+    "id": "R6a",
+    "lean": "Toy.RelroGc.runPreserved_of_edgeAccessesFollowEdges_of_implicitAccessesHitRoots_of_boundsAccessesRetained",
+    "lean_names": [
+      "Toy.RelroGc.Acc",
+      "Toy.RelroGc.Acc.dst",
+      "Toy.RelroGc.ReachedBefore",
+      "Toy.RelroGc.EdgeAccessesFollowEdges",
+      "Toy.RelroGc.ImplicitAccessesHitRoots",
+      "Toy.RelroGc.BoundsAccessesRetained",
+      "Toy.RelroGc.RunPreserved",
+      "Toy.RelroGc.GcIn",
+      "Toy.RelroGc.GcIn.Live",
+      "Toy.RelroGc.GcIn.ssEdges",
+      "Toy.RelroGc.Reach",
+      "Toy.RelroGc.gcPair",
+      "Toy.RelroGc.gcReg",
+      "Toy.RelroGc.reach_of_access",
+      "Toy.RelroGc.live_iff_exists_valid_run",
+      "Toy.RelroGc.exists_valid_run_of_live",
+      "Toy.RelroGc.phantom_section_live",
+      "Toy.RelroGc.gcPhantom",
+      "Toy.RelroGc.GcIn.isRootB",
+      "Toy.RelroGc.SSPolicy",
+      "Toy.RelroGc.Sec",
+      "Toy.RelroGc.Sec.isRoot",
+      "Toy.RelroGc.access_predicate_examples",
+      "Toy.RelroGc.gcDeadRef",
+      "Toy.RelroGc.keptItem_examples",
+      "Toy.RelroGc.registryScan_examples",
+      "Toy.RelroGc.registryScan_preserved_examples",
+      "Toy.RelroGc.registry_examples",
+      "Toy.RelroGc.sec_isRoot_examples",
+      "Toy.RelroGc.twoStage_examples"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every GC input g, start/stop policy pol and run (a list of section accesses, each an edge access, a bounds access or an implicit access): if (A1) every edge access edge i j follows a relocation edge (i, j) ∈ g.edges from a section i that is a root or was reached by an earlier access of the run, (A2) every implicit access reaches a root, and (A3) every bounds access bounds i X j comes from a section i that references the bounds of X ((i, X) ∈ g.ss) and is a root or was reached earlier, reaches a section j named X, and either the policy is conservative or j is a root, then every section the run accesses is kept by GC (g.Live pol).",
+    "hypotheses": [
+      {
+        "name": "h1 : EdgeAccessesFollowEdges g.edges g.IsRoot run",
+        "purpose": "accesses through relocations follow edges the linker sees, from kept sections",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.gcSoundness_cex_edge_access_without_edge",
+        "witness_class": "a toy GC input of at most three sections"
+      },
+      {
+        "name": "h2 : ImplicitAccessesHitRoots g.IsRoot run",
+        "purpose": "accesses the linker cannot see target roots",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.gcSoundness_cex_implicit_access_to_nonroot",
+        "witness_class": "a toy GC input of at most three sections"
+      },
+      {
+        "name": "h3 : BoundsAccessesRetained g pol run",
+        "purpose": "accesses by iterating __start_X..__stop_X come from kept referencing sections and reach entries that the start/stop rule or a root class retains",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.gcSoundness_cex_bounds_access_unretained",
+        "witness_class": "a toy GC input of at most three sections"
+      }
+    ],
+    "nonvacuity_witness": "gcPair [(0, 1)] with the run [implicit 0, edge 0 1] satisfies A1-A3 under either policy (gcSoundness_nonvacuity); gcReg [] false false under the conservative policy with the run [implicit 0, bounds 0 7 1, bounds 0 7 2] satisfies A1-A3 with bounds accesses (gcSoundness_bounds_nonvacuity).",
+    "nonvacuity_witness_lean": [
+      "Toy.RelroGc.gcSoundness_nonvacuity",
+      "Toy.RelroGc.gcSoundness_bounds_nonvacuity"
+    ],
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "Behaviour preservation is modeled as: every accessed section is kept. Address changes caused by removing sections, and code that depends on section sizes or on the absence of sections, are not modeled.",
+      "The access kinds classify how the program obtains an address, so one run is encoded the same way under both policies; the policy enters through A3 alone. A1-A3 are sufficient, not necessary, for one given run: for example, under the precise policy a bounds access to an entry that an earlier edge access reached is kept although A3 fails for it (an example, not proved here). Over all runs they are exact: live_iff_exists_valid_run proves that a section is kept iff some run satisfying A1-A3 accesses it (the converse direction is exists_valid_run_of_live), so the theorem restates reachability-based GC soundness and is tiered T0.",
+      "Edge and reference endpoints are not required to name existing sections: an index past the end of g.secs can be kept along a dangling edge (phantom_section_live).",
+      "The GC graph models relocation edges, four section-level root flags (entry, exported, KEEP, retain) and start/stop references. Static-archive member selection (which happens before section GC), COMDAT groups, SHF_LINK_ORDER dependencies, special-section roots such as init arrays and notes, dummy (R_*_NONE) relocations, /DISCARD/ rules, weak references, and linkers or OSABIs without SHF_GNU_RETAIN support are not modeled."
+    ],
+    "prior_art": [
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 2030-2039 (Texinfo markup removed): \"--gc-sections decides which input sections are used by examining symbols and relocations. The section containing the entry symbol and all sections containing symbols undefined on the command-line will be kept, as will sections containing symbols referenced by dynamic objects. Note that when building shared libraries, the linker must assume that any visible symbol is referenced. Once this initial set of sections has been determined, the linker recursively marks as used any section referenced by their relocations. See --entry, --undefined, and --gc-keep-exported.\" Basis: documentation. Derived (modeling bridge): the toy's root flags and GcIn.Live (reachability from roots along relocation edges) have this shape.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 5506-5509 (Texinfo markup removed): \"If an output section's name is the same as the input section's name and is representable as a C identifier, then the linker will automatically PROVIDE two symbols: __start_SECNAME and __stop_SECNAME, where SECNAME is the name of the section.\"; lines 5511-5512: \"Note: most section names are not representable as C identifiers because they contain a . character.\"; lines 1595-1602 (item start-stop-gc): \"When --gc-sections is in effect, a reference from a retained section to __start_SECNAME or __stop_SECNAME causes all input sections named SECNAME to also be retained, if SECNAME is representable as a C identifier and either __start_SECNAME or __stop_SECNAME is synthesized by the linker. -z start-stop-gc disables this effect, allowing sections to be garbage collected as if the special synthesized symbols were not defined.\"; lines 1602-1607: \"-z start-stop-gc has no effect on a definition of __start_SECNAME or __stop_SECNAME in an object file or linker script. Such a definition will prevent the linker providing a synthesized __start_SECNAME or __stop_SECNAME respectively, and therefore the special treatment by garbage collection for those references.\"; ld/NEWS lines 142-143 (Changes in 2.37): \"Add -z start-stop-gc to disable special treatment of __start_*/__stop_* references when --gc-sections.\" Basis: documentation. Derived (modeling bridge): the toy's conservative policy mirrors the retaining effect and the precise policy mirrors -z start-stop-gc; the C-identifier condition and user definitions of the bounds are not modeled.",
+      "G. Morrisett, M. Felleisen, R. Harper, \"Abstract models of memory management\", FPCA 1995, pp. 66-77, doi:10.1145/224164.224182 (bibliographic record verified via Crossref; the paper text was not retrieved): a formal treatment of garbage collection in which, per secondary summaries, collecting unreachable heap objects is shown not to change program results. Derived: R6a restates the reachability-based soundness argument for linker section GC, hence tier T0.",
+      "P. Gammie, A. L. Hosking, K. Engelhardt, \"Relaxing safely: verified on-the-fly garbage collection for x86-TSO\", PLDI 2015, pp. 99-109, doi:10.1145/2737924.2738006 (bibliographic record verified via Crossref; described by its title): mechanized GC verification, cited as related mechanized work on heap GC, not on linker GC.",
+      "S. Kell, D. P. Mulligan, P. Sewell, \"The missing link: explaining ELF static linking, semantically\", OOPSLA 2016, pp. 607-623, doi:10.1145/2983990.2983996: a Lem/Isabelle specification of static ELF linking; it states about --gc-sections \"we currently do not model it\" and restricts itself to static linking (no load-time relocation or RELRO protection).",
+      "Y. Wang, X. Xu, P. Wilke, Z. Shao, \"CompCertELF: verified separate compilation of C programs into ELF object files\", Proceedings of the ACM on Programming Languages 4 (OOPSLA), 2020, pp. 1-28, doi:10.1145/3428265 (bibliographic record verified via Crossref; described here by its title, the paper text was not re-read for this package). Mechanized ELF object generation and linking; it is cited as related mechanized work, not as covering dynamic loading, RELRO protection or section GC.",
+      "Novelty record: a bounded search (web search and Crossref, 2026-11-21) found the mechanized ELF-linking work of Kell, Mulligan and Sewell (doi:10.1145/2983990.2983996) and CompCertELF (doi:10.1145/3428265); no mechanized model of RELRO page rounding, linker GC retention roots, or compiler-then-linker retention was found. This result is tiered T0 (reachability-based GC soundness restated); the package's linker-specific results are T1, and no T3 novelty claim is made."
+    ],
+    "design_question": "When does section GC preserve program behaviour, and how does section granularity affect what is kept?"
+  },
+  {
+    "id": "R6b",
+    "lean": "Toy.RelroGc.keptItem_of_keptItem_of_coarsening",
+    "lean_names": [
+      "Toy.RelroGc.KeptItem",
+      "Toy.RelroGc.secEdges",
+      "Toy.RelroGc.secRoot",
+      "Toy.RelroGc.reach_secEdges_map",
+      "Toy.RelroGc.secShared",
+      "Toy.RelroGc.secFine",
+      "Toy.RelroGc.itemEdges",
+      "Toy.RelroGc.itemRoot",
+      "Toy.RelroGc.unreferenced_item_kept_when_sharing_live_section",
+      "Toy.RelroGc.coarsening_nonvacuity"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For item-level references E, root items R and item i: if the section assignment sec' factors through sec (sec' j = f (sec j) for every item j, for a map f that merges sections) and i is kept under sec, then i is kept under sec'.",
+    "hypotheses": [
+      {
+        "name": "hc : ∀ i, sec' i = f (sec i)",
+        "purpose": "sec' is a coarsening of sec, with the merging map f exposed",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.coarsening_cex_refinement",
+        "witness_class": "a three-item toy reference graph"
+      },
+      {
+        "name": "h : KeptItem sec E R i",
+        "purpose": "the item is kept under the finer assignment",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.coarsening_cex_not_kept",
+        "witness_class": "a three-item toy reference graph"
+      }
+    ],
+    "nonvacuity_witness": "secShared factors through secFine (f = secShared) and item 1 is kept under secFine (coarsening_nonvacuity).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.coarsening_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "Items stand for functions, objects or bytes; the kept byte set grows because each item's bytes are kept with it. Section-level attributes such as KEEP are modeled as root items.",
+      "Coarsening can strictly enlarge the kept set, and refining an assignment can shrink it: secShared factors through secFine (coarsening_nonvacuity), and unreferenced_item_kept_when_sharing_live_section proves that an unreferenced, non-root item 2 is removed with one item per section (secFine) and kept when it shares a section with the referenced item 1 (secShared). So \"GC removes every unreferenced function\" is false in the toy.",
+      "Even with one item per section, GC keeps root items and every item referenced by a kept item, including references from code that never runs (E records static references, not executed ones).",
+      "KeptItem models item-level references and root items; section-name-dependent rules (KEEP patterns, __start_X/__stop_X retention, COMDAT groups, SHF_GNU_RETAIN on merged sections) are not modeled.",
+      "This is the transfer of reachability along a graph homomorphism, restated for section assignments; it is tiered T0."
+    ],
+    "prior_art": [
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 2030-2039 (Texinfo markup removed): \"--gc-sections decides which input sections are used by examining symbols and relocations. The section containing the entry symbol and all sections containing symbols undefined on the command-line will be kept, as will sections containing symbols referenced by dynamic objects. Note that when building shared libraries, the linker must assume that any visible symbol is referenced. Once this initial set of sections has been determined, the linker recursively marks as used any section referenced by their relocations. See --entry, --undefined, and --gc-keep-exported.\" Basis: documentation. Derived (modeling bridge): the toy's root flags and GcIn.Live (reachability from roots along relocation edges) have this shape.",
+      "GCC 11.1.0 manual, Options That Control Optimization (gcc/doc/invoke.texi at tag releases/gcc-11.1.0, commit 50bc9185c2821350f0b785d6e23a6e9dcde58466, lines 12934-12937 and 12945-12947; HTML at https://gcc.gnu.org/onlinedocs/gcc-11.1.0/gcc/Optimize-Options.html): -ffunction-sections / -fdata-sections: \"Place each function or data item into its own section in the output file if the target supports arbitrary sections. The name of the function or the name of the data item determines the section's name in the output file.\" and \"Together with a linker garbage collection (linker --gc-sections option) these options may lead to smaller statically-linked executables (after stripping).\" Basis: documentation. Derived (modeling bridge): finer section assignments are refinements in the sense of R6b."
+    ],
+    "design_question": "When does section GC preserve program behaviour, and how does section granularity affect what is kept?"
+  },
+  {
+    "id": "R7a",
+    "lean": "Toy.RelroGc.precise_drops_unrooted_entries_of_noEdgeIntoName",
+    "lean_names": [
+      "Toy.RelroGc.StartStopUndefined",
+      "Toy.RelroGc.gcReg",
+      "Toy.RelroGc.NoEdgeIntoName",
+      "Toy.RelroGc.GcIn.nameOf",
+      "Toy.RelroGc.GcIn.IsRoot",
+      "Toy.RelroGc.registry_precise_link_failure_conservative_kept",
+      "Toy.RelroGc.registry_precise_silent_shrink",
+      "Toy.RelroGc.empty_registry_kept_and_undefined",
+      "Toy.RelroGc.gcEmptyReg",
+      "Toy.RelroGc.phantom_section_live",
+      "Toy.RelroGc.registry_nonvacuity"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every GC input g and name X: if no relocation edge reaches a section named X and no section named X is a root, then under the precise start/stop policy no section named X is kept; and if, in addition, a section kept under the precise policy references the bounds of X, the bounds are undefined (StartStopUndefined, the toy's link failure).",
+    "hypotheses": [
+      {
+        "name": "hN : NoEdgeIntoName g X",
+        "purpose": "no relocation edge reaches a registry entry",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.precise_drops_cex_edge_into_entry",
+        "witness_class": "a toy GC input of at most three sections"
+      },
+      {
+        "name": "hU : ∀ j, g.nameOf j = some X → ¬ g.IsRoot j",
+        "purpose": "no entry is retained by a root class",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.precise_drops_cex_rooted_entry",
+        "witness_class": "a toy GC input of at most three sections"
+      }
+    ],
+    "nonvacuity_witness": "gcReg [] false false (two entries named 7, bounds referenced by the entry section, no edges, no rooted entry) satisfies both hypotheses (registry_nonvacuity); registry_precise_link_failure_conservative_kept shows the link failure under the precise policy there.",
+    "nonvacuity_witness_lean": "Toy.RelroGc.registry_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "Modeling an undefined __start_X/__stop_X as a link failure is a toy choice; weak references and linker-script definitions of the bounds are not modeled.",
+      "In the GNU ld and lld documentation quoted in the prior art, bounds synthesis and the conservative retention rule apply when the section name is representable as a C identifier, and a definition of __start_X or __stop_X in an object file or linker script prevents synthesis; neither condition is modeled.",
+      "The second conjunct follows from the first: given that no entry is kept, a kept reference to the bounds is exactly StartStopUndefined. It records the toy's classification, not an additional fact about linkers.",
+      "If no section is named X but a kept section references its bounds, RegistryKept holds vacuously and StartStopUndefined holds, under either policy (empty_registry_kept_and_undefined).",
+      "With a relocation edge into one entry, the precise policy keeps that entry and removes the other while the bounds stay defined, so the registry shrinks without a link failure (registry_precise_silent_shrink); this is the witness behind the tightness of hN.",
+      "The GC graph models relocation edges, four section-level root flags (entry, exported, KEEP, retain) and start/stop references. Static-archive member selection (which happens before section GC), COMDAT groups, SHF_LINK_ORDER dependencies, special-section roots such as init arrays and notes, dummy (R_*_NONE) relocations, /DISCARD/ rules, weak references, and linkers or OSABIs without SHF_GNU_RETAIN support are not modeled."
+    ],
+    "prior_art": [
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 5506-5509 (Texinfo markup removed): \"If an output section's name is the same as the input section's name and is representable as a C identifier, then the linker will automatically PROVIDE two symbols: __start_SECNAME and __stop_SECNAME, where SECNAME is the name of the section.\"; lines 5511-5512: \"Note: most section names are not representable as C identifiers because they contain a . character.\"; lines 1595-1602 (item start-stop-gc): \"When --gc-sections is in effect, a reference from a retained section to __start_SECNAME or __stop_SECNAME causes all input sections named SECNAME to also be retained, if SECNAME is representable as a C identifier and either __start_SECNAME or __stop_SECNAME is synthesized by the linker. -z start-stop-gc disables this effect, allowing sections to be garbage collected as if the special synthesized symbols were not defined.\"; lines 1602-1607: \"-z start-stop-gc has no effect on a definition of __start_SECNAME or __stop_SECNAME in an object file or linker script. Such a definition will prevent the linker providing a synthesized __start_SECNAME or __stop_SECNAME respectively, and therefore the special treatment by garbage collection for those references.\"; ld/NEWS lines 142-143 (Changes in 2.37): \"Add -z start-stop-gc to disable special treatment of __start_*/__stop_* references when --gc-sections.\" Basis: documentation. Derived (modeling bridge): the toy's conservative policy mirrors the retaining effect and the precise policy mirrors -z start-stop-gc; the C-identifier condition and user definitions of the bounds are not modeled.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/docs/ELF/start-stop-gc.rst lines 13-18: \"__start_meta and __stop_meta are sometimes called encapsulation symbols. In October 2015, GNU ld switched behavior and made a __start_meta reference from a live section retain all meta input sections. This conservative behavior works for existing code which does not take GC into fair consideration, but unnecessarily increases sizes for modern metadata section usage which desires precise GC.\"; lines 21-22: \"ld.lld 13.0.0 defaults to -z start-stop-gc and supports -z nostart-stop-gc to switch to the conservative behavior.\" (reStructuredText markup removed). Basis: documentation.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/docs/ld.lld.1 lines 929-933 (items start-stop-gc and nostart-stop-gc; mdoc markup removed): \"Don't let __start_/__stop_ references retain the associated C identifier name sections (default).\" and \"Let __start_/__stop_ references retain the associated C identifier name sections.\" Basis: documentation.",
+      "Background: F. Song (MaskRay), \"Linker garbage collection\", 2021-02-28, https://maskray.me/blog/2021-02-28-linker-garbage-collection (living document, snapshot 2026-11-21, line 416): \"When -z nostart-stop-gc is in effect, if a live section contains a relocation referencing a symbol __start_$secname or __stop_$secname, and $secname has a C identifier name, all input sections $secname will be retained.\" Basis: documentation (practitioner write-up)."
+    ],
+    "design_question": "Which retention mechanisms must a verified toolchain assume for data that the program reaches by iterating between __start_X and __stop_X, with no per-entry relocations?"
+  },
+  {
+    "id": "R7f",
+    "lean": "Toy.RelroGc.registryKept_iff_of_noEdgeIntoName",
+    "lean_names": [
+      "Toy.RelroGc.RegistryKept",
+      "Toy.RelroGc.NoEdgeIntoName",
+      "Toy.RelroGc.gcReg",
+      "Toy.RelroGc.registryScan",
+      "Toy.RelroGc.RunPreserved",
+      "Toy.RelroGc.live_iff_root_or_conservative_reference_of_noEdgeIntoName",
+      "Toy.RelroGc.conservative_registryKept_of_live_reference",
+      "Toy.RelroGc.registryKept_of_entries_rooted",
+      "Toy.RelroGc.runPreserved_registryScan_iff_registryKept",
+      "Toy.RelroGc.conservative_registryKept_nonvacuity",
+      "Toy.RelroGc.registryKept_of_entries_rooted_nonvacuity",
+      "Toy.RelroGc.registry_precise_link_failure_conservative_kept",
+      "Toy.RelroGc.registry_keep_or_retain_kept_precise",
+      "Toy.RelroGc.registry_iff_cex_edge_into_entry",
+      "Toy.RelroGc.registry_iff_cex_other_name",
+      "Toy.RelroGc.conservative_cex_dead_referencer",
+      "Toy.RelroGc.conservative_cex_no_reference",
+      "Toy.RelroGc.rooted_cex_unrooted",
+      "Toy.RelroGc.registry_precise_silent_shrink",
+      "Toy.RelroGc.registry_nonvacuity",
+      "Toy.RelroGc.mem_ssEdges_conservative",
+      "Toy.RelroGc.mkSec"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every GC input g, policy pol and name X: if no relocation edge reaches a section named X, then GC keeps every section named X iff, for every section j named X, either j is a root, or the policy is conservative and some kept section references the bounds of X.",
+    "hypotheses": [
+      {
+        "name": "hN : NoEdgeIntoName g X",
+        "purpose": "no relocation edge reaches a registry entry",
+        "tightness": "tight",
+        "counterexample": "Toy.RelroGc.registryKept_iff_cex_edges_into_entries",
+        "witness_class": "a toy GC input of at most three sections"
+      }
+    ],
+    "nonvacuity_witness": "gcReg [] false false with X = 7 satisfies hN (registry_nonvacuity); both sides are false under the precise policy and true under the conservative policy (registry_precise_link_failure_conservative_kept).",
+    "nonvacuity_witness_lean": "Toy.RelroGc.registry_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "Behaviour preservation for a program that iterates a registry is connected to runs by the bridge lemma runPreserved_registryScan_iff_registryKept: the run registryScan g i X, in which section i iterates the bounds of X and reaches every section named X, is preserved by GC iff RegistryKept g pol X.",
+      "The pointwise form is the auxiliary lemma live_iff_root_or_conservative_reference_of_noEdgeIntoName (hypotheses hN and hj : g.nameOf j = some X, the latter tight by registry_iff_cex_other_name). Its two directions specialize to the auxiliary lemmas conservative_registryKept_of_live_reference (under the conservative policy a kept reference keeps every entry; hypotheses tight by conservative_cex_dead_referencer and conservative_cex_no_reference; instance conservative_registryKept_nonvacuity) and registryKept_of_entries_rooted (rooted entries are kept under either policy; hypothesis tight by rooted_cex_unrooted; instance registryKept_of_entries_rooted_nonvacuity).",
+      "The hypothesis NoEdgeIntoName is tight over three-section toy inputs: without it, entries reached by relocation edges are kept under the precise policy although no entry is rooted (registryKept_iff_cex_edges_into_entries, registry_precise_silent_shrink).",
+      "In the GNU ld and lld documentation quoted in the prior art, bounds synthesis and the conservative retention rule apply when the section name is representable as a C identifier, and a definition of __start_X or __stop_X in an object file or linker script prevents synthesis; neither condition is modeled.",
+      "Marking entries as roots (KEEP or the retain flag) in the toy does not model static-archive member selection, COMDAT resolution, /DISCARD/ rules, compiler-stage elimination (R8b), or linkers and OSABIs that ignore SHF_GNU_RETAIN."
+    ],
+    "prior_art": [
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 5506-5509 (Texinfo markup removed): \"If an output section's name is the same as the input section's name and is representable as a C identifier, then the linker will automatically PROVIDE two symbols: __start_SECNAME and __stop_SECNAME, where SECNAME is the name of the section.\"; lines 5511-5512: \"Note: most section names are not representable as C identifiers because they contain a . character.\"; lines 1595-1602 (item start-stop-gc): \"When --gc-sections is in effect, a reference from a retained section to __start_SECNAME or __stop_SECNAME causes all input sections named SECNAME to also be retained, if SECNAME is representable as a C identifier and either __start_SECNAME or __stop_SECNAME is synthesized by the linker. -z start-stop-gc disables this effect, allowing sections to be garbage collected as if the special synthesized symbols were not defined.\"; lines 1602-1607: \"-z start-stop-gc has no effect on a definition of __start_SECNAME or __stop_SECNAME in an object file or linker script. Such a definition will prevent the linker providing a synthesized __start_SECNAME or __stop_SECNAME respectively, and therefore the special treatment by garbage collection for those references.\"; ld/NEWS lines 142-143 (Changes in 2.37): \"Add -z start-stop-gc to disable special treatment of __start_*/__stop_* references when --gc-sections.\" Basis: documentation. Derived (modeling bridge): the toy's conservative policy mirrors the retaining effect and the precise policy mirrors -z start-stop-gc; the C-identifier condition and user definitions of the bounds are not modeled.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/docs/ELF/start-stop-gc.rst lines 13-18: \"__start_meta and __stop_meta are sometimes called encapsulation symbols. In October 2015, GNU ld switched behavior and made a __start_meta reference from a live section retain all meta input sections. This conservative behavior works for existing code which does not take GC into fair consideration, but unnecessarily increases sizes for modern metadata section usage which desires precise GC.\"; lines 21-22: \"ld.lld 13.0.0 defaults to -z start-stop-gc and supports -z nostart-stop-gc to switch to the conservative behavior.\" (reStructuredText markup removed). Basis: documentation.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/docs/ld.lld.1 lines 929-933 (items start-stop-gc and nostart-stop-gc; mdoc markup removed): \"Don't let __start_/__stop_ references retain the associated C identifier name sections (default).\" and \"Let __start_/__stop_ references retain the associated C identifier name sections.\" Basis: documentation.",
+      "GNU ld manual, binutils 2.42, ld/ld.texi lines 5462-5466 (node Input Section Keep): \"When link-time garbage collection is in use (--gc-sections), it is often useful to mark sections that should not be eliminated. This is accomplished by surrounding an input section's wildcard entry with KEEP(), as in KEEP(*(.init)) or KEEP(SORT_BY_NAME(*)(.ctors)).\" Basis: documentation.",
+      "GNU ld manual, binutils 2.42 (tag binutils-2_42, commit c7f28aad0c99d1d2fec4e52ebfa3735d90ceb8e9), ld/ld.texi lines 2047-2048: \"As a GNU extension, ELF input sections marked with the SHF_GNU_RETAIN flag will not be garbage collected.\" Basis: documentation.",
+      "binutils 2.36 (tag binutils-2_36, commit 9288e0fae61b716ce75334be906283de8b18b787), ld/NEWS lines 44-46: \"Add support for the SHF_GNU_RETAIN ELF section flag. This flag specifies that the section should not be garbage collected by the linker.\"; gas/NEWS lines 54-57: \"Add support for the SHF_GNU_RETAIN flag, which can be applied to sections using the 'R' flag in the .section directive. SHF_GNU_RETAIN specifies that the section should not be garbage collected by the linker. It requires the GNU or FreeBSD ELF OSABIs.\" Basis: documentation."
+    ],
+    "design_question": "Which retention mechanisms must a verified toolchain assume for data that the program reaches by iterating between __start_X and __stop_X, with no per-entry relocations?"
+  },
+  {
+    "id": "R8a",
+    "lean": "Toy.RelroGc.survives_iff_compiledPath",
+    "lean_names": [
+      "Toy.RelroGc.Prog2",
+      "Toy.RelroGc.Static",
+      "Toy.RelroGc.Prog2.compiled",
+      "Toy.RelroGc.compileKeeps",
+      "Toy.RelroGc.Prog2.objEdges",
+      "Toy.RelroGc.Prog2.objRoot",
+      "Toy.RelroGc.Prog2.LinkReach",
+      "Toy.RelroGc.Prog2.Survives",
+      "Toy.RelroGc.Prog2.CompiledPath",
+      "Toy.RelroGc.survives_iff_linkReach",
+      "Toy.RelroGc.compiled_of_linkReach",
+      "Toy.RelroGc.survives_iff_compileKept_and_linkReach_or_retain",
+      "Toy.RelroGc.survives_conjunction_cex_without_lookup",
+      "Toy.RelroGc.twoStage_nonvacuity",
+      "Toy.RelroGc.stMain",
+      "Toy.RelroGc.stUsedRetained",
+      "Toy.RelroGc.compiledPath_examples",
+      "Toy.RelroGc.unreferenced_item_kept_when_sharing_live_section"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every program p (statics, each emitted into its own input section, and source-level link edges p.ledges) and static i: i survives end-to-end (the compiler stage emits it and linker GC keeps its section in the object the compiler produced) iff there is a path in p.ledges from a static whose section is a link root or retained to i, every static of which, the start and i included, the compiler stage keeps (it is referenced by compiler-kept code or compiler-used).",
+    "hypotheses": [],
+    "nonvacuity_witness": "No side-condition hypotheses (universally quantified over p and i). twoStage_nonvacuity: in Prog2.mk [stMain, stUsedRetained] [], static 1 (compiler-used and retained) survives and has a compiler-kept path; compiledPath_examples gives a static with no such path.",
+    "nonvacuity_witness_lean": "Toy.RelroGc.twoStage_nonvacuity",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "survives_iff_linkReach: survival coincides with link-time reachability in the object the compiler produced, because that object's roots and edges lie on compiler-kept statics (compiled_of_linkReach). The conjunction form survives_iff_compileKept_and_linkReach_or_retain ((referenced at compile time or compiler-used) and (link-reachable or retained), for the record s with p.statics[i]? = some s) is therefore a definitional restatement: link reachability implies both its left conjunct and its right disjunction. Without the lookup binding the conjunction form is false (survives_conjunction_cex_without_lookup).",
+      "Source-level reachability plus compiler retention does not imply survival (compileKept_and_srcReach_not_sufficient, card R8b): paths through statics the compiler drops do not count.",
+      "The toy's compiler stage keeps a static iff it is referenced by compiler-kept code or compiler-used; compiler optimizations that remove referenced statics, LTO, and section merging are not modeled.",
+      "Attribute designs differ across toolchains and layers, and the toy fixes none of them: its flags cref, cused, retain and lroot are independent. LLVM IR @llvm.used binds the compiler, assembler and linker (LangRef); C/C++ __attribute__((retain)) in GCC 11 and Clang is a separate attribute from used, and the Clang documentation states that it has no effect if the compiler does not emit the definition and that it is typically combined with used; whether unstable Rust #[used(linker)] implies #[used(compiler)] is listed as an unresolved question in rust-lang/rust issue 93798 (an open tracking issue, cited as background, not as normative).",
+      "Prog2 places each static in its own input section (as with -fdata-sections). Without per-static sections a static can survive linker GC by sharing a kept section; the item-level model of R6b exhibits this (unreferenced_item_kept_when_sharing_live_section).",
+      "Surviving both stages in Prog2 does not establish presence in a real final binary: static-archive member selection, COMDAT deduplication, /DISCARD/ rules, LTO, and linkers or OSABIs without SHF_GNU_RETAIN support are not modeled.",
+      "This is reachability in the subgraph induced by the compiler-kept statics, restated; it is tiered T0."
+    ],
+    "prior_art": [
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), clang/include/clang/Basic/AttrDocs.td, RetainDocs lines 97-99: \"This attribute, when attached to a function or variable definition, prevents section garbage collection in the linker. It does not prevent other discard mechanisms, such as archive member selection, and COMDAT group resolution.\"; lines 101-105: \"If the compiler does not emit the definition, e.g. because it was not used in the translation unit or the compiler was able to eliminate all of the uses, this attribute has no effect. This attribute is typically combined with the used attribute to force the definition to be emitted and preserved into the final linked image.\"; UsedDocs lines 86-88: \"On ELF targets, it has no effect on its own, and the linker may remove the definition if it is not otherwise referenced. This linker GC can be avoided by also adding the retain attribute.\" (reStructuredText markup removed). Basis: documentation. Derived (modeling bridge): `retain` without `used` on a static that the compiler does not otherwise keep corresponds to the toy record stRetainOnly (retain = true, cref = cused = false), the configuration of retained_but_compiler_dropped.",
+      "GCC 11.1.0 manual, Common Variable Attributes (gcc/doc/extend.texi at tag releases/gcc-11.1.0, commit 50bc9185c2821350f0b785d6e23a6e9dcde58466, lines 7514-7516 and 7524-7530; HTML at https://gcc.gnu.org/onlinedocs/gcc-11.1.0/gcc/Common-Variable-Attributes.html): used: \"This attribute, attached to a variable with static storage, means that the variable must be emitted even if it appears that the variable is not referenced.\"; retain: \"For ELF targets that support the GNU or FreeBSD OSABIs, this attribute will save the variable from linker garbage collection. To support this behavior, variables that have not been placed in specific sections (e.g. by the section attribute, or the -fdata-sections option), will be placed in new, unique sections.\" and \"This additional functionality requires Binutils version 2.36 or later.\" Basis: documentation. The two entries are separate attributes; neither entry says that one implies the other.",
+      "LLVM 19.1.0 (commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), llvm/docs/LangRef.rst lines 8715-8719: \"If a symbol appears in the @llvm.used list, then the compiler, assembler, and linker are required to treat the symbol as if there is a reference to the symbol that it cannot see (which is why they have to be named). For example, if a variable has internal linkage and no references other than that from the @llvm.used list, it cannot be deleted.\"; lines 8732-8734: \"The @llvm.compiler.used directive is the same as the @llvm.used directive, except that it only prevents the compiler from touching the symbol.\" Basis: normative (IR specification).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/abi.md line 14: \"The used attribute forces a static to be kept in the output object file (.o, .rlib, etc., excluding final binaries) even if it's never used or referenced by any other item in the crate. The linker, however, is still free to remove it.\" Basis: documentation.",
+      "rust-lang/rust issue 93798, \"Tracking Issue for used_with_arg\" (open tracking issue, living document; cited as background and not relied on as normative; body snapshot 2026-11-21, lines 5-6): \"The #[used(compiler)] attribute indicates that the symbol should be considered used at the compiler level. It should not be eliminated by the compiler even if it appears unreferenced. This attribute guarantees that the symbol will make it to the linker.\" and \"The #[used(linker)] attribute indicates that the symbol should additionally be considered used at the linker level. The linker should not eliminate the symbol even if it appears unreferenced.\"; its Unresolved Questions list (line 28) includes: \"Does #[used(linker)] imply #[used(compiler)] or does it mean the symbol is only considered used if it actually makes it past the compiler?\" (Markdown markup removed). Basis: documentation of an unstable feature.",
+      "binutils 2.36 (tag binutils-2_36, commit 9288e0fae61b716ce75334be906283de8b18b787), ld/NEWS lines 44-46: \"Add support for the SHF_GNU_RETAIN ELF section flag. This flag specifies that the section should not be garbage collected by the linker.\"; gas/NEWS lines 54-57: \"Add support for the SHF_GNU_RETAIN flag, which can be applied to sections using the 'R' flag in the .section directive. SHF_GNU_RETAIN specifies that the section should not be garbage collected by the linker. It requires the GNU or FreeBSD ELF OSABIs.\" Basis: documentation.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/docs/ELF/start-stop-gc.rst lines 51-53: \"On ELF targets, __attribute__((used)) prevents compiler discarding, but does not affect linker --gc-sections.\"; lines 39-40 and 46: \"If a relocation is inconvenient, consider using __attribute__((retain)) (GCC 11 with modern binutils, Clang 13).\" followed by the example `__attribute__((retain,used,section(\"meta\")))` (reStructuredText markup removed). Basis: documentation."
+    ],
+    "design_question": "What must hold at each of the compiler and linker stages for a static to be present in the final binary?"
+  },
+  {
+    "id": "R8b",
+    "lean": [
+      "Toy.RelroGc.compilerUsed_unretained_unreachable_removed",
+      "Toy.RelroGc.retained_but_compiler_dropped",
+      "Toy.RelroGc.compileKept_and_srcReach_not_sufficient"
+    ],
+    "lean_names": [
+      "Toy.RelroGc.stMain",
+      "Toy.RelroGc.stUsedOnly",
+      "Toy.RelroGc.stRetainOnly",
+      "Toy.RelroGc.stPlain",
+      "Toy.RelroGc.Prog2.SrcReach",
+      "Toy.RelroGc.linkReach_closed",
+      "Toy.RelroGc.srcReach_examples",
+      "Toy.RelroGc.Prog2.objRootB"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "definitional",
+    "plain_claim": "(i) In Prog2.mk [stMain, stUsedOnly] [], the compiler-used static 1, in its own section and neither retained nor reachable at link time, survives the compiler stage and is removed by linker GC. (ii) In Prog2.mk [stMain, stRetainOnly] [], static 1, whose section carries the retain flag but which is neither referenced at compile time nor compiler-used, is dropped by the compiler stage and does not survive. (iii) In Prog2.mk [stMain, stPlain, stUsedOnly] [(0, 1), (1, 2)], static 2 is compiler-used and reachable from the entry static 0 in the source-level link graph, but its sole path passes through static 1, which no flag keeps and the compiler stage drops; static 2 does not survive.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Concrete programs with two or three statics; each fact is proved for the stated program.",
+    "nonvacuity_witness_lean": "Toy.RelroGc.compilerUsed_unretained_unreachable_removed",
+    "non_claims": [
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real dynamic loader, linker or compiler.",
+      "Instance (i) is the toy counterpart of the documented gap between compiler-level and linker-level retention (the GCC and Clang used entries, lld's start-stop-gc document, LangRef's @llvm.compiler.used, the Rust Reference's used attribute).",
+      "Instance (ii) is the configuration that the Clang documentation describes for __attribute__((retain)) on a definition the compiler does not emit (\"this attribute has no effect\"); this is why the Clang and lld documentation combine retain with used. Attribute designs differ across toolchains and layers, and the toy fixes none of them: its flags cref, cused, retain and lroot are independent. LLVM IR @llvm.used binds the compiler, assembler and linker (LangRef); C/C++ __attribute__((retain)) in GCC 11 and Clang is a separate attribute from used, and the Clang documentation states that it has no effect if the compiler does not emit the definition and that it is typically combined with used; whether unstable Rust #[used(linker)] implies #[used(compiler)] is listed as an unresolved question in rust-lang/rust issue 93798 (an open tracking issue, cited as background, not as normative).",
+      "Instance (iii) uses realistic flag combinations (an entry, a plain static, a compiler-used static); it shows that the second stage is reachability over compiler-kept statics (R8a), not source-level reachability.",
+      "Prog2 places each static in its own input section (as with -fdata-sections). Without per-static sections a static can survive linker GC by sharing a kept section; the item-level model of R6b exhibits this (unreferenced_item_kept_when_sharing_live_section).",
+      "Surviving both stages in Prog2 does not establish presence in a real final binary: static-archive member selection, COMDAT deduplication, /DISCARD/ rules, LTO, and linkers or OSABIs without SHF_GNU_RETAIN support are not modeled.",
+      "These are single concrete toy instances; they show the corresponding informal claims are false as stated in the toy, not how often real programs are affected."
+    ],
+    "prior_art": [
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), clang/include/clang/Basic/AttrDocs.td, RetainDocs lines 97-99: \"This attribute, when attached to a function or variable definition, prevents section garbage collection in the linker. It does not prevent other discard mechanisms, such as archive member selection, and COMDAT group resolution.\"; lines 101-105: \"If the compiler does not emit the definition, e.g. because it was not used in the translation unit or the compiler was able to eliminate all of the uses, this attribute has no effect. This attribute is typically combined with the used attribute to force the definition to be emitted and preserved into the final linked image.\"; UsedDocs lines 86-88: \"On ELF targets, it has no effect on its own, and the linker may remove the definition if it is not otherwise referenced. This linker GC can be avoided by also adding the retain attribute.\" (reStructuredText markup removed). Basis: documentation. Derived (modeling bridge): `retain` without `used` on a static that the compiler does not otherwise keep corresponds to the toy record stRetainOnly (retain = true, cref = cused = false), the configuration of retained_but_compiler_dropped.",
+      "GCC 11.1.0 manual, Common Variable Attributes (gcc/doc/extend.texi at tag releases/gcc-11.1.0, commit 50bc9185c2821350f0b785d6e23a6e9dcde58466, lines 7514-7516 and 7524-7530; HTML at https://gcc.gnu.org/onlinedocs/gcc-11.1.0/gcc/Common-Variable-Attributes.html): used: \"This attribute, attached to a variable with static storage, means that the variable must be emitted even if it appears that the variable is not referenced.\"; retain: \"For ELF targets that support the GNU or FreeBSD OSABIs, this attribute will save the variable from linker garbage collection. To support this behavior, variables that have not been placed in specific sections (e.g. by the section attribute, or the -fdata-sections option), will be placed in new, unique sections.\" and \"This additional functionality requires Binutils version 2.36 or later.\" Basis: documentation. The two entries are separate attributes; neither entry says that one implies the other.",
+      "LLVM 19.1.0 (tag llvmorg-19.1.0, commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), lld/docs/ELF/start-stop-gc.rst lines 51-53: \"On ELF targets, __attribute__((used)) prevents compiler discarding, but does not affect linker --gc-sections.\"; lines 39-40 and 46: \"If a relocation is inconvenient, consider using __attribute__((retain)) (GCC 11 with modern binutils, Clang 13).\" followed by the example `__attribute__((retain,used,section(\"meta\")))` (reStructuredText markup removed). Basis: documentation.",
+      "LLVM 19.1.0 (commit a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4), llvm/docs/LangRef.rst lines 8715-8719: \"If a symbol appears in the @llvm.used list, then the compiler, assembler, and linker are required to treat the symbol as if there is a reference to the symbol that it cannot see (which is why they have to be named). For example, if a variable has internal linkage and no references other than that from the @llvm.used list, it cannot be deleted.\"; lines 8732-8734: \"The @llvm.compiler.used directive is the same as the @llvm.used directive, except that it only prevents the compiler from touching the symbol.\" Basis: normative (IR specification).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/abi.md line 14: \"The used attribute forces a static to be kept in the output object file (.o, .rlib, etc., excluding final binaries) even if it's never used or referenced by any other item in the crate. The linker, however, is still free to remove it.\" Basis: documentation.",
+      "rust-lang/rust issue 93798, \"Tracking Issue for used_with_arg\" (open tracking issue, living document; cited as background and not relied on as normative; body snapshot 2026-11-21, lines 5-6): \"The #[used(compiler)] attribute indicates that the symbol should be considered used at the compiler level. It should not be eliminated by the compiler even if it appears unreferenced. This attribute guarantees that the symbol will make it to the linker.\" and \"The #[used(linker)] attribute indicates that the symbol should additionally be considered used at the linker level. The linker should not eliminate the symbol even if it appears unreferenced.\"; its Unresolved Questions list (line 28) includes: \"Does #[used(linker)] imply #[used(compiler)] or does it mean the symbol is only considered used if it actually makes it past the compiler?\" (Markdown markup removed). Basis: documentation of an unstable feature."
+    ],
+    "design_question": "What must hold at each of the compiler and linker stages for a static to be present in the final binary?"
+  }
+]

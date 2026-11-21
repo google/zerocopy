@@ -1,0 +1,24 @@
+import ToyRelroGc
+
+#print axioms Toy.RelroGc.twoPhaseGuarantees_of_slotsWritable_of_protectAfterRelocs_of_covers_of_avoids
+#print axioms Toy.RelroGc.pic_rodata_slot_load_faults
+#print axioms Toy.RelroGc.pic_loadOk_and_writeFaultsAfter_iff_relro
+#print axioms Toy.RelroGc.lazyBound_not_callWorks_and_writeFaultsAfter
+#print axioms Toy.RelroGc.bindings_writeFaultsAfter_iff_eager_of_eagerRelroOrLazy_of_callWorks
+#print axioms Toy.RelroGc.bindings_callWorks_of_eagerRelroOrLazyMut
+#print axioms Toy.RelroGc.downDown_avoidsMut_of_firstPage_noMut
+#print axioms Toy.RelroGc.downDown_coversRelro_iff_end_aligned
+#print axioms Toy.RelroGc.downUp_coversRelro
+#print axioms Toy.RelroGc.downUp_avoidsMut_iff_partialPages_noMut
+#print axioms Toy.RelroGc.exists_pageGranular_covers_avoids_iff_noSharedPage
+#print axioms Toy.RelroGc.exists_pageGranular_covers_avoids_iff_partialPages_noMut
+#print axioms Toy.RelroGc.applyAll_perm_of_addressOnly_of_nodup_slots
+#print axioms Toy.RelroGc.applyAll_append_perm_of_resolvers_read_no_resolver_slot
+#print axioms Toy.RelroGc.runPreserved_of_edgeAccessesFollowEdges_of_implicitAccessesHitRoots_of_boundsAccessesRetained
+#print axioms Toy.RelroGc.keptItem_of_keptItem_of_coarsening
+#print axioms Toy.RelroGc.precise_drops_unrooted_entries_of_noEdgeIntoName
+#print axioms Toy.RelroGc.registryKept_iff_of_noEdgeIntoName
+#print axioms Toy.RelroGc.survives_iff_compiledPath
+#print axioms Toy.RelroGc.compilerUsed_unretained_unreachable_removed
+#print axioms Toy.RelroGc.retained_but_compiler_dropped
+#print axioms Toy.RelroGc.compileKept_and_srcReach_not_sufficient
