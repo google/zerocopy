@@ -334,8 +334,8 @@ structure NaivePropProv where
 /-- Negative example (`NaivePropProv`): *no* such structure is consistent, with
 no ring and no bridge involved.  If `Prov False` failed, that failure would be
 a true proposition, hence "provable" by `nec`, and Löb would give `Prov False`.
-Any impossibility theorem stated over this interface is vacuous; this is why
-`ProvFamily` separates `Thm` from truth. -/
+Any theorem over this interface that assumes consistency (`¬ T.Prov False`)
+is vacuous; this is why `ProvFamily` separates `Thm` from truth. -/
 theorem NaivePropProv.not_not_prov_false (T : NaivePropProv) : ¬ ¬ T.Prov False :=
   fun h => h (T.lob (T.nec h))
 

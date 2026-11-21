@@ -27,7 +27,7 @@ All Lean names below live in namespace `Toy.KernelTrust`. The provability-interf
 | **K5-iff** | For a theory closed under modus ponens, with ex falso and with `GodelII`, proving its own local reflection schema is *equivalent* to inconsistency. |
 | **S-semSound** | Every sequent derivable from the standard natural-deduction table is truth-table valid. |
 | **S-recompute** | For every rule table, the recomputing re-checker and the trace checker are faithful, both certificate re-checkers are complete, and on honest certificates (`Cert.honest R c = true`) the two field policies agree. |
-| **S-naive-interface** | A provability operator on meta-level propositions with "true implies provable" and Löb's rule is never consistent, so impossibility theorems over that interface are vacuous. |
+| **S-naive-interface** | A provability operator on meta-level propositions with "true implies provable" and Löb's rule is never consistent, so any theorem over that interface that assumes consistency (`¬ Prov False`) is vacuous. |
 
 ## Applicability
 
@@ -771,7 +771,7 @@ Unfolded: `Consistent R := ¬ Derivable R [] .bot`.
 |:--|:--|:--|:--|:--|:--|
 | S-semSound | `stdRules_semSound`, `stdRules_consistent` | every sequent derivable from the standard table is truth-table valid; `[] ⊢ ⊥` is not derivable | T0 (textbook soundness of natural deduction: van Dalen 2013; Troelstra, Schwichtenberg 2000) | substantive (induction over derivations) | unconditional (`ex_semSound_stdRules_pos`) |
 | S-recompute | `recheckRecompute_faithful`, `recheck_complete`, `execCert_trust_eq_recompute_of_honest`, `traceChecker_faithful` | for every rule table the recomputing re-checker and the trace checker are faithful; both certificate re-checkers are complete; on honest certificates the two policies execute identically | T0 (stack-machine proof formats: Hurd 2011; Carneiro 2020) | substantive (inductions over certificates and derivations) | `ex_faithful_recheckRecompute_pos`, `ex_traceChecker_accepts_topTrace_pos`, `ex_honest_topCert_pos` |
-| S-naive-interface | `NaivePropProv.not_not_prov_false` | a provability operator on meta-level propositions with "true implies provable" (`nec`) and Löb's rule (`lob`) is never consistent (only these two fields exist and both are used), so an impossibility theorem over that interface is vacuous | T1 (interface-design note) | shallow | `NaivePropProv.nonempty` |
+| S-naive-interface | `NaivePropProv.not_not_prov_false` | a provability operator on meta-level propositions with "true implies provable" (`nec`) and Löb's rule (`lob`) is never consistent (only these two fields exist and both are used), so any theorem over that interface that assumes consistency (`¬ Prov False`) is vacuous | T1 (interface-design note) | shallow | `NaivePropProv.nonempty` |
 
 Basis for the three rows: execution (Lean kernel check).
 

@@ -886,7 +886,7 @@
   "kind": "counterexample",
   "tier": "T1",
   "tier_justification": "Interface-design note: conflating truth with theoremhood trivialises Löb-style arguments; folklore, made precise.",
-  "plain_claim": "A provability operator on meta-level propositions with 'every true proposition is provable' (`P → Prov P`) and Löb's rule is never consistent (`¬¬ Prov False`), so an impossibility theorem stated over that interface is vacuous.",
+  "plain_claim": "A provability operator on meta-level propositions with 'every true proposition is provable' (`P → Prov P`) and Löb's rule is never consistent (`¬¬ Prov False`), so any theorem over that interface that assumes consistency (`¬ Prov False`) is vacuous.",
   "hypotheses": [],
   "depth": "shallow",
   "depth_justification": "One application of each of the two fields.",
