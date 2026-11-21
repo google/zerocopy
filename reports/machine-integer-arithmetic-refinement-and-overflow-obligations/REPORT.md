@@ -304,7 +304,7 @@ def smulOverflow {w : Nat} (x y : BitVec w) : Bool :=
   (x.toInt * y.toInt ≥ 2 ^ (w - 1)) || (x.toInt * y.toInt < - 2 ^ (w - 1))
 ```
 
-Notation: `2 ^ n` in `Int.bmod x (2 ^ n)` is a natural number; `↑` is the coercion `Nat → Int`; `x.toNat`/`x.toInt` are the unsigned and two's-complement readings of `x : BitVec n`; `-1#n` is the all-ones vector. Statements below are printed by Lean's pretty-printer from the compiled declarations with namespace `Toy.MachInt` opened; where the specification predicates (`PosWidth`, `WidthLe`, `ShiftInBounds`, `InUnsignedRange`, `InSignedRange`, `sMinVal`, `sMaxVal`, `IntRingIdentity`, `Ult`, `Slt`, `NoUAddOverflow`, `NoSAddOverflow`, `NonZeroDiv`, `NoSDivOverflow`) occur, a second form with them unfolded (`Meta.deltaExpand`) follows.
+Notation: `2 ^ n` in `Int.bmod x (2 ^ n)` is a natural number; `↑` is the coercion `Nat → Int`; `x.toNat`/`x.toInt` are the unsigned and two's-complement readings of `x : BitVec n`; `-1#n` is the all-ones vector. Statements below are printed by Lean's pretty-printer from the compiled declarations with namespace `Toy.MachInt` opened; where the specification predicates (`PosWidth`, `WidthLe`, `ShiftInBounds`, `InUnsignedRange`, `InSignedRange`, `sMinVal`, `sMaxVal`, `IntRingIdentity`, `Ult`, `Slt`, `NoUAddOverflow`, `NoSAddOverflow`, `NonZeroDiv`, `NoSDivOverflow`) occur, a second form with them unfolded (`Meta.deltaExpand`) follows. Where the default output would not elaborate back to the theorem's statement because the target type of a coercion `↑` is not fixed by its context, the statement is printed with `set_option pp.coercions.types true`, which shows that type, as in `(↑(2 ^ n) : Int)`.
 
 ### Result 1: wrapping evaluation refines integer ring arithmetic modulo 2^n
 
@@ -1524,7 +1524,7 @@ theorem ce_wrappingShl_overshift_ne_mul_twoPow :
     (wrappingShl (1#8) 8).toNat ≠ 1 * 2 ^ 8 % 2 ^ 8 ∧
       checkedShl (5#8) 9 = none ∧
         (wrappingShl (5#8) 9).toNat ≠ 5 * 2 ^ 9 % 2 ^ 8 ∧
-          (wrappingShl (-1#8) 8).toInt ≠ (-1 * ↑(2 ^ 8)).bmod (2 ^ 8)
+          (wrappingShl (-1#8) 8).toInt ≠ (-1 * (↑(2 ^ 8) : Int)).bmod (2 ^ 8)
 ```
 
   Counterexample `ce_wrappingShl_drop_shiftInBounds_canonical` (all other hypotheses hold and the conclusion fails):
@@ -1666,7 +1666,7 @@ theorem ce_wrappingShl_overshift_ne_mul_twoPow :
     (wrappingShl (1#8) 8).toNat ≠ 1 * 2 ^ 8 % 2 ^ 8 ∧
       checkedShl (5#8) 9 = none ∧
         (wrappingShl (5#8) 9).toNat ≠ 5 * 2 ^ 9 % 2 ^ 8 ∧
-          (wrappingShl (-1#8) 8).toInt ≠ (-1 * ↑(2 ^ 8)).bmod (2 ^ 8)
+          (wrappingShl (-1#8) 8).toInt ≠ (-1 * (↑(2 ^ 8) : Int)).bmod (2 ^ 8)
 ```
 
 - **Hypothesis ledger:** no hypotheses.
@@ -1898,8 +1898,9 @@ theorem ce_castFromSigned_drop_widthLe :
 ```lean
 theorem reinterpretCast_characterization :
   ∀ {n : Nat} (x : BitVec n),
-    (↑(reinterpretCast x).toNat = if x.toInt < 0 then x.toInt + ↑(2 ^ n) else x.toInt) ∧
-      (reinterpretCast x).toInt = (↑x.toNat).bmod (2 ^ n)
+    ((↑(reinterpretCast x).toNat : Int) =
+        if x.toInt < 0 then x.toInt + (↑(2 ^ n) : Int) else x.toInt) ∧
+      (reinterpretCast x).toInt = (↑x.toNat : Int).bmod (2 ^ n)
 ```
 
 - **Hypothesis ledger:** no hypotheses.
