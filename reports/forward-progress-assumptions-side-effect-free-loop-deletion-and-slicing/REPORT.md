@@ -11,6 +11,9 @@ progress flag. Its 13 results characterize when deleting an emit-free loop and s
 statements are refinements under each semantics, and what an inliner must do when code from the two regimes is
 merged. Every result below is proved in Lean (`Basis: execution (Lean kernel check)`); statements about C, C++, LLVM
 or rustc are separate modelling-bridge claims (`Basis: derived (modeling bridge)`) in **Findings**.
+Model–system relation: none proved (the refinements and slice simulations proved here relate programs of the toy
+language to one another). These are statements about the toy model; they neither establish nor refute the
+corresponding claims about C, C++, LLVM, rustc or CompCert.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
