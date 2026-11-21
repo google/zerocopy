@@ -66,67 +66,91 @@ Each result's non-claims, escape hatches, and tightness status are listed under 
 `Toy/SafetyLiveness/Core.lean`:
 
 ```lean
+-- lean/Toy/SafetyLiveness/Core.lean:24
 abbrev InfTrace (α : Type u) : Type u := Nat → α
 
+-- lean/Toy/SafetyLiveness/Core.lean:29
 abbrev TraceProp (α : Type u) : Type u := InfTrace α → Prop
 
+-- lean/Toy/SafetyLiveness/Core.lean:33-34
 def takePrefix {α : Type u} (s : InfTrace α) (n : Nat) : List α :=
   List.ofFn (fun i : Fin n => s i.val)
 
+-- lean/Toy/SafetyLiveness/Core.lean:39-40
 def HasPrefix {α : Type u} (s : InfTrace α) (u : List α) : Prop :=
   ∀ (i : Nat) (h : i < u.length), s i = u[i]
 
+-- lean/Toy/SafetyLiveness/Core.lean:45-46
 def appendPrefix {α : Type u} (u : List α) (t : InfTrace α) : InfTrace α :=
   fun i => if h : i < u.length then u[i] else t (i - u.length)
 
+-- lean/Toy/SafetyLiveness/Core.lean:52-53
 def PropInter {α : Type u} (P Q : TraceProp α) : TraceProp α :=
   fun s => P s ∧ Q s
 
+-- lean/Toy/SafetyLiveness/Core.lean:57-58
 def UnivProp {α : Type u} : TraceProp α :=
   fun _ => True
 
+-- lean/Toy/SafetyLiveness/Core.lean:62-63
 def EmptyProp {α : Type u} : TraceProp α :=
   fun _ => False
 
+-- lean/Toy/SafetyLiveness/Core.lean:69-71
 def IsSafety {α : Type u} (P : TraceProp α) : Prop :=
   ∀ s : InfTrace α, ¬ P s →
     ∃ n : Nat, ∀ s' : InfTrace α, HasPrefix s' (takePrefix s n) → ¬ P s'
 
+-- lean/Toy/SafetyLiveness/Core.lean:76-77
 def IsLiveness {α : Type u} (P : TraceProp α) : Prop :=
   ∀ u : List α, ∃ s : InfTrace α, HasPrefix s u ∧ P s
 
+-- lean/Toy/SafetyLiveness/Core.lean:84-85
 def Closure {α : Type u} (P : TraceProp α) : TraceProp α :=
   fun s => ∀ n : Nat, ∃ s' : InfTrace α, HasPrefix s' (takePrefix s n) ∧ P s'
 
+-- lean/Toy/SafetyLiveness/Core.lean:90-91
 def LivenessPart {α : Type u} (P : TraceProp α) : TraceProp α :=
   fun s => P s ∨ ¬ Closure P s
 
+-- lean/Toy/SafetyLiveness/Core.lean:95
 abbrev StreamSystem (α : Type u) : Type u := InfTrace α → Prop
 
+-- lean/Toy/SafetyLiveness/Core.lean:99-100
 def Satisfies {α : Type u} (S : StreamSystem α) (P : TraceProp α) : Prop :=
   ∀ s : InfTrace α, S s → P s
 
+-- lean/Toy/SafetyLiveness/Core.lean:104-105
 def StreamRefines {α : Type u} (Impl Spec : StreamSystem α) : Prop :=
   ∀ s : InfTrace α, Impl s → Spec s
 
+-- lean/Toy/SafetyLiveness/Core.lean:110-111
 def IsNonemptyStream {α : Type u} (S : StreamSystem α) : Prop :=
   ∃ s : InfTrace α, S s
 
+-- lean/Toy/SafetyLiveness/Core.lean:190
 def constFalse : InfTrace Bool := fun _ => false
 
+-- lean/Toy/SafetyLiveness/Core.lean:193
 def constTrue : InfTrace Bool := fun _ => true
 
+-- lean/Toy/SafetyLiveness/Core.lean:196
 def AlwaysFalse : TraceProp Bool := fun s => ∀ i : Nat, s i = false
 
+-- lean/Toy/SafetyLiveness/Core.lean:199
 def EventuallyTrue : TraceProp Bool := fun s => ∃ i : Nat, s i = true
 
+-- lean/Toy/SafetyLiveness/Core.lean:202
 def EventuallyFalse : TraceProp Bool := fun s => ∃ i : Nat, s i = false
 
+-- lean/Toy/SafetyLiveness/Core.lean:205
 def StartsTrue : TraceProp Bool := fun s => s 0 = true
 
+-- lean/Toy/SafetyLiveness/Core.lean:209-210
 def StartsTrueAndEventuallyFalse : TraceProp Bool :=
   fun s => s 0 = true ∧ ∃ i : Nat, s i = false
 
+-- lean/Toy/SafetyLiveness/Core.lean:215-216
 def StartsFalseStaysFalse : TraceProp Bool :=
   fun s => s 0 = false → ∀ i : Nat, s i = false
 ```
@@ -134,6 +158,7 @@ def StartsFalseStaysFalse : TraceProp Bool :=
 `Toy/SafetyLiveness/Decomposition.lean` (a witness used by `alpernSchneider_nonunique_components`):
 
 ```lean
+-- lean/Toy/SafetyLiveness/Decomposition.lean:272-273
 def AlwaysFalseOrTwoTrues : TraceProp Bool :=
   fun s => AlwaysFalse s ∨ ∃ i : Nat, s i = true ∧ s (i + 1) = true
 ```
@@ -141,35 +166,45 @@ def AlwaysFalseOrTwoTrues : TraceProp Bool :=
 `Toy/SafetyLiveness/Refinement.lean`:
 
 ```lean
+-- lean/Toy/SafetyLiveness/Refinement.lean:126-127
 def IsPrefix {α : Type u} (u v : List α) : Prop :=
   ∃ w : List α, u ++ w = v
 
+-- lean/Toy/SafetyLiveness/Refinement.lean:132
 abbrev FinTraceSystem (α : Type u) : Type u := List α → Prop
 
+-- lean/Toy/SafetyLiveness/Refinement.lean:138-139
 def IsPrefixClosed {α : Type u} (T : FinTraceSystem α) : Prop :=
   ∀ u v : List α, IsPrefix u v → T v → T u
 
+-- lean/Toy/SafetyLiveness/Refinement.lean:144-145
 def IsNonemptyFin {α : Type u} (T : FinTraceSystem α) : Prop :=
   ∃ u : List α, T u
 
+-- lean/Toy/SafetyLiveness/Refinement.lean:149-150
 def FinRefines {α : Type u} (TImpl TSpec : FinTraceSystem α) : Prop :=
   ∀ u : List α, TImpl u → TSpec u
 
+-- lean/Toy/SafetyLiveness/Refinement.lean:159-160
 def doNothingFin {α : Type u} : FinTraceSystem α :=
   fun u => u = []
 
+-- lean/Toy/SafetyLiveness/Refinement.lean:165-166
 def finPrefixes {α : Type u} (S : StreamSystem α) : FinTraceSystem α :=
   fun u => ∃ s : InfTrace α, S s ∧ HasPrefix s u
 
+-- lean/Toy/SafetyLiveness/Refinement.lean:172-176
 def FinRefinesPreserves {α : Type u} (Φ : FinTraceSystem α → Prop) : Prop :=
   ∀ T₁ T₂ : FinTraceSystem α,
     IsPrefixClosed T₁ → IsNonemptyFin T₁ →
     IsPrefixClosed T₂ → IsNonemptyFin T₂ →
     FinRefines T₁ T₂ → Φ T₂ → Φ T₁
 
+-- lean/Toy/SafetyLiveness/Refinement.lean:281-282
 def emitTrueFin : FinTraceSystem Bool :=
   fun u => u = [] ∨ u = [true]
 
+-- lean/Toy/SafetyLiveness/Refinement.lean:341-342
 def FinHasNonemptyTrace : FinTraceSystem Bool → Prop :=
   fun T => ∃ u : List Bool, T u ∧ u ≠ []
 ```
@@ -177,63 +212,80 @@ def FinHasNonemptyTrace : FinTraceSystem Bool → Prop :=
 `Toy/SafetyLiveness/Divergence.lean`:
 
 ```lean
+-- lean/Toy/SafetyLiveness/Divergence.lean:50-53
 inductive ObsBehavior (α : Type u) : Type u where
   | terminates (trace : List α) : ObsBehavior α
   | diverges (trace : List α) : ObsBehavior α
   | reacts (stream : InfTrace α) : ObsBehavior α
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:57
 abbrev ObsProp (α : Type u) : Type u := ObsBehavior α → Prop
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:61
 abbrev ObsSystem (α : Type u) : Type u := ObsBehavior α → Prop
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:65-66
 def ObsSatisfies {α : Type u} (S : ObsSystem α) (Q : ObsProp α) : Prop :=
   ∀ b : ObsBehavior α, S b → Q b
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:71-72
 def ObsRefines {α : Type u} (Impl Spec : ObsSystem α) : Prop :=
   ∀ b : ObsBehavior α, Impl b → Spec b
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:77-78
 def IsNonemptyObs {α : Type u} (S : ObsSystem α) : Prop :=
   ∃ b : ObsBehavior α, S b
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:83-86
 def ObsRefinesPreserves {α : Type u} (Φ : ObsSystem α → Prop) : Prop :=
   ∀ T₁ T₂ : ObsSystem α,
     IsNonemptyObs T₁ → IsNonemptyObs T₂ →
     ObsRefines T₁ T₂ → Φ T₂ → Φ T₁
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:91-94
 def behaviorPrefixes {α : Type u} : ObsBehavior α → FinTraceSystem α
   | .terminates u => fun v => IsPrefix v u
   | .diverges u   => fun v => IsPrefix v u
   | .reacts s     => fun v => HasPrefix s v
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:98-99
 def obsFinPrefixes {α : Type u} (S : ObsSystem α) : FinTraceSystem α :=
   fun v => ∃ b : ObsBehavior α, S b ∧ behaviorPrefixes b v
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:108-111
 def EmitsEvent {α : Type u} : ObsProp α
   | .terminates u => u ≠ []
   | .diverges u   => u ≠ []
   | .reacts _     => True
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:117-118
 def ObsCanEmit {α : Type u} (S : ObsSystem α) : Prop :=
   ∃ b : ObsBehavior α, S b ∧ EmitsEvent b
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:122-125
 def NoDivergence {α : Type u} : ObsProp α
   | .terminates _ => True
   | .diverges _   => False
   | .reacts _     => True
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:129-130
 def silentDivergeObs {α : Type u} : ObsSystem α :=
   fun b => b = .diverges []
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:134-135
 def immediateHaltObs {α : Type u} : ObsSystem α :=
   fun b => b = .terminates []
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:139-141
 def embedStreams {α : Type u} (S : StreamSystem α) : ObsSystem α
   | .reacts s => S s
   | _         => False
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:247-248
 def emitTrueObs : ObsSystem Bool :=
   fun b => b = .terminates [true]
 
+-- lean/Toy/SafetyLiveness/Divergence.lean:255-256
 def divergeAfterTrueObs : ObsSystem Bool :=
   fun b => b = .diverges [true]
 ```
@@ -241,13 +293,16 @@ def divergeAfterTrueObs : ObsSystem Bool :=
 `Toy/SafetyLiveness/MachineClosure.lean`:
 
 ```lean
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:35-37
 def MachineClosed {α : Type u} (S L : TraceProp α) : Prop :=
   ∀ u : List α, (∃ s : InfTrace α, HasPrefix s u ∧ S s) →
     ∃ s' : InfTrace α, HasPrefix s' u ∧ S s' ∧ L s'
 
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:200-201
 def EventuallyAlwaysTrue : TraceProp Bool :=
   fun s => ∃ k : Nat, ∀ i : Nat, k ≤ i → s i = true
 
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:204-205
 def EventuallyAlwaysFalse : TraceProp Bool :=
   fun s => ∃ k : Nat, ∀ i : Nat, k ≤ i → s i = false
 ```
@@ -257,18 +312,24 @@ def EventuallyAlwaysFalse : TraceProp Bool :=
 Most core definitions are accompanied in the same files by proved positive and negative examples (theorems whose names contain `_pos_` or `_neg_`). For `IsSafety`, `IsLiveness`, and `MachineClosed`, the files also prove the following named instances. They illustrate the definitions and are not card results; `startsTrue_eventuallyFalse_machineClosed` is also a companion of `non-machine-closed-consistent-spec` and is hashed in `audit/statements.json`, while the other five are not listed there (the axioms of all six are recorded in `audit/axioms.json`, which covers every library declaration).
 
 ```lean
-theorem Toy.SafetyLiveness.alwaysFalse_isSafety : IsSafety AlwaysFalse
+-- lean/Toy/SafetyLiveness/Core.lean:309
+theorem alwaysFalse_isSafety : IsSafety AlwaysFalse
 
-theorem Toy.SafetyLiveness.eventuallyTrue_not_isSafety : ¬ IsSafety EventuallyTrue
+-- lean/Toy/SafetyLiveness/Core.lean:369
+theorem eventuallyTrue_not_isSafety : ¬ IsSafety EventuallyTrue
 
-theorem Toy.SafetyLiveness.eventuallyTrue_isLiveness : IsLiveness EventuallyTrue
+-- lean/Toy/SafetyLiveness/Core.lean:385
+theorem eventuallyTrue_isLiveness : IsLiveness EventuallyTrue
 
-theorem Toy.SafetyLiveness.alwaysFalse_not_isLiveness : ¬ IsLiveness AlwaysFalse
+-- lean/Toy/SafetyLiveness/Core.lean:403
+theorem alwaysFalse_not_isLiveness : ¬ IsLiveness AlwaysFalse
 
-theorem Toy.SafetyLiveness.startsTrue_eventuallyFalse_machineClosed :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:44-45
+theorem startsTrue_eventuallyFalse_machineClosed :
     MachineClosed StartsTrue EventuallyFalse
 
-theorem Toy.SafetyLiveness.alwaysFalse_eventuallyTrue_not_machineClosed :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:188-191
+theorem alwaysFalse_eventuallyTrue_not_machineClosed :
     IsSafety AlwaysFalse ∧
       IsLiveness EventuallyTrue ∧
       ¬ MachineClosed AlwaysFalse EventuallyTrue
@@ -285,7 +346,8 @@ Card fields used below: *hypothesis ledger* (each hypothesis, why it is needed, 
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.alpernSchneider_decomposition_of_nonempty
+-- lean/Toy/SafetyLiveness/Decomposition.lean:125-128
+theorem alpernSchneider_decomposition_of_nonempty
     {α : Type u} (hα : Nonempty α) (P : TraceProp α) :
     IsSafety (Closure P) ∧ IsLiveness (LivenessPart P) ∧
       PropInter (Closure P) (LivenessPart P) = P
@@ -295,9 +357,9 @@ With the key definitions unfolded:
 
 ```lean
 -- IsSafety (Closure P):
-∀ s, ¬ Closure P s → ∃ n, ∀ s', HasPrefix s' (takePrefix s n) → ¬ Closure P s'
+(∀ s, ¬ Closure P s → ∃ n, ∀ s', HasPrefix s' (takePrefix s n) → ¬ Closure P s') ∧
 -- IsLiveness (LivenessPart P):
-∀ u : List α, ∃ s, HasPrefix s u ∧ (P s ∨ ¬ Closure P s)
+(∀ u : List α, ∃ s, HasPrefix s u ∧ (P s ∨ ¬ Closure P s)) ∧
 -- PropInter (Closure P) (LivenessPart P) = P   (equality of predicates on Nat → α):
 (fun s => Closure P s ∧ (P s ∨ ¬ Closure P s)) = P
 -- where Closure P s := ∀ n, ∃ s', HasPrefix s' (takePrefix s n) ∧ P s'
@@ -312,7 +374,8 @@ With the key definitions unfolded:
 Counterexample statements:
 
 ```lean
-theorem Toy.SafetyLiveness.emptyAlphabet_tight_alpernSchneider :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:227-231
+theorem emptyAlphabet_tight_alpernSchneider :
     ¬ (IsSafety (Closure (EmptyProp : TraceProp Empty)) ∧
        IsLiveness (LivenessPart (EmptyProp : TraceProp Empty)) ∧
        PropInter (Closure (EmptyProp : TraceProp Empty))
@@ -322,7 +385,8 @@ theorem Toy.SafetyLiveness.emptyAlphabet_tight_alpernSchneider :
 **Non-vacuity witness:** On the nonempty alphabet Bool, StartsTrueAndEventuallyFalse is a nontrivial property that is neither a safety property nor a liveness property. (`alpernSchneider_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.alpernSchneider_nonvacuity :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:183-186
+theorem alpernSchneider_nonvacuity :
     Nonempty Bool ∧
       ¬ IsSafety StartsTrueAndEventuallyFalse ∧
       ¬ IsLiveness StartsTrueAndEventuallyFalse
@@ -331,7 +395,8 @@ theorem Toy.SafetyLiveness.alpernSchneider_nonvacuity :
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.alpernSchneider_nonunique_components :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:283-291
+theorem alpernSchneider_nonunique_components :
     (IsSafety AlwaysFalse ∧ IsLiveness (UnivProp : TraceProp Bool) ∧ IsLiveness AlwaysFalseOrTwoTrues ∧
       PropInter AlwaysFalse UnivProp = AlwaysFalse ∧
       PropInter AlwaysFalse AlwaysFalseOrTwoTrues = AlwaysFalse ∧
@@ -341,14 +406,18 @@ theorem Toy.SafetyLiveness.alpernSchneider_nonunique_components :
       PropInter StartsFalseStaysFalse EventuallyTrue = StartsTrue ∧
       StartsFalseStaysFalse ≠ StartsTrue)
 
-theorem Toy.SafetyLiveness.closure_isSafety {α : Type u} (P : TraceProp α) : IsSafety (Closure P)
+-- lean/Toy/SafetyLiveness/Decomposition.lean:32
+theorem closure_isSafety {α : Type u} (P : TraceProp α) : IsSafety (Closure P)
 
-theorem Toy.SafetyLiveness.emptyAlphabet_no_liveness (L : TraceProp Empty) : ¬ IsLiveness L
+-- lean/Toy/SafetyLiveness/Decomposition.lean:219
+theorem emptyAlphabet_no_liveness (L : TraceProp Empty) : ¬ IsLiveness L
 
-theorem Toy.SafetyLiveness.isLiveness_livenessPart_of_nonempty {α : Type u} (hα : Nonempty α) (P : TraceProp α) :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:103-104
+theorem isLiveness_livenessPart_of_nonempty {α : Type u} (hα : Nonempty α) (P : TraceProp α) :
     IsLiveness (LivenessPart P)
 
-theorem Toy.SafetyLiveness.machineClosed_not_closed_under_propInter :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:212-218
+theorem machineClosed_not_closed_under_propInter :
     IsLiveness EventuallyAlwaysTrue ∧
       IsLiveness EventuallyAlwaysFalse ∧
       MachineClosed (UnivProp : TraceProp Bool) EventuallyAlwaysTrue ∧
@@ -356,10 +425,12 @@ theorem Toy.SafetyLiveness.machineClosed_not_closed_under_propInter :
       ¬ MachineClosed (UnivProp : TraceProp Bool)
           (PropInter EventuallyAlwaysTrue EventuallyAlwaysFalse)
 
-theorem Toy.SafetyLiveness.propInter_closure_livenessPart_eq {α : Type u} (P : TraceProp α) :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:72-73
+theorem propInter_closure_livenessPart_eq {α : Type u} (P : TraceProp α) :
     PropInter (Closure P) (LivenessPart P) = P
 
-theorem Toy.SafetyLiveness.stepDiffers_isSafety : IsSafety (fun s : InfTrace Bool => s 0 ≠ s 1)
+-- lean/Toy/SafetyLiveness/Core.lean:356
+theorem stepDiffers_isSafety : IsSafety (fun s : InfTrace Bool => s 0 ≠ s 1)
 ```
 
 **Prior art:**
@@ -390,7 +461,8 @@ Basis: derived (modeling bridge). A specification that is faithfully modeled as 
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.isSafety_iff_closure_eq
+-- lean/Toy/SafetyLiveness/Decomposition.lean:135-137
+theorem isSafety_iff_closure_eq
     {α : Type u} (P : TraceProp α) :
     IsSafety P ↔ Closure P = P
 ```
@@ -407,28 +479,33 @@ With the key definitions unfolded:
 **Non-vacuity witness:** On Bool, AlwaysFalse is a safety property (both sides hold) and EventuallyTrue is not a safety property (both sides fail). (`isSafety_iff_closure_eq_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.isSafety_iff_closure_eq_nonvacuity :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:191-192
+theorem isSafety_iff_closure_eq_nonvacuity :
     IsSafety AlwaysFalse ∧ ¬ IsSafety EventuallyTrue
 ```
 
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.closure_minimal_of_isSafety {α : Type u} {P S : TraceProp α}
+-- lean/Toy/SafetyLiveness/Decomposition.lean:64-66
+theorem closure_minimal_of_isSafety {α : Type u} {P S : TraceProp α}
     (hSafe : IsSafety S) (hSub : ∀ s : InfTrace α, P s → S s) :
     ∀ s : InfTrace α, Closure P s → S s
 
-theorem Toy.SafetyLiveness.emptyAlphabet_tight_isLiveness_iff_closure_eq_univ :
+-- lean/Toy/SafetyLiveness/LivenessClosure.lean:52-56
+theorem emptyAlphabet_tight_isLiveness_iff_closure_eq_univ :
     Closure (EmptyProp : TraceProp Empty) = UnivProp ∧
       ¬ IsLiveness (EmptyProp : TraceProp Empty) ∧
       ¬ (IsLiveness (EmptyProp : TraceProp Empty) ↔
           Closure (EmptyProp : TraceProp Empty) = UnivProp)
 
-theorem Toy.SafetyLiveness.isLiveness_iff_closure_eq_univ_of_nonempty {α : Type u} (hα : Nonempty α)
+-- lean/Toy/SafetyLiveness/LivenessClosure.lean:29-31
+theorem isLiveness_iff_closure_eq_univ_of_nonempty {α : Type u} (hα : Nonempty α)
     (P : TraceProp α) :
     IsLiveness P ↔ Closure P = UnivProp
 
-theorem Toy.SafetyLiveness.stepDiffers_isSafety : IsSafety (fun s : InfTrace Bool => s 0 ≠ s 1)
+-- lean/Toy/SafetyLiveness/Core.lean:356
+theorem stepDiffers_isSafety : IsSafety (fun s : InfTrace Bool => s 0 ≠ s 1)
 ```
 
 **Prior art:**
@@ -455,7 +532,8 @@ No claim about real systems is made for this result beyond the mathematical stat
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_of_nonempty
+-- lean/Toy/SafetyLiveness/Decomposition.lean:150-152
+theorem isSafety_and_isLiveness_iff_eq_univ_of_nonempty
     {α : Type u} (hα : Nonempty α) (P : TraceProp α) :
     (IsSafety P ∧ IsLiveness P) ↔ P = UnivProp
 ```
@@ -477,7 +555,8 @@ With the key definitions unfolded:
 Counterexample statements:
 
 ```lean
-theorem Toy.SafetyLiveness.emptyAlphabet_tight_safety_liveness_iff_univ :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:261-263
+theorem emptyAlphabet_tight_safety_liveness_iff_univ :
     ¬ ((IsSafety (UnivProp : TraceProp Empty) ∧ IsLiveness (UnivProp : TraceProp Empty)) ↔
        (UnivProp : TraceProp Empty) = UnivProp)
 ```
@@ -485,7 +564,8 @@ theorem Toy.SafetyLiveness.emptyAlphabet_tight_safety_liveness_iff_univ :
 **Non-vacuity witness:** On Bool (nonempty), UnivProp satisfies both sides of the equivalence and AlwaysFalse falsifies both sides. (`isSafety_and_isLiveness_iff_eq_univ_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_nonvacuity :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:204-207
+theorem isSafety_and_isLiveness_iff_eq_univ_nonvacuity :
     Nonempty Bool ∧
       (IsSafety (UnivProp : TraceProp Bool) ∧ IsLiveness (UnivProp : TraceProp Bool)) ∧
       (¬ IsLiveness AlwaysFalse ∧ AlwaysFalse ≠ UnivProp)
@@ -494,29 +574,35 @@ theorem Toy.SafetyLiveness.isSafety_and_isLiveness_iff_eq_univ_nonvacuity :
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.alpernSchneider_nonvacuity :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:183-186
+theorem alpernSchneider_nonvacuity :
     Nonempty Bool ∧
       ¬ IsSafety StartsTrueAndEventuallyFalse ∧
       ¬ IsLiveness StartsTrueAndEventuallyFalse
 
-theorem Toy.SafetyLiveness.alwaysFalse_safety_entails_nontrivial_liveness_eventuallyFalse :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:166-170
+theorem alwaysFalse_safety_entails_nontrivial_liveness_eventuallyFalse :
     IsSafety AlwaysFalse ∧ IsLiveness EventuallyFalse ∧ EventuallyFalse ≠ UnivProp ∧
       (∀ s : InfTrace Bool, AlwaysFalse s → EventuallyFalse s) ∧
       Satisfies (fun s => s = constFalse) AlwaysFalse ∧
       Satisfies (fun s => s = constFalse) EventuallyFalse
 
-theorem Toy.SafetyLiveness.alwaysFalse_tight_liveness_of_unique :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:250-251
+theorem alwaysFalse_tight_liveness_of_unique :
     IsSafety AlwaysFalse ∧ AlwaysFalse ≠ UnivProp
 
-theorem Toy.SafetyLiveness.eq_univ_of_isSafety_of_isLiveness
+-- lean/Toy/SafetyLiveness/Decomposition.lean:86-89
+theorem eq_univ_of_isSafety_of_isLiveness
     {α : Type u} {P : TraceProp α}
     (hSafe : IsSafety P) (hLive : IsLiveness P) :
     P = UnivProp
 
-theorem Toy.SafetyLiveness.eventuallyTrue_tight_safety_of_unique :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:238-239
+theorem eventuallyTrue_tight_safety_of_unique :
     IsLiveness EventuallyTrue ∧ EventuallyTrue ≠ UnivProp
 
-theorem Toy.SafetyLiveness.propInter_startsTrue_eventuallyFalse_neither_safety_nor_liveness :
+-- lean/Toy/SafetyLiveness/LivenessClosure.lean:66-69
+theorem propInter_startsTrue_eventuallyFalse_neither_safety_nor_liveness :
     IsSafety StartsTrue ∧ IsLiveness EventuallyFalse ∧
       ¬ IsSafety (PropInter StartsTrue EventuallyFalse) ∧
       ¬ IsLiveness (PropInter StartsTrue EventuallyFalse)
@@ -544,7 +630,8 @@ No claim about real systems is made for this result beyond the mathematical stat
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.streamRefines_preserves_all_properties
+-- lean/Toy/SafetyLiveness/Refinement.lean:31-34
+theorem streamRefines_preserves_all_properties
     {α : Type u} {Impl Spec : StreamSystem α} {P : TraceProp α}
     (hRef : StreamRefines Impl Spec) (hSpec : Satisfies Spec P) :
     Satisfies Impl P
@@ -566,12 +653,14 @@ With the key definitions unfolded:
 Counterexample statements:
 
 ```lean
-theorem Toy.SafetyLiveness.streamRefines_preserves_tight_refines :
+-- lean/Toy/SafetyLiveness/Refinement.lean:100-103
+theorem streamRefines_preserves_tight_refines :
     let Impl : StreamSystem Bool := fun s => s = constFalse
     let Spec : StreamSystem Bool := EventuallyTrue
     Satisfies Spec EventuallyTrue ∧ ¬ Satisfies Impl EventuallyTrue
 
-theorem Toy.SafetyLiveness.streamRefines_preserves_tight_satisfies :
+-- lean/Toy/SafetyLiveness/Refinement.lean:113-116
+theorem streamRefines_preserves_tight_satisfies :
     let Impl : StreamSystem Bool := fun s => s = constFalse
     let Spec : StreamSystem Bool := fun s => s = constFalse
     StreamRefines Impl Spec ∧ ¬ Satisfies Impl EventuallyTrue
@@ -580,7 +669,8 @@ theorem Toy.SafetyLiveness.streamRefines_preserves_tight_satisfies :
 **Non-vacuity witness:** On Bool, {constTrue} stream-refines EventuallyTrue and EventuallyTrue satisfies EventuallyTrue. (`streamRefines_preserves_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.streamRefines_preserves_nonvacuity :
+-- lean/Toy/SafetyLiveness/Refinement.lean:89-91
+theorem streamRefines_preserves_nonvacuity :
     StreamRefines (fun s : InfTrace Bool => s = constTrue) EventuallyTrue ∧
       Satisfies EventuallyTrue EventuallyTrue
 ```
@@ -588,21 +678,25 @@ theorem Toy.SafetyLiveness.streamRefines_preserves_nonvacuity :
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.emptyStreamSystem_refines_all {α : Type u} (Spec : StreamSystem α) :
+-- lean/Toy/SafetyLiveness/Refinement.lean:46-47
+theorem emptyStreamSystem_refines_all {α : Type u} (Spec : StreamSystem α) :
     StreamRefines EmptyProp Spec
 
-theorem Toy.SafetyLiveness.no_nonempty_streamSystem_refines_all_nonempty :
+-- lean/Toy/SafetyLiveness/Refinement.lean:53-55
+theorem no_nonempty_streamSystem_refines_all_nonempty :
     ¬ ∃ Impl : StreamSystem Bool, IsNonemptyStream Impl ∧
         ∀ Spec : StreamSystem Bool, IsNonemptyStream Spec → StreamRefines Impl Spec
 
-theorem Toy.SafetyLiveness.streamRefines_fails_possibility :
+-- lean/Toy/SafetyLiveness/Refinement.lean:75-80
+theorem streamRefines_fails_possibility :
     IsNonemptyStream (fun s : InfTrace Bool => s = constFalse) ∧
       IsNonemptyStream (UnivProp : StreamSystem Bool) ∧
       StreamRefines (fun s : InfTrace Bool => s = constFalse) UnivProp ∧
       (∃ s : InfTrace Bool, (UnivProp : StreamSystem Bool) s ∧ s 0 = true) ∧
       ¬ (∃ s : InfTrace Bool, s = constFalse ∧ s 0 = true)
 
-theorem Toy.SafetyLiveness.unit_streamSystem_refines_all_nonempty (Impl Spec : StreamSystem Unit)
+-- lean/Toy/SafetyLiveness/Refinement.lean:65-66
+theorem unit_streamSystem_refines_all_nonempty (Impl Spec : StreamSystem Unit)
     (hSpec : IsNonemptyStream Spec) : StreamRefines Impl Spec
 ```
 
@@ -626,7 +720,8 @@ Basis: derived (modeling bridge). For systems whose semantics is a set of infini
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.doNothingFin_refines_every_prefixClosed_nonempty
+-- lean/Toy/SafetyLiveness/Refinement.lean:380-383
+theorem doNothingFin_refines_every_prefixClosed_nonempty
     {α : Type u} {Spec : FinTraceSystem α}
     (hClosed : IsPrefixClosed Spec) (hNonempty : IsNonemptyFin Spec) :
     FinRefines doNothingFin Spec
@@ -650,11 +745,13 @@ With the key definitions unfolded:
 Counterexample statements:
 
 ```lean
-theorem Toy.SafetyLiveness.singletonTrueTrace_tight_prefixClosed :
+-- lean/Toy/SafetyLiveness/Refinement.lean:552-554
+theorem singletonTrueTrace_tight_prefixClosed :
     IsNonemptyFin (fun u : List Bool => u = [true]) ∧
       ¬ FinRefines doNothingFin (fun u : List Bool => u = [true])
 
-theorem Toy.SafetyLiveness.emptyFinSystem_tight_nonempty :
+-- lean/Toy/SafetyLiveness/Refinement.lean:562-564
+theorem emptyFinSystem_tight_nonempty :
     IsPrefixClosed (fun _ : List Bool => False) ∧
       ¬ FinRefines doNothingFin (fun _ : List Bool => False)
 ```
@@ -662,31 +759,37 @@ theorem Toy.SafetyLiveness.emptyFinSystem_tight_nonempty :
 **Non-vacuity witness:** On Bool, emitTrueFin ({[], [true]}) is both prefix-closed and nonempty. (`doNothingFin_refines_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.doNothingFin_refines_nonvacuity :
+-- lean/Toy/SafetyLiveness/Refinement.lean:545-546
+theorem doNothingFin_refines_nonvacuity :
     IsPrefixClosed emitTrueFin ∧ IsNonemptyFin emitTrueFin
 ```
 
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.doNothingFin_finRefines_iff_nil_mem {α : Type u} (Spec : FinTraceSystem α) :
+-- lean/Toy/SafetyLiveness/Refinement.lean:359-360
+theorem doNothingFin_finRefines_iff_nil_mem {α : Type u} (Spec : FinTraceSystem α) :
     FinRefines doNothingFin Spec ↔ Spec []
 
-theorem Toy.SafetyLiveness.doNothingFin_finRefines_without_prefixClosed :
+-- lean/Toy/SafetyLiveness/Refinement.lean:370-372
+theorem doNothingFin_finRefines_without_prefixClosed :
     let Spec : FinTraceSystem Bool := fun v => v = [] ∨ v = [true, false]
     ¬ IsPrefixClosed Spec ∧ IsNonemptyFin Spec ∧ FinRefines doNothingFin Spec
 
-theorem Toy.SafetyLiveness.finPrefixes_refines_preserves_safety
+-- lean/Toy/SafetyLiveness/Refinement.lean:446-451
+theorem finPrefixes_refines_preserves_safety
     {α : Type u} {Impl Spec : StreamSystem α} {P : TraceProp α}
     (hSafe : IsSafety P)
     (hRef : FinRefines (finPrefixes Impl) (finPrefixes Spec))
     (hSpec : Satisfies Spec P) :
     Satisfies Impl P
 
-theorem Toy.SafetyLiveness.finRefinesPreserves_linearTime {α : Type u} (Q : List α → Prop) :
+-- lean/Toy/SafetyLiveness/Refinement.lean:389-390
+theorem finRefinesPreserves_linearTime {α : Type u} (Q : List α → Prop) :
     FinRefinesPreserves (fun T : FinTraceSystem α => ∀ v : List α, T v → Q v)
 
-theorem Toy.SafetyLiveness.obsRefines_separates_doNothing_from_finRefines
+-- lean/Toy/SafetyLiveness/Divergence.lean:565-571
+theorem obsRefines_separates_doNothing_from_finRefines
     {α : Type u} {Impl Spec : ObsSystem α}
     (hImplNE : IsNonemptyObs Impl)
     (hSpecNE : IsNonemptyObs Spec)
@@ -717,7 +820,8 @@ Basis: derived (modeling bridge). In the traces model of CSP, a process denotes 
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.finRefines_cannot_preserve_property_rejecting_doNothing
+-- lean/Toy/SafetyLiveness/Refinement.lean:421-425
+theorem finRefines_cannot_preserve_property_rejecting_doNothing
     {α : Type u} {Spec : FinTraceSystem α} {Φ : FinTraceSystem α → Prop}
     (hClosed : IsPrefixClosed Spec) (hNonempty : IsNonemptyFin Spec)
     (hSpec : Φ Spec) (hReject : ¬ Φ doNothingFin) :
@@ -746,22 +850,26 @@ IsPrefixClosed Spec → IsNonemptyFin Spec → Φ Spec → ¬ Φ (fun u => u = [
 Counterexample statements:
 
 ```lean
-theorem Toy.SafetyLiveness.finRefines_impossibility_tight_prefixClosed :
+-- lean/Toy/SafetyLiveness/Refinement.lean:582-585
+theorem finRefines_impossibility_tight_prefixClosed :
     let Spec : FinTraceSystem Bool := fun u => u = [true]
     let Φ : FinTraceSystem Bool → Prop := fun T => ∀ u, T u → u ≠ []
     IsNonemptyFin Spec ∧ Φ Spec ∧ ¬ Φ doNothingFin ∧ FinRefinesPreserves Φ
 
-theorem Toy.SafetyLiveness.finRefines_impossibility_tight_nonempty :
+-- lean/Toy/SafetyLiveness/Refinement.lean:596-599
+theorem finRefines_impossibility_tight_nonempty :
     let Spec : FinTraceSystem Bool := fun _ => False
     let Φ : FinTraceSystem Bool → Prop := fun T => ¬ T []
     IsPrefixClosed Spec ∧ Φ Spec ∧ ¬ Φ doNothingFin ∧ FinRefinesPreserves Φ
 
-theorem Toy.SafetyLiveness.finRefines_impossibility_tight_spec :
+-- lean/Toy/SafetyLiveness/Refinement.lean:607-610
+theorem finRefines_impossibility_tight_spec :
     let Spec : FinTraceSystem Bool := doNothingFin
     let Φ : FinTraceSystem Bool → Prop := fun _ => False
     IsPrefixClosed Spec ∧ IsNonemptyFin Spec ∧ ¬ Φ doNothingFin ∧ FinRefinesPreserves Φ
 
-theorem Toy.SafetyLiveness.finRefines_impossibility_tight_reject :
+-- lean/Toy/SafetyLiveness/Refinement.lean:616-619
+theorem finRefines_impossibility_tight_reject :
     let Spec : FinTraceSystem Bool := doNothingFin
     let Φ : FinTraceSystem Bool → Prop := fun _ => True
     IsPrefixClosed Spec ∧ IsNonemptyFin Spec ∧ Φ Spec ∧ FinRefinesPreserves Φ
@@ -770,7 +878,8 @@ theorem Toy.SafetyLiveness.finRefines_impossibility_tight_reject :
 **Non-vacuity witness:** On Bool, emitTrueFin is prefix-closed and nonempty, satisfies FinHasNonemptyTrace, and doNothingFin fails FinHasNonemptyTrace. (`finRefines_cannot_preserve_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.finRefines_cannot_preserve_nonvacuity :
+-- lean/Toy/SafetyLiveness/Refinement.lean:569-573
+theorem finRefines_cannot_preserve_nonvacuity :
     IsPrefixClosed emitTrueFin ∧
       IsNonemptyFin emitTrueFin ∧
       FinHasNonemptyTrace emitTrueFin ∧
@@ -780,7 +889,8 @@ theorem Toy.SafetyLiveness.finRefines_cannot_preserve_nonvacuity :
 **Positive control:** `obsRefinesPreserves_emitsEvent_rejects_doNothing`
 
 ```lean
-theorem Toy.SafetyLiveness.obsRefinesPreserves_emitsEvent_rejects_doNothing :
+-- lean/Toy/SafetyLiveness/Divergence.lean:414-419
+theorem obsRefinesPreserves_emitsEvent_rejects_doNothing :
     ObsRefinesPreserves (fun S : ObsSystem Bool => ObsSatisfies S EmitsEvent) ∧
       IsNonemptyObs emitTrueObs ∧
       ObsSatisfies emitTrueObs EmitsEvent ∧
@@ -791,7 +901,8 @@ theorem Toy.SafetyLiveness.obsRefinesPreserves_emitsEvent_rejects_doNothing :
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness
+-- lean/Toy/SafetyLiveness/Refinement.lean:521-528
+theorem finPrefixes_eq_fails_every_nontrivial_liveness
     {α : Type u} {P : TraceProp α} {s₀ : InfTrace α}
     (hLive : IsLiveness P) (hNotP : ¬ P s₀) :
     IsNonemptyStream (UnivProp : StreamSystem α) ∧
@@ -800,22 +911,26 @@ theorem Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness
       finPrefixes (UnivProp : StreamSystem α) = finPrefixes P ∧
       ¬ Satisfies (UnivProp : StreamSystem α) P
 
-theorem Toy.SafetyLiveness.finRefinesPreserves_linearTime {α : Type u} (Q : List α → Prop) :
+-- lean/Toy/SafetyLiveness/Refinement.lean:389-390
+theorem finRefinesPreserves_linearTime {α : Type u} (Q : List α → Prop) :
     FinRefinesPreserves (fun T : FinTraceSystem α => ∀ v : List α, T v → Q v)
 
-theorem Toy.SafetyLiveness.linearTime_never_meets_impossibility_hyps
+-- lean/Toy/SafetyLiveness/Refinement.lean:409-413
+theorem linearTime_never_meets_impossibility_hyps
     {α : Type u} (Q : List α → Prop) (Spec : FinTraceSystem α) :
     ¬ (IsPrefixClosed Spec ∧ IsNonemptyFin Spec ∧
         (fun T : FinTraceSystem α => ∀ v : List α, T v → Q v) Spec ∧
         ¬ (fun T : FinTraceSystem α => ∀ v : List α, T v → Q v) doNothingFin)
 
-theorem Toy.SafetyLiveness.linearTime_pred_accepts_doNothing_of_accepts_healthy
+-- lean/Toy/SafetyLiveness/Refinement.lean:396-400
+theorem linearTime_pred_accepts_doNothing_of_accepts_healthy
     {α : Type u} {Spec : FinTraceSystem α} (Q : List α → Prop)
     (hClosed : IsPrefixClosed Spec) (hNonempty : IsNonemptyFin Spec)
     (hSpec : ∀ v : List α, Spec v → Q v) :
     ∀ v : List α, doNothingFin v → Q v
 
-theorem Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit :
+-- lean/Toy/SafetyLiveness/Divergence.lean:313-319
+theorem obsRefines_fails_possibility_canEmit :
     let Spec : ObsSystem Bool := fun b => b = .diverges [] ∨ b = .terminates [true]
     IsNonemptyObs (silentDivergeObs : ObsSystem Bool) ∧
       IsNonemptyObs Spec ∧
@@ -823,7 +938,8 @@ theorem Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit :
       ObsCanEmit Spec ∧
       ¬ ObsCanEmit (silentDivergeObs : ObsSystem Bool)
 
-theorem Toy.SafetyLiveness.streamRefines_fails_possibility :
+-- lean/Toy/SafetyLiveness/Refinement.lean:75-80
+theorem streamRefines_fails_possibility :
     IsNonemptyStream (fun s : InfTrace Bool => s = constFalse) ∧
       IsNonemptyStream (UnivProp : StreamSystem Bool) ∧
       StreamRefines (fun s : InfTrace Bool => s = constFalse) UnivProp ∧
@@ -853,7 +969,8 @@ Basis: derived (modeling bridge). A verification method whose correctness criter
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.finPrefixes_refines_preserves_safety
+-- lean/Toy/SafetyLiveness/Refinement.lean:446-451
+theorem finPrefixes_refines_preserves_safety
     {α : Type u} {Impl Spec : StreamSystem α} {P : TraceProp α}
     (hSafe : IsSafety P)
     (hRef : FinRefines (finPrefixes Impl) (finPrefixes Spec))
@@ -881,21 +998,24 @@ IsSafety P →
 Counterexample statements:
 
 ```lean
-theorem Toy.SafetyLiveness.eventuallyTrue_tight_finPrefixes_safety :
+-- lean/Toy/SafetyLiveness/Refinement.lean:639-644
+theorem eventuallyTrue_tight_finPrefixes_safety :
     let Impl : StreamSystem Bool := fun s => s = constFalse
     let Spec : StreamSystem Bool := EventuallyTrue
     FinRefines (finPrefixes Impl) (finPrefixes Spec) ∧
       Satisfies Spec EventuallyTrue ∧
       ¬ Satisfies Impl EventuallyTrue
 
-theorem Toy.SafetyLiveness.finPrefixes_safety_tight_refines :
+-- lean/Toy/SafetyLiveness/Refinement.lean:656-661
+theorem finPrefixes_safety_tight_refines :
     let Impl : StreamSystem Bool := fun s => s = constTrue
     let Spec : StreamSystem Bool := AlwaysFalse
     IsSafety AlwaysFalse ∧
       Satisfies Spec AlwaysFalse ∧
       ¬ Satisfies Impl AlwaysFalse
 
-theorem Toy.SafetyLiveness.finPrefixes_safety_tight_satisfies :
+-- lean/Toy/SafetyLiveness/Refinement.lean:668-673
+theorem finPrefixes_safety_tight_satisfies :
     let Impl : StreamSystem Bool := fun s => s = constTrue
     let Spec : StreamSystem Bool := fun s => s = constTrue
     IsSafety AlwaysFalse ∧
@@ -906,7 +1026,8 @@ theorem Toy.SafetyLiveness.finPrefixes_safety_tight_satisfies :
 **Non-vacuity witness:** On Bool, {constFalse} refines AlwaysFalse on finite prefixes, and AlwaysFalse is a safety property satisfying itself. (`finPrefixes_preserves_safety_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.finPrefixes_preserves_safety_nonvacuity :
+-- lean/Toy/SafetyLiveness/Refinement.lean:625-628
+theorem finPrefixes_preserves_safety_nonvacuity :
     IsSafety AlwaysFalse ∧
       FinRefines (finPrefixes (fun s => s = constFalse)) (finPrefixes AlwaysFalse) ∧
       Satisfies AlwaysFalse AlwaysFalse
@@ -915,7 +1036,8 @@ theorem Toy.SafetyLiveness.finPrefixes_preserves_safety_nonvacuity :
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.finPrefixes_refines_fails_every_nontrivial_liveness
+-- lean/Toy/SafetyLiveness/Refinement.lean:464-471
+theorem finPrefixes_refines_fails_every_nontrivial_liveness
     {α : Type u} {P : TraceProp α} {s₀ : InfTrace α}
     (hLive : IsLiveness P) (hNotP : ¬ P s₀) :
     IsNonemptyStream (fun s => s = s₀) ∧
@@ -924,7 +1046,8 @@ theorem Toy.SafetyLiveness.finPrefixes_refines_fails_every_nontrivial_liveness
       FinRefines (finPrefixes (fun s => s = s₀)) (finPrefixes P) ∧
       ¬ Satisfies (fun s => s = s₀) P
 
-theorem Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety
+-- lean/Toy/SafetyLiveness/Refinement.lean:485-492
+theorem finPrefixes_refines_fails_of_not_isSafety
     {α : Type u} {P : TraceProp α} (hNotSafe : ¬ IsSafety P) :
     ∃ s₀ : InfTrace α,
       IsNonemptyStream (fun s => s = s₀) ∧
@@ -933,7 +1056,8 @@ theorem Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety
       FinRefines (finPrefixes (fun s => s = s₀)) (finPrefixes P) ∧
       ¬ Satisfies (fun s => s = s₀) P
 
-theorem Toy.SafetyLiveness.streamRefines_closure_of_finPrefixes_refines
+-- lean/Toy/SafetyLiveness/Refinement.lean:435-438
+theorem streamRefines_closure_of_finPrefixes_refines
     {α : Type u} {Impl Spec : StreamSystem α}
     (hRef : FinRefines (finPrefixes Impl) (finPrefixes Spec)) :
     StreamRefines Impl (Closure Spec)
@@ -960,7 +1084,8 @@ Basis: derived (modeling bridge). For systems whose runs are all infinite (for e
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.finPrefixes_refines_fails_every_nontrivial_liveness
+-- lean/Toy/SafetyLiveness/Refinement.lean:464-471
+theorem finPrefixes_refines_fails_every_nontrivial_liveness
     {α : Type u} {P : TraceProp α} {s₀ : InfTrace α}
     (hLive : IsLiveness P) (hNotP : ¬ P s₀) :
     IsNonemptyStream (fun s => s = s₀) ∧
@@ -990,7 +1115,8 @@ IsLiveness P → ¬ P s₀ →
 Counterexample statements:
 
 ```lean
-theorem Toy.SafetyLiveness.alwaysFalse_tight_finPrefixes_liveness :
+-- lean/Toy/SafetyLiveness/Refinement.lean:689-695
+theorem alwaysFalse_tight_finPrefixes_liveness :
     ¬ AlwaysFalse constTrue ∧
       ¬ (IsNonemptyStream (fun s => s = constTrue) ∧
          IsNonemptyStream AlwaysFalse ∧
@@ -998,7 +1124,8 @@ theorem Toy.SafetyLiveness.alwaysFalse_tight_finPrefixes_liveness :
          FinRefines (finPrefixes (fun s => s = constTrue)) (finPrefixes AlwaysFalse) ∧
          ¬ Satisfies (fun s => s = constTrue) AlwaysFalse)
 
-theorem Toy.SafetyLiveness.univ_tight_finPrefixes_liveness :
+-- lean/Toy/SafetyLiveness/Refinement.lean:709-715
+theorem univ_tight_finPrefixes_liveness :
     IsLiveness (UnivProp : TraceProp Bool) ∧
       ¬ (IsNonemptyStream (fun s => s = constFalse) ∧
          IsNonemptyStream (UnivProp : StreamSystem Bool) ∧
@@ -1010,14 +1137,16 @@ theorem Toy.SafetyLiveness.univ_tight_finPrefixes_liveness :
 **Non-vacuity witness:** On Bool, EventuallyTrue is a liveness property and rejects constFalse. (`finPrefixes_fails_liveness_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.finPrefixes_fails_liveness_nonvacuity :
+-- lean/Toy/SafetyLiveness/Refinement.lean:678-679
+theorem finPrefixes_fails_liveness_nonvacuity :
     IsLiveness EventuallyTrue ∧ ¬ EventuallyTrue constFalse
 ```
 
 **Positive control:** `streamRefines_rejects_constFalse_for_eventuallyTrue`
 
 ```lean
-theorem Toy.SafetyLiveness.streamRefines_rejects_constFalse_for_eventuallyTrue :
+-- lean/Toy/SafetyLiveness/Divergence.lean:454-457
+theorem streamRefines_rejects_constFalse_for_eventuallyTrue :
     FinRefines (finPrefixes (fun s => s = constFalse)) (finPrefixes EventuallyTrue) ∧
       ¬ StreamRefines (fun s => s = constFalse) EventuallyTrue ∧
       ¬ ObsRefines (embedStreams (fun s => s = constFalse)) (embedStreams EventuallyTrue)
@@ -1026,7 +1155,8 @@ theorem Toy.SafetyLiveness.streamRefines_rejects_constFalse_for_eventuallyTrue :
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness
+-- lean/Toy/SafetyLiveness/Refinement.lean:521-528
+theorem finPrefixes_eq_fails_every_nontrivial_liveness
     {α : Type u} {P : TraceProp α} {s₀ : InfTrace α}
     (hLive : IsLiveness P) (hNotP : ¬ P s₀) :
     IsNonemptyStream (UnivProp : StreamSystem α) ∧
@@ -1035,7 +1165,8 @@ theorem Toy.SafetyLiveness.finPrefixes_eq_fails_every_nontrivial_liveness
       finPrefixes (UnivProp : StreamSystem α) = finPrefixes P ∧
       ¬ Satisfies (UnivProp : StreamSystem α) P
 
-theorem Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety
+-- lean/Toy/SafetyLiveness/Refinement.lean:485-492
+theorem finPrefixes_refines_fails_of_not_isSafety
     {α : Type u} {P : TraceProp α} (hNotSafe : ¬ IsSafety P) :
     ∃ s₀ : InfTrace α,
       IsNonemptyStream (fun s => s = s₀) ∧
@@ -1044,7 +1175,8 @@ theorem Toy.SafetyLiveness.finPrefixes_refines_fails_of_not_isSafety
       FinRefines (finPrefixes (fun s => s = s₀)) (finPrefixes P) ∧
       ¬ Satisfies (fun s => s = s₀) P
 
-theorem Toy.SafetyLiveness.streamRefines_preserves_all_properties
+-- lean/Toy/SafetyLiveness/Refinement.lean:31-34
+theorem streamRefines_preserves_all_properties
     {α : Type u} {Impl Spec : StreamSystem α} {P : TraceProp α}
     (hRef : StreamRefines Impl Spec) (hSpec : Satisfies Spec P) :
     Satisfies Impl P
@@ -1072,7 +1204,8 @@ Basis: derived (modeling bridge). A refinement check that compares only the fini
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.obsRefines_separates_doNothing_from_finRefines
+-- lean/Toy/SafetyLiveness/Divergence.lean:565-571
+theorem obsRefines_separates_doNothing_from_finRefines
     {α : Type u} {Impl Spec : ObsSystem α}
     (hImplNE : IsNonemptyObs Impl)
     (hSpecNE : IsNonemptyObs Spec)
@@ -1106,7 +1239,8 @@ With the key definitions unfolded:
 Counterexample statements:
 
 ```lean
-theorem Toy.SafetyLiveness.obsEmpty_tight_implNE :
+-- lean/Toy/SafetyLiveness/Divergence.lean:627-633
+theorem obsEmpty_tight_implNE :
     let Impl : ObsSystem Bool := fun _ => False
     IsNonemptyObs emitTrueObs ∧
       FinRefines (obsFinPrefixes Impl) doNothingFin ∧
@@ -1114,7 +1248,8 @@ theorem Toy.SafetyLiveness.obsEmpty_tight_implNE :
       ¬ (FinRefines (obsFinPrefixes Impl) (obsFinPrefixes emitTrueObs) ∧
          ¬ ObsRefines Impl emitTrueObs)
 
-theorem Toy.SafetyLiveness.obsSpecEmpty_tight_specNE :
+-- lean/Toy/SafetyLiveness/Divergence.lean:644-650
+theorem obsSpecEmpty_tight_specNE :
     let Spec : ObsSystem Bool := fun _ => False
     IsNonemptyObs (silentDivergeObs : ObsSystem Bool) ∧
       FinRefines (obsFinPrefixes (silentDivergeObs : ObsSystem Bool)) doNothingFin ∧
@@ -1122,14 +1257,16 @@ theorem Toy.SafetyLiveness.obsSpecEmpty_tight_specNE :
       ¬ (FinRefines (obsFinPrefixes (silentDivergeObs : ObsSystem Bool)) (obsFinPrefixes Spec) ∧
          ¬ ObsRefines (silentDivergeObs : ObsSystem Bool) Spec)
 
-theorem Toy.SafetyLiveness.obsEmitTrue_tight_doNothing :
+-- lean/Toy/SafetyLiveness/Divergence.lean:665-670
+theorem obsEmitTrue_tight_doNothing :
     IsNonemptyObs emitTrueObs ∧
       IsNonemptyObs emitTrueObs ∧
       ObsSatisfies emitTrueObs EmitsEvent ∧
       ¬ (FinRefines (obsFinPrefixes emitTrueObs) (obsFinPrefixes emitTrueObs) ∧
          ¬ ObsRefines emitTrueObs emitTrueObs)
 
-theorem Toy.SafetyLiveness.obsAllowDiverge_tight_progress :
+-- lean/Toy/SafetyLiveness/Divergence.lean:699-705
+theorem obsAllowDiverge_tight_progress :
     IsNonemptyObs (silentDivergeObs : ObsSystem Bool) ∧
       IsNonemptyObs (silentDivergeObs : ObsSystem Bool) ∧
       FinRefines (obsFinPrefixes (silentDivergeObs : ObsSystem Bool)) doNothingFin ∧
@@ -1141,7 +1278,8 @@ theorem Toy.SafetyLiveness.obsAllowDiverge_tight_progress :
 **Non-vacuity witness:** On Bool, silentDivergeObs ({.diverges []}) and emitTrueObs ({.terminates [true]}) satisfy all four hypotheses. (`obsRefines_separates_doNothing_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.obsRefines_separates_doNothing_nonvacuity :
+-- lean/Toy/SafetyLiveness/Divergence.lean:612-616
+theorem obsRefines_separates_doNothing_nonvacuity :
     IsNonemptyObs (silentDivergeObs : ObsSystem Bool) ∧
       IsNonemptyObs emitTrueObs ∧
       FinRefines (obsFinPrefixes (silentDivergeObs : ObsSystem Bool)) doNothingFin ∧
@@ -1151,30 +1289,35 @@ theorem Toy.SafetyLiveness.obsRefines_separates_doNothing_nonvacuity :
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates :
+-- lean/Toy/SafetyLiveness/Divergence.lean:470-473
+theorem divergeAfterTrue_separates_sameTrace_terminates :
     obsFinPrefixes divergeAfterTrueObs = obsFinPrefixes emitTrueObs ∧
       ¬ ObsRefines divergeAfterTrueObs emitTrueObs ∧
       ¬ ObsRefines emitTrueObs divergeAfterTrueObs
 
-theorem Toy.SafetyLiveness.finRefines_obsFinPrefixes_of_doNothing
+-- lean/Toy/SafetyLiveness/Divergence.lean:517-521
+theorem finRefines_obsFinPrefixes_of_doNothing
     {α : Type u} {Impl Spec : ObsSystem α}
     (hSpecNE : IsNonemptyObs Spec)
     (hDoNothing : FinRefines (obsFinPrefixes Impl) doNothingFin) :
     FinRefines (obsFinPrefixes Impl) (obsFinPrefixes Spec)
 
-theorem Toy.SafetyLiveness.mixedSilentAndEmit_not_obsRefines_without_doNothing :
+-- lean/Toy/SafetyLiveness/Divergence.lean:545-549
+theorem mixedSilentAndEmit_not_obsRefines_without_doNothing :
     let Impl : ObsSystem Bool := fun b => b = .diverges [] ∨ b = .terminates [false]
     (∃ b : ObsBehavior Bool, Impl b ∧ ¬ EmitsEvent b) ∧
       ¬ FinRefines (obsFinPrefixes Impl) doNothingFin ∧
       ¬ ObsRefines Impl emitTrueObs
 
-theorem Toy.SafetyLiveness.not_obsRefines_of_silent_behavior
+-- lean/Toy/SafetyLiveness/Divergence.lean:532-536
+theorem not_obsRefines_of_silent_behavior
     {α : Type u} {Impl Spec : ObsSystem α}
     (hSilent : ∃ b : ObsBehavior α, Impl b ∧ ¬ EmitsEvent b)
     (hProgress : ObsSatisfies Spec EmitsEvent) :
     ¬ ObsRefines Impl Spec
 
-theorem Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit :
+-- lean/Toy/SafetyLiveness/Divergence.lean:313-319
+theorem obsRefines_fails_possibility_canEmit :
     let Spec : ObsSystem Bool := fun b => b = .diverges [] ∨ b = .terminates [true]
     IsNonemptyObs (silentDivergeObs : ObsSystem Bool) ∧
       IsNonemptyObs Spec ∧
@@ -1182,12 +1325,14 @@ theorem Toy.SafetyLiveness.obsRefines_fails_possibility_canEmit :
       ObsCanEmit Spec ∧
       ¬ ObsCanEmit (silentDivergeObs : ObsSystem Bool)
 
-theorem Toy.SafetyLiveness.obsRefines_implies_finRefines
+-- lean/Toy/SafetyLiveness/Divergence.lean:217-220
+theorem obsRefines_implies_finRefines
     {α : Type u} {Impl Spec : ObsSystem α}
     (hRef : ObsRefines Impl Spec) :
     FinRefines (obsFinPrefixes Impl) (obsFinPrefixes Spec)
 
-theorem Toy.SafetyLiveness.obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges
+-- lean/Toy/SafetyLiveness/Divergence.lean:598-603
+theorem obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges
     {α : Type u} {Spec : ObsSystem α} {u : List α}
     (hPrefix : obsFinPrefixes Spec u)
     (hNotDiv : ¬ Spec (.diverges u)) :
@@ -1219,7 +1364,8 @@ Basis: derived (modeling bridge). In closed-program compiler correctness stated 
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges
+-- lean/Toy/SafetyLiveness/Divergence.lean:598-603
+theorem obsRefines_separates_diverges_of_obsFinPrefixes_of_not_diverges
     {α : Type u} {Spec : ObsSystem α} {u : List α}
     (hPrefix : obsFinPrefixes Spec u)
     (hNotDiv : ¬ Spec (.diverges u)) :
@@ -1246,14 +1392,16 @@ obsFinPrefixes Spec u → ¬ Spec (ObsBehavior.diverges u) →
 Counterexample statements:
 
 ```lean
-theorem Toy.SafetyLiveness.obsSeparatesDiverges_tight_prefix :
+-- lean/Toy/SafetyLiveness/Divergence.lean:727-732
+theorem obsSeparatesDiverges_tight_prefix :
     let Spec : ObsSystem Bool := immediateHaltObs
     let u : List Bool := [true]
     ¬ Spec (.diverges u) ∧
       ¬ (FinRefines (obsFinPrefixes (fun b => b = .diverges u)) (obsFinPrefixes Spec) ∧
          ¬ ObsRefines (fun b => b = .diverges u) Spec)
 
-theorem Toy.SafetyLiveness.obsSeparatesDiverges_tight_notDiv :
+-- lean/Toy/SafetyLiveness/Divergence.lean:746-751
+theorem obsSeparatesDiverges_tight_notDiv :
     let Spec : ObsSystem Bool := divergeAfterTrueObs
     let u : List Bool := [true]
     obsFinPrefixes Spec u ∧
@@ -1264,19 +1412,22 @@ theorem Toy.SafetyLiveness.obsSeparatesDiverges_tight_notDiv :
 **Non-vacuity witness:** On Bool with Spec = emitTrueObs ({.terminates [true]}) and u = [true], [true] lies in obsFinPrefixes emitTrueObs and emitTrueObs rejects .diverges [true] (exercising .diverges vs. .terminates on the identical complete trace [true]; see also Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates). (`obsSeparatesDiverges_sameTrace_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.obsSeparatesDiverges_sameTrace_nonvacuity :
+-- lean/Toy/SafetyLiveness/Divergence.lean:716-717
+theorem obsSeparatesDiverges_sameTrace_nonvacuity :
     obsFinPrefixes emitTrueObs [true] ∧ ¬ emitTrueObs (.diverges [true])
 ```
 
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.divergeAfterTrue_separates_sameTrace_terminates :
+-- lean/Toy/SafetyLiveness/Divergence.lean:470-473
+theorem divergeAfterTrue_separates_sameTrace_terminates :
     obsFinPrefixes divergeAfterTrueObs = obsFinPrefixes emitTrueObs ∧
       ¬ ObsRefines divergeAfterTrueObs emitTrueObs ∧
       ¬ ObsRefines emitTrueObs divergeAfterTrueObs
 
-theorem Toy.SafetyLiveness.obsRefines_rejects_divergence_of_noDivergence
+-- lean/Toy/SafetyLiveness/Divergence.lean:226-230
+theorem obsRefines_rejects_divergence_of_noDivergence
     {α : Type u} {Impl Spec : ObsSystem α} {u : List α}
     (hDiv : Impl (.diverges u))
     (hNoDiv : ObsSatisfies Spec NoDivergence) :
@@ -1305,7 +1456,8 @@ Basis: derived (modeling bridge). A transformation that turns 'emit u, then stop
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.closure_propInter_eq_iff_isSafety_and_machineClosed
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:110-112
+theorem closure_propInter_eq_iff_isSafety_and_machineClosed
     {α : Type u} (S L : TraceProp α) :
     Closure (PropInter S L) = S ↔ IsSafety S ∧ MachineClosed S L
 ```
@@ -1323,7 +1475,8 @@ With the key definitions unfolded:
 **Non-vacuity witness:** On Bool, (StartsTrue, EventuallyFalse) satisfies both sides while (StartsFalseStaysFalse, EventuallyTrue) falsifies both sides. (`closure_propInter_eq_iff_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.closure_propInter_eq_iff_nonvacuity :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:279-281
+theorem closure_propInter_eq_iff_nonvacuity :
     (IsSafety StartsTrue ∧ MachineClosed StartsTrue EventuallyFalse) ∧
       ¬ (IsSafety StartsFalseStaysFalse ∧ MachineClosed StartsFalseStaysFalse EventuallyTrue)
 ```
@@ -1331,15 +1484,18 @@ theorem Toy.SafetyLiveness.closure_propInter_eq_iff_nonvacuity :
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.eventuallyTrue_tight_machineClosed_iff :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:259-261
+theorem eventuallyTrue_tight_machineClosed_iff :
     ¬ (MachineClosed EventuallyTrue UnivProp ↔
        Closure (PropInter EventuallyTrue UnivProp) = EventuallyTrue)
 
-theorem Toy.SafetyLiveness.machineClosed_iff_closure_propInter_eq_of_isSafety
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:86-88
+theorem machineClosed_iff_closure_propInter_eq_of_isSafety
     {α : Type u} {S L : TraceProp α} (hS : IsSafety S) :
     MachineClosed S L ↔ Closure (PropInter S L) = S
 
-theorem Toy.SafetyLiveness.machineClosed_not_closed_under_propInter :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:212-218
+theorem machineClosed_not_closed_under_propInter :
     IsLiveness EventuallyAlwaysTrue ∧
       IsLiveness EventuallyAlwaysFalse ∧
       MachineClosed (UnivProp : TraceProp Bool) EventuallyAlwaysTrue ∧
@@ -1347,7 +1503,8 @@ theorem Toy.SafetyLiveness.machineClosed_not_closed_under_propInter :
       ¬ MachineClosed (UnivProp : TraceProp Bool)
           (PropInter EventuallyAlwaysTrue EventuallyAlwaysFalse)
 
-theorem Toy.SafetyLiveness.machineClosed_without_liveness_witness :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:295-296
+theorem machineClosed_without_liveness_witness :
     IsSafety AlwaysFalse ∧ ¬ IsLiveness AlwaysFalse ∧ MachineClosed AlwaysFalse AlwaysFalse
 ```
 
@@ -1376,7 +1533,8 @@ Basis: derived (modeling bridge). In specifications written as a safety part S c
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.alpernSchneider_is_machineClosed
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:125-127
+theorem alpernSchneider_is_machineClosed
     {α : Type u} (P : TraceProp α) :
     MachineClosed (Closure P) (LivenessPart P)
 ```
@@ -1393,14 +1551,16 @@ With the key definitions unfolded:
 **Non-vacuity witness:** On Bool, StartsTrueAndEventuallyFalse is a nontrivial property that is neither safety nor liveness. (`alpernSchneider_is_machineClosed_nonvacuity`)
 
 ```lean
-theorem Toy.SafetyLiveness.alpernSchneider_is_machineClosed_nonvacuity :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:288-289
+theorem alpernSchneider_is_machineClosed_nonvacuity :
     ¬ IsSafety StartsTrueAndEventuallyFalse ∧ ¬ IsLiveness StartsTrueAndEventuallyFalse
 ```
 
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.alpernSchneider_nonunique_components :
+-- lean/Toy/SafetyLiveness/Decomposition.lean:283-291
+theorem alpernSchneider_nonunique_components :
     (IsSafety AlwaysFalse ∧ IsLiveness (UnivProp : TraceProp Bool) ∧ IsLiveness AlwaysFalseOrTwoTrues ∧
       PropInter AlwaysFalse UnivProp = AlwaysFalse ∧
       PropInter AlwaysFalse AlwaysFalseOrTwoTrues = AlwaysFalse ∧
@@ -1410,9 +1570,11 @@ theorem Toy.SafetyLiveness.alpernSchneider_nonunique_components :
       PropInter StartsFalseStaysFalse EventuallyTrue = StartsTrue ∧
       StartsFalseStaysFalse ≠ StartsTrue)
 
-theorem Toy.SafetyLiveness.emptyAlphabet_no_liveness (L : TraceProp Empty) : ¬ IsLiveness L
+-- lean/Toy/SafetyLiveness/Decomposition.lean:219
+theorem emptyAlphabet_no_liveness (L : TraceProp Empty) : ¬ IsLiveness L
 
-theorem Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:139-144
+theorem nonMachineClosed_consistent_spec_counterexample :
     IsSafety StartsFalseStaysFalse ∧
       IsLiveness EventuallyTrue ∧
       PropInter StartsFalseStaysFalse EventuallyTrue constTrue ∧
@@ -1441,7 +1603,8 @@ No claim about real systems is made for this result beyond the mathematical stat
 Lean statement:
 
 ```lean
-theorem Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:139-144
+theorem nonMachineClosed_consistent_spec_counterexample :
     IsSafety StartsFalseStaysFalse ∧
       IsLiveness EventuallyTrue ∧
       PropInter StartsFalseStaysFalse EventuallyTrue constTrue ∧
@@ -1467,7 +1630,8 @@ Closure (PropInter StartsFalseStaysFalse EventuallyTrue) ≠ StartsFalseStaysFal
 **Non-vacuity witness:** Self-witnessing concrete counterexample on Bool exposing PropInter StartsFalseStaysFalse EventuallyTrue constTrue while refuting extension of prefix [false] from constFalse. (`nonMachineClosed_consistent_spec_counterexample`)
 
 ```lean
-theorem Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:139-144
+theorem nonMachineClosed_consistent_spec_counterexample :
     IsSafety StartsFalseStaysFalse ∧
       IsLiveness EventuallyTrue ∧
       PropInter StartsFalseStaysFalse EventuallyTrue constTrue ∧
@@ -1478,11 +1642,13 @@ theorem Toy.SafetyLiveness.nonMachineClosed_consistent_spec_counterexample :
 **Companion declarations cited by this card:**
 
 ```lean
-theorem Toy.SafetyLiveness.closure_propInter_startsFalseStaysFalse_eventuallyTrue_eq_startsTrue :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:163-165
+theorem closure_propInter_startsFalseStaysFalse_eventuallyTrue_eq_startsTrue :
     PropInter StartsFalseStaysFalse EventuallyTrue = StartsTrue ∧
       Closure (PropInter StartsFalseStaysFalse EventuallyTrue) = StartsTrue
 
-theorem Toy.SafetyLiveness.startsTrue_eventuallyFalse_machineClosed :
+-- lean/Toy/SafetyLiveness/MachineClosure.lean:44-45
+theorem startsTrue_eventuallyFalse_machineClosed :
     MachineClosed StartsTrue EventuallyFalse
 ```
 
