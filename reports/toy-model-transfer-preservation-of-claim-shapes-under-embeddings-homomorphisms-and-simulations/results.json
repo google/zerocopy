@@ -744,7 +744,7 @@
     "kind": "theorem",
     "tier": "T0",
     "tier_justification": "The basic property of forward simulations; it follows from Lynch and Vaandrager 1995, Lemma 3.8, together with the start condition.",
-    "plain_claim": "If S relates every initial concrete state to some initial abstract state (`SimInit`) and matches every concrete step from an S-related pair by zero or more abstract steps ending in an S-related pair (`SimStepStar`), then every reachable concrete state is S-related to some reachable abstract state.",
+    "plain_claim": "If S relates every initial concrete state to some initial abstract state (`SimInit`) and, from every S-related pair, reachable or not, matches every concrete step by zero or more abstract steps ending in an S-related pair (`SimStepStar`), then every reachable concrete state is S-related to some reachable abstract state.",
     "hypotheses": [
       {
         "name": "hi : SimInit C A S",
@@ -1134,7 +1134,7 @@
     "kind": "theorem",
     "tier": "T0",
     "tier_justification": "The well-founded simulation criterion for termination; mechanized in CompCert for labelled small-step semantics (`fsim_properties` with a well-founded order, `forward_simulation_opt`, `simulation_forever_silent`).",
-    "plain_claim": "If S relates every initial concrete state to some initial abstract state (`SimInit`), every concrete step from an S-related pair is matched either by one abstract step or by no abstract step with a strict decrease of a measure μ(c, a) in a well-founded relation lt (`SimStepWF`), and every reachable state of A terminates (accessible for the converse step relation), then every reachable state of C terminates.",
+    "plain_claim": "If S relates every initial concrete state to some initial abstract state (`SimInit`); from every S-related pair, reachable or not, every concrete step is matched by zero or one abstract step, namely by exactly one abstract step or by no abstract step with a strict decrease of a measure μ(c, a) in a well-founded relation lt (`SimStepWF`); and every reachable state of A terminates (accessible for the converse step relation), then every reachable state of C terminates.",
     "hypotheses": [
       {
         "name": "hwf : WellFounded lt",
