@@ -1,0 +1,1934 @@
+{
+  "checks": [
+    {
+      "expected": {
+        "FN_TAIL": "12",
+        "IF_LET": "91",
+        "IF_LET_THEN": "81",
+        "MATCH": "91",
+        "MATCH_BLOCK_SCRUTINEE": "91",
+        "TAIL": "12"
+      },
+      "name": "drop_order/2021/native",
+      "observed": {
+        "FN_TAIL": "12",
+        "IF_LET": "91",
+        "IF_LET_THEN": "81",
+        "MATCH": "91",
+        "MATCH_BLOCK_SCRUTINEE": "91",
+        "TAIL": "12"
+      },
+      "ok": true
+    },
+    {
+      "expected": {
+        "FN_TAIL": "12",
+        "IF_LET": "91",
+        "IF_LET_THEN": "81",
+        "MATCH": "91",
+        "MATCH_BLOCK_SCRUTINEE": "91",
+        "TAIL": "12"
+      },
+      "name": "drop_order/2021/miri",
+      "observed": {
+        "FN_TAIL": "12",
+        "IF_LET": "91",
+        "IF_LET_THEN": "81",
+        "MATCH": "91",
+        "MATCH_BLOCK_SCRUTINEE": "91",
+        "TAIL": "12"
+      },
+      "ok": true
+    },
+    {
+      "expected": 0,
+      "name": "drop_order/2021/miri_rc",
+      "observed": 0,
+      "ok": true
+    },
+    {
+      "expected": "12",
+      "name": "drop_order/2021/mir_implied_log/run_tail_expr",
+      "observed": "12",
+      "ok": true
+    },
+    {
+      "expected": "12",
+      "name": "drop_order/2021/mir_implied_log/fn_body_tail",
+      "observed": "12",
+      "ok": true
+    },
+    {
+      "expected": "91",
+      "name": "drop_order/2021/mir_implied_log/run_if_let_else",
+      "observed": "91",
+      "ok": true
+    },
+    {
+      "expected": "81",
+      "name": "drop_order/2021/mir_implied_log/run_if_let_then",
+      "observed": "81",
+      "ok": true
+    },
+    {
+      "expected": "91",
+      "name": "drop_order/2021/mir_implied_log/run_match",
+      "observed": "91",
+      "ok": true
+    },
+    {
+      "expected": "91",
+      "name": "drop_order/2021/mir_implied_log/run_match_block_scrutinee",
+      "observed": "91",
+      "ok": true
+    },
+    {
+      "expected": {
+        "FN_TAIL": "21",
+        "IF_LET": "19",
+        "IF_LET_THEN": "81",
+        "MATCH": "91",
+        "MATCH_BLOCK_SCRUTINEE": "19",
+        "TAIL": "21"
+      },
+      "name": "drop_order/2024/native",
+      "observed": {
+        "FN_TAIL": "21",
+        "IF_LET": "19",
+        "IF_LET_THEN": "81",
+        "MATCH": "91",
+        "MATCH_BLOCK_SCRUTINEE": "19",
+        "TAIL": "21"
+      },
+      "ok": true
+    },
+    {
+      "expected": {
+        "FN_TAIL": "21",
+        "IF_LET": "19",
+        "IF_LET_THEN": "81",
+        "MATCH": "91",
+        "MATCH_BLOCK_SCRUTINEE": "19",
+        "TAIL": "21"
+      },
+      "name": "drop_order/2024/miri",
+      "observed": {
+        "FN_TAIL": "21",
+        "IF_LET": "19",
+        "IF_LET_THEN": "81",
+        "MATCH": "91",
+        "MATCH_BLOCK_SCRUTINEE": "19",
+        "TAIL": "21"
+      },
+      "ok": true
+    },
+    {
+      "expected": 0,
+      "name": "drop_order/2024/miri_rc",
+      "observed": 0,
+      "ok": true
+    },
+    {
+      "expected": "21",
+      "name": "drop_order/2024/mir_implied_log/run_tail_expr",
+      "observed": "21",
+      "ok": true
+    },
+    {
+      "expected": "21",
+      "name": "drop_order/2024/mir_implied_log/fn_body_tail",
+      "observed": "21",
+      "ok": true
+    },
+    {
+      "expected": "19",
+      "name": "drop_order/2024/mir_implied_log/run_if_let_else",
+      "observed": "19",
+      "ok": true
+    },
+    {
+      "expected": "81",
+      "name": "drop_order/2024/mir_implied_log/run_if_let_then",
+      "observed": "81",
+      "ok": true
+    },
+    {
+      "expected": "91",
+      "name": "drop_order/2024/mir_implied_log/run_match",
+      "observed": "91",
+      "ok": true
+    },
+    {
+      "expected": "19",
+      "name": "drop_order/2024/mir_implied_log/run_match_block_scrutinee",
+      "observed": "19",
+      "ok": true
+    },
+    {
+      "expected": [
+        "E0597"
+      ],
+      "name": "tail_temp_borrows_local/2021/error_codes",
+      "observed": [
+        "E0597"
+      ],
+      "ok": true
+    },
+    {
+      "expected": 0,
+      "name": "tail_temp_borrows_local/2024/build_rc",
+      "observed": 0,
+      "ok": true
+    },
+    {
+      "expected": "LEN=3",
+      "name": "tail_temp_borrows_local/2024/native",
+      "observed": "LEN=3",
+      "ok": true
+    },
+    {
+      "expected": "LEN=3",
+      "name": "tail_temp_borrows_local/2024/miri",
+      "observed": "LEN=3",
+      "ok": true
+    },
+    {
+      "expected": "N=4",
+      "name": "block_tail_temp_escapes/2021/native",
+      "observed": "N=4",
+      "ok": true
+    },
+    {
+      "expected": "N=4",
+      "name": "block_tail_temp_escapes/2021/miri",
+      "observed": "N=4",
+      "ok": true
+    },
+    {
+      "expected": [
+        "E0716"
+      ],
+      "name": "block_tail_temp_escapes/2024/error_codes",
+      "observed": [
+        "E0716"
+      ],
+      "ok": true
+    },
+    {
+      "expected": 0,
+      "name": "scrutinee_value_vs_place/2021/place_build_rc",
+      "observed": 0,
+      "ok": true
+    },
+    {
+      "expected": "PLACE=41",
+      "name": "scrutinee_value_vs_place/2021/place_run",
+      "observed": "PLACE=41",
+      "ok": true
+    },
+    {
+      "expected": [
+        "E0507"
+      ],
+      "name": "scrutinee_value_vs_place/2021/value_error_codes",
+      "observed": [
+        "E0507"
+      ],
+      "ok": true
+    },
+    {
+      "expected": 0,
+      "name": "scrutinee_value_vs_place/2024/place_build_rc",
+      "observed": 0,
+      "ok": true
+    },
+    {
+      "expected": "PLACE=41",
+      "name": "scrutinee_value_vs_place/2024/place_run",
+      "observed": "PLACE=41",
+      "ok": true
+    },
+    {
+      "expected": [
+        "E0507"
+      ],
+      "name": "scrutinee_value_vs_place/2024/value_error_codes",
+      "observed": [
+        "E0507"
+      ],
+      "ok": true
+    },
+    {
+      "expected": {
+        "IF_LET_ELSE_LOCK": "held",
+        "MATCH_ARM_LOCK": "held"
+      },
+      "name": "mutex_guard/2021/native",
+      "observed": {
+        "IF_LET_ELSE_LOCK": "held",
+        "MATCH_ARM_LOCK": "held"
+      },
+      "ok": true
+    },
+    {
+      "expected": {
+        "IF_LET_ELSE_LOCK": "held",
+        "MATCH_ARM_LOCK": "held"
+      },
+      "name": "mutex_guard/2021/miri",
+      "observed": {
+        "IF_LET_ELSE_LOCK": "held",
+        "MATCH_ARM_LOCK": "held"
+      },
+      "ok": true
+    },
+    {
+      "expected": {
+        "IF_LET_ELSE_LOCK": "released",
+        "MATCH_ARM_LOCK": "held"
+      },
+      "name": "mutex_guard/2024/native",
+      "observed": {
+        "IF_LET_ELSE_LOCK": "released",
+        "MATCH_ARM_LOCK": "held"
+      },
+      "ok": true
+    },
+    {
+      "expected": {
+        "IF_LET_ELSE_LOCK": "released",
+        "MATCH_ARM_LOCK": "held"
+      },
+      "name": "mutex_guard/2024/miri",
+      "observed": {
+        "IF_LET_ELSE_LOCK": "released",
+        "MATCH_ARM_LOCK": "held"
+      },
+      "ok": true
+    },
+    {
+      "expected": [
+        "switchInt(move _2) -> [0: bb2, otherwise: bb1];"
+      ],
+      "name": "ueb/classify_raw_wildcard/switch_before",
+      "observed": [
+        "switchInt(move _2) -> [0: bb2, otherwise: bb1];"
+      ],
+      "ok": true
+    },
+    {
+      "expected": [
+        "switchInt(move _2) -> [0: bb2, 2: bb1, otherwise: bb4];"
+      ],
+      "name": "ueb/classify_raw_wildcard/switch_after",
+      "observed": [
+        "switchInt(move _2) -> [0: bb2, 2: bb1, otherwise: bb4];"
+      ],
+      "ok": true
+    },
+    {
+      "expected": [
+        0,
+        1
+      ],
+      "name": "ueb/classify_raw_wildcard/unreachable_blocks",
+      "observed": [
+        0,
+        1
+      ],
+      "ok": true
+    },
+    {
+      "expected": [
+        "_2 = discriminant((*_1));"
+      ],
+      "name": "ueb/classify_raw_wildcard/place_discriminant",
+      "observed": [
+        "_2 = discriminant((*_1));"
+      ],
+      "ok": true
+    },
+    {
+      "expected": [
+        "_2 = copy (*_1);",
+        "_3 = discriminant(_2);"
+      ],
+      "name": "ueb/classify_raw_value/copy_then_discriminant",
+      "observed": [
+        "_2 = copy (*_1);",
+        "_3 = discriminant(_2);"
+      ],
+      "ok": true
+    },
+    {
+      "expected": [
+        "switchInt(move _3) -> [0: bb2, 2: bb1, otherwise: bb4];"
+      ],
+      "name": "ueb/classify_raw_value/switch_after",
+      "observed": [
+        "switchInt(move _3) -> [0: bb2, 2: bb1, otherwise: bb4];"
+      ],
+      "ok": true
+    },
+    {
+      "expected": [
+        "switchInt(move _2) -> [0: bb4, 1: bb3, 2: bb2, otherwise: bb1];"
+      ],
+      "name": "ueb/classify_ref/switch_before",
+      "observed": [
+        "switchInt(move _2) -> [0: bb4, 1: bb3, 2: bb2, otherwise: bb1];"
+      ],
+      "ok": true
+    },
+    {
+      "expected": [
+        "switchInt(move _2) -> [0: bb4, 1: bb1, 2: bb2, otherwise: bb1];"
+      ],
+      "name": "ueb/classify_ref/switch_after",
+      "observed": [
+        "switchInt(move _2) -> [0: bb4, 1: bb1, 2: bb2, otherwise: bb1];"
+      ],
+      "ok": true
+    },
+    {
+      "expected": {
+        "opt0_default": true,
+        "opt0_miropt0": false,
+        "opt3_default": true,
+        "opt3_miropt0": false
+      },
+      "name": "ueb/final_mir_has_unreachable_block_by_config",
+      "observed": {
+        "opt0_default": true,
+        "opt0_miropt0": false,
+        "opt3_default": true,
+        "opt3_miropt0": false
+      },
+      "ok": true
+    },
+    {
+      "expected": {
+        "opt3_default": true,
+        "opt3_miropt0": null
+      },
+      "name": "ueb/llvm_switch_default_is_unreachable",
+      "observed": {
+        "opt3_default": true,
+        "opt3_miropt0": null
+      },
+      "ok": true
+    },
+    {
+      "expected": {
+        "opt3_default": "!{i8 0, i8 3}",
+        "opt3_miropt0": "!{i8 0, i8 3}"
+      },
+      "name": "ueb/llvm_tag_load_range_metadata",
+      "observed": {
+        "opt3_default": "!{i8 0, i8 3}",
+        "opt3_miropt0": "!{i8 0, i8 3}"
+      },
+      "ok": true
+    },
+    {
+      "expected": 0,
+      "name": "ueb/miri/0/valid_rc",
+      "observed": 0,
+      "ok": true
+    },
+    {
+      "expected": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "name": "ueb/miri/0/valid_stdout",
+      "observed": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "ok": true
+    },
+    {
+      "expected": false,
+      "name": "ueb/miri/0/warns_mir_optimizations_explicitly_enabled",
+      "observed": false,
+      "ok": true
+    },
+    {
+      "expected": 1,
+      "name": "ueb/miri/0/tag1_place/rc",
+      "observed": 1,
+      "ok": true
+    },
+    {
+      "expected": [
+        "error: Undefined Behavior: read discriminant of an uninhabited enum variant"
+      ],
+      "name": "ueb/miri/0/tag1_place/ub_lines",
+      "observed": [
+        "error: Undefined Behavior: read discriminant of an uninhabited enum variant"
+      ],
+      "ok": true
+    },
+    {
+      "expected": 1,
+      "name": "ueb/miri/0/tag1_value/rc",
+      "observed": 1,
+      "ok": true
+    },
+    {
+      "expected": [
+        "error: Undefined Behavior: constructing invalid value of type Tri: at .<enum-tag>, encountered an uninhabited enum variant"
+      ],
+      "name": "ueb/miri/0/tag1_value/ub_lines",
+      "observed": [
+        "error: Undefined Behavior: constructing invalid value of type Tri: at .<enum-tag>, encountered an uninhabited enum variant"
+      ],
+      "ok": true
+    },
+    {
+      "expected": 1,
+      "name": "ueb/miri/0/tag3_place/rc",
+      "observed": 1,
+      "ok": true
+    },
+    {
+      "expected": [
+        "error: Undefined Behavior: enum value has invalid tag: 0x03"
+      ],
+      "name": "ueb/miri/0/tag3_place/ub_lines",
+      "observed": [
+        "error: Undefined Behavior: enum value has invalid tag: 0x03"
+      ],
+      "ok": true
+    },
+    {
+      "expected": 0,
+      "name": "ueb/miri/2/valid_rc",
+      "observed": 0,
+      "ok": true
+    },
+    {
+      "expected": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "name": "ueb/miri/2/valid_stdout",
+      "observed": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "ueb/miri/2/warns_mir_optimizations_explicitly_enabled",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": 1,
+      "name": "ueb/miri/2/tag1_place/rc",
+      "observed": 1,
+      "ok": true
+    },
+    {
+      "expected": [
+        "error: Undefined Behavior: read discriminant of an uninhabited enum variant"
+      ],
+      "name": "ueb/miri/2/tag1_place/ub_lines",
+      "observed": [
+        "error: Undefined Behavior: read discriminant of an uninhabited enum variant"
+      ],
+      "ok": true
+    },
+    {
+      "expected": 1,
+      "name": "ueb/miri/2/tag1_value/rc",
+      "observed": 1,
+      "ok": true
+    },
+    {
+      "expected": [
+        "error: Undefined Behavior: constructing invalid value of type Tri: at .<enum-tag>, encountered an uninhabited enum variant"
+      ],
+      "name": "ueb/miri/2/tag1_value/ub_lines",
+      "observed": [
+        "error: Undefined Behavior: constructing invalid value of type Tri: at .<enum-tag>, encountered an uninhabited enum variant"
+      ],
+      "ok": true
+    },
+    {
+      "expected": 1,
+      "name": "ueb/miri/2/tag3_place/rc",
+      "observed": 1,
+      "ok": true
+    },
+    {
+      "expected": [
+        "error: Undefined Behavior: enum value has invalid tag: 0x03"
+      ],
+      "name": "ueb/miri/2/tag3_place/ub_lines",
+      "observed": [
+        "error: Undefined Behavior: enum value has invalid tag: 0x03"
+      ],
+      "ok": true
+    },
+    {
+      "expected": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "name": "ueb/native/opt0_miropt0/valid_stdout",
+      "observed": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "ok": true
+    },
+    {
+      "expected": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "name": "ueb/native/opt0_default/valid_stdout",
+      "observed": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "ok": true
+    },
+    {
+      "expected": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "name": "ueb/native/opt3_miropt0/valid_stdout",
+      "observed": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "ok": true
+    },
+    {
+      "expected": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "name": "ueb/native/opt3_default/valid_stdout",
+      "observed": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77",
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/edition_2021_native_first_line/identical",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/edition_2021_miri_first_line/identical",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/edition_2021_run_tail_expr_mir/identical",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/edition_2021_run_if_let_else_mir/identical",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/edition_2024_native_first_line/identical",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/edition_2024_miri_first_line/identical",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/edition_2024_run_tail_expr_mir/identical",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/edition_2024_run_if_let_else_mir/identical",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/classify_raw_wildcard_before_mir/identical",
+      "observed": true,
+      "ok": true
+    },
+    {
+      "expected": true,
+      "name": "retained/classify_raw_wildcard_after_mir/identical",
+      "observed": true,
+      "ok": true
+    }
+  ],
+  "checks_failed": [],
+  "checks_total": 78,
+  "compile_time": {
+    "block_tail_temp_escapes": {
+      "edition_2021": {
+        "build": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2021",
+            "-o",
+            "block_tail_temp_escapes_2021",
+            "block_tail_temp_escapes.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": ""
+        },
+        "miri_run": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2021",
+            "block_tail_temp_escapes.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": "N=4\n"
+        },
+        "native_run": {
+          "argv": [
+            "<workdir>/block_tail_temp_escapes_2021"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": "N=4\n"
+        }
+      },
+      "edition_2024": {
+        "build": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2024",
+            "-o",
+            "block_tail_temp_escapes_2024",
+            "block_tail_temp_escapes.rs"
+          ],
+          "error_codes": [
+            "E0716"
+          ],
+          "error_lines": [
+            "error[E0716]: temporary value dropped while borrowed",
+            "error: aborting due to 1 previous error"
+          ],
+          "rc": 1,
+          "stdout": ""
+        }
+      }
+    },
+    "scrutinee_value_vs_place": {
+      "edition_2021": {
+        "place_scrutinee_build": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2021",
+            "-o",
+            "svp_place_2021",
+            "scrutinee_value_vs_place.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": ""
+        },
+        "place_scrutinee_run": {
+          "argv": [
+            "<workdir>/svp_place_2021"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": "PLACE=41\n"
+        },
+        "value_scrutinee_build": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2021",
+            "--cfg",
+            "value_scrutinee",
+            "-o",
+            "svp_value_2021",
+            "scrutinee_value_vs_place.rs"
+          ],
+          "error_codes": [
+            "E0507"
+          ],
+          "error_lines": [
+            "error[E0507]: cannot move out of `*p` which is behind a raw pointer",
+            "error: aborting due to 1 previous error"
+          ],
+          "rc": 1,
+          "stdout": ""
+        },
+        "value_scrutinee_e0507_span_lines": [
+          "26 |     match unsafe { *p } {",
+          "   |                    ^^ move occurs because `*p` has type `Msg`, which does not implement the `Copy` trait",
+          "26 |     match unsafe { *p } {"
+        ]
+      },
+      "edition_2024": {
+        "place_scrutinee_build": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2024",
+            "-o",
+            "svp_place_2024",
+            "scrutinee_value_vs_place.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": ""
+        },
+        "place_scrutinee_run": {
+          "argv": [
+            "<workdir>/svp_place_2024"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": "PLACE=41\n"
+        },
+        "value_scrutinee_build": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2024",
+            "--cfg",
+            "value_scrutinee",
+            "-o",
+            "svp_value_2024",
+            "scrutinee_value_vs_place.rs"
+          ],
+          "error_codes": [
+            "E0507"
+          ],
+          "error_lines": [
+            "error[E0507]: cannot move out of `*p` which is behind a raw pointer",
+            "error: aborting due to 1 previous error"
+          ],
+          "rc": 1,
+          "stdout": ""
+        },
+        "value_scrutinee_e0507_span_lines": [
+          "26 |     match unsafe { *p } {",
+          "   |                    ^^ move occurs because `*p` has type `Msg`, which does not implement the `Copy` trait",
+          "26 |     match unsafe { *p } {"
+        ]
+      }
+    },
+    "tail_temp_borrows_local": {
+      "edition_2021": {
+        "build": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2021",
+            "-o",
+            "tail_temp_borrows_local_2021",
+            "tail_temp_borrows_local.rs"
+          ],
+          "error_codes": [
+            "E0597"
+          ],
+          "error_lines": [
+            "error[E0597]: `c` does not live long enough",
+            "error: aborting due to 1 previous error"
+          ],
+          "rc": 1,
+          "stdout": ""
+        }
+      },
+      "edition_2024": {
+        "build": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2024",
+            "-o",
+            "tail_temp_borrows_local_2024",
+            "tail_temp_borrows_local.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": ""
+        },
+        "miri_run": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2024",
+            "tail_temp_borrows_local.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": "LEN=3\n"
+        },
+        "native_run": {
+          "argv": [
+            "<workdir>/tail_temp_borrows_local_2024"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": "LEN=3\n"
+        }
+      }
+    }
+  },
+  "drop_order": {
+    "edition_2021": {
+      "functions": {
+        "fn_body_tail": {
+          "mir_after_elaborate_drops": "// MIR for `fn_body_tail` after ElaborateDrops\n\nfn fn_body_tail() -> u32 {\n    let mut _0: u32;\n    let _1: Guard;\n    let mut _2: u32;\n    let mut _3: &Guard;\n    let _4: Guard;\n    scope 1 {\n        debug _local => _1;\n    }\n\n    bb0: {\n        StorageLive(_1);\n        _1 = Guard(const 1_u64);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 2_u64);\n        _3 = &_4;\n        _2 = Guard::val(move _3) -> [return: bb1, unwind: bb5];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        _0 = id(move _2) -> [return: bb2, unwind: bb5];\n    }\n\n    bb2: {\n        StorageDead(_2);\n        drop(_1) -> [return: bb3, unwind: bb6];\n    }\n\n    bb3: {\n        StorageDead(_1);\n        drop(_4) -> [return: bb4, unwind: bb7];\n    }\n\n    bb4: {\n        StorageDead(_4);\n        return;\n    }\n\n    bb5 (cleanup): {\n        drop(_1) -> [return: bb6, unwind terminate(cleanup)];\n    }\n\n    bb6 (cleanup): {\n        drop(_4) -> [return: bb7, unwind terminate(cleanup)];\n    }\n\n    bb7 (cleanup): {\n        resume;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_3)",
+              "StorageDead(_2)",
+              "drop(_1)",
+              "StorageDead(_1)",
+              "drop(_4)",
+              "StorageDead(_4)"
+            ],
+            "guard_locals": {
+              "_1": "Guard(1)",
+              "_4": "Guard(2)"
+            },
+            "implied_log": "12"
+          }
+        },
+        "run_if_let_else": {
+          "mir_after_elaborate_drops": "// MIR for `run_if_let_else` after ElaborateDrops\n\nfn run_if_let_else() -> u64 {\n    let mut _0: u64;\n    let _1: ();\n    let mut _2: std::option::Option<u32>;\n    let mut _3: &Guard;\n    let _4: Guard;\n    let mut _5: isize;\n    let _6: ();\n    let _7: ();\n    scope 1 {\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 1_u64);\n        _3 = &_4;\n        _2 = Guard::some(move _3) -> [return: bb1, unwind: bb9];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        PlaceMention(_2);\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb2, otherwise: bb4];\n    }\n\n    bb2: {\n        StorageLive(_6);\n        _6 = push(const 8_u64) -> [return: bb3, unwind: bb9];\n    }\n\n    bb3: {\n        StorageDead(_6);\n        _1 = const ();\n        goto -> bb6;\n    }\n\n    bb4: {\n        StorageLive(_7);\n        _7 = push(const 9_u64) -> [return: bb5, unwind: bb9];\n    }\n\n    bb5: {\n        StorageDead(_7);\n        _1 = const ();\n        goto -> bb6;\n    }\n\n    bb6: {\n        drop(_4) -> [return: bb7, unwind: bb10];\n    }\n\n    bb7: {\n        StorageDead(_4);\n        StorageDead(_2);\n        StorageDead(_1);\n        _0 = take_log() -> [return: bb8, unwind continue];\n    }\n\n    bb8: {\n        return;\n    }\n\n    bb9 (cleanup): {\n        drop(_4) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb10 (cleanup): {\n        resume;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_3)",
+              "push(9)",
+              "StorageDead(_7)",
+              "drop(_4)",
+              "StorageDead(_4)",
+              "StorageDead(_2)",
+              "StorageDead(_1)"
+            ],
+            "guard_locals": {
+              "_4": "Guard(1)"
+            },
+            "implied_log": "91"
+          }
+        },
+        "run_if_let_then": {
+          "mir_after_elaborate_drops": "// MIR for `run_if_let_then` after ElaborateDrops\n\nfn run_if_let_then() -> u64 {\n    let mut _0: u64;\n    let _1: ();\n    let mut _2: std::option::Option<u32>;\n    let mut _3: &Guard;\n    let _4: Guard;\n    let mut _5: isize;\n    let _6: ();\n    let _7: ();\n    scope 1 {\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 1_u64);\n        _3 = &_4;\n        _2 = Guard::some(move _3) -> [return: bb1, unwind: bb9];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        PlaceMention(_2);\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [1: bb2, otherwise: bb4];\n    }\n\n    bb2: {\n        StorageLive(_6);\n        _6 = push(const 8_u64) -> [return: bb3, unwind: bb9];\n    }\n\n    bb3: {\n        StorageDead(_6);\n        _1 = const ();\n        goto -> bb6;\n    }\n\n    bb4: {\n        StorageLive(_7);\n        _7 = push(const 9_u64) -> [return: bb5, unwind: bb9];\n    }\n\n    bb5: {\n        StorageDead(_7);\n        _1 = const ();\n        goto -> bb6;\n    }\n\n    bb6: {\n        drop(_4) -> [return: bb7, unwind: bb10];\n    }\n\n    bb7: {\n        StorageDead(_4);\n        StorageDead(_2);\n        StorageDead(_1);\n        _0 = take_log() -> [return: bb8, unwind continue];\n    }\n\n    bb8: {\n        return;\n    }\n\n    bb9 (cleanup): {\n        drop(_4) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb10 (cleanup): {\n        resume;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_3)",
+              "push(8)",
+              "StorageDead(_6)",
+              "drop(_4)",
+              "StorageDead(_4)",
+              "StorageDead(_2)",
+              "StorageDead(_1)"
+            ],
+            "guard_locals": {
+              "_4": "Guard(1)"
+            },
+            "implied_log": "81"
+          }
+        },
+        "run_match": {
+          "mir_after_elaborate_drops": "// MIR for `run_match` after ElaborateDrops\n\nfn run_match() -> u64 {\n    let mut _0: u64;\n    let _1: ();\n    let mut _2: std::option::Option<u32>;\n    let mut _3: &Guard;\n    let _4: Guard;\n    let mut _5: isize;\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 1_u64);\n        _3 = &_4;\n        _2 = Guard::some(move _3) -> [return: bb1, unwind: bb7];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        PlaceMention(_2);\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        _1 = push(const 9_u64) -> [return: bb9, unwind: bb7];\n    }\n\n    bb3: {\n        _1 = push(const 8_u64) -> [return: bb10, unwind: bb7];\n    }\n\n    bb4: {\n        drop(_4) -> [return: bb5, unwind: bb8];\n    }\n\n    bb5: {\n        StorageDead(_4);\n        StorageDead(_2);\n        StorageDead(_1);\n        _0 = take_log() -> [return: bb6, unwind continue];\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7 (cleanup): {\n        drop(_4) -> [return: bb8, unwind terminate(cleanup)];\n    }\n\n    bb8 (cleanup): {\n        resume;\n    }\n\n    bb9: {\n        goto -> bb4;\n    }\n\n    bb10: {\n        goto -> bb4;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_3)",
+              "push(9)",
+              "drop(_4)",
+              "StorageDead(_4)",
+              "StorageDead(_2)",
+              "StorageDead(_1)"
+            ],
+            "guard_locals": {
+              "_4": "Guard(1)"
+            },
+            "implied_log": "91"
+          }
+        },
+        "run_match_block_scrutinee": {
+          "mir_after_elaborate_drops": "// MIR for `run_match_block_scrutinee` after ElaborateDrops\n\nfn run_match_block_scrutinee() -> u64 {\n    let mut _0: u64;\n    let _1: ();\n    let mut _2: std::option::Option<u32>;\n    let mut _3: &Guard;\n    let _4: Guard;\n    let mut _5: isize;\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 1_u64);\n        _3 = &_4;\n        _2 = Guard::some(move _3) -> [return: bb1, unwind: bb7];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        PlaceMention(_2);\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        _1 = push(const 9_u64) -> [return: bb9, unwind: bb7];\n    }\n\n    bb3: {\n        _1 = push(const 8_u64) -> [return: bb10, unwind: bb7];\n    }\n\n    bb4: {\n        drop(_4) -> [return: bb5, unwind: bb8];\n    }\n\n    bb5: {\n        StorageDead(_4);\n        StorageDead(_2);\n        StorageDead(_1);\n        _0 = take_log() -> [return: bb6, unwind continue];\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7 (cleanup): {\n        drop(_4) -> [return: bb8, unwind terminate(cleanup)];\n    }\n\n    bb8 (cleanup): {\n        resume;\n    }\n\n    bb9: {\n        goto -> bb4;\n    }\n\n    bb10: {\n        goto -> bb4;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_3)",
+              "push(9)",
+              "drop(_4)",
+              "StorageDead(_4)",
+              "StorageDead(_2)",
+              "StorageDead(_1)"
+            ],
+            "guard_locals": {
+              "_4": "Guard(1)"
+            },
+            "implied_log": "91"
+          }
+        },
+        "run_tail_expr": {
+          "mir_after_elaborate_drops": "// MIR for `run_tail_expr` after ElaborateDrops\n\nfn run_tail_expr() -> (u32, u64) {\n    let mut _0: (u32, u64);\n    let _1: u32;\n    let _2: Guard;\n    let mut _3: u32;\n    let mut _4: &Guard;\n    let _5: Guard;\n    let mut _6: u32;\n    let mut _7: u64;\n    scope 1 {\n        debug out => _1;\n    }\n    scope 2 {\n        debug _local => _2;\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        _2 = Guard(const 1_u64);\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = Guard(const 2_u64);\n        _4 = &_5;\n        _3 = Guard::val(move _4) -> [return: bb1, unwind: bb6];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        _1 = id(move _3) -> [return: bb2, unwind: bb6];\n    }\n\n    bb2: {\n        StorageDead(_3);\n        drop(_2) -> [return: bb3, unwind: bb7];\n    }\n\n    bb3: {\n        StorageDead(_2);\n        drop(_5) -> [return: bb4, unwind: bb8];\n    }\n\n    bb4: {\n        StorageDead(_5);\n        StorageLive(_6);\n        _6 = copy _1;\n        StorageLive(_7);\n        _7 = take_log() -> [return: bb5, unwind continue];\n    }\n\n    bb5: {\n        _0 = (move _6, move _7);\n        StorageDead(_7);\n        StorageDead(_6);\n        StorageDead(_1);\n        return;\n    }\n\n    bb6 (cleanup): {\n        drop(_2) -> [return: bb7, unwind terminate(cleanup)];\n    }\n\n    bb7 (cleanup): {\n        drop(_5) -> [return: bb8, unwind terminate(cleanup)];\n    }\n\n    bb8 (cleanup): {\n        resume;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_4)",
+              "StorageDead(_3)",
+              "drop(_2)",
+              "StorageDead(_2)",
+              "drop(_5)",
+              "StorageDead(_5)"
+            ],
+            "guard_locals": {
+              "_2": "Guard(1)",
+              "_5": "Guard(2)"
+            },
+            "implied_log": "12"
+          }
+        }
+      },
+      "mir_dump_command": {
+        "argv": [
+          "<rustc>",
+          "--edition",
+          "2021",
+          "-Zdump-mir=ElaborateDrops",
+          "-Zdump-mir-dir=mir_drops_2021",
+          "--emit=mir",
+          "-o",
+          "mir_drops_2021/all.mir",
+          "drop_order.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": ""
+      },
+      "miri_run": {
+        "argv": [
+          "<miri>",
+          "--sysroot",
+          "<miri-sysroot>",
+          "--edition",
+          "2021",
+          "drop_order.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": "TAIL=12 IF_LET=91 MATCH=91\nFN_TAIL=12 IF_LET_THEN=81 MATCH_BLOCK_SCRUTINEE=91\n"
+      },
+      "native_build": {
+        "argv": [
+          "<rustc>",
+          "--edition",
+          "2021",
+          "-o",
+          "drop_order_2021",
+          "drop_order.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": ""
+      },
+      "native_run": {
+        "argv": [
+          "<workdir>/drop_order_2021"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": "TAIL=12 IF_LET=91 MATCH=91\nFN_TAIL=12 IF_LET_THEN=81 MATCH_BLOCK_SCRUTINEE=91\n"
+      }
+    },
+    "edition_2024": {
+      "functions": {
+        "fn_body_tail": {
+          "mir_after_elaborate_drops": "// MIR for `fn_body_tail` after ElaborateDrops\n\nfn fn_body_tail() -> u32 {\n    let mut _0: u32;\n    let _1: Guard;\n    let mut _2: u32;\n    let mut _3: &Guard;\n    let _4: Guard;\n    scope 1 {\n        debug _local => _1;\n    }\n\n    bb0: {\n        StorageLive(_1);\n        _1 = Guard(const 1_u64);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 2_u64);\n        _3 = &_4;\n        _2 = Guard::val(move _3) -> [return: bb1, unwind: bb5];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        _0 = id(move _2) -> [return: bb2, unwind: bb5];\n    }\n\n    bb2: {\n        drop(_4) -> [return: bb3, unwind: bb6];\n    }\n\n    bb3: {\n        StorageDead(_4);\n        StorageDead(_2);\n        drop(_1) -> [return: bb4, unwind: bb7];\n    }\n\n    bb4: {\n        StorageDead(_1);\n        return;\n    }\n\n    bb5 (cleanup): {\n        drop(_4) -> [return: bb6, unwind terminate(cleanup)];\n    }\n\n    bb6 (cleanup): {\n        drop(_1) -> [return: bb7, unwind terminate(cleanup)];\n    }\n\n    bb7 (cleanup): {\n        resume;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_3)",
+              "drop(_4)",
+              "StorageDead(_4)",
+              "StorageDead(_2)",
+              "drop(_1)",
+              "StorageDead(_1)"
+            ],
+            "guard_locals": {
+              "_1": "Guard(1)",
+              "_4": "Guard(2)"
+            },
+            "implied_log": "21"
+          }
+        },
+        "run_if_let_else": {
+          "mir_after_elaborate_drops": "// MIR for `run_if_let_else` after ElaborateDrops\n\nfn run_if_let_else() -> u64 {\n    let mut _0: u64;\n    let _1: ();\n    let mut _2: std::option::Option<u32>;\n    let mut _3: &Guard;\n    let _4: Guard;\n    let mut _5: isize;\n    let _6: ();\n    let _7: ();\n    scope 1 {\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 1_u64);\n        _3 = &_4;\n        _2 = Guard::some(move _3) -> [return: bb1, unwind: bb10];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        PlaceMention(_2);\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb2, otherwise: bb4];\n    }\n\n    bb2: {\n        StorageLive(_6);\n        _6 = push(const 8_u64) -> [return: bb3, unwind: bb10];\n    }\n\n    bb3: {\n        StorageDead(_6);\n        _1 = const ();\n        drop(_4) -> [return: bb6, unwind: bb11];\n    }\n\n    bb4: {\n        drop(_4) -> [return: bb5, unwind: bb11];\n    }\n\n    bb5: {\n        StorageDead(_4);\n        StorageDead(_2);\n        StorageLive(_7);\n        _7 = push(const 9_u64) -> [return: bb7, unwind continue];\n    }\n\n    bb6: {\n        StorageDead(_4);\n        StorageDead(_2);\n        goto -> bb8;\n    }\n\n    bb7: {\n        StorageDead(_7);\n        _1 = const ();\n        goto -> bb8;\n    }\n\n    bb8: {\n        StorageDead(_1);\n        _0 = take_log() -> [return: bb9, unwind continue];\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10 (cleanup): {\n        drop(_4) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb11 (cleanup): {\n        resume;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_3)",
+              "drop(_4)",
+              "StorageDead(_4)",
+              "StorageDead(_2)",
+              "push(9)",
+              "StorageDead(_7)",
+              "StorageDead(_1)"
+            ],
+            "guard_locals": {
+              "_4": "Guard(1)"
+            },
+            "implied_log": "19"
+          }
+        },
+        "run_if_let_then": {
+          "mir_after_elaborate_drops": "// MIR for `run_if_let_then` after ElaborateDrops\n\nfn run_if_let_then() -> u64 {\n    let mut _0: u64;\n    let _1: ();\n    let mut _2: std::option::Option<u32>;\n    let mut _3: &Guard;\n    let _4: Guard;\n    let mut _5: isize;\n    let _6: ();\n    let _7: ();\n    scope 1 {\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 1_u64);\n        _3 = &_4;\n        _2 = Guard::some(move _3) -> [return: bb1, unwind: bb10];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        PlaceMention(_2);\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [1: bb2, otherwise: bb4];\n    }\n\n    bb2: {\n        StorageLive(_6);\n        _6 = push(const 8_u64) -> [return: bb3, unwind: bb10];\n    }\n\n    bb3: {\n        StorageDead(_6);\n        _1 = const ();\n        drop(_4) -> [return: bb6, unwind: bb11];\n    }\n\n    bb4: {\n        drop(_4) -> [return: bb5, unwind: bb11];\n    }\n\n    bb5: {\n        StorageDead(_4);\n        StorageDead(_2);\n        StorageLive(_7);\n        _7 = push(const 9_u64) -> [return: bb7, unwind continue];\n    }\n\n    bb6: {\n        StorageDead(_4);\n        StorageDead(_2);\n        goto -> bb8;\n    }\n\n    bb7: {\n        StorageDead(_7);\n        _1 = const ();\n        goto -> bb8;\n    }\n\n    bb8: {\n        StorageDead(_1);\n        _0 = take_log() -> [return: bb9, unwind continue];\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10 (cleanup): {\n        drop(_4) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb11 (cleanup): {\n        resume;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_3)",
+              "push(8)",
+              "StorageDead(_6)",
+              "drop(_4)",
+              "StorageDead(_4)",
+              "StorageDead(_2)",
+              "StorageDead(_1)"
+            ],
+            "guard_locals": {
+              "_4": "Guard(1)"
+            },
+            "implied_log": "81"
+          }
+        },
+        "run_match": {
+          "mir_after_elaborate_drops": "// MIR for `run_match` after ElaborateDrops\n\nfn run_match() -> u64 {\n    let mut _0: u64;\n    let _1: ();\n    let mut _2: std::option::Option<u32>;\n    let mut _3: &Guard;\n    let _4: Guard;\n    let mut _5: isize;\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 1_u64);\n        _3 = &_4;\n        _2 = Guard::some(move _3) -> [return: bb1, unwind: bb7];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        PlaceMention(_2);\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        _1 = push(const 9_u64) -> [return: bb9, unwind: bb7];\n    }\n\n    bb3: {\n        _1 = push(const 8_u64) -> [return: bb10, unwind: bb7];\n    }\n\n    bb4: {\n        drop(_4) -> [return: bb5, unwind: bb8];\n    }\n\n    bb5: {\n        StorageDead(_4);\n        StorageDead(_2);\n        StorageDead(_1);\n        _0 = take_log() -> [return: bb6, unwind continue];\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7 (cleanup): {\n        drop(_4) -> [return: bb8, unwind terminate(cleanup)];\n    }\n\n    bb8 (cleanup): {\n        resume;\n    }\n\n    bb9: {\n        goto -> bb4;\n    }\n\n    bb10: {\n        goto -> bb4;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_3)",
+              "push(9)",
+              "drop(_4)",
+              "StorageDead(_4)",
+              "StorageDead(_2)",
+              "StorageDead(_1)"
+            ],
+            "guard_locals": {
+              "_4": "Guard(1)"
+            },
+            "implied_log": "91"
+          }
+        },
+        "run_match_block_scrutinee": {
+          "mir_after_elaborate_drops": "// MIR for `run_match_block_scrutinee` after ElaborateDrops\n\nfn run_match_block_scrutinee() -> u64 {\n    let mut _0: u64;\n    let _1: ();\n    let mut _2: std::option::Option<u32>;\n    let mut _3: &Guard;\n    let _4: Guard;\n    let mut _5: isize;\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = Guard(const 1_u64);\n        _3 = &_4;\n        _2 = Guard::some(move _3) -> [return: bb1, unwind: bb7];\n    }\n\n    bb1: {\n        drop(_4) -> [return: bb2, unwind: bb8];\n    }\n\n    bb2: {\n        StorageDead(_4);\n        StorageDead(_3);\n        PlaceMention(_2);\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb4, otherwise: bb3];\n    }\n\n    bb3: {\n        _1 = push(const 9_u64) -> [return: bb5, unwind continue];\n    }\n\n    bb4: {\n        _1 = push(const 8_u64) -> [return: bb5, unwind continue];\n    }\n\n    bb5: {\n        StorageDead(_2);\n        StorageDead(_1);\n        _0 = take_log() -> [return: bb6, unwind continue];\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7 (cleanup): {\n        drop(_4) -> [return: bb8, unwind terminate(cleanup)];\n    }\n\n    bb8 (cleanup): {\n        resume;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "drop(_4)",
+              "StorageDead(_4)",
+              "StorageDead(_3)",
+              "push(9)",
+              "StorageDead(_2)",
+              "StorageDead(_1)"
+            ],
+            "guard_locals": {
+              "_4": "Guard(1)"
+            },
+            "implied_log": "19"
+          }
+        },
+        "run_tail_expr": {
+          "mir_after_elaborate_drops": "// MIR for `run_tail_expr` after ElaborateDrops\n\nfn run_tail_expr() -> (u32, u64) {\n    let mut _0: (u32, u64);\n    let _1: u32;\n    let _2: Guard;\n    let mut _3: u32;\n    let mut _4: &Guard;\n    let _5: Guard;\n    let mut _6: u32;\n    let mut _7: u64;\n    scope 1 {\n        debug out => _1;\n    }\n    scope 2 {\n        debug _local => _2;\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        _2 = Guard(const 1_u64);\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = Guard(const 2_u64);\n        _4 = &_5;\n        _3 = Guard::val(move _4) -> [return: bb1, unwind: bb6];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        _1 = id(move _3) -> [return: bb2, unwind: bb6];\n    }\n\n    bb2: {\n        drop(_5) -> [return: bb3, unwind: bb7];\n    }\n\n    bb3: {\n        StorageDead(_5);\n        StorageDead(_3);\n        drop(_2) -> [return: bb4, unwind: bb8];\n    }\n\n    bb4: {\n        StorageDead(_2);\n        StorageLive(_6);\n        _6 = copy _1;\n        StorageLive(_7);\n        _7 = take_log() -> [return: bb5, unwind continue];\n    }\n\n    bb5: {\n        _0 = (move _6, move _7);\n        StorageDead(_7);\n        StorageDead(_6);\n        StorageDead(_1);\n        return;\n    }\n\n    bb6 (cleanup): {\n        drop(_5) -> [return: bb7, unwind terminate(cleanup)];\n    }\n\n    bb7 (cleanup): {\n        drop(_2) -> [return: bb8, unwind terminate(cleanup)];\n    }\n\n    bb8 (cleanup): {\n        resume;\n    }\n}\n",
+          "normal_path": {
+            "events": [
+              "StorageDead(_4)",
+              "drop(_5)",
+              "StorageDead(_5)",
+              "StorageDead(_3)",
+              "drop(_2)",
+              "StorageDead(_2)"
+            ],
+            "guard_locals": {
+              "_2": "Guard(1)",
+              "_5": "Guard(2)"
+            },
+            "implied_log": "21"
+          }
+        }
+      },
+      "mir_dump_command": {
+        "argv": [
+          "<rustc>",
+          "--edition",
+          "2024",
+          "-Zdump-mir=ElaborateDrops",
+          "-Zdump-mir-dir=mir_drops_2024",
+          "--emit=mir",
+          "-o",
+          "mir_drops_2024/all.mir",
+          "drop_order.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": ""
+      },
+      "miri_run": {
+        "argv": [
+          "<miri>",
+          "--sysroot",
+          "<miri-sysroot>",
+          "--edition",
+          "2024",
+          "drop_order.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": "TAIL=21 IF_LET=19 MATCH=91\nFN_TAIL=21 IF_LET_THEN=81 MATCH_BLOCK_SCRUTINEE=19\n"
+      },
+      "native_build": {
+        "argv": [
+          "<rustc>",
+          "--edition",
+          "2024",
+          "-o",
+          "drop_order_2024",
+          "drop_order.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": ""
+      },
+      "native_run": {
+        "argv": [
+          "<workdir>/drop_order_2024"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": "TAIL=21 IF_LET=19 MATCH=91\nFN_TAIL=21 IF_LET_THEN=81 MATCH_BLOCK_SCRUTINEE=19\n"
+      }
+    }
+  },
+  "enum_branching": {
+    "final_mir_by_build_config": {
+      "opt0_default": {
+        "final_mir_has_unreachable_block": true,
+        "final_switch": [
+          "switchInt(move _2) -> [0: bb2, 2: bb1, otherwise: bb7];"
+        ],
+        "flags": [
+          "-C",
+          "opt-level=0"
+        ],
+        "pass_dump_files_written": true
+      },
+      "opt0_miropt0": {
+        "final_mir_has_unreachable_block": false,
+        "final_switch": [
+          "switchInt(move _2) -> [0: bb2, otherwise: bb1];"
+        ],
+        "flags": [
+          "-C",
+          "opt-level=0",
+          "-Zmir-opt-level=0"
+        ],
+        "pass_dump_files_written": false
+      },
+      "opt3_default": {
+        "final_mir_has_unreachable_block": true,
+        "final_switch": [
+          "switchInt(move _2) -> [0: bb2, 2: bb1, otherwise: bb4];"
+        ],
+        "flags": [
+          "-C",
+          "opt-level=3"
+        ],
+        "pass_dump_files_written": true
+      },
+      "opt3_miropt0": {
+        "final_mir_has_unreachable_block": false,
+        "final_switch": [
+          "switchInt(move _2) -> [0: bb2, otherwise: bb1];"
+        ],
+        "flags": [
+          "-C",
+          "opt-level=3",
+          "-Zmir-opt-level=0"
+        ],
+        "pass_dump_files_written": false
+      }
+    },
+    "llvm_ir_classify_raw_wildcard": {
+      "opt3_default": {
+        "command": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2024",
+            "-C",
+            "opt-level=3",
+            "-C",
+            "no-prepopulate-passes",
+            "--emit=llvm-ir",
+            "-o",
+            "enum_branching_opt3_default.ll",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": ""
+        },
+        "function_ir": "define internal noundef i32 @_RNvCs7MvYeWcC5kH_14enum_branching21classify_raw_wildcard(ptr noundef %p) unnamed_addr #1 {\nstart:\n  %_0 = alloca [4 x i8], align 4\n  %_2 = load i8, ptr %p, align 4, !range !7, !noundef !6\n  %0 = getelementptr inbounds i8, ptr %p, i64 4\n  %1 = load i32, ptr %0, align 4\n  switch i8 %_2, label %bb4 [\n    i8 0, label %bb2\n    i8 2, label %bb1\n  ]\n\nbb4:                                              ; preds = %start\n  unreachable\n\nbb2:                                              ; preds = %start\n  %2 = getelementptr inbounds i8, ptr %p, i64 4\n  %v = load i32, ptr %2, align 4, !noundef !6\n  %3 = add i32 %v, 1\n  store i32 %3, ptr %_0, align 4\n  br label %bb3\n\nbb1:                                              ; preds = %start\n  store i32 77, ptr %_0, align 4\n  br label %bb3\n\nbb3:                                              ; preds = %bb1, %bb2\n  %4 = load i32, ptr %_0, align 4, !noundef !6\n  ret i32 %4\n}",
+        "switch_default_is_unreachable": true,
+        "tag_load_range_metadata": "!{i8 0, i8 3}"
+      },
+      "opt3_miropt0": {
+        "command": {
+          "argv": [
+            "<rustc>",
+            "--edition",
+            "2024",
+            "-C",
+            "opt-level=3",
+            "-Zmir-opt-level=0",
+            "-C",
+            "no-prepopulate-passes",
+            "--emit=llvm-ir",
+            "-o",
+            "enum_branching_opt3_miropt0.ll",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": ""
+        },
+        "function_ir": "define internal noundef i32 @_RNvCs7MvYeWcC5kH_14enum_branching21classify_raw_wildcard(ptr noundef %p) unnamed_addr #2 {\nstart:\n  %_0 = alloca [4 x i8], align 4\n  %_2 = load i8, ptr %p, align 4, !range !7, !noundef !6\n  %0 = getelementptr inbounds i8, ptr %p, i64 4\n  %1 = load i32, ptr %0, align 4\n  %2 = icmp eq i8 %_2, 0\n  br i1 %2, label %bb2, label %bb1\n\nbb2:                                              ; preds = %start\n  %3 = getelementptr inbounds i8, ptr %p, i64 4\n  %v = load i32, ptr %3, align 4, !noundef !6\n  %4 = add i32 %v, 1\n  store i32 %4, ptr %_0, align 4\n  br label %bb3\n\nbb1:                                              ; preds = %start\n  store i32 77, ptr %_0, align 4\n  br label %bb3\n\nbb3:                                              ; preds = %bb1, %bb2\n  %5 = load i32, ptr %_0, align 4, !noundef !6\n  ret i32 %5\n}",
+        "switch_default_is_unreachable": null,
+        "tag_load_range_metadata": "!{i8 0, i8 3}"
+      }
+    },
+    "miri": {
+      "mir_opt_level_0": {
+        "tag1_place": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2024",
+            "-Zmir-opt-level=0",
+            "--cfg",
+            "tag1_place",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [
+            "error: Undefined Behavior: read discriminant of an uninhabited enum variant",
+            "error: aborting due to 1 previous error"
+          ],
+          "rc": 1,
+          "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n",
+          "ub_lines": [
+            "error: Undefined Behavior: read discriminant of an uninhabited enum variant"
+          ],
+          "ub_span_lines": [
+            "   |               ^^ Undefined Behavior occurred here"
+          ]
+        },
+        "tag1_value": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2024",
+            "-Zmir-opt-level=0",
+            "--cfg",
+            "tag1_value",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [
+            "error: Undefined Behavior: constructing invalid value of type Tri: at .<enum-tag>, encountered an uninhabited enum variant",
+            "error: aborting due to 1 previous error"
+          ],
+          "rc": 1,
+          "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n",
+          "ub_lines": [
+            "error: Undefined Behavior: constructing invalid value of type Tri: at .<enum-tag>, encountered an uninhabited enum variant"
+          ],
+          "ub_span_lines": [
+            "   |                    ^^ Undefined Behavior occurred here"
+          ]
+        },
+        "tag3_place": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2024",
+            "-Zmir-opt-level=0",
+            "--cfg",
+            "tag3_place",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [
+            "error: Undefined Behavior: enum value has invalid tag: 0x03",
+            "error: aborting due to 1 previous error"
+          ],
+          "rc": 1,
+          "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n",
+          "ub_lines": [
+            "error: Undefined Behavior: enum value has invalid tag: 0x03"
+          ],
+          "ub_span_lines": [
+            "   |               ^^ Undefined Behavior occurred here"
+          ]
+        },
+        "valid_tags": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2024",
+            "-Zmir-opt-level=0",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n"
+        },
+        "warns_mir_optimizations_explicitly_enabled": false
+      },
+      "mir_opt_level_2": {
+        "tag1_place": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2024",
+            "-Zmir-opt-level=2",
+            "--cfg",
+            "tag1_place",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [
+            "error: Undefined Behavior: read discriminant of an uninhabited enum variant",
+            "error: aborting due to 1 previous error; 1 warning emitted"
+          ],
+          "rc": 1,
+          "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n",
+          "ub_lines": [
+            "error: Undefined Behavior: read discriminant of an uninhabited enum variant"
+          ],
+          "ub_span_lines": [
+            "   |               ^^ Undefined Behavior occurred here"
+          ]
+        },
+        "tag1_value": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2024",
+            "-Zmir-opt-level=2",
+            "--cfg",
+            "tag1_value",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [
+            "error: Undefined Behavior: constructing invalid value of type Tri: at .<enum-tag>, encountered an uninhabited enum variant",
+            "error: aborting due to 1 previous error; 1 warning emitted"
+          ],
+          "rc": 1,
+          "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n",
+          "ub_lines": [
+            "error: Undefined Behavior: constructing invalid value of type Tri: at .<enum-tag>, encountered an uninhabited enum variant"
+          ],
+          "ub_span_lines": [
+            "   |                    ^^ Undefined Behavior occurred here"
+          ]
+        },
+        "tag3_place": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2024",
+            "-Zmir-opt-level=2",
+            "--cfg",
+            "tag3_place",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [
+            "error: Undefined Behavior: enum value has invalid tag: 0x03",
+            "error: aborting due to 1 previous error; 1 warning emitted"
+          ],
+          "rc": 1,
+          "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n",
+          "ub_lines": [
+            "error: Undefined Behavior: enum value has invalid tag: 0x03"
+          ],
+          "ub_span_lines": [
+            "   |               ^^ Undefined Behavior occurred here"
+          ]
+        },
+        "valid_tags": {
+          "argv": [
+            "<miri>",
+            "--sysroot",
+            "<miri-sysroot>",
+            "--edition",
+            "2024",
+            "-Zmir-opt-level=2",
+            "enum_branching.rs"
+          ],
+          "error_codes": [],
+          "error_lines": [],
+          "rc": 0,
+          "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n"
+        },
+        "warns_mir_optimizations_explicitly_enabled": true
+      }
+    },
+    "native_runs": {
+      "opt0_default": {
+        "tag1_place": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt0_default_tag1_place"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG1_PLACE=77\n"
+          }
+        },
+        "tag1_value": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt0_default_tag1_value"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG1_VALUE=77\n"
+          }
+        },
+        "tag3_place": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt0_default_tag3_place"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG3_PLACE=77\n"
+          }
+        },
+        "valid_tags": {
+          "build_rc": 0,
+          "executes_undefined_behavior": false,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt0_default_valid"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n"
+          }
+        }
+      },
+      "opt0_miropt0": {
+        "tag1_place": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt0_miropt0_tag1_place"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG1_PLACE=77\n"
+          }
+        },
+        "tag1_value": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt0_miropt0_tag1_value"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG1_VALUE=77\n"
+          }
+        },
+        "tag3_place": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt0_miropt0_tag3_place"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG3_PLACE=77\n"
+          }
+        },
+        "valid_tags": {
+          "build_rc": 0,
+          "executes_undefined_behavior": false,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt0_miropt0_valid"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n"
+          }
+        }
+      },
+      "opt3_default": {
+        "tag1_place": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt3_default_tag1_place"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG1_PLACE=77\n"
+          }
+        },
+        "tag1_value": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt3_default_tag1_value"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG1_VALUE=77\n"
+          }
+        },
+        "tag3_place": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt3_default_tag3_place"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG3_PLACE=77\n"
+          }
+        },
+        "valid_tags": {
+          "build_rc": 0,
+          "executes_undefined_behavior": false,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt3_default_valid"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n"
+          }
+        }
+      },
+      "opt3_miropt0": {
+        "tag1_place": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt3_miropt0_tag1_place"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG1_PLACE=77\n"
+          }
+        },
+        "tag1_value": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt3_miropt0_tag1_value"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG1_VALUE=77\n"
+          }
+        },
+        "tag3_place": {
+          "build_rc": 0,
+          "executes_undefined_behavior": true,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt3_miropt0_tag3_place"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\nTAG3_PLACE=77\n"
+          }
+        },
+        "valid_tags": {
+          "build_rc": 0,
+          "executes_undefined_behavior": false,
+          "run": {
+            "argv": [
+              "<workdir>/eb_opt3_miropt0_valid"
+            ],
+            "error_codes": [],
+            "error_lines": [],
+            "rc": 0,
+            "stdout": "VALID A=42 C=77 A_VALUE=42 C_VALUE=77 A_REF=42 C_REF=77\n"
+          }
+        }
+      }
+    },
+    "pass_before_after": {
+      "classify_raw_value": {
+        "discriminant_statements_before": [
+          "_2 = copy (*_1);",
+          "_3 = discriminant(_2);"
+        ],
+        "mir_after": "// MIR for `classify_raw_value` after UnreachableEnumBranching\n\nfn classify_raw_value(_1: *const Tri) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: Tri;\n    let mut _3: u8;\n    let _4: u32;\n    let mut _5: u32;\n    scope 1 {\n        debug v => _4;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy (*_1);\n        _3 = discriminant(_2);\n        switchInt(move _3) -> [0: bb2, 2: bb1, otherwise: bb4];\n    }\n\n    bb1: {\n        _0 = const 77_u32;\n        goto -> bb3;\n    }\n\n    bb2: {\n        StorageLive(_4);\n        _4 = copy ((_2 as A).0: u32);\n        StorageLive(_5);\n        _5 = copy _4;\n        _0 = Add(move _5, const 1_u32);\n        StorageDead(_5);\n        StorageDead(_4);\n        goto -> bb3;\n    }\n\n    bb3: {\n        StorageDead(_2);\n        return;\n    }\n\n    bb4: {\n        unreachable;\n    }\n}\n",
+        "mir_before": "// MIR for `classify_raw_value` before UnreachableEnumBranching\n\nfn classify_raw_value(_1: *const Tri) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: Tri;\n    let mut _3: u8;\n    let _4: u32;\n    let mut _5: u32;\n    scope 1 {\n        debug v => _4;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy (*_1);\n        _3 = discriminant(_2);\n        switchInt(move _3) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const 77_u32;\n        goto -> bb3;\n    }\n\n    bb2: {\n        StorageLive(_4);\n        _4 = copy ((_2 as A).0: u32);\n        StorageLive(_5);\n        _5 = copy _4;\n        _0 = Add(move _5, const 1_u32);\n        StorageDead(_5);\n        StorageDead(_4);\n        goto -> bb3;\n    }\n\n    bb3: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "switch_after": [
+          "switchInt(move _3) -> [0: bb2, 2: bb1, otherwise: bb4];"
+        ],
+        "switch_before": [
+          "switchInt(move _3) -> [0: bb2, otherwise: bb1];"
+        ],
+        "unreachable_blocks_after": 1,
+        "unreachable_blocks_before": 0
+      },
+      "classify_raw_wildcard": {
+        "discriminant_statements_before": [
+          "_2 = discriminant((*_1));"
+        ],
+        "mir_after": "// MIR for `classify_raw_wildcard` after UnreachableEnumBranching\n\nfn classify_raw_wildcard(_1: *const Tri) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: u8;\n    let _3: u32;\n    let mut _4: u32;\n    scope 1 {\n        debug v => _3;\n    }\n\n    bb0: {\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb2, 2: bb1, otherwise: bb4];\n    }\n\n    bb1: {\n        _0 = const 77_u32;\n        goto -> bb3;\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = copy (((*_1) as A).0: u32);\n        StorageLive(_4);\n        _4 = copy _3;\n        _0 = Add(move _4, const 1_u32);\n        StorageDead(_4);\n        StorageDead(_3);\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n\n    bb4: {\n        unreachable;\n    }\n}\n",
+        "mir_before": "// MIR for `classify_raw_wildcard` before UnreachableEnumBranching\n\nfn classify_raw_wildcard(_1: *const Tri) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: u8;\n    let _3: u32;\n    let mut _4: u32;\n    scope 1 {\n        debug v => _3;\n    }\n\n    bb0: {\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const 77_u32;\n        goto -> bb3;\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = copy (((*_1) as A).0: u32);\n        StorageLive(_4);\n        _4 = copy _3;\n        _0 = Add(move _4, const 1_u32);\n        StorageDead(_4);\n        StorageDead(_3);\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}\n",
+        "switch_after": [
+          "switchInt(move _2) -> [0: bb2, 2: bb1, otherwise: bb4];"
+        ],
+        "switch_before": [
+          "switchInt(move _2) -> [0: bb2, otherwise: bb1];"
+        ],
+        "unreachable_blocks_after": 1,
+        "unreachable_blocks_before": 0
+      },
+      "classify_ref": {
+        "discriminant_statements_before": [
+          "_2 = discriminant((*_1));"
+        ],
+        "mir_after": "// MIR for `classify_ref` after UnreachableEnumBranching\n\nfn classify_ref(_1: &Tri) -> u32 {\n    debug t => _1;\n    let mut _0: u32;\n    let mut _2: u8;\n    let _3: u32;\n    let mut _4: u32;\n    let _5: Never;\n    let mut _6: !;\n    scope 1 {\n        debug v => _3;\n    }\n    scope 2 {\n        debug n => const ZeroSized: Never;\n    }\n\n    bb0: {\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb4, 1: bb1, 2: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        _0 = const 77_u32;\n        goto -> bb5;\n    }\n\n    bb3: {\n        nop;\n        nop;\n        nop;\n        unreachable;\n    }\n\n    bb4: {\n        StorageLive(_3);\n        _3 = copy (((*_1) as A).0: u32);\n        StorageLive(_4);\n        _4 = copy _3;\n        _0 = Add(move _4, const 1_u32);\n        StorageDead(_4);\n        StorageDead(_3);\n        goto -> bb5;\n    }\n\n    bb5: {\n        return;\n    }\n}\n",
+        "mir_before": "// MIR for `classify_ref` before UnreachableEnumBranching\n\nfn classify_ref(_1: &Tri) -> u32 {\n    debug t => _1;\n    let mut _0: u32;\n    let mut _2: u8;\n    let _3: u32;\n    let mut _4: u32;\n    let _5: Never;\n    let mut _6: !;\n    scope 1 {\n        debug v => _3;\n    }\n    scope 2 {\n        debug n => const ZeroSized: Never;\n    }\n\n    bb0: {\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb4, 1: bb3, 2: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        _0 = const 77_u32;\n        goto -> bb5;\n    }\n\n    bb3: {\n        nop;\n        nop;\n        nop;\n        unreachable;\n    }\n\n    bb4: {\n        StorageLive(_3);\n        _3 = copy (((*_1) as A).0: u32);\n        StorageLive(_4);\n        _4 = copy _3;\n        _0 = Add(move _4, const 1_u32);\n        StorageDead(_4);\n        StorageDead(_3);\n        goto -> bb5;\n    }\n\n    bb5: {\n        return;\n    }\n}\n",
+        "switch_after": [
+          "switchInt(move _2) -> [0: bb4, 1: bb1, 2: bb2, otherwise: bb1];"
+        ],
+        "switch_before": [
+          "switchInt(move _2) -> [0: bb4, 1: bb3, 2: bb2, otherwise: bb1];"
+        ],
+        "unreachable_blocks_after": 2,
+        "unreachable_blocks_before": 2
+      }
+    },
+    "pass_dump_command": {
+      "argv": [
+        "<rustc>",
+        "--edition",
+        "2024",
+        "-C",
+        "opt-level=3",
+        "-Zdump-mir=UnreachableEnumBranching",
+        "-Zdump-mir-dir=mir_ueb",
+        "--emit=mir",
+        "-o",
+        "mir_ueb/all.mir",
+        "enum_branching.rs"
+      ],
+      "error_codes": [],
+      "error_lines": [],
+      "rc": 0,
+      "stdout": ""
+    }
+  },
+  "mutex_guard": {
+    "edition_2021": {
+      "miri_run": {
+        "argv": [
+          "<miri>",
+          "--sysroot",
+          "<miri-sysroot>",
+          "--edition",
+          "2021",
+          "if_let_mutex_guard.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": "IF_LET_ELSE_LOCK=held MATCH_ARM_LOCK=held\n"
+      },
+      "native_build": {
+        "argv": [
+          "<rustc>",
+          "--edition",
+          "2021",
+          "-o",
+          "mutex_2021",
+          "if_let_mutex_guard.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": ""
+      },
+      "native_run": {
+        "argv": [
+          "<workdir>/mutex_2021"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": "IF_LET_ELSE_LOCK=held MATCH_ARM_LOCK=held\n"
+      }
+    },
+    "edition_2024": {
+      "miri_run": {
+        "argv": [
+          "<miri>",
+          "--sysroot",
+          "<miri-sysroot>",
+          "--edition",
+          "2024",
+          "if_let_mutex_guard.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": "IF_LET_ELSE_LOCK=released MATCH_ARM_LOCK=held\n"
+      },
+      "native_build": {
+        "argv": [
+          "<rustc>",
+          "--edition",
+          "2024",
+          "-o",
+          "mutex_2024",
+          "if_let_mutex_guard.rs"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": ""
+      },
+      "native_run": {
+        "argv": [
+          "<workdir>/mutex_2024"
+        ],
+        "error_codes": [],
+        "error_lines": [],
+        "rc": 0,
+        "stdout": "IF_LET_ELSE_LOCK=released MATCH_ARM_LOCK=held\n"
+      }
+    }
+  },
+  "retained_receipt_comparison": {
+    "comparisons": {
+      "classify_raw_wildcard_after_mir": {
+        "diff": [],
+        "identical": true
+      },
+      "classify_raw_wildcard_before_mir": {
+        "diff": [],
+        "identical": true
+      },
+      "edition_2021_miri_first_line": {
+        "identical": true,
+        "retained": "TAIL=12 IF_LET=91 MATCH=91",
+        "this_run": "TAIL=12 IF_LET=91 MATCH=91"
+      },
+      "edition_2021_native_first_line": {
+        "identical": true,
+        "retained": "TAIL=12 IF_LET=91 MATCH=91",
+        "this_run": "TAIL=12 IF_LET=91 MATCH=91"
+      },
+      "edition_2021_run_if_let_else_mir": {
+        "diff": [],
+        "identical": true
+      },
+      "edition_2021_run_tail_expr_mir": {
+        "diff": [],
+        "identical": true
+      },
+      "edition_2024_miri_first_line": {
+        "identical": true,
+        "retained": "TAIL=21 IF_LET=19 MATCH=91",
+        "this_run": "TAIL=21 IF_LET=19 MATCH=91"
+      },
+      "edition_2024_native_first_line": {
+        "identical": true,
+        "retained": "TAIL=21 IF_LET=19 MATCH=91",
+        "this_run": "TAIL=21 IF_LET=19 MATCH=91"
+      },
+      "edition_2024_run_if_let_else_mir": {
+        "diff": [],
+        "identical": true
+      },
+      "edition_2024_run_tail_expr_mir": {
+        "diff": [],
+        "identical": true
+      }
+    },
+    "retained_rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+  },
+  "schema": "edition-drop-scopes-and-enum-branching-probe/1",
+  "sources": [
+    "block_tail_temp_escapes.rs",
+    "drop_order.rs",
+    "enum_branching.rs",
+    "if_let_mutex_guard.rs",
+    "scrutinee_value_vs_place.rs",
+    "tail_temp_borrows_local.rs"
+  ],
+  "toolchain": {
+    "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "rustc_verbose_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+  }
+}

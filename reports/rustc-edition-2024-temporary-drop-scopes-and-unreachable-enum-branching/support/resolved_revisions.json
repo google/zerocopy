@@ -1,0 +1,49 @@
+{
+  "method": "GitHub REST API GET /repos/<repository>/commits/<queried_ref> through an authenticated gh api client, reading .sha and .commit.committer.date",
+  "resolved_on": "2026-11-21",
+  "revisions": [
+    {
+      "committer_date": "2026-05-31T20:13:59Z",
+      "queried_ref": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "repository": "rust-lang/rust",
+      "resolved_commit": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+    },
+    {
+      "committer_date": "2026-11-19T21:39:21Z",
+      "queried_ref": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "repository": "joshlf/anneal",
+      "resolved_commit": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+    },
+    {
+      "committer_date": "2026-11-11T17:59:24Z",
+      "queried_ref": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "repository": "rust-lang/rust",
+      "resolved_commit": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1"
+    },
+    {
+      "committer_date": "2026-09-24T17:27:27Z",
+      "queried_ref": "v4.34.1",
+      "repository": "leanprover/lean4",
+      "resolved_commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+    },
+    {
+      "committer_date": "2026-11-17T20:49:56Z",
+      "queried_ref": "master",
+      "repository": "rust-lang/reference",
+      "resolved_commit": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+    },
+    {
+      "committer_date": "2026-08-25T19:50:54Z",
+      "queried_ref": "master",
+      "repository": "rust-lang/edition-guide",
+      "resolved_commit": "ab8544aeed7b792984366aa122ac19bd47ad9a2f"
+    },
+    {
+      "committer_date": "2026-11-14T17:21:49Z",
+      "queried_ref": "HEAD",
+      "repository": "rust-lang/rfcs",
+      "resolved_commit": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+    }
+  ],
+  "schema": "resolved-revisions/1"
+}

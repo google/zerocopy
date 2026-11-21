@@ -88634,6 +88634,76 @@
         "verification"
       ]
     },
+    "rustc-edition-2024-temporary-drop-scopes-and-unreachable-enum-branching": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc 1.98.0-nightly: compiler source audited, and the rustc and Miri binaries executed by the probe"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc 1.102.0-nightly: compiler source cross-checked, and toolchain of the retained execution receipt"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Trusted.MirAst and Trusted.MirSemantics"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "Rust Reference: destructors and behavior considered undefined"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 3606: shorter temporary lifetimes in tail expressions"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/edition-guide",
+            "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f"
+          },
+          "name": "Rust Edition Guide: Rust 2024 temporary scope chapters"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain used to kernel-check the mechanization"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-elf64-postlink-relocation-tls-relaxation-and-ehframe-ground-truth": {
       "observed_at": "2026-11-21",
       "subjects": [

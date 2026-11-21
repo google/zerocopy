@@ -1,0 +1,305 @@
+{
+  "all_theorems_axiom_run": {
+    "rc": 0,
+    "theorems_missing_from_report": [],
+    "theorems_reported": 79,
+    "wall_seconds": 4.976
+  },
+  "as_published": {
+    "child_user_cpu_seconds": 4.224,
+    "children_max_rss_kib_high_water": 539108,
+    "error_or_warning_lines": [],
+    "rc": 0,
+    "wall_seconds": 4.455
+  },
+  "axiom_union": [
+    "propext"
+  ],
+  "axioms_by_theorem": {
+    "Scope.beq_refl": [
+      "propext"
+    ],
+    "ScopeData.beq_false_of_isRemainder": [
+      "propext"
+    ],
+    "ScopeData.beq_refl": [
+      "propext"
+    ],
+    "asTemps_split": [
+      "propext"
+    ],
+    "ble_add_two_one": [],
+    "ble_one_one": [],
+    "ble_zero_one": [],
+    "blockTailTempScope_ed2021": [],
+    "blockTailTempScope_ed2024": [],
+    "blockTail_dropTrace_ed2021": [
+      "propext"
+    ],
+    "blockTail_dropTrace_ed2024": [
+      "propext"
+    ],
+    "blockTail_edition_invisible_of_nil": [
+      "propext"
+    ],
+    "blockTail_edition_visible_of_cons": [
+      "propext"
+    ],
+    "ce1_ed2021_tail_temp_borrow_of_local_dangling_vs_ed2024_safe": [
+      "propext"
+    ],
+    "ce2_ed2021_if_let_mutex_guard_deadlocks_in_else_vs_ed2024_released": [
+      "propext"
+    ],
+    "ce3_raw_tag_discriminant_semantics_makes_unreachable_enum_branching_unsound": [
+      "propext"
+    ],
+    "compileBlockTail_ed2021": [
+      "propext"
+    ],
+    "compileBlockTail_ed2024": [
+      "propext"
+    ],
+    "compileIfLetElse_else_ed2021": [
+      "propext"
+    ],
+    "compileIfLetElse_else_ed2024": [
+      "propext"
+    ],
+    "compileIfLetElse_then": [
+      "propext"
+    ],
+    "compileMatch_block_ed2021": [
+      "propext"
+    ],
+    "compileMatch_block_ed2024": [
+      "propext"
+    ],
+    "compileMatch_plain": [
+      "propext"
+    ],
+    "declaredTag_eq_strict_of_all_inhabited": [
+      "propext"
+    ],
+    "defaultTemporaryScope_remainderChain": [],
+    "dropTrace_append": [
+      "propext"
+    ],
+    "dropTrace_dropEvents": [
+      "propext"
+    ],
+    "dropTrace_initEvents": [
+      "propext"
+    ],
+    "dropTrace_map_drop": [
+      "propext"
+    ],
+    "dropTrace_reversal_and_match_invariance": [
+      "propext"
+    ],
+    "findVariant_discr": [
+      "propext"
+    ],
+    "ifLetTempScope_ed2021": [],
+    "ifLetTempScope_ed2024": [],
+    "ifLet_then_path_invariant": [
+      "propext"
+    ],
+    "inhabited_only_rule_is_necessary": [
+      "propext"
+    ],
+    "lowerBlockStmts_frame": [
+      "propext"
+    ],
+    "matchTempScope_block_ed2021": [],
+    "matchTempScope_block_ed2024": [],
+    "matchTempScope_plain": [],
+    "match_arm_relock_deadlocks_in_both_editions": [
+      "propext"
+    ],
+    "match_block_scrutinee_is_edition_sensitive": [
+      "propext"
+    ],
+    "memb_allowedVariants_of_find": [
+      "propext"
+    ],
+    "memb_eraseFirst_of_ne": [
+      "propext"
+    ],
+    "natBeq_false_of_ne": [],
+    "noneIs_append": [
+      "propext"
+    ],
+    "noneIs_of_allRemainder": [
+      "propext"
+    ],
+    "probe_if_let_else_ed2021": [
+      "propext"
+    ],
+    "probe_if_let_else_ed2024": [
+      "propext"
+    ],
+    "probe_if_let_then": [
+      "propext"
+    ],
+    "probe_match": [
+      "propext"
+    ],
+    "probe_match_block_scrutinee_ed2021": [
+      "propext"
+    ],
+    "probe_match_block_scrutinee_ed2024": [
+      "propext"
+    ],
+    "probe_tail_ed2021": [
+      "propext"
+    ],
+    "probe_tail_ed2024": [
+      "propext"
+    ],
+    "pruneCases_keeps_unclaimed": [
+      "propext"
+    ],
+    "pruneCases_namedCases": [
+      "propext"
+    ],
+    "pruneCases_target": [
+      "propext"
+    ],
+    "scheduleIn_split": [
+      "propext"
+    ],
+    "strict_some_eq_tag": [
+      "propext"
+    ],
+    "strict_some_mem_allowed": [
+      "propext"
+    ],
+    "targetForValue_append": [
+      "propext"
+    ],
+    "targetForValue_namedCases": [
+      "propext"
+    ],
+    "targetForValue_namedCases_of_not_memb": [
+      "propext"
+    ],
+    "targetForValue_of_hasCase": [
+      "propext"
+    ],
+    "targetForValue_of_not_hasCase": [
+      "propext"
+    ],
+    "tri_exhaustive_rewrite_matches_observed_mir": [
+      "propext"
+    ],
+    "tri_rewrite_matches_observed_mir": [
+      "propext"
+    ],
+    "tri_tag1_is_ub_under_strict": [],
+    "tri_tag3_is_ub_under_strict_and_declaredTag": [],
+    "tri_valid_tags_unchanged": [
+      "propext"
+    ],
+    "unreachableEnumBranching_preserves_declaredTag_of_all_inhabited": [
+      "propext"
+    ],
+    "unreachableEnumBranching_preserves_of_allowed_only": [
+      "propext"
+    ],
+    "unreachableEnumBranching_preserves_strict": [
+      "propext"
+    ],
+    "unreachableEnumBranching_refines_strict": [
+      "propext"
+    ],
+    "unreachableEnumBranching_sound_iff_allowed_only": [
+      "propext"
+    ],
+    "unreachableEnumBranching_target": [
+      "propext"
+    ],
+    "unreachableEnumBranching_unsound_declaredTag": [
+      "propext"
+    ],
+    "unreachableEnumBranching_unsound_rawTag": [
+      "propext"
+    ]
+  },
+  "declarations": {
+    "abbrev": 16,
+    "def": 57,
+    "inductive": 6,
+    "noncomputable_def": 57,
+    "structure": 5,
+    "theorem": 79
+  },
+  "disallowed_axioms": [],
+  "file": "EditionDropScopesAndEnumBranching.lean",
+  "file_bytes": 77156,
+  "file_lines": 1676,
+  "file_sha256": "c0c470a0b09b34a803628b70677c9604fe7b6befa8bb7e979fd52151c38de33c",
+  "forbidden_construct_counts_outside_comments": {
+    "Classical": 0,
+    "admit": 0,
+    "axiom_declaration": 0,
+    "bv_decide": 0,
+    "decide": 0,
+    "extern_attribute": 0,
+    "implemented_by_attribute": 0,
+    "native_decide": 0,
+    "omega": 0,
+    "opaque": 0,
+    "partial": 0,
+    "sorry": 0,
+    "unsafe": 0,
+    "unsafe_rec": 0
+  },
+  "imports": [],
+  "kernel_constant_census": {
+    "axiom_declarations": 0,
+    "axioms_used": [
+      "propext"
+    ],
+    "build_rc": 0,
+    "census_rc": 0,
+    "constants": 669,
+    "constructors": 24,
+    "definitions": 353,
+    "inductives": 11,
+    "opaque": 0,
+    "partial": 0,
+    "recursors": 11,
+    "theorems": 270,
+    "unsafe": 0,
+    "unsafe_rec": 0,
+    "well_founded_fix_users": 0
+  },
+  "launched_through_wrapper": true,
+  "lean_binary": "lean",
+  "lean_flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "ok": true,
+  "schema": "lean-verification-receipt/1",
+  "theorems_without_any_axiom": [
+    "ble_add_two_one",
+    "ble_one_one",
+    "ble_zero_one",
+    "blockTailTempScope_ed2021",
+    "blockTailTempScope_ed2024",
+    "defaultTemporaryScope_remainderChain",
+    "ifLetTempScope_ed2021",
+    "ifLetTempScope_ed2024",
+    "matchTempScope_block_ed2021",
+    "matchTempScope_block_ed2024",
+    "matchTempScope_plain",
+    "natBeq_false_of_ne",
+    "tri_tag1_is_ub_under_strict",
+    "tri_tag3_is_ub_under_strict_and_declaredTag"
+  ]
+}
