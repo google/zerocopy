@@ -1,0 +1,5 @@
+name = "toy_panic_safety"
+defaultTargets = ["PanicSafety"]
+
+[[lean_lib]]
+name = "PanicSafety"

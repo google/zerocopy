@@ -65691,6 +65691,102 @@
         "security/prefix-cache-cross-tenant-isolation"
       ]
     },
+    "panic-safety-unwinding-through-broken-invariants-leak-amplification-and-safe-forget": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4d91de4e48198da2e33413efdcd9cd2cc0c46688",
+            "version": "1.85.0"
+          },
+          "name": "Rust 1.85.0 (standard library source and documentation)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/nomicon",
+            "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+          },
+          "name": "The Rustonomicon"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "Rust RFCs 1066, 1236, 1513, 2349 and 3151"
+        },
+        {
+          "identity": {
+            "path": "spec/lang/step/terminators.md",
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "path": "community/exception_safety.html",
+            "repository": "boostorg/website",
+            "revision": "5946dc4e147a8a7738ac5f2be7c84c4c4762112e"
+          },
+          "name": "Exception-Safety in Generic Components (Boost-hosted version)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3477132.3483570"
+          },
+          "name": "Rudra: Finding Memory Safety Bugs in Rust at the Ecosystem Scale"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422"
+          },
+          "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs"
+        },
+        {
+          "identity": {
+            "arxiv": "2206.07185",
+            "doi": "10.1145/3547647"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/panic-safety",
+        "pl/exception-safety",
+        "pl/ownership",
+        "rust/panic-safety",
+        "rust/unwinding",
+        "rust/drop",
+        "rust/leaking",
+        "rust/unsafe-code",
+        "security/memory-safety"
+      ]
+    },
     "parallel-move-sequentialization-and-sub-register-lane-framing": {
       "observed_at": "2026-11-20",
       "subjects": [

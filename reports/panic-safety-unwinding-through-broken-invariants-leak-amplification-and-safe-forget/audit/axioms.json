@@ -1,0 +1,1921 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.PanicSafety.AbsOut": [],
+    "Toy.PanicSafety.AbsOut.casesOn": [],
+    "Toy.PanicSafety.AbsOut.ctorIdx": [],
+    "Toy.PanicSafety.AbsOut.ending": [],
+    "Toy.PanicSafety.AbsOut.kept": [],
+    "Toy.PanicSafety.AbsOut.mk": [],
+    "Toy.PanicSafety.AbsOut.mk.inj": [],
+    "Toy.PanicSafety.AbsOut.mk.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.AbsOut.mk.noConfusion": [],
+    "Toy.PanicSafety.AbsOut.mk.sizeOf_spec": [],
+    "Toy.PanicSafety.AbsOut.noConfusion": [],
+    "Toy.PanicSafety.AbsOut.noConfusionType": [],
+    "Toy.PanicSafety.AbsOut.rec": [],
+    "Toy.PanicSafety.AbsOut.recOn": [],
+    "Toy.PanicSafety.AbsOut.rejected": [],
+    "Toy.PanicSafety.AbsOut.rest": [],
+    "Toy.PanicSafety.Beh": [],
+    "Toy.PanicSafety.Beh.casesOn": [],
+    "Toy.PanicSafety.Beh.ctorElim": [],
+    "Toy.PanicSafety.Beh.ctorElimType": [],
+    "Toy.PanicSafety.Beh.ctorIdx": [],
+    "Toy.PanicSafety.Beh.noConfusion": [],
+    "Toy.PanicSafety.Beh.noConfusionType": [],
+    "Toy.PanicSafety.Beh.panic": [],
+    "Toy.PanicSafety.Beh.panic.elim": [],
+    "Toy.PanicSafety.Beh.panic.sizeOf_spec": [],
+    "Toy.PanicSafety.Beh.rec": [],
+    "Toy.PanicSafety.Beh.recOn": [],
+    "Toy.PanicSafety.Beh.ret": [],
+    "Toy.PanicSafety.Beh.ret.elim": [],
+    "Toy.PanicSafety.Beh.ret.inj": [],
+    "Toy.PanicSafety.Beh.ret.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Beh.ret.noConfusion": [],
+    "Toy.PanicSafety.Beh.ret.sizeOf_spec": [],
+    "Toy.PanicSafety.BoundedCallSitesDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.BoundedPanicSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.CInstr": [],
+    "Toy.PanicSafety.CInstr.casesOn": [],
+    "Toy.PanicSafety.CInstr.ctorElim": [],
+    "Toy.PanicSafety.CInstr.ctorElimType": [],
+    "Toy.PanicSafety.CInstr.ctorIdx": [],
+    "Toy.PanicSafety.CInstr.drain": [],
+    "Toy.PanicSafety.CInstr.drain.elim": [],
+    "Toy.PanicSafety.CInstr.drain.sizeOf_spec": [],
+    "Toy.PanicSafety.CInstr.dropGuard": [],
+    "Toy.PanicSafety.CInstr.dropGuard.elim": [],
+    "Toy.PanicSafety.CInstr.dropGuard.sizeOf_spec": [],
+    "Toy.PanicSafety.CInstr.dropVal": [],
+    "Toy.PanicSafety.CInstr.dropVal.elim": [],
+    "Toy.PanicSafety.CInstr.dropVal.sizeOf_spec": [],
+    "Toy.PanicSafety.CInstr.forgetGuard": [],
+    "Toy.PanicSafety.CInstr.forgetGuard.elim": [],
+    "Toy.PanicSafety.CInstr.forgetGuard.sizeOf_spec": [],
+    "Toy.PanicSafety.CInstr.forgetVal": [],
+    "Toy.PanicSafety.CInstr.forgetVal.elim": [],
+    "Toy.PanicSafety.CInstr.forgetVal.sizeOf_spec": [],
+    "Toy.PanicSafety.CInstr.next": [],
+    "Toy.PanicSafety.CInstr.next.elim": [],
+    "Toy.PanicSafety.CInstr.next.sizeOf_spec": [],
+    "Toy.PanicSafety.CInstr.noConfusion": [],
+    "Toy.PanicSafety.CInstr.noConfusionType": [],
+    "Toy.PanicSafety.CInstr.ofNat": [],
+    "Toy.PanicSafety.CInstr.ofNat_ctorIdx": [],
+    "Toy.PanicSafety.CInstr.rec": [],
+    "Toy.PanicSafety.CInstr.recOn": [],
+    "Toy.PanicSafety.COut": [],
+    "Toy.PanicSafety.COut.casesOn": [],
+    "Toy.PanicSafety.COut.ctorElim": [],
+    "Toy.PanicSafety.COut.ctorElimType": [],
+    "Toy.PanicSafety.COut.ctorIdx": [],
+    "Toy.PanicSafety.COut.noConfusion": [],
+    "Toy.PanicSafety.COut.noConfusionType": [],
+    "Toy.PanicSafety.COut.ok": [],
+    "Toy.PanicSafety.COut.ok.elim": [],
+    "Toy.PanicSafety.COut.ok.inj": [],
+    "Toy.PanicSafety.COut.ok.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.COut.ok.noConfusion": [],
+    "Toy.PanicSafety.COut.ok.sizeOf_spec": [],
+    "Toy.PanicSafety.COut.rec": [],
+    "Toy.PanicSafety.COut.recOn": [],
+    "Toy.PanicSafety.COut.rejected": [],
+    "Toy.PanicSafety.COut.rejected.elim": [],
+    "Toy.PanicSafety.COut.rejected.sizeOf_spec": [],
+    "Toy.PanicSafety.COut.ub": [],
+    "Toy.PanicSafety.COut.ub.elim": [],
+    "Toy.PanicSafety.COut.ub.sizeOf_spec": [],
+    "Toy.PanicSafety.CState": [],
+    "Toy.PanicSafety.CState.casesOn": [],
+    "Toy.PanicSafety.CState.ctorIdx": [],
+    "Toy.PanicSafety.CState.guard": [],
+    "Toy.PanicSafety.CState.mem": [],
+    "Toy.PanicSafety.CState.mk": [],
+    "Toy.PanicSafety.CState.mk.inj": [],
+    "Toy.PanicSafety.CState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.CState.mk.noConfusion": [],
+    "Toy.PanicSafety.CState.mk.sizeOf_spec": [],
+    "Toy.PanicSafety.CState.noConfusion": [],
+    "Toy.PanicSafety.CState.noConfusionType": [],
+    "Toy.PanicSafety.CState.rec": [],
+    "Toy.PanicSafety.CState.recOn": [],
+    "Toy.PanicSafety.CState.vals": [],
+    "Toy.PanicSafety.CallSitesDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.Callback": [],
+    "Toy.PanicSafety.CallbackSitesDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.Cell": [],
+    "Toy.PanicSafety.CountersAgree": [],
+    "Toy.PanicSafety.DRes": [],
+    "Toy.PanicSafety.DRes.abort": [],
+    "Toy.PanicSafety.DRes.abort.elim": [],
+    "Toy.PanicSafety.DRes.abort.sizeOf_spec": [],
+    "Toy.PanicSafety.DRes.casesOn": [],
+    "Toy.PanicSafety.DRes.ctorElim": [],
+    "Toy.PanicSafety.DRes.ctorElimType": [],
+    "Toy.PanicSafety.DRes.ctorIdx": [],
+    "Toy.PanicSafety.DRes.noConfusion": [],
+    "Toy.PanicSafety.DRes.noConfusionType": [],
+    "Toy.PanicSafety.DRes.ok": [],
+    "Toy.PanicSafety.DRes.ok.elim": [],
+    "Toy.PanicSafety.DRes.ok.inj": [],
+    "Toy.PanicSafety.DRes.ok.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.DRes.ok.noConfusion": [],
+    "Toy.PanicSafety.DRes.ok.sizeOf_spec": [],
+    "Toy.PanicSafety.DRes.rec": [],
+    "Toy.PanicSafety.DRes.recOn": [],
+    "Toy.PanicSafety.DRes.ub": [],
+    "Toy.PanicSafety.DRes.ub.elim": [],
+    "Toy.PanicSafety.DRes.ub.sizeOf_spec": [],
+    "Toy.PanicSafety.DrainApi": [],
+    "Toy.PanicSafety.DrainApi.casesOn": [],
+    "Toy.PanicSafety.DrainApi.ctorElim": [],
+    "Toy.PanicSafety.DrainApi.ctorElimType": [],
+    "Toy.PanicSafety.DrainApi.ctorIdx": [],
+    "Toy.PanicSafety.DrainApi.destructorReliant": [],
+    "Toy.PanicSafety.DrainApi.destructorReliant.elim": [],
+    "Toy.PanicSafety.DrainApi.destructorReliant.sizeOf_spec": [],
+    "Toy.PanicSafety.DrainApi.leakAmplified": [],
+    "Toy.PanicSafety.DrainApi.leakAmplified.elim": [],
+    "Toy.PanicSafety.DrainApi.leakAmplified.sizeOf_spec": [],
+    "Toy.PanicSafety.DrainApi.noConfusion": [],
+    "Toy.PanicSafety.DrainApi.noConfusionType": [],
+    "Toy.PanicSafety.DrainApi.ofNat": [],
+    "Toy.PanicSafety.DrainApi.ofNat_ctorIdx": [],
+    "Toy.PanicSafety.DrainApi.rec": [],
+    "Toy.PanicSafety.DrainApi.recOn": [],
+    "Toy.PanicSafety.DrainClientInv": [],
+    "Toy.PanicSafety.DrainClientInv.eq_1": [],
+    "Toy.PanicSafety.DropSafe": [],
+    "Toy.PanicSafety.DropSafe.eq_1": [],
+    "Toy.PanicSafety.DtorTable": [],
+    "Toy.PanicSafety.Ending": [],
+    "Toy.PanicSafety.Ending.callbackPanic": [],
+    "Toy.PanicSafety.Ending.callbackPanic.elim": [],
+    "Toy.PanicSafety.Ending.callbackPanic.sizeOf_spec": [],
+    "Toy.PanicSafety.Ending.casesOn": [],
+    "Toy.PanicSafety.Ending.ctorElim": [],
+    "Toy.PanicSafety.Ending.ctorElimType": [],
+    "Toy.PanicSafety.Ending.ctorIdx": [],
+    "Toy.PanicSafety.Ending.dtorPanic": [],
+    "Toy.PanicSafety.Ending.dtorPanic.elim": [],
+    "Toy.PanicSafety.Ending.dtorPanic.sizeOf_spec": [],
+    "Toy.PanicSafety.Ending.finished": [],
+    "Toy.PanicSafety.Ending.finished.elim": [],
+    "Toy.PanicSafety.Ending.finished.sizeOf_spec": [],
+    "Toy.PanicSafety.Ending.noConfusion": [],
+    "Toy.PanicSafety.Ending.noConfusionType": [],
+    "Toy.PanicSafety.Ending.ofNat": [],
+    "Toy.PanicSafety.Ending.ofNat_ctorIdx": [],
+    "Toy.PanicSafety.Ending.rec": [],
+    "Toy.PanicSafety.Ending.recOn": [],
+    "Toy.PanicSafety.Entry": [],
+    "Toy.PanicSafety.Entry.casesOn": [],
+    "Toy.PanicSafety.Entry.ctorElim": [],
+    "Toy.PanicSafety.Entry.ctorElimType": [],
+    "Toy.PanicSafety.Entry.ctorIdx": [],
+    "Toy.PanicSafety.Entry.guard": [],
+    "Toy.PanicSafety.Entry.guard.elim": [],
+    "Toy.PanicSafety.Entry.guard.inj": [],
+    "Toy.PanicSafety.Entry.guard.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Entry.guard.noConfusion": [],
+    "Toy.PanicSafety.Entry.guard.sizeOf_spec": [],
+    "Toy.PanicSafety.Entry.noConfusion": [],
+    "Toy.PanicSafety.Entry.noConfusionType": [],
+    "Toy.PanicSafety.Entry.rec": [],
+    "Toy.PanicSafety.Entry.recOn": [],
+    "Toy.PanicSafety.Entry.value": [],
+    "Toy.PanicSafety.Entry.value.elim": [],
+    "Toy.PanicSafety.Entry.value.inj": [],
+    "Toy.PanicSafety.Entry.value.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Entry.value.noConfusion": [],
+    "Toy.PanicSafety.Entry.value.sizeOf_spec": [],
+    "Toy.PanicSafety.Final": [],
+    "Toy.PanicSafety.Final.aborted": [],
+    "Toy.PanicSafety.Final.aborted.elim": [],
+    "Toy.PanicSafety.Final.aborted.sizeOf_spec": [],
+    "Toy.PanicSafety.Final.casesOn": [],
+    "Toy.PanicSafety.Final.ctorElim": [],
+    "Toy.PanicSafety.Final.ctorElimType": [],
+    "Toy.PanicSafety.Final.ctorIdx": [],
+    "Toy.PanicSafety.Final.noConfusion": [],
+    "Toy.PanicSafety.Final.noConfusionType": [],
+    "Toy.PanicSafety.Final.panicked": [],
+    "Toy.PanicSafety.Final.panicked.elim": [],
+    "Toy.PanicSafety.Final.panicked.inj": [],
+    "Toy.PanicSafety.Final.panicked.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Final.panicked.noConfusion": [],
+    "Toy.PanicSafety.Final.panicked.sizeOf_spec": [],
+    "Toy.PanicSafety.Final.rec": [],
+    "Toy.PanicSafety.Final.recOn": [],
+    "Toy.PanicSafety.Final.returned": [],
+    "Toy.PanicSafety.Final.returned.elim": [],
+    "Toy.PanicSafety.Final.returned.inj": [],
+    "Toy.PanicSafety.Final.returned.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Final.returned.noConfusion": [],
+    "Toy.PanicSafety.Final.returned.sizeOf_spec": [],
+    "Toy.PanicSafety.Final.ub": [],
+    "Toy.PanicSafety.Final.ub.elim": [],
+    "Toy.PanicSafety.Final.ub.sizeOf_spec": [],
+    "Toy.PanicSafety.Guard": [],
+    "Toy.PanicSafety.Guard.casesOn": [],
+    "Toy.PanicSafety.Guard.ctorIdx": [],
+    "Toy.PanicSafety.Guard.fix": [],
+    "Toy.PanicSafety.Guard.mk": [],
+    "Toy.PanicSafety.Guard.mk.inj": [],
+    "Toy.PanicSafety.Guard.mk.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Guard.mk.noConfusion": [],
+    "Toy.PanicSafety.Guard.mk.sizeOf_spec": [],
+    "Toy.PanicSafety.Guard.noConfusion": [],
+    "Toy.PanicSafety.Guard.noConfusionType": [],
+    "Toy.PanicSafety.Guard.rec": [],
+    "Toy.PanicSafety.Guard.recOn": [],
+    "Toy.PanicSafety.GuardUnwindExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.GuardUnwoundLeakFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.Inv": [],
+    "Toy.PanicSafety.Inv.eq_1": [],
+    "Toy.PanicSafety.LeakFree": [],
+    "Toy.PanicSafety.LeakUnwindExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.LeakUnwindExact.match_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Mem": [],
+    "Toy.PanicSafety.Mem.buf": [],
+    "Toy.PanicSafety.Mem.casesOn": [],
+    "Toy.PanicSafety.Mem.ctorIdx": [],
+    "Toy.PanicSafety.Mem.ctrA": [],
+    "Toy.PanicSafety.Mem.ctrB": [],
+    "Toy.PanicSafety.Mem.dropped": [],
+    "Toy.PanicSafety.Mem.elems": [],
+    "Toy.PanicSafety.Mem.elems.eq_1": [],
+    "Toy.PanicSafety.Mem.len": [],
+    "Toy.PanicSafety.Mem.mk": [],
+    "Toy.PanicSafety.Mem.mk.inj": [],
+    "Toy.PanicSafety.Mem.mk.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Mem.mk.noConfusion": [],
+    "Toy.PanicSafety.Mem.mk.sizeOf_spec": [],
+    "Toy.PanicSafety.Mem.noConfusion": [],
+    "Toy.PanicSafety.Mem.noConfusionType": [],
+    "Toy.PanicSafety.Mem.rec": [],
+    "Toy.PanicSafety.Mem.recOn": [],
+    "Toy.PanicSafety.Mode": [],
+    "Toy.PanicSafety.Mode.abort": [],
+    "Toy.PanicSafety.Mode.abort.elim": [],
+    "Toy.PanicSafety.Mode.abort.sizeOf_spec": [],
+    "Toy.PanicSafety.Mode.casesOn": [],
+    "Toy.PanicSafety.Mode.ctorElim": [],
+    "Toy.PanicSafety.Mode.ctorElimType": [],
+    "Toy.PanicSafety.Mode.ctorIdx": [],
+    "Toy.PanicSafety.Mode.noConfusion": [],
+    "Toy.PanicSafety.Mode.noConfusionType": [],
+    "Toy.PanicSafety.Mode.ofNat": [],
+    "Toy.PanicSafety.Mode.ofNat_ctorIdx": [],
+    "Toy.PanicSafety.Mode.rec": [],
+    "Toy.PanicSafety.Mode.recOn": [],
+    "Toy.PanicSafety.Mode.unwind": [],
+    "Toy.PanicSafety.Mode.unwind.elim": [],
+    "Toy.PanicSafety.Mode.unwind.sizeOf_spec": [],
+    "Toy.PanicSafety.NoPanickingDtors": [],
+    "Toy.PanicSafety.OwnsUniquely": [],
+    "Toy.PanicSafety.OwnsUniquely.eq_1": [],
+    "Toy.PanicSafety.PanicSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.PanicSafeAssumingNoDtorPanic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog": [],
+    "Toy.PanicSafety.Prog.below": [],
+    "Toy.PanicSafety.Prog.brecOn": [],
+    "Toy.PanicSafety.Prog.brecOn.eq": [],
+    "Toy.PanicSafety.Prog.brecOn.go": [],
+    "Toy.PanicSafety.Prog.bumpA": [],
+    "Toy.PanicSafety.Prog.bumpA.elim": [],
+    "Toy.PanicSafety.Prog.bumpA.inj": [],
+    "Toy.PanicSafety.Prog.bumpA.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.bumpA.noConfusion": [],
+    "Toy.PanicSafety.Prog.bumpA.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.bumpB": [],
+    "Toy.PanicSafety.Prog.bumpB.elim": [],
+    "Toy.PanicSafety.Prog.bumpB.inj": [],
+    "Toy.PanicSafety.Prog.bumpB.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.bumpB.noConfusion": [],
+    "Toy.PanicSafety.Prog.bumpB.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.call": [],
+    "Toy.PanicSafety.Prog.call.elim": [],
+    "Toy.PanicSafety.Prog.call.inj": [],
+    "Toy.PanicSafety.Prog.call.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.call.noConfusion": [],
+    "Toy.PanicSafety.Prog.call.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.casesOn": [],
+    "Toy.PanicSafety.Prog.copy": [],
+    "Toy.PanicSafety.Prog.copy.elim": [],
+    "Toy.PanicSafety.Prog.copy.inj": [],
+    "Toy.PanicSafety.Prog.copy.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.copy.noConfusion": [],
+    "Toy.PanicSafety.Prog.copy.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.ctorElim": [],
+    "Toy.PanicSafety.Prog.ctorElimType": [],
+    "Toy.PanicSafety.Prog.ctorIdx": [],
+    "Toy.PanicSafety.Prog.done": [],
+    "Toy.PanicSafety.Prog.done.elim": [],
+    "Toy.PanicSafety.Prog.done.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.dropCell": [],
+    "Toy.PanicSafety.Prog.dropCell.elim": [],
+    "Toy.PanicSafety.Prog.dropCell.inj": [],
+    "Toy.PanicSafety.Prog.dropCell.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.dropCell.noConfusion": [],
+    "Toy.PanicSafety.Prog.dropCell.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.dropVal": [],
+    "Toy.PanicSafety.Prog.dropVal.elim": [],
+    "Toy.PanicSafety.Prog.dropVal.inj": [],
+    "Toy.PanicSafety.Prog.dropVal.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.dropVal.noConfusion": [],
+    "Toy.PanicSafety.Prog.dropVal.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.forgetGuard": [],
+    "Toy.PanicSafety.Prog.forgetGuard.elim": [],
+    "Toy.PanicSafety.Prog.forgetGuard.inj": [],
+    "Toy.PanicSafety.Prog.forgetGuard.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.forgetGuard.noConfusion": [],
+    "Toy.PanicSafety.Prog.forgetGuard.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.forgetVal": [],
+    "Toy.PanicSafety.Prog.forgetVal.elim": [],
+    "Toy.PanicSafety.Prog.forgetVal.inj": [],
+    "Toy.PanicSafety.Prog.forgetVal.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.forgetVal.noConfusion": [],
+    "Toy.PanicSafety.Prog.forgetVal.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.getLen": [],
+    "Toy.PanicSafety.Prog.getLen.elim": [],
+    "Toy.PanicSafety.Prog.getLen.inj": [],
+    "Toy.PanicSafety.Prog.getLen.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.getLen.noConfusion": [],
+    "Toy.PanicSafety.Prog.getLen.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.noConfusion": [],
+    "Toy.PanicSafety.Prog.noConfusionType": [],
+    "Toy.PanicSafety.Prog.popGuard": [],
+    "Toy.PanicSafety.Prog.popGuard.elim": [],
+    "Toy.PanicSafety.Prog.popGuard.inj": [],
+    "Toy.PanicSafety.Prog.popGuard.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.popGuard.noConfusion": [],
+    "Toy.PanicSafety.Prog.popGuard.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.pushGuard": [],
+    "Toy.PanicSafety.Prog.pushGuard.elim": [],
+    "Toy.PanicSafety.Prog.pushGuard.inj": [],
+    "Toy.PanicSafety.Prog.pushGuard.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.pushGuard.noConfusion": [],
+    "Toy.PanicSafety.Prog.pushGuard.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.readOut": [],
+    "Toy.PanicSafety.Prog.readOut.elim": [],
+    "Toy.PanicSafety.Prog.readOut.inj": [],
+    "Toy.PanicSafety.Prog.readOut.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.readOut.noConfusion": [],
+    "Toy.PanicSafety.Prog.readOut.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.rec": [],
+    "Toy.PanicSafety.Prog.recOn": [],
+    "Toy.PanicSafety.Prog.setGuard": [],
+    "Toy.PanicSafety.Prog.setGuard.elim": [],
+    "Toy.PanicSafety.Prog.setGuard.inj": [],
+    "Toy.PanicSafety.Prog.setGuard.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.setGuard.noConfusion": [],
+    "Toy.PanicSafety.Prog.setGuard.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.setLen": [],
+    "Toy.PanicSafety.Prog.setLen.elim": [],
+    "Toy.PanicSafety.Prog.setLen.inj": [],
+    "Toy.PanicSafety.Prog.setLen.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.setLen.noConfusion": [],
+    "Toy.PanicSafety.Prog.setLen.sizeOf_spec": [],
+    "Toy.PanicSafety.Prog.writeBack": [],
+    "Toy.PanicSafety.Prog.writeBack.elim": [],
+    "Toy.PanicSafety.Prog.writeBack.inj": [],
+    "Toy.PanicSafety.Prog.writeBack.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Prog.writeBack.noConfusion": [],
+    "Toy.PanicSafety.Prog.writeBack.sizeOf_spec": [],
+    "Toy.PanicSafety.RawAbortExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.RawAbortExact.match_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.RawUnwoundIff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.RawUnwoundIff.match_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Res": [],
+    "Toy.PanicSafety.Res.abort": [],
+    "Toy.PanicSafety.Res.abort.elim": [],
+    "Toy.PanicSafety.Res.abort.sizeOf_spec": [],
+    "Toy.PanicSafety.Res.casesOn": [],
+    "Toy.PanicSafety.Res.ctorElim": [],
+    "Toy.PanicSafety.Res.ctorElimType": [],
+    "Toy.PanicSafety.Res.ctorIdx": [],
+    "Toy.PanicSafety.Res.noConfusion": [],
+    "Toy.PanicSafety.Res.noConfusionType": [],
+    "Toy.PanicSafety.Res.rec": [],
+    "Toy.PanicSafety.Res.recOn": [],
+    "Toy.PanicSafety.Res.ret": [],
+    "Toy.PanicSafety.Res.ret.elim": [],
+    "Toy.PanicSafety.Res.ret.inj": [],
+    "Toy.PanicSafety.Res.ret.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Res.ret.noConfusion": [],
+    "Toy.PanicSafety.Res.ret.sizeOf_spec": [],
+    "Toy.PanicSafety.Res.ub": [],
+    "Toy.PanicSafety.Res.ub.elim": [],
+    "Toy.PanicSafety.Res.ub.sizeOf_spec": [],
+    "Toy.PanicSafety.Res.unwound": [],
+    "Toy.PanicSafety.Res.unwound.elim": [],
+    "Toy.PanicSafety.Res.unwound.inj": [],
+    "Toy.PanicSafety.Res.unwound.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Res.unwound.noConfusion": [],
+    "Toy.PanicSafety.Res.unwound.sizeOf_spec": [],
+    "Toy.PanicSafety.ResOk": [],
+    "Toy.PanicSafety.ResOk.eq_1": [],
+    "Toy.PanicSafety.ResOk.eq_2": [],
+    "Toy.PanicSafety.ResOk.eq_3": [],
+    "Toy.PanicSafety.ResOk.eq_4": [],
+    "Toy.PanicSafety.RetainReturns": [],
+    "Toy.PanicSafety.RetainReturns.eq_1": [],
+    "Toy.PanicSafety.Site": [],
+    "Toy.PanicSafety.Site.casesOn": [],
+    "Toy.PanicSafety.Site.ctorIdx": [],
+    "Toy.PanicSafety.Site.entries": [],
+    "Toy.PanicSafety.Site.kind": [],
+    "Toy.PanicSafety.Site.mem": [],
+    "Toy.PanicSafety.Site.mk": [],
+    "Toy.PanicSafety.Site.mk.inj": [],
+    "Toy.PanicSafety.Site.mk.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.Site.mk.noConfusion": [],
+    "Toy.PanicSafety.Site.mk.sizeOf_spec": [],
+    "Toy.PanicSafety.Site.noConfusion": [],
+    "Toy.PanicSafety.Site.noConfusionType": [],
+    "Toy.PanicSafety.Site.rec": [],
+    "Toy.PanicSafety.Site.recOn": [],
+    "Toy.PanicSafety.SiteKind": [],
+    "Toy.PanicSafety.SiteKind.callback": [],
+    "Toy.PanicSafety.SiteKind.callback.elim": [],
+    "Toy.PanicSafety.SiteKind.callback.sizeOf_spec": [],
+    "Toy.PanicSafety.SiteKind.casesOn": [],
+    "Toy.PanicSafety.SiteKind.ctorElim": [],
+    "Toy.PanicSafety.SiteKind.ctorElimType": [],
+    "Toy.PanicSafety.SiteKind.ctorIdx": [],
+    "Toy.PanicSafety.SiteKind.destructor": [],
+    "Toy.PanicSafety.SiteKind.destructor.elim": [],
+    "Toy.PanicSafety.SiteKind.destructor.sizeOf_spec": [],
+    "Toy.PanicSafety.SiteKind.noConfusion": [],
+    "Toy.PanicSafety.SiteKind.noConfusionType": [],
+    "Toy.PanicSafety.SiteKind.ofNat": [],
+    "Toy.PanicSafety.SiteKind.ofNat_ctorIdx": [],
+    "Toy.PanicSafety.SiteKind.rec": [],
+    "Toy.PanicSafety.SiteKind.recOn": [],
+    "Toy.PanicSafety.Tok": [],
+    "Toy.PanicSafety.URes": [],
+    "Toy.PanicSafety.URes.abort": [],
+    "Toy.PanicSafety.URes.abort.elim": [],
+    "Toy.PanicSafety.URes.abort.sizeOf_spec": [],
+    "Toy.PanicSafety.URes.casesOn": [],
+    "Toy.PanicSafety.URes.ctorElim": [],
+    "Toy.PanicSafety.URes.ctorElimType": [],
+    "Toy.PanicSafety.URes.ctorIdx": [],
+    "Toy.PanicSafety.URes.noConfusion": [],
+    "Toy.PanicSafety.URes.noConfusionType": [],
+    "Toy.PanicSafety.URes.ok": [],
+    "Toy.PanicSafety.URes.ok.elim": [],
+    "Toy.PanicSafety.URes.ok.inj": [],
+    "Toy.PanicSafety.URes.ok.injEq": [
+      "propext"
+    ],
+    "Toy.PanicSafety.URes.ok.noConfusion": [],
+    "Toy.PanicSafety.URes.ok.sizeOf_spec": [],
+    "Toy.PanicSafety.URes.rec": [],
+    "Toy.PanicSafety.URes.recOn": [],
+    "Toy.PanicSafety.URes.ub": [],
+    "Toy.PanicSafety.URes.ub.elim": [],
+    "Toy.PanicSafety.URes.ub.sizeOf_spec": [],
+    "Toy.PanicSafety.absRetain": [],
+    "Toy.PanicSafety.absRetain.eq_1": [],
+    "Toy.PanicSafety.absRetain.eq_2": [],
+    "Toy.PanicSafety.absRetain.eq_def": [],
+    "Toy.PanicSafety.absRetain.match_1": [],
+    "Toy.PanicSafety.absRetain.match_3": [],
+    "Toy.PanicSafety.allBehs": [],
+    "Toy.PanicSafety.allBehs.match_1": [],
+    "Toy.PanicSafety.allBools": [],
+    "Toy.PanicSafety.allClients": [],
+    "Toy.PanicSafety.allClients.match_1": [],
+    "Toy.PanicSafety.applyGuards": [],
+    "Toy.PanicSafety.applyGuards.eq_1": [],
+    "Toy.PanicSafety.applyGuards.eq_2": [],
+    "Toy.PanicSafety.applyGuards.eq_3": [],
+    "Toy.PanicSafety.applyGuards.eq_def": [],
+    "Toy.PanicSafety.applyGuards.match_1": [],
+    "Toy.PanicSafety.backshift": [
+      "propext"
+    ],
+    "Toy.PanicSafety.backshift.eq_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.backshift_example": [
+      "propext"
+    ],
+    "Toy.PanicSafety.badSetLen": [],
+    "Toy.PanicSafety.badSetLen.eq_1": [],
+    "Toy.PanicSafety.badSetLen_callSitesDropSafe_not_panicSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.bumpBoth": [],
+    "Toy.PanicSafety.bumpBoth.eq_1": [],
+    "Toy.PanicSafety.bumpBoth_needs_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.bumpBoth_unwind_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.callSitesDropSafe_iff_noPanicDtors": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.callSitesDropSafe_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.callSitesDropSafe_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.callbackSitesDropSafe_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.callbackSitesDropSafe_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.ceCbRemove": [
+      "propext"
+    ],
+    "Toy.PanicSafety.ceCbRemoveFirst": [
+      "propext"
+    ],
+    "Toy.PanicSafety.ceCbRemoveKeepPanic": [
+      "propext"
+    ],
+    "Toy.PanicSafety.ceCbRemoveThenPanic": [
+      "propext"
+    ],
+    "Toy.PanicSafety.ceMem1": [],
+    "Toy.PanicSafety.ceMem2": [],
+    "Toy.PanicSafety.ceMem3": [],
+    "Toy.PanicSafety.cend": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cend.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cend.match_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.cend.match_4": [],
+    "Toy.PanicSafety.charFamily": [
+      "propext"
+    ],
+    "Toy.PanicSafety.characterization_bounded_samples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.characterization_bounded_samples_nontrivial": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_cend_ne_ub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_clientInv_init": [],
+    "Toy.PanicSafety.cl_crun_ne_ub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_cstep_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_dropCells_noPanic_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_dropIdxRange_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_dropToks_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_ownsUniquely_append_log": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_ownsUniquely_append_log_right": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_ownsUniquely_perm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_ownsUniquely_sublist": [
+      "propext"
+    ],
+    "Toy.PanicSafety.cl_toks_map_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.clientRun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.clientRun_drainTwice_rejected": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.clientRun_rejected_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.clientTestMems": [],
+    "Toy.PanicSafety.closureScopedDrain_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.closureScopedDrain_panicSafe_unwind": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.closureScopedDrain_panicSafe_unwind_upTo3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.containerDrop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.containerDrop.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.containerDrop_neg_doubleDrop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.containerDrop_neg_lenPastBuffer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.containerDrop_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.copyRange": [
+      "propext"
+    ],
+    "Toy.PanicSafety.copyRange.eq_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.copyRange.eq_2": [
+      "propext"
+    ],
+    "Toy.PanicSafety.copyRange.eq_def": [
+      "propext"
+    ],
+    "Toy.PanicSafety.copyRange.match_1": [],
+    "Toy.PanicSafety.countersAgree_neg": [],
+    "Toy.PanicSafety.countersAgree_pos": [],
+    "Toy.PanicSafety.crun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.crun.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.crun.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.crun.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.crun.match_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.crun.match_4": [],
+    "Toy.PanicSafety.cstep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cstep.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cstep.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cstep.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cstep.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cstep.eq_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cstep.eq_6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.cstep.match_1": [],
+    "Toy.PanicSafety.cstep.match_3": [],
+    "Toy.PanicSafety.cstep.match_5": [],
+    "Toy.PanicSafety.cstep.match_7": [],
+    "Toy.PanicSafety.cstep.match_9": [],
+    "Toy.PanicSafety.destructorReliantDrain_forgetVal_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.destructorReliantDrain_forget_reachesUB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.destructorReliantDrain_noForget_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.destructorReliantDrain_noUB_withoutForgetGuard": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.destructorReliantDrain_noUB_withoutForgetGuard_upTo4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.drainClients_need_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.drainWith": [
+      "propext"
+    ],
+    "Toy.PanicSafety.drainWith.eq_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.drainWithLoop": [
+      "propext"
+    ],
+    "Toy.PanicSafety.drainWithLoop.eq_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.drainWithLoop.eq_2": [
+      "propext"
+    ],
+    "Toy.PanicSafety.drainWithLoop.eq_def": [
+      "propext"
+    ],
+    "Toy.PanicSafety.drainWithLoop.match_1": [],
+    "Toy.PanicSafety.drainWith_needs_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropCells.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropCells.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropCells.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropCells.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropCells.match_1": [],
+    "Toy.PanicSafety.dropCells_noPanic_ne_ub_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropIdxRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropIdxRange.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropIdxRange.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropIdxRange.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropIdxRange.match_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.dropIdxRange.match_4": [],
+    "Toy.PanicSafety.dropSafe_neg_lenPastBuffer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropSafe_neg_localDuplicates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropSafe_nil_iff_inv": [
+      "propext"
+    ],
+    "Toy.PanicSafety.dropSafe_of_resOk_panicFrom_noPanic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropSafe_pos_guardRepairs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropSafety_adequacy_fails_with_panickingDtors": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropToks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropToks.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropToks.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropToks.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dropToks.match_1": [],
+    "Toy.PanicSafety.dtOf": [
+      "propext"
+    ],
+    "Toy.PanicSafety.dtPanicsOn0": [
+      "propext"
+    ],
+    "Toy.PanicSafety.dupMem": [],
+    "Toy.PanicSafety.dw_cell": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dw_copyRange_getElem?_below": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dw_copyRange_getElem?_shift": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dw_copyRange_length": [
+      "propext"
+    ],
+    "Toy.PanicSafety.dw_copyRange_take": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dw_inv_fix": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dw_loop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.dw_owns_tail": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_10": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_11": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_12": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_13": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_14": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_15": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_16": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_17": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_18": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_19": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_20": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_21": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_22": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_9": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.match_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.match_11": [],
+    "Toy.PanicSafety.exec.match_4": [
+      "propext"
+    ],
+    "Toy.PanicSafety.exec.match_8": [
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_abort_resOk_of_unwind_resOk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_abort_resOk_of_unwind_resOk.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_callback_site_surgery": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_callback_site_surgery.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_destructor_site_surgery": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_destructor_site_surgery.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_sites_mode_indep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_sites_subset_noPanicDtors": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_sites_subset_noPanicDtors.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_unwind_resOk_of_abort_resOk_of_sitesDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.exec_unwind_resOk_of_abort_resOk_of_sitesDropSafe.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.forgetClient": [],
+    "Toy.PanicSafety.grd_absRetain_mem": [
+      "propext"
+    ],
+    "Toy.PanicSafety.grd_copyRange_getElem?_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.grd_copyRange_getElem?_shift": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.grd_copyRange_length": [
+      "propext"
+    ],
+    "Toy.PanicSafety.grd_loop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.grd_map_toks": [],
+    "Toy.PanicSafety.grd_ownsUniquely_map_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.grd_post": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.grd_take_eq_map_some": [
+      "propext"
+    ],
+    "Toy.PanicSafety.grd_toks_map_some": [],
+    "Toy.PanicSafety.grd_unwound_post": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoop": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoop.eq_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoop.eq_2": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoop.eq_def": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoopLate": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoopLate.eq_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoopLate.eq_2": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoopLate.eq_def": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoopLate_eq_guardLoop_of_noPanickingDtors": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardLoopLate_eq_guardLoop_of_noPanickingDtors.match_1_1": [],
+    "Toy.PanicSafety.guardRetain": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetainLate": [
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetainLate_dtorPanic_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetainLate_needs_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetainLate_noPanic_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetainLate_panicSafe_unwind_of_noPanickingDtors": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetainLate_panicSafe_upTo3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_dtorPanic_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_ownerDrop_doublePanic_aborts_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_panicSafe_unwind": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_unwind_exact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_unwind_exact_needs_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_unwind_exact_upTo3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_unwind_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_unwound_leakFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_unwound_leakFree_noInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_unwound_leakFree_noInv_bounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardRetain_unwound_leakFree_upTo3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardUnwindExact_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.guardUnwindExact_return_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.harness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableBoundedCallSitesDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableBoundedPanicSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableCountersAgree": [],
+    "Toy.PanicSafety.instDecidableDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableEqAbsOut": [],
+    "Toy.PanicSafety.instDecidableEqAbsOut.decEq": [],
+    "Toy.PanicSafety.instDecidableEqAbsOut.decEq.match_1": [],
+    "Toy.PanicSafety.instDecidableEqBeh": [],
+    "Toy.PanicSafety.instDecidableEqBeh.decEq": [],
+    "Toy.PanicSafety.instDecidableEqBeh.decEq.match_1": [],
+    "Toy.PanicSafety.instDecidableEqCInstr": [],
+    "Toy.PanicSafety.instDecidableEqCOut": [],
+    "Toy.PanicSafety.instDecidableEqCOut.decEq": [],
+    "Toy.PanicSafety.instDecidableEqCOut.decEq.match_1": [],
+    "Toy.PanicSafety.instDecidableEqCState": [],
+    "Toy.PanicSafety.instDecidableEqCState.decEq": [],
+    "Toy.PanicSafety.instDecidableEqCState.decEq.match_1": [],
+    "Toy.PanicSafety.instDecidableEqDRes": [],
+    "Toy.PanicSafety.instDecidableEqDRes.decEq": [],
+    "Toy.PanicSafety.instDecidableEqDRes.decEq.match_1": [],
+    "Toy.PanicSafety.instDecidableEqDrainApi": [],
+    "Toy.PanicSafety.instDecidableEqEnding": [],
+    "Toy.PanicSafety.instDecidableEqFinal": [],
+    "Toy.PanicSafety.instDecidableEqFinal.decEq": [],
+    "Toy.PanicSafety.instDecidableEqFinal.decEq.match_1": [],
+    "Toy.PanicSafety.instDecidableEqMem": [],
+    "Toy.PanicSafety.instDecidableEqMem.decEq": [],
+    "Toy.PanicSafety.instDecidableEqMem.decEq.match_1": [],
+    "Toy.PanicSafety.instDecidableEqMode": [],
+    "Toy.PanicSafety.instDecidableEqRes": [],
+    "Toy.PanicSafety.instDecidableEqRes.decEq": [],
+    "Toy.PanicSafety.instDecidableEqRes.decEq.match_1": [],
+    "Toy.PanicSafety.instDecidableEqSiteKind": [],
+    "Toy.PanicSafety.instDecidableEqURes": [],
+    "Toy.PanicSafety.instDecidableEqURes.decEq": [],
+    "Toy.PanicSafety.instDecidableEqURes.decEq.match_1": [],
+    "Toy.PanicSafety.instDecidableGuardUnwindExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableGuardUnwoundLeakFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableLeakFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableLeakUnwindExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableOwnsUniquely": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableRawAbortExact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableRawUnwoundIff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableResOk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instDecidableRetainReturns": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprAbsOut": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprAbsOut.repr": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprBeh": [],
+    "Toy.PanicSafety.instReprBeh.repr": [],
+    "Toy.PanicSafety.instReprBeh.repr.match_1": [],
+    "Toy.PanicSafety.instReprCInstr": [],
+    "Toy.PanicSafety.instReprCInstr.repr": [],
+    "Toy.PanicSafety.instReprCInstr.repr.match_1": [],
+    "Toy.PanicSafety.instReprCOut": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprCOut.repr": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprCOut.repr.match_1": [],
+    "Toy.PanicSafety.instReprCState": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprCState.repr": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprDRes": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprDRes.repr": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprDRes.repr.match_1": [],
+    "Toy.PanicSafety.instReprDrainApi": [],
+    "Toy.PanicSafety.instReprDrainApi.repr": [],
+    "Toy.PanicSafety.instReprDrainApi.repr.match_1": [],
+    "Toy.PanicSafety.instReprEnding": [],
+    "Toy.PanicSafety.instReprEnding.repr": [],
+    "Toy.PanicSafety.instReprEnding.repr.match_1": [],
+    "Toy.PanicSafety.instReprFinal": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprFinal.repr": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprFinal.repr.match_1": [],
+    "Toy.PanicSafety.instReprMem": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprMem.repr": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprMode": [],
+    "Toy.PanicSafety.instReprMode.repr": [],
+    "Toy.PanicSafety.instReprMode.repr.match_1": [],
+    "Toy.PanicSafety.instReprRes": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprRes.repr": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprRes.repr.match_1": [],
+    "Toy.PanicSafety.instReprSiteKind": [],
+    "Toy.PanicSafety.instReprSiteKind.repr": [],
+    "Toy.PanicSafety.instReprSiteKind.repr.match_1": [],
+    "Toy.PanicSafety.instReprURes": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprURes.repr": [
+      "propext"
+    ],
+    "Toy.PanicSafety.instReprURes.repr.match_1": [],
+    "Toy.PanicSafety.inv_iff_containerDrop_noPanic_ne_ub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.inv_neg_dropped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.inv_neg_duplicate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.inv_neg_lenPastBuffer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.inv_neg_uninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.inv_pop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.inv_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.inv_pos_countersDisagree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.inv_pos_staleTail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakAmplifiedDrain_forgetClient_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakAmplifiedDrain_forgetGuard_leaks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakAmplifiedDrain_noUB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakAmplifiedDrain_noUB_upTo4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakFree_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakFree_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakRetain": [],
+    "Toy.PanicSafety.leakRetain_panicSafe_unwind": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakRetain_unwind_exact": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakRetain_unwind_exact_needs_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakRetain_unwind_exact_upTo3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakRetain_unwind_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakRetain_unwound_leaks": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakRetain_unwound_leaks_needs_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakUnwindExact_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.leakUnwindExact_return_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.noPanicDtors": [],
+    "Toy.PanicSafety.noPanicDtors.eq_1": [],
+    "Toy.PanicSafety.noPanickingDtors_neg": [
+      "propext"
+    ],
+    "Toy.PanicSafety.noPanickingDtors_pos": [],
+    "Toy.PanicSafety.ownsUniquely_append_singleton_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.ownsUniquely_cons_some_iff": [
+      "propext"
+    ],
+    "Toy.PanicSafety.ownsUniquely_neg_dropped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.ownsUniquely_neg_duplicate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.ownsUniquely_neg_uninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.ownsUniquely_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicFrom.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicFrom.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicSafeAssumingNoDtorPanic_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicSafeAssumingNoDtorPanic_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicSafe_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicSafe_neg_rawRetain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicSafe_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicSafe_unwind_but_countersAgree_broken": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.panicSafe_unwind_iff_abort_and_callSitesDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawAbortExact_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawAbortExact_return_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawLoop": [],
+    "Toy.PanicSafety.rawLoop.eq_1": [],
+    "Toy.PanicSafety.rawLoop.eq_2": [],
+    "Toy.PanicSafety.rawLoop.eq_def": [],
+    "Toy.PanicSafety.rawLoop.match_1": [],
+    "Toy.PanicSafety.rawRetain": [],
+    "Toy.PanicSafety.rawRetain_abort_exact": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_abort_exact_needs_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_abort_exact_upTo3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_not_callSitesDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_panicSafe_abort": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_unwind_doubleDrop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_unwind_duplicate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_unwind_noRemoval_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_unwound_iff_needs_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_unwound_inv_iff_rejected_nil": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.rawRetain_unwound_inv_iff_upTo3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_buf_getD": [
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_buf_getElem?": [
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_buf_keep0": [
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_buf_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_buf_rej": [
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_buf_set": [
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_getElem?_len": [
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_loop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_map_some_toks": [],
+    "Toy.PanicSafety.raw_ownsUniquely_map_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_perm_keep": [
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_perm_rej": [
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_returns": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_run": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_set_len": [
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_setup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.raw_toks_map_some": [],
+    "Toy.PanicSafety.raw_unwound_inv_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.resOk_panicFrom_of_dropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.retainReturns_neg_wrongDropLog": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.retainReturns_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.run.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.samplePrograms": [
+      "propext"
+    ],
+    "Toy.PanicSafety.sites": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.sites.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.smallBufs": [],
+    "Toy.PanicSafety.smallMems": [],
+    "Toy.PanicSafety.specRetain": [],
+    "Toy.PanicSafety.specRetain_example": [
+      "propext"
+    ],
+    "Toy.PanicSafety.specRetain_example_dtorPanic": [
+      "propext"
+    ],
+    "Toy.PanicSafety.tableOf": [
+      "propext"
+    ],
+    "Toy.PanicSafety.tailFix": [
+      "propext"
+    ],
+    "Toy.PanicSafety.tailFix.eq_1": [
+      "propext"
+    ],
+    "Toy.PanicSafety.testMems": [],
+    "Toy.PanicSafety.testMems_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.toks": [],
+    "Toy.PanicSafety.toks.eq_1": [],
+    "Toy.PanicSafety.toks_append": [
+      "propext"
+    ],
+    "Toy.PanicSafety.toks_cons_some": [],
+    "Toy.PanicSafety.toks_example": [],
+    "Toy.PanicSafety.truncateLate": [],
+    "Toy.PanicSafety.truncateLate.eq_1": [],
+    "Toy.PanicSafety.truncateLate.match_1": [],
+    "Toy.PanicSafety.truncateLate_callbackSitesDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateLate_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateLate_dtorPanic_unwound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateLate_panicSafeAssumingNoDtorPanic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateLate_panicSafe_abort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateLate_sites_destructor": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateThenCall": [],
+    "Toy.PanicSafety.truncateThenCall.eq_1": [],
+    "Toy.PanicSafety.truncateThenCall_callSitesDropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateThenCall_panicSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateThenCall_satisfies_both_sides": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateThenCall_sites_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.truncateThenCall_sites_need_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries.match_1": [],
+    "Toy.PanicSafety.unwindEntries_eq_noPanic_of_panickers_dropped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries_eq_noPanic_of_panickers_dropped.match_1_1": [],
+    "Toy.PanicSafety.unwindEntries_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries_example_abort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries_noPanic_ok_inv_iff_dropSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries_ok_noPanic_imp_ok_or_abort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.unwindEntries_ok_noPanic_imp_ok_or_abort.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PanicSafety.valueToks": [],
+    "Toy.PanicSafety.valueToks.eq_1": [],
+    "Toy.PanicSafety.valueToks.eq_2": [],
+    "Toy.PanicSafety.valueToks.eq_3": [],
+    "Toy.PanicSafety.valueToks.eq_def": [],
+    "Toy.PanicSafety.valueToks.match_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

@@ -1,0 +1,874 @@
+[
+  {
+    "id": "R0-drop-safety-adequacy",
+    "title": "Adequacy of the drop-safety predicates",
+    "lean": "Toy.PanicSafety.inv_iff_containerDrop_noPanic_ne_ub",
+    "lean_names": [
+      "Toy.PanicSafety.inv_iff_containerDrop_noPanic_ne_ub",
+      "Toy.PanicSafety.unwindEntries_noPanic_ok_inv_iff_dropSafe",
+      "Toy.PanicSafety.dropCells_noPanic_ne_ub_iff",
+      "Toy.PanicSafety.dropSafe_nil_iff_inv",
+      "Toy.PanicSafety.exec_sites_mode_indep",
+      "Toy.PanicSafety.inv_pop",
+      "Toy.PanicSafety.ownsUniquely_cons_some_iff",
+      "Toy.PanicSafety.ownsUniquely_append_singleton_iff",
+      "Toy.PanicSafety.toks_cons_some",
+      "Toy.PanicSafety.toks_append",
+      "Toy.PanicSafety.dropSafety_adequacy_fails_with_panickingDtors",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.containerDrop_pos",
+      "Toy.PanicSafety.ceMem2",
+      "Toy.PanicSafety.dropSafe_pos_guardRepairs",
+      "Toy.PanicSafety.containerDrop_neg_doubleDrop",
+      "Toy.PanicSafety.dropSafe_neg_localDuplicates",
+      "Toy.PanicSafety.dtPanicsOn0",
+      "Toy.PanicSafety.DropSafe",
+      "Toy.PanicSafety.Prog",
+      "Toy.PanicSafety.noPanicDtors",
+      "Toy.PanicSafety.inv_pos",
+      "Toy.PanicSafety.inv_pos_staleTail",
+      "Toy.PanicSafety.inv_pos_countersDisagree",
+      "Toy.PanicSafety.inv_neg_lenPastBuffer",
+      "Toy.PanicSafety.inv_neg_duplicate",
+      "Toy.PanicSafety.inv_neg_dropped",
+      "Toy.PanicSafety.inv_neg_uninit",
+      "Toy.PanicSafety.ownsUniquely_pos",
+      "Toy.PanicSafety.ownsUniquely_neg_duplicate",
+      "Toy.PanicSafety.ownsUniquely_neg_dropped",
+      "Toy.PanicSafety.ownsUniquely_neg_uninit",
+      "Toy.PanicSafety.noPanickingDtors_pos",
+      "Toy.PanicSafety.noPanickingDtors_neg",
+      "Toy.PanicSafety.Guard",
+      "Toy.PanicSafety.unwindEntries_example",
+      "Toy.PanicSafety.unwindEntries_example_abort",
+      "Toy.PanicSafety.backshift_example",
+      "Toy.PanicSafety.panicSafe_pos",
+      "Toy.PanicSafety.truncateThenCall",
+      "Toy.PanicSafety.panicSafe_neg",
+      "Toy.PanicSafety.panicSafeAssumingNoDtorPanic_pos",
+      "Toy.PanicSafety.panicSafeAssumingNoDtorPanic_neg",
+      "Toy.PanicSafety.containerDrop_neg_lenPastBuffer",
+      "Toy.PanicSafety.dropCells",
+      "Toy.PanicSafety.specRetain_example",
+      "Toy.PanicSafety.retainReturns_pos",
+      "Toy.PanicSafety.retainReturns_neg_wrongDropLog",
+      "Toy.PanicSafety.leakFree_pos",
+      "Toy.PanicSafety.leakFree_neg",
+      "Toy.PanicSafety.guardUnwindExact_pos",
+      "Toy.PanicSafety.ceCbRemoveFirst",
+      "Toy.PanicSafety.callSitesDropSafe_pos",
+      "Toy.PanicSafety.callSitesDropSafe_neg",
+      "Toy.PanicSafety.callbackSitesDropSafe_pos",
+      "Toy.PanicSafety.callbackSitesDropSafe_neg",
+      "Toy.PanicSafety.clientRun_rejected_example",
+      "Toy.PanicSafety.clientRun_drainTwice_rejected",
+      "Toy.PanicSafety.countersAgree_pos",
+      "Toy.PanicSafety.countersAgree_neg",
+      "Toy.PanicSafety.panicFrom",
+      "Toy.PanicSafety.Tok",
+      "Toy.PanicSafety.Cell",
+      "Toy.PanicSafety.toks",
+      "Toy.PanicSafety.Mem",
+      "Toy.PanicSafety.Mem.elems",
+      "Toy.PanicSafety.OwnsUniquely",
+      "Toy.PanicSafety.Beh",
+      "Toy.PanicSafety.Callback",
+      "Toy.PanicSafety.DtorTable",
+      "Toy.PanicSafety.Entry",
+      "Toy.PanicSafety.Mode",
+      "Toy.PanicSafety.Res",
+      "Toy.PanicSafety.URes",
+      "Toy.PanicSafety.unwindEntries",
+      "Toy.PanicSafety.SiteKind",
+      "Toy.PanicSafety.Site",
+      "Toy.PanicSafety.DRes",
+      "Toy.PanicSafety.Final",
+      "Toy.PanicSafety.Ending",
+      "Toy.PanicSafety.AbsOut",
+      "Toy.PanicSafety.DrainApi",
+      "Toy.PanicSafety.CInstr",
+      "Toy.PanicSafety.CState",
+      "Toy.PanicSafety.dupMem",
+      "Toy.PanicSafety.ceCbRemoveKeepPanic",
+      "Toy.PanicSafety.ceCbRemove",
+      "Toy.PanicSafety.allBehs",
+      "Toy.PanicSafety.allBools",
+      "Toy.PanicSafety.tableOf",
+      "Toy.PanicSafety.dtOf",
+      "Toy.PanicSafety.testMems",
+      "Toy.PanicSafety.allClients",
+      "Toy.PanicSafety.clientTestMems",
+      "Toy.PanicSafety.charFamily",
+      "Toy.PanicSafety.BoundedPanicSafe",
+      "Toy.PanicSafety.BoundedCallSitesDropSafe",
+      "Toy.PanicSafety.samplePrograms"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every toy state `m`: `Inv m` holds iff the container's drop glue run with non-panicking destructors (`containerDrop noPanicDtors m`) does not reach UB. For every frame `es` and state `m`: `DropSafe es m` holds iff unwinding `es` from `m` with non-panicking destructors (`unwindEntries noPanicDtors es m`) ends in `.ok m'` for some `m'` satisfying `Inv`.",
+    "hypotheses": [
+      {
+        "name": "destructor table fixed to `noPanicDtors` (part of both statements)",
+        "purpose": "With panicking destructors, drop glue can abort before reaching UB, and unwinding a drop-safe frame can abort.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.dropSafety_adequacy_fails_with_panickingDtors",
+        "witness_class": "a two-cell state holding one value twice, and a one-local frame, with the destructor table `dtPanicsOn0`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "inductions over lists",
+    "nonvacuity_witness": "Both sides true: `containerDrop_pos` (on `ceMem2`, which satisfies `Inv`) and `dropSafe_pos_guardRepairs`; both sides false: `containerDrop_neg_doubleDrop` and `dropSafe_neg_localDuplicates`.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.containerDrop_pos",
+      "Toy.PanicSafety.dropSafe_pos_guardRepairs",
+      "Toy.PanicSafety.containerDrop_neg_doubleDrop",
+      "Toy.PanicSafety.dropSafe_neg_localDuplicates"
+    ],
+    "non_claims": [
+      "Says nothing about panicking destructors; with the table `dtPanicsOn0` both characterizations fail (`dropSafety_adequacy_fails_with_panickingDtors`).",
+      "Says nothing about the counters `ctrA` and `ctrB`, which `Inv` ignores.",
+      "`DropSafe` treats the frame's guards as pure `(buf, len)` fix-ups; that guard fix-ups and local drops can be applied in either order is a consequence of this restriction of the model. Guard fix-ups (`Guard.fix`) are pure functions of `(buf, len)`: a guard cannot run element destructors, panic, read or change the drop log, or reach UB. Guards that drop elements (for instance a drain's drop guard) are not programs of `Prog`; this result says nothing about them.",
+      "Does not say that `Inv` is the right invariant for any real container. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "The Rustonomicon, rust-lang/nomicon b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/exception-safety.md L25: 'We need only guarantee that it's a *safe* state.' derived (modeling bridge): `Inv` and `DropSafe` are the toy's 'safe state' predicates."
+    ],
+    "design_question": "What exactly must hold of the state that drop glue will see. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R1-raw-retain-unwind-double-drop",
+    "title": "Unwinding exposes the raw-move intermediate state",
+    "lean": "Toy.PanicSafety.rawRetain_unwind_doubleDrop",
+    "lean_names": [
+      "Toy.PanicSafety.rawRetain_unwind_doubleDrop",
+      "Toy.PanicSafety.rawRetain_unwind_duplicate",
+      "Toy.PanicSafety.rawRetain",
+      "Toy.PanicSafety.ceMem2",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.ceCbRemoveThenPanic",
+      "Toy.PanicSafety.harness",
+      "Toy.PanicSafety.rawRetain_unwind_noRemoval_example"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "Under `unwind`, `rawRetain` run on the container `ceMem2` (values `0`, `1`; it satisfies `Inv`) with callback table `ceCbRemoveThenPanic` (remove element `0`, then panic) and non-panicking destructors unwinds to a state whose `len` still covers the dropped value `0`, which violates `Inv`, and the owner's drop of the container (`harness`) then reaches UB (value `0` dropped twice); under `abort` the same run aborts.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "`decide` on one run",
+    "nonvacuity_witness": "The instance itself; `rawRetain_unwind_duplicate` is a second instance in which a moved-out slot duplicates value `1`.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.rawRetain_unwind_doubleDrop",
+      "Toy.PanicSafety.rawRetain_unwind_duplicate"
+    ],
+    "non_claims": [
+      "Does not say every callback panic breaks `rawRetain`: by R3, an unwound state satisfies `Inv` when nothing was removed up to and including the panic (example: `rawRetain_unwind_noRemoval_example`).",
+      "Does not claim that any version of the Rust standard library's `retain` or `String::retain` has this behaviour.",
+      "The UB in the toy is a double drop of a value. The toy does not model `String`; this result is not a statement about CVE-2020-36317 (https://nvd.nist.gov/vuln/detail/CVE-2020-36317), which is cited for context. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "Y. Bae, Y. Kim, A. Askar, J. Lim, T. Kim, 'Rudra: Finding Memory Safety Bugs in Rust at the Ecosystem Scale', SOSP 2021, pp. 84-99, doi:10.1145/3477132.3483570, Definition 3.1: 'A function F has a panic safety bug if it drops a value v of type T such that v ∉ safe-value(T) during unwinding and causes a memory safety violation.' derived (modeling bridge): the toy run has the shape 'invariant bypassed, user code panics before the fix-up, drop glue sees the inconsistent state'.",
+      "CVE-2020-36317, https://nvd.nist.gov/vuln/detail/CVE-2020-36317; rust-lang/rust issue 78498, https://github.com/rust-lang/rust/issues/78498; rust-lang/rust pull request 78499, https://github.com/rust-lang/rust/pull/78499. Cited by URL for context and described no further here; the toy does not model `String`.",
+      "The Rustonomicon, rust-lang/nomicon b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/exception-safety.md L20-22: 'Code that transiently creates unsound states must be careful that a panic does not cause that state to be used.'"
+    ],
+    "design_question": "What must hold at each user-code call site (answered by R4). Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R2-raw-retain-abort-exact",
+    "title": "Raw moves are exactly correct under `abort`",
+    "lean": "Toy.PanicSafety.rawRetain_abort_exact",
+    "lean_names": [
+      "Toy.PanicSafety.rawRetain_abort_exact",
+      "Toy.PanicSafety.rawRetain_panicSafe_abort",
+      "Toy.PanicSafety.rawRetain_abort_exact_upTo3",
+      "Toy.PanicSafety.RawAbortExact",
+      "Toy.PanicSafety.RetainReturns",
+      "Toy.PanicSafety.specRetain",
+      "Toy.PanicSafety.absRetain",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.rawRetain",
+      "Toy.PanicSafety.rawAbortExact_pos",
+      "Toy.PanicSafety.rawAbortExact_return_pos",
+      "Toy.PanicSafety.rawLoop"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every callback table `cb`, every destructor table `dt` and every entry state `m` satisfying `Inv`: `rawRetain` run under `abort` returns a state `m'` with `RetainReturns (specRetain cb dt (toks m.elems)) m m'` (the first `len` cells hold exactly the kept values in order, the removed values are prepended to the drop log, and `Inv m'` holds) if and only if the abstract run `specRetain` finishes; otherwise it aborts; it never reaches UB. Consequently (`rawRetain_panicSafe_abort`) `rawRetain` is panic-safe under `abort`.",
+    "hypotheses": [
+      {
+        "name": "hm : Inv m",
+        "purpose": "The entry container is well-formed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.rawRetain_abort_exact_needs_inv",
+        "witness_class": "a two-cell state holding one value twice, with a keep-everything callback"
+      },
+      {
+        "name": "panic mode `.abort` (fixed in `rawRetain_abort_exact`; the mode parameter of the corollary `rawRetain_panicSafe_abort`)",
+        "purpose": "Under `abort` no drop glue runs after a panic, so the broken intermediate state is never observed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.panicSafe_neg_rawRetain",
+        "witness_class": "the same operation under `unwind` on a two-element container"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "loop invariant over the meta-level recursion of `rawLoop`",
+    "nonvacuity_witness": "Abort branch: `rawAbortExact_pos` (three elements: remove, keep, panic). Return branch: `rawAbortExact_return_pos` (remove `0`, keep `1` and `2`). Both include `Inv ceMem3`.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.rawAbortExact_pos",
+      "Toy.PanicSafety.rawAbortExact_return_pos"
+    ],
+    "non_claims": [
+      "Buffer cells at index `len` and beyond after return are unspecified.",
+      "Says nothing about `unwind` (R1, R3).",
+      "The toy's `abort` mode is a property of one run. In Rust the panic strategy is chosen for a whole build: RFC 1513 (text/1513-less-unwinding.md L143-144) requires the `-C panic` mode of the panic runtime to match the final product (outputs that are not rlibs), so library code cannot choose abort-on-panic for itself. derived (modeling bridge); not proved here.",
+      "'Panic-safe under abort' holds because an abort is counted as an acceptable outcome (`ResOk .abort`), not because the state at the panic is consistent. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "Rust std 1.85.0, std::panic::catch_unwind (https://doc.rust-lang.org/1.85.0/std/panic/fn.catch_unwind.html): 'This function only catches unwinding panics, not those that abort the process.' derived (modeling bridge).",
+      "RFC 1513, rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/1513-less-unwinding.md L9: 'Stabilize implementing panics as aborts.' and L143-144: 'For a final product (outputs that aren't rlibs) the `-C panic` mode of the panic runtime must match the final product itself.' derived (modeling bridge): in Rust the abort strategy is chosen for a whole build, not by a library; the toy's `abort` mode is a property of the run."
+    ],
+    "design_question": "Whether any repair pattern is needed under abort-on-panic: for `rawRetain`, no. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R3-raw-retain-which-panics-expose",
+    "title": "Which panics expose the raw-move state",
+    "lean": "Toy.PanicSafety.rawRetain_unwound_inv_iff_rejected_nil",
+    "lean_names": [
+      "Toy.PanicSafety.rawRetain_unwound_inv_iff_rejected_nil",
+      "Toy.PanicSafety.rawRetain_unwound_inv_iff_upTo3",
+      "Toy.PanicSafety.RawUnwoundIff",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.rawRetain",
+      "Toy.PanicSafety.rawRetain_unwind_noRemoval_example",
+      "Toy.PanicSafety.rawRetain_unwind_doubleDrop",
+      "Toy.PanicSafety.specRetain_example_dtorPanic",
+      "Toy.PanicSafety.dropSafety_adequacy_fails_with_panickingDtors"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every callback table, every destructor table and every entry state `m` satisfying `Inv`: if `rawRetain` under `unwind` unwinds to `m'`, then `m'` satisfies `Inv` iff the abstract retain removed no element up to and including the panic, i.e. `(specRetain cb dt (toks m.elems)).rejected = []` (a removed element whose destructor panics counts as removed).",
+    "hypotheses": [
+      {
+        "name": "hm : Inv m",
+        "purpose": "The entry container is well-formed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.rawRetain_unwound_iff_needs_inv",
+        "witness_class": "a two-cell state holding one value twice, with a panic before any removal"
+      },
+      {
+        "name": "h : run .unwind cb dt rawRetain m = .unwound m'",
+        "purpose": "Binds `m'` to the unwound state of the run.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "counting argument: after a removal, the `len` cells hold values of the entry container and cannot all be distinct and live",
+    "nonvacuity_witness": "Right-hand side true and `Inv m'`: `rawRetain_unwind_noRemoval_example`; removal and `¬ Inv m'`: `rawRetain_unwind_doubleDrop`. Both start from states satisfying `Inv`.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.rawRetain_unwind_noRemoval_example",
+      "Toy.PanicSafety.rawRetain_unwind_doubleDrop"
+    ],
+    "non_claims": [
+      "The informal phrasing 'a callback that panics at step i causes a double drop' is false for panics before any removal (`rawRetain_unwind_noRemoval_example`).",
+      "By R3, a destructor panic on the first removed element already yields an unwound state violating `Inv`, because that element counts as removed (`specRetain_example_dtorPanic` shows the abstract result of such a run).",
+      "With panicking destructors, the owner's later drop of a state violating `Inv` may abort instead of reaching UB (`dropSafety_adequacy_fails_with_panickingDtors`); R0 covers non-panicking destructors. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "As R1 (Rudra Definition 3.1; CVE-2020-36317 cited by URL). derived (modeling bridge)."
+    ],
+    "design_question": "Which user-code call sites in a raw-move loop are dangerous. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R4-call-site-characterization",
+    "title": "Call-site characterization",
+    "lean": "Toy.PanicSafety.panicSafe_unwind_iff_abort_and_callSitesDropSafe",
+    "lean_names": [
+      "Toy.PanicSafety.panicSafe_unwind_iff_abort_and_callSitesDropSafe",
+      "Toy.PanicSafety.CallSitesDropSafe",
+      "Toy.PanicSafety.DropSafe",
+      "Toy.PanicSafety.callSitesDropSafe_iff_noPanicDtors",
+      "Toy.PanicSafety.characterization_bounded_samples",
+      "Toy.PanicSafety.characterization_bounded_samples_nontrivial",
+      "Toy.PanicSafety.exec_unwind_resOk_of_abort_resOk_of_sitesDropSafe",
+      "Toy.PanicSafety.exec_abort_resOk_of_unwind_resOk",
+      "Toy.PanicSafety.exec_callback_site_surgery",
+      "Toy.PanicSafety.exec_destructor_site_surgery",
+      "Toy.PanicSafety.dropSafe_of_resOk_panicFrom_noPanic",
+      "Toy.PanicSafety.resOk_panicFrom_of_dropSafe",
+      "Toy.PanicSafety.unwindEntries_ok_noPanic_imp_ok_or_abort",
+      "Toy.PanicSafety.unwindEntries_eq_noPanic_of_panickers_dropped",
+      "Toy.PanicSafety.exec_sites_subset_noPanicDtors",
+      "Toy.PanicSafety.sites",
+      "Toy.PanicSafety.exec",
+      "Toy.PanicSafety.run",
+      "Toy.PanicSafety.PanicSafe",
+      "Toy.PanicSafety.applyGuards",
+      "Toy.PanicSafety.valueToks",
+      "Toy.PanicSafety.dropSafe_neg_lenPastBuffer",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.truncateThenCall_satisfies_both_sides",
+      "Toy.PanicSafety.truncateThenCall_sites_example",
+      "Toy.PanicSafety.rawRetain_not_callSitesDropSafe",
+      "Toy.PanicSafety.panicSafe_neg_rawRetain",
+      "Toy.PanicSafety.Prog",
+      "Toy.PanicSafety.harness",
+      "Toy.PanicSafety.badSetLen",
+      "Toy.PanicSafety.truncateLate",
+      "Toy.PanicSafety.noPanicDtors"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every toy program `p`: `p` is panic-safe under `unwind` (for every callback table, destructor table and entry state satisfying `Inv`, the run `run .unwind cb dt p m` reaches no UB and a return or an unwind leaves `Inv`) iff (a) `p` is panic-safe under `abort`, and (b) for every callback table, destructor table and entry state satisfying `Inv`, every user-code site reached by `p` (callback invocations and element-destructor invocations, as produced by the interpreter `exec` through `sites`) satisfies `DropSafe`: after the frame's guard fix-ups are applied to `(buf, len)`, the fixed-up `len` is at most the buffer length, and the values of the live locals together with the first `len` cells of the fixed-up buffer are initialized, pairwise distinct and not in the drop log. `run` and `sites` start the interpreter with an empty frame, and guard fix-ups are pure functions of `(buf, len)`.",
+    "hypotheses": [
+      {
+        "name": "PanicSafe .abort p (right-hand-side conjunct)",
+        "purpose": "The normal-execution path must itself be correct; call sites do not see it.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.badSetLen_callSitesDropSafe_not_panicSafe",
+        "witness_class": "a program with no user-code site (`badSetLen`)"
+      },
+      {
+        "name": "CallSitesDropSafe p, including destructor sites (right-hand-side conjunct)",
+        "purpose": "Unwinding may start at any user-code call, including element destructors.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.truncateLate_counterexample",
+        "witness_class": "a two-instruction program with one destructor site (`truncateLate`) and a one-element container"
+      },
+      {
+        "name": "entry precondition Inv m inside CallSitesDropSafe",
+        "purpose": "Sites reached from states violating `Inv` are irrelevant to panic safety, which also assumes `Inv` on entry.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.truncateThenCall_sites_need_inv",
+        "witness_class": "a two-cell entry state holding one value twice"
+      },
+      {
+        "name": "quantifier over all destructor tables inside CallSitesDropSafe",
+        "purpose": "Readability; equivalent to fixing `noPanicDtors` (`callSitesDropSafe_iff_noPanicDtors`).",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "right to left by induction on `Prog`; left to right by table surgery at the site (a panicking callback invocation, or a destructor that panics on exactly one value)",
+    "nonvacuity_witness": "Both sides hold: `truncateThenCall_satisfies_both_sides` (with one destructor site and one callback site, `truncateThenCall_sites_example`). Both sides fail: `rawRetain_not_callSitesDropSafe` and `panicSafe_neg_rawRetain`.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.truncateThenCall_satisfies_both_sides",
+      "Toy.PanicSafety.truncateThenCall_sites_example",
+      "Toy.PanicSafety.rawRetain_not_callSitesDropSafe",
+      "Toy.PanicSafety.panicSafe_neg_rawRetain"
+    ],
+    "non_claims": [
+      "Guard fix-ups (`Guard.fix`) are pure functions of `(buf, len)`: a guard cannot run element destructors, panic, read or change the drop log, or reach UB. Guards that drop elements (for instance a drain's drop guard) are not programs of `Prog`; this result says nothing about them.",
+      "Says nothing about callers that hold guards or locals with drop glue over the same container; whether the characterization would then need the caller's frame as well is not proved here.",
+      "The model has no catch boundary: after an unwind the state is handed to the owner, whose drop glue runs (`harness`); reuse of the container after a caught panic is not modelled.",
+      "Says nothing about concurrency, re-entrant callbacks, user code with effects other than return or panic, non-terminating operations (every `Prog` run terminates), or unwinding across a foreign-function boundary (which the Rust Reference lists as undefined behaviour; not modelled).",
+      "`DropSafe` is a memory-safety condition in the toy; it says nothing about logical invariants (R15).",
+      "The bounded check covers nine sample programs on a finite family of tables and states; the unbounded statement is the theorem. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "The Rustonomicon, rust-lang/nomicon b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/exception-safety.md L20-22: 'Code that transiently creates unsound states must be careful that a panic does not cause that state to be used.' derived (modeling bridge).",
+      "Rudra (SOSP 2021, doi:10.1145/3477132.3483570), section 3.1, describes the same obligation as a bug pattern (Definition 3.1). derived (modeling bridge).",
+      "RustBelt (R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, PACMPL 2(POPL) article 66, 2018, doi:10.1145/3158154), section 9: 'We do not model … (3) stack unwinding when a panic occurs'.",
+      "RefinedRust (L. Gäher, M. Sammler, R. Jung, R. Krebbers, D. Dreyer, PACMPL 8(PLDI), 2024, doi:10.1145/3656422): an overflowing addition that would 'trigger a panic and abort program execution', and 'RefinedRust also verifies that no panics occur'; the text extracted from the paper PDF contains no occurrence of 'unwind'.",
+      "Aeneas (S. Ho, J. Protzenko, PACMPL 6(ICFP), 2022, doi:10.1145/3547647, arXiv:2206.07185): a panic is an 'unrecoverable error', and 'First, we ignore the drop nodes from MIR'; the text extracted from the arXiv PDF contains no occurrence of 'unwind'.",
+      "MiniRust, minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/terminators.md: an executable operational semantics that models unwinding with the terminators `StartUnwind`, `StopUnwind` and `ResumeUnwind`.",
+      "The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L56: 'unwinding past a stack frame that does not allow unwinding' is listed as undefined behaviour."
+    ],
+    "design_question": "What exactly must hold at each user-code call site: drop-safety of the frame's unwinding footprint, at destructor calls as well as closure calls. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R5-destructor-sites-needed",
+    "title": "Destructor sites count as call sites",
+    "lean": "Toy.PanicSafety.truncateLate_counterexample",
+    "lean_names": [
+      "Toy.PanicSafety.truncateLate_counterexample",
+      "Toy.PanicSafety.truncateLate_panicSafe_abort",
+      "Toy.PanicSafety.truncateLate_callbackSitesDropSafe",
+      "Toy.PanicSafety.truncateLate_panicSafeAssumingNoDtorPanic",
+      "Toy.PanicSafety.CallbackSitesDropSafe",
+      "Toy.PanicSafety.truncateLate",
+      "Toy.PanicSafety.CallSitesDropSafe",
+      "Toy.PanicSafety.ceMem1",
+      "Toy.PanicSafety.dtPanicsOn0",
+      "Toy.PanicSafety.truncateLate_sites_destructor",
+      "Toy.PanicSafety.truncateLate_dtorPanic_unwound"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "The program `truncateLate` (drop the last element, then decrement `len`) is panic-safe under `abort` and satisfies `CallbackSitesDropSafe`, yet it fails `CallSitesDropSafe` and is not panic-safe under `unwind` (`truncateLate_counterexample`). From every state (not only states satisfying `Inv`), under every callback table and every destructor table, every user-code site that `truncateLate` reaches (as produced by `exec` through `sites`) is an element-destructor site, so it reaches no callback site (`truncateLate_sites_destructor`). On the one-element container `ceMem1`, which satisfies `Inv`, with the destructor table `dtPanicsOn0`, under `unwind` and every callback table, `truncateLate` unwinds to the state `⟨[some 0], 1, [0], 0, 0⟩` (buffer `[some 0]`, `len = 1`, drop log `[0]`): the panicking destructor leaves `len` covering the cell of the dropped value `0`, and that state violates `Inv` (`truncateLate_dtorPanic_unwound`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The statement has no hypotheses. The destructor-panic run behind its `¬ PanicSafe .unwind truncateLate` conjunct, on `ceMem1` (which satisfies `Inv`) with `dtPanicsOn0`, is stated by `truncateLate_dtorPanic_unwound`.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.truncateLate_counterexample",
+      "Toy.PanicSafety.truncateLate_dtorPanic_unwound"
+    ],
+    "non_claims": [
+      "`truncateLate_dtorPanic_unwound` describes one entry state (`ceMem1`) and one destructor table (`dtPanicsOn0`); it states nothing about other entry states or destructor tables.",
+      "Does not say that dropping before updating `len` is unsafe when destructors cannot panic (`truncateLate_panicSafeAssumingNoDtorPanic`). Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "Rust 1.85.0 (rust-lang/rust 4d91de4e48198da2e33413efdcd9cd2cc0c46688), library/alloc/src/vec/mod.rs L1528-1530, `Vec::truncate` comment: 'the `len` of the vector is shrunk before calling `drop_in_place`, such that no value will be dropped twice in case `drop_in_place` were to panic once (if it panics twice, the program aborts).' derived (modeling bridge)."
+    ],
+    "design_question": "Which user-code calls count as call sites: element destructors do. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R6-leak-amplification",
+    "title": "Leak amplification is sound but leaks",
+    "lean": "Toy.PanicSafety.leakRetain_unwind_exact",
+    "lean_names": [
+      "Toy.PanicSafety.leakRetain_unwind_exact",
+      "Toy.PanicSafety.leakRetain_panicSafe_unwind",
+      "Toy.PanicSafety.leakRetain_unwound_leaks",
+      "Toy.PanicSafety.leakRetain_unwind_exact_upTo3",
+      "Toy.PanicSafety.LeakUnwindExact",
+      "Toy.PanicSafety.LeakFree",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.leakRetain",
+      "Toy.PanicSafety.specRetain",
+      "Toy.PanicSafety.leakRetain_unwind_example",
+      "Toy.PanicSafety.leakUnwindExact_pos",
+      "Toy.PanicSafety.leakUnwindExact_return_pos"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every callback table, every destructor table (panicking destructors included) and every entry state `m` satisfying `Inv`: `leakRetain` (set `len := 0`, run the raw loop, restore `len`) under `unwind` returns a state satisfying `RetainReturns (specRetain cb dt (toks m.elems)) m` if and only if `specRetain` finishes; otherwise it unwinds to a state with `len = 0`, drop log equal to the abstract `rejected` list prepended to the entry drop log, and unchanged buffer length and counters; it never aborts or reaches UB. Consequently it is panic-safe under `unwind` (`leakRetain_panicSafe_unwind`), and (`leakRetain_unwound_leaks`, same hypotheses, for an unwound state `m'`) the first `len` cells of `m'` hold no value and an entry value is in the drop log of `m'` iff the abstract retain removed it; so every entry value that was not removed is leaked (neither in the drop log nor held by the container).",
+    "hypotheses": [
+      {
+        "name": "hm : Inv m (leakRetain_unwind_exact)",
+        "purpose": "The entry container is well-formed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.leakRetain_unwind_exact_needs_inv",
+        "witness_class": "a two-cell state holding one value twice, with a keep-everything callback"
+      },
+      {
+        "name": "hm : Inv m (leakRetain_unwound_leaks)",
+        "purpose": "Entry values must not already be in the drop log.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.leakRetain_unwound_leaks_needs_inv",
+        "witness_class": "a one-element container whose value is already in the drop log, with a panic before any removal"
+      },
+      {
+        "name": "h : run .unwind cb dt leakRetain m = .unwound m' (leakRetain_unwound_leaks)",
+        "purpose": "Binds `m'` to the unwound state of the run.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "the raw-move loop invariant with `len = 0` throughout",
+    "nonvacuity_witness": "Unwind branch: `leakRetain_unwind_example` (remove, keep, panic; values `1` and `2` leaked) and `leakUnwindExact_pos`; return branch: `leakUnwindExact_return_pos`. All include `Inv ceMem3`.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.leakRetain_unwind_example",
+      "Toy.PanicSafety.leakUnwindExact_pos",
+      "Toy.PanicSafety.leakUnwindExact_return_pos"
+    ],
+    "non_claims": [
+      "'Panic-safe' does not mean 'no loss': after a panic the container is empty and values are leaked (`leakRetain_unwind_example` shows `¬ LeakFree`).",
+      "Buffer contents after an unwind are unspecified.",
+      "Leak amplification does not give the 'no resources are leaked' clause of Abrahams' basic guarantee (see R8 for the guard). Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "The Rustonomicon, rust-lang/nomicon b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/leaking.md L98-100: 'set the Vec's len to be 0 when we start the iteration, and fix it up if necessary in the destructor'; L104-105: 'We call leaks causing more leaks a *leak amplification*.'",
+      "rust-lang/rust pull request 78499, https://github.com/rust-lang/rust/pull/78499, cited by URL for context (compare R1).",
+      "'Pre-Pooping Your Pants With Rust', blog post dated April 27, 2015, https://faultlore.com/blah/everyone-poops/ (author credited on the page as Aria Desires; unpinned page).",
+      "Rust 1.85.0 (rust-lang/rust 4d91de4e48198da2e33413efdcd9cd2cc0c46688), library/alloc/src/vec/mod.rs L2132-2134 (`retain_mut`): '// Avoid double drop if the drop guard is not executed,' / '// since we may make some holes during the process.' followed by `unsafe { self.set_len(0) };`. derived (modeling bridge)."
+    ],
+    "design_question": "What leak amplification costs: every kept and unprocessed element is lost on panic. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R7-drop-guard-exact",
+    "title": "A drop guard updated before each destructor is exact on unwind",
+    "lean": "Toy.PanicSafety.guardRetain_unwind_exact",
+    "lean_names": [
+      "Toy.PanicSafety.guardRetain_unwind_exact",
+      "Toy.PanicSafety.guardRetain_panicSafe_unwind",
+      "Toy.PanicSafety.guardRetain_unwind_exact_upTo3",
+      "Toy.PanicSafety.GuardUnwindExact",
+      "Toy.PanicSafety.backshift",
+      "Toy.PanicSafety.copyRange",
+      "Toy.PanicSafety.guardLoop",
+      "Toy.PanicSafety.guardRetain",
+      "Toy.PanicSafety.guardRetain_ownerDrop_doublePanic_aborts_example",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.specRetain",
+      "Toy.PanicSafety.guardRetain_unwind_example",
+      "Toy.PanicSafety.guardRetain_dtorPanic_example",
+      "Toy.PanicSafety.guardUnwindExact_return_pos",
+      "Toy.PanicSafety.containerDrop",
+      "Toy.PanicSafety.LeakUnwindExact"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every callback table, every destructor table (panicking destructors included) and every entry state `m` satisfying `Inv`: `guardRetain` (a back-shift guard whose fields are updated before each removed element's destructor runs) under `unwind` returns a state satisfying `RetainReturns (specRetain cb dt (toks m.elems)) m` if and only if `specRetain` finishes; otherwise it unwinds to a state `m'` whose first `len` cells hold exactly the kept values followed by the unprocessed values (`toks m'.elems = kept ++ rest`), with drop log `rejected ++ m.dropped` and `Inv m'`; it never aborts or reaches UB.",
+    "hypotheses": [
+      {
+        "name": "hm : Inv m",
+        "purpose": "The entry container is well-formed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.guardRetain_unwind_exact_needs_inv",
+        "witness_class": "a two-cell state holding one value twice, with a keep-everything callback"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "loop invariant plus a memmove lemma for `copyRange`",
+    "nonvacuity_witness": "Unwind branch: `guardRetain_unwind_example` (callback panic after a removal and a move) and `guardRetain_dtorPanic_example` (destructor panic); return branch: `guardUnwindExact_return_pos`. All include `Inv` of the entry state.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.guardRetain_unwind_example",
+      "Toy.PanicSafety.guardRetain_dtorPanic_example",
+      "Toy.PanicSafety.guardUnwindExact_return_pos"
+    ],
+    "non_claims": [
+      "No hypothesis on element destructors is needed for this guard ordering; this does not extend to guards updated after the destructor (R9).",
+      "Does not cover the owner's later drop of the container while the panic propagates. In the toy, a destructor that panics there makes `containerDrop` return `.abort` by definition (`guardRetain_ownerDrop_doublePanic_aborts_example`: the guard has repaired the container, then the owner's drop aborts); that is a modelling choice, not a theorem about Rust.",
+      "`GuardUnwindExact` does not state that the buffer length and the counters are unchanged (unlike `LeakUnwindExact`); buffer cells at index `len` and beyond are unspecified.",
+      "The back-shift guard runs no destructor (its fix-up is a memory move and a `len` update); the toy guard omits the `set_len(0)` that std's `retain_mut` also performs. Omitting it relies on the guard staying in the library frame, where no instruction of user code can forget it (in `Prog`, user code is a callback table); a guard that safe code could forget is the situation of R11, and what `guardRetain` would then need is not proved here. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "Rust 1.85.0 (rust-lang/rust 4d91de4e48198da2e33413efdcd9cd2cc0c46688), library/alloc/src/vec/mod.rs L2147-2190 (`retain_mut`, `BackshiftOnDrop`): the guard's `Drop` copies the unprocessed tail down by `deleted_cnt` and sets `len` to `original_len - deleted_cnt`; L2186: 'Advance early to avoid double drop if `drop_in_place` panicked.'; L2187-2190 advance the counters and then call `ptr::drop_in_place(cur)`. derived (modeling bridge).",
+      "Rust std 1.85.0, `Drop` documentation (https://doc.rust-lang.org/1.85.0/std/ops/trait.Drop.html): 'if the drop() panics in that situation (a “double panic”), this will likely abort the program', and 'Note that even if this panics, the value is considered to be dropped'. derived (modeling bridge), hedged ('likely'); the Rust Reference at rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c states no such rule in src/panic.md or src/destructors.md."
+    ],
+    "design_question": "Whether drop guards are sound under unwinding, and under what hypothesis on destructors. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R8-drop-guard-leak-free",
+    "title": "The guard is leak-free on unwind",
+    "lean": "Toy.PanicSafety.guardRetain_unwound_leakFree",
+    "lean_names": [
+      "Toy.PanicSafety.guardRetain_unwound_leakFree",
+      "Toy.PanicSafety.guardRetain_unwound_leakFree_upTo3",
+      "Toy.PanicSafety.guardRetain_unwound_leakFree_noInv_bounded",
+      "Toy.PanicSafety.GuardUnwoundLeakFree",
+      "Toy.PanicSafety.LeakFree",
+      "Toy.PanicSafety.smallMems",
+      "Toy.PanicSafety.smallBufs",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.guardRetain",
+      "Toy.PanicSafety.guardRetain_unwind_example",
+      "Toy.PanicSafety.ceMem3",
+      "Toy.PanicSafety.grd_absRetain_mem",
+      "Toy.PanicSafety.leakRetain",
+      "Toy.PanicSafety.leakRetain_unwind_example",
+      "Toy.PanicSafety.guardRetain_unwound_leakFree_noInv"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every callback table, every destructor table and every entry state `m` satisfying `Inv`: if `guardRetain` under `unwind` unwinds to `m'`, then every value held by the first `len` cells of `m` is in the drop log of `m'` or held by the first `len` cells of `m'` (`LeakFree m m'`).",
+    "hypotheses": [
+      {
+        "name": "hm : Inv m",
+        "purpose": "Retained for meaning, not needed for the implication: `guardRetain_unwound_leakFree_noInv` proves the same conclusion for every entry state. Without `Inv m`, `LeakFree` no longer expresses 'no element is lost': a value already in the entry drop log, or one of two copies of a duplicated value, satisfies it trivially.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "h : run .unwind cb dt guardRetain m = .unwound m'",
+        "purpose": "Binds `m'` to the unwound state of the run.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "corollary of R7 plus the fact that the abstract retain loses no element (`grd_absRetain_mem`)",
+    "nonvacuity_witness": "`guardRetain_unwind_example` (entry `ceMem3` satisfies `Inv`; callback panic after a removal and a move).",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.guardRetain_unwind_example"
+    ],
+    "non_claims": [
+      "Leak-freedom is about the unwound state, before the owner drops the container.",
+      "The statement without `Inv m` is proved (`guardRetain_unwound_leakFree_noInv`, and on a finite family by `guardRetain_unwound_leakFree_noInv_bounded`), but off `Inv` its conclusion is weak: it does not say that no element is lost, because a value already in the entry drop log, or one of two copies of a duplicated value, satisfies `LeakFree` trivially.",
+      "Says nothing about `leakRetain`, which is not leak-free (`leakRetain_unwind_example`). Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "D. Abrahams, 'Exception-Safety in Generic Components', in Generic Programming, LNCS 1766, Springer 2000, pp. 69-79, doi:10.1007/3-540-39953-4_6 (full text not inspected). The guarantee wording is quoted from the version hosted by Boost, boostorg/website 5946dc4e147a8a7738ac5f2be7c84c4c4762112e, community/exception_safety.html L224-225: 'The *basic* guarantee: that the invariants of the component are preserved, and no resources are leaked.' (identity with the LNCS wording not verified). derived (modeling bridge): R7 with R8 is the toy analogue of the basic guarantee for this operation."
+    ],
+    "design_question": "What drop guards cost compared with leak amplification: no element is lost. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R9-late-guard-panic-safe-with-nonpanicking-destructors",
+    "title": "A guard updated after each destructor is panic-safe when no destructor panics",
+    "lean": "Toy.PanicSafety.guardRetainLate_panicSafe_unwind_of_noPanickingDtors",
+    "lean_names": [
+      "Toy.PanicSafety.guardRetainLate_panicSafe_unwind_of_noPanickingDtors",
+      "Toy.PanicSafety.guardRetainLate_panicSafe_upTo3",
+      "Toy.PanicSafety.guardLoopLate_eq_guardLoop_of_noPanickingDtors",
+      "Toy.PanicSafety.PanicSafeAssumingNoDtorPanic",
+      "Toy.PanicSafety.NoPanickingDtors",
+      "Toy.PanicSafety.guardRetainLate",
+      "Toy.PanicSafety.guardLoopLate",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.guardRetainLate_noPanic_example",
+      "Toy.PanicSafety.ceMem3",
+      "Toy.PanicSafety.dtPanicsOn0"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every callback table, every destructor table in which no destructor panics (`NoPanickingDtors dt`), and every entry state satisfying `Inv`: `guardRetainLate` (the back-shift guard updated after each removed element's destructor returns) under `unwind` reaches no UB, and a return or an unwind leaves `Inv`.",
+    "hypotheses": [
+      {
+        "name": "NoPanickingDtors dt (inside PanicSafeAssumingNoDtorPanic)",
+        "purpose": "A destructor panic between the drop and the guard update leaves the guard's fields stale.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.guardRetainLate_dtorPanic_counterexample",
+        "witness_class": "a one-element container whose destructor panics (`dtPanicsOn0`)"
+      },
+      {
+        "name": "Inv m (inside PanicSafeAssumingNoDtorPanic)",
+        "purpose": "The entry container is well-formed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.guardRetainLate_needs_inv",
+        "witness_class": "a two-cell state holding one value twice, with non-panicking destructors"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "with non-panicking destructors the late loop has the same outcome as the early loop (`guardLoopLate_eq_guardLoop_of_noPanickingDtors`), then R7",
+    "nonvacuity_witness": "`guardRetainLate_noPanic_example` (non-panicking table, entry `ceMem3` satisfying `Inv`, callback panic after a removal).",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.guardRetainLate_noPanic_example"
+    ],
+    "non_claims": [
+      "Does not say every guard needs non-panicking destructors: the ordering of R7 does not.",
+      "The tightness witness is one destructor table (`dtPanicsOn0`); which other panicking tables break `guardRetainLate` is not characterized here.",
+      "Does not identify the code path of any standard-library defect. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "CVE-2021-31162, https://nvd.nist.gov/vuln/detail/CVE-2021-31162; rust-lang/rust issue 83618, https://github.com/rust-lang/rust/issues/83618; rust-lang/rust pull request 83629, https://github.com/rust-lang/rust/pull/83629. Cited by URL for context and described no further here."
+    ],
+    "design_question": "Element destructors are user code: updating guard bookkeeping before them suffices (R7); updating it after them suffices when no destructor panics (R9) and fails for the destructor table `dtPanicsOn0`. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R11-destructor-reliant-drain-forget-counterexample",
+    "title": "The toy destructor-reliant drain reaches UB once `forgetGuard` is available",
+    "lean": "Toy.PanicSafety.destructorReliantDrain_forget_reachesUB",
+    "lean_names": [
+      "Toy.PanicSafety.destructorReliantDrain_forget_reachesUB",
+      "Toy.PanicSafety.leakAmplifiedDrain_forgetClient_ok",
+      "Toy.PanicSafety.forgetClient",
+      "Toy.PanicSafety.clientRun",
+      "Toy.PanicSafety.crun",
+      "Toy.PanicSafety.cstep",
+      "Toy.PanicSafety.cend",
+      "Toy.PanicSafety.ceMem1",
+      "Toy.PanicSafety.Inv"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "In the toy client language, all of whose instructions are safe operations, the client `forgetClient` = `[.drain, .next, .dropVal, .forgetGuard]` (drain, take one value, drop it, forget the guard) run against the destructor-reliant drain on the one-element container `ceMem1` (which satisfies `Inv`) reaches UB (the owner's drop drops value `0` a second time).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "`decide` on one run",
+    "nonvacuity_witness": "The instance itself; `leakAmplifiedDrain_forgetClient_ok` runs the same client against the leak-amplified drain without UB.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.destructorReliantDrain_forget_reachesUB",
+      "Toy.PanicSafety.leakAmplifiedDrain_forgetClient_ok"
+    ],
+    "positive_control_lean": [
+      "Toy.PanicSafety.leakAmplifiedDrain_noUB",
+      "Toy.PanicSafety.destructorReliantDrain_noUB_withoutForgetGuard",
+      "Toy.PanicSafety.closureScopedDrain_panicSafe_unwind"
+    ],
+    "non_claims": [
+      "A statement about one API and one client in one toy client language; it does not prove that every destructor-reliant API is unsound.",
+      "Of the positive controls, R12 and R13 are about the client language; R14 (`closureScopedDrain_panicSafe_unwind`) is about `drainWith`, a program of `Prog`, in which user code is a callback table and has no instruction that reaches the library's guard. R14 therefore does not run the client `forgetClient` or any other client program.",
+      "The toy shows a sequential double drop and has no threads; it is not a statement about rust-lang/rust issue 24292 (https://github.com/rust-lang/rust/issues/24292), which is cited for context.",
+      "`Rc` cycles are not modelled; safe `forget` stands in for every safe way to leak.",
+      "The client language has no panics and non-panicking destructors.",
+      "Escape hatches not modelled: types that cannot be leaked (linear rather than affine types), and the `Pin` drop guarantee, which requires `drop` to run before the memory of a pinned value is invalidated or reused (std 1.85.0 `std::pin` documentation) while still allowing pinned values to be leaked. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "RFC 1066, rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/1066-safe-mem-forget.md L9-10: 'Explicitly state that it is not considered unsafe behavior to not run destructors.'",
+      "rust-lang/rust issue 24292, https://github.com/rust-lang/rust/issues/24292 (2015), cited by URL for context.",
+      "The Rustonomicon, rust-lang/nomicon b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/leaking.md L36-37: 'However *unsafe* code cannot rely on destructors to be run in order to be safe.'",
+      "The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-not-considered-unsafe.md L6: 'Leaks of memory and other resources' and L7: 'Exiting without calling destructors'.",
+      "Rust std 1.85.0, `std::mem::forget` documentation (source rust-lang/rust 4d91de4e48198da2e33413efdcd9cd2cc0c46688, library/core/src/mem/mod.rs L52-53): 'Because forgetting a value is allowed, any `unsafe` code you write must allow for this possibility.' derived (modeling bridge).",
+      "Rust std 1.85.0, std::pin module documentation, section 'Drop guarantee' (https://doc.rust-lang.org/1.85.0/std/pin/index.html): 'in any situation where we may want to overwrite a pinned value, that value’s drop must be called beforehand' and 'leaking memory in such a way that its underlying storage will never get invalidated or re-used is still fine'.",
+      "J. A. Tov, R. Pucella, 'Practical affine types', POPL 2011, pp. 447-458, doi:10.1145/1926385.1926436 (metadata verified; full text not inspected); A. Desires, 'The Pain Of Real Linear Types in Rust', blog post dated May 8, 2017, https://faultlore.com/blah/linear-rust/ (unpinned page)."
+    ],
+    "design_question": "What a safe API can never rely on: that a destructor of a value handed to safe code runs. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R12-leak-amplified-drain-sound",
+    "title": "The leak-amplified drain reaches no UB under safe `forget`",
+    "lean": "Toy.PanicSafety.leakAmplifiedDrain_noUB",
+    "lean_names": [
+      "Toy.PanicSafety.leakAmplifiedDrain_noUB",
+      "Toy.PanicSafety.leakAmplifiedDrain_noUB_upTo4",
+      "Toy.PanicSafety.DrainClientInv",
+      "Toy.PanicSafety.cl_crun_ne_ub",
+      "Toy.PanicSafety.cl_clientInv_init",
+      "Toy.PanicSafety.dropIdxRange",
+      "Toy.PanicSafety.dropToks",
+      "Toy.PanicSafety.COut",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.leakAmplifiedDrain_forgetClient_ok",
+      "Toy.PanicSafety.ceMem1",
+      "Toy.PanicSafety.leakAmplifiedDrain_forgetGuard_leaks"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every client program `prog` and every entry state `m` satisfying `Inv`: running `prog` against the leak-amplified drain (`clientRun .leakAmplified prog m`) does not reach UB; the run completes (`.ok`) or is rejected as ill-typed (`.rejected`, a compile error in the toy).",
+    "hypotheses": [
+      {
+        "name": "hm : Inv m",
+        "purpose": "The entry container is well-formed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.drainClients_need_inv",
+        "witness_class": "the empty program on a two-cell state holding one value twice"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "client-state invariant `DrainClientInv` preserved by every instruction",
+    "nonvacuity_witness": "`leakAmplifiedDrain_forgetClient_ok` (entry `ceMem1` satisfies `Inv`; the program completes).",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.leakAmplifiedDrain_forgetClient_ok"
+    ],
+    "non_claims": [
+      "Says nothing about leaks. Forgetting the guard can leak the elements not yet taken out: `leakAmplifiedDrain_forgetGuard_leaks` exhibits one such run (on `ceMem1`, which satisfies `Inv`, the program `[.drain, .forgetGuard]` completes with value `0` neither dropped nor within `len`); a general statement about which elements leak is not proved here.",
+      "The client language has no panics and its destructors do not panic; nothing is said about a drain guard whose destructor panics part-way.",
+      "`.rejected` outcomes are not UB but are not successful runs either. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "As R6 and R11 (Rustonomicon 'Leaking', drain). derived (modeling bridge)."
+    ],
+    "design_question": "Which repair makes a guard-returning API sound under safe leaking. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R13-destructor-reliant-drain-sound-without-forgetGuard",
+    "title": "Without `forgetGuard`, the destructor-reliant drain reaches no UB",
+    "lean": "Toy.PanicSafety.destructorReliantDrain_noUB_withoutForgetGuard",
+    "lean_names": [
+      "Toy.PanicSafety.destructorReliantDrain_noUB_withoutForgetGuard",
+      "Toy.PanicSafety.destructorReliantDrain_noUB_withoutForgetGuard_upTo4",
+      "Toy.PanicSafety.destructorReliantDrain_forgetVal_example",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.destructorReliantDrain_noForget_example",
+      "Toy.PanicSafety.ceMem1"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every client program `prog` that does not contain `forgetGuard` (it may contain `forgetVal`) and every entry state `m` satisfying `Inv`: running `prog` against the destructor-reliant drain does not reach UB; the run completes or is rejected as ill-typed.",
+    "hypotheses": [
+      {
+        "name": "hm : Inv m",
+        "purpose": "The entry container is well-formed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.drainClients_need_inv",
+        "witness_class": "the empty program on a two-cell state holding one value twice"
+      },
+      {
+        "name": "hforget : CInstr.forgetGuard ∉ prog",
+        "purpose": "Forgetting the guard skips the destructor the API relies on.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.destructorReliantDrain_forget_reachesUB",
+        "witness_class": "a four-instruction client on a one-element container"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "the client-state invariant of R12, with the `forgetGuard` case excluded",
+    "nonvacuity_witness": "`destructorReliantDrain_noForget_example` (entry `ceMem1` satisfies `Inv`; the program has no `forgetGuard`); `destructorReliantDrain_forgetVal_example` (a program using `forgetVal`).",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.destructorReliantDrain_noForget_example",
+      "Toy.PanicSafety.destructorReliantDrain_forgetVal_example"
+    ],
+    "non_claims": [
+      "Excluding `forgetGuard` is a property of the toy language. In Rust a value can be leaked without `mem::forget`: the std 1.85.0 `mem::forget` documentation (rust-lang/rust 4d91de4e48198da2e33413efdcd9cd2cc0c46688, library/core/src/mem/mod.rs L43-44, where `Rc` and `process::exit` are written as intra-doc links) says that 'a program can create a reference cycle using `Rc`, or call `process::exit` to exit without running destructors'. That excluding one function would therefore not restore the guarantee in Rust is derived (modeling bridge) and not proved here.",
+      "The client language has no panics and its destructors do not panic. The destructor-reliant guard drops the remaining elements before it sets `len := 0`; with a destructor that could panic part-way, the already-dropped cells would still be within `len` (not proved here; compare R5 and R9).",
+      "`.rejected` outcomes are not UB but are not successful runs either. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "The Rustonomicon, rust-lang/nomicon b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/leaking.md L31-33: 'there are many ways to fail to call a destructor in safe code. The most famous example is creating a cycle of reference-counted pointers using interior mutability.' and L36-37: 'However *unsafe* code cannot rely on destructors to be run in order to be safe.' derived (modeling bridge).",
+      "Rust std 1.85.0, `std::mem::forget` documentation (source rust-lang/rust 4d91de4e48198da2e33413efdcd9cd2cc0c46688, library/core/src/mem/mod.rs L41-44), section 'Safety'. derived (modeling bridge).",
+      "rust-lang/rust issue 24292, https://github.com/rust-lang/rust/issues/24292, cited by URL for context."
+    ],
+    "design_question": "Confirms that, in the toy, the guard-forgetting operation is what breaks destructor-reliant soundness. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R14-closure-scoped-api-sound",
+    "title": "A closure-scoped drain is panic-safe under unwinding",
+    "lean": "Toy.PanicSafety.closureScopedDrain_panicSafe_unwind",
+    "lean_names": [
+      "Toy.PanicSafety.closureScopedDrain_panicSafe_unwind",
+      "Toy.PanicSafety.closureScopedDrain_panicSafe_unwind_upTo3",
+      "Toy.PanicSafety.tailFix",
+      "Toy.PanicSafety.drainWithLoop",
+      "Toy.PanicSafety.drainWith",
+      "Toy.PanicSafety.dw_loop",
+      "Toy.PanicSafety.dw_inv_fix",
+      "Toy.PanicSafety.dw_copyRange_getElem?_shift",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.closureScopedDrain_example",
+      "Toy.PanicSafety.ceMem3",
+      "Toy.PanicSafety.Prog",
+      "Toy.PanicSafety.ResOk"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every callback table (callbacks may drop or forget each element they receive, or panic while owning it), every destructor table, and every entry state satisfying `Inv`: the closure-scoped drain `drainWith`, which keeps its guard in the library frame, run under `unwind`, reaches no UB, and a return or an unwind leaves `Inv` (`PanicSafe .unwind drainWith`).",
+    "hypotheses": [
+      {
+        "name": "Inv m (inside PanicSafe)",
+        "purpose": "The entry container is well-formed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.drainWith_needs_inv",
+        "witness_class": "a two-cell state holding one value twice (unwinds to a non-`Inv` state), and a one-cell container with an uninitialized cell (UB)"
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "loop invariant: the buffer is never modified, and every value added to the drop log comes from an index below the cursor",
+    "nonvacuity_witness": "`closureScopedDrain_example` (entry `ceMem3` satisfies `Inv`; forget one element, panic while holding the next; the unprocessed element stays in the container).",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.closureScopedDrain_example"
+    ],
+    "non_claims": [
+      "`drainWith` is a program of `Prog`, not of the client language of R11-R13; user code in `Prog` has no instruction that reaches the library's guard, so 'the guard cannot be forgotten' holds by construction. The callbacks can forget elements (`forgetVal`).",
+      "The theorem is panic safety (`ResOk`); it gives no functional specification of `drainWith`.",
+      "On unwind the toy guard moves the unprocessed elements back to the front of the container; it does not model guards that drop them. Guard fix-ups (`Guard.fix`) are pure functions of `(buf, len)`: a guard cannot run element destructors, panic, read or change the drop log, or reach UB. Guards that drop elements (for instance a drain's drop guard) are not programs of `Prog`; this result says nothing about them.",
+      "Not modelled: asynchronous closure-scoped APIs, where a suspended future can be leaked; and deallocating a stack frame without running its destructors (for instance with C `longjmp`), which the Rust Reference says the runtime assumes does not happen.",
+      "Not a proof about `std::thread::scope`. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "Rust std 1.85.0, std::thread::scope (https://doc.rust-lang.org/1.85.0/std/thread/fn.scope.html): 'All threads spawned within the scope that haven’t been manually joined will be automatically joined before this function returns.' derived (modeling bridge).",
+      "RFC 3151, rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/3151-scoped-threads.md L32-33: 'the old scoped threads could be fixed by relying on closures rather than guards to ensure spawned threads get automatically joined'.",
+      "The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L67: 'The runtime assumes that a Rust stack frame is not deallocated without executing destructors for local variables owned by the stack frame. This assumption can be violated by C functions like `longjmp`.'",
+      "Without Boats, 'The Scoped Task trilemma', blog post dated April 8, 2023, https://without.boats/blog/the-scoped-task-trilemma/ (unpinned page): 'every object in Rust can be leaked without running its destructor'."
+    ],
+    "design_question": "Which API shape survives safe leaking: cleanup run by the library's own frame. Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  },
+  {
+    "id": "R15-memory-panic-safety-does-not-preserve-logical-invariant",
+    "title": "Memory panic safety does not imply preservation of a logical invariant on unwind",
+    "lean": "Toy.PanicSafety.panicSafe_unwind_but_countersAgree_broken",
+    "lean_names": [
+      "Toy.PanicSafety.panicSafe_unwind_but_countersAgree_broken",
+      "Toy.PanicSafety.bumpBoth",
+      "Toy.PanicSafety.CountersAgree",
+      "Toy.PanicSafety.bumpBoth_needs_inv",
+      "Toy.PanicSafety.Inv",
+      "Toy.PanicSafety.bumpBoth_unwind_example"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every callback table, destructor table and entry state satisfying `Inv`, `bumpBoth` (increment `ctrA`, call user code, increment `ctrB`) run under `unwind` reaches no UB, and a return or an unwind leaves `Inv` (`PanicSafe .unwind bumpBoth`); and there are a callback table, a destructor table and a state satisfying `Inv` and `CountersAgree` for which the run `run .unwind cb dt bumpBoth m` unwinds to a state violating `CountersAgree`.",
+    "hypotheses": [
+      {
+        "name": "Inv m (inside PanicSafe .unwind bumpBoth)",
+        "purpose": "The entry container is well-formed.",
+        "tightness": "tight",
+        "counterexample": "Toy.PanicSafety.bumpBoth_needs_inv",
+        "witness_class": "a two-cell state holding one value twice"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "`Inv` ignores the counters by definition; reference point",
+    "nonvacuity_witness": "`bumpBoth_unwind_example`.",
+    "nonvacuity_witness_lean": [
+      "Toy.PanicSafety.bumpBoth_unwind_example"
+    ],
+    "non_claims": [
+      "Shows one direction: memory panic safety does not imply that a logical invariant is preserved on unwind. The converse question is not addressed here.",
+      "`catch_unwind`, `UnwindSafe` and `AssertUnwindSafe` are not modelled. The std documentation describes `UnwindSafe` as 'mostly an advisory'; no statement here depends on it.",
+      "Does not say logical invariants never matter for soundness: if unsafe code relied on `CountersAgree` it would be a memory-safety invariant and R4 would apply to it. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust, its standard library, or any Rust program."
+    ],
+    "prior_art": [
+      "Rust std 1.85.0, std::panic::UnwindSafe (https://doc.rust-lang.org/1.85.0/std/panic/trait.UnwindSafe.html): 'in the absence of unsafe code, a panic cannot lead to memory unsafety'; 'this is not an unsafe trait, so there is not a succinct contract that this trait is providing'; 'the lack of unsafe means it is mostly an advisory. The AssertUnwindSafe wrapper struct can be used to force this trait to be implemented for any closed over variables passed to catch_unwind.' derived (modeling bridge).",
+      "RFC 1236, rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/1236-stabilize-catch-panic.md L135-138: 'panic safety in Rust is not solely limited to memory safety. *Logical invariants* are often just as critical to keep correct during execution and no `unsafe` code in Rust is needed to break a logical invariant.'",
+      "The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-not-considered-unsafe.md L26 (section 'Logic errors'): 'If a program breaks such a constraint, the behavior may be unspecified but will not result in undefined behavior.'"
+    ],
+    "design_question": "Which invariants must be restored on unwind: memory-safety ones; logical ones need not be (reference point). Unsafe library code breaks a container's safety invariant temporarily and calls user code in between, and under unwinding drop glue then runs on the broken state. What must hold at each user-code call site, which repair patterns (drop guards, leak amplification, abort-on-panic) are sound in the toy and what each costs, and what a safe API can never rely on once leaking is safe?"
+  }
+]
