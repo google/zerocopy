@@ -10,12 +10,12 @@ Small facts that delimit what the main results of the package say.
   commuting `*` past `∧`, not about the conjunction rule.
 * Locality does not preserve termination: a local command may terminate on the
   empty heap and have no outcome on every larger heap.
-* Degenerate separation structures make locality and precision vacuous: with
-  empty disjointness every command is local and every assertion precise; without
-  a unit even the always-true assertion can be precise.
+* Degenerate separation structures make locality and precision vacuous: for the
+  empty-disjointness structure on `Unit` every command is local and every assertion
+  precise; without a unit even the always-true assertion can be precise.
 * `Precise`, `UniqueFrame` and `ConjDistrib` put `R` on the right of `*`. Their
   left-handed variants coincide with them under `DisjSymm` and `UnionComm`, and
-  can differ without these laws, even in cancellative structures.
+  can differ without these laws, even in right- or left-cancellative structures.
 -/
 
 namespace Toy.Sep
