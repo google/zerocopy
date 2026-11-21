@@ -1,0 +1,965 @@
+[
+ {
+  "id": "tightAt_iff_witness_violates_exactly_i_of_sufficient",
+  "lean": "Toy.Ledger.tightAt_iff_witness_violates_exactly_i_of_sufficient",
+  "lean_names": [
+   "Toy.Ledger.Sufficient",
+   "Toy.Ledger.TightAt",
+   "Toy.Ledger.NecessaryAt",
+   "Toy.Ledger.UnweakenableAt",
+   "Toy.Ledger.IsolatingAt",
+   "Toy.Ledger.pinH",
+   "Toy.Ledger.pinC",
+   "Toy.Ledger.falseC",
+   "Toy.Ledger.sufficient_pin",
+   "Toy.Ledger.not_sufficient_single_le_one",
+   "Toy.Ledger.tightAt_pin_h1",
+   "Toy.Ledger.tightAt_pin_h2",
+   "Toy.Ledger.not_tightAt_pinWeak_h1",
+   "Toy.Ledger.topH"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "Suppose the hypotheses H suffice for C. Then (1) every model that satisfies every hypothesis other than i and violates C also violates H i, so it violates H i and no other hypothesis; and (2) hypothesis i is tight (some model satisfies every other hypothesis and violates C) exactly when some model satisfies every other hypothesis and violates both H i and C.",
+  "hypotheses": [
+   {
+    "name": "hs : Sufficient H C",
+    "purpose": "Without sufficiency a tightness witness may satisfy H i itself (it is then a counterexample to the theorem, not a witness about H i).",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.tightAt_iff_witness_violates_exactly_i_ce_not_sufficient",
+    "witness_class": "a one-hypothesis family over Unit, True ⊢ False (the theorem is false)"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "x ≥ 1, x ≤ 1 ⊢ x = 1 over Nat is sufficient; h1 (x ≥ 1) is tight with witness x = 0, which satisfies x ≤ 1 and violates x ≥ 1 and x = 1.",
+  "nonvacuity_witness_lean": "Toy.Ledger.tightAt_iff_witness_violates_exactly_i_nonvacuity",
+  "non_claims": [
+   "Does not say that H i is necessary for C (NecessaryAt) or cannot be weakened (UnweakenableAt); see tight_necessary_unweakenable_six_combinations.",
+   "Speaks about the model type over which TightAt is evaluated; for a reference class see the relativized results (sufficientIn_antitone_and_tightIn_monotone).",
+   "Does not say that the witness is unique or canonical, or that it violates C 'because of' H i in any causal sense.",
+   "Without sufficiency the conclusion can fail: tightAt_iff_witness_violates_exactly_i_ce_not_sufficient proves that the conjunction of the two parts fails for True ⊢ False over Unit, where the only model is a tightness witness and satisfies H i.",
+   "The model treats hypotheses as a non-dependent family H : ι → M → Prop. A Lean theorem whose later binders mention proofs of earlier ones, (h₁ : H₁ x) → (h₂ : H₂ x h₁) → C x, must first be turned into such a family, and the choice changes the ledger: with H₂' x := ∃ h₁ : H₁ x, H₂ x h₁ the other hypothesis entails H₁, so H₁ is not tight whenever the theorem holds (unweakenableAt_and_not_tightAt_iff_entailed_by_others_of_sufficient, right to left); with H₂' x := ∀ h₁ : H₁ x, H₂ x h₁, H₂' holds wherever H₁ fails, so H₁ is tight as soon as some model violates both H₁ and C (not proved here).",
+   "Uses classical logic: the proof uses Classical.em (j = i) for an arbitrary index type ι (no decidable equality on ι is assumed)."
+  ],
+  "prior_art": [
+   "David Hilbert, The Foundations of Geometry, authorized translation by E. J. Townsend, Open Court, 1902 (Project Gutenberg eBook #17384), Chapter II, sections 10-12; section 12: 'In order to demonstrate the independence of the axiom of Archimedes, we must produce a geometry in which all of the axioms are fulfilled with the exception of the one in question.' Hilbert's independence of an axiom does not mention a conclusion (it is IsolatingAt here); TightAt is relative to a conclusion.",
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "Given a theorem that holds, what exactly does a 'tight' entry in its hypothesis ledger assert about the witness model?"
+ },
+ {
+  "id": "tightAt_iff_not_sufficient_without",
+  "lean": "Toy.Ledger.tightAt_iff_not_sufficient_without",
+  "lean_names": [
+   "Toy.Ledger.restrict",
+   "Toy.Ledger.sufficient_restrict_sumVocab_h1h2",
+   "Toy.Ledger.not_sufficient_restrict_sumVocab_h1",
+   "Toy.Ledger.irredundant_of_not_sufficient",
+   "Toy.Ledger.dup_each_not_tight_but_both_needed",
+   "Toy.Ledger.geH",
+   "Toy.Ledger.geH_sufficient_no_irredundant_sufficient_subfamily"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For any hypothesis family H, conclusion C and index i, hypothesis i is tight exactly when the family with H i deleted (indexed by {j // j ≠ i}) is not sufficient for C. No assumption that the full family is sufficient is used.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "x ≥ 1, x ≤ 1 ⊢ x = 1 over Nat, i = h1: both sides hold (deleting x ≥ 1 leaves x ≤ 1, which does not give x = 1).",
+  "nonvacuity_witness_lean": "Toy.Ledger.tightAt_iff_not_sufficient_without_nonvacuity",
+  "non_claims": [
+   "Does not say that the full family is sufficient; when it is not, every hypothesis is tight (irredundant_of_not_sufficient).",
+   "Concerns deleting H i alone. Non-tight hypotheses cannot in general be deleted together: in x = 1, x = 1 ⊢ x = 1 neither hypothesis is tight, yet the empty family is not sufficient (dup_each_not_tight_but_both_needed). An infinite sufficient family need not contain any sufficient, irredundant subfamily (geH_sufficient_no_irredundant_sufficient_subfamily: the hypotheses i ≤ x for all i : Nat suffice for False).",
+   "Says nothing about replacing H i by a weaker premise (see weakestPremise_is_weakest_replacement).",
+   "Uses classical logic (the right side is a negated universal).",
+   "Relation to syntactic linters (derived, modeling bridge; not proved here). Consider a Lean declaration whose proof is transitively free of sorryAx and depends on no axioms beyond propext, Classical.choice and Quot.sound, and whose hypotheses are curried, non-dependent Prop binders over the model variable (no later binder and not the conclusion mentions the proof of hypothesis i). If its elaborated proof term never uses hypothesis i, the same term proves the statement with hypothesis i deleted, that is, the family without H i is sufficient, so i is not tight by this result. The converse does not hold (not proved here): a proof may use a hypothesis that is not tight. An unused-argument report is therefore evidence about one proof of one statement: it can indicate that a hypothesis is not tight, and it does not certify tightness. The sorry checks of Lean's linter.unusedVariables and of Batteries' unusedArguments look for sorry syntactically in the declaration itself, so a declaration that calls a sorry-tainted lemma passes them without meeting the condition above.",
+   "The model treats hypotheses as a non-dependent family H : ι → M → Prop. A Lean theorem whose later binders mention proofs of earlier ones, (h₁ : H₁ x) → (h₂ : H₂ x h₁) → C x, must first be turned into such a family, and the choice changes the ledger: with H₂' x := ∃ h₁ : H₁ x, H₂ x h₁ the other hypothesis entails H₁, so H₁ is not tight whenever the theorem holds (unweakenableAt_and_not_tightAt_iff_entailed_by_others_of_sufficient, right to left); with H₂' x := ∀ h₁ : H₁ x, H₂ x h₁, H₂' holds wherever H₁ fails, so H₁ is tight as soon as some model violates both H₁ and C (not proved here)."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary.",
+   "Lean 4 core unused-variables linter (option linter.unusedVariables), leanprover/lean4 commit 5045d0056413266e57c625dcd7c365b10e377c52 (the v4.34.1 toolchain), src/Lean/Linter/UnusedVariables.lean: 'reports any local variables that are never referred to, using information from the info tree'. Batteries environment linter unusedArguments, leanprover-community/batteries commit 4a314aed8362bd744e129ac93e4174b288811db6, Batteries/Tactic/Lint/Misc.lean: checks whether each argument occurs in the elaborated value or type, skipping declarations that contain sorry. Both are syntactic, proof-relative checks (their relation to this result is a prose argument: derived, modeling bridge)."
+  ],
+  "design_question": "Is 'tight' the same as 'the theorem fails without this hypothesis'? (Yes, relative to the stated model type: TightAt H C i holds exactly when the family without H i is not sufficient. Reference point.)"
+ },
+ {
+  "id": "irredundant_iff_no_proper_subfamily_sufficient",
+  "lean": "Toy.Ledger.irredundant_iff_no_proper_subfamily_sufficient",
+  "lean_names": [
+   "Toy.Ledger.Irredundant",
+   "Toy.Ledger.single",
+   "Toy.Ledger.irredundant_pin",
+   "Toy.Ledger.not_irredundant_dup",
+   "Toy.Ledger.irredundant_dup_true_false",
+   "Toy.Ledger.irredundant_sufficient_subfamilies_no_candidate_equals_conclusion"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For any hypothesis family H and conclusion C, every hypothesis is tight exactly when no proper subfamily of H (one omitting at least one hypothesis, possibly many) is sufficient for C. So one single-deletion witness per hypothesis certifies that no deletion of a nonempty set of hypotheses keeps C.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "x ≥ 1, x ≤ 1 ⊢ x = 1: sufficient and irredundant; the empty subfamily is not sufficient.",
+  "nonvacuity_witness_lean": "Toy.Ledger.irredundant_iff_no_proper_subfamily_sufficient_nonvacuity",
+  "non_claims": [
+   "Irredundance does not include sufficiency: every false theorem is irredundant, even with duplicated trivial hypotheses (irredundant_of_not_sufficient; irredundant_dup_true_false: True, True ⊢ False over Unit is irredundant and non-vacuous). Inclusion-minimality among sufficient families needs Sufficient H C in addition.",
+   "Inclusion-minimal is not minimum-size and not unique: a different, smaller sufficient family over the same vocabulary may exist (irredundant_sufficient_subfamilies_of_sizes_two_and_one), also when no candidate hypothesis is equivalent to the conclusion (irredundant_sufficient_subfamilies_no_candidate_equals_conclusion).",
+   "Non-tight hypotheses cannot in general be deleted together: in x = 1, x = 1 ⊢ x = 1 neither hypothesis is tight, yet the empty family is not sufficient (dup_each_not_tight_but_both_needed). An infinite sufficient family need not contain any sufficient, irredundant subfamily (geH_sufficient_no_irredundant_sufficient_subfamily: the hypotheses i ≤ x for all i : Nat suffice for False).",
+   "Minimality is with respect to deleting hypotheses; it says nothing about replacing hypotheses by weaker ones (see the unweakenability results).",
+   "Does not imply non-vacuity: a vacuous family can be sufficient and irredundant (irredundant_vacuous_and_nonvacuous_tightless).",
+   "Does not imply that the family is independent in the all-truth-patterns sense (irredundance_independence_isolation_countermodels)."
+  ],
+  "prior_art": [
+   "Mathlib (leanprover-community/mathlib4 commit 3eae40f5eb25c5934211edf662d3b24c5afbe47a): Mathlib/Order/Minimal.lean line 348, Set.minimal_iff_forall_sdiff_singleton (for a predicate P on sets that is closed under supersets, Minimal P s <-> P s and no s \\ {{x}} with x in s satisfies P); line 300, Minimal.eq_of_superset (Minimal P s -> P t -> t ⊆ s -> s = t); Mathlib/Order/Antichain.lean line 313, setOfPred_minimal_antichain (the minimal elements of a predicate form an antichain). These are the order-theoretic forms of the statements here, with P = sufficiency of a subfamily.",
+   "Sven Ove Hansson, \"Kernel contraction\", Journal of Symbolic Logic 59(3):845-859, 1994, DOI 10.2307/2275912. Kernel contraction acts on the alpha-kernels of a belief base B, its inclusion-minimal subsets implying alpha (definition as restated in Renata Wassermann, \"Local Diagnosis\", arXiv:cs/0003051, 2000, Definition 1). A sufficient, irredundant subfamily of a vocabulary is the analogue of an alpha-kernel, with implication read semantically over the model type.",
+   "Alexey Ignatiev, Nina Narodytska, Joao Marques-Silva, \"Abduction-Based Explanations for Machine Learning Models\", Proceedings of the AAAI Conference on Artificial Intelligence 33(01):1511-1519, 2019, DOI 10.1609/aaai.v33i01.33011511. Definition 1: the explanations are the subsets S of the hypotheses H with F ∧ S consistent and F ∧ S entailing E; subset-minimal and cardinality-minimal explanations are distinguished.",
+   "Mark H. Liffiton, Karem A. Sakallah, \"Algorithms for Computing Minimal Unsatisfiable Subsets of Constraints\", Journal of Automated Reasoning 40(1):1-33, 2008 (online 2007), DOI 10.1007/s10817-007-9084-z. Abstract: a sound and complete algorithm 'for producing all MUSes of an unsatisfiable constraint system'; complete results can be intractably large."
+  ],
+  "design_question": "For a theorem that holds, does an all-tight ledger certify that its hypothesis set is minimal, and in what sense? (Inclusion-minimal among sufficient subfamilies; not minimum-size, not unique.)"
+ },
+ {
+  "id": "sufficient_irredundant_nonVacuous_iff_minimalUnsatisfiable",
+  "lean": "Toy.Ledger.sufficient_irredundant_nonVacuous_iff_minimalUnsatisfiable",
+  "lean_names": [
+   "Toy.Ledger.NonVacuous",
+   "Toy.Ledger.MinimalUnsatisfiable",
+   "Toy.Ledger.withNegatedConclusion",
+   "Toy.Ledger.nonVacuous_pin",
+   "Toy.Ledger.not_nonVacuous_vac",
+   "Toy.Ledger.minimalUnsatisfiable_pin",
+   "Toy.Ledger.not_minimalUnsatisfiable_vac"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For any H and C: the theorem holds, every hypothesis is tight, and the hypotheses are jointly satisfiable exactly when the family {H i | i} together with the negated conclusion ¬ C is minimally unsatisfiable (unsatisfiable, and every proper subfamily satisfiable). Deleting H i corresponds to tightness of i and deleting ¬ C to non-vacuity.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "x ≥ 1, x ≤ 1 ⊢ x = 1: both sides hold.",
+  "nonvacuity_witness_lean": "Toy.Ledger.sufficient_irredundant_nonVacuous_iff_minimalUnsatisfiable_nonvacuity",
+  "non_claims": [
+   "The non-vacuity conjunct cannot be dropped: x = 1, x = 2 ⊢ False on Fin 3 is sufficient and irredundant, but its family with the negated conclusion is not minimally unsatisfiable (irredundant_vacuous_and_nonvacuous_tightless).",
+   "A minimal unsatisfiable subset extracted from a larger unsatisfiable pool H₀ ∪ {¬ C} need not contain ¬ C: for x = 1, x = 2 ⊢ False on Fin 3 the family stays unsatisfiable after deleting ¬ C (not_minimalUnsatisfiable_vac); such a subset certifies inconsistency of H₀, not a minimal premise set for C.",
+   "Within a larger vocabulary the minimally unsatisfiable family need not be unique: irredundant_sufficient_subfamilies_of_sizes_two_and_one gives two sufficient, irredundant, non-vacuous subfamilies of x ≤ 1, y ≤ 1, x + y ≤ 2 for the conclusion x + y ≤ 2 ({x ≤ 1, y ≤ 1} and {x + y ≤ 2}), so by this result each of them together with ¬ C is minimally unsatisfiable. This result fixes the family; it does not choose it.",
+   "Says nothing about the size or difficulty of the theorem."
+  ],
+  "prior_art": [
+   "Mark H. Liffiton, Karem A. Sakallah, \"Algorithms for Computing Minimal Unsatisfiable Subsets of Constraints\", Journal of Automated Reasoning 40(1):1-33, 2008 (online 2007), DOI 10.1007/s10817-007-9084-z. Abstract: a sound and complete algorithm 'for producing all MUSes of an unsatisfiable constraint system'; complete results can be intractably large.",
+   "Alexey Ignatiev, Nina Narodytska, Joao Marques-Silva, \"Abduction-Based Explanations for Machine Learning Models\", Proceedings of the AAAI Conference on Artificial Intelligence 33(01):1511-1519, 2019, DOI 10.1609/aaai.v33i01.33011511. Definition 1: the explanations are the subsets S of the hypotheses H with F ∧ S consistent and F ∧ S entailing E; subset-minimal and cardinality-minimal explanations are distinguished."
+  ],
+  "design_question": "Which standard object is a sufficient, irredundant ledger together with a non-vacuity witness equivalent to? (A minimal unsatisfiable family: the hypotheses plus the negated conclusion.)"
+ },
+ {
+  "id": "irredundance_independence_isolation_countermodels",
+  "lean": "Toy.Ledger.irredundance_independence_isolation_countermodels",
+  "lean_names": [
+   "Toy.Ledger.Independent",
+   "Toy.Ledger.pinWeakC",
+   "Toy.Ledger.trueC",
+   "Toy.Ledger.bitsH",
+   "Toy.Ledger.independent_bits",
+   "Toy.Ledger.not_independent_pin",
+   "Toy.Ledger.isolatingAt_pin_h1",
+   "Toy.Ledger.not_isolatingAt_dup_h1",
+   "Toy.Ledger.isolatingAt_every_index_not_irredundant_pinWeak"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Irredundancy, full independence and isolation are distinct: x ≥ 1, x ≤ 1 ⊢ x = 1 over Nat is sufficient, irredundant and non-vacuous but not independent; two independent coordinate bits over Bool × Bool with the valid conclusion True are sufficient and non-vacuous and have no tight hypothesis; and x ≥ 1, x ≤ 1 ⊢ x ≤ 1 is sufficient and non-vacuous, and its hypothesis x ≥ 1 has an isolating model but is not tight.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Each of the three instances is proved sufficient and non-vacuous inside the statement.",
+  "nonvacuity_witness_lean": "Toy.Ledger.irredundance_independence_isolation_countermodels",
+  "non_claims": [
+   "Shows that neither irredundancy nor full independence implies the other in general (the first two instances); it does not say that they are unrelated within every restricted class of instances.",
+   "Isolation (Hilbert-style independence of one axiom from the others) does not mention the conclusion and so does not certify tightness for any particular theorem.",
+   "Isolation at every index does not give irredundancy either: in x ≥ 1, x ≤ 1 ⊢ x ≤ 1 both hypotheses have isolating models and x ≥ 1 is not tight (isolatingAt_every_index_not_irredundant_pinWeak)."
+  ],
+  "prior_art": [
+   "David Hilbert, The Foundations of Geometry, authorized translation by E. J. Townsend, Open Court, 1902 (Project Gutenberg eBook #17384), Chapter II, sections 10-12; section 12: 'In order to demonstrate the independence of the axiom of Archimedes, we must produce a geometry in which all of the axioms are fulfilled with the exception of the one in question.' Hilbert's independence of an axiom does not mention a conclusion (it is IsolatingAt here); TightAt is relative to a conclusion."
+  ],
+  "design_question": "Can classical axiom-independence arguments (one model per axiom) stand in for a tightness ledger, or vice versa? (Not in general.)"
+ },
+ {
+  "id": "isolatingAt_of_tightAt_of_sufficient",
+  "lean": "Toy.Ledger.isolatingAt_of_tightAt_of_sufficient",
+  "lean_names": [
+   "Toy.Ledger.dupH",
+   "Toy.Ledger.isolatingAt_sufficient_not_tightAt_pinWeak"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If the hypotheses H suffice for C and hypothesis i is tight, then hypothesis i has an isolating model (one violating H i and satisfying every other hypothesis).",
+  "hypotheses": [
+   {
+    "name": "hs : Sufficient H C",
+    "purpose": "Lets the tightness witness be shown to violate H i.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.isolatingAt_of_tightAt_ce_not_sufficient",
+    "witness_class": "a one-hypothesis family over Unit, True ⊢ False (the theorem is false)"
+   },
+   {
+    "name": "ht : TightAt H C i",
+    "purpose": "Supplies the witness.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.isolatingAt_of_tightAt_ce_not_tight",
+    "witness_class": "duplicated hypotheses x = 1, x = 1 ⊢ x = 1 over Nat, i = h1"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "x ≥ 1, x ≤ 1 ⊢ x = 1 over Nat is sufficient, and h1 (x ≥ 1) is tight.",
+  "nonvacuity_witness_lean": "Toy.Ledger.isolatingAt_of_tightAt_of_sufficient_nonvacuity",
+  "non_claims": [
+   "The converse fails: an isolated hypothesis need not be tight (isolatingAt_sufficient_not_tightAt_pinWeak).",
+   "Every tightness witness is an isolating model (tightAt_iff_witness_violates_exactly_i_of_sufficient, first part); this card states the existence of one.",
+   "Does not give full independence (all truth patterns)."
+  ],
+  "prior_art": [
+   "David Hilbert, The Foundations of Geometry, authorized translation by E. J. Townsend, Open Court, 1902 (Project Gutenberg eBook #17384), Chapter II, sections 10-12; section 12: 'In order to demonstrate the independence of the axiom of Archimedes, we must produce a geometry in which all of the axioms are fulfilled with the exception of the one in question.' Hilbert's independence of an axiom does not mention a conclusion (it is IsolatingAt here); TightAt is relative to a conclusion."
+  ],
+  "design_question": "When the theorem holds, does a tightness ledger yield the classical one-model-per-axiom independence witnesses? (Yes, one per tight hypothesis. Reference point.)"
+ },
+ {
+  "id": "unweakenableAt_of_necessaryAt",
+  "lean": "Toy.Ledger.unweakenableAt_of_necessaryAt",
+  "lean_names": [
+   "Toy.Ledger.sumH",
+   "Toy.Ledger.sumC",
+   "Toy.Ledger.necessaryAt_pin_h1",
+   "Toy.Ledger.not_necessaryAt_sum_h1",
+   "Toy.Ledger.unweakenableAt_pin_h1",
+   "Toy.Ledger.not_unweakenableAt_sum_h1",
+   "Toy.Ledger.sumH_h1_weakenable_but_not_within_first_coordinate"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If every model of the conclusion C satisfies hypothesis H i (global necessity), then H i holds wherever the other hypotheses and C hold (necessity relative to the other hypotheses).",
+  "hypotheses": [
+   {
+    "name": "h : NecessaryAt H C i",
+    "purpose": "The premise being weakened to its relative form.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.unweakenableAt_of_necessaryAt_ce_not_necessary",
+    "witness_class": "x ≤ 1, y ≤ 1 ⊢ x + y ≤ 2 over Nat × Nat, i = h1"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "x ≥ 1, x ≤ 1 ⊢ x = 1: x ≥ 1 is necessary for x = 1.",
+  "nonvacuity_witness_lean": "Toy.Ledger.unweakenableAt_of_necessaryAt_nonvacuity",
+  "non_claims": [
+   "By tight_necessary_unweakenable_six_combinations, every combination of tight, necessary and unweakenable that is consistent with this implication occurs at a hypothesis of a sufficient, non-vacuous instance; hence no other implication among the three properties holds in every sufficient, non-vacuous instance, and tightness neither implies nor is implied by necessity or by unweakenability.",
+   "The converse fails: x = 0, y = 0 ⊢ x = y has x = 0 unweakenable but not necessary (tight_necessary_unweakenable_six_combinations).",
+   "UnweakenableAt quantifies over arbitrary premises (predicates on M), which may mention the conclusion or variables that H i does not mention; under sufficiency it says that H i agrees with C wherever the other hypotheses hold (unweakenableAt_characterizations_of_sufficient, third part). So 'not unweakenable' does not mean that H i can be weakened within its own variables: in x ≤ 1, y ≤ 1 ⊢ x + y ≤ 2 the hypothesis x ≤ 1 can be replaced by x + y ≤ 2, but every premise on x alone that is implied by x ≤ 1 and keeps the theorem already implies x ≤ 1 (sumH_h1_weakenable_but_not_within_first_coordinate)."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "Which of the readings 'necessary' and 'cannot be weakened' implies the other? (Necessary implies cannot be weakened; not conversely. Reference point.)"
+ },
+ {
+  "id": "tight_necessary_unweakenable_six_combinations",
+  "lean": "Toy.Ledger.tight_necessary_unweakenable_six_combinations",
+  "lean_names": [
+   "Toy.Ledger.eqH",
+   "Toy.Ledger.eqC",
+   "Toy.Ledger.entH",
+   "Toy.Ledger.tight_combinations_in_irredundant_families"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "In sufficient, non-vacuous two-hypothesis instances over Nat or Nat × Nat, all six combinations of (tight, necessary, unweakenable) at a hypothesis that are compatible with 'necessary implies unweakenable' occur: TNU (x ≥ 1, x ≤ 1 ⊢ x = 1), not-T NU (x = 1, x = 1 ⊢ x = 1), T not-N not-U (x ≤ 1, y ≤ 1 ⊢ x + y ≤ 2), not-T not-N not-U (x ≥ 1, x ≤ 1 ⊢ x ≤ 1), T not-N U (x = 0, y = 0 ⊢ x = y), not-T not-N U (x = 0, (x = 0 ∧ y = 0) ⊢ x = y).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Each instance is proved sufficient and non-vacuous inside the statement.",
+  "nonvacuity_witness_lean": "Toy.Ledger.tight_necessary_unweakenable_six_combinations",
+  "non_claims": [
+   "'Tight' does not mean 'necessary' or 'cannot be weakened' (third instance: tight, neither necessary nor unweakenable), and duplicated hypotheses are necessary yet not tight (second instance).",
+   "The instances are two-hypothesis toys; the result shows non-implication, and says nothing about frequency in practice.",
+   "The three non-tight combinations cannot occur in an irredundant family (by the definition of Irredundant); the three tight combinations do occur in irredundant families (tight_combinations_in_irredundant_families: x ≥ 1, x ≤ 1 ⊢ x = 1; x ≤ 1, y ≤ 1 ⊢ x + y ≤ 2; x = 0, y = 0 ⊢ x = y).",
+   "UnweakenableAt quantifies over arbitrary premises (predicates on M), which may mention the conclusion or variables that H i does not mention; under sufficiency it says that H i agrees with C wherever the other hypotheses hold (unweakenableAt_characterizations_of_sufficient, third part). So 'not unweakenable' does not mean that H i can be weakened within its own variables: in x ≤ 1, y ≤ 1 ⊢ x + y ≤ 2 the hypothesis x ≤ 1 can be replaced by x + y ≤ 2, but every premise on x alone that is implied by x ≤ 1 and keeps the theorem already implies x ≤ 1 (sumH_h1_weakenable_but_not_within_first_coordinate)."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "When a ledger says 'tight' for a theorem that holds, may a reader infer that the hypothesis is necessary or cannot be weakened? (No.)"
+ },
+ {
+  "id": "unweakenableAt_and_not_tightAt_iff_entailed_by_others_of_sufficient",
+  "lean": "Toy.Ledger.unweakenableAt_and_not_tightAt_iff_entailed_by_others_of_sufficient",
+  "lean_names": [
+   "Toy.Ledger.not_tightAt_not_entailed_by_others_pinWeak"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "Suppose the hypotheses H suffice for C. Then hypothesis i is unweakenable and not tight exactly when the other hypotheses entail H i.",
+  "hypotheses": [
+   {
+    "name": "hs : Sufficient H C",
+    "purpose": "Used for the right-to-left direction (an entailed hypothesis is not tight); without it that direction fails on the counterexample.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.unweakenableAt_and_not_tightAt_iff_entailed_ce_not_sufficient",
+    "witness_class": "a one-hypothesis family over Unit, True ⊢ False (the theorem is false)"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "x = 0, (x = 0 ∧ y = 0) ⊢ x = y over Nat × Nat is sufficient, and at h1 the left side holds (unweakenable and not tight); by the result the right side holds there too.",
+  "nonvacuity_witness_lean": "Toy.Ledger.unweakenableAt_and_not_tightAt_iff_entailed_nonvacuity",
+  "non_claims": [
+   "Non-tightness alone does not give entailment by the other hypotheses: in x ≥ 1, x ≤ 1 ⊢ x ≤ 1 the hypothesis x ≥ 1 is not tight and not entailed by x ≤ 1 (not_tightAt_not_entailed_by_others_pinWeak).",
+   "Without sufficiency the equivalence fails (unweakenableAt_and_not_tightAt_iff_entailed_ce_not_sufficient).",
+   "UnweakenableAt quantifies over arbitrary premises (predicates on M), which may mention the conclusion or variables that H i does not mention; under sufficiency it says that H i agrees with C wherever the other hypotheses hold (unweakenableAt_characterizations_of_sufficient, third part). So 'not unweakenable' does not mean that H i can be weakened within its own variables: in x ≤ 1, y ≤ 1 ⊢ x + y ≤ 2 the hypothesis x ≤ 1 can be replaced by x + y ≤ 2, but every premise on x alone that is implied by x ≤ 1 and keeps the theorem already implies x ≤ 1 (sumH_h1_weakenable_but_not_within_first_coordinate)."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "For a theorem that holds, when is a hypothesis that is not tight still impossible to weaken? (Exactly when the other hypotheses entail it.)"
+ },
+ {
+  "id": "weakestPremise_is_weakest_replacement",
+  "lean": "Toy.Ledger.weakestPremise_is_weakest_replacement",
+  "lean_names": [
+   "Toy.Ledger.replaceAt",
+   "Toy.Ledger.WeakestPremise",
+   "Toy.Ledger.replaceAt_self",
+   "Toy.Ledger.replaceAt_of_ne",
+   "Toy.Ledger.replaceAt_iff_ite",
+   "Toy.Ledger.sufficient_replaceAt_sum_h1_by_sumC",
+   "Toy.Ledger.not_sufficient_replaceAt_sum_h1_by_true",
+   "Toy.Ledger.weakestPremise_sum_h1_at_2_0",
+   "Toy.Ledger.not_weakestPremise_sum_h1_at_5_0"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For any hypothesis family H, conclusion C and index i: (1) replacing H i by a premise H' keeps sufficiency exactly when H' implies WeakestPremise H C i ('if the other hypotheses hold then C'); (2) WeakestPremise H C i is itself a valid replacement; (3) the original theorem holds exactly when H i implies it; (4) hypothesis i is not tight exactly when WeakestPremise H C i holds at every model.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "x ≤ 1, y ≤ 1 ⊢ x + y ≤ 2: replacing x ≤ 1 by x + y ≤ 2 keeps sufficiency; h1 is tight; the weakest premise holds at (2, 0), where x ≤ 1 fails.",
+  "nonvacuity_witness_lean": "Toy.Ledger.weakestPremise_sum_nonvacuity",
+  "non_claims": [
+   "Characterizes replacing one hypothesis while the others are kept; simultaneous replacement of several hypotheses is not characterized.",
+   "The weakest premise may mention the conclusion and the variables of the other hypotheses; it is not the weakest premise within a restricted vocabulary (sumH_h1_weakenable_but_not_within_first_coordinate).",
+   "Classical logic: in the proof (lean/Toy/Ledger/Strength.lean, lines 52-62) conjuncts 1 and 2 are proved without classical reasoning; the left-to-right direction of conjunct 3 (Sufficient H C → ∀ x, H i x → WeakestPremise H C i x) uses Classical.em (j = i) for an arbitrary index type ι, and conjunct 4, which equates validity of WeakestPremise H C i with ¬ TightAt H C i, uses Classical.byContradiction. The axiom record under Evidence is for the theorem as a whole. That conjunct 3 has no constructive proof for an arbitrary ι is not proved here."
+  ],
+  "prior_art": [
+   "Fangzhen Lin, \"On strongest necessary and weakest sufficient conditions\", Artificial Intelligence 128(1-2):143-159, 2001, DOI 10.1016/S0004-3702(01)00070-4: weakest sufficient conditions (WSC). As restated in Kaile Su, Abdul Sattar, Guanfeng Lv, Yan Zhang, \"Variable Forgetting in Reasoning about Knowledge\", Journal of Artificial Intelligence Research 35:677-716, 2009, DOI 10.1613/jair.2750, Definition 5 and Proposition 6, the WSC is characterized as 'forall(V - V')(theta => alpha)'. With the unrestricted vocabulary (V' = V) the WSC of C under background theta is theta => C, which is WeakestPremise here (theta = the other hypotheses).",
+   "Mathlib (leanprover-community/mathlib4 commit 3eae40f5eb25c5934211edf662d3b24c5afbe47a): Mathlib/Order/Heyting/Basic.lean line 98, GeneralizedHeytingAlgebra.le_himp_iff (a ≤ b ⇨ c <-> a ⊓ b ≤ c); the first conjunct is this adjunction for predicates on M, with b = the other hypotheses and c = C."
+  ],
+  "design_question": "What is the weakest premise that can replace one hypothesis while the others are kept, and how does it relate to tightness?"
+ },
+ {
+  "id": "unweakenableAt_characterizations_of_sufficient",
+  "lean": "Toy.Ledger.unweakenableAt_characterizations_of_sufficient",
+  "lean_names": [
+   "Toy.Ledger.unweakenableAt_true_false_disagrees",
+   "Toy.Ledger.flipH",
+   "Toy.Ledger.flipC",
+   "Toy.Ledger.unweakenableAt_first_characterization_holds_flip",
+   "Toy.Ledger.unweakenableAt_first_characterization_fails_true_false",
+   "Toy.Ledger.unweakenableAt_third_characterization_fails_true_false"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "Suppose the hypotheses H suffice for C. Then hypothesis i is unweakenable exactly when (1) H i agrees with WeakestPremise H C i wherever the other hypotheses hold; exactly when (2) every weakening H' of H i that keeps the theorem true agrees with H i wherever the other hypotheses hold; and exactly when (3) H i agrees with C wherever the other hypotheses hold.",
+  "hypotheses": [
+   {
+    "name": "hs : Sufficient H C",
+    "purpose": "Used by each characterization. Without it each characterization can fail: on True ⊢ False over Unit the first and the third fail (unweakenableAt_first_characterization_fails_true_false, unweakenableAt_third_characterization_fails_true_false), and on b = true ⊢ b = false over Bool the second fails (unweakenableAt_iff_weakenings_ce_not_sufficient).",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ledger.unweakenableAt_characterizations_ce_not_sufficient",
+     "Toy.Ledger.unweakenableAt_iff_weakenings_ce_not_sufficient"
+    ],
+    "witness_class": "True ⊢ False over Unit, a one-hypothesis family (the theorem is false; unweakenableAt_characterizations_ce_not_sufficient refutes the conjunction of the three characterizations, through the failure of the first, unweakenableAt_true_false_disagrees; the first and the third also fail separately, unweakenableAt_first_characterization_fails_true_false and unweakenableAt_third_characterization_fails_true_false), and b = true ⊢ b = false over Bool, a one-hypothesis family (the theorem is false; the second characterization fails, while the first holds, unweakenableAt_first_characterization_holds_flip)"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "x ≥ 1, x ≤ 1 ⊢ x = 1 is sufficient and h1 is unweakenable.",
+  "nonvacuity_witness_lean": "Toy.Ledger.unweakenableAt_characterizations_nonvacuity",
+  "non_claims": [
+   "The weakenings in the second characterization are claimed to agree with H i wherever the other hypotheses hold; nothing is claimed outside that region. That they can differ from H i there is not proved here (for instance, in x = 0, y = 0 ⊢ x = y over Nat × Nat the premise x = 0 ∨ y ≠ 0 is a weakening of x = 0 that keeps the theorem true and differs from x = 0 at (1, 1); not proved here).",
+   "UnweakenableAt quantifies over arbitrary premises (predicates on M), which may mention the conclusion or variables that H i does not mention; under sufficiency it says that H i agrees with C wherever the other hypotheses hold (unweakenableAt_characterizations_of_sufficient, third part). So 'not unweakenable' does not mean that H i can be weakened within its own variables: in x ≤ 1, y ≤ 1 ⊢ x + y ≤ 2 the hypothesis x ≤ 1 can be replaced by x + y ≤ 2, but every premise on x alone that is implied by x ≤ 1 and keeps the theorem already implies x ≤ 1 (sumH_h1_weakenable_but_not_within_first_coordinate).",
+   "Simultaneous weakening of several hypotheses is not characterized.",
+   "Uses classical logic: the proof uses the third conjunct of weakestPremise_is_weakest_replacement, whose left-to-right direction uses Classical.em (j = i) for an arbitrary index type ι."
+  ],
+  "prior_art": [
+   "Fangzhen Lin, \"On strongest necessary and weakest sufficient conditions\", Artificial Intelligence 128(1-2):143-159, 2001, DOI 10.1016/S0004-3702(01)00070-4: weakest sufficient conditions (WSC). As restated in Kaile Su, Abdul Sattar, Guanfeng Lv, Yan Zhang, \"Variable Forgetting in Reasoning about Knowledge\", Journal of Artificial Intelligence Research 35:677-716, 2009, DOI 10.1613/jair.2750, Definition 5 and Proposition 6, the WSC is characterized as 'forall(V - V')(theta => alpha)'. With the unrestricted vocabulary (V' = V) the WSC of C under background theta is theta => C, which is WeakestPremise here (theta = the other hypotheses). Neither source defines UnweakenableAt or characterizes it; that notion and its three characterizations are stated here."
+  ],
+  "design_question": "When a theorem holds, what exactly does 'this hypothesis cannot be weakened' mean?"
+ },
+ {
+  "id": "irredundant_sufficient_subfamilies_of_sizes_two_and_one",
+  "lean": "Toy.Ledger.irredundant_sufficient_subfamilies_of_sizes_two_and_one",
+  "lean_names": [
+   "Toy.Ledger.Three",
+   "Toy.Ledger.triple",
+   "Toy.Ledger.sumVocab",
+   "Toy.Ledger.intVocab",
+   "Toy.Ledger.intC"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "Over the vocabulary x ≤ 1, y ≤ 1, x + y ≤ 2 on Nat × Nat and the conclusion x + y ≤ 2, both the two-member subfamily {x ≤ 1, y ≤ 1} and the one-member subfamily {x + y ≤ 2} are sufficient, irredundant and non-vacuous.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Both subfamilies are proved non-vacuous (witness (0, 0)) inside the statement.",
+  "nonvacuity_witness_lean": "Toy.Ledger.irredundant_sufficient_subfamilies_of_sizes_two_and_one",
+  "non_claims": [
+   "Here one candidate equals the conclusion; distinct-size sufficient, irredundant subfamilies also occur when no candidate is equivalent to the conclusion ({x = 0, y = 0} and {x = 0 ∧ y = 0} for x + y = 0 over Int × Int, irredundant_sufficient_subfamilies_no_candidate_equals_conclusion).",
+   "Shows non-uniqueness and that size is not determined; says nothing about how to find a smallest subfamily."
+  ],
+  "prior_art": [
+   "Thomas Eiter, Georg Gottlob, \"The complexity of logic-based abduction\", Journal of the ACM 42(1):3-42, 1995, DOI 10.1145/200836.200838. Abstract: candidate abductive explanations 'are usually subjected to minimality criteria such as subset-minimality, minimal cardinality, minimal weight, or minimality under prioritization of individual hypotheses'.",
+   "Alexey Ignatiev, Nina Narodytska, Joao Marques-Silva, \"Abduction-Based Explanations for Machine Learning Models\", Proceedings of the AAAI Conference on Artificial Intelligence 33(01):1511-1519, 2019, DOI 10.1609/aaai.v33i01.33011511. Definition 1: the explanations are the subsets S of the hypotheses H with F ∧ S consistent and F ∧ S entailing E; subset-minimal and cardinality-minimal explanations are distinguished.",
+   "Mark H. Liffiton, Karem A. Sakallah, \"Algorithms for Computing Minimal Unsatisfiable Subsets of Constraints\", Journal of Automated Reasoning 40(1):1-33, 2008 (online 2007), DOI 10.1007/s10817-007-9084-z. Abstract: a sound and complete algorithm 'for producing all MUSes of an unsatisfiable constraint system'; complete results can be intractably large."
+  ],
+  "design_question": "Does 'every hypothesis is tight' single out a unique or smallest sufficient hypothesis set? (No.)"
+ },
+ {
+  "id": "subfamily_eq_of_sufficient_of_irredundant_superfamily",
+  "lean": "Toy.Ledger.subfamily_eq_of_sufficient_of_irredundant_superfamily",
+  "lean_names": [
+   "Toy.Ledger.Two"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "Let S and T select subfamilies of a vocabulary H. If the subfamily selected by S is sufficient for C, the subfamily selected by T is irredundant for C, and S ⊆ T, then S = T. In particular, of two sufficient, irredundant subfamilies, neither strictly contains the other.",
+  "hypotheses": [
+   {
+    "name": "hS : Sufficient (restrict S H) C",
+    "purpose": "Rules out a model that satisfies every member selected by S and violates C; the proof applies it to the tightness witness that hT supplies at an index selected by T and not by S.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.subfamily_eq_ce_not_sufficient",
+    "witness_class": "x ≥ 1, x ≤ 1 ⊢ x = 1 over Nat with S = {x ≥ 1} (irredundant, non-vacuous, not sufficient) and T = both hypotheses"
+   },
+   {
+    "name": "hT : Irredundant (restrict T H) C",
+    "purpose": "Supplies, for an index selected by T and not by S, a model that satisfies every other member selected by T and violates C.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.subfamily_eq_ce_not_irredundant",
+    "witness_class": "the valid conclusion True over Nat, S = the empty family, T = {True}"
+   },
+   {
+    "name": "hST : ∀ i, S i → T i",
+    "purpose": "Embeds S into T, so that a model satisfying every member selected by T except one index outside S satisfies every member selected by S.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.subfamily_eq_ce_not_contained",
+    "witness_class": "duplicated hypotheses x = 1, x = 1 ⊢ x = 1 over Nat, S = {h2}, T = {h1}"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "S = T = {x ≤ 1, y ≤ 1} within the vocabulary x ≤ 1, y ≤ 1, x + y ≤ 2 and the conclusion x + y ≤ 2.",
+  "nonvacuity_witness_lean": "Toy.Ledger.subfamily_eq_nonvacuity",
+  "non_claims": [
+   "Without the sufficiency of S, an irredundant family can strictly contain another irredundant family: {x ≥ 1} ⊂ {x ≥ 1, x ≤ 1} for x = 1 over Nat (subfamily_eq_ce_not_sufficient).",
+   "T is not assumed sufficient; its sufficiency follows from the conclusion S = T.",
+   "Irredundance does not include sufficiency: every false theorem is irredundant, even with duplicated trivial hypotheses (irredundant_of_not_sufficient; irredundant_dup_true_false: True, True ⊢ False over Unit is irredundant and non-vacuous). The content of this result comes from hS.",
+   "The antichain property does not give uniqueness or minimum size (irredundant_sufficient_subfamilies_of_sizes_two_and_one)."
+  ],
+  "prior_art": [
+   "Mathlib (leanprover-community/mathlib4 commit 3eae40f5eb25c5934211edf662d3b24c5afbe47a): Mathlib/Order/Minimal.lean line 348, Set.minimal_iff_forall_sdiff_singleton (for a predicate P on sets that is closed under supersets, Minimal P s <-> P s and no s \\ {{x}} with x in s satisfies P); line 300, Minimal.eq_of_superset (Minimal P s -> P t -> t ⊆ s -> s = t); Mathlib/Order/Antichain.lean line 313, setOfPred_minimal_antichain (the minimal elements of a predicate form an antichain). These are the order-theoretic forms of the statements here, with P = sufficiency of a subfamily.",
+   "Sven Ove Hansson, \"Kernel contraction\", Journal of Symbolic Logic 59(3):845-859, 1994, DOI 10.2307/2275912. Kernel contraction acts on the alpha-kernels of a belief base B, its inclusion-minimal subsets implying alpha (definition as restated in Renata Wassermann, \"Local Diagnosis\", arXiv:cs/0003051, 2000, Definition 1). A sufficient, irredundant subfamily of a vocabulary is the analogue of an alpha-kernel, with implication read semantically over the model type.",
+   "Mark H. Liffiton, Karem A. Sakallah, \"Algorithms for Computing Minimal Unsatisfiable Subsets of Constraints\", Journal of Automated Reasoning 40(1):1-33, 2008 (online 2007), DOI 10.1007/s10817-007-9084-z. Abstract: a sound and complete algorithm 'for producing all MUSes of an unsatisfiable constraint system'; complete results can be intractably large."
+  ],
+  "design_question": "Can an irredundant hypothesis set strictly contain a sufficient hypothesis set (in particular, another sufficient, irredundant one)? (No.)"
+ },
+ {
+  "id": "irredundant_vacuous_and_nonvacuous_tightless",
+  "lean": "Toy.Ledger.irredundant_vacuous_and_nonvacuous_tightless",
+  "lean_names": [
+   "Toy.Ledger.vacH",
+   "Toy.Ledger.nonVacuous_of_forall_of_nonempty",
+   "Toy.Ledger.nonVacuous_pin_antecedent_not_everywhere",
+   "Toy.Ledger.antecedent_everywhere_not_nonVacuous_empty"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "A complete tightness ledger does not certify non-vacuity, and non-vacuity certifies no tightness: on Fin 3, x = 1, x = 2 ⊢ False is sufficient and irredundant but vacuous (so its family with the negated conclusion is not minimally unsatisfiable); over Unit, True ⊢ True is sufficient and non-vacuous but its only hypothesis is not tight.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Both instances are concrete; the second is non-vacuous (witness ()). The first is vacuous by design.",
+  "nonvacuity_witness_lean": "Toy.Ledger.irredundant_vacuous_and_nonvacuous_tightless",
+  "non_claims": [
+   "Does not say that vacuity and tightness are unrelated within a restricted class of theorems.",
+   "NonVacuous H is satisfiability of the antecedent; it does not mention C. Kupferman and Vardi's vacuity (every subformula affects the truth value), applied to the implication from the conjunction of the hypotheses to C, also asks that each hypothesis matter, which corresponds to NonVacuous H ∧ Irredundant H C (derived, modeling bridge; not proved here); under that reading the second instance, True ⊢ True, counts as vacuous.",
+   "Beatty and Bryant's check against antecedent failure asks that the antecedent always hold on the states considered. When the set of states considered is nonempty this is stronger than NonVacuous (one model of the antecedent): it implies NonVacuous (nonVacuous_of_forall_of_nonempty), and not conversely (nonVacuous_pin_antecedent_not_everywhere). Without nonemptiness it does not imply NonVacuous: over the empty model type the antecedent True holds at every model, vacuously, and is not satisfiable (antecedent_everywhere_not_nonVacuous_empty)."
+  ],
+  "prior_art": [
+   "Ilan Beer, Shoham Ben-David, Cindy Eisner, Yoav Rodeh, \"Efficient Detection of Vacuity in Temporal Model Checking\", Formal Methods in System Design 18(2):141-163, 2001, DOI 10.1023/A:1008779610539. Abstract: an implication can be 'trivially valid because the pre-condition of the implication is not satisfiable' (antecedent failure), called vacuity; an 'interesting witness' is a non-trivial example of validity. Conference version: \"Efficient detection of vacuity in ACTL formulas\", CAV 1997, LNCS vol. 1254, pp. 279-290, DOI 10.1007/3-540-63166-6_28.",
+   "Orna Kupferman, Moshe Y. Vardi, \"Vacuity detection in temporal model checking\", International Journal on Software Tools for Technology Transfer 4(2):224-233, 2003, DOI 10.1007/s100090100062. Abstract: vacuity checks 'whether all the subformulas of the specification affect its truth value in the system'; interesting witnesses. Earlier version: CHARME 1999, LNCS vol. 1703, pp. 82-98, DOI 10.1007/3-540-48153-2_8.",
+   "Derek L. Beatty, Randal E. Bryant, \"Formally verifying a microprocessor using a simulation methodology\", Proceedings of the 31st Design Automation Conference (DAC 1994), pp. 596-602, DOI 10.1145/196244.196575: 'One of the principal dangers of formal verification is what we have called antecedent failure'; footnote 10: 'Techniques that are based entirely on pure logic, such as HOL, are especially prone to it.' Their remedy is 'to check that the antecedent is, in fact, always true'. On a nonempty set of models or states this is a stronger requirement than NonVacuous (one model of the antecedent): it implies NonVacuous there (nonVacuous_of_forall_of_nonempty), and not conversely (nonVacuous_pin_antecedent_not_everywhere). Without nonemptiness it does not imply NonVacuous: over the empty model type the antecedent True holds at every model, vacuously, and is not satisfiable (antecedent_everywhere_not_nonVacuous_empty)."
+  ],
+  "design_question": "Does a complete tightness ledger make a non-vacuity witness redundant, or the reverse? (Neither.)"
+ },
+ {
+  "id": "not_valid_of_tightAt",
+  "lean": "Toy.Ledger.not_valid_of_tightAt",
+  "lean_names": [
+   "Toy.Ledger.tightAt_pinWeak_h2_conclusion_valid_on_bounded"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If hypothesis i is tight for C, then C is not valid over the model type (some model violates C).",
+  "hypotheses": [
+   {
+    "name": "h : TightAt H C i",
+    "purpose": "Supplies a model violating C.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.not_valid_of_tightAt_ce_not_tight",
+    "witness_class": "the valid conclusion True over Unit"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "h1 of x ≥ 1, x ≤ 1 ⊢ x = 1 is tight.",
+  "nonvacuity_witness_lean": "Toy.Ledger.not_valid_of_tightAt_nonvacuity",
+  "non_claims": [
+   "Says nothing about the hypotheses beyond the existence of a model violating C; in particular it does not certify non-vacuity or depth.",
+   "Invalidity over the model type does not prevent C from holding throughout an intended class: in x ≥ 1, x ≤ 1 ⊢ x ≤ 1 the hypothesis x ≤ 1 is tight over Nat, and the conclusion holds throughout the class x ≤ 1 (tightAt_pinWeak_h2_conclusion_valid_on_bounded)."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "What does a single tight entry certify about the conclusion? (That it is not valid over the model type. Reference point.)",
+  "positive_control_lean": "Toy.Ledger.not_valid_of_tightAt_ce_not_tight"
+ },
+ {
+  "id": "schematic_ledger_irredundant_nonvacuous",
+  "lean": "Toy.Ledger.schematic_ledger_irredundant_nonvacuous",
+  "lean_names": [
+   "Toy.Ledger.schemaH",
+   "Toy.Ledger.orSchemaH",
+   "Toy.Ledger.or_schema_irredundant_nonvacuous_necessary_unweakenable"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "The schema P ∨ C, ¬ P ⊢ C is sufficient for every instantiation of the predicates P and C over every model type N : Type u; yet for P x := (x.1 = true) and C x := (x.2 = true) over Bool × Bool both hypotheses are tight and the family is non-vacuous.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "(false, true) satisfies both hypotheses of the Bool × Bool instance.",
+  "nonvacuity_witness_lean": "Toy.Ledger.schematic_ledger_irredundant_nonvacuous",
+  "non_claims": [
+   "'Depth' and 'non-triviality' are not formalized; the formal proxy is sufficiency uniform in the predicates (a schema).",
+   "Adding necessity and unweakenability of every hypothesis does not certify depth either: the schema P ∨ C, ¬ P ∨ C ⊢ C is sufficient for every instantiation, and its Bool × Bool instance is irredundant, non-vacuous, and every hypothesis is necessary and unweakenable (or_schema_irredundant_nonvacuous_necessary_unweakenable).",
+   "Does not say that every irredundant, non-vacuous ledger belongs to a propositional schema."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "Does a sufficient, irredundant, non-vacuous ledger certify that a theorem is deep or non-trivial? (No.)"
+ },
+ {
+  "id": "not_single_entails_of_irredundant_of_exists_other",
+  "lean": "Toy.Ledger.not_single_entails_of_irredundant_of_exists_other",
+  "lean_names": [
+   "Toy.Ledger.pair",
+   "Toy.Ledger.not_tightAt_of_ne_of_single_entails",
+   "Toy.Ledger.not_tightAt_of_ne_ce_not_entails",
+   "Toy.Ledger.not_tightAt_of_ne_ce_same_index",
+   "Toy.Ledger.not_tightAt_of_ne_nonvacuity",
+   "Toy.Ledger.hatchH",
+   "Toy.Ledger.hatchC",
+   "Toy.Ledger.irredundant_hypothesis_restates_conclusion_within_other"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If every hypothesis of H is tight for C and some hypothesis other than i exists, then hypothesis i alone does not entail C over the whole model type.",
+  "hypotheses": [
+   {
+    "name": "hirr : Irredundant H C",
+    "purpose": "Makes the other hypothesis j tight; a tightness witness for j satisfies H i and violates C.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.not_single_entails_ce_not_irredundant",
+    "witness_class": "x = 1, True ⊢ x = 1 over Nat"
+   },
+   {
+    "name": "hother : ∃ j, j ≠ i",
+    "purpose": "Supplies the other index j.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.not_single_entails_ce_single_hypothesis",
+    "witness_class": "the one-hypothesis family x = 1 ⊢ x = 1 over Nat"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "x ≥ 1, x ≤ 1 ⊢ x = 1 is irredundant and has two hypotheses.",
+  "nonvacuity_witness_lean": "Toy.Ledger.not_single_entails_nonvacuity",
+  "non_claims": [
+   "A hypothesis of an irredundant two-hypothesis family can still agree with the conclusion wherever another hypothesis holds: x ≠ 2, (x = 1 ∨ x = 2) ⊢ x = 1 over Fin 3 is sufficient, irredundant and non-vacuous, and on the region x ≠ 2 the second hypothesis is equivalent to the conclusion (irredundant_hypothesis_restates_conclusion_within_other).",
+   "For a false theorem the statement is uninformative: every hypothesis is tight (irredundant_of_not_sufficient), and no hypothesis set entails C.",
+   "The helper not_tightAt_of_ne_of_single_entails (if H i entails C then no j ≠ i is tight) is used in the proof and needs no assumption on the number of hypotheses."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "In a ledger with at least two hypotheses, all tight, can one hypothesis alone entail the conclusion over the model type? (No; it can still agree with the conclusion wherever another hypothesis holds.)",
+  "positive_control_lean": "Toy.Ledger.not_single_entails_ce_single_hypothesis"
+ },
+ {
+  "id": "sufficientIn_antitone_and_tightIn_monotone",
+  "lean": "Toy.Ledger.sufficientIn_antitone_and_tightIn_monotone",
+  "lean_names": [
+   "Toy.Ledger.SufficientIn",
+   "Toy.Ledger.TightIn",
+   "Toy.Ledger.bounded",
+   "Toy.Ledger.sufficientIn_bounded_single",
+   "Toy.Ledger.not_sufficientIn_true_single",
+   "Toy.Ledger.tightIn_true_pin_h2",
+   "Toy.Ledger.not_tightIn_bounded_pin_h2",
+   "Toy.Ledger.tightIn_true_iff",
+   "Toy.Ledger.nonVacuousIn_monotone",
+   "Toy.Ledger.nonVacuousIn_not_antitone"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "Let P ⊆ Q be classes of models. Then sufficiency over Q gives sufficiency over P, and for every index i, tightness of i over P gives tightness of i over Q.",
+  "hypotheses": [
+   {
+    "name": "hPQ : ∀ x, P x → Q x",
+    "purpose": "Orients the transfer.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Ledger.sufficientIn_antitone_ce_not_subclass",
+     "Toy.Ledger.tightIn_monotone_ce_not_subclass"
+    ],
+    "witness_class": "P = all naturals, Q = x ≤ 1 (P ⊄ Q): x ≥ 1 ⊢ x = 1 holds over Q but not over P (first conjunct fails); in x ≥ 1, x ≤ 1 ⊢ x = 1, x ≤ 1 is tight over P but not over Q (second conjunct fails)"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "x ≤ 1 is a subclass of all naturals; x ≥ 1, x ≤ 1 ⊢ x = 1 holds over all naturals and x ≥ 1 is tight over the subclass (witness 0).",
+  "nonvacuity_witness_lean": "Toy.Ledger.sufficientIn_antitone_nonvacuity",
+  "non_claims": [
+   "The reverse transfers fail: a theorem over a subclass need not hold over the superclass (sufficientIn_antitone_ce_not_subclass), and a tightness witness for the superclass need not lie in the subclass (tightIn_monotone_ce_not_subclass; tightIn_all_models_harmlessIn_bounded).",
+   "Non-vacuity transfers in the same direction as tightness, from P up to Q (nonVacuousIn_monotone), and not, in general, from Q down to P: a theorem that is non-vacuous over Q can be vacuous over a subclass (nonVacuousIn_not_antitone).",
+   "Ledger labels are relative to a stated class; this result does not choose the class."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "When the reference class is shrunk or enlarged, which ledger labels survive? (Sufficiency survives shrinking; tightness and non-vacuity witnesses survive enlarging.)"
+ },
+ {
+  "id": "tightIn_all_models_harmlessIn_bounded",
+  "lean": "Toy.Ledger.tightIn_all_models_harmlessIn_bounded",
+  "lean_names": [
+   "Toy.Ledger.NonVacuousIn",
+   "Toy.Ledger.HarmlessIn",
+   "Toy.Ledger.harmlessIn_bounded_pin_h2",
+   "Toy.Ledger.not_harmlessIn_true_pin_h2",
+   "Toy.Ledger.zeroClass",
+   "Toy.Ledger.nonVacuousIn_bounded_pin",
+   "Toy.Ledger.not_nonVacuousIn_zeroClass_pin",
+   "Toy.Ledger.tightIn_harmlessIn_not_exhaustive"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For x ≥ 1, x ≤ 1 ⊢ x = 1, which holds over all naturals and over the class x ≤ 1 and is non-vacuous over that class (witness 1): hypothesis x ≤ 1 is tight over all naturals (witness 2, outside the class), harmless over the class, and not tight over the class.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The statement includes NonVacuousIn bounded pinH (witness 1, which lies in the class).",
+  "nonvacuity_witness_lean": "Toy.Ledger.tightIn_all_models_harmlessIn_bounded",
+  "non_claims": [
+   "Within one class over which the theorem holds, 'tight' and 'harmless' exclude each other (not_harmlessIn_of_tightIn_of_sufficientIn); over a class where the theorem fails a hypothesis can be both (not_harmlessIn_ce_not_sufficientIn).",
+   "'Tight' and 'harmless' are not exhaustive: in x ≥ 1, x ≤ 1 ⊢ x ≤ 1 over all naturals the hypothesis x ≥ 1 is neither (tightIn_harmlessIn_not_exhaustive).",
+   "HarmlessIn is pointwise truth on the class; it does not model signature changes such as extra binders or instance arguments."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "For a theorem that holds over a class and over a subclass on which it is non-vacuous, can one hypothesis be 'tight' over the class and 'harmless' over the subclass? (Yes.)"
+ },
+ {
+  "id": "not_harmlessIn_of_tightIn_of_sufficientIn",
+  "lean": "Toy.Ledger.not_harmlessIn_of_tightIn_of_sufficientIn",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If the hypotheses H suffice for C over the class P and hypothesis i is tight over P, then H i is not harmless over P.",
+  "hypotheses": [
+   {
+    "name": "hs : SufficientIn P H C",
+    "purpose": "A harmless tight hypothesis would make the tightness witness a counterexample.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.not_harmlessIn_ce_not_sufficientIn",
+    "witness_class": "True ⊢ False over Unit with P = all models (the theorem is false)"
+   },
+   {
+    "name": "ht : TightIn P H C i",
+    "purpose": "Supplies a model of P on which H i must fail.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.not_harmlessIn_ce_not_tightIn",
+    "witness_class": "True ⊢ True over Unit with P = all models"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "x ≥ 1, x ≤ 1 ⊢ x = 1 over all naturals, i = h2 (tight, witness 2).",
+  "nonvacuity_witness_lean": "Toy.Ledger.not_harmlessIn_nonvacuity",
+  "non_claims": [
+   "Uses classical excluded middle on j = i for an arbitrary index type.",
+   "Exclusive but not exhaustive: a hypothesis can be neither tight nor harmless (tightIn_harmlessIn_not_exhaustive).",
+   "Relative to one fixed class; across a class and a subclass both labels can apply (tightIn_all_models_harmlessIn_bounded).",
+   "HarmlessIn is pointwise truth on the class; it does not model signature changes such as extra binders or instance arguments."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "Relative to one reference class over which the theorem holds, can a hypothesis be both 'tight' and 'harmless'? (No.)",
+  "positive_control_lean": "Toy.Ledger.not_harmlessIn_ce_not_sufficientIn"
+ },
+ {
+  "id": "sufficient_conjunction_iff_each_and_tightAt_conjunction_iff_some",
+  "lean": "Toy.Ledger.sufficient_conjunction_iff_each_and_tightAt_conjunction_iff_some",
+  "lean_names": [
+   "Toy.Ledger.unweakenable_for_conjunction_not_for_conjuncts"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For a fixed hypothesis family H: (1) for any conclusions C₁, C₂ and index i, hypothesis i is tight for C₁ ∧ C₂ exactly when it is tight for C₁ or for C₂; (2) for any family of conclusions D : κ → M → Prop, H suffices for all of them exactly when it suffices for each; (3) for any such family and index i, hypothesis i is tight for the conjunction of all D k exactly when it is tight for some D k.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "x ≤ 1, y ≤ 1 over Nat × Nat: x ≤ 1 is tight for x ≤ 1 ∧ y ≤ 1 and for x ≤ 1; with D := the hypotheses themselves, sufficiency and tightness hold on both sides of (2) and (3).",
+  "nonvacuity_witness_lean": "Toy.Ledger.sufficient_conjunction_nonvacuity",
+  "non_claims": [
+   "Uses classical logic (De Morgan for a negated conjunction and a negated universal).",
+   "A ledger computed for a conjunction overstates per-conjunct tightness (tight_for_conjunction_not_for_conjunct).",
+   "Unweakenability does not pass from a conjunction to its conjuncts: with the single hypothesis x = 1 over Nat, the hypothesis is necessary and unweakenable for 1 ≤ x ∧ x ≤ 1 but unweakenable for neither conjunct (unweakenable_for_conjunction_not_for_conjuncts)."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "If a theorem's conclusion is a conjunction, how does its ledger relate to the ledgers of the conjuncts?"
+ },
+ {
+  "id": "tight_for_conjunction_not_for_conjunct",
+  "lean": "Toy.Ledger.tight_for_conjunction_not_for_conjunct",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "In x ≤ 1, y ≤ 1 ⊢ x ≤ 1 ∧ y ≤ 1 over Nat × Nat: the hypotheses are jointly satisfiable (witness (0, 0)) and suffice for the conjunction, hypothesis x ≤ 1 is tight for the conjunction, the hypotheses suffice for the conjunct y ≤ 1, and x ≤ 1 is not tight for y ≤ 1.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The statement includes NonVacuous sumH (witness (0, 0)).",
+  "nonvacuity_witness_lean": "Toy.Ledger.tight_for_conjunction_not_for_conjunct",
+  "non_claims": [
+   "A summary 'under x ≤ 1, y ≤ 1' of the conjunct y ≤ 1 alone over-reads the ledger of the conjunction."
+  ],
+  "prior_art": [
+   "No specific prior source; an elementary consequence of the definitions, restated in this package's vocabulary."
+  ],
+  "design_question": "Can a ledger computed for a conjunction be read as the ledger of each conjunct? (No: a hypothesis tight for C₁ ∧ C₂ need not be tight for C₂.)"
+ },
+ {
+  "id": "check_of_cell_empty",
+  "lean": "Toy.Ledger.check_of_cell_empty",
+  "lean_names": [
+   "Toy.Ledger.Check",
+   "Toy.Ledger.demoTable",
+   "Toy.Ledger.evenQ",
+   "Toy.Ledger.informativeCheck_demo_h1_h1",
+   "Toy.Ledger.not_check_demo_h1_h2",
+   "Toy.Ledger.check_not_informative_demo_h2_h1"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For any table, property Q and cell (r, k): if the cell has no model, the ✓ at (r, k) holds.",
+  "hypotheses": [
+   {
+    "name": "h : ∀ x, ¬ cell r k x",
+    "purpose": "Emptiness of the cell.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.check_of_cell_empty_ce_nonempty",
+    "witness_class": "the nonempty cell {3} of a 2×2 table over Nat with the property 'even'"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "Cell (h2, h1) of demoTable is empty.",
+  "nonvacuity_witness_lean": "Toy.Ledger.check_of_cell_empty_nonvacuity",
+  "non_claims": [
+   "Says nothing about nonempty cells."
+  ],
+  "prior_art": [
+   "Ilan Beer, Shoham Ben-David, Cindy Eisner, Yoav Rodeh, \"Efficient Detection of Vacuity in Temporal Model Checking\", Formal Methods in System Design 18(2):141-163, 2001, DOI 10.1023/A:1008779610539. Abstract: an implication can be 'trivially valid because the pre-condition of the implication is not satisfiable' (antecedent failure), called vacuity; an 'interesting witness' is a non-trivial example of validity. Conference version: \"Efficient detection of vacuity in ACTL formulas\", CAV 1997, LNCS vol. 1254, pp. 279-290, DOI 10.1007/3-540-63166-6_28.",
+   "Derek L. Beatty, Randal E. Bryant, \"Formally verifying a microprocessor using a simulation methodology\", Proceedings of the 31st Design Automation Conference (DAC 1994), pp. 596-602, DOI 10.1145/196244.196575: 'One of the principal dangers of formal verification is what we have called antecedent failure'; footnote 10: 'Techniques that are based entirely on pure logic, such as HOL, are especially prone to it.' Their remedy is 'to check that the antecedent is, in fact, always true'. On a nonempty set of models or states this is a stronger requirement than NonVacuous (one model of the antecedent): it implies NonVacuous there (nonVacuous_of_forall_of_nonempty), and not conversely (nonVacuous_pin_antecedent_not_everywhere). Without nonemptiness it does not imply NonVacuous: over the empty model type the antecedent True holds at every model, vacuously, and is not satisfiable (antecedent_everywhere_not_nonVacuous_empty)."
+  ],
+  "design_question": "Does a ✓ in a soundness table show that its cell is inhabited? (No: every empty cell carries a ✓. Reference point.)"
+ },
+ {
+  "id": "all_checks_with_every_cell_empty",
+  "lean": "Toy.Ledger.all_checks_with_every_cell_empty",
+  "lean_names": [
+   "Toy.Ledger.InformativeCheck",
+   "Toy.Ledger.emptyTable",
+   "Toy.Ledger.classify"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "In the table over Nat with every cell empty, every cell carries a ✓ even for the unsatisfiable property False, and no ✓ is informative.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The table and property are concrete.",
+  "nonvacuity_witness_lean": "Toy.Ledger.all_checks_with_every_cell_empty",
+  "non_claims": [
+   "Does not say that tables in practice have empty cells; it shows that an all-✓ table is compatible with every cell being empty."
+  ],
+  "prior_art": [
+   "Ilan Beer, Shoham Ben-David, Cindy Eisner, Yoav Rodeh, \"Efficient Detection of Vacuity in Temporal Model Checking\", Formal Methods in System Design 18(2):141-163, 2001, DOI 10.1023/A:1008779610539. Abstract: an implication can be 'trivially valid because the pre-condition of the implication is not satisfiable' (antecedent failure), called vacuity; an 'interesting witness' is a non-trivial example of validity. Conference version: \"Efficient detection of vacuity in ACTL formulas\", CAV 1997, LNCS vol. 1254, pp. 279-290, DOI 10.1007/3-540-63166-6_28."
+  ],
+  "design_question": "What extra information distinguishes informative ✓ entries from ✓ entries on empty cells? (A model in the cell, or an explicit 'empty' mark; over a finite list of models, classify computes one or the other.)"
+ },
+ {
+  "id": "classify_sound",
+  "lean": "Toy.Ledger.classify_sound",
+  "lean_names": [
+   "Toy.Ledger.liftPred",
+   "Toy.Ledger.liftTable",
+   "Toy.Ledger.find?_eq_none_apply",
+   "Toy.Ledger.CellVerdict",
+   "Toy.Ledger.CellStatus",
+   "Toy.Ledger.CellVerdict.status",
+   "Toy.Ledger.CellVerdict.witness?",
+   "Toy.Ledger.classifyCell",
+   "Toy.Ledger.CellVerdict.Sound",
+   "Toy.Ledger.CellVerdict.sound",
+   "Toy.Ledger.demoTableB",
+   "Toy.Ledger.evenB",
+   "Toy.Ledger.twoThreeTableB",
+   "Toy.Ledger.classify_witnessedOnUniv_without_check"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For any finite list univ : List M, Bool-valued table cell : R → K → M → Bool, Bool-valued property q : M → Bool and cell (r, k), the verdict classify univ cell q r k satisfies, read through liftTable and liftPred: if its status is witnessedOnUniv, its witness? is some w with w in the cell and q w, and q holds on every member of univ in the cell; if its status is emptyOnUniv, its witness? is none and no member of univ is in the cell; if its status is foundCounterexample, its witness? is some x with x in the cell and not q x.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "classify_demo exhibits all three statuses on a 2×2 table over Fin 4.",
+  "nonvacuity_witness_lean": "Toy.Ledger.classify_demo",
+  "non_claims": [
+   "A witnessedOnUniv verdict does not give a ✓ when univ omits models: over univ = [2] the cell {2, 3} on Fin 4 is classified witnessedOnUniv for 'even', although 3 is in the cell and odd (classify_witnessedOnUniv_without_check). Over the whole model type such a verdict certifies that the cell contains a model with the property; it does not certify the ✓.",
+   "An emptyOnUniv verdict does not show that the cell is empty outside univ.",
+   "The verdict type carries its evidence, so the corresponding guarantee holds for every verdict value, whether or not it was computed by classify (CellVerdict.sound); the proof does not inspect classify. Depth is labelled shallow for that reason.",
+   "Concerns enumeration over a finite list; makes no efficiency claim."
+  ],
+  "prior_art": [
+   "Harsh Raju Chamarthi, Panagiotis Manolios, \"Automated Specification Analysis Using an Interactive Theorem Prover\", Formal Methods in Computer-Aided Design (FMCAD 2011), pp. 46-53 (author's version: https://www.ccs.neu.edu/home/harshrc/pub/fmcad11.pdf), Section II: assignments of a formula with hypotheses hyp1, ..., hypn are classified as 'vacuous' (not satisfying all hypotheses), 'counterexamples' (satisfying the hypotheses but not the conclusion), or 'witnesses' (satisfying the hypotheses and the conclusion).",
+   "Ilan Beer, Shoham Ben-David, Cindy Eisner, Yoav Rodeh, \"Efficient Detection of Vacuity in Temporal Model Checking\", Formal Methods in System Design 18(2):141-163, 2001, DOI 10.1023/A:1008779610539. Abstract: an implication can be 'trivially valid because the pre-condition of the implication is not satisfiable' (antecedent failure), called vacuity; an 'interesting witness' is a non-trivial example of validity. Conference version: \"Efficient detection of vacuity in ACTL formulas\", CAV 1997, LNCS vol. 1254, pp. 279-290, DOI 10.1007/3-540-63166-6_28."
+  ],
+  "design_question": "Which verdicts of a finite cell classifier can be trusted without knowing that its list of models is complete? (The returned witnesses and counterexamples.)"
+ },
+ {
+  "id": "classify_complete",
+  "lean": "Toy.Ledger.classify_complete",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For any list univ : List M that lists every model, any Bool-valued table cell : R → K → M → Bool, Bool-valued property q : M → Bool and cell (r, k), the status of classify univ cell q r k is witnessedOnUniv exactly when the cell carries an informative ✓ (InformativeCheck (liftTable cell) (liftPred q) r k), emptyOnUniv exactly when it carries a ✓ and has no model, and foundCounterexample exactly when it carries no ✓.",
+  "hypotheses": [
+   {
+    "name": "hu : ∀ x, x ∈ univ",
+    "purpose": "Turns the verdicts over univ into verdicts over the whole model type.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.classify_complete_ce_incomplete_univ",
+    "witness_class": "the empty list over Fin 4 and the cell {3} with the property 'even'"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "List.finRange 4 lists every element of Fin 4.",
+  "nonvacuity_witness_lean": "Toy.Ledger.classify_complete_nonvacuity",
+  "non_claims": [
+   "Is stated for Bool-valued tables over a model type that some finite list enumerates; it neither establishes nor refutes the corresponding claims for model types that no finite list enumerates. Proved model–system relation: none proved.",
+   "Says nothing about tables whose cells are given as arbitrary Prop-valued predicates."
+  ],
+  "prior_art": [
+   "Harsh Raju Chamarthi, Panagiotis Manolios, \"Automated Specification Analysis Using an Interactive Theorem Prover\", Formal Methods in Computer-Aided Design (FMCAD 2011), pp. 46-53 (author's version: https://www.ccs.neu.edu/home/harshrc/pub/fmcad11.pdf), Section II: assignments of a formula with hypotheses hyp1, ..., hypn are classified as 'vacuous' (not satisfying all hypotheses), 'counterexamples' (satisfying the hypotheses but not the conclusion), or 'witnesses' (satisfying the hypotheses and the conclusion).",
+   "Ilan Beer, Shoham Ben-David, Cindy Eisner, Yoav Rodeh, \"Efficient Detection of Vacuity in Temporal Model Checking\", Formal Methods in System Design 18(2):141-163, 2001, DOI 10.1023/A:1008779610539. Abstract: an implication can be 'trivially valid because the pre-condition of the implication is not satisfiable' (antecedent failure), called vacuity; an 'interesting witness' is a non-trivial example of validity. Conference version: \"Efficient detection of vacuity in ACTL formulas\", CAV 1997, LNCS vol. 1254, pp. 279-290, DOI 10.1007/3-540-63166-6_28."
+  ],
+  "design_question": "When can a finite classifier's 'empty' and ✓ verdicts be read as statements about the whole model type? (When its list contains every model.)"
+ },
+ {
+  "id": "auditLedger_sound",
+  "lean": "Toy.Ledger.auditLedger_sound",
+  "lean_names": [
+   "Toy.Ledger.Shown",
+   "Toy.Ledger.LedgerSummary",
+   "Toy.Ledger.liftH",
+   "Toy.Ledger.allB",
+   "Toy.Ledger.othersB",
+   "Toy.Ledger.SuffVerdict",
+   "Toy.Ledger.TightVerdict",
+   "Toy.Ledger.VacVerdict",
+   "Toy.Ledger.WeakVerdict",
+   "Toy.Ledger.LedgerReport",
+   "Toy.Ledger.auditSufficiency",
+   "Toy.Ledger.auditTightness",
+   "Toy.Ledger.auditNonVacuity",
+   "Toy.Ledger.auditWeakening",
+   "Toy.Ledger.auditLedger",
+   "Toy.Ledger.SuffVerdict.shown",
+   "Toy.Ledger.TightVerdict.shown",
+   "Toy.Ledger.VacVerdict.shown",
+   "Toy.Ledger.WeakVerdict.shown",
+   "Toy.Ledger.LedgerReport.summary",
+   "Toy.Ledger.pinHB",
+   "Toy.Ledger.pinCB",
+   "Toy.Ledger.sumHB",
+   "Toy.Ledger.sumCB",
+   "Toy.Ledger.grid3",
+   "Toy.Ledger.dupHB",
+   "Toy.Ledger.vacHB",
+   "Toy.Ledger.schemaHB",
+   "Toy.Ledger.bools2",
+   "Toy.Ledger.auditLedger_pin",
+   "Toy.Ledger.auditLedger_sum",
+   "Toy.Ledger.auditLedger_dup",
+   "Toy.Ledger.auditLedger_vac",
+   "Toy.Ledger.auditLedger_schema",
+   "Toy.Ledger.auditLedger_false_theorem_tight_entry_reuses_counterexample"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For any finite list univ : List M, Bool-valued hypotheses H : Fin m → M → Bool and conclusion C : M → Bool, every entry of (auditLedger univ H C).summary means the following, read through liftH and liftPred: a sufficiency entry witness x is a counterexample to the theorem; a tightness entry witness x at index i is a tightness witness for i; a non-vacuity entry witness x satisfies all hypotheses; a weakening entry witness x at i satisfies the other hypotheses and C and violates H i. A noWitness entry asserts the corresponding universal property restricted to the members of univ: the theorem, non-tightness of i, unsatisfiability of the hypotheses, or unweakenability of i.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "auditLedger_running_examples records five finite runs whose summaries contain both entry kinds (witness and noWitness) for tightness, non-vacuity and weakening, and noWitness sufficiency entries; a sufficiency entry witness x occurs in auditLedger_false_theorem_tight_entry_reuses_counterexample.",
+  "nonvacuity_witness_lean": "Toy.Ledger.auditLedger_running_examples",
+  "non_claims": [
+   "When the theorem fails, tightness entries may reuse the theorem's counterexample: for the single trivial hypothesis true and the conclusion b = true over [false, true], the sufficiency entry and the tightness entry are both witness false (auditLedger_false_theorem_tight_entry_reuses_counterexample), and that tightness witness satisfies H i. When the theorem holds, every tightness witness violates H i (tightAt_iff_witness_violates_exactly_i_of_sufficient, first part).",
+   "noWitness tightness entries for several hypotheses do not license deleting them together: auditLedger_dup reports noWitness for both hypotheses of x = 1, x = 1 ⊢ x = 1, yet deleting both breaks the theorem (dup_each_not_tight_but_both_needed).",
+   "A weakening witness x shows that H i is not unweakenable over the whole model type; when the theorem holds, the premise H i ∨ C, which holds at x where H i fails, is then a strictly weaker valid replacement (by parts 1 and 3 of weakestPremise_is_weakest_replacement). It does not show that H i can be weakened within its own variables (sumH_h1_weakenable_but_not_within_first_coordinate).",
+   "The non-vacuity entry concerns satisfiability of the hypotheses; it is not the 'every subformula matters' notion of vacuity from temporal-logic model checking (see irredundant_vacuous_and_nonvacuous_tightless).",
+   "noWitness entries are relative to univ; over an incomplete list they can be wrong for the whole model type (auditLedger_complete_ce_incomplete_univ).",
+   "The verdict constructors carry their evidence, so the guarantee holds by construction (depth shallow)."
+  ],
+  "prior_art": [
+   "Harsh Raju Chamarthi, Panagiotis Manolios, \"Automated Specification Analysis Using an Interactive Theorem Prover\", Formal Methods in Computer-Aided Design (FMCAD 2011), pp. 46-53 (author's version: https://www.ccs.neu.edu/home/harshrc/pub/fmcad11.pdf), Section II: assignments of a formula with hypotheses hyp1, ..., hypn are classified as 'vacuous' (not satisfying all hypotheses), 'counterexamples' (satisfying the hypotheses but not the conclusion), or 'witnesses' (satisfying the hypotheses and the conclusion).",
+   "Ilan Beer, Shoham Ben-David, Cindy Eisner, Yoav Rodeh, \"Efficient Detection of Vacuity in Temporal Model Checking\", Formal Methods in System Design 18(2):141-163, 2001, DOI 10.1023/A:1008779610539. Abstract: an implication can be 'trivially valid because the pre-condition of the implication is not satisfiable' (antecedent failure), called vacuity; an 'interesting witness' is a non-trivial example of validity. Conference version: \"Efficient detection of vacuity in ACTL formulas\", CAV 1997, LNCS vol. 1254, pp. 279-290, DOI 10.1007/3-540-63166-6_28.",
+   "Orna Kupferman, Moshe Y. Vardi, \"Vacuity detection in temporal model checking\", International Journal on Software Tools for Technology Transfer 4(2):224-233, 2003, DOI 10.1007/s100090100062. Abstract: vacuity checks 'whether all the subformulas of the specification affect its truth value in the system'; interesting witnesses. Earlier version: CHARME 1999, LNCS vol. 1703, pp. 82-98, DOI 10.1007/3-540-48153-2_8."
+  ],
+  "design_question": "Which parts of an executable ledger audit can be trusted without knowing that its list of models is complete? (Every model it shows.)"
+ },
+ {
+  "id": "auditLedger_complete",
+  "lean": "Toy.Ledger.auditLedger_complete",
+  "lean_names": [
+   "Toy.Ledger.mem_grid3",
+   "Toy.Ledger.mem_bools2"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For any list univ : List M that lists every model, any Bool-valued hypotheses H : Fin m → M → Bool and conclusion C : M → Bool, the summary of auditLedger univ H C satisfies: the sufficiency entry is noWitness exactly when Sufficient (liftH H) (liftPred C); the tightness entry at i is noWitness exactly when ¬ TightAt (liftH H) (liftPred C) i; the non-vacuity entry is noWitness exactly when ¬ NonVacuous (liftH H); the weakening entry at i is noWitness exactly when UnweakenableAt (liftH H) (liftPred C) i.",
+  "hypotheses": [
+   {
+    "name": "hu : ∀ x, x ∈ univ",
+    "purpose": "Turns the verdicts over univ into verdicts over the whole model type.",
+    "tightness": "tight",
+    "counterexample": "Toy.Ledger.auditLedger_complete_ce_incomplete_univ",
+    "witness_class": "the empty list over Fin 4 with x ≥ 1, x ≤ 1 ⊢ False"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "List.finRange 4 lists every element of Fin 4.",
+  "nonvacuity_witness_lean": "Toy.Ledger.auditLedger_complete_nonvacuity",
+  "non_claims": [
+   "When the theorem fails, tightness entries may reuse the theorem's counterexample: for the single trivial hypothesis true and the conclusion b = true over [false, true], the sufficiency entry and the tightness entry are both witness false (auditLedger_false_theorem_tight_entry_reuses_counterexample), and that tightness witness satisfies H i. When the theorem holds, every tightness witness violates H i (tightAt_iff_witness_violates_exactly_i_of_sufficient, first part).",
+   "noWitness tightness entries for several hypotheses do not license deleting them together: auditLedger_dup reports noWitness for both hypotheses of x = 1, x = 1 ⊢ x = 1, yet deleting both breaks the theorem (dup_each_not_tight_but_both_needed).",
+   "A weakening witness x shows that H i is not unweakenable over the whole model type; when the theorem holds, the premise H i ∨ C, which holds at x where H i fails, is then a strictly weaker valid replacement (by parts 1 and 3 of weakestPremise_is_weakest_replacement). It does not show that H i can be weakened within its own variables (sumH_h1_weakenable_but_not_within_first_coordinate).",
+   "The non-vacuity entry concerns satisfiability of the hypotheses; it is not the 'every subformula matters' notion of vacuity from temporal-logic model checking (see irredundant_vacuous_and_nonvacuous_tightless).",
+   "Is stated for Bool-valued, non-dependent hypothesis families indexed by Fin m over a model type that some finite list enumerates; it neither establishes nor refutes the corresponding claims for Prop-valued families, for other index types, or for model types that no finite list enumerates. Proved model–system relation: none proved.",
+   "The lists used in auditLedger_running_examples (List.finRange 4, grid3, List.finRange 3, bools2) list every model (List.mem_finRange, mem_grid3, mem_bools2), so this result applies to each run."
+  ],
+  "prior_art": [
+   "Harsh Raju Chamarthi, Panagiotis Manolios, \"Automated Specification Analysis Using an Interactive Theorem Prover\", Formal Methods in Computer-Aided Design (FMCAD 2011), pp. 46-53 (author's version: https://www.ccs.neu.edu/home/harshrc/pub/fmcad11.pdf), Section II: assignments of a formula with hypotheses hyp1, ..., hypn are classified as 'vacuous' (not satisfying all hypotheses), 'counterexamples' (satisfying the hypotheses but not the conclusion), or 'witnesses' (satisfying the hypotheses and the conclusion).",
+   "Ilan Beer, Shoham Ben-David, Cindy Eisner, Yoav Rodeh, \"Efficient Detection of Vacuity in Temporal Model Checking\", Formal Methods in System Design 18(2):141-163, 2001, DOI 10.1023/A:1008779610539. Abstract: an implication can be 'trivially valid because the pre-condition of the implication is not satisfiable' (antecedent failure), called vacuity; an 'interesting witness' is a non-trivial example of validity. Conference version: \"Efficient detection of vacuity in ACTL formulas\", CAV 1997, LNCS vol. 1254, pp. 279-290, DOI 10.1007/3-540-63166-6_28.",
+   "Orna Kupferman, Moshe Y. Vardi, \"Vacuity detection in temporal model checking\", International Journal on Software Tools for Technology Transfer 4(2):224-233, 2003, DOI 10.1007/s100090100062. Abstract: vacuity checks 'whether all the subformulas of the specification affect its truth value in the system'; interesting witnesses. Earlier version: CHARME 1999, LNCS vol. 1703, pp. 82-98, DOI 10.1007/3-540-48153-2_8."
+  ],
+  "design_question": "When can the 'no witness' entries of an executable ledger audit be read as statements about the whole model type? (When its list contains every model.)"
+ }
+]

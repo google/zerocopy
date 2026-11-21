@@ -1,0 +1,125 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/hypothesis-ledgers",
+    "verification/vacuity-detection",
+    "verification/minimal-unsatisfiable-subsets",
+    "verification/specification-analysis",
+    "verification/weakest-sufficient-conditions",
+    "lean/unused-argument-linters"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "The Foundations of Geometry (Hilbert, transl. Townsend 1902)",
+      "identity": {
+        "url": "https://www.gutenberg.org/ebooks/17384",
+        "gutenberg_ebook": "17384"
+      }
+    },
+    {
+      "name": "Kernel contraction (Hansson, JSL 1994)",
+      "identity": {
+        "doi": "10.2307/2275912"
+      }
+    },
+    {
+      "name": "Local Diagnosis (Wassermann 2000)",
+      "identity": {
+        "arxiv": "cs/0003051"
+      }
+    },
+    {
+      "name": "The complexity of logic-based abduction (Eiter, Gottlob, JACM 1995)",
+      "identity": {
+        "doi": "10.1145/200836.200838"
+      }
+    },
+    {
+      "name": "Algorithms for Computing Minimal Unsatisfiable Subsets of Constraints (Liffiton, Sakallah, JAR 2008)",
+      "identity": {
+        "doi": "10.1007/s10817-007-9084-z"
+      }
+    },
+    {
+      "name": "Abduction-Based Explanations for Machine Learning Models (Ignatiev, Narodytska, Marques-Silva, AAAI 2019)",
+      "identity": {
+        "doi": "10.1609/aaai.v33i01.33011511"
+      }
+    },
+    {
+      "name": "On strongest necessary and weakest sufficient conditions (Lin, AIJ 2001)",
+      "identity": {
+        "doi": "10.1016/S0004-3702(01)00070-4"
+      }
+    },
+    {
+      "name": "Variable Forgetting in Reasoning about Knowledge (Su, Sattar, Lv, Zhang, JAIR 2009)",
+      "identity": {
+        "doi": "10.1613/jair.2750"
+      }
+    },
+    {
+      "name": "Efficient Detection of Vacuity in Temporal Model Checking (Beer, Ben-David, Eisner, Rodeh, FMSD 2001)",
+      "identity": {
+        "doi": "10.1023/A:1008779610539"
+      }
+    },
+    {
+      "name": "Efficient detection of vacuity in ACTL formulas (Beer, Ben-David, Eisner, Rodeh, CAV 1997)",
+      "identity": {
+        "doi": "10.1007/3-540-63166-6_28"
+      }
+    },
+    {
+      "name": "Vacuity detection in temporal model checking (Kupferman, Vardi, STTT 2003)",
+      "identity": {
+        "doi": "10.1007/s100090100062"
+      }
+    },
+    {
+      "name": "Vacuity Detection in Temporal Model Checking (Kupferman, Vardi, CHARME 1999)",
+      "identity": {
+        "doi": "10.1007/3-540-48153-2_8"
+      }
+    },
+    {
+      "name": "Formally verifying a microprocessor using a simulation methodology (Beatty, Bryant, DAC 1994)",
+      "identity": {
+        "doi": "10.1145/196244.196575"
+      }
+    },
+    {
+      "name": "Automated Specification Analysis Using an Interactive Theorem Prover (Chamarthi, Manolios, FMCAD 2011)",
+      "identity": {
+        "url": "https://www.ccs.neu.edu/home/harshrc/pub/fmcad11.pdf",
+        "proceedings_isbn": "978-0-9835678-1-3",
+        "dblp": "conf/fmcad/ChamarthiM11",
+        "pages": "46-53"
+      }
+    },
+    {
+      "name": "Batteries (unusedArguments linter)",
+      "identity": {
+        "repository": "leanprover-community/batteries",
+        "revision": "4a314aed8362bd744e129ac93e4174b288811db6"
+      }
+    },
+    {
+      "name": "Mathlib (order-theoretic minimality and Heyting implication)",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "3eae40f5eb25c5934211edf662d3b24c5afbe47a"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,1042 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Ledger.CellStatus": [],
+    "Toy.Ledger.CellStatus.casesOn": [],
+    "Toy.Ledger.CellStatus.ctorElim": [],
+    "Toy.Ledger.CellStatus.ctorElimType": [],
+    "Toy.Ledger.CellStatus.ctorIdx": [],
+    "Toy.Ledger.CellStatus.emptyOnUniv": [],
+    "Toy.Ledger.CellStatus.emptyOnUniv.elim": [],
+    "Toy.Ledger.CellStatus.emptyOnUniv.sizeOf_spec": [],
+    "Toy.Ledger.CellStatus.foundCounterexample": [],
+    "Toy.Ledger.CellStatus.foundCounterexample.elim": [],
+    "Toy.Ledger.CellStatus.foundCounterexample.sizeOf_spec": [],
+    "Toy.Ledger.CellStatus.noConfusion": [],
+    "Toy.Ledger.CellStatus.noConfusionType": [],
+    "Toy.Ledger.CellStatus.ofNat": [],
+    "Toy.Ledger.CellStatus.ofNat_ctorIdx": [],
+    "Toy.Ledger.CellStatus.rec": [],
+    "Toy.Ledger.CellStatus.recOn": [],
+    "Toy.Ledger.CellStatus.witnessedOnUniv": [],
+    "Toy.Ledger.CellStatus.witnessedOnUniv.elim": [],
+    "Toy.Ledger.CellStatus.witnessedOnUniv.sizeOf_spec": [],
+    "Toy.Ledger.CellVerdict": [],
+    "Toy.Ledger.CellVerdict.Sound": [],
+    "Toy.Ledger.CellVerdict.casesOn": [],
+    "Toy.Ledger.CellVerdict.ctorElim": [],
+    "Toy.Ledger.CellVerdict.ctorElimType": [],
+    "Toy.Ledger.CellVerdict.ctorIdx": [],
+    "Toy.Ledger.CellVerdict.emptyOnUniv": [],
+    "Toy.Ledger.CellVerdict.emptyOnUniv.elim": [],
+    "Toy.Ledger.CellVerdict.emptyOnUniv.noConfusion": [],
+    "Toy.Ledger.CellVerdict.emptyOnUniv.sizeOf_spec": [],
+    "Toy.Ledger.CellVerdict.foundCounterexample": [],
+    "Toy.Ledger.CellVerdict.foundCounterexample.elim": [],
+    "Toy.Ledger.CellVerdict.foundCounterexample.inj": [],
+    "Toy.Ledger.CellVerdict.foundCounterexample.injEq": [
+      "propext"
+    ],
+    "Toy.Ledger.CellVerdict.foundCounterexample.noConfusion": [],
+    "Toy.Ledger.CellVerdict.foundCounterexample.sizeOf_spec": [],
+    "Toy.Ledger.CellVerdict.noConfusion": [],
+    "Toy.Ledger.CellVerdict.noConfusionType": [],
+    "Toy.Ledger.CellVerdict.rec": [],
+    "Toy.Ledger.CellVerdict.recOn": [],
+    "Toy.Ledger.CellVerdict.sound": [
+      "propext"
+    ],
+    "Toy.Ledger.CellVerdict.status": [],
+    "Toy.Ledger.CellVerdict.status.match_1": [],
+    "Toy.Ledger.CellVerdict.witness?": [],
+    "Toy.Ledger.CellVerdict.witnessedOnUniv": [],
+    "Toy.Ledger.CellVerdict.witnessedOnUniv.elim": [],
+    "Toy.Ledger.CellVerdict.witnessedOnUniv.inj": [],
+    "Toy.Ledger.CellVerdict.witnessedOnUniv.injEq": [
+      "propext"
+    ],
+    "Toy.Ledger.CellVerdict.witnessedOnUniv.noConfusion": [],
+    "Toy.Ledger.CellVerdict.witnessedOnUniv.sizeOf_spec": [],
+    "Toy.Ledger.Check": [],
+    "Toy.Ledger.HarmlessIn": [],
+    "Toy.Ledger.Independent": [],
+    "Toy.Ledger.InformativeCheck": [],
+    "Toy.Ledger.Irredundant": [],
+    "Toy.Ledger.IsolatingAt": [],
+    "Toy.Ledger.LedgerReport": [],
+    "Toy.Ledger.LedgerReport.casesOn": [],
+    "Toy.Ledger.LedgerReport.ctorIdx": [],
+    "Toy.Ledger.LedgerReport.mk": [],
+    "Toy.Ledger.LedgerReport.mk.inj": [],
+    "Toy.Ledger.LedgerReport.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Ledger.LedgerReport.mk.noConfusion": [],
+    "Toy.Ledger.LedgerReport.mk.sizeOf_spec": [],
+    "Toy.Ledger.LedgerReport.noConfusion": [],
+    "Toy.Ledger.LedgerReport.noConfusionType": [],
+    "Toy.Ledger.LedgerReport.nonvacuity": [],
+    "Toy.Ledger.LedgerReport.rec": [],
+    "Toy.Ledger.LedgerReport.recOn": [],
+    "Toy.Ledger.LedgerReport.sufficiency": [],
+    "Toy.Ledger.LedgerReport.summary": [],
+    "Toy.Ledger.LedgerReport.summary.eq_1": [],
+    "Toy.Ledger.LedgerReport.tightness": [],
+    "Toy.Ledger.LedgerReport.weakening": [],
+    "Toy.Ledger.LedgerSummary": [],
+    "Toy.Ledger.LedgerSummary.casesOn": [],
+    "Toy.Ledger.LedgerSummary.ctorIdx": [],
+    "Toy.Ledger.LedgerSummary.mk": [],
+    "Toy.Ledger.LedgerSummary.mk.inj": [],
+    "Toy.Ledger.LedgerSummary.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Ledger.LedgerSummary.mk.noConfusion": [],
+    "Toy.Ledger.LedgerSummary.mk.sizeOf_spec": [],
+    "Toy.Ledger.LedgerSummary.noConfusion": [],
+    "Toy.Ledger.LedgerSummary.noConfusionType": [],
+    "Toy.Ledger.LedgerSummary.nonvacuity": [],
+    "Toy.Ledger.LedgerSummary.rec": [],
+    "Toy.Ledger.LedgerSummary.recOn": [],
+    "Toy.Ledger.LedgerSummary.sufficiency": [],
+    "Toy.Ledger.LedgerSummary.tightness": [],
+    "Toy.Ledger.LedgerSummary.weakening": [],
+    "Toy.Ledger.MinimalUnsatisfiable": [],
+    "Toy.Ledger.NecessaryAt": [],
+    "Toy.Ledger.NonVacuous": [],
+    "Toy.Ledger.NonVacuousIn": [],
+    "Toy.Ledger.Shown": [],
+    "Toy.Ledger.Shown.casesOn": [],
+    "Toy.Ledger.Shown.ctorElim": [],
+    "Toy.Ledger.Shown.ctorElimType": [],
+    "Toy.Ledger.Shown.ctorIdx": [],
+    "Toy.Ledger.Shown.noConfusion": [],
+    "Toy.Ledger.Shown.noConfusionType": [],
+    "Toy.Ledger.Shown.noWitness": [],
+    "Toy.Ledger.Shown.noWitness.elim": [],
+    "Toy.Ledger.Shown.noWitness.sizeOf_spec": [],
+    "Toy.Ledger.Shown.rec": [],
+    "Toy.Ledger.Shown.recOn": [],
+    "Toy.Ledger.Shown.witness": [],
+    "Toy.Ledger.Shown.witness.elim": [],
+    "Toy.Ledger.Shown.witness.inj": [],
+    "Toy.Ledger.Shown.witness.injEq": [
+      "propext"
+    ],
+    "Toy.Ledger.Shown.witness.noConfusion": [],
+    "Toy.Ledger.Shown.witness.sizeOf_spec": [],
+    "Toy.Ledger.SuffVerdict": [],
+    "Toy.Ledger.SuffVerdict.casesOn": [],
+    "Toy.Ledger.SuffVerdict.ctorElim": [],
+    "Toy.Ledger.SuffVerdict.ctorElimType": [],
+    "Toy.Ledger.SuffVerdict.ctorIdx": [],
+    "Toy.Ledger.SuffVerdict.foundCounterexample": [],
+    "Toy.Ledger.SuffVerdict.foundCounterexample.congr_simp": [],
+    "Toy.Ledger.SuffVerdict.foundCounterexample.elim": [],
+    "Toy.Ledger.SuffVerdict.foundCounterexample.inj": [],
+    "Toy.Ledger.SuffVerdict.foundCounterexample.injEq": [
+      "propext"
+    ],
+    "Toy.Ledger.SuffVerdict.foundCounterexample.noConfusion": [],
+    "Toy.Ledger.SuffVerdict.foundCounterexample.sizeOf_spec": [],
+    "Toy.Ledger.SuffVerdict.holdsOnUniv": [],
+    "Toy.Ledger.SuffVerdict.holdsOnUniv.congr_simp": [],
+    "Toy.Ledger.SuffVerdict.holdsOnUniv.elim": [],
+    "Toy.Ledger.SuffVerdict.holdsOnUniv.noConfusion": [],
+    "Toy.Ledger.SuffVerdict.holdsOnUniv.sizeOf_spec": [],
+    "Toy.Ledger.SuffVerdict.noConfusion": [],
+    "Toy.Ledger.SuffVerdict.noConfusionType": [],
+    "Toy.Ledger.SuffVerdict.rec": [],
+    "Toy.Ledger.SuffVerdict.recOn": [],
+    "Toy.Ledger.SuffVerdict.shown": [],
+    "Toy.Ledger.SuffVerdict.shown.eq_1": [],
+    "Toy.Ledger.SuffVerdict.shown.eq_2": [],
+    "Toy.Ledger.SuffVerdict.shown.match_1": [],
+    "Toy.Ledger.SuffVerdict.shown_noWitness": [
+      "propext"
+    ],
+    "Toy.Ledger.SuffVerdict.shown_noWitness_iff": [
+      "propext"
+    ],
+    "Toy.Ledger.SuffVerdict.shown_witness": [
+      "propext"
+    ],
+    "Toy.Ledger.Sufficient": [],
+    "Toy.Ledger.SufficientIn": [],
+    "Toy.Ledger.Three": [],
+    "Toy.Ledger.Three.casesOn": [],
+    "Toy.Ledger.Three.ctorElim": [],
+    "Toy.Ledger.Three.ctorElimType": [],
+    "Toy.Ledger.Three.ctorIdx": [],
+    "Toy.Ledger.Three.forall_iff": [],
+    "Toy.Ledger.Three.forall_iff.match_1_1": [],
+    "Toy.Ledger.Three.h1": [],
+    "Toy.Ledger.Three.h1.elim": [],
+    "Toy.Ledger.Three.h1.sizeOf_spec": [],
+    "Toy.Ledger.Three.h2": [],
+    "Toy.Ledger.Three.h2.elim": [],
+    "Toy.Ledger.Three.h2.sizeOf_spec": [],
+    "Toy.Ledger.Three.h3": [],
+    "Toy.Ledger.Three.h3.elim": [],
+    "Toy.Ledger.Three.h3.sizeOf_spec": [],
+    "Toy.Ledger.Three.noConfusion": [],
+    "Toy.Ledger.Three.noConfusionType": [],
+    "Toy.Ledger.Three.ofNat": [],
+    "Toy.Ledger.Three.ofNat_ctorIdx": [],
+    "Toy.Ledger.Three.rec": [],
+    "Toy.Ledger.Three.recOn": [],
+    "Toy.Ledger.TightAt": [],
+    "Toy.Ledger.TightIn": [],
+    "Toy.Ledger.TightVerdict": [],
+    "Toy.Ledger.TightVerdict.casesOn": [],
+    "Toy.Ledger.TightVerdict.ctorElim": [],
+    "Toy.Ledger.TightVerdict.ctorElimType": [],
+    "Toy.Ledger.TightVerdict.ctorIdx": [],
+    "Toy.Ledger.TightVerdict.foundTightWitness": [],
+    "Toy.Ledger.TightVerdict.foundTightWitness.congr_simp": [],
+    "Toy.Ledger.TightVerdict.foundTightWitness.elim": [],
+    "Toy.Ledger.TightVerdict.foundTightWitness.inj": [],
+    "Toy.Ledger.TightVerdict.foundTightWitness.injEq": [
+      "propext"
+    ],
+    "Toy.Ledger.TightVerdict.foundTightWitness.noConfusion": [],
+    "Toy.Ledger.TightVerdict.foundTightWitness.sizeOf_spec": [],
+    "Toy.Ledger.TightVerdict.noConfusion": [],
+    "Toy.Ledger.TightVerdict.noConfusionType": [],
+    "Toy.Ledger.TightVerdict.noTightWitnessOnUniv": [],
+    "Toy.Ledger.TightVerdict.noTightWitnessOnUniv.congr_simp": [],
+    "Toy.Ledger.TightVerdict.noTightWitnessOnUniv.elim": [],
+    "Toy.Ledger.TightVerdict.noTightWitnessOnUniv.noConfusion": [],
+    "Toy.Ledger.TightVerdict.noTightWitnessOnUniv.sizeOf_spec": [],
+    "Toy.Ledger.TightVerdict.rec": [],
+    "Toy.Ledger.TightVerdict.recOn": [],
+    "Toy.Ledger.TightVerdict.shown": [],
+    "Toy.Ledger.TightVerdict.shown.eq_1": [],
+    "Toy.Ledger.TightVerdict.shown.eq_2": [],
+    "Toy.Ledger.TightVerdict.shown.match_1": [],
+    "Toy.Ledger.TightVerdict.shown_noWitness": [
+      "propext"
+    ],
+    "Toy.Ledger.TightVerdict.shown_noWitness_iff": [
+      "propext"
+    ],
+    "Toy.Ledger.TightVerdict.shown_noWitness_iff.match_1_6": [],
+    "Toy.Ledger.TightVerdict.shown_witness": [
+      "propext"
+    ],
+    "Toy.Ledger.Two": [],
+    "Toy.Ledger.Two.casesOn": [],
+    "Toy.Ledger.Two.ctorElim": [],
+    "Toy.Ledger.Two.ctorElimType": [],
+    "Toy.Ledger.Two.ctorIdx": [],
+    "Toy.Ledger.Two.exists_iff": [
+      "propext"
+    ],
+    "Toy.Ledger.Two.exists_iff.match_1_1": [],
+    "Toy.Ledger.Two.forall_iff": [],
+    "Toy.Ledger.Two.forall_iff.match_1_1": [],
+    "Toy.Ledger.Two.h1": [],
+    "Toy.Ledger.Two.h1.elim": [],
+    "Toy.Ledger.Two.h1.sizeOf_spec": [],
+    "Toy.Ledger.Two.h2": [],
+    "Toy.Ledger.Two.h2.elim": [],
+    "Toy.Ledger.Two.h2.sizeOf_spec": [],
+    "Toy.Ledger.Two.noConfusion": [],
+    "Toy.Ledger.Two.noConfusionType": [],
+    "Toy.Ledger.Two.ofNat": [],
+    "Toy.Ledger.Two.ofNat_ctorIdx": [],
+    "Toy.Ledger.Two.rec": [],
+    "Toy.Ledger.Two.recOn": [],
+    "Toy.Ledger.Unit.forall_iff'": [],
+    "Toy.Ledger.UnweakenableAt": [],
+    "Toy.Ledger.VacVerdict": [],
+    "Toy.Ledger.VacVerdict.casesOn": [],
+    "Toy.Ledger.VacVerdict.ctorElim": [],
+    "Toy.Ledger.VacVerdict.ctorElimType": [],
+    "Toy.Ledger.VacVerdict.ctorIdx": [],
+    "Toy.Ledger.VacVerdict.foundSatisfyingModel": [],
+    "Toy.Ledger.VacVerdict.foundSatisfyingModel.congr_simp": [],
+    "Toy.Ledger.VacVerdict.foundSatisfyingModel.elim": [],
+    "Toy.Ledger.VacVerdict.foundSatisfyingModel.inj": [],
+    "Toy.Ledger.VacVerdict.foundSatisfyingModel.injEq": [
+      "propext"
+    ],
+    "Toy.Ledger.VacVerdict.foundSatisfyingModel.noConfusion": [],
+    "Toy.Ledger.VacVerdict.foundSatisfyingModel.sizeOf_spec": [],
+    "Toy.Ledger.VacVerdict.noConfusion": [],
+    "Toy.Ledger.VacVerdict.noConfusionType": [],
+    "Toy.Ledger.VacVerdict.rec": [],
+    "Toy.Ledger.VacVerdict.recOn": [],
+    "Toy.Ledger.VacVerdict.shown": [],
+    "Toy.Ledger.VacVerdict.shown.eq_1": [],
+    "Toy.Ledger.VacVerdict.shown.eq_2": [],
+    "Toy.Ledger.VacVerdict.shown.match_1": [],
+    "Toy.Ledger.VacVerdict.shown_noWitness": [
+      "propext"
+    ],
+    "Toy.Ledger.VacVerdict.shown_noWitness_iff": [
+      "propext"
+    ],
+    "Toy.Ledger.VacVerdict.shown_noWitness_iff.match_1_6": [],
+    "Toy.Ledger.VacVerdict.shown_witness": [
+      "propext"
+    ],
+    "Toy.Ledger.VacVerdict.unsatisfiableOnUniv": [],
+    "Toy.Ledger.VacVerdict.unsatisfiableOnUniv.congr_simp": [],
+    "Toy.Ledger.VacVerdict.unsatisfiableOnUniv.elim": [],
+    "Toy.Ledger.VacVerdict.unsatisfiableOnUniv.noConfusion": [],
+    "Toy.Ledger.VacVerdict.unsatisfiableOnUniv.sizeOf_spec": [],
+    "Toy.Ledger.WeakVerdict": [],
+    "Toy.Ledger.WeakVerdict.casesOn": [],
+    "Toy.Ledger.WeakVerdict.ctorElim": [],
+    "Toy.Ledger.WeakVerdict.ctorElimType": [],
+    "Toy.Ledger.WeakVerdict.ctorIdx": [],
+    "Toy.Ledger.WeakVerdict.foundWeakeningWitness": [],
+    "Toy.Ledger.WeakVerdict.foundWeakeningWitness.congr_simp": [],
+    "Toy.Ledger.WeakVerdict.foundWeakeningWitness.elim": [],
+    "Toy.Ledger.WeakVerdict.foundWeakeningWitness.inj": [],
+    "Toy.Ledger.WeakVerdict.foundWeakeningWitness.injEq": [
+      "propext"
+    ],
+    "Toy.Ledger.WeakVerdict.foundWeakeningWitness.noConfusion": [],
+    "Toy.Ledger.WeakVerdict.foundWeakeningWitness.sizeOf_spec": [],
+    "Toy.Ledger.WeakVerdict.noConfusion": [],
+    "Toy.Ledger.WeakVerdict.noConfusionType": [],
+    "Toy.Ledger.WeakVerdict.noWeakeningOnUniv": [],
+    "Toy.Ledger.WeakVerdict.noWeakeningOnUniv.congr_simp": [],
+    "Toy.Ledger.WeakVerdict.noWeakeningOnUniv.elim": [],
+    "Toy.Ledger.WeakVerdict.noWeakeningOnUniv.noConfusion": [],
+    "Toy.Ledger.WeakVerdict.noWeakeningOnUniv.sizeOf_spec": [],
+    "Toy.Ledger.WeakVerdict.rec": [],
+    "Toy.Ledger.WeakVerdict.recOn": [],
+    "Toy.Ledger.WeakVerdict.shown": [],
+    "Toy.Ledger.WeakVerdict.shown.eq_1": [],
+    "Toy.Ledger.WeakVerdict.shown.eq_2": [],
+    "Toy.Ledger.WeakVerdict.shown.match_1": [],
+    "Toy.Ledger.WeakVerdict.shown_noWitness": [
+      "propext"
+    ],
+    "Toy.Ledger.WeakVerdict.shown_noWitness_iff": [
+      "propext"
+    ],
+    "Toy.Ledger.WeakVerdict.shown_witness": [
+      "propext"
+    ],
+    "Toy.Ledger.WeakestPremise": [],
+    "Toy.Ledger.allB": [],
+    "Toy.Ledger.allB.eq_1": [],
+    "Toy.Ledger.allB_eq_true_iff": [
+      "propext"
+    ],
+    "Toy.Ledger.all_checks_with_every_cell_empty": [],
+    "Toy.Ledger.all_checks_with_every_cell_empty.match_1_1": [],
+    "Toy.Ledger.all_checks_with_every_cell_empty.match_1_3": [],
+    "Toy.Ledger.antecedent_everywhere_not_nonVacuous_empty": [],
+    "Toy.Ledger.antecedent_everywhere_not_nonVacuous_empty.match_1_1": [],
+    "Toy.Ledger.auditLedger": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_complete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_complete_ce_incomplete_univ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_complete_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_dup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_false_theorem_tight_entry_reuses_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_pin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_running_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_schema": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_sum": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditLedger_vac": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditNonVacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditSufficiency": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditSufficiency.match_1": [],
+    "Toy.Ledger.auditTightness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.auditWeakening": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.bitsH": [],
+    "Toy.Ledger.bitsH.eq_1": [],
+    "Toy.Ledger.bools2": [],
+    "Toy.Ledger.bools2.eq_1": [],
+    "Toy.Ledger.bounded": [],
+    "Toy.Ledger.bounded.eq_1": [],
+    "Toy.Ledger.check_not_informative_demo_h2_h1": [],
+    "Toy.Ledger.check_not_informative_demo_h2_h1.match_1_1": [],
+    "Toy.Ledger.check_of_cell_empty": [],
+    "Toy.Ledger.check_of_cell_empty_ce_nonempty": [
+      "propext"
+    ],
+    "Toy.Ledger.check_of_cell_empty_nonvacuity": [],
+    "Toy.Ledger.classify": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.classifyCell": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.classifyCell.match_1": [],
+    "Toy.Ledger.classify_complete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.classify_complete.match_1_1": [],
+    "Toy.Ledger.classify_complete.match_1_3": [],
+    "Toy.Ledger.classify_complete.match_1_5": [],
+    "Toy.Ledger.classify_complete_ce_incomplete_univ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.classify_complete_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Ledger.classify_demo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.classify_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.classify_witnessedOnUniv_without_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.demoTable": [],
+    "Toy.Ledger.demoTable.eq_1": [],
+    "Toy.Ledger.demoTable.eq_2": [],
+    "Toy.Ledger.demoTable.eq_3": [],
+    "Toy.Ledger.demoTable.match_1": [],
+    "Toy.Ledger.demoTableB": [],
+    "Toy.Ledger.dupH": [],
+    "Toy.Ledger.dupH.eq_1": [],
+    "Toy.Ledger.dupHB": [],
+    "Toy.Ledger.dup_each_not_tight_but_both_needed": [
+      "propext"
+    ],
+    "Toy.Ledger.dup_each_not_tight_but_both_needed.match_1_1": [],
+    "Toy.Ledger.emptyTable": [],
+    "Toy.Ledger.entH": [],
+    "Toy.Ledger.entH.eq_1": [],
+    "Toy.Ledger.eqC": [],
+    "Toy.Ledger.eqC.eq_1": [],
+    "Toy.Ledger.eqH": [],
+    "Toy.Ledger.eqH.eq_1": [],
+    "Toy.Ledger.evenB": [],
+    "Toy.Ledger.evenQ": [],
+    "Toy.Ledger.evenQ.eq_1": [],
+    "Toy.Ledger.falseC": [],
+    "Toy.Ledger.find?_eq_none_apply": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.flipC": [],
+    "Toy.Ledger.flipC.eq_1": [],
+    "Toy.Ledger.flipH": [],
+    "Toy.Ledger.flipH.eq_1": [],
+    "Toy.Ledger.geH": [],
+    "Toy.Ledger.geH.eq_1": [],
+    "Toy.Ledger.geH_sufficient_no_irredundant_sufficient_subfamily": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.geH_sufficient_no_irredundant_sufficient_subfamily.match_1_4": [],
+    "Toy.Ledger.getElem?_map_finRange": [
+      "propext"
+    ],
+    "Toy.Ledger.grid3": [],
+    "Toy.Ledger.grid3.eq_1": [],
+    "Toy.Ledger.harmlessIn_bounded_pin_h2": [],
+    "Toy.Ledger.hatchC": [
+      "propext"
+    ],
+    "Toy.Ledger.hatchC.eq_1": [
+      "propext"
+    ],
+    "Toy.Ledger.hatchH": [
+      "propext"
+    ],
+    "Toy.Ledger.hatchH.eq_1": [
+      "propext"
+    ],
+    "Toy.Ledger.independent_bits": [
+      "propext"
+    ],
+    "Toy.Ledger.informativeCheck_demo_h1_h1": [],
+    "Toy.Ledger.instDecidableEqCellStatus": [],
+    "Toy.Ledger.instDecidableEqLedgerSummary": [],
+    "Toy.Ledger.instDecidableEqLedgerSummary.decEq": [],
+    "Toy.Ledger.instDecidableEqLedgerSummary.decEq.match_1": [],
+    "Toy.Ledger.instDecidableEqShown": [],
+    "Toy.Ledger.instDecidableEqShown.decEq": [],
+    "Toy.Ledger.instDecidableEqShown.decEq.match_1": [],
+    "Toy.Ledger.instDecidableEqThree": [],
+    "Toy.Ledger.instDecidableEqTwo": [],
+    "Toy.Ledger.instReprCellStatus": [],
+    "Toy.Ledger.instReprCellStatus.repr": [],
+    "Toy.Ledger.instReprCellStatus.repr.match_1": [],
+    "Toy.Ledger.instReprLedgerSummary": [
+      "propext"
+    ],
+    "Toy.Ledger.instReprLedgerSummary.repr": [
+      "propext"
+    ],
+    "Toy.Ledger.instReprShown": [],
+    "Toy.Ledger.instReprShown.repr": [],
+    "Toy.Ledger.instReprShown.repr.match_1": [],
+    "Toy.Ledger.instReprThree": [],
+    "Toy.Ledger.instReprThree.repr": [],
+    "Toy.Ledger.instReprThree.repr.match_1": [],
+    "Toy.Ledger.instReprTwo": [],
+    "Toy.Ledger.instReprTwo.repr": [],
+    "Toy.Ledger.instReprTwo.repr.match_1": [],
+    "Toy.Ledger.intC": [],
+    "Toy.Ledger.intC.eq_1": [],
+    "Toy.Ledger.intVocab": [],
+    "Toy.Ledger.intVocab.eq_1": [],
+    "Toy.Ledger.irredundance_independence_isolation_countermodels": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.irredundant_dup_true_false": [],
+    "Toy.Ledger.irredundant_hypothesis_restates_conclusion_within_other": [
+      "propext"
+    ],
+    "Toy.Ledger.irredundant_iff_no_proper_subfamily_sufficient": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.irredundant_iff_no_proper_subfamily_sufficient.match_1_1": [],
+    "Toy.Ledger.irredundant_iff_no_proper_subfamily_sufficient.match_1_3": [],
+    "Toy.Ledger.irredundant_iff_no_proper_subfamily_sufficient.match_1_5": [],
+    "Toy.Ledger.irredundant_iff_no_proper_subfamily_sufficient_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.irredundant_iff_no_proper_subfamily_sufficient_nonvacuity.match_1_1": [],
+    "Toy.Ledger.irredundant_of_not_sufficient": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.irredundant_pin": [
+      "propext"
+    ],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_no_candidate_equals_conclusion": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_no_candidate_equals_conclusion.match_1_11": [],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_no_candidate_equals_conclusion.match_1_13": [],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_no_candidate_equals_conclusion.match_1_4": [],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_no_candidate_equals_conclusion.match_1_6": [],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_no_candidate_equals_conclusion.match_1_8": [],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_of_sizes_two_and_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_of_sizes_two_and_one.match_1_1": [],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_of_sizes_two_and_one.match_1_3": [],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_of_sizes_two_and_one.match_1_5": [],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_of_sizes_two_and_one.match_1_7": [],
+    "Toy.Ledger.irredundant_sufficient_subfamilies_of_sizes_two_and_one.match_1_9": [],
+    "Toy.Ledger.irredundant_vacuous_and_nonvacuous_tightless": [
+      "propext"
+    ],
+    "Toy.Ledger.isolatingAt_every_index_not_irredundant_pinWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.isolatingAt_of_tightAt_ce_not_sufficient": [],
+    "Toy.Ledger.isolatingAt_of_tightAt_ce_not_tight": [
+      "propext"
+    ],
+    "Toy.Ledger.isolatingAt_of_tightAt_of_sufficient": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.isolatingAt_of_tightAt_of_sufficient.match_1_1": [],
+    "Toy.Ledger.isolatingAt_of_tightAt_of_sufficient_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.isolatingAt_pin_h1": [
+      "propext"
+    ],
+    "Toy.Ledger.isolatingAt_sufficient_not_tightAt_pinWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.liftH": [],
+    "Toy.Ledger.liftH.eq_1": [],
+    "Toy.Ledger.liftPred": [],
+    "Toy.Ledger.liftPred.eq_1": [],
+    "Toy.Ledger.liftTable": [],
+    "Toy.Ledger.liftTable.eq_1": [],
+    "Toy.Ledger.mem_bools2": [
+      "propext"
+    ],
+    "Toy.Ledger.mem_grid3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.minimalUnsatisfiable_pin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.minimalUnsatisfiable_pin.match_1_7": [],
+    "Toy.Ledger.necessaryAt_pin_h1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.nonVacuousIn_bounded_pin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.nonVacuousIn_monotone": [],
+    "Toy.Ledger.nonVacuousIn_monotone.match_1_1": [],
+    "Toy.Ledger.nonVacuousIn_not_antitone": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.nonVacuousIn_true_iff": [],
+    "Toy.Ledger.nonVacuousIn_true_iff.match_1_1": [],
+    "Toy.Ledger.nonVacuousIn_true_iff.match_1_3": [],
+    "Toy.Ledger.nonVacuous_of_forall_of_nonempty": [],
+    "Toy.Ledger.nonVacuous_of_forall_of_nonempty.match_1_1": [],
+    "Toy.Ledger.nonVacuous_pin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.nonVacuous_pin_antecedent_not_everywhere": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_check_demo_h1_h2": [
+      "propext"
+    ],
+    "Toy.Ledger.not_harmlessIn_ce_not_sufficientIn": [],
+    "Toy.Ledger.not_harmlessIn_ce_not_tightIn": [],
+    "Toy.Ledger.not_harmlessIn_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_harmlessIn_of_tightIn_of_sufficientIn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_harmlessIn_of_tightIn_of_sufficientIn.match_1_1": [],
+    "Toy.Ledger.not_harmlessIn_true_pin_h2": [
+      "propext"
+    ],
+    "Toy.Ledger.not_independent_pin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_irredundant_dup": [
+      "propext"
+    ],
+    "Toy.Ledger.not_isolatingAt_dup_h1": [
+      "propext"
+    ],
+    "Toy.Ledger.not_minimalUnsatisfiable_vac": [
+      "propext"
+    ],
+    "Toy.Ledger.not_necessaryAt_sum_h1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_nonVacuousIn_zeroClass_pin": [
+      "propext"
+    ],
+    "Toy.Ledger.not_nonVacuous_vac": [
+      "propext"
+    ],
+    "Toy.Ledger.not_single_entails_ce_not_irredundant": [
+      "propext"
+    ],
+    "Toy.Ledger.not_single_entails_ce_single_hypothesis": [
+      "propext"
+    ],
+    "Toy.Ledger.not_single_entails_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Ledger.not_single_entails_of_irredundant_of_exists_other": [],
+    "Toy.Ledger.not_single_entails_of_irredundant_of_exists_other.match_1_1": [],
+    "Toy.Ledger.not_sufficientIn_true_single": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_sufficient_replaceAt_sum_h1_by_true": [
+      "propext"
+    ],
+    "Toy.Ledger.not_sufficient_restrict_sumVocab_h1": [
+      "propext"
+    ],
+    "Toy.Ledger.not_sufficient_restrict_sumVocab_h1.match_1_1": [],
+    "Toy.Ledger.not_sufficient_single_le_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_tightAt_not_entailed_by_others_pinWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_tightAt_of_ne_ce_not_entails": [
+      "propext"
+    ],
+    "Toy.Ledger.not_tightAt_of_ne_ce_same_index": [
+      "propext"
+    ],
+    "Toy.Ledger.not_tightAt_of_ne_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Ledger.not_tightAt_of_ne_of_single_entails": [],
+    "Toy.Ledger.not_tightAt_of_ne_of_single_entails.match_1_1": [],
+    "Toy.Ledger.not_tightAt_pinWeak_h1": [
+      "propext"
+    ],
+    "Toy.Ledger.not_tightIn_bounded_pin_h2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_unweakenableAt_sum_h1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.not_valid_of_tightAt": [],
+    "Toy.Ledger.not_valid_of_tightAt.match_1_1": [],
+    "Toy.Ledger.not_valid_of_tightAt_ce_not_tight": [],
+    "Toy.Ledger.not_valid_of_tightAt_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Ledger.not_weakestPremise_sum_h1_at_5_0": [
+      "propext"
+    ],
+    "Toy.Ledger.orSchemaH": [],
+    "Toy.Ledger.orSchemaH.eq_1": [],
+    "Toy.Ledger.or_schema_irredundant_nonvacuous_necessary_unweakenable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.othersB": [],
+    "Toy.Ledger.othersB.eq_1": [],
+    "Toy.Ledger.othersB_eq_true_iff": [
+      "propext"
+    ],
+    "Toy.Ledger.pair": [],
+    "Toy.Ledger.pair.eq_1": [],
+    "Toy.Ledger.pair.eq_2": [],
+    "Toy.Ledger.pair_h1": [],
+    "Toy.Ledger.pair_h2": [],
+    "Toy.Ledger.pinC": [],
+    "Toy.Ledger.pinC.eq_1": [],
+    "Toy.Ledger.pinCB": [],
+    "Toy.Ledger.pinH": [],
+    "Toy.Ledger.pinH.eq_1": [],
+    "Toy.Ledger.pinHB": [
+      "propext"
+    ],
+    "Toy.Ledger.pinWeakC": [],
+    "Toy.Ledger.pinWeakC.eq_1": [],
+    "Toy.Ledger.replaceAt": [],
+    "Toy.Ledger.replaceAt_iff_ite": [
+      "propext"
+    ],
+    "Toy.Ledger.replaceAt_of_ne": [],
+    "Toy.Ledger.replaceAt_self": [],
+    "Toy.Ledger.restrict": [],
+    "Toy.Ledger.restrict.eq_1": [],
+    "Toy.Ledger.schemaH": [],
+    "Toy.Ledger.schemaH.eq_1": [],
+    "Toy.Ledger.schemaHB": [
+      "propext"
+    ],
+    "Toy.Ledger.schematic_ledger_irredundant_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.single": [],
+    "Toy.Ledger.single.eq_1": [],
+    "Toy.Ledger.single_apply": [],
+    "Toy.Ledger.subfamily_eq_ce_not_contained": [
+      "propext"
+    ],
+    "Toy.Ledger.subfamily_eq_ce_not_contained.match_1_1": [],
+    "Toy.Ledger.subfamily_eq_ce_not_irredundant": [],
+    "Toy.Ledger.subfamily_eq_ce_not_sufficient": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.subfamily_eq_ce_not_sufficient.match_1_1": [],
+    "Toy.Ledger.subfamily_eq_ce_not_sufficient.match_1_3": [],
+    "Toy.Ledger.subfamily_eq_ce_not_sufficient.match_1_5": [],
+    "Toy.Ledger.subfamily_eq_ce_not_sufficient.match_1_7": [],
+    "Toy.Ledger.subfamily_eq_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.subfamily_eq_of_sufficient_of_irredundant_superfamily": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.subfamily_eq_of_sufficient_of_irredundant_superfamily.match_1_1": [],
+    "Toy.Ledger.sufficientIn_antitone_and_tightIn_monotone": [],
+    "Toy.Ledger.sufficientIn_antitone_and_tightIn_monotone.match_1_1": [],
+    "Toy.Ledger.sufficientIn_antitone_ce_not_subclass": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.sufficientIn_antitone_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.sufficientIn_bounded_single": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.sufficientIn_true_iff": [],
+    "Toy.Ledger.sufficient_conjunction_iff_each_and_tightAt_conjunction_iff_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.sufficient_conjunction_iff_each_and_tightAt_conjunction_iff_some.match_1_1": [],
+    "Toy.Ledger.sufficient_conjunction_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Ledger.sufficient_irredundant_nonVacuous_iff_minimalUnsatisfiable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.sufficient_irredundant_nonVacuous_iff_minimalUnsatisfiable.match_1_1": [],
+    "Toy.Ledger.sufficient_irredundant_nonVacuous_iff_minimalUnsatisfiable.match_1_3": [],
+    "Toy.Ledger.sufficient_irredundant_nonVacuous_iff_minimalUnsatisfiable_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.sufficient_pin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.sufficient_replaceAt_sum_h1_by_sumC": [],
+    "Toy.Ledger.sufficient_restrict_sumVocab_h1h2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.sumC": [],
+    "Toy.Ledger.sumC.eq_1": [],
+    "Toy.Ledger.sumCB": [],
+    "Toy.Ledger.sumH": [],
+    "Toy.Ledger.sumH.eq_1": [],
+    "Toy.Ledger.sumHB": [
+      "propext"
+    ],
+    "Toy.Ledger.sumH_h1_weakenable_but_not_within_first_coordinate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.sumVocab": [],
+    "Toy.Ledger.sumVocab.eq_1": [],
+    "Toy.Ledger.tightAt_iff_not_sufficient_without": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.tightAt_iff_not_sufficient_without.match_1_1": [],
+    "Toy.Ledger.tightAt_iff_not_sufficient_without.match_1_3": [],
+    "Toy.Ledger.tightAt_iff_not_sufficient_without_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Ledger.tightAt_iff_not_sufficient_without_nonvacuity.match_1_1": [],
+    "Toy.Ledger.tightAt_iff_witness_violates_exactly_i_ce_not_sufficient": [],
+    "Toy.Ledger.tightAt_iff_witness_violates_exactly_i_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.tightAt_iff_witness_violates_exactly_i_of_sufficient": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.tightAt_iff_witness_violates_exactly_i_of_sufficient.match_1_1": [],
+    "Toy.Ledger.tightAt_iff_witness_violates_exactly_i_of_sufficient.match_1_3": [],
+    "Toy.Ledger.tightAt_pinWeak_h2_conclusion_valid_on_bounded": [
+      "propext"
+    ],
+    "Toy.Ledger.tightAt_pin_h1": [
+      "propext"
+    ],
+    "Toy.Ledger.tightAt_pin_h2": [
+      "propext"
+    ],
+    "Toy.Ledger.tightAt_topH_falseC": [],
+    "Toy.Ledger.tightIn_all_models_harmlessIn_bounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.tightIn_harmlessIn_not_exhaustive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.tightIn_monotone_ce_not_subclass": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.tightIn_true_iff": [],
+    "Toy.Ledger.tightIn_true_iff.match_1_1": [],
+    "Toy.Ledger.tightIn_true_iff.match_1_3": [],
+    "Toy.Ledger.tightIn_true_pin_h2": [
+      "propext"
+    ],
+    "Toy.Ledger.tight_combinations_in_irredundant_families": [
+      "propext"
+    ],
+    "Toy.Ledger.tight_for_conjunction_not_for_conjunct": [
+      "propext"
+    ],
+    "Toy.Ledger.tight_necessary_unweakenable_six_combinations": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.topH": [],
+    "Toy.Ledger.triple": [],
+    "Toy.Ledger.triple_h1": [],
+    "Toy.Ledger.triple_h2": [],
+    "Toy.Ledger.triple_h3": [],
+    "Toy.Ledger.trueC": [],
+    "Toy.Ledger.twoThreeTableB": [],
+    "Toy.Ledger.unweakenableAt_and_not_tightAt_iff_entailed_by_others_of_sufficient": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.unweakenableAt_and_not_tightAt_iff_entailed_by_others_of_sufficient.match_1_1": [],
+    "Toy.Ledger.unweakenableAt_and_not_tightAt_iff_entailed_by_others_of_sufficient.match_1_3": [],
+    "Toy.Ledger.unweakenableAt_and_not_tightAt_iff_entailed_ce_not_sufficient": [],
+    "Toy.Ledger.unweakenableAt_and_not_tightAt_iff_entailed_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.unweakenableAt_characterizations_ce_not_sufficient": [],
+    "Toy.Ledger.unweakenableAt_characterizations_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.unweakenableAt_characterizations_of_sufficient": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.unweakenableAt_first_characterization_fails_true_false": [],
+    "Toy.Ledger.unweakenableAt_first_characterization_holds_flip": [
+      "propext"
+    ],
+    "Toy.Ledger.unweakenableAt_iff_weakenings_ce_not_sufficient": [
+      "propext"
+    ],
+    "Toy.Ledger.unweakenableAt_of_necessaryAt": [],
+    "Toy.Ledger.unweakenableAt_of_necessaryAt_ce_not_necessary": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.unweakenableAt_of_necessaryAt_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.unweakenableAt_pin_h1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.unweakenableAt_third_characterization_fails_true_false": [],
+    "Toy.Ledger.unweakenableAt_true_false_disagrees": [],
+    "Toy.Ledger.unweakenable_for_conjunction_not_for_conjuncts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.vacH": [
+      "propext"
+    ],
+    "Toy.Ledger.vacH.eq_1": [
+      "propext"
+    ],
+    "Toy.Ledger.vacHB": [
+      "propext"
+    ],
+    "Toy.Ledger.weakestPremise_is_weakest_replacement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.weakestPremise_is_weakest_replacement.match_1_1": [],
+    "Toy.Ledger.weakestPremise_sum_h1_at_2_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.weakestPremise_sum_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Ledger.withNegatedConclusion": [],
+    "Toy.Ledger.withNegatedConclusion.eq_1": [],
+    "Toy.Ledger.withNegatedConclusion.eq_2": [],
+    "Toy.Ledger.withNegatedConclusion.match_1": [],
+    "Toy.Ledger.zeroClass": [],
+    "Toy.Ledger.zeroClass.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
