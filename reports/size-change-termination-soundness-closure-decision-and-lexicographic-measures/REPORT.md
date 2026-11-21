@@ -104,7 +104,7 @@ def runStep P : State nf k → State nf k → Prop :=        -- the most permiss
   fun s t => ∃ G ∈ P.calls, G.src = s.1 ∧ G.dst = t.1 ∧ Respects G s.2 t.2
 ```
 
-Intent: `ClosureCriterion` is the test of Lee, Jones and Ben-Amram (Theorem 4) on the unrooted closure; `SizeChangeTerminating` is their Definition 11 in the unrooted form of Ben-Amram (LMCS 2010); `ConsistentRunIn Nat` is an infinite call sequence of the abstraction itself, with natural-number values respecting every graph used; `StepRespects` is the obligation that the graphs are sound for a semantic call relation; `checkSCT` is a reference implementation of the graph-based algorithm. Concrete arc lists are written with `arcsG src dst [(i, j, label), ...]` (unlisted arcs are `absent`; first match wins). Fixture programs (module `Toy/SCT/Fixtures.lean`) are quoted with the results that use them.
+Intent: `ClosureCriterion` is the test of Lee, Jones and Ben-Amram (Theorem 4) on the unrooted closure; `SizeChangeTerminating` is their Definition 11 in the unrooted form of Ben-Amram (LMCS 2010); `ConsistentRunIn Nat` is an infinite call sequence of the abstraction itself, with natural-number values respecting every graph used; `StepRespects` is the obligation that the graphs are sound for a semantic call relation; `checkSCT` is a reference implementation of the graph-based algorithm. Concrete arc lists are written with `arcsG src dst [(i, j, label), ...]` (unlisted arcs are `absent`; first match wins). Fixture programs (module `Toy/SCT/Fixtures.lean`) are summarized in informal notation, in non-Lean blocks, with the results that use them.
 
 **Depth convention.** Depth labels are marginal: they measure the argument needed given the earlier results of the package.
 
@@ -119,12 +119,17 @@ Intent: `ClosureCriterion` is the test of Lee, Jones and Ben-Amram (Theorem 4) o
 **Kind:** characterization. **Lean:** `Toy.SCT.sizeChangeTerminating_of_closureCriterion`, `Toy.SCT.closureCriterion_of_sizeChangeTerminating`
 
 ```lean
-theorem Toy.SCT.sizeChangeTerminating_of_closureCriterion {nf k : Nat} (P : Prog nf k)
+-- lean/Toy/SCT/Results.lean:55-56
+theorem sizeChangeTerminating_of_closureCriterion {nf k : Nat} (P : Prog nf k)
     (h : ClosureCriterion P) : SizeChangeTerminating P
-theorem Toy.SCT.closureCriterion_of_sizeChangeTerminating {nf k : Nat} (P : Prog nf k)
+-- lean/Toy/SCT/Results.lean:62-63
+theorem closureCriterion_of_sizeChangeTerminating {nf k : Nat} (P : Prog nf k)
     (h : SizeChangeTerminating P) : ClosureCriterion P
+```
 
--- unfolded
+Unfolded (prose)
+
+```text
 ClosureCriterion P =
   ∀ G : SCG nf k, InClosureWith Label.seq P G → G.src = G.dst →
     G.compWith Label.seq G = G → ∃ i : Fin k, G.lab i i = Label.strict
@@ -184,10 +189,14 @@ Size-change checkers such as Agda's termination checker test idempotent loops of
 **Kind:** theorem. **Lean:** `Toy.SCT.no_consistent_nat_run_of_sizeChangeTerminating`
 
 ```lean
-theorem Toy.SCT.no_consistent_nat_run_of_sizeChangeTerminating {nf k : Nat} (P : Prog nf k)
+-- lean/Toy/SCT/Results.lean:90-91
+theorem no_consistent_nat_run_of_sizeChangeTerminating {nf k : Nat} (P : Prog nf k)
     (h : SizeChangeTerminating P) : ¬ ConsistentRunIn Nat P
+```
 
--- unfolded
+Unfolded
+
+```lean
 ConsistentRunIn Nat P =
   ∃ (fs : Nat → Fin nf) (vs : Nat → Fin k → Nat) (Gs : Nat → SCG nf k),
     ∀ n, Gs n ∈ P.calls ∧ (Gs n).src = fs n ∧ (Gs n).dst = fs (n + 1) ∧
@@ -225,7 +234,8 @@ Basis: execution (Lean kernel check)
 **Kind:** theorem. **Lean:** `Toy.SCT.no_consistent_nat_run_of_closureCriterion`
 
 ```lean
-theorem Toy.SCT.no_consistent_nat_run_of_closureCriterion {nf k : Nat} (P : Prog nf k)
+-- lean/Toy/SCT/Results.lean:102-103
+theorem no_consistent_nat_run_of_closureCriterion {nf k : Nat} (P : Prog nf k)
     (h : ClosureCriterion P) : ¬ ConsistentRunIn Nat P
 -- ClosureCriterion and ConsistentRunIn Nat as unfolded above
 ```
@@ -264,11 +274,15 @@ Basis: execution (Lean kernel check)
 **Kind:** theorem. **Lean:** `Toy.SCT.terminates_of_stepRespects_of_closureCriterion`
 
 ```lean
-theorem Toy.SCT.terminates_of_stepRespects_of_closureCriterion {nf k : Nat} (P : Prog nf k)
+-- lean/Toy/SCT/Results.lean:118-120
+theorem terminates_of_stepRespects_of_closureCriterion {nf k : Nat} (P : Prog nf k)
     (step : State nf k → State nf k → Prop) (hstep : StepRespects P step)
     (h : ClosureCriterion P) : Terminates step
+```
 
--- unfolded
+Unfolded (prose)
+
+```text
 State nf k = Fin nf × (Fin k → Nat)
 StepRespects P step =
   ∀ s t, step s t → ∃ G ∈ P.calls, G.src = s.1 ∧ G.dst = t.1 ∧
@@ -315,13 +329,17 @@ For a real first-order program, take `step` to be its call relation on states ma
 **Kind:** counterexample. **Lean:** `Toy.SCT.misfit_graphs_counterexample`
 
 ```lean
-theorem Toy.SCT.misfit_graphs_counterexample :
+-- lean/Toy/SCT/Counterexamples.lean:311-315
+theorem misfit_graphs_counterexample :
     ClosureCriterion decLoop ∧ checkSCT decLoop = true ∧
     (∀ s t, unguardedDecStep s t → 0 < s.2 0 → Respects gDec s.2 t.2) ∧
     ¬ StepRespects decLoop unguardedDecStep ∧ ¬ Terminates unguardedDecStep ∧
     ¬ StepRespects decLoop idStep ∧ ¬ Terminates idStep
+```
 
--- fixtures
+Fixtures:
+
+```text
 gDec    : SCG 1 1 := arcsG f0 f0 [(0, 0, .strict)]          -- x' < x
 decLoop : Prog 1 1 := ⟨[gDec]⟩
 unguardedDecStep s t = (t.1 = s.1 ∧ t.2 0 = s.2 0 - 1)       -- truncated subtraction, no guard
@@ -353,11 +371,15 @@ Basis: execution (Lean kernel check)
 **Kind:** counterexample. **Lean:** `Toy.SCT.ackProg_unbounded_finite_runs`
 
 ```lean
-theorem Toy.SCT.ackProg_unbounded_finite_runs :
+-- lean/Toy/SCT/Counterexamples.lean:367-369
+theorem ackProg_unbounded_finite_runs :
     ClosureCriterion ackProg ∧ LexProjDecreases ackProg ackOrd ∧
     ∀ N : Nat, FiniteRunFrom ackProg f0 (vec2 1 0) N
+```
 
--- fixtures and definitions
+Fixtures and definitions:
+
+```text
 gX      : SCG 1 2 := arcsG f0 f0 [(0, 0, .strict)]                      -- f(x - 1, ?)
 gKeepX  : SCG 1 2 := arcsG f0 f0 [(0, 0, .nonstrict), (1, 1, .strict)]  -- f(x, y - 1)
 ackProg : Prog 1 2 := ⟨[gX, gKeepX]⟩
@@ -398,7 +420,8 @@ Basis: execution (Lean kernel check)
 **Kind:** theorem. **Lean:** `Toy.SCT.consistent_nat_run_of_not_closureCriterion`
 
 ```lean
-theorem Toy.SCT.consistent_nat_run_of_not_closureCriterion {nf k : Nat} (P : Prog nf k)
+-- lean/Toy/SCT/Results.lean:138-139
+theorem consistent_nat_run_of_not_closureCriterion {nf k : Nat} (P : Prog nf k)
     (h : ¬ ClosureCriterion P) : ConsistentRunIn Nat P
 -- ClosureCriterion and ConsistentRunIn Nat as unfolded under closure-iff-sct and sct-sound-nat
 ```
@@ -434,12 +457,17 @@ Basis: execution (Lean kernel check)
 **Kind:** characterization. **Lean:** `Toy.SCT.closureCriterion_of_checkSCT_eq_true`, `Toy.SCT.checkSCT_eq_true_of_closureCriterion`
 
 ```lean
-theorem Toy.SCT.closureCriterion_of_checkSCT_eq_true {nf k : Nat} (P : Prog nf k)
+-- lean/Toy/SCT/Results.lean:151-152
+theorem closureCriterion_of_checkSCT_eq_true {nf k : Nat} (P : Prog nf k)
     (h : checkSCT P = true) : ClosureCriterion P
-theorem Toy.SCT.checkSCT_eq_true_of_closureCriterion {nf k : Nat} (P : Prog nf k)
+-- lean/Toy/SCT/Results.lean:157-158
+theorem checkSCT_eq_true_of_closureCriterion {nf k : Nat} (P : Prog nf k)
     (h : ClosureCriterion P) : checkSCT P = true
+```
 
--- the checker
+The checker:
+
+```text
 def checkSCT (P : Prog nf k) : Bool :=
   match closureIter (closureFuel nf k) (dedupGraphs P.calls) with
   | none   => false
@@ -486,12 +514,16 @@ Basis: derived (modeling bridge)
 **Kind:** counterexample. **Lean:** `Toy.SCT.stall_weakSelfArcCriterion_counterexample`
 
 ```lean
-theorem Toy.SCT.stall_weakSelfArcCriterion_counterexample :
+-- lean/Toy/SCT/Counterexamples.lean:183-186
+theorem stall_weakSelfArcCriterion_counterexample :
     WeakSelfArcCriterion stallProg ∧ ¬ ClosureCriterion stallProg ∧
     ¬ SizeChangeTerminating stallProg ∧ ConsistentRunIn Nat stallProg ∧
     StepRespects stallProg (runStep stallProg) ∧ ¬ Terminates (runStep stallProg)
+```
 
--- definitions and fixtures
+Definitions and fixtures:
+
+```text
 WeakSelfArcCriterion P =
   ∀ G, InClosure P G → G.src = G.dst → G.comp G = G → ∃ i, G.lab i i ≠ Label.absent
 runStep P s t = ∃ G ∈ P.calls, G.src = s.1 ∧ G.dst = t.1 ∧ Respects G s.2 t.2
@@ -524,12 +556,16 @@ Basis: execution (Lean kernel check)
 **Kind:** counterexample. **Lean:** `Toy.SCT.alt_generatorCriterion_counterexample`
 
 ```lean
-theorem Toy.SCT.alt_generatorCriterion_counterexample :
+-- lean/Toy/SCT/Counterexamples.lean:226-229
+theorem alt_generatorCriterion_counterexample :
     (∀ G ∈ altProg.calls, G.HasStrictSelfArc) ∧ GeneratorCriterion altProg ∧
     ¬ ClosureCriterion altProg ∧ ¬ SizeChangeTerminating altProg ∧ ConsistentRunIn Nat altProg ∧
     StepRespects altProg (runStep altProg) ∧ ¬ Terminates (runStep altProg)
+```
 
--- definitions and fixtures
+Definitions and fixtures:
+
+```text
 GeneratorCriterion P = ∀ G ∈ P.calls, G.src = G.dst → G.comp G = G → G.HasStrictSelfArc
 gX : SCG 1 2 := arcsG f0 f0 [(0, 0, .strict)]      -- f(x - 1, ?)
 gY : SCG 1 2 := arcsG f0 f0 [(1, 1, .strict)]      -- f(?, y - 1)
@@ -561,16 +597,21 @@ Basis: execution (Lean kernel check)
 **Kind:** counterexample. **Lean:** `Toy.SCT.overStrict_composition_counterexample`, `Toy.SCT.forget_composition_rejects_mutProg`
 
 ```lean
-theorem Toy.SCT.overStrict_composition_counterexample :
+-- lean/Toy/SCT/Counterexamples.lean:240-244
+theorem overStrict_composition_counterexample :
     CriterionWith Label.seqOverStrict idLoop ∧ ¬ ClosureCriterion idLoop ∧
     ¬ SizeChangeTerminating idLoop ∧
     ConsistentRunIn Nat idLoop ∧ StepRespects idLoop (runStep idLoop) ∧
     ¬ Terminates (runStep idLoop)
-theorem Toy.SCT.forget_composition_rejects_mutProg :
+-- lean/Toy/SCT/Counterexamples.lean:254-256
+theorem forget_composition_rejects_mutProg :
     ¬ CriterionWith Label.seqForgetLeft mutProg ∧ ¬ CriterionWith Label.seqForgetRight mutProg ∧
     ClosureCriterion mutProg ∧ SizeChangeTerminating mutProg ∧ ¬ ConsistentRunIn Nat mutProg
+```
 
--- definitions and fixtures
+Definitions and fixtures:
+
+```text
 CriterionWith sq P = ∀ G, InClosureWith sq P G → G.src = G.dst → G.compWith sq G = G →
                        G.HasStrictSelfArc        -- ClosureCriterion P = CriterionWith Label.seq P
 Label.seq:            ≤;≤ = ≤   ≤;< = <   <;≤ = <   <;< = <   (absent if either arc is absent)
@@ -608,11 +649,15 @@ Basis: execution (Lean kernel check)
 **Kind:** counterexample. **Lean:** `Toy.SCT.countUp_terminates_and_no_sound_prog_passes`
 
 ```lean
-theorem Toy.SCT.countUp_terminates_and_no_sound_prog_passes :
+-- lean/Toy/SCT/Counterexamples.lean:407-409
+theorem countUp_terminates_and_no_sound_prog_passes :
     Terminates countUpStep ∧
     ∀ P : Prog 1 1, StepRespects P countUpStep → ¬ ClosureCriterion P
+```
 
--- the model of f(x) = if x < 100 then f(x + 1) else 0
+The model of f(x) = if x < 100 then f(x + 1) else 0:
+
+```text
 countUpStep s t = (t.1 = s.1 ∧ s.2 0 < 100 ∧ t.2 0 = s.2 0 + 1)
 ```
 
@@ -651,10 +696,14 @@ Lean's own inference accepts `def countUp (x : Nat) : Nat := if x < 100 then cou
 **Kind:** theorem. **Lean:** `Toy.SCT.closureCriterion_of_lexProjDecreases`
 
 ```lean
-theorem Toy.SCT.closureCriterion_of_lexProjDecreases {nf k L : Nat} (P : Prog nf k)
+-- lean/Toy/SCT/Results.lean:208-209
+theorem closureCriterion_of_lexProjDecreases {nf k L : Nat} (P : Prog nf k)
     (ord : Fin nf → Fin L → Fin k) (h : LexProjDecreases P ord) : ClosureCriterion P
+```
 
--- unfolded
+Unfolded (prose)
+
+```text
 LexProjDecreases P ord =
   ∀ G ∈ P.calls, ∀ u v : Fin k → Nat, Respects G u v →
     LexLt (fun l => v (ord G.dst l)) (fun l => u (ord G.src l))
@@ -696,14 +745,18 @@ Lean's termination inference searches lexicographic combinations of measures (`G
 **Kind:** counterexample. **Lean:** `Toy.SCT.swapDec_closureCriterion_and_no_lexProjDecreases`
 
 ```lean
-theorem Toy.SCT.swapDec_closureCriterion_and_no_lexProjDecreases :
+-- lean/Toy/SCT/Counterexamples.lean:84-89
+theorem swapDec_closureCriterion_and_no_lexProjDecreases :
     ClosureCriterion swapDec ∧ checkSCT swapDec = true ∧
     StepRespects swapDec swapStep ∧ Terminates swapStep ∧
     (∀ (L : Nat) (ord : Fin 1 → Fin L → Fin 2), ¬ LexProjDecreases swapDec ord) ∧
     (∀ (L : Nat) (ord : Fin 1 → Fin L → Fin 2),
       ¬ ∀ s t, swapStep s t → LexLt (fun l => t.2 (ord t.1 l)) (fun l => s.2 (ord s.1 l)))
+```
 
--- fixtures
+Fixtures:
+
+```text
 gSwap   : SCG 1 2 := arcsG f0 f0 [(1, 0, .nonstrict), (0, 1, .strict)]   -- x' ≤ y, y' < x
 swapDec : Prog 1 2 := ⟨[gSwap]⟩
 swapStep s t = (t.1 = s.1 ∧ 0 < s.2 0 ∧ t.2 0 = s.2 1 ∧ t.2 1 = s.2 0 - 1)
@@ -715,7 +768,7 @@ swapStep s t = (t.1 = s.1 ∧ 0 < s.2 0 ∧ t.2 0 = s.2 1 ∧ t.2 1 = s.2 0 - 1)
 
 **Non-vacuity witness:** Concrete program swapDec and model swapStep. (Lean: `swapDec_closureCriterion_and_no_lexProjDecreases`)
 
-**Positive control:** The Ackermann call structure ackProg (calls f(x - 1, ?) and f(x, y - 1); fixtures quoted under no-run-length-bound) does have a decreasing lexicographic projection measure, ackOrd = (x, y) (LexProjDecreases ackProg ackOrd), and satisfies the closure criterion, so a program accepted by the criterion can have such a measure; swapDec has none. (Lean: `sct_not_lex_positive_control`)
+**Positive control:** The Ackermann call structure ackProg (calls f(x - 1, ?) and f(x, y - 1); fixtures summarized under no-run-length-bound) does have a decreasing lexicographic projection measure, ackOrd = (x, y) (LexProjDecreases ackProg ackOrd), and satisfies the closure criterion, so a program accepted by the criterion can have such a measure; swapDec has none. (Lean: `sct_not_lex_positive_control`)
 
 **Prior art:** [P15], [P10], [P14], [P17], [P6] (records under Evidence).
 
@@ -744,7 +797,8 @@ Lean's inference rejects `def swapF (x y : Nat) : Nat := if x = 0 then 0 else sw
 **Kind:** theorem. **Lean:** `Toy.SCT.infinite_ramsey_pairs_of_finite_colors`
 
 ```lean
-theorem Toy.SCT.infinite_ramsey_pairs_of_finite_colors {α : Type} (S : List α) (col : Nat → Nat → α)
+-- lean/Toy/SCT/Results.lean:36-39
+theorem infinite_ramsey_pairs_of_finite_colors {α : Type} (S : List α) (col : Nat → Nat → α)
     (hS : ∀ m n, m < n → col m n ∈ S) :
     ∃ h : Nat → Nat, (∀ m n, m < n → h m < h n) ∧
       ∃ a : α, ∀ m n, m < n → col (h m) (h n) = a
@@ -778,7 +832,7 @@ Each list states what the result does **not** show. Read it together with the re
 
 #### `closure-iff-sct`
 
-- Both sides are properties of the size-change graphs only. Neither says anything about a real program unless its calls respect the graphs (card graphs-must-be-sound).
+- Both sides are properties of the size-change graphs. Neither says anything about a real program unless its calls respect the graphs (card graphs-must-be-sound).
 - Size-change termination here quantifies over all infinite paths through the call sites, regardless of guards or reachability; it is not a statement about the paths a real program can actually take.
 - No complexity or efficiency claim: the closure can be exponentially large, and the problem is PSPACE-hard (Lee, Jones and Ben-Amram, Theorem 5; not formalized here).
 - Only idempotent loop graphs (G.src = G.dst and G ; G = G) must have a strict self-arc; non-idempotent loop graphs in the closure of a size-change-terminating program may have no self-arc at all (for swapDec: its only call-site graph gSwap = arcsG f0 f0 [(1, 0, .nonstrict), (0, 1, .strict)], that is x' <= y and y' < x, and gSwap3 = gSwap ; gSwap ; gSwap = arcsG f0 f0 [(0, 1, .strict), (1, 0, .strict)], with strict cross-arcs x -> y' and y -> x' and no self-arc, which lies in the closure by comp_pos and inClosure_pos; idempotence_needed_for_converse).
@@ -795,10 +849,10 @@ Each list states what the result does **not** show. Read it together with the re
 
 #### `closure-criterion-sound`
 
-- It is a statement about the abstraction only. 'Passed' licenses termination of a real program only together with a proof that every real call respects one of the graphs (card closure-criterion-sound-model and graphs-must-be-sound).
+- It is a statement about the abstraction; on its own it neither establishes nor refutes termination of a real program. 'Passed' licenses termination of a real program only together with a proof that every real call respects one of the graphs (card closure-criterion-sound-model and graphs-must-be-sound).
 - Over a non-well-founded value domain the conclusion fails (decLoop_closureCriterion_consistent_int_run).
 - No bound on the number of calls (card no-run-length-bound).
-- First-order calls only: the model has a fixed finite set of functions and explicit call sites; higher-order calls (calls through function-valued arguments) are outside the model, and nothing here covers them.
+- First-order calls: the model has a fixed finite set of functions and explicit call sites; higher-order calls (calls through function-valued arguments) are outside the model, and these results neither establish nor refute the corresponding claims about them.
 - It does not show that a program failing the criterion diverges (cards closure-criterion-exact and sct-incomplete-for-termination).
 - Weakening any component of the criterion (generators only, nonstrict self-arcs, composition that over-claims strictness) breaks it (cards generators-insufficient, nonstrict-self-arcs-insufficient, composition-tracks-strictness).
 - Unrooted model: every function is tested as a possible entry point (card closure-iff-sct); Lee, Jones and Ben-Amram (POPL 2001) consider only calls reachable from an initial function.

@@ -73,7 +73,7 @@
     "nonvacuity_witness": "The permuting call f(x, y) = f(y, x - 1) (for x > 0) satisfies the criterion and is size-change terminating (its path gSwap, gSwap, ... has the thread x, y, x, y, ...); so does f(x) = f(x - 1).",
     "nonvacuity_witness_lean": "Toy.SCT.closure_iff_sct_nonvacuous",
     "non_claims": [
-      "Both sides are properties of the size-change graphs only. Neither says anything about a real program unless its calls respect the graphs (card graphs-must-be-sound).",
+      "Both sides are properties of the size-change graphs. Neither says anything about a real program unless its calls respect the graphs (card graphs-must-be-sound).",
       "Size-change termination here quantifies over all infinite paths through the call sites, regardless of guards or reachability; it is not a statement about the paths a real program can actually take.",
       "No complexity or efficiency claim: the closure can be exponentially large, and the problem is PSPACE-hard (Lee, Jones and Ben-Amram, Theorem 5; not formalized here).",
       "Only idempotent loop graphs (G.src = G.dst and G ; G = G) must have a strict self-arc; non-idempotent loop graphs in the closure of a size-change-terminating program may have no self-arc at all (for swapDec: its only call-site graph gSwap = arcsG f0 f0 [(1, 0, .nonstrict), (0, 1, .strict)], that is x' <= y and y' < x, and gSwap3 = gSwap ; gSwap ; gSwap = arcsG f0 f0 [(0, 1, .strict), (1, 0, .strict)], with strict cross-arcs x -> y' and y -> x' and no self-arc, which lies in the closure by comp_pos and inClosure_pos; idempotence_needed_for_converse).",
@@ -181,10 +181,10 @@
     "nonvacuity_witness": "The criterion holds for the permuting call f(x, y) = f(y, x - 1) (for x > 0), for two mutually recursive one-parameter functions (f0(x) calls f1(x - 1) for x > 0, f1(y) calls f0(y)), and for the Ackermann call structure.",
     "nonvacuity_witness_lean": "Toy.SCT.closure_criterion_sound_nonvacuous",
     "non_claims": [
-      "It is a statement about the abstraction only. 'Passed' licenses termination of a real program only together with a proof that every real call respects one of the graphs (card closure-criterion-sound-model and graphs-must-be-sound).",
+      "It is a statement about the abstraction; on its own it neither establishes nor refutes termination of a real program. 'Passed' licenses termination of a real program only together with a proof that every real call respects one of the graphs (card closure-criterion-sound-model and graphs-must-be-sound).",
       "Over a non-well-founded value domain the conclusion fails (decLoop_closureCriterion_consistent_int_run).",
       "No bound on the number of calls (card no-run-length-bound).",
-      "First-order calls only: the model has a fixed finite set of functions and explicit call sites; higher-order calls (calls through function-valued arguments) are outside the model, and nothing here covers them.",
+      "First-order calls: the model has a fixed finite set of functions and explicit call sites; higher-order calls (calls through function-valued arguments) are outside the model, and these results neither establish nor refute the corresponding claims about them.",
       "It does not show that a program failing the criterion diverges (cards closure-criterion-exact and sct-incomplete-for-termination).",
       "Weakening any component of the criterion (generators only, nonstrict self-arcs, composition that over-claims strictness) breaks it (cards generators-insufficient, nonstrict-self-arcs-insufficient, composition-tracks-strictness).",
       "Unrooted model: every function is tested as a possible entry point (card closure-iff-sct); Lee, Jones and Ben-Amram (POPL 2001) consider only calls reachable from an initial function.",
@@ -387,7 +387,7 @@
     "depth_justification": "The first component of any such tuple is x or y, and an explicit call makes it increase: (1, 2) -> (2, 0) increases x and (2, 0) -> (0, 1) increases y.",
     "nonvacuity_witness": "Concrete program swapDec and model swapStep.",
     "nonvacuity_witness_lean": "Toy.SCT.swapDec_closureCriterion_and_no_lexProjDecreases",
-    "positive_control": "The Ackermann call structure ackProg (calls f(x - 1, ?) and f(x, y - 1); fixtures quoted under no-run-length-bound) does have a decreasing lexicographic projection measure, ackOrd = (x, y) (LexProjDecreases ackProg ackOrd), and satisfies the closure criterion, so a program accepted by the criterion can have such a measure; swapDec has none.",
+    "positive_control": "The Ackermann call structure ackProg (calls f(x - 1, ?) and f(x, y - 1); fixtures summarized under no-run-length-bound) does have a decreasing lexicographic projection measure, ackOrd = (x, y) (LexProjDecreases ackProg ackOrd), and satisfies the closure criterion, so a program accepted by the criterion can have such a measure; swapDec has none.",
     "positive_control_lean": "Toy.SCT.sct_not_lex_positive_control",
     "non_claims": [
       "The separation is only against lexicographic tuples of single parameters. It does not mean arithmetic is needed for a ranking function: the order-based measure max(2x, 2y + 1) (the lexicographic maximum of <x, 0> and <y, 1>) decreases on every graph-consistent step (swapDec_order_ranking), and every terminating size-change instance has a global ranking function built from minima and maxima of lexicographically ordered tuples of variables and constants (Lee, TOPLAS 2009, as summarized by Ben-Amram and Lee, LMCS 2009); x + y also works.",
