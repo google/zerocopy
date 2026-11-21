@@ -33,7 +33,6 @@ jobs:
     outputs:
       changed: ${{ steps.check.outputs.changed }}
       version: ${{ steps.check.outputs.version }}
-      prerelease: ${{ steps.check.outputs.prerelease }}
     env:
       CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
     steps:
@@ -85,12 +84,6 @@ jobs:
             echo "Version change detected."
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "version=$CUR_VER_ZC" >> $GITHUB_OUTPUT
-
-            if [[ "${CUR_VER_ZC%+*}" == *-* ]]; then
-              echo "prerelease=true" >> $GITHUB_OUTPUT
-            else
-              echo "prerelease=false" >> $GITHUB_OUTPUT
-            fi
           else
             echo "Version unchanged."
             echo "changed=false" >> $GITHUB_OUTPUT
@@ -110,6 +103,8 @@ jobs:
     permissions:
       contents: write # required to create a git tag and a GitHub Release
       id-token: write # required to publish to crates.io using OIDC
+      issues: read # required to query New Contributors via GraphQL search
+      pull-requests: read # required to resolve PR metadata for release notes
     env:
       CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
     steps:
@@ -141,6 +136,25 @@ jobs:
             echo "Error: Tag $TAG already exists." >&2
             exit 1
           fi
+
+      - name: Generate release notes
+        working-directory: .
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ''
+          ACTIONS_ID_TOKEN_REQUEST_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          VERSION: ${{ needs.check-version.outputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eo pipefail
+          TAG="v$VERSION"
+          python3 tools/release_notes.py \
+            --tag "$TAG" \
+            --target HEAD \
+            --path zerocopy \
+            > "$RUNNER_TEMP/release-notes.md"
 
       - name: Create git tag
         env:
@@ -194,17 +208,17 @@ jobs:
       - name: Create GitHub Release
         env:
           VERSION: ${{ needs.check-version.outputs.version }}
-          PRERELEASE: ${{ needs.check-version.outputs.prerelease }}
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eo pipefail
           TAG="v$VERSION"
           ARGS=(
             "$TAG"
-            --generate-notes
+            --title "$TAG"
+            --notes-file "$RUNNER_TEMP/release-notes.md"
           )
-          if [ "$PRERELEASE" = "true" ]; then
-            ARGS+=(--prerelease)
+          if [[ "${VERSION%+*}" == *-* ]]; then
+            ARGS+=(--prerelease --latest=false)
           else
             # Only set --latest if it's not a prerelease.
             ARGS+=(--latest)
