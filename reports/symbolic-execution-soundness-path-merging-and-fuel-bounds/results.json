@@ -11,7 +11,7 @@
     "nonvacuity_witness": "No hypotheses; a concrete instance (x1 + x1 in the x0 = 0 branch store at x0 = 5) is checked by decide.",
     "nonvacuity_witness_lean": "Toy.SymEx.nonvacuity_eval_subst",
     "non_claims": [
-      "Only for this term language (variables, literals, +, structural ==, ite) with total coercing operations; a language with partial operations (division, overflow traps, type errors) needs a side condition that is not modelled.",
+      "Proved for this term language (variables, literals, +, structural ==, ite) with total coercing operations; for a language with partial operations (division, overflow traps, type errors) it is not addressed (not proved either way), and such a language would need a side condition that is not modelled.",
       "Conditions are read through Val.toBool (nonzero integers are true) while Term.eq is structural equality of values, so Boolean identities such as (c == true) = c fail for non-Boolean c (proved example in Examples.lean); a simplifier must respect this.",
       "Symbolic input x stands for the initial value of local x (SymStore.init = var); uninitialized locals and havoc (fresh unconstrained values in the middle of a run) are not modelled.",
       "Says nothing about statements, control flow or fuel; those are per-path soundness.",

@@ -27,7 +27,7 @@ A toy CFG language with a fuel-indexed interpreter and a forking symbolic execut
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
-What each result does **not** show is listed first under **Boundaries** (non-claims per result), followed by stronger conclusions that are not established and the escape hatches. All results are about the toy model described under **Applicability**; none is a theorem about a real verifier.
+What each result does **not** show is listed first under **Boundaries** (non-claims per result), followed by stronger conclusions that are not established and the escape hatches. All results are about the toy model described under **Applicability**; none is a theorem about a real verifier. Model–system relation: none proved (the soundness, coverage and completeness theorems relate the package's own symbolic executor to its own concrete interpreter). These are statements about the toy model; they neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool).
 
 ## Applicability
 
@@ -2060,7 +2060,7 @@ Each list says what the result does **not** establish. Read it together with the
 
 **1. `eval-subst-agrees`**
 
-- Only for this term language (variables, literals, +, structural ==, ite) with total coercing operations; a language with partial operations (division, overflow traps, type errors) needs a side condition that is not modelled.
+- Proved for this term language (variables, literals, +, structural ==, ite) with total coercing operations; for a language with partial operations (division, overflow traps, type errors) it is not addressed (not proved either way), and such a language would need a side condition that is not modelled.
 - Conditions are read through Val.toBool (nonzero integers are true) while Term.eq is structural equality of values, so Boolean identities such as (c == true) = c fail for non-Boolean c (proved example in Examples.lean); a simplifier must respect this.
 - Symbolic input x stands for the initial value of local x (SymStore.init = var); uninitialized locals and havoc (fresh unconstrained values in the middle of a run) are not modelled.
 - Says nothing about statements, control flow or fuel; those are per-path soundness.
