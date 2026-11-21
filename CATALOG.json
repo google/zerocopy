@@ -95574,6 +95574,63 @@
         "compilers/wasm"
       ]
     },
+    "wavefront-scoreboard-deadlock-freedom-edge-clamped-halo-bounds-and-release-acquire-prefix-freeze": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "e8574d0b22b126acc76007babce536c68bc07d0a"
+          },
+          "name": "FFmpeg"
+        },
+        {
+          "identity": {
+            "repository": "Fraunhoferhhi/vvdec",
+            "revision": "00607ca1ecde3d8c7c1315450053edfaea13eec6"
+          },
+          "name": "VVdeC"
+        },
+        {
+          "identity": {
+            "repository": "AOMediaCodec/av1-spec",
+            "revision": "5e04f3f75e73a5898d7616c47c52f032144b8f80"
+          },
+          "name": "AV1 Bitstream and Decoding Process Specification"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rust"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "domains/media",
+        "lean/mechanization",
+        "rust/concurrency",
+        "systems/concurrency-weak-memory",
+        "verification/concurrency",
+        "verification/liveness",
+        "verification/separation-logic"
+      ]
+    },
     "wayland-explicit-drm-syncobj-dbus-fd-passing-and-pipewire-graph-scheduling": {
       "observed_at": "2026-11-19",
       "subjects": [
