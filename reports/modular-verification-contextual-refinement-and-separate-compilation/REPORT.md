@@ -30,7 +30,7 @@ One sentence per result (the key hypotheses are part of each sentence):
 18. **cex-verifiability-preservation-not-behavioural** (counterexample): a pass that replaces every body by `lit 0` preserves verification against the interface "`0` returns a non-negative value" and keeps every name, so all hypotheses of the verifiability theorem hold, yet the compiled program returns `0` where the source returns `1`.
 19. **cex-separate-compilation-callee-dependent-rewrite** (counterexample): a per-module rewrite of a caller that is valid only for one particular callee body is a contextual equivalence in that whole program, but it is neither a per-module contextual refinement nor verifiable against the shared interface, and it breaks when the callee is replaced by another implementation of the same interface.
 
-What these results do *not* show is listed first under **Boundaries** (non-claims per result, then escape hatches and the parts of the design space that were not examined).
+What these results do *not* show is listed first under **Boundaries** (non-claims per result, then escape hatches and the parts of the design space that were not examined). Model–system relation: none proved (the refinement relations proved here, `EntryRefines`, `StandaloneRefines` and `CtxRefines`, relate modules of the package's own toy language to one another, not the model to a real toolchain). These are statements about the toy model; they neither establish nor refute the corresponding claims about separate compilation and linking of C, Rust or assembly code, the compiler passes applied to it, or contract-based program verifiers; the modeling-bridge paragraphs under **Findings** argue the connection separately.
 
 ## Applicability
 
