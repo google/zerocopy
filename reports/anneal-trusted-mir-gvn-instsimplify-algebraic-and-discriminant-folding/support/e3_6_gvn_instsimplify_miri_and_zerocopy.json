@@ -1,0 +1,287 @@
+{
+  "timestamp_utc": "2026-11-21T04:49:02Z",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "specimens": {
+    "ce1_div_zero_lhs": {
+      "miri_no_opt": {
+        "rc": 1,
+        "wall_sec": 0.6857,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: dividing by zero\n --> <tmp>\n  |\n9 |             RET = 0_u32 / x;\n  |             ^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: victim\n              at <tmp> 9:28\n          1: main\n              at <tmp> 16:65\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": ""
+      },
+      "miri_plus_gvn": {
+        "rc": 0,
+        "wall_sec": 0.0835,
+        "stdout": "",
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = const 0_u32;\n        return;\n    }"
+      },
+      "miri_plus_gvn_preserve_ub": {
+        "rc": 0,
+        "wall_sec": 0.0577,
+        "stdout": "",
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = const 0_u32;\n        return;\n    }"
+      },
+      "miri_plus_instsimplify": {
+        "rc": 1,
+        "wall_sec": 0.0474,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: dividing by zero\n --> <tmp>\n  |\n9 |             RET = 0_u32 / x;\n  |             ^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: victim\n              at <tmp> 9:28\n          1: main\n              at <tmp> 16:65\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _0 = Div(const 0_u32, copy _1);\n        return;\n    }"
+      },
+      "rustc_opt0_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = const 0_u32;\n        return;\n    }"
+      },
+      "rustc_preserve_ub_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = const 0_u32;\n        return;\n    }"
+      }
+    },
+    "ce2_mul_zero_uninit": {
+      "miri_no_opt": {
+        "rc": 1,
+        "wall_sec": 0.0468,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> <tmp>\n   |\n10 |             RET = uninit * 0_u32;\n   |             ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 10:33\n           1: main\n               at <tmp> 17:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": ""
+      },
+      "miri_plus_gvn": {
+        "rc": 1,
+        "wall_sec": 0.0489,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> <tmp>\n   |\n10 |             RET = uninit * 0_u32;\n   |             ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 10:33\n           1: main\n               at <tmp> 17:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _0 = Mul(copy _1, const 0_u32);\n        return;\n    }"
+      },
+      "miri_plus_gvn_preserve_ub": {
+        "rc": 1,
+        "wall_sec": 0.0472,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> <tmp>\n   |\n10 |             RET = uninit * 0_u32;\n   |             ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 10:33\n           1: main\n               at <tmp> 17:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _0 = Mul(copy _1, const 0_u32);\n        return;\n    }"
+      },
+      "miri_plus_instsimplify": {
+        "rc": 1,
+        "wall_sec": 0.0482,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> <tmp>\n   |\n10 |             RET = uninit * 0_u32;\n   |             ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 10:33\n           1: main\n               at <tmp> 17:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _0 = Mul(copy _1, const 0_u32);\n        return;\n    }"
+      },
+      "rustc_opt0_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = Mul(copy _1, const 0_u32);\n        return;\n    }"
+      },
+      "rustc_preserve_ub_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = Mul(copy _1, const 0_u32);\n        return;\n    }"
+      }
+    },
+    "ce3_xor_self_uninit": {
+      "miri_no_opt": {
+        "rc": 1,
+        "wall_sec": 0.0486,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: constructing invalid value of type u32: encountered uninitialized memory, but expected an integer\n  --> <tmp>\n   |\n11 |             tmp = uninit;\n   |             ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 11:25\n           1: main\n               at <tmp> 19:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": ""
+      },
+      "miri_plus_gvn": {
+        "rc": 1,
+        "wall_sec": 0.0504,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: constructing invalid value of type u32: encountered uninitialized memory, but expected an integer\n  --> <tmp>\n   |\n11 |             tmp = uninit;\n   |             ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 11:25\n           1: main\n               at <tmp> 19:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _2 = copy _1;\n        _0 = const 0_u32;\n        return;\n    }"
+      },
+      "miri_plus_gvn_preserve_ub": {
+        "rc": 1,
+        "wall_sec": 0.0487,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: constructing invalid value of type u32: encountered uninitialized memory, but expected an integer\n  --> <tmp>\n   |\n11 |             tmp = uninit;\n   |             ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 11:25\n           1: main\n               at <tmp> 19:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _2 = copy _1;\n        _0 = const 0_u32;\n        return;\n    }"
+      },
+      "miri_plus_instsimplify": {
+        "rc": 1,
+        "wall_sec": 0.0481,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: constructing invalid value of type u32: encountered uninitialized memory, but expected an integer\n  --> <tmp>\n   |\n11 |             tmp = uninit;\n   |             ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 11:25\n           1: main\n               at <tmp> 19:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _2 = copy _1;\n        _0 = BitXor(copy _2, copy _2);\n        return;\n    }"
+      },
+      "rustc_opt0_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _2 = copy _1;\n        _0 = const 0_u32;\n        return;\n    }"
+      },
+      "rustc_preserve_ub_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _2 = copy _1;\n        _0 = const 0_u32;\n        return;\n    }"
+      }
+    },
+    "ce4_rem_one_uninit": {
+      "miri_no_opt": {
+        "rc": 1,
+        "wall_sec": 0.047,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> <tmp>\n   |\n10 |             RET = uninit % 1_u32;\n   |             ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 10:33\n           1: main\n               at <tmp> 17:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": ""
+      },
+      "miri_plus_gvn": {
+        "rc": 1,
+        "wall_sec": 0.0475,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> <tmp>\n   |\n10 |             RET = uninit % 1_u32;\n   |             ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 10:33\n           1: main\n               at <tmp> 17:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _0 = Rem(copy _1, const 1_u32);\n        return;\n    }"
+      },
+      "miri_plus_gvn_preserve_ub": {
+        "rc": 1,
+        "wall_sec": 0.047,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> <tmp>\n   |\n10 |             RET = uninit % 1_u32;\n   |             ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 10:33\n           1: main\n               at <tmp> 17:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _0 = Rem(copy _1, const 1_u32);\n        return;\n    }"
+      },
+      "miri_plus_instsimplify": {
+        "rc": 1,
+        "wall_sec": 0.0482,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> <tmp>\n   |\n10 |             RET = uninit % 1_u32;\n   |             ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: victim\n               at <tmp> 10:33\n           1: main\n               at <tmp> 17:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": "bb0: {\n        _0 = Rem(copy _1, const 1_u32);\n        return;\n    }"
+      },
+      "rustc_opt0_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = Rem(copy _1, const 1_u32);\n        return;\n    }"
+      },
+      "rustc_preserve_ub_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = Rem(copy _1, const 1_u32);\n        return;\n    }"
+      }
+    },
+    "ce5_neg_neg_int8_min": {
+      "miri_no_opt": {
+        "rc": 0,
+        "wall_sec": 0.0783,
+        "stdout": "",
+        "stderr": "",
+        "after_mir_bb0": ""
+      },
+      "miri_plus_gvn": {
+        "rc": 0,
+        "wall_sec": 0.0728,
+        "stdout": "",
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _2 = Neg(copy _1);\n        _0 = copy _1;\n        return;\n    }"
+      },
+      "miri_plus_gvn_preserve_ub": {
+        "rc": 0,
+        "wall_sec": 0.0584,
+        "stdout": "",
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _2 = Neg(copy _1);\n        _0 = copy _1;\n        return;\n    }"
+      },
+      "miri_plus_instsimplify": {
+        "rc": 0,
+        "wall_sec": 0.0538,
+        "stdout": "",
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _2 = Neg(copy _1);\n        _0 = Neg(copy _2);\n        return;\n    }"
+      },
+      "rustc_opt0_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _2 = Neg(copy _1);\n        _0 = copy _1;\n        return;\n    }"
+      },
+      "rustc_preserve_ub_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _2 = Neg(copy _1);\n        _0 = copy _1;\n        return;\n    }"
+      }
+    },
+    "ce6_bool_eq_true_invalid_scalar": {
+      "miri_no_opt": {
+        "rc": 1,
+        "wall_sec": 0.0524,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: constructing invalid value of type bool: encountered 0x02, but expected a boolean\n  --> <tmp>\n   |\n16 |     let bad: bool = unsafe { std::mem::transmute(2u8) };\n   |                              ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": ""
+      },
+      "miri_plus_gvn": {
+        "rc": 1,
+        "wall_sec": 0.0644,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: constructing invalid value of type bool: encountered 0x02, but expected a boolean\n  --> <tmp>\n   |\n16 |     let bad: bool = unsafe { std::mem::transmute(2u8) };\n   |                              ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": ""
+      },
+      "miri_plus_gvn_preserve_ub": {
+        "rc": 1,
+        "wall_sec": 0.0633,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: constructing invalid value of type bool: encountered 0x02, but expected a boolean\n  --> <tmp>\n   |\n16 |     let bad: bool = unsafe { std::mem::transmute(2u8) };\n   |                              ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": ""
+      },
+      "miri_plus_instsimplify": {
+        "rc": 1,
+        "wall_sec": 0.0517,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: constructing invalid value of type bool: encountered 0x02, but expected a boolean\n  --> <tmp>\n   |\n16 |     let bad: bool = unsafe { std::mem::transmute(2u8) };\n   |                              ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+        "after_mir_bb0": ""
+      },
+      "rustc_opt0_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = copy _1;\n        return;\n    }"
+      },
+      "rustc_preserve_ub_gvn_dump": {
+        "compile_rc": 0,
+        "run_rc": 0,
+        "stderr": "",
+        "after_mir_bb0": "bb0: {\n        _0 = copy _1;\n        return;\n    }"
+      }
+    }
+  },
+  "zerocopy_census": {
+    "cargo_rc": 0,
+    "passes": {
+      "GVN": {
+        "bodies": 4308,
+        "bodies_changed": 4308,
+        "binops_before": 433,
+        "binops_after": 433,
+        "unops_before": 21,
+        "unops_after": 21,
+        "discriminant_before": 535,
+        "discriminant_after": 533,
+        "const_tokens_before": 4204,
+        "const_tokens_after": 4424
+      },
+      "InstSimplify-after-simplifycfg": {
+        "bodies": 4308,
+        "bodies_changed": 4308,
+        "binops_before": 433,
+        "binops_after": 433,
+        "unops_before": 21,
+        "unops_after": 21,
+        "discriminant_before": 535,
+        "discriminant_after": 535,
+        "const_tokens_before": 4665,
+        "const_tokens_after": 4665
+      }
+    }
+  }
+}

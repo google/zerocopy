@@ -1,0 +1,82 @@
+{
+  "timestamp_utc": "2026-11-21T05:45:37Z",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "compile_wall_sec": 7.339,
+  "aggregate_pipeline_shrinkage": {
+    "post_cleanup_bodies": 4705,
+    "optimized_bodies": 4308,
+    "post_cleanup_locals": 24460,
+    "post_cleanup_bbs": 14084,
+    "post_cleanup_stmts": 59975,
+    "scfg_after_locals": 16200,
+    "scfg_after_bbs": 11500,
+    "scfg_after_stmts": 34520,
+    "sloc_after_locals": 15890,
+    "sloc_after_bbs": 11500,
+    "sloc_after_stmts": 33723
+  },
+  "simplifycfg_final_flipped_summary": {
+    "flipped_body_count": 7,
+    "total_flipped_locals": 50,
+    "flipped_locals_used_in_surviving_bbs": 0,
+    "unpruned_flipped_locals_bound": 0,
+    "bodies": [
+      {
+        "function": "error-{impl#10}-fmt",
+        "flipped_local_count": 2,
+        "used_in_surviving_bbs_count": 0,
+        "locals_before_simplifylocals": 8,
+        "locals_after_simplifylocals": 6,
+        "locals_pruned_by_simplifylocals": 2
+      },
+      {
+        "function": "error-{impl#18}-fmt",
+        "flipped_local_count": 9,
+        "used_in_surviving_bbs_count": 0,
+        "locals_before_simplifylocals": 17,
+        "locals_after_simplifylocals": 6,
+        "locals_pruned_by_simplifylocals": 11
+      },
+      {
+        "function": "error-{impl#27}-fmt",
+        "flipped_local_count": 9,
+        "used_in_surviving_bbs_count": 0,
+        "locals_before_simplifylocals": 17,
+        "locals_after_simplifylocals": 6,
+        "locals_pruned_by_simplifylocals": 11
+      },
+      {
+        "function": "layout-{impl#1}-extend",
+        "flipped_local_count": 12,
+        "used_in_surviving_bbs_count": 0,
+        "locals_before_simplifylocals": 68,
+        "locals_after_simplifylocals": 44,
+        "locals_pruned_by_simplifylocals": 24
+      },
+      {
+        "function": "layout-{impl#1}-validate_cast_and_convert_metadata",
+        "flipped_local_count": 11,
+        "used_in_surviving_bbs_count": 0,
+        "locals_before_simplifylocals": 59,
+        "locals_after_simplifylocals": 40,
+        "locals_pruned_by_simplifylocals": 19
+      },
+      {
+        "function": "util-copy_unchecked",
+        "flipped_local_count": 5,
+        "used_in_surviving_bbs_count": 0,
+        "locals_before_simplifylocals": 13,
+        "locals_after_simplifylocals": 7,
+        "locals_pruned_by_simplifylocals": 6
+      },
+      {
+        "function": "util-round_down_to_next_multiple_of_alignment",
+        "flipped_local_count": 2,
+        "used_in_surviving_bbs_count": 0,
+        "locals_before_simplifylocals": 9,
+        "locals_after_simplifylocals": 6,
+        "locals_pruned_by_simplifylocals": 3
+      }
+    ]
+  }
+}
