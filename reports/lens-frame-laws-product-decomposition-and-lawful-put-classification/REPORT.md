@@ -56,7 +56,7 @@ Every claim of the form "this tells us something about a real interface" is a se
 
 ### How to read this section
 
-- Every Lean block in a result card is the output of Lean's pretty-printer (`#check`, with `pp.fieldNotation.generalized false`) on the compiled project; nothing in those blocks is typed by hand. Universe variables print as `u_1`, `u_2`, ...; `Lens.JointExt` is the total-lens `JointExt`.
+- Every Lean block in a result card is the output of Lean's pretty-printer (`#check`, with `pp.fieldNotation.generalized false`) on the compiled project; nothing in those blocks is typed by hand. Nine entries are printed with one further option (`pp.funBinderTypes true`, `pp.analyze true` or `pp.proofs true`) so that the printed text elaborates to the theorem's statement; the line before each such block names the option and, where the block has several entries, the entry. Universe variables print as `u_1`, `u_2`, ...; `Lens.JointExt` is the total-lens `JointExt`.
 - "Unfolded" blocks are hand-written elementary readings in which law names are replaced by their one-line definitions (quoted under Definitions). For the bundled conclusions of F1, F2, F3 and F3-pair the unfolding is itself a proved lemma (listed under "Elementary readings").
 - Hypothesis ledgers give each hypothesis, why it is needed, and its tightness: `tight` with the name of a proved counterexample in which all other hypotheses hold and the conclusion fails, or `harmless` with a reason. No hypothesis has tightness `unknown`.
 - Every theorem below has `Basis: execution (Lean kernel check)`: it was elaborated and kernel-checked by the toolchain above. The separate `Basis: derived (modeling bridge)` line of each card is an argument, not a kernel check.
@@ -1053,6 +1053,8 @@ fun s => ∃ a b, s = ShapeShared.pair a b
 
 #### Elementary readings of the bundled conclusions (proved)
 
+`hasConstantComplement_iff_elementary` and `hasGhostComplement_iff_elementary` are printed with `pp.funBinderTypes true` in addition, which shows the types of the `∃`-bound complement and bijection.
+
 ```lean
 @intertwines_fst_iff : ∀ {S : Type u_1} {A : Type u_2} {C : Type u_3} (f : S → A × C) (l : Lens S A),
   Intertwines f l fst ↔ (∀ (s : S), (f s).fst = l.get s) ∧ ∀ (s : S) (a : A), f (l.put s a) = (a, (f s).snd)
@@ -1071,17 +1073,22 @@ fun s => ∃ a b, s = ShapeShared.pair a b
           ∀ (i j : ι), i ≠ j → ∀ (s : S) (a : A i), (l j).get ((l i).put s a) = (l j).get s
 @hasConstantComplement_iff_elementary : ∀ {S : Type u_1} {A : Type u_2} (l : Lens S A),
   HasConstantComplement l ↔
-    ∃ C e, (∀ (s : S), (e.toFun s).fst = l.get s) ∧ ∀ (s : S) (a : A), e.toFun (l.put s a) = (a, (e.toFun s).snd)
+    ∃ (C : Type u_1),
+      ∃ (e : Equiv S (A × C)),
+        (∀ (s : S), (e.toFun s).fst = l.get s) ∧ ∀ (s : S) (a : A), e.toFun (l.put s a) = (a, (e.toFun s).snd)
 @hasGhostComplement_iff_elementary : ∀ {S : Type u_1} {A : Type u_2} {B : Type u_3} (l₁ : Lens S A) (l₂ : Lens S B),
   HasGhostComplement l₁ l₂ ↔
-    ∃ G e,
-      (∀ (s : S), (e.toFun s).fst = l₁.get s) ∧
-        (∀ (s : S) (a : A), e.toFun (l₁.put s a) = (a, (e.toFun s).snd.fst, (e.toFun s).snd.snd)) ∧
-          (∀ (s : S), (e.toFun s).snd.fst = l₂.get s) ∧
-            ∀ (s : S) (b : B), e.toFun (l₂.put s b) = ((e.toFun s).fst, b, (e.toFun s).snd.snd)
+    ∃ (G : Type u_1),
+      ∃ (e : Equiv S (A × B × G)),
+        (∀ (s : S), (e.toFun s).fst = l₁.get s) ∧
+          (∀ (s : S) (a : A), e.toFun (l₁.put s a) = (a, (e.toFun s).snd.fst, (e.toFun s).snd.snd)) ∧
+            (∀ (s : S), (e.toFun s).snd.fst = l₂.get s) ∧
+              ∀ (s : S) (b : B), e.toFun (l₂.put s b) = ((e.toFun s).fst, b, (e.toFun s).snd.snd)
 ```
 
 #### Supporting lemmas referred to in the cards (proved)
+
+`f5_hyps_toPLens` is printed with `pp.funBinderTypes true` in addition, which shows the binder types of `fun` and `∃`.
 
 ```lean
 @eq_pairGet_of_get_eq : ∀ {S : Type u_1} {A : Type u_2} {B : Type u_3} {l₁ : Lens S A} {l₂ : Lens S B} (f : S → A × B),
@@ -1125,18 +1132,19 @@ fun s => ∃ a b, s = ShapeShared.pair a b
 @isProductDecompositionOn_toPLens_iff : ∀ {S : Type u_1} {A : Type u_2} {B : Type u_3} (l₁ : Lens S A) (l₂ : Lens S B),
   IsProductDecompositionOn (fun x => True) (toPLens l₁) (toPLens l₂) ↔ IsProductDecomposition l₁ l₂
 @f5_hyps_toPLens : ∀ {S : Type u_1} {A : Type u_2} {B : Type u_3} (l₁ : Lens S A) (l₂ : Lens S B),
-  TotalOn (fun x => True) (toPLens l₁) ∧
-    TotalOn (fun x => True) (toPLens l₂) ∧
-      (PutGetOn (fun x => True) (toPLens l₁) ↔ PutGet l₁) ∧
-        (PutGetOn (fun x => True) (toPLens l₂) ↔ PutGet l₂) ∧
-          (PutIndepOn (fun x => True) (toPLens l₁) (toPLens l₂) ↔ PutIndep l₁ l₂) ∧
-            (PutIndepOn (fun x => True) (toPLens l₂) (toPLens l₁) ↔ PutIndep l₂ l₁) ∧
-              (JointExtOn (fun x => True) (toPLens l₁) (toPLens l₂) ↔ Lens.JointExt l₁ l₂) ∧
-                ((Nonempty (A × B) → ∃ s, (fun x => True) s) ↔ Nonempty (A × B) → Nonempty S) ∧
-                  (IsProductDecompositionOn (fun x => True) (toPLens l₁) (toPLens l₂) ↔ IsProductDecomposition l₁ l₂)
+  TotalOn (fun (x : S) => True) (toPLens l₁) ∧
+    TotalOn (fun (x : S) => True) (toPLens l₂) ∧
+      (PutGetOn (fun (x : S) => True) (toPLens l₁) ↔ PutGet l₁) ∧
+        (PutGetOn (fun (x : S) => True) (toPLens l₂) ↔ PutGet l₂) ∧
+          (PutIndepOn (fun (x : S) => True) (toPLens l₁) (toPLens l₂) ↔ PutIndep l₁ l₂) ∧
+            (PutIndepOn (fun (x : S) => True) (toPLens l₂) (toPLens l₁) ↔ PutIndep l₂ l₁) ∧
+              (JointExtOn (fun (x : S) => True) (toPLens l₁) (toPLens l₂) ↔ Lens.JointExt l₁ l₂) ∧
+                ((Nonempty (A × B) → ∃ (s : S), (fun (x : S) => True) s) ↔ Nonempty (A × B) → Nonempty S) ∧
+                  (IsProductDecompositionOn (fun (x : S) => True) (toPLens l₁) (toPLens l₂) ↔
+                    IsProductDecomposition l₁ l₂)
 ```
 
-Edge-case and over-reading lemmas for F6 (proved):
+Edge-case and over-reading lemmas for F6 (proved). `card_veryWellBehaved_puts_empty_state_two_views` is printed with `pp.analyze true` in addition, which supplies the codomain `Bool` of `Empty.elim`:
 
 ```lean
 existsUnique_put_drop_jointExt_admits_unlawful_puts : (¬∀ (s t : Bool × Bool),
@@ -1166,8 +1174,10 @@ existsUnique_put_hsurj_not_necessary : (∀ (s t : Bool),
     ∀ (s : S) (a : A), ∃ s', get s' = a ∧ m.get s' = m.get s
 card_veryWellBehaved_puts_empty_state_two_views : Nonempty (Equiv Bool (Fin 2)) ∧
   (∀ (a : Bool), Nonempty (Equiv (GetFiber Empty.elim a) (Fin 0))) ∧
-    ¬Function.Surjective Empty.elim ∧
-      Nonempty (Equiv { put // VeryWellBehaved { get := Empty.elim, put := put } } (Fin (factorial 0 ^ (2 - 1))))
+    ¬Function.Surjective (β := Bool) Empty.elim ∧
+      Nonempty
+        (Equiv { put : Empty → Bool → Empty // VeryWellBehaved { get := Empty.elim, put := put : Lens Empty Bool } }
+          (Fin (factorial 0 ^ (2 - 1))))
 @veryWellBehaved_put_eq_self_of_subsingleton_view : ∀ {S : Type u_1} {A : Type u_2} (get : S → A),
   (∀ (a a' : A), a = a') →
     VeryWellBehaved { get := get, put := fun s x => s } ∧
@@ -1602,11 +1612,13 @@ Basis: derived (modeling bridge) — Exhibiting an injective encoding of values 
 
 **Plain claim.** If l is very well-behaved and a base view a₀ is given, there is a bijection S ≃ A × Fiber l a₀ that turns get into the first projection and put into first-coordinate update, whose forward map sends s to (l.get s, l.put s a₀) and whose inverse sends (a, c) to l.put c a. (That these equations determine the bijection uniquely is the proved lemma Toy.Lens.fiberEquiv_eq_of_equations.)
 
+Printed with `pp.funBinderTypes true` in addition, which shows the type of the `∃`-bound `e`:
+
 ```lean
 @fiber_isConstantComplement_of_veryWellBehaved : ∀ {S : Type u_1} {A : Type u_2} (l : Lens S A),
   VeryWellBehaved l →
     ∀ (a₀ : A),
-      ∃ e,
+      ∃ (e : Equiv S (A × Fiber l a₀)),
         Intertwines e.toFun l fst ∧
           (∀ (s : S), (e.toFun s).snd.val = l.put s a₀) ∧ ∀ (a : A) (c : Fiber l a₀), e.invFun (a, c) = l.put c.val a
 ```
@@ -1783,9 +1795,12 @@ Basis: derived (modeling bridge) — Frame laws between two field names exclude 
 
 **Plain claim.** The ghost record Nat × Nat × Bool is in bijection with Nat × Nat although its two Nat field lenses are not jointly extensional and do not form a product decomposition; so a conclusion of the form 'some bijection S ≃ A × B exists' cannot express 'no hidden state'.
 
+Printed with `pp.analyze true` in addition, which supplies the state type `Nat × Nat × Bool` of `ghostFst` and `ghostSnd`:
+
 ```lean
 ghost_admits_unrelated_bijection : Nonempty (Equiv (Nat × Nat × Bool) (Nat × Nat)) ∧
-  ¬Lens.JointExt ghostFst ghostSnd ∧ ¬IsProductDecomposition ghostFst ghostSnd
+  ¬Lens.JointExt (S := Nat × Nat × Bool) ghostFst ghostSnd ∧
+    ¬IsProductDecomposition (S := Nat × Nat × Bool) ghostFst ghostSnd
 ```
 
 **Hypothesis ledger.** None: this result is a closed statement about concrete instances.
@@ -1811,11 +1826,13 @@ Basis: derived (modeling bridge) — A specification that says only "values are 
 
 **Plain claim.** The coordinate lenses on eventually-false Boolean sequences, indexed by Nat, satisfy PutGet, pairwise cross-independence, joint extensionality and the nonemptiness condition, Nat is not enumerated by any list, and the tuple-of-views map is not surjective; so finiteness cannot be dropped from F2.
 
+Printed with `pp.funBinderTypes true` in addition, which shows the type `List Nat` of `elems`:
+
 ```lean
 evCoord_tight_finite_index : (∀ (i : Nat), PutGet (evCoord i)) ∧
   PairwiseIndep evCoord ∧
     FamJointExt evCoord ∧
-      (¬∃ elems, ∀ (i : Nat), i ∈ elems) ∧
+      (¬∃ (elems : List Nat), ∀ (i : Nat), i ∈ elems) ∧
         (Nonempty (Nat → Bool) → Nonempty EvFalse) ∧ ¬Function.Surjective (famGet evCoord) ∧ ¬IsPiDecomposition evCoord
 ```
 
@@ -2000,11 +2017,14 @@ Basis: derived (modeling bridge) — A separate law is needed to stop a field se
 
 **Plain claim.** Fix a getter get : S → A, and call a family of maps between the fibres of get (one map for every ordered pair of views) coherent if each fibre's map to itself is the identity and maps compose. Then the construction toPut (move a state to the fibre of the written view) sends every coherent family to a very well-behaved put for get, the construction ofPut (x ↦ put x a') sends every very well-behaved put to a coherent family, and ofPut undoes toPut on every family (toPut undoes ofPut by definition, Toy.Lens.toPut_ofPut), so coherent families and very well-behaved puts correspond bijectively. Law by law, for a put with PutGet, GetPut holds iff its fibre maps satisfy the identity law and PutPut holds iff they compose. (Each map of a coherent family is a bijection: the proved lemma Toy.Lens.FiberMaps.Coherent.leftInverse.)
 
+`coherent_fiberMaps_correspond_veryWellBehaved_puts` is printed with `pp.proofs true` in addition, which shows the proof arguments of `ofPut` in place of `⋯`:
+
 ```lean
 @coherent_fiberMaps_correspond_veryWellBehaved_puts : ∀ {S : Type u_1} {A : Type u_2} (get : S → A),
   (∀ (φ : FiberMaps get), FiberMaps.Coherent φ → VeryWellBehaved { get := get, put := FiberMaps.toPut φ }) ∧
-    (∀ (put : S → A → S) (h : VeryWellBehaved { get := get, put := put }), FiberMaps.Coherent (ofPut get put ⋯)) ∧
-      ∀ (φ : FiberMaps get), ofPut get (FiberMaps.toPut φ) ⋯ = φ
+    (∀ (put : S → A → S) (h : VeryWellBehaved { get := get, put := put }),
+        FiberMaps.Coherent (ofPut get put h.right.left)) ∧
+      ∀ (φ : FiberMaps get), ofPut get (FiberMaps.toPut φ) (toPut_putGet φ) = φ
 @getPut_iff_ofPut_map_self_and_putPut_iff_ofPut_map_comp : ∀ {S : Type u_1} {A : Type u_2} (get : S → A)
   (put : S → A → S) (h : PutGet { get := get, put := put }),
   (GetPut { get := get, put := put } ↔ ∀ (a : A) (x : GetFiber get a), ofPut get put h a a x = x) ∧
@@ -2061,11 +2081,15 @@ Basis: derived (modeling bridge) — For a given field getter, the freedom in ch
 
 **Plain claim.** Fix a getter get and a base view a₀: very well-behaved puts for get correspond bijectively to families of bijections from the fibre over a₀ to each other fibre, via put ↦ (x ↦ put x a). Consequently, if the view type has exactly k elements and every fibre of get has exactly m elements, the very well-behaved puts are in bijection with Fin (k − 1) → Equiv (Fin m) (Fin m) and there are exactly (m!)^(k − 1) of them (with truncated subtraction, also correct for k = 0).
 
+`veryWellBehaved_puts_equiv_baseFiber_bijections` is printed with `pp.funBinderTypes true` in addition, which shows the type of the `∃`-bound `e`:
+
 ```lean
 @veryWellBehaved_puts_equiv_baseFiber_bijections : ∀ {S : Type u_1} {A : Type u_2} (get : S → A) (a₀ : A),
-  ∃ e,
-    ∀ (p : { put // VeryWellBehaved { get := get, put := put } }) (a : { a // a ≠ a₀ }) (x : GetFiber get a₀),
-      ((e.toFun p a).toFun x).val = p.val x.val a.val
+  ∃ (e :
+    Equiv { put : S → A → S // VeryWellBehaved { get := get, put := put } }
+      ((a : { a : A // a ≠ a₀ }) → Equiv (GetFiber get a₀) (GetFiber get a.val))),
+    ∀ (p : { put : S → A → S // VeryWellBehaved { get := get, put := put } }) (a : { a : A // a ≠ a₀ })
+      (x : GetFiber get a₀), ((e.toFun p a).toFun x).val = p.val x.val a.val
 @card_veryWellBehaved_puts_of_card_views_card_fibers : ∀ {S : Type u_1} {A : Type u_2} (get : S → A) (k m : Nat),
   Nonempty (Equiv A (Fin k)) →
     (∀ (a : A), Nonempty (Equiv (GetFiber get a) (Fin m))) →
