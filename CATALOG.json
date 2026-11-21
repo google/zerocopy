@@ -63373,6 +63373,184 @@
         "verification/compiler-verification"
       ]
     },
+    "pseudo-tested-methods-descartes-checked-coverage-oracle-assessment-flex-assertion-bounds-and-hook-kelly-mutation-sensitivity": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "hcoles/pitest",
+            "revision": "1c6bfcdfdc6078313f5377b31630331e3fb56a33"
+          },
+          "name": "PIT mutation testing engine (mutator registry and groups)"
+        },
+        {
+          "identity": {
+            "repository": "STAMP-project/pitest-descartes",
+            "revision": "20cbecff6fab5a3bdfcdc048371981cbae973fd5"
+          },
+          "name": "Descartes extreme-mutation engine for PIT"
+        },
+        {
+          "identity": {
+            "repository": "rjust/defects4j",
+            "revision": "8c16da8230843cdc918eaf4ddb449637f02b83c6"
+          },
+          "name": "Defects4J database of real faults"
+        },
+        {
+          "identity": {
+            "repository": "numpy/numpy",
+            "revision": "e092b9144edcdf1c52f46b4b2a0ad0869109c500"
+          },
+          "name": "NumPy testing utilities and isclose (development head)"
+        },
+        {
+          "identity": {
+            "repository": "numpy/numpy",
+            "revision": "c3d60fc8393f3ca3306b8ce8b6453d43737e3d90",
+            "version": "v2.3.5"
+          },
+          "name": "NumPy 2.3.5 (executed)"
+        },
+        {
+          "identity": {
+            "repository": "pytest-dev/pytest",
+            "revision": "9efd0121a4396da80c20d7c3b7844825966612f6"
+          },
+          "name": "pytest approx (source executed from this revision)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "ab5b8f87a70b62a22c1ed78b3e26ccd9ba84caaa"
+          },
+          "name": "CPython math.isclose and unittest.assertAlmostEqual (development head)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "4061bc4c35f7c26f25264666d4ba083b93d2f6f9",
+            "version": "v3.13.15"
+          },
+          "name": "CPython 3.13.15 (executed)"
+        },
+        {
+          "identity": {
+            "repository": "pytorch/pytorch",
+            "revision": "f37e6ed227cb8010651c6ee2fda26ec900cc88c9"
+          },
+          "name": "PyTorch torch.testing default tolerances"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SECSE.2009.5069163"
+          },
+          "name": "Hook, Kelly, Testing for trustworthiness in scientific software (SECSE 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MCSE.2009.200"
+          },
+          "name": "Hook, Kelly, Mutation sensitivity testing (CiSE 2009)"
+        },
+        {
+          "identity": {
+            "url": "http://hdl.handle.net/1974/1765"
+          },
+          "name": "Hook, Using code mutation to study code faults in scientific software (MSc thesis, Queen's University, 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICST.2011.32"
+          },
+          "name": "Schuler, Zeller, Assessing oracle quality with checked coverage (ICST 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/stvr.1497"
+          },
+          "name": "Schuler, Zeller, Checked coverage: an indicator for oracle quality (STVR 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2568225.2568271"
+          },
+          "name": "Inozemtseva, Holmes, Coverage is not strongly correlated with test suite effectiveness (ICSE 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2635868.2635929"
+          },
+          "name": "Just et al., Are mutants a valid substitute for real faults in software testing? (FSE 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.infsof.2014.05.006"
+          },
+          "name": "Kanewala, Bieman, Testing scientific software: a systematic literature review (IST 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2014.2372785"
+          },
+          "name": "Barr et al., The oracle problem in software testing: a survey (TSE 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2896941.2896944"
+          },
+          "name": "Niedermayr, Juergens, Wagner, Will my tests tell me if I break this code? (CSED 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2931037.2931062"
+          },
+          "name": "Jahangirova, Clark, Harman, Tonella, Test oracle assessment and improvement (ISSTA 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3183519.3183521"
+          },
+          "name": "Petrovic, Ivankovic, State of mutation testing at Google (ICSE-SEIP 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3238147.3240474"
+          },
+          "name": "Vera-Perez, Monperrus, Baudry, Descartes tool demonstration (ASE 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10664-018-9653-2"
+          },
+          "name": "Vera-Perez, Danglot, Monperrus, Baudry, A comprehensive study of pseudo-tested methods (EMSE 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3395363.3397366"
+          },
+          "name": "Dutta et al., Detecting flaky tests in probabilistic and machine learning applications (ISSTA 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3468264.3468615"
+          },
+          "name": "Dutta, Shi, Misailovic, FLEX (ESEC/FSE 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2021.3107634"
+          },
+          "name": "Petrovic, Ivankovic, Fraser, Just, Practical mutation testing at scale (TSE 2022)"
+        }
+      ],
+      "topics": [
+        "verification/test-oracle-strength-evidence",
+        "tooling/pseudo-tested-method-detection",
+        "verification/assertion-tolerance-adequacy",
+        "domains/scientific-software-test-sensitivity"
+      ]
+    },
     "pybamm-electrochemical-bms-lithium-plating-and-grid-forming-inverters": {
       "observed_at": "2026-11-19",
       "subjects": [

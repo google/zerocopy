@@ -1,0 +1,22 @@
+python 3.13.15 numpy 2.3.5
+case                        | np.testing.assert_allclose | np.testing.assert_almost_equal | np.isclose | math.isclose | unittest.assertAlmostEqual | pytest.approx
+rel err 5e-8 at scale 1     | PASS                       | PASS                           | PASS       | FAIL         | PASS                       | PASS         
+rel err 5e-7 at scale 1     | FAIL                       | FAIL                           | PASS       | FAIL         | FAIL                       | PASS         
+rel err 5e-6 at scale 1     | FAIL                       | FAIL                           | PASS       | FAIL         | FAIL                       | FAIL         
+rel err 1e-10 at scale 1e10 | PASS                       | FAIL                           | PASS       | PASS         | FAIL                       | PASS         
+100% rel err at scale 1e-9  | FAIL                       | PASS                           | PASS       | FAIL         | PASS                       | FAIL         
+100% rel err at scale 1e-12 | FAIL                       | PASS                           | PASS       | FAIL         | PASS                       | PASS         
+expected 0, actual 1e-13    | FAIL                       | PASS                           | PASS       | FAIL         | PASS                       | PASS         
+expected 0, actual 1e-9     | FAIL                       | PASS                           | PASS       | FAIL         | PASS                       | FAIL         
+expected 0, actual 1e-300   | FAIL                       | PASS                           | PASS       | FAIL         | PASS                       | PASS         
+NaN vs NaN                  | PASS                       | PASS                           | FAIL       | FAIL         | FAIL                       | FAIL         
+inf vs inf                  | PASS                       | PASS                           | PASS       | PASS         | PASS                       | PASS         
+1e308 vs inf                | FAIL                       | FAIL                           | FAIL       | FAIL         | FAIL                       | FAIL         
+asymmetry: a=1.0 b=1.00001001005 np.isclose(a,b)=True np.isclose(b,a)=False math.isclose(a,b)=False math.isclose(b,a)=False
+effective tolerance |actual-expected| allowed (expected=x):
+  x=0: assert_allclose 0; np.isclose 1e-08; math.isclose ~0; approx 1e-12; assert_almost_equal <1.5e-07; assertAlmostEqual ~5e-8 (round to 7 places)
+  x=1e-12: assert_allclose 1e-19; np.isclose 1e-08; math.isclose ~1e-21; approx 1e-12; assert_almost_equal <1.5e-07; assertAlmostEqual ~5e-8 (round to 7 places)
+  x=1e-06: assert_allclose 1e-13; np.isclose 1e-08; math.isclose ~1e-15; approx 1e-12; assert_almost_equal <1.5e-07; assertAlmostEqual ~5e-8 (round to 7 places)
+  x=1: assert_allclose 1e-07; np.isclose 1e-05; math.isclose ~1e-09; approx 1e-06; assert_almost_equal <1.5e-07; assertAlmostEqual ~5e-8 (round to 7 places)
+  x=1e+06: assert_allclose 0.1; np.isclose 10; math.isclose ~0.001; approx 1; assert_almost_equal <1.5e-07; assertAlmostEqual ~5e-8 (round to 7 places)
+  x=1e+12: assert_allclose 1e+05; np.isclose 1e+07; math.isclose ~1e+03; approx 1e+06; assert_almost_equal <1.5e-07; assertAlmostEqual ~5e-8 (round to 7 places)

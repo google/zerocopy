@@ -1,0 +1,77 @@
+python 3.13.15
+original: value=1.7182819740518918 est=9.099341354475618e-09 relerr=8.473e-08
+statement coverage of subject under the test: 13/14 (missed lines [4])
+smallest tau in grid that the ORIGINAL passes: 1e-07
+mutants: 99 (AOR=12, CRP=80, EXT=3, RNG=4)
+  crashing mutants: 25
+  mutants whose (value, estimate) is bit-identical to original on the test input: 10
+  mutants whose value is bit-identical but estimate differs: 13
+
+Oracle A: |val - (e-1)| <= tau*|e-1|  (analytic reference, relative tolerance)
+  tau        original  killed/total  killed%   (by kind)
+  1e-12      FAIL       99/99       100.0%   (AOR 12/12, CRP 80/80, EXT 3/3, RNG 4/4)
+  1e-09      FAIL       99/99       100.0%   (AOR 12/12, CRP 80/80, EXT 3/3, RNG 4/4)
+  1e-07      pass       69/99        69.7%   (AOR 9/12, CRP 54/80, EXT 2/3, RNG 4/4)
+  1e-06      pass       66/99        66.7%   (AOR 9/12, CRP 51/80, EXT 2/3, RNG 4/4)
+  1e-05      pass       66/99        66.7%   (AOR 9/12, CRP 51/80, EXT 2/3, RNG 4/4)
+  0.0001     pass       63/99        63.6%   (AOR 9/12, CRP 48/80, EXT 2/3, RNG 4/4)
+  0.001      pass       63/99        63.6%   (AOR 9/12, CRP 48/80, EXT 2/3, RNG 4/4)
+  0.01       pass       60/99        60.6%   (AOR 9/12, CRP 45/80, EXT 2/3, RNG 4/4)
+  0.1        pass       46/99        46.5%   (AOR 8/12, CRP 35/80, EXT 2/3, RNG 1/4)
+
+Oracle B: tautological - expected value recomputed by the code under test at test time
+  killed 25/99 (only crashes; a value-comparison against itself always passes)
+Oracle C: golden master - exact equality with the value recorded from the original version
+  killed 76/99
+Oracle D: observed order of accuracy in [3.5, 4.5] for n = 8, 16, 32 (no reference tolerance)
+  killed 71/99; original passes: True
+  of the 33 mutants surviving Oracle A at tau=1e-6, Oracle D kills 5
+
+Extreme (Descartes-style) mutants:
+  extreme: body of simpson() -> return 0.0: relerr=1 crash=None -> Oracle A tau=1e-6: killed
+  extreme: body of error_estimate() -> return 0.0: relerr=8.47e-08 crash=None -> Oracle A tau=1e-6: SURVIVES (pseudo-tested at tau=1e-6)
+  extreme: body of integrate() -> return 0.0: relerr=inf crash=TypeError -> Oracle A tau=1e-6: killed
+
+Constant-perturbation (CRP c*(1+d)) kill threshold under Oracle A:
+  d=0.01: tau=1e-09:10/10, tau=1e-07:8/10, tau=1e-06:8/10, tau=1e-05:8/10, tau=0.001:8/10
+  d=0.0001: tau=1e-09:10/10, tau=1e-07:8/10, tau=1e-06:8/10, tau=1e-05:8/10, tau=0.001:5/10
+  d=1e-06: tau=1e-09:10/10, tau=1e-07:8/10, tau=1e-06:5/10, tau=1e-05:5/10, tau=0.001:5/10
+  d=1e-08: tau=1e-09:10/10, tau=1e-07:5/10, tau=1e-06:5/10, tau=1e-05:5/10, tau=0.001:5/10
+  d=1e-10: tau=1e-09:10/10, tau=1e-07:5/10, tau=1e-06:5/10, tau=1e-05:5/10, tau=0.001:5/10
+
+Surviving mutants at tau=1e-6 (Oracle A):
+  [AOR] binop#1 line 5: Sub->Add: relerr=8.473e-08 value-identical=True order-ok=True
+  [AOR] binop#9 line 17: Div->Mult: relerr=8.473e-08 value-identical=True order-ok=True
+  [AOR] binop#10 line 17: Sub->Add: relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#0 line 3 (2) -> c-1: relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#1 line 4 (1) -> c+1: relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#1 line 4 (1) -> c-1: relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#1 line 4 (1) -> 0: relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#1 line 4 (1) -> c*(1+0.01): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#1 line 4 (1) -> c*(1+0.0001): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#1 line 4 (1) -> c*(1+1e-06): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#1 line 4 (1) -> c*(1+1e-08): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#1 line 4 (1) -> c*(1+1e-10): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#4 line 10 (4) -> c*(1+1e-06): relerr=7.510e-07 value-identical=False order-ok=False
+  [CRP] const#4 line 10 (4) -> c*(1+1e-08): relerr=9.139e-08 value-identical=False order-ok=False
+  [CRP] const#4 line 10 (4) -> c*(1+1e-10): relerr=8.480e-08 value-identical=False order-ok=True
+  [CRP] const#5 line 12 (2) -> c*(1+1e-06): relerr=3.734e-07 value-identical=False order-ok=False
+  [CRP] const#5 line 12 (2) -> c*(1+1e-08): relerr=8.762e-08 value-identical=False order-ok=False
+  [CRP] const#5 line 12 (2) -> c*(1+1e-10): relerr=8.476e-08 value-identical=False order-ok=True
+  [CRP] const#6 line 13 (3) -> c*(1+1e-06): relerr=9.153e-07 value-identical=False order-ok=False
+  [CRP] const#6 line 13 (3) -> c*(1+1e-08): relerr=7.473e-08 value-identical=False order-ok=True
+  [CRP] const#6 line 13 (3) -> c*(1+1e-10): relerr=8.463e-08 value-identical=False order-ok=True
+  [CRP] const#7 line 17 (2) -> c+1: relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#7 line 17 (2) -> c-1: relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#8 line 17 (15.0) -> c+1: relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#8 line 17 (15.0) -> c-1: relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#8 line 17 (15.0) -> c*(1+0.01): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#8 line 17 (15.0) -> c*(1+0.0001): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#8 line 17 (15.0) -> c*(1+1e-06): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#8 line 17 (15.0) -> c*(1+1e-08): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#8 line 17 (15.0) -> c*(1+1e-10): relerr=8.473e-08 value-identical=True order-ok=True
+  [CRP] const#9 line 20 (16) -> c+1: relerr=5.290e-08 value-identical=False order-ok=True
+  [CRP] const#9 line 20 (16) -> c-1: relerr=8.473e-08 value-identical=True order-ok=True
+  [EXT] extreme: body of error_estimate() -> return 0.0: relerr=8.473e-08 value-identical=True order-ok=True
+
+wall time: 0.140 s
