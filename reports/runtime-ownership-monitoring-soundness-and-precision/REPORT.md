@@ -8,7 +8,7 @@ instrumentation for CN specifications. It proves, against the declarative (exact
 meaning of the contracts, when an accepted run really satisfied every contract (soundness), when every
 satisfying run is accepted (completeness), how both depend on the precision of the contracts and on the
 monitor's footprint-computation strategy, and what must be assumed about uninstrumented (unannotated)
-code. All 20 results below are kernel-checked. They are statements about the toy model; they neither establish nor refute the corresponding claims about Fulminate, CN, the `owned` primitive proposed for Rust contracts or its Miri prototype (the modeling-bridge claims B1–B5 under **Findings** argue such connections separately).
+code. All 20 results below are kernel-checked. Model–system relation: none proved (soundness and completeness relate the model's monitor to the model's own declarative semantics). They are statements about the toy model; they neither establish nor refute the corresponding claims about Fulminate, CN, the `owned` primitive proposed for Rust contracts or its Miri prototype (the modeling-bridge claims B1–B5 under **Findings** argue such connections separately).
 
 * **R1a-greedy-footprints-are-witnesses.** For every contract of the toy assertion language (byte-ownership cells, pure conditions, separating conjunction, and arbitrary, possibly imprecise, disjunction), any footprint the greedy evaluator returns lists allocated bytes of the fragment whose restriction satisfies the contract.
 * **R1b-search-footprints-are-witnesses.** The same holds for the first footprint found by exhaustive backtracking search.
