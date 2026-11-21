@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795219134197,
+  "lastUpdate": 1795227377578,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -24177,6 +24177,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1800,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "385a099849b344812c00f8e6054e106005ff0e2b",
+          "message": "[anneal] Update migrated issue references to google/zerocopy (#4019)\n\nPoint Anneal issue references and ICE bug-report URLs at google/zerocopy\nfollowing the migration of open issues from joshlf/anneal:\n\n- Update stable-release blocker references from joshlf/anneal#87 to\n  google/zerocopy#4012 in .github/workflows/anneal-current.yml,\n  anneal/.github/workflows/release.yml,\n  anneal/ci/check_non_stable_version.sh, and\n  anneal/trusted/cargo-anneal/Cargo.toml.\n- Update Codex review enforcement tracking references from\n  joshlf/anneal#236 to google/zerocopy#4013 in anneal/ci/codex_review.py\n  and anneal/docs/codex-review.md.\n- Update rustc_driver::install_ice_hook in\n  anneal/trusted/rustc-capture/src/driver.rs (and its assertion in\n  anneal/trusted/rustc-capture/tests/compiler_session.rs) to point to\n  https://github.com/google/zerocopy/issues/new?template=anneal.yml.\n\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-11-21T01:13:42Z",
+          "tree_id": "95451d1d9e67b2e5f434506db747251cfba44256",
+          "url": "https://github.com/google/zerocopy/commit/385a099849b344812c00f8e6054e106005ff0e2b"
+        },
+        "date": 1795227375337,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1595,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1767,
             "unit": "seconds"
           }
         ]
