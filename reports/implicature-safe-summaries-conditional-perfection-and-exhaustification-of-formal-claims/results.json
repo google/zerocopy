@@ -1,0 +1,935 @@
+[
+ {
+  "id": "literal-safety-does-not-imply-strengthening-safety",
+  "lean": [
+   "Toy.Implicature.perfection_reading_contradicted_though_literally_safe",
+   "Toy.Implicature.exhaustification_reading_contradicted_though_literally_safe",
+   "Toy.Implicature.qualifier_drop_reading_contradicted_though_literally_safe"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Each pattern (perfection, scalar implicature, overgeneralization by dropping a restriction) is classical in pragmatics; the precise countermodels in this report-and-rendering setting are new formulations of folklore.",
+  "plain_claim": "For the one-step reader `readings` with the standard alternatives `stdAlt` and no blocker flags, there are consistent reports E and renderings σ with E ⊨ σ (literal safety) for which the reader draws a reading that E contradicts: (i) perfection, in the 16-world space S22: E proves ∀x, A→B and refutes ∀x, B→A, and the reading ∀x, A↔B is drawn; (ii) exhaustification, in the 4-world space S12: E proves ∀x, A, and the reading of ∃x, A equivalent to (∃x, A) ∧ ¬(∀x, A) is drawn; (iii) qualifier dropping, in the 64-world space S32: E proves ∀x, H⇒A and refutes ∀x, A, and the reading ∀x, A is drawn.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Each theorem exhibits its instance and includes Sat S E (the report is consistent): S22 with E_notConv; S12 with E = [∀x, A]; S32 with E_qual.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.perfection_reading_contradicted_though_literally_safe",
+   "Toy.Implicature.exhaustification_reading_contradicted_though_literally_safe",
+   "Toy.Implicature.qualifier_drop_reading_contradicted_though_literally_safe"
+  ],
+  "non_claims": [
+   "Does not say that every literally safe rendering is strengthening-unsafe, and that stronger reading is false in this model: with the computed blocker set flagged every literally safe rendering is strengthening-safe (`blockers_sound`), and some literally safe renderings are strengthening-safe with no flags at all (the full rendering in `blocker_conjunct_drop_breaks_strengthening_safety`).",
+   "In case (i) the contradicted reading is the perfected one: the exhaustified reading of the same rendering is entailed by that report (`perfection_countermodel_exhaustified_reading_entailed`), and the computed blocker set is `[perfection]` (`blockers_pos`).",
+   "Exhaustification is not limited to existentials: the standard alternatives also include the converse and biconditional of a conditional (`stdAlt_pos_conditional`), the hypothesis-free version of a relativized claim (`stdAlt_pos_relativized`) and neighbouring values of a single-value claim (`stdAlt_pos_neighbouring_values`); whether an alternative is negated depends on whether it is innocently excludable.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time.",
+   "Exhaustified readings depend on the alternative set. Unless a card says otherwise the alternatives are `stdAlt`: converse and biconditional of a conditional, universal of an existential, hypothesis-free version of a relativized claim, and neighbouring parameter values of a quantifier-free claim that mentions exactly one parameter value (whatever its connectives, including negation, disjunction and biconditional; `stdAlt_value_alternatives_any_connective`), substituted at one top-level conjunct. These are stipulated rules, not structurally defined alternatives in the sense of R. Katzir, \"Structurally-defined alternatives\", Linguistics and Philosophy 30(6):669-690, 2007, doi:10.1007/s10988-008-9029-y. Other alternative sets (for example alternative antecedents, as in exhaustification accounts of perfection) may give different readings (not proved here); nothing is claimed for them, either way.",
+   "Cancellation keeps a strengthened reading exactly when it is consistent with the literal rendering over the listed worlds (the filter in `ruleReadings`); the reader model has no context, no background knowledge and no probabilities."
+  ],
+  "prior_art": [
+   "M. L. Geis and A. M. Zwicky, \"On invited inferences\", Linguistic Inquiry 2(4):561-566, 1971. Names the invited inference of conditional perfection (\"If you mow the lawn, I'll give you five dollars\" invites \"if not, not\").",
+   "L. R. Horn, A Natural History of Negation, University of Chicago Press, 1989 (reissued by CSLI Publications, Stanford, 2001, ISBN 1-57586-336-7); chapter 4, \"Negation and Quantity\", develops quantity scales such as <all, some> and the scalar implicature from \"some\" to \"not all\".",
+   "L. R. Horn, \"From if to iff: Conditional perfection as pragmatic strengthening\", Journal of Pragmatics 32(3):289-326, 2000, doi:10.1016/S0378-2166(99)00053-3. Analyzes conditional perfection as pragmatic strengthening.",
+   "H. P. Grice, \"Logic and conversation\", in P. Cole and J. L. Morgan (eds.), Syntax and Semantics 3: Speech Acts, Academic Press, 1975, pp. 41-58 (Brill reissue doi:10.1163/9789004368811_003). Introduces conversational implicature and its cancellability; the cancellation filter of the reader model is a toy version of cancellability.",
+   "I. A. Noveck, \"When children are more logical than adults: Experimental investigations of scalar implicature\", Cognition 78(2):165-188, 2001, doi:10.1016/S0010-0277(00)00114-1. Cited as evidence for the modeling bridge, not for any kernel-checked statement: adults often reject underinformative \"some\" statements.",
+   "L. Bott and I. A. Noveck, \"Some utterances are underinformative: The onset and time course of scalar inferences\", Journal of Memory and Language 51(3):437-457, 2004, doi:10.1016/j.jml.2004.05.006. Cited as evidence for the modeling bridge, not for any kernel-checked statement: \"some but not all\" responses take longer than logical responses."
+  ],
+  "design_question": "Is literal entailment of a summary sentence by the proved statement enough to make the summary safe against default strengthenings? (No, for this reader model: for each of the three rules there is a literally entailed summary whose strengthened reading a consistent report refutes.)",
+  "lean_names": [
+   "Toy.Implicature.blockers_sound",
+   "Toy.Implicature.blocker_conjunct_drop_breaks_strengthening_safety",
+   "Toy.Implicature.perfection_countermodel_exhaustified_reading_entailed",
+   "Toy.Implicature.blockers_pos",
+   "Toy.Implicature.stdAlt_pos_conditional",
+   "Toy.Implicature.stdAlt_pos_relativized",
+   "Toy.Implicature.stdAlt_pos_neighbouring_values",
+   "Toy.Implicature.stdAlt_value_alternatives_any_connective",
+   "Toy.Implicature.stdAlt_pos_existential",
+   "Toy.Implicature.stdAlt_pos_sites",
+   "Toy.Implicature.stdAlt_neg_universal",
+   "Toy.Implicature.stdAlt_neg_under_negation",
+   "Toy.Implicature.stdAlt_neg_value_outside_params",
+   "Toy.Implicature.negated_value_claim_exhaustified_reading_not_entailed",
+   "Toy.Implicature.step_perfection_pos",
+   "Toy.Implicature.step_perfection_neg",
+   "Toy.Implicature.step_drop_pos",
+   "Toy.Implicature.step_drop_neg",
+   "Toy.Implicature.readings_pos_perfection",
+   "Toy.Implicature.readings_neg_blocked",
+   "Toy.Implicature.readings_neg_cancelled",
+   "Toy.Implicature.strengtheningSafe_neg"
+  ]
+ },
+ {
+  "id": "literal-safety-closed-under-literal-weakening",
+  "lean": [
+   "Toy.Implicature.literal_safety_closed_under_literal_weakening"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Transitivity of entailment.",
+  "plain_claim": "For every finite space S, report E and claims σ, σ': if E ⊨ σ and σ ⊨ σ' over the listed worlds, then E ⊨ σ'.",
+  "hypotheses": [
+   {
+    "name": "hsafe : LiterallySafe S E σ",
+    "purpose": "the rendering being weakened is entailed by the report",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.literal_weakening_tight_hsafe"
+    ],
+    "witness_class": "the 4-world space S21 with the empty report and σ = σ' = p0"
+   },
+   {
+    "name": "hweak : Entails S [σ] σ'",
+    "purpose": "σ' is a literal weakening of σ",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.literal_weakening_tight_hweak"
+    ],
+    "witness_class": "the 4-world space S21 with report [p0], σ = p0 and the independent atom σ' = q0"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "S21, E = [p0 ∧ q0], σ = p0 ∧ q0, σ' = p0.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.literal_weakening_nonvacuous"
+  ],
+  "non_claims": [
+   "Says nothing about strengthening safety, which is not closed under literal weakening (`blocker_conjunct_drop_breaks_strengthening_safety`).",
+   "Reference point (baseline): this result is elementary and is included so that other cards can cite it.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "Standard property of semantic consequence; no specific source is relied on."
+  ],
+  "design_question": "Reference point: which kind of safety survives compression by weakening? (Literal safety does; strengthening safety need not: `blocker_conjunct_drop_breaks_strengthening_safety`.)",
+  "lean_names": [
+   "Toy.Implicature.blocker_conjunct_drop_breaks_strengthening_safety",
+   "Toy.Implicature.full_world_count",
+   "Toy.Implicature.holds_pos_all_true_world",
+   "Toy.Implicature.holds_neg_partial_world",
+   "Toy.Implicature.full_out_of_range_atom_false",
+   "Toy.Implicature.entails_pos_modus_ponens",
+   "Toy.Implicature.entails_neg_affirming_consequent",
+   "Toy.Implicature.entailsB_iff"
+  ]
+ },
+ {
+  "id": "dropping-a-blocking-conjunct-breaks-strengthening-safety",
+  "lean": [
+   "Toy.Implicature.blocker_conjunct_drop_breaks_strengthening_safety"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Cancellation of an implicature by an explicit clause is Gricean folklore; the statement that the literal weakening obtained by deleting the cancelling clause loses strengthening safety is a precise formulation of it.",
+  "plain_claim": "For the one-step reader with the standard alternatives and no blocker flags, in the 16-world space S22: the rendering σ = (∀x, A→B) ∧ ¬(∀x, B→A) is strengthening-safe for the report E = [σ], and its perfected reading (∀x, A↔B) ∧ ¬(∀x, B→A), generated at the first conjunct, is inconsistent with σ and is not drawn (cancellation); while its literal weakening ∀x, A→B (σ ⊨ ∀x, A→B) is not strengthening-safe for the same E.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instance itself; Sat S22 [σ] is part of the statement.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.blocker_conjunct_drop_breaks_strengthening_safety"
+  ],
+  "non_claims": [
+   "Relies on the cancellation filter (the generated and cancelled perfected reading is part of the theorem). Under a reader that perfects a conjunct without checking consistency, σ itself would be unsafe; under a reader that never looks inside conjunctions, every added conjunct would block perfection. Neither reader is formalized (not proved here).",
+   "An object-level cancelling conjunct such as ¬(∀x, B→A) is literally safe when the report refutes the converse. When the report leaves the converse open, neither \"and not conversely\" nor \"iff\" is literally safe (`open_converse_rewordings_not_literally_safe`), and, for a report proving ∀x, A→B in a space where ∀x, A→B is consistent with ∀x, A↔B (PerfectionConsistent), a flag set is safe iff it contains both the perfection and the exhaustification flags (`forall_conditional_open_converse_safe_iff_both_flags`).",
+   "One instance; does not characterize which conjuncts act as blockers.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time.",
+   "Exhaustified readings depend on the alternative set. Unless a card says otherwise the alternatives are `stdAlt`: converse and biconditional of a conditional, universal of an existential, hypothesis-free version of a relativized claim, and neighbouring parameter values of a quantifier-free claim that mentions exactly one parameter value (whatever its connectives, including negation, disjunction and biconditional; `stdAlt_value_alternatives_any_connective`), substituted at one top-level conjunct. These are stipulated rules, not structurally defined alternatives in the sense of R. Katzir, \"Structurally-defined alternatives\", Linguistics and Philosophy 30(6):669-690, 2007, doi:10.1007/s10988-008-9029-y. Other alternative sets (for example alternative antecedents, as in exhaustification accounts of perfection) may give different readings (not proved here); nothing is claimed for them, either way.",
+   "Cancellation keeps a strengthened reading exactly when it is consistent with the literal rendering over the listed worlds (the filter in `ruleReadings`); the reader model has no context, no background knowledge and no probabilities.",
+   "The one-step reader applies each unblocked rule once at one site. This card makes no claim, either way, about readers that compose rules; the composing reader `readingsStar` is treated in composing-reader-minimal-blockers-not-unique (`composing_reader_minimal_blocker_sets_not_unique`)."
+  ],
+  "prior_art": [
+   "H. P. Grice, \"Logic and conversation\", in P. Cole and J. L. Morgan (eds.), Syntax and Semantics 3: Speech Acts, Academic Press, 1975, pp. 41-58 (Brill reissue doi:10.1163/9789004368811_003). Introduces conversational implicature and its cancellability; the cancellation filter of the reader model is a toy version of cancellability.",
+   "M. L. Geis and A. M. Zwicky, \"On invited inferences\", Linguistic Inquiry 2(4):561-566, 1971. Names the invited inference of conditional perfection (\"If you mow the lawn, I'll give you five dollars\" invites \"if not, not\").",
+   "L. R. Horn, \"From if to iff: Conditional perfection as pragmatic strengthening\", Journal of Pragmatics 32(3):289-326, 2000, doi:10.1016/S0378-2166(99)00053-3. Analyzes conditional perfection as pragmatic strengthening."
+  ],
+  "design_question": "Does compression by dropping conjuncts (and nothing else) preserve the non-misleadingness of a summary? (No: dropping the clause that cancels a strengthening is a literal weakening that makes the summary misleading for this reader model.)",
+  "lean_names": [
+   "Toy.Implicature.open_converse_rewordings_not_literally_safe",
+   "Toy.Implicature.forall_conditional_open_converse_safe_iff_both_flags",
+   "Toy.Implicature.stdAlt_value_alternatives_any_connective",
+   "Toy.Implicature.composing_reader_minimal_blocker_sets_not_unique"
+  ]
+ },
+ {
+  "id": "naive-exhaustification-of-disjunction-inconsistent",
+  "lean": [
+   "Toy.Implicature.naive_exhaustification_of_disjunction_inconsistent",
+   "Toy.Implicature.disjunction_without_conjunctive_alternative"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "The standard motivating example for innocent exclusion (Fox 2007), and the disjunction-without-conjunction case of Spector (2016, section 2.2.2).",
+  "plain_claim": "In the 4-world space S21, for the satisfiable disjunction p ∨ q (p = P0(0), q = P1(0)) with the explicitly supplied alternatives p, q, p ∧ q: naive exhaustification negates all three alternatives and is unsatisfiable, while innocent exclusion negates exactly one alternative, p ∧ q (the computed list `ieList` is [p ∧ q]), and yields the satisfiable exclusive disjunction (p ∨ q) ∧ ¬(p ∧ q). With the alternative list [p, q] (no conjunctive alternative), naive exhaustification is still unsatisfiable, while innocent exclusion negates nothing and is equivalent to the inclusive p ∨ q.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instances themselves (Sat S21 [p ∨ q] is part of the first statement).",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.naive_exhaustification_of_disjunction_inconsistent",
+   "Toy.Implicature.disjunction_without_conjunctive_alternative"
+  ],
+  "non_claims": [
+   "The alternatives are supplied explicitly. The standard alternatives contain neither the disjuncts nor the conjunction of a disjunction: in S21, `stdAlt` of p ∨ q is empty, and in S22, which has the neighbouring parameter value 1, it is the one-element list [P0(1) ∨ P1(1)] (`stdAlt_value_alternatives_any_connective`).",
+   "In this instance the exclusive reading depends on p ∧ q being among the alternatives: with the alternatives p, q innocent exclusion negates nothing (`disjunction_without_conjunctive_alternative`).",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "D. Fox, \"Free choice and the theory of scalar implicatures\", in U. Sauerland and P. Stateva (eds.), Presupposition and Implicature in Compositional Semantics, Palgrave Macmillan, 2007, pp. 71-120, doi:10.1057/9780230210752_4. Defines innocent exclusion: an alternative is innocently excludable iff it belongs to every maximal set of alternatives whose negations are jointly consistent with the prejacent.",
+   "U. Sauerland, \"Scalar implicatures in complex sentences\", Linguistics and Philosophy 27(3):367-391, 2004, doi:10.1023/B:LING.0000023378.71748.db. Uses the disjuncts and the conjunction as the alternatives of a disjunction (the alternative set used in the disjunction example here).",
+   "M. Krifka, \"Focus and presupposition in dynamic interpretation\", Journal of Semantics 10(4):269-300, 1993, doi:10.1093/jos/10.4.269. The semantics of \"only\" that negates every alternative not entailed by the prejacent (the naive operator, called exh_krifka by Spector 2016).",
+   "B. Spector, \"Comparing exhaustivity operators\", Semantics and Pragmatics 9(11):1-33, 2016, doi:10.3765/sp.9.11. Compares naive exhaustification (exh_krifka), minimal-worlds exhaustification (exh_mw) and innocent exclusion (exh_ie). Section 2.2.2 (pp. 8-9): for A or B with the alternative set {A, B} (no conjunctive alternative), exh_krifka is contradictory, exh_mw gives the exclusive reading, and exh_ie is vacuous.",
+   "G. Chierchia, D. Fox and B. Spector, \"Scalar implicature as a grammatical phenomenon\", in C. Maienborn, K. von Heusinger and P. Portner (eds.), Semantics: An International Handbook of Natural Language Meaning, vol. 3, De Gruyter, 2012, pp. 2297-2332, doi:10.1515/9783110253382.2297. Survey of the exhaustification-operator approach to scalar implicature."
+  ],
+  "design_question": "Can a summary checker model readers by negating every non-entailed alternative? (No: that reader can be inconsistent on satisfiable renderings.)",
+  "lean_names": [
+   "Toy.Implicature.stdAlt_value_alternatives_any_connective"
+  ]
+ },
+ {
+  "id": "innocent-exclusion-consistent",
+  "lean": [
+   "Toy.Implicature.innocent_exhaustification_consistent_of_sat"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Consistency is the design goal of innocent exclusion in Fox 2007; it is stated and mechanized here for arbitrary finite alternative lists over finite spaces.",
+  "plain_claim": "For every finite space S, every finite alternative list A and every claim σ: if σ is satisfiable in S, then exh S A σ is satisfiable in S, where exh S A σ is σ together with the negation of every alternative in the computed list ieList S σ A (which agrees with innocent excludability in Fox's sense by innocent-exclusion-computed-by-maximal-falsified-sets).",
+  "hypotheses": [
+   {
+    "name": "hσ : Sat S [σ]",
+    "purpose": "exh S A σ has σ as a conjunct (definition of exh), so for an unsatisfiable σ it is unsatisfiable; instance in the counterexample",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.innocent_exh_consistent_tight"
+    ],
+    "witness_class": "the 4-world space S21 with the contradictory prejacent p0 ∧ ¬p0 and the empty alternative list"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "S21, σ = p0 ∨ q0 with the disjunction alternatives.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.innocent_exh_consistent_nonvacuous"
+  ],
+  "non_claims": [
+   "Concerns consistency with σ; says nothing about consistency with a report E, and exhaustified readings can be contradicted by a consistent report (`exhaustification_reading_contradicted_though_literally_safe`).",
+   "The theorem holds for every finite alternative list, but the exhaustified reading itself depends on the list.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "D. Fox, \"Free choice and the theory of scalar implicatures\", in U. Sauerland and P. Stateva (eds.), Presupposition and Implicature in Compositional Semantics, Palgrave Macmillan, 2007, pp. 71-120, doi:10.1057/9780230210752_4. Defines innocent exclusion: an alternative is innocently excludable iff it belongs to every maximal set of alternatives whose negations are jointly consistent with the prejacent.",
+   "G. Chierchia, D. Fox and B. Spector, \"Scalar implicature as a grammatical phenomenon\", in C. Maienborn, K. von Heusinger and P. Portner (eds.), Semantics: An International Handbook of Natural Language Meaning, vol. 3, De Gruyter, 2012, pp. 2297-2332, doi:10.1515/9783110253382.2297. Survey of the exhaustification-operator approach to scalar implicature."
+  ],
+  "design_question": "Is innocent exclusion a well-behaved reader model for safety checking, in the sense that it never contradicts a satisfiable rendering? (Yes in this sense: for every finite alternative list, a satisfiable rendering has a satisfiable innocent exhaustification.)",
+  "lean_names": [
+   "Toy.Implicature.exhaustification_reading_contradicted_though_literally_safe",
+   "Toy.Implicature.sat_pos_not_conversely",
+   "Toy.Implicature.sat_neg_iff_not_converse",
+   "Toy.Implicature.satB_iff"
+  ]
+ },
+ {
+  "id": "innocent-exclusion-computed-by-maximal-falsified-sets",
+  "lean": [
+   "Toy.Implicature.mem_ieList_iff_innocentlyExcludable"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Spector (2016, Proposition 7 and Corollary 8) proves that an alternative is innocently excludable iff minimal-worlds exhaustification entails its negation; over finitely many listed worlds the minimal worlds are the σ-worlds with inclusion-maximal falsified sets, so this is that result restated and mechanized.",
+  "plain_claim": "For every finite space S, prejacent σ, alternative list A and claim a: a ∈ ieList S σ A (that is, a ∈ A and a is false at every σ-world of S.worlds whose set of falsified alternatives is inclusion-maximal among the σ-worlds) iff a is innocently excludable in Fox's sense (a ∈ A and a belongs to every maximal subset of A whose negations are jointly consistent with σ).",
+  "hypotheses": [],
+  "depth": "substantive",
+  "nonvacuity_witness": "\"All\" is in the list and innocently excludable for \"some\" (S12); the empty maximal exclusion witnesses the case where both sides are false (innocentlyExcludable_neg).",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.ieList_characterization_instance",
+   "Toy.Implicature.innocentlyExcludable_neg"
+  ],
+  "non_claims": [
+   "Gives a decision procedure polynomial in the number of listed worlds and alternatives; says nothing about spaces given symbolically, where the number of worlds is exponential.",
+   "When σ is unsatisfiable both sides hold for every a ∈ A (`ieList_characterization_unsat_prejacent`).",
+   "`exh S A σ` is in general weaker than restricting σ to the worlds with inclusion-maximal falsified sets (minimal-worlds exhaustification): for p ∨ q with alternatives p, q, every such world falsifies p ∧ q, yet `exh` holds at a world where p ∧ q holds (`exh_weaker_than_maximal_falsified_worlds`). The two coincide when the alternatives are closed under conjunction (Spector 2016, Theorem 9; not proved here).",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "D. Fox, \"Free choice and the theory of scalar implicatures\", in U. Sauerland and P. Stateva (eds.), Presupposition and Implicature in Compositional Semantics, Palgrave Macmillan, 2007, pp. 71-120, doi:10.1057/9780230210752_4. Defines innocent exclusion: an alternative is innocently excludable iff it belongs to every maximal set of alternatives whose negations are jointly consistent with the prejacent.",
+   "B. Spector, \"Comparing exhaustivity operators\", Semantics and Pragmatics 9(11):1-33, 2016, doi:10.3765/sp.9.11. Compares naive exhaustification (exh_krifka), minimal-worlds exhaustification (exh_mw) and innocent exclusion (exh_ie). Proposition 7 and Corollary 8 (p. 12): an alternative is innocently excludable iff exh_mw entails its negation, so exh_ie conjoins the negations of exactly those alternatives; Theorem 9 (p. 13): exh_mw and exh_ie coincide when the alternatives are closed under conjunction.",
+   "K. Schulz and R. van Rooij, \"Pragmatic meaning and non-monotonic reasoning: The case of exhaustive interpretation\", Linguistics and Philosophy 29(2):205-250, 2006, doi:10.1007/s10988-005-3760-4. Exhaustive interpretation by minimal models (the minimal-worlds operator)."
+  ],
+  "design_question": "Can the innocent-exclusion reader be decided efficiently over an explicit finite claim space? (Yes, by comparing falsified-alternative sets of worlds.)",
+  "lean_names": [
+   "Toy.Implicature.ieList_characterization_unsat_prejacent",
+   "Toy.Implicature.exh_weaker_than_maximal_falsified_worlds",
+   "Toy.Implicature.ieList_pos_some_not_all",
+   "Toy.Implicature.exh_pos_some_but_not_all",
+   "Toy.Implicature.ieList_pos_disjunction",
+   "Toy.Implicature.ieList_neg_entailed",
+   "Toy.Implicature.innocentlyExcludable_pos",
+   "Toy.Implicature.innocentlyExcludable_neg_disjunct"
+  ]
+ },
+ {
+  "id": "naive-exhaustification-entails-innocent",
+  "lean": [
+   "Toy.Implicature.naive_exh_entails_innocent_exh"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Spector (2016, Corollary 2) proves that exh_krifka entails exh_ie; restated over finite listed worlds and mechanized.",
+  "plain_claim": "For every finite space S, alternative list A and claim σ: naive exhaustification of σ (σ and the negation of every alternative σ does not entail) entails innocent exhaustification of σ over the listed worlds.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "S12, σ = ∃x, A with alternatives [∀x, A], where the naive reading is satisfiable.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.naive_exh_entails_innocent_instance"
+  ],
+  "non_claims": [
+   "The converse fails (`innocent_exh_not_entails_naive_exh`: the disjunction in S21).",
+   "When the naive reading is unsatisfiable the entailment holds vacuously.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "M. Krifka, \"Focus and presupposition in dynamic interpretation\", Journal of Semantics 10(4):269-300, 1993, doi:10.1093/jos/10.4.269. The semantics of \"only\" that negates every alternative not entailed by the prejacent (the naive operator, called exh_krifka by Spector 2016).",
+   "B. Spector, \"Comparing exhaustivity operators\", Semantics and Pragmatics 9(11):1-33, 2016, doi:10.3765/sp.9.11. Compares naive exhaustification (exh_krifka), minimal-worlds exhaustification (exh_mw) and innocent exclusion (exh_ie). Corollary 2 (p. 11): exh_krifka entails both exh_mw and exh_ie.",
+   "D. Fox, \"Free choice and the theory of scalar implicatures\", in U. Sauerland and P. Stateva (eds.), Presupposition and Implicature in Compositional Semantics, Palgrave Macmillan, 2007, pp. 71-120, doi:10.1057/9780230210752_4. Defines innocent exclusion: an alternative is innocently excludable iff it belongs to every maximal set of alternatives whose negations are jointly consistent with the prejacent."
+  ],
+  "design_question": "Is the innocent reader ever stronger than the naive one? (No: for the same alternatives, naive exhaustification entails innocent exhaustification over the listed worlds, and the converse entailment fails in `innocent_exh_not_entails_naive_exh`.)",
+  "lean_names": [
+   "Toy.Implicature.innocent_exh_not_entails_naive_exh",
+   "Toy.Implicature.naiveExcl_pos_disjunction",
+   "Toy.Implicature.naiveExcl_neg_entailed"
+  ]
+ },
+ {
+  "id": "innocent-equals-naive-iff-naive-consistent",
+  "lean": [
+   "Toy.Implicature.innocent_equiv_naive_iff_naive_sat"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Spector (2016, Proposition 1) proves that a non-contradictory exh_krifka equals exh_ie; together with consistency of innocent exclusion for satisfiable prejacents this gives the equivalence, restated over finite listed worlds and mechanized.",
+  "plain_claim": "For every finite space S, alternative list A and claim σ: if σ is satisfiable in S, then innocent and naive exhaustification of σ are equivalent over the listed worlds iff naive exhaustification of σ is satisfiable.",
+  "hypotheses": [
+   {
+    "name": "hσ : Sat S [σ]",
+    "purpose": "both readings have σ as a conjunct (definitions of exh and naiveExh), so for an unsatisfiable σ they are equivalent (both unsatisfiable) while the naive reading is not satisfiable; instance in the counterexample",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.innocent_equiv_naive_tight"
+    ],
+    "witness_class": "the 4-world space S21 with the contradictory prejacent p0 ∧ ¬p0 and alternatives [p0]"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "S12, ∃x, A with [∀x, A] (both sides true); S21, the disjunction (both sides false).",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.innocent_equiv_naive_nonvacuous"
+  ],
+  "non_claims": [
+   "Equivalence means mutual entailment over the listed worlds of S; nothing is claimed about other spaces.",
+   "Shallow given innocent-exclusion-consistent and naive-exhaustification-entails-innocent.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "B. Spector, \"Comparing exhaustivity operators\", Semantics and Pragmatics 9(11):1-33, 2016, doi:10.3765/sp.9.11. Compares naive exhaustification (exh_krifka), minimal-worlds exhaustification (exh_mw) and innocent exclusion (exh_ie). Proposition 1 (p. 11): if exh_krifka is not the contradiction, exh_krifka = exh_mw = exh_ie.",
+   "D. Fox, \"Free choice and the theory of scalar implicatures\", in U. Sauerland and P. Stateva (eds.), Presupposition and Implicature in Compositional Semantics, Palgrave Macmillan, 2007, pp. 71-120, doi:10.1057/9780230210752_4. Defines innocent exclusion: an alternative is innocently excludable iff it belongs to every maximal set of alternatives whose negations are jointly consistent with the prejacent.",
+   "G. Chierchia, D. Fox and B. Spector, \"Scalar implicature as a grammatical phenomenon\", in C. Maienborn, K. von Heusinger and P. Portner (eds.), Semantics: An International Handbook of Natural Language Meaning, vol. 3, De Gruyter, 2012, pp. 2297-2332, doi:10.1515/9783110253382.2297. Survey of the exhaustification-operator approach to scalar implicature."
+  ],
+  "design_question": "For a satisfiable rendering, when can the simpler naive reader stand in for innocent exclusion? (Exactly when the naive reading is satisfiable, given that the rendering is satisfiable.)",
+  "lean_names": [
+   "Toy.Implicature.equiv_pos",
+   "Toy.Implicature.equiv_neg"
+  ]
+ },
+ {
+  "id": "exhaustification-not-monotone-antitone-or-reflecting",
+  "lean": [
+   "Toy.Implicature.exh_neither_monotone_nor_antitone",
+   "Toy.Implicature.exh_entailment_does_not_reflect"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Non-monotonicity of exhaustification is well known (\"all\" entails \"some\" but contradicts \"some but not all\"); the precise countermodels are stated here.",
+  "plain_claim": "With the standard alternatives in the 4-world space S12: ∀x, A entails ∃x, A, but neither exhaustified reading entails the other; and exh(∃x, A) entails exh(¬∀x, A) although ∃x, A does not entail ¬∀x, A.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instances themselves.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.exh_neither_monotone_nor_antitone",
+   "Toy.Implicature.exh_entailment_does_not_reflect"
+  ],
+  "non_claims": [
+   "Shows failure for one alternative function in one space; says nothing about restricted classes of renderings on which exh might be monotone.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time.",
+   "Exhaustified readings depend on the alternative set. Unless a card says otherwise the alternatives are `stdAlt`: converse and biconditional of a conditional, universal of an existential, hypothesis-free version of a relativized claim, and neighbouring parameter values of a quantifier-free claim that mentions exactly one parameter value (whatever its connectives, including negation, disjunction and biconditional; `stdAlt_value_alternatives_any_connective`), substituted at one top-level conjunct. These are stipulated rules, not structurally defined alternatives in the sense of R. Katzir, \"Structurally-defined alternatives\", Linguistics and Philosophy 30(6):669-690, 2007, doi:10.1007/s10988-008-9029-y. Other alternative sets (for example alternative antecedents, as in exhaustification accounts of perfection) may give different readings (not proved here); nothing is claimed for them, either way."
+  ],
+  "prior_art": [
+   "L. R. Horn, A Natural History of Negation, University of Chicago Press, 1989 (reissued by CSLI Publications, Stanford, 2001, ISBN 1-57586-336-7); chapter 4, \"Negation and Quantity\", develops quantity scales such as <all, some> and the scalar implicature from \"some\" to \"not all\".",
+   "G. Chierchia, D. Fox and B. Spector, \"Scalar implicature as a grammatical phenomenon\", in C. Maienborn, K. von Heusinger and P. Portner (eds.), Semantics: An International Handbook of Natural Language Meaning, vol. 3, De Gruyter, 2012, pp. 2297-2332, doi:10.1515/9783110253382.2297. Survey of the exhaustification-operator approach to scalar implicature.",
+   "K. Schulz and R. van Rooij, \"Pragmatic meaning and non-monotonic reasoning: The case of exhaustive interpretation\", Linguistics and Philosophy 29(2):205-250, 2006, doi:10.1007/s10988-005-3760-4. Exhaustive interpretation by minimal models (the minimal-worlds operator)."
+  ],
+  "design_question": "Can a summary checker reason about exhaustified readings compositionally by entailment? (Not by monotonicity in either direction.)",
+  "lean_names": [
+   "Toy.Implicature.stdAlt_value_alternatives_any_connective"
+  ]
+ },
+ {
+  "id": "computed-blockers-sound",
+  "lean": [
+   "Toy.Implicature.blockers_sound"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Formalizes the practice of adding explicit non-claims; the statement is new in form but conceptually folklore.",
+  "plain_claim": "For every finite space S, alternative function alt, report E and rendering σ: if E ⊨ σ, then flagging the computed blocker set blockers S alt E σ (the rules that contribute an uncancelled reading E does not entail) makes σ strengthening-safe for the one-step reader `readings`.",
+  "hypotheses": [
+   {
+    "name": "hlit : LiterallySafe S E σ",
+    "purpose": "the literal reading is always among the readings; no flag can block it",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.blockers_sound_tight"
+    ],
+    "witness_class": "the 4-world space S21 with the empty report, σ = p0 and the standard alternatives"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "S22, E_notConv, σ = ∀x, A→B: the computed blocker set is [perfection] and makes σ safe.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.blockers_sound_nonvacuous"
+  ],
+  "non_claims": [
+   "Concerns the one-step reader; for the composing reader the one-step blocker set can be insufficient (`composing_reader_minimal_blocker_sets_not_unique`).",
+   "Blocking a rule removes all its readings, including safe ones at other sites.",
+   "Blocker flags `F : List Rule` are out-of-band rule-disabling annotations with no truth conditions; unlike an object-language clause such as `¬(∀x, B→A)`, flagging `perfection` does not require the report to refute `∀x, B→A`. Flagging one rule leaves the others active.",
+   "Computing `blockers` decides entailment and satisfiability by scanning the listed worlds: polynomial in the number of listed worlds and alternatives, but exponential in the numbers of atoms and parameter values when the worlds enumerate all valuations (as in `Space.full`).",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time.",
+   "Cancellation keeps a strengthened reading exactly when it is consistent with the literal rendering over the listed worlds (the filter in `ruleReadings`); the reader model has no context, no background knowledge and no probabilities."
+  ],
+  "prior_art": [
+   "H. P. Grice, \"Logic and conversation\", in P. Cole and J. L. Morgan (eds.), Syntax and Semantics 3: Speech Acts, Academic Press, 1975, pp. 41-58 (Brill reissue doi:10.1163/9789004368811_003). Introduces conversational implicature and its cancellability; the cancellation filter of the reader model is a toy version of cancellability."
+  ],
+  "design_question": "Can the explicit blockers a summary needs be computed from the report? (Yes, for the one-step reader, by deciding entailment of each rule's uncancelled readings.)",
+  "lean_names": [
+   "Toy.Implicature.composing_reader_minimal_blocker_sets_not_unique",
+   "Toy.Implicature.blockers_neg"
+  ]
+ },
+ {
+  "id": "computed-blockers-minimal",
+  "lean": [
+   "Toy.Implicature.blockers_subset_of_strengtheningSafe",
+   "Toy.Implicature.strengtheningSafe_iff_blockers_subset"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "As for computed-blockers-sound.",
+  "plain_claim": "For every finite space S, alternative function alt, report E, rendering σ and flag set F, for the one-step reader `readings`: (a) if σ is strengthening-safe under F, then F contains every rule of the computed blocker set; (b) if E ⊨ σ, then σ is strengthening-safe under F iff F contains every rule of the computed blocker set, so the computed blocker set is the least safe flag set (up to rule membership).",
+  "hypotheses": [
+   {
+    "name": "hsafe : StrengtheningSafe S alt F E σ",
+    "purpose": "statement (a): minimality is relative to flag sets that achieve safety",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.blockers_minimal_tight"
+    ],
+    "witness_class": "the 16-world space S22 with E_notConv, σ = ∀x, A→B and F = []",
+    "applies_to": [
+     "Toy.Implicature.blockers_subset_of_strengtheningSafe"
+    ]
+   },
+   {
+    "name": "hlit : LiterallySafe S E σ",
+    "purpose": "statement (b): the literal reading σ is among the readings under every flag set (definition of readings), so without literal safety no flag set is safe, while the computed blocker set is contained in itself",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.blockers_iff_tight_hlit"
+    ],
+    "witness_class": "the 4-world space S21 with the empty report, σ = p0 and F the computed blocker set",
+    "applies_to": [
+     "Toy.Implicature.strengtheningSafe_iff_blockers_subset"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "(a) S22, E_notConv, σ = ∀x, A→B, F = [perfection]; (b) the same instance, with E ⊨ σ.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.strengtheningSafe_pos",
+   "Toy.Implicature.blockers_sound_nonvacuous"
+  ],
+  "non_claims": [
+   "Uniqueness of the least safe flag set holds for the one-step reader; it fails for the composing reader (`composing_reader_minimal_blocker_sets_not_unique`).",
+   "\"Least safe flag set\" means least with respect to rule membership (∀ r ∈ blockers S alt E σ, r ∈ F); the order of F and duplicate flags in F do not matter.",
+   "Least among flag sets of the three fixed rules; finer-grained blockers (per site, per alternative) are not modeled.",
+   "Blocker flags `F : List Rule` are out-of-band rule-disabling annotations with no truth conditions; unlike an object-language clause such as `¬(∀x, B→A)`, flagging `perfection` does not require the report to refute `∀x, B→A`. Flagging one rule leaves the others active.",
+   "Computing `blockers` decides entailment and satisfiability by scanning the listed worlds: polynomial in the number of listed worlds and alternatives, but exponential in the numbers of atoms and parameter values when the worlds enumerate all valuations (as in `Space.full`).",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "H. P. Grice, \"Logic and conversation\", in P. Cole and J. L. Morgan (eds.), Syntax and Semantics 3: Speech Acts, Academic Press, 1975, pp. 41-58 (Brill reissue doi:10.1163/9789004368811_003). Introduces conversational implicature and its cancellability; the cancellation filter of the reader model is a toy version of cancellability."
+  ],
+  "design_question": "Is there a canonical, smallest set of non-claims a summary must carry? (Yes for the one-step reader, for literally safe renderings.)",
+  "lean_names": [
+   "Toy.Implicature.composing_reader_minimal_blocker_sets_not_unique"
+  ]
+ },
+ {
+  "id": "composing-reader-minimal-blockers-not-unique",
+  "lean": [
+   "Toy.Implicature.composing_reader_minimal_blocker_sets_not_unique"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Not found in the cited literature; a direct consequence of letting strengthening rules compose, recorded as a precise countermodel.",
+  "plain_claim": "With the standard alternatives in the 64-world space S32, for the report E_relCond (∀x, A→B; ∀x, H⇒(B→A); ∃x, B∧¬A) and the literally safe rendering ∀x, H⇒(A→B): the one-step blocker set is {exhaustification} and suffices for the one-step reader `readings`, but for the composing reader `readingsStar` it is insufficient, and among the eight flag sets the safe ones have exactly two minimal elements, {exhaustification, qualifierDrop} and {exhaustification, perfection}.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instance itself (LiterallySafe is part of the statement).",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.composing_reader_minimal_blocker_sets_not_unique"
+  ],
+  "non_claims": [
+   "The composing reader applies rules in the fixed order qualifier dropping, perfection, exhaustification; other orders are not examined.",
+   "`readingsStar` applies each unblocked rule at most once and at a single top-level conjunct, and checks consistency with σ for the final composed reading, not after each step; readers that apply a rule at several conjuncts at once or cancel after each step are not modeled.",
+   "For the composing reader some flag set is safe iff the rendering is literally safe (`composing_reader_some_safe_flag_set_iff_literally_safe`); for a literally safe rendering a minimal safe flag set therefore exists among the eight flag sets (by finiteness; not stated as a theorem here).",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time.",
+   "Exhaustified readings depend on the alternative set. Unless a card says otherwise the alternatives are `stdAlt`: converse and biconditional of a conditional, universal of an existential, hypothesis-free version of a relativized claim, and neighbouring parameter values of a quantifier-free claim that mentions exactly one parameter value (whatever its connectives, including negation, disjunction and biconditional; `stdAlt_value_alternatives_any_connective`), substituted at one top-level conjunct. These are stipulated rules, not structurally defined alternatives in the sense of R. Katzir, \"Structurally-defined alternatives\", Linguistics and Philosophy 30(6):669-690, 2007, doi:10.1007/s10988-008-9029-y. Other alternative sets (for example alternative antecedents, as in exhaustification accounts of perfection) may give different readings (not proved here); nothing is claimed for them, either way.",
+   "Cancellation keeps a strengthened reading exactly when it is consistent with the literal rendering over the listed worlds (the filter in `ruleReadings`); the reader model has no context, no background knowledge and no probabilities."
+  ],
+  "prior_art": [
+   "No prior statement found; the composing reader is defined here."
+  ],
+  "design_question": "Does \"the minimal set of blockers\" remain well defined when readers chain strengthenings (drop the hypothesis, then perfect)? (No: in this instance there are two incomparable minimal safe flag sets.)",
+  "lean_names": [
+   "Toy.Implicature.composing_reader_some_safe_flag_set_iff_literally_safe",
+   "Toy.Implicature.stdAlt_value_alternatives_any_connective",
+   "Toy.Implicature.readingsStar_pos",
+   "Toy.Implicature.readings_neg_no_composition",
+   "Toy.Implicature.readingsStar_neg_blocked",
+   "Toy.Implicature.strengtheningSafeStar_pos",
+   "Toy.Implicature.strengtheningSafeStar_neg"
+  ]
+ },
+ {
+  "id": "conclusion-dropping-preserves-literal-safety",
+  "lean": [
+   "Toy.Implicature.conclusion_dropping_preserves_literal_safety"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Conjunction elimination.",
+  "plain_claim": "For every finite space S, report E, hypothesis H and conclusion lists Cs, Cs': if E ⊨ nf H Cs (E proves ∀x, H ⇒ C for every C in Cs) and every member of Cs' is in Cs, then E ⊨ nf H Cs'.",
+  "hypotheses": [
+   {
+    "name": "hE : LiterallySafe S E (nf H Cs)",
+    "purpose": "the report proves the normal-form claim",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.conclusion_dropping_tight_hE"
+    ],
+    "witness_class": "the 64-world space S32 with the empty report, H = xH and Cs = Cs' = [xA]"
+   },
+   {
+    "name": "hsub : ∀ c ∈ Cs', c ∈ Cs",
+    "purpose": "Cs' keeps whole conclusions of Cs (every member of Cs' is a member of Cs)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.conclusion_dropping_tight_hsub"
+    ],
+    "witness_class": "the 64-world space S32 with report [∀x, H⇒A], Cs = [A] and the added conclusion Cs' = [A, B]"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "S32, E = [nf H [A, B]], Cs' = [B].",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.conclusion_dropping_nonvacuous"
+  ],
+  "non_claims": [
+   "Concerns literal safety; strengthening safety need not be preserved (`inherited_blockers_insufficient_after_conclusion_drop`).",
+   "Reference point (baseline): this result is elementary and is included so that other cards can cite it.",
+   "Normal-form claims are rendered one conclusion per top-level conjunct (`nf H [C₁, …, Cₙ] = (∀x, H ⇒ C₁) ∧ … ∧ (∀x, H ⇒ Cₙ)`, and `⊤` when no conclusion remains); a conjunction written under `∀` or `⇒` would be a single site, to which perfection and the structural alternatives do not apply. No rule perfects a stated hypothesis into a necessary condition (no reading `∀x, C → H` or `∀x, H ↔ C` is generated from `∀x, H ⇒ C`); the qualifier-drop flag's intended phrasing is \"established under H; not shown without H\"; it does not say that C fails without H.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "Standard; no specific source is relied on."
+  ],
+  "design_question": "Reference point: which compressions of a theorem statement keep it literally true? (Dropping whole conclusions while keeping hypothesis and domain.)",
+  "lean_names": [
+   "Toy.Implicature.inherited_blockers_insufficient_after_conclusion_drop"
+  ]
+ },
+ {
+  "id": "compression-with-recomputed-blockers-safe",
+  "lean": [
+   "Toy.Implicature.compression_with_recomputed_blockers_strengthening_safe",
+   "Toy.Implicature.compression_with_entry_blockers_strengthening_safe"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Combines conclusion dropping with the computed blockers; folklore made precise.",
+  "plain_claim": "For every finite space S, alternative function alt, report E, list R of normal-form entries and compression comp, for the one-step reader `readings`: if E proves the normal-form claim of every entry of R, and comp is a conclusion-dropping compression of R (each compressed entry keeps the hypothesis of some entry of R, and each of its conclusions is a conclusion of that entry), then the rendering of comp is strengthening-safe (a) under the blocker set computed for that rendering relative to E, and (b) under the blocker set computed for that rendering relative to the normal-form claims of R alone.",
+  "hypotheses": [
+   {
+    "name": "hR : ∀ q ∈ R, LiterallySafe S E (nfOf q)",
+    "purpose": "the report proves the claims being compressed",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.compression_tight_hR"
+    ],
+    "witness_class": "the 64-world space S32 with the empty report and R = comp = [(H, [A])]"
+   },
+   {
+    "name": "hcomp : ConclusionDropping R comp",
+    "purpose": "whole conclusions are dropped; hypotheses and domains are kept",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.compression_tight_hcomp"
+    ],
+    "witness_class": "the 64-world space S32 with report [∀x, H⇒A] and the compressed entry (⊤, [A]), which drops the hypothesis"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "S32, R_comp = [(H, [A, B])], E_comp, comp = [(H, [A])].",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.compression_nonvacuous"
+  ],
+  "non_claims": [
+   "The blockers must be recomputed for the compressed rendering; flags computed for the uncompressed claim can be insufficient or can include unneeded flags (`inherited_blockers_insufficient_after_conclusion_drop`, `inherited_blockers_superfluous_after_conclusion_drop`).",
+   "Strengthening safety of the compressed rendering follows from its literal safety together with blocker soundness; `ConclusionDropping` does not bound or preserve the blocker set. Blockers computed from R alone are sound (statement (b)) but can be strictly larger than those computed from E (`entry_blockers_strictly_larger_than_report_blockers`: {qualifierDrop, exhaustification} versus {exhaustification}).",
+   "Normal form here means one hypothesis and one quantifier domain per claim; hypotheses that are themselves lists, or several quantifier domains, are not modeled. Duplicating a conclusion is allowed and does not hide a hazard (`duplicated_conclusion_keeps_perfection_hazard`).",
+   "Normal-form claims are rendered one conclusion per top-level conjunct (`nf H [C₁, …, Cₙ] = (∀x, H ⇒ C₁) ∧ … ∧ (∀x, H ⇒ Cₙ)`, and `⊤` when no conclusion remains); a conjunction written under `∀` or `⇒` would be a single site, to which perfection and the structural alternatives do not apply. No rule perfects a stated hypothesis into a necessary condition (no reading `∀x, C → H` or `∀x, H ↔ C` is generated from `∀x, H ⇒ C`); the qualifier-drop flag's intended phrasing is \"established under H; not shown without H\"; it does not say that C fails without H.",
+   "Computing `blockers` decides entailment and satisfiability by scanning the listed worlds: polynomial in the number of listed worlds and alternatives, but exponential in the numbers of atoms and parameter values when the worlds enumerate all valuations (as in `Space.full`).",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time.",
+   "The one-step reader applies each unblocked rule once at one site. This card makes no claim, either way, about readers that compose rules; the composing reader `readingsStar` is treated in composing-reader-minimal-blockers-not-unique (`composing_reader_minimal_blocker_sets_not_unique`)."
+  ],
+  "prior_art": [
+   "H. P. Grice, \"Logic and conversation\", in P. Cole and J. L. Morgan (eds.), Syntax and Semantics 3: Speech Acts, Academic Press, 1975, pp. 41-58 (Brill reissue doi:10.1163/9789004368811_003). Introduces conversational implicature and its cancellability; the cancellation filter of the reader model is a toy version of cancellability."
+  ],
+  "design_question": "What is a safe recipe for compressing a theorem into a headline under this reader model? (Drop whole conclusions, keep hypotheses and domains, and recompute the blockers for what remains, either from the report or from the normal-form entries alone.)",
+  "lean_names": [
+   "Toy.Implicature.inherited_blockers_insufficient_after_conclusion_drop",
+   "Toy.Implicature.inherited_blockers_superfluous_after_conclusion_drop",
+   "Toy.Implicature.entry_blockers_strictly_larger_than_report_blockers",
+   "Toy.Implicature.duplicated_conclusion_keeps_perfection_hazard",
+   "Toy.Implicature.composing_reader_minimal_blocker_sets_not_unique",
+   "Toy.Implicature.conclusionDropping_pos",
+   "Toy.Implicature.conclusionDropping_neg",
+   "Toy.Implicature.conclusionDropping_neg_added"
+  ]
+ },
+ {
+  "id": "inherited-blockers-can-be-insufficient-or-superfluous-after-compression",
+  "lean": [
+   "Toy.Implicature.inherited_blockers_insufficient_after_conclusion_drop",
+   "Toy.Implicature.inherited_blockers_superfluous_after_conclusion_drop"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Not found in the cited literature; precise countermodels for reusing the blockers of a full statement after compression.",
+  "plain_claim": "For the one-step reader with the standard alternatives: (i) in the 16-world space S22, for the report E_unc consisting of the normal-form claims ∀x, ⊤⇒(A→B) and ∀x, ⊤⇒(B∧¬A), the full rendering has an empty computed blocker set (its perfected reading is inconsistent with the rendering and is cancelled) and is strengthening-safe with no flags, while the compressed rendering ∀x, ⊤⇒(A→B) obtained by dropping the second conclusion has computed blocker set {perfection}: its perfected reading ∀x, ⊤⇒(A↔B) is drawn and is contradicted by E_unc, and the inherited (empty) flag set leaves it unsafe; (ii) in the 64-world space S32, for the report E_comp (∀x, H⇒A; ∀x, H⇒B; ∀x, A; ¬∀x, B), the full rendering has computed blocker set {qualifierDrop, exhaustification} and the compressed rendering ∀x, H⇒A has computed blocker set {exhaustification}: its exhaustified reading is equivalent to (∀x, H⇒A) ∧ ¬(∀x, A), is contradicted by E_comp, and does not entail \"H is needed for A\"; the inherited flags make the compressed rendering safe but include the unneeded qualifierDrop.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instances themselves (each includes Sat S E and literal safety of the entries).",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.inherited_blockers_insufficient_after_conclusion_drop",
+   "Toy.Implicature.inherited_blockers_superfluous_after_conclusion_drop"
+  ],
+  "non_claims": [
+   "Two instances; does not bound how often recomputation changes the blocker set, and does not say inherited flags are never sufficient (in instance (ii) they are sufficient).",
+   "The exhaustified reading of ∀x, H⇒A under `stdAlt` says that the hypothesis-free claim ∀x, A fails; it does not entail the necessity reading \"H is needed for A\", ∀x, A → H (`inherited_blockers_superfluous_after_conclusion_drop`).",
+   "Normal-form claims are rendered one conclusion per top-level conjunct (`nf H [C₁, …, Cₙ] = (∀x, H ⇒ C₁) ∧ … ∧ (∀x, H ⇒ Cₙ)`, and `⊤` when no conclusion remains); a conjunction written under `∀` or `⇒` would be a single site, to which perfection and the structural alternatives do not apply. No rule perfects a stated hypothesis into a necessary condition (no reading `∀x, C → H` or `∀x, H ↔ C` is generated from `∀x, H ⇒ C`); the qualifier-drop flag's intended phrasing is \"established under H; not shown without H\"; it does not say that C fails without H.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time.",
+   "Exhaustified readings depend on the alternative set. Unless a card says otherwise the alternatives are `stdAlt`: converse and biconditional of a conditional, universal of an existential, hypothesis-free version of a relativized claim, and neighbouring parameter values of a quantifier-free claim that mentions exactly one parameter value (whatever its connectives, including negation, disjunction and biconditional; `stdAlt_value_alternatives_any_connective`), substituted at one top-level conjunct. These are stipulated rules, not structurally defined alternatives in the sense of R. Katzir, \"Structurally-defined alternatives\", Linguistics and Philosophy 30(6):669-690, 2007, doi:10.1007/s10988-008-9029-y. Other alternative sets (for example alternative antecedents, as in exhaustification accounts of perfection) may give different readings (not proved here); nothing is claimed for them, either way.",
+   "The one-step reader applies each unblocked rule once at one site. This card makes no claim, either way, about readers that compose rules; the composing reader `readingsStar` is treated in composing-reader-minimal-blockers-not-unique (`composing_reader_minimal_blocker_sets_not_unique`)."
+  ],
+  "prior_art": [
+   "No prior statement found."
+  ],
+  "design_question": "Can a compressed headline reuse the blocker flags computed for the full statement? (Not in general: inherited flags can be insufficient (i) or include unneeded flags (ii); recompute them for the compressed rendering.)",
+  "lean_names": [
+   "Toy.Implicature.stdAlt_value_alternatives_any_connective",
+   "Toy.Implicature.composing_reader_minimal_blocker_sets_not_unique"
+  ]
+ },
+ {
+  "id": "hypothesis-dropping-literally-safe-iff-proved-where-hypothesis-fails",
+  "lean": [
+   "Toy.Implicature.hypothesis_dropping_literally_safe_iff_proved_where_hypothesis_fails",
+   "Toy.Implicature.nf_top_literally_safe_iff_unconditional"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Case analysis on the hypothesis under a universally quantified conditional.",
+  "plain_claim": "For every finite space S, report E, hypothesis H and conclusion list Cs: (a) if E ⊨ nf H Cs (E proves ∀x, H ⇒ C for every C in Cs), then the hypothesis-dropped rendering nf ⊤ Cs is literally safe iff E ⊨ nf (¬H) Cs (E also proves ∀x, ¬H ⇒ C for every C in Cs); (b) nf ⊤ Cs is literally safe iff E ⊨ ∀x, ⋀Cs.",
+  "hypotheses": [
+   {
+    "name": "hE : LiterallySafe S E (nf H Cs)",
+    "purpose": "statement (a): without it, a report that proves the conclusions where H fails, but not where H holds, satisfies the right-hand side but not the left; instance in the counterexample",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.hypothesis_dropping_tight_hE"
+    ],
+    "witness_class": "the 64-world space S32 with report [∀x, ¬H⇒A] and Cs = [A]",
+    "applies_to": [
+     "Toy.Implicature.hypothesis_dropping_literally_safe_iff_proved_where_hypothesis_fails"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "Both sides true: E = [∀x, H⇒A, ∀x, ¬H⇒A]; both sides false: E = [∀x, H⇒A] (S32).",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.hypothesis_dropping_nonvacuous"
+  ],
+  "non_claims": [
+   "Concerns literal safety: a literally safe hypothesis-free normal-form rendering can still carry strengthening hazards (the compressed rendering nf ⊤ [A→B] in `inherited_blockers_insufficient_after_conclusion_drop` is literally safe and not strengthening-safe without flags); its blockers are computed as for any rendering (`blockers_sound`).",
+   "Does not say a report proving ∀x, H⇒C never proves ∀x, C; it can (`hypothesis_dropping_nonvacuous`).",
+   "Reference point (baseline): this result is elementary and is included so that other cards can cite it.",
+   "Normal-form claims are rendered one conclusion per top-level conjunct (`nf H [C₁, …, Cₙ] = (∀x, H ⇒ C₁) ∧ … ∧ (∀x, H ⇒ Cₙ)`, and `⊤` when no conclusion remains); a conjunction written under `∀` or `⇒` would be a single site, to which perfection and the structural alternatives do not apply. No rule perfects a stated hypothesis into a necessary condition (no reading `∀x, C → H` or `∀x, H ↔ C` is generated from `∀x, H ⇒ C`); the qualifier-drop flag's intended phrasing is \"established under H; not shown without H\"; it does not say that C fails without H.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "Standard; no specific source is relied on."
+  ],
+  "design_question": "Reference point: when may a summary omit a hypothesis? (Given that the report proves the claim under the hypothesis: exactly when the report also proves the conclusions where the hypothesis fails.)",
+  "lean_names": [
+   "Toy.Implicature.inherited_blockers_insufficient_after_conclusion_drop",
+   "Toy.Implicature.blockers_sound"
+  ]
+ },
+ {
+  "id": "necessity-rendering-contradicted-iff-counterexample-proved",
+  "lean": [
+   "Toy.Implicature.necessity_rendering_contradicted_iff_counterexample"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Duality of ∀ and ∃ over a finite domain.",
+  "plain_claim": "For every finite space S, report E and claims X, Y: the rendering \"X is needed for Y\", read literally as ∀x, Y→X, is contradicted by E iff E proves ∃x, Y ∧ ¬X.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "S22: the report [∃x, B ∧ ¬A] makes both sides true for X = A, Y = B; the empty report makes both false.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.necessity_rendering_nonvacuous"
+  ],
+  "non_claims": [
+   "The theorem has no hypothesis that E proves ∀x, X→Y.",
+   "\"Needed\" is modeled as universal necessity; graded or causal senses of \"needed\" are not modeled.",
+   "Reference point (baseline): this result is elementary and is included so that other cards can cite it.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "Standard quantifier duality; no specific source is relied on."
+  ],
+  "design_question": "Reference point: is calling a sufficient condition \"needed\" merely an implicature hazard? (No: whenever the report proves a counterexample ∃x, Y ∧ ¬X, the rendering \"X is needed for Y\" is literally contradicted.)",
+  "lean_names": [
+   "Toy.Implicature.contradicts_pos",
+   "Toy.Implicature.contradicts_neg",
+   "Toy.Implicature.needed_pos",
+   "Toy.Implicature.needed_neg"
+  ]
+ },
+ {
+  "id": "tight-sufficient-hypothesis-not-needed-instances",
+  "lean": [
+   "Toy.Implicature.natural_instance_tight_sufficient_condition_not_needed",
+   "Toy.Implicature.tight_hypothesis_not_needed"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Elementary instances chosen to illustrate the gap between tightness and necessity that von Fintel (2001 ms., pp. 5-8) points out for conditionals.",
+  "plain_claim": "(i) In a single interpreted world over the parameter values 0..7, with atom 0 read as \"divisible by 4\" and atom 1 as \"even\" (a single world, so the empty report already decides every claim): \"divisible by 4 gives even\" holds, \"divisible by 4 is needed for evenness\" is false, the hypothesis is tight for \"under divisibility by 4, even\" (1 is neither), and the exhaustified reading of that claim under the standard alternatives holds. (ii) In the 16-world space S22, the consistent report E_tight (∀x, A⇒B; ∃x, B∧¬A; ∃x, ¬A∧¬B) proves ∀x, A⇒B, proves that A is tight for it (which the empty report does not), and entails its exhaustified reading, yet contradicts \"A is needed for B\". In both instances the hypothesis is sufficient and tight, and \"needed\" is false.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The instances themselves.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.natural_instance_tight_sufficient_condition_not_needed",
+   "Toy.Implicature.tight_hypothesis_not_needed"
+  ],
+  "non_claims": [
+   "Instance (i) uses a single-world space: entailment collapses to truth in that world (the empty report entails every true claim), no claim is open (`interp_never_open`), every literally safe rendering is strengthening-safe with no flags (`interp_literallySafe_strengtheningSafe_unblocked`), and exhaustification excludes ∀x, even because it is false in that world, not because it is open. Instance (ii) is the multi-world counterpart.",
+   "`tightFor H C` (∃x, ¬H ∧ ¬C) models tightness of a single hypothesis H in ∀x, H ⇒ C; for ∀x, (H₁ ∧ H₂) ⇒ C, tightness of H₁ also requires H₂ at the witness, which is not modeled. `tightFor` does not check that the theorem itself holds (`tightFor_does_not_check_theorem`).",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "K. von Fintel, \"Conditional strengthening: A case study in implicature\", unpublished manuscript, MIT, draft version of 13 September 2001, https://web.mit.edu/fintel/fintel-2001-condstrength.pdf (no DOI). Section \"Not True No Matter What\" (pp. 5-8): the quantity implicature of \"if p, q\" against the competitor \"q no matter what\" is that q is not unconditionally true; p. 8 stresses that this is much weaker than the claim that the antecedent is a necessary condition. This is the gap between tightness (an existential counterexample) and necessity modeled here.",
+   "M. L. Geis and A. M. Zwicky, \"On invited inferences\", Linguistic Inquiry 2(4):561-566, 1971. Names the invited inference of conditional perfection (\"If you mow the lawn, I'll give you five dollars\" invites \"if not, not\").",
+   "L. R. Horn, \"From if to iff: Conditional perfection as pragmatic strengthening\", Journal of Pragmatics 32(3):289-326, 2000, doi:10.1016/S0378-2166(99)00053-3. Analyzes conditional perfection as pragmatic strengthening."
+  ],
+  "design_question": "May a report write \"H is needed\" for a hypothesis it has shown to be tight? (Not in general: in both instances the hypothesis is tight yet \"needed\" is false; tightness is existential, necessity is universal.)",
+  "lean_names": [
+   "Toy.Implicature.interp_never_open",
+   "Toy.Implicature.interp_literallySafe_strengtheningSafe_unblocked",
+   "Toy.Implicature.tightFor_does_not_check_theorem",
+   "Toy.Implicature.tightFor_pos",
+   "Toy.Implicature.tightFor_neg"
+  ]
+ },
+ {
+  "id": "disclaimer-read-as-refutation",
+  "lean": [
+   "Toy.Implicature.not_shown_read_as_false_unsafe_iff_open",
+   "Toy.Implicature.not_shown_not_refuted_safe_iff_open"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Folklore about reading \"not shown\" as \"false\", made precise.",
+  "plain_claim": "For every finite space S, report E and claim c: (a) if the disclaimer \"c is not shown\" is true (E ⊭ c), then the reader rule \"not shown ↦ false\" makes it unsafe iff E leaves c open (neither proves nor refutes c); (b) the blocked disclaimer \"c is not shown, and not refuted\" is safe iff E leaves c open.",
+  "hypotheses": [
+   {
+    "name": "htrue : DisclaimerTrue S E (.notShown c)",
+    "purpose": "statement (a): DisclaimerSafe requires the disclaimer to be true (definition), so a false disclaimer is unsafe even when c is not open",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.not_shown_tight_htrue"
+    ],
+    "witness_class": "the 4-world space S21 with report [p0], which proves c = p0 and makes the disclaimer false",
+    "applies_to": [
+     "Toy.Implicature.not_shown_read_as_false_unsafe_iff_open"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "S21, E = [], c = p0: the bare disclaimer is true and unsafe, c is open, the blocked disclaimer is safe.",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.disclaimer_nonvacuous"
+  ],
+  "positive_control_lean": [
+   "Toy.Implicature.not_shown_read_as_false_safe_when_refuted"
+  ],
+  "non_claims": [
+   "When E refutes c the \"false\" reading is safe (`not_shown_read_as_false_safe_when_refuted`); the result does not say disclaimers are always misread.",
+   "`Open S E c` is semantic independence of c from E over the listed worlds (a world satisfying E and ¬c, and one satisfying E and c); it does not license writing \"not shown, and not refuted\" when c was merely not examined and E might entail ¬c.",
+   "`disclaimerReadings` fixes the readings by definition (\"not shown\" ↦ ¬c; the blocked form ↦ nothing); neither the \"not shown ↦ false\" inference nor its blocking is derived from exhaustification, the alternatives or the cancellation filter.",
+   "Disclaimers are statements about E; their truth is not a property of worlds.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time."
+  ],
+  "prior_art": [
+   "H. P. Grice, \"Logic and conversation\", in P. Cole and J. L. Morgan (eds.), Syntax and Semantics 3: Speech Acts, Academic Press, 1975, pp. 41-58 (Brill reissue doi:10.1163/9789004368811_003). Introduces conversational implicature; the disclaimer model here has no cancellation filter and fixes its readings by definition."
+  ],
+  "design_question": "How should a report state that something is not established without being read as refuting it? (Under this model, \"not shown, and not refuted\" is safe exactly when the matter is open; this requires checking that the report neither proves nor refutes it, not merely that it was not examined.)",
+  "lean_names": [
+   "Toy.Implicature.open_pos",
+   "Toy.Implicature.open_neg",
+   "Toy.Implicature.disclaimerSafe_pos",
+   "Toy.Implicature.disclaimerSafe_neg",
+   "Toy.Implicature.disclaimerTrue_neg"
+  ]
+ },
+ {
+  "id": "nondegenerate-universal-conditional-unsafe-without-blockers",
+  "lean": [
+   "Toy.Implicature.forall_conditional_unblocked_unsafe_of_perfection_consistent_of_converse_excludable",
+   "Toy.Implicature.forall_conditional_blockers_by_converse_status",
+   "Toy.Implicature.forall_conditional_blockers_of_open_converse"
+  ],
+  "kind": "impossibility",
+  "tier": "T1",
+  "tier_justification": "The clash between perfection (if ↦ iff) and a scalar reading of if against the stronger iff (if ↦ merely sufficient) is noted in the conditional-perfection literature (von Fintel 2001 ms., pp. 13-14); the impossibility for a consistent report and the blocker characterization are precise formulations of it.",
+  "plain_claim": "For the one-step reader `readings` with the standard alternatives `stdAlt`, every finite space S, report E and claims a, b: (a) if E is consistent, ∀x, a→b is consistent with its perfected reading ∀x, a↔b (PerfectionConsistent S a b), and ∀x, a→b is consistent with ¬∀x, b→a (ConverseExcludable S a b), then the rendering ∀x, a→b is not strengthening-safe for E without blocker flags; (b) if in addition E ⊨ ∀x, a→b, then its computed blocker set is {perfection} if E refutes ∀x, b→a, {exhaustification} if E proves ∀x, b→a, and {perfection, exhaustification} if E does neither; (c) if PerfectionConsistent S a b and E leaves ∀x, b→a open, then its computed blocker set is {perfection, exhaustification}.",
+  "hypotheses": [
+   {
+    "name": "hE : Sat S E",
+    "purpose": "statements (a), (b): an inconsistent report entails every reading",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.forall_conditional_tight_hE",
+     "Toy.Implicature.forall_conditional_blockers_tight_hE"
+    ],
+    "witness_class": "the 16-world space S22 with a = A, b = B and the inconsistent report [p0, ¬p0]",
+    "applies_to": [
+     "Toy.Implicature.forall_conditional_unblocked_unsafe_of_perfection_consistent_of_converse_excludable",
+     "Toy.Implicature.forall_conditional_blockers_by_converse_status"
+    ]
+   },
+   {
+    "name": "hlit : LiterallySafe S E (∀x, a→b)",
+    "purpose": "statement (b): the exhaustified reading has the rendering as a conjunct (definition of exh), so a report that does not prove the rendering does not entail it, and the blocker set can differ from the one stated; instance in the counterexample",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.forall_conditional_blockers_tight_hlit"
+    ],
+    "witness_class": "the 16-world space S22 with a = A, b = B and the report [¬∀x, B→A]",
+    "applies_to": [
+     "Toy.Implicature.forall_conditional_blockers_by_converse_status"
+    ]
+   },
+   {
+    "name": "hperf : PerfectionConsistent S a b",
+    "purpose": "statements (a), (b), (c): without it the perfected reading ∀x, a↔b is inconsistent with the rendering and is cancelled (definition of ruleReadings)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.forall_conditional_tight_hperf",
+     "Toy.Implicature.forall_conditional_tight_hperf_full",
+     "Toy.Implicature.forall_conditional_blockers_tight_hperf",
+     "Toy.Implicature.forall_conditional_open_tight_hperf"
+    ],
+    "witness_class": "(a) the 2-world space disagreeSpace (atoms 0 and 1 always disagree; not a full valuation space) with report [∀x, A→B], and the full 4-world space S12 with b = ¬a and report [∀x, A→¬A]; (b) disagreeSpace with E_notConv; (c) disagreeSpace with the empty report",
+    "applies_to": [
+     "Toy.Implicature.forall_conditional_unblocked_unsafe_of_perfection_consistent_of_converse_excludable",
+     "Toy.Implicature.forall_conditional_blockers_by_converse_status",
+     "Toy.Implicature.forall_conditional_blockers_of_open_converse"
+    ]
+   },
+   {
+    "name": "hconv : ConverseExcludable S a b",
+    "purpose": "statements (a), (b): without it ∀x, a→b entails its converse over the listed worlds, so the converse is not available for exclusion; in the counterexample exhaustification adds nothing and the unflagged rendering is safe",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.forall_conditional_tight_hconv",
+     "Toy.Implicature.forall_conditional_blockers_tight_hconv"
+    ],
+    "witness_class": "the 4-world space S12 with a = b = A and the empty report",
+    "applies_to": [
+     "Toy.Implicature.forall_conditional_unblocked_unsafe_of_perfection_consistent_of_converse_excludable",
+     "Toy.Implicature.forall_conditional_blockers_by_converse_status"
+    ]
+   },
+   {
+    "name": "hopen : Open S E (∀x, b→a)",
+    "purpose": "statement (c): a report that refutes the converse can have a one-flag blocker set (in the counterexample it is {perfection}; compare statement (b))",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Implicature.forall_conditional_open_tight_hopen"
+    ],
+    "witness_class": "the 16-world space S22 with a = A, b = B and E_notConv, which refutes the converse",
+    "applies_to": [
+     "Toy.Implicature.forall_conditional_blockers_of_open_converse"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "S22 with a = A, b = B: E_notConv satisfies the hypotheses of (a) and of (b) (refuted branch); [∀x, A↔B] and [∀x, A→B] satisfy those of (b) (proved and open branches); [∀x, A→B] satisfies those of (c).",
+  "nonvacuity_witness_lean": [
+   "Toy.Implicature.forall_conditional_nonvacuous",
+   "Toy.Implicature.forall_conditional_blockers_nonvacuous",
+   "Toy.Implicature.forall_conditional_open_nonvacuous"
+  ],
+  "positive_control_lean": [
+   "Toy.Implicature.forall_conditional_safe_with_blockers"
+  ],
+  "non_claims": [
+   "Escape hatches depend on what E proves about the converse (statement (b)): if E refutes ∀x, b→a, the perfection flag alone restores safety, and so does the rendering \"(∀x, a→b) ∧ ¬(∀x, b→a)\" in the instance of dropping-a-blocking-conjunct-breaks-strengthening-safety; if E proves ∀x, b→a, the exhaustification flag alone restores safety; if E leaves ∀x, b→a open, neither \"iff\" nor \"and not conversely\" is literally safe (`open_converse_rewordings_not_literally_safe`), and, for a report proving ∀x, a→b with PerfectionConsistent S a b, a flag set is safe iff it contains both the perfection and the exhaustification flags (`forall_conditional_open_converse_safe_iff_both_flags`; instances in `forall_conditional_safe_with_blockers`).",
+   "The perfection flag alone does not express \"the converse is open\": with that flag alone, exhaustification still negates the converse whenever the converse is innocently excludable (`forall_conditional_safe_with_blockers`, open-converse instance).",
+   "In the full valuation spaces S22 and S32 the distinct atoms A, B satisfy both PerfectionConsistent and ConverseExcludable (`distinct_atoms_nondegenerate_in_full_spaces`); the counterexamples for hperf and hconv use a restricted space, b = ¬a, or a = b.",
+   "For a quantifier-free single-value conditional such as p0 → q0, neighbouring-value alternatives add further exhaustified content: even when the report refutes q0 → p0 in S22, the perfection flag alone is not enough (`single_value_conditional_needs_exhaustification_flag`).",
+   "Depends on the standard alternatives (converse and biconditional of a conditional): with alternative antecedents instead, exhaustification may agree with perfection (not proved here); nothing is claimed for that reader, either way.",
+   "These are statements about a toy model: finitely many listed worlds, uninterpreted atoms over a finite parameter list, a single bound variable (inner quantifiers shadow outer ones), material implication for both `→` and `⇒`, and three stated reader rules applied deterministically. They neither establish nor refute the corresponding claims about how actual readers interpret actual summary sentences; any such connection is a separate `derived (modeling bridge)` claim, resting on experimental work such as Noveck (2001; Cognition 78(2):165-188, doi:10.1016/S0010-0277(00)00114-1) and Bott and Noveck (2004; Journal of Memory and Language 51(3):437-457, doi:10.1016/j.jml.2004.05.006), which find that adults often, though not always, read \"some\" as \"some but not all\" and that this reading takes extra processing time.",
+   "Cancellation keeps a strengthened reading exactly when it is consistent with the literal rendering over the listed worlds (the filter in `ruleReadings`); the reader model has no context, no background knowledge and no probabilities."
+  ],
+  "prior_art": [
+   "M. L. Geis and A. M. Zwicky, \"On invited inferences\", Linguistic Inquiry 2(4):561-566, 1971. Names the invited inference of conditional perfection (\"If you mow the lawn, I'll give you five dollars\" invites \"if not, not\").",
+   "J. van der Auwera, \"Pragmatics in the last quarter century: The case of conditional perfection\", Journal of Pragmatics 27(3):261-274, 1997, doi:10.1016/S0378-2166(96)00058-6. Survey of accounts of conditional perfection.",
+   "L. R. Horn, \"From if to iff: Conditional perfection as pragmatic strengthening\", Journal of Pragmatics 32(3):289-326, 2000, doi:10.1016/S0378-2166(99)00053-3. Analyzes conditional perfection as pragmatic strengthening.",
+   "K. von Fintel, \"Conditional strengthening: A case study in implicature\", unpublished manuscript, MIT, draft version of 13 September 2001, https://web.mit.edu/fintel/fintel-2001-condstrength.pdf (no DOI). Treats \"if p, q\" as restricted universal quantification over relevant situations, with perfection conveying \"all and only\"; on pp. 13-14 it notes that treating \"if and only if p, q\" as a stronger scalar alternative of \"if p, q\" would yield the quantity implicature that p is merely sufficient, against the perfected interpretation (a scale excluded as ill-formed by J. D. Atlas and S. C. Levinson, \"It-clefts, informativeness and logical form: Radical pragmatics (revised standard version)\", in P. Cole (ed.), Radical Pragmatics, Academic Press, 1981, pp. 1-61 (one library record gives pp. 1-62)), and that exhaustivity accounts instead compare \"if p, q\" with \"if p or r, q\"."
+  ],
+  "design_question": "Can a bare \"A gives B\" headline be safe against both default readers? (Under this reader model, not without flags when the report is consistent and both PerfectionConsistent and ConverseExcludable hold; which flags suffice depends on whether the report refutes, proves, or leaves open the converse; for a report that proves ∀x, a→b and leaves the converse open, with PerfectionConsistent S a b, a flag set is safe iff it contains both the perfection and the exhaustification flags.)",
+  "lean_names": [
+   "Toy.Implicature.open_converse_rewordings_not_literally_safe",
+   "Toy.Implicature.forall_conditional_open_converse_safe_iff_both_flags",
+   "Toy.Implicature.distinct_atoms_nondegenerate_in_full_spaces",
+   "Toy.Implicature.single_value_conditional_needs_exhaustification_flag",
+   "Toy.Implicature.perfectionConsistent_pos",
+   "Toy.Implicature.perfectionConsistent_neg",
+   "Toy.Implicature.converseExcludable_pos",
+   "Toy.Implicature.converseExcludable_neg"
+  ]
+ }
+]

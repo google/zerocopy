@@ -1,0 +1,1361 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Implicature.Arg": [],
+    "Toy.Implicature.Arg.casesOn": [],
+    "Toy.Implicature.Arg.ctorElim": [],
+    "Toy.Implicature.Arg.ctorElimType": [],
+    "Toy.Implicature.Arg.ctorIdx": [],
+    "Toy.Implicature.Arg.lit": [],
+    "Toy.Implicature.Arg.lit.elim": [],
+    "Toy.Implicature.Arg.lit.inj": [],
+    "Toy.Implicature.Arg.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Arg.lit.noConfusion": [],
+    "Toy.Implicature.Arg.lit.sizeOf_spec": [],
+    "Toy.Implicature.Arg.noConfusion": [],
+    "Toy.Implicature.Arg.noConfusionType": [],
+    "Toy.Implicature.Arg.rec": [],
+    "Toy.Implicature.Arg.recOn": [],
+    "Toy.Implicature.Arg.render": [],
+    "Toy.Implicature.Arg.var": [],
+    "Toy.Implicature.Arg.var.elim": [],
+    "Toy.Implicature.Arg.var.sizeOf_spec": [],
+    "Toy.Implicature.Claim": [],
+    "Toy.Implicature.Claim.all": [],
+    "Toy.Implicature.Claim.all.elim": [],
+    "Toy.Implicature.Claim.all.inj": [],
+    "Toy.Implicature.Claim.all.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.all.noConfusion": [],
+    "Toy.Implicature.Claim.all.sizeOf_spec": [],
+    "Toy.Implicature.Claim.and": [],
+    "Toy.Implicature.Claim.and.elim": [],
+    "Toy.Implicature.Claim.and.inj": [],
+    "Toy.Implicature.Claim.and.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.and.noConfusion": [],
+    "Toy.Implicature.Claim.and.sizeOf_spec": [],
+    "Toy.Implicature.Claim.atom": [],
+    "Toy.Implicature.Claim.atom.elim": [],
+    "Toy.Implicature.Claim.atom.inj": [],
+    "Toy.Implicature.Claim.atom.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.atom.noConfusion": [],
+    "Toy.Implicature.Claim.atom.sizeOf_spec": [],
+    "Toy.Implicature.Claim.below": [],
+    "Toy.Implicature.Claim.brecOn": [],
+    "Toy.Implicature.Claim.brecOn.eq": [],
+    "Toy.Implicature.Claim.brecOn.go": [],
+    "Toy.Implicature.Claim.casesOn": [],
+    "Toy.Implicature.Claim.ctorElim": [],
+    "Toy.Implicature.Claim.ctorElimType": [],
+    "Toy.Implicature.Claim.ctorIdx": [],
+    "Toy.Implicature.Claim.ex": [],
+    "Toy.Implicature.Claim.ex.elim": [],
+    "Toy.Implicature.Claim.ex.inj": [],
+    "Toy.Implicature.Claim.ex.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.ex.noConfusion": [],
+    "Toy.Implicature.Claim.ex.sizeOf_spec": [],
+    "Toy.Implicature.Claim.iff": [],
+    "Toy.Implicature.Claim.iff.elim": [],
+    "Toy.Implicature.Claim.iff.inj": [],
+    "Toy.Implicature.Claim.iff.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.iff.noConfusion": [],
+    "Toy.Implicature.Claim.iff.sizeOf_spec": [],
+    "Toy.Implicature.Claim.imp": [],
+    "Toy.Implicature.Claim.imp.elim": [],
+    "Toy.Implicature.Claim.imp.inj": [],
+    "Toy.Implicature.Claim.imp.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.imp.noConfusion": [],
+    "Toy.Implicature.Claim.imp.sizeOf_spec": [],
+    "Toy.Implicature.Claim.lits": [],
+    "Toy.Implicature.Claim.lits.match_1": [],
+    "Toy.Implicature.Claim.noConfusion": [],
+    "Toy.Implicature.Claim.noConfusionType": [],
+    "Toy.Implicature.Claim.not": [],
+    "Toy.Implicature.Claim.not.elim": [],
+    "Toy.Implicature.Claim.not.inj": [],
+    "Toy.Implicature.Claim.not.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.not.noConfusion": [],
+    "Toy.Implicature.Claim.not.sizeOf_spec": [],
+    "Toy.Implicature.Claim.or": [],
+    "Toy.Implicature.Claim.or.elim": [],
+    "Toy.Implicature.Claim.or.inj": [],
+    "Toy.Implicature.Claim.or.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.or.noConfusion": [],
+    "Toy.Implicature.Claim.or.sizeOf_spec": [],
+    "Toy.Implicature.Claim.quantFree": [],
+    "Toy.Implicature.Claim.rec": [],
+    "Toy.Implicature.Claim.recOn": [],
+    "Toy.Implicature.Claim.rel": [],
+    "Toy.Implicature.Claim.rel.elim": [],
+    "Toy.Implicature.Claim.rel.inj": [],
+    "Toy.Implicature.Claim.rel.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.rel.noConfusion": [],
+    "Toy.Implicature.Claim.rel.sizeOf_spec": [],
+    "Toy.Implicature.Claim.render": [
+      "propext"
+    ],
+    "Toy.Implicature.Claim.substLit": [],
+    "Toy.Implicature.Claim.substLit.match_1": [],
+    "Toy.Implicature.Claim.top": [],
+    "Toy.Implicature.Claim.top.elim": [],
+    "Toy.Implicature.Claim.top.sizeOf_spec": [],
+    "Toy.Implicature.ConclusionDropping": [],
+    "Toy.Implicature.ConsistentExclusion": [],
+    "Toy.Implicature.Contradicts": [],
+    "Toy.Implicature.Contradicts.eq_1": [],
+    "Toy.Implicature.ConverseExcludable": [],
+    "Toy.Implicature.Disclaimer": [],
+    "Toy.Implicature.Disclaimer.casesOn": [],
+    "Toy.Implicature.Disclaimer.ctorElim": [],
+    "Toy.Implicature.Disclaimer.ctorElimType": [],
+    "Toy.Implicature.Disclaimer.ctorIdx": [],
+    "Toy.Implicature.Disclaimer.noConfusion": [],
+    "Toy.Implicature.Disclaimer.noConfusionType": [],
+    "Toy.Implicature.Disclaimer.notShown": [],
+    "Toy.Implicature.Disclaimer.notShown.elim": [],
+    "Toy.Implicature.Disclaimer.notShown.inj": [],
+    "Toy.Implicature.Disclaimer.notShown.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Disclaimer.notShown.noConfusion": [],
+    "Toy.Implicature.Disclaimer.notShown.sizeOf_spec": [],
+    "Toy.Implicature.Disclaimer.notShownNotRefuted": [],
+    "Toy.Implicature.Disclaimer.notShownNotRefuted.elim": [],
+    "Toy.Implicature.Disclaimer.notShownNotRefuted.inj": [],
+    "Toy.Implicature.Disclaimer.notShownNotRefuted.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Disclaimer.notShownNotRefuted.noConfusion": [],
+    "Toy.Implicature.Disclaimer.notShownNotRefuted.sizeOf_spec": [],
+    "Toy.Implicature.Disclaimer.rec": [],
+    "Toy.Implicature.Disclaimer.recOn": [],
+    "Toy.Implicature.DisclaimerSafe": [],
+    "Toy.Implicature.DisclaimerSafe.eq_1": [],
+    "Toy.Implicature.DisclaimerTrue": [],
+    "Toy.Implicature.DisclaimerTrue.eq_1": [],
+    "Toy.Implicature.DisclaimerTrue.eq_2": [],
+    "Toy.Implicature.E_comp": [
+      "propext"
+    ],
+    "Toy.Implicature.E_notConv": [],
+    "Toy.Implicature.E_qual": [],
+    "Toy.Implicature.E_relCond": [],
+    "Toy.Implicature.E_tight": [],
+    "Toy.Implicature.E_unc": [
+      "propext"
+    ],
+    "Toy.Implicature.Entails": [],
+    "Toy.Implicature.Entails.eq_1": [],
+    "Toy.Implicature.Equiv": [],
+    "Toy.Implicature.InnocentlyExcludable": [],
+    "Toy.Implicature.LiterallySafe": [],
+    "Toy.Implicature.MaximalExclusion": [],
+    "Toy.Implicature.Open": [],
+    "Toy.Implicature.Open.eq_1": [],
+    "Toy.Implicature.PerfectionConsistent": [],
+    "Toy.Implicature.R_comp": [],
+    "Toy.Implicature.R_unc": [],
+    "Toy.Implicature.Rule": [],
+    "Toy.Implicature.Rule.casesOn": [],
+    "Toy.Implicature.Rule.ctorElim": [],
+    "Toy.Implicature.Rule.ctorElimType": [],
+    "Toy.Implicature.Rule.ctorIdx": [],
+    "Toy.Implicature.Rule.exhaustification": [],
+    "Toy.Implicature.Rule.exhaustification.elim": [],
+    "Toy.Implicature.Rule.exhaustification.sizeOf_spec": [],
+    "Toy.Implicature.Rule.noConfusion": [],
+    "Toy.Implicature.Rule.noConfusionType": [],
+    "Toy.Implicature.Rule.ofNat": [],
+    "Toy.Implicature.Rule.ofNat_ctorIdx": [],
+    "Toy.Implicature.Rule.perfection": [],
+    "Toy.Implicature.Rule.perfection.elim": [],
+    "Toy.Implicature.Rule.perfection.sizeOf_spec": [],
+    "Toy.Implicature.Rule.qualifierDrop": [],
+    "Toy.Implicature.Rule.qualifierDrop.elim": [],
+    "Toy.Implicature.Rule.qualifierDrop.sizeOf_spec": [],
+    "Toy.Implicature.Rule.rec": [],
+    "Toy.Implicature.Rule.recOn": [],
+    "Toy.Implicature.S12": [
+      "propext"
+    ],
+    "Toy.Implicature.S21": [
+      "propext"
+    ],
+    "Toy.Implicature.S22": [
+      "propext"
+    ],
+    "Toy.Implicature.S32": [
+      "propext"
+    ],
+    "Toy.Implicature.Sat": [],
+    "Toy.Implicature.Sat.eq_1": [],
+    "Toy.Implicature.Space": [],
+    "Toy.Implicature.Space.World": [],
+    "Toy.Implicature.Space.casesOn": [],
+    "Toy.Implicature.Space.ctorIdx": [],
+    "Toy.Implicature.Space.evalAt": [],
+    "Toy.Implicature.Space.evalAt.eq_1": [],
+    "Toy.Implicature.Space.evalAt.eq_10": [],
+    "Toy.Implicature.Space.evalAt.eq_11": [],
+    "Toy.Implicature.Space.evalAt.eq_2": [],
+    "Toy.Implicature.Space.evalAt.eq_3": [],
+    "Toy.Implicature.Space.evalAt.eq_4": [],
+    "Toy.Implicature.Space.evalAt.eq_5": [],
+    "Toy.Implicature.Space.evalAt.eq_6": [],
+    "Toy.Implicature.Space.evalAt.eq_7": [],
+    "Toy.Implicature.Space.evalAt.eq_8": [],
+    "Toy.Implicature.Space.evalAt.eq_9": [],
+    "Toy.Implicature.Space.evalAt.eq_def": [],
+    "Toy.Implicature.Space.evalAt.match_1": [],
+    "Toy.Implicature.Space.full": [
+      "propext"
+    ],
+    "Toy.Implicature.Space.holds": [],
+    "Toy.Implicature.Space.holds.eq_1": [],
+    "Toy.Implicature.Space.interp": [],
+    "Toy.Implicature.Space.mk": [],
+    "Toy.Implicature.Space.mk.inj": [],
+    "Toy.Implicature.Space.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Implicature.Space.mk.noConfusion": [],
+    "Toy.Implicature.Space.mk.sizeOf_spec": [],
+    "Toy.Implicature.Space.noConfusion": [],
+    "Toy.Implicature.Space.noConfusionType": [],
+    "Toy.Implicature.Space.params": [],
+    "Toy.Implicature.Space.rec": [],
+    "Toy.Implicature.Space.recOn": [],
+    "Toy.Implicature.Space.val": [],
+    "Toy.Implicature.Space.worlds": [],
+    "Toy.Implicature.StrengtheningSafe": [
+      "propext"
+    ],
+    "Toy.Implicature.StrengtheningSafeStar": [
+      "propext"
+    ],
+    "Toy.Implicature.allRules": [],
+    "Toy.Implicature.blocker_conjunct_drop_breaks_strengthening_safety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.blockers": [
+      "propext"
+    ],
+    "Toy.Implicature.blockers.eq_1": [
+      "propext"
+    ],
+    "Toy.Implicature.blockers_forall_imp": [
+      "propext"
+    ],
+    "Toy.Implicature.blockers_iff_tight_hlit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.blockers_minimal_tight": [
+      "propext"
+    ],
+    "Toy.Implicature.blockers_neg": [
+      "propext"
+    ],
+    "Toy.Implicature.blockers_pos": [
+      "propext"
+    ],
+    "Toy.Implicature.blockers_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.blockers_sound_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.blockers_sound_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.blockers_sound_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.blockers_subset_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.blockers_subset_of_strengtheningSafe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.composeReadings": [
+      "propext"
+    ],
+    "Toy.Implicature.composeReadings.eq_1": [
+      "propext"
+    ],
+    "Toy.Implicature.composeReadings.eq_2": [
+      "propext"
+    ],
+    "Toy.Implicature.composeReadings.eq_def": [
+      "propext"
+    ],
+    "Toy.Implicature.composeReadings.match_1": [],
+    "Toy.Implicature.composing_reader_minimal_blocker_sets_not_unique": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.composing_reader_some_safe_flag_set_iff_literally_safe": [
+      "propext"
+    ],
+    "Toy.Implicature.composing_reader_some_safe_flag_set_iff_literally_safe.match_1_1": [
+      "propext"
+    ],
+    "Toy.Implicature.compression_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.compression_tight_hR": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.compression_tight_hcomp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.compression_with_entry_blockers_strengthening_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.compression_with_recomputed_blockers_strengthening_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.conclusionDropping_neg": [
+      "propext"
+    ],
+    "Toy.Implicature.conclusionDropping_neg_added": [
+      "propext"
+    ],
+    "Toy.Implicature.conclusionDropping_pos": [
+      "propext"
+    ],
+    "Toy.Implicature.conclusion_dropping_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.conclusion_dropping_preserves_literal_safety": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.conclusion_dropping_tight_hE": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.conclusion_dropping_tight_hsub": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.conjList": [
+      "propext"
+    ],
+    "Toy.Implicature.conjList.eq_1": [
+      "propext"
+    ],
+    "Toy.Implicature.conjList.eq_2": [
+      "propext"
+    ],
+    "Toy.Implicature.conjList.eq_3": [
+      "propext"
+    ],
+    "Toy.Implicature.conjList.eq_def": [
+      "propext"
+    ],
+    "Toy.Implicature.conjList.match_1": [
+      "propext"
+    ],
+    "Toy.Implicature.contradicts_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.contradicts_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.conv_mem_ieList_of_converseExcludable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.conv_mem_ieList_or_entailed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.converseExcludable_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.converseExcludable_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.coreAlts": [
+      "propext"
+    ],
+    "Toy.Implicature.coreAlts.match_1": [
+      "propext"
+    ],
+    "Toy.Implicature.countP_le_of_imp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.countP_le_of_imp.match_1_1": [],
+    "Toy.Implicature.decConclusionDropping": [
+      "propext"
+    ],
+    "Toy.Implicature.decConsistentExclusion": [
+      "propext"
+    ],
+    "Toy.Implicature.decContradicts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decConverseExcludable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decDisclaimerSafe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decDisclaimerTrue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decEntails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decEquiv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decLiterallySafe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decOpen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decPerfectionConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decSat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decStrengtheningSafe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.decStrengtheningSafeStar": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.disagreeSpace": [],
+    "Toy.Implicature.disclaimerReadings": [],
+    "Toy.Implicature.disclaimerReadings.eq_1": [],
+    "Toy.Implicature.disclaimerReadings.eq_2": [],
+    "Toy.Implicature.disclaimerSafe_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.disclaimerSafe_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.disclaimerTrue_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.disclaimer_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.disjAlts": [],
+    "Toy.Implicature.disjAlts.eq_1": [],
+    "Toy.Implicature.disjunction_without_conjunctive_alternative": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.distinct_atoms_nondegenerate_in_full_spaces": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.div4": [],
+    "Toy.Implicature.dropCore": [
+      "propext"
+    ],
+    "Toy.Implicature.dropCore.match_1": [
+      "propext"
+    ],
+    "Toy.Implicature.duplicated_conclusion_keeps_perfection_hazard": [
+      "propext"
+    ],
+    "Toy.Implicature.entailsB": [],
+    "Toy.Implicature.entailsB_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.entails_neg_affirming_consequent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.entails_pos_modus_ponens": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.entails_singleton_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.entry_blockers_strictly_larger_than_report_blockers": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.equiv_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.equiv_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.evalAt_conjList": [
+      "propext"
+    ],
+    "Toy.Implicature.evalAt_conjList.match_1_1": [],
+    "Toy.Implicature.even": [],
+    "Toy.Implicature.exh": [
+      "propext"
+    ],
+    "Toy.Implicature.exh_entailment_does_not_reflect": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.exh_equiv_naiveExh_iff_sat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.exh_neither_monotone_nor_antitone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.exh_pos_some_but_not_all": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.exh_sat_of_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.exh_weaker_than_maximal_falsified_worlds": [
+      "propext"
+    ],
+    "Toy.Implicature.exhaustification_reading_contradicted_though_literally_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.exists_maxFals_above": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.exists_max_of_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.exists_max_of_mem.match_1_1": [],
+    "Toy.Implicature.falsSub": [],
+    "Toy.Implicature.falsSub_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.falsSub_of_fcount_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.falsSub_refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.falsSub_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.fcount": [],
+    "Toy.Implicature.fcount_le_of_falsSub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_blockers_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_blockers_by_converse_status": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_blockers_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_blockers_of_open_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_blockers_of_open_converse": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_blockers_tight_hE": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_blockers_tight_hconv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_blockers_tight_hlit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_blockers_tight_hperf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_open_converse_safe_iff_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_open_converse_safe_iff_both_flags": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_open_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_open_tight_hopen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_open_tight_hperf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_safe_with_blockers": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_tight_hE": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_tight_hconv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_tight_hperf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_tight_hperf_full": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_unblocked_unsafe_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.forall_conditional_unblocked_unsafe_of_perfection_consistent_of_converse_excludable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.full_out_of_range_atom_false": [
+      "propext"
+    ],
+    "Toy.Implicature.full_world_count": [
+      "propext"
+    ],
+    "Toy.Implicature.holds_all_eq": [],
+    "Toy.Implicature.holds_and_eq": [],
+    "Toy.Implicature.holds_conjList": [
+      "propext"
+    ],
+    "Toy.Implicature.holds_conjList.match_1_1": [],
+    "Toy.Implicature.holds_conv_of_holds_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.holds_exh": [
+      "propext"
+    ],
+    "Toy.Implicature.holds_exh_of_maxFals": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.holds_false_of_holds_exh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.holds_false_of_mem_ieList": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.holds_iff_of_holds_imp_conv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.holds_naiveExh": [
+      "propext"
+    ],
+    "Toy.Implicature.holds_neg_partial_world": [
+      "propext"
+    ],
+    "Toy.Implicature.holds_nf": [
+      "propext"
+    ],
+    "Toy.Implicature.holds_not_eq": [],
+    "Toy.Implicature.holds_of_holds_exh": [
+      "propext"
+    ],
+    "Toy.Implicature.holds_pos_all_true_world": [
+      "propext"
+    ],
+    "Toy.Implicature.holds_rel_all": [],
+    "Toy.Implicature.holds_renderComp": [
+      "propext"
+    ],
+    "Toy.Implicature.hypothesis_dropping_literally_safe_iff_proved_where_hypothesis_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.hypothesis_dropping_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.hypothesis_dropping_tight_hE": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.ieB": [],
+    "Toy.Implicature.ieB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.ieList": [],
+    "Toy.Implicature.ieList_characterization_instance": [
+      "propext"
+    ],
+    "Toy.Implicature.ieList_characterization_unsat_prejacent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.ieList_eq_self_of_not_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.ieList_neg_entailed": [
+      "propext"
+    ],
+    "Toy.Implicature.ieList_pos_disjunction": [
+      "propext"
+    ],
+    "Toy.Implicature.ieList_pos_some_not_all": [
+      "propext"
+    ],
+    "Toy.Implicature.imp_of_countP_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.imp_of_countP_le.match_1_1": [],
+    "Toy.Implicature.inherited_blockers_insufficient_after_conclusion_drop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.inherited_blockers_superfluous_after_conclusion_drop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocent_equiv_naive_iff_naive_sat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocent_equiv_naive_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocent_equiv_naive_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocent_exh_consistent_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocent_exh_consistent_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocent_exh_not_entails_naive_exh": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocent_exhaustification_consistent_of_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocentlyExcludable_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocentlyExcludable_neg.match_1_1": [
+      "propext"
+    ],
+    "Toy.Implicature.innocentlyExcludable_neg.match_1_4": [
+      "propext"
+    ],
+    "Toy.Implicature.innocentlyExcludable_neg_disjunct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocentlyExcludable_neg_disjunct.match_1_1": [
+      "propext"
+    ],
+    "Toy.Implicature.innocentlyExcludable_neg_disjunct.match_1_5": [
+      "propext"
+    ],
+    "Toy.Implicature.innocentlyExcludable_of_all_excludable": [],
+    "Toy.Implicature.innocentlyExcludable_of_not_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.innocentlyExcludable_of_not_sat.match_1_1": [],
+    "Toy.Implicature.innocentlyExcludable_pos": [
+      "propext"
+    ],
+    "Toy.Implicature.instDecidableEqArg": [],
+    "Toy.Implicature.instDecidableEqArg.decEq": [],
+    "Toy.Implicature.instDecidableEqArg.decEq.match_1": [],
+    "Toy.Implicature.instDecidableEqClaim": [],
+    "Toy.Implicature.instDecidableEqClaim.decEq": [],
+    "Toy.Implicature.instDecidableEqClaim.decEq.match_1": [],
+    "Toy.Implicature.instDecidableEqDisclaimer": [],
+    "Toy.Implicature.instDecidableEqDisclaimer.decEq": [],
+    "Toy.Implicature.instDecidableEqDisclaimer.decEq.match_1": [],
+    "Toy.Implicature.instDecidableEqRule": [],
+    "Toy.Implicature.instReprArg": [],
+    "Toy.Implicature.instReprArg.repr": [],
+    "Toy.Implicature.instReprArg.repr.match_1": [],
+    "Toy.Implicature.instReprClaim": [],
+    "Toy.Implicature.instReprClaim.repr": [],
+    "Toy.Implicature.instReprClaim.repr.match_1": [],
+    "Toy.Implicature.instReprDisclaimer": [],
+    "Toy.Implicature.instReprDisclaimer.repr": [],
+    "Toy.Implicature.instReprDisclaimer.repr.match_1": [],
+    "Toy.Implicature.instReprRule": [],
+    "Toy.Implicature.instReprRule.repr": [],
+    "Toy.Implicature.instReprRule.repr.match_1": [],
+    "Toy.Implicature.interp_literallySafe_strengtheningSafe_unblocked": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.interp_never_open": [
+      "propext"
+    ],
+    "Toy.Implicature.interp_never_open.match_1_1": [],
+    "Toy.Implicature.literal_safety_closed_under_literal_weakening": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.literal_weakening_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.literal_weakening_tight_hsafe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.literal_weakening_tight_hweak": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.literallySafe_of_strengtheningSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.maxFals": [],
+    "Toy.Implicature.maxFals_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.mem_blockers_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.mem_ieList_iff_ieB": [
+      "propext"
+    ],
+    "Toy.Implicature.mem_ieList_iff_innocentlyExcludable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.mem_ieList_iff_innocentlyExcludable_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.mem_readings_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.naiveExcl": [],
+    "Toy.Implicature.naiveExcl_neg_entailed": [
+      "propext"
+    ],
+    "Toy.Implicature.naiveExcl_pos_disjunction": [
+      "propext"
+    ],
+    "Toy.Implicature.naiveExh": [
+      "propext"
+    ],
+    "Toy.Implicature.naiveExh_entails_exh": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.naive_exh_entails_innocent_exh": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.naive_exh_entails_innocent_instance": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.naive_exhaustification_of_disjunction_inconsistent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.natSpace": [],
+    "Toy.Implicature.natural_instance_tight_sufficient_condition_not_needed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.necessity_rendering_contradicted_iff_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.necessity_rendering_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.needed": [],
+    "Toy.Implicature.needed.eq_1": [],
+    "Toy.Implicature.needed_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.needed_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.negated_value_claim_exhaustified_reading_not_entailed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.nf": [
+      "propext"
+    ],
+    "Toy.Implicature.nfOf": [
+      "propext"
+    ],
+    "Toy.Implicature.nf_conclusion_drop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.nf_top_literally_safe_iff_unconditional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.not_entails_and_not_of_sat": [],
+    "Toy.Implicature.not_shown_not_refuted_safe_iff_open": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.not_shown_read_as_false_safe_when_refuted": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.not_shown_read_as_false_unsafe_iff_open": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.not_shown_read_as_false_unsafe_iff_open.match_1_10": [],
+    "Toy.Implicature.not_shown_read_as_false_unsafe_iff_open.match_1_12": [],
+    "Toy.Implicature.not_shown_tight_htrue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.open_converse_rewordings_not_literally_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.open_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.open_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.p0": [],
+    "Toy.Implicature.pOrQ": [],
+    "Toy.Implicature.perfCore": [
+      "propext"
+    ],
+    "Toy.Implicature.perfCore.match_1": [
+      "propext"
+    ],
+    "Toy.Implicature.perfectionConsistent_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.perfectionConsistent_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.perfection_countermodel_exhaustified_reading_entailed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.perfection_reading_contradicted_though_literally_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.q0": [],
+    "Toy.Implicature.qualifier_drop_reading_contradicted_though_literally_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.readings": [
+      "propext"
+    ],
+    "Toy.Implicature.readings.eq_1": [
+      "propext"
+    ],
+    "Toy.Implicature.readingsStar": [
+      "propext"
+    ],
+    "Toy.Implicature.readingsStar.eq_1": [
+      "propext"
+    ],
+    "Toy.Implicature.readingsStar_neg_blocked": [
+      "propext"
+    ],
+    "Toy.Implicature.readingsStar_pos": [
+      "propext"
+    ],
+    "Toy.Implicature.readings_neg_blocked": [
+      "propext"
+    ],
+    "Toy.Implicature.readings_neg_cancelled": [
+      "propext"
+    ],
+    "Toy.Implicature.readings_neg_no_composition": [
+      "propext"
+    ],
+    "Toy.Implicature.readings_pos_perfection": [
+      "propext"
+    ],
+    "Toy.Implicature.renderComp": [
+      "propext"
+    ],
+    "Toy.Implicature.renderComp_literallySafe_of_conclusionDropping": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.ruleReadings": [
+      "propext"
+    ],
+    "Toy.Implicature.satB": [],
+    "Toy.Implicature.satB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.sat_neg_iff_not_converse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.sat_pair_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.sat_pos_not_conversely": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.sat_singleton_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.single_value_conditional_needs_exhaustification_flag": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.siteAlts": [
+      "propext"
+    ],
+    "Toy.Implicature.siteSubst": [
+      "propext"
+    ],
+    "Toy.Implicature.siteSubst.match_1": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_forall_imp": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_neg_under_negation": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_neg_universal": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_neg_value_outside_params": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_pos_conditional": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_pos_existential": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_pos_neighbouring_values": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_pos_relativized": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_pos_sites": [
+      "propext"
+    ],
+    "Toy.Implicature.stdAlt_value_alternatives_any_connective": [
+      "propext"
+    ],
+    "Toy.Implicature.step": [
+      "propext"
+    ],
+    "Toy.Implicature.step.match_1": [],
+    "Toy.Implicature.step_drop_neg": [
+      "propext"
+    ],
+    "Toy.Implicature.step_drop_pos": [
+      "propext"
+    ],
+    "Toy.Implicature.step_exhaustification_eq": [
+      "propext"
+    ],
+    "Toy.Implicature.step_perfection_forall_imp": [
+      "propext"
+    ],
+    "Toy.Implicature.step_perfection_neg": [
+      "propext"
+    ],
+    "Toy.Implicature.step_perfection_pos": [
+      "propext"
+    ],
+    "Toy.Implicature.step_qualifierDrop_forall_imp": [
+      "propext"
+    ],
+    "Toy.Implicature.strengtheningSafeStar_allRules_of_literallySafe": [
+      "propext"
+    ],
+    "Toy.Implicature.strengtheningSafeStar_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.strengtheningSafeStar_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.strengtheningSafe_iff_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.strengtheningSafe_iff_blockers_subset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.strengtheningSafe_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.strengtheningSafe_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.tightFor": [],
+    "Toy.Implicature.tightFor_does_not_check_theorem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.tightFor_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.tightFor_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.tight_hypothesis_not_needed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Implicature.valueAlts": [],
+    "Toy.Implicature.valueAlts.match_1": [],
+    "Toy.Implicature.xA": [],
+    "Toy.Implicature.xB": [],
+    "Toy.Implicature.xH": [],
+    "Toy.Implicature.\u03c3_notConv": [],
+    "Toy.Implicature.\u03c3_relCond": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

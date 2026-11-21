@@ -41837,6 +41837,138 @@
         "isa/ultralow-power-biomedical"
       ]
     },
+    "implicature-safe-summaries-conditional-perfection-and-exhaustification-of-formal-claims": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "issue": "4",
+            "journal": "Linguistic Inquiry",
+            "pages": "561-566",
+            "volume": "2",
+            "year": "1971"
+          },
+          "name": "On invited inferences (Geis and Zwicky 1971)"
+        },
+        {
+          "identity": {
+            "isbn": "1-57586-336-7",
+            "publisher": "University of Chicago Press",
+            "reissue": "CSLI Publications 2001",
+            "year": "1989"
+          },
+          "name": "A Natural History of Negation (Horn)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0378-2166(99)00053-3"
+          },
+          "name": "From if to iff: Conditional perfection as pragmatic strengthening (Horn 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1163/9789004368811_003"
+          },
+          "name": "Logic and conversation (Grice 1975)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0010-0277(00)00114-1"
+          },
+          "name": "When children are more logical than adults (Noveck 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jml.2004.05.006"
+          },
+          "name": "Some utterances are underinformative (Bott and Noveck 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1057/9780230210752_4"
+          },
+          "name": "Free choice and the theory of scalar implicatures (Fox 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1023/B:LING.0000023378.71748.db"
+          },
+          "name": "Scalar implicatures in complex sentences (Sauerland 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/jos/10.4.269"
+          },
+          "name": "Focus and presupposition in dynamic interpretation (Krifka 1993)"
+        },
+        {
+          "identity": {
+            "doi": "10.3765/sp.9.11"
+          },
+          "name": "Comparing exhaustivity operators (Spector 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1515/9783110253382.2297"
+          },
+          "name": "Scalar implicature as a grammatical phenomenon (Chierchia, Fox and Spector 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10988-005-3760-4"
+          },
+          "name": "Pragmatic meaning and non-monotonic reasoning (Schulz and van Rooij 2006)"
+        },
+        {
+          "identity": {
+            "author": "Kai von Fintel",
+            "limitation": "no DOI and no content hash recorded; identified by URL and page header",
+            "url": "https://web.mit.edu/fintel/fintel-2001-condstrength.pdf",
+            "version": "draft of 2001-09-13",
+            "version_header": "Draft \u2022 Version from 9/13/01 1:08 PM"
+          },
+          "name": "Conditional strengthening: A case study in implicature (von Fintel 2001 manuscript)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0378-2166(96)00058-6"
+          },
+          "name": "Pragmatics in the last quarter century: The case of conditional perfection (van der Auwera 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10988-008-9029-y"
+          },
+          "name": "Structurally-defined alternatives (Katzir 2007)"
+        },
+        {
+          "identity": {
+            "book": "Radical Pragmatics (P. Cole, ed.)",
+            "pages": "1-61",
+            "publisher": "Academic Press",
+            "year": "1981"
+          },
+          "name": "It-clefts, informativeness and logical form (Atlas and Levinson 1981)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/specification-summaries",
+        "verification/result-cards",
+        "verification/summary-implicature",
+        "verification/conditional-perfection",
+        "verification/exhaustification"
+      ]
+    },
     "in-kernel-side-channel-certificates-and-speculative-ct-2018-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
