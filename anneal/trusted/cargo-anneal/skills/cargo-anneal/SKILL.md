@@ -33,21 +33,38 @@ cargo anneal verify --request path/to/request.json > path/to/new-receipt.json
 
 ## Create a request and proof when needed
 
+Run `cargo anneal skill --example` to print a complete working example from the
+installed CLI. Save the four files together in a scratch directory to try it.
+The example proves that a safe function with no arguments terminates and always
+returns zero in the captured MIR model.
+
 1. For request schema `1`, set `scope.kind` to `selected_unit` and put one
-   exact Rust definition path in `scope.roots`. The `compilation` section
-   declares the crate root, configuration, and inputs. Include the crate root
-   in `source_files`. The `proof` section lists Lean modules with
-   `specification` or `proof` roles. Resolve both source roots relative to the
-   directory containing the request and keep them within it. List regular
-   files by paths relative to their source roots.
+   exact Rust definition path in `scope.roots`, relative to the crate root
+   (for example, `module::function`). Set the Rust edition, target, and `cfg`
+   for the intended compilation. Include the crate root in `source_files`.
+   The `proof` section lists Lean modules with `specification` or `proof`
+   roles. Resolve both source roots relative to the directory containing the
+   request and keep them within it. List regular files by paths relative to
+   their source roots.
 2. Write the property and proof in their declared Lean modules. The default
-   declarations are `Spec.specs` and `Proof.verify`. For an `unsafe` function,
-   express its actual caller preconditions in `Specs.safety`.
+   declarations are `Spec.specs` and `Proof.verify`. Express actual caller
+   preconditions for an `unsafe` function in `Specs.safety`. A predicate of
+   `False` excludes every caller of an unsafe function. Check which calls the
+   predicate admits before claiming that callers may rely on the proof.
 3. Import `Expected` in the proof and prove `Expected.claim`. Anneal generates
    `Captured.lean` from the Rust compilation and `Expected.lean` from that
    capture and the specification. Keep the selected function, configuration,
    property, and caller preconditions fixed while diagnosing the proof. Discuss
    any proposed change to the verification claim with the user.
+
+The example uses `execProg` to check a bounded execution of its captured body.
+`wellFormed_and_spec_of_wp` turns that check into safety, a postcondition, and
+termination in the model. When adapting the example, run the request with
+`--artifacts <new-directory>`. In `capture/capture.json`, inspect `selected` for
+the body index and `program` for the MIR. Choose fuel to cover the executed MIR
+steps through the return. Use `generated/Expected.lean` to inspect the goal.
+For functions with arguments, address all permitted inputs when the claim
+requires it.
 
 ## Diagnose limitations and report results
 
@@ -75,17 +92,6 @@ and applicable caller preconditions with the user's intent. The receipt's
 `audit.specificationClosure` identifies definitions to inspect. Report the
 property actually checked and any gap with the request, along with the selected
 function, compilation configuration, material assumptions, and deferred checks.
-Keep the input identities with the receipt.
-
-## Find a working example when useful
-
-Use the scalar example to see how the inputs fit together or to check a setup
-with a known proof. Use the example from the matching source checkout at
-`anneal/trusted/cargo-anneal/tests/fixtures/scalar/`, or from
-`tests/fixtures/scalar/` in the installed version's crates.io source archive at
-`https://crates.io/api/v1/crates/cargo-anneal/<version>/download`.
-
-Keep `lib.rs`, `request.json`, `Spec.lean`, and `Proof.lean` together if running
-the example. The fixture's `False` safety predicate belongs to its safe
-function. Copying it into an `unsafe` function's specification would exclude
-every caller.
+Keep the input identities with the receipt. A successful receipt can be large.
+Read `status`, `scope`, and `configuration` first, then inspect the relevant
+audit entries and the specification itself.

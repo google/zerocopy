@@ -37,7 +37,11 @@ enum Command {
         local_archive: Option<PathBuf>,
     },
     /// Print the bundled agent skill.
-    Skill,
+    Skill {
+        /// Print a complete Rust, request, and Lean example.
+        #[arg(long)]
+        example: bool,
+    },
     /// Capture a configured compilation and check its authored source proof.
     #[command(after_help = "Run `cargo anneal skill` to print the bundled agent skill.")]
     Verify(verify::VerifyArgs),
@@ -63,6 +67,22 @@ fn parse(mut args: Vec<OsString>) -> Result<Cli, clap::Error> {
     Cli::try_parse_from(args)
 }
 
+fn scalar_example() -> String {
+    format!(
+        "# Verify that `zero()` always returns 0\n\n\
+         Save these four files together in a scratch directory. Run \
+         `cargo anneal verify --request request.json` there after toolchain setup.\n\n\
+         ## `lib.rs`\n\n```rust\n{rust}```\n\n\
+         ## `request.json`\n\n```json\n{request}```\n\n\
+         ## `Spec.lean`\n\n```lean\n{spec}```\n\n\
+         ## `Proof.lean`\n\n```lean\n{proof}```\n",
+        rust = include_str!("../tests/fixtures/scalar/lib.rs"),
+        request = include_str!("../tests/fixtures/scalar/request.json"),
+        spec = include_str!("../tests/fixtures/scalar/Spec.lean"),
+        proof = include_str!("../tests/fixtures/scalar/Proof.lean"),
+    )
+}
+
 fn dispatch(
     cli: Cli,
     install: impl FnOnce(Option<PathBuf>) -> Result<PathBuf, String>,
@@ -73,7 +93,8 @@ fn dispatch(
             let root = install(local_archive)?;
             Ok(Action::Print(format!("Installed Anneal toolchain at {}\n", root.display())))
         }
-        Some(Command::Skill) => {
+        Some(Command::Skill { example: true }) => Ok(Action::Print(scalar_example())),
+        Some(Command::Skill { example: false }) => {
             Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
         }
         Some(Command::Verify(args)) => Ok(Action::Verify(args)),
