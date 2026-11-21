@@ -1,0 +1,23 @@
+error[E0373]: closure may outlive the current function, but it borrows `v`, which is owned by the current function
+ --> probes/p2_spawn_borrow_local.rs:4:32
+  |
+4 |     let h = std::thread::spawn(|| println!("{}", v.len()));
+  |                                ^^                - `v` is borrowed here
+  |                                |
+  |                                may outlive borrowed value `v`
+  |
+note: function requires argument type to outlive `'static`
+ --> probes/p2_spawn_borrow_local.rs:4:13
+  |
+4 |     let h = std::thread::spawn(|| println!("{}", v.len()));
+  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
+  |
+4 |     let h = std::thread::spawn(move || println!("{}", v.len()));
+  |                                ++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0373`.
+Command exited with non-zero status 1
+PEAK_RSS_KB=101296 WALL_S=0.03 EXIT=1

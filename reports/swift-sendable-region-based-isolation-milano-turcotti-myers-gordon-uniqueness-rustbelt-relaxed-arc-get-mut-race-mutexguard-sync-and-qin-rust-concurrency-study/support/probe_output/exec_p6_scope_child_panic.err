@@ -1,0 +1,8 @@
+
+thread '<unnamed>' (2377078) panicked at probes/p6_scope_child_panic.rs:5:24:
+child failed
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'main' (2377077) panicked at probes/p6_scope_child_panic.rs:4:9:
+a scoped thread panicked
+PEAK_RSS_KB=1612 WALL_S=0.00 EXIT=0

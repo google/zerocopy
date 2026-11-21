@@ -1,0 +1,98 @@
+{
+  "topics": [
+    "pl/sendability-and-region-isolation-checking",
+    "runtimes/lifetime-bounded-task-spawning",
+    "verification/concurrency-assumptions-in-ownership-soundness-proofs",
+    "security/release-under-concurrency-unsoundness-incidents"
+  ],
+  "subjects": [
+    {
+      "name": "Swift Evolution proposals SE-0302, SE-0304, SE-0414, SE-0430",
+      "identity": {
+        "repository": "swiftlang/swift-evolution",
+        "revision": "58a97fabc7233f58af6b8a1e8d3d5a25fb4f7060"
+      }
+    },
+    {
+      "name": "Swift compiler region analysis and SendNonSendable checker",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "df95e655b44760b7d16a7da561cbedb3f4294fed"
+      }
+    },
+    {
+      "name": "Rust standard library (marker traits, std::thread::scope, Arc, Mutex)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+      }
+    },
+    {
+      "name": "rustc and Miri nightly toolchain used for probes",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+      }
+    },
+    {
+      "name": "crossbeam-utils scoped threads",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+      }
+    },
+    {
+      "name": "rayon-core scope",
+      "identity": {
+        "repository": "rayon-rs/rayon",
+        "revision": "599425d4a4c64714632817f48496dbc53f656a90"
+      }
+    },
+    {
+      "name": "RustSec advisory database",
+      "identity": {
+        "repository": "rustsec/advisory-db",
+        "revision": "f291af9b1cc0d21dfcea1709d6b037963cef262b"
+      }
+    },
+    {
+      "name": "A Flexible Type System for Fearless Concurrency (Milano, Turcotti, Myers, PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523443"
+      }
+    },
+    {
+      "name": "Uniqueness and Reference Immutability for Safe Parallelism (Gordon et al., OOPSLA 2012)",
+      "identity": {
+        "doi": "10.1145/2384616.2384619"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language (POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158154"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371102"
+      }
+    },
+    {
+      "name": "Understanding Memory and Thread Safety Practices and Issues in Real-World Rust Programs (Qin et al., PLDI 2020)",
+      "identity": {
+        "doi": "10.1145/3385412.3386036"
+      }
+    },
+    {
+      "name": "Fearless Concurrency? Understanding Concurrent Programming Safety in Real-World Rust Software (Yu, Song, Zhang)",
+      "identity": {
+        "arxiv": "1902.01906",
+        "version": "v1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

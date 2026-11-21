@@ -86770,6 +86770,94 @@
         "security/quantitative-information-flow"
       ]
     },
+    "secureptrs-turn-taking-simulation-capableptrs-data-flow-back-translation-secomp-compartment-proofs-hur-dreyer-ml-assembly-kripke-jacobs-devriese-timany-and-sevcik-safe-reorderings": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "secure-compilation/SecurePtrs",
+            "revision": "5b4c34eda0b827469a5c73e434a12c6c87773e04"
+          },
+          "name": "SecurePtrs Coq development (data-flow back-translation, turn-taking simulation)"
+        },
+        {
+          "identity": {
+            "repository": "secure-compilation/SECOMP",
+            "revision": "cbef9c338d23f40db5054c9a3d6f2b3b873e9204"
+          },
+          "name": "SECOMP secure compiler for compartmentalized C (CompCert-based)"
+        },
+        {
+          "identity": {
+            "arxiv": "2110.01439",
+            "doi": "10.1109/CSF54842.2022.9919680"
+          },
+          "name": "SecurePtrs: Proving Secure Compilation with Data-Flow Back-Translation and Turn-Taking Simulation (CSF 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2005.05944",
+            "doi": "10.1109/CSF51468.2021.00036"
+          },
+          "name": "CapablePtrs: Securely Compiling Partial Programs Using the Pointers-as-Capabilities Principle (CSF 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.16277",
+            "doi": "10.1145/3658644.3670288"
+          },
+          "name": "SECOMP: Formally Secure Compilation of Compartmentalized C Programs (CCS 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1480881.1480925"
+          },
+          "name": "State-Dependent Representation Independence (Ahmed, Dreyer, Rossberg, POPL 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1596550.1596567"
+          },
+          "name": "Biorthogonality, Step-Indexing and Compiler Correctness (Benton, Hur, ICFP 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926402"
+          },
+          "name": "A Kripke Logical Relation between ML and Assembly (Hur, Dreyer, POPL 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3527326"
+          },
+          "name": "Purity of an ST Monad: Full Abstraction by Semantically Typed Back-Translation (Jacobs, Devriese, Timany, OOPSLA 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-008-9097-2"
+          },
+          "name": "Nominal Techniques in Isabelle/HOL (Urban, JAR 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2893582.2893594"
+          },
+          "name": "Nominal techniques (Pitts, ACM SIGLOG News 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1993498.1993534"
+          },
+          "name": "Safe Optimisations for Shared-Memory Concurrent Programs (\u0160ev\u010d\u00edk, PLDI 2011)"
+        }
+      ],
+      "topics": [
+        "verification/allocation-renaming-in-secure-compilation-proofs",
+        "pl/kripke-worlds-with-location-relations",
+        "verification/step-reordering-arguments-in-simulations",
+        "tooling/mechanized-full-abstraction-developments"
+      ]
+    },
     "seismic-eew-magnitude-saturation-p-arrival-pickers-and-tsunami-geoclaw": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -92198,6 +92286,104 @@
         "systems/memory-management",
         "systems/concurrency-weak-memory",
         "verification/os-kernels"
+      ]
+    },
+    "swift-sendable-region-based-isolation-milano-turcotti-myers-gordon-uniqueness-rustbelt-relaxed-arc-get-mut-race-mutexguard-sync-and-qin-rust-concurrency-study": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "swiftlang/swift-evolution",
+            "revision": "58a97fabc7233f58af6b8a1e8d3d5a25fb4f7060"
+          },
+          "name": "Swift Evolution proposals SE-0302, SE-0304, SE-0414, SE-0430"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "df95e655b44760b7d16a7da561cbedb3f4294fed"
+          },
+          "name": "Swift compiler region analysis and SendNonSendable checker"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "Rust standard library (marker traits, std::thread::scope, Arc, Mutex)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rustc and Miri nightly toolchain used for probes"
+        },
+        {
+          "identity": {
+            "repository": "crossbeam-rs/crossbeam",
+            "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+          },
+          "name": "crossbeam-utils scoped threads"
+        },
+        {
+          "identity": {
+            "repository": "rayon-rs/rayon",
+            "revision": "599425d4a4c64714632817f48496dbc53f656a90"
+          },
+          "name": "rayon-core scope"
+        },
+        {
+          "identity": {
+            "repository": "rustsec/advisory-db",
+            "revision": "f291af9b1cc0d21dfcea1709d6b037963cef262b"
+          },
+          "name": "RustSec advisory database"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523443"
+          },
+          "name": "A Flexible Type System for Fearless Concurrency (Milano, Turcotti, Myers, PLDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2384616.2384619"
+          },
+          "name": "Uniqueness and Reference Immutability for Safe Parallelism (Gordon et al., OOPSLA 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language (POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371102"
+          },
+          "name": "RustBelt Meets Relaxed Memory (POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3386036"
+          },
+          "name": "Understanding Memory and Thread Safety Practices and Issues in Real-World Rust Programs (Qin et al., PLDI 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "1902.01906",
+            "version": "v1"
+          },
+          "name": "Fearless Concurrency? Understanding Concurrent Programming Safety in Real-World Rust Software (Yu, Song, Zhang)"
+        }
+      ],
+      "topics": [
+        "pl/sendability-and-region-isolation-checking",
+        "runtimes/lifetime-bounded-task-spawning",
+        "verification/concurrency-assumptions-in-ownership-soundness-proofs",
+        "security/release-under-concurrency-unsoundness-incidents"
       ]
     },
     "swscale-complete-pixel-format-matrix-polyphase-rescaling-and-spirv-cms-parity": {

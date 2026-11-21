@@ -1,0 +1,88 @@
+{
+  "topics": [
+    "verification/allocation-renaming-in-secure-compilation-proofs",
+    "pl/kripke-worlds-with-location-relations",
+    "verification/step-reordering-arguments-in-simulations",
+    "tooling/mechanized-full-abstraction-developments"
+  ],
+  "subjects": [
+    {
+      "name": "SecurePtrs Coq development (data-flow back-translation, turn-taking simulation)",
+      "identity": {
+        "repository": "secure-compilation/SecurePtrs",
+        "revision": "5b4c34eda0b827469a5c73e434a12c6c87773e04"
+      }
+    },
+    {
+      "name": "SECOMP secure compiler for compartmentalized C (CompCert-based)",
+      "identity": {
+        "repository": "secure-compilation/SECOMP",
+        "revision": "cbef9c338d23f40db5054c9a3d6f2b3b873e9204"
+      }
+    },
+    {
+      "name": "SecurePtrs: Proving Secure Compilation with Data-Flow Back-Translation and Turn-Taking Simulation (CSF 2022)",
+      "identity": {
+        "doi": "10.1109/CSF54842.2022.9919680",
+        "arxiv": "2110.01439"
+      }
+    },
+    {
+      "name": "CapablePtrs: Securely Compiling Partial Programs Using the Pointers-as-Capabilities Principle (CSF 2021)",
+      "identity": {
+        "doi": "10.1109/CSF51468.2021.00036",
+        "arxiv": "2005.05944"
+      }
+    },
+    {
+      "name": "SECOMP: Formally Secure Compilation of Compartmentalized C Programs (CCS 2024)",
+      "identity": {
+        "doi": "10.1145/3658644.3670288",
+        "arxiv": "2401.16277"
+      }
+    },
+    {
+      "name": "State-Dependent Representation Independence (Ahmed, Dreyer, Rossberg, POPL 2009)",
+      "identity": {
+        "doi": "10.1145/1480881.1480925"
+      }
+    },
+    {
+      "name": "Biorthogonality, Step-Indexing and Compiler Correctness (Benton, Hur, ICFP 2009)",
+      "identity": {
+        "doi": "10.1145/1596550.1596567"
+      }
+    },
+    {
+      "name": "A Kripke Logical Relation between ML and Assembly (Hur, Dreyer, POPL 2011)",
+      "identity": {
+        "doi": "10.1145/1926385.1926402"
+      }
+    },
+    {
+      "name": "Purity of an ST Monad: Full Abstraction by Semantically Typed Back-Translation (Jacobs, Devriese, Timany, OOPSLA 2022)",
+      "identity": {
+        "doi": "10.1145/3527326"
+      }
+    },
+    {
+      "name": "Nominal Techniques in Isabelle/HOL (Urban, JAR 2008)",
+      "identity": {
+        "doi": "10.1007/s10817-008-9097-2"
+      }
+    },
+    {
+      "name": "Nominal techniques (Pitts, ACM SIGLOG News 2016)",
+      "identity": {
+        "doi": "10.1145/2893582.2893594"
+      }
+    },
+    {
+      "name": "Safe Optimisations for Shared-Memory Concurrent Programs (Ševčík, PLDI 2011)",
+      "identity": {
+        "doi": "10.1145/1993498.1993534"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

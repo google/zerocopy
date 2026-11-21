@@ -1,0 +1,68 @@
+advisory files parsed: 1535; withdrawn excluded: 25
+A thread-safety category: 68
+B ... mentioning Send/Sync: 60
+C ... and memory-corruption or use-after-free/dangling/double-free text: 51
+D B and explicit use-after-free/dangling/double-free text: 3
+A by year: {'2020': 53, '2021': 3, '2022': 2, '2023': 2, '2026': 8}
+B by year: {'2020': 52, '2021': 2, '2022': 1, '2023': 1, '2026': 4}
+--- B list (id, crate, date, title) ---
+RUSTSEC-2020-0121 | abox | 2020-11-10 | AtomicBox<T> implements Send/Sync for any `T: Sized` | C
+RUSTSEC-2020-0099 | aovec | 2020-12-10 | Aovec<T> lacks bound on its Send and Sync traits allowing data races | C
+RUSTSEC-2020-0149 | appendix | 2020-11-15 | Data race and memory safety issue in `Index` | C
+RUSTSEC-2020-0034 | arr | 2020-08-25 | Multiple security issues including data race, buffer overflow, and uninitialized memory drop | C
+RUSTSEC-2020-0124 | async-coap | 2020-12-08 | ArcGuard's Send and Sync should have bounds on RC | C
+RUSTSEC-2020-0044 | atom | 2020-09-21 | Unsafe Send implementation in Atom allows data races | C D
+RUSTSEC-2020-0113 | atomic-option | 2020-10-31 | AtomicOption should have Send + Sync bound on its type argument. | C
+RUSTSEC-2020-0122 | beef | 2020-10-28 | beef::Cow lacks a Sync bound on its Send trait allowing for data races | C
+RUSTSEC-2020-0130 | bunch | 2020-11-12 | Bunch<T> unconditionally implements Send/Sync | C
+RUSTSEC-2020-0112 | buttplug | 2020-12-18 | ButtplugFutureStateShared allows data race to (!Send|!Sync) objects | C
+RUSTSEC-2020-0128 | cache | 2020-11-24 | Cache<K>: Send/Sync impls needs trait bounds on `K` | C
+RUSTSEC-2020-0092 | concread | 2020-11-13 | Send/Sync bound needed on V in `impl Send/Sync for ARCache<K, V>` 
+RUSTSEC-2020-0101 | conquer-once | 2020-12-22 | conquer-once's OnceCell lacks Send bound for its Sync trait. | C
+RUSTSEC-2020-0117 | conqueue | 2020-11-24 | QueueSender<T>/QueueReceiver<T>: Send/Sync impls need `T: Send` | C
+RUSTSEC-2020-0125 | convec | 2020-11-24 | convec::ConVec<T> unconditionally implements Send/Sync | C
+RUSTSEC-2020-0139 | dces | 2020-12-09 | dces' World type can cause data races | C
+RUSTSEC-2026-0242 | dcrypt-api | 2026-08-09 | Safe ErrorRegistry APIs can cause undefined behavior | C D
+RUSTSEC-2020-0150 | disrustor | 2020-12-17 | RingBuffer can create multiple mutable references and cause data races | C
+RUSTSEC-2026-0221 | event-listener | 2026-07-13 | `event-listener` allows `!Send` tags to cross thread boundaries via `StackSlot` | C
+RUSTSEC-2020-0108 | eventio | 2020-12-20 | Soundness issue: Input<R> can be misused to create data race to an object | C
+RUSTSEC-2020-0072 | futures-intrusive | 2020-10-31 | GenericMutexGuard allows data races of non-Sync types across threads | C
+RUSTSEC-2020-0059 | futures-util | 2020-10-22 | MutexGuard::map can cause a data race in safe code 
+RUSTSEC-2020-0062 | futures-util | 2020-01-24 | Improper `Sync` implementation on `FuturesUnordered` in futures-utils can cause data corruption | C
+RUSTSEC-2020-0104 | gfwx | 2020-12-08 | ImageChunkMut needs bounds on its Send and Sync traits | C
+RUSTSEC-2020-0107 | hashconsing | 2020-11-10 | hashconsing's HConsed lacks Send/Sync bound for its Send/Sync trait. | C
+RUSTSEC-2020-0096 | im | 2020-11-09 | TreeFocus lacks bounds on its Send and Sync traits 
+RUSTSEC-2021-0036 | internment | 2021-03-03 | Intern<T>: Data race allowed on T 
+RUSTSEC-2023-0058 | inventory | 2023-09-10 | Exposes reference to non-Sync data to an arbitrary thread 
+RUSTSEC-2020-0129 | kekbit | 2020-12-18 | ShmWriter allows sending non-Send type across threads | C
+RUSTSEC-2020-0102 | late-static | 2020-11-10 | LateStatic has incorrect Sync bound | C
+RUSTSEC-2020-0137 | lever | 2020-11-10 | AtomicBox<T> lacks bound on its Send and Sync traits allowing data races | C
+RUSTSEC-2020-0138 | lexer | 2020-11-10 | ReaderResult should be bounded by Sync | C
+RUSTSEC-2020-0120 | libsbc | 2020-11-10 | `Decoder<R>` can carry `R: !Send` to other threads | C
+RUSTSEC-2020-0070 | lock_api | 2020-11-08 | Some lock_api lock guard objects can cause data races | C
+RUSTSEC-2020-0088 | magnetic | 2020-11-29 | MPMCConsumer/Producer allows sending non-Send type across threads 
+RUSTSEC-2020-0111 | may_queue | 2020-11-10 | may_queue's Queue lacks Send/Sync bound for its Send/Sync trait. | C
+RUSTSEC-2021-0113 | metrics-util | 2021-04-07 | AtomicBucket<T> unconditionally implements Send/Sync | C
+RUSTSEC-2020-0140 | model | 2020-11-10 | `Shared` can cause a data race 
+RUSTSEC-2020-0143 | multiqueue | 2020-12-25 | Queues allow non-Send types to be sent to other threads, allowing data races | C
+RUSTSEC-2020-0106 | multiqueue2 | 2020-12-19 | Queues allow non-Send types to be sent to other threads, allowing data races | C
+RUSTSEC-2020-0141 | noise_search | 2020-12-10 | MvccRwLock allows data races & aliasing violations | C
+RUSTSEC-2020-0134 | parc | 2020-11-14 | `LockWeak<T>` allows to create data race to `T`. | C
+RUSTSEC-2026-0177 | pyo3 | 2026-06-11 | Missing `Sync` bound on `PyCFunction::new_closure` closures 
+RUSTSEC-2020-0131 | rcu_cell | 2020-11-14 | Send/Sync bound needed on T  for Send/Sync impl of RcuCell<T> | C
+RUSTSEC-2020-0094 | reffers | 2020-12-01 | Unsound: can make `ARefss` contain a !Send, !Sync object. | C
+RUSTSEC-2020-0098 | rusb | 2020-12-18 | UsbContext trait did not require implementers to be Send and Sync. | C
+RUSTSEC-2020-0115 | ruspiro-singleton | 2020-11-16 | Singleton lacks bounds on Send and Sync. | C
+RUSTSEC-2020-0133 | scottqueue | 2020-11-15 | Queue<T> should have a Send bound on its Send/Sync traits | C
+RUSTSEC-2020-0126 | signal-simple | 2020-11-15 | SyncChannel<T> can move 'T: !Send' to other threads | C
+RUSTSEC-2020-0135 | slock | 2020-11-17 | Slock<T> allows sending non-Send types across thread boundaries | C
+RUSTSEC-2026-0454 | surrealdb-core | 2026-11-03 | Data race and double free via unsound `Send`/`Sync` in `reblessive` | C D
+RUSTSEC-2020-0090 | thex | 2020-12-08 | Thex<T> allows data races of non-Send types across threads | C
+RUSTSEC-2020-0119 | ticketed_lock | 2020-11-17 | ReadTicket and WriteTicket should only be sendable when T is Send | C
+RUSTSEC-2020-0118 | tiny_future | 2020-12-08 | Future<T> lacks bounds on Send and Sync. | C
+RUSTSEC-2020-0136 | toolshed | 2020-11-15 | CopyCell lacks bounds on its Send trait allowing for data races | C
+RUSTSEC-2020-0087 | try-mutex | 2020-11-17 | TryMutex<T> allows sending non-Send type across threads 
+RUSTSEC-2020-0116 | unicycle | 2020-11-15 | PinSlab<T> and Unordered<T, S> need bounds on their Send/Sync traits | C
+RUSTSEC-2020-0127 | v9 | 2020-12-18 | SyncRef's clone() and debug() allow data races | C
+RUSTSEC-2020-0114 | va-ts | 2020-12-22 | `Demuxer` can carry non-Send types across thread boundaries | C
+RUSTSEC-2022-0008 | windows | 2022-01-02 | Delegate functions are missing `Send` bound | C

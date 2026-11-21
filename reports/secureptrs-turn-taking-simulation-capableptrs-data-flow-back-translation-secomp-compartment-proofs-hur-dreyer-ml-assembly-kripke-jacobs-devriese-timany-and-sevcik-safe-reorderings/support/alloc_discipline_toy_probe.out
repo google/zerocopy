@@ -1,0 +1,11 @@
+Q1: P script [1, 2, 1]; 64 contexts (0..3 cells per turn)
+  per_party      exact observations=  1  modulo renaming=  1
+  global         exact observations= 64  modulo renaming=  1
+  budget(B=3)    exact observations=  7  modulo renaming=  4
+  budget(B=4)    exact observations= 11  modulo renaming=  4
+  budget(B=5)    exact observations= 17  modulo renaming=  4
+  budget(B=6)    exact observations= 25  modulo renaming=  4
+  budget(B=8)    exact observations= 45  modulo renaming=  3
+Q2: (a, b, B) triples with 1 <= a, b <= B <= 8: 204; order changes P outcome in 120 (58.8%)
+    (differs exactly when a <= B, b <= B and a + b > B)
+PEAK_RSS_KB=10348 WALL_S=0.01 EXIT=0

@@ -1,0 +1,903 @@
+Trying seed: 0
+Trying seed: 31
+Trying seed: 28
+Trying seed: 27
+Trying seed: 29
+Trying seed: 26
+Trying seed: 25
+Trying seed: 30
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1512+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1486+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1504+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 29
+Trying seed: 24
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1472+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 0
+Trying seed: 1
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1489+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+FAILING SEED: 27
+Trying seed: 23
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 25
+Trying seed: 22
+FAILING SEED: 31
+Trying seed: 21
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1501+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 30
+Trying seed: 20
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1478+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 26
+Trying seed: 19
+Trying seed: 18
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc22949+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 23
+Trying seed: 17
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc22805+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 1
+Trying seed: 2
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc22842+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 21
+Trying seed: 16
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc24933+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 22
+Trying seed: 15
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc24103+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 19
+Trying seed: 14
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc22748+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 24
+Trying seed: 13
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc23410+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 20
+Trying seed: 12
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc40244+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 17
+Trying seed: 11
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc41258+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 2
+Trying seed: 3
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc41807+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 16
+Trying seed: 10
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc44529+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 15
+Trying seed: 9
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc38463+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 18
+Trying seed: 8
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc49020+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 14
+Trying seed: 7
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc50119+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 13
+Trying seed: 6
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc49301+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 12
+Trying seed: 5
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc61386+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 3
+Trying seed: 4
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc61395+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 10
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc64235+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 9
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc65758+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 7
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc58246+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 11
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc65441+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 8
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc71886+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 6
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc73688+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 5
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc76434+0x8
+  --> probes/p7_toy_arc_unique.rs:23:22
+   |
+23 |             unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^ (2) just happened here
+   |
+help: and (1) occurred earlier here
+  --> probes/p7_toy_arc_unique.rs:18:22
+   |
+18 | ...   unsafe { *shr.payload.get() += 1 };       // A: non-atomic write
+   |                ^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
+   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = note: this is on thread `unnamed-2`
+note: the current function got called indirectly due to this code
+  --> probes/p7_toy_arc_unique.rs:21:9
+   |
+21 | / ...   s.spawn(move || {
+22 | | ...       while shr.count.load(ORDER) != 1 { std::thread::yield_now(); }
+23 | | ...       unsafe { *shr.payload.get() += 1 };       // B: "unique" access
+24 | | ...   });
+   | |________^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+  |
+  = note: duplicate diagnostic emitted due to `-Z deduplicate-diagnostics=no`
+
+FAILING SEED: 4
+31/32 SEEDS FAILED
+error: aborting due to 31 previous errors
+
+Command exited with non-zero status 1
+PEAK_RSS_KB=192968 WALL_S=0.49 EXIT=1

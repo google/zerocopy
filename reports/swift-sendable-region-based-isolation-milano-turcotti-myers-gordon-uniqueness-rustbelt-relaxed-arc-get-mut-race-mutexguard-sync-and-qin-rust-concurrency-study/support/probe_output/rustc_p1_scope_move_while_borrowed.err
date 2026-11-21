@@ -1,0 +1,46 @@
+error[E0373]: closure may outlive the current function, but it borrows `v`, which is owned by the current function
+ --> probes/p1_scope_move_while_borrowed.rs:6:17
+  |
+5 |     std::thread::scope(|s| {
+  |                         - has type `&'1 Scope<'1, '_>`
+6 |         s.spawn(|| println!("{}", v.len()));
+  |                 ^^                - `v` is borrowed here
+  |                 |
+  |                 may outlive borrowed value `v`
+  |
+note: function requires argument type to outlive `'1`
+ --> probes/p1_scope_move_while_borrowed.rs:6:9
+  |
+6 |         s.spawn(|| println!("{}", v.len()));
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
+  |
+6 |         s.spawn(move || println!("{}", v.len()));
+  |                 ++++
+
+error[E0505]: cannot move out of `v` because it is borrowed
+   --> probes/p1_scope_move_while_borrowed.rs:7:14
+    |
+  5 |     std::thread::scope(|s| {
+    |                         - has type `&'1 Scope<'1, '_>`
+  6 |         s.spawn(|| println!("{}", v.len()));
+    |         -----------------------------------
+    |         |       |                 |
+    |         |       |                 borrow occurs due to use in closure
+    |         |       borrow of `v` occurs here
+    |         argument requires that `v` is borrowed for `'1`
+  7 |         drop(v); // release while a scoped thread may still borrow `v`
+    |              ^ move out of `v` occurs here
+    |
+note: requirement that the value outlives `'1` introduced here
+   --> $TOOLCHAIN/lib/rustlib/src/rust/library/std/src/thread/scoped.rs:203:35
+    |
+203 |         F: FnOnce() -> T + Send + 'scope,
+    |                                   ^^^^^^
+
+error: aborting due to 2 previous errors
+
+Some errors have detailed explanations: E0373, E0505.
+For more information about an error, try `rustc --explain E0373`.
+Command exited with non-zero status 1
+PEAK_RSS_KB=114928 WALL_S=0.04 EXIT=1

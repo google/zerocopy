@@ -1,0 +1,32 @@
+== rustc_p1_scope_move_while_borrowed rc=1 PEAK_RSS_KB=114928 WALL_S=0.04 EXIT=1
+error[E0373]: closure may outlive the current function, but it borrows `v`, which is owned by the current function
+error[E0505]: cannot move out of `v` because it is borrowed
+error: aborting due to 2 previous errors
+== rustc_p1b_scope_release_after_scope rc=0 PEAK_RSS_KB=131224 WALL_S=0.09 EXIT=0
+== exec_p1b_scope_release_after_scope rc=0 PEAK_RSS_KB=1580 WALL_S=0.00 EXIT=0
+3
+== rustc_p2_spawn_borrow_local rc=1 PEAK_RSS_KB=101296 WALL_S=0.03 EXIT=1
+error[E0373]: closure may outlive the current function, but it borrows `v`, which is owned by the current function
+error: aborting due to 1 previous error
+== rustc_p3_scope_rc_not_send rc=1 PEAK_RSS_KB=113100 WALL_S=0.03 EXIT=1
+error[E0277]: `Rc<u32>` cannot be sent between threads safely
+error: aborting due to 1 previous error
+== rustc_p4_mutexguard_cell_sync rc=1 PEAK_RSS_KB=107552 WALL_S=0.03 EXIT=1
+error[E0277]: `Cell<i32>` cannot be shared between threads safely
+error: aborting due to 1 previous error
+== rustc_p5_scope_forget_handle rc=0 PEAK_RSS_KB=135376 WALL_S=0.09 EXIT=0
+== exec_p5_scope_forget_handle rc=3 PEAK_RSS_KB=1596 WALL_S=2.30 EXIT=3
+child: finished
+watchdog: scope() still blocked ~2 s after the child finished
+== rustc_p6_scope_child_panic rc=0 PEAK_RSS_KB=136728 WALL_S=0.11 EXIT=0
+== exec_p6_scope_child_panic rc=0 PEAK_RSS_KB=1612 WALL_S=0.00 EXIT=0
+scope() panicked with: Some("a scoped thread panicked")
+== miri_p7_acquire rc=0 PEAK_RSS_KB=188560 WALL_S=0.67 EXIT=0
+payload = 2
+payload = 2
+payload = 2
+== miri_p7_relaxed rc=1 PEAK_RSS_KB=192968 WALL_S=0.49 EXIT=1
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1512+0x8
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1486+0x8
+error: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `unnamed-2` at alloc1504+0x8
+payload = 2

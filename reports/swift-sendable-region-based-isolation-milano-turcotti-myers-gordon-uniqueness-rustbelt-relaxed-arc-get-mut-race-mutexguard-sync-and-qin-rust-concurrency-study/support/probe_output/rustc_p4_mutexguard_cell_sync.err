@@ -1,0 +1,20 @@
+error[E0277]: `Cell<i32>` cannot be shared between threads safely
+ --> probes/p4_mutexguard_cell_sync.rs:7:19
+  |
+7 |     assert_sync::<MutexGuard<'static, Cell<i32>>>();
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `Cell<i32>` cannot be shared between threads safely
+  |
+  = help: the trait `Sync` is not implemented for `Cell<i32>`
+  = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicI32` instead
+  = note: required for `std::sync::MutexGuard<'static, Cell<i32>>` to implement `Sync`
+note: required by a bound in `assert_sync`
+ --> probes/p4_mutexguard_cell_sync.rs:5:19
+  |
+5 | fn assert_sync<T: Sync>() {}
+  |                   ^^^^ required by this bound in `assert_sync`
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.
+Command exited with non-zero status 1
+PEAK_RSS_KB=107552 WALL_S=0.03 EXIT=1
