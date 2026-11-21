@@ -1,0 +1,156 @@
+{
+  "topics": [
+    "domains/pretrial-and-recidivism-risk-instruments",
+    "verification/risk-score-calibration-and-error-balance",
+    "domains/criminal-justice-algorithm-audits",
+    "tooling/interpretable-rule-list-baselines"
+  ],
+  "subjects": [
+    {
+      "name": "ProPublica COMPAS audit data and analysis (compas-analysis)",
+      "identity": {
+        "repository": "propublica/compas-analysis",
+        "revision": "bafff5da3f2e45eca6c2d5055faad269defd135a",
+        "file_sha256_compas-scores-two-years.csv": "c451db85908b2f7fef1d83203bedf6b71ecda0d5af468d82ae62178f91d0cc7d",
+        "file_sha256_truth_tables.py": "a1d3cacf9fa5bb43d8a1f6c48cdda1d188a00ff0931f8b1dd35f3ea43d5c81cf"
+      }
+    },
+    {
+      "name": "AI Fairness 360 COMPAS dataset loader",
+      "identity": {
+        "repository": "Trusted-AI/AIF360",
+        "revision": "34877916b789e569edf5c0aac033403ca90f34b3",
+        "path": "aif360/datasets/compas_dataset.py"
+      }
+    },
+    {
+      "name": "Fairlearn group metrics and threshold post-processing",
+      "identity": {
+        "repository": "fairlearn/fairlearn",
+        "revision": "34e44252a292159eecb67d94f6ef7f391d69c8bd",
+        "path": "fairlearn/metrics/_fairness_metrics.py; fairlearn/postprocessing/_threshold_optimizer.py"
+      }
+    },
+    {
+      "name": "CORELS certifiably optimal rule lists (reference C++ implementation)",
+      "identity": {
+        "repository": "corels/corels",
+        "revision": "c54cba53b5f6c62472bef508c68c565367ba474c"
+      }
+    },
+    {
+      "name": "Brennan, Dieterich, Ehret: Evaluating the Predictive Validity of the COMPAS Risk and Needs Assessment System (Criminal Justice and Behavior 36(1), 2009)",
+      "identity": {
+        "doi": "10.1177/0093854808326545"
+      }
+    },
+    {
+      "name": "Larson, Mattu, Kirchner, Angwin: How We Analyzed the COMPAS Recidivism Algorithm (ProPublica, 2016-05-23)",
+      "identity": {
+        "url": "https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm",
+        "date": "2016-05-23"
+      }
+    },
+    {
+      "name": "Flores, Bechtel, Lowenkamp: False Positives, False Negatives, and False Analyses (Federal Probation 80(2), 2016)",
+      "identity": {
+        "url": "https://www.uscourts.gov/sites/default/files/80_2_6_0.pdf",
+        "citation": "Federal Probation 80(2):38-46, September 2016"
+      }
+    },
+    {
+      "name": "Chouldechova: Fair Prediction with Disparate Impact (Big Data 5(2), 2017)",
+      "identity": {
+        "doi": "10.1089/big.2016.0047",
+        "arxiv": "1703.00056"
+      }
+    },
+    {
+      "name": "Kleinberg, Mullainathan, Raghavan: Inherent Trade-Offs in the Fair Determination of Risk Scores (ITCS 2017)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITCS.2017.43",
+        "arxiv": "1609.05807"
+      }
+    },
+    {
+      "name": "Corbett-Davies, Pierson, Feller, Goel, Huq: Algorithmic Decision Making and the Cost of Fairness (KDD 2017)",
+      "identity": {
+        "doi": "10.1145/3097983.3098095",
+        "arxiv": "1701.08230"
+      }
+    },
+    {
+      "name": "Angelino, Larus-Stone, Alabi, Seltzer, Rudin: Learning Certifiably Optimal Rule Lists (KDD 2017)",
+      "identity": {
+        "doi": "10.1145/3097983.3098047"
+      }
+    },
+    {
+      "name": "Angelino, Larus-Stone, Alabi, Seltzer, Rudin: Learning Certifiably Optimal Rule Lists for Categorical Data (JMLR 18(234), 2018)",
+      "identity": {
+        "url": "https://www.jmlr.org/papers/volume18/17-716/17-716.pdf",
+        "arxiv": "1704.01701"
+      }
+    },
+    {
+      "name": "Dressel, Farid: The Accuracy, Fairness, and Limits of Predicting Recidivism (Science Advances 4(1), 2018)",
+      "identity": {
+        "doi": "10.1126/sciadv.aao5580"
+      }
+    },
+    {
+      "name": "Lin, Jung, Goel, Skeem: The Limits of Human Predictions of Recidivism (Science Advances 6(7), 2020)",
+      "identity": {
+        "doi": "10.1126/sciadv.aaz0652"
+      }
+    },
+    {
+      "name": "Rudin, Wang, Coker: The Age of Secrecy and Unfairness in Recidivism Prediction (Harvard Data Science Review 2(1), 2020)",
+      "identity": {
+        "doi": "10.1162/99608f92.6ed64b30"
+      }
+    },
+    {
+      "name": "Public Safety Assessment: Risk Factors and Formula (Laura and John Arnold Foundation, 2013-2016)",
+      "identity": {
+        "url": "https://www.utcourts.gov/content/dam/resources/reports/psa/docs/PSA-Risk-Factors-and-Formula.pdf"
+      }
+    },
+    {
+      "name": "DeMichele et al.: The Public Safety Assessment: A Re-Validation and Assessment of Predictive Utility and Differential Prediction by Race and Gender in Kentucky (2018)",
+      "identity": {
+        "doi": "10.2139/ssrn.3168452"
+      }
+    },
+    {
+      "name": "Stevenson: Assessing Risk Assessment in Action (Minnesota Law Review 103:303, 2018)",
+      "identity": {
+        "doi": "10.2139/ssrn.3016088",
+        "citation": "103 Minn. L. Rev. 303 (2018)"
+      }
+    },
+    {
+      "name": "Imai, Jiang, Greiner, Halen, Shin: Experimental Evaluation of Algorithm-Assisted Human Decision-Making (JRSS Series A 186(2), 2023)",
+      "identity": {
+        "doi": "10.1093/jrsssa/qnad010",
+        "arxiv": "2012.02845"
+      }
+    },
+    {
+      "name": "Fogliato, Xiang, Lipton, Nagin, Chouldechova: On the Validity of Arrest as a Proxy for Offense (AIES 2021)",
+      "identity": {
+        "doi": "10.1145/3461702.3462538",
+        "arxiv": "2105.04953"
+      }
+    },
+    {
+      "name": "State v. Loomis, Supreme Court of Wisconsin (2016)",
+      "identity": {
+        "citation": "2016 WI 68, 371 Wis. 2d 235, 881 N.W.2d 749",
+        "docket": "2015AP157-CR",
+        "decided": "2016-07-13"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

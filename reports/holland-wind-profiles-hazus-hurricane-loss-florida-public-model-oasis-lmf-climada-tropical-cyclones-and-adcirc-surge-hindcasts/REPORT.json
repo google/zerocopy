@@ -1,0 +1,127 @@
+{
+  "topics": [
+    "domains/hurricane-catastrophe-loss-modelling",
+    "domains/storm-surge-hindcast-validation",
+    "verification/parametric-wind-field-models",
+    "tooling/open-catastrophe-loss-platforms"
+  ],
+  "subjects": [
+    {
+      "name": "CLIMADA (climada_python) tropical-cyclone wind fields, synthetic tracks and impact functions",
+      "identity": {
+        "repository": "CLIMADA-project/climada_python",
+        "revision": "cc0b21516a156384f718e328c59b60138dc1775c"
+      }
+    },
+    {
+      "name": "ADCIRC vortex module, NWS=8 Holland forcing and ASWIP preprocessor",
+      "identity": {
+        "repository": "adcirc/adcirc",
+        "revision": "ae33c51ffc2922f33dbf042e2948701c22e7bdc3"
+      }
+    },
+    {
+      "name": "GeoClaw parametric storm forcing",
+      "identity": {
+        "repository": "clawpack/geoclaw",
+        "revision": "091b28d19ecb1fb0e3b4f1881ccf4ce17d3886a8"
+      }
+    },
+    {
+      "name": "Oasis LMF Python tools (gulmc, gul, fm)",
+      "identity": {
+        "repository": "OasisLMF/OasisLMF",
+        "revision": "02aaf854da34b37cc3f386afc00b481727951e93"
+      }
+    },
+    {
+      "name": "Oasis ktools (eve, getmodel, gulcalc, fmcalc), built and tested",
+      "identity": {
+        "repository": "OasisLMF/ktools",
+        "revision": "4a7506c74a22593b1fd7aa32b32b91c44509be01",
+        "version": "3.12.5"
+      }
+    },
+    {
+      "name": "Holland 1980, An Analytic Model of the Wind and Pressure Profiles in Hurricanes",
+      "identity": {
+        "doi": "10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2"
+      }
+    },
+    {
+      "name": "Holland 2008, A Revised Hurricane Pressure-Wind Model",
+      "identity": {
+        "doi": "10.1175/2008MWR2395.1"
+      }
+    },
+    {
+      "name": "Holland, Belanger and Fritz 2010, A Revised Model for Radial Profiles of Hurricane Winds",
+      "identity": {
+        "doi": "10.1175/2010MWR3317.1"
+      }
+    },
+    {
+      "name": "Vickery et al. 2006, HAZUS-MH Hurricane Model Methodology I: hazard, terrain, wind load",
+      "identity": {
+        "doi": "10.1061/(ASCE)1527-6988(2006)7:2(82)"
+      }
+    },
+    {
+      "name": "Vickery et al. 2006, HAZUS-MH Hurricane Model Methodology II: damage and loss",
+      "identity": {
+        "doi": "10.1061/(ASCE)1527-6988(2006)7:2(94)"
+      }
+    },
+    {
+      "name": "Emanuel et al. 2006, A Statistical Deterministic Approach to Hurricane Risk Assessment",
+      "identity": {
+        "doi": "10.1175/BAMS-87-3-299"
+      }
+    },
+    {
+      "name": "Westerink et al. 2008, basin- to channel-scale unstructured grid surge model for southern Louisiana",
+      "identity": {
+        "doi": "10.1175/2007MWR1946.1"
+      }
+    },
+    {
+      "name": "Aznar-Siguan and Bresch 2019, CLIMADA v1",
+      "identity": {
+        "doi": "10.5194/gmd-12-3085-2019"
+      }
+    },
+    {
+      "name": "Eberenz, Luethi and Bresch 2021, regional tropical cyclone impact functions",
+      "identity": {
+        "doi": "10.5194/nhess-21-393-2021"
+      }
+    },
+    {
+      "name": "Emanuel 2011, Global Warming Effects on U.S. Hurricane Damage (impact-function form)",
+      "identity": {
+        "doi": "10.1175/WCAS-D-11-00007.1"
+      }
+    },
+    {
+      "name": "Knapp and Kruk 2010, interagency best-track wind differences",
+      "identity": {
+        "doi": "10.1175/2009MWR3123.1"
+      }
+    },
+    {
+      "name": "Jelesnianski, Chen and Shaffer 1992, SLOSH, NOAA Technical Report NWS 48",
+      "identity": {
+        "url": "https://slosh.nws.noaa.gov/pubs/data/SLOSH_TR48.pdf",
+        "version": "April 1992"
+      }
+    },
+    {
+      "name": "Florida Commission on Hurricane Loss Projection Methodology meeting summary adopting the hurricane standards",
+      "identity": {
+        "url": "https://fchlpm.sbafla.com/media/4vklsors/meeting-summary-oct-28-2025.pdf",
+        "version": "2025-10-28"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,116 @@
+# CORELS c54cba53b5f6c62472bef508c68c565367ba474c built with: make NGMP=1 corels (g++ 15.2.0, -O2, 96-vCPU x86-64 Linux workstation, Intel Xeon 2.60GHz)
+
+## ./corels -r 0.015 -c 2 -p 1 ../data/compas_train.out ../data/compas_train.label ../data/compas_train.minor
+
+Exited because queue empty
+
+minimum objective: 0.3779734936
+minimum lower bound in queue: 1.0000000000
+
+final num_nodes: 3
+final num_evaluated: 99
+final min_objective: 0.37797
+final accuracy: 0.65203
+final total time: 1.163294
+
+OPTIMAL RULE LIST
+if ({sex:Male,juvenile-crimes:>0}) then ({recidivate-within-two-years:Yes})
+else if ({priors:>3}) then ({recidivate-within-two-years:Yes})
+else ({recidivate-within-two-years:No})
+
+
+wall=1.17 s maxrss=4676 KB
+
+## ./corels -r 0.01 -c 2 -p 1 ../data/compas_train.out ../data/compas_train.label ../data/compas_train.minor
+
+Exited because max number of nodes in the tree was reached
+
+minimum objective: 0.3679734936
+minimum lower bound in queue: 0.3523917399
+
+final num_nodes: 91418
+final num_evaluated: 1924
+final min_objective: 0.36797
+final accuracy: 0.65203
+final total time: 0.856593
+
+OPTIMAL RULE LIST
+if ({sex:Male,juvenile-crimes:>0}) then ({recidivate-within-two-years:Yes})
+else if ({priors:>3}) then ({recidivate-within-two-years:Yes})
+else ({recidivate-within-two-years:No})
+
+
+wall=0.88 s maxrss=36940 KB
+
+## ./corels -r 0.005 -c 2 -p 1 ../data/compas_train.out ../data/compas_train.label ../data/compas_train.minor
+
+Exited because max number of nodes in the tree was reached
+
+minimum objective: 0.3535729696
+minimum lower bound in queue: 0.3349260287
+
+final num_nodes: 95451
+final num_evaluated: 1149
+final min_objective: 0.35357
+final accuracy: 0.66143
+final total time: 0.573814
+
+OPTIMAL RULE LIST
+if ({age:18-20}) then ({recidivate-within-two-years:Yes})
+else if ({sex:Male,age:21-22}) then ({recidivate-within-two-years:Yes})
+else if ({priors:>3}) then ({recidivate-within-two-years:Yes})
+else ({recidivate-within-two-years:No})
+
+
+wall=0.60 s maxrss=35404 KB
+
+## ./corels -r 0.001 -c 2 -p 1 ../data/compas_train.out ../data/compas_train.label ../data/compas_train.minor
+
+Exited because max number of nodes in the tree was reached
+
+minimum objective: 0.3414942210
+minimum lower bound in queue: 0.3222308522
+
+final num_nodes: 97853
+final num_evaluated: 936
+final min_objective: 0.34149
+final accuracy: 0.66251
+final total time: 0.619118
+
+OPTIMAL RULE LIST
+if ({age:23-25,priors:=0}) then ({recidivate-within-two-years:No})
+else if ({age:26-45,priors:>3}) then ({recidivate-within-two-years:Yes})
+else if ({age:26-45,juvenile-crimes:=0}) then ({recidivate-within-two-years:No})
+else if ({age:>45,juvenile-crimes:=0}) then ({recidivate-within-two-years:No})
+else ({recidivate-within-two-years:Yes})
+
+
+wall=0.66 s maxrss=35396 KB
+
+# Larger node limit (filtered to summary lines)
+## ./corels -n 50000000 -r 0.01 -c 2 -p 1 ../data/compas_train.out ../data/compas_train.label ../data/compas_train.minor
+Exited because queue empty
+minimum objective: 0.3679734936
+minimum lower bound in queue: 1.0000000000
+final num_nodes: 3
+final num_evaluated: 3802
+final accuracy: 0.65203
+final total time: 43.941461
+if ({sex:Male,juvenile-crimes:>0}) then ({recidivate-within-two-years:Yes})
+else if ({priors:>3}) then ({recidivate-within-two-years:Yes})
+else ({recidivate-within-two-years:No})
+wall=43.96 s maxrss=48452 KB
+## ./corels -n 50000000 -r 0.005 -c 2 -p 1 ../data/compas_train.out ../data/compas_train.label ../data/compas_train.minor
+Exited because queue empty
+minimum objective: 0.3480936970
+minimum lower bound in queue: 1.0000000000
+final num_nodes: 241
+final num_evaluated: 64646
+final accuracy: 0.67191
+final total time: 467.288825
+if ({age:23-25,priors:2-3}) then ({recidivate-within-two-years:Yes})
+else if ({sex:Male,age:21-22}) then ({recidivate-within-two-years:Yes})
+else if ({age:18-20}) then ({recidivate-within-two-years:Yes})
+else if ({priors:>3}) then ({recidivate-within-two-years:Yes})
+else ({recidivate-within-two-years:No})
+wall=467.51 s maxrss=599928 KB

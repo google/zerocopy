@@ -1,0 +1,65 @@
+sha256 c451db85908b2f7fef1d83203bedf6b71ecda0d5af468d82ae62178f91d0cc7d
+rows_in_file 7214
+cohort filtered: n=6172
+cohort unfiltered: n=7214
+
+== cohort filtered ==
+all                n= 6172 TP=1733 FP=1018 TN=2345 FN=1076 prev=0.4551 FPR=0.3027 FNR=0.3831 PPV=0.6300 NPV=0.6855 acc=0.6607 sel=0.4457 AUC=0.7098
+   chouldechova: FPR=0.302706 identity_rhs=0.302706
+African-American   n= 3175 TP=1188 FP=641 TN=873 FN=473 prev=0.5231 FPR=0.4234 FNR=0.2848 PPV=0.6495 NPV=0.6486 acc=0.6491 sel=0.5761 AUC=0.7043
+   chouldechova: FPR=0.423382 identity_rhs=0.423382
+Caucasian          n= 2103 TP=414 FP=282 TN=999 FN=408 prev=0.3909 FPR=0.2201 FNR=0.4964 PPV=0.5948 NPV=0.7100 acc=0.6719 sel=0.3310 AUC=0.6928
+   chouldechova: FPR=0.220141 identity_rhs=0.220141
+FPR ratio AA/CA=1.9232  FNR ratio CA/AA=1.7430
+fairlearn-style equalized_odds_difference(AA vs CA)=0.2116 demographic_parity_difference=0.2451 PPV gap=0.0547
+decile  n_AA  rate_AA  n_CA  rate_CA
+     1   365    0.233   605    0.212
+     2   346    0.303   321    0.312
+     3   298    0.419   238    0.345
+     4   337    0.469   243    0.403
+     5   323    0.489   200    0.455
+     6   318    0.588   160    0.581
+     7   343    0.609   113    0.602
+     8   301    0.714    96    0.750
+     9   317    0.722    77    0.714
+    10   227    0.837    50    0.700
+African-American: mean decile | no recid = 4.225 (n=1514); | recid = 6.236 (n=1661)
+Caucasian: mean decile | no recid = 2.942 (n=1281); | recid = 4.715 (n=822)
+
+== cohort unfiltered ==
+all                n= 7214 TP=2035 FP=1282 TN=2681 FN=1216 prev=0.4507 FPR=0.3235 FNR=0.3740 PPV=0.6135 NPV=0.6880 acc=0.6537 sel=0.4598 AUC=0.7022
+   chouldechova: FPR=0.323492 identity_rhs=0.323492
+African-American   n= 3696 TP=1369 FP=805 TN=990 FN=532 prev=0.5143 FPR=0.4485 FNR=0.2799 PPV=0.6297 NPV=0.6505 acc=0.6383 sel=0.5882 AUC=0.6918
+   chouldechova: FPR=0.448468 identity_rhs=0.448468
+Caucasian          n= 2454 TP=505 FP=349 TN=1139 FN=461 prev=0.3936 FPR=0.2345 FNR=0.4772 PPV=0.5913 NPV=0.7119 acc=0.6699 sel=0.3480 AUC=0.6931
+   chouldechova: FPR=0.234543 identity_rhs=0.234543
+FPR ratio AA/CA=1.9121  FNR ratio CA/AA=1.7053
+fairlearn-style equalized_odds_difference(AA vs CA)=0.2139 demographic_parity_difference=0.2402 PPV gap=0.0384
+decile  n_AA  rate_AA  n_CA  rate_CA
+     1   398    0.229   681    0.209
+     2   393    0.303   361    0.313
+     3   346    0.419   273    0.341
+     4   385    0.460   285    0.396
+     5   365    0.482   241    0.461
+     6   384    0.560   194    0.572
+     7   400    0.593   143    0.615
+     8   359    0.682   114    0.719
+     9   380    0.708    98    0.694
+    10   286    0.794    64    0.703
+African-American: mean decile | no recid = 4.396 (n=1795); | recid = 6.287 (n=1901)
+Caucasian: mean decile | no recid = 3.032 (n=1488); | recid = 4.818 (n=966)
+
+age column minus age at screening date (unfiltered): {1: 336, 2: 2743, 3: 3845, 4: 290}
+filtered rows whose age_cat differs from the category of age at screening: 1012
+logit(age,priors) [age column] 10-fold CV acc=0.6790 AUC=0.7277
+logit(age,priors) [age at screening] 10-fold CV acc=0.6745 AUC=0.7228
+COMPAS decile AUC on same cohort=0.7098
+
+logit(age, priors) full-data standardized coefficients [b0, age, priors]: [-0.1781, -0.5518, 0.8293]
+COMPAS decile>=5               acc=0.6607  AA: FPR=0.4234 FNR=0.2848 PPV=0.6495  CA: FPR=0.2201 FNR=0.4964 PPV=0.5948
+logit(age,priors) 10-fold CV   acc=0.6790  AA: FPR=0.2616 FNR=0.3739 PPV=0.7242  CA: FPR=0.1272 FNR=0.6363 PPV=0.6472
+CORELS README rule list        acc=0.6585  AA: FPR=0.4908 FNR=0.2137 PPV=0.6374  CA: FPR=0.2779 FNR=0.4538 PPV=0.5578
+Angelino et al. Fig. 1 rule list acc=0.6727  AA: FPR=0.3884 FNR=0.2944 PPV=0.6659  CA: FPR=0.2139 FNR=0.5024 PPV=0.5988
+bootstrap B=1000: COMPAS acc 95% [0.6492, 0.6721]; logit-COMPAS diff 95% [+0.0063, +0.0308]; rule-COMPAS diff 95% [-0.0151, +0.0107]; fig1rule-COMPAS diff 95% [-0.0011, +0.0250]
+elapsed_seconds 11.36
+wall=11.42 s maxrss=50548 KB

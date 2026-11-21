@@ -1,0 +1,160 @@
+# Recorded outputs (2026-11-21 UTC), x86-64 Linux workstation (Intel Xeon @ 2.60GHz, 96 logical CPUs, 236 GiB RAM)
+# Toolchain:
+gcc (Debian 15.2.0-14) 15.2.0
+g++ (Debian 15.2.0-14) 15.2.0
+GNU Fortran (Debian 15.2.0-14) 15.2.0
+Linux x86_64 (Debian-based)
+Python 3.13, numpy 2.3.5
+
+## ktools 4a7506c7 build (autoreconf -fi; ./configure --disable-parquet; /usr/bin/time -v make -j8)
+autoreconf:
+real	0m4.641s
+configure:
+real	0m5.743s
+	User time (seconds): 61.04
+	System time (seconds): 5.50
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:45.18
+	Maximum resident set size (kbytes): 232080
+
+## ktools make check (/usr/bin/time -v make check)
+	User time (seconds): 12.80
+	System time (seconds): 1.71
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:39.60
+	Maximum resident set size (kbytes): 10976
+sha1 comparisons reported OK: 200; FAILED: 0
+
+## fm_alloc case1 (ktest outputs), sidx=1 losses by output_id
+alloc1: 500.00 500.00 1500.00 1500.00 1500.00 1500.00 500.00 500.00 
+alloc2: 400.00 800.00 2400.00 400.00 400.00 2400.00 800.00 400.00 
+case1 sha256-prefix alloc2=a42df347e7427513 alloc3=a42df347e7427513
+case2 sha256-prefix alloc2=2f0a33b2c98ca337 alloc3=2f0a33b2c98ca337
+case3 sha256-prefix alloc2=87a3079f1440b39d alloc3=87a3079f1440b39d
+case4 sha256-prefix alloc2=87a3079f1440b39d alloc3=87a3079f1440b39d
+case5 sha256-prefix alloc2=c3da69d243a62836 alloc3=c3da69d243a62836
+
+## sh ktools_probe.sh <ktools-tree> /tmp/ktx   (validatedamagebin warning lines elided)
+== (1) timing: eve -n 1 1 | getmodel | gulcalc -S<n> -L0 -a0 -i - | fmcalc
+S=10 wall_s=1.39 maxrss_kB=3904
+S=10 gul-only wall_s=1.32 maxrss_kB=4720
+30296 fm_S10.bin
+1127040 gul_S10.bin
+S=100 wall_s=1.41 maxrss_kB=4700
+S=100 gul-only wall_s=1.35 maxrss_kB=3920
+157560 fm_S100.bin
+7466640 gul_S100.bin
+S=1000 wall_s=2.03 maxrss_kB=3932
+S=1000 gul-only wall_s=1.79 maxrss_kB=3920
+1432360 fm_S1000.bin
+70862640 gul_S1000.bin
+== (2) baseline: count non-finite losses with shipped damage bins (interpolation at bin centre)
+rows: 915721  nonfinite: 0
+== (2) stressed bins: interpolation = bin_from + 0.1*(bin_to-bin_from)
+validatedamagebin: ERROR lines=0 WARNING lines=100
+INFO: All Damage Bin Dictionary file validation checks have passed. Please take note of any warnings.
+rows: 915721  nonfinite: 0
+first non-finite rows (if any):
+
+## python3 gul_mean_check.py gul_base.csv / gul_stress.csv
+base:   pairs=8070 aggregate_ratio=1.00776 median_pair_ratio=0.97438 se_of_mean_pair_ratio=0.00979
+stress: pairs=8070 aggregate_ratio=1.01192 median_pair_ratio=0.97744 se_of_mean_pair_ratio=0.01020
+## python3 gul_paired_shift.py gul_base.csv gul_stress.csv
+pairs=8805 sum_analytic_shift=-203239.1 sum_sample_shift=-164109.7 ratio=0.8075
+
+## python3 gul_interp_toy.py
+x = (interpolation-bin_from)/(bin_to-bin_from); sampled damage reported as fraction of bin width
+   x    mean_of_samples  max_sample  (mean should equal x if the declared mean is honoured)
+0.1000          0.1794      0.4167
+0.2000          0.2263      0.5556
+0.3000          0.3009      0.8333
+0.3333          0.3333      1.0000
+0.4000          0.4000      1.0000
+0.6000          0.6000      1.0000
+0.6667          0.6667      1.0000
+0.7000          0.6991      1.0000
+0.8000          0.7737      1.0000
+0.9000          0.8206      1.0000
+closed form: discriminant at r = prob_to equals 4 h^2/w^2 (3x-1)^2; at r = prob_from it is bb^2
+x=1/3, r=prob_to, 200000 random float32 bins: ktools-style NaN count = 38424, OasisLMF-style NaN count = 0
+
+## sh geoclaw_b2008_probe.sh /tmp/gc
+ dp_hPa  vt_m/s   B(dp in hPa, dpdt hPa/h)   B(dp in Pa, dpdt Pa/s as passed by set_holland_2008_fields)
+   20.0    5.00               1.19253               1.00000
+   20.0    0.00               1.00000               2.50000
+   50.0    5.00               1.35473               1.00000
+   50.0    0.00               1.04000               2.50000
+   80.0    5.00               1.44346               1.00000
+   80.0    0.00               1.16840               2.50000
+  100.0    5.00               1.46143               1.00000
+  100.0    0.00               1.21000               2.50000
+sha256(parametric_met_forcing_module.f90)=cc6de93dd725382e5a9c722b16b8a80ba08f9c8161a69322640a6b09933e079a
+
+## sh adcirc_uvp_probe.sh /tmp/au
+      speedAtRmax = SQRT(
+     &           (Vmax*kt2ms)**2.d0 *
+     &                  * EXP(0.d0)
+     &             + (nm2m*dist*percentCoriolis
+     &                           *corio/2.d0)**2.d0)
+     &            - nm2m*dist*percentCoriolis*corio/2.d0
+speedAtRmax (compiled) =    43.594888
+sqrt(V^2+c^2)-c        =    43.594888
+
+## python3 climada_profile_probe.py
+sha256(source) = 28d30b5a9d3f3625a4b2e85ec51c9dae8977ce64492eeaa6f2d20d8a73cea830
+extracted _vgrad: source lines 79-95
+extracted _rho_air: source lines 321-361
+extracted _bs_holland_2008: source lines 364-434
+extracted _v_max_s_holland_2008: source lines 437-465
+extracted _B_holland_1980: source lines 468-508
+extracted _b_holland_clip_interval: source lines 511-532
+extracted _stat_holland_1980: source lines 702-768
+extracted _compute_angular_windspeeds_h1980: source lines 158-202
+extracted _compute_angular_windspeeds_h08: source lines 205-246
+H1980: hol_b=1.30251 rho=1.150 vgrad=50.0000
+H08: hol_b=1.39251 rho=1.150 vgrad=nan
+r_km        10      20      30      40      50      60      80     120     200     300
+H1980    8.463  33.397  42.415  43.905  42.779  40.794  36.418  29.034  19.536  12.664
+H08      6.829  36.554  48.456  50.481  49.066  46.555  41.088  32.090  20.905  13.094
+(angular wind speed, m/s; translational vector not yet added; H1980 already x0.9)
+H08-vt   1.829  31.554  43.456  45.481  45.066  43.221  38.588  30.424  19.905  12.427   (H08 after the l.1240-1242 subtraction; comparable with H1980 row)
+ratio   0.2161  0.9448  1.0245  1.0359  1.0535  1.0595  1.0596  1.0479  1.0189  0.9813
+H08 rho_air_const=None: rho=1.1163 hol_b=1.39251 v(Rmax)=51.256
+max|upstream-toy| H1980 = 0.00e+00 m/s, H08 = 0.00e+00 m/s
+_stat_holland_1980: 1000000 evaluations, best of 5 = 49.5 ms (20.2 M evals/s)
+
+## python3 holland_toy.py
+Reference storm: Vmax(1-min,10 m)=50.0 m/s, pc=950.0 hPa, penv=1010.0 hPa (CLIMADA only), Rmax=40.0 km, lat=25.0, vt=5.0 m/s
+r_km                          20      40      60      80     120     200     300
+CLIMADA H1980 [1-min]      33.40   43.90   40.79   36.42   29.03   19.54   12.66
+CLIMADA H08   [1-min]      36.55   50.48   46.55   41.09   32.09   20.90   13.09
+ADCIRC NWS8   [10-min]     28.35   39.20   36.12   31.85   24.82   16.09   10.00
+GeoClaw h80   [10-min]     30.31   38.64   36.09   32.48   26.28   18.12   12.07
+GeoClaw h08 coded[10m]     33.35   38.44   36.51   33.76   28.74   21.48   15.55
+GeoClaw h08 hPa [10m]      32.91   45.71   42.13   37.15   28.99   18.87   11.83
+B: ADCIRC NWS8=1.3947 GeoClaw h80=1.2405 GeoClaw h08 as coded=1.0000 (Vmax_s=44.89) vs hPa=1.4022 (Vmax_s=53.16)
+Same table with 10-min outputs divided by their own 1-min->10-min factor:
+CLIMADA H1980 [1-min]      33.40   43.90   40.79   36.42   29.03   19.54   12.66
+CLIMADA H08   [1-min]      36.55   50.48   46.55   41.09   32.09   20.90   13.09
+ADCIRC NWS8   [10-min]     31.76   43.90   40.46   35.68   27.80   18.02   11.20
+GeoClaw h80   [10-min]     34.44   43.90   41.01   36.91   29.86   20.59   13.72
+GeoClaw h08 coded[10m]     37.90   43.68   41.49   38.37   32.66   24.41   17.68
+GeoClaw h08 hPa [10m]      37.39   51.94   47.88   42.22   32.94   21.44   13.44
+
+B-clamp interaction (vt=0): B = rho*e*Vg^2/dp, Vg = Vmax/0.9, dp=60 hPa, rho=1.15
+Vmax= 40.0 B_raw= 1.029 B_used=1.029 cyclostrophic peak, B/rho*dp form x0.9 =  40.00 m/s; Vm^2 form x0.9 =  40.00 m/s
+Vmax= 50.0 B_raw= 1.608 B_used=1.608 cyclostrophic peak, B/rho*dp form x0.9 =  50.00 m/s; Vm^2 form x0.9 =  50.00 m/s
+Vmax= 60.0 B_raw= 2.316 B_used=2.316 cyclostrophic peak, B/rho*dp form x0.9 =  60.00 m/s; Vm^2 form x0.9 =  60.00 m/s
+Vmax= 70.0 B_raw= 3.152 B_used=2.500 cyclostrophic peak, B/rho*dp form x0.9 =  62.34 m/s; Vm^2 form x0.9 =  70.00 m/s
+
+Air-density choice: B is linear in rho -> B(1.293)/B(1.15) = 1.1243
+ADCIRC NWS8 recipe, rhoAir 1.293 (B=1.3947) vs 1.15 (B=1.2405); ratio of 10-m winds:
+r_km      20      40      60      80     120     200     300
+rat   0.9220  1.0000  0.9866  0.9667  0.9310  0.8749  0.8167
+Stress elasticity with ADCIRC Garratt drag Cd=1e-3*(0.75+0.067U), cap 0.0035 (U*=41.04 m/s):
+  U=20.0 m/s  d ln(tau)/d ln(U) = 2.641  -> 0.8928 vs 0.88 averaging factor: stress ratio 1.0389
+  U=30.0 m/s  d ln(tau)/d ln(U) = 2.728  -> 0.8928 vs 0.88 averaging factor: stress ratio 1.0402
+  U=40.0 m/s  d ln(tau)/d ln(U) = 2.781  -> 0.8928 vs 0.88 averaging factor: stress ratio 1.0410
+  U=45.0 m/s  d ln(tau)/d ln(U) = 2.000  -> 0.8928 vs 0.88 averaging factor: stress ratio 1.0293
+
+ADCIRC NWS19 uvp rescale factor Vmax/speedAtRmax (Vmax_BL=55.6 m/s, lat 25):
+r_km      40      80     120     200     300     400
+fac   1.0224  1.0454  1.0688  1.1171  1.1802  1.2462

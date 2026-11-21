@@ -17450,6 +17450,162 @@
         "verification/io-automata"
       ]
     },
+    "compas-propublica-audit-dressel-farid-lay-prediction-chouldechova-kleinberg-impossibility-psa-revalidation-and-arrest-label-validity": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "file_sha256_compas-scores-two-years.csv": "c451db85908b2f7fef1d83203bedf6b71ecda0d5af468d82ae62178f91d0cc7d",
+            "file_sha256_truth_tables.py": "a1d3cacf9fa5bb43d8a1f6c48cdda1d188a00ff0931f8b1dd35f3ea43d5c81cf",
+            "repository": "propublica/compas-analysis",
+            "revision": "bafff5da3f2e45eca6c2d5055faad269defd135a"
+          },
+          "name": "ProPublica COMPAS audit data and analysis (compas-analysis)"
+        },
+        {
+          "identity": {
+            "path": "aif360/datasets/compas_dataset.py",
+            "repository": "Trusted-AI/AIF360",
+            "revision": "34877916b789e569edf5c0aac033403ca90f34b3"
+          },
+          "name": "AI Fairness 360 COMPAS dataset loader"
+        },
+        {
+          "identity": {
+            "path": "fairlearn/metrics/_fairness_metrics.py; fairlearn/postprocessing/_threshold_optimizer.py",
+            "repository": "fairlearn/fairlearn",
+            "revision": "34e44252a292159eecb67d94f6ef7f391d69c8bd"
+          },
+          "name": "Fairlearn group metrics and threshold post-processing"
+        },
+        {
+          "identity": {
+            "repository": "corels/corels",
+            "revision": "c54cba53b5f6c62472bef508c68c565367ba474c"
+          },
+          "name": "CORELS certifiably optimal rule lists (reference C++ implementation)"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/0093854808326545"
+          },
+          "name": "Brennan, Dieterich, Ehret: Evaluating the Predictive Validity of the COMPAS Risk and Needs Assessment System (Criminal Justice and Behavior 36(1), 2009)"
+        },
+        {
+          "identity": {
+            "date": "2016-05-23",
+            "url": "https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm"
+          },
+          "name": "Larson, Mattu, Kirchner, Angwin: How We Analyzed the COMPAS Recidivism Algorithm (ProPublica, 2016-05-23)"
+        },
+        {
+          "identity": {
+            "citation": "Federal Probation 80(2):38-46, September 2016",
+            "url": "https://www.uscourts.gov/sites/default/files/80_2_6_0.pdf"
+          },
+          "name": "Flores, Bechtel, Lowenkamp: False Positives, False Negatives, and False Analyses (Federal Probation 80(2), 2016)"
+        },
+        {
+          "identity": {
+            "arxiv": "1703.00056",
+            "doi": "10.1089/big.2016.0047"
+          },
+          "name": "Chouldechova: Fair Prediction with Disparate Impact (Big Data 5(2), 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "1609.05807",
+            "doi": "10.4230/LIPIcs.ITCS.2017.43"
+          },
+          "name": "Kleinberg, Mullainathan, Raghavan: Inherent Trade-Offs in the Fair Determination of Risk Scores (ITCS 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "1701.08230",
+            "doi": "10.1145/3097983.3098095"
+          },
+          "name": "Corbett-Davies, Pierson, Feller, Goel, Huq: Algorithmic Decision Making and the Cost of Fairness (KDD 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3097983.3098047"
+          },
+          "name": "Angelino, Larus-Stone, Alabi, Seltzer, Rudin: Learning Certifiably Optimal Rule Lists (KDD 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "1704.01701",
+            "url": "https://www.jmlr.org/papers/volume18/17-716/17-716.pdf"
+          },
+          "name": "Angelino, Larus-Stone, Alabi, Seltzer, Rudin: Learning Certifiably Optimal Rule Lists for Categorical Data (JMLR 18(234), 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1126/sciadv.aao5580"
+          },
+          "name": "Dressel, Farid: The Accuracy, Fairness, and Limits of Predicting Recidivism (Science Advances 4(1), 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1126/sciadv.aaz0652"
+          },
+          "name": "Lin, Jung, Goel, Skeem: The Limits of Human Predictions of Recidivism (Science Advances 6(7), 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1162/99608f92.6ed64b30"
+          },
+          "name": "Rudin, Wang, Coker: The Age of Secrecy and Unfairness in Recidivism Prediction (Harvard Data Science Review 2(1), 2020)"
+        },
+        {
+          "identity": {
+            "url": "https://www.utcourts.gov/content/dam/resources/reports/psa/docs/PSA-Risk-Factors-and-Formula.pdf"
+          },
+          "name": "Public Safety Assessment: Risk Factors and Formula (Laura and John Arnold Foundation, 2013-2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.2139/ssrn.3168452"
+          },
+          "name": "DeMichele et al.: The Public Safety Assessment: A Re-Validation and Assessment of Predictive Utility and Differential Prediction by Race and Gender in Kentucky (2018)"
+        },
+        {
+          "identity": {
+            "citation": "103 Minn. L. Rev. 303 (2018)",
+            "doi": "10.2139/ssrn.3016088"
+          },
+          "name": "Stevenson: Assessing Risk Assessment in Action (Minnesota Law Review 103:303, 2018)"
+        },
+        {
+          "identity": {
+            "arxiv": "2012.02845",
+            "doi": "10.1093/jrsssa/qnad010"
+          },
+          "name": "Imai, Jiang, Greiner, Halen, Shin: Experimental Evaluation of Algorithm-Assisted Human Decision-Making (JRSS Series A 186(2), 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2105.04953",
+            "doi": "10.1145/3461702.3462538"
+          },
+          "name": "Fogliato, Xiang, Lipton, Nagin, Chouldechova: On the Validity of Arrest as a Proxy for Offense (AIES 2021)"
+        },
+        {
+          "identity": {
+            "citation": "2016 WI 68, 371 Wis. 2d 235, 881 N.W.2d 749",
+            "decided": "2016-07-13",
+            "docket": "2015AP157-CR"
+          },
+          "name": "State v. Loomis, Supreme Court of Wisconsin (2016)"
+        }
+      ],
+      "topics": [
+        "domains/pretrial-and-recidivism-risk-instruments",
+        "verification/risk-score-calibration-and-error-balance",
+        "domains/criminal-justice-algorithm-audits",
+        "tooling/interpretable-rule-list-baselines"
+      ]
+    },
     "compcert-sel4-everest-pass-composition-and-proof-maintenance": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -36359,6 +36515,133 @@
         "agents/formal-statement-misformalization-audits",
         "lean/delaborator-round-trip-fidelity",
         "verification/statement-audit-trust-boundary"
+      ]
+    },
+    "holland-wind-profiles-hazus-hurricane-loss-florida-public-model-oasis-lmf-climada-tropical-cyclones-and-adcirc-surge-hindcasts": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CLIMADA-project/climada_python",
+            "revision": "cc0b21516a156384f718e328c59b60138dc1775c"
+          },
+          "name": "CLIMADA (climada_python) tropical-cyclone wind fields, synthetic tracks and impact functions"
+        },
+        {
+          "identity": {
+            "repository": "adcirc/adcirc",
+            "revision": "ae33c51ffc2922f33dbf042e2948701c22e7bdc3"
+          },
+          "name": "ADCIRC vortex module, NWS=8 Holland forcing and ASWIP preprocessor"
+        },
+        {
+          "identity": {
+            "repository": "clawpack/geoclaw",
+            "revision": "091b28d19ecb1fb0e3b4f1881ccf4ce17d3886a8"
+          },
+          "name": "GeoClaw parametric storm forcing"
+        },
+        {
+          "identity": {
+            "repository": "OasisLMF/OasisLMF",
+            "revision": "02aaf854da34b37cc3f386afc00b481727951e93"
+          },
+          "name": "Oasis LMF Python tools (gulmc, gul, fm)"
+        },
+        {
+          "identity": {
+            "repository": "OasisLMF/ktools",
+            "revision": "4a7506c74a22593b1fd7aa32b32b91c44509be01",
+            "version": "3.12.5"
+          },
+          "name": "Oasis ktools (eve, getmodel, gulcalc, fmcalc), built and tested"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2"
+          },
+          "name": "Holland 1980, An Analytic Model of the Wind and Pressure Profiles in Hurricanes"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/2008MWR2395.1"
+          },
+          "name": "Holland 2008, A Revised Hurricane Pressure-Wind Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/2010MWR3317.1"
+          },
+          "name": "Holland, Belanger and Fritz 2010, A Revised Model for Radial Profiles of Hurricane Winds"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)1527-6988(2006)7:2(82)"
+          },
+          "name": "Vickery et al. 2006, HAZUS-MH Hurricane Model Methodology I: hazard, terrain, wind load"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)1527-6988(2006)7:2(94)"
+          },
+          "name": "Vickery et al. 2006, HAZUS-MH Hurricane Model Methodology II: damage and loss"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/BAMS-87-3-299"
+          },
+          "name": "Emanuel et al. 2006, A Statistical Deterministic Approach to Hurricane Risk Assessment"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/2007MWR1946.1"
+          },
+          "name": "Westerink et al. 2008, basin- to channel-scale unstructured grid surge model for southern Louisiana"
+        },
+        {
+          "identity": {
+            "doi": "10.5194/gmd-12-3085-2019"
+          },
+          "name": "Aznar-Siguan and Bresch 2019, CLIMADA v1"
+        },
+        {
+          "identity": {
+            "doi": "10.5194/nhess-21-393-2021"
+          },
+          "name": "Eberenz, Luethi and Bresch 2021, regional tropical cyclone impact functions"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/WCAS-D-11-00007.1"
+          },
+          "name": "Emanuel 2011, Global Warming Effects on U.S. Hurricane Damage (impact-function form)"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/2009MWR3123.1"
+          },
+          "name": "Knapp and Kruk 2010, interagency best-track wind differences"
+        },
+        {
+          "identity": {
+            "url": "https://slosh.nws.noaa.gov/pubs/data/SLOSH_TR48.pdf",
+            "version": "April 1992"
+          },
+          "name": "Jelesnianski, Chen and Shaffer 1992, SLOSH, NOAA Technical Report NWS 48"
+        },
+        {
+          "identity": {
+            "url": "https://fchlpm.sbafla.com/media/4vklsors/meeting-summary-oct-28-2025.pdf",
+            "version": "2025-10-28"
+          },
+          "name": "Florida Commission on Hurricane Loss Projection Methodology meeting summary adopting the hurricane standards"
+        }
+      ],
+      "topics": [
+        "domains/hurricane-catastrophe-loss-modelling",
+        "domains/storm-surge-hindcast-validation",
+        "verification/parametric-wind-field-models",
+        "tooling/open-catastrophe-loss-platforms"
       ]
     },
     "homomorphic-encryption-compilers-and-differential-privacy-types": {
