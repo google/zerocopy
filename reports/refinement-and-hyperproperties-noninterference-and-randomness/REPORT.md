@@ -262,7 +262,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any trace type `Trace` and hyperproperty `H` over `System Trace`, `H` is subset-closed if and only if every semantic whole-program refining compiler (`C : System Trace → System Trace` satisfying `C S ⊑ S` for all `S`, including transformations that delete arbitrary behaviors) preserves `H`.
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.subsetClosed_iff_preservedByAllRefiningCompilers
+  -- lean/ToyHyper/Core.lean:218-220
+  theorem subsetClosed_iff_preservedByAllRefiningCompilers
       {Trace : Type u} (H : Hyperprop Trace) :
       SubsetClosed H ↔ PreservedByAllRefiningCompilers H
   -- Unfolded:
@@ -284,7 +285,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any trace type `Trace` and systems `S'`, `S : System Trace`, `S'` refines `S` (`Refines S' S`) if and only if every subset-closed hyperproperty satisfied by `S` is also satisfied by `S'`.
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.refines_iff_preserves_all_subsetClosed
+  -- lean/ToyHyper/Core.lean:247-249
+  theorem refines_iff_preserves_all_subsetClosed
       {Trace : Type u} (S' S : System Trace) :
       Refines S' S ↔ ∀ H : Hyperprop Trace, SubsetClosed H → H S → H S'
   -- Unfolded:
@@ -306,7 +308,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any trace type `Trace` and trace property `P : Trace → Prop`, its hyperproperty lifting `LiftTraceProp P` (requiring every trace of `S` to satisfy `P`) is subset-closed (corollary of `universalKHyperprop_subsetClosed` at `k = 1` via `liftTraceProp_iff_universal1Hyperprop`).
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.liftTraceProp_subsetClosed
+  -- lean/ToyHyper/Core.lean:274-276
+  theorem liftTraceProp_subsetClosed
       {Trace : Type u} (P : TraceProp Trace) :
       SubsetClosed (LiftTraceProp P)
   -- Unfolded:
@@ -326,7 +329,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any trace type `Trace`, arity `k : Nat`, and `k`-ary trace relation `Rel : (Fin k → Trace) → Prop`, the universal `k`-trace hyperproperty `UniversalKHyperprop k Rel` is subset-closed.
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.universalKHyperprop_subsetClosed
+  -- lean/ToyHyper/Core.lean:288-290
+  theorem universalKHyperprop_subsetClosed
       {Trace : Type u} (k : Nat) (Rel : (Fin k → Trace) → Prop) :
       SubsetClosed (UniversalKHyperprop k Rel)
   -- Unfolded:
@@ -348,7 +352,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any trace types `L`, `H`, `O` and systems `S`, `S'` over `IOTrace L H O`, if `S'` refines `S` (`Refines S' S`) and `S` is observationally deterministic (`ObsDet S`), then `S'` is observationally deterministic (`ObsDet S'`) (corollary of `universalKHyperprop_subsetClosed` at `k = 2` via `obsDet_iff_universal2Hyperprop`).
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.obsDet_preserved_by_refinement
+  -- lean/ToyHyper/Noninterference.lean:492-496
+  theorem obsDet_preserved_by_refinement
       {L : Type u} {H : Type v} {O : Type w}
       {S S' : System (IOTrace L H O)}
       (hRef : Refines S' S) (hOD : ObsDet S) :
@@ -374,7 +379,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** Generalized noninterference is not preserved by trace-inclusion refinement even when both systems are input-total and the refinement is deterministic: on `IOTrace Unit Bool Bool`, `fullIOSystem` satisfies `GNI` and `InputTotal`, `leakHighSystem` refines `fullIOSystem` and satisfies `InputTotal` and `Deterministic`, yet `leakHighSystem` violates `GNI`.
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.gni_not_preserved_by_inputTotal_refinement :
+  -- lean/ToyHyper/Noninterference.lean:548-554
+  theorem gni_not_preserved_by_inputTotal_refinement :
       GNI fullIOSystem ∧
       InputTotal fullIOSystem ∧
       Refines leakHighSystem fullIOSystem ∧
@@ -401,7 +407,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any trace types `L`, `H`, `O`, system `S` over `IOTrace L H O`, and public-view predicate `P : L → O → Prop`, if `S` satisfies `GNI` then its trace-inclusion refinement `lowViewRestrict S P` (retaining traces `t` of `S` with `P t.lowIn t.lowOut`) also satisfies `GNI`.
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.gni_preserved_by_lowViewRestrict
+  -- lean/ToyHyper/Noninterference.lean:572-576
+  theorem gni_preserved_by_lowViewRestrict
       {L : Type u} {H : Type v} {O : Type w}
       {S : System (IOTrace L H O)} (P : L → O → Prop)
       (hGNI : GNI S) :
@@ -425,7 +432,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any `k > 0` and any chosen constant value `v : Fin (2^k)`, `FullRangeSystem k` ranges over all `2^k` values, yet the nonempty constant-output system `ConstSystem k v` is a trace-inclusion refinement of `FullRangeSystem k` that fails `RangesOverAll (2^k)`.
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.fullRange_const_refinement_not_rangesOverAll_of_pos
+  -- lean/ToyHyper/Randomness.lean:491-496
+  theorem fullRange_const_refinement_not_rangesOverAll_of_pos
       (k : Nat) (hk : 0 < k) (v : Fin (2 ^ k)) :
       RangesOverAll (2 ^ k) (FullRangeSystem k) ∧
       Refines (ConstSystem k v) (FullRangeSystem k) ∧
@@ -452,7 +460,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For every `k > 0`, `uniformDist k` over `Fin (2^k)` has exact integer min-entropy `k` (at least `k` and not `k + 1`), while `constDist k` satisfies support trace inclusion (`Refines (support (constDist k)) (support (uniformDist k))`), has exact integer min-entropy `0` (at least `0` and not `1`), and fails min-entropy `k`.
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.uniform_support_refined_by_const_loses_minEntropy_of_pos
+  -- lean/ToyHyper/Randomness.lean:570-577
+  theorem uniform_support_refined_by_const_loses_minEntropy_of_pos
       (k : Nat) (hk : 0 < k) :
       HasMinEntropyAtLeast (uniformDist k) k ∧
       ¬ HasMinEntropyAtLeast (uniformDist k) (k + 1) ∧
@@ -480,14 +489,15 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any valid finite discrete distributions `d`, `d' : FinDist n` and bound `k : Nat`, if `d'` and `d` represent the same probability distribution (`SameDist d' d`) and `d` has min-entropy at least `k` (`HasMinEntropyAtLeast d k`), then `d'` has min-entropy at least `k` (well-definedness of the min-entropy bound under weight rescaling, derived from `proportionalWeights_preserves_minEntropy_of_valid_source`).
 - **Lean statement (compact and unfolded, with hashed raw-table core `Toy.Hyper.proportionalWeights_preserves_minEntropy_of_valid_source`):**
   ```lean
-  theorem Toy.Hyper.sameDist_preserves_minEntropy
-      {n k : Nat} {d d' : FinDist n}
+  -- lean/ToyHyper/Randomness.lean:723-726
+  theorem sameDist_preserves_minEntropy {n k : Nat} {d d' : FinDist n}
       (hSame : SameDist d' d)
       (hEnt : HasMinEntropyAtLeast d k) :
       HasMinEntropyAtLeast d' k
 
+  -- lean/ToyHyper/Randomness.lean:668-673
   -- Unbundled raw-table core (hashed in audit/statements.json):
-  theorem Toy.Hyper.proportionalWeights_preserves_minEntropy_of_valid_source
+  theorem proportionalWeights_preserves_minEntropy_of_valid_source
       {n k : Nat} {w' w : Fin n → Nat}
       (hValid : ValidWeights w)
       (hProp : ProportionalWeights w' w)
@@ -520,7 +530,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** On the XOR choice presentation `xorSpecFn (_ h c => xor h c)` (whose trace set `SpecOf xorSpecFn` equals `fullIOSystem`), `SpecOf xorSpecFn` satisfies `GNI` and `InputTotal`, yet every secret-independent choice function `g : Unit → Bool` yields a deterministic, input-total refinement violating `GNI` (equivalently, corollary `xorPresentation_gni_choice_not_secretIndependent` proves every `GNI`-preserving choice index `r` on `xorSpecFn` fails `SecretIndependent r`).
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.secretIndepDeterminize_fails_gni_on_xorPresentation :
+  -- lean/ToyHyper/Determinization.lean:266-273
+  theorem secretIndepDeterminize_fails_gni_on_xorPresentation :
       GNI (SpecOf xorSpecFn) ∧
       InputTotal (SpecOf xorSpecFn) ∧
       (∀ g : Unit → Bool,
@@ -528,10 +539,12 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
         Deterministic (secretIndepDeterminize xorSpecFn g) ∧
         InputTotal (secretIndepDeterminize xorSpecFn g) ∧
         ¬ GNI (secretIndepDeterminize xorSpecFn g))
+  -- lean/ToyHyper/Determinization.lean:300-303
   -- Where xorSpecFn : Unit → Bool → Bool → Bool := fun _ h c => xor h c.
   -- Equivalent corollary on arbitrary choice indices r : Unit → Bool → Bool:
-  theorem Toy.Hyper.xorPresentation_gni_choice_not_secretIndependent
-      (r : Unit → Bool → Bool) (hGNI : GNI (determinize xorSpecFn r)) :
+  theorem xorPresentation_gni_choice_not_secretIndependent
+      (r : Unit → Bool → Bool)
+      (hGNI : GNI (determinize xorSpecFn r)) :
       ¬ SecretIndependent r
   ```
 - **Hypothesis ledger:** None on `secretIndepDeterminize_fails_gni_on_xorPresentation` (unconditionally proved by exhausting `g : Unit → Bool`). On corollary `xorPresentation_gni_choice_not_secretIndependent`, hypothesis `hGNI` is `tight` (`Toy.Hyper.xorPresentation_gni_choice_counterexample_no_gni`: `r _ _ = false` fails `GNI` and satisfies `SecretIndependent`) with non-vacuity witness `Toy.Hyper.xorPresentation_gni_choice_nonvacuity` (`r _ h = h`).
@@ -551,13 +564,15 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any trace types `L`, `H`, `O` and any (possibly partial) system `S` over `IOTrace L H O`, `S` satisfies both `GNI` and `Deterministic` if and only if `S` satisfies both `ObsDet` and `RectangularDomain` (with equivalent conditional corollary `gni_iff_obsDet_and_rectangularDomain_of_deterministic` and minimal directional lemmas `gni_imp_rectangularDomain`, `obsDet_of_gni_of_deterministic`, `gni_of_obsDet_of_rectangularDomain`).
 - **Lean statement (compact and unfolded, with hashed conditional corollary `Toy.Hyper.gni_iff_obsDet_and_rectangularDomain_of_deterministic`):**
   ```lean
-  theorem Toy.Hyper.gni_and_deterministic_iff_obsDet_and_rectangularDomain
+  -- lean/ToyHyper/Determinization.lean:386-389
+  theorem gni_and_deterministic_iff_obsDet_and_rectangularDomain
       {L : Type u} {H : Type v} {O : Type w}
       (S : System (IOTrace L H O)) :
       GNI S ∧ Deterministic S ↔ ObsDet S ∧ RectangularDomain S
 
+  -- lean/ToyHyper/Determinization.lean:395-399
   -- Equivalent conditional corollary (hashed in audit/statements.json):
-  theorem Toy.Hyper.gni_iff_obsDet_and_rectangularDomain_of_deterministic
+  theorem gni_iff_obsDet_and_rectangularDomain_of_deterministic
       {L : Type u} {H : Type v} {O : Type w}
       {S : System (IOTrace L H O)}
       (hDet : Deterministic S) :
@@ -582,14 +597,16 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any trace types `L`, `H`, `O` and any deterministic, input-total single-step system `S` over `IOTrace L H O` (`Deterministic S` and `InputTotal S`), generalized noninterference (`GNI S`) holds if and only if observational determinism (`ObsDet S`) holds (corollary of `gni_and_deterministic_iff_obsDet_and_rectangularDomain`).
 - **Lean statement (compact and unfolded, with hashed weaker-domain corollary `Toy.Hyper.gni_iff_obsDet_of_deterministic_acceptanceIgnoresHigh`):**
   ```lean
-  theorem Toy.Hyper.gni_iff_obsDet_of_deterministic_inputTotal
+  -- lean/ToyHyper/Determinization.lean:470-474
+  theorem gni_iff_obsDet_of_deterministic_inputTotal
       {L : Type u} {H : Type v} {O : Type w}
       {S : System (IOTrace L H O)}
       (hDet : Deterministic S) (hTot : InputTotal S) :
       GNI S ↔ ObsDet S
 
+  -- lean/ToyHyper/Determinization.lean:459-463
   -- Weaker-domain corollary under secret-independent acceptance (hashed in audit/statements.json):
-  theorem Toy.Hyper.gni_iff_obsDet_of_deterministic_acceptanceIgnoresHigh
+  theorem gni_iff_obsDet_of_deterministic_acceptanceIgnoresHigh
       {L : Type u} {H : Type v} {O : Type w}
       {S : System (IOTrace L H O)}
       (hDet : Deterministic S) (hA : AcceptanceIgnoresHigh S) :
@@ -611,7 +628,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any total single-step function `g : L → H → O`, its trace graph `ofFn g` satisfies `GNI` if and only if `g` is independent of the secret input `h` (`SecretIndependent g`) (corollary of `gni_iff_obsDet_of_deterministic_inputTotal`; instantiating `g := fun l h => f l h (r l h)` yields `determinize_gni_iff_resolvedOutput_secretIndependent`).
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.gni_ofFn_iff_secretIndependent
+  -- lean/ToyHyper/Determinization.lean:553-556
+  theorem gni_ofFn_iff_secretIndependent
       {L : Type u} {H : Type v} {O : Type w}
       (g : L → H → O) :
       GNI (ofFn g) ↔ SecretIndependent g
@@ -637,15 +655,17 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any choice presentation `f : L → H → C → O`, `SpecOf f` admits an input-total refinement `S'` satisfying `GNI` (deterministic or not — determinism adds nothing, see `exists_inputTotal_gni_refinement_iff_det`) if and only if there exists a choice function `r : L → H → C` making the resolved output `(fun l h => f l h (r l h))` independent of `highIn` (equivalently, for nonempty `H`, a public-only function `g : L → O` whose graph lies inside `SpecOf f` for every secret).
 - **Lean statement (compact and unfolded, with hashed deterministic corollary `Toy.Hyper.exists_det_inputTotal_gni_refinement_iff`):**
   ```lean
-  theorem Toy.Hyper.exists_inputTotal_gni_refinement_iff_exists_choice
+  -- lean/ToyHyper/Determinization.lean:603-608
+  theorem exists_inputTotal_gni_refinement_iff_exists_choice
       {L : Type u} {H : Type v} {C : Type w} {O : Type z}
       (f : L → H → C → O) :
       (∃ S' : System (IOTrace L H O),
         Refines S' (SpecOf f) ∧ InputTotal S' ∧ GNI S') ↔
       (∃ r : L → H → C, SecretIndependent (fun l h => f l h (r l h)))
 
+  -- lean/ToyHyper/Determinization.lean:631-636
   -- Deterministic corollary (hashed in audit/statements.json):
-  theorem Toy.Hyper.exists_det_inputTotal_gni_refinement_iff
+  theorem exists_det_inputTotal_gni_refinement_iff
       {L : Type u} {H : Type v} {C : Type w} {O : Type z}
       (f : L → H → C → O) :
       (∃ S' : System (IOTrace L H O),
@@ -671,7 +691,8 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Plain claim:** For any choice presentation `f : L → H → C → O`, if `SpecOf f` satisfies `GNI` and `InputTotal` (the latter is independent of `f` and equivalent to `Nonempty (L → H → C)`), then there exists a choice function `r : L → H → C` such that `determinize f r` satisfies `GNI` (and automatically satisfies `Refines`, `Deterministic`, and `InputTotal`; corollary of `exists_inputTotal_gni_refinement_iff_exists_choice` at `S' := SpecOf f`).
 - **Lean statement (compact and unfolded):**
   ```lean
-  theorem Toy.Hyper.gni_inputTotal_spec_admits_det_gni_refinement
+  -- lean/ToyHyper/Determinization.lean:811-816
+  theorem gni_inputTotal_spec_admits_det_gni_refinement
       {L : Type u} {H : Type v} {C : Type w} {O : Type z}
       (f : L → H → C → O)
       (hGNI : GNI (SpecOf f))
@@ -748,7 +769,7 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
   - Equal supports also fail to preserve min-entropy (`Toy.Hyper.same_support_different_minEntropy`) and min-entropy is not a `Hyperprop` of `support d` (`Toy.Hyper.minEntropy_not_a_hyperprop_of_support`); **derived**: because `support skewedFullSupportDist = support (uniformDist 1)`, **no reflexive relation** on possibilistic trace sets preserves min-entropy (the empty relation preserves it only vacuously).
   - "Exact integer min-entropy `k`" means `HasMinEntropyAtLeast d k ∧ ¬ HasMinEntropyAtLeast d (k + 1)`.
   - Positive control `scaledUniform_preserves_minEntropy` uses `SameDist` (distribution equality, admitting no probability changes), while proper probabilistic refinements that do not increase the maximum outcome probability also preserve min-entropy (`Toy.Hyper.minEntropy_kept_without_sameDist`).
-  - Finite `Nat`-weighted distributions over `Fin (2 ^ k)` only; continuous distributions and computational pseudorandomness are not modeled.
+  - Finite `Nat`-weighted distributions over `Fin (2 ^ k)`; continuous distributions and computational pseudorandomness are not modeled, and the result neither establishes nor refutes the corresponding claims about them.
 - **Card 10 (`same-dist-preserves-min-entropy`):**
   - `SameDist` is an equivalence relation (`sameDist_refl`, `sameDist_symm`, `sameDist_trans`), not a refinement order, and transfers bounds both ways (`Toy.Hyper.sameDist_minEntropy_iff`).
   - Sufficient, not necessary (`Toy.Hyper.minEntropy_kept_without_sameDist`).
@@ -770,7 +791,7 @@ Every concrete system, compiler, hyperproperty, choice presentation, and finite 
 - **Card 14 (`gni-of-fn-iff-secret-independent`):**
   - Corollary of Card 13 + `obsDet_ofFn_iff_secretIndependent`.
   - `determinize_gni_iff_resolvedOutput_secretIndependent` constrains `fun l h => f l h (r l h)` only, **not** `SecretIndependent r`.
-  - Single-step total pure functions only.
+  - Stated for single-step total pure functions; it neither establishes nor refutes the corresponding claims about stateful multi-step interactive systems.
 - **Card 15 (`exists-input-total-gni-refinement-iff-exists-choice`):**
   - Under `[Nonempty H]`, equivalent to `∃ g : L → O, ∀ l h, SpecOf f ⟨l, h, g l⟩` (`Toy.Hyper.exists_choice_iff_exists_low_function`; `[Nonempty H]` is necessary by `Toy.Hyper.emptyHigh_no_low_function_edge_case`).
   - `Deterministic S'` adds nothing (`Toy.Hyper.exists_inputTotal_gni_refinement_iff_det`), whereas `InputTotal S'` cannot be dropped (`Toy.Hyper.partial_det_gni_refinement_exists_without_choice`).
