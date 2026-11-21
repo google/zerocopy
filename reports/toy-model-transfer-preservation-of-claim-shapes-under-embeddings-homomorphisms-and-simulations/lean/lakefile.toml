@@ -1,0 +1,5 @@
+name = "toy_model_transfer"
+defaultTargets = ["ToyTransfer"]
+
+[[lean_lib]]
+name = "ToyTransfer"

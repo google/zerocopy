@@ -1,0 +1,1335 @@
+[
+  {
+    "id": "univ-preserved-to-substructure-along-embedding",
+    "lean": [
+      "Toy.Transfer.univ_preserved_to_substructure_of_embedding"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The easy direction of the Łoś–Tarski preservation theorem (Hodges 1993, Corollary 2.4.2(a)), restated for formulas with parameters in this signature; a mechanized version for arbitrary first-order languages exists in Mathlib (`IsUniversal.realize_embedding`).",
+    "plain_claim": "For structures A, B and a map h : A → B that is injective and preserves and reflects R and P (an embedding: A is isomorphic via h to the induced substructure of B on the image of h), every universal formula φ (a possibly empty ∀-prefix over a quantifier-free matrix; negation and equality allowed) that holds in B under the environment h ∘ e holds in A under e.",
+    "hypotheses": [
+      {
+        "name": "hφ : IsUniv φ",
+        "purpose": "restricts to the class that transfers from a structure to its induced substructures",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exP_not_preserved_to_substructure"
+        ],
+        "witness_class": "∃x, P x; an embedding of a one-element into a two-element structure"
+      },
+      {
+        "name": "hinj : Function.Injective h",
+        "purpose": "used for equality atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allAllEq_not_reflected_by_strongHom"
+        ],
+        "witness_class": "∀x ∀y, x = y; a non-injective strong homomorphism from a two-element onto a one-element structure"
+      },
+      {
+        "name": "hpR : PreservesR h",
+        "purpose": "used for negated R-atoms in the matrix",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allNotRxx_reflection_fails_without_presR"
+        ],
+        "witness_class": "∀x, ¬ R x x; a bijection between one-element structures satisfying the other four laws"
+      },
+      {
+        "name": "hpP : PreservesP h",
+        "purpose": "used for negated P-atoms in the matrix",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allNotP_reflection_fails_without_presP"
+        ],
+        "witness_class": "∀x, ¬ P x; a bijection between one-element structures satisfying the other four laws"
+      },
+      {
+        "name": "hrR : ReflectsR h",
+        "purpose": "used for positive R-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allRxx_reflection_fails_without_reflR"
+        ],
+        "witness_class": "∀x, R x x; a bijection between one-element structures satisfying the other four laws"
+      },
+      {
+        "name": "hrP : ReflectsP h",
+        "purpose": "used for positive P-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allP_not_reflected_by_surjHom"
+        ],
+        "witness_class": "∀x, P x; a bijective homomorphism between one-element structures that reflects R but not P"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`inclCyc` embeds the one-element structure `S1N` into the 2-cycle `S2Cyc`; the universal sentence ∀x, ¬ R x x holds in `S2Cyc`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.univ_preserved_to_substructure_nonvacuous"
+    ],
+    "lean_names": [
+      "Toy.Transfer.inclCyc",
+      "Toy.Transfer.S1N",
+      "Toy.Transfer.S2Cyc",
+      "Toy.Transfer.emptyStr",
+      "Toy.Transfer.exSelfEq_valid_iff_nonempty_carriers",
+      "Toy.Transfer.IsQF"
+    ],
+    "non_claims": [
+      "Does not state the converse (Łoś–Tarski: a formula preserved under induced substructures is equivalent to a universal one; Rossman 2008, Theorem 1.1 and footnote 1). The converse is not formalized here; over finite structures it fails (Tait 1959; Rossman 2008, Theorem 1.4) (not proved here).",
+      "Does not say that universal formulas transfer from a structure to its extensions; that direction fails (`allP_not_preserved_to_extension`).",
+      "Each of the five laws of an embedding is used: for each law there is an instance satisfying the other four laws in which some universal sentence fails to transfer (see the hypothesis table). In particular an injective homomorphism (which need not reflect R or P) and a strong homomorphism (which need not be injective) do not suffice.",
+      "Classes are syntactic: a formula that is merely logically equivalent to a universal formula is not covered.",
+      "Structures may have empty carriers (`emptyStr`), unlike the classical convention of non-empty domains (Rossman 2008, §2.1.1). The statement quantifies over all structures, empty or not, so it also holds when structures are restricted to non-empty ones. Facts about validity do depend on the convention: `∃x, x = x` is not valid over all structures but is valid over the non-empty ones (`exSelfEq_valid_iff_nonempty_carriers`).",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "J. Łoś, 'On the extending of models (I)', Fundamenta Mathematicae 42(1) (1955) 38–54 (bibliographic data verified at https://eudml.org/doc/213372; the paper itself was not opened). Cited, with Tarski 1954, for the Łoś–Tarski preservation theorem, whose statement was verified as Rossman 2008, Theorem 1.1 and footnote 1.",
+      "A. Tarski, 'Contributions to the theory of models. I' and 'II', Indagationes Mathematicae (Proceedings) 57 (1954) 572–581 and 582–588, DOIs 10.1016/S1385-7258(54)50074-0 and 10.1016/S1385-7258(54)50075-2 (bibliographic data verified via Crossref; the papers were not opened).",
+      "B. Rossman, 'Homomorphism preservation theorems', J. ACM 55(3), Article 15, 15:1–15:53 (2008), DOI 10.1145/1379759.1379763 (author PDF checked): Theorem 1.1 (Łoś–Tarski: preservation under embeddings iff equivalent to an existential formula; footnote 1: an embedding is an isomorphism onto an induced substructure, and the dual form is preservation under induced substructures iff universal), Theorem 1.2 (Lyndon's positivity theorem: surjective homomorphisms, positive formulas), Theorem 1.3 (homomorphism preservation theorem: homomorphisms, existential-positive formulas), Theorems 1.4 and 1.5 (Łoś–Tarski and Lyndon fail over finite structures; p. 3 attributes 1.4 to Tait 1959 and Gurevich–Shelah via Gurevich 1984, and 1.5 to Ajtai–Gurevich 1987 and Stolboushkin 1995), Theorem 1.7 (finite homomorphism preservation for sentences), Lemma 2.3 (the easy direction), §2.1.1 (structures have non-empty universes; substructure versus induced substructure), Remark 2.1 (formulas are not required to be prenex).",
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms).",
+      "C. C. Chang and H. J. Keisler, Model Theory, 3rd ed., North-Holland 1990 (Studies in Logic 73), DOI 10.1016/S0049-237X(08)X7004-1 (Crossref record of the 1990 Elsevier volume with ISBN 978-0-444-88054-3, whose chapter records include the preface to the third edition; the record itself lists no authors). The publisher's table of contents lists §3.2 'Applications of elementary chains' and §5.2 'Preservation theorems'; which theorem appears under which number was not verified at the source.",
+      "W. W. Tait, 'A counterexample to a conjecture of Scott and Suppes', J. Symbolic Logic 24(1) (1959) 15–16, DOI 10.2307/2964569 (verified: a sentence preserved under subsystems of finite systems that is not equivalent over finite systems to a universal sentence).",
+      "Y. Gurevich, 'Toward logic tailored for computational complexity', Computation and Proof Theory, Lecture Notes in Mathematics, Springer 1984, 175–216, DOI 10.1007/BFb0099486 (bibliographic data verified via Crossref, except the series volume number; cited as reported by Rossman 2008, p. 3, for the rediscovery of the finite failure of Łoś–Tarski).",
+      "Mathlib (Lean 4), file Mathlib/ModelTheory/Complexity.lean at commit 3eae40f5eb25c5934211edf662d3b24c5afbe47a of leanprover-community/mathlib4 (checked): prenex `IsUniversal` and `IsExistential` (lines 330, 342) and `IsQF.realize_embedding`, `IsUniversal.realize_embedding`, `IsExistential.realize_embedding` (lines 374, 387, 398), `Theory.IsUniversal.models_of_embedding` (line 418), for arbitrary first-order languages. The ModelTheory directory at that commit has no positive or positive existential classes and no preservation results for homomorphisms beyond atomic formulas."
+    ],
+    "design_question": "A result proved about a model is routinely read as evidence about the system it models. Which claim shapes transfer, along which proved relation between model and system, in which direction, and for which truth value? Here: when the model is isomorphic to an induced substructure of the system, universal claims true in the system hold in the model; equivalently, a universal counterexample found in the model refutes the system's universal claim (`univ_counterexample_transfers_along_model_embedding`).",
+    "modeling_bridge": "Reading the two structures as a model and a system is an interpretation, not part of the theorem. The theorem applies to a real model–system pair once both are represented as `Str` values (one binary relation, one unary predicate, equality), the stated map laws are proved for a map between the two representations, and the claim is written as a formula of the stated class; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "exist-preserved-to-extension-along-embedding",
+    "lean": [
+      "Toy.Transfer.exist_preserved_to_extension_of_embedding"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The easy direction of the existential form of the Łoś–Tarski theorem (Hodges 1993, Theorem 2.4.1), restated for formulas with parameters; mechanized in Mathlib (`IsExistential.realize_embedding`).",
+    "plain_claim": "For structures A, B and a map h : A → B that is injective and preserves and reflects R and P (an embedding, so B is an extension of A), every existential formula φ (a possibly empty ∃-prefix over a quantifier-free matrix; negation and equality allowed) that holds in A under e holds in B under h ∘ e.",
+    "hypotheses": [
+      {
+        "name": "hφ : IsExist φ",
+        "purpose": "restricts to the class that transfers to extensions",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allP_not_preserved_to_extension"
+        ],
+        "witness_class": "∀x, P x; an embedding of a one-element into a two-element structure"
+      },
+      {
+        "name": "hinj : Function.Injective h",
+        "purpose": "used for negated equality atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exExNeq_not_preserved_by_strongHom"
+        ],
+        "witness_class": "∃x ∃y, ¬ x = y; a non-injective strong homomorphism from a two-element onto a one-element structure"
+      },
+      {
+        "name": "hpR : PreservesR h",
+        "purpose": "used for positive R-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exRxx_transfer_fails_without_presR"
+        ],
+        "witness_class": "∃x, R x x; a bijection between one-element structures satisfying the other four laws"
+      },
+      {
+        "name": "hpP : PreservesP h",
+        "purpose": "used for positive P-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exP_transfer_fails_without_presP"
+        ],
+        "witness_class": "∃x, P x; a bijection between one-element structures satisfying the other four laws"
+      },
+      {
+        "name": "hrR : ReflectsR h",
+        "purpose": "used for negated R-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exNotRxx_transfer_fails_without_reflR"
+        ],
+        "witness_class": "∃x, ¬ R x x; a bijection between one-element structures satisfying the other four laws"
+      },
+      {
+        "name": "hrP : ReflectsP h",
+        "purpose": "used for negated P-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exNotP_not_preserved_by_hom"
+        ],
+        "witness_class": "∃x, ¬ P x; a bijective homomorphism between one-element structures that reflects R but not P"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`inclPN` embeds `S1P` into `S2PN`; ∃x, P x holds in `S1P`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.exist_preserved_to_extension_nonvacuous"
+    ],
+    "lean_names": [
+      "Toy.Transfer.inclPN",
+      "Toy.Transfer.S1P",
+      "Toy.Transfer.S2PN",
+      "Toy.Transfer.posExist_not_subset_exist"
+    ],
+    "non_claims": [
+      "Does not say that existential formulas transfer from a structure to its induced substructures; that direction fails (`exP_not_preserved_to_substructure`).",
+      "Does not state the converse (Łoś–Tarski: a formula preserved under embeddings is equivalent to an existential one; Rossman 2008, Theorem 1.1). The converse is not formalized here; over finite structures it fails (Tait 1959; Gurevich 1984; Rossman 2008, Theorem 1.4) (not proved here).",
+      "Each of the five laws of an embedding is used (see the hypothesis table); an injective homomorphism or a strong homomorphism does not suffice.",
+      "The universal, existential, ∀∃ and ∃∀ classes are prenex, while the positive and positive existential classes allow quantifiers under ∧ and ∨. So a positive existential formula need not be existential in the prenex sense: `posExist_not_subset_exist` exhibits `(∃x, P x) ∧ (∃y, P y)`. Hodges (1993, §2.4) and Rossman (2008, Remark 2.1) use non-prenex classes. Classes are syntactic: a formula that is merely logically equivalent to a class member is not covered.",
+      "Structures may have empty carriers (`emptyStr`), unlike the classical convention of non-empty domains (Rossman 2008, §2.1.1). The statement quantifies over all structures, empty or not, so it also holds when structures are restricted to non-empty ones. Facts about validity do depend on the convention: `∃x, x = x` is not valid over all structures but is valid over the non-empty ones (`exSelfEq_valid_iff_nonempty_carriers`).",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "J. Łoś, 'On the extending of models (I)', Fundamenta Mathematicae 42(1) (1955) 38–54 (bibliographic data verified at https://eudml.org/doc/213372; the paper itself was not opened). Cited, with Tarski 1954, for the Łoś–Tarski preservation theorem, whose statement was verified as Rossman 2008, Theorem 1.1 and footnote 1.",
+      "A. Tarski, 'Contributions to the theory of models. I' and 'II', Indagationes Mathematicae (Proceedings) 57 (1954) 572–581 and 582–588, DOIs 10.1016/S1385-7258(54)50074-0 and 10.1016/S1385-7258(54)50075-2 (bibliographic data verified via Crossref; the papers were not opened).",
+      "B. Rossman, 'Homomorphism preservation theorems', J. ACM 55(3), Article 15, 15:1–15:53 (2008), DOI 10.1145/1379759.1379763 (author PDF checked): Theorem 1.1 (Łoś–Tarski: preservation under embeddings iff equivalent to an existential formula; footnote 1: an embedding is an isomorphism onto an induced substructure, and the dual form is preservation under induced substructures iff universal), Theorem 1.2 (Lyndon's positivity theorem: surjective homomorphisms, positive formulas), Theorem 1.3 (homomorphism preservation theorem: homomorphisms, existential-positive formulas), Theorems 1.4 and 1.5 (Łoś–Tarski and Lyndon fail over finite structures; p. 3 attributes 1.4 to Tait 1959 and Gurevich–Shelah via Gurevich 1984, and 1.5 to Ajtai–Gurevich 1987 and Stolboushkin 1995), Theorem 1.7 (finite homomorphism preservation for sentences), Lemma 2.3 (the easy direction), §2.1.1 (structures have non-empty universes; substructure versus induced substructure), Remark 2.1 (formulas are not required to be prenex).",
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms).",
+      "W. W. Tait, 'A counterexample to a conjecture of Scott and Suppes', J. Symbolic Logic 24(1) (1959) 15–16, DOI 10.2307/2964569 (verified: a sentence preserved under subsystems of finite systems that is not equivalent over finite systems to a universal sentence).",
+      "Y. Gurevich, 'Toward logic tailored for computational complexity', Computation and Proof Theory, Lecture Notes in Mathematics, Springer 1984, 175–216, DOI 10.1007/BFb0099486 (bibliographic data verified via Crossref, except the series volume number; cited as reported by Rossman 2008, p. 3, for the rediscovery of the finite failure of Łoś–Tarski).",
+      "Mathlib (Lean 4), file Mathlib/ModelTheory/Complexity.lean at commit 3eae40f5eb25c5934211edf662d3b24c5afbe47a of leanprover-community/mathlib4 (checked): prenex `IsUniversal` and `IsExistential` (lines 330, 342) and `IsQF.realize_embedding`, `IsUniversal.realize_embedding`, `IsExistential.realize_embedding` (lines 374, 387, 398), `Theory.IsUniversal.models_of_embedding` (line 418), for arbitrary first-order languages. The ModelTheory directory at that commit has no positive or positive existential classes and no preservation results for homomorphisms beyond atomic formulas."
+    ],
+    "design_question": "Which claims about a model hold in a system that extends it? Existential claims (witnesses described by an ∃-prefix over a quantifier-free condition, for example a bounded-length configuration exhibited in the model) found in the model hold in every extension: model witnesses are system witnesses when the model is isomorphic to an induced substructure of the system. Reachability of unbounded length is not expressed by any formula of this syntax (a standard fact, not proved here) and is not covered.",
+    "modeling_bridge": "Reading the two structures as a model and a system is an interpretation, not part of the theorem. The theorem applies to a real model–system pair once both are represented as `Str` values (one binary relation, one unary predicate, equality), the stated map laws are proved for a map between the two representations, and the claim is written as a formula of the stated class; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "positive-existential-preserved-forward-along-homomorphism",
+    "lean": [
+      "Toy.Transfer.posExist_preserved_forward_of_hom"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The easy direction of the homomorphism preservation theorem (Hodges 1993, Theorem 2.4.3(a); Rossman 2008, Lemma 2.3), restated for formulas with parameters.",
+    "plain_claim": "For structures A, B and a map h : A → B that preserves R and P (a homomorphism; not necessarily injective, surjective or reflecting), every positive existential formula φ (no negation and no ∀; ∃ may occur under ∧ and ∨) that holds in A under e holds in B under h ∘ e.",
+    "hypotheses": [
+      {
+        "name": "hφ : IsPosExist φ",
+        "purpose": "excludes negation and ∀",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exNotP_not_preserved_by_hom",
+          "Toy.Transfer.allP_not_preserved_to_extension"
+        ],
+        "witness_class": "∃x, ¬ P x along a bijective homomorphism of one-element structures (negation); ∀x, P x along an embedding (universal quantifier)"
+      },
+      {
+        "name": "hpR : PreservesR h",
+        "purpose": "used for R-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exRxx_transfer_fails_without_presR"
+        ],
+        "witness_class": "∃x, R x x; a bijection between one-element structures preserving P"
+      },
+      {
+        "name": "hpP : PreservesP h",
+        "purpose": "used for P-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exP_transfer_fails_without_presP"
+        ],
+        "witness_class": "∃x, P x; a bijection between one-element structures preserving R"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`squashP` maps `S2NP` onto `S1P`; it is a homomorphism that is neither injective nor reflects P; ∃x, P x holds in `S2NP`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.posExist_preserved_forward_nonvacuous"
+    ],
+    "lean_names": [
+      "Toy.Transfer.squashP",
+      "Toy.Transfer.S2NP",
+      "Toy.Transfer.no_qf_sentences",
+      "Toy.Transfer.pos_holds_in_full_one_point"
+    ],
+    "non_claims": [
+      "Does not state the converse, the homomorphism preservation theorem (a formula preserved under homomorphisms is equivalent to an existential-positive one; Rossman 2008, Theorem 1.3). That theorem is not formalized here. Unlike Łoś–Tarski and Lyndon's theorem, it remains true over finite structures for sentences (Rossman 2008, Theorem 1.7) (not proved here).",
+      "Lyndon's positivity theorem (Lyndon 1959; Rossman 2008, Theorem 1.2) is the converse for surjective homomorphisms and positive formulas (`positive-preserved-forward-along-surjective-homomorphism`), not the converse of this statement.",
+      "Does not say that positive existential formulas transfer backward along homomorphisms (`exP_not_preserved_to_substructure`).",
+      "The universal, existential, ∀∃ and ∃∀ classes are prenex, while the positive and positive existential classes allow quantifiers under ∧ and ∨. So a positive existential formula need not be existential in the prenex sense: `posExist_not_subset_exist` exhibits `(∃x, P x) ∧ (∃y, P y)`. Hodges (1993, §2.4) and Rossman (2008, Remark 2.1) use non-prenex classes. Classes are syntactic: a formula that is merely logically equivalent to a class member is not covered.",
+      "The syntax has no nullary atoms ⊤ and ⊥ (positive formulas in the classical theorems may use them), so there are no quantifier-free sentences (`no_qf_sentences`), and no positive formula is unsatisfiable: every positive formula holds in the one-element structure where R and P hold everywhere (`pos_holds_in_full_one_point`).",
+      "Structures may have empty carriers (`emptyStr`), unlike the classical convention of non-empty domains (Rossman 2008, §2.1.1). The statement quantifies over all structures, empty or not, so it also holds when structures are restricted to non-empty ones. Facts about validity do depend on the convention: `∃x, x = x` is not valid over all structures but is valid over the non-empty ones (`exSelfEq_valid_iff_nonempty_carriers`).",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "B. Rossman, 'Homomorphism preservation theorems', J. ACM 55(3), Article 15, 15:1–15:53 (2008), DOI 10.1145/1379759.1379763 (author PDF checked): Theorem 1.1 (Łoś–Tarski: preservation under embeddings iff equivalent to an existential formula; footnote 1: an embedding is an isomorphism onto an induced substructure, and the dual form is preservation under induced substructures iff universal), Theorem 1.2 (Lyndon's positivity theorem: surjective homomorphisms, positive formulas), Theorem 1.3 (homomorphism preservation theorem: homomorphisms, existential-positive formulas), Theorems 1.4 and 1.5 (Łoś–Tarski and Lyndon fail over finite structures; p. 3 attributes 1.4 to Tait 1959 and Gurevich–Shelah via Gurevich 1984, and 1.5 to Ajtai–Gurevich 1987 and Stolboushkin 1995), Theorem 1.7 (finite homomorphism preservation for sentences), Lemma 2.3 (the easy direction), §2.1.1 (structures have non-empty universes; substructure versus induced substructure), Remark 2.1 (formulas are not required to be prenex).",
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms).",
+      "R. C. Lyndon, 'Properties preserved under homomorphism', Pacific J. Math. 9(1) (1959) 143–154, DOI 10.2140/pjm.1959.9.143 (bibliographic data verified; the paper was not opened; its theorem, as stated in Rossman 2008, Theorem 1.2, is the converse for surjective homomorphisms: a formula preserved under surjective homomorphisms is equivalent to a positive one)."
+    ],
+    "design_question": "Which claims survive any structure-preserving abstraction that may merge elements and add facts? Positive existential claims of the source hold in the target of every homomorphism.",
+    "modeling_bridge": "Reading the two structures as a model and a system is an interpretation, not part of the theorem. The theorem applies to a real model–system pair once both are represented as `Str` values (one binary relation, one unary predicate, equality), the stated map laws are proved for a map between the two representations, and the claim is written as a formula of the stated class; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "positive-preserved-forward-along-surjective-homomorphism",
+    "lean": [
+      "Toy.Transfer.pos_preserved_forward_of_surjHom"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The easy direction of Lyndon's positivity theorem (Hodges 1993, Theorem 2.4.3(b)), restated for formulas with parameters.",
+    "plain_claim": "For structures A, B and a map h : A → B that is surjective and preserves R and P (a surjective homomorphism; reflection not required), every positive formula φ (no negation; both quantifiers and equality allowed, quantifiers may occur under ∧ and ∨) that holds in A under e holds in B under h ∘ e.",
+    "hypotheses": [
+      {
+        "name": "hφ : IsPos φ",
+        "purpose": "excludes negation",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exNotP_not_preserved_by_hom"
+        ],
+        "witness_class": "∃x, ¬ P x; a bijective homomorphism between one-element structures"
+      },
+      {
+        "name": "hsurj : Function.Surjective h",
+        "purpose": "used for ∀",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allP_not_preserved_to_extension"
+        ],
+        "witness_class": "∀x, P x; a non-surjective embedding of a one-element into a two-element structure"
+      },
+      {
+        "name": "hpR : PreservesR h",
+        "purpose": "used for R-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exRxx_transfer_fails_without_presR"
+        ],
+        "witness_class": "∃x, R x x; a bijection between one-element structures preserving P"
+      },
+      {
+        "name": "hpP : PreservesP h",
+        "purpose": "used for P-atoms",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exP_transfer_fails_without_presP"
+        ],
+        "witness_class": "∃x, P x; a bijection between one-element structures preserving R"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`squashP` maps `S2NP` onto `S1P`; the positive sentence ∀x ∃y, P y (not positive existential) holds in `S2NP`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.pos_preserved_forward_nonvacuous"
+    ],
+    "lean_names": [
+      "Toy.Transfer.exP_not_reflected_by_surjHom"
+    ],
+    "non_claims": [
+      "Does not state the converse, Lyndon's positivity theorem (a formula preserved under surjective homomorphisms is equivalent to a positive one; Lyndon 1959; Rossman 2008, Theorem 1.2). It is not formalized here; over finite structures it fails (Ajtai and Gurevich 1987; Stolboushkin 1995; Rossman 2008, Theorem 1.5) (not proved here).",
+      "Does not say that positive formulas transfer backward along surjective homomorphisms (`exP_not_reflected_by_surjHom`).",
+      "The syntax has no nullary atoms ⊤ and ⊥ (positive formulas in the classical theorems may use them), so there are no quantifier-free sentences (`no_qf_sentences`), and no positive formula is unsatisfiable: every positive formula holds in the one-element structure where R and P hold everywhere (`pos_holds_in_full_one_point`).",
+      "Structures may have empty carriers (`emptyStr`), unlike the classical convention of non-empty domains (Rossman 2008, §2.1.1). The statement quantifies over all structures, empty or not, so it also holds when structures are restricted to non-empty ones. Facts about validity do depend on the convention: `∃x, x = x` is not valid over all structures but is valid over the non-empty ones (`exSelfEq_valid_iff_nonempty_carriers`).",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "R. C. Lyndon, 'Properties preserved under homomorphism', Pacific J. Math. 9(1) (1959) 143–154, DOI 10.2140/pjm.1959.9.143 (bibliographic data verified; the paper was not opened; its theorem, as stated in Rossman 2008, Theorem 1.2, is the converse for surjective homomorphisms: a formula preserved under surjective homomorphisms is equivalent to a positive one).",
+      "B. Rossman, 'Homomorphism preservation theorems', J. ACM 55(3), Article 15, 15:1–15:53 (2008), DOI 10.1145/1379759.1379763 (author PDF checked): Theorem 1.1 (Łoś–Tarski: preservation under embeddings iff equivalent to an existential formula; footnote 1: an embedding is an isomorphism onto an induced substructure, and the dual form is preservation under induced substructures iff universal), Theorem 1.2 (Lyndon's positivity theorem: surjective homomorphisms, positive formulas), Theorem 1.3 (homomorphism preservation theorem: homomorphisms, existential-positive formulas), Theorems 1.4 and 1.5 (Łoś–Tarski and Lyndon fail over finite structures; p. 3 attributes 1.4 to Tait 1959 and Gurevich–Shelah via Gurevich 1984, and 1.5 to Ajtai–Gurevich 1987 and Stolboushkin 1995), Theorem 1.7 (finite homomorphism preservation for sentences), Lemma 2.3 (the easy direction), §2.1.1 (structures have non-empty universes; substructure versus induced substructure), Remark 2.1 (formulas are not required to be prenex).",
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms).",
+      "M. Ajtai and Y. Gurevich, 'Monotone versus positive', J. ACM 34(4) (1987) 1004–1015, DOI 10.1145/31846.31852 (bibliographic data and abstract verified via Crossref): the abstract answers negatively whether a first-order formula that is semantically monotone in a predicate symbol P on finite structures is necessarily equivalent on finite structures to a first-order formula with only positive occurrences of P; it does not mention Lyndon's theorem. Cited for the failure of Lyndon's theorem over finite structures as reported by Rossman 2008, Theorem 1.5 and p. 3.",
+      "A. P. Stolboushkin, 'Finitely monotone properties', Proc. 10th IEEE Symposium on Logic in Computer Science (LICS 1995), 324–330, DOI 10.1109/LICS.1995.523267 (bibliographic data verified via Crossref): a simpler counterexample, per Rossman 2008, p. 3."
+    ],
+    "design_question": "Orientation matters. If h : model → system is a surjective homomorphism (the system is a homomorphic image of a finer model: elements may be merged and facts added), positive truths of the model hold in the system. If instead the model is a quotient-like abstraction of the system (h : system → model surjective), it is positive falsities of the model that transfer to the system (`licences_exact`, falsity list for surjective homomorphisms, system-to-model).",
+    "modeling_bridge": "Reading the two structures as a model and a system is an interpretation, not part of the theorem. The theorem applies to a real model–system pair once both are represented as `Str` values (one binary relation, one unary predicate, equality), the stated map laws are proved for a map between the two representations, and the claim is written as a formula of the stated class; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "five-unlicensed-transfers-countermodels",
+    "lean": [
+      "Toy.Transfer.allExR_not_preserved_to_substructure",
+      "Toy.Transfer.exP_not_preserved_to_substructure",
+      "Toy.Transfer.allP_not_preserved_to_extension",
+      "Toy.Transfer.exNotP_not_preserved_by_hom",
+      "Toy.Transfer.allRImpEq_not_preserved_by_surjHom"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Standard textbook countermodels, each on structures with at most two elements; a highlighted subset of the thirteen countermodels of the transfer matrix (`transfer-matrix-boolean-table-agrees-with-preservation`).",
+    "plain_claim": "Five transfers fail, each on structures with at most two elements, checked by evaluation: (1) ∀x ∃y, R x y holds in the 2-cycle `S2Cyc` and fails in its one-element induced substructure `S1N`; (2) ∃x, P x holds in `S2NP` and fails in its one-element induced substructure `S1N`; (3) ∀x, P x holds in `S1P` and fails in its two-element extension `S2PN`; (4) ∃x, ¬ P x holds in `S1N` and fails in `S1P` after the bijective homomorphism `raiseP`; (5) ∀x ∀y, R x y → x = y holds in `S2E` and fails in `S2R01` after the bijective homomorphism `addEdge`. Each theorem also states the class memberships and map laws that hold in its instance.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Not applicable: each theorem is a concrete instance.",
+    "positive_control_lean": [
+      "Toy.Transfer.univ_preserved_to_substructure_of_embedding",
+      "Toy.Transfer.exist_preserved_to_extension_of_embedding",
+      "Toy.Transfer.posExist_preserved_forward_of_hom",
+      "Toy.Transfer.pos_preserved_forward_of_surjHom"
+    ],
+    "lean_names": [
+      "Toy.Transfer.raiseP",
+      "Toy.Transfer.S2E",
+      "Toy.Transfer.S2R01",
+      "Toy.Transfer.addEdge"
+    ],
+    "non_claims": [
+      "Each countermodel refutes uniform transfer of its class along its map kind in the stated direction; it does not say that no formula of the class transfers (for example, quantifier-free formulas are universal and do transfer along embeddings in both directions, `unlicensed_cells_contain_transferring_subclasses`).",
+      "These are five of the thirteen countermodels used by the transfer matrix; the matrix card states which cells each refutes.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms).",
+      "B. Rossman, 'Homomorphism preservation theorems', J. ACM 55(3), Article 15, 15:1–15:53 (2008), DOI 10.1145/1379759.1379763 (author PDF checked): Theorem 1.1 (Łoś–Tarski: preservation under embeddings iff equivalent to an existential formula; footnote 1: an embedding is an isomorphism onto an induced substructure, and the dual form is preservation under induced substructures iff universal), Theorem 1.2 (Lyndon's positivity theorem: surjective homomorphisms, positive formulas), Theorem 1.3 (homomorphism preservation theorem: homomorphisms, existential-positive formulas), Theorems 1.4 and 1.5 (Łoś–Tarski and Lyndon fail over finite structures; p. 3 attributes 1.4 to Tait 1959 and Gurevich–Shelah via Gurevich 1984, and 1.5 to Ajtai–Gurevich 1987 and Stolboushkin 1995), Theorem 1.7 (finite homomorphism preservation for sentences), Lemma 2.3 (the easy direction), §2.1.1 (structures have non-empty universes; substructure versus induced substructure), Remark 2.1 (formulas are not required to be prenex)."
+    ],
+    "design_question": "Each unlicensed transfer that readers commonly assume (universal claims to extensions, existential claims to substructures, negated claims along homomorphisms, universal implications along surjective homomorphisms) has a two-element countermodel.",
+    "modeling_bridge": "A countermodel shows that the hypotheses it states do not suffice in general: no argument that uses those hypotheses alone can establish the transfer for every formula of the class. It does not show that the transfer fails for a particular real model and system; this package represents no real model or system."
+  },
+  {
+    "id": "transfer-matrix-boolean-table-agrees-with-preservation",
+    "lean": [
+      "Toy.Transfer.licensedB_iff",
+      "Toy.Transfer.cell_status",
+      "Toy.Transfer.licensedB_iff_preservesSent_of_ne_qf",
+      "Toy.Transfer.transfer_of_licensedForB"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise: which classes each map kind preserves is textbook material for the licensed cells (Hodges 1993, §2.4), and Mathlib mechanizes the embedding cells for prenex classes; a complete 7 × 8 table in which every unlicensed cell has a mechanized countermodel was not found in the sources checked (Mathlib's ModelTheory, Hodges §2.4, Rossman 2008).",
+    "plain_claim": "For each of the seven syntactic classes (quantifier-free, universal, existential, ∀∃, ∃∀, positive, positive existential), each of the four map kinds (homomorphism, strong homomorphism, embedding, surjective homomorphism) and each direction (forward from source to target, backward from target to source), the Boolean table `licensedB` is true exactly when every formula of the class (with parameters) transfers along every map of that kind in that direction (`licensedB_iff`); every one of the 56 cells is decided by a licensing theorem or a named countermodel (`cell_status`). For every class except the quantifier-free one, the same table is exact for sentences (`licensedB_iff_preservesSent_of_ne_qf`, hypothesis c ≠ qf). A formula that belongs to some class licensed for (k, d) transfers along every k-map in direction d (`transfer_of_licensedForB`, hypothesis licensedForB φ k d = true).",
+    "hypotheses": [
+      {
+        "name": "hl : licensedForB φ k d = true (transfer_of_licensedForB)",
+        "purpose": "the table licenses some class containing φ",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.transfer_of_licensedForB_needs_licence"
+        ],
+        "witness_class": "∀x, P x along an embedding of a one-element into a two-element structure"
+      },
+      {
+        "name": "hc : c ≠ .qf (licensedB_iff_preservesSent_of_ne_qf)",
+        "purpose": "excludes the quantifier-free row, which has no sentences",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.licensedB_iff_preservesSent_needs_ne_qf"
+        ],
+        "witness_class": "the quantifier-free row for homomorphisms, forward: unlicensed, yet sentence-level transfer holds vacuously"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Each cell is shallow; the content is the completeness of the table: 9 licensed cells, each proved by an easy preservation theorem, and 47 unlicensed cells, each refuted by one of 13 countermodels, plus the sentence-level version for six rows.",
+    "nonvacuity_witness": "Every licensed cell has an instance with the premise true (`licensed_cells_nonvacuous`); `preserves_examples` and `preservesSent_examples` exhibit a licensed and an unlicensed cell; `transfer_of_licensedForB_nonvacuous` exhibits ∃x, P x licensed forward along embeddings with its premise true at the source of `inclPN`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.licensed_cells_nonvacuous",
+      "Toy.Transfer.preserves_examples",
+      "Toy.Transfer.preservesSent_examples",
+      "Toy.Transfer.transfer_of_licensedForB_nonvacuous"
+    ],
+    "lean_names": [
+      "Toy.Transfer.licensedB",
+      "Toy.Transfer.licensedForB",
+      "Toy.Transfer.licensedForB_incomplete",
+      "Toy.Transfer.preservesSent_qf",
+      "Toy.Transfer.neq_not_preserved_by_strongHom",
+      "Toy.Transfer.eq_not_reflected_by_strongHom",
+      "Toy.Transfer.qf_sat_iff_of_strongHom_of_eqFree",
+      "Toy.Transfer.IsStrongHom",
+      "Toy.Transfer.Str",
+      "Toy.Transfer.FinStr",
+      "Toy.Transfer.Fml",
+      "Toy.Transfer.sat_pos_example",
+      "Toy.Transfer.sat_neg_example",
+      "Toy.Transfer.satS_pos_example",
+      "Toy.Transfer.satS_neg_example",
+      "Toy.Transfer.env_cons_example",
+      "Toy.Transfer.emptyStr_example",
+      "Toy.Transfer.isQF_examples",
+      "Toy.Transfer.isEqFree_examples",
+      "Toy.Transfer.isUniv_examples",
+      "Toy.Transfer.isExist_examples",
+      "Toy.Transfer.isAE_examples",
+      "Toy.Transfer.isEA_examples",
+      "Toy.Transfer.isPos_examples",
+      "Toy.Transfer.isPosExist_examples",
+      "Toy.Transfer.preservesR_examples",
+      "Toy.Transfer.preservesP_examples",
+      "Toy.Transfer.reflectsR_examples",
+      "Toy.Transfer.reflectsP_examples",
+      "Toy.Transfer.isHom_examples",
+      "Toy.Transfer.isStrongHom_examples",
+      "Toy.Transfer.isEmbedding_examples",
+      "Toy.Transfer.isSurjHom_examples",
+      "Toy.Transfer.isIso_examples",
+      "Toy.Transfer.mapKind_holds_examples",
+      "Toy.Transfer.dir_transfer_examples",
+      "Toy.Transfer.cls_test_examples",
+      "Toy.Transfer.Cls.test_iff",
+      "Toy.Transfer.Cls",
+      "Toy.Transfer.Preserves.toSent",
+      "Toy.Transfer.Preserves",
+      "Toy.Transfer.licensedB_examples",
+      "Toy.Transfer.licensedForB_examples",
+      "Toy.Transfer.reach_examples",
+      "Toy.Transfer.star_examples",
+      "Toy.Transfer.simInit_examples",
+      "Toy.Transfer.simStepStar_examples",
+      "Toy.Transfer.simStepLock_examples",
+      "Toy.Transfer.simStepStutter_examples",
+      "Toy.Transfer.simStepWF_examples",
+      "Toy.Transfer.terminates_examples",
+      "Toy.Transfer.allRunsFinite_examples",
+      "Toy.Transfer.weaklyTerminates_examples",
+      "Toy.Transfer.SimStepLock.toStar",
+      "Toy.Transfer.SimStepStutter.toStar",
+      "Toy.Transfer.SimStepWF.toStutter",
+      "Toy.Transfer.Terminates.no_infinite_run",
+      "Toy.Transfer.Terminates",
+      "Toy.Transfer.validIn_examples",
+      "Toy.Transfer.unsatIn_examples",
+      "Toy.Transfer.preserves_fwd_iff",
+      "Toy.Transfer.preserves_bwd_iff",
+      "Toy.Transfer.IsEmbedding",
+      "Toy.Transfer.isEmbedding_iff",
+      "Toy.Transfer.IsSurjHom",
+      "Toy.Transfer.isSurjHom_iff",
+      "Toy.Transfer.IsIso",
+      "Toy.Transfer.isIso_iff",
+      "Toy.Transfer.licensedB_eq_true_iff",
+      "Toy.Transfer.allRunsFinite_iff",
+      "Toy.Transfer.simStepWF_iff",
+      "Toy.Transfer.BothOutcomesNonIso",
+      "Toy.Transfer.bothOutcomesNonIso_fwd_iff",
+      "Toy.Transfer.notP0_not_preserved_by_surjHom",
+      "Toy.Transfer.P0_not_reflected_by_surjHom",
+      "Toy.Transfer.preserves_qf_emb",
+      "Toy.Transfer.preserves_univ_emb_bwd",
+      "Toy.Transfer.preserves_exist_emb_fwd",
+      "Toy.Transfer.preserves_pos_surj_fwd",
+      "Toy.Transfer.preserves_posExist_fwd",
+      "Toy.Transfer.IsEmbedding.toStrongHom",
+      "Toy.Transfer.IsStrongHom.toHom",
+      "Toy.Transfer.IsSurjHom.toHom",
+      "Toy.Transfer.bothOutcomesNonIso_of_unlicensed",
+      "Toy.Transfer.both_notP0",
+      "Toy.Transfer.both_P0",
+      "Toy.Transfer.both_neq",
+      "Toy.Transfer.both_allP",
+      "Toy.Transfer.both_atMostOneNotP",
+      "Toy.Transfer.both_allRImpEq",
+      "Toy.Transfer.both_allP_surj",
+      "Toy.Transfer.both_exNotP",
+      "Toy.Transfer.both_exP_sub",
+      "Toy.Transfer.both_exExNeq",
+      "Toy.Transfer.both_exP_surj",
+      "Toy.Transfer.both_allExR",
+      "Toy.Transfer.IsUniv",
+      "Toy.Transfer.PreservesR",
+      "Toy.Transfer.PreservesP",
+      "Toy.Transfer.ReflectsR",
+      "Toy.Transfer.ReflectsP",
+      "Toy.Transfer.IsExist",
+      "Toy.Transfer.IsPosExist",
+      "Toy.Transfer.IsPos",
+      "Toy.Transfer.Reach",
+      "Toy.Transfer.SatS",
+      "Toy.Transfer.S1Full",
+      "Toy.Transfer.Fml.imp",
+      "Toy.Transfer.Env.cons",
+      "Toy.Transfer.Sat",
+      "Toy.Transfer.IsEqFree",
+      "Toy.Transfer.IsAE",
+      "Toy.Transfer.IsEA",
+      "Toy.Transfer.IsHom",
+      "Toy.Transfer.MapKind.Holds",
+      "Toy.Transfer.Dir",
+      "Toy.Transfer.Dir.Transfer",
+      "Toy.Transfer.Cls.Mem",
+      "Toy.Transfer.Cls.test",
+      "Toy.Transfer.PreservesSent",
+      "Toy.Transfer.FinStr.toStr",
+      "Toy.Transfer.S2Loop1",
+      "Toy.Transfer.S3E",
+      "Toy.Transfer.lowerP",
+      "Toy.Transfer.raiseR",
+      "Toy.Transfer.lowerR",
+      "Toy.Transfer.inclPP",
+      "Toy.Transfer.inclP1",
+      "Toy.Transfer.inclN1",
+      "Toy.Transfer.collapseTo1",
+      "Toy.Transfer.inclLoop",
+      "Toy.Transfer.inclNoLoop",
+      "Toy.Transfer.inclE23",
+      "Toy.Transfer.squashPP",
+      "Toy.Transfer.allP",
+      "Toy.Transfer.exP",
+      "Toy.Transfer.allExR",
+      "Toy.Transfer.exNotP",
+      "Toy.Transfer.allRImpEq",
+      "Toy.Transfer.exExNeq",
+      "Toy.Transfer.allAllEq",
+      "Toy.Transfer.allNotRxx",
+      "Toy.Transfer.allNotP",
+      "Toy.Transfer.allRxx",
+      "Toy.Transfer.exRxx",
+      "Toy.Transfer.exNotRxx",
+      "Toy.Transfer.atMostOneNotP",
+      "Toy.Transfer.exPAndExP",
+      "Toy.Transfer.P0",
+      "Toy.Transfer.notP0",
+      "Toy.Transfer.eq01",
+      "Toy.Transfer.neq01",
+      "Toy.Transfer.env1",
+      "Toy.Transfer.env2",
+      "Toy.Transfer.allExP",
+      "Toy.Transfer.exSelfEq",
+      "Toy.Transfer.exAllR",
+      "Toy.Transfer.contra",
+      "Toy.Transfer.exclMid",
+      "Toy.Transfer.allCls",
+      "Toy.Transfer.TS",
+      "Toy.Transfer.Star",
+      "Toy.Transfer.WeaklyTerminates",
+      "Toy.Transfer.tsUnreachLoop",
+      "Toy.Transfer.tsLoopOrHalt",
+      "Toy.Transfer.tsBranch3",
+      "Toy.Transfer.tsLine2",
+      "Toy.Transfer.relSameIndex",
+      "Toy.Transfer.ValidIn",
+      "Toy.Transfer.UnsatIn",
+      "Toy.Transfer.Orient",
+      "Toy.Transfer.TruthLicensed",
+      "Toy.Transfer.FalsityLicensed",
+      "Toy.Transfer.truthList",
+      "Toy.Transfer.falsityList"
+    ],
+    "non_claims": [
+      "The table is about uniform transfer of a whole syntactic class. A `false` verdict for a class does not refute transfer of an individual formula: `licensedForB` is sound but not complete (`licensedForB_incomplete`, the valid ∀x, P x ∨ ¬ P x along homomorphisms), and unlicensed cells can contain subclasses that transfer (`unlicensed_cells_contain_transferring_subclasses`).",
+      "Transfer is stated for formulas with parameters: along h : A → B the environment e of A becomes h ∘ e, and in the system-to-model reading the model side is evaluated at image environments h ∘ e, not at arbitrary model environments. There are no quantifier-free sentences (`no_qf_sentences`), so the quantifier-free row is witnessed by formulas with one or two free variables; restricted to sentences, quantifier-free transfer holds vacuously in every cell (`preservesSent_qf`). For the other six rows the same table is exact for sentences (`licensedB_iff_preservesSent_of_ne_qf`).",
+      "Strong homomorphisms license the same cells as homomorphisms because the signature includes equality: a non-injective strong homomorphism does not preserve `¬ x = y` (`neq_not_preserved_by_strongHom`) and does not reflect `x = y` (`eq_not_reflected_by_strongHom`). On equality-free quantifier-free formulas, strong homomorphisms do preserve and reflect satisfaction (`qf_sat_iff_of_strongHom_of_eqFree`). An equality-free version of the whole table is not formalized. 'Strong homomorphism' means `IsStrongHom` (preserves and reflects R and P); usage of the term varies in the literature.",
+      "The universal, existential, ∀∃ and ∃∀ classes are prenex, while the positive and positive existential classes allow quantifiers under ∧ and ∨. So a positive existential formula need not be existential in the prenex sense: `posExist_not_subset_exist` exhibits `(∃x, P x) ∧ (∃y, P y)`. Hodges (1993, §2.4) and Rossman (2008, Remark 2.1) use non-prenex classes. Classes are syntactic: a formula that is merely logically equivalent to a class member is not covered.",
+      "Prenex classes allow empty prefixes, so every quantifier-free formula is universal and existential, and every universal or existential formula is ∀∃ and ∃∀. The ∀∃ and ∃∀ rows are therefore refuted partly by purely universal or purely existential sentences; the table makes no separate claim about strictly alternating formulas.",
+      "The syntax has no nullary atoms ⊤ and ⊥ (positive formulas in the classical theorems may use them), so there are no quantifier-free sentences (`no_qf_sentences`), and no positive formula is unsatisfiable: every positive formula holds in the one-element structure where R and P hold everywhere (`pos_holds_in_full_one_point`).",
+      "Structures may have empty carriers (`emptyStr`), unlike the classical convention of non-empty domains (Rossman 2008, §2.1.1). Every refuting instance in the table uses structures with one or two elements, and the licensed cells hold for all structures, so the table is unchanged if structures are restricted to non-empty ones (derived from the definitions of the countermodel structures; not stated as a separate theorem).",
+      "The formalization covers the signature with one binary relation, one unary predicate and equality; a general finite relational signature, isomorphisms, elementary embeddings and surjective strong homomorphisms are not formalized as columns (not proved here).",
+      "The converse preservation theorems (Łoś–Tarski, Lyndon, the homomorphism preservation theorem) are not formalized; the table concerns syntactic classes, not classes closed under logical equivalence.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms).",
+      "B. Rossman, 'Homomorphism preservation theorems', J. ACM 55(3), Article 15, 15:1–15:53 (2008), DOI 10.1145/1379759.1379763 (author PDF checked): Theorem 1.1 (Łoś–Tarski: preservation under embeddings iff equivalent to an existential formula; footnote 1: an embedding is an isomorphism onto an induced substructure, and the dual form is preservation under induced substructures iff universal), Theorem 1.2 (Lyndon's positivity theorem: surjective homomorphisms, positive formulas), Theorem 1.3 (homomorphism preservation theorem: homomorphisms, existential-positive formulas), Theorems 1.4 and 1.5 (Łoś–Tarski and Lyndon fail over finite structures; p. 3 attributes 1.4 to Tait 1959 and Gurevich–Shelah via Gurevich 1984, and 1.5 to Ajtai–Gurevich 1987 and Stolboushkin 1995), Theorem 1.7 (finite homomorphism preservation for sentences), Lemma 2.3 (the easy direction), §2.1.1 (structures have non-empty universes; substructure versus induced substructure), Remark 2.1 (formulas are not required to be prenex).",
+      "Mathlib (Lean 4), file Mathlib/ModelTheory/Complexity.lean at commit 3eae40f5eb25c5934211edf662d3b24c5afbe47a of leanprover-community/mathlib4 (checked): prenex `IsUniversal` and `IsExistential` (lines 330, 342) and `IsQF.realize_embedding`, `IsUniversal.realize_embedding`, `IsExistential.realize_embedding` (lines 374, 387, 398), `Theory.IsUniversal.models_of_embedding` (line 418), for arbitrary first-order languages. The ModelTheory directory at that commit has no positive or positive existential classes and no preservation results for homomorphisms beyond atomic formulas.",
+      "C. C. Chang and H. J. Keisler, Model Theory, 3rd ed., North-Holland 1990 (Studies in Logic 73), DOI 10.1016/S0049-237X(08)X7004-1 (Crossref record of the 1990 Elsevier volume with ISBN 978-0-444-88054-3, whose chapter records include the preface to the third edition; the record itself lists no authors). The publisher's table of contents lists §3.2 'Applications of elementary chains' and §5.2 'Preservation theorems'; which theorem appears under which number was not verified at the source."
+    ],
+    "design_question": "Given a proved relation between model and system (a map of one of the four kinds, in one of the two orientations), which claim shapes established on one side are licensed on the other? The table answers this for syntactic classes, with a refuting countermodel for every unlicensed cell.",
+    "modeling_bridge": "Reading the two structures as a model and a system is an interpretation, not part of the theorem. The theorem applies to a real model–system pair once both are represented as `Str` values (one binary relation, one unary predicate, equality), the stated map laws are proved for a map between the two representations, and the claim is written as a formula of the stated class; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "model-embeds-into-system-counterexamples-and-witnesses-transfer",
+    "lean": [
+      "Toy.Transfer.univ_counterexample_transfers_along_model_embedding",
+      "Toy.Transfer.exist_witness_transfers_along_model_embedding",
+      "Toy.Transfer.allP_truth_in_model_undetermined_in_system_along_embedding"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Contrapositive readings of the two easy Łoś–Tarski directions (Hodges 1993, Theorem 2.4.1 and Corollary 2.4.2) for the model-embeds-into-system orientation, with one concrete countermodel; the two transfer theorems are one-line repackagings of `univ_preserved_to_substructure_of_embedding` and `exist_preserved_to_extension_of_embedding`.",
+    "plain_claim": "Let h : M → S be an embedding of a model M into a system S (M is isomorphic via h to the induced substructure of S on the image of h). Then a universal formula that fails in M under e fails in S under h ∘ e, and an existential formula that holds in M under e holds in S under h ∘ e. Model truth of a universal formula does not in general determine its truth in S: the model `S1P` satisfies ∀x, P x and has two non-surjective embeddings, into `S2PP`, where the sentence holds, and into `S2PN`, where it fails.",
+    "hypotheses": [
+      {
+        "name": "hemb : IsEmbedding h (both transfer theorems)",
+        "purpose": "induced substructure; reflection of R and P is used",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allRxx_reflection_fails_without_reflR",
+          "Toy.Transfer.exNotRxx_transfer_fails_without_reflR"
+        ],
+        "witness_class": "an injective, surjective homomorphism of one-element structures that adds the loop R 0 0 (does not reflect R): ∀x, R x x fails in the model and holds in the system; ∃x, ¬ R x x holds in the model and fails in the system"
+      },
+      {
+        "name": "hφ : IsUniv φ (univ_counterexample_transfers_along_model_embedding)",
+        "purpose": "restricts to universal formulas",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exP_not_preserved_to_substructure"
+        ],
+        "witness_class": "∃x, P x fails in the model `S1N` and holds in the system `S2NP` it embeds into"
+      },
+      {
+        "name": "hφ : IsExist φ (exist_witness_transfers_along_model_embedding)",
+        "purpose": "restricts to existential formulas",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allP_not_preserved_to_extension"
+        ],
+        "witness_class": "∀x, P x holds in the model `S1P` and fails in the system `S2PN` it embeds into"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "∀x, P x fails in the model `S1N`, which embeds into `S2NP`; ∃x, P x holds in the model `S1P`, which embeds into `S2PN`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.model_embeds_into_system_nonvacuous"
+    ],
+    "lean_names": [
+      "Toy.Transfer.S2PP",
+      "Toy.Transfer.injective_hom_not_embedding_example",
+      "Toy.Transfer.qf_sat_iff_of_embedding_laws",
+      "Toy.Transfer.allP_in_nonempty_model_gives_exP_in_system"
+    ],
+    "non_claims": [
+      "An under-approximating model obtained by deleting R-edges or P-facts on retained elements is related to the system by an injective homomorphism that does not reflect R or P, which is not an embedding (`injective_hom_not_embedding_example`); for such models neither transfer is claimed, and both fail in general (`allRxx_reflection_fails_without_reflR`, `exNotRxx_transfer_fails_without_reflR`).",
+      "`allP_truth_in_model_undetermined_in_system_along_embedding` concerns the single sentence ∀x, P x. Model truth of other universal formulas can transfer: quantifier-free formulas transfer along embeddings in both directions (`qf_sat_iff_of_embedding_laws`), and valid sentences hold in every system. Model truth of a universal sentence can also license different claims about the system: for a non-empty model, ∀x, P x in M gives ∃x, P x in S (`allP_in_nonempty_model_gives_exP_in_system`).",
+      "Does not say that universal truths or existential falsities of the model transfer to the system in this orientation (`allP_not_preserved_to_extension`, `exP_not_preserved_to_substructure`).",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms).",
+      "B. Rossman, 'Homomorphism preservation theorems', J. ACM 55(3), Article 15, 15:1–15:53 (2008), DOI 10.1145/1379759.1379763 (author PDF checked): Theorem 1.1 (Łoś–Tarski: preservation under embeddings iff equivalent to an existential formula; footnote 1: an embedding is an isomorphism onto an induced substructure, and the dual form is preservation under induced substructures iff universal), Theorem 1.2 (Lyndon's positivity theorem: surjective homomorphisms, positive formulas), Theorem 1.3 (homomorphism preservation theorem: homomorphisms, existential-positive formulas), Theorems 1.4 and 1.5 (Łoś–Tarski and Lyndon fail over finite structures; p. 3 attributes 1.4 to Tait 1959 and Gurevich–Shelah via Gurevich 1984, and 1.5 to Ajtai–Gurevich 1987 and Stolboushkin 1995), Theorem 1.7 (finite homomorphism preservation for sentences), Lemma 2.3 (the easy direction), §2.1.1 (structures have non-empty universes; substructure versus induced substructure), Remark 2.1 (formulas are not required to be prenex).",
+      "P. W. O'Hearn, 'Incorrectness logic', Proc. ACM Program. Lang. 4(POPL) (2020), DOI 10.1145/3371078 (bibliographic data verified; content not checked). Cited as a program logic for under-approximate reasoning about bugs, a different formalism."
+    ],
+    "design_question": "When every model element and every atomic fact about it is present in the system, with no extra facts among model elements (an embedding), which model results carry over? Model counterexamples to universal claims and model witnesses to existential claims are system counterexamples and witnesses; a model proof of a universal claim does not in general establish that claim for the system.",
+    "modeling_bridge": "This is the first-order analogue of under-approximate bug finding. A model that keeps some of a system's elements together with exactly the system's atomic facts among them is an induced substructure, and `univ_counterexample_transfers_along_model_embedding` and `exist_witness_transfers_along_model_embedding` say that its counterexamples to universal formulas and its witnesses to existential formulas are the system's. The theorems assume models whose atomic facts agree with the system's on the model's elements. A model that also drops atomic facts about retained elements is related to the system by an injective homomorphism that does not reflect R or P, and so is not an embedding (an instance: `injective_hom_not_embedding_example`); neither transfer is claimed for such models, and both fail in general (`allRxx_reflection_fails_without_reflR`, `exNotRxx_transfer_fails_without_reflR`). Reading the two structures as a model and a system is an interpretation, not part of the theorem. The theorem applies to a real model–system pair once both are represented as `Str` values (one binary relation, one unary predicate, equality), the stated map laws are proved for a map between the two representations, and the claim is written as a formula of the stated class; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "system-embeds-into-model-universal-proofs-transfer-counterexamples-may-be-spurious",
+    "lean": [
+      "Toy.Transfer.univ_truth_transfers_down_from_model_extension",
+      "Toy.Transfer.model_counterexample_may_be_spurious_in_model_extension",
+      "Toy.Transfer.model_witness_may_be_spurious_in_model_extension"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The easy direction of Łoś–Tarski (Hodges 1993, Corollary 2.4.2(a)) read in the system-embeds-into-model orientation; the transfer theorem is a one-line repackaging of `univ_preserved_to_substructure_of_embedding`; the two countermodels are reused from the transfer matrix.",
+    "plain_claim": "Let h : S → M be an embedding of a system S into a model M (M extends S by extra elements and agrees with S on the atomic facts about S's elements). Then a universal formula that holds in M under h ∘ e holds in S under e. Model counterexamples to universal formulas, and model witnesses to existential formulas, may be spurious: ∀x, P x fails in the model `S2PN` and holds in the system `S1P` embedded by `inclPN`; ∃x, P x holds in the model `S2NP` and fails in the system `S1N` embedded by `inclNP`.",
+    "hypotheses": [
+      {
+        "name": "hemb : IsEmbedding h (univ_truth_transfers_down_from_model_extension)",
+        "purpose": "induced substructure",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.allRxx_reflection_fails_without_reflR"
+        ],
+        "witness_class": "the system `S1N` mapped into the model `S1R` by an injective homomorphism that does not reflect R: ∀x, R x x holds in the model and fails in the system"
+      },
+      {
+        "name": "hφ : IsUniv φ (univ_truth_transfers_down_from_model_extension)",
+        "purpose": "restricts to universal formulas",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.exP_not_preserved_to_substructure"
+        ],
+        "witness_class": "∃x, P x holds in the model `S2NP` and fails in the system `S1N`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`inclCyc` embeds the system `S1N` into the model `S2Cyc`, where ∀x, ¬ R x x holds.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.univ_preserved_to_substructure_nonvacuous"
+    ],
+    "lean_names": [
+      "Toy.Transfer.inclNP",
+      "Toy.Transfer.S1R"
+    ],
+    "non_claims": [
+      "Over-approximations used in model checking and abstract interpretation (state-merging quotients, predicate abstraction, relation-widening) are in general not embeddings: they are not injective or do not reflect R and P. This statement says nothing about them; for surjective homomorphisms from system to model, the classes whose model-side falsity is licensed are exactly the positive and positive existential ones (`licences_exact`).",
+      "Does not say that model counterexamples are always spurious; it says that the embedding does not exclude spurious ones.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms).",
+      "J. Łoś, 'On the extending of models (I)', Fundamenta Mathematicae 42(1) (1955) 38–54 (bibliographic data verified at https://eudml.org/doc/213372; the paper itself was not opened). Cited, with Tarski 1954, for the Łoś–Tarski preservation theorem, whose statement was verified as Rossman 2008, Theorem 1.1 and footnote 1.",
+      "A. Tarski, 'Contributions to the theory of models. I' and 'II', Indagationes Mathematicae (Proceedings) 57 (1954) 572–581 and 582–588, DOIs 10.1016/S1385-7258(54)50074-0 and 10.1016/S1385-7258(54)50075-2 (bibliographic data verified via Crossref; the papers were not opened).",
+      "E. M. Clarke, O. Grumberg, D. E. Long, 'Model checking and abstraction', ACM TOPLAS 16(5) (1994) 1512–1542, DOI 10.1145/186025.186051 (author PDF checked): abstractions are given by surjections from concrete to abstract states (p. 1513), and ∀CTL* properties true of the abstract model hold of the concrete one (Theorem 5.6). Different formalism: a surjective state abstraction of a Kripke structure, not a first-order embedding.",
+      "C. Loiseaux, S. Graf, J. Sifakis, A. Bouajjani, S. Bensalem, 'Property preserving abstractions for the verification of concurrent systems', Formal Methods in System Design 6(1) (1995) 11–44, DOI 10.1007/BF01384313 (abstract checked): simulations parameterized by Galois connections (α, γ) preserve fragments of the branching-time μ-calculus. Different formalism: Galois-connection abstractions, not first-order embeddings.",
+      "D. Dams, R. Gerth, O. Grumberg, 'Abstract interpretation of reactive systems', ACM TOPLAS 19(2) (1997) 253–291, DOI 10.1145/244795.244800 (first part of the abstract checked): abstract interpretation extended to existential and universal reactive properties. Different formalism, not first-order embeddings.",
+      "P. Cousot, R. Cousot, 'Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints', POPL 1977, 238–252, DOI 10.1145/512950.512973 (bibliographic data verified; content not checked). Cited as the origin of Galois-connection over-approximation, a different formalism from first-order embeddings.",
+      "E. Clarke, O. Grumberg, S. Jha, Y. Lu, H. Veith, 'Counterexample-guided abstraction refinement', CAV 2000, Lecture Notes in Computer Science, Springer, 154–169, DOI 10.1007/10722167_15 (PDF checked; series volume number not verified): over-approximating abstract models may produce spurious counterexamples, and an abstract counterexample is checked for a corresponding concrete path (Lemma 1); the check concerns one abstract path, not a converse simulation."
+    ],
+    "design_question": "When the model extends the system (more elements, same atomic facts about the system's elements), universal claims proved for the model hold for the system, while model counterexamples must be checked against the system.",
+    "modeling_bridge": "This mirrors over-approximating verification (Clarke, Grumberg and Long 1994; Clarke et al. 2000) in shape: universal model proofs transfer to the system, and model counterexamples must be checked against it. The analogy is one of shape: the cited verification frameworks abstract by surjections or by Galois connections, which are not embeddings, so the theorem does not apply to them as stated; for surjective homomorphisms from system to model, `licences_exact` gives the classes whose model-side falsity is licensed. Reading the two structures as a model and a system is an interpretation, not part of the theorem. The theorem applies to a real model–system pair once both are represented as `Str` values (one binary relation, one unary predicate, equality), the stated map laws are proved for a map between the two representations, and the claim is written as a formula of the stated class; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "forward-simulation-relates-reachable-states",
+    "lean": [
+      "Toy.Transfer.reach_related_of_forward_simulation"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The basic property of forward simulations; it follows from Lynch and Vaandrager 1995, Lemma 3.8, together with the start condition.",
+    "plain_claim": "If S relates every initial concrete state to some initial abstract state (`SimInit`) and matches every concrete step from an S-related pair by zero or more abstract steps ending in an S-related pair (`SimStepStar`), then every reachable concrete state is S-related to some reachable abstract state.",
+    "hypotheses": [
+      {
+        "name": "hi : SimInit C A S",
+        "purpose": "starts the induction on reachability",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.forward_simulation_needs_init"
+        ],
+        "witness_class": "the empty relation between one-state systems"
+      },
+      {
+        "name": "hs : SimStepStar C A S",
+        "purpose": "carries the relation along concrete steps",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.forward_simulation_needs_step_matching"
+        ],
+        "witness_class": "a two-state concrete system whose second state is related to nothing"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`tsTwoStep` (false → true) into `tsBoolHalt` (no steps) with S _ a := a = false: the concrete step is matched by zero abstract steps.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.forward_simulation_nonvacuous"
+    ],
+    "lean_names": [
+      "Toy.Transfer.SimInit",
+      "Toy.Transfer.SimStepStar",
+      "Toy.Transfer.tsTwoStep",
+      "Toy.Transfer.tsBoolHalt"
+    ],
+    "non_claims": [
+      "Does not say that every abstract state related to a reachable concrete state is reachable (`strong_pullback_fails_with_unreachable_related_state`).",
+      "`SimStepStar` (like every matching law here) requires matching from every `S`-related pair, reachable or not; a weaker law restricted to reachable pairs is not formalized.",
+      "Transition systems are unlabelled (states, a step relation, initial states); safety means a single-state invariant on reachable states. Trace properties of labelled systems are not formalized.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "N. Lynch, F. Vaandrager, 'Forward and backward simulations, Part I: untimed systems', Information and Computation 121(2) (1995) 214–233, DOI 10.1006/inco.1995.1134 (report version checked): forward simulations between labelled automata (§3.2: start states related; every step matched by a possibly empty sequence of steps with the same external behaviour), proved sound for trace inclusion. The paper has no separate lemma that reachable states are related; it follows from its Lemma 3.8 and the start condition. Its backward simulations (§3.3) go from the implementation to the specification and match steps backward in time; they are not the converse relation used here.",
+      "R. Milner, 'An algebraic definition of simulation between programs', Proc. IJCAI 1971, 481–489 (bibliographic data verified via DBLP and the first page of the proceedings PDF; content not checked). Cited as the original notion of simulation."
+    ],
+    "design_question": "Forward simulation is the relation along which safety facts move between an abstract model and a concrete system; in this package both safety transfers along it (`invariant_transfers_down_of_forward_simulation`, `bug_transfers_up_of_forward_simulation`) are proved from this lemma.",
+    "modeling_bridge": "Reading C as a concrete system and A as an abstract model is an interpretation, not part of the theorem. The theorem applies to a real system and model once both are represented as unlabelled transition systems (`TS`: a state type, a step relation, an initial-state predicate) and the stated simulation laws are proved for a relation between the two representations; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "safety-invariant-transfers-down-as-existential-pullback",
+    "lean": [
+      "Toy.Transfer.invariant_transfers_down_of_forward_simulation"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Immediate corollary of `reach_related_of_forward_simulation`; the standard 'proofs transfer down' direction of forward simulation.",
+    "plain_claim": "Under `SimInit` and `SimStepStar`, if an invariant I holds on every reachable abstract state, then every reachable concrete state c satisfies the existential pullback: some abstract state a with S c a satisfies I.",
+    "hypotheses": [
+      {
+        "name": "hi : SimInit C A S",
+        "purpose": "via `reach_related_of_forward_simulation`",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.forward_simulation_needs_init"
+        ],
+        "witness_class": "the empty relation between one-state systems, with I := True"
+      },
+      {
+        "name": "hs : SimStepStar C A S",
+        "purpose": "via `reach_related_of_forward_simulation`",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.forward_simulation_needs_step_matching"
+        ],
+        "witness_class": "a two-state concrete system whose second state is related to nothing, with I := True"
+      },
+      {
+        "name": "hI : ∀ a, Reach A a → I a",
+        "purpose": "the abstract invariant",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.invariant_transfer_needs_abstract_invariant"
+        ],
+        "witness_class": "I := False on one-state systems"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`tsTwoStep` into `tsBoolHalt`, S _ a := a = false, I a := a = false.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.forward_simulation_nonvacuous"
+    ],
+    "lean_names": [],
+    "non_claims": [
+      "The conclusion is the existential pullback, not the universal pullback {c | ∀ a, S c a → I a}, which can fail (`strong_pullback_fails_with_unreachable_related_state`). The universal pullback does hold when S relates each concrete state to at most one abstract state (`strong_pullback_of_functional_simulation`) or after restricting S to reachable abstract states (`reach_restricted_simulation_gives_strong_pullback`).",
+      "`SimStepStar` (like every matching law here) requires matching from every `S`-related pair, reachable or not; a weaker law restricted to reachable pairs is not formalized.",
+      "Transition systems are unlabelled (states, a step relation, initial states); safety means a single-state invariant on reachable states. Trace properties of labelled systems are not formalized.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "N. Lynch, F. Vaandrager, 'Forward and backward simulations, Part I: untimed systems', Information and Computation 121(2) (1995) 214–233, DOI 10.1006/inco.1995.1134 (report version checked): forward simulations between labelled automata (§3.2: start states related; every step matched by a possibly empty sequence of steps with the same external behaviour), proved sound for trace inclusion. The paper has no separate lemma that reachable states are related; it follows from its Lemma 3.8 and the start condition. Its backward simulations (§3.3) go from the implementation to the specification and match steps backward in time; they are not the converse relation used here.",
+      "M. Abadi, L. Lamport, 'The existence of refinement mappings', Theoretical Computer Science 82(2) (1991) 253–284, DOI 10.1016/0304-3975(91)90224-P (bibliographic data verified; the abstract was not accessible; per the authors' publication-page commentary, the paper shows that refinement mappings exist once history and prophecy variables are added, under stated hypotheses). Different formalism: state machines with stuttering and liveness."
+    ],
+    "design_question": "Proofs transfer down: an invariant proved for an abstract model yields, for the concrete system, the pulled-back property 'related to some state satisfying I'.",
+    "modeling_bridge": "Reading C as a concrete system and A as an abstract model is an interpretation, not part of the theorem. The theorem applies to a real system and model once both are represented as unlabelled transition systems (`TS`: a state type, a step relation, an initial-state predicate) and the stated simulation laws are proved for a relation between the two representations; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "strong-pullback-fails-with-unreachable-related-abstract-state",
+    "lean": [
+      "Toy.Transfer.strong_pullback_fails_with_unreachable_related_state"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "A two-state countermodel to a common over-reading.",
+    "plain_claim": "In a forward simulation from the one-state `tsHalt` to `tsBoolHalt` (abstract `true` unreachable) with S total, the invariant I a := a = false holds on every reachable abstract state, yet the reachable concrete state is S-related to an abstract state violating I: the universal pullback {c | ∀ a, S c a → I a} fails, while the existential pullback holds.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Not applicable: a concrete instance.",
+    "positive_control_lean": [
+      "Toy.Transfer.invariant_transfers_down_of_forward_simulation",
+      "Toy.Transfer.strong_pullback_of_functional_simulation",
+      "Toy.Transfer.reach_restricted_simulation_gives_strong_pullback"
+    ],
+    "lean_names": [
+      "Toy.Transfer.tsHalt",
+      "Toy.Transfer.functional_simulation_example",
+      "Toy.Transfer.reach_restriction_repairs_strong_pullback_countermodel"
+    ],
+    "non_claims": [
+      "Escape hatches (proved): the universal pullback holds when S relates each concrete state to at most one abstract state, for example the graph of a refinement mapping (`strong_pullback_of_functional_simulation`, instance `functional_simulation_example`), and when S is replaced by S c a ∧ Reach A a, which is again a forward simulation (`reach_restricted_simulation_gives_strong_pullback`, applied to this countermodel in `reach_restriction_repairs_strong_pullback_countermodel`).",
+      "Transition systems are unlabelled (states, a step relation, initial states); safety means a single-state invariant on reachable states. Trace properties of labelled systems are not formalized.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "M. Abadi, L. Lamport, 'The existence of refinement mappings', Theoretical Computer Science 82(2) (1991) 253–284, DOI 10.1016/0304-3975(91)90224-P (bibliographic data verified; the abstract was not accessible; per the authors' publication-page commentary, the paper shows that refinement mappings exist once history and prophecy variables are added, under stated hypotheses). Different formalism: state machines with stuttering and liveness."
+    ],
+    "design_question": "Shows why the transferred safety property must be read as 'related to some good abstract state', not 'all related abstract states are good', unless S is functional or restricted to reachable abstract states.",
+    "modeling_bridge": "A countermodel shows that the hypotheses it states do not suffice in general: no argument that uses those hypotheses alone can establish the transfer. It does not show that the transfer fails for a particular real system and model; this package represents no real system or model."
+  },
+  {
+    "id": "bugs-transfer-up-along-forward-simulation",
+    "lean": [
+      "Toy.Transfer.bug_transfers_up_of_forward_simulation"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Direct corollary of `reach_related_of_forward_simulation` with the bad-state hypothesis.",
+    "plain_claim": "Under `SimInit` and `SimStepStar`, if every abstract state S-related to a bad concrete state is bad (hbad), then every reachable bad concrete state is S-related to a reachable bad abstract state.",
+    "hypotheses": [
+      {
+        "name": "hi : SimInit C A S",
+        "purpose": "via `reach_related_of_forward_simulation`",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.forward_simulation_needs_init"
+        ],
+        "witness_class": "the empty relation between one-state systems, BadC = BadA := True"
+      },
+      {
+        "name": "hs : SimStepStar C A S",
+        "purpose": "via `reach_related_of_forward_simulation`",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.forward_simulation_needs_step_matching"
+        ],
+        "witness_class": "a two-state concrete system whose second state is related to nothing, BadC = BadA := True"
+      },
+      {
+        "name": "hbad : ∀ c a, S c a → BadC c → BadA a",
+        "purpose": "related states agree on badness, in this direction",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.bug_transfer_needs_bad_compatibility"
+        ],
+        "witness_class": "one-state systems with BadC := True and BadA := False"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The identity relation on `tsTwoStep` with BadC = BadA := (· = true): the bad state `true` is reachable and the initial state is not bad.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.bug_transfer_up_nonvacuous"
+    ],
+    "lean_names": [],
+    "non_claims": [
+      "Does not say that abstract bugs are concrete bugs; that direction fails under forward simulation alone (`spurious_abstract_counterexample`).",
+      "`SimStepStar` (like every matching law here) requires matching from every `S`-related pair, reachable or not; a weaker law restricted to reachable pairs is not formalized.",
+      "Transition systems are unlabelled (states, a step relation, initial states); safety means a single-state invariant on reachable states. Trace properties of labelled systems are not formalized.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "N. Lynch, F. Vaandrager, 'Forward and backward simulations, Part I: untimed systems', Information and Computation 121(2) (1995) 214–233, DOI 10.1006/inco.1995.1134 (report version checked): forward simulations between labelled automata (§3.2: start states related; every step matched by a possibly empty sequence of steps with the same external behaviour), proved sound for trace inclusion. The paper has no separate lemma that reachable states are related; it follows from its Lemma 3.8 and the start condition. Its backward simulations (§3.3) go from the implementation to the specification and match steps backward in time; they are not the converse relation used here."
+    ],
+    "design_question": "Bugs transfer up: if the relation relates every concrete initial state to an abstract initial state, matches every concrete step from a related pair by zero or more abstract steps, and relates bad concrete states to bad abstract states (every abstract state related to a bad concrete state is bad), then every reachable concrete bug is related to a reachable abstract bug.",
+    "modeling_bridge": "Reading C as a concrete system and A as an abstract model is an interpretation, not part of the theorem. The theorem applies to a real system and model once both are represented as unlabelled transition systems (`TS`: a state type, a step relation, an initial-state predicate) and the stated simulation laws are proved for a relation between the two representations; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "spurious-abstract-counterexample-under-forward-simulation",
+    "lean": [
+      "Toy.Transfer.spurious_abstract_counterexample"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "A two-state instance of the spurious counterexamples of abstraction refinement (Clarke et al. 2000).",
+    "plain_claim": "`relHaltTwoStep` is a forward simulation from the one-state `tsHalt` to `tsTwoStep` (false → true); related states agree on badness (`badNone`, `badTrue`: no concrete state is bad, the abstract state `true` is bad); the converse relation relates initial states but does not match the abstract step false → true. The abstract system reaches its bad state, while no reachable concrete state is bad and no concrete state is related to the abstract bad state.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Not applicable: a concrete instance.",
+    "positive_control_lean": [
+      "Toy.Transfer.bug_transfers_down_of_converse_simulation"
+    ],
+    "lean_names": [
+      "Toy.Transfer.relHaltTwoStep",
+      "Toy.Transfer.badNone",
+      "Toy.Transfer.badTrue",
+      "Toy.Transfer.abstract_bug_transfer_without_converse_step_matching"
+    ],
+    "non_claims": [
+      "Shows that forward simulation alone, even with bad-state agreement in both directions, does not make an abstract counterexample a concrete one. It does not characterize which additional property makes it one: a converse simulation suffices (`bug_transfers_down_of_converse_simulation`) but is not necessary (`abstract_bug_transfer_without_converse_step_matching`); in practice a single abstract counterexample trace can be checked for a concrete counterpart (Clarke et al. 2000, Lemma 1), which is not formalized here.",
+      "Transition systems are unlabelled (states, a step relation, initial states); safety means a single-state invariant on reachable states. Trace properties of labelled systems are not formalized.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "E. Clarke, O. Grumberg, S. Jha, Y. Lu, H. Veith, 'Counterexample-guided abstraction refinement', CAV 2000, Lecture Notes in Computer Science, Springer, 154–169, DOI 10.1007/10722167_15 (PDF checked; series volume number not verified): over-approximating abstract models may produce spurious counterexamples, and an abstract counterexample is checked for a corresponding concrete path (Lemma 1); the check concerns one abstract path, not a converse simulation."
+    ],
+    "design_question": "Forward simulation alone does not transfer abstract counterexamples: this instance satisfies it, and its abstract counterexample has no concrete counterpart. Further arguments that do transfer an abstract counterexample include a converse simulation (`bug_transfers_down_of_converse_simulation`) and concretization of the individual trace (Clarke et al. 2000; not formalized here).",
+    "modeling_bridge": "A countermodel shows that the hypotheses it states do not suffice in general: no argument that uses those hypotheses alone can establish the transfer. It does not show that the transfer fails for a particular real system and model; this package represents no real system or model. The instance has the shape of the spurious abstract counterexamples that counterexample-guided abstraction refinement (Clarke et al. 2000) detects by checking an abstract counterexample against the concrete system; that check is not formalized here."
+  },
+  {
+    "id": "abstract-bugs-transfer-down-along-converse-simulation",
+    "lean": [
+      "Toy.Transfer.bug_transfers_down_of_converse_simulation"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Instance of `bug_transfers_up_of_forward_simulation` with the roles of the two systems exchanged.",
+    "plain_claim": "If the converse relation (a ↦ c when S c a) relates every initial abstract state to an initial concrete state and matches every abstract step from a related pair by zero or more concrete steps (a forward simulation from A to C), and every concrete state S-related to a bad abstract state is bad, then every reachable bad abstract state is S-related to a reachable bad concrete state. S itself is not assumed to be a forward simulation from C to A.",
+    "hypotheses": [
+      {
+        "name": "hi : SimInit A C (fun a c => S c a)",
+        "purpose": "starts the induction on abstract reachability",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.converse_simulation_needs_init"
+        ],
+        "witness_class": "the empty relation between one-state systems"
+      },
+      {
+        "name": "hs : SimStepStar A C (fun a c => S c a)",
+        "purpose": "carries the converse relation along abstract steps",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.spurious_abstract_counterexample"
+        ],
+        "witness_class": "a one-state concrete system and a two-state abstract system whose step is not matched"
+      },
+      {
+        "name": "hbad : ∀ c a, S c a → BadA a → BadC c",
+        "purpose": "related states agree on badness, in this direction",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.converse_simulation_needs_bad_compatibility"
+        ],
+        "witness_class": "one-state systems with BadA := True and BadC := False"
+      }
+    ],
+    "depth": "definitional",
+    "depth_justification": "The proof is `bug_transfers_up_of_forward_simulation` applied with the systems exchanged.",
+    "nonvacuity_witness": "The identity relation on `tsTwoStep`, read in both directions, with BadC = BadA := (· = true).",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.converse_simulation_nonvacuous"
+    ],
+    "lean_names": [],
+    "non_claims": [
+      "This is a sufficient condition, and it is not necessary: `abstract_bug_transfer_without_converse_step_matching` gives a forward simulation in which every reachable abstract bug has a reachable concrete counterpart although the converse relation does not match an abstract step.",
+      "'Converse simulation' here means a forward simulation from A to C. It is not the backward simulation of Lynch and Vaandrager (1995, §3.3), which goes from the implementation to the specification and matches steps backward in time.",
+      "When S is also a forward simulation from C to A, S is a two-way simulation; that case is not separately formalized.",
+      "`SimStepStar` (like every matching law here) requires matching from every `S`-related pair, reachable or not; a weaker law restricted to reachable pairs is not formalized.",
+      "Transition systems are unlabelled (states, a step relation, initial states); safety means a single-state invariant on reachable states. Trace properties of labelled systems are not formalized.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "N. Lynch, F. Vaandrager, 'Forward and backward simulations, Part I: untimed systems', Information and Computation 121(2) (1995) 214–233, DOI 10.1006/inco.1995.1134 (report version checked): forward simulations between labelled automata (§3.2: start states related; every step matched by a possibly empty sequence of steps with the same external behaviour), proved sound for trace inclusion. The paper has no separate lemma that reachable states are related; it follows from its Lemma 3.8 and the start condition. Its backward simulations (§3.3) go from the implementation to the specification and match steps backward in time; they are not the converse relation used here.",
+      "E. Clarke, O. Grumberg, S. Jha, Y. Lu, H. Veith, 'Counterexample-guided abstraction refinement', CAV 2000, Lecture Notes in Computer Science, Springer, 154–169, DOI 10.1007/10722167_15 (PDF checked; series volume number not verified): over-approximating abstract models may produce spurious counterexamples, and an abstract counterexample is checked for a corresponding concrete path (Lemma 1); the check concerns one abstract path, not a converse simulation."
+    ],
+    "design_question": "Abstract counterexamples transfer down when the concrete system can match every abstract behaviour (a completeness property); this is a sufficient condition, and it is not necessary (`abstract_bug_transfer_without_converse_step_matching`).",
+    "modeling_bridge": "Reading C as a concrete system and A as an abstract model is an interpretation, not part of the theorem. The theorem applies to a real system and model once both are represented as unlabelled transition systems (`TS`: a state type, a step relation, an initial-state predicate) and the stated simulation laws are proved for a relation between the two representations; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "termination-transfers-down-along-lockstep-simulation",
+    "lean": [
+      "Toy.Transfer.allRunsFinite_transfers_down_of_lockstep"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Lock-step forward simulation transfers termination down; mechanized in CompCert (`forward_simulation_step`, preservation of silent divergence) for labelled small-step semantics.",
+    "plain_claim": "If S relates every initial concrete state to some initial abstract state (`SimInit`) and matches every concrete step from an S-related pair by a single abstract step (`SimStepLock`: one step, the matching successor need not be unique), and every reachable state of A terminates (accessible for the converse step relation), then every reachable state of C terminates.",
+    "hypotheses": [
+      {
+        "name": "hi : SimInit C A S",
+        "purpose": "relates reachable concrete states to reachable abstract states",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.termination_transfer_needs_init"
+        ],
+        "witness_class": "the empty relation from a one-state self-loop to a one-state halting system"
+      },
+      {
+        "name": "hs : SimStepLock C A S",
+        "purpose": "every concrete step forces an abstract step",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.stuttering_simulation_does_not_transfer_termination"
+        ],
+        "witness_class": "a stuttering (zero-step) simulation from a one-state self-loop to a one-state halting system"
+      },
+      {
+        "name": "hA : AllRunsFinite A",
+        "purpose": "abstract termination",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.termination_transfer_needs_abstract_termination"
+        ],
+        "witness_class": "the total relation between two one-state self-loops"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The identity relation on `tsTwoStep`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.lockstep_nonvacuous"
+    ],
+    "lean_names": [
+      "Toy.Transfer.SimStepLock",
+      "Toy.Transfer.lockstep_termination_transfer_is_about_reachable_states",
+      "Toy.Transfer.AllRunsFinite",
+      "Toy.Transfer.terminates_iff_no_infinite_run",
+      "Toy.Transfer.weak_termination_does_not_transfer_down_lockstep"
+    ],
+    "non_claims": [
+      "The conclusion is about reachable states: an unreachable concrete state may start an infinite run (`lockstep_termination_transfer_is_about_reachable_states`).",
+      "`AllRunsFinite` is universal termination from reachable states: every reachable state is accessible for the converse step relation, equivalently (`terminates_iff_no_infinite_run`, classical) no infinite run starts there. Weak termination (some run ends) does not transfer down, even along lock-step simulation (`weak_termination_does_not_transfer_down_lockstep`). Fair termination and other liveness properties are not formalized.",
+      "`SimStepLock` requires matching from every S-related pair, reachable or not.",
+      "Transition systems are unlabelled (states, a step relation, initial states); safety means a single-state invariant on reachable states. Trace properties of labelled systems are not formalized.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "X. Leroy, 'A formally verified compiler back-end', J. Automated Reasoning 43(4) (2009) 363–446, DOI 10.1007/s10817-009-9155-4 (bibliographic data verified), and the CompCert development, file common/Smallstep.v at commit 2685140bf72c959446981fb99b5e44a8975021bc of AbsInt/CompCert (checked): `fsim_properties` (line 566; a well-founded order, and each step matched by a non-empty sequence of steps or by a possibly empty sequence with a decrease), `forward_simulation_step` (line 727, lock-step), `forward_simulation_opt` (line 752, zero or one step with a decreasing natural-number measure), `simulation_forever_silent` (line 972, infinite silent runs are preserved). Different formalism: labelled small-step semantics with traces; divergence is coinductive rather than `Acc`.",
+      "C. Sternagel, R. Thiemann, 'Abstract Rewriting', Archive of Formal Proofs, June 2010, https://isa-afp.org/entries/Abstract-Rewriting.html (entry page and its bibliographic record verified; no DOI was found for the entry at Crossref; development version checked at the AFP mirror, Abstract_Rewriting.thy, at a revision that was not recorded): strong normalization defined as the absence of infinite chains (`SN_on`), with `SN_iff_wf` and `SN_on_conv_accp` relating it to well-foundedness and accessibility (the Isabelle counterpart of `terminates_iff_no_infinite_run`)."
+    ],
+    "design_question": "Termination proved for an abstract model transfers to the concrete system when every concrete step is matched by an abstract step.",
+    "modeling_bridge": "Reading C as a concrete system and A as an abstract model is an interpretation, not part of the theorem. The theorem applies to a real system and model once both are represented as unlabelled transition systems (`TS`: a state type, a step relation, an initial-state predicate) and the stated simulation laws are proved for a relation between the two representations; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "stuttering-simulation-does-not-transfer-termination",
+    "lean": [
+      "Toy.Transfer.stuttering_simulation_does_not_transfer_termination"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The standard one-state countermodel: stuttering matching lets a concrete loop simulate a halted abstract state.",
+    "plain_claim": "From the one-state self-loop `tsLoop` to the one-state halting `tsHalt`, the total relation relates initial states and matches the concrete step by zero abstract steps (`SimStepStutter`, hence also `SimStepStar`) but is not lock-step; every reachable abstract state terminates; the reachable concrete state does not (¬ AllRunsFinite tsLoop), and the concrete system has an explicit infinite run from a reachable state.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Not applicable: a concrete instance.",
+    "positive_control_lean": [
+      "Toy.Transfer.allRunsFinite_transfers_down_of_lockstep",
+      "Toy.Transfer.allRunsFinite_transfers_down_of_wf_simulation"
+    ],
+    "lean_names": [
+      "Toy.Transfer.tsLoop",
+      "Toy.Transfer.SimStepStutter",
+      "Toy.Transfer.SimStepWF",
+      "Toy.Transfer.stuttering_countermodel_admits_no_wf_measure"
+    ],
+    "non_claims": [
+      "Safety facts still transfer along this relation: it satisfies `SimInit` and `SimStepStar`, which are all the hypotheses of `reach_related_of_forward_simulation` and the simulation hypotheses of `invariant_transfers_down_of_forward_simulation` and `bug_transfers_up_of_forward_simulation`; those two theorems therefore apply to this relation for every invariant I that holds on every reachable abstract state (their hypothesis hI) and for every pair of bad-state predicates that satisfies their hypothesis hbad. The countermodel concerns the transfer of termination.",
+      "The repair is a measure that decreases on stuttering steps (`allRunsFinite_transfers_down_of_wf_simulation`). For this relation no such measure exists: for every type W, every well-founded relation lt on W and every measure μ, `SimStepWF` fails (`stuttering_countermodel_admits_no_wf_measure`, derived from `allRunsFinite_transfers_down_of_wf_simulation` and this countermodel). The tightness theorem `wf_simulation_needs_measure_decrease` shows the failure for one constant measure into `Unit`.",
+      "Transition systems are unlabelled (states, a step relation, initial states); safety means a single-state invariant on reachable states. Trace properties of labelled systems are not formalized.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "K. S. Namjoshi, 'A simple characterization of stuttering bisimulation', FSTTCS 1997, Lecture Notes in Computer Science 1346, 284–296, DOI 10.1007/BFb0058037 (PDF checked): well-founded bisimulation, a symmetric relation with a rank function S × S × S → W into a well-founded set and three matching clauses (a step, a stutter of the first state with a rank decrease, or a step of the second state with a rank decrease), is sound and complete for stuttering bisimulation (Theorems 1 and 2). Different formalism: symmetric bisimulation on labelled transition systems; the criterion here is one-sided.",
+      "M. C. Browne, E. M. Clarke, O. Grumberg, 'Characterizing finite Kripke structures in propositional temporal logic', Theoretical Computer Science 59(1–2) (1988) 115–131, DOI 10.1016/0304-3975(88)90098-9 (bibliographic data verified; content not checked). Cited as the origin of stuttering equivalence."
+    ],
+    "design_question": "Does a stuttering simulation, which satisfies the simulation hypotheses of the safety transfers (`invariant_transfers_down_of_forward_simulation`, `bug_transfers_up_of_forward_simulation`; see `SimStepStutter.toStar`), also transfer termination? Not in general: in this countermodel the relation is a stuttering simulation and every reachable abstract state terminates, the reachable concrete state does not terminate, and for this relation no well-founded measure satisfies `SimStepWF` (`stuttering_countermodel_admits_no_wf_measure`).",
+    "modeling_bridge": "A countermodel shows that the hypotheses it states do not suffice in general: no argument that uses those hypotheses alone can establish the transfer. It does not show that the transfer fails for a particular real system and model; this package represents no real system or model."
+  },
+  {
+    "id": "well-founded-simulation-criterion-transfers-termination",
+    "lean": [
+      "Toy.Transfer.allRunsFinite_transfers_down_of_wf_simulation"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The well-founded simulation criterion for termination; mechanized in CompCert for labelled small-step semantics (`fsim_properties` with a well-founded order, `forward_simulation_opt`, `simulation_forever_silent`).",
+    "plain_claim": "If S relates every initial concrete state to some initial abstract state (`SimInit`), every concrete step from an S-related pair is matched either by one abstract step or by no abstract step with a strict decrease of a measure μ(c, a) in a well-founded relation lt (`SimStepWF`), and every reachable state of A terminates (accessible for the converse step relation), then every reachable state of C terminates.",
+    "hypotheses": [
+      {
+        "name": "hwf : WellFounded lt",
+        "purpose": "stuttering steps cannot repeat forever",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.wf_simulation_needs_wellFounded"
+        ],
+        "witness_class": "the total relation on Unit as the measure order, in the stuttering countermodel"
+      },
+      {
+        "name": "hi : SimInit C A S",
+        "purpose": "relates reachable concrete states to reachable abstract states",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.termination_transfer_needs_init"
+        ],
+        "witness_class": "the empty relation from a self-loop to a halting system"
+      },
+      {
+        "name": "hs : SimStepWF C A S lt μ",
+        "purpose": "each concrete step is an abstract step or a measured stutter",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.wf_simulation_needs_measure_decrease"
+        ],
+        "witness_class": "the stuttering countermodel with a constant measure into Unit; for that relation every measure into every well-founded order fails `SimStepWF` (`stuttering_countermodel_admits_no_wf_measure`)"
+      },
+      {
+        "name": "hA : AllRunsFinite A",
+        "purpose": "abstract termination",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.termination_transfer_needs_abstract_termination"
+        ],
+        "witness_class": "the total relation between two self-loops"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Nested well-founded inductions, on abstract accessibility and on the measure.",
+    "nonvacuity_witness": "`tsTwoStep` into `tsBoolHalt` with S _ a := a = false and measure 1 at `false`, 0 at `true`: a genuine stutter with a measure decrease.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.wf_simulation_nonvacuous"
+    ],
+    "lean_names": [],
+    "non_claims": [
+      "`SimStepWF` allows zero or one abstract step per concrete step; matching by several abstract steps (as in CompCert's `fsim_properties`) is not formalized. The measure need not decrease on non-stuttering steps.",
+      "The criterion is sufficient; no completeness result is claimed.",
+      "`AllRunsFinite` is universal termination from reachable states: every reachable state is accessible for the converse step relation, equivalently (`terminates_iff_no_infinite_run`, classical) no infinite run starts there. Weak termination (some run ends) does not transfer down, even along lock-step simulation (`weak_termination_does_not_transfer_down_lockstep`). Fair termination and other liveness properties are not formalized.",
+      "`SimStepWF` requires matching from every S-related pair, reachable or not.",
+      "Transition systems are unlabelled (states, a step relation, initial states); safety means a single-state invariant on reachable states. Trace properties of labelled systems are not formalized.",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "X. Leroy, 'A formally verified compiler back-end', J. Automated Reasoning 43(4) (2009) 363–446, DOI 10.1007/s10817-009-9155-4 (bibliographic data verified), and the CompCert development, file common/Smallstep.v at commit 2685140bf72c959446981fb99b5e44a8975021bc of AbsInt/CompCert (checked): `fsim_properties` (line 566; a well-founded order, and each step matched by a non-empty sequence of steps or by a possibly empty sequence with a decrease), `forward_simulation_step` (line 727, lock-step), `forward_simulation_opt` (line 752, zero or one step with a decreasing natural-number measure), `simulation_forever_silent` (line 972, infinite silent runs are preserved). Different formalism: labelled small-step semantics with traces; divergence is coinductive rather than `Acc`.",
+      "K. S. Namjoshi, 'A simple characterization of stuttering bisimulation', FSTTCS 1997, Lecture Notes in Computer Science 1346, 284–296, DOI 10.1007/BFb0058037 (PDF checked): well-founded bisimulation, a symmetric relation with a rank function S × S × S → W into a well-founded set and three matching clauses (a step, a stutter of the first state with a rank decrease, or a step of the second state with a rank decrease), is sound and complete for stuttering bisimulation (Theorems 1 and 2). Different formalism: symmetric bisimulation on labelled transition systems; the criterion here is one-sided.",
+      "P. Manolios, K. Namjoshi, R. Sumners, 'Linking theorem proving and model-checking with well-founded bisimulation', CAV 1999, Lecture Notes in Computer Science, Springer, 369–379, DOI 10.1007/3-540-48683-6_32 (technical-report version checked; series volume number not verified): well-founded equivalence bisimulations with a rank function S × S → W, on transition systems whose transition relation must be left total (Definition 1), so no run ends. Different formalism.",
+      "R. W. Floyd, 'Assigning meanings to programs', Mathematical Aspects of Computer Science, Proc. Symposia in Applied Mathematics 19, AMS 1967, 19–32, DOI 10.1090/psapm/019/0235771 (bibliographic data verified via Crossref and the ACM Turing Award bibliography; content not checked). Cited as the origin of well-founded ranking arguments for termination.",
+      "C. Sternagel, R. Thiemann, 'Abstract Rewriting', Archive of Formal Proofs, June 2010, https://isa-afp.org/entries/Abstract-Rewriting.html (entry page and its bibliographic record verified; no DOI was found for the entry at Crossref; development version checked at the AFP mirror, Abstract_Rewriting.thy, at a revision that was not recorded): strong normalization defined as the absence of infinite chains (`SN_on`), with `SN_iff_wf` and `SN_on_conv_accp` relating it to well-foundedness and accessibility (the Isabelle counterpart of `terminates_iff_no_infinite_run`)."
+    ],
+    "design_question": "When a concrete system refines an abstract one with internal steps (stuttering), termination transfers down if every stutter decreases a well-founded measure.",
+    "modeling_bridge": "Reading C as a concrete system and A as an abstract model is an interpretation, not part of the theorem. The theorem applies to a real system and model once both are represented as unlabelled transition systems (`TS`: a state type, a step relation, an initial-state predicate) and the stated simulation laws are proved for a relation between the two representations; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "no-relation-transfer-iff-decided-by-model-or-system-class",
+    "lean": [
+      "Toy.Transfer.unrelated_truth_transfer_iff",
+      "Toy.Transfer.unrelated_falsity_transfer_iff",
+      "Toy.Transfer.unrelated_refutation_licensed_iff",
+      "Toy.Transfer.unrelated_refutation_licensed_iff_unsat_same_class",
+      "Toy.Transfer.unrelated_model_result_consistent_with_both"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Elementary predicate-logic facts, stated for satisfaction of sentences; they do not use the structure of formulas.",
+    "plain_claim": "Let KM be a class of models, KS a class of systems and φ a sentence, with no map between model and system assumed. The statement 'for every model T in KM and every system R in KS, if φ holds in T then φ holds in R' is true exactly when φ is unsatisfiable in KM or valid in KS (`unrelated_truth_transfer_iff`). The statement 'for every model T in KM and every system R in KS, if φ fails in T then φ fails in R' is true exactly when φ is valid in KM or unsatisfiable in KS (`unrelated_falsity_transfer_iff`). The statement 'for every model T in KM and every system R in KS, if φ holds in T then φ fails in R' (reading a model result as a refutation) is true exactly when φ is unsatisfiable in KM or unsatisfiable in KS (`unrelated_refutation_licensed_iff`); for KM = KS = K, the statement 'for every T and every R in K, if φ holds in T then φ fails in R' is true exactly when φ is unsatisfiable in K (`unrelated_refutation_licensed_iff_unsat_same_class`). In each statement both quantifiers range over the whole implication: it says that for each model T of KM in which the premise holds, the conclusion holds in every system of KS. If φ holds in some model of KM and KS contains both a system satisfying φ and one falsifying it, then there is a model T of KM satisfying φ such that KS contains a system satisfying φ and a system falsifying φ, so this model result is consistent with both system outcomes (`unrelated_model_result_consistent_with_both`).",
+    "hypotheses": [
+      {
+        "name": "hsatM : ∃ T, KM T ∧ SatS T φ (consistency form; the iff statements have no hypotheses)",
+        "purpose": "the model result is possible",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.consistent_with_both_needs_model_satisfiable"
+        ],
+        "witness_class": "KM := structures falsifying ∃x, P x"
+      },
+      {
+        "name": "hsatS : ∃ R, KS R ∧ SatS R φ (consistency form)",
+        "purpose": "some system agrees",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.consistent_with_both_needs_system_satisfiable"
+        ],
+        "witness_class": "KS := structures falsifying ∃x, P x"
+      },
+      {
+        "name": "hnvS : ∃ R, KS R ∧ ¬ SatS R φ (consistency form)",
+        "purpose": "some system disagrees",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Transfer.consistent_with_both_needs_system_not_valid"
+        ],
+        "witness_class": "KS := structures satisfying ∃x, P x"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Over all structures (KM = KS), ∃x, P x is neither valid nor unsatisfiable and none of the three transfers is licensed (`unrelated_nonvacuous`); with KM = all structures and KS = the structures with non-empty carrier, for every model T of KM and every system R of KS, truth of ∃x, x = x in T implies its truth in R, because the system class decides it, although ∃x, x = x is neither valid nor unsatisfiable over all structures (`unrelated_two_class_example`).",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.unrelated_nonvacuous",
+      "Toy.Transfer.unrelated_two_class_example"
+    ],
+    "lean_names": [
+      "Toy.Transfer.narrow_scope_readings_differ_from_unrelated_transfer"
+    ],
+    "non_claims": [
+      "The characterizations depend on KM, KS and φ, not on a particular model or system. When the system class decides φ (ValidIn KS φ or UnsatIn KS φ), the system claim holds or fails for every system of KS regardless of the model.",
+      "The characterizations are about statements that quantify over every model of KM and every system of KS at once. They are not about the narrow-scope statement 'if φ holds in every model of KM then φ holds in every system of KS' (ValidIn KM φ → ValidIn KS φ), nor its falsity and refutation analogues, which are different statements: for KM = KS = all structures and φ = ∃x, P x each narrow-scope implication holds while the right-hand side of the corresponding characterization fails (`narrow_scope_readings_differ_from_unrelated_transfer`).",
+      "The same-class form allows the model and the system to be the same structure (T = R). If models and systems are known to come from different classes, use the two-class statements: then a refutation is licensed whenever φ is unsatisfiable in the system class, even if φ is satisfiable in the model class.",
+      "Says nothing about structures related by a map; for those, see the transfer matrix and `licences_exact`.",
+      "Structures may have empty carriers (`emptyStr`), unlike the classical convention of non-empty domains (Rossman 2008, §2.1.1). The statement quantifies over all structures, empty or not, so it also holds when structures are restricted to non-empty ones. Facts about validity do depend on the convention: `∃x, x = x` is not valid over all structures but is valid over the non-empty ones (`exSelfEq_valid_iff_nonempty_carriers`).",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "No specific prior statement of the characterizations located; elementary consequence of the definitions.",
+      "B. Rossman, 'Homomorphism preservation theorems', J. ACM 55(3), Article 15, 15:1–15:53 (2008), DOI 10.1145/1379759.1379763 (author PDF checked): Theorem 1.1 (Łoś–Tarski: preservation under embeddings iff equivalent to an existential formula; footnote 1: an embedding is an isomorphism onto an induced substructure, and the dual form is preservation under induced substructures iff universal), Theorem 1.2 (Lyndon's positivity theorem: surjective homomorphisms, positive formulas), Theorem 1.3 (homomorphism preservation theorem: homomorphisms, existential-positive formulas), Theorems 1.4 and 1.5 (Łoś–Tarski and Lyndon fail over finite structures; p. 3 attributes 1.4 to Tait 1959 and Gurevich–Shelah via Gurevich 1984, and 1.5 to Ajtai–Gurevich 1987 and Stolboushkin 1995), Theorem 1.7 (finite homomorphism preservation for sentences), Lemma 2.3 (the easy direction), §2.1.1 (structures have non-empty universes; substructure versus induced substructure), Remark 2.1 (formulas are not required to be prenex)."
+    ],
+    "design_question": "What does a model result license about a system when no relation between them is proved? For a model class KM and a system class KS, a transfer statement over every model of KM and every system of KS holds exactly when the model class or the system class settles φ in the way given by the three characterizations.",
+    "modeling_bridge": "A scope statement should name the proved model–system relation, or say that the results neither establish nor refute the corresponding system claims. Reasoning: reading a model result as a refutation of the system claim is the refutation statement of this card, and `unrelated_refutation_licensed_iff` shows that it holds exactly when φ is unsatisfiable in KM or unsatisfiable in KS; for a sentence that is satisfiable in KM and satisfiable in KS it does not hold, so such a reading is unlicensed. Whether a particular disclaimer wording is read as such a refutation is a question about readers, which this package does not examine. Reading KM and KS as the possible models and systems is an interpretation: the characterizations apply to real models and systems once each is represented as a `Str` value and the claim as a sentence."
+  },
+  {
+    "id": "unlicensed-cell-admits-both-outcomes-along-non-isomorphisms",
+    "lean": [
+      "Toy.Transfer.bothOutcomesNonIso_iff_unlicensed",
+      "Toy.Transfer.falsity_licensed_where_truth_unlicensed_iff",
+      "Toy.Transfer.unlicensed_cells_contain_transferring_subclasses"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Folklore ('an unlicensed preservation cell carries no guarantee') made precise and corrected; not found mechanized in the sources checked.",
+    "plain_claim": "For every class c, map kind k and direction d, the cell (c, k, d) is unlicensed in the transfer table exactly when it admits both outcomes along non-isomorphisms (`bothOutcomesNonIso_iff_unlicensed`): there is a formula φ of class c (with parameters), a structure at the known end with an environment at which φ holds, and two k-maps, neither an isomorphism, such that φ holds at the other end of one and fails at the other end of the other. For a forward cell the known end is the source A with environment e, and φ is evaluated in each target at h ∘ e. For a backward cell the known end is the target B with environment b; each of the two maps h comes with a source environment e that it sends to b pointwise (h (e i) = b i for every i), and φ is evaluated in the source at that e. The two maps need not be distinct: in `both_eq` both outcomes use the map `collapse`, with two different source environments. Unlicensed does not mean that nothing transfers: model-side falsity is licensed while model-side truth is not for exactly seven (kind, orientation, class) triples (`falsity_licensed_where_truth_unlicensed_iff`), and some unlicensed cells contain proper subclasses that transfer (`unlicensed_cells_contain_transferring_subclasses`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "47 per-cell witnesses checked by evaluation, grouped into 13 witness lemmas, plus the converse from `licensedB_iff`.",
+    "nonvacuity_witness": "`bothOutcomesNonIso_examples`: the universal/embedding/forward cell admits both outcomes; the universal/embedding/backward cell does not.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.bothOutcomesNonIso_examples"
+    ],
+    "lean_names": [
+      "Toy.Transfer.both_eq",
+      "Toy.Transfer.collapse",
+      "Toy.Transfer.MapKind.holds_id",
+      "Toy.Transfer.MapKind"
+    ],
+    "non_claims": [
+      "The witnesses concern one formula per cell. An unlicensed cell does not mean that no formula of the class transfers, nor that the class carries no information: falsity can transfer in the same direction (`falsity_licensed_where_truth_unlicensed_iff`), and proper subclasses can transfer (`unlicensed_cells_contain_transferring_subclasses`, for example quantifier-free formulas inside the universal/embedding/forward cell).",
+      "Excluding isomorphisms rules out the trivial agreeing witness (the identity map, `MapKind.holds_id`); the witnesses are otherwise small (one to three elements) and all have non-empty carriers.",
+      "Transfer is stated for formulas with parameters: along h : A → B the environment e of A becomes h ∘ e, and in the system-to-model reading the model side is evaluated at image environments h ∘ e, not at arbitrary model environments. There are no quantifier-free sentences (`no_qf_sentences`), so the quantifier-free row is witnessed by formulas with one or two free variables; restricted to sentences, quantifier-free transfer holds vacuously in every cell (`preservesSent_qf`). For the other six rows the same table is exact for sentences (`licensedB_iff_preservesSent_of_ne_qf`).",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms)."
+    ],
+    "design_question": "What may a reader conclude from an unlicensed cell? That the transfer is not guaranteed: for some formula of the class, genuine (non-isomorphism) maps of that kind lead to both outcomes. Not that the claim is refuted, and not that every formula of the class fails to transfer.",
+    "modeling_bridge": "Reading the two structures as a model and a system is an interpretation, not part of the theorem. The theorem applies to a real model–system pair once both are represented as `Str` values (one binary relation, one unary predicate, equality), the stated map laws are proved for a map between the two representations, and the claim is written as a formula of the stated class; this package carries out none of these steps for any real pair."
+  },
+  {
+    "id": "exact-licences-per-map-kind-and-orientation",
+    "lean": [
+      "Toy.Transfer.licences_exact"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "A re-indexing of the transfer matrix by orientation (model-to-system or system-to-model) and truth value; the licensed cells are the easy preservation theorems (Hodges 1993, §2.4).",
+    "plain_claim": "For every map kind k, orientation o (h : model → system, or h : system → model) and class c: model-side truth of class-c formulas (with parameters, the environment pushed along h) is licensed for the system along every k-map in orientation o exactly when c ∈ truthList k o, and model-side falsity exactly when c ∈ falsityList k o. Model to system: embedding — truth [qf, exist, posExist], falsity [qf, univ]; strong homomorphism and homomorphism — truth [posExist], falsity []; surjective homomorphism — truth [pos, posExist], falsity []. System to model: embedding — truth [qf, univ], falsity [qf, exist, posExist]; strong homomorphism and homomorphism — truth [], falsity [posExist]; surjective homomorphism — truth [], falsity [pos, posExist].",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`truthLicensed_examples` and `falsityLicensed_examples` exhibit a licensed and an unlicensed entry of each list.",
+    "nonvacuity_witness_lean": [
+      "Toy.Transfer.truthLicensed_examples",
+      "Toy.Transfer.falsityLicensed_examples"
+    ],
+    "lean_names": [],
+    "non_claims": [
+      "Transfer is stated for formulas with parameters: along h : A → B the environment e of A becomes h ∘ e, and in the system-to-model reading the model side is evaluated at image environments h ∘ e, not at arbitrary model environments. There are no quantifier-free sentences (`no_qf_sentences`), so the quantifier-free row is witnessed by formulas with one or two free variables; restricted to sentences, quantifier-free transfer holds vacuously in every cell (`preservesSent_qf`). For the other six rows the same table is exact for sentences (`licensedB_iff_preservesSent_of_ne_qf`).",
+      "Strong homomorphisms license the same cells as homomorphisms because the signature includes equality: a non-injective strong homomorphism does not preserve `¬ x = y` (`neq_not_preserved_by_strongHom`) and does not reflect `x = y` (`eq_not_reflected_by_strongHom`). On equality-free quantifier-free formulas, strong homomorphisms do preserve and reflect satisfaction (`qf_sat_iff_of_strongHom_of_eqFree`). An equality-free version of the whole table is not formalized. 'Strong homomorphism' means `IsStrongHom` (preserves and reflects R and P); usage of the term varies in the literature.",
+      "The universal, existential, ∀∃ and ∃∀ classes are prenex, while the positive and positive existential classes allow quantifiers under ∧ and ∨. So a positive existential formula need not be existential in the prenex sense: `posExist_not_subset_exist` exhibits `(∃x, P x) ∧ (∃y, P y)`. Hodges (1993, §2.4) and Rossman (2008, Remark 2.1) use non-prenex classes. Classes are syntactic: a formula that is merely logically equivalent to a class member is not covered.",
+      "Structures may have empty carriers (`emptyStr`), unlike the classical convention of non-empty domains (Rossman 2008, §2.1.1). Every refuting instance in the table uses structures with one or two elements, and the licensed cells hold for all structures, so the table is unchanged if structures are restricted to non-empty ones (derived from the definitions of the countermodel structures; not stated as a separate theorem).",
+      "`.posExist` is listed separately from `.exist` because the positive existential class is not contained in the prenex existential class (`posExist_not_subset_exist`).",
+      "Model–system relation for this package itself: none proved. The structures (one binary relation R, one unary predicate P, equality), formulas and transition systems are abstract toy definitions; these results neither establish nor refute the corresponding claims about any particular modelling formalism, verification tool or real system. Connections to verification practice are separate claims of the kind 'derived (modeling bridge)'."
+    ],
+    "prior_art": [
+      "W. Hodges, Model Theory, Cambridge University Press 1993 (Encyclopedia of Mathematics and its Applications 42), DOI 10.1017/CBO9780511551574 (bibliographic data verified via Crossref), checked in the publisher's reading sample: §1.2 (an embedding is an injective homomorphism with ā ∈ R^A ⇔ fā ∈ R^B), §2.4 'Maps and the formulas they preserve' (∀1 and ∃1 formulas, not required to be prenex), Theorem 2.4.1 (∃1 formulas are preserved by embeddings), Corollary 2.4.2(a) (∀1 formulas are preserved in substructures), Theorem 2.4.3 ((a) positive existential formulas are preserved by homomorphisms; (b) positive formulas by surjective homomorphisms).",
+      "B. Rossman, 'Homomorphism preservation theorems', J. ACM 55(3), Article 15, 15:1–15:53 (2008), DOI 10.1145/1379759.1379763 (author PDF checked): Theorem 1.1 (Łoś–Tarski: preservation under embeddings iff equivalent to an existential formula; footnote 1: an embedding is an isomorphism onto an induced substructure, and the dual form is preservation under induced substructures iff universal), Theorem 1.2 (Lyndon's positivity theorem: surjective homomorphisms, positive formulas), Theorem 1.3 (homomorphism preservation theorem: homomorphisms, existential-positive formulas), Theorems 1.4 and 1.5 (Łoś–Tarski and Lyndon fail over finite structures; p. 3 attributes 1.4 to Tait 1959 and Gurevich–Shelah via Gurevich 1984, and 1.5 to Ajtai–Gurevich 1987 and Stolboushkin 1995), Theorem 1.7 (finite homomorphism preservation for sentences), Lemma 2.3 (the easy direction), §2.1.1 (structures have non-empty universes; substructure versus induced substructure), Remark 2.1 (formulas are not required to be prenex)."
+    ],
+    "design_question": "For each proved map between model and system, which model-side truths and which model-side falsities may be asserted of the system?",
+    "modeling_bridge": "Reading the two structures as a model and a system is an interpretation, not part of the theorem. The theorem applies to a real model–system pair once both are represented as `Str` values (one binary relation, one unary predicate, equality), the stated map laws are proved for a map between the two representations, and the claim is written as a formula of the stated class; this package carries out none of these steps for any real pair."
+  }
+]

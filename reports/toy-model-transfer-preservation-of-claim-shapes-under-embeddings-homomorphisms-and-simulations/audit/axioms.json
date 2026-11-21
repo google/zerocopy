@@ -1,0 +1,1501 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Transfer.AllRunsFinite": [],
+    "Toy.Transfer.BothOutcomesNonIso": [],
+    "Toy.Transfer.BothOutcomesNonIso.match_1": [],
+    "Toy.Transfer.Cls": [],
+    "Toy.Transfer.Cls.Mem": [],
+    "Toy.Transfer.Cls.Mem.match_1": [],
+    "Toy.Transfer.Cls.ae": [],
+    "Toy.Transfer.Cls.ae.elim": [],
+    "Toy.Transfer.Cls.ae.sizeOf_spec": [],
+    "Toy.Transfer.Cls.casesOn": [],
+    "Toy.Transfer.Cls.ctorElim": [],
+    "Toy.Transfer.Cls.ctorElimType": [],
+    "Toy.Transfer.Cls.ctorIdx": [],
+    "Toy.Transfer.Cls.ea": [],
+    "Toy.Transfer.Cls.ea.elim": [],
+    "Toy.Transfer.Cls.ea.sizeOf_spec": [],
+    "Toy.Transfer.Cls.exist": [],
+    "Toy.Transfer.Cls.exist.elim": [],
+    "Toy.Transfer.Cls.exist.sizeOf_spec": [],
+    "Toy.Transfer.Cls.noConfusion": [],
+    "Toy.Transfer.Cls.noConfusionType": [],
+    "Toy.Transfer.Cls.ofNat": [],
+    "Toy.Transfer.Cls.ofNat_ctorIdx": [],
+    "Toy.Transfer.Cls.pos": [],
+    "Toy.Transfer.Cls.pos.elim": [],
+    "Toy.Transfer.Cls.pos.sizeOf_spec": [],
+    "Toy.Transfer.Cls.posExist": [],
+    "Toy.Transfer.Cls.posExist.elim": [],
+    "Toy.Transfer.Cls.posExist.sizeOf_spec": [],
+    "Toy.Transfer.Cls.qf": [],
+    "Toy.Transfer.Cls.qf.elim": [],
+    "Toy.Transfer.Cls.qf.sizeOf_spec": [],
+    "Toy.Transfer.Cls.rec": [],
+    "Toy.Transfer.Cls.recOn": [],
+    "Toy.Transfer.Cls.test": [],
+    "Toy.Transfer.Cls.test_iff": [
+      "propext"
+    ],
+    "Toy.Transfer.Cls.univ": [],
+    "Toy.Transfer.Cls.univ.elim": [],
+    "Toy.Transfer.Cls.univ.sizeOf_spec": [],
+    "Toy.Transfer.Dir": [],
+    "Toy.Transfer.Dir.Transfer": [],
+    "Toy.Transfer.Dir.Transfer.match_1": [],
+    "Toy.Transfer.Dir.bwd": [],
+    "Toy.Transfer.Dir.bwd.elim": [],
+    "Toy.Transfer.Dir.bwd.sizeOf_spec": [],
+    "Toy.Transfer.Dir.casesOn": [],
+    "Toy.Transfer.Dir.ctorElim": [],
+    "Toy.Transfer.Dir.ctorElimType": [],
+    "Toy.Transfer.Dir.ctorIdx": [],
+    "Toy.Transfer.Dir.fwd": [],
+    "Toy.Transfer.Dir.fwd.elim": [],
+    "Toy.Transfer.Dir.fwd.sizeOf_spec": [],
+    "Toy.Transfer.Dir.noConfusion": [],
+    "Toy.Transfer.Dir.noConfusionType": [],
+    "Toy.Transfer.Dir.ofNat": [],
+    "Toy.Transfer.Dir.ofNat_ctorIdx": [],
+    "Toy.Transfer.Dir.rec": [],
+    "Toy.Transfer.Dir.recOn": [],
+    "Toy.Transfer.Env.cons": [],
+    "Toy.Transfer.Env.cons.match_1": [],
+    "Toy.Transfer.FalsityLicensed": [],
+    "Toy.Transfer.FinStr": [],
+    "Toy.Transfer.FinStr.casesOn": [],
+    "Toy.Transfer.FinStr.ctorIdx": [],
+    "Toy.Transfer.FinStr.decSat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.FinStr.decSat.match_7": [],
+    "Toy.Transfer.FinStr.mk": [],
+    "Toy.Transfer.FinStr.mk.inj": [],
+    "Toy.Transfer.FinStr.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.FinStr.mk.noConfusion": [],
+    "Toy.Transfer.FinStr.mk.sizeOf_spec": [],
+    "Toy.Transfer.FinStr.noConfusion": [],
+    "Toy.Transfer.FinStr.noConfusionType": [],
+    "Toy.Transfer.FinStr.p": [],
+    "Toy.Transfer.FinStr.r": [],
+    "Toy.Transfer.FinStr.rec": [],
+    "Toy.Transfer.FinStr.recOn": [],
+    "Toy.Transfer.FinStr.toStr": [],
+    "Toy.Transfer.Fml": [],
+    "Toy.Transfer.Fml.aeB": [],
+    "Toy.Transfer.Fml.all": [],
+    "Toy.Transfer.Fml.all.elim": [],
+    "Toy.Transfer.Fml.all.inj": [],
+    "Toy.Transfer.Fml.all.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.Fml.all.noConfusion": [],
+    "Toy.Transfer.Fml.all.sizeOf_spec": [],
+    "Toy.Transfer.Fml.and": [],
+    "Toy.Transfer.Fml.and.elim": [],
+    "Toy.Transfer.Fml.and.inj": [],
+    "Toy.Transfer.Fml.and.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.Fml.and.noConfusion": [],
+    "Toy.Transfer.Fml.and.sizeOf_spec": [],
+    "Toy.Transfer.Fml.below": [],
+    "Toy.Transfer.Fml.brecOn": [],
+    "Toy.Transfer.Fml.brecOn.eq": [],
+    "Toy.Transfer.Fml.brecOn.go": [],
+    "Toy.Transfer.Fml.casesOn": [],
+    "Toy.Transfer.Fml.ctorElim": [],
+    "Toy.Transfer.Fml.ctorElimType": [],
+    "Toy.Transfer.Fml.ctorIdx": [],
+    "Toy.Transfer.Fml.eaB": [],
+    "Toy.Transfer.Fml.eq": [],
+    "Toy.Transfer.Fml.eq.elim": [],
+    "Toy.Transfer.Fml.eq.inj": [],
+    "Toy.Transfer.Fml.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.Fml.eq.noConfusion": [],
+    "Toy.Transfer.Fml.eq.sizeOf_spec": [],
+    "Toy.Transfer.Fml.ex": [],
+    "Toy.Transfer.Fml.ex.elim": [],
+    "Toy.Transfer.Fml.ex.inj": [],
+    "Toy.Transfer.Fml.ex.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.Fml.ex.noConfusion": [],
+    "Toy.Transfer.Fml.ex.sizeOf_spec": [],
+    "Toy.Transfer.Fml.existB": [],
+    "Toy.Transfer.Fml.existB.match_1": [],
+    "Toy.Transfer.Fml.imp": [],
+    "Toy.Transfer.Fml.neg": [],
+    "Toy.Transfer.Fml.neg.elim": [],
+    "Toy.Transfer.Fml.neg.inj": [],
+    "Toy.Transfer.Fml.neg.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.Fml.neg.noConfusion": [],
+    "Toy.Transfer.Fml.neg.sizeOf_spec": [],
+    "Toy.Transfer.Fml.noConfusion": [],
+    "Toy.Transfer.Fml.noConfusionType": [],
+    "Toy.Transfer.Fml.or": [],
+    "Toy.Transfer.Fml.or.elim": [],
+    "Toy.Transfer.Fml.or.inj": [],
+    "Toy.Transfer.Fml.or.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.Fml.or.noConfusion": [],
+    "Toy.Transfer.Fml.or.sizeOf_spec": [],
+    "Toy.Transfer.Fml.posB": [],
+    "Toy.Transfer.Fml.posB.eq_1": [],
+    "Toy.Transfer.Fml.posB.eq_2": [],
+    "Toy.Transfer.Fml.posB.eq_3": [],
+    "Toy.Transfer.Fml.posB.eq_4": [],
+    "Toy.Transfer.Fml.posB.eq_5": [],
+    "Toy.Transfer.Fml.posB.eq_6": [],
+    "Toy.Transfer.Fml.posB.eq_7": [],
+    "Toy.Transfer.Fml.posB.eq_8": [],
+    "Toy.Transfer.Fml.posB.eq_def": [],
+    "Toy.Transfer.Fml.posExistB": [],
+    "Toy.Transfer.Fml.posExistB.eq_1": [],
+    "Toy.Transfer.Fml.posExistB.eq_2": [],
+    "Toy.Transfer.Fml.posExistB.eq_3": [],
+    "Toy.Transfer.Fml.posExistB.eq_4": [],
+    "Toy.Transfer.Fml.posExistB.eq_5": [],
+    "Toy.Transfer.Fml.posExistB.eq_6": [],
+    "Toy.Transfer.Fml.posExistB.eq_7": [],
+    "Toy.Transfer.Fml.posExistB.eq_8": [],
+    "Toy.Transfer.Fml.posExistB.eq_def": [],
+    "Toy.Transfer.Fml.pred": [],
+    "Toy.Transfer.Fml.pred.elim": [],
+    "Toy.Transfer.Fml.pred.inj": [],
+    "Toy.Transfer.Fml.pred.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.Fml.pred.noConfusion": [],
+    "Toy.Transfer.Fml.pred.sizeOf_spec": [],
+    "Toy.Transfer.Fml.qfB": [],
+    "Toy.Transfer.Fml.qfB.eq_1": [],
+    "Toy.Transfer.Fml.qfB.eq_2": [],
+    "Toy.Transfer.Fml.qfB.eq_3": [],
+    "Toy.Transfer.Fml.qfB.eq_4": [],
+    "Toy.Transfer.Fml.qfB.eq_5": [],
+    "Toy.Transfer.Fml.qfB.eq_6": [],
+    "Toy.Transfer.Fml.qfB.eq_7": [],
+    "Toy.Transfer.Fml.qfB.eq_8": [],
+    "Toy.Transfer.Fml.qfB.eq_def": [],
+    "Toy.Transfer.Fml.qfB.match_1": [],
+    "Toy.Transfer.Fml.rec": [],
+    "Toy.Transfer.Fml.recOn": [],
+    "Toy.Transfer.Fml.rel": [],
+    "Toy.Transfer.Fml.rel.elim": [],
+    "Toy.Transfer.Fml.rel.inj": [],
+    "Toy.Transfer.Fml.rel.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.Fml.rel.noConfusion": [],
+    "Toy.Transfer.Fml.rel.sizeOf_spec": [],
+    "Toy.Transfer.Fml.univB": [],
+    "Toy.Transfer.Fml.univB.match_1": [],
+    "Toy.Transfer.IsAE": [],
+    "Toy.Transfer.IsAE.all": [],
+    "Toy.Transfer.IsAE.below": [],
+    "Toy.Transfer.IsAE.below.all": [],
+    "Toy.Transfer.IsAE.below.casesOn": [],
+    "Toy.Transfer.IsAE.below.exist": [],
+    "Toy.Transfer.IsAE.below.rec": [],
+    "Toy.Transfer.IsAE.brecOn": [],
+    "Toy.Transfer.IsAE.casesOn": [],
+    "Toy.Transfer.IsAE.exist": [],
+    "Toy.Transfer.IsAE.rec": [],
+    "Toy.Transfer.IsAE.recOn": [],
+    "Toy.Transfer.IsEA": [],
+    "Toy.Transfer.IsEA.below": [],
+    "Toy.Transfer.IsEA.below.casesOn": [],
+    "Toy.Transfer.IsEA.below.ex": [],
+    "Toy.Transfer.IsEA.below.rec": [],
+    "Toy.Transfer.IsEA.below.univ": [],
+    "Toy.Transfer.IsEA.brecOn": [],
+    "Toy.Transfer.IsEA.casesOn": [],
+    "Toy.Transfer.IsEA.ex": [],
+    "Toy.Transfer.IsEA.rec": [],
+    "Toy.Transfer.IsEA.recOn": [],
+    "Toy.Transfer.IsEA.univ": [],
+    "Toy.Transfer.IsEmbedding": [],
+    "Toy.Transfer.IsEmbedding.casesOn": [],
+    "Toy.Transfer.IsEmbedding.inj": [],
+    "Toy.Transfer.IsEmbedding.mk": [],
+    "Toy.Transfer.IsEmbedding.presP": [],
+    "Toy.Transfer.IsEmbedding.presR": [],
+    "Toy.Transfer.IsEmbedding.rec": [],
+    "Toy.Transfer.IsEmbedding.recOn": [],
+    "Toy.Transfer.IsEmbedding.reflP": [],
+    "Toy.Transfer.IsEmbedding.reflR": [],
+    "Toy.Transfer.IsEmbedding.toHom": [],
+    "Toy.Transfer.IsEmbedding.toStrongHom": [],
+    "Toy.Transfer.IsEqFree": [],
+    "Toy.Transfer.IsEqFree.all": [],
+    "Toy.Transfer.IsEqFree.and": [],
+    "Toy.Transfer.IsEqFree.below": [],
+    "Toy.Transfer.IsEqFree.below.all": [],
+    "Toy.Transfer.IsEqFree.below.and": [],
+    "Toy.Transfer.IsEqFree.below.casesOn": [],
+    "Toy.Transfer.IsEqFree.below.ex": [],
+    "Toy.Transfer.IsEqFree.below.neg": [],
+    "Toy.Transfer.IsEqFree.below.or": [],
+    "Toy.Transfer.IsEqFree.below.pred": [],
+    "Toy.Transfer.IsEqFree.below.rec": [],
+    "Toy.Transfer.IsEqFree.below.rel": [],
+    "Toy.Transfer.IsEqFree.brecOn": [],
+    "Toy.Transfer.IsEqFree.casesOn": [],
+    "Toy.Transfer.IsEqFree.ex": [],
+    "Toy.Transfer.IsEqFree.neg": [],
+    "Toy.Transfer.IsEqFree.or": [],
+    "Toy.Transfer.IsEqFree.pred": [],
+    "Toy.Transfer.IsEqFree.rec": [],
+    "Toy.Transfer.IsEqFree.recOn": [],
+    "Toy.Transfer.IsEqFree.rel": [],
+    "Toy.Transfer.IsExist": [],
+    "Toy.Transfer.IsExist.below": [],
+    "Toy.Transfer.IsExist.below.casesOn": [],
+    "Toy.Transfer.IsExist.below.ex": [],
+    "Toy.Transfer.IsExist.below.qf": [],
+    "Toy.Transfer.IsExist.below.rec": [],
+    "Toy.Transfer.IsExist.brecOn": [],
+    "Toy.Transfer.IsExist.casesOn": [],
+    "Toy.Transfer.IsExist.ex": [],
+    "Toy.Transfer.IsExist.qf": [],
+    "Toy.Transfer.IsExist.rec": [],
+    "Toy.Transfer.IsExist.recOn": [],
+    "Toy.Transfer.IsHom": [],
+    "Toy.Transfer.IsHom.casesOn": [],
+    "Toy.Transfer.IsHom.mk": [],
+    "Toy.Transfer.IsHom.presP": [],
+    "Toy.Transfer.IsHom.presR": [],
+    "Toy.Transfer.IsHom.rec": [],
+    "Toy.Transfer.IsHom.recOn": [],
+    "Toy.Transfer.IsIso": [],
+    "Toy.Transfer.IsPos": [],
+    "Toy.Transfer.IsPos.all": [],
+    "Toy.Transfer.IsPos.and": [],
+    "Toy.Transfer.IsPos.below": [],
+    "Toy.Transfer.IsPos.below.all": [],
+    "Toy.Transfer.IsPos.below.and": [],
+    "Toy.Transfer.IsPos.below.casesOn": [],
+    "Toy.Transfer.IsPos.below.eq": [],
+    "Toy.Transfer.IsPos.below.ex": [],
+    "Toy.Transfer.IsPos.below.or": [],
+    "Toy.Transfer.IsPos.below.pred": [],
+    "Toy.Transfer.IsPos.below.rec": [],
+    "Toy.Transfer.IsPos.below.rel": [],
+    "Toy.Transfer.IsPos.brecOn": [],
+    "Toy.Transfer.IsPos.casesOn": [],
+    "Toy.Transfer.IsPos.eq": [],
+    "Toy.Transfer.IsPos.ex": [],
+    "Toy.Transfer.IsPos.or": [],
+    "Toy.Transfer.IsPos.pred": [],
+    "Toy.Transfer.IsPos.rec": [],
+    "Toy.Transfer.IsPos.recOn": [],
+    "Toy.Transfer.IsPos.rel": [],
+    "Toy.Transfer.IsPosExist": [],
+    "Toy.Transfer.IsPosExist.and": [],
+    "Toy.Transfer.IsPosExist.below": [],
+    "Toy.Transfer.IsPosExist.below.and": [],
+    "Toy.Transfer.IsPosExist.below.casesOn": [],
+    "Toy.Transfer.IsPosExist.below.eq": [],
+    "Toy.Transfer.IsPosExist.below.ex": [],
+    "Toy.Transfer.IsPosExist.below.or": [],
+    "Toy.Transfer.IsPosExist.below.pred": [],
+    "Toy.Transfer.IsPosExist.below.rec": [],
+    "Toy.Transfer.IsPosExist.below.rel": [],
+    "Toy.Transfer.IsPosExist.brecOn": [],
+    "Toy.Transfer.IsPosExist.casesOn": [],
+    "Toy.Transfer.IsPosExist.eq": [],
+    "Toy.Transfer.IsPosExist.ex": [],
+    "Toy.Transfer.IsPosExist.or": [],
+    "Toy.Transfer.IsPosExist.pred": [],
+    "Toy.Transfer.IsPosExist.rec": [],
+    "Toy.Transfer.IsPosExist.recOn": [],
+    "Toy.Transfer.IsPosExist.rel": [],
+    "Toy.Transfer.IsQF": [],
+    "Toy.Transfer.IsQF.and": [],
+    "Toy.Transfer.IsQF.below": [],
+    "Toy.Transfer.IsQF.below.and": [],
+    "Toy.Transfer.IsQF.below.casesOn": [],
+    "Toy.Transfer.IsQF.below.eq": [],
+    "Toy.Transfer.IsQF.below.neg": [],
+    "Toy.Transfer.IsQF.below.or": [],
+    "Toy.Transfer.IsQF.below.pred": [],
+    "Toy.Transfer.IsQF.below.rec": [],
+    "Toy.Transfer.IsQF.below.rel": [],
+    "Toy.Transfer.IsQF.brecOn": [],
+    "Toy.Transfer.IsQF.casesOn": [],
+    "Toy.Transfer.IsQF.eq": [],
+    "Toy.Transfer.IsQF.neg": [],
+    "Toy.Transfer.IsQF.or": [],
+    "Toy.Transfer.IsQF.pred": [],
+    "Toy.Transfer.IsQF.rec": [],
+    "Toy.Transfer.IsQF.recOn": [],
+    "Toy.Transfer.IsQF.rel": [],
+    "Toy.Transfer.IsStrongHom": [],
+    "Toy.Transfer.IsStrongHom.casesOn": [],
+    "Toy.Transfer.IsStrongHom.mk": [],
+    "Toy.Transfer.IsStrongHom.presP": [],
+    "Toy.Transfer.IsStrongHom.presR": [],
+    "Toy.Transfer.IsStrongHom.rec": [],
+    "Toy.Transfer.IsStrongHom.recOn": [],
+    "Toy.Transfer.IsStrongHom.reflP": [],
+    "Toy.Transfer.IsStrongHom.reflR": [],
+    "Toy.Transfer.IsStrongHom.toHom": [],
+    "Toy.Transfer.IsSurjHom": [],
+    "Toy.Transfer.IsSurjHom.casesOn": [],
+    "Toy.Transfer.IsSurjHom.mk": [],
+    "Toy.Transfer.IsSurjHom.presP": [],
+    "Toy.Transfer.IsSurjHom.presR": [],
+    "Toy.Transfer.IsSurjHom.rec": [],
+    "Toy.Transfer.IsSurjHom.recOn": [],
+    "Toy.Transfer.IsSurjHom.surj": [],
+    "Toy.Transfer.IsSurjHom.toHom": [],
+    "Toy.Transfer.IsUniv": [],
+    "Toy.Transfer.IsUniv.all": [],
+    "Toy.Transfer.IsUniv.below": [],
+    "Toy.Transfer.IsUniv.below.all": [],
+    "Toy.Transfer.IsUniv.below.casesOn": [],
+    "Toy.Transfer.IsUniv.below.qf": [],
+    "Toy.Transfer.IsUniv.below.rec": [],
+    "Toy.Transfer.IsUniv.brecOn": [],
+    "Toy.Transfer.IsUniv.casesOn": [],
+    "Toy.Transfer.IsUniv.qf": [],
+    "Toy.Transfer.IsUniv.rec": [],
+    "Toy.Transfer.IsUniv.recOn": [],
+    "Toy.Transfer.MapKind": [],
+    "Toy.Transfer.MapKind.Holds": [],
+    "Toy.Transfer.MapKind.Holds.match_1": [],
+    "Toy.Transfer.MapKind.Holds.toHom": [],
+    "Toy.Transfer.MapKind.casesOn": [],
+    "Toy.Transfer.MapKind.ctorElim": [],
+    "Toy.Transfer.MapKind.ctorElimType": [],
+    "Toy.Transfer.MapKind.ctorIdx": [],
+    "Toy.Transfer.MapKind.emb": [],
+    "Toy.Transfer.MapKind.emb.elim": [],
+    "Toy.Transfer.MapKind.emb.sizeOf_spec": [],
+    "Toy.Transfer.MapKind.holds_id": [],
+    "Toy.Transfer.MapKind.hom": [],
+    "Toy.Transfer.MapKind.hom.elim": [],
+    "Toy.Transfer.MapKind.hom.sizeOf_spec": [],
+    "Toy.Transfer.MapKind.noConfusion": [],
+    "Toy.Transfer.MapKind.noConfusionType": [],
+    "Toy.Transfer.MapKind.ofNat": [],
+    "Toy.Transfer.MapKind.ofNat_ctorIdx": [],
+    "Toy.Transfer.MapKind.rec": [],
+    "Toy.Transfer.MapKind.recOn": [],
+    "Toy.Transfer.MapKind.strong": [],
+    "Toy.Transfer.MapKind.strong.elim": [],
+    "Toy.Transfer.MapKind.strong.sizeOf_spec": [],
+    "Toy.Transfer.MapKind.surj": [],
+    "Toy.Transfer.MapKind.surj.elim": [],
+    "Toy.Transfer.MapKind.surj.sizeOf_spec": [],
+    "Toy.Transfer.Orient": [],
+    "Toy.Transfer.Orient.casesOn": [],
+    "Toy.Transfer.Orient.ctorElim": [],
+    "Toy.Transfer.Orient.ctorElimType": [],
+    "Toy.Transfer.Orient.ctorIdx": [],
+    "Toy.Transfer.Orient.modelToSystem": [],
+    "Toy.Transfer.Orient.modelToSystem.elim": [],
+    "Toy.Transfer.Orient.modelToSystem.sizeOf_spec": [],
+    "Toy.Transfer.Orient.noConfusion": [],
+    "Toy.Transfer.Orient.noConfusionType": [],
+    "Toy.Transfer.Orient.ofNat": [],
+    "Toy.Transfer.Orient.ofNat_ctorIdx": [],
+    "Toy.Transfer.Orient.rec": [],
+    "Toy.Transfer.Orient.recOn": [],
+    "Toy.Transfer.Orient.systemToModel": [],
+    "Toy.Transfer.Orient.systemToModel.elim": [],
+    "Toy.Transfer.Orient.systemToModel.sizeOf_spec": [],
+    "Toy.Transfer.P0": [
+      "propext"
+    ],
+    "Toy.Transfer.P0_not_reflected_by_surjHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.Preserves": [],
+    "Toy.Transfer.Preserves.toSent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.PreservesP": [],
+    "Toy.Transfer.PreservesR": [],
+    "Toy.Transfer.PreservesSent": [],
+    "Toy.Transfer.Reach": [],
+    "Toy.Transfer.Reach.below": [],
+    "Toy.Transfer.Reach.below.casesOn": [],
+    "Toy.Transfer.Reach.below.init": [],
+    "Toy.Transfer.Reach.below.rec": [],
+    "Toy.Transfer.Reach.below.step": [],
+    "Toy.Transfer.Reach.brecOn": [],
+    "Toy.Transfer.Reach.casesOn": [],
+    "Toy.Transfer.Reach.init": [],
+    "Toy.Transfer.Reach.rec": [],
+    "Toy.Transfer.Reach.recOn": [],
+    "Toy.Transfer.Reach.star": [],
+    "Toy.Transfer.Reach.step": [],
+    "Toy.Transfer.ReflectsP": [],
+    "Toy.Transfer.ReflectsR": [],
+    "Toy.Transfer.S1Full": [],
+    "Toy.Transfer.S1N": [],
+    "Toy.Transfer.S1P": [],
+    "Toy.Transfer.S1R": [],
+    "Toy.Transfer.S2Cyc": [],
+    "Toy.Transfer.S2E": [],
+    "Toy.Transfer.S2Loop1": [],
+    "Toy.Transfer.S2NP": [],
+    "Toy.Transfer.S2PN": [],
+    "Toy.Transfer.S2PP": [],
+    "Toy.Transfer.S2R01": [],
+    "Toy.Transfer.S3E": [],
+    "Toy.Transfer.Sat": [],
+    "Toy.Transfer.Sat.match_1": [],
+    "Toy.Transfer.SatS": [],
+    "Toy.Transfer.SimInit": [],
+    "Toy.Transfer.SimStepLock": [],
+    "Toy.Transfer.SimStepLock.toStar": [],
+    "Toy.Transfer.SimStepLock.toStar.match_1_1": [],
+    "Toy.Transfer.SimStepStar": [],
+    "Toy.Transfer.SimStepStutter": [],
+    "Toy.Transfer.SimStepStutter.toStar": [],
+    "Toy.Transfer.SimStepStutter.toStar.match_1_1": [],
+    "Toy.Transfer.SimStepWF": [],
+    "Toy.Transfer.SimStepWF.toStutter": [],
+    "Toy.Transfer.SimStepWF.toStutter.match_1_1": [],
+    "Toy.Transfer.Star": [],
+    "Toy.Transfer.Star.below": [],
+    "Toy.Transfer.Star.below.casesOn": [],
+    "Toy.Transfer.Star.below.rec": [],
+    "Toy.Transfer.Star.below.refl": [],
+    "Toy.Transfer.Star.below.tail": [],
+    "Toy.Transfer.Star.brecOn": [],
+    "Toy.Transfer.Star.casesOn": [],
+    "Toy.Transfer.Star.rec": [],
+    "Toy.Transfer.Star.recOn": [],
+    "Toy.Transfer.Star.refl": [],
+    "Toy.Transfer.Star.tail": [],
+    "Toy.Transfer.Str": [],
+    "Toy.Transfer.Str.P": [],
+    "Toy.Transfer.Str.R": [],
+    "Toy.Transfer.Str.carrier": [],
+    "Toy.Transfer.Str.casesOn": [],
+    "Toy.Transfer.Str.ctorIdx": [],
+    "Toy.Transfer.Str.mk": [],
+    "Toy.Transfer.Str.mk.inj": [],
+    "Toy.Transfer.Str.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.Str.mk.noConfusion": [],
+    "Toy.Transfer.Str.mk.sizeOf_spec": [],
+    "Toy.Transfer.Str.noConfusion": [],
+    "Toy.Transfer.Str.noConfusionType": [],
+    "Toy.Transfer.Str.rec": [],
+    "Toy.Transfer.Str.recOn": [],
+    "Toy.Transfer.TS": [],
+    "Toy.Transfer.TS.St": [],
+    "Toy.Transfer.TS.casesOn": [],
+    "Toy.Transfer.TS.ctorIdx": [],
+    "Toy.Transfer.TS.init": [],
+    "Toy.Transfer.TS.mk": [],
+    "Toy.Transfer.TS.mk.inj": [],
+    "Toy.Transfer.TS.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Transfer.TS.mk.noConfusion": [],
+    "Toy.Transfer.TS.mk.sizeOf_spec": [],
+    "Toy.Transfer.TS.noConfusion": [],
+    "Toy.Transfer.TS.noConfusionType": [],
+    "Toy.Transfer.TS.rec": [],
+    "Toy.Transfer.TS.recOn": [],
+    "Toy.Transfer.TS.step": [],
+    "Toy.Transfer.Terminates": [],
+    "Toy.Transfer.Terminates.no_infinite_run": [],
+    "Toy.Transfer.TruthLicensed": [],
+    "Toy.Transfer.UnsatIn": [],
+    "Toy.Transfer.ValidIn": [],
+    "Toy.Transfer.WeaklyTerminates": [],
+    "Toy.Transfer.abstract_bug_transfer_without_converse_step_matching": [
+      "propext"
+    ],
+    "Toy.Transfer.abstract_bug_transfer_without_converse_step_matching.match_1_1": [
+      "propext"
+    ],
+    "Toy.Transfer.addEdge": [],
+    "Toy.Transfer.addEdge_surjHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.aeB_iff": [
+      "propext"
+    ],
+    "Toy.Transfer.aeB_iff.match_1_1": [],
+    "Toy.Transfer.allAllEq": [
+      "propext"
+    ],
+    "Toy.Transfer.allAllEq_not_reflected_by_strongHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.allCls": [],
+    "Toy.Transfer.allExP": [
+      "propext"
+    ],
+    "Toy.Transfer.allExR": [
+      "propext"
+    ],
+    "Toy.Transfer.allExR_not_preserved_to_substructure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.allNotP": [
+      "propext"
+    ],
+    "Toy.Transfer.allNotP_reflection_fails_without_presP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.allNotRxx": [
+      "propext"
+    ],
+    "Toy.Transfer.allNotRxx_reflection_fails_without_presR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.allP": [
+      "propext"
+    ],
+    "Toy.Transfer.allP_in_nonempty_model_gives_exP_in_system": [
+      "propext"
+    ],
+    "Toy.Transfer.allP_not_preserved_to_extension": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.allP_not_reflected_by_surjHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.allP_truth_in_model_undetermined_in_system_along_embedding": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.allRImpEq": [
+      "propext"
+    ],
+    "Toy.Transfer.allRImpEq_not_preserved_by_surjHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.allRunsFinite_examples": [],
+    "Toy.Transfer.allRunsFinite_iff": [],
+    "Toy.Transfer.allRunsFinite_transfers_down_of_lockstep": [],
+    "Toy.Transfer.allRunsFinite_transfers_down_of_wf_simulation": [],
+    "Toy.Transfer.allRxx": [
+      "propext"
+    ],
+    "Toy.Transfer.allRxx_reflection_fails_without_reflR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.atMostOneNotP": [
+      "propext"
+    ],
+    "Toy.Transfer.badNone": [],
+    "Toy.Transfer.badTrue": [],
+    "Toy.Transfer.bothOutcomesNonIso_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.bothOutcomesNonIso_fwd_iff": [],
+    "Toy.Transfer.bothOutcomesNonIso_iff_unlicensed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.bothOutcomesNonIso_of_unlicensed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.bothOutcomesNonIso_of_unlicensed.match_1_1": [],
+    "Toy.Transfer.bothOutcomes_bwd_of": [],
+    "Toy.Transfer.bothOutcomes_fwd_of": [],
+    "Toy.Transfer.both_P0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_allExR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_allP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_allP_surj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_allRImpEq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_atMostOneNotP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_exExNeq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_exNotP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_exP_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_exP_surj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_neq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.both_notP0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.bug_transfer_needs_bad_compatibility": [],
+    "Toy.Transfer.bug_transfer_needs_bad_compatibility.match_1_1": [],
+    "Toy.Transfer.bug_transfer_up_nonvacuous": [],
+    "Toy.Transfer.bug_transfers_down_of_converse_simulation": [],
+    "Toy.Transfer.bug_transfers_up_of_forward_simulation": [],
+    "Toy.Transfer.cell_status": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.cell_status.match_1_1": [],
+    "Toy.Transfer.cls_test_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.collapse": [
+      "propext"
+    ],
+    "Toy.Transfer.collapseTo1": [
+      "propext"
+    ],
+    "Toy.Transfer.collapse_strong": [
+      "propext"
+    ],
+    "Toy.Transfer.comp_cons": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.comp_elim0": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.consistent_with_both_needs_model_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.consistent_with_both_needs_model_satisfiable.match_1_1": [
+      "propext"
+    ],
+    "Toy.Transfer.consistent_with_both_needs_model_satisfiable.match_1_3": [
+      "propext"
+    ],
+    "Toy.Transfer.consistent_with_both_needs_system_not_valid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.consistent_with_both_needs_system_not_valid.match_1_1": [
+      "propext"
+    ],
+    "Toy.Transfer.consistent_with_both_needs_system_not_valid.match_1_3": [
+      "propext"
+    ],
+    "Toy.Transfer.consistent_with_both_needs_system_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.consistent_with_both_needs_system_satisfiable.match_1_1": [
+      "propext"
+    ],
+    "Toy.Transfer.consistent_with_both_needs_system_satisfiable.match_1_3": [
+      "propext"
+    ],
+    "Toy.Transfer.contra": [
+      "propext"
+    ],
+    "Toy.Transfer.contra_unsat": [
+      "propext"
+    ],
+    "Toy.Transfer.converse_simulation_needs_bad_compatibility": [],
+    "Toy.Transfer.converse_simulation_needs_bad_compatibility.match_1_1": [],
+    "Toy.Transfer.converse_simulation_needs_init": [],
+    "Toy.Transfer.converse_simulation_needs_init.match_1_1": [],
+    "Toy.Transfer.converse_simulation_nonvacuous": [],
+    "Toy.Transfer.dir_transfer_examples": [],
+    "Toy.Transfer.eaB_iff": [
+      "propext"
+    ],
+    "Toy.Transfer.eaB_iff.match_1_1": [],
+    "Toy.Transfer.emptyStr": [],
+    "Toy.Transfer.emptyStr_example": [
+      "propext"
+    ],
+    "Toy.Transfer.emptyStr_example.match_1_1": [],
+    "Toy.Transfer.emptyStr_example.match_1_3": [
+      "propext"
+    ],
+    "Toy.Transfer.env1": [],
+    "Toy.Transfer.env2": [],
+    "Toy.Transfer.env_cons_example": [
+      "propext"
+    ],
+    "Toy.Transfer.eq01": [
+      "propext"
+    ],
+    "Toy.Transfer.eq_not_reflected_by_strongHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.exAllR": [
+      "propext"
+    ],
+    "Toy.Transfer.exExNeq": [
+      "propext"
+    ],
+    "Toy.Transfer.exExNeq_not_preserved_by_strongHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.exNotP": [
+      "propext"
+    ],
+    "Toy.Transfer.exNotP_not_preserved_by_hom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.exNotRxx": [
+      "propext"
+    ],
+    "Toy.Transfer.exNotRxx_transfer_fails_without_reflR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.exP": [
+      "propext"
+    ],
+    "Toy.Transfer.exPAndExP": [
+      "propext"
+    ],
+    "Toy.Transfer.exP_not_preserved_to_substructure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.exP_not_reflected_by_surjHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.exP_transfer_fails_without_presP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.exRxx": [
+      "propext"
+    ],
+    "Toy.Transfer.exRxx_transfer_fails_without_presR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.exSelfEq": [
+      "propext"
+    ],
+    "Toy.Transfer.exSelfEq_valid_iff_nonempty_carriers": [
+      "propext"
+    ],
+    "Toy.Transfer.exSelfEq_valid_iff_nonempty_carriers.match_1_1": [
+      "propext"
+    ],
+    "Toy.Transfer.exSelfEq_valid_iff_nonempty_carriers.match_1_3": [],
+    "Toy.Transfer.exclMid": [
+      "propext"
+    ],
+    "Toy.Transfer.exclMid_valid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.existB_iff": [
+      "propext"
+    ],
+    "Toy.Transfer.existB_iff.match_1_1": [],
+    "Toy.Transfer.existB_iff.match_1_3": [],
+    "Toy.Transfer.existB_iff.match_1_5": [],
+    "Toy.Transfer.exist_preserved_to_extension_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.exist_preserved_to_extension_of_embedding": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.exist_witness_transfers_along_model_embedding": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.falsityLicensed_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.falsityLicensed_iff_preserves": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.falsityList": [],
+    "Toy.Transfer.falsity_licensed_where_truth_unlicensed_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.forward_simulation_needs_init": [],
+    "Toy.Transfer.forward_simulation_needs_init.match_1_1": [],
+    "Toy.Transfer.forward_simulation_needs_init.match_1_3": [],
+    "Toy.Transfer.forward_simulation_needs_init.match_1_5": [],
+    "Toy.Transfer.forward_simulation_needs_step_matching": [],
+    "Toy.Transfer.forward_simulation_needs_step_matching.match_1_1": [],
+    "Toy.Transfer.forward_simulation_needs_step_matching.match_1_3": [],
+    "Toy.Transfer.forward_simulation_needs_step_matching.match_1_5": [],
+    "Toy.Transfer.forward_simulation_nonvacuous": [],
+    "Toy.Transfer.functional_simulation_example": [],
+    "Toy.Transfer.inclCyc": [
+      "propext"
+    ],
+    "Toy.Transfer.inclCyc_emb": [
+      "propext"
+    ],
+    "Toy.Transfer.inclE23": [],
+    "Toy.Transfer.inclLoop": [
+      "propext"
+    ],
+    "Toy.Transfer.inclN1": [
+      "propext"
+    ],
+    "Toy.Transfer.inclNP": [
+      "propext"
+    ],
+    "Toy.Transfer.inclNP_emb": [
+      "propext"
+    ],
+    "Toy.Transfer.inclNoLoop": [
+      "propext"
+    ],
+    "Toy.Transfer.inclP1": [
+      "propext"
+    ],
+    "Toy.Transfer.inclPN": [
+      "propext"
+    ],
+    "Toy.Transfer.inclPN_emb": [
+      "propext"
+    ],
+    "Toy.Transfer.inclPP": [
+      "propext"
+    ],
+    "Toy.Transfer.injective_hom_not_embedding_example": [],
+    "Toy.Transfer.instDecidableEqCls": [],
+    "Toy.Transfer.instDecidableEqDir": [],
+    "Toy.Transfer.instDecidableEqMapKind": [],
+    "Toy.Transfer.instDecidableEqOrient": [],
+    "Toy.Transfer.instDecidableHolds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableInjectiveFin_toyTransfer": [],
+    "Toy.Transfer.instDecidableIsAE": [
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableIsEA": [
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableIsEmbedding": [],
+    "Toy.Transfer.instDecidableIsEmbedding.match_1": [],
+    "Toy.Transfer.instDecidableIsEmbedding.match_3": [],
+    "Toy.Transfer.instDecidableIsExist": [
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableIsHom": [],
+    "Toy.Transfer.instDecidableIsHom.match_1": [],
+    "Toy.Transfer.instDecidableIsHom.match_3": [],
+    "Toy.Transfer.instDecidableIsIso": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableIsPos": [
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableIsPosExist": [
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableIsQF": [
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableIsStrongHom": [],
+    "Toy.Transfer.instDecidableIsStrongHom.match_1": [],
+    "Toy.Transfer.instDecidableIsStrongHom.match_3": [],
+    "Toy.Transfer.instDecidableIsSurjHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableIsSurjHom.match_1": [],
+    "Toy.Transfer.instDecidableIsSurjHom.match_3": [],
+    "Toy.Transfer.instDecidableIsUniv": [
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableMem": [
+      "propext"
+    ],
+    "Toy.Transfer.instDecidablePreservesP": [],
+    "Toy.Transfer.instDecidablePreservesR": [],
+    "Toy.Transfer.instDecidableReflectsP": [],
+    "Toy.Transfer.instDecidableReflectsR": [],
+    "Toy.Transfer.instDecidableSatSToStr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.instDecidableSurjectiveFin_toyTransfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.instReprCls": [],
+    "Toy.Transfer.instReprCls.repr": [],
+    "Toy.Transfer.instReprCls.repr.match_1": [],
+    "Toy.Transfer.instReprDir": [],
+    "Toy.Transfer.instReprDir.repr": [],
+    "Toy.Transfer.instReprDir.repr.match_1": [],
+    "Toy.Transfer.instReprMapKind": [],
+    "Toy.Transfer.instReprMapKind.repr": [],
+    "Toy.Transfer.instReprMapKind.repr.match_1": [],
+    "Toy.Transfer.instReprOrient": [],
+    "Toy.Transfer.instReprOrient.repr": [],
+    "Toy.Transfer.instReprOrient.repr.match_1": [],
+    "Toy.Transfer.invariant_transfer_needs_abstract_invariant": [],
+    "Toy.Transfer.invariant_transfer_needs_abstract_invariant.match_1_1": [],
+    "Toy.Transfer.invariant_transfers_down_of_forward_simulation": [],
+    "Toy.Transfer.isAE_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isEA_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isEmbedding_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isEmbedding_iff": [],
+    "Toy.Transfer.isEmbedding_iff.match_1_1": [],
+    "Toy.Transfer.isEmbedding_iff.match_1_3": [],
+    "Toy.Transfer.isEqFree_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isEqFree_examples.match_1_1": [
+      "propext"
+    ],
+    "Toy.Transfer.isExist_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isHom_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isIso_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.isIso_iff": [],
+    "Toy.Transfer.isIso_iff.match_1_1": [],
+    "Toy.Transfer.isIso_iff.match_1_3": [],
+    "Toy.Transfer.isPosExist_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isPos_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isQF_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isStrongHom_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.isSurjHom_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.isSurjHom_iff": [],
+    "Toy.Transfer.isSurjHom_iff.match_1_1": [],
+    "Toy.Transfer.isSurjHom_iff.match_1_3": [],
+    "Toy.Transfer.isUniv_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.licences_exact": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.licensedB": [
+      "propext"
+    ],
+    "Toy.Transfer.licensedB.match_1": [
+      "propext"
+    ],
+    "Toy.Transfer.licensedB_eq_true_iff": [
+      "propext"
+    ],
+    "Toy.Transfer.licensedB_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.licensedB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.licensedB_iff.match_1_1": [],
+    "Toy.Transfer.licensedB_iff_preservesSent_needs_ne_qf": [
+      "propext"
+    ],
+    "Toy.Transfer.licensedB_iff_preservesSent_of_ne_qf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.licensedForB": [
+      "propext"
+    ],
+    "Toy.Transfer.licensedForB_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.licensedForB_incomplete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.licensed_cells_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.lockstep_nonvacuous": [],
+    "Toy.Transfer.lockstep_termination_transfer_is_about_reachable_states": [],
+    "Toy.Transfer.lowerP": [],
+    "Toy.Transfer.lowerR": [],
+    "Toy.Transfer.mapKind_holds_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.model_counterexample_may_be_spurious_in_model_extension": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.model_embeds_into_system_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.model_witness_may_be_spurious_in_model_extension": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.narrow_scope_readings_differ_from_unrelated_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.neq01": [
+      "propext"
+    ],
+    "Toy.Transfer.neq_not_preserved_by_strongHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.no_qf_sentences": [],
+    "Toy.Transfer.notP0": [
+      "propext"
+    ],
+    "Toy.Transfer.notP0_not_preserved_by_surjHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.not_preservesSent_bwd": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.not_preservesSent_fwd": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.not_preserves_bwd": [],
+    "Toy.Transfer.not_preserves_fwd": [],
+    "Toy.Transfer.not_preserves_of_bothOutcomesNonIso": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.posB_iff": [
+      "propext"
+    ],
+    "Toy.Transfer.posB_iff.match_1_1": [],
+    "Toy.Transfer.posB_iff.match_1_14": [],
+    "Toy.Transfer.posB_iff.match_1_3": [],
+    "Toy.Transfer.posExistB_iff": [
+      "propext"
+    ],
+    "Toy.Transfer.posExistB_iff.match_1_1": [],
+    "Toy.Transfer.posExistB_iff.match_1_14": [],
+    "Toy.Transfer.posExistB_iff.match_1_16": [],
+    "Toy.Transfer.posExistB_iff.match_1_18": [],
+    "Toy.Transfer.posExistB_iff.match_1_3": [],
+    "Toy.Transfer.posExist_not_subset_exist": [
+      "propext"
+    ],
+    "Toy.Transfer.posExist_preserved_forward_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.posExist_preserved_forward_of_hom": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.posExist_preserved_forward_of_hom.match_1_1": [],
+    "Toy.Transfer.pos_holds_in_full_one_point": [
+      "propext"
+    ],
+    "Toy.Transfer.pos_preserved_forward_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.pos_preserved_forward_of_surjHom": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.pos_preserved_forward_of_surjHom.match_1_1": [],
+    "Toy.Transfer.preservesP_examples": [],
+    "Toy.Transfer.preservesR_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.preservesSent_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.preservesSent_qf": [],
+    "Toy.Transfer.preserves_bwd_iff": [],
+    "Toy.Transfer.preserves_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.preserves_exist_emb_fwd": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.preserves_fwd_iff": [],
+    "Toy.Transfer.preserves_posExist_fwd": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.preserves_pos_surj_fwd": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.preserves_qf_emb": [],
+    "Toy.Transfer.preserves_univ_emb_bwd": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.qfB_iff": [
+      "propext"
+    ],
+    "Toy.Transfer.qfB_iff.match_1_10": [],
+    "Toy.Transfer.qfB_iff.match_1_12": [],
+    "Toy.Transfer.qfB_iff.match_1_14": [],
+    "Toy.Transfer.qfB_iff.match_1_16": [],
+    "Toy.Transfer.qfB_iff.match_1_18": [],
+    "Toy.Transfer.qf_sat_iff_of_embedding_laws": [],
+    "Toy.Transfer.qf_sat_iff_of_strongHom_of_eqFree": [],
+    "Toy.Transfer.qf_sat_iff_of_strongHom_of_eqFree.match_1_1": [],
+    "Toy.Transfer.qf_sat_iff_of_strongHom_of_eqFree_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.raiseP": [],
+    "Toy.Transfer.raiseP_surjHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.raiseR": [],
+    "Toy.Transfer.reach_examples": [],
+    "Toy.Transfer.reach_related_of_forward_simulation": [],
+    "Toy.Transfer.reach_restricted_simulation_gives_strong_pullback": [],
+    "Toy.Transfer.reach_restricted_simulation_gives_strong_pullback.match_1_1": [],
+    "Toy.Transfer.reach_restriction_repairs_strong_pullback_countermodel": [],
+    "Toy.Transfer.reflectsP_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.reflectsR_examples": [
+      "propext"
+    ],
+    "Toy.Transfer.refuteS_by_allAllEq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refuteS_by_allExR_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refuteS_by_allP_ext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refuteS_by_allP_surj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refuteS_by_allRImpEq_surj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refuteS_by_exExNeq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refuteS_by_exNotP_hom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refuteS_by_exP_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refuteS_by_exP_surj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_P0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_allAllEq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_allExR_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_allP_ext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_allP_surj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_allRImpEq_surj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_exExNeq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_exNotP_hom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_exP_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_exP_surj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_neq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.refute_by_notP0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.relHaltTwoStep": [],
+    "Toy.Transfer.relSameIndex": [
+      "propext"
+    ],
+    "Toy.Transfer.satS_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.satS_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.sat_comp_elim0_iff": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.sat_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.sat_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.simInit_examples": [],
+    "Toy.Transfer.simStepLock_examples": [],
+    "Toy.Transfer.simStepStar_examples": [],
+    "Toy.Transfer.simStepStutter_examples": [],
+    "Toy.Transfer.simStepWF_examples": [],
+    "Toy.Transfer.simStepWF_iff": [],
+    "Toy.Transfer.spurious_abstract_counterexample": [],
+    "Toy.Transfer.spurious_abstract_counterexample.match_1_1": [],
+    "Toy.Transfer.squashP": [
+      "propext"
+    ],
+    "Toy.Transfer.squashPP": [
+      "propext"
+    ],
+    "Toy.Transfer.star_examples": [],
+    "Toy.Transfer.strong_pullback_fails_with_unreachable_related_state": [],
+    "Toy.Transfer.strong_pullback_of_functional_simulation": [],
+    "Toy.Transfer.stuttering_countermodel_admits_no_wf_measure": [],
+    "Toy.Transfer.stuttering_simulation_does_not_transfer_termination": [],
+    "Toy.Transfer.terminates_examples": [],
+    "Toy.Transfer.terminates_iff_no_infinite_run": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.terminates_iff_no_infinite_run.match_1_1": [],
+    "Toy.Transfer.terminates_of_lockstep_related": [],
+    "Toy.Transfer.terminates_of_wf_related": [],
+    "Toy.Transfer.termination_transfer_needs_abstract_termination": [],
+    "Toy.Transfer.termination_transfer_needs_init": [],
+    "Toy.Transfer.transfer_of_licensedForB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.transfer_of_licensedForB_needs_licence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.transfer_of_licensedForB_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.truthLicensed_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.truthLicensed_iff_preserves": [],
+    "Toy.Transfer.truthList": [],
+    "Toy.Transfer.truthList.match_1": [],
+    "Toy.Transfer.tsBoolHalt": [],
+    "Toy.Transfer.tsBoolHalt_allRunsFinite": [],
+    "Toy.Transfer.tsBoolHalt_reach_iff": [],
+    "Toy.Transfer.tsBranch3": [
+      "propext"
+    ],
+    "Toy.Transfer.tsHalt": [],
+    "Toy.Transfer.tsHalt_allRunsFinite": [],
+    "Toy.Transfer.tsLine2": [
+      "propext"
+    ],
+    "Toy.Transfer.tsLoop": [],
+    "Toy.Transfer.tsLoopOrHalt": [],
+    "Toy.Transfer.tsLoop_not_terminates": [],
+    "Toy.Transfer.tsLoop_reach": [],
+    "Toy.Transfer.tsTwoStep": [],
+    "Toy.Transfer.tsTwoStep_allRunsFinite": [],
+    "Toy.Transfer.tsTwoStep_reach_true": [],
+    "Toy.Transfer.tsUnreachLoop": [],
+    "Toy.Transfer.univB_iff": [
+      "propext"
+    ],
+    "Toy.Transfer.univB_iff.match_1_1": [],
+    "Toy.Transfer.univB_iff.match_1_3": [],
+    "Toy.Transfer.univB_iff.match_1_5": [],
+    "Toy.Transfer.univ_counterexample_transfers_along_model_embedding": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.univ_preserved_to_substructure_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.univ_preserved_to_substructure_of_embedding": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.univ_truth_transfers_down_from_model_extension": [
+      "Quot.sound"
+    ],
+    "Toy.Transfer.unlicensed_cells_contain_transferring_subclasses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.unrelated_falsity_transfer_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.unrelated_falsity_transfer_iff.match_1_1": [],
+    "Toy.Transfer.unrelated_model_result_consistent_with_both": [],
+    "Toy.Transfer.unrelated_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.unrelated_refutation_licensed_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.unrelated_refutation_licensed_iff.match_1_1": [],
+    "Toy.Transfer.unrelated_refutation_licensed_iff_unsat_same_class": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.unrelated_truth_transfer_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.unrelated_truth_transfer_iff.match_1_1": [],
+    "Toy.Transfer.unrelated_two_class_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.unsatIn_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.validIn_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Transfer.weak_termination_does_not_transfer_down_lockstep": [],
+    "Toy.Transfer.weak_termination_does_not_transfer_down_lockstep.match_1_1": [],
+    "Toy.Transfer.weaklyTerminates_examples": [],
+    "Toy.Transfer.weaklyTerminates_examples.match_1_1": [],
+    "Toy.Transfer.wf_simulation_needs_measure_decrease": [],
+    "Toy.Transfer.wf_simulation_needs_wellFounded": [],
+    "Toy.Transfer.wf_simulation_nonvacuous": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

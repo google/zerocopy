@@ -98987,6 +98987,194 @@
         "verification/physical-constraints"
       ]
     },
+    "toy-model-transfer-preservation-of-claim-shapes-under-embeddings-homomorphisms-and-simulations": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "url": "https://eudml.org/doc/213372"
+          },
+          "name": "On the extending of models (I)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/CBO9780511551574"
+          },
+          "name": "Model Theory (Hodges, 1993)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0049-237X(08)X7004-1"
+          },
+          "name": "Model Theory, 3rd edition (Chang and Keisler, 1990)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S1385-7258(54)50074-0"
+          },
+          "name": "Contributions to the Theory of Models. I"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S1385-7258(54)50075-2"
+          },
+          "name": "Contributions to the Theory of Models. II"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1379759.1379763"
+          },
+          "name": "Homomorphism preservation theorems"
+        },
+        {
+          "identity": {
+            "doi": "10.2307/2964569"
+          },
+          "name": "A counterexample to a conjecture of Scott and Suppes"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0099486"
+          },
+          "name": "Toward logic tailored for computational complexity"
+        },
+        {
+          "identity": {
+            "doi": "10.2140/pjm.1959.9.143"
+          },
+          "name": "Properties preserved under homomorphism"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/31846.31852"
+          },
+          "name": "Monotone versus positive"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.1995.523267"
+          },
+          "name": "Finitely monotone properties"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371078"
+          },
+          "name": "Incorrectness logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/186025.186051"
+          },
+          "name": "Model checking and abstraction"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF01384313"
+          },
+          "name": "Property preserving abstractions for the verification of concurrent systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/244795.244800"
+          },
+          "name": "Abstract interpretation of reactive systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512950.512973"
+          },
+          "name": "Abstract interpretation: a unified lattice model for static analysis of programs by construction or approximation of fixpoints"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/10722167_15"
+          },
+          "name": "Counterexample-Guided Abstraction Refinement"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/inco.1995.1134"
+          },
+          "name": "Forward and backward simulations, Part I: untimed systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(91)90224-P"
+          },
+          "name": "The existence of refinement mappings"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9155-4"
+          },
+          "name": "A Formally Verified Compiler Back-end"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0058037"
+          },
+          "name": "A simple characterization of stuttering bisimulation"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(88)90098-9"
+          },
+          "name": "Characterizing finite Kripke structures in propositional temporal logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-48683-6_32"
+          },
+          "name": "Linking Theorem Proving and Model-Checking with Well-Founded Bisimulation"
+        },
+        {
+          "identity": {
+            "doi": "10.1090/psapm/019/0235771"
+          },
+          "name": "Assigning meanings to programs"
+        },
+        {
+          "identity": {
+            "url": "https://isa-afp.org/entries/Abstract-Rewriting.html"
+          },
+          "name": "Abstract Rewriting (Archive of Formal Proofs)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "3eae40f5eb25c5934211edf662d3b24c5afbe47a"
+          },
+          "name": "Mathlib (model theory library, Mathlib/ModelTheory/Complexity.lean)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert (common/Smallstep.v)"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "verification/formalized-results",
+        "verification/refinement",
+        "verification/simulation",
+        "verification/abstraction",
+        "verification/model-transfer",
+        "verification/preservation-theorems"
+      ]
+    },
     "tpm2-pcr-lattices-dice-layered-attestation-and-bus-interposer-channels": {
       "observed_at": "2026-11-19",
       "subjects": [
