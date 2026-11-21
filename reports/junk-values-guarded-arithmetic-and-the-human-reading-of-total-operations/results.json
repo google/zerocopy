@@ -1,0 +1,919 @@
+[
+  {
+    "id": "lean_reading_is_junk_record_leanJ",
+    "lean": [
+      "Toy.Junk.evalJ_leanJ_iff",
+      "Toy.Junk.evalT_leanJ"
+    ],
+    "lean_names": [
+      "Toy.Junk.inexact_division_is_junk",
+      "Toy.Junk.leanReading_fAllOneDivZero",
+      "Toy.Junk.leanReading_fAllSubSucc",
+      "Toy.Junk.leanReading_fAllZeroLeSubOne",
+      "Toy.Junk.leanReading_fBoundedCancel",
+      "Toy.Junk.leanReading_fCastPlacement",
+      "Toy.Junk.leanReading_fCastPlacement01",
+      "Toy.Junk.leanReading_fContradictoryGuard",
+      "Toy.Junk.leanReading_fContrapositive",
+      "Toy.Junk.leanReading_fDivZero",
+      "Toy.Junk.leanReading_fDivZeroEM",
+      "Toy.Junk.leanReading_fDivZeroRefl",
+      "Toy.Junk.leanReading_fDvdDiv",
+      "Toy.Junk.leanReading_fDvdDivDividendGuard",
+      "Toy.Junk.leanReading_fDvdDivGuarded",
+      "Toy.Junk.leanReading_fExAndGuard",
+      "Toy.Junk.leanReading_fExImpGuard",
+      "Toy.Junk.leanReading_fExSubSuccNe",
+      "Toy.Junk.leanReading_fFiveDivZero",
+      "Toy.Junk.leanReading_fFiveModZero",
+      "Toy.Junk.leanReading_fFiveSubThree",
+      "Toy.Junk.leanReading_fFloorDiv",
+      "Toy.Junk.leanReading_fGuardFirst",
+      "Toy.Junk.leanReading_fGuardSecond",
+      "Toy.Junk.leanReading_fGuardedIntDiv",
+      "Toy.Junk.leanReading_fGuardedIntMod",
+      "Toy.Junk.leanReading_fGuardedNatMod",
+      "Toy.Junk.leanReading_fGuardedToNat",
+      "Toy.Junk.leanReading_fModDisjGuard",
+      "Toy.Junk.leanReading_fMulZero",
+      "Toy.Junk.leanReading_fNatDivModId",
+      "Toy.Junk.leanReading_fNegSevenDivTwo",
+      "Toy.Junk.leanReading_fNegSevenModTwo",
+      "Toy.Junk.leanReading_fNumeralInt",
+      "Toy.Junk.leanReading_fNumeralNat",
+      "Toy.Junk.leanReading_fOneDivTwo",
+      "Toy.Junk.leanReading_fOrNegGuardSubCancel",
+      "Toy.Junk.leanReading_fSevenDivNegTwo",
+      "Toy.Junk.leanReading_fSevenDivTwo",
+      "Toy.Junk.leanReading_fSevenModNegTwo",
+      "Toy.Junk.leanReading_fSevenModTwo",
+      "Toy.Junk.leanReading_fStaleGuard",
+      "Toy.Junk.leanReading_fSubAddCancel",
+      "Toy.Junk.leanReading_fSubAddCancelCast",
+      "Toy.Junk.leanReading_fSubAddCancelGuarded",
+      "Toy.Junk.leanReading_fSubLeSelf",
+      "Toy.Junk.leanReading_fToNatContrapose",
+      "Toy.Junk.leanReading_fToNatGuardFirst",
+      "Toy.Junk.leanReading_fToNatGuardSecond",
+      "Toy.Junk.leanReading_fToNatImp",
+      "Toy.Junk.leanReading_fToNatNeg",
+      "Toy.Junk.leanReading_fTrivOr",
+      "Toy.Junk.leanReading_fTruncSubCancel01",
+      "Toy.Junk.leanReading_fTruncSubLe01",
+      "Toy.Junk.leanReading_fUnboundedCancel",
+      "Toy.Junk.leanReading_fZeroSubOne"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "Folklore ('Lean's arithmetic is exact arithmetic plus one choice of junk values') made precise for this toy language; no mechanized statement of it was found.",
+    "plain_claim": "For every environment rho and every toy term t, the junk-parameterized total value of t at the junk record leanJ equals the value computed directly with Lean's core operators (truncated Nat subtraction, Nat floor division and remainder, the default Int / and % which are Int.ediv and Int.emod, Int.toNat, and the cast Nat -> Int); and for every toy formula phi and environment rho, evalJ leanJ phi rho = true iff the Lean proposition leanEvalF phi rho, built from Lean's operators and relations at the native sort, holds.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses: both statements are universal over all terms, formulas and environments (vacuous).",
+    "non_claims": [
+      "Does not show that the toy language covers Lean's surface syntax: implicit coercion insertion, numeral defaulting and overloaded notation are outside the model, and leanEvalF is itself a definition of this package written with Lean's operators.",
+      "Covers +, -, *, /, %, the cast Nat -> Int and Int.toNat on Nat and Int, with the atoms =, <=, < and divisibility; Fin n, rationals, reals and other operators are not covered.",
+      "Says nothing about other proof assistants or programming languages; their conventions appear in this package as prose (modeling bridge) and are not kernel-checked.",
+      "In this package's human reading, / denotes exact division: DivDom n d (for n d : Int) is d != 0 and d | n, so an inexact quotient with a nonzero divisor, such as (7 : Nat) / 2, is human-undefined and its total value comes from the junk record, whereas ModDom (0 <= n and 0 < d) makes (7 : Nat) % 2 defined. Floor or Euclidean division read as intended (with (7 : Nat) / 2 = 3 not junk) is not modeled. Consequently (7 : Nat) / 2 = 3 (fSevenDivTwo) is junk-dependent although Lean's, the truncating and the flooring records all give 3, and the floor-division identity (a b : Nat), not (b = 0) -> a / b * b + a % b = a (fNatDivModId) is Lean-valid but rejected by guarded, junk-dependent and not defined everywhere (Toy.Junk.inexact_division_is_junk)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Prelude.lean (blob 66af67237683d3c7f8230bcf473c0871e67749a2): Nat.sub (docstring at line 2111) 'Subtraction of natural numbers, truncated at 0'; Nat.div (docstring lines 2170-2184) 'Division by 0 returns 0 ... sometimes called floor division'; Nat.modCore (docstring lines 2202-2214, definition at line 2216) 'When the divisor is 0, the result is the dividend rather than an error'.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/DivMod/Basic.lean (blob 855635fb1ddc652debd9b4f843ecd546ef94dee9): module comment 'There are three main conventions for integer division, referred here as the E, F, T rounding conventions. All three pairs satisfy the identity x % y + (x / y) * y = x unconditionally, and satisfy x / 0 = 0 and x % 0 = x'; the default / and % instances use Int.ediv and Int.emod (E-rounding, 0 <= emod x y < natAbs y for y != 0); Int.div and Int.mod were removed in December 2024.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/Basic.lean (blob 13eb3c86d79160bb9bda2edd33772d6d4439ce0c): Int.toNat 'Negative numbers are converted to 0'.",
+      "Lean Prover Community, 'Common Lean Pitfalls', https://leanprover-community.github.io/extras/pitfalls.html: sections 'Division by 0' ('In Lean, n / 0 = 0'), 'Natural number subtraction' ('Subtraction of natural numbers truncates at 0') and 'Wrapping arithmetic in Fin' ('Arithmetic in Fin wraps around if it overflows or underflows')."
+    ],
+    "design_question": "Is the folklore statement 'Lean's arithmetic is exact arithmetic plus one particular choice of junk values' exactly true of Lean's core operators?"
+  },
+  {
+    "id": "agreement_where_defined_partialNat",
+    "lean": [
+      "Toy.Junk.evalJ_eq_of_hEval_eq_some_partialNat",
+      "Toy.Junk.no_flip_partialNat"
+    ],
+    "lean_names": [
+      "Toy.Junk.kleene_tables",
+      "Toy.Junk.seq_tables",
+      "Toy.Junk.kleene_quantifier_tables"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "The idea that a two-valued completion agrees with a three-valued value wherever the latter is defined is known informally (Gries and Schneider 1995; Darvas, Mehta and Rudich 2008); the nearest mechanization found (Schmalz 2012) concerns Event-B's logic in Isabelle/HOL, a different formalism and statement.",
+    "plain_claim": "Under the human reading in which natural subtraction below zero is undefined (partialNat), for either connective semantics (strong Kleene or sequential), every junk record J, every toy formula phi, every environment rho and every b: if the three-valued human value of phi at rho is defined and equal to b, then the total value of phi at rho under J equals b. Equivalently, under partialNat and for either connective semantics, there is no toy formula (quantified or not), environment and junk record at which the human value is false and the total value true, or the human value is true and the total value false.",
+    "hypotheses": [
+      {
+        "name": "reading = partialNat (both theorems)",
+        "purpose": "Natural subtraction below zero must be undefined in the human reading; if it is evaluated in Z, a defined human value can differ from the total value.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Junk.ce_agreement_intValued",
+          "Toy.Junk.ce_intValued_forall_humanFalse_leanTrue"
+        ],
+        "counterexample_class": "closed formulas under the intValued reading: the quantifier-free (2 : Nat) - 3 < 0 (fNumeralNat; human true, Lean false) and the universal statement for all a : Nat, 0 <= a - 1 (fAllZeroLeSubOne; human false, Lean true)"
+      },
+      {
+        "name": "h : hEval c partialNat phi rho = some b (evalJ_eq_of_hEval_eq_some_partialNat)",
+        "purpose": "Agreement is claimed where the human value is defined, and not elsewhere.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_agreement_undefined",
+        "counterexample_class": "an atom with one Int variable, (x : Int) / 0 = 0 (fDivZero), at the zero environment, with b = false and J = leanJ"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "(5 : Nat) - 3 = 2 (fFiveSubThree) has the defined human value true under partialNat with either connectives; (5 : Nat) - 3 = 3 has the defined human value false.",
+    "nonvacuity_witness_lean": [
+      "Toy.Junk.nv_evalJ_eq_of_hEval_eq_some_partialNat",
+      "Toy.Junk.nv_hEval_eq_some_false_partialNat"
+    ],
+    "non_claims": [
+      "Does not say where the human value is defined; for unguarded formulas it may be undefined at many or all environments (Toy.Junk.ce_leanValid_not_humanValid), and a formula whose human value is undefined can be Lean-true or Lean-false (Toy.Junk.ce_partialNat_forall_undefined_leanTrue, Toy.Junk.ce_partialNat_exists_undefined_leanFalse).",
+      "Fails for the intValued reading of natural subtraction (Toy.Junk.ce_agreement_intValued, Toy.Junk.ce_intValued_forall_humanFalse_leanTrue).",
+      "The absence of flips holds within the toy language and under this package's reading of / as exact division (an inexact quotient is undefined, not false). For every connective semantics and reading, (1 : Nat) / 2 = 0 (fOneDivTwo) and for all n : Nat, 2 < n -> 1 / n = 0 (fAllOneDivZero) are human-undefined and Lean-true here (Toy.Junk.inexact_quotient_undefined_leanTrue); under a rational-valued human reading in which the quotient of 1 by 2 denotes one half they would be human-false and Lean-true (that reading is not modeled; not proved here). Outside the toy language, (3 : Fin 5) + 4 = 2 is Lean-true (Toy.Junk.trap_fin_wrap).",
+      "The agreement is partly by construction: each junk record is consulted outside the fixed domains (b <= a for Nat subtraction, DivDom for /, ModDom for %, 0 <= z for Int.toNat) and nowhere else (definitions jSub, jDiv, jMod, jToNat), and under partialNat these are the points where the human reading is undefined (definitions hSub, hDiv, hMod, hToNat). The content is the propagation through connectives and quantifiers; adequacy of the domains is supported separately by Toy.Junk.evalJ_leanJ_iff and Toy.Junk.rounding_conventions_agree_on_domains.",
+      "Quantifiers are the strong Kleene quantifiers under both connective semantics (a universal statement is false as soon as one instance is false; Toy.Junk.kleene_quantifier_tables); a strict reading of quantifiers is not modeled."
+    ],
+    "prior_art": [
+      "David Gries and Fred B. Schneider, 'Avoiding the undefined by underspecification', in J. van Leeuwen (ed.), Computer Science Today: Recent Trends and Developments, LNCS 1000, Springer, 1995, pp. 366-373, DOI 10.1007/BFb0015254. Section 4: all operations are total but the value of an expression need not be uniquely specified; theorems about an underspecified operation carry an antecedent describing where it is uniquely specified (example: y != 0 => y/y = 1); a formula is valid if it evaluates to true for every combination of values that can be assigned to its underspecified terms. Section 2 notes that under a strict extension with an undefined value, excluded middle fails.",
+      "S. C. Kleene, Introduction to Metamathematics, North-Holland / P. Noordhoff / Van Nostrand, 1952, section 64 ('The 3-valued logic'): the strong three-valued connectives with truth values t, f, u, under which conjunction is the minimum and disjunction the maximum in the order f < u < t (as summarized in the Stanford Encyclopedia of Philosophy entry 'Many-Valued Logic', https://plato.stanford.edu/entries/logic-manyvalued/). These are the connectives of Conn.kleene (kleene_tables); the quantifiers tvAll and tvEx are the corresponding strong quantifiers (kleene_quantifier_tables).",
+      "John McCarthy, 'A basis for a mathematical theory of computation', in P. Braffort and D. Hirschberg (eds.), Computer Programming and Formal Systems, Studies in Logic and the Foundations of Mathematics, North-Holland, 1963, pp. 33-70, DOI 10.1016/S0049-237X(08)72018-4. Defines p AND q = (p -> q, T -> F) and p OR q = (p -> T, T -> q) by conditional expressions, and remarks that if p is false and q is undefined then p AND q is false and q AND p is undefined. These are the sequential connectives of Conn.seq (seq_tables).",
+      "Adam Darvas, Farhad Mehta and Arsenii Rudich, 'Efficient Well-Definedness Checking', in Automated Reasoning: 4th International Joint Conference, IJCAR 2008, LNCS 5195, Springer, 2008, pp. 100-115, DOI 10.1007/978-3-540-71070-7_8. Requiring well-definedness conditions to be proven 'allows us to reason in a two-valued logic even if the underlying specification language has a three-valued semantics' (abstract); the paper contrasts a well-definedness operator D corresponding to strong Kleene connectives with a simpler, stricter left-to-right operator L, with L(phi1 AND phi2) = L(phi1) AND (phi1 => L(phi2)).",
+      "Matthias Schmalz, Formalizing the Logic of Event-B: Partial Functions, Definitional Extensions, and Automated Theorem Proving, doctoral thesis, Diss. ETH No. 20516, ETH Zurich, 2012, DOI 10.3929/ethz-a-007577749: gives Event-B's logic, including its well-definedness operator D, a semantics by embedding into higher-order logic, discusses Kleene semantics for partial formulas, and checks a substantial part of the soundness proof in Isabelle/HOL."
+    ],
+    "design_question": "Can a reader trust a statement's Lean truth value at every point where the statement's exact human reading is meaningful?"
+  },
+  {
+    "id": "definedEverywhere_implies_junkIndependent",
+    "lean": "Toy.Junk.junkIndependent_of_definedEverywhere_partialNat",
+    "lean_names": [
+      "Toy.Junk.inexact_division_is_junk"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "Same status as agreement_where_defined_partialNat, of which it is a corollary.",
+    "plain_claim": "Under the partialNat reading, for either connective semantics and every toy formula phi: if the human value of phi is defined at every environment, then phi is junk-independent (at every environment its total value is the same for every two junk records).",
+    "hypotheses": [
+      {
+        "name": "DefinedEverywhere c partialNat phi",
+        "purpose": "Definedness at every environment is what forces every junk record to agree.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_zeroSubOne_junkDependent",
+        "counterexample_class": "a closed atom, (0 : Nat) - 1 = 0 (fZeroSubOne), undefined everywhere under partialNat and junk-dependent"
+      },
+      {
+        "name": "reading = partialNat",
+        "purpose": "Under intValued a defined human value need not constrain the junk values.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_zeroSubOne_junkDependent",
+        "counterexample_class": "the same closed atom, defined everywhere under intValued and junk-dependent"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "(5 : Nat) - 3 = 2 (fFiveSubThree) is defined at every environment under partialNat.",
+    "nonvacuity_witness_lean": "Toy.Junk.nv_definedEverywhere_partialNat",
+    "non_claims": [
+      "The converse fails: junk independence does not give definedness (Toy.Junk.ce_junkIndependent_not_definedEverywhere).",
+      "A formula that is Lean-valid and junk-independent need not be human-valid or defined anywhere, even without multiplication by zero: (x : Int) / 0 = x / 0 (fDivZeroRefl) and (x : Int) / 0 = 0 OR NOT (x / 0 = 0) (fDivZeroEM) are true at every environment under every junk record and human-undefined at every environment under both connective semantics and both readings (Toy.Junk.ce_junkIndependent_leanValid_undefined).",
+      "Gives no procedure for deciding definedness; the guard checker guarded is a decidable sufficient condition (Toy.Junk.definedEverywhere_of_guarded).",
+      "Junk records assign out-of-domain values as functions of the operand values, so (x : Int) / 0 and (y : Int) / 0 coincide when x = y; independence from arbitrary per-occurrence choices of junk values is not what JunkIndependent expresses (per-occurrence choices are not modeled; not proved here).",
+      "In this package's human reading, / denotes exact division: DivDom n d (for n d : Int) is d != 0 and d | n, so an inexact quotient with a nonzero divisor, such as (7 : Nat) / 2, is human-undefined and its total value comes from the junk record, whereas ModDom (0 <= n and 0 < d) makes (7 : Nat) % 2 defined. Floor or Euclidean division read as intended (with (7 : Nat) / 2 = 3 not junk) is not modeled. Consequently (7 : Nat) / 2 = 3 (fSevenDivTwo) is junk-dependent although Lean's, the truncating and the flooring records all give 3, and the floor-division identity (a b : Nat), not (b = 0) -> a / b * b + a % b = a (fNatDivModId) is Lean-valid but rejected by guarded, junk-dependent and not defined everywhere (Toy.Junk.inexact_division_is_junk)."
+    ],
+    "prior_art": [
+      "David Gries and Fred B. Schneider, 'Avoiding the undefined by underspecification', in J. van Leeuwen (ed.), Computer Science Today: Recent Trends and Developments, LNCS 1000, Springer, 1995, pp. 366-373, DOI 10.1007/BFb0015254. Section 4: all operations are total but the value of an expression need not be uniquely specified; theorems about an underspecified operation carry an antecedent describing where it is uniquely specified (example: y != 0 => y/y = 1); a formula is valid if it evaluates to true for every combination of values that can be assigned to its underspecified terms. Section 2 notes that under a strict extension with an undefined value, excluded middle fails. Its underspecified terms may take different values at different occurrences, whereas a junk record of this package assigns values as a function of the operands."
+    ],
+    "design_question": "Which properties of a formula (definedness of its exact human reading at every environment, junk independence, agreement where defined) guarantee that its truth value in Lean's reading matches its exact human reading?"
+  },
+  {
+    "id": "junkIndependent_does_not_imply_defined",
+    "lean": [
+      "Toy.Junk.ce_junkIndependent_not_definedEverywhere",
+      "Toy.Junk.ce_junkIndependent_leanValid_undefined"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "Instances of a known gap between totalized and three-valued readings (Gries and Schneider 1995, Section 2, on excluded middle) worked out for this toy language.",
+    "plain_claim": "For each connective semantics c: (a b : Nat), (a - b) * 0 = 0 (fMulZero) is junk-independent, but its partialNat human value is undefined at a = 0, b = 1 (undefinedness propagates strictly through * 0), so it is not defined everywhere. For each connective semantics c and reading r: (x : Int) / 0 = x / 0 (fDivZeroRefl) and (x : Int) / 0 = 0 OR NOT (x / 0 = 0) (fDivZeroEM) contain no multiplication, are Lean-valid and junk-independent, and are human-undefined at every environment. So junk independence implies neither definedness nor human validity.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). ce_junkIndependent_not_definedEverywhere quantifies over c : Conn, and ce_junkIndependent_leanValid_undefined over c : Conn and r : SubReading; both types are inhabited (Conn by kleene and seq, SubReading by partialNat and intValued). The quantifier over environments rho inside the second statement is part of its conclusion, not a hypothesis.",
+    "non_claims": [
+      "The first instance depends on strict term evaluation; a human semantics in which 0 absorbs an undefined factor would make (a b : Nat), (a - b) * 0 = 0 defined everywhere (not modeled; not proved here). The second and third instances do not involve multiplication.",
+      "No claim is made about the decidability or complexity of junk independence."
+    ],
+    "prior_art": [
+      "David Gries and Fred B. Schneider, 'Avoiding the undefined by underspecification', in J. van Leeuwen (ed.), Computer Science Today: Recent Trends and Developments, LNCS 1000, Springer, 1995, pp. 366-373, DOI 10.1007/BFb0015254. Section 4: all operations are total but the value of an expression need not be uniquely specified; theorems about an underspecified operation carry an antecedent describing where it is uniquely specified (example: y != 0 => y/y = 1); a formula is valid if it evaluates to true for every combination of values that can be assigned to its underspecified terms. Section 2 notes that under a strict extension with an undefined value, excluded middle fails."
+    ],
+    "design_question": "Which properties of a formula (definedness of its exact human reading at every environment, junk independence, agreement where defined) guarantee that its truth value in Lean's reading matches its exact human reading?"
+  },
+  {
+    "id": "agreement_does_not_imply_junkIndependent_or_definedness",
+    "lean": "Toy.Junk.ce_agrees_not_junkIndependent",
+    "lean_names": [
+      "Toy.Junk.agreesWhereDefined_partialNat",
+      "Toy.Junk.AgreesWhereDefined_pos",
+      "Toy.Junk.AgreesWhereDefined_neg"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "A concrete instance in this toy language; no prior statement of it was found.",
+    "plain_claim": "For each connective semantics c: (a b : Nat), a - b <= a (fSubLeSelf) agrees with the partialNat human reading wherever that is defined, for every junk record (AgreesWhereDefined c partialNat J, which holds for every formula); it is Lean-valid; it is junk-dependent (with every junk value equal to 1, the record oneJ, it is false at a = 0, b = 1); and its human value is undefined at a = 0, b = 1, so it is not defined everywhere. Hence agreement-where-defined implies neither junk independence nor definedness everywhere.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). The sole parameter of ce_agrees_not_junkIndependent is c : Conn (inhabited by kleene and seq); the reading is fixed to partialNat, and the quantifier over junk records J inside the statement is part of its conclusion. The supporting theorem agreesWhereDefined_partialNat (quoted under Supporting theorems) is universal over c, J and phi and has no hypotheses.",
+    "non_claims": [
+      "Under partialNat, AgreesWhereDefined holds for every formula (Toy.Junk.agreesWhereDefined_partialNat), so it does not separate formulas under that reading; under intValued it does (Toy.Junk.AgreesWhereDefined_pos, Toy.Junk.AgreesWhereDefined_neg).",
+      "Does not say that the Lean statement (a b : Nat) : a - b <= a is a defective lemma; it says that its truth at a < b rests on Lean's specific junk value 0.",
+      "The Lean truth of (a b : Nat), a - b <= a at a < b rests on truncated subtraction. Readers bring a convention, not the absence of one: under wrapping unsigned subtraction, 0 - 1 is the largest machine value and the inequality is false at a = 0, b = 1, as it is for the junk record oneJ; under subtraction that panics below zero there is no value there, the partialNat outcome. Wrapping subtraction is not modeled (modeling bridge; not proved here).",
+      "The junk record oneJ is a test device, not a convention of any system."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Prelude.lean (blob 66af67237683d3c7f8230bcf473c0871e67749a2): Nat.sub (docstring at line 2111) 'Subtraction of natural numbers, truncated at 0'; Nat.div (docstring lines 2170-2184) 'Division by 0 returns 0 ... sometimes called floor division'; Nat.modCore (docstring lines 2202-2214, definition at line 2216) 'When the divisor is 0, the result is the dividend rather than an error'."
+    ],
+    "design_question": "Which properties of a formula (definedness of its exact human reading at every environment, junk independence, agreement where defined) guarantee that its truth value in Lean's reading matches its exact human reading?"
+  },
+  {
+    "id": "validity_transfer_partialNat",
+    "lean": [
+      "Toy.Junk.leanValid_of_humanValid_partialNat",
+      "Toy.Junk.leanValid_iff_humanValid_of_definedEverywhere_partialNat"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "Same status as agreement_where_defined_partialNat, of which both parts are corollaries.",
+    "plain_claim": "Under the partialNat reading, for either connective semantics and every toy formula phi: if phi is human-valid (defined and true at every environment) then phi is valid in Lean's reading (true at every environment for leanJ); and if the human value of phi is defined at every environment, then phi is valid in Lean's reading iff it is human-valid.",
+    "hypotheses": [
+      {
+        "name": "HumanValid c partialNat phi (leanValid_of_humanValid_partialNat)",
+        "purpose": "The first transfer starts from human validity.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_not_humanValid_not_leanValid",
+        "counterexample_class": "an open quantifier-free formula with two Nat variables, (a b : Nat), a - b + b = a (fSubAddCancel), neither human-valid under partialNat nor Lean-valid"
+      },
+      {
+        "name": "DefinedEverywhere c partialNat phi (leanValid_iff_humanValid_of_definedEverywhere_partialNat)",
+        "purpose": "Without definedness, Lean validity can hold where the human reading is undefined.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_leanValid_not_humanValid",
+        "counterexample_class": "an open atom with one Int variable, (x : Int) / 0 = 0 (fDivZero), Lean-valid and never human-defined"
+      },
+      {
+        "name": "reading = partialNat (both theorems)",
+        "purpose": "Under intValued, a formula can be defined everywhere and human-valid without being Lean-valid.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Junk.ce_intValued_humanValid_not_leanValid",
+          "Toy.Junk.ce_intValued_definedEverywhere_humanValid_not_leanValid"
+        ],
+        "counterexample_class": "(a b : Nat), a - b + b = a (fSubAddCancel) under intValued: defined everywhere and human-valid, not Lean-valid"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "(5 : Nat) - 3 = 2 (fFiveSubThree) is human-valid and defined at every environment under partialNat.",
+    "nonvacuity_witness_lean": [
+      "Toy.Junk.nv_humanValid_partialNat",
+      "Toy.Junk.nv_definedEverywhere_partialNat"
+    ],
+    "non_claims": [
+      "Lean validity does not give human validity without definedness: (x : Int) / 0 = 0 (fDivZero) is Lean-valid but its human value is never defined (Toy.Junk.ce_leanValid_not_humanValid).",
+      "A formula that is Lean-valid and junk-independent need not be human-valid or defined anywhere, even without multiplication by zero: (x : Int) / 0 = x / 0 (fDivZeroRefl) and (x : Int) / 0 = 0 OR NOT (x / 0 = 0) (fDivZeroEM) are true at every environment under every junk record and human-undefined at every environment under both connective semantics and both readings (Toy.Junk.ce_junkIndependent_leanValid_undefined).",
+      "Provides no decision procedure for DefinedEverywhere; the guard checker guarded is a decidable sufficient condition (Toy.Junk.definedEverywhere_of_guarded).",
+      "Validity means truth at every environment of the toy semantics, not provability in any proof system."
+    ],
+    "prior_art": [
+      "David Gries and Fred B. Schneider, 'Avoiding the undefined by underspecification', in J. van Leeuwen (ed.), Computer Science Today: Recent Trends and Developments, LNCS 1000, Springer, 1995, pp. 366-373, DOI 10.1007/BFb0015254. Section 4: all operations are total but the value of an expression need not be uniquely specified; theorems about an underspecified operation carry an antecedent describing where it is uniquely specified (example: y != 0 => y/y = 1); a formula is valid if it evaluates to true for every combination of values that can be assigned to its underspecified terms. Section 2 notes that under a strict extension with an undefined value, excluded middle fails.",
+      "Adam Darvas, Farhad Mehta and Arsenii Rudich, 'Efficient Well-Definedness Checking', in Automated Reasoning: 4th International Joint Conference, IJCAR 2008, LNCS 5195, Springer, 2008, pp. 100-115, DOI 10.1007/978-3-540-71070-7_8. Requiring well-definedness conditions to be proven 'allows us to reason in a two-valued logic even if the underlying specification language has a three-valued semantics' (abstract); the paper contrasts a well-definedness operator D corresponding to strong Kleene connectives with a simpler, stricter left-to-right operator L, with L(phi1 AND phi2) = L(phi1) AND (phi1 => L(phi2))."
+    ],
+    "design_question": "Which properties of a formula (definedness of its exact human reading at every environment, junk independence, agreement where defined) guarantee that its truth value in Lean's reading matches its exact human reading?"
+  },
+  {
+    "id": "guarded_fragment_conservativity",
+    "lean": [
+      "Toy.Junk.hEval_eq_some_evalJ_of_guarded",
+      "Toy.Junk.definedEverywhere_of_guarded",
+      "Toy.Junk.junkIndependent_of_guarded"
+    ],
+    "lean_names": [
+      "Toy.Junk.inexact_division_is_junk",
+      "Toy.Junk.guarded_accepts_vacuous_guards",
+      "Toy.Junk.guarded_rejects_strict_bound"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "Restates, for this toy language and the checker guarded, the known principle that proving left-to-right well-definedness conditions licenses two-valued reasoning about a three-valued specification language (Darvas, Mehta and Rudich 2008).",
+    "plain_claim": "For every toy formula phi accepted by the decidable guard checker guarded (each Nat subtraction a - b needs the fact b <= a; each division n / d, at Nat or at Int, needs the facts not (d = 0) and d | n; each Nat remainder n % d needs not (d = 0); each Int remainder n % d needs 0 < d and 0 <= n; each Int.toNat t (t : Int) needs 0 <= t; facts are matched syntactically and accumulate left to right through the earlier conjuncts of AND and the premise of IMPLIES, and facts mentioning a variable are discarded under a quantifier that binds it), for every connective semantics c, every reading r of natural subtraction, every junk record J and every environment rho, the human value of phi at rho is defined and equals the total value of phi at rho under J. In particular every formula accepted by guarded is defined everywhere (for every c and r) and junk-independent.",
+    "hypotheses": [
+      {
+        "name": "guarded phi = true (hEval_eq_some_evalJ_of_guarded, definedEverywhere_of_guarded)",
+        "purpose": "The guards are what make every partial operation defined.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_unguarded_divZero",
+        "counterexample_class": "an open atom with one Int variable, (x : Int) / 0 = 0 (fDivZero), rejected and undefined at every environment"
+      },
+      {
+        "name": "guarded phi = true (junkIndependent_of_guarded)",
+        "purpose": "Unguarded formulas can depend on junk values.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_unguarded_junkDependent",
+        "counterexample_class": "a closed atom, (0 : Nat) - 1 = 0 (fZeroSubOne), rejected and junk-dependent"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "(a b : Nat), b <= a -> a - b + b = a (fSubAddCancelGuarded) is accepted by the checker; each partial-operation rule has an accepted instance (guarded_pos).",
+    "nonvacuity_witness_lean": [
+      "Toy.Junk.nv_guarded_subAddCancel",
+      "Toy.Junk.guarded_pos"
+    ],
+    "non_claims": [
+      "The checker is incomplete: it rejects junk-independent formulas, formulas that are human-valid, and (under strong Kleene) formulas defined everywhere (Toy.Junk.guarded_incomplete_junkIndependent, Toy.Junk.guarded_incomplete_defined, Toy.Junk.guarded_incomplete_disjunctive_guards, Toy.Junk.definedEverywhere_kleene_guardSecond).",
+      "Acceptance by guarded certifies that the human and total truth values coincide; it does not check that hypotheses are satisfiable. For every connective semantics and reading, (a b : Nat), b <= a AND a < b -> a - b = 1 (fContradictoryGuard) and the bounded existential written with an implication, (a : Nat), exists b : Nat, b <= a -> a - b = 1 (fExImpGuard), are accepted by guarded, Lean-valid and human-valid, the first because its premise is never true and the second because b = a + 1 falsifies the premise; the AND form (a : Nat), exists b : Nat, b <= a AND a - b = 1 (fExAndGuard) is not Lean-valid (Toy.Junk.guarded_accepts_vacuous_guards).",
+      "guarded adds no facts across disjunctions (unlike left-to-right well-definedness operators that propagate the negated left disjunct into the right one). For every connective semantics and reading, (a b : Nat), NOT (b <= a) OR a - b + b = a (fOrNegGuardSubCancel) and (a b : Nat), b = 0 OR a % b < b (fModDisjGuard) are rejected by guarded although both are human-valid (Toy.Junk.guarded_incomplete_disjunctive_guards).",
+      "Guards are matched syntactically: a strict bound b < a, a fact 0 < d for a Nat divisor, or a guard implied by other facts is not recognized (Toy.Junk.guarded_rejects_strict_bound for b < a; the other two cases are not proved here).",
+      "In this package's human reading, / denotes exact division: DivDom n d (for n d : Int) is d != 0 and d | n, so an inexact quotient with a nonzero divisor, such as (7 : Nat) / 2, is human-undefined and its total value comes from the junk record, whereas ModDom (0 <= n and 0 < d) makes (7 : Nat) % 2 defined. Floor or Euclidean division read as intended (with (7 : Nat) / 2 = 3 not junk) is not modeled. Consequently (7 : Nat) / 2 = 3 (fSevenDivTwo) is junk-dependent although Lean's, the truncating and the flooring records all give 3, and the floor-division identity (a b : Nat), not (b = 0) -> a / b * b + a % b = a (fNatDivModId) is Lean-valid but rejected by guarded, junk-dependent and not defined everywhere (Toy.Junk.inexact_division_is_junk).",
+      "Covers the toy language (Nat and Int terms with +, -, *, /, %, the cast Nat -> Int and Int.toNat; atoms =, <=, <, divisibility). Fin n, rationals, reals and user-defined functions are not covered. The toy has no implicit casts, so 'every cast is explicit' holds by construction rather than being checked.",
+      "Gives no translation from Lean source statements into the toy language, so it does not by itself certify any Lean statement."
+    ],
+    "prior_art": [
+      "Adam Darvas, Farhad Mehta and Arsenii Rudich, 'Efficient Well-Definedness Checking', in Automated Reasoning: 4th International Joint Conference, IJCAR 2008, LNCS 5195, Springer, 2008, pp. 100-115, DOI 10.1007/978-3-540-71070-7_8. Requiring well-definedness conditions to be proven 'allows us to reason in a two-valued logic even if the underlying specification language has a three-valued semantics' (abstract); the paper contrasts a well-definedness operator D corresponding to strong Kleene connectives with a simpler, stricter left-to-right operator L, with L(phi1 AND phi2) = L(phi1) AND (phi1 => L(phi2)).",
+      "Matthias Schmalz, Formalizing the Logic of Event-B: Partial Functions, Definitional Extensions, and Automated Theorem Proving, doctoral thesis, Diss. ETH No. 20516, ETH Zurich, 2012, DOI 10.3929/ethz-a-007577749: gives Event-B's logic, including its well-definedness operator D, a semantics by embedding into higher-order logic, discusses Kleene semantics for partial formulas, and checks a substantial part of the soundness proof in Isabelle/HOL.",
+      "John Rushby, Sam Owre and Natarajan Shankar, 'Subtypes for Specifications: Predicate Subtyping in PVS', IEEE Transactions on Software Engineering 24(9):709-720, 1998, DOI 10.1109/32.713327: predicate subtyping, with type-checking proof obligations called Type Correctness Conditions (TCCs).",
+      "Matt Kaufmann and J Strother Moore, 'An Industrial Strength Theorem Prover for a Logic Based on Common Lisp', IEEE Transactions on Software Engineering 23(4):203-213, 1997, DOI 10.1109/32.588534: total functions in the logic (Section 3.4), with guards that are extra-logical (not involved in the axioms defining functions; Sections 3.4 and 3.6) and connect the logic to execution in Common Lisp (Section 4).",
+      "David Gries and Fred B. Schneider, 'Avoiding the undefined by underspecification', in J. van Leeuwen (ed.), Computer Science Today: Recent Trends and Developments, LNCS 1000, Springer, 1995, pp. 366-373, DOI 10.1007/BFb0015254. Section 4: all operations are total but the value of an expression need not be uniquely specified; theorems about an underspecified operation carry an antecedent describing where it is uniquely specified (example: y != 0 => y/y = 1); a formula is valid if it evaluates to true for every combination of values that can be assigned to its underspecified terms. Section 2 notes that under a strict extension with an undefined value, excluded middle fails.",
+      "Kevin Buzzard, 'Division by zero in type theory: a FAQ', Xena project blog, July 5, 2020, https://xenaproject.wordpress.com/2020/07/05/division-by-zero-in-type-theory-a-faq/ (Lean's / is total with 1/0 = 0; natural subtraction x - y is 0 when x < y; idiomatic Lean lets functions accept 'garbage inputs' and puts the side conditions as hypotheses of the theorems)."
+    ],
+    "design_question": "Is there a decidable syntactic discipline (guards for every partial operation, explicit casts) on which the exact human reading and the total reading provably coincide?"
+  },
+  {
+    "id": "guarded_validity_transfer",
+    "lean": [
+      "Toy.Junk.leanValid_iff_humanValid_of_guarded",
+      "Toy.Junk.restate_subAddCancel_guarded"
+    ],
+    "lean_names": [
+      "Toy.Junk.guarded_accepts_vacuous_guards"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "A corollary of guarded_fragment_conservativity; same status.",
+    "plain_claim": "For every connective semantics c, every reading r of natural subtraction and every toy formula phi accepted by guarded, phi is valid in Lean's reading iff it is human-valid. For instance, for every c and r, (a b : Nat), b <= a -> a - b + b = a (fSubAddCancelGuarded) is accepted by guarded, Lean-valid and human-valid.",
+    "hypotheses": [
+      {
+        "name": "guarded phi = true (leanValid_iff_humanValid_of_guarded)",
+        "purpose": "Unguarded formulas can be Lean-valid with no defined human value.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_unguarded_leanValid_not_humanValid",
+        "counterexample_class": "an open atom with one Int variable, (x : Int) / 0 = 0 (fDivZero), rejected, Lean-valid, not human-valid"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "(a b : Nat), b <= a -> a - b + b = a (fSubAddCancelGuarded) is accepted.",
+    "nonvacuity_witness_lean": "Toy.Junk.nv_guarded_subAddCancel",
+    "non_claims": [
+      "Acceptance by guarded certifies that the human and total truth values coincide; it does not check that hypotheses are satisfiable. For every connective semantics and reading, (a b : Nat), b <= a AND a < b -> a - b = 1 (fContradictoryGuard) and the bounded existential written with an implication, (a : Nat), exists b : Nat, b <= a -> a - b = 1 (fExImpGuard), are accepted by guarded, Lean-valid and human-valid, the first because its premise is never true and the second because b = a + 1 falsifies the premise; the AND form (a : Nat), exists b : Nat, b <= a AND a - b = 1 (fExAndGuard) is not Lean-valid (Toy.Junk.guarded_accepts_vacuous_guards).",
+      "The guarded restatement (a b : Nat), b <= a -> a - b + b = a says nothing at environments with b > a (its premise is false there), whereas the intValued reading of the unguarded (a b : Nat), a - b + b = a asserts the integer identity there as well; that reading is treated in Toy.Junk.restate_signedDiff_cast.",
+      "Validity is semantic truth at every environment of the toy, not provability; no claim about Lean statements outside the toy language."
+    ],
+    "prior_art": [
+      "Adam Darvas, Farhad Mehta and Arsenii Rudich, 'Efficient Well-Definedness Checking', in Automated Reasoning: 4th International Joint Conference, IJCAR 2008, LNCS 5195, Springer, 2008, pp. 100-115, DOI 10.1007/978-3-540-71070-7_8. Requiring well-definedness conditions to be proven 'allows us to reason in a two-valued logic even if the underlying specification language has a three-valued semantics' (abstract); the paper contrasts a well-definedness operator D corresponding to strong Kleene connectives with a simpler, stricter left-to-right operator L, with L(phi1 AND phi2) = L(phi1) AND (phi1 => L(phi2)).",
+      "David Gries and Fred B. Schneider, 'Avoiding the undefined by underspecification', in J. van Leeuwen (ed.), Computer Science Today: Recent Trends and Developments, LNCS 1000, Springer, 1995, pp. 366-373, DOI 10.1007/BFb0015254. Section 4: all operations are total but the value of an expression need not be uniquely specified; theorems about an underspecified operation carry an antecedent describing where it is uniquely specified (example: y != 0 => y/y = 1); a formula is valid if it evaluates to true for every combination of values that can be assigned to its underspecified terms. Section 2 notes that under a strict extension with an undefined value, excluded middle fails.",
+      "Kevin Buzzard, 'Division by zero in type theory: a FAQ', Xena project blog, July 5, 2020, https://xenaproject.wordpress.com/2020/07/05/division-by-zero-in-type-theory-a-faq/ (Lean's / is total with 1/0 = 0; natural subtraction x - y is 0 when x < y; idiomatic Lean lets functions accept 'garbage inputs' and puts the side conditions as hypotheses of the theorems)."
+    ],
+    "design_question": "Is there a decidable syntactic discipline (guards for every partial operation, explicit casts) on which the exact human reading and the total reading provably coincide?"
+  },
+  {
+    "id": "guard_checker_incomplete",
+    "lean": [
+      "Toy.Junk.guarded_incomplete_junkIndependent",
+      "Toy.Junk.guarded_incomplete_defined",
+      "Toy.Junk.guarded_incomplete_disjunctive_guards",
+      "Toy.Junk.definedEverywhere_kleene_guardSecond"
+    ],
+    "lean_names": [
+      "Toy.Junk.seq_tables"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "Instances for this checker; the asymmetry of left-to-right well-definedness operators is known (Darvas, Mehta and Rudich 2008), the particular instances are not taken from a source.",
+    "plain_claim": "The guard checker guarded rejects formulas that are well behaved: (a b : Nat), (a - b) * 0 = 0 (fMulZero), which is junk-independent; for each connective semantics, (a b : Nat), (0 : Nat) <= 0 OR a - b = 0 (fTrivOr), which is human-valid under partialNat (its left disjunct is true and both semantics return true for a disjunction whose left side is true), while the checker's rule for OR checks both disjuncts against the same facts; for each connective semantics and reading, (a b : Nat), NOT (b <= a) OR a - b + b = a (fOrNegGuardSubCancel) and (a b : Nat), b = 0 OR a % b < b (fModDisjGuard), which are human-valid, because the checker adds no facts across OR; and, under strong Kleene connectives and either reading, (a b : Nat), a - b + b = a AND b <= a (fGuardSecond), which is defined at every environment.",
+    "hypotheses": [
+      {
+        "name": "connectives = strong Kleene (definedEverywhere_kleene_guardSecond)",
+        "purpose": "With sequential connectives the guard-second conjunction is undefined at a < b.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_seq_not_closed",
+        "counterexample_class": "sequential connectives, partialNat, the formula (a b : Nat), a - b + b = a AND b <= a (fGuardSecond) at a = 0, b = 1"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "No propositional hypotheses. guarded_incomplete_junkIndependent has no parameters; guarded_incomplete_defined quantifies over c : Conn; guarded_incomplete_disjunctive_guards over c : Conn and r : SubReading; definedEverywhere_kleene_guardSecond over r : SubReading, with the connective semantics fixed to kleene. The ledger entry connectives = strong Kleene is that fixed instantiation rather than a premise, and definedEverywhere_kleene_guardSecond is itself an instance satisfying it (with either reading). Conn and SubReading are inhabited.",
+    "non_claims": [
+      "Does not quantify the loss and claims no completeness result for any sub-fragment; no checker that accepts these formulas is defined here."
+    ],
+    "prior_art": [
+      "Adam Darvas, Farhad Mehta and Arsenii Rudich, 'Efficient Well-Definedness Checking', in Automated Reasoning: 4th International Joint Conference, IJCAR 2008, LNCS 5195, Springer, 2008, pp. 100-115, DOI 10.1007/978-3-540-71070-7_8. Requiring well-definedness conditions to be proven 'allows us to reason in a two-valued logic even if the underlying specification language has a three-valued semantics' (abstract); the paper contrasts a well-definedness operator D corresponding to strong Kleene connectives with a simpler, stricter left-to-right operator L, with L(phi1 AND phi2) = L(phi1) AND (phi1 => L(phi2)).",
+      "John McCarthy, 'A basis for a mathematical theory of computation', in P. Braffort and D. Hirschberg (eds.), Computer Programming and Formal Systems, Studies in Logic and the Foundations of Mathematics, North-Holland, 1963, pp. 33-70, DOI 10.1016/S0049-237X(08)72018-4. Defines p AND q = (p -> q, T -> F) and p OR q = (p -> T, T -> q) by conditional expressions, and remarks that if p is false and q is undefined then p AND q is false and q AND p is undefined. These are the sequential connectives of Conn.seq (seq_tables)."
+    ],
+    "design_question": "Is there a decidable syntactic discipline (guards for every partial operation, explicit casts) on which the exact human reading and the total reading provably coincide?"
+  },
+  {
+    "id": "trap_truncated_subtraction",
+    "lean": [
+      "Toy.Junk.trap_truncSub_addCancel",
+      "Toy.Junk.trap_truncSub_le_self"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "Ground evaluations of Lean core operators whose behavior is documented in the cited docstrings.",
+    "plain_claim": "Truncated subtraction, for each connective semantics: (0 : Nat) - 1 + 1 = 0 (fTruncSubCancel01) is false in Lean, undefined in the partialNat reading and true in the intValued reading; (0 : Nat) - 1 <= 0 (fTruncSubLe01) is true in Lean, false for the junk record oneJ and undefined under partialNat, so its Lean truth rests on the junk value 0.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). The sole parameter of trap_truncSub_addCancel and of trap_truncSub_le_self is c : Conn (inhabited by kleene and seq); the readings partialNat and intValued appear as fixed constants, the formulas are closed and evaluated at Env.zero, and (0 : Nat) - 1 + 1 != 0 is a closed Lean-core proposition.",
+    "non_claims": [
+      "These are closed instances; the open formulas (a b : Nat), a - b + b = a and (a b : Nat), a - b <= a are treated by other theorems (Toy.Junk.ce_not_humanValid_not_leanValid, Toy.Junk.ce_agrees_not_junkIndependent).",
+      "Both Lean values rest on truncated subtraction, (0 : Nat) - 1 = 0. Readers of (0 : Nat) - 1 bring a convention, not the absence of one: integer subtraction (the intValued reading), subtraction that panics or traps below zero (no value; the closest toy outcome is the partialNat value, undefined), or wrapping unsigned machine subtraction, under which 0 - 1 is the largest machine value, so 0 - 1 + 1 = 0 would be true and 0 - 1 <= 0 false. Lean's truncation agrees with none of these below zero. Wrapping subtraction is not modeled, and no relation between the toy readings and any machine or language semantics is proved (modeling bridge; not proved here)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Prelude.lean (blob 66af67237683d3c7f8230bcf473c0871e67749a2): Nat.sub (docstring at line 2111) 'Subtraction of natural numbers, truncated at 0'; Nat.div (docstring lines 2170-2184) 'Division by 0 returns 0 ... sometimes called floor division'; Nat.modCore (docstring lines 2202-2214, definition at line 2216) 'When the divisor is 0, the result is the dividend rather than an error'.",
+      "Lean Prover Community, 'Common Lean Pitfalls', https://leanprover-community.github.io/extras/pitfalls.html: sections 'Division by 0' ('In Lean, n / 0 = 0'), 'Natural number subtraction' ('Subtraction of natural numbers truncates at 0') and 'Wrapping arithmetic in Fin' ('Arithmetic in Fin wraps around if it overflows or underflows').",
+      "Kevin Buzzard, 'Division by zero in type theory: a FAQ', Xena project blog, July 5, 2020, https://xenaproject.wordpress.com/2020/07/05/division-by-zero-in-type-theory-a-faq/ (Lean's / is total with 1/0 = 0; natural subtraction x - y is 0 when x < y; idiomatic Lean lets functions accept 'garbage inputs' and puts the side conditions as hypotheses of the theorems)."
+    ],
+    "design_question": "Which constructs make a statement's Lean reading diverge from its exact human reading, construct by construct?"
+  },
+  {
+    "id": "trap_division_by_zero",
+    "lean": "Toy.Junk.trap_div_mod_zero",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "Ground evaluations of Lean core operators whose behavior is documented in the cited docstrings.",
+    "plain_claim": "Division and remainder by zero, for each connective semantics and reading: (5 : Int) / 0 = 0 (fFiveDivZero) and (5 : Nat) % 0 = 5 (fFiveModZero) are true in Lean, false for oneJ, and human-undefined; in Lean core (5 : Int) / 0 = 0, (5 : Nat) / 0 = 0, (5 : Nat) % 0 = 5 and (5 : Int) % 0 = 5.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). trap_div_mod_zero quantifies over c : Conn and r : SubReading, both inhabited; the formulas are closed and evaluated at Env.zero, and the Lean-core conjunct is a closed proposition.",
+    "non_claims": [
+      "Does not claim that any other proof assistant uses the same values; the system checked is Lean core v4.34.1.",
+      "Lean's (5 : Int) / 0 = 0 and (5 : Nat) % 0 = 5 are totalizing conventions. Readers bring a convention for division by zero, not the absence of one: that it is undefined (as in mathematics), or that it traps, panics or is undefined behaviour (conventions found in programming languages); Lean's values match none of these. The toy represents all of them by the undefined human value, and no relation to any language's semantics is proved (modeling bridge; not proved here)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Prelude.lean (blob 66af67237683d3c7f8230bcf473c0871e67749a2): Nat.sub (docstring at line 2111) 'Subtraction of natural numbers, truncated at 0'; Nat.div (docstring lines 2170-2184) 'Division by 0 returns 0 ... sometimes called floor division'; Nat.modCore (docstring lines 2202-2214, definition at line 2216) 'When the divisor is 0, the result is the dividend rather than an error'.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/DivMod/Basic.lean (blob 855635fb1ddc652debd9b4f843ecd546ef94dee9): module comment 'There are three main conventions for integer division, referred here as the E, F, T rounding conventions. All three pairs satisfy the identity x % y + (x / y) * y = x unconditionally, and satisfy x / 0 = 0 and x % 0 = x'; the default / and % instances use Int.ediv and Int.emod (E-rounding, 0 <= emod x y < natAbs y for y != 0); Int.div and Int.mod were removed in December 2024.",
+      "Lean Prover Community, 'Common Lean Pitfalls', https://leanprover-community.github.io/extras/pitfalls.html: sections 'Division by 0' ('In Lean, n / 0 = 0'), 'Natural number subtraction' ('Subtraction of natural numbers truncates at 0') and 'Wrapping arithmetic in Fin' ('Arithmetic in Fin wraps around if it overflows or underflows').",
+      "Kevin Buzzard, 'Division by zero in type theory: a FAQ', Xena project blog, July 5, 2020, https://xenaproject.wordpress.com/2020/07/05/division-by-zero-in-type-theory-a-faq/ (Lean's / is total with 1/0 = 0; natural subtraction x - y is 0 when x < y; idiomatic Lean lets functions accept 'garbage inputs' and puts the side conditions as hypotheses of the theorems).",
+      "Lawrence C. Paulson, 'Undefined values, or what do we get when we divide by zero?', Machine Logic blog, 1 December 2021, https://lawrencecpaulson.github.io/2021/12/01/Undefined.html: surveys totalization ('we go ahead and define x/0=0') and mentions proposals to use a three-valued logic.",
+      "Jan A. Bergstra and John V. Tucker, 'The Rational Numbers as an Abstract Data Type', Journal of the ACM 54(2), Article 7, 2007, DOI 10.1145/1219092.1219095: an equational specification of the rationals with a total inverse in which 0^-1 = 0."
+    ],
+    "design_question": "Which constructs make a statement's Lean reading diverge from its exact human reading, construct by construct?"
+  },
+  {
+    "id": "trap_floor_division_read_as_exact",
+    "lean": "Toy.Junk.trap_floorDiv_exact",
+    "lean_names": [
+      "Toy.Junk.inexact_division_is_junk"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "A ground evaluation of a Lean core operator whose behavior is documented in the cited docstring.",
+    "plain_claim": "Floor division read as exact division, for each connective semantics and reading: (7 : Nat) / 2 * 2 = 7 (fFloorDiv) is false in Lean ((7 : Nat) / 2 * 2 = 6) and human-undefined, because the human reading reads / as exact division and leaves inexact quotients undefined.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). trap_floorDiv_exact quantifies over c : Conn and r : SubReading, both inhabited; the formula is closed and evaluated at Env.zero, and (7 : Nat) / 2 * 2 = 6 is a closed Lean-core proposition.",
+    "non_claims": [
+      "Under a rational-valued reading in which the quotient of 7 by 2 denotes 3.5 the statement would be human-true (not modeled; not proved here).",
+      "In this package's human reading, / denotes exact division: DivDom n d (for n d : Int) is d != 0 and d | n, so an inexact quotient with a nonzero divisor, such as (7 : Nat) / 2, is human-undefined and its total value comes from the junk record, whereas ModDom (0 <= n and 0 < d) makes (7 : Nat) % 2 defined. Floor or Euclidean division read as intended (with (7 : Nat) / 2 = 3 not junk) is not modeled. Consequently (7 : Nat) / 2 = 3 (fSevenDivTwo) is junk-dependent although Lean's, the truncating and the flooring records all give 3, and the floor-division identity (a b : Nat), not (b = 0) -> a / b * b + a % b = a (fNatDivModId) is Lean-valid but rejected by guarded, junk-dependent and not defined everywhere (Toy.Junk.inexact_division_is_junk).",
+      "Lean's (7 : Nat) / 2 = 3 is floor division. Readers bring a convention, not the absence of one: exact or rational division (under which 7 / 2 is 3.5, or has no integer value; the toy's human reading takes the second), or the integer division of programming languages, which also gives 3 for these nonnegative operands; the trap concerns the first convention (modeling bridge; not proved here)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Prelude.lean (blob 66af67237683d3c7f8230bcf473c0871e67749a2): Nat.sub (docstring at line 2111) 'Subtraction of natural numbers, truncated at 0'; Nat.div (docstring lines 2170-2184) 'Division by 0 returns 0 ... sometimes called floor division'; Nat.modCore (docstring lines 2202-2214, definition at line 2216) 'When the divisor is 0, the result is the dividend rather than an error'.",
+      "Lean Prover Community, 'Common Lean Pitfalls', https://leanprover-community.github.io/extras/pitfalls.html: sections 'Division by 0' ('In Lean, n / 0 = 0'), 'Natural number subtraction' ('Subtraction of natural numbers truncates at 0') and 'Wrapping arithmetic in Fin' ('Arithmetic in Fin wraps around if it overflows or underflows')."
+    ],
+    "design_question": "Which constructs make a statement's Lean reading diverge from its exact human reading, construct by construct?"
+  },
+  {
+    "id": "trap_integer_rounding",
+    "lean": [
+      "Toy.Junk.trap_int_rounding",
+      "Toy.Junk.trap_int_rounding_values"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "Ground evaluations of Lean core operators whose conventions are documented in the cited module comment.",
+    "plain_claim": "Integer rounding: Lean's default Int / and % are Int.ediv and Int.emod (definitionally). At (-7, 2) the Euclidean, truncating and flooring quotients are -4, -3, -4 and the remainders 1, -1, 1; at (7, -2) the quotients are -3, -3, -4 and the remainders 1, 1, -1. In the toy, for each connective semantics and reading, (-7 : Int) / 2 = -4 (fNegSevenDivTwo) and (-7 : Int) % 2 = 1 (fNegSevenModTwo) hold for leanJ and floorJ and fail for truncJ; (7 : Int) / (-2) = -3 (fSevenDivNegTwo) and (7 : Int) % (-2) = 1 (fSevenModNegTwo) hold for leanJ and truncJ and fail for floorJ; all four are human-undefined.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). trap_int_rounding quantifies over c : Conn and r : SubReading, both inhabited, with closed formulas evaluated at Env.zero; trap_int_rounding_values has no parameters, and its last conjunct, for all a b : Int, a / b = Int.ediv a b AND a % b = Int.emod a b, is a universal conclusion without premises (Int is inhabited).",
+    "non_claims": [
+      "Does not state which convention any programming language uses; remarks about truncating division in C or Rust are modeling-bridge prose and are not kernel-checked.",
+      "Readers bring a rounding convention for negative operands, not the absence of one, typically truncation toward zero (Int.tdiv, Int.tmod) or flooring (Int.fdiv, Int.fmod); Lean's default / and % are Euclidean (Int.ediv, Int.emod), and at (-7, 2) and (7, -2) the three conventions do not all agree (Toy.Junk.trap_int_rounding_values). Which convention a given reader brings is not examined (not proved here).",
+      "Int.div and Int.mod do not exist in Lean core v4.34.1 (removed in December 2024 according to the core module comment); older material using those names referred to truncating division."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/DivMod/Basic.lean (blob 855635fb1ddc652debd9b4f843ecd546ef94dee9): module comment 'There are three main conventions for integer division, referred here as the E, F, T rounding conventions. All three pairs satisfy the identity x % y + (x / y) * y = x unconditionally, and satisfy x / 0 = 0 and x % 0 = x'; the default / and % instances use Int.ediv and Int.emod (E-rounding, 0 <= emod x y < natAbs y for y != 0); Int.div and Int.mod were removed in December 2024.",
+      "Raymond T. Boute, 'The Euclidean definition of the functions div and mod', ACM Transactions on Programming Languages and Systems 14(2):127-144, 1992, DOI 10.1145/128861.128862 (Euclidean conditions as summarized in Leijen 2001; they presuppose a nonzero divisor).",
+      "Daan Leijen, 'Division and Modulus for Computer Scientists', note, University of Utrecht, December 3, 2001, https://www.microsoft.com/en-us/research/publication/division-and-modulus-for-computer-scientists/, Section 1.2 (Euclidean division: q in Z, D = d*q + r, 0 <= r < |d|, conditions that presuppose d != 0, attributed to Boute 1992); Section 1 reviews truncated and floored division."
+    ],
+    "design_question": "Which constructs make a statement's Lean reading diverge from its exact human reading, construct by construct?"
+  },
+  {
+    "id": "rounding_conventions_agree_on_domains",
+    "lean": [
+      "Toy.Junk.quotient_conventions_agree_of_dvd",
+      "Toy.Junk.remainder_conventions_agree_of_nonneg",
+      "Toy.Junk.rounding_conventions_agree_on_domains"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "Re-derivation from Lean core lemmas (Int.tdiv_eq_ediv_of_dvd, Int.fdiv_eq_ediv_of_dvd, Int.tmod_eq_emod_of_nonneg, Int.fmod_eq_emod_of_nonneg).",
+    "plain_claim": "For all integers n and d, with / and % Lean's default (Euclidean) operators: if d | n then Int.tdiv n d = n / d and Int.fdiv n d = n / d (no d != 0 hypothesis is used); if 0 <= n and 0 <= d then Int.tmod n d = n % d and Int.fmod n d = n % d. In particular the quotients agree on DivDom (d != 0 and d | n) and the remainders on ModDom (0 <= n and 0 < d).",
+    "hypotheses": [
+      {
+        "name": "h : d | n (quotient_conventions_agree_of_dvd)",
+        "purpose": "Without divisibility the quotient conventions can differ.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_quotient_conventions_not_dvd",
+        "counterexample_class": "one integer pair, n = -7, d = 2"
+      },
+      {
+        "name": "hn : 0 <= n (remainder_conventions_agree_of_nonneg)",
+        "purpose": "With a negative dividend the truncating remainder can differ.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_remainder_conventions_neg_dividend",
+        "counterexample_class": "one integer pair with 0 <= d, n = -7, d = 2"
+      },
+      {
+        "name": "hd : 0 <= d (remainder_conventions_agree_of_nonneg)",
+        "purpose": "With a negative divisor the flooring remainder can differ.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_remainder_conventions_neg_divisor",
+        "counterexample_class": "one integer pair with 0 <= n, n = 7, d = -2"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "(3 : Int) | 6 and (2 : Int) | -4; (0 : Int) <= 7 and (0 : Int) <= 2; DivDom 6 3 and ModDom 7 2 (on Int) hold.",
+    "nonvacuity_witness_lean": [
+      "Toy.Junk.nv_quotient_conventions_agree_of_dvd",
+      "Toy.Junk.nv_remainder_conventions_agree_of_nonneg",
+      "Toy.Junk.DivDom_pos",
+      "Toy.Junk.ModDom_pos"
+    ],
+    "non_claims": [
+      "Neither DivDom nor ModDom is the largest agreement set: the quotients Int.tdiv n d and n / d coincide iff 0 <= n or d | n or d = 0, and Int.fdiv n d and n / d iff 0 <= d or d | n (for instance at n = 7, d = 2, outside DivDom); the remainders likewise (Toy.Junk.restate_named_int_division).",
+      "Does not justify reading / as exact division; what it shows is that the domains used by the total semantics hide no choice of rounding convention."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/DivMod/Lemmas.lean (blob 99da2d83e13e782fb6ab3304b39321ded95e3737): Int.tdiv_eq_ediv (line 223), Int.fdiv_eq_ediv (line 265), Int.tdiv_eq_ediv_of_dvd (line 323), Int.fdiv_eq_ediv_of_dvd (line 326), Int.fmod_eq_emod_of_nonneg (line 418), Int.fmod_eq_emod (line 421), Int.tmod_eq_emod_of_nonneg (line 431), Int.tmod_eq_emod (line 434).",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/DivMod/Basic.lean (blob 855635fb1ddc652debd9b4f843ecd546ef94dee9): module comment 'There are three main conventions for integer division, referred here as the E, F, T rounding conventions. All three pairs satisfy the identity x % y + (x / y) * y = x unconditionally, and satisfy x / 0 = 0 and x % 0 = x'; the default / and % instances use Int.ediv and Int.emod (E-rounding, 0 <= emod x y < natAbs y for y != 0); Int.div and Int.mod were removed in December 2024.",
+      "Daan Leijen, 'Division and Modulus for Computer Scientists', note, University of Utrecht, December 3, 2001, https://www.microsoft.com/en-us/research/publication/division-and-modulus-for-computer-scientists/, Section 1.2 (Euclidean division: q in Z, D = d*q + r, 0 <= r < |d|, conditions that presuppose d != 0, attributed to Boute 1992); Section 1 reviews truncated and floored division."
+    ],
+    "design_question": "Do the domains on which the total semantics is fixed silently commit to a rounding convention?"
+  },
+  {
+    "id": "trap_fin_wraparound",
+    "lean": [
+      "Toy.Junk.trap_fin_wrap",
+      "Toy.Junk.trap_fin_numeral_wraps_before_bound"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "Ground evaluations of Lean core Fin operations documented in the cited docstrings.",
+    "plain_claim": "Fin wrap-around (Lean core): (3 : Fin 5) + 4 = 2; (3 : Fin 5).val + (4 : Fin 5).val is not ((3 : Fin 5) + 4).val; ((2 : Fin 5) - 3).val = 4; and (7 : Fin 5).val = 2. In Fin 3 the numeral 4 denotes the element with value 1, (4 : Fin 3).val = 1, so (1 : Fin 3).val + (4 : Fin 3).val < 3 holds while ((1 : Fin 3) + 4).val is not the natural number 1 + 4.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "No hypotheses and no parameters (vacuous): trap_fin_wrap and trap_fin_numeral_wraps_before_bound are closed Lean-core propositions about Fin 5 and Fin 3. The degenerate modulus n = 0 does not arise (Fin 0 has no elements).",
+    "non_claims": [
+      "Fin n is outside the toy language; the agreement, guard and quantifier results say nothing about Fin arithmetic.",
+      "Wrap-around is the documented meaning of Fin addition and subtraction (modulo n); it is a trap for a reader who reads + on Fin n as exact natural-number addition, not for one who reads it modulo n."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Fin/Basic.lean (blob 6fee3ab2eaacf1b76de02ea7f7880f29fbac8294): Fin.add (line 90) 'Addition modulo n'; Fin.sub (line 113) 'Subtraction modulo n'; Fin.ofNat (line 54) 'Returns a modulo n as a Fin n', used by the numeral instance Fin.instOfNat (line 245).",
+      "Lean Prover Community, 'Common Lean Pitfalls', https://leanprover-community.github.io/extras/pitfalls.html: sections 'Division by 0' ('In Lean, n / 0 = 0'), 'Natural number subtraction' ('Subtraction of natural numbers truncates at 0') and 'Wrapping arithmetic in Fin' ('Arithmetic in Fin wraps around if it overflows or underflows')."
+    ],
+    "design_question": "Which constructs make a statement's Lean reading diverge from its exact human reading, construct by construct?"
+  },
+  {
+    "id": "trap_cast_placement_and_toNat",
+    "lean": [
+      "Toy.Junk.trap_cast_placement",
+      "Toy.Junk.natCast_sub_eq_iff_le",
+      "Toy.Junk.trap_toNat_neg"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "Ground evaluations and a restatement of Lean core's Int.ofNat_sub.",
+    "plain_claim": "Cast placement, for each connective semantics: the Int formula with the Nat subtraction inside the cast, (((0 : Nat) - 1 : Nat) : Int) = ((0 : Nat) : Int) - ((1 : Nat) : Int) (fCastPlacement01), is false in Lean, undefined under partialNat and true under intValued; in the toy, at every environment the Lean value of (a b : Nat), ((a - b : Nat) : Int) = (a : Int) - (b : Int) (fCastPlacement) is decide (b <= a); and in Lean core, for all a b : Nat, ((a - b : Nat) : Int) = (a : Int) - (b : Int) iff b <= a. For each connective semantics and reading, (-3 : Int).toNat = 0 (fToNatNeg) is true in Lean, false for oneJ and human-undefined.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). trap_cast_placement quantifies over c : Conn and trap_toNat_neg over c : Conn and r : SubReading, all inhabited; the quantifier over environments rho inside trap_cast_placement is part of its conclusion. natCast_sub_eq_iff_le (a b : Nat) is a biconditional without premises, and both of its sides take both truth values: at a = 1, b = 0 the cast equation holds (0 <= 1), and at a = 0, b = 1 it fails (NOT (1 <= 0)).",
+    "non_claims": [
+      "The toy does not model where Lean's elaborator inserts coercions; which of the two cast placements a given Lean source statement elaborates to must be checked in Lean.",
+      "The first Lean value rests on truncated subtraction inside the cast ((0 : Nat) - 1 is 0 before it is cast), and (-3 : Int).toNat = 0 on the truncation of negative integers to 0. Readers bring a convention, not the absence of one: integer subtraction (the cast equation holds, as in the intValued reading), subtraction that panics below zero (no value; the closest toy outcome is the partialNat value, undefined), or wrapping unsigned subtraction followed by a widening cast (the cast of the largest machine value); for Int.toNat, an error, a saturating conversion (which also gives 0 here) or a bit-reinterpreting conversion. Wrapping and reinterpreting conversions are not modeled, and no relation to any language's semantics is proved (modeling bridge; not proved here)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/Lemmas.lean (blob be4123f91d766b8563c965e72e9f96010dfbee61): Int.ofNat_sub (line 346) '((n - m : Nat) : Int) = n - m' under m <= n.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Prelude.lean (blob 66af67237683d3c7f8230bcf473c0871e67749a2): Nat.sub (docstring at line 2111) 'Subtraction of natural numbers, truncated at 0'; Nat.div (docstring lines 2170-2184) 'Division by 0 returns 0 ... sometimes called floor division'; Nat.modCore (docstring lines 2202-2214, definition at line 2216) 'When the divisor is 0, the result is the dividend rather than an error'.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/Basic.lean (blob 13eb3c86d79160bb9bda2edd33772d6d4439ce0c): Int.toNat 'Negative numbers are converted to 0'."
+    ],
+    "design_question": "Which constructs make a statement's Lean reading diverge from its exact human reading, construct by construct?"
+  },
+  {
+    "id": "trap_numeral_typing",
+    "lean": "Toy.Junk.trap_numeral_typing",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "Ground evaluations plus a check of Lean core's default numeral instance.",
+    "plain_claim": "Numeral typing, for each connective semantics and reading: (2 : Nat) - 3 < 0 (fNumeralNat) is false in Lean and (2 : Int) - 3 < 0 (fNumeralInt) is true in Lean; in the human readings the Int version is true and the Nat version is undefined under partialNat and true under intValued. In Lean core the unannotated propositions NOT (2 - 3 < 0) and 2 - 3 = 0, whose numerals elaborate at Nat by default, are provable (both are false at Int, where (2 : Int) - 3 < 0 holds), and HEq (2 - 3) ((2 : Nat) - 3) holds for the unannotated term 2 - 3, so that term has type Nat (heterogeneous equality implies equal types, by Lean core's type_eq_of_heq).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). trap_numeral_typing quantifies over c : Conn and r : SubReading, both inhabited; its formulas are closed and evaluated at Env.zero, and its Lean-core conjuncts are closed propositions.",
+    "non_claims": [
+      "The toy does not model numeral defaulting; the unannotated conjuncts are checked directly in Lean core v4.34.1, where the default numeral instance is instOfNatNat.",
+      "The Nat value rests on truncated subtraction, (2 : Nat) - 3 = 0. A reader who brings integer subtraction expects 2 - 3 < 0 to hold (as it does at Int and in the intValued reading); one who brings subtraction that panics below zero expects no value; one who brings wrapping unsigned subtraction expects a large positive value, so that 2 - 3 < 0 and 2 - 3 = 0 are both false. Wrapping subtraction is not modeled (modeling bridge; not proved here)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Prelude.lean (blob 66af67237683d3c7f8230bcf473c0871e67749a2): instance instOfNatNat (lines 1280-1281) carries the attribute @[default_instance 100], so a numeral whose type is not otherwise determined elaborates at Nat.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Prelude.lean (blob 66af67237683d3c7f8230bcf473c0871e67749a2): Nat.sub (docstring at line 2111) 'Subtraction of natural numbers, truncated at 0'; Nat.div (docstring lines 2170-2184) 'Division by 0 returns 0 ... sometimes called floor division'; Nat.modCore (docstring lines 2202-2214, definition at line 2216) 'When the divisor is 0, the result is the dividend rather than an error'.",
+      "Lean Prover Community, 'Common Lean Pitfalls', https://leanprover-community.github.io/extras/pitfalls.html: sections 'Division by 0' ('In Lean, n / 0 = 0'), 'Natural number subtraction' ('Subtraction of natural numbers truncates at 0') and 'Wrapping arithmetic in Fin' ('Arithmetic in Fin wraps around if it overflows or underflows')."
+    ],
+    "design_question": "Which constructs make a statement's Lean reading diverge from its exact human reading, construct by construct?"
+  },
+  {
+    "id": "guarded_fragment_not_closed_under_lean_equivalences",
+    "lean": [
+      "Toy.Junk.ce_guarded_not_closed_under_and_comm",
+      "Toy.Junk.ce_guarded_not_closed_under_contrapose"
+    ],
+    "lean_names": [
+      "Toy.Junk.seq_tables"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_rationale": "The left-to-right well-definedness operator L is known to be stricter than the symmetric operator D (Darvas, Mehta and Rudich 2008); these are concrete instances for the checker guarded.",
+    "plain_claim": "The set of formulas accepted by the syntactic checker guarded is not closed under rewrites that are equivalences in Lean's reading: with a b : Nat, b <= a AND a - b + b = a (fGuardFirst) is accepted while a - b + b = a AND b <= a (fGuardSecond) is rejected, and b <= a -> a - b + b = a (fSubAddCancelGuarded) is accepted while its contrapositive NOT (a - b + b = a) -> NOT (b <= a) (fContrapositive) is rejected, although each pair has the same total value under every junk record at every environment.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete formulas; no hypotheses (vacuous).",
+    "positive_control_lean": "Toy.Junk.definedEverywhere_kleene_closed",
+    "non_claims": [
+      "Concerns the checker's verdict, not semantic definedness. Whether a sound checker can restore closure depends on the connective semantics: under sequential connectives even the semantic class of everywhere-defined formulas fails closure under both rewrites (Toy.Junk.ce_seq_not_closed), so no checker sound for sequential connectives can accept both members of either pair; under strong Kleene connectives the class of everywhere-defined formulas is closed under both rewrites (Toy.Junk.definedEverywhere_kleene_closed), and a symmetric checker that lets later conjuncts or negated consequents supply facts is not defined or examined here.",
+      "Says nothing about closure under other Lean equivalences (associativity, distributivity, de Morgan) beyond the two shown."
+    ],
+    "prior_art": [
+      "Adam Darvas, Farhad Mehta and Arsenii Rudich, 'Efficient Well-Definedness Checking', in Automated Reasoning: 4th International Joint Conference, IJCAR 2008, LNCS 5195, Springer, 2008, pp. 100-115, DOI 10.1007/978-3-540-71070-7_8. Requiring well-definedness conditions to be proven 'allows us to reason in a two-valued logic even if the underlying specification language has a three-valued semantics' (abstract); the paper contrasts a well-definedness operator D corresponding to strong Kleene connectives with a simpler, stricter left-to-right operator L, with L(phi1 AND phi2) = L(phi1) AND (phi1 => L(phi2)).",
+      "John McCarthy, 'A basis for a mathematical theory of computation', in P. Braffort and D. Hirschberg (eds.), Computer Programming and Formal Systems, Studies in Logic and the Foundations of Mathematics, North-Holland, 1963, pp. 33-70, DOI 10.1016/S0049-237X(08)72018-4. Defines p AND q = (p -> q, T -> F) and p OR q = (p -> T, T -> q) by conditional expressions, and remarks that if p is false and q is undefined then p AND q is false and q AND p is undefined. These are the sequential connectives of Conn.seq (seq_tables)."
+    ],
+    "design_question": "Does the position of a guard matter, and is the set of formulas accepted by the guard checker stable under rewrites that are equivalences in Lean?"
+  },
+  {
+    "id": "kleene_definedness_closed_under_comm_and_contraposition",
+    "lean": [
+      "Toy.Junk.definedEverywhere_kleene_closed",
+      "Toy.Junk.hEval_kleene_and_comm",
+      "Toy.Junk.hEval_kleene_contrapose"
+    ],
+    "lean_names": [
+      "Toy.Junk.kleene_tables",
+      "Toy.Junk.kleene_quantifier_tables"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "Restates the symmetry of Kleene's strong conjunction (minimum) and the equivalence of an implication and its contrapositive under the strong tables.",
+    "plain_claim": "Under strong Kleene connectives, for either reading of natural subtraction, all toy formulas phi and psi and every environment, the human values of phi AND psi and psi AND phi coincide, as do those of phi -> psi and NOT psi -> NOT phi; hence phi AND psi is defined everywhere iff psi AND phi is, and phi -> psi is defined everywhere iff NOT psi -> NOT phi is.",
+    "hypotheses": [
+      {
+        "name": "connectives = strong Kleene",
+        "purpose": "Sequential connectives are not commutative on undefined values.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_seq_not_closed",
+        "counterexample_class": "sequential connectives, partialNat, the formulas (a b : Nat), a - b + b = a AND b <= a (fGuardSecond) and (a b : Nat), NOT (a - b + b = a) -> NOT (b <= a) (fContrapositive)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses on phi and psi; for instance (a b : Nat), a - b + b = a AND b <= a (fGuardSecond) is defined everywhere under strong Kleene.",
+    "nonvacuity_witness_lean": "Toy.Junk.definedEverywhere_kleene_guardSecond",
+    "non_claims": [
+      "Does not extend to the syntactic checker, which is closed under neither rewrite (Toy.Junk.ce_guarded_not_closed_under_and_comm, Toy.Junk.ce_guarded_not_closed_under_contrapose)."
+    ],
+    "prior_art": [
+      "S. C. Kleene, Introduction to Metamathematics, North-Holland / P. Noordhoff / Van Nostrand, 1952, section 64 ('The 3-valued logic'): the strong three-valued connectives with truth values t, f, u, under which conjunction is the minimum and disjunction the maximum in the order f < u < t (as summarized in the Stanford Encyclopedia of Philosophy entry 'Many-Valued Logic', https://plato.stanford.edu/entries/logic-manyvalued/). These are the connectives of Conn.kleene (kleene_tables); the quantifiers tvAll and tvEx are the corresponding strong quantifiers (kleene_quantifier_tables).",
+      "Adam Darvas, Farhad Mehta and Arsenii Rudich, 'Efficient Well-Definedness Checking', in Automated Reasoning: 4th International Joint Conference, IJCAR 2008, LNCS 5195, Springer, 2008, pp. 100-115, DOI 10.1007/978-3-540-71070-7_8. Requiring well-definedness conditions to be proven 'allows us to reason in a two-valued logic even if the underlying specification language has a three-valued semantics' (abstract); the paper contrasts a well-definedness operator D corresponding to strong Kleene connectives with a simpler, stricter left-to-right operator L, with L(phi1 AND phi2) = L(phi1) AND (phi1 => L(phi2)).",
+      "Matthias Schmalz, Formalizing the Logic of Event-B: Partial Functions, Definitional Extensions, and Automated Theorem Proving, doctoral thesis, Diss. ETH No. 20516, ETH Zurich, 2012, DOI 10.3929/ethz-a-007577749: gives Event-B's logic, including its well-definedness operator D, a semantics by embedding into higher-order logic, discusses Kleene semantics for partial formulas, and checks a substantial part of the soundness proof in Isabelle/HOL."
+    ],
+    "design_question": "Does the position of a guard matter, and is the set of formulas accepted by the guard checker stable under rewrites that are equivalences in Lean?"
+  },
+  {
+    "id": "sequential_connectives_break_closure",
+    "lean": [
+      "Toy.Junk.ce_seq_and_comm_changes_definedness",
+      "Toy.Junk.ce_seq_contrapose_changes_definedness",
+      "Toy.Junk.ce_seq_not_closed",
+      "Toy.Junk.ce_seq_not_closed_toNat"
+    ],
+    "lean_names": [
+      "Toy.Junk.seq_defined_intValued",
+      "Toy.Junk.seq_tables"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "Instances of McCarthy's remark that sequential conjunction is not commutative on undefined values.",
+    "plain_claim": "With sequential (McCarthy-style) connectives and the partialNat reading, at a = 0, b = 1 (a b : Nat) the formula b <= a AND a - b + b = a (fGuardFirst) is defined (false) while a - b + b = a AND b <= a (fGuardSecond) is undefined, and b <= a -> a - b + b = a (fSubAddCancelGuarded) is defined (true) while its contrapositive (fContrapositive) is undefined; the first and third are defined everywhere and the second and fourth are not. With sequential connectives and either reading, (x : Int), 0 <= x AND x.toNat = x.toNat (fToNatGuardFirst) and (x : Int), 0 <= x -> x.toNat = x.toNat (fToNatImp) are defined everywhere while their commuted and contraposed forms (fToNatGuardSecond, fToNatContrapose) are undefined at x = -1. So with sequential connectives the class of everywhere-defined formulas is closed under neither commutation of AND nor contraposition.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). ce_seq_and_comm_changes_definedness, ce_seq_contrapose_changes_definedness and ce_seq_not_closed have no parameters (connective semantics seq and reading partialNat fixed); ce_seq_not_closed_toNat quantifies over r : SubReading (inhabited by partialNat and intValued), with the connective semantics fixed to seq.",
+    "non_claims": [
+      "Under the intValued reading natural subtraction is always defined, so the Nat-subtraction formulas above are defined everywhere even with sequential connectives (Toy.Junk.seq_defined_intValued); the toNat formulas separate the connective semantics under both readings."
+    ],
+    "prior_art": [
+      "John McCarthy, 'A basis for a mathematical theory of computation', in P. Braffort and D. Hirschberg (eds.), Computer Programming and Formal Systems, Studies in Logic and the Foundations of Mathematics, North-Holland, 1963, pp. 33-70, DOI 10.1016/S0049-237X(08)72018-4. Defines p AND q = (p -> q, T -> F) and p OR q = (p -> T, T -> q) by conditional expressions, and remarks that if p is false and q is undefined then p AND q is false and q AND p is undefined. These are the sequential connectives of Conn.seq (seq_tables).",
+      "Adam Darvas, Farhad Mehta and Arsenii Rudich, 'Efficient Well-Definedness Checking', in Automated Reasoning: 4th International Joint Conference, IJCAR 2008, LNCS 5195, Springer, 2008, pp. 100-115, DOI 10.1007/978-3-540-71070-7_8. Requiring well-definedness conditions to be proven 'allows us to reason in a two-valued logic even if the underlying specification language has a three-valued semantics' (abstract); the paper contrasts a well-definedness operator D corresponding to strong Kleene connectives with a simpler, stricter left-to-right operator L, with L(phi1 AND phi2) = L(phi1) AND (phi1 => L(phi2))."
+    ],
+    "design_question": "Does the position of a guard matter, and is the set of formulas accepted by the guard checker stable under rewrites that are equivalences in Lean?"
+  },
+  {
+    "id": "restate_signed_difference_with_casts",
+    "lean": "Toy.Junk.restate_signedDiff_cast",
+    "lean_names": [
+      "Toy.Junk.ce_shallow_cast_nested_sub"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "A worked restatement for this toy language; the general practice of moving Nat subtraction to Int under casts is known (Lean core Int.ofNat_sub).",
+    "plain_claim": "For every connective semantics c, with the intValued reading fixed: for every junk record J and environment rho, the intValued human value of the Nat term a - b (a b : Nat, the Nat variables) is defined and equals the total value of the Int term (a : Int) - (b : Int); (a : Int) - (b : Int) + (b : Int) = (a : Int) (fSubAddCancelCast) is accepted by guarded and Lean-valid; and at every environment and for every junk record, the intValued human value of the trap (a b : Nat), a - b + b = a (fSubAddCancel) is defined and equals the total value of (a : Int) - (b : Int) + (b : Int) = (a : Int).",
+    "hypotheses": [
+      {
+        "name": "reading = intValued (fixed in the first and last conjuncts)",
+        "purpose": "Under partialNat, the Nat subtraction a - b is undefined when a < b.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_restate_signedDiff_partialNat",
+        "counterexample_class": "the partialNat reading at a = 0, b = 1, with J = leanJ"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses beyond the universally quantified c, J and rho; the statement fixes the reading intValued (vacuous).",
+    "non_claims": [
+      "Stated for the atomic Nat variables a, b and the single formula (a b : Nat), a - b + b = a; it says nothing about other formulas. Casting compound Nat subterms shallowly as (t : Int) - (u : Int) does not match the intValued reading when t or u contains a nested Nat subtraction: with t = (0 : Nat) - 1 and u = (0 : Nat), the intValued value of the Nat term t - u is -1 while Lean's value of ((0 - 1 : Nat) : Int) - ((0 : Nat) : Int) is 0 (Toy.Junk.ce_shallow_cast_nested_sub). Translating Nat formulas with quantifiers or % into Int needs explicit nonnegativity and domain guards (not proved here).",
+      "Concerns the toy cast; it does not address where Lean's elaborator places coercions in source statements."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/Lemmas.lean (blob be4123f91d766b8563c965e72e9f96010dfbee61): Int.ofNat_sub (line 346) '((n - m : Nat) : Int) = n - m' under m <= n."
+    ],
+    "design_question": "How should a statement be written so that its Lean reading and its exact human reading coincide?"
+  },
+  {
+    "id": "restate_exact_division_with_nonzero_divisor_guard",
+    "lean": [
+      "Toy.Junk.restate_dvd_div",
+      "Toy.Junk.hEval_dvdDiv",
+      "Toy.Junk.humanValid_dvdDiv_dividend_guard"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "A worked example of a guard antecedent (Gries and Schneider 1995, Section 4) in this toy language, with the exact undefinedness set computed.",
+    "plain_claim": "For every connective semantics c and reading r: (a b : Nat), b | a -> a / b * b = a (fDvdDiv) is Lean-valid and rejected by guarded; at every environment its human value is undefined if a = 0 and b = 0, and true otherwise; adding the premise not (b = 0) gives a formula (fDvdDivGuarded) that is accepted by guarded, Lean-valid and human-valid. The divisor guard is what the checker's division rule asks for, not what human validity needs: (a b : Nat), not (a = 0) -> b | a -> a / b * b = a (fDvdDivDividendGuard) is rejected by guarded, yet Lean-valid and human-valid, and human-true at a = 5, b = 0.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses beyond the universally quantified c and r (vacuous).",
+    "non_claims": [
+      "Does not claim that b != 0 is needed for the Lean-validity of the divisibility statement; it is not (first conjunct of restate_dvd_div, and Lean core's Nat.div_mul_cancel has no such hypothesis).",
+      "Does not identify a weakest guard in general; what it shows is that the undefinedness set of this one formula is the single point a = b = 0."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Nat/Dvd.lean (blob 996481d2e08458e4484f0b34480376711b7fb5dd): Nat.div_mul_cancel (line 110) 'm / n * n = m' under n | m, with no n != 0 hypothesis.",
+      "David Gries and Fred B. Schneider, 'Avoiding the undefined by underspecification', in J. van Leeuwen (ed.), Computer Science Today: Recent Trends and Developments, LNCS 1000, Springer, 1995, pp. 366-373, DOI 10.1007/BFb0015254. Section 4: all operations are total but the value of an expression need not be uniquely specified; theorems about an underspecified operation carry an antecedent describing where it is uniquely specified (example: y != 0 => y/y = 1); a formula is valid if it evaluates to true for every combination of values that can be assigned to its underspecified terms. Section 2 notes that under a strict extension with an undefined value, excluded middle fails."
+    ],
+    "design_question": "How should a statement be written so that its Lean reading and its exact human reading coincide?"
+  },
+  {
+    "id": "named_integer_division_characterization",
+    "lean": "Toy.Junk.restate_named_int_division",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_rationale": "Re-derivation from Lean core lemmas Int.tdiv_eq_ediv, Int.fdiv_eq_ediv, Int.tmod_eq_emod and Int.fmod_eq_emod.",
+    "plain_claim": "For all integers a and b, with / and % Lean's default Euclidean operators: Int.tdiv a b = a / b iff 0 <= a or b | a or b = 0; Int.fdiv a b = a / b iff 0 <= b or b | a; Int.tmod a b = a % b iff 0 <= a or b | a or b = 0; Int.fmod a b = a % b iff 0 <= b or b | a.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses (vacuous); at a = -7, b = 2 both sides of the tdiv clause are false (trap_int_rounding_values).",
+    "non_claims": [
+      "The b = 0 disjunct for tdiv and tmod is easy to miss: all three conventions give (a : Int) / 0 = 0 and (a : Int) % 0 = a in Lean core, so they agree at b = 0 even when 0 <= a and b | a both fail. This agreement comes from Lean core's convention; Boute (1992) and Leijen (2001) treat nonzero divisors, and programming languages in which division by zero traps or is undefined are not covered (modeling bridge, not proved here).",
+      "Characterizes agreement with the default operator; it does not say which convention a given statement should use."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/DivMod/Lemmas.lean (blob 99da2d83e13e782fb6ab3304b39321ded95e3737): Int.tdiv_eq_ediv (line 223), Int.fdiv_eq_ediv (line 265), Int.tdiv_eq_ediv_of_dvd (line 323), Int.fdiv_eq_ediv_of_dvd (line 326), Int.fmod_eq_emod_of_nonneg (line 418), Int.fmod_eq_emod (line 421), Int.tmod_eq_emod_of_nonneg (line 431), Int.tmod_eq_emod (line 434).",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Int/DivMod/Basic.lean (blob 855635fb1ddc652debd9b4f843ecd546ef94dee9): module comment 'There are three main conventions for integer division, referred here as the E, F, T rounding conventions. All three pairs satisfy the identity x % y + (x / y) * y = x unconditionally, and satisfy x / 0 = 0 and x % 0 = x'; the default / and % instances use Int.ediv and Int.emod (E-rounding, 0 <= emod x y < natAbs y for y != 0); Int.div and Int.mod were removed in December 2024.",
+      "Daan Leijen, 'Division and Modulus for Computer Scientists', note, University of Utrecht, December 3, 2001, https://www.microsoft.com/en-us/research/publication/division-and-modulus-for-computer-scientists/, Section 1.2 (Euclidean division: q in Z, D = d*q + r, 0 <= r < |d|, conditions that presuppose d != 0, attributed to Boute 1992); Section 1 reviews truncated and floored division.",
+      "Raymond T. Boute, 'The Euclidean definition of the functions div and mod', ACM Transactions on Programming Languages and Systems 14(2):127-144, 1992, DOI 10.1145/128861.128862 (Euclidean conditions as summarized in Leijen 2001; they presuppose a nonzero divisor)."
+    ],
+    "design_question": "How should a statement be written so that its Lean reading and its exact human reading coincide?"
+  },
+  {
+    "id": "restate_fin_addition_with_bound",
+    "lean": "Toy.Junk.restate_fin_add_of_lt",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "Re-derivation from Lean core's Fin.val_add.",
+    "plain_claim": "For every n and all a, b : Fin n, if a.val + b.val < n then (a + b).val = a.val + b.val.",
+    "hypotheses": [
+      {
+        "name": "h : a.val + b.val < n",
+        "purpose": "Without the bound, Fin addition wraps.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_restate_fin_add_bound",
+        "counterexample_class": "n = 5, a = 3, b = 4"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "(1 : Fin 5) and (2 : Fin 5) satisfy the bound: (1 : Fin 5).val + (2 : Fin 5).val < 5.",
+    "nonvacuity_witness_lean": "Toy.Junk.nv_restate_fin_add_of_lt",
+    "non_claims": [
+      "Fin n is outside the toy language; this is a Lean-core fact, not an instance of the guard theorem.",
+      "The bound inspects the already-reduced values of a and b: an operand written as an out-of-range numeral has wrapped before the bound is checked (in Fin 3, (1 : Fin 3).val + (4 : Fin 3).val < 3 holds while ((1 : Fin 3) + 4).val is not the natural number 1 + 4; Toy.Junk.trap_fin_numeral_wraps_before_bound).",
+      "Degenerate modulus: at n = 0 the statement holds vacuously, because Fin 0 has no elements (a.val < 0 is impossible); the non-vacuity witness is at n = 5 (Toy.Junk.nv_restate_fin_add_of_lt). Fin n arithmetic wraps modulo n (Toy.Junk.trap_fin_wrap), which matches a reader who brings wrapping machine arithmetic with modulus n and not one who reads + as natural-number addition."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Fin/Lemmas.lean (blob 4bda280b83da6927f2408516b4673669e7f548fe): Fin.val_add (line 361) '(a + b).val = (a.val + b.val) % n'.",
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Data/Fin/Basic.lean (blob 6fee3ab2eaacf1b76de02ea7f7880f29fbac8294): Fin.add (line 90) 'Addition modulo n'; Fin.sub (line 113) 'Subtraction modulo n'; Fin.ofNat (line 54) 'Returns a modulo n as a Fin n', used by the numeral instance Fin.instOfNat (line 245)."
+    ],
+    "design_question": "How should a statement be written so that its Lean reading and its exact human reading coincide?"
+  },
+  {
+    "id": "bounded_quantifier_guard_rule",
+    "lean": [
+      "Toy.Junk.ballNat_guardedIn_iff_of_not_mentionsNat",
+      "Toy.Junk.boundedCancel_guarded_leanValid_humanValid",
+      "Toy.Junk.ce_unbounded_cancel"
+    ],
+    "lean_names": [
+      "Toy.Junk.guarded_rejects_strict_bound",
+      "Toy.Junk.guarded_accepts_vacuous_guards"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_rationale": "The rule is the toy checker's instance of passing a bound as a guard fact to the quantified body; it is stated and proved for this checker and no other.",
+    "plain_claim": "For every list of facts Gamma, natural variable x, bound term t that does not mention x, and body phi: ballNat x t phi (for all x, x <= t -> phi) is accepted relative to Gamma iff t is guarded by Gamma and phi is guarded by the facts of Gamma that do not mention x together with the fact x <= t. For example, for every connective semantics and reading, for all a : Nat, for all b : Nat with b <= a, a - b + b = a (fBoundedCancel) is accepted by guarded, Lean-valid and human-valid; without the bound, for each connective semantics, for all a b : Nat, a - b + b = a (fUnboundedCancel) is rejected, Lean-false, undefined under partialNat and true under intValued.",
+    "hypotheses": [
+      {
+        "name": "hm : t.mentionsNat x = false (ballNat_guardedIn_iff_of_not_mentionsNat)",
+        "purpose": "The bound t lies inside the scope of the quantifier; if t mentions x, that occurrence refers to the bound x.",
+        "tightness": "tight",
+        "counterexample": "Toy.Junk.ce_ballNat_bound_mentions_var",
+        "counterexample_class": "Gamma = [a <= b], x = a (natural variable 0), t = b - a (Nat subtraction), body (0 : Nat) = 0"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The bound a does not mention b, and for all b : Nat with b <= a, a - b + b = a (Nat subtraction) is accepted with no facts.",
+    "nonvacuity_witness_lean": "Toy.Junk.nv_ballNat_guardedIn_iff",
+    "non_claims": [
+      "The rule concerns the checker's verdict; the semantic agreement for accepted formulas comes from Toy.Junk.hEval_eq_some_evalJ_of_guarded.",
+      "Bounds must be written as the fact x <= t: strict bounds such as b < a or b < a + 1 are rejected (Toy.Junk.guarded_rejects_strict_bound).",
+      "A bounded existential must be written with AND (exists b, b <= a AND phi), not with an implication (exists b, b <= a -> phi), which is accepted and valid by vacuity (Toy.Junk.guarded_accepts_vacuous_guards)."
+    ],
+    "prior_art": [
+      "Adam Darvas, Farhad Mehta and Arsenii Rudich, 'Efficient Well-Definedness Checking', in Automated Reasoning: 4th International Joint Conference, IJCAR 2008, LNCS 5195, Springer, 2008, pp. 100-115, DOI 10.1007/978-3-540-71070-7_8. Requiring well-definedness conditions to be proven 'allows us to reason in a two-valued logic even if the underlying specification language has a three-valued semantics' (abstract); the paper contrasts a well-definedness operator D corresponding to strong Kleene connectives with a simpler, stricter left-to-right operator L, with L(phi1 AND phi2) = L(phi1) AND (phi1 => L(phi2)).",
+      "David Gries and Fred B. Schneider, 'Avoiding the undefined by underspecification', in J. van Leeuwen (ed.), Computer Science Today: Recent Trends and Developments, LNCS 1000, Springer, 1995, pp. 366-373, DOI 10.1007/BFb0015254. Section 4: all operations are total but the value of an expression need not be uniquely specified; theorems about an underspecified operation carry an antecedent describing where it is uniquely specified (example: y != 0 => y/y = 1); a formula is valid if it evaluates to true for every combination of values that can be assigned to its underspecified terms. Section 2 notes that under a strict extension with an undefined value, excluded middle fails."
+    ],
+    "design_question": "Can quantification over a junk-dependent body change a statement's truth between the human and the Lean readings?"
+  },
+  {
+    "id": "flips_under_intValued",
+    "lean": [
+      "Toy.Junk.ce_intValued_forall_humanFalse_leanTrue",
+      "Toy.Junk.ce_intValued_forall_humanTrue_leanFalse"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "Concrete instances in this toy language.",
+    "plain_claim": "Under the intValued reading, for each connective semantics: for all a : Nat, 0 <= a - 1 (fAllZeroLeSubOne) is human-false (at a = 0) and Lean-true, and for all a b : Nat, a - b + b = a (fUnboundedCancel) is human-true and Lean-false.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). The sole parameter of ce_intValued_forall_humanFalse_leanTrue and of ce_intValued_forall_humanTrue_leanFalse is c : Conn (inhabited by kleene and seq); the reading is fixed to intValued, and the formulas are closed (their quantifiers are toy quantifiers inside the formula) and evaluated at Env.zero.",
+    "non_claims": [
+      "These flips come from the intValued reading of natural subtraction, not from quantification as such: quantifier-free instances already disagree ((2 : Nat) - 3 < 0, Toy.Junk.ce_agreement_intValued; (a b : Nat), a - b + b = a, human-valid under intValued and not Lean-valid, Toy.Junk.ce_intValued_humanValid_not_leanValid).",
+      "Under partialNat no flip occurs in the toy language (Toy.Junk.no_flip_partialNat); a rational-valued reading of / would produce flips such as (1 : Nat) / 2 = 0 read with the quotient of 1 by 2 denoting one half (not modeled; not proved here).",
+      "Both Lean values rest on truncated subtraction (a - 1 = 0 at a = 0, and a - b = 0 when a < b). Readers bring a convention, not the absence of one: integer subtraction (the intValued reading used here), subtraction that panics below zero (no value at a = 0, or where a < b), or wrapping unsigned subtraction, under which 0 <= a - 1 holds trivially and a - b + b = a holds because the wrap-around cancels. Wrapping subtraction is not modeled (modeling bridge; not proved here)."
+    ],
+    "prior_art": [
+      "Lean 4 core, leanprover/lean4 tag v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52, src/Init/Prelude.lean (blob 66af67237683d3c7f8230bcf473c0871e67749a2): Nat.sub (docstring at line 2111) 'Subtraction of natural numbers, truncated at 0'; Nat.div (docstring lines 2170-2184) 'Division by 0 returns 0 ... sometimes called floor division'; Nat.modCore (docstring lines 2202-2214, definition at line 2216) 'When the divisor is 0, the result is the dividend rather than an error'.",
+      "Lean Prover Community, 'Common Lean Pitfalls', https://leanprover-community.github.io/extras/pitfalls.html: sections 'Division by 0' ('In Lean, n / 0 = 0'), 'Natural number subtraction' ('Subtraction of natural numbers truncates at 0') and 'Wrapping arithmetic in Fin' ('Arithmetic in Fin wraps around if it overflows or underflows')."
+    ],
+    "design_question": "Can quantification over a junk-dependent body change a statement's truth between the human and the Lean readings?"
+  },
+  {
+    "id": "undefined_to_lean_truth_under_partialNat",
+    "lean": [
+      "Toy.Junk.ce_partialNat_forall_undefined_leanTrue",
+      "Toy.Junk.ce_partialNat_exists_undefined_leanFalse",
+      "Toy.Junk.inexact_quotient_undefined_leanTrue"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "Concrete instances in this toy language.",
+    "plain_claim": "Under partialNat, for each connective semantics: for all a : Nat, a - (a + 1) = 0 (fAllSubSucc) is human-undefined (every instance is undefined), true in Lean and false for oneJ; and there exists a : Nat with NOT (a - (a + 1) = 0) (fExSubSuccNe) is human-undefined, false in Lean and true for oneJ. For each connective semantics and reading, (1 : Nat) / 2 = 0 (fOneDivTwo) and for all n : Nat, 2 < n -> 1 / n = 0 (fAllOneDivZero) are human-undefined and true in Lean.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No propositional hypotheses (vacuous). ce_partialNat_forall_undefined_leanTrue and ce_partialNat_exists_undefined_leanFalse quantify over c : Conn, with the reading fixed to partialNat; inexact_quotient_undefined_leanTrue quantifies over c : Conn and r : SubReading. Conn and SubReading are inhabited; the formulas are closed (their quantifiers are toy quantifiers inside the formula) and evaluated at Env.zero.",
+    "non_claims": [
+      "Does not show a human-false statement that is Lean-true under partialNat; in the toy language that is impossible (Toy.Junk.no_flip_partialNat).",
+      "The absence of flips holds within the toy language and under this package's reading of / as exact division (an inexact quotient is undefined, not false). For every connective semantics and reading, (1 : Nat) / 2 = 0 (fOneDivTwo) and for all n : Nat, 2 < n -> 1 / n = 0 (fAllOneDivZero) are human-undefined and Lean-true here (Toy.Junk.inexact_quotient_undefined_leanTrue); under a rational-valued human reading in which the quotient of 1 by 2 denotes one half they would be human-false and Lean-true (that reading is not modeled; not proved here). Outside the toy language, (3 : Fin 5) + 4 = 2 is Lean-true (Toy.Junk.trap_fin_wrap).",
+      "The Lean values of the first two formulas rest on truncated subtraction (a - (a + 1) = 0), and those of the last two on floor division ((1 : Nat) / 2 = 0). Readers bring a convention, not the absence of one: subtraction that panics below zero (no value, the partialNat outcome), wrapping unsigned subtraction (a - (a + 1) is the largest machine value, so the universal formula would be false and the existential true), or integer subtraction (a - (a + 1) = -1, with the same truth values). Wrapping subtraction is not modeled, and the integer-reading values of these two formulas are not proved here."
+    ],
+    "prior_art": [
+      "David Gries and Fred B. Schneider, 'Avoiding the undefined by underspecification', in J. van Leeuwen (ed.), Computer Science Today: Recent Trends and Developments, LNCS 1000, Springer, 1995, pp. 366-373, DOI 10.1007/BFb0015254. Section 4: all operations are total but the value of an expression need not be uniquely specified; theorems about an underspecified operation carry an antecedent describing where it is uniquely specified (example: y != 0 => y/y = 1); a formula is valid if it evaluates to true for every combination of values that can be assigned to its underspecified terms. Section 2 notes that under a strict extension with an undefined value, excluded middle fails.",
+      "Lean Prover Community, 'Common Lean Pitfalls', https://leanprover-community.github.io/extras/pitfalls.html: sections 'Division by 0' ('In Lean, n / 0 = 0'), 'Natural number subtraction' ('Subtraction of natural numbers truncates at 0') and 'Wrapping arithmetic in Fin' ('Arithmetic in Fin wraps around if it overflows or underflows')."
+    ],
+    "design_question": "Can quantification over a junk-dependent body change a statement's truth between the human and the Lean readings?"
+  }
+]

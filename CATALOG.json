@@ -45633,6 +45633,81 @@
         "compilers/dead-binding-narrowing-and-space"
       ]
     },
+    "junk-values-guarded-arithmetic-and-the-human-reading-of-total-operations": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0015254"
+          },
+          "name": "Avoiding the undefined by underspecification (Gries and Schneider, 1995)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-71070-7_8"
+          },
+          "name": "Efficient Well-Definedness Checking (Darvas, Mehta and Rudich, IJCAR 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.3929/ethz-a-007577749"
+          },
+          "name": "Formalizing the Logic of Event-B (Schmalz, doctoral thesis, ETH Zurich, 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0049-237X(08)72018-4"
+          },
+          "name": "A basis for a mathematical theory of computation (McCarthy, 1963)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/32.713327"
+          },
+          "name": "Subtypes for Specifications: Predicate Subtyping in PVS (Rushby, Owre and Shankar, 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/32.588534"
+          },
+          "name": "An Industrial Strength Theorem Prover for a Logic Based on Common Lisp (Kaufmann and Moore, 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1219092.1219095"
+          },
+          "name": "The Rational Numbers as an Abstract Data Type (Bergstra and Tucker, 2007)"
+        },
+        {
+          "identity": {
+            "dated": "2001-12-03",
+            "pdf": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/divmodnote-letter.pdf",
+            "url": "https://www.microsoft.com/en-us/research/publication/division-and-modulus-for-computer-scientists/"
+          },
+          "name": "Division and Modulus for Computer Scientists (Leijen, 2001)"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/mechanization",
+        "lean/core-arithmetic",
+        "verification",
+        "verification/formalized-results",
+        "verification/partial-functions",
+        "verification/well-definedness",
+        "pl",
+        "pl/three-valued-logic",
+        "pl/total-functions"
+      ]
+    },
     "jvm-bytecode-verification-jmm-causality-valhalla-loom-and-panama-ffi": {
       "observed_at": "2026-11-19",
       "subjects": [

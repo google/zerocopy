@@ -1,0 +1,2072 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Junk.AgreesWhereDefined": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.AgreesWhereDefined_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.AgreesWhereDefined_partialNat_trivial": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.AgreesWhereDefined_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.Conn": [],
+    "Toy.Junk.Conn.casesOn": [],
+    "Toy.Junk.Conn.ctorElim": [],
+    "Toy.Junk.Conn.ctorElimType": [],
+    "Toy.Junk.Conn.ctorIdx": [],
+    "Toy.Junk.Conn.kleene": [],
+    "Toy.Junk.Conn.kleene.elim": [],
+    "Toy.Junk.Conn.kleene.sizeOf_spec": [],
+    "Toy.Junk.Conn.noConfusion": [],
+    "Toy.Junk.Conn.noConfusionType": [],
+    "Toy.Junk.Conn.ofNat": [],
+    "Toy.Junk.Conn.ofNat_ctorIdx": [],
+    "Toy.Junk.Conn.rec": [],
+    "Toy.Junk.Conn.recOn": [],
+    "Toy.Junk.Conn.seq": [],
+    "Toy.Junk.Conn.seq.elim": [],
+    "Toy.Junk.Conn.seq.sizeOf_spec": [],
+    "Toy.Junk.DefinedEverywhere": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.DefinedEverywhere_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.DefinedEverywhere_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.DivDom": [],
+    "Toy.Junk.DivDom.eq_1": [],
+    "Toy.Junk.DivDom_neg": [
+      "propext"
+    ],
+    "Toy.Junk.DivDom_pos": [
+      "propext"
+    ],
+    "Toy.Junk.Env": [],
+    "Toy.Junk.Env.casesOn": [],
+    "Toy.Junk.Env.ctorIdx": [],
+    "Toy.Junk.Env.int": [],
+    "Toy.Junk.Env.mk": [],
+    "Toy.Junk.Env.mk.inj": [],
+    "Toy.Junk.Env.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Env.mk.noConfusion": [],
+    "Toy.Junk.Env.mk.sizeOf_spec": [],
+    "Toy.Junk.Env.nat": [],
+    "Toy.Junk.Env.noConfusion": [],
+    "Toy.Junk.Env.noConfusionType": [],
+    "Toy.Junk.Env.rec": [],
+    "Toy.Junk.Env.recOn": [],
+    "Toy.Junk.Env.setInt": [],
+    "Toy.Junk.Env.setInt.eq_1": [],
+    "Toy.Junk.Env.setNat": [],
+    "Toy.Junk.Env.setNat.eq_1": [],
+    "Toy.Junk.Env.zero": [],
+    "Toy.Junk.Env.zero.eq_1": [],
+    "Toy.Junk.FactsTrue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.FactsTrue.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.Formula": [],
+    "Toy.Junk.Formula.allInt": [],
+    "Toy.Junk.Formula.allInt.elim": [],
+    "Toy.Junk.Formula.allInt.inj": [],
+    "Toy.Junk.Formula.allInt.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.allInt.noConfusion": [],
+    "Toy.Junk.Formula.allInt.sizeOf_spec": [],
+    "Toy.Junk.Formula.allNat": [],
+    "Toy.Junk.Formula.allNat.elim": [],
+    "Toy.Junk.Formula.allNat.inj": [],
+    "Toy.Junk.Formula.allNat.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.allNat.noConfusion": [],
+    "Toy.Junk.Formula.allNat.sizeOf_spec": [],
+    "Toy.Junk.Formula.and": [],
+    "Toy.Junk.Formula.and.elim": [],
+    "Toy.Junk.Formula.and.inj": [],
+    "Toy.Junk.Formula.and.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.and.noConfusion": [],
+    "Toy.Junk.Formula.and.sizeOf_spec": [],
+    "Toy.Junk.Formula.below": [],
+    "Toy.Junk.Formula.brecOn": [],
+    "Toy.Junk.Formula.brecOn.eq": [],
+    "Toy.Junk.Formula.brecOn.go": [],
+    "Toy.Junk.Formula.casesOn": [],
+    "Toy.Junk.Formula.ctorElim": [],
+    "Toy.Junk.Formula.ctorElimType": [],
+    "Toy.Junk.Formula.ctorIdx": [],
+    "Toy.Junk.Formula.dvd": [],
+    "Toy.Junk.Formula.dvd.elim": [],
+    "Toy.Junk.Formula.dvd.inj": [],
+    "Toy.Junk.Formula.dvd.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.dvd.noConfusion": [],
+    "Toy.Junk.Formula.dvd.sizeOf_spec": [],
+    "Toy.Junk.Formula.eq": [],
+    "Toy.Junk.Formula.eq.elim": [],
+    "Toy.Junk.Formula.eq.inj": [],
+    "Toy.Junk.Formula.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.eq.noConfusion": [],
+    "Toy.Junk.Formula.eq.sizeOf_spec": [],
+    "Toy.Junk.Formula.exInt": [],
+    "Toy.Junk.Formula.exInt.elim": [],
+    "Toy.Junk.Formula.exInt.inj": [],
+    "Toy.Junk.Formula.exInt.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.exInt.noConfusion": [],
+    "Toy.Junk.Formula.exInt.sizeOf_spec": [],
+    "Toy.Junk.Formula.exNat": [],
+    "Toy.Junk.Formula.exNat.elim": [],
+    "Toy.Junk.Formula.exNat.inj": [],
+    "Toy.Junk.Formula.exNat.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.exNat.noConfusion": [],
+    "Toy.Junk.Formula.exNat.sizeOf_spec": [],
+    "Toy.Junk.Formula.facts": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.facts.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.facts.eq_2": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.facts.eq_3": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.facts.eq_4": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.facts.eq_5": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.facts.eq_6": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.facts.eq_7": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.facts.eq_def": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.facts.match_1": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_10": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_11": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_12": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_2": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_3": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_4": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_5": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_6": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_7": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_8": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_9": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.eq_def": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.guardedIn.match_1": [],
+    "Toy.Junk.Formula.imp": [],
+    "Toy.Junk.Formula.imp.elim": [],
+    "Toy.Junk.Formula.imp.inj": [],
+    "Toy.Junk.Formula.imp.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.imp.noConfusion": [],
+    "Toy.Junk.Formula.imp.sizeOf_spec": [],
+    "Toy.Junk.Formula.le": [],
+    "Toy.Junk.Formula.le.elim": [],
+    "Toy.Junk.Formula.le.inj": [],
+    "Toy.Junk.Formula.le.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.le.noConfusion": [],
+    "Toy.Junk.Formula.le.sizeOf_spec": [],
+    "Toy.Junk.Formula.lt": [],
+    "Toy.Junk.Formula.lt.elim": [],
+    "Toy.Junk.Formula.lt.inj": [],
+    "Toy.Junk.Formula.lt.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.lt.noConfusion": [],
+    "Toy.Junk.Formula.lt.sizeOf_spec": [],
+    "Toy.Junk.Formula.mentionsInt": [],
+    "Toy.Junk.Formula.mentionsInt.eq_1": [],
+    "Toy.Junk.Formula.mentionsInt.eq_10": [],
+    "Toy.Junk.Formula.mentionsInt.eq_11": [],
+    "Toy.Junk.Formula.mentionsInt.eq_12": [],
+    "Toy.Junk.Formula.mentionsInt.eq_2": [],
+    "Toy.Junk.Formula.mentionsInt.eq_3": [],
+    "Toy.Junk.Formula.mentionsInt.eq_4": [],
+    "Toy.Junk.Formula.mentionsInt.eq_5": [],
+    "Toy.Junk.Formula.mentionsInt.eq_6": [],
+    "Toy.Junk.Formula.mentionsInt.eq_7": [],
+    "Toy.Junk.Formula.mentionsInt.eq_8": [],
+    "Toy.Junk.Formula.mentionsInt.eq_9": [],
+    "Toy.Junk.Formula.mentionsInt.eq_def": [],
+    "Toy.Junk.Formula.mentionsNat": [],
+    "Toy.Junk.Formula.mentionsNat.eq_1": [],
+    "Toy.Junk.Formula.mentionsNat.eq_10": [],
+    "Toy.Junk.Formula.mentionsNat.eq_11": [],
+    "Toy.Junk.Formula.mentionsNat.eq_12": [],
+    "Toy.Junk.Formula.mentionsNat.eq_2": [],
+    "Toy.Junk.Formula.mentionsNat.eq_3": [],
+    "Toy.Junk.Formula.mentionsNat.eq_4": [],
+    "Toy.Junk.Formula.mentionsNat.eq_5": [],
+    "Toy.Junk.Formula.mentionsNat.eq_6": [],
+    "Toy.Junk.Formula.mentionsNat.eq_7": [],
+    "Toy.Junk.Formula.mentionsNat.eq_8": [],
+    "Toy.Junk.Formula.mentionsNat.eq_9": [],
+    "Toy.Junk.Formula.mentionsNat.eq_def": [],
+    "Toy.Junk.Formula.noConfusion": [],
+    "Toy.Junk.Formula.noConfusionType": [],
+    "Toy.Junk.Formula.not": [],
+    "Toy.Junk.Formula.not.elim": [],
+    "Toy.Junk.Formula.not.inj": [],
+    "Toy.Junk.Formula.not.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.not.noConfusion": [],
+    "Toy.Junk.Formula.not.sizeOf_spec": [],
+    "Toy.Junk.Formula.or": [],
+    "Toy.Junk.Formula.or.elim": [],
+    "Toy.Junk.Formula.or.inj": [],
+    "Toy.Junk.Formula.or.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Formula.or.noConfusion": [],
+    "Toy.Junk.Formula.or.sizeOf_spec": [],
+    "Toy.Junk.Formula.rec": [],
+    "Toy.Junk.Formula.recOn": [],
+    "Toy.Junk.HumanValid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.HumanValid_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.HumanValid_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.Junk": [],
+    "Toy.Junk.Junk.casesOn": [],
+    "Toy.Junk.Junk.ctorIdx": [],
+    "Toy.Junk.Junk.intDiv": [],
+    "Toy.Junk.Junk.intMod": [],
+    "Toy.Junk.Junk.mk": [],
+    "Toy.Junk.Junk.mk.inj": [],
+    "Toy.Junk.Junk.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Junk.mk.noConfusion": [],
+    "Toy.Junk.Junk.mk.sizeOf_spec": [],
+    "Toy.Junk.Junk.natDiv": [],
+    "Toy.Junk.Junk.natMod": [],
+    "Toy.Junk.Junk.natSub": [],
+    "Toy.Junk.Junk.noConfusion": [],
+    "Toy.Junk.Junk.noConfusionType": [],
+    "Toy.Junk.Junk.rec": [],
+    "Toy.Junk.Junk.recOn": [],
+    "Toy.Junk.Junk.toNat": [],
+    "Toy.Junk.JunkIndependent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.JunkIndependent_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.JunkIndependent_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.LeanValid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.LeanValid_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.LeanValid_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ModDom": [],
+    "Toy.Junk.ModDom.eq_1": [],
+    "Toy.Junk.ModDom_neg": [],
+    "Toy.Junk.ModDom_pos": [],
+    "Toy.Junk.Srt": [],
+    "Toy.Junk.Srt.casesOn": [],
+    "Toy.Junk.Srt.ctorElim": [],
+    "Toy.Junk.Srt.ctorElimType": [],
+    "Toy.Junk.Srt.ctorIdx": [],
+    "Toy.Junk.Srt.denote": [],
+    "Toy.Junk.Srt.dvdP": [],
+    "Toy.Junk.Srt.dvdP.eq_1": [],
+    "Toy.Junk.Srt.dvdP.eq_2": [],
+    "Toy.Junk.Srt.int": [],
+    "Toy.Junk.Srt.int.elim": [],
+    "Toy.Junk.Srt.int.sizeOf_spec": [],
+    "Toy.Junk.Srt.leP": [],
+    "Toy.Junk.Srt.leP.eq_1": [],
+    "Toy.Junk.Srt.leP.eq_2": [],
+    "Toy.Junk.Srt.ltP": [],
+    "Toy.Junk.Srt.ltP.eq_1": [],
+    "Toy.Junk.Srt.ltP.eq_2": [],
+    "Toy.Junk.Srt.nat": [],
+    "Toy.Junk.Srt.nat.elim": [],
+    "Toy.Junk.Srt.nat.sizeOf_spec": [],
+    "Toy.Junk.Srt.noConfusion": [],
+    "Toy.Junk.Srt.noConfusionType": [],
+    "Toy.Junk.Srt.ofNat": [],
+    "Toy.Junk.Srt.ofNat_ctorIdx": [],
+    "Toy.Junk.Srt.rec": [],
+    "Toy.Junk.Srt.recOn": [],
+    "Toy.Junk.Srt.toInt": [],
+    "Toy.Junk.Srt.toInt.eq_1": [],
+    "Toy.Junk.Srt.toInt.eq_2": [],
+    "Toy.Junk.Srt.toInt.match_1": [],
+    "Toy.Junk.Srt.toInt_int": [],
+    "Toy.Junk.Srt.toInt_nat": [],
+    "Toy.Junk.SubReading": [],
+    "Toy.Junk.SubReading.casesOn": [],
+    "Toy.Junk.SubReading.ctorElim": [],
+    "Toy.Junk.SubReading.ctorElimType": [],
+    "Toy.Junk.SubReading.ctorIdx": [],
+    "Toy.Junk.SubReading.intValued": [],
+    "Toy.Junk.SubReading.intValued.elim": [],
+    "Toy.Junk.SubReading.intValued.sizeOf_spec": [],
+    "Toy.Junk.SubReading.noConfusion": [],
+    "Toy.Junk.SubReading.noConfusionType": [],
+    "Toy.Junk.SubReading.ofNat": [],
+    "Toy.Junk.SubReading.ofNat_ctorIdx": [],
+    "Toy.Junk.SubReading.partialNat": [],
+    "Toy.Junk.SubReading.partialNat.elim": [],
+    "Toy.Junk.SubReading.partialNat.sizeOf_spec": [],
+    "Toy.Junk.SubReading.rec": [],
+    "Toy.Junk.SubReading.recOn": [],
+    "Toy.Junk.Term": [],
+    "Toy.Junk.Term.add": [],
+    "Toy.Junk.Term.add.elim": [],
+    "Toy.Junk.Term.add.inj": [],
+    "Toy.Junk.Term.add.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.add.noConfusion": [],
+    "Toy.Junk.Term.add.sizeOf_spec": [],
+    "Toy.Junk.Term.below": [],
+    "Toy.Junk.Term.brecOn": [],
+    "Toy.Junk.Term.brecOn.eq": [],
+    "Toy.Junk.Term.brecOn.go": [],
+    "Toy.Junk.Term.casesOn": [],
+    "Toy.Junk.Term.cast": [],
+    "Toy.Junk.Term.cast.elim": [],
+    "Toy.Junk.Term.cast.inj": [],
+    "Toy.Junk.Term.cast.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.cast.noConfusion": [],
+    "Toy.Junk.Term.cast.sizeOf_spec": [],
+    "Toy.Junk.Term.ctorElim": [],
+    "Toy.Junk.Term.ctorElimType": [],
+    "Toy.Junk.Term.ctorIdx": [],
+    "Toy.Junk.Term.div": [],
+    "Toy.Junk.Term.div.elim": [],
+    "Toy.Junk.Term.div.inj": [],
+    "Toy.Junk.Term.div.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.div.noConfusion": [],
+    "Toy.Junk.Term.div.sizeOf_spec": [],
+    "Toy.Junk.Term.guardedIn": [],
+    "Toy.Junk.Term.guardedIn.eq_1": [],
+    "Toy.Junk.Term.guardedIn.eq_10": [],
+    "Toy.Junk.Term.guardedIn.eq_11": [],
+    "Toy.Junk.Term.guardedIn.eq_12": [],
+    "Toy.Junk.Term.guardedIn.eq_13": [],
+    "Toy.Junk.Term.guardedIn.eq_2": [],
+    "Toy.Junk.Term.guardedIn.eq_3": [],
+    "Toy.Junk.Term.guardedIn.eq_4": [],
+    "Toy.Junk.Term.guardedIn.eq_5": [],
+    "Toy.Junk.Term.guardedIn.eq_6": [],
+    "Toy.Junk.Term.guardedIn.eq_7": [],
+    "Toy.Junk.Term.guardedIn.eq_8": [],
+    "Toy.Junk.Term.guardedIn.eq_9": [],
+    "Toy.Junk.Term.guardedIn.eq_def": [],
+    "Toy.Junk.Term.guardedIn.match_1": [],
+    "Toy.Junk.Term.guardedIn_filter_of_not_mentionsNat": [
+      "propext"
+    ],
+    "Toy.Junk.Term.guardedIn_mono": [
+      "propext"
+    ],
+    "Toy.Junk.Term.intLit": [],
+    "Toy.Junk.Term.intLit.elim": [],
+    "Toy.Junk.Term.intLit.inj": [],
+    "Toy.Junk.Term.intLit.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.intLit.noConfusion": [],
+    "Toy.Junk.Term.intLit.sizeOf_spec": [],
+    "Toy.Junk.Term.intVar": [],
+    "Toy.Junk.Term.intVar.elim": [],
+    "Toy.Junk.Term.intVar.inj": [],
+    "Toy.Junk.Term.intVar.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.intVar.noConfusion": [],
+    "Toy.Junk.Term.intVar.sizeOf_spec": [],
+    "Toy.Junk.Term.mentionsInt": [],
+    "Toy.Junk.Term.mentionsInt.eq_1": [],
+    "Toy.Junk.Term.mentionsInt.eq_10": [],
+    "Toy.Junk.Term.mentionsInt.eq_11": [],
+    "Toy.Junk.Term.mentionsInt.eq_2": [],
+    "Toy.Junk.Term.mentionsInt.eq_3": [],
+    "Toy.Junk.Term.mentionsInt.eq_4": [],
+    "Toy.Junk.Term.mentionsInt.eq_5": [],
+    "Toy.Junk.Term.mentionsInt.eq_6": [],
+    "Toy.Junk.Term.mentionsInt.eq_7": [],
+    "Toy.Junk.Term.mentionsInt.eq_8": [],
+    "Toy.Junk.Term.mentionsInt.eq_9": [],
+    "Toy.Junk.Term.mentionsInt.eq_def": [],
+    "Toy.Junk.Term.mentionsNat": [],
+    "Toy.Junk.Term.mentionsNat.eq_1": [],
+    "Toy.Junk.Term.mentionsNat.eq_10": [],
+    "Toy.Junk.Term.mentionsNat.eq_11": [],
+    "Toy.Junk.Term.mentionsNat.eq_2": [],
+    "Toy.Junk.Term.mentionsNat.eq_3": [],
+    "Toy.Junk.Term.mentionsNat.eq_4": [],
+    "Toy.Junk.Term.mentionsNat.eq_5": [],
+    "Toy.Junk.Term.mentionsNat.eq_6": [],
+    "Toy.Junk.Term.mentionsNat.eq_7": [],
+    "Toy.Junk.Term.mentionsNat.eq_8": [],
+    "Toy.Junk.Term.mentionsNat.eq_9": [],
+    "Toy.Junk.Term.mentionsNat.eq_def": [],
+    "Toy.Junk.Term.mod": [],
+    "Toy.Junk.Term.mod.elim": [],
+    "Toy.Junk.Term.mod.inj": [],
+    "Toy.Junk.Term.mod.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.mod.noConfusion": [],
+    "Toy.Junk.Term.mod.sizeOf_spec": [],
+    "Toy.Junk.Term.mul": [],
+    "Toy.Junk.Term.mul.elim": [],
+    "Toy.Junk.Term.mul.inj": [],
+    "Toy.Junk.Term.mul.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.mul.noConfusion": [],
+    "Toy.Junk.Term.mul.sizeOf_spec": [],
+    "Toy.Junk.Term.natLit": [],
+    "Toy.Junk.Term.natLit.elim": [],
+    "Toy.Junk.Term.natLit.inj": [],
+    "Toy.Junk.Term.natLit.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.natLit.noConfusion": [],
+    "Toy.Junk.Term.natLit.sizeOf_spec": [],
+    "Toy.Junk.Term.natVar": [],
+    "Toy.Junk.Term.natVar.elim": [],
+    "Toy.Junk.Term.natVar.inj": [],
+    "Toy.Junk.Term.natVar.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.natVar.noConfusion": [],
+    "Toy.Junk.Term.natVar.sizeOf_spec": [],
+    "Toy.Junk.Term.noConfusion": [],
+    "Toy.Junk.Term.noConfusionType": [],
+    "Toy.Junk.Term.rec": [],
+    "Toy.Junk.Term.recOn": [],
+    "Toy.Junk.Term.sub": [],
+    "Toy.Junk.Term.sub.elim": [],
+    "Toy.Junk.Term.sub.inj": [],
+    "Toy.Junk.Term.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.sub.noConfusion": [],
+    "Toy.Junk.Term.sub.sizeOf_spec": [],
+    "Toy.Junk.Term.toNat": [],
+    "Toy.Junk.Term.toNat.elim": [],
+    "Toy.Junk.Term.toNat.inj": [],
+    "Toy.Junk.Term.toNat.injEq": [
+      "propext"
+    ],
+    "Toy.Junk.Term.toNat.noConfusion": [],
+    "Toy.Junk.Term.toNat.sizeOf_spec": [],
+    "Toy.Junk.agreesWhereDefined_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ballNat": [],
+    "Toy.Junk.ballNat.eq_1": [],
+    "Toy.Junk.ballNat_guardedIn_iff_of_not_mentionsNat": [
+      "propext"
+    ],
+    "Toy.Junk.ballNat_unfold": [],
+    "Toy.Junk.boundedCancel_guarded_leanValid_humanValid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_agreement_intValued": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_agreement_undefined": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_agrees_not_junkIndependent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_ballNat_bound_mentions_var": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_guarded_not_closed_under_and_comm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_guarded_not_closed_under_contrapose": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_intValued_definedEverywhere_humanValid_not_leanValid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_intValued_forall_humanFalse_leanTrue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_intValued_forall_humanTrue_leanFalse": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_intValued_humanValid_not_leanValid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_junkIndependent_leanValid_undefined": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_junkIndependent_not_definedEverywhere": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_leanValid_not_humanValid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_not_humanValid_not_leanValid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_partialNat_exists_undefined_leanFalse": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_partialNat_forall_undefined_leanTrue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_quotient_conventions_not_dvd": [
+      "propext"
+    ],
+    "Toy.Junk.ce_remainder_conventions_neg_dividend": [],
+    "Toy.Junk.ce_remainder_conventions_neg_divisor": [],
+    "Toy.Junk.ce_restate_fin_add_bound": [
+      "propext"
+    ],
+    "Toy.Junk.ce_restate_signedDiff_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_seq_and_comm_changes_definedness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_seq_contrapose_changes_definedness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_seq_not_closed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_seq_not_closed_toNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_shallow_cast_nested_sub": [
+      "propext"
+    ],
+    "Toy.Junk.ce_unbounded_cancel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_unguarded_divZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_unguarded_junkDependent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_unguarded_leanValid_not_humanValid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.ce_zeroSubOne_junkDependent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.contains_of_mem": [
+      "propext"
+    ],
+    "Toy.Junk.definedEverywhere_kleene_closed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.definedEverywhere_kleene_guardSecond": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.definedEverywhere_of_guarded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.envAB": [],
+    "Toy.Junk.envAB.eq_1": [],
+    "Toy.Junk.envX": [],
+    "Toy.Junk.evalJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_10": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_11": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_12": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_3": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_4": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_5": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_6": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_7": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_8": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_9": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.eq_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ.match_1": [],
+    "Toy.Junk.evalJ_eq_of_hEval_eq_some_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalJ_leanJ_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.evalT": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_10": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_11": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_2": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_3": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_4": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_5": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_6": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_7": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_8": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_9": [
+      "propext"
+    ],
+    "Toy.Junk.evalT.eq_def": [
+      "propext"
+    ],
+    "Toy.Junk.evalT_leanJ": [
+      "propext"
+    ],
+    "Toy.Junk.evalT_neg": [
+      "propext"
+    ],
+    "Toy.Junk.evalT_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.fAllOneDivZero": [],
+    "Toy.Junk.fAllSubSucc": [],
+    "Toy.Junk.fAllSubSucc.eq_1": [],
+    "Toy.Junk.fAllZeroLeSubOne": [],
+    "Toy.Junk.fBoundedCancel": [],
+    "Toy.Junk.fCastPlacement": [],
+    "Toy.Junk.fCastPlacement01": [],
+    "Toy.Junk.fContradictoryGuard": [],
+    "Toy.Junk.fContrapositive": [],
+    "Toy.Junk.fDivZero": [],
+    "Toy.Junk.fDivZero.eq_1": [],
+    "Toy.Junk.fDivZeroEM": [],
+    "Toy.Junk.fDivZeroEM.eq_1": [],
+    "Toy.Junk.fDivZeroRefl": [],
+    "Toy.Junk.fDivZeroRefl.eq_1": [],
+    "Toy.Junk.fDvdDiv": [],
+    "Toy.Junk.fDvdDiv.eq_1": [],
+    "Toy.Junk.fDvdDivDividendGuard": [],
+    "Toy.Junk.fDvdDivDividendGuard.eq_1": [],
+    "Toy.Junk.fDvdDivGuarded": [],
+    "Toy.Junk.fDvdDivGuarded.eq_1": [],
+    "Toy.Junk.fExAndGuard": [],
+    "Toy.Junk.fExImpGuard": [],
+    "Toy.Junk.fExSubSuccNe": [],
+    "Toy.Junk.fExSubSuccNe.eq_1": [],
+    "Toy.Junk.fFiveDivZero": [],
+    "Toy.Junk.fFiveModZero": [],
+    "Toy.Junk.fFiveSubThree": [],
+    "Toy.Junk.fFiveSubThree.eq_1": [],
+    "Toy.Junk.fFloorDiv": [],
+    "Toy.Junk.fGuardFirst": [],
+    "Toy.Junk.fGuardFirst.eq_1": [],
+    "Toy.Junk.fGuardSecond": [],
+    "Toy.Junk.fGuardSecond.eq_1": [],
+    "Toy.Junk.fGuardedIntDiv": [],
+    "Toy.Junk.fGuardedIntDiv.eq_1": [],
+    "Toy.Junk.fGuardedIntMod": [],
+    "Toy.Junk.fGuardedIntMod.eq_1": [],
+    "Toy.Junk.fGuardedNatMod": [],
+    "Toy.Junk.fGuardedNatMod.eq_1": [],
+    "Toy.Junk.fGuardedToNat": [],
+    "Toy.Junk.fGuardedToNat.eq_1": [],
+    "Toy.Junk.fModDisjGuard": [],
+    "Toy.Junk.fMulZero": [],
+    "Toy.Junk.fMulZero.eq_1": [],
+    "Toy.Junk.fNatDivModId": [],
+    "Toy.Junk.fNatDivModId.eq_1": [],
+    "Toy.Junk.fNegSevenDivTwo": [],
+    "Toy.Junk.fNegSevenModTwo": [],
+    "Toy.Junk.fNumeralInt": [],
+    "Toy.Junk.fNumeralNat": [],
+    "Toy.Junk.fOneDivTwo": [],
+    "Toy.Junk.fOrNegGuardSubCancel": [],
+    "Toy.Junk.fSevenDivNegTwo": [],
+    "Toy.Junk.fSevenDivTwo": [],
+    "Toy.Junk.fSevenModNegTwo": [],
+    "Toy.Junk.fSevenModTwo": [],
+    "Toy.Junk.fSevenModTwo.eq_1": [],
+    "Toy.Junk.fStaleGuard": [],
+    "Toy.Junk.fSubAddCancel": [],
+    "Toy.Junk.fSubAddCancel.eq_1": [],
+    "Toy.Junk.fSubAddCancelCast": [],
+    "Toy.Junk.fSubAddCancelCast.eq_1": [],
+    "Toy.Junk.fSubAddCancelGuarded": [],
+    "Toy.Junk.fSubLeSelf": [],
+    "Toy.Junk.fSubLeSelf.eq_1": [],
+    "Toy.Junk.fToNatContrapose": [],
+    "Toy.Junk.fToNatGuardFirst": [],
+    "Toy.Junk.fToNatGuardSecond": [],
+    "Toy.Junk.fToNatImp": [],
+    "Toy.Junk.fToNatNeg": [],
+    "Toy.Junk.fTrivOr": [],
+    "Toy.Junk.fTrivOr.eq_1": [],
+    "Toy.Junk.fTruncSubCancel01": [],
+    "Toy.Junk.fTruncSubLe01": [],
+    "Toy.Junk.fUnboundedCancel": [],
+    "Toy.Junk.fUnboundedCancel.eq_1": [],
+    "Toy.Junk.fZeroSubOne": [],
+    "Toy.Junk.fZeroSubOne.eq_1": [],
+    "Toy.Junk.factsTrue_append": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.factsTrue_facts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.facts_neg": [
+      "propext"
+    ],
+    "Toy.Junk.facts_pos": [
+      "propext"
+    ],
+    "Toy.Junk.floorJ": [],
+    "Toy.Junk.guarded": [
+      "propext"
+    ],
+    "Toy.Junk.guarded_accepts_vacuous_guards": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.guarded_branches_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.guarded_incomplete_defined": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.guarded_incomplete_disjunctive_guards": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.guarded_incomplete_junkIndependent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.guarded_neg": [
+      "propext"
+    ],
+    "Toy.Junk.guarded_pos": [
+      "propext"
+    ],
+    "Toy.Junk.guarded_rejects_strict_bound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hAtom": [
+      "propext"
+    ],
+    "Toy.Junk.hAtom.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.hAtom.eq_2": [
+      "propext"
+    ],
+    "Toy.Junk.hAtom_eq_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hDiv": [
+      "propext"
+    ],
+    "Toy.Junk.hDiv.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.hEval": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_10": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_11": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_12": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_3": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_4": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_5": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_6": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_7": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_8": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_9": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval.eq_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEvalT": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_10": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_11": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_2": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_3": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_4": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_5": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_6": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_7": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_8": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_9": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT.eq_def": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT_congr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEvalT_eq_of_guardedIn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEvalT_neg": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT_pos": [
+      "propext"
+    ],
+    "Toy.Junk.hEvalT_zeroOf": [
+      "propext"
+    ],
+    "Toy.Junk.hEval_congr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval_dvdDiv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval_dvdDiv.match_1_2": [],
+    "Toy.Junk.hEval_eq_some_evalJ_of_guarded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval_eq_some_evalJ_of_guardedIn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval_kleene_and_comm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval_kleene_contrapose": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hEval_subAddCancel_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hMod": [],
+    "Toy.Junk.hMod.eq_1": [],
+    "Toy.Junk.hSub": [],
+    "Toy.Junk.hSub.eq_1": [],
+    "Toy.Junk.hSub.eq_2": [],
+    "Toy.Junk.hSub.eq_3": [],
+    "Toy.Junk.hSub.match_1": [],
+    "Toy.Junk.hSub_nat_of_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.hToNat": [],
+    "Toy.Junk.hToNat.eq_1": [],
+    "Toy.Junk.humanValid_dvdDiv_dividend_guard": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.inexact_division_is_junk": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.inexact_quotient_undefined_leanTrue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.instDecidableDivDom": [
+      "propext"
+    ],
+    "Toy.Junk.instDecidableEqConn": [],
+    "Toy.Junk.instDecidableEqFormula": [],
+    "Toy.Junk.instDecidableEqFormula.decEq": [],
+    "Toy.Junk.instDecidableEqFormula.decEq.match_1": [],
+    "Toy.Junk.instDecidableEqSrt": [],
+    "Toy.Junk.instDecidableEqSubReading": [],
+    "Toy.Junk.instDecidableEqTerm": [],
+    "Toy.Junk.instDecidableEqTerm.decEq": [],
+    "Toy.Junk.instDecidableEqTerm.decEq.match_1": [],
+    "Toy.Junk.instDecidableModDom": [],
+    "Toy.Junk.instReprConn": [],
+    "Toy.Junk.instReprConn.repr": [],
+    "Toy.Junk.instReprConn.repr.match_1": [],
+    "Toy.Junk.instReprFormula": [
+      "propext"
+    ],
+    "Toy.Junk.instReprFormula.repr": [
+      "propext"
+    ],
+    "Toy.Junk.instReprFormula.repr.match_1": [],
+    "Toy.Junk.instReprSrt": [],
+    "Toy.Junk.instReprSrt.repr": [],
+    "Toy.Junk.instReprSrt.repr.match_1": [],
+    "Toy.Junk.instReprSubReading": [],
+    "Toy.Junk.instReprSubReading.repr": [],
+    "Toy.Junk.instReprSubReading.repr.match_1": [],
+    "Toy.Junk.instReprTerm": [
+      "propext"
+    ],
+    "Toy.Junk.instReprTerm.repr": [
+      "propext"
+    ],
+    "Toy.Junk.instReprTerm.repr.match_1": [],
+    "Toy.Junk.jDiv": [
+      "propext"
+    ],
+    "Toy.Junk.jDiv.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.jDiv.eq_2": [
+      "propext"
+    ],
+    "Toy.Junk.jMod": [],
+    "Toy.Junk.jMod.eq_1": [],
+    "Toy.Junk.jMod.eq_2": [],
+    "Toy.Junk.jSub": [],
+    "Toy.Junk.jSub.eq_1": [],
+    "Toy.Junk.jSub.eq_2": [],
+    "Toy.Junk.jToNat": [],
+    "Toy.Junk.jToNat.eq_1": [],
+    "Toy.Junk.junkIndependent_of_definedEverywhere_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.junkIndependent_of_guarded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.kleene_contrapositive_defined": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.kleene_quantifier_tables": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.kleene_quantifier_tables.match_1_1": [],
+    "Toy.Junk.kleene_tables": [
+      "propext"
+    ],
+    "Toy.Junk.leanEvalF": [],
+    "Toy.Junk.leanEvalF.eq_1": [],
+    "Toy.Junk.leanEvalF.eq_10": [],
+    "Toy.Junk.leanEvalF.eq_11": [],
+    "Toy.Junk.leanEvalF.eq_12": [],
+    "Toy.Junk.leanEvalF.eq_2": [],
+    "Toy.Junk.leanEvalF.eq_3": [],
+    "Toy.Junk.leanEvalF.eq_4": [],
+    "Toy.Junk.leanEvalF.eq_5": [],
+    "Toy.Junk.leanEvalF.eq_6": [],
+    "Toy.Junk.leanEvalF.eq_7": [],
+    "Toy.Junk.leanEvalF.eq_8": [],
+    "Toy.Junk.leanEvalF.eq_9": [],
+    "Toy.Junk.leanEvalF.eq_def": [],
+    "Toy.Junk.leanEvalF_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanEvalF_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanEvalT": [],
+    "Toy.Junk.leanEvalT.eq_1": [],
+    "Toy.Junk.leanEvalT.eq_10": [],
+    "Toy.Junk.leanEvalT.eq_11": [],
+    "Toy.Junk.leanEvalT.eq_12": [],
+    "Toy.Junk.leanEvalT.eq_13": [],
+    "Toy.Junk.leanEvalT.eq_14": [],
+    "Toy.Junk.leanEvalT.eq_15": [],
+    "Toy.Junk.leanEvalT.eq_16": [],
+    "Toy.Junk.leanEvalT.eq_2": [],
+    "Toy.Junk.leanEvalT.eq_3": [],
+    "Toy.Junk.leanEvalT.eq_4": [],
+    "Toy.Junk.leanEvalT.eq_5": [],
+    "Toy.Junk.leanEvalT.eq_6": [],
+    "Toy.Junk.leanEvalT.eq_7": [],
+    "Toy.Junk.leanEvalT.eq_8": [],
+    "Toy.Junk.leanEvalT.eq_9": [],
+    "Toy.Junk.leanEvalT.eq_def": [],
+    "Toy.Junk.leanEvalT.match_1": [],
+    "Toy.Junk.leanJ": [],
+    "Toy.Junk.leanJ.eq_1": [],
+    "Toy.Junk.leanJ_neg": [
+      "propext"
+    ],
+    "Toy.Junk.leanJ_pos": [
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fAllOneDivZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fAllSubSucc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fAllZeroLeSubOne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fBoundedCancel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fCastPlacement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fCastPlacement01": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fContradictoryGuard": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fContrapositive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fDivZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fDivZeroEM": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fDivZeroRefl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fDvdDiv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fDvdDivDividendGuard": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fDvdDivGuarded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fExAndGuard": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fExImpGuard": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fExSubSuccNe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fFiveDivZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fFiveModZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fFiveSubThree": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fFloorDiv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fGuardFirst": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fGuardSecond": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fGuardedIntDiv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fGuardedIntMod": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fGuardedNatMod": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fGuardedToNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fModDisjGuard": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fMulZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fNatDivModId": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fNegSevenDivTwo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fNegSevenModTwo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fNumeralInt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fNumeralNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fOneDivTwo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fOrNegGuardSubCancel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fSevenDivNegTwo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fSevenDivTwo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fSevenModNegTwo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fSevenModTwo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fStaleGuard": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fSubAddCancel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fSubAddCancelCast": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fSubAddCancelGuarded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fSubLeSelf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fToNatContrapose": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fToNatGuardFirst": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fToNatGuardSecond": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fToNatImp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fToNatNeg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fTrivOr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fTruncSubCancel01": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fTruncSubLe01": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fUnboundedCancel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanReading_fZeroSubOne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanValid_iff_humanValid_of_definedEverywhere_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanValid_iff_humanValid_of_guarded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.leanValid_of_humanValid_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.mem_of_contains": [
+      "propext"
+    ],
+    "Toy.Junk.natCast_sub_eq_iff_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.no_flip_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.no_flip_partialNat.match_1_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.no_flip_partialNat.match_1_3": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.nv_ballNat_guardedIn_iff": [
+      "propext"
+    ],
+    "Toy.Junk.nv_definedEverywhere_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.nv_evalJ_eq_of_hEval_eq_some_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.nv_guarded_subAddCancel": [
+      "propext"
+    ],
+    "Toy.Junk.nv_hEval_eq_some_false_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.nv_humanValid_partialNat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.nv_quotient_conventions_agree_of_dvd": [
+      "propext"
+    ],
+    "Toy.Junk.nv_remainder_conventions_agree_of_nonneg": [],
+    "Toy.Junk.nv_restate_fin_add_of_lt": [
+      "propext"
+    ],
+    "Toy.Junk.obind2": [
+      "propext"
+    ],
+    "Toy.Junk.obind2.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.obind2.eq_2": [
+      "propext"
+    ],
+    "Toy.Junk.obind2.match_1": [
+      "propext"
+    ],
+    "Toy.Junk.obind2_eq_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.oneJ": [],
+    "Toy.Junk.opAdd": [],
+    "Toy.Junk.opAdd.eq_1": [],
+    "Toy.Junk.opAdd.eq_2": [],
+    "Toy.Junk.opAdd.match_1": [],
+    "Toy.Junk.opMul": [],
+    "Toy.Junk.opMul.eq_1": [],
+    "Toy.Junk.opMul.eq_2": [],
+    "Toy.Junk.quotient_conventions_agree_of_dvd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.remainder_conventions_agree_of_nonneg": [
+      "propext"
+    ],
+    "Toy.Junk.restate_dvd_div": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.restate_fin_add_of_lt": [
+      "propext"
+    ],
+    "Toy.Junk.restate_named_int_division": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.restate_signedDiff_cast": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.restate_subAddCancel_guarded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.rounding_conventions_agree_on_domains": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.seq_defined_intValued": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.seq_tables": [
+      "propext"
+    ],
+    "Toy.Junk.toInt_dvd_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.toInt_eq_iff": [],
+    "Toy.Junk.toInt_evalT_of_hEvalT_partialNat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.toInt_jDiv_of_hDiv": [
+      "propext"
+    ],
+    "Toy.Junk.toInt_jMod_of_hMod": [
+      "propext"
+    ],
+    "Toy.Junk.toInt_jSub_of_hSub_partialNat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.toInt_jToNat_of_hToNat": [
+      "propext"
+    ],
+    "Toy.Junk.toInt_le_iff": [
+      "propext"
+    ],
+    "Toy.Junk.toInt_lt_iff": [
+      "propext"
+    ],
+    "Toy.Junk.toInt_nonneg_of_nat": [
+      "propext"
+    ],
+    "Toy.Junk.toInt_opAdd": [
+      "propext"
+    ],
+    "Toy.Junk.toInt_opMul": [
+      "propext"
+    ],
+    "Toy.Junk.trap_cast_placement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.trap_div_mod_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.trap_fin_numeral_wraps_before_bound": [
+      "propext"
+    ],
+    "Toy.Junk.trap_fin_wrap": [
+      "propext"
+    ],
+    "Toy.Junk.trap_floorDiv_exact": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.trap_int_rounding": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.trap_int_rounding_values": [],
+    "Toy.Junk.trap_numeral_typing": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.trap_toNat_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.trap_truncSub_addCancel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.trap_truncSub_le_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.truncJ": [],
+    "Toy.Junk.tvAll": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAll_eq_none_of": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAll_eq_none_of.match_1_1": [],
+    "Toy.Junk.tvAll_eq_none_of_not": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAll_eq_some_false": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAll_eq_some_false_of": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAll_eq_some_true": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAll_eq_some_true_of": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAll_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAll_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAll_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvAnd": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd.eq_2": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd.eq_3": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd.eq_4": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd.eq_5": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd.eq_6": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd.eq_7": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd.match_1": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd_eq_some_false": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd_eq_some_true": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd_kleene_comm": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd_some_false": [
+      "propext"
+    ],
+    "Toy.Junk.tvAnd_some_true_some": [
+      "propext"
+    ],
+    "Toy.Junk.tvEx": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvEx_eq_none_of": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvEx_eq_none_of.match_1_1": [],
+    "Toy.Junk.tvEx_eq_some_false": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvEx_eq_some_true": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvEx_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvEx_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvEx_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Junk.tvImp": [
+      "propext"
+    ],
+    "Toy.Junk.tvImp.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.tvImp_kleene_contrapose": [
+      "propext"
+    ],
+    "Toy.Junk.tvImp_neg": [
+      "propext"
+    ],
+    "Toy.Junk.tvImp_pos": [
+      "propext"
+    ],
+    "Toy.Junk.tvImp_some_false": [
+      "propext"
+    ],
+    "Toy.Junk.tvImp_some_true_some": [
+      "propext"
+    ],
+    "Toy.Junk.tvNot": [],
+    "Toy.Junk.tvNot.eq_1": [],
+    "Toy.Junk.tvNot_eq_some": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr.eq_1": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr.eq_2": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr.eq_3": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr.eq_4": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr.eq_5": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr.eq_6": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr.eq_7": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr.match_1": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr_eq_some_false": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr_eq_some_true": [
+      "propext"
+    ],
+    "Toy.Junk.tvOr_some_some": [
+      "propext"
+    ],
+    "Toy.Junk.tvRank": [],
+    "Toy.Junk.tvRank.eq_1": [],
+    "Toy.Junk.tvRank.eq_2": [],
+    "Toy.Junk.tvRank.eq_3": [],
+    "Toy.Junk.tvRank.match_1": [],
+    "Toy.Junk.tvRank_inj": [
+      "propext"
+    ],
+    "Toy.Junk.tv_neg": [
+      "propext"
+    ],
+    "Toy.Junk.tv_pos": [
+      "propext"
+    ],
+    "Toy.Junk.vA": [],
+    "Toy.Junk.vB": [],
+    "Toy.Junk.vX": [],
+    "Toy.Junk.vY": [],
+    "Toy.Junk.zeroOf": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
