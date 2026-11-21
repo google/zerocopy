@@ -2,7 +2,7 @@
 
 ## Summary
 
-This package is a self-contained, Mathlib-free Lean 4 development (namespace `Toy.MachInt`, Lean `v4.34.1`) of fixed-width unsigned and two's-complement signed integers over Lean core's `BitVec n`, with the side conditions under which machine arithmetic agrees with mathematical integer arithmetic. All 35 results below are kernel-checked with no `sorry` and only the standard axioms `propext`, `Classical.choice`, `Quot.sound`. Their connection to Rust is a separate, modeling-level claim (see Applicability and the `Basis: derived (modeling bridge)` lines in Findings).
+This package is a self-contained, Mathlib-free Lean 4 development (namespace `Toy.MachInt`, Lean `v4.34.1`) of fixed-width unsigned and two's-complement signed integers over Lean core's `BitVec n`, with the side conditions under which machine arithmetic agrees with mathematical integer arithmetic. All 35 results below are kernel-checked with no `sorry` and only the standard axioms `propext`, `Classical.choice`, `Quot.sound`. Their connection to Rust is a separate, modeling-level claim (see Applicability and the `Basis: derived (modeling bridge)` lines in Findings). Model–system relation: none proved (the refinement of Result 1 relates wrapping `BitVec n` evaluation to integer evaluation, both defined in the model; no theorem mentions a definition taken from Rust or `rustc`). These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's fixed-width integer types and operations or about `rustc`; the `rustc` runs in `support/` are cross-checks, not proofs.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
