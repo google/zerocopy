@@ -1,0 +1,693 @@
+{
+  "exp1_layout_and_llvm_ir": {
+    "layout_stdout": [
+      "Packed1 size=13 align=1 offsets=0,1,5",
+      "Packed2 size=14 align=2 offsets=0,2,6",
+      "Packed4 size=16 align=4 offsets=0,4,8",
+      "InnerAligned size=8 align=4 offsets=0,4",
+      "OuterPackedInnerAligned size=9 align=1 offsets=0,1",
+      "PackedNewtype size=8 align=1",
+      "AlignedNewtype size=8 align=8",
+      "OuterPacked2Dst_sizes 0=6 1=10 2=10 5=14"
+    ],
+    "llvm_ir": {
+      "O0": {
+        "pass_aligned_newtype": {
+          "header": "define i64 @pass_aligned_newtype(i64 %v) unnamed_addr #3 {",
+          "mem_ops": []
+        },
+        "pass_packed_newtype": {
+          "header": "define i64 @pass_packed_newtype(i64 %0) unnamed_addr #3 {",
+          "mem_ops": [
+            "store i64 %0, ptr %1, align 8",
+            "call void @llvm.memcpy.p0.p0.i64(ptr align 1 %v, ptr align 8 %1, i64 8, i1 false)",
+            "%_2 = load i64, ptr %v, align 1"
+          ]
+        },
+        "read_p1_u32": {
+          "header": "define i32 @read_p1_u32(ptr %p) unnamed_addr #4 {",
+          "mem_ops": [
+            "%_0 = load i32, ptr %0, align 1"
+          ]
+        },
+        "read_p1_ub_deref_raw": {
+          "header": "define i32 @read_p1_ub_deref_raw(ptr %p) unnamed_addr #4 personality ptr @rust_eh_personality {",
+          "mem_ops": [
+            "%_0 = load i32, ptr %raw, align 4"
+          ]
+        },
+        "read_p1_unaligned_raw": {
+          "header": "define i32 @read_p1_unaligned_raw(ptr %p) unnamed_addr #4 personality ptr @rust_eh_personality {",
+          "mem_ops": []
+        },
+        "read_p2_u32": {
+          "header": "define i32 @read_p2_u32(ptr align 2 %p) unnamed_addr #4 {",
+          "mem_ops": [
+            "%_0 = load i32, ptr %0, align 2"
+          ]
+        },
+        "read_p4_u32": {
+          "header": "define i32 @read_p4_u32(ptr align 4 %p) unnamed_addr #4 {",
+          "mem_ops": [
+            "%_0 = load i32, ptr %0, align 4"
+          ]
+        },
+        "read_p4_u64": {
+          "header": "define i64 @read_p4_u64(ptr align 4 %p) unnamed_addr #4 {",
+          "mem_ops": [
+            "%_0 = load i64, ptr %0, align 4"
+          ]
+        },
+        "write_p1_u32": {
+          "header": "define void @write_p1_u32(ptr %p, i32 %v) unnamed_addr #4 {",
+          "mem_ops": [
+            "store i32 %v, ptr %0, align 1"
+          ]
+        },
+        "write_p2_u32": {
+          "header": "define void @write_p2_u32(ptr align 2 %p, i32 %v) unnamed_addr #4 {",
+          "mem_ops": [
+            "store i32 %v, ptr %0, align 2"
+          ]
+        }
+      },
+      "O2": {
+        "pass_aligned_newtype": {
+          "header": "define noundef i64 @pass_aligned_newtype(i64 noundef %v) unnamed_addr #0 {",
+          "mem_ops": []
+        },
+        "pass_packed_newtype": {
+          "header": "define noundef i64 @pass_packed_newtype(i64 noundef %0) unnamed_addr #0 {",
+          "mem_ops": []
+        },
+        "read_p1_u32": {
+          "header": "define noundef i32 @read_p1_u32(ptr noalias noundef readonly captures(none) dereferenceable(13) %p) unnamed_addr #1 {",
+          "mem_ops": [
+            "%_0 = load i32, ptr %0, align 1, !noundef !4"
+          ]
+        },
+        "read_p1_ub_deref_raw": {
+          "header": "define noundef i32 @read_p1_ub_deref_raw(ptr noalias noundef readonly captures(address, read_provenance) dereferenceable(13) %p) unnamed_addr #2 {",
+          "mem_ops": [
+            "store ptr %_3, ptr %raw, align 8",
+            "%0 = load ptr, ptr %raw, align 8, !noundef !4",
+            "%_0 = load i32, ptr %0, align 4, !noundef !4"
+          ]
+        },
+        "read_p1_unaligned_raw": {
+          "header": "define noundef i32 @read_p1_unaligned_raw(ptr noalias noundef readonly captures(none) dereferenceable(13) %p) unnamed_addr #1 {",
+          "mem_ops": [
+            "%_3.sroa.0.0.copyload = load i32, ptr %raw, align 1"
+          ]
+        },
+        "read_p2_u32": {
+          "header": "define noundef i32 @read_p2_u32(ptr noalias noundef readonly align 2 captures(none) dereferenceable(14) %p) unnamed_addr #1 {",
+          "mem_ops": [
+            "%_0 = load i32, ptr %0, align 2, !noundef !4"
+          ]
+        },
+        "read_p4_u32": {
+          "header": "define noundef i32 @read_p4_u32(ptr noalias noundef readonly align 4 captures(none) dereferenceable(16) %p) unnamed_addr #1 {",
+          "mem_ops": [
+            "%_0 = load i32, ptr %0, align 4, !noundef !4"
+          ]
+        },
+        "read_p4_u64": {
+          "header": "define noundef i64 @read_p4_u64(ptr noalias noundef readonly align 4 captures(none) dereferenceable(16) %p) unnamed_addr #1 {",
+          "mem_ops": [
+            "%_0 = load i64, ptr %0, align 4, !noundef !4"
+          ]
+        },
+        "write_p1_u32": {
+          "header": "define void @write_p1_u32(ptr noalias noundef writeonly captures(none) dereferenceable(13) initializes((1, 5)) %p, i32 noundef %v) unnamed_addr #3 {",
+          "mem_ops": [
+            "store i32 %v, ptr %0, align 1"
+          ]
+        },
+        "write_p2_u32": {
+          "header": "define void @write_p2_u32(ptr noalias noundef writeonly align 2 captures(none) dereferenceable(14) initializes((2, 6)) %p, i32 noundef %v) unnamed_addr #3 {",
+          "mem_ops": [
+            "store i32 %v, ptr %0, align 2"
+          ]
+        }
+      }
+    }
+  },
+  "exp2_e0793_and_wfcheck_matrix": [
+    {
+      "case": "safe_ref_packed1_u32",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0793"
+      ],
+      "error_messages": [
+        "reference to field of packed struct is unaligned",
+        "aborting due to 1 previous error"
+      ],
+      "expected_ok": false
+    },
+    {
+      "case": "unsafe_ref_packed1_u32",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0793"
+      ],
+      "error_messages": [
+        "reference to field of packed struct is unaligned",
+        "aborting due to 1 previous error; 1 warning emitted"
+      ],
+      "expected_ok": false
+    },
+    {
+      "case": "println_implicit_ref_packed1_u32",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0793"
+      ],
+      "error_messages": [
+        "reference to field of packed struct is unaligned",
+        "aborting due to 1 previous error"
+      ],
+      "expected_ok": false
+    },
+    {
+      "case": "braced_copy_packed1_u32",
+      "compiled_ok": true,
+      "error_codes": [],
+      "error_messages": [],
+      "expected_ok": true
+    },
+    {
+      "case": "safe_ref_packed1_u8_ok",
+      "compiled_ok": true,
+      "error_codes": [],
+      "error_messages": [],
+      "expected_ok": true
+    },
+    {
+      "case": "safe_ref_packed4_u32_ok",
+      "compiled_ok": true,
+      "error_codes": [],
+      "error_messages": [],
+      "expected_ok": true
+    },
+    {
+      "case": "safe_ref_packed4_u64_err",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0793"
+      ],
+      "error_messages": [
+        "reference to field of packed struct is unaligned",
+        "aborting due to 1 previous error"
+      ],
+      "expected_ok": false
+    },
+    {
+      "case": "safe_raw_ptr_packed1_u32_ok",
+      "compiled_ok": true,
+      "error_codes": [],
+      "error_messages": [],
+      "expected_ok": true
+    },
+    {
+      "case": "packed_unsized_drop_tail_err",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0277"
+      ],
+      "error_messages": [
+        "the size for values of type `[D]` cannot be known at compilation time",
+        "aborting due to 1 previous error"
+      ],
+      "expected_ok": false
+    },
+    {
+      "case": "packed_unsized_manually_drop_tail_ok",
+      "compiled_ok": true,
+      "error_codes": [],
+      "error_messages": [],
+      "expected_ok": true
+    },
+    {
+      "case": "repr_packed_and_align_conflict_e0587",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0587"
+      ],
+      "error_messages": [
+        "type has conflicting packed and align representation hints",
+        "aborting due to 1 previous error"
+      ],
+      "expected_ok": false
+    },
+    {
+      "case": "packed_containing_repr_align_e0588",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0588"
+      ],
+      "error_messages": [
+        "packed type cannot transitively contain a `#[repr(align)]` type",
+        "aborting due to 1 previous error"
+      ],
+      "expected_ok": false
+    },
+    {
+      "case": "repr_packed_duplicate_e0634",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0634"
+      ],
+      "error_messages": [
+        "type has conflicting packed representation hints",
+        "aborting due to 1 previous error"
+      ],
+      "expected_ok": false
+    },
+    {
+      "case": "custom_drop_move_from_mut_ref_e0507",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0507"
+      ],
+      "error_messages": [
+        "cannot move out of `self.d` which is behind a mutable reference",
+        "aborting due to 1 previous error"
+      ],
+      "expected_ok": false
+    },
+    {
+      "case": "custom_drop_owned_move_field_e0509",
+      "compiled_ok": false,
+      "error_codes": [
+        "E0509"
+      ],
+      "error_messages": [
+        "cannot move out of type `S`, which implements the `Drop` trait",
+        "aborting due to 1 previous error"
+      ],
+      "expected_ok": false
+    }
+  ],
+  "exp3_add_moves_for_packed_drops": {
+    "dumped_mir_files_count": 34,
+    "mir_snippets": {
+      "core.ptr-drop_glue.Align16_PackedHolder_.1-1-001.AddMovesForPackedDrops.after.mir": "// MIR for `std::ptr::drop_glue` after AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut Align16<PackedHolder>) -> () {\n    let mut _0: ();\n\n    bb0: {\n        goto -> bb5;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        drop(((*_1).0: PackedHolder)) -> [return: bb2, unwind terminate(cleanup)];\n    }\n\n    bb5: {\n        drop(((*_1).0: PackedHolder)) -> [return: bb3, unwind: bb2];\n    }\n}\n",
+      "core.ptr-drop_glue.Align16_PackedHolder_.1-1-001.AddMovesForPackedDrops.before.mir": "// MIR for `std::ptr::drop_glue` before AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut Align16<PackedHolder>) -> () {\n    let mut _0: ();\n\n    bb0: {\n        goto -> bb5;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        drop(((*_1).0: PackedHolder)) -> [return: bb2, unwind terminate(cleanup)];\n    }\n\n    bb5: {\n        drop(((*_1).0: PackedHolder)) -> [return: bb3, unwind: bb2];\n    }\n}\n",
+      "core.ptr-drop_glue.PackedHolder.1-1-001.AddMovesForPackedDrops.after.mir": "// MIR for `std::ptr::drop_glue` after AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut PackedHolder) -> () {\n    let mut _0: ();\n    let mut _2: DropU128;\n    let mut _3: DropU128;\n\n    bb0: {\n        goto -> bb5;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        StorageLive(_2);\n        _2 = move ((*_1).1: DropU128);\n        drop(_2) -> [return: bb6, unwind terminate(cleanup)];\n    }\n\n    bb5: {\n        StorageLive(_3);\n        _3 = move ((*_1).1: DropU128);\n        drop(_3) -> [return: bb7, unwind: bb2];\n    }\n\n    bb6 (cleanup): {\n        StorageDead(_2);\n        goto -> bb2;\n    }\n\n    bb7: {\n        StorageDead(_3);\n        goto -> bb3;\n    }\n}\n",
+      "core.ptr-drop_glue.PackedHolder.1-1-001.AddMovesForPackedDrops.before.mir": "// MIR for `std::ptr::drop_glue` before AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut PackedHolder) -> () {\n    let mut _0: ();\n\n    bb0: {\n        goto -> bb5;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        drop(((*_1).1: DropU128)) -> [return: bb2, unwind terminate(cleanup)];\n    }\n\n    bb5: {\n        drop(((*_1).1: DropU128)) -> [return: bb3, unwind: bb2];\n    }\n}\n",
+      "exp3_packed_drops.drop_whole_packed_holder.2-2-007.AddMovesForPackedDrops.after.mir": "// MIR for `drop_whole_packed_holder` after AddMovesForPackedDrops\n\nfn drop_whole_packed_holder(_1: Align16<PackedHolder>) -> usize {\n    debug holder => _1;\n    let mut _0: usize;\n    let _2: usize;\n    let mut _3: usize;\n    let mut _4: *const DropU128;\n    let mut _5: bool;\n    let _6: ();\n    let mut _7: Align16<PackedHolder>;\n    let mut _8: bool;\n    scope 1 {\n        debug field_mod => _2;\n    }\n\n    bb0: {\n        _8 = const false;\n        _8 = const true;\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = &raw const ((_1.0: PackedHolder).1: DropU128);\n        _3 = std::ptr::const_ptr::<impl *const DropU128>::addr(move _4) -> [return: bb1, unwind: bb6];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        _5 = Eq(const 16_usize, const 0_usize);\n        assert(!move _5, \"attempt to calculate the remainder of `{}` with a divisor of zero\", copy _3) -> [success: bb2, unwind: bb6];\n    }\n\n    bb2: {\n        _2 = Rem(move _3, const 16_usize);\n        StorageDead(_3);\n        StorageLive(_6);\n        StorageLive(_7);\n        _8 = const false;\n        _7 = move _1;\n        _6 = std::mem::drop::<Align16<PackedHolder>>(move _7) -> [return: bb3, unwind: bb5];\n    }\n\n    bb3: {\n        StorageDead(_7);\n        StorageDead(_6);\n        _0 = copy _2;\n        StorageDead(_2);\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n\n    bb5 (cleanup): {\n        goto -> bb6;\n    }\n\n    bb6 (cleanup): {\n        goto -> bb9;\n    }\n\n    bb7 (cleanup): {\n        resume;\n    }\n\n    bb8 (cleanup): {\n        drop(_1) -> [return: bb7, unwind terminate(cleanup)];\n    }\n\n    bb9 (cleanup): {\n        switchInt(copy _8) -> [0: bb7, otherwise: bb8];\n    }\n}\n",
+      "exp3_packed_drops.drop_whole_packed_holder.2-2-007.AddMovesForPackedDrops.before.mir": "// MIR for `drop_whole_packed_holder` before AddMovesForPackedDrops\n\nfn drop_whole_packed_holder(_1: Align16<PackedHolder>) -> usize {\n    debug holder => _1;\n    let mut _0: usize;\n    let _2: usize;\n    let mut _3: usize;\n    let mut _4: *const DropU128;\n    let mut _5: bool;\n    let _6: ();\n    let mut _7: Align16<PackedHolder>;\n    let mut _8: bool;\n    scope 1 {\n        debug field_mod => _2;\n    }\n\n    bb0: {\n        _8 = const false;\n        _8 = const true;\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = &raw const ((_1.0: PackedHolder).1: DropU128);\n        _3 = std::ptr::const_ptr::<impl *const DropU128>::addr(move _4) -> [return: bb1, unwind: bb6];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        _5 = Eq(const 16_usize, const 0_usize);\n        assert(!move _5, \"attempt to calculate the remainder of `{}` with a divisor of zero\", copy _3) -> [success: bb2, unwind: bb6];\n    }\n\n    bb2: {\n        _2 = Rem(move _3, const 16_usize);\n        StorageDead(_3);\n        StorageLive(_6);\n        StorageLive(_7);\n        _8 = const false;\n        _7 = move _1;\n        _6 = std::mem::drop::<Align16<PackedHolder>>(move _7) -> [return: bb3, unwind: bb5];\n    }\n\n    bb3: {\n        StorageDead(_7);\n        StorageDead(_6);\n        _0 = copy _2;\n        StorageDead(_2);\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n\n    bb5 (cleanup): {\n        goto -> bb6;\n    }\n\n    bb6 (cleanup): {\n        goto -> bb9;\n    }\n\n    bb7 (cleanup): {\n        resume;\n    }\n\n    bb8 (cleanup): {\n        drop(_1) -> [return: bb7, unwind terminate(cleanup)];\n    }\n\n    bb9 (cleanup): {\n        switchInt(copy _8) -> [0: bb7, otherwise: bb8];\n    }\n}\n",
+      "exp3_packed_drops.overwrite_packed_field.2-2-007.AddMovesForPackedDrops.after.mir": "// MIR for `overwrite_packed_field` after AddMovesForPackedDrops\n\nfn overwrite_packed_field(_1: Align16<PackedHolder>, _2: DropU128) -> (usize, usize) {\n    debug holder => _1;\n    debug replacement => _2;\n    let mut _0: (usize, usize);\n    let _3: usize;\n    let mut _4: usize;\n    let mut _5: *const DropU128;\n    let mut _6: bool;\n    let mut _7: DropU128;\n    let mut _9: &std::sync::atomic::Atomic<usize>;\n    let _10: &std::sync::atomic::Atomic<usize>;\n    let mut _11: std::sync::atomic::Ordering;\n    let _12: ();\n    let mut _13: Align16<PackedHolder>;\n    let mut _14: usize;\n    let mut _15: usize;\n    let mut _16: bool;\n    let mut _17: bool;\n    let mut _18: bool;\n    let mut _19: bool;\n    let mut _20: DropU128;\n    let mut _21: DropU128;\n    scope 1 {\n        debug field_mod => _3;\n        let _8: usize;\n        scope 2 {\n            debug after_overwrite_mod => _8;\n        }\n    }\n\n    bb0: {\n        _17 = const false;\n        _16 = const false;\n        _18 = const false;\n        _19 = const false;\n        _17 = const true;\n        _18 = const true;\n        _19 = const true;\n        _16 = const true;\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = &raw const ((_1.0: PackedHolder).1: DropU128);\n        _4 = std::ptr::const_ptr::<impl *const DropU128>::addr(move _5) -> [return: bb1, unwind: bb11];\n    }\n\n    bb1: {\n        StorageDead(_5);\n        _6 = Eq(const 16_usize, const 0_usize);\n        assert(!move _6, \"attempt to calculate the remainder of `{}` with a divisor of zero\", copy _4) -> [success: bb2, unwind: bb11];\n    }\n\n    bb2: {\n        _3 = Rem(move _4, const 16_usize);\n        StorageDead(_4);\n        StorageLive(_7);\n        _16 = const false;\n        _7 = move _2;\n        StorageLive(_20);\n        _20 = move ((_1.0: PackedHolder).1: DropU128);\n        drop(_20) -> [return: bb20, unwind: bb4];\n    }\n\n    bb3: {\n        _19 = const true;\n        ((_1.0: PackedHolder).1: DropU128) = move _7;\n        goto -> bb5;\n    }\n\n    bb4 (cleanup): {\n        _19 = const true;\n        ((_1.0: PackedHolder).1: DropU128) = move _7;\n        goto -> bb11;\n    }\n\n    bb5: {\n        StorageDead(_7);\n        StorageLive(_8);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = const {alloc1: &Atomic<usize>};\n        _9 = &(*_10);\n        StorageLive(_11);\n        _11 = std::sync::atomic::Ordering::SeqCst;\n        _8 = Atomic::<usize>::load(move _9, move _11) -> [return: bb6, unwind: bb11];\n    }\n\n    bb6: {\n        StorageDead(_11);\n        StorageDead(_9);\n        StorageDead(_10);\n        StorageLive(_12);\n        StorageLive(_13);\n        _17 = const false;\n        _18 = const false;\n        _19 = const false;\n        _13 = move _1;\n        _12 = std::mem::drop::<Align16<PackedHolder>>(move _13) -> [return: bb7, unwind: bb10];\n    }\n\n    bb7: {\n        StorageDead(_13);\n        StorageDead(_12);\n        StorageLive(_14);\n        _14 = copy _3;\n        StorageLive(_15);\n        _15 = copy _8;\n        _0 = (move _14, move _15);\n        StorageDead(_15);\n        StorageDead(_14);\n        StorageDead(_8);\n        StorageDead(_3);\n        goto -> bb8;\n    }\n\n    bb8: {\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10 (cleanup): {\n        goto -> bb11;\n    }\n\n    bb11 (cleanup): {\n        goto -> bb15;\n    }\n\n    bb12 (cleanup): {\n        goto -> bb16;\n    }\n\n    bb13 (cleanup): {\n        resume;\n    }\n\n    bb14 (cleanup): {\n        drop(_2) -> [return: bb12, unwind terminate(cleanup)];\n    }\n\n    bb15 (cleanup): {\n        switchInt(copy _16) -> [0: bb12, otherwise: bb14];\n    }\n\n    bb16 (cleanup): {\n        goto -> bb17;\n    }\n\n    bb17 (cleanup): {\n        goto -> bb19;\n    }\n\n    bb18 (cleanup): {\n        StorageLive(_21);\n        _21 = move ((_1.0: PackedHolder).1: DropU128);\n        drop(_21) -> [return: bb21, unwind terminate(cleanup)];\n    }\n\n    bb19 (cleanup): {\n        switchInt(copy _19) -> [0: bb13, otherwise: bb18];\n    }\n\n    bb20: {\n        StorageDead(_20);\n        goto -> bb3;\n    }\n\n    bb21 (cleanup): {\n        StorageDead(_21);\n        goto -> bb13;\n    }\n}\n\nalloc1 (static: LAST_DROP_MOD16, size: 8, align: 8) {\n    e7 03 00 00 00 00 00 00                         \u2502 ........\n}\n",
+      "exp3_packed_drops.overwrite_packed_field.2-2-007.AddMovesForPackedDrops.before.mir": "// MIR for `overwrite_packed_field` before AddMovesForPackedDrops\n\nfn overwrite_packed_field(_1: Align16<PackedHolder>, _2: DropU128) -> (usize, usize) {\n    debug holder => _1;\n    debug replacement => _2;\n    let mut _0: (usize, usize);\n    let _3: usize;\n    let mut _4: usize;\n    let mut _5: *const DropU128;\n    let mut _6: bool;\n    let mut _7: DropU128;\n    let mut _9: &std::sync::atomic::Atomic<usize>;\n    let _10: &std::sync::atomic::Atomic<usize>;\n    let mut _11: std::sync::atomic::Ordering;\n    let _12: ();\n    let mut _13: Align16<PackedHolder>;\n    let mut _14: usize;\n    let mut _15: usize;\n    let mut _16: bool;\n    let mut _17: bool;\n    let mut _18: bool;\n    let mut _19: bool;\n    scope 1 {\n        debug field_mod => _3;\n        let _8: usize;\n        scope 2 {\n            debug after_overwrite_mod => _8;\n        }\n    }\n\n    bb0: {\n        _17 = const false;\n        _16 = const false;\n        _18 = const false;\n        _19 = const false;\n        _17 = const true;\n        _18 = const true;\n        _19 = const true;\n        _16 = const true;\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = &raw const ((_1.0: PackedHolder).1: DropU128);\n        _4 = std::ptr::const_ptr::<impl *const DropU128>::addr(move _5) -> [return: bb1, unwind: bb11];\n    }\n\n    bb1: {\n        StorageDead(_5);\n        _6 = Eq(const 16_usize, const 0_usize);\n        assert(!move _6, \"attempt to calculate the remainder of `{}` with a divisor of zero\", copy _4) -> [success: bb2, unwind: bb11];\n    }\n\n    bb2: {\n        _3 = Rem(move _4, const 16_usize);\n        StorageDead(_4);\n        StorageLive(_7);\n        _16 = const false;\n        _7 = move _2;\n        drop(((_1.0: PackedHolder).1: DropU128)) -> [return: bb3, unwind: bb4];\n    }\n\n    bb3: {\n        _19 = const true;\n        ((_1.0: PackedHolder).1: DropU128) = move _7;\n        goto -> bb5;\n    }\n\n    bb4 (cleanup): {\n        _19 = const true;\n        ((_1.0: PackedHolder).1: DropU128) = move _7;\n        goto -> bb11;\n    }\n\n    bb5: {\n        StorageDead(_7);\n        StorageLive(_8);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = const {alloc1: &Atomic<usize>};\n        _9 = &(*_10);\n        StorageLive(_11);\n        _11 = std::sync::atomic::Ordering::SeqCst;\n        _8 = Atomic::<usize>::load(move _9, move _11) -> [return: bb6, unwind: bb11];\n    }\n\n    bb6: {\n        StorageDead(_11);\n        StorageDead(_9);\n        StorageDead(_10);\n        StorageLive(_12);\n        StorageLive(_13);\n        _17 = const false;\n        _18 = const false;\n        _19 = const false;\n        _13 = move _1;\n        _12 = std::mem::drop::<Align16<PackedHolder>>(move _13) -> [return: bb7, unwind: bb10];\n    }\n\n    bb7: {\n        StorageDead(_13);\n        StorageDead(_12);\n        StorageLive(_14);\n        _14 = copy _3;\n        StorageLive(_15);\n        _15 = copy _8;\n        _0 = (move _14, move _15);\n        StorageDead(_15);\n        StorageDead(_14);\n        StorageDead(_8);\n        StorageDead(_3);\n        goto -> bb8;\n    }\n\n    bb8: {\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10 (cleanup): {\n        goto -> bb11;\n    }\n\n    bb11 (cleanup): {\n        goto -> bb15;\n    }\n\n    bb12 (cleanup): {\n        goto -> bb16;\n    }\n\n    bb13 (cleanup): {\n        resume;\n    }\n\n    bb14 (cleanup): {\n        drop(_2) -> [return: bb12, unwind terminate(cleanup)];\n    }\n\n    bb15 (cleanup): {\n        switchInt(copy _16) -> [0: bb12, otherwise: bb14];\n    }\n\n    bb16 (cleanup): {\n        goto -> bb17;\n    }\n\n    bb17 (cleanup): {\n        goto -> bb19;\n    }\n\n    bb18 (cleanup): {\n        drop(((_1.0: PackedHolder).1: DropU128)) -> [return: bb13, unwind terminate(cleanup)];\n    }\n\n    bb19 (cleanup): {\n        switchInt(copy _19) -> [0: bb13, otherwise: bb18];\n    }\n}\n\nalloc1 (static: LAST_DROP_MOD16, size: 8, align: 8) {\n    e7 03 00 00 00 00 00 00                         \u2502 ........\n}\n"
+    },
+    "miri": {
+      "rc": 0,
+      "stderr_ub_lines": [],
+      "stdout": "OVERWRITE_FIELD_MOD16=1 OVERWRITE_DROP_MOD16=0 FINAL_MOD16=0 OV_COUNT=2 WHOLE_FIELD_MOD16=1 WHOLE_DROP_MOD16=0 TOTAL_COUNT=3"
+    },
+    "native_rc": 0,
+    "native_stdout": "OVERWRITE_FIELD_MOD16=1 OVERWRITE_DROP_MOD16=0 FINAL_MOD16=0 OV_COUNT=2 WHOLE_FIELD_MOD16=1 WHOLE_DROP_MOD16=0 TOTAL_COUNT=3",
+    "relevant_mir_files": [
+      "core.ptr-drop_glue.Align16_PackedHolder_.1-1-001.AddMovesForPackedDrops.after.mir",
+      "core.ptr-drop_glue.Align16_PackedHolder_.1-1-001.AddMovesForPackedDrops.before.mir",
+      "core.ptr-drop_glue.PackedHolder.1-1-001.AddMovesForPackedDrops.after.mir",
+      "core.ptr-drop_glue.PackedHolder.1-1-001.AddMovesForPackedDrops.before.mir",
+      "exp3_packed_drops.drop_whole_packed_holder.2-2-007.AddMovesForPackedDrops.after.mir",
+      "exp3_packed_drops.drop_whole_packed_holder.2-2-007.AddMovesForPackedDrops.before.mir",
+      "exp3_packed_drops.overwrite_packed_field.2-2-007.AddMovesForPackedDrops.after.mir",
+      "exp3_packed_drops.overwrite_packed_field.2-2-007.AddMovesForPackedDrops.before.mir"
+    ]
+  },
+  "exp4_nested_packed_and_unwind_safety": {
+    "miri": {
+      "rc": 0,
+      "stderr_ub_lines": [
+        "thread 'main' (<TID>) panicked at src/main.rs:20:13:"
+      ],
+      "stdout": "CAUGHT=true PRE_MOD16=(5,5,5) LOG=[inner.f1:mod16=0:panic=true,inner.f2:mod16=0:panic=false,outer.tail:mod16=0:panic=false]"
+    },
+    "native_rc": 0,
+    "native_stdout": "CAUGHT=true PRE_MOD16=(5,5,5) LOG=[inner.f1:mod16=0:panic=true,inner.f2:mod16=0:panic=false,outer.tail:mod16=0:panic=false]",
+    "shim_mir_files": [
+      "core.ptr-drop_glue.Align16_OuterPacked1_.1-1-001.AddMovesForPackedDrops.after.mir",
+      "core.ptr-drop_glue.Align16_OuterPacked1_.1-1-001.AddMovesForPackedDrops.before.mir",
+      "core.ptr-drop_glue.InnerPacked4.1-1-001.AddMovesForPackedDrops.after.mir",
+      "core.ptr-drop_glue.InnerPacked4.1-1-001.AddMovesForPackedDrops.before.mir",
+      "core.ptr-drop_glue.OuterPacked1.1-1-001.AddMovesForPackedDrops.after.mir",
+      "core.ptr-drop_glue.OuterPacked1.1-1-001.AddMovesForPackedDrops.before.mir"
+    ],
+    "shim_mir_snippets": {
+      "core.ptr-drop_glue.Align16_OuterPacked1_.1-1-001.AddMovesForPackedDrops.after.mir": "// MIR for `std::ptr::drop_glue` after AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut Align16<OuterPacked1>) -> () {\n    let mut _0: ();\n\n    bb0: {\n        goto -> bb5;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        drop(((*_1).0: OuterPacked1)) -> [return: bb2, unwind terminate(cleanup)];\n    }\n\n    bb5: {\n        drop(((*_1).0: OuterPacked1)) -> [return: bb3, unwind: bb2];\n    }\n}\n",
+      "core.ptr-drop_glue.Align16_OuterPacked1_.1-1-001.AddMovesForPackedDrops.before.mir": "// MIR for `std::ptr::drop_glue` before AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut Align16<OuterPacked1>) -> () {\n    let mut _0: ();\n\n    bb0: {\n        goto -> bb5;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        drop(((*_1).0: OuterPacked1)) -> [return: bb2, unwind terminate(cleanup)];\n    }\n\n    bb5: {\n        drop(((*_1).0: OuterPacked1)) -> [return: bb3, unwind: bb2];\n    }\n}\n",
+      "core.ptr-drop_glue.InnerPacked4.1-1-001.AddMovesForPackedDrops.after.mir": "// MIR for `std::ptr::drop_glue` after AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut InnerPacked4) -> () {\n    let mut _0: ();\n    let mut _2: Logged16;\n    let mut _3: Logged16;\n    let mut _4: Logged16;\n    let mut _5: Logged16;\n\n    bb0: {\n        goto -> bb7;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        StorageLive(_2);\n        _2 = move ((*_1).2: Logged16);\n        drop(_2) -> [return: bb8, unwind terminate(cleanup)];\n    }\n\n    bb5 (cleanup): {\n        StorageLive(_3);\n        _3 = move ((*_1).1: Logged16);\n        drop(_3) -> [return: bb9, unwind terminate(cleanup)];\n    }\n\n    bb6: {\n        StorageLive(_4);\n        _4 = move ((*_1).2: Logged16);\n        drop(_4) -> [return: bb10, unwind: bb2];\n    }\n\n    bb7: {\n        StorageLive(_5);\n        _5 = move ((*_1).1: Logged16);\n        drop(_5) -> [return: bb11, unwind: bb4];\n    }\n\n    bb8 (cleanup): {\n        StorageDead(_2);\n        goto -> bb2;\n    }\n\n    bb9 (cleanup): {\n        StorageDead(_3);\n        goto -> bb4;\n    }\n\n    bb10: {\n        StorageDead(_4);\n        goto -> bb3;\n    }\n\n    bb11: {\n        StorageDead(_5);\n        goto -> bb6;\n    }\n}\n",
+      "core.ptr-drop_glue.InnerPacked4.1-1-001.AddMovesForPackedDrops.before.mir": "// MIR for `std::ptr::drop_glue` before AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut InnerPacked4) -> () {\n    let mut _0: ();\n\n    bb0: {\n        goto -> bb7;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        drop(((*_1).2: Logged16)) -> [return: bb2, unwind terminate(cleanup)];\n    }\n\n    bb5 (cleanup): {\n        drop(((*_1).1: Logged16)) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb6: {\n        drop(((*_1).2: Logged16)) -> [return: bb3, unwind: bb2];\n    }\n\n    bb7: {\n        drop(((*_1).1: Logged16)) -> [return: bb6, unwind: bb4];\n    }\n}\n",
+      "core.ptr-drop_glue.OuterPacked1.1-1-001.AddMovesForPackedDrops.after.mir": "// MIR for `std::ptr::drop_glue` after AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut OuterPacked1) -> () {\n    let mut _0: ();\n    let mut _2: Logged16;\n    let mut _3: InnerPacked4;\n    let mut _4: Logged16;\n    let mut _5: InnerPacked4;\n\n    bb0: {\n        goto -> bb7;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        StorageLive(_2);\n        _2 = move ((*_1).2: Logged16);\n        drop(_2) -> [return: bb8, unwind terminate(cleanup)];\n    }\n\n    bb5 (cleanup): {\n        StorageLive(_3);\n        _3 = move ((*_1).1: InnerPacked4);\n        drop(_3) -> [return: bb9, unwind terminate(cleanup)];\n    }\n\n    bb6: {\n        StorageLive(_4);\n        _4 = move ((*_1).2: Logged16);\n        drop(_4) -> [return: bb10, unwind: bb2];\n    }\n\n    bb7: {\n        StorageLive(_5);\n        _5 = move ((*_1).1: InnerPacked4);\n        drop(_5) -> [return: bb11, unwind: bb4];\n    }\n\n    bb8 (cleanup): {\n        StorageDead(_2);\n        goto -> bb2;\n    }\n\n    bb9 (cleanup): {\n        StorageDead(_3);\n        goto -> bb4;\n    }\n\n    bb10: {\n        StorageDead(_4);\n        goto -> bb3;\n    }\n\n    bb11: {\n        StorageDead(_5);\n        goto -> bb6;\n    }\n}\n",
+      "core.ptr-drop_glue.OuterPacked1.1-1-001.AddMovesForPackedDrops.before.mir": "// MIR for `std::ptr::drop_glue` before AddMovesForPackedDrops\n\nfn std::ptr::drop_glue(_1: &mut OuterPacked1) -> () {\n    let mut _0: ();\n\n    bb0: {\n        goto -> bb7;\n    }\n\n    bb1: {\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4 (cleanup): {\n        drop(((*_1).2: Logged16)) -> [return: bb2, unwind terminate(cleanup)];\n    }\n\n    bb5 (cleanup): {\n        drop(((*_1).1: InnerPacked4)) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb6: {\n        drop(((*_1).2: Logged16)) -> [return: bb3, unwind: bb2];\n    }\n\n    bb7: {\n        drop(((*_1).1: InnerPacked4)) -> [return: bb6, unwind: bb4];\n    }\n}\n"
+    }
+  },
+  "exp5_ub_checks_vs_miri_matrix": {
+    "case5a_direct_user_mut_ref_packed_u128": {
+      "miri": {
+        "rc": 1,
+        "stderr_ub_lines": [
+          "error: Undefined Behavior: constructing invalid value of type &mut DropU128: encountered an unaligned reference (required 16 byte alignment but found 1)",
+          "   |                                ^^^^^^^^^ Undefined Behavior occurred here",
+          "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ],
+        "stdout": ""
+      },
+      "native_O0_ub_no": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "USER_MUT_REF_OK pre_mod=1 addr_mod=1"
+      },
+      "native_O0_ub_yes": {
+        "mir_misaligned_assert_counts": {
+          "case5a_direct_user_mut_ref_packed_u128.main.3-2-001.CheckAlignment.after.mir": 1,
+          "case5a_direct_user_mut_ref_packed_u128.main.3-2-001.CheckAlignment.before.mir": 0,
+          "case5a_direct_user_mut_ref_packed_u128.main.3-2-006.ForceInline.after.mir": 1,
+          "case5a_direct_user_mut_ref_packed_u128.main.3-2-006.ForceInline.before.mir": 1
+        },
+        "rc": -6,
+        "stderr_head": "thread 'main' (<TID>) panicked at <TMP>/case5a_direct_user_mut_ref_packed_u128.rs:78:32:\nmisaligned pointer dereference: address must be a multiple of 0x10 but is <ADDR>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+        "stdout": ""
+      },
+      "native_O2_ub_yes": {
+        "rc": -6,
+        "stderr_head": "thread 'main' (<TID>) panicked at <TMP>/case5a_direct_user_mut_ref_packed_u128.rs:78:32:\nmisaligned pointer dereference: address must be a multiple of 0x10 but is <ADDR>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+        "stdout": ""
+      }
+    },
+    "case5b_direct_user_mut_ref_aligned64": {
+      "miri": {
+        "rc": 1,
+        "stderr_ub_lines": [
+          "error: Undefined Behavior: constructing invalid value of type &mut Aligned64: encountered an unaligned reference (required 64 byte alignment but found 1)",
+          "   |                                 ^^^^^^^^^ Undefined Behavior occurred here",
+          "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ],
+        "stdout": ""
+      },
+      "native_O0_ub_no": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "USER_MUT_REF64_OK pre_mod=1 addr_mod=1"
+      },
+      "native_O0_ub_yes": {
+        "mir_misaligned_assert_counts": {
+          "case5b_direct_user_mut_ref_aligned64.main.3-2-001.CheckAlignment.after.mir": 1,
+          "case5b_direct_user_mut_ref_aligned64.main.3-2-001.CheckAlignment.before.mir": 0,
+          "case5b_direct_user_mut_ref_aligned64.main.3-2-006.ForceInline.after.mir": 1,
+          "case5b_direct_user_mut_ref_aligned64.main.3-2-006.ForceInline.before.mir": 1,
+          "core.ptr-drop_glue.Aligned64.1-1-003.SimplifyCfg-make_shim.after.mir": 0,
+          "core.ptr-drop_glue.Aligned64.1-1-003.SimplifyCfg-make_shim.before.mir": 0,
+          "core.ptr-drop_glue.Aligned64.1-1-005.ForceInline.after.mir": 0,
+          "core.ptr-drop_glue.Aligned64.1-1-005.ForceInline.before.mir": 0
+        },
+        "rc": -6,
+        "stderr_head": "thread 'main' (<TID>) panicked at <TMP>/case5b_direct_user_mut_ref_aligned64.rs:78:33:\nmisaligned pointer dereference: address must be a multiple of 0x40 but is <ADDR>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+        "stdout": ""
+      },
+      "native_O2_ub_yes": {
+        "rc": -6,
+        "stderr_head": "thread 'main' (<TID>) panicked at <TMP>/case5b_direct_user_mut_ref_aligned64.rs:78:33:\nmisaligned pointer dereference: address must be a multiple of 0x40 but is <ADDR>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+        "stdout": ""
+      }
+    },
+    "case5c_direct_user_read_deref": {
+      "miri": {
+        "rc": 1,
+        "stderr_ub_lines": [
+          "error: Undefined Behavior: accessing memory based on pointer with alignment 1, but alignment 16 is required",
+          "   |                 ^^^^^^^^^^^ Undefined Behavior occurred here",
+          "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ],
+        "stdout": ""
+      },
+      "native_O0_ub_no": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "USER_READ_OK pre_mod=1 v=42"
+      },
+      "native_O0_ub_yes": {
+        "mir_misaligned_assert_counts": {
+          "case5c_direct_user_read_deref.main.3-2-001.CheckAlignment.after.mir": 1,
+          "case5c_direct_user_read_deref.main.3-2-001.CheckAlignment.before.mir": 0,
+          "case5c_direct_user_read_deref.main.3-2-006.ForceInline.after.mir": 1,
+          "case5c_direct_user_read_deref.main.3-2-006.ForceInline.before.mir": 1
+        },
+        "rc": -6,
+        "stderr_head": "thread 'main' (<TID>) panicked at <TMP>/case5c_direct_user_read_deref.rs:78:17:\nmisaligned pointer dereference: address must be a multiple of 0x10 but is <ADDR>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+        "stdout": ""
+      },
+      "native_O2_ub_yes": {
+        "rc": -6,
+        "stderr_head": "thread 'main' (<TID>) panicked at <TMP>/case5c_direct_user_read_deref.rs:78:17:\nmisaligned pointer dereference: address must be a multiple of 0x10 but is <ADDR>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+        "stdout": ""
+      }
+    },
+    "case5d_drop_in_place_packed_u128": {
+      "miri": {
+        "rc": 1,
+        "stderr_ub_lines": [
+          "error: Undefined Behavior: constructing invalid value of type &mut DropU128: encountered an unaligned reference (required 16 byte alignment but found 1)",
+          "    |                        ^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ],
+        "stdout": ""
+      },
+      "native_O0_ub_no": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "DROP_U128_MOD16=1\nDROP_IN_PLACE_U128_DONE pre_mod=1"
+      },
+      "native_O0_ub_yes": {
+        "mir_misaligned_assert_counts": {
+          "case5d_drop_in_place_packed_u128.main.3-2-001.CheckAlignment.after.mir": 0,
+          "case5d_drop_in_place_packed_u128.main.3-2-001.CheckAlignment.before.mir": 0,
+          "case5d_drop_in_place_packed_u128.main.3-2-006.ForceInline.after.mir": 0,
+          "case5d_drop_in_place_packed_u128.main.3-2-006.ForceInline.before.mir": 0,
+          "core.ptr-drop_glue.DropU128.1-1-003.SimplifyCfg-make_shim.after.mir": 0,
+          "core.ptr-drop_glue.DropU128.1-1-003.SimplifyCfg-make_shim.before.mir": 0,
+          "core.ptr-drop_glue.DropU128.1-1-005.ForceInline.after.mir": 0,
+          "core.ptr-drop_glue.DropU128.1-1-005.ForceInline.before.mir": 0
+        },
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "DROP_U128_MOD16=1\nDROP_IN_PLACE_U128_DONE pre_mod=1"
+      },
+      "native_O2_ub_yes": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "DROP_U128_MOD16=0\nDROP_IN_PLACE_U128_DONE pre_mod=1"
+      }
+    },
+    "case5e_drop_in_place_aligned64": {
+      "miri": {
+        "rc": 1,
+        "stderr_ub_lines": [
+          "error: Undefined Behavior: constructing invalid value of type &mut Aligned64: encountered an unaligned reference (required 64 byte alignment but found 1)",
+          "    |                        ^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ],
+        "stdout": ""
+      },
+      "native_O0_ub_no": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "DROP_ALIGNED64_MOD64=1\nDROP_IN_PLACE_ALIGNED64_DONE pre_mod=1"
+      },
+      "native_O0_ub_yes": {
+        "mir_misaligned_assert_counts": {
+          "case5e_drop_in_place_aligned64.main.3-2-001.CheckAlignment.after.mir": 0,
+          "case5e_drop_in_place_aligned64.main.3-2-001.CheckAlignment.before.mir": 0,
+          "case5e_drop_in_place_aligned64.main.3-2-006.ForceInline.after.mir": 0,
+          "case5e_drop_in_place_aligned64.main.3-2-006.ForceInline.before.mir": 0,
+          "core.ptr-drop_glue.Aligned64.1-1-003.SimplifyCfg-make_shim.after.mir": 0,
+          "core.ptr-drop_glue.Aligned64.1-1-003.SimplifyCfg-make_shim.before.mir": 0,
+          "core.ptr-drop_glue.Aligned64.1-1-005.ForceInline.after.mir": 0,
+          "core.ptr-drop_glue.Aligned64.1-1-005.ForceInline.before.mir": 0
+        },
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "DROP_ALIGNED64_MOD64=1\nDROP_IN_PLACE_ALIGNED64_DONE pre_mod=1"
+      },
+      "native_O2_ub_yes": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "DROP_ALIGNED64_MOD64=0\nDROP_IN_PLACE_ALIGNED64_DONE pre_mod=1"
+      }
+    },
+    "case5f_drop_in_place_glue_field_only": {
+      "miri": {
+        "rc": 1,
+        "stderr_ub_lines": [
+          "error: Undefined Behavior: constructing invalid value of type &mut GlueOnly16: encountered an unaligned reference (required 16 byte alignment but found 1)",
+          "    |                        ^^^^^^^^^^^^^ Undefined Behavior occurred here",
+          "    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ],
+        "stdout": ""
+      },
+      "native_O0_ub_no": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "DROP_LEAF_VAL=99\nDROP_IN_PLACE_GLUE_DONE pre_mod=1"
+      },
+      "native_O0_ub_yes": {
+        "mir_misaligned_assert_counts": {
+          "case5f_drop_in_place_glue_field_only.main.3-2-001.CheckAlignment.after.mir": 0,
+          "case5f_drop_in_place_glue_field_only.main.3-2-001.CheckAlignment.before.mir": 0,
+          "case5f_drop_in_place_glue_field_only.main.3-2-006.ForceInline.after.mir": 0,
+          "case5f_drop_in_place_glue_field_only.main.3-2-006.ForceInline.before.mir": 0,
+          "core.ptr-drop_glue.DropLeaf.1-1-003.SimplifyCfg-make_shim.after.mir": 0,
+          "core.ptr-drop_glue.DropLeaf.1-1-003.SimplifyCfg-make_shim.before.mir": 0,
+          "core.ptr-drop_glue.DropLeaf.1-1-005.ForceInline.after.mir": 0,
+          "core.ptr-drop_glue.DropLeaf.1-1-005.ForceInline.before.mir": 0,
+          "core.ptr-drop_glue.GlueOnly16.1-1-003.SimplifyCfg-make_shim.after.mir": 0,
+          "core.ptr-drop_glue.GlueOnly16.1-1-003.SimplifyCfg-make_shim.before.mir": 0,
+          "core.ptr-drop_glue.GlueOnly16.1-1-005.ForceInline.after.mir": 0,
+          "core.ptr-drop_glue.GlueOnly16.1-1-005.ForceInline.before.mir": 0
+        },
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "DROP_LEAF_VAL=99\nDROP_IN_PLACE_GLUE_DONE pre_mod=1"
+      },
+      "native_O2_ub_yes": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "DROP_LEAF_VAL=99\nDROP_IN_PLACE_GLUE_DONE pre_mod=1"
+      }
+    },
+    "case5g_generic_sized_inline_always_ref": {
+      "miri": {
+        "rc": 1,
+        "stderr_ub_lines": [
+          "error: Undefined Behavior: constructing invalid value of type &mut DropU128: encountered an unaligned reference (required 16 byte alignment but found 1)",
+          "   |              ^^^^^^^^^ Undefined Behavior occurred here",
+          "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ],
+        "stdout": ""
+      },
+      "native_O0_ub_no": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "GENERIC_SIZED_OK pre_mod=1 addr_mod=1"
+      },
+      "native_O0_ub_yes": {
+        "mir_misaligned_assert_counts": {
+          "case5g_generic_sized_inline_always_ref.generic_sized_ref.3-2-001.CheckAlignment.after.mir": 1,
+          "case5g_generic_sized_inline_always_ref.generic_sized_ref.3-2-001.CheckAlignment.before.mir": 0,
+          "case5g_generic_sized_inline_always_ref.generic_sized_ref.3-2-006.ForceInline.after.mir": 1,
+          "case5g_generic_sized_inline_always_ref.generic_sized_ref.3-2-006.ForceInline.before.mir": 1,
+          "case5g_generic_sized_inline_always_ref.main.3-2-001.CheckAlignment.after.mir": 0,
+          "case5g_generic_sized_inline_always_ref.main.3-2-001.CheckAlignment.before.mir": 0,
+          "case5g_generic_sized_inline_always_ref.main.3-2-006.ForceInline.after.mir": 0,
+          "case5g_generic_sized_inline_always_ref.main.3-2-006.ForceInline.before.mir": 0,
+          "case5g_generic_sized_inline_always_ref.make_packed.3-2-001.CheckAlignment.after.mir": 0,
+          "case5g_generic_sized_inline_always_ref.make_packed.3-2-001.CheckAlignment.before.mir": 0,
+          "case5g_generic_sized_inline_always_ref.make_packed.3-2-006.ForceInline.after.mir": 0,
+          "case5g_generic_sized_inline_always_ref.make_packed.3-2-006.ForceInline.before.mir": 0
+        },
+        "rc": -6,
+        "stderr_head": "thread 'main' (<TID>) panicked at <TMP>/case5g_generic_sized_inline_always_ref.rs:75:14:\nmisaligned pointer dereference: address must be a multiple of 0x10 but is <ADDR>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+        "stdout": ""
+      },
+      "native_O2_ub_yes": {
+        "rc": -6,
+        "stderr_head": "thread 'main' (<TID>) panicked at <TMP>/case5g_generic_sized_inline_always_ref.rs:75:14:\nmisaligned pointer dereference: address must be a multiple of 0x10 but is <ADDR>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+        "stdout": ""
+      }
+    },
+    "case5h_generic_unsized_inline_always_ref": {
+      "miri": {
+        "rc": 1,
+        "stderr_ub_lines": [
+          "error: Undefined Behavior: constructing invalid value of type &mut DropU128: encountered an unaligned reference (required 16 byte alignment but found 1)",
+          "   |              ^^^^^^^^^ Undefined Behavior occurred here",
+          "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error"
+        ],
+        "stdout": ""
+      },
+      "native_O0_ub_no": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "GENERIC_UNSIZED_OK pre_mod=1 addr_mod=1"
+      },
+      "native_O0_ub_yes": {
+        "mir_misaligned_assert_counts": {
+          "case5h_generic_unsized_inline_always_ref.generic_unsized_ref.3-2-001.CheckAlignment.after.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.generic_unsized_ref.3-2-001.CheckAlignment.before.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.generic_unsized_ref.3-2-006.ForceInline.after.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.generic_unsized_ref.3-2-006.ForceInline.before.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.main.3-2-001.CheckAlignment.after.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.main.3-2-001.CheckAlignment.before.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.main.3-2-006.ForceInline.after.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.main.3-2-006.ForceInline.before.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.make_packed.3-2-001.CheckAlignment.after.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.make_packed.3-2-001.CheckAlignment.before.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.make_packed.3-2-006.ForceInline.after.mir": 0,
+          "case5h_generic_unsized_inline_always_ref.make_packed.3-2-006.ForceInline.before.mir": 0
+        },
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "GENERIC_UNSIZED_OK pre_mod=1 addr_mod=1"
+      },
+      "native_O2_ub_yes": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "GENERIC_UNSIZED_OK pre_mod=1 addr_mod=1"
+      }
+    },
+    "case5i_custom_mir_terminator_only_deref": {
+      "miri": {
+        "rc": 1,
+        "stderr_ub_lines": [
+          "error: Undefined Behavior: accessing memory based on pointer with alignment 1, but alignment 16 is required",
+          "   |         ^ Undefined Behavior occurred here",
+          "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ],
+        "stdout": ""
+      },
+      "native_O0_ub_no": {
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "CUSTOM_MIR_TERM_DEREF_OK pre_mod=1 v=77"
+      },
+      "native_O0_ub_yes": {
+        "mir_misaligned_assert_counts": {
+          "case5i_custom_mir_terminator_only_deref.call_terminator_deref.3-2-001.CheckAlignment.after.mir": 0,
+          "case5i_custom_mir_terminator_only_deref.call_terminator_deref.3-2-001.CheckAlignment.before.mir": 0,
+          "case5i_custom_mir_terminator_only_deref.call_terminator_deref.3-2-006.ForceInline.after.mir": 0,
+          "case5i_custom_mir_terminator_only_deref.call_terminator_deref.3-2-006.ForceInline.before.mir": 0,
+          "case5i_custom_mir_terminator_only_deref.main.3-2-001.CheckAlignment.after.mir": 0,
+          "case5i_custom_mir_terminator_only_deref.main.3-2-001.CheckAlignment.before.mir": 0,
+          "case5i_custom_mir_terminator_only_deref.main.3-2-006.ForceInline.after.mir": 0,
+          "case5i_custom_mir_terminator_only_deref.main.3-2-006.ForceInline.before.mir": 0
+        },
+        "rc": 0,
+        "stderr_head": "",
+        "stdout": "CUSTOM_MIR_TERM_DEREF_OK pre_mod=1 v=77"
+      },
+      "native_O2_ub_yes": {
+        "rc": -11,
+        "stderr_head": "",
+        "stdout": ""
+      }
+    }
+  },
+  "toolchain": {
+    "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+    "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+  }
+}

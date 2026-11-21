@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (rustc 1.98.0-nightly 2026-05-31, Miri 0.1.0, LLVM 22.1.6: rustc_abi layout, CheckPackedRef, AddMovesForPackedDrops, CheckAlignment, make_shim, rustc_codegen_ssa alignment emission, core::ptr::drop_in_place)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+      }
+    },
+    {
+      "name": "rust-lang/rust (upstream main audited for continuity and E0588 -> ALIGNED_FIELDS_IN_PACKED drift across check.rs, check_packed_ref.rs, add_moves_for_packed_drops.rs, check_alignment.rs, check_pointers.rs, shim.rs, alignment.rs, core::ptr::drop_in_place)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+      }
+    },
+    {
+      "name": "rust-lang/reference (type layout alignment modifiers, places based on misaligned pointers, destructors \u2014 submodule pinned by rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "rust-lang/reference (submodule pinned by rust-lang/rust@c7d5ba59d8e11ee2e2204b173458eec4cb41c973)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+      }
+    },
+    {
+      "name": "joshlf/anneal (Trusted.MirAst, Trusted.MirSemantics, Trusted.Correspondence)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
