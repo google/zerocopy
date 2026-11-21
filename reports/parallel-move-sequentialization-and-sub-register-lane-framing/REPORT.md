@@ -11,9 +11,9 @@ impossibility results for an isolated cycle. The second is sub-register *lanes*:
 `n`-bit word, written either by a preserve-upper write (`putLane`, the other bits are kept) or by
 a zero-extending write (`writeZext`, the whole word is replaced), with their lens laws,
 commutation and framing conditions, and parallel moves between lanes. There are 21 results. All
-are theorems about these toy models only; none is a theorem about a production compiler or
-about x86-64 or AArch64 hardware, and every connection to them is a separately labelled modeling
-bridge.
+are theorems about these toy models; these theorems neither establish nor refute the
+corresponding claims about a production compiler or about x86-64 or AArch64 hardware, and every
+connection to them is a separately labelled modeling bridge under **Findings**.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -182,45 +182,55 @@ def runSeq (ms) (σ) := ms.foldl seqStep σ              -- left-to-right execut
 Examples (each proved; statements quoted verbatim, proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Readings.lean:18-21
 -- lean/ToyParMove/Readings.lean — Positive example (pmove)
 theorem pmove_swap_example :
     pmove [(0, 1), (1, 0)] (id : Nat → Nat) 0 = 1 ∧
     pmove [(0, 1), (1, 0)] (id : Nat → Nat) 1 = 0 ∧
     pmove [(0, 1), (1, 0)] (id : Nat → Nat) 2 = 2
 
+-- lean/ToyParMove/Readings.lean:25-27
 -- lean/ToyParMove/Readings.lean — Negative example (pmove)
 theorem pmove_rejects_sequential_reading :
     pmove [(1, 0), (2, 1)] (id : Nat → Nat) 2 = 1 ∧
     runSeq [(1, 0), (2, 1)] (id : Nat → Nat) 2 = 0
 
+-- lean/ToyParMove/Readings.lean:30
 -- lean/ToyParMove/Readings.lean — Positive example (WellFormed)
 theorem wellFormed_swap_example : WellFormed [((0 : Nat), (1 : Nat)), (1, 0)]
 
+-- lean/ToyParMove/Readings.lean:33-34
 -- lean/ToyParMove/Readings.lean — Negative example (WellFormed)
 theorem not_wellFormed_repeated_destination :
     ¬ WellFormed [((0 : Nat), (1 : Nat)), (0, 2)]
 
+-- lean/ToyParMove/Readings.lean:38-39
 -- lean/ToyParMove/Readings.lean — Positive example (Functional)
 theorem functional_duplicate_not_wellFormed :
     Functional [((0 : Nat), (1 : Nat)), (0, 1)] ∧ ¬ WellFormed [((0 : Nat), (1 : Nat)), (0, 1)]
 
+-- lean/ToyParMove/Readings.lean:46
 -- lean/ToyParMove/Readings.lean — Negative example (Functional)
 theorem not_functional_two_sources : ¬ Functional [((0 : Nat), (1 : Nat)), (0, 2)]
 
+-- lean/ToyParMove/Readings.lean:80-82
 -- lean/ToyParMove/Readings.lean — Positive example (FunctionalAt)
 theorem functionalAt_equal_values_example :
     FunctionalAt (fun l : Nat => if l = 2 then 1 else l) [((0 : Nat), (1 : Nat)), (0, 2)] ∧
     ¬ Functional [((0 : Nat), (1 : Nat)), (0, 2)]
 
+-- lean/ToyParMove/Readings.lean:90-91
 -- lean/ToyParMove/Readings.lean — Negative example (FunctionalAt)
 theorem not_functionalAt_id_example :
     ¬ FunctionalAt (id : Nat → Nat) [((0 : Nat), (1 : Nat)), (0, 2)]
 
+-- lean/ToyParMove/Readings.lean:52-54
 -- lean/ToyParMove/Readings.lean — Positive example (runSeq)
 theorem runSeq_swap_via_scratch_example :
     runSeq [(2, 0), (0, 1), (1, 2)] (id : Nat → Nat) 0 = 1 ∧
     runSeq [(2, 0), (0, 1), (1, 2)] (id : Nat → Nat) 1 = 0
 
+-- lean/ToyParMove/Readings.lean:58-59
 -- lean/ToyParMove/Readings.lean — Negative example (runSeq)
 theorem runSeq_naive_swap_fails :
     runSeq [(0, 1), (1, 0)] (id : Nat → Nat) 1 = 1
@@ -234,18 +244,22 @@ type with two distinct values a realization on every store holds on the identity
 injective-store bounds. The four lemmas, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Basic.lean:163-164
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem runSeq_comp {W : Type} (f : V → W) : ∀ (ms : List (Loc × Loc)) (τ : Loc → V),
     runSeq ms (f ∘ τ) = f ∘ runSeq ms τ
 
+-- lean/ToyParMove/Basic.lean:169-170
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem pmove_comp {W : Type} (f : V → W) (M : List (Loc × Loc)) (τ : Loc → V) :
     pmove M (f ∘ τ) = f ∘ pmove M τ
 
+-- lean/ToyParMove/Basic.lean:187-188
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem runSeq_eq_pmove_of_id {ms M : List (Loc × Loc)}
     (h : runSeq ms (id : Loc → Loc) = pmove M id) (σ : Loc → V) : runSeq ms σ = pmove M σ
 
+-- lean/ToyParMove/Basic.lean:203-205
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem runSeq_eq_pmove_at_id_of_forall {ms M : List (Loc × Loc)} {l : Loc} (a b : V)
     (hab : a ≠ b) (h : ∀ σ : Loc → V, runSeq ms σ l = pmove M σ l) :
@@ -277,20 +291,25 @@ Algorithm 1 (which reuses an existing copy of a cycle value when there is one).
 Examples (each proved; statements quoted verbatim, proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Sequentialize.lean:294
 -- lean/ToyParMove/Sequentialize.lean — Positive example (isReady)
 theorem isReady_example : isReady [((1 : Nat), (2 : Nat)), (3, 0)] (3, 0) = true
 
+-- lean/ToyParMove/Sequentialize.lean:297
 -- lean/ToyParMove/Sequentialize.lean — Negative example (isReady)
 theorem not_isReady_example : isReady [((1 : Nat), (2 : Nat)), (2, 1)] (1, 2) = false
 
+-- lean/ToyParMove/Sequentialize.lean:301-302
 -- lean/ToyParMove/Sequentialize.lean — Positive example (sequentialize)
 theorem sequentialize_swap_example :
     sequentialize (9 : Nat) [(1, 2), (2, 1)] = [(9, 1), (1, 2), (2, 9)]
 
+-- lean/ToyParMove/Sequentialize.lean:306-307
 -- lean/ToyParMove/Sequentialize.lean — Positive example (sequentialize)
 theorem sequentialize_chain_example :
     sequentialize (9 : Nat) [(0, 0), (1, 0), (2, 1)] = [(2, 1), (1, 0)]
 
+-- lean/ToyParMove/Sequentialize.lean:311-312
 -- lean/ToyParMove/Sequentialize.lean — Non-claim witness (sequentialize does not deduplicate)
 theorem sequentialize_emits_duplicates_example :
     sequentialize (9 : Nat) [(0, 1), (0, 1), (1, 0)] = [(9, 0), (0, 1), (0, 1), (1, 9)]
@@ -324,32 +343,39 @@ def runXorSwaps (ss) (σ) := ss.foldl (fun τ p => xorSwap τ p.1 p.2) σ
 Examples (each proved; statements quoted verbatim, proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:293
 -- lean/ToyParMove/Necessity.lean — Positive example (Topological)
 theorem topological_example : Topological [((2 : Nat), (1 : Nat)), (1, 0)]
 
+-- lean/ToyParMove/Necessity.lean:296
 -- lean/ToyParMove/Necessity.lean — Negative example (Topological)
 theorem not_topological_example : ¬ Topological [((1 : Nat), (0 : Nat)), (2, 1)]
 
+-- lean/ToyParMove/Cycles.lean:434-437
 -- lean/ToyParMove/Cycles.lean — Positive example (cycleMoves)
 theorem cycleMoves_example :
     cycleMoves ([0, 1, 2] : List Nat) = [(0, 2), (1, 0), (2, 1)] ∧
     pmove (cycleMoves ([0, 1, 2] : List Nat)) (id : Nat → Nat) 1 = 0 ∧
     pmove (cycleMoves ([0, 1, 2] : List Nat)) (id : Nat → Nat) 1 ≠ 2
 
+-- lean/ToyParMove/Cycles.lean:441-442
 -- lean/ToyParMove/Cycles.lean — Negative example (cycleMoves)
 theorem cycleMoves_repeated_not_cycle :
     pmove (cycleMoves ([0, 1, 0] : List Nat)) (id : Nat → Nat) 0 = 0
 
+-- lean/ToyParMove/Cycles.lean:445-446
 -- lean/ToyParMove/Cycles.lean — Positive example (cycleSeqScratch)
 theorem cycleSeqScratch_example :
     cycleSeqScratch (9 : Nat) [0, 1, 2] = [(9, 2), (2, 1), (1, 0), (0, 9)]
 
+-- lean/ToyParMove/Swaps.lean:292-295
 -- lean/ToyParMove/Swaps.lean — Positive example (swapStore)
 theorem swapStore_example :
     swapStore (id : Nat → Nat) 0 1 0 = 1 ∧ swapStore (id : Nat → Nat) 0 1 1 = 0 ∧
     swapStore (id : Nat → Nat) 0 1 2 = 2 ∧
     swapStore (id : Nat → Nat) 0 1 1 ≠ upd (id : Nat → Nat) 0 1 1
 
+-- lean/ToyParMove/Swaps.lean:299-303
 -- lean/ToyParMove/Swaps.lean — Positive example (cycleSwaps, runSwaps)
 theorem cycleSwaps_example :
     cycleSwaps ([0, 1, 2] : List Nat) = [(0, 1), (0, 2)] ∧
@@ -357,17 +383,20 @@ theorem cycleSwaps_example :
       runSwaps [((0 : Nat), (1 : Nat)), (0, 2)] (id : Nat → Nat) 1 = 0 ∧
       runSwaps [((0 : Nat), (1 : Nat)), (0, 2)] (id : Nat → Nat) 2 = 1)
 
+-- lean/ToyParMove/Swaps.lean:307-309
 -- lean/ToyParMove/Swaps.lean — Negative example (runSwaps)
 theorem runSwaps_order_matters :
     runSwaps [((0 : Nat), (2 : Nat)), (0, 1)] (id : Nat → Nat) 0 ≠
       runSwaps [((0 : Nat), (1 : Nat)), (0, 2)] (id : Nat → Nat) 0
 
+-- lean/ToyParMove/XorSwap.lean:169-172
 -- lean/ToyParMove/XorSwap.lean — Positive example (xorSwap, runXorSwaps)
 theorem xorSwap_examples :
     xorSwap (fun l : Nat => if l = 0 then 0x5A#8 else 0xC3#8) 0 1 0 = 0xC3#8 ∧
     runXorSwaps [((0 : Nat), (1 : Nat)), (0, 2)]
       (fun l : Nat => if l = 0 then 1#8 else if l = 1 then 2#8 else 3#8) 0 = 3#8
 
+-- lean/ToyParMove/XorSwap.lean:176-177
 -- lean/ToyParMove/XorSwap.lean — Negative example (xorSwap)
 theorem xorSwap_alias_example :
     xorSwap (fun _ : Nat => (1#8 : BitVec 8)) 0 0 0 = 0#8
@@ -405,11 +434,13 @@ Bitwise unfolding used throughout (`getLsbD_putLane`), and the bit-set reading o
 (`Lane.disjoint_iff_bits`), verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:110-112
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem getLsbD_putLane (L : Lane) (v : BitVec L.wid) (w : BitVec n) {i : Nat} (hi : i < n) :
     (putLane L v w).getLsbD i =
       if L.off ≤ i ∧ i < L.off + L.wid then v.getLsbD (i - L.off) else w.getLsbD i
 
+-- lean/ToyParMove/Lanes.lean:67-69
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem Lane.disjoint_iff_bits (L₁ L₂ : Lane) :
     L₁.Disjoint L₂ ↔
@@ -419,55 +450,68 @@ theorem Lane.disjoint_iff_bits (L₁ L₂ : Lane) :
 Examples (each proved; statements quoted verbatim, proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:31-32
 -- lean/ToyParMove/Lanes.lean — Positive example (VeryWellBehaved)
 theorem veryWellBehaved_fst :
     VeryWellBehaved (fun s : Nat × Nat => s.1) (fun a s => (a, s.2))
 
+-- lean/ToyParMove/Lanes.lean:36-37
 -- lean/ToyParMove/Lanes.lean — Negative example (VeryWellBehaved, PutGet fails)
 theorem not_putGet_constant_put :
     ¬ PutGet (fun s : Nat => s) (fun _ _ => 0)
 
+-- lean/ToyParMove/Lanes.lean:41-42
 -- lean/ToyParMove/Lanes.lean — Negative example (VeryWellBehaved)
 theorem not_veryWellBehaved_constant_put :
     ¬ VeryWellBehaved (fun s : Nat => s) (fun _ _ => 0)
 
+-- lean/ToyParMove/Lanes.lean:317-318
 -- lean/ToyParMove/Lanes.lean — Positive example (putLane)
 theorem putLane_low8_example :
     putLane laneLow8 0xFF#8 (0x1122334455667788#64) = 0x11223344556677FF#64
 
+-- lean/ToyParMove/Lanes.lean:321-322
 -- lean/ToyParMove/Lanes.lean — Positive example (putLane)
 theorem putLane_high8_example :
     putLane laneHigh8 0xAB#8 (0x1122334455667788#64) = 0x112233445566AB88#64
 
+-- lean/ToyParMove/Lanes.lean:325-327
 -- lean/ToyParMove/Lanes.lean — Negative example (putLane is not a zero-extending write)
 theorem putLane_low32_not_zext :
     putLane laneLow32 0xDEADBEEF#32 (0x1122334455667788#64) ≠
       writeZext 64 0xDEADBEEF#32 (0x1122334455667788#64)
 
+-- lean/ToyParMove/Lanes.lean:330-331
 -- lean/ToyParMove/Lanes.lean — Positive example (writeZext)
 theorem writeZext_example :
     writeZext 64 0xDEADBEEF#32 (0x1122334455667788#64) = 0x00000000DEADBEEF#64
 
+-- lean/ToyParMove/Lanes.lean:351-352
 -- lean/ToyParMove/Lanes.lean — Negative example (writeZext)
 theorem writeZext_not_preserve_upper :
     writeZext 64 0xDEADBEEF#32 (0x1122334455667788#64) ≠ 0x11223344DEADBEEF#64
 
+-- lean/ToyParMove/Lanes.lean:355
 -- lean/ToyParMove/Lanes.lean — Non-claim witness (writeZext truncates a value wider than the register)
 theorem writeZext_truncates_example : writeZext 8 (0x1234#16) (0#8) = 0x34#8
 
+-- lean/ToyParMove/Lanes.lean:345-347
 -- lean/ToyParMove/Lanes.lean — Positive / negative examples (getLane)
 theorem getLane_examples :
     getLane (n := 64) ⟨8, 8⟩ (0x1122334455667788#64) = (0x77#8 : BitVec 8) ∧
     getLane (n := 64) ⟨60, 8⟩ (BitVec.allOnes 64) = (0x0F#8 : BitVec 8)
 
+-- lean/ToyParMove/Lanes.lean:335-336
 -- lean/ToyParMove/Lanes.lean — Positive / negative examples (Lane.Disjoint)
 theorem disjoint_examples :
     laneLow8.Disjoint laneHigh8 ∧ ¬ laneLow8.Disjoint laneLow16 ∧ Lane.Disjoint ⟨4, 0⟩ ⟨0, 8⟩
 
+-- lean/ToyParMove/Lanes.lean:341-342
 -- lean/ToyParMove/Lanes.lean — Positive / negative examples (Lane.DisjointIn)
 theorem disjointIn_examples :
     Lane.DisjointIn 8 ⟨6, 4⟩ ⟨8, 4⟩ ∧ ¬ Lane.DisjointIn 16 ⟨6, 4⟩ ⟨8, 4⟩
 
+-- lean/ToyParMove/Lanes.lean:358
 -- lean/ToyParMove/Lanes.lean — Positive / negative examples (Lane.Fits)
 theorem fits_examples : laneLow32.Fits 64 ∧ ¬ (Lane.Fits ⟨60, 8⟩ 64)
 ```
@@ -495,22 +539,27 @@ def regs16 : Nat → BitVec 16 :=
 Examples (each proved; statements quoted verbatim, proofs omitted):
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:211-212
 -- lean/ToyParMove/LaneMoves.lean — Positive example (lanePMove)
 theorem lanePMove_byte_swap_example :
     lanePMove [lm 0 0 0 8 8, lm 0 8 0 0 8] regs16 0 = 0x3412#16
 
+-- lean/ToyParMove/LaneMoves.lean:216-217
 -- lean/ToyParMove/LaneMoves.lean — Negative example (runLanes is not the parallel reading)
 theorem runLanes_byte_swap_naive :
     runLanes [lm 0 0 0 8 8, lm 0 8 0 0 8] regs16 0 = 0x1212#16
 
+-- lean/ToyParMove/LaneMoves.lean:220-221
 -- lean/ToyParMove/LaneMoves.lean — Positive / negative examples (LaneWF)
 theorem laneWF_examples :
     LaneWF [lm 0 0 1 0 8, lm 0 8 1 8 8] ∧ ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 1 0 16]
 
+-- lean/ToyParMove/LaneMoves.lean:225-226
 -- lean/ToyParMove/LaneMoves.lean — Positive / negative examples (DistinctDstLanes)
 theorem distinctDstLanes_examples :
     DistinctDstLanes [lm 0 0 1 0 8, lm 0 8 2 0 8] ∧ ¬ DistinctDstLanes [lm 0 0 1 0 8, lm 0 0 2 0 8]
 
+-- lean/ToyParMove/LaneMoves.lean:230-231
 -- lean/ToyParMove/LaneMoves.lean — Positive / negative examples (LaneTopological)
 theorem laneTopological_examples :
     LaneTopological [lm 2 0 1 0 8, lm 1 0 0 0 8] ∧ ¬ LaneTopological [lm 1 0 0 0 8, lm 2 0 1 0 8]
@@ -542,7 +591,7 @@ theorem laneTopological_examples :
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.pmove_readings_disagree_on_repeated_destination`.
 
 ```lean
--- lean/ToyParMove/Readings.lean
+-- lean/ToyParMove/Readings.lean:101-103
 theorem pmove_readings_disagree_on_repeated_destination :
     pmove [(0, 1), (0, 2)] (id : Nat → Nat) 0 = 1 ∧
     pmoveLast [(0, 1), (0, 2)] (id : Nat → Nat) 0 = 2
@@ -550,7 +599,7 @@ theorem pmove_readings_disagree_on_repeated_destination :
 
 - **Reading with key definitions unfolded:**
 
-```text
+```lean
 pmove [(0,1),(0,2)] (id : Nat → Nat) 0 = 1 ∧ pmoveLast [(0,1),(0,2)] (id : Nat → Nat) 0 = 2
 ```
 
@@ -575,32 +624,32 @@ Basis: derived (modeling bridge) — The toy `pmove` reads the old store for eve
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.pmove_perm_invariant_iff_functional_of_two_values`, `Toy.ParMove.pmove_perm_invariant_of_functional`, `Toy.ParMove.functional_of_pmove_perm_invariant_of_two_values`, `Toy.ParMove.pmove_perm_invariant_at_iff_functionalAt`, `Toy.ParMove.pmove_eq_pmoveLast_of_functional`.
 
 ```lean
--- lean/ToyParMove/Readings.lean
+-- lean/ToyParMove/Readings.lean:142-145
 theorem pmove_perm_invariant_iff_functional_of_two_values {M : List (Loc × Loc)} (a b : V)
     (hab : a ≠ b) :
     (∀ M' : List (Loc × Loc), M'.Perm M → ∀ σ : Loc → V, pmove M' σ = pmove M σ) ↔
       Functional M
 
--- lean/ToyParMove/Readings.lean
+-- lean/ToyParMove/Readings.lean:110-111
 theorem pmove_perm_invariant_of_functional {M M' : List (Loc × Loc)} (hF : Functional M)
     (hp : M.Perm M') (σ : Loc → V) : pmove M σ = pmove M' σ
 
--- lean/ToyParMove/Readings.lean
+-- lean/ToyParMove/Readings.lean:125-128
 theorem functional_of_pmove_perm_invariant_of_two_values {M : List (Loc × Loc)} (a b : V)
     (hab : a ≠ b)
     (h : ∀ M' : List (Loc × Loc), M'.Perm M → ∀ σ : Loc → V, pmove M' σ = pmove M σ) :
     Functional M
 
--- lean/ToyParMove/Readings.lean
+-- lean/ToyParMove/Readings.lean:152-153
 theorem pmove_perm_invariant_at_iff_functionalAt {M : List (Loc × Loc)} (σ : Loc → V) :
     (∀ M' : List (Loc × Loc), M'.Perm M → pmove M' σ = pmove M σ) ↔ FunctionalAt σ M
 
--- lean/ToyParMove/Readings.lean
+-- lean/ToyParMove/Readings.lean:183-184
 theorem pmove_eq_pmoveLast_of_functional {M : List (Loc × Loc)} (hF : Functional M)
     (σ : Loc → V) : pmove M σ = pmoveLast M σ
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 (a) (a b : V) (hab : a ≠ b) : (∀ M', M'.Perm M → ∀ σ, pmove M' σ = pmove M σ) ↔ Functional M;  (b) Functional M → M.Perm M' → ∀ σ, pmove M σ = pmove M' σ;  (a→) (a b : V) → a ≠ b → (∀ M', M'.Perm M → ∀ σ, pmove M' σ = pmove M σ) → Functional M;  (c) ∀ σ, (∀ M', M'.Perm M → pmove M' σ = pmove M σ) ↔ FunctionalAt σ M;  (b') Functional M → ∀ σ, pmove M σ = pmoveLast M σ.   Here Functional M := ∀ d s₁ s₂, (d,s₁) ∈ M → (d,s₂) ∈ M → s₁ = s₂ and FunctionalAt σ M := ∀ d s₁ s₂, (d,s₁) ∈ M → (d,s₂) ∈ M → σ s₁ = σ s₂.
@@ -633,13 +682,13 @@ Basis: derived (modeling bridge) — The toy `pmove` reads the old store for eve
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.sequentialize_agrees_off_tmp`.
 
 ```lean
--- lean/ToyParMove/Sequentialize.lean
+-- lean/ToyParMove/Sequentialize.lean:271-273
 theorem sequentialize_agrees_off_tmp {M : List (Loc × Loc)} {tmp : Loc} (hF : Functional M)
     (htmp : tmp ∉ dsts M ∨ tmp ∉ srcs M) (σ : Loc → V) :
     ∀ l, l ≠ tmp → runSeq (sequentialize tmp M) σ l = pmove M σ l
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 Functional M → (tmp ∉ dsts M ∨ tmp ∉ srcs M) → ∀ σ, ∀ l ≠ tmp, runSeq (sequentialize tmp M) σ l = pmove M σ l
@@ -673,7 +722,7 @@ Basis: derived (modeling bridge) — The toy `pmove` reads the old store for eve
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.runSeq_append_realizes_off_tmp`.
 
 ```lean
--- lean/ToyParMove/Necessity.lean
+-- lean/ToyParMove/Necessity.lean:135-141
 theorem runSeq_append_realizes_off_tmp {M₁ M₂ ms₁ ms₂ : List (Loc × Loc)} {tmp : Loc}
     (h₁ : ∀ τ : Loc → V, ∀ l, l ≠ tmp → runSeq ms₁ τ l = pmove M₁ τ l)
     (h₂ : ∀ τ : Loc → V, ∀ l, l ≠ tmp → runSeq ms₂ τ l = pmove M₂ τ l)
@@ -683,7 +732,7 @@ theorem runSeq_append_realizes_off_tmp {M₁ M₂ ms₁ ms₂ : List (Loc × Loc
     ∀ τ : Loc → V, ∀ l, l ≠ tmp → runSeq (ms₁ ++ ms₂) τ l = pmove (M₁ ++ M₂) τ l
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 (h₁ : ∀ τ, ∀ l ≠ tmp, runSeq ms₁ τ l = pmove M₁ τ l) → (h₂ : ∀ τ, ∀ l ≠ tmp, runSeq ms₂ τ l = pmove M₂ τ l) → (hdisj : ∀ x ∈ dsts M₁, x ∉ dsts M₂) → (hread : ∀ x ∈ srcs M₂, x ∉ dsts M₁) → (htmp : tmp ∉ srcs M₂) → ∀ τ, ∀ l ≠ tmp, runSeq (ms₁ ++ ms₂) τ l = pmove (M₁ ++ M₂) τ l
@@ -714,12 +763,12 @@ Basis: derived (modeling bridge) — The toy `pmove` reads the old store for eve
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.runSeq_eq_pmove_of_topological`.
 
 ```lean
--- lean/ToyParMove/Necessity.lean
+-- lean/ToyParMove/Necessity.lean:268-269
 theorem runSeq_eq_pmove_of_topological {ms : List (Loc × Loc)} (hF : Functional ms)
     (htop : Topological ms) (σ : Loc → V) : runSeq ms σ = pmove ms σ
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 Functional ms → ms.Pairwise (fun e l => e.1 ≠ l.2) → ∀ σ, runSeq ms σ = pmove ms σ
@@ -748,18 +797,18 @@ Basis: derived (modeling bridge) — The toy `pmove` reads the old store for eve
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.runSeq_cycleSeqScratch`, `Toy.ParMove.length_cycleSeqScratch`.
 
 ```lean
--- lean/ToyParMove/Cycles.lean
+-- lean/ToyParMove/Cycles.lean:178-181
 theorem runSeq_cycleSeqScratch {l₀ : Loc} {rest : List Loc} {tmp : Loc}
     (hn : (l₀ :: rest).Nodup) (htmp : tmp ∉ l₀ :: rest) (σ : Loc → V) :
     ∀ l, l ≠ tmp →
       runSeq (cycleSeqScratch tmp (l₀ :: rest)) σ l = pmove (cycleMoves (l₀ :: rest)) σ l
 
--- lean/ToyParMove/Cycles.lean
+-- lean/ToyParMove/Cycles.lean:171-172
 theorem length_cycleSeqScratch (tmp l₀ : Loc) (rest : List Loc) :
     (cycleSeqScratch tmp (l₀ :: rest)).length = (l₀ :: rest).length + 1
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 (l₀ :: rest).Nodup → tmp ∉ l₀ :: rest → ∀ σ, ∀ l ≠ tmp, runSeq (cycleSeqScratch tmp (l₀ :: rest)) σ l = pmove (cycleMoves (l₀ :: rest)) σ l;  (cycleSeqScratch tmp (l₀ :: rest)).length = (l₀ :: rest).length + 1
@@ -788,14 +837,14 @@ Basis: derived (modeling bridge) — A rotation of registers (for example a call
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.cycle_length_add_one_le_of_injective_of_realizes_off_tmp`, `Toy.ParMove.cycle_length_add_one_le_of_two_values_of_realizes_off_tmp`.
 
 ```lean
--- lean/ToyParMove/Cycles.lean
+-- lean/ToyParMove/Cycles.lean:337-341
 theorem cycle_length_add_one_le_of_injective_of_realizes_off_tmp {ls : List Loc} {tmp : Loc}
     {σ : Loc → V} {ms : List (Loc × Loc)} (hn : ls.Nodup) (hk : 2 ≤ ls.length) (htmp : tmp ∉ ls)
     (hσ : Function.Injective σ)
     (hreal : ∀ l, l ≠ tmp → runSeq ms σ l = pmove (cycleMoves ls) σ l) :
     ls.length + 1 ≤ ms.length
 
--- lean/ToyParMove/Cycles.lean
+-- lean/ToyParMove/Cycles.lean:411-415
 theorem cycle_length_add_one_le_of_two_values_of_realizes_off_tmp {ls : List Loc} {tmp : Loc}
     {ms : List (Loc × Loc)} (a b : V) (hab : a ≠ b) (hn : ls.Nodup) (hk : 2 ≤ ls.length)
     (htmp : tmp ∉ ls)
@@ -803,7 +852,7 @@ theorem cycle_length_add_one_le_of_two_values_of_realizes_off_tmp {ls : List Loc
     ls.length + 1 ≤ ms.length
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 (a) ls.Nodup → 2 ≤ ls.length → tmp ∉ ls → Function.Injective σ → (∀ l ≠ tmp, runSeq ms σ l = pmove (cycleMoves ls) σ l) → ls.length + 1 ≤ ms.length;  (b) (a b : V) → a ≠ b → ls.Nodup → 2 ≤ ls.length → tmp ∉ ls → (∀ σ : Loc → V, ∀ l ≠ tmp, runSeq ms σ l = pmove (cycleMoves ls) σ l) → ls.length + 1 ≤ ms.length
@@ -838,22 +887,22 @@ Basis: derived (modeling bridge) — A rotation of registers (for example a call
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.runSeq_ne_pmove_cycle_of_injective`, `Toy.ParMove.runSeq_ne_pmove_swap_of_injective`, `Toy.ParMove.runSeq_ne_pmove_cycle_of_two_values`.
 
 ```lean
--- lean/ToyParMove/Cycles.lean
+-- lean/ToyParMove/Cycles.lean:354-356
 theorem runSeq_ne_pmove_cycle_of_injective {ls : List Loc} {σ : Loc → V} (hn : ls.Nodup)
     (hk : 2 ≤ ls.length) (hσ : Function.Injective σ) :
     ∀ ms : List (Loc × Loc), runSeq ms σ ≠ pmove (cycleMoves ls) σ
 
--- lean/ToyParMove/Cycles.lean
+-- lean/ToyParMove/Cycles.lean:373-374
 theorem runSeq_ne_pmove_swap_of_injective {a b : Loc} {σ : Loc → V} (hab : a ≠ b)
     (hσ : Function.Injective σ) : ∀ ms : List (Loc × Loc), runSeq ms σ ≠ pmove [(a, b), (b, a)] σ
 
--- lean/ToyParMove/Cycles.lean
+-- lean/ToyParMove/Cycles.lean:400-402
 theorem runSeq_ne_pmove_cycle_of_two_values {ls : List Loc} (a b : V) (hab : a ≠ b)
     (hn : ls.Nodup) (hk : 2 ≤ ls.length) :
     ¬ ∃ ms : List (Loc × Loc), ∀ σ : Loc → V, runSeq ms σ = pmove (cycleMoves ls) σ
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 (a) ls.Nodup → 2 ≤ ls.length → Function.Injective σ → ∀ ms, runSeq ms σ ≠ pmove (cycleMoves ls) σ;  (a') a ≠ b → Function.Injective σ → ∀ ms, runSeq ms σ ≠ pmove [(a,b),(b,a)] σ;  (b) (a b : V) → a ≠ b → ls.Nodup → 2 ≤ ls.length → ¬ ∃ ms, ∀ σ : Loc → V, runSeq ms σ = pmove (cycleMoves ls) σ
@@ -886,15 +935,15 @@ Basis: derived (modeling bridge) — A rotation of registers (for example a call
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.runSwaps_cycleSwaps`, `Toy.ParMove.length_cycleSwaps`.
 
 ```lean
--- lean/ToyParMove/Swaps.lean
+-- lean/ToyParMove/Swaps.lean:124-125
 theorem runSwaps_cycleSwaps {ls : List Loc} (hn : ls.Nodup) (σ : Loc → V) :
     runSwaps (cycleSwaps ls) σ = pmove (cycleMoves ls) σ
 
--- lean/ToyParMove/Swaps.lean
+-- lean/ToyParMove/Swaps.lean:40
 theorem length_cycleSwaps (ls : List Loc) : (cycleSwaps ls).length = ls.length - 1
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 ls.Nodup → ∀ σ, runSwaps (cycleSwaps ls) σ = pmove (cycleMoves ls) σ;  (cycleSwaps ls).length = ls.length - 1
@@ -920,19 +969,19 @@ Basis: derived (modeling bridge) — A rotation of registers (for example a call
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.cycle_length_sub_one_le_of_injective_of_runSwaps`, `Toy.ParMove.cycle_length_sub_one_le_of_two_values_of_runSwaps`.
 
 ```lean
--- lean/ToyParMove/Swaps.lean
+-- lean/ToyParMove/Swaps.lean:226-228
 theorem cycle_length_sub_one_le_of_injective_of_runSwaps {ls : List Loc} {σ : Loc → V}
     {ss : List (Loc × Loc)} (hn : ls.Nodup) (hσ : Function.Injective σ)
     (hreal : runSwaps ss σ = pmove (cycleMoves ls) σ) : ls.length - 1 ≤ ss.length
 
--- lean/ToyParMove/Swaps.lean
+-- lean/ToyParMove/Swaps.lean:272-275
 theorem cycle_length_sub_one_le_of_two_values_of_runSwaps {ls : List Loc}
     {ss : List (Loc × Loc)} (a b : V) (hab : a ≠ b) (hn : ls.Nodup)
     (hreal : ∀ σ : Loc → V, runSwaps ss σ = pmove (cycleMoves ls) σ) :
     ls.length - 1 ≤ ss.length
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 (a) ls.Nodup → Function.Injective σ → runSwaps ss σ = pmove (cycleMoves ls) σ → ls.length - 1 ≤ ss.length;  (b) (a b : V) → a ≠ b → ls.Nodup → (∀ σ : Loc → V, runSwaps ss σ = pmove (cycleMoves ls) σ) → ls.length - 1 ≤ ss.length
@@ -962,19 +1011,19 @@ Basis: derived (modeling bridge) — A rotation of registers (for example a call
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.xorSwap_eq_swapStore_iff`, `Toy.ParMove.xorSwap_eq_swapStore_of_ne`, `Toy.ParMove.xorSwap_self`.
 
 ```lean
--- lean/ToyParMove/XorSwap.lean
+-- lean/ToyParMove/XorSwap.lean:61-62
 theorem xorSwap_eq_swapStore_iff (σ : Loc → BitVec w) (a b : Loc) :
     xorSwap σ a b = swapStore σ a b ↔ (a ≠ b ∨ σ a = 0#w)
 
--- lean/ToyParMove/XorSwap.lean
+-- lean/ToyParMove/XorSwap.lean:32-33
 theorem xorSwap_eq_swapStore_of_ne {a b : Loc} (hab : a ≠ b) (σ : Loc → BitVec w) :
     xorSwap σ a b = swapStore σ a b
 
--- lean/ToyParMove/XorSwap.lean
+-- lean/ToyParMove/XorSwap.lean:53
 theorem xorSwap_self (σ : Loc → BitVec w) (a : Loc) : xorSwap σ a a = upd σ a 0#w
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 ∀ σ a b, xorSwap σ a b = swapStore σ a b ↔ (a ≠ b ∨ σ a = 0#w);  a ≠ b → ∀ σ, xorSwap σ a b = swapStore σ a b;  ∀ σ a, xorSwap σ a a = upd σ a 0#w
@@ -1000,17 +1049,17 @@ Basis: derived (modeling bridge) — `xorSwap` models the three exclusive-or exc
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.runXorSwaps_eq_runSwaps_of_no_self`, `Toy.ParMove.runXorSwaps_cycleSwaps`.
 
 ```lean
--- lean/ToyParMove/XorSwap.lean
+-- lean/ToyParMove/XorSwap.lean:85-87
 theorem runXorSwaps_eq_runSwaps_of_no_self :
     ∀ {ss : List (Loc × Loc)}, (∀ p ∈ ss, p.1 ≠ p.2) → ∀ σ : Loc → BitVec w,
       runXorSwaps ss σ = runSwaps ss σ
 
--- lean/ToyParMove/XorSwap.lean
+-- lean/ToyParMove/XorSwap.lean:107-108
 theorem runXorSwaps_cycleSwaps {ls : List Loc} (hn : ls.Nodup) (σ : Loc → BitVec w) :
     runXorSwaps (cycleSwaps ls) σ = pmove (cycleMoves ls) σ
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 (∀ p ∈ ss, p.1 ≠ p.2) → ∀ σ, runXorSwaps ss σ = runSwaps ss σ;  ls.Nodup → ∀ σ, runXorSwaps (cycleSwaps ls) σ = pmove (cycleMoves ls) σ
@@ -1037,21 +1086,21 @@ Basis: derived (modeling bridge) — As for the xor characterization: a compiler
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.putLane_veryWellBehaved_of_fits`, `Toy.ParMove.putLane_getPut`, `Toy.ParMove.putLane_putGet_of_fits`, `Toy.ParMove.putLane_putPut`.
 
 ```lean
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:156-157
 theorem putLane_veryWellBehaved_of_fits {L : Lane} (hfit : L.Fits n) :
     VeryWellBehaved (getLane (n := n) L) (putLane L)
 
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:127
 theorem putLane_getPut (L : Lane) : GetPut (getLane (n := n) L) (putLane L)
 
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:147
 theorem putLane_putGet_of_fits {L : Lane} (hfit : L.Fits n) : PutGet (getLane (n := n) L) (putLane L)
 
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:139
 theorem putLane_putPut (L : Lane) : PutPut (getLane (n := n) L) (putLane L)
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 L.off + L.wid ≤ n → VeryWellBehaved (getLane L) (putLane L);  GetPut (getLane L) (putLane L);  L.off + L.wid ≤ n → PutGet (getLane L) (putLane L);  PutPut (getLane L) (putLane L)
@@ -1079,17 +1128,17 @@ Basis: derived (modeling bridge) — Under the modeling bridges stated above (**
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.putLane_comm_of_disjoint`, `Toy.ParMove.getLane_putLane_of_disjoint`.
 
 ```lean
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:161-163
 theorem putLane_comm_of_disjoint {L₁ L₂ : Lane} (hd : L₁.Disjoint L₂) (v₁ : BitVec L₁.wid)
     (v₂ : BitVec L₂.wid) (w : BitVec n) :
     putLane L₁ v₁ (putLane L₂ v₂ w) = putLane L₂ v₂ (putLane L₁ v₁ w)
 
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:175-176
 theorem getLane_putLane_of_disjoint {L₁ L₂ : Lane} (hd : L₁.Disjoint L₂) (v : BitVec L₁.wid)
     (w : BitVec n) : getLane L₂ (putLane L₁ v w) = getLane L₂ w
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 L₁.Disjoint L₂ → ∀ v₁ v₂ w, putLane L₁ v₁ (putLane L₂ v₂ w) = putLane L₂ v₂ (putLane L₁ v₁ w);  L₁.Disjoint L₂ → ∀ v w, getLane L₂ (putLane L₁ v w) = getLane L₂ w.   Here L₁.Disjoint L₂ := L₁.wid = 0 ∨ L₂.wid = 0 ∨ L₁.off + L₁.wid ≤ L₂.off ∨ L₂.off + L₂.wid ≤ L₁.off, which is equivalent to disjointness of the bit sets [off, off + wid) (Lane.disjoint_iff_bits).
@@ -1116,18 +1165,18 @@ Basis: derived (modeling bridge) — Under the modeling bridges stated above (**
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.putLane_comm_iff_disjointIn`, `Toy.ParMove.putLane_comm_iff_disjoint_of_fits`.
 
 ```lean
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:189-191
 theorem putLane_comm_iff_disjointIn (L₁ L₂ : Lane) :
     (∀ (v₁ : BitVec L₁.wid) (v₂ : BitVec L₂.wid) (w : BitVec n),
       putLane L₁ v₁ (putLane L₂ v₂ w) = putLane L₂ v₂ (putLane L₁ v₁ w)) ↔ L₁.DisjointIn n L₂
 
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:210-212
 theorem putLane_comm_iff_disjoint_of_fits {L₁ L₂ : Lane} (hfit : L₁.Fits n ∨ L₂.Fits n) :
     (∀ (v₁ : BitVec L₁.wid) (v₂ : BitVec L₂.wid) (w : BitVec n),
       putLane L₁ v₁ (putLane L₂ v₂ w) = putLane L₂ v₂ (putLane L₁ v₁ w)) ↔ L₁.Disjoint L₂
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 (a) (∀ v₁ v₂ (w : BitVec n), putLane L₁ v₁ (putLane L₂ v₂ w) = putLane L₂ v₂ (putLane L₁ v₁ w)) ↔ L₁.DisjointIn n L₂;  (b) (L₁.Fits n ∨ L₂.Fits n) → ((∀ v₁ v₂ w, ...) ↔ L₁.Disjoint L₂).   Here L₁.DisjointIn n L₂ := ∀ i < n, ¬ (L₁.off ≤ i < L₁.off + L₁.wid ∧ L₂.off ≤ i < L₂.off + L₂.wid).
@@ -1154,14 +1203,14 @@ Basis: derived (modeling bridge) — Under the modeling bridges stated above (**
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.writeZext_not_getPut_of_lt`.
 
 ```lean
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:273-274
 theorem writeZext_not_getPut_of_lt {wid : Nat} (h : wid < n) :
     ¬ ∃ g : BitVec n → BitVec wid, GetPut g (writeZext n (wid := wid))
 ```
 
 - **Reading with key definitions unfolded:**
 
-```text
+```lean
 wid < n → ¬ ∃ g : BitVec n → BitVec wid, GetPut g (writeZext n)
 ```
 
@@ -1188,14 +1237,14 @@ Basis: derived (modeling bridge) — Under the modeling bridges stated above (**
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.writeZext_getPut_iff`.
 
 ```lean
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:254-255
 theorem writeZext_getPut_iff {wid : Nat} (w : BitVec n) :
     writeZext n (getLane ⟨0, wid⟩ w) w = w ↔ ∀ i, wid ≤ i → w.getLsbD i = false
 ```
 
 - **Reading with key definitions unfolded:**
 
-```text
+```lean
 ∀ w : BitVec n, writeZext n (getLane ⟨0, wid⟩ w) w = w ↔ ∀ i, wid ≤ i → w.getLsbD i = false
 ```
 
@@ -1219,24 +1268,24 @@ Basis: derived (modeling bridge) — Under the modeling bridges stated above (**
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.writeZext_eq_putLane_full`, `Toy.ParMove.putLane_full_veryWellBehaved`, `Toy.ParMove.writeZext_putGet_of_le`, `Toy.ParMove.writeZext_putPut`.
 
 ```lean
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:223-224
 theorem writeZext_eq_putLane_full {wid : Nat} (v : BitVec wid) (w : BitVec n) :
     writeZext n v w = putLane ⟨0, n⟩ (v.setWidth n) w
 
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:232-233
 theorem putLane_full_veryWellBehaved :
     VeryWellBehaved (getLane (n := n) ⟨0, n⟩) (putLane ⟨0, n⟩)
 
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:237-238
 theorem writeZext_putGet_of_le {wid : Nat} (h : wid ≤ n) :
     PutGet (getLane (n := n) ⟨0, wid⟩) (writeZext n (wid := wid))
 
--- lean/ToyParMove/Lanes.lean
+-- lean/ToyParMove/Lanes.lean:249-250
 theorem writeZext_putPut {wid : Nat} :
     PutPut (getLane (n := n) ⟨0, wid⟩) (writeZext n (wid := wid))
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 ∀ v w, writeZext n v w = putLane ⟨0, n⟩ (v.setWidth n) w;  VeryWellBehaved (getLane ⟨0, n⟩) (putLane ⟨0, n⟩);  wid ≤ n → PutGet (getLane ⟨0, wid⟩) (writeZext n);  PutPut (getLane ⟨0, wid⟩) (writeZext n)
@@ -1263,14 +1312,14 @@ Basis: derived (modeling bridge) — Under the modeling bridges stated above (**
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.lanePMove_distinct_dst_lanes_not_enough`.
 
 ```lean
--- lean/ToyParMove/LaneMoves.lean
+-- lean/ToyParMove/LaneMoves.lean:237-240
 theorem lanePMove_distinct_dst_lanes_not_enough :
     DistinctDstLanes [lm 0 0 1 0 8, lm 0 0 2 0 16] ∧ ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 2 0 16] ∧
     lanePMove [lm 0 0 1 0 8, lm 0 0 2 0 16] regs16 0 ≠
       lanePMove [lm 0 0 2 0 16, lm 0 0 1 0 8] regs16 0
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 DistinctDstLanes [lm 0 0 1 0 8, lm 0 0 2 0 16] ∧ ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 2 0 16] ∧ lanePMove [lm 0 0 1 0 8, lm 0 0 2 0 16] regs16 0 ≠ lanePMove [lm 0 0 2 0 16, lm 0 0 1 0 8] regs16 0.   Here lm dreg doff sreg soff wid copies wid bits from bit soff of register sreg to bit doff of register dreg, and regs16 r := if r = 0 then 0x1234#16 else if r = 1 then 0xABCD#16 else 0#16.
@@ -1295,12 +1344,12 @@ Basis: derived (modeling bridge) — Lane moves model a parallel copy between su
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.lanePMove_perm_invariant_of_laneWF`.
 
 ```lean
--- lean/ToyParMove/LaneMoves.lean
+-- lean/ToyParMove/LaneMoves.lean:121-122
 theorem lanePMove_perm_invariant_of_laneWF {M M' : List (LaneMove R)} (hwf : LaneWF M)
     (hp : M.Perm M') (ρ : R → BitVec n) : lanePMove M ρ = lanePMove M' ρ
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 LaneWF M → M.Perm M' → ∀ ρ, lanePMove M ρ = lanePMove M' ρ.   Here LaneWF M := M.Pairwise (fun m₁ m₂ => m₁.dreg = m₂.dreg → m₁.dst.Disjoint m₂.dst).
@@ -1327,13 +1376,13 @@ Basis: derived (modeling bridge) — Lane moves model a parallel copy between su
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.runLanes_eq_lanePMove_of_laneWF_of_topological`.
 
 ```lean
--- lean/ToyParMove/LaneMoves.lean
+-- lean/ToyParMove/LaneMoves.lean:159-161
 theorem runLanes_eq_lanePMove_of_laneWF_of_topological {M ms : List (LaneMove R)}
     (hwf : LaneWF M) (hp : ms.Perm M) (htop : LaneTopological ms) (ρ : R → BitVec n) :
     runLanes ms ρ = lanePMove M ρ
 ```
 
-- **Reading with key definitions unfolded:**
+- **Reading with key definitions unfolded (prose):**
 
 ```text
 LaneWF M → ms.Perm M → LaneTopological ms → ∀ ρ, runLanes ms ρ = lanePMove M ρ.   Here LaneTopological ms := ms.Pairwise (fun e l => e.dreg = l.sreg → e.dst.Disjoint l.src).
@@ -1367,43 +1416,53 @@ wherever the text cites one it is an example or a counterexample to a universal 
 evidence for one. The definition examples are quoted under **Definitions**.
 
 ```lean
+-- lean/ToyParMove/Basic.lean:119
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem functional_of_wellFormed {M : List (Loc × Loc)} (h : WellFormed M) : Functional M
 
+-- lean/ToyParMove/Basic.lean:163-164
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem runSeq_comp {W : Type} (f : V → W) : ∀ (ms : List (Loc × Loc)) (τ : Loc → V),
     runSeq ms (f ∘ τ) = f ∘ runSeq ms τ
 
+-- lean/ToyParMove/Basic.lean:169-170
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem pmove_comp {W : Type} (f : V → W) (M : List (Loc × Loc)) (τ : Loc → V) :
     pmove M (f ∘ τ) = f ∘ pmove M τ
 
+-- lean/ToyParMove/Basic.lean:187-188
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem runSeq_eq_pmove_of_id {ms M : List (Loc × Loc)}
     (h : runSeq ms (id : Loc → Loc) = pmove M id) (σ : Loc → V) : runSeq ms σ = pmove M σ
 
+-- lean/ToyParMove/Basic.lean:203-205
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem runSeq_eq_pmove_at_id_of_forall {ms M : List (Loc × Loc)} {l : Loc} (a b : V)
     (hab : a ≠ b) (h : ∀ σ : Loc → V, runSeq ms σ l = pmove M σ l) :
     runSeq ms (id : Loc → Loc) l = pmove M id l
 
+-- lean/ToyParMove/Readings.lean:38-39
 -- lean/ToyParMove/Readings.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem functional_duplicate_not_wellFormed :
     Functional [((0 : Nat), (1 : Nat)), (0, 1)] ∧ ¬ WellFormed [((0 : Nat), (1 : Nat)), (0, 1)]
 
+-- lean/ToyParMove/Readings.lean:188-189
 -- lean/ToyParMove/Readings.lean — universally quantified theorem
 theorem pmove_eq_pmoveLast_of_wellFormed {M : List (Loc × Loc)} (hM : WellFormed M)
     (σ : Loc → V) : pmove M σ = pmoveLast M σ
 
+-- lean/ToyParMove/Readings.lean:196-198
 -- lean/ToyParMove/Readings.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem pmove_readings_agree_on_equal_source_values :
     pmove [((0 : Nat), (1 : Nat)), (0, 2)] (fun l : Nat => if l = 2 then 1 else l) =
       pmoveLast [((0 : Nat), (1 : Nat)), (0, 2)] (fun l : Nat => if l = 2 then 1 else l)
 
+-- lean/ToyParMove/Sequentialize.lean:311-312
 -- lean/ToyParMove/Sequentialize.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem sequentialize_emits_duplicates_example :
     sequentialize (9 : Nat) [(0, 1), (0, 1), (1, 0)] = [(9, 0), (0, 1), (0, 1), (1, 9)]
 
+-- lean/ToyParMove/Necessity.lean:51-56
 -- lean/ToyParMove/Necessity.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem sequentialize_loses_tmp_destination :
     Functional [((0 : Nat), (3 : Nat)), (1, 2), (2, 1)] ∧
@@ -1412,6 +1471,7 @@ theorem sequentialize_loses_tmp_destination :
     runSeq (sequentialize 0 [((0 : Nat), (3 : Nat)), (1, 2), (2, 1)]) (id : Nat → Nat) 0 = 1 ∧
     pmove [((0 : Nat), (3 : Nat)), (1, 2), (2, 1)] (id : Nat → Nat) 0 = 3
 
+-- lean/ToyParMove/Necessity.lean:62-66
 -- lean/ToyParMove/Necessity.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem sequentialize_clobbers_tmp :
     (0 : Nat) ∉ dsts [((1 : Nat), (2 : Nat)), (2, 1)] ∧
@@ -1419,6 +1479,7 @@ theorem sequentialize_clobbers_tmp :
     runSeq (sequentialize 0 [((1 : Nat), (2 : Nat)), (2, 1)]) (id : Nat → Nat) 0 = 1 ∧
     pmove [((1 : Nat), (2 : Nat)), (2, 1)] (id : Nat → Nat) 0 = 0
 
+-- lean/ToyParMove/Necessity.lean:72-78
 -- lean/ToyParMove/Necessity.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem sequentialize_works_with_tmp_self_move :
     Functional [((0 : Nat), (0 : Nat)), (1, 2), (2, 1)] ∧
@@ -1428,28 +1489,34 @@ theorem sequentialize_works_with_tmp_self_move :
       runSeq (sequentialize 0 [((0 : Nat), (0 : Nat)), (1, 2), (2, 1)]) σ l =
         pmove [((0 : Nat), (0 : Nat)), (1, 2), (2, 1)] σ l
 
+-- lean/ToyParMove/Necessity.lean:321-324
 -- lean/ToyParMove/Necessity.lean — single concrete move list (all value types and stores); it proves nothing beyond this list
 theorem topological_rejects_benign_self_move :
     ¬ Topological [((1 : Nat), (1 : Nat)), (2, 1)] ∧
     ∀ (V : Type) (σ : Nat → V),
       runSeq [((1 : Nat), (1 : Nat)), (2, 1)] σ = pmove [((1 : Nat), (1 : Nat)), (2, 1)] σ
 
+-- lean/ToyParMove/Necessity.lean:338-340
 -- lean/ToyParMove/Necessity.lean — universally quantified theorem
 theorem not_topological_of_dsts_read {ms C : List (Loc × Loc)} (hC : C ≠ [])
     (hsub : ∀ m ∈ C, m ∈ ms) (hread : ∀ m ∈ C, ∃ m' ∈ C, m' ≠ m ∧ m'.2 = m.1) :
     ¬ Topological ms
 
+-- lean/ToyParMove/Necessity.lean:405-406
 -- lean/ToyParMove/Necessity.lean — universally quantified theorem
 theorem runSeq_eq_pmoveLast_of_topological :
     ∀ {ms : List (Loc × Loc)}, Topological ms → ∀ σ : Loc → V, runSeq ms σ = pmoveLast ms σ
 
+-- lean/ToyParMove/Cycles.lean:379-380
 -- lean/ToyParMove/Cycles.lean — universally quantified theorem
 theorem not_topological_of_perm_cycleMoves {ls : List Loc} {ms : List (Loc × Loc)}
     (hn : ls.Nodup) (hk : 2 ≤ ls.length) (hp : ms.Perm (cycleMoves ls)) : ¬ Topological ms
 
+-- lean/ToyParMove/Cycles.lean:423
 -- lean/ToyParMove/Cycles.lean — universally quantified over all stores Nat → Bool
 theorem no_injective_store_nat_bool : ∀ σ : Nat → Bool, ¬ Function.Injective σ
 
+-- lean/ToyParMove/CycleTightness.lean:411-415
 -- lean/ToyParMove/CycleTightness.lean — finite check of four concrete instances (k = 2, 3, 4, 5); not a general theorem
 theorem sequentialize_cycle_length_examples :
     (sequentialize (9 : Nat) (cycleMoves [0, 1])).length = 3 ∧
@@ -1457,89 +1524,107 @@ theorem sequentialize_cycle_length_examples :
     (sequentialize (9 : Nat) (cycleMoves [0, 1, 2, 3])).length = 5 ∧
     (sequentialize (9 : Nat) (cycleMoves [0, 1, 2, 3, 4])).length = 6
 
+-- lean/ToyParMove/Swaps.lean:54-55
 -- lean/ToyParMove/Swaps.lean — universally quantified theorem
 theorem runSwaps_comp (f : V → W) : ∀ (ss : List (Loc × Loc)) (τ : Loc → V),
     runSwaps ss (f ∘ τ) = f ∘ runSwaps ss τ
 
+-- lean/ToyParMove/Swaps.lean:312-313
 -- lean/ToyParMove/Swaps.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem length_cycleSwaps_nil :
     (cycleSwaps ([] : List Nat)).length = 0 ∧ ([] : List Nat).length - 1 = 0
 
+-- lean/ToyParMove/XorSwap.lean:118-121
 -- lean/ToyParMove/XorSwap.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem xorSwap_unsafe_for_aliased_parallel_swap :
     pmove [((0 : Nat), (0 : Nat)), (0, 0)] (fun _ : Nat => (1#8 : BitVec 8)) 0 = 1#8 ∧
     swapStore (fun _ : Nat => (1#8 : BitVec 8)) 0 0 0 = 1#8 ∧
     xorSwap (fun _ : Nat => (1#8 : BitVec 8)) 0 0 0 = 0#8
 
+-- lean/ToyParMove/XorSwap.lean:161-162
 -- lean/ToyParMove/XorSwap.lean — universally quantified over stores Nat → BitVec 0 and locations a, b : Nat
 theorem xorSwap_eq_swapStore_width_zero (σ : Nat → BitVec 0) (a b : Nat) :
     xorSwap σ a b = swapStore σ a b
 
+-- lean/ToyParMove/Lanes.lean:67-69
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem Lane.disjoint_iff_bits (L₁ L₂ : Lane) :
     L₁.Disjoint L₂ ↔
       ∀ i, ¬ (L₁.off ≤ i ∧ i < L₁.off + L₁.wid ∧ L₂.off ≤ i ∧ i < L₂.off + L₂.wid)
 
+-- lean/ToyParMove/Lanes.lean:110-112
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem getLsbD_putLane (L : Lane) (v : BitVec L.wid) (w : BitVec n) {i : Nat} (hi : i < n) :
     (putLane L v w).getLsbD i =
       if L.off ≤ i ∧ i < L.off + L.wid then v.getLsbD (i - L.off) else w.getLsbD i
 
+-- lean/ToyParMove/Lanes.lean:289-290
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem writeZext_getPut_of_ge {wid : Nat} (h : n ≤ wid) :
     GetPut (getLane (n := n) ⟨0, wid⟩) (writeZext n (wid := wid))
 
+-- lean/ToyParMove/Lanes.lean:296-297
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem writeZext_upper_zero {wid : Nat} (v : BitVec wid) (w : BitVec n) :
     ∀ i, wid ≤ i → (writeZext n v w).getLsbD i = false
 
+-- lean/ToyParMove/Lanes.lean:355
 -- lean/ToyParMove/Lanes.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem writeZext_truncates_example : writeZext 8 (0x1234#16) (0#8) = 0x34#8
 
+-- lean/ToyParMove/LaneMoves.lean:138-140
 -- lean/ToyParMove/LaneMoves.lean — universally quantified theorem
 theorem runLanes_eq_lanePMove_of_topological :
     ∀ {ms : List (LaneMove R)}, LaneTopological ms → ∀ ρ : R → BitVec n,
       runLanes ms ρ = lanePMove ms ρ
 
+-- lean/ToyParMove/LaneMoves.lean:168-170
 -- lean/ToyParMove/LaneMoves.lean — universally quantified theorem
 theorem laneWF_implies_distinctDstLanes_of_pos_wid {R : Type} [DecidableEq R]
     {M : List (LaneMove R)} (hwf : LaneWF M) (hpos : ∀ m ∈ M, 0 < m.wid) :
     DistinctDstLanes M
 
+-- lean/ToyParMove/LaneMoves.lean:269-270
 -- lean/ToyParMove/LaneMoves.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem laneWF_not_implies_distinctDstLanes_width_zero :
     LaneWF [lm 0 4 1 0 0, lm 0 4 2 0 0] ∧ ¬ DistinctDstLanes [lm 0 4 1 0 0, lm 0 4 2 0 0]
 
+-- lean/ToyParMove/LaneMoves.lean:330-333
 -- lean/ToyParMove/LaneMoves.lean — single concrete move list (all reorderings, all 16-bit register files); it proves nothing beyond this list
 theorem lanePMove_perm_invariant_duplicate_not_laneWF :
     ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 1 0 8] ∧
     ∀ (M' : List (LaneMove Nat)), M'.Perm [lm 0 0 1 0 8, lm 0 0 1 0 8] →
       ∀ ρ : Nat → BitVec 16, lanePMove M' ρ = lanePMove [lm 0 0 1 0 8, lm 0 0 1 0 8] ρ
 
+-- lean/ToyParMove/LaneMoves.lean:339-342
 -- lean/ToyParMove/LaneMoves.lean — single concrete move list (both orders, all 16-bit register files); it proves nothing beyond this list
 theorem lanePMove_same_source_overlap_not_laneWF :
     ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 1 0 16] ∧
     ∀ ρ : Nat → BitVec 16,
       lanePMove [lm 0 0 1 0 8, lm 0 0 1 0 16] ρ = lanePMove [lm 0 0 1 0 16, lm 0 0 1 0 8] ρ
 
+-- lean/ToyParMove/LaneMoves.lean:360-363
 -- lean/ToyParMove/LaneMoves.lean — single concrete move list (both orders, all 8-bit register files); it proves nothing beyond this list
 theorem lanePMove_beyond_register_overlap_not_laneWF :
     ¬ LaneWF [lm 0 6 1 0 4, lm 0 8 1 0 4] ∧
     ∀ ρ : Nat → BitVec 8,
       lanePMove [lm 0 6 1 0 4, lm 0 8 1 0 4] ρ = lanePMove [lm 0 8 1 0 4, lm 0 6 1 0 4] ρ
 
+-- lean/ToyParMove/LaneMoves.lean:376-379
 -- lean/ToyParMove/LaneMoves.lean — single concrete move list (all 16-bit register files); it proves nothing beyond this list
 theorem laneTopological_rejects_benign_self_copy :
     ¬ LaneTopological [lm 0 0 0 0 8, lm 1 0 0 0 8] ∧
     ∀ ρ : Nat → BitVec 16,
       runLanes [lm 0 0 0 0 8, lm 1 0 0 0 8] ρ = lanePMove [lm 0 0 0 0 8, lm 1 0 0 0 8] ρ
 
+-- lean/ToyParMove/Boundaries.lean:28-31
 -- lean/ToyParMove/Boundaries.lean — universally quantified theorem
 theorem not_topological_of_contains_cycleMoves {ls : List Loc} {M ms : List (Loc × Loc)}
     (hn : ls.Nodup) (hk : 2 ≤ ls.length)
     (hsub : ∀ m ∈ cycleMoves ls, m ∈ M) (hp : ms.Perm M) :
     ¬ Topological ms
 
+-- lean/ToyParMove/Boundaries.lean:141-146
 -- lean/ToyParMove/Boundaries.lean — universally quantified theorem
 theorem cycle_length_sub_one_le_of_injOn_of_runSwaps
     {ls : List Loc} {σ : Loc → V} {ss : List (Loc × Loc)}
@@ -1548,6 +1633,7 @@ theorem cycle_length_sub_one_le_of_injOn_of_runSwaps
     (hreal : runSwaps ss σ = pmove (cycleMoves ls) σ) :
     ls.length - 1 ≤ ss.length
 
+-- lean/ToyParMove/Boundaries.lean:262-267
 -- lean/ToyParMove/Boundaries.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem nonvacuity_cycle_length_sub_one_le_of_injOn_of_runSwaps :
     let σ : Nat → Nat := fun l => if l ≤ 2 then l else 0
@@ -1556,10 +1642,12 @@ theorem nonvacuity_cycle_length_sub_one_le_of_injOn_of_runSwaps :
       ¬ Function.Injective σ ∧
       runSwaps (cycleSwaps [0, 1, 2]) σ = pmove (cycleMoves [0, 1, 2]) σ
 
+-- lean/ToyParMove/Boundaries.lean:280-281
 -- lean/ToyParMove/Boundaries.lean — universally quantified theorem
 theorem putLane_putGet_iff_wid_zero_or_fits (L : Lane) :
     PutGet (getLane (n := n) L) (putLane L) ↔ (L.wid = 0 ∨ L.Fits n)
 
+-- lean/ToyParMove/Boundaries.lean:303-304
 -- lean/ToyParMove/Boundaries.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem putLane_putGet_width_zero_beyond_register :
     ¬ (⟨9, 0⟩ : Lane).Fits 8 ∧ PutGet (getLane (n := 8) ⟨9, 0⟩) (putLane ⟨9, 0⟩)
@@ -1575,6 +1663,7 @@ quoted verbatim from the source (proofs omitted), in card order.
 #### `Toy.ParMove.functional_of_pmove_perm_invariant_needs_two_values` (`lean/ToyParMove/Readings.lean`; result 2)
 
 ```lean
+-- lean/ToyParMove/Readings.lean:226-232
 theorem functional_of_pmove_perm_invariant_needs_two_values :
     (∀ a b : Unit, a = b) ∧
     (∀ M' : List (Nat × Nat), M'.Perm [(0, 1), (0, 2)] → ∀ σ : Nat → Unit,
@@ -1587,6 +1676,7 @@ theorem functional_of_pmove_perm_invariant_needs_two_values :
 #### `Toy.ParMove.functional_of_pmove_perm_invariant_needs_perm_invariance` (`lean/ToyParMove/Readings.lean`; result 2)
 
 ```lean
+-- lean/ToyParMove/Readings.lean:252-256
 theorem functional_of_pmove_perm_invariant_needs_perm_invariance :
     (true ≠ false) ∧
     ¬ (∀ M' : List (Nat × Nat), M'.Perm [(0, 1), (0, 2)] → ∀ σ : Nat → Bool,
@@ -1597,6 +1687,7 @@ theorem functional_of_pmove_perm_invariant_needs_perm_invariance :
 #### `Toy.ParMove.pmove_perm_invariant_needs_functional` (`lean/ToyParMove/Readings.lean`; result 2)
 
 ```lean
+-- lean/ToyParMove/Readings.lean:205-208
 theorem pmove_perm_invariant_needs_functional :
     ¬ Functional [((0 : Nat), (1 : Nat)), (0, 2)] ∧
     List.Perm [((0 : Nat), (1 : Nat)), (0, 2)] [(0, 2), (0, 1)] ∧
@@ -1606,6 +1697,7 @@ theorem pmove_perm_invariant_needs_functional :
 #### `Toy.ParMove.pmove_perm_invariant_needs_perm` (`lean/ToyParMove/Readings.lean`; result 2)
 
 ```lean
+-- lean/ToyParMove/Readings.lean:240-243
 theorem pmove_perm_invariant_needs_perm :
     Functional ([] : List (Nat × Nat)) ∧
     ¬ List.Perm ([] : List (Nat × Nat)) [(0, 1)] ∧
@@ -1615,6 +1707,7 @@ theorem pmove_perm_invariant_needs_perm :
 #### `Toy.ParMove.pmove_eq_pmoveLast_needs_functional` (`lean/ToyParMove/Readings.lean`; result 2)
 
 ```lean
+-- lean/ToyParMove/Readings.lean:214-217
 theorem pmove_eq_pmoveLast_needs_functional :
     ¬ Functional [((0 : Nat), (1 : Nat)), (0, 2)] ∧
     pmove [((0 : Nat), (1 : Nat)), (0, 2)] (id : Nat → Nat) ≠
@@ -1624,6 +1717,7 @@ theorem pmove_eq_pmoveLast_needs_functional :
 #### `Toy.ParMove.nonvacuity_pmove_perm_invariant_all` (`lean/ToyParMove/Readings.lean`; result 2)
 
 ```lean
+-- lean/ToyParMove/Readings.lean:276-281
 theorem nonvacuity_pmove_perm_invariant_all :
     (true ≠ false) ∧
     Functional [((0 : Nat), (1 : Nat)), (1, 0)] ∧
@@ -1635,6 +1729,7 @@ theorem nonvacuity_pmove_perm_invariant_all :
 #### `Toy.ParMove.functionalAt_equal_values_example` (`lean/ToyParMove/Readings.lean`; result 2)
 
 ```lean
+-- lean/ToyParMove/Readings.lean:80-82
 theorem functionalAt_equal_values_example :
     FunctionalAt (fun l : Nat => if l = 2 then 1 else l) [((0 : Nat), (1 : Nat)), (0, 2)] ∧
     ¬ Functional [((0 : Nat), (1 : Nat)), (0, 2)]
@@ -1643,6 +1738,7 @@ theorem functionalAt_equal_values_example :
 #### `Toy.ParMove.not_functionalAt_id_example` (`lean/ToyParMove/Readings.lean`; result 2)
 
 ```lean
+-- lean/ToyParMove/Readings.lean:90-91
 theorem not_functionalAt_id_example :
     ¬ FunctionalAt (id : Nat → Nat) [((0 : Nat), (1 : Nat)), (0, 2)]
 ```
@@ -1650,6 +1746,7 @@ theorem not_functionalAt_id_example :
 #### `Toy.ParMove.sequentialize_needs_functional` (`lean/ToyParMove/Necessity.lean`; result 3)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:24-31
 theorem sequentialize_needs_functional :
     ¬ Functional [((0 : Nat), (0 : Nat)), (0, 1), (0, 0)] ∧
     ((2 : Nat) ∉ dsts [((0 : Nat), (0 : Nat)), (0, 1), (0, 0)] ∨
@@ -1663,6 +1760,7 @@ theorem sequentialize_needs_functional :
 #### `Toy.ParMove.sequentialize_needs_tmp_not_dst_or_not_src` (`lean/ToyParMove/Necessity.lean`; result 3)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:39-44
 theorem sequentialize_needs_tmp_not_dst_or_not_src :
     Functional [((0 : Nat), (1 : Nat)), (1, 0)] ∧
     ¬ ((0 : Nat) ∉ dsts [((0 : Nat), (1 : Nat)), (1, 0)] ∨
@@ -1674,6 +1772,7 @@ theorem sequentialize_needs_tmp_not_dst_or_not_src :
 #### `Toy.ParMove.nonvacuity_sequentialize_tmp_is_source` (`lean/ToyParMove/Necessity.lean`; result 3)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:91-96
 theorem nonvacuity_sequentialize_tmp_is_source :
     Functional [((1 : Nat), (2 : Nat)), (2, 1), (3, 0)] ∧
     ((0 : Nat) ∉ dsts [((1 : Nat), (2 : Nat)), (2, 1), (3, 0)] ∨
@@ -1685,6 +1784,7 @@ theorem nonvacuity_sequentialize_tmp_is_source :
 #### `Toy.ParMove.nonvacuity_sequentialize_tmp_is_destination` (`lean/ToyParMove/Necessity.lean`; result 3)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:101-104
 theorem nonvacuity_sequentialize_tmp_is_destination :
     Functional [((0 : Nat), (3 : Nat)), (1, 2), (2, 1)] ∧
     ((0 : Nat) ∉ dsts [((0 : Nat), (3 : Nat)), (1, 2), (2, 1)] ∨
@@ -1694,6 +1794,7 @@ theorem nonvacuity_sequentialize_tmp_is_destination :
 #### `Toy.ParMove.runSeq_append_needs_first_realization` (`lean/ToyParMove/Necessity.lean`; result 4)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:216-223
 theorem runSeq_append_needs_first_realization :
     ¬ (∀ τ : Nat → Nat, ∀ l, l ≠ 9 → runSeq [] τ l = pmove [((1 : Nat), (0 : Nat))] τ l) ∧
     (∀ τ : Nat → Nat, ∀ l, l ≠ 9 → runSeq [] τ l = pmove ([] : List (Nat × Nat)) τ l) ∧
@@ -1707,6 +1808,7 @@ theorem runSeq_append_needs_first_realization :
 #### `Toy.ParMove.runSeq_append_needs_second_realization` (`lean/ToyParMove/Necessity.lean`; result 4)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:229-236
 theorem runSeq_append_needs_second_realization :
     (∀ τ : Nat → Nat, ∀ l, l ≠ 9 → runSeq [] τ l = pmove ([] : List (Nat × Nat)) τ l) ∧
     ¬ (∀ τ : Nat → Nat, ∀ l, l ≠ 9 → runSeq [] τ l = pmove [((1 : Nat), (0 : Nat))] τ l) ∧
@@ -1720,6 +1822,7 @@ theorem runSeq_append_needs_second_realization :
 #### `Toy.ParMove.runSeq_append_needs_disjoint_dsts` (`lean/ToyParMove/Necessity.lean`; result 4)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:199-206
 theorem runSeq_append_needs_disjoint_dsts :
     (∀ τ : Nat → Nat, ∀ l, l ≠ 9 → runSeq [(0, 1)] τ l = pmove [((0 : Nat), (1 : Nat))] τ l) ∧
     (∀ τ : Nat → Nat, ∀ l, l ≠ 9 → runSeq [(0, 2)] τ l = pmove [((0 : Nat), (2 : Nat))] τ l) ∧
@@ -1733,6 +1836,7 @@ theorem runSeq_append_needs_disjoint_dsts :
 #### `Toy.ParMove.runSeq_append_needs_sources_not_overwritten` (`lean/ToyParMove/Necessity.lean`; result 4)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:183-190
 theorem runSeq_append_needs_sources_not_overwritten :
     (∀ τ : Nat → Nat, ∀ l, l ≠ 9 → runSeq [(1, 0)] τ l = pmove [((1 : Nat), (0 : Nat))] τ l) ∧
     (∀ τ : Nat → Nat, ∀ l, l ≠ 9 → runSeq [(2, 1)] τ l = pmove [((2 : Nat), (1 : Nat))] τ l) ∧
@@ -1746,6 +1850,7 @@ theorem runSeq_append_needs_sources_not_overwritten :
 #### `Toy.ParMove.runSeq_append_needs_tmp_not_src` (`lean/ToyParMove/Necessity.lean`; result 4)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:162-170
 theorem runSeq_append_needs_tmp_not_src :
     (∀ τ : Nat → Nat, ∀ l, l ≠ 0 →
       runSeq [(0, 1), (1, 2), (2, 0)] τ l = pmove [((1 : Nat), (2 : Nat)), (2, 1)] τ l) ∧
@@ -1760,6 +1865,7 @@ theorem runSeq_append_needs_tmp_not_src :
 #### `Toy.ParMove.nonvacuity_runSeq_append_realizes_off_tmp` (`lean/ToyParMove/Necessity.lean`; result 4)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:242-248
 theorem nonvacuity_runSeq_append_realizes_off_tmp :
     (∀ τ : Nat → Nat, ∀ l, l ≠ 0 → runSeq [(3, 0)] τ l = pmove [((3 : Nat), (0 : Nat))] τ l) ∧
     (∀ τ : Nat → Nat, ∀ l, l ≠ 0 →
@@ -1772,6 +1878,7 @@ theorem nonvacuity_runSeq_append_realizes_off_tmp :
 #### `Toy.ParMove.runSeq_eq_pmove_needs_functional` (`lean/ToyParMove/Necessity.lean`; result 5)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:308-311
 theorem runSeq_eq_pmove_needs_functional :
     ¬ Functional [((0 : Nat), (1 : Nat)), (0, 2)] ∧ Topological [((0 : Nat), (1 : Nat)), (0, 2)] ∧
     runSeq [((0 : Nat), (1 : Nat)), (0, 2)] (id : Nat → Nat) ≠
@@ -1781,6 +1888,7 @@ theorem runSeq_eq_pmove_needs_functional :
 #### `Toy.ParMove.runSeq_eq_pmove_needs_topological` (`lean/ToyParMove/Necessity.lean`; result 5)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:300-303
 theorem runSeq_eq_pmove_needs_topological :
     Functional [((1 : Nat), (0 : Nat)), (2, 1)] ∧ ¬ Topological [((1 : Nat), (0 : Nat)), (2, 1)] ∧
     runSeq [((1 : Nat), (0 : Nat)), (2, 1)] (id : Nat → Nat) ≠
@@ -1790,6 +1898,7 @@ theorem runSeq_eq_pmove_needs_topological :
 #### `Toy.ParMove.nonvacuity_runSeq_eq_pmove_of_topological` (`lean/ToyParMove/Necessity.lean`; result 5)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:315-316
 theorem nonvacuity_runSeq_eq_pmove_of_topological :
     Functional [((2 : Nat), (1 : Nat)), (1, 0)] ∧ Topological [((2 : Nat), (1 : Nat)), (1, 0)]
 ```
@@ -1797,6 +1906,7 @@ theorem nonvacuity_runSeq_eq_pmove_of_topological :
 #### `Toy.ParMove.runSeq_cycleSeqScratch_needs_nodup` (`lean/ToyParMove/CycleTightness.lean`; result 6)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:37-40
 theorem runSeq_cycleSeqScratch_needs_nodup :
     ¬ ([0, 1, 0] : List Nat).Nodup ∧ (5 : Nat) ∉ ([0, 1, 0] : List Nat) ∧
     ¬ (∀ l, l ≠ 5 → runSeq (cycleSeqScratch 5 [0, 1, 0]) (id : Nat → Nat) l =
@@ -1806,6 +1916,7 @@ theorem runSeq_cycleSeqScratch_needs_nodup :
 #### `Toy.ParMove.runSeq_cycleSeqScratch_needs_tmp_fresh` (`lean/ToyParMove/CycleTightness.lean`; result 6)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:44-47
 theorem runSeq_cycleSeqScratch_needs_tmp_fresh :
     ([0, 1] : List Nat).Nodup ∧ (0 : Nat) ∈ ([0, 1] : List Nat) ∧
     ¬ (∀ l, l ≠ 0 → runSeq (cycleSeqScratch 0 [0, 1]) (id : Nat → Nat) l =
@@ -1815,6 +1926,7 @@ theorem runSeq_cycleSeqScratch_needs_tmp_fresh :
 #### `Toy.ParMove.nonvacuity_runSeq_cycleSeqScratch` (`lean/ToyParMove/CycleTightness.lean`; result 6)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:52-54
 theorem nonvacuity_runSeq_cycleSeqScratch :
     ((0 : Nat) :: [1, 2]).Nodup ∧ (3 : Nat) ∉ ((0 : Nat) :: [1, 2]) ∧
     (cycleSeqScratch (3 : Nat) [0, 1, 2]).length = 4
@@ -1823,6 +1935,7 @@ theorem nonvacuity_runSeq_cycleSeqScratch :
 #### `Toy.ParMove.cycle_lower_bound_needs_nodup` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:59-64
 theorem cycle_lower_bound_needs_nodup :
     ¬ ([0, 1, 0] : List Nat).Nodup ∧ 2 ≤ ([0, 1, 0] : List Nat).length ∧
     (5 : Nat) ∉ ([0, 1, 0] : List Nat) ∧ Function.Injective (id : Nat → Nat) ∧
@@ -1834,6 +1947,7 @@ theorem cycle_lower_bound_needs_nodup :
 #### `Toy.ParMove.cycle_lower_bound_uniform_needs_nodup` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:313-318
 theorem cycle_lower_bound_uniform_needs_nodup :
     (true ≠ false) ∧ ¬ ([0, 1, 0] : List Nat).Nodup ∧ 2 ≤ ([0, 1, 0] : List Nat).length ∧
     (5 : Nat) ∉ ([0, 1, 0] : List Nat) ∧
@@ -1845,6 +1959,7 @@ theorem cycle_lower_bound_uniform_needs_nodup :
 #### `Toy.ParMove.cycle_lower_bound_needs_two` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:68-73
 theorem cycle_lower_bound_needs_two :
     ([0] : List Nat).Nodup ∧ ¬ 2 ≤ ([0] : List Nat).length ∧ (5 : Nat) ∉ ([0] : List Nat) ∧
     Function.Injective (id : Nat → Nat) ∧
@@ -1856,6 +1971,7 @@ theorem cycle_lower_bound_needs_two :
 #### `Toy.ParMove.cycle_lower_bound_uniform_needs_two` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:324-329
 theorem cycle_lower_bound_uniform_needs_two :
     (true ≠ false) ∧ ([0] : List Nat).Nodup ∧ ¬ 2 ≤ ([0] : List Nat).length ∧
     (5 : Nat) ∉ ([0] : List Nat) ∧
@@ -1867,6 +1983,7 @@ theorem cycle_lower_bound_uniform_needs_two :
 #### `Toy.ParMove.cycle_lower_bound_needs_tmp_fresh` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:79-84
 theorem cycle_lower_bound_needs_tmp_fresh :
     ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧ (0 : Nat) ∈ ([0, 1] : List Nat) ∧
     Function.Injective (id : Nat → Nat) ∧
@@ -1878,6 +1995,7 @@ theorem cycle_lower_bound_needs_tmp_fresh :
 #### `Toy.ParMove.cycle_lower_bound_uniform_needs_tmp_fresh` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:336-341
 theorem cycle_lower_bound_uniform_needs_tmp_fresh :
     (true ≠ false) ∧ ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧
     (0 : Nat) ∈ ([0, 1] : List Nat) ∧
@@ -1889,6 +2007,7 @@ theorem cycle_lower_bound_uniform_needs_tmp_fresh :
 #### `Toy.ParMove.cycle_lower_bound_needs_injective` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:90-95
 theorem cycle_lower_bound_needs_injective :
     ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧ (5 : Nat) ∉ ([0, 1] : List Nat) ∧
     ¬ Function.Injective (fun _ : Nat => (0 : Nat)) ∧
@@ -1900,6 +2019,7 @@ theorem cycle_lower_bound_needs_injective :
 #### `Toy.ParMove.cycle_lower_bound_needs_global_injectivity` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:231-239
 theorem cycle_lower_bound_needs_global_injectivity :
     ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧ (2 : Nat) ∉ ([0, 1] : List Nat) ∧
     ¬ Function.Injective (fun l : Nat => if l = 3 then 0 else l) ∧
@@ -1914,6 +2034,7 @@ theorem cycle_lower_bound_needs_global_injectivity :
 #### `Toy.ParMove.cycle_lower_bound_needs_realization` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:99-104
 theorem cycle_lower_bound_needs_realization :
     ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧ (5 : Nat) ∉ ([0, 1] : List Nat) ∧
     Function.Injective (id : Nat → Nat) ∧
@@ -1925,6 +2046,7 @@ theorem cycle_lower_bound_needs_realization :
 #### `Toy.ParMove.cycle_lower_bound_uniform_needs_two_values` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:303-308
 theorem cycle_lower_bound_uniform_needs_two_values :
     (∀ a b : Unit, a = b) ∧ ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧
     (5 : Nat) ∉ ([0, 1] : List Nat) ∧
@@ -1936,6 +2058,7 @@ theorem cycle_lower_bound_uniform_needs_two_values :
 #### `Toy.ParMove.cycle_lower_bound_uniform_needs_realization` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:348-353
 theorem cycle_lower_bound_uniform_needs_realization :
     (true ≠ false) ∧ ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧
     (5 : Nat) ∉ ([0, 1] : List Nat) ∧
@@ -1947,6 +2070,7 @@ theorem cycle_lower_bound_uniform_needs_realization :
 #### `Toy.ParMove.nonvacuity_cycle_lower_bound` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:111-116
 theorem nonvacuity_cycle_lower_bound :
     ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧ (2 : Nat) ∉ ([0, 1] : List Nat) ∧
     Function.Injective (id : Nat → Nat) ∧
@@ -1958,6 +2082,7 @@ theorem nonvacuity_cycle_lower_bound :
 #### `Toy.ParMove.nonvacuity_cycle_lower_bound_uniform` (`lean/ToyParMove/CycleTightness.lean`; result 7)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:359-364
 theorem nonvacuity_cycle_lower_bound_uniform :
     (true ≠ false) ∧ ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧
     (2 : Nat) ∉ ([0, 1] : List Nat) ∧
@@ -1969,6 +2094,7 @@ theorem nonvacuity_cycle_lower_bound_uniform :
 #### `Toy.ParMove.cycle_impossibility_needs_nodup` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:122-125
 theorem cycle_impossibility_needs_nodup :
     ¬ ([0, 1, 0] : List Nat).Nodup ∧ 2 ≤ ([0, 1, 0] : List Nat).length ∧
     Function.Injective (id : Nat → Nat) ∧
@@ -1978,6 +2104,7 @@ theorem cycle_impossibility_needs_nodup :
 #### `Toy.ParMove.cycle_impossibility_uniform_needs_nodup` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:285-287
 theorem cycle_impossibility_uniform_needs_nodup :
     (true ≠ false) ∧ ¬ ([0, 1, 0] : List Nat).Nodup ∧ 2 ≤ ([0, 1, 0] : List Nat).length ∧
     ∃ ms : List (Nat × Nat), ∀ σ : Nat → Bool, runSeq ms σ = pmove (cycleMoves [0, 1, 0]) σ
@@ -1986,6 +2113,7 @@ theorem cycle_impossibility_uniform_needs_nodup :
 #### `Toy.ParMove.cycle_impossibility_needs_two` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:128-130
 theorem cycle_impossibility_needs_two :
     ([0] : List Nat).Nodup ∧ ¬ 2 ≤ ([0] : List Nat).length ∧ Function.Injective (id : Nat → Nat) ∧
     runSeq ([] : List (Nat × Nat)) (id : Nat → Nat) = pmove (cycleMoves [0]) id
@@ -1994,6 +2122,7 @@ theorem cycle_impossibility_needs_two :
 #### `Toy.ParMove.cycle_impossibility_uniform_needs_two` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:291-293
 theorem cycle_impossibility_uniform_needs_two :
     (true ≠ false) ∧ ([0] : List Nat).Nodup ∧ ¬ 2 ≤ ([0] : List Nat).length ∧
     ∃ ms : List (Nat × Nat), ∀ σ : Nat → Bool, runSeq ms σ = pmove (cycleMoves [0]) σ
@@ -2002,6 +2131,7 @@ theorem cycle_impossibility_uniform_needs_two :
 #### `Toy.ParMove.cycle_impossibility_needs_injective` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:136-140
 theorem cycle_impossibility_needs_injective :
     ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧
     ¬ Function.Injective (fun _ : Nat => (0 : Nat)) ∧
@@ -2012,6 +2142,7 @@ theorem cycle_impossibility_needs_injective :
 #### `Toy.ParMove.swap_impossibility_needs_injective` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:172-175
 theorem swap_impossibility_needs_injective :
     (0 : Nat) ≠ 1 ∧ ¬ Function.Injective (fun _ : Nat => (0 : Nat)) ∧
     runSeq ([] : List (Nat × Nat)) (fun _ : Nat => (0 : Nat)) =
@@ -2021,6 +2152,7 @@ theorem swap_impossibility_needs_injective :
 #### `Toy.ParMove.cycle_impossibility_needs_global_injectivity` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:254-261
 theorem cycle_impossibility_needs_global_injectivity :
     ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧
     ¬ Function.Injective (fun l : Nat => if l = 3 then 2 else l) ∧
@@ -2034,6 +2166,7 @@ theorem cycle_impossibility_needs_global_injectivity :
 #### `Toy.ParMove.swap_impossibility_needs_distinct` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:164-166
 theorem swap_impossibility_needs_distinct :
     ¬ ((0 : Nat) ≠ 0) ∧ Function.Injective (id : Nat → Nat) ∧
     runSeq ([] : List (Nat × Nat)) (id : Nat → Nat) = pmove [((0 : Nat), (0 : Nat)), (0, 0)] id
@@ -2042,6 +2175,7 @@ theorem swap_impossibility_needs_distinct :
 #### `Toy.ParMove.cycle_impossibility_uniform_needs_two_values` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:279-281
 theorem cycle_impossibility_uniform_needs_two_values :
     (∀ a b : Unit, a = b) ∧ ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧
     ∃ ms : List (Nat × Nat), ∀ σ : Nat → Unit, runSeq ms σ = pmove (cycleMoves [0, 1]) σ
@@ -2050,6 +2184,7 @@ theorem cycle_impossibility_uniform_needs_two_values :
 #### `Toy.ParMove.nonvacuity_cycle_impossibility` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:159-161
 theorem nonvacuity_cycle_impossibility :
     ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length ∧
     Function.Injective (id : Nat → Nat)
@@ -2058,6 +2193,7 @@ theorem nonvacuity_cycle_impossibility :
 #### `Toy.ParMove.nonvacuity_swap_impossibility` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:179-180
 theorem nonvacuity_swap_impossibility :
     (0 : Nat) ≠ 1 ∧ Function.Injective (id : Nat → Nat)
 ```
@@ -2065,6 +2201,7 @@ theorem nonvacuity_swap_impossibility :
 #### `Toy.ParMove.nonvacuity_cycle_impossibility_uniform` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:297-298
 theorem nonvacuity_cycle_impossibility_uniform :
     (true ≠ false) ∧ ([0, 1] : List Nat).Nodup ∧ 2 ≤ ([0, 1] : List Nat).length
 ```
@@ -2072,6 +2209,7 @@ theorem nonvacuity_cycle_impossibility_uniform :
 #### `Toy.ParMove.cycle_impossibility_positive_control` (`lean/ToyParMove/CycleTightness.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:148-153
 theorem cycle_impossibility_positive_control :
     (∀ l, l ≠ 2 → runSeq (cycleSeqScratch 2 [0, 1]) (id : Nat → Nat) l =
       pmove (cycleMoves [0, 1]) id l) ∧
@@ -2083,6 +2221,7 @@ theorem cycle_impossibility_positive_control :
 #### `Toy.ParMove.cycle_with_outgoing_copy_realized_without_scratch` (`lean/ToyParMove/Necessity.lean`; result 8)
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:368-371
 theorem cycle_with_outgoing_copy_realized_without_scratch :
     (∀ ms : List (Nat × Nat), ms.Perm [(3, 1), (2, 1), (1, 2)] → ¬ Topological ms) ∧
     ∀ (V : Type) (σ : Nat → V),
@@ -2092,6 +2231,7 @@ theorem cycle_with_outgoing_copy_realized_without_scratch :
 #### `Toy.ParMove.runSwaps_cycleSwaps_needs_nodup` (`lean/ToyParMove/CycleTightness.lean`; result 9)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:184-186
 theorem runSwaps_cycleSwaps_needs_nodup :
     ¬ ([0, 1, 0] : List Nat).Nodup ∧
     runSwaps (cycleSwaps [0, 1, 0]) (id : Nat → Nat) ≠ pmove (cycleMoves [0, 1, 0]) id
@@ -2100,6 +2240,7 @@ theorem runSwaps_cycleSwaps_needs_nodup :
 #### `Toy.ParMove.nonvacuity_runSwaps_cycleSwaps` (`lean/ToyParMove/CycleTightness.lean`; result 9)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:189-190
 theorem nonvacuity_runSwaps_cycleSwaps :
     ([0, 1, 2] : List Nat).Nodup ∧ (cycleSwaps ([0, 1, 2] : List Nat)).length = 2
 ```
@@ -2107,6 +2248,7 @@ theorem nonvacuity_runSwaps_cycleSwaps :
 #### `Toy.ParMove.swap_lower_bound_needs_nodup` (`lean/ToyParMove/CycleTightness.lean`; result 10)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:193-196
 theorem swap_lower_bound_needs_nodup :
     ¬ ([0, 1, 0, 1] : List Nat).Nodup ∧ Function.Injective (id : Nat → Nat) ∧
     runSwaps [((0 : Nat), (1 : Nat))] (id : Nat → Nat) = pmove (cycleMoves [0, 1, 0, 1]) id ∧
@@ -2116,6 +2258,7 @@ theorem swap_lower_bound_needs_nodup :
 #### `Toy.ParMove.swap_lower_bound_uniform_needs_nodup` (`lean/ToyParMove/CycleTightness.lean`; result 10)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:376-379
 theorem swap_lower_bound_uniform_needs_nodup :
     (true ≠ false) ∧ ¬ ([0, 1, 0, 1] : List Nat).Nodup ∧
     (∀ σ : Nat → Bool, runSwaps [((0 : Nat), (1 : Nat))] σ = pmove (cycleMoves [0, 1, 0, 1]) σ) ∧
@@ -2125,6 +2268,7 @@ theorem swap_lower_bound_uniform_needs_nodup :
 #### `Toy.ParMove.swap_lower_bound_needs_injective` (`lean/ToyParMove/CycleTightness.lean`; result 10)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:204-208
 theorem swap_lower_bound_needs_injective :
     ([0, 1] : List Nat).Nodup ∧ ¬ Function.Injective (fun _ : Nat => (0 : Nat)) ∧
     runSwaps ([] : List (Nat × Nat)) (fun _ : Nat => (0 : Nat)) =
@@ -2135,6 +2279,7 @@ theorem swap_lower_bound_needs_injective :
 #### `Toy.ParMove.swap_lower_bound_needs_realization` (`lean/ToyParMove/CycleTightness.lean`; result 10)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:212-215
 theorem swap_lower_bound_needs_realization :
     ([0, 1] : List Nat).Nodup ∧ Function.Injective (id : Nat → Nat) ∧
     runSwaps ([] : List (Nat × Nat)) (id : Nat → Nat) ≠ pmove (cycleMoves [0, 1]) id ∧
@@ -2144,6 +2289,7 @@ theorem swap_lower_bound_needs_realization :
 #### `Toy.ParMove.swap_lower_bound_uniform_needs_two_values` (`lean/ToyParMove/CycleTightness.lean`; result 10)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:369-372
 theorem swap_lower_bound_uniform_needs_two_values :
     (∀ a b : Unit, a = b) ∧ ([0, 1] : List Nat).Nodup ∧
     (∀ σ : Nat → Unit, runSwaps ([] : List (Nat × Nat)) σ = pmove (cycleMoves [0, 1]) σ) ∧
@@ -2153,6 +2299,7 @@ theorem swap_lower_bound_uniform_needs_two_values :
 #### `Toy.ParMove.swap_lower_bound_uniform_needs_realization` (`lean/ToyParMove/CycleTightness.lean`; result 10)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:384-387
 theorem swap_lower_bound_uniform_needs_realization :
     (true ≠ false) ∧ ([0, 1] : List Nat).Nodup ∧
     ¬ (∀ σ : Nat → Bool, runSwaps ([] : List (Nat × Nat)) σ = pmove (cycleMoves [0, 1]) σ) ∧
@@ -2162,6 +2309,7 @@ theorem swap_lower_bound_uniform_needs_realization :
 #### `Toy.ParMove.nonvacuity_swap_lower_bound` (`lean/ToyParMove/CycleTightness.lean`; result 10)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:220-223
 theorem nonvacuity_swap_lower_bound :
     ([0, 1, 2] : List Nat).Nodup ∧ Function.Injective (id : Nat → Nat) ∧
     runSwaps (cycleSwaps [0, 1, 2]) (id : Nat → Nat) = pmove (cycleMoves [0, 1, 2]) id ∧
@@ -2171,6 +2319,7 @@ theorem nonvacuity_swap_lower_bound :
 #### `Toy.ParMove.nonvacuity_swap_lower_bound_uniform` (`lean/ToyParMove/CycleTightness.lean`; result 10)
 
 ```lean
+-- lean/ToyParMove/CycleTightness.lean:393-396
 theorem nonvacuity_swap_lower_bound_uniform :
     (true ≠ false) ∧ ([0, 1, 2] : List Nat).Nodup ∧
     (∀ σ : Nat → Bool, runSwaps (cycleSwaps [0, 1, 2]) σ = pmove (cycleMoves [0, 1, 2]) σ) ∧
@@ -2180,6 +2329,7 @@ theorem nonvacuity_swap_lower_bound_uniform :
 #### `Toy.ParMove.xorSwap_eq_swapStore_needs_ne` (`lean/ToyParMove/XorSwap.lean`; result 11)
 
 ```lean
+-- lean/ToyParMove/XorSwap.lean:126-128
 theorem xorSwap_eq_swapStore_needs_ne :
     ¬ ((0 : Nat) ≠ 0) ∧
     xorSwap (fun _ : Nat => (1#8 : BitVec 8)) 0 0 ≠ swapStore (fun _ : Nat => (1#8 : BitVec 8)) 0 0
@@ -2188,6 +2338,7 @@ theorem xorSwap_eq_swapStore_needs_ne :
 #### `Toy.ParMove.nonvacuity_xorSwap` (`lean/ToyParMove/XorSwap.lean`; result 11)
 
 ```lean
+-- lean/ToyParMove/XorSwap.lean:149-152
 theorem nonvacuity_xorSwap :
     (0 : Nat) ≠ 1 ∧
     xorSwap (fun l : Nat => if l = 0 then 0x5A#8 else 0xC3#8) 0 1 0 = 0xC3#8 ∧
@@ -2197,6 +2348,7 @@ theorem nonvacuity_xorSwap :
 #### `Toy.ParMove.runXorSwaps_needs_no_self` (`lean/ToyParMove/XorSwap.lean`; result 12)
 
 ```lean
+-- lean/ToyParMove/XorSwap.lean:132-135
 theorem runXorSwaps_needs_no_self :
     ¬ (∀ p ∈ [((0 : Nat), (0 : Nat))], p.1 ≠ p.2) ∧
     runXorSwaps [((0 : Nat), (0 : Nat))] (fun _ : Nat => (1#8 : BitVec 8)) ≠
@@ -2206,6 +2358,7 @@ theorem runXorSwaps_needs_no_self :
 #### `Toy.ParMove.runXorSwaps_cycleSwaps_needs_nodup` (`lean/ToyParMove/XorSwap.lean`; result 12)
 
 ```lean
+-- lean/ToyParMove/XorSwap.lean:140-145
 theorem runXorSwaps_cycleSwaps_needs_nodup :
     ¬ ([0, 1, 0] : List Nat).Nodup ∧
     runXorSwaps (cycleSwaps [0, 1, 0]) (fun l : Nat => if l = 0 then 1#8 else 2#8) ≠
@@ -2217,6 +2370,7 @@ theorem runXorSwaps_cycleSwaps_needs_nodup :
 #### `Toy.ParMove.nonvacuity_runXorSwaps` (`lean/ToyParMove/XorSwap.lean`; result 12)
 
 ```lean
+-- lean/ToyParMove/XorSwap.lean:156-157
 theorem nonvacuity_runXorSwaps :
     (∀ p ∈ [((0 : Nat), (1 : Nat)), (0, 2)], p.1 ≠ p.2) ∧ ([0, 1, 2] : List Nat).Nodup
 ```
@@ -2224,6 +2378,7 @@ theorem nonvacuity_runXorSwaps :
 #### `Toy.ParMove.putLane_putGet_needs_fits` (`lean/ToyParMove/Lanes.lean`; result 13)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:365-369
 theorem putLane_putGet_needs_fits :
     ¬ (Lane.Fits ⟨4, 8⟩ 8) ∧
     ¬ PutGet (getLane (n := 8) ⟨4, 8⟩) (putLane ⟨4, 8⟩) ∧
@@ -2234,12 +2389,14 @@ theorem putLane_putGet_needs_fits :
 #### `Toy.ParMove.nonvacuity_putLane_veryWellBehaved` (`lean/ToyParMove/Lanes.lean`; result 13)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:417
 theorem nonvacuity_putLane_veryWellBehaved : laneHigh8.Fits 64
 ```
 
 #### `Toy.ParMove.putLane_overlapping_not_comm` (`lean/ToyParMove/Lanes.lean`; result 14)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:375-378
 theorem putLane_overlapping_not_comm :
     ¬ laneLow8.Disjoint laneLow16 ∧
     putLane laneLow8 (0xFF#8) (putLane laneLow16 (0x0000#16) (0#16)) ≠
@@ -2249,6 +2406,7 @@ theorem putLane_overlapping_not_comm :
 #### `Toy.ParMove.getLane_putLane_needs_disjoint` (`lean/ToyParMove/Lanes.lean`; result 14)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:381-383
 theorem getLane_putLane_needs_disjoint :
     ¬ laneLow8.Disjoint laneLow16 ∧
     getLane laneLow16 (putLane laneLow8 (0xFF#8) (0#16)) ≠ getLane laneLow16 (0#16)
@@ -2257,12 +2415,14 @@ theorem getLane_putLane_needs_disjoint :
 #### `Toy.ParMove.nonvacuity_putLane_comm` (`lean/ToyParMove/Lanes.lean`; result 14)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:420
 theorem nonvacuity_putLane_comm : laneLow8.Disjoint laneHigh8
 ```
 
 #### `Toy.ParMove.putLane_comm_iff_needs_fits` (`lean/ToyParMove/Lanes.lean`; result 15)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:388-395
 theorem putLane_comm_iff_needs_fits :
     ¬ (Lane.Fits ⟨6, 4⟩ 8 ∨ Lane.Fits ⟨8, 4⟩ 8) ∧
     (∀ (v₁ : BitVec 4) (v₂ : BitVec 4) (w : BitVec 8),
@@ -2276,6 +2436,7 @@ theorem putLane_comm_iff_needs_fits :
 #### `Toy.ParMove.nonvacuity_putLane_comm_iff` (`lean/ToyParMove/Lanes.lean`; result 15)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:424-426
 theorem nonvacuity_putLane_comm_iff :
     (laneLow8.Fits 64 ∨ laneHigh8.Fits 64) ∧ laneLow8.Disjoint laneHigh8 ∧
     (laneLow8.Fits 64 ∨ laneLow16.Fits 64) ∧ ¬ laneLow8.Disjoint laneLow16
@@ -2284,6 +2445,7 @@ theorem nonvacuity_putLane_comm_iff :
 #### `Toy.ParMove.nonvacuity_putLane_comm_iff_disjointIn` (`lean/ToyParMove/Lanes.lean`; result 15)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:430-431
 theorem nonvacuity_putLane_comm_iff_disjointIn :
     laneLow8.DisjointIn 64 laneHigh8 ∧ ¬ laneLow8.DisjointIn 64 laneLow16
 ```
@@ -2291,6 +2453,7 @@ theorem nonvacuity_putLane_comm_iff_disjointIn :
 #### `Toy.ParMove.writeZext_not_getPut_needs_lt` (`lean/ToyParMove/Lanes.lean`; result 16)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:411-412
 theorem writeZext_not_getPut_needs_lt :
     ¬ ((8 : Nat) < 8) ∧ ∃ g : BitVec 8 → BitVec 8, GetPut g (writeZext 8 (wid := 8))
 ```
@@ -2298,18 +2461,21 @@ theorem writeZext_not_getPut_needs_lt :
 #### `Toy.ParMove.nonvacuity_writeZext` (`lean/ToyParMove/Lanes.lean`; result 16)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:434
 theorem nonvacuity_writeZext : (32 : Nat) < 64 ∧ (32 : Nat) ≤ 64
 ```
 
 #### `Toy.ParMove.writeZext_getPut_full` (`lean/ToyParMove/Lanes.lean`; result 16)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:283
 theorem writeZext_getPut_full : GetPut (getLane (n := n) ⟨0, n⟩) (writeZext n (wid := n))
 ```
 
 #### `Toy.ParMove.nonvacuity_writeZext_getPut_iff` (`lean/ToyParMove/Lanes.lean`; result 17)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:438-442
 theorem nonvacuity_writeZext_getPut_iff :
     writeZext 64 (getLane ⟨0, 32⟩ (0x00000000DEADBEEF#64)) (0x00000000DEADBEEF#64) =
       0x00000000DEADBEEF#64 ∧
@@ -2320,6 +2486,7 @@ theorem nonvacuity_writeZext_getPut_iff :
 #### `Toy.ParMove.writeZext_putGet_needs_fit` (`lean/ToyParMove/Lanes.lean`; result 18)
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:403-405
 theorem writeZext_putGet_needs_fit :
     ¬ (16 ≤ 8) ∧ ¬ PutGet (getLane (n := 8) ⟨0, 16⟩) (writeZext 8 (wid := 16)) ∧
     getLane (n := 8) ⟨0, 16⟩ (writeZext 8 (0xFFFF#16) (0#8)) ≠ (0xFFFF#16)
@@ -2328,6 +2495,7 @@ theorem writeZext_putGet_needs_fit :
 #### `Toy.ParMove.lanePMove_perm_needs_laneWF` (`lean/ToyParMove/LaneMoves.lean`; result 20)
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:283-286
 theorem lanePMove_perm_needs_laneWF :
     ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 2 0 16] ∧
     List.Perm [lm 0 0 1 0 8, lm 0 0 2 0 16] [lm 0 0 2 0 16, lm 0 0 1 0 8] ∧
@@ -2337,6 +2505,7 @@ theorem lanePMove_perm_needs_laneWF :
 #### `Toy.ParMove.lanePMove_perm_needs_perm` (`lean/ToyParMove/LaneMoves.lean`; result 20)
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:275-278
 theorem lanePMove_perm_needs_perm :
     LaneWF [lm 0 0 1 0 8] ∧
     ¬ List.Perm [lm 0 0 1 0 8] ([] : List (LaneMove Nat)) ∧
@@ -2346,6 +2515,7 @@ theorem lanePMove_perm_needs_perm :
 #### `Toy.ParMove.nonvacuity_lanePMove_perm` (`lean/ToyParMove/LaneMoves.lean`; result 20)
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:290-292
 theorem nonvacuity_lanePMove_perm :
     LaneWF [lm 0 0 0 8 8, lm 0 8 0 0 8] ∧
     List.Perm [lm 0 0 0 8 8, lm 0 8 0 0 8] [lm 0 8 0 0 8, lm 0 0 0 8 8]
@@ -2354,6 +2524,7 @@ theorem nonvacuity_lanePMove_perm :
 #### `Toy.ParMove.runLanes_needs_laneWF` (`lean/ToyParMove/LaneMoves.lean`; result 21)
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:243-247
 theorem runLanes_needs_laneWF :
     ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 2 0 16] ∧
     List.Perm [lm 0 0 2 0 16, lm 0 0 1 0 8] [lm 0 0 1 0 8, lm 0 0 2 0 16] ∧
@@ -2364,6 +2535,7 @@ theorem runLanes_needs_laneWF :
 #### `Toy.ParMove.runLanes_needs_perm` (`lean/ToyParMove/LaneMoves.lean`; result 21)
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:259-262
 theorem runLanes_needs_perm :
     LaneWF [lm 0 0 1 0 8] ∧ ¬ List.Perm ([] : List (LaneMove Nat)) [lm 0 0 1 0 8] ∧
     LaneTopological ([] : List (LaneMove Nat)) ∧
@@ -2373,6 +2545,7 @@ theorem runLanes_needs_perm :
 #### `Toy.ParMove.runLanes_needs_topological` (`lean/ToyParMove/LaneMoves.lean`; result 21)
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:251-255
 theorem runLanes_needs_topological :
     LaneWF [lm 0 0 0 8 8, lm 0 8 0 0 8] ∧
     List.Perm [lm 0 0 0 8 8, lm 0 8 0 0 8] [lm 0 0 0 8 8, lm 0 8 0 0 8] ∧
@@ -2383,6 +2556,7 @@ theorem runLanes_needs_topological :
 #### `Toy.ParMove.nonvacuity_runLanes_same_register` (`lean/ToyParMove/LaneMoves.lean`; result 21)
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:299-303
 theorem nonvacuity_runLanes_same_register :
     LaneWF [lm 0 8 0 16 8, lm 0 0 0 8 8] ∧
     List.Perm [lm 0 0 0 8 8, lm 0 8 0 16 8] [lm 0 8 0 16 8, lm 0 0 0 8 8] ∧
@@ -2393,6 +2567,7 @@ theorem nonvacuity_runLanes_same_register :
 #### `Toy.ParMove.nonvacuity_runLanes` (`lean/ToyParMove/LaneMoves.lean`; result 21)
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:308-311
 theorem nonvacuity_runLanes :
     LaneWF [lm 1 0 0 0 8, lm 2 0 1 0 8] ∧
     List.Perm [lm 2 0 1 0 8, lm 1 0 0 0 8] [lm 1 0 0 0 8, lm 2 0 1 0 8] ∧
@@ -2415,6 +2590,7 @@ What each result does not show, verbatim from its card. Several cards share the 
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Readings.lean:196-198
 -- lean/ToyParMove/Readings.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem pmove_readings_agree_on_equal_source_values :
     pmove [((0 : Nat), (1 : Nat)), (0, 2)] (fun l : Nat => if l = 2 then 1 else l) =
@@ -2432,13 +2608,16 @@ theorem pmove_readings_agree_on_equal_source_values :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Basic.lean:119
 -- lean/ToyParMove/Basic.lean — universally quantified theorem
 theorem functional_of_wellFormed {M : List (Loc × Loc)} (h : WellFormed M) : Functional M
 
+-- lean/ToyParMove/Readings.lean:38-39
 -- lean/ToyParMove/Readings.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem functional_duplicate_not_wellFormed :
     Functional [((0 : Nat), (1 : Nat)), (0, 1)] ∧ ¬ WellFormed [((0 : Nat), (1 : Nat)), (0, 1)]
 
+-- lean/ToyParMove/Readings.lean:188-189
 -- lean/ToyParMove/Readings.lean — universally quantified theorem
 theorem pmove_eq_pmoveLast_of_wellFormed {M : List (Loc × Loc)} (hM : WellFormed M)
     (σ : Loc → V) : pmove M σ = pmoveLast M σ
@@ -2461,10 +2640,12 @@ theorem pmove_eq_pmoveLast_of_wellFormed {M : List (Loc × Loc)} (hM : WellForme
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Sequentialize.lean:311-312
 -- lean/ToyParMove/Sequentialize.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem sequentialize_emits_duplicates_example :
     sequentialize (9 : Nat) [(0, 1), (0, 1), (1, 0)] = [(9, 0), (0, 1), (0, 1), (1, 9)]
 
+-- lean/ToyParMove/Necessity.lean:51-56
 -- lean/ToyParMove/Necessity.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem sequentialize_loses_tmp_destination :
     Functional [((0 : Nat), (3 : Nat)), (1, 2), (2, 1)] ∧
@@ -2473,6 +2654,7 @@ theorem sequentialize_loses_tmp_destination :
     runSeq (sequentialize 0 [((0 : Nat), (3 : Nat)), (1, 2), (2, 1)]) (id : Nat → Nat) 0 = 1 ∧
     pmove [((0 : Nat), (3 : Nat)), (1, 2), (2, 1)] (id : Nat → Nat) 0 = 3
 
+-- lean/ToyParMove/Necessity.lean:62-66
 -- lean/ToyParMove/Necessity.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem sequentialize_clobbers_tmp :
     (0 : Nat) ∉ dsts [((1 : Nat), (2 : Nat)), (2, 1)] ∧
@@ -2480,6 +2662,7 @@ theorem sequentialize_clobbers_tmp :
     runSeq (sequentialize 0 [((1 : Nat), (2 : Nat)), (2, 1)]) (id : Nat → Nat) 0 = 1 ∧
     pmove [((1 : Nat), (2 : Nat)), (2, 1)] (id : Nat → Nat) 0 = 0
 
+-- lean/ToyParMove/Necessity.lean:72-78
 -- lean/ToyParMove/Necessity.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem sequentialize_works_with_tmp_self_move :
     Functional [((0 : Nat), (0 : Nat)), (1, 2), (2, 1)] ∧
@@ -2489,6 +2672,7 @@ theorem sequentialize_works_with_tmp_self_move :
       runSeq (sequentialize 0 [((0 : Nat), (0 : Nat)), (1, 2), (2, 1)]) σ l =
         pmove [((0 : Nat), (0 : Nat)), (1, 2), (2, 1)] σ l
 
+-- lean/ToyParMove/CycleTightness.lean:411-415
 -- lean/ToyParMove/CycleTightness.lean — finite check of four concrete instances (k = 2, 3, 4, 5); not a general theorem
 theorem sequentialize_cycle_length_examples :
     (sequentialize (9 : Nat) (cycleMoves [0, 1])).length = 3 ∧
@@ -2514,25 +2698,30 @@ theorem sequentialize_cycle_length_examples :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Necessity.lean:321-324
 -- lean/ToyParMove/Necessity.lean — single concrete move list (all value types and stores); it proves nothing beyond this list
 theorem topological_rejects_benign_self_move :
     ¬ Topological [((1 : Nat), (1 : Nat)), (2, 1)] ∧
     ∀ (V : Type) (σ : Nat → V),
       runSeq [((1 : Nat), (1 : Nat)), (2, 1)] σ = pmove [((1 : Nat), (1 : Nat)), (2, 1)] σ
 
+-- lean/ToyParMove/Necessity.lean:338-340
 -- lean/ToyParMove/Necessity.lean — universally quantified theorem
 theorem not_topological_of_dsts_read {ms C : List (Loc × Loc)} (hC : C ≠ [])
     (hsub : ∀ m ∈ C, m ∈ ms) (hread : ∀ m ∈ C, ∃ m' ∈ C, m' ≠ m ∧ m'.2 = m.1) :
     ¬ Topological ms
 
+-- lean/ToyParMove/Necessity.lean:405-406
 -- lean/ToyParMove/Necessity.lean — universally quantified theorem
 theorem runSeq_eq_pmoveLast_of_topological :
     ∀ {ms : List (Loc × Loc)}, Topological ms → ∀ σ : Loc → V, runSeq ms σ = pmoveLast ms σ
 
+-- lean/ToyParMove/Cycles.lean:379-380
 -- lean/ToyParMove/Cycles.lean — universally quantified theorem
 theorem not_topological_of_perm_cycleMoves {ls : List Loc} {ms : List (Loc × Loc)}
     (hn : ls.Nodup) (hk : 2 ≤ ls.length) (hp : ms.Perm (cycleMoves ls)) : ¬ Topological ms
 
+-- lean/ToyParMove/Boundaries.lean:28-31
 -- lean/ToyParMove/Boundaries.lean — universally quantified theorem
 theorem not_topological_of_contains_cycleMoves {ls : List Loc} {M ms : List (Loc × Loc)}
     (hn : ls.Nodup) (hk : 2 ≤ ls.length)
@@ -2557,6 +2746,7 @@ theorem not_topological_of_contains_cycleMoves {ls : List Loc} {M ms : List (Loc
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Cycles.lean:423
 -- lean/ToyParMove/Cycles.lean — universally quantified over all stores Nat → Bool
 theorem no_injective_store_nat_bool : ∀ σ : Nat → Bool, ¬ Function.Injective σ
 ```
@@ -2573,6 +2763,7 @@ theorem no_injective_store_nat_bool : ∀ σ : Nat → Bool, ¬ Function.Injecti
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Cycles.lean:423
 -- lean/ToyParMove/Cycles.lean — universally quantified over all stores Nat → Bool
 theorem no_injective_store_nat_bool : ∀ σ : Nat → Bool, ¬ Function.Injective σ
 ```
@@ -2586,6 +2777,7 @@ theorem no_injective_store_nat_bool : ∀ σ : Nat → Bool, ¬ Function.Injecti
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Swaps.lean:312-313
 -- lean/ToyParMove/Swaps.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem length_cycleSwaps_nil :
     (cycleSwaps ([] : List Nat)).length = 0 ∧ ([] : List Nat).length - 1 = 0
@@ -2603,17 +2795,21 @@ theorem length_cycleSwaps_nil :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Cycles.lean:423
 -- lean/ToyParMove/Cycles.lean — universally quantified over all stores Nat → Bool
 theorem no_injective_store_nat_bool : ∀ σ : Nat → Bool, ¬ Function.Injective σ
 
+-- lean/ToyParMove/Swaps.lean:54-55
 -- lean/ToyParMove/Swaps.lean — universally quantified theorem
 theorem runSwaps_comp (f : V → W) : ∀ (ss : List (Loc × Loc)) (τ : Loc → V),
     runSwaps ss (f ∘ τ) = f ∘ runSwaps ss τ
 
+-- lean/ToyParMove/Swaps.lean:312-313
 -- lean/ToyParMove/Swaps.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem length_cycleSwaps_nil :
     (cycleSwaps ([] : List Nat)).length = 0 ∧ ([] : List Nat).length - 1 = 0
 
+-- lean/ToyParMove/Boundaries.lean:141-146
 -- lean/ToyParMove/Boundaries.lean — universally quantified theorem
 theorem cycle_length_sub_one_le_of_injOn_of_runSwaps
     {ls : List Loc} {σ : Loc → V} {ss : List (Loc × Loc)}
@@ -2622,6 +2818,7 @@ theorem cycle_length_sub_one_le_of_injOn_of_runSwaps
     (hreal : runSwaps ss σ = pmove (cycleMoves ls) σ) :
     ls.length - 1 ≤ ss.length
 
+-- lean/ToyParMove/Boundaries.lean:262-267
 -- lean/ToyParMove/Boundaries.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem nonvacuity_cycle_length_sub_one_le_of_injOn_of_runSwaps :
     let σ : Nat → Nat := fun l => if l ≤ 2 then l else 0
@@ -2642,12 +2839,14 @@ theorem nonvacuity_cycle_length_sub_one_le_of_injOn_of_runSwaps :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/XorSwap.lean:118-121
 -- lean/ToyParMove/XorSwap.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem xorSwap_unsafe_for_aliased_parallel_swap :
     pmove [((0 : Nat), (0 : Nat)), (0, 0)] (fun _ : Nat => (1#8 : BitVec 8)) 0 = 1#8 ∧
     swapStore (fun _ : Nat => (1#8 : BitVec 8)) 0 0 0 = 1#8 ∧
     xorSwap (fun _ : Nat => (1#8 : BitVec 8)) 0 0 0 = 0#8
 
+-- lean/ToyParMove/XorSwap.lean:161-162
 -- lean/ToyParMove/XorSwap.lean — universally quantified over stores Nat → BitVec 0 and locations a, b : Nat
 theorem xorSwap_eq_swapStore_width_zero (σ : Nat → BitVec 0) (a b : Nat) :
     xorSwap σ a b = swapStore σ a b
@@ -2671,10 +2870,12 @@ theorem xorSwap_eq_swapStore_width_zero (σ : Nat → BitVec 0) (a b : Nat) :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Boundaries.lean:280-281
 -- lean/ToyParMove/Boundaries.lean — universally quantified theorem
 theorem putLane_putGet_iff_wid_zero_or_fits (L : Lane) :
     PutGet (getLane (n := n) L) (putLane L) ↔ (L.wid = 0 ∨ L.Fits n)
 
+-- lean/ToyParMove/Boundaries.lean:303-304
 -- lean/ToyParMove/Boundaries.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem putLane_putGet_width_zero_beyond_register :
     ¬ (⟨9, 0⟩ : Lane).Fits 8 ∧ PutGet (getLane (n := 8) ⟨9, 0⟩) (putLane ⟨9, 0⟩)
@@ -2691,6 +2892,7 @@ theorem putLane_putGet_width_zero_beyond_register :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:296-297
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem writeZext_upper_zero {wid : Nat} (v : BitVec wid) (w : BitVec n) :
     ∀ i, wid ≤ i → (writeZext n v w).getLsbD i = false
@@ -2706,6 +2908,7 @@ theorem writeZext_upper_zero {wid : Nat} (v : BitVec wid) (w : BitVec n) :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:296-297
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem writeZext_upper_zero {wid : Nat} (v : BitVec wid) (w : BitVec n) :
     ∀ i, wid ≤ i → (writeZext n v w).getLsbD i = false
@@ -2723,10 +2926,12 @@ theorem writeZext_upper_zero {wid : Nat} (v : BitVec wid) (w : BitVec n) :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:296-297
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem writeZext_upper_zero {wid : Nat} (v : BitVec wid) (w : BitVec n) :
     ∀ i, wid ≤ i → (writeZext n v w).getLsbD i = false
 
+-- lean/ToyParMove/Lanes.lean:355
 -- lean/ToyParMove/Lanes.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem writeZext_truncates_example : writeZext 8 (0x1234#16) (0#8) = 0x34#8
 ```
@@ -2741,10 +2946,12 @@ theorem writeZext_truncates_example : writeZext 8 (0x1234#16) (0#8) = 0x34#8
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:289-290
 -- lean/ToyParMove/Lanes.lean — universally quantified theorem
 theorem writeZext_getPut_of_ge {wid : Nat} (h : n ≤ wid) :
     GetPut (getLane (n := n) ⟨0, wid⟩) (writeZext n (wid := wid))
 
+-- lean/ToyParMove/Lanes.lean:355
 -- lean/ToyParMove/Lanes.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem writeZext_truncates_example : writeZext 8 (0x1234#16) (0#8) = 0x34#8
 ```
@@ -2759,6 +2966,7 @@ theorem writeZext_truncates_example : writeZext 8 (0x1234#16) (0#8) = 0x34#8
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/Lanes.lean:355
 -- lean/ToyParMove/Lanes.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem writeZext_truncates_example : writeZext 8 (0x1234#16) (0#8) = 0x34#8
 ```
@@ -2773,11 +2981,13 @@ theorem writeZext_truncates_example : writeZext 8 (0x1234#16) (0#8) = 0x34#8
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:168-170
 -- lean/ToyParMove/LaneMoves.lean — universally quantified theorem
 theorem laneWF_implies_distinctDstLanes_of_pos_wid {R : Type} [DecidableEq R]
     {M : List (LaneMove R)} (hwf : LaneWF M) (hpos : ∀ m ∈ M, 0 < m.wid) :
     DistinctDstLanes M
 
+-- lean/ToyParMove/LaneMoves.lean:269-270
 -- lean/ToyParMove/LaneMoves.lean — single concrete instance: fixed inputs; it proves nothing beyond this instance
 theorem laneWF_not_implies_distinctDstLanes_width_zero :
     LaneWF [lm 0 4 1 0 0, lm 0 4 2 0 0] ∧ ¬ DistinctDstLanes [lm 0 4 1 0 0, lm 0 4 2 0 0]
@@ -2794,18 +3004,21 @@ theorem laneWF_not_implies_distinctDstLanes_width_zero :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:330-333
 -- lean/ToyParMove/LaneMoves.lean — single concrete move list (all reorderings, all 16-bit register files); it proves nothing beyond this list
 theorem lanePMove_perm_invariant_duplicate_not_laneWF :
     ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 1 0 8] ∧
     ∀ (M' : List (LaneMove Nat)), M'.Perm [lm 0 0 1 0 8, lm 0 0 1 0 8] →
       ∀ ρ : Nat → BitVec 16, lanePMove M' ρ = lanePMove [lm 0 0 1 0 8, lm 0 0 1 0 8] ρ
 
+-- lean/ToyParMove/LaneMoves.lean:339-342
 -- lean/ToyParMove/LaneMoves.lean — single concrete move list (both orders, all 16-bit register files); it proves nothing beyond this list
 theorem lanePMove_same_source_overlap_not_laneWF :
     ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 1 0 16] ∧
     ∀ ρ : Nat → BitVec 16,
       lanePMove [lm 0 0 1 0 8, lm 0 0 1 0 16] ρ = lanePMove [lm 0 0 1 0 16, lm 0 0 1 0 8] ρ
 
+-- lean/ToyParMove/LaneMoves.lean:360-363
 -- lean/ToyParMove/LaneMoves.lean — single concrete move list (both orders, all 8-bit register files); it proves nothing beyond this list
 theorem lanePMove_beyond_register_overlap_not_laneWF :
     ¬ LaneWF [lm 0 6 1 0 4, lm 0 8 1 0 4] ∧
@@ -2828,11 +3041,13 @@ theorem lanePMove_beyond_register_overlap_not_laneWF :
 Uncarded theorems cited in these non-claims, verbatim (proofs omitted):
 
 ```lean
+-- lean/ToyParMove/LaneMoves.lean:138-140
 -- lean/ToyParMove/LaneMoves.lean — universally quantified theorem
 theorem runLanes_eq_lanePMove_of_topological :
     ∀ {ms : List (LaneMove R)}, LaneTopological ms → ∀ ρ : R → BitVec n,
       runLanes ms ρ = lanePMove ms ρ
 
+-- lean/ToyParMove/LaneMoves.lean:376-379
 -- lean/ToyParMove/LaneMoves.lean — single concrete move list (all 16-bit register files); it proves nothing beyond this list
 theorem laneTopological_rejects_benign_self_copy :
     ¬ LaneTopological [lm 0 0 0 0 8, lm 1 0 0 0 8] ∧
