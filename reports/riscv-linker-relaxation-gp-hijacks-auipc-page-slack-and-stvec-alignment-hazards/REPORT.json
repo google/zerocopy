@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "isa/riscv",
+    "isa/elf-relocations",
+    "verification/binary-analysis",
+    "systems/trap-handling",
+    "compilers/linking"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V ELF psABI Specification",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+        "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+      }
+    },
+    {
+      "name": "RISC-V Instruction Set Manual (Unprivileged and Privileged Specifications)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "3142f66fd71c7ea0326b3687072318aedab587f8"
+      }
+    },
+    {
+      "name": "Sail RISC-V Formal Architecture Specification",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "71312d537fc10782c42b7303a611b923af0566d4"
+      }
+    },
+    {
+      "name": "LLVM Linker (LLD) RISC-V ELF Backend",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "ece0017061ac8da713b4a91ac00c26e8928022db"
+      }
+    },
+    {
+      "name": "LLVM / LLD Executed RV64 Toolchain (22.1.6)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+        "version": "22.1.6"
+      }
+    },
+    {
+      "name": "Linux Kernel RISC-V Architecture Port",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "aa31d5f8b151b786b748c6bfc9a8c4f1855c8adc"
+      }
+    },
+    {
+      "name": "seL4 Microkernel RISC-V Architecture Port",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
