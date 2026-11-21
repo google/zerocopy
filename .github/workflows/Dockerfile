@@ -59,10 +59,13 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --de
 
 COPY --from=nextest-builder /root/.cargo/bin/cargo-nextest /root/.cargo/bin/cargo-nextest
 
-ENV CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1
+ENV CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1 \
+    CARGO_ZEROCOPY_PREBUILT=/usr/local/bin/cargo-zerocopy
 
-# Pre-install pinned `stable`, `nightly`, and `msrv` toolchains via bind mounts
-# so neither `/tmp/setup` nor `tools/target` enters any image layer.
+# Pre-install pinned `stable`, `nightly`, and `msrv` toolchains, install the
+# prebuilt `cargo-zerocopy` wrapper, and warm the host/native `x86_64` Miri
+# sysroot (`RUSTFLAGS` matching `ci.yml`) via bind mounts so neither
+# `/tmp/setup` nor `tools/target` enters any image layer.
 RUN --mount=type=bind,source=zerocopy/Cargo.toml,target=/mnt/setup/zerocopy/Cargo.toml \
     --mount=type=bind,source=zerocopy/cargo.sh,target=/mnt/setup/zerocopy/cargo.sh     \
     --mount=type=bind,source=tools,target=/mnt/setup/tools                             \
@@ -74,10 +77,16 @@ RUN --mount=type=bind,source=zerocopy/Cargo.toml,target=/mnt/setup/zerocopy/Carg
     test -n "$PINNED_STABLE" && \
     rustup toolchain install "$PINNED_STABLE" --profile minimal && \
     rustup default "$PINNED_STABLE" && \
+    ( cd /tmp/setup && \
+      env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo "+$PINNED_STABLE" build \
+        --locked --release --manifest-path tools/Cargo.toml -p cargo-zerocopy ) && \
+    install -Dm755 /tmp/setup/tools/target/release/cargo-zerocopy /usr/local/bin/cargo-zerocopy && \
     ( cd /tmp/setup/zerocopy && \
       ./cargo.sh +stable --version  && \
       ./cargo.sh +nightly --version && \
-      ./cargo.sh +msrv --version ) && \
+      ./cargo.sh +msrv --version    && \
+      RUSTFLAGS="-Dwarnings -Zrandomize-layout" \
+        ./cargo.sh +nightly miri setup --target x86_64-unknown-linux-gnu ) && \
     rm -rf /tmp/setup /root/.cargo/registry /root/.cargo/git \
       /root/.rustup/downloads /root/.rustup/tmp \
       /root/.rustup/toolchains/*/share/doc /root/.rustup/toolchains/*/share/man

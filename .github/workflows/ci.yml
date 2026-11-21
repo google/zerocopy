@@ -917,14 +917,22 @@ jobs:
           # Kani sets cfg(kani) in dependencies even without their features.
           - configuration: no features
             args: '--no-default-features --only-codegen'
-          - configuration: stable features
+            shard: '1/1'
+          - configuration: 'stable features, shard 1/2'
             args: '--features __internal_use_only_features_that_work_on_stable'
+            shard: '1/2'
+          - configuration: 'stable features, shard 2/2'
+            args: '--features __internal_use_only_features_that_work_on_stable'
+            shard: '2/2'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
+        env:
+          KANI_SHARD: ${{ matrix.shard }}
         with:
+          command: ./.github/scripts/run_kani_sharded.sh
           # Use `--features __internal_use_only_features_that_work_on_stable`
           # because the Kani GitHub Action uses its own pinned nightly
           # toolchain. Sometimes, we make changes to our nightly features for
@@ -1291,7 +1299,7 @@ jobs:
         run: |
           set -euo pipefail
           trap 'rm -f -- "$RAW_ARCHIVE"' EXIT
-          zstd -T0 -6 "$RAW_ARCHIVE" -o "$COMPRESSED_ARCHIVE"
+          zstd -T0 -3 "$RAW_ARCHIVE" -o "$COMPRESSED_ARCHIVE"
 
       # Uploading is the producer's final gate. Matrix jobs cannot start until
       # this succeeds and the job exposes its artifact ID, so no runner is spent
