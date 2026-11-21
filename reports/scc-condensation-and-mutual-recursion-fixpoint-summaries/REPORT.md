@@ -58,7 +58,7 @@ Basis: derived (modeling bridge). Applying a result to a real system requires ch
 
 ## Findings
 
-All theorem statements below are the output of Lean's pretty-printer on the compiled declarations, with the options `pp.analyze true` and `pp.fieldNotation.generalized false`, and with the namespace `Toy.Scc` omitted. `pp.analyze` adds named arguments such as `(n := 1) (m := 1)` where the default output would hide an implicit argument that the printed term does not determine (for example the dimensions of `topT`, `botT`, `bot` or `oneComp` in a counterexample); without it, several counterexamples would read as if they quantified over all dimensions. It does not catch every such case: where its output would still not elaborate back to the theorem's statement, the statement is printed with `pp.numericTypes true` in addition (every numeral shows its type, as in `Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))]`, which `pp.analyze` alone prints as `Covers idComp [1, 0]`, leaving the size of `Fin` undetermined), or with `pp.coercions.types true` in addition (every coercion shows its target type, as in `(↑f : Nat)`). `↑f` is the coercion of `f : Fin n` to `Nat`. Definitions, fixtures and anonymous examples are quoted as Lean source excerpts and labelled as such. Every `Toy.Scc` declaration named anywhere in this report is defined or quoted in it (key definitions and fixtures in this section, definition examples under **Definition examples**, card theorems on the cards, and everything else under **Other declarations named in this report** at the end of this section). *Unfolded* blocks are hand-written elementary readings of the quoted statements, in which `≤` on summary vectors is bitwise inclusion (`Le`).
+All theorem statements below are quoted verbatim from the Lean sources. Each quote is preceded by a comment `-- <file>:<first>-<last>` naming the quoted source lines, and runs from the keyword `theorem` (or from its doc comment, where one is shown) through the end of the statement; proofs are omitted. Every declaration is in the namespace `Toy.Scc`, which the quotes, like the sources, do not write. Implicit arguments that the statement fixes appear as the source writes them, for example `Covers (idComp (n := 2)) [1, 0]`. Definitions and fixtures are quoted from the sources in the same way, with their full bodies and their doc comments; anonymous examples are shown as in the source with their proofs elided, without a line reference. Every `Toy.Scc` declaration named anywhere in this report is defined or quoted in it (key definitions and fixtures in this section, definition examples under **Definition examples**, card theorems on the cards, and everything else under **Other declarations named in this report** at the end of this section). *Unfolded (prose)* blocks are hand-written elementary readings of the quoted statements, not Lean terms, in which `≤` on summary vectors is bitwise inclusion (`Le`).
 
 The card fields **Plain claim**, hypothesis names and purposes, **Depth**, **Non-vacuity witness**, **Tier justification**, **Prior art** and **Design question** are reproduced verbatim from `results.json`; there, ASCII spellings such as `sigma`, `mu`, `nu`, `<=` and `->` stand for `σ`, `μ`, `ν`, `≤` and `→`.
 
@@ -69,33 +69,40 @@ Lean source excerpts (doc comments included; the `Decidable` instances that acco
 #### Call graphs, reachability and SCC decompositions (`Toy.Scc.Graph`)
 
 ```lean
+-- lean/Toy/Scc/Graph.lean:39-41
 /-- A finite call graph on the functions `Fin n`: `E f g = true` iff `f` contains
 a call to `g`.  This models the (static) call graph of a whole program. -/
 abbrev Graph (n : Nat) := Fin n → Fin n → Bool
 
+-- lean/Toy/Scc/Graph.lean:43-47
 /-- Reflexive-transitive reachability in the call graph: `Reach E f g` iff there is
 a call chain (of length `≥ 0`) from `f` to `g`. -/
 inductive Reach {n : Nat} (E : Graph n) : Fin n → Fin n → Prop
   | refl (f : Fin n) : Reach E f f
   | step {f g h : Fin n} : E f g = true → Reach E g h → Reach E f h
 
+-- lean/Toy/Scc/Graph.lean:58-60
 /-- A set of functions (as a Boolean predicate) closed under calls. -/
 def ClosedUnder {n : Nat} (E : Graph n) (S : Fin n → Bool) : Prop :=
   ∀ x y, S x = true → E x y = true → S y = true
 
+-- lean/Toy/Scc/Graph.lean:72-74
 /-- One step of forward expansion of a set of reached functions. -/
 def reachStep {n : Nat} (E : Graph n) (S : Fin n → Bool) : Fin n → Bool :=
   fun g => S g || (List.finRange n).any fun h => S h && E h g
 
+-- lean/Toy/Scc/Graph.lean:76-80
 /-- `reachFrom E f fuel` is the set of functions reachable from `f` by call chains
 of length at most `fuel` (fuel-bounded closure). -/
 def reachFrom {n : Nat} (E : Graph n) (f : Fin n) : Nat → Fin n → Bool
   | 0 => fun g => decide (g = f)
   | k + 1 => reachStep E (reachFrom E f k)
 
+-- lean/Toy/Scc/Graph.lean:82-83
 /-- Decidable reachability: the fuel-bounded closure with fuel `n`. -/
 def reachB {n : Nat} (E : Graph n) (f g : Fin n) : Bool := reachFrom E f n g
 
+-- lean/Toy/Scc/Graph.lean:125-130
 /-- `comp : Fin n → Fin k` is a (valid) SCC decomposition of `E`: two functions lie in
 the same block exactly when they are mutually reachable.  This is the textbook
 definition of the partition into strongly connected components, with blocks named
@@ -103,37 +110,44 @@ by `Fin k` (block names need not all be used). -/
 def IsSccDecomp {n k : Nat} (E : Graph n) (comp : Fin n → Fin k) : Prop :=
   ∀ f g, comp f = comp g ↔ (Reach E f g ∧ Reach E g f)
 
+-- lean/Toy/Scc/Graph.lean:132-135
 /-- Every block is mutually reachable inside the whole graph ("no over-merging").
 Reachability is taken in all of `E`, not in the subgraph induced by the block. -/
 def BlocksMutuallyReachable {n k : Nat} (E : Graph n) (comp : Fin n → Fin k) : Prop :=
   ∀ f g, comp f = comp g → Reach E f g ∧ Reach E g f
 
+-- lean/Toy/Scc/Graph.lean:137-140
 /-- An edge of the condensation: some call crosses from block `c` to a different
 block `d`. -/
 def CondEdge {n k : Nat} (E : Graph n) (comp : Fin n → Fin k) (c d : Fin k) : Prop :=
   c ≠ d ∧ ∃ f g, comp f = c ∧ comp g = d ∧ E f g = true
 
+-- lean/Toy/Scc/Graph.lean:142-145
 /-- The condensation (the quotient graph on blocks, keeping only edges between
 distinct blocks) has no cycle. -/
 def CondensationAcyclic {n k : Nat} (E : Graph n) (comp : Fin n → Fin k) : Prop :=
   ∀ c, ¬ Relation.TransGen (CondEdge E comp) c c
 
+-- lean/Toy/Scc/Graph.lean:147-151
 /-- The decidable SCC checker: compares block equality with mutual reachability as
 computed by the fuel-bounded closure, for all pairs. -/
 def checkScc {n k : Nat} (E : Graph n) (comp : Fin n → Fin k) : Bool :=
   (List.finRange n).all fun f => (List.finRange n).all fun g =>
     decide (comp f = comp g) == (reachB E f g && reachB E g f)
 
+-- lean/Toy/Scc/Graph.lean:193-197
 /-- Position of a block in a processing order: the index of its first occurrence
 (`List.idxOf`), and `order.length` if the block does not occur.  The definition of
 `CalleesFirst` below requires the blocks it compares to occur, so this out-of-range
 value never decides a comparison there. -/
 def pos {k : Nat} (order : List (Fin k)) (c : Fin k) : Nat := order.idxOf c
 
+-- lean/Toy/Scc/Graph.lean:214-216
 /-- The order mentions the block of every function. -/
 def Covers {n k : Nat} (comp : Fin n → Fin k) (order : List (Fin k)) : Prop :=
   ∀ f, comp f ∈ order
 
+-- lean/Toy/Scc/Graph.lean:230-238
 /-- Callees first (a reverse topological order of the condensation): for every call
 that crosses blocks, both endpoint blocks occur in `order`, and the callee's block
 first occurs strictly earlier than the caller's block.  Blocks that take part in no
@@ -148,46 +162,58 @@ def CalleesFirst {n k : Nat} (E : Graph n) (comp : Fin n → Fin k) (order : Lis
 #### Summaries, transfers and fixpoints (`Toy.Scc.Lattice`)
 
 ```lean
+-- lean/Toy/Scc/Lattice.lean:16-18
 /-- An abstract value: a subset of `Fin m` given as a bit vector (the powerset
 lattice of `Fin m` ordered by inclusion). -/
 abbrev Val (m : Nat) := Fin m → Bool
 
+-- lean/Toy/Scc/Lattice.lean:20-21
 /-- A summary vector: one abstract value per function. -/
 abbrev Summ (n m : Nat) := Fin n → Val m
 
+-- lean/Toy/Scc/Lattice.lean:23-24
 /-- A transfer function on summary vectors (one equation per function). -/
 abbrev Transfer (n m : Nat) := Summ n m → Summ n m
 
+-- lean/Toy/Scc/Lattice.lean:26-27
 /-- The pointwise inclusion order on summary vectors. -/
 def Le {n m : Nat} (σ τ : Summ n m) : Prop := ∀ f i, σ f i = true → τ f i = true
 
+-- lean/Toy/Scc/Lattice.lean:32-33
 /-- Least summary vector (every function summarized by the empty set). -/
 def bot {n m : Nat} : Summ n m := fun _ _ => false
 
+-- lean/Toy/Scc/Lattice.lean:34-35
 /-- Greatest summary vector. -/
 def top {n m : Nat} : Summ n m := fun _ _ => true
 
+-- lean/Toy/Scc/Lattice.lean:66-67
 /-- Monotonicity of a transfer function. -/
 def Monotone {n m : Nat} (F : Transfer n m) : Prop := ∀ σ τ, Le σ τ → Le (F σ) (F τ)
 
+-- lean/Toy/Scc/Lattice.lean:69-72
 /-- Locality: the equation of `f` reads only the summaries of the callees of `f`
 (this is what makes a transfer function "follow the call graph"). -/
 def RespectsCalls {n m : Nat} (E : Graph n) (F : Transfer n m) : Prop :=
   ∀ σ τ f, (∀ g, E f g = true → σ g = τ g) → F σ f = F τ f
 
+-- lean/Toy/Scc/Lattice.lean:76-78
 /-- `σ` is the least fixpoint of `F` (least among all fixpoints). -/
 def IsLeastFixpoint {n m : Nat} (F : Transfer n m) (σ : Summ n m) : Prop :=
   F σ = σ ∧ ∀ τ, F τ = τ → Le σ τ
 
+-- lean/Toy/Scc/Lattice.lean:80-82
 /-- `σ` is the greatest fixpoint of `F` (greatest among all fixpoints). -/
 def IsGreatestFixpoint {n m : Nat} (F : Transfer n m) (σ : Summ n m) : Prop :=
   F σ = σ ∧ ∀ τ, F τ = τ → Le τ σ
 
+-- lean/Toy/Scc/Lattice.lean:84-87
 /-- `k`-fold iteration (Kleene iteration when started at `bot` or `top`). -/
 def iter {α : Type} (g : α → α) : Nat → α → α
   | 0, a => a
   | k + 1, a => iter g k (g a)
 
+-- lean/Toy/Scc/Lattice.lean:246-254
 /-- Disjunctive transfer with unary-premise rules: bit `i` of `f` holds if it is a seed
 (`c f i`) or if some single dependency bit `(g, j)` with `d f i g j` holds.  Every rule
 has at most one premise, so these transfers preserve joins (they are additive);
@@ -198,6 +224,7 @@ def disjT {n m : Nat} (c : Fin n → Fin m → Bool) (d : Fin n → Fin m → Fi
   fun σ f i => c f i || (List.finRange n).any fun g => (List.finRange m).any fun j =>
     d f i g j && σ g j
 
+-- lean/Toy/Scc/Lattice.lean:256-261
 /-- Conjunctive transfer: bit `i` of `f` holds if it is allowed by `c` and every dependency
 bit holds.  Greatest fixpoints of such transfers are safety-invariant-style facts. -/
 def conjT {n m : Nat} (c : Fin n → Fin m → Bool) (d : Fin n → Fin m → Fin n → Fin m → Bool) :
@@ -209,23 +236,27 @@ def conjT {n m : Nat} (c : Fin n → Fin m → Bool) (d : Fin n → Fin m → Fi
 #### The bottom-up algorithm and hierarchical solutions (`Toy.Scc.BottomUp`)
 
 ```lean
+-- lean/Toy/Scc/BottomUp.lean:15-19
 /-- The block operator: the equations of block `c` (taken from `F`), with every summary
 outside block `c` frozen to its value in `σ`. -/
 def blockOp {n m k : Nat} (F : Transfer n m) (comp : Fin n → Fin k) (c : Fin k)
     (σ : Summ n m) : Transfer n m :=
   fun τ f => if comp f = c then F τ f else σ f
 
+-- lean/Toy/Scc/BottomUp.lean:21-25
 /-- Starting point of the inner iteration for block `c`: block `c` reset to the empty
 set (`least = true`) or to the full set (`least = false`); other blocks from `σ`. -/
 def blockInit {n m k : Nat} (comp : Fin n → Fin k) (c : Fin k) (least : Bool)
     (σ : Summ n m) : Summ n m :=
   fun f => if comp f = c then (fun _ => !least) else σ f
 
+-- lean/Toy/Scc/BottomUp.lean:27-30
 /-- Solve block `c` by `fuel` rounds of Kleene iteration of its block operator. -/
 def solveBlock {n m k : Nat} (F : Transfer n m) (comp : Fin n → Fin k) (fuel : Nat)
     (least : Bool) (c : Fin k) (σ : Summ n m) : Summ n m :=
   iter (blockOp F comp c σ) fuel (blockInit comp c least σ)
 
+-- lean/Toy/Scc/BottomUp.lean:32-37
 /-- The bottom-up algorithm: one pass over `order`, performing one block solve per list
 entry (a block listed twice is solved twice), with the least (`sign c = true`) or
 greatest (`sign c = false`) inner fixpoint, starting from the summary vector `init`. -/
@@ -233,17 +264,20 @@ def bottomUp {n m k : Nat} (F : Transfer n m) (comp : Fin n → Fin k) (sign : F
     (order : List (Fin k)) (fuel : Nat) (init : Summ n m) : Summ n m :=
   order.foldl (fun σ c => solveBlock F comp fuel (sign c) c σ) init
 
+-- lean/Toy/Scc/BottomUp.lean:39-42
 /-- Bottom-up least fixpoint: every block solved with its least inner fixpoint, start `bot`. -/
 def bottomUpLfp {n m k : Nat} (F : Transfer n m) (comp : Fin n → Fin k)
     (order : List (Fin k)) (fuel : Nat) : Summ n m :=
   bottomUp F comp (fun _ => true) order fuel bot
 
+-- lean/Toy/Scc/BottomUp.lean:44-48
 /-- Bottom-up greatest fixpoint: every block solved with its greatest inner fixpoint,
 start `top`. -/
 def bottomUpGfp {n m k : Nat} (F : Transfer n m) (comp : Fin n → Fin k)
     (order : List (Fin k)) (fuel : Nat) : Summ n m :=
   bottomUp F comp (fun _ => false) order fuel top
 
+-- lean/Toy/Scc/BottomUp.lean:52-58
 /-- `σ` solves block `c` extremally: restricted to block `c`, `σ` is the least
 (`least = true`) or greatest (`least = false`) fixpoint of the block operator whose
 frozen outside values are taken from `σ` itself. -/
@@ -252,6 +286,7 @@ def BlockExtremal {n m k : Nat} (F : Transfer n m) (comp : Fin n → Fin k) (c :
   blockOp F comp c σ σ = σ ∧
     ∀ τ, blockOp F comp c σ τ = τ → (if least then Le σ τ else Le τ σ)
 
+-- lean/Toy/Scc/BottomUp.lean:60-73
 /-- Coordinatewise block-extremality for the sign assignment `sign`: every block `c` is
 the least (`sign c = true`) or greatest (`sign c = false`) fixpoint of its own equations
 when all other blocks are frozen, as constants, to their values in `σ`.
@@ -271,10 +306,12 @@ def HierSolution {n m k : Nat} (F : Transfer n m) (comp : Fin n → Fin k)
 #### Ranking certificates (`Toy.Scc.Fixpoint`)
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:383-385
 /-- The part of `σ` whose bits have rank strictly below `k`. -/
 def below {n m : Nat} (σ : Summ n m) (r : Fin n → Fin m → Nat) (k : Nat) : Summ n m :=
   fun f i => σ f i && decide (r f i < k)
 
+-- lean/Toy/Scc/Fixpoint.lean:387-393
 /-- A ranking certificate for `σ`: every set bit of `σ` is produced by one application of
 `F` to the strictly lower-ranked part of `σ`.  This is a well-founded derivation witness;
 checking it evaluates `F` on the vectors `below σ r k`, one per distinct rank value `k`
@@ -283,6 +320,7 @@ def RankedJustified {n m : Nat} (F : Transfer n m) (σ : Summ n m)
     (r : Fin n → Fin m → Nat) : Prop :=
   ∀ f i, σ f i = true → F (below σ r (r f i)) f i = true
 
+-- lean/Toy/Scc/Fixpoint.lean:399-403
 /-- The canonical ranking: `kleeneRank F f i` is the least `k < n * m` such that bit `(f, i)`
 is set in the Kleene iterate `F^(k+1)(bot)` (that is, after `k + 1` rounds), and `0` if
 there is no such `k` (in particular for bits that are never set). -/
@@ -293,39 +331,47 @@ def kleeneRank {n m : Nat} (F : Transfer n m) (f : Fin n) (i : Fin m) : Nat :=
 #### Configuration-level calls and termination (`Toy.Scc.Termination`)
 
 ```lean
+-- lean/Toy/Scc/Termination.lean:14-16
 /-- A configuration-level call relation: `C (f, x) (g, y)` means that `f` running on
 argument state `x` makes a call to `g` with argument state `y`. -/
 abbrev Calls (n : Nat) (S : Type) := Fin n × S → Fin n × S → Prop
 
+-- lean/Toy/Scc/Termination.lean:18-21
 /-- Every configuration-level call follows an edge of the call graph (the call graph
 over-approximates the calls the program can make). -/
 def CallsInGraph {n : Nat} {S : Type} (E : Graph n) (C : Calls n S) : Prop :=
   ∀ a b, C a b → E a.1 b.1 = true
 
+-- lean/Toy/Scc/Termination.lean:23-26
 /-- Calls inside a block strictly decrease the inner measure. -/
 def IntraDecrease {n k : Nat} {S : Type} (comp : Fin n → Fin k) (inner : Fin n → S → Nat)
     (C : Calls n S) : Prop :=
   ∀ a b, C a b → comp a.1 = comp b.1 → inner b.1 b.2 < inner a.1 a.2
 
+-- lean/Toy/Scc/Termination.lean:28-31
 /-- Calls across blocks go to a block of strictly smaller rank. -/
 def InterRankDecrease {n k : Nat} {S : Type} (rank : Fin k → Nat) (comp : Fin n → Fin k)
     (C : Calls n S) : Prop :=
   ∀ a b, C a b → comp a.1 ≠ comp b.1 → rank (comp b.1) < rank (comp a.1)
 
+-- lean/Toy/Scc/Termination.lean:33-34
 /-- Strict lexicographic order on pairs of naturals. -/
 def LexLt (p q : Nat × Nat) : Prop := p.1 < q.1 ∨ (p.1 = q.1 ∧ p.2 < q.2)
 
+-- lean/Toy/Scc/Termination.lean:36-40
 /-- The lexicographic measure of a configuration `(f, x)`: the rank of the block of `f`,
 then the inner measure of `f` at `x`. -/
 def lexMeasure {n k : Nat} {S : Type} (rank : Fin k → Nat) (comp : Fin n → Fin k)
     (inner : Fin n → S → Nat) (a : Fin n × S) : Nat × Nat :=
   (rank (comp a.1), inner a.1 a.2)
 
+-- lean/Toy/Scc/Termination.lean:42-45
 /-- The lexicographic measure strictly decreases along every call. -/
 def LexDecreasing {n k : Nat} {S : Type} (rank : Fin k → Nat) (comp : Fin n → Fin k)
     (inner : Fin n → S → Nat) (C : Calls n S) : Prop :=
   ∀ a b, C a b → LexLt (lexMeasure rank comp inner b) (lexMeasure rank comp inner a)
 
+-- lean/Toy/Scc/Termination.lean:47-50
 /-- Every call chain is finite: every configuration is accessible for the converse of
 the call relation. -/
 def Terminates {n : Nat} {S : Type} (C : Calls n S) : Prop :=
@@ -357,18 +403,25 @@ Lean source excerpts:
 #### Graphs
 
 ```lean
+-- lean/Toy/Scc/Graph.lean:265-266
 /-- `0 → 1`. -/
 def gPath : Graph 2 := fun f g => decide (f.val = 0 ∧ g.val = 1)
+-- lean/Toy/Scc/Graph.lean:267-268
 /-- `0 → 1 → 0`. -/
 def gCycle : Graph 2 := fun f g => decide (f ≠ g)
+-- lean/Toy/Scc/Graph.lean:269-270
 /-- No calls. -/
 def gEmpty : Graph 2 := fun _ _ => false
+-- lean/Toy/Scc/Graph.lean:271-272
 /-- One self-recursive function. -/
 def gLoop : Graph 1 := fun _ _ => true
+-- lean/Toy/Scc/Graph.lean:273-274
 /-- `0 → 1 → 2`. -/
 def gPath3 : Graph 3 := fun f g => decide (g.val = f.val + 1)
+-- lean/Toy/Scc/Graph.lean:275-276
 /-- `0 → 0`, `0 → 1`, `1 → 1`. -/
 def gMix : Graph 2 := fun f g => decide (f.val ≤ g.val)
+-- lean/Toy/Scc/Graph.lean:277-278
 /-- `0 → 1`, `1 → 1` (a caller and a self-recursive callee). -/
 def gPathLoop1 : Graph 2 := fun _ g => decide (g.val = 1)
 ```
@@ -376,17 +429,23 @@ def gPathLoop1 : Graph 2 := fun _ g => decide (g.val = 1)
 #### Block maps and sign assignments
 
 ```lean
+-- lean/Toy/Scc/Graph.lean:280-281
 /-- Identity decomposition (every function its own block). -/
 def idComp {n : Nat} : Fin n → Fin n := fun f => f
+-- lean/Toy/Scc/Graph.lean:282-283
 /-- Everything in one block. -/
 def oneComp {n : Nat} : Fin n → Fin 1 := fun _ => 0
+-- lean/Toy/Scc/Graph.lean:284-285
 /-- Merges the endpoints of `0 → 1 → 2` into block `0`; `1` is block `1`. -/
 def mergeComp3 : Fin 3 → Fin 2 := fun f => if f.val = 1 then 1 else 0
+-- lean/Toy/Scc/Graph.lean:286-288
 /-- Merges the first two functions of `0 → 1 → 2` into block `0`; `2` is block `1`
 (a merge along the path that keeps the condensation acyclic). -/
 def convexMerge3 : Fin 3 → Fin 2 := fun f => if f.val = 2 then 1 else 0
+-- lean/Toy/Scc/BottomUp.lean:436-437
 /-- Sign assignment on two blocks: block `1` least, block `0` greatest. -/
 def mixSign : Fin 2 → Bool := fun c => decide (c.val = 1)
+-- lean/Toy/Scc/Transfer.lean:371-373
 /-- Sign assignment: the callee block `1` uses its greatest fixpoint, the caller block `0`
 its least. -/
 def revSign : Fin 2 → Bool := fun c => decide (c.val = 0)
@@ -395,68 +454,89 @@ def revSign : Fin 2 → Bool := fun c => decide (c.val = 0)
 #### Transfers
 
 ```lean
+-- lean/Toy/Scc/Lattice.lean:308-310
 /-- On `gPath` (`0 → 1`): `F 1 = {0}`, `F 0 = σ 1`.  Least fixpoint: everything. -/
 def chainLfpT : Transfer 2 1 :=
   disjT (fun f _ => decide (f.val = 1)) (fun f _ g _ => decide (f.val = 0 ∧ g.val = 1))
+-- lean/Toy/Scc/Lattice.lean:312-314
 /-- On `gPath`: `F 1 = ∅`, `F 0 = σ 1`.  Greatest fixpoint: nothing. -/
 def chainGfpT : Transfer 2 1 :=
   conjT (fun f _ => decide (f.val = 0)) (fun f _ g _ => decide (f.val = 0 ∧ g.val = 1))
+-- lean/Toy/Scc/Lattice.lean:316-317
 /-- On `gLoop`: the identity equation `σ 0 = σ 0` (least fixpoint `bot`, greatest `top`). -/
 def idT : Transfer 1 1 := disjT (fun _ _ => false) (fun _ i _ j => decide (i = j))
+-- lean/Toy/Scc/Lattice.lean:319-320
 /-- On `gLoop`: negation, which is not monotone and has no fixpoint. -/
 def negT : Transfer 1 1 := fun σ f i => !σ f i
+-- lean/Toy/Scc/Lattice.lean:322-323
 /-- Constant `top` (reads nothing). -/
 def topT {n m : Nat} : Transfer n m := fun _ => top
+-- lean/Toy/Scc/Fixpoint.lean:28-29
 /-- Constant `bot` (reads nothing). -/
 def botT {n m : Nat} : Transfer n m := fun _ => bot
+-- lean/Toy/Scc/Fixpoint.lean:15-17
 /-- A non-monotone single-function transfer with two bits:
 `F σ = ∅` if `σ 0 = {0}`, and `F σ = {0, 1}` otherwise.  Unique fixpoint `top`. -/
 def nmLfpT : Transfer 1 2 := fun σ _ _ => !(σ 0 0 && !σ 0 1)
+-- lean/Toy/Scc/Fixpoint.lean:19-21
 /-- A non-monotone single-function transfer with two bits:
 `F σ = {0, 1}` if `σ 0 = {1}`, and `F σ = ∅` otherwise.  Unique fixpoint `bot`. -/
 def nmGfpT : Transfer 1 2 := fun σ _ _ => !σ 0 0 && σ 0 1
+-- lean/Toy/Scc/Fixpoint.lean:23-26
 /-- A non-monotone single-function transfer with two bits:
 bit 0 is `¬σ 0 0 ∨ σ 0 1`, bit 1 is `σ 0 1`.  Unique fixpoint `top`, but Kleene
 iteration from `bot` oscillates between `∅` and `{0}`. -/
 def nmRankT : Transfer 1 2 := fun σ _ i => if i.val = 0 then !σ 0 0 || σ 0 1 else σ 0 1
+-- lean/Toy/Scc/Fixpoint.lean:36-40
 /-- On `gPath` (`0 → 1`) with two bits: `F 1 = {0}`, `F 0 = σ 1` (bitwise copy).
 Least and greatest fixpoint: `{0}` for both functions (`seedCopyFix`). -/
 def seedCopyT : Transfer 2 2 :=
   disjT (fun f i => decide (f.val = 1 ∧ i.val = 0))
     (fun f i g j => decide (f.val = 0 ∧ g.val = 1 ∧ j = i))
+-- lean/Toy/Scc/Transfer.lean:128-131
 /-- On `gMix` (`0 → 0`, `0 → 1`, `1 → 1`): `F 0 = σ 0 ∪ σ 1`, `F 1 = {0} ∪ σ 1`
 (both blocks recursive; least fixpoint: everything). -/
 def mixLfpT : Transfer 2 1 :=
   disjT (fun f _ => decide (f.val = 1)) (fun f _ g _ => decide (f.val ≤ g.val))
+-- lean/Toy/Scc/Transfer.lean:133-135
 /-- On `gMix`: `F 0 = σ 0 ∩ σ 1`, `F 1 = ∅` (greatest fixpoint: nothing). -/
 def mixGfpT : Transfer 2 1 :=
   conjT (fun f _ => decide (f.val = 0)) (fun f _ g _ => decide (f.val ≤ g.val))
+-- lean/Toy/Scc/Transfer.lean:295-296
 /-- On `gMix` (`0 → 0`, `0 → 1`, `1 → 1`): `F 0 = σ 0 ∪ σ 1`, `F 1 = σ 1`. -/
 def mixT : Transfer 2 1 := disjT (fun _ _ => false) (fun f _ g _ => decide (f.val ≤ g.val))
+-- lean/Toy/Scc/Transfer.lean:368-369
 /-- On `gMix`: `F 0 = σ 0 ∩ σ 1`, `F 1 = σ 1`. -/
 def mixRevT : Transfer 2 1 := conjT (fun _ _ => true) (fun f _ g _ => decide (f.val ≤ g.val))
+-- lean/Toy/Scc/BottomUp.lean:439-440
 /-- On the 2-cycle: `F 0 = σ 1`, `F 1 = σ 0`. -/
 def swapT : Transfer 2 1 := disjT (fun _ _ => false) (fun f _ g _ => decide (f ≠ g))
+-- lean/Toy/Scc/Transfer.lean:402-404
 /-- On `0 → 1 → 2`: `F 2 = {0}`, `F 1 = σ 2`, `F 0 = σ 1` (least fixpoint: everything). -/
 def chain3LfpT : Transfer 3 1 :=
   disjT (fun f _ => decide (f.val = 2)) (fun f _ g _ => decide (g.val = f.val + 1))
+-- lean/Toy/Scc/Transfer.lean:406-408
 /-- On `0 → 1 → 2`: `F 2 = ∅`, `F 1 = σ 2`, `F 0 = σ 1` (greatest fixpoint: nothing). -/
 def chain3GfpT : Transfer 3 1 :=
   conjT (fun f _ => decide (f.val ≠ 2)) (fun f _ g _ => decide (g.val = f.val + 1))
+-- lean/Toy/Scc/Transfer.lean:480-484
 /-- On the 2-cycle with two bits: function `f` seeds bit `f` and copies the other bit
 from the other function.  Least fixpoint: everything. -/
 def splitLfpT : Transfer 2 2 :=
   disjT (fun f i => decide (f.val = i.val))
     (fun f i g j => decide (f.val ≠ i.val ∧ g.val = i.val ∧ j = i))
+-- lean/Toy/Scc/Transfer.lean:486-490
 /-- Dual: function `f` forbids bit `f` and copies the other bit from the other function.
 Greatest fixpoint: nothing. -/
 def splitGfpT : Transfer 2 2 :=
   conjT (fun f i => decide (f.val ≠ i.val))
     (fun f i g j => decide (f.val ≠ i.val ∧ g.val = i.val ∧ j = i))
+-- lean/Toy/Scc/Transfer.lean:523-526
 /-- The three monotone maps `Bool → Bool`: constant `false` (`a = 0`), constant `true`
 (`a = 1`), identity (`a = 2`). -/
 def oneBitCase (a : Fin 3) (x : Bool) : Bool :=
   if a.val = 0 then false else if a.val = 1 then true else x
+-- lean/Toy/Scc/Transfer.lean:528-532
 /-- One bit per function on the 2-cycle: `F 0 = oneBitCase a (σ 1)`, `F 1 = oneBitCase b (σ 0)`.
 These nine transfers are all the monotone transfers on `Summ 2 1` that read only callees
 in the 2-cycle. -/
@@ -467,20 +547,27 @@ def splitOneBitT (a b : Fin 3) : Transfer 2 1 :=
 #### Summary vectors
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:31-32
 /-- The vector `{0}` for a single function with two bits. -/
 def only0 : Summ 1 2 := fun _ i => decide (i.val = 0)
+-- lean/Toy/Scc/Fixpoint.lean:33-34
 /-- The vector `{1}` for a single function with two bits. -/
 def only1 : Summ 1 2 := fun _ i => decide (i.val = 1)
+-- lean/Toy/Scc/Fixpoint.lean:42-43
 /-- `{0}` for both functions: the unique fixpoint of `seedCopyT`. -/
 def seedCopyFix : Summ 2 2 := fun _ i => decide (i.val = 0)
+-- lean/Toy/Scc/Fixpoint.lean:44-46
 /-- `σ 0 = {0, 1}`, `σ 1 = {0}`: a prefixpoint of `seedCopyT` strictly between its least
 fixpoint and `top`. -/
 def seedCopyPre : Summ 2 2 := fun f i => decide (i.val = 0 ∨ f.val = 0)
+-- lean/Toy/Scc/Fixpoint.lean:47-49
 /-- `σ 0 = ∅`, `σ 1 = {0}`: a postfixpoint of `seedCopyT` strictly between `bot` and its
 greatest fixpoint. -/
 def seedCopyPost : Summ 2 2 := fun f i => decide (f.val = 1 ∧ i.val = 0)
+-- lean/Toy/Scc/Transfer.lean:298-299
 /-- The vector `σ 0 = {0}`, `σ 1 = ∅`. -/
 def mixResult : Summ 2 1 := fun f _ => decide (f.val = 0)
+-- lean/Toy/Scc/Transfer.lean:375-376
 /-- The vector `σ 0 = ∅`, `σ 1 = {0}`. -/
 def revResult : Summ 2 1 := fun f _ => decide (f.val = 1)
 ```
@@ -488,16 +575,22 @@ def revResult : Summ 2 1 := fun f _ => decide (f.val = 1)
 #### Configuration-level call relations
 
 ```lean
+-- lean/Toy/Scc/Termination.lean:65-66
 /-- One call from `0` to `1` (unit state). -/
 def cPath : Calls 2 Unit := fun a b => a.1 = 0 ∧ b.1 = 1
+-- lean/Toy/Scc/Termination.lean:67-68
 /-- `0` and `1` call each other forever (unit state). -/
 def cCycle : Calls 2 Unit := fun a b => a.1 ≠ b.1
+-- lean/Toy/Scc/Termination.lean:69-70
 /-- One function calls itself forever (unit state). -/
 def cLoop : Calls 1 Unit := fun _ _ => True
+-- lean/Toy/Scc/Termination.lean:71-72
 /-- Self-recursion on a counter that decreases by one. -/
 def cCount : Calls 1 Nat := fun a b => b.2 + 1 = a.2
+-- lean/Toy/Scc/Termination.lean:73-74
 /-- One call from `(0, 0)` to `(1, 5)`. -/
 def cJump : Calls 2 Nat := fun a b => a = (0, 0) ∧ b = (1, 5)
+-- lean/Toy/Scc/Termination.lean:75-78
 /-- On `gPathLoop1`: `0` on state `0` calls `1` on any state `y` (unbounded fan-out across
 blocks), and `1` on state `y + 1` calls itself on state `y`. -/
 def cUnbounded : Calls 2 Nat :=
@@ -506,7 +599,7 @@ def cUnbounded : Calls 2 Nat :=
 
 ### Definition examples
 
-Statements of the positive and negative examples, in source order (anonymous `example`s as in the source with proofs elided; named theorems pretty-printed). Every one is kernel-checked.
+Statements of the positive and negative examples, in source order (anonymous `example`s as in the source with proofs elided; named theorems and definitions quoted verbatim with their source lines). Every one is kernel-checked.
 
 #### `Toy.Scc.Graph`
 
@@ -514,46 +607,64 @@ Statements of the positive and negative examples, in source order (anonymous `ex
 -- `Reach`: positive and negative examples.
 example : Reach gPath 0 1
 example : ¬ Reach gPath 1 0
-theorem reach_gPath3_0_2 :
-  Reach gPath3 0 2
-theorem not_reach_gPath3_2_0 :
-  ¬Reach gPath3 2 0
+```
+
+```lean
+-- lean/Toy/Scc/Graph.lean:296
+theorem reach_gPath3_0_2 : Reach gPath3 0 2
+-- lean/Toy/Scc/Graph.lean:299
+theorem not_reach_gPath3_2_0 : ¬ Reach gPath3 2 0
+```
+
+```lean
 -- `reachB`: positive and negative examples.
 example : reachB gPath3 0 2 = true
 example : reachB gPath3 2 0 = false
+```
+
+```lean
+-- lean/Toy/Scc/Graph.lean:308
 -- `IsSccDecomp`: positive examples (certified, fully proved).
-theorem isSccDecomp_gPath_id :
-  IsSccDecomp gPath idComp
-theorem isSccDecomp_gCycle_one :
-  IsSccDecomp gCycle oneComp
-theorem isSccDecomp_gMix_id :
-  IsSccDecomp gMix idComp
-theorem isSccDecomp_gPath3_id :
-  IsSccDecomp gPath3 idComp
-theorem isSccDecomp_gPathLoop1_id :
-  IsSccDecomp gPathLoop1 idComp
-theorem reach_gCycle :
-  ∀ (f g : Fin 2), Reach gCycle f g
+theorem isSccDecomp_gPath_id : IsSccDecomp gPath idComp
+-- lean/Toy/Scc/Graph.lean:310
+theorem isSccDecomp_gCycle_one : IsSccDecomp gCycle oneComp
+-- lean/Toy/Scc/Graph.lean:312
+theorem isSccDecomp_gMix_id : IsSccDecomp gMix idComp
+-- lean/Toy/Scc/Graph.lean:314
+theorem isSccDecomp_gPath3_id : IsSccDecomp gPath3 idComp
+-- lean/Toy/Scc/Graph.lean:316
+theorem isSccDecomp_gPathLoop1_id : IsSccDecomp gPathLoop1 idComp
+-- lean/Toy/Scc/Graph.lean:319
+theorem reach_gCycle (f g : Fin 2) : Reach gCycle f g
+-- lean/Toy/Scc/Graph.lean:325-326
 -- `IsSccDecomp`: negative examples.
 /-- Splitting the 2-cycle is not an SCC decomposition. -/
-theorem not_isSccDecomp_gCycle_id :
-  ¬IsSccDecomp gCycle idComp
+theorem not_isSccDecomp_gCycle_id : ¬ IsSccDecomp gCycle idComp
+-- lean/Toy/Scc/Graph.lean:329-330
 /-- Merging `0 → 1` into one block is not an SCC decomposition. -/
-theorem not_isSccDecomp_gPath_one :
-  ¬IsSccDecomp gPath oneComp
+theorem not_isSccDecomp_gPath_one : ¬ IsSccDecomp gPath oneComp
+-- lean/Toy/Scc/Graph.lean:335-336
 /-- Merging the endpoints of `0 → 1 → 2` is not an SCC decomposition. -/
-theorem not_isSccDecomp_gPath3_merge :
-  ¬IsSccDecomp gPath3 mergeComp3
+theorem not_isSccDecomp_gPath3_merge : ¬ IsSccDecomp gPath3 mergeComp3
+-- lean/Toy/Scc/Graph.lean:339-340
 /-- Merging `0` and `1` of `0 → 1 → 2` is not an SCC decomposition. -/
-theorem not_isSccDecomp_gPath3_convexMerge :
-  ¬IsSccDecomp gPath3 convexMerge3
+theorem not_isSccDecomp_gPath3_convexMerge : ¬ IsSccDecomp gPath3 convexMerge3
+```
+
+```lean
 -- `BlocksMutuallyReachable`: positive and negative examples.
 example : BlocksMutuallyReachable gCycle idComp
 example : ¬ BlocksMutuallyReachable gPath oneComp
 -- `CondensationAcyclic`: positive and negative examples.
 example : CondensationAcyclic gPath idComp
-theorem not_condensationAcyclic_gCycle_id :
-  ¬CondensationAcyclic gCycle idComp
+```
+
+```lean
+-- lean/Toy/Scc/Graph.lean:356
+theorem not_condensationAcyclic_gCycle_id : ¬ CondensationAcyclic gCycle idComp
+```
+
+```lean
 -- `checkScc`: accepts and rejects.
 example : checkScc gPath idComp = true
 example : checkScc gCycle idComp = false
@@ -563,23 +674,34 @@ example : Covers (idComp (n := 2)) [1, 0]
 example : ¬ Covers (idComp (n := 2)) [1]
 example : CalleesFirst gPath idComp [1, 0]
 example : ¬ CalleesFirst gPath idComp [0, 1]
+```
+
+```lean
+-- lean/Toy/Scc/Graph.lean:372-374
 /-- Non-covering negative examples: a list that omits the caller block, or the callee
 block, of a cross-block call is not callees-first. -/
-theorem not_calleesFirst_gPath_omitted_caller :
-  ¬CalleesFirst gPath idComp [1]
-theorem not_calleesFirst_gPath_omitted_callee :
-  ¬CalleesFirst gPath idComp [0]
+theorem not_calleesFirst_gPath_omitted_caller : ¬ CalleesFirst gPath idComp [1]
+-- lean/Toy/Scc/Graph.lean:375
+theorem not_calleesFirst_gPath_omitted_callee : ¬ CalleesFirst gPath idComp [0]
+```
+
+```lean
 /-- Non-covering positive example: a block with no cross-block calls need not be listed
 for `CalleesFirst` (but `Covers` fails). -/
 example : CalleesFirst gLoop oneComp [] ∧ ¬ Covers (oneComp (n := 1)) []
 /-- A duplicate entry is allowed: positions are first occurrences. -/
 example : CalleesFirst gPath idComp [1, 0, 1]
+```
+
+```lean
+-- lean/Toy/Scc/Graph.lean:382-384
 /-- No order whatsoever is callees-first for the split 2-cycle. -/
-theorem not_calleesFirst_gCycle_id :
-  ∀ (order : List (Fin 2)), ¬CalleesFirst gCycle idComp order
+theorem not_calleesFirst_gCycle_id (order : List (Fin 2)) :
+    ¬ CalleesFirst gCycle idComp order
+-- lean/Toy/Scc/Graph.lean:391-393
 /-- No order whatsoever is callees-first for the non-convex merge of `0 → 1 → 2`. -/
-theorem not_calleesFirst_gPath3_merge :
-  ∀ (order : List (Fin 2)), ¬CalleesFirst gPath3 mergeComp3 order
+theorem not_calleesFirst_gPath3_merge (order : List (Fin 2)) :
+    ¬ CalleesFirst gPath3 mergeComp3 order
 ```
 
 #### `Toy.Scc.Lattice`
@@ -590,26 +712,35 @@ example : Le (bot : Summ 2 1) top
 example : ¬ Le (top : Summ 2 1) bot
 -- `Monotone`: positive and negative examples.
 example : Monotone chainLfpT
-theorem not_monotone_negT :
-  ¬Monotone negT
+```
+
+```lean
+-- lean/Toy/Scc/Lattice.lean:357
+theorem not_monotone_negT : ¬ Monotone negT
+```
+
+```lean
 -- `RespectsCalls`: positive and negative examples.
 example : RespectsCalls gPath chainLfpT
+```
+
+```lean
+-- lean/Toy/Scc/Lattice.lean:364-365
 /-- On the call-free graph, `chainLfpT` reads a non-callee. -/
-theorem not_respectsCalls_gEmpty_chainLfpT :
-  ¬RespectsCalls gEmpty chainLfpT
+theorem not_respectsCalls_gEmpty_chainLfpT : ¬ RespectsCalls gEmpty chainLfpT
+-- lean/Toy/Scc/Lattice.lean:372
 -- `IsLeastFixpoint` / `IsGreatestFixpoint`: positive and negative examples.
-theorem isLeastFixpoint_chainLfpT_top :
-  IsLeastFixpoint chainLfpT top
-theorem isGreatestFixpoint_chainGfpT_bot :
-  IsGreatestFixpoint chainGfpT bot
-theorem isLeastFixpoint_idT_bot :
-  IsLeastFixpoint idT bot
-theorem isGreatestFixpoint_idT_top :
-  IsGreatestFixpoint idT top
-theorem not_isLeastFixpoint_idT_top :
-  ¬IsLeastFixpoint idT top
-theorem not_isGreatestFixpoint_idT_bot :
-  ¬IsGreatestFixpoint idT bot
+theorem isLeastFixpoint_chainLfpT_top : IsLeastFixpoint chainLfpT top
+-- lean/Toy/Scc/Lattice.lean:377
+theorem isGreatestFixpoint_chainGfpT_bot : IsGreatestFixpoint chainGfpT bot
+-- lean/Toy/Scc/Lattice.lean:382
+theorem isLeastFixpoint_idT_bot : IsLeastFixpoint idT bot
+-- lean/Toy/Scc/Lattice.lean:384
+theorem isGreatestFixpoint_idT_top : IsGreatestFixpoint idT top
+-- lean/Toy/Scc/Lattice.lean:387
+theorem not_isLeastFixpoint_idT_top : ¬ IsLeastFixpoint idT top
+-- lean/Toy/Scc/Lattice.lean:389
+theorem not_isGreatestFixpoint_idT_bot : ¬ IsGreatestFixpoint idT bot
 ```
 
 #### `Toy.Scc.BottomUp`
@@ -620,33 +751,41 @@ example : bottomUpLfp chainLfpT idComp [1, 0] 2 = top
 example : bottomUpGfp chainGfpT idComp [1, 0] 2 = bot
 -- ... and with the caller first.
 example : bottomUpLfp chainLfpT idComp [0, 1] 2 ≠ top
+```
+
+```lean
+-- lean/Toy/Scc/BottomUp.lean:421
 -- `BlockExtremal` / `HierSolution`: positive and negative examples.
-theorem hierSolution_chainLfpT_top :
-  HierSolution chainLfpT idComp (fun x => true) top
-theorem hierSolution_idT_bot_least :
-  HierSolution idT oneComp (fun x => true) bot
-theorem hierSolution_idT_top_greatest :
-  HierSolution idT oneComp (fun x => false) top
+theorem hierSolution_chainLfpT_top : HierSolution chainLfpT idComp (fun _ => true) top
+-- lean/Toy/Scc/BottomUp.lean:424
+theorem hierSolution_idT_bot_least : HierSolution idT oneComp (fun _ => true) bot
+-- lean/Toy/Scc/BottomUp.lean:427
+theorem hierSolution_idT_top_greatest : HierSolution idT oneComp (fun _ => false) top
+-- lean/Toy/Scc/BottomUp.lean:430-431
 /-- `top` is a fixpoint of `idT` but not its least-signed hierarchical solution. -/
-theorem not_hierSolution_idT_top_least :
-  ¬HierSolution idT oneComp (fun x => true) top
+theorem not_hierSolution_idT_top_least : ¬ HierSolution idT oneComp (fun _ => true) top
+-- lean/Toy/Scc/BottomUp.lean:436-437
 /-- Sign assignment on two blocks: block `1` least, block `0` greatest. -/
 def mixSign : Fin 2 → Bool := fun c => decide (c.val = 1)
+-- lean/Toy/Scc/BottomUp.lean:439-440
 /-- On the 2-cycle: `F 0 = σ 1`, `F 1 = σ 0`. -/
 def swapT : Transfer 2 1 := disjT (fun _ _ => false) (fun f _ g _ => decide (f ≠ g))
-theorem swapT_monotone :
-  Monotone swapT
-theorem swapT_respectsCalls :
-  RespectsCalls gCycle swapT
+-- lean/Toy/Scc/BottomUp.lean:442
+theorem swapT_monotone : Monotone swapT
+-- lean/Toy/Scc/BottomUp.lean:443
+theorem swapT_respectsCalls : RespectsCalls gCycle swapT
+-- lean/Toy/Scc/BottomUp.lean:445-451
 /-- With a cyclic dependency between a greatest-signed block (`0`) and a least-signed block
 (`1`), coordinatewise block-extremality is not unique: both `bot` and `top` are
 hierarchical solutions.  (Nested-substitution semantics of the equation system
 `ν X₀ = X₁; μ X₁ = X₀`, with `X₀` outermost, has the single solution `top`.) -/
 theorem hierSolution_swapT_gCycle_mixSign_not_unique :
-  HierSolution swapT idComp mixSign bot ∧ HierSolution swapT idComp mixSign top ∧ Ne (α := Summ 2 1) bot top
+    HierSolution swapT idComp mixSign bot ∧ HierSolution swapT idComp mixSign top ∧
+      (bot : Summ 2 1) ≠ top
+-- lean/Toy/Scc/BottomUp.lean:455-457
 /-- A summary vector that is not even a fixpoint is never a hierarchical solution. -/
-theorem not_hierSolution_chainLfpT_bot :
-  ∀ (sign : Fin 2 → Bool), ¬HierSolution chainLfpT idComp sign bot
+theorem not_hierSolution_chainLfpT_bot (sign : Fin 2 → Bool) :
+    ¬ HierSolution chainLfpT idComp sign bot
 ```
 
 #### `Toy.Scc.Fixpoint`
@@ -684,14 +823,16 @@ example : ¬ Terminates cLoop
 - **Plain claim.** For every call graph E on Fin n and every block map comp : Fin n -> Fin k, the Boolean checker checkScc E comp, which compares "same block" with mutual reachability computed by the fuel-n closure reachB for all ordered pairs of functions, returns true exactly when comp is a valid SCC decomposition (same block iff mutually reachable); the underlying closure reachFrom E f fuel computes reachability exactly whenever fuel >= n - 1.
 
 ```lean
-theorem checkScc_eq_true_iff_isSccDecomp :
-  ∀ {n k : Nat} (E : Graph n) (comp : Fin n → Fin k), checkScc E comp = true ↔ IsSccDecomp E comp
+-- lean/Toy/Scc/Decomp.lean:90-91
+theorem checkScc_eq_true_iff_isSccDecomp {n k : Nat} (E : Graph n) (comp : Fin n → Fin k) :
+    checkScc E comp = true ↔ IsSccDecomp E comp
 
-theorem reachFrom_eq_true_iff_reach_of_pred_le :
-  ∀ {n : Nat} (E : Graph n) (f g : Fin n) {fuel : Nat}, n - 1 ≤ fuel → (reachFrom E f fuel g = true ↔ Reach E f g)
+-- lean/Toy/Scc/Decomp.lean:44-45
+theorem reachFrom_eq_true_iff_reach_of_pred_le {n : Nat} (E : Graph n) (f g : Fin n)
+    {fuel : Nat} (hfuel : n - 1 ≤ fuel) : reachFrom E f fuel g = true ↔ Reach E f g
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 For every n, k, E : Fin n → Fin n → Bool and comp : Fin n → Fin k:
@@ -711,21 +852,25 @@ where reachFrom E f 0 = {f} and reachFrom E f (k+1) = reachFrom E f k ∪ {g | s
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Decomp.lean:109-110
 theorem reachFrom_tight_fuel :
-  ¬3 - 1 ≤ 1 ∧ ¬(reachFrom gPath3 0 1 2 = true ↔ Reach gPath3 0 2)
+    ¬ (3 - 1 ≤ 1) ∧ ¬ (reachFrom gPath3 0 1 2 = true ↔ Reach gPath3 0 2)
 ```
 
 - **Depth.** substantive. Completeness of the bounded closure uses a counting argument: the reached sets grow with the fuel, every step that is not closed under calls adds a function, so by fuel n - 1 the set is closed under calls or contains every function. Given that, the checker equivalence is a case analysis.
 - **Non-vacuity witness** (`checkScc_nonvacuous`, `reachFrom_nonvacuous`). checkScc accepts the singleton-block decomposition of 0 -> 1, which is a valid SCC decomposition, and rejects both the split 2-cycle and the one-block merge of 0 -> 1, which are invalid; with fuel 2 = n - 1 the closure finds 0 ->* 2 in 0 -> 1 -> 2 and excludes 2 ->* 0.
 
 ```lean
+-- lean/Toy/Scc/Decomp.lean:124-127
 theorem checkScc_nonvacuous :
-  (checkScc gPath idComp = true ∧ IsSccDecomp gPath idComp) ∧
-    (checkScc gCycle idComp = false ∧ ¬IsSccDecomp gCycle idComp) ∧
-      checkScc gPath oneComp = false ∧ ¬IsSccDecomp gPath oneComp
+    (checkScc gPath idComp = true ∧ IsSccDecomp gPath idComp) ∧
+      (checkScc gCycle idComp = false ∧ ¬ IsSccDecomp gCycle idComp) ∧
+      (checkScc gPath oneComp = false ∧ ¬ IsSccDecomp gPath oneComp)
 
+-- lean/Toy/Scc/Decomp.lean:117-119
 theorem reachFrom_nonvacuous :
-  3 - 1 ≤ 2 ∧ reachFrom gPath3 0 2 2 = true ∧ Reach gPath3 0 2 ∧ reachFrom gPath3 2 2 0 = false ∧ ¬Reach gPath3 2 0
+    3 - 1 ≤ 2 ∧ reachFrom gPath3 0 2 2 = true ∧ Reach gPath3 0 2 ∧
+      reachFrom gPath3 2 2 0 = false ∧ ¬ Reach gPath3 2 0
 ```
 
 - **Tier justification.** Textbook graph theory (reachability by bounded closure; SCCs as classes of mutual reachability), restated as a decidable checker in this vocabulary. Verified SCC algorithms exist in several proof assistants (prior art).
@@ -749,12 +894,13 @@ Basis: derived (modeling bridge). A tool that receives a block map from an untru
 - **Plain claim.** A block map comp is a valid SCC decomposition of E exactly when (a) any two functions in the same block are mutually reachable in the whole graph E and (b) the condensation, the graph on blocks with an edge c -> d whenever c differs from d and some function of block c calls some function of block d, has no cycle.
 
 ```lean
-theorem isSccDecomp_iff_blocksMutuallyReachable_and_condensationAcyclic :
-  ∀ {n k : Nat} (E : Graph n) (comp : Fin n → Fin k),
+-- lean/Toy/Scc/Decomp.lean:135-137
+theorem isSccDecomp_iff_blocksMutuallyReachable_and_condensationAcyclic {n k : Nat}
+    (E : Graph n) (comp : Fin n → Fin k) :
     IsSccDecomp E comp ↔ BlocksMutuallyReachable E comp ∧ CondensationAcyclic E comp
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 IsSccDecomp E comp  ↔  (∀ f g, comp f = comp g → f →* g ∧ g →* f)            -- (a), reachability in all of E
@@ -772,20 +918,25 @@ where CondEdge E comp c d := c ≠ d ∧ ∃ f g, comp f = c ∧ comp g = d ∧ 
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Decomp.lean:184-186
 theorem sccChar_tight_acyclic :
-  BlocksMutuallyReachable gCycle idComp ∧ ¬CondensationAcyclic gCycle idComp ∧ ¬IsSccDecomp gCycle idComp
+    BlocksMutuallyReachable gCycle idComp ∧ ¬ CondensationAcyclic gCycle idComp ∧
+      ¬ IsSccDecomp gCycle idComp
 
+-- lean/Toy/Scc/Decomp.lean:192-194
 theorem sccChar_tight_mutual :
-  CondensationAcyclic gEmpty oneComp ∧ ¬BlocksMutuallyReachable gEmpty oneComp ∧ ¬IsSccDecomp gEmpty oneComp
+    CondensationAcyclic gEmpty oneComp ∧ ¬ BlocksMutuallyReachable gEmpty oneComp ∧
+      ¬ IsSccDecomp gEmpty oneComp
 ```
 
 - **Depth.** shallow. Lifting condensation paths to call chains and projecting call chains to condensation paths, one induction each.
 - **Non-vacuity witness** (`sccChar_nonvacuous`). The singleton decomposition of 0 -> 0, 0 -> 1, 1 -> 1 satisfies both sides; its condensation has the edge 0 -> 1 and both blocks are recursive.
 
 ```lean
+-- lean/Toy/Scc/Decomp.lean:203-205
 theorem sccChar_nonvacuous :
-  IsSccDecomp gMix idComp ∧
-    BlocksMutuallyReachable gMix idComp ∧ CondensationAcyclic gMix idComp ∧ CondEdge gMix idComp 0 1
+    IsSccDecomp gMix idComp ∧ BlocksMutuallyReachable gMix idComp ∧
+      CondensationAcyclic gMix idComp ∧ CondEdge gMix idComp 0 1
 ```
 
 - **Tier justification.** Standard graph theory: the SCC partition is the finest partition into mutually reachable blocks, and its condensation is acyclic.
@@ -805,13 +956,14 @@ Basis: derived (modeling bridge). A checker can split SCC validity into an edge-
 - **Plain claim.** The condensation of E under comp is acyclic exactly when there is a duplicate-free list of blocks that contains the block of every function and is callees-first: for every call between functions in different blocks, both blocks occur in the list and the callee's block occurs strictly earlier than the caller's block.
 
 ```lean
-theorem condensationAcyclic_iff_exists_nodup_covering_calleesFirst_order :
-  ∀ {n k : Nat} (E : Graph n) (comp : Fin n → Fin k),
+-- lean/Toy/Scc/Decomp.lean:214-217
+theorem condensationAcyclic_iff_exists_nodup_covering_calleesFirst_order {n k : Nat}
+    (E : Graph n) (comp : Fin n → Fin k) :
     CondensationAcyclic E comp ↔
-      ∃ (order : List (Fin k)), List.Nodup order ∧ Covers comp order ∧ CalleesFirst E comp order
+      ∃ order : List (Fin k), order.Nodup ∧ Covers comp order ∧ CalleesFirst E comp order
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 CondensationAcyclic E comp  ↔  ∃ order : List (Fin k),
@@ -832,30 +984,32 @@ CondensationAcyclic E comp  ↔  ∃ order : List (Fin k),
 - **Non-vacuity witness** (`topoOrder_nonvacuous`). For 0 -> 1 with singleton blocks, the condensation is acyclic and [1, 0] is a duplicate-free covering callees-first order; for the split 2-cycle both sides fail.
 
 ```lean
+-- lean/Toy/Scc/Decomp.lean:263-268
 theorem topoOrder_nonvacuous :
-  (CondensationAcyclic gPath idComp ∧
-      List.Nodup [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-          CalleesFirst gPath idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))]) ∧
-    ¬CondensationAcyclic gCycle idComp ∧ ∀ (order : List (Fin (2 : Nat))), ¬CalleesFirst gCycle idComp order
+    (CondensationAcyclic gPath idComp ∧
+        ([1, 0] : List (Fin 2)).Nodup ∧ Covers (idComp (n := 2)) [1, 0] ∧
+          CalleesFirst gPath idComp [1, 0]) ∧
+      (¬ CondensationAcyclic gCycle idComp ∧
+        ∀ order : List (Fin 2), ¬ CalleesFirst gCycle idComp order)
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
 
 ```lean
-theorem condensationAcyclic_of_calleesFirst :
-  ∀ {n k : Nat} {E : Graph n} {comp : Fin n → Fin k} {order : List (Fin k)},
-    CalleesFirst E comp order → CondensationAcyclic E comp
+-- lean/Toy/Scc/Graph.lean:247-248
+theorem condensationAcyclic_of_calleesFirst {n k : Nat} {E : Graph n} {comp : Fin n → Fin k}
+    {order : List (Fin k)} (h : CalleesFirst E comp order) : CondensationAcyclic E comp
 
-theorem pos_injective_on_used_blocks_of_covers :
-  ∀ {n k : Nat} {comp : Fin n → Fin k} {order : List (Fin k)},
-    Covers comp order → ∀ (f g : Fin n), pos order (comp f) = pos order (comp g) → comp f = comp g
+-- lean/Toy/Scc/Graph.lean:225-227
+theorem pos_injective_on_used_blocks_of_covers {n k : Nat} {comp : Fin n → Fin k}
+    {order : List (Fin k)} (h : Covers comp order) :
+    ∀ f g, pos order (comp f) = pos order (comp g) → comp f = comp g
 
-theorem not_calleesFirst_gPath_omitted_caller :
-  ¬CalleesFirst gPath idComp [1]
+-- lean/Toy/Scc/Graph.lean:374
+theorem not_calleesFirst_gPath_omitted_caller : ¬ CalleesFirst gPath idComp [1]
 
-theorem not_calleesFirst_gPath_omitted_callee :
-  ¬CalleesFirst gPath idComp [0]
+-- lean/Toy/Scc/Graph.lean:375
+theorem not_calleesFirst_gPath_omitted_callee : ¬ CalleesFirst gPath idComp [0]
 ```
 
 - **Tier justification.** Existence of a topological order of a finite acyclic graph (Kahn 1962; mechanized in Coq, see prior art), restated for the condensation in callees-first form.
@@ -879,14 +1033,18 @@ Basis: derived (modeling bridge). An untrusted producer can ship `(comp, order)`
 - **Plain claim.** For a monotone transfer F on summary vectors Fin n -> (Fin m -> Bool) ordered pointwise, at least n*m rounds of iteration from the all-false vector give the least fixpoint of F, and at least n*m rounds from the all-true vector give the greatest fixpoint (n*m, the number of bits, is the height of this lattice).
 
 ```lean
-theorem iter_bot_isLeastFixpoint_of_monotone_of_height_le :
-  ∀ {n m : Nat} {F : Transfer n m}, Monotone F → ∀ {fuel : Nat}, n * m ≤ fuel → IsLeastFixpoint F (iter F fuel bot)
+-- lean/Toy/Scc/Fixpoint.lean:173-175
+theorem iter_bot_isLeastFixpoint_of_monotone_of_height_le {n m : Nat} {F : Transfer n m}
+    (hmono : Monotone F) {fuel : Nat} (hfuel : n * m ≤ fuel) :
+    IsLeastFixpoint F (iter F fuel bot)
 
-theorem iter_top_isGreatestFixpoint_of_monotone_of_height_le :
-  ∀ {n m : Nat} {F : Transfer n m}, Monotone F → ∀ {fuel : Nat}, n * m ≤ fuel → IsGreatestFixpoint F (iter F fuel top)
+-- lean/Toy/Scc/Fixpoint.lean:183-185
+theorem iter_top_isGreatestFixpoint_of_monotone_of_height_le {n m : Nat} {F : Transfer n m}
+    (hmono : Monotone F) {fuel : Nat} (hfuel : n * m ≤ fuel) :
+    IsGreatestFixpoint F (iter F fuel top)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 For F : (Fin n → Fin m → Bool) → (Fin n → Fin m → Bool) with σ ≤ τ → F σ ≤ F τ (pointwise ≤ on bits), and n * m ≤ fuel:
@@ -904,28 +1062,33 @@ For F : (Fin n → Fin m → Bool) → (Fin n → Fin m → Bool) with σ ≤ τ
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:191-192
 theorem kleeneLfp_tight_monotone :
-  1 * 1 ≤ 1 ∧ ¬Monotone negT ∧ ¬IsLeastFixpoint negT (iter negT 1 bot)
+    1 * 1 ≤ 1 ∧ ¬ Monotone negT ∧ ¬ IsLeastFixpoint negT (iter negT 1 bot)
 
+-- lean/Toy/Scc/Fixpoint.lean:199-200
 theorem kleeneGfp_tight_monotone :
-  1 * 1 ≤ 1 ∧ ¬Monotone negT ∧ ¬IsGreatestFixpoint negT (iter negT 1 top)
+    1 * 1 ≤ 1 ∧ ¬ Monotone negT ∧ ¬ IsGreatestFixpoint negT (iter negT 1 top)
 
+-- lean/Toy/Scc/Fixpoint.lean:195-196
 theorem kleeneLfp_tight_fuel :
-  Monotone chainLfpT ∧ ¬2 * 1 ≤ 1 ∧ ¬IsLeastFixpoint chainLfpT (iter chainLfpT 1 bot)
+    Monotone chainLfpT ∧ ¬ (2 * 1 ≤ 1) ∧ ¬ IsLeastFixpoint chainLfpT (iter chainLfpT 1 bot)
 
+-- lean/Toy/Scc/Fixpoint.lean:203-205
 theorem kleeneGfp_tight_fuel :
-  Monotone chainGfpT ∧ ¬2 * 1 ≤ 1 ∧ ¬IsGreatestFixpoint chainGfpT (iter chainGfpT 1 top)
+    Monotone chainGfpT ∧ ¬ (2 * 1 ≤ 1) ∧
+      ¬ IsGreatestFixpoint chainGfpT (iter chainGfpT 1 top)
 ```
 
 - **Depth.** substantive. Counting argument: along the monotone Kleene chain every round that is not yet fixed strictly increases (resp. decreases) the number of set bits, which lies between 0 and n*m.
 - **Non-vacuity witness** (`kleene_nonvacuous`). The monotone transfer seedCopyT on 0 -> 1 with two bits per function (n*m = 4): after 4 rounds from either end the iteration reaches the unique fixpoint, after 1 round it has not.
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:209-212
 theorem kleene_nonvacuous :
-  Monotone seedCopyT ∧
-    2 * 2 ≤ 4 ∧
-      iter seedCopyT 4 bot = seedCopyFix ∧
-        iter seedCopyT 4 top = seedCopyFix ∧ iter seedCopyT 1 bot ≠ seedCopyFix ∧ iter seedCopyT 1 top ≠ seedCopyFix
+    Monotone seedCopyT ∧ 2 * 2 ≤ 4 ∧ iter seedCopyT 4 bot = seedCopyFix ∧
+      iter seedCopyT 4 top = seedCopyFix ∧ iter seedCopyT 1 bot ≠ seedCopyFix ∧
+      iter seedCopyT 1 top ≠ seedCopyFix
 ```
 
 - **Tier justification.** Kleene iteration on a finite-height lattice (Kleene 1952; Cousot and Cousot 1979; textbook in Nielson, Nielson and Hankin 1999), restated for summary vectors.
@@ -946,14 +1109,15 @@ Basis: derived (modeling bridge). A per-block or whole-program fixpoint iteratio
 - **Plain claim.** If F is monotone and the equation of each function reads only the summaries of its callees in E, then for any block map comp and any list of blocks that contains every function's block and is callees-first, one pass over the list (one block solve per list entry), solving each block by at least n*m rounds of Kleene iteration from the empty set with all other summaries frozen and starting from the all-false vector, yields the global least fixpoint of F.
 
 ```lean
-theorem bottomUpLfp_isLeastFixpoint_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le :
-  ∀ {n m k : Nat} {E : Graph n} {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat},
-    Monotone F →
-      RespectsCalls E F →
-        Covers comp order → CalleesFirst E comp order → n * m ≤ fuel → IsLeastFixpoint F (bottomUpLfp F comp order fuel)
+-- lean/Toy/Scc/Transfer.lean:74-78
+theorem bottomUpLfp_isLeastFixpoint_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le {n m k : Nat} {E : Graph n}
+    {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat}
+    (hmono : Monotone F) (hresp : RespectsCalls E F) (hcover : Covers comp order)
+    (hfirst : CalleesFirst E comp order) (hfuel : n * m ≤ fuel) :
+    IsLeastFixpoint F (bottomUpLfp F comp order fuel)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Assume F monotone; F σ f depends only on σ g for callees g of f (E f g = true); every function's block occurs in order;
@@ -976,78 +1140,68 @@ Then the final σ satisfies F σ = σ and σ ≤ τ for every τ with F τ = τ.
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:84-87
 theorem bottomUpLfp_tight_monotone :
-  ¬Monotone negT ∧
-    RespectsCalls gLoop negT ∧
-      Covers (n := 1) oneComp [0] ∧
-        CalleesFirst gLoop oneComp [0] ∧ 1 * 1 ≤ 1 ∧ ¬IsLeastFixpoint negT (bottomUpLfp negT oneComp [0] 1)
+    ¬ Monotone negT ∧ RespectsCalls gLoop negT ∧ Covers (oneComp (n := 1)) [0] ∧
+      CalleesFirst gLoop oneComp [0] ∧ 1 * 1 ≤ 1 ∧
+      ¬ IsLeastFixpoint negT (bottomUpLfp negT oneComp [0] 1)
 
+-- lean/Toy/Scc/Transfer.lean:91-94
 theorem bottomUpLfp_tight_respectsCalls :
-  Monotone chainLfpT ∧
-    Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-      CalleesFirst gEmpty idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-          ¬RespectsCalls gEmpty chainLfpT ∧
-            ¬IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat))
+    Monotone chainLfpT ∧ Covers (idComp (n := 2)) [0, 1] ∧ CalleesFirst gEmpty idComp [0, 1] ∧
+      2 * 1 ≤ 2 ∧ ¬ RespectsCalls gEmpty chainLfpT ∧
+      ¬ IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [0, 1] 2)
 
+-- lean/Toy/Scc/Transfer.lean:100-103
 theorem bottomUpLfp_tight_covers :
-  Monotone (n := 1) (m := 1) topT ∧
-    RespectsCalls (m := 1) gLoop topT ∧
-      CalleesFirst gLoop oneComp [] ∧
-        1 * 1 ≤ 1 ∧ ¬Covers (n := 1) oneComp [] ∧ ¬IsLeastFixpoint (n := 1) (m := 1) topT (bottomUpLfp topT oneComp [] 1)
+    Monotone (topT (n := 1) (m := 1)) ∧ RespectsCalls gLoop (topT (m := 1)) ∧
+      CalleesFirst gLoop oneComp [] ∧ 1 * 1 ≤ 1 ∧ ¬ Covers (oneComp (n := 1)) [] ∧
+      ¬ IsLeastFixpoint (topT (n := 1) (m := 1)) (bottomUpLfp (topT (n := 1) (m := 1)) oneComp [] 1)
 
+-- lean/Toy/Scc/Transfer.lean:107-110
 theorem bottomUpLfp_tight_calleesFirst :
-  Monotone chainLfpT ∧
-    RespectsCalls gPath chainLfpT ∧
-      Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-          ¬CalleesFirst gPath idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-            ¬IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat))
+    Monotone chainLfpT ∧ RespectsCalls gPath chainLfpT ∧ Covers (idComp (n := 2)) [0, 1] ∧
+      2 * 1 ≤ 2 ∧ ¬ CalleesFirst gPath idComp [0, 1] ∧
+      ¬ IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [0, 1] 2)
 
+-- lean/Toy/Scc/Transfer.lean:121-124
 theorem bottomUpLfp_tight_fuel :
-  IsSccDecomp gCycle oneComp ∧
-    Monotone chainLfpT ∧
-      RespectsCalls gCycle chainLfpT ∧
-        Covers (n := 2) oneComp [0] ∧
-          CalleesFirst gCycle oneComp [0] ∧ ¬2 * 1 ≤ 1 ∧ ¬IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT oneComp [0] 1)
+    IsSccDecomp gCycle oneComp ∧ Monotone chainLfpT ∧ RespectsCalls gCycle chainLfpT ∧
+      Covers (oneComp (n := 2)) [0] ∧ CalleesFirst gCycle oneComp [0] ∧ ¬ (2 * 1 ≤ 1) ∧
+      ¬ IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT oneComp [0] 1)
 ```
 
 - **Depth.** shallow. Depth is measured relative to the other cards of this package. Given bottomup-mixed (the pass computes the unique hierarchical solution), the global least fixpoint (kleene-bound) is an all-least hierarchical solution, because its meet with any block fixpoint is a prefixpoint (prefix-postfix-sound); uniqueness identifies the two. The induction along the order is in bottomup-mixed.
 - **Non-vacuity witness** (`bottomUpLfp_nonvacuous`). The graph 0 -> 0, 0 -> 1, 1 -> 1 with singleton blocks (a condensation edge and two recursive blocks), order [1, 0], fuel 2, and the monotone callee-local transfer F(0) = sigma(0) union sigma(1), F(1) = {0} union sigma(1).
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:144-147
 theorem bottomUpLfp_nonvacuous :
-  IsSccDecomp gMix idComp ∧
-    Monotone mixLfpT ∧
-      RespectsCalls gMix mixLfpT ∧
-        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-          CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-              CondEdge gMix idComp (0 : Fin (2 : Nat)) (1 : Fin (2 : Nat)) ∧
-                gMix (0 : Fin (2 : Nat)) (0 : Fin (2 : Nat)) = true ∧ gMix (1 : Fin (2 : Nat)) (1 : Fin (2 : Nat)) = true
+    IsSccDecomp gMix idComp ∧ Monotone mixLfpT ∧ RespectsCalls gMix mixLfpT ∧
+      Covers (idComp (n := 2)) [1, 0] ∧ CalleesFirst gMix idComp [1, 0] ∧ 2 * 1 ≤ 2 ∧
+      CondEdge gMix idComp 0 1 ∧ gMix 0 0 = true ∧ gMix 1 1 = true
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
 
 ```lean
-theorem hierSolution_of_isLeastFixpoint :
-  ∀ {n m k : Nat} {F : Transfer n m},
-    Monotone F → ∀ (comp : Fin n → Fin k) {μ : Summ n m}, IsLeastFixpoint F μ → HierSolution F comp (fun x => true) μ
+-- lean/Toy/Scc/Transfer.lean:17-19
+theorem hierSolution_of_isLeastFixpoint {n m k : Nat} {F : Transfer n m} (hmono : Monotone F)
+    (comp : Fin n → Fin k) {μ : Summ n m} (hμ : IsLeastFixpoint F μ) :
+    HierSolution F comp (fun _ => true) μ
 
-theorem hierSolution_bottomUp :
-  ∀ {n m k : Nat} {E : Graph n} {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat},
-    Monotone F →
-      RespectsCalls E F →
-        Covers comp order →
-          CalleesFirst E comp order →
-            n * m ≤ fuel →
-              ∀ (sign : Fin k → Bool) (init : Summ n m), HierSolution F comp sign (bottomUp F comp sign order fuel init)
+-- lean/Toy/Scc/BottomUp.lean:302-306
+theorem hierSolution_bottomUp {n m k : Nat} {E : Graph n} {F : Transfer n m}
+    {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat} (hmono : Monotone F)
+    (hresp : RespectsCalls E F) (hcover : Covers comp order) (hfirst : CalleesFirst E comp order)
+    (hfuel : n * m ≤ fuel) (sign : Fin k → Bool) (init : Summ n m) :
+    HierSolution F comp sign (bottomUp F comp sign order fuel init)
 
-theorem hierSolution_unique :
-  ∀ {n m k : Nat} {E : Graph n} {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)},
-    RespectsCalls E F →
-      CalleesFirst E comp order →
-        ∀ {sign : Fin k → Bool} {σ σ' : Summ n m}, HierSolution F comp sign σ → HierSolution F comp sign σ' → σ = σ'
+-- lean/Toy/Scc/BottomUp.lean:351-354
+theorem hierSolution_unique {n m k : Nat} {E : Graph n} {F : Transfer n m}
+    {comp : Fin n → Fin k} {order : List (Fin k)} (hresp : RespectsCalls E F)
+    (hfirst : CalleesFirst E comp order) {sign : Fin k → Bool} {σ σ' : Summ n m}
+    (h : HierSolution F comp sign σ) (h' : HierSolution F comp sign σ') : σ = σ'
 ```
 
 - **Tier justification.** Known: solving the SCCs of a dependency graph in reverse topological order, each by fixpoint iteration, yields the least solution of a monotone equation system (Bekic's theorem in DAG form; SCC-structured iteration strategies; block-wise solving of alternation-free equation systems). Restated here for arbitrary block maps, with every hypothesis shown necessary.
@@ -1073,15 +1227,15 @@ Basis: derived (modeling bridge). A summary-based analysis that solves the call-
 - **Plain claim.** Under the same hypotheses as bottomup-lfp (monotone, callee-local F; a covering callees-first list of blocks; inner fuel at least n*m), one pass over the list (one block solve per list entry), solving each block by Kleene iteration from the full set with all other summaries frozen and starting from the all-true vector, yields the global greatest fixpoint of F.
 
 ```lean
-theorem bottomUpGfp_isGreatestFixpoint_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le :
-  ∀ {n m k : Nat} {E : Graph n} {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat},
-    Monotone F →
-      RespectsCalls E F →
-        Covers comp order →
-          CalleesFirst E comp order → n * m ≤ fuel → IsGreatestFixpoint F (bottomUpGfp F comp order fuel)
+-- lean/Toy/Scc/Transfer.lean:154-158
+theorem bottomUpGfp_isGreatestFixpoint_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le {n m k : Nat} {E : Graph n}
+    {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat}
+    (hmono : Monotone F) (hresp : RespectsCalls E F) (hcover : Covers comp order)
+    (hfirst : CalleesFirst E comp order) (hfuel : n * m ≤ fuel) :
+    IsGreatestFixpoint F (bottomUpGfp F comp order fuel)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Same hypotheses as bottomup-lfp. Let σ₀ = all-true and solve each listed block from the full set
@@ -1101,82 +1255,68 @@ Same hypotheses as bottomup-lfp. Let σ₀ = all-true and solve each listed bloc
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:171-174
 theorem bottomUpGfp_tight_monotone :
-  ¬Monotone negT ∧
-    RespectsCalls gLoop negT ∧
-      Covers (n := 1) oneComp [0] ∧
-        CalleesFirst gLoop oneComp [0] ∧ 1 * 1 ≤ 1 ∧ ¬IsGreatestFixpoint negT (bottomUpGfp negT oneComp [0] 1)
+    ¬ Monotone negT ∧ RespectsCalls gLoop negT ∧ Covers (oneComp (n := 1)) [0] ∧
+      CalleesFirst gLoop oneComp [0] ∧ 1 * 1 ≤ 1 ∧
+      ¬ IsGreatestFixpoint negT (bottomUpGfp negT oneComp [0] 1)
 
+-- lean/Toy/Scc/Transfer.lean:178-181
 theorem bottomUpGfp_tight_respectsCalls :
-  Monotone chainGfpT ∧
-    Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-      CalleesFirst gEmpty idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-          ¬RespectsCalls gEmpty chainGfpT ∧
-            ¬IsGreatestFixpoint chainGfpT
-                (bottomUpGfp chainGfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat))
+    Monotone chainGfpT ∧ Covers (idComp (n := 2)) [0, 1] ∧ CalleesFirst gEmpty idComp [0, 1] ∧
+      2 * 1 ≤ 2 ∧ ¬ RespectsCalls gEmpty chainGfpT ∧
+      ¬ IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [0, 1] 2)
 
+-- lean/Toy/Scc/Transfer.lean:189-192
 theorem bottomUpGfp_tight_covers :
-  Monotone (n := 1) (m := 1) botT ∧
-    RespectsCalls (m := 1) gLoop botT ∧
-      CalleesFirst gLoop oneComp [] ∧
-        1 * 1 ≤ 1 ∧
-          ¬Covers (n := 1) oneComp [] ∧ ¬IsGreatestFixpoint (n := 1) (m := 1) botT (bottomUpGfp botT oneComp [] 1)
+    Monotone (botT (n := 1) (m := 1)) ∧ RespectsCalls gLoop (botT (m := 1)) ∧
+      CalleesFirst gLoop oneComp [] ∧ 1 * 1 ≤ 1 ∧ ¬ Covers (oneComp (n := 1)) [] ∧
+      ¬ IsGreatestFixpoint (botT (n := 1) (m := 1)) (bottomUpGfp (botT (n := 1) (m := 1)) oneComp [] 1)
 
+-- lean/Toy/Scc/Transfer.lean:196-199
 theorem bottomUpGfp_tight_calleesFirst :
-  Monotone chainGfpT ∧
-    RespectsCalls gPath chainGfpT ∧
-      Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-          ¬CalleesFirst gPath idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-            ¬IsGreatestFixpoint chainGfpT
-                (bottomUpGfp chainGfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat))
+    Monotone chainGfpT ∧ RespectsCalls gPath chainGfpT ∧ Covers (idComp (n := 2)) [0, 1] ∧
+      2 * 1 ≤ 2 ∧ ¬ CalleesFirst gPath idComp [0, 1] ∧
+      ¬ IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [0, 1] 2)
 
+-- lean/Toy/Scc/Transfer.lean:203-206
 theorem bottomUpGfp_tight_fuel :
-  IsSccDecomp gCycle oneComp ∧
-    Monotone chainGfpT ∧
-      RespectsCalls gCycle chainGfpT ∧
-        Covers (n := 2) oneComp [0] ∧
-          CalleesFirst gCycle oneComp [0] ∧
-            ¬2 * 1 ≤ 1 ∧ ¬IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT oneComp [0] 1)
+    IsSccDecomp gCycle oneComp ∧ Monotone chainGfpT ∧ RespectsCalls gCycle chainGfpT ∧
+      Covers (oneComp (n := 2)) [0] ∧ CalleesFirst gCycle oneComp [0] ∧ ¬ (2 * 1 ≤ 1) ∧
+      ¬ IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT oneComp [0] 1)
 ```
 
 - **Depth.** shallow. Dual of bottomup-lfp: given bottomup-mixed, the global greatest fixpoint is an all-greatest hierarchical solution because its join with any block fixpoint is a postfixpoint (prefix-postfix-sound).
 - **Non-vacuity witness** (`bottomUpGfp_nonvacuous`). The graph 0 -> 0, 0 -> 1, 1 -> 1 with singleton blocks, order [1, 0], fuel 2, and the monotone callee-local transfer F(0) = sigma(0) intersect sigma(1), F(1) = empty.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:211-214
 theorem bottomUpGfp_nonvacuous :
-  IsSccDecomp gMix idComp ∧
-    Monotone mixGfpT ∧
-      RespectsCalls gMix mixGfpT ∧
-        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-          CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-              CondEdge gMix idComp (0 : Fin (2 : Nat)) (1 : Fin (2 : Nat)) ∧
-                gMix (0 : Fin (2 : Nat)) (0 : Fin (2 : Nat)) = true ∧ gMix (1 : Fin (2 : Nat)) (1 : Fin (2 : Nat)) = true
+    IsSccDecomp gMix idComp ∧ Monotone mixGfpT ∧ RespectsCalls gMix mixGfpT ∧
+      Covers (idComp (n := 2)) [1, 0] ∧ CalleesFirst gMix idComp [1, 0] ∧ 2 * 1 ≤ 2 ∧
+      CondEdge gMix idComp 0 1 ∧ gMix 0 0 = true ∧ gMix 1 1 = true
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
 
 ```lean
-theorem hierSolution_of_isGreatestFixpoint :
-  ∀ {n m k : Nat} {F : Transfer n m},
-    Monotone F → ∀ (comp : Fin n → Fin k) {ν : Summ n m}, IsGreatestFixpoint F ν → HierSolution F comp (fun x => false) ν
+-- lean/Toy/Scc/Transfer.lean:44-46
+theorem hierSolution_of_isGreatestFixpoint {n m k : Nat} {F : Transfer n m} (hmono : Monotone F)
+    (comp : Fin n → Fin k) {ν : Summ n m} (hν : IsGreatestFixpoint F ν) :
+    HierSolution F comp (fun _ => false) ν
 
-theorem hierSolution_bottomUp :
-  ∀ {n m k : Nat} {E : Graph n} {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat},
-    Monotone F →
-      RespectsCalls E F →
-        Covers comp order →
-          CalleesFirst E comp order →
-            n * m ≤ fuel →
-              ∀ (sign : Fin k → Bool) (init : Summ n m), HierSolution F comp sign (bottomUp F comp sign order fuel init)
+-- lean/Toy/Scc/BottomUp.lean:302-306
+theorem hierSolution_bottomUp {n m k : Nat} {E : Graph n} {F : Transfer n m}
+    {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat} (hmono : Monotone F)
+    (hresp : RespectsCalls E F) (hcover : Covers comp order) (hfirst : CalleesFirst E comp order)
+    (hfuel : n * m ≤ fuel) (sign : Fin k → Bool) (init : Summ n m) :
+    HierSolution F comp sign (bottomUp F comp sign order fuel init)
 
-theorem hierSolution_unique :
-  ∀ {n m k : Nat} {E : Graph n} {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)},
-    RespectsCalls E F →
-      CalleesFirst E comp order →
-        ∀ {sign : Fin k → Bool} {σ σ' : Summ n m}, HierSolution F comp sign σ → HierSolution F comp sign σ' → σ = σ'
+-- lean/Toy/Scc/BottomUp.lean:351-354
+theorem hierSolution_unique {n m k : Nat} {E : Graph n} {F : Transfer n m}
+    {comp : Fin n → Fin k} {order : List (Fin k)} (hresp : RespectsCalls E F)
+    (hfirst : CalleesFirst E comp order) {sign : Fin k → Bool} {σ σ' : Summ n m}
+    (h : HierSolution F comp sign σ) (h' : HierSolution F comp sign σ') : σ = σ'
 ```
 
 - **Tier justification.** Dual of bottomup-lfp; block-wise solving of greatest-fixpoint equation blocks is known from alternation-free equation systems. Restated here with every hypothesis shown necessary.
@@ -1197,20 +1337,18 @@ Basis: derived (modeling bridge). Same bridge as `bottomup-lfp`, for greatest-fi
 - **Plain claim.** For monotone F, the single-pass bottom-up least computation (start all-false) lies below every prefixpoint of F, in particular below the least fixpoint, for every block map, every list of blocks (callees-first or not, covering or not) and every fuel; dually, the single-pass greatest computation (start all-true) lies above every postfixpoint, in particular above the greatest fixpoint.
 
 ```lean
-theorem bottomUpLfp_le_of_monotone_of_prefixpoint :
-  ∀ {n m k : Nat} {F : Transfer n m},
-    Monotone F →
-      ∀ {τ : Summ n m},
-        Le (F τ) τ → ∀ (comp : Fin n → Fin k) (order : List (Fin k)) (fuel : Nat), Le (bottomUpLfp F comp order fuel) τ
+-- lean/Toy/Scc/Fixpoint.lean:220-222
+theorem bottomUpLfp_le_of_monotone_of_prefixpoint {n m k : Nat} {F : Transfer n m}
+    (hmono : Monotone F) {τ : Summ n m} (hpre : Le (F τ) τ) (comp : Fin n → Fin k)
+    (order : List (Fin k)) (fuel : Nat) : Le (bottomUpLfp F comp order fuel) τ
 
-theorem le_bottomUpGfp_of_monotone_of_postfixpoint :
-  ∀ {n m k : Nat} {F : Transfer n m},
-    Monotone F →
-      ∀ {τ : Summ n m},
-        Le τ (F τ) → ∀ (comp : Fin n → Fin k) (order : List (Fin k)) (fuel : Nat), Le τ (bottomUpGfp F comp order fuel)
+-- lean/Toy/Scc/Fixpoint.lean:242-244
+theorem le_bottomUpGfp_of_monotone_of_postfixpoint {n m k : Nat} {F : Transfer n m}
+    (hmono : Monotone F) {τ : Summ n m} (hpost : Le τ (F τ)) (comp : Fin n → Fin k)
+    (order : List (Fin k)) (fuel : Nat) : Le τ (bottomUpGfp F comp order fuel)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 For monotone F, every τ with F τ ≤ τ, every comp, every order (any list of blocks) and every fuel:
@@ -1228,36 +1366,40 @@ Dually, for every τ with τ ≤ F τ:  τ ≤ bottomUpGfp F comp order fuel.
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:262-264
 theorem oneSidedLfp_tight_monotone :
-  ¬Monotone nmLfpT ∧ Le (nmLfpT only0) only0 ∧ ¬Le (bottomUpLfp nmLfpT oneComp [0] 1) only0
+    ¬ Monotone nmLfpT ∧ Le (nmLfpT only0) only0 ∧
+      ¬ Le (bottomUpLfp nmLfpT oneComp [0] 1) only0
 
+-- lean/Toy/Scc/Fixpoint.lean:272-274
 theorem oneSidedGfp_tight_monotone :
-  ¬Monotone nmGfpT ∧ Le only1 (nmGfpT only1) ∧ ¬Le only1 (bottomUpGfp nmGfpT oneComp [0] 1)
+    ¬ Monotone nmGfpT ∧ Le only1 (nmGfpT only1) ∧
+      ¬ Le only1 (bottomUpGfp nmGfpT oneComp [0] 1)
 
+-- lean/Toy/Scc/Fixpoint.lean:267-269
 theorem oneSidedLfp_tight_prefixpoint :
-  Monotone (n := 1) (m := 1) topT ∧
-    ¬Le (n := 1) (m := 1) (topT bot) bot ∧ ¬Le (n := 1) (m := 1) (bottomUpLfp topT oneComp [0] 1) bot
+    Monotone (topT (n := 1) (m := 1)) ∧ ¬ Le (topT (bot : Summ 1 1)) bot ∧
+      ¬ Le (bottomUpLfp (topT (n := 1) (m := 1)) oneComp [0] 1) bot
 
+-- lean/Toy/Scc/Fixpoint.lean:277-279
 theorem oneSidedGfp_tight_postfixpoint :
-  Monotone (n := 1) (m := 1) botT ∧
-    ¬Le (n := 1) (m := 1) top (botT top) ∧ ¬Le (n := 1) (m := 1) top (bottomUpGfp botT oneComp [0] 1)
+    Monotone (botT (n := 1) (m := 1)) ∧ ¬ Le (top : Summ 1 1) (botT top) ∧
+      ¬ Le top (bottomUpGfp (botT (n := 1) (m := 1)) oneComp [0] 1)
 ```
 
 - **Depth.** shallow. Induction over the order and the inner iterations, keeping the invariant "current vector <= tau" (resp. ">=").
 - **Non-vacuity witness** (`oneSided_nonvacuous`). The monotone transfer seedCopyT on 0 -> 1 with two bits per function, a prefixpoint other than all-true and a postfixpoint other than all-false, exercised at the caller-first order [0, 1], where the single-pass least result is strictly below the least fixpoint and the greatest result strictly above the greatest fixpoint.
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:286-293
 theorem oneSided_nonvacuous :
-  Monotone seedCopyT ∧
-    Le (seedCopyT seedCopyPre) seedCopyPre ∧
-      seedCopyPre ≠ top ∧
-        Le seedCopyPost (seedCopyT seedCopyPost) ∧
-          seedCopyPost ≠ bot ∧
-            ¬CalleesFirst gPath idComp [0, 1] ∧
-              bottomUpLfp seedCopyT idComp [0, 1] 4 ≠ seedCopyFix ∧
-                Le (bottomUpLfp seedCopyT idComp [0, 1] 4) seedCopyFix ∧
-                  bottomUpGfp seedCopyT idComp [0, 1] 4 ≠ seedCopyFix ∧
-                    Le seedCopyFix (bottomUpGfp seedCopyT idComp [0, 1] 4)
+    Monotone seedCopyT ∧ Le (seedCopyT seedCopyPre) seedCopyPre ∧ seedCopyPre ≠ top ∧
+      Le seedCopyPost (seedCopyT seedCopyPost) ∧ seedCopyPost ≠ bot ∧
+      ¬ CalleesFirst gPath idComp [0, 1] ∧
+      bottomUpLfp seedCopyT idComp [0, 1] 4 ≠ seedCopyFix ∧
+      Le (bottomUpLfp seedCopyT idComp [0, 1] 4) seedCopyFix ∧
+      bottomUpGfp seedCopyT idComp [0, 1] 4 ≠ seedCopyFix ∧
+      Le seedCopyFix (bottomUpGfp seedCopyT idComp [0, 1] 4)
 ```
 
 - **Tier justification.** An instance of Park induction (iterates of a monotone map from the bottom stay below every prefixpoint), applied to the single-pass bottom-up algorithm.
@@ -1276,29 +1418,29 @@ Basis: derived (modeling bridge). If a tool does not check its decomposition or 
 - **Plain claim.** Under the hypotheses of bottomup-lfp, for every per-block sign assignment (least or greatest inner fixpoint per block) and every start vector, single-pass bottom-up computes a vector in which every block is the least (resp. greatest) fixpoint of that block's equations when all other blocks are frozen, as constants, at their values in the same vector (HierSolution, coordinatewise block-extremality), and no other vector has this property. Every vector with this property is a fixpoint of F and lies between the least and the greatest fixpoint of F.
 
 ```lean
-theorem bottomUp_hierSolution_and_unique_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le :
-  ∀ {n m k : Nat} {E : Graph n} {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat},
-    Monotone F →
-      RespectsCalls E F →
-        Covers comp order →
-          CalleesFirst E comp order →
-            n * m ≤ fuel →
-              ∀ (sign : Fin k → Bool) (init : Summ n m),
-                HierSolution F comp sign (bottomUp F comp sign order fuel init) ∧
-                  ∀ (σ : Summ n m), HierSolution F comp sign σ → σ = bottomUp F comp sign order fuel init
+-- lean/Toy/Scc/Transfer.lean:222-228
+theorem bottomUp_hierSolution_and_unique_of_monotone_of_respectsCalls_of_covers_of_calleesFirst_of_height_le {n m k : Nat} {E : Graph n}
+    {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat}
+    (hmono : Monotone F) (hresp : RespectsCalls E F) (hcover : Covers comp order)
+    (hfirst : CalleesFirst E comp order) (hfuel : n * m ≤ fuel) (sign : Fin k → Bool)
+    (init : Summ n m) :
+    HierSolution F comp sign (bottomUp F comp sign order fuel init) ∧
+      ∀ σ, HierSolution F comp sign σ → σ = bottomUp F comp sign order fuel init
 
-theorem le_and_le_of_hierSolution_of_isLeastFixpoint_of_isGreatestFixpoint :
-  ∀ {n m k : Nat} {F : Transfer n m} {comp : Fin n → Fin k} {sign : Fin k → Bool} {μ ν σ : Summ n m},
-    IsLeastFixpoint F μ → IsGreatestFixpoint F ν → HierSolution F comp sign σ → Le μ σ ∧ Le σ ν
+-- lean/Toy/Scc/BottomUp.lean:84-87
+theorem le_and_le_of_hierSolution_of_isLeastFixpoint_of_isGreatestFixpoint {n m k : Nat}
+    {F : Transfer n m} {comp : Fin n → Fin k} {sign : Fin k → Bool} {μ ν σ : Summ n m}
+    (hμ : IsLeastFixpoint F μ) (hν : IsGreatestFixpoint F ν)
+    (h : HierSolution F comp sign σ) : Le μ σ ∧ Le σ ν
 
-theorem HierSolution.fixpoint :
-  ∀ {n m k : Nat} {F : Transfer n m} {comp : Fin n → Fin k} {sign : Fin k → Bool} {σ : Summ n m},
-    HierSolution F comp sign σ → F σ = σ
+-- lean/Toy/Scc/BottomUp.lean:76-77
+theorem HierSolution.fixpoint {n m k : Nat} {F : Transfer n m} {comp : Fin n → Fin k}
+    {sign : Fin k → Bool} {σ : Summ n m} (h : HierSolution F comp sign σ) : F σ = σ
 ```
 
 `HierSolution.fixpoint` is listed among this card's result names (it supplies the clause "every vector with this property is a fixpoint of F"); its statement and closure are hashed with the card's other theorems.
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Under the hypotheses of bottomup-lfp, for every sign : Fin k → Bool and every start vector init, with
@@ -1325,116 +1467,103 @@ then μ ≤ σ ≤ ν; and HierSolution.fixpoint: if σ satisfies (1), then F σ
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:239-244
 theorem bottomUpHier_tight_monotone :
-  ¬Monotone negT ∧
-    RespectsCalls gLoop negT ∧
-      Covers (n := 1) oneComp [0] ∧
-        CalleesFirst gLoop oneComp [0] ∧
-          1 * 1 ≤ 1 ∧
-            ¬(HierSolution negT oneComp (fun x => true) (bottomUp negT oneComp (fun x => true) [0] 1 bot) ∧
-                ∀ (σ : Summ 1 1),
-                  HierSolution negT oneComp (fun x => true) σ → σ = bottomUp negT oneComp (fun x => true) [0] 1 bot)
+    ¬ Monotone negT ∧ RespectsCalls gLoop negT ∧ Covers (oneComp (n := 1)) [0] ∧
+      CalleesFirst gLoop oneComp [0] ∧ 1 * 1 ≤ 1 ∧
+      ¬ (HierSolution negT oneComp (fun _ => true) (bottomUp negT oneComp (fun _ => true) [0] 1 bot) ∧
+        ∀ σ, HierSolution negT oneComp (fun _ => true) σ →
+          σ = bottomUp negT oneComp (fun _ => true) [0] 1 bot)
 
+-- lean/Toy/Scc/Transfer.lean:248-254
 theorem bottomUpHier_tight_respectsCalls :
-  Monotone chainLfpT ∧
-    Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-      CalleesFirst gEmpty idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-          ¬RespectsCalls gEmpty chainLfpT ∧
-            ¬(HierSolution chainLfpT idComp (fun x => true)
-                  (bottomUp chainLfpT idComp (fun x => true) [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat) bot) ∧
-                ∀ (σ : Summ (2 : Nat) (1 : Nat)),
-                  HierSolution chainLfpT idComp (fun x => true) σ →
-                    σ =
-                      bottomUp chainLfpT idComp (fun x => true) [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat) bot)
+    Monotone chainLfpT ∧ Covers (idComp (n := 2)) [0, 1] ∧ CalleesFirst gEmpty idComp [0, 1] ∧
+      2 * 1 ≤ 2 ∧ ¬ RespectsCalls gEmpty chainLfpT ∧
+      ¬ (HierSolution chainLfpT idComp (fun _ => true)
+            (bottomUp chainLfpT idComp (fun _ => true) [0, 1] 2 bot) ∧
+        ∀ σ, HierSolution chainLfpT idComp (fun _ => true) σ →
+          σ = bottomUp chainLfpT idComp (fun _ => true) [0, 1] 2 bot)
 
+-- lean/Toy/Scc/Transfer.lean:259-265
 theorem bottomUpHier_tight_covers :
-  Monotone (n := 1) (m := 1) topT ∧
-    RespectsCalls (m := 1) gLoop topT ∧
-      CalleesFirst gLoop oneComp [] ∧
-        1 * 1 ≤ 1 ∧
-          ¬Covers (n := 1) oneComp [] ∧
-            ¬(HierSolution (n := 1) (m := 1) topT oneComp (fun x => true)
-                  (bottomUp topT oneComp (fun x => true) [] 1 bot) ∧
-                ∀ (σ : Summ 1 1),
-                  HierSolution topT oneComp (fun x => true) σ → σ = bottomUp topT oneComp (fun x => true) [] 1 bot)
+    Monotone (topT (n := 1) (m := 1)) ∧ RespectsCalls gLoop (topT (m := 1)) ∧
+      CalleesFirst gLoop oneComp [] ∧ 1 * 1 ≤ 1 ∧ ¬ Covers (oneComp (n := 1)) [] ∧
+      ¬ (HierSolution (topT (n := 1) (m := 1)) oneComp (fun _ => true)
+            (bottomUp (topT (n := 1) (m := 1)) oneComp (fun _ => true) [] 1 bot) ∧
+        ∀ σ, HierSolution (topT (n := 1) (m := 1)) oneComp (fun _ => true) σ →
+          σ = bottomUp (topT (n := 1) (m := 1)) oneComp (fun _ => true) [] 1 bot)
 
+-- lean/Toy/Scc/Transfer.lean:272-277
 theorem bottomUpHier_tight_calleesFirst :
-  Monotone swapT ∧
-    RespectsCalls gCycle swapT ∧
-      Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-        (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-          ¬CalleesFirst gCycle idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-            ¬(HierSolution swapT idComp mixSign
-                  (bottomUp swapT idComp mixSign [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat) bot) ∧
-                ∀ (σ : Summ (2 : Nat) (1 : Nat)),
-                  HierSolution swapT idComp mixSign σ →
-                    σ = bottomUp swapT idComp mixSign [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat) bot)
+    Monotone swapT ∧ RespectsCalls gCycle swapT ∧ Covers (idComp (n := 2)) [0, 1] ∧
+      2 * 1 ≤ 2 ∧ ¬ CalleesFirst gCycle idComp [0, 1] ∧
+      ¬ (HierSolution swapT idComp mixSign (bottomUp swapT idComp mixSign [0, 1] 2 bot) ∧
+        ∀ σ, HierSolution swapT idComp mixSign σ →
+          σ = bottomUp swapT idComp mixSign [0, 1] 2 bot)
 
+-- lean/Toy/Scc/Transfer.lean:283-289
 theorem bottomUpHier_tight_fuel :
-  IsSccDecomp gCycle oneComp ∧
-    Monotone chainLfpT ∧
-      RespectsCalls gCycle chainLfpT ∧
-        Covers (n := 2) oneComp [0] ∧
-          CalleesFirst gCycle oneComp [0] ∧
-            ¬2 * 1 ≤ 1 ∧
-              ¬(HierSolution chainLfpT oneComp (fun x => true) (bottomUp chainLfpT oneComp (fun x => true) [0] 1 bot) ∧
-                  ∀ (σ : Summ 2 1),
-                    HierSolution chainLfpT oneComp (fun x => true) σ →
-                      σ = bottomUp chainLfpT oneComp (fun x => true) [0] 1 bot)
+    IsSccDecomp gCycle oneComp ∧ Monotone chainLfpT ∧ RespectsCalls gCycle chainLfpT ∧
+      Covers (oneComp (n := 2)) [0] ∧ CalleesFirst gCycle oneComp [0] ∧ ¬ (2 * 1 ≤ 1) ∧
+      ¬ (HierSolution chainLfpT oneComp (fun _ => true)
+            (bottomUp chainLfpT oneComp (fun _ => true) [0] 1 bot) ∧
+        ∀ σ, HierSolution chainLfpT oneComp (fun _ => true) σ →
+          σ = bottomUp chainLfpT oneComp (fun _ => true) [0] 1 bot)
 
+-- lean/Toy/Scc/Transfer.lean:340-343
 theorem hierBetween_tight_hierSolution :
-  IsLeastFixpoint chainLfpT top ∧
-    IsGreatestFixpoint chainLfpT top ∧
-      ¬HierSolution chainLfpT idComp (fun x => true) bot ∧ ¬(Le (n := 2) (m := 1) top bot ∧ Le (n := 2) (m := 1) bot top)
+    IsLeastFixpoint chainLfpT top ∧ IsGreatestFixpoint chainLfpT top ∧
+      ¬ HierSolution chainLfpT idComp (fun _ => true) bot ∧
+      ¬ (Le (top : Summ 2 1) bot ∧ Le (bot : Summ 2 1) top)
 
+-- lean/Toy/Scc/Transfer.lean:351-354
 theorem hierBetween_tight_least :
-  ¬IsLeastFixpoint idT top ∧
-    IsGreatestFixpoint idT top ∧
-      HierSolution idT oneComp (fun x => true) bot ∧ ¬(Le (n := 1) (m := 1) top bot ∧ Le (n := 1) (m := 1) bot top)
+    ¬ IsLeastFixpoint idT top ∧ IsGreatestFixpoint idT top ∧
+      HierSolution idT oneComp (fun _ => true) bot ∧
+      ¬ (Le (top : Summ 1 1) bot ∧ Le (bot : Summ 1 1) top)
 
+-- lean/Toy/Scc/Transfer.lean:361-364
 theorem hierBetween_tight_greatest :
-  IsLeastFixpoint idT bot ∧
-    ¬IsGreatestFixpoint idT bot ∧
-      HierSolution idT oneComp (fun x => false) top ∧ ¬(Le (n := 1) (m := 1) bot top ∧ Le (n := 1) (m := 1) top bot)
+    IsLeastFixpoint idT bot ∧ ¬ IsGreatestFixpoint idT bot ∧
+      HierSolution idT oneComp (fun _ => false) top ∧
+      ¬ (Le (bot : Summ 1 1) top ∧ Le (top : Summ 1 1) bot)
 ```
 
 - **Depth.** substantive. Existence by induction along the order (a block solved at its first occurrence stays solved when later blocks change, because CalleesFirst forbids it from reading them, and re-solving an already solved block changes nothing); uniqueness by strong induction on block positions; both use the inner-iteration bound for arbitrary start vectors. The betweenness lemma is immediate from HierSolution.fixpoint.
 - **Non-vacuity witness** (`bottomUpHier_nonvacuous`, `hierBetween_nonvacuous`). The graph 0 -> 0, 0 -> 1, 1 -> 1, singleton blocks, order [1, 0], with the mixed sign assignment mixSign (callee block 1 least, caller block 0 greatest); for the betweenness lemma, the hierarchical solution of mixed-neither, strictly between the least and greatest fixpoint.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:323-325
 theorem bottomUpHier_nonvacuous :
-  Monotone mixT ∧
-    RespectsCalls gMix mixT ∧
-      Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-        CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-          (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧ mixSign (1 : Fin (2 : Nat)) = true ∧ mixSign (0 : Fin (2 : Nat)) = false
+    Monotone mixT ∧ RespectsCalls gMix mixT ∧ Covers (idComp (n := 2)) [1, 0] ∧
+      CalleesFirst gMix idComp [1, 0] ∧ 2 * 1 ≤ 2 ∧ mixSign 1 = true ∧ mixSign 0 = false
 
+-- lean/Toy/Scc/Transfer.lean:330-332
 theorem hierBetween_nonvacuous :
-  IsLeastFixpoint mixT bot ∧
-    IsGreatestFixpoint mixT top ∧ HierSolution mixT idComp mixSign mixResult ∧ mixResult ≠ bot ∧ mixResult ≠ top
+    IsLeastFixpoint mixT bot ∧ IsGreatestFixpoint mixT top ∧
+      HierSolution mixT idComp mixSign mixResult ∧ mixResult ≠ bot ∧ mixResult ≠ top
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
 
 ```lean
-theorem hierSolution_bottomUp :
-  ∀ {n m k : Nat} {E : Graph n} {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat},
-    Monotone F →
-      RespectsCalls E F →
-        Covers comp order →
-          CalleesFirst E comp order →
-            n * m ≤ fuel →
-              ∀ (sign : Fin k → Bool) (init : Summ n m), HierSolution F comp sign (bottomUp F comp sign order fuel init)
+-- lean/Toy/Scc/BottomUp.lean:302-306
+theorem hierSolution_bottomUp {n m k : Nat} {E : Graph n} {F : Transfer n m}
+    {comp : Fin n → Fin k} {order : List (Fin k)} {fuel : Nat} (hmono : Monotone F)
+    (hresp : RespectsCalls E F) (hcover : Covers comp order) (hfirst : CalleesFirst E comp order)
+    (hfuel : n * m ≤ fuel) (sign : Fin k → Bool) (init : Summ n m) :
+    HierSolution F comp sign (bottomUp F comp sign order fuel init)
 
-theorem hierSolution_unique :
-  ∀ {n m k : Nat} {E : Graph n} {F : Transfer n m} {comp : Fin n → Fin k} {order : List (Fin k)},
-    RespectsCalls E F →
-      CalleesFirst E comp order →
-        ∀ {sign : Fin k → Bool} {σ σ' : Summ n m}, HierSolution F comp sign σ → HierSolution F comp sign σ' → σ = σ'
+-- lean/Toy/Scc/BottomUp.lean:351-354
+theorem hierSolution_unique {n m k : Nat} {E : Graph n} {F : Transfer n m}
+    {comp : Fin n → Fin k} {order : List (Fin k)} (hresp : RespectsCalls E F)
+    (hfirst : CalleesFirst E comp order) {sign : Fin k → Bool} {σ σ' : Summ n m}
+    (h : HierSolution F comp sign σ) (h' : HierSolution F comp sign σ') : σ = σ'
 
+-- lean/Toy/Scc/BottomUp.lean:449-451
 theorem hierSolution_swapT_gCycle_mixSign_not_unique :
-  HierSolution swapT idComp mixSign bot ∧ HierSolution swapT idComp mixSign top ∧ Ne (α := Summ 2 1) bot top
+    HierSolution swapT idComp mixSign bot ∧ HierSolution swapT idComp mixSign top ∧
+      (bot : Summ 2 1) ≠ top
 ```
 
 - **Tier justification.** Alternation-free equation systems with least and greatest blocks solved in dependency order are known (Cleaveland and Steffen 1993; Mader 1997; mechanized operations on such systems in Neele and van de Pol 2024). Restated here for the single-pass bottom-up algorithm and coordinatewise block-extremality.
@@ -1456,35 +1585,26 @@ Basis: derived (modeling bridge). A tool that summarizes some blocks by least an
 - **Plain claim.** On the call graph 0 -> 0, 0 -> 1, 1 -> 1 with one bit per function, singleton blocks (a valid SCC decomposition), the callees-first order [1, 0], inner fuel 2 = n*m and start vector all-false: (i) for F(0) = sigma(0) union sigma(1), F(1) = sigma(1), solving the callee block {1} with its least fixpoint and the caller block {0} with its greatest gives sigma(0) = {0}, sigma(1) = empty; (ii) for F(0) = sigma(0) intersect sigma(1), F(1) = sigma(1), solving the callee block with its greatest fixpoint and the caller block with its least gives sigma(0) = empty, sigma(1) = {0}. In both cases the result is the hierarchical solution and a fixpoint of F, but neither the least fixpoint (all-false) nor the greatest fixpoint (all-true); both transfers are monotone and callee-local.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:307-313
 theorem mixed_lfp_callee_gfp_caller_neither_lfp_nor_gfp :
-  IsSccDecomp gMix idComp ∧
-    Monotone mixT ∧
-      RespectsCalls gMix mixT ∧
-        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-          CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-              bottomUp mixT idComp mixSign [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] (2 : Nat) bot = mixResult ∧
-                HierSolution mixT idComp mixSign mixResult ∧
-                  mixT mixResult = mixResult ∧
-                    IsLeastFixpoint mixT bot ∧
-                      IsGreatestFixpoint mixT top ∧ ¬IsLeastFixpoint mixT mixResult ∧ ¬IsGreatestFixpoint mixT mixResult
+    IsSccDecomp gMix idComp ∧ Monotone mixT ∧ RespectsCalls gMix mixT ∧
+      Covers (idComp (n := 2)) [1, 0] ∧ CalleesFirst gMix idComp [1, 0] ∧ 2 * 1 ≤ 2 ∧
+      bottomUp mixT idComp mixSign [1, 0] 2 bot = mixResult ∧
+      HierSolution mixT idComp mixSign mixResult ∧ mixT mixResult = mixResult ∧
+      IsLeastFixpoint mixT bot ∧ IsGreatestFixpoint mixT top ∧
+      ¬ IsLeastFixpoint mixT mixResult ∧ ¬ IsGreatestFixpoint mixT mixResult
 
+-- lean/Toy/Scc/Transfer.lean:385-391
 theorem mixed_gfp_callee_lfp_caller_neither_lfp_nor_gfp :
-  IsSccDecomp gMix idComp ∧
-    Monotone mixRevT ∧
-      RespectsCalls gMix mixRevT ∧
-        Covers idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-          CalleesFirst gMix idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] ∧
-            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-              bottomUp mixRevT idComp revSign [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] (2 : Nat) bot = revResult ∧
-                HierSolution mixRevT idComp revSign revResult ∧
-                  mixRevT revResult = revResult ∧
-                    IsLeastFixpoint mixRevT bot ∧
-                      IsGreatestFixpoint mixRevT top ∧
-                        ¬IsLeastFixpoint mixRevT revResult ∧ ¬IsGreatestFixpoint mixRevT revResult
+    IsSccDecomp gMix idComp ∧ Monotone mixRevT ∧ RespectsCalls gMix mixRevT ∧
+      Covers (idComp (n := 2)) [1, 0] ∧ CalleesFirst gMix idComp [1, 0] ∧ 2 * 1 ≤ 2 ∧
+      bottomUp mixRevT idComp revSign [1, 0] 2 bot = revResult ∧
+      HierSolution mixRevT idComp revSign revResult ∧ mixRevT revResult = revResult ∧
+      IsLeastFixpoint mixRevT bot ∧ IsGreatestFixpoint mixRevT top ∧
+      ¬ IsLeastFixpoint mixRevT revResult ∧ ¬ IsGreatestFixpoint mixRevT revResult
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 On gMix (0 → 0, 0 → 1, 1 → 1), one bit per function, blocks idComp, order [1, 0], fuel 2, start all-false:
@@ -1520,22 +1640,18 @@ Basis: derived (modeling bridge). A tool that mixes least and greatest per-block
 - **Plain claim.** On the path 0 -> 1 -> 2, merging 0 and 1 (not mutually reachable) into one block, with 2 in its own block, is not an SCC decomposition, yet [1, 0] is a covering callees-first order with a genuine cross-block call (1 -> 2), and single-pass bottom-up over the merged block map with inner fuel 3 = n*m computes the global least fixpoint of F(2) = {0}, F(1) = sigma(2), F(0) = sigma(1) and the global greatest fixpoint of F(2) = empty, F(1) = sigma(2), F(0) = sigma(1); both transfers are monotone and callee-local.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:423-430
 theorem convex_merge_not_scc_still_lfp_and_gfp :
-  ¬IsSccDecomp gPath3 convexMerge3 ∧
-    IsSccDecomp gPath3 idComp ∧
-      Monotone chain3LfpT ∧
-        RespectsCalls gPath3 chain3LfpT ∧
-          Monotone chain3GfpT ∧
-            RespectsCalls gPath3 chain3GfpT ∧
-              Covers convexMerge3 [1, 0] ∧
-                CalleesFirst gPath3 convexMerge3 [1, 0] ∧
-                  CondEdge gPath3 convexMerge3 0 1 ∧
-                    3 * 1 ≤ 3 ∧
-                      IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT convexMerge3 [1, 0] 3) ∧
-                        IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT convexMerge3 [1, 0] 3)
+    ¬ IsSccDecomp gPath3 convexMerge3 ∧ IsSccDecomp gPath3 idComp ∧
+      Monotone chain3LfpT ∧ RespectsCalls gPath3 chain3LfpT ∧
+      Monotone chain3GfpT ∧ RespectsCalls gPath3 chain3GfpT ∧
+      Covers convexMerge3 [1, 0] ∧ CalleesFirst gPath3 convexMerge3 [1, 0] ∧
+      CondEdge gPath3 convexMerge3 0 1 ∧ 3 * 1 ≤ 3 ∧
+      IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT convexMerge3 [1, 0] 3) ∧
+      IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT convexMerge3 [1, 0] 3)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 On gPath3 (0 → 1 → 2), convexMerge3 puts 0 and 1 in block 0 and 2 in block 1 (0 and 1 are not mutually reachable).
@@ -1567,24 +1683,21 @@ Basis: derived (modeling bridge). A checker for single-pass bottom-up solving ca
 - **Plain claim.** Merging the endpoints 0 and 2 of the path 0 -> 1 -> 2 (not mutually reachable) into one block, with 1 in its own block, admits no callees-first order; with inner fuel 3 = n*m, single-pass bottom-up then returns a wrong least fixpoint for F(2) = {0}, F(1) = sigma(2), F(0) = sigma(1) and a wrong greatest fixpoint for the dual transfer F(2) = empty, F(1) = sigma(2), F(0) = sigma(1), in both duplicate-free orders [0, 1] and [1, 0], while the SCC decomposition processed in the callees-first order [2, 1, 0] is right.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:445-455
 theorem nonconvex_merge_wrong_in_both_orders :
-  ¬Reach gPath3 2 0 ∧
-    mergeComp3 0 = mergeComp3 2 ∧
-      ¬IsSccDecomp gPath3 mergeComp3 ∧
-        (∀ (order : List (Fin 2)), ¬CalleesFirst gPath3 mergeComp3 order) ∧
-          Monotone chain3LfpT ∧
-            RespectsCalls gPath3 chain3LfpT ∧
-              Monotone chain3GfpT ∧
-                RespectsCalls gPath3 chain3GfpT ∧
-                  ¬IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT mergeComp3 [0, 1] 3) ∧
-                    ¬IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT mergeComp3 [1, 0] 3) ∧
-                      ¬IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT mergeComp3 [0, 1] 3) ∧
-                        ¬IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT mergeComp3 [1, 0] 3) ∧
-                          IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT idComp [2, 1, 0] 3) ∧
-                            IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT idComp [2, 1, 0] 3)
+    ¬ Reach gPath3 2 0 ∧ mergeComp3 0 = mergeComp3 2 ∧ ¬ IsSccDecomp gPath3 mergeComp3 ∧
+      (∀ order, ¬ CalleesFirst gPath3 mergeComp3 order) ∧
+      Monotone chain3LfpT ∧ RespectsCalls gPath3 chain3LfpT ∧
+      Monotone chain3GfpT ∧ RespectsCalls gPath3 chain3GfpT ∧
+      ¬ IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT mergeComp3 [0, 1] 3) ∧
+      ¬ IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT mergeComp3 [1, 0] 3) ∧
+      ¬ IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT mergeComp3 [0, 1] 3) ∧
+      ¬ IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT mergeComp3 [1, 0] 3) ∧
+      IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT idComp [2, 1, 0] 3) ∧
+      IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT idComp [2, 1, 0] 3)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 On gPath3 (0 → 1 → 2), mergeComp3 puts 0 and 2 in block 0 and 1 in block 1. Then 2 does not reach 0, the merge is not an
@@ -1601,9 +1714,10 @@ either order; with idComp and order [2, 1, 0] both are right.
 - Positive control (`nonconvex_merge_order_0_1_0_recovers_lfp_and_gfp`): with the same non-convex merge, the order `[0, 1, 0]`, which solves the merged block a second time after the middle block, gives the least and the greatest fixpoint, so the failure is a single-pass phenomenon of the duplicate-free orders, not of the block map alone.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:469-471
 theorem nonconvex_merge_order_0_1_0_recovers_lfp_and_gfp :
-  IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT mergeComp3 [0, 1, 0] 3) ∧
-    IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT mergeComp3 [0, 1, 0] 3)
+    IsLeastFixpoint chain3LfpT (bottomUpLfp chain3LfpT mergeComp3 [0, 1, 0] 3) ∧
+      IsGreatestFixpoint chain3GfpT (bottomUpGfp chain3GfpT mergeComp3 [0, 1, 0] 3)
 ```
 
 - **Tier justification.** Concrete kernel-checked instance correcting an over-general folk claim ("merging is always sound, just not minimal").
@@ -1622,23 +1736,21 @@ Basis: derived (modeling bridge). A tool that merges SCCs into larger blocks (fo
 - **Plain claim.** Splitting the 2-cycle 0 <-> 1 into singleton blocks admits no callees-first order; with two bits per function and inner fuel 4 = n*m, single-pass bottom-up gives a wrong least fixpoint in both duplicate-free orders [0, 1] and [1, 0] for the transfer in which function f seeds bit f and copies the other bit from the other function, and a wrong greatest fixpoint in both duplicate-free orders for the dual transfer in which f forbids bit f and copies the other bit; the one-block SCC decomposition gives the right ones.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:503-513
 theorem split_scc_wrong_lfp_and_gfp_in_both_orders :
-  ¬IsSccDecomp gCycle idComp ∧
-    IsSccDecomp gCycle oneComp ∧
-      (∀ (order : List (Fin 2)), ¬CalleesFirst gCycle idComp order) ∧
-        Monotone splitLfpT ∧
-          RespectsCalls gCycle splitLfpT ∧
-            Monotone splitGfpT ∧
-              RespectsCalls gCycle splitGfpT ∧
-                ¬IsLeastFixpoint splitLfpT (bottomUpLfp splitLfpT idComp [0, 1] 4) ∧
-                  ¬IsLeastFixpoint splitLfpT (bottomUpLfp splitLfpT idComp [1, 0] 4) ∧
-                    ¬IsGreatestFixpoint splitGfpT (bottomUpGfp splitGfpT idComp [0, 1] 4) ∧
-                      ¬IsGreatestFixpoint splitGfpT (bottomUpGfp splitGfpT idComp [1, 0] 4) ∧
-                        IsLeastFixpoint splitLfpT (bottomUpLfp splitLfpT oneComp [0] 4) ∧
-                          IsGreatestFixpoint splitGfpT (bottomUpGfp splitGfpT oneComp [0] 4)
+    ¬ IsSccDecomp gCycle idComp ∧ IsSccDecomp gCycle oneComp ∧
+      (∀ order, ¬ CalleesFirst gCycle idComp order) ∧
+      Monotone splitLfpT ∧ RespectsCalls gCycle splitLfpT ∧
+      Monotone splitGfpT ∧ RespectsCalls gCycle splitGfpT ∧
+      ¬ IsLeastFixpoint splitLfpT (bottomUpLfp splitLfpT idComp [0, 1] 4) ∧
+      ¬ IsLeastFixpoint splitLfpT (bottomUpLfp splitLfpT idComp [1, 0] 4) ∧
+      ¬ IsGreatestFixpoint splitGfpT (bottomUpGfp splitGfpT idComp [0, 1] 4) ∧
+      ¬ IsGreatestFixpoint splitGfpT (bottomUpGfp splitGfpT idComp [1, 0] 4) ∧
+      IsLeastFixpoint splitLfpT (bottomUpLfp splitLfpT oneComp [0] 4) ∧
+      IsGreatestFixpoint splitGfpT (bottomUpGfp splitGfpT oneComp [0] 4)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 On gCycle (0 → 1 → 0), idComp splits the SCC {0, 1}; no list is callees-first. With two bits per function and fuel 4:
@@ -1655,9 +1767,10 @@ the one-block decomposition oneComp with order [0] gives the least and greatest 
 - Positive control (`split_scc_order_0_1_0_recovers_lfp_and_gfp`): with the same split, the order `[0, 1, 0]` gives the least and the greatest fixpoint on these transfers. This is not a general repair: with more bits or longer cycles more repetitions can be needed, and no general statement about repeated entries is proved.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:576-578
 theorem split_scc_order_0_1_0_recovers_lfp_and_gfp :
-  IsLeastFixpoint splitLfpT (bottomUpLfp splitLfpT idComp [0, 1, 0] 4) ∧
-    IsGreatestFixpoint splitGfpT (bottomUpGfp splitGfpT idComp [0, 1, 0] 4)
+    IsLeastFixpoint splitLfpT (bottomUpLfp splitLfpT idComp [0, 1, 0] 4) ∧
+      IsGreatestFixpoint splitGfpT (bottomUpGfp splitGfpT idComp [0, 1, 0] 4)
 ```
 
 - **Tier justification.** Concrete kernel-checked instance of a known pitfall (splitting an SCC breaks one-pass solving).
@@ -1676,26 +1789,18 @@ Basis: derived (modeling bridge). A tool must not split an SCC across blocks whe
 - **Plain claim.** With the valid SCC decomposition of 0 -> 1 (singleton blocks), the monotone callee-local transfers F(1) = {0}, F(0) = sigma(1) and F(1) = empty, F(0) = sigma(1), inner fuel 2 = n*m, and the covering but caller-first order [0, 1], single-pass bottom-up gives a wrong least fixpoint for the first transfer and a wrong greatest fixpoint for the second; the callees-first order [1, 0] gives the right ones.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:589-596
 theorem valid_scc_caller_first_order_wrong_lfp_and_gfp :
-  IsSccDecomp gPath idComp ∧
-    Monotone chainLfpT ∧
-      RespectsCalls gPath chainLfpT ∧
-        Monotone chainGfpT ∧
-          RespectsCalls gPath chainGfpT ∧
-            (2 : Nat) * (1 : Nat) ≤ (2 : Nat) ∧
-              Covers idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-                ¬CalleesFirst gPath idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] ∧
-                  ¬IsLeastFixpoint chainLfpT
-                        (bottomUpLfp chainLfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat)) ∧
-                    ¬IsGreatestFixpoint chainGfpT
-                          (bottomUpGfp chainGfpT idComp [(0 : Fin (2 : Nat)), (1 : Fin (2 : Nat))] (2 : Nat)) ∧
-                      IsLeastFixpoint chainLfpT
-                          (bottomUpLfp chainLfpT idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] (2 : Nat)) ∧
-                        IsGreatestFixpoint chainGfpT
-                          (bottomUpGfp chainGfpT idComp [(1 : Fin (2 : Nat)), (0 : Fin (2 : Nat))] (2 : Nat))
+    IsSccDecomp gPath idComp ∧ Monotone chainLfpT ∧ RespectsCalls gPath chainLfpT ∧
+      Monotone chainGfpT ∧ RespectsCalls gPath chainGfpT ∧ 2 * 1 ≤ 2 ∧
+      Covers (idComp (n := 2)) [0, 1] ∧ ¬ CalleesFirst gPath idComp [0, 1] ∧
+      ¬ IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [0, 1] 2) ∧
+      ¬ IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [0, 1] 2) ∧
+      IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [1, 0] 2) ∧
+      IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [1, 0] 2)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 On gPath (0 → 1), idComp is a valid SCC decomposition and [0, 1] covers it but is not callees-first. With fuel 2,
@@ -1712,9 +1817,10 @@ with the callees-first order [1, 0] both are right.
 - Positive control (`caller_first_order_0_1_0_recovers_lfp_and_gfp`): with the same decomposition, the order `[0, 1, 0]` (caller, callee, caller again) gives the least and the greatest fixpoint.
 
 ```lean
+-- lean/Toy/Scc/Transfer.lean:607-609
 theorem caller_first_order_0_1_0_recovers_lfp_and_gfp :
-  IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [0, 1, 0] 2) ∧
-    IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [0, 1, 0] 2)
+    IsLeastFixpoint chainLfpT (bottomUpLfp chainLfpT idComp [0, 1, 0] 2) ∧
+      IsGreatestFixpoint chainGfpT (bottomUpGfp chainGfpT idComp [0, 1, 0] 2)
 ```
 
 - **Tier justification.** Reference point: a minimal kernel-checked instance of a known pitfall. Its content overlaps the hfirst tightness counterexamples of bottomup-lfp and bottomup-gfp; it is kept as a stand-alone card so that the pitfall can be cited directly.
@@ -1735,17 +1841,20 @@ Basis: derived (modeling bridge). A checker must verify the processing order, no
 - **Plain claim.** For a configuration-level call relation C on (function, state) pairs, a block map comp, an inner measure, and a rank on blocks that is injective on the blocks used by comp, the lexicographic measure that maps a configuration (f, x) to (rank of the block of f, inner measure of f at x) strictly decreases along every call exactly when every call within a block strictly decreases the inner measure and every call across blocks goes to a block of strictly smaller rank; and whenever this lexicographic measure decreases along every call, every call chain is finite.
 
 ```lean
-theorem lexDecreasing_iff_intraDecrease_and_interRankDecrease_of_rank_injective_on_used_blocks :
-  ∀ {n k : Nat} {S : Type} {rank : Fin k → Nat} {comp : Fin n → Fin k} {inner : Fin n → S → Nat} {C : Calls n S},
-    (∀ (f g : Fin n), rank (comp f) = rank (comp g) → comp f = comp g) →
-      (LexDecreasing rank comp inner C ↔ IntraDecrease comp inner C ∧ InterRankDecrease rank comp C)
+-- lean/Toy/Scc/Termination.lean:216-220
+theorem lexDecreasing_iff_intraDecrease_and_interRankDecrease_of_rank_injective_on_used_blocks
+    {n k : Nat} {S : Type} {rank : Fin k → Nat} {comp : Fin n → Fin k}
+    {inner : Fin n → S → Nat} {C : Calls n S}
+    (hinj : ∀ f g, rank (comp f) = rank (comp g) → comp f = comp g) :
+    LexDecreasing rank comp inner C ↔ IntraDecrease comp inner C ∧ InterRankDecrease rank comp C
 
-theorem terminates_of_lexDecreasing :
-  ∀ {n k : Nat} {S : Type} {rank : Fin k → Nat} {comp : Fin n → Fin k} {inner : Fin n → S → Nat} {C : Calls n S},
-    LexDecreasing rank comp inner C → Terminates C
+-- lean/Toy/Scc/Termination.lean:234-236
+theorem terminates_of_lexDecreasing {n k : Nat} {S : Type} {rank : Fin k → Nat}
+    {comp : Fin n → Fin k} {inner : Fin n → S → Nat} {C : Calls n S}
+    (h : LexDecreasing rank comp inner C) : Terminates C
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Let μ(f, x) := (rank (comp f), inner f x), compared lexicographically (LexLt p q := p.1 < q.1 ∨ (p.1 = q.1 ∧ p.2 < q.2)).
@@ -1765,42 +1874,51 @@ Termination half (no injectivity): (∀ a b, C a b → μ b <lex μ a) → every
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Termination.lean:264-269
 theorem lexIff_tight_injective :
-  (¬∀ (f g : Fin 2),
-        Eq (α := Nat) ((fun (x : Fin 2) => 0) (idComp f)) ((fun (x : Fin 2) => 0) (idComp g)) → idComp f = idComp g) ∧
-    ¬(LexDecreasing (fun x => 0) idComp (fun f x => 1 - ↑f) cPath ↔
-        IntraDecrease idComp (fun f x => 1 - ↑f) cPath ∧ InterRankDecrease (fun x => 0) idComp cPath)
+    ¬ (∀ f g : Fin 2, (fun _ : Fin 2 => 0) (idComp f) = (fun _ : Fin 2 => 0) (idComp g) →
+        idComp f = idComp g) ∧
+      ¬ (LexDecreasing (fun _ : Fin 2 => 0) idComp (fun f (_ : Unit) => 1 - f.val) cPath ↔
+        IntraDecrease idComp (fun f (_ : Unit) => 1 - f.val) cPath ∧
+          InterRankDecrease (fun _ : Fin 2 => 0) idComp cPath)
 
+-- lean/Toy/Scc/Termination.lean:291-293
 theorem lexTerminates_tight_lexDecreasing :
-  ¬LexDecreasing (fun x => 0) oneComp (fun x x_1 => 0) cLoop ∧ ¬Terminates cLoop
+    ¬ LexDecreasing (fun _ : Fin 1 => 0) oneComp (fun _ (_ : Unit) => 0) cLoop ∧
+      ¬ Terminates cLoop
 ```
 
 - **Depth.** shallow. The equivalence is a case analysis on the lexicographic order (close to definitional); the termination half uses well-foundedness of the lexicographic order on Nat x Nat from core Lean.
 - **Non-vacuity witness** (`lexIff_nonvacuous`, `lexTerminates_nonvacuous`). The call relation cUnbounded on 0 -> 1, 1 -> 1 (block 1 recurses on a decreasing counter, block 0 calls block 1 with any state) with ranks 1 and 0 and inner measure the state: intra-block calls exist and decrease, and the cross-block calls go to the lower rank.
 
 ```lean
+-- lean/Toy/Scc/Termination.lean:278-283
 theorem lexIff_nonvacuous :
-  (∀ (f g : Fin 2), 1 - (↑(idComp f) : Nat) = 1 - (↑(idComp g) : Nat) → idComp f = idComp g) ∧
-    LexDecreasing (fun c => 1 - (↑c : Nat)) idComp (fun x x_1 => x_1) cUnbounded ∧
-      IntraDecrease idComp (fun x x_1 => x_1) cUnbounded ∧
-        InterRankDecrease (fun c => 1 - (↑c : Nat)) idComp cUnbounded ∧
-          cUnbounded (1, 1) (1, 0) ∧ cUnbounded (0, 0) (1, 7)
+    (∀ f g : Fin 2, 1 - (idComp f).val = 1 - (idComp g).val → idComp f = idComp g) ∧
+      LexDecreasing (fun c : Fin 2 => 1 - c.val) idComp (fun _ x => x) cUnbounded ∧
+      IntraDecrease idComp (fun _ x => x) cUnbounded ∧
+      InterRankDecrease (fun c : Fin 2 => 1 - c.val) idComp cUnbounded ∧
+      cUnbounded (1, 1) (1, 0) ∧ cUnbounded (0, 0) (1, 7)
 
+-- lean/Toy/Scc/Termination.lean:299-300
 theorem lexTerminates_nonvacuous :
-  LexDecreasing (fun c => 1 - ↑c) idComp (fun x x_1 => x_1) cUnbounded
+    LexDecreasing (fun c : Fin 2 => 1 - c.val) idComp (fun _ x => x) cUnbounded
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
 
 ```lean
-theorem lexDecreasing_pos_iff_of_covers :
-  ∀ {n k : Nat} {S : Type} {comp : Fin n → Fin k} {order : List (Fin k)} {inner : Fin n → S → Nat} {C : Calls n S},
-    Covers comp order →
-      (LexDecreasing (pos order) comp inner C ↔ IntraDecrease comp inner C ∧ InterRankDecrease (pos order) comp C)
+-- lean/Toy/Scc/Termination.lean:253-257
+theorem lexDecreasing_pos_iff_of_covers {n k : Nat} {S : Type} {comp : Fin n → Fin k}
+    {order : List (Fin k)} {inner : Fin n → S → Nat} {C : Calls n S}
+    (hcover : Covers comp order) :
+    LexDecreasing (pos order) comp inner C ↔
+      IntraDecrease comp inner C ∧ InterRankDecrease (pos order) comp C
 
-theorem pos_injective_on_used_blocks_of_covers :
-  ∀ {n k : Nat} {comp : Fin n → Fin k} {order : List (Fin k)},
-    Covers comp order → ∀ (f g : Fin n), pos order (comp f) = pos order (comp g) → comp f = comp g
+-- lean/Toy/Scc/Graph.lean:225-227
+theorem pos_injective_on_used_blocks_of_covers {n k : Nat} {comp : Fin n → Fin k}
+    {order : List (Fin k)} (h : Covers comp order) :
+    ∀ f g, pos order (comp f) = pos order (comp g) → comp f = comp g
 ```
 
 - **Tier justification.** The lexicographic order on pairs of naturals and its well-foundedness are textbook; restated for a (block rank, inner measure) measure on configurations.
@@ -1819,12 +1937,14 @@ Basis: derived (modeling bridge). A termination checker for mutual recursion tha
 - **Plain claim.** If the condensation of the call graph E under comp is acyclic and every configuration-level call follows an edge of E, then strict decrease of an inner measure on calls within blocks alone implies that every call chain is finite; no rank on blocks has to be supplied or checked.
 
 ```lean
-theorem terminates_of_condensationAcyclic_of_callsInGraph_of_intraDecrease :
-  ∀ {n k : Nat} {S : Type} {E : Graph n} {comp : Fin n → Fin k} {inner : Fin n → S → Nat} {C : Calls n S},
-    CondensationAcyclic E comp → CallsInGraph E C → IntraDecrease comp inner C → Terminates C
+-- lean/Toy/Scc/Termination.lean:308-311
+theorem terminates_of_condensationAcyclic_of_callsInGraph_of_intraDecrease
+    {n k : Nat} {S : Type} {E : Graph n} {comp : Fin n → Fin k} {inner : Fin n → S → Nat}
+    {C : Calls n S} (hacyc : CondensationAcyclic E comp) (hin : CallsInGraph E C)
+    (hdec : IntraDecrease comp inner C) : Terminates C
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 If the condensation of E under comp has no cycle, every call C (f, x) (g, y) has E f g = true, and every call with
@@ -1843,27 +1963,31 @@ comp f = comp g has inner g y < inner f x, then every configuration is accessibl
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Termination.lean:320-322
 theorem terminationIntra_tight_acyclic :
-  CallsInGraph gCycle cCycle ∧
-    IntraDecrease idComp (fun x x_1 => 0) cCycle ∧ ¬CondensationAcyclic gCycle idComp ∧ ¬Terminates cCycle
+    CallsInGraph gCycle cCycle ∧ IntraDecrease idComp (fun _ (_ : Unit) => 0) cCycle ∧
+      ¬ CondensationAcyclic gCycle idComp ∧ ¬ Terminates cCycle
 
+-- lean/Toy/Scc/Termination.lean:327-329
 theorem terminationIntra_tight_callsInGraph :
-  CondensationAcyclic gEmpty idComp ∧
-    IntraDecrease idComp (fun x x_1 => 0) cCycle ∧ ¬CallsInGraph gEmpty cCycle ∧ ¬Terminates cCycle
+    CondensationAcyclic gEmpty idComp ∧ IntraDecrease idComp (fun _ (_ : Unit) => 0) cCycle ∧
+      ¬ CallsInGraph gEmpty cCycle ∧ ¬ Terminates cCycle
 
+-- lean/Toy/Scc/Termination.lean:335-337
 theorem terminationIntra_tight_intraDecrease :
-  CondensationAcyclic gLoop oneComp ∧
-    CallsInGraph gLoop cLoop ∧ ¬IntraDecrease oneComp (fun x x_1 => 0) cLoop ∧ ¬Terminates cLoop
+    CondensationAcyclic gLoop oneComp ∧ CallsInGraph gLoop cLoop ∧
+      ¬ IntraDecrease oneComp (fun _ (_ : Unit) => 0) cLoop ∧ ¬ Terminates cLoop
 ```
 
 - **Depth.** shallow. Depth is measured relative to the other cards of this package: topo-order supplies a covering callees-first order, whose positions form a block rank under which the lexicographic measure decreases, and lex-iff (terminates_of_lexDecreasing) concludes.
 - **Non-vacuity witness** (`terminationIntra_nonvacuous`). The call relation cUnbounded on 0 -> 1, 1 -> 1 with singleton blocks: a condensation edge, a genuinely recursive callee block, and unbounded cross-block fan-out.
 
 ```lean
+-- lean/Toy/Scc/Termination.lean:343-346
 theorem terminationIntra_nonvacuous :
-  CondensationAcyclic gPathLoop1 idComp ∧
-    CondEdge gPathLoop1 idComp 0 1 ∧
-      CallsInGraph gPathLoop1 cUnbounded ∧ IntraDecrease idComp (fun x x_1 => x_1) cUnbounded ∧ cUnbounded (1, 1) (1, 0)
+    CondensationAcyclic gPathLoop1 idComp ∧ CondEdge gPathLoop1 idComp 0 1 ∧
+      CallsInGraph gPathLoop1 cUnbounded ∧ IntraDecrease idComp (fun _ x => x) cUnbounded ∧
+      cUnbounded (1, 1) (1, 0)
 ```
 
 - **Tier justification.** Known from termination analysis: with dependency graphs, termination can be shown separately per cycle or SCC (Arts and Giesl 2000), mechanized in Isabelle/HOL (IsaFoR/CeTA); restated for configuration-level calls over an arbitrary block map with acyclic condensation.
@@ -1885,16 +2009,17 @@ Basis: derived (modeling bridge). A verifier that has checked an acyclic condens
 - **Plain claim.** For the valid SCC decomposition of 0 -> 1, 1 -> 1 and the call relation cUnbounded, in which function 0 at state 0 calls function 1 at every state y and function 1 at state y + 1 calls itself at state y, the inner measure "state" decreases on every intra-block call but not on the cross-block calls (for example (0, 0) calls (1, 5)), and no measure from configurations into Nat decreases along every call at all; yet the call relation terminates and the lexicographic measure (block rank, state) with ranks 1 for block 0 and 0 for block 1 decreases along every call.
 
 ```lean
+-- lean/Toy/Scc/Termination.lean:358-364
 theorem inner_alone_fails_and_no_nat_measure_of_unbounded_cross_block_fanout :
-  IsSccDecomp gPathLoop1 idComp ∧
-    CallsInGraph gPathLoop1 cUnbounded ∧
-      IntraDecrease idComp (fun x x_1 => x_1) cUnbounded ∧
-        (¬∀ (a b : Fin 2 × Nat), cUnbounded a b → b.snd < a.snd) ∧
-          (∀ (μ : Fin 2 × Nat → Nat), ¬∀ (a b : Fin 2 × Nat), cUnbounded a b → μ b < μ a) ∧
-            LexDecreasing (fun c => 1 - ↑c) idComp (fun x x_1 => x_1) cUnbounded ∧ Terminates cUnbounded
+    IsSccDecomp gPathLoop1 idComp ∧ CallsInGraph gPathLoop1 cUnbounded ∧
+      IntraDecrease idComp (fun _ x => x) cUnbounded ∧
+      ¬ (∀ a b, cUnbounded a b → b.2 < a.2) ∧
+      (∀ μ : Fin 2 × Nat → Nat, ¬ ∀ a b, cUnbounded a b → μ b < μ a) ∧
+      LexDecreasing (fun c : Fin 2 => 1 - c.val) idComp (fun _ x => x) cUnbounded ∧
+      Terminates cUnbounded
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 gPathLoop1: 0 → 1, 1 → 1; idComp is an SCC decomposition. cUnbounded: (0, 0) calls (1, y) for every y, and (1, y + 1)
@@ -1912,18 +2037,19 @@ call; and cUnbounded terminates.
 - Positive control (`cJump_has_nat_measure`): for `cJump`, which makes the single cross-block call `(0, 0) → (1, 5)` (bounded fan-out), a measure into `Nat` that decreases along every call exists; it is the unbounded fan-out of `cUnbounded` that rules out every `Nat`-valued measure.
 
 ```lean
-theorem cJump_has_nat_measure :
-  ∃ (μ : Fin 2 × Nat → Nat), ∀ (a b : Fin 2 × Nat), cJump a b → μ b < μ a
+-- lean/Toy/Scc/Termination.lean:206
+theorem cJump_has_nat_measure : ∃ μ : Fin 2 × Nat → Nat, ∀ a b, cJump a b → μ b < μ a
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
 
 ```lean
+-- lean/Toy/Scc/Termination.lean:190-191
 theorem no_nat_measure_cUnbounded :
-  ∀ (μ : Fin 2 × Nat → Nat), ¬∀ (a b : Fin 2 × Nat), cUnbounded a b → μ b < μ a
+    ∀ μ : Fin 2 × Nat → Nat, ¬ ∀ a b, cUnbounded a b → μ b < μ a
 
-theorem terminates_cUnbounded :
-  Terminates cUnbounded
+-- lean/Toy/Scc/Termination.lean:161
+theorem terminates_cUnbounded : Terminates cUnbounded
 ```
 
 - **Tier justification.** Concrete kernel-checked instance of a standard fact: a terminating relation with infinite branching can have well-founded height beyond omega, so no measure into Nat exists, while a lexicographic pair does.
@@ -1944,14 +2070,18 @@ Basis: derived (modeling bridge). A termination checker that insists on a single
 - **Plain claim.** For monotone F on summary vectors, any untrusted vector sigma with F sigma <= sigma (a prefixpoint) lies above the least fixpoint of F, and any sigma with sigma <= F sigma (a postfixpoint) lies below the greatest fixpoint; both checks compare F sigma with sigma function by function and need no decomposition.
 
 ```lean
-theorem le_of_monotone_of_isLeastFixpoint_of_prefixpoint :
-  ∀ {n m : Nat} {F : Transfer n m}, Monotone F → ∀ {μ σ : Summ n m}, IsLeastFixpoint F μ → Le (F σ) σ → Le μ σ
+-- lean/Toy/Scc/Fixpoint.lean:300-302
+theorem le_of_monotone_of_isLeastFixpoint_of_prefixpoint {n m : Nat} {F : Transfer n m}
+    (hmono : Monotone F) {μ σ : Summ n m} (hμ : IsLeastFixpoint F μ) (hpre : Le (F σ) σ) :
+    Le μ σ
 
-theorem le_of_monotone_of_isGreatestFixpoint_of_postfixpoint :
-  ∀ {n m : Nat} {F : Transfer n m}, Monotone F → ∀ {ν σ : Summ n m}, IsGreatestFixpoint F ν → Le σ (F σ) → Le σ ν
+-- lean/Toy/Scc/Fixpoint.lean:312-314
+theorem le_of_monotone_of_isGreatestFixpoint_of_postfixpoint {n m : Nat} {F : Transfer n m}
+    (hmono : Monotone F) {ν σ : Summ n m} (hν : IsGreatestFixpoint F ν) (hpost : Le σ (F σ)) :
+    Le σ ν
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 For monotone F, μ the least fixpoint and any σ:  F σ ≤ σ → μ ≤ σ.
@@ -1970,39 +2100,46 @@ For monotone F, ν the greatest fixpoint and any σ:  σ ≤ F σ → σ ≤ ν.
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:324-326
 theorem prefixSound_tight_monotone :
-  ¬Monotone nmLfpT ∧ IsLeastFixpoint nmLfpT top ∧ Le (nmLfpT only0) only0 ∧ ¬Le top only0
+    ¬ Monotone nmLfpT ∧ IsLeastFixpoint nmLfpT top ∧ Le (nmLfpT only0) only0 ∧
+      ¬ Le top only0
 
+-- lean/Toy/Scc/Fixpoint.lean:329-331
 theorem postfixSound_tight_monotone :
-  ¬Monotone nmGfpT ∧ IsGreatestFixpoint nmGfpT bot ∧ Le only1 (nmGfpT only1) ∧ ¬Le only1 bot
+    ¬ Monotone nmGfpT ∧ IsGreatestFixpoint nmGfpT bot ∧ Le only1 (nmGfpT only1) ∧
+      ¬ Le only1 bot
 
+-- lean/Toy/Scc/Fixpoint.lean:335-336
 theorem prefixSound_tight_least :
-  Monotone idT ∧ ¬IsLeastFixpoint idT top ∧ Le (idT bot) bot ∧ ¬Le (n := 1) (m := 1) top bot
+    Monotone idT ∧ ¬ IsLeastFixpoint idT top ∧ Le (idT bot) bot ∧ ¬ Le (top : Summ 1 1) bot
 
+-- lean/Toy/Scc/Fixpoint.lean:347-348
 theorem postfixSound_tight_greatest :
-  Monotone idT ∧ ¬IsGreatestFixpoint idT bot ∧ Le top (idT top) ∧ ¬Le (n := 1) (m := 1) top bot
+    Monotone idT ∧ ¬ IsGreatestFixpoint idT bot ∧ Le top (idT top) ∧ ¬ Le (top : Summ 1 1) bot
 
+-- lean/Toy/Scc/Fixpoint.lean:340-342
 theorem prefixSound_tight_prefixpoint :
-  Monotone chainLfpT ∧ IsLeastFixpoint chainLfpT top ∧ ¬Le (chainLfpT bot) bot ∧ ¬Le (n := 2) (m := 1) top bot
+    Monotone chainLfpT ∧ IsLeastFixpoint chainLfpT top ∧ ¬ Le (chainLfpT bot) bot ∧
+      ¬ Le (top : Summ 2 1) bot
 
+-- lean/Toy/Scc/Fixpoint.lean:352-354
 theorem postfixSound_tight_postfixpoint :
-  Monotone chainGfpT ∧ IsGreatestFixpoint chainGfpT bot ∧ ¬Le top (chainGfpT top) ∧ ¬Le (n := 2) (m := 1) top bot
+    Monotone chainGfpT ∧ IsGreatestFixpoint chainGfpT bot ∧ ¬ Le top (chainGfpT top) ∧
+      ¬ Le (top : Summ 2 1) bot
 ```
 
 - **Depth.** shallow. The meet of all prefixpoints is shown to be a fixpoint (and dually the join of all postfixpoints), then compared with the given extremal fixpoint.
 - **Non-vacuity witness** (`prefixPostfixSound_nonvacuous`). The monotone transfer seedCopyT on 0 -> 1 with two bits per function: its least fixpoint is not all-false and the prefixpoint is strictly between it and all-true; its greatest fixpoint is not all-true and the postfixpoint is strictly between all-false and it.
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:360-365
 theorem prefixPostfixSound_nonvacuous :
-  Monotone seedCopyT ∧
-    IsLeastFixpoint seedCopyT seedCopyFix ∧
-      Le (seedCopyT seedCopyPre) seedCopyPre ∧
-        seedCopyFix ≠ bot ∧
-          seedCopyPre ≠ seedCopyFix ∧
-            seedCopyPre ≠ top ∧
-              IsGreatestFixpoint seedCopyT seedCopyFix ∧
-                Le seedCopyPost (seedCopyT seedCopyPost) ∧
-                  seedCopyFix ≠ top ∧ seedCopyPost ≠ seedCopyFix ∧ seedCopyPost ≠ bot
+    Monotone seedCopyT ∧ IsLeastFixpoint seedCopyT seedCopyFix ∧
+      Le (seedCopyT seedCopyPre) seedCopyPre ∧ seedCopyFix ≠ bot ∧
+      seedCopyPre ≠ seedCopyFix ∧ seedCopyPre ≠ top ∧
+      IsGreatestFixpoint seedCopyT seedCopyFix ∧ Le seedCopyPost (seedCopyT seedCopyPost) ∧
+      seedCopyFix ≠ top ∧ seedCopyPost ≠ seedCopyFix ∧ seedCopyPost ≠ bot
 ```
 
 - **Tier justification.** Park induction and its dual (Park 1969; Tarski 1955), restated for summary vectors; also available in Lean core and Mathlib for complete lattices.
@@ -2024,14 +2161,14 @@ Basis: derived (modeling bridge). A consumer that receives untrusted summary vec
 - **Plain claim.** For one self-recursive function with the identity equation sigma(0) = sigma(0) over one bit (monotone and callee-local), the all-true and the all-false vector both pass the prefixpoint and the postfixpoint check (both are fixpoints), yet the all-true vector is not the least fixpoint and the all-false vector is not the greatest.
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:374-377
 theorem prefix_and_postfix_checks_pass_but_not_extremal :
-  Monotone idT ∧
-    RespectsCalls gLoop idT ∧
-      (Le (idT top) top ∧ Le top (idT top) ∧ ¬IsLeastFixpoint idT top) ∧
-        Le (idT bot) bot ∧ Le bot (idT bot) ∧ ¬IsGreatestFixpoint idT bot
+    Monotone idT ∧ RespectsCalls gLoop idT ∧
+      (Le (idT top) top ∧ Le top (idT top) ∧ ¬ IsLeastFixpoint idT top) ∧
+      (Le (idT bot) bot ∧ Le bot (idT bot) ∧ ¬ IsGreatestFixpoint idT bot)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 On gLoop with idT (σ 0 = σ 0, one bit): idT is monotone and call-local;
@@ -2062,12 +2199,13 @@ Basis: derived (modeling bridge). A consumer that needs exact least or greatest 
 - **Plain claim.** For monotone F, if an untrusted summary vector sigma is a prefixpoint (F sigma <= sigma) and comes with a ranking r of its bits such that every set bit (f, i) is produced by F applied to the part of sigma whose bits have rank strictly below r(f, i), then sigma is exactly the least fixpoint of F.
 
 ```lean
-theorem isLeastFixpoint_of_monotone_of_prefixpoint_of_rankedJustified :
-  ∀ {n m : Nat} {F : Transfer n m},
-    Monotone F → ∀ {σ : Summ n m} {r : Fin n → Fin m → Nat}, Le (F σ) σ → RankedJustified F σ r → IsLeastFixpoint F σ
+-- lean/Toy/Scc/Fixpoint.lean:431-433
+theorem isLeastFixpoint_of_monotone_of_prefixpoint_of_rankedJustified {n m : Nat}
+    {F : Transfer n m} (hmono : Monotone F) {σ : Summ n m} {r : Fin n → Fin m → Nat}
+    (hpre : Le (F σ) σ) (hrank : RankedJustified F σ r) : IsLeastFixpoint F σ
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 For monotone F, σ and r : Fin n → Fin m → Nat: if F σ ≤ σ and, for every set bit (f, i) of σ,
@@ -2086,24 +2224,31 @@ F σ = σ and σ ≤ τ for every fixpoint τ of F.
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:450-452
 theorem rankedCert_tight_monotone :
-  ¬Monotone negT ∧ Le (negT top) top ∧ (RankedJustified negT top fun x x_1 => 0) ∧ ¬IsLeastFixpoint negT top
+    ¬ Monotone negT ∧ Le (negT top) top ∧ RankedJustified negT top (fun _ _ => 0) ∧
+      ¬ IsLeastFixpoint negT top
 
+-- lean/Toy/Scc/Fixpoint.lean:455-458
 theorem rankedCert_tight_prefixpoint :
-  Monotone (n := 1) (m := 1) topT ∧
-    ¬Le (n := 1) (m := 1) (topT bot) bot ∧
-      (RankedJustified (n := 1) (m := 1) topT bot fun x x_1 => 0) ∧ ¬IsLeastFixpoint (n := 1) (m := 1) topT bot
+    Monotone (topT (n := 1) (m := 1)) ∧ ¬ Le (topT (bot : Summ 1 1)) bot ∧
+      RankedJustified (topT (n := 1) (m := 1)) bot (fun _ _ => 0) ∧
+      ¬ IsLeastFixpoint (topT (n := 1) (m := 1)) bot
 
+-- lean/Toy/Scc/Fixpoint.lean:463-465
 theorem rankedCert_tight_ranking :
-  Monotone idT ∧ Le (idT top) top ∧ (∀ (r : Fin 1 → Fin 1 → Nat), ¬RankedJustified idT top r) ∧ ¬IsLeastFixpoint idT top
+    Monotone idT ∧ Le (idT top) top ∧ (∀ r, ¬ RankedJustified idT top r) ∧
+      ¬ IsLeastFixpoint idT top
 ```
 
 - **Depth.** shallow. Strong induction on the rank.
 - **Non-vacuity witness** (`rankedCert_nonvacuous`). The chain transfer on 0 -> 1 with sigma all-true, rank 0 for function 1 and rank 1 for function 0.
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:468-470
 theorem rankedCert_nonvacuous :
-  Monotone chainLfpT ∧ Le (chainLfpT top) top ∧ RankedJustified chainLfpT top fun f x => if (↑f : Nat) = 1 then 0 else 1
+    Monotone chainLfpT ∧ Le (chainLfpT top) top ∧
+      RankedJustified chainLfpT top (fun f _ => if f.val = 1 then 0 else 1)
 ```
 
 - **Tier justification.** Known: well-founded derivations (stages) certify membership in least fixpoints (Aczel 1977), and certifying model checkers use rank-based certificates for least-fixpoint properties (Namjoshi 2001). Restated as a local certificate for summary vectors.
@@ -2124,15 +2269,14 @@ Basis: derived (modeling bridge). A producer can attach a rank to every derived 
 - **Plain claim.** For monotone F, the least fixpoint mu has a complete ranking certificate: mu is a prefixpoint, it is ranked-justified by kleeneRank F, and every rank is below n*m. Here kleeneRank F f i is the least k < n*m such that bit (f, i) is set after k + 1 Kleene rounds from all-false, and 0 if there is no such k (in particular for bits that are never set, which the certificate does not use).
 
 ```lean
-theorem prefixpoint_and_rankedJustified_kleeneRank_lt_height_of_monotone_of_isLeastFixpoint :
-  ∀ {n m : Nat} {F : Transfer n m},
-    Monotone F →
-      ∀ {μ : Summ n m},
-        IsLeastFixpoint F μ →
-          Le (F μ) μ ∧ RankedJustified F μ (kleeneRank F) ∧ ∀ (f : Fin n) (i : Fin m), kleeneRank F f i < n * m
+-- lean/Toy/Scc/Fixpoint.lean:476-479
+theorem prefixpoint_and_rankedJustified_kleeneRank_lt_height_of_monotone_of_isLeastFixpoint
+    {n m : Nat} {F : Transfer n m} (hmono : Monotone F) {μ : Summ n m}
+    (hμ : IsLeastFixpoint F μ) :
+    Le (F μ) μ ∧ RankedJustified F μ (kleeneRank F) ∧ ∀ f i, kleeneRank F f i < n * m
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 For monotone F and its least fixpoint μ:
@@ -2152,32 +2296,35 @@ where kleeneRank F f i is the least k < n * m with bit (f, i) set in F^(k+1)(all
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:546-549
 theorem rankedComplete_tight_monotone :
-  ¬Monotone nmRankT ∧
-    IsLeastFixpoint nmRankT top ∧
-      ¬(Le (nmRankT top) top ∧
-          RankedJustified nmRankT top (kleeneRank nmRankT) ∧ ∀ (f : Fin 1) (i : Fin 2), kleeneRank nmRankT f i < 1 * 2)
+    ¬ Monotone nmRankT ∧ IsLeastFixpoint nmRankT top ∧
+      ¬ (Le (nmRankT top) top ∧ RankedJustified nmRankT top (kleeneRank nmRankT) ∧
+        ∀ f i, kleeneRank nmRankT f i < 1 * 2)
 
+-- lean/Toy/Scc/Fixpoint.lean:554-557
 theorem rankedComplete_tight_least :
-  Monotone idT ∧
-    idT top = top ∧
-      ¬IsLeastFixpoint idT top ∧
-        ¬(Le (idT top) top ∧ RankedJustified idT top (kleeneRank idT) ∧ ∀ (f i : Fin 1), kleeneRank idT f i < 1 * 1)
+    Monotone idT ∧ idT top = top ∧ ¬ IsLeastFixpoint idT top ∧
+      ¬ (Le (idT top) top ∧ RankedJustified idT top (kleeneRank idT) ∧
+        ∀ f i, kleeneRank idT f i < 1 * 1)
 ```
 
 - **Depth.** shallow. Given kleene-bound, mu is the Kleene iterate after n*m rounds, and every bit set after k + 1 rounds is produced by F from the bits set after k rounds, which all have smaller kleeneRank; the rest is bookkeeping about List.find?.
 - **Non-vacuity witness** (`rankedComplete_nonvacuous`). The chain transfer on 0 -> 1 with its least fixpoint (all-true), whose two bits get the different ranks 0 and 1.
 
 ```lean
+-- lean/Toy/Scc/Fixpoint.lean:562-564
 theorem rankedComplete_nonvacuous :
-  Monotone chainLfpT ∧ IsLeastFixpoint chainLfpT top ∧ kleeneRank chainLfpT 1 0 = 0 ∧ kleeneRank chainLfpT 0 0 = 1
+    Monotone chainLfpT ∧ IsLeastFixpoint chainLfpT top ∧
+      kleeneRank chainLfpT 1 0 = 0 ∧ kleeneRank chainLfpT 0 0 = 1
 ```
 
 - **Supporting lemmas** (proved; recorded in `supporting_lean`; their statements are not separately hashed):
 
 ```lean
-theorem kleeneRank_lt_height :
-  ∀ {n m : Nat} (F : Transfer n m) (f : Fin n) (i : Fin m), kleeneRank F f i < n * m
+-- lean/Toy/Scc/Fixpoint.lean:418-419
+theorem kleeneRank_lt_height {n m : Nat} (F : Transfer n m) (f : Fin n) (i : Fin m) :
+    kleeneRank F f i < n * m
 ```
 
 - **Tier justification.** Stage ranking of inductive definitions (Aczel 1977) and completeness of rank-based certificates for least fixpoints (Namjoshi 2001), restated for summary vectors with an explicit bound.
@@ -2197,20 +2344,22 @@ Every `Toy.Scc` declaration named anywhere in this report is defined or quoted i
 Proved statements:
 
 ```lean
-theorem isGreatestFixpoint_of_iter_fixed :
-  ∀ {n m : Nat} {F : Transfer n m},
-    Monotone F → ∀ {k : Nat}, F (iter F k top) = iter F k top → IsGreatestFixpoint F (iter F k top)
+-- lean/Toy/Scc/Lattice.lean:118-119
+theorem isGreatestFixpoint_of_iter_fixed {n m : Nat} {F : Transfer n m} (hmono : Monotone F)
+    {k : Nat} (hfix : F (iter F k top) = iter F k top) : IsGreatestFixpoint F (iter F k top)
 
-theorem isLeastFixpoint_of_iter_fixed :
-  ∀ {n m : Nat} {F : Transfer n m},
-    Monotone F → ∀ {k : Nat}, F (iter F k bot) = iter F k bot → IsLeastFixpoint F (iter F k bot)
+-- lean/Toy/Scc/Lattice.lean:113-114
+theorem isLeastFixpoint_of_iter_fixed {n m : Nat} {F : Transfer n m} (hmono : Monotone F)
+    {k : Nat} (hfix : F (iter F k bot) = iter F k bot) : IsLeastFixpoint F (iter F k bot)
 
+-- lean/Toy/Scc/Termination.lean:144-145
 theorem lexDecreasing_cUnbounded :
-  LexDecreasing (fun c => 1 - ↑c) idComp (fun x x_1 => x_1) cUnbounded
+    LexDecreasing (fun c : Fin 2 => 1 - c.val) idComp (fun _ x => x) cUnbounded
 
+-- lean/Toy/Scc/Transfer.lean:566-571
 theorem split_scc_one_bit_some_duplicate_free_order_correct :
-  ∀ (a b : Fin 3),
-    (bottomUpLfp (splitOneBitT a b) idComp [0, 1] 2 = iter (splitOneBitT a b) 2 bot ∨
+    ∀ a b : Fin 3,
+      (bottomUpLfp (splitOneBitT a b) idComp [0, 1] 2 = iter (splitOneBitT a b) 2 bot ∨
         bottomUpLfp (splitOneBitT a b) idComp [1, 0] 2 = iter (splitOneBitT a b) 2 bot) ∧
       (bottomUpGfp (splitOneBitT a b) idComp [0, 1] 2 = iter (splitOneBitT a b) 2 top ∨
         bottomUpGfp (splitOneBitT a b) idComp [1, 0] 2 = iter (splitOneBitT a b) 2 top)
