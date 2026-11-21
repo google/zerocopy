@@ -86209,6 +86209,67 @@
         "systems"
       ]
     },
+    "rustc-c-variadic-va-list-abi-and-unsafe-naked-asm-lowering": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "host": "x86_64-unknown-linux-gnu",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rustc and Miri, nightly-2026-11-12 toolchain (upstream source audited and preserved run)"
+        },
+        {
+          "identity": {
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm": "22.1.6",
+            "miri": "miri 0.1.0 (14210df0e2 2026-05-31)",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rustc and Miri, nightly-2026-06-01 toolchain (source audited and live probes executed)"
+        },
+        {
+          "identity": {
+            "target": "x86_64-linux-gnu",
+            "tool": "gcc",
+            "version": "15.2.0 (Debian 15.2.0-14)"
+          },
+          "name": "GNU Compiler Collection (GCC)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/abi",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "verification"
+      ]
+    },
     "rustc-cleanup-post-borrowck-false-edges-and-abort-unwinding-mir-lowering": {
       "observed_at": "2026-11-21",
       "subjects": [

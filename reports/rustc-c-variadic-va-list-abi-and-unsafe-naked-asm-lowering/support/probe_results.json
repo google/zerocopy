@@ -1,0 +1,266 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "gcc_version": "gcc (Debian 15.2.0-14) 15.2.0",
+  "part_a_c_variadic_sysv": {
+    "native_stdout": "ZERO_FP=200 MIXED_OVERFLOW=1220 NINE_FP=45 VALIST_SZ=24 VALIST_ALIGN=8",
+    "clone_fork_native_stdout": "CLONE_FORK=110",
+    "miri_rc": 0,
+    "miri_stdout": "ZERO_FP=200 MIXED_OVERFLOW=1220 NINE_FP=45 VALIST_SZ=24 VALIST_ALIGN=8",
+    "miri_stderr": "",
+    "call_zero_floats_asm": "call_zero_floats:\n\t.cfi_startproc\n\tmovl\t$100, %esi\n\tmovl\t$100, %edx\n\txorl\t%edi, %edi\n\txorl\t%eax, %eax\n\tjmp\trust_variadic_mixed\n.Lfunc_end7:\n\t.size\tcall_zero_floats, .Lfunc_end7-call_zero_floats",
+    "call_two_floats_and_overflow_asm": "call_two_floats_and_overflow:\n\t.cfi_startproc\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 16\n\tmovq\t$1000, (%rsp)\n\tmovsd\t.LCPI6_0(%rip), %xmm0\n\tmovsd\t.LCPI6_1(%rip), %xmm1\n\tmovl\t$1, %edi\n\tmovl\t$40, %ecx\n\tmovl\t$60, %r8d\n\tmovl\t$10, %r9d\n\tmovl\t$10, %esi\n\tmovl\t$30, %edx\n\tmovb\t$2, %al\n\tcallq\trust_variadic_mixed\n\tpopq\t%rcx\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end6:\n\t.size\tcall_two_floats_and_overflow, .Lfunc_end6-call_two_floats_and_overflow",
+    "call_nine_floats_asm": "call_nine_floats:\n\t.cfi_startproc\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 16\n\tmovabsq\t$4621256167635550208, %rax\n\tmovq\t%rax, (%rsp)\n\tmovsd\t.LCPI5_0(%rip), %xmm0\n\tmovsd\t.LCPI5_1(%rip), %xmm1\n\tmovsd\t.LCPI5_2(%rip), %xmm2\n\tmovsd\t.LCPI5_3(%rip), %xmm3\n\tmovsd\t.LCPI5_4(%rip), %xmm4\n\tmovsd\t.LCPI5_5(%rip), %xmm5\n\tmovsd\t.LCPI5_6(%rip), %xmm6\n\tmovsd\t.LCPI5_7(%rip), %xmm7\n\tmovl\t$2, %edi\n\tmovb\t$8, %al\n\tcallq\trust_variadic_mixed\n\tpopq\t%rcx\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end5:\n\t.size\tcall_nine_floats, .Lfunc_end5-call_nine_floats",
+    "rust_variadic_mixed_mir": "fn rust_variadic_mixed(_1: usize, _2: VaList<'_>) -> u64 {\n    debug tag_count => _1;\n    debug ap => _2;\n    let mut _0: u64;\n\n    bb0: {\n        _0 = rust_vsum_indirect_valist(move _1, move _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}",
+    "rust_variadic_mixed_llvm_ir": "define dso_local noundef i64 @rust_variadic_mixed(i64 noundef %tag_count, ...) unnamed_addr #3 {\nstart:\n  %ap = alloca [24 x i8], align 8\n  call void @llvm.lifetime.start.p0(ptr nonnull %ap)\n  call void @llvm.va_start.p0(ptr nonnull %ap)\n  %_0 = call noundef i64 @rust_vsum_indirect_valist(i64 noundef %tag_count, ptr noalias noundef nonnull align 8 captures(address) dereferenceable(24) %ap) #12\n  call void @llvm.va_end.p0(ptr nonnull %ap)\n  call void @llvm.lifetime.end.p0(ptr nonnull %ap)\n  ret i64 %_0\n}",
+    "rust_vsum_indirect_valist_llvm_ir_head": "define dso_local noundef i64 @rust_vsum_indirect_valist(i64 noundef %tag_count, ptr dead_on_return noalias noundef align 8 captures(none) dereferenceable(24) %ap) unnamed_addr #4 personality ptr @rust_eh_personality {\nstart:\n  %trunc = trunc i64 %tag_count to i8\n  switch i8 %trunc, label %bb7 [\n    i8 0, label %bb4\n    i8 1, label %bb3\n    i8 2, label %bb5.preheader\n  ]\n\nbb5.preheader:                                    ; preds = %start\n  %0 = getelementptr inbounds nuw i8, ptr %ap, i64 4\n  %.promoted = load i32, ptr %0, align 4\n  %1 = getelementptr inbounds nuw i8, ptr %ap, i64 8\n  %2 = getelementptr inbounds nuw i8, ptr %ap, i64 16\n  %3 = load ptr, ptr %2, align 8\n  %.promoted56 = load ptr, ptr %1, align 8\n  %4 = icmp ult i32 %.promoted, 161\n  br i1 %4, label %va_arg.end30, label %va_arg.end30.thread\n\nbb4:                                              ; preds = %start\n  %5 = load i32, ptr %ap, align 8\n  %6 = icmp ult i32 %5, 41\n  br i1 %6, label %va_arg.end, label %va_arg.end.thread\n\nbb3:                                              ; preds = %start\n  %7 = getelementptr inbounds nuw i8, ptr %ap, i64 4\n  %8 = load i32, ptr %ap, align 8\n  %9 = icmp ult i32 %8, 41\n  br i1 %9, label %va_arg.in_reg4, label %va_arg.in_mem5\n\nva_arg.end.thread:                                ; preds = %bb4\n  %10 = getelementptr inbounds nuw i8, ptr %ap, i64 8\n  %11 = load ptr, ptr %10, align 8\n  %12 = getelementptr inbounds nuw i8, ptr %11, i64 8\n  store ptr %12, ptr %10, align 8\n  %a81 = load i64, ptr %11, align 8\n  br label %va_arg.in_mem2\n\nva_arg.end:                                       ; preds = %bb4\n  %13 = getelementptr inbounds nuw i8, ptr %ap, i64 16\n  %14 = load ptr, ptr %13, align 8\n  %15 = zext nneg i32 %5 to i64\n  %16 = getelementptr inbounds nuw i8, ptr %14, i64 %15\n  %a = load i64, ptr %16, align 8\n  %17 = icmp ult i32 %5, 33"
+  },
+  "part_b_gcc_rust_interop_and_u128": {
+    "c_rust_interop_stdout": "C_TO_RUST_VA=1220 C_VA_LIST_DECAY=1220 RUST_TO_C_VA_DECAY=600100",
+    "c_u128_sysv_stdout": "U128_ODD_GP_OK=1 U128_SPILL_R9_BACKFILL_OK=1 U128_OVERFLOW_ALIGN16_OK=1",
+    "read_5gp_then_u128_then_u64_gcc_asm": "read_5gp_then_u128_then_u64:\n.LFB12:\n\t.cfi_startproc\n\tleaq\t23(%rsp), %rdx\n\tleaq\t-56(%rsp), %rax\n\tmovq\t%r9, %rsi\n\txorl\t%edi, %edi\n\tandq\t$-16, %rdx\n\tmovq\t%r9, -16(%rsp)\n\tmovq\t%rax, -64(%rsp)\n\taddq\t(%rdx), %rsi\n\tleaq\t16(%rdx), %rax\n\tadcq\t8(%rdx), %rdi\n\tmovq\t%rax, -72(%rsp)\n\tmovq\t%rsi, %rax\n\tmovl\t$40, -80(%rsp)\n\tmovq\t%rdi, %rdx\n\tret\n\t.cfi_endproc",
+    "read_7gp_then_u128_gcc_asm": "read_7gp_then_u128:\n.LFB13:\n\t.cfi_startproc\n\tleaq\t8(%rsp), %rax\n\tmovl\t$48, -80(%rsp)\n\tmovq\t%rax, -72(%rsp)\n\tleaq\t-56(%rsp), %rax\n\tmovq\t%rax, -64(%rsp)\n\tleaq\t31(%rsp), %rax\n\tandq\t$-16, %rax\n\tmovq\t8(%rax), %rdx\n\tmovq\t(%rax), %rax\n\taddq\t8(%rsp), %rax\n\tadcq\t$0, %rdx\n\tret\n\t.cfi_endproc"
+  },
+  "part_c_miri_ub_suite": {
+    "miri_type_mismatch_ub": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: Undefined Behavior: va_arg type mismatch: requested `u64` is incompatible with next argument of type `f64`\n --> src/main.rs:4:14\n  |\n4 |     unsafe { ap.next_arg::<u64>() }\n  |              ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: read_u64\n              at src/main.rs:4:14: 4:34\n          1: main\n              at src/main.rs:7:22: 7:41\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+      "expected_rc_on_1_99_plus": 1
+    },
+    "miri_signed_value_mismatch_ub": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: Undefined Behavior: va_arg value mismatch: value `-1_i32` cannot be represented by type `u32`\n --> src/main.rs:4:14\n  |\n4 |     unsafe { ap.next_arg::<u32>() }\n  |              ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: read_u32\n              at src/main.rs:4:14: 4:34\n          1: main\n              at src/main.rs:7:22: 7:40\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+      "expected_rc_on_1_99_plus": 1
+    },
+    "miri_signed_nonneg_compatible_ok": {
+      "rc": 0,
+      "stdout": "COMPAT_I32_AS_U32=42",
+      "stderr": "",
+      "expected_rc_on_1_99_plus": 0
+    },
+    "miri_out_of_bounds_ub": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: Undefined Behavior: more C-variadic arguments read than were passed\n --> src/main.rs:5:22\n  |\n5 |     let b = unsafe { ap.next_arg::<u64>() };\n  |                      ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: read_two\n              at src/main.rs:5:22: 5:42\n          1: main\n              at src/main.rs:9:22: 9:39\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+      "expected_rc_on_1_99_plus": 1
+    },
+    "miri_raw_memcpy_after_step_ub": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: Undefined Behavior: using alloc154 as variable argument list pointer but it does not point to a variable argument list\n --> src/main.rs:7:22\n  |\n7 |     let b = unsafe { raw_copy.next_arg::<u64>() };\n  |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: raw_copy_bypass\n              at src/main.rs:7:22: 7:48\n          1: main\n              at src/main.rs:12:22: 12:54\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+      "expected_rc_on_1_99_plus": 1
+    },
+    "miri_use_after_va_end_ub": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: Undefined Behavior: using alloc153 as variable argument list pointer but it does not point to a variable argument list\n --> src/main.rs:7:14\n  |\n7 |     unsafe { md.next_arg::<u64>() }\n  |              ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: use_after_drop\n              at src/main.rs:7:14: 7:34\n          1: main\n              at src/main.rs:10:22: 10:46\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+      "expected_rc_on_1_99_plus": 1
+    },
+    "miri_va_copy_fork_probe": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: Undefined Behavior: constructing invalid value of type std::ffi::VaList<'_>: at .inner.gp_offset, encountered uninitialized memory, but expected an integer\n --> src/main.rs:7:23\n  |\n7 |     let mut ap_fork = ap.clone();\n  |                       ^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: rust_variadic_clone_fork\n              at src/main.rs:7:23: 7:33\n          1: main\n              at src/main.rs:21:23: 21:78\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+      "expected_rc_on_1_99_plus": 0
+    }
+  },
+  "part_d_cross_target_valist_matrix": {
+    "x86_64-unknown-linux-gnu": {
+      "rc": 0,
+      "valist_size_bytes": 24,
+      "valist_align_bytes": 8,
+      "takes_valist_ir_signature": "define noundef i64 @takes_valist_reads_i32_f64(ptr dead_on_return noalias noundef align 8 captures(none) dereferenceable(24) %ap) unnamed_addr #0 personality ptr @rust_eh_personality {",
+      "uses_byval": false,
+      "uses_llvm_va_arg_instruction": false,
+      "ir_line_count": 39,
+      "ir_head": "define noundef i64 @takes_valist_reads_i32_f64(ptr dead_on_return noalias noundef align 8 captures(none) dereferenceable(24) %ap) unnamed_addr #0 personality ptr @rust_eh_personality {\nstart:\n  %0 = load i32, ptr %ap, align 8\n  %1 = icmp ult i32 %0, 41\n  br i1 %1, label %va_arg.in_reg, label %va_arg.in_mem\n\nva_arg.in_reg:                                    ; preds = %start\n  %2 = getelementptr inbounds nuw i8, ptr %ap, i64 16\n  %3 = load ptr, ptr %2, align 8\n  %4 = zext nneg i32 %0 to i64\n  %5 = getelementptr inbounds nuw i8, ptr %3, i64 %4\n  br label %va_arg.end\n\nva_arg.in_mem:                                    ; preds = %start\n  %6 = getelementptr inbounds nuw i8, ptr %ap, i64 8\n  %7 = load ptr, ptr %6, align 8\n  %8 = getelementptr inbounds nuw i8, ptr %7, i64 8\n  store ptr %8, ptr %6, align 8\n  br label %va_arg.end\n\nva_arg.end:                                       ; preds = %va_arg.in_mem, %va_arg.in_reg\n  %9 = phi ptr [ %5, %va_arg.in_reg ], [ %7, %va_arg.in_mem ]\n  %10 = getelementptr inbounds nuw i8, ptr %ap, i64 4\n  %_3 = load i32, ptr %9, align 4\n  %11 = load i32, ptr %10, align 4\n  %12 = icmp ult i32 %11, 161\n  %13 = getelementptr inbounds nuw i8, ptr %ap, i64 16\n  %14 = load ptr, ptr %13, align 8"
+    },
+    "x86_64-apple-darwin": {
+      "rc": 0,
+      "valist_size_bytes": 24,
+      "valist_align_bytes": 8,
+      "takes_valist_ir_signature": "define noundef i64 @takes_valist_reads_i32_f64(ptr dead_on_return noalias noundef align 8 captures(none) dereferenceable(24) %ap) unnamed_addr #0 personality ptr @rust_eh_personality {",
+      "uses_byval": false,
+      "uses_llvm_va_arg_instruction": false,
+      "ir_line_count": 39,
+      "ir_head": "define noundef i64 @takes_valist_reads_i32_f64(ptr dead_on_return noalias noundef align 8 captures(none) dereferenceable(24) %ap) unnamed_addr #0 personality ptr @rust_eh_personality {\nstart:\n  %0 = load i32, ptr %ap, align 8\n  %1 = icmp ult i32 %0, 41\n  br i1 %1, label %va_arg.in_reg, label %va_arg.in_mem\n\nva_arg.in_reg:                                    ; preds = %start\n  %2 = getelementptr inbounds nuw i8, ptr %ap, i64 16\n  %3 = load ptr, ptr %2, align 8\n  %4 = zext nneg i32 %0 to i64\n  %5 = getelementptr inbounds nuw i8, ptr %3, i64 %4\n  br label %va_arg.end\n\nva_arg.in_mem:                                    ; preds = %start\n  %6 = getelementptr inbounds nuw i8, ptr %ap, i64 8\n  %7 = load ptr, ptr %6, align 8\n  %8 = getelementptr inbounds nuw i8, ptr %7, i64 8\n  store ptr %8, ptr %6, align 8\n  br label %va_arg.end\n\nva_arg.end:                                       ; preds = %va_arg.in_mem, %va_arg.in_reg\n  %9 = phi ptr [ %5, %va_arg.in_reg ], [ %7, %va_arg.in_mem ]\n  %10 = getelementptr inbounds nuw i8, ptr %ap, i64 4\n  %_3 = load i32, ptr %9, align 4\n  %11 = load i32, ptr %10, align 4\n  %12 = icmp ult i32 %11, 161\n  %13 = getelementptr inbounds nuw i8, ptr %ap, i64 16\n  %14 = load ptr, ptr %13, align 8"
+    },
+    "aarch64-unknown-linux-gnu": {
+      "rc": 0,
+      "valist_size_bytes": 32,
+      "valist_align_bytes": 8,
+      "takes_valist_ir_signature": "define noundef i64 @takes_valist_reads_i32_f64(ptr dead_on_return noalias noundef align 8 captures(none) dereferenceable(32) %ap) unnamed_addr #0 personality ptr @rust_eh_personality {",
+      "uses_byval": false,
+      "uses_llvm_va_arg_instruction": false,
+      "ir_line_count": 38,
+      "ir_head": "define noundef i64 @takes_valist_reads_i32_f64(ptr dead_on_return noalias noundef align 8 captures(none) dereferenceable(32) %ap) unnamed_addr #0 personality ptr @rust_eh_personality {\nstart:\n  %0 = getelementptr inbounds nuw i8, ptr %ap, i64 24\n  %1 = load i32, ptr %0, align 8\n  %or.cond = icmp sgt i32 %1, -8\n  br i1 %or.cond, label %va_arg.on_stack, label %va_arg.in_reg\n\nva_arg.in_reg:                                    ; preds = %start\n  %2 = getelementptr inbounds nuw i8, ptr %ap, i64 8\n  %3 = load ptr, ptr %2, align 8\n  %4 = sext i32 %1 to i64\n  %5 = getelementptr i8, ptr %3, i64 %4\n  br label %va_arg.end\n\nva_arg.on_stack:                                  ; preds = %start\n  %6 = load ptr, ptr %ap, align 8\n  %7 = getelementptr inbounds nuw i8, ptr %6, i64 8\n  store ptr %7, ptr %ap, align 8\n  br label %va_arg.end\n\nva_arg.end:                                       ; preds = %va_arg.on_stack, %va_arg.in_reg\n  %_3.in = phi ptr [ %5, %va_arg.in_reg ], [ %6, %va_arg.on_stack ]\n  %_3 = load i32, ptr %_3.in, align 4\n  %8 = getelementptr inbounds nuw i8, ptr %ap, i64 16\n  %9 = getelementptr inbounds nuw i8, ptr %ap, i64 28\n  %10 = load i32, ptr %9, align 4\n  %or.cond7 = icmp sgt i32 %10, -16\n  %11 = load ptr, ptr %8, align 8"
+    },
+    "aarch64-apple-darwin": {
+      "rc": 0,
+      "valist_size_bytes": 8,
+      "valist_align_bytes": 8,
+      "takes_valist_ir_signature": "define noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 personality ptr @rust_eh_personality {",
+      "uses_byval": false,
+      "uses_llvm_va_arg_instruction": false,
+      "ir_line_count": 10,
+      "ir_head": "define noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 personality ptr @rust_eh_personality {\nbb1:\n  %1 = getelementptr inbounds nuw i8, ptr %0, i64 8\n  %_3 = load i32, ptr %0, align 8\n  %_6 = load double, ptr %1, align 8\n  %a = sext i32 %_3 to i64\n  %b = tail call i64 @llvm.fptoui.sat.i64.f64(double %_6)\n  %_0 = add i64 %b, %a\n  ret i64 %_0\n}"
+    },
+    "x86_64-pc-windows-msvc": {
+      "rc": 0,
+      "valist_size_bytes": 8,
+      "valist_align_bytes": 8,
+      "takes_valist_ir_signature": "define noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 personality ptr @__CxxFrameHandler3 {",
+      "uses_byval": false,
+      "uses_llvm_va_arg_instruction": false,
+      "ir_line_count": 10,
+      "ir_head": "define noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 personality ptr @__CxxFrameHandler3 {\nbb1:\n  %1 = getelementptr inbounds nuw i8, ptr %0, i64 8\n  %_3 = load i32, ptr %0, align 8\n  %_6 = load double, ptr %1, align 8\n  %a = sext i32 %_3 to i64\n  %b = tail call i64 @llvm.fptoui.sat.i64.f64(double %_6)\n  %_0 = add i64 %b, %a\n  ret i64 %_0\n}"
+    },
+    "i686-unknown-linux-gnu": {
+      "rc": 0,
+      "valist_size_bytes": 4,
+      "valist_align_bytes": 4,
+      "takes_valist_ir_signature": "define noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 personality ptr @rust_eh_personality {",
+      "uses_byval": false,
+      "uses_llvm_va_arg_instruction": false,
+      "ir_line_count": 10,
+      "ir_head": "define noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 personality ptr @rust_eh_personality {\nbb1:\n  %1 = getelementptr inbounds nuw i8, ptr %0, i32 4\n  %_3 = load i32, ptr %0, align 4\n  %_6 = load double, ptr %1, align 4\n  %a = sext i32 %_3 to i64\n  %b = tail call i64 @llvm.fptoui.sat.i64.f64(double %_6)\n  %_0 = add i64 %b, %a\n  ret i64 %_0\n}"
+    },
+    "powerpc64-unknown-linux-gnu": {
+      "rc": 0,
+      "valist_size_bytes": 8,
+      "valist_align_bytes": 8,
+      "takes_valist_ir_signature": "define noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 personality ptr @rust_eh_personality {",
+      "uses_byval": false,
+      "uses_llvm_va_arg_instruction": false,
+      "ir_line_count": 11,
+      "ir_head": "define noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 personality ptr @rust_eh_personality {\nbb1:\n  %1 = getelementptr inbounds nuw i8, ptr %0, i64 8\n  %2 = getelementptr inbounds nuw i8, ptr %0, i64 4\n  %_3 = load i32, ptr %2, align 4\n  %_6 = load double, ptr %1, align 8\n  %a = sext i32 %_3 to i64\n  %b = tail call i64 @llvm.fptoui.sat.i64.f64(double %_6)\n  %_0 = add i64 %b, %a\n  ret i64 %_0\n}"
+    },
+    "riscv64gc-unknown-none-elf": {
+      "rc": 0,
+      "valist_size_bytes": 8,
+      "valist_align_bytes": 8,
+      "takes_valist_ir_signature": "define dso_local noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 {",
+      "uses_byval": false,
+      "uses_llvm_va_arg_instruction": false,
+      "ir_line_count": 10,
+      "ir_head": "define dso_local noundef i64 @takes_valist_reads_i32_f64(ptr noundef readonly captures(none) %0) unnamed_addr #0 {\nstart:\n  %1 = getelementptr inbounds nuw i8, ptr %0, i64 8\n  %_3 = load i32, ptr %0, align 8\n  %a = sext i32 %_3 to i64\n  %_6 = load double, ptr %1, align 8\n  %b = tail call i64 @llvm.fptoui.sat.i64.f64(double %_6)\n  %_0 = add i64 %b, %a\n  ret i64 %_0\n}"
+    }
+  },
+  "part_e_unsafe_naked_and_rejections": {
+    "naked_ok_stdout": "NAKED_OK=35",
+    "naked_add_mul_asm": "naked_add_mul:\n\tleaq\t(%rdi,%rsi), %rax\n\timulq\t%rdx, %rax\n\tretq\n.Lfunc_end_naked_add_mul:\n.Ltmp0:\n\t.size\tnaked_add_mul, .Ltmp0-naked_add_mul",
+    "naked_ok_module_asm_lines": [
+      "module asm \".intel_syntax\"",
+      "module asm \".pushsection .text.naked_add_mul,\\22ax\\22, @progbits\"",
+      "module asm \".balign 4\"",
+      "module asm \".globl naked_add_mul\"",
+      "module asm \".type naked_add_mul, @function\"",
+      "module asm \"naked_add_mul:\"",
+      "module asm \"lea rax, [rdi + rsi]\"",
+      "module asm \"imul rax, rdx\"",
+      "module asm \"ret\"",
+      "module asm \".Lfunc_end_naked_add_mul:\"",
+      "module asm \".size naked_add_mul, . - naked_add_mul\"",
+      "module asm \".popsection\"",
+      "module asm \"\"",
+      "module asm \".att_syntax\"",
+      "  %0 = tail call noundef i64 @naked_add_mul(i64 noundef 3, i64 noundef 4, i64 noundef 5) #9",
+      "declare noundef i64 @naked_add_mul(i64 noundef, i64 noundef, i64 noundef) unnamed_addr #4"
+    ],
+    "aarch64_bti_rc": 0,
+    "aarch64_bti_normal_add1_asm": "normal_add1:\n\t.cfi_startproc\n\thint\t#34\n\tadd\tx0, x0, #1\n\tret\n.Lfunc_end0:\n\t.size\tnormal_add1, .Lfunc_end0-normal_add1",
+    "aarch64_bti_naked_add1_asm": "naked_add1:\n\tadd\tx0, x0, #1\n\tret\n.Lfunc_end_naked_add1:\n.Ltmp0:\n\t.size\tnaked_add1, .Ltmp0-naked_add1",
+    "aarch64_bti_llvm_attrs": [
+      "module asm \".pushsection .text.naked_add1,\\22ax\\22, @progbits\"",
+      "module asm \".balign 4\"",
+      "module asm \".globl naked_add1\"",
+      "module asm \".type naked_add1, @function\"",
+      "module asm \"naked_add1:\"",
+      "module asm \"add x0, x0, #1\"",
+      "module asm \"ret\"",
+      "module asm \".Lfunc_end_naked_add1:\"",
+      "module asm \".size naked_add1, . - naked_add1\"",
+      "module asm \".popsection\"",
+      "attributes #0 = { mustprogress nofree noinline norecurse nosync nounwind willreturn memory(none) uwtable \"branch-target-enforcement\" \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"sign-return-address\"=\"non-leaf\" \"sign-return-address-key\"=\"a_key\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+      "!2 = !{i32 8, !\"branch-target-enforcement\", i32 1}",
+      "!3 = !{i32 8, !\"sign-return-address\", i32 1}",
+      "!5 = !{i32 8, !\"sign-return-address-all\", i32 0}",
+      "!6 = !{i32 8, !\"sign-return-address-with-bkey\", i32 0}"
+    ],
+    "compile_rejections": {
+      "naked_non_asm_and_param_ref": {
+        "rc": 1,
+        "stderr": "error: referencing function parameters is not allowed in naked functions\n --> <TMP>/naked_non_asm_and_param_ref.rs:3:5\n  |\n3 |     x + 1\n  |     ^\n  |\n  = help: follow the calling convention in asm block to use parameters\n\nerror[E0787]: naked functions must contain a single `naked_asm!` invocation\n --> <TMP>/naked_non_asm_and_param_ref.rs:2:1\n  |\n2 | pub extern \"C\" fn bad_naked(x: u64) -> u64 {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n3 |     x + 1\n  |     ----- not allowed in naked functions\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0787`."
+      },
+      "naked_uses_asm_instead_of_naked_asm": {
+        "rc": 1,
+        "stderr": "error[E0787]: the `asm!` macro is not allowed in naked functions\n --> <TMP>/naked_uses_asm_instead_of_naked_asm.rs:4:5\n  |\n4 |     asm!(\"ret\", options(noreturn))\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ consider using the `naked_asm!` macro instead\n\nerror[E0133]: use of inline assembly is unsafe and requires unsafe function or block\n --> <TMP>/naked_uses_asm_instead_of_naked_asm.rs:4:5\n  |\n4 |     asm!(\"ret\", options(noreturn))\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use of inline assembly\n  |\n  = note: inline assembly is entirely unchecked and can cause undefined behavior\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0133, E0787.\nFor more information about an error, try `rustc --explain E0133`."
+      },
+      "naked_pattern_param": {
+        "rc": 1,
+        "stderr": "error: patterns not allowed in naked function parameters\n --> <TMP>/naked_pattern_param.rs:3:31\n  |\n3 | pub extern \"C\" fn bad_pattern((a, _b): (u64, u64)) -> u64 {\n  |                               ^^^^^^^\n\nerror: aborting due to 1 previous error"
+      },
+      "naked_with_in_operand": {
+        "rc": 1,
+        "stderr": "error: the `in` operand cannot be used with `naked_asm!`\n --> <TMP>/naked_with_in_operand.rs:4:23\n  |\n4 |     naked_asm!(\"ret\", in(\"rdi\") x)\n  |                       ^^ the `in` operand is not meaningful for global-scoped inline assembly, remove it\n\nerror: aborting due to 1 previous error"
+      },
+      "naked_with_nostack_option": {
+        "rc": 1,
+        "stderr": "error: the `nostack` option cannot be used with `naked_asm!`\n --> <TMP>/naked_with_nostack_option.rs:4:31\n  |\n4 |     naked_asm!(\"ret\", options(nostack))\n  |                               ^^^^^^^ the `nostack` option is not meaningful for global-scoped inline assembly\n\nerror: aborting due to 1 previous error"
+      },
+      "extern_custom_without_naked": {
+        "rc": 1,
+        "stderr": "error[E0658]: the extern \"custom\" ABI is experimental and subject to change\n --> <TMP>/extern_custom_without_naked.rs:1:19\n  |\n1 | pub unsafe extern \"custom\" fn needs_naked() {}\n  |                   ^^^^^^^^\n  |\n  = note: see issue #140829 <https://github.com/rust-lang/rust/issues/140829> for more information\n  = help: add `#![feature(abi_custom)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: items with the \"custom\" ABI can only be declared externally or defined via naked functions\n --> <TMP>/extern_custom_without_naked.rs:1:1\n  |\n1 | pub unsafe extern \"custom\" fn needs_naked() {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\nhelp: convert this to an `#[unsafe(naked)]` function\n  |\n1 + #[unsafe(naked)]\n2 | pub unsafe extern \"custom\" fn needs_naked() {}\n  |\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0658`."
+      },
+      "extern_custom_with_feature_without_naked": {
+        "rc": 1,
+        "stderr": "error: items with the \"custom\" ABI can only be declared externally or defined via naked functions\n --> <TMP>/extern_custom_with_feature_without_naked.rs:2:1\n  |\n2 | pub unsafe extern \"custom\" fn needs_naked() {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\nhelp: convert this to an `#[unsafe(naked)]` function\n  |\n2 + #[unsafe(naked)]\n3 | pub unsafe extern \"custom\" fn needs_naked() {}\n  |\n\nerror: aborting due to 1 previous error"
+      },
+      "naked_incompatible_inline_e0736": {
+        "rc": 1,
+        "stderr": "error[E0736]: attribute incompatible with `#[unsafe(naked)]`\n --> <TMP>/naked_incompatible_inline_e0736.rs:3:3\n  |\n2 | #[unsafe(naked)]\n  | ---------------- function marked with `#[unsafe(naked)]` here\n3 | #[inline(never)]\n  |   ^^^^^^ the `inline` attribute is incompatible with `#[unsafe(naked)]`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0736`."
+      },
+      "variadic_call_promoted_f32_e0617": {
+        "rc": 1,
+        "stderr": "error[E0617]: can't pass `f32` to variadic function\n --> <TMP>/variadic_call_promoted_f32_e0617.rs:2:35\n  |\n2 | pub fn bad_f32() { unsafe { cv(1, 1.5f32); } }\n  |                                   ^^^^^^\n  |\nhelp: cast the value to `c_double`\n  |\n2 | pub fn bad_f32() { unsafe { cv(1, 1.5f32 as c_double); } }\n  |                                          +++++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0617`."
+      },
+      "variadic_call_promoted_i8_e0617": {
+        "rc": 1,
+        "stderr": "error[E0617]: can't pass `i8` to variadic function\n --> <TMP>/variadic_call_promoted_i8_e0617.rs:2:34\n  |\n2 | pub fn bad_i8() { unsafe { cv(1, 5i8); } }\n  |                                  ^^^\n  |\nhelp: cast the value to `c_int`\n  |\n2 | pub fn bad_i8() { unsafe { cv(1, 5i8 as c_int); } }\n  |                                      ++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0617`."
+      },
+      "variadic_call_promoted_bool_e0617": {
+        "rc": 1,
+        "stderr": "error[E0617]: can't pass `bool` to variadic function\n --> <TMP>/variadic_call_promoted_bool_e0617.rs:2:36\n  |\n2 | pub fn bad_bool() { unsafe { cv(1, true); } }\n  |                                    ^^^^\n  |\nhelp: cast the value to `c_int`\n  |\n2 | pub fn bad_bool() { unsafe { cv(1, true as c_int); } }\n  |                                         ++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0617`."
+      },
+      "variadic_call_fndef_e0617": {
+        "rc": 1,
+        "stderr": "error[E0617]: can't pass a function item to a variadic function\n --> <TMP>/variadic_call_fndef_e0617.rs:3:37\n  |\n3 | pub fn bad_fndef() { unsafe { cv(1, target_fn); } }\n  |                                     ^^^^^^^^^\n  |\n  = help: a function item is zero-sized and needs to be cast into a function pointer to be used in FFI\n  = note: for more information on function items, visit https://doc.rust-lang.org/reference/types/function-item.html\nhelp: use a function pointer instead\n  |\n3 | pub fn bad_fndef() { unsafe { cv(1, target_fn as fn()); } }\n  |                                               +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0617`."
+      },
+      "variadic_call_char_allowed_by_hir_check": {
+        "rc": 0,
+        "stderr": ""
+      },
+      "variadic_without_feature_gate_probe": {
+        "rc": 1,
+        "stderr": "error[E0658]: C-variadic functions are unstable\n --> <TMP>/variadic_without_feature_gate_probe.rs:1:1\n  |\n1 | / pub unsafe extern \"C\" fn vfn(_n: usize, mut ap: ...) -> i32 {\n2 | |     unsafe { ap.next_arg::<i32>() }\n3 | | }\n  | |_^\n  |\n  = note: see issue #44930 <https://github.com/rust-lang/rust/issues/44930> for more information\n  = help: add `#![feature(c_variadic)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror[E0658]: use of unstable library feature `c_variadic`: the `c_variadic` feature has not been properly tested on all supported platforms\n --> <TMP>/variadic_without_feature_gate_probe.rs:2:17\n  |\n2 |     unsafe { ap.next_arg::<i32>() }\n  |                 ^^^^^^^^\n  |\n  = note: see issue #44930 <https://github.com/rust-lang/rust/issues/44930> for more information\n  = help: add `#![feature(c_variadic)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0658`."
+      },
+      "variadic_int128_probe": {
+        "rc": 1,
+        "stderr": "error[E0277]: the trait bound `u128: VaArgSafe` is not satisfied\n   --> <TMP>/variadic_int128_probe.rs:4:28\n    |\n  4 |     unsafe { ap.next_arg::<u128>() }\n    |                 --------   ^^^^ the nightly-only, unstable trait `VaArgSafe` is not implemented for `u128`\n    |                 |\n    |                 required by a bound introduced by this call\n    |\n    = help: the following other types implement trait `VaArgSafe`:\n              f64\n              i32\n              i64\n              isize\n              u32\n              u64\n              usize\nnote: required by a bound in `VaList::<'f>::next_arg`\n   --> <HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ffi/va_list.rs:426:37\n    |\n426 |     pub const unsafe fn next_arg<T: VaArgSafe>(&mut self) -> T {\n    |                                     ^^^^^^^^^ required by this bound in `VaList::<'f>::next_arg`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "naked_c_variadic_with_wild_probe": {
+        "rc": 0,
+        "stderr": ""
+      },
+      "naked_c_variadic_sysv64_probe": {
+        "rc": 1,
+        "stderr": "error[E0658]: Naked c-variadic `extern \"sysv64\"` functions are unstable\n --> <TMP>/naked_c_variadic_sysv64_probe.rs:5:1\n  |\n5 | pub unsafe extern \"sysv64\" fn naked_var_sysv64(_tag: u64, _: ...) -> u64 {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #148767 <https://github.com/rust-lang/rust/issues/148767> for more information\n  = help: add `#![feature(c_variadic_naked_functions)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0658`."
+      },
+      "naked_c_variadic_rust_abi_rejected": {
+        "rc": 1,
+        "stderr": "error: `...` is not supported for `extern \"Rust\"` naked functions\n --> <TMP>/naked_c_variadic_rust_abi_rejected.rs:5:55\n  |\n5 | pub unsafe extern \"Rust\" fn naked_var_rust(_tag: u64, _: ...) -> u64 {\n  |            -------------                              ^^^^^^\n  |            |\n  |            `extern \"Rust\"` because of this\n  |\n  = help: C-variadic function must have a compatible calling convention\n\nerror[E0658]: `#[naked]` is currently unstable on `extern \"Rust\"` functions\n --> <TMP>/naked_c_variadic_rust_abi_rejected.rs:5:1\n  |\n5 | pub unsafe extern \"Rust\" fn naked_var_rust(_tag: u64, _: ...) -> u64 {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #138997 <https://github.com/rust-lang/rust/issues/138997> for more information\n  = help: add `#![feature(naked_functions_rustic_abi)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0658`."
+      }
+    }
+  }
+}
