@@ -34,7 +34,7 @@
       "Says nothing about how to find derivations, about decidability, or about proof size.",
       "Deriv L restricts only sequencing midpoints and while-loop invariants to L; pre- and postconditions, assignment preconditions Q[e/x], branch-guarded preconditions P and b, and the intermediate assertions P', Q' of the consequence rule remain unrestricted semantic predicates.",
       "Deriv L and verification by vcgen with loop annotations in L (ACom.InvsIn L) do not coincide in general: Deriv.seq requires an L midpoint at every ';', while vcgen propagates preconditions across ';' and assignments semantically (for L = LinDef see vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef).",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "C. A. R. Hoare, \"An axiomatic basis for computer programming\", Communications of the ACM 12(10):576-580, 583, October 1969, doi:10.1145/363235.363259. Introduces the triple notation, the assignment axiom and the rules of consequence, composition and iteration for structured programs; it defines no operational semantics and proves no soundness theorem.",
@@ -101,7 +101,7 @@
       "Relative completeness: consequence premises are semantic facts supplied by an oracle; nothing here gives an effective or decidable proof procedure.",
       "No syntactic assertion language is shown to be expressive (Cook and Winskel use first-order arithmetic with quantifiers); the only syntactic language studied here (divisibility-free quantifier-free linear arithmetic) is shown not to be expressive for one loop.",
       "Deriv L is not a fully syntactic Hoare logic over L: a syntactic calculus would also require the assignment preconditions Q[e/x] (programs may multiply variables), the guard conjunctions P and b, I and not b (guards may compare products), and the intermediate assertions P', Q' of consequence steps to belong to L; Deriv L restricts only seq midpoints and loop invariants.",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM Journal on Computing 7(1):70-90, 1978, doi:10.1137/0207005. Soundness and relative completeness of a Hoare system for an ALGOL-like language, relative to an expressive assertion language and an oracle for true assertions.",
@@ -180,7 +180,7 @@
       "A fully syntactic Hoare logic over the linear formulas (assignment by syntactic substitution) is not formalized; that it also cannot derive the triple follows because each of its derivations is a Deriv LinDef derivation (an argument, not mechanized).",
       "Deriv LinDef is strictly more restrictive than VC generation with linear loop annotations (ACom.InvsIn LinDef) on sequential composition: Deriv.seq requires a LinDef midpoint at every ';', whereas vcgen propagates preconditions across ';' and assignments semantically. For example, the loop-free triple {true} x := y * y; x := x - y * y {x = 0} is verified by vcgen but not derivable in Deriv LinDef (vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef). For the one-loop program here both fail.",
       "The program uses only linear arithmetic; multiplication in programs plays no role in this example.",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM Journal on Computing 7(1):70-90, 1978, doi:10.1137/0207005. Soundness and relative completeness of a Hoare system for an ALGOL-like language, relative to an expressive assertion language and an oracle for true assertions.",
@@ -235,7 +235,7 @@
       "LinDef excludes modulo and divisibility predicates; in the SMT-LIB logic QF_LIA, which allows the predicates (_ divisible n), this wlp is definable without quantifiers as (x <= 0) or ((_ divisible 2) x).",
       "Non-definability of wlp c Q in LinDef does not mean that no valid triple {P} c {Q} is derivable in Deriv LinDef or verifiable by vcgen with a linear loop invariant: for the precondition x = 0 the stronger linear invariant x = 0 suffices (exLoop_linDef_control_pre_zero, vcgen_linDef_control_pre_zero). It rules out only the uniform wlp-based (Cook-style) construction for this loop and postcondition; in general Cook's expressiveness is not necessary for completeness (Bergstra and Tucker 1982).",
       "Shows non-expressiveness for one command and postcondition; no classification of which wlp's are linear.",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM Journal on Computing 7(1):70-90, 1978, doi:10.1137/0207005. Soundness and relative completeness of a Hoare system for an ALGOL-like language, relative to an expressive assertion language and an oracle for true assertions.",
@@ -330,7 +330,7 @@
       "Restricting loop annotations to LinDef (ACom.InvsIn LinDef) with linear pre- and postconditions does not keep the generated precondition or side conditions in linear arithmetic when the program multiplies variables, and vcgen with linear loop annotations is not equivalent to Deriv LinDef (vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef).",
       "Nothing about VC size or sharing (the concern of Flanagan and Saxe 2001).",
       "Partial correctness only.",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "S. Igarashi, R. L. London and D. C. Luckham, \"Automatic program verification I: A logical basis and its implementation\", Acta Informatica 4(2):145-182, 1975, doi:10.1007/BF00288746. Logical basis of an early verification-condition generator for programs annotated with loop invariants.",
@@ -370,7 +370,7 @@
       "Concerns 1-inductive VC generation. The annotation x <= 2 is not k-inductive for any k either (ncInv_not_k_inductive), so k-induction does not rescue it; bounded unrolling would succeed here only because the loop runs at most once from x = 0, which is not formalized.",
       "Side conditions are checked in every store, without path conditions (see vcgen-soundness).",
       "Covers a single top-level loop; HeadReach is defined only for that shape.",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12 \"Hoare Logic\" (doi:10.1007/978-3-319-10542-0_12). Mechanized in the Isabelle sources src/HOL/IMP/Hoare_Sound_Complete.thy (hoare_sound; hoare_complete via wp over semantic assertions; corollary hoare_sound_complete, derivable iff valid) and src/HOL/IMP/VCG.thy (vc_sound; vc_complete: from a derivation of {P}c{Q} there exists an annotation C with strip C = c, vc C Q and P implying pre C Q; side conditions are checked in every state), repository isabelle-prover/mirror-isabelle at commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe.",
@@ -409,7 +409,7 @@
       "annotWlp is not computable from program text in general: wlp is a semantic object and may be inexpressible in a syntactic language (vcgen-linear-qf-annotations-incomplete).",
       "Does not show that annotations can be inferred automatically, nor that the resulting side conditions are easy to discharge.",
       "This does not follow from Hoare-logic relative completeness by itself; it is proved directly from properties of wlp.",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "T. Nipkow and G. Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, doi:10.1007/978-3-319-10542-0; chapter 12 \"Hoare Logic\" (doi:10.1007/978-3-319-10542-0_12). Mechanized in the Isabelle sources src/HOL/IMP/Hoare_Sound_Complete.thy (hoare_sound; hoare_complete via wp over semantic assertions; corollary hoare_sound_complete, derivable iff valid) and src/HOL/IMP/VCG.thy (vc_sound; vc_complete: from a derivation of {P}c{Q} there exists an annotation C with strip C = c, vc C Q and P implying pre C Q; side conditions are checked in every state), repository isabelle-prover/mirror-isabelle at commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe.",
@@ -487,7 +487,7 @@
       "Depends on both the precondition x = y + y and the postcondition x != 1: with precondition x = 0 (invariant x = 0) or the weaker postcondition x <= 1 (invariant true), the uninstrumented loop is verifiable by vcgen with linear annotations (vcgen_linDef_control_pre_zero, vcgen_linDef_control_weak_post).",
       "LinDef covers only boolean combinations of <= and = over linear terms with integer coefficients, without modulo or divisibility predicates. It is strictly weaker than the SMT-LIB logic QF_LIA, whose formulas may use the predicates (_ divisible n) of the Ints theory: there '(_ divisible 2) x' is a quantifier-free invariant that verifies the loop. Adding a divisibility (parity) atom or an existential quantifier to LinDef would likewise define the needed invariant 'x even'.",
       "VC verifiability with linear loop annotations is not equivalent to derivability in Deriv LinDef for general programs: vcgen composes sequential statements semantically without requiring a LinDef midpoint at ';', whereas Deriv.seq requires one (vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef). For this one-loop program both fail.",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM Journal on Computing 7(1):70-90, 1978, doi:10.1137/0207005. Soundness and relative completeness of a Hoare system for an ALGOL-like language, relative to an expressive assertion language and an oracle for true assertions.",
@@ -528,7 +528,7 @@
       "In TDeriv, invariants, intermediate assertions and variants are arbitrary semantic predicates and functions on stores, not syntactic expressions, and there is no admissibility predicate L; no total-correctness VC generator is formalized.",
       "TValid P c Q (from every state satisfying P some run terminates in a state satisfying Q) expresses guaranteed termination only because Exec is deterministic; for a nondeterministic language this existential definition would express possible termination only. Nondeterminism is not formalized.",
       "Other forms of the lower-bound premise are not formalized. A fixed bound c0 <= V with c0 independent of the store reduces to this rule with the shifted variant V - c0 (an argument, not mechanized); a store-dependent bound B s <= V s is no restriction in general (take B := V - 1) and gives no termination guarantee, as the derivation in unbounded_variant_unsound illustrates.",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "Z. Manna and A. Pnueli, \"Axiomatic approach to total correctness of programs\", Acta Informatica 3(3):243-263, 1974, doi:10.1007/BF00288637. Hoare-style proof rules for total correctness.",
@@ -560,7 +560,7 @@
       "Shows only that the lower-bound premise cannot simply be dropped; other ways to restore soundness (nat-valued variants, well-founded orders, a fixed constant bound) are not formalized here.",
       "In TDeriv, invariants, intermediate assertions and variants are arbitrary semantic predicates and functions on stores, not syntactic expressions, and there is no admissibility predicate L; no total-correctness VC generator is formalized.",
       "TValid P c Q (from every state satisfying P some run terminates in a state satisfying Q) expresses guaranteed termination only because Exec is deterministic; for a nondeterministic language this existential definition would express possible termination only. Nondeterminism is not formalized.",
-      "Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier."
+      "Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately."
     ],
     "prior_art": [
       "K. R. Apt, \"Ten years of Hoare's logic: a survey - part I\", ACM Transactions on Programming Languages and Systems 3(4):431-483, October 1981, doi:10.1145/357146.357150. Section 2.8 treats total correctness of while programs with a while rule based on an integer-valued termination function that is bounded below by 0 and decreases with each iteration.",

@@ -53,8 +53,11 @@ derivation may invent, and a textbook verification-condition generator. It conta
     premise, `[true] while true do x := x - 1 [true]` is derivable (variant `x`), yet the loop never
     terminates, so the triple is not valid in total correctness.
 
-Every result concerns this toy model only; what each result does **not** show is listed first
-under **Boundaries** (non-claims, per result), followed by escape hatches and boundary theorems.
+Every result concerns this toy model; these theorems neither establish nor refute the
+corresponding claims about real program verifiers, SMT solvers or intermediate verification
+languages (the modeling bridge under **Applicability** argues the connection separately). What
+each result does **not** show is listed first under **Boundaries** (non-claims, per result),
+followed by escape hatches and boundary theorems.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -310,11 +313,16 @@ line; with `L := fun _ => False` the valid triple `{true} skip; skip {true}` is 
 `{true} … {false}` in partial correctness but not `{true} … {true}` in total correctness:
 
 ```lean
+-- lean/ToyHoare/Examples.lean:152
 theorem linDef_example_neg : ¬ LinDef (fun s => s 0 % 2 = 0)
+-- lean/ToyHoare/Examples.lean:157
 theorem affineLine_example_neg : ¬ AffineLine (fun n : Int => fun _ : Nat => n % 2)
+-- lean/ToyHoare/Examples.lean:124-125
 theorem deriv_example_neg_empty_L :
     ¬ Deriv (fun _ => False) (fun _ => True) (.seq .skip .skip) (fun _ => True)
+-- lean/ToyHoare/Examples.lean:67
 theorem valid_example_pos_diverge : Valid (fun _ => True) (.whileDo .tt .skip) (fun _ => False)
+-- lean/ToyHoare/Examples.lean:235
 theorem tvalid_example_neg : ¬ TValid (fun _ => True) (.whileDo .tt .skip) (fun _ => True)
 ```
 
@@ -325,6 +333,7 @@ theorem tvalid_example_neg : ¬ TValid (fun _ => True) (.whileDo .tt .skip) (fun
 - **Lean statement** (`ToyHoare/Logic.lean`):
 
   ```lean
+  -- lean/ToyHoare/Logic.lean:73-74
   theorem hoare_sound {L : Assn → Prop} {P : Assn} {c : Com} {Q : Assn}
       (h : Deriv L P c Q) : Valid P c Q
   ```
@@ -372,12 +381,16 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statements** (`ToyHoare/Logic.lean`):
 
   ```lean
+  -- lean/ToyHoare/Logic.lean:182-183
   theorem hoare_relatively_complete_of_wlpAdmissibleFor {L : Assn → Prop} {P : Assn} {c : Com}
       {Q : Assn} (hwlp : WlpAdmissibleFor L c Q) (hv : Valid P c Q) : Deriv L P c Q
+  -- lean/ToyHoare/Logic.lean:167-168
   theorem valid_iff_deriv_wlpInvented {P : Assn} {c : Com} {Q : Assn} :
       Valid P c Q ↔ Deriv (WlpInvented c Q) P c Q
+  -- lean/ToyHoare/Logic.lean:174-175
   theorem deriv_wlp_of_wlpAdmissibleFor {L : Assn → Prop} {c : Com} {Q : Assn}
       (hwlp : WlpAdmissibleFor L c Q) : Deriv L (wlp c Q) c Q
+  -- lean/ToyHoare/Logic.lean:221-222
   theorem deriv_anyAssn_iff_valid {P : Assn} {c : Com} {Q : Assn} :
       Deriv AnyAssn P c Q ↔ Valid P c Q
   ```
@@ -406,16 +419,20 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
   Counterexample statements (`ToyHoare/Witnesses.lean`):
 
   ```lean
+  -- lean/ToyHoare/Witnesses.lean:66-68
   theorem relcomp_wlp_admissible_tight :
       Valid exPre exLoop exPost ∧ ¬ WlpAdmissibleFor LinDef exLoop exPost ∧
       ¬ Deriv LinDef exPre exLoop exPost
+  -- lean/ToyHoare/Witnesses.lean:74-76
   theorem deriv_wlp_needs_admissible :
       ¬ WlpAdmissibleFor LinDef exLoop exPost ∧
       ¬ Deriv LinDef (wlp exLoop exPost) exLoop exPost
+  -- lean/ToyHoare/Witnesses.lean:57-60
   theorem relcomp_valid_tight :
       WlpAdmissibleFor AnyAssn (.assign 0 (.lit 1)) (fun s => s 0 = 0) ∧
       ¬ Valid (fun _ => True) (.assign 0 (.lit 1)) (fun s => s 0 = 0) ∧
       ¬ Deriv AnyAssn (fun _ => True) (.assign 0 (.lit 1)) (fun s => s 0 = 0)
+  -- lean/ToyHoare/Witnesses.lean:121-122
   theorem semantic_iff_needs_anyAssn :
       Valid exPre exLoop exPost ∧ ¬ Deriv LinDef exPre exLoop exPost
   ```
@@ -423,10 +440,12 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Non-vacuity witnesses:**
 
   ```lean
+  -- lean/ToyHoare/Witnesses.lean:46-49
   theorem nonvacuity_relcomp :
       (WlpAdmissibleFor LinDef countdown (fun s => s 0 = 0) ∧
         Valid (fun s => 0 ≤ s 0) countdown (fun s => s 0 = 0) ∧ ¬ ∀ s : Store, s 0 = 0) ∧
       (WlpAdmissibleFor AnyAssn exLoop exPost ∧ Valid exPre exLoop exPost)
+  -- lean/ToyHoare/Witnesses.lean:111-115
   theorem nonvacuity_semantic_iff :
       (Deriv AnyAssn exPre exLoop exPost ∧ Deriv (WlpInvented exLoop exPost) exPre exLoop exPost ∧
         Valid exPre exLoop exPost) ∧
@@ -467,8 +486,10 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statements** (`ToyHoare/Incomplete.lean`):
 
   ```lean
+  -- lean/ToyHoare/Incomplete.lean:207-208
   theorem linear_qf_hoare_incomplete :
       LinDef exPre ∧ LinDef exPost ∧ Valid exPre exLoop exPost ∧ ¬ Deriv LinDef exPre exLoop exPost
+  -- lean/ToyHoare/Incomplete.lean:173-176
   theorem exLoop_no_linDef_invariant :
       ¬ ∃ I : Assn, LinDef I ∧ (∀ s, exPre s → I s) ∧
         Valid (fun s => I s ∧ exGuard.eval s = true) exBody I ∧
@@ -501,13 +522,17 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
   | the program text `while 2 ≤ x do x := x - 2`, with no auxiliary variables | with an auxiliary counter `g := y` decremented in the body, the same linear specification is derivable with the linear invariant `x = g + g` | tight: `exLoopGhost_linDef_control` |
 
   ```lean
+  -- lean/ToyHoare/Incomplete.lean:187
   theorem exLoop_deriv_anyAssn : Deriv AnyAssn exPre exLoop exPost
+  -- lean/ToyHoare/Witnesses.lean:134-136
   theorem exLoop_linDef_control_weak_post :
       LinDef exPre ∧ LinDef exPostWeak ∧ Valid exPre exLoop exPostWeak ∧
       Deriv LinDef exPre exLoop exPostWeak
+  -- lean/ToyHoare/Witnesses.lean:144-146
   theorem exLoop_linDef_control_pre_zero :
       LinDef (fun s => s 0 = 0) ∧ LinDef exPost ∧ Valid (fun s => s 0 = 0) exLoop exPost ∧
       Deriv LinDef (fun s => s 0 = 0) exLoop exPost
+  -- lean/ToyHoare/Witnesses.lean:165-167
   theorem exLoopGhost_linDef_control :
       LinDef exPre ∧ LinDef exPost ∧ Valid exPre exLoopGhost exPost ∧
       Deriv LinDef exPre exLoopGhost exPost
@@ -540,7 +565,9 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statements** (`ToyHoare/Incomplete.lean`, `ToyHoare/Witnesses.lean`):
 
   ```lean
+  -- lean/ToyHoare/Incomplete.lean:216
   theorem linear_qf_not_expressive_wlp_exLoop : ¬ LinDef (wlp exLoop exPost)
+  -- lean/ToyHoare/Witnesses.lean:215
   theorem wlp_exLoop_st2_iff (a b : Int) :
       wlp exLoop exPost (st2 a b) ↔ (a ≤ 0 ∨ a % 2 = 0)
   ```
@@ -563,6 +590,7 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Non-vacuity witness:** the `wlp` is a non-trivial assertion:
 
   ```lean
+  -- lean/ToyHoare/Witnesses.lean:201-203
   theorem nonvacuity_wlp_exLoop_nontrivial :
       (∀ s, exPre s → wlp exLoop exPost s) ∧
       (∀ k : Nat, ¬ wlp exLoop exPost (st2 (2 * (k : Int) + 1) 0))
@@ -588,10 +616,13 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statements** (`ToyHoare/Linear.lean`):
 
   ```lean
+  -- lean/ToyHoare/Linear.lean:129-130
   theorem LAssn.eventually_const_on_affineLine (φ : LAssn) {σ : Int → Store} (hσ : AffineLine σ) :
       ∃ N : Int, ∃ bv : Bool, ∀ n, N ≤ n → φ.eval (σ n) = bv
+  -- lean/ToyHoare/Linear.lean:166-167
   theorem not_linDef_of_alternating_on_affineLine {R : Assn} (σ : Int → Store) (hσ : AffineLine σ)
       (h : ∀ N : Int, ∃ n n', N ≤ n ∧ N ≤ n' ∧ R (σ n) ∧ ¬ R (σ n')) : ¬ LinDef R
+  -- lean/ToyHoare/Linear.lean:181
   theorem parity_not_linDef : ¬ LinDef (fun s => s 0 % 2 = 0)
   ```
 
@@ -611,14 +642,17 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
   | `h` : the assertion is true and false beyond every bound along `σ` (in `not_linDef_of_alternating_on_affineLine`) | the property contradicting eventual constancy | tight: `alternating_hyp_tight` |
 
   ```lean
+  -- lean/ToyHoare/Witnesses.lean:433-435
   theorem eventually_const_needs_affine :
       ¬ ∃ N : Int, ∃ bv : Bool, ∀ n, N ≤ n →
         (LAssn.eq (.var 0) (.lit 0)).eval ((fun n : Int => fun _ : Nat => n % 2) n) = bv
+  -- lean/ToyHoare/Witnesses.lean:459-463
   theorem alternating_needs_affine :
       (∀ N : Int, ∃ n n', N ≤ n ∧ N ≤ n' ∧
         (fun s : Store => s 0 = 0) ((fun n : Int => fun _ : Nat => n % 2) n) ∧
         ¬ (fun s : Store => s 0 = 0) ((fun n : Int => fun _ : Nat => n % 2) n')) ∧
       LinDef (fun s : Store => s 0 = 0)
+  -- lean/ToyHoare/Witnesses.lean:448-450
   theorem alternating_hyp_tight :
       AffineLine (fun n => st2 n n) ∧ LinDef exPre ∧
       ¬ (∀ N : Int, ∃ n n', N ≤ n ∧ N ≤ n' ∧ exPre (st2 n n) ∧ ¬ exPre (st2 n' n'))
@@ -628,6 +662,7 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Non-vacuity witness:**
 
   ```lean
+  -- lean/ToyHoare/Witnesses.lean:423-425
   theorem nonvacuity_eventually_const_and_alternating :
       AffineLine (fun n => st2 n n) ∧
       ∀ N : Int, ∃ n n', N ≤ n ∧ N ≤ n' ∧ exParityInv (st2 n n) ∧ ¬ exParityInv (st2 n' n')
@@ -647,6 +682,7 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statement** (`ToyHoare/VC.lean`):
 
   ```lean
+  -- lean/ToyHoare/VC.lean:99-100
   theorem vcgen_sound {a : ACom} {P Q : Assn} (hvc : VCsValid (vcgen a Q).2)
       (hpre : ∀ s, P s → (vcgen a Q).1 s) : Valid P a.erase Q
   ```
@@ -663,10 +699,14 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
   | `hpre : ∀ s, P s → (vcgen a Q).1 s` | connects the caller's precondition to the computed one | tight: `vcgen_sound_pre_tight` |
 
   ```lean
-  def falseLoopAnn : ACom := .whileDo (fun _ => True) .ff .skip   -- while[true] false do skip
+  -- lean/ToyHoare/Witnesses.lean:247-248
+  /-- `while false do skip` annotated with the invariant `true`. -/
+  def falseLoopAnn : ACom := .whileDo (fun _ => True) .ff .skip
+  -- lean/ToyHoare/Witnesses.lean:253-255
   theorem vcgen_sound_vcs_tight :
       (∀ s, (fun _ => True) s → (vcgen falseLoopAnn (fun _ => False)).1 s) ∧
       ¬ Valid (fun _ => True) falseLoopAnn.erase (fun _ => False)
+  -- lean/ToyHoare/Witnesses.lean:261-263
   theorem vcgen_sound_pre_tight :
       VCsValid (vcgen (.assign 0 (.lit 1)) (fun s => s 0 = 0)).2 ∧
       ¬ Valid (fun _ => True) (ACom.assign 0 (.lit 1)).erase (fun s => s 0 = 0)
@@ -694,6 +734,7 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statement** (`ToyHoare/VC.lean`):
 
   ```lean
+  -- lean/ToyHoare/VC.lean:229-237
   theorem vcgen_reachable_noninductive_annotation_fails :
       Valid ncPre ncAnn.erase ncPost ∧
       (∀ s, HeadReach ncPre ncGuard ncBody s → ncInv s) ∧
@@ -721,8 +762,10 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
   `x = 0 ∨ x = 2` is verified:
 
   ```lean
+  -- lean/ToyHoare/Witnesses.lean:269-270
   def ncAnnLin : ACom :=
     .whileDo (fun s => s 0 = 0 ∨ s 0 = 2) ncGuard (.assign 0 (.add (.var 0) (.lit 2)))
+  -- lean/ToyHoare/Witnesses.lean:275-277
   theorem ncAnnLin_verifies :
       ncAnnLin.erase = ncAnn.erase ∧ ncAnnLin.InvsIn LinDef ∧
       VCsValid (vcgen ncAnnLin ncPost).2 ∧ ∀ s, ncPre s → (vcgen ncAnnLin ncPost).1 s
@@ -743,11 +786,14 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statements** (`ToyHoare/VC.lean`):
 
   ```lean
+  -- lean/ToyHoare/VC.lean:178-180
   theorem valid_iff_vcs_annotWlp {P : Assn} {c : Com} {Q : Assn} :
       Valid P c Q ↔
         (VCsValid (vcgen (annotWlp c Q) Q).2 ∧ ∀ s, P s → (vcgen (annotWlp c Q) Q).1 s)
+  -- lean/ToyHoare/VC.lean:124-125
   theorem vcgen_annotWlp (c : Com) :
       ∀ Q, (∀ s, (vcgen (annotWlp c Q) Q).1 s ↔ wlp c Q s) ∧ VCsValid (vcgen (annotWlp c Q) Q).2
+  -- lean/ToyHoare/VC.lean:114
   theorem erase_annotWlp (c : Com) : ∀ Q, (annotWlp c Q).erase = c
   ```
 
@@ -781,6 +827,7 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statement** (`ToyHoare/VC.lean`):
 
   ```lean
+  -- lean/ToyHoare/VC.lean:286-289
   theorem vcgen_linear_qf_annotations_incomplete :
       LinDef exPre ∧ LinDef exPost ∧ Valid exPre exLoop exPost ∧
       ∀ a : ACom, a.erase = exLoop → a.InvsIn LinDef →
@@ -804,20 +851,25 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
   | parameter (fixed in the statement): the program text, with no auxiliary variables | the loop instrumented with an auxiliary counter `g` is verified with the linear invariant `x = g + g` | tight: `vcgen_ghost_linDef_control` |
 
   ```lean
+  -- lean/ToyHoare/Witnesses.lean:338-340
   theorem vcgen_erase_hyp_tight :
       ACom.skip.erase ≠ exLoop ∧ ACom.skip.InvsIn LinDef ∧
       VCsValid (vcgen .skip exPost).2 ∧ ∀ s, exPre s → (vcgen .skip exPost).1 s
+  -- lean/ToyHoare/Witnesses.lean:348-350
   theorem vcgen_invsIn_hyp_tight :
       exParityAnn.erase = exLoop ∧ ¬ exParityAnn.InvsIn LinDef ∧
       VCsValid (vcgen exParityAnn exPost).2 ∧ ∀ s, exPre s → (vcgen exParityAnn exPost).1 s
+  -- lean/ToyHoare/Witnesses.lean:355-357
   -- exTrueAnn: exLoop annotated with `true`; exZeroAnn: exLoop annotated with `x = 0`
   theorem vcgen_linDef_control_weak_post :
       LinDef exPre ∧ LinDef exPostWeak ∧ exTrueAnn.erase = exLoop ∧ exTrueAnn.InvsIn LinDef ∧
       VCsValid (vcgen exTrueAnn exPostWeak).2 ∧ ∀ s, exPre s → (vcgen exTrueAnn exPostWeak).1 s
+  -- lean/ToyHoare/Witnesses.lean:368-371
   theorem vcgen_linDef_control_pre_zero :
       LinDef (fun s => s 0 = 0) ∧ LinDef exPost ∧ exZeroAnn.erase = exLoop ∧
       exZeroAnn.InvsIn LinDef ∧
       VCsValid (vcgen exZeroAnn exPost).2 ∧ ∀ s, s 0 = 0 → (vcgen exZeroAnn exPost).1 s
+  -- lean/ToyHoare/Witnesses.lean:390-392
   -- exGhostAnn: g := y; while[x = g + g] 2 ≤ x do (x := x - 2; g := g - 1)
   theorem vcgen_ghost_linDef_control :
       LinDef exPre ∧ LinDef exPost ∧ exGhostAnn.erase = exLoopGhost ∧ exGhostAnn.InvsIn LinDef ∧
@@ -844,6 +896,7 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statement** (`ToyHoare/Total.lean`):
 
   ```lean
+  -- lean/ToyHoare/Total.lean:58-59
   theorem total_sound_of_bounded_variant {P : Assn} {c : Com} {Q : Assn}
       (h : TDeriv true P c Q) : TValid P c Q
   ```
@@ -885,6 +938,7 @@ depends on `L`, `c` and `Q`; for `L = LinDef` it fails for the example loop (res
 - **Lean statement** (`ToyHoare/Total.lean`):
 
   ```lean
+  -- lean/ToyHoare/Total.lean:127-133
   theorem unbounded_variant_unsound :
       (∀ n : Int, TDeriv false (fun s => True ∧ BExp.tt.eval s = true ∧ s 0 = n) downBody
         (fun s => True ∧ s 0 < n)) ∧
@@ -925,7 +979,7 @@ under *Boundary and bridge theorems* below.
 - Says nothing about how to find derivations, about decidability, or about proof size.
 - Deriv L restricts only sequencing midpoints and while-loop invariants to L; pre- and postconditions, assignment preconditions Q[e/x], branch-guarded preconditions P and b, and the intermediate assertions P', Q' of the consequence rule remain unrestricted semantic predicates.
 - Deriv L and verification by vcgen with loop annotations in L (ACom.InvsIn L) do not coincide in general: Deriv.seq requires an L midpoint at every ';', while vcgen propagates preconditions across ';' and assignments semantically (for L = LinDef see vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef).
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 
 **Result 2 — `hoare-relative-completeness-wlp-admissible`** — non-claims:
 
@@ -935,7 +989,7 @@ under *Boundary and bridge theorems* below.
 - Relative completeness: consequence premises are semantic facts supplied by an oracle; nothing here gives an effective or decidable proof procedure.
 - No syntactic assertion language is shown to be expressive (Cook and Winskel use first-order arithmetic with quantifiers); the only syntactic language studied here (divisibility-free quantifier-free linear arithmetic) is shown not to be expressive for one loop.
 - Deriv L is not a fully syntactic Hoare logic over L: a syntactic calculus would also require the assignment preconditions Q[e/x] (programs may multiply variables), the guard conjunctions P and b, I and not b (guards may compare products), and the intermediate assertions P', Q' of consequence steps to belong to L; Deriv L restricts only seq midpoints and loop invariants.
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 
 **Result 3 — `linear-qf-hoare-incomplete`** — non-claims:
 
@@ -947,7 +1001,7 @@ under *Boundary and bridge theorems* below.
 - A fully syntactic Hoare logic over the linear formulas (assignment by syntactic substitution) is not formalized; that it also cannot derive the triple follows because each of its derivations is a Deriv LinDef derivation (an argument, not mechanized).
 - Deriv LinDef is strictly more restrictive than VC generation with linear loop annotations (ACom.InvsIn LinDef) on sequential composition: Deriv.seq requires a LinDef midpoint at every ';', whereas vcgen propagates preconditions across ';' and assignments semantically. For example, the loop-free triple {true} x := y * y; x := x - y * y {x = 0} is verified by vcgen but not derivable in Deriv LinDef (vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef). For the one-loop program here both fail.
 - The program uses only linear arithmetic; multiplication in programs plays no role in this example.
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 
 **Result 4 — `linear-qf-not-wlp-expressive`** — non-claims:
 
@@ -955,7 +1009,7 @@ under *Boundary and bridge theorems* below.
 - LinDef excludes modulo and divisibility predicates; in the SMT-LIB logic QF_LIA, which allows the predicates (_ divisible n), this wlp is definable without quantifiers as (x <= 0) or ((_ divisible 2) x).
 - Non-definability of wlp c Q in LinDef does not mean that no valid triple {P} c {Q} is derivable in Deriv LinDef or verifiable by vcgen with a linear loop invariant: for the precondition x = 0 the stronger linear invariant x = 0 suffices (exLoop_linDef_control_pre_zero, vcgen_linDef_control_pre_zero). It rules out only the uniform wlp-based (Cook-style) construction for this loop and postcondition; in general Cook's expressiveness is not necessary for completeness (Bergstra and Tucker 1982).
 - Shows non-expressiveness for one command and postcondition; no classification of which wlp's are linear.
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 
 **Result 5 — `qf-linear-eventually-constant-on-affine-lines`** — non-claims:
 
@@ -970,7 +1024,7 @@ under *Boundary and bridge theorems* below.
 - Restricting loop annotations to LinDef (ACom.InvsIn LinDef) with linear pre- and postconditions does not keep the generated precondition or side conditions in linear arithmetic when the program multiplies variables, and vcgen with linear loop annotations is not equivalent to Deriv LinDef (vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef).
 - Nothing about VC size or sharing (the concern of Flanagan and Saxe 2001).
 - Partial correctness only.
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 
 **Result 7 — `vcgen-reachable-noninductive-annotation-fails`** — non-claims:
 
@@ -979,14 +1033,14 @@ under *Boundary and bridge theorems* below.
 - Concerns 1-inductive VC generation. The annotation x <= 2 is not k-inductive for any k either (ncInv_not_k_inductive), so k-induction does not rescue it; bounded unrolling would succeed here only because the loop runs at most once from x = 0, which is not formalized.
 - Side conditions are checked in every store, without path conditions (see vcgen-soundness).
 - Covers a single top-level loop; HeadReach is defined only for that shape.
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 
 **Result 8 — `vcgen-complete-wlp-annotation`** — non-claims:
 
 - annotWlp is not computable from program text in general: wlp is a semantic object and may be inexpressible in a syntactic language (vcgen-linear-qf-annotations-incomplete).
 - Does not show that annotations can be inferred automatically, nor that the resulting side conditions are easy to discharge.
 - This does not follow from Hoare-logic relative completeness by itself; it is proved directly from properties of wlp.
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 
 **Result 9 — `vcgen-linear-qf-annotations-incomplete`** — non-claims:
 
@@ -995,7 +1049,7 @@ under *Boundary and bridge theorems* below.
 - Depends on both the precondition x = y + y and the postcondition x != 1: with precondition x = 0 (invariant x = 0) or the weaker postcondition x <= 1 (invariant true), the uninstrumented loop is verifiable by vcgen with linear annotations (vcgen_linDef_control_pre_zero, vcgen_linDef_control_weak_post).
 - LinDef covers only boolean combinations of <= and = over linear terms with integer coefficients, without modulo or divisibility predicates. It is strictly weaker than the SMT-LIB logic QF_LIA, whose formulas may use the predicates (_ divisible n) of the Ints theory: there '(_ divisible 2) x' is a quantifier-free invariant that verifies the loop. Adding a divisibility (parity) atom or an existential quantifier to LinDef would likewise define the needed invariant 'x even'.
 - VC verifiability with linear loop annotations is not equivalent to derivability in Deriv LinDef for general programs: vcgen composes sequential statements semantically without requiring a LinDef midpoint at ';', whereas Deriv.seq requires one (vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef). For this one-loop program both fail.
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 
 **Result 10 — `total-soundness-bounded-variant`** — non-claims:
 
@@ -1004,14 +1058,14 @@ under *Boundary and bridge theorems* below.
 - In TDeriv, invariants, intermediate assertions and variants are arbitrary semantic predicates and functions on stores, not syntactic expressions, and there is no admissibility predicate L; no total-correctness VC generator is formalized.
 - TValid P c Q (from every state satisfying P some run terminates in a state satisfying Q) expresses guaranteed termination only because Exec is deterministic; for a nondeterministic language this existential definition would express possible termination only. Nondeterminism is not formalized.
 - Other forms of the lower-bound premise are not formalized. A fixed bound c0 <= V with c0 independent of the store reduces to this rule with the shifted variant V - c0 (an argument, not mechanized); a store-dependent bound B s <= V s is no restriction in general (take B := V - 1) and gives no termination guarantee, as the derivation in unbounded_variant_unsound illustrates.
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 
 **Result 11 — `unbounded-variant-unsound`** — non-claims:
 
 - Shows only that the lower-bound premise cannot simply be dropped; other ways to restore soundness (nat-valued variants, well-founded orders, a fixed constant bound) are not formalized here.
 - In TDeriv, invariants, intermediate assertions and variants are arbitrary semantic predicates and functions on stores, not syntactic expressions, and there is no admissibility predicate L; no total-correctness VC generator is formalized.
 - TValid P c Q (from every state satisfying P some run terminates in a state satisfying Q) expresses guaranteed termination only because Exec is deterministic; for a nondeterministic language this existential definition would express possible termination only. Nondeterminism is not formalized.
-- Toy model only: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics; nothing is claimed about any production verifier.
+- Toy model: unbounded Int variables, no heap, no procedures, no runtime errors, no overflow, deterministic big-step semantics. These theorems neither establish nor refute the corresponding claims about real program verifiers, SMT solvers or intermediate verification languages; the modeling bridge under Applicability argues the connection separately.
 ### Boundary and bridge theorems
 
 The following fully proved theorems delimit the results above and are cited by name in the
@@ -1023,13 +1077,16 @@ Why the relative-completeness hypothesis is command-local (`ToyHoare/Boundaries.
 `ToyHoare/Logic.lean`):
 
 ```lean
+-- lean/ToyHoare/Boundaries.lean:140-141
 -- Requiring LinDef (wlp c' Q) for *every* command c' holds only for postconditions Q that hold
 -- in every store.
 theorem linDef_forall_wlp_iff_tautology (Q : Assn) :
     (∀ c' : Com, LinDef (wlp c' Q)) ↔ (∀ s : Store, Q s)
+-- lean/ToyHoare/Logic.lean:189-190
 -- The global form implies the command-local hypothesis.
 theorem wlpAdmissibleFor_of_forall_wlp {L : Assn → Prop} (c : Com) :
     ∀ Q : Assn, (∀ c' : Com, L (wlp c' Q)) → WlpAdmissibleFor L c Q
+-- lean/ToyHoare/Logic.lean:214-216
 -- Cook's expressiveness (L closed under wlp) together with L Q implies the hypothesis for every c.
 theorem wlpAdmissibleFor_of_expressive {L : Assn → Prop} {Q : Assn}
     (hexp : ∀ (c : Com) (R : Assn), L R → L (wlp c R)) (hQ : L Q) (c : Com) :
@@ -1039,6 +1096,7 @@ theorem wlpAdmissibleFor_of_expressive {L : Assn → Prop} {Q : Assn}
 The hypothesis is sufficient, not necessary, for a particular triple (`ToyHoare/Witnesses.lean`):
 
 ```lean
+-- lean/ToyHoare/Witnesses.lean:102-104
 theorem wlpAdmissibleFor_not_necessary :
     ¬ WlpAdmissibleFor LinDef exLoop exPost ∧ LinDef (fun s => s 0 = 0) ∧
     Deriv LinDef (fun s => s 0 = 0) exLoop exPost
@@ -1048,10 +1106,17 @@ theorem wlpAdmissibleFor_not_necessary :
 (`ToyHoare/Boundaries.lean`):
 
 ```lean
-def quadSeqCom : Com :=                         -- x := y * y; x := x - y * y
-  .seq (.assign 0 (.mul (.var 1) (.var 1))) (.assign 0 (.sub (.var 0) (.mul (.var 1) (.var 1))))
-def quadSeqAnn : ACom :=                        -- the same program as an annotated command
-  .seq (.assign 0 (.mul (.var 1) (.var 1))) (.assign 0 (.sub (.var 0) (.mul (.var 1) (.var 1))))
+-- lean/ToyHoare/Boundaries.lean:193-196
+/-- `x := y * y; x := x - y * y`. -/
+def quadSeqCom : Com :=
+  .seq (.assign 0 (.mul (.var 1) (.var 1)))
+       (.assign 0 (.sub (.var 0) (.mul (.var 1) (.var 1))))
+-- lean/ToyHoare/Boundaries.lean:198-201
+/-- `quadSeqCom` as an annotated command (it has no loops). -/
+def quadSeqAnn : ACom :=
+  .seq (.assign 0 (.mul (.var 1) (.var 1)))
+       (.assign 0 (.sub (.var 0) (.mul (.var 1) (.var 1))))
+-- lean/ToyHoare/Boundaries.lean:371-378
 theorem vcgen_linDef_verifies_quad_seq_but_not_deriv_linDef :
     LinDef (fun _ => True) ∧
     LinDef (fun s => s 0 = 0) ∧
@@ -1069,8 +1134,12 @@ for large `y`, by `lassnEvalParabolaNeighborEq`.)
 taken (`ToyHoare/Boundaries.lean`):
 
 ```lean
-def deadBranchAnn : ACom :=        -- if x = 1 then (while[true] false do skip) else skip
+-- lean/ToyHoare/Boundaries.lean:408-411
+/-- `if x = 1 then (while[true] false do skip) else skip`: a loop, annotated with `true`, inside a
+branch that is never taken from `x = 0`. -/
+def deadBranchAnn : ACom :=
   .cond (.eq (.var 0) (.lit 1)) (.whileDo (fun _ => True) .ff .skip) .skip
+-- lean/ToyHoare/Boundaries.lean:417-421
 theorem vcgen_side_conditions_ignore_branch_guards :
     Valid (fun s => s 0 = 0) deadBranchAnn.erase (fun s => s 0 = 0) ∧
     deadBranchAnn.InvsIn LinDef ∧
@@ -1081,6 +1150,7 @@ theorem vcgen_side_conditions_ignore_branch_guards :
 Eventual constancy is one-sided (`ToyHoare/Boundaries.lean`):
 
 ```lean
+-- lean/ToyHoare/Boundaries.lean:438-440
 theorem lassn_eventually_const_one_sided :
     (∀ n : Int, 0 ≤ n → (LAssn.le (.lit 0) (.var 0)).eval (st2 n n) = true) ∧
     (∀ n : Int, n ≤ -1 → (LAssn.le (.lit 0) (.var 0)).eval (st2 n n) = false)
@@ -1090,6 +1160,7 @@ The non-inductive annotation `x ≤ 2` of result 7 is not `k`-inductive for any 
 (`ToyHoare/Witnesses.lean`):
 
 ```lean
+-- lean/ToyHoare/Witnesses.lean:295-300
 theorem ncInv_not_k_inductive (k : Nat) :
     ∃ x₀ : Int,
       (∀ i : Nat, i < k →
