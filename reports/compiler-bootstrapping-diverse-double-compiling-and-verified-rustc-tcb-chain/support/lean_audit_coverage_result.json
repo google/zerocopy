@@ -1,0 +1,73 @@
+{
+  "elf_files_loaded_by_lean_inside_prefix": [
+    {
+      "bytes": 9024,
+      "covered_by_launcher_digest": true,
+      "covered_by_sysroot_manifest": false,
+      "gmp_symbols_defined": 0,
+      "path": "bin/lean",
+      "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+    },
+    {
+      "bytes": 6264,
+      "covered_by_launcher_digest": false,
+      "covered_by_sysroot_manifest": false,
+      "gmp_symbols_defined": 0,
+      "path": "lib/lean/libInit_shared.so",
+      "sha256": "07f8c1156271ab6ec36c14c3031b5572329325d5f73dde3e89a1615d88f4e5cb"
+    },
+    {
+      "bytes": 233708536,
+      "covered_by_launcher_digest": false,
+      "covered_by_sysroot_manifest": false,
+      "gmp_symbols_defined": 501,
+      "path": "lib/lean/libleanshared.so",
+      "sha256": "6b30cc963d065fc9d2f87f7e9cbe0682b23000ae5425bccd769c5d477fa74f13"
+    },
+    {
+      "bytes": 6264,
+      "covered_by_launcher_digest": false,
+      "covered_by_sysroot_manifest": false,
+      "gmp_symbols_defined": 0,
+      "path": "lib/lean/libleanshared_1.so",
+      "sha256": "69e900c025f40bf05c14f5b9ec48071b3130e34c96a7c45ee2eb5b6f307e19e6"
+    },
+    {
+      "bytes": 6264,
+      "covered_by_launcher_digest": false,
+      "covered_by_sysroot_manifest": false,
+      "gmp_symbols_defined": 0,
+      "path": "lib/lean/libleanshared_2.so",
+      "sha256": "38d0a03750b2e8d51161885ad597a8b4f6d3b85215c5a52aecd2b3753273cf3f"
+    }
+  ],
+  "elf_loaded_bytes_covered_by_a_pinned_digest": 9024,
+  "elf_loaded_not_covered": [
+    "lib/lean/libInit_shared.so",
+    "lib/lean/libleanshared.so",
+    "lib/lean/libleanshared_1.so",
+    "lib/lean/libleanshared_2.so"
+  ],
+  "elf_loaded_total_bytes": 233736352,
+  "host": "Linux x86_64",
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "manifest_seconds": 9.89,
+  "pinned_in_audit_source": {
+    "audit_src_sha256": "ca351966883f3c31524f51937c98510a132e2e72f319ec55a8a97cff19ea17f6",
+    "launcher_digests": [
+      "79fb1d26fa5a39385d59fdc48a711a14b0710ca6480271acce99b4d177cea085",
+      "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+      "998f0cc2a5a754cc66df1f33b85e1447528737ff15012db35d8c501754b02f1e",
+      "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+    ],
+    "sysroot_manifest": "2fa0ec692ae74051072ed105a66054843dcb711eb702bb64dc7947b96ea4fcdf"
+  },
+  "recomputed_manifest_equals_pinned": true,
+  "recomputed_sysroot_manifest": {
+    "bytes": 1664048208,
+    "elf_files_in_manifest": 0,
+    "files": 7068,
+    "manifest_sha256": "2fa0ec692ae74051072ed105a66054843dcb711eb702bb64dc7947b96ea4fcdf",
+    "symlinks_under_package_dirs": []
+  }
+}

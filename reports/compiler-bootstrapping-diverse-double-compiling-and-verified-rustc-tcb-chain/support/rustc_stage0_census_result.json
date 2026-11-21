@@ -1,0 +1,46 @@
+{
+  "artifact_entries": 441,
+  "config": {
+    "artifacts_server": "https://ci-artifacts.rust-lang.org/rustc-builds",
+    "artifacts_with_llvm_assertions_server": "https://ci-artifacts.rust-lang.org/rustc-builds-alt",
+    "compiler_channel_manifest_hash": "3f7d139b73bbbd0004ef6e58b430831c68cdad2b1f64ee2eb35d54c09199489a",
+    "compiler_date": "2026-08-20",
+    "compiler_git_commit_hash": "88d9e12ae178fab0fb5cc050a94da85685d449ea",
+    "compiler_version": "1.98.0",
+    "dist_server": "https://static.rust-lang.org",
+    "git_merge_commit_email": "bors@rust-lang.org",
+    "nightly_branch": "main"
+  },
+  "distinct_date_version_pairs": [
+    [
+      "2026-08-20",
+      "1.98.0"
+    ]
+  ],
+  "distinct_targets_by_component": {
+    "cargo": 33,
+    "clippy": 33,
+    "rust": 9,
+    "rust-std": 116,
+    "rustc": 34
+  },
+  "entries_by_component": {
+    "cargo": 66,
+    "clippy": 66,
+    "rust": 9,
+    "rust-std": 232,
+    "rustc": 68
+  },
+  "entries_by_extension": {
+    "msi": 7,
+    "pkg": 2,
+    "tar.gz": 216,
+    "tar.xz": 216
+  },
+  "non_sha256_values": 0,
+  "repository": "rust-lang/rust",
+  "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "src_version": "1.99.1",
+  "stage0_sha256": "759b73eca37a7b589b1ecc0fea77d94a1f8ca36cddb94f1401c72343e0dc1d4e",
+  "unparsed_paths": []
+}

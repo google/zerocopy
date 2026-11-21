@@ -1,0 +1,118 @@
+{
+  "host": "Linux x86_64",
+  "launcher": {
+    "bytes": 9024,
+    "defines_kernel_entry_points": [],
+    "path": "bin/lean",
+    "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+  },
+  "launcher_needed": [
+    "libInit_shared.so",
+    "libleanshared_2.so",
+    "libleanshared_1.so",
+    "libleanshared.so",
+    "libc.so.6",
+    "libpthread.so.0",
+    "libdl.so.2",
+    "libm.so.6"
+  ],
+  "launcher_runpath": [
+    "$ORIGIN/../lib:$ORIGIN/../lib/lean"
+  ],
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "libraries_defining_kernel_entry_points": [
+    "libleanshared.so"
+  ],
+  "lock": {
+    "distribution_entries": 4,
+    "launcher_digest_listed": true,
+    "launcher_digest_matches_entry_for_this_version": true,
+    "library_digests_listed": {
+      "libInit_shared.so": false,
+      "libleanshared.so": false,
+      "libleanshared_1.so": false,
+      "libleanshared_2.so": false
+    },
+    "lock_text_mentions_any_library_digest": false,
+    "version_string_listed": true
+  },
+  "resolved_libraries": {
+    "libInit_shared.so": {
+      "bytes": 6264,
+      "defines_kernel_entry_points": [],
+      "inside_prefix": true,
+      "path": "lib/lean/libInit_shared.so",
+      "sha256": "07f8c1156271ab6ec36c14c3031b5572329325d5f73dde3e89a1615d88f4e5cb"
+    },
+    "libc.so.6": {
+      "bytes": 2018344,
+      "inside_prefix": false,
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6"
+    },
+    "libdl.so.2": {
+      "bytes": 14408,
+      "inside_prefix": false,
+      "path": "/usr/lib/x86_64-linux-gnu/libdl.so.2"
+    },
+    "libleanshared.so": {
+      "bytes": 233708536,
+      "defines_kernel_entry_points": [
+        "lean_add_decl",
+        "lean_kernel_check",
+        "lean_kernel_is_def_eq"
+      ],
+      "inside_prefix": true,
+      "path": "lib/lean/libleanshared.so",
+      "sha256": "6b30cc963d065fc9d2f87f7e9cbe0682b23000ae5425bccd769c5d477fa74f13"
+    },
+    "libleanshared_1.so": {
+      "bytes": 6264,
+      "defines_kernel_entry_points": [],
+      "inside_prefix": true,
+      "path": "lib/lean/libleanshared_1.so",
+      "sha256": "69e900c025f40bf05c14f5b9ec48071b3130e34c96a7c45ee2eb5b6f307e19e6"
+    },
+    "libleanshared_2.so": {
+      "bytes": 6264,
+      "defines_kernel_entry_points": [],
+      "inside_prefix": true,
+      "path": "lib/lean/libleanshared_2.so",
+      "sha256": "38d0a03750b2e8d51161885ad597a8b4f6d3b85215c5a52aecd2b3753273cf3f"
+    },
+    "libm.so.6": {
+      "bytes": 1132760,
+      "inside_prefix": false,
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6"
+    },
+    "libpthread.so.0": {
+      "bytes": 14408,
+      "inside_prefix": false,
+      "path": "/usr/lib/x86_64-linux-gnu/libpthread.so.0"
+    },
+    "librt.so.1": {
+      "bytes": 14552,
+      "inside_prefix": false,
+      "path": "/usr/lib/x86_64-linux-gnu/librt.so.1"
+    }
+  },
+  "timing": {
+    "lean_version_startup": {
+      "max_s": 0.2907,
+      "median_s": 0.1184,
+      "min_s": 0.101,
+      "runs": 5
+    },
+    "sha256sum_launcher": {
+      "max_s": 0.0054,
+      "median_s": 0.0047,
+      "min_s": 0.004,
+      "runs": 5
+    },
+    "sha256sum_libleanshared.so": {
+      "max_s": 1.4813,
+      "median_s": 1.269,
+      "min_s": 0.939,
+      "runs": 5
+    }
+  }
+}

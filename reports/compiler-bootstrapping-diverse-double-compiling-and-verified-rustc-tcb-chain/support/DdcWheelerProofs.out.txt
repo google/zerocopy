@@ -1,0 +1,7 @@
+'DdcModel.source_corresponds_to_executable' does not depend on any axioms
+'DdcModel.always_equal' does not depend on any axioms
+'DdcModel.proof1_assumptions_satisfiable' does not depend on any axioms
+'DdcModel.taint_sP_compiles_sA' does not depend on any axioms
+'DdcModel.taint_define_exactly_correspond' does not depend on any axioms
+'DdcModel.ddc_passes_but_unsound_when_cT_shares_payload' does not depend on any axioms
+'DdcModel.ddc_detects_tainted_cA_with_clean_cT' does not depend on any axioms

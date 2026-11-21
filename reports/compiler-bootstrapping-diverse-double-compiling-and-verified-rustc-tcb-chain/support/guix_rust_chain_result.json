@@ -1,0 +1,500 @@
+{
+  "chains": {
+    "rust-bootstrap-1.54": {
+      "rustc_builds_including_mrustc_built": 45,
+      "rustc_by_rustc_builds": 44,
+      "versions": [
+        "1.54.0",
+        "1.55.0",
+        "1.56.1",
+        "1.57.0",
+        "1.58.1",
+        "1.59.0",
+        "1.60.0",
+        "1.61.0",
+        "1.62.1",
+        "1.63.0",
+        "1.64.0",
+        "1.65.0",
+        "1.66.1",
+        "1.67.1",
+        "1.68.2",
+        "1.69.0",
+        "1.70.0",
+        "1.71.1",
+        "1.72.1",
+        "1.73.0",
+        "1.74.1",
+        "1.75.0",
+        "1.76.0",
+        "1.77.2",
+        "1.78.0",
+        "1.79.0",
+        "1.80.1",
+        "1.81.0",
+        "1.82.0",
+        "1.83.0",
+        "1.84.1",
+        "1.85.1",
+        "1.86.0",
+        "1.87.0",
+        "1.88.0",
+        "1.89.0",
+        "1.90.0",
+        "1.91.1",
+        "1.92.0",
+        "1.93.1",
+        "1.94.1",
+        "1.95.0",
+        "1.96.1",
+        "1.97.1",
+        "1.98.1"
+      ]
+    },
+    "rust-bootstrap-1.74": {
+      "rustc_builds_including_mrustc_built": 25,
+      "rustc_by_rustc_builds": 24,
+      "versions": [
+        "1.74.0",
+        "1.75.0",
+        "1.76.0",
+        "1.77.2",
+        "1.78.0",
+        "1.79.0",
+        "1.80.1",
+        "1.81.0",
+        "1.82.0",
+        "1.83.0",
+        "1.84.1",
+        "1.85.1",
+        "1.86.0",
+        "1.87.0",
+        "1.88.0",
+        "1.89.0",
+        "1.90.0",
+        "1.91.1",
+        "1.92.0",
+        "1.93.1",
+        "1.94.1",
+        "1.95.0",
+        "1.96.1",
+        "1.97.1",
+        "1.98.1"
+      ]
+    },
+    "rust-bootstrap-1.90": {
+      "rustc_builds_including_mrustc_built": 9,
+      "rustc_by_rustc_builds": 8,
+      "versions": [
+        "1.90.0",
+        "1.91.1",
+        "1.92.0",
+        "1.93.1",
+        "1.94.1",
+        "1.95.0",
+        "1.96.1",
+        "1.97.1",
+        "1.98.1"
+      ]
+    }
+  },
+  "default_rust_package_base": "rust-1.98",
+  "default_rust_version": "1.98.1",
+  "mrustc_built_entry_points": [
+    "rust-bootstrap-1.54",
+    "rust-bootstrap-1.74",
+    "rust-bootstrap-1.90"
+  ],
+  "mrustc_commit_pins": {
+    "1.54": "06b87d1af49d2db3bd850fdee8888055dd540dd1",
+    "1.90": "a822472b9ee744e58d8b1a79bdd8080f7a7b008f"
+  },
+  "packages": {
+    "rust": {
+      "base_rust_binding": "rust-1.98",
+      "bootstrapped_from": null,
+      "conditional_mrustc_input": null,
+      "line": 2420,
+      "unconditional_mrustc_input": null,
+      "version": null
+    },
+    "rust-1.55": {
+      "base_rust_binding": null,
+      "bootstrapped_from": null,
+      "conditional_mrustc_input": null,
+      "line": 764,
+      "unconditional_mrustc_input": "rust-bootstrap-1.54",
+      "version": "1.55.0"
+    },
+    "rust-1.56": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.55",
+      "conditional_mrustc_input": null,
+      "line": 937,
+      "unconditional_mrustc_input": null,
+      "version": "1.56.1"
+    },
+    "rust-1.57": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.56",
+      "conditional_mrustc_input": null,
+      "line": 957,
+      "unconditional_mrustc_input": null,
+      "version": "1.57.0"
+    },
+    "rust-1.58": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.57",
+      "conditional_mrustc_input": null,
+      "line": 963,
+      "unconditional_mrustc_input": null,
+      "version": "1.58.1"
+    },
+    "rust-1.59": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.58",
+      "conditional_mrustc_input": null,
+      "line": 973,
+      "unconditional_mrustc_input": null,
+      "version": "1.59.0"
+    },
+    "rust-1.60": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.59",
+      "conditional_mrustc_input": null,
+      "line": 1002,
+      "unconditional_mrustc_input": null,
+      "version": "1.60.0"
+    },
+    "rust-1.61": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.60",
+      "conditional_mrustc_input": null,
+      "line": 1008,
+      "unconditional_mrustc_input": null,
+      "version": "1.61.0"
+    },
+    "rust-1.62": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.61",
+      "conditional_mrustc_input": null,
+      "line": 1031,
+      "unconditional_mrustc_input": null,
+      "version": "1.62.1"
+    },
+    "rust-1.63": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.62",
+      "conditional_mrustc_input": null,
+      "line": 1035,
+      "unconditional_mrustc_input": null,
+      "version": "1.63.0"
+    },
+    "rust-1.64": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.63",
+      "conditional_mrustc_input": null,
+      "line": 1039,
+      "unconditional_mrustc_input": null,
+      "version": "1.64.0"
+    },
+    "rust-1.65": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.64",
+      "conditional_mrustc_input": null,
+      "line": 1084,
+      "unconditional_mrustc_input": null,
+      "version": "1.65.0"
+    },
+    "rust-1.66": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.65",
+      "conditional_mrustc_input": null,
+      "line": 1096,
+      "unconditional_mrustc_input": null,
+      "version": "1.66.1"
+    },
+    "rust-1.67": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.66",
+      "conditional_mrustc_input": null,
+      "line": 1100,
+      "unconditional_mrustc_input": null,
+      "version": "1.67.1"
+    },
+    "rust-1.68": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.67",
+      "conditional_mrustc_input": null,
+      "line": 1134,
+      "unconditional_mrustc_input": null,
+      "version": "1.68.2"
+    },
+    "rust-1.69": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.68",
+      "conditional_mrustc_input": null,
+      "line": 1138,
+      "unconditional_mrustc_input": null,
+      "version": "1.69.0"
+    },
+    "rust-1.70": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.69",
+      "conditional_mrustc_input": null,
+      "line": 1167,
+      "unconditional_mrustc_input": null,
+      "version": "1.70.0"
+    },
+    "rust-1.71": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.70",
+      "conditional_mrustc_input": null,
+      "line": 1200,
+      "unconditional_mrustc_input": null,
+      "version": "1.71.1"
+    },
+    "rust-1.72": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.71",
+      "conditional_mrustc_input": null,
+      "line": 1239,
+      "unconditional_mrustc_input": null,
+      "version": "1.72.1"
+    },
+    "rust-1.73": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.72",
+      "conditional_mrustc_input": null,
+      "line": 1268,
+      "unconditional_mrustc_input": null,
+      "version": "1.73.0"
+    },
+    "rust-1.74": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.73",
+      "conditional_mrustc_input": null,
+      "line": 1292,
+      "unconditional_mrustc_input": null,
+      "version": "1.74.1"
+    },
+    "rust-1.75": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.74",
+      "conditional_mrustc_input": "rust-bootstrap-1.74",
+      "line": 1324,
+      "unconditional_mrustc_input": null,
+      "version": "1.75.0"
+    },
+    "rust-1.76": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.75",
+      "conditional_mrustc_input": null,
+      "line": 1386,
+      "unconditional_mrustc_input": null,
+      "version": "1.76.0"
+    },
+    "rust-1.77": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.76",
+      "conditional_mrustc_input": null,
+      "line": 1397,
+      "unconditional_mrustc_input": null,
+      "version": "1.77.2"
+    },
+    "rust-1.78": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.77",
+      "conditional_mrustc_input": null,
+      "line": 1421,
+      "unconditional_mrustc_input": null,
+      "version": "1.78.0"
+    },
+    "rust-1.79": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.78",
+      "conditional_mrustc_input": null,
+      "line": 1432,
+      "unconditional_mrustc_input": null,
+      "version": "1.79.0"
+    },
+    "rust-1.80": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.79",
+      "conditional_mrustc_input": null,
+      "line": 1458,
+      "unconditional_mrustc_input": null,
+      "version": "1.80.1"
+    },
+    "rust-1.81": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.80",
+      "conditional_mrustc_input": null,
+      "line": 1485,
+      "unconditional_mrustc_input": null,
+      "version": "1.81.0"
+    },
+    "rust-1.82": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.81",
+      "conditional_mrustc_input": null,
+      "line": 1496,
+      "unconditional_mrustc_input": null,
+      "version": "1.82.0"
+    },
+    "rust-1.83": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.82",
+      "conditional_mrustc_input": null,
+      "line": 1525,
+      "unconditional_mrustc_input": null,
+      "version": "1.83.0"
+    },
+    "rust-1.84": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.83",
+      "conditional_mrustc_input": null,
+      "line": 1566,
+      "unconditional_mrustc_input": null,
+      "version": "1.84.1"
+    },
+    "rust-1.85": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.84",
+      "conditional_mrustc_input": null,
+      "line": 1570,
+      "unconditional_mrustc_input": null,
+      "version": "1.85.1"
+    },
+    "rust-1.86": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.85",
+      "conditional_mrustc_input": null,
+      "line": 1599,
+      "unconditional_mrustc_input": null,
+      "version": "1.86.0"
+    },
+    "rust-1.87": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.86",
+      "conditional_mrustc_input": null,
+      "line": 1639,
+      "unconditional_mrustc_input": null,
+      "version": "1.87.0"
+    },
+    "rust-1.88": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.87",
+      "conditional_mrustc_input": null,
+      "line": 1689,
+      "unconditional_mrustc_input": null,
+      "version": "1.88.0"
+    },
+    "rust-1.89": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.88",
+      "conditional_mrustc_input": null,
+      "line": 1722,
+      "unconditional_mrustc_input": null,
+      "version": "1.89.0"
+    },
+    "rust-1.90": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.89",
+      "conditional_mrustc_input": null,
+      "line": 1783,
+      "unconditional_mrustc_input": null,
+      "version": "1.90.0"
+    },
+    "rust-1.91": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.90",
+      "conditional_mrustc_input": "rust-bootstrap-1.90",
+      "line": 1843,
+      "unconditional_mrustc_input": null,
+      "version": "1.91.1"
+    },
+    "rust-1.92": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.91",
+      "conditional_mrustc_input": null,
+      "line": 1945,
+      "unconditional_mrustc_input": null,
+      "version": "1.92.0"
+    },
+    "rust-1.93": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.92",
+      "conditional_mrustc_input": null,
+      "line": 2009,
+      "unconditional_mrustc_input": null,
+      "version": "1.93.1"
+    },
+    "rust-1.94": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.93",
+      "conditional_mrustc_input": null,
+      "line": 2069,
+      "unconditional_mrustc_input": null,
+      "version": "1.94.1"
+    },
+    "rust-1.95": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.94",
+      "conditional_mrustc_input": null,
+      "line": 2158,
+      "unconditional_mrustc_input": null,
+      "version": "1.95.0"
+    },
+    "rust-1.96": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.95",
+      "conditional_mrustc_input": null,
+      "line": 2219,
+      "unconditional_mrustc_input": null,
+      "version": "1.96.1"
+    },
+    "rust-1.97": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.96",
+      "conditional_mrustc_input": null,
+      "line": 2282,
+      "unconditional_mrustc_input": null,
+      "version": "1.97.1"
+    },
+    "rust-1.98": {
+      "base_rust_binding": null,
+      "bootstrapped_from": "rust-1.97",
+      "conditional_mrustc_input": null,
+      "line": 2345,
+      "unconditional_mrustc_input": null,
+      "version": "1.98.1"
+    },
+    "rust-bootstrap-1.54": {
+      "base_rust_binding": null,
+      "bootstrapped_from": null,
+      "conditional_mrustc_input": null,
+      "line": 201,
+      "unconditional_mrustc_input": null,
+      "version": "1.54.0"
+    },
+    "rust-bootstrap-1.74": {
+      "base_rust_binding": null,
+      "bootstrapped_from": null,
+      "conditional_mrustc_input": null,
+      "line": 385,
+      "unconditional_mrustc_input": null,
+      "version": "1.74.0"
+    },
+    "rust-bootstrap-1.90": {
+      "base_rust_binding": null,
+      "bootstrapped_from": null,
+      "conditional_mrustc_input": null,
+      "line": 570,
+      "unconditional_mrustc_input": null,
+      "version": "1.90.0"
+    }
+  },
+  "rust_scm_sha256": "e2adeaf1d320489d33fbbc06031c3d40273a0a0bd4687c1b78fd53d716e475e1",
+  "rustc_built_packages": 44
+}

@@ -1,0 +1,34 @@
+{
+  "compile_A": {
+    "exit_code": 0,
+    "first_output_line": ""
+  },
+  "githash_mismatch_rejected": true,
+  "header": {
+    "flags": 1,
+    "githash": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "lean_version": "4.34.1",
+    "marker": "olean",
+    "version": 2
+  },
+  "import_githash_one_character_changed": {
+    "exit_code": 1,
+    "first_output_line": "B.lean:1:0: error: failed to read file './A.olean', incompatible header",
+    "githash_in_file": "0045d0056413266e57c625dcd7c365b10e377c52"
+  },
+  "import_restored": {
+    "exit_code": 0,
+    "first_output_line": "42"
+  },
+  "import_unmodified": {
+    "exit_code": 0,
+    "first_output_line": "42"
+  },
+  "import_version_string_changed": {
+    "exit_code": 0,
+    "first_output_line": "42",
+    "lean_version_in_file": "9.99.1"
+  },
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "version_string_mismatch_rejected": false
+}

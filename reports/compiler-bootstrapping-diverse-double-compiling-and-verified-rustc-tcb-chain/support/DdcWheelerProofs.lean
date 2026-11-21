@@ -212,5 +212,7 @@ end DdcModel
 #print axioms DdcModel.source_corresponds_to_executable
 #print axioms DdcModel.always_equal
 #print axioms DdcModel.proof1_assumptions_satisfiable
+#print axioms DdcModel.taint_sP_compiles_sA
+#print axioms DdcModel.taint_define_exactly_correspond
 #print axioms DdcModel.ddc_passes_but_unsound_when_cT_shares_payload
 #print axioms DdcModel.ddc_detects_tainted_cA_with_clean_cT

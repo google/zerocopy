@@ -1,0 +1,69 @@
+{
+  "ammkrn/nanoda_lib@0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929": {
+    "blobs": 35,
+    "bytes": 449117,
+    "selections": {
+      "src_rs_non_test": {
+        "bytes": 366393,
+        "files": 16,
+        "regex": "^src/(?!tests/).*\\.rs$"
+      }
+    },
+    "tree_sha": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+    "truncated": false
+  },
+  "digama0/lean4lean@67f63b0c818920dfaed2ad07ccff187a6a8fe1e3": {
+    "blobs": 124,
+    "bytes": 2535462,
+    "selections": {
+      "checker": {
+        "bytes": 168491,
+        "files": 18,
+        "regex": "^Lean4Lean/(?!(Theory|Verify|Experimental|Std|Tests)(/|\\.lean)).*\\.lean$"
+      },
+      "verify": {
+        "bytes": 1271976,
+        "files": 37,
+        "regex": "^Lean4Lean/Verify(/|\\.lean).*"
+      }
+    },
+    "tree_sha": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+    "truncated": false
+  },
+  "leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52:stage0": {
+    "blobs": 2761,
+    "bytes": 614589424,
+    "selections": {
+      "src_all": {
+        "bytes": 1726952,
+        "files": 242,
+        "regex": "^src/"
+      },
+      "stdlib_c": {
+        "bytes": 612862472,
+        "files": 2519,
+        "regex": "^stdlib/.*\\.c$"
+      }
+    },
+    "tree_sha": "2d2706e9bcba6cf49b549ba0f5d8d90fb621d205",
+    "truncated": false
+  },
+  "thepowersgang/mrustc@4e020d6b307c738434209435e9b75b7d81b00077": {
+    "blobs": 636,
+    "bytes": 7845388,
+    "selections": {
+      "all_c_cpp": {
+        "bytes": 7141223,
+        "files": 296,
+        "regex": "\\.(cpp|hpp|h|c)$"
+      },
+      "src_c_cpp": {
+        "bytes": 6192185,
+        "files": 228,
+        "regex": "^src/.*\\.(cpp|hpp|h|c)$"
+      }
+    },
+    "tree_sha": "4e020d6b307c738434209435e9b75b7d81b00077",
+    "truncated": false
+  }
+}
