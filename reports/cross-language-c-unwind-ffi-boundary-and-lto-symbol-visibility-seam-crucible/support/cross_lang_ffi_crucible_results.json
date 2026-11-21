@@ -1,0 +1,2502 @@
+{
+  "abi_disassembly": {
+    "cpp_spill_5gpr_128": [
+      "     340: 4c 89 c0                     \tmovq\t%r8, %rax",
+      "     343: 4c 8b 44 24 10               \tmovq\t0x10(%rsp), %r8",
+      "     348: 48 31 f7                     \txorq\t%rsi, %rdi",
+      "     34b: 48 31 ca                     \txorq\t%rcx, %rdx",
+      "     34e: 48 31 fa                     \txorq\t%rdi, %rdx",
+      "     351: 4c 31 c8                     \txorq\t%r9, %rax",
+      "     354: 48 31 d0                     \txorq\t%rdx, %rax",
+      "     357: 48 03 44 24 08               \taddq\t0x8(%rsp), %rax",
+      "     35c: 49 83 d0 00                  \tadcq\t$0x0, %r8",
+      "     360: 4c 89 c2                     \tmovq\t%r8, %rdx",
+      "     363: c3                           \tretq",
+      "     364: 66 66 66 2e 0f 1f 84 00 00 00 00 00  \tnopw\t%cs:(%rax,%rax)"
+    ],
+    "cpp_unaligned_gpr_128": [
+      "     330: 89 f8                        \tmovl\t%edi, %eax",
+      "     332: 48 31 f0                     \txorq\t%rsi, %rax",
+      "     335: 48 29 c8                     \tsubq\t%rcx, %rax",
+      "     338: 4c 19 c2                     \tsbbq\t%r8, %rdx",
+      "     33b: c3                           \tretq",
+      "     33c: 0f 1f 40 00                  \tnopl\t(%rax)"
+    ],
+    "gcc_spill_5gpr_128": [
+      "      60: 4d 31 c8                     \txorq\t%r9, %r8",
+      "      63: 49 31 c8                     \txorq\t%rcx, %r8",
+      "      66: 49 31 d0                     \txorq\t%rdx, %r8",
+      "      69: 31 d2                        \txorl\t%edx, %edx",
+      "      6b: 49 31 f0                     \txorq\t%rsi, %r8",
+      "      6e: 49 31 f8                     \txorq\t%rdi, %r8",
+      "      71: 4c 89 c0                     \tmovq\t%r8, %rax",
+      "      74: 48 03 44 24 08               \taddq\t0x8(%rsp), %rax",
+      "      79: 48 13 54 24 10               \tadcq\t0x10(%rsp), %rdx",
+      "      7e: c3                           \tretq",
+      "      7f: 90                           \tnop"
+    ],
+    "gcc_unaligned_gpr_128": [
+      "      80: 40 0f b6 c7                  \tmovzbl\t%dil, %eax",
+      "      84: 49 89 d3                     \tmovq\t%rdx, %r11",
+      "      87: 31 d2                        \txorl\t%edx, %edx",
+      "      89: 48 31 f0                     \txorq\t%rsi, %rax",
+      "      8c: 4c 31 da                     \txorq\t%r11, %rdx",
+      "      8f: 48 29 c8                     \tsubq\t%rcx, %rax",
+      "      92: 4c 19 c2                     \tsbbq\t%r8, %rdx",
+      "      95: c3                           \tretq",
+      "      96: 66 2e 0f 1f 84 00 00 00 00 00\tnopw\t%cs:(%rax,%rax)"
+    ]
+  },
+  "cell4c_cpp_main_nocatch_staticlib_abort": {
+    "eh_frame_audit": {
+      "symbols": {
+        "cpp_throw_nocatch": {
+          "fde_range": [
+            "0xe080",
+            "0xe0b8"
+          ],
+          "has_fde": true,
+          "lsda": null,
+          "personality": null,
+          "present_in_symtab": true,
+          "size": 56,
+          "va": "0xe080"
+        },
+        "rust_staticlib_c_unwind_no_guard": {
+          "fde_range": [
+            "0x14d70",
+            "0x14d7f"
+          ],
+          "has_fde": true,
+          "lsda": {
+            "call_site_count": 1,
+            "call_sites": [
+              {
+                "cs_action": 0,
+                "cs_len": 6,
+                "cs_lpad": 9,
+                "cs_start": 1,
+                "kind": "cleanup",
+                "ttype_index": null
+              }
+            ],
+            "lp_start": "0x14d70",
+            "lsda_va": "0xe003c",
+            "ttype_enc": "0xff"
+          },
+          "personality": "DW.ref.rust_eh_personality",
+          "present_in_symtab": true,
+          "size": 15,
+          "va": "0x14d70"
+        },
+        "rust_staticlib_c_unwind_with_guard": {
+          "fde_range": [
+            "0x14d80",
+            "0x14d94"
+          ],
+          "has_fde": true,
+          "lsda": {
+            "call_site_count": 1,
+            "call_sites": [
+              {
+                "cs_action": 0,
+                "cs_len": 6,
+                "cs_lpad": 9,
+                "cs_start": 1,
+                "kind": "cleanup",
+                "ttype_index": null
+              }
+            ],
+            "lp_start": "0x14d80",
+            "lsda_va": "0xe0044",
+            "ttype_enc": "0xff"
+          },
+          "personality": "DW.ref.rust_eh_personality",
+          "present_in_symtab": true,
+          "size": 20,
+          "va": "0x14d80"
+        }
+      },
+      "total_fdes": 2205
+    },
+    "runs": {
+      "mode_g": {
+        "rc": -6,
+        "stderr": "terminate called after throwing an instance of 'BareCppEx'",
+        "stdout": "",
+        "trace_events": [
+          "cpp_throwing_bare"
+        ]
+      },
+      "mode_n": {
+        "rc": -6,
+        "stderr": "terminate called after throwing an instance of 'BareCppEx'",
+        "stdout": "",
+        "trace_events": [
+          "cpp_throwing_bare"
+        ]
+      }
+    }
+  },
+  "mir_abort_unwinding_calls": {
+    "panic_abort": {
+      "rust_c_unwind_no_guard": {
+        "after_bb_count": 2,
+        "after_has_resume": false,
+        "after_has_terminate_abi": true,
+        "after_has_unwind_terminate_cleanup": false,
+        "after_has_unwind_unreachable": false,
+        "before_bb_count": 2,
+        "before_has_resume": true
+      },
+      "rust_c_unwind_with_guard": {
+        "after_bb_count": 3,
+        "after_has_resume": false,
+        "after_has_terminate_abi": true,
+        "after_has_unwind_terminate_cleanup": true,
+        "after_has_unwind_unreachable": false,
+        "before_bb_count": 3,
+        "before_has_resume": true
+      },
+      "rust_extern_c_nounwind_with_guard": {
+        "after_bb_count": 1,
+        "after_has_resume": false,
+        "after_has_terminate_abi": false,
+        "after_has_unwind_terminate_cleanup": false,
+        "after_has_unwind_unreachable": true,
+        "before_bb_count": 3,
+        "before_has_resume": true
+      }
+    },
+    "panic_unwind": {
+      "rust_c_unwind_no_guard": {
+        "after_bb_count": 1,
+        "after_has_resume": false,
+        "after_has_terminate_abi": false,
+        "after_has_unwind_terminate_cleanup": false,
+        "after_has_unwind_unreachable": false,
+        "before_bb_count": 1,
+        "before_has_resume": false
+      },
+      "rust_c_unwind_with_guard": {
+        "after_bb_count": 3,
+        "after_has_resume": true,
+        "after_has_terminate_abi": false,
+        "after_has_unwind_terminate_cleanup": true,
+        "after_has_unwind_unreachable": false,
+        "before_bb_count": 3,
+        "before_has_resume": true
+      },
+      "rust_extern_c_nounwind_with_guard": {
+        "after_bb_count": 1,
+        "after_has_resume": false,
+        "after_has_terminate_abi": false,
+        "after_has_unwind_terminate_cleanup": false,
+        "after_has_unwind_unreachable": true,
+        "before_bb_count": 3,
+        "before_has_resume": true
+      }
+    }
+  },
+  "observed_at": "2026-11-21",
+  "profiles": {
+    "panic_abort_O2": {
+      "binary_size_bytes": 4381456,
+      "compile_rc": 0,
+      "eh_frame_audit": {
+        "symbols": {
+          "cpp_raii_then_rust_panic": {
+            "fde_range": [
+              "0x54260",
+              "0x542e4"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 3,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 2,
+                  "cs_lpad": 105,
+                  "cs_start": 24,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 66,
+                  "cs_lpad": 124,
+                  "cs_start": 33,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 33,
+                  "cs_lpad": 0,
+                  "cs_start": 99,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x54260",
+              "lsda_va": "0x7c28",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.__gxx_personality_v0",
+            "present_in_symtab": true,
+            "size": 132,
+            "va": "0x54260"
+          },
+          "cpp_throw_code": {
+            "fde_range": [
+              "0x54550",
+              "0x5458b"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 59,
+            "va": "0x54550"
+          },
+          "cpp_try_call_rust": {
+            "fde_range": [
+              "0x541e0",
+              "0x54257"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 7,
+              "call_sites": [
+                {
+                  "cs_action": 3,
+                  "cs_len": 5,
+                  "cs_lpad": 20,
+                  "cs_start": 7,
+                  "kind": "catch",
+                  "ttype_index": 2
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 25,
+                  "cs_lpad": 0,
+                  "cs_start": 12,
+                  "kind": "none",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 15,
+                  "cs_lpad": 95,
+                  "cs_start": 37,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 12,
+                  "cs_lpad": 85,
+                  "cs_start": 64,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 12,
+                  "cs_lpad": 0,
+                  "cs_start": 76,
+                  "kind": "none",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 15,
+                  "cs_lpad": 111,
+                  "cs_start": 88,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 16,
+                  "cs_lpad": 0,
+                  "cs_start": 103,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x541e0",
+              "lsda_va": "0x7bf8",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.__gxx_personality_v0",
+            "present_in_symtab": true,
+            "size": 119,
+            "va": "0x541e0"
+          },
+          "rust_c_unwind_no_guard": {
+            "fde_range": [
+              "0x161f0",
+              "0x16206"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 1,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 13,
+                  "cs_lpad": 16,
+                  "cs_start": 1,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x161f0",
+              "lsda_va": "0x50e8",
+              "ttype_enc": "0xff"
+            },
+            "personality": "DW.ref.rust_eh_personality",
+            "present_in_symtab": true,
+            "size": 22,
+            "va": "0x161f0"
+          },
+          "rust_c_unwind_with_guard": {
+            "fde_range": [
+              "0x16210",
+              "0x1624a"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 1,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 13,
+                  "cs_lpad": 44,
+                  "cs_start": 29,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x16210",
+              "lsda_va": "0x50f0",
+              "ttype_enc": "0xff"
+            },
+            "personality": "DW.ref.rust_eh_personality",
+            "present_in_symtab": true,
+            "size": 58,
+            "va": "0x16210"
+          },
+          "rust_call_cpp_thinlto_leaf": {
+            "fde_range": [
+              "0x16250",
+              "0x16261"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 17,
+            "va": "0x16250"
+          },
+          "rust_catch_cpp_throw_inner": {
+            "fde_range": [
+              "0x16270",
+              "0x1629c"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 44,
+            "va": "0x16270"
+          },
+          "rust_extern_c_nounwind_with_guard": {
+            "fde_range": [
+              "0x162a0",
+              "0x162ae"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 14,
+            "va": "0x162a0"
+          },
+          "rust_panic_target": {
+            "fde_range": [
+              "0x162b0",
+              "0x162cf"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 31,
+            "va": "0x162b0"
+          }
+        },
+        "total_fdes": 571
+      },
+      "llvm_ir": {
+        "cpp_spill_5gpr_128": {
+          "attr_id": "#0",
+          "attrs": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "declare noundef i128 @cpp_spill_5gpr_128(i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i128 noundef, i64 noundef) unnamed_addr #0"
+        },
+        "cpp_throw_code": {
+          "attr_id": "#8",
+          "attrs": "noreturn nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": false,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "declare void @cpp_throw_code(i32 noundef, i32 noundef) unnamed_addr #8"
+        },
+        "rust_c_unwind_no_guard": {
+          "attr_id": "#4",
+          "attrs": "noinline noreturn nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": true,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": true,
+          "has_personality": true,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i32 @rust_c_unwind_no_guard(ptr readnone captures(none) %_rust_drops) unnamed_addr #4 personality ptr @rust_eh_personality {"
+        },
+        "rust_c_unwind_with_guard": {
+          "attr_id": "#4",
+          "attrs": "noinline noreturn nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": true,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": true,
+          "has_personality": true,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i32 @rust_c_unwind_with_guard(ptr noundef %rust_drops) unnamed_addr #4 personality ptr @rust_eh_personality {"
+        },
+        "rust_call_cpp_thinlto_leaf": {
+          "attr_id": "#1",
+          "attrs": "noinline nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i128 @rust_call_cpp_thinlto_leaf(i128 noundef %a, i128 noundef %b) unnamed_addr #1 {"
+        },
+        "rust_extern_c_nounwind_with_guard": {
+          "attr_id": "#4",
+          "attrs": "noinline noreturn nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i32 @rust_extern_c_nounwind_with_guard(ptr readnone captures(none) %rust_drops) unnamed_addr #4 {"
+        }
+      },
+      "modes": {
+        "cell1_cpp_through_rust_c_unwind": {
+          "rc": -6,
+          "stderr": "thread 'main' (<TID>) panicked at <RUSTC_SRC>/library/core/src/panicking.rs:225:5:\npanic in a function that cannot unwind\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+          "stdout": "",
+          "trace_events": [
+            "cpp_throwing",
+            "rust_c_unwind_guard_drop"
+          ]
+        },
+        "cell2_rust_panic_through_cpp_raii": {
+          "rc": -6,
+          "stderr": "thread 'main' (<TID>) panicked at <SPECIMENS>/rust_ffi_harness.rs:134:5:\nintentional rust C-unwind panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "stdout": "",
+          "trace_events": [
+            "rust_panicking_in_c_unwind"
+          ]
+        },
+        "cell3_rust_catch_unwind_on_cpp": {
+          "rc": -6,
+          "stderr": "thread 'main' (<TID>) panicked at <RUSTC_SRC>/library/core/src/panicking.rs:225:5:\npanic in a function that cannot unwind\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+          "stdout": "",
+          "trace_events": [
+            "cpp_throwing",
+            "cpp_inner_guard_dtor",
+            "rust_inner_catch_guard_drop"
+          ]
+        },
+        "cell4a_c_unwind_no_guard": {
+          "rc": -6,
+          "stderr": "thread 'main' (<TID>) panicked at <RUSTC_SRC>/library/core/src/panicking.rs:225:5:\npanic in a function that cannot unwind\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+          "stdout": "",
+          "trace_events": [
+            "cpp_throwing"
+          ]
+        },
+        "cell5_extern_c_nounwind_throw": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "RC=142 RUST_DROPS=0",
+          "trace_events": [
+            "cpp_throwing",
+            "cpp_caught_ex"
+          ]
+        },
+        "i128_abi": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "I128_SZ=16 I128_AL=16 P48_RUST=(48,16,0,16,32) P48_CPP=(48,16,0,16,32) P48_GCC=(48,16,0,16,32) M64_RUST=(64,16,0,16,32,48) M64_CPP=(64,16,0,16,32,48) M64_GCC=(64,16,0,16,32,48) SPILL_CPP_OK=true SPILL_GCC_OK=true MATCH=true VIS_SUM=75",
+          "trace_events": []
+        },
+        "xlang_thinlto": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "THINLTO_SUM=21981",
+          "trace_events": []
+        }
+      },
+      "thinlto_caller_disasm": [
+        "   16250: 50                           \tpushq\t%rax",
+        "   16251: ff 15 89 16 04 00            \tcallq\t*0x41689(%rip)          # 0x578e0 <writev+0x578e0>",
+        "   16257: 48 83 c0 01                  \taddq\t$0x1, %rax",
+        "   1625b: 48 83 d2 00                  \tadcq\t$0x0, %rdx",
+        "   1625f: 59                           \tpopq\t%rcx",
+        "   16260: c3                           \tretq",
+        "   16261: cc                           \tint3",
+        "   16262: cc                           \tint3",
+        "   16263: cc                           \tint3",
+        "   16264: cc                           \tint3",
+        "   16265: cc                           \tint3",
+        "   16266: cc                           \tint3",
+        "   16267: cc                           \tint3",
+        "   16268: cc                           \tint3",
+        "   16269: cc                           \tint3",
+        "   1626a: cc                           \tint3",
+        "   1626b: cc                           \tint3",
+        "   1626c: cc                           \tint3",
+        "   1626d: cc                           \tint3",
+        "   1626e: cc                           \tint3",
+        "   1626f: cc                           \tint3"
+      ],
+      "thinlto_caller_has_call": true
+    },
+    "panic_abort_no_uwtable_O2": {
+      "binary_size_bytes": 4381024,
+      "compile_rc": 0,
+      "eh_frame_audit": {
+        "symbols": {
+          "cpp_raii_then_rust_panic": {
+            "fde_range": [
+              "0x540b0",
+              "0x54134"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 3,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 2,
+                  "cs_lpad": 105,
+                  "cs_start": 24,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 66,
+                  "cs_lpad": 124,
+                  "cs_start": 33,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 33,
+                  "cs_lpad": 0,
+                  "cs_start": 99,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x540b0",
+              "lsda_va": "0x7c28",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.__gxx_personality_v0",
+            "present_in_symtab": true,
+            "size": 132,
+            "va": "0x540b0"
+          },
+          "cpp_throw_code": {
+            "fde_range": [
+              "0x543a0",
+              "0x543db"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 59,
+            "va": "0x543a0"
+          },
+          "cpp_try_call_rust": {
+            "fde_range": [
+              "0x54030",
+              "0x540a7"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 7,
+              "call_sites": [
+                {
+                  "cs_action": 3,
+                  "cs_len": 5,
+                  "cs_lpad": 20,
+                  "cs_start": 7,
+                  "kind": "catch",
+                  "ttype_index": 2
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 25,
+                  "cs_lpad": 0,
+                  "cs_start": 12,
+                  "kind": "none",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 15,
+                  "cs_lpad": 95,
+                  "cs_start": 37,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 12,
+                  "cs_lpad": 85,
+                  "cs_start": 64,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 12,
+                  "cs_lpad": 0,
+                  "cs_start": 76,
+                  "kind": "none",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 15,
+                  "cs_lpad": 111,
+                  "cs_start": 88,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 16,
+                  "cs_lpad": 0,
+                  "cs_start": 103,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x54030",
+              "lsda_va": "0x7bf8",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.__gxx_personality_v0",
+            "present_in_symtab": true,
+            "size": 119,
+            "va": "0x54030"
+          },
+          "rust_c_unwind_no_guard": {
+            "fde_range": [
+              "0x16040",
+              "0x16056"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 1,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 13,
+                  "cs_lpad": 16,
+                  "cs_start": 1,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x16040",
+              "lsda_va": "0x50e8",
+              "ttype_enc": "0xff"
+            },
+            "personality": "DW.ref.rust_eh_personality",
+            "present_in_symtab": true,
+            "size": 22,
+            "va": "0x16040"
+          },
+          "rust_c_unwind_with_guard": {
+            "fde_range": [
+              "0x16060",
+              "0x1609a"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 1,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 13,
+                  "cs_lpad": 44,
+                  "cs_start": 29,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x16060",
+              "lsda_va": "0x50f0",
+              "ttype_enc": "0xff"
+            },
+            "personality": "DW.ref.rust_eh_personality",
+            "present_in_symtab": true,
+            "size": 58,
+            "va": "0x16060"
+          },
+          "rust_call_cpp_thinlto_leaf": {
+            "has_fde": false,
+            "present_in_symtab": true,
+            "size": 17,
+            "va": "0x160a0"
+          },
+          "rust_catch_cpp_throw_inner": {
+            "has_fde": false,
+            "present_in_symtab": true,
+            "size": 44,
+            "va": "0x160c0"
+          },
+          "rust_extern_c_nounwind_with_guard": {
+            "has_fde": false,
+            "present_in_symtab": true,
+            "size": 14,
+            "va": "0x160f0"
+          },
+          "rust_panic_target": {
+            "has_fde": false,
+            "present_in_symtab": true,
+            "size": 31,
+            "va": "0x16100"
+          }
+        },
+        "total_fdes": 557
+      },
+      "llvm_ir": {
+        "cpp_spill_5gpr_128": {
+          "attr_id": "#0",
+          "attrs": "nounwind nonlazybind \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": false,
+          "signature": "declare noundef i128 @cpp_spill_5gpr_128(i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i128 noundef, i64 noundef) unnamed_addr #0"
+        },
+        "cpp_throw_code": {
+          "attr_id": "#8",
+          "attrs": "noreturn nonlazybind \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": false,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": false,
+          "signature": "declare void @cpp_throw_code(i32 noundef, i32 noundef) unnamed_addr #8"
+        },
+        "rust_c_unwind_no_guard": {
+          "attr_id": "#4",
+          "attrs": "noinline noreturn nounwind nonlazybind \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": true,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": true,
+          "has_personality": true,
+          "has_uwtable": false,
+          "signature": "define dso_local noundef i32 @rust_c_unwind_no_guard(ptr readnone captures(none) %_rust_drops) unnamed_addr #4 personality ptr @rust_eh_personality {"
+        },
+        "rust_c_unwind_with_guard": {
+          "attr_id": "#4",
+          "attrs": "noinline noreturn nounwind nonlazybind \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": true,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": true,
+          "has_personality": true,
+          "has_uwtable": false,
+          "signature": "define dso_local noundef i32 @rust_c_unwind_with_guard(ptr noundef %rust_drops) unnamed_addr #4 personality ptr @rust_eh_personality {"
+        },
+        "rust_call_cpp_thinlto_leaf": {
+          "attr_id": "#1",
+          "attrs": "noinline nounwind nonlazybind \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": false,
+          "signature": "define dso_local noundef i128 @rust_call_cpp_thinlto_leaf(i128 noundef %a, i128 noundef %b) unnamed_addr #1 {"
+        },
+        "rust_extern_c_nounwind_with_guard": {
+          "attr_id": "#4",
+          "attrs": "noinline noreturn nounwind nonlazybind \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": false,
+          "signature": "define dso_local noundef i32 @rust_extern_c_nounwind_with_guard(ptr readnone captures(none) %rust_drops) unnamed_addr #4 {"
+        }
+      },
+      "modes": {
+        "cell1_cpp_through_rust_c_unwind": {
+          "rc": -6,
+          "stderr": "thread 'main' (<TID>) panicked at <RUSTC_SRC>/library/core/src/panicking.rs:225:5:\npanic in a function that cannot unwind\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+          "stdout": "",
+          "trace_events": [
+            "cpp_throwing",
+            "rust_c_unwind_guard_drop"
+          ]
+        },
+        "cell2_rust_panic_through_cpp_raii": {
+          "rc": -6,
+          "stderr": "thread 'main' (<TID>) panicked at <SPECIMENS>/rust_ffi_harness.rs:134:5:\nintentional rust C-unwind panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "stdout": "",
+          "trace_events": [
+            "rust_panicking_in_c_unwind"
+          ]
+        },
+        "cell3_rust_catch_unwind_on_cpp": {
+          "rc": -6,
+          "stderr": "terminate called after throwing an instance of 'CppEx'",
+          "stdout": "",
+          "trace_events": [
+            "cpp_throwing"
+          ]
+        },
+        "cell4a_c_unwind_no_guard": {
+          "rc": -6,
+          "stderr": "thread 'main' (<TID>) panicked at <RUSTC_SRC>/library/core/src/panicking.rs:225:5:\npanic in a function that cannot unwind\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+          "stdout": "",
+          "trace_events": [
+            "cpp_throwing"
+          ]
+        },
+        "cell5_extern_c_nounwind_throw": {
+          "rc": -6,
+          "stderr": "terminate called after throwing an instance of 'CppEx'",
+          "stdout": "",
+          "trace_events": [
+            "cpp_throwing"
+          ]
+        },
+        "i128_abi": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "I128_SZ=16 I128_AL=16 P48_RUST=(48,16,0,16,32) P48_CPP=(48,16,0,16,32) P48_GCC=(48,16,0,16,32) M64_RUST=(64,16,0,16,32,48) M64_CPP=(64,16,0,16,32,48) M64_GCC=(64,16,0,16,32,48) SPILL_CPP_OK=true SPILL_GCC_OK=true MATCH=true VIS_SUM=75",
+          "trace_events": []
+        },
+        "xlang_thinlto": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "THINLTO_SUM=21981",
+          "trace_events": []
+        }
+      },
+      "thinlto_caller_disasm": [
+        "   160a0: 50                           \tpushq\t%rax",
+        "   160a1: ff 15 89 16 04 00            \tcallq\t*0x41689(%rip)          # 0x57730 <writev+0x57730>",
+        "   160a7: 48 83 c0 01                  \taddq\t$0x1, %rax",
+        "   160ab: 48 83 d2 00                  \tadcq\t$0x0, %rdx",
+        "   160af: 59                           \tpopq\t%rcx",
+        "   160b0: c3                           \tretq",
+        "   160b1: cc                           \tint3",
+        "   160b2: cc                           \tint3",
+        "   160b3: cc                           \tint3",
+        "   160b4: cc                           \tint3",
+        "   160b5: cc                           \tint3",
+        "   160b6: cc                           \tint3",
+        "   160b7: cc                           \tint3",
+        "   160b8: cc                           \tint3",
+        "   160b9: cc                           \tint3",
+        "   160ba: cc                           \tint3",
+        "   160bb: cc                           \tint3",
+        "   160bc: cc                           \tint3",
+        "   160bd: cc                           \tint3",
+        "   160be: cc                           \tint3",
+        "   160bf: cc                           \tint3"
+      ],
+      "thinlto_caller_has_call": true
+    },
+    "panic_unwind_O2": {
+      "binary_size_bytes": 4389568,
+      "compile_rc": 0,
+      "eh_frame_audit": {
+        "symbols": {
+          "cpp_raii_then_rust_panic": {
+            "fde_range": [
+              "0x54d10",
+              "0x54d94"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 3,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 2,
+                  "cs_lpad": 105,
+                  "cs_start": 24,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 66,
+                  "cs_lpad": 124,
+                  "cs_start": 33,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 33,
+                  "cs_lpad": 0,
+                  "cs_start": 99,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x54d10",
+              "lsda_va": "0x7d54",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.__gxx_personality_v0",
+            "present_in_symtab": true,
+            "size": 132,
+            "va": "0x54d10"
+          },
+          "cpp_throw_code": {
+            "fde_range": [
+              "0x55000",
+              "0x5503b"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 59,
+            "va": "0x55000"
+          },
+          "cpp_try_call_rust": {
+            "fde_range": [
+              "0x54c90",
+              "0x54d07"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 7,
+              "call_sites": [
+                {
+                  "cs_action": 3,
+                  "cs_len": 5,
+                  "cs_lpad": 20,
+                  "cs_start": 7,
+                  "kind": "catch",
+                  "ttype_index": 2
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 25,
+                  "cs_lpad": 0,
+                  "cs_start": 12,
+                  "kind": "none",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 15,
+                  "cs_lpad": 95,
+                  "cs_start": 37,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 12,
+                  "cs_lpad": 85,
+                  "cs_start": 64,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 12,
+                  "cs_lpad": 0,
+                  "cs_start": 76,
+                  "kind": "none",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 15,
+                  "cs_lpad": 111,
+                  "cs_start": 88,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 16,
+                  "cs_lpad": 0,
+                  "cs_start": 103,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x54c90",
+              "lsda_va": "0x7d24",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.__gxx_personality_v0",
+            "present_in_symtab": true,
+            "size": 119,
+            "va": "0x54c90"
+          },
+          "rust_c_unwind_no_guard": {
+            "fde_range": [
+              "0x16770",
+              "0x1677e"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 14,
+            "va": "0x16770"
+          },
+          "rust_c_unwind_with_guard": {
+            "fde_range": [
+              "0x16780",
+              "0x16814"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 2,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 13,
+                  "cs_lpad": 28,
+                  "cs_start": 13,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 122,
+                  "cs_lpad": 0,
+                  "cs_start": 26,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x16780",
+              "lsda_va": "0x51b0",
+              "ttype_enc": "0xff"
+            },
+            "personality": "DW.ref.rust_eh_personality",
+            "present_in_symtab": true,
+            "size": 148,
+            "va": "0x16780"
+          },
+          "rust_call_cpp_thinlto_leaf": {
+            "fde_range": [
+              "0x16820",
+              "0x16831"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 17,
+            "va": "0x16820"
+          },
+          "rust_catch_cpp_throw_inner": {
+            "fde_range": [
+              "0x16840",
+              "0x16937"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 4,
+              "call_sites": [
+                {
+                  "cs_action": 3,
+                  "cs_len": 13,
+                  "cs_lpad": 36,
+                  "cs_start": 21,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 9,
+                  "cs_lpad": 241,
+                  "cs_start": 36,
+                  "kind": "filter_terminate",
+                  "ttype_index": -1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 5,
+                  "cs_lpad": 208,
+                  "cs_start": 163,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 79,
+                  "cs_lpad": 0,
+                  "cs_start": 168,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x16840",
+              "lsda_va": "0x51bc",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.rust_eh_personality",
+            "present_in_symtab": true,
+            "size": 247,
+            "va": "0x16840"
+          },
+          "rust_extern_c_nounwind_with_guard": {
+            "fde_range": [
+              "0x16940",
+              "0x1694e"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 14,
+            "va": "0x16940"
+          },
+          "rust_panic_target": {
+            "fde_range": [
+              "0x16950",
+              "0x1696f"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 31,
+            "va": "0x16950"
+          }
+        },
+        "total_fdes": 576
+      },
+      "llvm_ir": {
+        "cpp_spill_5gpr_128": {
+          "attr_id": "#1",
+          "attrs": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "declare noundef i128 @cpp_spill_5gpr_128(i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i128 noundef, i64 noundef) unnamed_addr #1"
+        },
+        "cpp_throw_code": {
+          "attr_id": "#14",
+          "attrs": "noreturn nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": false,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "declare void @cpp_throw_code(i32 noundef, i32 noundef) unnamed_addr #14"
+        },
+        "rust_c_unwind_no_guard": {
+          "attr_id": "#5",
+          "attrs": "noinline noreturn nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": false,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i32 @rust_c_unwind_no_guard(ptr readnone captures(none) %_rust_drops) unnamed_addr #5 {"
+        },
+        "rust_c_unwind_with_guard": {
+          "attr_id": "#5",
+          "attrs": "noinline noreturn nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": true,
+          "has_nounwind": false,
+          "has_panic_cannot_unwind": false,
+          "has_personality": true,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i32 @rust_c_unwind_with_guard(ptr noundef captures(address_is_null) %rust_drops) unnamed_addr #5 personality ptr @rust_eh_personality {"
+        },
+        "rust_call_cpp_thinlto_leaf": {
+          "attr_id": "#6",
+          "attrs": "noinline nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i128 @rust_call_cpp_thinlto_leaf(i128 noundef %a, i128 noundef %b) unnamed_addr #6 {"
+        },
+        "rust_extern_c_nounwind_with_guard": {
+          "attr_id": "#7",
+          "attrs": "noinline noreturn nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i32 @rust_extern_c_nounwind_with_guard(ptr readnone captures(none) %rust_drops) unnamed_addr #7 {"
+        }
+      },
+      "modes": {
+        "cell1_cpp_through_rust_c_unwind": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "RC=142 RUST_DROPS=1",
+          "trace_events": [
+            "cpp_throwing",
+            "rust_c_unwind_guard_drop",
+            "cpp_caught_ex"
+          ]
+        },
+        "cell2_rust_panic_through_cpp_raii": {
+          "rc": 0,
+          "stderr": "thread 'main' (<TID>) panicked at <SPECIMENS>/rust_ffi_harness.rs:134:5:\nintentional rust C-unwind panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "stdout": "CAUGHT=true CPP_DTORS=1",
+          "trace_events": [
+            "rust_panicking_in_c_unwind",
+            "cpp_raii_guard_dtor",
+            "rust_caught_panic"
+          ]
+        },
+        "cell3_rust_catch_unwind_on_cpp": {
+          "rc": -6,
+          "stderr": "fatal runtime error: Rust cannot catch foreign exceptions, aborting",
+          "stdout": "",
+          "trace_events": [
+            "cpp_throwing",
+            "cpp_inner_guard_dtor",
+            "rust_inner_catch_guard_drop",
+            "cpp_ex_dtor"
+          ]
+        },
+        "cell4a_c_unwind_no_guard": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "RC=142 RUST_DROPS=0",
+          "trace_events": [
+            "cpp_throwing",
+            "cpp_caught_ex"
+          ]
+        },
+        "cell5_extern_c_nounwind_throw": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "RC=142 RUST_DROPS=0",
+          "trace_events": [
+            "cpp_throwing",
+            "cpp_caught_ex"
+          ]
+        },
+        "i128_abi": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "I128_SZ=16 I128_AL=16 P48_RUST=(48,16,0,16,32) P48_CPP=(48,16,0,16,32) P48_GCC=(48,16,0,16,32) M64_RUST=(64,16,0,16,32,48) M64_CPP=(64,16,0,16,32,48) M64_GCC=(64,16,0,16,32,48) SPILL_CPP_OK=true SPILL_GCC_OK=true MATCH=true VIS_SUM=75",
+          "trace_events": []
+        },
+        "xlang_thinlto": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "THINLTO_SUM=21981",
+          "trace_events": []
+        }
+      },
+      "thinlto_caller_disasm": [
+        "   16820: 50                           \tpushq\t%rax",
+        "   16821: ff 15 21 1b 04 00            \tcallq\t*0x41b21(%rip)          # 0x58348 <writev+0x58348>",
+        "   16827: 48 83 c0 01                  \taddq\t$0x1, %rax",
+        "   1682b: 48 83 d2 00                  \tadcq\t$0x0, %rdx",
+        "   1682f: 59                           \tpopq\t%rcx",
+        "   16830: c3                           \tretq",
+        "   16831: cc                           \tint3",
+        "   16832: cc                           \tint3",
+        "   16833: cc                           \tint3",
+        "   16834: cc                           \tint3",
+        "   16835: cc                           \tint3",
+        "   16836: cc                           \tint3",
+        "   16837: cc                           \tint3",
+        "   16838: cc                           \tint3",
+        "   16839: cc                           \tint3",
+        "   1683a: cc                           \tint3",
+        "   1683b: cc                           \tint3",
+        "   1683c: cc                           \tint3",
+        "   1683d: cc                           \tint3",
+        "   1683e: cc                           \tint3",
+        "   1683f: cc                           \tint3"
+      ],
+      "thinlto_caller_has_call": true
+    },
+    "panic_unwind_xlang_thinlto_O2": {
+      "binary_size_bytes": 4388568,
+      "compile_rc": 0,
+      "eh_frame_audit": {
+        "symbols": {
+          "cpp_raii_then_rust_panic": {
+            "fde_range": [
+              "0x54bc0",
+              "0x54c44"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 3,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 2,
+                  "cs_lpad": 105,
+                  "cs_start": 24,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 66,
+                  "cs_lpad": 124,
+                  "cs_start": 33,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 33,
+                  "cs_lpad": 0,
+                  "cs_start": 99,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x54bc0",
+              "lsda_va": "0x7aa4",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.__gxx_personality_v0",
+            "present_in_symtab": true,
+            "size": 132,
+            "va": "0x54bc0"
+          },
+          "cpp_throw_code": {
+            "fde_range": [
+              "0x54a40",
+              "0x54a7b"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 59,
+            "va": "0x54a40"
+          },
+          "cpp_try_call_rust": {
+            "fde_range": [
+              "0x54b30",
+              "0x54ba7"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 7,
+              "call_sites": [
+                {
+                  "cs_action": 3,
+                  "cs_len": 5,
+                  "cs_lpad": 20,
+                  "cs_start": 7,
+                  "kind": "catch",
+                  "ttype_index": 2
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 25,
+                  "cs_lpad": 0,
+                  "cs_start": 12,
+                  "kind": "none",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 15,
+                  "cs_lpad": 95,
+                  "cs_start": 37,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 12,
+                  "cs_lpad": 85,
+                  "cs_start": 64,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 12,
+                  "cs_lpad": 0,
+                  "cs_start": 76,
+                  "kind": "none",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 15,
+                  "cs_lpad": 111,
+                  "cs_start": 88,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 16,
+                  "cs_lpad": 0,
+                  "cs_start": 103,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x54b30",
+              "lsda_va": "0x7a74",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.__gxx_personality_v0",
+            "present_in_symtab": true,
+            "size": 119,
+            "va": "0x54b30"
+          },
+          "rust_c_unwind_no_guard": {
+            "fde_range": [
+              "0x547b0",
+              "0x547bd"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 13,
+            "va": "0x547b0"
+          },
+          "rust_c_unwind_with_guard": {
+            "fde_range": [
+              "0x547c0",
+              "0x54851"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 2,
+              "call_sites": [
+                {
+                  "cs_action": 0,
+                  "cs_len": 12,
+                  "cs_lpad": 25,
+                  "cs_start": 13,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 120,
+                  "cs_lpad": 0,
+                  "cs_start": 25,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x547c0",
+              "lsda_va": "0x7a30",
+              "ttype_enc": "0xff"
+            },
+            "personality": "DW.ref.rust_eh_personality",
+            "present_in_symtab": true,
+            "size": 145,
+            "va": "0x547c0"
+          },
+          "rust_call_cpp_thinlto_leaf": {
+            "fde_range": [
+              "0x54860",
+              "0x5488b"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 43,
+            "va": "0x54860"
+          },
+          "rust_catch_cpp_throw_inner": {
+            "fde_range": [
+              "0x54890",
+              "0x54983"
+            ],
+            "has_fde": true,
+            "lsda": {
+              "call_site_count": 4,
+              "call_sites": [
+                {
+                  "cs_action": 3,
+                  "cs_len": 13,
+                  "cs_lpad": 34,
+                  "cs_start": 21,
+                  "kind": "catch",
+                  "ttype_index": 1
+                },
+                {
+                  "cs_action": 1,
+                  "cs_len": 9,
+                  "cs_lpad": 237,
+                  "cs_start": 34,
+                  "kind": "filter_terminate",
+                  "ttype_index": -1
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 5,
+                  "cs_lpad": 205,
+                  "cs_start": 161,
+                  "kind": "cleanup",
+                  "ttype_index": null
+                },
+                {
+                  "cs_action": 0,
+                  "cs_len": 77,
+                  "cs_lpad": 0,
+                  "cs_start": 166,
+                  "kind": "none",
+                  "ttype_index": null
+                }
+              ],
+              "lp_start": "0x54890",
+              "lsda_va": "0x7a3c",
+              "ttype_enc": "0x9b"
+            },
+            "personality": "DW.ref.rust_eh_personality",
+            "present_in_symtab": true,
+            "size": 243,
+            "va": "0x54890"
+          },
+          "rust_extern_c_nounwind_with_guard": {
+            "fde_range": [
+              "0x54990",
+              "0x5499d"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 13,
+            "va": "0x54990"
+          },
+          "rust_panic_target": {
+            "fde_range": [
+              "0x549a0",
+              "0x549bf"
+            ],
+            "has_fde": true,
+            "lsda": null,
+            "personality": null,
+            "present_in_symtab": true,
+            "size": 31,
+            "va": "0x549a0"
+          }
+        },
+        "total_fdes": 575
+      },
+      "llvm_ir": {
+        "cpp_spill_5gpr_128": {
+          "attr_id": "#1",
+          "attrs": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "declare noundef i128 @cpp_spill_5gpr_128(i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i128 noundef, i64 noundef) unnamed_addr #1"
+        },
+        "cpp_throw_code": {
+          "attr_id": "#14",
+          "attrs": "noreturn nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": false,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "declare void @cpp_throw_code(i32 noundef, i32 noundef) unnamed_addr #14"
+        },
+        "rust_c_unwind_no_guard": {
+          "attr_id": "#5",
+          "attrs": "noinline noreturn nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": false,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i32 @rust_c_unwind_no_guard(ptr readnone captures(none) %_rust_drops) unnamed_addr #5 {"
+        },
+        "rust_c_unwind_with_guard": {
+          "attr_id": "#5",
+          "attrs": "noinline noreturn nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": true,
+          "has_nounwind": false,
+          "has_panic_cannot_unwind": false,
+          "has_personality": true,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i32 @rust_c_unwind_with_guard(ptr noundef captures(address_is_null) %rust_drops) unnamed_addr #5 personality ptr @rust_eh_personality {"
+        },
+        "rust_call_cpp_thinlto_leaf": {
+          "attr_id": "#6",
+          "attrs": "noinline nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i128 @rust_call_cpp_thinlto_leaf(i128 noundef %a, i128 noundef %b) unnamed_addr #6 {"
+        },
+        "rust_extern_c_nounwind_with_guard": {
+          "attr_id": "#7",
+          "attrs": "noinline noreturn nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+          "has_filter_lpad": false,
+          "has_invoke": false,
+          "has_nounwind": true,
+          "has_panic_cannot_unwind": false,
+          "has_personality": false,
+          "has_uwtable": true,
+          "signature": "define dso_local noundef i32 @rust_extern_c_nounwind_with_guard(ptr readnone captures(none) %rust_drops) unnamed_addr #7 {"
+        }
+      },
+      "modes": {
+        "cell1_cpp_through_rust_c_unwind": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "RC=142 RUST_DROPS=1",
+          "trace_events": [
+            "cpp_throwing",
+            "rust_c_unwind_guard_drop",
+            "cpp_caught_ex"
+          ]
+        },
+        "cell2_rust_panic_through_cpp_raii": {
+          "rc": 0,
+          "stderr": "thread 'main' (<TID>) panicked at <SPECIMENS>/rust_ffi_harness.rs:134:5:\nintentional rust C-unwind panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "stdout": "CAUGHT=true CPP_DTORS=1",
+          "trace_events": [
+            "rust_panicking_in_c_unwind",
+            "cpp_raii_guard_dtor",
+            "rust_caught_panic"
+          ]
+        },
+        "cell3_rust_catch_unwind_on_cpp": {
+          "rc": -6,
+          "stderr": "fatal runtime error: Rust cannot catch foreign exceptions, aborting",
+          "stdout": "",
+          "trace_events": [
+            "cpp_throwing",
+            "cpp_inner_guard_dtor",
+            "rust_inner_catch_guard_drop",
+            "cpp_ex_dtor"
+          ]
+        },
+        "cell4a_c_unwind_no_guard": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "RC=142 RUST_DROPS=0",
+          "trace_events": [
+            "cpp_throwing",
+            "cpp_caught_ex"
+          ]
+        },
+        "cell5_extern_c_nounwind_throw": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "RC=142 RUST_DROPS=0",
+          "trace_events": [
+            "cpp_throwing",
+            "cpp_caught_ex"
+          ]
+        },
+        "i128_abi": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "I128_SZ=16 I128_AL=16 P48_RUST=(48,16,0,16,32) P48_CPP=(48,16,0,16,32) P48_GCC=(48,16,0,16,32) M64_RUST=(64,16,0,16,32,48) M64_CPP=(64,16,0,16,32,48) M64_GCC=(64,16,0,16,32,48) SPILL_CPP_OK=true SPILL_GCC_OK=true MATCH=true VIS_SUM=75",
+          "trace_events": []
+        },
+        "xlang_thinlto": {
+          "rc": 0,
+          "stderr": "",
+          "stdout": "THINLTO_SUM=21981",
+          "trace_events": []
+        }
+      },
+      "thinlto_caller_disasm": [
+        "   54860: 49 89 d0                     \tmovq\t%rdx, %r8",
+        "   54863: 48 89 f8                     \tmovq\t%rdi, %rax",
+        "   54866: ba 03 00 00 00               \tmovl\t$0x3, %edx",
+        "   5486b: 48 f7 e2                     \tmulq\t%rdx",
+        "   5486e: 48 8d 34 76                  \tleaq\t(%rsi,%rsi,2), %rsi",
+        "   54872: 48 01 f2                     \taddq\t%rsi, %rdx",
+        "   54875: 49 81 f0 aa 55 00 00         \txorq\t$0x55aa, %r8            # imm = 0x55AA",
+        "   5487c: 4c 01 c0                     \taddq\t%r8, %rax",
+        "   5487f: 48 11 ca                     \tadcq\t%rcx, %rdx",
+        "   54882: 48 83 c0 01                  \taddq\t$0x1, %rax",
+        "   54886: 48 83 d2 00                  \tadcq\t$0x0, %rdx",
+        "   5488a: c3                           \tretq",
+        "   5488b: cc                           \tint3",
+        "   5488c: cc                           \tint3",
+        "   5488d: cc                           \tint3",
+        "   5488e: cc                           \tint3",
+        "   5488f: cc                           \tint3"
+      ],
+      "thinlto_caller_has_call": false
+    }
+  },
+  "specimen_hashes": {
+    "cpp_main_nocatch.cpp": {
+      "bytes": 1066,
+      "sha256": "01ccfd00a03113e10b4c9336a769aecbccc38f01cd402e948200625dc406946a"
+    },
+    "ffi_bridge.cpp": {
+      "bytes": 5502,
+      "sha256": "d214ba95434e12b6eff82b55463ca4d098d4d4fb1283d4ab36296f82b5f22bea"
+    },
+    "ffi_c17_abi.c": {
+      "bytes": 1981,
+      "sha256": "4fa6bfadeb6d2ee19df0a79e5ed5f501975e88f55d0a81665ce69296b72b00f0"
+    },
+    "rust_cdylib_vis.rs": {
+      "bytes": 1026,
+      "sha256": "83e4eada2ff7929a11d95d3e513479a64e56621fff36d1c0ef87b9ecebc82043"
+    },
+    "rust_ffi_harness.rs": {
+      "bytes": 11110,
+      "sha256": "a046402de9eaedce8f476ce8d325bbbf9dc6657409813e8ac552941fa73cb393"
+    },
+    "rust_staticlib_abort.rs": {
+      "bytes": 717,
+      "sha256": "206b94f72ace4c8631414bafbf46e87854d549312b6cff9bdae4d6d1ce13d582"
+    }
+  },
+  "toolchains": {
+    "cxx": "clang version 22.1.4 (https://github.com/llvm/llvm-project 35990504507d79e0b9deb809c8ee5e1b34ceef20)",
+    "cxx_driver_mode": "clang_x_cpp",
+    "gcc": "gcc (Debian 15.2.0-14) 15.2.0",
+    "libstdcpp": "libstdc++.so.6",
+    "readelf": "GNU readelf (GNU Binutils for Debian) 2.47",
+    "rustc": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+  },
+  "visibility_and_linker_matrix": {
+    "bin_default_linker_libs_no": {
+      "dynsym_check": null,
+      "has_dynamic_list": false,
+      "has_nodefaultlibs": true,
+      "rust_c_unwind_in_dynsym": {
+        "dynsym": null,
+        "symtab": null
+      }
+    },
+    "bin_default_linker_libs_yes": {
+      "dynsym_check": null,
+      "has_dynamic_list": false,
+      "has_nodefaultlibs": false,
+      "rust_c_unwind_in_dynsym": {
+        "dynsym": null,
+        "symtab": null
+      }
+    },
+    "bin_export_exec_syms": {
+      "dynsym_check": {
+        "bind": "GLOBAL",
+        "ndx": "15",
+        "raw_name": "rust_c_unwind_with_guard",
+        "size": "148",
+        "type": "FUNC",
+        "value": "00000000000168f0",
+        "vis": "DEFAULT"
+      },
+      "has_dynamic_list": true,
+      "has_nodefaultlibs": true,
+      "rust_c_unwind_in_dynsym": {
+        "dynsym": null,
+        "symtab": null
+      }
+    },
+    "clang_shared_so": {
+      "symbols": {
+        "cpp_thinlto_leaf_mul_add128": {
+          "dynsym": {
+            "bind": "GLOBAL",
+            "ndx": "12",
+            "raw_name": "cpp_thinlto_leaf_mul_add128",
+            "size": "35",
+            "type": "FUNC",
+            "value": "00000000000026a0",
+            "vis": "DEFAULT"
+          },
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "12",
+            "raw_name": "cpp_thinlto_leaf_mul_add128",
+            "size": "35",
+            "type": "FUNC",
+            "value": "00000000000026a0",
+            "vis": "DEFAULT"
+          }
+        },
+        "cpp_vis_default_fn": {
+          "dynsym": {
+            "bind": "GLOBAL",
+            "ndx": "12",
+            "raw_name": "cpp_vis_default_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "0000000000002680",
+            "vis": "DEFAULT"
+          },
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "12",
+            "raw_name": "cpp_vis_default_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "0000000000002680",
+            "vis": "DEFAULT"
+          }
+        },
+        "cpp_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "12",
+            "raw_name": "cpp_vis_hidden_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "0000000000002690",
+            "vis": "HIDDEN"
+          }
+        },
+        "gcc_vis_default_fn": {
+          "dynsym": {
+            "bind": "GLOBAL",
+            "ndx": "12",
+            "raw_name": "gcc_vis_default_fn",
+            "size": "16",
+            "type": "FUNC",
+            "value": "00000000000028d0",
+            "vis": "DEFAULT"
+          },
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "12",
+            "raw_name": "gcc_vis_default_fn",
+            "size": "16",
+            "type": "FUNC",
+            "value": "00000000000028d0",
+            "vis": "DEFAULT"
+          }
+        },
+        "gcc_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "12",
+            "raw_name": "gcc_vis_hidden_fn",
+            "size": "10",
+            "type": "FUNC",
+            "value": "00000000000028e0",
+            "vis": "HIDDEN"
+          }
+        },
+        "rust_custom_export_api": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_exported_c_unwind_api": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_mangled_pub_api": {
+          "dynsym": null,
+          "symtab": null
+        }
+      },
+      "total_dynsym_defined_globals": 25
+    },
+    "prelink_c17_obj": {
+      "symbols": {
+        "cpp_thinlto_leaf_mul_add128": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "cpp_vis_default_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "cpp_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "gcc_vis_default_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "1",
+            "raw_name": "gcc_vis_default_fn",
+            "size": "16",
+            "type": "FUNC",
+            "value": "00000000000000a0",
+            "vis": "DEFAULT"
+          }
+        },
+        "gcc_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "1",
+            "raw_name": "gcc_vis_hidden_fn",
+            "size": "10",
+            "type": "FUNC",
+            "value": "00000000000000b0",
+            "vis": "HIDDEN"
+          }
+        },
+        "rust_custom_export_api": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_exported_c_unwind_api": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_mangled_pub_api": {
+          "dynsym": null,
+          "symtab": null
+        }
+      },
+      "total_dynsym_defined_globals": 0
+    },
+    "prelink_cpp_obj": {
+      "symbols": {
+        "cpp_thinlto_leaf_mul_add128": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "2",
+            "raw_name": "cpp_thinlto_leaf_mul_add128",
+            "size": "35",
+            "type": "FUNC",
+            "value": "0000000000000390",
+            "vis": "DEFAULT"
+          }
+        },
+        "cpp_vis_default_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "2",
+            "raw_name": "cpp_vis_default_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "0000000000000370",
+            "vis": "DEFAULT"
+          }
+        },
+        "cpp_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "2",
+            "raw_name": "cpp_vis_hidden_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "0000000000000380",
+            "vis": "HIDDEN"
+          }
+        },
+        "gcc_vis_default_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "gcc_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_custom_export_api": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_exported_c_unwind_api": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_mangled_pub_api": {
+          "dynsym": null,
+          "symtab": null
+        }
+      },
+      "total_dynsym_defined_globals": 0
+    },
+    "rustc_cdylib_default": {
+      "disasm_rust_custom_export_api": [
+        "   11ec0: 50                           \tpushq\t%rax",
+        "   11ec1: 48 89 f2                     \tmovq\t%rsi, %rdx",
+        "   11ec4: 31 f6                        \txorl\t%esi, %esi",
+        "   11ec6: 31 c9                        \txorl\t%ecx, %ecx",
+        "   11ec8: ff 15 e2 ae 03 00            \tcallq\t*0x3aee2(%rip)          # 0x4cdb0 <writev+0x4cdb0>",
+        "   11ece: 59                           \tpopq\t%rcx",
+        "   11ecf: c3                           \tretq"
+      ],
+      "symbols": {
+        "cpp_thinlto_leaf_mul_add128": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "cpp_thinlto_leaf_mul_add128",
+            "size": "35",
+            "type": "FUNC",
+            "value": "000000000004a370",
+            "vis": "DEFAULT"
+          }
+        },
+        "cpp_vis_default_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "cpp_vis_default_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "000000000004a350",
+            "vis": "DEFAULT"
+          }
+        },
+        "cpp_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "cpp_vis_hidden_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "000000000004a360",
+            "vis": "HIDDEN"
+          }
+        },
+        "gcc_vis_default_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "gcc_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_custom_export_api": {
+          "dynsym": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_custom_export_api",
+            "size": "16",
+            "type": "FUNC",
+            "value": "0000000000011ec0",
+            "vis": "DEFAULT"
+          },
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_custom_export_api",
+            "size": "16",
+            "type": "FUNC",
+            "value": "0000000000011ec0",
+            "vis": "DEFAULT"
+          }
+        },
+        "rust_exported_c_unwind_api": {
+          "dynsym": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_exported_c_unwind_api",
+            "size": "5",
+            "type": "FUNC",
+            "value": "0000000000011ed0",
+            "vis": "DEFAULT"
+          },
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_exported_c_unwind_api",
+            "size": "5",
+            "type": "FUNC",
+            "value": "0000000000011ed0",
+            "vis": "DEFAULT"
+          }
+        },
+        "rust_mangled_pub_api": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "_RNvCsg76ilNuPX1q_15rust_cdylib_vis20rust_mangled_pub_api",
+            "size": "50",
+            "type": "FUNC",
+            "value": "0000000000011e80",
+            "vis": "DEFAULT"
+          }
+        }
+      },
+      "total_dynsym_defined_globals": 2
+    },
+    "rustc_cdylib_xlang_thinlto": {
+      "disasm_rust_custom_export_api": [
+        "   49a10: 48 8d 04 7f                  \tleaq\t(%rdi,%rdi,2), %rax",
+        "   49a14: 48 81 f6 aa 55 00 00         \txorq\t$0x55aa, %rsi           # imm = 0x55AA",
+        "   49a1b: 48 01 f0                     \taddq\t%rsi, %rax",
+        "   49a1e: c3                           \tretq",
+        "   49a1f: cc                           \tint3"
+      ],
+      "symbols": {
+        "cpp_thinlto_leaf_mul_add128": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "cpp_vis_default_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "cpp_vis_default_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "0000000000049a80",
+            "vis": "DEFAULT"
+          }
+        },
+        "cpp_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "cpp_vis_hidden_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "0000000000049a90",
+            "vis": "HIDDEN"
+          }
+        },
+        "gcc_vis_default_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "gcc_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_custom_export_api": {
+          "dynsym": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_custom_export_api",
+            "size": "15",
+            "type": "FUNC",
+            "value": "0000000000049a10",
+            "vis": "DEFAULT"
+          },
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_custom_export_api",
+            "size": "15",
+            "type": "FUNC",
+            "value": "0000000000049a10",
+            "vis": "DEFAULT"
+          }
+        },
+        "rust_exported_c_unwind_api": {
+          "dynsym": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_exported_c_unwind_api",
+            "size": "5",
+            "type": "FUNC",
+            "value": "0000000000049a20",
+            "vis": "DEFAULT"
+          },
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_exported_c_unwind_api",
+            "size": "5",
+            "type": "FUNC",
+            "value": "0000000000049a20",
+            "vis": "DEFAULT"
+          }
+        },
+        "rust_mangled_pub_api": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "_RNvCsg76ilNuPX1q_15rust_cdylib_vis20rust_mangled_pub_api",
+            "size": "50",
+            "type": "FUNC",
+            "value": "00000000000499d0",
+            "vis": "DEFAULT"
+          }
+        }
+      },
+      "total_dynsym_defined_globals": 2
+    },
+    "rustc_cdylib_z_hidden": {
+      "symbols": {
+        "cpp_thinlto_leaf_mul_add128": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "cpp_thinlto_leaf_mul_add128",
+            "size": "35",
+            "type": "FUNC",
+            "value": "000000000004a370",
+            "vis": "DEFAULT"
+          }
+        },
+        "cpp_vis_default_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "cpp_vis_default_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "000000000004a350",
+            "vis": "DEFAULT"
+          }
+        },
+        "cpp_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "cpp_vis_hidden_fn",
+            "size": "9",
+            "type": "FUNC",
+            "value": "000000000004a360",
+            "vis": "HIDDEN"
+          }
+        },
+        "gcc_vis_default_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "gcc_vis_hidden_fn": {
+          "dynsym": null,
+          "symtab": null
+        },
+        "rust_custom_export_api": {
+          "dynsym": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_custom_export_api",
+            "size": "16",
+            "type": "FUNC",
+            "value": "0000000000011ec0",
+            "vis": "DEFAULT"
+          },
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_custom_export_api",
+            "size": "16",
+            "type": "FUNC",
+            "value": "0000000000011ec0",
+            "vis": "DEFAULT"
+          }
+        },
+        "rust_exported_c_unwind_api": {
+          "dynsym": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_exported_c_unwind_api",
+            "size": "5",
+            "type": "FUNC",
+            "value": "0000000000011ed0",
+            "vis": "DEFAULT"
+          },
+          "symtab": {
+            "bind": "GLOBAL",
+            "ndx": "15",
+            "raw_name": "rust_exported_c_unwind_api",
+            "size": "5",
+            "type": "FUNC",
+            "value": "0000000000011ed0",
+            "vis": "DEFAULT"
+          }
+        },
+        "rust_mangled_pub_api": {
+          "dynsym": null,
+          "symtab": {
+            "bind": "LOCAL",
+            "ndx": "15",
+            "raw_name": "_RNvCsg76ilNuPX1q_15rust_cdylib_vis20rust_mangled_pub_api",
+            "size": "50",
+            "type": "FUNC",
+            "value": "0000000000011e80",
+            "vis": "DEFAULT"
+          }
+        }
+      },
+      "total_dynsym_defined_globals": 2
+    },
+    "rustc_rlib_default_obj_syms": {
+      ".text.rust_custom_export_api": {
+        "bind": "LOCAL",
+        "ndx": "7",
+        "raw_name": ".text.rust_custom_export_api",
+        "size": "0",
+        "type": "SECTION",
+        "value": "0000000000000000",
+        "vis": "DEFAULT"
+      },
+      ".text.rust_exported_c_unwind_api": {
+        "bind": "LOCAL",
+        "ndx": "9",
+        "raw_name": ".text.rust_exported_c_unwind_api",
+        "size": "0",
+        "type": "SECTION",
+        "value": "0000000000000000",
+        "vis": "DEFAULT"
+      },
+      "rust_custom_export_api": {
+        "bind": "GLOBAL",
+        "ndx": "7",
+        "raw_name": "rust_custom_export_api",
+        "size": "16",
+        "type": "FUNC",
+        "value": "0000000000000000",
+        "vis": "DEFAULT"
+      },
+      "rust_exported_c_unwind_api": {
+        "bind": "GLOBAL",
+        "ndx": "9",
+        "raw_name": "rust_exported_c_unwind_api",
+        "size": "6",
+        "type": "FUNC",
+        "value": "0000000000000000",
+        "vis": "DEFAULT"
+      },
+      "rust_mangled_pub_api": {
+        "bind": "GLOBAL",
+        "ndx": "5",
+        "raw_name": "_RNvCsg76ilNuPX1q_15rust_cdylib_vis20rust_mangled_pub_api",
+        "size": "50",
+        "type": "FUNC",
+        "value": "0000000000000000",
+        "vis": "DEFAULT"
+      }
+    },
+    "rustc_rlib_z_hidden_obj_syms": {
+      ".text.rust_custom_export_api": {
+        "bind": "LOCAL",
+        "ndx": "7",
+        "raw_name": ".text.rust_custom_export_api",
+        "size": "0",
+        "type": "SECTION",
+        "value": "0000000000000000",
+        "vis": "DEFAULT"
+      },
+      ".text.rust_exported_c_unwind_api": {
+        "bind": "LOCAL",
+        "ndx": "9",
+        "raw_name": ".text.rust_exported_c_unwind_api",
+        "size": "0",
+        "type": "SECTION",
+        "value": "0000000000000000",
+        "vis": "DEFAULT"
+      },
+      "rust_custom_export_api": {
+        "bind": "GLOBAL",
+        "ndx": "7",
+        "raw_name": "rust_custom_export_api",
+        "size": "16",
+        "type": "FUNC",
+        "value": "0000000000000000",
+        "vis": "DEFAULT"
+      },
+      "rust_exported_c_unwind_api": {
+        "bind": "GLOBAL",
+        "ndx": "9",
+        "raw_name": "rust_exported_c_unwind_api",
+        "size": "5",
+        "type": "FUNC",
+        "value": "0000000000000000",
+        "vis": "DEFAULT"
+      },
+      "rust_mangled_pub_api": {
+        "bind": "GLOBAL",
+        "ndx": "5",
+        "raw_name": "_RNvCsg76ilNuPX1q_15rust_cdylib_vis20rust_mangled_pub_api",
+        "size": "50",
+        "type": "FUNC",
+        "value": "0000000000000000",
+        "vis": "HIDDEN"
+      }
+    }
+  }
+}
