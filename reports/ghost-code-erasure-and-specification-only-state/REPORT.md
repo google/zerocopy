@@ -77,6 +77,10 @@ is a toy language (no heap, procedures, nondeterminism, concurrency, exceptions,
 the restrictions are sufficient conditions and none is claimed necessary for any individual
 program, and every statement about Dafny, Why3 or other real verifiers is a modeling bridge, not a
 kernel-checked fact.
+Model–system relation: none proved (the erasure and refinement relations proved here relate programs
+of the toy language to their erasures in the same language). These are statements about the toy
+model; they neither establish nor refute the corresponding claims about Dafny, Why3 or other
+deductive verifiers and their compilers.
 
 ## Applicability
 
