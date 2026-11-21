@@ -29,7 +29,6 @@ EXCLUDE_FILES=(
     "./.github/ISSUE_TEMPLATE/zerocopy-bug.yml"
     "./.github/ISSUE_TEMPLATE/zerocopy-feature.yml"
     "./.github/dependabot.yml"
-    "./.github/release.yml"
 )
 
 failed=0

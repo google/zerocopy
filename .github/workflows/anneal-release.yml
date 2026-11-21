@@ -80,12 +80,32 @@ jobs:
     permissions:
       contents: write # required to create a git tag and a GitHub Release
       id-token: write # required to publish to crates.io using OIDC
+      issues: read # required to query New Contributors via GraphQL search
+      pull-requests: read # required to resolve PR metadata for release notes
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
+
+      - name: Generate release notes
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ''
+          ACTIONS_ID_TOKEN_REQUEST_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          VERSION: ${{ needs.check-version.outputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eo pipefail
+          TAG="anneal-v$VERSION"
+          python3 tools/release_notes.py \
+            --tag "$TAG" \
+            --target HEAD \
+            --path anneal/v1 \
+            > "$RUNNER_TEMP/release-notes.md"
 
       - name: Authenticate with crates.io
         uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
@@ -120,7 +140,16 @@ jobs:
         run: |
           set -eo pipefail
           TAG="anneal-v$VERSION"
-          gh release create "$TAG" --generate-notes
+          ARGS=(
+            "$TAG"
+            --title "$TAG"
+            --notes-file "$RUNNER_TEMP/release-notes.md"
+            --latest=false
+          )
+          if [[ "${VERSION%+*}" == *-* ]]; then
+            ARGS+=(--prerelease)
+          fi
+          gh release create "${ARGS[@]}"
 
   prepare-release-source:
     name: Prepare release source patch
