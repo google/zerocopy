@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "rust/abi",
+    "rust/calling-conventions",
+    "rustc/abi",
+    "ffi/abi",
+    "verification/os-kernels",
+    "verification/refinement",
+    "isa/riscv",
+    "isa/riscv64"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V ELF psABI Specification (Calling Conventions)",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+        "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+      }
+    },
+    {
+      "name": "RISC-V Supervisor Binary Interface (SBI) Specification",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-sbi-doc",
+        "revision": "8a545effe9b50484ff897d9815d7d9015cdef203"
+      }
+    },
+    {
+      "name": "OpenSBI Supervisor Execution Environment Firmware",
+      "identity": {
+        "repository": "riscv-software-src/opensbi",
+        "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+      }
+    },
+    {
+      "name": "RISC-V Instruction Set Manual (Privileged Architecture)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "3142f66fd71c7ea0326b3687072318aedab587f8"
+      }
+    },
+    {
+      "name": "The Rust Compiler (rustc_target RISC-V Call Convention Lowering)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+      }
+    },
+    {
+      "name": "The Rust Reference (External Blocks, Functions, and Inline Assembly)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "seL4 Microkernel (RISC-V Boot and Trap Entry/Exit)",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "Asterinas Framekernel OSTD (RISC-V Bootstrap and Trap Assembly)",
+      "identity": {
+        "repository": "asterinas/asterinas",
+        "revision": "12374d1337d21f2d0dbe39c5cab340b41c58e553"
+      }
+    },
+    {
+      "name": "CompCert Verified C Compiler (RISC-V Calling Conventions and Smallstep Simulation)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "CakeML and Pancake Verified Systems Compiler (RISC-V Backend Configuration)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

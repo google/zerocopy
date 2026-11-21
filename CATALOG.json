@@ -68616,6 +68616,54 @@
         "lean/mechanization"
       ]
     },
+    "riscv-reservation-granule-aliasing-dummy-sc-trap-sanitization-and-branching-sail-exit": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "3142f66fd71c7ea0326b3687072318aedab587f8"
+          },
+          "name": "RISC-V Instruction Set Manual (Unprivileged and Privileged Specifications)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "04bcb62ccab96e35b9d6ce01873851972945af6f"
+          },
+          "name": "Sail RISC-V Formal ISA Model"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel (RISC-V Architecture Port)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 Formal Verification Proofs (RISCV64 Machine Specification)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux Kernel (RISC-V Exception Entry and Context Switch)"
+        }
+      ],
+      "topics": [
+        "isa/riscv",
+        "isa/riscv64",
+        "isa/sail",
+        "verification/isa-semantics",
+        "systems/trap-handling",
+        "systems/os-kernels"
+      ]
+    },
     "riscv-rvv-ppc-vsx-loongarch-and-wasm-simd-isa-formalizations": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -94197,6 +94245,91 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "verified-rust-to-assembly-boot-abi-handovers-callee-saved-frames-and-first-sret-seams": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+            "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+          },
+          "name": "RISC-V ELF psABI Specification (Calling Conventions)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-sbi-doc",
+            "revision": "8a545effe9b50484ff897d9815d7d9015cdef203"
+          },
+          "name": "RISC-V Supervisor Binary Interface (SBI) Specification"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/opensbi",
+            "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+          },
+          "name": "OpenSBI Supervisor Execution Environment Firmware"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "3142f66fd71c7ea0326b3687072318aedab587f8"
+          },
+          "name": "RISC-V Instruction Set Manual (Privileged Architecture)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "The Rust Compiler (rustc_target RISC-V Call Convention Lowering)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (External Blocks, Functions, and Inline Assembly)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel (RISC-V Boot and Trap Entry/Exit)"
+        },
+        {
+          "identity": {
+            "repository": "asterinas/asterinas",
+            "revision": "12374d1337d21f2d0dbe39c5cab340b41c58e553"
+          },
+          "name": "Asterinas Framekernel OSTD (RISC-V Bootstrap and Trap Assembly)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert Verified C Compiler (RISC-V Calling Conventions and Smallstep Simulation)"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML and Pancake Verified Systems Compiler (RISC-V Backend Configuration)"
+        }
+      ],
+      "topics": [
+        "rust/abi",
+        "rust/calling-conventions",
+        "rustc/abi",
+        "ffi/abi",
+        "verification/os-kernels",
+        "verification/refinement",
+        "isa/riscv",
+        "isa/riscv64"
       ]
     },
     "verified-rustc-delivered-toolchain-trusted-component-inventory": {

@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "isa/riscv",
+    "isa/riscv64",
+    "isa/sail",
+    "verification/isa-semantics",
+    "systems/trap-handling",
+    "systems/os-kernels"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Instruction Set Manual (Unprivileged and Privileged Specifications)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "3142f66fd71c7ea0326b3687072318aedab587f8"
+      }
+    },
+    {
+      "name": "Sail RISC-V Formal ISA Model",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "04bcb62ccab96e35b9d6ce01873851972945af6f"
+      }
+    },
+    {
+      "name": "seL4 Microkernel (RISC-V Architecture Port)",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "seL4 Formal Verification Proofs (RISCV64 Machine Specification)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Linux Kernel (RISC-V Exception Entry and Context Switch)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
