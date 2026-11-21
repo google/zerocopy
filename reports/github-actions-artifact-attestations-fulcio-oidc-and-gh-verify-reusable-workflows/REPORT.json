@@ -1,0 +1,94 @@
+{
+  "topics": [
+    "security/attestation",
+    "security/ci",
+    "security/supply-chain",
+    "tooling/ci",
+    "verification/certificates"
+  ],
+  "subjects": [
+    {
+      "name": "GitHub Docs",
+      "identity": {
+        "repository": "github/docs",
+        "revision": "d7487f5debb5a5a2a6e65e6f9fa539266f5f8db6"
+      }
+    },
+    {
+      "name": "GitHub REST API Description",
+      "identity": {
+        "repository": "github/rest-api-description",
+        "revision": "c9c95fe34ced05fe076001f5c55704742bc8e7f8"
+      }
+    },
+    {
+      "name": "actions/attest (v4.2.2)",
+      "identity": {
+        "repository": "actions/attest",
+        "revision": "1e69f48acb82d1966a394da916b4c1698aa569d6",
+        "version": "v4.2.2"
+      }
+    },
+    {
+      "name": "actions/attest (main)",
+      "identity": {
+        "repository": "actions/attest",
+        "revision": "badbb428b0055a04f53d6ce00bda98cf1c04e56e"
+      }
+    },
+    {
+      "name": "actions/toolkit (@actions/attest)",
+      "identity": {
+        "repository": "actions/toolkit",
+        "revision": "b679af25032f1f40e4dee4143e4ed9422b386073",
+        "package": "@actions/attest@3.2.0"
+      }
+    },
+    {
+      "name": "Sigstore Fulcio",
+      "identity": {
+        "repository": "sigstore/fulcio",
+        "revision": "b01d056a925d1f15d1315676d454adf46b6b6629",
+        "version": "v1.10.1"
+      }
+    },
+    {
+      "name": "Sigstore Go Verifier",
+      "identity": {
+        "repository": "sigstore/sigstore-go",
+        "revision": "0dfc163321ea4e131454380638c76bc3e633d655"
+      }
+    },
+    {
+      "name": "GitHub CLI (v2.105.0)",
+      "identity": {
+        "repository": "cli/cli",
+        "revision": "e1219499a578b69e3437adaa31cd60614e23c802",
+        "version": "v2.105.0"
+      }
+    },
+    {
+      "name": "GitHub CLI (local execution probe v2.103.3)",
+      "identity": {
+        "repository": "cli/cli",
+        "revision": "63837fb778d6a39f02be0ce76ff89f2bc8d74bdc",
+        "version": "v2.103.3"
+      }
+    },
+    {
+      "name": "Sigstore Rust (v0.16.0)",
+      "identity": {
+        "repository": "sigstore/sigstore-rust",
+        "revision": "3d2baa8ca9b1cde8a31d7cb4927338427417611a",
+        "version": "0.16.0"
+      }
+    },
+    {
+      "name": "GitHub Actions OIDC Discovery Endpoint",
+      "identity": {
+        "endpoint": "https://token.actions.githubusercontent.com/.well-known/openid-configuration"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

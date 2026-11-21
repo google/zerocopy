@@ -1,0 +1,119 @@
+{
+  "topics": [
+    "build/caching",
+    "security/ci",
+    "security/supply-chain",
+    "tooling/ci",
+    "vcs/git"
+  ],
+  "subjects": [
+    {
+      "name": "GitHub Docs",
+      "identity": {
+        "repository": "github/docs",
+        "revision": "d7487f5debb5a5a2a6e65e6f9fa539266f5f8db6"
+      }
+    },
+    {
+      "name": "GitHub REST API Description (GHEC)",
+      "identity": {
+        "repository": "github/rest-api-description",
+        "revision": "c9c95fe34ced05fe076001f5c55704742bc8e7f8"
+      }
+    },
+    {
+      "name": "GitHub Actions Runner",
+      "identity": {
+        "repository": "actions/runner",
+        "revision": "7e211dc69c347b78fc398e630e74facb11a13235"
+      }
+    },
+    {
+      "name": "actions/checkout (v4.4.0)",
+      "identity": {
+        "repository": "actions/checkout",
+        "revision": "11d5960a326750d5838078e36cf38b85af677262",
+        "version": "v4.4.0"
+      }
+    },
+    {
+      "name": "actions/checkout (v6.1.0)",
+      "identity": {
+        "repository": "actions/checkout",
+        "revision": "d23441a48e516b6c34aea4fa41551a30e30af803",
+        "version": "v6.1.0"
+      }
+    },
+    {
+      "name": "actions/upload-artifact (v4.6.2)",
+      "identity": {
+        "repository": "actions/upload-artifact",
+        "revision": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "version": "v4.6.2"
+      }
+    },
+    {
+      "name": "actions/upload-artifact (v7.0.2)",
+      "identity": {
+        "repository": "actions/upload-artifact",
+        "revision": "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "version": "v7.0.2"
+      }
+    },
+    {
+      "name": "actions/download-artifact (v4.3.0)",
+      "identity": {
+        "repository": "actions/download-artifact",
+        "revision": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "version": "v4.3.0"
+      }
+    },
+    {
+      "name": "actions/download-artifact (v8.0.2)",
+      "identity": {
+        "repository": "actions/download-artifact",
+        "revision": "9000827ccba6bdab643e8b6fd33ac0654aef8333",
+        "version": "v8.0.2"
+      }
+    },
+    {
+      "name": "actions/toolkit (@actions/artifact)",
+      "identity": {
+        "repository": "actions/toolkit",
+        "revision": "3e145bf7757797499b3ff168c99984389f117322",
+        "package": "@actions/artifact@6.3.1"
+      }
+    },
+    {
+      "name": "GitHub Actions Runner Images (ubuntu-24.04)",
+      "identity": {
+        "repository": "actions/runner-images",
+        "revision": "0e63d4f9d2c29043b4cf1d2f40d1812a7cde1369"
+      }
+    },
+    {
+      "name": "GitHub CLI (gh release verify-asset)",
+      "identity": {
+        "repository": "cli/cli",
+        "revision": "de06af2c2ea536d5722fda35dc2001565f9b9f64"
+      }
+    },
+    {
+      "name": "Git (Linux x86_64 execution probe)",
+      "identity": {
+        "tool": "git",
+        "version": "2.56.1.750.gf70dc682cf-goog",
+        "platform": "x86_64-linux"
+      }
+    },
+    {
+      "name": "GitHub Releases and GHCR Live Endpoints",
+      "identity": {
+        "endpoints": "https://github.com, https://api.github.com, https://ghcr.io",
+        "probed_release_asset": "BurntSushi/ripgrep@14.1.1 (sha256:4cf9f2741e6c465ffdb7c26f38056a59e2a2544b51f7cc128ef28337eeae4d8e)",
+        "probed_ghcr_manifest": "ghcr.io/oras-project/oras@sha256:30eaf40bfe09d8faa412beb8aec13226f819f2168121ad63ce18301d5af9a3c5"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "build/hermeticity",
+    "cargo/manifests",
+    "cargo/workspaces",
+    "rust/cargo",
+    "security/ci",
+    "tooling/ci",
+    "zerocopy/workspaces"
+  ],
+  "subjects": [
+    {
+      "name": "Cargo (source)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "930a674da900a73c1dfbe16be62c42e75bdfdfc0"
+      }
+    },
+    {
+      "name": "Cargo (execution oracle)",
+      "identity": {
+        "tool": "cargo",
+        "version": "1.102.0-nightly (c07ac2c4d 2026-11-06)",
+        "platform": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rustup",
+      "identity": {
+        "repository": "rust-lang/rustup",
+        "revision": "2faded0d9e7fb7b597ee948bac6aa04778dddcce"
+      }
+    },
+    {
+      "name": "zerocopy (consumer workspaces)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

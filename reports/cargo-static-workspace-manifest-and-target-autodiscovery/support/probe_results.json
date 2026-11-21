@@ -1,0 +1,716 @@
+{
+  "cargo_version": "cargo 1.102.0-nightly (c07ac2c4d 2026-11-06)",
+  "python_version": "3.13.15",
+  "cargo_source_revision": "rust-lang/cargo@930a674da900a73c1dfbe16be62c42e75bdfdfc0",
+  "zerocopy_suite": {
+    "repository": "google/zerocopy",
+    "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+    "workspaces": {
+      "zerocopy": {
+        "match": true,
+        "diffs": [],
+        "is_virtual": false,
+        "member_count": 3,
+        "members": [
+          {
+            "name": "zerocopy",
+            "edition": "2021",
+            "manifest_rel": "zerocopy/Cargo.toml",
+            "readme": "README.md",
+            "license_file": null,
+            "target_count": 108,
+            "targets_by_kind": {
+              "bench": 103,
+              "custom-build": 1,
+              "lib": 1,
+              "test": 3
+            },
+            "path_dep_count": 4,
+            "path_deps": [
+              {
+                "name": "zerocopy-derive",
+                "rename": null,
+                "kind": null,
+                "target": null,
+                "path_rel": "zerocopy/zerocopy-derive"
+              },
+              {
+                "name": "testutil",
+                "rename": null,
+                "kind": "dev",
+                "target": null,
+                "path_rel": "zerocopy/testutil"
+              },
+              {
+                "name": "zerocopy-derive",
+                "rename": null,
+                "kind": "dev",
+                "target": null,
+                "path_rel": "zerocopy/zerocopy-derive"
+              },
+              {
+                "name": "zerocopy-derive",
+                "rename": null,
+                "kind": null,
+                "target": "cfg(any())",
+                "path_rel": "zerocopy/zerocopy-derive"
+              }
+            ],
+            "package_exclude": [
+              ".*"
+            ],
+            "package_include": []
+          },
+          {
+            "name": "zerocopy-derive",
+            "edition": "2021",
+            "manifest_rel": "zerocopy/zerocopy-derive/Cargo.toml",
+            "readme": null,
+            "license_file": null,
+            "target_count": 42,
+            "targets_by_kind": {
+              "proc-macro": 1,
+              "test": 41
+            },
+            "path_dep_count": 2,
+            "path_deps": [
+              {
+                "name": "testutil",
+                "rename": null,
+                "kind": "dev",
+                "target": null,
+                "path_rel": "zerocopy/testutil"
+              },
+              {
+                "name": "zerocopy",
+                "rename": "zerocopy-renamed",
+                "kind": "dev",
+                "target": null,
+                "path_rel": "zerocopy"
+              }
+            ],
+            "package_exclude": [
+              ".*",
+              "tests/enum_from_bytes.rs",
+              "tests/ui-nightly/enum_from_bytes_u16_too_few.rs.disabled"
+            ],
+            "package_include": []
+          },
+          {
+            "name": "testutil",
+            "edition": "2018",
+            "manifest_rel": "zerocopy/testutil/Cargo.toml",
+            "readme": null,
+            "license_file": null,
+            "target_count": 1,
+            "targets_by_kind": {
+              "lib": 1
+            },
+            "path_dep_count": 0,
+            "path_deps": [],
+            "package_exclude": [],
+            "package_include": []
+          }
+        ],
+        "default_members_rel": [
+          "zerocopy/Cargo.toml"
+        ],
+        "lockfile_rel": "zerocopy/Cargo.lock",
+        "lockfile_exists": true,
+        "config_files": [
+          {
+            "path_rel": "zerocopy/.cargo/config.toml",
+            "vendored_dirs_rel": [
+              "zerocopy/vendor"
+            ],
+            "exec_or_network_keys": [
+              "env",
+              "source"
+            ]
+          }
+        ]
+      },
+      "anneal": {
+        "match": true,
+        "diffs": [],
+        "is_virtual": true,
+        "member_count": 3,
+        "members": [
+          {
+            "name": "anneal-audit",
+            "edition": "2024",
+            "manifest_rel": "anneal/trusted/audit/Cargo.toml",
+            "readme": null,
+            "license_file": null,
+            "target_count": 5,
+            "targets_by_kind": {
+              "bin": 1,
+              "lib": 1,
+              "test": 3
+            },
+            "path_dep_count": 1,
+            "path_deps": [
+              {
+                "name": "cargo-anneal",
+                "rename": null,
+                "kind": null,
+                "target": null,
+                "path_rel": "anneal/trusted/cargo-anneal"
+              }
+            ],
+            "package_exclude": [],
+            "package_include": []
+          },
+          {
+            "name": "cargo-anneal",
+            "edition": "2024",
+            "manifest_rel": "anneal/trusted/cargo-anneal/Cargo.toml",
+            "readme": "../../README.md",
+            "license_file": null,
+            "target_count": 9,
+            "targets_by_kind": {
+              "bin": 1,
+              "example": 1,
+              "lib": 1,
+              "test": 6
+            },
+            "path_dep_count": 0,
+            "path_deps": [],
+            "package_exclude": [],
+            "package_include": []
+          },
+          {
+            "name": "anneal-rustc-capture",
+            "edition": "2024",
+            "manifest_rel": "anneal/trusted/rustc-capture/Cargo.toml",
+            "readme": null,
+            "license_file": null,
+            "target_count": 3,
+            "targets_by_kind": {
+              "bin": 1,
+              "test": 2
+            },
+            "path_dep_count": 0,
+            "path_deps": [],
+            "package_exclude": [],
+            "package_include": []
+          }
+        ],
+        "default_members_rel": [
+          "anneal/trusted/audit/Cargo.toml",
+          "anneal/trusted/cargo-anneal/Cargo.toml",
+          "anneal/trusted/rustc-capture/Cargo.toml"
+        ],
+        "lockfile_rel": "anneal/Cargo.lock",
+        "lockfile_exists": true,
+        "config_files": []
+      },
+      "exocrate": {
+        "match": true,
+        "diffs": [],
+        "is_virtual": false,
+        "member_count": 1,
+        "members": [
+          {
+            "name": "exocrate",
+            "edition": "2024",
+            "manifest_rel": "exocrate/Cargo.toml",
+            "readme": "README.md",
+            "license_file": null,
+            "target_count": 1,
+            "targets_by_kind": {
+              "lib": 1
+            },
+            "path_dep_count": 0,
+            "path_deps": [],
+            "package_exclude": [],
+            "package_include": []
+          }
+        ],
+        "default_members_rel": [
+          "exocrate/Cargo.toml"
+        ],
+        "lockfile_rel": "exocrate/Cargo.lock",
+        "lockfile_exists": true,
+        "config_files": []
+      },
+      "tools": {
+        "match": true,
+        "diffs": [],
+        "is_virtual": true,
+        "member_count": 3,
+        "members": [
+          {
+            "name": "cargo-zerocopy",
+            "edition": "2021",
+            "manifest_rel": "tools/cargo-zerocopy/Cargo.toml",
+            "readme": null,
+            "license_file": null,
+            "target_count": 1,
+            "targets_by_kind": {
+              "bin": 1
+            },
+            "path_dep_count": 0,
+            "path_deps": [],
+            "package_exclude": [],
+            "package_include": []
+          },
+          {
+            "name": "generate-readme",
+            "edition": "2021",
+            "manifest_rel": "tools/generate-readme/Cargo.toml",
+            "readme": null,
+            "license_file": null,
+            "target_count": 1,
+            "targets_by_kind": {
+              "bin": 1
+            },
+            "path_dep_count": 0,
+            "path_deps": [],
+            "package_exclude": [],
+            "package_include": []
+          },
+          {
+            "name": "ui-runner",
+            "edition": "2021",
+            "manifest_rel": "tools/ui-runner/Cargo.toml",
+            "readme": null,
+            "license_file": null,
+            "target_count": 1,
+            "targets_by_kind": {
+              "bin": 1
+            },
+            "path_dep_count": 0,
+            "path_deps": [],
+            "package_exclude": [],
+            "package_include": []
+          }
+        ],
+        "default_members_rel": [
+          "tools/cargo-zerocopy/Cargo.toml",
+          "tools/generate-readme/Cargo.toml",
+          "tools/ui-runner/Cargo.toml"
+        ],
+        "lockfile_rel": "tools/Cargo.lock",
+        "lockfile_exists": true,
+        "config_files": []
+      }
+    },
+    "repo_status_unchanged": true
+  },
+  "synthetic_suite": {
+    "1_empty_ws_implicit_transitive_path_deps": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "a",
+        "b",
+        "c",
+        "root"
+      ],
+      "default_member_names": [
+        "root"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "2_external_path_dep_outside_ws_root": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "root"
+      ],
+      "default_member_names": [
+        "root"
+      ],
+      "external_path_dep_names": [
+        "ext_crate"
+      ],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "3_external_path_dep_with_package_workspace_pointer": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "ext_member",
+        "root"
+      ],
+      "default_member_names": [
+        "root"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "4a_exclude_wins_over_glob_and_skips_noncrate_dir": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "keep_me"
+      ],
+      "default_member_names": [
+        "keep_me"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "4b_literal_member_overrides_parent_exclude": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "keep_me"
+      ],
+      "default_member_names": [
+        "keep_me"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "4c_glob_in_exclude_does_not_expand": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "still_included"
+      ],
+      "default_member_names": [
+        "still_included"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "5a_glob_matches_hidden_dir_and_doublestar": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "deep_pkg",
+        "hidden_crate"
+      ],
+      "default_member_names": [
+        "deep_pkg",
+        "hidden_crate"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "5b_glob_matching_dir_without_manifest_errors": {
+      "expect_error": true,
+      "cargo_rc": 101,
+      "cargo_stderr_head": [
+        "error: failed to load manifest for workspace member `/tmp/track4_syn_5b_glob_matching_dir_without_manifest_errors_2k6fd5zv/ws/crates/empty_dir`",
+        "referenced via `crates/*` by workspace at `/tmp/track4_syn_5b_glob_matching_dir_without_manifest_errors_2k6fd5zv/ws/Cargo.toml`",
+        ""
+      ],
+      "static_error": "[Errno 2] No such file or directory: '/tmp/track4_syn_5b_glob_matching_dir_without_manifest_errors_2k6fd5zv/ws/crates/empty_dir/Cargo.toml'",
+      "match": true
+    },
+    "6a_nested_workspace_path_dep_without_exclude_errors": {
+      "expect_error": true,
+      "cargo_rc": 101,
+      "cargo_stderr_head": [
+        "error: multiple workspace roots found in the same workspace:",
+        "  /tmp/track4_syn_6a_nested_workspace_path_dep_without_exclude_errors_z84o_53n/ws",
+        "  /tmp/track4_syn_6a_nested_workspace_path_dep_without_exclude_errors_z84o_53n/ws/nested"
+      ],
+      "static_error": "multiple workspace roots found in the same workspace: [PosixPath('/tmp/track4_syn_6a_nested_workspace_path_dep_without_exclude_errors_z84o_53n/ws'), PosixPath('/tmp/track4_syn_6a_nested_workspace_path_dep_without_exclude_errors_z84o_53n/ws/nested')]",
+      "match": true
+    },
+    "6b_nested_workspace_path_dep_with_exclude_ok": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "root"
+      ],
+      "default_member_names": [
+        "root"
+      ],
+      "external_path_dep_names": [
+        "nested"
+      ],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "7_workspace_deps_relative_path_and_uninherited": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "app",
+        "shared"
+      ],
+      "default_member_names": [
+        "app",
+        "shared"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "8a_patch_crates_io_path_dep": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "app"
+      ],
+      "default_member_names": [
+        "app"
+      ],
+      "external_path_dep_names": [
+        "patched"
+      ],
+      "patch_path_count": 1,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "8b_replace_path_dep": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "app"
+      ],
+      "default_member_names": [
+        "app"
+      ],
+      "external_path_dep_names": [
+        "repl"
+      ],
+      "patch_path_count": 0,
+      "replace_path_count": 1,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "9_edition_2015_vs_2024_autotests": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "e2015_auto",
+        "e2015_expl",
+        "e2024_expl",
+        "e2024_off"
+      ],
+      "default_member_names": [
+        "e2015_auto",
+        "e2015_expl",
+        "e2024_expl",
+        "e2024_off"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "10_autolib_false_and_inferred_lib": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "expl-lib",
+        "no-lib"
+      ],
+      "default_member_names": [
+        "expl-lib",
+        "no-lib"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "11_autobins_false_explicit_bin_inferred_path": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "my-cli"
+      ],
+      "default_member_names": [
+        "my-cli"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "12_target_depth_dotfiles_and_symlinks": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "sym_test"
+      ],
+      "default_member_names": [
+        "sym_test"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "13_package_build_modes": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "b_auto",
+        "b_custom",
+        "b_dir",
+        "b_false",
+        "b_true"
+      ],
+      "default_member_names": [
+        "b_auto",
+        "b_custom",
+        "b_dir",
+        "b_false",
+        "b_true"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "14_readme_and_license_file_inheritance": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "p_auto_txt",
+        "p_false",
+        "p_inh",
+        "p_true"
+      ],
+      "default_member_names": [
+        "p_auto_txt",
+        "p_false",
+        "p_inh",
+        "p_true"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "15_deprecated_project_and_underscore_dep_tables": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "d1",
+        "d2",
+        "d3",
+        "legacy"
+      ],
+      "default_member_names": [
+        "d1",
+        "d2",
+        "d3",
+        "legacy"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "16_default_members_with_excluded_member": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "a"
+      ],
+      "default_member_names": [
+        "a"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    },
+    "17_config_precedence_include_and_cargo_fetch_exec": {
+      "match": true,
+      "discovered_configs_rel": [
+        {
+          "path_rel": "repo/subws/.cargo/config",
+          "rank": 0,
+          "included_from_rel": null,
+          "exec_or_network_keys": [
+            "build.rustc-wrapper"
+          ]
+        },
+        {
+          "path_rel": "repo/.cargo/config.toml",
+          "rank": 1,
+          "included_from_rel": null,
+          "exec_or_network_keys": [
+            "env"
+          ]
+        },
+        {
+          "path_rel": "repo/.cargo/extra.toml",
+          "rank": 2,
+          "included_from_rel": "repo/.cargo/config.toml",
+          "exec_or_network_keys": [
+            "env"
+          ]
+        }
+      ],
+      "legacy_config_shadowed_config_toml": true,
+      "cargo_fetch_rc": 0,
+      "cargo_fetch_executed_rustc_wrapper": true,
+      "cargo_fetch_wrapper_invocations": [
+        "EXECUTED:<HOME>/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc -vV",
+        "EXECUTED:<HOME>/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc - --crate-name ___ --print=file-names --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings"
+      ],
+      "cargo_fetch_cli_override_rc": 0,
+      "cargo_fetch_executed_after_cli_empty_override": false,
+      "cargo_fetch_from_parent_rc": 0,
+      "cargo_fetch_from_parent_skipped_subdir_config": true
+    },
+    "18_cargo_fetch_ld_preload_and_isolated_cwd_mitigation": {
+      "match": true,
+      "ld_preload_reached_rustc": true,
+      "ld_preload_stderr_lines": [
+        "  process didn't exit successfully: `<HOME>/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc - --crate-name ___ --print=file-names --invalid-canary-flag-xyz --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings` (exit status: 1)",
+        "  ERROR: ld.so: object '/nonexistent_canary_preload.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.",
+        "  error: Unrecognized option: 'invalid-canary-flag-xyz'"
+      ],
+      "isolated_cwd_fetch_rc": 0,
+      "isolated_cwd_bypassed_repo_config": true,
+      "build_rustc_executed_during_fetch": true,
+      "build_rustc_invocations": [
+        "FAKE_RUSTC:-vV",
+        "FAKE_RUSTC:- --crate-name ___ --print=file-names --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings"
+      ]
+    },
+    "19_literal_missing_member_errors": {
+      "expect_error": true,
+      "cargo_rc": 101,
+      "cargo_stderr_head": [
+        "error: failed to load manifest for workspace member `/tmp/track4_syn_19_literal_missing_member_errors_rhby59rp/ws/does_not_exist`",
+        "referenced by workspace at `/tmp/track4_syn_19_literal_missing_member_errors_rhby59rp/ws/Cargo.toml`",
+        ""
+      ],
+      "static_error": "[Errno 2] No such file or directory: '/tmp/track4_syn_19_literal_missing_member_errors_rhby59rp/ws/does_not_exist/Cargo.toml'",
+      "match": true
+    },
+    "20_omitted_edition_defaults_to_2015": {
+      "match": true,
+      "diffs": [],
+      "member_names": [
+        "no_ed"
+      ],
+      "default_member_names": [
+        "no_ed"
+      ],
+      "external_path_dep_names": [],
+      "patch_path_count": 0,
+      "replace_path_count": 0,
+      "lockfile_rel": "ws/Cargo.lock"
+    }
+  }
+}
