@@ -44,7 +44,7 @@ The non-claims of every result are listed first under **Boundaries**, after the 
 - **Fixed field lists.** F2 needs a finite index type fixed across all states, with field types depending on the index only (no dependent records, no dynamically keyed maps).
 - **Universes.** Complements in F3 and ghosts in F3-pair are required to live in the universe of `S`; F3-sharp has no universe restriction.
 
-Every claim of the form "this tells us something about a real interface" is a separate *derived (modeling bridge)* claim, stated per result under Findings with its reasoning; a kernel-checked theorem is never by itself a statement about a real system.
+Every claim of the form "this tells us something about a real interface" is a separate *derived (modeling bridge)* claim, stated per result under Findings with its reasoning; a kernel-checked theorem is never by itself a statement about a real system. Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the value-algebra interfaces of real programming languages (the field getters and setters of their records, structs and sum-typed values); the per-result modeling-bridge claims under Findings argue the connection separately.
 
 **Toolchain.** Lean `leanprover/lean4:v4.34.1` (tag commit `5045d0056413266e57c625dcd7c365b10e377c52`; the same commit is reported by `lean --version` of the toolchain used). No Mathlib and no other dependency: the Lake project in `lean/` declares one `[[lean_lib]]` (`Toy`) and no `[[require]]`, and imports only core Lean.
 
