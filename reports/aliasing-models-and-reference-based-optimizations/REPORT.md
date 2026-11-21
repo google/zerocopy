@@ -13,8 +13,9 @@ access through a freshly reborrowed reference across one call to unknown code, a
 commutation theorem for reads in the tree model, and two concrete programs on which the two toy
 models disagree. Every hypothesis of every theorem has a proved counterexample showing that it
 cannot be dropped, and every theorem has a proved instance in which all its hypotheses hold.
-These are theorems about the toy models only; every connection to Stacked Borrows, Tree Borrows,
-or Miri is a separately labelled modeling bridge.
+These are theorems about the toy models; these theorems neither establish nor refute the
+corresponding claims about Stacked Borrows, Tree Borrows, or Miri, and every connection to those
+systems is a separately labelled modeling bridge under **Findings**.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -363,6 +364,7 @@ Card id `R1a-read-elim-mut-unpassed`.
 - **Lean statement** (verbatim from `lean/ToyAlias/Optimizations.lean`; proof omitted): `Toy.Alias.readElim_refines_of_fresh_or_protected_of_unique_of_unpassed`
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:221-224
 theorem readElim_refines_of_fresh_or_protected_of_unique_of_unpassed
     (p : Perm) (prot : Bool) (a : Tag) (ts : List Tag) (c : List COp) (m : Mem)
     (hfresh : NextFresh m ∨ prot = true) (hp : p = .unique) (hts : m.next ∉ ts) :
@@ -397,6 +399,7 @@ Card id `R2a-read-elim-shared-ro`.
 - **Lean statement** (verbatim from `lean/ToyAlias/Optimizations.lean`; proof omitted): `Toy.Alias.readElim_refines_of_fresh_or_protected_of_sharedRO`
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:287-290
 theorem readElim_refines_of_fresh_or_protected_of_sharedRO
     (p : Perm) (prot : Bool) (a : Tag) (ts : List Tag) (c : List COp) (m : Mem)
     (hfresh : NextFresh m ∨ prot = true) (hp : p = .sharedRO) :
@@ -429,6 +432,7 @@ Card id `R1b-read-defer-mut-protected`.
 - **Lean statement** (verbatim from `lean/ToyAlias/Optimizations.lean`; proof omitted): `Toy.Alias.readDefer_refines_of_protected_of_unique_of_unpassed`
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:420-423
 theorem readDefer_refines_of_protected_of_unique_of_unpassed
     (p : Perm) (prot : Bool) (a : Tag) (ts : List Tag) (c : List COp) (m : Mem)
     (hprot : prot = true) (hp : p = .unique) (hts : m.next ∉ ts) :
@@ -463,6 +467,7 @@ Card id `R2b-read-defer-shared-ro-protected`.
 - **Lean statement** (verbatim from `lean/ToyAlias/Optimizations.lean`; proof omitted): `Toy.Alias.readDefer_refines_of_protected_of_sharedRO`
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:510-513
 theorem readDefer_refines_of_protected_of_sharedRO
     (p : Perm) (prot : Bool) (a : Tag) (ts : List Tag) (c : List COp) (m : Mem)
     (hprot : prot = true) (hp : p = .sharedRO) :
@@ -494,6 +499,7 @@ Card id `R3-dead-store-elim-protected`.
 - **Lean statement** (verbatim from `lean/ToyAlias/Optimizations.lean`; proof omitted): `Toy.Alias.dse_refines_of_protected_of_unique_of_unpassed`
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:601-604
 theorem dse_refines_of_protected_of_unique_of_unpassed
     (p : Perm) (prot : Bool) (a : Tag) (ts : List Tag) (c : List COp) (v₁ v₂ : Nat) (m : Mem)
     (hprot : prot = true) (hp : p = .unique) (hts : m.next ∉ ts) :
@@ -528,6 +534,7 @@ Card id `R4a-parent-read-before-child-write`.
 - **Lean statement** (verbatim from `lean/ToyAlias/Tree.lean`; proof omitted): `Toy.Alias.Tree.stack_ub_tree_defined_parentReadThenChildWrite`
 
 ```lean
+-- lean/ToyAlias/Tree.lean:259-261
 theorem stack_ub_tree_defined_parentReadThenChildWrite :
     runStack [0] parentReadThenChildWrite initMem = none ∧
       (runTree [0] parentReadThenChildWrite initTMem).map Prod.fst = some [0, 5]
@@ -555,6 +562,7 @@ Card id `R4c-tree-reads-commute`.
 - **Lean statement** (verbatim from `lean/ToyAlias/Tree.lean`; proof omitted): `Toy.Alias.Tree.tree_read_read_commute`
 
 ```lean
+-- lean/ToyAlias/Tree.lean:457-459
 theorem tree_read_read_commute (t₁ t₂ : Tag) (m : TMem) :
     ((tread t₁ m).bind fun (v₁, m₁) => (tread t₂ m₁).map fun (v₂, m₂) => ((v₁, v₂), m₂)) =
       ((tread t₂ m).bind fun (v₂, m₁) => (tread t₁ m₁).map fun (v₁, m₂) => ((v₁, v₂), m₂))
@@ -585,6 +593,7 @@ Card id `R4d-raw-write-around-parent-read`.
 - **Lean statement** (verbatim from `lean/ToyAlias/Tree.lean`; proof omitted): `Toy.Alias.Tree.stack_defined_tree_ub_rawWriteAroundParentRead`
 
 ```lean
+-- lean/ToyAlias/Tree.lean:290-292
 theorem stack_defined_tree_ub_rawWriteAroundParentRead :
     (runStack [0] rawWriteAroundParentRead initMem).map Prod.fst = some [1] ∧
       runTree [0] rawWriteAroundParentRead initTMem = none
@@ -641,6 +650,7 @@ Every Lean name referenced by a card other than the main statements above, verba
 #### `Toy.Alias.readElim_fresh_or_protected_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:254-260
 theorem readElim_fresh_or_protected_needed :
     ¬ (NextFresh memDupNext ∨ false = true) ∧ Perm.unique = .unique ∧
       memDupNext.next ∉ [0] ∧
@@ -653,6 +663,7 @@ theorem readElim_fresh_or_protected_needed :
 #### `Toy.Alias.readElim_unique_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:241-247
 theorem readElim_unique_needed :
     (NextFresh memSibling ∨ false = true) ∧ ¬ Perm.sharedRW = .unique ∧
       memSibling.next ∉ [1] ∧
@@ -665,6 +676,7 @@ theorem readElim_unique_needed :
 #### `Toy.Alias.readElim_unpassed_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:230-235
 theorem readElim_unpassed_needed :
     (NextFresh initMem ∨ false = true) ∧ Perm.unique = .unique ∧ ¬ initMem.next ∉ [1] ∧
       ¬ Refines (readElimTgt .unique false 0 [1] [.write 0 9] initMem)
@@ -676,6 +688,7 @@ theorem readElim_unpassed_needed :
 #### `Toy.Alias.readElim_unpassed_nonvacuous` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:266-269
 theorem readElim_unpassed_nonvacuous :
     (NextFresh initMem ∨ false = true) ∧ Perm.unique = .unique ∧ initMem.next ∉ [0] ∧
       (readElimSrc .unique false 0 [0] [.emit 3, .retag 0 .sharedRW, .emit 4] initMem).visible =
@@ -685,6 +698,7 @@ theorem readElim_unpassed_nonvacuous :
 #### `Toy.Alias.readElim_unpassed_nonvacuous_halting` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:275-278
 theorem readElim_unpassed_nonvacuous_halting :
     (NextFresh initMem ∨ false = true) ∧ Perm.unique = .unique ∧ initMem.next ∉ [0] ∧
       (readElimSrc .unique false 0 [0] [.write 0 9, .read 0, .halt] initMem).visible =
@@ -694,18 +708,21 @@ theorem readElim_unpassed_nonvacuous_halting :
 #### `Toy.Alias.memSibling_reachable` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:152
 theorem memSibling_reachable : retag 0 .sharedRW false initMem = some (1, memSibling)
 ```
 
 #### `Toy.Alias.not_tagsBelowNext_memDupNext` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:141
 theorem not_tagsBelowNext_memDupNext : ¬ TagsBelowNext memDupNext
 ```
 
 #### `Toy.Alias.readElim_sharedRO_fresh_or_protected_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:347-352
 theorem readElim_sharedRO_fresh_or_protected_needed :
     ¬ (NextFresh memDupNext ∨ false = true) ∧ Perm.sharedRO = .sharedRO ∧
       ¬ Refines (readElimTgt .sharedRO false 0 [1] [.write 0 9] memDupNext)
@@ -717,6 +734,7 @@ theorem readElim_sharedRO_fresh_or_protected_needed :
 #### `Toy.Alias.readElim_sharedRO_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:335-340
 theorem readElim_sharedRO_needed :
     (NextFresh initMem ∨ false = true) ∧ ¬ Perm.sharedRW = .sharedRO ∧
       ¬ Refines (readElimTgt .sharedRW false 0 [1] [.write 0 9] initMem)
@@ -728,6 +746,7 @@ theorem readElim_sharedRO_needed :
 #### `Toy.Alias.readElim_sharedRO_nonvacuous` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:357-360
 theorem readElim_sharedRO_nonvacuous :
     (NextFresh initMem ∨ false = true) ∧ Perm.sharedRO = .sharedRO ∧
       (readElimSrc .sharedRO false 0 [1] [.read 0, .retag 0 .sharedRO, .read 1]
@@ -737,6 +756,7 @@ theorem readElim_sharedRO_nonvacuous :
 #### `Toy.Alias.readDefer_protected_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:430-435
 theorem readDefer_protected_needed :
     ¬ false = true ∧ Perm.unique = .unique ∧ initMem.next ∉ [0] ∧
       ¬ Refines (readDeferTgt .unique false 0 [0] [.read 0] initMem)
@@ -748,6 +768,7 @@ theorem readDefer_protected_needed :
 #### `Toy.Alias.readDefer_unique_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:449-454
 theorem readDefer_unique_needed :
     true = true ∧ ¬ Perm.sharedRW = .unique ∧ memSibling.next ∉ [1] ∧
       ¬ Refines (readDeferTgt .sharedRW true 0 [1] [.write 0 9] memSibling)
@@ -759,6 +780,7 @@ theorem readDefer_unique_needed :
 #### `Toy.Alias.readDefer_unpassed_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:439-444
 theorem readDefer_unpassed_needed :
     true = true ∧ Perm.unique = .unique ∧ ¬ initMem.next ∉ [1] ∧
       ¬ Refines (readDeferTgt .unique true 0 [1] [.write 0 9] initMem)
@@ -770,6 +792,7 @@ theorem readDefer_unpassed_needed :
 #### `Toy.Alias.readDefer_unpassed_nonvacuous` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:459-462
 theorem readDefer_unpassed_nonvacuous :
     true = true ∧ Perm.unique = .unique ∧ initMem.next ∉ [0] ∧
       (readDeferSrc .unique true 0 [0] [.emit 3, .retag 0 .sharedRW] initMem).visible =
@@ -779,6 +802,7 @@ theorem readDefer_unpassed_nonvacuous :
 #### `Toy.Alias.readDeferSrc_unique_ub_of_touches` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:872-874
 theorem readDeferSrc_unique_ub_of_touches (a : Tag) (ts : List Tag) (c : List COp) (m : Mem)
     (hts : m.next ∉ ts) (htouch : TouchesBeforeHalt c = true) :
     readDeferSrc .unique true a ts c m = .ub
@@ -787,6 +811,7 @@ theorem readDeferSrc_unique_ub_of_touches (a : Tag) (ts : List Tag) (c : List CO
 #### `Toy.Alias.runCallee_ub_of_touches_of_protected_unique_head` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:773-777
 theorem runCallee_ub_of_touches_of_protected_unique_head
     (c : List COp) (env : List Tag) (x : Tag) (m : Mem) (rest : List Item)
     (hstack : m.stack = ⟨.unique, x, true⟩ :: rest) (henv : x ∉ env) (hnext : x < m.next)
@@ -797,6 +822,7 @@ theorem runCallee_ub_of_touches_of_protected_unique_head
 #### `Toy.Alias.readDefer_sharedRO_protected_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:519-524
 theorem readDefer_sharedRO_protected_needed :
     ¬ false = true ∧ Perm.sharedRO = .sharedRO ∧
       ¬ Refines (readDeferTgt .sharedRO false 0 [0] [.write 0 9] initMem)
@@ -808,6 +834,7 @@ theorem readDefer_sharedRO_protected_needed :
 #### `Toy.Alias.readDefer_sharedRO_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:529-534
 theorem readDefer_sharedRO_needed :
     true = true ∧ ¬ Perm.sharedRW = .sharedRO ∧
       ¬ Refines (readDeferTgt .sharedRW true 0 [1] [.write 0 9] initMem)
@@ -819,6 +846,7 @@ theorem readDefer_sharedRO_needed :
 #### `Toy.Alias.readDefer_sharedRO_nonvacuous` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:538-541
 theorem readDefer_sharedRO_nonvacuous :
     true = true ∧ Perm.sharedRO = .sharedRO ∧
       (readDeferSrc .sharedRO true 0 [1] [.read 0] initMem).visible =
@@ -828,6 +856,7 @@ theorem readDefer_sharedRO_nonvacuous :
 #### `Toy.Alias.dse_protected_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:613-618
 theorem dse_protected_needed :
     ¬ false = true ∧ Perm.unique = .unique ∧ initMem.next ∉ [0] ∧
       ¬ Refines (dseTgt .unique false 0 [0] [.read 0, .halt] 7 initMem)
@@ -839,6 +868,7 @@ theorem dse_protected_needed :
 #### `Toy.Alias.dse_unique_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:623-628
 theorem dse_unique_needed :
     true = true ∧ ¬ Perm.sharedRW = .unique ∧ initMem.next ∉ [0] ∧
       ¬ Refines (dseTgt .sharedRW true 0 [0] [.read 0] 7 initMem)
@@ -850,6 +880,7 @@ theorem dse_unique_needed :
 #### `Toy.Alias.dse_unpassed_needed` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:632-637
 theorem dse_unpassed_needed :
     true = true ∧ Perm.unique = .unique ∧ ¬ initMem.next ∉ [1] ∧
       ¬ Refines (dseTgt .unique true 0 [1] [.read 0] 7 initMem)
@@ -861,6 +892,7 @@ theorem dse_unpassed_needed :
 #### `Toy.Alias.dse_nonvacuous` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:642-645
 theorem dse_nonvacuous :
     true = true ∧ Perm.unique = .unique ∧ initMem.next ∉ [0] ∧
       (dseSrc .unique true 0 [0] [.emit 3, .retag 0 .sharedRW] 5 7 initMem).visible =
@@ -870,6 +902,7 @@ theorem dse_nonvacuous :
 #### `Toy.Alias.dse_nonvacuous_halting` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:650-653
 theorem dse_nonvacuous_halting :
     true = true ∧ Perm.unique = .unique ∧ initMem.next ∉ [0] ∧
       (dseSrc .unique true 0 [0] [.emit 3, .halt] 5 7 initMem).visible =
@@ -879,6 +912,7 @@ theorem dse_nonvacuous_halting :
 #### `Toy.Alias.storeElim_without_overwrite_not_refines` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:659-669
 theorem storeElim_without_overwrite_not_refines :
     (true = true ∧ Perm.unique = .unique ∧ initMem.next ∉ ([] : List Tag) ∧
         NextFresh initMem) ∧
@@ -895,6 +929,7 @@ theorem storeElim_without_overwrite_not_refines :
 #### `Toy.Alias.dseSrc_sharedRO_protected_ub` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:685-687
 theorem dseSrc_sharedRO_protected_ub
     (a : Tag) (ts : List Tag) (c : List COp) (v₁ v₂ : Nat) (m : Mem) :
     dseSrc .sharedRO true a ts c v₁ v₂ m = .ub
@@ -903,6 +938,7 @@ theorem dseSrc_sharedRO_protected_ub
 #### `Toy.Alias.dse_sharedRO_tgt_defined_src_ub` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:715-717
 theorem dse_sharedRO_tgt_defined_src_ub :
     dseSrc .sharedRO true 0 [] [.halt] 5 7 initMem = .ub ∧
       dseTgt .sharedRO true 0 [] [.halt] 7 initMem = .halted []
@@ -911,6 +947,7 @@ theorem dse_sharedRO_tgt_defined_src_ub :
 #### `Toy.Alias.dseSrc_ub_of_touches` (`lean/ToyAlias/Optimizations.lean`)
 
 ```lean
+-- lean/ToyAlias/Optimizations.lean:851-853
 theorem dseSrc_ub_of_touches (a : Tag) (ts : List Tag) (c : List COp) (v₁ v₂ : Nat)
     (m : Mem) (hts : m.next ∉ ts) (htouch : TouchesBeforeHalt c = true) :
     dseSrc .unique true a ts c v₁ v₂ m = .ub
@@ -919,6 +956,7 @@ theorem dseSrc_ub_of_touches (a : Tag) (ts : List Tag) (c : List COp) (v₁ v₂
 #### `Toy.Alias.Tree.tree_read_read_commute_nonvacuous` (`lean/ToyAlias/Tree.lean`)
 
 ```lean
+-- lean/ToyAlias/Tree.lean:479-484
 theorem tree_read_read_commute_nonvacuous :
     let m0 : TMem := ⟨42, [⟨0, none, .unique⟩, ⟨1, some 0, .unique⟩], 2⟩
     let lhs := (tread 0 m0).bind fun (v₁, m₁) =>
@@ -930,6 +968,7 @@ theorem tree_read_read_commute_nonvacuous :
 #### `Toy.Alias.Tree.stack_read_read_not_commute` (`lean/ToyAlias/Tree.lean`)
 
 ```lean
+-- lean/ToyAlias/Tree.lean:489-493
 theorem stack_read_read_not_commute :
     ((read 1 ⟨42, [⟨.unique, 1, false⟩, ⟨.unique, 0, false⟩], 2⟩).bind fun (_, m) => read 0 m).isSome
         = true ∧
@@ -940,6 +979,7 @@ theorem stack_read_read_not_commute :
 #### `Toy.Alias.Tree.readRead_swap_stack_rejects_tree_agrees` (`lean/ToyAlias/Tree.lean`)
 
 ```lean
+-- lean/ToyAlias/Tree.lean:274-278
 theorem readRead_swap_stack_rejects_tree_agrees :
     (runStack [0] readReadSrc initMem).isSome = true ∧
       runStack [0] readReadTgt initMem = none ∧
