@@ -1,0 +1,7 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name":
+ "«address-observed-slot-coalescing-copy-to-move-upgrade-subplace-merges-and-overlap-staging»",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

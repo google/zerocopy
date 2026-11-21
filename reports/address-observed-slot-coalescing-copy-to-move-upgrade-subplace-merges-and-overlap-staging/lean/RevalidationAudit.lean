@@ -1,0 +1,52 @@
+import ToyCoalesce
+
+/-! Prints the axioms of every main result of the cards (not part of the library target). -/
+
+#print axioms Toy.Coalesce.upgrade_outcome_eq_moveAsCopy
+#print axioms Toy.Coalesce.upgrade_moveDeinit_outcome_eq_iff_noReadBeforeReinit
+#print axioms Toy.Coalesce.upgrade_moveDeinit_refines_of_noReadBeforeReinit
+#print axioms Toy.Coalesce.upgrade_moveInPlaceCall_refines_of_noReadAfterCall_calleeAvoids_paramNotAddrTaken
+#print axioms Toy.Coalesce.upgrade_outcome_eq_moveInPlaceCall_of_not_call
+#print axioms Toy.Coalesce.cex_upgrade_moveDeinit_dtorLoad
+#print axioms Toy.Coalesce.pNoDtor_upgrade_refines
+#print axioms Toy.Coalesce.cex_upgrade_moveInPlaceCall_calleeAvoids
+#print axioms Toy.Coalesce.cex_upgrade_moveInPlaceCall_noParamAddr
+#print axioms Toy.Coalesce.cex_upgrade_moveInPlaceCall_noReadAfterCall
+#print axioms Toy.Coalesce.cex_upgrade_callee_load_escaped
+#print axioms Toy.Coalesce.cex_inPlaceCall_param_addrTaken_in_caller
+#print axioms Toy.Coalesce.cex_inPlaceCall_param_conflict
+#print axioms Toy.Coalesce.moveDeinit_moveInPlaceCall_upgrades_incomparable
+#print axioms Toy.Coalesce.checkObs_eq_true_iff
+#print axioms Toy.Coalesce.obsAnalysis_least_cert
+#print axioms Toy.Coalesce.noReadBeforeReinit_of_obsCert
+#print axioms Toy.Coalesce.upgrade_refines_of_obsCert_licensed
+#print axioms Toy.Coalesce.cex_obsCertBodyOnly_licenses_dtorLoad
+#print axioms Toy.Coalesce.coalesce_single_refines_of_noValueClobber_of_lexDisjoint_addrTaken
+#print axioms Toy.Coalesce.cex_coalesce_single_addrTaken_lexOverlap
+#print axioms Toy.Coalesce.cex_coalesce_single_valueClobber
+#print axioms Toy.Coalesce.coalesce_single_refines_addrTaken_child_only
+#print axioms Toy.Coalesce.coalesce_refines_of_noValueClobber_of_classAddrDisjoint
+#print axioms Toy.Coalesce.classAddrDisjoint_of_classAddrDisjointW
+#print axioms Toy.Coalesce.cex_edgeAddrCheck_does_not_compose
+#print axioms Toy.Coalesce.cex_rootAddrCheck_insufficient_siblings
+#print axioms Toy.Coalesce.ufCheck_eq_true_iff_classAddrDisjointW
+#print axioms Toy.Coalesce.policySound_of_lexical_for_addrTaken
+#print axioms Toy.Coalesce.not_policySound_of_precise_for_addrTaken
+#print axioms Toy.Coalesce.policySound_iff
+#print axioms Toy.Coalesce.cex_policy_precise_for_addrTaken
+#print axioms Toy.Coalesce.outcome_inOrder_eq_atomic_of_noStagingNeeded
+#print axioms Toy.Coalesce.stage_inOrder_refines_atomic
+#print axioms Toy.Coalesce.stage_inOrder_behEq_atomic_of_localsInRange
+#print axioms Toy.Coalesce.stage_coalesce_refines_inOrder
+#print axioms Toy.Coalesce.coalesce_refines_inOrder_of_noStagingNeeded
+#print axioms Toy.Coalesce.cex_coalesce_without_staging_inOrder
+#print axioms Toy.Coalesce.cex_recoalesce_staging_temp
+#print axioms Toy.Coalesce.vc_forward_addrFree_of_noValueClobber
+#print axioms Toy.Coalesce.vc_backward_addrFree_of_noValueClobber_of_ubFree
+#print axioms Toy.Coalesce.vc_forward_of_noValueClobber_of_classAddrDisjoint
+#print axioms Toy.Coalesce.cex_vc_forward_addrPost_needs_classAddrDisjoint
+#print axioms Toy.Coalesce.cex_vc_forward_addrPost_precisePolicy
+#print axioms Toy.Coalesce.cex_vc_forward_addrFree_needs_noValueClobber
+#print axioms Toy.Coalesce.cex_vc_backward_needs_ubFree
+#print axioms Toy.Coalesce.cex_vc_backward_needs_noValueClobber
+#print axioms Toy.Coalesce.cex_vc_backward_addrPost

@@ -1,0 +1,6 @@
+name = "address-observed-slot-coalescing-copy-to-move-upgrade-subplace-merges-and-overlap-staging"
+version = "0.1.0"
+defaultTargets = ["ToyCoalesce"]
+
+[[lean_lib]]
+name = "ToyCoalesce"

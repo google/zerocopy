@@ -507,6 +507,122 @@
         "verification/hybrid-systems"
       ]
     },
+    "address-observed-slot-coalescing-copy-to-move-upgrade-subplace-merges-and-overlap-staging": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc MIR documentation (Operand::Move, Assign, storage statements) and destination propagation module documentation"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert register allocation by a posteriori validation (backend/Allocation.v)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-11970-5_13"
+          },
+          "name": "Validating Register Allocation and Spilling"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-11957-6_9"
+          },
+          "name": "Formal Verification of Coalescing Graph-Coloring Register Allocation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-008-9099-0"
+          },
+          "name": "Formal Verification of a C-like Memory Model and Its Uses for Verifying Program Transformations"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2738005"
+          },
+          "name": "A Formal C Memory Model Supporting Integer-Pointer Casts"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290380"
+          },
+          "name": "Exploring C Semantics and Pointer Provenance"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/800230.806984"
+          },
+          "name": "Register allocation & spilling via graph coloring"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/229542.229546"
+          },
+          "name": "Iterated register coalescing"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512529.512534"
+          },
+          "name": "Fast Copy Coalescing and Live-Range Identification"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CGO.2009.19"
+          },
+          "name": "Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8"
+          },
+          "name": "Practical Improvements to the Construction and Destruction of Static Single Assignment Form"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-007-9096-8"
+          },
+          "name": "Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512927.512945"
+          },
+          "name": "A Unified Approach to Global Program Optimization"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "compilers/stack-slot-coalescing",
+        "compilers/destination-propagation",
+        "compilers/copy-to-move-upgrade",
+        "pl/move-semantics",
+        "pl/pointer-provenance",
+        "pl/address-observation"
+      ]
+    },
     "adversarial-value-algebras-symbolic-handle-accounting-and-branch-correlated-borrow-joins": {
       "observed_at": "2026-11-20",
       "subjects": [

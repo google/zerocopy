@@ -1,0 +1,6414 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "List.range.eq_1": [],
+    "List.range.loop.eq_1": [],
+    "List.range.loop.eq_2": [],
+    "List.range.loop.eq_def": [],
+    "Toy.Coalesce.A0": [],
+    "Toy.Coalesce.A_eq03": [],
+    "Toy.Coalesce.A_eq03.match_1": [],
+    "Toy.Coalesce.AccKind": [],
+    "Toy.Coalesce.AccKind.casesOn": [],
+    "Toy.Coalesce.AccKind.ctorElim": [],
+    "Toy.Coalesce.AccKind.ctorElimType": [],
+    "Toy.Coalesce.AccKind.ctorIdx": [],
+    "Toy.Coalesce.AccKind.noConfusion": [],
+    "Toy.Coalesce.AccKind.noConfusionType": [],
+    "Toy.Coalesce.AccKind.ofNat": [],
+    "Toy.Coalesce.AccKind.ofNat_ctorIdx": [],
+    "Toy.Coalesce.AccKind.read": [],
+    "Toy.Coalesce.AccKind.read.elim": [],
+    "Toy.Coalesce.AccKind.read.sizeOf_spec": [],
+    "Toy.Coalesce.AccKind.rec": [],
+    "Toy.Coalesce.AccKind.recOn": [],
+    "Toy.Coalesce.AccKind.reset": [],
+    "Toy.Coalesce.AccKind.reset.elim": [],
+    "Toy.Coalesce.AccKind.reset.sizeOf_spec": [],
+    "Toy.Coalesce.AccKind.write": [],
+    "Toy.Coalesce.AccKind.write.elim": [],
+    "Toy.Coalesce.AccKind.write.sizeOf_spec": [],
+    "Toy.Coalesce.Access": [],
+    "Toy.Coalesce.Access.casesOn": [],
+    "Toy.Coalesce.Access.ctorIdx": [],
+    "Toy.Coalesce.Access.inCall": [],
+    "Toy.Coalesce.Access.kind": [],
+    "Toy.Coalesce.Access.loc": [],
+    "Toy.Coalesce.Access.mk": [],
+    "Toy.Coalesce.Access.mk.inj": [],
+    "Toy.Coalesce.Access.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Access.mk.noConfusion": [],
+    "Toy.Coalesce.Access.mk.sizeOf_spec": [],
+    "Toy.Coalesce.Access.noConfusion": [],
+    "Toy.Coalesce.Access.noConfusionType": [],
+    "Toy.Coalesce.Access.off": [],
+    "Toy.Coalesce.Access.rec": [],
+    "Toy.Coalesce.Access.recOn": [],
+    "Toy.Coalesce.Access.tick": [],
+    "Toy.Coalesce.AccessPt": [
+      "propext"
+    ],
+    "Toy.Coalesce.AccessPt.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.AccessPtHalf": [
+      "propext"
+    ],
+    "Toy.Coalesce.AddrDisc": [
+      "propext"
+    ],
+    "Toy.Coalesce.AddrFree": [],
+    "Toy.Coalesce.AddrTaken": [
+      "propext"
+    ],
+    "Toy.Coalesce.AssignMode": [],
+    "Toy.Coalesce.AssignMode.atomic": [],
+    "Toy.Coalesce.AssignMode.atomic.elim": [],
+    "Toy.Coalesce.AssignMode.atomic.sizeOf_spec": [],
+    "Toy.Coalesce.AssignMode.casesOn": [],
+    "Toy.Coalesce.AssignMode.ctorElim": [],
+    "Toy.Coalesce.AssignMode.ctorElimType": [],
+    "Toy.Coalesce.AssignMode.ctorIdx": [],
+    "Toy.Coalesce.AssignMode.inOrder": [],
+    "Toy.Coalesce.AssignMode.inOrder.elim": [],
+    "Toy.Coalesce.AssignMode.inOrder.sizeOf_spec": [],
+    "Toy.Coalesce.AssignMode.noConfusion": [],
+    "Toy.Coalesce.AssignMode.noConfusionType": [],
+    "Toy.Coalesce.AssignMode.ofNat": [],
+    "Toy.Coalesce.AssignMode.ofNat_ctorIdx": [],
+    "Toy.Coalesce.AssignMode.rec": [],
+    "Toy.Coalesce.AssignMode.recOn": [],
+    "Toy.Coalesce.Beh": [
+      "propext"
+    ],
+    "Toy.Coalesce.BehEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.CallSite": [
+      "propext"
+    ],
+    "Toy.Coalesce.Callee": [],
+    "Toy.Coalesce.Callee.body": [],
+    "Toy.Coalesce.Callee.casesOn": [],
+    "Toy.Coalesce.Callee.ctorIdx": [],
+    "Toy.Coalesce.Callee.mk": [],
+    "Toy.Coalesce.Callee.mk.inj": [],
+    "Toy.Coalesce.Callee.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Callee.mk.noConfusion": [],
+    "Toy.Coalesce.Callee.mk.sizeOf_spec": [],
+    "Toy.Coalesce.Callee.noConfusion": [],
+    "Toy.Coalesce.Callee.noConfusionType": [],
+    "Toy.Coalesce.Callee.prm": [],
+    "Toy.Coalesce.Callee.rec": [],
+    "Toy.Coalesce.Callee.recOn": [],
+    "Toy.Coalesce.CalleeAvoids": [],
+    "Toy.Coalesce.CalleeNoParamAddr": [
+      "propext"
+    ],
+    "Toy.Coalesce.CalleesNoStaging": [
+      "propext"
+    ],
+    "Toy.Coalesce.CalleesNoStagingSyn": [
+      "propext"
+    ],
+    "Toy.Coalesce.CallsInBounds": [
+      "propext"
+    ],
+    "Toy.Coalesce.CallsInBounds.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.ClassAddrDisjoint": [
+      "propext"
+    ],
+    "Toy.Coalesce.ClassAddrDisjointW": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Covered": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Covered.mono": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.EntryInv": [],
+    "Toy.Coalesce.Coal.EntryInv.alias": [],
+    "Toy.Coalesce.Coal.EntryInv.casesOn": [],
+    "Toy.Coalesce.Coal.EntryInv.inCall": [],
+    "Toy.Coalesce.Coal.EntryInv.live": [],
+    "Toy.Coalesce.Coal.EntryInv.lt": [],
+    "Toy.Coalesce.Coal.EntryInv.mk": [],
+    "Toy.Coalesce.Coal.EntryInv.pairs": [],
+    "Toy.Coalesce.Coal.EntryInv.rec": [],
+    "Toy.Coalesce.Coal.EntryInv.recOn": [],
+    "Toy.Coalesce.Coal.EntryInv.run": [],
+    "Toy.Coalesce.Coal.EntryInv.trace": [],
+    "Toy.Coalesce.Coal.Ext": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.casesOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.cov": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.mk": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.mono": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.of_fr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.rec": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.recOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.rr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.setCtx": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.setInCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.setTick": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Ext.zr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Fr": [],
+    "Toy.Coalesce.Coal.Fr.casesOn": [],
+    "Toy.Coalesce.Coal.Fr.conf": [],
+    "Toy.Coalesce.Coal.Fr.live": [],
+    "Toy.Coalesce.Coal.Fr.mk": [],
+    "Toy.Coalesce.Coal.Fr.mono": [],
+    "Toy.Coalesce.Coal.Fr.rec": [],
+    "Toy.Coalesce.Coal.Fr.recOn": [],
+    "Toy.Coalesce.Coal.Fr.refl": [],
+    "Toy.Coalesce.Coal.Fr.trans": [],
+    "Toy.Coalesce.Coal.Grow": [],
+    "Toy.Coalesce.Coal.Grow.refl": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Grow.trans": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.IsBasic": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.IsBasic.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.IsBasic.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.IsBasic.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.IsBasic.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.IsBasic.eq_5": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.IsBasic.eq_6": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.IsBasic.eq_7": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.IsBasic.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.NoEmit": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.NoEmit.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.PairIn": [],
+    "Toy.Coalesce.Coal.PairIn.mono": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.PairIn.symm": [],
+    "Toy.Coalesce.Coal.Rel": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.alias": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.aliasNC": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.casesOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.emit": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.frame": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.inCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.init": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.liveNC": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.liveR": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.liveRoot": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.mem": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.mk": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.rec": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.recOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.resetBoth": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.resetSrc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.runS": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.runT": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.setCtx": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.setInCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.setLive": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.setLiveSrc": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.setTick": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.Rel.trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TR": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TR.append": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TR.nil": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TRel": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TRel.of_teq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel.alias": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel.casesOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel.ext": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel.inCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel.lex": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel.mk": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel.rec": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel.recOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.TopRel.rel": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.addr_hyb": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.alloc_both_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.alloc_src_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.allocate_c": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.allocate_conf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.allocate_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.allocate_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.allocate_status": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.allocate_trace_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.basic_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.bound": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.callCP": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.callCP.match_1": [],
+    "Toy.Coalesce.Coal.callCP_c": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.callCP_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.callIP": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.callIP.match_1": [],
+    "Toy.Coalesce.Coal.callIP_c": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.callIP_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.callsInBounds_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.cfa_append": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.cfa_reads": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.cmpOp_c": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.cmpOp_running": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.cmpOp_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.coalesceStmt_basic": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.code_c": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.core_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.dealloc_both_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.dealloc_src_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.deallocate_c": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.deallocate_conf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.deallocate_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.deallocate_status": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.deallocate_trace_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.disj_covered": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.disj_pairIn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.disj_symm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.emit_basic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.emit_cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.entry": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.entry_inv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.eq_of_root_eq_notClass": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.evalOp_c": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.evalOp_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.evalOp_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.evalOp_trace_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.evalOps_c": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.evalOps_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.evalOps_trace_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.execBasic_c": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.execBasic_inCall_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.execBasic_trace_noemit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.execCallee_c": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.execCallee_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.execStmt_basic": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.execStmt_callCP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.execStmt_callIP": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.ext_alloc_both": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.ext_alloc_src": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.ext_dealloc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fail_not_running": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fn_c": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fn_mem": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_emit": [],
+    "Toy.Coalesce.Coal.fr_evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_fail": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_readCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_writeCells": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_writeCellsK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.fr_writeInOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.getD_map_tr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.hyb": [],
+    "Toy.Coalesce.Coal.hyb.eq_1": [],
+    "Toy.Coalesce.Coal.inClass_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.inClass_root": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.iteN": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.iteP": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.le_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.le_sum_of_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.len_mapPlaces": [],
+    "Toy.Coalesce.Coal.lexLiveBefore_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.lexLiveBefore_succ.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.lexLiveBefore_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.lt_nloc_of_inClass": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.map_tr_replicate": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.mem_liveOthers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.mem_nubNat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.mem_roots": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.mono_execBasic": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.mono_execCallee": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.mono_execStmt": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.notClass_of_root_notClass": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.not_call_of_basic": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.nvc_of_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.nvc_of_hi": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.nvc_prefix": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.nvc_step": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.nvc_stepT": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.nvc_suffix": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.obs_hyb": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.offset_add_size_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.offset_of_not_inClass": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.offset_root": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.outcome_done": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.parentOf_eq_none_of_ge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.parentOf_of_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.parentOf_root": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.parentOf_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.readCells_fields": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.readCells_none_status": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.readCells_running": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.readCells_status": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.readCells_trace_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.read_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resetCells_conf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resetCells_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resetCells_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resolveF_of_none": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resolveF_size": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resolveF_stable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resolveF_succ_of_some": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resolve_edge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resolve_root": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.resolve_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.root_edge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.root_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.root_mem_roots": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.root_of_not_inClass": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.root_root": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.runAt_running": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.run_coalesce": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.running_of_ubFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.scan": [],
+    "Toy.Coalesce.Coal.scan.eq_1": [],
+    "Toy.Coalesce.Coal.scan.eq_2": [],
+    "Toy.Coalesce.Coal.scan.eq_def": [],
+    "Toy.Coalesce.Coal.scan.match_1": [],
+    "Toy.Coalesce.Coal.scan.match_3": [],
+    "Toy.Coalesce.Coal.scan_append": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.scan_block": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.scan_nonwrite": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.scan_reset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.size_c": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.srcLayout": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.srcLayout.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.srcLayout_agree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.srcLayout_cases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.stepT_grow": [],
+    "Toy.Coalesce.Coal.stepT_grow.match_1_1": [],
+    "Toy.Coalesce.Coal.step_grow": [],
+    "Toy.Coalesce.Coal.step_grow.match_1_1": [],
+    "Toy.Coalesce.Coal.topRel_init": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.top_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.top_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.tr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.tr.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.tr.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.tr.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.tr_cmp": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.tr_ne_uninit": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.tr_uninit": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.tr_vals": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.trel_execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.trel_execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.trel_execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.trel_run": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.wck_status": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.writeCellsK_trace_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.writeInOrder_c": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.writeInOrder_trace_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Coal.write_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Disj": [],
+    "Toy.Coalesce.Disj.eq_1": [],
+    "Toy.Coalesce.EVal": [],
+    "Toy.Coalesce.EVal.addr": [],
+    "Toy.Coalesce.EVal.addr.elim": [],
+    "Toy.Coalesce.EVal.addr.inj": [],
+    "Toy.Coalesce.EVal.addr.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.EVal.addr.noConfusion": [],
+    "Toy.Coalesce.EVal.addr.sizeOf_spec": [],
+    "Toy.Coalesce.EVal.casesOn": [],
+    "Toy.Coalesce.EVal.ctorElim": [],
+    "Toy.Coalesce.EVal.ctorElimType": [],
+    "Toy.Coalesce.EVal.ctorIdx": [],
+    "Toy.Coalesce.EVal.int": [],
+    "Toy.Coalesce.EVal.int.elim": [],
+    "Toy.Coalesce.EVal.int.inj": [],
+    "Toy.Coalesce.EVal.int.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.EVal.int.noConfusion": [],
+    "Toy.Coalesce.EVal.int.sizeOf_spec": [],
+    "Toy.Coalesce.EVal.noConfusion": [],
+    "Toy.Coalesce.EVal.noConfusionType": [],
+    "Toy.Coalesce.EVal.rec": [],
+    "Toy.Coalesce.EVal.recOn": [],
+    "Toy.Coalesce.Edge": [],
+    "Toy.Coalesce.Edge.casesOn": [],
+    "Toy.Coalesce.Edge.child": [],
+    "Toy.Coalesce.Edge.ctorIdx": [],
+    "Toy.Coalesce.Edge.mk": [],
+    "Toy.Coalesce.Edge.mk.inj": [],
+    "Toy.Coalesce.Edge.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Edge.mk.noConfusion": [],
+    "Toy.Coalesce.Edge.mk.sizeOf_spec": [],
+    "Toy.Coalesce.Edge.noConfusion": [],
+    "Toy.Coalesce.Edge.noConfusionType": [],
+    "Toy.Coalesce.Edge.off": [],
+    "Toy.Coalesce.Edge.parent": [],
+    "Toy.Coalesce.Edge.rec": [],
+    "Toy.Coalesce.Edge.recOn": [],
+    "Toy.Coalesce.EdgeAddrCheck": [
+      "propext"
+    ],
+    "Toy.Coalesce.Event": [],
+    "Toy.Coalesce.Event.casesOn": [],
+    "Toy.Coalesce.Event.cmp": [],
+    "Toy.Coalesce.Event.cmp.elim": [],
+    "Toy.Coalesce.Event.cmp.inj": [],
+    "Toy.Coalesce.Event.cmp.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Event.cmp.noConfusion": [],
+    "Toy.Coalesce.Event.cmp.sizeOf_spec": [],
+    "Toy.Coalesce.Event.ctorElim": [],
+    "Toy.Coalesce.Event.ctorElimType": [],
+    "Toy.Coalesce.Event.ctorIdx": [],
+    "Toy.Coalesce.Event.erase": [],
+    "Toy.Coalesce.Event.erase.eq_1": [],
+    "Toy.Coalesce.Event.erase.eq_2": [],
+    "Toy.Coalesce.Event.erase.match_1": [],
+    "Toy.Coalesce.Event.erase.match_3": [],
+    "Toy.Coalesce.Event.noConfusion": [],
+    "Toy.Coalesce.Event.noConfusionType": [],
+    "Toy.Coalesce.Event.rec": [],
+    "Toy.Coalesce.Event.recOn": [],
+    "Toy.Coalesce.Event.vals": [],
+    "Toy.Coalesce.Event.vals.elim": [],
+    "Toy.Coalesce.Event.vals.inj": [],
+    "Toy.Coalesce.Event.vals.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Event.vals.noConfusion": [],
+    "Toy.Coalesce.Event.vals.sizeOf_spec": [],
+    "Toy.Coalesce.Forest": [],
+    "Toy.Coalesce.Forest.coalesceStmt": [
+      "propext"
+    ],
+    "Toy.Coalesce.Forest.coalesceStmt.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Forest.coalesceStmt.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Forest.coalesceStmt.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Forest.coalesceStmt.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Forest.inClass": [],
+    "Toy.Coalesce.Forest.inClass.eq_1": [],
+    "Toy.Coalesce.Forest.mapPlace": [],
+    "Toy.Coalesce.Forest.mapPlace.eq_1": [],
+    "Toy.Coalesce.Forest.offset": [],
+    "Toy.Coalesce.Forest.offset.eq_1": [],
+    "Toy.Coalesce.Forest.parentOf": [],
+    "Toy.Coalesce.Forest.parentOf.eq_1": [],
+    "Toy.Coalesce.Forest.resolve": [],
+    "Toy.Coalesce.Forest.resolve.eq_1": [],
+    "Toy.Coalesce.Forest.resolveF": [],
+    "Toy.Coalesce.Forest.resolveF.eq_1": [],
+    "Toy.Coalesce.Forest.resolveF.eq_2": [],
+    "Toy.Coalesce.Forest.resolveF.eq_def": [],
+    "Toy.Coalesce.Forest.resolveF.match_1": [],
+    "Toy.Coalesce.Forest.resolveF.match_3": [],
+    "Toy.Coalesce.Forest.resolveF_fst_eq_or_parent": [
+      "propext"
+    ],
+    "Toy.Coalesce.Forest.resolve_of_not_inClass": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Forest.root": [],
+    "Toy.Coalesce.Forest.root.eq_1": [],
+    "Toy.Coalesce.Forest.root_ne_of_not_inClass": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Forest.roots": [],
+    "Toy.Coalesce.Forest.roots.eq_1": [],
+    "Toy.Coalesce.Forest.sameClass": [],
+    "Toy.Coalesce.Forest.sameClass.eq_1": [],
+    "Toy.Coalesce.Forest.tcell": [],
+    "Toy.Coalesce.Forest.tcell.eq_1": [],
+    "Toy.Coalesce.Forest.windowsOverlap": [
+      "propext"
+    ],
+    "Toy.Coalesce.Forest.windowsOverlap.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.ForestWF": [
+      "propext"
+    ],
+    "Toy.Coalesce.ForestWFNoCallCheck": [
+      "propext"
+    ],
+    "Toy.Coalesce.InIv": [
+      "propext"
+    ],
+    "Toy.Coalesce.InIv.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.InIv.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.InIvHalf": [
+      "propext"
+    ],
+    "Toy.Coalesce.InIvHalf.match_1": [],
+    "Toy.Coalesce.InPlace.Ctx2": [],
+    "Toy.Coalesce.InPlace.Ctx2.casesOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.Ctx2.len": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.Ctx2.mk": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.Ctx2.nat": [],
+    "Toy.Coalesce.InPlace.Ctx2.pq": [],
+    "Toy.Coalesce.InPlace.Ctx2.qb": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.Ctx2.rec": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.Ctx2.recOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.Good2": [],
+    "Toy.Coalesce.InPlace.Good3": [],
+    "Toy.Coalesce.InPlace.InWin": [],
+    "Toy.Coalesce.InPlace.R2": [],
+    "Toy.Coalesce.InPlace.R2.aliasS": [],
+    "Toy.Coalesce.InPlace.R2.aliasT": [],
+    "Toy.Coalesce.InPlace.R2.casesOn": [],
+    "Toy.Coalesce.InPlace.R2.cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R2.conf": [],
+    "Toy.Coalesce.InPlace.R2.emit": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R2.evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R2.evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R2.execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R2.execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R2.fail": [],
+    "Toy.Coalesce.InPlace.R2.inC": [],
+    "Toy.Coalesce.InPlace.R2.inCall": [],
+    "Toy.Coalesce.InPlace.R2.live": [],
+    "Toy.Coalesce.InPlace.R2.liveQ": [],
+    "Toy.Coalesce.InPlace.R2.liveSP": [],
+    "Toy.Coalesce.InPlace.R2.liveTP": [],
+    "Toy.Coalesce.InPlace.R2.mem": [],
+    "Toy.Coalesce.InPlace.R2.memW": [],
+    "Toy.Coalesce.InPlace.R2.mk": [],
+    "Toy.Coalesce.InPlace.R2.ptrs": [],
+    "Toy.Coalesce.InPlace.R2.read": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R2.rec": [],
+    "Toy.Coalesce.InPlace.R2.recOn": [],
+    "Toy.Coalesce.InPlace.R2.resolve": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R2.status": [],
+    "Toy.Coalesce.InPlace.R2.tick": [],
+    "Toy.Coalesce.InPlace.R2.tk": [],
+    "Toy.Coalesce.InPlace.R2.trace": [],
+    "Toy.Coalesce.InPlace.R2.write": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R2.writeInOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3": [],
+    "Toy.Coalesce.InPlace.R3.addConf": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.alias": [],
+    "Toy.Coalesce.InPlace.R3.allocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.callCopy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.callCopy.match_1": [],
+    "Toy.Coalesce.InPlace.R3.casesOn": [],
+    "Toy.Coalesce.InPlace.R3.cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.conf": [],
+    "Toy.Coalesce.InPlace.R3.ctx": [],
+    "Toy.Coalesce.InPlace.R3.deallocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.emit": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.fail": [],
+    "Toy.Coalesce.InPlace.R3.inCall": [],
+    "Toy.Coalesce.InPlace.R3.len": [],
+    "Toy.Coalesce.InPlace.R3.live": [],
+    "Toy.Coalesce.InPlace.R3.mem": [],
+    "Toy.Coalesce.InPlace.R3.mk": [],
+    "Toy.Coalesce.InPlace.R3.read": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.rec": [],
+    "Toy.Coalesce.InPlace.R3.recOn": [],
+    "Toy.Coalesce.InPlace.R3.resolve": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.setInCall": [],
+    "Toy.Coalesce.InPlace.R3.setLive": [],
+    "Toy.Coalesce.InPlace.R3.setTick": [],
+    "Toy.Coalesce.InPlace.R3.status": [],
+    "Toy.Coalesce.InPlace.R3.tick": [],
+    "Toy.Coalesce.InPlace.R3.trace": [],
+    "Toy.Coalesce.InPlace.R3.write": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.R3.writeInOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.Step.ext": [],
+    "Toy.Coalesce.InPlace.Step.ext.match_1_1": [],
+    "Toy.Coalesce.InPlace.bridge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.cmpOp_layout": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.code_getElem?_ne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.code_getElem?_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.code_length": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.deallocate_status": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.disj_far": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.evalOp_len": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.evalOps_len": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.execBasic_layout": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.execCallee_layout": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.execStmt_layout": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.execTop_upgrade": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.farLayout": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.farLayout.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.ftnr_append_left": [],
+    "Toy.Coalesce.InPlace.ftnr_append_untouched": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.ftnr_congr": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.ftnr_reads": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.ftnr_skip": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.good2_of_calleeAvoids": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.good2_prefix": [],
+    "Toy.Coalesce.InPlace.good2_step": [],
+    "Toy.Coalesce.InPlace.good3_prefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.good3_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.good3_stepT": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.good3_stepT.match_1_1": [],
+    "Toy.Coalesce.InPlace.le_sum_range": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.main_sim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.mem_uninit_of_dead": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.modifyAt_getElem?": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.modifyAt_length": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.pair_eta": [],
+    "Toy.Coalesce.InPlace.rc_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.rc_ok": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.readCells_sim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.resolvePlace_noAlias": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.rho": [],
+    "Toy.Coalesce.InPlace.rho.eq_1": [],
+    "Toy.Coalesce.InPlace.rho_len": [],
+    "Toy.Coalesce.InPlace.rho_of_ne": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.runAt_layout": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.runAt_running": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.runAt_upgrade_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.runAt_upgrade_succ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.run_layout": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.size_of_ge": [
+      "propext"
+    ],
+    "Toy.Coalesce.InPlace.val_layout": [
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.allocate_live_or": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.evalOp_alias": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.getD_replicate_uninit": [
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_allocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_congr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_deallocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_of_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_writeCells": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_writeCellsK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_writeInOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.liveInv_writeUninit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.ptrsIn_allocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.ptrsIn_cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.ptrsIn_congr": [],
+    "Toy.Coalesce.Inv.ptrsIn_deallocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.ptrsIn_evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.ptrsIn_evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.ptrsIn_execCallee_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.ptrsIn_writeCellsK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.ptrsIn_writeInOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.readCells_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.readCells_len": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.resolvePlace_base": [
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.resolvePlace_spec": [
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.valsIn_append": [
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.valsIn_read": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.valsIn_replicate": [
+      "propext"
+    ],
+    "Toy.Coalesce.Inv.writeCellsK_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.IvOverlap": [
+      "propext"
+    ],
+    "Toy.Coalesce.IvOverlap.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.IvOverlapHalf": [
+      "propext"
+    ],
+    "Toy.Coalesce.Layout": [],
+    "Toy.Coalesce.LexLiveAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.LexLiveAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.LexOverlap": [
+      "propext"
+    ],
+    "Toy.Coalesce.LexOverlap.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.EOK": [
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.EOK.cons": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.EOK.mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.EOK.tail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.LogOK": [],
+    "Toy.Coalesce.Lic.LogOK.mono": [],
+    "Toy.Coalesce.Lic.LogOK.refl": [],
+    "Toy.Coalesce.Lic.LogOK.trans": [],
+    "Toy.Coalesce.Lic.LogOK.trans'": [],
+    "Toy.Coalesce.Lic.RS": [],
+    "Toy.Coalesce.Lic.WS": [],
+    "Toy.Coalesce.Lic.callCopy_log": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.cmpOp_log": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.code_get": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.eok_deinit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.eok_inPlace": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.evalOp_log": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.evalOps_log": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.execBasic_log": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.execCallee_log": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.execCallee_log.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.execStmt_noncall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.firstTouch_true_of_false": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.logOK_emit": [],
+    "Toy.Coalesce.Lic.logOK_fail": [],
+    "Toy.Coalesce.Lic.logOK_of_step": [
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.logOK_step_false": [
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.readCells_log": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.readCells_log'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.resolvePlace_none": [
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.tick_entries": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.writeCellsK_log": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Lic.writeInOrder_log": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Licensed": [
+      "propext"
+    ],
+    "Toy.Coalesce.Licensed.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Licensed.match_4": [],
+    "Toy.Coalesce.LicensedNoParamAddr": [
+      "propext"
+    ],
+    "Toy.Coalesce.LicensedNoParamAddr.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.LicensedNoParamAddr.match_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.LicensedNoParamAddr.match_7": [],
+    "Toy.Coalesce.LiveInv": [
+      "propext"
+    ],
+    "Toy.Coalesce.LocalsInRange": [
+      "propext"
+    ],
+    "Toy.Coalesce.MoveSem": [],
+    "Toy.Coalesce.MoveSem.asCopy": [],
+    "Toy.Coalesce.MoveSem.asCopy.elim": [],
+    "Toy.Coalesce.MoveSem.asCopy.sizeOf_spec": [],
+    "Toy.Coalesce.MoveSem.casesOn": [],
+    "Toy.Coalesce.MoveSem.ctorElim": [],
+    "Toy.Coalesce.MoveSem.ctorElimType": [],
+    "Toy.Coalesce.MoveSem.ctorIdx": [],
+    "Toy.Coalesce.MoveSem.deinit": [],
+    "Toy.Coalesce.MoveSem.deinit.elim": [],
+    "Toy.Coalesce.MoveSem.deinit.sizeOf_spec": [],
+    "Toy.Coalesce.MoveSem.inPlaceCall": [],
+    "Toy.Coalesce.MoveSem.inPlaceCall.elim": [],
+    "Toy.Coalesce.MoveSem.inPlaceCall.sizeOf_spec": [],
+    "Toy.Coalesce.MoveSem.noConfusion": [],
+    "Toy.Coalesce.MoveSem.noConfusionType": [],
+    "Toy.Coalesce.MoveSem.ofNat": [],
+    "Toy.Coalesce.MoveSem.ofNat_ctorIdx": [],
+    "Toy.Coalesce.MoveSem.rec": [],
+    "Toy.Coalesce.MoveSem.recOn": [],
+    "Toy.Coalesce.NeedsStaging": [
+      "propext"
+    ],
+    "Toy.Coalesce.NeedsStaging.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.NeedsStagingParam": [
+      "propext"
+    ],
+    "Toy.Coalesce.NeedsStagingParam.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.NoReadBeforeReinit": [],
+    "Toy.Coalesce.NoStagingNeeded": [
+      "propext"
+    ],
+    "Toy.Coalesce.NoStagingNeededSyn": [
+      "propext"
+    ],
+    "Toy.Coalesce.NoValueClobber": [],
+    "Toy.Coalesce.NoValueClobberStmt": [
+      "propext"
+    ],
+    "Toy.Coalesce.Notion": [],
+    "Toy.Coalesce.Notion.casesOn": [],
+    "Toy.Coalesce.Notion.ctorElim": [],
+    "Toy.Coalesce.Notion.ctorElimType": [],
+    "Toy.Coalesce.Notion.ctorIdx": [],
+    "Toy.Coalesce.Notion.lexical": [],
+    "Toy.Coalesce.Notion.lexical.elim": [],
+    "Toy.Coalesce.Notion.lexical.sizeOf_spec": [],
+    "Toy.Coalesce.Notion.noConfusion": [],
+    "Toy.Coalesce.Notion.noConfusionType": [],
+    "Toy.Coalesce.Notion.ofNat": [],
+    "Toy.Coalesce.Notion.ofNat_ctorIdx": [],
+    "Toy.Coalesce.Notion.precise": [],
+    "Toy.Coalesce.Notion.precise.elim": [],
+    "Toy.Coalesce.Notion.precise.sizeOf_spec": [],
+    "Toy.Coalesce.Notion.rec": [],
+    "Toy.Coalesce.Notion.recOn": [],
+    "Toy.Coalesce.Obs.Bad": [],
+    "Toy.Coalesce.Obs.BaseRes": [],
+    "Toy.Coalesce.Obs.Cells": [],
+    "Toy.Coalesce.Obs.Cells.after": [],
+    "Toy.Coalesce.Obs.Cells.after.eq_1": [],
+    "Toy.Coalesce.Obs.Cells.after_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.DInv": [],
+    "Toy.Coalesce.Obs.G": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.alias": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.casesOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.live": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.log": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.mk": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.mono": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.rec": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.recOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G.trans": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_emit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_evalOps.match_1_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_execCallee.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_fail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_readCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_writeCellsK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_writeInOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.G_writeInOrder.match_1_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Grow": [],
+    "Toy.Coalesce.Obs.Grow.refl": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Grow.trans": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.OK": [],
+    "Toy.Coalesce.Obs.Pc": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.casesOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.dead": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.fail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.log": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.mk": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.of_G": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.of_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.rec": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.recOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc.trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc_allocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc_deallocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc_execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc_execStmt.match_1_30": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Pc_execStmt.match_1_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.Rel": [],
+    "Toy.Coalesce.Obs.Rel.alias": [],
+    "Toy.Coalesce.Obs.Rel.conflicts": [],
+    "Toy.Coalesce.Obs.Rel.emit": [],
+    "Toy.Coalesce.Obs.Rel.fail": [],
+    "Toy.Coalesce.Obs.Rel.inCall": [],
+    "Toy.Coalesce.Obs.Rel.live": [],
+    "Toy.Coalesce.Obs.Rel.logAcc": [],
+    "Toy.Coalesce.Obs.Rel.mem": [],
+    "Toy.Coalesce.Obs.Rel.setCtx": [],
+    "Toy.Coalesce.Obs.Rel.setInCall": [],
+    "Toy.Coalesce.Obs.Rel.setTick": [],
+    "Toy.Coalesce.Obs.Rel.status": [],
+    "Toy.Coalesce.Obs.Rel.tick": [],
+    "Toy.Coalesce.Obs.Rel.trace": [],
+    "Toy.Coalesce.Obs.SimS": [],
+    "Toy.Coalesce.Obs.SimS.bind": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.SimS.extend": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.SimS.start": [],
+    "Toy.Coalesce.Obs.SimV": [],
+    "Toy.Coalesce.Obs.SimV.bindS": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.SimV.bindV": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.SimV.extend": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.SimV.map": [],
+    "Toy.Coalesce.Obs.Sub": [],
+    "Toy.Coalesce.Obs.T1_back": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.after_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.after_of_nonX": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.aliasBase_none": [],
+    "Toy.Coalesce.Obs.allocate_locs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.bad_append_left": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.bad_append_right": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.base_assign": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.base_call": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.base_out": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.base_write": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.copy_move_deinit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.deallocate_conflicts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.deallocate_locs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.deallocate_status": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.dinv_base": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.dinv_run": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.dinv_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.erase": [],
+    "Toy.Coalesce.Obs.erase.eq_1": [],
+    "Toy.Coalesce.Obs.evalOp_none_stuck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.execStmt_of_not_call": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.execTop_upgradeAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.fail_execTop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.firstTouchNotRead_all": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.firstTouchNotRead_of_noRead": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.firstTouchNotRead_skip": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.ft": [],
+    "Toy.Coalesce.Obs.ft_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.ft_of_noRead": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.ft_of_not_touched": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.ft_reads_false": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.grow_callBody": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.grow_execStmt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.grow_of_step": [],
+    "Toy.Coalesce.Obs.grow_of_stepT": [],
+    "Toy.Coalesce.Obs.grow_setCtx": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.grow_setInCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.kill_assign": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.kill_storageDead": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.kill_storageLive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.kills_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.layoutOK_upgradeAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.mayReadNoCall_of_stRd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.mayRead_of_noCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.modifyAt_append": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.modifyAt_getElem?": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.modifyAt_length": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.modifyAt_take": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.noRead_iff_ok": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.not_ok_of_bad": [],
+    "Toy.Coalesce.Obs.not_touched_of_nonX": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.ok_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.ok_nil": [],
+    "Toy.Coalesce.Obs.ok_of_nonX": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.opRd": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.opRd.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.opRd.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.opRd.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.opRd.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.opRd.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.outcome_upgradeAt_eq_of_rel": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.outcome_upgradeAt_ub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.pos_size_lt_nloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.qCells": [],
+    "Toy.Coalesce.Obs.qCells.eq_1": [],
+    "Toy.Coalesce.Obs.rel_intro": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.rel_resolvePlace": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.resolvePlace_eq_of_none": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.runAt_inBounds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.runAt_stuck_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.runAt_succ_stuck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.runAt_upgradeAt_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.runAt_upgradeAt_succ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.running_of_execStmt": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.simS_of_ok": [],
+    "Toy.Coalesce.Obs.simS_refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.simS_same": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.simV_refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.simV_same": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_allocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_deallocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_execTop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_readCells": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_writeCellsK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.sim_writeInOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.stRd": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.stRd_some": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.tick_pc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.touched": [],
+    "Toy.Coalesce.Obs.touched.eq_1": [],
+    "Toy.Coalesce.Obs.touched_append": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.touched_false_of_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.touched_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.touched_of_ft_false": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.touched_writeCellsK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.touched_writes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.trivPtrs": [],
+    "Toy.Coalesce.Obs.upgradeAt_code": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.upgradeSite_lt": [
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.writeCellsK_locs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Obs.writeInOrder_touch": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ObsCert": [
+      "propext"
+    ],
+    "Toy.Coalesce.ObsCert.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.ObsCertBodyOnly": [
+      "propext"
+    ],
+    "Toy.Coalesce.ObsMask": [],
+    "Toy.Coalesce.Operand": [],
+    "Toy.Coalesce.Operand.addrOf": [],
+    "Toy.Coalesce.Operand.addrOf.elim": [],
+    "Toy.Coalesce.Operand.addrOf.inj": [],
+    "Toy.Coalesce.Operand.addrOf.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.addrOf.noConfusion": [],
+    "Toy.Coalesce.Operand.addrOf.sizeOf_spec": [],
+    "Toy.Coalesce.Operand.casesOn": [],
+    "Toy.Coalesce.Operand.copy": [],
+    "Toy.Coalesce.Operand.copy.elim": [],
+    "Toy.Coalesce.Operand.copy.inj": [],
+    "Toy.Coalesce.Operand.copy.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.copy.noConfusion": [],
+    "Toy.Coalesce.Operand.copy.sizeOf_spec": [],
+    "Toy.Coalesce.Operand.ctorElim": [],
+    "Toy.Coalesce.Operand.ctorElimType": [],
+    "Toy.Coalesce.Operand.ctorIdx": [],
+    "Toy.Coalesce.Operand.isLoad": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.isLoad.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.isLoad.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.isLoad.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.len": [],
+    "Toy.Coalesce.Operand.len.eq_1": [],
+    "Toy.Coalesce.Operand.len.eq_2": [],
+    "Toy.Coalesce.Operand.len.eq_3": [],
+    "Toy.Coalesce.Operand.len.eq_4": [],
+    "Toy.Coalesce.Operand.len.eq_5": [],
+    "Toy.Coalesce.Operand.lit": [],
+    "Toy.Coalesce.Operand.lit.elim": [],
+    "Toy.Coalesce.Operand.lit.inj": [],
+    "Toy.Coalesce.Operand.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.lit.noConfusion": [],
+    "Toy.Coalesce.Operand.lit.sizeOf_spec": [],
+    "Toy.Coalesce.Operand.load": [],
+    "Toy.Coalesce.Operand.load.elim": [],
+    "Toy.Coalesce.Operand.load.inj": [],
+    "Toy.Coalesce.Operand.load.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.load.noConfusion": [],
+    "Toy.Coalesce.Operand.load.sizeOf_spec": [],
+    "Toy.Coalesce.Operand.locals": [],
+    "Toy.Coalesce.Operand.locals.eq_1": [],
+    "Toy.Coalesce.Operand.locals.eq_2": [],
+    "Toy.Coalesce.Operand.locals.eq_3": [],
+    "Toy.Coalesce.Operand.locals.eq_4": [],
+    "Toy.Coalesce.Operand.locals.eq_5": [],
+    "Toy.Coalesce.Operand.locals.match_1": [],
+    "Toy.Coalesce.Operand.mapPlaces": [],
+    "Toy.Coalesce.Operand.mapPlaces.eq_1": [],
+    "Toy.Coalesce.Operand.mapPlaces.eq_2": [],
+    "Toy.Coalesce.Operand.mapPlaces.eq_3": [],
+    "Toy.Coalesce.Operand.mapPlaces.eq_4": [],
+    "Toy.Coalesce.Operand.mapPlaces.eq_5": [],
+    "Toy.Coalesce.Operand.mapPlaces.match_1": [],
+    "Toy.Coalesce.Operand.mayOverlap": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlap.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlap.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlap.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlap.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlap.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlapParam": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlapParam.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlapParam.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlapParam.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.mayOverlapParam.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.move": [],
+    "Toy.Coalesce.Operand.move.elim": [],
+    "Toy.Coalesce.Operand.move.inj": [],
+    "Toy.Coalesce.Operand.move.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.move.noConfusion": [],
+    "Toy.Coalesce.Operand.move.sizeOf_spec": [],
+    "Toy.Coalesce.Operand.noConfusion": [],
+    "Toy.Coalesce.Operand.noConfusionType": [],
+    "Toy.Coalesce.Operand.readsName": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.readsName.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.readsName.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.readsName.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.readsName.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.readsName.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.rec": [],
+    "Toy.Coalesce.Operand.recOn": [],
+    "Toy.Coalesce.Operand.takesAddr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.takesAddr.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.takesAddr.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Operand.takesAddr.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Outcome": [],
+    "Toy.Coalesce.Outcome.badLayout": [],
+    "Toy.Coalesce.Outcome.badLayout.elim": [],
+    "Toy.Coalesce.Outcome.badLayout.sizeOf_spec": [],
+    "Toy.Coalesce.Outcome.casesOn": [],
+    "Toy.Coalesce.Outcome.ctorElim": [],
+    "Toy.Coalesce.Outcome.ctorElimType": [],
+    "Toy.Coalesce.Outcome.ctorIdx": [],
+    "Toy.Coalesce.Outcome.done": [],
+    "Toy.Coalesce.Outcome.done.elim": [],
+    "Toy.Coalesce.Outcome.done.inj": [],
+    "Toy.Coalesce.Outcome.done.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Outcome.done.noConfusion": [],
+    "Toy.Coalesce.Outcome.done.sizeOf_spec": [],
+    "Toy.Coalesce.Outcome.noConfusion": [],
+    "Toy.Coalesce.Outcome.noConfusionType": [],
+    "Toy.Coalesce.Outcome.rec": [],
+    "Toy.Coalesce.Outcome.recOn": [],
+    "Toy.Coalesce.Outcome.ub": [],
+    "Toy.Coalesce.Outcome.ub.elim": [],
+    "Toy.Coalesce.Outcome.ub.sizeOf_spec": [],
+    "Toy.Coalesce.ParamsInRange": [],
+    "Toy.Coalesce.Place": [],
+    "Toy.Coalesce.Place.base": [],
+    "Toy.Coalesce.Place.casesOn": [],
+    "Toy.Coalesce.Place.ctorIdx": [],
+    "Toy.Coalesce.Place.len": [],
+    "Toy.Coalesce.Place.mk": [],
+    "Toy.Coalesce.Place.mk.inj": [],
+    "Toy.Coalesce.Place.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Place.mk.noConfusion": [],
+    "Toy.Coalesce.Place.mk.sizeOf_spec": [],
+    "Toy.Coalesce.Place.noConfusion": [],
+    "Toy.Coalesce.Place.noConfusionType": [],
+    "Toy.Coalesce.Place.off": [],
+    "Toy.Coalesce.Place.paramSplit": [],
+    "Toy.Coalesce.Place.paramSplit.eq_1": [],
+    "Toy.Coalesce.Place.proj": [],
+    "Toy.Coalesce.Place.rec": [],
+    "Toy.Coalesce.Place.recOn": [],
+    "Toy.Coalesce.Place.whole": [],
+    "Toy.Coalesce.Pol.Acc": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.CtxR": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.CtxW": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.DeadAfter": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.Good": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.Good.casesOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.Good.live": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.Good.mk": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.Good.ptrs": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.Good.rec": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.Good.recOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.Good.run": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.Prec": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.acc_alias": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.acc_of_accessPt": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.acc_of_addrTaken": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.accessPt_callee": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.accessPt_callee.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.accessPt_even": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.accessPt_odd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.classAddrDisjoint_of_policyCheck": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.clobber_append": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.clobber_single_reset": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.clobber_single_write": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.conflict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.ctxR_top": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.ctxW_top": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.ctx_callee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.deadAfter_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.fn_mem_of_call": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.getD_code": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_allocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_congr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_deallocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_emit": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_fail": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_of_not_running": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_read": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_readCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_readCells_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_resetCells": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_runAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_top_basic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_wr_reset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_wr_write": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.good_writeCells": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.inIv_at": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.inIv_precise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lexLiveAt_of_succ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lexLiveBefore_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lexLiveBefore_succ.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lt_nloc_of_lt_size": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lwOf": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lwOf.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lwOf.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lwOf.eq_def": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lwOf.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lwOf.match_4": [],
+    "Toy.Coalesce.Pol.lwOf_append": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lwOf_single_read": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lwOf_single_reset": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.lwOf_single_write": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.noValueClobberStmt_of_policyCheck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.notion_lexical": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.parentOf_none_of_not_inClass": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.resolveF_of_parentOf_none": [
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.resolveF_root": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.root_cases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.root_of_not_inClass": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.takesAddr_callee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Pol.tcell_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Policy": [],
+    "Toy.Coalesce.PolicyCheck": [
+      "propext"
+    ],
+    "Toy.Coalesce.PolicyCheckHalf": [
+      "propext"
+    ],
+    "Toy.Coalesce.PolicySound": [
+      "propext"
+    ],
+    "Toy.Coalesce.PolicySoundWith": [
+      "propext"
+    ],
+    "Toy.Coalesce.Prog": [],
+    "Toy.Coalesce.Prog.body": [],
+    "Toy.Coalesce.Prog.casesOn": [],
+    "Toy.Coalesce.Prog.code": [],
+    "Toy.Coalesce.Prog.code.eq_1": [],
+    "Toy.Coalesce.Prog.ctorIdx": [],
+    "Toy.Coalesce.Prog.dtors": [],
+    "Toy.Coalesce.Prog.fn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Prog.fn.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Prog.fns": [],
+    "Toy.Coalesce.Prog.mk": [],
+    "Toy.Coalesce.Prog.mk.inj": [],
+    "Toy.Coalesce.Prog.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Prog.mk.noConfusion": [],
+    "Toy.Coalesce.Prog.mk.sizeOf_spec": [],
+    "Toy.Coalesce.Prog.nloc": [],
+    "Toy.Coalesce.Prog.nloc.eq_1": [],
+    "Toy.Coalesce.Prog.noConfusion": [],
+    "Toy.Coalesce.Prog.noConfusionType": [],
+    "Toy.Coalesce.Prog.rec": [],
+    "Toy.Coalesce.Prog.recOn": [],
+    "Toy.Coalesce.Prog.size": [
+      "propext"
+    ],
+    "Toy.Coalesce.Prog.size.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Prog.sizes": [],
+    "Toy.Coalesce.Prog.upgradeAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.Prog.upgradeAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.PtrsIn": [],
+    "Toy.Coalesce.Refines": [
+      "propext"
+    ],
+    "Toy.Coalesce.Refines.trans": [
+      "propext"
+    ],
+    "Toy.Coalesce.RootAddrCheck": [
+      "propext"
+    ],
+    "Toy.Coalesce.Sem": [],
+    "Toy.Coalesce.Sem.assign": [],
+    "Toy.Coalesce.Sem.casesOn": [],
+    "Toy.Coalesce.Sem.ctorIdx": [],
+    "Toy.Coalesce.Sem.mk": [],
+    "Toy.Coalesce.Sem.mk.inj": [],
+    "Toy.Coalesce.Sem.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Sem.mk.noConfusion": [],
+    "Toy.Coalesce.Sem.mk.sizeOf_spec": [],
+    "Toy.Coalesce.Sem.move": [],
+    "Toy.Coalesce.Sem.noConfusion": [],
+    "Toy.Coalesce.Sem.noConfusionType": [],
+    "Toy.Coalesce.Sem.rec": [],
+    "Toy.Coalesce.Sem.recOn": [],
+    "Toy.Coalesce.St": [],
+    "Toy.Coalesce.St.alias": [],
+    "Toy.Coalesce.St.casesOn": [],
+    "Toy.Coalesce.St.conflicts": [],
+    "Toy.Coalesce.St.ctorIdx": [],
+    "Toy.Coalesce.St.emit": [],
+    "Toy.Coalesce.St.emit.eq_1": [],
+    "Toy.Coalesce.St.fail": [],
+    "Toy.Coalesce.St.fail.eq_1": [],
+    "Toy.Coalesce.St.inCall": [],
+    "Toy.Coalesce.St.init": [],
+    "Toy.Coalesce.St.init.eq_1": [],
+    "Toy.Coalesce.St.live": [],
+    "Toy.Coalesce.St.log": [],
+    "Toy.Coalesce.St.logAcc": [],
+    "Toy.Coalesce.St.logAcc.eq_1": [],
+    "Toy.Coalesce.St.mem": [],
+    "Toy.Coalesce.St.mk": [],
+    "Toy.Coalesce.St.mk.inj": [],
+    "Toy.Coalesce.St.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.St.mk.noConfusion": [],
+    "Toy.Coalesce.St.mk.sizeOf_spec": [],
+    "Toy.Coalesce.St.noConfusion": [],
+    "Toy.Coalesce.St.noConfusionType": [],
+    "Toy.Coalesce.St.rec": [],
+    "Toy.Coalesce.St.recOn": [],
+    "Toy.Coalesce.St.status": [],
+    "Toy.Coalesce.St.tick": [],
+    "Toy.Coalesce.St.trace": [],
+    "Toy.Coalesce.St.wr": [],
+    "Toy.Coalesce.St.wr.eq_1": [],
+    "Toy.Coalesce.Stage.Agr": [],
+    "Toy.Coalesce.Stage.Agr.alias": [],
+    "Toy.Coalesce.Stage.Agr.casesOn": [],
+    "Toy.Coalesce.Stage.Agr.conf": [],
+    "Toy.Coalesce.Stage.Agr.emit": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Agr.fail": [],
+    "Toy.Coalesce.Stage.Agr.inCall": [],
+    "Toy.Coalesce.Stage.Agr.leq_right": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Agr.live": [],
+    "Toy.Coalesce.Stage.Agr.mem": [],
+    "Toy.Coalesce.Stage.Agr.mk": [],
+    "Toy.Coalesce.Stage.Agr.rec": [],
+    "Toy.Coalesce.Stage.Agr.recOn": [],
+    "Toy.Coalesce.Stage.Agr.resolve": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Agr.salias": [],
+    "Toy.Coalesce.Stage.Agr.sconf": [],
+    "Toy.Coalesce.Stage.Agr.sdead": [],
+    "Toy.Coalesce.Stage.Agr.setCtx": [],
+    "Toy.Coalesce.Stage.Agr.setInCall": [],
+    "Toy.Coalesce.Stage.Agr.setTick": [],
+    "Toy.Coalesce.Stage.Agr.sptr": [],
+    "Toy.Coalesce.Stage.Agr.status": [],
+    "Toy.Coalesce.Stage.Agr.tconf": [],
+    "Toy.Coalesce.Stage.Agr.tick_right": [],
+    "Toy.Coalesce.Stage.Agr.trace": [],
+    "Toy.Coalesce.Stage.Agree": [],
+    "Toy.Coalesce.Stage.Agree.fail": [],
+    "Toy.Coalesce.Stage.AsgOK": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.AsgOK.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.CellsDisj": [],
+    "Toy.Coalesce.Stage.Ext": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Ext.casesOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Ext.fns": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Ext.mk": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Ext.nloc": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Ext.rec": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Ext.recOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.Ext.size": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq": [],
+    "Toy.Coalesce.Stage.LEq.alias": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.allocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.conflicts": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.deallocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.emit": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.eq_1": [],
+    "Toy.Coalesce.Stage.LEq.evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.fail": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.iff": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.inCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.live": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.mem": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.readCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.refl": [],
+    "Toy.Coalesce.Stage.LEq.resetCells": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.setCtx": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.setInCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.setTick": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.status": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.symm": [],
+    "Toy.Coalesce.Stage.LEq.tick": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.trans": [],
+    "Toy.Coalesce.Stage.LEq.writeCells": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.writeCellsK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.LEq.writeInOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.MemOnly": [],
+    "Toy.Coalesce.Stage.MemOnly.alias": [],
+    "Toy.Coalesce.Stage.MemOnly.casesOn": [],
+    "Toy.Coalesce.Stage.MemOnly.conflicts": [],
+    "Toy.Coalesce.Stage.MemOnly.inCall": [],
+    "Toy.Coalesce.Stage.MemOnly.live": [],
+    "Toy.Coalesce.Stage.MemOnly.mk": [],
+    "Toy.Coalesce.Stage.MemOnly.rec": [],
+    "Toy.Coalesce.Stage.MemOnly.recOn": [],
+    "Toy.Coalesce.Stage.MemOnly.refl": [],
+    "Toy.Coalesce.Stage.MemOnly.tick": [],
+    "Toy.Coalesce.Stage.MemOnly.trace": [],
+    "Toy.Coalesce.Stage.MemOnly.trans": [],
+    "Toy.Coalesce.Stage.OpOK": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.OpOK.congr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.OpOK.match_1": [],
+    "Toy.Coalesce.Stage.OpOK.mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR": [],
+    "Toy.Coalesce.Stage.RR.bumpTick": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.conflicts": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.deallocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.leq_left": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.leq_right": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.of_leq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.setCtx": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.setInCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.status": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.RR.trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.TopRel": [],
+    "Toy.Coalesce.Stage.addr_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_alloc_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_allocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_callCopy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_callInPlace": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_dealloc_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_deallocate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_execBasic_ns": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_readCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_writeCellsK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_writeCellsK_extra": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agr_writeInOrder_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.agree_init": [],
+    "Toy.Coalesce.Stage.asgOK_callee": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.asgOK_of_not_needs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.asgOK_top": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.assign_core": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.assign_core.match_1_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.callCopy": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.callInPlace": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.callInPlace.match_1": [],
+    "Toy.Coalesce.Stage.calleeNoStaging_fn": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.cand": [],
+    "Toy.Coalesce.Stage.cand.eq_1": [],
+    "Toy.Coalesce.Stage.cand.eq_2": [],
+    "Toy.Coalesce.Stage.cand.match_1": [],
+    "Toy.Coalesce.Stage.cand_base": [],
+    "Toy.Coalesce.Stage.deallocate_frame": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.evalOp_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.evalOp_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.evalOp_writeCells_comm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.evalOps_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.evalOps_none.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.evalOps_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.evalOps_some.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.execBasic_mode": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.execStmt_call_copy": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.execStmt_call_inPlace": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.execStmt_eq_execBasic": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.execTop_failed": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.execTop_frame": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.execTop_status": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.exec_assign_atomic": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.exec_assign_inOrder": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.exec_storageDead": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.exec_storageLive": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.ext_stage": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.fail_writeCells_comm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.fn_ext": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.foldl_failed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.getD_append_left'": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.getD_append_right'": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.layoutOK_src": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.layoutOK_tgt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.le_sum_range": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.le_sum_range.match_1_1": [],
+    "Toy.Coalesce.Stage.liveOthers_ext": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.live_cmpOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.live_execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.map_getD_range": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.mayOverlap_of_param": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.memOnly_evalOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.memOnly_evalOps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.memOnly_fail": [],
+    "Toy.Coalesce.Stage.memOnly_readCells": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.memOnly_writeCellsK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.memOnly_writeInOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.mem_liveOthers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.move_tmp_eval": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.not_running_fail": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.obs_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.opOK_of_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.opOK_of_param": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.outcome_ub_of_failed": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.prm_lt_of_callCopy_running": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.prm_of_paramsInRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.rc_alias": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.rc_conflicts": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.rc_inCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.rc_live": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.rc_mem": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.rc_tick": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.rc_trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.readCells_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.readCells_known": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.readCells_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.readCells_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.resolvePlace_congr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.resolvePlace_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.resolvePlace_eq.match_1": [],
+    "Toy.Coalesce.Stage.resolvePlace_of_alias_none": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.resolvePlace_of_alias_some": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.resolve_tmp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.rr_runAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.sim_list": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.sim_run": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.top_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.window_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.wk_alias": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.wk_conflicts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.wk_inCall": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.wk_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.wk_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.wk_status": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.wk_tick": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.wk_trace": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.writeCells_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.writeCells_comm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.writeCells_mem_disj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.writeInOrder_core": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Stage.writeInOrder_core.match_1": [],
+    "Toy.Coalesce.Stage.writeInOrder_core.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Status": [],
+    "Toy.Coalesce.Status.casesOn": [],
+    "Toy.Coalesce.Status.ctorElim": [],
+    "Toy.Coalesce.Status.ctorElimType": [],
+    "Toy.Coalesce.Status.ctorIdx": [],
+    "Toy.Coalesce.Status.noConfusion": [],
+    "Toy.Coalesce.Status.noConfusionType": [],
+    "Toy.Coalesce.Status.ofNat": [],
+    "Toy.Coalesce.Status.ofNat_ctorIdx": [],
+    "Toy.Coalesce.Status.rec": [],
+    "Toy.Coalesce.Status.recOn": [],
+    "Toy.Coalesce.Status.running": [],
+    "Toy.Coalesce.Status.running.elim": [],
+    "Toy.Coalesce.Status.running.sizeOf_spec": [],
+    "Toy.Coalesce.Status.ub": [],
+    "Toy.Coalesce.Status.ub.elim": [],
+    "Toy.Coalesce.Status.ub.sizeOf_spec": [],
+    "Toy.Coalesce.Step": [],
+    "Toy.Coalesce.Step.alias": [],
+    "Toy.Coalesce.Step.casesOn": [],
+    "Toy.Coalesce.Step.conf": [],
+    "Toy.Coalesce.Step.inCall": [],
+    "Toy.Coalesce.Step.log": [],
+    "Toy.Coalesce.Step.mk": [],
+    "Toy.Coalesce.Step.rec": [],
+    "Toy.Coalesce.Step.recOn": [],
+    "Toy.Coalesce.Step.refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.Step.tick": [],
+    "Toy.Coalesce.Step.toT": [],
+    "Toy.Coalesce.Step.toT.match_1_1": [],
+    "Toy.Coalesce.Step.trace": [],
+    "Toy.Coalesce.Step.trans": [
+      "propext"
+    ],
+    "Toy.Coalesce.StepT": [],
+    "Toy.Coalesce.StepT.casesOn": [],
+    "Toy.Coalesce.StepT.conf": [],
+    "Toy.Coalesce.StepT.log": [],
+    "Toy.Coalesce.StepT.mk": [],
+    "Toy.Coalesce.StepT.rec": [],
+    "Toy.Coalesce.StepT.recOn": [],
+    "Toy.Coalesce.StepT.refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.StepT.setCtx": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.StepT.setCtx'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.StepT.setInCall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.StepT.tick": [],
+    "Toy.Coalesce.StepT.trace": [],
+    "Toy.Coalesce.StepT.trans": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt": [],
+    "Toy.Coalesce.Stmt.assign": [],
+    "Toy.Coalesce.Stmt.assign.elim": [],
+    "Toy.Coalesce.Stmt.assign.inj": [],
+    "Toy.Coalesce.Stmt.assign.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.assign.noConfusion": [],
+    "Toy.Coalesce.Stmt.assign.sizeOf_spec": [],
+    "Toy.Coalesce.Stmt.call": [],
+    "Toy.Coalesce.Stmt.call.elim": [],
+    "Toy.Coalesce.Stmt.call.inj": [],
+    "Toy.Coalesce.Stmt.call.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.call.noConfusion": [],
+    "Toy.Coalesce.Stmt.call.sizeOf_spec": [],
+    "Toy.Coalesce.Stmt.calleeTouchesByName": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.calleeTouchesByName.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.casesOn": [],
+    "Toy.Coalesce.Stmt.ctorElim": [],
+    "Toy.Coalesce.Stmt.ctorElimType": [],
+    "Toy.Coalesce.Stmt.ctorIdx": [],
+    "Toy.Coalesce.Stmt.escapesInPlace": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.escapesInPlace.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.escapesInPlace.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.escapesInPlace.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.kills": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.kills.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.kills.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.kills.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.kills.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.kills.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.eq_5": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.eq_6": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.eq_7": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.eq_8": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.eq_9": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.locals.match_1": [],
+    "Toy.Coalesce.Stmt.mapPlaces": [],
+    "Toy.Coalesce.Stmt.mapPlaces.eq_1": [],
+    "Toy.Coalesce.Stmt.mapPlaces.eq_2": [],
+    "Toy.Coalesce.Stmt.mapPlaces.eq_3": [],
+    "Toy.Coalesce.Stmt.mapPlaces.eq_4": [],
+    "Toy.Coalesce.Stmt.mapPlaces.eq_5": [],
+    "Toy.Coalesce.Stmt.mapPlaces.eq_6": [],
+    "Toy.Coalesce.Stmt.mapPlaces.eq_7": [],
+    "Toy.Coalesce.Stmt.mapPlaces.eq_8": [],
+    "Toy.Coalesce.Stmt.mapPlaces.eq_9": [],
+    "Toy.Coalesce.Stmt.mapPlaces.match_1": [],
+    "Toy.Coalesce.Stmt.mayRead": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.mayRead.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.mayRead.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.mayRead.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.mayReadNoCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.mayReadNoCall.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.mayReadNoCall.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.mayReadNoCall.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.noConfusion": [],
+    "Toy.Coalesce.Stmt.noConfusionType": [],
+    "Toy.Coalesce.Stmt.nop": [],
+    "Toy.Coalesce.Stmt.nop.elim": [],
+    "Toy.Coalesce.Stmt.nop.sizeOf_spec": [],
+    "Toy.Coalesce.Stmt.operands": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.operands.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.operands.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.operands.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.operands.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.operands.eq_5": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.operands.eq_6": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.operands.eq_7": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.operands.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.out": [],
+    "Toy.Coalesce.Stmt.out.elim": [],
+    "Toy.Coalesce.Stmt.out.inj": [],
+    "Toy.Coalesce.Stmt.out.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.out.noConfusion": [],
+    "Toy.Coalesce.Stmt.out.sizeOf_spec": [],
+    "Toy.Coalesce.Stmt.ptrEq": [],
+    "Toy.Coalesce.Stmt.ptrEq.elim": [],
+    "Toy.Coalesce.Stmt.ptrEq.inj": [],
+    "Toy.Coalesce.Stmt.ptrEq.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.ptrEq.noConfusion": [],
+    "Toy.Coalesce.Stmt.ptrEq.sizeOf_spec": [],
+    "Toy.Coalesce.Stmt.ptrInRange": [],
+    "Toy.Coalesce.Stmt.ptrInRange.elim": [],
+    "Toy.Coalesce.Stmt.ptrInRange.inj": [],
+    "Toy.Coalesce.Stmt.ptrInRange.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.ptrInRange.noConfusion": [],
+    "Toy.Coalesce.Stmt.ptrInRange.sizeOf_spec": [],
+    "Toy.Coalesce.Stmt.readsByName": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.readsByName.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.rec": [],
+    "Toy.Coalesce.Stmt.recOn": [],
+    "Toy.Coalesce.Stmt.storageDead": [],
+    "Toy.Coalesce.Stmt.storageDead.elim": [],
+    "Toy.Coalesce.Stmt.storageDead.inj": [],
+    "Toy.Coalesce.Stmt.storageDead.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.storageDead.noConfusion": [],
+    "Toy.Coalesce.Stmt.storageDead.sizeOf_spec": [],
+    "Toy.Coalesce.Stmt.storageLive": [],
+    "Toy.Coalesce.Stmt.storageLive.elim": [],
+    "Toy.Coalesce.Stmt.storageLive.inj": [],
+    "Toy.Coalesce.Stmt.storageLive.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.storageLive.noConfusion": [],
+    "Toy.Coalesce.Stmt.storageLive.sizeOf_spec": [],
+    "Toy.Coalesce.Stmt.store": [],
+    "Toy.Coalesce.Stmt.store.elim": [],
+    "Toy.Coalesce.Stmt.store.inj": [],
+    "Toy.Coalesce.Stmt.store.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.store.noConfusion": [],
+    "Toy.Coalesce.Stmt.store.sizeOf_spec": [],
+    "Toy.Coalesce.Stmt.takesAddr": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.takesAddr.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.takesAddr.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.takesAddr.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.takesAddr.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.takesAddr.eq_5": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.takesAddr.eq_6": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.takesAddr.eq_7": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.takesAddr.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.upgradeCopy": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.upgradeCopy.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.upgradeCopy.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.upgradeCopy.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.upgradeCopy.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.upgradeCopy.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.writesByName": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.writesByName.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Stmt.writesByName.match_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq": [],
+    "Toy.Coalesce.TEq.alias": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.conflicts": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.emit": [],
+    "Toy.Coalesce.TEq.eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.inCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.live": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.log": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.mem": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.of_eq": [],
+    "Toy.Coalesce.TEq.refl": [],
+    "Toy.Coalesce.TEq.setCtx": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.setInCall": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.setTick": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.status": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.symm": [],
+    "Toy.Coalesce.TEq.tick": [
+      "propext"
+    ],
+    "Toy.Coalesce.TEq.trans": [],
+    "Toy.Coalesce.TEq.with_trace": [],
+    "Toy.Coalesce.UBFree": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.casesOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.cover": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.disj": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.edges": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.head": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.mem_lt": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.mk": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.rec": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.recOn": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.ticks": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Inv.uniq": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Reach": [],
+    "Toy.Coalesce.UF.Reach.below": [],
+    "Toy.Coalesce.UF.Reach.below.casesOn": [],
+    "Toy.Coalesce.UF.Reach.below.rec": [],
+    "Toy.Coalesce.UF.Reach.below.refl": [],
+    "Toy.Coalesce.UF.Reach.below.step": [],
+    "Toy.Coalesce.UF.Reach.brecOn": [],
+    "Toy.Coalesce.UF.Reach.casesOn": [],
+    "Toy.Coalesce.UF.Reach.child_of_ne": [],
+    "Toy.Coalesce.UF.Reach.eq_of_not_child": [],
+    "Toy.Coalesce.UF.Reach.mono": [],
+    "Toy.Coalesce.UF.Reach.parent_of_ne": [],
+    "Toy.Coalesce.UF.Reach.rec": [],
+    "Toy.Coalesce.UF.Reach.recOn": [],
+    "Toy.Coalesce.UF.Reach.refl": [],
+    "Toy.Coalesce.UF.Reach.root_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.Reach.step": [],
+    "Toy.Coalesce.UF.Reach.trans": [],
+    "Toy.Coalesce.UF.block_inClass": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.block_root": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.common_tick": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.find_block": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.fold_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.fold_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.inClass_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.inv_init": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.inv_merge": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.inv_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.mem_aoTicks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.mem_merged": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.no_cycle": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.not_child_of_split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.parentOf_of_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.parentOf_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.reach_resolveF": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.reach_sameblock": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.resolveF_closed": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.resolveF_of_none": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.resolveF_stable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.resolveF_succ_of_some": [
+      "propext"
+    ],
+    "Toy.Coalesce.UF.root_edge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.step_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.UF.step_some.match_1_1": [],
+    "Toy.Coalesce.UFBlock": [],
+    "Toy.Coalesce.UFBlock.casesOn": [],
+    "Toy.Coalesce.UFBlock.ctorIdx": [],
+    "Toy.Coalesce.UFBlock.members": [],
+    "Toy.Coalesce.UFBlock.mk": [],
+    "Toy.Coalesce.UFBlock.mk.inj": [],
+    "Toy.Coalesce.UFBlock.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.UFBlock.mk.noConfusion": [],
+    "Toy.Coalesce.UFBlock.mk.sizeOf_spec": [],
+    "Toy.Coalesce.UFBlock.noConfusion": [],
+    "Toy.Coalesce.UFBlock.noConfusionType": [],
+    "Toy.Coalesce.UFBlock.rec": [],
+    "Toy.Coalesce.UFBlock.recOn": [],
+    "Toy.Coalesce.UFBlock.ticks": [],
+    "Toy.Coalesce.UpgradeSite": [
+      "propext"
+    ],
+    "Toy.Coalesce.UpgradeSite.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Val": [],
+    "Toy.Coalesce.Val.addr?": [
+      "propext"
+    ],
+    "Toy.Coalesce.Val.addr?.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Val.addr?.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.Val.addr?.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.Val.casesOn": [],
+    "Toy.Coalesce.Val.ctorElim": [],
+    "Toy.Coalesce.Val.ctorElimType": [],
+    "Toy.Coalesce.Val.ctorIdx": [],
+    "Toy.Coalesce.Val.int": [],
+    "Toy.Coalesce.Val.int.elim": [],
+    "Toy.Coalesce.Val.int.inj": [],
+    "Toy.Coalesce.Val.int.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Val.int.noConfusion": [],
+    "Toy.Coalesce.Val.int.sizeOf_spec": [],
+    "Toy.Coalesce.Val.noConfusion": [],
+    "Toy.Coalesce.Val.noConfusionType": [],
+    "Toy.Coalesce.Val.obs": [],
+    "Toy.Coalesce.Val.obs.eq_1": [],
+    "Toy.Coalesce.Val.obs.eq_2": [],
+    "Toy.Coalesce.Val.obs.eq_3": [],
+    "Toy.Coalesce.Val.obs.match_1": [],
+    "Toy.Coalesce.Val.ptr": [],
+    "Toy.Coalesce.Val.ptr.elim": [],
+    "Toy.Coalesce.Val.ptr.inj": [],
+    "Toy.Coalesce.Val.ptr.injEq": [
+      "propext"
+    ],
+    "Toy.Coalesce.Val.ptr.noConfusion": [],
+    "Toy.Coalesce.Val.ptr.sizeOf_spec": [],
+    "Toy.Coalesce.Val.rec": [],
+    "Toy.Coalesce.Val.recOn": [],
+    "Toy.Coalesce.Val.uninit": [],
+    "Toy.Coalesce.Val.uninit.elim": [],
+    "Toy.Coalesce.Val.uninit.sizeOf_spec": [],
+    "Toy.Coalesce.Valid": [
+      "propext"
+    ],
+    "Toy.Coalesce.ValsIn": [],
+    "Toy.Coalesce.ValsIn.eq_1": [],
+    "Toy.Coalesce.WindowsDisjoint": [],
+    "Toy.Coalesce.WindowsDisjoint.eq_1": [],
+    "Toy.Coalesce.addrDisc_addrTaken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.afterUse": [],
+    "Toy.Coalesce.afterUse.eq_1": [],
+    "Toy.Coalesce.aliasBase": [],
+    "Toy.Coalesce.aliasBase.eq_1": [],
+    "Toy.Coalesce.aliasBase.eq_2": [],
+    "Toy.Coalesce.aliasBase.match_1": [],
+    "Toy.Coalesce.allocate": [
+      "propext"
+    ],
+    "Toy.Coalesce.allocate.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.allocate_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.allocate_teq": [
+      "propext"
+    ],
+    "Toy.Coalesce.allocate_trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.aoTicks": [
+      "propext"
+    ],
+    "Toy.Coalesce.beh_ub_of_status": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.callCopy_frame": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.callCopy_frame.match_1": [],
+    "Toy.Coalesce.calleeNoParamAddr_of_not_addrTaken_prm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.calleeNoStaging": [
+      "propext"
+    ],
+    "Toy.Coalesce.calleeNoStaging.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.calleeNoStaging_of_map_coalesceStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_callee_reorder_rejected_by_policy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_classAddrDisjoint_of_classAddrDisjointW_needs_h": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_coalesce_needs_callsInBounds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_coalesce_needs_callsInBounds.match_1_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_coalesce_needs_forestWF": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_coalesce_needs_forestWF.match_1_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_coalesce_single_addrTaken_lexOverlap": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_coalesce_single_valueClobber": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_coalesce_without_staging_inOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_edgeAddrCheck_does_not_compose": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_inOrder_eq_atomic_needs_noStaging": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_inPlaceCall_param_addrTaken_in_caller": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_inPlaceCall_param_conflict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_licensed_incomplete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_licensed_needs_licensing": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_licensed_needs_obsCert": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_noRead_needs_not_in_mask": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_noRead_needs_obsCert": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_not_policySound_of_precise_needs_h": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_obsCertBodyOnly_licenses_dtorLoad": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_pipeline_inPlaceCall_alias": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_pipeline_needs_calleesNoStaging": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_pipeline_needs_classAddrDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_pipeline_needs_noStagingNeeded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_pipeline_needs_noValueClobber": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_pipeline_needs_paramsInRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_policy_precise_for_addrTaken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_recoalesce_staging_temp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_rootAddrCheck_insufficient_siblings": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_stage_behEq_needs_localsInRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_stage_needs_calleesNoStaging": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_stage_refines_needs_paramsInRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_staging_inPlaceCall_alias": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_ufCheck_needs_forestWF": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_callee_load_escaped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_deinit_iff_bad_layout": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_deinit_iff_lhs_overlap": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_deinit_iff_source_ub": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_deinit_refines_needs_site": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_inPlaceCall_call_site": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_moveDeinit_dtorLoad": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_moveInPlaceCall_calleeAvoids": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noParamAddr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noReadAfterCall": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_addrPost": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_addrPost.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_addrPost.match_1_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_needs_forestWF": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_needs_forestWF.match_1_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_needs_forestWF.match_1_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_needs_noValueClobber": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_needs_noValueClobber.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_needs_noValueClobber.match_1_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_needs_ubFree": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_backward_needs_ubFree.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_forward_addrFree_needs_noValueClobber": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_forward_addrFree_needs_noValueClobber.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_forward_addrPost_needs_classAddrDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_forward_addrPost_needs_classAddrDisjoint.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_forward_addrPost_precisePolicy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_forward_addrPost_precisePolicy.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_forward_needs_callsInBounds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_forward_needs_noValueClobber_classAddrDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cex_vc_needs_valid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.checkObs": [
+      "propext"
+    ],
+    "Toy.Coalesce.checkObs.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.checkObs_eq_true_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.checkObs_eq_true_iff.match_1_5": [
+      "propext"
+    ],
+    "Toy.Coalesce.checkObs_eq_true_iff.match_1_7": [
+      "propext"
+    ],
+    "Toy.Coalesce.classAddrDisjoint_of_classAddrDisjointW": [
+      "propext"
+    ],
+    "Toy.Coalesce.classAddrDisjoint_single_of_lexDisjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.classAddrDisjoint_single_of_lexDisjoint.match_1_5": [
+      "propext"
+    ],
+    "Toy.Coalesce.clobberFreeAux": [],
+    "Toy.Coalesce.clobberFreeAux.eq_1": [],
+    "Toy.Coalesce.clobberFreeAux.eq_2": [],
+    "Toy.Coalesce.clobberFreeAux.eq_def": [],
+    "Toy.Coalesce.clobberFreeAux.match_1": [],
+    "Toy.Coalesce.clobberFreeAux.match_3": [],
+    "Toy.Coalesce.clobberFreeAux.match_5": [],
+    "Toy.Coalesce.cmpAllFalse": [],
+    "Toy.Coalesce.cmpAllFalse.eq_1": [],
+    "Toy.Coalesce.cmpOp": [
+      "propext"
+    ],
+    "Toy.Coalesce.cmpOp.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.cmpOp.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.cmpOp.match_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.cmpOp_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.cmpOp_teq": [
+      "propext"
+    ],
+    "Toy.Coalesce.coalesce": [
+      "propext"
+    ],
+    "Toy.Coalesce.coalesce.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.coalesce_pSwap_contains_overlap": [
+      "propext"
+    ],
+    "Toy.Coalesce.coalesce_pSwap_outcome_inOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.coalesce_refines_inOrder_of_noStagingNeeded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.coalesce_refines_of_noValueClobber_of_classAddrDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.coalesce_single_refines_addrTaken_child_only": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.coalesce_single_refines_of_noValueClobber_of_lexDisjoint_addrTaken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.deallocate": [
+      "propext"
+    ],
+    "Toy.Coalesce.deallocate.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.deallocate_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.deallocate_teq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.deallocate_trace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.disj_goodLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.erasedIs": [],
+    "Toy.Coalesce.erasedIs.eq_1": [],
+    "Toy.Coalesce.erasedIs_addrFree": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp.eq_5": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp.match_5": [],
+    "Toy.Coalesce.evalOp_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp_move_eq_copy": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOp_trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOps": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOps.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOps.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOps.eq_def": [
+      "propext"
+    ],
+    "Toy.Coalesce.evalOps.match_1": [],
+    "Toy.Coalesce.evalOps_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.evalOps_trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_accessPt_callee_both_halves": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_accessPt_noncall": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_addrFree_neg": [],
+    "Toy.Coalesce.ex_addrFree_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_addrTaken_inPlace_channel": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_addrTaken_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_addrTaken_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_assignMode_outcomes": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_badLayout": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_calleeAvoids_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_calleeAvoids_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_calleeNoParamAddr_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_calleeNoParamAddr_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_calleesNoStaging_neg_alias": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_calleesNoStaging_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_callsInBounds_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_callsInBounds_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_checkObs_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_classAddrDisjoint_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_classAddrDisjoint_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_coalesce_chain_offset": [],
+    "Toy.Coalesce.ex_coalesce_p3": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_disj_empty": [],
+    "Toy.Coalesce.ex_disj_neg": [],
+    "Toy.Coalesce.ex_disj_pos": [],
+    "Toy.Coalesce.ex_edgeAddrCheck_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_edgeAddrCheck_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_forestWF_neg_cycle": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_forestWF_neg_fit": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_forestWF_neg_oob_call": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_forestWF_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_ivOverlap_precise_callee": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_ivOverlap_precise_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_ivOverlap_precise_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_lexOverlap_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_lexOverlap_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_licensed_inPlaceCall_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_licensed_inPlaceCall_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_licensed_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_licensed_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_localsInRange_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_localsInRange_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_moveSem_outcomes": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_noReadBeforeReinit_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_noReadBeforeReinit_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_noStagingNeeded_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_noStagingNeeded_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_noValueClobber_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_noValueClobber_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_obsCert_neg": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_obsCert_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_paramSplit_neg": [],
+    "Toy.Coalesce.ex_paramSplit_pos": [],
+    "Toy.Coalesce.ex_paramsInRange_neg": [],
+    "Toy.Coalesce.ex_paramsInRange_pos": [],
+    "Toy.Coalesce.ex_policyCheck_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_policyCheck_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_rootAddrCheck_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_rootAddrCheck_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_stage_body": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_ubFree_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_ubFree_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_upgradeSite_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ex_upgradeSite_pos": [
+      "propext"
+    ],
+    "Toy.Coalesce.ex_windowsDisjoint_empty_edge": [],
+    "Toy.Coalesce.ex_windowsDisjoint_empty_interior": [],
+    "Toy.Coalesce.ex_windowsDisjoint_neg": [],
+    "Toy.Coalesce.ex_windowsDisjoint_pos": [],
+    "Toy.Coalesce.execBasic": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.eq_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.eq_4": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.eq_5": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.eq_6": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.eq_7": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.eq_8": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.eq_9": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic.match_1": [],
+    "Toy.Coalesce.execBasic_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic_of_not_running": [
+      "propext"
+    ],
+    "Toy.Coalesce.execBasic_teq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.execCallee": [
+      "propext"
+    ],
+    "Toy.Coalesce.execCallee.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.execCallee_of_not_running": [
+      "propext"
+    ],
+    "Toy.Coalesce.execCallee_teq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.execStmt": [
+      "propext"
+    ],
+    "Toy.Coalesce.execStmt.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.execStmt.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.execStmt.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.execStmt.match_5": [
+      "propext"
+    ],
+    "Toy.Coalesce.execStmt_frame": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.execStmt_of_not_running": [
+      "propext"
+    ],
+    "Toy.Coalesce.execStmt_teq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.execTop": [
+      "propext"
+    ],
+    "Toy.Coalesce.execTop.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.execTop_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.execTop_teq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.fail_trace": [],
+    "Toy.Coalesce.firstTouchNotRead": [],
+    "Toy.Coalesce.firstTouchNotRead.eq_1": [],
+    "Toy.Coalesce.firstTouchNotRead.eq_2": [],
+    "Toy.Coalesce.firstTouchNotRead.eq_def": [],
+    "Toy.Coalesce.firstTouchNotRead.match_1": [],
+    "Toy.Coalesce.foldl_execTop_of_not_running": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.foldl_execTop_teq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.foldl_modifyAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.getD_le_sum": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.goodLayout": [],
+    "Toy.Coalesce.instDecidableAddrTaken": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableCalleeAvoids": [],
+    "Toy.Coalesce.instDecidableCalleeNoParamAddr": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableCalleesNoStaging": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableCalleesNoStagingSyn": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableCallsInBounds": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableClassAddrDisjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableClassAddrDisjointW": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableDisj": [],
+    "Toy.Coalesce.instDecidableEdgeAddrCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableEqAccKind": [],
+    "Toy.Coalesce.instDecidableEqAccess": [],
+    "Toy.Coalesce.instDecidableEqAccess.decEq": [],
+    "Toy.Coalesce.instDecidableEqAccess.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqAssignMode": [],
+    "Toy.Coalesce.instDecidableEqCallee": [],
+    "Toy.Coalesce.instDecidableEqCallee.decEq": [],
+    "Toy.Coalesce.instDecidableEqCallee.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqEVal": [],
+    "Toy.Coalesce.instDecidableEqEVal.decEq": [],
+    "Toy.Coalesce.instDecidableEqEVal.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqEdge": [],
+    "Toy.Coalesce.instDecidableEqEdge.decEq": [],
+    "Toy.Coalesce.instDecidableEqEdge.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqEvent": [],
+    "Toy.Coalesce.instDecidableEqEvent.decEq": [],
+    "Toy.Coalesce.instDecidableEqEvent.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqMoveSem": [],
+    "Toy.Coalesce.instDecidableEqNotion": [],
+    "Toy.Coalesce.instDecidableEqOperand": [],
+    "Toy.Coalesce.instDecidableEqOperand.decEq": [],
+    "Toy.Coalesce.instDecidableEqOperand.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqOutcome": [],
+    "Toy.Coalesce.instDecidableEqOutcome.decEq": [],
+    "Toy.Coalesce.instDecidableEqOutcome.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqPlace": [],
+    "Toy.Coalesce.instDecidableEqPlace.decEq": [],
+    "Toy.Coalesce.instDecidableEqPlace.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqProg": [],
+    "Toy.Coalesce.instDecidableEqProg.decEq": [],
+    "Toy.Coalesce.instDecidableEqProg.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqSem": [],
+    "Toy.Coalesce.instDecidableEqSem.decEq": [],
+    "Toy.Coalesce.instDecidableEqSem.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqStatus": [],
+    "Toy.Coalesce.instDecidableEqStmt": [],
+    "Toy.Coalesce.instDecidableEqStmt.decEq": [],
+    "Toy.Coalesce.instDecidableEqStmt.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqUFBlock": [],
+    "Toy.Coalesce.instDecidableEqUFBlock.decEq": [],
+    "Toy.Coalesce.instDecidableEqUFBlock.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableEqVal": [],
+    "Toy.Coalesce.instDecidableEqVal.decEq": [],
+    "Toy.Coalesce.instDecidableEqVal.decEq.match_1": [],
+    "Toy.Coalesce.instDecidableForestWF": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableForestWFNoCallCheck": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableIvOverlap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableIvOverlapHalf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableLexOverlap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableLocalsInRange": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableNoReadBeforeReinit": [],
+    "Toy.Coalesce.instDecidableNoStagingNeeded": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableNoStagingNeededSyn": [
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableNoValueClobber": [],
+    "Toy.Coalesce.instDecidableParamsInRange": [],
+    "Toy.Coalesce.instDecidablePolicyCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidablePolicyCheckHalf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidablePredListEventCmpAllFalse": [],
+    "Toy.Coalesce.instDecidablePredListEventErasedIs": [],
+    "Toy.Coalesce.instDecidablePredListEventSomeCmpTrue": [],
+    "Toy.Coalesce.instDecidableRootAddrCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.instDecidableWindowsDisjoint": [],
+    "Toy.Coalesce.instReprAccKind": [],
+    "Toy.Coalesce.instReprAccKind.repr": [],
+    "Toy.Coalesce.instReprAccKind.repr.match_1": [],
+    "Toy.Coalesce.instReprAccess": [],
+    "Toy.Coalesce.instReprAccess.repr": [],
+    "Toy.Coalesce.instReprAssignMode": [],
+    "Toy.Coalesce.instReprAssignMode.repr": [],
+    "Toy.Coalesce.instReprAssignMode.repr.match_1": [],
+    "Toy.Coalesce.instReprCallee": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprCallee.repr": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprEVal": [],
+    "Toy.Coalesce.instReprEVal.repr": [],
+    "Toy.Coalesce.instReprEVal.repr.match_1": [],
+    "Toy.Coalesce.instReprEdge": [],
+    "Toy.Coalesce.instReprEdge.repr": [],
+    "Toy.Coalesce.instReprEvent": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprEvent.repr": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprEvent.repr.match_1": [],
+    "Toy.Coalesce.instReprMoveSem": [],
+    "Toy.Coalesce.instReprMoveSem.repr": [],
+    "Toy.Coalesce.instReprMoveSem.repr.match_1": [],
+    "Toy.Coalesce.instReprNotion": [],
+    "Toy.Coalesce.instReprNotion.repr": [],
+    "Toy.Coalesce.instReprNotion.repr.match_1": [],
+    "Toy.Coalesce.instReprOperand": [],
+    "Toy.Coalesce.instReprOperand.repr": [],
+    "Toy.Coalesce.instReprOperand.repr.match_1": [],
+    "Toy.Coalesce.instReprOutcome": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprOutcome.repr": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprOutcome.repr.match_1": [],
+    "Toy.Coalesce.instReprPlace": [],
+    "Toy.Coalesce.instReprPlace.repr": [],
+    "Toy.Coalesce.instReprProg": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprProg.repr": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprSem": [],
+    "Toy.Coalesce.instReprSem.repr": [],
+    "Toy.Coalesce.instReprStatus": [],
+    "Toy.Coalesce.instReprStatus.repr": [],
+    "Toy.Coalesce.instReprStatus.repr.match_1": [],
+    "Toy.Coalesce.instReprStmt": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprStmt.repr": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprStmt.repr.match_1": [],
+    "Toy.Coalesce.instReprUFBlock": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprUFBlock.repr": [
+      "propext"
+    ],
+    "Toy.Coalesce.instReprVal": [],
+    "Toy.Coalesce.instReprVal.repr": [],
+    "Toy.Coalesce.instReprVal.repr.match_1": [],
+    "Toy.Coalesce.inv_run_liveInv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.layoutOK": [
+      "propext"
+    ],
+    "Toy.Coalesce.layoutOK.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.layoutOK_goodLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.layoutOK_goodLayout_run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.layoutOK_of_outcome_ne": [
+      "propext"
+    ],
+    "Toy.Coalesce.layoutOK_of_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.lexLiveBefore": [
+      "propext"
+    ],
+    "Toy.Coalesce.lexLiveBefore.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.liveInv_execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.liveInv_execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.liveInv_execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.liveInv_init": [
+      "propext"
+    ],
+    "Toy.Coalesce.liveInv_runAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.liveOthers": [],
+    "Toy.Coalesce.liveOthers.eq_1": [],
+    "Toy.Coalesce.logAcc_trace": [],
+    "Toy.Coalesce.mayOverlapParam_mapPlace": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.mayOverlap_mapPlace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.modifyAt": [],
+    "Toy.Coalesce.modifyAt.eq_1": [],
+    "Toy.Coalesce.modifyAt.eq_2": [],
+    "Toy.Coalesce.modifyAt.eq_3": [],
+    "Toy.Coalesce.modifyAt.eq_def": [],
+    "Toy.Coalesce.modifyAt.match_1": [],
+    "Toy.Coalesce.moveDeinit_moveInPlaceCall_upgrades_incomparable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.noReadBeforeReinit_of_obsCert": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.noStagingNeeded_of_noStagingNeeded_coalesce": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_classAddrDisjoint_of_classAddrDisjointW": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_coalesce_refines_inOrder_of_noStagingNeeded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_coalesce_refines_of_noValueClobber_of_classAddrDisjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_coalesce_single": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_not_policySound_of_precise_for_addrTaken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_staging": [
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_ufCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_upgrade_moveDeinit_iff": [
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_upgrade_moveDeinit_refines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_upgrade_moveInPlaceCall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_upgrade_outcome_eq_moveInPlaceCall_of_not_call": [
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_upgrade_refines_of_obsCert_licensed": [
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_upgrade_refines_of_obsCert_licensed_inPlaceCall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_vc_backward": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_vc_backward.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_vc_p3x": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_vc_p3x.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.nonvacuous_vc_p3x.match_1_6": [
+      "propext"
+    ],
+    "Toy.Coalesce.not_policySoundWith_noCallCheck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.not_policySound_of_precise_for_addrTaken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.not_refines_of_pred": [
+      "propext"
+    ],
+    "Toy.Coalesce.not_refines_of_witness": [
+      "propext"
+    ],
+    "Toy.Coalesce.not_ub_of_outcome": [
+      "propext"
+    ],
+    "Toy.Coalesce.nubNat": [],
+    "Toy.Coalesce.nubNat.eq_1": [],
+    "Toy.Coalesce.nubNat.eq_2": [],
+    "Toy.Coalesce.nubNat.eq_def": [],
+    "Toy.Coalesce.nubNat.match_1": [],
+    "Toy.Coalesce.obsAnalysis": [
+      "propext"
+    ],
+    "Toy.Coalesce.obsAnalysis.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.obsAnalysis_least_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.obsAnalysis_rejects_dtorLoad": [
+      "propext"
+    ],
+    "Toy.Coalesce.obsBodyOnly": [
+      "propext"
+    ],
+    "Toy.Coalesce.obsFrom": [
+      "propext"
+    ],
+    "Toy.Coalesce.obsFrom.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.obsFrom.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.obsFrom.eq_def": [
+      "propext"
+    ],
+    "Toy.Coalesce.obsFrom.match_1": [],
+    "Toy.Coalesce.outcome": [
+      "propext"
+    ],
+    "Toy.Coalesce.outcome.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.outcome_goodLayout_ne_badLayout": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.outcome_inOrder_eq_atomic_of_noStagingNeeded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.outcome_of_running": [
+      "propext"
+    ],
+    "Toy.Coalesce.p3": [],
+    "Toy.Coalesce.p3.eq_1": [],
+    "Toy.Coalesce.p3_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.p3_outcome_inOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.p3x": [],
+    "Toy.Coalesce.p3x.eq_1": [],
+    "Toy.Coalesce.pAliasCoalSwap": [],
+    "Toy.Coalesce.pAliasCoalSwap.eq_1": [],
+    "Toy.Coalesce.pAliasCoalSwap_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pAliasSwap": [],
+    "Toy.Coalesce.pAliasSwap.eq_1": [],
+    "Toy.Coalesce.pAliasSwap_atomic_outcome": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pBackHwf": [],
+    "Toy.Coalesce.pBackHwf.eq_1": [],
+    "Toy.Coalesce.pBackHwf_coalesced_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pBackHwf_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pCall": [],
+    "Toy.Coalesce.pCall.eq_1": [],
+    "Toy.Coalesce.pCallMv": [],
+    "Toy.Coalesce.pCallMv.eq_1": [],
+    "Toy.Coalesce.pCall_upgradeAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.pCalleeCoalSwap": [],
+    "Toy.Coalesce.pCalleeCoalSwap.eq_1": [],
+    "Toy.Coalesce.pCalleeCoalSwap_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pCalleeReorder": [],
+    "Toy.Coalesce.pCalleeReorder.eq_1": [],
+    "Toy.Coalesce.pCalleeReorder_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pCalleeSwap": [],
+    "Toy.Coalesce.pCalleeSwap.eq_1": [],
+    "Toy.Coalesce.pChain": [],
+    "Toy.Coalesce.pChain.eq_1": [],
+    "Toy.Coalesce.pChainOk": [],
+    "Toy.Coalesce.pChainOk.eq_1": [],
+    "Toy.Coalesce.pChain_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pClobber": [],
+    "Toy.Coalesce.pClobber.eq_1": [],
+    "Toy.Coalesce.pClobber_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pClobber_outcome_inOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pDtor": [],
+    "Toy.Coalesce.pDtor.eq_1": [],
+    "Toy.Coalesce.pDtorMv": [],
+    "Toy.Coalesce.pDtorMv.eq_1": [],
+    "Toy.Coalesce.pDtor_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pDtor_upgradeAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.pEscape": [],
+    "Toy.Coalesce.pIPAddr": [],
+    "Toy.Coalesce.pIPAddr.eq_1": [],
+    "Toy.Coalesce.pIPAddr_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pIPAfter": [],
+    "Toy.Coalesce.pIPAfter.eq_1": [],
+    "Toy.Coalesce.pIPAfter_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pIPAfter_violates_noReadAfterCall": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pIPLoad": [],
+    "Toy.Coalesce.pIPLoad.eq_1": [],
+    "Toy.Coalesce.pIPLoad_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pIPOk": [],
+    "Toy.Coalesce.pIPOk.eq_1": [],
+    "Toy.Coalesce.pIPStore": [],
+    "Toy.Coalesce.pIPStore.eq_1": [],
+    "Toy.Coalesce.pIPStore_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pIPStore_violates_calleeAvoids": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pLoadOther": [],
+    "Toy.Coalesce.pLoadOther.eq_1": [],
+    "Toy.Coalesce.pNoDtor": [],
+    "Toy.Coalesce.pNoDtor.eq_1": [],
+    "Toy.Coalesce.pNoDtor_upgradeAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.pNoDtor_upgrade_refines": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pOobCall": [],
+    "Toy.Coalesce.pOobCall.eq_1": [],
+    "Toy.Coalesce.pOobCall_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pOverlapSrc": [],
+    "Toy.Coalesce.pOverlapSrc.eq_1": [],
+    "Toy.Coalesce.pPrecise": [],
+    "Toy.Coalesce.pPrecise.eq_1": [],
+    "Toy.Coalesce.pPreciseOk": [],
+    "Toy.Coalesce.pPreciseOk.eq_1": [],
+    "Toy.Coalesce.pPrecise_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pPrmConflict": [],
+    "Toy.Coalesce.pPrmConflict.eq_1": [],
+    "Toy.Coalesce.pPrmConflict_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pPrmEscaped": [],
+    "Toy.Coalesce.pPrmEscaped.eq_1": [],
+    "Toy.Coalesce.pPrmEscaped_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pReuse": [],
+    "Toy.Coalesce.pReuse.eq_1": [],
+    "Toy.Coalesce.pReuseMv": [],
+    "Toy.Coalesce.pReuseMv.eq_1": [],
+    "Toy.Coalesce.pReuseUB": [],
+    "Toy.Coalesce.pReuseUB.eq_1": [],
+    "Toy.Coalesce.pReuse_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pReuse_upgradeAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.pSelf": [],
+    "Toy.Coalesce.pSelf.eq_1": [],
+    "Toy.Coalesce.pSib": [],
+    "Toy.Coalesce.pSib.eq_1": [],
+    "Toy.Coalesce.pSib_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pSmallParent": [],
+    "Toy.Coalesce.pSmallParent.eq_1": [],
+    "Toy.Coalesce.pSmallParent_outcome": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pStageOobPrm": [],
+    "Toy.Coalesce.pStageOobPrm.eq_1": [],
+    "Toy.Coalesce.pStageOobPrm_outcome": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pSwap": [],
+    "Toy.Coalesce.pSwap.eq_1": [],
+    "Toy.Coalesce.pSwapPrm": [],
+    "Toy.Coalesce.pSwapPrm.eq_1": [],
+    "Toy.Coalesce.pSwapPrm_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pSwapStaged": [
+      "propext"
+    ],
+    "Toy.Coalesce.pSwapStaged.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.pSwapStaged_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pSwap_outcome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.pTmpClash": [
+      "propext"
+    ],
+    "Toy.Coalesce.pTmpClash.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.pUBRemoved": [],
+    "Toy.Coalesce.pUBRemoved.eq_1": [],
+    "Toy.Coalesce.pUBRemoved_outcome": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.paramSplit_mapPlace": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.paramsInRange_coalesce": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.policySound_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.policySound_of_lexical_for_addrTaken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.policy_mixed_accepts_pPreciseOk": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ptrsIn_execBasic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ptrsIn_execCallee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ptrsIn_execStmt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ptrsIn_init": [],
+    "Toy.Coalesce.ptrsIn_runAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.qx": [],
+    "Toy.Coalesce.qx.eq_1": [],
+    "Toy.Coalesce.readCells": [],
+    "Toy.Coalesce.readCells.eq_1": [],
+    "Toy.Coalesce.readCells.eq_2": [],
+    "Toy.Coalesce.readCells.eq_def": [],
+    "Toy.Coalesce.readCells.match_1": [],
+    "Toy.Coalesce.readCells.match_3": [],
+    "Toy.Coalesce.readCells_frame": [
+      "propext"
+    ],
+    "Toy.Coalesce.readCells_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.readCells_trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.refines_of_outcome_eq": [
+      "propext"
+    ],
+    "Toy.Coalesce.refines_of_outcome_eq.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.refines_of_param_trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.refines_of_param_trace.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.refines_of_running": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refines_of_running.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.refines_of_single_trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.refines_of_single_trace.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_coalesce_refines_inOrder_noCallCheck_synStaging": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_coalesce_refines_noCallCheck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_coalesce_single_refines_noCallCheck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_outcome_inOrder_eq_atomic_synStaging": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_policySound_iff_noCallCheck_halfPoints": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_policySound_mixed_halfPoints": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_policySound_of_lexical_noCallCheck_halfPoints": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_stage_coalesce_refines_inOrder_noCallCheck_synStaging": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_stage_inOrder_behEq_atomic_synStaging": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_stage_inOrder_refines_atomic_noParamsInRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_stage_inOrder_refines_atomic_synStaging": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_upgrade_moveInPlaceCall_refines_of_noReadAfterCall_calleeAvoids_noParamAddr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_upgrade_refines_of_obsCert_licensed_noParamAddr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_vc_forward_addrFree_noCallCheck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.refuted_vc_forward_of_classAddrDisjoint_noCallCheck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.resetCells": [],
+    "Toy.Coalesce.resetCells.eq_1": [],
+    "Toy.Coalesce.resolvePlace": [
+      "propext"
+    ],
+    "Toy.Coalesce.resolvePlace.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.resolvePlace.match_1": [],
+    "Toy.Coalesce.resolvePlace.match_3": [],
+    "Toy.Coalesce.resolvePlace_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.resolvePlace_trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.run": [
+      "propext"
+    ],
+    "Toy.Coalesce.run.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.runAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.runAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.runAt_conflicts_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.runAt_frame": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.runAt_log_extends": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.runAt_of_le": [
+      "propext"
+    ],
+    "Toy.Coalesce.runAt_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.runAt_succ_log": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.runAt_teq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.runAt_zero": [
+      "propext"
+    ],
+    "Toy.Coalesce.run_conflicts_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.run_eq_runAt": [
+      "propext"
+    ],
+    "Toy.Coalesce.run_log_split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.run_ptrsIn_addrTaken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.run_status_running_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.run_teq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.run_upgradeAt_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.semC": [],
+    "Toy.Coalesce.semD": [],
+    "Toy.Coalesce.semI": [],
+    "Toy.Coalesce.single": [],
+    "Toy.Coalesce.single.eq_1": [],
+    "Toy.Coalesce.size_le_sum": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.someCmpTrue": [],
+    "Toy.Coalesce.stage": [
+      "propext"
+    ],
+    "Toy.Coalesce.stage.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.stageList": [
+      "propext"
+    ],
+    "Toy.Coalesce.stageList.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.stageList.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.stageList.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.stageList.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.stageList.match_1": [],
+    "Toy.Coalesce.stage_coalesce_pSwap": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.stage_coalesce_refines_inOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.stage_inOrder_behEq_atomic_of_localsInRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.stage_inOrder_refines_atomic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.status_eq_ub_of_ne_running": [
+      "propext"
+    ],
+    "Toy.Coalesce.step_allocate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_cmpOp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_deallocate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_emit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_evalOp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_evalOps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_execBasic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_execCallee": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_fail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_logAcc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_readCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_resetCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_wr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_writeCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_writeCellsK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.step_writeInOrder": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.stmtsNoStaging": [
+      "propext"
+    ],
+    "Toy.Coalesce.stmtsNoStaging.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.stmtsNoStaging.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.stmtsNoStaging_of_map_coalesceStmt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.tacticCase_ite": [],
+    "Toy.Coalesce.tacticCoalesce_simp": [],
+    "Toy.Coalesce.tacticLog_eval": [],
+    "Toy.Coalesce.tacticRun_eval": [],
+    "Toy.Coalesce.ufCheck": [
+      "propext"
+    ],
+    "Toy.Coalesce.ufCheck_eq_true_iff_classAddrDisjointW": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.ufCheck_examples": [
+      "propext"
+    ],
+    "Toy.Coalesce.ufInit": [
+      "propext"
+    ],
+    "Toy.Coalesce.ufStep": [
+      "propext"
+    ],
+    "Toy.Coalesce.ufStep.match_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.upgrade_moveDeinit_outcome_eq_iff_noReadBeforeReinit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.upgrade_moveDeinit_refines_of_noReadBeforeReinit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.upgrade_moveInPlaceCall_refines_of_noReadAfterCall_calleeAvoids_paramNotAddrTaken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.upgrade_outcome_eq_moveAsCopy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.upgrade_outcome_eq_moveInPlaceCall_of_not_call": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.upgrade_refines_of_obsCert_licensed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.valid_of_refines": [
+      "propext"
+    ],
+    "Toy.Coalesce.vc_backward_addrFree_of_noValueClobber_of_ubFree": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.vc_backward_addrFree_of_noValueClobber_of_ubFree.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.vc_forward_addrFree_of_noValueClobber": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.vc_forward_addrFree_of_noValueClobber.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.vc_forward_addrFree_p3": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.vc_forward_addrFree_p3.match_1_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.vc_forward_addrFree_p3.match_1_3": [
+      "propext"
+    ],
+    "Toy.Coalesce.vc_forward_of_noValueClobber_of_classAddrDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.windowsDisjoint_of_mapPlace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.wr_trace": [],
+    "Toy.Coalesce.writeCells": [],
+    "Toy.Coalesce.writeCells.eq_1": [],
+    "Toy.Coalesce.writeCellsK": [],
+    "Toy.Coalesce.writeCellsK.eq_1": [],
+    "Toy.Coalesce.writeCellsK.eq_2": [],
+    "Toy.Coalesce.writeCellsK.eq_def": [],
+    "Toy.Coalesce.writeCellsK.match_1": [],
+    "Toy.Coalesce.writeCellsK_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.writeCellsK_trace": [],
+    "Toy.Coalesce.writeCells_teq": [
+      "propext"
+    ],
+    "Toy.Coalesce.writeCells_trace": [],
+    "Toy.Coalesce.writeInOrder": [
+      "propext"
+    ],
+    "Toy.Coalesce.writeInOrder.eq_1": [
+      "propext"
+    ],
+    "Toy.Coalesce.writeInOrder.eq_2": [
+      "propext"
+    ],
+    "Toy.Coalesce.writeInOrder.eq_def": [
+      "propext"
+    ],
+    "Toy.Coalesce.writeInOrder_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Coalesce.writeInOrder_trace": [
+      "propext"
+    ],
+    "Toy.Coalesce.\u03bcChain": [],
+    "Toy.Coalesce.\u03bcSib": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

@@ -1,0 +1,1496 @@
+[
+  {
+    "id": "upgrade-moveAsCopy-equivalence",
+    "lean": [
+      "Toy.Coalesce.upgrade_outcome_eq_moveAsCopy"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Reference point: under `MoveSem.asCopy`, `move q` and `copy q` take identical branches of the interpreter (`evalOp_move_eq_copy`); recorded as the baseline against which the other two `move` semantics are compared.",
+    "plain_claim": "Under `MoveSem.asCopy`, for either assignment order, every program `P`, every body index `k` and every layout `A`, the program `P.upgradeAt k` (whose statement `k`, if it is `lhs := [copy q]`, `call fn (copy q)` or `out (copy q)`, has `copy q` replaced by `move q`) has the same outcome as `P`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Any program; e.g. `pDtor` with `k = 5` on `A0` (`ex_moveSem_outcomes`).",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.ex_moveSem_outcomes"
+    ],
+    "non_claims": [
+      "Says nothing about `MoveSem.deinit` or `MoveSem.inPlaceCall`, where upgrades can change behaviour (`cex_upgrade_moveDeinit_dtorLoad`, `cex_upgrade_moveInPlaceCall_calleeAvoids`).",
+      "`Prog.upgradeAt` rewrites a single-operand assignment, a `call` or an `out` statement of `P.body`; multi-operand aggregates, `store`, `ptrEq`, `ptrInRange`, destructor statements (`P.dtors`) and callee bodies (`P.fns`) are left unchanged.",
+      "Does not claim that `MoveSem.asCopy` is the intended semantics of `move` in any real IR.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:1289-1293 and :1295-1303 (`Operand::Move`: may overwrite the place with `uninit`; in-place passing of `Call` arguments; operational impact unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/unsafe-code-guidelines#188, \"What about: use-after-move and (maybe) use-after-drop\" (open issue; mentioned in prose, not a subject, not normative).",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made."
+    ],
+    "design_question": "When may the last `copy` of a slot be upgraded to `move`? Under the copy reading of `move`: always (reference point).",
+    "lean_names": [
+      "Toy.Coalesce.A0",
+      "Toy.Coalesce.AccKind",
+      "Toy.Coalesce.Access",
+      "Toy.Coalesce.AccessPt",
+      "Toy.Coalesce.AccessPtHalf",
+      "Toy.Coalesce.AddrFree",
+      "Toy.Coalesce.CallSite",
+      "Toy.Coalesce.Callee",
+      "Toy.Coalesce.CalleeAvoids",
+      "Toy.Coalesce.CalleesNoStaging",
+      "Toy.Coalesce.CalleesNoStagingSyn",
+      "Toy.Coalesce.Disj",
+      "Toy.Coalesce.EVal",
+      "Toy.Coalesce.Edge",
+      "Toy.Coalesce.EdgeAddrCheck",
+      "Toy.Coalesce.Event",
+      "Toy.Coalesce.Event.erase",
+      "Toy.Coalesce.Forest",
+      "Toy.Coalesce.Forest.coalesceStmt",
+      "Toy.Coalesce.Forest.inClass",
+      "Toy.Coalesce.Forest.mapPlace",
+      "Toy.Coalesce.Forest.offset",
+      "Toy.Coalesce.Forest.parentOf",
+      "Toy.Coalesce.Forest.resolve",
+      "Toy.Coalesce.Forest.resolveF",
+      "Toy.Coalesce.Forest.root",
+      "Toy.Coalesce.Forest.roots",
+      "Toy.Coalesce.Forest.sameClass",
+      "Toy.Coalesce.Forest.tcell",
+      "Toy.Coalesce.Forest.windowsOverlap",
+      "Toy.Coalesce.ForestWFNoCallCheck",
+      "Toy.Coalesce.InIv",
+      "Toy.Coalesce.InIvHalf",
+      "Toy.Coalesce.IvOverlap",
+      "Toy.Coalesce.IvOverlapHalf",
+      "Toy.Coalesce.Layout",
+      "Toy.Coalesce.LexLiveAt",
+      "Toy.Coalesce.LexOverlap",
+      "Toy.Coalesce.LicensedNoParamAddr",
+      "Toy.Coalesce.LocalsInRange",
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.NeedsStaging",
+      "Toy.Coalesce.NeedsStagingParam",
+      "Toy.Coalesce.NoReadBeforeReinit",
+      "Toy.Coalesce.NoStagingNeeded",
+      "Toy.Coalesce.NoStagingNeededSyn",
+      "Toy.Coalesce.NoValueClobber",
+      "Toy.Coalesce.ObsCert",
+      "Toy.Coalesce.ObsCertBodyOnly",
+      "Toy.Coalesce.ObsMask",
+      "Toy.Coalesce.Operand",
+      "Toy.Coalesce.Operand.isLoad",
+      "Toy.Coalesce.Operand.len",
+      "Toy.Coalesce.Operand.locals",
+      "Toy.Coalesce.Operand.mapPlaces",
+      "Toy.Coalesce.Operand.mayOverlap",
+      "Toy.Coalesce.Operand.mayOverlapParam",
+      "Toy.Coalesce.Operand.readsName",
+      "Toy.Coalesce.Operand.takesAddr",
+      "Toy.Coalesce.Outcome",
+      "Toy.Coalesce.ParamsInRange",
+      "Toy.Coalesce.Place",
+      "Toy.Coalesce.Place.paramSplit",
+      "Toy.Coalesce.Place.proj",
+      "Toy.Coalesce.Place.whole",
+      "Toy.Coalesce.PolicyCheck",
+      "Toy.Coalesce.PolicyCheckHalf",
+      "Toy.Coalesce.PolicySoundWith",
+      "Toy.Coalesce.Prog",
+      "Toy.Coalesce.Prog.code",
+      "Toy.Coalesce.Prog.nloc",
+      "Toy.Coalesce.Prog.size",
+      "Toy.Coalesce.Prog.upgradeAt",
+      "Toy.Coalesce.RootAddrCheck",
+      "Toy.Coalesce.Sem",
+      "Toy.Coalesce.St",
+      "Toy.Coalesce.St.emit",
+      "Toy.Coalesce.St.fail",
+      "Toy.Coalesce.St.init",
+      "Toy.Coalesce.St.logAcc",
+      "Toy.Coalesce.St.wr",
+      "Toy.Coalesce.Status",
+      "Toy.Coalesce.Stmt",
+      "Toy.Coalesce.Stmt.calleeTouchesByName",
+      "Toy.Coalesce.Stmt.escapesInPlace",
+      "Toy.Coalesce.Stmt.kills",
+      "Toy.Coalesce.Stmt.locals",
+      "Toy.Coalesce.Stmt.mapPlaces",
+      "Toy.Coalesce.Stmt.mayRead",
+      "Toy.Coalesce.Stmt.mayReadNoCall",
+      "Toy.Coalesce.Stmt.operands",
+      "Toy.Coalesce.Stmt.readsByName",
+      "Toy.Coalesce.Stmt.takesAddr",
+      "Toy.Coalesce.Stmt.upgradeCopy",
+      "Toy.Coalesce.Stmt.writesByName",
+      "Toy.Coalesce.UFBlock",
+      "Toy.Coalesce.UpgradeSite",
+      "Toy.Coalesce.Val",
+      "Toy.Coalesce.Val.addr?",
+      "Toy.Coalesce.Val.obs",
+      "Toy.Coalesce.Valid",
+      "Toy.Coalesce.WindowsDisjoint",
+      "Toy.Coalesce.afterUse",
+      "Toy.Coalesce.allocate",
+      "Toy.Coalesce.aoTicks",
+      "Toy.Coalesce.calleeNoStaging",
+      "Toy.Coalesce.cex_callee_reorder_rejected_by_policy",
+      "Toy.Coalesce.cex_upgrade_moveDeinit_dtorLoad",
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_calleeAvoids",
+      "Toy.Coalesce.clobberFreeAux",
+      "Toy.Coalesce.cmpAllFalse",
+      "Toy.Coalesce.cmpOp",
+      "Toy.Coalesce.deallocate",
+      "Toy.Coalesce.erasedIs",
+      "Toy.Coalesce.evalOp",
+      "Toy.Coalesce.evalOp_move_eq_copy",
+      "Toy.Coalesce.evalOps",
+      "Toy.Coalesce.ex_moveSem_outcomes",
+      "Toy.Coalesce.ex_windowsDisjoint_empty_interior",
+      "Toy.Coalesce.execBasic",
+      "Toy.Coalesce.execCallee",
+      "Toy.Coalesce.execStmt",
+      "Toy.Coalesce.execTop",
+      "Toy.Coalesce.firstTouchNotRead",
+      "Toy.Coalesce.layoutOK",
+      "Toy.Coalesce.lexLiveBefore",
+      "Toy.Coalesce.liveOthers",
+      "Toy.Coalesce.modifyAt",
+      "Toy.Coalesce.nubNat",
+      "Toy.Coalesce.obsBodyOnly",
+      "Toy.Coalesce.obsFrom",
+      "Toy.Coalesce.outcome",
+      "Toy.Coalesce.pAliasCoalSwap",
+      "Toy.Coalesce.pAliasSwap",
+      "Toy.Coalesce.pCalleeCoalSwap",
+      "Toy.Coalesce.pCalleeReorder",
+      "Toy.Coalesce.pCalleeSwap",
+      "Toy.Coalesce.pDtor",
+      "Toy.Coalesce.pOobCall",
+      "Toy.Coalesce.pOverlapSrc",
+      "Toy.Coalesce.pReuseUB",
+      "Toy.Coalesce.pSelf",
+      "Toy.Coalesce.pSmallParent",
+      "Toy.Coalesce.pStageOobPrm",
+      "Toy.Coalesce.pSwapPrm",
+      "Toy.Coalesce.pTmpClash",
+      "Toy.Coalesce.qx",
+      "Toy.Coalesce.readCells",
+      "Toy.Coalesce.refuted_coalesce_refines_inOrder_noCallCheck_synStaging",
+      "Toy.Coalesce.refuted_coalesce_refines_noCallCheck",
+      "Toy.Coalesce.refuted_coalesce_single_refines_noCallCheck",
+      "Toy.Coalesce.refuted_policySound_iff_noCallCheck_halfPoints",
+      "Toy.Coalesce.refuted_stage_coalesce_refines_inOrder_noCallCheck_synStaging",
+      "Toy.Coalesce.refuted_stage_inOrder_refines_atomic_noParamsInRange",
+      "Toy.Coalesce.refuted_vc_forward_addrFree_noCallCheck",
+      "Toy.Coalesce.refuted_vc_forward_of_classAddrDisjoint_noCallCheck",
+      "Toy.Coalesce.resetCells",
+      "Toy.Coalesce.resolvePlace",
+      "Toy.Coalesce.run",
+      "Toy.Coalesce.semC",
+      "Toy.Coalesce.someCmpTrue",
+      "Toy.Coalesce.stageList",
+      "Toy.Coalesce.stmtsNoStaging",
+      "Toy.Coalesce.ufInit",
+      "Toy.Coalesce.ufStep",
+      "Toy.Coalesce.upgrade_outcome_eq_moveAsCopy",
+      "Toy.Coalesce.writeCells",
+      "Toy.Coalesce.writeCellsK",
+      "Toy.Coalesce.writeInOrder"
+    ]
+  },
+  {
+    "id": "upgrade-moveDeinit-iff-no-read-before-reinit",
+    "lean": [
+      "Toy.Coalesce.upgrade_moveDeinit_outcome_eq_iff_noReadBeforeReinit",
+      "Toy.Coalesce.upgrade_moveDeinit_refines_of_noReadBeforeReinit"
+    ],
+    "kind": "characterization",
+    "tier": "T2",
+    "tier_justification": "The informal rule in the `Operand::Move` documentation (\"should not emit MIR that may attempt a subsequent second load ... without first re-initializing it\") made precise as an exact per-run characterization, covering reads through pointers, in callees and in destructors.",
+    "plain_claim": "Under `MoveSem.deinit` (either assignment order), for an upgrade site `k` of place `q` (`lhs := [copy q]` with `lhs` disjoint from `q`, `call fn (copy q)` with the callee parameter different from `q.base`, or `out (copy q)`) and a layout on which the source run is neither undefined nor excluded, the upgraded program has the same outcome iff every cell of `q` is not read after the use (inside the callee at tick `k`, at later ticks, through pointers, or in the destructor block) before it is written or reset; and, for an upgrade site, if that condition holds on every layout whose source run is neither undefined nor excluded, the upgrade is a refinement.",
+    "hypotheses": [
+      {
+        "name": "hsite (iff form)",
+        "purpose": "restricts to statements in which the upgraded operand is the single read of `q` and the write of the statement cannot re-initialize `q`",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_upgrade_deinit_iff_lhs_overlap"
+        ],
+        "counterexample_witness": "cex_upgrade_deinit_iff_lhs_overlap (witness class: a one-local program `x := copy x`)"
+      },
+      {
+        "name": "hub",
+        "purpose": "the source run is not undefined behaviour (otherwise both runs may be UB while the condition fails)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_upgrade_deinit_iff_source_ub"
+        ],
+        "counterexample_witness": "cex_upgrade_deinit_iff_source_ub (witness class: a two-local program with an undefined destructor)"
+      },
+      {
+        "name": "hbad",
+        "purpose": "the source run is not excluded (excluded runs have equal outcomes regardless)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_upgrade_deinit_iff_bad_layout"
+        ],
+        "counterexample_witness": "cex_upgrade_deinit_iff_bad_layout (witness class: the all-zero layout)"
+      },
+      {
+        "name": "hsite (refinement form)",
+        "purpose": "ties the condition to the upgraded place; tight as a whole (a place other than the upgraded one); its left-side-disjointness and parameter conjuncts are not shown needed for the refinement form",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_upgrade_deinit_refines_needs_site"
+        ],
+        "counterexample_witness": "cex_upgrade_deinit_refines_needs_site (witness class: a two-local program, `q` a place other than the upgraded one)"
+      },
+      {
+        "name": "hno (refinement form)",
+        "purpose": "the dynamic condition on every non-UB, non-excluded layout",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_upgrade_moveDeinit_dtorLoad"
+        ],
+        "counterexample_witness": "cex_upgrade_moveDeinit_dtorLoad (witness class: three locals and a one-statement destructor block)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`pNoDtor` (the destructor-load program without its destructor), site 5, layout `A0`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.nonvacuous_upgrade_moveDeinit_iff",
+      "Toy.Coalesce.nonvacuous_upgrade_moveDeinit_refines"
+    ],
+    "non_claims": [
+      "The condition is dynamic (over the source run's access log); it is not a static analysis. A static, sound over-approximation is the separate card `observation-certificate-licenses-upgrades`.",
+      "The `↔` is per layout (outcome equality on one layout whose source run is neither undefined nor excluded). No converse of the refinement form is proved: `Refines` is not characterized (for example, by the definition of `Refines`, refinement holds whenever the source has undefined behaviour on some non-excluded run).",
+      "The per-layout `↔` is stated for upgrade sites; with a left side overlapping `q` it fails (`cex_upgrade_deinit_iff_lhs_overlap`); multi-operand aggregates are not covered.",
+      "Reads of uninitialized cells are undefined behaviour in this toy for every operand kind; a semantics in which copying uninitialized bytes is allowed would change the 'only if' direction (not proved here).",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:1289-1293 and :1295-1303 (`Operand::Move`: may overwrite the place with `uninit`; in-place passing of `Call` arguments; operational impact unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/unsafe-code-guidelines#188, \"What about: use-after-move and (maybe) use-after-drop\" (open issue; mentioned in prose, not a subject, not normative).",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made."
+    ],
+    "design_question": "Under the de-initializing reading of `move`, when is a copy-to-move upgrade sound? Per layout: exactly when no cell of the place is read before re-initialization; as a refinement: whenever that holds on every non-UB, non-excluded layout.",
+    "lean_names": [
+      "Toy.Coalesce.A0",
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.Operand",
+      "Toy.Coalesce.Refines",
+      "Toy.Coalesce.cex_upgrade_deinit_iff_bad_layout",
+      "Toy.Coalesce.cex_upgrade_deinit_iff_lhs_overlap",
+      "Toy.Coalesce.cex_upgrade_deinit_iff_source_ub",
+      "Toy.Coalesce.cex_upgrade_deinit_refines_needs_site",
+      "Toy.Coalesce.cex_upgrade_moveDeinit_dtorLoad",
+      "Toy.Coalesce.nonvacuous_upgrade_moveDeinit_iff",
+      "Toy.Coalesce.nonvacuous_upgrade_moveDeinit_refines",
+      "Toy.Coalesce.pNoDtor",
+      "Toy.Coalesce.upgrade_moveDeinit_outcome_eq_iff_noReadBeforeReinit",
+      "Toy.Coalesce.upgrade_moveDeinit_refines_of_noReadBeforeReinit"
+    ]
+  },
+  {
+    "id": "upgrade-moveInPlaceCall-sufficient-conditions",
+    "lean": [
+      "Toy.Coalesce.upgrade_moveInPlaceCall_refines_of_noReadAfterCall_calleeAvoids_paramNotAddrTaken",
+      "Toy.Coalesce.upgrade_outcome_eq_moveInPlaceCall_of_not_call"
+    ],
+    "kind": "theorem",
+    "tier": "T2",
+    "tier_justification": "Makes precise, for an in-place reading of call arguments, which conditions suffice; each of the three conditions is shown tight.",
+    "plain_claim": "Under `MoveSem.inPlaceCall` (either assignment order): upgrading a body statement that is not a call leaves the outcome unchanged on every layout; and, for a call site `call fn (copy q)` whose callee parameter is different from `q.base`, upgrading the argument is a refinement if (a) on every layout whose source run is neither undefined nor excluded, no cell of `q` is read after the call returns before it is written or reset, (b) on every such layout, the callee accesses no cell of `q` during the call, and (c) the callee's parameter local is not address-taken anywhere in `P` (`¬ AddrTaken P (P.fn fn).prm`; the parameter is a local of the caller's frame, so taking its address outside the callee also counts).",
+    "hypotheses": [
+      {
+        "name": "hnc (non-call form)",
+        "purpose": "the statement is not a call",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_upgrade_inPlaceCall_call_site"
+        ],
+        "counterexample_witness": "cex_upgrade_inPlaceCall_call_site (witness class: the call program pIPStore)"
+      },
+      {
+        "name": "hsite",
+        "purpose": "the statement is a call whose argument is `copy q` and whose callee parameter is not `q.base`",
+        "tightness": "unknown"
+      },
+      {
+        "name": "ha",
+        "purpose": "after the call, `q` holds the callee's final parameter contents",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noReadAfterCall",
+          "Toy.Coalesce.pIPAfter_violates_noReadAfterCall"
+        ],
+        "counterexample_witness": "cex_upgrade_moveInPlaceCall_noReadAfterCall, with pIPAfter_violates_noReadAfterCall (the hypothesis `ha` itself fails: the source run on `A0` completes) (witness class: three locals, one-statement callee)"
+      },
+      {
+        "name": "hb",
+        "purpose": "the callee must not reach `q` (by name or through escaped pointers, reads or writes)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_upgrade_moveInPlaceCall_calleeAvoids",
+          "Toy.Coalesce.pIPStore_violates_calleeAvoids"
+        ],
+        "counterexample_witness": "cex_upgrade_moveInPlaceCall_calleeAvoids, with pIPStore_violates_calleeAvoids (the hypothesis `hb` itself fails: the source run on `A0` completes) (witness class: callee storing through an escaped pointer, then reading its parameter)"
+      },
+      {
+        "name": "hc",
+        "purpose": "in place, the parameter local is never allocated and its address is an address inside `q`; a pointer to it or a comparison with its address anywhere in `P` observes the difference",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noParamAddr",
+          "Toy.Coalesce.cex_inPlaceCall_param_addrTaken_in_caller",
+          "Toy.Coalesce.cex_inPlaceCall_param_conflict"
+        ],
+        "counterexample_witness": "cex_upgrade_moveInPlaceCall_noParamAddr (witness class: callee comparing `&param` with an escaped pointer); cex_inPlaceCall_param_addrTaken_in_caller and cex_inPlaceCall_param_conflict (witness class: callee body never takes its parameter's address, the caller does)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`pIPOk` (the callee reads its parameter and does nothing else), call site 4; `pReuse`, body index 3 (not a call).",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.nonvacuous_upgrade_moveInPlaceCall",
+      "Toy.Coalesce.nonvacuous_upgrade_outcome_eq_moveInPlaceCall_of_not_call"
+    ],
+    "non_claims": [
+      "These are sufficient conditions; no converse is proved. For example, a callee that never writes its parameter can accept a moved argument even if the caller reads `q` afterwards, violating (a) (not proved here).",
+      "Condition (c) is about the whole program, not the callee body: the weaker condition `CalleeNoParamAddr P fn` (the callee body never takes its parameter's address) does not suffice (`cex_inPlaceCall_param_addrTaken_in_caller`, `cex_inPlaceCall_param_conflict`; earlier formulation refuted by `refuted_upgrade_moveInPlaceCall_refines_of_noReadAfterCall_calleeAvoids_noParamAddr`).",
+      "The in-place reading here is deterministic (the parameter always aliases the argument) and performs no de-initialization; a semantics that may or may not alias, and a combined de-initializing and in-place semantics, are not modeled.",
+      "`MoveSem.inPlaceCall` models no aliasing-model protectors (such as the function-call protectors of Stacked Borrows; the cited `Operand::Move` documentation, `syntax.rs:1295-1303`, says that Miri implements in-place argument passing with protectors); how protectors would affect these results is not examined here.",
+      "Callee bodies run in the caller's frame and may name caller locals; storage statements and nested calls inside callees are undefined behaviour in this toy.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:1289-1293 and :1295-1303 (`Operand::Move`: may overwrite the place with `uninit`; in-place passing of `Call` arguments; operational impact unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/unsafe-code-guidelines#188, \"What about: use-after-move and (maybe) use-after-drop\" (open issue; mentioned in prose, not a subject, not normative).",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made.",
+      "R. Jung, H.-H. Dang, J. Kang, D. Dreyer, \"Stacked Borrows: An Aliasing Model for Rust\", PACMPL 4 (POPL), Article 41, 2020, doi:10.1145/3371109: an aliasing model with function-call protectors, which `MoveSem.inPlaceCall` does not model (bibliographic data verified; full text not inspected)."
+    ],
+    "design_question": "Under in-place passing of moved call arguments, what must a copy-to-move upgrade of a call argument check?",
+    "lean_names": [
+      "Toy.Coalesce.AddrTaken",
+      "Toy.Coalesce.CalleeNoParamAddr",
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.Operand",
+      "Toy.Coalesce.Prog.fn",
+      "Toy.Coalesce.cex_inPlaceCall_param_addrTaken_in_caller",
+      "Toy.Coalesce.cex_inPlaceCall_param_conflict",
+      "Toy.Coalesce.cex_upgrade_inPlaceCall_call_site",
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_calleeAvoids",
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noParamAddr",
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noReadAfterCall",
+      "Toy.Coalesce.nonvacuous_upgrade_moveInPlaceCall",
+      "Toy.Coalesce.nonvacuous_upgrade_outcome_eq_moveInPlaceCall_of_not_call",
+      "Toy.Coalesce.pIPOk",
+      "Toy.Coalesce.pReuse",
+      "Toy.Coalesce.refuted_upgrade_moveInPlaceCall_refines_of_noReadAfterCall_calleeAvoids_noParamAddr",
+      "Toy.Coalesce.upgrade_moveInPlaceCall_refines_of_noReadAfterCall_calleeAvoids_paramNotAddrTaken",
+      "Toy.Coalesce.upgrade_outcome_eq_moveInPlaceCall_of_not_call"
+    ]
+  },
+  {
+    "id": "destructor-load-breaks-deinit-upgrade",
+    "lean": [
+      "Toy.Coalesce.cex_upgrade_moveDeinit_dtorLoad",
+      "Toy.Coalesce.pNoDtor_upgrade_refines"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "The destructor-on-return-path hazard, made concrete and kernel-checked. Paired with `upgrade-moveDeinit-iff-no-read-before-reinit` (tightness witness of its `hno`) and `destructor-blind-analysis-admits-unsound-upgrade`.",
+    "plain_claim": "Under `MoveSem.deinit` with atomic assignments (`semD`): in `pDtor` (x := 7; p := &x; y := copy x at body index 5; out y; a destructor block that loads through p), body index 5 is an upgrade site, the source completes with `[7, 7]` on layout `A0` while the `MoveSem.deinit` upgrade has undefined behaviour there, the no-read-before-re-initialization condition fails, and the upgrade is not a refinement; without the destructor block the same upgrade is a refinement (positive control `pNoDtor_upgrade_refines`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The program `pDtor` itself (all claims are about it).",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.cex_upgrade_moveDeinit_dtorLoad"
+    ],
+    "non_claims": [
+      "Destructors are modeled as one straight-line block `P.dtors` run after `P.body`; drop elaboration, drop flags, reverse drop order and unwinding paths are not modeled.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:1289-1293 and :1295-1303 (`Operand::Move`: may overwrite the place with `uninit`; in-place passing of `Call` arguments; operational impact unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/unsafe-code-guidelines#188, \"What about: use-after-move and (maybe) use-after-drop\" (open issue; mentioned in prose, not a subject, not normative)."
+    ],
+    "design_question": "Must copy-to-move analyses consider reads in destructors run on the return path? Yes (in the toy, under `MoveSem.deinit`).",
+    "positive_control_lean": [
+      "Toy.Coalesce.pNoDtor_upgrade_refines"
+    ],
+    "lean_names": [
+      "Toy.Coalesce.A0",
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.Operand",
+      "Toy.Coalesce.cex_upgrade_moveDeinit_dtorLoad",
+      "Toy.Coalesce.pDtor",
+      "Toy.Coalesce.pNoDtor_upgrade_refines"
+    ]
+  },
+  {
+    "id": "in-place-call-upgrade-counterexamples",
+    "lean": [
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_calleeAvoids",
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noParamAddr",
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noReadAfterCall",
+      "Toy.Coalesce.cex_upgrade_callee_load_escaped",
+      "Toy.Coalesce.cex_inPlaceCall_param_addrTaken_in_caller",
+      "Toy.Coalesce.cex_inPlaceCall_param_conflict"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Concrete witnesses for each in-place condition. Paired with `upgrade-moveInPlaceCall-sufficient-conditions` (tightness witnesses of `ha`, `hb`, `hc`).",
+    "plain_claim": "Under `MoveSem.inPlaceCall` with atomic assignments (`semI`), each of the conditions (a) no read of `q` after the call, (b) the callee does not access `q`, (c) the callee's parameter local is not address-taken can fail alone, with the call site and the other two holding (the dynamic ones on every layout whose source run is neither undefined nor excluded), and the call-argument upgrade then is not a refinement; (c) can fail through the caller alone, under either assignment order (the caller takes the parameter local's address, or allocates it and compares its address, while the callee body never takes it); and, with atomic assignments (`semI`, `semD`), a callee that writes its parameter and then loads through an escaped pointer to the argument breaks the upgrade under both `MoveSem.inPlaceCall` and `MoveSem.deinit`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The programs `pIPStore`, `pIPAddr`, `pIPAfter`, `pIPLoad`, `pPrmEscaped`, `pPrmConflict`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_calleeAvoids"
+    ],
+    "non_claims": [
+      "Each counterexample exhibits one hazard: `pIPAfter` the callee writing its parameter; `pIPStore`, `pIPAddr` and `pIPLoad` an escaped pointer to `x` reaching the callee; `pPrmEscaped` and `pPrmConflict` the caller taking the address of the parameter local. That removing its hazard from each program restores refinement is not proved here; `pIPOk`, a separate program with none of these hazards, satisfies all three conditions (`nonvacuous_upgrade_moveInPlaceCall`).",
+      "The load-through-escaped-pointer program `pIPLoad` violates (b) and also the `MoveSem.deinit` condition; it is not a canonical witness for (b) alone (that is `pIPStore`).",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:1289-1293 and :1295-1303 (`Operand::Move`: may overwrite the place with `uninit`; in-place passing of `Call` arguments; operational impact unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/unsafe-code-guidelines#188, \"What about: use-after-move and (maybe) use-after-drop\" (open issue; mentioned in prose, not a subject, not normative)."
+    ],
+    "design_question": "Which in-place passing hazards does a copy-to-move upgrade of a call argument face?",
+    "lean_names": [
+      "Toy.Coalesce.A_eq03",
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.Operand",
+      "Toy.Coalesce.cex_inPlaceCall_param_addrTaken_in_caller",
+      "Toy.Coalesce.cex_inPlaceCall_param_conflict",
+      "Toy.Coalesce.cex_upgrade_callee_load_escaped",
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_calleeAvoids",
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noParamAddr",
+      "Toy.Coalesce.cex_upgrade_moveInPlaceCall_noReadAfterCall",
+      "Toy.Coalesce.nonvacuous_upgrade_moveInPlaceCall",
+      "Toy.Coalesce.pCall",
+      "Toy.Coalesce.pIPAddr",
+      "Toy.Coalesce.pIPAfter",
+      "Toy.Coalesce.pIPLoad",
+      "Toy.Coalesce.pIPOk",
+      "Toy.Coalesce.pIPStore",
+      "Toy.Coalesce.pPrmConflict",
+      "Toy.Coalesce.pPrmEscaped"
+    ]
+  },
+  {
+    "id": "moveDeinit-moveInPlaceCall-incomparable",
+    "lean": [
+      "Toy.Coalesce.moveDeinit_moveInPlaceCall_upgrades_incomparable"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Makes precise that the two candidate operational readings of `move` license different upgrades.",
+    "plain_claim": "Under atomic assignments (`semD` = `MoveSem.deinit`, `semI` = `MoveSem.inPlaceCall`), the two semantics admit incomparable sets of refining upgrades: on `pIPStore` (callee stores 2 through an escaped pointer to x, then prints its parameter) the call-argument upgrade is a refinement under `MoveSem.deinit` but not under `MoveSem.inPlaceCall`; on `pReuse` (y := copy x; out x) the assignment upgrade is a refinement under `MoveSem.inPlaceCall` but not under `MoveSem.deinit`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The two programs.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.moveDeinit_moveInPlaceCall_upgrades_incomparable"
+    ],
+    "non_claims": [
+      "Incomparability is shown between the two separate readings (`MoveSem.deinit` alone, `MoveSem.inPlaceCall` alone) under `AssignMode.atomic`; a combined semantics performing both de-initialization and in-place passing is not modeled, and its relation to either reading is not proved here.",
+      "Does not say which reading real MIR adopts (the cited `Operand::Move` documentation, `syntax.rs:1295-1303`, says that the operational impact of `Move` is unclear, and rust-lang/unsafe-code-guidelines#188 is an open issue).",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:1289-1293 and :1295-1303 (`Operand::Move`: may overwrite the place with `uninit`; in-place passing of `Call` arguments; operational impact unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/unsafe-code-guidelines#188, \"What about: use-after-move and (maybe) use-after-drop\" (open issue; mentioned in prose, not a subject, not normative)."
+    ],
+    "design_question": "Can an optimizer be agnostic between the two readings of `move`? An upgrade satisfying both sets of conditions is sound under both (each by its own theorem); no weaker semantics-agnostic condition is proved.",
+    "lean_names": [
+      "Toy.Coalesce.AssignMode",
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.Operand",
+      "Toy.Coalesce.moveDeinit_moveInPlaceCall_upgrades_incomparable",
+      "Toy.Coalesce.pIPStore",
+      "Toy.Coalesce.pReuse",
+      "Toy.Coalesce.semD",
+      "Toy.Coalesce.semI"
+    ]
+  },
+  {
+    "id": "observation-certificate-checker-and-least-solution",
+    "lean": [
+      "Toy.Coalesce.checkObs_eq_true_iff",
+      "Toy.Coalesce.obsAnalysis_least_cert"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Standard backward may-analysis and certificate checking restated for this language; the claimed-and-checked certificate pattern is the one of the published address-free package (card `liveness-checker-characterization-and-soundness`), cited, not re-proved.",
+    "plain_claim": "The Boolean checker `checkObs` accepts a mask exactly when it satisfies the gen/transfer certificate conditions over the body and the destructor block (gen: by-name reads, any `load` if the local is address-taken, and the same inside called callees; kill: storage statements and whole-local assignments), and the backward scan `obsAnalysis` is such a certificate and is below every certificate at every tick up to the end and every local of the program.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`pDtor` with `obsAnalysis pDtor` (`ex_obsCert_pos`).",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.ex_obsCert_pos"
+    ],
+    "non_claims": [
+      "Says nothing about soundness with respect to the semantics (that is `observation-certificate-licenses-upgrades`).",
+      "The analysis is over straight-line code (no control-flow joins, loops or fixpoint iteration); callee summaries are single-level because nested calls inside callees are undefined behaviour in this toy.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "Published reference package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing` (namespace `Toy.SlotCompact`), google/zerocopy branch `reference`, commit a85598234b05e6dcc9afb9e81d2e396cc1218751 (no later commit touches the package as of 2026-11-21; no correction commit exists): card `liveness-checker-characterization-and-soundness` (`checkLive_eq_true_iff`, Liveness.lean:107; `checkLive_sound`, Liveness.lean:112): the claimed-and-checked certificate pattern reused here.",
+      "G. A. Kildall, \"A Unified Approach to Global Program Optimization\", POPL 1973, pp. 194-206, doi:10.1145/512927.512945: the lattice framework for data-flow analysis; the least-solution part of `obsAnalysis_least_cert` is its straight-line instance (bibliographic data verified; full text not inspected).",
+      "S. Rideau, X. Leroy, \"Validating Register Allocation and Spilling\", CC 2010, LNCS 6011, pp. 224-243, doi:10.1007/978-3-642-11970-5_13, implemented in AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc backend/Allocation.v (line 13: \"Register allocation by external oracle and a posteriori validation.\"; lines 22-25 cite this paper): a posteriori validation of an untrusted allocation result, the same claimed-and-checked pattern as the certificate here; not formalized here."
+    ],
+    "design_question": "Can the return-tail analysis be checked rather than trusted? Yes, as a certificate.",
+    "lean_names": [
+      "Toy.Coalesce.checkObs",
+      "Toy.Coalesce.checkObs_eq_true_iff",
+      "Toy.Coalesce.ex_obsCert_pos",
+      "Toy.Coalesce.obsAnalysis",
+      "Toy.Coalesce.obsAnalysis_least_cert",
+      "Toy.Coalesce.pDtor"
+    ]
+  },
+  {
+    "id": "observation-certificate-licenses-upgrades",
+    "lean": [
+      "Toy.Coalesce.noReadBeforeReinit_of_obsCert",
+      "Toy.Coalesce.upgrade_refines_of_obsCert_licensed"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Soundness of a conservative backward analysis that includes destructor bodies and callee summaries, connected to the three `move` semantics.",
+    "plain_claim": "If a mask `O` satisfies the certificate conditions and `q.base ∉ O (k+1)`, then on every layout and under every semantics no cell of `q` is read at a tick after `k` before it is written or reset; and, for an upgrade site `k` of `q`, a certificate that licenses the upgrade under the chosen `move` semantics (`Licensed`: always for `MoveSem.asCopy`; `q.base ∉ O (k+1)` plus a callee summary with no possible read of `q.base` for `MoveSem.deinit`; for `MoveSem.inPlaceCall`, always for non-call sites and, for call sites, `q.base ∉ O (k+1)`, a callee that does not read or assign a place based at `q.base` by name nor store through a pointer held in one, does no `load` and no `store` if `q.base` is address-taken, and whose parameter local is not address-taken anywhere in `P`) makes the upgrade a refinement, under either assignment order.",
+    "hypotheses": [
+      {
+        "name": "hcert",
+        "purpose": "the mask must be a certificate, not just claimed",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_noRead_needs_obsCert",
+          "Toy.Coalesce.cex_licensed_needs_obsCert"
+        ],
+        "counterexample_witness": "cex_noRead_needs_obsCert; cex_licensed_needs_obsCert (witness class: the all-false mask on two small programs)"
+      },
+      {
+        "name": "hO",
+        "purpose": "the local must be absent from the mask after the use",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_noRead_needs_not_in_mask"
+        ],
+        "counterexample_witness": "cex_noRead_needs_not_in_mask (witness class: pReuse with its computed certificate)"
+      },
+      {
+        "name": "hlic",
+        "purpose": "licensing condition per semantics",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_licensed_needs_licensing"
+        ],
+        "counterexample_witness": "cex_licensed_needs_licensing (witness class: pDtor with its computed certificate, `MoveSem.deinit`)"
+      },
+      {
+        "name": "hsite",
+        "purpose": "the statement is an upgrade site",
+        "tightness": "unknown"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`pNoDtor` with `obsAnalysis pNoDtor`, site 5, `MoveSem.deinit`; `pIPOk` with `obsAnalysis pIPOk`, call site 4, `MoveSem.inPlaceCall`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.nonvacuous_upgrade_refines_of_obsCert_licensed",
+      "Toy.Coalesce.nonvacuous_upgrade_refines_of_obsCert_licensed_inPlaceCall"
+    ],
+    "non_claims": [
+      "The analysis is whole-local and treats every `load` as possibly reading every address-taken local (no points-to precision); stores do not kill.",
+      "No completeness: some sound upgrades are licensed by no certificate. On `pLoadOther` no certificate licenses the `MoveSem.deinit` upgrade at body index 8, yet the upgrade is a refinement (`cex_licensed_incomplete`).",
+      "For `MoveSem.inPlaceCall` the licensing condition on the parameter is `¬ AddrTaken P (P.fn fn).prm`; the earlier condition `CalleeNoParamAddr P fn` is insufficient (`refuted_upgrade_refines_of_obsCert_licensed_noParamAddr`).",
+      "The analysis is over straight-line code (no control-flow joins, loops or fixpoint iteration); callee summaries are single-level because nested calls inside callees are undefined behaviour in this toy.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "Published reference package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing` (namespace `Toy.SlotCompact`), google/zerocopy branch `reference`, commit a85598234b05e6dcc9afb9e81d2e396cc1218751 (no later commit touches the package as of 2026-11-21; no correction commit exists): card `liveness-checker-characterization-and-soundness` (`checkLive_eq_true_iff`, Liveness.lean:107; `checkLive_sound`, Liveness.lean:112): the claimed-and-checked certificate pattern reused here.",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/dest_prop.rs:49-57 (write-versus-liveness condition; locals with their address taken are excluded), :64-66 (disjoint live ranges at half-statement granularity), :72-75 (future work: merging storage liveness ranges instead of removing storage statements; merging into places with projections). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made.",
+      "S. Rideau, X. Leroy, \"Validating Register Allocation and Spilling\", CC 2010, LNCS 6011, pp. 224-243, doi:10.1007/978-3-642-11970-5_13, implemented in AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc backend/Allocation.v (line 13: \"Register allocation by external oracle and a posteriori validation.\"; lines 22-25 cite this paper): a posteriori validation of an untrusted allocation result, the same claimed-and-checked pattern as the certificate here; not formalized here."
+    ],
+    "design_question": "Which static analysis licenses copy-to-move upgrades of address-taken slots, including destructor and callee reads?",
+    "lean_names": [
+      "Toy.Coalesce.AddrTaken",
+      "Toy.Coalesce.CalleeNoParamAddr",
+      "Toy.Coalesce.Licensed",
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.Prog.fn",
+      "Toy.Coalesce.cex_licensed_incomplete",
+      "Toy.Coalesce.cex_licensed_needs_licensing",
+      "Toy.Coalesce.cex_licensed_needs_obsCert",
+      "Toy.Coalesce.cex_noRead_needs_not_in_mask",
+      "Toy.Coalesce.cex_noRead_needs_obsCert",
+      "Toy.Coalesce.noReadBeforeReinit_of_obsCert",
+      "Toy.Coalesce.nonvacuous_upgrade_refines_of_obsCert_licensed",
+      "Toy.Coalesce.nonvacuous_upgrade_refines_of_obsCert_licensed_inPlaceCall",
+      "Toy.Coalesce.obsAnalysis",
+      "Toy.Coalesce.pIPOk",
+      "Toy.Coalesce.pLoadOther",
+      "Toy.Coalesce.pNoDtor",
+      "Toy.Coalesce.refuted_upgrade_refines_of_obsCert_licensed_noParamAddr",
+      "Toy.Coalesce.upgrade_refines_of_obsCert_licensed"
+    ]
+  },
+  {
+    "id": "destructor-blind-analysis-admits-unsound-upgrade",
+    "lean": [
+      "Toy.Coalesce.cex_obsCertBodyOnly_licenses_dtorLoad"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Shows, in the toy under `MoveSem.deinit`, that the analysis is unsound when its return tail omits the destructor block.",
+    "plain_claim": "A version of the analysis that checks the certificate conditions over the body and not over the destructor block produces, for `pDtor`, a mask that licenses the `MoveSem.deinit` upgrade at body index 5, which is not a refinement under atomic assignments (`semD`); the full analysis of `pDtor` is accepted by `checkObs` (hence is a certificate, `ex_obsCert_pos`) and does not license it (positive control).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`pDtor`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.cex_obsCertBodyOnly_licenses_dtorLoad",
+      "Toy.Coalesce.ex_obsCert_pos"
+    ],
+    "non_claims": [
+      "`pDtor` is a counterexample for `MoveSem.deinit` at a non-call site; under `MoveSem.asCopy` and `MoveSem.inPlaceCall` the same upgrade leaves the outcome unchanged on every layout (`upgrade_outcome_eq_moveAsCopy`, `upgrade_outcome_eq_moveInPlaceCall_of_not_call`).",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:1289-1293 and :1295-1303 (`Operand::Move`: may overwrite the place with `uninit`; in-place passing of `Call` arguments; operational impact unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding."
+    ],
+    "design_question": "Must the return-tail analysis include destructor bodies? Yes (in the toy, under `MoveSem.deinit`).",
+    "positive_control_lean": [
+      "Toy.Coalesce.obsAnalysis_rejects_dtorLoad"
+    ],
+    "lean_names": [
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.Operand",
+      "Toy.Coalesce.cex_obsCertBodyOnly_licenses_dtorLoad",
+      "Toy.Coalesce.checkObs",
+      "Toy.Coalesce.ex_obsCert_pos",
+      "Toy.Coalesce.obsAnalysis_rejects_dtorLoad",
+      "Toy.Coalesce.pDtor",
+      "Toy.Coalesce.upgrade_outcome_eq_moveAsCopy",
+      "Toy.Coalesce.upgrade_outcome_eq_moveInPlaceCall_of_not_call"
+    ]
+  },
+  {
+    "id": "single-merge-into-field-sufficient",
+    "lean": [
+      "Toy.Coalesce.coalesce_single_refines_of_noValueClobber_of_lexDisjoint_addrTaken"
+    ],
+    "kind": "theorem",
+    "tier": "T2",
+    "tier_justification": "Generalizes the address-free no-clobber criterion to subplace merges of address-taken locals, with the address condition stated two-sidedly; a specialization of the forest theorem.",
+    "plain_claim": "Under atomic assignments and every `move` semantics, for the single merge of local `x` into the field window at offset `f` of local `y`: if the forest is well formed (`ForestWF`, including that every top-level call names an existing callee), `NoValueClobberStmt` holds (no read in the source run observes a clobber in the merged memory; checked on the atomic-assignment access log of every non-UB, non-excluded run), and, if `x` and `y` are both address-taken, they are never lexically allocated during a common tick, then the coalesced program refines the source.",
+    "hypotheses": [
+      {
+        "name": "hwf",
+        "purpose": "well-formed forest (fits, acyclic, parameters not merged, calls in bounds)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_coalesce_needs_forestWF",
+          "Toy.Coalesce.cex_coalesce_needs_callsInBounds"
+        ],
+        "counterexample_witness": "cex_coalesce_needs_forestWF (witness class: a two-cell local merged into a one-cell local); cex_coalesce_needs_callsInBounds (witness class: a call to an absent callee)"
+      },
+      {
+        "name": "hi",
+        "purpose": "the value-level condition `NoValueClobberStmt`",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_coalesce_single_valueClobber"
+        ],
+        "counterexample_witness": "cex_coalesce_single_valueClobber (witness class: two locals, no address-taken local)"
+      },
+      {
+        "name": "hii",
+        "purpose": "the lexical address condition, two-sided form",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_coalesce_single_addrTaken_lexOverlap"
+        ],
+        "counterexample_witness": "cex_coalesce_single_addrTaken_lexOverlap (witness class: two locals, `ptrInRange(&x, &y, 2)`)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`p3x` with the merge `x ↦ y.0` (`x` address-taken, `y` not).",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.nonvacuous_coalesce_single"
+    ],
+    "non_claims": [
+      "This is a sufficient condition; no 'iff' is proved for a fixed program (for example, whether a program that takes both addresses without ever comparing them admits the merge when the lexical address condition fails is not proved here).",
+      "The one-sided condition 'if `x` is address-taken, `x` and the whole of `y` are lexically disjoint' is not necessary: `coalesce_single_refines_addrTaken_child_only` merges an address-taken `x` into a non-address-taken `y` that is allocated at the same time.",
+      "`NoValueClobberStmt` is a dynamic condition; no static checker for it is proved here (the cited address-free package proves static certificate conditions for its own language).",
+      "Under in-order field writes the coalesced program may need staging (card `coalescing-creates-overlap-and-recoalescing-pitfall`).",
+      "`coalesce` yields one-way `Refines`, not `BehEq`: erasing the storage statements of class members can remove undefined behaviour from reading an unallocated or uninitialized member (`pUBRemoved`, `cex_vc_backward_needs_ubFree`).",
+      "`coalesce` hoists the allocation of each class root to function entry (extending its storage lifetime to the whole run); alignment and padding are not modeled.",
+      "Layouts give one static address per local, without allocation generations: a re-allocated local reuses its address and old pointers to it stay valid, whereas the cited MIR storage documentation (`syntax.rs:370-381`) describes a repeated `StorageLive` as freeing the local and allocating fresh memory.",
+      "`AddrTaken` is a syntactic over-approximation (any `addrOf`, or an in-place escape, anywhere in the program, even in a callee that is never called); semantic address exposure is not tracked separately.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "Published reference package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing` (namespace `Toy.SlotCompact`), google/zerocopy branch `reference`, commit a85598234b05e6dcc9afb9e81d2e396cc1218751 (no later commit touches the package as of 2026-11-21; no correction commit exists): `compact_silentBisim_of_noClobber` (lean/ToySlotCompact/Bisim.lean:74-77) and `compact_lockstepBisim_of_noClobber` (Bisim.lean:209), card `compact-bisim-no-clobber`: value-level soundness of merging slots with disjoint liveness in an address-free language. Cited as the address-free baseline; not re-proved and not applied (the languages differ).",
+      "Published reference package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing` (namespace `Toy.SlotCompact`), google/zerocopy branch `reference`, commit a85598234b05e6dcc9afb9e81d2e396cc1218751 (no later commit touches the package as of 2026-11-21; no correction commit exists): cards `merging-simultaneously-live-slots-breaks-compaction` (`cex_bisim_noClobber_noAssignClobber`, Counterexamples.lean:34) and `marker-reset-breaks-slot-sharing` (`cex_bisim_noClobber_noMarkerClobber`, Counterexamples.lean:40): the address-free baseline counterexamples.",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/dest_prop.rs:49-57 (write-versus-liveness condition; locals with their address taken are excluded), :64-66 (disjoint live ranges at half-statement granularity), :72-75 (future work: merging storage liveness ranges instead of removing storage statements; merging into places with projections). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:370-381 (`StorageLive`/`StorageDead`: allocate/deallocate; using an unallocated local is UB; locals without storage statements are allocated for the whole function; re-`StorageLive` frees and reallocates). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "J. Kang, C.-K. Hur, W. Mansky, D. Garbuzov, S. Zdancewic, V. Vafeiadis, \"A Formal C Memory Model Supporting Integer-Pointer Casts\", PLDI 2015, doi:10.1145/2737924.2738005: memory models in which allocations have identities and pointer values can be observed as concrete addresses. Bibliographic data verified by search; full text not inspected; the toy model does not reproduce its definitions.",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made.",
+      "S. Blazy, B. Robillard, A. W. Appel, \"Formal Verification of Coalescing Graph-Coloring Register Allocation\", ESOP 2010, LNCS 6012, pp. 145-164, doi:10.1007/978-3-642-11957-6_9: mechanized coalescing for register allocation in an address-free setting (bibliographic data verified; full text not inspected).",
+      "X. Leroy, S. Blazy, \"Formal Verification of a C-like Memory Model and Its Uses for Verifying Program Transformations\", Journal of Automated Reasoning 41(1):1-31, 2008, doi:10.1007/s10817-008-9099-0: block-and-offset memory, of which the per-local cell memory with per-local pointer provenance here is a small instance (bibliographic data verified; full text not inspected).",
+      "K. Memarian, V. B. F. Gomes, B. Davis, S. Kell, A. Richardson, R. N. M. Watson, P. Sewell, \"Exploring C Semantics and Pointer Provenance\", Proc. ACM Program. Lang. 3(POPL), Article 67, 2019, doi:10.1145/3290380: pointer provenance and address exposure in a C memory object model; cited for the distinction between provenance and observed addresses that this toy's per-local provenance and observable absolute addresses also draw (bibliographic data verified; full text not inspected; no formal relation is stated)."
+    ],
+    "design_question": "When may a local be merged into a subplace of another local once addresses can be observed?",
+    "lean_names": [
+      "Toy.Coalesce.AddrTaken",
+      "Toy.Coalesce.BehEq",
+      "Toy.Coalesce.ForestWF",
+      "Toy.Coalesce.NoValueClobberStmt",
+      "Toy.Coalesce.Refines",
+      "Toy.Coalesce.cex_coalesce_needs_callsInBounds",
+      "Toy.Coalesce.cex_coalesce_needs_forestWF",
+      "Toy.Coalesce.cex_coalesce_single_addrTaken_lexOverlap",
+      "Toy.Coalesce.cex_coalesce_single_valueClobber",
+      "Toy.Coalesce.cex_vc_backward_needs_ubFree",
+      "Toy.Coalesce.coalesce",
+      "Toy.Coalesce.coalesce_single_refines_addrTaken_child_only",
+      "Toy.Coalesce.coalesce_single_refines_of_noValueClobber_of_lexDisjoint_addrTaken",
+      "Toy.Coalesce.nonvacuous_coalesce_single",
+      "Toy.Coalesce.p3x",
+      "Toy.Coalesce.pUBRemoved"
+    ]
+  },
+  {
+    "id": "address-taken-merge-overlap-breaks-refinement",
+    "lean": [
+      "Toy.Coalesce.cex_coalesce_single_addrTaken_lexOverlap",
+      "Toy.Coalesce.cex_coalesce_single_valueClobber",
+      "Toy.Coalesce.coalesce_single_refines_addrTaken_child_only"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "The pointer-comparison observation of a merged address, kernel-checked, with its positive control. Paired with `single-merge-into-field-sufficient` (tightness witnesses of `hi`, `hii`) and its one-sided-condition remark.",
+    "plain_claim": "Under atomic assignments and every `move` semantics: in `p3` (x and y allocated together; `y.1 := 5; x := 7; out x; y.0 := 9; ptrInRange(&x, &y, 2); out y`) the merge `x ↦ y.0` is well formed and satisfies `NoValueClobberStmt` but not the lexical address condition (both are address-taken and allocated together); the source comparison is `false` on every non-excluded layout (`p3_outcome`) and the coalesced one is `true` on `A0`, so it is not a refinement; in `pClobber` (no address-taken local) a value clobber breaks the same merge; in `p3x` an address-taken `x` merged into a non-address-taken `y` allocated at the same time, with `NoValueClobberStmt`, is a refinement.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The programs `p3`, `pClobber`, `p3x`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.cex_coalesce_single_addrTaken_lexOverlap"
+    ],
+    "non_claims": [
+      "The failure in `p3` uses both locals being address-taken, allocated together and compared. `p3x`, where `y` is not address-taken, is a refinement (`coalesce_single_refines_addrTaken_child_only`), and the card `single-merge-into-field-sufficient` gives a refinement whenever the lexical address condition holds together with its other hypotheses; whether a variant of `p3` that takes both addresses but never compares them breaks refinement is not proved here.",
+      "The observation uses an explicit range comparison on absolute addresses; a pointer-comparison semantics that is nondeterministic across allocations is not examined.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "Published reference package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing` (namespace `Toy.SlotCompact`), google/zerocopy branch `reference`, commit a85598234b05e6dcc9afb9e81d2e396cc1218751 (no later commit touches the package as of 2026-11-21; no correction commit exists): cards `merging-simultaneously-live-slots-breaks-compaction` (`cex_bisim_noClobber_noAssignClobber`, Counterexamples.lean:34) and `marker-reset-breaks-slot-sharing` (`cex_bisim_noClobber_noMarkerClobber`, Counterexamples.lean:40): the address-free baseline counterexamples.",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/dest_prop.rs:49-57 (write-versus-liveness condition; locals with their address taken are excluded), :64-66 (disjoint live ranges at half-statement granularity), :72-75 (future work: merging storage liveness ranges instead of removing storage statements; merging into places with projections). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "J. Kang, C.-K. Hur, W. Mansky, D. Garbuzov, S. Zdancewic, V. Vafeiadis, \"A Formal C Memory Model Supporting Integer-Pointer Casts\", PLDI 2015, doi:10.1145/2737924.2738005: memory models in which allocations have identities and pointer values can be observed as concrete addresses. Bibliographic data verified by search; full text not inspected; the toy model does not reproduce its definitions."
+    ],
+    "design_question": "Which address condition is needed for merging address-taken locals?",
+    "positive_control_lean": [
+      "Toy.Coalesce.coalesce_single_refines_addrTaken_child_only"
+    ],
+    "lean_names": [
+      "Toy.Coalesce.A0",
+      "Toy.Coalesce.NoValueClobberStmt",
+      "Toy.Coalesce.cex_coalesce_single_addrTaken_lexOverlap",
+      "Toy.Coalesce.cex_coalesce_single_valueClobber",
+      "Toy.Coalesce.coalesce_single_refines_addrTaken_child_only",
+      "Toy.Coalesce.p3",
+      "Toy.Coalesce.p3_outcome",
+      "Toy.Coalesce.p3x",
+      "Toy.Coalesce.pClobber",
+      "Toy.Coalesce.single"
+    ]
+  },
+  {
+    "id": "forest-coalescing-root-level-check-sufficient",
+    "lean": [
+      "Toy.Coalesce.coalesce_refines_of_noValueClobber_of_classAddrDisjoint",
+      "Toy.Coalesce.classAddrDisjoint_of_classAddrDisjointW"
+    ],
+    "kind": "theorem",
+    "tier": "T2",
+    "tier_justification": "Transitive (forest) merges into subplaces with a root-relative address check; not found mechanized.",
+    "plain_claim": "Under atomic assignments and every `move` semantics, for a well-formed merge forest (`ForestWF`, including that every top-level call names an existing callee): `NoValueClobberStmt` together with the root-level check `ClassAddrDisjoint` (any two distinct address-taken locals of the same class whose root-relative windows intersect are never lexically allocated during a common tick) gives a refinement; the window-insensitive check `ClassAddrDisjointW` (all pairs of distinct address-taken class members) implies `ClassAddrDisjoint`.",
+    "hypotheses": [
+      {
+        "name": "hwf",
+        "purpose": "well-formed forest (fits, acyclic, parameters not merged, calls in bounds)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_coalesce_needs_forestWF",
+          "Toy.Coalesce.cex_coalesce_needs_callsInBounds"
+        ],
+        "counterexample_witness": "cex_coalesce_needs_forestWF (witness class: a one-edge forest that does not fit); cex_coalesce_needs_callsInBounds (witness class: a call to an absent callee)"
+      },
+      {
+        "name": "hi",
+        "purpose": "the value-level condition `NoValueClobberStmt` for the whole forest",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_coalesce_single_valueClobber"
+        ],
+        "counterexample_witness": "cex_coalesce_single_valueClobber (witness class: a one-edge forest)"
+      },
+      {
+        "name": "hii",
+        "purpose": "root-level address check",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_edgeAddrCheck_does_not_compose",
+          "Toy.Coalesce.cex_rootAddrCheck_insufficient_siblings",
+          "Toy.Coalesce.cex_coalesce_single_addrTaken_lexOverlap"
+        ],
+        "counterexample_witness": "cex_edgeAddrCheck_does_not_compose; cex_rootAddrCheck_insufficient_siblings; cex_coalesce_single_addrTaken_lexOverlap (witness classes: two- and three-local programs)"
+      },
+      {
+        "name": "h",
+        "purpose": "the window-insensitive check `ClassAddrDisjointW` (hypothesis of `classAddrDisjoint_of_classAddrDisjointW`)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_classAddrDisjoint_of_classAddrDisjointW_needs_h"
+        ],
+        "counterexample_witness": "cex_classAddrDisjoint_of_classAddrDisjointW_needs_h (witness class: the one-edge forest `single 0 1 0` of `p3`, for which `ClassAddrDisjoint` fails)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`pChainOk` with the forest `x ↦ y.1`, `y ↦ z.1` (`μChain`), for both theorems: all hypotheses of the forest theorem hold, and `ClassAddrDisjointW pChainOk μChain` holds.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.nonvacuous_coalesce_refines_of_noValueClobber_of_classAddrDisjoint",
+      "Toy.Coalesce.nonvacuous_classAddrDisjoint_of_classAddrDisjointW",
+      "Toy.Coalesce.nonvacuous_ufCheck"
+    ],
+    "non_claims": [
+      "The check involves pairs of class members, not each member against its root local alone (that is insufficient: `cex_rootAddrCheck_insufficient_siblings`).",
+      "Pairs with disjoint root-relative windows are not checked; the card's theorem shows that this is sound in this toy (informally, a static frame layout can place them at the same relative offsets in the source); it is not claimed for other layout models.",
+      "`coalesce` yields one-way `Refines`, not `BehEq`: erasing the storage statements of class members can remove undefined behaviour from reading an unallocated or uninitialized member (`pUBRemoved`, `cex_vc_backward_needs_ubFree`).",
+      "`coalesce` hoists the allocation of each class root to function entry (extending its storage lifetime to the whole run); alignment and padding are not modeled.",
+      "Layouts give one static address per local, without allocation generations: a re-allocated local reuses its address and old pointers to it stay valid, whereas the cited MIR storage documentation (`syntax.rs:370-381`) describes a repeated `StorageLive` as freeing the local and allocating fresh memory.",
+      "`AddrTaken` is a syntactic over-approximation (any `addrOf`, or an in-place escape, anywhere in the program, even in a callee that is never called); semantic address exposure is not tracked separately.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "Published reference package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing` (namespace `Toy.SlotCompact`), google/zerocopy branch `reference`, commit a85598234b05e6dcc9afb9e81d2e396cc1218751 (no later commit touches the package as of 2026-11-21; no correction commit exists): `compact_silentBisim_of_noClobber` (lean/ToySlotCompact/Bisim.lean:74-77) and `compact_lockstepBisim_of_noClobber` (Bisim.lean:209), card `compact-bisim-no-clobber`: value-level soundness of merging slots with disjoint liveness in an address-free language. Cited as the address-free baseline; not re-proved and not applied (the languages differ).",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/dest_prop.rs:49-57 (write-versus-liveness condition; locals with their address taken are excluded), :64-66 (disjoint live ranges at half-statement granularity), :72-75 (future work: merging storage liveness ranges instead of removing storage statements; merging into places with projections). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "G. J. Chaitin, \"Register allocation & spilling via graph coloring\", SIGPLAN '82 Symposium on Compiler Construction, doi:10.1145/800230.806984; L. George and A. W. Appel, \"Iterated register coalescing\", TOPLAS 18(3), 1996, doi:10.1145/229542.229546: interference-based coalescing (the address-free analogue). Bibliographic data verified by search; full texts not inspected here. A textbook section number for Appel's Modern Compiler Implementation could not be verified at the source and is not cited.",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made.",
+      "S. Rideau, X. Leroy, \"Validating Register Allocation and Spilling\", CC 2010, LNCS 6011, pp. 224-243, doi:10.1007/978-3-642-11970-5_13, implemented in AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc backend/Allocation.v (line 13: \"Register allocation by external oracle and a posteriori validation.\"; lines 22-25 cite this paper): a posteriori validation of an untrusted allocation result, cited as related verified-compiler work that validates a slot and register assignment a posteriori; not formalized here, and no formal comparison is made.",
+      "S. Blazy, B. Robillard, A. W. Appel, \"Formal Verification of Coalescing Graph-Coloring Register Allocation\", ESOP 2010, LNCS 6012, pp. 145-164, doi:10.1007/978-3-642-11957-6_9: mechanized coalescing for register allocation in an address-free setting (bibliographic data verified; full text not inspected).",
+      "K. Memarian, V. B. F. Gomes, B. Davis, S. Kell, A. Richardson, R. N. M. Watson, P. Sewell, \"Exploring C Semantics and Pointer Provenance\", Proc. ACM Program. Lang. 3(POPL), Article 67, 2019, doi:10.1145/3290380: pointer provenance and address exposure in a C memory object model; cited for the distinction between provenance and observed addresses that this toy's per-local provenance and observable absolute addresses also draw (bibliographic data verified; full text not inspected; no formal relation is stated)."
+    ],
+    "design_question": "Do pairwise-valid merges compose, and what check suffices for merge forests?",
+    "lean_names": [
+      "Toy.Coalesce.AddrTaken",
+      "Toy.Coalesce.BehEq",
+      "Toy.Coalesce.ClassAddrDisjoint",
+      "Toy.Coalesce.ClassAddrDisjointW",
+      "Toy.Coalesce.ForestWF",
+      "Toy.Coalesce.NoValueClobberStmt",
+      "Toy.Coalesce.Refines",
+      "Toy.Coalesce.cex_coalesce_needs_callsInBounds",
+      "Toy.Coalesce.cex_coalesce_needs_forestWF",
+      "Toy.Coalesce.cex_coalesce_single_addrTaken_lexOverlap",
+      "Toy.Coalesce.cex_coalesce_single_valueClobber",
+      "Toy.Coalesce.cex_edgeAddrCheck_does_not_compose",
+      "Toy.Coalesce.cex_rootAddrCheck_insufficient_siblings",
+      "Toy.Coalesce.cex_vc_backward_needs_ubFree",
+      "Toy.Coalesce.classAddrDisjoint_of_classAddrDisjointW",
+      "Toy.Coalesce.coalesce",
+      "Toy.Coalesce.coalesce_refines_of_noValueClobber_of_classAddrDisjoint",
+      "Toy.Coalesce.nonvacuous_coalesce_refines_of_noValueClobber_of_classAddrDisjoint",
+      "Toy.Coalesce.pChainOk",
+      "Toy.Coalesce.pUBRemoved",
+      "Toy.Coalesce.μChain"
+    ]
+  },
+  {
+    "id": "pairwise-merge-checks-do-not-compose",
+    "lean": [
+      "Toy.Coalesce.cex_edgeAddrCheck_does_not_compose",
+      "Toy.Coalesce.cex_rootAddrCheck_insufficient_siblings"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Refutes, in the address-taken setting, the folklore that merge edges validated independently against the original program can be combined into one forest.",
+    "plain_claim": "Under atomic assignments and every `move` semantics: in `pChain`, the merges `x ↦ y.1` and `y ↦ z.1`, checked independently against the original program, each satisfy `NoValueClobberStmt` as single merges and the per-edge address check, and the forest satisfies `NoValueClobberStmt` and the per-edge check; but `x` and its final root `z` are address-taken and allocated together, and the composite coalescing is not a refinement; in `pSib`, the sibling merges `x1 ↦ y.0`, `x2 ↦ y.0` pass the per-edge and the member-versus-root checks and `NoValueClobberStmt`, but the siblings are address-taken and allocated together, and the coalescing is not a refinement.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The programs `pChain`, `pSib`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.cex_edgeAddrCheck_does_not_compose"
+    ],
+    "non_claims": [
+      "What fails is validating edges independently against the original program and combining them into one forest. Sequential composition of refinements holds (`Refines.trans`): if each later merge is shown to be a refinement of the already-coalesced program (with its widened lifetimes), the composite is a refinement of the source.",
+      "`pSib` merges both siblings into the same root-relative offset `y.0`; siblings merged into disjoint subfields (such as `y.0` and `y.1`) have non-intersecting windows and are not refuted by `pSib`.",
+      "The per-edge facts proved for `pChain` are `NoValueClobberStmt` and the per-edge address check for each edge; refinement of each single-edge coalescing is not separately proved.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/dest_prop.rs:49-57 (write-versus-liveness condition; locals with their address taken are excluded), :64-66 (disjoint live ranges at half-statement granularity), :72-75 (future work: merging storage liveness ranges instead of removing storage statements; merging into places with projections). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "G. J. Chaitin, \"Register allocation & spilling via graph coloring\", SIGPLAN '82 Symposium on Compiler Construction, doi:10.1145/800230.806984; L. George and A. W. Appel, \"Iterated register coalescing\", TOPLAS 18(3), 1996, doi:10.1145/229542.229546: interference-based coalescing (the address-free analogue). Bibliographic data verified by search; full texts not inspected here. A textbook section number for Appel's Modern Compiler Implementation could not be verified at the source and is not cited."
+    ],
+    "design_question": "Does the root-level check need information beyond each member versus its root? Yes: pairs of members.",
+    "lean_names": [
+      "Toy.Coalesce.NoValueClobberStmt",
+      "Toy.Coalesce.Refines.trans",
+      "Toy.Coalesce.cex_edgeAddrCheck_does_not_compose",
+      "Toy.Coalesce.cex_rootAddrCheck_insufficient_siblings",
+      "Toy.Coalesce.pChain",
+      "Toy.Coalesce.pSib",
+      "Toy.Coalesce.μChain",
+      "Toy.Coalesce.μSib"
+    ]
+  },
+  {
+    "id": "union-find-interval-union-decides-root-check",
+    "lean": [
+      "Toy.Coalesce.ufCheck_eq_true_iff_classAddrDisjointW"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Standard disjoint-set merging with summarised interval unions (as in equivalence-class live-range coalescing), stated for this check.",
+    "plain_claim": "For a well-formed forest, the disjoint-set pass `ufCheck` (each block keeps the union of the lexical tick sets of its address-taken members; merging two blocks is rejected if their unions intersect or they are already one block) accepts iff the window-insensitive root-level check `ClassAddrDisjointW` holds.",
+    "hypotheses": [
+      {
+        "name": "hwf",
+        "purpose": "well-formed forest (classes by root agree with classes by edges; no cycles)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_ufCheck_needs_forestWF"
+        ],
+        "counterexample_witness": "cex_ufCheck_needs_forestWF (witness class: a two-cycle forest over a two-local program)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`pChainOk` / `μChain`: the forest is well formed, `ufCheck` accepts and `ClassAddrDisjointW` holds.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.nonvacuous_ufCheck"
+    ],
+    "non_claims": [
+      "Decides the window-insensitive check `ClassAddrDisjointW`, which implies `ClassAddrDisjoint` (`classAddrDisjoint_of_classAddrDisjointW`); the converse implication is not proved here.",
+      "`ufCheck P μ = true` decides the address-disjointness check; it does not check `NoValueClobberStmt`, `ForestWF` or the staging conditions, and does not by itself license coalescing.",
+      "The 'union–find' is a list of blocks; no complexity claim is made.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "G. J. Chaitin, \"Register allocation & spilling via graph coloring\", SIGPLAN '82 Symposium on Compiler Construction, doi:10.1145/800230.806984; L. George and A. W. Appel, \"Iterated register coalescing\", TOPLAS 18(3), 1996, doi:10.1145/229542.229546: interference-based coalescing (the address-free analogue). Bibliographic data verified by search; full texts not inspected here. A textbook section number for Appel's Modern Compiler Implementation could not be verified at the source and is not cited.",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made.",
+      "Z. Budimlić, K. D. Cooper, T. J. Harvey, K. Kennedy, T. S. Oberg, S. W. Reeves, \"Fast Copy Coalescing and Live-Range Identification\", PLDI 2002, pp. 25-32, doi:10.1145/512529.512534: copy coalescing over equivalence classes of live ranges (bibliographic data verified; full text not inspected).",
+      "B. Boissinot, A. Darte, F. Rastello, B. Dupont de Dinechin, C. Guillon, \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency\", CGO 2009, pp. 114-125, doi:10.1109/CGO.2009.19: congruence-class coalescing and parallel-copy sequentialization (bibliographic data verified; full text not inspected)."
+    ],
+    "design_question": "Can the root-level check be decided incrementally from per-class summaries? Yes, with interval unions.",
+    "lean_names": [
+      "Toy.Coalesce.ClassAddrDisjoint",
+      "Toy.Coalesce.ClassAddrDisjointW",
+      "Toy.Coalesce.ForestWF",
+      "Toy.Coalesce.NoValueClobberStmt",
+      "Toy.Coalesce.cex_ufCheck_needs_forestWF",
+      "Toy.Coalesce.classAddrDisjoint_of_classAddrDisjointW",
+      "Toy.Coalesce.nonvacuous_ufCheck",
+      "Toy.Coalesce.pChainOk",
+      "Toy.Coalesce.ufCheck",
+      "Toy.Coalesce.ufCheck_eq_true_iff_classAddrDisjointW",
+      "Toy.Coalesce.μChain"
+    ]
+  },
+  {
+    "id": "lifetime-policy-soundness-iff-lexical-for-address-taken",
+    "lean": [
+      "Toy.Coalesce.policySound_of_lexical_for_addrTaken",
+      "Toy.Coalesce.not_policySound_of_precise_for_addrTaken",
+      "Toy.Coalesce.policySound_iff",
+      "Toy.Coalesce.cex_policy_precise_for_addrTaken"
+    ],
+    "kind": "characterization",
+    "tier": "T2",
+    "tier_justification": "Which lifetime notion an interference check must use, by address observation; both directions are proved.",
+    "plain_claim": "For a uniform interference policy that assigns one of the two lifetime notions of `Notion` (lexical storage liveness, or precise by-name liveness: the hull of by-name access points at half-statement granularity, where a call marks both halves for every local its callee body touches by name) to address-taken locals and one to the other locals, and checks that distinct class members with intersecting root-relative windows have non-overlapping intervals: the policy is sound (every forest satisfying `ForestWF`, including that calls name existing callees, that passes the check yields a refinement, under atomic assignments and every `move` semantics) iff it uses lexical intervals for address-taken locals; a policy that uses precise intervals for address-taken locals is not sound, whatever it uses for the other locals; precise liveness for the other locals is allowed.",
+    "hypotheses": [
+      {
+        "name": "h (sufficiency)",
+        "purpose": "lexical intervals for address-taken locals",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.not_policySound_of_precise_for_addrTaken",
+          "Toy.Coalesce.cex_policy_precise_for_addrTaken"
+        ],
+        "counterexample_witness": "not_policySound_of_precise_for_addrTaken / cex_policy_precise_for_addrTaken (witness class: two address-taken locals, precisely disjoint, lexically overlapping)"
+      },
+      {
+        "name": "h (necessity form)",
+        "purpose": "precise intervals for address-taken locals (the hypothesis of `not_policySound_of_precise_for_addrTaken`)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_not_policySound_of_precise_needs_h"
+        ],
+        "counterexample_witness": "cex_not_policySound_of_precise_needs_h (witness class: the mixed policy, lexical intervals for address-taken locals and precise intervals for the others, which does not satisfy `h` and is sound)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "For `policySound_of_lexical_for_addrTaken`: the mixed policy on `pPreciseOk` (accepted, refinement holds). For `not_policySound_of_precise_for_addrTaken`: the precise-everywhere policy, which satisfies `pol true = .precise`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.policy_mixed_accepts_pPreciseOk",
+      "Toy.Coalesce.nonvacuous_not_policySound_of_precise_for_addrTaken"
+    ],
+    "non_claims": [
+      "`Policy` ranges over the two-element type `Notion` (`Notion.lexical` and the by-name access hull `Notion.precise`); the characterization neither establishes nor refutes the soundness of other, pointer-aware lifetime notions (for example from allocation or `addrOf` to the last pointer use).",
+      "The characterization covers uniform policies (depending on whether a local is address-taken); per-local or program-dependent policies are not covered.",
+      "Precise liveness here is the hull of by-name access points (calls that pass a place by `move` count as writes; a call marks both halves for locals its callee touches by name); it is not a full liveness analysis. With access points that split a call into a read half and a write half, the mixed policy is not sound (`refuted_policySound_mixed_halfPoints`).",
+      "`PolicySound` quantifies over forests satisfying `ForestWF`, and its `CallsInBounds` clause cannot be dropped: with `ForestWFNoCallCheck` (`ForestWF` without `CallsInBounds`) in place of `ForestWF`, no policy is sound for `PolicyCheck` (`not_policySoundWith_noCallCheck`, from `cex_coalesce_needs_callsInBounds`: `pOobCall` calls an absent callee, passes every policy check for the merge `1 ↦ 0.0`, and its coalescing is not a refinement); the earlier formulation with half-statement access points is refuted by the same program (`refuted_policySound_of_lexical_noCallCheck_halfPoints`).",
+      "Whether precise liveness becomes safe for address-taken locals under a weaker pointer-comparison semantics is not examined.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/dest_prop.rs:49-57 (write-versus-liveness condition; locals with their address taken are excluded), :64-66 (disjoint live ranges at half-statement granularity), :72-75 (future work: merging storage liveness ranges instead of removing storage statements; merging into places with projections). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:370-381 (`StorageLive`/`StorageDead`: allocate/deallocate; using an unallocated local is UB; locals without storage statements are allocated for the whole function; re-`StorageLive` frees and reallocates). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made."
+    ],
+    "design_question": "Which allocation-lifetime notion must a coalescer use for address-taken locals?",
+    "positive_control_lean": [
+      "Toy.Coalesce.policy_mixed_accepts_pPreciseOk"
+    ],
+    "lean_names": [
+      "Toy.Coalesce.CallsInBounds",
+      "Toy.Coalesce.ForestWF",
+      "Toy.Coalesce.ForestWFNoCallCheck",
+      "Toy.Coalesce.Notion",
+      "Toy.Coalesce.Policy",
+      "Toy.Coalesce.PolicyCheck",
+      "Toy.Coalesce.PolicySound",
+      "Toy.Coalesce.PolicySoundWith",
+      "Toy.Coalesce.cex_coalesce_needs_callsInBounds",
+      "Toy.Coalesce.cex_policy_precise_for_addrTaken",
+      "Toy.Coalesce.not_policySoundWith_noCallCheck",
+      "Toy.Coalesce.not_policySound_of_precise_for_addrTaken",
+      "Toy.Coalesce.pOobCall",
+      "Toy.Coalesce.pPreciseOk",
+      "Toy.Coalesce.policySound_iff",
+      "Toy.Coalesce.policySound_of_lexical_for_addrTaken",
+      "Toy.Coalesce.policy_mixed_accepts_pPreciseOk",
+      "Toy.Coalesce.refuted_policySound_mixed_halfPoints",
+      "Toy.Coalesce.refuted_policySound_of_lexical_noCallCheck_halfPoints"
+    ]
+  },
+  {
+    "id": "overlap-staging-behavioural-equivalence",
+    "lean": [
+      "Toy.Coalesce.outcome_inOrder_eq_atomic_of_noStagingNeeded",
+      "Toy.Coalesce.stage_inOrder_refines_atomic",
+      "Toy.Coalesce.stage_inOrder_behEq_atomic_of_localsInRange"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Staging through a fresh temporary as a semantics bridge between in-order and atomic aggregate assignment.",
+    "plain_claim": "Under every `move` semantics: if no assignment of a program needs staging (top-level: two or more operands, one of which is a load or reads a place intersecting the left side; in a callee: the same, where in addition a place based at the callee parameter and one not based at it count as possibly overlapping), in-order and atomic assignment give the same outcome on every layout; staging (each such top-level assignment of the body and destructors becomes `storageLive tmp; tmp := rhs; lhs := [move tmp]; storageDead tmp` with a fresh `tmp`) under in-order writes refines the unstaged program under atomic assignment when no callee assignment needs staging and every callee parameter local exists, and the behaviour sets are equal (`BehEq`) when no callee assignment needs staging and every local the program mentions exists.",
+    "hypotheses": [
+      {
+        "name": "h (no staging needed)",
+        "purpose": "no overlapping aggregate, including in-place aliasing inside callees",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_inOrder_eq_atomic_needs_noStaging"
+        ],
+        "counterexample_witness": "cex_inOrder_eq_atomic_needs_noStaging (witness class: the coalesced swap program)"
+      },
+      {
+        "name": "hc",
+        "purpose": "callee bodies are not staged",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_stage_needs_calleesNoStaging"
+        ],
+        "counterexample_witness": "cex_stage_needs_calleesNoStaging (witness class: a callee swapping its parameter; both forms)"
+      },
+      {
+        "name": "hp (refinement form)",
+        "purpose": "the fresh temporaries do not take the index of a callee parameter local",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_stage_refines_needs_paramsInRange"
+        ],
+        "counterexample_witness": "cex_stage_refines_needs_paramsInRange (witness class: a one-local program whose callee parameter does not exist, `MoveSem.inPlaceCall`)"
+      },
+      {
+        "name": "hl (equality form)",
+        "purpose": "the fresh temporaries are not mentioned by the program",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_stage_behEq_needs_localsInRange"
+        ],
+        "counterexample_witness": "cex_stage_behEq_needs_localsInRange (witness class: coalesced swap plus uses of local 2)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`pSwap` (needs no staging) and the coalesced `pSwap` (needs staging; no callee assignment needs staging; parameters and mentioned locals exist).",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.nonvacuous_staging"
+    ],
+    "non_claims": [
+      "`BehEq` is equality of behaviour sets (`∀ o, Beh T o ↔ Beh S o`), not a step-level bisimulation and not per-layout outcome equality (a layout that collides with a fresh staging temporary may be excluded for the staged program and not for the source; not proved here).",
+      "The staging criterion is syntactic and conservative (any multi-operand assignment with a load is staged; in callees, any multi-operand assignment mixing places based at the parameter with other places); single-operand assignments are exempt because the toy evaluates a single operand completely before writing; IRs in which a single overlapping copy is undefined are not modeled.",
+      "With callee assignments checked syntactically, ignoring in-place binding of the parameter, the three statements are false under `MoveSem.inPlaceCall` (`cex_staging_inPlaceCall_alias`; refuted earlier formulations `refuted_outcome_inOrder_eq_atomic_synStaging`, `refuted_stage_inOrder_refines_atomic_synStaging`, `refuted_stage_inOrder_behEq_atomic_synStaging`).",
+      "`stage` does not rewrite callee bodies and adds one local per staged assignment (more locals and stack space).",
+      "The temporary is never address-taken; staging of address-taken temporaries is not examined.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:328-333 (`StatementKind::Assign`: LHS must not overlap places read by the RHS for some rvalues; under discussion; evaluation order of components unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/rust#68364, \"Semantics of MIR assignments, around aliasing, ordering, and primitives.\" (open issue; mentioned in prose, not a subject, not normative).",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made.",
+      "L. Rideau, B. P. Serpette, X. Leroy, \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves\", Journal of Automated Reasoning 40(4):307-326, 2008, doi:10.1007/s10817-007-9096-8: Coq-verified sequentialization of parallel moves, using a temporary to break cycles such as swaps; compared in prose with staging (staging here sequentializes one aggregate assignment through a fresh local), not formalized here.",
+      "P. Briggs, K. D. Cooper, T. J. Harvey, L. T. Simpson, \"Practical Improvements to the Construction and Destruction of Static Single Assignment Form\", Software: Practice and Experience 28(8):859-881, 1998, doi:10.1002/(SICI)1097-024X(19980710)28:8<859::AID-SPE188>3.0.CO;2-8: the swap problem when sequentializing copies (bibliographic data verified; full text not inspected).",
+      "B. Boissinot, A. Darte, F. Rastello, B. Dupont de Dinechin, C. Guillon, \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency\", CGO 2009, pp. 114-125, doi:10.1109/CGO.2009.19: congruence-class coalescing and parallel-copy sequentialization (bibliographic data verified; full text not inspected)."
+    ],
+    "design_question": "What fixup makes overlapping assignments created by coalescing safe under in-order field writes, and what must the overlap check consider inside callees?",
+    "lean_names": [
+      "Toy.Coalesce.Beh",
+      "Toy.Coalesce.BehEq",
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.cex_inOrder_eq_atomic_needs_noStaging",
+      "Toy.Coalesce.cex_stage_behEq_needs_localsInRange",
+      "Toy.Coalesce.cex_stage_needs_calleesNoStaging",
+      "Toy.Coalesce.cex_stage_refines_needs_paramsInRange",
+      "Toy.Coalesce.cex_staging_inPlaceCall_alias",
+      "Toy.Coalesce.nonvacuous_staging",
+      "Toy.Coalesce.outcome_inOrder_eq_atomic_of_noStagingNeeded",
+      "Toy.Coalesce.pSwap",
+      "Toy.Coalesce.refuted_outcome_inOrder_eq_atomic_synStaging",
+      "Toy.Coalesce.refuted_stage_inOrder_behEq_atomic_synStaging",
+      "Toy.Coalesce.refuted_stage_inOrder_refines_atomic_synStaging",
+      "Toy.Coalesce.stage",
+      "Toy.Coalesce.stage_inOrder_behEq_atomic_of_localsInRange",
+      "Toy.Coalesce.stage_inOrder_refines_atomic"
+    ]
+  },
+  {
+    "id": "coalesce-then-stage-pipeline",
+    "lean": [
+      "Toy.Coalesce.stage_coalesce_refines_inOrder",
+      "Toy.Coalesce.coalesce_refines_inOrder_of_noStagingNeeded"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "A composition (by `Refines.trans`) of the forest theorem with the staging theorems; recorded because the hypotheses of the composite (in particular the callee and parameter conditions) are not obvious.",
+    "plain_claim": "Under in-order field writes and every `move` semantics, for a well-formed forest (`ForestWF`) with `NoValueClobberStmt` and the root-level address check `ClassAddrDisjoint`: if no assignment of the source needs staging, no callee assignment of the coalesced program needs staging, and every callee parameter local exists, the staged coalesced program refines the source; and if no assignment of the coalesced program needs staging (a coalescer that respects the no-overlap constraint), the unstaged coalesced program refines the source.",
+    "hypotheses": [
+      {
+        "name": "hwf",
+        "purpose": "well-formed forest",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_coalesce_needs_callsInBounds"
+        ],
+        "counterexample_witness": "cex_coalesce_needs_callsInBounds (witness class: a call to an absent callee; both forms)"
+      },
+      {
+        "name": "hi",
+        "purpose": "the value-level condition `NoValueClobberStmt`",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_pipeline_needs_noValueClobber"
+        ],
+        "counterexample_witness": "cex_pipeline_needs_noValueClobber (witness class: two locals, no address-taken local; both forms)"
+      },
+      {
+        "name": "hii",
+        "purpose": "root-level address check",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_pipeline_needs_classAddrDisjoint"
+        ],
+        "counterexample_witness": "cex_pipeline_needs_classAddrDisjoint (witness class: two locals, `ptrInRange(&x, &y, 2)`; both forms)"
+      },
+      {
+        "name": "hns (staged form)",
+        "purpose": "the source needs no staging",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_pipeline_needs_noStagingNeeded"
+        ],
+        "counterexample_witness": "cex_pipeline_needs_noStagingNeeded (witness class: one two-cell local, empty forest)"
+      },
+      {
+        "name": "hc (staged form)",
+        "purpose": "callee bodies of the coalesced program need no staging (they are not staged)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_pipeline_needs_calleesNoStaging"
+        ],
+        "counterexample_witness": "cex_pipeline_needs_calleesNoStaging (witness class: a merge that creates an overlapping callee assignment)"
+      },
+      {
+        "name": "hp (staged form)",
+        "purpose": "staging temporaries do not take the index of a callee parameter local",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_pipeline_needs_paramsInRange"
+        ],
+        "counterexample_witness": "cex_pipeline_needs_paramsInRange (witness class: the swap program plus an in-place call to a callee whose parameter does not exist, `MoveSem.inPlaceCall`)"
+      },
+      {
+        "name": "hnc (no-overlap coalescer form)",
+        "purpose": "the coalesced program needs no staging",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_coalesce_without_staging_inOrder"
+        ],
+        "counterexample_witness": "cex_coalesce_without_staging_inOrder (witness class: the swap program)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`pSwap` with `y' ↦ y.0` (staged form, `stage_coalesce_pSwap`); `p3x` with `x ↦ y.0` (no-overlap form).",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.stage_coalesce_pSwap",
+      "Toy.Coalesce.nonvacuous_coalesce_refines_inOrder_of_noStagingNeeded"
+    ],
+    "non_claims": [
+      "For the no-overlap form, the absence of staging needs in the source is not a hypothesis: it follows from the hypothesis on the coalesced program for a well-formed forest (`noStagingNeeded_of_noStagingNeeded_coalesce`).",
+      "Excluding staging temporaries from later coalescing is not shown sufficient by itself: the proved alternatives are re-staging after every coalescing, or a coalescer whose output needs no staging.",
+      "The staging conditions are checked alias-aware inside callees; with syntactic callee checks the pipeline statements are false under `MoveSem.inPlaceCall` (`cex_pipeline_inPlaceCall_alias`).",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:328-333 (`StatementKind::Assign`: LHS must not overlap places read by the RHS for some rvalues; under discussion; evaluation order of components unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/rust#68364, \"Semantics of MIR assignments, around aliasing, ordering, and primitives.\" (open issue; mentioned in prose, not a subject, not normative).",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/dest_prop.rs:49-57 (write-versus-liveness condition; locals with their address taken are excluded), :64-66 (disjoint live ranges at half-statement granularity), :72-75 (future work: merging storage liveness ranges instead of removing storage statements; merging into places with projections). Documentation; used in derived (modeling bridge) remarks, not as a finding."
+    ],
+    "design_question": "How do coalescing and overlap staging compose, and what must a re-run of the coalescer respect?",
+    "lean_names": [
+      "Toy.Coalesce.ClassAddrDisjoint",
+      "Toy.Coalesce.ForestWF",
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.NoValueClobberStmt",
+      "Toy.Coalesce.Refines.trans",
+      "Toy.Coalesce.cex_coalesce_needs_callsInBounds",
+      "Toy.Coalesce.cex_coalesce_without_staging_inOrder",
+      "Toy.Coalesce.cex_pipeline_inPlaceCall_alias",
+      "Toy.Coalesce.cex_pipeline_needs_calleesNoStaging",
+      "Toy.Coalesce.cex_pipeline_needs_classAddrDisjoint",
+      "Toy.Coalesce.cex_pipeline_needs_noStagingNeeded",
+      "Toy.Coalesce.cex_pipeline_needs_noValueClobber",
+      "Toy.Coalesce.cex_pipeline_needs_paramsInRange",
+      "Toy.Coalesce.coalesce_refines_inOrder_of_noStagingNeeded",
+      "Toy.Coalesce.noStagingNeeded_of_noStagingNeeded_coalesce",
+      "Toy.Coalesce.nonvacuous_coalesce_refines_inOrder_of_noStagingNeeded",
+      "Toy.Coalesce.p3x",
+      "Toy.Coalesce.pSwap",
+      "Toy.Coalesce.stage_coalesce_pSwap",
+      "Toy.Coalesce.stage_coalesce_refines_inOrder"
+    ]
+  },
+  {
+    "id": "coalescing-creates-overlap-and-recoalescing-pitfall",
+    "lean": [
+      "Toy.Coalesce.cex_coalesce_without_staging_inOrder",
+      "Toy.Coalesce.cex_recoalesce_staging_temp"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Refutes \"coalescing never creates overlapping assignments\" and exhibits the fixpoint pitfall.",
+    "plain_claim": "Under every `move` semantics: in `pSwap` (y := (1, 2); y' := (y.1, y.0); out y') the merge `y' ↦ y.0` is well formed and satisfies `NoValueClobberStmt` and the root-level address check, and the source needs no staging, but the coalesced program contains `y := (y.1, y.0)` (`coalesce_pSwap_contains_overlap`), prints `(2, 2)` on every non-excluded layout under in-order field writes (`coalesce_pSwap_outcome_inOrder`) and is not a refinement there (it is one under atomic assignment, and its staged version is one under in-order writes); re-running the coalescer on the staged program with the merge of the staging temporary into `y` satisfies the same conditions but again contains an assignment that needs staging and is not a refinement under in-order writes.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`pSwap` and `pSwapStaged`.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.cex_coalesce_without_staging_inOrder"
+    ],
+    "non_claims": [
+      "Both the overlap hazard and the re-coalescing pitfall are under `AssignMode.inOrder`; under `AssignMode.atomic` the unstaged coalescing of `pSwap` is a refinement (`cex_coalesce_without_staging_inOrder`), and a coalescer whose output needs no staging is covered by `coalesce_refines_inOrder_of_noStagingNeeded`.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/mir/syntax.rs:328-333 (`StatementKind::Assign`: LHS must not overlap places read by the RHS for some rvalues; under discussion; evaluation order of components unclear). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "rust-lang/rust#68364, \"Semantics of MIR assignments, around aliasing, ordering, and primitives.\" (open issue; mentioned in prose, not a subject, not normative).",
+      "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_mir_transform/src/dest_prop.rs:49-57 (write-versus-liveness condition; locals with their address taken are excluded), :64-66 (disjoint live ranges at half-statement granularity), :72-75 (future work: merging storage liveness ranges instead of removing storage statements; merging into places with projections). Documentation; used in derived (modeling bridge) remarks, not as a finding.",
+      "L. Rideau, B. P. Serpette, X. Leroy, \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves\", Journal of Automated Reasoning 40(4):307-326, 2008, doi:10.1007/s10817-007-9096-8: Coq-verified sequentialization of parallel moves, using a temporary to break cycles such as swaps; compared in prose with staging (staging here sequentializes one aggregate assignment through a fresh local), not formalized here."
+    ],
+    "design_question": "Does coalescing create overlapping assignments? Yes; and staging is not a fixpoint of coalescing.",
+    "positive_control_lean": [
+      "Toy.Coalesce.stage_coalesce_pSwap"
+    ],
+    "lean_names": [
+      "Toy.Coalesce.AssignMode",
+      "Toy.Coalesce.NoValueClobberStmt",
+      "Toy.Coalesce.cex_coalesce_without_staging_inOrder",
+      "Toy.Coalesce.cex_recoalesce_staging_temp",
+      "Toy.Coalesce.coalesce_pSwap_contains_overlap",
+      "Toy.Coalesce.coalesce_pSwap_outcome_inOrder",
+      "Toy.Coalesce.coalesce_refines_inOrder_of_noStagingNeeded",
+      "Toy.Coalesce.pSwap",
+      "Toy.Coalesce.pSwapStaged",
+      "Toy.Coalesce.stage_coalesce_pSwap"
+    ]
+  },
+  {
+    "id": "vc-transfer-address-free-and-address-mentioning",
+    "lean": [
+      "Toy.Coalesce.vc_forward_addrFree_of_noValueClobber",
+      "Toy.Coalesce.vc_backward_addrFree_of_noValueClobber_of_ubFree",
+      "Toy.Coalesce.vc_forward_of_noValueClobber_of_classAddrDisjoint"
+    ],
+    "kind": "theorem",
+    "tier": "T2",
+    "tier_justification": "The address-free / address-mentioning split for verification-condition transfer across coalescing of address-taken locals.",
+    "plain_claim": "Under atomic assignments and every `move` semantics, for a well-formed forest (`ForestWF`) with `NoValueClobberStmt`: an address-free postcondition (one that gives the same verdict on traces that agree after erasing printed addresses and comparison results) valid for the source is valid for the coalesced program, with no address condition (in this toy addresses reach nothing but printed pointers and comparison results); it transfers back if moreover the source has no undefined behaviour; and an arbitrary postcondition valid for the source transfers forward when the root-level address check `ClassAddrDisjoint` also holds.",
+    "hypotheses": [
+      {
+        "name": "hwf (forward forms)",
+        "purpose": "well-formed forest",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_coalesce_needs_forestWF",
+          "Toy.Coalesce.cex_coalesce_needs_callsInBounds",
+          "Toy.Coalesce.cex_vc_forward_needs_callsInBounds"
+        ],
+        "counterexample_witness": "cex_coalesce_needs_forestWF (witness class: a forest that does not fit); cex_coalesce_needs_callsInBounds, with its canonical form cex_vc_forward_needs_callsInBounds (witness class: a call to an absent callee)"
+      },
+      {
+        "name": "hwf (backward form)",
+        "purpose": "well-formed forest",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_vc_backward_needs_forestWF"
+        ],
+        "counterexample_witness": "cex_vc_backward_needs_forestWF (witness class: a three-local program whose callee parameter is merged into a caller local, under `MoveSem.inPlaceCall`)"
+      },
+      {
+        "name": "hi",
+        "purpose": "the value-level condition `NoValueClobberStmt`",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_vc_forward_addrFree_needs_noValueClobber",
+          "Toy.Coalesce.cex_vc_backward_needs_noValueClobber",
+          "Toy.Coalesce.cex_vc_forward_needs_noValueClobber_classAddrDisjoint"
+        ],
+        "counterexample_witness": "cex_vc_forward_addrFree_needs_noValueClobber; cex_vc_forward_needs_noValueClobber_classAddrDisjoint (the same witness with the root-level check `ClassAddrDisjoint`, for `vc_forward_of_noValueClobber_of_classAddrDisjoint`); cex_vc_backward_needs_noValueClobber (witness class: two locals, no address-taken local)"
+      },
+      {
+        "name": "hpost",
+        "purpose": "address-freedom of the postcondition",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_vc_forward_addrPost_needs_classAddrDisjoint",
+          "Toy.Coalesce.cex_vc_backward_addrPost"
+        ],
+        "counterexample_witness": "cex_vc_forward_addrPost_needs_classAddrDisjoint (forward; witness class: `p3` with 'no comparison returned true'); cex_vc_backward_addrPost (backward; witness class: `p3` with 'some comparison returned true')"
+      },
+      {
+        "name": "hsafe (backward)",
+        "purpose": "the source has no undefined behaviour",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_vc_backward_needs_ubFree"
+        ],
+        "counterexample_witness": "cex_vc_backward_needs_ubFree (witness class: coalescing removes a read of an uninitialized local)"
+      },
+      {
+        "name": "hii (address-mentioning forward)",
+        "purpose": "root-level address check",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_vc_forward_addrPost_needs_classAddrDisjoint",
+          "Toy.Coalesce.cex_vc_forward_addrPost_precisePolicy"
+        ],
+        "counterexample_witness": "cex_vc_forward_addrPost_needs_classAddrDisjoint; cex_vc_forward_addrPost_precisePolicy (witness class: two locals compared while allocated together)"
+      },
+      {
+        "name": "hv",
+        "purpose": "validity on the side the condition is transferred from",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Coalesce.cex_vc_needs_valid"
+        ],
+        "counterexample_witness": "cex_vc_needs_valid (witness class: `p3x` with the unsatisfiable postcondition)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`p3x` with the merge `x ↦ y.0` and the address-free postcondition 'the erased trace is `[7], [address], [9, 5]`' (all hypotheses of the three theorems, including validity on both sides); `p3` (`vc_forward_addrFree_p3`, positive control where `ClassAddrDisjoint` fails).",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.nonvacuous_vc_p3x",
+      "Toy.Coalesce.vc_forward_addrFree_p3"
+    ],
+    "non_claims": [
+      "Address-free transfer without `ClassAddrDisjoint` relies on this toy having no address-dependent control flow, no integer-pointer casts and no address-dependent indexing, so that addresses affect no integer value, memory content or undefined behaviour; in a language where a branch or an integer computation can depend on a pointer comparison (for example `if &x == &y { out 1 } else { out 2 }`), address-free postconditions need not transfer without an address condition (not proved here).",
+      "Backward transfer of address-mentioning postconditions is not proved; it can fail even when `ClassAddrDisjoint` and `UBFree` hold, for example when two simultaneously live address-taken locals are merged into adjacent disjoint subfields of one root, which fixes a range comparison that the source may answer either way (not proved here).",
+      "All transfer theorems here are stated under `AssignMode.atomic`; no verification-condition transfer theorem under `AssignMode.inOrder` is stated or proved here. Composing `valid_of_refines` with the refinements of the card `coalesce-then-stage-pipeline` gives forward transfer of arbitrary postconditions under that card's hypotheses (a sufficient condition; the composition is not stated as a separate theorem). Whether those staging conditions are necessary for verification-condition transfer under `AssignMode.inOrder` is not proved here, and neither is address-free transfer without `ClassAddrDisjoint` or backward transfer under `AssignMode.inOrder`.",
+      "Validity here is total correctness over all non-excluded runs; partial-correctness variants are not examined.",
+      "Forward transfer across copy-to-move upgrades and staging follows by composing `valid_of_refines` with those cards' refinement theorems (the compositions are not stated as separate theorems); no backward transfer across them is stated or proved here.",
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "Published reference package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing` (namespace `Toy.SlotCompact`), google/zerocopy branch `reference`, commit a85598234b05e6dcc9afb9e81d2e396cc1218751 (no later commit touches the package as of 2026-11-21; no correction commit exists): `vc_transfer_of_noClobber` (lean/ToySlotCompact/WP.lean:212), `vc_forward_of_noClobber` (WP.lean:181), `vc_backward_of_noClobber` (WP.lean:196), cards `vc-transfer-original-to-compacted` / `vc-transfer-compacted-to-original`. Cited as the address-free analogue; not applied.",
+      "Novelty search (2026-11-21; web search for mechanized results on destination propagation / move semantics / stack-slot coalescing with observable pointer comparisons): no mechanized statement of this criterion was found; the phenomena are documented informally (sources above). No T3 claim is made."
+    ],
+    "design_question": "Which verification conditions survive coalescing of address-taken locals, and which need the address check?",
+    "lean_names": [
+      "Toy.Coalesce.AssignMode",
+      "Toy.Coalesce.ClassAddrDisjoint",
+      "Toy.Coalesce.ForestWF",
+      "Toy.Coalesce.NoValueClobberStmt",
+      "Toy.Coalesce.UBFree",
+      "Toy.Coalesce.cex_coalesce_needs_callsInBounds",
+      "Toy.Coalesce.cex_coalesce_needs_forestWF",
+      "Toy.Coalesce.cex_vc_backward_addrPost",
+      "Toy.Coalesce.cex_vc_backward_needs_noValueClobber",
+      "Toy.Coalesce.cex_vc_backward_needs_ubFree",
+      "Toy.Coalesce.cex_vc_forward_addrFree_needs_noValueClobber",
+      "Toy.Coalesce.cex_vc_forward_addrPost_needs_classAddrDisjoint",
+      "Toy.Coalesce.cex_vc_forward_addrPost_precisePolicy",
+      "Toy.Coalesce.cex_vc_needs_valid",
+      "Toy.Coalesce.nonvacuous_vc_p3x",
+      "Toy.Coalesce.p3",
+      "Toy.Coalesce.p3x",
+      "Toy.Coalesce.pBackHwf",
+      "Toy.Coalesce.valid_of_refines",
+      "Toy.Coalesce.vc_backward_addrFree_of_noValueClobber_of_ubFree",
+      "Toy.Coalesce.vc_forward_addrFree_of_noValueClobber",
+      "Toy.Coalesce.vc_forward_addrFree_p3",
+      "Toy.Coalesce.vc_forward_of_noValueClobber_of_classAddrDisjoint"
+    ]
+  },
+  {
+    "id": "vc-transfer-counterexamples",
+    "lean": [
+      "Toy.Coalesce.cex_vc_forward_addrPost_needs_classAddrDisjoint",
+      "Toy.Coalesce.cex_vc_forward_addrPost_precisePolicy",
+      "Toy.Coalesce.cex_vc_forward_addrFree_needs_noValueClobber",
+      "Toy.Coalesce.cex_vc_backward_needs_ubFree",
+      "Toy.Coalesce.cex_vc_backward_needs_noValueClobber",
+      "Toy.Coalesce.cex_vc_backward_addrPost"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Witnesses for each hypothesis of the transfer card. Paired with `vc-transfer-address-free-and-address-mentioning` (tightness witnesses of its hypotheses).",
+    "plain_claim": "Under atomic assignments and `MoveSem.deinit`: the address-mentioning postcondition 'no comparison returned true' holds for `p3` and `pPrecise` but fails after a merge that violates the root-level address check (also when the merge passes the precise-everywhere policy); an address-free postcondition fails to transfer across a value clobber (`pClobber`, both directions); backward transfer fails when coalescing removes undefined behaviour (`pUBRemoved`, a read of an uninitialized local) and for an address-mentioning postcondition (`p3`, where the root-level address check also fails).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The programs named.",
+    "nonvacuity_witness_lean": [
+      "Toy.Coalesce.cex_vc_forward_addrPost_needs_classAddrDisjoint"
+    ],
+    "non_claims": [
+      "These are statements about the toy model (Model–system relation: none proved); they neither establish nor refute the corresponding claims about rustc MIR or any other compiler."
+    ],
+    "prior_art": [
+      "Published reference package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing` (namespace `Toy.SlotCompact`), google/zerocopy branch `reference`, commit a85598234b05e6dcc9afb9e81d2e396cc1218751 (no later commit touches the package as of 2026-11-21; no correction commit exists): `vc_transfer_of_noClobber` (lean/ToySlotCompact/WP.lean:212), `vc_forward_of_noClobber` (WP.lean:181), `vc_backward_of_noClobber` (WP.lean:196), cards `vc-transfer-original-to-compacted` / `vc-transfer-compacted-to-original`. Cited as the address-free analogue; not applied."
+    ],
+    "design_question": "Which hypotheses of verification-condition transfer are needed?",
+    "lean_names": [
+      "Toy.Coalesce.MoveSem",
+      "Toy.Coalesce.cex_vc_backward_addrPost",
+      "Toy.Coalesce.cex_vc_backward_needs_noValueClobber",
+      "Toy.Coalesce.cex_vc_backward_needs_ubFree",
+      "Toy.Coalesce.cex_vc_forward_addrFree_needs_noValueClobber",
+      "Toy.Coalesce.cex_vc_forward_addrPost_needs_classAddrDisjoint",
+      "Toy.Coalesce.cex_vc_forward_addrPost_precisePolicy",
+      "Toy.Coalesce.p3",
+      "Toy.Coalesce.pClobber",
+      "Toy.Coalesce.pPrecise",
+      "Toy.Coalesce.pUBRemoved"
+    ]
+  }
+]
