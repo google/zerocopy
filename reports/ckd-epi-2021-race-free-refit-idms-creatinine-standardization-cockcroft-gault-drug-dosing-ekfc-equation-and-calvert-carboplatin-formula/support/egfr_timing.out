@@ -1,0 +1,3 @@
+n=10000 kidney.epi 0.110s (90909/s, max-mem 46 MB) | nephro 0.108s (92593/s, max-mem 46 MB) | max|diff| after kidney.epi rounding 0.0050
+n=100000 kidney.epi 0.086s (1162791/s, max-mem 73 MB) | nephro 0.475s (210526/s, max-mem 65 MB) | max|diff| after kidney.epi rounding 0.0050
+n=1000000 kidney.epi 0.517s (1934236/s, max-mem 142 MB) | nephro 6.696s (149343/s, max-mem 314 MB) | max|diff| after kidney.epi rounding 0.0050

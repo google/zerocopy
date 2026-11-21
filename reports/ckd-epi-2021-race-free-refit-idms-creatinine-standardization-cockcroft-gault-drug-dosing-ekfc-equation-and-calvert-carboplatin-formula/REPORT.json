@@ -1,0 +1,83 @@
+{
+  "topics": [
+    "domains/kidney-function-estimating-equations",
+    "domains/renal-drug-dosing",
+    "verification/assay-standardization-and-equation-recalibration",
+    "tooling/estimated-gfr-calculator-implementations"
+  ],
+  "subjects": [
+    {
+      "name": "kidney.epi R package (CRAN read-only mirror)",
+      "identity": {
+        "repository": "cran/kidney.epi",
+        "revision": "04297148e9dc8077a99a5b39f4c11471d15aee54",
+        "version": "1.4.0"
+      }
+    },
+    {
+      "name": "nephro R package (CRAN read-only mirror)",
+      "identity": {
+        "repository": "cran/nephro",
+        "revision": "5d906c2d898597e0bfb2d9731cbcd01f6a8d958a",
+        "version": "1.5"
+      }
+    },
+    {
+      "name": "Cockcroft and Gault, Prediction of creatinine clearance from serum creatinine (Nephron 1976)",
+      "identity": {"doi": "10.1159/000180580"}
+    },
+    {
+      "name": "Levey et al., MDRD Study prediction equation (Ann Intern Med 1999)",
+      "identity": {"doi": "10.7326/0003-4819-130-6-199903160-00002"}
+    },
+    {
+      "name": "Levey et al., Using standardized serum creatinine values in the MDRD Study equation (Ann Intern Med 2006)",
+      "identity": {"doi": "10.7326/0003-4819-145-4-200608150-00004"}
+    },
+    {
+      "name": "Levey et al., Expressing the MDRD Study equation with standardized serum creatinine values (Clin Chem 2007)",
+      "identity": {"doi": "10.1373/clinchem.2006.077180"}
+    },
+    {
+      "name": "Myers et al., NKDEP recommendations for improving serum creatinine measurement (Clin Chem 2006)",
+      "identity": {"doi": "10.1373/clinchem.2005.0525144"}
+    },
+    {
+      "name": "Levey et al., CKD-EPI creatinine equation (Ann Intern Med 2009)",
+      "identity": {"doi": "10.7326/0003-4819-150-9-200905050-00006", "pmcid": "PMC2763564"}
+    },
+    {
+      "name": "Inker et al., New creatinine- and cystatin C-based equations to estimate GFR without race (NEJM 2021)",
+      "identity": {"doi": "10.1056/NEJMoa2102953", "pmcid": "PMC8822996"}
+    },
+    {
+      "name": "Delgado et al., NKF-ASN Task Force recommendations (Am J Kidney Dis 2022; simultaneous J Am Soc Nephrol 2021)",
+      "identity": {"doi": "10.1053/j.ajkd.2021.08.003", "companion_doi": "10.1681/ASN.2021070988"}
+    },
+    {
+      "name": "Pottel et al., EKFC modified full-age-spectrum creatinine equation (Ann Intern Med 2021)",
+      "identity": {"doi": "10.7326/M20-4366"}
+    },
+    {
+      "name": "Pottel et al., EKFC cystatin C equation (NEJM 2023)",
+      "identity": {"doi": "10.1056/NEJMoa2203769"}
+    },
+    {
+      "name": "Calvert et al., Carboplatin dosage formula based on renal function (J Clin Oncol 1989)",
+      "identity": {"doi": "10.1200/JCO.1989.7.11.1748"}
+    },
+    {
+      "name": "Matzke et al., KDIGO drug dosing clinical update (Kidney Int 2011)",
+      "identity": {"doi": "10.1038/ki.2011.322"}
+    },
+    {
+      "name": "McLean et al., Carboplatin dosing in the era of IDMS-creatinine (Gynecol Oncol 2020)",
+      "identity": {"doi": "10.1016/j.ygyno.2020.03.017"}
+    },
+    {
+      "name": "US NCI CTEP follow-up information letter regarding AUC-based dosing of carboplatin",
+      "identity": {"url": "https://dctd.cancer.gov/research/ctep-trials/memos/carboplatin-dosing.pdf", "date": "2010-10-22"}
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

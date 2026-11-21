@@ -1,0 +1,53 @@
+
+## A. Reference change value (derived; CV_A = 2%, CV_I = 5% are synthetic example inputs)
+Z=1.96 (two-sided 95%): symmetric RCV = 14.93%; log-normal RCV = +16.09% / -13.86%
+Z=2.58 (two-sided 99%): symmetric RCV = 19.65%; log-normal RCV = +21.70% / -17.83%
+Z=1.645 (one-sided 95%): symmetric RCV = 12.53%; log-normal RCV = +13.34% / -11.77%
+
+## B. Delta check toy model: same-patient pairs vs specimen mix-ups (n = 200000 pairs each)
+Set points ~ lognormal(CV_G); results = set point x (1 + N(0, sqrt(CV_I^2 + CV_A^2))). Mix-up: 2nd result from another patient.
+II = CV_I/CV_G; threshold = symmetric RCV at Z (percent change, |delta| > RCV flags).
+II, CV_G, Z, RCV%, false-flag rate (true pairs), sensitivity (mix-ups), PPV@0.1% prev, PPV@1% prev, detect 10% shift, detect 20% shift
+0.2, 0.25, 1.96, 14.9, 0.0520, 0.6727, 0.013, 0.116, 0.2819, 0.7140
+0.2, 0.25, 2.58, 19.6, 0.0118, 0.5762, 0.047, 0.330, 0.1356, 0.5146
+0.2, 0.25, 3.29, 25.1, 0.0018, 0.4736, 0.206, 0.724, 0.0467, 0.2933
+0.5, 0.10, 1.96, 14.9, 0.0521, 0.3497, 0.007, 0.063, 0.2828, 0.7145
+0.5, 0.10, 2.58, 19.6, 0.0116, 0.2190, 0.019, 0.160, 0.1359, 0.5151
+0.5, 0.10, 3.29, 25.1, 0.0018, 0.1174, 0.061, 0.396, 0.0470, 0.2937
+1.0, 0.05, 1.96, 14.9, 0.0520, 0.1503, 0.003, 0.028, 0.2809, 0.7138
+1.0, 0.05, 2.58, 19.6, 0.0115, 0.0604, 0.005, 0.051, 0.1348, 0.5142
+1.0, 0.05, 3.29, 25.1, 0.0020, 0.0188, 0.009, 0.088, 0.0466, 0.2920
+
+## C. Statistical QC rules: 2 control levels per run, z ~ N(SE, 1) per observation (toy model)
+Analytic checks: P(1_2s reject | N=2, in control) = 0.0889; P(1_3s reject | N=2) = 0.0054
+Analytic R4s, iid N(0,1) pair: Westgard within-run form P(one>+2 & other<-2) = 0.00104; range form P(|z1-z2|>=4) = 0.00468
+procedure, P(reject first run) at SE=0 / 1 / 2 / 3 (n=4000 runs each); mean run length to rejection at SE=0 (capped 200) / 1 / 2
+1_3s only: 0.0053 / 0.0450 / 0.2903 / 0.7588; ARL 118.3 / 22.09 / 3.35
+1_2s only: 0.0880 / 0.3033 / 0.7490 / 0.9728; ARL 10.8 / 3.42 / 1.29
+multirule, 1_2s-gated (classic): 0.0070 / 0.0693 / 0.4133 / 0.8752; ARL 100.7 / 9.97 / 2.13
+multirule, ungated (modern): 0.0088 / 0.0780 / 0.4180 / 0.8712; ARL 83.8 / 6.99 / 1.98
+LIS-variant rule forms: 0.0227 / 0.0833 / 0.3685 / 0.7785; ARL 56.2 / 6.99 / 2.14
+(section C elapsed 3.9 s)
+
+## D. Rolling-window statistics absorb a persistent shift (toy model of a rolling calculator)
+One control series, true SD 1. 20 in-control runs establish stats. Persistent shift SE from run 1.
+FIXED: mean/SD frozen after establishment. ROLLING: mean/SD recomputed over the last 20 results (all
+results, including rejected ones) after each insert; each result's z uses the statistics in force before it.
+Rules: 1_3s, 2_2s, 4_1s, 10x in the LIS-variant forms (>=, per series). Report P(detected by run k), 3000 reps.
+SE=0.0 FIXED  : P(by run 5) 0.058, by 10 0.114, by 40 0.351; mean z over runs 26-30 when undetected: +0.01
+SE=0.0 ROLLING: P(by run 5) 0.047, by 10 0.101, by 40 0.418; mean z over runs 26-30 when undetected: +0.02
+SE=1.0 FIXED  : P(by run 5) 0.274, by 10 0.549, by 40 0.940; mean z over runs 26-30 when undetected: +0.69
+SE=1.0 ROLLING: P(by run 5) 0.223, by 10 0.359, by 40 0.584; mean z over runs 26-30 when undetected: +0.03
+SE=1.5 FIXED  : P(by run 5) 0.579, by 10 0.865, by 40 0.998; mean z over runs 26-30 when undetected: +0.87
+SE=1.5 ROLLING: P(by run 5) 0.446, by 10 0.646, by 40 0.784; mean z over runs 26-30 when undetected: +0.07
+SE=2.0 FIXED  : P(by run 5) 0.818, by 10 0.985, by 40 1.000; mean z over runs 26-30 when undetected: n/a (all detected before run 30)
+SE=2.0 ROLLING: P(by run 5) 0.695, by 10 0.865, by 40 0.917; mean z over runs 26-30 when undetected: +0.06
+
+## E. Moving-average patient-based QC toy model (bias detection curve)
+Synthetic patient stream: 90% N(140, 2.5), 10% N(133, 6) (a sodium-like mixture; synthetic).
+Truncation 130-150; simple moving average of block N over retained results; symmetric control limits
+calibrated on 400000 in-control results to ~1 false alarm per 10000 results. Bias added from result 1.
+N=20, limit +/-2.55 around 139.73: bias 0.5: median 6000, p95 6000; bias 1.0: median 569, p95 2067; bias 2.0: median 41, p95 137; bias 3.0: median 21, p95 43 (patient results to detection, censored at 6000)
+N=50, limit +/-1.71 around 139.72: bias 0.5: median 5448, p95 6000; bias 1.0: median 335, p95 1282; bias 2.0: median 52, p95 92; bias 3.0: median 51, p95 53 (patient results to detection, censored at 6000)
+N=100, limit +/-1.16 around 139.71: bias 0.5: median 1576, p95 6000; bias 1.0: median 150, p95 479; bias 2.0: median 102, p95 105; bias 3.0: median 102, p95 104 (patient results to detection, censored at 6000)
+(section E elapsed 2.8 s)

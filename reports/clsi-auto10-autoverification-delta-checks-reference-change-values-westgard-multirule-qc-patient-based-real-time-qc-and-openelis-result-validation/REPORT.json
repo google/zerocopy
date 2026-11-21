@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "domains/clinical-laboratory-autoverification",
+    "domains/laboratory-statistical-quality-control",
+    "verification/delta-check-and-moving-average-error-detection",
+    "tooling/open-laboratory-information-systems"
+  ],
+  "subjects": [
+    {
+      "name": "OpenELIS Global 2 laboratory information system",
+      "identity": {
+        "repository": "DIGI-UW/OpenELIS-Global-2",
+        "revision": "2865b4cfec53a0334d3f5a33e14e350e8ee64e55"
+      }
+    },
+    {
+      "name": "SENAITE LIMS core",
+      "identity": {
+        "repository": "senaite/senaite.core",
+        "revision": "4ba33292398c337a47c058a51a99799494829648",
+        "version": "2.7.0"
+      }
+    },
+    {
+      "name": "Westgard et al., A multi-rule Shewhart chart for quality control in clinical chemistry (Clin Chem 1981)",
+      "identity": {"doi": "10.1093/clinchem/27.3.493"}
+    },
+    {
+      "name": "Westgard QC, Westgard Rules / multirule reference page",
+      "identity": {"url": "https://www.westgard.com/mltirule.htm", "retrieved": "2026-11-21"}
+    },
+    {
+      "name": "Ladenson, Patients as their own controls: delta check (Clin Chem 1975)",
+      "identity": {"doi": "10.1093/clinchem/21.11.1648"}
+    },
+    {
+      "name": "Plebani and Carraro, Mistakes in a stat laboratory: types and frequency (Clin Chem 1997)",
+      "identity": {"doi": "10.1093/clinchem/43.8.1348"}
+    },
+    {
+      "name": "Plebani, Errors in clinical laboratories or errors in laboratory medicine? (Clin Chem Lab Med 2006)",
+      "identity": {"doi": "10.1515/CCLM.2006.123"}
+    },
+    {
+      "name": "Carraro and Plebani, Errors in a stat laboratory: 10 years later (Clin Chem 2007)",
+      "identity": {"doi": "10.1373/clinchem.2007.088344"}
+    },
+    {
+      "name": "Strathmann, Baird and Hoffman, Simulations of delta check rule performance (Clin Chim Acta 2011)",
+      "identity": {"doi": "10.1016/j.cca.2011.07.007"}
+    },
+    {
+      "name": "Fraser, Reference change values (Clin Chem Lab Med 2012)",
+      "identity": {"doi": "10.1515/CCLM.2011.733"}
+    },
+    {
+      "name": "Krasowski et al., Autoverification in a core clinical chemistry laboratory (J Pathol Inform 2014)",
+      "identity": {"doi": "10.4103/2153-3539.129450"}
+    },
+    {
+      "name": "van Rossum and Kemperman, Moving average QC optimization with bias detection curves (Clin Chem Lab Med 2017)",
+      "identity": {"doi": "10.1515/cclm-2016-0270"}
+    },
+    {
+      "name": "Randell and Yenice, Delta checks in the clinical laboratory (Crit Rev Clin Lab Sci 2019)",
+      "identity": {"doi": "10.1080/10408363.2018.1540536"}
+    },
+    {
+      "name": "Badrick et al., Patient-based real-time quality control: review and recommendations (Clin Chem 2019)",
+      "identity": {"doi": "10.1373/clinchem.2019.305482"}
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

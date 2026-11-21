@@ -16686,6 +16686,121 @@
         "tooling/ci"
       ]
     },
+    "ckd-epi-2021-race-free-refit-idms-creatinine-standardization-cockcroft-gault-drug-dosing-ekfc-equation-and-calvert-carboplatin-formula": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cran/kidney.epi",
+            "revision": "04297148e9dc8077a99a5b39f4c11471d15aee54",
+            "version": "1.4.0"
+          },
+          "name": "kidney.epi R package (CRAN read-only mirror)"
+        },
+        {
+          "identity": {
+            "repository": "cran/nephro",
+            "revision": "5d906c2d898597e0bfb2d9731cbcd01f6a8d958a",
+            "version": "1.5"
+          },
+          "name": "nephro R package (CRAN read-only mirror)"
+        },
+        {
+          "identity": {
+            "doi": "10.1159/000180580"
+          },
+          "name": "Cockcroft and Gault, Prediction of creatinine clearance from serum creatinine (Nephron 1976)"
+        },
+        {
+          "identity": {
+            "doi": "10.7326/0003-4819-130-6-199903160-00002"
+          },
+          "name": "Levey et al., MDRD Study prediction equation (Ann Intern Med 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.7326/0003-4819-145-4-200608150-00004"
+          },
+          "name": "Levey et al., Using standardized serum creatinine values in the MDRD Study equation (Ann Intern Med 2006)"
+        },
+        {
+          "identity": {
+            "doi": "10.1373/clinchem.2006.077180"
+          },
+          "name": "Levey et al., Expressing the MDRD Study equation with standardized serum creatinine values (Clin Chem 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1373/clinchem.2005.0525144"
+          },
+          "name": "Myers et al., NKDEP recommendations for improving serum creatinine measurement (Clin Chem 2006)"
+        },
+        {
+          "identity": {
+            "doi": "10.7326/0003-4819-150-9-200905050-00006",
+            "pmcid": "PMC2763564"
+          },
+          "name": "Levey et al., CKD-EPI creatinine equation (Ann Intern Med 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMoa2102953",
+            "pmcid": "PMC8822996"
+          },
+          "name": "Inker et al., New creatinine- and cystatin C-based equations to estimate GFR without race (NEJM 2021)"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1681/ASN.2021070988",
+            "doi": "10.1053/j.ajkd.2021.08.003"
+          },
+          "name": "Delgado et al., NKF-ASN Task Force recommendations (Am J Kidney Dis 2022; simultaneous J Am Soc Nephrol 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.7326/M20-4366"
+          },
+          "name": "Pottel et al., EKFC modified full-age-spectrum creatinine equation (Ann Intern Med 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMoa2203769"
+          },
+          "name": "Pottel et al., EKFC cystatin C equation (NEJM 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1200/JCO.1989.7.11.1748"
+          },
+          "name": "Calvert et al., Carboplatin dosage formula based on renal function (J Clin Oncol 1989)"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/ki.2011.322"
+          },
+          "name": "Matzke et al., KDIGO drug dosing clinical update (Kidney Int 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.ygyno.2020.03.017"
+          },
+          "name": "McLean et al., Carboplatin dosing in the era of IDMS-creatinine (Gynecol Oncol 2020)"
+        },
+        {
+          "identity": {
+            "date": "2010-10-22",
+            "url": "https://dctd.cancer.gov/research/ctep-trials/memos/carboplatin-dosing.pdf"
+          },
+          "name": "US NCI CTEP follow-up information letter regarding AUC-based dosing of carboplatin"
+        }
+      ],
+      "topics": [
+        "domains/kidney-function-estimating-equations",
+        "domains/renal-drug-dosing",
+        "verification/assay-standardization-and-equation-recalibration",
+        "tooling/estimated-gfr-calculator-implementations"
+      ]
+    },
     "clang-arc-precise-lifetime-swift-lexical-lifetimes-ossa-withextendedlifetime-cpython-pypy-finalization-timing-and-joisha-rc-elimination": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -17178,6 +17293,105 @@
         "compilers",
         "compilers/jit",
         "ffi"
+      ]
+    },
+    "clsi-auto10-autoverification-delta-checks-reference-change-values-westgard-multirule-qc-patient-based-real-time-qc-and-openelis-result-validation": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "DIGI-UW/OpenELIS-Global-2",
+            "revision": "2865b4cfec53a0334d3f5a33e14e350e8ee64e55"
+          },
+          "name": "OpenELIS Global 2 laboratory information system"
+        },
+        {
+          "identity": {
+            "repository": "senaite/senaite.core",
+            "revision": "4ba33292398c337a47c058a51a99799494829648",
+            "version": "2.7.0"
+          },
+          "name": "SENAITE LIMS core"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/clinchem/27.3.493"
+          },
+          "name": "Westgard et al., A multi-rule Shewhart chart for quality control in clinical chemistry (Clin Chem 1981)"
+        },
+        {
+          "identity": {
+            "retrieved": "2026-11-21",
+            "url": "https://www.westgard.com/mltirule.htm"
+          },
+          "name": "Westgard QC, Westgard Rules / multirule reference page"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/clinchem/21.11.1648"
+          },
+          "name": "Ladenson, Patients as their own controls: delta check (Clin Chem 1975)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/clinchem/43.8.1348"
+          },
+          "name": "Plebani and Carraro, Mistakes in a stat laboratory: types and frequency (Clin Chem 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1515/CCLM.2006.123"
+          },
+          "name": "Plebani, Errors in clinical laboratories or errors in laboratory medicine? (Clin Chem Lab Med 2006)"
+        },
+        {
+          "identity": {
+            "doi": "10.1373/clinchem.2007.088344"
+          },
+          "name": "Carraro and Plebani, Errors in a stat laboratory: 10 years later (Clin Chem 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.cca.2011.07.007"
+          },
+          "name": "Strathmann, Baird and Hoffman, Simulations of delta check rule performance (Clin Chim Acta 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1515/CCLM.2011.733"
+          },
+          "name": "Fraser, Reference change values (Clin Chem Lab Med 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.4103/2153-3539.129450"
+          },
+          "name": "Krasowski et al., Autoverification in a core clinical chemistry laboratory (J Pathol Inform 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1515/cclm-2016-0270"
+          },
+          "name": "van Rossum and Kemperman, Moving average QC optimization with bias detection curves (Clin Chem Lab Med 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1080/10408363.2018.1540536"
+          },
+          "name": "Randell and Yenice, Delta checks in the clinical laboratory (Crit Rev Clin Lab Sci 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1373/clinchem.2019.305482"
+          },
+          "name": "Badrick et al., Patient-based real-time quality control: review and recommendations (Clin Chem 2019)"
+        }
+      ],
+      "topics": [
+        "domains/clinical-laboratory-autoverification",
+        "domains/laboratory-statistical-quality-control",
+        "verification/delta-check-and-moving-average-error-detection",
+        "tooling/open-laboratory-information-systems"
       ]
     },
     "cluster-gpu-deterministic-replay-foundationdb-madsim-hermit-and-nvbit": {

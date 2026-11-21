@@ -1,0 +1,55 @@
+bdcc9cd88d3a2a861f6af23f4d464e6c44cc26d2239902c4bca2b5a193581210  org/openelisglobal/qc/service/evaluator/AbstractWestgardRuleEvaluator.java
+7b9b70047e942924c9bb4b1aa91c88e181004451b01bae085b818dff3c7cb79a  org/openelisglobal/qc/service/evaluator/WestgardRuleEvaluator.java
+4ffcbf0c7d209bcf064a0f69decbfc0eb279cf9b91873afde7ff8071c0dff41f  org/openelisglobal/qc/service/evaluator/RuleEvaluationResult.java
+dd6aedf81eff94f1b519cfdd9183f1e8933ea88db2c6bf3ee61e0ff2c4c1b2a2  org/openelisglobal/qc/service/evaluator/Rule1_2sEvaluator.java
+d787b74cbdb6d05ac3f93f6341833babf4d747d7a0768c7720d57ced72702fcd  org/openelisglobal/qc/service/evaluator/Rule1_3sEvaluator.java
+d1b6c7fe476704613b0d86460941e1ef922b2b9399f36b9d5870fe253d3cf117  org/openelisglobal/qc/service/evaluator/Rule2_2sEvaluator.java
+95a0c0d75fa1395cb4d220b617773de7e8b3e84d8a2bcb2821c8f9fe724672a4  org/openelisglobal/qc/service/evaluator/RuleR_4sEvaluator.java
+5d405e21b2c2ac6cb9a5554cfbfc9e76ab4b8d5ded1e2e178d556ff80d554af8  org/openelisglobal/qc/service/evaluator/Rule4_1sEvaluator.java
+066784fcf3a23527748752c76e5a293dbd8da37ac8e3fc0bd3468c6de4b047b1  org/openelisglobal/qc/service/evaluator/Rule10_xEvaluator.java
+bdcec8df863e75055c7e4bd7801a872e62b06f5e0c5578a0f65d472e7a81c2c8  org/openelisglobal/resultvalidation/util/ValidationSignals.java
+489d6164c656b3ee61f41766df7dcd5b335d87a40a1da81e96bc6058431e7eea  org/openelisglobal/resultlimits/valueholder/ResultLimit.java
+java 27.0.1
+
+## Westgard evaluators (mean 100, SD 2 unless noted; z computed from value when no stored z)
+W1 1_3s value 106.0 (z=+3.0 exactly)         : violated=true evaluated=true severity=REJECTION msg=CRITICAL: Result exceeds 3SD above mean (z-score: 3.00)
+W2 1_3s value 105.98 (z=+2.99)               : violated=false evaluated=true severity=null msg=No violation detected
+W3 1_3s value 200 with SD=0                  : violated=false evaluated=true severity=null msg=No violation detected
+W4 1_3s value 200 with SD=null               : violated=false evaluated=true severity=null msg=No violation detected
+W5 10x current 50, 9 history 300, SD=0       : violated=true evaluated=true severity=REJECTION msg=Ten consecutive results on below side of mean
+W6 10x current 100 (=mean), 9 history 99     : violated=true evaluated=true severity=REJECTION msg=Ten consecutive results on below side of mean
+W7 10x current 100 (=mean), 9 history 101    : violated=false evaluated=true severity=null msg=No violation detected
+W8 R4s prev z=+3.0, curr z=-1.0 (range 4.0) : violated=true evaluated=true severity=REJECTION msg=Range between consecutive results exceeds 4SD (z-scores: 3.00, -1.00, range: 4.00)
+W9 R4s prev z=+2.1, curr z=-2.1 (range 4.2) : violated=true evaluated=true severity=REJECTION msg=Range between consecutive results exceeds 4SD (z-scores: 2.10, -2.10, range: 4.20)
+W10 2_2s with empty history                  : violated=false evaluated=false severity=null msg=Insufficient data: need at least 1 previous result
+W11 2_2s with null statistics                : violated=false evaluated=false severity=null msg=Missing current result or statistics
+W12 1_3s stored z=0.5 although value 200     : violated=false evaluated=true severity=null msg=No violation detected
+W13 4_1s four at z=+1.1                      : violated=true evaluated=true severity=REJECTION msg=Four consecutive results above +1SD (z-scores: 1.10, 1.10, 1.10, 1.10)
+W14 1_2s value 104.0 (z=+2.0)                : violated=true evaluated=true severity=WARNING msg=Result exceeds 2SD above mean (z-score: 2.00)
+W15 canEvaluate(config code '1-3s')          : false
+W16 canEvaluate(config code '1₃ₛ')            : true
+
+## ValidationSignals.resultFlag / isClearAtEntry (authored limit: valid 0..20, normal 3.5..5.1, critical <2.5 or >6.5)
+V value='4.0'        flag=NORMAL    isCritical(Result)=false clearAtEntry(QC UNKNOWN)=true
+V value='5.5'        flag=ABNORMAL  isCritical(Result)=false clearAtEntry(QC UNKNOWN)=false
+V value='7.0'        flag=CRITICAL  isCritical(Result)=true  clearAtEntry(QC UNKNOWN)=false
+V value='25'         flag=INVALID   isCritical(Result)=true  clearAtEntry(QC UNKNOWN)=false
+V value='-1'         flag=INVALID   isCritical(Result)=true  clearAtEntry(QC UNKNOWN)=false
+V value='<0.5'       flag=null      isCritical(Result)=false clearAtEntry(QC UNKNOWN)=false
+V value='>20'        flag=null      isCritical(Result)=false clearAtEntry(QC UNKNOWN)=false
+V value='5×10⁰'      flag=NORMAL    isCritical(Result)=false clearAtEntry(QC UNKNOWN)=true
+V value='7×10⁰'      flag=CRITICAL  isCritical(Result)=false clearAtEntry(QC UNKNOWN)=false
+V value='7e0'        flag=CRITICAL  isCritical(Result)=true  clearAtEntry(QC UNKNOWN)=false
+V value='NaN'        flag=null      isCritical(Result)=false clearAtEntry(QC UNKNOWN)=false
+V value='Infinity'   flag=null      isCritical(Result)=true  clearAtEntry(QC UNKNOWN)=false
+V value=''           flag=null      isCritical(Result)=false clearAtEntry(QC UNKNOWN)=false
+V value='4,0'        flag=null      isCritical(Result)=false clearAtEntry(QC UNKNOWN)=false
+V value=' 4.0 '      flag=NORMAL    isCritical(Result)=false clearAtEntry(QC UNKNOWN)=true
+V in-range 4.0 with QC_FAIL clear?            : false
+V in-range 4.0 with QC_PASS clear?            : true
+V upper-only limit, value -5 flag/clear       : NORMAL / true
+V synthetic empty limit (id null) flag/clear  : null / false
+V default ResultLimit lowCritical/highCritical: Infinity / Infinity
+V isModified('2'), ('x'), (null)              : true false false
+V isNceOpen(null), ('Closed'), ('closed')     : true false true
+V isStale(null), ('abc'), ('1000')            : false true false

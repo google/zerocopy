@@ -1,0 +1,50 @@
+## Published-form identities (derived)
+MDRD: 186 x 0.95^1.154 = 175.31  (re-expressed intercept is 175)
+MDRD umol/L intercept: 175 x 88.4^1.154 = 30849  (published 30849)
+CKD-EPI 2009 white/other F: compact intercept 143.538 vs table 144 -> table/compact = 1.00322
+CKD-EPI 2009 Black F: compact intercept 166.361 vs table 166 -> table/compact = 0.99783
+CKD-EPI 2009 Black M: compact intercept 163.419 vs table 163 -> table/compact = 0.99744
+EKFC adult Q: 62/88.4 = 0.7014 mg/dL, 80/88.4 = 0.9050 mg/dL; eGFR ratio above knee (umol Q vs 0.70/0.90 mg/dL Q): F 1.00220, M 1.00626
+Default-unit misuse: 1.0 read as umol/L = 0.01131 mg/dL; F40 2021 eGFR 302.83 vs intended 73.04
+
+## Calibration shift propagation: Scr_new = f x Scr_old (f = 0.95 is the MDRD-laboratory factor of Levey 2007;
+##   it is NOT a general correction; other laboratories differed). Ratios new/old.
+CG ratio (all Scr): 1.0526; MDRD ratio: 1.0610
+CKD-EPI 2021 above knee: 1.0635; below knee F: 1.0124; below knee M: 1.0156
+profile, Scr_old, CG_old, CG_new, Calvert(AUC5)_old, _new, _new_capped125, relative change uncapped/capped
+F45 60kg, 0.6, 112.2, 118.1, 686, 715, 715, +4.3% / +4.3%
+F45 60kg, 0.9, 74.8, 78.7, 499, 519, 519, +3.9% / +3.9%
+M30 90kg, 0.8, 171.9, 180.9, 984, 1030, 750, +4.6% / -23.8%
+M70 70kg, 1.4, 48.6, 51.2, 368, 381, 381, +3.5% / +3.5%
+F80 50kg, 1.1, 32.2, 33.9, 286, 294, 294, +3.0% / +3.0%
+
+## Floor vs cap (CTEP 2010 follow-up letter: Scr floor 0.6 mg/dL OR GFR cap 125 mL/min)
+female=True age=35 wt=55 Scr=0.45: CG 151.5; CG with floor 113.6; capped 125.0; both 113.6
+female=False age=25 wt=110 Scr=0.7: CG 251.0; CG with floor 251.0; capped 125.0; both 125.0
+female=True age=60 wt=70 Scr=0.6: CG 110.2; CG with floor 110.2; capped 110.2; both 110.2
+
+## Indexed vs absolute GFR in the Calvert formula (eGFR is per 1.73 m^2; Calvert expects mL/min)
+height 150 cm weight 45 kg: BSA 1.37 m^2; eGFR 90 indexed -> 71.3 mL/min absolute; Calvert(AUC5) indexed-as-absolute 575 vs de-indexed 481
+height 170 cm weight 70 kg: BSA 1.81 m^2; eGFR 90 indexed -> 94.1 mL/min absolute; Calvert(AUC5) indexed-as-absolute 575 vs de-indexed 596
+height 190 cm weight 120 kg: BSA 2.47 m^2; eGFR 90 indexed -> 128.3 mL/min absolute; Calvert(AUC5) indexed-as-absolute 575 vs de-indexed 767
+
+## Properties of the reference formulas (derived by evaluation)
+EKFC Q at age 25 (F): polynomial 62.43 umol/L vs adult constant 62 -> eGFR step at 25->25+ for Scr above Q: x0.9922
+EKFC Q at age 25 (M): polynomial 80.86 umol/L vs adult constant 80 -> eGFR step at 25->25+ for Scr above Q: x0.9879
+CKD-EPI 2021 continuous at the knee: True; strictly decreasing in Scr on 0.30-5.29 mg/dL: True
+CKD-EPI 2021 strictly decreasing in age 18-100: True; EKFC age factor flat to 40 then 0.990/yr
+
+## Comparison with R differential grid (max |R - reference|; kidney.epi rounds to 2 dp)
+ke2021             max|diff| = 0.004986
+ne2021             max|diff| = 0.000000
+ke2009             max|diff| = 0.004955
+ne2009             max|diff| = 0.000000
+keEKFC             max|diff| = 0.004917
+neEKFC             max|diff| = 0.000000
+keMDRDdefault      max|diff| = 0.004909
+keMDRDidms         max|diff| = 0.004960
+neMDRDdefault      max|diff| = 0.000000
+neMDRDlower_idms   max|diff| = 0.000000
+keCG70             max|diff| = 0.004815
+neCG70             max|diff| = 0.000000
+2009 table vs compact (female) max relative difference: 0.00322
