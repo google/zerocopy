@@ -13,6 +13,15 @@ set -eo pipefail
 ZEROCOPY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 REPO_DIR="$(dirname "$ZEROCOPY_DIR")"
 
+# Inside the prebuilt CI container image, reuse `/usr/local/bin/cargo-zerocopy`
+# (built from `tools/` during `build_docker_env`) so each matrix container does
+# not re-fetch crates.io dependencies and recompile `cargo-zerocopy` on
+# startup.
+if [[ -n "${CARGO_ZEROCOPY_PREBUILT:-}" && -x "$CARGO_ZEROCOPY_PREBUILT" ]]; then
+  cd "$ZEROCOPY_DIR"
+  exec "$CARGO_ZEROCOPY_PREBUILT" "$@"
+fi
+
 # Build `cargo-zerocopy` without any RUSTFLAGS or CARGO_TARGET_DIR set in the
 # environment. Build it from the repository root so that Zerocopy's vendoring
 # config does not apply to the unvendored tools workspace. Prefer `stable`
