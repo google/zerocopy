@@ -18,7 +18,7 @@
       "Toy.Zc.semIntoBytes_int"
     ],
     "non_claims": [
-      "These are equivalences inside the model only; that SemFromBytes/SemFromZeros/SemIntoBytes match zerocopy's documented safety contracts (zerocopy/src/lib.rs:4266-4269, 3681-3683, 5913-5916) is a modeling bridge.",
+      "These are equivalences inside the model; they neither establish nor refute the corresponding claims about the safety contracts of zerocopy v0.8.63's `FromBytes`, `FromZeros` and `IntoBytes` traits. That SemFromBytes/SemFromZeros/SemIntoBytes match those documented contracts (zerocopy/src/lib.rs:4266-4269, 3681-3683, 5913-5916) is a modeling bridge.",
       "validInit is the exact validity of the model's decoder, not zerocopy's runtime check; the two are related only by R2f (derive_isSafe_eq_validInit_of_wf_of_length) for well-formed descriptions and bytes of the right length.",
       "Bytes carry no provenance; nothing here says anything about pointer-carrying types.",
       "On unions, validity (Desc.decodeL) is by definition zerocopy's conservative rule 'some field is valid', returning the first such field (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:292-296: 'The bit validity of a union is not yet well defined in Rust, but it is guaranteed to be no more strict than this definition'). Consequently Desc.rep on unions is not canonical: decoding then encoding can forget bytes (union_decode_encode_forgets_bytes) and decoding is not monotone in definedness (union_decode_not_monotone).",
@@ -826,6 +826,7 @@
     ],
     "non_claims": [
       "No positivity, phase, or element-size hypothesis is needed; the validation's own endpoint check supplies alignment of addr (prefix) or addr + bytes_len (suffix). The theorem does not say the returned count is maximal (that is R6a).",
+      "With align = 0, Lean's 0 ∣ x means x = 0 and x % 0 = x, so the hypotheses require t.sizeBase = 0 and t.sizeAlign = 0, and the conclusion (addr + startOffset ct splitAt) % align = 0 reads addr + startOffset ct splitAt = 0; the theorem has no 0 < align hypothesis.",
       "normalizeDst_align_dvd shows that the normalized layout of a flat repr(C) slice DST with layout alignment dstAlign d satisfies both hypotheses; whether zerocopy's own DstLayout for real types does is not modeled.",
       "Does not model #[derive(KnownLayout)] (zerocopy/zerocopy-derive/src/derive/known_layout.rs:252-351) or zerocopy's construction of a type's DstLayout (DstLayout::for_type, DstLayout::for_repr_c_struct).",
       "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
@@ -878,6 +879,7 @@
     "non_claims": [
       "For zero-sized elements both sides are none for different reasons (panic vs. none); no largest count exists (vccm_normalizeDst_zst_both_none).",
       "Only element counts are compared (split_at is dropped), and the layout alignment is arbitrary rather than dstAlign d; start alignment is R6d (with normalizeDst_align_dvd for align = dstAlign d).",
+      "With align = 0 the alignment hypothesis (addr + castOffset ct bytesLen) % align = 0 reads addr + castOffset ct bytesLen = 0, because Lean defines x % 0 = x; the theorem has no 0 < align hypothesis, so at align = 0 the hypothesis is not \"no alignment constraint\" but holds exactly when addr + castOffset ct bytesLen = 0.",
       "Does not model #[derive(KnownLayout)] (zerocopy/zerocopy-derive/src/derive/known_layout.rs:252-351) or zerocopy's construction of a type's DstLayout (DstLayout::for_type, DstLayout::for_repr_c_struct).",
       "Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact."
     ],

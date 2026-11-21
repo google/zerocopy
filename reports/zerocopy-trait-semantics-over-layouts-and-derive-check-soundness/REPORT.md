@@ -739,20 +739,20 @@ Basis: source (quotations at the pinned commit) + derived (modeling bridge)
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Bridge.lean
+-- lean/ToyZc/Bridge.lean:46-47
 theorem semFromBytes_iff_validInit_total (d : Desc) :
     SemFromBytes d ↔ ∀ bs : List Byte, bs.length = d.size → validInit d bs = true
 
--- ToyZc/Bridge.lean
+-- lean/ToyZc/Bridge.lean:62-63
 theorem semFromZeros_iff_validInit_zeros (d : Desc) :
     SemFromZeros d ↔ validInit d (List.replicate d.size 0) = true
 
--- ToyZc/Bridge.lean
+-- lean/ToyZc/Bridge.lean:75-77
 theorem semIntoBytes_iff_encodeL_init (d : Desc) :
     SemIntoBytes d ↔
       ∀ v, d.hasType v = true → ∀ i, i < d.size → ((d.encodeL v).getD i .uninit).isInit = true
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 SemFromBytes d := ∀ x : Bytes Byte d.size, x.IsInit → ∃ v, d.rep.decode x = some v
@@ -784,15 +784,15 @@ Basis: derived (modeling bridge): via B1, B2, B3, B4. R1 is what lets the remain
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Struct.lean
+-- lean/ToyZc/Struct.lean:84-85
 theorem struct_fromBytes_iff_fields_fromBytes (r : StructRepr) (fs : List Desc) :
     SemFromBytes (.strct r fs) ↔ ∀ f ∈ fs, SemFromBytes f
 
--- ToyZc/Struct.lean
+-- lean/ToyZc/Struct.lean:121-122
 theorem struct_fromZeros_iff_fields_fromZeros (r : StructRepr) (fs : List Desc) :
     SemFromZeros (.strct r fs) ↔ ∀ f ∈ fs, SemFromZeros f
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 (∀ bs, |bs| = size(S) → validInit S bs) ⟺ ∀ f ∈ fs, ∀ bs, |bs| = size f → validInit f bs   (S = strct r fs, any r)
@@ -818,13 +818,13 @@ Basis: derived (modeling bridge): via B1, B2, B8, B9. Read with B8, R2a says tha
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Struct.lean
+-- lean/ToyZc/Struct.lean:172-175
 theorem struct_intoBytes_iff_fields_intoBytes_no_padding_of_inhabited (r : StructRepr) (fs : List Desc)
     (hInh : ∀ f ∈ fs, f.Inhabited) :
     SemIntoBytes (.strct r fs) ↔
       (∀ f ∈ fs, SemIntoBytes f) ∧ (Desc.strct r fs).size = Desc.fieldSizeSum fs
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 (∀ f ∈ fs, ∃ v, f.hasType v) →
@@ -857,12 +857,12 @@ Basis: derived (modeling bridge): via B3, B9. Read with B3 and B9, R2c is the se
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Struct.lean
+-- lean/ToyZc/Struct.lean:499-501
 theorem structPaddingOK_sound (r : StructRepr) (fs : List Desc)
     (hwf : (Desc.strct r fs).wf = true) (hP : structPaddingOK r fs = true) :
     (Desc.strct r fs).size = Desc.fieldSizeSum fs
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 wf(S) → [ r = transparent ∨ (r = c m ∧ (m = packed 1 ∨ (¬(m = aligned n ∧ n > 1) ∧ |fs| ≤ 1) ∨ size(S) - Σ size f = 0)) ]
@@ -890,22 +890,22 @@ Basis: derived (modeling bridge): via B8, B9. `structPaddingOK` transcribes `D/d
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Closure.lean
+-- lean/ToyZc/Closure.lean:251-252
 theorem derive_fromZeros_sound_of_wf (d : Desc) (hwf : d.wf = true) (h : implFromZeros d = true) :
     SemFromZeros d
 
--- ToyZc/Closure.lean
+-- lean/ToyZc/Closure.lean:296-297
 theorem derive_fromBytes_sound_of_wf (d : Desc) (hwf : d.wf = true) (h : implFromBytes d = true) :
     SemFromBytes d
 
--- ToyZc/Closure.lean
+-- lean/ToyZc/Closure.lean:335-336
 theorem derive_intoBytes_sound_of_wf (cfg : DeriveConfig) (d : Desc) (hwf : d.wf = true)
     (h : implIntoBytes cfg d = true) : SemIntoBytes d
 
--- ToyZc/Closure.lean
+-- lean/ToyZc/Closure.lean:371
 theorem derive_unaligned_sound (d : Desc) (h : implUnaligned d = true) : SemUnaligned d
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 wf d → implFromZeros d → validInit d 0^size(d)
@@ -934,11 +934,11 @@ Basis: derived (modeling bridge): via B1, B2, B3, B5, B8, B9. Every modeled chec
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Closure.lean
+-- lean/ToyZc/Closure.lean:430-431
 theorem derive_isSafe_eq_validInit_of_wf_of_length (d : Desc) (hwf : d.wf = true) (bs : List Byte)
     (hlen : bs.length = d.size) : isSafe d bs = validInit d bs
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 wf d → |bs| = size(d) → isSafe d bs = validInit d bs
@@ -965,13 +965,13 @@ Basis: derived (modeling bridge): via B4, B8. `isSafe` transcribes the generated
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:772-775
 theorem fieldless_enum_fromBytes_iff_every_tag_is_discriminant (t : IntTy)
     (vs : List (DiscrSyn × List Desc)) (hfl : Desc.Fieldless vs) :
     SemFromBytes (.enm (.prim t) vs) ↔
       ∀ n, n < 2 ^ (8 * t.width) → n ∈ Desc.codes (.prim t) vs
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 (∀ v ∈ vs, v.fields = []) →
@@ -997,12 +997,12 @@ Basis: derived (modeling bridge): via B1, B9. Tag placement (offset 0, little-en
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:813-815
 theorem enum_variant_count_check_sound (r : EnumRepr) (vs : List (DiscrSyn × List Desc))
     (hwf : discrsWF r (vs.map Prod.fst) = true) (hc : enumVariantCountOK r vs = true) :
     ∀ n, n < 2 ^ (8 * r.tagTy.width) → n ∈ Desc.codes r vs
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 discriminants pairwise distinct ∧ each in [minVal t, maxVal t] → r ∈ {u8,i8,u16,i16} ∧ |vs| = 2^(8w)
@@ -1029,13 +1029,13 @@ Basis: derived (modeling bridge): via B8, B9. `enumVariantCountOK` transcribes `
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:820-823
 theorem enum_fromBytes_of_count_check (r : EnumRepr) (vs : List (DiscrSyn × List Desc))
     (hwf : discrsWF r (vs.map Prod.fst) = true) (hc : enumVariantCountOK r vs = true)
     (hF : ∀ v ∈ vs, ∀ f ∈ v.2, SemFromBytes f) :
     SemFromBytes (.enm r vs)
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 distinct representable discriminants → count check → (∀ variant, ∀ field, SemFromBytes field) → SemFromBytes (enm r vs)
@@ -1063,14 +1063,14 @@ Basis: derived (modeling bridge): via B1, B8, B9. As for R3b, together with the 
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:848-852
 theorem enum_fromZeros_iff_zero_variant_fields_fromZeros_of_discrsWF (r : EnumRepr)
     (vs : List (DiscrSyn × List Desc)) (hwf : discrsWF r (vs.map Prod.fst) = true) :
     SemFromZeros (.enm r vs) ↔
       ∃ i fs, (Desc.discrs vs)[i]? = some 0 ∧ variantFields vs i = some fs ∧
         ∀ f ∈ fs, SemFromZeros f
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 distinct representable discriminants →
@@ -1097,22 +1097,22 @@ Basis: derived (modeling bridge): via B2, B9. The decoder selects the first vari
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:929-930
 theorem findZeroVariant_sound (ds : List DiscrSyn) (i : Nat) (h : findZeroVariant ds = .ok i) :
     (resolveDiscrs ds)[i]? = some 0
 
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:936-937
 theorem findZeroVariant_complete_of_no_unknown (ds : List DiscrSyn)
     (h : findZeroVariant ds = .error false) : 0 ∉ resolveDiscrs ds
 
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:943-947
 theorem enum_fromZeros_of_findZeroVariant (r : EnumRepr) (vs : List (DiscrSyn × List Desc))
     (hwf : discrsWF r (vs.map Prod.fst) = true) (i : Nat)
     (hz : findZeroVariant (vs.map Prod.fst) = .ok i)
     (hF : ∀ fs, variantFields vs i = some fs → ∀ f ∈ fs, SemFromZeros f) :
     SemFromZeros (.enm r vs)
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 findZeroVariant ds = ok i → resolveDiscrs(ds)[i] = 0
@@ -1143,21 +1143,21 @@ Basis: derived (modeling bridge): via B2, B8, B9. `findZeroVariant` transcribes 
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:960-964
 theorem enum_validInit_iff_first_matching_variant_valid (r : EnumRepr)
     (vs : List (DiscrSyn × List Desc)) (bs : List Byte) (hlen : bs.length = (Desc.enm r vs).size) :
     validInit (.enm r vs) bs = true ↔
       ∃ i, (Desc.codes r vs).findIdx? (· == enumTag r vs bs) = some i ∧
         validVariant vs i (Desc.enumLayout r vs).variantFieldOffsets bs = true
 
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:971-975
 theorem isSafe_enm_eq_validInit (r : EnumRepr) (vs : List (DiscrSyn × List Desc))
     (hwf : discrsWF r (vs.map Prod.fst) = true)
     (hfields : ∀ v ∈ vs, ∀ f ∈ v.2, ∀ bs, bs.length = f.size → isSafe f bs = validInit f bs)
     (bs : List Byte) (hlen : bs.length = (Desc.enm r vs).size) :
     isSafe (.enm r vs) bs = validInit (.enm r vs) bs
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 |bs| = size(E) → (validInit E bs ⟺ ∃ i, firstIndex(code = tag(bs)) = i ∧ ∀ k, validInit field_{i,k} (bs[off_{i,k} ..+ size]))
@@ -1185,12 +1185,12 @@ Basis: derived (modeling bridge): via B4, B8, B9. The enum branch of `isSafe` tr
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:1024-1026
 theorem enum_intoBytes_of_fields_of_padding_check (r : EnumRepr) (vs : List (DiscrSyn × List Desc))
     (hF : ∀ v ∈ vs, ∀ f ∈ v.2, SemIntoBytes f) (hP : enumPaddingOK r vs = true) :
     SemIntoBytes (.enm r vs)
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 (∀ variant, ∀ field, IntoBytes field) → (∀ variant v, size(E) - (tagWidth + Σ_{f∈v} size f) = 0) → IntoBytes E
@@ -1218,12 +1218,12 @@ Basis: derived (modeling bridge): via B3, B8, B9. `enumPaddingOK` transcribes `P
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Union.lean
+-- lean/ToyZc/Union.lean:107-109
 theorem union_intoBytes_iff_fields_intoBytes_full_size_of_inhabited (r : UnionRepr) (fs : List Desc)
     (hInh : ∀ f ∈ fs, f.Inhabited) :
     SemIntoBytes (.union r fs) ↔ ∀ f ∈ fs, SemIntoBytes f ∧ f.size = (Desc.union r fs).size
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 (∀ f ∈ fs, ∃ v, f.hasType v) →
@@ -1254,12 +1254,12 @@ Basis: derived (modeling bridge): via B3, B7, B9. R4a is about the written-throu
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Union.lean
+-- lean/ToyZc/Union.lean:134-136
 theorem union_intoBytes_of_fields_of_padding_check (r : UnionRepr) (fs : List Desc)
     (hF : ∀ f ∈ fs, SemIntoBytes f) (hP : unionPaddingOK r fs = true) :
     SemIntoBytes (.union r fs)
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 (∀ f ∈ fs, IntoBytes f) → (∀ f ∈ fs, size U - size f = 0) → IntoBytes (union r fs)
@@ -1285,13 +1285,13 @@ Basis: derived (modeling bridge): via B3, B7, B8. Under B7, R4b says that the un
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Union.lean
+-- lean/ToyZc/Union.lean:149-152
 theorem union_u8_u16_written_through_u8_leaves_uninit :
     (Desc.union (.c .none) [.u8, .u16]).encodeL (.union 0 (.int [7])) = [.init 7, .uninit] ∧
     (∀ f ∈ [Desc.u8, Desc.u16], SemIntoBytes f) ∧
     ¬ SemIntoBytes (.union (.c .none) [.u8, .u16])
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 encode(union {a: u8, b: u16}, written through a with 7) = [init 7, uninit]
@@ -1315,12 +1315,12 @@ Basis: derived (modeling bridge): via B3, B7. A concrete instance of why `union_
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Union.lean
+-- lean/ToyZc/Union.lean:279-281
 theorem permissive_union_validity_of_size_pos_not_intoBytes (r : UnionRepr) (fs : List Desc)
     (hn : 0 < (Desc.union r fs).size) :
     ¬ (permissiveUnionRep (Desc.union r fs).size).IntoBytes
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 0 < size U → ¬ IntoBytes ⟨encode := id, decode := some⟩ on Bytes Byte (size U)   (the value all-uninit is allowed)
@@ -1351,14 +1351,14 @@ Basis: derived (modeling bridge): via B3, B7. `permissiveUnionRep` models a unio
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Transmute.lean
+-- lean/ToyZc/Transmute.lean:33-35
 theorem transmuteTotal_of_intoBytes_of_fromBytes {D A B : Type} {n : Nat}
     (ra : Rep (Bytes D n) A) (rb : Rep (Bytes D n) B)
     (hA : ra.IntoBytes) (hB : rb.FromBytes) : TransmuteTotal ra rb
 ```
 - **Unfolded reading** (key definitions expanded):
 
-```text
+```lean
 ra.IntoBytes → rb.FromBytes → ∀ a, ∃ b, rb.decode (ra.encode a) = some b
 ```
 - **Hypothesis ledger:**
@@ -1383,17 +1383,17 @@ Basis: derived (modeling bridge): via B1, B3. R5a is the representation-level re
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/Transmute.lean
+-- lean/ToyZc/Transmute.lean:52-54
 theorem desc_transmute_total_of_size_ge (s d : Desc) (hsz : d.size ≤ s.size)
     (hI : SemIntoBytes s) (hF : SemFromBytes d) :
     ∀ v, s.hasType v = true → (transmuteVal s d v).isSome = true
 
--- ToyZc/Transmute.lean
+-- lean/ToyZc/Transmute.lean:77-79
 theorem desc_transmute_total_of_size_eq (s d : Desc) (hsz : s.size = d.size)
     (hI : SemIntoBytes s) (hF : SemFromBytes d) :
     ∀ v, s.hasType v = true → (transmuteVal s d v).isSome = true
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 size Dst ≤ size Src → IntoBytes Src → FromBytes Dst →
@@ -1424,7 +1424,7 @@ Basis: derived (modeling bridge): via B1, B3, B10. `transmuteVal` models the `#[
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/KnownLayout.lean
+-- lean/ToyZc/KnownLayout.lean:234-241
 theorem vccm_sliceDst_returns_max_fitting_elems (align addr bytesLen : Nat) (ct : CastType)
     (t : TrailingSliceLayout) (hA : 0 < t.sizeAlign) (hP : t.sizePhase ≤ t.sizeAlign)
     (hE : 0 < t.elemSize) (hAl : (addr + castOffset ct bytesLen) % align = 0) :
@@ -1434,7 +1434,7 @@ theorem vccm_sliceDst_returns_max_fitting_elems (align addr bytesLen : Nat) (ct 
     | .sizeErr => ∀ n, bytesLen < t.sizeForElems n
     | _ => False
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 size(n) := base + alignUp(phase + n·elem, A);  0 < A → phase ≤ A → 0 < elem → aligned endpoint →
@@ -1465,13 +1465,13 @@ Basis: derived (modeling bridge): via B6. `vccm` transcribes `validate_cast_and_
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/KnownLayout.lean
+-- lean/ToyZc/KnownLayout.lean:345-348
 theorem vccm_sliceDst_start_aligned_of_align_dvd (align addr bytesLen : Nat) (ct : CastType)
     (t : TrailingSliceLayout) (hdB : align ∣ t.sizeBase) (hdA : align ∣ t.sizeAlign)
     (elems splitAt : Nat) (hok : vccm ⟨align, .sliceDst t⟩ addr bytesLen ct = .ok elems splitAt) :
     (addr + startOffset ct splitAt) % align = 0
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 align ∣ base → align ∣ A → vccm ⟨align, sliceDst t⟩ addr len ct = ok(e, s) →
@@ -1500,11 +1500,11 @@ Basis: derived (modeling bridge): via B6. The divisibility hypotheses state zero
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/KnownLayout.lean
+-- lean/ToyZc/KnownLayout.lean:406-407
 theorem normalizeDst_sizeForElems_eq_dstSize (d : SliceDstSpec) (n : Nat) :
     (normalizeDst d).sizeForElems n = dstSize d n
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 (T - T mod A) + alignUp(T mod A + n·e, A) = alignUp(T + n·e, A)   (T = dstTailOffset d, A = dstAlign d, e = elem size)
@@ -1529,13 +1529,13 @@ Basis: derived (modeling bridge): via B6, B9. `normalizeDst` is the trailing-sli
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/KnownLayout.lean
+-- lean/ToyZc/KnownLayout.lean:426-429
 theorem vccm_normalizeDst_elems_eq_maxSliceElems_of_aligned (d : SliceDstSpec)
     (align addr bytesLen : Nat) (ct : CastType)
     (hAl : (addr + castOffset ct bytesLen) % align = 0) :
     (vccm ⟨align, .sliceDst (normalizeDst d)⟩ addr bytesLen ct).elems? = maxSliceElems d bytesLen
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 (addr + castOffset ct len) % align = 0 → elems(vccm ⟨align, sliceDst (normalizeDst d)⟩ addr len ct) = maxSliceElems d len
@@ -1561,11 +1561,11 @@ Basis: derived (modeling bridge): via B6, B9. As for R6a and R6b. Only the eleme
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/NonClaims.lean
+-- lean/ToyZc/NonClaims.lean:67-68
 theorem immutable_not_byte_determined :
     ¬ ∃ P : Desc → Prop, ByteDetermined P ∧ ∀ d, P d ↔ implImmutable d = true
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 ¬ ∃ P, (∀ d₁ d₂, same layout, typing, encoder, decoder → (P d₁ ↔ P d₂)) ∧ ∀ d, P d ↔ implImmutable d
@@ -1591,17 +1591,17 @@ Basis: derived (modeling bridge): via B8. `implImmutable` transcribes the `Immut
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/NonClaims.lean
+-- lean/ToyZc/NonClaims.lean:93-95
 theorem union_fromBytes_derive_not_necessary :
     SemFromBytes (.union (.c .none) [.u8, .bool]) ∧
     implFromBytes (.union (.c .none) [.u8, .bool]) = false
 
--- ToyZc/NonClaims.lean
+-- lean/ToyZc/NonClaims.lean:104-106
 theorem union_fromZeros_derive_not_necessary :
     SemFromZeros (.union (.c .none) [.u8, Desc.noZero]) ∧
     implFromZeros (.union (.c .none) [.u8, Desc.noZero]) = false
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 FromBytes (union {u8, bool}) ∧ ¬ implFromBytes (union {u8, bool});  FromZeros (union {u8, E}) ∧ ¬ implFromZeros (union {u8, E})
@@ -1626,7 +1626,7 @@ Basis: derived (modeling bridge): via B1, B2, B8. The modeled union `FromBytes`/
 - **Lean statement(s):**
 
 ```lean
--- ToyZc/NonClaims.lean
+-- lean/ToyZc/NonClaims.lean:125-161
 theorem unaligned_check_conjuncts_necessary :
     -- 1
     ((ReprModifier.aligned 2).isAlignGt1 = true ∧
@@ -1665,7 +1665,7 @@ theorem unaligned_check_conjuncts_necessary :
       implUnaligned (.union (.c .none) [.u8, .u16]) = false ∧
       ¬ SemUnaligned (.union (.c .none) [.u8, .u16]))
 ```
-- **Unfolded reading** (key definitions expanded):
+- **Unfolded reading** (key definitions expanded; prose):
 
 ```text
 for each conjunct c of implUnaligned's struct (repr(C): !align>1, packed1 ∨ all fields; repr(transparent): all fields),
@@ -1703,21 +1703,21 @@ Each remark in this report that a modeled check is incomplete, stronger than nee
 * `Toy.Zc.vccm_normalizeDst_zst_both_none` (R6c): In the model, for a zero-sized trailing element `vccm` panics and `maxSliceElems` returns `none`, so both sides of R6c are `none`, although every element count fits.
 
 ```lean
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:1464-1468
 theorem findZeroVariant_incomplete_with_unknown :
     findZeroVariant [.other 0] = .error true ∧ findZeroVariant [.other 0] ≠ .error false ∧
     0 ∈ resolveDiscrs [.other 0] ∧
     implFromZeros (.enm (.prim .u8) [(.other 0, [])]) = false ∧
     SemFromZeros (.enm (.prim .u8) [(.other 0, [])])
 
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:1481-1485
 theorem findZeroVariant_incomplete_nonliteral_before_implicit :
     findZeroVariant [.other (-1), .implicit] = .error true ∧
     resolveDiscrs [.other (-1), .implicit] = [-1, 0] ∧
     implFromZeros (.enm (.prim .i8) [(.other (-1), []), (.implicit, [])]) = false ∧
     SemFromZeros (.enm (.prim .i8) [(.other (-1), []), (.implicit, [])])
 
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:1592-1598
 theorem fromBytes_enum_rejected_by_findZeroVariant :
     (Desc.enm (.prim .u8) nonLiteralZeroFullU8).wf = true ∧
     enumVariantCountOK (.prim .u8) nonLiteralZeroFullU8 = true ∧
@@ -1726,31 +1726,31 @@ theorem fromBytes_enum_rejected_by_findZeroVariant :
     SemFromZeros (.enm (.prim .u8) nonLiteralZeroFullU8) ∧
     implFromBytes (.enm (.prim .u8) nonLiteralZeroFullU8) = false
 
--- ToyZc/NonClaims.lean
+-- lean/ToyZc/NonClaims.lean:93-95
 theorem union_fromBytes_derive_not_necessary :
     SemFromBytes (.union (.c .none) [.u8, .bool]) ∧
     implFromBytes (.union (.c .none) [.u8, .bool]) = false
 
--- ToyZc/NonClaims.lean
+-- lean/ToyZc/NonClaims.lean:104-106
 theorem union_fromZeros_derive_not_necessary :
     SemFromZeros (.union (.c .none) [.u8, Desc.noZero]) ∧
     implFromZeros (.union (.c .none) [.u8, Desc.noZero]) = false
 
--- ToyZc/Union.lean
+-- lean/ToyZc/Union.lean:311-313
 theorem union_gate_rejects_intoBytes_union :
     implIntoBytes cfgDefault (.union (.c .none) [.u16, .int .i16]) = false ∧
     SemIntoBytes (.union (.c .none) [.u16, .int .i16])
 
--- ToyZc/Transmute.lean
+-- lean/ToyZc/Transmute.lean:97-98
 theorem transmute_shrink_example :
     transmuteVal .u32 .u16 (.int [1, 2, 3, 4]) = some (.int [1, 2])
 
--- ToyZc/Transmute.lean
+-- lean/ToyZc/Transmute.lean:105-107
 theorem transmute_extend_into_trailing_padding_example :
     Desc.u8.size < Desc.alignedByte.size ∧ SemIntoBytes .u8 ∧
     ∀ v, Desc.u8.hasType v = true → (transmuteVal .u8 Desc.alignedByte v).isSome = true
 
--- ToyZc/NonClaims.lean
+-- lean/ToyZc/NonClaims.lean:125-161
 theorem unaligned_check_conjuncts_necessary :
     -- 1
     ((ReprModifier.aligned 2).isAlignGt1 = true ∧
@@ -1789,27 +1789,27 @@ theorem unaligned_check_conjuncts_necessary :
       implUnaligned (.union (.c .none) [.u8, .u16]) = false ∧
       ¬ SemUnaligned (.union (.c .none) [.u8, .u16]))
 
--- ToyZc/Enum.lean
+-- lean/ToyZc/Enum.lean:1397-1401
 theorem ce_enum_fromZeros_of_findZeroVariant_drop_wf :
     discrsWF (.prim .u8) (dupZeroNonLiteral.map Prod.fst) = false ∧
     findZeroVariant (dupZeroNonLiteral.map Prod.fst) = .ok 1 ∧
     (∀ fs, variantFields dupZeroNonLiteral 1 = some fs → ∀ f ∈ fs, SemFromZeros f) ∧
     ¬ SemFromZeros (.enm (.prim .u8) dupZeroNonLiteral)
 
--- ToyZc/Union.lean
+-- lean/ToyZc/Union.lean:323-327
 theorem union_decode_encode_forgets_bytes :
     let U : Desc := .union (.c .none) [.u8, .u16]
     U.encodeL (.union 1 (.int [5, 9])) = [.init 5, .init 9] ∧
     U.decodeL [.init 5, .init 9] = some (.union 0 (.int [5])) ∧
     U.encodeL (.union 0 (.int [5])) = [.init 5, .uninit]
 
--- ToyZc/Union.lean
+-- lean/ToyZc/Union.lean:334-337
 theorem union_decode_not_monotone :
     let U : Desc := .union (.c .none) [.u16, .u8]
     U.decodeL [.init 5, .uninit] = some (.union 1 (.int [5])) ∧
     U.decodeL [.init 5, .init 9] = some (.union 0 (.int [5, 9]))
 
--- ToyZc/KnownLayout.lean
+-- lean/ToyZc/KnownLayout.lean:585-588
 theorem vccm_normalizeDst_zst_both_none :
     let d : SliceDstSpec := ⟨.none, [⟨4, 4⟩], ⟨0, 1⟩⟩
     vccm ⟨4, .sliceDst (normalizeDst d)⟩ 0 8 .prefixCast = .panic ∧ maxSliceElems d 8 = none ∧
@@ -1824,7 +1824,7 @@ Basis: execution (Lean kernel check)
 
 **R1-semantic-predicates-list-characterizations** (`Toy.Zc.semFromBytes_iff_validInit_total`, `Toy.Zc.semFromZeros_iff_validInit_zeros`, `Toy.Zc.semIntoBytes_iff_encodeL_init`):
 
-* These are equivalences inside the model only; that SemFromBytes/SemFromZeros/SemIntoBytes match zerocopy's documented safety contracts (zerocopy/src/lib.rs:4266-4269, 3681-3683, 5913-5916) is a modeling bridge.
+* These are equivalences inside the model; they neither establish nor refute the corresponding claims about the safety contracts of zerocopy v0.8.63's `FromBytes`, `FromZeros` and `IntoBytes` traits. That SemFromBytes/SemFromZeros/SemIntoBytes match those documented contracts (zerocopy/src/lib.rs:4266-4269, 3681-3683, 5913-5916) is a modeling bridge.
 * validInit is the exact validity of the model's decoder, not zerocopy's runtime check; the two are related only by R2f (derive_isSafe_eq_validInit_of_wf_of_length) for well-formed descriptions and bytes of the right length.
 * Bytes carry no provenance; nothing here says anything about pointer-carrying types.
 * On unions, validity (Desc.decodeL) is by definition zerocopy's conservative rule 'some field is valid', returning the first such field (zerocopy/zerocopy-derive/src/derive/try_from_bytes.rs:292-296: 'The bit validity of a union is not yet well defined in Rust, but it is guaranteed to be no more strict than this definition'). Consequently Desc.rep on unions is not canonical: decoding then encoding can forget bytes (union_decode_encode_forgets_bytes) and decoding is not monotone in definedness (union_decode_not_monotone).
@@ -1977,6 +1977,7 @@ Basis: execution (Lean kernel check)
 **R6d-validate-cast-start-aligned-of-align-dvd** (`Toy.Zc.vccm_sliceDst_start_aligned_of_align_dvd`):
 
 * No positivity, phase, or element-size hypothesis is needed; the validation's own endpoint check supplies alignment of addr (prefix) or addr + bytes_len (suffix). The theorem does not say the returned count is maximal (that is R6a).
+* With align = 0, Lean's 0 ∣ x means x = 0 and x % 0 = x, so the hypotheses require t.sizeBase = 0 and t.sizeAlign = 0, and the conclusion (addr + startOffset ct splitAt) % align = 0 reads addr + startOffset ct splitAt = 0; the theorem has no 0 < align hypothesis.
 * normalizeDst_align_dvd shows that the normalized layout of a flat repr(C) slice DST with layout alignment dstAlign d satisfies both hypotheses; whether zerocopy's own DstLayout for real types does is not modeled.
 * Does not model #[derive(KnownLayout)] (zerocopy/zerocopy-derive/src/derive/known_layout.rs:252-351) or zerocopy's construction of a type's DstLayout (DstLayout::for_type, DstLayout::for_repr_c_struct).
 * Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact.
@@ -1991,6 +1992,7 @@ Basis: execution (Lean kernel check)
 
 * For zero-sized elements both sides are none for different reasons (panic vs. none); no largest count exists (vccm_normalizeDst_zst_both_none).
 * Only element counts are compared (split_at is dropped), and the layout alignment is arbitrary rather than dstAlign d; start alignment is R6d (with normalizeDst_align_dvd for align = dstAlign d).
+* With align = 0 the alignment hypothesis (addr + castOffset ct bytesLen) % align = 0 reads addr + castOffset ct bytesLen = 0, because Lean defines x % 0 = x; the theorem has no 0 < align hypothesis, so at align = 0 the hypothesis is not "no alignment constraint" but holds exactly when addr + castOffset ct bytesLen = 0.
 * Does not model #[derive(KnownLayout)] (zerocopy/zerocopy-derive/src/derive/known_layout.rs:252-351) or zerocopy's construction of a type's DstLayout (DstLayout::for_type, DstLayout::for_repr_c_struct).
 * Model-relative: statements are about the toy model: closed non-generic descriptions built from the primitives u8, i8, u16, i16, u32, i32, u64, i64 and bool (no u128/i128, usize/isize, floats, char, NonZero*, tuples, PhantomData, ManuallyDrop, references or pointers); little-endian integers whose alignment equals their size (modeled on x86_64-unknown-linux-gnu); repr(C) enums restricted to a 4-byte tag holding i32-range discriminants; no align(N) on enums; unbounded natural-number sizes. Agreement with zerocopy and rustc is a modeling bridge argued from cited source lines, not a kernel-checked fact.
 
