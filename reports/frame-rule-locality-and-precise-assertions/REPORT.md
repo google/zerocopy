@@ -42,6 +42,10 @@ again in each result's `non_claims` in `results.json`. In particular: everything
 partial correctness with no termination guarantee; the model has no variable store,
 no address arithmetic and no concurrency; and "proved" means proved about these Lean
 definitions, not about any particular program logic or verifier.
+Model–system relation: none proved. These are statements about the toy model; they neither
+establish nor refute the corresponding claims about real separation logics or the
+mechanized frameworks and verifiers built on them (such as HOL4's separation-logic
+framework, VST's `msl` and Isabelle's `Separation_Algebra`).
 
 ## Applicability
 
