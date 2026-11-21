@@ -130,7 +130,7 @@ vacuous.
 
 All prefix lengths `j < k` are checked, not only paths with exactly `k - 1` transitions. The two
 agree when every state has a successor (`base_iff_exactBase_of_total`); without that assumption a
-check of exact length only is unsound, because a bad state at a dead end reached in fewer than
+check of exact length only can be unsound, because a bad state at a dead end reached in fewer than
 `k - 1` transitions is never examined (`exact_length_base_unsound_without_totality`). -/
 def Base (I : σ → Prop) (T : σ → σ → Prop) (P : σ → Prop) (k : Nat) : Prop :=
   ∀ j, j < k → ∀ π : Nat → σ, I (π 0) → IsPath T j π → ∀ i, i ≤ j → P (π i)
