@@ -353,6 +353,59 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             self.assertEqual(seen, "exists")
             self.assertIn("--miri-cache-dir", args)
 
+    def test_ci_performance_and_sandbox_probe_invariants(self):
+        top_env = self.workflow["env"]
+        self.assertEqual(top_env.get("CARGO_BUILD_JOBS"), "4")
+        self.assertEqual(top_env.get("RUST_TEST_THREADS"), "4")
+
+        jobs = self.workflow["jobs"]
+        self.assertEqual(
+            jobs["test-and-verify"]["env"].get("ANNEAL_TEST_JOBS"), "4"
+        )
+        opt_flags = tuple(
+            f"--config 'profile.dev.package.{pkg}.opt-level=3'"
+            for pkg in ("cpufeatures", "digest", "sha2")
+        )
+        for job_name, step_ids in (
+            (
+                "test-and-verify",
+                ("installed_cli", "installed_auditor", "audit", "package", "smoke"),
+            ),
+            ("workspace-tests", ("installed_cli", "workspace")),
+        ):
+            by_id = {
+                s["id"]: s for s in jobs[job_name]["steps"] if "id" in s
+            }
+            for step_id in step_ids:
+                for flag in opt_flags:
+                    self.assertIn(
+                        flag,
+                        by_id[step_id]["run"],
+                        f"{job_name}.{step_id} missing {flag}",
+                    )
+
+        rg_step = next(
+            s for s in jobs["static-checks"]["steps"]
+            if s.get("name") == "Install ripgrep"
+        )
+        self.assertIn("set -euo pipefail", rg_step["run"])
+        self.assertIn("rg --version", rg_step["run"])
+
+        for job_name in ("test-and-verify", "workspace-tests"):
+            sandbox_step = next(
+                s for s in jobs[job_name]["steps"] if s.get("id") == "sandbox"
+            )
+            self.assertIn("set -euo pipefail", sandbox_step["run"])
+            self.assertIn("bwrap --unshare-all", sandbox_step["run"])
+            self.assertIn("-- /true", sandbox_step["run"])
+
+        alpha_step = next(
+            s for s in jobs["test-and-verify"]["steps"]
+            if s.get("name") == "Check the scalar alpha with the installed toolchain"
+        )
+        self.assertIn('"$ANNEAL_TEST_CARGO_ANNEAL" /cargo-anneal', alpha_step["run"])
+        self.assertNotIn("cargo build", alpha_step["run"])
+
     def test_parallel_workspace_tests_job_wired_into_gate_and_isolated(self):
         jobs = self.workflow["jobs"]
         self.assertIn("workspace-tests", jobs["all-jobs-succeed"]["needs"])

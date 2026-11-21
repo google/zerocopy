@@ -15,7 +15,12 @@ use std::env;
 use std::ffi::OsString;
 use std::fs;
 use std::io;
+use std::num::NonZero;
 use std::path::{Component, Path, PathBuf};
+use std::sync::{
+    Mutex,
+    atomic::{AtomicUsize, Ordering},
+};
 
 use serde::Deserialize;
 use walkdir::WalkDir;
@@ -168,15 +173,14 @@ pub fn verify_sysroot_foundation_dir(
     expected_manifest_sha: &str,
 ) -> Result<Vec<String>, Failure> {
     let phase = "sysroot-foundation";
-    let mut entries: BTreeMap<String, String> = BTreeMap::new();
+    let mut files_to_hash: Vec<(String, PathBuf)> = Vec::new();
     let mut modules: BTreeSet<String> = BTreeSet::new();
     for pkg in ["Init", "Std", "Lean"] {
         for ext in OLEAN_PARTS {
             let rel = format!("{pkg}.{ext}");
             let path = lib_dir.join(&rel);
             if fs::symlink_metadata(&path).is_ok() {
-                let sha = sha256_file(&path, phase)?;
-                entries.insert(rel, sha);
+                files_to_hash.push((rel, path));
                 if ext == "olean" && !foundation_modules.contains(pkg) {
                     modules.insert(pkg.to_string());
                 }
@@ -230,8 +234,6 @@ pub fn verify_sysroot_foundation_dir(
                 .iter()
                 .any(|ext| rel_str.ends_with(&format!(".{ext}")));
             if is_olean_part {
-                let sha = sha256_file(item.path(), phase)?;
-                entries.insert(rel_str.clone(), sha);
                 if let Some(stem) = rel_str.strip_suffix(".olean") {
                     let mod_name = stem.replace('/', ".");
                     if !mod_name.split('.').all(is_lean_ident) {
@@ -244,9 +246,63 @@ pub fn verify_sysroot_foundation_dir(
                         modules.insert(mod_name);
                     }
                 }
+                files_to_hash.push((rel_str, item.path().to_path_buf()));
             }
         }
     }
+
+    // Hash the validated regular files across up to 4 bounded worker threads,
+    // then reassemble digests in deterministic index order so both the
+    // canonical `BTreeMap` manifest and the first reported error match a
+    // single-threaded walk.
+    let workers = std::thread::available_parallelism()
+        .map(NonZero::get)
+        .unwrap_or(1)
+        .min(4)
+        .min(files_to_hash.len());
+    let mut entries: BTreeMap<String, String> = BTreeMap::new();
+    if workers <= 1 {
+        for (rel, path) in files_to_hash {
+            let sha = sha256_file(&path, phase)?;
+            entries.insert(rel, sha);
+        }
+    } else {
+        let next_idx = AtomicUsize::new(0);
+        let min_err_idx = AtomicUsize::new(usize::MAX);
+        let outcomes: Mutex<Vec<(usize, Result<String, Failure>)>> =
+            Mutex::new(Vec::with_capacity(files_to_hash.len()));
+        std::thread::scope(|scope| {
+            for _ in 0..workers {
+                scope.spawn(|| {
+                    let mut local = Vec::new();
+                    loop {
+                        let idx = next_idx.fetch_add(1, Ordering::Relaxed);
+                        if idx >= files_to_hash.len()
+                            || idx > min_err_idx.load(Ordering::Relaxed)
+                        {
+                            break;
+                        }
+                        let res = sha256_file(&files_to_hash[idx].1, phase);
+                        if res.is_err() {
+                            min_err_idx.fetch_min(idx, Ordering::Relaxed);
+                        }
+                        local.push((idx, res));
+                    }
+                    outcomes
+                        .lock()
+                        .unwrap_or_else(|e| e.into_inner())
+                        .extend(local);
+                });
+            }
+        });
+        let mut collected = outcomes.into_inner().unwrap_or_else(|e| e.into_inner());
+        collected.sort_unstable_by_key(|(idx, _)| *idx);
+        for (idx, res) in collected {
+            let sha = res?;
+            entries.insert(files_to_hash[idx].0.clone(), sha);
+        }
+    }
+
     let mut manifest = String::new();
     for (rel, sha) in &entries {
         manifest.push_str(rel);

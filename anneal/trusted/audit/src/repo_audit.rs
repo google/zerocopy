@@ -18,8 +18,10 @@ use std::{
     env,
     ffi::{OsStr, OsString},
     fs, io,
+    num::NonZero,
     path::{Component, Path, PathBuf},
     process::Command,
+    sync::{Condvar, Mutex},
 };
 
 use cargo_anneal::{
@@ -1039,10 +1041,11 @@ impl Checker {
         Ok(corr_report)
     }
 
-    /// Stage, restore from the digest-gated cache or compile synchronously,
-    /// verify every staged source and output `.olean` companion digest, and
-    /// write newly compiled artifacts to `self.miri_cache_dir` only after
-    /// verification succeeds.
+    /// Stage, restore from the digest-gated cache or compile inside isolated
+    /// per-module OS sandboxes (concurrently along the `Miri.*` import DAG
+    /// when multiple modules miss the cache), verify every staged source and
+    /// output `.olean` companion digest, and write newly compiled artifacts to
+    /// `self.miri_cache_dir` only after verification succeeds.
     pub fn verify_and_stage_miri_entries(
         &mut self,
         vendor_dir: &Path,
@@ -1057,7 +1060,14 @@ impl Checker {
         let miri_lib = stage.join("miri-lib");
         fs::create_dir_all(&miri_lib)
             .map_err(|e| Failure::operational("miri-compile", e.to_string()))?;
+        let mut seen_modules = BTreeSet::new();
         for entry in entries {
+            if !seen_modules.insert(entry.module.as_str()) {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!("duplicate Miri closure module {}", entry.module),
+                ));
+            }
             let Some(expected_src_sha) = expected_sources.get(&entry.path) else {
                 return Err(Failure::policy(
                     "miri-pin",
@@ -1078,7 +1088,8 @@ impl Checker {
             }
         }
 
-        for entry in entries {
+        let mut cold_indices: Vec<usize> = Vec::new();
+        for (idx, entry) in entries.iter().enumerate() {
             let rel_stem = entry.module.replace('.', "/");
             let rel_olean = format!("{rel_stem}.olean");
             let staged_olean = miri_lib.join(&rel_olean);
@@ -1178,141 +1189,221 @@ impl Checker {
                         }
                     }
                 }
-                continue;
+            } else {
+                cold_indices.push(idx);
             }
+        }
 
-            // Cold vendor elaboration runs inside an isolated per-module OS
-            // sandbox whose sole host-backed writable directory is a fresh
-            // owner-only temporary directory outside `self.stage`, the
-            // checkout, `$HOME`, and `self.miri_cache_dir`.
-            self.inner.mark_execution_began();
-            let mut out_builder = tempfile::Builder::new();
-            out_builder.prefix("anneal-miri-out-");
-            #[cfg(unix)]
-            out_builder.permissions(fs::Permissions::from_mode(0o700));
-            let module_out_dir = out_builder
-                .tempdir()
-                .map_err(|e| Failure::operational("miri-compile", e.to_string()))?;
-            let out_olean = module_out_dir.path().join(&rel_olean);
-            if let Some(parent) = out_olean.parent() {
-                fs::create_dir_all(parent)
-                    .map_err(|e| Failure::operational("miri-compile", e.to_string()))?;
-            }
-            self.sandbox_compile_miri_module(
-                &format!("compile-{}", entry.module),
-                &miri_src_root,
-                &miri_lib,
-                module_out_dir.path(),
-                &rel_olean,
-                &entry.path,
-            )?;
+        if cold_indices.is_empty() {
+            return Ok(miri_lib);
+        }
 
-            let actual_olean_sha = sha256_file(&out_olean, "miri-pin")?;
-            if !actual_olean_sha.eq_ignore_ascii_case(&entry.olean_sha256) {
+        let workers = std::thread::available_parallelism()
+            .map(NonZero::get)
+            .unwrap_or(1)
+            .min(4)
+            .min(cold_indices.len())
+            .max(1);
+
+        // Parse only the `module`/`prelude`/`import` headers of all
+        // SHA-256-verified staged closure sources (`Parser.parseHeader` in
+        // `"headers"` mode loads zero `.olean` files, runs zero initializers,
+        // and elaborates zero commands) to build the complete `Miri.*`
+        // dependency DAG, preserving transitive dependencies and cycle checks
+        // across cached intermediate modules regardless of worker count.
+        let total_len = entries.len();
+        let mut is_cold = vec![false; total_len];
+        for &idx in &cold_indices {
+            is_cold[idx] = true;
+        }
+        let header_sources: Vec<(String, PathBuf)> = entries
+            .iter()
+            .map(|entry| (entry.module.clone(), miri_src_root.join(&entry.path)))
+            .collect();
+        let headers_res: PreflightResult =
+            serde_json::from_value(self.inspect(InspectorRequest::Headers {
+                sources: header_sources,
+            })?)
+            .map_err(|e| Failure::operational("headers", e.to_string()))?;
+        let idx_by_module: BTreeMap<&str, usize> = entries
+            .iter()
+            .enumerate()
+            .map(|(idx, entry)| (entry.module.as_str(), idx))
+            .collect();
+        if headers_res.headers.len() != total_len {
+            return Err(Failure::operational(
+                "headers",
+                "incomplete Miri closure header inventory",
+            ));
+        }
+
+        let mut seen_headers = vec![false; total_len];
+        let mut in_degree = vec![0usize; total_len];
+        let mut dependents: Vec<Vec<usize>> = vec![Vec::new(); total_len];
+        for header in headers_res.headers {
+            let Some(&dst_idx) = idx_by_module.get(header.module.as_str()) else {
                 return Err(Failure::policy(
                     "miri-pin",
-                    format!(
-                        "compiled Miri .olean SHA-256 mismatch for {}: expected {}, got {actual_olean_sha}",
-                        entry.module, entry.olean_sha256
-                    ),
+                    format!("unexpected Miri header record for {}", header.module),
                 ));
-            }
-            let mut expected_out_files = BTreeSet::from([rel_olean.clone()]);
-            for (part, expected_opt) in [
-                ("olean.server", entry.olean_server_sha256.as_deref()),
-                ("olean.private", entry.olean_private_sha256.as_deref()),
-            ] {
-                let rel_part = format!("{rel_stem}.{part}");
-                let out_part = module_out_dir.path().join(&rel_part);
-                match expected_opt {
-                    Some(exp_sha) => {
-                        if fs::symlink_metadata(&out_part).is_err() {
-                            return Err(Failure::policy(
-                                "miri-pin",
-                                format!(
-                                    "missing compiled Miri .{part} sidecar for {}",
-                                    entry.module
-                                ),
-                            ));
-                        }
-                        let actual_sha = sha256_file(&out_part, "miri-pin")?;
-                        if !actual_sha.eq_ignore_ascii_case(exp_sha) {
-                            return Err(Failure::policy(
-                                "miri-pin",
-                                format!(
-                                    "compiled Miri .{part} SHA-256 mismatch for {}: expected {exp_sha}, got {actual_sha}",
-                                    entry.module
-                                ),
-                            ));
-                        }
-                        expected_out_files.insert(rel_part);
-                    }
-                    None => {
-                        if fs::symlink_metadata(&out_part).is_ok() {
-                            return Err(Failure::policy(
-                                "miri-pin",
-                                format!("unexpected Miri .{part} sidecar for {}", entry.module),
-                            ));
-                        }
-                    }
-                }
-            }
-            if entry.olean_server_sha256.is_some() || entry.olean_private_sha256.is_some() {
-                expected_out_files.insert(format!("{rel_stem}.ir"));
-                expected_out_files.insert(format!("{rel_stem}.ir.sig"));
-            }
-            verify_no_unexpected_sandbox_outputs(
-                module_out_dir.path(),
-                &expected_out_files,
-                &rel_olean,
-                &entry.module,
-            )?;
-
-            let staged_olean_sha = stage_regular_file(&out_olean, &staged_olean, "miri-pin")?;
-            if !staged_olean_sha.eq_ignore_ascii_case(&entry.olean_sha256) {
+            };
+            if seen_headers[dst_idx] {
                 return Err(Failure::policy(
                     "miri-pin",
-                    format!(
-                        "staged Miri .olean SHA-256 mismatch for {}: expected {}, got {staged_olean_sha}",
-                        entry.module, entry.olean_sha256
-                    ),
+                    format!("duplicate Miri header record for {}", header.module),
                 ));
             }
-            for (part, expected_opt) in [
-                ("olean.server", entry.olean_server_sha256.as_deref()),
-                ("olean.private", entry.olean_private_sha256.as_deref()),
-            ] {
-                if let Some(exp_sha) = expected_opt {
-                    let rel_part = format!("{rel_stem}.{part}");
-                    let staged_part_sha = stage_regular_file(
-                        &module_out_dir.path().join(&rel_part),
-                        &miri_lib.join(&rel_part),
-                        "miri-pin",
-                    )?;
-                    if !staged_part_sha.eq_ignore_ascii_case(exp_sha) {
+            seen_headers[dst_idx] = true;
+            let mut unique_deps = BTreeSet::new();
+            for edge in header.imports {
+                if let Some(&src_idx) = idx_by_module.get(edge.module.as_str()) {
+                    if src_idx == dst_idx {
                         return Err(Failure::policy(
                             "miri-pin",
-                            format!(
-                                "staged Miri .{part} SHA-256 mismatch for {}: expected {exp_sha}, got {staged_part_sha}",
-                                entry.module
-                            ),
+                            format!("self-import in Miri closure module {}", header.module),
                         ));
                     }
-                }
-            }
-
-            if let Some(cache_dir) = &self.miri_cache_dir {
-                write_cache_file(&staged_olean, cache_dir, &rel_olean, "miri-pin")?;
-                for part in &OLEAN_PARTS[1..] {
-                    let rel_part = format!("{rel_stem}.{part}");
-                    let staged_part = miri_lib.join(&rel_part);
-                    if fs::symlink_metadata(&staged_part).is_ok() {
-                        write_cache_file(&staged_part, cache_dir, &rel_part, "miri-pin")?;
-                    } else {
-                        remove_cache_file(cache_dir, &rel_part, "miri-pin")?;
+                    if unique_deps.insert(src_idx) {
+                        dependents[src_idx].push(dst_idx);
+                        in_degree[dst_idx] += 1;
                     }
                 }
             }
+        }
+        let topo_order = verify_miri_dag_acyclic(&in_degree, &dependents)?;
+        let mut min_cold_descendant = vec![usize::MAX; total_len];
+        for &u in topo_order.iter().rev() {
+            let mut best = if is_cold[u] { u } else { usize::MAX };
+            for &v in &dependents[u] {
+                best = best.min(min_cold_descendant[v]);
+            }
+            min_cold_descendant[u] = best;
+        }
+
+        let first_label = format!("compile-{}", entries[cold_indices[0]].module);
+        let (bwrap, lean_prefix, sandbox_lean) =
+            self.resolve_bwrap_and_sandbox_lean(&first_label)?;
+        self.inner.mark_execution_began();
+        for _ in 0..cold_indices.len() {
+            let _ = self.inner.next_counter();
+        }
+
+        let mut init_state = MiriDagState {
+            ready: BTreeSet::new(),
+            in_degree,
+            active_workers: 0,
+            first_error: None,
+        };
+        let mut cached_roots = Vec::new();
+        for idx in 0..total_len {
+            if init_state.in_degree[idx] == 0 {
+                if is_cold[idx] {
+                    init_state.ready.insert((min_cold_descendant[idx], idx));
+                } else {
+                    cached_roots.push(idx);
+                }
+            }
+        }
+        propagate_miri_completions(
+            cached_roots,
+            &is_cold,
+            &min_cold_descendant,
+            &dependents,
+            &mut init_state,
+        );
+        let sync = (Mutex::new(init_state), Condvar::new());
+        let miri_cache_dir = self.miri_cache_dir.as_deref();
+
+        std::thread::scope(|scope| {
+            for _ in 0..workers {
+                scope.spawn(|| {
+                    let (lock, cvar) = &sync;
+                    loop {
+                        let entry_idx = {
+                            let mut state = lock.lock().unwrap_or_else(|e| e.into_inner());
+                            while let Some(&(last_min_desc, _)) = state.ready.last() {
+                                let beaten = state
+                                    .first_error
+                                    .as_ref()
+                                    .is_some_and(|(best_idx, _)| *best_idx < last_min_desc);
+                                if beaten {
+                                    state.ready.pop_last();
+                                } else {
+                                    break;
+                                }
+                            }
+                            if let Some((_, next_idx)) = state.ready.pop_first() {
+                                state.active_workers += 1;
+                                next_idx
+                            } else if state.active_workers == 0 {
+                                cvar.notify_all();
+                                break;
+                            } else {
+                                drop(cvar.wait(state).unwrap_or_else(|e| e.into_inner()));
+                                continue;
+                            }
+                        };
+
+                        let mut panic_guard = MiriWorkerPanicGuard {
+                            sync: &sync,
+                            entry_idx,
+                            armed: true,
+                        };
+                        let compile_res = compile_and_verify_cold_miri_entry(
+                            bwrap,
+                            &lean_prefix,
+                            &sandbox_lean,
+                            &miri_src_root,
+                            &miri_lib,
+                            &entries[entry_idx],
+                        );
+
+                        let mut state = lock.lock().unwrap_or_else(|e| e.into_inner());
+                        panic_guard.armed = false;
+                        state.active_workers -= 1;
+                        let min_desc = min_cold_descendant[entry_idx];
+                        let beaten = state
+                            .first_error
+                            .as_ref()
+                            .is_some_and(|(best_idx, _)| *best_idx < min_desc);
+                        match compile_res {
+                            Ok(module_out_dir) if !beaten => {
+                                // Stage and cache under the lock so dependents
+                                // see complete `.olean` files without races.
+                                match stage_and_cache_verified_miri_entry(
+                                    &miri_lib,
+                                    miri_cache_dir,
+                                    module_out_dir.path(),
+                                    &entries[entry_idx],
+                                ) {
+                                    Ok(()) => propagate_miri_completions(
+                                        vec![entry_idx],
+                                        &is_cold,
+                                        &min_cold_descendant,
+                                        &dependents,
+                                        &mut state,
+                                    ),
+                                    Err(err) => record_earliest_miri_error(
+                                        &mut state.first_error,
+                                        entry_idx,
+                                        err,
+                                    ),
+                                }
+                            }
+                            Ok(_) => {}
+                            Err(err) => {
+                                record_earliest_miri_error(&mut state.first_error, entry_idx, err);
+                            }
+                        }
+                        cvar.notify_all();
+                    }
+                });
+            }
+        });
+
+        let final_state = sync.0.into_inner().unwrap_or_else(|e| e.into_inner());
+        if let Some((_, err)) = final_state.first_error {
+            return Err(err);
         }
         Ok(miri_lib)
     }
@@ -1480,51 +1571,6 @@ impl Checker {
         }
     }
 
-    fn sandbox_compile_miri_module(
-        &mut self,
-        label: &str,
-        miri_src_root: &Path,
-        miri_lib: &Path,
-        module_out_dir: &Path,
-        rel_olean: &str,
-        entry_rel_path: &str,
-    ) -> Result<(), Failure> {
-        let (bwrap, lean_prefix, sandbox_lean) = self.resolve_bwrap_and_sandbox_lean(label)?;
-        let args = build_bwrap_miri_compile_args(
-            &lean_prefix,
-            &sandbox_lean,
-            miri_src_root,
-            miri_lib,
-            module_out_dir,
-            rel_olean,
-            entry_rel_path,
-        );
-        let _ = self.inner.next_counter();
-        let output = Command::new(bwrap)
-            .args(&args)
-            .current_dir(module_out_dir)
-            .env_clear()
-            .output()
-            .map_err(|e| {
-                Failure::new(
-                    2,
-                    label,
-                    format!("could not execute bubblewrap sandbox {}: {e}", bwrap.display()),
-                )
-            })?;
-        if !output.status.success() {
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            let detail = if stderr.trim().is_empty() { stdout.trim() } else { stderr.trim() };
-            return Err(Failure::new(
-                2,
-                label,
-                format!("sandboxed Lean exited {:?}: {detail}", output.status.code()),
-            ));
-        }
-        Ok(())
-    }
-
     fn sandbox_compile_pass2_module(&mut self, spec: &Pass2CompileSpec<'_>) -> Result<(), Failure> {
         let label = format!("compile-{}", spec.module);
         let rel_olean = format!("{}.olean", spec.module.replace('.', "/"));
@@ -1589,6 +1635,282 @@ impl Checker {
         regular(&staged_olean, "compile")?;
         Ok(())
     }
+}
+
+struct MiriDagState {
+    ready: BTreeSet<(usize, usize)>,
+    in_degree: Vec<usize>,
+    active_workers: usize,
+    first_error: Option<(usize, Failure)>,
+}
+
+struct MiriWorkerPanicGuard<'a> {
+    sync: &'a (Mutex<MiriDagState>, Condvar),
+    entry_idx: usize,
+    armed: bool,
+}
+
+impl Drop for MiriWorkerPanicGuard<'_> {
+    fn drop(&mut self) {
+        if self.armed {
+            let (lock, cvar) = self.sync;
+            let mut state = lock.lock().unwrap_or_else(|e| e.into_inner());
+            state.active_workers = state.active_workers.saturating_sub(1);
+            record_earliest_miri_error(
+                &mut state.first_error,
+                self.entry_idx,
+                Failure::operational("miri-compile", "worker panicked during Miri compilation"),
+            );
+            cvar.notify_all();
+        }
+    }
+}
+
+fn record_earliest_miri_error(
+    slot: &mut Option<(usize, Failure)>,
+    entry_idx: usize,
+    err: Failure,
+) {
+    if slot.as_ref().is_none_or(|(best_idx, _)| entry_idx < *best_idx) {
+        *slot = Some((entry_idx, err));
+    }
+}
+
+fn propagate_miri_completions(
+    mut newly_done: Vec<usize>,
+    is_cold: &[bool],
+    min_cold_descendant: &[usize],
+    dependents: &[Vec<usize>],
+    state: &mut MiriDagState,
+) {
+    while let Some(done_idx) = newly_done.pop() {
+        for &dep_idx in &dependents[done_idx] {
+            state.in_degree[dep_idx] -= 1;
+            if state.in_degree[dep_idx] == 0 {
+                if is_cold[dep_idx] {
+                    let min_desc = min_cold_descendant[dep_idx];
+                    let dep_beaten = state
+                        .first_error
+                        .as_ref()
+                        .is_some_and(|(best_idx, _)| *best_idx < min_desc);
+                    if !dep_beaten {
+                        state.ready.insert((min_desc, dep_idx));
+                    }
+                } else {
+                    newly_done.push(dep_idx);
+                }
+            }
+        }
+    }
+}
+
+fn verify_miri_dag_acyclic(
+    in_degree: &[usize],
+    dependents: &[Vec<usize>],
+) -> Result<Vec<usize>, Failure> {
+    let mut rem = in_degree.to_vec();
+    let mut stack: Vec<usize> = (0..rem.len()).filter(|&i| rem[i] == 0).collect();
+    let mut topo_order = Vec::with_capacity(rem.len());
+    while let Some(u) = stack.pop() {
+        topo_order.push(u);
+        for &v in &dependents[u] {
+            rem[v] -= 1;
+            if rem[v] == 0 {
+                stack.push(v);
+            }
+        }
+    }
+    if topo_order.len() != rem.len() {
+        return Err(Failure::policy(
+            "miri-pin",
+            "import cycle in Miri closure modules",
+        ));
+    }
+    Ok(topo_order)
+}
+
+/// Compile one cold `vendor/lean-miri` module inside an isolated OS `bwrap`
+/// sandbox whose sole writable mount is a fresh `0o700` temporary directory,
+/// and verify all `.olean`, `.olean.server`, `.olean.private`, and directory
+/// output invariants before returning the verified temporary directory.
+fn compile_and_verify_cold_miri_entry(
+    bwrap: &Path,
+    lean_prefix: &Path,
+    sandbox_lean: &Path,
+    miri_src_root: &Path,
+    miri_lib: &Path,
+    entry: &MiriClosureEntry,
+) -> Result<tempfile::TempDir, Failure> {
+    let label = format!("compile-{}", entry.module);
+    let rel_stem = entry.module.replace('.', "/");
+    let rel_olean = format!("{rel_stem}.olean");
+
+    let mut out_builder = tempfile::Builder::new();
+    out_builder.prefix("anneal-miri-out-");
+    #[cfg(unix)]
+    out_builder.permissions(fs::Permissions::from_mode(0o700));
+    let module_out_dir = out_builder
+        .tempdir()
+        .map_err(|e| Failure::operational("miri-compile", e.to_string()))?;
+    let out_olean = module_out_dir.path().join(&rel_olean);
+    if let Some(parent) = out_olean.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|e| Failure::operational("miri-compile", e.to_string()))?;
+    }
+
+    let args = build_bwrap_miri_compile_args(
+        lean_prefix,
+        sandbox_lean,
+        miri_src_root,
+        miri_lib,
+        module_out_dir.path(),
+        &rel_olean,
+        &entry.path,
+    );
+    let output = Command::new(bwrap)
+        .args(&args)
+        .current_dir(module_out_dir.path())
+        .env_clear()
+        .output()
+        .map_err(|e| {
+            Failure::new(
+                2,
+                &label,
+                format!("could not execute bubblewrap sandbox {}: {e}", bwrap.display()),
+            )
+        })?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let detail = if stderr.trim().is_empty() { stdout.trim() } else { stderr.trim() };
+        return Err(Failure::new(
+            2,
+            &label,
+            format!("sandboxed Lean exited {:?}: {detail}", output.status.code()),
+        ));
+    }
+
+    let actual_olean_sha = sha256_file(&out_olean, "miri-pin")?;
+    if !actual_olean_sha.eq_ignore_ascii_case(&entry.olean_sha256) {
+        return Err(Failure::policy(
+            "miri-pin",
+            format!(
+                "compiled Miri .olean SHA-256 mismatch for {}: expected {}, got {actual_olean_sha}",
+                entry.module, entry.olean_sha256
+            ),
+        ));
+    }
+    let mut expected_out_files = BTreeSet::from([rel_olean.clone()]);
+    for (part, expected_opt) in [
+        ("olean.server", entry.olean_server_sha256.as_deref()),
+        ("olean.private", entry.olean_private_sha256.as_deref()),
+    ] {
+        let rel_part = format!("{rel_stem}.{part}");
+        let out_part = module_out_dir.path().join(&rel_part);
+        match expected_opt {
+            Some(exp_sha) => {
+                if fs::symlink_metadata(&out_part).is_err() {
+                    return Err(Failure::policy(
+                        "miri-pin",
+                        format!(
+                            "missing compiled Miri .{part} sidecar for {}",
+                            entry.module
+                        ),
+                    ));
+                }
+                let actual_sha = sha256_file(&out_part, "miri-pin")?;
+                if !actual_sha.eq_ignore_ascii_case(exp_sha) {
+                    return Err(Failure::policy(
+                        "miri-pin",
+                        format!(
+                            "compiled Miri .{part} SHA-256 mismatch for {}: expected {exp_sha}, got {actual_sha}",
+                            entry.module
+                        ),
+                    ));
+                }
+                expected_out_files.insert(rel_part);
+            }
+            None => {
+                if fs::symlink_metadata(&out_part).is_ok() {
+                    return Err(Failure::policy(
+                        "miri-pin",
+                        format!("unexpected Miri .{part} sidecar for {}", entry.module),
+                    ));
+                }
+            }
+        }
+    }
+    if entry.olean_server_sha256.is_some() || entry.olean_private_sha256.is_some() {
+        expected_out_files.insert(format!("{rel_stem}.ir"));
+        expected_out_files.insert(format!("{rel_stem}.ir.sig"));
+    }
+    verify_no_unexpected_sandbox_outputs(
+        module_out_dir.path(),
+        &expected_out_files,
+        &rel_olean,
+        &entry.module,
+    )?;
+    Ok(module_out_dir)
+}
+
+/// Stage a digest-verified `module_out_dir` into `miri_lib`, re-verify staged
+/// digests, and populate `miri_cache_dir` when configured.
+fn stage_and_cache_verified_miri_entry(
+    miri_lib: &Path,
+    miri_cache_dir: Option<&Path>,
+    module_out_dir: &Path,
+    entry: &MiriClosureEntry,
+) -> Result<(), Failure> {
+    let rel_stem = entry.module.replace('.', "/");
+    let rel_olean = format!("{rel_stem}.olean");
+    let out_olean = module_out_dir.join(&rel_olean);
+    let staged_olean = miri_lib.join(&rel_olean);
+    let staged_olean_sha = stage_regular_file(&out_olean, &staged_olean, "miri-pin")?;
+    if !staged_olean_sha.eq_ignore_ascii_case(&entry.olean_sha256) {
+        return Err(Failure::policy(
+            "miri-pin",
+            format!(
+                "staged Miri .olean SHA-256 mismatch for {}: expected {}, got {staged_olean_sha}",
+                entry.module, entry.olean_sha256
+            ),
+        ));
+    }
+    for (part, expected_opt) in [
+        ("olean.server", entry.olean_server_sha256.as_deref()),
+        ("olean.private", entry.olean_private_sha256.as_deref()),
+    ] {
+        if let Some(exp_sha) = expected_opt {
+            let rel_part = format!("{rel_stem}.{part}");
+            let staged_part_sha = stage_regular_file(
+                &module_out_dir.join(&rel_part),
+                &miri_lib.join(&rel_part),
+                "miri-pin",
+            )?;
+            if !staged_part_sha.eq_ignore_ascii_case(exp_sha) {
+                return Err(Failure::policy(
+                    "miri-pin",
+                    format!(
+                        "staged Miri .{part} SHA-256 mismatch for {}: expected {exp_sha}, got {staged_part_sha}",
+                        entry.module
+                    ),
+                ));
+            }
+        }
+    }
+
+    if let Some(cache_dir) = miri_cache_dir {
+        write_cache_file(&staged_olean, cache_dir, &rel_olean, "miri-pin")?;
+        for part in &OLEAN_PARTS[1..] {
+            let rel_part = format!("{rel_stem}.{part}");
+            let staged_part = miri_lib.join(&rel_part);
+            if fs::symlink_metadata(&staged_part).is_ok() {
+                write_cache_file(&staged_part, cache_dir, &rel_part, "miri-pin")?;
+            } else {
+                remove_cache_file(cache_dir, &rel_part, "miri-pin")?;
+            }
+        }
+    }
+    Ok(())
 }
 
 #[derive(Deserialize)]

@@ -1376,7 +1376,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     // untouched.
     let checkout_victim = fix.root.join("sandbox-escape-checkout.txt");
     let escape_checkout_src = format!(
-        "import Lean\n\
+        "import Lean.Elab.Command\n\
          namespace Miri.EscapeCheckout\n\
          run_cmd do\n\
            IO.FS.writeFile \"{}\" \"pwned\"\n\
@@ -1419,7 +1419,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     let stage_victim = c2.stage().join("sandbox-escape-stage.txt");
     let ro_lib_victim = c2.stage().join("miri-lib/sandbox-escape-ro.txt");
     let escape_stage_src = format!(
-        "import Lean\n\
+        "import Lean.Elab.Command\n\
          namespace Miri.EscapeStage\n\
          run_cmd do\n\
            try\n\
@@ -1456,7 +1456,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     // sole writable sandbox output directory (`/work/out`) while producing a
     // digest-matching `.olean`, the outer auditor rejects the unexpected file
     // with policy exit code `1` and stages nothing into `miri-lib` or cache.
-    let extra_out_src = "import Lean\n\
+    let extra_out_src = "import Lean.Elab.Command\n\
         namespace Miri.ExtraOut\n\
         run_cmd do\n\
           IO.FS.writeFile \"out/unexpected-drop.txt\" \"junk\"\n\
@@ -1582,7 +1582,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     {
         let sidecar_rel = format!("{stem}.{ext}");
         let src = format!(
-            "import Lean\n\
+            "import Lean.Elab.Command\n\
              namespace {module}\n\
              run_cmd do\n\
                IO.FS.writeFile \"out/{sidecar_rel}\" \"fake-ir\"\n\
@@ -4811,7 +4811,7 @@ fn rejects_forged_trusted_constant_referencing_theory() {
         "gen-forged-ref",
         &stage.join("gen_forged_ref.lean"),
         &format!(
-            "import Lean\n\
+            "import Lean.Environment\n\
              open Lean\n\
              def main : IO Unit := do\n\
                let ci : ConstantInfo := .defnInfo {{\n\
@@ -5276,7 +5276,7 @@ fn rejects_forged_ill_typed_correspondence_declaration_during_replay() {
         "gen-bogus-corr-proof",
         &stage.join("gen_bogus_corr_proof.lean"),
         &format!(
-            "import Lean\n\
+            "import Lean.Environment\n\
              open Lean\n\
              def main : IO Unit := do\n\
                let ci : ConstantInfo := .thmInfo {{\n\
@@ -5361,7 +5361,7 @@ fn rejects_repository_constant_shadowing_sysroot_declaration() {
         "gen-shadow-sysroot",
         &stage.join("gen_shadow_sysroot.lean"),
         &format!(
-            "import Lean\n\
+            "import Lean.Environment\n\
              open Lean\n\
              def main : IO Unit := do\n\
                initSearchPath (System.FilePath.mk {:?})\n\
@@ -5444,7 +5444,7 @@ fn rejects_pass2_lean_syntax_extensions_in_correspondence_preflight() {
     fs::create_dir_all(miri_out.parent().unwrap()).unwrap();
     fs::write(
         &miri_src,
-        "import Lean\nnamespace Miri.ImportLean\ndef ok : Nat := 0\nend Miri.ImportLean\n",
+        "import Lean.Exception\nnamespace Miri.ImportLean\ndef ok : Nat := 0\nend Miri.ImportLean\n",
     )
     .unwrap();
     checker
@@ -5604,7 +5604,7 @@ fn rejects_scoped_syntax_and_extensions_in_preflight() {
     fs::create_dir_all(miri_out.parent().unwrap()).unwrap();
     fs::write(
         &miri_src,
-        "import Lean\n\
+        "import Lean.PostprocessTraces\n\
          namespace Miri.ScopedSyntax\n\
          scoped syntax \"sneaky_term\" : term\n\
          scoped macro_rules | `(sneaky_term) => `(0)\n\
@@ -5861,7 +5861,7 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
     let miri_rel = "Miri/ImportLean.lean";
     let miri_src_path = vendor_dir.join(miri_rel);
     fs::create_dir_all(miri_src_path.parent().unwrap()).unwrap();
-    let miri_src = "import Lean\n\
+    let miri_src = "import Lean.PostprocessTraces\n\
                     namespace Miri.ScopedSyntax\n\
                     scoped syntax \"sneaky_macro\" : term\n\
                     scoped macro_rules | `(sneaky_macro) => `(0)\n\
@@ -6468,7 +6468,7 @@ fn validates_and_rejects_alternate_foundation_theorem_proofs() {
     fs::write(
         &gen_script,
         format!(
-            "import Lean\n\
+            "import Lean.Environment\n\
              open Lean\n\
              def main : IO Unit := do\n\
                let ci : ConstantInfo := .thmInfo {{\n\
@@ -6976,7 +6976,8 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     // unexpected file into `/work/out/sneaky-drop.txt`.
     let host_victim = fix.root.join("pass2-escape-host.txt");
     let init_host_src = format!(
-        "import Lean\n\
+        "prelude\n\
+         import Init.System.IO\n\
          namespace Miri.InitHost\n\
          initialize _ : Unit ← do\n\
            IO.FS.writeFile \"{}\" \"pwned\"\n\
@@ -7060,7 +7061,8 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     // writable `/work/out` directory during `"correspondence-preflight"`,
     // `anneal-audit` rejects it with policy exit code `1` before trusting
     // `result.json`.
-    let init_drop_src = "import Lean\n\
+    let init_drop_src = "prelude\n\
+        import Init.System.IO\n\
         namespace Miri.InitDrop\n\
         initialize _ : Unit ← do\n\
           IO.FS.writeFile \"/work/out/sneaky-drop.txt\" \"junk\"\n\
@@ -7123,7 +7125,8 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     // inside the sandbox, leaving `compile_host_victim` untouched.
     let compile_host_victim = fix.root.join("pass2-compile-escape-host.txt");
     let init_compile_host_src = format!(
-        "import Lean\n\
+        "prelude\n\
+         import Init.System.IO\n\
          namespace Miri.InitCompileHost\n\
          initialize _ : Unit ← do\n\
            if ← System.FilePath.pathExists \"/work/src/pass2\" then\n\
@@ -7217,7 +7220,8 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     // 4. Even if a vendored `[init]` drops an extra file into `/work/out`
     // during Pass 2 compilation, `anneal-audit` rejects it with policy exit
     // code `1` and stages nothing into `lib/`.
-    let init_compile_drop_src = "import Lean\n\
+    let init_compile_drop_src = "prelude\n\
+        import Init.System.IO\n\
         namespace Miri.InitCompileDrop\n\
         initialize _ : Unit ← do\n\
           if ← System.FilePath.pathExists \"/work/src/pass2\" then\n\
@@ -7618,4 +7622,246 @@ fn rejects_dual_deletion_of_bundle_generator_and_output() {
     assert_eq!(err.phase, "bundle-manifest", "unexpected phase: {err}");
     assert!(err.message.contains("missing bundled_resources.rs"), "unexpected error: {err}");
     assert!(!checker.execution_began());
+}
+
+/// Verifies multi-module parallel DAG compilation in
+/// [`Checker::verify_and_stage_miri_entries`]:
+/// 1. A 4-module diamond DAG (`Miri.DagRoot -> {Miri.DagLeft, Miri.DagRight}
+///    -> Miri.DagTop`) compiles cold across workers, verifies digests, stages
+///    into `miri-lib`, populates `miri_cache_dir`, and preserves transitive
+///    ordering when an intermediate module (`Miri.DagLeft`/`Miri.DagRight`)
+///    hits the cache while `Miri.DagRoot` and `Miri.DagTop` miss.
+/// 2. When multiple modules fail concurrently (a dependent module at index 1
+///    and an independent root at index 2), the earliest closure index's failure
+///    is reported deterministically and dependent indices (`Miri.DagTop`) are
+///    neither staged nor cached.
+/// 3. Cyclic `Miri.*` imports (including cycles traversing a cached module) and
+///    duplicate closure modules fail closed with policy exit code `1` before
+///    compiling.
+#[cfg(target_os = "linux")]
+#[test]
+fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
+    let fix = TempFixture::new(None);
+    let vendor_dir = fix.root.join("dag-vendor");
+    fs::create_dir_all(vendor_dir.join("Miri")).unwrap();
+
+    let dag_sources_raw = [
+        (
+            "Miri.DagRoot",
+            "Miri/DagRoot.lean",
+            "prelude\nimport Init.Prelude\nnamespace Miri.DagRoot\ndef r : Nat := 1\nend Miri.DagRoot\n",
+        ),
+        (
+            "Miri.DagLeft",
+            "Miri/DagLeft.lean",
+            "prelude\nimport Miri.DagRoot\nnamespace Miri.DagLeft\ndef l : Nat := Miri.DagRoot.r\nend Miri.DagLeft\n",
+        ),
+        (
+            "Miri.DagRight",
+            "Miri/DagRight.lean",
+            "prelude\nimport Miri.DagRoot\nnamespace Miri.DagRight\ndef rg : Nat := Miri.DagRoot.r\nend Miri.DagRight\n",
+        ),
+        (
+            "Miri.DagTop",
+            "Miri/DagTop.lean",
+            "prelude\nimport Miri.DagLeft\nimport Miri.DagRight\nnamespace Miri.DagTop\ndef t : Nat := Miri.DagLeft.l\nend Miri.DagTop\n",
+        ),
+    ];
+
+    let mut expected_sources = BTreeMap::new();
+    for (_, rel, src) in &dag_sources_raw {
+        fs::write(vendor_dir.join(rel), src).unwrap();
+        expected_sources.insert((*rel).to_string(), sha256_bytes(src.as_bytes()));
+    }
+
+    let mut probe = Checker::new(&fix.root, None).unwrap();
+    probe.set_require_mir_wp(false);
+    probe.run().unwrap();
+    let probe_lib = probe.stage().join("dag-probe-lib");
+    fs::create_dir_all(probe_lib.join("Miri")).unwrap();
+    let mut entries = Vec::new();
+    for (module, rel, _) in &dag_sources_raw {
+        let out_olean = probe_lib.join(format!("{}.olean", module.replace('.', "/")));
+        probe
+            .process_with_path(
+                &format!("probe-{module}"),
+                &[
+                    "-j1".to_string(),
+                    "-M2048".to_string(),
+                    "-t0".to_string(),
+                    "-DElab.async=false".to_string(),
+                    "-Ddebug.skipKernelTC=false".to_string(),
+                    "-R".to_string(),
+                    vendor_dir.to_string_lossy().into_owned(),
+                    "-o".to_string(),
+                    out_olean.to_string_lossy().into_owned(),
+                    vendor_dir.join(rel).to_string_lossy().into_owned(),
+                ],
+                Some(probe_lib.as_os_str()),
+            )
+            .unwrap();
+        entries.push(MiriClosureEntry {
+            module: (*module).to_string(),
+            path: (*rel).to_string(),
+            olean_sha256: sha256_file(&out_olean, "test").unwrap(),
+            olean_server_sha256: None,
+            olean_private_sha256: None,
+        });
+    }
+
+    // 1. Cold parallel DAG compilation succeeds and populates the cache.
+    let cache_tmp = tempfile::Builder::new().prefix("anneal-dag-cache-").tempdir().unwrap();
+    let cache_dir = cache_tmp.path().join("miri-cache");
+    let mut c1 = Checker::new(&fix.root, None).unwrap();
+    c1.set_require_mir_wp(false);
+    c1.set_miri_cache_dir(Some(cache_dir.clone()));
+    c1.run().unwrap();
+    let miri_lib = c1.verify_and_stage_miri_entries(&vendor_dir, &entries, &expected_sources).unwrap();
+    for entry in &entries {
+        let rel_olean = format!("{}.olean", entry.module.replace('.', "/"));
+        assert_eq!(sha256_file(&miri_lib.join(&rel_olean), "test").unwrap(), entry.olean_sha256);
+        assert_eq!(sha256_file(&cache_dir.join(&rel_olean), "test").unwrap(), entry.olean_sha256);
+    }
+
+    // 1b. Partial cache hit where intermediate modules (`Miri.DagLeft` and
+    // `Miri.DagRight`) hit `cache_dir` while `Miri.DagRoot` and `Miri.DagTop`
+    // (which does NOT directly import `Miri.DagRoot`) miss: `Miri.DagTop` must
+    // still wait for `Miri.DagRoot` to compile and stage into `miri-lib`.
+    fs::remove_file(cache_dir.join("Miri/DagRoot.olean")).unwrap();
+    fs::remove_file(cache_dir.join("Miri/DagTop.olean")).unwrap();
+    let mut c1_partial = Checker::new(&fix.root, None).unwrap();
+    c1_partial.set_require_mir_wp(false);
+    c1_partial.set_miri_cache_dir(Some(cache_dir.clone()));
+    c1_partial.run().unwrap();
+    let partial_lib =
+        c1_partial.verify_and_stage_miri_entries(&vendor_dir, &entries, &expected_sources).unwrap();
+    for entry in &entries {
+        let rel_olean = format!("{}.olean", entry.module.replace('.', "/"));
+        assert_eq!(sha256_file(&partial_lib.join(&rel_olean), "test").unwrap(), entry.olean_sha256);
+        assert_eq!(sha256_file(&cache_dir.join(&rel_olean), "test").unwrap(), entry.olean_sha256);
+    }
+
+    // 2. Concurrent multi-failure preserves deterministic earliest-index order:
+    // index 1 (`Miri.DagLeft`, blocked behind `Miri.DagRoot`) and index 2 (an
+    // independent root with a bad digest that finishes immediately) both fail;
+    // index 1's failure must win and index 3 (`Miri.DagTop`) must not stage.
+    let mut race_entries = vec![
+        entries[0].clone(),
+        MiriClosureEntry { olean_sha256: "0".repeat(64), ..entries[1].clone() },
+        MiriClosureEntry { olean_sha256: "f".repeat(64), ..entries[2].clone() },
+        entries[3].clone(),
+    ];
+    let ind_src = "prelude\nimport Init.Prelude\nnamespace Miri.DagRight\ndef rg : Nat := 1\nend Miri.DagRight\n";
+    let race_vendor = fix.root.join("dag-race-vendor");
+    copy_dir_all(&vendor_dir, &race_vendor).unwrap();
+    fs::write(race_vendor.join("Miri/DagRight.lean"), ind_src).unwrap();
+    let mut race_sources = expected_sources.clone();
+    race_sources.insert("Miri/DagRight.lean".to_string(), sha256_bytes(ind_src.as_bytes()));
+    let race_cache = cache_tmp.path().join("race-cache");
+    let mut c2 = Checker::new(&fix.root, None).unwrap();
+    c2.set_require_mir_wp(false);
+    c2.set_miri_cache_dir(Some(race_cache.clone()));
+    c2.run().unwrap();
+    let err_race =
+        c2.verify_and_stage_miri_entries(&race_vendor, &race_entries, &race_sources).unwrap_err();
+    assert_eq!(err_race.code, 1, "expected policy mismatch: {err_race}");
+    assert!(
+        err_race.message.contains("compiled Miri .olean SHA-256 mismatch for Miri.DagLeft"),
+        "expected earliest index failure (Miri.DagLeft), got: {err_race}"
+    );
+    assert!(!race_cache.join("Miri/DagTop.olean").exists());
+
+    // 2b. Non-topological `entries` slice (`Miri.DagLeft` at index 0 depending
+    // on valid `Miri.DagRoot` at index 2, with independent failing root
+    // `Miri.DagRight` at index 1): `min_cold_descendant` ensures `Miri.DagRoot`
+    // is never pruned as "beaten" by index 1, so index 0's failure still wins.
+    let non_topo_entries = [
+        MiriClosureEntry { olean_sha256: "0".repeat(64), ..entries[1].clone() },
+        MiriClosureEntry { olean_sha256: "f".repeat(64), ..entries[2].clone() },
+        entries[0].clone(),
+    ];
+    let mut c2_nontopo = Checker::new(&fix.root, None).unwrap();
+    c2_nontopo.set_require_mir_wp(false);
+    c2_nontopo.run().unwrap();
+    let err_nontopo = c2_nontopo
+        .verify_and_stage_miri_entries(&race_vendor, &non_topo_entries, &race_sources)
+        .unwrap_err();
+    assert_eq!(err_nontopo.code, 1, "expected policy mismatch: {err_nontopo}");
+    assert!(
+        err_nontopo.message.contains("compiled Miri .olean SHA-256 mismatch for Miri.DagLeft"),
+        "expected index 0 failure (Miri.DagLeft) on non-topological slice, got: {err_nontopo}"
+    );
+
+    // Duplicate module entries fail closed with policy exit code `1`.
+    race_entries[2] = race_entries[0].clone();
+    let mut c_dup = Checker::new(&fix.root, None).unwrap();
+    c_dup.set_require_mir_wp(false);
+    c_dup.run().unwrap();
+    let err_dup =
+        c_dup.verify_and_stage_miri_entries(&race_vendor, &race_entries, &race_sources).unwrap_err();
+    assert_eq!(err_dup.code, 1);
+    assert!(err_dup.message.contains("duplicate Miri closure module Miri.DagRoot"));
+
+    // 3. Cold `Miri.*` import cycles fail closed with policy exit code `1`.
+    let cyc_vendor = fix.root.join("dag-cycle-vendor");
+    fs::create_dir_all(cyc_vendor.join("Miri")).unwrap();
+    let cyc_a = "prelude\nimport Miri.CycB\n";
+    let cyc_b = "prelude\nimport Miri.CycA\n";
+    fs::write(cyc_vendor.join("Miri/CycA.lean"), cyc_a).unwrap();
+    fs::write(cyc_vendor.join("Miri/CycB.lean"), cyc_b).unwrap();
+    let cyc_sources = BTreeMap::from([
+        ("Miri/CycA.lean".to_string(), sha256_bytes(cyc_a.as_bytes())),
+        ("Miri/CycB.lean".to_string(), sha256_bytes(cyc_b.as_bytes())),
+    ]);
+    let cyc_entries = [
+        MiriClosureEntry {
+            module: "Miri.CycA".to_string(),
+            path: "Miri/CycA.lean".to_string(),
+            olean_sha256: "0".repeat(64),
+            olean_server_sha256: None,
+            olean_private_sha256: None,
+        },
+        MiriClosureEntry {
+            module: "Miri.CycB".to_string(),
+            path: "Miri/CycB.lean".to_string(),
+            olean_sha256: "0".repeat(64),
+            olean_server_sha256: None,
+            olean_private_sha256: None,
+        },
+    ];
+    let mut c3 = Checker::new(&fix.root, None).unwrap();
+    c3.set_require_mir_wp(false);
+    c3.run().unwrap();
+    let err_cyc =
+        c3.verify_and_stage_miri_entries(&cyc_vendor, &cyc_entries, &cyc_sources).unwrap_err();
+    assert_eq!(err_cyc.code, 1, "expected policy cycle rejection: {err_cyc}");
+    assert!(
+        err_cyc.message.contains("import cycle in Miri closure modules"),
+        "unexpected cycle error: {err_cyc}"
+    );
+
+    // 3b. Import cycle traversing cached intermediate modules even when only a
+    // single module (`Miri.DagRoot`, rewritten to import `Miri.DagTop`) misses
+    // `cache_dir` (`cold_indices.len() == 1`) fails closed with policy exit
+    // code `1` before compiling.
+    let cyc_cached_vendor = fix.root.join("dag-cycle-cached-vendor");
+    copy_dir_all(&vendor_dir, &cyc_cached_vendor).unwrap();
+    let cyc_root_src = "prelude\nimport Miri.DagTop\n";
+    fs::write(cyc_cached_vendor.join("Miri/DagRoot.lean"), cyc_root_src).unwrap();
+    let mut cyc_cached_sources = expected_sources.clone();
+    cyc_cached_sources
+        .insert("Miri/DagRoot.lean".to_string(), sha256_bytes(cyc_root_src.as_bytes()));
+    fs::remove_file(cache_dir.join("Miri/DagRoot.olean")).unwrap();
+    let mut c3_cached = Checker::new(&fix.root, None).unwrap();
+    c3_cached.set_require_mir_wp(false);
+    c3_cached.set_miri_cache_dir(Some(cache_dir));
+    c3_cached.run().unwrap();
+    let err_cyc_cached = c3_cached
+        .verify_and_stage_miri_entries(&cyc_cached_vendor, &entries, &cyc_cached_sources)
+        .unwrap_err();
+    assert_eq!(err_cyc_cached.code, 1, "expected policy cycle rejection: {err_cyc_cached}");
+    assert!(
+        err_cyc_cached.message.contains("import cycle in Miri closure modules"),
+        "unexpected 1-cold cached-node cycle error: {err_cyc_cached}"
+    );
 }
