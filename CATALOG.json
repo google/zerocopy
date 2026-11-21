@@ -34820,6 +34820,155 @@
         "ffi/hdl-cosimulation"
       ]
     },
+    "first-order-unification-occurs-check-and-impl-overlap-coherence": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/321250.321253"
+          },
+          "name": "A Machine-Oriented Logic Based on the Resolution Principle (Robinson, JACM 1965)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/357162.357169"
+          },
+          "name": "An Efficient Unification Algorithm (Martelli, Montanari, TOPLAS 1982)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/B978-044450813-3/50010-2"
+          },
+          "name": "Unification Theory (Baader, Snyder, Handbook of Automated Reasoning, 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/B978-0-934613-40-8.50019-1"
+          },
+          "name": "Unification Revisited (Lassez, Maher, Marriott, 1988)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0167-6423(85)90009-7"
+          },
+          "name": "Verifying the Unification Algorithm in LCF (Paulson, Science of Computer Programming 1985)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796803004957"
+          },
+          "name": "First-order unification by structural recursion (McBride, JFP 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-14052-5_6"
+          },
+          "name": "(Nominal) Unification by Recursive Descent with Triangular Substitutions (Kumar, Norrish, ITP 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-29473-5_8"
+          },
+          "name": "A Mechanized Textbook Proof of a Type Unification Algorithm (Ribeiro, Camar\u00e3o, SBMF 2015)"
+        },
+        {
+          "identity": {
+            "url": "https://www.isa-afp.org/entries/First_Order_Terms.html"
+          },
+          "name": "First-Order Terms (Sternagel, Thiemann, Archive of Formal Proofs, 2018)"
+        },
+        {
+          "identity": {
+            "url": "http://gallium.inria.fr/~huet/PUBLIC/Huet1976.pdf"
+          },
+          "name": "Resolution d'equations dans des langages d'ordre 1, 2, ..., omega (Huet, thesis, 1976)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF03037324"
+          },
+          "name": "The occur-check problem in Prolog (Plaisted, New Generation Computing 1984)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF03037057"
+          },
+          "name": "Efficient Unification over Infinite Terms (Jaffar, New Generation Computing 1984)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(83)90059-2"
+          },
+          "name": "Fundamental properties of infinite trees (Courcelle, TCS 1983)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.1988.5132"
+          },
+          "name": "Complete axiomatizations of the algebras of finite, rational and infinite trees (Maher, LICS 1988)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/177492.177673"
+          },
+          "name": "On the occur-check-free PROLOG programs (Apt, Pellegrini, TOPLAS 1994)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2535838.2535856"
+          },
+          "name": "Closed type families with overlapping equations (Eisenberg, Vytiniotis, Peyton Jones, Weirich, POPL 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1863543.1863596"
+          },
+          "name": "Instance chains: type class programming without overlapping instances (Morris, Jones, ICFP 2010)"
+        },
+        {
+          "identity": {
+            "path": "text/1023-rebalancing-coherence.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "Rust RFC 1023, Rebalancing coherence"
+        },
+        {
+          "identity": {
+            "path": "text/2451-re-rebalancing-coherence.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "Rust RFC 2451, Re-rebalancing coherence"
+        },
+        {
+          "identity": {
+            "path": "src/coherence.md",
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "33fa6bef32eee98a8e38c9376645cf6fbcb2ca67"
+          },
+          "name": "rustc-dev-guide, Coherence chapter"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "pl/unification",
+        "pl/occurs-check",
+        "pl/rational-trees",
+        "pl/trait-coherence",
+        "pl/orphan-rules",
+        "pl/type-classes"
+      ]
+    },
     "fixed-arena-capability-forests-transitive-revocation-and-bounded-batch-invariants": {
       "observed_at": "2026-11-20",
       "subjects": [

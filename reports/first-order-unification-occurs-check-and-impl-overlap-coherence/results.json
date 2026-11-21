@@ -1,0 +1,1291 @@
+[
+  {
+    "id": "unify-sound-idempotent",
+    "lean": [
+      "Toy.Unify.unify_sound",
+      "Toy.Unify.unify_idempotent"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Soundness and idempotence of the substitution computed by Robinson / Martelli-Montanari style unification (Robinson 1965; Martelli and Montanari 1982; Lassez, Maher and Marriott 1988; Baader and Snyder 2001), restated for this solved-form algorithm with explicit fuel; mechanized before in other systems (Paulson 1985 in LCF; McBride 2003 in Lego; Kumar and Norrish 2010 in HOL4; Ribeiro and Camarão 2016 in Coq; Sternagel and Thiemann 2018 in Isabelle/HOL).",
+    "plain_claim": "For finite first-order terms s and t, if unify s t returns some σ, then σ unifies s and t (σ s = σ t syntactically) and σ is idempotent (σ (σ u) = σ u for every term u).",
+    "hypotheses": [
+      {
+        "name": "h : unify s t = some σ",
+        "purpose": "Restricts the claim to substitutions actually returned by unify.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Unify.unify_sound_needs_output",
+          "Toy.Unify.unify_idempotent_needs_output"
+        ],
+        "witness_class": "unify_sound_needs_output: the instance X =? u8 (one variable, one nullary constructor) with the non-output σ = []; unify_idempotent_needs_output: the instance X =? Box X with the non-output σ = [X ↦ Box X]."
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Needs the solved-form invariant Inv (bound variables pairwise distinct and absent from every right-hand side and from the pending equations), maintained through decomposition and elimination passes, plus preservation of the solutions of the combined system Sys by each pass (both in ToyUnify/UnifyLemmas.lean).",
+    "nonvacuity_witness": "unify (X, Box Y) (Box u8, X) returns [Y ↦ u8, X ↦ Box u8].",
+    "nonvacuity_witness_lean": "Toy.Unify.unify_sound_nonvacuous",
+    "non_claims": [
+      "These are statements about this toy algorithm on finite terms (run with fuel numVars); they neither establish nor refute the corresponding claims about any production trait solver's unifier. Model–system relation: none proved.",
+      "It does not say unify returns a substitution whenever a unifier exists; that is unify-complete.",
+      "Idempotence is a property of the returned association list read with first-binding lookup; it does not claim the list is minimal (not proved here). That the bound variables of σ are pairwise distinct is part of the solved-form invariant Inv maintained inside the proof, but it is not stated as a theorem about unify here. That they occur among the variables of s and t is not proved here.",
+      "The idempotence counterexample [X ↦ Box X] is exactly what the occurs-check-free variant returns on X =? Box X; nothing here is claimed for unifyNoOC."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement depends on the input–output behaviour of `unify` alone. An implementation that returns the same result as `unify` on every input therefore satisfies the same statement; one that differs in any output (another binding order, another substitution representation such as union-find or triangular substitutions, multiequations, or merged or re-checked bindings) is related to this model by no proved relation, and whether a given production unifier or trait solver computes these functions is not examined. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "J. A. Robinson, \"A Machine-Oriented Logic Based on the Resolution Principle\", Journal of the ACM 12(1):23-41, 1965, doi:10.1145/321250.321253 (bibliographic data verified via the dblp record journals/jacm/Robinson65; full text not consulted). Standard attribution for syntactic unification and most general unifiers.",
+      "A. Martelli and U. Montanari, \"An Efficient Unification Algorithm\", ACM Transactions on Programming Languages and Systems 4(2):258-282, 1982, doi:10.1145/357162.357169 (verified via the dblp record journals/toplas/MartelliM82; full text not consulted). Standard source for unification as the transformation of a set of equations into solved form. This package formalizes the paper's naive equation-transformation rules with eager substitution (which can build exponentially large terms), not its efficient multiequation algorithm.",
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties.",
+      "L. C. Paulson, \"Verifying the Unification Algorithm in LCF\", Science of Computer Programming 5(2):143-169, 1985, doi:10.1016/0167-6423(85)90009-7 (verified via dblp; full text not consulted). An earlier mechanized correctness proof of a unification algorithm.",
+      "C. Sternagel and R. Thiemann, \"First-Order Terms\", Archive of Formal Proofs, February 2018 (entry page https://www.isa-afp.org/entries/First_Order_Terms.html consulted: its abstract states that it formalizes matching and a first-order unification algorithm in Isabelle/HOL).",
+      "J.-L. Lassez, M. J. Maher and K. Marriott, \"Unification Revisited\", in Foundations of Deductive Databases and Logic Programming, 1988, pp. 587-625, doi:10.1016/B978-0-934613-40-8.50019-1 (bibliographic data verified via the Crossref record of the DOI; full text not consulted). Clarifies the notions of most general and idempotent unifiers; the characterization of idempotent most general unifiers by the factor law τ = τ ∘ σ is attributed to it by secondary sources (not checked against the full text).",
+      "C. McBride, \"First-order unification by structural recursion\", Journal of Functional Programming 13(6):1061-1075, 2003, doi:10.1017/S0956796803004957 (verified via the Crossref record; its abstract states that the program and its correctness proof were checked in the proof assistant Lego). A structurally recursive unification algorithm whose termination follows from the number of variables in scope.",
+      "R. Kumar and M. Norrish, \"(Nominal) Unification by Recursive Descent with Triangular Substitutions\", Interactive Theorem Proving (ITP 2010), Springer, pp. 51-66, doi:10.1007/978-3-642-14052-5_6 (bibliographic data verified via the Crossref record; full text not consulted). A mechanized unification algorithm in HOL4.",
+      "R. Ribeiro and C. Camarão, \"A Mechanized Textbook Proof of a Type Unification Algorithm\", Formal Methods: Foundations and Applications (SBMF 2015), Springer, 2016, pp. 127-141, doi:10.1007/978-3-319-29473-5_8 (bibliographic data verified via the Crossref record; full text not consulted). A mechanized unification proof in Coq."
+    ],
+    "design_question": "What exactly does a successful unification call guarantee about its output?",
+    "lean_names": [
+      "Toy.Unify.unify_sound",
+      "Toy.Unify.unify_idempotent",
+      "Toy.Unify.unify_sound_nonvacuous",
+      "Toy.Unify.unify_sound_needs_output",
+      "Toy.Unify.unify_idempotent_needs_output",
+      "Toy.Unify.Inv",
+      "Toy.Unify.Sys",
+      "Toy.Unify.Term",
+      "Toy.Unify.term_eq_example",
+      "Toy.Unify.term_arity_ne_example",
+      "Toy.Unify.term_ne_example",
+      "Toy.Unify.Term.vars",
+      "Toy.Unify.vars_example",
+      "Toy.Unify.vars_ground_example",
+      "Toy.Unify.Term.varsList",
+      "Toy.Unify.Term.ctors",
+      "Toy.Unify.ctors_example",
+      "Toy.Unify.ctors_var_example",
+      "Toy.Unify.Term.ctorsList",
+      "Toy.Unify.Subst",
+      "Toy.Unify.substVar_first_binding_example",
+      "Toy.Unify.substVar_unbound_example",
+      "Toy.Unify.subst",
+      "Toy.Unify.subst_example",
+      "Toy.Unify.subst_ne_example",
+      "Toy.Unify.substList",
+      "Toy.Unify.Subst.comp",
+      "Toy.Unify.subst_comp",
+      "Toy.Unify.comp_example",
+      "Toy.Unify.comp_order_example",
+      "Toy.Unify.Unifies",
+      "Toy.Unify.unifies_example",
+      "Toy.Unify.not_unifies_example",
+      "Toy.Unify.Idempotent",
+      "Toy.Unify.idempotent_example",
+      "Toy.Unify.not_idempotent_example",
+      "Toy.Unify.decomp",
+      "Toy.Unify.decomp_example",
+      "Toy.Unify.decomp_clash_example",
+      "Toy.Unify.decomp_arity_clash_example",
+      "Toy.Unify.decompList",
+      "Toy.Unify.decompAll",
+      "Toy.Unify.decompAll_example",
+      "Toy.Unify.Result",
+      "Toy.Unify.run_outOfFuel_example",
+      "Toy.Unify.unify_clash_example",
+      "Toy.Unify.step",
+      "Toy.Unify.unify_example",
+      "Toy.Unify.unify_occurs_example",
+      "Toy.Unify.run",
+      "Toy.Unify.numVars",
+      "Toy.Unify.numVars_example",
+      "Toy.Unify.numVars_dedup_example",
+      "Toy.Unify.unify",
+      "Toy.Unify.Bound",
+      "Toy.Unify.implements_via_bound_example",
+      "Toy.Unify.implements_isGround_example",
+      "Toy.Unify.Impl.vars",
+      "Toy.Unify.impl_vars_example",
+      "Toy.Unify.not_mem_impl_vars_example",
+      "Toy.Unify.Impl.traits",
+      "Toy.Unify.impl_traits_example",
+      "Toy.Unify.not_mem_impl_traits_example",
+      "Toy.Unify.Impl.ctors",
+      "Toy.Unify.impl_ctors_example",
+      "Toy.Unify.impl_ctors_nil_example",
+      "Toy.Unify.loopEqs",
+      "Toy.Unify.Result.toOption",
+      "Toy.Unify.Step",
+      "Toy.Unify.elimBinding",
+      "Toy.Unify.eqsVars"
+    ]
+  },
+  {
+    "id": "unify-most-general",
+    "lean": [
+      "Toy.Unify.unify_mgu_factor",
+      "Toy.Unify.unify_moreGeneral"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Most generality of the computed unifier, in the standard form 'every unifier τ satisfies τ = τ ∘ σ' for idempotent most general unifiers (Lassez, Maher and Marriott 1988; Baader and Snyder 2001); Robinson 1965 states most generality with an existential factor. Restated for this algorithm.",
+    "plain_claim": "For finite terms s and t, if unify s t returns some σ and τ is any unifier of s and t, then τ (σ u) = τ u for every term u; hence σ is more general than τ, with τ itself as the factor.",
+    "hypotheses": [
+      {
+        "name": "h : unify s t = some σ",
+        "purpose": "Restricts σ to the output of unify; another unifier need not be a factor of τ.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.unify_mgu_factor_needs_output",
+        "witness_class": "The instance X =? Y (two variables, two nullary constructors) with the non-output unifier [X ↦ u8, Y ↦ u8] and τ = [X ↦ u32, Y ↦ u32]; both conclusions (the factor law and MoreGeneral) fail."
+      },
+      {
+        "name": "hτ : Unifies τ s t",
+        "purpose": "Without assuming that τ unifies s and t, τ need not satisfy τ ∘ σ = τ.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.unify_mgu_factor_needs_unifier",
+        "witness_class": "The instance X =? u8 with σ = [X ↦ u8] and the non-unifier τ = []; both conclusions fail."
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Every pass preserves the solutions of the combined system, so τ solves each solved binding x ↦ u, i.e. τ x = τ u; with first-binding lookup this gives τ ∘ σ = τ on every variable.",
+    "nonvacuity_witness": "unify X (Y, u8) returns [X ↦ (Y, u8)] and [X ↦ (u32, u8), Y ↦ u32] unifies X and (Y, u8).",
+    "nonvacuity_witness_lean": "Toy.Unify.unify_mgu_factor_nonvacuous",
+    "non_claims": [
+      "Most generality is among finite substitutions over finite terms; it says nothing about infinite (rational) solutions.",
+      "It does not claim σ is the unique most general unifier; most general unifiers are unique up to variable renaming, not literally unique (not proved here).",
+      "The factor τ works because σ is the output of unify; the statement gives no factor for an arbitrary unifier in place of σ (see unify_mgu_factor_needs_output).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement depends on the input–output behaviour of `unify` alone. An implementation that returns the same result as `unify` on every input therefore satisfies the same statement; one that differs in any output (another binding order, another substitution representation such as union-find or triangular substitutions, multiequations, or merged or re-checked bindings) is related to this model by no proved relation, and whether a given production unifier or trait solver computes these functions is not examined. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "J. A. Robinson, \"A Machine-Oriented Logic Based on the Resolution Principle\", Journal of the ACM 12(1):23-41, 1965, doi:10.1145/321250.321253 (bibliographic data verified via the dblp record journals/jacm/Robinson65; full text not consulted). Standard attribution for syntactic unification and most general unifiers.",
+      "A. Martelli and U. Montanari, \"An Efficient Unification Algorithm\", ACM Transactions on Programming Languages and Systems 4(2):258-282, 1982, doi:10.1145/357162.357169 (verified via the dblp record journals/toplas/MartelliM82; full text not consulted). Standard source for unification as the transformation of a set of equations into solved form. This package formalizes the paper's naive equation-transformation rules with eager substitution (which can build exponentially large terms), not its efficient multiequation algorithm.",
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties.",
+      "J.-L. Lassez, M. J. Maher and K. Marriott, \"Unification Revisited\", in Foundations of Deductive Databases and Logic Programming, 1988, pp. 587-625, doi:10.1016/B978-0-934613-40-8.50019-1 (bibliographic data verified via the Crossref record of the DOI; full text not consulted). Clarifies the notions of most general and idempotent unifiers; the characterization of idempotent most general unifiers by the factor law τ = τ ∘ σ is attributed to it by secondary sources (not checked against the full text)."
+    ],
+    "design_question": "Can a client rely on the unifier being most general, and with which explicit factor?",
+    "lean_names": [
+      "Toy.Unify.unify_mgu_factor",
+      "Toy.Unify.unify_moreGeneral",
+      "Toy.Unify.unify_mgu_factor_nonvacuous",
+      "Toy.Unify.unify_mgu_factor_needs_output",
+      "Toy.Unify.unify_mgu_factor_needs_unifier",
+      "Toy.Unify.MoreGeneral",
+      "Toy.Unify.moreGeneral_example",
+      "Toy.Unify.not_moreGeneral_example"
+    ]
+  },
+  {
+    "id": "unify-complete",
+    "lean": [
+      "Toy.Unify.unify_complete",
+      "Toy.Unify.unify_eq_none_iff"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Completeness of syntactic unification (Robinson 1965; Martelli and Montanari 1982), restated for this algorithm with its fuel bound.",
+    "plain_claim": "For finite terms s and t, if some substitution τ unifies s and t then unify s t returns some substitution; consequently unify s t = none exactly when s and t have no unifier over finite terms.",
+    "hypotheses": [
+      {
+        "name": "hτ : Unifies τ s t (first theorem)",
+        "purpose": "A unifier must exist for an output to be guaranteed.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.unify_complete_needs_unifier",
+        "witness_class": "The instance u8 =? u32 (two distinct nullary constructors) with τ = []: no output."
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Needs preservation of the solutions of the combined system by every pass, that a clash or occurs-check failure leaves no solution (decompAll_none, not_unifies_var_of_occurs), and termination within fuel numVars.",
+    "nonvacuity_witness": "[X ↦ u8] unifies (X, u8) and (u8, X).",
+    "nonvacuity_witness_lean": "Toy.Unify.unify_complete_nonvacuous",
+    "non_claims": [
+      "unify returns none on a constructor clash, on an occurs-check failure and on fuel exhaustion alike; the equivalence relies on fuel exhaustion never happening with fuel numVars (unify-termination-measure).",
+      "It is about unifiers over finite terms; X =? Box X has no such unifier, although it has a solution among infinite trees (not proved here: no infinite-tree semantics is formalized).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement depends on the input–output behaviour of `unify` alone. An implementation that returns the same result as `unify` on every input therefore satisfies the same statement; one that differs in any output (another binding order, another substitution representation such as union-find or triangular substitutions, multiequations, or merged or re-checked bindings) is related to this model by no proved relation, and whether a given production unifier or trait solver computes these functions is not examined. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "J. A. Robinson, \"A Machine-Oriented Logic Based on the Resolution Principle\", Journal of the ACM 12(1):23-41, 1965, doi:10.1145/321250.321253 (bibliographic data verified via the dblp record journals/jacm/Robinson65; full text not consulted). Standard attribution for syntactic unification and most general unifiers.",
+      "A. Martelli and U. Montanari, \"An Efficient Unification Algorithm\", ACM Transactions on Programming Languages and Systems 4(2):258-282, 1982, doi:10.1145/357162.357169 (verified via the dblp record journals/toplas/MartelliM82; full text not consulted). Standard source for unification as the transformation of a set of equations into solved form. This package formalizes the paper's naive equation-transformation rules with eager substitution (which can build exponentially large terms), not its efficient multiequation algorithm.",
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties."
+    ],
+    "design_question": "Does a failed unification prove that two types can never be made equal?",
+    "lean_names": [
+      "Toy.Unify.unify_complete",
+      "Toy.Unify.unify_eq_none_iff",
+      "Toy.Unify.unify_complete_nonvacuous",
+      "Toy.Unify.unify_complete_needs_unifier",
+      "Toy.Unify.decompAll_none",
+      "Toy.Unify.not_unifies_var_of_occurs",
+      "Toy.Unify.Unifiable",
+      "Toy.Unify.unifiable_example",
+      "Toy.Unify.not_unifiable_u8_u32",
+      "Toy.Unify.not_unifiable_var_box"
+    ]
+  },
+  {
+    "id": "unify-termination-measure",
+    "lean": [
+      "Toy.Unify.run_ne_outOfFuel_of_numVars_le"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The standard termination argument for solved-form unification (each variable elimination removes a variable from the pending equations; Martelli and Montanari 1982), stated as an explicit fuel bound; McBride 2003 gives a structural argument mechanized in Lego.",
+    "plain_claim": "With the occurs check on (oc = true), for every equation list eqs and every initial accumulator substitution σ (arbitrary: σ need not be in solved form, since no pass of the algorithm branches on it), if fuel ≥ numVars eqs (the number of distinct variables of eqs), then run oc fuel eqs σ does not return outOfFuel.",
+    "hypotheses": [
+      {
+        "name": "hoc : oc = true",
+        "purpose": "The occurs check guarantees that an eliminated variable disappears from the pending equations.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.run_needs_occurs_check_for_bound",
+        "witness_class": "The equation (X, (X, Y)) =? (Box X, (Box Y, Vec Y)) (measure 2) with fuel 2 and oc = false: X is eliminated twice and the run runs out of fuel."
+      },
+      {
+        "name": "hfuel : numVars eqs ≤ fuel",
+        "purpose": "Each elimination pass consumes one unit of fuel.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.run_needs_fuel_bound",
+        "witness_class": "The equation X =? u8 (measure 1) with fuel 0."
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Decomposition never introduces variables and every elimination pass strictly decreases the number of distinct variables of the pending equations (step_true_next_numVars); induction on fuel.",
+    "nonvacuity_witness": "numVars [((X, Y), (Y, u8))] ≤ 2, so with oc = true (hoc holds by rfl) and fuel = 2 both hypotheses hold.",
+    "nonvacuity_witness_lean": "Toy.Unify.run_ne_outOfFuel_nonvacuous",
+    "non_claims": [
+      "Fuel counts elimination passes, not primitive steps; no bound on running time or on the size of the solved form is claimed (solved forms can be exponentially large; not proved here).",
+      "It does not claim numVars eqs is the least sufficient fuel for every input.",
+      "Without the occurs check the bound fails, and some renamed-apart inputs exhaust every fuel (unifyNoOC_outOfFuel_example), so an occurs-check-free implementation without fuel can fail to terminate.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement depends on the input–output behaviour of `run` (with the occurs check on) and `numVars` alone. An implementation that returns the same result as `run` (with the occurs check on) and `numVars` on every input therefore satisfies the same statement; one that differs in any output (another binding order, another substitution representation such as union-find or triangular substitutions, multiequations, or merged or re-checked bindings) is related to this model by no proved relation, and whether a given production unifier or trait solver computes these functions is not examined. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "A. Martelli and U. Montanari, \"An Efficient Unification Algorithm\", ACM Transactions on Programming Languages and Systems 4(2):258-282, 1982, doi:10.1145/357162.357169 (verified via the dblp record journals/toplas/MartelliM82; full text not consulted). Standard source for unification as the transformation of a set of equations into solved form. This package formalizes the paper's naive equation-transformation rules with eager substitution (which can build exponentially large terms), not its efficient multiequation algorithm.",
+      "C. McBride, \"First-order unification by structural recursion\", Journal of Functional Programming 13(6):1061-1075, 2003, doi:10.1017/S0956796803004957 (verified via the Crossref record; its abstract states that the program and its correctness proof were checked in the proof assistant Lego). A structurally recursive unification algorithm whose termination follows from the number of variables in scope.",
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties."
+    ],
+    "design_question": "What explicit measure bounds the work of a unification-based checker, and what does that bound rely on?",
+    "lean_names": [
+      "Toy.Unify.run_ne_outOfFuel_of_numVars_le",
+      "Toy.Unify.run_ne_outOfFuel_nonvacuous",
+      "Toy.Unify.run_needs_occurs_check_for_bound",
+      "Toy.Unify.run_needs_fuel_bound",
+      "Toy.Unify.step_true_next_numVars",
+      "Toy.Unify.unifyNoOC_outOfFuel_example"
+    ]
+  },
+  {
+    "id": "occurs-failure-sound",
+    "lean": [
+      "Toy.Unify.not_unifiable_var_of_occurs"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The textbook justification of the occurs check over finite terms (Robinson 1965; Baader and Snyder 2001).",
+    "plain_claim": "If a variable x occurs in a term u and u is not the variable x itself, then x and u have no unifier over finite terms.",
+    "hypotheses": [
+      {
+        "name": "hocc : occurs x u = true",
+        "purpose": "Without an occurrence, x ↦ u is a unifier.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.not_unifiable_var_of_occurs_needs_occurs",
+        "witness_class": "The instance X =? Box Y (X does not occur), which [X ↦ Box Y] unifies."
+      },
+      {
+        "name": "hne : u ≠ .var x",
+        "purpose": "x =? x is unified by any substitution.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.not_unifiable_var_of_occurs_needs_ne",
+        "witness_class": "The instance X =? X, which [] unifies."
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "A size argument: σ u is strictly larger than σ x when x occurs strictly inside u (size_substVar_lt_con).",
+    "nonvacuity_witness": "X occurs in Box X, and Box X ≠ X.",
+    "nonvacuity_witness_lean": "Toy.Unify.not_unifiable_var_of_occurs_nonvacuous",
+    "non_claims": [
+      "It is about unifiers over finite terms; it does not address infinite trees, among which X = Box X has a solution (classical; not proved here).",
+      "It does not claim the occurs check is the sole reason unification fails (constructor clashes are another).",
+      "The algorithm's occurs check `occurs x u` has no guard u ≠ var x; it is sound because decomposition drops trivial equations x =? x, so no binding x ↦ var x is ever formed (decompAll_bindingOK: every produced binding p satisfies p.2 ≠ .var p.1).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement is about substitutions on finite first-order terms and involves no algorithm, so it applies to any type language that is represented faithfully by such terms (variables, and constructor symbols with argument lists); type languages with aliases, associated-type projections, binders or subtyping are not represented, and no faithful representation of a production type language is proved. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "J. A. Robinson, \"A Machine-Oriented Logic Based on the Resolution Principle\", Journal of the ACM 12(1):23-41, 1965, doi:10.1145/321250.321253 (bibliographic data verified via the dblp record journals/jacm/Robinson65; full text not consulted). Standard attribution for syntactic unification and most general unifiers.",
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties."
+    ],
+    "design_question": "Why is the occurs-check failure branch of a unifier a sound 'no unifier' answer?",
+    "lean_names": [
+      "Toy.Unify.not_unifiable_var_of_occurs",
+      "Toy.Unify.not_unifiable_var_of_occurs_nonvacuous",
+      "Toy.Unify.not_unifiable_var_of_occurs_needs_occurs",
+      "Toy.Unify.not_unifiable_var_of_occurs_needs_ne",
+      "Toy.Unify.size_substVar_lt_con",
+      "Toy.Unify.decompAll_bindingOK",
+      "Toy.Unify.BindingOK",
+      "Toy.Unify.occurs",
+      "Toy.Unify.occurs_example",
+      "Toy.Unify.not_occurs_example",
+      "Toy.Unify.substVar",
+      "Toy.Unify.Term.size",
+      "Toy.Unify.Term.sizeList"
+    ]
+  },
+  {
+    "id": "occurs-check-removal-unsound",
+    "lean": [
+      "Toy.Unify.unifyNoOC_returns_nonunifier_var_box",
+      "Toy.Unify.unifyNoOC_eqUpTo_fails_with_duplicate_elimination"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "That omitting the occurs check yields non-unifiers over finite terms is classical (the \"occur-check problem\"; Plaisted 1984). The second instance, showing that this solved-form algorithm without the occurs check is not sound even for infinite unfoldings when a variable is eliminated twice, is made precise here for this specific algorithm; no source stating it was found, and no novelty search was recorded.",
+    "plain_claim": "Removing the occurs check, and changing nothing else, breaks soundness: on X =? Box X the variant returns [X ↦ Box X], which is not a unifier, no finite unifier exists, and unify returns none; and on (X, (X, (Y, Z))) =? (Box X, (Box Y, (Vec Y, Z))) it returns dupσ = [(1, Vec Y), (0, Vec Y), (0, Box (Vec Y))], whose list of bound variables is [1, 0, 0] (X is bound twice), and whose k-fold unfoldings of the two sides disagree at depth 2 for every k, so the depth-indexed solution property fails.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Evaluation of the algorithm on two inputs, a size argument for the absence of finite unifiers, and a case split on k for the unfoldings.",
+    "nonvacuity_witness": "Counterexample; its instances are the witnesses.",
+    "nonvacuity_witness_lean": "Toy.Unify.unifyNoOC_returns_nonunifier_var_box",
+    "non_claims": [
+      "The second instance shows that the returned substitution fails the depth-2 test for every number of unfoldings; that the equations X = Box X, X = Box Y, Y = Vec Y have no infinite-tree solution at all is not proved here (no infinite-tree semantics is formalized).",
+      "The variable Z in the second instance is there to raise the fuel numVars from 2 to 3; without it the variant runs out of fuel and returns none on (X, (X, Y)) =? (Box X, (Box Y, Vec Y)) (run_needs_occurs_check_for_bound).",
+      "It concerns this solved-form algorithm with the occurs check deleted; algorithms designed for infinite (rational) trees, which merge or re-check repeated bindings (Huet 1976; Martelli and Rossi 1984; Jaffar 1984), are not covered.",
+      "It does not show the variant is unsound when no variable is bound twice; see no-oc-infinite-unfolding-sound-without-double-elimination.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The two counterexamples concern the outputs of `unifyNoOC` on two concrete inputs. Any implementation that returns the same substitution on such an input exhibits the same failure there, because each failure is a property of the input and the returned substitution (not a unifier; unfoldings that disagree at depth 2). An implementation that returns other substitutions on these inputs is not covered, and whether a given production unifier without the occurs check returns them is not examined. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "G. Huet, \"Resolution d'equations dans des langages d'ordre 1, 2, ..., omega\", these de doctorat d'Etat, Universite Paris VII, defended 28 September 1976 (author-hosted scan at http://gallium.inria.fr/~huet/PUBLIC/Huet1976.pdf consulted: its introduction states that Chapter 5 treats first-order languages, proves existence of a principal unifier via rational congruences, and extends the existence of a principal solution to solutions among finite or infinite terms, such a solution being rational, i.e. recognizable by a finite automaton).",
+      "A. Colmerauer, \"Prolog and Infinite Trees\", in K. L. Clark and S.-A. Tärnlund (eds.), Logic Programming, Academic Press, 1982, pp. 231-251 (bibliographic data taken from secondary indexes, the Computer History Museum Prolog bibliography and a reference list on EuDML; not verified at the publisher; full text not consulted). Solving equations over rational trees.",
+      "J. Jaffar, \"Efficient Unification over Infinite Terms\", New Generation Computing 2(3):207-219, 1984, doi:10.1007/BF03037057 (verified via the dblp record journals/ngc/Jaffar84; full text not consulted).",
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties.",
+      "D. A. Plaisted, \"The occur-check problem in Prolog\", New Generation Computing 2(4):309-322, 1984, doi:10.1007/BF03037324 (bibliographic data verified via the Crossref record of the DOI; full text not consulted). Analyses the consequences of omitting the occurs check in Prolog unification.",
+      "A. Martelli and G. Rossi, \"Efficient Unification with Infinite Terms in Logic Programming\", in Proceedings of the International Conference on Fifth Generation Computer Systems (FGCS 1984), Tokyo, 1984, pp. 202-209 (bibliographic data from the second author's publication list; no DOI; full text not consulted). A unification algorithm over infinite (rational) terms."
+    ],
+    "design_question": "What exactly breaks when a unifier skips the occurs check, over finite and over infinite terms?",
+    "lean_names": [
+      "Toy.Unify.unifyNoOC_returns_nonunifier_var_box",
+      "Toy.Unify.unifyNoOC_eqUpTo_fails_with_duplicate_elimination",
+      "Toy.Unify.dupS",
+      "Toy.Unify.dupT",
+      "Toy.Unify.dupσ",
+      "Toy.Unify.run_needs_occurs_check_for_bound",
+      "Toy.Unify.iterSubst",
+      "Toy.Unify.iterSubst_example",
+      "Toy.Unify.iterSubst_ne_example",
+      "Toy.Unify.unifyNoOC",
+      "Toy.Unify.unifyNoOC_example",
+      "Toy.Unify.unifyNoOC_clash_example",
+      "Toy.Unify.eqUpTo",
+      "Toy.Unify.eqUpTo_example",
+      "Toy.Unify.eqUpTo_ne_example",
+      "Toy.Unify.eqUpTo_arity_ne_example",
+      "Toy.Unify.eqUpToList",
+      "Toy.Unify.box"
+    ]
+  },
+  {
+    "id": "no-oc-agrees-when-unify-succeeds",
+    "lean": [
+      "Toy.Unify.run_false_eq_ok_of_run_true_eq_ok",
+      "Toy.Unify.unifyNoOC_eq_some_of_unify_eq_some",
+      "Toy.Unify.unifyNoOC_unifies_iff_unifiable"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "A known fact about unification without the occurs check: on equation systems with a finite unifier the occurs check never fires, so the variant takes the same steps (the NSTO literature; Plaisted 1984; Deransart, Ferrand and Téguia 1991; Apt and Pellegrini 1994). Restated for this algorithm (same passes, same fuel).",
+    "plain_claim": "If the run with the occurs check returns ok σ' then the run without it, from the same fuel, equations and initial accumulator substitution σ (arbitrary; σ need not be in solved form), returns ok σ'; hence if unify s t = some σ then unifyNoOC s t = some σ, and if unifyNoOC s t = some σ then σ unifies s and t iff s and t are unifiable.",
+    "hypotheses": [
+      {
+        "name": "h : run true fuel eqs σ = .ok σ' (first theorem)",
+        "purpose": "Agreement is claimed when the run with the check succeeds.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.run_agreement_needs_run_true_ok",
+        "witness_class": "The equation X =? u8 with fuel 0 and σ' = []: both runs run out of fuel."
+      },
+      {
+        "name": "h : unify s t = some σ (second theorem)",
+        "purpose": "As above, at the level of unify.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.unifyNoOC_eq_some_needs_unify_output",
+        "witness_class": "The instance X =? u8 with the non-output σ = []."
+      },
+      {
+        "name": "h : unifyNoOC s t = some σ (third theorem)",
+        "purpose": "The equivalence is about the variant's output.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.unifyNoOC_unifies_iff_needs_output",
+        "witness_class": "The instance X =? u8 (unifiable) with the non-output σ = [], which does not unify it."
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction on fuel: the two runs take identical passes until an occurs-check failure, which a successful run never meets; the third theorem then follows from soundness and completeness of unify.",
+    "nonvacuity_witness": "unify (X, u8) (u32, Y) succeeds with [Y ↦ u8, X ↦ u32]; unifyNoOC returns outputs both on that unifiable pair and on the non-unifiable X =? Box X.",
+    "nonvacuity_witness_lean": [
+      "Toy.Unify.agreement_nonvacuous",
+      "Toy.Unify.unifyNoOC_unifies_iff_unifiable_nonvacuous"
+    ],
+    "non_claims": [
+      "The converse fails: the occurs-check-free run can succeed where the run with the check fails (run_true_ne_ok_of_run_false_ok_example).",
+      "It depends on the variant being this algorithm with the same fuel and with the occurs check as the sole difference; a variant that also reorders, merges or re-checks equations is not covered.",
+      "It says nothing about what the variant returns on non-unifiable inputs (a substitution, a failure, or fuel exhaustion are all possible).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement depends on the input–output behaviour of `run`, `unify` and `unifyNoOC` alone. An implementation that returns the same result as `run`, `unify` and `unifyNoOC` on every input therefore satisfies the same statement; one that differs in any output (another binding order, another substitution representation such as union-find or triangular substitutions, multiequations, or merged or re-checked bindings) is related to this model by no proved relation, and whether a given production unifier or trait solver computes these functions is not examined. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties.",
+      "D. A. Plaisted, \"The occur-check problem in Prolog\", New Generation Computing 2(4):309-322, 1984, doi:10.1007/BF03037324 (bibliographic data verified via the Crossref record of the DOI; full text not consulted). Analyses the consequences of omitting the occurs check in Prolog unification.",
+      "P. Deransart, G. Ferrand and M. Téguia, \"NSTO programs (not subject to occur-check)\", in V. A. Saraswat and K. Ueda (eds.), Logic Programming, Proceedings of the 1991 International Symposium, MIT Press, 1991, pp. 533-547 (bibliographic data taken from a secondary source, the bibliography of arXiv:2103.01911v2; not verified at the publisher; full text not consulted).",
+      "K. R. Apt and A. Pellegrini, \"On the occur-check-free PROLOG programs\", ACM Transactions on Programming Languages and Systems 16(3):687-726, 1994, doi:10.1145/177492.177673 (bibliographic data verified via the Crossref record of the DOI; full text not consulted). Studies when unification without the occurs check is safe, building on the notion of equation systems \"not subject to occur-check\" (NSTO); the relationship of that notion to results 7 and 19 is stated from secondary descriptions and was not checked against the full text."
+    ],
+    "design_question": "On which inputs can removing the occurs check change a unifier's answer?",
+    "lean_names": [
+      "Toy.Unify.run_false_eq_ok_of_run_true_eq_ok",
+      "Toy.Unify.unifyNoOC_eq_some_of_unify_eq_some",
+      "Toy.Unify.unifyNoOC_unifies_iff_unifiable",
+      "Toy.Unify.agreement_nonvacuous",
+      "Toy.Unify.unifyNoOC_unifies_iff_unifiable_nonvacuous",
+      "Toy.Unify.run_agreement_needs_run_true_ok",
+      "Toy.Unify.unifyNoOC_eq_some_needs_unify_output",
+      "Toy.Unify.unifyNoOC_unifies_iff_needs_output",
+      "Toy.Unify.run_true_ne_ok_of_run_false_ok_example"
+    ]
+  },
+  {
+    "id": "no-oc-infinite-unfolding-sound-without-double-elimination",
+    "lean": [
+      "Toy.Unify.unifyNoOC_eqUpTo_of_nodup",
+      "Toy.Unify.eqUpTo_subst",
+      "Toy.Unify.eqUpTo_iterSubst_mono",
+      "Toy.Unify.eqUpTo_forall_iff_eq"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Solvability of first-order equations over infinite (rational) trees is classical (Huet 1976, Chapter 5; Colmerauer 1982; Courcelle 1983; Jaffar 1984; Martelli and Rossi 1984; Maher 1988). The representation-specific, depth-indexed statement for this solved-form algorithm, with the no-double-elimination condition, is made precise here; no source stating it was found, and no novelty search was recorded.",
+    "plain_claim": "If unifyNoOC s t returns some σ and the left-hand variables of the returned association list σ are pairwise distinct (the run eliminated no variable twice), then for every depth n there is a number k such that σ applied k times to s and to t gives terms that agree at every position of depth below n; agreement up to depth n is preserved by applying any substitution; agreement of the k-fold unfoldings persists for every number of unfoldings m ≥ k; and on finite terms, agreement at every depth is equality.",
+    "hypotheses": [
+      {
+        "name": "h : unifyNoOC s t = some σ (first theorem)",
+        "purpose": "The claim is about the variant's output.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.unifyNoOC_eqUpTo_needs_output",
+        "witness_class": "The instance X =? u8 with the non-output σ = [] (duplicate-free): X and u8 disagree at depth 1 after any number of unfoldings."
+      },
+      {
+        "name": "hnd : (σ.map Prod.fst).Nodup (first theorem)",
+        "purpose": "No variable may have been eliminated twice; a re-eliminated variable's earlier binding is rewritten in the solved part and never re-checked.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.unifyNoOC_eqUpTo_fails_with_duplicate_elimination",
+        "witness_class": "The instance (X, (X, (Y, Z))) =? (Box X, (Box Y, (Vec Y, Z))) (three variables; constructors Box, Vec, Pair), whose output binds X twice."
+      },
+      {
+        "name": "h : eqUpTo n a b = true (eqUpTo_subst)",
+        "purpose": "Congruence needs agreement before substitution.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.eqUpTo_subst_needs_agreement",
+        "witness_class": "The instance u8, u32 (two nullary constructors) with n = 1 and the empty substitution."
+      },
+      {
+        "name": "hkm : k ≤ m (eqUpTo_iterSubst_mono)",
+        "purpose": "Fewer unfoldings can disagree where more agree.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.eqUpTo_iterSubst_mono_needs_le",
+        "witness_class": "The substitution [X ↦ u8] with k = 1, m = 0 on X and u8."
+      },
+      {
+        "name": "h : eqUpTo n (iterSubst σ k a) (iterSubst σ k b) = true (eqUpTo_iterSubst_mono)",
+        "purpose": "Persistence needs agreement at k.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.eqUpTo_iterSubst_mono_needs_agreement",
+        "witness_class": "The instance u8, u32 with n = 1, k = 0, m = 1 and the empty substitution: k ≤ m holds, the 0-fold unfoldings disagree at depth 1 (h fails) and so do the 1-fold unfoldings (the conclusion fails)."
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "The proof (ToyUnify/OccursCheck.lean) shows that agreement in the limit (LimEq) is an equivalence and a congruence preserved backwards by every pass, that in a run whose output is duplicate-free a variable bound to a variable never reappears (invariant ChainInv), so var-to-var chains in the output have length at most one, and that then 2n and 2n + 1 unfoldings agree up to depth n (eqUpTo_iterSubst_converge).",
+    "nonvacuity_witness": "unifyNoOC X (Box X) = some [X ↦ Box X], whose bound variables are distinct, on an input with no finite unifier; Box u8 and Box u32 agree up to depth 1 although they differ; k = 0 ≤ m = 3 with agreeing 0-fold unfoldings.",
+    "nonvacuity_witness_lean": [
+      "Toy.Unify.unifyNoOC_eqUpTo_of_nodup_nonvacuous",
+      "Toy.Unify.eqUpTo_subst_nonvacuous",
+      "Toy.Unify.eqUpTo_iterSubst_mono_nonvacuous"
+    ],
+    "non_claims": [
+      "It is a representation-specific, depth-indexed approximation: no type of infinite or rational trees is constructed, and convergence of the unfoldings to such a tree is not stated as a theorem here.",
+      "The distinctness hypothesis is about the association list as returned (step prepends one binding per elimination and never removes any), not about the substitution it denotes: deleting the shadowed binding from dupσ gives a duplicate-free list that acts identically on every term and still fails the depth-2 test (dupσ_dedup_still_fails). A representation that keeps one binding per variable (a finite map, or post-hoc deduplication) therefore does not by itself make the occurs-check-free output a depth-indexed solution.",
+      "No completeness: the variant may fail or run out of fuel on inputs that have infinite-tree solutions (not proved here).",
+      "The distinctness condition is checked on the output; which inputs lead to double elimination is not characterized.",
+      "The existential k is not a bound on k (the proof yields k = 2n for the output's own bindings, but no bound for s and t is stated).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement depends on the input–output behaviour of `unifyNoOC` alone. An implementation that returns the same result as `unifyNoOC` on every input therefore satisfies the same statement; one that differs in any output (another binding order, another substitution representation such as union-find or triangular substitutions, multiequations, or merged or re-checked bindings) is related to this model by no proved relation, and whether a given production unifier or trait solver computes these functions is not examined. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "G. Huet, \"Resolution d'equations dans des langages d'ordre 1, 2, ..., omega\", these de doctorat d'Etat, Universite Paris VII, defended 28 September 1976 (author-hosted scan at http://gallium.inria.fr/~huet/PUBLIC/Huet1976.pdf consulted: its introduction states that Chapter 5 treats first-order languages, proves existence of a principal unifier via rational congruences, and extends the existence of a principal solution to solutions among finite or infinite terms, such a solution being rational, i.e. recognizable by a finite automaton).",
+      "A. Colmerauer, \"Prolog and Infinite Trees\", in K. L. Clark and S.-A. Tärnlund (eds.), Logic Programming, Academic Press, 1982, pp. 231-251 (bibliographic data taken from secondary indexes, the Computer History Museum Prolog bibliography and a reference list on EuDML; not verified at the publisher; full text not consulted). Solving equations over rational trees.",
+      "J. Jaffar, \"Efficient Unification over Infinite Terms\", New Generation Computing 2(3):207-219, 1984, doi:10.1007/BF03037057 (verified via the dblp record journals/ngc/Jaffar84; full text not consulted).",
+      "B. Courcelle, \"Fundamental properties of infinite trees\", Theoretical Computer Science 25(2):95-169, 1983, doi:10.1016/0304-3975(83)90059-2 (bibliographic data verified via the Crossref record of the DOI; full text not consulted). Standard reference for infinite and rational trees.",
+      "A. Martelli and G. Rossi, \"Efficient Unification with Infinite Terms in Logic Programming\", in Proceedings of the International Conference on Fifth Generation Computer Systems (FGCS 1984), Tokyo, 1984, pp. 202-209 (bibliographic data from the second author's publication list; no DOI; full text not consulted). A unification algorithm over infinite (rational) terms.",
+      "M. J. Maher, \"Complete axiomatizations of the algebras of finite, rational and infinite trees\", Proceedings of the Third Annual Symposium on Logic in Computer Science (LICS 1988), Edinburgh, IEEE Computer Society Press, pp. 348-357, doi:10.1109/LICS.1988.5132 (bibliographic data verified via the Crossref record of the DOI; full text not consulted)."
+    ],
+    "design_question": "Is an occurs-check-free unifier at least a correct solver for cyclic (infinite) types, and under what condition?",
+    "lean_names": [
+      "Toy.Unify.unifyNoOC_eqUpTo_of_nodup",
+      "Toy.Unify.eqUpTo_subst",
+      "Toy.Unify.eqUpTo_iterSubst_mono",
+      "Toy.Unify.eqUpTo_forall_iff_eq",
+      "Toy.Unify.unifyNoOC_eqUpTo_of_nodup_nonvacuous",
+      "Toy.Unify.eqUpTo_subst_nonvacuous",
+      "Toy.Unify.eqUpTo_iterSubst_mono_nonvacuous",
+      "Toy.Unify.unifyNoOC_eqUpTo_needs_output",
+      "Toy.Unify.unifyNoOC_eqUpTo_fails_with_duplicate_elimination",
+      "Toy.Unify.eqUpTo_subst_needs_agreement",
+      "Toy.Unify.eqUpTo_iterSubst_mono_needs_le",
+      "Toy.Unify.eqUpTo_iterSubst_mono_needs_agreement",
+      "Toy.Unify.dupσ",
+      "Toy.Unify.dupσDedup",
+      "Toy.Unify.dupσ_dedup_still_fails",
+      "Toy.Unify.LimEq",
+      "Toy.Unify.ChainInv",
+      "Toy.Unify.eqUpTo_iterSubst_converge"
+    ]
+  },
+  {
+    "id": "matching-vs-unification-differ",
+    "lean": [
+      "Toy.Unify.unifiable_not_matchable",
+      "Toy.Unify.matchable_not_unifiable"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The difference between one-sided matching and unification is textbook (Baader and Snyder 2001).",
+    "plain_claim": "One-sided matching and unification differ in both directions: (X, u8) and (u32, Y) are unifiable but (X, u8) does not match (u32, Y); and X matches Box X (by X ↦ Box X, the target left untouched) while X and Box X are not unifiable.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Explicit witnesses and constructor/size arguments.",
+    "nonvacuity_witness": "Counterexample; its instances are the witnesses.",
+    "nonvacuity_witness_lean": "Toy.Unify.matchable_not_unifiable",
+    "non_claims": [
+      "Matching here keeps the target's variables fixed; it is not matching modulo renaming, nor unification of renamed-apart terms.",
+      "The direction \"matchable but not unifiable\" depends on the pattern and the target sharing variable names: when they share none, every matchable pair is unifiable (unifiable_of_matchable_of_varsDisjoint).",
+      "It does not say which notion a particular trait solver uses at a given point.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement is about substitutions on finite first-order terms and involves no algorithm, so it applies to any type language that is represented faithfully by such terms (variables, and constructor symbols with argument lists); type languages with aliases, associated-type projections, binders or subtyping are not represented, and no faithful representation of a production type language is proved. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties."
+    ],
+    "design_question": "When may a solver use one-sided matching instead of unification?",
+    "lean_names": [
+      "Toy.Unify.unifiable_not_matchable",
+      "Toy.Unify.matchable_not_unifiable",
+      "Toy.Unify.unifiable_of_matchable_of_varsDisjoint",
+      "Toy.Unify.Matchable",
+      "Toy.Unify.matchable_example",
+      "Toy.Unify.not_matchable_example",
+      "Toy.Unify.u8",
+      "Toy.Unify.u32",
+      "Toy.Unify.pair"
+    ]
+  },
+  {
+    "id": "matching-needs-no-occurs-check",
+    "lean": [
+      "Toy.Unify.matchAlg_sound",
+      "Toy.Unify.matchAlg_complete"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Correctness of syntactic matching (Baader and Snyder 2001); matching was formalized before in Isabelle/HOL (Sternagel and Thiemann 2018).",
+    "plain_claim": "The matching algorithm matchAlg, which performs no occurs check and never applies its bindings to the target, is sound (if matchAlg p t = some σ then σ p = t) and complete (if some σ satisfies σ p = t, then matchAlg p t returns some substitution).",
+    "hypotheses": [
+      {
+        "name": "h : matchAlg p t = some σ (soundness)",
+        "purpose": "Restricts σ to the output.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.matchAlg_sound_needs_output",
+        "witness_class": "The instance X against u8 with the non-output σ = []."
+      },
+      {
+        "name": "h : Matchable p t (completeness)",
+        "purpose": "An output is guaranteed when a matcher exists.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.matchAlg_complete_needs_matchable",
+        "witness_class": "The instance u8 against u32 (two distinct nullary constructors)."
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Structural induction on the pattern with an invariant on the accumulated bindings (they extend the input bindings and bind every pattern variable seen; for completeness, they agree with a given matcher).",
+    "nonvacuity_witness": "matchAlg X (Box X) = some [X ↦ Box X], the instance on which unification needs the occurs check, and X matches Box X.",
+    "nonvacuity_witness_lean": "Toy.Unify.matchAlg_nonvacuous",
+    "non_claims": [
+      "Completeness gives some output; it does not claim the output equals a given matcher (they agree on the pattern's variables; not proved here).",
+      "The output need not be idempotent and need not fix the target when pattern and target share variable names: on X against Box X it returns [X ↦ Box X] (matchAlg_output_not_idempotent_example). It instantiates the pattern; it is not meant to be applied to the target.",
+      "It says nothing about problems where the target's variables may also be instantiated; that is unification.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement depends on the input–output behaviour of `matchAlg` alone. An implementation that returns the same result as `matchAlg` on every input therefore satisfies the same statement; one that differs in any output (another binding order, another substitution representation such as union-find or triangular substitutions, multiequations, or merged or re-checked bindings) is related to this model by no proved relation, and whether a given production unifier or trait solver computes these functions is not examined. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties.",
+      "C. Sternagel and R. Thiemann, \"First-Order Terms\", Archive of Formal Proofs, February 2018 (entry page https://www.isa-afp.org/entries/First_Order_Terms.html consulted: its abstract states that it formalizes matching and a first-order unification algorithm in Isabelle/HOL)."
+    ],
+    "design_question": "Which steps of a type checker can safely skip the occurs check?",
+    "lean_names": [
+      "Toy.Unify.matchAlg_sound",
+      "Toy.Unify.matchAlg_complete",
+      "Toy.Unify.matchAlg_nonvacuous",
+      "Toy.Unify.matchAlg_sound_needs_output",
+      "Toy.Unify.matchAlg_complete_needs_matchable",
+      "Toy.Unify.matchAlg_output_not_idempotent_example",
+      "Toy.Unify.matchAux",
+      "Toy.Unify.matchAlg_example",
+      "Toy.Unify.matchAlg_none_example",
+      "Toy.Unify.matchList",
+      "Toy.Unify.matchAlg"
+    ]
+  },
+  {
+    "id": "matching-iff-unification-on-ground-targets",
+    "lean": [
+      "Toy.Unify.matchable_iff_unifiable_of_isGround",
+      "Toy.Unify.matchAlg_isSome_iff_unify_isSome_of_isGround"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Immediate from the definitions; a standard observation.",
+    "plain_claim": "If the target t is ground, then p matches t iff p and t are unifiable; and matchAlg p t returns a substitution iff unify p t does.",
+    "hypotheses": [
+      {
+        "name": "ht : IsGround t (both theorems)",
+        "purpose": "With variables in the target, matching and unification can differ.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Unify.matchable_iff_unifiable_needs_ground",
+          "Toy.Unify.matchAlg_isSome_iff_unify_needs_ground"
+        ],
+        "witness_class": "The instance X against Box X (one variable, one unary constructor; the target is not ground)."
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "The first theorem is definitional: one rewrite with subst_of_isGround (substitutions fix ground terms). The second combines it with soundness and completeness of matchAlg and of unify.",
+    "nonvacuity_witness": "Vec u8 is ground.",
+    "nonvacuity_witness_lean": "Toy.Unify.matchable_iff_unifiable_of_isGround_nonvacuous",
+    "non_claims": [
+      "Groundness of the target is sufficient, not necessary: for the non-ground target Box Y, X matches Box Y and X and Box Y are unifiable, so the equivalence holds (matchable_iff_unifiable_nonGround_example); for non-ground targets it is not guaranteed for all patterns (matchable_iff_unifiable_needs_ground, matching-vs-unification-differ).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): The statement depends on the input–output behaviour of `matchAlg` and `unify` alone. An implementation that returns the same result as `matchAlg` and `unify` on every input therefore satisfies the same statement; one that differs in any output (another binding order, another substitution representation such as union-find or triangular substitutions, multiequations, or merged or re-checked bindings) is related to this model by no proved relation, and whether a given production unifier or trait solver computes these functions is not examined. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about production unifiers or trait solvers.",
+    "prior_art": [
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties."
+    ],
+    "design_question": "When is selecting an impl for a concrete type the same problem as unifying with its header?",
+    "lean_names": [
+      "Toy.Unify.matchable_iff_unifiable_of_isGround",
+      "Toy.Unify.matchAlg_isSome_iff_unify_isSome_of_isGround",
+      "Toy.Unify.matchable_iff_unifiable_of_isGround_nonvacuous",
+      "Toy.Unify.matchable_iff_unifiable_needs_ground",
+      "Toy.Unify.matchAlg_isSome_iff_unify_needs_ground",
+      "Toy.Unify.subst_of_isGround",
+      "Toy.Unify.matchable_iff_unifiable_nonGround_example",
+      "Toy.Unify.IsGround",
+      "Toy.Unify.isGround_example",
+      "Toy.Unify.not_isGround_example"
+    ]
+  },
+  {
+    "id": "overlap-check-unification-characterization",
+    "lean": [
+      "Toy.Unify.headersOverlap_iff_unify_isSome",
+      "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjoint",
+      "Toy.Unify.not_implsOverlapIn_of_overlapCheckSaysDisjoint",
+      "Toy.Unify.overlapCheckSaysDisjoint_stable"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "That two variable-disjoint first-order terms have a common ground instance iff they are unifiable, and hence that a header-unification overlap check soundly reports disjointness, is standard (Baader and Snyder 2001; it underlies the apartness check of Eisenberg et al. 2014 and the overlap check described in the rustc-dev-guide). Restated here, including the renaming-apart hypothesis.",
+    "plain_claim": "For two impl headers whose self types share no variable, the headers overlap (same trait and a common ground instance of the self types) iff the traits agree and unify succeeds on the self types; so if the checker says disjoint (traits differ or unify fails on the self types), the headers have no common ground instance, the two impls overlap in no impl set at all, and hence that verdict is stable under every extension of any impl set; in particular it is StableUnderDownstream for every fundamental-constructor predicate fund, every impl set and all query symbols (it holds after every orphan-allowed downstream extension).",
+    "hypotheses": [
+      {
+        "name": "hdisj : VarsDisjoint i.selfTy j.selfTy (all four theorems)",
+        "purpose": "Self types must be renamed apart; with a shared variable name unification can fail although the headers overlap.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Unify.overlapCheck_needs_renaming_apart",
+          "Toy.Unify.overlapCheckSaysDisjoint_stable_needs_renaming_apart"
+        ],
+        "witness_class": "Two impls of one trait without where-clauses whose self types (T, u8) and (u32, T) share the variable name T: the checker says disjoint, the characterization fails, the impls overlap in every impl set, and non-overlap is not stable."
+      },
+      {
+        "name": "h : overlapCheckSaysDisjoint i j = true (not_headersOverlap_of_overlapCheckSaysDisjoint, not_implsOverlapIn_of_overlapCheckSaysDisjoint, overlapCheckSaysDisjoint_stable)",
+        "purpose": "The 'disjoint' verdict is what is claimed sound; when it is false the impls can overlap, and can come to overlap after a downstream extension.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.overlapCheckSaysDisjoint_needs_verdict",
+        "witness_class": "The renamed-apart blanket impls impl<T: A> Tr for T and impl<U: B> Tr for U: the checker does not say disjoint, the headers overlap, the impls overlap in I_AB ++ E_AB, and non-overlap is not stable for I_AB."
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Merge the two instantiations into one substitution (variables disjoint), then use soundness and completeness of unify; a ground instance of the unifier is obtained by sending all remaining variables to u8; stability is a corollary (the verdict excludes overlap in every impl set).",
+    "nonvacuity_witness": "impl<T> Tr for Vec<T> and impl<U> Tr for Box<U>: self types renamed apart and the checker says disjoint; impl<T: A> Tr for T and impl<U: B> Tr for U have self types renamed apart.",
+    "nonvacuity_witness_lean": [
+      "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjoint_nonvacuous",
+      "Toy.Unify.headersOverlap_iff_unify_isSome_nonvacuous"
+    ],
+    "non_claims": [
+      "HeadersOverlap ignores where-clauses: unify succeeding does not imply that the impls overlap in a given impl set (where-clauses-break-converse-nonmonotone).",
+      "Renaming apart is a hypothesis, not something the checker does; with shared variable names its verdict can be wrong (overlapCheck_needs_renaming_apart).",
+      "The stability part holds for the trivial reason that the verdict excludes overlap in every impl set; it is not a statement about any orphan rule, and it holds equally for orphan-disallowed or upstream extensions.",
+      "Not a model of rustc's coherence checker: no trait type parameters, lifetimes, associated types, negative impls, specialization or orphan check."
+    ],
+    "modeling_bridge": "derived (modeling bridge): rustc's overlap check compares two impl headers by unifying them (rustc-dev-guide, Coherence chapter, pinned commit). The toy check overlapCheckSaysDisjoint models the header-unification part of such a check for traits without type parameters. rustc additionally handles trait parameters, lifetimes, associated types, negative impls, specialization and the orphan check; none of these is modeled. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about rustc.",
+    "prior_art": [
+      "rustc-dev-guide, chapter \"Coherence\", file src/coherence.md of https://github.com/rust-lang/rustc-dev-guide at commit 33fa6bef32eee98a8e38c9376645cf6fbcb2ca67 (consulted). It describes overlap checks on pairs of impls that unify the impl headers (its example obtains ?E = &str), the implicit negative impl check impl_intersection_has_impossible_obligation (an overlap is impossible when an obligation cannot hold, using that downstream crates cannot implement a remote trait for a remote type), and the orphan check, which guards against impls that could be added by upstream crates in a backwards-compatible way or by downstream crates.",
+      "Rust RFC 1023, \"Rebalancing coherence\" (feature fundamental_attribute, start date 2015-03-27), file text/1023-rebalancing-coherence.md of https://github.com/rust-lang/rfcs at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 (consulted). It restricts negative reasoning to obey the orphan rules ('we cannot conclude that a proposition like T0: !Trait<T1..Tn> holds unless T0: Trait<T1..Tn> meets the orphan rules'), motivated by letting parent (upstream) crates add impls without breaking children, and introduces #[fundamental]: a fundamental type is one where implementing a blanket impl over it is a breaking change; it is applied to Box so that Box behaves like & and &mut with respect to coherence.",
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties.",
+      "R. A. Eisenberg, D. Vytiniotis, S. Peyton Jones and S. Weirich, \"Closed type families with overlapping equations\", POPL 2014, pp. 671-683, doi:10.1145/2535838.2535856 (bibliographic data verified via the Crossref record; author-hosted full text consulted). Its apartness check (Definition 6) uses ordinary first-order unification; Section 6.1 shows with the pair (a, a) and ([b], b) that an occurs-check-based apartness verdict becomes unsound in the presence of non-terminating type families, Section 6.2 defines unification over infinite types (Definition 19) and conjectures, without proof, that using it restores soundness, and Section 6.3 reports that GHC uses it for the overlap check of open type families."
+    ],
+    "design_question": "What does a 'no overlap' verdict computed by header unification alone guarantee, and on what renaming discipline does it depend?",
+    "lean_names": [
+      "Toy.Unify.headersOverlap_iff_unify_isSome",
+      "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjoint",
+      "Toy.Unify.not_implsOverlapIn_of_overlapCheckSaysDisjoint",
+      "Toy.Unify.overlapCheckSaysDisjoint_stable",
+      "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjoint_nonvacuous",
+      "Toy.Unify.headersOverlap_iff_unify_isSome_nonvacuous",
+      "Toy.Unify.overlapCheck_needs_renaming_apart",
+      "Toy.Unify.overlapCheckSaysDisjoint_stable_needs_renaming_apart",
+      "Toy.Unify.overlapCheckSaysDisjoint_needs_verdict",
+      "Toy.Unify.I_AB",
+      "Toy.Unify.E_AB",
+      "Toy.Unify.i1",
+      "Toy.Unify.i2",
+      "Toy.Unify.iShared1",
+      "Toy.Unify.iShared2",
+      "Toy.Unify.VarsDisjoint",
+      "Toy.Unify.varsDisjoint_example",
+      "Toy.Unify.not_varsDisjoint_example",
+      "Toy.Unify.Impl",
+      "Toy.Unify.implements_example",
+      "Toy.Unify.not_headersOverlap_example",
+      "Toy.Unify.ImplSet",
+      "Toy.Unify.HeadersOverlap",
+      "Toy.Unify.headersOverlap_example",
+      "Toy.Unify.ImplsOverlapIn",
+      "Toy.Unify.overlapCheckSaysDisjoint",
+      "Toy.Unify.overlapCheckSaysDisjoint_example",
+      "Toy.Unify.overlapCheckSaysDisjoint_false_example",
+      "Toy.Unify.OrphanOK",
+      "Toy.Unify.orphanOK_example",
+      "Toy.Unify.not_orphanOK_example",
+      "Toy.Unify.FreshFor",
+      "Toy.Unify.freshFor_example",
+      "Toy.Unify.not_freshFor_example",
+      "Toy.Unify.StableUnderDownstream",
+      "Toy.Unify.stableUnderDownstream_example"
+    ]
+  },
+  {
+    "id": "where-clause-overlap-iff-mgu-instance",
+    "lean": [
+      "Toy.Unify.implsOverlapIn_iff_mgu_instance"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "The decomposition 'overlap = unify the headers, then satisfy all where-clauses at an instance of the unifier' underlies coherence overlap checks (rustc-dev-guide, Coherence chapter); made precise here using most generality.",
+    "plain_claim": "For two impls whose variables (in self types and where-clauses) are renamed apart, they overlap in an impl set I iff the traits agree, unify returns some σ on the self types, and some θ grounds σ applied to the first self type while every where-clause of both impls is derivable in I at θ ∘ σ.",
+    "hypotheses": [
+      {
+        "name": "hdisj : ∀ x ∈ i.vars, x ∉ j.vars",
+        "purpose": "Renaming apart must cover where-clause variables too: a variable that the two impls share in their where-clauses but not in their self types is forced to one value on the right but may take two values on the left.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.implsOverlapIn_iff_mgu_instance_needs_bound_vars_disjoint",
+        "witness_class": "Two impls (T, u8) where W: A and (u32, V) where W: B whose self types are renamed apart but whose where-clauses share the variable W, in I_AB."
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "The forward direction merges the two instantiations and factors the resulting common instance through the most general unifier (unify_mgu_factor); the backward direction composes. No new induction beyond the unify results used as black boxes.",
+    "nonvacuity_witness": "impl<T: A> Tr for T and impl<U: B> Tr for U have all variables renamed apart.",
+    "nonvacuity_witness_lean": "Toy.Unify.implsOverlapIn_iff_mgu_instance_nonvacuous",
+    "non_claims": [
+      "The right-hand side quantifies over all grounding θ and over derivability in I; it is a characterization, not a decision procedure (derivability in impl sets with recursive where-clauses is not shown decidable here).",
+      "ImplsOverlapIn I i j is a closed-world notion: where-clauses are evaluated in the fixed impl set I, which need not contain i or j. It does not model rustc's open-world checks (impl_intersection_has_impossible_obligation, impl_intersection_has_negative_obligation), which reason about impls that other crates could add; that a where-clause is not derivable in the current I does not make an overlap impossible in that open-world sense (negative-reasoning-unstable).",
+      "Overlap is relative to the given impl set; it is not preserved by adding impls (where-clauses-break-converse-nonmonotone).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): rustc's overlap check first unifies the two impl headers and then asks whether the instantiated where-clause obligations could hold (rustc-dev-guide, Coherence chapter, pinned commit). In the toy, subst θ (subst σ b.ty) mirrors instantiating a where-clause after header unification with σ = unify i.selfTy j.selfTy, and derivability in the fixed impl set I stands in for 'the obligation holds'. rustc's checks are open-world (an obligation counts as impossible when no crate could make it hold), while ImplsOverlapIn is closed-world. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about rustc.",
+    "prior_art": [
+      "rustc-dev-guide, chapter \"Coherence\", file src/coherence.md of https://github.com/rust-lang/rustc-dev-guide at commit 33fa6bef32eee98a8e38c9376645cf6fbcb2ca67 (consulted). It describes overlap checks on pairs of impls that unify the impl headers (its example obtains ?E = &str), the implicit negative impl check impl_intersection_has_impossible_obligation (an overlap is impossible when an obligation cannot hold, using that downstream crates cannot implement a remote trait for a remote type), and the orphan check, which guards against impls that could be added by upstream crates in a backwards-compatible way or by downstream crates.",
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties."
+    ],
+    "design_question": "Exactly what extra fact beyond header unification must hold for two impls with where-clauses to overlap?",
+    "lean_names": [
+      "Toy.Unify.implsOverlapIn_iff_mgu_instance",
+      "Toy.Unify.implsOverlapIn_iff_mgu_instance_nonvacuous",
+      "Toy.Unify.implsOverlapIn_iff_mgu_instance_needs_bound_vars_disjoint",
+      "Toy.Unify.unify_mgu_factor",
+      "Toy.Unify.iW1",
+      "Toy.Unify.iW2",
+      "Toy.Unify.I_AB",
+      "Toy.Unify.Implements",
+      "Toy.Unify.not_implements_example"
+    ]
+  },
+  {
+    "id": "where-clauses-break-converse-nonmonotone",
+    "lean": [
+      "Toy.Unify.headersOverlap_not_implsOverlapIn",
+      "Toy.Unify.implsOverlapIn_not_monotone"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "The standard example motivating restrictions on negative reasoning in coherence (cf. RFC 1023), made precise in the toy.",
+    "plain_claim": "impl<T: A> Tr for T and impl<U: B> Tr for U have unifiable self types, so the checker does not say disjoint (overlapCheckSaysDisjoint i1 i2 = false) and their headers overlap; no type implements both A and B in I_AB = {impl A for u8, impl B for u32, the two Tr impls}, and the impls do not overlap in I_AB; adding the single impl `impl B for u8` makes u8 an instance of both self types with u8: A and u8: B derivable, so they overlap; hence where-clause-based disjointness is not monotone in the impl set.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Inversion of the derivability relation on a four-impl set.",
+    "nonvacuity_witness": "Counterexample; its instances are the witnesses.",
+    "nonvacuity_witness_lean": "Toy.Unify.headersOverlap_not_implsOverlapIn",
+    "non_claims": [
+      "The added impl `impl B for u8` is not claimed to be writable by a downstream crate under the orphan rule; for an orphan-allowed downstream extension with the same effect see negative-reasoning-unstable.",
+      "It does not say how rustc treats this pair of impls."
+    ],
+    "modeling_bridge": "derived (modeling bridge): RFC 1023 restricts negative reasoning to facts that the orphan rules make knowable, and the rustc-dev-guide's implicit negative impl check uses that downstream crates cannot implement a remote trait for a remote type. The toy models extensions by one fresh downstream crate under a simplified orphan rule; upstream crates adding impls in later versions (the main motivation in RFC 1023) and simultaneous extensions by several crates are not modeled. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about Rust's coherence rules.",
+    "prior_art": [
+      "Rust RFC 1023, \"Rebalancing coherence\" (feature fundamental_attribute, start date 2015-03-27), file text/1023-rebalancing-coherence.md of https://github.com/rust-lang/rfcs at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 (consulted). It restricts negative reasoning to obey the orphan rules ('we cannot conclude that a proposition like T0: !Trait<T1..Tn> holds unless T0: Trait<T1..Tn> meets the orphan rules'), motivated by letting parent (upstream) crates add impls without breaking children, and introduces #[fundamental]: a fundamental type is one where implementing a blanket impl over it is a breaking change; it is applied to Box so that Box behaves like & and &mut with respect to coherence.",
+      "rustc-dev-guide, chapter \"Coherence\", file src/coherence.md of https://github.com/rust-lang/rustc-dev-guide at commit 33fa6bef32eee98a8e38c9376645cf6fbcb2ca67 (consulted). It describes overlap checks on pairs of impls that unify the impl headers (its example obtains ?E = &str), the implicit negative impl check impl_intersection_has_impossible_obligation (an overlap is impossible when an obligation cannot hold, using that downstream crates cannot implement a remote trait for a remote type), and the orphan check, which guards against impls that could be added by upstream crates in a backwards-compatible way or by downstream crates.",
+      "J. G. Morris and M. P. Jones, \"Instance chains: type class programming without overlapping instances\", ICFP 2010, pp. 375-386, doi:10.1145/1863543.1863596 (bibliographic data verified via the Crossref record; full text not consulted). Type-class design in which negative information about instances is made explicit.",
+      "S. Peyton Jones, M. Jones and E. Meijer, \"Type classes: an exploration of the design space\", Haskell Workshop, 1997 (title, authors and venue verified via the publisher page of Microsoft Research; full text not consulted). Discusses overlapping instances and the design space of instance resolution."
+    ],
+    "design_question": "Can a coherence checker use 'no type implements both bounds' to accept two blanket impls?",
+    "lean_names": [
+      "Toy.Unify.headersOverlap_not_implsOverlapIn",
+      "Toy.Unify.implsOverlapIn_not_monotone",
+      "Toy.Unify.I_AB",
+      "Toy.Unify.i1",
+      "Toy.Unify.i2",
+      "Toy.Unify.implA_u8",
+      "Toy.Unify.implB_u32"
+    ]
+  },
+  {
+    "id": "ground-negative-facts-stable-downstream",
+    "lean": [
+      "Toy.Unify.implements_append_iff_of_orphanOK",
+      "Toy.Unify.not_implements_append_of_orphanOK",
+      "Toy.Unify.not_implements_stable_of_isGround"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore behind orphan-rule-based negative reasoning (RFC 1023; the rustc-dev-guide's implicit negative impl check), made precise in the toy for one fresh downstream crate.",
+    "plain_claim": "For a ground type X: if every where-clause variable of every impl in I occurs in that impl's self type, crate c owns no trait or constructor mentioned in I, c owns neither the trait B nor any constructor of X, and every impl in E is orphan-allowed for c, then X: B is derivable from I ++ E iff it is derivable from I; in particular a negative fact ¬(X: B) in I remains true in I ++ E; equivalently, for ground X and constrained I, ¬(X: B) in I is stable for every fundamental-constructor predicate fund (StableUnderDownstream fund relative to the query symbols B and the constructors of X: it holds after every orphan-allowed extension by every crate that owns no trait or constructor mentioned in I, B or X, under every ownership map whose fundamental constructors are given by fund).",
+    "hypotheses": [
+      {
+        "name": "hXg : IsGround X (all three theorems)",
+        "purpose": "Restricts the claim to ground facts; Implements derives no fact about a non-ground type (Implements.isGround).",
+        "tightness": "harmless",
+        "witness_class": "Not tight: for a non-ground X both sides of the first theorem are false and the stability of ¬(X: B) holds trivially (implements_append_iff_of_not_isGround, not_implements_stable_of_not_isGround). The hypothesis is a domain restriction that keeps the statement from being read as a claim about open types."
+      },
+      {
+        "name": "hcons : Constrained I",
+        "purpose": "An unconstrained where-clause variable can be instantiated with the new crate's type.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Unify.implements_append_iff_needs_constrained",
+          "Toy.Unify.not_implements_stable_needs_constrained"
+        ],
+        "witness_class": "The one-impl set {impl<U: C> B for u8} with the unconstrained U, X = u8, and the extension {impl C for L} by crate 2 (for the stability form: under ownersEx, relative to ownersEx.fundamental)."
+      },
+      {
+        "name": "hfresh : FreshCrate o c I (first two theorems)",
+        "purpose": "If c owns a where-clause trait of I, it can satisfy that where-clause for old types.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.implements_append_iff_needs_fresh",
+        "witness_class": "The one-impl set {impl<T: C> B for Vec<T>} where crate 2 owns C, X = Vec<u8>, and the extension {impl C for u8}."
+      },
+      {
+        "name": "hB : o.traitOwner B ≠ c (first two theorems)",
+        "purpose": "If c owns B, it may implement B for X directly.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.implements_append_iff_needs_trait_not_owned",
+        "witness_class": "The empty impl set, crate 2 owning B, X = u8, and the extension {impl B for u8}."
+      },
+      {
+        "name": "hX : ∀ f ∈ X.ctors, o.ctorOwner f ≠ c (first two theorems)",
+        "purpose": "If X mentions c's type, c may implement B for X directly.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.implements_append_iff_needs_ctors_not_owned",
+        "witness_class": "The empty impl set, X = L owned by crate 2, and the extension {impl B for L}."
+      },
+      {
+        "name": "hE : ∀ e ∈ E, OrphanOK o c e (first two theorems)",
+        "purpose": "Without the orphan rule any impl can be added.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.implements_append_iff_needs_orphanOK",
+        "witness_class": "The empty impl set, X = u8, and the orphan-disallowed extension {impl B for u8} by crate 2."
+      },
+      {
+        "name": "hneg : ¬ Implements I B X (second and third theorems)",
+        "purpose": "The conclusion is the persistence of this negative fact.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Unify.not_implements_append_needs_neg",
+          "Toy.Unify.not_implements_stable_needs_neg"
+        ],
+        "witness_class": "The one-impl set {impl B for u8} with X = u8 (and the empty extension; for the stability form, relative to ownersEx.fundamental)."
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Induction on derivations in I ++ E, with constrainedness keeping every instantiated where-clause inside the constructors of the derived type, and the orphan rule excluding E-impls from deriving facts over symbols c does not own.",
+    "nonvacuity_witness": "I_AB, crate 2, E = [impl A for L, impl B for L], trait B and the ground type X = u8 (u8: B is not derivable in I_AB).",
+    "nonvacuity_witness_lean": [
+      "Toy.Unify.implements_append_iff_of_orphanOK_nonvacuous",
+      "Toy.Unify.not_implements_stable_of_isGround_nonvacuous"
+    ],
+    "non_claims": [
+      "Implements I tr ty implies IsGround ty (Implements.isGround), so ¬ Implements I B X for an open X is trivially true and must never be read as NoInstanceImplements I B X (\"no instance of X implements B\"); negative reasoning over open types is not covered and can be unstable (negative-reasoning-unstable).",
+      "The extensions are by a single fresh downstream crate; impls added by upstream crates in later versions, which RFC 1023's restriction on negative reasoning is chiefly about, are not modeled, and the theorem gives no stability against them.",
+      "The non-vacuity instance reasons about u8: B from the point of view of a crate that owns neither u8 nor B; RFC 1023 forbids such a crate from relying on ¬(u8: B) in coherence, because an upstream crate could add the impl later. The theorem neither establishes nor refutes that Rust would accept such reasoning.",
+      "Constrained is a hypothesis about I and is stricter in form than Rust's rule that impl parameters be constrained: Rust also counts parameters constrained through associated-type projections (where U: Trait<Assoc = T>), which can introduce constructors absent from the self type. That case is not modeled.",
+      "OrphanOK has no covered-parameter check (orphanOK_uncovered_param_overlap_example); the theorem quantifies over the extensions this permissive rule allows. It neither establishes nor refutes the corresponding statement for RFC 2451's orphan rule, which also differs in other respects (trait type parameters).",
+      "Simultaneous extensions by several crates are not modeled (not proved here)."
+    ],
+    "modeling_bridge": "derived (modeling bridge): RFC 1023 restricts negative reasoning to facts that the orphan rules make knowable, and the rustc-dev-guide's implicit negative impl check uses that downstream crates cannot implement a remote trait for a remote type. The toy models extensions by one fresh downstream crate under a simplified orphan rule; upstream crates adding impls in later versions (the main motivation in RFC 1023) and simultaneous extensions by several crates are not modeled. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about Rust's coherence rules.",
+    "prior_art": [
+      "Rust RFC 1023, \"Rebalancing coherence\" (feature fundamental_attribute, start date 2015-03-27), file text/1023-rebalancing-coherence.md of https://github.com/rust-lang/rfcs at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 (consulted). It restricts negative reasoning to obey the orphan rules ('we cannot conclude that a proposition like T0: !Trait<T1..Tn> holds unless T0: Trait<T1..Tn> meets the orphan rules'), motivated by letting parent (upstream) crates add impls without breaking children, and introduces #[fundamental]: a fundamental type is one where implementing a blanket impl over it is a breaking change; it is applied to Box so that Box behaves like & and &mut with respect to coherence.",
+      "rustc-dev-guide, chapter \"Coherence\", file src/coherence.md of https://github.com/rust-lang/rustc-dev-guide at commit 33fa6bef32eee98a8e38c9376645cf6fbcb2ca67 (consulted). It describes overlap checks on pairs of impls that unify the impl headers (its example obtains ?E = &str), the implicit negative impl check impl_intersection_has_impossible_obligation (an overlap is impossible when an obligation cannot hold, using that downstream crates cannot implement a remote trait for a remote type), and the orphan check, which guards against impls that could be added by upstream crates in a backwards-compatible way or by downstream crates."
+    ],
+    "design_question": "Which negative facts about the current impl set survive any downstream crate's orphan-allowed impls?",
+    "lean_names": [
+      "Toy.Unify.implements_append_iff_of_orphanOK",
+      "Toy.Unify.not_implements_append_of_orphanOK",
+      "Toy.Unify.not_implements_stable_of_isGround",
+      "Toy.Unify.implements_append_iff_of_orphanOK_nonvacuous",
+      "Toy.Unify.not_implements_stable_of_isGround_nonvacuous",
+      "Toy.Unify.implements_append_iff_needs_constrained",
+      "Toy.Unify.not_implements_stable_needs_constrained",
+      "Toy.Unify.implements_append_iff_needs_fresh",
+      "Toy.Unify.implements_append_iff_needs_trait_not_owned",
+      "Toy.Unify.implements_append_iff_needs_ctors_not_owned",
+      "Toy.Unify.implements_append_iff_needs_orphanOK",
+      "Toy.Unify.not_implements_append_needs_neg",
+      "Toy.Unify.not_implements_stable_needs_neg",
+      "Toy.Unify.implements_append_iff_of_not_isGround",
+      "Toy.Unify.not_implements_stable_of_not_isGround",
+      "Toy.Unify.Implements.isGround",
+      "Toy.Unify.orphanOK_uncovered_param_overlap_example",
+      "Toy.Unify.I_unconstrained",
+      "Toy.Unify.I_vecC",
+      "Toy.Unify.ownersC",
+      "Toy.Unify.ownersB",
+      "Toy.Unify.ownersEx",
+      "Toy.Unify.localL",
+      "Toy.Unify.StableUnderDownstream.self",
+      "Toy.Unify.Owners",
+      "Toy.Unify.isLocalTy_example",
+      "Toy.Unify.not_isLocalTy_example",
+      "Toy.Unify.isLocalTy",
+      "Toy.Unify.isLocalTy_fundamental_example",
+      "Toy.Unify.not_isLocalTy_var_example",
+      "Toy.Unify.FreshCrate",
+      "Toy.Unify.freshCrate_example",
+      "Toy.Unify.not_freshCrate_example",
+      "Toy.Unify.Constrained",
+      "Toy.Unify.constrained_example",
+      "Toy.Unify.not_constrained_example"
+    ]
+  },
+  {
+    "id": "orphan-addressable-iff-fundamental-spine",
+    "lean": [
+      "Toy.Unify.exists_orphanOK_overlapping_impl_iff_fundSpineVar",
+      "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "The role of fundamental types in what downstream crates may implement, and the restriction of negative reasoning to facts that the orphan rules make knowable, are described informally in RFC 1023; this toy characterization and the stability condition are made precise here.",
+    "plain_claim": "If crate c owns neither the trait B nor any constructor of X, and owns at least one constructor L, then c may write (under the toy orphan rule) an impl of B whose self type shares a ground instance with X iff following first arguments of fundamental head constructors from the root of X reaches a variable. Moreover, for any ownership map o₀: if no impl of B in I has a self type sharing a ground instance with X, and following first arguments of o₀'s fundamental head constructors from the root of X does not reach a variable, then 'no ground instance of X implements B' is stable (StableUnderDownstream relative to o₀.fundamental, the trait B and the constructors of X: it holds after every orphan-allowed extension by every crate that owns no trait or constructor mentioned in I, B or X, under every ownership map whose fundamental constructors are those of o₀).",
+    "hypotheses": [
+      {
+        "name": "hB : o.traitOwner B ≠ c (first theorem)",
+        "purpose": "If c owns B, a blanket impl of B is allowed and overlaps every X.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.exists_orphanOK_iff_needs_trait_not_owned",
+        "witness_class": "Crate 2 owning B, X = u8, and the blanket impl impl<T> B for T."
+      },
+      {
+        "name": "hX : ∀ f ∈ X.ctors, o.ctorOwner f ≠ c (first theorem)",
+        "purpose": "If X mentions c's type, c may target X directly.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.exists_orphanOK_iff_needs_ctors_not_owned",
+        "witness_class": "X = L owned by crate 2, and impl B for L."
+      },
+      {
+        "name": "hL : o.ctorOwner L = c (first theorem)",
+        "purpose": "A crate that defines no type cannot write a local self type.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.exists_orphanOK_iff_needs_local_ctor",
+        "witness_class": "Crate 3 owning no type constructor at all (in ownersEx), with X = T."
+      },
+      {
+        "name": "hI : ∀ i ∈ I, i.trait = B → ¬ CommonGroundInstance i.selfTy X (second theorem)",
+        "purpose": "An existing impl of B that matches an instance of X may have where-clauses that a downstream crate can satisfy.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.noInstanceImplements_stable_needs_no_matching_impl",
+        "witness_class": "The one-impl set I_vecC = {impl<T: C> B for Vec<T>} with X = Vec<T> under ownersEx (Vec not fundamental, so hspine holds); crate 2 adds impl C for L, after which Vec<L>: B."
+      },
+      {
+        "name": "hspine : fundSpineVar o₀ X = false (second theorem)",
+        "purpose": "If the spine ends in a variable, a downstream crate can write an impl of B for an instance of X directly (first theorem).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Unify.noInstanceImplements_stable_needs_not_fundSpineVar",
+          "Toy.Unify.noInstanceImplements_vec_not_stable_of_vec_fundamental"
+        ],
+        "witness_class": "The empty impl set (so hI holds) with X = Box<T> under ownersEx (Box fundamental), where crate 2 adds impl B for Box<L>; and the empty impl set with X = Vec<T> under ownersAllFund (every constructor fundamental), where crate 2 adds impl B for Vec<L>."
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction along the first-argument spine; the reverse direction substitutes the local type for the spine variable; the stability theorem inverts the last step of a derivation of B at an instance of X: an impl of I is excluded by hI, an impl of the extension is excluded by the forward direction of the first theorem and the fact that ownership maps with the same fundamental constructors give the same fundSpineVar (fundSpineVar_congr).",
+    "nonvacuity_witness": "ownersEx, crate 2, trait B, local type L, with X = Box T (criterion holds) and X = Vec T (criterion fails); for the stability theorem, o₀ = ownersEx, I = I_AB (its one impl of B, impl B for u32, matches no instance of Vec<T>), B and X = Vec<T>, giving that no ground instance of Vec<T> implements B in I_AB, stably.",
+    "nonvacuity_witness_lean": [
+      "Toy.Unify.exists_orphanOK_overlapping_impl_iff_fundSpineVar_nonvacuous",
+      "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar_nonvacuous",
+      "Toy.Unify.noInstanceImplements_vec_stable_example"
+    ],
+    "non_claims": [
+      "The first theorem concerns impls that target X directly. The second theorem assumes, besides the spine condition, that no impl of B in I has a self type sharing a ground instance with X; when such an impl has a where-clause, negative reasoning about X can be unstable although no downstream impl can target X directly (noInstanceImplements_vec_not_stable, noInstanceImplements_stable_needs_no_matching_impl).",
+      "The second theorem gives a sufficient condition for stability; it is not claimed to be necessary (not proved here).",
+      "Stability is relative to a fixed set of fundamental constructors (o₀.fundamental): whether the spine of X ends in a variable depends on it, and with every constructor fundamental, negative reasoning over Vec<T> is unstable even for the empty impl set (noInstanceImplements_vec_not_stable_of_vec_fundamental).",
+      "The toy orphan rule (trait owned, or self type local, with fundamental constructors transparent in their first argument) simplifies RFC 1023/2451: no trait type parameters, no ordering conditions, no fundamental traits.",
+      "isLocalTy ignores every argument of a fundamental constructor after the first, and Term enforces no arities, so there is no covered-parameter check: a fresh crate may write impl<A> B for Box<L, A>, which overlaps an upstream non-blanket impl<T> B for Box<T, u8> at Box<L, u8> (orphanOK_uncovered_param_overlap_example). RFC 2451 requires such type parameters to be covered.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): RFC 1023 makes Box behave like & and &mut for coherence via #[fundamental], so that a downstream crate may implement a remote trait for Box<LocalType>. The toy marks some constructors fundamental and lets the orphan rule look through their first argument; RFC 2451's covered/uncovered parameter rules, trait type parameters and fundamental traits are not modeled. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about Rust's orphan rules.",
+    "prior_art": [
+      "Rust RFC 1023, \"Rebalancing coherence\" (feature fundamental_attribute, start date 2015-03-27), file text/1023-rebalancing-coherence.md of https://github.com/rust-lang/rfcs at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 (consulted). It restricts negative reasoning to obey the orphan rules ('we cannot conclude that a proposition like T0: !Trait<T1..Tn> holds unless T0: Trait<T1..Tn> meets the orphan rules'), motivated by letting parent (upstream) crates add impls without breaking children, and introduces #[fundamental]: a fundamental type is one where implementing a blanket impl over it is a breaking change; it is applied to Box so that Box behaves like & and &mut with respect to coherence.",
+      "Rust RFC 2451, \"Re-rebalancing coherence\" (start date 2018-05-30), file text/2451-re-rebalancing-coherence.md of https://github.com/rust-lang/rfcs at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 (consulted). It clarifies RFC 1023, allows impl<T> ForeignTrait<LocalType> for ForeignType<T>, defines covered and uncovered type parameters, and states that fundamental types cannot cover other types."
+    ],
+    "design_question": "Which (trait, type) patterns can a downstream crate address directly, how do fundamental type constructors change that, and when does negative reasoning about the remaining patterns survive downstream extensions?",
+    "lean_names": [
+      "Toy.Unify.exists_orphanOK_overlapping_impl_iff_fundSpineVar",
+      "Toy.Unify.exists_orphanOK_overlapping_impl_iff_fundSpineVar_nonvacuous",
+      "Toy.Unify.exists_orphanOK_iff_needs_trait_not_owned",
+      "Toy.Unify.exists_orphanOK_iff_needs_ctors_not_owned",
+      "Toy.Unify.exists_orphanOK_iff_needs_local_ctor",
+      "Toy.Unify.noInstanceImplements_vec_not_stable",
+      "Toy.Unify.orphanOK_uncovered_param_overlap_example",
+      "Toy.Unify.iUpBox2",
+      "Toy.Unify.eDownBox2",
+      "Toy.Unify.ownersEx",
+      "Toy.Unify.ownersB",
+      "Toy.Unify.localL",
+      "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar",
+      "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar_nonvacuous",
+      "Toy.Unify.noInstanceImplements_vec_stable_example",
+      "Toy.Unify.noInstanceImplements_stable_needs_no_matching_impl",
+      "Toy.Unify.noInstanceImplements_stable_needs_not_fundSpineVar",
+      "Toy.Unify.noInstanceImplements_vec_not_stable_of_vec_fundamental",
+      "Toy.Unify.fundSpineVar_congr",
+      "Toy.Unify.ownersAllFund",
+      "Toy.Unify.I_vecC",
+      "Toy.Unify.I_AB",
+      "Toy.Unify.E_C",
+      "Toy.Unify.CommonGroundInstance",
+      "Toy.Unify.commonGroundInstance_example",
+      "Toy.Unify.not_commonGroundInstance_example",
+      "Toy.Unify.fundSpineVar",
+      "Toy.Unify.fundSpineVar_example",
+      "Toy.Unify.not_fundSpineVar_example",
+      "Toy.Unify.NoInstanceImplements",
+      "Toy.Unify.noInstanceImplements_example",
+      "Toy.Unify.not_noInstanceImplements_example"
+    ]
+  },
+  {
+    "id": "negative-reasoning-unstable",
+    "lean": [
+      "Toy.Unify.noInstanceImplements_vec_not_stable",
+      "Toy.Unify.whereClause_disjointness_not_stable"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Instances of the hazard RFC 1023 addresses, made precise in the toy with orphan-allowed downstream extensions.",
+    "plain_claim": "(a) For the non-fundamental Vec and I_vecC = {impl<T: C> B for Vec<T>}, no ground instance of Vec<T> implements B, and no impl of B that crate 2 may write has a self type sharing a ground instance with Vec<T>; yet crate 2, fresh for I_vecC, B and Vec, may add `impl C for L`, after which Vec<L>: B is derivable, so ¬(some instance of Vec<T> implements B) is not stable relative to the fundamental constructors of ownersEx (under which Box is fundamental and Vec is not); (b) impl<T: A> Tr for T and impl<U: B> Tr for U do not overlap in I_AB, but crate 2, fresh for I_AB and for the symbols of both impls, may add `impl A for L` and `impl B for L`, after which L instantiates both self types with L: A and L: B derivable, so they overlap at L and that non-overlap verdict is not stable relative to the fundamental constructors of ownersEx.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Explicit extensions and inversion of derivability on small impl sets; part (a) uses orphan-addressable-iff-fundamental-spine to exclude impls targeting Vec<T> directly.",
+    "nonvacuity_witness": "Counterexample; its instances are the witnesses.",
+    "nonvacuity_witness_lean": "Toy.Unify.whereClause_disjointness_not_stable",
+    "non_claims": [
+      "It does not claim every negative fact over an open type is unstable: if no impl of B in I has a self type sharing a ground instance with X and the fundamental spine of X does not end in a variable, 'no ground instance of X implements B' is stable (noInstanceImplements_stable_of_not_fundSpineVar); for example, no ground instance of Vec<T> implements B in I_AB, stably (noInstanceImplements_vec_stable_example).",
+      "The instability witnesses use one ownership map (ownersEx), and stability is taken relative to its fundamental constructors, under which Vec is not fundamental (first conjunct of noInstanceImplements_vec_not_stable); the instability does not come from treating Vec as fundamental. Nothing is claimed about upstream changes."
+    ],
+    "modeling_bridge": "derived (modeling bridge): RFC 1023 restricts negative reasoning to facts that the orphan rules make knowable, and the rustc-dev-guide's implicit negative impl check uses that downstream crates cannot implement a remote trait for a remote type. The toy models extensions by one fresh downstream crate under a simplified orphan rule; upstream crates adding impls in later versions (the main motivation in RFC 1023) and simultaneous extensions by several crates are not modeled. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about Rust's coherence rules.",
+    "prior_art": [
+      "Rust RFC 1023, \"Rebalancing coherence\" (feature fundamental_attribute, start date 2015-03-27), file text/1023-rebalancing-coherence.md of https://github.com/rust-lang/rfcs at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 (consulted). It restricts negative reasoning to obey the orphan rules ('we cannot conclude that a proposition like T0: !Trait<T1..Tn> holds unless T0: Trait<T1..Tn> meets the orphan rules'), motivated by letting parent (upstream) crates add impls without breaking children, and introduces #[fundamental]: a fundamental type is one where implementing a blanket impl over it is a breaking change; it is applied to Box so that Box behaves like & and &mut with respect to coherence.",
+      "rustc-dev-guide, chapter \"Coherence\", file src/coherence.md of https://github.com/rust-lang/rustc-dev-guide at commit 33fa6bef32eee98a8e38c9376645cf6fbcb2ca67 (consulted). It describes overlap checks on pairs of impls that unify the impl headers (its example obtains ?E = &str), the implicit negative impl check impl_intersection_has_impossible_obligation (an overlap is impossible when an obligation cannot hold, using that downstream crates cannot implement a remote trait for a remote type), and the orphan check, which guards against impls that could be added by upstream crates in a backwards-compatible way or by downstream crates.",
+      "J. G. Morris and M. P. Jones, \"Instance chains: type class programming without overlapping instances\", ICFP 2010, pp. 375-386, doi:10.1145/1863543.1863596 (bibliographic data verified via the Crossref record; full text not consulted). Type-class design in which negative information about instances is made explicit.",
+      "rust-lang/chalk, book chapter \"Coherence\", file book/src/clauses/coherence.md of https://github.com/rust-lang/chalk at commit 5fc7e4564e704ec94747a66affb5ea6bde555d3e (existence of the file at that commit confirmed via the GitHub API; its content was not consulted here). Cited as a reference treatment of Rust's orphan and overlap checks, including restrictions on negative reasoning."
+    ],
+    "design_question": "Why must a coherence checker refuse negative reasoning about open types and conjunctions of bounds?",
+    "lean_names": [
+      "Toy.Unify.noInstanceImplements_vec_not_stable",
+      "Toy.Unify.whereClause_disjointness_not_stable",
+      "Toy.Unify.I_vecC",
+      "Toy.Unify.E_C",
+      "Toy.Unify.E_AB",
+      "Toy.Unify.I_AB",
+      "Toy.Unify.ownersEx",
+      "Toy.Unify.localL",
+      "Toy.Unify.exists_orphanOK_overlapping_impl_iff_fundSpineVar",
+      "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar",
+      "Toy.Unify.noInstanceImplements_vec_stable_example",
+      "Toy.Unify.vec"
+    ]
+  },
+  {
+    "id": "no-oc-checker-false-overlap",
+    "lean": [
+      "Toy.Unify.noOC_check_reports_false_overlap"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "A known consequence of omitting the occurs check (Plaisted 1984); for type-level apartness the pair (a, a), ([b], b) plays this role in Eisenberg et al. 2014, Section 6. Made precise here for an overlap checker.",
+    "plain_claim": "impl<T> Tr for (T, T) and impl<U> Tr for (U, Box<U>), renamed apart, have no common ground instance; the checker with the occurs check says disjoint, while the checker using the occurs-check-free variant does not.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Evaluation of both checkers and a size argument.",
+    "nonvacuity_witness": "Counterexample; its instance is the witness.",
+    "nonvacuity_witness_lean": "Toy.Unify.noOC_check_reports_false_overlap",
+    "non_claims": [
+      "It shows incompleteness (rejecting impls that do not overlap), not unsoundness; see no-oc-checker-never-false-disjoint. Omitting the occurs check has a further effect:",
+      "Without the fuel bound the occurs-check-free algorithm need not terminate: on the renamed-apart pair (T, (T, T)), (U, ((U, U), (U, U))) every fuel is exhausted (unifyNoOC_outOfFuel_example); here unifyNoOC returns none because the run returns outOfFuel, and the checker says disjoint for that reason.",
+      "Uses of unification with positive polarity, such as deciding that one impl specializes another, would turn the variant's extra outputs into unsound permissions; no such use is modeled (not proved here).",
+      "With associated-type normalization, semantic overlap need not imply syntactic unifiability of the headers (not proved here; not modeled).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about production unifiers, trait solvers or coherence checkers."
+    ],
+    "modeling_bridge": "derived (modeling bridge): rustc's overlap check compares two impl headers by unifying them (rustc-dev-guide, Coherence chapter, pinned commit). The toy check overlapCheckSaysDisjointNoOC models the header-unification part of such a check for traits without type parameters. rustc additionally handles trait parameters, lifetimes, associated types, negative impls, specialization and the orphan check; none of these is modeled. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about rustc.",
+    "prior_art": [
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties.",
+      "rustc-dev-guide, chapter \"Coherence\", file src/coherence.md of https://github.com/rust-lang/rustc-dev-guide at commit 33fa6bef32eee98a8e38c9376645cf6fbcb2ca67 (consulted). It describes overlap checks on pairs of impls that unify the impl headers (its example obtains ?E = &str), the implicit negative impl check impl_intersection_has_impossible_obligation (an overlap is impossible when an obligation cannot hold, using that downstream crates cannot implement a remote trait for a remote type), and the orphan check, which guards against impls that could be added by upstream crates in a backwards-compatible way or by downstream crates.",
+      "D. A. Plaisted, \"The occur-check problem in Prolog\", New Generation Computing 2(4):309-322, 1984, doi:10.1007/BF03037324 (bibliographic data verified via the Crossref record of the DOI; full text not consulted). Analyses the consequences of omitting the occurs check in Prolog unification.",
+      "R. A. Eisenberg, D. Vytiniotis, S. Peyton Jones and S. Weirich, \"Closed type families with overlapping equations\", POPL 2014, pp. 671-683, doi:10.1145/2535838.2535856 (bibliographic data verified via the Crossref record; author-hosted full text consulted). Its apartness check (Definition 6) uses ordinary first-order unification; Section 6.1 shows with the pair (a, a) and ([b], b) that an occurs-check-based apartness verdict becomes unsound in the presence of non-terminating type families, Section 6.2 defines unification over infinite types (Definition 19) and conjectures, without proof, that using it restores soundness, and Section 6.3 reports that GHC uses it for the overlap check of open type families."
+    ],
+    "design_question": "What does an overlap checker lose if its unifier omits the occurs check?",
+    "lean_names": [
+      "Toy.Unify.noOC_check_reports_false_overlap",
+      "Toy.Unify.iPairSame",
+      "Toy.Unify.iPairBox",
+      "Toy.Unify.unifyNoOC_outOfFuel_example",
+      "Toy.Unify.loopS",
+      "Toy.Unify.loopT",
+      "Toy.Unify.overlapCheckSaysDisjointNoOC",
+      "Toy.Unify.overlapCheckSaysDisjointNoOC_example",
+      "Toy.Unify.overlapCheckSaysDisjointNoOC_false_example"
+    ]
+  },
+  {
+    "id": "no-oc-checker-never-false-disjoint",
+    "lean": [
+      "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjointNoOC",
+      "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound",
+      "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_uniform"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Follows from the agreement of the two variants on unifiable inputs; made precise here. It corrects the tempting belief that removing the occurs check can make a coherence checker accept overlapping impls.",
+    "plain_claim": "For impl headers whose self types are renamed apart, if the checker using the occurs-check-free variant says disjoint, then the headers have no common ground instance; more generally, for any verdict function chk on unifier outputs and any proposition P that implies that s and t are unifiable: if chk (unify s t) = true rules out P and chk (unifyNoOC s t) = true, then P fails; uniformly, if chk fed unify is sound for an overlap relation P (implying unifiability) on every input, it is sound on every input when fed unifyNoOC.",
+    "hypotheses": [
+      {
+        "name": "hdisj : VarsDisjoint i.selfTy j.selfTy (first theorem)",
+        "purpose": "Renaming apart, as for the checker with the occurs check.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.noOC_check_false_disjoint_without_renaming",
+        "witness_class": "Two impls of one trait whose self types (T, u8) and (u32, T) share the variable name T."
+      },
+      {
+        "name": "h : overlapCheckSaysDisjointNoOC i j = true (first theorem)",
+        "purpose": "The 'disjoint' verdict is what is claimed sound.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.noOC_disjoint_needs_verdict",
+        "witness_class": "The renamed-apart blanket impls impl<T: A> Tr for T and impl<U: B> Tr for U."
+      },
+      {
+        "name": "hP : P → Unifiable s t (second theorem)",
+        "purpose": "The verdict's subject must imply unifiability; otherwise the variant's extra outputs can be misread.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.noOC_verdict_transfer_needs_hP",
+        "witness_class": "P := True, chk := Option.isSome on the pair (T, T), (U, Box U): hchk holds vacuously on this pair, h holds, and P holds."
+      },
+      {
+        "name": "hP : ∀ s t, P s t → Unifiable s t (third theorem)",
+        "purpose": "As for the second theorem, on every input.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.noOC_verdict_transfer_uniform_needs_hP",
+        "witness_class": "chk := Option.isSome and P s t := ¬ Unifiable s t: hchk holds on every input (soundness of unify), hP fails at u8 =? u32, and the conclusion fails at X =? Box X, where unifyNoOC returns a substitution although the pair has no unifier."
+      },
+      {
+        "name": "hchk : chk (unify s t) = true → ¬ P (second theorem)",
+        "purpose": "The verdict must be sound for unify to begin with.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.noOC_verdict_transfer_needs_hchk",
+        "witness_class": "The constant verdict true with P := Unifiable on X =? u8."
+      },
+      {
+        "name": "hchk : ∀ s t, chk (unify s t) = true → ¬ P s t (third theorem)",
+        "purpose": "As for the second theorem, on every input.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.noOC_verdict_transfer_uniform_needs_hchk",
+        "witness_class": "The constant verdict true with P := Unifiable: hP holds on every input, and hchk and the conclusion both fail at X =? u8."
+      },
+      {
+        "name": "h : chk (unifyNoOC s t) = true (second theorem)",
+        "purpose": "The claim concerns the variant's 'disjoint' verdict. The third theorem has no such hypothesis: there chk (unifyNoOC s t) = true is the antecedent of the universally quantified conclusion.",
+        "tightness": "tight",
+        "counterexample": "Toy.Unify.noOC_verdict_transfer_needs_noOC_verdict",
+        "witness_class": "chk := Option.isNone, P := Unifiable on X =? u8, where the variant's verdict is false."
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Completeness of unify plus agreement of the variant on inputs where unify succeeds.",
+    "nonvacuity_witness": "impl<T> Tr for Vec<T> and impl<U> Tr for Box<U>: renamed apart and the occurs-check-free checker says disjoint; for the second theorem, P = header overlap of that pair with chk = Option.isNone, all three hypotheses including chk (unifyNoOC …) = true; for the third, chk = Option.isNone and P = Unifiable satisfy both hypotheses, and the verdict fed unifyNoOC fires on u8 =? u32 (so the antecedent of the conclusion is satisfiable) and does not fire on X =? Vec Y or on X =? Box X. In every instance satisfying all hypotheses of the second theorem P is false, since that is its conclusion; the uniform version is the non-trivial reading.",
+    "nonvacuity_witness_lean": [
+      "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjointNoOC_nonvacuous",
+      "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_nonvacuous",
+      "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_uniform_nonvacuous"
+    ],
+    "positive_control_lean": [
+      "Toy.Unify.noOC_check_false_disjoint_without_renaming",
+      "Toy.Unify.noOC_verdict_transfer_needs_hP",
+      "Toy.Unify.noOC_verdict_transfer_needs_hchk",
+      "Toy.Unify.noOC_verdict_transfer_uniform_needs_hP",
+      "Toy.Unify.noOC_verdict_transfer_uniform_needs_hchk"
+    ],
+    "non_claims": [
+      "Omitting the occurs check is still harmful: the checker can reject impls that do not overlap (no-oc-checker-false-overlap).",
+      "It holds for this variant (same passes and fuel, with the occurs check as the sole difference). The fuel matters: some renamed-apart pairs exhaust every fuel without the occurs check (unifyNoOC_outOfFuel_example), and the variant's \"disjoint\" verdict on them comes from fuel exhaustion mapped to none. An implementation that loops instead, or that post-processes cyclic outputs differently, is not covered.",
+      "Escape hatches: if P does not imply unifiability the transfer fails (pointwise with P := True, noOC_verdict_transfer_needs_hP; uniformly with P s t := ¬ Unifiable s t, noOC_verdict_transfer_uniform_needs_hP); this is the situation with associated-type normalization, where semantic overlap need not imply syntactic unifiability (not proved here; not modeled). Positive-polarity uses of unification, such as specialization, are not covered (not proved here).",
+      "These are statements about the toy checkers; they neither establish nor refute the corresponding claims about rustc or any production coherence checker. Model–system relation: none proved."
+    ],
+    "modeling_bridge": "derived (modeling bridge): rustc's overlap check compares two impl headers by unifying them (rustc-dev-guide, Coherence chapter, pinned commit). The toy check overlapCheckSaysDisjointNoOC models the header-unification part of such a check for traits without type parameters. rustc additionally handles trait parameters, lifetimes, associated types, negative impls, specialization and the orphan check; none of these is modeled. Model–system relation: none proved; these statements neither establish nor refute the corresponding claims about rustc.",
+    "prior_art": [
+      "F. Baader and W. Snyder, \"Unification Theory\", Handbook of Automated Reasoning, vol. I, chapter 8, pp. 445-532, Elsevier, 2001, doi:10.1016/B978-044450813-3/50010-2 (verified via the dblp record books/el/RV01/BaaderS01; full text not consulted). Survey of syntactic unification, most general unifiers and their properties.",
+      "rustc-dev-guide, chapter \"Coherence\", file src/coherence.md of https://github.com/rust-lang/rustc-dev-guide at commit 33fa6bef32eee98a8e38c9376645cf6fbcb2ca67 (consulted). It describes overlap checks on pairs of impls that unify the impl headers (its example obtains ?E = &str), the implicit negative impl check impl_intersection_has_impossible_obligation (an overlap is impossible when an obligation cannot hold, using that downstream crates cannot implement a remote trait for a remote type), and the orphan check, which guards against impls that could be added by upstream crates in a backwards-compatible way or by downstream crates.",
+      "K. R. Apt and A. Pellegrini, \"On the occur-check-free PROLOG programs\", ACM Transactions on Programming Languages and Systems 16(3):687-726, 1994, doi:10.1145/177492.177673 (bibliographic data verified via the Crossref record of the DOI; full text not consulted). Studies when unification without the occurs check is safe, building on the notion of equation systems \"not subject to occur-check\" (NSTO); the relationship of that notion to results 7 and 19 is stated from secondary descriptions and was not checked against the full text.",
+      "R. A. Eisenberg, D. Vytiniotis, S. Peyton Jones and S. Weirich, \"Closed type families with overlapping equations\", POPL 2014, pp. 671-683, doi:10.1145/2535838.2535856 (bibliographic data verified via the Crossref record; author-hosted full text consulted). Its apartness check (Definition 6) uses ordinary first-order unification; Section 6.1 shows with the pair (a, a) and ([b], b) that an occurs-check-based apartness verdict becomes unsound in the presence of non-terminating type families, Section 6.2 defines unification over infinite types (Definition 19) and conjectures, without proof, that using it restores soundness, and Section 6.3 reports that GHC uses it for the overlap check of open type families."
+    ],
+    "design_question": "Can omitting the occurs check make a coherence checker accept overlapping impls?",
+    "lean_names": [
+      "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjointNoOC",
+      "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound",
+      "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_uniform",
+      "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjointNoOC_nonvacuous",
+      "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_nonvacuous",
+      "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_uniform_nonvacuous",
+      "Toy.Unify.noOC_check_false_disjoint_without_renaming",
+      "Toy.Unify.noOC_verdict_transfer_needs_hP",
+      "Toy.Unify.noOC_verdict_transfer_needs_hchk",
+      "Toy.Unify.noOC_disjoint_needs_verdict",
+      "Toy.Unify.noOC_verdict_transfer_needs_noOC_verdict",
+      "Toy.Unify.unifyNoOC_outOfFuel_example",
+      "Toy.Unify.iShared1",
+      "Toy.Unify.iShared2",
+      "Toy.Unify.noOC_verdict_transfer_uniform_needs_hP",
+      "Toy.Unify.noOC_verdict_transfer_uniform_needs_hchk"
+    ]
+  }
+]

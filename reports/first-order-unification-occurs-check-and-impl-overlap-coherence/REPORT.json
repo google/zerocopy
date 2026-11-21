@@ -1,0 +1,115 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "pl/unification",
+    "pl/occurs-check",
+    "pl/rational-trees",
+    "pl/trait-coherence",
+    "pl/orphan-rules",
+    "pl/type-classes"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "A Machine-Oriented Logic Based on the Resolution Principle (Robinson, JACM 1965)",
+      "identity": {"doi": "10.1145/321250.321253"}
+    },
+    {
+      "name": "An Efficient Unification Algorithm (Martelli, Montanari, TOPLAS 1982)",
+      "identity": {"doi": "10.1145/357162.357169"}
+    },
+    {
+      "name": "Unification Theory (Baader, Snyder, Handbook of Automated Reasoning, 2001)",
+      "identity": {"doi": "10.1016/B978-044450813-3/50010-2"}
+    },
+    {
+      "name": "Unification Revisited (Lassez, Maher, Marriott, 1988)",
+      "identity": {"doi": "10.1016/B978-0-934613-40-8.50019-1"}
+    },
+    {
+      "name": "Verifying the Unification Algorithm in LCF (Paulson, Science of Computer Programming 1985)",
+      "identity": {"doi": "10.1016/0167-6423(85)90009-7"}
+    },
+    {
+      "name": "First-order unification by structural recursion (McBride, JFP 2003)",
+      "identity": {"doi": "10.1017/S0956796803004957"}
+    },
+    {
+      "name": "(Nominal) Unification by Recursive Descent with Triangular Substitutions (Kumar, Norrish, ITP 2010)",
+      "identity": {"doi": "10.1007/978-3-642-14052-5_6"}
+    },
+    {
+      "name": "A Mechanized Textbook Proof of a Type Unification Algorithm (Ribeiro, Camarão, SBMF 2015)",
+      "identity": {"doi": "10.1007/978-3-319-29473-5_8"}
+    },
+    {
+      "name": "First-Order Terms (Sternagel, Thiemann, Archive of Formal Proofs, 2018)",
+      "identity": {"url": "https://www.isa-afp.org/entries/First_Order_Terms.html"}
+    },
+    {
+      "name": "Resolution d'equations dans des langages d'ordre 1, 2, ..., omega (Huet, thesis, 1976)",
+      "identity": {"url": "http://gallium.inria.fr/~huet/PUBLIC/Huet1976.pdf"}
+    },
+    {
+      "name": "The occur-check problem in Prolog (Plaisted, New Generation Computing 1984)",
+      "identity": {"doi": "10.1007/BF03037324"}
+    },
+    {
+      "name": "Efficient Unification over Infinite Terms (Jaffar, New Generation Computing 1984)",
+      "identity": {"doi": "10.1007/BF03037057"}
+    },
+    {
+      "name": "Fundamental properties of infinite trees (Courcelle, TCS 1983)",
+      "identity": {"doi": "10.1016/0304-3975(83)90059-2"}
+    },
+    {
+      "name": "Complete axiomatizations of the algebras of finite, rational and infinite trees (Maher, LICS 1988)",
+      "identity": {"doi": "10.1109/LICS.1988.5132"}
+    },
+    {
+      "name": "On the occur-check-free PROLOG programs (Apt, Pellegrini, TOPLAS 1994)",
+      "identity": {"doi": "10.1145/177492.177673"}
+    },
+    {
+      "name": "Closed type families with overlapping equations (Eisenberg, Vytiniotis, Peyton Jones, Weirich, POPL 2014)",
+      "identity": {"doi": "10.1145/2535838.2535856"}
+    },
+    {
+      "name": "Instance chains: type class programming without overlapping instances (Morris, Jones, ICFP 2010)",
+      "identity": {"doi": "10.1145/1863543.1863596"}
+    },
+    {
+      "name": "Rust RFC 1023, Rebalancing coherence",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4",
+        "path": "text/1023-rebalancing-coherence.md"
+      }
+    },
+    {
+      "name": "Rust RFC 2451, Re-rebalancing coherence",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4",
+        "path": "text/2451-re-rebalancing-coherence.md"
+      }
+    },
+    {
+      "name": "rustc-dev-guide, Coherence chapter",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "revision": "33fa6bef32eee98a8e38c9376645cf6fbcb2ca67",
+        "path": "src/coherence.md"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

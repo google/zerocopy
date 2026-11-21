@@ -1,0 +1,1565 @@
+{
+  "statements": {
+    "Toy.Unify.BindingOK": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "975be0b221953fc213ac4522b868b2a44469c3bf7baf080a36d3900ace17ac6c"
+    },
+    "Toy.Unify.Bound": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Unify.ChainInv": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "ce569da1acc47eb9ae64aabaa0983333c1000a1763729e5ddc19855cca91cc56"
+    },
+    "Toy.Unify.CommonGroundInstance": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "06ae07e50925fcb30f1b151bdd8ce2fe592423d98fa685bbfa6124fdb623b699"
+    },
+    "Toy.Unify.Constrained": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "a9538f1ca765003a96603aa11f95186677c5938f70b5525e777627b938ab2482"
+    },
+    "Toy.Unify.E_AB": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "75948f4890217e99d82e9693451cab5727dc766fd6b76d1ea954ff0cdb254aec"
+    },
+    "Toy.Unify.E_C": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "75948f4890217e99d82e9693451cab5727dc766fd6b76d1ea954ff0cdb254aec"
+    },
+    "Toy.Unify.FreshCrate": {
+      "closure_sha256": "abf8aa2f615eb3dd1515fd6e303dbb13f9ccc1161eaf96fa87a50172d6934cb5",
+      "closure_size": 10,
+      "statement_sha256": "c9ee32b507c2aaef3f950192a89d19ac872cafa74ef0a7673785858574d992c3"
+    },
+    "Toy.Unify.FreshFor": {
+      "closure_sha256": "abf8aa2f615eb3dd1515fd6e303dbb13f9ccc1161eaf96fa87a50172d6934cb5",
+      "closure_size": 10,
+      "statement_sha256": "b25cac00706c5f62963cd70cc63488d6741cc4299c7a1628d943694c65be87b1"
+    },
+    "Toy.Unify.HeadersOverlap": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "8fb0b5dea1afc324cb441ad3b290359fb5e2b74250921f7df0c4406e41b70fbb"
+    },
+    "Toy.Unify.I_AB": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "75948f4890217e99d82e9693451cab5727dc766fd6b76d1ea954ff0cdb254aec"
+    },
+    "Toy.Unify.I_unconstrained": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "75948f4890217e99d82e9693451cab5727dc766fd6b76d1ea954ff0cdb254aec"
+    },
+    "Toy.Unify.I_vecC": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "75948f4890217e99d82e9693451cab5727dc766fd6b76d1ea954ff0cdb254aec"
+    },
+    "Toy.Unify.Idempotent": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "c557e20df7313d6ee28706525d1989b3ed6aa82759e86e4b13a50acf612b752b"
+    },
+    "Toy.Unify.Impl": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Unify.Impl.ctors": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "8b75d780f73d98dce25a68310156522d5caf3794b7ff9ac0283ad2089f19adff"
+    },
+    "Toy.Unify.Impl.traits": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "8b75d780f73d98dce25a68310156522d5caf3794b7ff9ac0283ad2089f19adff"
+    },
+    "Toy.Unify.Impl.vars": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "8b75d780f73d98dce25a68310156522d5caf3794b7ff9ac0283ad2089f19adff"
+    },
+    "Toy.Unify.ImplSet": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Unify.Implements": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "5a02ea05f81d6c868513110cbfeeb4d51d5e0afb216bf8681cbac4be54e8385c"
+    },
+    "Toy.Unify.Implements.isGround": {
+      "closure_sha256": "bc5bf89215836ac3c2b4d8bd0bcdb8eec3d1a68784954bac2b733a1716584dde",
+      "closure_size": 34,
+      "statement_sha256": "530b3b8d7d96caa90bb65868a75f43ac2648be2141b468d25c1a4844c95c98a0"
+    },
+    "Toy.Unify.ImplsOverlapIn": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "970433e9cb661227b33a5409ca64ecd399c8523045262b57b77cc2cae8b6eb44"
+    },
+    "Toy.Unify.Inv": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "affcb8b65dda789430ed52d788106ec3502ffc3a6a08a2bfc64c64e02d46d1b4"
+    },
+    "Toy.Unify.IsGround": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "db8fae7c52559750d857f2dbab4b8c3bb3cec137fd2d9b3ec7c73fb312b0f6f3"
+    },
+    "Toy.Unify.LimEq": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "c6579a47faef9d1b4e27e782e8f5849aa3fb368f703c0a63643c0c90993dd66b"
+    },
+    "Toy.Unify.Matchable": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "dc7ffdeddc88eb014ed47a72ff42f771b044922633f2d36f92bcdf74a4622c8d"
+    },
+    "Toy.Unify.MoreGeneral": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "b63740feced68a565c8e6c83f9e04536f0cd6387af48c9bb9018c903e775885d"
+    },
+    "Toy.Unify.NoInstanceImplements": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "e4df3d46494cca25bce38d3d28955593421e320da3d65310ea391c228bac75b5"
+    },
+    "Toy.Unify.OrphanOK": {
+      "closure_sha256": "f68b5592a290316576cf2a455bdd0c541d5c3afa27f51159d4b8ed50f2790b9d",
+      "closure_size": 9,
+      "statement_sha256": "ffa8ed0378ddf0b352c6593e0b922f7d1feef92ed34eec8ceb0ae337206d8083"
+    },
+    "Toy.Unify.Owners": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Unify.Result": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Unify.Result.toOption": {
+      "closure_sha256": "1749a11426ff29e6013f8913970382b8c91f77fd89ce512e40714f48ab1c82ca",
+      "closure_size": 8,
+      "statement_sha256": "8e5326dc096615bdef488a6b330bbe021c647f0b5a32fe10deab9fc4574eb090"
+    },
+    "Toy.Unify.StableUnderDownstream": {
+      "closure_sha256": "a78fcb5dc96365915855231211e7ea6b86f868314c2fc50ae78d8fc47ef57c74",
+      "closure_size": 8,
+      "statement_sha256": "877a7c75c93683dc73538cb92c1e3b0f7e6bb30d75e60ead4b57eb10711b3570"
+    },
+    "Toy.Unify.StableUnderDownstream.self": {
+      "closure_sha256": "e908454c9323b396e967c422c6e4246b731a5431979b6c900dfdbeb4fe10075f",
+      "closure_size": 39,
+      "statement_sha256": "a176fd11fb966d7e4958c99bb7448e494a39d816f29102a3db0e53714ccb0922"
+    },
+    "Toy.Unify.Step": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Unify.Subst": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Unify.Subst.comp": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "e339f3e14cb4a1ec0620f6659a580eb0c3a8af114c8e815ce63ce6ed872288d2"
+    },
+    "Toy.Unify.Sys": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "7054199a4b14afe922abbe0c061c0b179b2c57b3c5cd98f2b088bdb6c8d12f8c"
+    },
+    "Toy.Unify.Term": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Unify.Term.ctors": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "359b6e2ba0f3ba122150faa54e1bde21dc492f18f3564b01218d4e63de311650"
+    },
+    "Toy.Unify.Term.ctorsList": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "bebc63844e6ad6e2feaedc3024daf8331228b480907cc6d74dcf1ba558542bac"
+    },
+    "Toy.Unify.Term.size": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "ce9c7bc2ce2f438b56029b0bb67cbc85eebfb996565b2aa2a4d502e6f4e708ea"
+    },
+    "Toy.Unify.Term.sizeList": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "a45d9a9a7963ef9152297f6013a39438944bce2407f78cc21db4b2ffddd637e0"
+    },
+    "Toy.Unify.Term.vars": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "359b6e2ba0f3ba122150faa54e1bde21dc492f18f3564b01218d4e63de311650"
+    },
+    "Toy.Unify.Term.varsList": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "bebc63844e6ad6e2feaedc3024daf8331228b480907cc6d74dcf1ba558542bac"
+    },
+    "Toy.Unify.Unifiable": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "06ae07e50925fcb30f1b151bdd8ce2fe592423d98fa685bbfa6124fdb623b699"
+    },
+    "Toy.Unify.Unifies": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "e7b46ac900f8e95750aeb19a931764fd2ff4e963352bbfaba1a899032e59bd78"
+    },
+    "Toy.Unify.VarsDisjoint": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "06ae07e50925fcb30f1b151bdd8ce2fe592423d98fa685bbfa6124fdb623b699"
+    },
+    "Toy.Unify.agreement_nonvacuous": {
+      "closure_sha256": "d341abfd7d22e37bdc36f48176d4f893361e6ac5107366594781293c61ab0ddf",
+      "closure_size": 55,
+      "statement_sha256": "2e9bf98120e1c4dfca7ddd087c885cfe58997a6e39e5ca24183b971342154000"
+    },
+    "Toy.Unify.box": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "5b9b97a85a3b2c098972838117f5b54bd71e0044788fe5af8e83e83248f9ca11"
+    },
+    "Toy.Unify.commonGroundInstance_example": {
+      "closure_sha256": "a414fe1e2bf7dcb1e31d8a3e5e210fd5100ac78bced14ac7cdbcb1933e94dd37",
+      "closure_size": 26,
+      "statement_sha256": "a8951f6bcaa0a7913bf2ee8bda5b417be3e9790ec71c15eb6780e3182353bc5d"
+    },
+    "Toy.Unify.comp_example": {
+      "closure_sha256": "6fe62b8e48e7322fb6f1ce143476ba4e27a180cf6d6ba9714a7e15c92cfcc8e4",
+      "closure_size": 22,
+      "statement_sha256": "05334d1c76ea0a01e12fee06c0b28b50a51745db3299a8bcbaa902821028c173"
+    },
+    "Toy.Unify.comp_order_example": {
+      "closure_sha256": "d5ffbe5bdd3a5cb13c509f789631a00eb3c9a72b160107e5adeafd081e2d1291",
+      "closure_size": 21,
+      "statement_sha256": "59ca32a23b8b68803da3a59fbc174e33f86096dac226fd4786a47c621d1d80c3"
+    },
+    "Toy.Unify.constrained_example": {
+      "closure_sha256": "9c8368ecec1866c0e896d6af50a528ece4bd702e91a91ccef7073366902e1b1b",
+      "closure_size": 31,
+      "statement_sha256": "3c4afd7ec249d0efa8116209ffe282aff9cf5394d7e31446461a575eb792fd78"
+    },
+    "Toy.Unify.ctors_example": {
+      "closure_sha256": "3dd8ae9b1fa78075f197987feabb8d3625764505598112102b9a4a3857ced07b",
+      "closure_size": 18,
+      "statement_sha256": "dddb67c77b3efce8bf57c79ac42fc17f0bfacefc8121bf2e53d6251ce82e292d"
+    },
+    "Toy.Unify.ctors_var_example": {
+      "closure_sha256": "38015e992dd155d14818bd30536029654007b7cc48cba562762f6a2ee9ab8052",
+      "closure_size": 15,
+      "statement_sha256": "73cff7ca5f5d08ade10956572f00cb467935f6e0e3bc1ae27c2d6b853dd63969"
+    },
+    "Toy.Unify.decomp": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "2a8cdbe66b433ecec0ac294c282b209a280c6f932850937ddbe9679ba5549c5b"
+    },
+    "Toy.Unify.decompAll": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "fcdc580405b6c089ff610df11cfbef25287e982b6aa0cd12c9d2f86374b8c07d"
+    },
+    "Toy.Unify.decompAll_bindingOK": {
+      "closure_sha256": "ff7ffbd4194b1a19603a270e5f42c5bb6b8306d047fdc3b3a1d3ec8cb29ed76c",
+      "closure_size": 29,
+      "statement_sha256": "f4350117e66b24a8b1cc1a1dc4ee5b1fab995dd3220c731adda54b3f6a357f40"
+    },
+    "Toy.Unify.decompAll_example": {
+      "closure_sha256": "5d82d0856a7ff8d000c543a265cf41c2f45827585c60559a2ac5dedec02e1e04",
+      "closure_size": 24,
+      "statement_sha256": "42fec0dc51b8b35f6656340a8dc179ab88a9e8b2cae241185adadd837672dbe8"
+    },
+    "Toy.Unify.decompAll_none": {
+      "closure_sha256": "549b36b67af44f702d2dcedf7d6de402bf65f721bf8c4e52041bc5d27b337207",
+      "closure_size": 30,
+      "statement_sha256": "0cedd5d7b855311c47f9a577b5ba927a12a8229530acb785a65ccefa12f2b79a"
+    },
+    "Toy.Unify.decompList": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "29bb2106e89941d9f4150f853f80a07b933c8f2b83350f400bb0b1c9dd9342f9"
+    },
+    "Toy.Unify.decomp_arity_clash_example": {
+      "closure_sha256": "6a14da9c03a0b363484f51d4ab8eb9a36c2d442ae2d8594bd7b4540b8c1318e8",
+      "closure_size": 21,
+      "statement_sha256": "1666998d3bd1351f17f3923e16c92c764accd324f45d7061b50fc2bacd3216f3"
+    },
+    "Toy.Unify.decomp_clash_example": {
+      "closure_sha256": "6c715b18f8dee168a295cbfa07664bd3296c4fd7738cec0fefb8d52e0affe70f",
+      "closure_size": 22,
+      "statement_sha256": "f0947e846ec87f7635d422d04d32abe67d208aa7c2175db071eea236552591ae"
+    },
+    "Toy.Unify.decomp_example": {
+      "closure_sha256": "6028b9e7451ac5bf62fc75c835249aecf552980a14617bdda28104be00805fee",
+      "closure_size": 22,
+      "statement_sha256": "958eaa4f7b232a0874090f8a3da26149ffb2be23f4e4ecba96db965bb25f5a1a"
+    },
+    "Toy.Unify.dupS": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "01928932a9655d7f693b9700c81d1e1e27e9496d62212a5a7cb0fefbfbc7518d"
+    },
+    "Toy.Unify.dupT": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "01928932a9655d7f693b9700c81d1e1e27e9496d62212a5a7cb0fefbfbc7518d"
+    },
+    "Toy.Unify.dup\u03c3": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "4763b44a1cef4e7de30b9ddf0ef6679e1285b3d50803d71dae518c7d1fac587d"
+    },
+    "Toy.Unify.dup\u03c3Dedup": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "4763b44a1cef4e7de30b9ddf0ef6679e1285b3d50803d71dae518c7d1fac587d"
+    },
+    "Toy.Unify.dup\u03c3_dedup_still_fails": {
+      "closure_sha256": "9c2cc41ef9ed9fdfcb146ae373610f3ebceccee9085ffaf931c1eaffcb51a098",
+      "closure_size": 38,
+      "statement_sha256": "43349f91977da98e5852ffcf8d3cfaebc647a531296a326293357db617704daf"
+    },
+    "Toy.Unify.eDownBox2": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.elimBinding": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "8bd930bfc980fa7125e4683f27ae4abac7d1f11ab0f4e9daa92e7dfd4c59bb98"
+    },
+    "Toy.Unify.eqUpTo": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "3044e39ec0822a291b605e2c2635de21896238d800c4b43cd5b1992c0e0c7a57"
+    },
+    "Toy.Unify.eqUpToList": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "e167152ff281bf8d28a6f624b3264495cee37cf5eb0cab9f94e8e9515168ed30"
+    },
+    "Toy.Unify.eqUpTo_arity_ne_example": {
+      "closure_sha256": "150da001f3b88534dd1aa7dc800314af5d96fb1c7c908bdd2d084a03d7f1f5d0",
+      "closure_size": 22,
+      "statement_sha256": "d708f828a1fcfc39c6221241781256fcc2267d3c603ff5fee03466ff8fc68eda"
+    },
+    "Toy.Unify.eqUpTo_example": {
+      "closure_sha256": "115428332efe859e51a6fa86c399b6edb32165e49e1ca63aa7b0436314bd8a91",
+      "closure_size": 23,
+      "statement_sha256": "96e97fade77b4a7f39948311f51953a4f20b7450ccfa0ff6cc2f157da013ee96"
+    },
+    "Toy.Unify.eqUpTo_forall_iff_eq": {
+      "closure_sha256": "39fc706dff58191ee6ec29eb46e6ee314e69c1ca0929f1fd874351f124988f86",
+      "closure_size": 20,
+      "statement_sha256": "b34fd6628eb953045f1cc7f83debc13c711c7c946a8562b58c742210fc81d859"
+    },
+    "Toy.Unify.eqUpTo_iterSubst_converge": {
+      "closure_sha256": "4795315a07dd90a4704c0331701ff4fea3d02e4e07917e8269b2a2e2fde36997",
+      "closure_size": 31,
+      "statement_sha256": "1d9f5092cd515b42a16efcfe61a15bb599b2f8b4c1790bd3969920877637745a"
+    },
+    "Toy.Unify.eqUpTo_iterSubst_mono": {
+      "closure_sha256": "4795315a07dd90a4704c0331701ff4fea3d02e4e07917e8269b2a2e2fde36997",
+      "closure_size": 31,
+      "statement_sha256": "817a080d7b8ab758619691623b088d144c79d314605aa539cce6e7ce5808af72"
+    },
+    "Toy.Unify.eqUpTo_iterSubst_mono_needs_agreement": {
+      "closure_sha256": "e13fb773eae0b98838a78f3b2488bf274d058b5498ff6919f740bd767cce9e84",
+      "closure_size": 33,
+      "statement_sha256": "7245c78accb86dbfbdee68ddcff066a657789d9c2b5e755f270f8174fba55591"
+    },
+    "Toy.Unify.eqUpTo_iterSubst_mono_needs_le": {
+      "closure_sha256": "b07281cf7925eeb6dad239ebde61e18709fb195736f08955197d78c5456c58a4",
+      "closure_size": 32,
+      "statement_sha256": "ebae0936b2f639fc4768bfab1d5c76320bfb54451c9fd93117b422a502a48860"
+    },
+    "Toy.Unify.eqUpTo_iterSubst_mono_nonvacuous": {
+      "closure_sha256": "f6ecf69cc095422ae74ae8605929a79afe1f05f6a3c8bff1d7c999dedd11f679",
+      "closure_size": 34,
+      "statement_sha256": "029ba3de82bf6baf5a47f26cb815f29544d02c3c2d947ef5ded35d8233d53ae2"
+    },
+    "Toy.Unify.eqUpTo_ne_example": {
+      "closure_sha256": "115428332efe859e51a6fa86c399b6edb32165e49e1ca63aa7b0436314bd8a91",
+      "closure_size": 23,
+      "statement_sha256": "460d43335a30c3974325cce2c5d695be162b61f94c03d0acf1c49ef3db96fe3b"
+    },
+    "Toy.Unify.eqUpTo_subst": {
+      "closure_sha256": "8eda5b83f4b4516af0a89b0ab7dbd90060327187910e0bb228f66b4a27b02392",
+      "closure_size": 28,
+      "statement_sha256": "0c8f1ae1de16e2e5496317ce678675904b285ab15add38ea7f8849cfe219b520"
+    },
+    "Toy.Unify.eqUpTo_subst_needs_agreement": {
+      "closure_sha256": "d28be73a32e8ec58b4dc9d4d4cf4a6d6990ecf8a71253d49472aac578010998c",
+      "closure_size": 30,
+      "statement_sha256": "6cd551222eef211b7b445276d19403ff81f6294a866cdcac5e450e6ca37da5f4"
+    },
+    "Toy.Unify.eqUpTo_subst_nonvacuous": {
+      "closure_sha256": "115428332efe859e51a6fa86c399b6edb32165e49e1ca63aa7b0436314bd8a91",
+      "closure_size": 23,
+      "statement_sha256": "7c78112128faf936a3dff70960811a81e399ea1f868cae4f8e89da93ab6b7d18"
+    },
+    "Toy.Unify.eqsVars": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "77d2e4612a980f50925eea425fd6c384579097225345bab18c39d742ce7f2c73"
+    },
+    "Toy.Unify.exists_orphanOK_iff_needs_ctors_not_owned": {
+      "closure_sha256": "9b917c7b63346f0500f1e79441d948de89cd1a2e1530aafb0a80766e98ffb334",
+      "closure_size": 45,
+      "statement_sha256": "c446d9537481bef5082e008cafd40931c2ec0702dd166e47c738c36d1eae88c1"
+    },
+    "Toy.Unify.exists_orphanOK_iff_needs_local_ctor": {
+      "closure_sha256": "15aeea2c5556bb5515ead3214a2b0ae1e91c3ea5bbf2c4d6c45a6881803e42d1",
+      "closure_size": 44,
+      "statement_sha256": "fe2edb8779a863e001ef725f435d8f8b176e667b545470c2601ae95a1e62c955"
+    },
+    "Toy.Unify.exists_orphanOK_iff_needs_trait_not_owned": {
+      "closure_sha256": "8a1e2dda35e078a7bf6a267acf2cf7b9a316d8be13b5ad41a569a8b6254ed5ab",
+      "closure_size": 45,
+      "statement_sha256": "f8fe4b2cb65244ed63dacabeebf8fab56bf14e6659fc513d960829154b38929d"
+    },
+    "Toy.Unify.exists_orphanOK_overlapping_impl_iff_fundSpineVar": {
+      "closure_sha256": "a8b02c2acf2ef305da92ec1d0657b49111ab82e76ab6140b5cccfb303fca296c",
+      "closure_size": 43,
+      "statement_sha256": "52ee9cd7bba2c716aa4cac90254bd6e8773abbe6a4bd3c5ef2ddf2f0cacbbadc"
+    },
+    "Toy.Unify.exists_orphanOK_overlapping_impl_iff_fundSpineVar_nonvacuous": {
+      "closure_sha256": "05378386f7b066c5f9bc200f949fcb95378298cbd15833e3075c3a395edf6074",
+      "closure_size": 22,
+      "statement_sha256": "68db64994207fa0b03995187a4583b0e6fda48f95b1e4c06bf925c96b363aacc"
+    },
+    "Toy.Unify.freshCrate_example": {
+      "closure_sha256": "b46e4a9bcef2503b1ab67fc70094e2e9b57a3121ae4c1e45162bd6d57b2e51d1",
+      "closure_size": 40,
+      "statement_sha256": "918106e3e345aa403b923b45af01a722a51a52bda2ce69194a103a0bdc7e04af"
+    },
+    "Toy.Unify.freshFor_example": {
+      "closure_sha256": "b7fc96c7333f082d97594290305b3166dde54556051c76006b7711853d113dbb",
+      "closure_size": 41,
+      "statement_sha256": "19b42083aca53c2a8ee2d90a439a37fa65c600827f7d31182ea0eceb0d7d7e4d"
+    },
+    "Toy.Unify.fundSpineVar": {
+      "closure_sha256": "bef1ca367796614f199125bd0eccb60dee241a3bef9140497a5ad6f83b0bb1a9",
+      "closure_size": 5,
+      "statement_sha256": "febdd5b8dd57838d0e340bc57b4aea5bb661886c16f512eae77e545ee314174c"
+    },
+    "Toy.Unify.fundSpineVar_congr": {
+      "closure_sha256": "55a3c1af99f9cd9647d3d2e2c2fc350fe28a34c85d1c66aaeddb6850492f761c",
+      "closure_size": 16,
+      "statement_sha256": "e5f0fe10ba7b4adbc06ec239b9449b1eb9d290cbdc5adaffdd8b96d416f0cfd1"
+    },
+    "Toy.Unify.fundSpineVar_example": {
+      "closure_sha256": "e3764e18a778b05c0bb2d1a5cc9fdd560b6586b32a4c714b8e8ea405346fffd5",
+      "closure_size": 18,
+      "statement_sha256": "a563f9a65dc9c69ec19a40ff9b4d1167608335ca0aa095b59b0f3aa6a732848e"
+    },
+    "Toy.Unify.headersOverlap_example": {
+      "closure_sha256": "a8e3cc77b11ee7d5c26e2a9254e551af8e1ae8f67f3f98384ed2f1801dbca08b",
+      "closure_size": 32,
+      "statement_sha256": "6e84ee200652c630abf1f1b794797314cbb1ccc65e4e491c54955402ed057027"
+    },
+    "Toy.Unify.headersOverlap_iff_unify_isSome": {
+      "closure_sha256": "14e8448bec283c0b02a02cd4b6eea087884868f83198e467cfa997825eab8b38",
+      "closure_size": 69,
+      "statement_sha256": "e74df8f216ac81393a1c880e1da8cc5f5fc7ba322346fcdb0e4641b26106e75c"
+    },
+    "Toy.Unify.headersOverlap_iff_unify_isSome_nonvacuous": {
+      "closure_sha256": "d2d16dd8541d9e020369bbb571f350a3a4f489de3575c6ce69e8f7059479250e",
+      "closure_size": 23,
+      "statement_sha256": "faad16f6a5ca1d219abfa6273e72578ed8def520ac770b5ff70808324b44be9d"
+    },
+    "Toy.Unify.headersOverlap_not_implsOverlapIn": {
+      "closure_sha256": "a16dfff2812b188b5f7cd8b7efcb33e0cf29e67346e607b395b4fd9b73ad885b",
+      "closure_size": 85,
+      "statement_sha256": "a311d51ae4c29f6d3b487ca58913a451445b0c0e7ab9aca32e25c6541ea5965b"
+    },
+    "Toy.Unify.i1": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.i2": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.iPairBox": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.iPairSame": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.iShared1": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.iShared2": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.iUpBox2": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.iW1": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.iW2": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.idempotent_example": {
+      "closure_sha256": "b2426fa3713bfebb6c17dd53d57e9a3525640700e1ac562aa9ab6081cea72090",
+      "closure_size": 21,
+      "statement_sha256": "7fad50d535ec47dcbc66d9422d007fac249a9abf5118d269c96432137b077d46"
+    },
+    "Toy.Unify.implA_u8": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.implB_u32": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "80ffb0ba9b2c259f8511b7113a3ebfa91fb0527015fedf0c3b45c7f2d2d9f922"
+    },
+    "Toy.Unify.impl_ctors_example": {
+      "closure_sha256": "73debe55fdc95831a013364d727154b404baad677468dd9777618e268e2cf899",
+      "closure_size": 25,
+      "statement_sha256": "fdb29cd6bfc1973abb83f65fc6a54ec13032174876aa874a98ae83bd6461fd9b"
+    },
+    "Toy.Unify.impl_ctors_nil_example": {
+      "closure_sha256": "59baeae8db5318438b5c41ad3f7cfc7ca525c1557e3ae7f0edd54e4a76d109cb",
+      "closure_size": 24,
+      "statement_sha256": "3f4cec8c26aae364099e7194e5022aea7dc0edb67dd8ea240891ec037011b8a4"
+    },
+    "Toy.Unify.impl_traits_example": {
+      "closure_sha256": "866980bd1caeaa040fd3ef7a502f495152ffd59ca325764565cdeb612522c759",
+      "closure_size": 12,
+      "statement_sha256": "ee1f235114b87a50ee491ba4d85697182d9ef066497f703142447c29f0b9513c"
+    },
+    "Toy.Unify.impl_vars_example": {
+      "closure_sha256": "fa719aa42cf55d12cfef099222b66ee0b8e5ff6138c51f74fed2380a95e54e4f",
+      "closure_size": 24,
+      "statement_sha256": "e55f5b00d40718e340855dfb16c9a24743f0e617ad3726462765da3bc66c6425"
+    },
+    "Toy.Unify.implements_append_iff_needs_constrained": {
+      "closure_sha256": "22b4461df6a75ea94c087ce9918f430ccdd564fa41576dba76fe1753acc58c2e",
+      "closure_size": 54,
+      "statement_sha256": "1a15fc0cac2c32bee65d13639524860ea5d8f3a0f378fe3513dbbfd57785d1dc"
+    },
+    "Toy.Unify.implements_append_iff_needs_ctors_not_owned": {
+      "closure_sha256": "781334439f475f21c5834011c7a20aa18d0380390351ac648a68012e855098e3",
+      "closure_size": 52,
+      "statement_sha256": "3f0dc35fb4bcb36b7fa6b36de73dcef9d4ba26475ecca7c22036c5feaa67ae7e"
+    },
+    "Toy.Unify.implements_append_iff_needs_fresh": {
+      "closure_sha256": "9bad0e0377c75c9a6ead4c5c8e85da5ea34f3291f61c6e84aba631f88fdb536a",
+      "closure_size": 54,
+      "statement_sha256": "0c4921641bc67409c843fddf7e70f6ec5ed61827a27973dd3423c26de58f5f36"
+    },
+    "Toy.Unify.implements_append_iff_needs_orphanOK": {
+      "closure_sha256": "591b2933997ec5280a2e84fb99d13041dc45568639967d1d068276e50fcb11bd",
+      "closure_size": 52,
+      "statement_sha256": "05aca8fbb1f4ed8d905d4cf2187860243b90f4ba72f9fdc52e75e30e770861e9"
+    },
+    "Toy.Unify.implements_append_iff_needs_trait_not_owned": {
+      "closure_sha256": "076b0f1bc73559e90c3d2bfe9c8931ac5ec598b8c27ae08dee4c0890005a5ffc",
+      "closure_size": 52,
+      "statement_sha256": "c0afc2a29573d5466fa2fd213c95e89afc85fe1230f7bc25d7477b9e07095e03"
+    },
+    "Toy.Unify.implements_append_iff_of_not_isGround": {
+      "closure_sha256": "bc5bf89215836ac3c2b4d8bd0bcdb8eec3d1a68784954bac2b733a1716584dde",
+      "closure_size": 34,
+      "statement_sha256": "86d21a5ccfe8bf3515fe92c74ff8a507efe00127307be22e36edb565e5a9b5df"
+    },
+    "Toy.Unify.implements_append_iff_of_orphanOK": {
+      "closure_sha256": "89a26b78927b71cc063149ae326245498ec632179ee2662af68d7b0cf739993e",
+      "closure_size": 50,
+      "statement_sha256": "d79295decd54be4431d1f88829d9fd810ad27330b976778a4720ff61bf4dc1af"
+    },
+    "Toy.Unify.implements_append_iff_of_orphanOK_nonvacuous": {
+      "closure_sha256": "c7aca12a79fe45c099ddc32bad44b6c4af40c9fd376bdca5591382a8148cff06",
+      "closure_size": 59,
+      "statement_sha256": "fd566fd5a84f3fd8b13fe858958a9b1385eb8deefb1866006e2afb11362d4a30"
+    },
+    "Toy.Unify.implements_example": {
+      "closure_sha256": "bd5585e59d5b8e4ad25efca027c20eced0260287de3256b997e72e81e24aaed2",
+      "closure_size": 41,
+      "statement_sha256": "8199e78e1fb90268a3b022509fa56f926a8137d8759f17603685dcd4bf927cbb"
+    },
+    "Toy.Unify.implements_isGround_example": {
+      "closure_sha256": "bd5585e59d5b8e4ad25efca027c20eced0260287de3256b997e72e81e24aaed2",
+      "closure_size": 41,
+      "statement_sha256": "02b0cf3db2911d21edb9def411ddde398aeedda1a19b7de7bf77bdfb3e56aacb"
+    },
+    "Toy.Unify.implements_via_bound_example": {
+      "closure_sha256": "bd5585e59d5b8e4ad25efca027c20eced0260287de3256b997e72e81e24aaed2",
+      "closure_size": 41,
+      "statement_sha256": "c37ca34afe2bb55e743788ef7fb4621aa0a9b862d5a46ebdac422662297b927c"
+    },
+    "Toy.Unify.implsOverlapIn_iff_mgu_instance": {
+      "closure_sha256": "1c5ec5492e021792da61dc58bcfa260d61479b758168ab90dd7a5e020a0c7b1e",
+      "closure_size": 74,
+      "statement_sha256": "05b0d0d1b2cf40d5513f689578b8760d36be92783293738dbe71dd8750df5b2b"
+    },
+    "Toy.Unify.implsOverlapIn_iff_mgu_instance_needs_bound_vars_disjoint": {
+      "closure_sha256": "49fda2de5c6bc346eed7c72836263096818d21b2b0e6f297527579ea584ea558",
+      "closure_size": 85,
+      "statement_sha256": "7d740e42eaabf652320b47439082376b78d0d6f4c756e39df6b77085d9e9b3a8"
+    },
+    "Toy.Unify.implsOverlapIn_iff_mgu_instance_nonvacuous": {
+      "closure_sha256": "f515e551f95a4d3dddf01fa38d3a2f209ecc748ece01c910f037a1aad247a682",
+      "closure_size": 25,
+      "statement_sha256": "c90d0bb3df32d6f6583882d5568aeb69619322d973cde57e471f52f7c4be8214"
+    },
+    "Toy.Unify.implsOverlapIn_not_monotone": {
+      "closure_sha256": "f625ea607f269a3847559f2bc83df91f1c857dd87adfe17f17de1e2f905d7cac",
+      "closure_size": 42,
+      "statement_sha256": "85f2b97ac43fa69cb04a36a97c5a03c6f5f0254985f6f7c9c5d51665067cfe3b"
+    },
+    "Toy.Unify.isGround_example": {
+      "closure_sha256": "55752338cf9d80acf43380b478a7869be5a45a56f31a6dc058e4ab92d696597b",
+      "closure_size": 20,
+      "statement_sha256": "d06f655f31c2e5bb622393e9ea0fdbbd78f0ebd3db18fe009ffeb3017157b95b"
+    },
+    "Toy.Unify.isLocalTy": {
+      "closure_sha256": "bef1ca367796614f199125bd0eccb60dee241a3bef9140497a5ad6f83b0bb1a9",
+      "closure_size": 5,
+      "statement_sha256": "b4ae74eac031042c25eba739030abae4faf9e07d7961cce9f92a07134c5e660b"
+    },
+    "Toy.Unify.isLocalTy_example": {
+      "closure_sha256": "5c24154d6e64b5f1e45e27e8851c4f8a1ada75624ecc5b9de3afedc1e7faf4f8",
+      "closure_size": 19,
+      "statement_sha256": "1f88077d74c766ee51c1409e01035b00c040fe7c19ebedb11b11e29fcd486ff3"
+    },
+    "Toy.Unify.isLocalTy_fundamental_example": {
+      "closure_sha256": "2f64d112b62b9cb03a3a3e8a87bb74028346523521e591a27af6abd6ac9fc3f2",
+      "closure_size": 20,
+      "statement_sha256": "eab28bb0f4f28ae21e42a20d16607d84df0334b456d334006a33dc2cff373064"
+    },
+    "Toy.Unify.iterSubst": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "69db43de032055c22229221fae9653e34a848ec612d48383d540de42dd4627be"
+    },
+    "Toy.Unify.iterSubst_example": {
+      "closure_sha256": "39be3287e3dfbd9508e8e48040882ab14abb09da98bef82640eb4fb341658cb1",
+      "closure_size": 22,
+      "statement_sha256": "ffbf476ff955d10e02a828ba4be2e3d9ea3a5c5d7e2ab6bf1c45314d4f534312"
+    },
+    "Toy.Unify.iterSubst_ne_example": {
+      "closure_sha256": "39be3287e3dfbd9508e8e48040882ab14abb09da98bef82640eb4fb341658cb1",
+      "closure_size": 22,
+      "statement_sha256": "b437be5705dd69df1fb0bc5295a87b8e74b96d88d87b1bf32d4a4b95a6690b14"
+    },
+    "Toy.Unify.localL": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "01928932a9655d7f693b9700c81d1e1e27e9496d62212a5a7cb0fefbfbc7518d"
+    },
+    "Toy.Unify.loopEqs": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "a19a3a929c7c012b19abca1ec9cd51a6d3403caec87ee2c4857bf12d0d1cb487"
+    },
+    "Toy.Unify.loopS": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "01928932a9655d7f693b9700c81d1e1e27e9496d62212a5a7cb0fefbfbc7518d"
+    },
+    "Toy.Unify.loopT": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "01928932a9655d7f693b9700c81d1e1e27e9496d62212a5a7cb0fefbfbc7518d"
+    },
+    "Toy.Unify.matchAlg": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "f49ad4d6711992ff2f27c212fe74aa6b86f08b06a96b8b75ffa9c6411c2f3ed1"
+    },
+    "Toy.Unify.matchAlg_complete": {
+      "closure_sha256": "96c4698201458154efe2b57255998593e332166b3ec23bd1626670976772f041",
+      "closure_size": 44,
+      "statement_sha256": "bacbf27bdd4b6485f21be137b559711282b0e9e7686e9fbc62ca63ffaac14d1b"
+    },
+    "Toy.Unify.matchAlg_complete_needs_matchable": {
+      "closure_sha256": "a9b4105e177db2b377c57948b772bd4a1ab683447ee9ac0322293de6485390d7",
+      "closure_size": 46,
+      "statement_sha256": "d5a84f6995ba2306247170df52acbb4a553e7d15e742d3382d68d776d5cd29da"
+    },
+    "Toy.Unify.matchAlg_example": {
+      "closure_sha256": "30533418bf1b79c48d479ecdedcffe1499ca884b07c8cf79ffef6f61271b947b",
+      "closure_size": 38,
+      "statement_sha256": "0579a936b8b9eef0191b9f15a119700e6c9d42940a8c5dc14d9e2effe2de5fbb"
+    },
+    "Toy.Unify.matchAlg_isSome_iff_unify_isSome_of_isGround": {
+      "closure_sha256": "8ac9a5144c7989a12df345f5424f954e85c4617cbaba5d78a5730a4491a0c704",
+      "closure_size": 85,
+      "statement_sha256": "707b74dbfa4bacbd474e75e26bc33d611c85d0f222decc44c3b06f9ce489aad6"
+    },
+    "Toy.Unify.matchAlg_isSome_iff_unify_needs_ground": {
+      "closure_sha256": "37c539e4b5bf1f40f2cb5c2efc9c7a50d81c39c807b7c5d5216cc12d6e411580",
+      "closure_size": 86,
+      "statement_sha256": "02bb313fd49f798bcf02ff72ee056eca22a841df5774eaff2fd680ba38115bbd"
+    },
+    "Toy.Unify.matchAlg_none_example": {
+      "closure_sha256": "abbde8f32bb5a775f09ad3c9c098679ffa55c17b2cd654ec45702f2a87788b10",
+      "closure_size": 39,
+      "statement_sha256": "e006a556bf8b1ef89a8f0fed8051543e0a757227512f4ebea222cae3f66a23f6"
+    },
+    "Toy.Unify.matchAlg_nonvacuous": {
+      "closure_sha256": "19801e71d5849b629fd953e7600a8b2c06ffc39cc0d4a52bf7f9efce84159227",
+      "closure_size": 45,
+      "statement_sha256": "6a21dc03c047f81817617c739423a4472bf27990c142e9a1e1f830dc5c788804"
+    },
+    "Toy.Unify.matchAlg_output_not_idempotent_example": {
+      "closure_sha256": "bcd0bb93e76b08a7a1983d83aea1255a34af82261a14807a54130c01222ac2b8",
+      "closure_size": 45,
+      "statement_sha256": "225be3122ce38c3d57230e95ed26326dfc22754ea8dad00fc8227376fe870d70"
+    },
+    "Toy.Unify.matchAlg_sound": {
+      "closure_sha256": "179e433a045aa5afb1a10cba8bc8407e38a45779e257cc5ae2a38d539ea97157",
+      "closure_size": 43,
+      "statement_sha256": "61cfd12866ad1810571c0455330c68802f0153c224fd62dfab814649ce3c31d1"
+    },
+    "Toy.Unify.matchAlg_sound_needs_output": {
+      "closure_sha256": "8b870b066d4efcfa404be57ffeb98d07accad79548b0db16d911eb328364f506",
+      "closure_size": 44,
+      "statement_sha256": "5f873396f90cf2b3d97f19a4ce8f4eaf49017d9a74bbcc06452be1f931b8e01d"
+    },
+    "Toy.Unify.matchAux": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "b7bb3de7bb012daea8845c25b056527d038ec556ffc51b7cd3e98f79d8f2f102"
+    },
+    "Toy.Unify.matchList": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "8ca33758ce9e5c7b5fe97757265c6c509881615c0163ac7d9cfb4a2f03eccf7b"
+    },
+    "Toy.Unify.matchable_example": {
+      "closure_sha256": "46f1f12c0acf7f054bb1c52cc28e225c957be6280cdb61622b50ea3fac8ebee1",
+      "closure_size": 21,
+      "statement_sha256": "40214512fae8eb430a5a9abb760cf76fa2889b05aa26a282ec6531ac7e8363f0"
+    },
+    "Toy.Unify.matchable_iff_unifiable_needs_ground": {
+      "closure_sha256": "3d4cc18fc30b1a0beb5839531732094338a49aed9751e2d17e488ab85737028c",
+      "closure_size": 26,
+      "statement_sha256": "4b30ca530e11c2745ae05e728ee78acc3659a3fd85d23cc4f09e13da60b6275e"
+    },
+    "Toy.Unify.matchable_iff_unifiable_nonGround_example": {
+      "closure_sha256": "3d4cc18fc30b1a0beb5839531732094338a49aed9751e2d17e488ab85737028c",
+      "closure_size": 26,
+      "statement_sha256": "4d4aa182c5265b2ed3068b26fab8e73d665544a6d7496ef30d4e1c408cffbe2e"
+    },
+    "Toy.Unify.matchable_iff_unifiable_of_isGround": {
+      "closure_sha256": "9f9d781c382b14c3ca3d084b1642fb17aed9b3cd0ca5e94ee76dd421fde87417",
+      "closure_size": 25,
+      "statement_sha256": "01a3e28f812f06b84b373f49f0356d9707cd1d4a2bacd7baac8a4dece1a82aaa"
+    },
+    "Toy.Unify.matchable_iff_unifiable_of_isGround_nonvacuous": {
+      "closure_sha256": "044b2542fff5739b659994fd67c122c6b466765b8d32946703c0e27f2dfd1a08",
+      "closure_size": 18,
+      "statement_sha256": "c2876304aa57e750b0e3a586f27aba7bee58a49b103301d8a3fcf2d963f35f5a"
+    },
+    "Toy.Unify.matchable_not_unifiable": {
+      "closure_sha256": "f5cfd08968f1bc393a0a3e76ecd9f69d43b56a5086c632778f2c57f12db20bce",
+      "closure_size": 22,
+      "statement_sha256": "2bd477ec5abc8b0bb97428e50ba4f20a9520d9fd22bd870ffd31256d6cbd528b"
+    },
+    "Toy.Unify.moreGeneral_example": {
+      "closure_sha256": "113a55da53d6a44649d49a3b54a6514492f42fa4acdebec56f0b4a164547f27e",
+      "closure_size": 20,
+      "statement_sha256": "c80e03656ff0379fa2d120a0acfb491407b158f7d0c53ae0fa38df9c69216f52"
+    },
+    "Toy.Unify.noInstanceImplements_example": {
+      "closure_sha256": "699a330badfd3adce3fd05fab4dc66b8ad37d99a73c659e134c4d2178badc80d",
+      "closure_size": 42,
+      "statement_sha256": "b5fc322527fb7c8d4eb4b13da9adbe358d695cb97b6e9d8a9a614ff03cf1bf1d"
+    },
+    "Toy.Unify.noInstanceImplements_stable_needs_no_matching_impl": {
+      "closure_sha256": "f8c6440716945f1677876edd8930fb45918efed7b26f85abb9e289f220e012ae",
+      "closure_size": 58,
+      "statement_sha256": "a70a56d25ea549c1c5f58a31e9370385fb4430c6ba5f56718f80a1197a1e5ec1"
+    },
+    "Toy.Unify.noInstanceImplements_stable_needs_not_fundSpineVar": {
+      "closure_sha256": "38152c32b5e40017b86a64e90320306b250bca47d96e09d3e9d46fb3271da43b",
+      "closure_size": 57,
+      "statement_sha256": "0f1f4d5640e8d8a7dc4e9d1d1a238e01740c0d60ccccacf9425d9b47ea7249c0"
+    },
+    "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar": {
+      "closure_sha256": "8b98241d951f53d58d166be4d36978806111473b052deb2cecd174792973948a",
+      "closure_size": 55,
+      "statement_sha256": "16d6e7a17fe0103a8080b16612859f377de9d0b18c1c25649a85770b5fbdfc06"
+    },
+    "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar_nonvacuous": {
+      "closure_sha256": "2fe66be0491d30a376ce4ec38858cee45d40012dd7bdacf19276f71d5bf0ab16",
+      "closure_size": 45,
+      "statement_sha256": "ed62dfce0e37109bae243919058ff0871aee85e86af8ef367a7645a69231ab29"
+    },
+    "Toy.Unify.noInstanceImplements_vec_not_stable": {
+      "closure_sha256": "b09b1c2b2b1fba9a2159703c5e2d7ac8d6cffd12cf5088cb6af93c8d754ed44f",
+      "closure_size": 60,
+      "statement_sha256": "243e9a7b3f1f7aede1d765cb7b61b6d82024621a7fc9906f669062622ddcdcb1"
+    },
+    "Toy.Unify.noInstanceImplements_vec_not_stable_of_vec_fundamental": {
+      "closure_sha256": "5c7c8a12fee2f02d8e6f3bade0ee9059f99ad0d8c1d9ea1014a0b1ec5d529f06",
+      "closure_size": 58,
+      "statement_sha256": "6f11e3616aabe4fbb9df78523928757d7a8fc525d444e8620c82c154c4627560"
+    },
+    "Toy.Unify.noInstanceImplements_vec_stable_example": {
+      "closure_sha256": "332c44f2c260178870366312f94aa11a24dafb7170764898c75fd3cba7143218",
+      "closure_size": 61,
+      "statement_sha256": "a25ef8cc96c84a2aa04f4bca7d7de7d0f497595d7bafcc89e4aaabcdabc3b028"
+    },
+    "Toy.Unify.noOC_check_false_disjoint_without_renaming": {
+      "closure_sha256": "ed7dd489294207348fe01413175ff1c8581cb91a193f2fcfc1518ea4cd13f3c4",
+      "closure_size": 75,
+      "statement_sha256": "c93c888aafb0627cfebe14d9d1010c119dee4eb5740d4eb7894a1e0e4ffdc390"
+    },
+    "Toy.Unify.noOC_check_reports_false_overlap": {
+      "closure_sha256": "bbce68831a2c63d73a60740b4d2bdd0b64e3cc5a4109f5c27cc9f1b8c9c6df93",
+      "closure_size": 76,
+      "statement_sha256": "f9f7f2be16defa5dc211ed36b19e4d3de44817323554c87c610a25eea21f49b8"
+    },
+    "Toy.Unify.noOC_disjoint_needs_verdict": {
+      "closure_sha256": "85b46575386231f980494d011132a5a45356496291386d9a41d18212d3c0dc48",
+      "closure_size": 72,
+      "statement_sha256": "d3857191d11d94e1ed761f1121c31bc494baca5f857b3cf9db9bf8d5c2d2b719"
+    },
+    "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound": {
+      "closure_sha256": "d1a120e113fad4cfc53b43ef6fcc0f3783d4b399fb4abba5334b0d8f0e4a4536",
+      "closure_size": 62,
+      "statement_sha256": "90d55010e9123e7565582127b4b5d9213854d20c1348d33da1ea2bf326e5fdc2"
+    },
+    "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_nonvacuous": {
+      "closure_sha256": "aac365b4e20426de8ccebf9c70f97c8e89e3fd53d37d0efcbbd247d6a24b9033",
+      "closure_size": 73,
+      "statement_sha256": "cdb6bb34d9632e682bdd221a1009a14f533616caea512d8b2592deb905b5a84a"
+    },
+    "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_uniform": {
+      "closure_sha256": "d1a120e113fad4cfc53b43ef6fcc0f3783d4b399fb4abba5334b0d8f0e4a4536",
+      "closure_size": 62,
+      "statement_sha256": "d1caddc307067524e9e00249fd22f0b6dd926e3cbdf1703a2889a929ad8647f0"
+    },
+    "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_uniform_nonvacuous": {
+      "closure_sha256": "f1889bfd48f6bd276043da4d242a7c64108e1b3bcb38b8eb0a4132a286765be7",
+      "closure_size": 66,
+      "statement_sha256": "b0d56117e5ce0cd3d825a5b4771d234dbb577ceeb25810781041a4c109261f32"
+    },
+    "Toy.Unify.noOC_verdict_transfer_needs_hP": {
+      "closure_sha256": "deb7f823478fe2017898e3bb16f7d1fd22c49ee8bb2850c724cb773d2e06b5b8",
+      "closure_size": 71,
+      "statement_sha256": "94f15fc21943753086556474510c807f06a22360d548e9d87ca4c5a9c513f466"
+    },
+    "Toy.Unify.noOC_verdict_transfer_needs_hchk": {
+      "closure_sha256": "02c68d76ed7e9cb202cc41ff8abb97fdf9cccda3d4b321a8bc2783610da2c13c",
+      "closure_size": 63,
+      "statement_sha256": "36aac0b86342a1b72186329f12ca25334db66585cc962a15932618dd8e544b2d"
+    },
+    "Toy.Unify.noOC_verdict_transfer_needs_noOC_verdict": {
+      "closure_sha256": "02c68d76ed7e9cb202cc41ff8abb97fdf9cccda3d4b321a8bc2783610da2c13c",
+      "closure_size": 63,
+      "statement_sha256": "4a854581ab8a27643861ef4c768f3f7cc894472300bcef6edcfafe991673c588"
+    },
+    "Toy.Unify.noOC_verdict_transfer_uniform_needs_hP": {
+      "closure_sha256": "4de08df94e8da6e7b2986416db6491c1ccdfe5eca9cfc8843d00ddc90d9f1494",
+      "closure_size": 63,
+      "statement_sha256": "07f41ad62e5a6e522958f1ebbffaeada2b9ebf2f3a69cb0b2af8e86fc93b526e"
+    },
+    "Toy.Unify.noOC_verdict_transfer_uniform_needs_hchk": {
+      "closure_sha256": "d1a120e113fad4cfc53b43ef6fcc0f3783d4b399fb4abba5334b0d8f0e4a4536",
+      "closure_size": 62,
+      "statement_sha256": "e7099309268a4c649b949780ea81203b25f228a772d91f884e43a413024fc6a2"
+    },
+    "Toy.Unify.not_commonGroundInstance_example": {
+      "closure_sha256": "6461430cffac441cc50acdd31526781272b77743e36020102050a21b08d90170",
+      "closure_size": 25,
+      "statement_sha256": "286fa9cbcf64962e6797accef4bc0a75d63eb35d32a638f680df74e45bd86c73"
+    },
+    "Toy.Unify.not_constrained_example": {
+      "closure_sha256": "c68dd0b552c511e531dc6be9f5892694cdecece2ab2e5eb77174c10b855f2607",
+      "closure_size": 25,
+      "statement_sha256": "9781263dc64d7cfc079ca382461d951c8cd21d0b4a676537e7b3cd0d578da7ba"
+    },
+    "Toy.Unify.not_freshCrate_example": {
+      "closure_sha256": "b46e4a9bcef2503b1ab67fc70094e2e9b57a3121ae4c1e45162bd6d57b2e51d1",
+      "closure_size": 40,
+      "statement_sha256": "b310871c6a83734ffda27cb9676458e543b2439220c61d1014212732d1fcf53d"
+    },
+    "Toy.Unify.not_freshFor_example": {
+      "closure_sha256": "e78561a8e9872feca6a63b67782d6ced662358f9ffb5564ff0aef312a3399f29",
+      "closure_size": 35,
+      "statement_sha256": "baede187a9fdbde6c16b627c0413b94eb0c57a1e916dbb02727e543879fd2964"
+    },
+    "Toy.Unify.not_fundSpineVar_example": {
+      "closure_sha256": "971f0bbb81fafc6536522ca0f5985981856799a115b4bfcbaccc78793f0f023a",
+      "closure_size": 18,
+      "statement_sha256": "8929b698c813d18b4b6dbb7a37b09b9a9eeadce6f1954dc52bc19cb8c5221fb4"
+    },
+    "Toy.Unify.not_headersOverlap_example": {
+      "closure_sha256": "dde269f50b03d4911b99035411642c1b9b1b57089784bd2be8dcc17db7731d7e",
+      "closure_size": 33,
+      "statement_sha256": "30fc10af72db06d894827570ae18c41dea38aea6f956c085eddd677d815ab158"
+    },
+    "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjoint": {
+      "closure_sha256": "8064cc43745d1a98007023be475aaf73b03ffede8cdae9f3cad3cc97b6ec2c04",
+      "closure_size": 70,
+      "statement_sha256": "ae89da1f4532fa3f3e2598bbc16fa76f23d0813bda07bebc9d3cb97ebeb39d86"
+    },
+    "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjointNoOC": {
+      "closure_sha256": "f5149776c9528aa440e3599358ebc2d23ccd4a66c0b93bed33cd19b08f9031b7",
+      "closure_size": 70,
+      "statement_sha256": "37eb09d85c4b9120f81b81aa7f00192f543fda0c2383491dd0c0b7ba226822e1"
+    },
+    "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjointNoOC_nonvacuous": {
+      "closure_sha256": "55adfb04e43134abd5471c62c562f81ef3568dc4af087f515d6bb76cd3975ed7",
+      "closure_size": 69,
+      "statement_sha256": "9d1fea52ead23ef16d7e00b93c014fa35f2003cbeb498a3364338905c94974ba"
+    },
+    "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjoint_nonvacuous": {
+      "closure_sha256": "0c28e8597765b31add0999966da093ba0cfd95520adb6e83232630cc7615b5ee",
+      "closure_size": 69,
+      "statement_sha256": "99160fbfbbf6c9c1ca0f4a59b26fe22903fc09fc376a89828c7d2599d2a3c3e7"
+    },
+    "Toy.Unify.not_idempotent_example": {
+      "closure_sha256": "bfc7735020e7707f93a3e2d95f901b761138de1da872d29e659bf0c066e6a0e8",
+      "closure_size": 20,
+      "statement_sha256": "13b0d84adc79bb8b9fdc07a40be9c133b1e17018f0179c335fc733ce2752c051"
+    },
+    "Toy.Unify.not_implements_append_needs_neg": {
+      "closure_sha256": "591b2933997ec5280a2e84fb99d13041dc45568639967d1d068276e50fcb11bd",
+      "closure_size": 52,
+      "statement_sha256": "190d8720761bf537972bb24afef0ba114cb5ec4ce9d7e209508bdaca9a3cad8d"
+    },
+    "Toy.Unify.not_implements_append_of_orphanOK": {
+      "closure_sha256": "89a26b78927b71cc063149ae326245498ec632179ee2662af68d7b0cf739993e",
+      "closure_size": 50,
+      "statement_sha256": "76205049d57bb3446a9600da44b0314db70f680404a8cfcf81a154772ed6b7bb"
+    },
+    "Toy.Unify.not_implements_example": {
+      "closure_sha256": "bd5585e59d5b8e4ad25efca027c20eced0260287de3256b997e72e81e24aaed2",
+      "closure_size": 41,
+      "statement_sha256": "a6dca387e2e7eeb87f8384010c11a22dbc838e2189205b13e66803e176bb5b9c"
+    },
+    "Toy.Unify.not_implements_stable_needs_constrained": {
+      "closure_sha256": "03a8ad6b23b251d8e85f82f8e5f45ff0da2c718d0a6ba32d10df212b21c4ba92",
+      "closure_size": 55,
+      "statement_sha256": "540d48b43bfa75f6b49cf32becae8cde2827564e71dd8e378bcc6d655ad6afbd"
+    },
+    "Toy.Unify.not_implements_stable_needs_neg": {
+      "closure_sha256": "aab2b061aba106f1a68f3a8dc9c4ed0d3f448d558930619894eb7981e05f45b5",
+      "closure_size": 54,
+      "statement_sha256": "3f022633d680912ce75161c873ac9639d3a3aeff09e541c6f005a181d2a41d23"
+    },
+    "Toy.Unify.not_implements_stable_of_isGround": {
+      "closure_sha256": "18928231c80466919e2ffb85efbf47c84293604514f6ee001548be2be613197c",
+      "closure_size": 52,
+      "statement_sha256": "32e0281e3812d749f87da8513fabf6a285904d9187dc473af71d06a25692986d"
+    },
+    "Toy.Unify.not_implements_stable_of_isGround_nonvacuous": {
+      "closure_sha256": "881fbaa4e98c7e7a8d08bae9f3de2bb89a4438ec5ec835a0b917f0a56db1b940",
+      "closure_size": 42,
+      "statement_sha256": "6ba98d0d62739244fb1d42935088ae1cc589ad963d8fe9b96f2bfb8919d5376f"
+    },
+    "Toy.Unify.not_implements_stable_of_not_isGround": {
+      "closure_sha256": "7a42f7dc3a25f926d9125125e511e62e25a1436e42545a927a273d29b44fffd2",
+      "closure_size": 51,
+      "statement_sha256": "96afb0bb0b52d068437812e291571316cab1fb8513e0082531eb6763d2acf844"
+    },
+    "Toy.Unify.not_implsOverlapIn_of_overlapCheckSaysDisjoint": {
+      "closure_sha256": "38ea866b1c90f51651ad253a3dfe7ed40aed186b89738c7171c116cd43de2aa2",
+      "closure_size": 75,
+      "statement_sha256": "46d7556e1a967168ecf18632e13992a619fa4680f0f4b7d04df3608794102c5e"
+    },
+    "Toy.Unify.not_isGround_example": {
+      "closure_sha256": "2b0e1d79b42aa85f26c6aa46fad7c669e1632ea9ae98f53684677f7f16adfed8",
+      "closure_size": 17,
+      "statement_sha256": "2080dfff21ebb872a3f821f8491de8e590bf6c2f40d39e139006fa7fcc0b52f9"
+    },
+    "Toy.Unify.not_isLocalTy_example": {
+      "closure_sha256": "69797d757c6ac60dfddfae77bff6254b3f8a66b3c06c9781f546c31d579371c5",
+      "closure_size": 20,
+      "statement_sha256": "7c567b7ec273510d7041924fa755b3c09750c27f432655fd3c15a22f762bb6d1"
+    },
+    "Toy.Unify.not_isLocalTy_var_example": {
+      "closure_sha256": "dc93a609e7a5323d4b4cb51d9227dddffbe70058da83055e3c1472ad54b6e63c",
+      "closure_size": 18,
+      "statement_sha256": "1ee2be5414748ec4289b0f144ee892bbdd860ffb119a414b181923bfdc564867"
+    },
+    "Toy.Unify.not_matchable_example": {
+      "closure_sha256": "54acc72bf8d67480a662f74188bb62ecfe16b213c20cf5e0c94e4d75f1bafe69",
+      "closure_size": 22,
+      "statement_sha256": "72cf6cee3a62341b6d33784b56f1a1b2df8c93b4400a4e337fcdf2e3415cc5c4"
+    },
+    "Toy.Unify.not_mem_impl_traits_example": {
+      "closure_sha256": "866980bd1caeaa040fd3ef7a502f495152ffd59ca325764565cdeb612522c759",
+      "closure_size": 12,
+      "statement_sha256": "3eb8fa5d99c2d693833d6a17fed1ca88656ba6792f2c5e9766b6ae74cf3a6f26"
+    },
+    "Toy.Unify.not_mem_impl_vars_example": {
+      "closure_sha256": "fa719aa42cf55d12cfef099222b66ee0b8e5ff6138c51f74fed2380a95e54e4f",
+      "closure_size": 24,
+      "statement_sha256": "327aa3e1170b8d543c8e4c45c0bbb49ff3ecf5b60c07d8e1fdf27828840ea3bc"
+    },
+    "Toy.Unify.not_moreGeneral_example": {
+      "closure_sha256": "113a55da53d6a44649d49a3b54a6514492f42fa4acdebec56f0b4a164547f27e",
+      "closure_size": 20,
+      "statement_sha256": "4ccada7ddbb5814ce882b60d973eb5c1480bad28857405d2281507b588ab75d2"
+    },
+    "Toy.Unify.not_noInstanceImplements_example": {
+      "closure_sha256": "699a330badfd3adce3fd05fab4dc66b8ad37d99a73c659e134c4d2178badc80d",
+      "closure_size": 42,
+      "statement_sha256": "1f0e8aff876001b6f94c0d81a77a0bc711b7c64aa8eadea8c2e2e28e43437bce"
+    },
+    "Toy.Unify.not_occurs_example": {
+      "closure_sha256": "233ee4dd6ba9aaf31cc6a34ed39da0931dc838bcece08dccf69df81fe8909340",
+      "closure_size": 19,
+      "statement_sha256": "291d4e3621f025e0cda1f2b8f5cebe3526d3461a480ac3587f75eb80c2e3eca4"
+    },
+    "Toy.Unify.not_orphanOK_example": {
+      "closure_sha256": "292adc6f34c96348863119f6e4b26c602d4585ed4b9ae3cae89a3484d4aa8173",
+      "closure_size": 27,
+      "statement_sha256": "f27e57b17303a305175a40a215be13d81249465b813e01b770f617af42c9075b"
+    },
+    "Toy.Unify.not_unifiable_u8_u32": {
+      "closure_sha256": "e78b3e9c8a0da2214485fcb3d443a676de1f4d3d30e7dae8d23de198e3ec05ec",
+      "closure_size": 22,
+      "statement_sha256": "b525afe18c173fea15090ac25a11c526f81dbf54dafa6aa8cca02718a17235f3"
+    },
+    "Toy.Unify.not_unifiable_var_box": {
+      "closure_sha256": "96302457b3837d7ea313c5887126ac8312ee7c6fe6adfd20c2b42a4fa4363317",
+      "closure_size": 21,
+      "statement_sha256": "4103a62334059f5422f0ee2117ab49c5755c52989c02ae60e1b15854da02b481"
+    },
+    "Toy.Unify.not_unifiable_var_of_occurs": {
+      "closure_sha256": "7bfff5573d4d4b6c45a78355ed0f57dbeb6dbc350a9235451b3ea80c7c0dc332",
+      "closure_size": 24,
+      "statement_sha256": "5aa60a8b2dc8099a64ce5554aaf3aaf346c8029612eec879df12c34effedc8fb"
+    },
+    "Toy.Unify.not_unifiable_var_of_occurs_needs_ne": {
+      "closure_sha256": "7bfff5573d4d4b6c45a78355ed0f57dbeb6dbc350a9235451b3ea80c7c0dc332",
+      "closure_size": 24,
+      "statement_sha256": "2c5f3f96b88e214eba6224160ee7cef7fb0063685c64c5349d765f3c55c2c692"
+    },
+    "Toy.Unify.not_unifiable_var_of_occurs_needs_occurs": {
+      "closure_sha256": "54656e709d087f5ce8f62f83793968d34656fcba8978c320e0bffabb7a96e9a3",
+      "closure_size": 25,
+      "statement_sha256": "88730502b08383df9c7f076620d82566fb729ce1e4d484bde0f0ef3fddab96e8"
+    },
+    "Toy.Unify.not_unifiable_var_of_occurs_nonvacuous": {
+      "closure_sha256": "1255ef0fe2baaeb8fa3e88c94561a29a2f33f0cfeaa9dafd40e4f80f4c11a4e3",
+      "closure_size": 17,
+      "statement_sha256": "32a62468ae5da8639a6a7ead6eaa8f11403dd16a731401cb6c830c01547aeb22"
+    },
+    "Toy.Unify.not_unifies_example": {
+      "closure_sha256": "fa272daab5f5b991049b8d1e317edb365831cc367aa977dcaa8b78b27d786f0a",
+      "closure_size": 22,
+      "statement_sha256": "3ed07784de6b263582f0f73fc36fbfbe065519eacd0b614644d0544f889d01f9"
+    },
+    "Toy.Unify.not_unifies_var_of_occurs": {
+      "closure_sha256": "09ed9a210f7e6afebd8c253fb96f5d9e85a42e0b41882f68a8dd9f8436b6332d",
+      "closure_size": 22,
+      "statement_sha256": "90e62b5e14619494c503e856b7f20ec6d5c8fe3bde4920bee3b6978d7b59a78b"
+    },
+    "Toy.Unify.not_varsDisjoint_example": {
+      "closure_sha256": "e720f3b034343052d2d78c5214f73037287191aa7b1873803b519a3816da92bb",
+      "closure_size": 19,
+      "statement_sha256": "e0793147ad160495552dcc62e4606d198e977858a226fae19db1a78894673157"
+    },
+    "Toy.Unify.numVars": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "eec11d38a0d3798f68e3eef2c0d98dfbabf481c3c360428764a1c4ca27d1775f"
+    },
+    "Toy.Unify.numVars_dedup_example": {
+      "closure_sha256": "11f506b496a60003a9b6bdb8eaea5e6b1b13216131e04ce5549d3c679085208b",
+      "closure_size": 18,
+      "statement_sha256": "8241178b589b5539f7e2dc3af665b7dc0541cb4c91a2f6b213791e87dfdb823b"
+    },
+    "Toy.Unify.numVars_example": {
+      "closure_sha256": "11f506b496a60003a9b6bdb8eaea5e6b1b13216131e04ce5549d3c679085208b",
+      "closure_size": 18,
+      "statement_sha256": "582e9c7ea938524f085bca8ea4d99f7c9e7c371bf73074ca4fd3cf66ea26e374"
+    },
+    "Toy.Unify.occurs": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "5a6d1b561f91013ac6371c4af11586513ddd516cc64b8cb5b9361bee58f200b8"
+    },
+    "Toy.Unify.occurs_example": {
+      "closure_sha256": "233ee4dd6ba9aaf31cc6a34ed39da0931dc838bcece08dccf69df81fe8909340",
+      "closure_size": 19,
+      "statement_sha256": "612d95e2309956041e4399ea178505e1b4aeb07ce42dbb649c6d7e88bf067685"
+    },
+    "Toy.Unify.orphanOK_example": {
+      "closure_sha256": "867b4f40ea8fbf766c14da9aca353fc844f9640e65bc67e2c70175baca5a593f",
+      "closure_size": 27,
+      "statement_sha256": "7c01f03bff15ad7ce4a21751a3406d8e06b8623ac3af8eb0ff1668d50f7af9c6"
+    },
+    "Toy.Unify.orphanOK_uncovered_param_overlap_example": {
+      "closure_sha256": "53805fe4443d5642883a68c96ddc2d4f4ff30777ba54e4230cb6cd5e138253df",
+      "closure_size": 56,
+      "statement_sha256": "2d96ce685b6fcbbc661c6008c2ea0e015bf14e0031b665e20aced280754a80db"
+    },
+    "Toy.Unify.overlapCheckSaysDisjoint": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "ae3d4d9503375a69ad5a7478c441f03e8a29b2fdd0c0d72d1a5ce7da90e53f6a"
+    },
+    "Toy.Unify.overlapCheckSaysDisjointNoOC": {
+      "closure_sha256": "a98db4e47a6cc86f8dcc43ceb74294ad9b6d51e666bdc3d7613ef63174379b83",
+      "closure_size": 7,
+      "statement_sha256": "ae3d4d9503375a69ad5a7478c441f03e8a29b2fdd0c0d72d1a5ce7da90e53f6a"
+    },
+    "Toy.Unify.overlapCheckSaysDisjointNoOC_example": {
+      "closure_sha256": "dc5adf6e38fb8d40b75ed5697c778965463539419851b9db410e952da96d64d9",
+      "closure_size": 68,
+      "statement_sha256": "cf1a7f960229231c9d6e6ce68e4f376ab15905fe1257eb519b2429a2ad597ca1"
+    },
+    "Toy.Unify.overlapCheckSaysDisjointNoOC_false_example": {
+      "closure_sha256": "c06e7e049ae1cb473e8a5f161874805d08eaa76d25215bb29f4b6df3d1647b95",
+      "closure_size": 68,
+      "statement_sha256": "45d0d3aa29651b8464f3cc3a212fd5e92ec240374c4b2de6353839b0abaae312"
+    },
+    "Toy.Unify.overlapCheckSaysDisjoint_example": {
+      "closure_sha256": "2d1b9e134ab615e316f98ebb939f1306c04e555c3b2c38cc771dd090831233a3",
+      "closure_size": 68,
+      "statement_sha256": "0b0cd6b0403080e2bb9336b5f82cf28f59347350e5dadca679167c051cdc1acb"
+    },
+    "Toy.Unify.overlapCheckSaysDisjoint_false_example": {
+      "closure_sha256": "1fb1ce6dd4f544bfc28920b9c5a6cd2470a94481191a752ad739137dc6cd3a6c",
+      "closure_size": 68,
+      "statement_sha256": "a953b5aafe362ce31e112f98ee9bf1faaf27c1cb2c4780e2c6c43e1569d192a2"
+    },
+    "Toy.Unify.overlapCheckSaysDisjoint_needs_verdict": {
+      "closure_sha256": "54bb6f960340e46edd0c24b8a338177234e737e188eefc5056112f5d8761e314",
+      "closure_size": 104,
+      "statement_sha256": "a48efb2f4542e5a6c81f0bc6ea9709e9e07197443680db97ce205499d16578ed"
+    },
+    "Toy.Unify.overlapCheckSaysDisjoint_stable": {
+      "closure_sha256": "0db4d948819a1a479af8be887a63f5faec0b90e4ab052b0aa413870a89c921f0",
+      "closure_size": 92,
+      "statement_sha256": "f6d6a40b3d763391462665b6eff2a8d76752e6be98ecce4f0017825f2de85eb2"
+    },
+    "Toy.Unify.overlapCheckSaysDisjoint_stable_needs_renaming_apart": {
+      "closure_sha256": "74d4d0d87a1d596cf81353bc9b3cfc0f3bbea39fd26b50a57bbe918588b6ded3",
+      "closure_size": 103,
+      "statement_sha256": "254854af7c761e510f905a186232889d8b8fd9276e819d030db2028cd9f557b2"
+    },
+    "Toy.Unify.overlapCheck_needs_renaming_apart": {
+      "closure_sha256": "4b48fcb748e8b55d9a4972b830dac6462dcd0535a458c87ad66c3d6f8864d1aa",
+      "closure_size": 82,
+      "statement_sha256": "bdfa52ec8ef7c0228a1953889022c7bf853185fab8b169cd766f5fcd26e854fe"
+    },
+    "Toy.Unify.ownersAllFund": {
+      "closure_sha256": "e1592f25df8dd4167ecf578b129fd447ba505b453ed2c986e2aa0bd23360fa31",
+      "closure_size": 2,
+      "statement_sha256": "48a50e979502fa07fba1c6c8fcf84a122bbb212984a33002f1919a3b0133f5af"
+    },
+    "Toy.Unify.ownersB": {
+      "closure_sha256": "e1592f25df8dd4167ecf578b129fd447ba505b453ed2c986e2aa0bd23360fa31",
+      "closure_size": 2,
+      "statement_sha256": "48a50e979502fa07fba1c6c8fcf84a122bbb212984a33002f1919a3b0133f5af"
+    },
+    "Toy.Unify.ownersC": {
+      "closure_sha256": "e1592f25df8dd4167ecf578b129fd447ba505b453ed2c986e2aa0bd23360fa31",
+      "closure_size": 2,
+      "statement_sha256": "48a50e979502fa07fba1c6c8fcf84a122bbb212984a33002f1919a3b0133f5af"
+    },
+    "Toy.Unify.ownersEx": {
+      "closure_sha256": "e1592f25df8dd4167ecf578b129fd447ba505b453ed2c986e2aa0bd23360fa31",
+      "closure_size": 2,
+      "statement_sha256": "48a50e979502fa07fba1c6c8fcf84a122bbb212984a33002f1919a3b0133f5af"
+    },
+    "Toy.Unify.pair": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "116df927d3c6a52a75997b23f82ec32d7c80d112dad7c61bf7c3b900adededa4"
+    },
+    "Toy.Unify.run": {
+      "closure_sha256": "1749a11426ff29e6013f8913970382b8c91f77fd89ce512e40714f48ab1c82ca",
+      "closure_size": 8,
+      "statement_sha256": "880b027cc701cd5a68d0cf25eac221a807b0436e349507192525cc93953e7d8f"
+    },
+    "Toy.Unify.run_agreement_needs_run_true_ok": {
+      "closure_sha256": "5bf50fa35fc2cf26e4fe4ad56a295bb9bd11308f10941d086e66c1f83c815882",
+      "closure_size": 51,
+      "statement_sha256": "76ee23bc9b23c229384c42030bb93fbd760d93341f9eeed048c85770c2254cc1"
+    },
+    "Toy.Unify.run_false_eq_ok_of_run_true_eq_ok": {
+      "closure_sha256": "d22fc26a19c4368f12d62e2e703b9f705beb47ed7ae296ca9df1316d2cc88176",
+      "closure_size": 50,
+      "statement_sha256": "759e5f99c97a84eb19a691e94154bf34417bdb3ce951f3c2b76abce43fa6cd67"
+    },
+    "Toy.Unify.run_ne_outOfFuel_nonvacuous": {
+      "closure_sha256": "902cc11e0e0ac5414e157aea235ddfe0b51f57c72547c4cd6f5eaafc66920349",
+      "closure_size": 19,
+      "statement_sha256": "4e003bdd5f16ac93db4eeca0c2f103851f271b9c7355e043e4b074555a28e5ac"
+    },
+    "Toy.Unify.run_ne_outOfFuel_of_numVars_le": {
+      "closure_sha256": "488ffb28c1922196f278a193fa53349eeee06edc47796886dc685665338b2387",
+      "closure_size": 52,
+      "statement_sha256": "fa5aae2f50806890f88862c3f20fdd7e594a31205d41974eed8754490f483fe1"
+    },
+    "Toy.Unify.run_needs_fuel_bound": {
+      "closure_sha256": "d9419a5c4d846eaafb2411eb2b36b65dd9b25d51d75236eef008d627f0e276fc",
+      "closure_size": 53,
+      "statement_sha256": "fada50833bd111a79030b952d2148a0d34daefd36ce348fed626ad11e43eb4df"
+    },
+    "Toy.Unify.run_needs_occurs_check_for_bound": {
+      "closure_sha256": "57772f01dae756306034a8093293b7668d8b51d9c7b72b7369748544fb228137",
+      "closure_size": 55,
+      "statement_sha256": "d47c1ee33e48f4edf11e16f8e6db4ce622e7ceae7341d5a8c56929f50719f13c"
+    },
+    "Toy.Unify.run_outOfFuel_example": {
+      "closure_sha256": "5bf50fa35fc2cf26e4fe4ad56a295bb9bd11308f10941d086e66c1f83c815882",
+      "closure_size": 51,
+      "statement_sha256": "fb586416793e2a6ba901bfcda5a5dcda6e3b52bdb4eb8cf2475946feeee0b87e"
+    },
+    "Toy.Unify.run_true_ne_ok_of_run_false_ok_example": {
+      "closure_sha256": "9dcc77f2b89d396904872f1c9c380533cbfeecd3b6d27bc68c7ea736c06d01c5",
+      "closure_size": 51,
+      "statement_sha256": "fb7243980a018109b5467aeb4587b2581c20b33feb393701a787aba35ecf96b5"
+    },
+    "Toy.Unify.size_substVar_lt_con": {
+      "closure_sha256": "f13672d802a9194214aa1332e5c9fd814ba87ce56c7fad06f9575a41c9e0255e",
+      "closure_size": 26,
+      "statement_sha256": "612c13131b2d259aa3afbdc43c89acf4d1968aca39bde9e43413ce5a93be0d4f"
+    },
+    "Toy.Unify.stableUnderDownstream_example": {
+      "closure_sha256": "2487479575909ce61c13417c159aad420fc0f1c08db21192f088c764bac3a0fc",
+      "closure_size": 62,
+      "statement_sha256": "ba96ae325edf2583b4de0ddcb8051ac000aab993e7958c621081a736ae3523e1"
+    },
+    "Toy.Unify.step": {
+      "closure_sha256": "3e28456e2a0f7cedc1f31cba856389eec487c98d35dd23b90b03e7a60f611d9e",
+      "closure_size": 11,
+      "statement_sha256": "553da34a8a00e68203ca6200cc3e90b134522d9ea3d2b91dfcd12812e0b6c9b6"
+    },
+    "Toy.Unify.step_true_next_numVars": {
+      "closure_sha256": "07a68452dd5c85b3b4f791ece0f93a3192a96a1aae456ea6ccfeb959a1d9dda7",
+      "closure_size": 46,
+      "statement_sha256": "52d0d62e29874f5598ff8e08cf0799441ec69c2e113bdc0b3e25e26412b5ebba"
+    },
+    "Toy.Unify.subst": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "e26fc3b808843377d8310bc5c7a06785b552e683e2250c020004c3e179df1758"
+    },
+    "Toy.Unify.substList": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "4ec5af0261c73cad551d5db7ed38945893bbb45d83612c4ae425f7aabadf1f19"
+    },
+    "Toy.Unify.substVar": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "2f6b6764b3d7128af72e6197ac6561ce28a23444e4fa3f791caad92c73c1d181"
+    },
+    "Toy.Unify.substVar_first_binding_example": {
+      "closure_sha256": "23aeb57295e747a1fd34a604ca7c4a5722f78ec25f9eef24e27c81b868b46725",
+      "closure_size": 8,
+      "statement_sha256": "147c1098529d063b09f8b7b32db17bf9c37945684ba81111946f233a441fcf6e"
+    },
+    "Toy.Unify.substVar_unbound_example": {
+      "closure_sha256": "c1037ddd7ada66aef515ee869b563e8078a6c99d3072ade2680f77375a80adb2",
+      "closure_size": 7,
+      "statement_sha256": "033c9b15a1508dab700e39491f80f24f3c804ffe93a5cbefb193d093a52d472e"
+    },
+    "Toy.Unify.subst_comp": {
+      "closure_sha256": "05e0871319b864b32ec6dfd0c3a584391347d5914ce2062549d7fbab09a30bc4",
+      "closure_size": 19,
+      "statement_sha256": "d818d6d28aab5a0d4f3dbede3ca9fa8fe3d4884e6380c136157f75fbbd97847b"
+    },
+    "Toy.Unify.subst_example": {
+      "closure_sha256": "c3a0157047674ff9a8f03a0b1e084432e431fdb259b0778af3ab2c92924a4d47",
+      "closure_size": 21,
+      "statement_sha256": "9d4a06833d2d0a633c594287cd66359c7a4bc6d0d0b92935d1ce970f551102a7"
+    },
+    "Toy.Unify.subst_ne_example": {
+      "closure_sha256": "8c943da1722bd1726ba275209455642bda2cf721d8f63c7873c2e2cd1ec8a73e",
+      "closure_size": 20,
+      "statement_sha256": "d6991f79feaa27390b11f614e3fd221535b6ea27120db754f3a2b1d54b73d095"
+    },
+    "Toy.Unify.subst_of_isGround": {
+      "closure_sha256": "dc9101e6baa39b8c11b42a1cd9c029fff8f6a18fbb4438d323c3684d53c0c8d9",
+      "closure_size": 22,
+      "statement_sha256": "1937d6170ad4bfce27e28e9da356a495a5fba12fe4413ac5d8184e701f38a252"
+    },
+    "Toy.Unify.term_arity_ne_example": {
+      "closure_sha256": "8ddd1cfff76f7df4afb217590af70ae21fbeec86301a6d45a2bfda0c53bcb6bc",
+      "closure_size": 5,
+      "statement_sha256": "0191d277ee75ce9780a7e57ba8dc59f4827b2a34ffc095d5450e7e756c349606"
+    },
+    "Toy.Unify.term_eq_example": {
+      "closure_sha256": "ff3e14043dfd9ca443b8543a0c30868faa03db3b5aacd1bc5da041ed4c370c6b",
+      "closure_size": 5,
+      "statement_sha256": "e0612551d3d6340c13569aa1c5ffd915f871f1e254f7894d4f18b31e8ab3d98f"
+    },
+    "Toy.Unify.term_ne_example": {
+      "closure_sha256": "fbcc856a67a8cad332f1684d4592ad0badfc93a34022ed4ce4049025a43d8adf",
+      "closure_size": 6,
+      "statement_sha256": "445367465a49ef645627c1e05a67a97b7ca30c3565fbeddb0b9fae6345429f87"
+    },
+    "Toy.Unify.u32": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "01928932a9655d7f693b9700c81d1e1e27e9496d62212a5a7cb0fefbfbc7518d"
+    },
+    "Toy.Unify.u8": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "01928932a9655d7f693b9700c81d1e1e27e9496d62212a5a7cb0fefbfbc7518d"
+    },
+    "Toy.Unify.unifiable_example": {
+      "closure_sha256": "17ab74abf317112aa6d262e62bebe4265ee86d7328afc35d2ce237bddc3b5efa",
+      "closure_size": 23,
+      "statement_sha256": "22bee9ad8507e4929a938a041110cdb6ac0d5ea0e893409c6cabbab6ad30c77a"
+    },
+    "Toy.Unify.unifiable_not_matchable": {
+      "closure_sha256": "e84015cb74b7962f2d9b46c48f28e829902aef0fe238c94e7109e7dfea6c3e9a",
+      "closure_size": 24,
+      "statement_sha256": "2e6cc6817bf0eedf842d45a4174da0134748e11564c8359bd3fbfecc49a5874a"
+    },
+    "Toy.Unify.unifiable_of_matchable_of_varsDisjoint": {
+      "closure_sha256": "667423917ef4de3639e1ca5bac18a3b56eb7be4049e84ac143978216eee03a8a",
+      "closure_size": 25,
+      "statement_sha256": "9ea51972340a753c0cf9c8e0d53d4217101640d90f1a8f00c5d9f261a15694dd"
+    },
+    "Toy.Unify.unifies_example": {
+      "closure_sha256": "debde9d249b51d23392d5984746f501df68e378617f883423981423ecf759aa6",
+      "closure_size": 21,
+      "statement_sha256": "4d39aef81824c11a660ef95069e0f08e613ba6481eb4d375f611d9d86c8cb703"
+    },
+    "Toy.Unify.unify": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "92cb4a6bfef08ce43855282867e62410fcb444eaa2f33c095c44a8dcb66a2bec"
+    },
+    "Toy.Unify.unifyNoOC": {
+      "closure_sha256": "84b4e76dd616f3a686e979d09cc19aa12d6483461d6421957650634f3fe4c789",
+      "closure_size": 4,
+      "statement_sha256": "92cb4a6bfef08ce43855282867e62410fcb444eaa2f33c095c44a8dcb66a2bec"
+    },
+    "Toy.Unify.unifyNoOC_clash_example": {
+      "closure_sha256": "8da450a29d5b526588bdeb0e5ac33b78078e51ecf73ee0dc6b7f83e553a163e6",
+      "closure_size": 61,
+      "statement_sha256": "13909271e0d99d08ede775bc9441474b94805f3a3645fbd0b27cfae4da10f72d"
+    },
+    "Toy.Unify.unifyNoOC_eqUpTo_fails_with_duplicate_elimination": {
+      "closure_sha256": "946e127c4d3429187c86b81333528e571a52bd36ad7b25ecd27e39c16c4b8378",
+      "closure_size": 76,
+      "statement_sha256": "d85994c51ac4357dab9b184f9b8258c1ddebe5e5c1a253ae2a34d69bda2b7aa0"
+    },
+    "Toy.Unify.unifyNoOC_eqUpTo_needs_output": {
+      "closure_sha256": "7f80b03465d9333ac82437e799eb397c783a19fb4556fc845f4bd7bb6e30571c",
+      "closure_size": 71,
+      "statement_sha256": "8e0543f657228e7d07bc8f9bda665f86546b1d5d0534ad182e59d3cb16af771c"
+    },
+    "Toy.Unify.unifyNoOC_eqUpTo_of_nodup": {
+      "closure_sha256": "b1f0fd5cf71340cc833212dbd8ecf16f83c5e1cd3a7f000517c3b70e8d807b7d",
+      "closure_size": 70,
+      "statement_sha256": "4570f4c98e3001d97619b6e47b4d3917976a23a99a160d7b7e7ac2c92b0ca2df"
+    },
+    "Toy.Unify.unifyNoOC_eqUpTo_of_nodup_nonvacuous": {
+      "closure_sha256": "c7c2592d9ee10d3bd0876110d97b4ba4a1c178c18343d0dc8431b2756bf681b6",
+      "closure_size": 62,
+      "statement_sha256": "9e837e6db08cf9018760f6202b30f3679cde297fdbc2cafdd8552aef282dd220"
+    },
+    "Toy.Unify.unifyNoOC_eq_some_needs_unify_output": {
+      "closure_sha256": "52273f535e91096be1ca07690606a1612b410042d1c686393366da6fafd49580",
+      "closure_size": 61,
+      "statement_sha256": "ba29d2889264e5d585670450567825fa77e88b5348295abbe7c31be76c416983"
+    },
+    "Toy.Unify.unifyNoOC_eq_some_of_unify_eq_some": {
+      "closure_sha256": "d376a4c2b632fa34ad0b57ac4df9db39aff4ff26e412ceb173e98bbf4d1fbf59",
+      "closure_size": 60,
+      "statement_sha256": "6b6e840051baed12e4850d86fc1b29c9f82ea12f559b830c7c8408e59a20bd91"
+    },
+    "Toy.Unify.unifyNoOC_example": {
+      "closure_sha256": "f67ba13577c9de9e068ea24bfbf220d429f5652037b64e843bbd92794e9f149d",
+      "closure_size": 62,
+      "statement_sha256": "5769c4361f3f9913c5801e7b13928057cfb9640f1fdf7e53351fd152c958abd4"
+    },
+    "Toy.Unify.unifyNoOC_outOfFuel_example": {
+      "closure_sha256": "2a3aed2ff5fa45623d6adc1299cc851f1f3de74c7a3921f9302a2c468d5fa886",
+      "closure_size": 72,
+      "statement_sha256": "a41aa302f859ded282b6bca2d772ee4e4ca3554721fbc718d9136f4982de56ff"
+    },
+    "Toy.Unify.unifyNoOC_returns_nonunifier_var_box": {
+      "closure_sha256": "4de08df94e8da6e7b2986416db6491c1ccdfe5eca9cfc8843d00ddc90d9f1494",
+      "closure_size": 63,
+      "statement_sha256": "a705349126be2cef5ce2845586ac5886a3e75a1a42e4f68c2cfd1450382c8d18"
+    },
+    "Toy.Unify.unifyNoOC_unifies_iff_needs_output": {
+      "closure_sha256": "b29767f0d9dc2d5e8385a3cff33ee3c7aea5a4800309f71648478830f16b7a93",
+      "closure_size": 62,
+      "statement_sha256": "b4404a3a1e3af76cf76fe3d2f2ed4ec1ec10c00e2672aaf266059c80dec5c9e8"
+    },
+    "Toy.Unify.unifyNoOC_unifies_iff_unifiable": {
+      "closure_sha256": "fbd4af672f2fa7ccb06b1a961752dd438455eed6ca60fb526bb39b8700cf6c45",
+      "closure_size": 61,
+      "statement_sha256": "c74d2e22488bcce915de7d9873538920267ff14a867e6cc1c7c75b9f7fff6cb2"
+    },
+    "Toy.Unify.unifyNoOC_unifies_iff_unifiable_nonvacuous": {
+      "closure_sha256": "421007a67aebdddaf9cff4dd26fecf80c2ad45a703a940fb2808b8f284c22762",
+      "closure_size": 63,
+      "statement_sha256": "106df75bc16c2de9de7b76f27c8f7ee95c0a714f73687f5cf550da334b961381"
+    },
+    "Toy.Unify.unify_clash_example": {
+      "closure_sha256": "0375aed5aa6c4c52dfcc04f057f455d0cb7cd98ce3864f438dc76c713a275af6",
+      "closure_size": 61,
+      "statement_sha256": "1255acef841708bca682dcc098ba4ec504d38ed34f4d350abc1c16a289bb1c7b"
+    },
+    "Toy.Unify.unify_complete": {
+      "closure_sha256": "a3eceb968cc6a890f1eab45d6d5067a555da6d2e5efa5267d4cc228ea1fb3d58",
+      "closure_size": 60,
+      "statement_sha256": "03e959a96a017660516da5dfe5ae94439f62ee278fef4bf0773cd6ca15b647e7"
+    },
+    "Toy.Unify.unify_complete_needs_unifier": {
+      "closure_sha256": "0343410cc86abdffecc059bf59f05641d20d4798eb0e19b2a0f8d7e009b68b19",
+      "closure_size": 62,
+      "statement_sha256": "1d2989c6e06385ce778f33208bb942fa98f906396bad8c6076ec0e59c2fe2cb5"
+    },
+    "Toy.Unify.unify_complete_nonvacuous": {
+      "closure_sha256": "debde9d249b51d23392d5984746f501df68e378617f883423981423ecf759aa6",
+      "closure_size": 21,
+      "statement_sha256": "4d39aef81824c11a660ef95069e0f08e613ba6481eb4d375f611d9d86c8cb703"
+    },
+    "Toy.Unify.unify_eq_none_iff": {
+      "closure_sha256": "a19c110bf12bc86fa1b71187b23b85abea9d9c4779c6f2e2c93f9fdd78a73ac8",
+      "closure_size": 61,
+      "statement_sha256": "b14109985375dde70bbcd6069a177117cce83a77710f65802550179ca31d6851"
+    },
+    "Toy.Unify.unify_example": {
+      "closure_sha256": "3b6fc0fcb43dd0767603d24d6a752582c961c0a686f941b7944b81a7181416fa",
+      "closure_size": 62,
+      "statement_sha256": "80528686d3e6afa32bde063c00c58fbb71e7597816f9cf5ae54522cd152ddf2d"
+    },
+    "Toy.Unify.unify_idempotent": {
+      "closure_sha256": "2a183e07487642533014d978b11a11be36e0929d779eb92ff738177a25533747",
+      "closure_size": 60,
+      "statement_sha256": "0670e72e6714908b29143a33192c936c34fbfe3e02e9237d7574265ea87a4ff2"
+    },
+    "Toy.Unify.unify_idempotent_needs_output": {
+      "closure_sha256": "fe3359b2d078c926c6db13e2ec0feaf657fff371369eca38392f0894d757bc2f",
+      "closure_size": 61,
+      "statement_sha256": "8174333cc9a55fd5cb4f62eed80a600e8b84d7bcc865e7c8fd11dff5d650bc07"
+    },
+    "Toy.Unify.unify_mgu_factor": {
+      "closure_sha256": "a3eceb968cc6a890f1eab45d6d5067a555da6d2e5efa5267d4cc228ea1fb3d58",
+      "closure_size": 60,
+      "statement_sha256": "f3b1d30eacc30ecf5df19c81ddfcdc8bef4e38207a2633b70f80bba1451b62b5"
+    },
+    "Toy.Unify.unify_mgu_factor_needs_output": {
+      "closure_sha256": "48c9419f0337f9d2bb0df6daab32eb0bb9712861e25fd4b2d3c1030e816f6197",
+      "closure_size": 63,
+      "statement_sha256": "bdda733f3504114732530426d7b2a1b97e91cb717ee365b2d85c57098a843df2"
+    },
+    "Toy.Unify.unify_mgu_factor_needs_unifier": {
+      "closure_sha256": "3d2bd422fa24867166c50ed99bbb68cec66ab3d9705d88751ffce58e51e8fbf5",
+      "closure_size": 62,
+      "statement_sha256": "4ec59e11ba0db3d518091a51c2556b3dcf2562864c568448bc7f083f00e47992"
+    },
+    "Toy.Unify.unify_mgu_factor_nonvacuous": {
+      "closure_sha256": "085c505d476508c3395add8dbe69613d4c6eeb99ccdb977fc22fbf54fd19f421",
+      "closure_size": 63,
+      "statement_sha256": "21bf3fe77742fce7cd9c7faea8e3f000c881aab232bc19a1c24d223cffd6984a"
+    },
+    "Toy.Unify.unify_moreGeneral": {
+      "closure_sha256": "b7c3cb59cf55e82dd6e32f932566f9b1f97f0749cc10d40fc443bb41a2b6ad68",
+      "closure_size": 61,
+      "statement_sha256": "2d339b7cd3666b484af01d0f3764f28da6e9758eb81adf9105aba95dbdb5d582"
+    },
+    "Toy.Unify.unify_occurs_example": {
+      "closure_sha256": "e329cbf9be06a7f4d6c70904b9c73dc0f03cb479b202504f26080ecf29112836",
+      "closure_size": 60,
+      "statement_sha256": "a28267f20c424fc8ce8005c1699e27fe7a858d7407edd762c46fc836c0d35ab2"
+    },
+    "Toy.Unify.unify_sound": {
+      "closure_sha256": "a3eceb968cc6a890f1eab45d6d5067a555da6d2e5efa5267d4cc228ea1fb3d58",
+      "closure_size": 60,
+      "statement_sha256": "4340ee937c039a8071544d797b253e55c594c0587693ec9ba66a7731b2e37c6b"
+    },
+    "Toy.Unify.unify_sound_needs_output": {
+      "closure_sha256": "b1e5ab4de0b1fb25382fd9bb1766a44fcd3a76856174fd413ccb6121929530e7",
+      "closure_size": 61,
+      "statement_sha256": "6915c869391b6b0a248b71f3912d9f09f849472a03a9d260b95c3ce02fbe8e30"
+    },
+    "Toy.Unify.unify_sound_nonvacuous": {
+      "closure_sha256": "fd9d95a85e0f59052758c2a97f6462ef254e46002ae1cdd5ae77e0fee849f978",
+      "closure_size": 62,
+      "statement_sha256": "c33b0e3d86e29370eeb63050bd9b1314e51e93d9090fcacfd67e918e2826a988"
+    },
+    "Toy.Unify.varsDisjoint_example": {
+      "closure_sha256": "e720f3b034343052d2d78c5214f73037287191aa7b1873803b519a3816da92bb",
+      "closure_size": 19,
+      "statement_sha256": "2329bbb117cddd5eeaa6686b8d7dc995f1b7b6c816ad9b83c5805ef43af1de68"
+    },
+    "Toy.Unify.vars_example": {
+      "closure_sha256": "821031fdacd57a76d1100a62b752f79db733432d156f687d8845031a91a00700",
+      "closure_size": 17,
+      "statement_sha256": "ebd276a8b51e181c99fb5a3d00d8e981a0baf628602804f839d7383003dfd133"
+    },
+    "Toy.Unify.vars_ground_example": {
+      "closure_sha256": "777a8a70fd5a4faf26ad51a53223210a36dca2ad2c133be32dcd6ea2a1459797",
+      "closure_size": 17,
+      "statement_sha256": "0b9ca18d5c00b5ee80aa27fa74800d9f967509db66fbe5e03c4a143484b197d1"
+    },
+    "Toy.Unify.vec": {
+      "closure_sha256": "9075a225ade168a0e680ad6829aab361cdbd65a6cc5aa034ee32ba4571e3be87",
+      "closure_size": 3,
+      "statement_sha256": "5b9b97a85a3b2c098972838117f5b54bd71e0044788fe5af8e83e83248f9ca11"
+    },
+    "Toy.Unify.whereClause_disjointness_not_stable": {
+      "closure_sha256": "2134c3251fba23195edf794970f5ea19b216d612fdc00ea9ce7aa038177ac012",
+      "closure_size": 62,
+      "statement_sha256": "d7814acd6b6140647c9f3284db7c48321cb3a7d1b197ec9b1533b8a516175748"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

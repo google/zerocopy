@@ -1,0 +1,1800 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "List.lookup.eq_1": [],
+    "List.lookup.eq_2": [],
+    "List.lookup.eq_def": [],
+    "Toy.Unify.BindingOK": [],
+    "Toy.Unify.BindingOK.mono": [],
+    "Toy.Unify.Bound": [],
+    "Toy.Unify.Bound.casesOn": [],
+    "Toy.Unify.Bound.ctorIdx": [],
+    "Toy.Unify.Bound.mk": [],
+    "Toy.Unify.Bound.mk.inj": [],
+    "Toy.Unify.Bound.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Unify.Bound.mk.noConfusion": [],
+    "Toy.Unify.Bound.mk.sizeOf_spec": [],
+    "Toy.Unify.Bound.noConfusion": [],
+    "Toy.Unify.Bound.noConfusionType": [],
+    "Toy.Unify.Bound.rec": [],
+    "Toy.Unify.Bound.recOn": [],
+    "Toy.Unify.Bound.trait": [],
+    "Toy.Unify.Bound.ty": [],
+    "Toy.Unify.ChainInv": [],
+    "Toy.Unify.CommonGroundInstance": [],
+    "Toy.Unify.Constrained": [],
+    "Toy.Unify.E_AB": [],
+    "Toy.Unify.E_AB.eq_1": [],
+    "Toy.Unify.E_C": [],
+    "Toy.Unify.E_C.eq_1": [],
+    "Toy.Unify.FreshCrate": [],
+    "Toy.Unify.FreshFor": [],
+    "Toy.Unify.HeadersOverlap": [],
+    "Toy.Unify.I_AB": [],
+    "Toy.Unify.I_AB.eq_1": [],
+    "Toy.Unify.I_unconstrained": [],
+    "Toy.Unify.I_unconstrained.eq_1": [],
+    "Toy.Unify.I_vecC": [],
+    "Toy.Unify.I_vecC.eq_1": [],
+    "Toy.Unify.Idempotent": [],
+    "Toy.Unify.Impl": [],
+    "Toy.Unify.Impl.bounds": [],
+    "Toy.Unify.Impl.casesOn": [],
+    "Toy.Unify.Impl.ctorIdx": [],
+    "Toy.Unify.Impl.ctors": [],
+    "Toy.Unify.Impl.ctors.eq_1": [],
+    "Toy.Unify.Impl.mk": [],
+    "Toy.Unify.Impl.mk.inj": [],
+    "Toy.Unify.Impl.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Unify.Impl.mk.noConfusion": [],
+    "Toy.Unify.Impl.mk.sizeOf_spec": [],
+    "Toy.Unify.Impl.noConfusion": [],
+    "Toy.Unify.Impl.noConfusionType": [],
+    "Toy.Unify.Impl.rec": [],
+    "Toy.Unify.Impl.recOn": [],
+    "Toy.Unify.Impl.selfTy": [],
+    "Toy.Unify.Impl.trait": [],
+    "Toy.Unify.Impl.traits": [],
+    "Toy.Unify.Impl.traits.eq_1": [],
+    "Toy.Unify.Impl.vars": [],
+    "Toy.Unify.Impl.vars.eq_1": [],
+    "Toy.Unify.ImplSet": [],
+    "Toy.Unify.Implements": [],
+    "Toy.Unify.Implements.below": [],
+    "Toy.Unify.Implements.below.casesOn": [],
+    "Toy.Unify.Implements.below.intro": [],
+    "Toy.Unify.Implements.below.rec": [],
+    "Toy.Unify.Implements.brecOn": [],
+    "Toy.Unify.Implements.casesOn": [],
+    "Toy.Unify.Implements.intro": [],
+    "Toy.Unify.Implements.inv": [],
+    "Toy.Unify.Implements.isGround": [],
+    "Toy.Unify.Implements.mono": [],
+    "Toy.Unify.Implements.rec": [],
+    "Toy.Unify.Implements.recOn": [],
+    "Toy.Unify.ImplsOverlapIn": [],
+    "Toy.Unify.Inv": [],
+    "Toy.Unify.IsGround": [],
+    "Toy.Unify.LimEq": [
+      "propext"
+    ],
+    "Toy.Unify.LimEq.con": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.LimEq.refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.LimEq.symm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.LimEq.trans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.LimEqList": [
+      "propext"
+    ],
+    "Toy.Unify.LimEqList.cons": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.LimEqList.nil": [
+      "propext"
+    ],
+    "Toy.Unify.LimSys": [
+      "propext"
+    ],
+    "Toy.Unify.LookupCompat": [],
+    "Toy.Unify.LookupExt": [],
+    "Toy.Unify.Matchable": [],
+    "Toy.Unify.Matchable.eq_1": [],
+    "Toy.Unify.MoreGeneral": [],
+    "Toy.Unify.NoInstanceImplements": [],
+    "Toy.Unify.OrphanOK": [],
+    "Toy.Unify.Owners": [],
+    "Toy.Unify.Owners.casesOn": [],
+    "Toy.Unify.Owners.ctorIdx": [],
+    "Toy.Unify.Owners.ctorOwner": [],
+    "Toy.Unify.Owners.fundamental": [],
+    "Toy.Unify.Owners.mk": [],
+    "Toy.Unify.Owners.mk.inj": [],
+    "Toy.Unify.Owners.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Unify.Owners.mk.noConfusion": [],
+    "Toy.Unify.Owners.mk.sizeOf_spec": [],
+    "Toy.Unify.Owners.noConfusion": [],
+    "Toy.Unify.Owners.noConfusionType": [],
+    "Toy.Unify.Owners.rec": [],
+    "Toy.Unify.Owners.recOn": [],
+    "Toy.Unify.Owners.traitOwner": [],
+    "Toy.Unify.Result": [],
+    "Toy.Unify.Result.casesOn": [],
+    "Toy.Unify.Result.ctorElim": [],
+    "Toy.Unify.Result.ctorElimType": [],
+    "Toy.Unify.Result.ctorIdx": [],
+    "Toy.Unify.Result.fail": [],
+    "Toy.Unify.Result.fail.elim": [],
+    "Toy.Unify.Result.fail.sizeOf_spec": [],
+    "Toy.Unify.Result.noConfusion": [],
+    "Toy.Unify.Result.noConfusionType": [],
+    "Toy.Unify.Result.ok": [],
+    "Toy.Unify.Result.ok.elim": [],
+    "Toy.Unify.Result.ok.inj": [],
+    "Toy.Unify.Result.ok.injEq": [
+      "propext"
+    ],
+    "Toy.Unify.Result.ok.noConfusion": [],
+    "Toy.Unify.Result.ok.sizeOf_spec": [],
+    "Toy.Unify.Result.outOfFuel": [],
+    "Toy.Unify.Result.outOfFuel.elim": [],
+    "Toy.Unify.Result.outOfFuel.sizeOf_spec": [],
+    "Toy.Unify.Result.rec": [],
+    "Toy.Unify.Result.recOn": [],
+    "Toy.Unify.Result.toOption": [
+      "propext"
+    ],
+    "Toy.Unify.Result.toOption.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.Result.toOption.eq_2": [
+      "propext"
+    ],
+    "Toy.Unify.Result.toOption.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.StableUnderDownstream": [],
+    "Toy.Unify.StableUnderDownstream.self": [
+      "propext"
+    ],
+    "Toy.Unify.StableUnderDownstream.self.match_1_1": [],
+    "Toy.Unify.Step": [],
+    "Toy.Unify.Step.casesOn": [],
+    "Toy.Unify.Step.ctorElim": [],
+    "Toy.Unify.Step.ctorElimType": [],
+    "Toy.Unify.Step.ctorIdx": [],
+    "Toy.Unify.Step.done": [],
+    "Toy.Unify.Step.done.elim": [],
+    "Toy.Unify.Step.done.inj": [],
+    "Toy.Unify.Step.done.injEq": [
+      "propext"
+    ],
+    "Toy.Unify.Step.done.noConfusion": [],
+    "Toy.Unify.Step.done.sizeOf_spec": [],
+    "Toy.Unify.Step.next": [],
+    "Toy.Unify.Step.next.elim": [],
+    "Toy.Unify.Step.next.inj": [],
+    "Toy.Unify.Step.next.injEq": [
+      "propext"
+    ],
+    "Toy.Unify.Step.next.noConfusion": [],
+    "Toy.Unify.Step.next.sizeOf_spec": [],
+    "Toy.Unify.Step.noConfusion": [],
+    "Toy.Unify.Step.noConfusionType": [],
+    "Toy.Unify.Step.rec": [],
+    "Toy.Unify.Step.recOn": [],
+    "Toy.Unify.Subst": [],
+    "Toy.Unify.Subst.comp": [],
+    "Toy.Unify.Sys": [],
+    "Toy.Unify.Sys.eq_1": [],
+    "Toy.Unify.Term": [],
+    "Toy.Unify.Term.below": [],
+    "Toy.Unify.Term.below_1": [],
+    "Toy.Unify.Term.brecOn": [],
+    "Toy.Unify.Term.brecOn.eq": [],
+    "Toy.Unify.Term.brecOn.go": [],
+    "Toy.Unify.Term.brecOn_1": [],
+    "Toy.Unify.Term.brecOn_1.eq": [],
+    "Toy.Unify.Term.brecOn_1.go": [],
+    "Toy.Unify.Term.casesOn": [],
+    "Toy.Unify.Term.con": [],
+    "Toy.Unify.Term.con.elim": [],
+    "Toy.Unify.Term.con.inj": [],
+    "Toy.Unify.Term.con.injEq": [
+      "propext"
+    ],
+    "Toy.Unify.Term.con.noConfusion": [],
+    "Toy.Unify.Term.con.sizeOf_spec": [],
+    "Toy.Unify.Term.ctorElim": [],
+    "Toy.Unify.Term.ctorElimType": [],
+    "Toy.Unify.Term.ctorIdx": [],
+    "Toy.Unify.Term.ctors": [],
+    "Toy.Unify.Term.ctors.eq_1": [],
+    "Toy.Unify.Term.ctors.eq_2": [],
+    "Toy.Unify.Term.ctors.eq_def": [],
+    "Toy.Unify.Term.ctorsList": [],
+    "Toy.Unify.Term.ctorsList.eq_1": [],
+    "Toy.Unify.Term.ctorsList.eq_2": [],
+    "Toy.Unify.Term.ctorsList.eq_def": [],
+    "Toy.Unify.Term.decEq": [],
+    "Toy.Unify.Term.decEq.match_1": [],
+    "Toy.Unify.Term.decEq.match_3": [],
+    "Toy.Unify.Term.decEq.match_5": [],
+    "Toy.Unify.Term.decEq.match_7": [],
+    "Toy.Unify.Term.decEqList": [],
+    "Toy.Unify.Term.decEqList.match_1": [],
+    "Toy.Unify.Term.decEqList.match_3": [],
+    "Toy.Unify.Term.decEqList.match_5": [],
+    "Toy.Unify.Term.decEqList.match_7": [],
+    "Toy.Unify.Term.format": [
+      "propext"
+    ],
+    "Toy.Unify.Term.format.match_1": [],
+    "Toy.Unify.Term.formatList": [
+      "propext"
+    ],
+    "Toy.Unify.Term.formatList.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.Term.noConfusion": [],
+    "Toy.Unify.Term.noConfusionType": [],
+    "Toy.Unify.Term.rec": [],
+    "Toy.Unify.Term.recOn": [],
+    "Toy.Unify.Term.rec_1": [],
+    "Toy.Unify.Term.size": [],
+    "Toy.Unify.Term.size.eq_1": [],
+    "Toy.Unify.Term.size.eq_2": [],
+    "Toy.Unify.Term.size.eq_def": [],
+    "Toy.Unify.Term.size.match_1": [],
+    "Toy.Unify.Term.sizeList": [],
+    "Toy.Unify.Term.sizeList.eq_1": [],
+    "Toy.Unify.Term.sizeList.eq_2": [],
+    "Toy.Unify.Term.sizeList.eq_def": [],
+    "Toy.Unify.Term.sizeList.match_1": [],
+    "Toy.Unify.Term.var": [],
+    "Toy.Unify.Term.var.elim": [],
+    "Toy.Unify.Term.var.inj": [],
+    "Toy.Unify.Term.var.injEq": [
+      "propext"
+    ],
+    "Toy.Unify.Term.var.noConfusion": [],
+    "Toy.Unify.Term.var.sizeOf_spec": [],
+    "Toy.Unify.Term.vars": [],
+    "Toy.Unify.Term.vars.eq_1": [],
+    "Toy.Unify.Term.vars.eq_2": [],
+    "Toy.Unify.Term.vars.eq_def": [],
+    "Toy.Unify.Term.varsList": [],
+    "Toy.Unify.Term.varsList.eq_1": [],
+    "Toy.Unify.Term.varsList.eq_2": [],
+    "Toy.Unify.Term.varsList.eq_def": [],
+    "Toy.Unify.Term.varsList.match_1": [],
+    "Toy.Unify.Unifiable": [],
+    "Toy.Unify.Unifiable.eq_1": [],
+    "Toy.Unify.Unifies": [],
+    "Toy.Unify.Unifies.eq_1": [],
+    "Toy.Unify.VarsDisjoint": [],
+    "Toy.Unify.agreement_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Unify.box": [],
+    "Toy.Unify.box.eq_1": [],
+    "Toy.Unify.chainInv_short": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.commonGroundInstance_example": [],
+    "Toy.Unify.comp_example": [],
+    "Toy.Unify.comp_order_example": [],
+    "Toy.Unify.constrained_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.ctors_example": [],
+    "Toy.Unify.ctors_var_example": [],
+    "Toy.Unify.decomp": [
+      "propext"
+    ],
+    "Toy.Unify.decomp.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.decomp.eq_2": [
+      "propext"
+    ],
+    "Toy.Unify.decomp.eq_3": [
+      "propext"
+    ],
+    "Toy.Unify.decomp.eq_4": [
+      "propext"
+    ],
+    "Toy.Unify.decomp.eq_def": [
+      "propext"
+    ],
+    "Toy.Unify.decomp.match_1": [],
+    "Toy.Unify.decompAll": [
+      "propext"
+    ],
+    "Toy.Unify.decompAll.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.decompAll.eq_2": [
+      "propext"
+    ],
+    "Toy.Unify.decompAll.eq_def": [
+      "propext"
+    ],
+    "Toy.Unify.decompAll.match_1": [],
+    "Toy.Unify.decompAll_bindingOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.decompAll_bindingOK.match_1_1": [
+      "propext"
+    ],
+    "Toy.Unify.decompAll_example": [
+      "propext"
+    ],
+    "Toy.Unify.decompAll_none": [
+      "propext"
+    ],
+    "Toy.Unify.decompAll_none.match_1_1": [
+      "propext"
+    ],
+    "Toy.Unify.decompAll_some_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.decompAll_some_iff.match_1_1": [
+      "propext"
+    ],
+    "Toy.Unify.decompList": [
+      "propext"
+    ],
+    "Toy.Unify.decompList.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.decompList.eq_2": [
+      "propext"
+    ],
+    "Toy.Unify.decompList.eq_3": [
+      "propext"
+    ],
+    "Toy.Unify.decompList.eq_def": [
+      "propext"
+    ],
+    "Toy.Unify.decompList.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.decompList.match_4": [
+      "propext"
+    ],
+    "Toy.Unify.decompList_bindingOK": [
+      "propext"
+    ],
+    "Toy.Unify.decompList_bindingOK.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.decompList_none": [
+      "propext"
+    ],
+    "Toy.Unify.decompList_none.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.decompList_some_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.decompList_some_iff.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.decomp_arity_clash_example": [
+      "propext"
+    ],
+    "Toy.Unify.decomp_bindingOK": [
+      "propext"
+    ],
+    "Toy.Unify.decomp_bindingOK.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.decomp_bindingOK.match_3": [],
+    "Toy.Unify.decomp_bindingOK.match_5": [],
+    "Toy.Unify.decomp_clash_example": [
+      "propext"
+    ],
+    "Toy.Unify.decomp_example": [
+      "propext"
+    ],
+    "Toy.Unify.decomp_none": [
+      "propext"
+    ],
+    "Toy.Unify.decomp_none.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.decomp_some_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.decomp_some_iff.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.dupS": [],
+    "Toy.Unify.dupT": [],
+    "Toy.Unify.dup_eqUpTo_two_false": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.dup\u03c3": [],
+    "Toy.Unify.dup\u03c3.eq_1": [],
+    "Toy.Unify.dup\u03c3Dedup": [],
+    "Toy.Unify.dup\u03c3Dedup.eq_1": [],
+    "Toy.Unify.dup\u03c3_dedup_still_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eDownBox2": [],
+    "Toy.Unify.eDownBox2.eq_1": [],
+    "Toy.Unify.elimBinding": [],
+    "Toy.Unify.elimBinding.eq_1": [],
+    "Toy.Unify.elimSolved": [],
+    "Toy.Unify.elimSolved.eq_1": [],
+    "Toy.Unify.eqUpTo": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo.eq_2": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo.eq_3": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo.eq_4": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo.eq_def": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList.eq_2": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList.eq_3": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList.eq_def": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_iterSubst_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_iterSubst_mono.match_1_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_map_of_forall": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_map_of_forall.match_1_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_refl.match_1": [],
+    "Toy.Unify.eqUpToList_subst": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_subst.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_symm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_symm.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpToList_trans.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_arity_ne_example": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_example": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_forall_iff_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_iterSubst_converge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_iterSubst_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_iterSubst_mono_needs_agreement": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_iterSubst_mono_needs_le": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_iterSubst_mono_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_ne_example": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_refl.match_1": [],
+    "Toy.Unify.eqUpTo_subst": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_subst.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_subst_needs_agreement": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_subst_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_symm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_symm.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eqUpTo_trans.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eq_of_forall_eqUpTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eq_of_forall_eqUpTo.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eq_of_forall_eqUpToList": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.eq_of_forall_eqUpToList.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.eqsVars": [],
+    "Toy.Unify.eqsVars.eq_1": [],
+    "Toy.Unify.exists_orphanOK_iff_needs_ctors_not_owned": [],
+    "Toy.Unify.exists_orphanOK_iff_needs_local_ctor": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.exists_orphanOK_iff_needs_trait_not_owned": [],
+    "Toy.Unify.exists_orphanOK_overlapping_impl_iff_fundSpineVar": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.exists_orphanOK_overlapping_impl_iff_fundSpineVar_nonvacuous": [],
+    "Toy.Unify.freshCrate_example": [],
+    "Toy.Unify.freshFor_example": [],
+    "Toy.Unify.fundSpineVar": [],
+    "Toy.Unify.fundSpineVar.eq_1": [],
+    "Toy.Unify.fundSpineVar.eq_2": [],
+    "Toy.Unify.fundSpineVar.eq_3": [],
+    "Toy.Unify.fundSpineVar.eq_def": [],
+    "Toy.Unify.fundSpineVar_congr": [
+      "propext"
+    ],
+    "Toy.Unify.fundSpineVar_congr.match_1_1": [],
+    "Toy.Unify.fundSpineVar_example": [],
+    "Toy.Unify.fundSpineVar_of_isLocalTy_subst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.fundSpineVar_of_isLocalTy_subst.match_1_1": [],
+    "Toy.Unify.groundAllTo": [],
+    "Toy.Unify.headersOverlap_example": [],
+    "Toy.Unify.headersOverlap_iff_unify_isSome": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.headersOverlap_iff_unify_isSome_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.headersOverlap_not_implsOverlapIn": [
+      "propext"
+    ],
+    "Toy.Unify.i1": [],
+    "Toy.Unify.i1.eq_1": [],
+    "Toy.Unify.i2": [],
+    "Toy.Unify.i2.eq_1": [],
+    "Toy.Unify.iPairBox": [],
+    "Toy.Unify.iPairBox.eq_1": [],
+    "Toy.Unify.iPairSame": [],
+    "Toy.Unify.iPairSame.eq_1": [],
+    "Toy.Unify.iShared1": [],
+    "Toy.Unify.iShared1.eq_1": [],
+    "Toy.Unify.iShared2": [],
+    "Toy.Unify.iShared2.eq_1": [],
+    "Toy.Unify.iUpBox2": [],
+    "Toy.Unify.iUpBox2.eq_1": [],
+    "Toy.Unify.iW1": [],
+    "Toy.Unify.iW1.eq_1": [],
+    "Toy.Unify.iW2": [],
+    "Toy.Unify.iW2.eq_1": [],
+    "Toy.Unify.idempotent_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implA_u8": [],
+    "Toy.Unify.implA_u8.eq_1": [],
+    "Toy.Unify.implB_u32": [],
+    "Toy.Unify.implB_u32.eq_1": [],
+    "Toy.Unify.impl_ctors_example": [],
+    "Toy.Unify.impl_ctors_nil_example": [],
+    "Toy.Unify.impl_traits_example": [],
+    "Toy.Unify.impl_vars_example": [],
+    "Toy.Unify.implements_I_AB_A_iff": [
+      "propext"
+    ],
+    "Toy.Unify.implements_I_AB_B_iff": [
+      "propext"
+    ],
+    "Toy.Unify.implements_append_iff_needs_constrained": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implements_append_iff_needs_ctors_not_owned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implements_append_iff_needs_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implements_append_iff_needs_orphanOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implements_append_iff_needs_trait_not_owned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implements_append_iff_of_not_isGround": [],
+    "Toy.Unify.implements_append_iff_of_orphanOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implements_append_iff_of_orphanOK_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implements_example": [
+      "propext"
+    ],
+    "Toy.Unify.implements_isGround_example": [],
+    "Toy.Unify.implements_of_mem_of_bounds_nil": [
+      "propext"
+    ],
+    "Toy.Unify.implements_via_bound_example": [
+      "propext"
+    ],
+    "Toy.Unify.implsOverlapIn_headersOverlap": [],
+    "Toy.Unify.implsOverlapIn_iff_mgu_instance": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implsOverlapIn_iff_mgu_instance_needs_bound_vars_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implsOverlapIn_iff_mgu_instance_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.implsOverlapIn_not_monotone": [
+      "propext"
+    ],
+    "Toy.Unify.instDecidableConstrained": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.instDecidableEqBound": [],
+    "Toy.Unify.instDecidableEqBound.decEq": [],
+    "Toy.Unify.instDecidableEqBound.decEq.match_1": [],
+    "Toy.Unify.instDecidableEqImpl": [],
+    "Toy.Unify.instDecidableEqImpl.decEq": [],
+    "Toy.Unify.instDecidableEqImpl.decEq.match_1": [],
+    "Toy.Unify.instDecidableEqResult": [],
+    "Toy.Unify.instDecidableEqResult.decEq": [],
+    "Toy.Unify.instDecidableEqResult.decEq.match_1": [],
+    "Toy.Unify.instDecidableEqTerm": [],
+    "Toy.Unify.instDecidableFreshCrate": [],
+    "Toy.Unify.instDecidableFreshFor": [],
+    "Toy.Unify.instDecidableIsGround": [],
+    "Toy.Unify.instDecidableOrphanOK": [],
+    "Toy.Unify.instDecidableUnifies": [],
+    "Toy.Unify.instDecidableVarsDisjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.instInhabitedTerm": [],
+    "Toy.Unify.instInhabitedTerm.default": [],
+    "Toy.Unify.instReprBound": [
+      "propext"
+    ],
+    "Toy.Unify.instReprBound.repr": [
+      "propext"
+    ],
+    "Toy.Unify.instReprImpl": [
+      "propext"
+    ],
+    "Toy.Unify.instReprImpl.repr": [
+      "propext"
+    ],
+    "Toy.Unify.instReprResult": [
+      "propext"
+    ],
+    "Toy.Unify.instReprResult.repr": [
+      "propext"
+    ],
+    "Toy.Unify.instReprResult.repr.match_1": [],
+    "Toy.Unify.instReprTerm": [
+      "propext"
+    ],
+    "Toy.Unify.inv_init": [],
+    "Toy.Unify.inv_init.match_1_1": [],
+    "Toy.Unify.inv_init.match_1_3": [],
+    "Toy.Unify.isGround_example": [],
+    "Toy.Unify.isGround_subst_groundAllTo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.isLocalTy": [],
+    "Toy.Unify.isLocalTy.eq_1": [],
+    "Toy.Unify.isLocalTy.eq_2": [],
+    "Toy.Unify.isLocalTy.eq_3": [],
+    "Toy.Unify.isLocalTy.eq_def": [],
+    "Toy.Unify.isLocalTy.match_1": [],
+    "Toy.Unify.isLocalTy_ctor_owned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.isLocalTy_ctor_owned.match_1_1": [],
+    "Toy.Unify.isLocalTy_example": [],
+    "Toy.Unify.isLocalTy_fundamental_example": [],
+    "Toy.Unify.isLocalTy_subst": [
+      "propext"
+    ],
+    "Toy.Unify.isLocalTy_subst.match_1_1": [],
+    "Toy.Unify.isLocalTy_subst.match_1_7": [],
+    "Toy.Unify.isLocalTy_subst_groundAllTo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.isLocalTy_subst_groundAllTo.match_1_1": [],
+    "Toy.Unify.iterSubst": [],
+    "Toy.Unify.iterSubst.eq_1": [],
+    "Toy.Unify.iterSubst.eq_2": [],
+    "Toy.Unify.iterSubst.eq_def": [],
+    "Toy.Unify.iterSubst.match_1": [],
+    "Toy.Unify.iterSubst_con": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.iterSubst_con.match_1_1": [],
+    "Toy.Unify.iterSubst_example": [],
+    "Toy.Unify.iterSubst_ne_example": [],
+    "Toy.Unify.iterSubst_succ'": [],
+    "Toy.Unify.iterSubst_succ'.match_1_1": [],
+    "Toy.Unify.iterSubst_var_fixed": [],
+    "Toy.Unify.iterSubst_var_fixed.match_1_1": [],
+    "Toy.Unify.length_le_of_nodup_of_subset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.length_le_of_nodup_of_subset.match_1_1": [],
+    "Toy.Unify.limEqList_of_decompList": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.limEqList_of_decompList.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.limEqList_subst_single": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.limEqList_subst_single.match_1": [],
+    "Toy.Unify.limEq_of_decomp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.limEq_of_decomp.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.limEq_of_decompAll": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.limEq_of_decompAll.match_1_1": [
+      "propext"
+    ],
+    "Toy.Unify.limEq_subst_single": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.limEq_subst_single.match_1": [],
+    "Toy.Unify.localL": [],
+    "Toy.Unify.lookup_cons_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.loopEqs": [],
+    "Toy.Unify.loopS": [],
+    "Toy.Unify.loopT": [],
+    "Toy.Unify.matchAlg": [
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_complete_needs_matchable": [
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_example": [
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_isSome_iff_unify_isSome_of_isGround": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_isSome_iff_unify_needs_ground": [
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_none_example": [
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_output_not_idempotent_example": [
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.matchAlg_sound_needs_output": [
+      "propext"
+    ],
+    "Toy.Unify.matchAux": [
+      "propext"
+    ],
+    "Toy.Unify.matchAux.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.matchAux.eq_2": [
+      "propext"
+    ],
+    "Toy.Unify.matchAux.eq_3": [
+      "propext"
+    ],
+    "Toy.Unify.matchAux.eq_def": [
+      "propext"
+    ],
+    "Toy.Unify.matchAux.match_1": [],
+    "Toy.Unify.matchAux.match_3": [],
+    "Toy.Unify.matchAux_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.matchAux_complete.match_1": [],
+    "Toy.Unify.matchAux_spec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.matchAux_spec.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.matchList": [
+      "propext"
+    ],
+    "Toy.Unify.matchList.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.matchList.eq_2": [
+      "propext"
+    ],
+    "Toy.Unify.matchList.eq_3": [
+      "propext"
+    ],
+    "Toy.Unify.matchList.eq_def": [
+      "propext"
+    ],
+    "Toy.Unify.matchList.match_1": [],
+    "Toy.Unify.matchList.match_3": [
+      "propext"
+    ],
+    "Toy.Unify.matchList_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.matchList_complete.match_1": [],
+    "Toy.Unify.matchList_spec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.matchList_spec.match_1": [
+      "propext"
+    ],
+    "Toy.Unify.matchable_example": [],
+    "Toy.Unify.matchable_iff_unifiable_needs_ground": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.matchable_iff_unifiable_nonGround_example": [],
+    "Toy.Unify.matchable_iff_unifiable_of_isGround": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.matchable_iff_unifiable_of_isGround_nonvacuous": [],
+    "Toy.Unify.matchable_not_unifiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.mem_elimSolved": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.mem_eqsVars": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.mem_eqsVars_elim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.mem_varsList_substList": [
+      "propext"
+    ],
+    "Toy.Unify.mem_varsList_substList.match_1": [],
+    "Toy.Unify.mem_vars_of_occurs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.mem_vars_subst": [
+      "propext"
+    ],
+    "Toy.Unify.mem_vars_subst.match_1": [],
+    "Toy.Unify.mem_vars_subst_single": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.mergeOn": [],
+    "Toy.Unify.moreGeneral_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.ne_box_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noInstanceImplements_example": [
+      "propext"
+    ],
+    "Toy.Unify.noInstanceImplements_stable_needs_no_matching_impl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noInstanceImplements_stable_needs_not_fundSpineVar": [
+      "propext"
+    ],
+    "Toy.Unify.noInstanceImplements_stable_needs_not_fundSpineVar.match_1_1": [],
+    "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar.match_1_1": [],
+    "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Unify.noInstanceImplements_stable_of_not_fundSpineVar_nonvacuous.match_1_1": [],
+    "Toy.Unify.noInstanceImplements_vec_not_stable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noInstanceImplements_vec_not_stable_of_vec_fundamental": [
+      "propext"
+    ],
+    "Toy.Unify.noInstanceImplements_vec_not_stable_of_vec_fundamental.match_1_1": [],
+    "Toy.Unify.noInstanceImplements_vec_stable_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noOC_check_false_disjoint_without_renaming": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noOC_check_reports_false_overlap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noOC_disjoint_needs_verdict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_uniform": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noOC_verdict_sound_of_unify_verdict_sound_uniform_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noOC_verdict_transfer_needs_hP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noOC_verdict_transfer_needs_hchk": [
+      "propext"
+    ],
+    "Toy.Unify.noOC_verdict_transfer_needs_noOC_verdict": [
+      "propext"
+    ],
+    "Toy.Unify.noOC_verdict_transfer_uniform_needs_hP": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.noOC_verdict_transfer_uniform_needs_hchk": [
+      "propext"
+    ],
+    "Toy.Unify.nodup_eraseDups_nat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.nodup_eraseDups_nat.match_1_1": [],
+    "Toy.Unify.not_commonGroundInstance_example": [
+      "propext"
+    ],
+    "Toy.Unify.not_constrained_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_freshCrate_example": [],
+    "Toy.Unify.not_freshFor_example": [],
+    "Toy.Unify.not_fundSpineVar_example": [],
+    "Toy.Unify.not_headersOverlap_example": [
+      "propext"
+    ],
+    "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjointNoOC": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjointNoOC_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_headersOverlap_of_overlapCheckSaysDisjoint_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_idempotent_example": [],
+    "Toy.Unify.not_implements_append_needs_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_implements_append_of_orphanOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_implements_example": [
+      "propext"
+    ],
+    "Toy.Unify.not_implements_stable_needs_constrained": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_implements_stable_needs_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_implements_stable_of_isGround": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_implements_stable_of_isGround.match_1_1": [],
+    "Toy.Unify.not_implements_stable_of_isGround_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_implements_stable_of_not_isGround": [],
+    "Toy.Unify.not_implsOverlapIn_of_overlapCheckSaysDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_isGround_example": [],
+    "Toy.Unify.not_isLocalTy_example": [],
+    "Toy.Unify.not_isLocalTy_var_example": [],
+    "Toy.Unify.not_matchable_example": [
+      "propext"
+    ],
+    "Toy.Unify.not_mem_impl_traits_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_mem_impl_vars_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_mem_vars_of_occurs_false": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_moreGeneral_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_noInstanceImplements_example": [
+      "propext"
+    ],
+    "Toy.Unify.not_occurs_example": [],
+    "Toy.Unify.not_orphanOK_example": [],
+    "Toy.Unify.not_unifiable_u8_u32": [
+      "propext"
+    ],
+    "Toy.Unify.not_unifiable_var_box": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_unifiable_var_of_occurs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_unifiable_var_of_occurs_needs_ne": [],
+    "Toy.Unify.not_unifiable_var_of_occurs_needs_occurs": [],
+    "Toy.Unify.not_unifiable_var_of_occurs_nonvacuous": [],
+    "Toy.Unify.not_unifies_example": [],
+    "Toy.Unify.not_unifies_var_of_occurs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.not_varsDisjoint_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.numVars": [],
+    "Toy.Unify.numVars_dedup_example": [],
+    "Toy.Unify.numVars_example": [],
+    "Toy.Unify.numVars_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.numVars_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.occurs": [],
+    "Toy.Unify.occurs.eq_1": [],
+    "Toy.Unify.occurs_example": [],
+    "Toy.Unify.orphanOK_example": [],
+    "Toy.Unify.orphanOK_uncovered_param_overlap_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjoint": [
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjoint.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjointNoOC": [
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjointNoOC_example": [
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjointNoOC_false_example": [
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjoint_example": [
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjoint_false_example": [
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjoint_needs_verdict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjoint_stable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.overlapCheckSaysDisjoint_stable_needs_renaming_apart": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.overlapCheck_needs_renaming_apart": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.ownersAllFund": [],
+    "Toy.Unify.ownersB": [],
+    "Toy.Unify.ownersC": [],
+    "Toy.Unify.ownersEx": [],
+    "Toy.Unify.ownersEx.eq_1": [],
+    "Toy.Unify.pair": [],
+    "Toy.Unify.pair.eq_1": [],
+    "Toy.Unify.run": [
+      "propext"
+    ],
+    "Toy.Unify.run.eq_def": [
+      "propext"
+    ],
+    "Toy.Unify.run.match_1": [],
+    "Toy.Unify.run.match_3": [],
+    "Toy.Unify.run_agreement_needs_run_true_ok": [
+      "propext"
+    ],
+    "Toy.Unify.run_false_eq_ok_of_run_true_eq_ok": [
+      "propext"
+    ],
+    "Toy.Unify.run_false_loopEqs": [
+      "propext"
+    ],
+    "Toy.Unify.run_false_loopEqs.match_1_1": [],
+    "Toy.Unify.run_false_ok_chainInv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.run_false_ok_limSys": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.run_false_ok_limSys.match_1_1": [],
+    "Toy.Unify.run_ne_outOfFuel_nonvacuous": [],
+    "Toy.Unify.run_ne_outOfFuel_of_numVars_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.run_needs_fuel_bound": [
+      "propext"
+    ],
+    "Toy.Unify.run_needs_occurs_check_for_bound": [
+      "propext"
+    ],
+    "Toy.Unify.run_ok_keys_suffix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.run_outOfFuel_example": [
+      "propext"
+    ],
+    "Toy.Unify.run_true_fail": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.run_true_ne_ok_of_run_false_ok_example": [
+      "propext"
+    ],
+    "Toy.Unify.run_true_ne_outOfFuel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.run_true_ok": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.size_substVar_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.size_substVar_le.match_1": [],
+    "Toy.Unify.size_substVar_le_list": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.size_substVar_le_list.match_1": [],
+    "Toy.Unify.size_substVar_lt_con": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.stableUnderDownstream_example": [
+      "propext"
+    ],
+    "Toy.Unify.step": [
+      "propext"
+    ],
+    "Toy.Unify.step.eq_1": [
+      "propext"
+    ],
+    "Toy.Unify.step.match_1": [],
+    "Toy.Unify.step_cases": [
+      "propext"
+    ],
+    "Toy.Unify.step_false_next_chainInv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.step_ne_outOfFuel": [
+      "propext"
+    ],
+    "Toy.Unify.step_ne_outOfFuel.match_1_1": [],
+    "Toy.Unify.step_ne_outOfFuel.match_1_3": [],
+    "Toy.Unify.step_ne_outOfFuel.match_1_5": [],
+    "Toy.Unify.step_next_sys": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.step_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.step_true_fail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.step_true_next_inv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.step_true_next_numVars": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.subst": [],
+    "Toy.Unify.subst.eq_1": [],
+    "Toy.Unify.subst.eq_2": [],
+    "Toy.Unify.subst.eq_def": [],
+    "Toy.Unify.substList": [],
+    "Toy.Unify.substList.eq_1": [],
+    "Toy.Unify.substList.eq_2": [],
+    "Toy.Unify.substList.eq_def": [],
+    "Toy.Unify.substList_comp_of_vars": [
+      "propext"
+    ],
+    "Toy.Unify.substList_comp_of_vars.match_1": [],
+    "Toy.Unify.substList_congr_vars": [
+      "propext"
+    ],
+    "Toy.Unify.substList_congr_vars.match_1": [],
+    "Toy.Unify.substList_eq_map": [
+      "propext"
+    ],
+    "Toy.Unify.substList_eq_map.match_1_1": [],
+    "Toy.Unify.substList_eq_self_of_vars": [
+      "propext"
+    ],
+    "Toy.Unify.substList_eq_self_of_vars.match_1": [],
+    "Toy.Unify.substVar": [],
+    "Toy.Unify.substVar.eq_1": [],
+    "Toy.Unify.substVar.match_1": [],
+    "Toy.Unify.substVar_cases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.substVar_comp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.substVar_cons": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.substVar_ctors_subset_subst": [
+      "propext"
+    ],
+    "Toy.Unify.substVar_ctors_subset_subst.match_1_1": [],
+    "Toy.Unify.substVar_ctors_subset_subst.substVar_ctors_subset_substList": [
+      "propext"
+    ],
+    "Toy.Unify.substVar_ctors_subset_subst.substVar_ctors_subset_substList.match_1": [],
+    "Toy.Unify.substVar_first_binding_example": [],
+    "Toy.Unify.substVar_groundAllTo": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.substVar_mergeOn_left": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.substVar_mergeOn_right": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.substVar_nil": [],
+    "Toy.Unify.substVar_of_lookup": [
+      "propext"
+    ],
+    "Toy.Unify.substVar_of_mem_nodup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.substVar_of_not_key": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.substVar_single": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.substVar_unbound_example": [],
+    "Toy.Unify.subst_comp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.subst_comp_of_vars": [
+      "propext"
+    ],
+    "Toy.Unify.subst_comp_of_vars.match_1": [],
+    "Toy.Unify.subst_con": [
+      "propext"
+    ],
+    "Toy.Unify.subst_congr_vars": [
+      "propext"
+    ],
+    "Toy.Unify.subst_congr_vars.match_1": [],
+    "Toy.Unify.subst_ctors_decomp": [
+      "propext"
+    ],
+    "Toy.Unify.subst_ctors_decomp.match_1_1": [],
+    "Toy.Unify.subst_ctors_decomp.substList_ctors_decomp": [
+      "propext"
+    ],
+    "Toy.Unify.subst_ctors_decomp.substList_ctors_decomp.match_1": [],
+    "Toy.Unify.subst_ctors_subset": [
+      "propext"
+    ],
+    "Toy.Unify.subst_ctors_subset.match_1_1": [],
+    "Toy.Unify.subst_ctors_subset.substList_ctors_subset": [
+      "propext"
+    ],
+    "Toy.Unify.subst_ctors_subset.substList_ctors_subset.match_1": [],
+    "Toy.Unify.subst_eq_self_of_vars": [
+      "propext"
+    ],
+    "Toy.Unify.subst_eq_self_of_vars.match_1": [],
+    "Toy.Unify.subst_example": [],
+    "Toy.Unify.subst_ne_example": [],
+    "Toy.Unify.subst_nil": [
+      "propext"
+    ],
+    "Toy.Unify.subst_of_isGround": [
+      "propext"
+    ],
+    "Toy.Unify.subst_of_lookupExt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.subst_rhs_of_solved": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.subst_subst_single_of_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.subst_var": [],
+    "Toy.Unify.sys_elim_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.sys_single_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.term_arity_ne_example": [],
+    "Toy.Unify.term_eq_example": [],
+    "Toy.Unify.term_ne_example": [],
+    "Toy.Unify.u32": [],
+    "Toy.Unify.u32.eq_1": [],
+    "Toy.Unify.u8": [],
+    "Toy.Unify.u8.eq_1": [],
+    "Toy.Unify.unifiable_example": [],
+    "Toy.Unify.unifiable_not_matchable": [
+      "propext"
+    ],
+    "Toy.Unify.unifiable_of_matchable_needs_varsDisjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unifiable_of_matchable_of_varsDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unifiable_of_matchable_of_varsDisjoint_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unifies_example": [],
+    "Toy.Unify.unify": [
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC": [
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_clash_example": [
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_eqUpTo_fails_with_duplicate_elimination": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_eqUpTo_needs_output": [
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_eqUpTo_of_nodup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_eqUpTo_of_nodup.match_1_1": [],
+    "Toy.Unify.unifyNoOC_eqUpTo_of_nodup.match_1_3": [],
+    "Toy.Unify.unifyNoOC_eqUpTo_of_nodup_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_eq_some_needs_unify_output": [
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_eq_some_of_unify_eq_some": [
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_example": [
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_outOfFuel_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_outOfFuel_example.match_1_1": [],
+    "Toy.Unify.unifyNoOC_returns_nonunifier_var_box": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_unifies_iff_needs_output": [
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_unifies_iff_unifiable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unifyNoOC_unifies_iff_unifiable_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Unify.unify_clash_example": [
+      "propext"
+    ],
+    "Toy.Unify.unify_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unify_complete_needs_unifier": [
+      "propext"
+    ],
+    "Toy.Unify.unify_complete_nonvacuous": [],
+    "Toy.Unify.unify_eq_none_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unify_eq_some_iff_run": [
+      "propext"
+    ],
+    "Toy.Unify.unify_example": [
+      "propext"
+    ],
+    "Toy.Unify.unify_idempotent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unify_idempotent_needs_output": [
+      "propext"
+    ],
+    "Toy.Unify.unify_mgu_factor": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unify_mgu_factor_needs_output": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unify_mgu_factor_needs_unifier": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unify_mgu_factor_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Unify.unify_moreGeneral": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unify_occurs_example": [
+      "propext"
+    ],
+    "Toy.Unify.unify_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.unify_sound.match_1_1": [],
+    "Toy.Unify.unify_sound_needs_output": [
+      "propext"
+    ],
+    "Toy.Unify.unify_sound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Unify.varsDisjoint_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.varsList_subst_groundAllTo_nil": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.varsList_subst_groundAllTo_nil.match_1": [],
+    "Toy.Unify.vars_example": [],
+    "Toy.Unify.vars_ground_example": [],
+    "Toy.Unify.vars_subst_groundAllTo_nil": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Unify.vars_subst_groundAllTo_nil.match_1": [],
+    "Toy.Unify.vec": [],
+    "Toy.Unify.vec.eq_1": [],
+    "Toy.Unify.whereClause_disjointness_not_stable": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

@@ -1,0 +1,6 @@
+name = "first_order_unification_coherence"
+version = "0.1.0"
+defaultTargets = ["ToyUnify"]
+
+[[lean_lib]]
+name = "ToyUnify"
