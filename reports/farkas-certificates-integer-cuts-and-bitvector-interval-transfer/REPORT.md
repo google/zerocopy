@@ -81,7 +81,7 @@ Lean `leanprover/lean4:v4.34.1`, core library only: no Mathlib, no other depende
 - Every theorem is labeled `Basis: execution (Lean kernel check)`. Any claim connecting a Lean statement to rational numbers or to real systems is a separate `Basis: derived (modeling bridge)` line with its reasoning.
 - Counterexamples are in canonical form: all other hypotheses hold and the conclusion fails.
 - Each card's non-claims are listed under Boundaries; each card's statement and definition-closure hashes are listed under Evidence.
-- Lean statements are printed by Lean's `#check` (namespace `Toy.Farkas` opened). Definitions they use are quoted in full under Core definitions. Where the default `#check` output would not elaborate back to the theorem's statement, it is printed with `set_option pp.numericTypes true` (every numeral shows its type; used where a numeral's type is not fixed by its context, e.g. `(0 : Int) < (1 : Int)`, which the default output prints as `0 < 1` and which would then elaborate over `Nat`) or with `set_option pp.structureInstanceTypes true` (every structure instance shows its type, as in `{ terms := …, const := 0 : AffExpr }`).
+- Lean statements are quoted verbatim from the source lines cited above each one (`-- lean/ToyFarkas/<File>.lean:<lines>`), from `theorem` through the end of the statement; proofs are omitted. Each statement is read in the namespace in which it is declared: `Toy.Farkas`, or `Toy.Farkas.Motzkin` for the theorems cited from `ToyFarkas/Motzkin.lean`. Definitions they use are quoted in full under Core definitions.
 
 ### Core definitions
 
@@ -422,7 +422,7 @@ def atomsHalfU : List BvAtom := [⟨⟨[(0, 2)], 0⟩, .le, ⟨[], 1⟩⟩, ⟨�
 
 ### How Farkas completeness (R4a) is proved
 
-`farkas_complete_scaled` is proved in module `ToyFarkas.Motzkin` (`Toy.Farkas.Motzkin.complete`). The auxiliary definitions of that module (namespace `Toy.Farkas.Motzkin`) are used only inside proofs; they occur in no card statement and in no statement or closure hash. Because the proof-internal statements listed under "Other kernel-checked theorems mentioned in this report" use them, they are quoted here as in the source (inside namespace `Toy.Farkas.Motzkin`, so `HC` here is `Motzkin.HC` in those statements; doc comments omitted):
+`farkas_complete_scaled` is proved in module `ToyFarkas.Motzkin` (`Toy.Farkas.Motzkin.complete`). The auxiliary definitions of that module (namespace `Toy.Farkas.Motzkin`) are used only inside proofs; they occur in no card statement and in no statement or closure hash. Because the proof-internal statements listed under "Other kernel-checked theorems mentioned in this report" use them, they are quoted here as in the source (inside namespace `Toy.Farkas.Motzkin`, like the quoted statements that use them, so `HC` there is `Toy.Farkas.Motzkin.HC`; doc comments omitted):
 
 ```lean
 structure HC where
@@ -495,17 +495,24 @@ Basis: execution (Lean kernel check). The statements of the lemmas named above a
 - **Lean statement** (`Toy.Farkas.checkFarkas_sound_scaled`; corollaries and related forms: `checkFarkas_sound_int`, `checkFarkas_sound_scaled_posSupport`, `checkFarkas_sound_int_posSupport`):
 
 ```lean
-theorem checkFarkas_sound_scaled (S : List Constraint) (cert : List Int) (h : checkFarkas S cert = true) (d : Int)
-  (hd : 0 < d) (p : Nat → Int) : ¬SatScaled S d p
+-- lean/ToyFarkas/Checker.lean:227-229
+theorem checkFarkas_sound_scaled (S : List Constraint) (cert : List Int)
+    (h : checkFarkas S cert = true) (d : Int) (hd : 0 < d) (p : Nat → Int) :
+    ¬ SatScaled S d p
 
-theorem checkFarkas_sound_int (S : List Constraint) (cert : List Int) (h : checkFarkas S cert = true)
-  (x : Nat → Int) : ¬SatInt S x
+-- lean/ToyFarkas/Checker.lean:235-237
+theorem checkFarkas_sound_int (S : List Constraint) (cert : List Int)
+    (h : checkFarkas S cert = true) (x : Nat → Int) :
+    ¬ SatInt S x
 
-theorem checkFarkas_sound_scaled_posSupport (S : List Constraint) (cert : List Int) (h : checkFarkas S cert = true)
-  (d : Int) (hd : 0 < d) (p : Nat → Int) : ¬SatScaled (posSupport cert S) d p
+-- lean/ToyFarkas/Checker.lean:328-330
+theorem checkFarkas_sound_scaled_posSupport (S : List Constraint) (cert : List Int)
+    (h : checkFarkas S cert = true) (d : Int) (hd : 0 < d) (p : Nat → Int) :
+    ¬ SatScaled (posSupport cert S) d p
 
-theorem checkFarkas_sound_int_posSupport (S : List Constraint) (cert : List Int) (h : checkFarkas S cert = true)
-  (x : Nat → Int) : ¬SatInt (posSupport cert S) x
+-- lean/ToyFarkas/Checker.lean:353-354
+theorem checkFarkas_sound_int_posSupport (S : List Constraint) (cert : List Int)
+    (h : checkFarkas S cert = true) (x : Nat → Int) : ¬ SatInt (posSupport cert S) x
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `Constraint`, `checkFarkas`, `SatScaled`, `SatInt`, `posSupport`.
@@ -539,9 +546,14 @@ theorem checkFarkas_sound_int_posSupport (S : List Constraint) (cert : List Int)
 - **Lean statement** (`Toy.Farkas.farkas_sound_scaled_of_nonneg_of_lhsVanishes_of_rhsContradicts`):
 
 ```lean
-theorem farkas_sound_scaled_of_nonneg_of_lhsVanishes_of_rhsContradicts (S : List Constraint) (cert : List Int)
-  (hnn : multipliersNonneg cert = true) (hlhs : lhsVanishes S cert = true) (hrhs : rhsContradicts S cert = true)
-  (d : Int) (hd : 0 < d) (p : Nat → Int) : ¬SatScaled S d p
+-- lean/ToyFarkas/Checker.lean:198-204
+theorem farkas_sound_scaled_of_nonneg_of_lhsVanishes_of_rhsContradicts
+    (S : List Constraint) (cert : List Int)
+    (hnn : multipliersNonneg cert = true)
+    (hlhs : lhsVanishes S cert = true)
+    (hrhs : rhsContradicts S cert = true)
+    (d : Int) (hd : 0 < d) (p : Nat → Int) :
+    ¬ SatScaled S d p
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `Constraint`, `multipliersNonneg`, `lhsVanishes`, `rhsContradicts`, `SatScaled`.
@@ -572,11 +584,15 @@ theorem farkas_sound_scaled_of_nonneg_of_lhsVanishes_of_rhsContradicts (S : List
 - **Lean statement** (`Toy.Farkas.SparseVec.eval_eq_denseDotOn_coeff_of_nodup_of_keys_mem`; corollaries and related forms: `SparseVec.eval_eq_denseDot_coeff_of_keys_lt`):
 
 ```lean
-theorem SparseVec.eval_eq_denseDotOn_coeff_of_nodup_of_keys_mem (v : SparseVec) (ks : List Nat) (hnd : ks.Nodup)
-  (hmem : ∀ (p : Nat × Int), p ∈ v → p.fst ∈ ks) (x : Nat → Int) : v.eval x = denseDotOn ks v.coeff x
+-- lean/ToyFarkas/Sparse.lean:226-228
+theorem SparseVec.eval_eq_denseDotOn_coeff_of_nodup_of_keys_mem (v : SparseVec) (ks : List Nat)
+    (hnd : ks.Nodup) (hmem : ∀ p ∈ v, p.1 ∈ ks) (x : Nat → Int) :
+    v.eval x = denseDotOn ks v.coeff x
 
+-- lean/ToyFarkas/Sparse.lean:243-245
 theorem SparseVec.eval_eq_denseDot_coeff_of_keys_lt (v : SparseVec) (n : Nat)
-  (h : ∀ (p : Nat × Int), p ∈ v → p.fst < n) (x : Nat → Int) : v.eval x = denseDot n v.coeff x
+    (h : ∀ p ∈ v, p.1 < n) (x : Nat → Int) :
+    v.eval x = denseDot n v.coeff x
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `SparseVec`, `SparseVec.eval`, `denseDotOn`, `SparseVec.coeff`, `denseDot`.
@@ -602,11 +618,15 @@ theorem SparseVec.eval_eq_denseDot_coeff_of_keys_lt (v : SparseVec) (n : Nat)
 - **Lean statement** (`Toy.Farkas.combineLhs_coeff`; corollaries and related forms: `combineLhs_eval`):
 
 ```lean
+-- lean/ToyFarkas/Checker.lean:121-123
 theorem combineLhs_coeff (S : List Constraint) (cert : List Int) (i : Nat) :
-  (combineLhs S cert).coeff i = (List.zipWith (fun l c => l * c.lhs.coeff i) cert S).sum
+    SparseVec.coeff (combineLhs S cert) i =
+      (List.zipWith (fun l c => l * SparseVec.coeff c.lhs i) cert S).sum
 
+-- lean/ToyFarkas/Checker.lean:136-138
 theorem combineLhs_eval (S : List Constraint) (cert : List Int) (x : Nat → Int) :
-  (combineLhs S cert).eval x = (List.zipWith (fun l c => l * c.lhs.eval x) cert S).sum
+    SparseVec.eval (combineLhs S cert) x =
+      (List.zipWith (fun l c => l * SparseVec.eval c.lhs x) cert S).sum
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `Constraint`, `SparseVec.coeff`, `combineLhs`, `Constraint.lhs`, `SparseVec.eval`.
@@ -627,7 +647,9 @@ theorem combineLhs_eval (S : List Constraint) (cert : List Int) (x : Nat → Int
 - **Lean statement** (`Toy.Farkas.SparseVec.isZero_iff_coeff_eq_zero`):
 
 ```lean
-theorem SparseVec.isZero_iff_coeff_eq_zero (v : SparseVec) : v.isZero = true ↔ ∀ (i : Nat), v.coeff i = 0
+-- lean/ToyFarkas/Sparse.lean:251-252
+theorem SparseVec.isZero_iff_coeff_eq_zero (v : SparseVec) :
+    v.isZero = true ↔ ∀ i, v.coeff i = 0
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `SparseVec`, `SparseVec.isZero`, `SparseVec.coeff`.
@@ -648,11 +670,13 @@ theorem SparseVec.isZero_iff_coeff_eq_zero (v : SparseVec) : v.isZero = true ↔
 - **Lean statement** (`Toy.Farkas.ce_farkas_negative_multiplier`):
 
 ```lean
+-- lean/ToyFarkas/Counterexamples.lean:23-28
 theorem ce_farkas_negative_multiplier :
-  multipliersNonneg [(1 : Int), (-1 : Int)] = false ∧
-    lhsVanishes sysTwoUpper [(1 : Int), (-1 : Int)] = true ∧
-      rhsContradicts sysTwoUpper [(1 : Int), (-1 : Int)] = true ∧
-        (0 : Int) < (1 : Int) ∧ SatScaled sysTwoUpper (1 : Int) (pt1 (0 : Int)) ∧ SatInt sysTwoUpper (pt1 (0 : Int))
+    multipliersNonneg [1, -1] = false ∧
+    lhsVanishes sysTwoUpper [1, -1] = true ∧
+    rhsContradicts sysTwoUpper [1, -1] = true ∧
+    (0 : Int) < 1 ∧
+    SatScaled sysTwoUpper 1 (pt1 0) ∧ SatInt sysTwoUpper (pt1 0)
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `multipliersNonneg`, `lhsVanishes`, `sysTwoUpper`, `rhsContradicts`, `SatScaled`, `pt1`, `SatInt`.
@@ -674,14 +698,15 @@ theorem ce_farkas_negative_multiplier :
 - **Lean statement** (`Toy.Farkas.ce_farkas_strictness_ignored`; corollaries and related forms: `ce_farkas_strict_flag_from_zero_weight`):
 
 ```lean
+-- lean/ToyFarkas/Counterexamples.lean:100-105
 theorem ce_farkas_strictness_ignored :
-  multipliersNonneg [(1 : Int), (1 : Int)] = true ∧
-    lhsVanishes sysEq [(1 : Int), (1 : Int)] = true ∧
-      rhsContradictsIgnoringStrictness sysEq [(1 : Int), (1 : Int)] = true ∧
-        rhsContradicts sysEq [(1 : Int), (1 : Int)] = false ∧
-          checkFarkas sysEq [(1 : Int), (1 : Int)] = false ∧
-            (0 : Int) < (1 : Int) ∧ SatInt sysEq (pt1 (1 : Int)) ∧ SatScaled sysEq (1 : Int) (pt1 (1 : Int))
+    multipliersNonneg [1, 1] = true ∧
+    lhsVanishes sysEq [1, 1] = true ∧
+    rhsContradictsIgnoringStrictness sysEq [1, 1] = true ∧
+    rhsContradicts sysEq [1, 1] = false ∧ checkFarkas sysEq [1, 1] = false ∧
+    (0 : Int) < 1 ∧ SatInt sysEq (pt1 1) ∧ SatScaled sysEq 1 (pt1 1)
 
+-- lean/ToyFarkas/Counterexamples.lean:110-115
 theorem ce_farkas_strict_flag_from_zero_weight :
   multipliersNonneg [1, 1, 0] = true ∧
     lhsVanishes sysEqPlusStrict [1, 1, 0] = true ∧
@@ -709,8 +734,9 @@ theorem ce_farkas_strict_flag_from_zero_weight :
 - **Lean statement** (`Toy.Farkas.checkFarkasTightened_sound_int`):
 
 ```lean
+-- lean/ToyFarkas/Counterexamples.lean:139-140
 theorem checkFarkasTightened_sound_int (S : List Constraint) (cert : List Int)
-  (h : checkFarkasTightened S cert = true) (x : Nat → Int) : ¬SatInt S x
+    (h : checkFarkasTightened S cert = true) (x : Nat → Int) : ¬ SatInt S x
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `Constraint`, `checkFarkasTightened`, `SatInt`.
@@ -734,10 +760,11 @@ theorem checkFarkasTightened_sound_int (S : List Constraint) (cert : List Int)
 - **Lean statement** (`Toy.Farkas.ce_tightening_unsound_over_rat`):
 
 ```lean
+-- lean/ToyFarkas/Counterexamples.lean:161-164
 theorem ce_tightening_unsound_over_rat :
-  checkFarkasTightened sysOpenUnit [(1 : Int), (1 : Int)] = true ∧
-    checkFarkas sysOpenUnit [(1 : Int), (1 : Int)] = false ∧
-      (0 : Int) < (2 : Int) ∧ SatScaled sysOpenUnit (2 : Int) (pt1 (1 : Int))
+    checkFarkasTightened sysOpenUnit [1, 1] = true ∧
+    checkFarkas sysOpenUnit [1, 1] = false ∧
+    (0 : Int) < 2 ∧ SatScaled sysOpenUnit 2 (pt1 1)
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `checkFarkasTightened`, `sysOpenUnit`, `checkFarkas`, `SatScaled`, `pt1`.
@@ -758,37 +785,32 @@ theorem ce_tightening_unsound_over_rat :
 - **Lean statement** (`Toy.Farkas.ce_zero_test_index_blind`; corollaries and related forms: `ce_zero_test_first_match`, `ce_zero_test_first_match_dupfree_inputs`):
 
 ```lean
+-- lean/ToyFarkas/Counterexamples.lean:191-197
 theorem ce_zero_test_index_blind :
-  multipliersNonneg [1] = true ∧
-    checkFarkas [{ lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := -1 }] [1] = false ∧
-      isZeroIndexBlind (combineLhs [{ lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := -1 }] [1]) = true ∧
-        lhsVanishes [{ lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := -1 }] [1] = false ∧
-          rhsContradicts [{ lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := -1 }] [1] = true ∧
-            SatInt [{ lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := -1 }] (pt2 0 1)
+    multipliersNonneg [1] = true ∧
+    checkFarkas [⟨[(0, 1), (1, -1)], .le, -1⟩] [1] = false ∧
+    isZeroIndexBlind (combineLhs [⟨[(0, 1), (1, -1)], .le, -1⟩] [1]) = true ∧
+    lhsVanishes [⟨[(0, 1), (1, -1)], .le, -1⟩] [1] = false ∧
+    rhsContradicts [⟨[(0, 1), (1, -1)], .le, -1⟩] [1] = true ∧
+    SatInt [⟨[(0, 1), (1, -1)], .le, -1⟩] (pt2 0 1)
 
+-- lean/ToyFarkas/Counterexamples.lean:203-209
 theorem ce_zero_test_first_match :
-  multipliersNonneg [1] = true ∧
-    checkFarkas [{ lhs := [(0, 0), (0, 1)], rel := Rel.le, rhs := -1 }] [1] = false ∧
-      isZeroFirstMatch (combineLhs [{ lhs := [(0, 0), (0, 1)], rel := Rel.le, rhs := -1 }] [1]) = true ∧
-        lhsVanishes [{ lhs := [(0, 0), (0, 1)], rel := Rel.le, rhs := -1 }] [1] = false ∧
-          rhsContradicts [{ lhs := [(0, 0), (0, 1)], rel := Rel.le, rhs := -1 }] [1] = true ∧
-            SatInt [{ lhs := [(0, 0), (0, 1)], rel := Rel.le, rhs := -1 }] (pt1 (-1))
+    multipliersNonneg [1] = true ∧
+    checkFarkas [⟨[(0, 0), (0, 1)], .le, -1⟩] [1] = false ∧
+    isZeroFirstMatch (combineLhs [⟨[(0, 0), (0, 1)], .le, -1⟩] [1]) = true ∧
+    lhsVanishes [⟨[(0, 0), (0, 1)], .le, -1⟩] [1] = false ∧
+    rhsContradicts [⟨[(0, 0), (0, 1)], .le, -1⟩] [1] = true ∧
+    SatInt [⟨[(0, 0), (0, 1)], .le, -1⟩] (pt1 (-1))
 
+-- lean/ToyFarkas/Counterexamples.lean:215-221
 theorem ce_zero_test_first_match_dupfree_inputs :
-  combineLhs [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }, { lhs := [(0, 1)], rel := Rel.le, rhs := -1 }] [0, 1] =
-      [(0, 0), (0, 1)] ∧
+    combineLhs [⟨[(0, 1)], .le, 0⟩, ⟨[(0, 1)], .le, -1⟩] [0, 1] = [(0, 0), (0, 1)] ∧
     multipliersNonneg [0, 1] = true ∧
-      checkFarkas [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }, { lhs := [(0, 1)], rel := Rel.le, rhs := -1 }] [0, 1] =
-          false ∧
-        isZeroFirstMatch
-              (combineLhs [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }, { lhs := [(0, 1)], rel := Rel.le, rhs := -1 }]
-                [0, 1]) =
-            true ∧
-          rhsContradicts [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }, { lhs := [(0, 1)], rel := Rel.le, rhs := -1 }]
-                [0, 1] =
-              true ∧
-            SatInt [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }, { lhs := [(0, 1)], rel := Rel.le, rhs := -1 }]
-              (pt1 (-1))
+    checkFarkas [⟨[(0, 1)], .le, 0⟩, ⟨[(0, 1)], .le, -1⟩] [0, 1] = false ∧
+    isZeroFirstMatch (combineLhs [⟨[(0, 1)], .le, 0⟩, ⟨[(0, 1)], .le, -1⟩] [0, 1]) = true ∧
+    rhsContradicts [⟨[(0, 1)], .le, 0⟩, ⟨[(0, 1)], .le, -1⟩] [0, 1] = true ∧
+    SatInt [⟨[(0, 1)], .le, 0⟩, ⟨[(0, 1)], .le, -1⟩] (pt1 (-1))
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `multipliersNonneg`, `checkFarkas`, `Constraint`, `isZeroIndexBlind`, `combineLhs`, `lhsVanishes`, `rhsContradicts`, `SatInt`, `pt2`, `isZeroFirstMatch`, `pt1`, `SparseVec`.
@@ -809,8 +831,10 @@ theorem ce_zero_test_first_match_dupfree_inputs :
 - **Lean statement** (`Toy.Farkas.farkas_complete_scaled`):
 
 ```lean
-theorem farkas_complete_scaled (S : List Constraint) (h : ∀ (d : Int) (p : Nat → Int), 0 < d → ¬SatScaled S d p) :
-  ∃ cert, checkFarkas S cert = true
+-- lean/ToyFarkas/Completeness.lean:24-26
+theorem farkas_complete_scaled (S : List Constraint)
+    (h : ∀ (d : Int) (p : Nat → Int), 0 < d → ¬ SatScaled S d p) :
+    ∃ cert : List Int, checkFarkas S cert = true
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `Constraint`, `SatScaled`, `checkFarkas`.
@@ -840,8 +864,9 @@ theorem farkas_complete_scaled (S : List Constraint) (h : ∀ (d : Int) (p : Nat
 - **Lean statement** (`Toy.Farkas.ce_farkas_incomplete_int`):
 
 ```lean
+-- lean/ToyFarkas/Completeness.lean:47-48
 theorem ce_farkas_incomplete_int :
-  (∀ (x : Nat → Int), ¬SatInt sysHalf x) ∧ ∀ (cert : List Int), checkFarkas sysHalf cert = false
+    (∀ x : Nat → Int, ¬ SatInt sysHalf x) ∧ (∀ cert : List Int, checkFarkas sysHalf cert = false)
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `SatInt`, `sysHalf`, `checkFarkas`.
@@ -869,10 +894,12 @@ theorem ce_farkas_incomplete_int :
 - **Lean statement** (`Toy.Farkas.cgCut_sound_int_of_nonneg_of_div_pos_of_divisible`; corollaries and related forms: `cgDerive_sound_int`):
 
 ```lean
+-- lean/ToyFarkas/Cuts.lean:180-182
 theorem cgCut_sound_int_of_nonneg_of_div_pos_of_divisible (S : List Constraint) (k : CGStep)
   (hnn : multipliersNonneg k.mult = true) (hg : 0 < k.div) (hdiv : cgDivisible S k = true) (x : Nat → Int)
   (hx : SatInt S x) : (cgCut S k).HoldsInt x
 
+-- lean/ToyFarkas/Cuts.lean:199-200
 theorem cgDerive_sound_int (S : List Constraint) (k : CGStep) (c : Constraint) (h : cgDerive S k = some c)
   (x : Nat → Int) (hx : SatInt S x) : c.HoldsInt x
 ```
@@ -906,8 +933,9 @@ theorem cgDerive_sound_int (S : List Constraint) (k : CGStep) (c : Constraint) (
 - **Lean statement** (`Toy.Farkas.checkCutCert_sound_int`):
 
 ```lean
-theorem checkCutCert_sound_int (S : List Constraint) (cc : CutCert) (h : checkCutCert S cc = true) (x : Nat → Int) :
-  ¬SatInt S x
+-- lean/ToyFarkas/Cuts.lean:226-227
+theorem checkCutCert_sound_int (S : List Constraint) (cc : CutCert)
+    (h : checkCutCert S cc = true) (x : Nat → Int) : ¬ SatInt S x
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `Constraint`, `CutCert`, `checkCutCert`, `SatInt`.
@@ -935,10 +963,11 @@ theorem checkCutCert_sound_int (S : List Constraint) (cc : CutCert) (h : checkCu
 - **Lean statement** (`Toy.Farkas.bv_ule_ult_iff_int_of_inUnsignedRange`):
 
 ```lean
+-- lean/ToyFarkas/BitVecSystems.lean:15-18
 theorem bv_ule_ult_iff_int_of_inUnsignedRange (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
-  (h₁ : InUnsignedRange w (e₁.evalInt (uval x))) (h₂ : InUnsignedRange w (e₂.evalInt (uval x))) :
-  ((AffExpr.evalBv w e₁ x).ule (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (uval x) ≤ e₂.evalInt (uval x)) ∧
-    ((AffExpr.evalBv w e₁ x).ult (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (uval x) < e₂.evalInt (uval x))
+    (h₁ : InUnsignedRange w (e₁.evalInt (uval x))) (h₂ : InUnsignedRange w (e₂.evalInt (uval x))) :
+    ((e₁.evalBv w x).ule (e₂.evalBv w x) = true ↔ e₁.evalInt (uval x) ≤ e₂.evalInt (uval x)) ∧
+    ((e₁.evalBv w x).ult (e₂.evalBv w x) = true ↔ e₁.evalInt (uval x) < e₂.evalInt (uval x))
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `AffExpr`, `InUnsignedRange`, `AffExpr.evalInt`, `uval`, `AffExpr.evalBv`.
@@ -966,10 +995,11 @@ theorem bv_ule_ult_iff_int_of_inUnsignedRange (w : Nat) (e₁ e₂ : AffExpr) (x
 - **Lean statement** (`Toy.Farkas.bv_sle_slt_iff_int_of_inSignedRange`):
 
 ```lean
+-- lean/ToyFarkas/BitVecSystems.lean:25-28
 theorem bv_sle_slt_iff_int_of_inSignedRange (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
-  (h₁ : InSignedRange w (e₁.evalInt (sval x))) (h₂ : InSignedRange w (e₂.evalInt (sval x))) :
-  ((AffExpr.evalBv w e₁ x).sle (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x)) ∧
-    ((AffExpr.evalBv w e₁ x).slt (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (sval x) < e₂.evalInt (sval x))
+    (h₁ : InSignedRange w (e₁.evalInt (sval x))) (h₂ : InSignedRange w (e₂.evalInt (sval x))) :
+    ((e₁.evalBv w x).sle (e₂.evalBv w x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x)) ∧
+    ((e₁.evalBv w x).slt (e₂.evalBv w x) = true ↔ e₁.evalInt (sval x) < e₂.evalInt (sval x))
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `AffExpr`, `InSignedRange`, `AffExpr.evalInt`, `sval`, `AffExpr.evalBv`.
@@ -997,15 +1027,17 @@ theorem bv_sle_slt_iff_int_of_inSignedRange (w : Nat) (e₁ e₂ : AffExpr) (x :
 - **Lean statement** (`Toy.Farkas.bv_ule_ult_iff_int_of_noWrapU`; corollaries and related forms: `bv_sle_slt_iff_int_of_noWrapS`):
 
 ```lean
-theorem bv_ule_ult_iff_int_of_noWrapU (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w) (h₁ : NoWrapU w e₁ (uval x))
-  (h₂ : NoWrapU w e₂ (uval x)) :
-  ((AffExpr.evalBv w e₁ x).ule (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (uval x) ≤ e₂.evalInt (uval x)) ∧
-    ((AffExpr.evalBv w e₁ x).ult (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (uval x) < e₂.evalInt (uval x))
+-- lean/ToyFarkas/BitVecTransfer.lean:298-301
+theorem bv_ule_ult_iff_int_of_noWrapU (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
+    (h₁ : NoWrapU w e₁ (uval x)) (h₂ : NoWrapU w e₂ (uval x)) :
+    ((e₁.evalBv w x).ule (e₂.evalBv w x) = true ↔ e₁.evalInt (uval x) ≤ e₂.evalInt (uval x)) ∧
+    ((e₁.evalBv w x).ult (e₂.evalBv w x) = true ↔ e₁.evalInt (uval x) < e₂.evalInt (uval x))
 
-theorem bv_sle_slt_iff_int_of_noWrapS (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w) (h₁ : NoWrapS w e₁ (sval x))
-  (h₂ : NoWrapS w e₂ (sval x)) :
-  ((AffExpr.evalBv w e₁ x).sle (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x)) ∧
-    ((AffExpr.evalBv w e₁ x).slt (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (sval x) < e₂.evalInt (sval x))
+-- lean/ToyFarkas/BitVecTransfer.lean:308-311
+theorem bv_sle_slt_iff_int_of_noWrapS (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
+    (h₁ : NoWrapS w e₁ (sval x)) (h₂ : NoWrapS w e₂ (sval x)) :
+    ((e₁.evalBv w x).sle (e₂.evalBv w x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x)) ∧
+    ((e₁.evalBv w x).slt (e₂.evalBv w x) = true ↔ e₁.evalInt (sval x) < e₂.evalInt (sval x))
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `AffExpr`, `NoWrapU`, `uval`, `AffExpr.evalBv`, `AffExpr.evalInt`, `NoWrapS`, `sval`.
@@ -1030,11 +1062,13 @@ theorem bv_sle_slt_iff_int_of_noWrapS (w : Nat) (e₁ e₂ : AffExpr) (x : Nat �
 - **Lean statement** (`Toy.Farkas.checkFarkas_refutes_bvU_posSupport_of_lhs_lt_of_rhs_nonneg`):
 
 ```lean
-theorem checkFarkas_refutes_bvU_posSupport_of_lhs_lt_of_rhs_nonneg (A : List BvAtom) (cert : List Int)
-  (h : checkFarkas (List.map BvAtom.toConstraint A) cert = true) (w : Nat) (x : Nat → BitVec w)
-  (hl : ∀ (a : BvAtom), a ∈ posSupport cert A → a.lhs.evalInt (uval x) < 2 ^ w)
-  (hr : ∀ (a : BvAtom), a ∈ posSupport cert A → 0 ≤ a.rhs.evalInt (uval x)) :
-  ¬∀ (a : BvAtom), a ∈ posSupport cert A → BvAtom.HoldsU w a x
+-- lean/ToyFarkas/BitVecSystems.lean:131-136
+theorem checkFarkas_refutes_bvU_posSupport_of_lhs_lt_of_rhs_nonneg (A : List BvAtom)
+    (cert : List Int) (h : checkFarkas (A.map BvAtom.toConstraint) cert = true)
+    (w : Nat) (x : Nat → BitVec w)
+    (hl : ∀ a ∈ posSupport cert A, a.lhs.evalInt (uval x) < (2 : Int) ^ w)
+    (hr : ∀ a ∈ posSupport cert A, 0 ≤ a.rhs.evalInt (uval x)) :
+    ¬ ∀ a ∈ posSupport cert A, a.HoldsU w x
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `BvAtom`, `checkFarkas`, `Constraint`, `BvAtom.toConstraint`, `posSupport`, `AffExpr.evalInt`, `BvAtom.lhs`, `uval`, `BvAtom.rhs`, `BvAtom.HoldsU`.
@@ -1062,11 +1096,13 @@ theorem checkFarkas_refutes_bvU_posSupport_of_lhs_lt_of_rhs_nonneg (A : List BvA
 - **Lean statement** (`Toy.Farkas.checkFarkas_refutes_bvS_posSupport_of_lhs_lt_of_rhs_ge`):
 
 ```lean
-theorem checkFarkas_refutes_bvS_posSupport_of_lhs_lt_of_rhs_ge (A : List BvAtom) (cert : List Int)
-  (h : checkFarkas (List.map BvAtom.toConstraint A) cert = true) (w : Nat) (x : Nat → BitVec w)
-  (hl : ∀ (a : BvAtom), a ∈ posSupport cert A → 2 * a.lhs.evalInt (sval x) < 2 ^ w)
-  (hr : ∀ (a : BvAtom), a ∈ posSupport cert A → -2 ^ w ≤ 2 * a.rhs.evalInt (sval x)) :
-  ¬∀ (a : BvAtom), a ∈ posSupport cert A → BvAtom.HoldsS w a x
+-- lean/ToyFarkas/BitVecSystems.lean:147-152
+theorem checkFarkas_refutes_bvS_posSupport_of_lhs_lt_of_rhs_ge (A : List BvAtom)
+    (cert : List Int) (h : checkFarkas (A.map BvAtom.toConstraint) cert = true)
+    (w : Nat) (x : Nat → BitVec w)
+    (hl : ∀ a ∈ posSupport cert A, 2 * a.lhs.evalInt (sval x) < (2 : Int) ^ w)
+    (hr : ∀ a ∈ posSupport cert A, -((2 : Int) ^ w) ≤ 2 * a.rhs.evalInt (sval x)) :
+    ¬ ∀ a ∈ posSupport cert A, a.HoldsS w x
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `BvAtom`, `checkFarkas`, `Constraint`, `BvAtom.toConstraint`, `posSupport`, `AffExpr.evalInt`, `BvAtom.lhs`, `sval`, `BvAtom.rhs`, `BvAtom.HoldsS`.
@@ -1094,15 +1130,17 @@ theorem checkFarkas_refutes_bvS_posSupport_of_lhs_lt_of_rhs_ge (A : List BvAtom)
 - **Lean statement** (`Toy.Farkas.ce_bv_reading_mismatch`):
 
 ```lean
+-- lean/ToyFarkas/BitVecSystems.lean:332-341
 theorem ce_bv_reading_mismatch :
-  (InSignedRange 8 (eX0.evalInt (sval (bvPt2 255#8 0#8))) ∧
-      InSignedRange 8 ((eConst 0).evalInt (sval (bvPt2 255#8 0#8))) ∧
-        eX0.evalInt (sval (bvPt2 255#8 0#8)) ≤ (eConst 0).evalInt (sval (bvPt2 255#8 0#8)) ∧
-          (AffExpr.evalBv 8 eX0 (bvPt2 255#8 0#8)).ule (AffExpr.evalBv 8 (eConst 0) (bvPt2 255#8 0#8)) = false) ∧
-    InUnsignedRange 8 (eX0.evalInt (uval (bvPt2 255#8 0#8))) ∧
-      InUnsignedRange 8 ((eConst 0).evalInt (uval (bvPt2 255#8 0#8))) ∧
-        ¬eX0.evalInt (uval (bvPt2 255#8 0#8)) ≤ (eConst 0).evalInt (uval (bvPt2 255#8 0#8)) ∧
-          (AffExpr.evalBv 8 eX0 (bvPt2 255#8 0#8)).sle (AffExpr.evalBv 8 (eConst 0) (bvPt2 255#8 0#8)) = true
+    (InSignedRange 8 (eX0.evalInt (sval (bvPt2 (255#8) 0#8))) ∧
+      InSignedRange 8 ((eConst 0).evalInt (sval (bvPt2 (255#8) 0#8))) ∧
+      eX0.evalInt (sval (bvPt2 (255#8) 0#8)) ≤ (eConst 0).evalInt (sval (bvPt2 (255#8) 0#8)) ∧
+      (eX0.evalBv 8 (bvPt2 (255#8) 0#8)).ule ((eConst 0).evalBv 8 (bvPt2 (255#8) 0#8)) = false) ∧
+    -- the converse mismatch: unsigned-reading ranges with the signed comparison
+    (InUnsignedRange 8 (eX0.evalInt (uval (bvPt2 (255#8) 0#8))) ∧
+      InUnsignedRange 8 ((eConst 0).evalInt (uval (bvPt2 (255#8) 0#8))) ∧
+      ¬ (eX0.evalInt (uval (bvPt2 (255#8) 0#8)) ≤ (eConst 0).evalInt (uval (bvPt2 (255#8) 0#8))) ∧
+      (eX0.evalBv 8 (bvPt2 (255#8) 0#8)).sle ((eConst 0).evalBv 8 (bvPt2 (255#8) 0#8)) = true)
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `InSignedRange`, `AffExpr.evalInt`, `eX0`, `sval`, `bvPt2`, `eConst`, `AffExpr.evalBv`, `InUnsignedRange`, `uval`.
@@ -1123,24 +1161,24 @@ theorem ce_bv_reading_mismatch :
 - **Lean statement** (`Toy.Farkas.ce_bv_rearrangement_unsound`):
 
 ```lean
+-- lean/ToyFarkas/BitVecSystems.lean:350-366
 theorem ce_bv_rearrangement_unsound :
-  (InUnsignedRange 8 (eX0.evalInt (uval (bvPt2 0#8 1#8))) ∧
-      InUnsignedRange 8 (eX1.evalInt (uval (bvPt2 0#8 1#8))) ∧
-        (AffExpr.evalBv 8 eX0 (bvPt2 0#8 1#8)).ule (AffExpr.evalBv 8 eX1 (bvPt2 0#8 1#8)) = true ∧
-          (AffExpr.evalBv 8 { terms := [(0, 1), (1, -1)], const := 0 : AffExpr } (bvPt2 0#8 1#8)).ule
-                (AffExpr.evalBv 8 (eConst 0) (bvPt2 0#8 1#8)) =
-              false ∧
-            { terms := [(0, 1), (1, -1)], const := 0 : AffExpr }.evalInt (uval (bvPt2 0#8 1#8)) ≤
-              (eConst 0).evalInt (uval (bvPt2 0#8 1#8))) ∧
-    sval (bvPt2 156#8 100#8) 0 = -100 ∧
-      InSignedRange 8 (eX0.evalInt (sval (bvPt2 156#8 100#8))) ∧
-        InSignedRange 8 (eX1.evalInt (sval (bvPt2 156#8 100#8))) ∧
-          (AffExpr.evalBv 8 eX0 (bvPt2 156#8 100#8)).sle (AffExpr.evalBv 8 eX1 (bvPt2 156#8 100#8)) = true ∧
-            (AffExpr.evalBv 8 { terms := [(0, 1), (1, -1)], const := 0 : AffExpr } (bvPt2 156#8 100#8)).sle
-                  (AffExpr.evalBv 8 (eConst 0) (bvPt2 156#8 100#8)) =
-                false ∧
-              { terms := [(0, 1), (1, -1)], const := 0 : AffExpr }.evalInt (sval (bvPt2 156#8 100#8)) ≤
-                (eConst 0).evalInt (sval (bvPt2 156#8 100#8))
+    (InUnsignedRange 8 (eX0.evalInt (uval (bvPt2 (0#8) (1#8)))) ∧
+      InUnsignedRange 8 (eX1.evalInt (uval (bvPt2 (0#8) (1#8)))) ∧
+      (eX0.evalBv 8 (bvPt2 (0#8) (1#8))).ule (eX1.evalBv 8 (bvPt2 (0#8) (1#8))) = true ∧
+      (AffExpr.evalBv 8 ⟨[(0, 1), (1, -1)], 0⟩ (bvPt2 (0#8) (1#8))).ule
+        ((eConst 0).evalBv 8 (bvPt2 (0#8) (1#8))) = false ∧
+      AffExpr.evalInt ⟨[(0, 1), (1, -1)], 0⟩ (uval (bvPt2 (0#8) (1#8))) ≤
+        (eConst 0).evalInt (uval (bvPt2 (0#8) (1#8)))) ∧
+    -- signed: at `(x₀, x₁) = (-100, 100)`, `x₀ ≤ₛ x₁` holds but `x₀ - x₁` wraps to `56`
+    (sval (bvPt2 (156#8) (100#8)) 0 = -100 ∧
+      InSignedRange 8 (eX0.evalInt (sval (bvPt2 (156#8) (100#8)))) ∧
+      InSignedRange 8 (eX1.evalInt (sval (bvPt2 (156#8) (100#8)))) ∧
+      (eX0.evalBv 8 (bvPt2 (156#8) (100#8))).sle (eX1.evalBv 8 (bvPt2 (156#8) (100#8))) = true ∧
+      (AffExpr.evalBv 8 ⟨[(0, 1), (1, -1)], 0⟩ (bvPt2 (156#8) (100#8))).sle
+        ((eConst 0).evalBv 8 (bvPt2 (156#8) (100#8))) = false ∧
+      AffExpr.evalInt ⟨[(0, 1), (1, -1)], 0⟩ (sval (bvPt2 (156#8) (100#8))) ≤
+        (eConst 0).evalInt (sval (bvPt2 (156#8) (100#8))))
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `InUnsignedRange`, `AffExpr.evalInt`, `eX0`, `uval`, `bvPt2`, `eX1`, `AffExpr.evalBv`, `eConst`, `sval`, `InSignedRange`.
@@ -1161,16 +1199,18 @@ theorem ce_bv_rearrangement_unsound :
 - **Lean statement** (`Toy.Farkas.ce_noWrap_not_needed_for_wrapping_eval`):
 
 ```lean
+-- lean/ToyFarkas/BitVecSystems.lean:381-391
 theorem ce_noWrap_not_needed_for_wrapping_eval :
-  (200 ∈ eAddAddSub.intermediates (sval (bvPt2 100#8 0#8)) ∧
-      (∀ (z : Int), z ∈ eAddAddSub.intermediates (sval (bvPt2 100#8 0#8)) → z ≠ 200 → InSignedRange 8 z) ∧
-        ¬NoWrapS 8 eAddAddSub (sval (bvPt2 100#8 0#8)) ∧
-          InSignedRange 8 (eAddAddSub.evalInt (sval (bvPt2 100#8 0#8))) ∧
-            (AffExpr.evalBv 8 eAddAddSub (bvPt2 100#8 0#8)).toInt = eAddAddSub.evalInt (sval (bvPt2 100#8 0#8))) ∧
-    400 ∈ eAddAddSub.intermediates (uval (bvPt2 200#8 0#8)) ∧
-      ¬NoWrapU 8 eAddAddSub (uval (bvPt2 200#8 0#8)) ∧
-        InUnsignedRange 8 (eAddAddSub.evalInt (uval (bvPt2 200#8 0#8))) ∧
-          ↑(AffExpr.evalBv 8 eAddAddSub (bvPt2 200#8 0#8)).toNat = eAddAddSub.evalInt (uval (bvPt2 200#8 0#8))
+    ((200 : Int) ∈ eAddAddSub.intermediates (sval (bvPt2 (100#8) 0#8)) ∧
+      (∀ z ∈ eAddAddSub.intermediates (sval (bvPt2 (100#8) 0#8)), z ≠ 200 → InSignedRange 8 z) ∧
+      ¬ NoWrapS 8 eAddAddSub (sval (bvPt2 (100#8) 0#8)) ∧
+      InSignedRange 8 (eAddAddSub.evalInt (sval (bvPt2 (100#8) 0#8))) ∧
+      (eAddAddSub.evalBv 8 (bvPt2 (100#8) 0#8)).toInt = eAddAddSub.evalInt (sval (bvPt2 (100#8) 0#8))) ∧
+    ((400 : Int) ∈ eAddAddSub.intermediates (uval (bvPt2 (200#8) 0#8)) ∧
+      ¬ NoWrapU 8 eAddAddSub (uval (bvPt2 (200#8) 0#8)) ∧
+      InUnsignedRange 8 (eAddAddSub.evalInt (uval (bvPt2 (200#8) 0#8))) ∧
+      ((eAddAddSub.evalBv 8 (bvPt2 (200#8) 0#8)).toNat : Int) =
+        eAddAddSub.evalInt (uval (bvPt2 (200#8) 0#8)))
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `AffExpr.intermediates`, `eAddAddSub`, `sval`, `bvPt2`, `InSignedRange`, `NoWrapS`, `AffExpr.evalInt`, `AffExpr.evalBv`, `uval`, `NoWrapU`, `InUnsignedRange`.
@@ -1189,309 +1229,327 @@ theorem ce_noWrap_not_needed_for_wrapping_eval :
 Ledger counterexamples, non-vacuity witnesses and positive controls referenced by the cards (all kernel-checked; statement and closure hashes under Evidence).
 
 ```lean
+-- lean/ToyFarkas/BitVecSystems.lean:312-316
 theorem ce_bv_sle_lhs_out_of_range :
-  ¬InSignedRange 8 (eDouble.evalInt (sval (bvPt2 100#8 0#8))) ∧
-    InSignedRange 8 ((eConst 0).evalInt (sval (bvPt2 100#8 0#8))) ∧
-      (AffExpr.evalBv 8 eDouble (bvPt2 100#8 0#8)).sle (AffExpr.evalBv 8 (eConst 0) (bvPt2 100#8 0#8)) = true ∧
-        ¬eDouble.evalInt (sval (bvPt2 100#8 0#8)) ≤ (eConst 0).evalInt (sval (bvPt2 100#8 0#8))
+    ¬ InSignedRange 8 (eDouble.evalInt (sval (bvPt2 (100#8) 0#8))) ∧
+    InSignedRange 8 ((eConst 0).evalInt (sval (bvPt2 (100#8) 0#8))) ∧
+    (eDouble.evalBv 8 (bvPt2 (100#8) 0#8)).sle ((eConst 0).evalBv 8 (bvPt2 (100#8) 0#8)) = true ∧
+    ¬ (eDouble.evalInt (sval (bvPt2 (100#8) 0#8)) ≤ (eConst 0).evalInt (sval (bvPt2 (100#8) 0#8)))
 
+-- lean/ToyFarkas/BitVecSystems.lean:491-496
 theorem ce_bv_sle_noWrapS_lhs :
-  ¬NoWrapS 8 eDouble (sval (bvPt2 100#8 0#8)) ∧
-    NoWrapS 8 (eConst 0) (sval (bvPt2 100#8 0#8)) ∧
-      ¬(((AffExpr.evalBv 8 eDouble (bvPt2 100#8 0#8)).sle (AffExpr.evalBv 8 (eConst 0) (bvPt2 100#8 0#8)) = true ↔
-            eDouble.evalInt (sval (bvPt2 100#8 0#8)) ≤ (eConst 0).evalInt (sval (bvPt2 100#8 0#8))) ∧
-          ((AffExpr.evalBv 8 eDouble (bvPt2 100#8 0#8)).slt (AffExpr.evalBv 8 (eConst 0) (bvPt2 100#8 0#8)) = true ↔
-            eDouble.evalInt (sval (bvPt2 100#8 0#8)) < (eConst 0).evalInt (sval (bvPt2 100#8 0#8))))
+    ¬ NoWrapS 8 eDouble (sval (bvPt2 (100#8) 0#8)) ∧ NoWrapS 8 (eConst 0) (sval (bvPt2 (100#8) 0#8)) ∧
+    ¬ (((eDouble.evalBv 8 (bvPt2 (100#8) 0#8)).sle ((eConst 0).evalBv 8 (bvPt2 (100#8) 0#8)) = true ↔
+        eDouble.evalInt (sval (bvPt2 (100#8) 0#8)) ≤ (eConst 0).evalInt (sval (bvPt2 (100#8) 0#8))) ∧
+      ((eDouble.evalBv 8 (bvPt2 (100#8) 0#8)).slt ((eConst 0).evalBv 8 (bvPt2 (100#8) 0#8)) = true ↔
+        eDouble.evalInt (sval (bvPt2 (100#8) 0#8)) < (eConst 0).evalInt (sval (bvPt2 (100#8) 0#8))))
 
+-- lean/ToyFarkas/BitVecSystems.lean:500-505
 theorem ce_bv_sle_noWrapS_rhs :
-  NoWrapS 8 eX0 (sval (bvPt2 100#8 0#8)) ∧
-    ¬NoWrapS 8 (eConst 200) (sval (bvPt2 100#8 0#8)) ∧
-      ¬(((AffExpr.evalBv 8 eX0 (bvPt2 100#8 0#8)).sle (AffExpr.evalBv 8 (eConst 200) (bvPt2 100#8 0#8)) = true ↔
-            eX0.evalInt (sval (bvPt2 100#8 0#8)) ≤ (eConst 200).evalInt (sval (bvPt2 100#8 0#8))) ∧
-          ((AffExpr.evalBv 8 eX0 (bvPt2 100#8 0#8)).slt (AffExpr.evalBv 8 (eConst 200) (bvPt2 100#8 0#8)) = true ↔
-            eX0.evalInt (sval (bvPt2 100#8 0#8)) < (eConst 200).evalInt (sval (bvPt2 100#8 0#8))))
+    NoWrapS 8 eX0 (sval (bvPt2 (100#8) 0#8)) ∧ ¬ NoWrapS 8 (eConst 200) (sval (bvPt2 (100#8) 0#8)) ∧
+    ¬ (((eX0.evalBv 8 (bvPt2 (100#8) 0#8)).sle ((eConst 200).evalBv 8 (bvPt2 (100#8) 0#8)) = true ↔
+        eX0.evalInt (sval (bvPt2 (100#8) 0#8)) ≤ (eConst 200).evalInt (sval (bvPt2 (100#8) 0#8))) ∧
+      ((eX0.evalBv 8 (bvPt2 (100#8) 0#8)).slt ((eConst 200).evalBv 8 (bvPt2 (100#8) 0#8)) = true ↔
+        eX0.evalInt (sval (bvPt2 (100#8) 0#8)) < (eConst 200).evalInt (sval (bvPt2 (100#8) 0#8))))
 
+-- lean/ToyFarkas/BitVecSystems.lean:321-325
 theorem ce_bv_sle_rhs_out_of_range :
-  InSignedRange 8 (eX0.evalInt (sval (bvPt2 100#8 0#8))) ∧
-    ¬InSignedRange 8 ((eConst 200).evalInt (sval (bvPt2 100#8 0#8))) ∧
-      (AffExpr.evalBv 8 eX0 (bvPt2 100#8 0#8)).sle (AffExpr.evalBv 8 (eConst 200) (bvPt2 100#8 0#8)) = false ∧
-        eX0.evalInt (sval (bvPt2 100#8 0#8)) ≤ (eConst 200).evalInt (sval (bvPt2 100#8 0#8))
+    InSignedRange 8 (eX0.evalInt (sval (bvPt2 (100#8) 0#8))) ∧
+    ¬ InSignedRange 8 ((eConst 200).evalInt (sval (bvPt2 (100#8) 0#8))) ∧
+    (eX0.evalBv 8 (bvPt2 (100#8) 0#8)).sle ((eConst 200).evalBv 8 (bvPt2 (100#8) 0#8)) = false ∧
+    eX0.evalInt (sval (bvPt2 (100#8) 0#8)) ≤ (eConst 200).evalInt (sval (bvPt2 (100#8) 0#8))
 
+-- lean/ToyFarkas/BitVecSystems.lean:294-298
 theorem ce_bv_ule_lhs_out_of_range :
-  ¬InUnsignedRange 8 (eDouble.evalInt (uval (bvPt2 200#8 0#8))) ∧
-    InUnsignedRange 8 ((eConst 150).evalInt (uval (bvPt2 200#8 0#8))) ∧
-      (AffExpr.evalBv 8 eDouble (bvPt2 200#8 0#8)).ule (AffExpr.evalBv 8 (eConst 150) (bvPt2 200#8 0#8)) = true ∧
-        ¬eDouble.evalInt (uval (bvPt2 200#8 0#8)) ≤ (eConst 150).evalInt (uval (bvPt2 200#8 0#8))
+    ¬ InUnsignedRange 8 (eDouble.evalInt (uval (bvPt2 (200#8) 0#8))) ∧
+    InUnsignedRange 8 ((eConst 150).evalInt (uval (bvPt2 (200#8) 0#8))) ∧
+    (eDouble.evalBv 8 (bvPt2 (200#8) 0#8)).ule ((eConst 150).evalBv 8 (bvPt2 (200#8) 0#8)) = true ∧
+    ¬ (eDouble.evalInt (uval (bvPt2 (200#8) 0#8)) ≤ (eConst 150).evalInt (uval (bvPt2 (200#8) 0#8)))
 
+-- lean/ToyFarkas/BitVecSystems.lean:472-477
 theorem ce_bv_ule_noWrapU_lhs :
-  ¬NoWrapU 8 eDouble (uval (bvPt2 200#8 0#8)) ∧
-    NoWrapU 8 (eConst 150) (uval (bvPt2 200#8 0#8)) ∧
-      ¬(((AffExpr.evalBv 8 eDouble (bvPt2 200#8 0#8)).ule (AffExpr.evalBv 8 (eConst 150) (bvPt2 200#8 0#8)) = true ↔
-            eDouble.evalInt (uval (bvPt2 200#8 0#8)) ≤ (eConst 150).evalInt (uval (bvPt2 200#8 0#8))) ∧
-          ((AffExpr.evalBv 8 eDouble (bvPt2 200#8 0#8)).ult (AffExpr.evalBv 8 (eConst 150) (bvPt2 200#8 0#8)) = true ↔
-            eDouble.evalInt (uval (bvPt2 200#8 0#8)) < (eConst 150).evalInt (uval (bvPt2 200#8 0#8))))
+    ¬ NoWrapU 8 eDouble (uval (bvPt2 (200#8) 0#8)) ∧ NoWrapU 8 (eConst 150) (uval (bvPt2 (200#8) 0#8)) ∧
+    ¬ (((eDouble.evalBv 8 (bvPt2 (200#8) 0#8)).ule ((eConst 150).evalBv 8 (bvPt2 (200#8) 0#8)) = true ↔
+        eDouble.evalInt (uval (bvPt2 (200#8) 0#8)) ≤ (eConst 150).evalInt (uval (bvPt2 (200#8) 0#8))) ∧
+      ((eDouble.evalBv 8 (bvPt2 (200#8) 0#8)).ult ((eConst 150).evalBv 8 (bvPt2 (200#8) 0#8)) = true ↔
+        eDouble.evalInt (uval (bvPt2 (200#8) 0#8)) < (eConst 150).evalInt (uval (bvPt2 (200#8) 0#8))))
 
+-- lean/ToyFarkas/BitVecSystems.lean:482-487
 theorem ce_bv_ule_noWrapU_rhs :
-  NoWrapU 8 eX0 (uval (bvPt2 200#8 0#8)) ∧
-    ¬NoWrapU 8 (eConst 300) (uval (bvPt2 200#8 0#8)) ∧
-      ¬(((AffExpr.evalBv 8 eX0 (bvPt2 200#8 0#8)).ule (AffExpr.evalBv 8 (eConst 300) (bvPt2 200#8 0#8)) = true ↔
-            eX0.evalInt (uval (bvPt2 200#8 0#8)) ≤ (eConst 300).evalInt (uval (bvPt2 200#8 0#8))) ∧
-          ((AffExpr.evalBv 8 eX0 (bvPt2 200#8 0#8)).ult (AffExpr.evalBv 8 (eConst 300) (bvPt2 200#8 0#8)) = true ↔
-            eX0.evalInt (uval (bvPt2 200#8 0#8)) < (eConst 300).evalInt (uval (bvPt2 200#8 0#8))))
+    NoWrapU 8 eX0 (uval (bvPt2 (200#8) 0#8)) ∧ ¬ NoWrapU 8 (eConst 300) (uval (bvPt2 (200#8) 0#8)) ∧
+    ¬ (((eX0.evalBv 8 (bvPt2 (200#8) 0#8)).ule ((eConst 300).evalBv 8 (bvPt2 (200#8) 0#8)) = true ↔
+        eX0.evalInt (uval (bvPt2 (200#8) 0#8)) ≤ (eConst 300).evalInt (uval (bvPt2 (200#8) 0#8))) ∧
+      ((eX0.evalBv 8 (bvPt2 (200#8) 0#8)).ult ((eConst 300).evalBv 8 (bvPt2 (200#8) 0#8)) = true ↔
+        eX0.evalInt (uval (bvPt2 (200#8) 0#8)) < (eConst 300).evalInt (uval (bvPt2 (200#8) 0#8))))
 
+-- lean/ToyFarkas/BitVecSystems.lean:303-307
 theorem ce_bv_ule_rhs_out_of_range :
-  InUnsignedRange 8 (eX0.evalInt (uval (bvPt2 200#8 0#8))) ∧
-    ¬InUnsignedRange 8 ((eConst 300).evalInt (uval (bvPt2 200#8 0#8))) ∧
-      (AffExpr.evalBv 8 eX0 (bvPt2 200#8 0#8)).ule (AffExpr.evalBv 8 (eConst 300) (bvPt2 200#8 0#8)) = false ∧
-        eX0.evalInt (uval (bvPt2 200#8 0#8)) ≤ (eConst 300).evalInt (uval (bvPt2 200#8 0#8))
+    InUnsignedRange 8 (eX0.evalInt (uval (bvPt2 (200#8) 0#8))) ∧
+    ¬ InUnsignedRange 8 ((eConst 300).evalInt (uval (bvPt2 (200#8) 0#8))) ∧
+    (eX0.evalBv 8 (bvPt2 (200#8) 0#8)).ule ((eConst 300).evalBv 8 (bvPt2 (200#8) 0#8)) = false ∧
+    eX0.evalInt (uval (bvPt2 (200#8) 0#8)) ≤ (eConst 300).evalInt (uval (bvPt2 (200#8) 0#8))
 
+-- lean/ToyFarkas/Cuts.lean:311-315
 theorem ce_cgCut_div_one_unsound_over_rat :
-  cgValid sysOpenUnit { mult := [(1 : Int), (1 : Int)], div := (1 : Int) } = true ∧
-    cgCut sysOpenUnit { mult := [(1 : Int), (1 : Int)], div := (1 : Int) } =
-        { lhs := [((0 : Nat), (0 : Int))], rel := Rel.le, rhs := (-1 : Int) } ∧
-      (0 : Int) < (2 : Int) ∧
-        SatScaled sysOpenUnit (2 : Int) (pt1 (1 : Int)) ∧
-          ¬(cgCut sysOpenUnit { mult := [(1 : Int), (1 : Int)], div := (1 : Int) }).HoldsScaled (2 : Int)
-              (pt1 (1 : Int))
+    cgValid sysOpenUnit ⟨[1, 1], 1⟩ = true ∧
+    cgCut sysOpenUnit ⟨[1, 1], 1⟩ = ⟨[(0, 0)], .le, -1⟩ ∧
+    (0 : Int) < 2 ∧ SatScaled sysOpenUnit 2 (pt1 1) ∧
+    ¬ (cgCut sysOpenUnit ⟨[1, 1], 1⟩).HoldsScaled 2 (pt1 1)
 
+-- lean/ToyFarkas/Cuts.lean:277-281
 theorem ce_cgCut_negative_divisor :
-  multipliersNonneg [1] = true ∧
-    ¬0 < -1 ∧
-      cgDivisible [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] { mult := [1], div := -1 } = true ∧
-        SatInt [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] (pt1 (-1)) ∧
-          ¬(cgCut [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] { mult := [1], div := -1 }).HoldsInt (pt1 (-1))
+    multipliersNonneg [1] = true ∧ ¬ ((0 : Int) < -1) ∧
+    cgDivisible [⟨[(0, 1)], .le, 0⟩] ⟨[1], -1⟩ = true ∧
+    SatInt [⟨[(0, 1)], .le, 0⟩] (pt1 (-1)) ∧
+    ¬ (cgCut [⟨[(0, 1)], .le, 0⟩] ⟨[1], -1⟩).HoldsInt (pt1 (-1))
 
+-- lean/ToyFarkas/Cuts.lean:269-273
 theorem ce_cgCut_negative_multiplier :
-  multipliersNonneg [(-1 : Int)] = false ∧
-    (0 : Int) < (1 : Int) ∧
-      cgDivisible [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
-            { mult := [(-1 : Int)], div := (1 : Int) } =
-          true ∧
-        SatInt [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (0 : Int) }] (pt1 (-1 : Int)) ∧
-          ¬(cgCut [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
-                  { mult := [(-1 : Int)], div := (1 : Int) }).HoldsInt
-              (pt1 (-1 : Int))
+    multipliersNonneg [-1] = false ∧ (0 : Int) < 1 ∧
+    cgDivisible [⟨[(0, 1)], .le, 0⟩] ⟨[-1], 1⟩ = true ∧
+    SatInt [⟨[(0, 1)], .le, 0⟩] (pt1 (-1)) ∧
+    ¬ (cgCut [⟨[(0, 1)], .le, 0⟩] ⟨[-1], 1⟩).HoldsInt (pt1 (-1))
 
+-- lean/ToyFarkas/Cuts.lean:287-291
 theorem ce_cgCut_not_divisible :
-  multipliersNonneg [(1 : Int)] = true ∧
-    (0 : Int) < (2 : Int) ∧
-      cgDivisible [{ lhs := [((0 : Nat), (1 : Int)), ((1 : Nat), (-1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
-            { mult := [(1 : Int)], div := (2 : Int) } =
-          false ∧
-        SatInt [{ lhs := [((0 : Nat), (1 : Int)), ((1 : Nat), (-1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
-            (pt2 (-1 : Int) (-1 : Int)) ∧
-          ¬(cgCut [{ lhs := [((0 : Nat), (1 : Int)), ((1 : Nat), (-1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
-                  { mult := [(1 : Int)], div := (2 : Int) }).HoldsInt
-              (pt2 (-1 : Int) (-1 : Int))
+    multipliersNonneg [1] = true ∧ (0 : Int) < 2 ∧
+    cgDivisible [⟨[(0, 1), (1, -1)], .le, 0⟩] ⟨[1], 2⟩ = false ∧
+    SatInt [⟨[(0, 1), (1, -1)], .le, 0⟩] (pt2 (-1) (-1)) ∧
+    ¬ (cgCut [⟨[(0, 1), (1, -1)], .le, 0⟩] ⟨[1], 2⟩).HoldsInt (pt2 (-1) (-1))
 
+-- lean/ToyFarkas/Cuts.lean:295-297
 theorem ce_cgCut_point_not_solution :
-  multipliersNonneg [(1 : Int)] = true ∧
-    (0 : Int) < (2 : Int) ∧
-      cgDivisible sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) } = true ∧
-        ¬SatInt sysTwoXLeThree (pt1 (5 : Int)) ∧
-          ¬(cgCut sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) }).HoldsInt (pt1 (5 : Int))
+    multipliersNonneg [1] = true ∧ (0 : Int) < 2 ∧ cgDivisible sysTwoXLeThree ⟨[1], 2⟩ = true ∧
+    ¬ SatInt sysTwoXLeThree (pt1 5) ∧ ¬ (cgCut sysTwoXLeThree ⟨[1], 2⟩).HoldsInt (pt1 5)
 
+-- lean/ToyFarkas/Cuts.lean:255-258
 theorem ce_cgCut_unsound_over_rat :
-  multipliersNonneg [(1 : Int), (0 : Int)] = true ∧
-    (0 : Int) < (2 : Int) ∧
-      cgDivisible sysHalf { mult := [(1 : Int), (0 : Int)], div := (2 : Int) } = true ∧
-        (0 : Int) < (2 : Int) ∧
-          SatScaled sysHalf (2 : Int) (pt1 (1 : Int)) ∧
-            ¬(cgCut sysHalf { mult := [(1 : Int), (0 : Int)], div := (2 : Int) }).HoldsScaled (2 : Int) (pt1 (1 : Int))
+    multipliersNonneg [1, 0] = true ∧ (0 : Int) < 2 ∧ cgDivisible sysHalf ⟨[1, 0], 2⟩ = true ∧
+    (0 : Int) < 2 ∧ SatScaled sysHalf 2 (pt1 1) ∧
+    ¬ (cgCut sysHalf ⟨[1, 0], 2⟩).HoldsScaled 2 (pt1 1)
 
+-- lean/ToyFarkas/Cuts.lean:302-305
 theorem ce_cgDerive_rejected :
-  cgDerive [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] { mult := [-1], div := 1 } = none ∧
-    SatInt [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] (pt1 (-1)) ∧
-      ¬(cgCut [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] { mult := [-1], div := 1 }).HoldsInt (pt1 (-1))
+    cgDerive [⟨[(0, 1)], .le, 0⟩] ⟨[-1], 1⟩ = none ∧
+    SatInt [⟨[(0, 1)], .le, 0⟩] (pt1 (-1)) ∧
+    ¬ (cgCut [⟨[(0, 1)], .le, 0⟩] ⟨[-1], 1⟩).HoldsInt (pt1 (-1))
 
+-- lean/ToyFarkas/Cuts.lean:339-340
 theorem ce_checkCutCert_rejects_satisfiable :
-  checkCutCert sysTwoXLeThree { cuts := [{ mult := [1], div := 2 }], farkas := [1] } = false ∧
-    SatInt sysTwoXLeThree (pt1 1)
+    checkCutCert sysTwoXLeThree ⟨[⟨[1], 2⟩], [1]⟩ = false ∧ SatInt sysTwoXLeThree (pt1 1)
 
+-- lean/ToyFarkas/Cuts.lean:263-264
 theorem ce_checkCutCert_unsound_over_rat :
-  checkCutCert sysHalf halfCutCert = true ∧ (0 : Int) < (2 : Int) ∧ SatScaled sysHalf (2 : Int) (pt1 (1 : Int))
+    checkCutCert sysHalf halfCutCert = true ∧ (0 : Int) < 2 ∧ SatScaled sysHalf 2 (pt1 1)
 
+-- lean/ToyFarkas/Counterexamples.lean:149-150
 theorem ce_checkFarkasTightened_rejects_satisfiable :
   checkFarkasTightened sysEq [1, 1] = false ∧ SatInt sysEq (pt1 1)
 
+-- lean/ToyFarkas/BitVecSystems.lean:431-438
 theorem ce_checkFarkas_bvS_lhs_out_of_range :
-  checkFarkas (List.map BvAtom.toConstraint atomsLhsWrapS) [1, 3] = true ∧
+    checkFarkas (atomsLhsWrapS.map BvAtom.toConstraint) [1, 3] = true ∧
     posSupport [1, 3] atomsLhsWrapS = atomsLhsWrapS ∧
-      (¬∀ (a : BvAtom), a ∈ posSupport [1, 3] atomsLhsWrapS → 2 * a.lhs.evalInt (sval (bvPt2 100#8 0#8)) < 2 ^ 8) ∧
-        (∀ (a : BvAtom), a ∈ posSupport [1, 3] atomsLhsWrapS → -2 ^ 8 ≤ 2 * a.rhs.evalInt (sval (bvPt2 100#8 0#8))) ∧
-          ∀ (a : BvAtom), a ∈ posSupport [1, 3] atomsLhsWrapS → BvAtom.HoldsS 8 a (bvPt2 100#8 0#8)
+    ¬ (∀ a ∈ posSupport [1, 3] atomsLhsWrapS,
+        2 * a.lhs.evalInt (sval (bvPt2 (100#8) 0#8)) < (2 : Int) ^ 8) ∧
+    (∀ a ∈ posSupport [1, 3] atomsLhsWrapS,
+        -((2 : Int) ^ 8) ≤ 2 * a.rhs.evalInt (sval (bvPt2 (100#8) 0#8))) ∧
+    (∀ a ∈ posSupport [1, 3] atomsLhsWrapS, a.HoldsS 8 (bvPt2 (100#8) 0#8))
 
+-- lean/ToyFarkas/BitVecSystems.lean:448-455
 theorem ce_checkFarkas_bvS_rhs_out_of_range :
-  checkFarkas (List.map BvAtom.toConstraint atomsRhsWrapS) [1, 1] = true ∧
+    checkFarkas (atomsRhsWrapS.map BvAtom.toConstraint) [1, 1] = true ∧
     posSupport [1, 1] atomsRhsWrapS = atomsRhsWrapS ∧
-      (∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsRhsWrapS → 2 * a.lhs.evalInt (sval (bvPt2 50#8 0#8)) < 2 ^ 8) ∧
-        (¬∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsRhsWrapS → -2 ^ 8 ≤ 2 * a.rhs.evalInt (sval (bvPt2 50#8 0#8))) ∧
-          ∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsRhsWrapS → BvAtom.HoldsS 8 a (bvPt2 50#8 0#8)
+    (∀ a ∈ posSupport [1, 1] atomsRhsWrapS,
+        2 * a.lhs.evalInt (sval (bvPt2 (50#8) 0#8)) < (2 : Int) ^ 8) ∧
+    ¬ (∀ a ∈ posSupport [1, 1] atomsRhsWrapS,
+        -((2 : Int) ^ 8) ≤ 2 * a.rhs.evalInt (sval (bvPt2 (50#8) 0#8))) ∧
+    (∀ a ∈ posSupport [1, 1] atomsRhsWrapS, a.HoldsS 8 (bvPt2 (50#8) 0#8))
 
+-- lean/ToyFarkas/BitVecSystems.lean:402-407
 theorem ce_checkFarkas_bvU_lhs_out_of_range :
-  checkFarkas (List.map BvAtom.toConstraint atomsLhsWrapU) [1, 3] = true ∧
+    checkFarkas (atomsLhsWrapU.map BvAtom.toConstraint) [1, 3] = true ∧
     posSupport [1, 3] atomsLhsWrapU = atomsLhsWrapU ∧
-      (¬∀ (a : BvAtom), a ∈ posSupport [1, 3] atomsLhsWrapU → a.lhs.evalInt (uval (bvPt2 200#8 0#8)) < 2 ^ 8) ∧
-        (∀ (a : BvAtom), a ∈ posSupport [1, 3] atomsLhsWrapU → 0 ≤ a.rhs.evalInt (uval (bvPt2 200#8 0#8))) ∧
-          ∀ (a : BvAtom), a ∈ posSupport [1, 3] atomsLhsWrapU → BvAtom.HoldsU 8 a (bvPt2 200#8 0#8)
+    ¬ (∀ a ∈ posSupport [1, 3] atomsLhsWrapU, a.lhs.evalInt (uval (bvPt2 (200#8) 0#8)) < (2 : Int) ^ 8) ∧
+    (∀ a ∈ posSupport [1, 3] atomsLhsWrapU, 0 ≤ a.rhs.evalInt (uval (bvPt2 (200#8) 0#8))) ∧
+    (∀ a ∈ posSupport [1, 3] atomsLhsWrapU, a.HoldsU 8 (bvPt2 (200#8) 0#8))
 
+-- lean/ToyFarkas/BitVecSystems.lean:416-421
 theorem ce_checkFarkas_bvU_rhs_out_of_range :
-  checkFarkas (List.map BvAtom.toConstraint atomsRhsWrapU) [1, 1] = true ∧
+    checkFarkas (atomsRhsWrapU.map BvAtom.toConstraint) [1, 1] = true ∧
     posSupport [1, 1] atomsRhsWrapU = atomsRhsWrapU ∧
-      (∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsRhsWrapU → a.lhs.evalInt (uval (bvPt2 0#8 0#8)) < 2 ^ 8) ∧
-        (¬∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsRhsWrapU → 0 ≤ a.rhs.evalInt (uval (bvPt2 0#8 0#8))) ∧
-          ∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsRhsWrapU → BvAtom.HoldsU 8 a (bvPt2 0#8 0#8)
+    (∀ a ∈ posSupport [1, 1] atomsRhsWrapU, a.lhs.evalInt (uval (bvPt2 (0#8) 0#8)) < (2 : Int) ^ 8) ∧
+    ¬ (∀ a ∈ posSupport [1, 1] atomsRhsWrapU, 0 ≤ a.rhs.evalInt (uval (bvPt2 (0#8) 0#8))) ∧
+    (∀ a ∈ posSupport [1, 1] atomsRhsWrapU, a.HoldsU 8 (bvPt2 (0#8) 0#8))
 
+-- lean/ToyFarkas/BitVecSystems.lean:514-521
 theorem ce_checkFarkas_refutes_bv_rejected :
-  checkFarkas (List.map BvAtom.toConstraint atomsLe) [1] = false ∧
+    checkFarkas (atomsLe.map BvAtom.toConstraint) [1] = false ∧
     posSupport [1] atomsLe = atomsLe ∧
-      (∀ (a : BvAtom), a ∈ atomsLe → InUnsignedRange 8 (a.lhs.evalInt (uval (bvPt2 0#8 0#8)))) ∧
-        (∀ (a : BvAtom), a ∈ atomsLe → InUnsignedRange 8 (a.rhs.evalInt (uval (bvPt2 0#8 0#8)))) ∧
-          (∀ (a : BvAtom), a ∈ atomsLe → InSignedRange 8 (a.lhs.evalInt (sval (bvPt2 0#8 0#8)))) ∧
-            (∀ (a : BvAtom), a ∈ atomsLe → InSignedRange 8 (a.rhs.evalInt (sval (bvPt2 0#8 0#8)))) ∧
-              (∀ (a : BvAtom), a ∈ atomsLe → BvAtom.HoldsU 8 a (bvPt2 0#8 0#8)) ∧
-                ∀ (a : BvAtom), a ∈ atomsLe → BvAtom.HoldsS 8 a (bvPt2 0#8 0#8)
+    (∀ a ∈ atomsLe, InUnsignedRange 8 (a.lhs.evalInt (uval (bvPt2 0#8 0#8)))) ∧
+    (∀ a ∈ atomsLe, InUnsignedRange 8 (a.rhs.evalInt (uval (bvPt2 0#8 0#8)))) ∧
+    (∀ a ∈ atomsLe, InSignedRange 8 (a.lhs.evalInt (sval (bvPt2 0#8 0#8)))) ∧
+    (∀ a ∈ atomsLe, InSignedRange 8 (a.rhs.evalInt (sval (bvPt2 0#8 0#8)))) ∧
+    (∀ a ∈ atomsLe, a.HoldsU 8 (bvPt2 0#8 0#8)) ∧ (∀ a ∈ atomsLe, a.HoldsS 8 (bvPt2 0#8 0#8))
 
+-- lean/ToyFarkas/Checker.lean:384-387
 theorem ce_checkFarkas_rejected_satisfiable :
-  checkFarkas sysEq [(1 : Int), (1 : Int)] = false ∧
-    (0 : Int) < (1 : Int) ∧
-      SatScaled sysEq (1 : Int) (pt1 (1 : Int)) ∧
-        SatInt sysEq (pt1 (1 : Int)) ∧ posSupport [(1 : Int), (1 : Int)] sysEq = sysEq
+    checkFarkas sysEq [1, 1] = false ∧ (0 : Int) < 1 ∧
+    SatScaled sysEq 1 (pt1 1) ∧ SatInt sysEq (pt1 1) ∧
+    posSupport [1, 1] sysEq = sysEq
 
+-- lean/ToyFarkas/Sparse.lean:291-293
 theorem ce_eval_eq_denseDotOn_duplicate_index_list :
-  ¬[0, 0].Nodup ∧
-    (∀ (p : Nat × Int), p ∈ [(0, 1)] → p.fst ∈ [0, 0]) ∧
-      (SparseVec.eval [(0, 1)] fun x => 1) ≠ denseDotOn [0, 0] (SparseVec.coeff [(0, 1)]) fun x => 1
+    ¬ ([0, 0] : List Nat).Nodup ∧ (∀ p ∈ ([(0, 1)] : SparseVec), p.1 ∈ [0, 0]) ∧
+    SparseVec.eval [(0, 1)] (fun _ => 1) ≠ denseDotOn [0, 0] (SparseVec.coeff [(0, 1)]) (fun _ => 1)
 
+-- lean/ToyFarkas/Sparse.lean:297-299
 theorem ce_eval_eq_denseDotOn_missing_index :
-  [0].Nodup ∧
-    (¬∀ (p : Nat × Int), p ∈ [(1, 1)] → p.fst ∈ [0]) ∧
-      (SparseVec.eval [(1, 1)] fun x => 1) ≠ denseDotOn [0] (SparseVec.coeff [(1, 1)]) fun x => 1
+    ([0] : List Nat).Nodup ∧ ¬ (∀ p ∈ ([(1, 1)] : SparseVec), p.1 ∈ [0]) ∧
+    SparseVec.eval [(1, 1)] (fun _ => 1) ≠ denseDotOn [0] (SparseVec.coeff [(1, 1)]) (fun _ => 1)
 
+-- lean/ToyFarkas/Sparse.lean:303-305
 theorem ce_eval_eq_denseDot_index_out_of_range :
-  (¬∀ (p : Nat × Int), p ∈ [(1, 1)] → p.fst < 1) ∧
-    (SparseVec.eval [(1, 1)] fun x => 1) ≠ denseDot 1 (SparseVec.coeff [(1, 1)]) fun x => 1
+    ¬ (∀ p ∈ ([(1, 1)] : SparseVec), p.1 < 1) ∧
+    SparseVec.eval [(1, 1)] (fun _ => 1) ≠ denseDot 1 (SparseVec.coeff [(1, 1)]) (fun _ => 1)
 
+-- lean/ToyFarkas/Completeness.lean:64-65
 theorem ce_farkas_complete_feasible_system :
-  (0 : Int) < (1 : Int) ∧ SatScaled sysEq (1 : Int) (pt1 (1 : Int)) ∧ ¬∃ cert, checkFarkas sysEq cert = true
+    (0 : Int) < 1 ∧ SatScaled sysEq 1 (pt1 1) ∧ ¬ ∃ cert : List Int, checkFarkas sysEq cert = true
 
+-- lean/ToyFarkas/Counterexamples.lean:52-58
 theorem ce_farkas_denominator_zero :
-  checkFarkas [{ lhs := [], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = true ∧
-    multipliersNonneg [(1 : Int)] = true ∧
-      lhsVanishes [{ lhs := [], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = true ∧
-        rhsContradicts [{ lhs := [], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = true ∧
-          ¬(0 : Int) < (0 : Int) ∧
-            SatScaled [{ lhs := [], rel := Rel.le, rhs := (-1 : Int) }] (0 : Int) fun x => (0 : Int)
+    checkFarkas [⟨[], .le, -1⟩] [1] = true ∧
+    multipliersNonneg [1] = true ∧
+    lhsVanishes [⟨[], .le, -1⟩] [1] = true ∧
+    rhsContradicts [⟨[], .le, -1⟩] [1] = true ∧
+    ¬ ((0 : Int) < 0) ∧
+    SatScaled [⟨[], .le, -1⟩] 0 (fun _ => 0)
 
+-- lean/ToyFarkas/Counterexamples.lean:32-37
 theorem ce_farkas_lhs_not_vanishing :
-  multipliersNonneg [(1 : Int)] = true ∧
-    lhsVanishes [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = false ∧
-      rhsContradicts [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = true ∧
-        (0 : Int) < (1 : Int) ∧
-          SatScaled [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (-1 : Int) }] (1 : Int) (pt1 (-1 : Int))
+    multipliersNonneg [1] = true ∧
+    lhsVanishes [⟨[(0, 1)], .le, -1⟩] [1] = false ∧
+    rhsContradicts [⟨[(0, 1)], .le, -1⟩] [1] = true ∧
+    (0 : Int) < 1 ∧
+    SatScaled [⟨[(0, 1)], .le, -1⟩] 1 (pt1 (-1))
 
+-- lean/ToyFarkas/Counterexamples.lean:42-47
 theorem ce_farkas_rhs_not_contradicting :
-  multipliersNonneg [(1 : Int), (1 : Int)] = true ∧
-    lhsVanishes sysEq [(1 : Int), (1 : Int)] = true ∧
-      rhsContradicts sysEq [(1 : Int), (1 : Int)] = false ∧
-        (0 : Int) < (1 : Int) ∧ SatScaled sysEq (1 : Int) (pt1 (1 : Int))
+    multipliersNonneg [1, 1] = true ∧
+    lhsVanishes sysEq [1, 1] = true ∧
+    rhsContradicts sysEq [1, 1] = false ∧
+    (0 : Int) < 1 ∧
+    SatScaled sysEq 1 (pt1 1)
 
+-- lean/ToyFarkas/BitVecSystems.lean:201-202
 theorem nv_bv_sle_slt_noWrapS :
-  NoWrapS 8 eDouble (sval (bvPt2 206#8 0#8)) ∧ NoWrapS 8 (eConst 0) (sval (bvPt2 206#8 0#8))
+    NoWrapS 8 eDouble (sval (bvPt2 (206#8) 0#8)) ∧ NoWrapS 8 (eConst 0) (sval (bvPt2 (206#8) 0#8))
 
+-- lean/ToyFarkas/BitVecSystems.lean:190-194
 theorem nv_bv_sle_slt_transfer :
-  InSignedRange 8 (eDouble.evalInt (sval (bvPt2 206#8 0#8))) ∧
-    InSignedRange 8 ((eConst 0).evalInt (sval (bvPt2 206#8 0#8))) ∧
-      sval (bvPt2 206#8 0#8) 0 = -50 ∧
-        (AffExpr.evalBv 8 eDouble (bvPt2 206#8 0#8)).sle (AffExpr.evalBv 8 (eConst 0) (bvPt2 206#8 0#8)) = true
+    InSignedRange 8 (eDouble.evalInt (sval (bvPt2 (206#8) 0#8))) ∧
+    InSignedRange 8 ((eConst 0).evalInt (sval (bvPt2 (206#8) 0#8))) ∧
+    sval (bvPt2 (206#8) 0#8) 0 = -50 ∧
+    (eDouble.evalBv 8 (bvPt2 (206#8) 0#8)).sle ((eConst 0).evalBv 8 (bvPt2 (206#8) 0#8)) = true
 
+-- lean/ToyFarkas/BitVecSystems.lean:197-198
 theorem nv_bv_ule_ult_noWrapU :
-  NoWrapU 8 eDouble (uval (bvPt2 70#8 0#8)) ∧ NoWrapU 8 (eConst 150) (uval (bvPt2 70#8 0#8))
+    NoWrapU 8 eDouble (uval (bvPt2 (70#8) 0#8)) ∧ NoWrapU 8 (eConst 150) (uval (bvPt2 (70#8) 0#8))
 
+-- lean/ToyFarkas/BitVecSystems.lean:183-186
 theorem nv_bv_ule_ult_transfer :
-  InUnsignedRange 8 (eDouble.evalInt (uval (bvPt2 70#8 0#8))) ∧
-    InUnsignedRange 8 ((eConst 150).evalInt (uval (bvPt2 70#8 0#8))) ∧
-      (AffExpr.evalBv 8 eDouble (bvPt2 70#8 0#8)).ule (AffExpr.evalBv 8 (eConst 150) (bvPt2 70#8 0#8)) = true
+    InUnsignedRange 8 (eDouble.evalInt (uval (bvPt2 (70#8) 0#8))) ∧
+    InUnsignedRange 8 ((eConst 150).evalInt (uval (bvPt2 (70#8) 0#8))) ∧
+    (eDouble.evalBv 8 (bvPt2 (70#8) 0#8)).ule ((eConst 150).evalBv 8 (bvPt2 (70#8) 0#8)) = true
 
+-- lean/ToyFarkas/Cuts.lean:240-243
 theorem nv_cgCut_sound_int :
-  multipliersNonneg [(1 : Int)] = true ∧
-    (0 : Int) < (2 : Int) ∧
-      cgDivisible sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) } = true ∧
-        SatInt sysTwoXLeThree (pt1 (1 : Int)) ∧
-          cgDerive sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) } =
-              some { lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (1 : Int) } ∧
-            (cgCut sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) }).HoldsInt (pt1 (1 : Int))
+    multipliersNonneg [1] = true ∧ (0 : Int) < 2 ∧ cgDivisible sysTwoXLeThree ⟨[1], 2⟩ = true ∧
+    SatInt sysTwoXLeThree (pt1 1) ∧ cgDerive sysTwoXLeThree ⟨[1], 2⟩ = some ⟨[(0, 1)], .le, 1⟩ ∧
+    (cgCut sysTwoXLeThree ⟨[1], 2⟩).HoldsInt (pt1 1)
 
+-- lean/ToyFarkas/Cuts.lean:248
 theorem nv_checkCutCert_sound_int : checkCutCert sysHalf halfCutCert = true
 
+-- lean/ToyFarkas/Counterexamples.lean:156
 theorem nv_checkFarkasTightened : checkFarkasTightened sysOpenUnit [1, 1] = true
 
+-- lean/ToyFarkas/BitVecSystems.lean:217-222
 theorem nv_checkFarkas_refutes_bvS :
-  checkFarkas (List.map BvAtom.toConstraint atomsLtLe) [1, 1] = true ∧
+    checkFarkas (atomsLtLe.map BvAtom.toConstraint) [1, 1] = true ∧
     posSupport [1, 1] atomsLtLe = atomsLtLe ∧
-      (∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsLtLe → 2 * a.lhs.evalInt (sval (bvPt2 253#8 9#8)) < 2 ^ 8) ∧
-        ∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsLtLe → -2 ^ 8 ≤ 2 * a.rhs.evalInt (sval (bvPt2 253#8 9#8))
+    (∀ a ∈ posSupport [1, 1] atomsLtLe, 2 * a.lhs.evalInt (sval (bvPt2 (253#8) (9#8))) < (2 : Int) ^ 8) ∧
+    (∀ a ∈ posSupport [1, 1] atomsLtLe,
+      -((2 : Int) ^ 8) ≤ 2 * a.rhs.evalInt (sval (bvPt2 (253#8) (9#8))))
 
+-- lean/ToyFarkas/BitVecSystems.lean:210-214
 theorem nv_checkFarkas_refutes_bvU :
-  checkFarkas (List.map BvAtom.toConstraint atomsLtLe) [1, 1] = true ∧
+    checkFarkas (atomsLtLe.map BvAtom.toConstraint) [1, 1] = true ∧
     posSupport [1, 1] atomsLtLe = atomsLtLe ∧
-      (∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsLtLe → a.lhs.evalInt (uval (bvPt2 5#8 9#8)) < 2 ^ 8) ∧
-        ∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsLtLe → 0 ≤ a.rhs.evalInt (uval (bvPt2 5#8 9#8))
+    (∀ a ∈ posSupport [1, 1] atomsLtLe, a.lhs.evalInt (uval (bvPt2 (5#8) (9#8))) < (2 : Int) ^ 8) ∧
+    (∀ a ∈ posSupport [1, 1] atomsLtLe, 0 ≤ a.rhs.evalInt (uval (bvPt2 (5#8) (9#8))))
 
+-- lean/ToyFarkas/BitVecSystems.lean:225-230
 theorem nv_checkFarkas_refutes_bv_two_sided :
-  checkFarkas (List.map BvAtom.toConstraint atomsLtLe) [1, 1] = true ∧
-    (∀ (a : BvAtom), a ∈ atomsLtLe → InUnsignedRange 8 (a.lhs.evalInt (uval (bvPt2 5#8 9#8)))) ∧
-      (∀ (a : BvAtom), a ∈ atomsLtLe → InUnsignedRange 8 (a.rhs.evalInt (uval (bvPt2 5#8 9#8)))) ∧
-        (∀ (a : BvAtom), a ∈ atomsLtLe → InSignedRange 8 (a.lhs.evalInt (sval (bvPt2 253#8 9#8)))) ∧
-          ∀ (a : BvAtom), a ∈ atomsLtLe → InSignedRange 8 (a.rhs.evalInt (sval (bvPt2 253#8 9#8)))
+    checkFarkas (atomsLtLe.map BvAtom.toConstraint) [1, 1] = true ∧
+    (∀ a ∈ atomsLtLe, InUnsignedRange 8 (a.lhs.evalInt (uval (bvPt2 (5#8) (9#8))))) ∧
+    (∀ a ∈ atomsLtLe, InUnsignedRange 8 (a.rhs.evalInt (uval (bvPt2 (5#8) (9#8))))) ∧
+    (∀ a ∈ atomsLtLe, InSignedRange 8 (a.lhs.evalInt (sval (bvPt2 (253#8) (9#8))))) ∧
+    (∀ a ∈ atomsLtLe, InSignedRange 8 (a.rhs.evalInt (sval (bvPt2 (253#8) (9#8)))))
 
+-- lean/ToyFarkas/Checker.lean:368-369
 theorem nv_checkFarkas_sound : checkFarkas sysLeGe [1, 1] = true ∧ checkFarkas sysStrict [1, 1] = true
 
+-- lean/ToyFarkas/Checker.lean:374-376
 theorem nv_checkFarkas_sound_posSupport :
-  checkFarkas (sysLeGe ++ [{ lhs := [((1 : Nat), (1 : Int))], rel := Rel.le, rhs := (-7 : Int) }])
-        [(1 : Int), (1 : Int), (0 : Int)] =
-      true ∧
-    posSupport [(1 : Int), (1 : Int), (0 : Int)]
-          (sysLeGe ++ [{ lhs := [((1 : Nat), (1 : Int))], rel := Rel.le, rhs := (-7 : Int) }]) =
-        sysLeGe ∧
-      (0 : Int) < (1 : Int)
+    checkFarkas (sysLeGe ++ [⟨[(1, 1)], .le, -7⟩]) [1, 1, 0] = true ∧
+    posSupport [1, 1, 0] (sysLeGe ++ [⟨[(1, 1)], .le, -7⟩]) = sysLeGe ∧ (0 : Int) < 1
 
+-- lean/ToyFarkas/Checker.lean:362-363
 theorem nv_checkFarkas_sound_scaled :
-  checkFarkas sysLeGe [(1 : Int), (1 : Int)] = true ∧
-    checkFarkas sysStrict [(1 : Int), (1 : Int)] = true ∧ (0 : Int) < (1 : Int)
+    checkFarkas sysLeGe [1, 1] = true ∧ checkFarkas sysStrict [1, 1] = true ∧ (0 : Int) < 1
 
-theorem nv_combineLhs_coeff : (combineLhs sysLeGe [2, 3]).coeff 0 = 2 * 1 + 3 * -1
+-- lean/ToyFarkas/Checker.lean:396-397
+theorem nv_combineLhs_coeff :
+    SparseVec.coeff (combineLhs sysLeGe [2, 3]) 0 = 2 * 1 + 3 * (-1)
 
+-- lean/ToyFarkas/Checker.lean:400-402
 theorem nv_combineLhs_eval :
-  (combineLhs sysLeGe [2, 3]).eval (pt1 5) = 2 * SparseVec.eval [(0, 1)] (pt1 5) + 3 * SparseVec.eval [(0, -1)] (pt1 5)
+    SparseVec.eval (combineLhs sysLeGe [2, 3]) (pt1 5) =
+      2 * SparseVec.eval [(0, 1)] (pt1 5) + 3 * SparseVec.eval [(0, -1)] (pt1 5)
 
+-- lean/ToyFarkas/Sparse.lean:283-286
 theorem nv_eval_eq_denseDot :
-  (∀ (p : Nat × Int), p ∈ [(0, 2), (2, -3), (0, 1)] → p.fst < 3) ∧
-    (SparseVec.eval [(0, 2), (2, -3), (0, 1)] fun i => ↑i + 4) =
-      denseDot 3 (SparseVec.coeff [(0, 2), (2, -3), (0, 1)]) fun i => ↑i + 4
+    (∀ p ∈ ([(0, 2), (2, -3), (0, 1)] : SparseVec), p.1 < 3) ∧
+    SparseVec.eval [(0, 2), (2, -3), (0, 1)] (fun i => (i : Int) + 4) =
+      denseDot 3 (SparseVec.coeff [(0, 2), (2, -3), (0, 1)]) (fun i => (i : Int) + 4)
 
+-- lean/ToyFarkas/Sparse.lean:276-279
 theorem nv_eval_eq_denseDotOn :
-  [1, 0].Nodup ∧
-    (∀ (p : Nat × Int), p ∈ [(0, 2), (1, -3), (0, 1)] → p.fst ∈ [1, 0]) ∧
-      (SparseVec.eval [(0, 2), (1, -3), (0, 1)] fun i => ↑i + 4) =
-        denseDotOn [1, 0] (SparseVec.coeff [(0, 2), (1, -3), (0, 1)]) fun i => ↑i + 4
+    ([1, 0] : List Nat).Nodup ∧ (∀ p ∈ ([(0, 2), (1, -3), (0, 1)] : SparseVec), p.1 ∈ [1, 0]) ∧
+    SparseVec.eval [(0, 2), (1, -3), (0, 1)] (fun i => (i : Int) + 4) =
+      denseDotOn [1, 0] (SparseVec.coeff [(0, 2), (1, -3), (0, 1)]) (fun i => (i : Int) + 4)
 
+-- lean/ToyFarkas/Completeness.lean:31-34
 theorem nv_farkas_complete_scaled :
-  (∀ (d : Int) (p : Nat → Int), 0 < d → ¬SatScaled sysLeGe d p) ∧
-    (∀ (d : Int) (p : Nat → Int), 0 < d → ¬SatScaled sysStrict d p) ∧
-      checkFarkas sysLeGe [1, 1] = true ∧ checkFarkas sysStrict [1, 1] = true
+    (∀ (d : Int) (p : Nat → Int), 0 < d → ¬ SatScaled sysLeGe d p) ∧
+    (∀ (d : Int) (p : Nat → Int), 0 < d → ¬ SatScaled sysStrict d p) ∧
+    checkFarkas sysLeGe [1, 1] = true ∧ checkFarkas sysStrict [1, 1] = true
 
+-- lean/ToyFarkas/Checker.lean:391-393
 theorem nv_farkas_sound_structured :
-  multipliersNonneg [(1 : Int), (1 : Int)] = true ∧
-    lhsVanishes sysLeGe [(1 : Int), (1 : Int)] = true ∧
-      rhsContradicts sysLeGe [(1 : Int), (1 : Int)] = true ∧ (0 : Int) < (1 : Int)
+    multipliersNonneg [1, 1] = true ∧ lhsVanishes sysLeGe [1, 1] = true ∧
+      rhsContradicts sysLeGe [1, 1] = true ∧ (0 : Int) < 1
 
+-- lean/ToyFarkas/Sparse.lean:309-310
 theorem nv_isZero_iff : SparseVec.isZero [(3, 2), (3, -2)] = true ∧ SparseVec.coeff [(3, 2), (3, -2)] 3 = 0
 
+-- lean/ToyFarkas/Completeness.lean:72-75
 theorem sysHalf_refuted_by_case_split :
-  (∀ (v : Int), v ≤ 0 ∨ -v ≤ -1) ∧
-    checkFarkas (sysHalf ++ [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }]) [0, 1, 2] = true ∧
-      checkFarkas (sysHalf ++ [{ lhs := [(0, -1)], rel := Rel.le, rhs := -1 }]) [1, 0, 2] = true
+    (∀ v : Int, v ≤ 0 ∨ -v ≤ -1) ∧
+    checkFarkas (sysHalf ++ [⟨[(0, 1)], .le, 0⟩]) [0, 1, 2] = true ∧
+    checkFarkas (sysHalf ++ [⟨[(0, -1)], .le, -1⟩]) [1, 0, 2] = true
 ```
 
 ### Other kernel-checked theorems mentioned in this report
@@ -1499,317 +1557,406 @@ theorem sysHalf_refuted_by_case_split :
 Corollaries, helper lemmas, bounded checks and proof internals named in card prose or above. They are kernel-checked with standard axioms only (recorded in `audit/axioms.json`) but carry no recorded statement hash, because no card lists them in a Lean-name field. Statements of the definition examples cited under Core definitions are in the next subsection, "Statements of the definition examples".
 
 ```lean
-theorem AffExpr.evalBv_eq_ofInt (w : Nat) (e : AffExpr) (x : Nat → BitVec w) (ρ : Nat → Int)
-  (hρ : ∀ (i : Nat), BitVec.ofInt w (ρ i) = x i) : AffExpr.evalBv w e x = BitVec.ofInt w (e.evalInt ρ)
+-- lean/ToyFarkas/BitVecTransfer.lean:190-192
+theorem AffExpr.evalBv_eq_ofInt (w : Nat) (e : AffExpr) (x : Nat → BitVec w)
+    (ρ : Nat → Int) (hρ : ∀ i, BitVec.ofInt w (ρ i) = x i) :
+    e.evalBv w x = BitVec.ofInt w (e.evalInt ρ)
 
+-- lean/ToyFarkas/BitVecSystems.lean:115-118
 theorem BvAtom.holdsInt_of_holdsS_of_lhs_lt_of_rhs_ge (w : Nat) (a : BvAtom) (x : Nat → BitVec w)
-  (h₁ : 2 * a.lhs.evalInt (sval x) < 2 ^ w) (h₂ : -2 ^ w ≤ 2 * a.rhs.evalInt (sval x)) (h : BvAtom.HoldsS w a x) :
-  a.toConstraint.HoldsInt (sval x)
+    (h₁ : 2 * a.lhs.evalInt (sval x) < (2 : Int) ^ w)
+    (h₂ : -((2 : Int) ^ w) ≤ 2 * a.rhs.evalInt (sval x))
+    (h : a.HoldsS w x) : a.toConstraint.HoldsInt (sval x)
 
+-- lean/ToyFarkas/BitVecSystems.lean:105-107
 theorem BvAtom.holdsInt_of_holdsU_of_lhs_lt_of_rhs_nonneg (w : Nat) (a : BvAtom) (x : Nat → BitVec w)
-  (h₁ : a.lhs.evalInt (uval x) < 2 ^ w) (h₂ : 0 ≤ a.rhs.evalInt (uval x)) (h : BvAtom.HoldsU w a x) :
-  a.toConstraint.HoldsInt (uval x)
+    (h₁ : a.lhs.evalInt (uval x) < (2 : Int) ^ w) (h₂ : 0 ≤ a.rhs.evalInt (uval x))
+    (h : a.HoldsU w x) : a.toConstraint.HoldsInt (uval x)
 
+-- lean/ToyFarkas/BitVecSystems.lean:95-97
 theorem BvAtom.holdsS_iff_holdsInt_of_inSignedRange (w : Nat) (a : BvAtom) (x : Nat → BitVec w)
-  (h₁ : InSignedRange w (a.lhs.evalInt (sval x))) (h₂ : InSignedRange w (a.rhs.evalInt (sval x))) :
-  BvAtom.HoldsS w a x ↔ a.toConstraint.HoldsInt (sval x)
+    (h₁ : InSignedRange w (a.lhs.evalInt (sval x))) (h₂ : InSignedRange w (a.rhs.evalInt (sval x))) :
+    a.HoldsS w x ↔ a.toConstraint.HoldsInt (sval x)
 
+-- lean/ToyFarkas/BitVecSystems.lean:85-87
 theorem BvAtom.holdsU_iff_holdsInt_of_inUnsignedRange (w : Nat) (a : BvAtom) (x : Nat → BitVec w)
-  (h₁ : InUnsignedRange w (a.lhs.evalInt (uval x))) (h₂ : InUnsignedRange w (a.rhs.evalInt (uval x))) :
-  BvAtom.HoldsU w a x ↔ a.toConstraint.HoldsInt (uval x)
+    (h₁ : InUnsignedRange w (a.lhs.evalInt (uval x))) (h₂ : InUnsignedRange w (a.rhs.evalInt (uval x))) :
+    a.HoldsU w x ↔ a.toConstraint.HoldsInt (uval x)
 
+-- lean/ToyFarkas/BitVecSystems.lean:78-79
 theorem BvAtom.toConstraint_holdsInt_iff (a : BvAtom) (ρ : Nat → Int) :
   a.toConstraint.HoldsInt ρ ↔ a.rel.Sat (a.lhs.evalInt ρ) (a.rhs.evalInt ρ)
 
+-- lean/ToyFarkas/Counterexamples.lean:132-133
 theorem Constraint.holdsInt_tighten_iff (c : Constraint) (x : Nat → Int) : c.tighten.HoldsInt x ↔ c.HoldsInt x
 
-theorem SparseVec.evalBv_eq_ofInt (w : Nat) (v : SparseVec) (x : Nat → BitVec w) (ρ : Nat → Int)
-  (hρ : ∀ (i : Nat), BitVec.ofInt w (ρ i) = x i) : SparseVec.evalBv w v x = BitVec.ofInt w (v.eval ρ)
+-- lean/ToyFarkas/BitVecTransfer.lean:182-184
+theorem SparseVec.evalBv_eq_ofInt (w : Nat) (v : SparseVec) (x : Nat → BitVec w)
+    (ρ : Nat → Int) (hρ : ∀ i, BitVec.ofInt w (ρ i) = x i) :
+    SparseVec.evalBv w v x = BitVec.ofInt w (SparseVec.eval v ρ)
 
+-- lean/ToyFarkas/Sparse.lean:266-267
 theorem SparseVec.eval_eq_zero_of_isZero (v : SparseVec) (h : v.isZero = true) (x : Nat → Int) : v.eval x = 0
 
+-- lean/ToyFarkas/Cuts.lean:209-210
 theorem applyCuts_satInt (ks : List CGStep) (S S' : List Constraint) (h : applyCuts S ks = some S') (x : Nat → Int)
   (hx : SatInt S x) : SatInt S' x
 
+-- lean/ToyFarkas/BitVecTransfer.lean:242-244
 theorem bv_sle_iff_int_le_of_inSignedRange (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
-  (h₁ : InSignedRange w (e₁.evalInt (sval x))) (h₂ : InSignedRange w (e₂.evalInt (sval x))) :
-  (AffExpr.evalBv w e₁ x).sle (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x)
+    (h₁ : InSignedRange w (e₁.evalInt (sval x))) (h₂ : InSignedRange w (e₂.evalInt (sval x))) :
+    (e₁.evalBv w x).sle (e₂.evalBv w x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x)
 
+-- lean/ToyFarkas/BitVecTransfer.lean:275-278
 theorem bv_sle_slt_imp_int_of_lhs_lt_of_rhs_ge (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
-  (h₁ : 2 * e₁.evalInt (sval x) < 2 ^ w) (h₂ : -2 ^ w ≤ 2 * e₂.evalInt (sval x)) :
-  ((AffExpr.evalBv w e₁ x).sle (AffExpr.evalBv w e₂ x) = true → e₁.evalInt (sval x) ≤ e₂.evalInt (sval x)) ∧
-    ((AffExpr.evalBv w e₁ x).slt (AffExpr.evalBv w e₂ x) = true → e₁.evalInt (sval x) < e₂.evalInt (sval x))
+    (h₁ : 2 * e₁.evalInt (sval x) < (2 : Int) ^ w) (h₂ : -((2 : Int) ^ w) ≤ 2 * e₂.evalInt (sval x)) :
+    ((e₁.evalBv w x).sle (e₂.evalBv w x) = true → e₁.evalInt (sval x) ≤ e₂.evalInt (sval x)) ∧
+    ((e₁.evalBv w x).slt (e₂.evalBv w x) = true → e₁.evalInt (sval x) < e₂.evalInt (sval x))
 
+-- lean/ToyFarkas/BitVecTransfer.lean:250-252
 theorem bv_slt_iff_int_lt_of_inSignedRange (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
-  (h₁ : InSignedRange w (e₁.evalInt (sval x))) (h₂ : InSignedRange w (e₂.evalInt (sval x))) :
-  (AffExpr.evalBv w e₁ x).slt (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (sval x) < e₂.evalInt (sval x)
+    (h₁ : InSignedRange w (e₁.evalInt (sval x))) (h₂ : InSignedRange w (e₂.evalInt (sval x))) :
+    (e₁.evalBv w x).slt (e₂.evalBv w x) = true ↔ e₁.evalInt (sval x) < e₂.evalInt (sval x)
 
+-- lean/ToyFarkas/BitVecTransfer.lean:220-222
 theorem bv_ule_iff_int_le_of_inUnsignedRange (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
-  (h₁ : InUnsignedRange w (e₁.evalInt (uval x))) (h₂ : InUnsignedRange w (e₂.evalInt (uval x))) :
-  (AffExpr.evalBv w e₁ x).ule (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (uval x) ≤ e₂.evalInt (uval x)
+    (h₁ : InUnsignedRange w (e₁.evalInt (uval x))) (h₂ : InUnsignedRange w (e₂.evalInt (uval x))) :
+    (e₁.evalBv w x).ule (e₂.evalBv w x) = true ↔ e₁.evalInt (uval x) ≤ e₂.evalInt (uval x)
 
+-- lean/ToyFarkas/BitVecTransfer.lean:262-265
 theorem bv_ule_ult_imp_int_of_lhs_lt_of_rhs_nonneg (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
-  (h₁ : e₁.evalInt (uval x) < 2 ^ w) (h₂ : 0 ≤ e₂.evalInt (uval x)) :
-  ((AffExpr.evalBv w e₁ x).ule (AffExpr.evalBv w e₂ x) = true → e₁.evalInt (uval x) ≤ e₂.evalInt (uval x)) ∧
-    ((AffExpr.evalBv w e₁ x).ult (AffExpr.evalBv w e₂ x) = true → e₁.evalInt (uval x) < e₂.evalInt (uval x))
+    (h₁ : e₁.evalInt (uval x) < (2 : Int) ^ w) (h₂ : 0 ≤ e₂.evalInt (uval x)) :
+    ((e₁.evalBv w x).ule (e₂.evalBv w x) = true → e₁.evalInt (uval x) ≤ e₂.evalInt (uval x)) ∧
+    ((e₁.evalBv w x).ult (e₂.evalBv w x) = true → e₁.evalInt (uval x) < e₂.evalInt (uval x))
 
+-- lean/ToyFarkas/BitVecTransfer.lean:230-232
 theorem bv_ult_iff_int_lt_of_inUnsignedRange (w : Nat) (e₁ e₂ : AffExpr) (x : Nat → BitVec w)
-  (h₁ : InUnsignedRange w (e₁.evalInt (uval x))) (h₂ : InUnsignedRange w (e₂.evalInt (uval x))) :
-  (AffExpr.evalBv w e₁ x).ult (AffExpr.evalBv w e₂ x) = true ↔ e₁.evalInt (uval x) < e₂.evalInt (uval x)
+    (h₁ : InUnsignedRange w (e₁.evalInt (uval x))) (h₂ : InUnsignedRange w (e₂.evalInt (uval x))) :
+    (e₁.evalBv w x).ult (e₂.evalBv w x) = true ↔ e₁.evalInt (uval x) < e₂.evalInt (uval x)
 
+-- lean/ToyFarkas/BitVecSystems.lean:460-465
 theorem ce_bvS_range_on_difference_insufficient :
-  InSignedRange 8 ((eConst 150).evalInt (sval (bvPt2 0#8 0#8)) - (eConst 100).evalInt (sval (bvPt2 0#8 0#8))) ∧
-    ¬InSignedRange 8 ((eConst 150).evalInt (sval (bvPt2 0#8 0#8))) ∧
-      (AffExpr.evalBv 8 (eConst 150) (bvPt2 0#8 0#8)).sle (AffExpr.evalBv 8 (eConst 100) (bvPt2 0#8 0#8)) = true ∧
-        ¬(eConst 150).evalInt (sval (bvPt2 0#8 0#8)) ≤ (eConst 100).evalInt (sval (bvPt2 0#8 0#8))
+    InSignedRange 8 ((eConst 150).evalInt (sval (bvPt2 0#8 0#8)) -
+      (eConst 100).evalInt (sval (bvPt2 0#8 0#8))) ∧
+    ¬ InSignedRange 8 ((eConst 150).evalInt (sval (bvPt2 0#8 0#8))) ∧
+    ((eConst 150).evalBv 8 (bvPt2 0#8 0#8)).sle ((eConst 100).evalBv 8 (bvPt2 0#8 0#8)) = true ∧
+    ¬ ((eConst 150).evalInt (sval (bvPt2 0#8 0#8)) ≤ (eConst 100).evalInt (sval (bvPt2 0#8 0#8)))
 
+-- lean/ToyFarkas/BitVecSystems.lean:542-545
 theorem ce_bv_domain_bounds_not_emitted :
-  (∀ (v : BitVec 8), ¬∀ (a : BvAtom), a ∈ atomsLtZero → BvAtom.HoldsU 8 a (bvPt2 v 0#8)) ∧
-    SatInt (List.map BvAtom.toConstraint atomsLtZero) (pt1 (-1)) ∧
-      ∀ (cert : List Int), checkFarkas (List.map BvAtom.toConstraint atomsLtZero) cert = false
+    (∀ v : BitVec 8, ¬ ∀ a ∈ atomsLtZero, a.HoldsU 8 (bvPt2 v 0#8)) ∧
+    SatInt (atomsLtZero.map BvAtom.toConstraint) (pt1 (-1)) ∧
+    (∀ cert : List Int, checkFarkas (atomsLtZero.map BvAtom.toConstraint) cert = false)
 
+-- lean/ToyFarkas/BitVecSystems.lean:569-571
 theorem ce_bv_tightening_unsound :
-  (∀ (v : BitVec 8),
-      ¬BvAtom.HoldsU 8 { lhs := { terms := [(0, 1)], const := 0 }, rel := Rel.lt, rhs := { terms := [], const := 0 } }
-          (bvPt2 v 0#8)) ∧
-    ∀ (v : BitVec 8),
-      BvAtom.HoldsU 8 { lhs := { terms := [(0, 1)], const := 0 }, rel := Rel.le, rhs := { terms := [], const := -1 } }
-        (bvPt2 v 0#8)
+    (∀ v : BitVec 8, ¬ (⟨⟨[(0, 1)], 0⟩, .lt, ⟨[], 0⟩⟩ : BvAtom).HoldsU 8 (bvPt2 v 0#8)) ∧
+    (∀ v : BitVec 8, (⟨⟨[(0, 1)], 0⟩, .le, ⟨[], -1⟩⟩ : BvAtom).HoldsU 8 (bvPt2 v 0#8))
 
+-- lean/ToyFarkas/Cuts.lean:327-330
 theorem ce_checkFarkasTightened_incomplete_int :
-  List.map Constraint.tighten sysHalf = sysHalf ∧
-    (∀ (x : Nat → Int), ¬SatInt sysHalf x) ∧ ∀ (cert : List Int), checkFarkasTightened sysHalf cert = false
+    sysHalf.map Constraint.tighten = sysHalf ∧
+    (∀ x : Nat → Int, ¬ SatInt sysHalf x) ∧
+    (∀ cert : List Int, checkFarkasTightened sysHalf cert = false)
 
+-- lean/ToyFarkas/BitVecSystems.lean:557-560
 theorem ce_checkFarkas_bv_incomplete :
-  (∀ (v : BitVec (8 : Nat)),
-      ¬∀ (a : BvAtom), a ∈ atomsHalfU → BvAtom.HoldsU (8 : Nat) a (bvPt2 v (BitVec.ofNat (8 : Nat) (0 : Nat)))) ∧
-    (0 : Int) < (2 : Int) ∧
-      SatScaled (List.map BvAtom.toConstraint atomsHalfU) (2 : Int) (pt1 (1 : Int)) ∧
-        ∀ (cert : List Int), checkFarkas (List.map BvAtom.toConstraint atomsHalfU) cert = false
+    (∀ v : BitVec 8, ¬ ∀ a ∈ atomsHalfU, a.HoldsU 8 (bvPt2 v 0#8)) ∧
+    (0 : Int) < 2 ∧ SatScaled (atomsHalfU.map BvAtom.toConstraint) 2 (pt1 1) ∧
+    (∀ cert : List Int, checkFarkas (atomsHalfU.map BvAtom.toConstraint) cert = false)
 
-theorem cgLhs_eval_le_cgRhs (S : List Constraint) (k : CGStep) (hnn : multipliersNonneg k.mult = true)
-  (x : Nat → Int) (hx : SatInt S x) : (cgLhs S k).eval x ≤ cgRhs S k
+-- lean/ToyFarkas/Cuts.lean:163-165
+theorem cgLhs_eval_le_cgRhs (S : List Constraint) (k : CGStep)
+    (hnn : multipliersNonneg k.mult = true) (x : Nat → Int) (hx : SatInt S x) :
+    SparseVec.eval (cgLhs S k) x ≤ cgRhs S k
 
+-- lean/ToyFarkas/BitVecSystems.lean:171-175
 theorem checkFarkas_refutes_bvS_of_inSignedRange (A : List BvAtom) (cert : List Int)
-  (h : checkFarkas (List.map BvAtom.toConstraint A) cert = true) (w : Nat) (x : Nat → BitVec w)
-  (hl : ∀ (a : BvAtom), a ∈ A → InSignedRange w (a.lhs.evalInt (sval x)))
-  (hr : ∀ (a : BvAtom), a ∈ A → InSignedRange w (a.rhs.evalInt (sval x))) : ¬∀ (a : BvAtom), a ∈ A → BvAtom.HoldsS w a x
+    (h : checkFarkas (A.map BvAtom.toConstraint) cert = true) (w : Nat) (x : Nat → BitVec w)
+    (hl : ∀ a ∈ A, InSignedRange w (a.lhs.evalInt (sval x)))
+    (hr : ∀ a ∈ A, InSignedRange w (a.rhs.evalInt (sval x))) :
+    ¬ ∀ a ∈ A, a.HoldsS w x
 
+-- lean/ToyFarkas/BitVecSystems.lean:161-165
 theorem checkFarkas_refutes_bvU_of_inUnsignedRange (A : List BvAtom) (cert : List Int)
-  (h : checkFarkas (List.map BvAtom.toConstraint A) cert = true) (w : Nat) (x : Nat → BitVec w)
-  (hl : ∀ (a : BvAtom), a ∈ A → InUnsignedRange w (a.lhs.evalInt (uval x)))
-  (hr : ∀ (a : BvAtom), a ∈ A → InUnsignedRange w (a.rhs.evalInt (uval x))) :
-  ¬∀ (a : BvAtom), a ∈ A → BvAtom.HoldsU w a x
+    (h : checkFarkas (A.map BvAtom.toConstraint) cert = true) (w : Nat) (x : Nat → BitVec w)
+    (hl : ∀ a ∈ A, InUnsignedRange w (a.lhs.evalInt (uval x)))
+    (hr : ∀ a ∈ A, InUnsignedRange w (a.rhs.evalInt (uval x))) :
+    ¬ ∀ a ∈ A, a.HoldsU w x
 
+-- lean/ToyFarkas/BitVecSystems.lean:280-286
 theorem check_bv_sle_transfer_w0 :
-  have x := fun x => 0#0;
-  ∀ (k₁ k₂ : Fin 5),
-    have e₁ := { terms := [(0, 3)], const := ↑↑k₁ - 2 };
-    have e₂ := { terms := [], const := ↑↑k₂ - 2 };
-    InSignedRange 0 (e₁.evalInt (sval x)) →
-      InSignedRange 0 (e₂.evalInt (sval x)) →
-        ((AffExpr.evalBv 0 e₁ x).sle (AffExpr.evalBv 0 e₂ x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x))
+    let x : Nat → BitVec 0 := fun _ => 0#0
+    ∀ k₁ k₂ : Fin 5,
+      let e₁ : AffExpr := ⟨[(0, 3)], (k₁ : Int) - 2⟩
+      let e₂ : AffExpr := ⟨[], (k₂ : Int) - 2⟩
+      InSignedRange 0 (e₁.evalInt (sval x)) → InSignedRange 0 (e₂.evalInt (sval x)) →
+        ((e₁.evalBv 0 x).sle (e₂.evalBv 0 x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x))
 
-theorem check_bv_sle_transfer_w3 (a b : Fin 8) :
-  have x := bvPt2 (BitVec.ofNat 3 ↑a) (BitVec.ofNat 3 ↑b);
-  have e₁ := { terms := [(0, 2), (1, -1)], const := 1 };
-  have e₂ := { terms := [(1, 1)], const := 0 };
-  InSignedRange 3 (e₁.evalInt (sval x)) →
-    InSignedRange 3 (e₂.evalInt (sval x)) →
-      ((AffExpr.evalBv 3 e₁ x).sle (AffExpr.evalBv 3 e₂ x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x))
+-- lean/ToyFarkas/BitVecSystems.lean:269-275
+theorem check_bv_sle_transfer_w3 :
+    ∀ a b : Fin 8,
+      let x := bvPt2 (BitVec.ofNat 3 a) (BitVec.ofNat 3 b)
+      let e₁ : AffExpr := ⟨[(0, 2), (1, -1)], 1⟩
+      let e₂ : AffExpr := ⟨[(1, 1)], 0⟩
+      InSignedRange 3 (e₁.evalInt (sval x)) → InSignedRange 3 (e₂.evalInt (sval x)) →
+        ((e₁.evalBv 3 x).sle (e₂.evalBv 3 x) = true ↔ e₁.evalInt (sval x) ≤ e₂.evalInt (sval x))
 
-theorem check_bv_ule_transfer_w3 (a b : Fin 8) :
-  have x := bvPt2 (BitVec.ofNat 3 ↑a) (BitVec.ofNat 3 ↑b);
-  have e₁ := { terms := [(0, 2), (1, -1)], const := 1 };
-  have e₂ := { terms := [(1, 1)], const := 0 };
-  InUnsignedRange 3 (e₁.evalInt (uval x)) →
-    InUnsignedRange 3 (e₂.evalInt (uval x)) →
-      ((AffExpr.evalBv 3 e₁ x).ule (AffExpr.evalBv 3 e₂ x) = true ↔ e₁.evalInt (uval x) ≤ e₂.evalInt (uval x))
+-- lean/ToyFarkas/BitVecSystems.lean:259-265
+theorem check_bv_ule_transfer_w3 :
+    ∀ a b : Fin 8,
+      let x := bvPt2 (BitVec.ofNat 3 a) (BitVec.ofNat 3 b)
+      let e₁ : AffExpr := ⟨[(0, 2), (1, -1)], 1⟩
+      let e₂ : AffExpr := ⟨[(1, 1)], 0⟩
+      InUnsignedRange 3 (e₁.evalInt (uval x)) → InUnsignedRange 3 (e₂.evalInt (uval x)) →
+        ((e₁.evalBv 3 x).ule (e₂.evalBv 3 x) = true ↔ e₁.evalInt (uval x) ≤ e₂.evalInt (uval x))
 
-theorem check_noWrapU_of_final_in_range_w3 (c1 c2 k v : Fin 8) :
-  have e := { terms := [(0, ↑↑c1), (0, ↑↑c2)], const := ↑↑k };
-  InUnsignedRange 3 (e.evalInt (uval (bvPt2 (BitVec.ofNat 3 ↑v) 0#3))) →
-    NoWrapU 3 e (uval (bvPt2 (BitVec.ofNat 3 ↑v) 0#3))
+-- lean/ToyFarkas/BitVecSystems.lean:527-531
+theorem check_noWrapU_of_final_in_range_w3 :
+    ∀ c1 c2 k : Fin 8, ∀ v : Fin 8,
+      let e : AffExpr := ⟨[(0, (c1 : Int)), (0, (c2 : Int))], (k : Int)⟩
+      InUnsignedRange 3 (e.evalInt (uval (bvPt2 (BitVec.ofNat 3 v) 0#3))) →
+        NoWrapU 3 e (uval (bvPt2 (BitVec.ofNat 3 v) 0#3))
 
+-- lean/ToyFarkas/Checker.lean:153-156
 theorem combine_holdsScaled (S : List Constraint) (cert : List Int) (d : Int) (p : Nat → Int)
-  (hnn : ∀ (l : Int), l ∈ cert → 0 ≤ l) (hS : SatScaled S d p) :
-  (combineLhs S cert).eval p ≤ combineRhs S cert * d ∧
-    (combineStrict S cert = true → (combineLhs S cert).eval p < combineRhs S cert * d)
+    (hnn : ∀ l ∈ cert, 0 ≤ l) (hS : SatScaled S d p) :
+    SparseVec.eval (combineLhs S cert) p ≤ combineRhs S cert * d ∧
+      (combineStrict S cert = true → SparseVec.eval (combineLhs S cert) p < combineRhs S cert * d)
 
-theorem combine_holdsScaled_of_posSupport (S : List Constraint) (cert : List Int) (d : Int) (p : Nat → Int)
-  (hnn : ∀ (l : Int), l ∈ cert → 0 ≤ l) (hS : SatScaled (posSupport cert S) d p) :
-  (combineLhs S cert).eval p ≤ combineRhs S cert * d ∧
-    (combineStrict S cert = true → (combineLhs S cert).eval p < combineRhs S cert * d)
+-- lean/ToyFarkas/Checker.lean:272-275
+theorem combine_holdsScaled_of_posSupport (S : List Constraint) (cert : List Int) (d : Int)
+    (p : Nat → Int) (hnn : ∀ l ∈ cert, 0 ≤ l) (hS : SatScaled (posSupport cert S) d p) :
+    SparseVec.eval (combineLhs S cert) p ≤ combineRhs S cert * d ∧
+      (combineStrict S cert = true → SparseVec.eval (combineLhs S cert) p < combineRhs S cert * d)
 
+-- lean/ToyFarkas/BitVecSystems.lean:576-578
 theorem ex_isZero_not_bitvector_vanishing :
-  SparseVec.isZero [(0, 256)] = false ∧ ∀ (v : BitVec 8), SparseVec.evalBv 8 [(0, 256)] (bvPt2 v 0#8) = 0#8
+    SparseVec.isZero [(0, 256)] = false ∧
+    (∀ v : BitVec 8, SparseVec.evalBv 8 [(0, 256)] (bvPt2 v 0#8) = 0#8)
 
+-- lean/ToyFarkas/BitVecSystems.lean:245-253
 theorem ex_one_sided_posSupport_weaker_than_two_sided :
-  (checkFarkas (List.map BvAtom.toConstraint atomsLhsUnderflowU) [1, 1] = true ∧
-      (¬∀ (a : BvAtom), a ∈ atomsLhsUnderflowU → InUnsignedRange 8 (a.lhs.evalInt (uval (bvPt2 0#8 0#8)))) ∧
-        (∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsLhsUnderflowU → a.lhs.evalInt (uval (bvPt2 0#8 0#8)) < 2 ^ 8) ∧
-          ∀ (a : BvAtom), a ∈ posSupport [1, 1] atomsLhsUnderflowU → 0 ≤ a.rhs.evalInt (uval (bvPt2 0#8 0#8))) ∧
-    checkFarkas (List.map BvAtom.toConstraint atomsZeroWeight) [1, 1, 0] = true ∧
+    (checkFarkas (atomsLhsUnderflowU.map BvAtom.toConstraint) [1, 1] = true ∧
+      ¬ (∀ a ∈ atomsLhsUnderflowU, InUnsignedRange 8 (a.lhs.evalInt (uval (bvPt2 0#8 0#8)))) ∧
+      (∀ a ∈ posSupport [1, 1] atomsLhsUnderflowU,
+        a.lhs.evalInt (uval (bvPt2 0#8 0#8)) < (2 : Int) ^ 8) ∧
+      (∀ a ∈ posSupport [1, 1] atomsLhsUnderflowU, 0 ≤ a.rhs.evalInt (uval (bvPt2 0#8 0#8)))) ∧
+    (checkFarkas (atomsZeroWeight.map BvAtom.toConstraint) [1, 1, 0] = true ∧
       posSupport [1, 1, 0] atomsZeroWeight = atomsLtLe ∧
-        ¬∀ (a : BvAtom), a ∈ atomsZeroWeight → InUnsignedRange 8 (a.lhs.evalInt (uval (bvPt2 200#8 200#8)))
+      ¬ (∀ a ∈ atomsZeroWeight, InUnsignedRange 8 (a.lhs.evalInt (uval (bvPt2 (200#8) (200#8))))))
 
+-- lean/ToyFarkas/BitVecTransfer.lean:292-293
 theorem inSignedRange_evalInt_of_noWrapS (w : Nat) (e : AffExpr) (ρ : Nat → Int) (h : NoWrapS w e ρ) :
   InSignedRange w (e.evalInt ρ)
 
+-- lean/ToyFarkas/BitVecTransfer.lean:288-289
 theorem inUnsignedRange_evalInt_of_noWrapU (w : Nat) (e : AffExpr) (ρ : Nat → Int) (h : NoWrapU w e ρ) :
   InUnsignedRange w (e.evalInt ρ)
 
+-- lean/ToyFarkas/Constraint.lean:93-94
 theorem satInt_iff_satScaled_one (S : List Constraint) (x : Nat → Int) : SatInt S x ↔ SatScaled S 1 x
 
-theorem Motzkin.complete (S : List Constraint) (h : ∀ (d : Int) (p : Nat → Int), 0 < d → ¬SatScaled S d p) :
-  ∃ cert, checkFarkas S cert = true
+-- lean/ToyFarkas/Motzkin.lean:614-616
+theorem complete (S : List Constraint)
+    (h : ∀ (d : Int) (p : Nat → Int), 0 < d → ¬ SatScaled S d p) :
+    ∃ cert : List Int, checkFarkas S cert = true
 
-theorem Motzkin.fm_main (n : Nat) (H : List Motzkin.HC) :
-  (∀ (h : Motzkin.HC), h ∈ H → ∀ (i : Nat), n ≤ i → h.a.coeff i = 0) →
-    (∀ (y : Nat → Int), ¬Motzkin.HSat H y) → ∃ g, Motzkin.Deriv H g ∧ g.s = true ∧ ∀ (i : Nat), g.a.coeff i = 0
+-- lean/ToyFarkas/Motzkin.lean:325-327
+theorem fm_main : ∀ (n : Nat) (H : List HC),
+    (∀ h ∈ H, ∀ i, n ≤ i → SparseVec.coeff h.a i = 0) →
+    (∀ y, ¬ HSat H y) → ∃ g, Deriv H g ∧ g.s = true ∧ ∀ i, SparseVec.coeff g.a i = 0
 
-theorem Motzkin.elim_extend (n : Nat) (H : List Motzkin.HC) (y' : Nat → Int)
-  (hy : Motzkin.HSat (Motzkin.elim n H) y') : ∃ y, Motzkin.HSat H y
+-- lean/ToyFarkas/Motzkin.lean:265-266
+theorem elim_extend (n : Nat) (H : List HC) (y' : Nat → Int) (hy : HSat (elim n H) y') :
+    ∃ y, HSat H y
 
-theorem Motzkin.extend_of_bounds (n : Nat) (H : List Motzkin.HC) (y' : Nat → Int)
-  (hZ : ∀ (h : Motzkin.HC), h ∈ H → h.a.coeff n = 0 → h.Holds y') (M t : Int) (hM : 0 < M)
-  (hP :
-    ∀ (p : Motzkin.HC),
-      p ∈ H →
-        0 < p.a.coeff n →
-          M * Motzkin.rest n y' p + p.a.coeff n * t ≤ 0 ∧ (p.s = true → M * Motzkin.rest n y' p + p.a.coeff n * t < 0))
-  (hN :
-    ∀ (q : Motzkin.HC),
-      q ∈ H →
-        q.a.coeff n < 0 →
-          M * Motzkin.rest n y' q + q.a.coeff n * t ≤ 0 ∧
-            (q.s = true → M * Motzkin.rest n y' q + q.a.coeff n * t < 0)) :
-  Motzkin.HSat H fun i => if i = n then t else M * y' i
+-- lean/ToyFarkas/Motzkin.lean:236-245
+theorem extend_of_bounds (n : Nat) (H : List HC) (y' : Nat → Int)
+    (hZ : ∀ h ∈ H, SparseVec.coeff h.a n = 0 → h.Holds y')
+    (M t : Int) (hM : 0 < M)
+    (hP : ∀ p ∈ H, 0 < SparseVec.coeff p.a n →
+      M * rest n y' p + SparseVec.coeff p.a n * t ≤ 0 ∧
+      (p.s = true → M * rest n y' p + SparseVec.coeff p.a n * t < 0))
+    (hN : ∀ q ∈ H, SparseVec.coeff q.a n < 0 →
+      M * rest n y' q + SparseVec.coeff q.a n * t ≤ 0 ∧
+      (q.s = true → M * rest n y' q + SparseVec.coeff q.a n * t < 0)) :
+    HSat H (fun i => if i = n then t else M * y' i)
 
-theorem Motzkin.isMult_of_deriv {H : List Motzkin.HC} {g : Motzkin.HC} (hd : Motzkin.Deriv H g) :
-  ∃ μ, Motzkin.IsMult H g μ
+-- lean/ToyFarkas/Motzkin.lean:474
+theorem isMult_of_deriv {H : List HC} {g : HC} (hd : Deriv H g) : ∃ μ, IsMult H g μ
 
-theorem Motzkin.homSys_sat (S : List Constraint) (y : Nat → Int) (h : Motzkin.HSat (Motzkin.homSys S) y) :
-  0 < y 0 ∧ SatScaled S (y 0) fun i => y (i + 1)
+-- lean/ToyFarkas/Motzkin.lean:535-536
+theorem homSys_sat (S : List Constraint) (y : Nat → Int) (h : HSat (homSys S) y) :
+    0 < y 0 ∧ SatScaled S (y 0) (fun i => y (i + 1))
 
-theorem Motzkin.homSys_support (S : List Constraint) (h : Motzkin.HC) :
-  h ∈ Motzkin.homSys S → ∀ (i : Nat), Motzkin.homBound S ≤ i → h.a.coeff i = 0
+-- lean/ToyFarkas/Motzkin.lean:565-566
+theorem homSys_support (S : List Constraint) :
+    ∀ h ∈ homSys S, ∀ i, homBound S ≤ i → SparseVec.coeff h.a i = 0
 
-theorem Motzkin.deriv_of_mem_elim (n : Nat) (H : List Motzkin.HC) (g : Motzkin.HC) :
-  g ∈ Motzkin.elim n H → Motzkin.Deriv H g
+-- lean/ToyFarkas/Motzkin.lean:128
+theorem deriv_of_mem_elim (n : Nat) (H : List HC) : ∀ g ∈ elim n H, Deriv H g
 
-theorem Motzkin.elim_support (n : Nat) (H : List Motzkin.HC)
-  (hH : ∀ (h : Motzkin.HC), h ∈ H → ∀ (i : Nat), n + 1 ≤ i → h.a.coeff i = 0) (g : Motzkin.HC) :
-  g ∈ Motzkin.elim n H → ∀ (i : Nat), n ≤ i → g.a.coeff i = 0
+-- lean/ToyFarkas/Motzkin.lean:115-117
+theorem elim_support (n : Nat) (H : List HC)
+    (hH : ∀ h ∈ H, ∀ i, n + 1 ≤ i → SparseVec.coeff h.a i = 0) :
+    ∀ g ∈ elim n H, ∀ i, n ≤ i → SparseVec.coeff g.a i = 0
 
-theorem Motzkin.Deriv.trans {H H' : List Motzkin.HC} (hH : ∀ (g : Motzkin.HC), g ∈ H' → Motzkin.Deriv H g)
-  {x : Motzkin.HC} (hx : Motzkin.Deriv H' x) : Motzkin.Deriv H x
+-- lean/ToyFarkas/Motzkin.lean:48-49
+theorem Deriv.trans {H H' : List HC} (hH : ∀ g ∈ H', Deriv H g) {x : HC} (hx : Deriv H' x) :
+    Deriv H x
 ```
 
 ### Statements of the definition examples
 
-The positive and negative examples cited under Core definitions, grouped by source module in the order in which they are cited there. They use only the definitions quoted under Core definitions, are kernel-checked with standard axioms only (recorded in `audit/axioms.json`), and carry no recorded statement hash. Statements are printed by Lean's `#check` (namespace `Toy.Farkas` opened; printing options as described under Conventions); in them `↑` is a coercion to `Int` (from `Nat`; `↑↑v` for `v : Fin n` goes through `Nat`), and a statement with a binder such as `(v : Fin 7)` is a bounded check over all values of that finite type.
+The positive and negative examples cited under Core definitions, grouped by source module in the order in which they are cited there. They use only the definitions quoted under Core definitions, are kernel-checked with standard axioms only (recorded in `audit/axioms.json`), and carry no recorded statement hash. Statements are quoted verbatim from the cited source lines (proofs omitted; see Conventions); in them a type ascription such as `(i : Int)` for `i : Nat` is a coercion to `Int` (for `v : Fin n`, `(v : Int)` goes through `Nat`), and a statement with a binder such as `∀ v : Fin 7` is a bounded check over all values of that finite type.
 
 #### `ToyFarkas/Sparse.lean`
 
 ```lean
+-- lean/ToyFarkas/Sparse.lean:66
 theorem ex_coeff_duplicates_add : SparseVec.coeff [(0, 1), (1, 5), (0, 2)] 0 = 3
 
+-- lean/ToyFarkas/Sparse.lean:69
 theorem ex_coeff_not_first_match : SparseVec.coeff [(0, 1), (1, 5), (0, 2)] 0 ≠ 1
 
-theorem ex_eval_pos : (SparseVec.eval [(0, 2), (1, -3)] fun i => if i = 0 then 5 else 1) = 7
+-- lean/ToyFarkas/Sparse.lean:72
+theorem ex_eval_pos : SparseVec.eval [(0, 2), (1, -3)] (fun i => if i = 0 then 5 else 1) = 7
 
-theorem ex_eval_neg : (SparseVec.eval [(0, 2), (1, -3)] fun i => if i = 0 then 5 else 1) ≠ 10
+-- lean/ToyFarkas/Sparse.lean:76
+theorem ex_eval_neg : SparseVec.eval [(0, 2), (1, -3)] (fun i => if i = 0 then 5 else 1) ≠ 10
 
+-- lean/ToyFarkas/Sparse.lean:80
 theorem ex_smul_pos : SparseVec.smul 3 [(0, 2), (1, -1)] = [(0, 6), (1, -3)]
 
+-- lean/ToyFarkas/Sparse.lean:83
 theorem ex_smul_neg : SparseVec.smul 3 [(1, 2)] ≠ [(3, 6)]
 
+-- lean/ToyFarkas/Sparse.lean:87
 theorem ex_isZero_pos : SparseVec.isZero [(0, 1), (1, 4), (0, -1), (1, -4)] = true
 
+-- lean/ToyFarkas/Sparse.lean:90
 theorem ex_isZero_neg : SparseVec.isZero [(0, 1), (1, 4), (0, -1)] = false
 
+-- lean/ToyFarkas/Sparse.lean:109
 theorem ex_bound_pos : SparseVec.bound [(3, 1), (7, 0), (2, 5)] = 8
 
+-- lean/ToyFarkas/Sparse.lean:112
 theorem ex_bound_neg : SparseVec.bound [(3, 1), (7, 0), (2, 5)] ≠ 3
 
-theorem ex_denseDotOn_pos : (denseDotOn [0, 2] (fun i => ↑i + 1) fun x => 2) = 8
+-- lean/ToyFarkas/Sparse.lean:93-94
+theorem ex_denseDotOn_pos :
+    denseDotOn [0, 2] (fun i => (i : Int) + 1) (fun _ => 2) = 8
 
-theorem ex_denseDotOn_neg : (denseDotOn [0, 2] (fun i => ↑i + 1) fun x => 2) ≠ 12
+-- lean/ToyFarkas/Sparse.lean:97-98
+theorem ex_denseDotOn_neg :
+    denseDotOn [0, 2] (fun i => (i : Int) + 1) (fun _ => 2) ≠ 12
 
-theorem ex_denseDot_pos : (denseDot 3 (fun i => ↑i) fun x => 1) = 3
+-- lean/ToyFarkas/Sparse.lean:101
+theorem ex_denseDot_pos : denseDot 3 (fun i => (i : Int)) (fun _ => 1) = 3
 
-theorem ex_denseDot_neg : (denseDot 3 (fun i => ↑i) fun x => 1) ≠ 6
+-- lean/ToyFarkas/Sparse.lean:104
+theorem ex_denseDot_neg : denseDot 3 (fun i => (i : Int)) (fun _ => 1) ≠ 6
 ```
 
 #### `ToyFarkas/Constraint.lean`
 
 ```lean
-theorem ex_holdsInt_pos : { lhs := [(0, 2), (1, -1)], rel := Rel.le, rhs := 3 : Constraint }.HoldsInt (pt2 2 1)
+-- lean/ToyFarkas/Constraint.lean:106
+theorem ex_holdsInt_pos : Constraint.HoldsInt ⟨[(0, 2), (1, -1)], .le, 3⟩ (pt2 2 1)
 
-theorem ex_holdsInt_neg : ¬{ lhs := [(0, 2), (1, -1)], rel := Rel.le, rhs := 3 : Constraint }.HoldsInt (pt2 3 1)
+-- lean/ToyFarkas/Constraint.lean:109
+theorem ex_holdsInt_neg : ¬ Constraint.HoldsInt ⟨[(0, 2), (1, -1)], .le, 3⟩ (pt2 3 1)
 
-theorem ex_holdsInt_strict_neg : ¬{ lhs := [(0, 1)], rel := Rel.lt, rhs := 2 : Constraint }.HoldsInt (pt1 2)
+-- lean/ToyFarkas/Constraint.lean:112
+theorem ex_holdsInt_strict_neg : ¬ Constraint.HoldsInt ⟨[(0, 1)], .lt, 2⟩ (pt1 2)
 
-theorem ex_holdsScaled_pos : { lhs := [(0, 2)], rel := Rel.le, rhs := 1 : Constraint }.HoldsScaled 2 (pt1 1)
+-- lean/ToyFarkas/Constraint.lean:115
+theorem ex_holdsScaled_pos : Constraint.HoldsScaled ⟨[(0, 2)], .le, 1⟩ 2 (pt1 1)
 
-theorem ex_holdsScaled_neg : ¬{ lhs := [(0, 2)], rel := Rel.le, rhs := 1 : Constraint }.HoldsScaled 2 (pt1 3)
+-- lean/ToyFarkas/Constraint.lean:118
+theorem ex_holdsScaled_neg : ¬ Constraint.HoldsScaled ⟨[(0, 2)], .le, 1⟩ 2 (pt1 3)
 
+-- lean/ToyFarkas/Constraint.lean:121-122
 theorem ex_satScaled_pos :
-  SatScaled [{ lhs := [(0, 2)], rel := Rel.le, rhs := 1 }, { lhs := [(0, -2)], rel := Rel.le, rhs := -1 }] 2 (pt1 1)
+    SatScaled [⟨[(0, 2)], .le, 1⟩, ⟨[(0, -2)], .le, -1⟩] 2 (pt1 1)
 
+-- lean/ToyFarkas/Constraint.lean:134-135
 theorem ex_satScaled_neg :
-  ¬SatScaled [{ lhs := [(0, 2)], rel := Rel.le, rhs := 1 }, { lhs := [(0, -2)], rel := Rel.le, rhs := -1 }] 2 (pt1 3)
+    ¬ SatScaled [⟨[(0, 2)], .le, 1⟩, ⟨[(0, -2)], .le, -1⟩] 2 (pt1 3)
 
-theorem ex_satInt_pos :
-  SatInt [{ lhs := [(0, 1)], rel := Rel.le, rhs := 1 }, { lhs := [(0, -1)], rel := Rel.le, rhs := 0 }] (pt1 1)
+-- lean/ToyFarkas/Constraint.lean:130
+theorem ex_satInt_pos : SatInt [⟨[(0, 1)], .le, 1⟩, ⟨[(0, -1)], .le, 0⟩] (pt1 1)
 
-theorem ex_satInt_neg (v : Fin 7) :
-  ¬SatInt [{ lhs := [(0, 2)], rel := Rel.le, rhs := 1 }, { lhs := [(0, -2)], rel := Rel.le, rhs := -1 }] (pt1 (↑↑v - 3))
+-- lean/ToyFarkas/Constraint.lean:125-126
+theorem ex_satInt_neg :
+    ∀ v : Fin 7, ¬ SatInt [⟨[(0, 2)], .le, 1⟩, ⟨[(0, -2)], .le, -1⟩] (pt1 ((v : Int) - 3))
 
-theorem ex_satScaled_denominator_zero_degenerate : SatScaled [{ lhs := [], rel := Rel.le, rhs := -1 }] 0 fun x => 0
+-- lean/ToyFarkas/Constraint.lean:140-141
+theorem ex_satScaled_denominator_zero_degenerate :
+    SatScaled [⟨[], .le, -1⟩] 0 (fun _ => 0)
 
-theorem ex_isStrict_pos : { lhs := [(0, 1)], rel := Rel.lt, rhs := 1 : Constraint }.isStrict = true
+-- lean/ToyFarkas/Constraint.lean:144
+theorem ex_isStrict_pos : Constraint.isStrict ⟨[(0, 1)], .lt, 1⟩ = true
 
-theorem ex_isStrict_neg : { lhs := [(0, 1)], rel := Rel.le, rhs := 1 : Constraint }.isStrict = false
+-- lean/ToyFarkas/Constraint.lean:147
+theorem ex_isStrict_neg : Constraint.isStrict ⟨[(0, 1)], .le, 1⟩ = false
 ```
 
 #### `ToyFarkas/Checker.lean`
 
 ```lean
+-- lean/ToyFarkas/Checker.lean:63
 theorem ex_multipliersNonneg_pos : multipliersNonneg [0, 3, 1] = true
 
+-- lean/ToyFarkas/Checker.lean:64
 theorem ex_multipliersNonneg_neg : multipliersNonneg [0, -3, 1] = false
 
+-- lean/ToyFarkas/Checker.lean:68
 theorem ex_combineLhs_pos : combineLhs sysLeGe [1, 1] = [(0, 1), (0, -1)]
 
+-- lean/ToyFarkas/Checker.lean:70
 theorem ex_combineLhs_neg : combineLhs sysLeGe [1, 1] ≠ []
 
+-- lean/ToyFarkas/Checker.lean:72
 theorem ex_combineRhs_pos : combineRhs sysLeGe [1, 1] = -1
 
+-- lean/ToyFarkas/Checker.lean:73
 theorem ex_combineRhs_neg : combineRhs sysLeGe [2, 1] ≠ -1
 
+-- lean/ToyFarkas/Checker.lean:76
 theorem ex_combineStrict_pos : combineStrict sysStrict [1, 1] = true
 
+-- lean/ToyFarkas/Checker.lean:78
 theorem ex_combineStrict_neg : combineStrict sysStrict [0, 1] = false
 
+-- lean/ToyFarkas/Checker.lean:80
 theorem ex_lhsVanishes_pos : lhsVanishes sysLeGe [1, 1] = true
 
+-- lean/ToyFarkas/Checker.lean:81
 theorem ex_lhsVanishes_neg : lhsVanishes sysLeGe [1, 2] = false
 
+-- lean/ToyFarkas/Checker.lean:84
 theorem ex_rhsContradicts_pos : rhsContradicts sysLeGe [1, 1] = true
 
+-- lean/ToyFarkas/Checker.lean:86
 theorem ex_rhsContradicts_neg : rhsContradicts sysEq [1, 1] = false
 
+-- lean/ToyFarkas/Checker.lean:89
 theorem ex_checkFarkas_pos : checkFarkas sysLeGe [1, 1] = true
 
+-- lean/ToyFarkas/Checker.lean:91
 theorem ex_checkFarkas_strict_pos : checkFarkas sysStrict [1, 1] = true
 
-theorem ex_checkFarkas_neg (a b : Fin 5) : checkFarkas sysEq [↑↑a - 2, ↑↑b - 2] = false
+-- lean/ToyFarkas/Checker.lean:93-94
+theorem ex_checkFarkas_neg :
+    ∀ a b : Fin 5, checkFarkas sysEq [(a : Int) - 2, (b : Int) - 2] = false
 
+-- lean/ToyFarkas/Checker.lean:97-98
 theorem ex_checkFarkas_short_certificate :
-  checkFarkas (sysLeGe ++ [{ lhs := [(1, 1)], rel := Rel.le, rhs := 5 }]) [1, 1] = true
+    checkFarkas (sysLeGe ++ [⟨[(1, 1)], .le, 5⟩]) [1, 1] = true
 
+-- lean/ToyFarkas/Checker.lean:102-103
 theorem ex_checkFarkas_surplus_multipliers :
   checkFarkas sysLeGe [1, 1, 7] = true ∧ checkFarkas sysLeGe [1, 1, -7] = false
 ```
@@ -1817,168 +1964,221 @@ theorem ex_checkFarkas_surplus_multipliers :
 #### `ToyFarkas/Counterexamples.lean`
 
 ```lean
+-- lean/ToyFarkas/Counterexamples.lean:76-77
 theorem ex_rhsContradictsIgnoringStrictness_pos : rhsContradictsIgnoringStrictness sysEq [1, 1] = true
 
+-- lean/ToyFarkas/Counterexamples.lean:78-79
 theorem ex_rhsContradictsIgnoringStrictness_neg : rhsContradictsIgnoringStrictness sysTwoUpper [1, 0] = false
 
+-- lean/ToyFarkas/Counterexamples.lean:85
 theorem ex_combineStrictAnyPremise_pos : combineStrictAnyPremise sysEqPlusStrict [1, 1, 0] = true
 
+-- lean/ToyFarkas/Counterexamples.lean:87
 theorem ex_combineStrictAnyPremise_neg : combineStrictAnyPremise sysEq [1, 1] = false
 
+-- lean/ToyFarkas/Counterexamples.lean:91-92
 theorem ex_rhsContradictsAnyPremise_pos : rhsContradictsAnyPremise sysEqPlusStrict [1, 1, 0] = true
 
+-- lean/ToyFarkas/Counterexamples.lean:96
 theorem ex_rhsContradictsAnyPremise_neg : rhsContradictsAnyPremise sysEq [1, 1] = false
 
-theorem ex_tighten_pos :
-  { lhs := [(0, 1)], rel := Rel.lt, rhs := 1 : Constraint }.tighten =
-    { lhs := [(0, 1)], rel := Rel.le, rhs := 0 : Constraint }
+-- lean/ToyFarkas/Counterexamples.lean:129
+theorem ex_tighten_pos : Constraint.tighten ⟨[(0, 1)], .lt, 1⟩ = ⟨[(0, 1)], .le, 0⟩
 
-theorem ex_tighten_neg :
-  { lhs := [(0, 1)], rel := Rel.le, rhs := 1 : Constraint }.tighten ≠
-    { lhs := [(0, 1)], rel := Rel.le, rhs := 0 : Constraint }
+-- lean/ToyFarkas/Counterexamples.lean:130
+theorem ex_tighten_neg : Constraint.tighten ⟨[(0, 1)], .le, 1⟩ ≠ ⟨[(0, 1)], .le, 0⟩
 
+-- lean/ToyFarkas/Counterexamples.lean:179
 theorem ex_isZeroIndexBlind_pos : isZeroIndexBlind [(0, 1), (0, -1)] = true
 
+-- lean/ToyFarkas/Counterexamples.lean:180
 theorem ex_isZeroIndexBlind_neg : isZeroIndexBlind [(0, 1), (1, 1)] = false
 
+-- lean/ToyFarkas/Counterexamples.lean:184
 theorem ex_coeffFirstMatch_pos : coeffFirstMatch [(0, 0), (0, 1)] 0 = 0
 
+-- lean/ToyFarkas/Counterexamples.lean:186-187
 theorem ex_coeffFirstMatch_neg : coeffFirstMatch [(0, 0), (0, 1)] 0 ≠ SparseVec.coeff [(0, 0), (0, 1)] 0
 
+-- lean/ToyFarkas/Counterexamples.lean:181
 theorem ex_isZeroFirstMatch_pos : isZeroFirstMatch [(0, 0), (1, 0)] = true
 
+-- lean/ToyFarkas/Counterexamples.lean:182
 theorem ex_isZeroFirstMatch_neg : isZeroFirstMatch [(0, 0), (1, 2)] = false
 ```
 
 #### `ToyFarkas/Cuts.lean`
 
 ```lean
-theorem ex_cgCut_floor_negative :
-  cgCut sysHalf { mult := [0, 1], div := 2 } = { lhs := [(0, -1)], rel := Rel.le, rhs := -1 }
+-- lean/ToyFarkas/Cuts.lean:105
+theorem ex_cgCut_floor_negative : cgCut sysHalf ⟨[0, 1], 2⟩ = ⟨[(0, -1)], .le, -1⟩
 
+-- lean/ToyFarkas/Cuts.lean:93-95
 theorem ex_cgLhs_pos :
-  cgLhs [{ lhs := [(0, 1), (1, 1)], rel := Rel.le, rhs := 1 }, { lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := 0 }]
-      { mult := [1, 1], div := 2 } =
-    [(0, 1), (1, 1), (0, 1), (1, -1)]
+    cgLhs [⟨[(0, 1), (1, 1)], .le, 1⟩, ⟨[(0, 1), (1, -1)], .le, 0⟩] ⟨[1, 1], 2⟩ =
+      [(0, 1), (1, 1), (0, 1), (1, -1)]
 
+-- lean/ToyFarkas/Cuts.lean:97-98
 theorem ex_cgLhs_neg :
-  cgLhs [{ lhs := [(0, 1), (1, 1)], rel := Rel.le, rhs := 1 }, { lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := 0 }]
-      { mult := [1, 1], div := 2 } ≠
-    [(0, 1)]
+    cgLhs [⟨[(0, 1), (1, 1)], .le, 1⟩, ⟨[(0, 1), (1, -1)], .le, 0⟩] ⟨[1, 1], 2⟩ ≠ [(0, 1)]
 
-theorem ex_cgCut_pos : cgCut sysTwoXLeThree { mult := [1], div := 2 } = { lhs := [(0, 1)], rel := Rel.le, rhs := 1 }
+-- lean/ToyFarkas/Cuts.lean:101
+theorem ex_cgCut_pos : cgCut sysTwoXLeThree ⟨[1], 2⟩ = ⟨[(0, 1)], .le, 1⟩
 
-theorem ex_cgCut_neg : cgCut sysTwoXLeThree { mult := [1], div := 2 } ≠ { lhs := [(0, 1)], rel := Rel.le, rhs := 2 }
+-- lean/ToyFarkas/Cuts.lean:103
+theorem ex_cgCut_neg : cgCut sysTwoXLeThree ⟨[1], 2⟩ ≠ ⟨[(0, 1)], .le, 2⟩
 
-theorem ex_cgRhs_strict_pos : cgRhs [{ lhs := [(0, 2)], rel := Rel.lt, rhs := 3 }] { mult := [1], div := 2 } = 2
+-- lean/ToyFarkas/Cuts.lean:108
+theorem ex_cgRhs_strict_pos : cgRhs [⟨[(0, 2)], .lt, 3⟩] ⟨[1], 2⟩ = 2
 
-theorem ex_cgRhs_neg : cgRhs [{ lhs := [(0, 2)], rel := Rel.lt, rhs := 3 }] { mult := [1], div := 2 } ≠ 3
+-- lean/ToyFarkas/Cuts.lean:109
+theorem ex_cgRhs_neg : cgRhs [⟨[(0, 2)], .lt, 3⟩] ⟨[1], 2⟩ ≠ 3
 
-theorem ex_cgDivisible_pos : cgDivisible sysTwoXLeThree { mult := [1], div := 2 } = true
+-- lean/ToyFarkas/Cuts.lean:111
+theorem ex_cgDivisible_pos : cgDivisible sysTwoXLeThree ⟨[1], 2⟩ = true
 
-theorem ex_cgDivisible_neg : cgDivisible sysTwoXLeThree { mult := [1], div := 3 } = false
+-- lean/ToyFarkas/Cuts.lean:112
+theorem ex_cgDivisible_neg : cgDivisible sysTwoXLeThree ⟨[1], 3⟩ = false
 
+-- lean/ToyFarkas/Cuts.lean:116-117
 theorem ex_cgDivisible_duplicates_pos :
-  cgDivisible
-      [{ lhs := [(0, 1), (1, 1)], rel := Rel.le, rhs := 1 }, { lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := 0 }]
-      { mult := [1, 1], div := 2 } =
-    true
+    cgDivisible [⟨[(0, 1), (1, 1)], .le, 1⟩, ⟨[(0, 1), (1, -1)], .le, 0⟩] ⟨[1, 1], 2⟩ = true
 
-theorem ex_cgValid_pos : cgValid sysTwoXLeThree { mult := [1], div := 2 } = true
+-- lean/ToyFarkas/Cuts.lean:120
+theorem ex_cgValid_pos : cgValid sysTwoXLeThree ⟨[1], 2⟩ = true
 
-theorem ex_cgValid_neg : cgValid sysTwoXLeThree { mult := [1], div := 0 } = false
+-- lean/ToyFarkas/Cuts.lean:121
+theorem ex_cgValid_neg : cgValid sysTwoXLeThree ⟨[1], 0⟩ = false
 
-theorem ex_cgDerive_pos :
-  cgDerive sysTwoXLeThree { mult := [1], div := 2 } = some { lhs := [(0, 1)], rel := Rel.le, rhs := 1 }
+-- lean/ToyFarkas/Cuts.lean:123
+theorem ex_cgDerive_pos : cgDerive sysTwoXLeThree ⟨[1], 2⟩ = some ⟨[(0, 1)], .le, 1⟩
 
-theorem ex_cgDerive_neg : cgDerive sysTwoXLeThree { mult := [-1], div := 2 } = none
+-- lean/ToyFarkas/Cuts.lean:124
+theorem ex_cgDerive_neg : cgDerive sysTwoXLeThree ⟨[-1], 2⟩ = none
 
+-- lean/ToyFarkas/Cuts.lean:129-131
 theorem ex_applyCuts_pos :
-  applyCuts sysHalf halfCutCert.cuts =
-    some (sysHalf ++ [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }, { lhs := [(0, -1)], rel := Rel.le, rhs := -1 }])
+    applyCuts sysHalf halfCutCert.cuts =
+      some (sysHalf ++ [⟨[(0, 1)], .le, 0⟩, ⟨[(0, -1)], .le, -1⟩])
 
-theorem ex_applyCuts_neg : applyCuts sysHalf [{ mult := [1, 0], div := 3 }] = none
+-- lean/ToyFarkas/Cuts.lean:132
+theorem ex_applyCuts_neg : applyCuts sysHalf [⟨[1, 0], 3⟩] = none
 
+-- lean/ToyFarkas/Cuts.lean:134
 theorem ex_checkCutCert_pos : checkCutCert sysHalf halfCutCert = true
 
-theorem ex_checkCutCert_neg : checkCutCert sysHalf { cuts := [], farkas := [1, 1] } = false
+-- lean/ToyFarkas/Cuts.lean:135
+theorem ex_checkCutCert_neg : checkCutCert sysHalf ⟨[], [1, 1]⟩ = false
 
+-- lean/ToyFarkas/Cuts.lean:320-322
 theorem ex_checkCutCert_no_cuts_no_tightening :
-  checkCutCert sysOpenUnit { cuts := [], farkas := [1, 1] } = false ∧
-    checkCutCert sysOpenUnit { cuts := [{ mult := [1, 1], div := 1 }], farkas := [0, 0, 1] } = true
+    checkCutCert sysOpenUnit ⟨[], [1, 1]⟩ = false ∧
+    checkCutCert sysOpenUnit ⟨[⟨[1, 1], 1⟩], [0, 0, 1]⟩ = true
 ```
 
 #### `ToyFarkas/BitVecTransfer.lean`
 
 ```lean
+-- lean/ToyFarkas/BitVecTransfer.lean:165-168
 theorem ex_noWrapU_rejects_machine_subtraction :
-  (10#8 - 3#8).toNat = 7 ∧
-    { terms := [(0, 1), (1, -1)], const := 0 : AffExpr }.evalInt (uval (bvPt2 10#8 3#8)) = 7 ∧
-      ¬NoWrapU 8 { terms := [(0, 1), (1, -1)], const := 0 : AffExpr } (uval (bvPt2 10#8 3#8))
+    (10#8 - 3#8).toNat = 7 ∧
+    AffExpr.evalInt ⟨[(0, 1), (1, -1)], 0⟩ (uval (bvPt2 (10#8) (3#8))) = 7 ∧
+    ¬ NoWrapU 8 ⟨[(0, 1), (1, -1)], 0⟩ (uval (bvPt2 (10#8) (3#8)))
 
-theorem ex_evalInt_pos : eDouble.evalInt (uval (bvPt2 200#8 0#8)) = 400
+-- lean/ToyFarkas/BitVecTransfer.lean:128
+theorem ex_evalInt_pos : eDouble.evalInt (uval (bvPt2 (200#8) 0#8)) = 400
 
-theorem ex_evalInt_neg : eDouble.evalInt (uval (bvPt2 200#8 0#8)) ≠ 144
+-- lean/ToyFarkas/BitVecTransfer.lean:129
+theorem ex_evalInt_neg : eDouble.evalInt (uval (bvPt2 (200#8) 0#8)) ≠ 144
 
-theorem ex_evalBv_pos : AffExpr.evalBv 8 eDouble (bvPt2 200#8 0#8) = 144#8
+-- lean/ToyFarkas/BitVecTransfer.lean:131
+theorem ex_evalBv_pos : eDouble.evalBv 8 (bvPt2 (200#8) 0#8) = 144#8
 
-theorem ex_evalBv_neg : (AffExpr.evalBv 8 eDouble (bvPt2 200#8 0#8)).toNat ≠ 400
+-- lean/ToyFarkas/BitVecTransfer.lean:132
+theorem ex_evalBv_neg : (eDouble.evalBv 8 (bvPt2 (200#8) 0#8)).toNat ≠ 400
 
-theorem ex_sparse_evalBv_pos : SparseVec.evalBv 8 [(0, -1)] (bvPt2 1#8 0#8) = 255#8
+-- lean/ToyFarkas/BitVecTransfer.lean:133
+theorem ex_sparse_evalBv_pos : SparseVec.evalBv 8 [(0, -1)] (bvPt2 (1#8) 0#8) = 255#8
 
-theorem ex_sparse_evalBv_neg : SparseVec.evalBv 8 [(0, -1)] (bvPt2 1#8 0#8) ≠ 0#8
+-- lean/ToyFarkas/BitVecTransfer.lean:134
+theorem ex_sparse_evalBv_neg : SparseVec.evalBv 8 [(0, -1)] (bvPt2 (1#8) 0#8) ≠ 0#8
 
-theorem ex_uval_pos : uval (bvPt2 255#8 0#8) 0 = 255
+-- lean/ToyFarkas/BitVecTransfer.lean:136
+theorem ex_uval_pos : uval (bvPt2 (255#8) 0#8) 0 = 255
 
-theorem ex_uval_neg : uval (bvPt2 255#8 0#8) 0 ≠ -1
+-- lean/ToyFarkas/BitVecTransfer.lean:137
+theorem ex_uval_neg : uval (bvPt2 (255#8) 0#8) 0 ≠ -1
 
-theorem ex_sval_pos : sval (bvPt2 255#8 0#8) 0 = -1
+-- lean/ToyFarkas/BitVecTransfer.lean:138
+theorem ex_sval_pos : sval (bvPt2 (255#8) 0#8) 0 = -1
 
-theorem ex_sval_neg : sval (bvPt2 255#8 0#8) 0 ≠ 255
+-- lean/ToyFarkas/BitVecTransfer.lean:139
+theorem ex_sval_neg : sval (bvPt2 (255#8) 0#8) 0 ≠ 255
 
+-- lean/ToyFarkas/BitVecTransfer.lean:140
 theorem ex_inUnsignedRange_pos : InUnsignedRange 8 255
 
-theorem ex_inUnsignedRange_neg : ¬InUnsignedRange 8 256 ∧ ¬InUnsignedRange 8 (-1)
+-- lean/ToyFarkas/BitVecTransfer.lean:141
+theorem ex_inUnsignedRange_neg : ¬ InUnsignedRange 8 256 ∧ ¬ InUnsignedRange 8 (-1)
 
+-- lean/ToyFarkas/BitVecTransfer.lean:142
 theorem ex_inSignedRange_pos : InSignedRange 8 (-128) ∧ InSignedRange 8 127
 
-theorem ex_inSignedRange_neg : ¬InSignedRange 8 128 ∧ ¬InSignedRange 8 (-129)
+-- lean/ToyFarkas/BitVecTransfer.lean:143
+theorem ex_inSignedRange_neg : ¬ InSignedRange 8 128 ∧ ¬ InSignedRange 8 (-129)
 
-theorem ex_inSignedRange_zero_width : InSignedRange 0 0 ∧ ¬InSignedRange 0 (-1)
+-- lean/ToyFarkas/BitVecTransfer.lean:145
+theorem ex_inSignedRange_zero_width : InSignedRange 0 0 ∧ ¬ InSignedRange 0 (-1)
 
-theorem ex_intermediates_pos : eDouble.intermediates (uval (bvPt2 200#8 0#8)) = [1, 200, 200, 1, 200, 400, 0, 400]
+-- lean/ToyFarkas/BitVecTransfer.lean:148-149
+theorem ex_intermediates_pos :
+    eDouble.intermediates (uval (bvPt2 (200#8) 0#8)) = [1, 200, 200, 1, 200, 400, 0, 400]
 
-theorem ex_intermediates_neg : eDouble.intermediates (uval (bvPt2 200#8 0#8)) ≠ [400]
+-- lean/ToyFarkas/BitVecTransfer.lean:151-152
+theorem ex_intermediates_neg :
+    eDouble.intermediates (uval (bvPt2 (200#8) 0#8)) ≠ [400]
 
-theorem ex_noWrapU_pos : NoWrapU 8 eDouble (uval (bvPt2 100#8 0#8))
+-- lean/ToyFarkas/BitVecTransfer.lean:153
+theorem ex_noWrapU_pos : NoWrapU 8 eDouble (uval (bvPt2 (100#8) 0#8))
 
-theorem ex_noWrapU_neg : ¬NoWrapU 8 eDouble (uval (bvPt2 200#8 0#8))
+-- lean/ToyFarkas/BitVecTransfer.lean:154
+theorem ex_noWrapU_neg : ¬ NoWrapU 8 eDouble (uval (bvPt2 (200#8) 0#8))
 
-theorem ex_noWrapS_pos : NoWrapS 8 eDouble (sval (bvPt2 50#8 0#8))
+-- lean/ToyFarkas/BitVecTransfer.lean:155
+theorem ex_noWrapS_pos : NoWrapS 8 eDouble (sval (bvPt2 (50#8) 0#8))
 
-theorem ex_noWrapS_neg : ¬NoWrapS 8 eDouble (sval (bvPt2 100#8 0#8))
+-- lean/ToyFarkas/BitVecTransfer.lean:156
+theorem ex_noWrapS_neg : ¬ NoWrapS 8 eDouble (sval (bvPt2 (100#8) 0#8))
 
+-- lean/ToyFarkas/BitVecTransfer.lean:159-161
 theorem ex_noWrap_checks_coefficient_literals :
-  ¬NoWrapU 8 { terms := [(0, 1000)], const := 0 } (uval (bvPt2 0#8 0#8)) ∧
-    ¬NoWrapS 8 { terms := [(0, 1000)], const := 0 } (sval (bvPt2 0#8 0#8))
+    ¬ NoWrapU 8 ⟨[(0, 1000)], 0⟩ (uval (bvPt2 0#8 0#8)) ∧
+    ¬ NoWrapS 8 ⟨[(0, 1000)], 0⟩ (sval (bvPt2 0#8 0#8))
 ```
 
 #### `ToyFarkas/BitVecSystems.lean`
 
 ```lean
-theorem ex_bvAtom_holdsU_pos : BvAtom.HoldsU 8 atomEx (bvPt2 3#8 4#8)
+-- lean/ToyFarkas/BitVecSystems.lean:67
+theorem ex_bvAtom_holdsU_pos : atomEx.HoldsU 8 (bvPt2 (3#8) (4#8))
 
-theorem ex_bvAtom_holdsU_neg : ¬BvAtom.HoldsU 8 atomEx (bvPt2 4#8 4#8)
+-- lean/ToyFarkas/BitVecSystems.lean:69
+theorem ex_bvAtom_holdsU_neg : ¬ atomEx.HoldsU 8 (bvPt2 (4#8) (4#8))
 
-theorem ex_bvAtom_holdsU_wrap : BvAtom.HoldsU 8 atomEx (bvPt2 255#8 0#8)
+-- lean/ToyFarkas/BitVecSystems.lean:72
+theorem ex_bvAtom_holdsU_wrap : atomEx.HoldsU 8 (bvPt2 (255#8) (0#8))
 
-theorem ex_bvAtom_holdsS_pos : BvAtom.HoldsS 8 atomEx (bvPt2 255#8 0#8)
+-- lean/ToyFarkas/BitVecSystems.lean:73
+theorem ex_bvAtom_holdsS_pos : atomEx.HoldsS 8 (bvPt2 (255#8) (0#8))
 
-theorem ex_bvAtom_holdsS_neg : ¬BvAtom.HoldsS 8 atomEx (bvPt2 5#8 3#8)
+-- lean/ToyFarkas/BitVecSystems.lean:74
+theorem ex_bvAtom_holdsS_neg : ¬ atomEx.HoldsS 8 (bvPt2 (5#8) (3#8))
 
-theorem ex_bvAtom_toConstraint_pos : atomEx.toConstraint = { lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := -1 }
+-- lean/ToyFarkas/BitVecSystems.lean:75
+theorem ex_bvAtom_toConstraint_pos : atomEx.toConstraint = ⟨[(0, 1), (1, -1)], .le, -1⟩
 
-theorem ex_bvAtom_toConstraint_neg : atomEx.toConstraint ≠ { lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := 1 }
+-- lean/ToyFarkas/BitVecSystems.lean:76
+theorem ex_bvAtom_toConstraint_neg : atomEx.toConstraint ≠ ⟨[(0, 1), (1, -1)], .le, 1⟩
 ```
 
 ## Boundaries
@@ -2358,4 +2558,4 @@ EOF
 
 Both lists must be empty and all 84 recorded names must be checked. A passing run re-establishes the kernel checks and that the statements and the definitions they depend on are unchanged; it does not re-establish the modeling bridges under Applicability, which must be re-argued for any real checker, solver, or machine-integer semantics.
 
-To revalidate against a newer Lean release, change `lean/lean-toolchain` and rerun the commands above. A hash mismatch then indicates a change in how Lean elaborates or prints a statement or definition, which must be inspected by hand (compare the printed statements under Findings) before the cards are relied on for that release.
+To revalidate against a newer Lean release, change `lean/lean-toolchain` and rerun the commands above. A hash mismatch then indicates a change in how Lean elaborates or prints a statement or definition, which must be inspected by hand (compare the statements quoted under Findings) before the cards are relied on for that release.
