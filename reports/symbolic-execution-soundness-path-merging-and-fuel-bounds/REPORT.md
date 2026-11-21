@@ -566,6 +566,7 @@ def σx0plus1 : SymStore := SymStore.init.set 0 (add (var 0) (int 1))
 `Toy.SymEx.eval_subst` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:14-17
 /-- Symbolic evaluation of a program expression (`e.subst σ`) interpreted under
 `ρ` agrees with concrete evaluation of `e` in the instantiated store `σ.inst ρ`. -/
 theorem eval_subst (σ : SymStore) (ρ : Valuation) (e : Term) :
@@ -574,7 +575,7 @@ theorem eval_subst (σ : SymStore) (ρ : Valuation) (e : Term) :
 
 **Unfolded reading** (hand-expanded; not a Lean declaration):
 
-```text
+```lean
 (e.subst σ).eval ρ = e.eval (fun x => (σ x).eval ρ)
 ```
 
@@ -587,6 +588,7 @@ theorem eval_subst (σ : SymStore) (ρ : Valuation) (e : Term) :
 `Toy.SymEx.nonvacuity_eval_subst` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:66-67
 theorem nonvacuity_eval_subst :
     ((add (var 1) (var 1)).subst dσ₁).eval ρ5 = (add (var 1) (var 1)).eval (dσ₁.inst ρ5)
 ```
@@ -610,6 +612,7 @@ Basis: execution (Lean kernel check) — `eval_subst` (axioms: `propext`).
 `Toy.SymEx.symExec_leaf_sound` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:22-29
 /-- Per-path soundness: for every leaf produced by `symExec p f` and every
 valuation `ρ` satisfying the leaf's path condition, the concrete run of `p` from
 the `ρ`-instantiated initial store with the same fuel `f` has exactly the leaf's
@@ -622,7 +625,7 @@ theorem symExec_leaf_sound (p : Cfg) (f : Nat) (l : Leaf) (hl : l ∈ symExec p 
 
 **Unfolded reading** (hand-expanded; not a Lean declaration):
 
-```text
+```lean
 l ∈ symExec p f → (l.pc.eval ρ).toBool = true →
   exec p f (fun x => ρ x) = l.res.inst ρ
 -- SymOutcome.inst: .ok σ ↦ .ok (fun x => (σ x).eval ρ); .panic loc ↦ .panic loc;
@@ -643,6 +646,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.symExec_leaf_sound_needs_membership` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:78-82
 /-- Tightness of `hl`: a leaf that `symExec` does not produce (`(true, ok init)`)
 satisfies `hpc` at `ρ0`, yet the concrete run panics. -/
 theorem symExec_leaf_sound_needs_membership :
@@ -653,6 +657,7 @@ theorem symExec_leaf_sound_needs_membership :
 `Toy.SymEx.symExec_leaf_sound_needs_pc` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:88-94
 /-- Tightness of `hpc`: the success leaf of `exPanicIfZero` is produced by
 `symExec`, its path condition fails at `ρ0`, and there the concrete run panics
 while the leaf records success (a spurious success if the path condition is
@@ -667,6 +672,7 @@ theorem symExec_leaf_sound_needs_pc :
 `Toy.SymEx.nonvacuity_symExec_leaf_sound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:72-75
 /-- All hypotheses of `symExec_leaf_sound` hold for the `x0 = 0` leaf of
 `exDiamond` at `ρ0`. -/
 theorem nonvacuity_symExec_leaf_sound :
@@ -696,6 +702,7 @@ Basis: execution (Lean kernel check) — `symExec_leaf_sound` (axioms: `Quot.sou
 `Toy.SymEx.symExec_exhaustive` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:34-37
 /-- Exhaustiveness: at every fuel, every valuation satisfies the path condition
 of at least one leaf of `symExec p f`. -/
 theorem symExec_exhaustive (p : Cfg) (f : Nat) (ρ : Valuation) :
@@ -705,13 +712,14 @@ theorem symExec_exhaustive (p : Cfg) (f : Nat) (ρ : Valuation) :
 `Toy.SymEx.symExec_pairwise_disjoint` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:40-43
 /-- Pairwise disjointness: at every fuel, the path conditions of any two leaves
 at distinct positions of `symExec p f` are never true together. -/
 theorem symExec_pairwise_disjoint (p : Cfg) (f : Nat) :
     (symExec p f).Pairwise (fun l₁ l₂ => Disjoint l₁.pc l₂.pc)
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 ∀ ρ, ∃ l ∈ symExec p f, (l.pc.eval ρ).toBool = true
@@ -728,6 +736,7 @@ theorem symExec_pairwise_disjoint (p : Cfg) (f : Nat) :
 `Toy.SymEx.nonvacuity_path_coverage` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:103-107
 /-- Instance: the two `exDiamond` leaves cover every input and are disjoint. -/
 theorem nonvacuity_path_coverage :
     (∀ ρ, ∃ l ∈ symExec exDiamond 4, holds l.pc ρ) ∧
@@ -756,6 +765,7 @@ Basis: execution (Lean kernel check) — `symExec_exhaustive` (axioms: `Quot.sou
 `Toy.SymEx.exec_okWith_of_leavesSound_of_exhaustive_of_leavesProve` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:48-55
 /-- Strict transfer: if a leaf list `L` is per-leaf sound for `p` at fuel `f`,
 exhaustive, and every leaf passes the strict check for `Q`, then every concrete
 run of `p` at fuel `f` returns with a final store satisfying `Q`. -/
@@ -769,6 +779,7 @@ theorem exec_okWith_of_leavesSound_of_exhaustive_of_leavesProve (p : Cfg) (f : N
 `Toy.SymEx.exec_okWithOrOutOfFuel_of_leavesSound_of_exhaustive_of_leavesProveLax` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:58-64
 /-- Lax transfer: as above, but with the lax check (out-of-fuel leaves accepted);
 the conclusion weakens to "returns with `Q`, or runs out of fuel". -/
 theorem exec_okWithOrOutOfFuel_of_leavesSound_of_exhaustive_of_leavesProveLax (p : Cfg)
@@ -778,7 +789,7 @@ theorem exec_okWithOrOutOfFuel_of_leavesSound_of_exhaustive_of_leavesProveLax (p
     OkWithOrOutOfFuel Q (exec p f (SymStore.init.inst ρ))
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 hsound : ∀ l ∈ L, ∀ ρ, holds l.pc ρ → exec p f (fun x => ρ x) = l.res.inst ρ
@@ -805,6 +816,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.transfer_needs_leavesSound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:127-134
 /-- Tightness of `hsound`: `[(true, ok init)]` is exhaustive and passes both
 checks for `True`, but `exPanicIfZero` panics at `ρ0`. -/
 theorem transfer_needs_leavesSound :
@@ -818,6 +830,7 @@ theorem transfer_needs_leavesSound :
 `Toy.SymEx.transfer_needs_exhaustive` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:141-149
 /-- Tightness of `hexh`: keeping only the success leaf of `exPanicIfZero` (whose
 path condition is not valid) gives a sound list that passes both checks, but the
 program panics at `ρ0`. -/
@@ -832,6 +845,7 @@ theorem transfer_needs_exhaustive :
 `Toy.SymEx.transfer_needs_leaf_check` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:160-166
 /-- Tightness of `hprove`: the leaves of `exPanicIfZero` are sound and
 exhaustive, the check fails, and so does the conclusion. -/
 theorem transfer_needs_leaf_check :
@@ -846,6 +860,7 @@ theorem transfer_needs_leaf_check :
 `Toy.SymEx.nonvacuity_transfer` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:120-123
 theorem nonvacuity_transfer :
     LeavesSound exDiamond 4 (symExec exDiamond 4) ∧ LeavesExhaustive (symExec exDiamond 4) ∧
       LeavesProve (symExec exDiamond 4) QneDiamond ∧
@@ -873,6 +888,7 @@ Basis: execution (Lean kernel check) — `exec_okWith_of_leavesSound_of_exhausti
 `Toy.SymEx.provesLax_iff_forall_exec_okWithOrOutOfFuel` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:67-72
 /-- Lax symbolic success at fuel `f` (every leaf of `symExec p f`, under every
 valuation satisfying its path condition, returns with `Q` or is out of fuel;
 panic leaves are rejected) holds if and only if every concrete run at the same
@@ -881,7 +897,7 @@ theorem provesLax_iff_forall_exec_okWithOrOutOfFuel (p : Cfg) (f : Nat) (Q : Sto
     ProvesLax p f Q ↔ ∀ ρ, OkWithOrOutOfFuel Q (exec p f (SymStore.init.inst ρ))
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 (∀ l ∈ symExec p f, ∀ ρ, holds l.pc ρ → OkWithOrOutOfFuel Q (l.res.inst ρ)) ↔
@@ -897,6 +913,7 @@ theorem provesLax_iff_forall_exec_okWithOrOutOfFuel (p : Cfg) (f : Nat) (Q : Sto
 `Toy.SymEx.nonvacuity_provesLax_iff` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:176-185
 /-- Both sides of the lax characterization hold non-trivially for `exHalfDone` at
 fuel 3 with the satisfiable postcondition `x1 = 1`: the lax check passes, the
 strict check fails, the input `x0 = 0` returns with `x1 = 1`, and the input
@@ -928,6 +945,7 @@ Basis: execution (Lean kernel check) — `provesLax_iff_forall_exec_okWithOrOutO
 `Toy.SymEx.leavesProve_of_leavesProve_dropPcs` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:79-83
 /-- Erasing path conditions only strengthens the strict leaf check: if the
 leaves with every path condition replaced by `true` pass, the original leaves
 pass. -/
@@ -938,6 +956,7 @@ theorem leavesProve_of_leavesProve_dropPcs (L : List Leaf) (Q : Store → Prop)
 `Toy.SymEx.dropPcs_false_alarm` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:226-231
 /-- The converse fails (dropping path conditions causes false alarms):
 `exAssertTrue` passes the strict check, but not after dropping path conditions,
 because its infeasible panic leaf becomes feasible. -/
@@ -946,7 +965,7 @@ theorem dropPcs_false_alarm :
       ¬ LeavesProve (dropPcs (symExec exAssertTrue 2)) Qtrue
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 -- dropPcs L = L.map (fun l => ⟨tt, l.res⟩) and holds tt ρ is true, so the hypothesis is
@@ -966,6 +985,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.leavesProve_dropPcs_needed` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:216-220
 /-- Tightness of `h`: neither the dropped nor the original check passes for
 `exPanicIfZero`. -/
 theorem leavesProve_dropPcs_needed :
@@ -978,6 +998,7 @@ theorem leavesProve_dropPcs_needed :
 `Toy.SymEx.nonvacuity_leavesProve_dropPcs` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:205
 theorem nonvacuity_leavesProve_dropPcs : LeavesProve (dropPcs (symExec exDiamond 4)) QneDiamond
 ```
 
@@ -999,6 +1020,7 @@ Basis: execution (Lean kernel check) — `leavesProve_of_leavesProve_dropPcs` (a
 `Toy.SymEx.guardedMerge_sound` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:88-96
 /-- Guarded merge soundness: if `(c₁, σ₁)` and `(c₂, σ₂)` are both sound for the
 same reference `R` and the same continuation `K`, then
 `(c₁ ∨ c₂, x ↦ ite c₁ (σ₁ x) (σ₂ x))` is sound for `R` and `K`. No disjointness
@@ -1010,7 +1032,7 @@ theorem guardedMerge_sound {α : Type} (R : Valuation → α) (K : Store → α)
     GuardedSound R K (Term.or c₁ c₂) (mergeStore c₁ σ₁ σ₂)
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 h₁   : ∀ ρ, holds c₁ ρ → R ρ = K (fun x => (σ₁ x).eval ρ)
@@ -1032,6 +1054,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.guardedMerge_needs_first_sound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:279-282
 /-- Tightness of `h₁`: with an unsound first state the merge is unsound. -/
 theorem guardedMerge_needs_first_sound :
     GuardedSound Rdia Outcome.ok dc₂ dσ₂ ∧
@@ -1041,6 +1064,7 @@ theorem guardedMerge_needs_first_sound :
 `Toy.SymEx.guardedMerge_needs_second_sound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:287-290
 /-- Tightness of `h₂`: with an unsound second state the merge is unsound. -/
 theorem guardedMerge_needs_second_sound :
     GuardedSound Rdia Outcome.ok dc₁ dσ₁ ∧
@@ -1052,6 +1076,7 @@ theorem guardedMerge_needs_second_sound :
 `Toy.SymEx.nonvacuity_guardedMerge_sound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:253-260
 /-- Both hypotheses hold for the two branch states of `exDiamond` (disjoint
 guards) and also for an overlapping pair: the first branch state and the merged
 state, whose guards `dc₁` and `dc₁ ∨ dc₂` overlap. -/
@@ -1087,6 +1112,7 @@ Basis: derived (modeling bridge) — Kuznetsov et al. (PLDI 2012, Algorithm 1, l
 `Toy.SymEx.mergeLeaf_preserves_leavesSound` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:99-104
 /-- Merging two successful leaves at the front of a per-leaf sound leaf list
 keeps it per-leaf sound. (The converse fails: `mergeLeaf_leavesSound_converse_fails`.) -/
 theorem mergeLeaf_preserves_leavesSound (p : Cfg) (f : Nat) (c₁ : Term) (σ₁ : SymStore)
@@ -1098,6 +1124,7 @@ theorem mergeLeaf_preserves_leavesSound (p : Cfg) (f : Nat) (c₁ : Term) (σ₁
 `Toy.SymEx.mergeLeaf_leavesExhaustive_iff` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:107-112
 /-- Merging two successful leaves at the front of a leaf list neither gains nor
 loses exhaustiveness. -/
 theorem mergeLeaf_leavesExhaustive_iff (c₁ : Term) (σ₁ : SymStore) (c₂ : Term)
@@ -1106,7 +1133,7 @@ theorem mergeLeaf_leavesExhaustive_iff (c₁ : Term) (σ₁ : SymStore) (c₂ : 
       LeavesExhaustive (⟨c₁, .ok σ₁⟩ :: ⟨c₂, .ok σ₂⟩ :: rest)
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 -- mergeLeaf c₁ σ₁ c₂ σ₂ = ⟨ite c₁ tt c₂, .ok (fun x => ite c₁ (σ₁ x) (σ₂ x))⟩
@@ -1127,6 +1154,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.mergeLeaf_needs_leavesSound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:302-307
 /-- Tightness of `hs`: an exhaustive list whose first leaf is unsound (the
 `x0 ≠ 0` store under the `x0 = 0` guard) merges into an unsound leaf. -/
 theorem mergeLeaf_needs_leavesSound :
@@ -1140,6 +1168,7 @@ theorem mergeLeaf_needs_leavesSound :
 `Toy.SymEx.nonvacuity_mergeLeaf` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:297-299
 theorem nonvacuity_mergeLeaf :
     LeavesSound exDiamond 4 [⟨dc₁, .ok dσ₁⟩, ⟨dc₂, .ok dσ₂⟩] ∧
       LeavesExhaustive [⟨dc₁, .ok dσ₁⟩, ⟨dc₂, .ok dσ₂⟩]
@@ -1164,6 +1193,7 @@ Basis: execution (Lean kernel check) — `mergeLeaf_preserves_leavesSound` (axio
 `Toy.SymEx.unguardedMerge_spurious_success` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:340-351
 /-- The unguarded merge of the two sound `exDiamond` leaves is exhaustive and
 passes the strict check for `x1 = x0 + 1`; at the input `x0 = 5`, whose path
 condition `c₁ ∨ c₂` holds, the unguarded leaf claims `x1 = 6` while the concrete
@@ -1189,6 +1219,7 @@ theorem unguardedMerge_spurious_success :
 `Toy.SymEx.guardedMerge_rejects_Qplus1` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:367-371
 /-- Positive control: the guarded merge of the same leaves is sound and the
 strict check correctly rejects `x1 = x0 + 1`. -/
 theorem guardedMerge_rejects_Qplus1 :
@@ -1217,6 +1248,7 @@ Basis: derived (modeling bridge) — An engine that merges branch states by keep
 `Toy.SymEx.guardedMerge_preserves_covers_of_agree_on_overlap` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:123-131
 /-- Coverage under merging: for a possibly many-valued behaviour relation `B`,
 merging the first two guarded states of a covering list keeps it covering
 provided the two states agree (through `K`) wherever both guards hold. -/
@@ -1228,7 +1260,7 @@ theorem guardedMerge_preserves_covers_of_agree_on_overlap {α : Type}
     Covers B K ((Term.or c₁ c₂, mergeStore c₁ σ₁ σ₂) :: rest)
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 hcov : ∀ ρ a, B ρ a → ∃ cs ∈ (c₁, σ₁) :: (c₂, σ₂) :: rest, holds cs.1 ρ ∧ K (cs.2.inst ρ) = a
@@ -1250,6 +1282,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.covers_merge_needs_covers` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:405-409
 /-- Tightness of `hcov`: agreement holds trivially for two copies of one state,
 but a non-covering list stays non-covering after merging. -/
 theorem covers_merge_needs_covers :
@@ -1260,6 +1293,7 @@ theorem covers_merge_needs_covers :
 `Toy.SymEx.overlapping_merge_loses_behaviour` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:390-394
 /-- Tightness of `hagree`: two fully overlapping guarded states cover both
 behaviours; their guarded merge produces only behaviour `1`. -/
 theorem overlapping_merge_loses_behaviour :
@@ -1272,6 +1306,7 @@ theorem overlapping_merge_loses_behaviour :
 `Toy.SymEx.nonvacuity_covers_merge` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:418-427
 /-- All hypotheses hold with genuine overlap: the behaviour relation `B₁₂` has
 two behaviours at every valuation; the two states to be merged, `(tt, s₁)` and
 `(dc₁, σx0plus1)`, have overlapping guards (both hold at `ρ0`) and different
@@ -1303,6 +1338,7 @@ Basis: execution (Lean kernel check) — `guardedMerge_preserves_covers_of_agree
 `Toy.SymEx.exec_fuel_mono` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:136-140
 /-- Concrete fuel monotonicity: a run that does not exhaust fuel `f` has the
 same outcome at every larger fuel. -/
 theorem exec_fuel_mono (p : Cfg) (f f' : Nat) (st : Store)
@@ -1312,7 +1348,7 @@ theorem exec_fuel_mono (p : Cfg) (f f' : Nat) (st : Store)
 
 **Unfolded reading** (hand-expanded; not a Lean declaration):
 
-```text
+```lean
 exec p f st ≠ .outOfFuel → f ≤ f' → exec p f' st = exec p f st
 ```
 
@@ -1330,6 +1366,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.exec_fuel_mono_needs_ne_outOfFuel` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:444-447
 /-- Tightness of `hne`: at fuel 4 `exStraight` runs out of fuel; at fuel 5 it
 returns. -/
 theorem exec_fuel_mono_needs_ne_outOfFuel :
@@ -1339,6 +1376,7 @@ theorem exec_fuel_mono_needs_ne_outOfFuel :
 `Toy.SymEx.exec_fuel_mono_needs_le` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:451-453
 /-- Tightness of `hle`: fuel can not be decreased. -/
 theorem exec_fuel_mono_needs_le :
     exec exStraight 5 ρ5 ≠ .outOfFuel ∧ exec exStraight 4 ρ5 ≠ exec exStraight 5 ρ5
@@ -1349,6 +1387,7 @@ theorem exec_fuel_mono_needs_le :
 `Toy.SymEx.nonvacuity_exec_fuel_mono` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:440
 theorem nonvacuity_exec_fuel_mono : exec exStraight 5 ρ5 ≠ .outOfFuel ∧ 5 ≤ 6
 ```
 
@@ -1370,6 +1409,7 @@ Basis: execution (Lean kernel check) — `exec_fuel_mono` (axioms: `Classical.ch
 `Toy.SymEx.provesStrict_mono` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:143-147
 /-- Strict symbolic success is monotone in fuel: if it holds at fuel `f`, it
 holds at every fuel `f' ≥ f`. -/
 theorem provesStrict_mono (p : Cfg) (f f' : Nat) (Q : Store → Prop)
@@ -1380,6 +1420,7 @@ theorem provesStrict_mono (p : Cfg) (f f' : Nat) (Q : Store → Prop)
 `Toy.SymEx.exec_okWith_of_provesStrict_of_le` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:151-155
 /-- Strict symbolic success at fuel `f` implies concrete success (return with
 `Q`) at every fuel `f' ≥ f`, from every input. -/
 theorem exec_okWith_of_provesStrict_of_le (p : Cfg) (f f' : Nat) (Q : Store → Prop)
@@ -1387,7 +1428,7 @@ theorem exec_okWith_of_provesStrict_of_le (p : Cfg) (f f' : Nat) (Q : Store → 
     OkWith Q (exec p f' (SymStore.init.inst ρ))
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 -- ProvesStrict p f Q = ∀ l ∈ symExec p f, ∀ ρ, holds l.pc ρ → OkWith Q (l.res.inst ρ)
@@ -1409,6 +1450,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.provesStrict_mono_needs_provesStrict` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:460-465
 /-- Tightness of `h` (for both `provesStrict_mono` and
 `exec_okWith_of_provesStrict_of_le`): with `f = f' = 2`, `exPanicIfZero` fails
 the strict check and its run from `ρ0` panics. -/
@@ -1420,6 +1462,7 @@ theorem provesStrict_mono_needs_provesStrict :
 `Toy.SymEx.provesStrict_mono_needs_le` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:468-472
 /-- Tightness of `hle`: `exDiamond` passes the strict check at fuel 4 but not at
 fuel 3, where its run from `ρ0` runs out of fuel. -/
 theorem provesStrict_mono_needs_le :
@@ -1432,6 +1475,7 @@ theorem provesStrict_mono_needs_le :
 `Toy.SymEx.nonvacuity_provesStrict_mono` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:457
 theorem nonvacuity_provesStrict_mono : ProvesStrict exDiamond 4 QneDiamond ∧ 4 ≤ 5
 ```
 
@@ -1454,6 +1498,7 @@ Basis: execution (Lean kernel check) — `provesStrict_mono` (axioms: `Classical
 `Toy.SymEx.provesLax_loopThenAssertFalse_but_panics` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:492-497
 /-- Treating `outOfFuel` as success "proves" that the assertion failure after a
 three-iteration loop never happens (and even postcondition `False`) at fuel 4,
 yet with fuel 13 every input panics at that assertion. -/
@@ -1465,6 +1510,7 @@ theorem provesLax_loopThenAssertFalse_but_panics :
 `Toy.SymEx.provesLax_selfLoop_every_fuel_but_never_returns` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:505-509
 /-- Treating `outOfFuel` as success "proves" postcondition `False` for the
 infinite loop at every fuel, although no run ever returns. -/
 theorem provesLax_selfLoop_every_fuel_but_never_returns :
@@ -1483,6 +1529,7 @@ theorem provesLax_selfLoop_every_fuel_but_never_returns :
 `Toy.SymEx.provesStrict_rejects_out_of_fuel` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:516-518
 /-- Positive control: the strict check rejects both programs. -/
 theorem provesStrict_rejects_out_of_fuel :
     ¬ ProvesStrict exLoopThenAssertFalse 4 Qtrue ∧ ∀ f, ¬ ProvesStrict exSelfLoop f Qtrue
@@ -1510,6 +1557,7 @@ Basis: derived (modeling bridge) — Fuel exhaustion here plays the role of an e
 `Toy.SymEx.acyclic_exec_ne_outOfFuel_of_fuelBound_le` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:158-162
 /-- For acyclic CFGs, fuel `fuelBound p = #statements + #blocks` suffices: no
 run exhausts it. -/
 theorem acyclic_exec_ne_outOfFuel_of_fuelBound_le (p : Cfg) (f : Nat) (st : Store)
@@ -1519,7 +1567,7 @@ theorem acyclic_exec_ne_outOfFuel_of_fuelBound_le (p : Cfg) (f : Nat) (st : Stor
 
 **Unfolded reading** (hand-expanded; not a Lean declaration):
 
-```text
+```lean
 -- Acyclic p = ∃ rank : Nat → Nat, ∀ i (h : i < p.length), ∀ b ∈ p[i].term.targetsOf,
 --              b < p.length → rank i < rank b
 -- fuelBound p = (p.map (·.stmts.length)).sum + p.length
@@ -1540,6 +1588,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.acyclic_fuelBound_needs_acyclic` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:536-538
 /-- Tightness of `hacyc`: the self-loop has `fuelBound = 1` but runs out of fuel. -/
 theorem acyclic_fuelBound_needs_acyclic :
     ¬ Acyclic exSelfLoop ∧ fuelBound exSelfLoop ≤ 1 ∧ exec exSelfLoop 1 ρ0 = .outOfFuel
@@ -1548,6 +1597,7 @@ theorem acyclic_fuelBound_needs_acyclic :
 `Toy.SymEx.acyclic_fuelBound_needs_bound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:541-543
 /-- Tightness of `hf`: one unit below the bound, `exStraight` runs out of fuel. -/
 theorem acyclic_fuelBound_needs_bound :
     Acyclic exStraight ∧ exec exStraight 4 ρ5 = .outOfFuel
@@ -1558,6 +1608,7 @@ theorem acyclic_fuelBound_needs_bound :
 `Toy.SymEx.nonvacuity_acyclic_fuelBound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:529-533
 /-- Both hypotheses hold for `exDiamond` (forward edges) and for `exDag`
 (acyclic but not numbered in topological order). -/
 theorem nonvacuity_acyclic_fuelBound :
@@ -1586,6 +1637,7 @@ Basis: derived (modeling bridge) — For loop-free code, a bounded checker or a 
 `Toy.SymEx.straightLine_fuelBound_le_of_exec_ok` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:165-169
 /-- For straight-line CFGs, a run that returns needs at least
 `fuelBound p = #statements + #blocks` fuel. -/
 theorem straightLine_fuelBound_le_of_exec_ok (p : Cfg) (f : Nat) (st s : Store)
@@ -1596,6 +1648,7 @@ theorem straightLine_fuelBound_le_of_exec_ok (p : Cfg) (f : Nat) (st s : Store)
 `Toy.SymEx.straightLine_exec_ok_iff_fuelBound_minimal` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:172-178
 /-- For straight-line CFGs, `fuelBound p` is the exact minimal fuel of every run
 that returns: a run returns `s` at some fuel if and only if it returns `s` at
 fuel `fuelBound p` and runs out of fuel at every smaller fuel. -/
@@ -1605,7 +1658,7 @@ theorem straightLine_exec_ok_iff_fuelBound_minimal (p : Cfg) (st s : Store)
       (exec p (fuelBound p) st = .ok s ∧ ∀ f' < fuelBound p, exec p f' st = .outOfFuel)
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 -- StraightLine p = p ≠ [] ∧ ∀ i (h : i < p.length),
@@ -1629,6 +1682,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.straightLine_fuelBound_needs_straightLine` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:554-565
 /-- Tightness of `hsl`, for both straight-line theorems. With a branch
 (`exDiamond` from `ρ0`), the run returns after 4 steps, below `fuelBound = 6`;
 with an unreachable block (`exDeadBlock`), the run returns after 1 step, below
@@ -1646,6 +1700,7 @@ theorem straightLine_fuelBound_needs_straightLine :
 `Toy.SymEx.straightLine_fuelBound_needs_ok` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:570-574
 /-- Tightness of `hok` (lower bound only): a straight-line run that panics needs
 less fuel. -/
 theorem straightLine_fuelBound_needs_ok :
@@ -1658,6 +1713,7 @@ theorem straightLine_fuelBound_needs_ok :
 `Toy.SymEx.nonvacuity_straightLine_fuelBound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:545-549
 /-- All hypotheses of both straight-line theorems hold for `exStraight` from
 `x0 = 5`: it returns at fuel 5 = `fuelBound` and runs out of fuel below. -/
 theorem nonvacuity_straightLine_fuelBound :
@@ -1685,6 +1741,7 @@ Basis: derived (modeling bridge) — Same bridge as the sufficiency card: the ex
 `Toy.SymEx.simpSoundUnder_iff_preserves_guardedSound` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:201-209
 /-- A term simplifier `S` is sound under path condition `c` (preserves
 interpretation under every valuation satisfying `c`) if and only if rewriting
 every term of a guarded state with `S` preserves guarded soundness for every
@@ -1698,7 +1755,7 @@ theorem simpSoundUnder_iff_preserves_guardedSound (c : Term) (S : Term → Term)
 
 **Unfolded reading** (hand-expanded; not a Lean declaration):
 
-```text
+```lean
 (∀ t ρ, holds c ρ → (S t).eval ρ = t.eval ρ) ↔
   ∀ (α : Type) (R : Valuation → α) (K : Store → α) (σ : SymStore),
     (∀ ρ, holds c ρ → R ρ = K (fun x => (σ x).eval ρ)) →
@@ -1714,6 +1771,7 @@ theorem simpSoundUnder_iff_preserves_guardedSound (c : Term) (S : Term → Term)
 `Toy.SymEx.nonvacuity_simpSoundUnder` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:579-580
 theorem nonvacuity_simpSoundUnder :
     SimpSoundUnder dc₁ (Term.substVar 0 (int 0)) ∧ ¬ SimpSoundUnder tt (Term.substVar 0 (int 0))
 ```
@@ -1740,6 +1798,7 @@ Basis: derived (modeling bridge) — Implied value concretization (KLEE, OSDI 20
 `Toy.SymEx.pathSimp_after_merge_breaks_soundness` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:605-618
 /-- Simplifying with a fact that holds on only one path (`x0 = 0`, sound under
 `dc₁`) after merging breaks soundness of the merged leaf. The rewrite also
 reaches the merge guard: `x0 ↦ 0` turns `dc₁` into a condition that holds at
@@ -1767,6 +1826,7 @@ theorem pathSimp_after_merge_breaks_soundness :
 `Toy.SymEx.pathSimp_before_merge_sound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:624-628
 /-- Positive control: simplifying inside the `dc₁` branch before merging keeps
 the merged leaf sound. -/
 theorem pathSimp_before_merge_sound :
@@ -1796,13 +1856,14 @@ Basis: derived (modeling bridge) — The same bridge as the simplifier card: a b
 `Toy.SymEx.provesStrict_iff_forall_exec_okWith` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:214-217
 /-- At a fixed fuel, strict symbolic success is equivalent to concrete success
 (return with `Q`) from every input at that same fuel. No acyclicity needed. -/
 theorem provesStrict_iff_forall_exec_okWith (p : Cfg) (f : Nat) (Q : Store → Prop) :
     ProvesStrict p f Q ↔ ∀ ρ, OkWith Q (exec p f (SymStore.init.inst ρ))
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 (∀ l ∈ symExec p f, ∀ ρ, holds l.pc ρ → OkWith Q (l.res.inst ρ)) ↔
@@ -1818,6 +1879,7 @@ theorem provesStrict_iff_forall_exec_okWith (p : Cfg) (f : Nat) (Q : Store → P
 `Toy.SymEx.nonvacuity_provesStrict_iff` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:642-647
 /-- Instances of the same-fuel characterization: `exDiamond` at fuel 4, and the
 three-iteration loop `exLoop3` (not acyclic) at fuel 13, where both sides
 hold. -/
@@ -1846,6 +1908,7 @@ Basis: execution (Lean kernel check) — `provesStrict_iff_forall_exec_okWith` (
 `Toy.SymEx.acyclic_provesStrict_fuelBound_iff_forall_exists_fuel` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:220-226
 /-- For acyclic CFGs, strict symbolic success at fuel `fuelBound p` is
 equivalent to: every input has some fuel at which the concrete run returns with
 `Q`. -/
@@ -1855,7 +1918,7 @@ theorem acyclic_provesStrict_fuelBound_iff_forall_exists_fuel (p : Cfg) (Q : Sto
       ∀ ρ, ∃ f, OkWith Q (exec p f (SymStore.init.inst ρ))
 ```
 
-**Unfolded reading** (hand-expanded; not a Lean declaration):
+**Unfolded reading** (prose; hand-expanded, not a Lean declaration):
 
 ```text
 Acyclic p →
@@ -1876,6 +1939,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.acyclic_completeness_needs_acyclic` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:657-661
 /-- Tightness of `hacyc`: every input of the three-iteration loop returns (at
 fuel 13), but the strict check fails at `fuelBound exLoop3 = 6`. -/
 theorem acyclic_completeness_needs_acyclic :
@@ -1888,6 +1952,7 @@ theorem acyclic_completeness_needs_acyclic :
 `Toy.SymEx.nonvacuity_acyclic_completeness` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:651-652
 theorem nonvacuity_acyclic_completeness :
     Acyclic exDiamond ∧ ProvesStrict exDiamond (fuelBound exDiamond) QneDiamond
 ```
@@ -1913,6 +1978,7 @@ Basis: derived (modeling bridge) — Bounded exploration is complete for loop-fr
 `Toy.SymEx.acyclic_provesLax_iff_provesStrict_of_fuelBound_le` (`lean/ToySymEx/Statements.lean`):
 
 ```lean
+-- lean/ToySymEx/Statements.lean:240-245
 /-- For acyclic CFGs at any fuel `f ≥ fuelBound p`, the lax check (out-of-fuel
 leaves accepted) and the strict check coincide: no satisfiable out-of-fuel leaf
 remains. -/
@@ -1923,7 +1989,7 @@ theorem acyclic_provesLax_iff_provesStrict_of_fuelBound_le (p : Cfg) (f : Nat)
 
 **Unfolded reading** (hand-expanded; not a Lean declaration):
 
-```text
+```lean
 Acyclic p → fuelBound p ≤ f →
   ((∀ l ∈ symExec p f, ∀ ρ, holds l.pc ρ → OkWithOrOutOfFuel Q (l.res.inst ρ)) ↔
    (∀ l ∈ symExec p f, ∀ ρ, holds l.pc ρ → OkWith Q (l.res.inst ρ)))
@@ -1943,6 +2009,7 @@ Each counterexample states that every other hypothesis holds and the conclusion 
 `Toy.SymEx.acyclic_lax_iff_strict_needs_acyclic` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:678-684
 /-- Tightness of `hacyc`: the loop followed by `assert false` has
 `fuelBound = 7`; at fuel 7 every feasible path is still looping, so the lax check
 passes even for postcondition `False`, while the strict check fails. -/
@@ -1955,6 +2022,7 @@ theorem acyclic_lax_iff_strict_needs_acyclic :
 `Toy.SymEx.acyclic_lax_iff_strict_needs_bound` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:691-695
 /-- Tightness of `hf`: below the bound, the acyclic `exStraight` passes the lax
 check for `False` at fuel 4 but fails the strict check. -/
 theorem acyclic_lax_iff_strict_needs_bound :
@@ -1967,6 +2035,7 @@ theorem acyclic_lax_iff_strict_needs_bound :
 `Toy.SymEx.nonvacuity_acyclic_lax_iff_strict` (`lean/ToySymEx/Counterexamples.lean`):
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:669-671
 theorem nonvacuity_acyclic_lax_iff_strict :
     Acyclic exDiamond ∧ fuelBound exDiamond ≤ 6 ∧ ProvesStrict exDiamond 6 QneDiamond ∧
       ProvesLax exDiamond 6 QneDiamond
@@ -1995,7 +2064,7 @@ Each list says what the result does **not** establish. Read it together with the
 - Conditions are read through Val.toBool (nonzero integers are true) while Term.eq is structural equality of values, so Boolean identities such as (c == true) = c fail for non-Boolean c (proved example in Examples.lean); a simplifier must respect this.
 - Symbolic input x stands for the initial value of local x (SymStore.init = var); uninitialized locals and havoc (fresh unconstrained values in the middle of a run) are not modelled.
 - Says nothing about statements, control flow or fuel; those are per-path soundness.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **2. `per-path-soundness`**
 
@@ -2005,7 +2074,7 @@ Each list says what the result does **not** establish. Read it together with the
 - Does not say that every leaf is reachable: leaves with unsatisfiable path conditions are produced (no pruning) and are vacuously sound.
 - The executor here never simplifies, prunes, or merges; soundness of executors that do is a separate question (see the merge and simplification cards).
 - Symbolic input x stands for the initial value of local x (SymStore.init = var); uninitialized locals and havoc (fresh unconstrained values in the middle of a run) are not modelled.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **3. `path-coverage`**
 
@@ -2014,7 +2083,7 @@ Each list says what the result does **not** establish. Read it together with the
 - Disjointness is not needed for transferring leaf checks to concrete runs (leaf-check-transfer uses only exhaustiveness); it is recorded because it holds and supports counting arguments.
 - Exhaustiveness is for this executor, which records every branch condition and prunes nothing; an executor that prunes or deduplicates leaves keeps exhaustiveness only if it removes leaves whose path conditions are unsatisfiable (or covered by kept leaves), which needs a solver soundness argument that is not modelled.
 - The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **4. `leaf-check-transfer`**
 
@@ -2023,7 +2092,7 @@ Each list says what the result does **not** establish. Read it together with the
 - A failing check does not by itself show that a concrete run fails: only a failing leaf whose path condition is satisfiable, in a sound list, witnesses a concrete failure.
 - The theorem does not construct L; for L = symExec p f the hypotheses hsound and hexh are per-path-soundness and path-coverage.
 - The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **5. `lax-success-iff-concrete-success-or-out-of-fuel-same-fuel`**
 
@@ -2032,7 +2101,7 @@ Each list says what the result does **not** establish. Read it together with the
 - With postcondition False both sides degenerate to 'every run runs out of fuel at f'; that is not a proof of anything about returning runs.
 - Reference point: the forward direction is leaf-check-transfer instantiated with per-path-soundness and path-coverage; the backward direction is per-path-soundness alone.
 - The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **6. `dropping-path-conditions-is-conservative`**
 
@@ -2040,7 +2109,7 @@ Each list says what the result does **not** establish. Read it together with the
 - For bug finding the direction reverses: erasing path conditions produces spurious panic reports (false alarms), as dropPcs_false_alarm shows.
 - Erased leaves are not per-leaf sound (dropPcs_not_leavesSound in Examples.lean), so leaf-check-transfer cannot be applied to dropPcs L directly.
 - Erasing the path condition of only some leaves, checking leaves that do not cover all inputs, or erasing the guard inside a merge are different shortcuts and can give spurious success (leaf-check-transfer, unguarded-merge-spurious-success).
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **7. `guarded-merge-sound`**
 
@@ -2048,7 +2117,7 @@ Each list says what the result does **not** establish. Read it together with the
 - Both states must be sound for the same continuation K, which models 'same program point and same remaining fuel'. Merging states that reach a join point with different step counts or remaining fuel (for example across loop iterations) is not covered and would need fuel alignment.
 - Says nothing about behaviour coverage of a many-valued relation; there overlap matters (merge-behaviour-coverage-needs-agreement-on-overlap).
 - Says nothing about solver cost or term growth, which is what state-merging heuristics trade off.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **8. `merge-leaves-preserve-soundness-and-exhaustiveness`**
 
@@ -2058,14 +2127,14 @@ Each list says what the result does **not** establish. Read it together with the
 - Panic and out-of-fuel leaves are not merged by this operator.
 - Pairwise disjointness of the list is neither assumed nor concluded.
 - Reference point: the soundness half is guarded-merge-sound with R the concrete run and K = Outcome.ok.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **9. `unguarded-merge-spurious-success`**
 
 - Shows one failing instance; it does not classify all unsound merge operators.
 - Escape hatch: dropping the guard is harmless when, wherever c2 holds, sigma1 and sigma2 are indistinguishable through the continuation K, for example when they differ only in locals that K never reads (unguardedMerge_sound_of_agree_on_second_guard in Lemmas.lean).
 - The guarded merge of the same leaves is sound and correctly fails the check (guardedMerge_rejects_Qplus1).
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **10. `merge-behaviour-coverage-needs-agreement-on-overlap`**
 
@@ -2075,26 +2144,26 @@ Each list says what the result does **not** establish. Read it together with the
 - Sufficient conditions for hagree, proved separately and not part of this card's claim: disjoint guards (agree_on_overlap_of_disjoint) and two states sound for one single-valued reference (agree_on_overlap_of_guardedSound).
 - The behaviour relation is abstract; the toy CFG semantics is deterministic, where hagree is automatic for sound states.
 - Says nothing about whether a merged state's later exploration recovers a lost behaviour.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **11. `concrete-fuel-monotonicity`**
 
 - Relies on the interpreter being deterministic; for a nondeterministic clocked semantics, more fuel can expose additional behaviours.
 - Says nothing about how much fuel is needed (see the fuel-bound cards).
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **12. `strict-success-monotone-in-fuel`**
 
 - Requires the strict check: the lax check is not monotone in fuel (it passes at fuel 4 and fails at fuel 13 for the loop of out-of-fuel-is-not-success).
 - Says nothing about the size of the leaf list, the size of path conditions, or the cost of checking at the larger fuel.
 - The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **13. `out-of-fuel-is-not-success`**
 
 - The lax check is still meaningful as bounded safety at a fixed fuel (lax-success-iff-concrete-success-or-out-of-fuel-same-fuel); the failure is reading it as success, as Hoare-style partial correctness, or as a statement about other fuels.
 - Escape hatches: (1) the strict check rejects both programs (provesStrict_rejects_out_of_fuel), and a strict pass transfers to every larger fuel (strict-success-monotone-in-fuel); (2) for acyclic CFGs at fuel >= fuelBound p the lax and strict checks coincide (lax-check-equals-strict-for-acyclic-at-fuel-bound); (3) discharging loops by invariants instead of fuel is not modelled.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **14. `loop-free-fuel-bound-sufficient`**
 
@@ -2102,14 +2171,14 @@ Each list says what the result does **not** establish. Read it together with the
 - Acyclic does not constrain edges to nonexistent blocks; such a jump ends the run with a panic, which is not fuel exhaustion.
 - The bound depends on this fuel accounting; entering a block is free and every statement and terminator costs one unit.
 - ForwardEdges (successor index greater than block index) is a decidable sufficient condition for Acyclic (acyclic_of_forwardEdges); deciding Acyclic itself is not provided.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **15. `straight-line-fuel-bound-minimal`**
 
 - Minimality is for runs that return; for inputs that panic less fuel suffices, and if every input panics the minimal sufficient fuel is smaller than fuelBound.
 - The exact-minimality equivalence combines the lower bound with sufficiency for acyclic CFGs (straight-line CFGs are acyclic: acyclic_of_straightLine in Lemmas.lean) and concrete fuel monotonicity.
 - The number #statements + #blocks reflects this model's accounting (each terminator, including return, costs one unit; entering a block is free).
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **16. `simplifier-soundness-characterization`**
 
@@ -2117,20 +2186,20 @@ Each list says what the result does **not** establish. Read it together with the
 - Known not to apply to rewriting the path condition itself: a rewrite that is sound under c can turn c into a weaker condition and break soundness (simp_pathCondition_breaks_guardedSound in Counterexamples.lean: x0 -> 0 turns x0 = 0 into a condition that also holds at x0 = 5). Simplifying a path condition needs a separate argument (for example, that the new condition is equivalent to the old one).
 - The right-hand side quantifies over all result types, references and continuations. For one fixed continuation the equivalence fails (simpSound_iff_fails_for_fixed_continuation in Counterexamples.lean: with a constant continuation every rewrite preserves soundness). The backward direction needs only the single instance result type Val, K = 'read local 0', and a constant store.
 - Conditions are read through Val.toBool (nonzero integers are true) while Term.eq is structural equality of values, so Boolean identities such as (c == true) = c fail for non-Boolean c (proved example in Examples.lean); a simplifier must respect this.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **17. `path-specific-simplification-breaks-merge`**
 
 - One instance; the general rule is simplifier-soundness-characterization applied with the correct path condition.
 - Escape hatch: path-specific simplification stays sound if it is applied to each branch's store before merging, under that branch's path condition, leaving the merge guard unrewritten (guardedMerge_sound_of_simp_branches in Lemmas.lean; the instance x0 -> 0 in the x0 = 0 branch is the positive control pathSimp_before_merge_sound).
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **18. `strict-success-iff-concrete-success-same-fuel`**
 
 - The equivalence is at one fuel. 'Every input returns at some fuel' does not give strict success at any single fuel for CFGs with cycles (loop-free-completeness-at-fuel-bound and its counterexample).
 - The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.
 - Neither side says which leaves are feasible, and the leaf list is not pruned or merged, so the size of the check is not bounded by the number of feasible paths.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **19. `loop-free-completeness-at-fuel-bound`**
 
@@ -2138,7 +2207,7 @@ Each list says what the result does **not** establish. Read it together with the
 - The counterexample loop runs a fixed three iterations; a loop whose iteration count depends on the input without a uniform bound is not exhibited here (the term language has no order comparison).
 - For CFGs with cycles, beyond the counterexample, whether some other single fuel makes the strict check complete is not examined.
 - The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 **20. `lax-check-equals-strict-for-acyclic-at-fuel-bound`**
 
@@ -2146,7 +2215,7 @@ Each list says what the result does **not** establish. Read it together with the
 - Says nothing about CFGs with cycles; there the lax check can pass at every fuel while no run returns (out-of-fuel-is-not-success).
 - The equivalence is between the two checks at the same fuel; it does not say either check passes.
 - The leaf checks quantify over every valuation satisfying a path condition, which models an ideal solver; a verifier that decides path conditions with an SMT solver adds solver soundness (and, for completeness claims, solver completeness) assumptions that are not modelled.
-- Toy model only: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. Transfer to any real verifier is a separate modelling argument that this package does not provide.
+- Toy model: a CFG of blocks with assignment and assert statements and goto/switchInt/return terminators over dynamically typed Int/Bool values with total coercing operations; no heap, pointers, calls, overflow, undefined behaviour, nondeterminism or concurrency. The kernel-checked theorems neither establish nor refute the corresponding claims about real verifiers (Kani, CBMC, KLEE, a MIR-based tool). Transfer to any real verifier is a separate modelling argument that this package does not provide.
 
 ### Attractive stronger conclusions that are not established
 
@@ -2167,6 +2236,7 @@ Proved lemmas that say which hypotheses can be weakened or replaced, and in whic
 - `unguardedMerge_sound_of_agree_on_second_guard` (`Lemmas.lean`, axioms: `propext`): An unguarded merge (keep `σ₁` under `c₁ ∨ c₂`) is sound when `σ₁` agrees with `σ₂` through `K` wherever `c₂` holds; this is the hypothesis whose absence `unguarded-merge-spurious-success` exploits.
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:96-104
 /-- When dropping the merge guard is harmless: keeping `σ₁` under `c₁ ∨ c₂` is
 sound if, wherever `c₂` holds, `σ₁` and `σ₂` are indistinguishable through
 the continuation `K` (for example, they differ only in locals that `K` never
@@ -2181,6 +2251,7 @@ theorem unguardedMerge_sound_of_agree_on_second_guard {α : Type} (R : Valuation
 - `guardedMerge_sound_of_simp_branches` (`Lemmas.lean`, axioms: `Quot.sound`, `propext`): Simplifying each branch with a simplifier sound under that branch's own path condition and then merging is sound; this is the safe order that `path-specific-simplification-breaks-merge` contrasts with.
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:110-117
 /-- Path-specific simplification stays sound when it is applied to each branch
 before merging, under that branch's own path condition, and the merge guard is
 left unchanged. -/
@@ -2194,6 +2265,7 @@ theorem guardedMerge_sound_of_simp_branches {α : Type} (R : Valuation → α) (
 - `guardedMerge_sound_rel` (`Lemmas.lean`, axioms: `Quot.sound`, `propext`): The guarded merge stays sound for a many-valued behaviour relation (soundness, as opposed to coverage, needs no agreement on the overlap).
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:80-89
 /-- Merge soundness for a possibly many-valued behaviour relation `B`: if every
 behaviour produced by each state under its guard is allowed by `B`, so is every
 behaviour produced by the guarded merge. No disjointness and no agreement on
@@ -2209,6 +2281,7 @@ theorem guardedMerge_sound_rel {α : Type} (B : Valuation → α → Prop) (K : 
 - `agree_on_overlap_of_disjoint` (`Lemmas.lean`, axioms: none): Disjoint guards discharge the agreement hypothesis of `merge-behaviour-coverage-needs-agreement-on-overlap`.
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:65-68
 /-- Disjoint guards agree on their (empty) overlap. -/
 theorem agree_on_overlap_of_disjoint {α : Type} (K : Store → α) (c₁ : Term) (σ₁ : SymStore)
     (c₂ : Term) (σ₂ : SymStore) (h : Disjoint c₁ c₂) :
@@ -2218,6 +2291,7 @@ theorem agree_on_overlap_of_disjoint {α : Type} (K : Store → α) (c₁ : Term
 - `agree_on_overlap_of_guardedSound` (`Lemmas.lean`, axioms: none): Two states sound for the same single-valued reference agree on their overlap, discharging the agreement hypothesis.
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:71-77
 /-- Two states sound for the same single-valued reference agree (through `K`)
 wherever both guards hold. This is a consequence of soundness; the proof of
 merge soundness does not need it. -/
@@ -2230,6 +2304,7 @@ theorem agree_on_overlap_of_guardedSound {α : Type} (R : Valuation → α) (K :
 - `acyclic_provesLax_iff_provesStrict_of_fuelBound_le` (`Statements.lean`, axioms: `Classical.choice`, `Quot.sound`, `propext`): For acyclic CFGs at fuel at least `fuelBound`, accepting out-of-fuel leaves is harmless; this is the escape hatch for `out-of-fuel-is-not-success` (card `lax-check-equals-strict-for-acyclic-at-fuel-bound`).
 
 ```lean
+-- lean/ToySymEx/Statements.lean:240-245
 /-- For acyclic CFGs at any fuel `f ≥ fuelBound p`, the lax check (out-of-fuel
 leaves accepted) and the strict check coincide: no satisfiable out-of-fuel leaf
 remains. -/
@@ -2241,18 +2316,21 @@ theorem acyclic_provesLax_iff_provesStrict_of_fuelBound_le (p : Cfg) (f : Nat)
 - `acyclic_of_forwardEdges` (`Lemmas.lean`, axioms: none): Decidable sufficient condition for `Acyclic`.
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:215
 theorem acyclic_of_forwardEdges (p : Cfg) (h : ForwardEdges p) : Acyclic p
 ```
 
 - `acyclic_of_straightLine` (`Lemmas.lean`, axioms: `Quot.sound`, `propext`): Straight-line CFGs are acyclic, so the acyclic results apply to them.
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:230
 theorem acyclic_of_straightLine (p : Cfg) (hsl : StraightLine p) : Acyclic p
 ```
 
 - `leavesSound_of_subset` (`Lemmas.lean`, axioms: `propext`): Per-leaf soundness depends only on membership, so the merge lemmas, stated for the first two leaves, apply to any two leaves after reordering.
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:169-170
 theorem leavesSound_of_subset (p : Cfg) (f : Nat) {L L' : List Leaf}
     (hsub : ∀ l, l ∈ L' → l ∈ L) (hs : LeavesSound p f L) : LeavesSound p f L'
 ```
@@ -2260,6 +2338,7 @@ theorem leavesSound_of_subset (p : Cfg) (f : Nat) {L L' : List Leaf}
 - `leavesExhaustive_of_subset` (`Lemmas.lean`, axioms: none): Exhaustiveness is monotone under adding leaves (membership only).
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:173-174
 theorem leavesExhaustive_of_subset {L L' : List Leaf}
     (hsub : ∀ l, l ∈ L → l ∈ L') (he : LeavesExhaustive L) : LeavesExhaustive L'
 ```
@@ -2271,6 +2350,7 @@ Proved lemmas that the non-claims and the list of stronger conclusions above cit
 - `dropPcs_not_leavesSound` (`lean/ToySymEx/Examples.lean`, axioms: `propext`): Erasing path conditions destroys per-leaf soundness, so `leaf-check-transfer` cannot be applied to `dropPcs L` directly (cited under `dropping-path-conditions-is-conservative`).
 
 ```lean
+-- lean/ToySymEx/Examples.lean:272-275
 /-- `dropPcs`, negative: erased leaves are not per-leaf sound (the erased
 panic leaf of `exAssertTrue` claims a panic on every input). -/
 theorem dropPcs_not_leavesSound :
@@ -2280,6 +2360,7 @@ theorem dropPcs_not_leavesSound :
 - `mergeLeaf_leavesSound_converse_fails` (`lean/ToySymEx/Counterexamples.lean`, axioms: `Quot.sound`, `propext`): The converse of `mergeLeaf_preserves_leavesSound` fails: a merged leaf list can be per-leaf sound while the unmerged list is not (cited under `merge-leaves-preserve-soundness-and-exhaustiveness`).
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:320-324
 /-- The converse of `mergeLeaf_preserves_leavesSound` fails: an unsound second
 leaf whose guard is covered by the first guard disappears in the merge. -/
 theorem mergeLeaf_leavesSound_converse_fails :
@@ -2290,6 +2371,7 @@ theorem mergeLeaf_leavesSound_converse_fails :
 - `covers_pairwise_agree_single_valued` (`lean/ToySymEx/Lemmas.lean`, axioms: `propext`): A list whose states pairwise agree on their overlaps covers at most one behaviour per valuation (cited under `merge-behaviour-coverage-needs-agreement-on-overlap`).
 
 ```lean
+-- lean/ToySymEx/Lemmas.lean:143-153
 /-- If every pair of guarded states in a covering list agrees (through `K`) on
 the overlap of their guards — in particular, if the guards are pairwise
 disjoint — then the covered relation has at most one behaviour per valuation.
@@ -2306,6 +2388,7 @@ theorem covers_pairwise_agree_single_valued {α : Type}
 - `simp_pathCondition_breaks_guardedSound` (`lean/ToySymEx/Counterexamples.lean`, axioms: `Quot.sound`, `propext`): Rewriting the path condition itself with a simplifier that is sound under it can break guarded soundness (cited under `simplifier-soundness-characterization`).
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:593-599
 /-- Rewriting the path condition itself with a simplifier that is sound under
 that path condition can break soundness: `x0 ↦ 0` turns `dc₁` (`x0 = 0`) into a
 condition that also holds at `x0 = 5`. -/
@@ -2318,6 +2401,7 @@ theorem simp_pathCondition_breaks_guardedSound :
 - `simpSound_iff_fails_for_fixed_continuation` (`lean/ToySymEx/Counterexamples.lean`, axioms: none): For one fixed (constant) continuation, the characterization's equivalence fails (cited under `simplifier-soundness-characterization`).
 
 ```lean
+-- lean/ToySymEx/Counterexamples.lean:583-590
 /-- For one fixed continuation the equivalence fails: with a constant
 continuation every rewrite preserves guarded soundness, including one that is
 not sound under the path condition. -/
