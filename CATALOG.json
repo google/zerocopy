@@ -27302,6 +27302,109 @@
         "isa/step-hashing"
       ]
     },
+    "deutsch-bobrow-deferred-decrements-ulterior-reference-counting-levanoni-petrank-sliding-views-boehm-lazy-rc-space-cost-and-cdrc-snapshots": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "kaist-cp/smr-benchmark",
+            "revision": "00b4e4d06d9b91f289b4644163f0cac0660d4af7"
+          },
+          "name": "smr-benchmark (DoubleLink queue driver with Rust ports of CDRC and CIRC)"
+        },
+        {
+          "identity": {
+            "repository": "cmuparlay/concurrent_deferred_rc",
+            "revision": "f1fb49b36a8a3cd60be3b816db9922c4ed5faf4b"
+          },
+          "name": "concurrent_deferred_rc (C++ CDRC library)"
+        },
+        {
+          "identity": {
+            "repository": "mmtk/mmtk-core",
+            "revision": "d154f4f0dcca27439b920165ce5c948ca18aef24"
+          },
+          "name": "MMTk core (LXR plan)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "dc222c8d6c366e3d52d4b0d0053ad7bb8a601fff",
+            "version": "3.16.0a2+dev"
+          },
+          "name": "CPython (free-threaded and default builds; deferred reference counting and QSBR)"
+        },
+        {
+          "identity": {
+            "repository": "python/peps",
+            "revision": "4434e728a7db24540d581f52e96570ca1230356e"
+          },
+          "name": "Python Enhancement Proposals (PEP 703 and PEP 779)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/360336.360345"
+          },
+          "name": "An Efficient, Incremental, Automatic Garbage Collector (Deutsch, Bobrow; CACM 19(9), 1976)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1111596.1111597",
+            "doi_conference": "10.1145/504282.504309"
+          },
+          "name": "An On-the-Fly Reference-Counting Garbage Collector for Java (Levanoni, Petrank; OOPSLA 2001 and TOPLAS 28(1), 2006)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/949305.949336"
+          },
+          "name": "Ulterior Reference Counting: Fast Garbage Collection without a Long Wait (Blackburn, McKinley; OOPSLA 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/964001.964019"
+          },
+          "name": "The Space Cost of Lazy Reference Counting (Boehm; POPL 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1028976.1028982"
+          },
+          "name": "A Unified Theory of Garbage Collection (Bacon, Cheng, Rajan; OOPSLA 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454060"
+          },
+          "name": "Concurrent Deferred Reference Counting with Constant-Time Overhead (Anderson, Blelloch, Wei; PLDI 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2204.05985",
+            "doi": "10.1145/3519939.3523730"
+          },
+          "name": "Turning Manual Concurrent Memory Reclamation into Automatic Reference Counting (Anderson, Blelloch, Wei; PLDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523440"
+          },
+          "name": "Low-Latency, High-Throughput Garbage Collection (Zhao, Blackburn, McKinley; PLDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656383"
+          },
+          "name": "Concurrent Immediate Reference Counting (Jung, Kim, Parkinson, Kang; PACMPL 8(PLDI), 2024)"
+        }
+      ],
+      "topics": [
+        "runtimes/deferred-reference-count-decrement-space",
+        "pl/lazy-freeing-space-cost",
+        "verification/reference-counting-reclamation-delay-bounds",
+        "systems/concurrent-deferred-reference-counting"
+      ]
+    },
     "differentiable-programming-autodiff-semantics-and-compiler-challenges": {
       "observed_at": "2026-11-19",
       "subjects": [

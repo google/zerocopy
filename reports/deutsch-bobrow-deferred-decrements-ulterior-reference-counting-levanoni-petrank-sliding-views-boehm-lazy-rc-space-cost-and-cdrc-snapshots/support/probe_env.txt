@@ -1,0 +1,12 @@
+Probe environment
+Host class: shared cloud VM, 96 vCPUs reported by nproc, Intel Xeon @ 2.60GHz, 236 GiB RAM; other tenants' workloads were running.
+DoubleLink probe: smr-benchmark at the pinned revision, rustc nightly-2025-03-02 (repository pins nightly-2025-03-03); incremental build of double-link, cdrc-ebr, cdrc-ebr-flush, circ-ebr, cdrc-hp, circ-hp: 19.6 s wall.
+DoubleLink start/end timestamps and load averages ('date -u; uptime'):
+Sat Nov 21 04:36:40 AM UTC 2026
+ 04:36:40 up 18 days, 17:28,  4 users,  load average: 100.76, 117.41, 159.38
+Sat Nov 21 04:42:28 AM UTC 2026
+ 04:42:28 up 18 days, 17:34,  4 users,  load average: 97.00, 109.47, 143.51
+CPython probe: pinned commit, GCC 15.2.0; out-of-tree builds 'configure --disable-gil' and default 'configure', each followed by 'make -j24 python'.
+  free-threaded build: Elapsed (wall clock) time (h:mm:ss or m:ss): 0:52.69; Maximum resident set size (kbytes): 326568
+  GIL build: Elapsed (wall clock) time (h:mm:ss or m:ss): 0:51.60; Maximum resident set size (kbytes): 317792
+  (times include configure; measured with /usr/bin/time -v)

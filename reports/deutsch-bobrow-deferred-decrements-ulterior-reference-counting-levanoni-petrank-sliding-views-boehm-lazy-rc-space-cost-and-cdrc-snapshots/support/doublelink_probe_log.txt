@@ -1,0 +1,60 @@
+### double-link -m nr -t 32 -i 5
+ops/s: 1652921, peak mem: 2182439488, avg_mem: 1013987204
+### double-link -m ebr -t 32 -i 5
+ops/s: 1751669, peak mem: 114479504, avg_mem: 4142504
+### double-link -m cdrc-ebr -t 32 -i 5
+ops/s: 1355171, peak mem: 2655467568, avg_mem: 1300385988
+### double-link -m cdrc-ebr-flush -t 32 -i 5
+ops/s: 545650, peak mem: 1900735656, avg_mem: 609697405
+### double-link -m circ-ebr -t 32 -i 5
+ops/s: 1163146, peak mem: 583894168, avg_mem: 342354640
+### double-link -m hp -t 32 -i 5
+ops/s: 1774328, peak mem: 10400640, avg_mem: 4248324
+### double-link -m cdrc-hp -t 32 -i 5
+ops/s: 1593467, peak mem: 3127806368, avg_mem: 1605780602
+### double-link -m circ-hp -t 32 -i 5
+ops/s: 1304705, peak mem: 2557921568, avg_mem: 1297205733
+### double-link -m nr -t 32 -i 10
+ops/s: 1835303, peak mem: 4846171936, avg_mem: 2467524232
+### double-link -m ebr -t 32 -i 10
+ops/s: 1903618, peak mem: 107121224, avg_mem: 8990042
+### double-link -m cdrc-ebr -t 32 -i 10
+ops/s: 1454547, peak mem: 5698999536, avg_mem: 3022708787
+### double-link -m cdrc-ebr-flush -t 32 -i 10
+ops/s: 531137, peak mem: 2520168632, avg_mem: 1033451701
+### double-link -m circ-ebr -t 32 -i 10
+ops/s: 1123502, peak mem: 1024956600, avg_mem: 578738652
+### double-link -m hp -t 32 -i 10
+ops/s: 1697344, peak mem: 9851840, avg_mem: 4309293
+### double-link -m cdrc-hp -t 32 -i 10
+ops/s: 1602735, peak mem: 6286274848, avg_mem: 3134984021
+### double-link -m circ-hp -t 32 -i 10
+ops/s: 1113248, peak mem: 4364056736, avg_mem: 2092523171
+### double-link -m nr -t 32 -i 20
+ops/s: 1532626, peak mem: 8078367736, avg_mem: 3873626645
+### double-link -m ebr -t 32 -i 20
+ops/s: 1682884, peak mem: 197946744, avg_mem: 4994867
+### double-link -m cdrc-ebr -t 32 -i 20
+ops/s: 1474487, peak mem: 11565456592, avg_mem: 5395764951
+### double-link -m cdrc-ebr-flush -t 32 -i 20
+ops/s: 556745, peak mem: 4892053976, avg_mem: 2186236558
+### double-link -m circ-ebr -t 32 -i 20
+ops/s: 1151465, peak mem: 1707335280, avg_mem: 1201959398
+### double-link -m hp -t 32 -i 20
+ops/s: 1942307, peak mem: 10448112, avg_mem: 4192262
+### double-link -m cdrc-hp -t 32 -i 20
+ops/s: 1466400, peak mem: 11498487328, avg_mem: 5890308092
+### double-link -m circ-hp -t 32 -i 20
+ops/s: 1300214, peak mem: 10194269664, avg_mem: 5098435803
+### double-link -m ebr -t 32 -i 10
+ops/s: 1813970, peak mem: 13845664, avg_mem: 2800946
+### double-link -m cdrc-ebr -t 32 -i 10
+ops/s: 1495368, peak mem: 5859841424, avg_mem: 3164875377
+### double-link -m circ-ebr -t 32 -i 10
+ops/s: 1238102, peak mem: 388627472, avg_mem: 239311388
+### double-link -m ebr -t 32 -i 10
+ops/s: 1872743, peak mem: 160836024, avg_mem: 6110011
+### double-link -m cdrc-ebr -t 32 -i 10
+ops/s: 1493502, peak mem: 5849252096, avg_mem: 2901295661
+### double-link -m circ-ebr -t 32 -i 10
+ops/s: 1146565, peak mem: 992297024, avg_mem: 286762988
