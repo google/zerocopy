@@ -771,8 +771,9 @@ def extract_lints_and_error_codes(reader: GitRevisionReader) -> dict:
     for fp, src in sorted(texts.items()):
         if fp == "compiler/rustc_lint_defs/src/lib.rs":
             continue
-        for m in decl_lint_re.finditer(src):
-            body = strip_line_comments(extract_delimited(src, m.end() - 1, "{", "}"))
+        clean_src = strip_line_comments(src)
+        for m in decl_lint_re.finditer(clean_src):
+            body = extract_delimited(clean_src, m.end() - 1, "{", "}")
             mh = re.search(
                 r"(?:pub(?:\([^)]*\))?\s+)?([A-Z][A-Z0-9_]+)\s*,\s*(Allow|Warn|Deny|Forbid)\s*,",
                 body,

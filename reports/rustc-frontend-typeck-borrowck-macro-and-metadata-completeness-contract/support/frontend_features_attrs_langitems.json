@@ -9598,16 +9598,16 @@
         "Warn": 144,
         "Deny": 54
       },
-      "future_incompatible_count": 71,
+      "future_incompatible_count": 69,
       "by_future_incompat_reason": {
         "EditionError": 16,
-        "FutureReleaseError": 42,
+        "FutureReleaseError": 40,
         "EditionSemanticsChange": 11,
         "FutureIncompatible": 2
       },
-      "edition_overridden_count": 3,
-      "feature_gated_count": 18,
-      "crate_level_only_count": 19,
+      "edition_overridden_count": 2,
+      "feature_gated_count": 16,
+      "crate_level_only_count": 16,
       "by_source_file": {
         "compiler/rustc_lint_defs/src/builtin.rs": 155,
         "compiler/rustc_lint/src/builtin.rs": 25,
@@ -11382,15 +11382,12 @@
           "ident": "EXPORTED_PRIVATE_DEPENDENCIES",
           "name": "exported_private_dependencies",
           "default_level": "Warn",
-          "feature_gate": "staged_api",
-          "edition_override": {
-            "edition": "Edition2024",
-            "level": "Warn"
-          },
-          "future_incompatible_reason": "FutureReleaseError",
-          "report_in_external_macro": true,
-          "crate_level_only": true,
-          "eval_always": true,
+          "feature_gate": null,
+          "edition_override": null,
+          "future_incompatible_reason": null,
+          "report_in_external_macro": false,
+          "crate_level_only": false,
+          "eval_always": false,
           "source_file": "compiler/rustc_lint_defs/src/builtin.rs"
         },
         {
@@ -12132,12 +12129,12 @@
           "ident": "UNSUPPORTED_FN_PTR_CALLING_CONVENTIONS",
           "name": "unsupported_fn_ptr_calling_conventions",
           "default_level": "Warn",
-          "feature_gate": "non_exhaustive_omitted_patterns_lint",
+          "feature_gate": null,
           "edition_override": null,
           "future_incompatible_reason": "FutureReleaseError",
-          "report_in_external_macro": true,
-          "crate_level_only": true,
-          "eval_always": true,
+          "report_in_external_macro": false,
+          "crate_level_only": false,
+          "eval_always": false,
           "source_file": "compiler/rustc_lint_defs/src/builtin.rs"
         },
         {
@@ -12158,10 +12155,10 @@
           "default_level": "Allow",
           "feature_gate": "non_exhaustive_omitted_patterns_lint",
           "edition_override": null,
-          "future_incompatible_reason": "FutureReleaseError",
-          "report_in_external_macro": true,
-          "crate_level_only": true,
-          "eval_always": true,
+          "future_incompatible_reason": null,
+          "report_in_external_macro": false,
+          "crate_level_only": false,
+          "eval_always": false,
           "source_file": "compiler/rustc_lint_defs/src/builtin.rs"
         },
         {
@@ -15078,10 +15075,10 @@
         "metadata_version": 12,
         "root_pos": 2246,
         "unhashed_pos": 2599,
-        "crate_hash_svh_hex": "8624e6654b22e89d0a6b8a0a75b7e53d",
+        "crate_hash_svh_hex": "d2f39d7ea97cb2af037d5c3c04c73a55",
         "crate_hash_u64_pair": [
-          "0x9de8224b65e62486",
-          "0x3de5b7750a8a6b0a"
+          "0xafb27ca97e9df3d2",
+          "0x553ac7043c5c7d03"
         ],
         "version_offset": 40,
         "rustc_version_string": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",

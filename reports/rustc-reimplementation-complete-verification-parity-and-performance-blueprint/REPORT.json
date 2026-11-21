@@ -1,0 +1,290 @@
+{
+  "topics": [
+    "build",
+    "build/bootstrapping",
+    "build/release-engineering",
+    "cargo",
+    "cargo/pipelining",
+    "compilers",
+    "compilers/qualification",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/compatibility",
+    "compilers/verified-rustc/validation",
+    "ffi",
+    "ffi/c-cpp-abi",
+    "isa",
+    "lean",
+    "llvm",
+    "llvm/codegen",
+    "rust",
+    "rust/governance",
+    "rustc",
+    "rustc/abi",
+    "rustc/architecture",
+    "rustc/bootstrap",
+    "rustc/codegen",
+    "rustc/compiletest",
+    "rustc/frontend",
+    "rustc/metadata",
+    "rustc/performance",
+    "security",
+    "security/supply-chain",
+    "systems",
+    "systems/perf-events",
+    "tooling",
+    "tooling/differential-testing",
+    "vcs",
+    "vcs/josh-subtree",
+    "vcs/submodules",
+    "verification",
+    "verification/compiler-verification",
+    "verification/performance-metrics"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust upstream source snapshot (1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "412be32a6a189d9a28922beee178bc0abee9d492"
+      }
+    },
+    {
+      "name": "rust-lang/rust 1.99.1 stable release baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust 1.102.0-nightly live execution host toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust stage0 rustfmt companion nightly pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ac8310ba643a3796cbe77d2e06944d7c8513999f"
+      }
+    },
+    {
+      "name": "src/llvm-project submodule (LLVM 23.1 fork at upstream snapshot)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380"
+      }
+    },
+    {
+      "name": "src/llvm-project submodule (LLVM 23.1.1 in Rust 1.99.1)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "src/tools/cargo submodule",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20"
+      }
+    },
+    {
+      "name": "src/tools/rustc-perf submodule",
+      "identity": {
+        "repository": "rust-lang/rustc-perf",
+        "revision": "15d95905429e577d5a710b17c49e04b4451c263b"
+      }
+    },
+    {
+      "name": "src/tools/enzyme submodule",
+      "identity": {
+        "repository": "rust-lang/enzyme",
+        "revision": "9cff5a8afebc22748bb36c135dfe5a09dd1047f3"
+      }
+    },
+    {
+      "name": "src/gcc submodule (libgccjit fork)",
+      "identity": {
+        "repository": "rust-lang/gcc",
+        "revision": "e1c6e07b095d091177376a163da44039475e05e3"
+      }
+    },
+    {
+      "name": "src/tpde single-pass backend submodule",
+      "identity": {
+        "repository": "rust-lang/tpde",
+        "revision": "050927ee81dc11a9e599fa2524ff0eef16daf51a"
+      }
+    },
+    {
+      "name": "library/backtrace submodule",
+      "identity": {
+        "repository": "rust-lang/backtrace-rs",
+        "revision": "d902726a1dcdc1e1c66f73d1162181b5423c645b"
+      }
+    },
+    {
+      "name": "src/doc/book submodule",
+      "identity": {
+        "repository": "rust-lang/book",
+        "revision": "2771df165f092a4fbb9f46b5b2e7450f19010adb"
+      }
+    },
+    {
+      "name": "src/doc/edition-guide submodule",
+      "identity": {
+        "repository": "rust-lang/edition-guide",
+        "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f"
+      }
+    },
+    {
+      "name": "src/doc/embedded-book submodule",
+      "identity": {
+        "repository": "rust-embedded/book",
+        "revision": "637b4a0244e16ec391a60184ae0c86b550ffc24b"
+      }
+    },
+    {
+      "name": "src/doc/nomicon submodule",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+      }
+    },
+    {
+      "name": "src/doc/reference submodule",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+      }
+    },
+    {
+      "name": "src/doc/rust-by-example submodule",
+      "identity": {
+        "repository": "rust-lang/rust-by-example",
+        "revision": "dcc14f912bf8790792a2df082eddc82ab2539229"
+      }
+    },
+    {
+      "name": "rustc-josh-sync bidirectional subtree synchronization tool",
+      "identity": {
+        "repository": "rust-lang/josh-sync",
+        "revision": "8ce49808a529d3df3283fcdc7eceff1d034578b3"
+      }
+    },
+    {
+      "name": "measureme v9 self-profiling binary wire-format library",
+      "identity": {
+        "repository": "rust-lang/measureme",
+        "revision": "5ac839c602b59eee9c908b3b35b6d6c0cd1c42f7",
+        "version": "12.0.3"
+      }
+    },
+    {
+      "name": "Crater ecosystem-scale regression runner",
+      "identity": {
+        "repository": "rust-lang/crater",
+        "revision": "abaa949414a8b9457858f0fc1a6ed97824cb9120"
+      }
+    },
+    {
+      "name": "rustwide isolated container execution library",
+      "identity": {
+        "repository": "rust-lang/rustwide",
+        "revision": "864a7751581e916b4964f8f2fc755c8067d8fc03"
+      }
+    },
+    {
+      "name": "promote-release release channel signing and CDN manifest publisher",
+      "identity": {
+        "repository": "rust-lang/promote-release",
+        "revision": "9407dc9fe0a529c6d55b66ad54f75531eb34e51a"
+      }
+    },
+    {
+      "name": "bors merge-queue, rollup, and post-merge unroll service",
+      "identity": {
+        "repository": "rust-lang/bors",
+        "revision": "831b87d59302caac5c76f52a7414f10f52c33bb2"
+      }
+    },
+    {
+      "name": "triagebot automated PR labeling, review assignment, and diff-mention bot",
+      "identity": {
+        "repository": "rust-lang/triagebot",
+        "revision": "61d3c27be1f4d2c81939987d43734b1565ca3683"
+      }
+    },
+    {
+      "name": "rfcbot-rs Final Comment Period state machine",
+      "identity": {
+        "repository": "rust-lang/rfcbot-rs",
+        "revision": "abc6e319b90c6cac93d6505e115ad70fe3d40ed3"
+      }
+    },
+    {
+      "name": "rust-lang/team governance and permission registry",
+      "identity": {
+        "repository": "rust-lang/team",
+        "revision": "35cec6a5bc4f65f1082edea0766c296da8f242c6"
+      }
+    },
+    {
+      "name": "abi-cafe cross-compiler calling-convention differential harness",
+      "identity": {
+        "repository": "Gankra/abi-cafe",
+        "revision": "94d38030419eb00a1ba80e5e2b4d763dcee58db4"
+      }
+    },
+    {
+      "name": "Ferrocene safety-critical qualified Rust toolchain and traceability suite",
+      "identity": {
+        "repository": "ferrocene/ferrocene",
+        "revision": "fef61e63733cf86e31b1cb0da3271058a8673f1c"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS upstream main)",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "bca860e8dab52715effdd49a792347b262f5e539"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS 1.99 release tag)",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "version": "1.99"
+      }
+    },
+    {
+      "name": "rustlantis deterministic UB-free custom-MIR differential fuzzer",
+      "identity": {
+        "repository": "cbeuw/rustlantis",
+        "revision": "2be7c5a6763831dc0f908f0e05723ebbbc2a62cc"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 kernel proof checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "google/zerocopy bounds-check survival benchmark subject",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "0d0e0196aa4c95f7ccc1292a49b07a33011be371"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,575 @@
+{
+  "schema": "rustc-master-qualification-scorecard/1",
+  "observed_date": "2026-11-21",
+  "elapsed_seconds": 107.953,
+  "configuration": {
+    "mode": "mode-a",
+    "compat_policy": "rustc-fcw",
+    "shuffle_seeds_K": 8,
+    "runs_per_seed_R": 8
+  },
+  "toolchains": {
+    "baseline": {
+      "spec": "+1.99.1",
+      "rustc": "<SYSROOT_BASE>/bin/rustc",
+      "rustdoc": "<SYSROOT_BASE>/bin/rustdoc",
+      "cargo": "<SYSROOT_BASE>/bin/cargo",
+      "sysroot": "<SYSROOT_BASE>",
+      "host": "x86_64-unknown-linux-gnu",
+      "header": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "release": "1.99.1",
+      "commit_hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "commit_date": "2026-10-13",
+      "llvm_version": "23.1.1",
+      "vv_line_count": "7",
+      "lld_dir": "<SYSROOT_BASE>/lib/rustlib/x86_64-unknown-linux-gnu/bin/gcc-ld",
+      "llvm_objdump": "<SYSROOT_BASE>/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-objdump",
+      "llvm_size": "<SYSROOT_BASE>/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-size",
+      "llvm_nm": "<SYSROOT_BASE>/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-nm",
+      "llvm_strip": "<SYSROOT_BASE>/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-strip"
+    },
+    "candidate": {
+      "spec": "+nightly",
+      "rustc": "<SYSROOT_CAND>/bin/rustc",
+      "rustdoc": "<SYSROOT_CAND>/bin/rustdoc",
+      "cargo": "<SYSROOT_CAND>/bin/cargo",
+      "sysroot": "<SYSROOT_CAND>",
+      "host": "x86_64-unknown-linux-gnu",
+      "header": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+      "release": "1.102.0-nightly",
+      "commit_hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "commit_date": "2026-11-11",
+      "llvm_version": "23.1.5",
+      "vv_line_count": "7",
+      "lld_dir": "<SYSROOT_CAND>/lib/rustlib/x86_64-unknown-linux-gnu/bin/gcc-ld",
+      "llvm_objdump": "<SYSROOT_CAND>/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-objdump",
+      "llvm_size": "<SYSROOT_CAND>/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-size",
+      "llvm_nm": "<SYSROOT_CAND>/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-nm",
+      "llvm_strip": "<SYSROOT_CAND>/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-strip"
+    }
+  },
+  "git_object_reconciliation": {
+    "status": "verified_from_git_objects",
+    "revision": "412be32a6a189d9a28922beee178bc0abee9d492",
+    "compiler_direct_crates": 79,
+    "has_librustdoc": true,
+    "total_compiler_and_rustdoc_crates": 80,
+    "tyctxt_queries_count": 330,
+    "submodules_count": 13,
+    "submodules": [
+      "src/doc/nomicon",
+      "src/tools/cargo",
+      "src/doc/reference",
+      "src/doc/book",
+      "src/doc/rust-by-example",
+      "src/doc/edition-guide",
+      "src/llvm-project",
+      "src/doc/embedded-book",
+      "library/backtrace",
+      "src/tools/rustc-perf",
+      "src/tools/enzyme",
+      "src/gcc",
+      "src/tpde"
+    ],
+    "josh_subtrees_count": 11,
+    "josh_subtrees": [
+      "compiler/rustc_codegen_cranelift",
+      "compiler/rustc_codegen_gcc",
+      "library/compiler-builtins",
+      "library/hashbrown",
+      "library/portable-simd",
+      "library/stdarch",
+      "src/doc/rustc-dev-guide",
+      "src/tools/clippy",
+      "src/tools/miri",
+      "src/tools/rust-analyzer",
+      "src/tools/rustfmt"
+    ],
+    "compiletest_suites_count": 22,
+    "has_assembly_gcc_suite": true,
+    "supported_targets_count": 340,
+    "platform_support_doc_tiers": {
+      "Tier 1 with Host Tools": 7,
+      "Tier 1 without Host Tools": 1,
+      "Tier 2 with Host Tools": 27,
+      "Tier 2 without Host Tools": 85,
+      "Tier 3": 220
+    },
+    "tier1_without_host_tools_triples": [
+      "i686-pc-windows-msvc"
+    ],
+    "stage0_sha256_checksum_count": 576,
+    "stage0_channel_manifest_hash_count": 2,
+    "fcw_lints_rustc_lint_defs": 56,
+    "fcw_lints_rustc_lint": 13,
+    "fcw_lints_total": 69,
+    "nightly_channel_compile_defaults": {
+      "CFG_DEFAULT_NEXT_SOLVER_GLOBALLY_eq_1": true,
+      "CFG_DEFAULT_POLONIUS_NEXT_eq_1": true,
+      "CFG_DEFAULT_FRONTEND_JOBS_eq_2": true
+    },
+    "tcb_license_manifests_present": {
+      "REUSE_toml": true,
+      "license_metadata_json": true
+    }
+  },
+  "overall_qualification_pass": true,
+  "rung_summary": [
+    {
+      "rung": "Rung 0",
+      "title": "CLI, Session, --print, Artifact Container, .d Escaping, & License/TCB Gate",
+      "passed": true
+    },
+    {
+      "rung": "Rung 1",
+      "title": "Frontend Surface, Editions (2015..2024), Macro Bridge, FCW, & rustdoc JSON Gate",
+      "passed": true
+    },
+    {
+      "rung": "Rung 2",
+      "title": "Core MIR Semantics, #![no_core], Intrinsics, Miri UB-Preservation, & Proof-Checker Gate",
+      "passed": true
+    },
+    {
+      "rung": "Rung 3",
+      "title": "Cross-Language ABI (u128/__int128), extern \"C-unwind\" Drops, & Nounwind Abort Barrier Gate",
+      "passed": true
+    },
+    {
+      "rung": "Rung 4",
+      "title": "Standard Library, Incremental/Debuginfo Smoke, & Skip-List Soundness Auditor Gate",
+      "passed": true
+    },
+    {
+      "rung": "Rung 5",
+      "title": "Twin-Compiler 5-Level Differential Oracle & 6-Class Divergence Lattice Gate",
+      "passed": true
+    },
+    {
+      "rung": "Rung 6",
+      "title": "Multi-Stage Self-Hosting & Bit-for-Bit Reproducible Fixed-Point Gate",
+      "passed": true
+    },
+    {
+      "rung": "Rung 7",
+      "title": "Ecosystem-Scale Crater Two-Phase Funnel & Normative FLS Traceability Gate",
+      "passed": true
+    },
+    {
+      "rung": "Rung 8",
+      "title": "Full-Spectrum Compiler, Verification, & Generated-Code Performance Scorecard Gate",
+      "passed": true
+    }
+  ],
+  "rungs": {
+    "rung_0": {
+      "rung": "Rung 0",
+      "title": "CLI, Session, --print, Artifact Container, .d Escaping, & License/TCB Gate",
+      "passed": true,
+      "vv_header_lines": {
+        "baseline": 7,
+        "candidate": 7
+      },
+      "print_line_counts": {
+        "baseline": {
+          "code-models": 6,
+          "relocation-models": 9,
+          "tls-models": 6,
+          "target-cpus": 138,
+          "target-features": 237,
+          "calling-conventions": 40,
+          "target-list": 331
+        },
+        "candidate": {
+          "code-models": 6,
+          "relocation-models": 9,
+          "tls-models": 6,
+          "target-cpus": 138,
+          "target-features": 237,
+          "calling-conventions": 40,
+          "target-list": 336,
+          "stack-protector-strategies": 16,
+          "host-tuple": 1,
+          "supported-crate-types": 7,
+          "backend-has-zstd": 1
+        }
+      },
+      "silent_empty_candidate_prints": [],
+      "native_static_libs_stderr_only_ok": true,
+      "rmeta_header_probe": {
+        "baseline": {
+          "magic_ok": true,
+          "metadata_version": 10,
+          "size_ef1_bytes": 2226,
+          "size_ef2_bytes": 2240,
+          "root_offset_ef1": 1835,
+          "svh_invariant_under_extra_filename": true
+        },
+        "candidate": {
+          "magic_ok": true,
+          "metadata_version": 12,
+          "size_ef1_bytes": 2250,
+          "size_ef2_bytes": 2264,
+          "root_offset_ef1": 1512,
+          "header_bytes_24_40_svh_ef1": "f09c95e0b1bfa006274357c3d6446b15",
+          "header_bytes_24_40_svh_ef2": "f09c95e0b1bfa006274357c3d6446b15",
+          "svh_invariant_under_extra_filename": true
+        }
+      },
+      "dep_info_space_only_escaping_ok": true,
+      "tcb_license_hygiene": {
+        "REUSE_toml": true,
+        "license_metadata_json": true
+      }
+    },
+    "rung_1": {
+      "rung": "Rung 1",
+      "title": "Frontend Surface, Editions (2015..2024), Macro Bridge, FCW, & rustdoc JSON Gate",
+      "passed": true,
+      "compat_policy_evaluated": "rustc-fcw",
+      "edition_drop_order_traces": {
+        "baseline": {
+          "2021": "block_local,tail_temp,else_branch,if_let_temp",
+          "2024": "tail_temp,block_local,if_let_temp,else_branch"
+        },
+        "candidate": {
+          "2021": "block_local,tail_temp,else_branch,if_let_temp",
+          "2024": "tail_temp,block_local,if_let_temp,else_branch"
+        }
+      },
+      "edition_2021_vs_2024_parity_ok": true,
+      "proc_macro_bridge_delimiter_none_traces": {
+        "baseline": "ID=9|REBUILT=7",
+        "candidate": "ID=9|REBUILT=7"
+      },
+      "proc_macro_bridge_ok": true,
+      "fcw_cap_lints_probe": {
+        "uncapped_rc": 1,
+        "capped_allow_rc": 0,
+        "future_incompat_json_emitted": 1,
+        "fcw_contract_ok": true
+      },
+      "rustdoc_json_probe": {
+        "format_version": 61,
+        "top_level_keys_count": 8,
+        "schema_ok": true
+      }
+    },
+    "rung_2": {
+      "rung": "Rung 2",
+      "title": "Core MIR Semantics, #![no_core], Intrinsics, Miri UB-Preservation, & Proof-Checker Gate",
+      "passed": true,
+      "no_core_ladder": {
+        "empty_crate_rc": 0,
+        "struct_without_copy_rc": 1,
+        "six_lang_items_plus_intrinsics_rc": 0,
+        "ladder_ok": true
+      },
+      "miri_and_ub_erasure_guard": {
+        "available": true,
+        "ub_free_specimen_rc": 0,
+        "zero_div_without_gvn_rc": 1,
+        "zero_div_with_gvn_rc": 0,
+        "gvn_ub_erasure_reproduced": true
+      },
+      "certificate_kernel_predicate_spec": {
+        "required_lean_trust_level": 0,
+        "permitted_axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "forbidden_constructs": [
+          "sorryAx",
+          "Lean.ofReduceBool",
+          "Lean.trustCompiler"
+        ],
+        "mir_capture_point": "Runtime(PostCleanup) prior to UB-erasing GVN / StripDebugInfo+DSE"
+      }
+    },
+    "rung_3": {
+      "rung": "Rung 3",
+      "title": "Cross-Language ABI (u128/__int128), extern \"C-unwind\" Drops, & Nounwind Abort Barrier Gate",
+      "passed": true,
+      "toolchains": {
+        "baseline": {
+          "pair128_and_c_unwind": {
+            "rust_sz": 48,
+            "rust_al": 16,
+            "cpp_sz": 48,
+            "cpp_al": 16,
+            "math_ok": true,
+            "caught": 42,
+            "rust_drops": 1
+          },
+          "nounwind_abort_barrier_returncode": -6,
+          "nounwind_abort_barrier_enforced": true,
+          "passed": true
+        },
+        "candidate": {
+          "pair128_and_c_unwind": {
+            "rust_sz": 48,
+            "rust_al": 16,
+            "cpp_sz": 48,
+            "cpp_al": 16,
+            "math_ok": true,
+            "caught": 42,
+            "rust_drops": 1
+          },
+          "nounwind_abort_barrier_returncode": -6,
+          "nounwind_abort_barrier_enforced": true,
+          "passed": true
+        }
+      }
+    },
+    "rung_4": {
+      "rung": "Rung 4",
+      "title": "Standard Library, Incremental/Debuginfo Smoke, & Skip-List Soundness Auditor Gate",
+      "passed": true,
+      "skip_list_auditor": {
+        "mode_a_baseline": {
+          "passed": true,
+          "violations": []
+        },
+        "mode_b_baseline": {
+          "passed": true,
+          "violations": []
+        },
+        "negative_control_vacuous_check_pass_rejected": true,
+        "negative_control_unanchored_lto_rejected": true,
+        "auditor_self_test_ok": true
+      },
+      "live_stdlib_incremental_debuginfo": {
+        "baseline": {
+          "test_runner_rc": 0,
+          "has_dwarf_debug_info": true,
+          "incremental_cache_populated": true,
+          "passed": true
+        },
+        "candidate": {
+          "test_runner_rc": 0,
+          "has_dwarf_debug_info": true,
+          "incremental_cache_populated": true,
+          "passed": true
+        }
+      }
+    },
+    "rung_5": {
+      "rung": "Rung 5",
+      "title": "Twin-Compiler 5-Level Differential Oracle & 6-Class Divergence Lattice Gate",
+      "passed": true,
+      "compat_mode": "rustc-fcw",
+      "v0_symbol_mangling_default_verified": true,
+      "specimens": {
+        "S1_deterministic_v0": {
+          "base_rc": 0,
+          "cand_rc": 0,
+          "class": "EQUIVALENT"
+        },
+        "S2_repr_rust_randomize_layout": {
+          "base_out": "off_a=10",
+          "cand_out": "off_a=0",
+          "class": "BENIGN_UNSPECIFIED_CHOICE"
+        },
+        "S3_polonius_next_nll_case3": {
+          "base_rc": 1,
+          "base_codes": [
+            "E0499",
+            "E0499"
+          ],
+          "cand_rc": 0,
+          "cand_out": "42",
+          "class": "INTENTIONAL_BUG_FIX_OR_STRICTNESS"
+        },
+        "S4_issue_107975_negative_control_canary": {
+          "o0_out": "CONSISTENT=true",
+          "o2_out": "CONSISTENT=false",
+          "detected_class": "SOUNDNESS_MISCOMPILATION"
+        }
+      }
+    },
+    "rung_6": {
+      "rung": "Rung 6",
+      "title": "Multi-Stage Self-Hosting & Bit-for-Bit Reproducible Fixed-Point Gate",
+      "passed": true,
+      "build_1_sha256": "49cee67e3c4ab2c02512b0128132cdbc457c8a4e4524fa11e9c2c79172dd45a6",
+      "build_2_sha256": "49cee67e3c4ab2c02512b0128132cdbc457c8a4e4524fa11e9c2c79172dd45a6",
+      "bit_for_bit_identical": true,
+      "execution_outputs": [
+        "RESULT=42",
+        "RESULT=42"
+      ]
+    },
+    "rung_7": {
+      "rung": "Rung 7",
+      "title": "Ecosystem-Scale Crater Two-Phase Funnel & Normative FLS Traceability Gate",
+      "passed": true,
+      "mini_crater_workspace_funnel": {
+        "baseline": {
+          "phase1_build_only_rc": 0,
+          "phase2_build_and_test_rc": 0,
+          "crater_result": "TestPass"
+        },
+        "candidate": {
+          "phase1_build_only_rc": 0,
+          "phase2_build_and_test_rc": 0,
+          "crater_result": "TestPass"
+        }
+      },
+      "regressions_count": 0,
+      "fls_traceability_contract": {
+        "pinned_fls_paragraph_count": 4110,
+        "sample_dp_ids_validated": [
+          "fls_jep7p27kaqlp",
+          "fls_9ucqbbd0s2yo",
+          "fls_lish33a1c56d"
+        ],
+        "format_valid": true
+      }
+    },
+    "rung_8": {
+      "rung": "Rung 8",
+      "title": "Full-Spectrum Compiler, Verification, & Generated-Code Performance Scorecard Gate",
+      "passed": true,
+      "compiler_performance": {
+        "baseline": {
+          "opt_o2_wall_ms": 171.506,
+          "opt_o2_max_rss_kib": 158908,
+          "cachegrind_instructions_Ir": {
+            "check_rmeta": 54461999,
+            "opt_o2_cgu1": 349100108
+          },
+          "measureme_profdata": {
+            "magic_MMPD_ok": true,
+            "format_version": 9
+          }
+        },
+        "candidate": {
+          "opt_o2_wall_ms": 170.232,
+          "opt_o2_max_rss_kib": 144164,
+          "cachegrind_instructions_Ir": {
+            "check_rmeta": 56462941,
+            "opt_o2_cgu1": 349404080
+          },
+          "measureme_profdata": {
+            "magic_MMPD_ok": true,
+            "format_version": 9
+          }
+        }
+      },
+      "cargo_pipelining_4_stage_dag": {
+        "sequential_rustc_sum_ms": 874.05,
+        "pipelined_rustc_span_ms": 434.67,
+        "cargo_total_wall_ms": 603.63,
+        "rmeta_time_fractions_eta": [
+          0.2043,
+          0.2148,
+          0.2051,
+          0.2163
+        ],
+        "pipelining_speedup_ratio": 2.011
+      },
+      "verification_pipelined_decoupling_model": {
+        "mean_eta_rmeta_fraction": 0.2101,
+        "decoupling_invariant": "Scheduling T_cert_gen + T_check post-.rmeta hides upstream crate verification off Cargo's frontend critical path."
+      },
+      "stack_sizes_exact_verification": {
+        "O3_default_redzone": {
+          "per_fn_stack_sizes_bytes": {
+            "sc_d1": 136,
+            "sc_d2": 136,
+            "sc_d3": 136,
+            "sc_leaf": 136
+          },
+          "leaf_redzone_bytes": 128,
+          "internal_call_edges_8B": 24,
+          "naive_section_sum_bytes": 544,
+          "exact_formula_bound_bytes": 696,
+          "runtime_painted_watermark_bytes": 696,
+          "exact_byte_match": true
+        },
+        "O3_no_redzone": {
+          "per_fn_stack_sizes_bytes": {
+            "sc_d1": 136,
+            "sc_d2": 136,
+            "sc_d3": 136,
+            "sc_leaf": 264
+          },
+          "leaf_redzone_bytes": 0,
+          "internal_call_edges_8B": 24,
+          "naive_section_sum_bytes": 672,
+          "exact_formula_bound_bytes": 696,
+          "runtime_painted_watermark_bytes": 696,
+          "exact_byte_match": true
+        }
+      },
+      "binary_footprint_and_relr": {
+        "default_O3_unstripped_file_bytes": 4649704,
+        "Oz_fatlto_abort_icf_relr_stripped_file_bytes": 299944,
+        "size_reduction_pct": 93.55
+      },
+      "hierarchical_shuffle_sections_tost": {
+        "suite_geomean_ratio_cand_over_base": 1.02629,
+        "per_kernel": {
+          "crc32c_ns": {
+            "k_seeds": 8,
+            "runs_per_seed": 8,
+            "median_ratio_cand_over_base": 1.00162,
+            "hodges_lehmann_delta_pct": 0.045,
+            "ci90_ratio": [
+              0.99372,
+              1.00831
+            ],
+            "ci95_ratio": [
+              0.9924,
+              1.00931
+            ],
+            "tost_equiv_5pct_pass": true,
+            "non_inferior_5pct_pass": true,
+            "p_tost": 0.0,
+            "p_two_sided_raw": 0.869,
+            "p_two_sided_holm_bonferroni": 1.0
+          },
+          "swiss_probe_ns": {
+            "k_seeds": 8,
+            "runs_per_seed": 8,
+            "median_ratio_cand_over_base": 1.02535,
+            "hodges_lehmann_delta_pct": 2.056,
+            "ci90_ratio": [
+              0.99291,
+              1.0506
+            ],
+            "ci95_ratio": [
+              0.98684,
+              1.05466
+            ],
+            "tost_equiv_5pct_pass": false,
+            "non_inferior_5pct_pass": false,
+            "p_tost": 0.056,
+            "p_two_sided_raw": 0.22,
+            "p_two_sided_holm_bonferroni": 0.66
+          },
+          "f32_dot_ns": {
+            "k_seeds": 8,
+            "runs_per_seed": 8,
+            "median_ratio_cand_over_base": 1.05253,
+            "hodges_lehmann_delta_pct": -0.249,
+            "ci90_ratio": [
+              0.847,
+              1.07129
+            ],
+            "ci95_ratio": [
+              0.83019,
+              1.07712
+            ],
+            "tost_equiv_5pct_pass": false,
+            "non_inferior_5pct_pass": false,
+            "p_tost": 0.3095,
+            "p_two_sided_raw": 0.906,
+            "p_two_sided_holm_bonferroni": 1.0
+          }
+        }
+      }
+    }
+  }
+}

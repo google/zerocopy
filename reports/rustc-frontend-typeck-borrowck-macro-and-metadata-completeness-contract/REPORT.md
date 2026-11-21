@@ -54,8 +54,8 @@ completeness contracts:
    `rustdoc::*`), lint groups, and `518` `E0xxx` error codes:** `declare_lint!`
    defines `261` compiler lints (`63` `Allow`, `144` `Warn`, `54` `Deny`, `0`
    default-`Forbid`), alongside `17` `rustc::*` internal compiler lints and `14`
-   `rustdoc::*` documentation lints (`292` in-tree lints total); `71` compiler
-   lints carry `FutureIncompatibleInfo` (`42` `FutureReleaseError`, `16`
+   `rustdoc::*` documentation lints (`292` in-tree lints total); `69` compiler
+   lints carry `FutureIncompatibleInfo` (`40` `FutureReleaseError`, `16`
    `EditionError`, `11` `EditionSemanticsChange`, `2` custom). `LintStore`
    exposes `10` static/explicit lint groups (`unused`, `nonstandard_style`,
    `rust_2018_idioms`, `rustc::internal`, `rustdoc::all`, etc.), `6` dynamic
@@ -66,10 +66,12 @@ completeness contracts:
 4. **Dual trait-solver and three-mode borrow-checker boundary:** Across `9`
    type-system and borrow-checking crates (`194,421` SLOC), `rustc` runs the
    canonicalized next-generation trait solver (`rustc_next_trait_solver`, `9,568`
-   SLOC, generic over `rustc_type_ir::Interner`) **on stable Rust for coherence
-   checking** (`NextSolverConfig::Coherence`) while still defaulting to the
-   legacy `SelectionContext`/`FulfillmentContext` engine (`41,023` SLOC) outside
-   coherence unless `-Znext-solver=globally` is set. Pattern checking
+   **on stable Rust for coherence checking** (`NextSolverConfig::Coherence`),
+   defaulting to the legacy `SelectionContext`/`FulfillmentContext` engine
+   (`41,023` SLOC) outside coherence on `stable`/`beta` builds while enabling
+   `NextSolverConfig::Globally` (alongside `Polonius::Next` and
+   `CFG_DEFAULT_FRONTEND_JOBS=2`) by default on `nightly`/`dev` builds via
+   `src/bootstrap/src/core/build_steps/compile.rs:1372-1379`. Pattern checking
    (`rustc_pattern_analysis`, `3,102` SLOC) normalizes patterns into `21`
    `Constructor` variants for Maranget matrix usefulness checking. Borrow
    checking (`rustc_borrowck`, `27,851` SLOC) operates over `mir_promoted` with
@@ -438,11 +440,11 @@ documentation lints in `src/librustdoc/lint.rs`):
      borrow checking, resolved against scoped `#[allow]`/`#[warn]`/`#[expect]`/`#[deny]`/`#[forbid]`
      via `HirId` level tables (`rustc_lint/src/levels.rs`) and RFC 2383
      `#[expect(...)]` fulfillment (`rustc_lint/src/expect.rs`).
-- **Future-incompatibility metadata (`71` lints):** `42` `FutureReleaseError`
+- **Future-incompatibility metadata (`69` lints: `56` in `rustc_lint_defs/src/builtin.rs` + `13` in `rustc_lint/src/*.rs`):** `40` `FutureReleaseError`
   (grouped dynamically into `future_incompatible`, causing Cargo to cache and
   display a future-breakage report even for dependencies built with
   `--cap-lints=allow`!), `16` `EditionError`, `11` `EditionSemanticsChange`, and
-  `2` custom reasons.
+  `2` custom reasons (`21` with `report_in_deps: true`).
 
 #### 3.2 Lint groups, aliases, and `518` `E0xxx` error codes
 
@@ -517,7 +519,10 @@ exhaustiveness checking, THIR/MIR lowering, and borrow checking at
 2. **Where the next-generation trait solver is already normative on stable Rust:**
    `compiler/rustc_session/src/config.rs:1071-1086` defines
    `NextSolverConfig::{Coherence, Globally}` and defaults to **`Coherence`**
-   whenever `CFG_DEFAULT_NEXT_SOLVER_GLOBALLY` is unset. In
+   whenever `CFG_DEFAULT_NEXT_SOLVER_GLOBALLY` is unset (the `stable`/`beta`
+   build configuration), whereas `src/bootstrap/src/core/build_steps/compile.rs:1372-1379`
+   exports `CFG_DEFAULT_NEXT_SOLVER_GLOBALLY=1`, `CFG_DEFAULT_POLONIUS_NEXT=1`,
+   and `CFG_DEFAULT_FRONTEND_JOBS=2` when `channel == "nightly" || channel == "dev"`. In
    `compiler/rustc_trait_selection/src/traits/engine.rs:34-54`,
    `FulfillmentEngine::new(infcx)` selects `FulfillmentEngine::Next` whenever
    `infcx.next_trait_solver()` is true—which is **unconditionally enabled during
