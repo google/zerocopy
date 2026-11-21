@@ -66,8 +66,8 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # FIXME(#87): We must address all blockers listed in #87 before permitting
-      # stable releases.
+      # FIXME(#4012): We must address all blockers listed in #4012 before
+      # permitting stable releases.
       - name: Ensure non-stable cargo-anneal version
         if: steps.check.outputs.changed == 'true'
         run: ./ci/check_non_stable_version.sh
@@ -92,8 +92,8 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
 
-      # FIXME(#87): We must address all blockers listed in #87 before permitting
-      # stable releases.
+      # FIXME(#4012): We must address all blockers listed in #4012 before
+      # permitting stable releases.
       - name: Ensure non-stable cargo-anneal version
         run: ./ci/check_non_stable_version.sh
 

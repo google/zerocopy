@@ -10,7 +10,7 @@
 
 The deployed workflow runs this standard-library adapter only as manually
 dispatched, read-only diagnostics. The former publisher and deletion recorder
-remain available for the research tracked in issue #236. Neither write mode
+remain available for the research tracked in issue #4013. Neither write mode
 runs in that workflow. PR code and comment contents are never executed.
 The default mode reads live inputs and prints proposed statuses. Explicit
 --publish and --record-deletion retain the former gate's two write effects.

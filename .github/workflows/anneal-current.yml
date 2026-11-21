@@ -76,8 +76,8 @@ jobs:
         run: ./ci/check_actions.sh
       - name: Check Nix flake evaluation across all platforms
         run: ./ci/check_flake_eval.sh
-      # FIXME(#87): We must address all blockers listed in #87 before permitting
-      # stable releases.
+      # FIXME(#4012): We must address all blockers listed in #4012 before
+      # permitting stable releases.
       - name: Check non-stable cargo-anneal version
         run: ./ci/check_non_stable_version.sh
 

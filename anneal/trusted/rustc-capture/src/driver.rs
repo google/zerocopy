@@ -121,7 +121,10 @@ pub(super) fn run(args: Vec<OsString>) -> ExitCode {
         // program names. Compiler panics still retain rustc's context and
         // bug-report guidance, including before analysis.
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_driver_impl/src/lib.rs#L1434-L1461
-        rustc_driver::install_ice_hook("https://github.com/joshlf/anneal/issues/new", |_| ());
+        rustc_driver::install_ice_hook(
+            "https://github.com/google/zerocopy/issues/new?template=anneal.yml",
+            |_| (),
+        );
 
         let mut callbacks = AnalysisCallbacks {
             error_format: ErrorOutputType::default(),

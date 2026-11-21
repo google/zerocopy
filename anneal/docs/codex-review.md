@@ -9,9 +9,9 @@ those terms. -->
 # Codex review policy and diagnostics
 
 Anneal uses Codex review alongside local `change-review`, `trust-review`, CI,
-and human review. Until [#236](https://github.com/joshlf/anneal/issues/236) is
-resolved, Codex review is enforced by the manual merge gates below rather than
-by a GitHub ruleset.
+and human review. Until [#4013](https://github.com/google/zerocopy/issues/4013)
+is resolved, Codex review is enforced by the manual merge gates below rather
+than by a GitHub ruleset.
 
 ## Merge gates
 
@@ -151,7 +151,7 @@ permissions, runs default diagnostic mode, and neither publishes **Codex
 review** statuses nor records summary deletions. PRs, comments, merge groups,
 and pushes do not trigger it automatically.
 
-While [#236](https://github.com/joshlf/anneal/issues/236) remains open:
+While [#4013](https://github.com/google/zerocopy/issues/4013) remains open:
 
 - Keep
   [`.github/codex-review-ruleset.json`](../.github/codex-review-ruleset.json)
@@ -191,7 +191,7 @@ making a manual merge decision.
 ## Preserve the evaluator and re-enablement criteria
 
 The [adapter](../ci/codex_review.py) and its tests remain available for
-[#236](https://github.com/joshlf/anneal/issues/236) as **research material,
+[#4013](https://github.com/google/zerocopy/issues/4013) as **research material,
 rather than a selected design for restoring enforcement**. Run the simulated
 tests locally with:
 
@@ -206,7 +206,7 @@ between a review and its head/base comparison.
 
 Before re-enabling ruleset `26810364` and automated status publication:
 
-1. Address [#236](https://github.com/joshlf/anneal/issues/236) and exercise
+1. Address [#4013](https://github.com/google/zerocopy/issues/4013) and exercise
    both **acceptance and refusal** against the live GitHub integration before
    enabling enforcement.
 2. Deploy and validate the evaluator and provide a **recovery path that
