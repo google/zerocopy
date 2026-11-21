@@ -1,0 +1,92 @@
+{
+  "zerocopy_assert_lifecycle": {
+    "zerocopy_revision": "57cef100c3801df512085bf83ec29bbcaae9efae",
+    "zerocopy_version": "0.8.48",
+    "rustc_flags": [
+      "-C",
+      "opt-level=2",
+      "-Z",
+      "mir-opt-level=2"
+    ],
+    "incremental_dev_inline_disabled": {
+      "SimplifyCfg-pre-optimizations": {
+        "bodies": 4663,
+        "bodies_with_assert": 9,
+        "assert_free_bodies": 4654,
+        "assert_free_pct": 99.81,
+        "total_assert_terminators": 19,
+        "bounds_check": 4,
+        "overflow_check": 4,
+        "div_or_rem_zero": 11,
+        "other_assert": 0
+      },
+      "SimplifyCfg-final": {
+        "bodies": 4302,
+        "bodies_with_assert": 6,
+        "assert_free_bodies": 4296,
+        "assert_free_pct": 99.86,
+        "total_assert_terminators": 15,
+        "bounds_check": 4,
+        "overflow_check": 0,
+        "div_or_rem_zero": 11,
+        "other_assert": 0
+      }
+    },
+    "non_incremental_inline_enabled": {
+      "SimplifyCfg-pre-optimizations": {
+        "bodies": 4663,
+        "bodies_with_assert": 9,
+        "assert_free_bodies": 4654,
+        "assert_free_pct": 99.81,
+        "total_assert_terminators": 19,
+        "bounds_check": 4,
+        "overflow_check": 4,
+        "div_or_rem_zero": 11,
+        "other_assert": 0
+      },
+      "SimplifyCfg-final": {
+        "bodies": 4302,
+        "bodies_with_assert": 292,
+        "assert_free_bodies": 4010,
+        "assert_free_pct": 93.21,
+        "total_assert_terminators": 341,
+        "bounds_check": 4,
+        "overflow_check": 240,
+        "div_or_rem_zero": 97,
+        "other_assert": 0
+      }
+    }
+  },
+  "zerocopy_sroa_delta": {
+    "before": {
+      "bodies": 4302,
+      "projection_free_bodies": 2652,
+      "ref_free_bodies": 3483,
+      "pure_unprojected_noref_bodies": 2621,
+      "field_projections": 3724,
+      "deref_projections": 1822,
+      "ref_rvalues": 2774,
+      "zst_const_ops": 3766
+    },
+    "after": {
+      "bodies": 4302,
+      "projection_free_bodies": 2675,
+      "ref_free_bodies": 3483,
+      "pure_unprojected_noref_bodies": 2644,
+      "field_projections": 3637,
+      "deref_projections": 1976,
+      "ref_rvalues": 2774,
+      "zst_const_ops": 3766
+    },
+    "delta": {
+      "bodies": 0,
+      "projection_free_bodies": 23,
+      "ref_free_bodies": 0,
+      "pure_unprojected_noref_bodies": 23,
+      "field_projections": -87,
+      "deref_projections": 154,
+      "ref_rvalues": 0,
+      "zst_const_ops": 0
+    }
+  }
+}

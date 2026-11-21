@@ -1,0 +1,109 @@
+{
+ "audit": {
+  "exit_code": 0,
+  "peak_rss_kb": 1584572,
+  "print_axioms": {
+   "MirPreserveUbSeam.Examples.ce1_null_nonzero_field_place_mention_ub_erased_in_default_postcleanup": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.Examples.ce1b_null_zero_offset_field0_defined_both_modes": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.Examples.ce2_uninit_local_equal_target_switchint_ub_erased_in_default_postcleanup": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.Examples.ce3_naive_full_read_semantics_for_place_mention_falsely_rejects_rfc2582_raw_deref": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.Examples.ce4_derefer_chained_deref_inner_uninit_survives_while_outer_field_ub_erased": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.Examples.runtimePostCleanup_preserveUb_false_unsound": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.evalBody_postCleanup_false_exact_of_traceCertified": [
+    "propext",
+    "Quot.sound"
+   ],
+   "MirPreserveUbSeam.evalBody_removePlaceMention_exact_of_localOnly": [
+    "propext",
+    "Quot.sound"
+   ],
+   "MirPreserveUbSeam.evalBody_runtimePostCleanup_preserveUb_true_complete": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.evalBody_runtimePostCleanup_preserveUb_true_exact_noNops": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.evalPlaceMPlace_null_nonzero_field_ub": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.evalPlaceMPlace_ok_of_safeToErasePlaceMention": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.evalPlaceMPlace_raw_deref_zero_offset_ok": [
+    "propext"
+   ],
+   "MirPreserveUbSeam.evalPlaceMPlace_safeRef_null_ub": [
+    "propext"
+   ]
+  },
+  "summary": {
+   "axioms_used": [
+    "propext",
+    "Quot.sound"
+   ],
+   "constants": 1028,
+   "constructors": 51,
+   "definitions": 478,
+   "inductive_types": 17,
+   "recursors": 17,
+   "theorems": 465,
+   "theorems_without_axioms": 357,
+   "violations": 0
+  },
+  "violation_lines": [],
+  "wall_seconds": 3.256
+ },
+ "compile": {
+  "errors": 0,
+  "exit_code": 0,
+  "olean_bytes": 4103752,
+  "peak_rss_kb": 590724,
+  "wall_seconds": 6.482,
+  "warnings": 0
+ },
+ "compile_flags": [
+  "-M2048",
+  "-DElab.async=false",
+  "-Ddebug.skipKernelTC=false",
+  "-DwarningAsError=true"
+ ],
+ "forbidden_token_counts": {
+  "Classical": 0,
+  "_unsafe_rec": 0,
+  "admit": 0,
+  "axiom": 0,
+  "bv_decide": 0,
+  "extern": 0,
+  "implemented_by": 0,
+  "native_decide": 0,
+  "omega": 0,
+  "opaque": 0,
+  "partial": 0,
+  "sorry": 0,
+  "unsafe": 0
+ },
+ "generated_on": "2026-11-21",
+ "imports": [],
+ "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+ "module": "support/MirPreserveUbAndPlaceMentionSeam.lean",
+ "passed": true,
+ "schema": "lean-check-receipt/1",
+ "source_bytes": 77105,
+ "source_def_keywords": 62,
+ "source_inductive_keywords": 17,
+ "source_lines": 1878,
+ "source_sha256": "e42331e2a8b9bd0940baf9733aa7313e8a12e1c960a6644b96b8931166720488",
+ "source_theorem_keywords": 73
+}

@@ -1,0 +1,3720 @@
+{
+ "schema": "mir-preserve-ub-probe/1",
+ "observed_on": "2026-11-21",
+ "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+ "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+ "specimens": {
+  "c01_null_pair_field1_place_mention": {
+   "description": "let _ = (*null_pair).1 (offset 8 inbounds pointer-arithmetic UB erased by default RemovePlaceMention, missed by -Zub-checks=yes)",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: in-bounds pointer arithmetic failed: attempting to offset pointer by 8 bytes, but got null pointer",
+    "stderr_scrubbed": "error: Undefined Behavior: in-bounds pointer arithmetic failed: attempting to offset pointer by 8 bytes, but got null pointer\n --> src/bin/c01_null_pair_field1_place_mention.rs:7:22\n  |\n7 |     unsafe { let _ = (*p).1; }\n  |                      ^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: check\n              at src/bin/c01_null_pair_field1_place_mention.rs:7:22: 7:28\n          1: main\n              at src/bin/c01_null_pair_field1_place_mention.rs:12:13: 12:37\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   },
+   "native_ub_checks": {
+    "ub_checks_default": {
+     "compile_rc": 0,
+     "exec_rc": 0,
+     "check_null_ubchecks": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "check_alignment_ubchecks": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "ub_checks_preserve_ub_opt0": {
+     "compile_rc": 0,
+     "exec_rc": 0,
+     "check_null_ubchecks": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "check_alignment_ubchecks": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   }
+  },
+  "c02a_null_pair_field0_place_mention": {
+   "description": "let _ = (*null_pair).0 (offset 0 short-circuits in check_and_deref_ptr -> defined even with -Zmir-preserve-ub=yes)",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).0: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   }
+  },
+  "c02b_block_value_field0_read_control": {
+   "description": "let _ = unsafe { (*null_pair).0 } (block-value syntax emits real Rvalue::Use(Copy) load, NOT pure PlaceMention)",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_2);"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer",
+    "stderr_scrubbed": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer\n --> src/bin/c02b_block_value_field0_read_control.rs:7:22\n  |\n7 |     let _ = unsafe { (*p).0 };\n  |                      ^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: check\n              at src/bin/c02b_block_value_field0_read_control.rs:7:22: 7:28\n          1: main\n              at src/bin/c02b_block_value_field0_read_control.rs:12:13: 12:37\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer",
+    "stderr_scrubbed": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer\n --> src/bin/c02b_block_value_field0_read_control.rs:7:22\n  |\n7 |     let _ = unsafe { (*p).0 };\n  |                      ^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: check\n              at src/bin/c02b_block_value_field0_read_control.rs:7:22: 7:28\n          1: main\n              at src/bin/c02b_block_value_field0_read_control.rs:12:13: 12:37\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   }
+  },
+  "c03_rfc2582_raw_u64_unaligned_place_mention": {
+   "description": "let _ = *unaligned_raw_u64 (RFC 2582 raw place creation without read/alignment check -> defined under Miri)",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_1));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   }
+  },
+  "c04_oob_small_alloc_field1_place_mention": {
+   "description": "let _ = (*one_byte_ptr).1 (offset 8 past 1-byte allocation triggers Miri inbounds UB under preserve-ub, erased under -Zmir-preserve-ub=no)",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_1).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: in-bounds pointer arithmetic failed: attempting to offset pointer by 8 bytes, but got alloc153 which is only 1 byte from the end of the allocation",
+    "stderr_scrubbed": "error: Undefined Behavior: in-bounds pointer arithmetic failed: attempting to offset pointer by 8 bytes, but got alloc153 which is only 1 byte from the end of the allocation\n  --> src/bin/c04_oob_small_alloc_field1_place_mention.rs:7:22\n   |\n 7 |     unsafe { let _ = (*p).1; }\n   |                      ^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nhelp: alloc153 was allocated here:\n  --> src/bin/c04_oob_small_alloc_field1_place_mention.rs:12:9\n   |\n12 |     let small = 7u8;\n   |         ^^^^^\n   = note: stack backtrace:\n           0: check\n               at src/bin/c04_oob_small_alloc_field1_place_mention.rs:7:22: 7:28\n           1: main\n               at src/bin/c04_oob_small_alloc_field1_place_mention.rs:14:16: 14:24\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   }
+  },
+  "c05a_derefer_chained_deref_inner_uninit": {
+   "description": "let _ = (*(*pp)).1 with uninit *pp: Derefer (PassPolicy::Required) hoists _tmp = copy (*pp), so inner uninit UB survives RemovePlaceMention",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_2).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: reading memory at alloc152[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory",
+    "stderr_scrubbed": "error: Undefined Behavior: reading memory at alloc152[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory\n --> src/bin/c05a_derefer_chained_deref_inner_uninit.rs:9:22\n  |\n9 |     unsafe { let _ = (*(*pp)).1; }\n  |                      ^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: check\n              at src/bin/c05a_derefer_chained_deref_inner_uninit.rs:9:22: 9:32\n          1: main\n              at src/bin/c05a_derefer_chained_deref_inner_uninit.rs:15:14: 15:34\n\nUninitialized memory occurred at alloc152[0x0..0x8], in this allocation:\nalloc152 (stack variable, size: 8, align: 8) {\n    __ __ __ __ __ __ __ __                         \u2502 \u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\n}\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: reading memory at alloc152[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory",
+    "stderr_scrubbed": "error: Undefined Behavior: reading memory at alloc152[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory\n --> src/bin/c05a_derefer_chained_deref_inner_uninit.rs:9:22\n  |\n9 |     unsafe { let _ = (*(*pp)).1; }\n  |                      ^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: check\n              at src/bin/c05a_derefer_chained_deref_inner_uninit.rs:9:22: 9:32\n          1: main\n              at src/bin/c05a_derefer_chained_deref_inner_uninit.rs:15:14: 15:34\n\nUninitialized memory occurred at alloc152[0x0..0x8], in this allocation:\nalloc152 (stack variable, size: 8, align: 8) {\n    __ __ __ __ __ __ __ __                         \u2502 \u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\n}\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   }
+  },
+  "c05b_derefer_chained_deref_inner_null": {
+   "description": "let _ = (*(*pp)).1 with *pp = null: hoisted _tmp = copy (*pp) reads null cleanly, while outer PlaceMention((*_tmp).1) UB is erased under -Zmir-preserve-ub=no",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_3).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_2).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: in-bounds pointer arithmetic failed: attempting to offset pointer by 8 bytes, but got null pointer",
+    "stderr_scrubbed": "error: Undefined Behavior: in-bounds pointer arithmetic failed: attempting to offset pointer by 8 bytes, but got null pointer\n --> src/bin/c05b_derefer_chained_deref_inner_null.rs:7:22\n  |\n7 |     unsafe { let _ = (*(*pp)).1; }\n  |                      ^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: check\n              at src/bin/c05b_derefer_chained_deref_inner_null.rs:7:22: 7:32\n          1: main\n              at src/bin/c05b_derefer_chained_deref_inner_null.rs:13:14: 13:23\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   }
+  },
+  "c06_equal_target_switchint_uninit_u8_loop": {
+   "description": "match uninit_union.byte { 0 => continue, _ => continue } lowers to PlaceMention + equal-target SwitchInt -> erased under -Zmir-preserve-ub=no",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _3) -> [0: bb3, otherwise: bb2];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _7) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy (_1.0: u8)) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((_1.0: u8));"
+      ],
+      "switchint_count": 2,
+      "switchint_lines": [
+       "switchInt(move _3) -> [0: bb3, otherwise: bb2];",
+       "switchInt(copy (_1.0: u8)) -> bb1;"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: reading memory at alloc153[0x0..0x1], but memory is uninitialized at [0x0..0x1], and this operation requires initialized memory",
+    "stderr_scrubbed": "error: Undefined Behavior: reading memory at alloc153[0x0..0x1], but memory is uninitialized at [0x0..0x1], and this operation requires initialized memory\n  --> src/bin/c06_equal_target_switchint_uninit_u8_loop.rs:18:13\n   |\n18 |             match u.byte {\n   |             ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: check\n               at src/bin/c06_equal_target_switchint_uninit_u8_loop.rs:18:13: 18:25\n           1: main\n               at src/bin/c06_equal_target_switchint_uninit_u8_loop.rs:27:16: 27:23\n\nUninitialized memory occurred at alloc153[0x0..0x1], in this allocation:\nalloc153 (stack variable, size: 1, align: 1) {\n    __                                              \u2502 \u2591\n}\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   }
+  },
+  "c07_custom_mir_pure_equal_target_switchint_zero_pm": {
+   "description": "#[custom_mir] switchInt(copy uninit_u8) -> [0: bb1, otherwise: bb1] with ZERO PlaceMentions isolates SimplifyCfg::PreOptimizations preserve_switch_reads erasure",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": null,
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": null,
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": null,
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> bb1;"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory",
+    "stderr_scrubbed": "warning: the feature `custom_mir` is internal to the compiler or standard library\n --> src/bin/c07_custom_mir_pure_equal_target_switchint_zero_pm.rs:1:12\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |            ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> src/bin/c07_custom_mir_pure_equal_target_switchint_zero_pm.rs:1:24\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |                        ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nerror: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> src/bin/c07_custom_mir_pure_equal_target_switchint_zero_pm.rs:13:13\n   |\n13 | /             match x {\n14 | |                 0 => bb1,\n15 | |                 _ => bb1,\n16 | |             }\n   | |_____________^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: check\n               at src/bin/c07_custom_mir_pure_equal_target_switchint_zero_pm.rs:13:13: 16:14\n           1: main\n               at src/bin/c07_custom_mir_pure_equal_target_switchint_zero_pm.rs:27:16: 27:23\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": "warning: the feature `custom_mir` is internal to the compiler or standard library\n --> src/bin/c07_custom_mir_pure_equal_target_switchint_zero_pm.rs:1:12\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |            ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> src/bin/c07_custom_mir_pure_equal_target_switchint_zero_pm.rs:1:24\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |                        ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\n"
+   }
+  },
+  "c08_mir_opt_level_help_string_mismatch": {
+   "description": "Tests options.rs docstring ('implies -Zmir-opt-level=0') vs session.rs mir_opt_level() on constant-condition dead branch",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(move _2) -> [0: bb3, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   }
+  },
+  "c09_empty_arms_not_equal_target_switchint": {
+   "description": "match uninit_u8 { 0 => (), _ => () } emits distinct empty blocks bb1/bb2 before SimplifyCfg-pre-optimizations, so switchInt survives even with -Zmir-preserve-ub=no",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_4);",
+       "PlaceMention(_5);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 2,
+      "placemention_lines": [
+       "PlaceMention(_5);",
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _5) -> [0: bb4, otherwise: bb3];"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(_4);"
+      ],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _4) -> bb3;"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: reading memory at alloc154[0x0..0x1], but memory is uninitialized at [0x0..0x1], and this operation requires initialized memory",
+    "stderr_scrubbed": "error: Undefined Behavior: reading memory at alloc154[0x0..0x1], but memory is uninitialized at [0x0..0x1], and this operation requires initialized memory\n --> src/bin/c09_empty_arms_not_equal_target_switchint.rs:8:28\n  |\n8 |     let _ = match unsafe { *p } {\n  |                            ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: check\n              at src/bin/c09_empty_arms_not_equal_target_switchint.rs:8:28: 8:30\n          1: main\n              at src/bin/c09_empty_arms_not_equal_target_switchint.rs:16:16: 16:23\n\nUninitialized memory occurred at alloc154[0x0..0x1], in this allocation:\nalloc154 (stack variable, size: 1, align: 1) {\n    __                                              \u2502 \u2591\n}\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: reading memory at alloc154[0x0..0x1], but memory is uninitialized at [0x0..0x1], and this operation requires initialized memory",
+    "stderr_scrubbed": "error: Undefined Behavior: reading memory at alloc154[0x0..0x1], but memory is uninitialized at [0x0..0x1], and this operation requires initialized memory\n --> src/bin/c09_empty_arms_not_equal_target_switchint.rs:8:28\n  |\n8 |     let _ = match unsafe { *p } {\n  |                            ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: check\n              at src/bin/c09_empty_arms_not_equal_target_switchint.rs:8:28: 8:30\n          1: main\n              at src/bin/c09_empty_arms_not_equal_target_switchint.rs:16:16: 16:23\n\nUninitialized memory occurred at alloc154[0x0..0x1], in this allocation:\nalloc154 (stack variable, size: 1, align: 1) {\n    __                                              \u2502 \u2591\n}\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   }
+  },
+  "c10_uninit_bool_switchint_erasure": {
+   "description": "#[custom_mir] switchInt on uninit bool collapsing equal targets [0: bb1, otherwise: bb1] removes UB under -Zmir-preserve-ub=no",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": null,
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": null,
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": null,
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "equal_target_switchint_count": 1,
+      "equal_target_switchint_lines": [
+       "switchInt(copy _1) -> [0: bb1, otherwise: bb1];"
+      ],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 1,
+      "switchint_lines": [
+       "switchInt(copy _1) -> bb1;"
+      ],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory",
+    "stderr_scrubbed": "warning: the feature `custom_mir` is internal to the compiler or standard library\n --> src/bin/c10_uninit_bool_switchint_erasure.rs:1:12\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |            ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> src/bin/c10_uninit_bool_switchint_erasure.rs:1:24\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |                        ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nerror: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> src/bin/c10_uninit_bool_switchint_erasure.rs:13:13\n   |\n13 | /             match b {\n14 | |                 false => bb1,\n15 | |                 _ => bb1,\n16 | |             }\n   | |_____________^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: check\n               at src/bin/c10_uninit_bool_switchint_erasure.rs:13:13: 16:14\n           1: main\n               at src/bin/c10_uninit_bool_switchint_erasure.rs:27:16: 27:23\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": "warning: the feature `custom_mir` is internal to the compiler or standard library\n --> src/bin/c10_uninit_bool_switchint_erasure.rs:1:12\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |            ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> src/bin/c10_uninit_bool_switchint_erasure.rs:1:24\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |                        ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\n"
+   }
+  },
+  "c11a_dangling_safe_ref_place_mention": {
+   "description": "let _ = *dangling_safe_ref at offset 0 on 1.98.0-nightly (14210df0e): PlaceMention((*_3)) is emitted and exits 0 (confirming 14210df0e eval_place lacked 3ef0c22cdb place.rs ref dereferenceability check)",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention((*_3));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   },
+   "miri_no_sb_preserve_ub_yes": {
+    "miriflags": "-Zmiri-disable-stacked-borrows -Zmir-preserve-ub=yes -Zmir-opt-level=0",
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   },
+   "miri_no_sb_preserve_ub_no": {
+    "miriflags": "-Zmiri-disable-stacked-borrows -Zmir-preserve-ub=no -Zmir-opt-level=0",
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   }
+  },
+  "c11b_dangling_safe_ref_field1_place_mention": {
+   "description": "let _ = (*dangling_safe_ref).1 at offset 8: Miri triggers dangling pointer arithmetic UB under preserve-ub, erased by -Zmir-preserve-ub=no",
+   "mir": {
+    "default_postcleanup": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_optimized_after": {
+      "placemention_count": 0,
+      "placemention_lines": [],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_opt0": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    },
+    "preserve_ub_alone": {
+     "compile_rc": 0,
+     "runtime_initial": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "derefer_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "pre_optimizations_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "runtime_post_cleanup": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     },
+     "remove_place_mention_before": null,
+     "runtime_optimized_after": {
+      "placemention_count": 1,
+      "placemention_lines": [
+       "PlaceMention(((*_4).1: u64));"
+      ],
+      "switchint_count": 0,
+      "switchint_lines": [],
+      "equal_target_switchint_count": 0,
+      "equal_target_switchint_lines": [],
+      "otherwise_only_switchint_count": 0,
+      "ubcheck_lines": []
+     }
+    }
+   },
+   "miri_default": {
+    "returncode": 1,
+    "ub_summary": "error: Undefined Behavior: in-bounds pointer arithmetic failed: alloc238 has been freed, so this pointer is dangling",
+    "stderr_scrubbed": "error: Undefined Behavior: in-bounds pointer arithmetic failed: alloc238 has been freed, so this pointer is dangling\n  --> src/bin/c11b_dangling_safe_ref_field1_place_mention.rs:10:13\n   |\n10 |     let _ = (*r).1;\n   |             ^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nhelp: alloc238 was allocated here:\n  --> src/bin/c11b_dangling_safe_ref_field1_place_mention.rs:7:29\n   |\n 7 |     let raw = Box::into_raw(Box::new(Pair(1, 2)));\n   |                             ^^^^^^^^^^^^^^^^^^^^\nhelp: alloc238 was deallocated here:\n  --> src/bin/c11b_dangling_safe_ref_field1_place_mention.rs:9:14\n   |\n 9 |     unsafe { drop(Box::from_raw(raw)); }\n   |              ^^^^^^^^^^^^^^^^^^^^^^^^\n   = note: stack backtrace:\n           0: check\n               at src/bin/c11b_dangling_safe_ref_field1_place_mention.rs:10:13: 10:19\n           1: main\n               at src/bin/c11b_dangling_safe_ref_field1_place_mention.rs:15:16: 15:23\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+   },
+   "miri_no_preserve_ub_opt0": {
+    "returncode": 0,
+    "ub_summary": null,
+    "stderr_scrubbed": ""
+   }
+  }
+ },
+ "zerocopy_live_census": {
+  "default_features": {
+   "default": {
+    "compile_rc": 0,
+    "postcleanup_bodies": 4715,
+    "placemention_total": 0,
+    "placemention_bodies": 0,
+    "placemention_breakdown": {
+     "deref": 0,
+     "deref_with_field": 0,
+     "index": 0,
+     "field_or_cast": 0,
+     "plain_local": 0
+    },
+    "switchint_total": 1137,
+    "equal_target_switchint_total": 0,
+    "equal_target_switchint_bodies": 0,
+    "otherwise_only_switchint_total": 0,
+    "top_placemention_bodies": [],
+    "sample_deref_placementions": [],
+    "sample_equal_target_switches": []
+   },
+   "preserve_ub_opt0": {
+    "compile_rc": 0,
+    "postcleanup_bodies": 4715,
+    "placemention_total": 1019,
+    "placemention_bodies": 206,
+    "placemention_breakdown": {
+     "deref": 17,
+     "deref_with_field": 1,
+     "index": 0,
+     "field_or_cast": 60,
+     "plain_local": 942
+    },
+    "switchint_total": 1178,
+    "equal_target_switchint_total": 41,
+    "equal_target_switchint_bodies": 20,
+    "otherwise_only_switchint_total": 0,
+    "top_placemention_bodies": [
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1427}-is_safe.3-1-002",
+      "count": 52
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1322}-is_safe.3-1-002",
+      "count": 50
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1221}-is_safe.3-1-002",
+      "count": 48
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1124}-is_safe.3-1-002",
+      "count": 46
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1031}-is_safe.3-1-002",
+      "count": 44
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#942}-is_safe.3-1-002",
+      "count": 42
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#857}-is_safe.3-1-002",
+      "count": 40
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#776}-is_safe.3-1-002",
+      "count": 38
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#699}-is_safe.3-1-002",
+      "count": 36
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#626}-is_safe.3-1-002",
+      "count": 34
+     }
+    ],
+    "sample_deref_placementions": [
+     {
+      "fn": "zerocopy.byteorder-{impl#17}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#1}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#20}-eq.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#21}-cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#22}-partial_cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#23}-hash.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#27}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#30}-eq.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#31}-cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#32}-partial_cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#33}-hash.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#3}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.layout-{impl#3}-try_to_nonzero_elem_size.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.layout-{impl#4}-metadata_for_exact_size.3-1-002",
+      "stmt": "PlaceMention(((*_1).1: layout::SizeInfo));"
+     },
+     {
+      "fn": "zerocopy.pointer-invariant-{impl#18}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.pointer-invariant-{impl#22}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.wrappers-{impl#2}-get.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     }
+    ],
+    "sample_equal_target_switches": [
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_prefix.3-1-002",
+      "term": "switchInt(move _29) -> [0: bb16, otherwise: bb16];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_prefix.3-1-002",
+      "term": "switchInt(move _31) -> [0: bb15, otherwise: bb15];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_suffix.3-1-002",
+      "term": "switchInt(move _33) -> [0: bb18, otherwise: bb18];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_suffix.3-1-002",
+      "term": "switchInt(move _35) -> [0: bb17, otherwise: bb17];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#0}-from.3-1-002",
+      "term": "switchInt(move _13) -> [0: bb7, 1: bb7, otherwise: bb7];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#0}-from.3-1-002",
+      "term": "switchInt(move _15) -> [0: bb6, 1: bb6, otherwise: bb6];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-into.3-1-002",
+      "term": "switchInt(move _11) -> [0: bb6, 1: bb6, otherwise: bb6];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-into_src.3-1-002",
+      "term": "switchInt(move _9) -> [0: bb6, 1: bb6, otherwise: bb6];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-map_src.3-1-002",
+      "term": "switchInt(move _16) -> [0: bb9, 1: bb9, otherwise: bb9];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-map_src.3-1-002",
+      "term": "switchInt(move _18) -> [0: bb8, 1: bb8, otherwise: bb8];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-with_src.3-1-002",
+      "term": "switchInt(move _16) -> [0: bb9, 1: bb9, otherwise: bb9];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-with_src.3-1-002",
+      "term": "switchInt(move _18) -> [0: bb8, 1: bb8, otherwise: bb8];"
+     }
+    ]
+   }
+  },
+  "no_default_features": {
+   "default": {
+    "compile_rc": 0,
+    "postcleanup_bodies": 4715,
+    "placemention_total": 0,
+    "placemention_bodies": 0,
+    "placemention_breakdown": {
+     "deref": 0,
+     "deref_with_field": 0,
+     "index": 0,
+     "field_or_cast": 0,
+     "plain_local": 0
+    },
+    "switchint_total": 1137,
+    "equal_target_switchint_total": 0,
+    "equal_target_switchint_bodies": 0,
+    "otherwise_only_switchint_total": 0,
+    "top_placemention_bodies": [],
+    "sample_deref_placementions": [],
+    "sample_equal_target_switches": []
+   },
+   "preserve_ub_opt0": {
+    "compile_rc": 0,
+    "postcleanup_bodies": 4715,
+    "placemention_total": 1019,
+    "placemention_bodies": 206,
+    "placemention_breakdown": {
+     "deref": 17,
+     "deref_with_field": 1,
+     "index": 0,
+     "field_or_cast": 60,
+     "plain_local": 942
+    },
+    "switchint_total": 1178,
+    "equal_target_switchint_total": 41,
+    "equal_target_switchint_bodies": 20,
+    "otherwise_only_switchint_total": 0,
+    "top_placemention_bodies": [
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1427}-is_safe.3-1-002",
+      "count": 52
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1322}-is_safe.3-1-002",
+      "count": 50
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1221}-is_safe.3-1-002",
+      "count": 48
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1124}-is_safe.3-1-002",
+      "count": 46
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1031}-is_safe.3-1-002",
+      "count": 44
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#942}-is_safe.3-1-002",
+      "count": 42
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#857}-is_safe.3-1-002",
+      "count": 40
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#776}-is_safe.3-1-002",
+      "count": 38
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#699}-is_safe.3-1-002",
+      "count": 36
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#626}-is_safe.3-1-002",
+      "count": 34
+     }
+    ],
+    "sample_deref_placementions": [
+     {
+      "fn": "zerocopy.byteorder-{impl#17}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#1}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#20}-eq.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#21}-cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#22}-partial_cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#23}-hash.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#27}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#30}-eq.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#31}-cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#32}-partial_cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#33}-hash.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#3}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.layout-{impl#3}-try_to_nonzero_elem_size.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.layout-{impl#4}-metadata_for_exact_size.3-1-002",
+      "stmt": "PlaceMention(((*_1).1: layout::SizeInfo));"
+     },
+     {
+      "fn": "zerocopy.pointer-invariant-{impl#18}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.pointer-invariant-{impl#22}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.wrappers-{impl#2}-get.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     }
+    ],
+    "sample_equal_target_switches": [
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_prefix.3-1-002",
+      "term": "switchInt(move _29) -> [0: bb16, otherwise: bb16];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_prefix.3-1-002",
+      "term": "switchInt(move _31) -> [0: bb15, otherwise: bb15];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_suffix.3-1-002",
+      "term": "switchInt(move _33) -> [0: bb18, otherwise: bb18];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_suffix.3-1-002",
+      "term": "switchInt(move _35) -> [0: bb17, otherwise: bb17];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#0}-from.3-1-002",
+      "term": "switchInt(move _13) -> [0: bb7, 1: bb7, otherwise: bb7];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#0}-from.3-1-002",
+      "term": "switchInt(move _15) -> [0: bb6, 1: bb6, otherwise: bb6];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-into.3-1-002",
+      "term": "switchInt(move _11) -> [0: bb6, 1: bb6, otherwise: bb6];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-into_src.3-1-002",
+      "term": "switchInt(move _9) -> [0: bb6, 1: bb6, otherwise: bb6];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-map_src.3-1-002",
+      "term": "switchInt(move _16) -> [0: bb9, 1: bb9, otherwise: bb9];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-map_src.3-1-002",
+      "term": "switchInt(move _18) -> [0: bb8, 1: bb8, otherwise: bb8];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-with_src.3-1-002",
+      "term": "switchInt(move _16) -> [0: bb9, 1: bb9, otherwise: bb9];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-with_src.3-1-002",
+      "term": "switchInt(move _18) -> [0: bb8, 1: bb8, otherwise: bb8];"
+     }
+    ]
+   }
+  },
+  "all_features": {
+   "default": {
+    "compile_rc": 0,
+    "postcleanup_bodies": 5012,
+    "placemention_total": 0,
+    "placemention_bodies": 0,
+    "placemention_breakdown": {
+     "deref": 0,
+     "deref_with_field": 0,
+     "index": 0,
+     "field_or_cast": 0,
+     "plain_local": 0
+    },
+    "switchint_total": 1196,
+    "equal_target_switchint_total": 0,
+    "equal_target_switchint_bodies": 0,
+    "otherwise_only_switchint_total": 0,
+    "top_placemention_bodies": [],
+    "sample_deref_placementions": [],
+    "sample_equal_target_switches": []
+   },
+   "preserve_ub_opt0": {
+    "compile_rc": 0,
+    "postcleanup_bodies": 5012,
+    "placemention_total": 1073,
+    "placemention_bodies": 222,
+    "placemention_breakdown": {
+     "deref": 17,
+     "deref_with_field": 1,
+     "index": 0,
+     "field_or_cast": 60,
+     "plain_local": 996
+    },
+    "switchint_total": 1240,
+    "equal_target_switchint_total": 44,
+    "equal_target_switchint_bodies": 21,
+    "otherwise_only_switchint_total": 0,
+    "top_placemention_bodies": [
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1427}-is_safe.3-1-002",
+      "count": 52
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1322}-is_safe.3-1-002",
+      "count": 50
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1221}-is_safe.3-1-002",
+      "count": 48
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1124}-is_safe.3-1-002",
+      "count": 46
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#1031}-is_safe.3-1-002",
+      "count": 44
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#942}-is_safe.3-1-002",
+      "count": 42
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#857}-is_safe.3-1-002",
+      "count": 40
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#776}-is_safe.3-1-002",
+      "count": 38
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#699}-is_safe.3-1-002",
+      "count": 36
+     },
+     {
+      "fn": "zerocopy.impls-tuples-_-{impl#626}-is_safe.3-1-002",
+      "count": 34
+     }
+    ],
+    "sample_deref_placementions": [
+     {
+      "fn": "zerocopy.byteorder-{impl#17}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#1}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#20}-eq.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#21}-cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#22}-partial_cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#23}-hash.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#27}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#30}-eq.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#31}-cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#32}-partial_cmp.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#33}-hash.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.byteorder-{impl#3}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.layout-{impl#3}-try_to_nonzero_elem_size.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.layout-{impl#4}-metadata_for_exact_size.3-1-002",
+      "stmt": "PlaceMention(((*_1).1: layout::SizeInfo));"
+     },
+     {
+      "fn": "zerocopy.pointer-invariant-{impl#18}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.pointer-invariant-{impl#22}-fmt.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     },
+     {
+      "fn": "zerocopy.wrappers-{impl#2}-get.3-1-002",
+      "stmt": "PlaceMention((*_1));"
+     }
+    ],
+    "sample_equal_target_switches": [
+     {
+      "fn": "zerocopy.FromBytes-read_from_io.3-1-002",
+      "term": "switchInt(move _26) -> [1: bb17, otherwise: bb17];"
+     },
+     {
+      "fn": "zerocopy.FromBytes-read_from_io.3-1-002",
+      "term": "switchInt(move _28) -> [1: bb18, otherwise: bb18];"
+     },
+     {
+      "fn": "zerocopy.FromBytes-read_from_io.3-1-002",
+      "term": "switchInt(move _30) -> [1: bb15, otherwise: bb15];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_prefix.3-1-002",
+      "term": "switchInt(move _29) -> [0: bb16, otherwise: bb16];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_prefix.3-1-002",
+      "term": "switchInt(move _31) -> [0: bb15, otherwise: bb15];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_suffix.3-1-002",
+      "term": "switchInt(move _33) -> [0: bb18, otherwise: bb18];"
+     },
+     {
+      "fn": "zerocopy.TryFromBytes-try_read_from_suffix.3-1-002",
+      "term": "switchInt(move _35) -> [0: bb17, otherwise: bb17];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#0}-from.3-1-002",
+      "term": "switchInt(move _13) -> [0: bb7, 1: bb7, otherwise: bb7];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#0}-from.3-1-002",
+      "term": "switchInt(move _15) -> [0: bb6, 1: bb6, otherwise: bb6];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-into.3-1-002",
+      "term": "switchInt(move _11) -> [0: bb6, 1: bb6, otherwise: bb6];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-into_src.3-1-002",
+      "term": "switchInt(move _9) -> [0: bb6, 1: bb6, otherwise: bb6];"
+     },
+     {
+      "fn": "zerocopy.error-{impl#30}-map_src.3-1-002",
+      "term": "switchInt(move _16) -> [0: bb9, 1: bb9, otherwise: bb9];"
+     }
+    ]
+   }
+  }
+ }
+}
