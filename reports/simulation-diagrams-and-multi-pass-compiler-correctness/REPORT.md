@@ -304,10 +304,9 @@ Names are in `Toy.Sim.Examples` (file `lean/ToySim/Examples.lean`).
 | `StepLabelsMatch` / `StepFunctional` / `InitDeterminate` / `FinalNoStep` / `FinalDeterminate` / `Determinate` | `stepLabelsMatch_pos` / `stepFunctional_pos` / `initDeterminate_pos` / `finalNoStep_pos` / `finalDeterminate_pos` / `determinate_pos` | `stepLabelsMatch_neg` / `stepFunctional_neg` / `initDeterminate_neg` / `finalNoStep_neg` / `finalDeterminate_neg` / `determinate_neg` |
 | `compOrd` / `compRel` / `FSimChain` | `compOrd_pos` / `compRel_pos` / `fsimChain_pos` | `compOrd_neg` / `compRel_neg` / `fsimChain_neg` |
 
-Machine-printed statements of every name in the table, in table order (`#check @<name>`, same options as above). Each statement shows the concrete instance that the definition admits or rejects; the systems and helper relations it mentions are quoted under **Concrete systems**.
+Machine-printed statements of the names in the table, in table order (`#check @<name>`, same options as above), except eight whose printed form leaves binder types or implicit arguments undetermined (it does not elaborate on its own); those eight are quoted verbatim from the source in the block after this one. Each statement shows the concrete instance that the definition admits or rejects; the systems and helper relations it mentions are quoted under **Concrete systems**.
 
 ```lean
-Toy.Sim.Examples.obs_pos : Toy.Sim.obs (some 3) = [3] ∧ Toy.Sim.obs none = []
 Toy.Sim.Examples.obs_neg : Toy.Sim.obs (some 3) ≠ []
 Toy.Sim.Examples.star_pos : Toy.Sim.Star Toy.Sim.Ex.Src Toy.Sim.Ex.SrcSt.start [5] (Toy.Sim.Ex.SrcSt.done 5)
 Toy.Sim.Examples.star_neg : ¬Toy.Sim.Star (Toy.Sim.Ex.Done 0) () [7] ()
@@ -322,8 +321,6 @@ Toy.Sim.Examples.safe_pos : Toy.Sim.Safe Toy.Sim.Ex.Src Toy.Sim.Ex.SrcSt.start �
     Toy.Sim.Safe Toy.Sim.Ex.EmitThenStuck false ∧
       Toy.Sim.HasBehavior Toy.Sim.Ex.EmitThenStuck (Toy.Sim.Behavior.goesWrong [1])
 Toy.Sim.Examples.safe_neg : ¬Toy.Sim.Safe Toy.Sim.Ex.Crash false ∧ ¬Toy.Sim.Stuck Toy.Sim.Ex.Crash false
-Toy.Sim.Examples.trace_pos : Toy.Sim.Behavior.trace (Toy.Sim.Behavior.terminates [1, 2] 0) = [1, 2] ∧
-  Toy.Sim.Behavior.trace (Toy.Sim.Behavior.goesWrong [3]) = [3]
 Toy.Sim.Examples.hasBehavior_pos : Toy.Sim.HasBehavior Toy.Sim.Ex.Src (Toy.Sim.Behavior.terminates [5] 5) ∧
   Toy.Sim.HasBehavior Toy.Sim.Ex.Loop (Toy.Sim.Behavior.diverges []) ∧
     Toy.Sim.HasBehavior Toy.Sim.Ex.Crash (Toy.Sim.Behavior.goesWrong []) ∧
@@ -332,22 +329,10 @@ Toy.Sim.Examples.hasBehavior_neg : ¬Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (To
   ¬Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (Toy.Sim.Behavior.goesWrong []) ∧
     ¬Toy.Sim.HasBehavior Toy.Sim.Ex.Loop (Toy.Sim.Behavior.terminates [] 0) ∧
       ∀ (b : Toy.Sim.Behavior Nat Nat), ¬Toy.Sim.HasBehavior Toy.Sim.Ex.Chatter b
-Toy.Sim.Examples.improves_pos : Toy.Sim.Improves (Toy.Sim.Behavior.goesWrong [1])
-    (Toy.Sim.Behavior.terminates [1, 2] 0) ∧
-  Toy.Sim.Improves (Toy.Sim.Behavior.diverges [4]) (Toy.Sim.Behavior.diverges [4])
-Toy.Sim.Examples.improves_neg : ¬Toy.Sim.Improves (Toy.Sim.Behavior.goesWrong [1]) (Toy.Sim.Behavior.terminates [2] 0) ∧
-  ¬Toy.Sim.Improves (Toy.Sim.Behavior.diverges []) (Toy.Sim.Behavior.terminates [] 0) ∧
-    ¬Toy.Sim.Improves (Toy.Sim.Behavior.terminates [] 0) (Toy.Sim.Behavior.terminates [] 1)
 Toy.Sim.Examples.refinedBy_pos : Toy.Sim.RefinedBy Toy.Sim.Ex.StuckNow (Toy.Sim.Ex.Done 0) ∧
   Toy.Sim.RefinedBy Toy.Sim.Ex.Src Toy.Sim.Ex.Src
 Toy.Sim.Examples.positive_control_src_tgt : Toy.Sim.RefinedBy Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt ∧
   ∀ (b : Toy.Sim.Behavior Nat Nat), Toy.Sim.HasBehavior Toy.Sim.Ex.Tgt b → Toy.Sim.HasBehavior Toy.Sim.Ex.Src b
-Toy.Sim.Examples.nonvacuous_preorder : (Toy.Sim.Improves (Toy.Sim.Behavior.goesWrong [])
-      (Toy.Sim.Behavior.goesWrong [1]) ∧
-    Toy.Sim.Improves (Toy.Sim.Behavior.goesWrong [1]) (Toy.Sim.Behavior.terminates [1, 2] 0)) ∧
-  (Toy.Sim.Improves (Toy.Sim.Behavior.diverges [4]) (Toy.Sim.Behavior.diverges [4]) ∧
-      Toy.Sim.Improves (Toy.Sim.Behavior.diverges [4]) (Toy.Sim.Behavior.diverges [4])) ∧
-    Toy.Sim.RefinedBy Toy.Sim.Ex.StuckNow Toy.Sim.Ex.Src ∧ Toy.Sim.RefinedBy Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt
 Toy.Sim.Examples.refinedBy_neg : ¬Toy.Sim.RefinedBy (Toy.Sim.Ex.Done 0) Toy.Sim.Ex.StuckNow ∧
   ¬Toy.Sim.RefinedBy (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 1)
 Toy.Sim.Examples.neverGoesWrong_pos : Toy.Sim.NeverGoesWrong Toy.Sim.Ex.Src ∧ Toy.Sim.NeverGoesWrong Toy.Sim.Ex.Loop
@@ -360,10 +345,6 @@ Toy.Sim.Examples.fsimInit_neg : ¬Toy.Sim.FSimInit (Toy.Sim.Ex.Done 0) Toy.Sim.E
 Toy.Sim.Examples.fsimFinal_neg : ¬Toy.Sim.FSimFinal (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 1) Toy.Sim.Cex.relTrue
 Toy.Sim.Examples.fsimStep_neg : ¬Toy.Sim.FSimStep (Toy.Sim.Ex.OneStep (some 7) 0) (Toy.Sim.Ex.Done 0)
     Toy.Sim.Cex.emptyOrd Toy.Sim.Cex.relBefore
-Toy.Sim.Examples.isForwardSim_pos : Toy.Sim.IsForwardSim Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt (fun i' i => i' < i)
-    Toy.Sim.Ex.SrcTgtRel ∧
-  Toy.Sim.IsForwardSim Toy.Sim.Ex.Src Toy.Sim.Ex.Src (fun x x_1 => False) fun x s s' => s = s'
-Toy.Sim.Examples.isForwardSim_neg : ¬∃ I ord R, Toy.Sim.IsForwardSim Toy.Sim.Ex.Loop (Toy.Sim.Ex.Done 0) ord R
 Toy.Sim.Examples.bsimInitExists_pos : Toy.Sim.BSimInitExists Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt
 Toy.Sim.Examples.bsimInitMatch_pos : Toy.Sim.BSimInitMatch Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt Toy.Sim.Ex.SrcTgtBackRel
 Toy.Sim.Examples.bsimFinal_pos : Toy.Sim.BSimFinal Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt Toy.Sim.Ex.SrcTgtBackRel
@@ -384,8 +365,6 @@ Toy.Sim.Examples.isBackwardSim_neg : Toy.Sim.NoBackwardSim (Toy.Sim.Ex.Done 0) (
 Toy.Sim.Examples.noBackwardSim_pos : Toy.Sim.NoBackwardSim (Toy.Sim.Ex.OneStep none 0)
   (Toy.Sim.Ex.TwoBranch none none 0 1)
 Toy.Sim.Examples.noBackwardSim_neg : ¬Toy.Sim.NoBackwardSim Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt
-Toy.Sim.Examples.labelMatch_pos : Toy.Sim.LabelMatch Eq (some 1) (some 1) ∧
-  Toy.Sim.LabelMatch Toy.Sim.Ex.AnyInput (some 0) (some 1) ∧ Toy.Sim.LabelMatch Eq none none
 Toy.Sim.Examples.receptive_pos : Toy.Sim.Receptive Toy.Sim.Ex.AnyInput Toy.Sim.Ex.Src ∧
   Toy.Sim.Receptive Eq (Toy.Sim.Ex.OneStep (some 0) 0)
 Toy.Sim.Examples.labelMatch_neg : ¬Toy.Sim.LabelMatch Toy.Sim.Ex.AnyInput none (some 1) ∧
@@ -415,6 +394,45 @@ Toy.Sim.Examples.compOrd_neg : ¬Toy.Sim.compOrd (fun i' i => i' < i) Toy.Sim.Ce
 Toy.Sim.Examples.compRel_neg : ¬Toy.Sim.compRel Toy.Sim.Ex.SrcMidRel Toy.Sim.Ex.MidTgtRel ((), 0) Toy.Sim.Ex.SrcSt.start
     Toy.Sim.Ex.TgtSt.ready
 Toy.Sim.Examples.fsimChain_neg : ¬Toy.Sim.FSimChain (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 1)
+```
+
+Source statements (verbatim, with `file:line` citations) of `obs_pos`, `trace_pos`, `improves_pos`, `improves_neg`, `nonvacuous_preorder`, `isForwardSim_pos`, `isForwardSim_neg` and `labelMatch_pos`:
+
+```lean
+-- lean/ToySim/Examples.lean:19
+theorem obs_pos : obs (some 3) = [3] ∧ obs (none : Option Nat) = []
+-- lean/ToySim/Examples.lean:81-82
+theorem trace_pos : (Behavior.terminates [1, 2] 0 : Behavior Nat Nat).trace = [1, 2] ∧
+    (Behavior.goesWrong [3] : Behavior Nat Nat).trace = [3]
+-- lean/ToySim/Examples.lean:106-108
+theorem improves_pos :
+    Improves (.goesWrong [1] : Behavior Nat Nat) (.terminates [1, 2] 0) ∧
+    Improves (.diverges [4] : Behavior Nat Nat) (.diverges [4])
+-- lean/ToySim/Examples.lean:114-117
+theorem improves_neg :
+    ¬ Improves (.goesWrong [1] : Behavior Nat Nat) (.terminates [2] 0) ∧
+    ¬ Improves (.diverges [] : Behavior Nat Nat) (.terminates [] 0) ∧
+    ¬ Improves (.terminates [] 0 : Behavior Nat Nat) (.terminates [] 1)
+-- lean/ToySim/Examples.lean:771-776
+theorem nonvacuous_preorder :
+    (Improves (.goesWrong [] : Behavior Nat Nat) (.goesWrong [1]) ∧
+      Improves (.goesWrong [1] : Behavior Nat Nat) (.terminates [1, 2] 0)) ∧
+    (Improves (.diverges [4] : Behavior Nat Nat) (.diverges [4]) ∧
+      Improves (.diverges [4] : Behavior Nat Nat) (.diverges [4])) ∧
+    (RefinedBy StuckNow Src ∧ RefinedBy Src Tgt)
+-- lean/ToySim/Examples.lean:181-183
+theorem isForwardSim_pos :
+    IsForwardSim Src Tgt (fun i' i : Nat => i' < i) SrcTgtRel ∧
+    IsForwardSim Src Src (fun (_ _ : Unit) => False) (fun _ s s' => s = s')
+-- lean/ToySim/Examples.lean:189-191
+theorem isForwardSim_neg :
+    ¬ ∃ (I : Type) (ord : I → I → Prop) (R : I → Loop.State → (Done 0).State → Prop),
+        IsForwardSim Loop (Done 0) ord R
+-- lean/ToySim/Examples.lean:270-273
+theorem labelMatch_pos :
+    LabelMatch (Eq : Nat → Nat → Prop) (some 1) (some 1) ∧
+    LabelMatch AnyInput (some 0) (some 1) ∧
+    LabelMatch (Eq : Nat → Nat → Prop) none none
 ```
 
 ### Concrete systems
@@ -684,7 +702,7 @@ abbrev DoneWithJunk : LTS Nat Nat where
 
 ### Results
 
-Each result below gives: kind and tier; the Lean statement (exact source signature; for the core results also the restatement with every named clause unfolded, from `lean/ToySim/Unfolded.lean`, where each restatement is derived from the folded statement in Lean); a proof outline; the hypothesis ledger with tightness and counterexample names; the depth label; the non-vacuity witness (theorem cards) or positive control (counterexample cards); prior art; the design question; and the evidence basis. The non-claims of every result are listed at the start of **Boundaries**. Counterexample statements are quoted as machine-printed by Lean (`#check`); every counterexample is a single theorem stating that a concrete instance satisfies all other hypotheses of the result and that its conclusion fails.
+Each result below gives: kind and tier; the Lean statement (exact source signature; for the core results also the restatement with every named clause unfolded, from `lean/ToySim/Unfolded.lean`, where each restatement is derived from the folded statement in Lean); a proof outline; the hypothesis ledger with tightness and counterexample names; the depth label; the non-vacuity witness (theorem cards) or positive control (counterexample cards); prior art; the design question; and the evidence basis. The non-claims of every result are listed at the start of **Boundaries**. Counterexample statements are quoted as machine-printed by Lean (`#check`), except that a block whose first line is a `file:line` citation quotes the source verbatim (used where the printed form leaves binder types or implicit arguments undetermined; non-vacuity witnesses follow the same rule); every counterexample is a single theorem stating that a concrete instance satisfies all other hypotheses of the result and that its conclusion fails.
 
 #### `partial-run-simulated`
 
@@ -697,6 +715,7 @@ Each result below gives: kind and tier; the Lean statement (exact source signatu
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:34-39
 -- Toy.Sim.fsimInit_fsimStep_partial_run_simulated
 theorem fsimInit_fsimStep_partial_run_simulated
     {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
@@ -709,6 +728,7 @@ theorem fsimInit_fsimStep_partial_run_simulated
 Unfolded (every named clause replaced by its definition):
 
 ```lean
+-- lean/ToySim/Unfolded.lean:19-27
 -- Toy.Sim.Unfolded.partial_run_simulated
 theorem partial_run_simulated
     (L₁ L₂ : LTS E Res) (I : Type) (ord : I → I → Prop)
@@ -766,6 +786,7 @@ Basis: derived (modeling bridge) — This mirrors CompCert's `simulation_star` c
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:47-53
 -- Toy.Sim.fsimInit_fsimStep_fsimFinal_preserve_terminates
 theorem fsimInit_fsimStep_fsimFinal_preserve_terminates
     {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
@@ -779,6 +800,7 @@ theorem fsimInit_fsimStep_fsimFinal_preserve_terminates
 Unfolded (every named clause replaced by its definition):
 
 ```lean
+-- lean/ToySim/Unfolded.lean:31-41
 -- Toy.Sim.Unfolded.terminating_behaviours_preserved
 theorem terminating_behaviours_preserved
     (L₁ L₂ : LTS E Res) (I : Type) (ord : I → I → Prop)
@@ -837,6 +859,7 @@ Basis: derived (modeling bridge) — This mirrors the termination case of CompCe
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:64-70
 -- Toy.Sim.wf_fsimInit_fsimStep_preserve_diverges
 theorem wf_fsimInit_fsimStep_preserve_diverges
     {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
@@ -850,6 +873,7 @@ theorem wf_fsimInit_fsimStep_preserve_diverges
 Unfolded (every named clause replaced by its definition):
 
 ```lean
+-- lean/ToySim/Unfolded.lean:45-57
 -- Toy.Sim.Unfolded.silent_divergence_preserved
 theorem silent_divergence_preserved
     (L₁ L₂ : LTS E Res) (I : Type) (ord : I → I → Prop)
@@ -882,10 +906,12 @@ theorem silent_divergence_preserved
 **Non-vacuity witness.** Spin (a silent step, then a silent self-loop) simulated by Loop: the target stutters once, then follows the loop. (`Toy.Sim.Examples.nonvacuous_preserve_diverges`)
 
 ```lean
-Toy.Sim.Examples.nonvacuous_preserve_diverges : (WellFounded fun i' i => i' < i) ∧
-  Toy.Sim.FSimInit Toy.Sim.Ex.Spin Toy.Sim.Ex.Loop Toy.Sim.Examples.spinRel ∧
-    Toy.Sim.FSimStep Toy.Sim.Ex.Spin Toy.Sim.Ex.Loop (fun i' i => i' < i) Toy.Sim.Examples.spinRel ∧
-      Toy.Sim.HasBehavior Toy.Sim.Ex.Spin (Toy.Sim.Behavior.diverges [])
+-- lean/ToySim/Examples.lean:425-429
+theorem nonvacuous_preserve_diverges :
+    WellFounded (fun i' i : Nat => i' < i) ∧
+    FSimInit Spin Loop spinRel ∧
+    FSimStep Spin Loop (fun i' i : Nat => i' < i) spinRel ∧
+    HasBehavior Spin (.diverges [])
 ```
 
 **Prior art.**
@@ -911,6 +937,7 @@ Basis: derived (modeling bridge) — This mirrors CompCert's `simulation_forever
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:108-113
 -- Toy.Sim.isForwardSim_preserves_non_goesWrong_behaviors
 theorem isForwardSim_preserves_non_goesWrong_behaviors
     {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
@@ -919,6 +946,7 @@ theorem isForwardSim_preserves_non_goesWrong_behaviors
     {b : Behavior E Res} (hb : HasBehavior L₁ b) (hnw : ∀ t, b ≠ .goesWrong t) :
     HasBehavior L₂ b
 
+-- lean/ToySim/Statements.lean:485-488
 -- Toy.Sim.fsimChain_preserves_non_goesWrong_behaviors
 theorem fsimChain_preserves_non_goesWrong_behaviors {L L' : LTS E Res}
     (hchain : FSimChain L L')
@@ -977,6 +1005,7 @@ Basis: derived (modeling bridge) — This mirrors CompCert's `forward_simulation
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:163-167
 -- Toy.Sim.fsimStep_comp
 theorem fsimStep_comp {L₁ L₂ L₃ : LTS E Res} {I₁ I₂ : Type}
     {ord₁ : I₁ → I₁ → Prop} {ord₂ : I₂ → I₂ → Prop}
@@ -988,6 +1017,7 @@ theorem fsimStep_comp {L₁ L₂ L₃ : LTS E Res} {I₁ I₂ : Type}
 Unfolded (every named clause replaced by its definition):
 
 ```lean
+-- lean/ToySim/Unfolded.lean:61-77
 -- Toy.Sim.Unfolded.step_diagrams_compose
 theorem step_diagrams_compose
     (L₁ L₂ L₃ : LTS E Res) (I₁ I₂ : Type)
@@ -1058,6 +1088,7 @@ Basis: derived (modeling bridge) — This mirrors the step-diagram part of CompC
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:195-199
 -- Toy.Sim.isForwardSim_comp
 theorem isForwardSim_comp {L₁ L₂ L₃ : LTS E Res} {I₁ I₂ : Type}
     {ord₁ : I₁ → I₁ → Prop} {ord₂ : I₂ → I₂ → Prop}
@@ -1065,18 +1096,21 @@ theorem isForwardSim_comp {L₁ L₂ L₃ : LTS E Res} {I₁ I₂ : Type}
     (h₁ : IsForwardSim L₁ L₂ ord₁ R₁) (h₂ : IsForwardSim L₂ L₃ ord₂ R₂) :
     IsForwardSim L₁ L₃ (compOrd ord₁ ord₂) (compRel R₁ R₂)
 
+-- lean/ToySim/Statements.lean:124-127
 -- Toy.Sim.fsimInit_comp
 theorem fsimInit_comp {L₁ L₂ L₃ : LTS E Res} {I₁ I₂ : Type}
     {R₁ : I₁ → L₁.State → L₂.State → Prop} {R₂ : I₂ → L₂.State → L₃.State → Prop}
     (h₁ : FSimInit L₁ L₂ R₁) (h₂ : FSimInit L₂ L₃ R₂) :
     FSimInit L₁ L₃ (compRel R₁ R₂)
 
+-- lean/ToySim/Statements.lean:134-137
 -- Toy.Sim.fsimFinal_comp
 theorem fsimFinal_comp {L₁ L₂ L₃ : LTS E Res} {I₁ I₂ : Type}
     {R₁ : I₁ → L₁.State → L₂.State → Prop} {R₂ : I₂ → L₂.State → L₃.State → Prop}
     (h₁ : FSimFinal L₁ L₂ R₁) (h₂ : FSimFinal L₂ L₃ R₂) :
     FSimFinal L₁ L₃ (compRel R₁ R₂)
 
+-- lean/ToySim/Statements.lean:143-145
 -- Toy.Sim.compOrd_wf
 theorem compOrd_wf {I₁ I₂ : Type} {ord₁ : I₁ → I₁ → Prop} {ord₂ : I₂ → I₂ → Prop}
     (h₁ : WellFounded ord₁) (h₂ : WellFounded ord₂) :
@@ -1139,6 +1173,7 @@ Basis: derived (modeling bridge) — This mirrors CompCert's `compose_forward_si
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:214-220
 -- Toy.Sim.forwardSim_receptive_determinate_gives_backwardSim
 theorem forwardSim_receptive_determinate_gives_backwardSim
     {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
@@ -1148,6 +1183,7 @@ theorem forwardSim_receptive_determinate_gives_backwardSim
     ∃ (I' : Type) (ord' : I' → I' → Prop) (R' : I' → L₁.State → L₂.State → Prop),
       IsBackwardSim L₁ L₂ ord' R' ∧ ∀ i s₁ s₂, R i s₁ s₂ → ∃ i', R' i' s₁ s₂
 
+-- lean/ToySim/Statements.lean:359-364
 -- Toy.Sim.forwardSim_deterministic_target_gives_backwardSim
 theorem forwardSim_deterministic_target_gives_backwardSim
     {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
@@ -1160,6 +1196,7 @@ theorem forwardSim_deterministic_target_gives_backwardSim
 Unfolded (every named clause replaced by its definition):
 
 ```lean
+-- lean/ToySim/Unfolded.lean:81-117
 -- Toy.Sim.Unfolded.flip_forward_to_backward
 theorem flip_forward_to_backward
     (M : E → E → Prop) (L₁ L₂ : LTS E Res) (I : Type) (ord : I → I → Prop)
@@ -1263,6 +1300,7 @@ Basis: derived (modeling bridge) — This mirrors CompCert's `forward_to_backwar
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:372-375
 -- Toy.Sim.backwardSim_gives_refinedBy
 theorem backwardSim_gives_refinedBy
     {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
@@ -1273,6 +1311,7 @@ theorem backwardSim_gives_refinedBy
 Unfolded (every named clause replaced by its definition):
 
 ```lean
+-- lean/ToySim/Unfolded.lean:126-145
 -- Toy.Sim.Unfolded.backward_sim_gives_refinement
 theorem backward_sim_gives_refinement
     (L₁ L₂ : LTS E Res) (I : Type) (ord : I → I → Prop)
@@ -1343,11 +1382,13 @@ Basis: derived (modeling bridge) — This mirrors CompCert's `backward_simulatio
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Basic.lean:141-143
 -- Toy.Sim.refinedBy_neverGoesWrong_behaviors_subset
 theorem refinedBy_neverGoesWrong_behaviors_subset {L₁ L₂ : LTS E Res}
     (href : RefinedBy L₁ L₂) (hsafe : NeverGoesWrong L₁)
     {b : Behavior E Res} (hb : HasBehavior L₂ b) : HasBehavior L₁ b
 
+-- lean/ToySim/Statements.lean:441-445
 -- Toy.Sim.backwardSim_neverGoesWrong_behaviors_subset
 theorem backwardSim_neverGoesWrong_behaviors_subset
     {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
@@ -1400,11 +1441,13 @@ Basis: derived (modeling bridge) — This mirrors CompCert's `backward_simulatio
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:452-454
 -- Toy.Sim.fsimChain_collapse
 theorem fsimChain_collapse {L L' : LTS E Res} (h : FSimChain L L') :
     ∃ (I : Type) (ord : I → I → Prop) (R : I → L.State → L'.State → Prop),
       IsForwardSim L L' ord R
 
+-- lean/ToySim/Basic.lean:230-232
 -- Toy.Sim.fsimChain_of_isForwardSim
 theorem fsimChain_of_isForwardSim {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
     {R : I → L₁.State → L₂.State → Prop} (h : IsForwardSim L₁ L₂ ord R) :
@@ -1425,11 +1468,12 @@ theorem fsimChain_of_isForwardSim {L₁ L₂ : LTS E Res} {I : Type} {ord : I �
 **Non-vacuity witness.** The two-pass chain Src ⟶ Mid ⟶ Tgt; the forward simulation SrcTgtRel from Src to Tgt. (`Toy.Sim.Examples.fsimChain_pos`, `Toy.Sim.Examples.isForwardSim_pos`)
 
 ```lean
-Toy.Sim.Examples.fsimChain_pos : Toy.Sim.FSimChain Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt ∧
-  Toy.Sim.FSimChain Toy.Sim.Ex.Src Toy.Sim.Ex.Src
-Toy.Sim.Examples.isForwardSim_pos : Toy.Sim.IsForwardSim Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt (fun i' i => i' < i)
-    Toy.Sim.Ex.SrcTgtRel ∧
-  Toy.Sim.IsForwardSim Toy.Sim.Ex.Src Toy.Sim.Ex.Src (fun x x_1 => False) fun x s s' => s = s'
+-- lean/ToySim/Examples.lean:391
+theorem fsimChain_pos : FSimChain Src Tgt ∧ FSimChain Src Src
+-- lean/ToySim/Examples.lean:181-183
+theorem isForwardSim_pos :
+    IsForwardSim Src Tgt (fun i' i : Nat => i' < i) SrcTgtRel ∧
+    IsForwardSim Src Src (fun (_ _ : Unit) => False) (fun _ s s' => s = s')
 ```
 
 **Prior art.**
@@ -1454,12 +1498,14 @@ Basis: derived (modeling bridge) — This mirrors the repeated use of `compose_f
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:466-469
 -- Toy.Sim.fsimChain_receptive_first_determinate_last_gives_refinedBy
 theorem fsimChain_receptive_first_determinate_last_gives_refinedBy
     {L L' : LTS E Res} (M : E → E → Prop)
     (hchain : FSimChain L L') (hrec : Receptive M L) (hdet : Determinate M L') :
     RefinedBy L L'
 
+-- lean/ToySim/Statements.lean:477-479
 -- Toy.Sim.fsimChain_deterministic_last_gives_refinedBy
 theorem fsimChain_deterministic_last_gives_refinedBy
     {L L' : LTS E Res} (hchain : FSimChain L L') (hdet : Determinate Eq L') :
@@ -1469,6 +1515,7 @@ theorem fsimChain_deterministic_last_gives_refinedBy
 Unfolded (every named clause replaced by its definition):
 
 ```lean
+-- lean/ToySim/Unfolded.lean:149-161
 -- Toy.Sim.Unfolded.pipeline_end_to_end_refinement
 theorem pipeline_end_to_end_refinement
     (M : E → E → Prop) (L L' : LTS E Res)
@@ -1542,6 +1589,7 @@ Basis: derived (modeling bridge) — CompCert's `cstrategy_semantic_preservation
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Statements.lean:499-503
 -- Toy.Sim.fsimChain_receptive_first_determinate_last_neverGoesWrong_first_behaviors_iff
 theorem fsimChain_receptive_first_determinate_last_neverGoesWrong_first_behaviors_iff
     {L L' : LTS E Res} (M : E → E → Prop)
@@ -1601,23 +1649,29 @@ Basis: derived (modeling bridge) — This mirrors the combination of CompCert's 
 **Lean statement.**
 
 ```lean
+-- lean/ToySim/Basic.lean:89
 -- Toy.Sim.Improves.refl
 theorem Improves.refl (b : Behavior E Res) : Improves b b
 
+-- lean/ToySim/Basic.lean:95-96
 -- Toy.Sim.Improves.trans
 theorem Improves.trans {b₁ b₂ b₃ : Behavior E Res}
     (h₁₂ : Improves b₁ b₂) (h₂₃ : Improves b₂ b₃) : Improves b₁ b₃
 
+-- lean/ToySim/Basic.lean:104-105
 -- Toy.Sim.Improves.antisymm
 theorem Improves.antisymm {b₁ b₂ : Behavior E Res}
     (h₁₂ : Improves b₁ b₂) (h₂₁ : Improves b₂ b₁) : b₁ = b₂
 
+-- lean/ToySim/Basic.lean:92
 -- Toy.Sim.improves_goesWrong_nil
 theorem improves_goesWrong_nil (b : Behavior E Res) : Improves (.goesWrong []) b
 
+-- lean/ToySim/Basic.lean:122
 -- Toy.Sim.RefinedBy.refl
 theorem RefinedBy.refl (L : LTS E Res) : RefinedBy L L
 
+-- lean/ToySim/Basic.lean:125-126
 -- Toy.Sim.RefinedBy.trans
 theorem RefinedBy.trans {L₁ L₂ L₃ : LTS E Res}
     (h₁₂ : RefinedBy L₁ L₂) (h₂₃ : RefinedBy L₂ L₃) : RefinedBy L₁ L₃
@@ -1641,12 +1695,13 @@ theorem RefinedBy.trans {L₁ L₂ L₃ : LTS E Res}
 **Non-vacuity witness.** A composable Improves chain goesWrong [] ⟶ goesWrong [1] ⟶ terminates [1, 2] 0, a mutual Improves pair (equal behaviours), and a composable refinement chain StuckNow ⟶ Src ⟶ Tgt. (`Toy.Sim.Examples.nonvacuous_preorder`)
 
 ```lean
-Toy.Sim.Examples.nonvacuous_preorder : (Toy.Sim.Improves (Toy.Sim.Behavior.goesWrong [])
-      (Toy.Sim.Behavior.goesWrong [1]) ∧
-    Toy.Sim.Improves (Toy.Sim.Behavior.goesWrong [1]) (Toy.Sim.Behavior.terminates [1, 2] 0)) ∧
-  (Toy.Sim.Improves (Toy.Sim.Behavior.diverges [4]) (Toy.Sim.Behavior.diverges [4]) ∧
-      Toy.Sim.Improves (Toy.Sim.Behavior.diverges [4]) (Toy.Sim.Behavior.diverges [4])) ∧
-    Toy.Sim.RefinedBy Toy.Sim.Ex.StuckNow Toy.Sim.Ex.Src ∧ Toy.Sim.RefinedBy Toy.Sim.Ex.Src Toy.Sim.Ex.Tgt
+-- lean/ToySim/Examples.lean:771-776
+theorem nonvacuous_preorder :
+    (Improves (.goesWrong [] : Behavior Nat Nat) (.goesWrong [1]) ∧
+      Improves (.goesWrong [1] : Behavior Nat Nat) (.terminates [1, 2] 0)) ∧
+    (Improves (.diverges [4] : Behavior Nat Nat) (.diverges [4]) ∧
+      Improves (.diverges [4] : Behavior Nat Nat) (.diverges [4])) ∧
+    (RefinedBy StuckNow Src ∧ RefinedBy Src Tgt)
 ```
 
 **Prior art.**
@@ -1670,14 +1725,16 @@ Basis: derived (modeling bridge) — `Improves` is CompCert's `behavior_improves
 **Lean statement.**
 
 ```lean
-Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved : ¬WellFounded Toy.Sim.Cex.fullOrd ∧
-  Toy.Sim.FSimInit Toy.Sim.Ex.Loop (Toy.Sim.Ex.Done 0) Toy.Sim.Cex.relTrue ∧
-    Toy.Sim.FSimFinal Toy.Sim.Ex.Loop (Toy.Sim.Ex.Done 0) Toy.Sim.Cex.relTrue ∧
-      Toy.Sim.FSimStep Toy.Sim.Ex.Loop (Toy.Sim.Ex.Done 0) Toy.Sim.Cex.fullOrd Toy.Sim.Cex.relTrue ∧
-        Toy.Sim.HasBehavior Toy.Sim.Ex.Loop (Toy.Sim.Behavior.diverges []) ∧
-          ¬Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (Toy.Sim.Behavior.diverges []) ∧
-            Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (Toy.Sim.Behavior.terminates [] 0) ∧
-              ∀ (t : List Nat), Toy.Sim.Behavior.diverges [] ≠ Toy.Sim.Behavior.goesWrong t
+-- lean/ToySim/Counterexamples.lean:151-159
+theorem cex_fsim_without_wf_divergence_not_preserved :
+    ¬ WellFounded fullOrd ∧
+    FSimInit Loop (Done 0) relTrue ∧
+    FSimFinal Loop (Done 0) relTrue ∧
+    FSimStep Loop (Done 0) fullOrd relTrue ∧
+    HasBehavior Loop (.diverges []) ∧
+    ¬ HasBehavior (Done 0) (.diverges []) ∧
+    HasBehavior (Done 0) (.terminates [] 0) ∧
+    (∀ t, (Behavior.diverges [] : Behavior Nat Nat) ≠ .goesWrong t)
 ```
 
 **Depth:** shallow — Finite case analysis on one-state systems.
@@ -1702,7 +1759,7 @@ Toy.Sim.Examples.positive_control_diverges : Toy.Sim.IsForwardSim Toy.Sim.Ex.Spi
 
 Basis: execution (Lean kernel check) — `Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved`; axioms listed under **Evidence**.
 
-Basis: derived (modeling bridge) — The counterexample is about the toy systems only; it illustrates the 'infinite stuttering problem' that Leroy (JAR 2009, Section 3.7) gives as the reason for the well-founded measure.
+Basis: derived (modeling bridge) — The counterexample is about the toy systems; it neither establishes nor refutes the corresponding claim about CompCert; it illustrates the 'infinite stuttering problem' that Leroy (JAR 2009, Section 3.7) gives as the reason for the well-founded measure.
 
 #### `cex-going-wrong-not-preserved`
 
@@ -1735,7 +1792,7 @@ Toy.Sim.Cex.cex_forwardSim_goesWrong_not_preserved : Toy.Sim.IsForwardSim Toy.Si
 
 Basis: execution (Lean kernel check) — `Toy.Sim.Cex.cex_forwardSim_goesWrong_not_preserved`; axioms listed under **Evidence**.
 
-Basis: derived (modeling bridge) — The counterexample is about the toy systems only; it illustrates why CompCert's forward preservation corollary is stated only for `not_wrong` behaviours.
+Basis: derived (modeling bridge) — The counterexample is about the toy systems; it neither establishes nor refutes the corresponding claim about CompCert; it illustrates why CompCert's forward preservation corollary is stated only for `not_wrong` behaviours.
 
 #### `cex-naive-lexicographic-order`
 
@@ -1772,7 +1829,7 @@ Toy.Sim.Cex.cex_comp_naive_lex_order_fails : Toy.Sim.IsForwardSim (Toy.Sim.Ex.On
 
 Basis: execution (Lean kernel check) — `Toy.Sim.Cex.cex_comp_naive_lex_order_fails`; axioms listed under **Evidence**.
 
-Basis: derived (modeling bridge) — The counterexample is about the toy systems only; it illustrates why CompCert's and VeriComp's composite orders use the transitive closure of the second-pass order.
+Basis: derived (modeling bridge) — The counterexample is about the toy systems; it neither establishes nor refutes the corresponding claim about CompCert or VeriComp; it illustrates why CompCert's and VeriComp's composite orders use the transitive closure of the second-pass order.
 
 #### `cex-non-receptive-source`
 
@@ -1829,7 +1886,7 @@ Toy.Sim.Examples.positive_control_flip : Toy.Sim.IsForwardSim Toy.Sim.Ex.Src Toy
 
 Basis: execution (Lean kernel check) — `Toy.Sim.Cex.cex_flip_nonreceptive_source`, `Toy.Sim.Cex.cex_pipeline_nonreceptive_first`; axioms listed under **Evidence**.
 
-Basis: derived (modeling bridge) — The counterexample is about the toy systems only; it illustrates why receptiveness is a hypothesis of CompCert's `forward_to_backward_simulation`.
+Basis: derived (modeling bridge) — The counterexample is about the toy systems; it neither establishes nor refutes the corresponding claim about CompCert; it illustrates why receptiveness is a hypothesis of CompCert's `forward_to_backward_simulation`.
 
 #### `cex-determinacy-clauses-necessary`
 
@@ -2015,7 +2072,7 @@ Toy.Sim.Examples.positive_control_flip : Toy.Sim.IsForwardSim Toy.Sim.Ex.Src Toy
 
 Basis: execution (Lean kernel check) — `Toy.Sim.Cex.cex_flip_target_labels_mismatch`, `Toy.Sim.Cex.cex_flip_target_event_labels_mismatch`, `Toy.Sim.Cex.cex_flip_target_not_functional`, `Toy.Sim.Cex.cex_flip_target_two_initial_states`, `Toy.Sim.Cex.cex_flip_target_final_state_steps`, `Toy.Sim.Cex.cex_flip_target_two_results`, `Toy.Sim.Cex.cex_pipeline_last_labels_mismatch`, `Toy.Sim.Cex.cex_pipeline_last_event_labels_mismatch`, `Toy.Sim.Cex.cex_pipeline_last_not_functional`, `Toy.Sim.Cex.cex_pipeline_last_two_initial_states`, `Toy.Sim.Cex.cex_pipeline_last_final_state_steps`, `Toy.Sim.Cex.cex_pipeline_last_two_results`; axioms listed under **Evidence**.
 
-Basis: derived (modeling bridge) — The counterexamples are about the toy systems only; they illustrate why each field of CompCert's `determinate` record (with `sd_determ` split into two clauses) is a hypothesis of `forward_to_backward_simulation`.
+Basis: derived (modeling bridge) — The counterexamples are about the toy systems; they neither establish nor refute the corresponding claims about CompCert; they illustrate why each field of CompCert's `determinate` record (with `sd_determ` split into two clauses) is a hypothesis of `forward_to_backward_simulation`.
 
 #### `cex-refinement-not-symmetric`
 
@@ -2028,11 +2085,13 @@ Basis: derived (modeling bridge) — The counterexamples are about the toy syste
 **Lean statement.**
 
 ```lean
-Toy.Sim.Cex.cex_improves_not_symmetric : Toy.Sim.Improves (Toy.Sim.Behavior.goesWrong [])
-    (Toy.Sim.Behavior.terminates [] 0) ∧
-  ¬Toy.Sim.Improves (Toy.Sim.Behavior.terminates [] 0) (Toy.Sim.Behavior.goesWrong [])
-Toy.Sim.Cex.cex_refinedBy_not_symmetric : Toy.Sim.RefinedBy Toy.Sim.Ex.StuckNow (Toy.Sim.Ex.Done 0) ∧
-  ¬Toy.Sim.RefinedBy (Toy.Sim.Ex.Done 0) Toy.Sim.Ex.StuckNow
+-- lean/ToySim/Counterexamples.lean:1295-1297
+theorem cex_improves_not_symmetric :
+    Improves (.goesWrong [] : Behavior Nat Nat) (.terminates [] 0) ∧
+    ¬ Improves (.terminates [] 0 : Behavior Nat Nat) (.goesWrong [])
+-- lean/ToySim/Counterexamples.lean:1303-1304
+theorem cex_refinedBy_not_symmetric :
+    RefinedBy StuckNow (Done 0) ∧ ¬ RefinedBy (Done 0) StuckNow
 ```
 
 **Depth:** shallow — Finite case analysis on one-state systems.
@@ -2047,7 +2106,7 @@ Toy.Sim.Cex.cex_refinedBy_not_symmetric : Toy.Sim.RefinedBy Toy.Sim.Ex.StuckNow 
 
 Basis: execution (Lean kernel check) — `Toy.Sim.Cex.cex_improves_not_symmetric`, `Toy.Sim.Cex.cex_refinedBy_not_symmetric`; axioms listed under **Evidence**.
 
-Basis: derived (modeling bridge) — The counterexample is about the toy systems only; it illustrates that CompCert's `behavior_improves` is an order, not an equivalence.
+Basis: derived (modeling bridge) — The counterexample is about the toy systems; it neither establishes nor refutes the corresponding claim about CompCert; it illustrates that CompCert's `behavior_improves` is an order, not an equivalence.
 
 #### `cex-inclusion-needs-source-never-goes-wrong`
 
@@ -2089,7 +2148,7 @@ Toy.Sim.Cex.cex_inclusion_without_refinement : Toy.Sim.NeverGoesWrong (Toy.Sim.E
 
 Basis: execution (Lean kernel check) — `Toy.Sim.Cex.cex_inclusion_needs_source_never_goes_wrong`, `Toy.Sim.Cex.cex_inclusion_without_refinement`; axioms listed under **Evidence**.
 
-Basis: derived (modeling bridge) — The counterexample is about the toy systems only; it illustrates why CompCert's `backward_simulation_same_safe_behavior` assumes that every source behaviour is `not_wrong`.
+Basis: derived (modeling bridge) — The counterexample is about the toy systems; it neither establishes nor refutes the corresponding claim about CompCert; it illustrates why CompCert's `backward_simulation_same_safe_behavior` assumes that every source behaviour is `not_wrong`.
 
 ## Boundaries
 
@@ -2121,7 +2180,7 @@ What each result does **not** show. These are part of the result: quote them tog
 - Only silent divergence after a finite trace. A source run that emits infinitely many events is not a behaviour in this model and nothing is claimed about it.
 - The target's infinite silent run is asserted to exist; it is not claimed to be related step for step to the source run.
 - Without a well-founded order the three forward clauses can hold between a diverging source and a target that terminates at once (Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved).
-- Well-foundedness of the index order is shown necessary only within this step-diagram formulation; other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.
+- Well-foundedness of the index order is shown necessary within this step-diagram formulation; whether it is necessary outside this formulation is not addressed (not proved either way). Other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.
 - Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.
 - Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).
 - Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations.
@@ -2243,7 +2302,7 @@ What each result does **not** show. These are part of the result: quote them tog
 #### Non-claims of `cex-no-measure-infinite-stuttering`
 
 - Shows that the named hypothesis cannot simply be dropped; it does not show that the conclusion fails whenever the hypothesis fails.
-- Well-foundedness of the index order is shown necessary only within this step-diagram formulation; other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.
+- Well-foundedness of the index order is shown necessary within this step-diagram formulation; whether it is necessary outside this formulation is not addressed (not proved either way). Other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.
 - The systems are toy systems chosen for minimality; nothing is claimed about real languages.
 
 #### Non-claims of `cex-going-wrong-not-preserved`
@@ -2443,7 +2502,7 @@ The following formulations were considered while fixing the statements and are *
 
 #### Machine-printed statements
 
-Output of `#check @<name>` (with `set_option format.width 100` and `set_option pp.fieldNotation false`), in the built environment, for every name in the table above whose machine-printed statement is not already quoted under **Findings** (counterexample, non-vacuity and positive-control statements are quoted there with their cards; the main theorems are quoted there as source signatures and are repeated here machine-printed).
+Output of `#check @<name>` (with `set_option format.width 100` and `set_option pp.fieldNotation false`), in the built environment, for every name in the table above whose statement is not already quoted under **Findings** (counterexample, non-vacuity and positive-control statements are quoted there with their cards, machine-printed or, in blocks that begin with a `file:line` citation, verbatim from the source; the main theorems are quoted there as source signatures and are repeated here machine-printed). Eleven names whose printed form leaves binder types or implicit arguments undetermined (it does not elaborate on its own) are quoted verbatim from the source in the second block instead.
 
 ```lean
 Toy.Sim.Cex.cex_bsim_without_final_clause : WellFounded Toy.Sim.Cex.emptyOrd ∧
@@ -2610,11 +2669,6 @@ Toy.Sim.Cex.cex_fsim_without_init_clause : WellFounded Toy.Sim.Cex.emptyOrd ∧
             Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (Toy.Sim.Behavior.terminates [] 0) ∧
               ¬Toy.Sim.HasBehavior Toy.Sim.Ex.NoInit (Toy.Sim.Behavior.terminates [] 0) ∧
                 ∀ (t : List Nat), Toy.Sim.Behavior.terminates [] 0 ≠ Toy.Sim.Behavior.goesWrong t
-Toy.Sim.Cex.cex_fsim_without_init_clause_diverges : WellFounded Toy.Sim.Cex.emptyOrd ∧
-  Toy.Sim.FSimStep Toy.Sim.Ex.Loop Toy.Sim.Ex.NoInit Toy.Sim.Cex.emptyOrd Toy.Sim.Cex.relFalse ∧
-    Toy.Sim.HasBehavior Toy.Sim.Ex.Loop (Toy.Sim.Behavior.diverges []) ∧
-      ¬Toy.Sim.HasBehavior Toy.Sim.Ex.NoInit (Toy.Sim.Behavior.diverges []) ∧
-        ∀ (t : List Nat), Toy.Sim.Behavior.diverges [] ≠ Toy.Sim.Behavior.goesWrong t
 Toy.Sim.Cex.cex_fsim_without_step_diagram : WellFounded Toy.Sim.Cex.emptyOrd ∧
   Toy.Sim.FSimInit (Toy.Sim.Ex.OneStep (some 7) 0) (Toy.Sim.Ex.Done 0) Toy.Sim.Cex.relBefore ∧
     Toy.Sim.FSimFinal (Toy.Sim.Ex.OneStep (some 7) 0) (Toy.Sim.Ex.Done 0) Toy.Sim.Cex.relBefore ∧
@@ -2627,19 +2681,6 @@ Toy.Sim.Cex.cex_fsim_without_step_diagram : WellFounded Toy.Sim.Cex.emptyOrd ∧
             Toy.Sim.HasBehavior (Toy.Sim.Ex.OneStep (some 7) 0) (Toy.Sim.Behavior.terminates [7] 0) ∧
               ¬Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (Toy.Sim.Behavior.terminates [7] 0) ∧
                 ∀ (t : List Nat), Toy.Sim.Behavior.terminates [7] 0 ≠ Toy.Sim.Behavior.goesWrong t
-Toy.Sim.Cex.cex_fsim_without_step_diagram_diverges : WellFounded Toy.Sim.Cex.emptyOrd ∧
-  Toy.Sim.FSimInit Toy.Sim.Ex.Loop (Toy.Sim.Ex.Done 0) Toy.Sim.Cex.relTrue ∧
-    Toy.Sim.HasBehavior Toy.Sim.Ex.Loop (Toy.Sim.Behavior.diverges []) ∧
-      ¬Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (Toy.Sim.Behavior.diverges []) ∧
-        ∀ (t : List Nat), Toy.Sim.Behavior.diverges [] ≠ Toy.Sim.Behavior.goesWrong t
-Toy.Sim.Cex.cex_improves_antisymm_needs_both : Toy.Sim.Improves (Toy.Sim.Behavior.goesWrong [])
-    (Toy.Sim.Behavior.terminates [] 0) ∧
-  Toy.Sim.Behavior.goesWrong [] ≠ Toy.Sim.Behavior.terminates [] 0
-Toy.Sim.Cex.cex_improves_trans_needs_both : (Toy.Sim.Improves (Toy.Sim.Behavior.terminates [] 1)
-      (Toy.Sim.Behavior.terminates [] 1) ∧
-    ¬Toy.Sim.Improves (Toy.Sim.Behavior.terminates [] 0) (Toy.Sim.Behavior.terminates [] 1)) ∧
-  Toy.Sim.Improves (Toy.Sim.Behavior.terminates [] 0) (Toy.Sim.Behavior.terminates [] 0) ∧
-    ¬Toy.Sim.Improves (Toy.Sim.Behavior.terminates [] 0) (Toy.Sim.Behavior.terminates [] 1)
 Toy.Sim.Cex.cex_inclusion_without_target_behavior : Toy.Sim.RefinedBy (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 0) ∧
   Toy.Sim.IsBackwardSim (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 0) Toy.Sim.Cex.emptyOrd Toy.Sim.Cex.relEq ∧
     Toy.Sim.NeverGoesWrong (Toy.Sim.Ex.Done 0) ∧
@@ -2670,18 +2711,10 @@ Toy.Sim.Cex.cex_pipeline_without_chain : ∀ (M : Nat → Nat → Prop),
           Toy.Sim.NeverGoesWrong (Toy.Sim.Ex.Done 0) ∧
             ¬(Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 1) (Toy.Sim.Behavior.terminates [] 1) ↔
                 Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (Toy.Sim.Behavior.terminates [] 1))
-Toy.Sim.Cex.cex_preservation_without_source_behavior : Toy.Sim.IsForwardSim (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 0)
-    Toy.Sim.Cex.emptyOrd Toy.Sim.Cex.relEq ∧
-  ¬Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (Toy.Sim.Behavior.terminates [] 1) ∧
-    ¬Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) (Toy.Sim.Behavior.diverges []) ∧
-      Toy.Sim.FSimChain (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 0) ∧
-        (∀ (t : List Nat), Toy.Sim.Behavior.terminates [] 1 ≠ Toy.Sim.Behavior.goesWrong t) ∧
-          ∀ (t : List Nat), Toy.Sim.Behavior.diverges [] ≠ Toy.Sim.Behavior.goesWrong t
 Toy.Sim.Cex.cex_refinedBy_trans_needs_both : (Toy.Sim.RefinedBy (Toy.Sim.Ex.Done 1) (Toy.Sim.Ex.Done 1) ∧
     ¬Toy.Sim.RefinedBy (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 1)) ∧
   Toy.Sim.RefinedBy (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 0) ∧ ¬Toy.Sim.RefinedBy (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 1)
 Toy.Sim.Examples.fsimChain_neg : ¬Toy.Sim.FSimChain (Toy.Sim.Ex.Done 0) (Toy.Sim.Ex.Done 1)
-Toy.Sim.Examples.isForwardSim_neg : ¬∃ I ord R, Toy.Sim.IsForwardSim Toy.Sim.Ex.Loop (Toy.Sim.Ex.Done 0) ord R
 @Toy.Sim.Improves.antisymm : ∀ {E Res : Type} {b₁ b₂ : Toy.Sim.Behavior E Res},
   Toy.Sim.Improves b₁ b₂ → Toy.Sim.Improves b₂ b₁ → b₁ = b₂
 @Toy.Sim.Improves.refl : ∀ {E Res : Type} (b : Toy.Sim.Behavior E Res), Toy.Sim.Improves b b
@@ -2723,66 +2756,6 @@ Toy.Sim.Examples.isForwardSim_neg : ¬∃ I ord R, Toy.Sim.IsForwardSim Toy.Sim.
                   ∃ b₁,
                     Toy.Sim.HasBehavior L₁ b₁ ∧
                       (b₁ = b₂ ∨ ∃ t, b₁ = Toy.Sim.Behavior.goesWrong t ∧ t <+: Toy.Sim.Behavior.trace b₂)
-@Toy.Sim.Unfolded.flip_forward_to_backward : ∀ {E Res : Type} (M : E → E → Prop) (L₁ L₂ : Toy.Sim.LTS E Res) (I : Type)
-  (ord : I → I → Prop) (R : I → Toy.Sim.LTS.State L₁ → Toy.Sim.LTS.State L₂ → Prop),
-  WellFounded ord →
-    (∀ (s₁ : Toy.Sim.LTS.State L₁), Toy.Sim.LTS.init L₁ s₁ → ∃ i s₂, Toy.Sim.LTS.init L₂ s₂ ∧ R i s₁ s₂) →
-      (∀ (i : I) (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂) (r : Res),
-          R i s₁ s₂ → Toy.Sim.LTS.final L₁ s₁ r → Toy.Sim.LTS.final L₂ s₂ r) →
-        (∀ (i : I) (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂) (e : Option E) (s₁' : Toy.Sim.LTS.State L₁),
-            R i s₁ s₂ →
-              Toy.Sim.LTS.step L₁ s₁ e s₁' →
-                ∃ i' s₂',
-                  (Toy.Sim.Plus L₂ s₂ (Toy.Sim.obs e) s₂' ∨ Toy.Sim.Star L₂ s₂ (Toy.Sim.obs e) s₂' ∧ ord i' i) ∧
-                    R i' s₁' s₂') →
-          (∀ (s : Toy.Sim.LTS.State L₁) (a : E) (s₁ : Toy.Sim.LTS.State L₁) (b : E),
-              Toy.Sim.LTS.step L₁ s (some a) s₁ → M a b → ∃ s₂, Toy.Sim.LTS.step L₁ s (some b) s₂) →
-            (∀ (s : Toy.Sim.LTS.State L₂) (e₁ : Option E) (s₁ : Toy.Sim.LTS.State L₂) (e₂ : Option E)
-                (s₂ : Toy.Sim.LTS.State L₂),
-                Toy.Sim.LTS.step L₂ s e₁ s₁ → Toy.Sim.LTS.step L₂ s e₂ s₂ → Toy.Sim.LabelMatch M e₁ e₂) →
-              (∀ (s : Toy.Sim.LTS.State L₂) (e : Option E) (s₁ s₂ : Toy.Sim.LTS.State L₂),
-                  Toy.Sim.LTS.step L₂ s e s₁ → Toy.Sim.LTS.step L₂ s e s₂ → s₁ = s₂) →
-                (∀ (s s' : Toy.Sim.LTS.State L₂), Toy.Sim.LTS.init L₂ s → Toy.Sim.LTS.init L₂ s' → s = s') →
-                  (∀ (s : Toy.Sim.LTS.State L₂) (r : Res),
-                      Toy.Sim.LTS.final L₂ s r →
-                        ∀ (e : Option E) (s' : Toy.Sim.LTS.State L₂), ¬Toy.Sim.LTS.step L₂ s e s') →
-                    (∀ (s : Toy.Sim.LTS.State L₂) (r r' : Res),
-                        Toy.Sim.LTS.final L₂ s r → Toy.Sim.LTS.final L₂ s r' → r = r') →
-                      ∃ I' ord' R',
-                        WellFounded ord' ∧
-                          ((∃ s₁, Toy.Sim.LTS.init L₁ s₁) → ∃ s₂, Toy.Sim.LTS.init L₂ s₂) ∧
-                            (∀ (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂),
-                                Toy.Sim.LTS.init L₁ s₁ →
-                                  Toy.Sim.LTS.init L₂ s₂ → ∃ i s₁', Toy.Sim.LTS.init L₁ s₁' ∧ R' i s₁' s₂) ∧
-                              (∀ (i : I') (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂) (r : Res),
-                                  R' i s₁ s₂ →
-                                    (∀ (s₁' : Toy.Sim.LTS.State L₁),
-                                        Toy.Sim.Star L₁ s₁ [] s₁' →
-                                          (∃ r, Toy.Sim.LTS.final L₁ s₁' r) ∨
-                                            ∃ e s₁'', Toy.Sim.LTS.step L₁ s₁' e s₁'') →
-                                      Toy.Sim.LTS.final L₂ s₂ r →
-                                        ∃ s₁', Toy.Sim.Star L₁ s₁ [] s₁' ∧ Toy.Sim.LTS.final L₁ s₁' r) ∧
-                                (∀ (i : I') (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂),
-                                    R' i s₁ s₂ →
-                                      (∀ (s₁' : Toy.Sim.LTS.State L₁),
-                                          Toy.Sim.Star L₁ s₁ [] s₁' →
-                                            (∃ r, Toy.Sim.LTS.final L₁ s₁' r) ∨
-                                              ∃ e s₁'', Toy.Sim.LTS.step L₁ s₁' e s₁'') →
-                                        (∃ r, Toy.Sim.LTS.final L₂ s₂ r) ∨ ∃ e s₂', Toy.Sim.LTS.step L₂ s₂ e s₂') ∧
-                                  (∀ (i : I') (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂) (e : Option E)
-                                      (s₂' : Toy.Sim.LTS.State L₂),
-                                      R' i s₁ s₂ →
-                                        (∀ (s₁' : Toy.Sim.LTS.State L₁),
-                                            Toy.Sim.Star L₁ s₁ [] s₁' →
-                                              (∃ r, Toy.Sim.LTS.final L₁ s₁' r) ∨
-                                                ∃ e s₁'', Toy.Sim.LTS.step L₁ s₁' e s₁'') →
-                                          Toy.Sim.LTS.step L₂ s₂ e s₂' →
-                                            ∃ i' s₁',
-                                              (Toy.Sim.Plus L₁ s₁ (Toy.Sim.obs e) s₁' ∨
-                                                  Toy.Sim.Star L₁ s₁ (Toy.Sim.obs e) s₁' ∧ ord' i' i) ∧
-                                                R' i' s₁' s₂') ∧
-                                    ∀ (i : I) (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂),
-                                      R i s₁ s₂ → ∃ i', R' i' s₁ s₂
 @Toy.Sim.Unfolded.partial_run_simulated : ∀ {E Res : Type} (L₁ L₂ : Toy.Sim.LTS E Res) (I : Type) (ord : I → I → Prop)
   (R : I → Toy.Sim.LTS.State L₁ → Toy.Sim.LTS.State L₂ → Prop),
   (∀ (s₁ : Toy.Sim.LTS.State L₁), Toy.Sim.LTS.init L₁ s₁ → ∃ i s₂, Toy.Sim.LTS.init L₂ s₂ ∧ R i s₁ s₂) →
@@ -2815,23 +2788,6 @@ Toy.Sim.Examples.isForwardSim_neg : ¬∃ I ord R, Toy.Sim.IsForwardSim Toy.Sim.
                     ∃ b,
                       Toy.Sim.HasBehavior L b ∧
                         (b = b' ∨ ∃ t, b = Toy.Sim.Behavior.goesWrong t ∧ t <+: Toy.Sim.Behavior.trace b')
-@Toy.Sim.Unfolded.silent_divergence_preserved : ∀ {E Res : Type} (L₁ L₂ : Toy.Sim.LTS E Res) (I : Type)
-  (ord : I → I → Prop) (R : I → Toy.Sim.LTS.State L₁ → Toy.Sim.LTS.State L₂ → Prop),
-  WellFounded ord →
-    (∀ (s₁ : Toy.Sim.LTS.State L₁), Toy.Sim.LTS.init L₁ s₁ → ∃ i s₂, Toy.Sim.LTS.init L₂ s₂ ∧ R i s₁ s₂) →
-      (∀ (i : I) (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂) (e : Option E) (s₁' : Toy.Sim.LTS.State L₁),
-          R i s₁ s₂ →
-            Toy.Sim.LTS.step L₁ s₁ e s₁' →
-              ∃ i' s₂',
-                (Toy.Sim.Plus L₂ s₂ (Toy.Sim.obs e) s₂' ∨ Toy.Sim.Star L₂ s₂ (Toy.Sim.obs e) s₂' ∧ ord i' i) ∧
-                  R i' s₁' s₂') →
-        ∀ (t : List E),
-          (∃ s₀ s,
-              Toy.Sim.LTS.init L₁ s₀ ∧
-                Toy.Sim.Star L₁ s₀ t s ∧ ∃ f, f 0 = s ∧ ∀ (n : Nat), Toy.Sim.LTS.step L₁ (f n) none (f (n + 1))) →
-            ∃ s₀' s',
-              Toy.Sim.LTS.init L₂ s₀' ∧
-                Toy.Sim.Star L₂ s₀' t s' ∧ ∃ g, g 0 = s' ∧ ∀ (n : Nat), Toy.Sim.LTS.step L₂ (g n) none (g (n + 1))
 @Toy.Sim.Unfolded.step_diagrams_compose : ∀ {E Res : Type} (L₁ L₂ L₃ : Toy.Sim.LTS E Res) (I₁ I₂ : Type)
   (ord₁ : I₁ → I₁ → Prop) (ord₂ : I₂ → I₂ → Prop) (R₁ : I₁ → Toy.Sim.LTS.State L₁ → Toy.Sim.LTS.State L₂ → Prop)
   (R₂ : I₂ → Toy.Sim.LTS.State L₂ → Toy.Sim.LTS.State L₃ → Prop),
@@ -2880,23 +2836,6 @@ Toy.Sim.Examples.isForwardSim_neg : ¬∃ I ord R, Toy.Sim.IsForwardSim Toy.Sim.
     Toy.Sim.NeverGoesWrong L₁ → ∀ {b : Toy.Sim.Behavior E Res}, Toy.Sim.HasBehavior L₂ b → Toy.Sim.HasBehavior L₁ b
 @Toy.Sim.compOrd_wf : ∀ {I₁ I₂ : Type} {ord₁ : I₁ → I₁ → Prop} {ord₂ : I₂ → I₂ → Prop},
   WellFounded ord₁ → WellFounded ord₂ → WellFounded (Toy.Sim.compOrd ord₁ ord₂)
-@Toy.Sim.forwardSim_deterministic_target_gives_backwardSim : ∀ {E Res : Type} {L₁ L₂ : Toy.Sim.LTS E Res} {I : Type}
-  {ord : I → I → Prop} {R : I → Toy.Sim.LTS.State L₁ → Toy.Sim.LTS.State L₂ → Prop},
-  Toy.Sim.IsForwardSim L₁ L₂ ord R →
-    Toy.Sim.Determinate Eq L₂ →
-      ∃ I' ord' R',
-        Toy.Sim.IsBackwardSim L₁ L₂ ord' R' ∧
-          ∀ (i : I) (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂), R i s₁ s₂ → ∃ i', R' i' s₁ s₂
-@Toy.Sim.forwardSim_receptive_determinate_gives_backwardSim : ∀ {E Res : Type} {L₁ L₂ : Toy.Sim.LTS E Res} {I : Type}
-  {ord : I → I → Prop} {R : I → Toy.Sim.LTS.State L₁ → Toy.Sim.LTS.State L₂ → Prop} (M : E → E → Prop),
-  Toy.Sim.IsForwardSim L₁ L₂ ord R →
-    Toy.Sim.Receptive M L₁ →
-      Toy.Sim.Determinate M L₂ →
-        ∃ I' ord' R',
-          Toy.Sim.IsBackwardSim L₁ L₂ ord' R' ∧
-            ∀ (i : I) (s₁ : Toy.Sim.LTS.State L₁) (s₂ : Toy.Sim.LTS.State L₂), R i s₁ s₂ → ∃ i', R' i' s₁ s₂
-@Toy.Sim.fsimChain_collapse : ∀ {E Res : Type} {L L' : Toy.Sim.LTS E Res},
-  Toy.Sim.FSimChain L L' → ∃ I ord R, Toy.Sim.IsForwardSim L L' ord R
 @Toy.Sim.fsimChain_deterministic_last_gives_refinedBy : ∀ {E Res : Type} {L L' : Toy.Sim.LTS E Res},
   Toy.Sim.FSimChain L L' → Toy.Sim.Determinate Eq L' → Toy.Sim.RefinedBy L L'
 @Toy.Sim.fsimChain_of_isForwardSim : ∀ {E Res : Type} {L₁ L₂ : Toy.Sim.LTS E Res} {I : Type} {ord : I → I → Prop}
@@ -2967,9 +2906,121 @@ Toy.Sim.Examples.isForwardSim_neg : ¬∃ I ord R, Toy.Sim.IsForwardSim Toy.Sim.
           Toy.Sim.HasBehavior L₁ (Toy.Sim.Behavior.diverges t) → Toy.Sim.HasBehavior L₂ (Toy.Sim.Behavior.diverges t)
 ```
 
+Source statements (verbatim, with `file:line` citations) of the eleven names in the table whose printed form leaves binder types or implicit arguments undetermined:
+
+```lean
+-- lean/ToySim/Counterexamples.lean:193-198
+theorem cex_fsim_without_init_clause_diverges :
+    WellFounded emptyOrd ∧
+    FSimStep Loop NoInit emptyOrd relFalse ∧
+    HasBehavior Loop (.diverges []) ∧
+    ¬ HasBehavior NoInit (.diverges []) ∧
+    (∀ t, (Behavior.diverges [] : Behavior Nat Nat) ≠ .goesWrong t)
+-- lean/ToySim/Counterexamples.lean:254-259
+theorem cex_fsim_without_step_diagram_diverges :
+    WellFounded emptyOrd ∧
+    FSimInit Loop (Done 0) relTrue ∧
+    HasBehavior Loop (.diverges []) ∧
+    ¬ HasBehavior (Done 0) (.diverges []) ∧
+    (∀ t, (Behavior.diverges [] : Behavior Nat Nat) ≠ .goesWrong t)
+-- lean/ToySim/Counterexamples.lean:1334-1336
+theorem cex_improves_antisymm_needs_both :
+    Improves (.goesWrong [] : Behavior Nat Nat) (.terminates [] 0) ∧
+    (Behavior.goesWrong [] : Behavior Nat Nat) ≠ .terminates [] 0
+-- lean/ToySim/Counterexamples.lean:1322-1326
+theorem cex_improves_trans_needs_both :
+    (Improves (.terminates [] 1 : Behavior Nat Nat) (.terminates [] 1) ∧
+      ¬ Improves (.terminates [] 0 : Behavior Nat Nat) (.terminates [] 1)) ∧
+    (Improves (.terminates [] 0 : Behavior Nat Nat) (.terminates [] 0) ∧
+      ¬ Improves (.terminates [] 0 : Behavior Nat Nat) (.terminates [] 1))
+-- lean/ToySim/Counterexamples.lean:320-326
+theorem cex_preservation_without_source_behavior :
+    IsForwardSim (Done 0) (Done 0) emptyOrd relEq ∧
+    ¬ HasBehavior (Done 0) (.terminates [] 1) ∧
+    ¬ HasBehavior (Done 0) (.diverges []) ∧
+    FSimChain (Done 0) (Done 0) ∧
+    (∀ t, (Behavior.terminates [] 1 : Behavior Nat Nat) ≠ .goesWrong t) ∧
+    (∀ t, (Behavior.diverges [] : Behavior Nat Nat) ≠ .goesWrong t)
+-- lean/ToySim/Examples.lean:189-191
+theorem isForwardSim_neg :
+    ¬ ∃ (I : Type) (ord : I → I → Prop) (R : I → Loop.State → (Done 0).State → Prop),
+        IsForwardSim Loop (Done 0) ord R
+-- lean/ToySim/Unfolded.lean:81-117
+theorem flip_forward_to_backward
+    (M : E → E → Prop) (L₁ L₂ : LTS E Res) (I : Type) (ord : I → I → Prop)
+    (R : I → L₁.State → L₂.State → Prop)
+    -- forward simulation
+    (hwf : WellFounded ord)
+    (hinit : ∀ s₁, L₁.init s₁ → ∃ i s₂, L₂.init s₂ ∧ R i s₁ s₂)
+    (hfinal : ∀ i s₁ s₂ r, R i s₁ s₂ → L₁.final s₁ r → L₂.final s₂ r)
+    (hstep : ∀ i s₁ s₂ e s₁', R i s₁ s₂ → L₁.step s₁ e s₁' →
+      ∃ i' s₂', (Plus L₂ s₂ (obs e) s₂' ∨ (Star L₂ s₂ (obs e) s₂' ∧ ord i' i)) ∧
+        R i' s₁' s₂')
+    -- receptive source
+    (hrec : ∀ s a s₁ b, L₁.step s (some a) s₁ → M a b → ∃ s₂, L₁.step s (some b) s₂)
+    -- determinate target
+    (hlabels : ∀ s e₁ s₁ e₂ s₂, L₂.step s e₁ s₁ → L₂.step s e₂ s₂ → LabelMatch M e₁ e₂)
+    (hfunctional : ∀ s e s₁ s₂, L₂.step s e s₁ → L₂.step s e s₂ → s₁ = s₂)
+    (hinitDet : ∀ s s', L₂.init s → L₂.init s' → s = s')
+    (hfinalNoStep : ∀ s r, L₂.final s r → ∀ e s', ¬ L₂.step s e s')
+    (hfinalDet : ∀ s r r', L₂.final s r → L₂.final s r' → r = r') :
+    ∃ (I' : Type) (ord' : I' → I' → Prop) (R' : I' → L₁.State → L₂.State → Prop),
+      -- backward simulation, clause by clause
+      WellFounded ord' ∧
+      ((∃ s₁, L₁.init s₁) → ∃ s₂, L₂.init s₂) ∧
+      (∀ s₁ s₂, L₁.init s₁ → L₂.init s₂ → ∃ i s₁', L₁.init s₁' ∧ R' i s₁' s₂) ∧
+      -- (`Safe L₁ s₁` is unfolded: `s₁` cannot get stuck before its next event)
+      (∀ i s₁ s₂ r, R' i s₁ s₂ →
+        (∀ s₁', Star L₁ s₁ [] s₁' → (∃ r, L₁.final s₁' r) ∨ (∃ e s₁'', L₁.step s₁' e s₁'')) →
+        L₂.final s₂ r → ∃ s₁', Star L₁ s₁ [] s₁' ∧ L₁.final s₁' r) ∧
+      (∀ i s₁ s₂, R' i s₁ s₂ →
+        (∀ s₁', Star L₁ s₁ [] s₁' → (∃ r, L₁.final s₁' r) ∨ (∃ e s₁'', L₁.step s₁' e s₁'')) →
+        (∃ r, L₂.final s₂ r) ∨ (∃ e s₂', L₂.step s₂ e s₂')) ∧
+      (∀ i s₁ s₂ e s₂', R' i s₁ s₂ →
+        (∀ s₁', Star L₁ s₁ [] s₁' → (∃ r, L₁.final s₁' r) ∨ (∃ e s₁'', L₁.step s₁' e s₁'')) →
+        L₂.step s₂ e s₂' →
+        ∃ i' s₁', (Plus L₁ s₁ (obs e) s₁' ∨ (Star L₁ s₁ (obs e) s₁' ∧ ord' i' i)) ∧
+          R' i' s₁' s₂') ∧
+      -- the backward relation contains the forward relation
+      (∀ i s₁ s₂, R i s₁ s₂ → ∃ i', R' i' s₁ s₂)
+-- lean/ToySim/Unfolded.lean:45-57
+theorem silent_divergence_preserved
+    (L₁ L₂ : LTS E Res) (I : Type) (ord : I → I → Prop)
+    (R : I → L₁.State → L₂.State → Prop)
+    (hwf : WellFounded ord)
+    (hinit : ∀ s₁, L₁.init s₁ → ∃ i s₂, L₂.init s₂ ∧ R i s₁ s₂)
+    (hstep : ∀ i s₁ s₂ e s₁', R i s₁ s₂ → L₁.step s₁ e s₁' →
+      ∃ i' s₂', (Plus L₂ s₂ (obs e) s₂' ∨ (Star L₂ s₂ (obs e) s₂' ∧ ord i' i)) ∧
+        R i' s₁' s₂')
+    (t : List E)
+    (hb : ∃ s₀ s, L₁.init s₀ ∧ Star L₁ s₀ t s ∧
+      ∃ f : Nat → L₁.State, f 0 = s ∧ ∀ n, L₁.step (f n) none (f (n + 1))) :
+    ∃ s₀' s', L₂.init s₀' ∧ Star L₂ s₀' t s' ∧
+      ∃ g : Nat → L₂.State, g 0 = s' ∧ ∀ n, L₂.step (g n) none (g (n + 1))
+-- lean/ToySim/Statements.lean:359-364
+theorem forwardSim_deterministic_target_gives_backwardSim
+    {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
+    {R : I → L₁.State → L₂.State → Prop}
+    (hsim : IsForwardSim L₁ L₂ ord R) (hdet : Determinate Eq L₂) :
+    ∃ (I' : Type) (ord' : I' → I' → Prop) (R' : I' → L₁.State → L₂.State → Prop),
+      IsBackwardSim L₁ L₂ ord' R' ∧ ∀ i s₁ s₂, R i s₁ s₂ → ∃ i', R' i' s₁ s₂
+-- lean/ToySim/Statements.lean:214-220
+theorem forwardSim_receptive_determinate_gives_backwardSim
+    {L₁ L₂ : LTS E Res} {I : Type} {ord : I → I → Prop}
+    {R : I → L₁.State → L₂.State → Prop} (M : E → E → Prop)
+    (hsim : IsForwardSim L₁ L₂ ord R)
+    (hrec : Receptive M L₁) (hdet : Determinate M L₂) :
+    ∃ (I' : Type) (ord' : I' → I' → Prop) (R' : I' → L₁.State → L₂.State → Prop),
+      IsBackwardSim L₁ L₂ ord' R' ∧ ∀ i s₁ s₂, R i s₁ s₂ → ∃ i', R' i' s₁ s₂
+-- lean/ToySim/Statements.lean:452-454
+theorem fsimChain_collapse {L L' : LTS E Res} (h : FSimChain L L') :
+    ∃ (I : Type) (ord : I → I → Prop) (R : I → L.State → L'.State → Prop),
+      IsForwardSim L L' ord R
+```
+
 #### Machine-printed statements of supporting declarations
 
-Output of `#check @<name>` (with `set_option format.width 100` and `set_option pp.fieldNotation false`), in the built environment, for the supporting lemmas, helper theorems and boundary facts that **Findings** or **Boundaries** cite by name and whose statements are not quoted elsewhere in this report. They are not card results; like every declaration of the library they are covered by `lake build` and the axiom audit. The systems they mention are quoted under **Findings → Concrete systems**.
+Output of `#check @<name>` (with `set_option format.width 100` and `set_option pp.fieldNotation false`), in the built environment, for the supporting lemmas, helper theorems and boundary facts that **Findings** or **Boundaries** cite by name and whose statements are not quoted elsewhere in this report; three whose printed form leaves binder types or implicit arguments undetermined (it does not elaborate on its own) are quoted verbatim from the source in the second block instead. They are not card results; like every declaration of the library they are covered by `lake build` and the axiom audit. The systems they mention are quoted under **Findings → Concrete systems**.
 
 ```lean
 @Toy.Sim.NeverGoesWrong.exists_init : ∀ {E Res : Type} {L : Toy.Sim.LTS E Res},
@@ -2984,8 +3035,6 @@ Output of `#check @<name>` (with `set_option format.width 100` and `set_option p
     ∀ (p q : I₂ × I₁), Toy.Sim.compOrd ord₁ ord₂ p q ↔ Toy.Sim.Cex.naiveCompOrd ord₁ ord₂ p q
 @Toy.Sim.Star.trans : ∀ {E Res : Type} {L : Toy.Sim.LTS E Res} {s s' s'' : Toy.Sim.LTS.State L} {t t' : List E},
   Toy.Sim.Star L s t s' → Toy.Sim.Star L s' t' s'' → Toy.Sim.Star L s (t ++ t') s''
-@Toy.Sim.isForwardSim_id : ∀ {E Res : Type} (L : Toy.Sim.LTS E Res),
-  Toy.Sim.IsForwardSim L L (fun x x_1 => False) fun x s s' => s = s'
 @Toy.Sim.isForwardSim_measure_iff : ∀ {E Res : Type} {L₁ L₂ : Toy.Sim.LTS E Res}
   (R : Toy.Sim.LTS.State L₁ → Toy.Sim.LTS.State L₂ → Prop) (m : Toy.Sim.LTS.State L₁ → Nat),
   (Toy.Sim.IsForwardSim L₁ L₂ (fun i' i => m i' < m i) fun i s₁ s₂ => i = s₁ ∧ R s₁ s₂) ↔
@@ -3012,25 +3061,11 @@ Toy.Sim.Boundary.mutual_refinedBy_different_behaviors : Toy.Sim.RefinedBy Toy.Si
   Toy.Sim.RefinedBy Toy.Sim.Ex.StuckNow Toy.Sim.Boundary.StuckOrDone ∧
     Toy.Sim.HasBehavior Toy.Sim.Boundary.StuckOrDone (Toy.Sim.Behavior.terminates [] 0) ∧
       ¬Toy.Sim.HasBehavior Toy.Sim.Ex.StuckNow (Toy.Sim.Behavior.terminates [] 0)
-Toy.Sim.Boundary.refinedBy_blind_to_infinite_event_runs : (∀ (b : Toy.Sim.Behavior Nat Nat),
-    Toy.Sim.HasBehavior Toy.Sim.Boundary.DoneOrChatter b ↔ Toy.Sim.HasBehavior (Toy.Sim.Ex.Done 0) b) ∧
-  Toy.Sim.RefinedBy (Toy.Sim.Ex.Done 0) Toy.Sim.Boundary.DoneOrChatter ∧
-    (∃ f,
-        Toy.Sim.LTS.init Toy.Sim.Boundary.DoneOrChatter (f 0) ∧
-          ∀ (n : Nat), Toy.Sim.LTS.step Toy.Sim.Boundary.DoneOrChatter (f n) (some 0) (f (n + 1))) ∧
-      Toy.Sim.NoBackwardSim (Toy.Sim.Ex.Done 0) Toy.Sim.Boundary.DoneOrChatter
 Toy.Sim.Boundary.refinedBy_may_drop_termination : Toy.Sim.NeverGoesWrong Toy.Sim.Boundary.TermOrDiverge ∧
   Toy.Sim.HasBehavior Toy.Sim.Boundary.TermOrDiverge (Toy.Sim.Behavior.terminates [] 0) ∧
     Toy.Sim.HasBehavior Toy.Sim.Boundary.TermOrDiverge (Toy.Sim.Behavior.diverges []) ∧
       Toy.Sim.RefinedBy Toy.Sim.Boundary.TermOrDiverge Toy.Sim.Ex.Loop ∧
         ¬Toy.Sim.HasBehavior Toy.Sim.Ex.Loop (Toy.Sim.Behavior.terminates [] 0)
-Toy.Sim.Boundary.resolving_nondeterminism_needs_backward_simulation : Toy.Sim.NeverGoesWrong
-    (Toy.Sim.Ex.TwoBranch none none 0 1) ∧
-  Toy.Sim.Determinate Eq (Toy.Sim.Ex.Done 0) ∧
-    Toy.Sim.IsBackwardSim (Toy.Sim.Ex.TwoBranch none none 0 1) (Toy.Sim.Ex.Done 0) Toy.Sim.Cex.emptyOrd
-        Toy.Sim.Boundary.chooseRel ∧
-      Toy.Sim.RefinedBy (Toy.Sim.Ex.TwoBranch none none 0 1) (Toy.Sim.Ex.Done 0) ∧
-        ¬∃ I ord R, Toy.Sim.IsForwardSim (Toy.Sim.Ex.TwoBranch none none 0 1) (Toy.Sim.Ex.Done 0) ord R
 Toy.Sim.Boundary.flip_conclusion_with_unreachable_nondeterminism : Toy.Sim.IsForwardSim (Toy.Sim.Ex.Done 0)
     Toy.Sim.Boundary.DoneWithJunk Toy.Sim.Cex.emptyOrd Toy.Sim.Cex.relToFalse ∧
   ¬Toy.Sim.StepFunctional Toy.Sim.Boundary.DoneWithJunk ∧
@@ -3038,6 +3073,29 @@ Toy.Sim.Boundary.flip_conclusion_with_unreachable_nondeterminism : Toy.Sim.IsFor
       Toy.Sim.IsBackwardSim (Toy.Sim.Ex.Done 0) Toy.Sim.Boundary.DoneWithJunk Toy.Sim.Cex.emptyOrd
           Toy.Sim.Cex.relToFalse ∧
         ∀ (i s₁ : Unit) (s₂ : Bool), Toy.Sim.Cex.relToFalse i s₁ s₂ → ∃ i', Toy.Sim.Cex.relToFalse i' s₁ s₂
+```
+
+Source statements (verbatim, with `file:line` citations) of `Toy.Sim.isForwardSim_id`, `Toy.Sim.Boundary.refinedBy_blind_to_infinite_event_runs` and `Toy.Sim.Boundary.resolving_nondeterminism_needs_backward_simulation`:
+
+```lean
+-- lean/ToySim/Basic.lean:153-154
+theorem isForwardSim_id (L : LTS E Res) :
+    IsForwardSim L L (fun (_ _ : Unit) => False) (fun _ s s' => s = s')
+-- lean/ToySim/Boundaries.lean:105-110
+theorem refinedBy_blind_to_infinite_event_runs :
+    (∀ b, HasBehavior DoneOrChatter b ↔ HasBehavior (Done 0) b) ∧
+    RefinedBy (Done 0) DoneOrChatter ∧
+    (∃ f : Nat → DoneOrChatter.State, DoneOrChatter.init (f 0) ∧
+        ∀ n, DoneOrChatter.step (f n) (some 0) (f (n + 1))) ∧
+    NoBackwardSim (Done 0) DoneOrChatter
+-- lean/ToySim/Boundaries.lean:176-182
+theorem resolving_nondeterminism_needs_backward_simulation :
+    NeverGoesWrong (TwoBranch none none 0 1) ∧ Determinate Eq (Done 0) ∧
+    IsBackwardSim (TwoBranch none none 0 1) (Done 0) emptyOrd chooseRel ∧
+    RefinedBy (TwoBranch none none 0 1) (Done 0) ∧
+    ¬ ∃ (I : Type) (ord : I → I → Prop)
+        (R : I → (TwoBranch none none 0 1).State → (Done 0).State → Prop),
+        IsForwardSim (TwoBranch none none 0 1) (Done 0) ord R
 ```
 
 ### Primary sources

@@ -149,7 +149,7 @@
       "Only silent divergence after a finite trace. A source run that emits infinitely many events is not a behaviour in this model and nothing is claimed about it.",
       "The target's infinite silent run is asserted to exist; it is not claimed to be related step for step to the source run.",
       "Without a well-founded order the three forward clauses can hold between a diverging source and a target that terminates at once (Toy.Sim.Cex.cex_fsim_without_wf_divergence_not_preserved).",
-      "Well-foundedness of the index order is shown necessary only within this step-diagram formulation; other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.",
+      "Well-foundedness of the index order is shown necessary within this step-diagram formulation; whether it is necessary outside this formulation is not addressed (not proved either way). Other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.",
       "Toy model: one event per step (`Option E`), no memory model, no global environment or symbol tables; nothing here is a statement about a production compiler.",
       "Behaviours with infinitely many events are not modelled; a system whose every run emits events forever has no behaviour at all in this model (Toy.Sim.Ex.chatter_no_behavior).",
       "Whole programs only: nothing is claimed about separate compilation, linking, or open (contextual) simulations."
@@ -923,7 +923,7 @@
     ],
     "non_claims": [
       "Shows that the named hypothesis cannot simply be dropped; it does not show that the conclusion fails whenever the hypothesis fails.",
-      "Well-foundedness of the index order is shown necessary only within this step-diagram formulation; other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.",
+      "Well-foundedness of the index order is shown necessary within this step-diagram formulation; whether it is necessary outside this formulation is not addressed (not proved either way). Other ways of ruling out infinite stuttering in the literature (for example the 'asynchronous progress' simulations of Cho et al., PACMPL 7(OOPSLA2), 2023) are not covered or compared here.",
       "The systems are toy systems chosen for minimality; nothing is claimed about real languages."
     ],
     "prior_art": [
