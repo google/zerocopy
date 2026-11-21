@@ -379,10 +379,10 @@ theorem forced_value_relabeled_iff_of_injective {P : Type u} {π : P → P}
     exact (congrFun heq p).symm.trans (h c' hc')
   · exact forced_value_at_image_of_invariantUnder_comp hL
 
-/-- Surjectivity without injectivity does not suffice: `n ↦ n - 2` is
-surjective, the law "accepts `0`" is invariant under precomposition with
-it, and the law forces acceptance at the image `2 - 2 = 0` of `2` but not at
-`2`. -/
+/-- Surjectivity without injectivity does not suffice: on `Nat`, with truncated
+subtraction, `n ↦ n - 2` is surjective (and not injective), the law "accepts `0`"
+is invariant under precomposition with it, and the law forces acceptance at the
+image `2 - 2 = 0` of `2` but not at `2`. -/
 theorem cex_forced_value_relabeled_surjective_not_injective :
     (∀ y : Nat, ∃ x, x - 2 = y) ∧
     InvariantUnder (fun c : Nat → Bool => c ∘ fun n => n - 2) acceptsZeroLaw ∧

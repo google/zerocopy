@@ -577,7 +577,7 @@
       },
       {
         "name": "σ : Relabeling P (left_inv / injectivity tight; right_inv unused; forced_value_relabeled_iff_of_invariantUnder_comp)",
-        "purpose": "Needed for the direction from sigma p to p. Only the left-inverse half of the bijection (sigma.left_inv, which makes sigma.toFun injective) is used; sigma.right_inv (surjectivity) is not. Tightness counterexample: for the constant map 0, which is neither injective nor surjective, an invariant law forces an answer at the image of p without forcing it at p. Surjectivity alone does not suffice either (cex_forced_value_relabeled_surjective_not_injective, with the surjective, non-injective map n |-> n - 2); a left inverse suffices (forced_value_relabeled_iff_of_leftInverse), and classically injectivity suffices (forced_value_relabeled_iff_of_injective).",
+        "purpose": "Needed for the direction from sigma p to p. Only the left-inverse half of the bijection (sigma.left_inv, which makes sigma.toFun injective) is used; sigma.right_inv (surjectivity) is not. Tightness counterexample: for the constant map 0, which is neither injective nor surjective, an invariant law forces an answer at the image of p without forcing it at p. Surjectivity alone does not suffice either (cex_forced_value_relabeled_surjective_not_injective, with the map n |-> n - 2 on Nat, where - is truncated subtraction: surjective, and not injective because the truncation sends 0, 1 and 2 to 0); a left inverse suffices (forced_value_relabeled_iff_of_leftInverse), and classically injectivity suffices (forced_value_relabeled_iff_of_injective).",
         "tightness": "tight",
         "counterexample": "Toy.Checker.cex_forced_value_relabeled_needs_bijective"
       },

@@ -139,7 +139,7 @@ def DecidedIn {P : Type u} (K : (P → Bool) → Prop) (F : P → Prop) : Prop :
   ∃ d, K d ∧ ∀ p, d p = true ↔ F p
 ```
 
-Every core definition has proved positive and negative examples in the sources (for example `sound_example_evenExact` / `not_sound_example_acceptAll`, `anchoredSound_example_evenExact` / `not_anchoredSound_example_rejectAll`, `twoSidedVerifiedOn_example_honest` / `not_twoSidedVerifiedOn_example_silent`, `not_relabeling_example_const`, `andClosed_decidedIn_example_all` / `not_andClosed_example_belowTwo_zeroOrLarge`). `classicalOracle_eq_true_iff : classicalOracle Q p = true ↔ Q p` and `classicalOracle_eq_decide : classicalOracle Q = fun p => decide (Q p)` (for decidable `Q`) state what the oracle is.
+Every core definition has proved positive and negative examples in the sources (for example `sound_example_evenExact` / `not_sound_example_acceptAll`, `anchoredSound_example_evenExact` / `not_anchoredSound_example_rejectAll`, `twoSidedVerifiedOn_example_honest` / `not_twoSidedVerifiedOn_example_silent`, `not_relabeling_example_const`, `andClosed_decidedIn_example_all` / `not_andClosed_example_belowTwo_zeroOrLarge`). `classicalOracle_eq_true_iff {P : Type u} (Q : P → Prop) (p : P) : classicalOracle Q p = true ↔ Q p` and `classicalOracle_eq_decide {P : Type u} (Q : P → Prop) [DecidablePred Q] : classicalOracle Q = fun p => decide (Q p)` (for decidable `Q`) state what the oracle is.
 
 ### Toy instance and named examples
 
@@ -221,14 +221,18 @@ Kind: characterization. Tier: **T0** (Textbook facts about yes/no analyzers (alw
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/DownSet.lean:50-51
 theorem sound_iff_checkerLE_classicalOracle {P : Type u} (good : P → Prop) (c : P → Bool) :
     Sound good c ↔ CheckerLE c (classicalOracle good)
 
+-- lean/ToyChecker/DownSet.lean:26
 theorem sound_rejectAll {P : Type u} (good : P → Prop) : Sound good rejectAll
 
+-- lean/ToyChecker/DownSet.lean:32-33
 theorem sound_of_checkerLE_of_sound {P : Type u} {good : P → Prop} {c₁ c₂ : P → Bool}
     (hle : CheckerLE c₁ c₂) (h₂ : Sound good c₂) : Sound good c₁
 
+-- lean/ToyChecker/DownSet.lean:38-39
 theorem sound_orChecker_of_sound_of_sound {P : Type u} {good : P → Prop} {c₁ c₂ : P → Bool}
     (h₁ : Sound good c₁) (h₂ : Sound good c₂) : Sound good (orChecker c₁ c₂)
 ```
@@ -274,6 +278,7 @@ Kind: impossibility. Tier: **T0** (Immediate consequence of the textbook fact th
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/DownSet.lean:62-63
 theorem law_of_all_sound_holds_for_rejectAll {P : Type u} (good : P → Prop) (L : Law P)
     (hL : ∀ c, Sound good c → L c) : L rejectAll
 ```
@@ -314,9 +319,11 @@ Kind: characterization. Tier: **T0** (Restatement of version-space facts for an 
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Anchors.lean:59-60
 theorem not_anchoredSound_rejectAll_iff_anchors_ne_nil {P : Type u} (good : P → Prop)
     (A : List P) : ¬ AnchoredSound good A rejectAll ↔ A ≠ []
 
+-- lean/ToyChecker/Anchors.lean:74-76
 theorem allowlist_anchoredSound_of_anchors_good {P : Type u} [DecidableEq P]
     {good : P → Prop} {A : List P} (hA : ∀ a ∈ A, good a) :
     AnchoredSound good A (allowlist A)
@@ -358,14 +365,17 @@ Kind: characterization. Tier: **T0** (Restatement of the unanimous-vote facts fo
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Anchors.lean:85-87
 theorem forced_accept_iff_mem_anchors_of_anchors_good {P : Type u} {good : P → Prop} {A : List P}
     (hA : ∀ a ∈ A, good a) (p : P) :
     (∀ c, AnchoredSound good A c → c p = true) ↔ p ∈ A
 
+-- lean/ToyChecker/Anchors.lean:98-100
 theorem forced_reject_iff_not_good_of_anchors_good {P : Type u} {good : P → Prop} {A : List P}
     (hA : ∀ a ∈ A, good a) (p : P) :
     (∀ c, AnchoredSound good A c → c p = false) ↔ ¬ good p
 
+-- lean/ToyChecker/Anchors.lean:122-126
 theorem anchoredSound_admits_allowlists_disagreeing_at_good_nonanchor_of_anchors_good
     {P : Type u} [DecidableEq P] {good : P → Prop} {A : List P} {p : P}
     (hA : ∀ a ∈ A, good a) (hp : good p) (hpA : p ∉ A) :
@@ -414,11 +424,13 @@ Kind: impossibility. Tier: **T0** (Restatement of the fact that the most specifi
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Anchors.lean:230-233
 theorem tableChecker_sound_passes_le_of_sound_passes {P : Type u} [DecidableEq P]
     {good : P → Prop} {c : P → Bool} {T : TestSuite P}
     (hc : Sound good c) (hT : Passes c T) :
     Sound good (tableChecker T) ∧ Passes (tableChecker T) T ∧ CheckerLE (tableChecker T) c
 
+-- lean/ToyChecker/Anchors.lean:204-206
 theorem tableChecker_passes_and_le_of_passes {P : Type u} [DecidableEq P]
     {c : P → Bool} {T : TestSuite P} (hT : Passes c T) :
     Passes (tableChecker T) T ∧ CheckerLE (tableChecker T) c
@@ -467,13 +479,16 @@ Kind: impossibility. Tier: **T0** (Restatement of the definition of an extension
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Extensional.lean:115-117
 theorem extensionalLaw_iff_of_same_behavior {P : Type u} {I : Type v} {run : I → P → Bool}
     {L : I → Prop} {i j : I} (hL : ExtensionalLaw run L) (hij : ∀ p, run i p = run j p) :
     L i ↔ L j
 
+-- lean/ToyChecker/Extensional.lean:123-124
 theorem extensionalLaw_id_of_law {P : Type u} (L : Law P) :
     ExtensionalLaw (id : (P → Bool) → P → Bool) L
 
+-- lean/ToyChecker/Extensional.lean:136-137
 theorem extensionalLaw_cannot_separate_honestImpl_from_tableImpl {L : ToyImpl → Prop}
     (hL : ExtensionalLaw toyRun L) : L honestImpl ↔ L tableImpl
 ```
@@ -520,6 +535,7 @@ Kind: theorem. Tier: **T0** (Core soundness argument of proof-carrying code, cer
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Certificates.lean:126-128
 theorem certChecker_sound_of_verifierSound {P : Type u} {W : Type v} {good : P → Prop}
     {V : P → W → Bool} (hV : VerifierSound good V) (t : P → Option W) :
     Sound good (certChecker V t)
@@ -565,10 +581,12 @@ Kind: characterization. Tier: **T0** (The trusted-checker principle as an exact 
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Certificates.lean:137-139
 theorem verifierSound_iff_forall_certChecker_sound {P : Type u} {W : Type v}
     (good : P → Prop) (V : P → W → Bool) :
     VerifierSound good V ↔ ∀ t : P → Option W, Sound good (certChecker V t)
 
+-- lean/ToyChecker/Certificates.lean:146-149
 theorem certChecker_const_not_sound_of_bad_certificate {P : Type u} {W : Type v}
     {good : P → Prop} {V : P → W → Bool} {p : P} {w : W}
     (hVpw : V p w = true) (hp : ¬ good p) :
@@ -612,11 +630,13 @@ Kind: characterization. Tier: **T0** (Exact unfolding of completeness for the on
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Certificates.lean:158-161
 theorem certChecker_completeOn_iff {P : Type u} {W : Type v} (good F : P → Prop)
     (V : P → W → Bool) (t : P → Option W) :
     CompleteOn good F (certChecker V t) ↔
       ∀ p, good p → F p → ∃ w, t p = some w ∧ V p w = true
 
+-- lean/ToyChecker/Certificates.lean:202-204
 theorem verifierCompleteOn_of_certChecker_completeOn {P : Type u} {W : Type v}
     {good F : P → Prop} {V : P → W → Bool} {t : P → Option W}
     (h : CompleteOn good F (certChecker V t)) : ∀ p, good p → F p → ∃ w, V p w = true
@@ -658,6 +678,7 @@ Kind: counterexample. Tier: **T1** (Concrete counterexample to the tempting read
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Certificates.lean:319-321
 theorem cex_verifierSound_verifierComplete_not_completeOn :
     VerifierSound evenGood halfV ∧ VerifierComplete evenGood halfV ∧
     ¬ CompleteOn evenGood (fun _ => True) (certChecker halfV silentTool)
@@ -691,6 +712,7 @@ Kind: characterization. Tier: **T1** (Folklore made precise; no source stating i
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Certificates.lean:180-182
 theorem exists_certChecker_eq_iff_sound_certifiable {P : Type u} {W : Type v}
     (V : P → W → Bool) (c : P → Bool) :
     (∃ t : P → Option W, certChecker V t = c) ↔ Sound (fun p => ∃ w, V p w = true) c
@@ -724,6 +746,7 @@ Kind: theorem. Tier: **T0** (Restatement of the certifying-algorithm principle f
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Certificates.lean:451-455
 theorem twoSidedChecker_sound_completeOn_of_verifiedOn {P : Type u} {W : Type v}
     {good F : P → Prop} {Vpos Vneg : P → W → Bool} {t : P → Bool × W}
     (hpos : VerifierSound good Vpos) (hneg : VerifierSound (fun p => ¬ good p) Vneg)
@@ -766,6 +789,7 @@ Kind: impossibility. Tier: **T0** (Invariance of soundness under precomposition 
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Relabel.lean:159-161
 theorem sound_comp_iff_of_surjective_of_invariantUnder {P : Type u} {good : P → Prop}
     {π : P → P} (hsurj : Function.Surjective π) (hgood : InvariantUnder π good)
     (c : P → Bool) : Sound good (c ∘ π) ↔ Sound good c
@@ -809,10 +833,12 @@ Kind: impossibility. Tier: **T1** (Folklore ('a renaming-invariant requirement c
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/Relabel.lean:246-248
 theorem forced_value_relabeled_iff_of_invariantUnder_comp {P : Type u} (σ : Relabeling P)
     {L : Law P} (hL : InvariantUnder (fun c : P → Bool => c ∘ σ.toFun) L) (p : P) (b : Bool) :
     (∀ c, L c → c (σ.toFun p) = b) ↔ (∀ c, L c → c p = b)
 
+-- lean/ToyChecker/Relabel.lean:236-238
 theorem forced_value_at_image_of_invariantUnder_comp {P : Type u} {π : P → P} {L : Law P}
     (hL : InvariantUnder (fun c : P → Bool => c ∘ π) L) {p : P} {b : Bool}
     (hp : ∀ c, L c → c p = b) : ∀ c, L c → c (π p) = b
@@ -828,7 +854,7 @@ Unfolded:
 | Hypothesis | Why it is needed | Tightness |
 | :--- | :--- | :--- |
 | `hL : InvariantUnder (fun c => c ∘ σ.toFun) L (forced_value_relabeled_iff_of_invariantUnder_comp)` | A law that mentions a fixed program (a single anchor) is not invariant and can force an answer at that program but not at its image. | tight: counterexample `cex_forced_value_relabeled_needs_invariant` |
-| `σ : Relabeling P (left_inv / injectivity tight; right_inv unused; forced_value_relabeled_iff_of_invariantUnder_comp)` | Needed for the direction from sigma p to p. Only the left-inverse half of the bijection (sigma.left_inv, which makes sigma.toFun injective) is used; sigma.right_inv (surjectivity) is not. Tightness counterexample: for the constant map 0, which is neither injective nor surjective, an invariant law forces an answer at the image of p without forcing it at p. Surjectivity alone does not suffice either (cex_forced_value_relabeled_surjective_not_injective, with the surjective, non-injective map n \|-> n - 2); a left inverse suffices (forced_value_relabeled_iff_of_leftInverse), and classically injectivity suffices (forced_value_relabeled_iff_of_injective). | tight: counterexample `cex_forced_value_relabeled_needs_bijective` |
+| `σ : Relabeling P (left_inv / injectivity tight; right_inv unused; forced_value_relabeled_iff_of_invariantUnder_comp)` | Needed for the direction from sigma p to p. Only the left-inverse half of the bijection (sigma.left_inv, which makes sigma.toFun injective) is used; sigma.right_inv (surjectivity) is not. Tightness counterexample: for the constant map 0, which is neither injective nor surjective, an invariant law forces an answer at the image of p without forcing it at p. Surjectivity alone does not suffice either (cex_forced_value_relabeled_surjective_not_injective, with the map n \|-> n - 2 on Nat, where - is truncated subtraction: surjective, and not injective because the truncation sends 0, 1 and 2 to 0); a left inverse suffices (forced_value_relabeled_iff_of_leftInverse), and classically injectivity suffices (forced_value_relabeled_iff_of_injective). | tight: counterexample `cex_forced_value_relabeled_needs_bijective` |
 | `hL : InvariantUnder (fun c => c ∘ π) L (forced_value_at_image_of_invariantUnder_comp)` | As above, for the one-directional statement about an arbitrary map. | tight: counterexample `cex_forced_value_at_image_needs_invariant` |
 | `hp : ∀ c, L c → c p = b (forced_value_at_image_of_invariantUnder_comp)` | The answer at p must actually be forced; an invariant law that forces nothing transfers nothing. | tight: counterexample `cex_forced_value_at_image_needs_forced` |
 
@@ -859,11 +885,13 @@ Kind: characterization. Tier: **T0** (Restatement of the interval structure of c
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/RelativeCompleteness.lean:125-128
 theorem soundCompleteOn_iff_between {P : Type u} (good F : P → Prop) (c : P → Bool) :
     SoundCompleteOn good F c ↔
       CheckerLE (classicalOracle (fun p => F p ∧ good p)) c ∧
       CheckerLE c (classicalOracle good)
 
+-- lean/ToyChecker/RelativeCompleteness.lean:117-118
 theorem soundCompleteOn_classicalOracle_inter {P : Type u} (good F : P → Prop) :
     SoundCompleteOn good F (classicalOracle (fun p => F p ∧ good p))
 ```
@@ -899,23 +927,28 @@ Kind: characterization. Tier: **T1** (The pointwise and class forms are elementa
 **Lean statements** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/RelativeCompleteness.lean:140-142
 theorem soundCompleteOn_iff_sound_and_decides_on {P : Type u} (good F : P → Prop)
     (c : P → Bool) :
     SoundCompleteOn good F c ↔ Sound good c ∧ ∀ p, F p → (c p = true ↔ good p)
 
+-- lean/ToyChecker/RelativeCompleteness.lean:150-153
 theorem exists_soundCompleteOn_in_class_iff {P : Type u} (good F : P → Prop)
     (K : (P → Bool) → Prop) :
     (∃ c, K c ∧ SoundCompleteOn good F c) ↔
       ∃ c, K c ∧ Sound good c ∧ ∀ p, F p → (c p = true ↔ good p)
 
+-- lean/ToyChecker/RelativeCompleteness.lean:158-159
 theorem soundCompleteOn_univ_iff_decides {P : Type u} (good : P → Prop) (c : P → Bool) :
     SoundCompleteOn good (fun _ => True) c ↔ ∀ p, c p = true ↔ good p
 
+-- lean/ToyChecker/RelativeCompleteness.lean:166-169
 theorem exists_soundCompleteOn_univ_in_class_iff {P : Type u} (good : P → Prop)
     (K : (P → Bool) → Prop) :
     (∃ c, K c ∧ SoundCompleteOn good (fun _ => True) c) ↔
       ∃ c, K c ∧ ∀ p, c p = true ↔ good p
 
+-- lean/ToyChecker/RelativeCompleteness.lean:176-179
 theorem exists_soundCompleteOn_in_class_iff_decides_on_of_andClosed_of_decidedIn
     {P : Type u} (good F : P → Prop) (K : (P → Bool) → Prop)
     (hK : AndClosed K) (hF : DecidedIn K F) :
@@ -964,6 +997,7 @@ Kind: characterization. Tier: **T0** (Elementary: rejectAll is sound (textbook),
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/RelativeCompleteness.lean:200-201
 theorem not_soundCompleteOn_rejectAll_iff {P : Type u} (good F : P → Prop) :
     ¬ SoundCompleteOn good F rejectAll ↔ ∃ p, F p ∧ good p
 ```
@@ -995,6 +1029,7 @@ Kind: characterization. Tier: **T0** (Elementary set reading: the accepted set o
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/RelativeCompleteness.lean:213-216
 theorem soundCompleteOn_allowlist_iff {P : Type u} [DecidableEq P] (good F : P → Prop)
     (A : List P) :
     SoundCompleteOn good F (allowlist A) ↔
@@ -1032,6 +1067,7 @@ Kind: impossibility. Tier: **T0** (Concrete instance of R6f: there are infinitel
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/RelativeCompleteness.lean:229-230
 theorem no_allowlist_soundCompleteOn_evenGood_univ (A : List Nat) :
     ¬ SoundCompleteOn evenGood (fun _ => True) (allowlist A)
 ```
@@ -1065,6 +1101,7 @@ Kind: counterexample. Tier: **T1** (Counterexample to a tempting simplification 
 **Lean statement** (namespace `Toy.Checker`):
 
 ```lean
+-- lean/ToyChecker/RelativeCompleteness.lean:247-251
 theorem cex_decides_on_fragment_without_soundness :
     (∃ c, (fun c => c = (acceptAll : Nat → Bool)) c ∧
       ∀ p, (fun n => n = 0) p → (c p = true ↔ (fun n => n = 0) p)) ∧
@@ -1207,7 +1244,7 @@ Per-result non-claims (verbatim from the machine-readable cards):
 - **R2f** (lookup tables pass finite suites): drop the restriction to pointwise laws on finitely many inputs. Completeness on an infinite fragment, or a relational law linking answers on different programs, excludes every table while admitting honest tools (both positive controls). Suites chosen after the table are outside the statement.
 - **R3a** (extensional laws cannot separate behaviorally identical implementations): intensional laws (`IsStructural`) can; and implementations that differ on even one program can be separated by an extensional law (`cex_extensionalLaw_iff_needs_same_behavior`).
 - **R5b** (soundness cannot see relabeling): fails without surjectivity (`cex_sound_comp_iff_needs_surjective`) or when `good` is not invariant (`cex_sound_comp_iff_needs_invariant`); laws that mention framework-supplied programs, such as anchors, can separate a checker from its relabeled twin.
-- **R5c** (invariant laws force answers only uniformly): fails for laws that are not invariant (single anchor) and, for the converse direction, for maps without a left inverse (constant map; also the surjective, non-injective map `n ↦ n - 2`, `cex_forced_value_relabeled_surjective_not_injective`).
+- **R5c** (invariant laws force answers only uniformly): fails for laws that are not invariant (single anchor) and, for the converse direction, for maps without a left inverse (constant map; also the map `n ↦ n - 2` on `Nat` with truncated subtraction, which is surjective and, because of the truncation, not injective (`0`, `1` and `2` all map to `0`): `cex_forced_value_relabeled_surjective_not_injective`).
 - **R6g** (no allowlist on all programs): on a fragment with finitely many good programs an allowlist can be sound and complete (`positive_control_allowlist_soundCompleteOn_finite_fragment`; R6f in general).
 
 ### Tightness status `unknown`
