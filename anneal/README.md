@@ -204,7 +204,7 @@ Follow the [alpha guide][alpha-guide] to install it and check a runnable proof.
 ## Agent skill
 
 Run `cargo anneal skill` to print the bundled `SKILL.md` without setting up
-the Anneal toolchain. The skill is a placeholder.
+the Anneal toolchain.
 
 To make the skill discoverable before an agent runs `cargo anneal`, install it
 with [GitHub CLI][gh-skill]. Set `ANNEAL_REV` to the release tag or source
