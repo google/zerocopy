@@ -266,7 +266,10 @@
             dontPatchShebangs = true;
 
             nativeBuildInputs = with pkgs; [
+              coreutils
+              gnused
               gnutar
+              jq
               zstd
             ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
               patchelf
@@ -277,6 +280,9 @@
             rustcCapture = self.packages.${system}.rustc-capture;
             leanFoundation = ./trusted/lean;
             leanTheory = ./theory;
+            targetInspector = ./trusted/audit/TrustedBoundary.lean;
+            targetLibraryLock = ./trusted/audit/library-lock.json;
+            bundledResources = ./trusted/cargo-anneal/src/bundled_resources.rs;
 
             buildPhase = ''
               set -euo pipefail
@@ -284,13 +290,33 @@
                 "$TMPDIR/dist_staging/bin" \
                 "$TMPDIR/dist_staging/lean" \
                 "$TMPDIR/dist_staging/rust" \
-                "$TMPDIR/dist_staging/share/anneal/trusted"
+                "$TMPDIR/dist_staging/share/anneal/trusted/audit"
 
               cp -r "$rustToolchain"/* "$TMPDIR/dist_staging/rust/"
               cp -r "$leanToolchain"/* "$TMPDIR/dist_staging/lean/"
               cp "$rustcCapture/bin/anneal-rustc-capture" "$TMPDIR/dist_staging/bin/"
               cp -r "$leanFoundation" "$TMPDIR/dist_staging/share/anneal/trusted/lean"
               cp -r "$leanTheory" "$TMPDIR/dist_staging/share/anneal/theory"
+              cp "$targetInspector" "$TMPDIR/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean"
+              cp "$targetLibraryLock" "$TMPDIR/dist_staging/share/anneal/trusted/audit/library-lock.json"
+
+              # Copy correspondence provenance verbatim from the parity-checked
+              # `CORRESPONDENCE_PROVENANCE_JSON` constant embedded in
+              # `bundled_resources.rs` so the archive metadata and `cargo-anneal
+              # verify` receipts share one canonical source of truth.
+              provenance_literal="$(sed -n \
+                's/^const CORRESPONDENCE_PROVENANCE_JSON: &str = \(.*\);$/\1/p' \
+                "$bundledResources")"
+              if [ "$(printf '%s\n' "$provenance_literal" | sed '/^$/d' | wc -l)" -ne 1 ]; then
+                echo "ERROR: expected unique CORRESPONDENCE_PROVENANCE_JSON in $bundledResources" >&2
+                exit 1
+              fi
+              printf '%s\n' "$provenance_literal" \
+                | jq -e -r . \
+                > "$TMPDIR/dist_staging/share/anneal/correspondence-provenance.json"
+              jq -e 'type == "object" and .schema_version == 1' \
+                "$TMPDIR/dist_staging/share/anneal/correspondence-provenance.json" \
+                > /dev/null
 
               chmod -R u+w "$TMPDIR/dist_staging"
               rm -rf "$TMPDIR/dist_staging/rust/share/doc"
@@ -319,6 +345,9 @@
                 lean/bin/lean \
                 rust/bin/cargo \
                 rust/bin/rustc \
+                share/anneal/correspondence-provenance.json \
+                share/anneal/trusted/audit/TrustedBoundary.lean \
+                share/anneal/trusted/audit/library-lock.json \
                 share/anneal/trusted/lean/foundation-lock.json \
                 share/anneal/trusted/lean/lean-toolchain \
                 share/anneal/trusted/lean/Trusted/MirAst.lean \
