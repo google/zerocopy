@@ -1,0 +1,431 @@
+{
+  "generated_at": "2026-11-21T03:20:10Z",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "miri_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+  "zerocopy_head_sha": "e9bc37a4d2c0ad9be243f25db28ff21624d8102b",
+  "anneal_head_sha": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+  "miri_counterexamples": {
+    "ce1_runtime_dead_block_storage_flip": {
+      "miri_no_simplifycfg": {
+        "returncode": 1,
+        "elapsed_sec": 0.0687,
+        "ub_detected": true,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged\nerror: Undefined Behavior: accessing a dead local variable\n  |             ^^^^^^^^^^ Undefined Behavior occurred here\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = note: stack backtrace:\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error; 2 warnings emitted",
+        "before_bb_count": 0,
+        "after_bb_count": 0,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      },
+      "miri_with_simplifycfg": {
+        "returncode": 0,
+        "elapsed_sec": 0.0938,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 2,
+        "after_bb_count": 1,
+        "before_has_storage_live": true,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      },
+      "miri_explicit_preserve_ub": {
+        "returncode": 0,
+        "elapsed_sec": 0.0607,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 2,
+        "after_bb_count": 1,
+        "before_has_storage_live": true,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      },
+      "rustc_codegen_default": {
+        "returncode": 0,
+        "elapsed_sec": 0.0416,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 2,
+        "after_bb_count": 1,
+        "before_has_storage_live": true,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      },
+      "rustc_preserve_ub_yes": {
+        "returncode": 0,
+        "elapsed_sec": 0.0398,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 2,
+        "after_bb_count": 1,
+        "before_has_storage_live": true,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      }
+    },
+    "ce1_built_phase_dead_block_storage_flip": {
+      "miri_no_simplifycfg": {
+        "returncode": 0,
+        "elapsed_sec": 0.0571,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 0,
+        "after_bb_count": 0,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      },
+      "miri_with_simplifycfg": {
+        "returncode": 0,
+        "elapsed_sec": 0.0551,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 1,
+        "after_bb_count": 1,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      },
+      "miri_explicit_preserve_ub": {
+        "returncode": 0,
+        "elapsed_sec": 0.0556,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 1,
+        "after_bb_count": 1,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      },
+      "rustc_codegen_default": {
+        "returncode": 0,
+        "elapsed_sec": 0.0408,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 1,
+        "after_bb_count": 1,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      },
+      "rustc_preserve_ub_yes": {
+        "returncode": 0,
+        "elapsed_sec": 0.0403,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 1,
+        "after_bb_count": 1,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      }
+    },
+    "ce3_runtime_uniform_switch_uninit": {
+      "miri_no_simplifycfg": {
+        "returncode": 1,
+        "elapsed_sec": 0.048,
+        "ub_detected": true,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged\nerror: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n   | |_____________^ Undefined Behavior occurred here\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = note: stack backtrace:\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error; 2 warnings emitted",
+        "before_bb_count": 0,
+        "after_bb_count": 0,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": false,
+        "after_has_switch_int": false
+      },
+      "miri_with_simplifycfg": {
+        "returncode": 1,
+        "elapsed_sec": 0.0457,
+        "ub_detected": true,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged\nerror: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n   | |_____________^ Undefined Behavior occurred here\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = note: stack backtrace:\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error; 2 warnings emitted",
+        "before_bb_count": 2,
+        "after_bb_count": 2,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": true,
+        "after_has_switch_int": true
+      },
+      "miri_explicit_preserve_ub": {
+        "returncode": 1,
+        "elapsed_sec": 0.0482,
+        "ub_detected": true,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged\nerror: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n   | |_____________^ Undefined Behavior occurred here\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = note: stack backtrace:\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error; 2 warnings emitted",
+        "before_bb_count": 2,
+        "after_bb_count": 2,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": true,
+        "after_has_switch_int": true
+      },
+      "rustc_codegen_default": {
+        "returncode": 0,
+        "elapsed_sec": 0.0401,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 2,
+        "after_bb_count": 1,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": true,
+        "after_has_switch_int": false
+      },
+      "rustc_preserve_ub_yes": {
+        "returncode": 0,
+        "elapsed_sec": 0.0421,
+        "ub_detected": false,
+        "stderr_excerpt": "  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n  = note: using it is strongly discouraged",
+        "before_bb_count": 2,
+        "after_bb_count": 2,
+        "before_has_storage_live": false,
+        "after_has_storage_live": false,
+        "before_has_switch_int": true,
+        "after_has_switch_int": true
+      }
+    }
+  },
+  "zerocopy_simplifycfg_census": {
+    "compile_elapsed_sec": 8.377,
+    "pass_stats": {
+      "SimplifyCfg-post-analysis": {
+        "bodies": 4688,
+        "blocks_before": 17572,
+        "blocks_after": 14451,
+        "blocks_removed": 3121,
+        "nops_before": 3187,
+        "nops_after": 0,
+        "const_switches_before": 0,
+        "const_switches_after": 0,
+        "uniform_switches_before": 0,
+        "uniform_switches_after": 0,
+        "empty_gotos_before": 624,
+        "empty_gotos_after": 0,
+        "bodies_with_storage_annot_flip": 0,
+        "total_locals_flipped_to_always_live": 0
+      },
+      "SimplifyCfg-pre-optimizations": {
+        "bodies": 4688,
+        "blocks_before": 14431,
+        "blocks_after": 13880,
+        "blocks_removed": 551,
+        "nops_before": 0,
+        "nops_after": 0,
+        "const_switches_before": 0,
+        "const_switches_after": 0,
+        "uniform_switches_before": 0,
+        "uniform_switches_after": 0,
+        "empty_gotos_before": 32,
+        "empty_gotos_after": 0,
+        "bodies_with_storage_annot_flip": 0,
+        "total_locals_flipped_to_always_live": 0
+      },
+      "SimplifyConstCondition-after-const-prop": {
+        "bodies": 4301,
+        "blocks_before": 11494,
+        "blocks_after": 11494,
+        "blocks_removed": 0,
+        "nops_before": 10,
+        "nops_after": 10,
+        "const_switches_before": 45,
+        "const_switches_after": 40,
+        "uniform_switches_before": 0,
+        "uniform_switches_after": 0,
+        "empty_gotos_before": 79,
+        "empty_gotos_after": 79,
+        "bodies_with_storage_annot_flip": 0,
+        "total_locals_flipped_to_always_live": 0
+      },
+      "SimplifyCfg-final": {
+        "bodies": 4301,
+        "blocks_before": 11510,
+        "blocks_after": 11314,
+        "blocks_removed": 196,
+        "nops_before": 10,
+        "nops_after": 0,
+        "const_switches_before": 40,
+        "const_switches_after": 40,
+        "uniform_switches_before": 0,
+        "uniform_switches_after": 0,
+        "empty_gotos_before": 87,
+        "empty_gotos_after": 20,
+        "bodies_with_storage_annot_flip": 7,
+        "total_locals_flipped_to_always_live": 50
+      }
+    },
+    "storage_annotation_flip_examples": [
+      {
+        "pass": "SimplifyCfg-final",
+        "function": "error-{impl#10}-fmt",
+        "blocks_before": 12,
+        "blocks_after": 8,
+        "flipped_locals": [
+          "_6",
+          "_7"
+        ],
+        "flipped_count": 2
+      },
+      {
+        "pass": "SimplifyCfg-final",
+        "function": "error-{impl#18}-fmt",
+        "blocks_before": 22,
+        "blocks_after": 8,
+        "flipped_locals": [
+          "_10",
+          "_12",
+          "_13",
+          "_14",
+          "_15",
+          "_6",
+          "_7",
+          "_8"
+        ],
+        "flipped_count": 9
+      },
+      {
+        "pass": "SimplifyCfg-final",
+        "function": "error-{impl#27}-fmt",
+        "blocks_before": 22,
+        "blocks_after": 8,
+        "flipped_locals": [
+          "_10",
+          "_12",
+          "_13",
+          "_14",
+          "_15",
+          "_6",
+          "_7",
+          "_8"
+        ],
+        "flipped_count": 9
+      },
+      {
+        "pass": "SimplifyCfg-final",
+        "function": "layout-{impl#1}-extend",
+        "blocks_before": 74,
+        "blocks_after": 37,
+        "flipped_locals": [
+          "_11",
+          "_12",
+          "_13",
+          "_14",
+          "_16",
+          "_17",
+          "_18",
+          "_19"
+        ],
+        "flipped_count": 12
+      },
+      {
+        "pass": "SimplifyCfg-final",
+        "function": "layout-{impl#1}-validate_cast_and_convert_metadata",
+        "blocks_before": 45,
+        "blocks_after": 32,
+        "flipped_locals": [
+          "_11",
+          "_12",
+          "_13",
+          "_14",
+          "_15",
+          "_16",
+          "_18",
+          "_49"
+        ],
+        "flipped_count": 11
+      },
+      {
+        "pass": "SimplifyCfg-final",
+        "function": "util-copy_unchecked",
+        "blocks_before": 9,
+        "blocks_after": 4,
+        "flipped_locals": [
+          "_3",
+          "_4",
+          "_5",
+          "_6",
+          "_7"
+        ],
+        "flipped_count": 5
+      },
+      {
+        "pass": "SimplifyCfg-final",
+        "function": "util-round_down_to_next_multiple_of_alignment",
+        "blocks_before": 8,
+        "blocks_after": 2,
+        "flipped_locals": [
+          "_4",
+          "_5"
+        ],
+        "flipped_count": 2
+      }
+    ]
+  },
+  "lean_symbolic_scaling": [
+    {
+      "K": 4,
+      "unsimp_blocks": 17,
+      "simp_blocks": 2,
+      "unsimplified_rc": 0,
+      "unsimplified_sec": 0.663,
+      "unsimplified_rss_mb": 176.82,
+      "unsimplified_olean_bytes": 66688,
+      "simplified_rc": 0,
+      "simplified_sec": 0.516,
+      "simplified_rss_mb": 171.34,
+      "simplified_olean_bytes": 49560,
+      "speedup_x": 1.28,
+      "olean_ratio_x": 1.35
+    },
+    {
+      "K": 8,
+      "unsimp_blocks": 33,
+      "simp_blocks": 2,
+      "unsimplified_rc": 0,
+      "unsimplified_sec": 1.105,
+      "unsimplified_rss_mb": 187.68,
+      "unsimplified_olean_bytes": 87472,
+      "simplified_rc": 0,
+      "simplified_sec": 0.523,
+      "simplified_rss_mb": 175.29,
+      "simplified_olean_bytes": 53784,
+      "speedup_x": 2.11,
+      "olean_ratio_x": 1.63
+    },
+    {
+      "K": 16,
+      "unsimp_blocks": 65,
+      "simp_blocks": 2,
+      "unsimplified_rc": 0,
+      "unsimplified_sec": 1.92,
+      "unsimplified_rss_mb": 209.48,
+      "unsimplified_olean_bytes": 127640,
+      "simplified_rc": 0,
+      "simplified_sec": 0.785,
+      "simplified_rss_mb": 183.36,
+      "simplified_olean_bytes": 62232,
+      "speedup_x": 2.45,
+      "olean_ratio_x": 2.05
+    },
+    {
+      "K": 32,
+      "unsimp_blocks": 129,
+      "simp_blocks": 2,
+      "unsimplified_rc": 1,
+      "unsimplified_sec": 2.193,
+      "unsimplified_rss_mb": 197.8,
+      "unsimplified_olean_bytes": null,
+      "unsimplified_err": "Command exited with non-zero status 1",
+      "simplified_rc": 0,
+      "simplified_sec": 1.263,
+      "simplified_rss_mb": 194.27,
+      "simplified_olean_bytes": 79128
+    }
+  ]
+}

@@ -8468,6 +8468,86 @@
         "verification/translation-validation"
       ]
     },
+    "anneal-trusted-mir-simplifycfg-branch-folding-and-dead-block-compaction": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Trusted.MirAst, Trusted.MirSemantics, and TrustedBoundary.lean Pass 1 TCB"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc SimplifyCfg & Miri mir_preserve_ub live execution probe (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rustc_mir_transform::simplify::SimplifyCfg & Miri reference revision pinned by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "e9bc37a4d2c0ad9be243f25db28ff21624d8102b"
+          },
+          "name": "zerocopy crate full-body SimplifyCfg MIR pass-pair delta census"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 primary kernel and TrustedBoundary Pass 1 replay toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 cross-version kernel verification toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe",
+            "version": "3.1.0"
+          },
+          "name": "lean4export NDJSON kernel declaration exporter"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "0.4.19"
+          },
+          "name": "nanoda_lib independent Rust external Lean 4 kernel typechecker"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/theory",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "anneal-universal-algebra-institutions-and-incompleteness-bounds": {
       "observed_at": "2026-11-02",
       "subjects": [
