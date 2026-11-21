@@ -1,0 +1,1052 @@
+[
+ {
+  "id": "add_mul_fma_comm",
+  "lean": "Toy.Float.add_comm_mul_comm_fma_comm",
+  "kind": "theorem",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model (one NaN, payload and sign not represented), for all values x, y, z including NaN, ±∞ and ±0: add x y = add y x, mul x y = mul y x, and fma x y z = fma y x z (the two multiplicands of fma swapped), as identity of encodings.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3), distinct finite operands with rounding: 2 + 1/4 (a tie, = 2) in both orders; 1.25 * 1.5 (= 1.875, rounds to 2) in both orders; fma(5/16, 7/8, 2) with the multiplicands swapped.",
+  "nonvacuity_witness_lean": "Toy.Float.nv_comm_F33",
+  "non_claims": [
+   "NaN encoding: the model has one NaN, so '=' means identical encodings modulo NaN payload and NaN sign. Real hardware and LLVM choose the payload and sign of a NaN result non-deterministically (LLVM LangRef 'Behavior of Floating-Point NaN values'), and signaling NaNs are not modelled (not proved here). So a + b and b + a may differ in NaN bits on such systems (not proved here).",
+   "It is not associativity: add is not associative (add_assoc_fails_by_rounding_all_normal_of_prec_le_two_bias, add_assoc_fails_by_overflow), and mul is not associative in format (3,3) (rwMulAssoc_not_validMod_allBut_reassoc_F33).",
+   "The fma conjunct swaps the two multiplicands; it says nothing about the addend: symmetry of fma in its addend is not claimed, and fma x y z and fma x z y differ in general (not proved here).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2019, IEEE Standard for Floating-Point Arithmetic, IEEE, July 2019, DOI 10.1109/IEEESTD.2019.8766229 (the 2019 text was not accessible). §6.3 'The sign bit', quoted from public verbatim quotations of the IEEE 754-2008 §6.3 text: an exactly zero sum of operands with opposite signs is +0 in every rounding-direction attribute except roundTowardNegative, and 'x + x = x − (−x) retains the same sign as x even when x is zero'; the sign of a product is the exclusive OR of the operand signs, also when the result is zero; for fusedMultiplyAdd an exactly zero (a×b)+c is signed by the sum rule, and a nonzero exact result that rounds to zero takes the sign of the exact result. §6.3 concerns non-comparison operations.",
+   "David Goldberg, 'What every computer scientist should know about floating-point arithmetic', ACM Computing Surveys 23(1):5–48, March 1991, DOI 10.1145/103162.103163 (quoted from the edited reprint, Appendix D of Sun's Numerical Computation Guide; section paths are those of the reprint). Section 'Systems Aspects › Languages and Compilers › Ambiguity': 'Due to roundoff errors, the associative laws of algebra do not necessarily hold for floating-point numbers', with (x+y)+z = 1 but x+(y+z) = 0 for x = 10^30, y = −10^30, z = 1.",
+   "Sylvie Boldo, Jacques-Henri Jourdan, Xavier Leroy, Guillaume Melquiond, 'Verified Compilation of Floating-Point Computations', Journal of Automated Reasoning 54(2):135–163, 2015, DOI 10.1007/s10817-014-9317-x. Mechanized IEEE 754 semantics in CompCert (Coq/Flocq) with strict, value-preserving floating-point optimizations.",
+   "Mechanized IEEE 754 models (none of which this package depends on): John Harrison, 'A Machine-Checked Theory of Floating Point Arithmetic', TPHOLs 1999, LNCS 1690, pp. 113–130, DOI 10.1007/3-540-48256-3_9; Lei Yu, 'A Formal Model of IEEE Floating Point Arithmetic', Archive of Formal Proofs, July 2013 (entry IEEE_Floating_Point); Lean 4 v4.34.1 core Init.Data.Float.Model (a parametric model with structure Format { mantissaBitsWithoutImplicit, exponentBits, he : 2 ≤ exponentBits } backing Float and Float32; inspected in the pinned toolchain source); FloatLib (R. J. George, W. Adkisson, A. Anandkumar, 'FloatLib: Verified Floating-Point Arithmetic in Lean', arXiv:2609.19352, 2026); FloatSpec (github.com/Beneficial-AI-Foundation/FloatSpec, a Lean 4 port of the Coq Flocq library). No bridge between Toy.Float.FP and any of these is proved."
+  ],
+  "design_question": "Which algebraic rewrites may an optimizer apply to IEEE 754 binary arithmetic with round-to-nearest-even without any fast-math flag, and which special values (signed zero, NaN, infinities, subnormals) are responsible for each failure?",
+  "lean_names": [
+   "Toy.Float.add_assoc_fails_by_overflow",
+   "Toy.Float.add_assoc_fails_by_rounding_all_normal_of_prec_le_two_bias",
+   "Toy.Float.rwMulAssoc_not_validMod_allBut_reassoc_F33",
+   "Toy.Float.FP.bits",
+   "Toy.Float.FP.neg",
+   "Toy.Float.ofDyadic",
+   "Toy.Float.Expr.reassocMul",
+   "Toy.Float.Expr.variants",
+   "Toy.Float.FP",
+   "Toy.Float.Flags",
+   "Toy.Float.Fmt",
+   "Toy.Float.Fmt.bias",
+   "Toy.Float.Fmt.qneg",
+   "Toy.Float.add",
+   "Toy.Float.bitLen",
+   "Toy.Float.decodeE",
+   "Toy.Float.decodeM",
+   "Toy.Float.ex_add_neg_F33",
+   "Toy.Float.ex_add_pos_F33",
+   "Toy.Float.ex_admissible_F33",
+   "Toy.Float.ex_bits_injective_F33",
+   "Toy.Float.ex_bits_pos_F33",
+   "Toy.Float.ex_cmp_F33",
+   "Toy.Float.ex_cvt_F33",
+   "Toy.Float.ex_eqNsz_F33",
+   "Toy.Float.ex_err_F33",
+   "Toy.Float.ex_flagsSub",
+   "Toy.Float.ex_fma_neg_F33",
+   "Toy.Float.ex_fma_pos_F33",
+   "Toy.Float.ex_fmt_neg_no_one_bit_exponent",
+   "Toy.Float.ex_fmt_pos_F33",
+   "Toy.Float.ex_fp_neg_zeros_distinct_F33",
+   "Toy.Float.ex_minLt_F33",
+   "Toy.Float.ex_minimum_F33",
+   "Toy.Float.ex_mkFin_units_F33",
+   "Toy.Float.ex_mul_neg_F33",
+   "Toy.Float.ex_mul_pos_F33",
+   "Toy.Float.ex_rel_F33",
+   "Toy.Float.ex_round_neg_F33",
+   "Toy.Float.ex_round_pos_F33",
+   "Toy.Float.ex_sub_F33",
+   "Toy.Float.ex_units_neg_F33",
+   "Toy.Float.ex_units_pos_F33",
+   "Toy.Float.ex_validMod_F33",
+   "Toy.Float.ex_variants_F33",
+   "Toy.Float.fma",
+   "Toy.Float.le",
+   "Toy.Float.mkFin",
+   "Toy.Float.mul",
+   "Toy.Float.unitsOf",
+   "Toy.Float.validMod_mono",
+   "Toy.Float.valid_iff_forall_eq",
+   "Toy.Float.zero",
+   "Toy.Float.F33",
+   "Toy.Float.dy",
+   "Toy.Float.rneDiv",
+   "Toy.Float.bitLenAux",
+   "Toy.Float.FP.isNaN",
+   "Toy.Float.FP.isInf",
+   "Toy.Float.FP.isZero",
+   "Toy.Float.FP.signBit",
+   "Toy.Float.FP.units",
+   "Toy.Float.Fmt.expCount",
+   "Toy.Float.Fmt.fracCount",
+   "Toy.Float.Fmt.maxUnits",
+   "Toy.Float.Fmt.expCount_pos",
+   "Toy.Float.Fmt.fracCount_pos"
+  ]
+ },
+ {
+  "id": "add_negZero_mul_one_identity",
+  "lean": "Toy.Float.add_negZero_right_and_mul_one_right",
+  "kind": "theorem",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, for every value x (including NaN, ±∞ and both zeros): x + (−0) = x and x * 1 = x, as identity of encodings.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): (−0) + (−0) = −0, (1/16) + (−0) = 1/16, (−∞) * 1 = −∞, NaN * 1 = NaN.",
+  "nonvacuity_witness_lean": "Toy.Float.nv_identities_F33",
+  "non_claims": [
+   "NaN encoding: the model has one NaN, so '=' means identical encodings modulo NaN payload and NaN sign. Real hardware and LLVM choose the payload and sign of a NaN result non-deterministically (LLVM LangRef 'Behavior of Floating-Point NaN values'), and signaling NaNs are not modelled (not proved here). On hardware, NaN * 1 may change a NaN payload or quiet a signaling NaN (not proved here).",
+   "The law x + (+0) = x is different and fails at x = −0 (add_posZero_right_eq_iff_and_eqNsz).",
+   "Rounding attribute: the model fixes roundTiesToEven; under IEEE 754 roundTowardNegative the sign of an exact zero sum changes ((+0) + (−0) = −0 and x − x = −0 for finite x) (not proved here; other rounding attributes are not modelled).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2019, IEEE Standard for Floating-Point Arithmetic, IEEE, July 2019, DOI 10.1109/IEEESTD.2019.8766229 (the 2019 text was not accessible). §6.3 'The sign bit', quoted from public verbatim quotations of the IEEE 754-2008 §6.3 text: an exactly zero sum of operands with opposite signs is +0 in every rounding-direction attribute except roundTowardNegative, and 'x + x = x − (−x) retains the same sign as x even when x is zero'; the sign of a product is the exclusive OR of the operand signs, also when the result is zero; for fusedMultiplyAdd an exactly zero (a×b)+c is signed by the sum rule, and a nonzero exact result that rounds to zero takes the sign of the exact result. §6.3 concerns non-comparison operations.",
+   "llvm/lib/Analysis/InstructionSimplify.cpp at llvm/llvm-project commit ef72a0e441f65f73b7cf732bf05b8bcc1a8cf609. 'fsub nnan x, x ==> 0.0' (lines 6244–6247, inside a default-floating-point-environment guard). 'X * 0.0 --> 0.0 (with nnan and nsz)' (lines 6286–6289). 'fadd X, -0 ==> X' (lines 6144–6153, guarded so that it is not applied when the rounding mode can be TowardNegative unless nsz is present, or when signaling NaNs cannot be ignored). 'fadd X, 0 ==> X, when we know X is not -0' (lines 6155–6159; requires nsz or X ≠ −0).",
+   "David Menendez, Santosh Nagarakatte, Aarti Gupta, 'Alive-FP: Automated Verification of Floating Point Based Peephole Optimizations in LLVM', Static Analysis (SAS 2016), LNCS 9837, pp. 317–337, Springer, 2016, DOI 10.1007/978-3-662-53413-7_16. Abstract: it 'handles a class of floating point optimizations and fast-math optimizations involving signed zeros, not-a-number, and infinities, which do not result in loss of accuracy' and found 'seven wrong optimizations in LLVM' (SMT-based checks at fixed bit widths; the paper body was not accessible, so the attribution of the flag names nnan/ninf/nsz to it rests on its public implementation).",
+   "Andres Nötzli, Fraser Brown, 'LifeJacket: Verifying Precise Floating-Point Optimizations in LLVM', Proceedings of the 5th ACM SIGPLAN International Workshop on State Of the Art in Program Analysis (SOAP 2016), pp. 24–29, DOI 10.1145/2931021.2931024 (arXiv:1603.09290). Verifies 43 LLVM floating-point peephole optimizations with SMT and finds eight incorrect ones; 'LifeJacket currently supports three of the five fast-math flags that LLVM implements: nnan, ninf, and nsz'; its Fig. 1 example +0.0 - (-0.0 - x) => x 'is not valid if x = −0.0'.",
+   "Sylvie Boldo, Jacques-Henri Jourdan, Xavier Leroy, Guillaume Melquiond, 'Verified Compilation of Floating-Point Computations', Journal of Automated Reasoning 54(2):135–163, 2015, DOI 10.1007/s10817-014-9317-x. Mechanized IEEE 754 semantics in CompCert (Coq/Flocq) with strict, value-preserving floating-point optimizations."
+  ],
+  "design_question": "Which algebraic rewrites may an optimizer apply to IEEE 754 binary arithmetic with round-to-nearest-even without any fast-math flag, and which special values (signed zero, NaN, infinities, subnormals) are responsible for each failure?",
+  "lean_names": [
+   "Toy.Float.add_posZero_right_eq_iff_and_eqNsz",
+   "Toy.Float.one",
+   "Toy.Float.negZero"
+  ]
+ },
+ {
+  "id": "add_posZero_identity_characterization",
+  "lean": "Toy.Float.add_posZero_right_eq_iff_and_eqNsz",
+  "kind": "characterization",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, for every value x: x + (+0) = x holds if and only if x ≠ −0 (at x = −0 the sum is +0), and x + (+0) equals x up to the sign of zero (EqNsz) for every x.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): (−0) + (+0) = +0 ≠ −0 (the failing instance) and (+0) + (+0) = +0 (a holding instance).",
+  "nonvacuity_witness_lean": "Toy.Float.add_posZero_fails_at_negZero_F33",
+  "non_claims": [
+   "The equivalence with x ≠ −0 is about identity of encodings in the toy model; NaN payload effects are not modelled.",
+   "Rounding attribute: the model fixes roundTiesToEven; under IEEE 754 roundTowardNegative the sign of an exact zero sum changes ((+0) + (−0) = −0 and x − x = −0 for finite x) (not proved here; other rounding attributes are not modelled).",
+   "That {nsz} is exactly the family of flag sets licensing x + (+0) → x is the table result rwAddPosZero_validMod_iff_F33, proved in format (3,3). For every format, sufficiency of {nsz} is flagTable_sufficient; necessity of nsz is proved in format (3,3), and in other formats it is neither established nor refuted here.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), Annex F.9.2 'Expression transformations' (HTML rendering of N1570). 'x - x → 0.0 The expressions x - x and 0.0 are not equivalent if x is a NaN or infinite'. '0 * x → 0.0 The expressions 0*x and 0.0 are not equivalent if x is a NaN, infinite, or -0' (this lists sufficient reasons; every negative finite x also gives −0). 'x + 0 → x The expressions x + 0 and x are not equivalent if x is -0, because (-0) + (+0) yields +0 (in the default rounding direction), not -0'. '-x ↔ 0 - x The expressions -x and 0 - x are not equivalent if x is +0, because -(+0) yields -0, but 0 - (+0) yields +0 (unless rounding is downward)'.",
+   "llvm/lib/Analysis/InstructionSimplify.cpp at llvm/llvm-project commit ef72a0e441f65f73b7cf732bf05b8bcc1a8cf609. 'fsub nnan x, x ==> 0.0' (lines 6244–6247, inside a default-floating-point-environment guard). 'X * 0.0 --> 0.0 (with nnan and nsz)' (lines 6286–6289). 'fadd X, -0 ==> X' (lines 6144–6153, guarded so that it is not applied when the rounding mode can be TowardNegative unless nsz is present, or when signaling NaNs cannot be ignored). 'fadd X, 0 ==> X, when we know X is not -0' (lines 6155–6159; requires nsz or X ≠ −0).",
+   "IEEE Std 754-2019, IEEE Standard for Floating-Point Arithmetic, IEEE, July 2019, DOI 10.1109/IEEESTD.2019.8766229 (the 2019 text was not accessible). §6.3 'The sign bit', quoted from public verbatim quotations of the IEEE 754-2008 §6.3 text: an exactly zero sum of operands with opposite signs is +0 in every rounding-direction attribute except roundTowardNegative, and 'x + x = x − (−x) retains the same sign as x even when x is zero'; the sign of a product is the exclusive OR of the operand signs, also when the result is zero; for fusedMultiplyAdd an exactly zero (a×b)+c is signed by the sum rule, and a nonzero exact result that rounds to zero takes the sign of the exact result. §6.3 concerns non-comparison operations.",
+   "David Menendez, Santosh Nagarakatte, Aarti Gupta, 'Alive-FP: Automated Verification of Floating Point Based Peephole Optimizations in LLVM', Static Analysis (SAS 2016), LNCS 9837, pp. 317–337, Springer, 2016, DOI 10.1007/978-3-662-53413-7_16. Abstract: it 'handles a class of floating point optimizations and fast-math optimizations involving signed zeros, not-a-number, and infinities, which do not result in loss of accuracy' and found 'seven wrong optimizations in LLVM' (SMT-based checks at fixed bit widths; the paper body was not accessible, so the attribution of the flag names nnan/ninf/nsz to it rests on its public implementation).",
+   "Andres Nötzli, Fraser Brown, 'LifeJacket: Verifying Precise Floating-Point Optimizations in LLVM', Proceedings of the 5th ACM SIGPLAN International Workshop on State Of the Art in Program Analysis (SOAP 2016), pp. 24–29, DOI 10.1145/2931021.2931024 (arXiv:1603.09290). Verifies 43 LLVM floating-point peephole optimizations with SMT and finds eight incorrect ones; 'LifeJacket currently supports three of the five fast-math flags that LLVM implements: nnan, ninf, and nsz'; its Fig. 1 example +0.0 - (-0.0 - x) => x 'is not valid if x = −0.0'."
+  ],
+  "design_question": "Which algebraic rewrites may an optimizer apply to IEEE 754 binary arithmetic with round-to-nearest-even without any fast-math flag, and which special values (signed zero, NaN, infinities, subnormals) are responsible for each failure?",
+  "lean_names": [
+   "Toy.Float.flagTable_sufficient",
+   "Toy.Float.rwAddPosZero_validMod_iff_F33",
+   "Toy.Float.EqNsz",
+   "Toy.Float.posZero",
+   "Toy.Float.zeroBlind"
+  ]
+ },
+ {
+  "id": "sub_self_characterization",
+  "lean": "Toy.Float.sub_self_eq_posZero_iff_and_eq_nan_iff",
+  "kind": "characterization",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, for every value x: x − x = +0 if and only if x is finite (this includes x = ±0), and x − x is NaN if and only if x is not finite (x is NaN, +∞ or −∞).",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): NaN − NaN = NaN, ∞ − ∞ = NaN (the input +∞ is not NaN; the result is), (−∞) − (−∞) = NaN, (−0) − (−0) = +0.",
+  "nonvacuity_witness_lean": "Toy.Float.sub_self_fails_at_nan_inf_F33",
+  "non_claims": [
+   "It does not say that x − x → +0 needs both nnan and ninf: under LLVM's nnan, which also excludes NaN results, the second conjunct shows that excluding NaN results already excludes x = ±∞. Sufficiency of {nnan} in every format is flagTable_sufficient; that {nnan} is exactly the required family is rwSubSelf_validMod_iff_F33, proved in format (3,3); in other formats it is neither established nor refuted here.",
+   "Under a reading of 'no NaNs' that restricts the inputs but not the results, the input +∞ would not be excluded; the package does not model that reading as a flag.",
+   "Rounding attribute: the model fixes roundTiesToEven; under IEEE 754 roundTowardNegative the sign of an exact zero sum changes ((+0) + (−0) = −0 and x − x = −0 for finite x) (not proved here; other rounding attributes are not modelled).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), Annex F.9.2 'Expression transformations' (HTML rendering of N1570). 'x - x → 0.0 The expressions x - x and 0.0 are not equivalent if x is a NaN or infinite'. '0 * x → 0.0 The expressions 0*x and 0.0 are not equivalent if x is a NaN, infinite, or -0' (this lists sufficient reasons; every negative finite x also gives −0). 'x + 0 → x The expressions x + 0 and x are not equivalent if x is -0, because (-0) + (+0) yields +0 (in the default rounding direction), not -0'. '-x ↔ 0 - x The expressions -x and 0 - x are not equivalent if x is +0, because -(+0) yields -0, but 0 - (+0) yields +0 (unless rounding is downward)'.",
+   "David Goldberg, 'What every computer scientist should know about floating-point arithmetic', ACM Computing Surveys 23(1):5–48, March 1991, DOI 10.1145/103162.103163 (edited reprint, Appendix D of Sun's Numerical Computation Guide; section paths are those of the reprint). Section 'Systems Aspects › Languages and Compilers › The IEEE Standard': 'Since x - x = +0 for all x, (+0) - (+0) = +0. However, -(+0) = -0, thus -x should not be defined as 0 - x', with footnote 27 'Unless the rounding mode is round toward -∞, in which case x - x = -0' (the sentence ignores NaN and infinities); the same paragraph: 'a NaN is never equal to any other number (including another NaN), so x = x is no longer always true' and 'NaNs are unordered with respect to all other numbers, so x ≤ y cannot be defined as not x > y'. Section 'The IEEE Standard › Special Quantities › Signed Zero': 'the IEEE standard defines comparison so that +0 = -0, rather than -0 < +0'.",
+   "llvm/lib/Analysis/InstructionSimplify.cpp at llvm/llvm-project commit ef72a0e441f65f73b7cf732bf05b8bcc1a8cf609. 'fsub nnan x, x ==> 0.0' (lines 6244–6247, inside a default-floating-point-environment guard). 'X * 0.0 --> 0.0 (with nnan and nsz)' (lines 6286–6289). 'fadd X, -0 ==> X' (lines 6144–6153, guarded so that it is not applied when the rounding mode can be TowardNegative unless nsz is present, or when signaling NaNs cannot be ignored). 'fadd X, 0 ==> X, when we know X is not -0' (lines 6155–6159; requires nsz or X ≠ −0).",
+   "David Menendez, Santosh Nagarakatte, Aarti Gupta, 'Alive-FP: Automated Verification of Floating Point Based Peephole Optimizations in LLVM', Static Analysis (SAS 2016), LNCS 9837, pp. 317–337, Springer, 2016, DOI 10.1007/978-3-662-53413-7_16. Abstract: it 'handles a class of floating point optimizations and fast-math optimizations involving signed zeros, not-a-number, and infinities, which do not result in loss of accuracy' and found 'seven wrong optimizations in LLVM' (SMT-based checks at fixed bit widths; the paper body was not accessible, so the attribution of the flag names nnan/ninf/nsz to it rests on its public implementation).",
+   "Andres Nötzli, Fraser Brown, 'LifeJacket: Verifying Precise Floating-Point Optimizations in LLVM', Proceedings of the 5th ACM SIGPLAN International Workshop on State Of the Art in Program Analysis (SOAP 2016), pp. 24–29, DOI 10.1145/2931021.2931024 (arXiv:1603.09290). Verifies 43 LLVM floating-point peephole optimizations with SMT and finds eight incorrect ones; 'LifeJacket currently supports three of the five fast-math flags that LLVM implements: nnan, ninf, and nsz'; its Fig. 1 example +0.0 - (-0.0 - x) => x 'is not valid if x = −0.0'."
+  ],
+  "design_question": "Which algebraic rewrites may an optimizer apply to IEEE 754 binary arithmetic with round-to-nearest-even without any fast-math flag, and which special values (signed zero, NaN, infinities, subnormals) are responsible for each failure?",
+  "lean_names": [
+   "Toy.Float.flagTable_sufficient",
+   "Toy.Float.rwSubSelf_validMod_iff_F33",
+   "Toy.Float.sub"
+  ]
+ },
+ {
+  "id": "feq_self_characterization",
+  "lean": "Toy.Float.feq_self_iff",
+  "kind": "characterization",
+  "tier": "T0",
+  "depth": "definitional",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, for every value x: the IEEE quiet equality x == x (feq) is true if and only if x is not NaN.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): NaN == NaN is false; (−0) == (−0) is true.",
+  "nonvacuity_witness_lean": "Toy.Float.feq_self_fails_at_nan_F33",
+  "non_claims": [
+   "== is the IEEE quiet equality feq; identity of encodings (=) is a different relation, under which x = x always holds and +0 and −0 differ.",
+   "Comparison rewrites are not rows of the flag table, because the expression language is floating-point valued; the statement that x == x → true is licensed by an assumption that x is not NaN is prose derived from this characterization.",
+   "feq returns a Bool and models no exception flags (IEEE 754 quiet versus signaling predicates are not distinguished).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2019 §5.11 'Details of comparison predicates' (the standard's text was not accessible; quoted from a public verbatim quotation of the 754-2008 text and a late 754-2019 draft, Stack Overflow question 71224184, answer by E. Postpischil): 'Four mutually exclusive relations are possible: less than, equal, greater than, and unordered. The last case arises when at least one operand is NaN. Every NaN shall compare unordered with everything, including itself. Comparisons shall ignore the sign of zero (so +0 = −0).'",
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), Annex F.9.3 'Relational operators' (HTML rendering of N1570; the same text is F.8.3 in C99 N1256). 'x != x → false The expression x != x is true if x is a NaN.' 'x == x → true The expression x = x [sic; C99 N1256 F.8.3 reads 'The statement x == x'] is false if x is a NaN.' 'The sense of relational operators shall be maintained. This includes handling unordered cases as expressed by the source code.' EXAMPLE: 'if (a < b) f(); else g();' is not equivalent to 'if (a >= b) g(); else f();' (and the comments note that both raise 'invalid' if a and b are unordered) but is equivalent to 'if (!(a < b)) g(); else f();'.",
+   "David Goldberg, 'What every computer scientist should know about floating-point arithmetic', ACM Computing Surveys 23(1):5–48, March 1991, DOI 10.1145/103162.103163 (edited reprint, Appendix D of Sun's Numerical Computation Guide; section paths are those of the reprint). Section 'Systems Aspects › Languages and Compilers › The IEEE Standard': 'Since x - x = +0 for all x, (+0) - (+0) = +0. However, -(+0) = -0, thus -x should not be defined as 0 - x', with footnote 27 'Unless the rounding mode is round toward -∞, in which case x - x = -0' (the sentence ignores NaN and infinities); the same paragraph: 'a NaN is never equal to any other number (including another NaN), so x = x is no longer always true' and 'NaNs are unordered with respect to all other numbers, so x ≤ y cannot be defined as not x > y'. Section 'The IEEE Standard › Special Quantities › Signed Zero': 'the IEEE standard defines comparison so that +0 = -0, rather than -0 < +0'."
+  ],
+  "design_question": "Which algebraic rewrites may an optimizer apply to IEEE 754 binary arithmetic with round-to-nearest-even without any fast-math flag, and which special values (signed zero, NaN, infinities, subnormals) are responsible for each failure?",
+  "lean_names": [
+   "Toy.Float.feq"
+  ]
+ },
+ {
+  "id": "mul_posZero_characterization",
+  "lean": "Toy.Float.mul_posZero_eq_posZero_iff_and_failure_values",
+  "kind": "characterization",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, for every value x: x * (+0) = +0 if and only if x is finite and its sign bit is clear; if x is not finite (NaN, +∞ or −∞), x * (+0) is NaN; and if x is finite with the sign bit set (−0 and every negative finite value), x * (+0) is −0.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): NaN, +∞, −∞ give NaN; −1 and −0 give −0; 3 * (+0) = +0.",
+  "nonvacuity_witness_lean": "Toy.Float.mul_posZero_fails_F33",
+  "non_claims": [
+   "Sufficiency of {nnan, nsz} for x * (+0) → +0 holds in every format (flagTable_sufficient); that ninf is not needed and that {nnan, nsz} is exactly the required family is rwMulPosZero_validMod_iff_F33, proved in format (3,3); in other formats it is neither established nor refuted here.",
+   "C11 F.9.2 lists 'NaN, infinite, or −0' as reasons for non-equivalence; this characterization adds every negative finite x. It does not contradict C11's table, which gives sufficient reasons.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), Annex F.9.2 'Expression transformations' (HTML rendering of N1570). 'x - x → 0.0 The expressions x - x and 0.0 are not equivalent if x is a NaN or infinite'. '0 * x → 0.0 The expressions 0*x and 0.0 are not equivalent if x is a NaN, infinite, or -0' (this lists sufficient reasons; every negative finite x also gives −0). 'x + 0 → x The expressions x + 0 and x are not equivalent if x is -0, because (-0) + (+0) yields +0 (in the default rounding direction), not -0'. '-x ↔ 0 - x The expressions -x and 0 - x are not equivalent if x is +0, because -(+0) yields -0, but 0 - (+0) yields +0 (unless rounding is downward)'.",
+   "llvm/lib/Analysis/InstructionSimplify.cpp at llvm/llvm-project commit ef72a0e441f65f73b7cf732bf05b8bcc1a8cf609. 'fsub nnan x, x ==> 0.0' (lines 6244–6247, inside a default-floating-point-environment guard). 'X * 0.0 --> 0.0 (with nnan and nsz)' (lines 6286–6289). 'fadd X, -0 ==> X' (lines 6144–6153, guarded so that it is not applied when the rounding mode can be TowardNegative unless nsz is present, or when signaling NaNs cannot be ignored). 'fadd X, 0 ==> X, when we know X is not -0' (lines 6155–6159; requires nsz or X ≠ −0).",
+   "IEEE Std 754-2019, IEEE Standard for Floating-Point Arithmetic, IEEE, July 2019, DOI 10.1109/IEEESTD.2019.8766229 (the 2019 text was not accessible). §6.3 'The sign bit', quoted from public verbatim quotations of the IEEE 754-2008 §6.3 text: an exactly zero sum of operands with opposite signs is +0 in every rounding-direction attribute except roundTowardNegative, and 'x + x = x − (−x) retains the same sign as x even when x is zero'; the sign of a product is the exclusive OR of the operand signs, also when the result is zero; for fusedMultiplyAdd an exactly zero (a×b)+c is signed by the sum rule, and a nonzero exact result that rounds to zero takes the sign of the exact result. §6.3 concerns non-comparison operations.",
+   "David Menendez, Santosh Nagarakatte, Aarti Gupta, 'Alive-FP: Automated Verification of Floating Point Based Peephole Optimizations in LLVM', Static Analysis (SAS 2016), LNCS 9837, pp. 317–337, Springer, 2016, DOI 10.1007/978-3-662-53413-7_16. Abstract: it 'handles a class of floating point optimizations and fast-math optimizations involving signed zeros, not-a-number, and infinities, which do not result in loss of accuracy' and found 'seven wrong optimizations in LLVM' (SMT-based checks at fixed bit widths; the paper body was not accessible, so the attribution of the flag names nnan/ninf/nsz to it rests on its public implementation).",
+   "Andres Nötzli, Fraser Brown, 'LifeJacket: Verifying Precise Floating-Point Optimizations in LLVM', Proceedings of the 5th ACM SIGPLAN International Workshop on State Of the Art in Program Analysis (SOAP 2016), pp. 24–29, DOI 10.1145/2931021.2931024 (arXiv:1603.09290). Verifies 43 LLVM floating-point peephole optimizations with SMT and finds eight incorrect ones; 'LifeJacket currently supports three of the five fast-math flags that LLVM implements: nnan, ninf, and nsz'; its Fig. 1 example +0.0 - (-0.0 - x) => x 'is not valid if x = −0.0'.",
+   "Sylvie Boldo, Jacques-Henri Jourdan, Xavier Leroy, Guillaume Melquiond, 'Verified Compilation of Floating-Point Computations', Journal of Automated Reasoning 54(2):135–163, 2015, DOI 10.1007/s10817-014-9317-x. Mechanized IEEE 754 semantics in CompCert (Coq/Flocq) with strict, value-preserving floating-point optimizations."
+  ],
+  "design_question": "Which algebraic rewrites may an optimizer apply to IEEE 754 binary arithmetic with round-to-nearest-even without any fast-math flag, and which special values (signed zero, NaN, infinities, subnormals) are responsible for each failure?",
+  "lean_names": [
+   "Toy.Float.flagTable_sufficient",
+   "Toy.Float.rwMulPosZero_validMod_iff_F33"
+  ]
+ },
+ {
+  "id": "add_assoc_fails_by_rounding",
+  "lean": "Toy.Float.add_assoc_fails_by_rounding_all_normal_of_prec_le_two_bias",
+  "kind": "counterexample",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "For every format with p + 1 ≤ 2·bias, the exposed witnesses a = 2^(emin+p) and b = 2^emin (emin = 1 − bias; assocRoundA, assocRoundB) satisfy all of the following: a, b, a + b, b + b, (a + b) + b and a + (b + b) are normal; (a + b) + b = a; and a + (b + b) ≠ a. So rounding alone breaks associativity of add, with no special values, underflow or overflow involved.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   },
+   {
+    "name": "h : f.p + 1 ≤ 2 * f.bias",
+    "purpose": "Makes a + 2b = 2^(emin+p)(1 + 2^(1−p)) a finite normal value (emin + p ≤ emax).",
+    "tightness": "tight",
+    "counterexample": "Toy.Float.add_assoc_fails_by_rounding_all_normal_hyp_tight_F22",
+    "witness_class": "the format (2,2) with the same exposed witnesses assocRoundA, assocRoundB (there assocRoundA overflows to +∞); tightness is recorded for these witnesses; for other witnesses it is neither established nor refuted here"
+   }
+  ],
+  "nonvacuity_witness": "Formats (3,2) and (3,3) satisfy h. In (3,3): a = 2, b = 1/4; (2 + 1/4) + 1/4 = 2 and 2 + (1/4 + 1/4) = 2.5.",
+  "nonvacuity_witness_lean": "Toy.Float.add_assoc_fails_by_rounding_all_normal_F32_F33",
+  "non_claims": [
+   "The hypothesis h is tight in the sense of this ledger for the exposed witnesses assocRoundA, assocRoundB (counterexample in format (2,2), add_assoc_fails_by_rounding_all_normal_hyp_tight_F22); for other witnesses its tightness is neither established nor refuted here. It is not necessary for the existence of an all-normal counterexample: format (2,3) violates h and still has one (add_assoc_rounding_all_normal_F23).",
+   "It does not show that associativity fails for every triple, or for most triples.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "David Goldberg, 'What every computer scientist should know about floating-point arithmetic', ACM Computing Surveys 23(1):5–48, March 1991, DOI 10.1145/103162.103163 (quoted from the edited reprint, Appendix D of Sun's Numerical Computation Guide; section paths are those of the reprint). Section 'Systems Aspects › Languages and Compilers › Ambiguity': 'Due to roundoff errors, the associative laws of algebra do not necessarily hold for floating-point numbers', with (x+y)+z = 1 but x+(y+z) = 0 for x = 10^30, y = −10^30, z = 1."
+  ],
+  "design_question": "Which algebraic rewrites may an optimizer apply to IEEE 754 binary arithmetic with round-to-nearest-even without any fast-math flag, and which special values (signed zero, NaN, infinities, subnormals) are responsible for each failure?",
+  "lean_names": [
+   "Toy.Float.add_assoc_fails_by_rounding_all_normal_hyp_tight_F22",
+   "Toy.Float.add_assoc_rounding_all_normal_F23",
+   "Toy.Float.assocRoundA",
+   "Toy.Float.assocRoundB",
+   "Toy.Float.F22",
+   "Toy.Float.F32",
+   "Toy.Float.F23",
+   "Toy.Float.FP.isNormal"
+  ]
+ },
+ {
+  "id": "add_assoc_fails_by_overflow",
+  "lean": "Toy.Float.add_assoc_fails_by_overflow",
+  "kind": "counterexample",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, with M the largest finite value: (M + M) + (−M) = +∞ while M + (M + (−M)) = M.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "No hypotheses beyond the format invariants; in format (3,3), M = 14 (add_assoc_overflow_excluded_by_ninf_F33 evaluates the instance).",
+  "nonvacuity_witness_lean": "Toy.Float.add_assoc_overflow_excluded_by_ninf_F33",
+  "non_claims": [
+   "This failure needs an infinite intermediate result, so it is excluded by ninf (add_assoc_overflow_excluded_by_ninf_F33, format (3,3)); rounding counterexamples are not excluded (add_assoc_not_validMod_allBut_reassoc_F33).",
+   "Overflow of M + M to +∞ relies on roundTiesToEven; under roundTowardZero or roundTowardNegative, M + M rounds to M instead (not proved here; other rounding attributes are not modelled).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2019 §4.3.1, quoted in public sources: under roundTiesToEven 'an infinitely precise result with magnitude at least b^emax(b − ½b^(1−p)) shall round to ∞ with no change in sign'.",
+   "David Goldberg, 'What every computer scientist should know about floating-point arithmetic', ACM Computing Surveys 23(1):5–48, March 1991, DOI 10.1145/103162.103163 (quoted from the edited reprint, Appendix D of Sun's Numerical Computation Guide; section paths are those of the reprint). Section 'Systems Aspects › Languages and Compilers › Ambiguity': 'Due to roundoff errors, the associative laws of algebra do not necessarily hold for floating-point numbers', with (x+y)+z = 1 but x+(y+z) = 0 for x = 10^30, y = −10^30, z = 1."
+  ],
+  "design_question": "Which algebraic rewrites may an optimizer apply to IEEE 754 binary arithmetic with round-to-nearest-even without any fast-math flag, and which special values (signed zero, NaN, infinities, subnormals) are responsible for each failure?",
+  "lean_names": [
+   "Toy.Float.add_assoc_not_validMod_allBut_reassoc_F33",
+   "Toy.Float.Admissible",
+   "Toy.Float.rwAddAssoc",
+   "Toy.Float.maxFinite",
+   "Toy.Float.envAssocOverflow"
+  ]
+ },
+ {
+  "id": "add_assoc_zero_sign_impossible",
+  "lean": "Toy.Float.add_assoc_defect_never_only_zero_sign",
+  "kind": "impossibility",
+  "tier": "T1",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model (roundTiesToEven, gradual underflow), for all a, b, c: if (a + b) + c and a + (b + c) are equal up to the sign of zero, then they are identical. So under round-to-nearest-even with gradual underflow the two bracketings of a sum of three values never differ only in the sign of zero.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   },
+   {
+    "name": "h : EqNsz (add (add a b) c) (add a (add b c))",
+    "purpose": "Restricts to triples where the bracketings agree up to zero sign; without it the conclusion is associativity, which fails.",
+    "tightness": "tight",
+    "counterexample": "Toy.Float.add_assoc_fails_F33",
+    "witness_class": "an all-normal triple (2, 1/4, 1/4) in format (3,3), where the bracketings give 2 and 2.5"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3), (a, b, c) = (−0, +0, −0): h holds and both bracketings are +0.",
+  "nonvacuity_witness_lean": "Toy.Float.nv_assoc_zero_sign_F33",
+  "positive_control_lean": "Toy.Float.sub_rebracket_differs_only_in_zero_sign_F33",
+  "non_claims": [
+   "It does not say signed zeros are harmless for re-bracketing in general: the nearby re-bracketing (a − b) − c versus a − (b + c) differs only in zero sign at (−0, +0, −0) (sub_rebracket_differs_only_in_zero_sign_F33), and so does −(x − y) versus y − x (rwNegSub_validMod_iff_F33). It covers pure add re-bracketing; it neither establishes nor refutes zero-sign agreement for expressions mixing sub, mul or fma.",
+   "Escape hatch (subnormal handling): the proof uses gradual underflow, under which every nonzero exact sum of format values is at least one subnormal unit 2^−qneg in magnitude and so never rounds to ±0. Under flush-to-zero (abrupt underflow preserving the sign), all-normal triples can give −0 in one bracketing and +0 in the other, e.g. (−2.5, 2.0, 0.375) in format (3,3) (not proved here; flush-to-zero is not modelled).",
+   "Escape hatch (rounding attribute): the proof uses the roundTiesToEven sum-sign rule; other rounding attributes are not modelled (not proved here).",
+   "It does not claim novelty; it is a direct consequence of the IEEE 754 §6.3 sum-sign rule and gradual underflow. No explicit statement of it was located in the sources checked.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2019, IEEE Standard for Floating-Point Arithmetic, IEEE, July 2019, DOI 10.1109/IEEESTD.2019.8766229 (the 2019 text was not accessible). §6.3 'The sign bit', quoted from public verbatim quotations of the IEEE 754-2008 §6.3 text: an exactly zero sum of operands with opposite signs is +0 in every rounding-direction attribute except roundTowardNegative, and 'x + x = x − (−x) retains the same sign as x even when x is zero'; the sign of a product is the exclusive OR of the operand signs, also when the result is zero; for fusedMultiplyAdd an exactly zero (a×b)+c is signed by the sum rule, and a nonzero exact result that rounds to zero takes the sign of the exact result. §6.3 concerns non-comparison operations.",
+   "Rust core library, library/core/src/primitive_docs.rs at rust-lang/rust commit 268bdaabaceb7688b974bae0f96b9c5c1b6ab991 (lines 1194–1207): primitive operations round with roundTiesToEven, and 'If the result of a sum exactly equals zero, the outcome is +0.0 unless both arguments were negative, then it is -0.0. Subtraction a - b is regarded as a sum a + (-b).'"
+  ],
+  "design_question": "May an optimizer that ignores the sign of zero (LLVM nsz) but not other differences re-bracket floating-point sums, i.e. can re-bracketing ever change only the sign of a zero result?",
+  "lean_names": [
+   "Toy.Float.rwNegSub_validMod_iff_F33"
+  ]
+ },
+ {
+  "id": "add_assoc_survives_restriction_flags",
+  "lean": "Toy.Float.add_assoc_not_validMod_allBut_reassoc_F33",
+  "kind": "counterexample",
+  "tier": "T0",
+  "depth": "definitional",
+  "proof_status": "proved",
+  "plain_claim": "In format (3,3), at the exposed input (x, y, z) = (2, 1/4, 1/4) (envAssocRound): the source (x + y) + z is admissible under the flag set {nnan, ninf, nsz, contract} (no NaN or infinite argument or result), evaluates to 2, the target x + (y + z) evaluates to 2.5, and the target is not related by Rel {nnan, ninf, nsz, contract} to the value of any form of the source generated by Expr.variants {nnan, ninf, nsz, contract}; hence (x + y) + z → x + (y + z) is not ValidMod {nnan, ninf, nsz, contract}. So in this model reassoc is not implied by the other flags. Here ValidMod S r means: on every input admissible for r.lhs under S (no NaN/infinite argument or result of any node, for nnan/ninf), r.rhs evaluates, up to Rel S (identity, or equality up to the sign of zero under nsz), to the value of some form of r.lhs generated by Expr.variants S (at every node, after choosing forms of the children: the node itself, plus one reassociation step at an add/mul node under reassoc, plus one contraction of a product into an add/sub node under contract).",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "The exposed input (2, 1/4, 1/4) in format (3,3) is admissible under all flags except reassoc (first conjunct).",
+  "nonvacuity_witness_lean": "Toy.Float.add_assoc_not_validMod_allBut_reassoc_F33",
+  "positive_control_lean": "Toy.Float.rwAddAssoc_validMod_reassoc",
+  "non_claims": [
+   "It is proved in format (3,3) for this input; it does not say how often reassociation changes results. In every format, overflow inputs also break associativity (add_assoc_fails_by_overflow), but those are excluded by ninf (add_assoc_overflow_excluded_by_ninf_F33).",
+   "ValidMod quantifies over the one-step-per-node forms generated by Expr.variants, not over every algebraically equivalent form; it is not transitive: the two one-step reassociations ((w + x) + y) + z → (w + x) + (y + z) and (w + x) + (y + z) → w + (x + (y + z)) are each valid modulo {reassoc}, but their composite is not valid even modulo all five flags (reassoc_validMod_not_transitive_F33; Expr.variants does not generate w + (x + (y + z)) from ((w + x) + y) + z, reassoc_variants_omits_right_assoc_F33). Rewrites such as (x + y) − y → x, which LLVM performs under reassoc nsz, are outside this permission model.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "David Goldberg, 'What every computer scientist should know about floating-point arithmetic', ACM Computing Surveys 23(1):5–48, March 1991, DOI 10.1145/103162.103163 (quoted from the edited reprint, Appendix D of Sun's Numerical Computation Guide; section paths are those of the reprint). Section 'Systems Aspects › Languages and Compilers › Ambiguity': 'Due to roundoff errors, the associative laws of algebra do not necessarily hold for floating-point numbers', with (x+y)+z = 1 but x+(y+z) = 0 for x = 10^30, y = −10^30, z = 1.",
+   "LLVM Language Reference Manual, llvm/docs/LangRef.md at llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, section 'Fast-Math Flags' (lines 4466–4566): reassoc 'Allow algebraically equivalent transformations for floating-point instructions such as reassociation transformations. This may dramatically change results in floating-point.'",
+   "Heiko Becker, Eva Darulova, Magnus O. Myreen, Zachary Tatlock, 'Icing: Supporting Fast-Math Style Optimizations in a Verified Compiler', Computer Aided Verification (CAV 2019), LNCS 11562, pp. 155–173, Springer, 2019, DOI 10.1007/978-3-030-25543-5_10. Formalized in HOL4 and connected to CakeML; optimizations such as fusing x * y + z into fma (its Rewrite 1) and associativity/commutativity (Rewrites 2–5) are allowed rewrites 'applied nondeterministically' in the semantics — the closest mechanized analogue of the permission model Expr.variants/ValidMod used here.",
+   "David Menendez, Santosh Nagarakatte, Aarti Gupta, 'Alive-FP: Automated Verification of Floating Point Based Peephole Optimizations in LLVM', Static Analysis (SAS 2016), LNCS 9837, pp. 317–337, Springer, 2016, DOI 10.1007/978-3-662-53413-7_16. Abstract: it 'handles a class of floating point optimizations and fast-math optimizations involving signed zeros, not-a-number, and infinities, which do not result in loss of accuracy' and found 'seven wrong optimizations in LLVM' (SMT-based checks at fixed bit widths; the paper body was not accessible, so the attribution of the flag names nnan/ninf/nsz to it rests on its public implementation)."
+  ],
+  "design_question": "Which fast-math flags license reassociation of floating-point sums, and can the restriction flags nnan, ninf, nsz substitute for reassoc?",
+  "lean_names": [
+   "Toy.Float.add_assoc_fails_by_overflow",
+   "Toy.Float.add_assoc_overflow_excluded_by_ninf_F33",
+   "Toy.Float.reassoc_validMod_not_transitive_F33",
+   "Toy.Float.reassoc_variants_omits_right_assoc_F33",
+   "Toy.Float.envAssocRound",
+   "Toy.Float.Rel",
+   "Toy.Float.ValidMod",
+   "Toy.Float.fReassoc",
+   "Toy.Float.Flags.allBut",
+   "Toy.Float.Flag"
+  ]
+ },
+ {
+  "id": "permissions_refine_iff_laws",
+  "lean": [
+   "Toy.Float.permittedFormsAgreeAt_iff_laws",
+   "Toy.Float.reassoc_contract_change_result_at_maxFinite"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "(Pointwise characterization.) In every format of the toy model, for all values a, b, c: every form of (x + y) + z generated by Expr.variants {reassoc} evaluates at (a, b, c) to the value of (x + y) + z if and only if (a + b) + c = a + (b + c); and every form of x * y + z generated by Expr.variants {contract} evaluates at (a, b, c) to the value of x * y + z if and only if fma a b c = a * b + c. (Witnesses in every format.) With M the largest finite value: (M + M) + (−M) = +∞ while its permitted form M + (M + (−M)) = M, and M * 2 + (−M) = +∞ while its permitted form fma M 2 (−M) = M; so at these exposed inputs not every permitted form agrees with the source, in every format.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): both pointwise agreements hold at (+0, +0, +0) and both fail at (2, 1/4, 1/4) for reassoc and at (5/16, 7/8, 2) for contract, so both sides of both equivalences take both truth values.",
+  "nonvacuity_witness_lean": "Toy.Float.nv_permittedFormsAgreeAt_true_and_false_F33",
+  "non_claims": [
+   "The pointwise equivalences are definitional unfoldings of Expr.variants for these two source expressions (the generated forms are the source itself and x + (y + z), respectively fma x y z); they contain no floating-point reasoning. The floating-point content is in the exposed witnesses.",
+   "The every-format witnesses use overflow, so they are not admissible under ninf; a finite all-normal witness for reassoc is add_assoc_not_validMod_allBut_reassoc_F33 and one for contract is fma_ne_twoStep_all_normal_F33, both proved in format (3,3); finite all-normal witnesses in other formats are neither established nor refuted here.",
+   "The corollary not_permittedFormsAgree (neither permission is a refinement of the flag-free semantics, in every format) follows from the witnesses; it does not quantify over larger expressions or other generators.",
+   "ValidMod quantifies over the one-step-per-node forms generated by Expr.variants, not over every algebraically equivalent form; it is not transitive: the two one-step reassociations ((w + x) + y) + z → (w + x) + (y + z) and (w + x) + (y + z) → w + (x + (y + z)) are each valid modulo {reassoc}, but their composite is not valid even modulo all five flags (reassoc_validMod_not_transitive_F33; Expr.variants does not generate w + (x + (y + z)) from ((w + x) + y) + z, reassoc_variants_omits_right_assoc_F33). Rewrites such as (x + y) − y → x, which LLVM performs under reassoc nsz, are outside this permission model.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "LLVM Language Reference Manual, llvm/docs/LangRef.md at llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, section 'Fast-Math Flags': contract 'Allow floating-point contraction (e.g., fusing a multiply followed by an addition into a fused multiply-and-add)'; reassoc 'Allow algebraically equivalent transformations ... This may dramatically change results in floating-point.'",
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), HTML rendering. §6.5 ¶8: 'A floating expression may be contracted, that is, evaluated as though it were a single operation, thereby omitting rounding errors implied by the source code'. §7.12.2 ¶2: the FP_CONTRACT pragma allows or disallows contraction, with implementation-defined default.",
+   "Heiko Becker, Eva Darulova, Magnus O. Myreen, Zachary Tatlock, 'Icing: Supporting Fast-Math Style Optimizations in a Verified Compiler', Computer Aided Verification (CAV 2019), LNCS 11562, pp. 155–173, Springer, 2019, DOI 10.1007/978-3-030-25543-5_10. Formalized in HOL4 and connected to CakeML; optimizations such as fusing x * y + z into fma (its Rewrite 1) and associativity/commutativity (Rewrites 2–5) are allowed rewrites 'applied nondeterministically' in the semantics — the closest mechanized analogue of the permission model Expr.variants/ValidMod used here."
+  ],
+  "design_question": "Are the permissions reassoc and contract refinements of the flag-free semantics (do they ever change results), and on exactly which inputs do their permitted forms agree with the source?",
+  "lean_names": [
+   "Toy.Float.add_assoc_not_validMod_allBut_reassoc_F33",
+   "Toy.Float.fma_ne_twoStep_all_normal_F33",
+   "Toy.Float.not_permittedFormsAgree",
+   "Toy.Float.reassoc_validMod_not_transitive_F33",
+   "Toy.Float.reassoc_variants_omits_right_assoc_F33",
+   "Toy.Float.fContract",
+   "Toy.Float.rwContract",
+   "Toy.Float.PermittedFormsAgree",
+   "Toy.Float.PermittedFormsAgreeAt",
+   "Toy.Float.env3"
+  ]
+ },
+ {
+  "id": "fma_ne_twoStep_all_normal",
+  "lean": "Toy.Float.fma_ne_twoStep_all_normal_F33",
+  "kind": "counterexample",
+  "tier": "T0",
+  "depth": "definitional",
+  "proof_status": "proved",
+  "plain_claim": "In format (3,3), for a = 5/16, b = 7/8, c = 2: the exact product a·b is 70 units of 2^−8 (35/128, at least the smallest normal 1/4, so no underflow), the rounded product a * b is 1/4, the inputs, the rounded product and both results are normal, fma a b c = 2.5, and a * b + c = 2. So contraction changes results on finite inputs by rounding alone.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Float.fma_ne_twoStep_all_normal_F33",
+  "non_claims": [
+   "Proved for one instance in format (3,3); no claim about how often contraction changes results.",
+   "Here the fused result is the more accurate one (error 29/128 versus 35/128, nv_fma_accuracy_F33). That is not always so: if the fused result overflows, it is not (fma_overflows_while_twoStep_finite_F33).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2008 §5.4.1, quoted verbatim in a public source: fusedMultiplyAdd(x, y, z) 'computes (x×y)+z as if with unbounded range and precision, rounding only once to the destination format ... and so fusedMultiplyAdd differs from a multiplication operation followed by an addition operation'. The 2019 wording and section number were not checked at a 2019 source.",
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), HTML rendering. §6.5 ¶8 (contraction) and Annex F.7 ¶1: a contracted expression is correctly rounded once."
+  ],
+  "design_question": "When a compiler contracts a*b + c into a fused multiply-add (C FP_CONTRACT, LLVM contract), what is gained (accuracy) and what is lost (refinement of the unfused semantics)?",
+  "lean_names": [
+   "Toy.Float.fma_overflows_while_twoStep_finite_F33",
+   "Toy.Float.nv_fma_accuracy_F33"
+  ]
+ },
+ {
+  "id": "fma_nearest",
+  "lean": "Toy.Float.fma_nearest_of_fma_finite",
+  "kind": "theorem",
+  "tier": "T0",
+  "depth": "substantive",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, for all values a, b, c and every value r: if fma a b c is finite, then its absolute error with respect to the exact a·b + c is at most the error of r (the error of r is infinite when r is NaN or ±∞). So a finite fused result is a nearest value of the format to the exact a·b + c.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   },
+   {
+    "name": "h : (fma a b c).isFinite = true",
+    "purpose": "A fused result that overflows to ±∞ has infinite error and is not nearest to a finite exact value.",
+    "tightness": "tight",
+    "counterexample": "Toy.Float.fma_overflows_while_twoStep_finite_F33",
+    "witness_class": "the format (3,3) instance (a, b, c) = (3/4, 12, 6) with r = 14 (the two-step result): fma overflows to +∞ and 14 has finite error"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3), (5/16, 7/8, 2): fused result 2.5 (finite), error 58 units of 2^−8 (29/128).",
+  "nonvacuity_witness_lean": "Toy.Float.nv_fma_accuracy_F33",
+  "bounded_instances_lean": [
+   "Toy.Float.fma_nearest_of_fma_finite_F22"
+  ],
+  "non_claims": [
+   "Finiteness of a, b, c is not assumed because it follows from h (fma_isFinite_imp, proved).",
+   "fma is, by definition, the RNE rounding of the exact value when the exact a·b + c is nonzero and a, b, c are finite (fma_eq_round_exactMulAdd, proved, with the guard exactMulAdd a b c ≠ 0; an exactly zero result is signed by the sum rule instead). This theorem is the nearest property of that rounding.",
+   "It concerns absolute error measured exactly; it does not claim the fused result is the unique nearest value (ties exist). errOf assigns error 0 to both +0 and −0, so the theorem constrains magnitude distance, not the sign of a zero result (which IEEE 754 §6.3 governs separately).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2008 §5.4.1, quoted verbatim in a public source: fusedMultiplyAdd(x, y, z) 'computes (x×y)+z as if with unbounded range and precision, rounding only once to the destination format ... and so fusedMultiplyAdd differs from a multiplication operation followed by an addition operation'. The 2019 wording and section number were not checked at a 2019 source.",
+   "Sylvie Boldo and Guillaume Melquiond, 'Flocq: A Unified Library for Proving Floating-Point Algorithms in Coq', 2011 IEEE 20th Symposium on Computer Arithmetic (ARITH), pp. 243–252, DOI 10.1109/ARITH.2011.40 (a general mechanized formalization of floating-point rounding; bibliographic data verified, specific theorems not checked).",
+   "Mechanized IEEE 754 models (none of which this package depends on): John Harrison, 'A Machine-Checked Theory of Floating Point Arithmetic', TPHOLs 1999, LNCS 1690, pp. 113–130, DOI 10.1007/3-540-48256-3_9; Lei Yu, 'A Formal Model of IEEE Floating Point Arithmetic', Archive of Formal Proofs, July 2013 (entry IEEE_Floating_Point); Lean 4 v4.34.1 core Init.Data.Float.Model (a parametric model with structure Format { mantissaBitsWithoutImplicit, exponentBits, he : 2 ≤ exponentBits } backing Float and Float32; inspected in the pinned toolchain source); FloatLib (R. J. George, W. Adkisson, A. Anandkumar, 'FloatLib: Verified Floating-Point Arithmetic in Lean', arXiv:2609.19352, 2026); FloatSpec (github.com/Beneficial-AI-Foundation/FloatSpec, a Lean 4 port of the Coq Flocq library). No bridge between Toy.Float.FP and any of these is proved."
+  ],
+  "design_question": "When a compiler contracts a*b + c into a fused multiply-add (C FP_CONTRACT, LLVM contract), what is gained (accuracy) and what is lost (refinement of the unfused semantics)?",
+  "lean_names": [
+   "Toy.Float.fma_eq_round_exactMulAdd",
+   "Toy.Float.fma_isFinite_imp",
+   "Toy.Float.fma_nearest_of_fma_finite_F22",
+   "Toy.Float.fma_err_le",
+   "Toy.Float.roundUnits_nearest",
+   "Toy.Float.IsRepr",
+   "Toy.Float.ErrLe",
+   "Toy.Float.FP.isFinite",
+   "Toy.Float.errOf",
+   "Toy.Float.exactMulAdd",
+   "Toy.Float.round",
+   "Toy.Float.roundUnits",
+   "Toy.Float.unitsOf_isRepr",
+   "Toy.Float.FP.val2",
+   "Toy.Float.exactFma",
+   "Toy.Float.sval"
+  ]
+ },
+ {
+  "id": "fma_errLe_twoStep",
+  "lean": [
+   "Toy.Float.fma_errLe_twoStep_of_fma_finite",
+   "Toy.Float.fma_overflows_while_twoStep_finite_F33"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "definitional",
+  "proof_status": "proved (one-line corollary of fma_nearest_of_fma_finite)",
+  "plain_claim": "In every format of the toy model, for all values a, b, c: if fma a b c is finite, its error with respect to the exact a·b + c is at most the error of the two-step a * b + c (infinite if the two-step result overflows). Finiteness of the two-step result is not a sufficient hypothesis: in format (3,3), for (3/4, 12, 6) the two-step result is 14 while the fused result overflows to +∞, and the fused error is not at most the two-step error.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   },
+   {
+    "name": "h : (fma a b c).isFinite = true",
+    "purpose": "Excludes the overflow corner where rounding the exact value up crosses the overflow threshold while the two-step evaluation, having rounded the product down, stays finite.",
+    "tightness": "tight",
+    "counterexample": "Toy.Float.fma_overflows_while_twoStep_finite_F33",
+    "witness_class": "the format (3,3) instance (a, b, c) = (3/4, 12, 6)"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3), (5/16, 7/8, 2): fused error 58, two-step error 70 (units of 2^−8).",
+  "nonvacuity_witness_lean": "Toy.Float.nv_fma_accuracy_F33",
+  "non_claims": [
+   "Derivation: fma_errLe_twoStep_of_fma_finite is fma_nearest_of_fma_finite instantiated at r := a * b + c; it adds nothing beyond that instance.",
+   "It does not say contraction preserves results: fma and a * b + c differ (fma_ne_twoStep_all_normal_F33), and contraction can turn a*b − a*b from +0 into a nonzero value (contract_mulSubMul_nonzero_F33).",
+   "'More accurate' is about a single expression a*b + c; it says nothing about accuracy of larger expressions after contraction.",
+   "The overflow corner is exhibited in format (3,3); whether it occurs in formats (2,2) or (3,2) is not stated (not proved here).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2008 §5.4.1, quoted verbatim in a public source: fusedMultiplyAdd(x, y, z) 'computes (x×y)+z as if with unbounded range and precision, rounding only once to the destination format ... and so fusedMultiplyAdd differs from a multiplication operation followed by an addition operation'. The 2019 wording and section number were not checked at a 2019 source.",
+   "IEEE Std 754-2019 §4.3.1, quoted in public sources: under roundTiesToEven 'an infinitely precise result with magnitude at least b^emax(b − ½b^(1−p)) shall round to ∞ with no change in sign'."
+  ],
+  "design_question": "When a compiler contracts a*b + c into a fused multiply-add (C FP_CONTRACT, LLVM contract), what is gained (accuracy) and what is lost (refinement of the unfused semantics)?",
+  "lean_names": [
+   "Toy.Float.contract_mulSubMul_nonzero_F33",
+   "Toy.Float.fma_ne_twoStep_all_normal_F33",
+   "Toy.Float.fma_nearest_of_fma_finite"
+  ]
+ },
+ {
+  "id": "contraction_hazard_mulSubMul",
+  "lean": "Toy.Float.contract_mulSubMul_nonzero_F33",
+  "kind": "counterexample",
+  "tier": "T0",
+  "depth": "definitional",
+  "proof_status": "proved",
+  "plain_claim": "In format (3,3), at a = 3/16, b = 3: the product a * b = 9/16 rounds to 1/2, the flag-free value of a*b − a*b is +0, and Expr.variants {contract} generates the form fma a b (−(a*b)) of a*b − a*b, whose value is 1/16 (the rounding error of the product). So contraction is not semantics-preserving even for an expression whose real value is 0.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Float.contract_mulSubMul_nonzero_F33",
+  "non_claims": [
+   "An inexact product does not always yield a nonzero residual: at (1/16, 3.5) in format (3,3) the product rounds to the normal 1/4 but fma a b (−(a*b)) is −0 (fma_mulSubMul_zero_for_inexact_product_F33).",
+   "The residual can be negative: when the product rounds up, fma a b (−(a*b)) < 0, e.g. −1/8 at (5/4, 3/2) in format (3,3) (fma_mulSubMul_negative_F33); downstream operations with restricted domains (such as a square root of x*x − x*x) could then produce NaN (not proved here; square root is not modelled).",
+   "ValidMod quantifies over the one-step-per-node forms generated by Expr.variants, not over every algebraically equivalent form; it is not transitive: the two one-step reassociations ((w + x) + y) + z → (w + x) + (y + z) and (w + x) + (y + z) → w + (x + (y + z)) are each valid modulo {reassoc}, but their composite is not valid even modulo all five flags (reassoc_validMod_not_transitive_F33; Expr.variants does not generate w + (x + (y + z)) from ((w + x) + y) + z, reassoc_variants_omits_right_assoc_F33). Rewrites such as (x + y) − y → x, which LLVM performs under reassoc nsz, are outside this permission model.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "Rust RFC 3514 'float_semantics' (rust-lang/rfcs pull request #3514, merged 2024-07-27), text/3514-float-semantics.md at rust-lang/rfcs commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4: strict IEEE semantics 'precludes many transformations, such as turning a*b + c into FMA operations', with the x*x - x*x versus x.mul_add(x, -x*x) example.",
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), HTML rendering. §6.5 ¶8 (contraction) and §7.12.2 (FP_CONTRACT).",
+   "Heiko Becker, Eva Darulova, Magnus O. Myreen, Zachary Tatlock, 'Icing: Supporting Fast-Math Style Optimizations in a Verified Compiler', Computer Aided Verification (CAV 2019), LNCS 11562, pp. 155–173, Springer, 2019, DOI 10.1007/978-3-030-25543-5_10. Formalized in HOL4 and connected to CakeML; optimizations such as fusing x * y + z into fma (its Rewrite 1) and associativity/commutativity (Rewrites 2–5) are allowed rewrites 'applied nondeterministically' in the semantics — the closest mechanized analogue of the permission model Expr.variants/ValidMod used here."
+  ],
+  "design_question": "When a compiler contracts a*b + c into a fused multiply-add (C FP_CONTRACT, LLVM contract), what is gained (accuracy) and what is lost (refinement of the unfused semantics)?",
+  "lean_names": [
+   "Toy.Float.fma_mulSubMul_negative_F33",
+   "Toy.Float.fma_mulSubMul_zero_for_inexact_product_F33",
+   "Toy.Float.reassoc_validMod_not_transitive_F33",
+   "Toy.Float.reassoc_variants_omits_right_assoc_F33",
+   "Toy.Float.eMulSubMul",
+   "Toy.Float.env2"
+  ]
+ },
+ {
+  "id": "double_rounding_not_innocuous",
+  "lean": "Toy.Float.addVia_ne_add_F33_W34",
+  "kind": "counterexample",
+  "tier": "T0",
+  "depth": "definitional",
+  "proof_status": "proved",
+  "plain_claim": "With narrow format (3,3) (p = 3) and wide format (3,4) (p' = 4): 3/16 + 2.5 computed by addVia (convert both operands to the wide format, add there, convert back, each step correctly rounded) is 3, while direct addition in the narrow format gives 2.5.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "The instance itself.",
+  "nonvacuity_witness_lean": "Toy.Float.addVia_ne_add_F33_W34",
+  "non_claims": [
+   "This is an introductory witness with p' = p + 1. The sharp witness for addition, with p' = 2p and the exponent-range hypothesis satisfied, is addVia_ne_add_F33_W36 (the tightness counterexample of double_rounding_add_innocuous).",
+   "One instance in one format pair; no claim about frequency.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "Samuel A. Figueroa, 'When is double rounding innocuous?', ACM SIGNUM Newsletter 30(3):21–26, July 1995, DOI 10.1145/221332.221334 (bibliographic data verified; the paper text was not accessible). Its theorems are restated in S. A. Figueroa del Cid, 'A Rigorous Framework for Fully Supporting the IEEE Standard for Floating-Point Arithmetic in High-Level Programming Languages', PhD thesis, New York University, January 2000, §6.2, Theorems 1–5 and Table 6.1: for binary p-digit operands with round-to-nearest, rounding first to q digits is innocuous for addition iff q ≥ 2p + 1, for subtraction iff q ≥ 2p + 1 (ties to even), for multiplication (p ≥ 4) and division if q ≥ 2p, and for square root iff q ≥ 2p + 2; the proofs assume an unbounded exponent range."
+  ],
+  "design_question": "When is evaluating a narrow-format operation in a wider format and rounding back (x87 extended precision, FLT_EVAL_METHOD, emulation) identical to evaluating it directly?",
+  "lean_names": [
+   "Toy.Float.addVia_ne_add_F33_W36",
+   "Toy.Float.addVia",
+   "Toy.Float.W34"
+  ]
+ },
+ {
+  "id": "double_rounding_add_innocuous",
+  "lean": "Toy.Float.addVia_eq_add_of_two_mul_add_one_le_and_bias_le",
+  "kind": "theorem",
+  "tier": "T0",
+  "depth": "substantive",
+  "proof_status": "proved",
+  "plain_claim": "For all formats f (narrow, precision p) and g (wide, precision p'), if 2p + 1 ≤ p' and bias f ≤ bias g, then for all values x, y of f: addVia g x y (convert x and y to g, add in g, convert the sum back to f, each step correctly rounded with roundTiesToEven) equals add x y.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   },
+   {
+    "name": "hp : 2 * f.p + 1 ≤ g.p",
+    "purpose": "Figueroa's precision bound for addition under round-to-nearest-even.",
+    "tightness": "tight",
+    "counterexample": "Toy.Float.addVia_ne_add_F33_W36",
+    "witness_class": "the format pair f = (3,3), g = (3,6) (p' = 2p, same exponent range): 7/16 + 5 gives 6 via g and 5 directly"
+   },
+   {
+    "name": "hb : f.bias ≤ g.bias",
+    "purpose": "The exponent range of g contains that of f (narrow values convert to g exactly, and narrow overflow precedes wide overflow).",
+    "tightness": "tight",
+    "counterexample": "Toy.Float.addVia_ne_add_F33_W29",
+    "witness_class": "the format pair f = (3,3), g = (2,9): converting the input 4 to g already overflows to +∞, so 4 + 0 via g is +∞"
+   }
+  ],
+  "nonvacuity_witness": "Narrow (3,3) with wide (3,7) (p' = 2p + 1) and (3,8) (p' = 2p + 2): both hypotheses hold.",
+  "nonvacuity_witness_lean": "Toy.Float.doubleRounding_hyps_bounded",
+  "bounded_instances_lean": [
+   "Toy.Float.addVia_eq_add_F33_W37",
+   "Toy.Float.addVia_eq_add_F33_W38"
+  ],
+  "non_claims": [
+   "Subtraction is not stated separately; sub is add with a negated operand, but no theorem about a subVia is given.",
+   "These theorems concern one operation at a time: each addition (addVia) or multiplication (mulVia) is widened to g and rounded back to f immediately. They do not license evaluating a multi-operation expression such as (a + b) + c or a * b + c in g with a single final rounding to f (as with x87 extended registers or C FLT_EVAL_METHOD 1 or 2), which can change results (not proved here; compare fma_ne_twoStep_all_normal_F33 for the single-rounding effect).",
+   "Neither theorem covers division, square root or fma: whether a narrow fma can be emulated by a wide fma rounded back to f under these precision bounds is not stated (not proved here).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "Samuel A. Figueroa, 'When is double rounding innocuous?', ACM SIGNUM Newsletter 30(3):21–26, July 1995, DOI 10.1145/221332.221334 (bibliographic data verified; the paper text was not accessible). Its theorems are restated in S. A. Figueroa del Cid, 'A Rigorous Framework for Fully Supporting the IEEE Standard for Floating-Point Arithmetic in High-Level Programming Languages', PhD thesis, New York University, January 2000, §6.2, Theorems 1–5 and Table 6.1: for binary p-digit operands with round-to-nearest, rounding first to q digits is innocuous for addition iff q ≥ 2p + 1, for subtraction iff q ≥ 2p + 1 (ties to even), for multiplication (p ≥ 4) and division if q ≥ 2p, and for square root iff q ≥ 2p + 2; the proofs assume an unbounded exponent range.",
+   "Pierre Roux, 'Innocuous Double Rounding of Basic Arithmetic Operations', Journal of Formalized Reasoning 7(1):131–142, 2014, DOI 10.6092/issn.1972-5787/4359. Coq proofs of the Figueroa bounds without underflow (Table I: +, −: p2 ≥ 2p1 + 1; ×, /: p2 ≥ 2p1; √: p2 ≥ 2p1 + 2), with optimality remarks. Table II adds conditions on emin under gradual underflow (e.g. ×: emin2 ≤ 2·emin1). Notation: Roux works in Flocq's FLT formats, where emin is the exponent of the least significant digit of the smallest subnormal (Flocq FLT.v: 'emin <= Fexp f' with an integer significand); in this package that is −qneg, not the IEEE normal minimum exponent 1 − bias. So Roux's 'emin2 ≤ 2·emin1' corresponds to 2·qneg f ≤ qneg g. Overflows are harmless whenever the narrow format is included in the wide one."
+  ],
+  "design_question": "When is evaluating a narrow-format operation in a wider format and rounding back (x87 extended precision, FLT_EVAL_METHOD, emulation) identical to evaluating it directly?",
+  "lean_names": [
+   "Toy.Float.addVia_eq_add_F33_W37",
+   "Toy.Float.addVia_eq_add_F33_W38",
+   "Toy.Float.fma_ne_twoStep_all_normal_F33",
+   "Toy.Float.roundUnits_double_sum",
+   "Toy.Float.rneDiv_double",
+   "Toy.Float.sum_far",
+   "Toy.Float.cvt_up_fin",
+   "Toy.Float.overflow_transfer",
+   "Toy.Float.cvt",
+   "Toy.Float.W29",
+   "Toy.Float.W36",
+   "Toy.Float.W37",
+   "Toy.Float.W38"
+  ]
+ },
+ {
+  "id": "double_rounding_mul_innocuous",
+  "lean": "Toy.Float.mulVia_eq_mul_of_two_mul_le_and_qneg_bias_le",
+  "kind": "theorem",
+  "tier": "T0",
+  "depth": "substantive",
+  "proof_status": "proved",
+  "plain_claim": "For all formats f (narrow, precision p) and g (wide, precision p'), if 2p ≤ p', 2·qneg f ≤ qneg g (the smallest subnormal of g is at most the square of that of f) and bias f ≤ bias g, then for all values x, y of f: mulVia g x y (convert x and y to g, multiply in g, convert the product back to f, each step correctly rounded with roundTiesToEven) equals mul x y.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   },
+   {
+    "name": "hp : 2 * f.p ≤ g.p",
+    "purpose": "A product of two p-bit significands has at most 2p bits, so it is exact in g.",
+    "tightness": "tight",
+    "counterexample": "Toy.Float.mulVia_ne_mul_F34_W57",
+    "witness_class": "the format pair f = (3,4), g = (5,7) (p' = 2p − 1, other hypotheses hold); in (3,3) via (4,5) no counterexample was found by search (not proved here)"
+   },
+   {
+    "name": "hq : 2 * f.qneg ≤ g.qneg",
+    "purpose": "Products in the narrow subnormal range must not be rounded on g's coarser subnormal grid (double rounding at underflow).",
+    "tightness": "tight",
+    "counterexample": "Toy.Float.mulVia_ne_mul_F33_W36",
+    "witness_class": "the format pair f = (3,3), g = (3,6) (p' = 2p, same exponent range): (3/16)^2 gives +0 via g and 1/16 directly"
+   },
+   {
+    "name": "hb : f.bias ≤ g.bias",
+    "purpose": "Narrow values convert to g exactly and narrow overflow precedes wide overflow.",
+    "tightness": "tight",
+    "counterexample": "Toy.Float.mulVia_ne_mul_F33_W29",
+    "witness_class": "the format pair f = (3,3), g = (2,9): converting the input 4 to g already overflows to +∞, so 4 * 1 via g is +∞"
+   }
+  ],
+  "nonvacuity_witness": "Narrow (3,3) with wide (4,6) and (3,8); narrow (3,4) with wide (5,8): all three hypotheses hold.",
+  "nonvacuity_witness_lean": "Toy.Float.doubleRounding_hyps_bounded",
+  "bounded_instances_lean": [
+   "Toy.Float.mulVia_eq_mul_F33_W46",
+   "Toy.Float.mulVia_eq_mul_F33_W38",
+   "Toy.Float.mulVia_eq_mul_F34_W58"
+  ],
+  "non_claims": [
+   "The hypothesis hq is stated with qneg (the exponent of the smallest subnormal, negated), not with the IEEE normal minimum exponent: with emin = 1 − bias, the inequality emin_g ≤ 2·emin_f fails for f = (3,3), g = (3,8), whose instance is nevertheless proved (mulVia_eq_mul_F33_W38).",
+   "These theorems concern one operation at a time: each addition (addVia) or multiplication (mulVia) is widened to g and rounded back to f immediately. They do not license evaluating a multi-operation expression such as (a + b) + c or a * b + c in g with a single final rounding to f (as with x87 extended registers or C FLT_EVAL_METHOD 1 or 2), which can change results (not proved here; compare fma_ne_twoStep_all_normal_F33 for the single-rounding effect).",
+   "Neither theorem covers division, square root or fma: whether a narrow fma can be emulated by a wide fma rounded back to f under these precision bounds is not stated (not proved here).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "Samuel A. Figueroa, 'When is double rounding innocuous?', ACM SIGNUM Newsletter 30(3):21–26, July 1995, DOI 10.1145/221332.221334 (bibliographic data verified; the paper text was not accessible). Its theorems are restated in S. A. Figueroa del Cid, 'A Rigorous Framework for Fully Supporting the IEEE Standard for Floating-Point Arithmetic in High-Level Programming Languages', PhD thesis, New York University, January 2000, §6.2, Theorems 1–5 and Table 6.1: for binary p-digit operands with round-to-nearest, rounding first to q digits is innocuous for addition iff q ≥ 2p + 1, for subtraction iff q ≥ 2p + 1 (ties to even), for multiplication (p ≥ 4) and division if q ≥ 2p, and for square root iff q ≥ 2p + 2; the proofs assume an unbounded exponent range.",
+   "Pierre Roux, 'Innocuous Double Rounding of Basic Arithmetic Operations', Journal of Formalized Reasoning 7(1):131–142, 2014, DOI 10.6092/issn.1972-5787/4359. Coq proofs of the Figueroa bounds without underflow (Table I: +, −: p2 ≥ 2p1 + 1; ×, /: p2 ≥ 2p1; √: p2 ≥ 2p1 + 2), with optimality remarks. Table II adds conditions on emin under gradual underflow (e.g. ×: emin2 ≤ 2·emin1). Notation: Roux works in Flocq's FLT formats, where emin is the exponent of the least significant digit of the smallest subnormal (Flocq FLT.v: 'emin <= Fexp f' with an integer significand); in this package that is −qneg, not the IEEE normal minimum exponent 1 − bias. So Roux's 'emin2 ≤ 2·emin1' corresponds to 2·qneg f ≤ qneg g. Overflows are harmless whenever the narrow format is included in the wide one."
+  ],
+  "design_question": "When is evaluating a narrow-format operation in a wider format and rounding back (x87 extended precision, FLT_EVAL_METHOD, emulation) identical to evaluating it directly?",
+  "lean_names": [
+   "Toy.Float.fma_ne_twoStep_all_normal_F33",
+   "Toy.Float.mulVia_eq_mul_F33_W38",
+   "Toy.Float.mulVia_eq_mul_F33_W46",
+   "Toy.Float.mulVia_eq_mul_F34_W58",
+   "Toy.Float.cvt_up_fin",
+   "Toy.Float.overflow_transfer",
+   "Toy.Float.roundUnits_mul_pow_add",
+   "Toy.Float.mulVia",
+   "Toy.Float.F34",
+   "Toy.Float.W46",
+   "Toy.Float.W57",
+   "Toy.Float.W58"
+  ]
+ },
+ {
+  "id": "lt_not_ge_characterization",
+  "lean": "Toy.Float.lt_eq_not_ge_iff",
+  "kind": "characterization",
+  "tier": "T0",
+  "depth": "definitional",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, for all values a, b: the IEEE comparison a < b (lt) equals ¬(a >= b) if and only if neither a nor b is NaN.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): NaN < 1 and NaN >= 1 are both false; 1 < 2 equals ¬(1 >= 2).",
+  "nonvacuity_witness_lean": "Toy.Float.lt_ne_not_ge_at_nan_F33",
+  "non_claims": [
+   "It concerns quiet comparisons returning Bool on the toy model's values; it is not a statement about branch structure or about the order key itself.",
+   "lt, le, ge and feq return Bool and model no exception flags. In IEEE 754 §5.11 and in C with FENV_ACCESS ON (Annex F.9.3), the relational predicates <, <=, >, >= signal the invalid exception on any NaN operand, including a quiet NaN, so rewriting between them also changes exception behaviour (not proved here).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2019 §5.11 'Details of comparison predicates' (the standard's text was not accessible; quoted from a public verbatim quotation of the 754-2008 text and a late 754-2019 draft, Stack Overflow question 71224184, answer by E. Postpischil): 'Four mutually exclusive relations are possible: less than, equal, greater than, and unordered. The last case arises when at least one operand is NaN. Every NaN shall compare unordered with everything, including itself. Comparisons shall ignore the sign of zero (so +0 = −0).'",
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), Annex F.9.3 'Relational operators' (HTML rendering of N1570; the same text is F.8.3 in C99 N1256). 'x != x → false The expression x != x is true if x is a NaN.' 'x == x → true The expression x = x [sic; C99 N1256 F.8.3 reads 'The statement x == x'] is false if x is a NaN.' 'The sense of relational operators shall be maintained. This includes handling unordered cases as expressed by the source code.' EXAMPLE: 'if (a < b) f(); else g();' is not equivalent to 'if (a >= b) g(); else f();' (and the comments note that both raise 'invalid' if a and b are unordered) but is equivalent to 'if (!(a < b)) g(); else f();'.",
+   "David Goldberg, 'What every computer scientist should know about floating-point arithmetic', ACM Computing Surveys 23(1):5–48, March 1991, DOI 10.1145/103162.103163 (edited reprint, Appendix D of Sun's Numerical Computation Guide; section paths are those of the reprint). Section 'Systems Aspects › Languages and Compilers › The IEEE Standard': 'Since x - x = +0 for all x, (+0) - (+0) = +0. However, -(+0) = -0, thus -x should not be defined as 0 - x', with footnote 27 'Unless the rounding mode is round toward -∞, in which case x - x = -0' (the sentence ignores NaN and infinities); the same paragraph: 'a NaN is never equal to any other number (including another NaN), so x = x is no longer always true' and 'NaNs are unordered with respect to all other numbers, so x ≤ y cannot be defined as not x > y'. Section 'The IEEE Standard › Special Quantities › Signed Zero': 'the IEEE standard defines comparison so that +0 = -0, rather than -0 < +0'."
+  ],
+  "design_question": "Which comparison and min/max identities may an optimizer use on IEEE 754 values, and how do NaN and signed zero break them?",
+  "lean_names": [
+   "Toy.Float.ge",
+   "Toy.Float.lt",
+   "Toy.Float.key"
+  ]
+ },
+ {
+  "id": "minLt_maxLt_commutativity_characterization",
+  "lean": "Toy.Float.minLt_maxLt_comm_iff",
+  "kind": "characterization",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, for all values a, b: minLt a b = minLt b a (with minLt a b = if a < b then a else b) holds if and only if it is not the case that exactly one of a, b is NaN or that {a, b} = {+0, −0}; the same holds for maxLt a b = if b < a then a else b.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): minLt NaN 1 = 1 but minLt 1 NaN = NaN; minLt (+0) (−0) = −0 but minLt (−0) (+0) = +0; minLt 1 2 = minLt 2 1.",
+  "nonvacuity_witness_lean": "Toy.Float.minLt_maxLt_not_comm_F33",
+  "non_claims": [
+   "minLt and maxLt are not associative in the presence of NaN either: minLt (minLt 1 NaN) 2 = 2 while minLt 1 (minLt NaN 2) = 1 (minLt_not_assoc_at_nan_F33, format (3,3)).",
+   "minLt is not Rust's f32::min (which returns the non-NaN argument and may return either zero) nor IEEE 754-2019 minimum/minimumNumber; these are prose bridges, not modelled definitions.",
+   "lt, le, ge and feq return Bool and model no exception flags. In IEEE 754 §5.11 and in C with FENV_ACCESS ON (Annex F.9.3), the relational predicates <, <=, >, >= signal the invalid exception on any NaN operand, including a quiet NaN, so rewriting between them also changes exception behaviour (not proved here).",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "Rust core library, library/core/src/num/f32.rs at rust-lang/rust commit 268bdaabaceb7688b974bae0f96b9c5c1b6ab991. f32::min (lines 838–861): 'If exactly one of the arguments is NaN (quiet or signaling), then the other argument is returned ... If the inputs compare equal (such as for the case of +0.0 and -0.0), either input may be returned non-deterministically'.",
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), Annex F.9.3 'Relational operators' (HTML rendering of N1570; the same text is F.8.3 in C99 N1256). 'x != x → false The expression x != x is true if x is a NaN.' 'x == x → true The expression x = x [sic; C99 N1256 F.8.3 reads 'The statement x == x'] is false if x is a NaN.' 'The sense of relational operators shall be maintained. This includes handling unordered cases as expressed by the source code.' EXAMPLE: 'if (a < b) f(); else g();' is not equivalent to 'if (a >= b) g(); else f();' (and the comments note that both raise 'invalid' if a and b are unordered) but is equivalent to 'if (!(a < b)) g(); else f();'."
+  ],
+  "design_question": "Which comparison and min/max identities may an optimizer use on IEEE 754 values, and how do NaN and signed zero break them?",
+  "lean_names": [
+   "Toy.Float.minLt_not_assoc_at_nan_F33",
+   "Toy.Float.maxLt",
+   "Toy.Float.minLt",
+   "Toy.Float.OneNaNOrOppositeZeros"
+  ]
+ },
+ {
+  "id": "minimum_maximum_comm_assoc",
+  "lean": "Toy.Float.minimum_maximum_comm_assoc",
+  "kind": "theorem",
+  "tier": "T0",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model, for all values a, b, c: the operations minimum and maximum modelled on IEEE 754-2019 §9.6 (NaN-propagating, with −0 below +0) are commutative and associative as identity of encodings.",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): minimum NaN 1 = minimum 1 NaN; minimum (+0) (−0) = minimum (−0) (+0) = −0.",
+  "nonvacuity_witness_lean": "Toy.Float.nv_minimum_F33",
+  "positive_control_lean": "Toy.Float.minLt_maxLt_not_comm_F33",
+  "non_claims": [
+   "NaN encoding: the model has one NaN, so '=' means identical encodings modulo NaN payload and NaN sign. Real hardware and LLVM choose the payload and sign of a NaN result non-deterministically (LLVM LangRef 'Behavior of Floating-Point NaN values'), and signaling NaNs are not modelled (not proved here). With several NaN operands, real implementations may return different NaN encodings depending on order (not proved here).",
+   "minimum and maximum model IEEE 754-2019's NaN-propagating operations (C23 fminimum/fmaximum); they are not the number-preferring minimumNumber/maximumNumber (C23 fminimum_num/fmaximum_num, which return the number when one operand is NaN) and not the deleted IEEE 754-2008 minNum/maxNum.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "IEEE Std 754-2019 §9.6, quoted verbatim in WG21 paper P3008R6 (G. Brito Gadeschi and D. Sankel, 'Atomic floating-point min/max', 2025-06-19): 'minimum(x, y) is x if x < y, y if y < x, and a quiet NaN if either operand is a NaN, according to 6.2. For this operation, −0 compares less than +0'; 'minimumNumber(x, y) is x if x<y, y if y<x, and the number if one operand is a number and the other is a NaN'; these operations are recommended ('should'). P3008R6: 'IEEE 754-2019 removed minNum/maxNum'. C23 (as quoted in P3008R6): the fminimum_num functions 'determine the number if one argument is a number and the other is a NaN'.",
+   "Rust core library, library/core/src/num/f32.rs at rust-lang/rust commit 268bdaabaceb7688b974bae0f96b9c5c1b6ab991. f32::minimum (lines 893–917; unstable, feature float_minimum_maximum): 'propagating NaN ... -0.0 is considered to be less than +0.0 ... This follows the IEEE 754-2019 semantics for minimum'.",
+   "Mechanized IEEE 754 models (none of which this package depends on): John Harrison, 'A Machine-Checked Theory of Floating Point Arithmetic', TPHOLs 1999, LNCS 1690, pp. 113–130, DOI 10.1007/3-540-48256-3_9; Lei Yu, 'A Formal Model of IEEE Floating Point Arithmetic', Archive of Formal Proofs, July 2013 (entry IEEE_Floating_Point); Lean 4 v4.34.1 core Init.Data.Float.Model (a parametric model with structure Format { mantissaBitsWithoutImplicit, exponentBits, he : 2 ≤ exponentBits } backing Float and Float32; inspected in the pinned toolchain source); FloatLib (R. J. George, W. Adkisson, A. Anandkumar, 'FloatLib: Verified Floating-Point Arithmetic in Lean', arXiv:2609.19352, 2026); FloatSpec (github.com/Beneficial-AI-Foundation/FloatSpec, a Lean 4 port of the Coq Flocq library). No bridge between Toy.Float.FP and any of these is proved."
+  ],
+  "design_question": "Which comparison and min/max identities may an optimizer use on IEEE 754 values, and how do NaN and signed zero break them?",
+  "lean_names": [
+   "Toy.Float.maximum",
+   "Toy.Float.minimum",
+   "Toy.Float.totalKey"
+  ]
+ },
+ {
+  "id": "flag_table_sufficiency",
+  "lean": "Toy.Float.flagTable_sufficient",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In every format of the toy model (roundTiesToEven, one collapsed NaN), with ValidMod quantifying over the forms generated by Expr.variants: x + (−0) → x, x * 1 → x, x * (−1) → −x, x * 2 → x + x, (−0) − x → −x and x + y → y + x are valid without flags; x + (+0) → x, (+0) − x → −x and −(x − y) → y − x are ValidMod {nsz}; x − x → +0 is ValidMod {nnan}; x * (+0) → +0 is ValidMod {nnan, nsz}; (x + y) + z → x + (y + z) and (x * y) * z → x * (y * z) are ValidMod {reassoc}; x * y + z → fma x y z is ValidMod {contract}. Here ValidMod S r means: on every input admissible for r.lhs under S (no NaN/infinite argument or result of any node, for nnan/ninf), r.rhs evaluates, up to Rel S (identity, or equality up to the sign of zero under nsz), to the value of some form of r.lhs generated by Expr.variants S (at every node, after choosing forms of the children: the node itself, plus one reassociation step at an add/mul node under reassoc, plus one contraction of a product into an add/sub node under contract).",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Format (3,3): every row's source expression has an input admissible under all five flags (x = 1, y = 2, z = 1/4).",
+  "nonvacuity_witness_lean": "Toy.Float.flagTable_nonvacuous_F33",
+  "non_claims": [
+   "This result states sufficiency of each flag set, in every format. That each flag set is also necessary (minimal) is flagTable_exact_F33, proved in format (3,3); in other formats minimality is neither established nor refuted here.",
+   "Escape hatches of the flag-free and {nnan} rows: all rows assume roundTiesToEven, gradual underflow, no exception status flags or traps, and one signless NaN. Under roundTowardNegative, x + (−0) → x fails at x = +0, (−0) − x → −x fails at x = −0, and x − x → +0 needs {nnan, nsz} rather than {nnan}; on IEEE 754 hardware and in Rust (RFC 3514), unary −x flips the NaN sign bit deterministically and does not quiet a signaling NaN, whereas x * (−1) and (−0) − x are arithmetic operations that may quiet signaling NaNs and need not flip NaN signs (not proved here; none of this is modelled).",
+   "Rel models nsz as equality of results up to the sign of zero (EqNsz). On the modelled operations {neg, +, −, *, fma}, where flipping the sign of a ±0 input can change at most the sign of a ±0 result, EqNsz is at least as permissive as LLVM's current input-zero-flip wording ('the sign bit of 0.0 or -0.0 input operands can be non-deterministically flipped'), and it is strictly coarser on expressions whose nonzero operands underflow to −0: the closed rewrite (−1/16) * (1/2) → +0 is ValidMod {nsz} in format (3,3) although no operand is a zero (nsz_rel_identifies_underflow_sign_F33). This comparison is a derived modelling bridge, not a theorem. On full LLVM IR, which also has fdiv (where flipping −0.0 to +0.0 in 1.0 / (−0.0) changes −∞ to +∞), bitcast and copysign, the two readings are incomparable (not proved here). Whether they agree on the four nsz rows of the table is not proved here.",
+   "ValidMod quantifies over the one-step-per-node forms generated by Expr.variants, not over every algebraically equivalent form; it is not transitive: the two one-step reassociations ((w + x) + y) + z → (w + x) + (y + z) and (w + x) + (y + z) → w + (x + (y + z)) are each valid modulo {reassoc}, but their composite is not valid even modulo all five flags (reassoc_validMod_not_transitive_F33; Expr.variants does not generate w + (x + (y + z)) from ((w + x) + y) + z, reassoc_variants_omits_right_assoc_F33). Rewrites such as (x + y) − y → x, which LLVM performs under reassoc nsz, are outside this permission model.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "LLVM Language Reference Manual, llvm/docs/LangRef.md at llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, section 'Fast-Math Flags' (lines 4466–4566). nnan: 'Allow optimizations to assume the arguments and result are not NaN. If an argument is a nan, or the result would be a nan, it produces a poison value instead.' ninf: the same for +/-Inf. nsz: 'Unless otherwise mentioned, the sign bit of 0.0 or -0.0 input operands can be non-deterministically flipped.' The older wording, still in LLVM 20.1.0's LangRef.rst, was 'treat the sign of a zero argument or zero result as insignificant'. contract: 'Allow floating-point contraction (e.g., fusing a multiply followed by an addition into a fused multiply-and-add)'. reassoc: 'Allow algebraically equivalent transformations for floating-point instructions such as reassociation transformations. This may dramatically change results in floating-point.'",
+   "llvm/lib/Analysis/InstructionSimplify.cpp at llvm/llvm-project commit ef72a0e441f65f73b7cf732bf05b8bcc1a8cf609. 'fsub nnan x, x ==> 0.0' (lines 6244–6247, inside a default-floating-point-environment guard). 'X * 0.0 --> 0.0 (with nnan and nsz)' (lines 6286–6289). 'fadd X, -0 ==> X' (lines 6144–6153, guarded so that it is not applied when the rounding mode can be TowardNegative unless nsz is present, or when signaling NaNs cannot be ignored). 'fadd X, 0 ==> X, when we know X is not -0' (lines 6155–6159; requires nsz or X ≠ −0).",
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), Annex F.9.2 'Expression transformations' (HTML rendering of N1570). 'x - x → 0.0 The expressions x - x and 0.0 are not equivalent if x is a NaN or infinite'. '0 * x → 0.0 The expressions 0*x and 0.0 are not equivalent if x is a NaN, infinite, or -0' (this lists sufficient reasons; every negative finite x also gives −0). 'x + 0 → x The expressions x + 0 and x are not equivalent if x is -0, because (-0) + (+0) yields +0 (in the default rounding direction), not -0'. '-x ↔ 0 - x The expressions -x and 0 - x are not equivalent if x is +0, because -(+0) yields -0, but 0 - (+0) yields +0 (unless rounding is downward)'.",
+   "David Menendez, Santosh Nagarakatte, Aarti Gupta, 'Alive-FP: Automated Verification of Floating Point Based Peephole Optimizations in LLVM', Static Analysis (SAS 2016), LNCS 9837, pp. 317–337, Springer, 2016, DOI 10.1007/978-3-662-53413-7_16. Abstract: it 'handles a class of floating point optimizations and fast-math optimizations involving signed zeros, not-a-number, and infinities, which do not result in loss of accuracy' and found 'seven wrong optimizations in LLVM' (SMT-based checks at fixed bit widths; the paper body was not accessible, so the attribution of the flag names nnan/ninf/nsz to it rests on its public implementation).",
+   "Andres Nötzli, Fraser Brown, 'LifeJacket: Verifying Precise Floating-Point Optimizations in LLVM', Proceedings of the 5th ACM SIGPLAN International Workshop on State Of the Art in Program Analysis (SOAP 2016), pp. 24–29, DOI 10.1145/2931021.2931024 (arXiv:1603.09290). Verifies 43 LLVM floating-point peephole optimizations with SMT and finds eight incorrect ones; 'LifeJacket currently supports three of the five fast-math flags that LLVM implements: nnan, ninf, and nsz'; its Fig. 1 example +0.0 - (-0.0 - x) => x 'is not valid if x = −0.0'.",
+   "Heiko Becker, Eva Darulova, Magnus O. Myreen, Zachary Tatlock, 'Icing: Supporting Fast-Math Style Optimizations in a Verified Compiler', Computer Aided Verification (CAV 2019), LNCS 11562, pp. 155–173, Springer, 2019, DOI 10.1007/978-3-030-25543-5_10. Formalized in HOL4 and connected to CakeML; optimizations such as fusing x * y + z into fma (its Rewrite 1) and associativity/commutativity (Rewrites 2–5) are allowed rewrites 'applied nondeterministically' in the semantics — the closest mechanized analogue of the permission model Expr.variants/ValidMod used here.",
+   "Sylvie Boldo, Jacques-Henri Jourdan, Xavier Leroy, Guillaume Melquiond, 'Verified Compilation of Floating-Point Computations', Journal of Automated Reasoning 54(2):135–163, 2015, DOI 10.1007/s10817-014-9317-x. Mechanized IEEE 754 semantics in CompCert (Coq/Flocq) with strict, value-preserving floating-point optimizations."
+  ],
+  "design_question": "For each common floating-point peephole rewrite, which LLVM fast-math flags (nnan, ninf, nsz, reassoc, contract) exactly license it, under round-to-nearest-even?",
+  "lean_names": [
+   "Toy.Float.flagTable_exact_F33",
+   "Toy.Float.nsz_rel_identifies_underflow_sign_F33",
+   "Toy.Float.reassoc_validMod_not_transitive_F33",
+   "Toy.Float.reassoc_variants_omits_right_assoc_F33",
+   "Toy.Float.Flags.Sub",
+   "Toy.Float.Rewrite",
+   "Toy.Float.Valid",
+   "Toy.Float.fNnan",
+   "Toy.Float.fNnanNsz",
+   "Toy.Float.fNsz",
+   "Toy.Float.rwAddComm",
+   "Toy.Float.rwAddNegZero",
+   "Toy.Float.rwAddPosZero",
+   "Toy.Float.rwMulAssoc",
+   "Toy.Float.rwMulNegOne",
+   "Toy.Float.rwMulOne",
+   "Toy.Float.rwMulPosZero",
+   "Toy.Float.rwMulTwo",
+   "Toy.Float.rwNegSub",
+   "Toy.Float.rwNegZeroSub",
+   "Toy.Float.rwPosZeroSub",
+   "Toy.Float.rwSubSelf",
+   "Toy.Float.rwUncontract",
+   "Toy.Float.Expr",
+   "Toy.Float.Expr.eval",
+   "Toy.Float.Expr.nodeVals",
+   "Toy.Float.Expr.reassocAdd",
+   "Toy.Float.Expr.contractAdd",
+   "Toy.Float.Expr.contractSub",
+   "Toy.Float.rwAssoc4Step1",
+   "Toy.Float.rwAssoc4Step2",
+   "Toy.Float.rwAssoc4Comp",
+   "Toy.Float.env4",
+   "Toy.Float.envAssoc4Witness"
+  ]
+ },
+ {
+  "id": "flag_table_exact_F33",
+  "lean": "Toy.Float.flagTable_exact_F33",
+  "kind": "characterization",
+  "tier": "T1",
+  "depth": "shallow",
+  "proof_status": "proved",
+  "plain_claim": "In format (3,3) of the toy model (roundTiesToEven, one collapsed NaN), with ValidMod quantifying over the forms generated by Expr.variants, for every flag set T: x + (−0) → x, x * 1 → x, x * (−1) → −x, x * 2 → x + x, (−0) − x → −x and x + y → y + x are ValidMod T; x + (+0) → x, (+0) − x → −x and −(x − y) → y − x are ValidMod T iff nsz ∈ T; x − x → +0 iff nnan ∈ T; x * (+0) → +0 iff nnan ∈ T and nsz ∈ T; (x + y) + z → x + (y + z) and (x * y) * z → x * (y * z) iff reassoc ∈ T; x * y + z → fma x y z iff contract ∈ T; and fma x y z → x * y + z is ValidMod T for no T. Here ValidMod S r means: on every input admissible for r.lhs under S (no NaN/infinite argument or result of any node, for nnan/ninf), r.rhs evaluates, up to Rel S (identity, or equality up to the sign of zero under nsz), to the value of some form of r.lhs generated by Expr.variants S (at every node, after choosing forms of the children: the node itself, plus one reassociation step at an add/mul node under reassoc, plus one contraction of a product into an add/sub node under contract).",
+  "hypotheses": [
+   {
+    "name": "format invariants 2 ≤ e, 2 ≤ p (fields of Fmt)",
+    "purpose": "Excludes degenerate formats without normal numbers or without a fractional significand bit; all definitions assume them. They are fields of the structure Fmt, so no statement can drop them.",
+    "tightness": "unknown"
+   }
+  ],
+  "nonvacuity_witness": "Every row's source expression has an input admissible under all five flags (flagTable_nonvacuous_F33).",
+  "nonvacuity_witness_lean": "Toy.Float.flagTable_nonvacuous_F33",
+  "positive_control_lean": "Toy.Float.rwUncontract_positive_control",
+  "non_claims": [
+   "The necessity (minimality) directions are proved in format (3,3); in other formats they are neither established nor refuted here (the sufficiency directions hold in every format, flagTable_sufficient).",
+   "fma x y z → x * y + z is not ValidMod for any flag set in format (3,3) (rwUncontract_never_validMod_F33) because Expr.variants has no rewrite rules at fma nodes; the permission model has no 'uncontract'.",
+   "Escape hatches of the flag-free and {nnan} rows: all rows assume roundTiesToEven, gradual underflow, no exception status flags or traps, and one signless NaN. Under roundTowardNegative, x + (−0) → x fails at x = +0, (−0) − x → −x fails at x = −0, and x − x → +0 needs {nnan, nsz} rather than {nnan}; on IEEE 754 hardware and in Rust (RFC 3514), unary −x flips the NaN sign bit deterministically and does not quiet a signaling NaN, whereas x * (−1) and (−0) − x are arithmetic operations that may quiet signaling NaNs and need not flip NaN signs (not proved here; none of this is modelled).",
+   "Rel models nsz as equality of results up to the sign of zero (EqNsz). On the modelled operations {neg, +, −, *, fma}, where flipping the sign of a ±0 input can change at most the sign of a ±0 result, EqNsz is at least as permissive as LLVM's current input-zero-flip wording ('the sign bit of 0.0 or -0.0 input operands can be non-deterministically flipped'), and it is strictly coarser on expressions whose nonzero operands underflow to −0: the closed rewrite (−1/16) * (1/2) → +0 is ValidMod {nsz} in format (3,3) although no operand is a zero (nsz_rel_identifies_underflow_sign_F33). This comparison is a derived modelling bridge, not a theorem. On full LLVM IR, which also has fdiv (where flipping −0.0 to +0.0 in 1.0 / (−0.0) changes −∞ to +∞), bitcast and copysign, the two readings are incomparable (not proved here). Whether they agree on the four nsz rows of the table is not proved here.",
+   "ValidMod quantifies over the one-step-per-node forms generated by Expr.variants, not over every algebraically equivalent form; it is not transitive: the two one-step reassociations ((w + x) + y) + z → (w + x) + (y + z) and (w + x) + (y + z) → w + (x + (y + z)) are each valid modulo {reassoc}, but their composite is not valid even modulo all five flags (reassoc_validMod_not_transitive_F33; Expr.variants does not generate w + (x + (y + z)) from ((w + x) + y) + z, reassoc_variants_omits_right_assoc_F33). Rewrites such as (x + y) − y → x, which LLVM performs under reassoc nsz, are outside this permission model.",
+   "Model–system relation: none proved. This is a statement about the toy model Toy.Float (IEEE binary fields; roundTiesToEven as the sole rounding mode; gradual underflow; no exception status flags or traps; a single NaN with payload and sign collapsed). It neither establishes nor refutes the corresponding claims about IEEE 754 hardware, C, LLVM, Rust, or Lean's built-in Float, Float32 and Init.Data.Float.Model; no representation-equivalence proof to any of them is given."
+  ],
+  "prior_art": [
+   "LLVM Language Reference Manual, llvm/docs/LangRef.md at llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, section 'Fast-Math Flags' (lines 4466–4566). nnan: 'Allow optimizations to assume the arguments and result are not NaN. If an argument is a nan, or the result would be a nan, it produces a poison value instead.' ninf: the same for +/-Inf. nsz: 'Unless otherwise mentioned, the sign bit of 0.0 or -0.0 input operands can be non-deterministically flipped.' The older wording, still in LLVM 20.1.0's LangRef.rst, was 'treat the sign of a zero argument or zero result as insignificant'. contract: 'Allow floating-point contraction (e.g., fusing a multiply followed by an addition into a fused multiply-and-add)'. reassoc: 'Allow algebraically equivalent transformations for floating-point instructions such as reassociation transformations. This may dramatically change results in floating-point.'",
+   "llvm/lib/Analysis/InstructionSimplify.cpp at llvm/llvm-project commit ef72a0e441f65f73b7cf732bf05b8bcc1a8cf609. 'fsub nnan x, x ==> 0.0' (lines 6244–6247, inside a default-floating-point-environment guard). 'X * 0.0 --> 0.0 (with nnan and nsz)' (lines 6286–6289). 'fadd X, -0 ==> X' (lines 6144–6153, guarded so that it is not applied when the rounding mode can be TowardNegative unless nsz is present, or when signaling NaNs cannot be ignored). 'fadd X, 0 ==> X, when we know X is not -0' (lines 6155–6159; requires nsz or X ≠ −0).",
+   "ISO/IEC 9899:201x Committee Draft N1570 (12 April 2011), Annex F.9.2 'Expression transformations' (HTML rendering of N1570). 'x - x → 0.0 The expressions x - x and 0.0 are not equivalent if x is a NaN or infinite'. '0 * x → 0.0 The expressions 0*x and 0.0 are not equivalent if x is a NaN, infinite, or -0' (this lists sufficient reasons; every negative finite x also gives −0). 'x + 0 → x The expressions x + 0 and x are not equivalent if x is -0, because (-0) + (+0) yields +0 (in the default rounding direction), not -0'. '-x ↔ 0 - x The expressions -x and 0 - x are not equivalent if x is +0, because -(+0) yields -0, but 0 - (+0) yields +0 (unless rounding is downward)'.",
+   "David Menendez, Santosh Nagarakatte, Aarti Gupta, 'Alive-FP: Automated Verification of Floating Point Based Peephole Optimizations in LLVM', Static Analysis (SAS 2016), LNCS 9837, pp. 317–337, Springer, 2016, DOI 10.1007/978-3-662-53413-7_16. Abstract: it 'handles a class of floating point optimizations and fast-math optimizations involving signed zeros, not-a-number, and infinities, which do not result in loss of accuracy' and found 'seven wrong optimizations in LLVM' (SMT-based checks at fixed bit widths; the paper body was not accessible, so the attribution of the flag names nnan/ninf/nsz to it rests on its public implementation).",
+   "Andres Nötzli, Fraser Brown, 'LifeJacket: Verifying Precise Floating-Point Optimizations in LLVM', Proceedings of the 5th ACM SIGPLAN International Workshop on State Of the Art in Program Analysis (SOAP 2016), pp. 24–29, DOI 10.1145/2931021.2931024 (arXiv:1603.09290). Verifies 43 LLVM floating-point peephole optimizations with SMT and finds eight incorrect ones; 'LifeJacket currently supports three of the five fast-math flags that LLVM implements: nnan, ninf, and nsz'; its Fig. 1 example +0.0 - (-0.0 - x) => x 'is not valid if x = −0.0'.",
+   "Heiko Becker, Eva Darulova, Magnus O. Myreen, Zachary Tatlock, 'Icing: Supporting Fast-Math Style Optimizations in a Verified Compiler', Computer Aided Verification (CAV 2019), LNCS 11562, pp. 155–173, Springer, 2019, DOI 10.1007/978-3-030-25543-5_10. Formalized in HOL4 and connected to CakeML; optimizations such as fusing x * y + z into fma (its Rewrite 1) and associativity/commutativity (Rewrites 2–5) are allowed rewrites 'applied nondeterministically' in the semantics — the closest mechanized analogue of the permission model Expr.variants/ValidMod used here.",
+   "Sylvie Boldo, Jacques-Henri Jourdan, Xavier Leroy, Guillaume Melquiond, 'Verified Compilation of Floating-Point Computations', Journal of Automated Reasoning 54(2):135–163, 2015, DOI 10.1007/s10817-014-9317-x. Mechanized IEEE 754 semantics in CompCert (Coq/Flocq) with strict, value-preserving floating-point optimizations."
+  ],
+  "design_question": "For each common floating-point peephole rewrite, which LLVM fast-math flags (nnan, ninf, nsz, reassoc, contract) exactly license it, under round-to-nearest-even?",
+  "lean_names": [
+   "Toy.Float.flagTable_sufficient",
+   "Toy.Float.nsz_rel_identifies_underflow_sign_F33",
+   "Toy.Float.reassoc_validMod_not_transitive_F33",
+   "Toy.Float.reassoc_variants_omits_right_assoc_F33",
+   "Toy.Float.rwUncontract_never_validMod_F33",
+   "Toy.Float.validMod_iff_sub_of_minimal",
+   "Toy.Float.Flags.all",
+   "Toy.Float.Flags.has",
+   "Toy.Float.env1"
+  ]
+ }
+]

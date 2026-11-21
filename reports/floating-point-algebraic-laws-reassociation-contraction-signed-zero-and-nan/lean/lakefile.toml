@@ -1,0 +1,6 @@
+name = "fp_algebraic_laws"
+version = "0.1.0"
+defaultTargets = ["Toy"]
+
+[[lean_lib]]
+name = "Toy"

@@ -1,0 +1,2340 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Float.Admissible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.EqNsz": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ErrLe": [],
+    "Toy.Float.ErrLe.match_1": [],
+    "Toy.Float.Expr": [],
+    "Toy.Float.Expr.add": [],
+    "Toy.Float.Expr.add.elim": [],
+    "Toy.Float.Expr.add.inj": [],
+    "Toy.Float.Expr.add.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Expr.add.noConfusion": [],
+    "Toy.Float.Expr.add.sizeOf_spec": [],
+    "Toy.Float.Expr.below": [],
+    "Toy.Float.Expr.brecOn": [],
+    "Toy.Float.Expr.brecOn.eq": [],
+    "Toy.Float.Expr.brecOn.go": [],
+    "Toy.Float.Expr.casesOn": [],
+    "Toy.Float.Expr.contractAdd": [
+      "propext"
+    ],
+    "Toy.Float.Expr.contractAdd.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.Expr.contractAdd.eq_2": [
+      "propext"
+    ],
+    "Toy.Float.Expr.contractAdd.eq_3": [
+      "propext"
+    ],
+    "Toy.Float.Expr.contractAdd.eq_4": [
+      "propext"
+    ],
+    "Toy.Float.Expr.contractSub": [
+      "propext"
+    ],
+    "Toy.Float.Expr.ctorElim": [],
+    "Toy.Float.Expr.ctorElimType": [],
+    "Toy.Float.Expr.ctorIdx": [],
+    "Toy.Float.Expr.eval": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.eval.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.eval.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.eval.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.eval.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.eval.eq_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.eval.eq_6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.eval.eq_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.eval.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.fma": [],
+    "Toy.Float.Expr.fma.elim": [],
+    "Toy.Float.Expr.fma.inj": [],
+    "Toy.Float.Expr.fma.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Expr.fma.noConfusion": [],
+    "Toy.Float.Expr.fma.sizeOf_spec": [],
+    "Toy.Float.Expr.lit": [],
+    "Toy.Float.Expr.lit.elim": [],
+    "Toy.Float.Expr.lit.inj": [],
+    "Toy.Float.Expr.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Expr.lit.noConfusion": [],
+    "Toy.Float.Expr.lit.sizeOf_spec": [],
+    "Toy.Float.Expr.mul": [],
+    "Toy.Float.Expr.mul.elim": [],
+    "Toy.Float.Expr.mul.inj": [],
+    "Toy.Float.Expr.mul.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Expr.mul.noConfusion": [],
+    "Toy.Float.Expr.mul.sizeOf_spec": [],
+    "Toy.Float.Expr.neg": [],
+    "Toy.Float.Expr.neg.elim": [],
+    "Toy.Float.Expr.neg.inj": [],
+    "Toy.Float.Expr.neg.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Expr.neg.noConfusion": [],
+    "Toy.Float.Expr.neg.sizeOf_spec": [],
+    "Toy.Float.Expr.noConfusion": [],
+    "Toy.Float.Expr.noConfusionType": [],
+    "Toy.Float.Expr.nodeVals": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.nodeVals.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.nodeVals.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.nodeVals.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.nodeVals.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.nodeVals.eq_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.nodeVals.eq_6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.nodeVals.eq_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.nodeVals.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocAdd": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocAdd.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocAdd.eq_2": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocAdd.eq_3": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocAdd.eq_4": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocAdd.match_1": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocMul": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocMul.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocMul.eq_2": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocMul.eq_3": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocMul.eq_4": [
+      "propext"
+    ],
+    "Toy.Float.Expr.reassocMul.match_1": [
+      "propext"
+    ],
+    "Toy.Float.Expr.rec": [],
+    "Toy.Float.Expr.recOn": [],
+    "Toy.Float.Expr.sub": [],
+    "Toy.Float.Expr.sub.elim": [],
+    "Toy.Float.Expr.sub.inj": [],
+    "Toy.Float.Expr.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Expr.sub.noConfusion": [],
+    "Toy.Float.Expr.sub.sizeOf_spec": [],
+    "Toy.Float.Expr.var": [],
+    "Toy.Float.Expr.var.elim": [],
+    "Toy.Float.Expr.var.inj": [],
+    "Toy.Float.Expr.var.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Expr.var.noConfusion": [],
+    "Toy.Float.Expr.var.sizeOf_spec": [],
+    "Toy.Float.Expr.variants": [
+      "propext"
+    ],
+    "Toy.Float.Expr.variants.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.Expr.variants.eq_2": [
+      "propext"
+    ],
+    "Toy.Float.Expr.variants.eq_3": [
+      "propext"
+    ],
+    "Toy.Float.Expr.variants.eq_4": [
+      "propext"
+    ],
+    "Toy.Float.Expr.variants.eq_5": [
+      "propext"
+    ],
+    "Toy.Float.Expr.variants.eq_6": [
+      "propext"
+    ],
+    "Toy.Float.Expr.variants.eq_7": [
+      "propext"
+    ],
+    "Toy.Float.Expr.variants.eq_def": [
+      "propext"
+    ],
+    "Toy.Float.Expr.variants_eq_single": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.variants_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Expr.variants_noPerm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.F22": [],
+    "Toy.Float.F22.eq_1": [],
+    "Toy.Float.F23": [],
+    "Toy.Float.F32": [],
+    "Toy.Float.F33": [],
+    "Toy.Float.F33.eq_1": [],
+    "Toy.Float.F34": [],
+    "Toy.Float.F34.eq_1": [],
+    "Toy.Float.FP": [],
+    "Toy.Float.FP.all": [],
+    "Toy.Float.FP.allFin": [],
+    "Toy.Float.FP.allFin_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.FP.all_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.FP.bits": [],
+    "Toy.Float.FP.casesOn": [],
+    "Toy.Float.FP.ctorElim": [],
+    "Toy.Float.FP.ctorElimType": [],
+    "Toy.Float.FP.ctorIdx": [],
+    "Toy.Float.FP.decForall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.FP.fin": [],
+    "Toy.Float.FP.fin.elim": [],
+    "Toy.Float.FP.fin.inj": [],
+    "Toy.Float.FP.fin.injEq": [
+      "propext"
+    ],
+    "Toy.Float.FP.fin.noConfusion": [],
+    "Toy.Float.FP.fin.sizeOf_spec": [],
+    "Toy.Float.FP.inf": [],
+    "Toy.Float.FP.inf.elim": [],
+    "Toy.Float.FP.inf.inj": [],
+    "Toy.Float.FP.inf.injEq": [
+      "propext"
+    ],
+    "Toy.Float.FP.inf.noConfusion": [],
+    "Toy.Float.FP.inf.sizeOf_spec": [],
+    "Toy.Float.FP.isFinite": [
+      "propext"
+    ],
+    "Toy.Float.FP.isFinite.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.FP.isFinite.eq_2": [
+      "propext"
+    ],
+    "Toy.Float.FP.isFinite_fin": [
+      "propext"
+    ],
+    "Toy.Float.FP.isFinite_inf": [
+      "propext"
+    ],
+    "Toy.Float.FP.isFinite_ite": [
+      "propext"
+    ],
+    "Toy.Float.FP.isFinite_nan": [
+      "propext"
+    ],
+    "Toy.Float.FP.isInf": [
+      "propext"
+    ],
+    "Toy.Float.FP.isInf.match_1": [
+      "propext"
+    ],
+    "Toy.Float.FP.isNaN": [
+      "propext"
+    ],
+    "Toy.Float.FP.isNaN.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.FP.isNaN.eq_2": [
+      "propext"
+    ],
+    "Toy.Float.FP.isNaN.match_1": [
+      "propext"
+    ],
+    "Toy.Float.FP.isNormal": [
+      "propext"
+    ],
+    "Toy.Float.FP.isNormal.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.FP.isNormal.eq_2": [
+      "propext"
+    ],
+    "Toy.Float.FP.isZero": [
+      "propext"
+    ],
+    "Toy.Float.FP.isZero.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.FP.isZero.eq_2": [
+      "propext"
+    ],
+    "Toy.Float.FP.list": [],
+    "Toy.Float.FP.nan": [],
+    "Toy.Float.FP.nan.elim": [],
+    "Toy.Float.FP.nan.sizeOf_spec": [],
+    "Toy.Float.FP.neg": [],
+    "Toy.Float.FP.neg.eq_1": [],
+    "Toy.Float.FP.neg.eq_2": [],
+    "Toy.Float.FP.neg.eq_3": [],
+    "Toy.Float.FP.noConfusion": [],
+    "Toy.Float.FP.noConfusionType": [],
+    "Toy.Float.FP.rec": [],
+    "Toy.Float.FP.recOn": [],
+    "Toy.Float.FP.signBit": [],
+    "Toy.Float.FP.signBit.eq_1": [],
+    "Toy.Float.FP.signBit.eq_2": [],
+    "Toy.Float.FP.signBit.eq_3": [],
+    "Toy.Float.FP.units": [
+      "propext"
+    ],
+    "Toy.Float.FP.units.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.FP.units.eq_2": [
+      "propext"
+    ],
+    "Toy.Float.FP.units.match_1": [
+      "propext"
+    ],
+    "Toy.Float.FP.val2": [
+      "propext"
+    ],
+    "Toy.Float.FP.val2.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.Flag": [],
+    "Toy.Float.Flag.casesOn": [],
+    "Toy.Float.Flag.contract": [],
+    "Toy.Float.Flag.contract.elim": [],
+    "Toy.Float.Flag.contract.sizeOf_spec": [],
+    "Toy.Float.Flag.ctorElim": [],
+    "Toy.Float.Flag.ctorElimType": [],
+    "Toy.Float.Flag.ctorIdx": [],
+    "Toy.Float.Flag.ninf": [],
+    "Toy.Float.Flag.ninf.elim": [],
+    "Toy.Float.Flag.ninf.sizeOf_spec": [],
+    "Toy.Float.Flag.nnan": [],
+    "Toy.Float.Flag.nnan.elim": [],
+    "Toy.Float.Flag.nnan.sizeOf_spec": [],
+    "Toy.Float.Flag.noConfusion": [],
+    "Toy.Float.Flag.noConfusionType": [],
+    "Toy.Float.Flag.nsz": [],
+    "Toy.Float.Flag.nsz.elim": [],
+    "Toy.Float.Flag.nsz.sizeOf_spec": [],
+    "Toy.Float.Flag.ofNat": [],
+    "Toy.Float.Flag.ofNat_ctorIdx": [],
+    "Toy.Float.Flag.reassoc": [],
+    "Toy.Float.Flag.reassoc.elim": [],
+    "Toy.Float.Flag.reassoc.sizeOf_spec": [],
+    "Toy.Float.Flag.rec": [],
+    "Toy.Float.Flag.recOn": [],
+    "Toy.Float.Flags": [],
+    "Toy.Float.Flags.Sub": [],
+    "Toy.Float.Flags.Sub.eq_1": [],
+    "Toy.Float.Flags.all": [],
+    "Toy.Float.Flags.all.eq_1": [],
+    "Toy.Float.Flags.allBut": [],
+    "Toy.Float.Flags.allBut.eq_1": [],
+    "Toy.Float.Flags.allBut.eq_2": [],
+    "Toy.Float.Flags.allBut.eq_3": [],
+    "Toy.Float.Flags.allBut.eq_4": [],
+    "Toy.Float.Flags.allBut.eq_5": [],
+    "Toy.Float.Flags.casesOn": [],
+    "Toy.Float.Flags.contract": [],
+    "Toy.Float.Flags.ctorIdx": [],
+    "Toy.Float.Flags.has": [],
+    "Toy.Float.Flags.has.eq_1": [],
+    "Toy.Float.Flags.has.eq_2": [],
+    "Toy.Float.Flags.has.eq_3": [],
+    "Toy.Float.Flags.has.eq_4": [],
+    "Toy.Float.Flags.has.eq_5": [],
+    "Toy.Float.Flags.instDecidableSub": [],
+    "Toy.Float.Flags.mk": [],
+    "Toy.Float.Flags.mk.inj": [],
+    "Toy.Float.Flags.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Flags.mk.noConfusion": [],
+    "Toy.Float.Flags.mk.sizeOf_spec": [],
+    "Toy.Float.Flags.ninf": [],
+    "Toy.Float.Flags.nnan": [],
+    "Toy.Float.Flags.noConfusion": [],
+    "Toy.Float.Flags.noConfusionType": [],
+    "Toy.Float.Flags.nsz": [],
+    "Toy.Float.Flags.reassoc": [],
+    "Toy.Float.Flags.rec": [],
+    "Toy.Float.Flags.recOn": [],
+    "Toy.Float.Flags.sub_allBut_of_not_has": [
+      "propext"
+    ],
+    "Toy.Float.Flags.sub_iff_has": [],
+    "Toy.Float.Flags.sub_refl": [],
+    "Toy.Float.Fmt": [],
+    "Toy.Float.Fmt.bias": [],
+    "Toy.Float.Fmt.casesOn": [],
+    "Toy.Float.Fmt.ctorIdx": [],
+    "Toy.Float.Fmt.e": [],
+    "Toy.Float.Fmt.expCount": [],
+    "Toy.Float.Fmt.expCount.eq_1": [],
+    "Toy.Float.Fmt.expCount_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.expCount_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.four_le_two_pow_e": [],
+    "Toy.Float.Fmt.fracCount": [],
+    "Toy.Float.Fmt.fracCount_le_maxUnits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.fracCount_pos": [],
+    "Toy.Float.Fmt.maxUnits": [],
+    "Toy.Float.Fmt.maxUnits_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.maxUnits_isRepr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.maxUnits_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.mk": [],
+    "Toy.Float.Fmt.mk.congr_simp": [],
+    "Toy.Float.Fmt.mk.inj": [],
+    "Toy.Float.Fmt.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Fmt.mk.noConfusion": [],
+    "Toy.Float.Fmt.mk.sizeOf_spec": [],
+    "Toy.Float.Fmt.noConfusion": [],
+    "Toy.Float.Fmt.noConfusionType": [],
+    "Toy.Float.Fmt.one_le_bias": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.p": [],
+    "Toy.Float.Fmt.qneg": [],
+    "Toy.Float.Fmt.qneg_add_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.rec": [],
+    "Toy.Float.Fmt.recOn": [],
+    "Toy.Float.Fmt.two_le_e": [],
+    "Toy.Float.Fmt.two_le_fracCount": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.two_le_p": [],
+    "Toy.Float.Fmt.two_pow_e_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Fmt.two_pow_p_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.IsRepr": [],
+    "Toy.Float.IsRepr.mono": [],
+    "Toy.Float.IsRepr.mul_two_pow": [
+      "propext"
+    ],
+    "Toy.Float.OneNaNOrOppositeZeros": [
+      "propext"
+    ],
+    "Toy.Float.PermittedFormsAgree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.PermittedFormsAgreeAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Rel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.Rewrite": [],
+    "Toy.Float.Rewrite.casesOn": [],
+    "Toy.Float.Rewrite.ctorIdx": [],
+    "Toy.Float.Rewrite.lhs": [],
+    "Toy.Float.Rewrite.mk": [],
+    "Toy.Float.Rewrite.mk.inj": [],
+    "Toy.Float.Rewrite.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Float.Rewrite.mk.noConfusion": [],
+    "Toy.Float.Rewrite.mk.sizeOf_spec": [],
+    "Toy.Float.Rewrite.noConfusion": [],
+    "Toy.Float.Rewrite.noConfusionType": [],
+    "Toy.Float.Rewrite.rec": [],
+    "Toy.Float.Rewrite.recOn": [],
+    "Toy.Float.Rewrite.rhs": [],
+    "Toy.Float.Valid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ValidMod": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.W29": [],
+    "Toy.Float.W34": [],
+    "Toy.Float.W36": [],
+    "Toy.Float.W37": [],
+    "Toy.Float.W38": [],
+    "Toy.Float.W46": [],
+    "Toy.Float.W57": [],
+    "Toy.Float.W58": [],
+    "Toy.Float.add": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add.eq_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add.eq_6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add.eq_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add.match_1": [],
+    "Toy.Float.addVia": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.addVia_eq_add_F33_W37": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.addVia_eq_add_F33_W38": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.addVia_eq_add_of_two_mul_add_one_le_and_bias_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.addVia_ne_add_F33_W29": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.addVia_ne_add_F33_W34": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.addVia_ne_add_F33_W36": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_assoc_defect_never_only_zero_sign": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_assoc_fails_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_assoc_fails_by_overflow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_assoc_fails_by_rounding_all_normal_F32_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_assoc_fails_by_rounding_all_normal_hyp_tight_F22": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_assoc_fails_by_rounding_all_normal_of_prec_le_two_bias": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_assoc_not_validMod_allBut_reassoc_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_assoc_overflow_excluded_by_ninf_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_assoc_rounding_all_normal_F23": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_comm'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_comm_mul_comm_fma_comm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_eq_negZero_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_fin_false": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_fin_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_maxFinite_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_maxFinite_posZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_maxFinite_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_negZero_right": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_negZero_right_and_mul_one_right": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_neg_neg_eqNsz": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_one_mul'": [],
+    "Toy.Float.add_posZero_fails_at_negZero_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.add_posZero_right_eq_iff_and_eqNsz": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.admissible_anti": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.allAtExp": [],
+    "Toy.Float.allBelow": [],
+    "Toy.Float.allBelow.match_1": [],
+    "Toy.Float.allBelow_iff": [
+      "propext"
+    ],
+    "Toy.Float.allEnv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.allEnv.match_1": [],
+    "Toy.Float.allEnv_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.allEnv_iff.match_1_1": [],
+    "Toy.Float.all_FP_list_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.assocRoundA": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.assocRoundA.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.assocRoundB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.assocRoundB.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.bitLen": [],
+    "Toy.Float.bitLenAux": [],
+    "Toy.Float.bitLenAux.eq_1": [],
+    "Toy.Float.bitLenAux.eq_2": [],
+    "Toy.Float.bitLenAux.eq_def": [],
+    "Toy.Float.bitLenAux.match_1": [],
+    "Toy.Float.bitLenAux_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.bitLenAux_zero": [
+      "propext"
+    ],
+    "Toy.Float.bitLenAux_zero.match_1_1": [],
+    "Toy.Float.bitLen_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.bitLen_le_of_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.bitLen_mul_two_pow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.bitLen_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.bitLen_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.bitLen_zero": [],
+    "Toy.Float.bne_comm'": [],
+    "Toy.Float.bne_false'": [],
+    "Toy.Float.bne_true'": [],
+    "Toy.Float.chkFmaNearestF22": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chkFmaNearestF22_E0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chkFmaNearestF22_E1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chkFmaNearestF22_E2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chkFmaNearestF22_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chkFmaNearestF22_all.match_1_1": [],
+    "Toy.Float.chkFmaNearestF22_special": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_E0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_E1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_E2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_E3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_E4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_E5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_E6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_all.match_1_1": [],
+    "Toy.Float.chk_addVia_eq_add_F33_W37_special": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_E0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_E1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_E2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_E3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_E4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_E5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_E6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_all.match_1_1": [],
+    "Toy.Float.chk_addVia_eq_add_F33_W38_special": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_E0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_E1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_E2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_E3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_E4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_E5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_E6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_all.match_1_1": [],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W38_special": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_E0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_E1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_E2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_E3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_E4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_E5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_E6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_all.match_1_1": [],
+    "Toy.Float.chk_mulVia_eq_mul_F33_W46_special": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_E0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_E1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_E2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_E3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_E4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_E5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_E6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_all.match_1_1": [],
+    "Toy.Float.chk_mulVia_eq_mul_F34_W58_special": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.consEnv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.consEnv_head_tail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.contract_mulSubMul_nonzero_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.cvt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.cvt.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.cvt.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.cvt.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.cvt_down_fin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.cvt_round": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.cvt_up_fin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.cvt_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.decForallEnv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.decide_lt_eq_not_decide_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.decide_sval_neg": [
+      "propext"
+    ],
+    "Toy.Float.decodeE": [],
+    "Toy.Float.decodeE.eq_1": [],
+    "Toy.Float.decodeM": [],
+    "Toy.Float.decodeM.eq_1": [],
+    "Toy.Float.decode_spec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.decode_unitsOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.doubleRounding_hyps_bounded": [],
+    "Toy.Float.dy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.eMulSubMul": [
+      "propext"
+    ],
+    "Toy.Float.env1": [],
+    "Toy.Float.env2": [],
+    "Toy.Float.env3": [],
+    "Toy.Float.env3.eq_1": [],
+    "Toy.Float.env4": [],
+    "Toy.Float.envAssoc4Witness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.envAssocOverflow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.envAssocRound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.eqNsz_refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.eqNsz_symm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.eqNsz_zeros": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.eq_nan_of_isNaN": [
+      "propext"
+    ],
+    "Toy.Float.eq_of_mul_close": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.eq_zero_of_isZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.errOf": [
+      "propext"
+    ],
+    "Toy.Float.ex_add_neg_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_add_pos_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_admissible_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_bits_injective_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_bits_pos_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_cmp_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_cvt_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_eqNsz_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_err_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_flagsSub": [],
+    "Toy.Float.ex_fma_neg_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_fma_pos_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_fmt_neg_no_one_bit_exponent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_fmt_pos_F33": [],
+    "Toy.Float.ex_fp_neg_zeros_distinct_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_minLt_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_minimum_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_mkFin_units_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_mul_neg_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_mul_pos_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_rel_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_round_neg_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_round_pos_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_sub_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_units_neg_F33": [],
+    "Toy.Float.ex_units_pos_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_validMod_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ex_variants_F33": [
+      "propext"
+    ],
+    "Toy.Float.exactFma": [],
+    "Toy.Float.exactFma.eq_1": [],
+    "Toy.Float.exactMulAdd": [
+      "propext"
+    ],
+    "Toy.Float.exactMulAdd.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.fContract": [],
+    "Toy.Float.fContract.eq_1": [],
+    "Toy.Float.fNnan": [],
+    "Toy.Float.fNnan.eq_1": [],
+    "Toy.Float.fNnanNinfNsz": [],
+    "Toy.Float.fNnanNsz": [],
+    "Toy.Float.fNnanNsz.eq_1": [],
+    "Toy.Float.fNsz": [],
+    "Toy.Float.fNsz.eq_1": [],
+    "Toy.Float.fReassoc": [],
+    "Toy.Float.fReassoc.eq_1": [],
+    "Toy.Float.feq": [
+      "propext"
+    ],
+    "Toy.Float.feq.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.feq_self_fails_at_nan_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.feq_self_iff": [
+      "propext"
+    ],
+    "Toy.Float.fin_eq_zero_of_units": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.flagTable_exact_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.flagTable_nonvacuous_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.flagTable_sufficient": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.flags_sub_all": [],
+    "Toy.Float.fma": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.eq_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.eq_6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.eq_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.eq_8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.eq_9": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma.match_1": [
+      "propext"
+    ],
+    "Toy.Float.fma_eq_round_exactMulAdd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_errLe_twoStep_of_fma_finite": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_err_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_isFinite_imp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_maxFinite_two": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_mulSubMul_negative_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_mulSubMul_zero_for_inexact_product_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_ne_twoStep_all_normal_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_nearest_of_fma_finite": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_nearest_of_fma_finite_F22": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_overflows_while_twoStep_finite_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.fma_zero_of_exact_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.forall_of_allAtExp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ge": [
+      "propext"
+    ],
+    "Toy.Float.ge.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.ge_of_gt_maxUnits": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.instDecidableAdmissible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.instDecidableEqExpr": [],
+    "Toy.Float.instDecidableEqExpr.decEq": [],
+    "Toy.Float.instDecidableEqExpr.decEq.match_1": [],
+    "Toy.Float.instDecidableEqFP": [],
+    "Toy.Float.instDecidableEqFP.decEq": [],
+    "Toy.Float.instDecidableEqFP.decEq.match_1": [],
+    "Toy.Float.instDecidableEqFlag": [],
+    "Toy.Float.instDecidableEqFlags": [],
+    "Toy.Float.instDecidableEqFlags.decEq": [],
+    "Toy.Float.instDecidableEqFlags.decEq.match_1": [],
+    "Toy.Float.instDecidableEqNsz": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.instDecidableErrLe": [],
+    "Toy.Float.instDecidableOneNaNOrOppositeZeros": [
+      "propext"
+    ],
+    "Toy.Float.instDecidablePermittedFormsAgree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.instDecidablePermittedFormsAgreeAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.instDecidableRel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.instDecidableValid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.instDecidableValidMod": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.instReprExpr": [],
+    "Toy.Float.instReprExpr.repr": [],
+    "Toy.Float.instReprExpr.repr.match_1": [],
+    "Toy.Float.instReprFP": [],
+    "Toy.Float.instReprFP.repr": [],
+    "Toy.Float.instReprFP.repr.match_1": [],
+    "Toy.Float.instReprFlag": [],
+    "Toy.Float.instReprFlag.repr": [],
+    "Toy.Float.instReprFlag.repr.match_1": [],
+    "Toy.Float.instReprFlags": [],
+    "Toy.Float.instReprFlags.repr": [],
+    "Toy.Float.isNormal_mkFin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.isRepr_dvd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.isRepr_of_lt": [
+      "propext"
+    ],
+    "Toy.Float.isRepr_two_pow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.isRepr_zero": [
+      "propext"
+    ],
+    "Toy.Float.isZero_fin_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.isZero_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.key": [],
+    "Toy.Float.key.eq_1": [],
+    "Toy.Float.key.eq_2": [],
+    "Toy.Float.key.eq_3": [],
+    "Toy.Float.key_fin_abs_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.key_inj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.key_of_isZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.le": [
+      "propext"
+    ],
+    "Toy.Float.le.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.le_bitLen_of_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.lt": [
+      "propext"
+    ],
+    "Toy.Float.lt.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.lt_eq_not_ge_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.lt_ne_not_ge_at_nan_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.lt_two_pow_self'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.lt_two_pow_self'.match_1_1": [],
+    "Toy.Float.maxFinite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.maxFinite_fields": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.maxLt": [
+      "propext"
+    ],
+    "Toy.Float.maxUnits_mul_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.maxUnits_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.maximum": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.maximum.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.maximum_assoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.maximum_comm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mem_FP_list": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.minLt": [
+      "propext"
+    ],
+    "Toy.Float.minLt_maxLt_comm_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.minLt_maxLt_not_comm_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.minLt_not_assoc_at_nan_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.minimum": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.minimum.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.minimum_assoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.minimum_comm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.minimum_maximum_comm_assoc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mkFin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mkFin_fields": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mkFin_ne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mkFin_overflow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mkFin_repr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mkFin_units": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mkFin_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul.eq_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul.eq_6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul.eq_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mulVia": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mulVia_eq_mul_F33_W38": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mulVia_eq_mul_F33_W46": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mulVia_eq_mul_F34_W58": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mulVia_eq_mul_of_two_mul_le_and_qneg_bias_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mulVia_ne_mul_F33_W29": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mulVia_ne_mul_F33_W36": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mulVia_ne_mul_F34_W57": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul_fin_posZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul_maxFinite_two": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul_negOne_right": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul_one_right": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul_posZero_eq_posZero_iff_and_failure_values": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul_posZero_fails_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.mul_two_eq_add_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.negZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.negZero.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.neg_mkFin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.neg_neg": [
+      "propext"
+    ],
+    "Toy.Float.neg_round": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.neg_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.not_permittedFormsAgree": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.not_permittedFormsAgree_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.nsz_rel_identifies_underflow_sign_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.nv_assoc_zero_sign_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.nv_comm_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.nv_fma_accuracy_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.nv_identities_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.nv_minimum_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.nv_permittedFormsAgreeAt_true_and_false_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ofDyadic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ofDyadic_false_eq_mkFin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.ofDyadic_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.one_fields": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.one_le_two_pow": [],
+    "Toy.Float.overflow_transfer": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.permittedFormsAgreeAt_iff_laws": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.posZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.posZero.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.pow_qneg_le_maxUnits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.qneg_sub_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.reassoc_contract_change_result_at_maxFinite": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.reassoc_validMod_not_transitive_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.reassoc_variants_omits_right_assoc_F33": [
+      "propext"
+    ],
+    "Toy.Float.rel_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rneDiv": [],
+    "Toy.Float.rneDiv_double": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rneDiv_eq_of_close": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rneDiv_err": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rneDiv_ge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rneDiv_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rneDiv_mul_pow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rneDiv_mul_pow_add": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rneDiv_nearest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rneDiv_zero_right": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.round": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.round.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits": [],
+    "Toy.Float.roundUnits_double_sum": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_isRepr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_mul_pow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_mul_pow_add": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_mul_pow_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_nearest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_of_range": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_repr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_repr0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_tie": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.roundUnits_zero": [
+      "propext"
+    ],
+    "Toy.Float.round_ne_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.round_repr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.round_units": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwAddAssoc": [
+      "propext"
+    ],
+    "Toy.Float.rwAddAssoc.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.rwAddAssoc_validMod_iff_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwAddAssoc_validMod_reassoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwAddComm": [
+      "propext"
+    ],
+    "Toy.Float.rwAddComm_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwAddNegZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwAddNegZero_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwAddPosZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwAddPosZero_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwAssoc4Comp": [
+      "propext"
+    ],
+    "Toy.Float.rwAssoc4Step1": [
+      "propext"
+    ],
+    "Toy.Float.rwAssoc4Step2": [
+      "propext"
+    ],
+    "Toy.Float.rwContract": [
+      "propext"
+    ],
+    "Toy.Float.rwContract.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.rwContract_not_validMod_allBut_contract_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwContract_validMod_contract": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwContract_validMod_iff_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulAssoc": [
+      "propext"
+    ],
+    "Toy.Float.rwMulAssoc.eq_1": [
+      "propext"
+    ],
+    "Toy.Float.rwMulAssoc_not_validMod_allBut_reassoc_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulAssoc_validMod_iff_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulAssoc_validMod_reassoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulNegOne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulNegOne_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulOne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulOne_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulPosZero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulPosZero.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulPosZero_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulTwo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwMulTwo_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwNegSub": [
+      "propext"
+    ],
+    "Toy.Float.rwNegSub_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwNegZeroSub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwNegZeroSub_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwPosZeroSub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwPosZeroSub_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwSubSelf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwSubSelf.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwSubSelf_validMod_iff_F33": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwUncontract": [
+      "propext"
+    ],
+    "Toy.Float.rwUncontract_never_validMod_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwUncontract_not_validMod_all_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.rwUncontract_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.sub.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.sub_rebracket_differs_only_in_zero_sign_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.sub_self_eq_posZero_iff_and_eq_nan_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.sub_self_fails_at_nan_inf_F33": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.sum_far": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.sum_far_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.sval": [],
+    "Toy.Float.sval.eq_1": [],
+    "Toy.Float.sval_eq_zero_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.sval_natAbs": [
+      "propext"
+    ],
+    "Toy.Float.sval_not": [
+      "propext"
+    ],
+    "Toy.Float.sval_zero": [
+      "propext"
+    ],
+    "Toy.Float.totalKey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.totalKey_inj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.two_fields": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.two_pow_le_roundUnits": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.two_pow_le_two_pow": [],
+    "Toy.Float.two_pow_lt_two_pow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.two_pow_split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.two_pow_succ'": [],
+    "Toy.Float.unitsOf": [],
+    "Toy.Float.unitsOf.eq_1": [],
+    "Toy.Float.unitsOf_eq_zero_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.unitsOf_isRepr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.unitsOf_le_maxUnits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.unitsOf_succ": [
+      "propext"
+    ],
+    "Toy.Float.unitsOf_zero_left": [
+      "propext"
+    ],
+    "Toy.Float.validMod_iff_of_noPerm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.validMod_iff_sub_of_minimal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.validMod_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.validMod_of_rhs_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.valid_iff_forall_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.zero.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.zeroBlind": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.zeroBlind.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.zeroBlind_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.zero_ne_zero_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Float.zero_units": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

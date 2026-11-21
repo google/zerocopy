@@ -1,0 +1,114 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/floating-point",
+    "compilers/floating-point",
+    "compilers/fast-math",
+    "compilers/double-rounding",
+    "llvm/fast-math-flags",
+    "pl/floating-point-semantics",
+    "rust/floating-point"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "IEEE Standard for Floating-Point Arithmetic (IEEE Std 754-2019)",
+      "identity": {
+        "doi": "10.1109/IEEESTD.2019.8766229",
+        "limitation": "the 2019 text was not accessible; the clauses relied on are quoted in REPORT.md from public verbatim quotations of the 2008 text and of a late 2019 draft"
+      }
+    },
+    {
+      "name": "What every computer scientist should know about floating-point arithmetic",
+      "identity": {
+        "doi": "10.1145/103162.103163"
+      }
+    },
+    {
+      "name": "When is double rounding innocuous?",
+      "identity": {
+        "doi": "10.1145/221332.221334",
+        "limitation": "paper text not accessible; its theorems are cited as restated in the author's NYU PhD thesis (2000), section 6.2"
+      }
+    },
+    {
+      "name": "Innocuous Double Rounding of Basic Arithmetic Operations",
+      "identity": {
+        "doi": "10.6092/issn.1972-5787/4359"
+      }
+    },
+    {
+      "name": "LLVM Language Reference Manual (fast-math flags)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6",
+        "path": "llvm/docs/LangRef.md"
+      }
+    },
+    {
+      "name": "LLVM InstructionSimplify (floating-point folds)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "ef72a0e441f65f73b7cf732bf05b8bcc1a8cf609",
+        "path": "llvm/lib/Analysis/InstructionSimplify.cpp"
+      }
+    },
+    {
+      "name": "Rust RFC 3514: float semantics",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4",
+        "path": "text/3514-float-semantics.md"
+      }
+    },
+    {
+      "name": "Rust core library floating-point documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "268bdaabaceb7688b974bae0f96b9c5c1b6ab991",
+        "paths": "library/core/src/primitive_docs.rs; library/core/src/num/f32.rs"
+      }
+    },
+    {
+      "name": "ISO/IEC 9899:201x Committee Draft N1570 (C11)",
+      "identity": {
+        "document": "N1570, 12 April 2011",
+        "url": "https://port70.net/~nsz/c/c11/n1570.html",
+        "limitation": "HTML rendering of the committee draft, a web page with no revision identifier; the clauses relied on are quoted in REPORT.md"
+      }
+    },
+    {
+      "name": "Alive-FP: Automated Verification of Floating Point Based Peephole Optimizations in LLVM",
+      "identity": {
+        "doi": "10.1007/978-3-662-53413-7_16"
+      }
+    },
+    {
+      "name": "LifeJacket: Verifying Precise Floating-Point Optimizations in LLVM",
+      "identity": {
+        "doi": "10.1145/2931021.2931024"
+      }
+    },
+    {
+      "name": "Icing: Supporting Fast-Math Style Optimizations in a Verified Compiler",
+      "identity": {
+        "doi": "10.1007/978-3-030-25543-5_10"
+      }
+    },
+    {
+      "name": "Verified Compilation of Floating-Point Computations",
+      "identity": {
+        "doi": "10.1007/s10817-014-9317-x"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
