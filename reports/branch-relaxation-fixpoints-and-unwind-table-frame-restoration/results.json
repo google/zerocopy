@@ -215,7 +215,7 @@
   ],
   "kind": "counterexample",
   "tier": "T1",
-  "plain_claim": "With an alignment directive, leastness fails while termination and validity still hold: on [branch 1, align 4, branch 1] (short 1, long 2, reach 2; shortSize <= longSize), relaxation from all-short stops within numBranches + 1 passes at a valid assignment that promotes branch 2, yet promoting only branch 0 is also valid (it shrinks the alignment padding and brings branch 2 into reach), and the relaxation result is not below it.",
+  "plain_claim": "With an alignment directive, leastness fails while termination and validity still hold (as for every program; R1a relaxLoop_returns_relax_within_numBranches_succ, R1b relax_valid_and_above_start): on [branch 1, align 4, branch 1] (short 1, long 2, reach 2; shortSize <= longSize), relaxation from all-short stops within numBranches + 1 passes at a valid assignment that promotes branch 2, yet promoting only branch 0 is also valid (it shrinks the alignment padding and brings branch 2 into reach), and the relaxation result is not below it.",
   "hypotheses": [],
   "depth": "definitional",
   "nonvacuity_witness": "The instance itself.",

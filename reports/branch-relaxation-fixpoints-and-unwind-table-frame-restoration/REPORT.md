@@ -17,7 +17,7 @@ The non-claims of every result are listed first under **Boundaries**; read them 
 - **R2a** — The distance between the starts of instructions `i` and `t` depends only on the sizes of the instructions in `[min i t, max i t)` and is monotone in those sizes.
 - **R2b** — If every instruction size is monotone in the assignment (`SizesMonotone`), every branch distance is monotone in the assignment (`DistMonotone`).
 - **R2c** — A program without alignment directives, under parameters with `shortSize ≤ longSize`, has every instruction size monotone in the assignment.
-- **R2e** — With an alignment directive (and `shortSize ≤ longSize`), leastness fails while termination and validity still hold: on `[branch 1, align 4, branch 1]` (short 1, long 2, reach 2) relaxation from all-short stops at a valid assignment that promotes branch 2, yet promoting only branch 0 is also valid and the relaxation result is not below it.
+- **R2e** — With an alignment directive (and `shortSize ≤ longSize`), leastness fails while termination and validity still hold (as for every program; R1a `relaxLoop_returns_relax_within_numBranches_succ`, R1b `relax_valid_and_above_start`): on `[branch 1, align 4, branch 1]` (short 1, long 2, reach 2) relaxation from all-short stops at a valid assignment that promotes branch 2, yet promoting only branch 0 is also valid and the relaxation result is not below it.
 - **R4a** — If `DistMonotone` holds and `shortSize ≤ longSize`, the grow-only result from all-short has the minimum total size among all valid assignments (alignment directives are allowed as long as `DistMonotone` holds).
 - **R4b** — With alignment padding inside a branch span (and `shortSize ≤ longSize`), the grow-only fixpoint from all-short need not have minimum total size: on `[branch 1, align 4, branch 1]` it has total size 6, while a valid assignment of total size 5 exists.
 - **R5** — If assignment `a` is valid, position `j` is promoted and grow-only relaxation is re-run to obtain `r = relax prm p (promote a j)`, and every instruction has positive size in both layouts `a` and `r`, then in each layout every branch has an encodable displacement, recomputed from that layout, that lands exactly on its target index (`min t p.length`).
@@ -567,7 +567,7 @@ Basis: derived (modeling bridge) — The sufficient condition corresponds to an 
 
 **Kind / tier / depth.** counterexample / T1 / definitional.
 
-**Plain claim.** With an alignment directive, leastness fails while termination and validity still hold: on [branch 1, align 4, branch 1] (short 1, long 2, reach 2; shortSize <= longSize), relaxation from all-short stops within numBranches + 1 passes at a valid assignment that promotes branch 2, yet promoting only branch 0 is also valid (it shrinks the alignment padding and brings branch 2 into reach), and the relaxation result is not below it.
+**Plain claim.** With an alignment directive, leastness fails while termination and validity still hold (as for every program; R1a `relaxLoop_returns_relax_within_numBranches_succ`, R1b `relax_valid_and_above_start`): on [branch 1, align 4, branch 1] (short 1, long 2, reach 2; shortSize <= longSize), relaxation from all-short stops within numBranches + 1 passes at a valid assignment that promotes branch 2, yet promoting only branch 0 is also valid (it shrinks the alignment padding and brings branch 2 into reach), and the relaxation result is not below it.
 
 **Lean statement.**
 
