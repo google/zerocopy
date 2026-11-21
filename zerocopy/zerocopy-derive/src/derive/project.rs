@@ -151,7 +151,7 @@ pub(crate) fn derive_projection_struct_union(
     }
 
     let field_tokens = fields.iter().map(|(vis, ident, _)| {
-        let ident = ident!(("ẕ{}", ident), ident.span());
+        let ident = ident!(("___ZcField_{}", ident), ident.span());
         quote! {
             #vis enum #ident {}
         }
@@ -169,7 +169,7 @@ pub(crate) fn derive_projection_struct_union(
         .build();
 
     let has_fields = fields.iter().map(move |(_, ident, ty)| {
-        let field_token = ident!(("ẕ{}", ident), ident.span());
+        let field_token = ident!(("___ZcField_{}", ident), ident.span());
         let projection = FieldProjection {
             variant_id: variant_id.clone(),
             field: parse_quote!(#field_token),

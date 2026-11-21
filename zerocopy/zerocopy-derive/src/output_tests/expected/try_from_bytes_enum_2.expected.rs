@@ -92,13 +92,13 @@ const _: () = {
             #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
-                enum ẕ0 {}
-                enum ẕ1 {}
-                enum ẕ2 {}
-                enum ẕ3 {}
-                enum ẕ4 {}
-                enum ẕ5 {}
-                enum ẕ6 {}
+                enum ___ZcField_0 {}
+                enum ___ZcField_1 {}
+                enum ___ZcField_2 {}
+                enum ___ZcField_3 {}
+                enum ___ZcField_4 {}
+                enum ___ZcField_5 {}
+                enum ___ZcField_6 {}
                 #[allow(
                     deprecated,
                     private_bounds,
@@ -147,7 +147,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ0,
+                        ___ZcField_0,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -163,7 +163,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ0,
+                            ___ZcField_0,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(0) },
                         >>::Type {
@@ -198,7 +198,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ0,
+                        ___ZcField_0,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
@@ -237,7 +237,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ0,
+                        ___ZcField_0,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -280,7 +280,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ0,
+                        ___ZcField_0,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
@@ -317,7 +317,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ1,
+                        ___ZcField_1,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(1) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -331,7 +331,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ1,
+                            ___ZcField_1,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(1) },
                         >>::Type {
@@ -366,7 +366,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ1,
+                        ___ZcField_1,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(1) },
@@ -405,7 +405,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ1,
+                        ___ZcField_1,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -448,7 +448,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ1,
+                        ___ZcField_1,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(1) },
@@ -485,7 +485,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ2,
+                        ___ZcField_2,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(2) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -499,7 +499,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ2,
+                            ___ZcField_2,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(2) },
                         >>::Type {
@@ -534,7 +534,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ2,
+                        ___ZcField_2,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(2) },
@@ -573,7 +573,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ2,
+                        ___ZcField_2,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -616,7 +616,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ2,
+                        ___ZcField_2,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(2) },
@@ -653,7 +653,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ3,
+                        ___ZcField_3,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(3) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -667,7 +667,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ3,
+                            ___ZcField_3,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(3) },
                         >>::Type {
@@ -702,7 +702,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ3,
+                        ___ZcField_3,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(3) },
@@ -741,7 +741,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ3,
+                        ___ZcField_3,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -784,7 +784,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ3,
+                        ___ZcField_3,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(3) },
@@ -821,7 +821,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ4,
+                        ___ZcField_4,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(4) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -835,7 +835,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ4,
+                            ___ZcField_4,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(4) },
                         >>::Type {
@@ -870,7 +870,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ4,
+                        ___ZcField_4,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(4) },
@@ -909,7 +909,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ4,
+                        ___ZcField_4,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -952,7 +952,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ4,
+                        ___ZcField_4,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(4) },
@@ -989,7 +989,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ5,
+                        ___ZcField_5,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(5) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -1003,7 +1003,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ5,
+                            ___ZcField_5,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(5) },
                         >>::Type {
@@ -1038,7 +1038,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ5,
+                        ___ZcField_5,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(5) },
@@ -1077,7 +1077,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ5,
+                        ___ZcField_5,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -1120,7 +1120,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ5,
+                        ___ZcField_5,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(5) },
@@ -1157,7 +1157,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ6,
+                        ___ZcField_6,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(6) },
                     > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
@@ -1173,7 +1173,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ6,
+                            ___ZcField_6,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(6) },
                         >>::Type {
@@ -1208,7 +1208,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ6,
+                        ___ZcField_6,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(6) },
@@ -1247,7 +1247,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ6,
+                        ___ZcField_6,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -1290,7 +1290,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ6,
+                        ___ZcField_6,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(6) },
@@ -1340,11 +1340,11 @@ const _: () = {
             #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
-                enum ẕ0 {}
-                enum ẕ1 {}
-                enum ẕ2 {}
-                enum ẕ3 {}
-                enum ẕ4 {}
+                enum ___ZcField_0 {}
+                enum ___ZcField_1 {}
+                enum ___ZcField_2 {}
+                enum ___ZcField_3 {}
+                enum ___ZcField_4 {}
                 #[allow(
                     deprecated,
                     private_bounds,
@@ -1393,7 +1393,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ0,
+                        ___ZcField_0,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1409,7 +1409,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ0,
+                            ___ZcField_0,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(0) },
                         >>::Type {
@@ -1444,7 +1444,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ0,
+                        ___ZcField_0,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
@@ -1483,7 +1483,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ0,
+                        ___ZcField_0,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -1526,7 +1526,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ0,
+                        ___ZcField_0,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
@@ -1563,7 +1563,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ1,
+                        ___ZcField_1,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(1) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1577,7 +1577,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ1,
+                            ___ZcField_1,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(1) },
                         >>::Type {
@@ -1612,7 +1612,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ1,
+                        ___ZcField_1,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(1) },
@@ -1651,7 +1651,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ1,
+                        ___ZcField_1,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -1694,7 +1694,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ1,
+                        ___ZcField_1,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(1) },
@@ -1731,7 +1731,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ2,
+                        ___ZcField_2,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(2) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1745,7 +1745,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ2,
+                            ___ZcField_2,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(2) },
                         >>::Type {
@@ -1780,7 +1780,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ2,
+                        ___ZcField_2,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(2) },
@@ -1819,7 +1819,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ2,
+                        ___ZcField_2,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -1862,7 +1862,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ2,
+                        ___ZcField_2,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(2) },
@@ -1899,7 +1899,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ3,
+                        ___ZcField_3,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(3) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -1913,7 +1913,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ3,
+                            ___ZcField_3,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(3) },
                         >>::Type {
@@ -1948,7 +1948,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ3,
+                        ___ZcField_3,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(3) },
@@ -1987,7 +1987,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ3,
+                        ___ZcField_3,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -2030,7 +2030,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ3,
+                        ___ZcField_3,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(3) },
@@ -2067,7 +2067,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ4,
+                        ___ZcField_4,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(4) },
                     > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
@@ -2083,7 +2083,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ4,
+                            ___ZcField_4,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(4) },
                         >>::Type {
@@ -2118,7 +2118,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ4,
+                        ___ZcField_4,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(4) },
@@ -2157,7 +2157,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ4,
+                        ___ZcField_4,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -2200,7 +2200,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ4,
+                        ___ZcField_4,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(4) },
@@ -2241,9 +2241,9 @@ const _: () = {
             #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
-                enum ẕ__field_StructLike {}
-                enum ẕ__field_TupleLike {}
-                enum ẕ__nonempty {}
+                enum ___ZcField___field_StructLike {}
+                enum ___ZcField___field_TupleLike {}
+                enum ___ZcField___nonempty {}
                 #[allow(
                     deprecated,
                     private_bounds,
@@ -2289,7 +2289,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ__field_StructLike,
+                        ___ZcField___field_StructLike,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_StructLike) },
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
@@ -2302,7 +2302,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ__field_StructLike,
+                            ___ZcField___field_StructLike,
                             { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_StructLike) },
                         >>::Type {
@@ -2337,7 +2337,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ__field_StructLike,
+                        ___ZcField___field_StructLike,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_StructLike) },
@@ -2373,7 +2373,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ__field_StructLike,
+                        ___ZcField___field_StructLike,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -2411,7 +2411,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ__field_TupleLike,
+                        ___ZcField___field_TupleLike,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_TupleLike) },
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
@@ -2424,7 +2424,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ__field_TupleLike,
+                            ___ZcField___field_TupleLike,
                             { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_TupleLike) },
                         >>::Type {
@@ -2459,7 +2459,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ__field_TupleLike,
+                        ___ZcField___field_TupleLike,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_TupleLike) },
@@ -2495,7 +2495,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ__field_TupleLike,
+                        ___ZcField___field_TupleLike,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -2533,7 +2533,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ__nonempty,
+                        ___ZcField___nonempty,
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__nonempty) },
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
@@ -2544,7 +2544,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕ__nonempty,
+                            ___ZcField___nonempty,
                             { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__nonempty) },
                         >>::Type {
@@ -2579,7 +2579,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ__nonempty,
+                        ___ZcField___nonempty,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__nonempty) },
@@ -2615,7 +2615,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕ__nonempty,
+                        ___ZcField___nonempty,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -2652,8 +2652,8 @@ const _: () = {
             #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
-                enum ẕtag {}
-                enum ẕvariants {}
+                enum ___ZcField_tag {}
+                enum ___ZcField_variants {}
                 #[allow(
                     deprecated,
                     private_bounds,
@@ -2699,7 +2699,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕtag,
+                        ___ZcField_tag,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
                     > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
@@ -2710,7 +2710,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕtag,
+                            ___ZcField_tag,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(tag) },
                         >>::Type {
@@ -2745,7 +2745,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕtag,
+                        ___ZcField_tag,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
@@ -2781,7 +2781,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕtag,
+                        ___ZcField_tag,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -2821,7 +2821,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕtag,
+                        ___ZcField_tag,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(tag) },
@@ -2855,7 +2855,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::HasField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕvariants,
+                        ___ZcField_variants,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
                     > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
@@ -2866,7 +2866,7 @@ const _: () = {
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                         ) -> *mut <Self as ::zerocopy::HasField<
                             ::zerocopy::project_clients::TryFromBytesDerive,
-                            ẕvariants,
+                            ___ZcField_variants,
                             { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(variants) },
                         >>::Type {
@@ -2901,7 +2901,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕvariants,
+                        ___ZcField_variants,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
@@ -2937,7 +2937,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕvariants,
+                        ___ZcField_variants,
                         (
                             ___ZcAliasing,
                             ___ZcAlignment,
@@ -2977,7 +2977,7 @@ const _: () = {
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
-                        ẕvariants,
+                        ___ZcField_variants,
                         (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Safe),
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },

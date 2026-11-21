@@ -47,7 +47,7 @@ const _: () = {
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
     const _: () = {
-        enum ẕa {}
+        enum ___ZcField_a {}
         #[allow(
             deprecated,
             private_bounds,
@@ -84,7 +84,7 @@ const _: () = {
         const _: () = {
             unsafe impl ::zerocopy::HasField<
                 ::zerocopy::project_clients::TryFromBytesDerive,
-                ẕa,
+                ___ZcField_a,
                 { ::zerocopy::UNION_VARIANT_ID },
                 { ::zerocopy::ident_id!(a) },
             > for Foo {
@@ -95,7 +95,7 @@ const _: () = {
                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                 ) -> *mut <Self as ::zerocopy::HasField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
-                    ẕa,
+                    ___ZcField_a,
                     { ::zerocopy::UNION_VARIANT_ID },
                     { ::zerocopy::ident_id!(a) },
                 >>::Type {
@@ -126,7 +126,7 @@ const _: () = {
                 ___ZcAlignment: ::zerocopy::invariant::Alignment,
             > ::zerocopy::ProjectField<
                 ::zerocopy::project_clients::TryFromBytesDerive,
-                ẕa,
+                ___ZcField_a,
                 (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
                 { ::zerocopy::UNION_VARIANT_ID },
                 { ::zerocopy::ident_id!(a) },
@@ -158,7 +158,7 @@ const _: () = {
                 ___ZcAlignment: ::zerocopy::invariant::Alignment,
             > ::zerocopy::ProjectField<
                 ::zerocopy::project_clients::TryFromBytesDerive,
-                ẕa,
+                ___ZcField_a,
                 (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
                 { ::zerocopy::UNION_VARIANT_ID },
                 { ::zerocopy::ident_id!(a) },
