@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "domains/newborn-screening-tandem-mass-spectrometry",
+    "domains/inborn-errors-of-metabolism-case-finding",
+    "verification/screening-cutoff-and-multivariate-interpretation-performance",
+    "tooling/post-analytical-interpretive-tools"
+  ],
+  "subjects": [
+    {
+      "name": "Arizona newborn screening cutoff analysis template (R and SQL)",
+      "identity": {
+        "repository": "AZ-NBS-Data/AZ-NBS-Cutoff-Analysis",
+        "revision": "46d2d03aa612eb8cff85b97cf2f49d28d25e58e8"
+      }
+    },
+    {
+      "name": "Pre-analytical factors in newborn screening notebooks (DBS diameter and transit time versus cut-off classification)",
+      "identity": {
+        "repository": "nf260/preanalyticalfactorsinNBS",
+        "revision": "49092996002c9bfa674b2370c29fea11c1c97f73"
+      }
+    },
+    {
+      "name": "Chace, Kalas, Naylor: Use of tandem mass spectrometry for multianalyte screening of dried blood specimens from newborns",
+      "identity": {
+        "doi": "10.1373/clinchem.2003.022178"
+      }
+    },
+    {
+      "name": "Wilcken, Wiley, Hammond, Carpenter: Screening newborns for inborn errors of metabolism by tandem mass spectrometry",
+      "identity": {
+        "doi": "10.1056/NEJMoa025225"
+      }
+    },
+    {
+      "name": "Matern et al.: Reduction of the false-positive rate in newborn screening by MS/MS-based second-tier tests (Mayo Clinic 2004-2007)",
+      "identity": {
+        "doi": "10.1007/s10545-007-0691-y"
+      }
+    },
+    {
+      "name": "Marquardt et al.: Enhanced interpretation of newborn screening results without analyte cutoff values",
+      "identity": {
+        "doi": "10.1038/gim.2012.2"
+      }
+    },
+    {
+      "name": "Hall et al.: Postanalytical tools improve performance of newborn screening by tandem mass spectrometry",
+      "identity": {
+        "doi": "10.1038/gim.2014.62"
+      }
+    },
+    {
+      "name": "Minter Baerg et al.: Precision newborn screening for lysosomal disorders (CLIR covariate adjustment)",
+      "identity": {
+        "doi": "10.1038/gim.2017.194"
+      }
+    },
+    {
+      "name": "Peng et al.: Reducing false-positive results in newborn screening using machine learning",
+      "identity": {
+        "doi": "10.3390/ijns6010016"
+      }
+    },
+    {
+      "name": "Hall, Wittenauer, Hagar: Post-analytical tools for the triage of newborn screening results in follow-up",
+      "identity": {
+        "doi": "10.3390/ijns6010020"
+      }
+    },
+    {
+      "name": "Andermann: Revisiting Wilson and Jungner in the genomic age (reproduces the 1968 WHO screening principles)",
+      "identity": {
+        "doi": "10.2471/BLT.07.050112"
+      }
+    },
+    {
+      "name": "Flynn, Hogg, Moat: Impact of dried blood spot diameter and transit time on analyte concentrations and cut-off classification",
+      "identity": {
+        "doi": "10.1515/cclm-2026-0976"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

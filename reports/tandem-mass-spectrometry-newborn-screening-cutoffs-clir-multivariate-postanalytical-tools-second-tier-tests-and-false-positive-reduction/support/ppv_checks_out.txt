@@ -1,0 +1,28 @@
+== Peng et al. 2020, Table (screen positives, California)
+GA-1    FP reduction  88.8% | PPV from table counts   3.4% ->  24.2% (printed 3.1% -> 22.3%) | TP implied by printed PPVs  43.0,  43.1
+MMA     FP reduction  45.0% | PPV from table counts  17.0% ->  27.2% (printed 16.4% -> 26.4%) | TP implied by printed PPVs  98.5,  99.0
+OTCD    FP reduction  97.8% | PPV from table counts   4.6% ->  68.6% (printed 3.5% -> 62.1%) | TP implied by printed PPVs  18.0,  18.0
+VLCADD  FP reduction   2.0% | PPV from table counts  23.1% ->  23.4% (printed 23.1% -> 23.4%) | TP implied by printed PPVs  60.1,  59.9
+
+== Hall et al. 2014, California Jan-Jun 2012 (actual cutoff system)
+FP = 458 (paper reports 454 FP reclassified); implied TP = 51
+
+== Hall et al. 2014, Minnesota 2013 prospective (tools as primary interpretation)
+PPV = 69.1% (printed 69%); FPR = 0.0239% (printed 0.024%)
+
+== Matern et al. 2007, Mayo programme with second-tier tests
+per 100,000: TP 59.8, FP 90.0, PPV implied 39.9% (printed 41%)
+
+== Bayes: PPV as a function of prevalence at fixed sensitivity/FPR (illustrative)
+prevalence 1/ 10000  FPR 0.30%  -> PPV  3.19%
+prevalence 1/ 10000  FPR 0.10%  -> PPV  9.01%
+prevalence 1/ 10000  FPR 0.02%  -> PPV 33.11%
+prevalence 1/ 50000  FPR 0.30%  -> PPV  0.66%
+prevalence 1/ 50000  FPR 0.10%  -> PPV  1.94%
+prevalence 1/ 50000  FPR 0.02%  -> PPV  9.01%
+prevalence 1/200000  FPR 0.30%  -> PPV  0.16%
+prevalence 1/200000  FPR 0.10%  -> PPV  0.49%
+prevalence 1/200000  FPR 0.02%  -> PPV  2.42%
+
+== NaN through a "<" cutoff comparison
+value=nan, cutoff=240.0: x < cutoff is False -> label '>= cutoff'

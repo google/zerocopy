@@ -1,0 +1,831 @@
+{
+ "summary": {
+  "A_raw_cutoff": {
+   "sensitivity": {
+    "median": 0.9096467391304348,
+    "min": 0.8301886792452831,
+    "max": 1.0
+   },
+   "false_positives": {
+    "median": 5000.0,
+    "min": 5000.0,
+    "max": 5000.0
+   },
+   "fpr_pct": {
+    "median": 0.5,
+    "min": 0.5,
+    "max": 0.5
+   },
+   "ppv_pct": {
+    "median": 0.8624953079959612,
+    "min": 0.5370996618261389,
+    "max": 1.1466982997232107
+   },
+   "fp_share_low_bw_pct": {
+    "median": 79.65,
+    "min": 78.34,
+    "max": 80.82
+   }
+  },
+  "B_covariate_adjusted_cutoff": {
+   "sensitivity": {
+    "median": 0.9728937728937729,
+    "min": 0.8541666666666666,
+    "max": 1.0
+   },
+   "false_positives": {
+    "median": 5000.0,
+    "min": 5000.0,
+    "max": 5000.0
+   },
+   "fpr_pct": {
+    "median": 0.5,
+    "min": 0.5,
+    "max": 0.5
+   },
+   "ppv_pct": {
+    "median": 0.8821479012440769,
+    "min": 0.5568814638027049,
+    "max": 1.2443215484890382
+   },
+   "fp_share_low_bw_pct": {
+    "median": 8.05,
+    "min": 7.28,
+    "max": 8.62
+   }
+  },
+  "C_two_marker_score_matched_sens": {
+   "sensitivity": {
+    "median": 0.9096467391304348,
+    "min": 0.8301886792452831,
+    "max": 1.0
+   },
+   "false_positives": {
+    "median": 62.5,
+    "min": 0.0,
+    "max": 9661.0
+   },
+   "fpr_pct": {
+    "median": 0.00625,
+    "min": 0.0,
+    "max": 0.9661
+   },
+   "ppv_pct": {
+    "median": 40.613432046536225,
+    "min": 0.48413679439637414,
+    "max": 100.0
+   },
+   "fp_share_low_bw_pct": {
+    "median": 7.905186683263487,
+    "min": 0.0,
+    "max": 25.0
+   }
+  },
+  "D_second_tier_classifier": {
+   "first_tier_positives": {
+    "median": 5043.5,
+    "min": 5027.0,
+    "max": 5058.0
+   },
+   "first_tier_tp": {
+    "median": 43.5,
+    "min": 27.0,
+    "max": 58.0
+   },
+   "cv_threshold_fp_reduction_pct": {
+    "median": 99.79,
+    "min": 70.98,
+    "max": 100.0
+   },
+   "cv_threshold_sensitivity_among_screen_pos": {
+    "median": 1.0,
+    "min": 1.0,
+    "max": 1.0
+   },
+   "next_cohort_first_tier_tp": {
+    "median": 43.5,
+    "min": 28.0,
+    "max": 53.0
+   },
+   "next_cohort_fp_reduction_pct": {
+    "median": 99.79694105074424,
+    "min": 77.2279219472943,
+    "max": 100.0
+   },
+   "next_cohort_sensitivity_among_screen_pos": {
+    "median": 0.978219696969697,
+    "min": 0.82,
+    "max": 1.0
+   },
+   "next_cohort_missed_tp": {
+    "median": 1.0,
+    "min": 0.0,
+    "max": 9.0
+   },
+   "seeds_with_any_missed_tp_next_cohort": 12
+  },
+  "seeds": 20
+ },
+ "per_seed": {
+  "seed0": {
+   "n_total": 1000051,
+   "n_affected": 51,
+   "A_raw_cutoff": {
+    "sensitivity": 0.9411764705882353,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.9508716323296355,
+    "fp_share_low_bw_pct": 79.4
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9803921568627451,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.9900990099009901,
+    "fp_share_low_bw_pct": 7.28
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.9411764705882353,
+    "false_positives": 175,
+    "fpr_pct": 0.0175,
+    "ppv_pct": 21.524663677130047,
+    "fp_share_low_bw_pct": 8.571428571428571
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5048,
+    "first_tier_tp": 48,
+    "cv_threshold_fp_reduction_pct": 98.66,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 47,
+    "next_cohort_fp_reduction_pct": 99.33973589435774,
+    "next_cohort_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_missed_tp": 0
+   }
+  },
+  "seed1": {
+   "n_total": 1000044,
+   "n_affected": 44,
+   "A_raw_cutoff": {
+    "sensitivity": 0.8863636363636364,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.7739630879142687,
+    "fp_share_low_bw_pct": 79.6
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9772727272727273,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8526670632559984,
+    "fp_share_low_bw_pct": 8.08
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.8863636363636364,
+    "false_positives": 74,
+    "fpr_pct": 0.0074,
+    "ppv_pct": 34.51327433628319,
+    "fp_share_low_bw_pct": 9.45945945945946
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5039,
+    "first_tier_tp": 39,
+    "cv_threshold_fp_reduction_pct": 99.92,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 53,
+    "next_cohort_fp_reduction_pct": 99.97969130787978,
+    "next_cohort_sensitivity_among_screen_pos": 0.9433962264150944,
+    "next_cohort_missed_tp": 3
+   }
+  },
+  "seed2": {
+   "n_total": 1000053,
+   "n_affected": 53,
+   "A_raw_cutoff": {
+    "sensitivity": 0.8301886792452831,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8723235527359239,
+    "fp_share_low_bw_pct": 79.24
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9433962264150944,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.9900990099009901,
+    "fp_share_low_bw_pct": 7.84
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.8301886792452831,
+    "false_positives": 29,
+    "fpr_pct": 0.0029,
+    "ppv_pct": 60.273972602739725,
+    "fp_share_low_bw_pct": 3.4482758620689653
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5044,
+    "first_tier_tp": 44,
+    "cv_threshold_fp_reduction_pct": 90.58,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 41,
+    "next_cohort_fp_reduction_pct": 92.40456513183786,
+    "next_cohort_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_missed_tp": 0
+   }
+  },
+  "seed3": {
+   "n_total": 1000050,
+   "n_affected": 50,
+   "A_raw_cutoff": {
+    "sensitivity": 0.88,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8723235527359239,
+    "fp_share_low_bw_pct": 79.28
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.96,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.9508716323296355,
+    "fp_share_low_bw_pct": 7.5
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.88,
+    "false_positives": 0,
+    "fpr_pct": 0.0,
+    "ppv_pct": 100.0,
+    "fp_share_low_bw_pct": 0.0
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5044,
+    "first_tier_tp": 44,
+    "cv_threshold_fp_reduction_pct": 100.0,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 48,
+    "next_cohort_fp_reduction_pct": 100.0,
+    "next_cohort_sensitivity_among_screen_pos": 0.9583333333333334,
+    "next_cohort_missed_tp": 2
+   }
+  },
+  "seed4": {
+   "n_total": 1000064,
+   "n_affected": 64,
+   "A_raw_cutoff": {
+    "sensitivity": 0.90625,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 1.1466982997232107,
+    "fp_share_low_bw_pct": 79.8
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.984375,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 1.2443215484890382,
+    "fp_share_low_bw_pct": 7.48
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.90625,
+    "false_positives": 121,
+    "fpr_pct": 0.0121,
+    "ppv_pct": 32.402234636871505,
+    "fp_share_low_bw_pct": 13.223140495867769
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5058,
+    "first_tier_tp": 58,
+    "cv_threshold_fp_reduction_pct": 99.14,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 49,
+    "next_cohort_fp_reduction_pct": 99.4203477913252,
+    "next_cohort_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_missed_tp": 0
+   }
+  },
+  "seed5": {
+   "n_total": 1000044,
+   "n_affected": 44,
+   "A_raw_cutoff": {
+    "sensitivity": 0.9772727272727273,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8526670632559984,
+    "fp_share_low_bw_pct": 78.34
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 1.0,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8723235527359239,
+    "fp_share_low_bw_pct": 7.3
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.9772727272727273,
+    "false_positives": 190,
+    "fpr_pct": 0.019,
+    "ppv_pct": 18.454935622317596,
+    "fp_share_low_bw_pct": 11.052631578947368
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5043,
+    "first_tier_tp": 43,
+    "cv_threshold_fp_reduction_pct": 99.68,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 44,
+    "next_cohort_fp_reduction_pct": 99.64857477547832,
+    "next_cohort_sensitivity_among_screen_pos": 0.9772727272727273,
+    "next_cohort_missed_tp": 1
+   }
+  },
+  "seed6": {
+   "n_total": 1000045,
+   "n_affected": 45,
+   "A_raw_cutoff": {
+    "sensitivity": 0.9333333333333333,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8330027766759223,
+    "fp_share_low_bw_pct": 80.06
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9555555555555556,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8526670632559984,
+    "fp_share_low_bw_pct": 8.62
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.9333333333333333,
+    "false_positives": 19,
+    "fpr_pct": 0.0019,
+    "ppv_pct": 68.85245901639344,
+    "fp_share_low_bw_pct": 5.2631578947368425
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5042,
+    "first_tier_tp": 42,
+    "cv_threshold_fp_reduction_pct": 100.0,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 38,
+    "next_cohort_fp_reduction_pct": 100.0,
+    "next_cohort_sensitivity_among_screen_pos": 0.9736842105263158,
+    "next_cohort_missed_tp": 1
+   }
+  },
+  "seed7": {
+   "n_total": 1000058,
+   "n_affected": 58,
+   "A_raw_cutoff": {
+    "sensitivity": 0.9137931034482759,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 1.0488818523649317,
+    "fp_share_low_bw_pct": 79.7
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9310344827586207,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 1.0684606252473288,
+    "fp_share_low_bw_pct": 8.36
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.9137931034482759,
+    "false_positives": 702,
+    "fpr_pct": 0.0702,
+    "ppv_pct": 7.0198675496688745,
+    "fp_share_low_bw_pct": 8.11965811965812
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5053,
+    "first_tier_tp": 53,
+    "cv_threshold_fp_reduction_pct": 97.96000000000001,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 51,
+    "next_cohort_fp_reduction_pct": 98.36420969649193,
+    "next_cohort_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_missed_tp": 0
+   }
+  },
+  "seed8": {
+   "n_total": 1000048,
+   "n_affected": 48,
+   "A_raw_cutoff": {
+    "sensitivity": 0.8333333333333334,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.7936507936507936,
+    "fp_share_low_bw_pct": 78.82
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.8541666666666666,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.813330688355485,
+    "fp_share_low_bw_pct": 7.88
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.8333333333333334,
+    "false_positives": 198,
+    "fpr_pct": 0.0198,
+    "ppv_pct": 16.80672268907563,
+    "fp_share_low_bw_pct": 9.090909090909092
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5040,
+    "first_tier_tp": 40,
+    "cv_threshold_fp_reduction_pct": 99.66000000000001,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 34,
+    "next_cohort_fp_reduction_pct": 99.71932638331997,
+    "next_cohort_sensitivity_among_screen_pos": 0.9705882352941176,
+    "next_cohort_missed_tp": 1
+   }
+  },
+  "seed9": {
+   "n_total": 1000039,
+   "n_affected": 39,
+   "A_raw_cutoff": {
+    "sensitivity": 0.9743589743589743,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.7542675664946408,
+    "fp_share_low_bw_pct": 79.74
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 1.0,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.7739630879142687,
+    "fp_share_low_bw_pct": 8.3
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.9743589743589743,
+    "false_positives": 267,
+    "fpr_pct": 0.0267,
+    "ppv_pct": 12.459016393442623,
+    "fp_share_low_bw_pct": 7.116104868913857
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5038,
+    "first_tier_tp": 38,
+    "cv_threshold_fp_reduction_pct": 99.26,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 39,
+    "next_cohort_fp_reduction_pct": 99.26442121564072,
+    "next_cohort_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_missed_tp": 0
+   }
+  },
+  "seed10": {
+   "n_total": 1000031,
+   "n_affected": 31,
+   "A_raw_cutoff": {
+    "sensitivity": 0.8709677419354839,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.5370996618261389,
+    "fp_share_low_bw_pct": 79.26
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9032258064516129,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.5568814638027049,
+    "fp_share_low_bw_pct": 8.04
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.8709677419354839,
+    "false_positives": 0,
+    "fpr_pct": 0.0,
+    "ppv_pct": 100.0,
+    "fp_share_low_bw_pct": 0.0
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5027,
+    "first_tier_tp": 27,
+    "cv_threshold_fp_reduction_pct": 100.0,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 43,
+    "next_cohort_fp_reduction_pct": 100.0,
+    "next_cohort_sensitivity_among_screen_pos": 0.9534883720930233,
+    "next_cohort_missed_tp": 2
+   }
+  },
+  "seed11": {
+   "n_total": 1000048,
+   "n_affected": 48,
+   "A_raw_cutoff": {
+    "sensitivity": 0.875,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8330027766759223,
+    "fp_share_low_bw_pct": 79.86
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9166666666666666,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8723235527359239,
+    "fp_share_low_bw_pct": 8.18
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.875,
+    "false_positives": 2,
+    "fpr_pct": 0.0002,
+    "ppv_pct": 95.45454545454545,
+    "fp_share_low_bw_pct": 0.0
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5042,
+    "first_tier_tp": 42,
+    "cv_threshold_fp_reduction_pct": 100.0,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 28,
+    "next_cohort_fp_reduction_pct": 99.98021369212505,
+    "next_cohort_sensitivity_among_screen_pos": 0.9285714285714286,
+    "next_cohort_missed_tp": 2
+   }
+  },
+  "seed12": {
+   "n_total": 1000046,
+   "n_affected": 46,
+   "A_raw_cutoff": {
+    "sensitivity": 0.9130434782608695,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8330027766759223,
+    "fp_share_low_bw_pct": 79.44
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9347826086956522,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8526670632559984,
+    "fp_share_low_bw_pct": 7.44
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.9130434782608695,
+    "false_positives": 51,
+    "fpr_pct": 0.0051,
+    "ppv_pct": 45.16129032258065,
+    "fp_share_low_bw_pct": 5.882352941176471
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5042,
+    "first_tier_tp": 42,
+    "cv_threshold_fp_reduction_pct": 100.0,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 32,
+    "next_cohort_fp_reduction_pct": 100.0,
+    "next_cohort_sensitivity_among_screen_pos": 0.9375,
+    "next_cohort_missed_tp": 2
+   }
+  },
+  "seed13": {
+   "n_total": 1000039,
+   "n_affected": 39,
+   "A_raw_cutoff": {
+    "sensitivity": 0.9487179487179487,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.7345642247369466,
+    "fp_share_low_bw_pct": 79.88
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9743589743589743,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.7542675664946408,
+    "fp_share_low_bw_pct": 8.34
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.9487179487179487,
+    "false_positives": 89,
+    "fpr_pct": 0.0089,
+    "ppv_pct": 29.365079365079364,
+    "fp_share_low_bw_pct": 8.98876404494382
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5037,
+    "first_tier_tp": 37,
+    "cv_threshold_fp_reduction_pct": 70.98,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 39,
+    "next_cohort_fp_reduction_pct": 77.2279219472943,
+    "next_cohort_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_missed_tp": 0
+   }
+  },
+  "seed14": {
+   "n_total": 1000035,
+   "n_affected": 35,
+   "A_raw_cutoff": {
+    "sensitivity": 0.8857142857142857,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.6161796859471278,
+    "fp_share_low_bw_pct": 79.42
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9714285714285714,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.6754072308303536,
+    "fp_share_low_bw_pct": 7.82
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.8857142857142857,
+    "false_positives": 0,
+    "fpr_pct": 0.0,
+    "ppv_pct": 100.0,
+    "fp_share_low_bw_pct": 0.0
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5031,
+    "first_tier_tp": 31,
+    "cv_threshold_fp_reduction_pct": 100.0,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 50,
+    "next_cohort_fp_reduction_pct": 100.0,
+    "next_cohort_sensitivity_among_screen_pos": 0.82,
+    "next_cohort_missed_tp": 9
+   }
+  },
+  "seed15": {
+   "n_total": 1000058,
+   "n_affected": 58,
+   "A_raw_cutoff": {
+    "sensitivity": 0.896551724137931,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 1.0292953285827395,
+    "fp_share_low_bw_pct": 80.82
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9827586206896551,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 1.1271504844769626,
+    "fp_share_low_bw_pct": 8.06
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.896551724137931,
+    "false_positives": 1,
+    "fpr_pct": 0.0001,
+    "ppv_pct": 98.11320754716981,
+    "fp_share_low_bw_pct": 0.0
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5052,
+    "first_tier_tp": 52,
+    "cv_threshold_fp_reduction_pct": 99.62,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 43,
+    "next_cohort_fp_reduction_pct": 99.62053125624126,
+    "next_cohort_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_missed_tp": 0
+   }
+  },
+  "seed16": {
+   "n_total": 1000047,
+   "n_affected": 47,
+   "A_raw_cutoff": {
+    "sensitivity": 1.0,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.9312462849217357,
+    "fp_share_low_bw_pct": 80.18
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9787234042553191,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.9116131589377725,
+    "fp_share_low_bw_pct": 8.1
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 1.0,
+    "false_positives": 9661,
+    "fpr_pct": 0.9661,
+    "ppv_pct": 0.48413679439637414,
+    "fp_share_low_bw_pct": 7.690715246868854
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5047,
+    "first_tier_tp": 47,
+    "cv_threshold_fp_reduction_pct": 95.52000000000001,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 48,
+    "next_cohort_fp_reduction_pct": 96.17873028710069,
+    "next_cohort_sensitivity_among_screen_pos": 0.9791666666666666,
+    "next_cohort_missed_tp": 1
+   }
+  },
+  "seed17": {
+   "n_total": 1000046,
+   "n_affected": 46,
+   "A_raw_cutoff": {
+    "sensitivity": 0.9565217391304348,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8723235527359239,
+    "fp_share_low_bw_pct": 80.46
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9782608695652174,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8919722497522299,
+    "fp_share_low_bw_pct": 8.2
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.9565217391304348,
+    "false_positives": 78,
+    "fpr_pct": 0.0078,
+    "ppv_pct": 36.0655737704918,
+    "fp_share_low_bw_pct": 14.102564102564102
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5044,
+    "first_tier_tp": 44,
+    "cv_threshold_fp_reduction_pct": 99.92,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 49,
+    "next_cohort_fp_reduction_pct": 99.94115339348765,
+    "next_cohort_sensitivity_among_screen_pos": 0.9795918367346939,
+    "next_cohort_missed_tp": 1
+   }
+  },
+  "seed18": {
+   "n_total": 1000052,
+   "n_affected": 52,
+   "A_raw_cutoff": {
+    "sensitivity": 0.8653846153846154,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.8919722497522299,
+    "fp_share_low_bw_pct": 80.2
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 0.9615384615384616,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.9900990099009901,
+    "fp_share_low_bw_pct": 8.28
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.8653846153846154,
+    "false_positives": 10,
+    "fpr_pct": 0.001,
+    "ppv_pct": 81.81818181818181,
+    "fp_share_low_bw_pct": 20.0
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5045,
+    "first_tier_tp": 45,
+    "cv_threshold_fp_reduction_pct": 99.9,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 35,
+    "next_cohort_fp_reduction_pct": 99.87455571816851,
+    "next_cohort_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_missed_tp": 0
+   }
+  },
+  "seed19": {
+   "n_total": 1000050,
+   "n_affected": 50,
+   "A_raw_cutoff": {
+    "sensitivity": 0.96,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.9508716323296355,
+    "fp_share_low_bw_pct": 79.14
+   },
+   "B_covariate_adjusted_cutoff": {
+    "sensitivity": 1.0,
+    "false_positives": 5000,
+    "fpr_pct": 0.5,
+    "ppv_pct": 0.9900990099009901,
+    "fp_share_low_bw_pct": 7.72
+   },
+   "C_two_marker_score_matched_sens": {
+    "sensitivity": 0.96,
+    "false_positives": 8,
+    "fpr_pct": 0.0008,
+    "ppv_pct": 85.71428571428571,
+    "fp_share_low_bw_pct": 25.0
+   },
+   "D_second_tier_classifier": {
+    "first_tier_positives": 5048,
+    "first_tier_tp": 48,
+    "cv_threshold_fp_reduction_pct": 99.98,
+    "cv_threshold_sensitivity_among_screen_pos": 1.0,
+    "next_cohort_first_tier_tp": 53,
+    "next_cohort_fp_reduction_pct": 99.96056004732795,
+    "next_cohort_sensitivity_among_screen_pos": 0.9056603773584906,
+    "next_cohort_missed_tp": 5
+   }
+  }
+ }
+}

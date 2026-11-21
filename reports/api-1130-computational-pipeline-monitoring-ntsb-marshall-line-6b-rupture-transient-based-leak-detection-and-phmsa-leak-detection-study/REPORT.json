@@ -1,0 +1,86 @@
+{
+  "topics": [
+    "domains/hazardous-liquid-pipeline-leak-detection",
+    "domains/pipeline-control-room-alarm-response",
+    "verification/computational-pipeline-monitoring-performance-metrics",
+    "tooling/open-hydraulic-transient-simulation"
+  ],
+  "subjects": [
+    {
+      "name": "TSNet transient simulator for pipe networks",
+      "identity": {
+        "repository": "glorialulu/TSNet",
+        "revision": "27e616a8e2048a431eed27b00a08322d49035a52",
+        "version": "0.3.1 (setup.py); 0.2.2 (tsnet/__init__.py)"
+      }
+    },
+    {
+      "name": "NTSB Pipeline Accident Report, Enbridge Line 6B rupture, Marshall, Michigan, July 25, 2010",
+      "identity": {
+        "standard": "NTSB/PAR-12/01 (PB2012-916501, Notation 8423)",
+        "version": "adopted 2012-07-10",
+        "url": "https://www.ntsb.gov/investigations/AccidentReports/Reports/PAR1201.pdf"
+      }
+    },
+    {
+      "name": "NTSB safety recommendation letter to PHMSA, P-12-3 through -10",
+      "identity": {
+        "standard": "NTSB Safety Recommendation P-12-3 through -10 (P-11-8 reiterated)",
+        "version": "2012-07-25",
+        "url": "https://www.ntsb.gov/safety/safety-recs/recletters/P-12-003-010.pdf"
+      }
+    },
+    {
+      "name": "49 CFR Part 195 leak detection, control room management and rupture provisions",
+      "identity": {
+        "standard": "49 CFR 195.3, 195.134, 195.417, 195.418, 195.444, 195.446",
+        "version": "text as amended through Amdt. 195-106 (88 FR 50062, 2023-08-01), observed 2026-11-21",
+        "url": "https://www.law.cornell.edu/cfr/text/49/195.444"
+      }
+    },
+    {
+      "name": "Final rule: Pipeline Safety: Safety of Hazardous Liquid Pipelines",
+      "identity": {
+        "standard": "84 FR 52260 (FR Doc. 2019-20458; Docket PHMSA-2010-0229; RIN 2137-AE66)",
+        "version": "2019-10-01",
+        "url": "https://www.govinfo.gov/content/pkg/FR-2019-10-01/pdf/2019-20458.pdf"
+      }
+    },
+    {
+      "name": "NPRM: Pipeline Safety: Valve Installation and Minimum Rupture Detection Standards",
+      "identity": {
+        "standard": "85 FR 7162 (FR Doc. 2020-01459; Docket PHMSA-2013-0255; RIN 2137-AF06)",
+        "version": "2020-02-06",
+        "url": "https://www.govinfo.gov/content/pkg/FR-2020-02-06/html/2020-01459.htm"
+      }
+    },
+    {
+      "name": "API RP 1175 Pipeline Leak Detection - Program Management, product sheet and contents",
+      "identity": {
+        "standard": "API RP 1175",
+        "version": "1st edition, December 2015 (product no. D11751)",
+        "url": "https://www.api.org/~/media/files/publications/whats%20new/1175_e1%20pa.pdf"
+      }
+    },
+    {
+      "name": "Wang, Lambert, Simpson, Liggett, Vitkovsky: Leak detection in pipelines using the damping of fluid transients",
+      "identity": {
+        "doi": "10.1061/(ASCE)0733-9429(2002)128:7(697)",
+        "url": "http://hdl.handle.net/2440/994"
+      }
+    },
+    {
+      "name": "Xing and Sela: Transient simulations in water distribution networks: TSNet python package",
+      "identity": {
+        "doi": "10.1016/j.advengsoft.2020.102884"
+      }
+    },
+    {
+      "name": "Adegboye, Fung, Karnik: Recent advances in pipeline monitoring and oil leakage detection technologies",
+      "identity": {
+        "doi": "10.3390/s19112548"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -9123,6 +9123,92 @@
         "verification/wet-dry-positivity-invariants"
       ]
     },
+    "api-1130-computational-pipeline-monitoring-ntsb-marshall-line-6b-rupture-transient-based-leak-detection-and-phmsa-leak-detection-study": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "glorialulu/TSNet",
+            "revision": "27e616a8e2048a431eed27b00a08322d49035a52",
+            "version": "0.3.1 (setup.py); 0.2.2 (tsnet/__init__.py)"
+          },
+          "name": "TSNet transient simulator for pipe networks"
+        },
+        {
+          "identity": {
+            "standard": "NTSB/PAR-12/01 (PB2012-916501, Notation 8423)",
+            "url": "https://www.ntsb.gov/investigations/AccidentReports/Reports/PAR1201.pdf",
+            "version": "adopted 2012-07-10"
+          },
+          "name": "NTSB Pipeline Accident Report, Enbridge Line 6B rupture, Marshall, Michigan, July 25, 2010"
+        },
+        {
+          "identity": {
+            "standard": "NTSB Safety Recommendation P-12-3 through -10 (P-11-8 reiterated)",
+            "url": "https://www.ntsb.gov/safety/safety-recs/recletters/P-12-003-010.pdf",
+            "version": "2012-07-25"
+          },
+          "name": "NTSB safety recommendation letter to PHMSA, P-12-3 through -10"
+        },
+        {
+          "identity": {
+            "standard": "49 CFR 195.3, 195.134, 195.417, 195.418, 195.444, 195.446",
+            "url": "https://www.law.cornell.edu/cfr/text/49/195.444",
+            "version": "text as amended through Amdt. 195-106 (88 FR 50062, 2023-08-01), observed 2026-11-21"
+          },
+          "name": "49 CFR Part 195 leak detection, control room management and rupture provisions"
+        },
+        {
+          "identity": {
+            "standard": "84 FR 52260 (FR Doc. 2019-20458; Docket PHMSA-2010-0229; RIN 2137-AE66)",
+            "url": "https://www.govinfo.gov/content/pkg/FR-2019-10-01/pdf/2019-20458.pdf",
+            "version": "2019-10-01"
+          },
+          "name": "Final rule: Pipeline Safety: Safety of Hazardous Liquid Pipelines"
+        },
+        {
+          "identity": {
+            "standard": "85 FR 7162 (FR Doc. 2020-01459; Docket PHMSA-2013-0255; RIN 2137-AF06)",
+            "url": "https://www.govinfo.gov/content/pkg/FR-2020-02-06/html/2020-01459.htm",
+            "version": "2020-02-06"
+          },
+          "name": "NPRM: Pipeline Safety: Valve Installation and Minimum Rupture Detection Standards"
+        },
+        {
+          "identity": {
+            "standard": "API RP 1175",
+            "url": "https://www.api.org/~/media/files/publications/whats%20new/1175_e1%20pa.pdf",
+            "version": "1st edition, December 2015 (product no. D11751)"
+          },
+          "name": "API RP 1175 Pipeline Leak Detection - Program Management, product sheet and contents"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)0733-9429(2002)128:7(697)",
+            "url": "http://hdl.handle.net/2440/994"
+          },
+          "name": "Wang, Lambert, Simpson, Liggett, Vitkovsky: Leak detection in pipelines using the damping of fluid transients"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.advengsoft.2020.102884"
+          },
+          "name": "Xing and Sela: Transient simulations in water distribution networks: TSNet python package"
+        },
+        {
+          "identity": {
+            "doi": "10.3390/s19112548"
+          },
+          "name": "Adegboye, Fung, Karnik: Recent advances in pipeline monitoring and oil leakage detection technologies"
+        }
+      ],
+      "topics": [
+        "domains/hazardous-liquid-pipeline-leak-detection",
+        "domains/pipeline-control-room-alarm-response",
+        "verification/computational-pipeline-monitoring-performance-metrics",
+        "tooling/open-hydraulic-transient-simulation"
+      ]
+    },
     "arm-cca-sev-snp-vmpl-pkvm-and-mutually-distrusting-world-isolation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -90654,6 +90740,91 @@
         "domains/slope-stability-factor-of-safety",
         "verification/strength-reduction-versus-limit-equilibrium",
         "tooling/open-slope-stability-codes"
+      ]
+    },
+    "tandem-mass-spectrometry-newborn-screening-cutoffs-clir-multivariate-postanalytical-tools-second-tier-tests-and-false-positive-reduction": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AZ-NBS-Data/AZ-NBS-Cutoff-Analysis",
+            "revision": "46d2d03aa612eb8cff85b97cf2f49d28d25e58e8"
+          },
+          "name": "Arizona newborn screening cutoff analysis template (R and SQL)"
+        },
+        {
+          "identity": {
+            "repository": "nf260/preanalyticalfactorsinNBS",
+            "revision": "49092996002c9bfa674b2370c29fea11c1c97f73"
+          },
+          "name": "Pre-analytical factors in newborn screening notebooks (DBS diameter and transit time versus cut-off classification)"
+        },
+        {
+          "identity": {
+            "doi": "10.1373/clinchem.2003.022178"
+          },
+          "name": "Chace, Kalas, Naylor: Use of tandem mass spectrometry for multianalyte screening of dried blood specimens from newborns"
+        },
+        {
+          "identity": {
+            "doi": "10.1056/NEJMoa025225"
+          },
+          "name": "Wilcken, Wiley, Hammond, Carpenter: Screening newborns for inborn errors of metabolism by tandem mass spectrometry"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10545-007-0691-y"
+          },
+          "name": "Matern et al.: Reduction of the false-positive rate in newborn screening by MS/MS-based second-tier tests (Mayo Clinic 2004-2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/gim.2012.2"
+          },
+          "name": "Marquardt et al.: Enhanced interpretation of newborn screening results without analyte cutoff values"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/gim.2014.62"
+          },
+          "name": "Hall et al.: Postanalytical tools improve performance of newborn screening by tandem mass spectrometry"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/gim.2017.194"
+          },
+          "name": "Minter Baerg et al.: Precision newborn screening for lysosomal disorders (CLIR covariate adjustment)"
+        },
+        {
+          "identity": {
+            "doi": "10.3390/ijns6010016"
+          },
+          "name": "Peng et al.: Reducing false-positive results in newborn screening using machine learning"
+        },
+        {
+          "identity": {
+            "doi": "10.3390/ijns6010020"
+          },
+          "name": "Hall, Wittenauer, Hagar: Post-analytical tools for the triage of newborn screening results in follow-up"
+        },
+        {
+          "identity": {
+            "doi": "10.2471/BLT.07.050112"
+          },
+          "name": "Andermann: Revisiting Wilson and Jungner in the genomic age (reproduces the 1968 WHO screening principles)"
+        },
+        {
+          "identity": {
+            "doi": "10.1515/cclm-2026-0976"
+          },
+          "name": "Flynn, Hogg, Moat: Impact of dried blood spot diameter and transit time on analyte concentrations and cut-off classification"
+        }
+      ],
+      "topics": [
+        "domains/newborn-screening-tandem-mass-spectrometry",
+        "domains/inborn-errors-of-metabolism-case-finding",
+        "verification/screening-cutoff-and-multivariate-interpretation-performance",
+        "tooling/post-analytical-interpretive-tools"
       ]
     },
     "target-features-implications-detection-and-abi-effects": {
