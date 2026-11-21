@@ -1,11 +1,5 @@
 # Anneal
 
-> **Historical V1 documentation:** This document describes the prototype in
-> [`anneal/v1/`][archived-v1]. It remains authoritative for using and
-> maintaining V1, but it is not current Anneal design authority. See
-> [`PRINCIPLES.md`][principles] for current project principles. Known
-> differences are historical and need not be reconciled here.
-
 <img src="https://raw.githubusercontent.com/google/zerocopy/main/anneal/docs/images/logo.svg" alt="Anneal logo" width="100%">
 
 <p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
@@ -231,6 +225,4 @@ cargo anneal verify
 - **`cargo anneal expand`**: Outputs the generated Lean code without running full verification (useful for debugging).
 - **`cargo anneal generate`**: Generates the `.lean` files on disk, allowing you to iterate on proofs using standard Lean tooling before copying them back to Rust source.
 
-[archived-v1]: https://github.com/google/zerocopy/tree/anneal-archive-v1-v2/anneal/v1
-[principles]: https://github.com/google/zerocopy/blob/main/anneal/PRINCIPLES.md
 [alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md
