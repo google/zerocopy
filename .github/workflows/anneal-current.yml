@@ -20,7 +20,7 @@ permissions:
 
 env:
   CARGO_BUILD_JOBS: '4'
-  RUST_TEST_THREADS: '2'
+  RUST_TEST_THREADS: '4'
 
 jobs:
   static-checks:
@@ -36,8 +36,12 @@ jobs:
       - name: Install ripgrep
         working-directory: .
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ripgrep
+          set -euo pipefail
+          if ! command -v rg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ripgrep
+          fi
+          rg --version
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
@@ -232,7 +236,7 @@ jobs:
     timeout-minutes: 90
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/anneal/target
-      ANNEAL_TEST_JOBS: '2'
+      ANNEAL_TEST_JOBS: '4'
       ANNEAL_TEST_TIMEOUT_SECS: '120'
     steps:
       - name: Initialize test diagnostics
@@ -313,7 +317,13 @@ jobs:
           bootstrap_target="$(mktemp -d "$RUNNER_TEMP/anneal-bootstrap-target.XXXXXX")"
           # Build the bootstrap `setup` binary outside `CARGO_TARGET_DIR` before
           # `setup` switches `RUSTC` and `RUSTFLAGS` to the extracted toolchain.
+          # Compile `sha2` and its thin traits at `opt-level = 3` (`test`
+          # inherits `profile.dev.package.*`) so hardware SHA-NI/AVX2 hashing
+          # runs at native speed without altering `anneal/Cargo.toml`.
           cargo install --locked --debug --path trusted/cargo-anneal \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
             --target-dir "$bootstrap_target" --root "$tools_root"
           rm -rf "$bootstrap_target"
           printf 'ANNEAL_TEST_CARGO_ANNEAL=%s/bin/cargo-anneal\n' \
@@ -406,6 +416,9 @@ jobs:
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/install-tools.log") 2>&1
           cargo install --locked --debug --path trusted/audit \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
             --root "$ANNEAL_TEST_TOOLS_ROOT"
           printf 'ANNEAL_TEST_AUDITOR=%s/bin/anneal-audit\n' \
             "$ANNEAL_TEST_TOOLS_ROOT" >> "$GITHUB_ENV"
@@ -415,8 +428,10 @@ jobs:
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/sandbox.log") 2>&1
-          sudo apt-get update
-          sudo apt-get install -y bubblewrap
+          if ! command -v bwrap >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y bubblewrap
+          fi
           if [ ! -f /etc/apparmor.d/bwrap ] && command -v apparmor_parser >/dev/null 2>&1; then
             sudo tee /etc/apparmor.d/bwrap <<'PROFILE' >/dev/null
           abi <abi/4.0>,
@@ -463,7 +478,11 @@ jobs:
           elif [ "$CI_EVENT_NAME" = "pull_request" ]; then
             audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
           fi
-          cargo run --locked -p anneal-audit -- "${audit_args[@]}"
+          cargo \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            run --locked -p anneal-audit -- "${audit_args[@]}"
 
       - name: Save lean-miri closure .olean cache
         id: save_miri_olean_cache
@@ -481,7 +500,6 @@ jobs:
           ACTIONS_RUNTIME_URL: ''
         run: |
           set -euo pipefail
-          cargo build --locked -p cargo-anneal
           # Authored Lean runs inside the sandbox with the verifier. Keep its
           # output in diagnostics rather than interpreting it as runner commands.
           bwrap --unshare-all --die-with-parent --new-session --clearenv \
@@ -494,7 +512,7 @@ jobs:
             --ro-bind-try /lib64 /lib64 \
             --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
             --ro-bind "$XDG_CACHE_HOME" /toolchain-cache \
-            --ro-bind "$CARGO_TARGET_DIR/debug/cargo-anneal" /cargo-anneal \
+            --ro-bind "$ANNEAL_TEST_CARGO_ANNEAL" /cargo-anneal \
             --ro-bind "$PWD/ci/probe_alpha.py" /anneal/ci/probe_alpha.py \
             --ro-bind "$PWD/trusted/cargo-anneal/tests/fixtures/scalar" \
               /anneal/trusted/cargo-anneal/tests/fixtures/scalar \
@@ -532,7 +550,10 @@ jobs:
           # Publication verification builds the packaged library and binaries.
           # Compile the packaged tests too, so omitted fixtures or helpers
           # cannot hide behind a successful source-tree test build.
-          cargo test --locked --manifest-path "$prepared_manifest" --no-run
+          cargo test --locked --manifest-path "$prepared_manifest" --no-run \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3'
 
       - name: Run installed smoke suite
         id: smoke
@@ -544,13 +565,19 @@ jobs:
           unset ANNEAL_TEST_ARCHIVE ANNEAL_TEST_CASE
           # Cargo also succeeds when a filter selects no tests. Prove that
           # the intended ignored test exists before relying on its result.
-          cargo test --locked -p cargo-anneal --test installed_smoke -- \
-            --ignored --exact installed_smoke --list \
+          cargo test --locked -p cargo-anneal --test installed_smoke \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            -- --ignored --exact installed_smoke --list \
             > "$ANNEAL_TEST_DIAGNOSTICS/installed-smoke-selection.stdout"
           grep -Fx 'installed_smoke: test' \
             "$ANNEAL_TEST_DIAGNOSTICS/installed-smoke-selection.stdout"
-          cargo test --locked -p cargo-anneal --test installed_smoke -- \
-            --ignored --exact installed_smoke --nocapture
+          cargo test --locked -p cargo-anneal --test installed_smoke \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            -- --ignored --exact installed_smoke --nocapture
 
       - name: Verify clean working tree
         id: clean_tree
@@ -673,6 +700,9 @@ jobs:
           tools_root="$(mktemp -d "$RUNNER_TEMP/anneal-tools.XXXXXX")"
           bootstrap_target="$(mktemp -d "$RUNNER_TEMP/anneal-bootstrap-target.XXXXXX")"
           cargo install --locked --debug --path trusted/cargo-anneal \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
             --target-dir "$bootstrap_target" --root "$tools_root"
           rm -rf "$bootstrap_target"
           printf 'ANNEAL_TEST_CARGO_ANNEAL=%s/bin/cargo-anneal\n' \
@@ -733,8 +763,10 @@ jobs:
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/sandbox.log") 2>&1
-          sudo apt-get update
-          sudo apt-get install -y bubblewrap
+          if ! command -v bwrap >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y bubblewrap
+          fi
           if [ ! -f /etc/apparmor.d/bwrap ] && command -v apparmor_parser >/dev/null 2>&1; then
             sudo tee /etc/apparmor.d/bwrap <<'PROFILE' >/dev/null
           abi <abi/4.0>,
@@ -766,9 +798,15 @@ jobs:
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/workspace.log") 2>&1
-          cargo run --locked -p cargo-anneal --example regenerate_bundle -- \
-            --root . --check
-          cargo test --workspace --locked
+          cargo run --locked -p cargo-anneal --example regenerate_bundle \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            -- --root . --check
+          cargo test --workspace --locked \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3'
 
       - name: Verify clean working tree
         id: clean_tree

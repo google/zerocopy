@@ -785,6 +785,7 @@ fn classifies_native_failures_and_resource_limits_as_operational() {
         "#eval (Array.replicate (2^128) (0 : UInt8)).size",
         "def wrong : Nat := \"bad\"\n#eval (Array.replicate (2^128) (0 : UInt8)).size",
         "set_option maxHeartbeats 1 in\nexample : (List.range 10000).foldl Nat.add 0 = 49995000 := by decide",
+        "def wrong : Nat := \"bad\"\nset_option maxHeartbeats 1 in\nexample : (List.range 10000).foldl Nat.add 0 = 49995000 := by decide",
     ] {
         // lean_mk_array rejects a Nat that does not fit size_t before
         // allocating the array, so this probes native OOM without exhausting
@@ -801,14 +802,21 @@ fn classifies_native_failures_and_resource_limits_as_operational() {
                 failure.message.contains("INTERNAL PANIC: out of memory"),
                 "{failure}"
             );
+            // Lean 4.34.1 elaborates commands on a worker task while the main
+            // thread drains JSON diagnostics in `SnapshotTree.runAndReport`.
+            // Under CPU contention, the native OOM's `std::exit(1)` can
+            // terminate the process before the main thread buffers the earlier
+            // `Type mismatch` JSON on stdout; classification remains code 2
+            // either way, and `stage::process_tests` deterministically covers
+            // combined stdout JSON + stderr `INTERNAL PANIC`.
         } else {
             assert!(
                 failure.message.contains("runtime.maxHeartbeats"),
                 "{failure}"
             );
-        }
-        if body.starts_with("def wrong") {
-            assert!(failure.message.contains("Type mismatch"), "{failure}");
+            if body.starts_with("def wrong") {
+                assert!(failure.message.contains("Type mismatch"), "{failure}");
+            }
         }
     }
 }
