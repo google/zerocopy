@@ -20,7 +20,7 @@ This package proves, in a small Lean 4 model (core Lean `v4.34.1`, no Mathlib, s
 - **well-founded-extraction-terminates-and-is-sound** (theorem, T1): Under the oriented-extraction hypotheses, if the choice is well-founded below a class, extraction from it terminates for some fuel and its result refines the class denotation; well-foundedness of the choice is exactly the termination condition (`extract_total_and_sound_of_wfBelow_oriented_mono`, `extract_isSome_iff_wfBelow`).
 - **cyclic-extraction-counterexample** (counterexample, T1): An oriented cyclic class whose chosen e-node follows the cycle yields no term at any fuel, and no finite term solves the cycle equation (`extract_cycle_counterexample`).
 
-All results are about the toy definitions below, not about any production e-graph, compiler or IR; every result's non-claims are listed first under **Boundaries**, and connections to real systems are labelled `derived (modeling bridge)`.
+All results are about the toy definitions below, not about any production e-graph, compiler or IR; every result's non-claims are listed first under **Boundaries**, and connections to real systems are labelled `derived (modeling bridge)`. Model–system relation: none proved (the equivalences between the three freeze semantics relate the package's own semantics to one another). These are statements about the toy model; they neither establish nor refute the corresponding claims about production e-graph engines, compilers, IRs and refinement checkers (egg, egglog, Cranelift, LLVM, Alive2).
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
