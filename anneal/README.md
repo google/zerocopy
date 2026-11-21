@@ -1,6 +1,6 @@
 # Anneal
 
-<img src="docs/images/logo.svg" width="100%">
+<img src="https://raw.githubusercontent.com/google/zerocopy/main/anneal/docs/images/logo.svg" alt="Anneal logo" width="100%">
 
 <p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
 
@@ -33,9 +33,12 @@ let res: usize = unsafe { 1usize.unchecked_div_exact(0) }; // ERROR: Cannot prov
 
 *Support for this example is in development. The annotation syntax may change.*
 
-Read the [project principles](PRINCIPLES.md) for Anneal's correctness
-promise and the [developer guide](docs/README.md) to build and test the
+Read the [project principles][principles] for Anneal's correctness
+promise and the [developer guide][developer-guide] to build and test the
 current verifier. The guide also links to the [historical V1 and V2
-workspaces](docs/README.md#historical-workspaces).
+workspaces][historical-workspaces].
 
 [unchecked-div]: https://doc.rust-lang.org/std/primitive.usize.html#method.unchecked_div_exact
+[principles]: https://github.com/google/zerocopy/blob/main/anneal/PRINCIPLES.md
+[developer-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/README.md
+[historical-workspaces]: https://github.com/google/zerocopy/blob/main/anneal/docs/README.md#historical-workspaces
