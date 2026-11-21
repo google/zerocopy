@@ -19,7 +19,7 @@ Decision procedure and what rejection means:
 - **checker-correct** (characterization). The fixpoint checker `checkSCT` (closure by iteration with fuel `nf * nf * 3^(k*k) + 1`, then the idempotent-loop test) returns `true` if and only if the closure criterion holds.
 - **nonstrict-self-arcs-insufficient** (counterexample). Requiring only a nonstrict self-arc on idempotent loop graphs is unsound: `f(x, y) = f(x, x - 1)` passes that weaker test and has an infinite consistent run.
 - **generators-insufficient** (counterexample). Testing only the call-site graphs instead of the closure is unsound: the calls `f(x - 1, ?)` and `f(?, y - 1)` each pass, but their composite is the empty idempotent loop and an infinite consistent run exists.
-- **composition-tracks-strictness** (counterexample). Composition must sequence labels exactly (`≤ ; < = <`, `< ; ≤ = <`, `≤ ; ≤ = ≤`): over-claiming `≤ ; ≤ = <` accepts `f(x) = f(x)`; forgetting either mixed case rejects a size-change-terminating mutual recursion.
+- **composition-tracks-strictness** (counterexample). Each of the three sequencing entries `≤ ; < = <`, `< ; ≤ = <` and `≤ ; ≤ = ≤` is tight: there is a change of that entry alone that breaks the criterion. Over-claiming `≤ ; ≤ = <` accepts `f(x) = f(x)`; forgetting either mixed case (`≤ ; < = ≤` or `< ; ≤ = ≤`) rejects a size-change-terminating mutual recursion.
 - **sct-incomplete-for-termination** (counterexample). Rejection is not evidence of divergence: `f(x) = if x < 100 then f(x + 1) else 0` terminates, yet every one-function, one-slot abstraction whose graphs describe all of its calls on the raw argument `x` fails the criterion.
 
 Lexicographic measures:
@@ -590,7 +590,7 @@ Basis: execution (Lean kernel check)
 
 #### `composition-tracks-strictness`
 
-**Claim.** Composition must sequence labels exactly as <= ; < = <, < ; <= = < and <= ; <= = <=: if <= ; <= is taken to be <, the criterion accepts f(x) = f(x), which fails the standard criterion and has an infinite consistent run; if either mixed case is forgotten (<= ; < = <= or < ; <= = <=), the criterion rejects the mutually recursive mutProg (f0(x) = f1(x - 1) for x > 0, f1(y) = f0(y)), which satisfies the standard criterion, is size-change terminating and has no infinite consistent Nat run.
+**Claim.** Each of the three label-sequencing entries <= ; < = <, < ; <= = < and <= ; <= = <= is tight: there is a change of that entry alone that breaks the criterion. If <= ; <= is taken to be <, the criterion accepts f(x) = f(x), which fails the standard criterion and has an infinite consistent run; if either mixed case is forgotten (<= ; < = <= or < ; <= = <=), the criterion rejects the mutually recursive mutProg (f0(x) = f1(x - 1) for x > 0, f1(y) = f0(y)), which satisfies the standard criterion, is size-change terminating and has no infinite consistent Nat run.
 
 **Tier:** T1. Folklore about the composition of Lee, Jones and Ben-Amram (Definition 14); stated precisely here.
 

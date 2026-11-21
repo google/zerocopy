@@ -51,8 +51,8 @@ def seq : Label → Label → Label
   | nonstrict, nonstrict => nonstrict
 
 /-- An alternative, deliberately wrong sequencing that over-claims strictness: any two present
-arcs sequence to `strict` (so `≤ ; ≤ = <`). Used only to show that composition must track
-strictness exactly. -/
+arcs sequence to `strict` (so `≤ ; ≤ = <`). Used only to show that the entry `≤ ; ≤ = ≤` of
+`seq` is tight. -/
 def seqOverStrict : Label → Label → Label
   | absent, _ => absent
   | _, absent => absent
@@ -60,7 +60,7 @@ def seqOverStrict : Label → Label → Label
 
 /-- An alternative, deliberately lossy sequencing that forgets strictness when a nonstrict arc is
 followed by a strict one (`≤ ; < = ≤`), and is otherwise `seq` (`< ; ≤ = <`, `< ; < = <`,
-`≤ ; ≤ = ≤`). Used only to show that composition must track strictness exactly. -/
+`≤ ; ≤ = ≤`). Used only to show that the entry `≤ ; < = <` of `seq` is tight. -/
 def seqForgetLeft : Label → Label → Label
   | absent, _ => absent
   | _, absent => absent
@@ -69,7 +69,7 @@ def seqForgetLeft : Label → Label → Label
 
 /-- An alternative, deliberately lossy sequencing that forgets strictness when a strict arc is
 followed by a nonstrict one (`< ; ≤ = ≤`), and is otherwise `seq` (`≤ ; < = <`, `< ; < = <`,
-`≤ ; ≤ = ≤`). Used only to show that composition must track strictness exactly. -/
+`≤ ; ≤ = ≤`). Used only to show that the entry `< ; ≤ = <` of `seq` is tight. -/
 def seqForgetRight : Label → Label → Label
   | absent, _ => absent
   | _, absent => absent

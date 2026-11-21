@@ -456,7 +456,7 @@
     "kind": "counterexample",
     "tier": "T1",
     "tier_justification": "Folklore about the composition of Lee, Jones and Ben-Amram (Definition 14); stated precisely here.",
-    "plain_claim": "Composition must sequence labels exactly as <= ; < = <, < ; <= = < and <= ; <= = <=: if <= ; <= is taken to be <, the criterion accepts f(x) = f(x), which fails the standard criterion and has an infinite consistent run; if either mixed case is forgotten (<= ; < = <= or < ; <= = <=), the criterion rejects the mutually recursive mutProg (f0(x) = f1(x - 1) for x > 0, f1(y) = f0(y)), which satisfies the standard criterion, is size-change terminating and has no infinite consistent Nat run.",
+    "plain_claim": "Each of the three label-sequencing entries <= ; < = <, < ; <= = < and <= ; <= = <= is tight: there is a change of that entry alone that breaks the criterion. If <= ; <= is taken to be <, the criterion accepts f(x) = f(x), which fails the standard criterion and has an infinite consistent run; if either mixed case is forgotten (<= ; < = <= or < ; <= = <=), the criterion rejects the mutually recursive mutProg (f0(x) = f1(x - 1) for x > 0, f1(y) = f0(y)), which satisfies the standard criterion, is size-change terminating and has no infinite consistent Nat run.",
     "hypotheses": [],
     "depth": "shallow",
     "depth_justification": "Small closures computed by decision procedures in the kernel; size-change termination and absence of runs for mutProg come from closure-iff-sct and closure-criterion-sound.",
