@@ -1,0 +1,5 @@
+name = "toy_cfi"
+defaultTargets = ["ToyCFI"]
+
+[[lean_lib]]
+name = "ToyCFI"

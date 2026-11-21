@@ -1,0 +1,745 @@
+[
+ {
+  "id": "R1",
+  "lean": "Toy.CFI.genCFI_tableCorrect_of_sound_recoverable_annotation",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "If every non-empty block of a function appears in its layout, the block annotation is sound (block 0's state is implied by the entry state and, along every CFG edge, the abstract exit state of a block is at least as precise as the successor's single annotated entry state), and at every PC of every annotated block the abstract state is recoverable - some row is entailed by it (annRecoverableB_iff), a condition that does not mention the emitter - then the program emitted by genCFI (row deltas inside blocks, and at a layout boundary whose inherited row differs from the entry row either rememberState at the start of the layout predecessor plus restoreState, or an explicit re-definition) is TableCorrect.",
+  "hypotheses": [
+   {
+    "name": "hcover : LayoutCovers f",
+    "purpose": "every reachable block needs a linear address",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.genCFI_incorrect_without_layoutCovers",
+    "witness_class": "a concrete 3-block function, coldFnMissing (the blocks of coldFn with layout [0, 1]), whose reachable cold block 2 has no address; its inferred annotation is sound and recoverable"
+   },
+   {
+    "name": "hsound : annSoundB f ann = true",
+    "purpose": "one entry frame state per block, consistent with every incoming CFG edge (and with function entry)",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.genCFI_incorrect_without_annSound",
+    "witness_class": "the concrete 3-block function coldFn (covering layout 0, 1, 2) with the hand-written annotation coldBadAnn, which is recoverable but unsound at the cold block 2"
+   },
+   {
+    "name": "hrec : annRecoverableB f ann = true",
+    "purpose": "at every PC of every annotated block some row is entailed by the abstract state: some register holds a CFA-relative value and each callee-saved register holds the caller's value or is the (unshadowed) content of a CFA-relative slot; emitter-independent (stateRecoverableB_iff_exists_entails, annRecoverableB_iff)",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.genCFI_incorrect_without_annRecoverable",
+    "witness_class": "the concrete 4-block merge function mergeFn (covering layout) with its inferred annotation, which is sound but not recoverable (annRecoverableB = false)"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "coldFn (epilogue placed before a cold block) with its inferred annotation satisfies all three hypotheses; the generated program uses rememberState/restoreState and is correct (genCFI_coldFn_tableCorrect). A second instance with a user-supplied annotation containing shadowed slot entries is genCFI_shadowedClobberFn_tableCorrect, which applies this theorem directly.",
+  "nonvacuity_witness_lean": "Toy.CFI.genCFI_hypotheses_hold_coldFn",
+  "non_claims": [
+   "Does not say every correct table is produced by genCFI, nor that genCFI's output is minimal.",
+   "annSoundB/annRecoverableB are checks over the package's abstract domain (CFA-relative registers and CFA-relative stack slots); whether every function that has a correct table also has a sound recoverable annotation in this domain is not established (not proved here). The related checker gap checkCFI_incomplete concerns checkCFI, which uses the inferred annotation inferredAnn: it proves that checkCFI rejects the correct table incCFI for incFn, not that incFn has no sound recoverable annotation.",
+   "Rows are emitted at every PC (one address unit per operation); real emitters only emit at frame-affecting instructions and encode advances in bytes.",
+   "The return-address column, DW_CFA_def_cfa_expression and register rules other than same/offset are not modeled.",
+   "annRecoverableB only requires that some row is entailed at each PC; that genCFI's own derived row is then entailed is the separate lemma entails_rowOf_of_stateRecoverableB (completeness of rowOf for the toy's entailment), and the encoder lemma rowAt_genCFI_eq_rowOf states which row genCFI emits at each PC.",
+   "Op.call is modeled as a state-preserving no-op in both step and xfer (the caller-saved scratch register t1 and all stack memory are unchanged across a call), and cfaChoice/entails allow t1 as a CFA base. checkCFI can therefore accept tables that anchor the CFA in t1 across a call: outerT1Fn_tableCorrect proves the hand-written table outerT1CFI (CFA = t1 + 0 from address 1 on, across the call at address 2) TableCorrect for outerT1Fn, and its one-line proof checkCFI_sound (by decide) has the kernel evaluate checkCFI outerT1Fn outerT1CFI to true, i.e. checkCFI accepts it. genCFI itself chooses t1 only at a PC where none of fp, sp, s1 is CFA-relative in the abstract state (cfaChoice takes the first CFA-relative register in the order fp, sp, s1, t1); that genCFI can emit a t1-anchored call-site row is not proved here. A t1-anchored call-site row violates the CFA-base hypothesis BaseSafeUpTo of the multi-frame theorem unwind_caught_at_first_handler_frame_with_caller_registers (the call-site rows of outer frames must use sp or a callee-saved register as CFA base); in the toy multi-frame setting an inner frame that overwrites t1 makes the reconstructed state wrong (multiFrame_fails_without_baseSafeUpTo), and the same is expected after a real call that clobbers caller-saved registers (derived, not proved here).",
+   "Reach requires 0 < (f.blockOps b).length at function entry and on every CFG edge, so empty basic blocks (ops = []) are unenterable dead ends rather than frame-neutral pass-through blocks; projecting a real CFG to frame-affecting operations without contracting or padding frame-neutral blocks makes TableCorrect vacuously true on paths through empty blocks (and for the whole function if block 0 is empty).",
+   "genCFI emits rememberState/restoreState only across a single immediately preceding layout block whose entry row equals the current block's entry row (otherwise it re-defines the row explicitly); it encodes rule 'same' with CFIInst.restore r, which is correct only because initRow sets every register to 'same' (unlike CIEs that initialize a return-address column to an offset rule); and it places row changes before advanceLoc 1, relying on rowAt?'s convention that instructions located at addresses <= pc apply at pc. No claim is made that a real unwinder uses the same boundary convention: LLVM libunwind's parseFDEInstructions (llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, libunwind/src/DwarfParser.hpp line 503, 'while ((p < instructionsEnd) && (codeOffset < pcoffset))') stops before instructions located exactly at the looked-up code offset.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM CFIFixup pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIFixup.cpp: header comment (lines 10-66) - after the prologue each block either 'has a call frame' or not; where the state at a block's start differs from the state at the end of its layout predecessor, the pass inserts either a target-specific reset to the initial state or '.cfi_restore_state' followed by '.cfi_remember_state', with a '.cfi_remember_state' after the last prologue CFI instruction; stated preconditions include 'CFI instructions are not contained in any loops'; stated limitations: an epilogue preceding the prologue in layout, and functions using SP as frame pointer with SP adjustments in different blocks. insertRememberRestorePair (line 195), fixupBlock (line 245). Derived (modeling bridge): the toy genCFI handles arbitrary rows rather than the pass's two states, but it remembers a row only at the start of the immediately preceding layout block and otherwise falls back to explicit re-definition, whereas the pass keeps one remember insertion point per section and chains remember/restore pairs across any number of intervening blocks (fixupBlock, lines 288-300; runImpl, lines 304-341) and, for the first block of a new section, clones the prologue's CFI instructions instead (lines 290-294). genCFI was not compared against the pass's output.",
+   "LLVM CFIInstrInserter pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIInstrInserter.cpp: header comment (lines 9-17) - verifies that the outgoing CFA information of predecessors matches the incoming information of successors and inserts CFI instructions at block beginnings when 'a non-linear layout of blocks' leaves an incorrect rule. Besides the CFA offset and register it tracks callee-saved register save locations (CSRSavedLocation with kinds Register and CFAOffset, CSRLocMap, IncomingCSRSaved/OutgoingCSRSaved; lines 64-162; propagated along CFG edges, line 408), repairs them at block beginnings with .cfi_restore, .cfi_offset and .cfi_register (insertCFIInstrs, lines 415-511; a block that begins a new section gets a full def_cfa plus the callee-saved moves, lines 431-470), and reports CFG-edge CFA and callee-saved mismatches in verify (lines 545-571; CFA mismatches into blocks with no successors that are not return blocks are exempt, lines 553-557). It requires a single save location per callee-saved register ('Different saved locations for the same CSR', lines 366-369). In builds with assertions (#ifndef NDEBUG) it accepts cfi_remember_state/cfi_restore_state only as balanced depth-1 pairs inside one basic block and otherwise reports 'Support for cfi_remember_state not implemented!' (lines 316-339, 375-381); in builds without assertions its analysis ignores both instructions. Derived (modeling bridge): this is the explicit re-definition alternative; like the toy genCFI it repairs both the CFA rule and callee-saved register rules at layout boundaries, but it never places a remember/restore pair across blocks. It was not compared against the toy's output.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, 'Reliable and fast DWARF-based stack unwinding', Proc. ACM Program. Lang. 3(OOPSLA), Article 146, October 2019, doi:10.1145/3360572. §2.2 (pp. 146:8-146:12; the passages summarized here are on pp. 146:9-146:11): unwind rows are synthesized by forward propagation along CFG edges, relying on stack offsets being invariant at merge points; with variable-size stack allocation compilers fall back to a base-pointer register; if different rows reach a merge point the tool aborts (a lossy merge is enabled only for terminal blocks). Appendix A (pp. 146:21-146:23): remember_state pushes 'the state of all the registers of this row', and restore(reg) is not supported (p. 146:21); the formal interpretation keeps a state-saving stack of rows (Row*, p. 146:22; Table 5, p. 146:23). The paper contains no mechanized proof.",
+   "DWARF Debugging Information Format Committee, DWARF Debugging Information Format, Version 5 (February 13, 2017), https://dwarfstd.org/doc/DWARF5.pdf. §2.5.1.2 DW_OP_fbreg (an offset from the address given by DW_AT_frame_base); §2.5.1.3 item 15 (printed page 33; PDF page 51) DW_OP_call_frame_cfa (pushes the CFA obtained from the call frame information; computing DW_AT_frame_base from registers would 'in some cases ... require an extensive location list because the values of the registers used in computing the CFA change during a subroutine'). §6.4.2.4 (printed page 181; PDF page 199) DW_CFA_remember_state / DW_CFA_restore_state ('push the set of rules for every register onto an implicit stack' / 'pop the set of rules off the implicit stack and place them in the current row') in the wording quoted by DWARF issue 230103.1. The toy's register rules and CFA-definition instructions are modeled on the pinned LLVM libunwind implementation (libunwind/src/DwarfParser.hpp and DwarfInstructions.hpp at llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc) rather than on the text of §6.4.1 and §6.4.2.2.",
+   "DWARF issue 230103.1, 'Clarify that DW_CFA_remember_state includes the current CFA' (F. Song; submitted 2023-01-03; accepted 2023-07-24; DWARF Version 6), https://dwarfstd.org/issues/230103.1.html: proposes 'push the set of rules for the current CFA and every register onto an implicit stack' and states that nongnu libunwind src/dwarf/Gparser.c, libgcc unwind-dw2.c and llvm-project libunwind/src/DwarfParser.hpp all include the current CFA in the implicit stack. Derived (modeling bridge): the toy rememberState/restoreState save and restore the whole row, CFA rule included."
+  ],
+  "design_question": "What must a CFI emitter guarantee for a linear layout of a CFG whose blocks are not placed in control-flow order, and which checks of the emitted table are sound?"
+ },
+ {
+  "id": "R2",
+  "lean": "Toy.CFI.no_tableCorrect_of_conflictingCfaOffsetsAt",
+  "kind": "impossibility",
+  "tier": "T1",
+  "plain_claim": "If at some PC (b, k) of a function no register keeps a fixed offset from the CFA across reachable states - for every register r there are two reachable states there (for possibly different callers and memories) in which r - CFA differs (ConflictingCfaOffsetsAt f b k) - then no CFI program whatsoever is TableCorrect for the function: a row is a function of the PC, and a register+offset CFA rule is right only if its base register has a fixed offset from the CFA. mergeFn, where one CFG path into block 3 pushes fp and the other does not, satisfies the hypothesis at its merge PC (mergeFn_conflictingCfaOffsetsAt), so no table is correct for it (mergeFn_no_tableCorrect).",
+  "hypotheses": [
+   {
+    "name": "hconf : ConflictingCfaOffsetsAt f b k",
+    "purpose": "at one PC, every register's offset from the CFA varies across reachable states, so no register+offset CFA rule can be right there",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.no_tableCorrect_fails_without_conflictingCfaOffsetsAt",
+    "witness_class": "the concrete 4-block function mergeFnBalanced at its merge PC (3, 0), where both incoming paths push fp; a correct table exists"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "mergeFn at its merge PC (3, 0): sp is CFA - 1 via block 1 and CFA via block 2; fp, s1, t1 hold caller values whose offset from the CFA depends on the caller.",
+  "nonvacuity_witness_lean": "Toy.CFI.mergeFn_conflictingCfaOffsetsAt",
+  "positive_control_lean": "Toy.CFI.genCFI_mergeFnBalanced_tableCorrect",
+  "non_claims": [
+   "ConflictingCfaOffsetsAt is sufficient for impossibility; it is not claimed to be necessary. A function might have no correct table because a callee-saved register is unrecoverable even though some register keeps a fixed CFA offset (not proved here: the package exhibits no such function).",
+   "The abstract-domain version ('a merge point whose incoming abstract frame states join to an unrecoverable state admits no correct table') is not claimed: joins may lose information that a table can still exploit (not proved here; compare checkCFI_incomplete, a correct table that checkCFI, which works in this abstract domain, rejects).",
+   "Escape hatches (each defeats the hypothesis or changes the setting): agreeing frame states at the merge (positive control mergeFnBalanced); a register that holds a CFA-relative anchor on every incoming path; tail-duplicating or splitting the merge block so that each incoming path has its own PC; mutually exclusive branch conditions that make one incoming path infeasible (Reach ignores branch predicates); requiring correctness only at call sites (synchronous unwinding) when the merge block contains no call (mergeFn's merge block contains only ret); or a CFA rule more expressive than register+offset (DW_CFA_def_cfa_expression, not modeled).",
+   "Says nothing about remember/restore: no linear encoding helps, because both paths reach the same PC.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "T. Bastian, S. Kell, F. Zappa Nardelli, 'Reliable and fast DWARF-based stack unwinding', Proc. ACM Program. Lang. 3(OOPSLA), Article 146, October 2019, doi:10.1145/3360572. §2.2 (pp. 146:8-146:12; the passages summarized here are on pp. 146:9-146:11): unwind rows are synthesized by forward propagation along CFG edges, relying on stack offsets being invariant at merge points; with variable-size stack allocation compilers fall back to a base-pointer register; if different rows reach a merge point the tool aborts (a lossy merge is enabled only for terminal blocks). Appendix A (pp. 146:21-146:23): remember_state pushes 'the state of all the registers of this row', and restore(reg) is not supported (p. 146:21); the formal interpretation keeps a state-saving stack of rows (Row*, p. 146:22; Table 5, p. 146:23). The paper contains no mechanized proof.",
+   "LLVM CFIInstrInserter pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIInstrInserter.cpp: header comment (lines 9-17) - verifies that the outgoing CFA information of predecessors matches the incoming information of successors and inserts CFI instructions at block beginnings when 'a non-linear layout of blocks' leaves an incorrect rule. Besides the CFA offset and register it tracks callee-saved register save locations (CSRSavedLocation with kinds Register and CFAOffset, CSRLocMap, IncomingCSRSaved/OutgoingCSRSaved; lines 64-162; propagated along CFG edges, line 408), repairs them at block beginnings with .cfi_restore, .cfi_offset and .cfi_register (insertCFIInstrs, lines 415-511; a block that begins a new section gets a full def_cfa plus the callee-saved moves, lines 431-470), and reports CFG-edge CFA and callee-saved mismatches in verify (lines 545-571; CFA mismatches into blocks with no successors that are not return blocks are exempt, lines 553-557). It requires a single save location per callee-saved register ('Different saved locations for the same CSR', lines 366-369). In builds with assertions (#ifndef NDEBUG) it accepts cfi_remember_state/cfi_restore_state only as balanced depth-1 pairs inside one basic block and otherwise reports 'Support for cfi_remember_state not implemented!' (lines 316-339, 375-381); in builds without assertions its analysis ignores both instructions. Derived (modeling bridge): this is the explicit re-definition alternative; like the toy genCFI it repairs both the CFA rule and callee-saved register rules at layout boundaries, but it never places a remember/restore pair across blocks. It was not compared against the toy's output.",
+   "J. Oakley, S. Bratus, 'Exploiting the hard-working DWARF: Trojan and exploit techniques with no native executable code', USENIX WOOT 2011, https://www.usenix.org/conference/woot11/exploiting-hard-working-dwarf-trojan-and-exploit-techniques-no-native-executable: DWARF call-frame/expression bytecode interpreted by the unwinder is Turing-complete. Derived (modeling bridge): expression-based CFA rules (DW_CFA_def_cfa_expression, not modeled) are far more expressive than the toy's register+offset rule, so the impossibility results stated for register+offset rules are not claimed for them (whether they fail for such rules is not proved here)."
+  ],
+  "design_question": "What must a CFI emitter guarantee for a linear layout of a CFG whose blocks are not placed in control-flow order, and which checks of the emitted table are sound?"
+ },
+ {
+  "id": "R3",
+  "lean": "Toy.CFI.coldBlocks_no_row_recovers_at_both_epilogue_ret_and_cold_entry",
+  "kind": "impossibility",
+  "tier": "T1",
+  "plain_claim": "For the blocks of coldFn - prologue (push fp; movReg fp sp; call), epilogue (movReg sp fp; pop fp; ret), and a cold block (call) entered with the frame established that jumps to the epilogue - placed in any layout, no single row recovers the caller both at every reachable state of the epilogue's ret (block 1, offset 2) and at every reachable state of the cold block's first PC (block 2, offset 0). This concerns two CFG program points: reachability does not depend on the layout, and the layout only decides whether the two points receive the same row (for layout 0, 1, 2, a program whose row at the cold block's address equals its row at the epilogue's ret is not TableCorrect: coldFn_not_tableCorrect_of_cold_entry_row_eq_epilogue_ret_row).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Both program points are reachable for every caller and memory, with sp = CFA at the ret and sp = CFA - 1 at the cold entry (shown for layout 0, 1, 2; reachability is layout-independent, Reach.layout_irrelevant).",
+  "nonvacuity_witness_lean": "Toy.CFI.coldFn_both_pcs_reachable",
+  "positive_control_lean": "Toy.CFI.coldBlocks_one_row_recovers_at_epilogue_entry_and_cold_entry",
+  "non_claims": [
+   "Shown for one CFG; it does not characterize in general which pairs of program points admit a common row.",
+   "Holds for every layout, including the CFG-order layout 0, 2, 1; that the naive emitter is correct for that layout (naiveCFI_coldFnFallthrough_tableCorrect) is because there the two program points get different addresses and different rows, not because one row serves both. The positive control shows that a different pair of program points (the epilogue's first PC and the cold entry) does share a row.",
+   "Escape hatches for a concrete layout: give the cold block's address its own row - an instruction located there (restoreState, or an explicit re-definition: genCFI_coldFn_tableCorrect, coldExplicitCFI_tableCorrect) or a layout in which the cold block does not follow the epilogue's ret; place the cold block in a separate code section with its own FDE initialized from the CIE plus cloned prologue instructions (not modeled: one FDE covers the whole toy function); or require correctness only at call sites (synchronous unwinding), under which the row at the epilogue's ret, which cannot throw, is irrelevant.",
+   "Does not establish expressive necessity of rememberState/restoreState: the explicit re-definition program coldExplicitCFI, which contains neither rememberState nor restoreState, is also TableCorrect for coldFn (coldExplicitCFI_tableCorrect); that its per-PC rows coincide with those of genCFI's program is not claimed.",
+   "Real-world consequences (e.g. an unwinder computing a wrong CFA or failing) are derived (modeling bridge) only: they follow if the real table's row at the cold block is the post-epilogue row.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM CFIFixup pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIFixup.cpp: header comment (lines 10-66) - after the prologue each block either 'has a call frame' or not; where the state at a block's start differs from the state at the end of its layout predecessor, the pass inserts either a target-specific reset to the initial state or '.cfi_restore_state' followed by '.cfi_remember_state', with a '.cfi_remember_state' after the last prologue CFI instruction; stated preconditions include 'CFI instructions are not contained in any loops'; stated limitations: an epilogue preceding the prologue in layout, and functions using SP as frame pointer with SP adjustments in different blocks. insertRememberRestorePair (line 195), fixupBlock (line 245). Derived (modeling bridge): the toy genCFI handles arbitrary rows rather than the pass's two states, but it remembers a row only at the start of the immediately preceding layout block and otherwise falls back to explicit re-definition, whereas the pass keeps one remember insertion point per section and chains remember/restore pairs across any number of intervening blocks (fixupBlock, lines 288-300; runImpl, lines 304-341) and, for the first block of a new section, clones the prologue's CFI instructions instead (lines 290-294). genCFI was not compared against the pass's output.",
+   "LLVM CFIInstrInserter pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIInstrInserter.cpp: header comment (lines 9-17) - verifies that the outgoing CFA information of predecessors matches the incoming information of successors and inserts CFI instructions at block beginnings when 'a non-linear layout of blocks' leaves an incorrect rule. Besides the CFA offset and register it tracks callee-saved register save locations (CSRSavedLocation with kinds Register and CFAOffset, CSRLocMap, IncomingCSRSaved/OutgoingCSRSaved; lines 64-162; propagated along CFG edges, line 408), repairs them at block beginnings with .cfi_restore, .cfi_offset and .cfi_register (insertCFIInstrs, lines 415-511; a block that begins a new section gets a full def_cfa plus the callee-saved moves, lines 431-470), and reports CFG-edge CFA and callee-saved mismatches in verify (lines 545-571; CFA mismatches into blocks with no successors that are not return blocks are exempt, lines 553-557). It requires a single save location per callee-saved register ('Different saved locations for the same CSR', lines 366-369). In builds with assertions (#ifndef NDEBUG) it accepts cfi_remember_state/cfi_restore_state only as balanced depth-1 pairs inside one basic block and otherwise reports 'Support for cfi_remember_state not implemented!' (lines 316-339, 375-381); in builds without assertions its analysis ignores both instructions. Derived (modeling bridge): this is the explicit re-definition alternative; like the toy genCFI it repairs both the CFA rule and callee-saved register rules at layout boundaries, but it never places a remember/restore pair across blocks. It was not compared against the toy's output.",
+   "DWARF Debugging Information Format Committee, DWARF Debugging Information Format, Version 5 (February 13, 2017), https://dwarfstd.org/doc/DWARF5.pdf. §2.5.1.2 DW_OP_fbreg (an offset from the address given by DW_AT_frame_base); §2.5.1.3 item 15 (printed page 33; PDF page 51) DW_OP_call_frame_cfa (pushes the CFA obtained from the call frame information; computing DW_AT_frame_base from registers would 'in some cases ... require an extensive location list because the values of the registers used in computing the CFA change during a subroutine'). §6.4.2.4 (printed page 181; PDF page 199) DW_CFA_remember_state / DW_CFA_restore_state ('push the set of rules for every register onto an implicit stack' / 'pop the set of rules off the implicit stack and place them in the current row') in the wording quoted by DWARF issue 230103.1. The toy's register rules and CFA-definition instructions are modeled on the pinned LLVM libunwind implementation (libunwind/src/DwarfParser.hpp and DwarfInstructions.hpp at llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc) rather than on the text of §6.4.1 and §6.4.2.2.",
+   "DWARF issue 230103.1, 'Clarify that DW_CFA_remember_state includes the current CFA' (F. Song; submitted 2023-01-03; accepted 2023-07-24; DWARF Version 6), https://dwarfstd.org/issues/230103.1.html: proposes 'push the set of rules for the current CFA and every register onto an implicit stack' and states that nongnu libunwind src/dwarf/Gparser.c, libgcc unwind-dw2.c and llvm-project libunwind/src/DwarfParser.hpp all include the current CFA in the implicit stack. Derived (modeling bridge): the toy rememberState/restoreState save and restore the whole row, CFA rule included."
+  ],
+  "design_question": "What must a CFI emitter guarantee for a linear layout of a CFG whose blocks are not placed in control-flow order, and which checks of the emitted table are sound?"
+ },
+ {
+  "id": "R3b",
+  "lean": "Toy.CFI.coldFn_not_tableCorrect_of_cold_entry_row_eq_epilogue_ret_row",
+  "kind": "impossibility",
+  "tier": "T1",
+  "plain_claim": "For coldFn with layout 0, 1, 2 (epilogue at addresses 3-5 with ret at 5, cold block at 6), any CFI program whose row at address 6 equals its row at address 5 (as happens when no instruction is located at address 6, i.e. neither restoreState nor an explicit re-definition) is not TableCorrect.",
+  "hypotheses": [
+   {
+    "name": "hinh : rowAt? prog 6 = rowAt? prog 5",
+    "purpose": "the row at the cold block is inherited from the epilogue",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.genCFI_coldFn_rows_differ_and_tableCorrect",
+    "witness_class": "a single concrete program, genCFI coldFn (inferredAnn coldFn) for coldFn in layout 0, 1, 2, whose rows at addresses 6 and 5 differ and which is TableCorrect"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The naive emitter's program (per-block deltas, nothing at block boundaries) satisfies hinh (naiveCFI_coldFn_rows_equal); naiveCFI_coldFn_not_tableCorrect instantiates the theorem.",
+  "nonvacuity_witness_lean": "Toy.CFI.naiveCFI_coldFn_rows_equal",
+  "positive_control_lean": "Toy.CFI.genCFI_coldFn_rows_differ_and_tableCorrect",
+  "non_claims": [
+   "Reference point: the program-level form, for the single layout 0, 1, 2, of the layout-independent fact that no single row recovers the caller both at the epilogue's ret and at the cold block's entry (coldBlocks_no_row_recovers_at_both_epilogue_ret_and_cold_entry); it adds no generality beyond coldFn.",
+   "The hypothesis is row equality, not 'no instruction at address 6'; the latter implies the former in the toy semantics (rowAt? stops at the first advanceLoc past pc), but that implication is not stated as a Lean lemma.",
+   "Escape hatches: an instruction at address 6 that changes the row (restoreState after a rememberState in the epilogue, or an explicit re-definition; genCFI_coldFn_rows_differ_and_tableCorrect, coldExplicitCFI_tableCorrect); a layout in which the cold block does not follow the epilogue's ret (naiveCFI_coldFnFallthrough_tableCorrect); a separate FDE for the cold block (not modeled); or requiring correctness only at call sites (synchronous unwinding), which this TableCorrect does not model.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM CFIFixup pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIFixup.cpp: header comment (lines 10-66) - after the prologue each block either 'has a call frame' or not; where the state at a block's start differs from the state at the end of its layout predecessor, the pass inserts either a target-specific reset to the initial state or '.cfi_restore_state' followed by '.cfi_remember_state', with a '.cfi_remember_state' after the last prologue CFI instruction; stated preconditions include 'CFI instructions are not contained in any loops'; stated limitations: an epilogue preceding the prologue in layout, and functions using SP as frame pointer with SP adjustments in different blocks. insertRememberRestorePair (line 195), fixupBlock (line 245). Derived (modeling bridge): the toy genCFI handles arbitrary rows rather than the pass's two states, but it remembers a row only at the start of the immediately preceding layout block and otherwise falls back to explicit re-definition, whereas the pass keeps one remember insertion point per section and chains remember/restore pairs across any number of intervening blocks (fixupBlock, lines 288-300; runImpl, lines 304-341) and, for the first block of a new section, clones the prologue's CFI instructions instead (lines 290-294). genCFI was not compared against the pass's output.",
+   "LLVM CFIInstrInserter pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIInstrInserter.cpp: header comment (lines 9-17) - verifies that the outgoing CFA information of predecessors matches the incoming information of successors and inserts CFI instructions at block beginnings when 'a non-linear layout of blocks' leaves an incorrect rule. Besides the CFA offset and register it tracks callee-saved register save locations (CSRSavedLocation with kinds Register and CFAOffset, CSRLocMap, IncomingCSRSaved/OutgoingCSRSaved; lines 64-162; propagated along CFG edges, line 408), repairs them at block beginnings with .cfi_restore, .cfi_offset and .cfi_register (insertCFIInstrs, lines 415-511; a block that begins a new section gets a full def_cfa plus the callee-saved moves, lines 431-470), and reports CFG-edge CFA and callee-saved mismatches in verify (lines 545-571; CFA mismatches into blocks with no successors that are not return blocks are exempt, lines 553-557). It requires a single save location per callee-saved register ('Different saved locations for the same CSR', lines 366-369). In builds with assertions (#ifndef NDEBUG) it accepts cfi_remember_state/cfi_restore_state only as balanced depth-1 pairs inside one basic block and otherwise reports 'Support for cfi_remember_state not implemented!' (lines 316-339, 375-381); in builds without assertions its analysis ignores both instructions. Derived (modeling bridge): this is the explicit re-definition alternative; like the toy genCFI it repairs both the CFA rule and callee-saved register rules at layout boundaries, but it never places a remember/restore pair across blocks. It was not compared against the toy's output."
+  ],
+  "design_question": "What must a CFI emitter guarantee for a linear layout of a CFG whose blocks are not placed in control-flow order, and which checks of the emitted table are sound?"
+ },
+ {
+  "id": "R3c",
+  "lean": "Toy.CFI.naiveCFI_coldFn_cold_entry_cfa_is_true_cfa_minus_one",
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "The naive emitter's program for coldFn has the post-epilogue row initRow (CFA = sp + 0) at the cold block's address 6, and for every caller and every reachable state there it computes CFA - 1 instead of the CFA.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "coldFn_reach_cold: the cold block's first PC is reachable for every caller.",
+  "nonvacuity_witness_lean": "Toy.CFI.coldFn_reach_cold",
+  "non_claims": [
+   "Reference point: a concrete evaluation quantifying the CFA error of a table whose row at the cold block is inherited from the epilogue, the situation ruled out by coldBlocks_no_row_recovers_at_both_epilogue_ret_and_cold_entry and coldFn_not_tableCorrect_of_cold_entry_row_eq_epilogue_ret_row; it is not a general statement.",
+   "The size of the error (one address unit) is specific to this toy prologue (one push).",
+   "The callee-saved fp rule of that row ('same') is also wrong there for every caller whose fp differs from CFA - 1, i.e. whenever c.regs.fp ≠ c.cfa - 1: in the state coldStCold c m, which is reachable at that PC for every caller c and memory m (coldFn_reach_cold), fp holds c.cfa - 1 (coldStCold_regs), so there the rule yields c.cfa - 1 instead of the caller's fp. That consequence is not proved here as a Lean lemma; this theorem states only the CFA error.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM CFIFixup pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIFixup.cpp: header comment (lines 10-66) - after the prologue each block either 'has a call frame' or not; where the state at a block's start differs from the state at the end of its layout predecessor, the pass inserts either a target-specific reset to the initial state or '.cfi_restore_state' followed by '.cfi_remember_state', with a '.cfi_remember_state' after the last prologue CFI instruction; stated preconditions include 'CFI instructions are not contained in any loops'; stated limitations: an epilogue preceding the prologue in layout, and functions using SP as frame pointer with SP adjustments in different blocks. insertRememberRestorePair (line 195), fixupBlock (line 245). Derived (modeling bridge): the toy genCFI handles arbitrary rows rather than the pass's two states, but it remembers a row only at the start of the immediately preceding layout block and otherwise falls back to explicit re-definition, whereas the pass keeps one remember insertion point per section and chains remember/restore pairs across any number of intervening blocks (fixupBlock, lines 288-300; runImpl, lines 304-341) and, for the first block of a new section, clones the prologue's CFI instructions instead (lines 290-294). genCFI was not compared against the pass's output.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, 'Reliable and fast DWARF-based stack unwinding', Proc. ACM Program. Lang. 3(OOPSLA), Article 146, October 2019, doi:10.1145/3360572. §2.2 (pp. 146:8-146:12; the passages summarized here are on pp. 146:9-146:11): unwind rows are synthesized by forward propagation along CFG edges, relying on stack offsets being invariant at merge points; with variable-size stack allocation compilers fall back to a base-pointer register; if different rows reach a merge point the tool aborts (a lossy merge is enabled only for terminal blocks). Appendix A (pp. 146:21-146:23): remember_state pushes 'the state of all the registers of this row', and restore(reg) is not supported (p. 146:21); the formal interpretation keeps a state-saving stack of rows (Row*, p. 146:22; Table 5, p. 146:23). The paper contains no mechanized proof."
+  ],
+  "design_question": "What must a CFI emitter guarantee for a linear layout of a CFG whose blocks are not placed in control-flow order, and which checks of the emitted table are sound?"
+ },
+ {
+  "id": "R4",
+  "lean": "Toy.CFI.probeLoop_cfa_correct_at_every_iteration_iff_fp_anchor",
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For the probing loop probeFn page (push fp; movReg fp sp; loop subSp page) with page > 0, a row computes the correct CFA at every reachable state of the loop PC - every iteration, every caller, every memory - if and only if its CFA rule is fp + 1, i.e. relative to the anchor register rather than to the varying sp.",
+  "hypotheses": [
+   {
+    "name": "hpage : 0 < page",
+    "purpose": "sp must actually vary between iterations",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.probeLoop_characterization_fails_for_page_zero",
+    "witness_class": "degenerate boundary instance page = 0: the loop body subSp 0 leaves sp unchanged, and a row whose CFA rule is not fp + 1 is correct at every reachable loop state"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "For page = 4096 the anchor rule fp + 1 satisfies the left side and sp + 1 does not (both sides of the iff are exercised); every iteration's state is reachable (probeLoopState_reach) and the anchor-relative table is correct for every page (probeAnchorCFI_tableCorrect).",
+  "nonvacuity_witness_lean": "Toy.CFI.probeLoop_characterization_nonvacuity",
+  "non_claims": [
+   "The iff characterizes the CFA rule (R.cfaReg, R.cfaOff) and says nothing about the register rules R.rules. For register rules the package proves sufficiency for one concrete table: probeAnchorCFI, whose row at the loop PC saves fp at CFA - 1 and keeps s1 same, is TableCorrect for every page (probeAnchorCFI_tableCorrect). Whether every row that recovers the caller at the loop PC must use these register rules is not proved here.",
+   "One loop shape with one anchor (fp); other anchors (e.g. a scratch register holding the old sp) are not examined; a scratch anchor is unsafe at call sites when the callee may clobber it: in the toy multi-frame setting an inner frame that overwrites the outer frame's t1 anchor makes the reconstructed state wrong (multiFrame_fails_without_baseSafeUpTo), and the multi-frame theorem unwind_caught_at_first_handler_frame_with_caller_registers accordingly requires sp or a callee-saved register as the CFA base of outer frames' call-site rows (BaseSafeUpTo).",
+   "Within the loop body there are no calls or stores, so the claim says nothing about stack probes that touch memory.",
+   "Restricted to register+offset CFA rules at one loop PC shared by all iterations: unrolling a bounded probe gives each iteration its own PC with a static sp offset (no base switch needed), and DW_CFA_def_cfa_expression (not modeled) can compute the CFA without a dedicated anchor register.",
+   "The table-level consequence for the SP-relative program probeSpCFI (not TableCorrect for page > 0) is the separate theorem spRelative_cfa_right_on_entry_wrong_after_first_iteration_of_pos_page.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "DWARF Debugging Information Format Committee, DWARF Debugging Information Format, Version 5 (February 13, 2017), https://dwarfstd.org/doc/DWARF5.pdf. §2.5.1.2 DW_OP_fbreg (an offset from the address given by DW_AT_frame_base); §2.5.1.3 item 15 (printed page 33; PDF page 51) DW_OP_call_frame_cfa (pushes the CFA obtained from the call frame information; computing DW_AT_frame_base from registers would 'in some cases ... require an extensive location list because the values of the registers used in computing the CFA change during a subroutine'). §6.4.2.4 (printed page 181; PDF page 199) DW_CFA_remember_state / DW_CFA_restore_state ('push the set of rules for every register onto an implicit stack' / 'pop the set of rules off the implicit stack and place them in the current row') in the wording quoted by DWARF issue 230103.1. The toy's register rules and CFA-definition instructions are modeled on the pinned LLVM libunwind implementation (libunwind/src/DwarfParser.hpp and DwarfInstructions.hpp at llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc) rather than on the text of §6.4.1 and §6.4.2.2.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, 'Reliable and fast DWARF-based stack unwinding', Proc. ACM Program. Lang. 3(OOPSLA), Article 146, October 2019, doi:10.1145/3360572. §2.2 (pp. 146:8-146:12; the passages summarized here are on pp. 146:9-146:11): unwind rows are synthesized by forward propagation along CFG edges, relying on stack offsets being invariant at merge points; with variable-size stack allocation compilers fall back to a base-pointer register; if different rows reach a merge point the tool aborts (a lossy merge is enabled only for terminal blocks). Appendix A (pp. 146:21-146:23): remember_state pushes 'the state of all the registers of this row', and restore(reg) is not supported (p. 146:21); the formal interpretation keeps a state-saving stack of rows (Row*, p. 146:22; Table 5, p. 146:23). The paper contains no mechanized proof.",
+   "LLVM CFIFixup pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIFixup.cpp: header comment (lines 10-66) - after the prologue each block either 'has a call frame' or not; where the state at a block's start differs from the state at the end of its layout predecessor, the pass inserts either a target-specific reset to the initial state or '.cfi_restore_state' followed by '.cfi_remember_state', with a '.cfi_remember_state' after the last prologue CFI instruction; stated preconditions include 'CFI instructions are not contained in any loops'; stated limitations: an epilogue preceding the prologue in layout, and functions using SP as frame pointer with SP adjustments in different blocks. insertRememberRestorePair (line 195), fixupBlock (line 245). Derived (modeling bridge): the toy genCFI handles arbitrary rows rather than the pass's two states, but it remembers a row only at the start of the immediately preceding layout block and otherwise falls back to explicit re-definition, whereas the pass keeps one remember insertion point per section and chains remember/restore pairs across any number of intervening blocks (fixupBlock, lines 288-300; runImpl, lines 304-341) and, for the first block of a new section, clones the prologue's CFI instructions instead (lines 290-294). genCFI was not compared against the pass's output.",
+   "LLVM libunwind, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc. libunwind/src/DwarfParser.hpp: struct PrologInfo (lines 95-100: cfaRegister, cfaRegisterOffset, savedRegisters); parseFDEInstructions loop 'while ((p < instructionsEnd) && (codeOffset < pcoffset))' (line 503); DW_CFA_remember_state pushes a copy of the whole PrologInfo ('entry->info = *results', lines 606-621); DW_CFA_restore_state pops it ('*results = top->info') and returns false on an empty stack (lines 622-632); DW_CFA_def_cfa_register sets only cfaRegister and DW_CFA_def_cfa_offset only cfaRegisterOffset (lines 646-661). libunwind/src/DwarfInstructions.hpp: getCFA returns register value + cfaRegisterOffset (lines 66-76); kRegisterInCFA reads memory at cfa + value (lines 107-108); the caller's SP is set to the CFA (line 284). Derived (modeling bridge): the toy rowAt? applies every instruction located at an address <= pc, whereas this loop stops before instructions located exactly at pcoffset; how that interacts with the caller-side PC adjustment was not examined.",
+   "J. Oakley, S. Bratus, 'Exploiting the hard-working DWARF: Trojan and exploit techniques with no native executable code', USENIX WOOT 2011, https://www.usenix.org/conference/woot11/exploiting-hard-working-dwarf-trojan-and-exploit-techniques-no-native-executable: DWARF call-frame/expression bytecode interpreted by the unwinder is Turing-complete. Derived (modeling bridge): expression-based CFA rules (DW_CFA_def_cfa_expression, not modeled) are far more expressive than the toy's register+offset rule, so the impossibility results stated for register+offset rules are not claimed for them (whether they fail for such rules is not proved here)."
+  ],
+  "design_question": "When the stack pointer varies at run time (probing loops, dynamic allocation), which CFA rule keeps the table correct?"
+ },
+ {
+  "id": "R4b",
+  "lean": "Toy.CFI.spRelative_cfa_right_on_entry_wrong_after_first_iteration_of_pos_page",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For page > 0, for every caller, memory and choice of register rules, the SP-relative row CFA = sp + 1 computes the true CFA at the loop PC of probeFn page on loop entry, computes CFA - page (which differs from the CFA) after the first iteration, and the SP-relative table probeSpCFI is not TableCorrect for probeFn page.",
+  "hypotheses": [
+   {
+    "name": "hpage : 0 < page",
+    "purpose": "the loop moves sp; with page = 0 the SP-relative row is right at every iteration",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.spRelative_wrong_after_first_iteration_fails_for_page_zero",
+    "witness_class": "degenerate boundary instance page = 0 (the loop body subSp 0 leaves sp unchanged), for every caller, memory and register rules"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "page = 4096 satisfies the hypothesis (and probeSpCFI is incorrect there).",
+  "nonvacuity_witness_lean": "Toy.CFI.spRelative_wrong_after_first_iteration_nonvacuity",
+  "non_claims": [
+   "Concerns one fixed offset; that no SP-relative rule with any fixed offset works at every iteration when page > 0 is the content of the separate characterization probeLoop_cfa_correct_at_every_iteration_iff_fp_anchor (for page > 0 a row computes the correct CFA at every iteration iff its CFA rule is fp + 1), not of this theorem.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "T. Bastian, S. Kell, F. Zappa Nardelli, 'Reliable and fast DWARF-based stack unwinding', Proc. ACM Program. Lang. 3(OOPSLA), Article 146, October 2019, doi:10.1145/3360572. §2.2 (pp. 146:8-146:12; the passages summarized here are on pp. 146:9-146:11): unwind rows are synthesized by forward propagation along CFG edges, relying on stack offsets being invariant at merge points; with variable-size stack allocation compilers fall back to a base-pointer register; if different rows reach a merge point the tool aborts (a lossy merge is enabled only for terminal blocks). Appendix A (pp. 146:21-146:23): remember_state pushes 'the state of all the registers of this row', and restore(reg) is not supported (p. 146:21); the formal interpretation keeps a state-saving stack of rows (Row*, p. 146:22; Table 5, p. 146:23). The paper contains no mechanized proof."
+  ],
+  "design_question": "When the stack pointer varies at run time (probing loops, dynamic allocation), which CFA rule keeps the table correct?"
+ },
+ {
+  "id": "R5a",
+  "lean": "Toy.CFI.lookupFirst_eq_result_of_uniqueAt",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If at most one distinct entry value of a call-site table contains pc (duplicate identical entries are permitted) (half-open [start, stop)), then for the entry e containing pc, first-match lookup returns e's outcome: its landing pad, or 'no landing pad'.",
+  "hypotheses": [
+   {
+    "name": "hu : UniqueAt t pc",
+    "purpose": "no entry with a different value also contains pc",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.lookupFirst_wrong_without_uniqueAt",
+    "witness_class": "a concrete 2-entry table with overlapping ranges, lsdaOverlap = [0,10) ↦ 1, [5,15) ↦ 2, at pc = 7 with e = [5,15) ↦ 2"
+   },
+   {
+    "name": "he : e ∈ t",
+    "purpose": "e is an entry of the table (without it, e may be any range containing pc)",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.lookup_eq_result_fails_without_mem",
+    "witness_class": "degenerate boundary instance: the empty table [] (sorted and unique vacuously) at pc = 0, with e = [0,4) ↦ 1, which contains 0 but is not an entry"
+   },
+   {
+    "name": "hc : e.contains pc",
+    "purpose": "e contains pc (without it, e may be an entry that does not cover pc)",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.lookup_eq_result_fails_without_contains",
+    "witness_class": "a concrete 1-entry table [[0,4) ↦ 1] at pc = 8, which its only entry does not contain"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "lsdaAdjacent ([0,4) -> 1, [4,8) -> 2) at pc 4 with e = [4,8): unique, lookup returns 2.",
+  "nonvacuity_witness_lean": "Toy.CFI.lookupFirst_nonvacuity",
+  "non_claims": [
+   "UniqueAt is pointwise; NonOverlapping (pairwise disjoint ranges) implies it for every pc (uniqueAt_of_nonOverlapping) but is not needed: a table holding the same entry twice is UniqueAt at every pc without being NonOverlapping (duplicate_entries_uniqueAt_not_nonOverlapping).",
+   "Says nothing about what a personality routine does with 'no landing pad' or 'not found'; the toy personality frameAction skips the frame on the first and terminates on the second, a modeling choice that mirrors the C++ personality cited below.",
+   "UniqueAt t pc equates entries as values (e1 = e2), not table positions: duplicate identical entries are permitted, and even 'forall pc, UniqueAt t pc' does not imply NonOverlapping t (duplicate_entries_uniqueAt_not_nonOverlapping).",
+   "CallSite models only an optional landing-pad address and omits the LSDA action and type tables; in the cited Itanium C++ personality (libc++abi scan_eh_tab, cxa_personality.cpp lines 774-778 and 884-892), a matching entry with a non-zero landing pad but actionEntry == 0 (a cleanup-only scope), or whose catch clauses do not match the exception type, continues unwinding in the search phase rather than catching.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM libc++abi, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, libcxxabi/src/cxa_personality.cpp, scan_eh_tab: no LSDA gives _URC_CONTINUE_UNWIND (lines 684-688); 'uintptr_t ip = _Unwind_GetIP(context) - 1' (line 698); comments 'The call sites are non-overlapping in [start, start+length)' and 'The call sites are ordered in increasing value of start' (lines 747-748); match condition 'start <= ipOffset && ipOffset < start + length' (line 753); landingPad == 0 gives _URC_CONTINUE_UNWIND (lines 763-768); 'else if (ipOffset < start)' calls call_terminate (lines 899-905); falling off the end of the table calls call_terminate (lines 910-911). Derived (modeling bridge): lookupScan mirrors this scan with unit-size toy addresses and frameAction mirrors the three outcomes.",
+   "Itanium C++ ABI: Exception Handling ($Revision: 1.22 $), https://itanium-cxx-abi.github.io/cxx-abi/abi-eh.html: two-phase unwinding (the search phase calls the personality routine frame by frame and, if it reports failure, terminate() is called instead of phase 2; the cleanup phase restores the register state at the handler frame); the personality routine is language- and vendor-specific; _Unwind_GetLanguageSpecificData returns the frame's LSDA. The call-site table layout is not specified in that document.",
+   "G. Klein, T. Nipkow, 'A machine-checked model for a Java-like language, virtual machine, and compiler', ACM TOPLAS 28(4):619-695, 2006, doi:10.1145/1146809.1146811; Isabelle AFP entry Jinja (https://www.isa-afp.org/entries/Jinja.html), theory JVM/JVMExceptions.thy: matches_ex_entry tests the half-open range 's <= pc < e' plus a class check, match_ex_table returns the first matching entry's handler (None if no entry matches), and find_handler pops frames until some frame's exception table matches. Derived (modeling bridge): the same first-match half-open lookup and frame-by-frame handler search, mechanized; Jinja has no register restoration from unwind rows, no 'entry without landing pad' outcome and no terminate-on-uncovered-PC outcome."
+  ],
+  "design_question": "Which properties of a call-site table make the personality routine's lookup return the intended landing pad, and which off-by-one conventions break it?"
+ },
+ {
+  "id": "R5b",
+  "lean": "Toy.CFI.lookupFirst_eq_notFound_iff",
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For every call-site table, first-match lookup reports 'not found' exactly when no entry contains pc; no ordering or disjointness hypothesis is needed.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "lookupIncl_wrong_on_adjacent_ranges includes lookupFirst lsdaAdjacent 8 = notFound.",
+  "nonvacuity_witness_lean": "Toy.CFI.lookupIncl_wrong_on_adjacent_ranges",
+  "non_claims": [
+   "Reference point: a generic property of first-match list search; it uses no interval structure.",
+   "'Not found' is distinct from 'entry without landing pad': in the C++ personality cited below the first terminates, the second continues unwinding (derived (modeling bridge)).",
+   "CallSite models only an optional landing-pad address and omits the LSDA action and type tables; in the cited Itanium C++ personality (libc++abi scan_eh_tab, cxa_personality.cpp lines 774-778 and 884-892), a matching entry with a non-zero landing pad but actionEntry == 0 (a cleanup-only scope), or whose catch clauses do not match the exception type, continues unwinding in the search phase rather than catching.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM libc++abi, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, libcxxabi/src/cxa_personality.cpp, scan_eh_tab: no LSDA gives _URC_CONTINUE_UNWIND (lines 684-688); 'uintptr_t ip = _Unwind_GetIP(context) - 1' (line 698); comments 'The call sites are non-overlapping in [start, start+length)' and 'The call sites are ordered in increasing value of start' (lines 747-748); match condition 'start <= ipOffset && ipOffset < start + length' (line 753); landingPad == 0 gives _URC_CONTINUE_UNWIND (lines 763-768); 'else if (ipOffset < start)' calls call_terminate (lines 899-905); falling off the end of the table calls call_terminate (lines 910-911). Derived (modeling bridge): lookupScan mirrors this scan with unit-size toy addresses and frameAction mirrors the three outcomes.",
+   "G. Klein, T. Nipkow, 'A machine-checked model for a Java-like language, virtual machine, and compiler', ACM TOPLAS 28(4):619-695, 2006, doi:10.1145/1146809.1146811; Isabelle AFP entry Jinja (https://www.isa-afp.org/entries/Jinja.html), theory JVM/JVMExceptions.thy: matches_ex_entry tests the half-open range 's <= pc < e' plus a class check, match_ex_table returns the first matching entry's handler (None if no entry matches), and find_handler pops frames until some frame's exception table matches. Derived (modeling bridge): the same first-match half-open lookup and frame-by-frame handler search, mechanized; Jinja has no register restoration from unwind rows, no 'entry without landing pad' outcome and no terminate-on-uncovered-PC outcome."
+  ],
+  "design_question": "Which properties of a call-site table make the personality routine's lookup return the intended landing pad, and which off-by-one conventions break it?"
+ },
+ {
+  "id": "R5c",
+  "lean": "Toy.CFI.lookupScan_eq_result_of_sorted_uniqueAt",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For a call-site table sorted by start address in which at most one distinct entry value contains pc (duplicate identical entries are permitted), the early-exit scan (stop with 'not found' at the first entry starting after pc) returns the outcome of the entry e containing pc.",
+  "hypotheses": [
+   {
+    "name": "hs : SortedByStart t",
+    "purpose": "the early exit must not skip the containing entry",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.lookupScan_wrong_without_sorted",
+    "witness_class": "a concrete 2-entry unsorted table, lsdaUnsorted = [10,20) ↦ 1, [0,5) ↦ 2, at pc = 3 with e = [0,5) ↦ 2"
+   },
+   {
+    "name": "hu : UniqueAt t pc",
+    "purpose": "no entry with a different value also contains pc",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.lookupScan_wrong_without_uniqueAt",
+    "witness_class": "the concrete sorted 2-entry table with overlapping ranges lsdaOverlap = [0,10) ↦ 1, [5,15) ↦ 2, at pc = 7 with e = [5,15) ↦ 2"
+   },
+   {
+    "name": "he : e ∈ t",
+    "purpose": "e is an entry of the table (without it, e may be any range containing pc)",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.lookup_eq_result_fails_without_mem",
+    "witness_class": "degenerate boundary instance: the empty table [] (sorted and unique vacuously) at pc = 0, with e = [0,4) ↦ 1, which contains 0 but is not an entry"
+   },
+   {
+    "name": "hc : e.contains pc",
+    "purpose": "e contains pc (without it, e may be an entry that does not cover pc)",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.lookup_eq_result_fails_without_contains",
+    "witness_class": "a concrete 1-entry table [[0,4) ↦ 1] at pc = 8, which its only entry does not contain"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "lsdaAdjacent is sorted, unique at pc 4, and [4,8) contains 4; the scan returns 2.",
+  "nonvacuity_witness_lean": "Toy.CFI.lookupScan_nonvacuity",
+  "non_claims": [
+   "The companion lookupScan_eq_notFound_of_none_contains (no hypotheses) covers the 'not found' direction.",
+   "Off-by-one conventions are separate counterexamples: an inclusive end (lookupIncl_wrong_on_adjacent_ranges) and looking up the return address instead of return address - 1 (lookup_at_return_address_misses_last_call_in_range).",
+   "UniqueAt t pc equates entries as values (e1 = e2), not table positions: duplicate identical entries are permitted, and even 'forall pc, UniqueAt t pc' does not imply NonOverlapping t (duplicate_entries_uniqueAt_not_nonOverlapping).",
+   "CallSite models only an optional landing-pad address and omits the LSDA action and type tables; in the cited Itanium C++ personality (libc++abi scan_eh_tab, cxa_personality.cpp lines 774-778 and 884-892), a matching entry with a non-zero landing pad but actionEntry == 0 (a cleanup-only scope), or whose catch clauses do not match the exception type, continues unwinding in the search phase rather than catching.",
+   "Without SortedByStart the converse of lookupScan_eq_notFound_of_none_contains fails: the early-exit scan can return notFound although a later entry covers pc (lookupScan_wrong_without_sorted), which frameAction turns into terminate.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM libc++abi, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, libcxxabi/src/cxa_personality.cpp, scan_eh_tab: no LSDA gives _URC_CONTINUE_UNWIND (lines 684-688); 'uintptr_t ip = _Unwind_GetIP(context) - 1' (line 698); comments 'The call sites are non-overlapping in [start, start+length)' and 'The call sites are ordered in increasing value of start' (lines 747-748); match condition 'start <= ipOffset && ipOffset < start + length' (line 753); landingPad == 0 gives _URC_CONTINUE_UNWIND (lines 763-768); 'else if (ipOffset < start)' calls call_terminate (lines 899-905); falling off the end of the table calls call_terminate (lines 910-911). Derived (modeling bridge): lookupScan mirrors this scan with unit-size toy addresses and frameAction mirrors the three outcomes.",
+   "Itanium C++ ABI: Exception Handling ($Revision: 1.22 $), https://itanium-cxx-abi.github.io/cxx-abi/abi-eh.html: two-phase unwinding (the search phase calls the personality routine frame by frame and, if it reports failure, terminate() is called instead of phase 2; the cleanup phase restores the register state at the handler frame); the personality routine is language- and vendor-specific; _Unwind_GetLanguageSpecificData returns the frame's LSDA. The call-site table layout is not specified in that document.",
+   "G. Klein, T. Nipkow, 'A machine-checked model for a Java-like language, virtual machine, and compiler', ACM TOPLAS 28(4):619-695, 2006, doi:10.1145/1146809.1146811; Isabelle AFP entry Jinja (https://www.isa-afp.org/entries/Jinja.html), theory JVM/JVMExceptions.thy: matches_ex_entry tests the half-open range 's <= pc < e' plus a class check, match_ex_table returns the first matching entry's handler (None if no entry matches), and find_handler pops frames until some frame's exception table matches. Derived (modeling bridge): the same first-match half-open lookup and frame-by-frame handler search, mechanized; Jinja has no register restoration from unwind rows, no 'entry without landing pad' outcome and no terminate-on-uncovered-PC outcome."
+  ],
+  "design_question": "Which properties of a call-site table make the personality routine's lookup return the intended landing pad, and which off-by-one conventions break it?"
+ },
+ {
+  "id": "R5d",
+  "lean": "Toy.CFI.uniqueAt_of_nonOverlapping",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "If the ranges at distinct positions of a call-site table are pairwise disjoint, then at every pc at most one distinct entry value contains pc.",
+  "hypotheses": [
+   {
+    "name": "h : NonOverlapping t",
+    "purpose": "disjointness of ranges",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.uniqueAt_fails_without_nonOverlapping",
+    "witness_class": "the concrete 2-entry table with overlapping ranges lsdaOverlap = [0,10) ↦ 1, [5,15) ↦ 2, where uniqueness fails at pc = 7"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "lsdaAdjacent is non-overlapping.",
+  "nonvacuity_witness_lean": "Toy.CFI.lsdaAdjacent_wellFormed",
+  "non_claims": [
+   "Reference point: a supporting lemma connecting the global well-formedness condition to the pointwise hypothesis UniqueAt t pc of lookupFirst_eq_result_of_uniqueAt and lookupScan_eq_result_of_sorted_uniqueAt.",
+   "The converse fails even in its strongest form: 'forall pc, UniqueAt t pc' does not imply NonOverlapping t, because UniqueAt compares entries as values and a table may contain the same entry twice (duplicate_entries_uniqueAt_not_nonOverlapping); a fortiori UniqueAt t pc at a single pc does not imply it.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM libc++abi, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, libcxxabi/src/cxa_personality.cpp, scan_eh_tab: no LSDA gives _URC_CONTINUE_UNWIND (lines 684-688); 'uintptr_t ip = _Unwind_GetIP(context) - 1' (line 698); comments 'The call sites are non-overlapping in [start, start+length)' and 'The call sites are ordered in increasing value of start' (lines 747-748); match condition 'start <= ipOffset && ipOffset < start + length' (line 753); landingPad == 0 gives _URC_CONTINUE_UNWIND (lines 763-768); 'else if (ipOffset < start)' calls call_terminate (lines 899-905); falling off the end of the table calls call_terminate (lines 910-911). Derived (modeling bridge): lookupScan mirrors this scan with unit-size toy addresses and frameAction mirrors the three outcomes."
+  ],
+  "design_question": "Which properties of a call-site table make the personality routine's lookup return the intended landing pad, and which off-by-one conventions break it?"
+ },
+ {
+  "id": "R5e",
+  "lean": [
+   "Toy.CFI.lookupIncl_wrong_on_adjacent_ranges",
+   "Toy.CFI.lookup_at_return_address_misses_last_call_in_range"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "Two off-by-one conventions break lookup on the sorted, non-overlapping table [0,4) -> 1, [4,8) -> 2: a lookup that treats the end as inclusive returns landing pad 1 for a call at 4 (correct: 2) and landing pad 2 for a call at 8, which no range contains (correct: not found); and looking up the return address 3 + 1 of a call at address 3, the last address of [0,4), finds landing pad 2, whereas looking up return address - 1 finds the correct landing pad 1.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "lsdaAdjacent_wellFormed: the table is sorted and non-overlapping.",
+  "nonvacuity_witness_lean": "Toy.CFI.lsdaAdjacent_wellFormed",
+  "non_claims": [
+   "Reference point: two concrete evaluations, not general statements.",
+   "Concerns the toy's unit-size addresses; real tables use byte offsets.",
+   "CallSite models only an optional landing-pad address and omits the LSDA action and type tables; in the cited Itanium C++ personality (libc++abi scan_eh_tab, cxa_personality.cpp lines 774-778 and 884-892), a matching entry with a non-zero landing pad but actionEntry == 0 (a cleanup-only scope), or whose catch clauses do not match the exception type, continues unwinding in the search phase rather than catching.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM libc++abi, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, libcxxabi/src/cxa_personality.cpp, scan_eh_tab: no LSDA gives _URC_CONTINUE_UNWIND (lines 684-688); 'uintptr_t ip = _Unwind_GetIP(context) - 1' (line 698); comments 'The call sites are non-overlapping in [start, start+length)' and 'The call sites are ordered in increasing value of start' (lines 747-748); match condition 'start <= ipOffset && ipOffset < start + length' (line 753); landingPad == 0 gives _URC_CONTINUE_UNWIND (lines 763-768); 'else if (ipOffset < start)' calls call_terminate (lines 899-905); falling off the end of the table calls call_terminate (lines 910-911). Derived (modeling bridge): lookupScan mirrors this scan with unit-size toy addresses and frameAction mirrors the three outcomes."
+  ],
+  "design_question": "Which properties of a call-site table make the personality routine's lookup return the intended landing pad, and which off-by-one conventions break it?"
+ },
+ {
+  "id": "R6",
+  "lean": "Toy.CFI.unwind_caught_at_first_handler_frame_with_caller_registers",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "Let the true states of frames 0..j (innermost first) form a call chain - frame i's true state is reachable at its call when its function is called from frame i+1's true state (or from top) - let st0 be frame 0's true state, and let the tables of frames 0..j be correct. Suppose the toy personality routine frameAction (an early-exit scan lookupScan of the frame's call-site table; no table means skip) returns skip for frames 0..j-1 and handle lp for frame j; the call-site rows of frames 1..j use sp or a callee-saved register as CFA base; and the throw-time memory st0.mem still holds the save slots read by the call-site rows of frames 1..j-1. Then unwinding from st0 stops at frame j with landing pad lp, in a state st that agrees with frame j's true state on sp and the callee-saved registers and whose memory is st0.mem (frame 0's throw-time memory, not frame j's pre-call memory); frame j's CFI program has a row R at frame j's call PC, and in st that row computes frame j's true CFA and hence the frame base CFA - frameSize.",
+  "hypotheses": [
+   {
+    "name": "hchain : ChainUpTo frames truth top j",
+    "purpose": "ties the claimed true states to executions of each frame's function called from the next frame",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrame_fails_without_chainUpTo",
+    "witness_class": "a concrete 2-frame instance (frames2; j = 1, so SlotsPreservedBelow holds vacuously) whose claimed innermost true state and starting state innerStBad (innerSt with fp set to 900) is not reachable at innerFn's call from the caller context of outerSt, so ChainUpTo fails"
+   },
+   {
+    "name": "htab : TablesUpTo frames j",
+    "purpose": "each frame's row at its call site must recover its caller",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrame_fails_without_tablesUpTo",
+    "witness_class": "a concrete 2-frame instance (j = 1, so SlotsPreservedBelow holds vacuously) whose inner frame innerFrameBad has the empty CFI program (the initial row at every PC), so its table is not correct"
+   },
+   {
+    "name": "h0 : truth[0]? = some st0",
+    "purpose": "ties the starting state st0 to frame 0's true state",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrame_fails_without_h0",
+    "witness_class": "a concrete 2-frame instance (frames2, truth2; j = 1, so SlotsPreservedBelow holds vacuously) started from innerStBad (innerSt with fp set to 900) instead of truth[0] = innerSt"
+   },
+   {
+    "name": "hj : frames[j]? = some frj",
+    "purpose": "names frame j and carries j < frames.length",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrame_fails_without_hj",
+    "witness_class": "degenerate boundary instance: the empty frame list [] with j = 1 and the 2-state truth list truth2; ChainUpTo, TablesUpTo, SkippedBelow, BaseSafeUpTo and SlotsPreservedBelow hold vacuously, and unwinding escapes"
+   },
+   {
+    "name": "htj : truth[j]? = some stj",
+    "purpose": "names frame j's true state and carries j < truth.length (otherwise ChainUpTo does not constrain frame j)",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrame_fails_without_htj",
+    "witness_class": "degenerate boundary instance: frames2 at j = 1 with the truncated 1-state truth list [innerSt] and top caller ctxOf outerSt, so ChainUpTo does not constrain frame 1; stj is the arbitrary state innerStBad"
+   },
+   {
+    "name": "hskip : SkippedBelow frames j",
+    "purpose": "the personality routine (operationally: frameAction, via lookupScan) skips frames 0..j-1",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrame_fails_without_skippedBelow",
+    "witness_class": "a concrete 2-frame instance (j = 1, so SlotsPreservedBelow holds vacuously) whose inner frame innerFrameTerm has the empty call-site table (lsda = some []), so frameAction terminates at depth 0"
+   },
+   {
+    "name": "hcatch : frameAction frj = .handle lp",
+    "purpose": "the personality routine (operationally: frameAction, via lookupScan) returns handle lp at frame j",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrame_fails_without_handler",
+    "witness_class": "a concrete 2-frame instance (j = 1, so SlotsPreservedBelow holds vacuously) whose outer frame outerFrameNoLsda has no call-site table, so it is skipped too and unwinding escapes"
+   },
+   {
+    "name": "hbase : BaseSafeUpTo frames j",
+    "purpose": "a reconstructed state is only right on sp and callee-saved registers, so CFA rules must not read scratch registers",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrame_fails_without_baseSafeUpTo",
+    "witness_class": "a concrete 2-frame instance (innerT1Frame, outerT1Frame; j = 1, so SlotsPreservedBelow holds vacuously) in which the outer frame's correct hand-written table outerT1CFI anchors the CFA in the scratch register t1, which the inner frame overwrites"
+   },
+   {
+    "name": "hslots : SlotsPreservedBelow frames truth st0.mem j",
+    "purpose": "inner frames must not have overwritten the save slots that outer rows read",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrame_fails_without_slotsPreservedBelow",
+    "witness_class": "a concrete 3-frame instance (frames3, truth3; j = 2, so the index range 0 < i < j is non-empty) in which the innermost frame clobberFrame stores t1 into the middle frame's save slot for fp"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Two frames: an inner function with a frame-pointer prologue and no call-site table, called from an outer function whose call site has landing pad 7; the state reached at the handler has the outer frame's sp = 998, fp = 11, s1 = 22 (multiFrame_outcome). The handler depth is j = 1, so the index range 0 < i < j of SlotsPreservedBelow is empty and that hypothesis holds vacuously (slotsPreservedBelow_one); no instance in the package satisfies all hypotheses with j >= 2 (the 3-frame, j = 2 instance multiFrame_fails_without_slotsPreservedBelow is one in which SlotsPreservedBelow fails).",
+  "nonvacuity_witness_lean": "Toy.CFI.multiFrame_hypotheses_hold",
+  "non_claims": [
+   "Scratch registers (t1) of the handler frame are not recovered and are not claimed.",
+   "The frame-base claim is about the address CFA - frameSize; the theorem says nothing about the values stored at the local slots, whose preservation is not a hypothesis here (that inner frames can overwrite them is not proved here).",
+   "Models a single pass that stops at the handler; the two-phase search/cleanup protocol, cleanups (landing pads that resume unwinding), catch-clause type matching and the personality's register setup are not modeled.",
+   "The toy personality terminates when a frame has a call-site table that does not cover its call PC; this mirrors the cited C++ personality and is a modeling choice, not a property of DWARF unwinding.",
+   "Lookups use the call instruction's own address; real unwinders look up return address - 1.",
+   "Callee effects are not modeled by Reach (call is a no-op); the link between a frame and its callee is only the chain hypothesis plus save-slot preservation.",
+   "hskip and hcatch constrain the outcome of the operational lookup (lookupScan inside frameAction), not the call-site table's contents: without SortedByStart a frame whose table contains a handler entry for its call PC can terminate instead (multiFrameDecl_fails_without_lsdaWellFormed: an unsorted table whose second entry covers the call PC); without UniqueAt the scan can return the outcome of a different covering entry (lookupScan_wrong_without_uniqueAt, a statement about tables, not frames); that such a frame can instead be skipped is not proved here. The declarative form, with sorted unique tables and entries containing the call PCs, is the separate theorem unwind_caught_at_first_handler_frame_of_sorted_unique_lsda, which combines this theorem with the scan lemma lookupScan_eq_result_of_sorted_uniqueAt.",
+   "Frame pre-supplies fn, prog, lsda and callPC for every outer frame as an external list rather than recovering each caller's return address from memory or a link register through a return-address column; corruption of return-address stack slots by inner frames is therefore not modeled.",
+   "Row carries a rule for sp, but Recovers and unwindRegs ignore Row.rules.sp and set the caller's sp to the computed CFA unconditionally (an unwinder in which an explicit sp register rule overrides the CFA is not modeled).",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "Itanium C++ ABI: Exception Handling ($Revision: 1.22 $), https://itanium-cxx-abi.github.io/cxx-abi/abi-eh.html: two-phase unwinding (the search phase calls the personality routine frame by frame and, if it reports failure, terminate() is called instead of phase 2; the cleanup phase restores the register state at the handler frame); the personality routine is language- and vendor-specific; _Unwind_GetLanguageSpecificData returns the frame's LSDA. The call-site table layout is not specified in that document.",
+   "LLVM libc++abi, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, libcxxabi/src/cxa_personality.cpp, scan_eh_tab: no LSDA gives _URC_CONTINUE_UNWIND (lines 684-688); 'uintptr_t ip = _Unwind_GetIP(context) - 1' (line 698); comments 'The call sites are non-overlapping in [start, start+length)' and 'The call sites are ordered in increasing value of start' (lines 747-748); match condition 'start <= ipOffset && ipOffset < start + length' (line 753); landingPad == 0 gives _URC_CONTINUE_UNWIND (lines 763-768); 'else if (ipOffset < start)' calls call_terminate (lines 899-905); falling off the end of the table calls call_terminate (lines 910-911). Derived (modeling bridge): lookupScan mirrors this scan with unit-size toy addresses and frameAction mirrors the three outcomes.",
+   "LLVM libunwind, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc. libunwind/src/DwarfParser.hpp: struct PrologInfo (lines 95-100: cfaRegister, cfaRegisterOffset, savedRegisters); parseFDEInstructions loop 'while ((p < instructionsEnd) && (codeOffset < pcoffset))' (line 503); DW_CFA_remember_state pushes a copy of the whole PrologInfo ('entry->info = *results', lines 606-621); DW_CFA_restore_state pops it ('*results = top->info') and returns false on an empty stack (lines 622-632); DW_CFA_def_cfa_register sets only cfaRegister and DW_CFA_def_cfa_offset only cfaRegisterOffset (lines 646-661). libunwind/src/DwarfInstructions.hpp: getCFA returns register value + cfaRegisterOffset (lines 66-76); kRegisterInCFA reads memory at cfa + value (lines 107-108); the caller's SP is set to the CFA (line 284). Derived (modeling bridge): the toy rowAt? applies every instruction located at an address <= pc, whereas this loop stops before instructions located exactly at pcoffset; how that interacts with the caller-side PC adjustment was not examined.",
+   "DWARF Debugging Information Format Committee, DWARF Debugging Information Format, Version 5 (February 13, 2017), https://dwarfstd.org/doc/DWARF5.pdf. §2.5.1.2 DW_OP_fbreg (an offset from the address given by DW_AT_frame_base); §2.5.1.3 item 15 (printed page 33; PDF page 51) DW_OP_call_frame_cfa (pushes the CFA obtained from the call frame information; computing DW_AT_frame_base from registers would 'in some cases ... require an extensive location list because the values of the registers used in computing the CFA change during a subroutine'). §6.4.2.4 (printed page 181; PDF page 199) DW_CFA_remember_state / DW_CFA_restore_state ('push the set of rules for every register onto an implicit stack' / 'pop the set of rules off the implicit stack and place them in the current row') in the wording quoted by DWARF issue 230103.1. The toy's register rules and CFA-definition instructions are modeled on the pinned LLVM libunwind implementation (libunwind/src/DwarfParser.hpp and DwarfInstructions.hpp at llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc) rather than on the text of §6.4.1 and §6.4.2.2.",
+   "G. Klein, T. Nipkow, 'A machine-checked model for a Java-like language, virtual machine, and compiler', ACM TOPLAS 28(4):619-695, 2006, doi:10.1145/1146809.1146811; Isabelle AFP entry Jinja (https://www.isa-afp.org/entries/Jinja.html), theory JVM/JVMExceptions.thy: matches_ex_entry tests the half-open range 's <= pc < e' plus a class check, match_ex_table returns the first matching entry's handler (None if no entry matches), and find_handler pops frames until some frame's exception table matches. Derived (modeling bridge): the same first-match half-open lookup and frame-by-frame handler search, mechanized; Jinja has no register restoration from unwind rows, no 'entry without landing pad' outcome and no terminate-on-uncovered-PC outcome."
+  ],
+  "design_question": "What does exception propagation through several frames rely on beyond per-function table correctness?"
+ },
+ {
+  "id": "R6c",
+  "lean": "Toy.CFI.unwind_caught_at_first_handler_frame_of_sorted_unique_lsda",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "Let frames 0..j (innermost first) be suspended at call operations, and let their true states form a call chain: for each i <= j, frame i's true state is reachable at its call PC when its function is called from frame i+1's true state, or from the outermost caller top if there is none (ChainUpTo); let st0 be frame 0's true state (truth[0]? = some st0), let frj and stj be frame j and its true state (frames[j]? = some frj, truth[j]? = some stj), and let the CFI programs of frames 0..j be TableCorrect for their functions (TablesUpTo). Suppose that the call-site tables of frames 0..j are sorted by start address and have at most one distinct entry value containing the frame's call PC (LsdaWellFormedUpTo); each of frames 0..j-1 has no call-site table or an entry containing its call PC without a landing pad (DeclarativeSkippedBelow); frame j's table has an entry containing its call PC with landing pad lp (DeclarativeCatch); the call-site rows of frames 1..j use sp or a callee-saved register as CFA base (BaseSafeUpTo); and the throw-time memory st0.mem still holds the save slots read by the call-site rows of frames 1..j-1 (SlotsPreservedBelow). Then unwinding from st0 with the toy personality routine frameAction (an early-exit scan lookupScan of each frame's call-site table; no table means skip) stops at frame j with landing pad lp, in a state st that agrees with frame j's true state on sp and the callee-saved registers and whose memory is st0.mem (frame 0's throw-time memory, not frame j's pre-call memory); frame j's CFI program has a row R at frame j's call PC, and in st that row computes frame j's true CFA and hence the frame base CFA - frameSize.",
+  "hypotheses": [
+   {
+    "name": "hchain : ChainUpTo frames truth top j",
+    "purpose": "ties the claimed true states to executions of each frame's function called from the next frame",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_chainUpTo",
+    "witness_class": "a concrete 2-frame instance (frames2; j = 1, so SlotsPreservedBelow holds vacuously) whose claimed innermost true state and starting state innerStBad (innerSt with fp set to 900) is not reachable at innerFn's call from the caller context of outerSt, so ChainUpTo fails"
+   },
+   {
+    "name": "htab : TablesUpTo frames j",
+    "purpose": "each frame's row at its call site must recover its caller",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_tablesUpTo",
+    "witness_class": "a concrete 2-frame instance (j = 1, so SlotsPreservedBelow holds vacuously) whose inner frame innerFrameBad has the empty CFI program (the initial row at every PC), so its table is not correct"
+   },
+   {
+    "name": "hlsda : LsdaWellFormedUpTo frames j",
+    "purpose": "the early-exit scan returns the outcome of the entry containing the call PC (lookupScan_eq_result_of_sorted_uniqueAt); without it an unsorted table with a handler entry can make the personality routine terminate",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_lsdaWellFormed",
+    "witness_class": "a concrete 2-frame instance (j = 1, so SlotsPreservedBelow holds vacuously) whose outer frame outerFrameUnsorted has the unsorted table [10,20) ↦ 1, [1,2) ↦ 7; the early-exit scan stops at the first entry and the personality routine terminates"
+   },
+   {
+    "name": "h0 : truth[0]? = some st0",
+    "purpose": "ties the starting state st0 to frame 0's true state",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_h0",
+    "witness_class": "a concrete 2-frame instance (frames2, truth2; j = 1, so SlotsPreservedBelow holds vacuously) started from innerStBad (innerSt with fp set to 900) instead of truth[0] = innerSt"
+   },
+   {
+    "name": "hj : frames[j]? = some frj",
+    "purpose": "names frame j and carries j < frames.length",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_hj",
+    "witness_class": "degenerate boundary instance: the empty frame list [] with j = 1 and the 2-state truth list truth2; ChainUpTo, TablesUpTo, LsdaWellFormedUpTo, DeclarativeSkippedBelow, BaseSafeUpTo and SlotsPreservedBelow hold vacuously, and unwinding escapes"
+   },
+   {
+    "name": "htj : truth[j]? = some stj",
+    "purpose": "names frame j's true state and carries j < truth.length (otherwise ChainUpTo does not constrain frame j)",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_htj",
+    "witness_class": "degenerate boundary instance: frames2 at j = 1 with the truncated 1-state truth list [innerSt] and top caller ctxOf outerSt, so ChainUpTo does not constrain frame 1; stj is the arbitrary state innerStBad"
+   },
+   {
+    "name": "hskip : DeclarativeSkippedBelow frames j",
+    "purpose": "each of frames 0..j-1 has no call-site table or an entry containing its call PC without a landing pad",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_declarativeSkippedBelow",
+    "witness_class": "a concrete 2-frame instance (j = 1, so SlotsPreservedBelow holds vacuously) whose inner frame innerFrameTerm has the empty call-site table (no entry covers its call PC), so the personality routine terminates at depth 0"
+   },
+   {
+    "name": "hcatch : DeclarativeCatch frj lp",
+    "purpose": "frame j's call-site table has an entry containing its call PC with landing pad lp",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_declarativeCatch",
+    "witness_class": "a concrete 2-frame instance (j = 1, so SlotsPreservedBelow holds vacuously) whose outer frame outerFrameNoLsda has no call-site table; unwinding escapes"
+   },
+   {
+    "name": "hbase : BaseSafeUpTo frames j",
+    "purpose": "a reconstructed state is only right on sp and callee-saved registers, so CFA rules must not read scratch registers",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_baseSafeUpTo",
+    "witness_class": "a concrete 2-frame instance (innerT1Frame, outerT1Frame; j = 1, so SlotsPreservedBelow holds vacuously) in which the outer frame's correct hand-written table outerT1CFI anchors the CFA in the scratch register t1, which the inner frame overwrites"
+   },
+   {
+    "name": "hslots : SlotsPreservedBelow frames truth st0.mem j",
+    "purpose": "inner frames must not have overwritten the save slots that outer rows read",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.multiFrameDecl_fails_without_slotsPreservedBelow",
+    "witness_class": "a concrete 3-frame instance (frames3, truth3; j = 2, so the index range 0 < i < j is non-empty) in which the innermost frame clobberFrame stores t1 into the middle frame's save slot for fp"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The two-frame chain (inner frame without call-site table, outer frame whose table [1,2) -> 7 covers its call PC) satisfies every hypothesis with j = 1. At j = 1 the index range 0 < i < j of SlotsPreservedBelow is empty, so that hypothesis holds vacuously (slotsPreservedBelow_one); and frame 0 has no call-site table (lsda = none), so only the first disjunct of DeclarativeSkip is exercised, not the second (a covering entry without landing pad). No instance in the package satisfies all hypotheses with j >= 2 (the 3-frame, j = 2 instance multiFrameDecl_fails_without_slotsPreservedBelow is one in which SlotsPreservedBelow fails).",
+  "nonvacuity_witness_lean": "Toy.CFI.multiFrame_declarative_hypotheses_hold",
+  "non_claims": [
+   "LsdaWellFormedUpTo is required for frames 0..j only; frames beyond j are never consulted.",
+   "UniqueAt t pc equates entries as values (e1 = e2), not table positions: duplicate identical entries are permitted, and even 'forall pc, UniqueAt t pc' does not imply NonOverlapping t (duplicate_entries_uniqueAt_not_nonOverlapping).",
+   "CallSite models only an optional landing-pad address and omits the LSDA action and type tables; in the cited Itanium C++ personality (libc++abi scan_eh_tab, cxa_personality.cpp lines 774-778 and 884-892), a matching entry with a non-zero landing pad but actionEntry == 0 (a cleanup-only scope), or whose catch clauses do not match the exception type, continues unwinding in the search phase rather than catching.",
+   "Scratch registers (t1) of the handler frame are not recovered and are not claimed; BaseSafeUpTo forbids t1 as the CFA base of the call-site rows of frames 1..j.",
+   "The frame-base claim is about the address CFA - frameSize; the theorem says nothing about the values stored at frame j's local slots, whose preservation is not a hypothesis here (that inner frames can overwrite them is not proved here).",
+   "Models a single pass that stops at the handler; the two-phase search/cleanup protocol, cleanups (landing pads that resume unwinding), catch-clause type matching and the personality's register setup are not modeled.",
+   "The toy personality frameAction terminates when a frame has a call-site table that does not cover its call PC; DeclarativeSkippedBelow and DeclarativeCatch exclude this for frames 0..j. This mirrors the cited C++ personality and is a modeling choice, not a property of DWARF unwinding.",
+   "Lookups use the call instruction's own address (callPC); real unwinders look up return address - 1.",
+   "Callee effects are not modeled by Reach (call is a no-op); the link between a frame and its callee is only the chain hypothesis ChainUpTo plus the save-slot hypothesis SlotsPreservedBelow.",
+   "Frame pre-supplies fn, prog, lsda and callPC for every outer frame as an external list rather than recovering each caller's return address from memory or a link register through a return-address column; corruption of return-address stack slots by inner frames is therefore not modeled.",
+   "Row carries a rule for sp, but Recovers and unwindRegs ignore Row.rules.sp and set the caller's sp to the computed CFA unconditionally (an unwinder in which an explicit sp register rule overrides the CFA is not modeled).",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "Itanium C++ ABI: Exception Handling ($Revision: 1.22 $), https://itanium-cxx-abi.github.io/cxx-abi/abi-eh.html: two-phase unwinding (the search phase calls the personality routine frame by frame and, if it reports failure, terminate() is called instead of phase 2; the cleanup phase restores the register state at the handler frame); the personality routine is language- and vendor-specific; _Unwind_GetLanguageSpecificData returns the frame's LSDA. The call-site table layout is not specified in that document.",
+   "LLVM libc++abi, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, libcxxabi/src/cxa_personality.cpp, scan_eh_tab: no LSDA gives _URC_CONTINUE_UNWIND (lines 684-688); 'uintptr_t ip = _Unwind_GetIP(context) - 1' (line 698); comments 'The call sites are non-overlapping in [start, start+length)' and 'The call sites are ordered in increasing value of start' (lines 747-748); match condition 'start <= ipOffset && ipOffset < start + length' (line 753); landingPad == 0 gives _URC_CONTINUE_UNWIND (lines 763-768); 'else if (ipOffset < start)' calls call_terminate (lines 899-905); falling off the end of the table calls call_terminate (lines 910-911). Derived (modeling bridge): lookupScan mirrors this scan with unit-size toy addresses and frameAction mirrors the three outcomes.",
+   "LLVM libunwind, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc. libunwind/src/DwarfParser.hpp: struct PrologInfo (lines 95-100: cfaRegister, cfaRegisterOffset, savedRegisters); parseFDEInstructions loop 'while ((p < instructionsEnd) && (codeOffset < pcoffset))' (line 503); DW_CFA_remember_state pushes a copy of the whole PrologInfo ('entry->info = *results', lines 606-621); DW_CFA_restore_state pops it ('*results = top->info') and returns false on an empty stack (lines 622-632); DW_CFA_def_cfa_register sets only cfaRegister and DW_CFA_def_cfa_offset only cfaRegisterOffset (lines 646-661). libunwind/src/DwarfInstructions.hpp: getCFA returns register value + cfaRegisterOffset (lines 66-76); kRegisterInCFA reads memory at cfa + value (lines 107-108); the caller's SP is set to the CFA (line 284). Derived (modeling bridge): the toy rowAt? applies every instruction located at an address <= pc, whereas this loop stops before instructions located exactly at pcoffset; how that interacts with the caller-side PC adjustment was not examined.",
+   "DWARF Debugging Information Format Committee, DWARF Debugging Information Format, Version 5 (February 13, 2017), https://dwarfstd.org/doc/DWARF5.pdf. §2.5.1.2 DW_OP_fbreg (an offset from the address given by DW_AT_frame_base); §2.5.1.3 item 15 (printed page 33; PDF page 51) DW_OP_call_frame_cfa (pushes the CFA obtained from the call frame information; computing DW_AT_frame_base from registers would 'in some cases ... require an extensive location list because the values of the registers used in computing the CFA change during a subroutine'). §6.4.2.4 (printed page 181; PDF page 199) DW_CFA_remember_state / DW_CFA_restore_state ('push the set of rules for every register onto an implicit stack' / 'pop the set of rules off the implicit stack and place them in the current row') in the wording quoted by DWARF issue 230103.1. The toy's register rules and CFA-definition instructions are modeled on the pinned LLVM libunwind implementation (libunwind/src/DwarfParser.hpp and DwarfInstructions.hpp at llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc) rather than on the text of §6.4.1 and §6.4.2.2.",
+   "G. Klein, T. Nipkow, 'A machine-checked model for a Java-like language, virtual machine, and compiler', ACM TOPLAS 28(4):619-695, 2006, doi:10.1145/1146809.1146811; Isabelle AFP entry Jinja (https://www.isa-afp.org/entries/Jinja.html), theory JVM/JVMExceptions.thy: matches_ex_entry tests the half-open range 's <= pc < e' plus a class check, match_ex_table returns the first matching entry's handler (None if no entry matches), and find_handler pops frames until some frame's exception table matches. Derived (modeling bridge): the same first-match half-open lookup and frame-by-frame handler search, mechanized; Jinja has no register restoration from unwind rows, no 'entry without landing pad' outcome and no terminate-on-uncovered-PC outcome."
+  ],
+  "design_question": "What does exception propagation through several frames rely on beyond per-function table correctness?"
+ },
+ {
+  "id": "R6b",
+  "lean": "Toy.CFI.recovers_of_reads_agree",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "A row that recovers caller c from a state σ also recovers c from any state that agrees with σ on the row's CFA base register, on the callee-saved registers whose rule is 'same', and on the memory at the save slots of the callee-saved registers whose rule is 'offset'.",
+  "hypotheses": [
+   {
+    "name": "hrec : Recovers R c σ",
+    "purpose": "the row recovers the caller from the true state",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.recovers_of_reads_agree_fails_without_rec",
+    "witness_class": "a single concrete state σ (sp = 99, fp = 5, s1 = 6, t1 = 0, zero memory) with st = σ, the caller flCaller (CFA 100) and the initial row CFA = sp + 0; the agreement hypotheses hold trivially"
+   },
+   {
+    "name": "hcfa : st.regs.get R.cfaReg = σ.regs.get R.cfaReg",
+    "purpose": "agreement on the CFA base register",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.recovers_of_reads_agree_fails_without_cfa",
+    "witness_class": "concrete caller flCaller (CFA 100), true state flSigma (sp = 100) and the initial row, with st differing from flSigma only in sp = 101"
+   },
+   {
+    "name": "hsame : ∀ r ∈ calleeSaved, R.rules.get r = .same → st.regs.get r = σ.regs.get r",
+    "purpose": "agreement on callee-saved registers whose rule is same",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.recovers_of_reads_agree_fails_without_same",
+    "witness_class": "concrete caller flCaller, true state flSigma and the initial row (rule same for fp), with st differing from flSigma only in fp = 9 instead of 5"
+   },
+   {
+    "name": "hslot : ∀ r ∈ calleeSaved, ∀ k, R.rules.get r = .offset k → st.mem (cfaOf R σ + k) = σ.mem (cfaOf R σ + k)",
+    "purpose": "agreement on the save slots read by offset rules",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.recovers_of_reads_agree_fails_without_slot",
+    "witness_class": "concrete row flRowSaved (fp saved at CFA - 1), true state flSigmaSaved whose slot 99 holds the caller's fp = 5, and st with the same registers and all-zero memory"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "A state differing from the true state in the scratch register and in unread memory but agreeing on the CFA base, s1 and the read save slot.",
+  "nonvacuity_witness_lean": "Toy.CFI.recovers_of_reads_agree_nonvacuity",
+  "non_claims": [
+   "A frame (locality) lemma about one row; it says nothing about how the agreeing state is obtained (obtaining such a state across several frames is the subject of the multi-frame unwinding theorems, e.g. unwind_caught_at_first_handler_frame_with_caller_registers).",
+   "Recovers reads only the CFA base register, the callee-saved registers with rule 'same' and the save slots of callee-saved registers with rule 'offset'; Row.rules.sp and the scratch register t1 are never read, so agreement on them is neither required nor established.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "LLVM libunwind, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc. libunwind/src/DwarfParser.hpp: struct PrologInfo (lines 95-100: cfaRegister, cfaRegisterOffset, savedRegisters); parseFDEInstructions loop 'while ((p < instructionsEnd) && (codeOffset < pcoffset))' (line 503); DW_CFA_remember_state pushes a copy of the whole PrologInfo ('entry->info = *results', lines 606-621); DW_CFA_restore_state pops it ('*results = top->info') and returns false on an empty stack (lines 622-632); DW_CFA_def_cfa_register sets only cfaRegister and DW_CFA_def_cfa_offset only cfaRegisterOffset (lines 646-661). libunwind/src/DwarfInstructions.hpp: getCFA returns register value + cfaRegisterOffset (lines 66-76); kRegisterInCFA reads memory at cfa + value (lines 107-108); the caller's SP is set to the CFA (line 284). Derived (modeling bridge): the toy rowAt? applies every instruction located at an address <= pc, whereas this loop stops before instructions located exactly at pcoffset; how that interacts with the caller-side PC adjustment was not examined.",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814; CompCert (AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc) backend/Stackingproof.v, Lemma save_callee_save_correct (line 1007): after the prologue's callee-save sequence the frame's callee-save area contains the callee-saved values (agree_callee_save relates the caller's and callee's register states). Derived (modeling bridge): this is a mechanized counterpart of the toy's save-slot reasoning, but CompCert returns through its own verified epilogues and has no DWARF-style unwinder or row semantics."
+  ],
+  "design_question": "What does exception propagation through several frames rely on beyond per-function table correctness?"
+ },
+ {
+  "id": "R7",
+  "lean": "Toy.CFI.checkCFI_sound",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "If the decidable checker checkCFI accepts a CFI program for a function - it infers one abstract entry state per block by forward propagation with join, re-checks the entry state and every CFG edge, and checks that the program's row at the linear address of every PC of every annotated block is entailed by the abstract state there - then the program is TableCorrect.",
+  "hypotheses": [
+   {
+    "name": "h : checkCFI f prog = true",
+    "purpose": "the checker accepts the program",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.checkCFI_sound_fails_without_check",
+    "witness_class": "a single concrete program, naiveCFI coldFn (inferredAnn coldFn) for the 3-block function coldFn in layout 0, 1, 2, which checkCFI rejects and which is not TableCorrect"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "checkCFI accepts the generator's program for coldFn and rejects the naive one.",
+  "nonvacuity_witness_lean": "Toy.CFI.checkCFI_examples",
+  "non_claims": [
+   "Not complete: checkCFI_incomplete exhibits a correct table it rejects (a store and reload through an unknown address). Completeness is not claimed.",
+   "The soundness proof is relative to the toy semantics (Reach, step, rowAt?); the checker is not a verifier of real .eh_frame data.",
+   "Inference may run out of fuel, in which case checkCFI returns false (still sound).",
+   "Op.call is modeled as a state-preserving no-op in both step and xfer (the caller-saved scratch register t1 and all stack memory are unchanged across a call), and cfaChoice/entails allow t1 as a CFA base. checkCFI can therefore accept tables that anchor the CFA in t1 across a call: outerT1Fn_tableCorrect proves the hand-written table outerT1CFI (CFA = t1 + 0 from address 1 on, across the call at address 2) TableCorrect for outerT1Fn, and its one-line proof checkCFI_sound (by decide) has the kernel evaluate checkCFI outerT1Fn outerT1CFI to true, i.e. checkCFI accepts it. genCFI itself chooses t1 only at a PC where none of fp, sp, s1 is CFA-relative in the abstract state (cfaChoice takes the first CFA-relative register in the order fp, sp, s1, t1); that genCFI can emit a t1-anchored call-site row is not proved here. A t1-anchored call-site row violates the CFA-base hypothesis BaseSafeUpTo of the multi-frame theorem unwind_caught_at_first_handler_frame_with_caller_registers (the call-site rows of outer frames must use sp or a callee-saved register as CFA base); in the toy multi-frame setting an inner frame that overwrites t1 makes the reconstructed state wrong (multiFrame_fails_without_baseSafeUpTo), and the same is expected after a real call that clobbers caller-saved registers (derived, not proved here).",
+   "Reach requires 0 < (f.blockOps b).length at function entry and on every CFG edge, so empty basic blocks (ops = []) are unenterable dead ends rather than frame-neutral pass-through blocks; projecting a real CFG to frame-affecting operations without contracting or padding frame-neutral blocks makes TableCorrect vacuously true on paths through empty blocks (and for the whole function if block 0 is empty).",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "T. Bastian, S. Kell, F. Zappa Nardelli, 'Reliable and fast DWARF-based stack unwinding', Proc. ACM Program. Lang. 3(OOPSLA), Article 146, October 2019, doi:10.1145/3360572. §2.2 (pp. 146:8-146:12; the passages summarized here are on pp. 146:9-146:11): unwind rows are synthesized by forward propagation along CFG edges, relying on stack offsets being invariant at merge points; with variable-size stack allocation compilers fall back to a base-pointer register; if different rows reach a merge point the tool aborts (a lossy merge is enabled only for terminal blocks). Appendix A (pp. 146:21-146:23): remember_state pushes 'the state of all the registers of this row', and restore(reg) is not supported (p. 146:21); the formal interpretation keeps a state-saving stack of rows (Row*, p. 146:22; Table 5, p. 146:23). The paper contains no mechanized proof.",
+   "LLVM CFIInstrInserter pass, llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc, llvm/lib/CodeGen/CFIInstrInserter.cpp: header comment (lines 9-17) - verifies that the outgoing CFA information of predecessors matches the incoming information of successors and inserts CFI instructions at block beginnings when 'a non-linear layout of blocks' leaves an incorrect rule. Besides the CFA offset and register it tracks callee-saved register save locations (CSRSavedLocation with kinds Register and CFAOffset, CSRLocMap, IncomingCSRSaved/OutgoingCSRSaved; lines 64-162; propagated along CFG edges, line 408), repairs them at block beginnings with .cfi_restore, .cfi_offset and .cfi_register (insertCFIInstrs, lines 415-511; a block that begins a new section gets a full def_cfa plus the callee-saved moves, lines 431-470), and reports CFG-edge CFA and callee-saved mismatches in verify (lines 545-571; CFA mismatches into blocks with no successors that are not return blocks are exempt, lines 553-557). It requires a single save location per callee-saved register ('Different saved locations for the same CSR', lines 366-369). In builds with assertions (#ifndef NDEBUG) it accepts cfi_remember_state/cfi_restore_state only as balanced depth-1 pairs inside one basic block and otherwise reports 'Support for cfi_remember_state not implemented!' (lines 316-339, 375-381); in builds without assertions its analysis ignores both instructions. Derived (modeling bridge): this is the explicit re-definition alternative; like the toy genCFI it repairs both the CFA rule and callee-saved register rules at layout boundaries, but it never places a remember/restore pair across blocks. It was not compared against the toy's output.",
+   "DWARF Debugging Information Format Committee, DWARF Debugging Information Format, Version 5 (February 13, 2017), https://dwarfstd.org/doc/DWARF5.pdf. §2.5.1.2 DW_OP_fbreg (an offset from the address given by DW_AT_frame_base); §2.5.1.3 item 15 (printed page 33; PDF page 51) DW_OP_call_frame_cfa (pushes the CFA obtained from the call frame information; computing DW_AT_frame_base from registers would 'in some cases ... require an extensive location list because the values of the registers used in computing the CFA change during a subroutine'). §6.4.2.4 (printed page 181; PDF page 199) DW_CFA_remember_state / DW_CFA_restore_state ('push the set of rules for every register onto an implicit stack' / 'pop the set of rules off the implicit stack and place them in the current row') in the wording quoted by DWARF issue 230103.1. The toy's register rules and CFA-definition instructions are modeled on the pinned LLVM libunwind implementation (libunwind/src/DwarfParser.hpp and DwarfInstructions.hpp at llvm/llvm-project commit 701f926aebef9d992746680f00548cff3703a7dc) rather than on the text of §6.4.1 and §6.4.2.2.",
+   "G. A. Kildall, 'A unified approach to global program optimization', Proc. 1st ACM SIGACT-SIGPLAN Symposium on Principles of Programming Languages (POPL 1973), pp. 194-206, doi:10.1145/512927.512945: iterative dataflow analysis over a semilattice along CFG edges until a fixed point. Derived (modeling bridge): annSoundB is a post-fixpoint check of this kind for the toy's abstract frame-state domain; the toy does not use Kildall's algorithm for the soundness argument, only the post-fixpoint property.",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814; CompCert (AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc) backend/Kildall.v mechanizes generic Kildall-style dataflow solvers in Coq: Theorem fixpoint_solution (line 661) states that the solver's result satisfies the dataflow inequations along every CFG edge, and Theorem fixpoint_invariant (line 741) that a property preserved by join and transfer holds of the result. Derived (modeling bridge): reach_inv_of_annSound is the corresponding 'post-fixpoint annotation over-approximates every reachable state' step, which CompCert proves separately inside each client analysis rather than in Kildall.v."
+  ],
+  "design_question": "What must a CFI emitter guarantee for a linear layout of a CFG whose blocks are not placed in control-flow order, and which checks of the emitted table are sound?"
+ },
+ {
+  "id": "R7b",
+  "lean": "Toy.CFI.checkCFI_incomplete",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For incFn (t1 anchors the CFA, a loop moves sp, then fp is stored to and reloaded from [sp]) the table incCFI (CFA = t1 + 0, all registers same) is TableCorrect, yet checkCFI rejects it.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The statement itself exhibits both facts.",
+  "nonvacuity_witness_lean": "Toy.CFI.checkCFI_incomplete",
+  "non_claims": [
+   "One source of incompleteness; others (joins, fuel) are not catalogued.",
+   "Clearing AState.slots on a store through an address that is not CFA-relative (storeSlot) is part of the transfer function whose soundness is proved (xfer_sound); it accounts for a store that may overwrite a CFA-relative save slot. That a variant without the clearing would be unsound whenever offset rules are in use is not proved here. In incFn the reload of fp from the address [sp + 0] just written restores the caller's value (store-to-load forwarding through an address that AState does not track), and incCFI uses 'same' for every register; the package proves that incCFI is TableCorrect and rejected (checkCFI_incomplete), not that these are the only reasons.",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "T. Bastian, S. Kell, F. Zappa Nardelli, 'Reliable and fast DWARF-based stack unwinding', Proc. ACM Program. Lang. 3(OOPSLA), Article 146, October 2019, doi:10.1145/3360572. §2.2 (pp. 146:8-146:12; the passages summarized here are on pp. 146:9-146:11): unwind rows are synthesized by forward propagation along CFG edges, relying on stack offsets being invariant at merge points; with variable-size stack allocation compilers fall back to a base-pointer register; if different rows reach a merge point the tool aborts (a lossy merge is enabled only for terminal blocks). Appendix A (pp. 146:21-146:23): remember_state pushes 'the state of all the registers of this row', and restore(reg) is not supported (p. 146:21); the formal interpretation keeps a state-saving stack of rows (Row*, p. 146:22; Table 5, p. 146:23). The paper contains no mechanized proof."
+  ],
+  "design_question": "What must a CFI emitter guarantee for a linear layout of a CFG whose blocks are not placed in control-flow order, and which checks of the emitted table are sound?"
+ },
+ {
+  "id": "R7c",
+  "lean": "Toy.CFI.reach_inv_of_annSound",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "Under a sound block annotation, every state reachable at offset k of block b satisfies the abstract state obtained by running the abstract transfer function over the first k operations from b's annotated entry state; the CFI program plays no role.",
+  "hypotheses": [
+   {
+    "name": "hs : annSoundB f ann = true",
+    "purpose": "entry and edge consistency",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.reach_inv_fails_without_annSound",
+    "witness_class": "the concrete 3-block function coldFn with the hand-written unsound annotation coldBadAnn; a reachable state at the cold block's first PC (2, 0) violates the annotated abstract state"
+   },
+   {
+    "name": "h : Reach f c m b k st",
+    "purpose": "the state is actually reachable at (b, k) along a CFG path",
+    "tightness": "tight",
+    "counterexample": "Toy.CFI.reach_inv_fails_without_reach",
+    "witness_class": "an unreachable concrete state at coldFn's entry PC (0, 0) (caller CFA 100, sp = 99), with the sound inferred annotation inferredAnn coldFn, which that state violates"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "coldFn with its inferred (sound) annotation and the reachable state at the cold block's entry satisfy both hypotheses.",
+  "nonvacuity_witness_lean": "Toy.CFI.reach_inv_of_annSound_nonvacuity",
+  "non_claims": [
+   "Reference point: the standard post-fixpoint soundness step of forward abstract interpretation, re-derived for the toy domain as a supporting lemma of the generator theorem genCFI_tableCorrect_of_sound_recoverable_annotation and the checker theorem checkCFI_sound.",
+   "Says nothing about rows or about semantic table correctness (Recovers, TableCorrect). On top of annotation soundness, the checkers checkWith and checkCFI additionally check that the row at each PC is entailed by the abstract state there (rowsOK, entails); checkWith_sound and checkCFI_sound prove that passing this check is sufficient for TableCorrect. The check is not necessary: checkCFI_incomplete proves TableCorrect incFn incCFI together with checkCFI incFn incCFI = false.",
+   "Reach requires 0 < (f.blockOps b).length at function entry and on every CFG edge, so empty basic blocks (ops = []) are unenterable dead ends rather than frame-neutral pass-through blocks; projecting a real CFG to frame-affecting operations without contracting or padding frame-neutral blocks makes TableCorrect vacuously true on paths through empty blocks (and for the whole function if block 0 is empty).",
+   "This is a statement about the toy model; it neither establishes nor refutes the corresponding claim about a real unwinder, compiler or ABI, and connections to real systems are separate derived (modeling bridge) claims."
+  ],
+  "prior_art": [
+   "G. A. Kildall, 'A unified approach to global program optimization', Proc. 1st ACM SIGACT-SIGPLAN Symposium on Principles of Programming Languages (POPL 1973), pp. 194-206, doi:10.1145/512927.512945: iterative dataflow analysis over a semilattice along CFG edges until a fixed point. Derived (modeling bridge): annSoundB is a post-fixpoint check of this kind for the toy's abstract frame-state domain; the toy does not use Kildall's algorithm for the soundness argument, only the post-fixpoint property.",
+   "X. Leroy, 'Formal verification of a realistic compiler', Commun. ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814; CompCert (AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc) backend/Kildall.v mechanizes generic Kildall-style dataflow solvers in Coq: Theorem fixpoint_solution (line 661) states that the solver's result satisfies the dataflow inequations along every CFG edge, and Theorem fixpoint_invariant (line 741) that a property preserved by join and transfer holds of the result. Derived (modeling bridge): reach_inv_of_annSound is the corresponding 'post-fixpoint annotation over-approximates every reachable state' step, which CompCert proves separately inside each client analysis rather than in Kildall.v; this mechanization is why reach_inv_of_annSound is tiered T0 (re-derivation).",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, 'Reliable and fast DWARF-based stack unwinding', Proc. ACM Program. Lang. 3(OOPSLA), Article 146, October 2019, doi:10.1145/3360572. §2.2 (pp. 146:8-146:12; the passages summarized here are on pp. 146:9-146:11): unwind rows are synthesized by forward propagation along CFG edges, relying on stack offsets being invariant at merge points; with variable-size stack allocation compilers fall back to a base-pointer register; if different rows reach a merge point the tool aborts (a lossy merge is enabled only for terminal blocks). Appendix A (pp. 146:21-146:23): remember_state pushes 'the state of all the registers of this row', and restore(reg) is not supported (p. 146:21); the formal interpretation keeps a state-saving stack of rows (Row*, p. 146:22; Table 5, p. 146:23). The paper contains no mechanized proof."
+  ],
+  "design_question": "What must a CFI emitter guarantee for a linear layout of a CFG whose blocks are not placed in control-flow order, and which checks of the emitted table are sound?"
+ }
+]

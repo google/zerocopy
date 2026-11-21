@@ -15560,6 +15560,95 @@
         "lean/mechanization"
       ]
     },
+    "cfg-dwarf-cfi-state-stack-and-lsda-landing-pad-unwinding-soundness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360572"
+          },
+          "name": "Reliable and fast DWARF-based stack unwinding"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1146809.1146811"
+          },
+          "name": "A machine-checked model for a Java-like language, virtual machine, and compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1538788.1538814"
+          },
+          "name": "Formal verification of a realistic compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512927.512945"
+          },
+          "name": "A unified approach to global program optimization"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/woot11/exploiting-hard-working-dwarf-trojan-and-exploit-techniques-no-native-executable"
+          },
+          "name": "Exploiting the Hard-Working DWARF: Trojan and Exploit Techniques with No Native Executable Code"
+        },
+        {
+          "identity": {
+            "date": "2017-02-13",
+            "url": "https://dwarfstd.org/doc/DWARF5.pdf",
+            "version": "5"
+          },
+          "name": "DWARF Debugging Information Format, Version 5"
+        },
+        {
+          "identity": {
+            "url": "https://dwarfstd.org/issues/230103.1.html"
+          },
+          "name": "DWARF issue 230103.1: Clarify that DW_CFA_remember_state includes the current CFA"
+        },
+        {
+          "identity": {
+            "url": "https://itanium-cxx-abi.github.io/cxx-abi/abi-eh.html",
+            "version": "Revision 1.22"
+          },
+          "name": "Itanium C++ ABI: Exception Handling"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "701f926aebef9d992746680f00548cff3703a7dc"
+          },
+          "name": "LLVM (CFIFixup, CFIInstrInserter, libunwind, libc++abi)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/dwarf-cfi",
+        "compilers/stack-unwinding",
+        "compilers/exception-handling",
+        "compilers/basic-block-layout",
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/abstract-interpretation",
+        "verification/static-checkers"
+      ]
+    },
     "cfml-characteristic-formulae-and-prelude-dijkstra-monad-vcgen": {
       "observed_at": "2026-11-19",
       "subjects": [
