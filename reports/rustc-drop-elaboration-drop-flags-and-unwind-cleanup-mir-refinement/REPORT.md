@@ -115,10 +115,12 @@ order, `CriticalCallEdges`, `PostAnalysisNormalize`, `Subtyper`, `ElaborateDrops
 
 The pass lives in two files. `compiler/rustc_mir_transform/src/elaborate_drops.rs` (521 lines)
 owns the dataflow, the flags and the per-terminator driver. The generic elaborator
-(`DropStyle`, `DropFlagMode`, `Unwind`, `elaborate_drop`, the ladder builders) is
-`compiler/rustc_mir_transform/src/elaborate_drop.rs` (1,424 lines). The path
-`compiler/rustc_mir_dataflow/src/elaborate_drops.rs`, where this code used to live, does not exist
-at this commit (HTTP 404 on the raw file).
+(`DropStyle`, `DropFlagMode`, `Unwind`, the `DropElaborator` trait at L82–140, `elaborate_drop`,
+and the ladder builders) is `compiler/rustc_mir_transform/src/elaborate_drop.rs` (1,424 lines).
+The path `compiler/rustc_mir_dataflow/src/elaborate_drops.rs`, where this code used to live, does
+not exist at this commit (HTTP 404 on the raw file); `compiler/rustc_mir_dataflow` retains
+`DropFlagState::{Present, Absent}` (`drop_flag_effects.rs` L10–26, where `DropFlagState::value`
+maps `Present` to `true` and `Absent` to `false`) and `drop_flag_effects_for_location`.
 
 Upstream itself documents the input semantics as unfinished. The doc comment of
 `TerminatorKind::Drop` (`compiler/rustc_middle/src/mir/syntax.rs` L742–760) reads:
@@ -163,7 +165,11 @@ drops and 0 flags.
 
 `collect_drop_flags` (L289–333) creates a `bool` temp for a move path only when
 `maybe_init && maybe_uninit` holds for it at some `Drop` that covers it. `set_drop_flag`
-(L416–422) is a no-op for a path without a flag.
+(L416–422) takes a `DropFlagState` (`Present` → `const true`, `Absent` → `const false`) and is a
+no-op for a path without a flag. Through the `DropElaborator` trait (`elaborate_drop.rs` L82–140),
+the generic elaborator queries `drop_style`, `get_drop_flag`, `clear_drop_flag`, and subpath
+projections (`field_subpath`, `deref_subpath`, `downcast_subpath`, `array_subpath`) from the
+driver.
 
 Flag writes come from four places:
 
@@ -703,11 +709,19 @@ written by hand to mirror the specimens.
 
 - `inductive UnwindAction` (L693–697) has `continue_ | unreachable | terminate | cleanup block`;
   `terminate` carries no `UnwindTerminateReason`.
-- `inductive TerminatorKind` (L785–795) has `goto`, `switchInt`, `return_`, `unreachable`,
-  `unwindResume`, `assert`, `call` and `unsupported`. Its doc comment (L783–784) lists what
-  `unsupported` stands for: "`UnwindTerminate`, `Drop`, indirect `Call`, `TailCall`, `Yield`,
-  `CoroutineDrop`, `FalseEdge`, `FalseUnwind`, and `InlineAsm`".
-- `structure BasicBlock` (L810–813) keeps `cleanup : Bool := false`.
+- `inductive TerminatorKind` (L785–795; doc comment L742–784) has `goto`, `switchInt`, `return_`,
+  `unreachable`, `unwindResume`, `assert`, `call` and `unsupported`. Its doc comment (L783–784)
+  lists what `unsupported` stands for: "`UnwindTerminate`, `Drop`, indirect `Call`, `TailCall`,
+  `Yield`, `CoroutineDrop`, `FalseEdge`, `FalseUnwind`, and `InlineAsm`".
+- `structure BasicBlock` (L810–813; doc comment L797–809) keeps `cleanup : Bool := false`.
+- `inductive TerminalOut` (`MirSemantics.lean` L602–604) has only `returned` and `unwound`, with
+  no `aborted` outcome for `UnwindTerminate`.
+- `isSupportedScalarOrUnitTy` (`MirSemantics.lean` L721–724) admits `bool` drop-flag locals
+  (`.bool`) while rejecting non-fieldless ADTs; `evalOperandToSlot` (L949–976, which conservatively
+  deinitializes moved non-ZST locals via `liveUninitSlot`) and `evalStatement` (L1407) also require
+  `place.projection.isEmpty`, rejecting field-projected open drops.
+- `trusted/rustc-capture/src/driver.rs` (L75–84) does not yet emit MIR bodies (`after_analysis`
+  records only whether analysis completed without errors).
 
 `trusted/lean/Trusted/MirSemantics.lean`, `evalTerminator` (L1537–1569):
 
@@ -747,8 +761,8 @@ or for validating its output against pre-elaboration MIR.
 | `L2` | Toolchain / TCB build time | none | **not measured** (released Lean `v4.34.1` binary used; no imports beyond `Init`). |
 | `L3` | Pass / certificate synthesis latency | none | **not measured**: the model has no dataflow solver (the certificates of the example bodies are written by hand), and the run time of `rustc`'s pass was not timed. |
 | `L4` | Generated code performance | execution (static MIR counts only) | Run-time performance: **not measured**. Static MIR overhead (Finding 8): 16 flags, 39 flag tests, 64 flag writes, blocks 376 → 540 → 382 over 32 functions. |
-| `L5` | Checking latency and throughput | execution | Kernel check of the module: 13.198 s wall clock (synchronous elaboration, kernel type checking on); audit run: 5.346 s. Throughput on larger bodies: **not measured**. |
-| `L6` | RAM and artifact footprint | execution | Peak resident memory 638,820 kB (module) and 1,637,444 kB (audit, which imports `Lean`); `.olean` 4,294,408 bytes; package support material 732,593 bytes in 91 files. |
+| `L5` | Checking latency and throughput | execution | Kernel check of the module: 13.990 s wall clock (synchronous elaboration, kernel type checking on); audit run: 4.954 s. Throughput on larger bodies: **not measured**. |
+| `L6` | RAM and artifact footprint | execution | Peak resident memory 637,564 kB (module) and 1,634,604 kB (audit, which imports `Lean`); `.olean` 4,294,408 bytes; package support material 732,592 bytes in 91 files. |
 | `C1` | Specification and assumption auditability | execution (audit) | 0 imports; axioms used by any theorem: `propext`, `Quot.sound`; 329 of 596 kernel theorem constants use no axiom; 0 axioms, 0 `opaque` constants, 0 non-`safe` definitions, 0 `_unsafe_rec` helpers among 1,282 constants; the main statement depends on sections 1–7 and `RRel` only. |
 | `C2` | Orthogonality and simplicity | derived | One `glue` function with three modes serves the reference, the checked and the unchecked semantics; normal and cleanup elaboration differ only in the unwind continuation; the certificate is three lists per block and `check` is a conjunction of per-statement, per-edge and per-drop conditions. |
 | `V1` | Adequacy, mutation and non-vacuity | execution (Lean kernel; native runs) | 40 kernel-checked theorems on concrete bodies, including 9 bodies whose certificate checks (conditional move, field move, assignment with cleanup blocks, loop, three-field ladder, cleanup chain, stale-flag join with a move-out, cleanup pair under two certificates) and 5 mutants that each break one side condition (join without flag keeping the drop, join without flag deleting it, `continue` on the unwind half of a ladder, `continue` on a cleanup-block drop, stale flag). 39 probe checks pass on 136 native runs. |
@@ -825,8 +839,8 @@ by `rustc -Vv`):
 | :-- | :-- | :-- |
 | `compiler/rustc_mir_transform/src/lib.rs` | 572–602, 626–650 | pass order around `ElaborateDrops` |
 | `compiler/rustc_mir_transform/src/elaborate_drops.rs` | 20–48, 52–88, 99–120, 170–193, 276–287, 289–333, 335–403, 416–422, 424–520 | pass doc, driver, dead unwinds, `drop_style`, order of steps, flag creation, per-terminator driver and `Unwind` mapping, flag writes |
-| `compiler/rustc_mir_transform/src/elaborate_drop.rs` | 19–36, 40–45, 49–80, 500–523, 564–596, 609–635, 675–716, 1096–1161, 1239, 1251–1312, 1369–1385 | `DropStyle`, `DropFlagMode`, `Unwind`, `elaborate_drop`, `drop_subpath`, half-ladder and ladder bottom, `drop_ladder`, arrays, slice flag reset, `open_drop`, `complete_drop`, `drop_flag_reset_block`, `drop_flag_test_block` |
-| `compiler/rustc_mir_dataflow/src/drop_flag_effects.rs` | 106–135 | effects of a location on flags; `Drop` de-initializes |
+| `compiler/rustc_mir_transform/src/elaborate_drop.rs` | 19–36, 40–45, 49–80, 82–140, 500–523, 564–596, 609–635, 675–716, 1096–1161, 1239, 1251–1312, 1369–1385 | `DropStyle`, `DropFlagMode`, `Unwind`, `DropElaborator`, `elaborate_drop`, `drop_subpath`, half-ladder and ladder bottom, `drop_ladder`, arrays, slice flag reset, `open_drop`, `complete_drop`, `drop_flag_reset_block`, `drop_flag_test_block` |
+| `compiler/rustc_mir_dataflow/src/drop_flag_effects.rs` | 10–26, 106–135 | `DropFlagState::{Present, Absent}` and `value()`; effects of a location on flags; `Drop` de-initializes |
 | `compiler/rustc_mir_dataflow/src/move_paths/builder.rs` | 401–406 | `StorageDead` gathered as a move |
 | `compiler/rustc_mir_transform/src/abort_unwinding_calls.rs` | 26–139 | `AbortUnwindingCalls` |
 | `compiler/rustc_mir_transform/src/validate.rs` | 140–166, 247–276, 491–511 | cleanup-edge and unwind-action rules |
@@ -844,8 +858,9 @@ by `rustc -Vv`):
 `text/0320-nonzeroing-dynamic-drop.md`.
 
 **Anneal.** `joshlf/anneal@c131b320eeeb26ef692e5afd5ec8db49ee518613`:
-`trusted/lean/Trusted/MirAst.lean` L682–697, L736–795, L799–813;
-`trusted/lean/Trusted/MirSemantics.lean` L1537–1569.
+`trusted/lean/Trusted/MirAst.lean` L682–697, L742–795, L797–813;
+`trusted/lean/Trusted/MirSemantics.lean` L602–604, L721–724, L949–976, L1406–1408, L1537–1569;
+`trusted/rustc-capture/src/driver.rs` L75–84.
 
 **Execution, this package** (all produced on 2026-11-21 on `x86_64-unknown-linux-gnu`):
 
@@ -870,8 +885,8 @@ MIR, not reported by the compiler; the rule is in the script's docstring.
 **Literature** (context for the method; none of these papers was re-derived here):
 
 - T. Ramananandro, G. Dos Reis, X. Leroy. "A Mechanized Semantics for C++ Object Construction
-  and Destruction, with Applications to Resource Management." POPL 2012.
-  doi:10.1145/2103621.2103718. A mechanized account of destruction order and of destroying
+  and Destruction, with Applications to Resource Management." POPL 2012, pp. 521–532.
+  doi:10.1145/2103656.2103718. A mechanized account of destruction order and of destroying
   partially constructed objects when an exception propagates.
 - J.-B. Tristan, X. Leroy. "Formal Verification of Translation Validators: A Case Study on
   Instruction Scheduling Optimizations." POPL 2008. doi:10.1145/1328438.1328444. The pattern used
@@ -881,6 +896,15 @@ MIR, not reported by the compiler; the rule is in the script's docstring.
   states: "We do not model ... (3) stack unwinding when a panic occurs ... We proved safety of the
   destructors of the verified libraries, but do not handle automatic destruction". Checked against
   the paper's text on 2026-11-21.
+- M. Cui, C. Chen, H. Xu, Y. Zhou. "SafeDrop: Detecting Memory Deallocation Bugs of Rust Programs
+  via Static Data-flow Analysis." ACM TOSEM 2023. doi:10.1145/3542948. Static MIR data-flow
+  analysis targeting double-free and invalid-drop defects around Rust drop glue.
+- L. Gäher, M. Sammler, R. Jung, R. Krebbers, D. Dreyer. "RefinedRust: A Type System for
+  High-Assurance Verification of Rust Programs." PLDI 2024. doi:10.1145/3656422. Foundational
+  refinement-type verification of Rust programs over a MIR-level operational semantics.
+- N. Villani, J. Hostert, D. Dreyer, R. Jung. "Tree Borrows." PLDI 2025 (PACMPL 9, pp. 1019–1042).
+  doi:10.1145/3735592. Tree-structured aliasing semantics governing borrowing and protector
+  lifetimes across normal and unwinding execution.
 
 ## Revalidation
 

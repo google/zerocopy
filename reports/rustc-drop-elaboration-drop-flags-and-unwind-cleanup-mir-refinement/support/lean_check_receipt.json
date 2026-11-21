@@ -1,7 +1,7 @@
 {
  "audit": {
   "exit_code": 0,
-  "peak_rss_kb": 1637444,
+  "peak_rss_kb": 1634604,
   "print_axioms": {
    "DropElab.Example.ce1_no_flag_always_drop_double_drop": [
     "propext",
@@ -67,14 +67,14 @@
    "violations": 0
   },
   "violation_lines": [],
-  "wall_seconds": 5.346
+  "wall_seconds": 4.954
  },
  "compile": {
   "errors": 0,
   "exit_code": 0,
   "olean_bytes": 4294408,
-  "peak_rss_kb": 638820,
-  "wall_seconds": 13.198,
+  "peak_rss_kb": 637564,
+  "wall_seconds": 13.99,
   "warnings": 0
  },
  "compile_flags": [
