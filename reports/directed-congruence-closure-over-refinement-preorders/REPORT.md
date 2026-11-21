@@ -93,9 +93,9 @@ eval M ρ (.app f args) = M.interp f (args.map (eval M ρ))     -- eval_app
   between distinct values.
 * `Model` bundles no law; laws are separate propositions.
 
-Model laws (unfolded; the hole position is `pre.length`):
+Model laws (unfolded, prose; the hole position is `pre.length`):
 
-```lean
+```text
 LeRefl M  := ∀ x, M.le x x
 LeTrans M := ∀ x y z, M.le x y → M.le y z → M.le x z
 MonoAt P M := ∀ f pre post x y, P f pre.length = .mono → M.le x y →
@@ -290,7 +290,9 @@ What each core definition is meant to capture: `Modality`/`Profile` — what a p
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-(in the scope of `variable {Op : Type}`) theorem check_sound [DecidableEq Op] {P : Profile Op} {M : Model Op} (hR : LeRefl M) (hT : LeTrans M) (hMono : MonoAt P M) (hKer : KerAt P M) {ρ : Nat → M.C} {facts : List (Term Op × Term Op)} (hF : FactsHold M ρ facts) {c : Cert Op} {s t : Term Op} (hc : check Policy.standard P facts c s t = true) : M.le (eval M ρ s) (eval M ρ t)
+-- lean/ToyDirCC/Cert.lean:199-203
+-- (in the scope of `variable {Op : Type}`)
+theorem check_sound [DecidableEq Op] {P : Profile Op} {M : Model Op} (hR : LeRefl M) (hT : LeTrans M) (hMono : MonoAt P M) (hKer : KerAt P M) {ρ : Nat → M.C} {facts : List (Term Op × Term Op)} (hF : FactsHold M ρ facts) {c : Cert Op} {s t : Term Op} (hc : check Policy.standard P facts c s t = true) : M.le (eval M ρ s) (eval M ρ t)
 ```
 
 - **Hypothesis ledger:**
@@ -322,7 +324,10 @@ What each core definition is meant to capture: `Modality`/`Profile` — what a p
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-(in the scope of `variable {Op : Type}`) theorem check_sound_of_admissible [DecidableEq Op] {pol : Policy} {P : Profile Op} {M : Model Op} (hA : pol.AdmissibleFor P) (hR : LeRefl M) (hT : LeTrans M) (hMono : MonoAt P M) (hKer : KerAt P M) {ρ : Nat → M.C} {facts : List (Term Op × Term Op)} (hF : FactsHold M ρ facts) {c : Cert Op} {s t : Term Op} (hc : check pol P facts c s t = true) : M.le (eval M ρ s) (eval M ρ t)  -- where pol.AdmissibleFor P := (∀ f i, pol.cong (P f i) = true → P f i = .mono) ∧ (∀ f i, pol.congEq (P f i) = true → P f i ≠ .opaqueArg)
+-- lean/ToyDirCC/Cert.lean:186-191
+-- (in the scope of `variable {Op : Type}`)
+theorem check_sound_of_admissible [DecidableEq Op] {pol : Policy} {P : Profile Op} {M : Model Op} (hA : pol.AdmissibleFor P) (hR : LeRefl M) (hT : LeTrans M) (hMono : MonoAt P M) (hKer : KerAt P M) {ρ : Nat → M.C} {facts : List (Term Op × Term Op)} (hF : FactsHold M ρ facts) {c : Cert Op} {s t : Term Op} (hc : check pol P facts c s t = true) : M.le (eval M ρ s) (eval M ρ t)
+-- where pol.AdmissibleFor P := (∀ f i, pol.cong (P f i) = true → P f i = .mono) ∧ (∀ f i, pol.congEq (P f i) = true → P f i ≠ .opaqueArg)
 ```
 
 - **Hypothesis ledger:**
@@ -355,7 +360,10 @@ What each core definition is meant to capture: `Modality`/`Profile` — what a p
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-(in the scope of `variable {Op : Type}`) theorem monoCong_refuted_at_nonMono [DecidableEq Op] (P : Profile Op) (f : Op) (pre post : List (Term Op)) (h : P f pre.length ≠ .mono) : LeRefl (flipModel f pre.length) ∧ LeTrans (flipModel f pre.length) ∧ MonoAt P (flipModel f pre.length) ∧ KerAt P (flipModel f pre.length) ∧ (flipModel f pre.length).le (flipVal 0) (flipVal 1) ∧ ¬ (flipModel f pre.length).le (eval (flipModel f pre.length) flipVal (.app f (pre ++ .var 0 :: post))) (eval (flipModel f pre.length) flipVal (.app f (pre ++ .var 1 :: post)))  -- flipModel f i : carrier Bool, le a b := (a = true → b = true), interp g args := if g = f then !(args.getD i false) else false; flipVal n := (n != 0)
+-- lean/ToyDirCC/Necessity.lean:71-78
+-- (in the scope of `variable {Op : Type}`)
+theorem monoCong_refuted_at_nonMono [DecidableEq Op] (P : Profile Op) (f : Op) (pre post : List (Term Op)) (h : P f pre.length ≠ .mono) : LeRefl (flipModel f pre.length) ∧ LeTrans (flipModel f pre.length) ∧ MonoAt P (flipModel f pre.length) ∧ KerAt P (flipModel f pre.length) ∧ (flipModel f pre.length).le (flipVal 0) (flipVal 1) ∧ ¬ (flipModel f pre.length).le (eval (flipModel f pre.length) flipVal (.app f (pre ++ .var 0 :: post))) (eval (flipModel f pre.length) flipVal (.app f (pre ++ .var 1 :: post)))
+-- flipModel f i : carrier Bool, le a b := (a = true → b = true), interp g args := if g = f then !(args.getD i false) else false; flipVal n := (n != 0)
 ```
 
 - **Hypothesis ledger:**
@@ -383,7 +391,10 @@ What each core definition is meant to capture: `Modality`/`Profile` — what a p
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-(in the scope of `variable {Op : Type}`) theorem eqCong_refuted_at_opaque [DecidableEq Op] (P : Profile Op) (f : Op) (pre post : List (Term Op)) (h : P f pre.length = .opaqueArg) : LeRefl (splitModel f pre.length) ∧ LeTrans (splitModel f pre.length) ∧ MonoAt P (splitModel f pre.length) ∧ KerAt P (splitModel f pre.length) ∧ (splitModel f pre.length).le (splitVal 0) (splitVal 1) ∧ (splitModel f pre.length).le (splitVal 1) (splitVal 0) ∧ ¬ (splitModel f pre.length).le (eval (splitModel f pre.length) splitVal (.app f (pre ++ .var 0 :: post))) (eval (splitModel f pre.length) splitVal (.app f (pre ++ .var 1 :: post)))  -- splitModel f i : carrier Tri = {a, a', b}, le relates a and a' to each other and to themselves and b only to itself; interp g args := if g = f then (if args.getD i .a = .a' then .b else .a) else .a; splitVal n := if n = 0 then .a else .a'
+-- lean/ToyDirCC/Necessity.lean:153-161
+-- (in the scope of `variable {Op : Type}`)
+theorem eqCong_refuted_at_opaque [DecidableEq Op] (P : Profile Op) (f : Op) (pre post : List (Term Op)) (h : P f pre.length = .opaqueArg) : LeRefl (splitModel f pre.length) ∧ LeTrans (splitModel f pre.length) ∧ MonoAt P (splitModel f pre.length) ∧ KerAt P (splitModel f pre.length) ∧ (splitModel f pre.length).le (splitVal 0) (splitVal 1) ∧ (splitModel f pre.length).le (splitVal 1) (splitVal 0) ∧ ¬ (splitModel f pre.length).le (eval (splitModel f pre.length) splitVal (.app f (pre ++ .var 0 :: post))) (eval (splitModel f pre.length) splitVal (.app f (pre ++ .var 1 :: post)))
+-- splitModel f i : carrier Tri = {a, a', b}, le relates a and a' to each other and to themselves and b only to itself; interp g args := if g = f then (if args.getD i .a = .a' then .b else .a) else .a; splitVal n := if n = 0 then .a else .a'
 ```
 
 - **Hypothesis ledger:**
@@ -411,7 +422,10 @@ What each core definition is meant to capture: `Modality`/`Profile` — what a p
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-(in the scope of `variable {Op : Type}`) theorem policySound_iff_admissibleFor [DecidableEq Op] (P : Profile Op) (pol : Policy) : PolicySound Op P pol ↔ pol.AdmissibleFor P  -- where PolicySound Op P pol := ∀ (M : Model Op), LeRefl M → LeTrans M → MonoAt P M → KerAt P M → ∀ (ρ : Nat → M.C) (facts : List (Term Op × Term Op)), FactsHold M ρ facts → ∀ (c : Cert Op) (s t : Term Op), check pol P facts c s t = true → M.le (eval M ρ s) (eval M ρ t); and pol.AdmissibleFor P := (∀ f i, pol.cong (P f i) = true → P f i = .mono) ∧ (∀ f i, pol.congEq (P f i) = true → P f i ≠ .opaqueArg)
+-- lean/ToyDirCC/Necessity.lean:303-304
+-- (in the scope of `variable {Op : Type}`)
+theorem policySound_iff_admissibleFor [DecidableEq Op] (P : Profile Op) (pol : Policy) : PolicySound Op P pol ↔ pol.AdmissibleFor P
+-- where PolicySound Op P pol := ∀ (M : Model Op), LeRefl M → LeTrans M → MonoAt P M → KerAt P M → ∀ (ρ : Nat → M.C) (facts : List (Term Op × Term Op)), FactsHold M ρ facts → ∀ (c : Cert Op) (s t : Term Op), check pol P facts c s t = true → M.le (eval M ρ s) (eval M ρ t); and pol.AdmissibleFor P := (∀ f i, pol.cong (P f i) = true → P f i = .mono) ∧ (∀ f i, pol.congEq (P f i) = true → P f i ≠ .opaqueArg)
 ```
 
 - **Hypothesis ledger:**
@@ -437,8 +451,21 @@ What each core definition is meant to capture: `Modality`/`Profile` — what a p
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
+-- lean/ToyDirCC/Necessity.lean:370-378
 theorem pickMin_monoCong_counterexample : LeRefl oModel ∧ LeTrans oModel ∧ MonoAt oProfile oModel ∧ KerAt oProfile oModel ∧ FactsHold oModel oVal [(.var 0, .var 1)] ∧ check Policy.permissive oProfile [(.var 0, .var 1)] (.cong .pickMin [] [] (.fact 0)) (.app .pickMin [.var 0]) (.app .pickMin [.var 1]) = true ∧ check Policy.standard oProfile [(.var 0, .var 1)] (.cong .pickMin [] [] (.fact 0)) (.app .pickMin [.var 0]) (.app .pickMin [.var 1]) = false ∧ ¬ oModel.le (eval oModel oVal (.app .pickMin [.var 0])) (eval oModel oVal (.app .pickMin [.var 1]))
-theorem pickFirst_eqCong_counterexample : LeRefl oModel ∧ LeTrans oModel ∧ MonoAt oProfile oModel ∧ KerAt oProfile oModel ∧ FactsHold oModel oVal [(.var 0, .var 2), (.var 2, .var 0)] ∧ check Policy.permissive oProfile [(.var 0, .var 2), (.var 2, .var 0)] (.congEq .pickFirst [] [] (.fact 0) (.fact 1)) (.app .pickFirst [.var 0]) (.app .pickFirst [.var 2]) = true ∧ check Policy.standard oProfile [(.var 0, .var 2), (.var 2, .var 0)] (.congEq .pickFirst [] [] (.fact 0) (.fact 1)) (.app .pickFirst [.var 0]) (.app .pickFirst [.var 2]) = false ∧ ¬ oModel.le (eval oModel oVal (.app .pickFirst [.var 0])) (eval oModel oVal (.app .pickFirst [.var 2]))  -- oVal n := [[0, 1], [1], [1, 0]].getD n []; Policy.permissive allows both rules at every modality
+-- lean/ToyDirCC/Necessity.lean:391-401
+theorem pickFirst_eqCong_counterexample :
+    LeRefl oModel ∧ LeTrans oModel ∧ MonoAt oProfile oModel ∧ KerAt oProfile oModel ∧
+    FactsHold oModel oVal [(.var 0, .var 2), (.var 2, .var 0)] ∧
+    check Policy.permissive oProfile [(.var 0, .var 2), (.var 2, .var 0)]
+      (.congEq .pickFirst [] [] (.fact 0) (.fact 1))
+      (.app .pickFirst [.var 0]) (.app .pickFirst [.var 2]) = true ∧
+    check Policy.standard oProfile [(.var 0, .var 2), (.var 2, .var 0)]
+      (.congEq .pickFirst [] [] (.fact 0) (.fact 1))
+      (.app .pickFirst [.var 0]) (.app .pickFirst [.var 2]) = false ∧
+    ¬ oModel.le (eval oModel oVal (.app .pickFirst [.var 0]))
+      (eval oModel oVal (.app .pickFirst [.var 2]))
+-- oVal n := [[0, 1], [1], [1, 0]].getD n []; Policy.permissive allows both rules at every modality
 ```
 
 - **Hypothesis ledger:** none (a closed statement about concrete instances).
@@ -459,7 +486,16 @@ theorem pickFirst_eqCong_counterexample : LeRefl oModel ∧ LeTrans oModel ∧ M
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-theorem dup_vs_let_hashcons_counterexample : inline letProg = dupProg ∧ hashcons [] dupProg = ([.var 0, .frz 0 0, .add 1 1], 2) ∧ indep poisonEnv dupProg (some 1) ∧ ¬ hcSem poisonEnv dupProg (some 1) ∧ ¬ indep poisonEnv letProg (some 1) ∧ ¬ Refines dupProg letProg ∧ Refines letProg dupProg  -- note: Refines tgt src takes the target first
+-- lean/ToyDirCC/Dup.lean:975-982
+theorem dup_vs_let_hashcons_counterexample :
+    inline letProg = dupProg ∧
+    hashcons [] dupProg = ([.var 0, .frz 0 0, .add 1 1], 2) ∧
+    indep poisonEnv dupProg (some 1) ∧
+    ¬ hcSem poisonEnv dupProg (some 1) ∧
+    ¬ indep poisonEnv letProg (some 1) ∧
+    ¬ Refines dupProg letProg ∧
+    Refines letProg dupProg
+-- note: Refines tgt src takes the target first
 ```
 
 - **Hypothesis ledger:** none (a closed statement about concrete instances).
@@ -480,7 +516,10 @@ theorem dup_vs_let_hashcons_counterexample : inline letProg = dupProg ∧ hashco
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-theorem hashcons_inline_sound_of_uniqueTags (ρ : Nat → Val) (t : Tm) (hu : UniqueTags t) (v : Val) : hcSem ρ (inline t) v ↔ indep ρ t v  -- where hcSem ρ t v := ∃ c : Nat → Nat, (evalTbl c ρ (hashcons [] t).1 []).getD (hashcons [] t).2 none = v (one choice per table node) and UniqueTags t := ((frzOccs t).map Prod.fst).Nodup
+-- lean/ToyDirCC/Dup.lean:1104-1105
+theorem hashcons_inline_sound_of_uniqueTags (ρ : Nat → Val) (t : Tm) (hu : UniqueTags t)
+    (v : Val) : hcSem ρ (inline t) v ↔ indep ρ t v
+-- where hcSem ρ t v := ∃ c : Nat → Nat, (evalTbl c ρ (hashcons [] t).1 []).getD (hashcons [] t).2 none = v (one choice per table node) and UniqueTags t := ((frzOccs t).map Prod.fst).Nodup
 ```
 
 - **Hypothesis ledger:**
@@ -506,7 +545,10 @@ theorem hashcons_inline_sound_of_uniqueTags (ρ : Nat → Val) (t : Tm) (hu : Un
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-theorem hcSem_iff_tagSem_of_letFree_wellTagged (ρ : Nat → Val) (t : Tm) (hlf : LetFree t = true) (hwt : WellTagged t) (v : Val) : hcSem ρ t v ↔ tagSem ρ t v  -- where tagSem ρ t v := ∃ σ : Nat → Nat, evalT σ ρ t = v (one choice per tag) and WellTagged t := ∀ p ∈ frzOccs t, ∀ q ∈ frzOccs t, p.1 = q.1 → p.2 = q.2
+-- lean/ToyDirCC/Dup.lean:989-990
+theorem hcSem_iff_tagSem_of_letFree_wellTagged (ρ : Nat → Val) (t : Tm)
+    (hlf : LetFree t = true) (hwt : WellTagged t) (v : Val) : hcSem ρ t v ↔ tagSem ρ t v
+-- where tagSem ρ t v := ∃ σ : Nat → Nat, evalT σ ρ t = v (one choice per tag) and WellTagged t := ∀ p ∈ frzOccs t, ∀ q ∈ frzOccs t, p.1 = q.1 → p.2 = q.2
 ```
 
 - **Hypothesis ledger:**
@@ -533,6 +575,7 @@ theorem hcSem_iff_tagSem_of_letFree_wellTagged (ρ : Nat → Val) (t : Tm) (hlf 
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
+-- lean/ToyDirCC/Dup.lean:1041-1042
 theorem tagSem_iff_indep_of_uniqueTags (ρ : Nat → Val) (t : Tm) (hu : UniqueTags t) (v : Val) : tagSem ρ t v ↔ indep ρ t v
 ```
 
@@ -559,7 +602,10 @@ theorem tagSem_iff_indep_of_uniqueTags (ρ : Nat → Val) (t : Tm) (hu : UniqueT
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-(in the scope of `variable {Op : Type}`) theorem extract_refines_of_chosenOriented_mono {P : Profile Op} {M : Model Op} {ρ : Nat → M.C} {den : Nat → M.C} {ch : Choice Op} (hT : LeTrans M) (hMono : MonoAt P M) (hCO : ChosenOriented M ρ den ch) (hCM : ChosenMono P ch) {fuel c : Nat} {t : Term Op} (h : extract ch fuel c = some t) : M.le (den c) (eval M ρ t)  -- where ChosenOriented M ρ den ch := ∀ c n, ch c = some n → M.le (den c) (nodeVal M ρ den n); ChosenMono P ch := ∀ c f ks, ch c = some (.app f ks) → ∀ i, i < ks.length → P f i = .mono; nodeVal M ρ den (.var x) = ρ x, nodeVal M ρ den (.app f ks) = M.interp f (ks.map den)
+-- lean/ToyDirCC/Extract.lean:261-264
+-- (in the scope of `variable {Op : Type}`)
+theorem extract_refines_of_chosenOriented_mono {P : Profile Op} {M : Model Op} {ρ : Nat → M.C} {den : Nat → M.C} {ch : Choice Op} (hT : LeTrans M) (hMono : MonoAt P M) (hCO : ChosenOriented M ρ den ch) (hCM : ChosenMono P ch) {fuel c : Nat} {t : Term Op} (h : extract ch fuel c = some t) : M.le (den c) (eval M ρ t)
+-- where ChosenOriented M ρ den ch := ∀ c n, ch c = some n → M.le (den c) (nodeVal M ρ den n); ChosenMono P ch := ∀ c f ks, ch c = some (.app f ks) → ∀ i, i < ks.length → P f i = .mono; nodeVal M ρ den (.var x) = ρ x, nodeVal M ρ den (.app f ks) = M.interp f (ks.map den)
 ```
 
 - **Hypothesis ledger:**
@@ -589,7 +635,10 @@ theorem tagSem_iff_indep_of_uniqueTags (ρ : Nat → Val) (t : Tm) (hu : UniqueT
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-(in the scope of `variable {Op : Type}`) theorem extract_refines_of_oriented_mono {P : Profile Op} {M : Model Op} {ρ : Nat → M.C} {G : EGraph Op} {den : Nat → M.C} {ch : Choice Op} (hT : LeTrans M) (hMono : MonoAt P M) (hO : Oriented M ρ G den) (hC : ChoiceIn G ch) (hCM : ChosenMono P ch) {fuel c : Nat} {t : Term Op} (h : extract ch fuel c = some t) : M.le (den c) (eval M ρ t)  -- where Oriented M ρ G den := ∀ c n, n ∈ G.nodes c → M.le (den c) (nodeVal M ρ den n) and ChoiceIn G ch := ∀ c n, ch c = some n → n ∈ G.nodes c
+-- lean/ToyDirCC/Extract.lean:303-306
+-- (in the scope of `variable {Op : Type}`)
+theorem extract_refines_of_oriented_mono {P : Profile Op} {M : Model Op} {ρ : Nat → M.C} {G : EGraph Op} {den : Nat → M.C} {ch : Choice Op} (hT : LeTrans M) (hMono : MonoAt P M) (hO : Oriented M ρ G den) (hC : ChoiceIn G ch) (hCM : ChosenMono P ch) {fuel c : Nat} {t : Term Op} (h : extract ch fuel c = some t) : M.le (den c) (eval M ρ t)
+-- where Oriented M ρ G den := ∀ c n, n ∈ G.nodes c → M.le (den c) (nodeVal M ρ den n) and ChoiceIn G ch := ∀ c n, ch c = some n → n ∈ G.nodes c
 ```
 
 - **Hypothesis ledger:**
@@ -620,7 +669,16 @@ theorem tagSem_iff_indep_of_uniqueTags (ρ : Nat → Val) (t : Tm) (hu : UniqueT
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-theorem extract_unoriented_counterexample : LeTrans oModel ∧ MonoAt oProfile oModel ∧ RelatedEitherWay oModel (fun _ => []) egUnoriented denLit ∧ ChoiceIn egUnoriented chChoose ∧ ¬ ChosenOriented oModel (fun _ => []) denLit chChoose ∧ ChosenMono oProfile chChoose ∧ extract chChoose 2 0 = some (.app .choose [.app (.lit 0) [], .app (.lit 1) []]) ∧ ¬ oModel.le (denLit 0) (eval oModel (fun _ => []) (.app .choose [.app (.lit 0) [], .app (.lit 1) []]))  -- egUnoriented: class 0 = {lit 0, choose(1, 2)}, class 1 = {lit 0}, class 2 = {lit 1}; denLit = [[0], [0], [1]]; chChoose picks choose(1, 2) in class 0
+-- lean/ToyDirCC/Extract.lean:514-521
+theorem extract_unoriented_counterexample :
+    LeTrans oModel ∧ MonoAt oProfile oModel ∧
+    RelatedEitherWay oModel (fun _ => []) egUnoriented denLit ∧
+    ChoiceIn egUnoriented chChoose ∧
+    ¬ ChosenOriented oModel (fun _ => []) denLit chChoose ∧ ChosenMono oProfile chChoose ∧
+    extract chChoose 2 0 = some (.app .choose [.app (.lit 0) [], .app (.lit 1) []]) ∧
+    ¬ oModel.le (denLit 0)
+      (eval oModel (fun _ => []) (.app .choose [.app (.lit 0) [], .app (.lit 1) []]))
+-- egUnoriented: class 0 = {lit 0, choose(1, 2)}, class 1 = {lit 0}, class 2 = {lit 1}; denLit = [[0], [0], [1]]; chChoose picks choose(1, 2) in class 0
 ```
 
 - **Hypothesis ledger:** none (a closed statement about concrete instances).
@@ -641,7 +699,10 @@ theorem extract_unoriented_counterexample : LeTrans oModel ∧ MonoAt oProfile o
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-(in the scope of `variable {Op : Type}`) theorem extract_total_and_sound_of_wfBelow_oriented_mono {P : Profile Op} {M : Model Op} {ρ : Nat → M.C} {den : Nat → M.C} {ch : Choice Op} (hT : LeTrans M) (hMono : MonoAt P M) (hCO : ChosenOriented M ρ den ch) (hCM : ChosenMono P ch) {c : Nat} (hW : WFBelow ch c) : ∃ fuel t, extract ch fuel c = some t ∧ M.le (den c) (eval M ρ t)  -- where WFBelow ch is the inductive predicate with constructors var : ch c = some (.var x) → WFBelow ch c and app : ch c = some (.app f ks) → (∀ k, k ∈ ks → WFBelow ch k) → WFBelow ch c
+-- lean/ToyDirCC/Extract.lean:312-316
+-- (in the scope of `variable {Op : Type}`)
+theorem extract_total_and_sound_of_wfBelow_oriented_mono {P : Profile Op} {M : Model Op} {ρ : Nat → M.C} {den : Nat → M.C} {ch : Choice Op} (hT : LeTrans M) (hMono : MonoAt P M) (hCO : ChosenOriented M ρ den ch) (hCM : ChosenMono P ch) {c : Nat} (hW : WFBelow ch c) : ∃ fuel t, extract ch fuel c = some t ∧ M.le (den c) (eval M ρ t)
+-- where WFBelow ch is the inductive predicate with constructors var : ch c = some (.var x) → WFBelow ch c and app : ch c = some (.app f ks) → (∀ k, k ∈ ks → WFBelow ch k) → WFBelow ch c
 ```
 
 - **Hypothesis ledger:**
@@ -671,7 +732,17 @@ theorem extract_unoriented_counterexample : LeTrans oModel ∧ MonoAt oProfile o
 - **Lean statement** (exact source header; definitions it uses are unfolded in the trailing comment or above):
 
 ```lean
-theorem extract_cycle_counterexample (ρ : Nat → List Nat) : LeTrans oModel ∧ MonoAt oProfile oModel ∧ Oriented oModel ρ egCycle (fun _ => ρ 0) ∧ ChosenOriented oModel ρ (fun _ => ρ 0) chCycle ∧ oModel.le (nodeVal oModel ρ (fun _ => ρ 0) (.app .choose [0, 0])) (ρ 0) ∧ ChoiceIn egCycle chCycle ∧ ChosenMono oProfile chCycle ∧ ¬ WFBelow chCycle 0 ∧ (∀ fuel, extract chCycle fuel 0 = none) ∧ (∀ t : Term OOp, t ≠ .app .choose [t, t])  -- egCycle: class 0 = {var 0, choose(0, 0)}; chCycle picks choose(0, 0)
+-- lean/ToyDirCC/Extract.lean:552-560
+theorem extract_cycle_counterexample (ρ : Nat → List Nat) :
+    LeTrans oModel ∧ MonoAt oProfile oModel ∧
+    Oriented oModel ρ egCycle (fun _ => ρ 0) ∧
+    ChosenOriented oModel ρ (fun _ => ρ 0) chCycle ∧
+    oModel.le (nodeVal oModel ρ (fun _ => ρ 0) (.app .choose [0, 0])) (ρ 0) ∧
+    ChoiceIn egCycle chCycle ∧ ChosenMono oProfile chCycle ∧
+    ¬ WFBelow chCycle 0 ∧
+    (∀ fuel, extract chCycle fuel 0 = none) ∧
+    (∀ t : Term OOp, t ≠ .app .choose [t, t])
+-- egCycle: class 0 = {var 0, choose(0, 0)}; chCycle picks choose(0, 0)
 ```
 
 - **Hypothesis ledger:** none (a closed statement about concrete instances).
