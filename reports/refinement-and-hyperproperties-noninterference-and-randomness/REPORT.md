@@ -27,7 +27,7 @@ One-sentence summary of the 16 kernel-checked results (consult **Boundaries** fi
 15. **`exists-input-total-gni-refinement-iff-exists-choice` (`Toy.Hyper.exists_inputTotal_gni_refinement_iff_exists_choice`):** For any choice presentation `f : L → H → C → O`, `SpecOf f` admits an input-total `GNI` refinement (deterministic or not) if and only if there exists a choice function `r : L → H → C` making the resolved output `fun l h => f l h (r l h)` secret-independent.
 16. **`gni-input-total-spec-admits-det-gni-refinement` (`Toy.Hyper.gni_inputTotal_spec_admits_det_gni_refinement`):** For any choice presentation `f : L → H → C → O`, if `SpecOf f` satisfies `GNI` and `InputTotal` (`Nonempty (L → H → C)`), then there exists a choice function `r : L → H → C` such that `determinize f r` satisfies `GNI` (alongside `Refines`, `Deterministic`, and `InputTotal`).
 
-See **Boundaries** for all non-claims, excluded stronger readings, and escape hatches before applying any result to a compiler, specification, or verification architecture.
+See **Boundaries** for all non-claims, excluded stronger readings, and escape hatches before applying any result to a compiler, specification, or verification architecture. Model–system relation: none proved (`Refines` and the refining compilers studied here relate the package's own trace-set systems to one another). These are statements about the toy model; they neither establish nor refute the corresponding claims about real compilers and their correctness theorems, the specification and verification architectures that state noninterference or randomness requirements, or the random-number sources such systems use; the modeling-bridge lines under **Findings** argue the connection separately.
 
 ## Applicability
 
