@@ -1112,7 +1112,7 @@ mod tests {
         );
         assert_eq!(provenance["upstream_pin_sha256"].as_str().unwrap().len(), 64);
         assert_eq!(provenance["correspondence_adapters"].as_object().unwrap().len(), 7);
-        assert_eq!(provenance["patched_files"].as_array().unwrap().len(), 10);
+        assert_eq!(provenance["patched_files"].as_array().unwrap().len(), 13);
         assert_eq!(provenance["correspondence_proofs"].as_object().unwrap().len(), 10);
         assert_eq!(provenance["trusted_lean"].as_object().unwrap().len(), 21);
     }

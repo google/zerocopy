@@ -34,7 +34,7 @@ pub const LOCKED_MIRI_COMMIT: &str = "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a";
 /// any change to `UPSTREAM_PIN.json` requires a corresponding TCB diff inside
 /// `trusted/audit/`.
 pub const LOCKED_UPSTREAM_PIN_SHA256: &str =
-    "b629a9b4c3fd184b20b791d34621a9f6aa1518ed9b164e42561b4eb688157271";
+    "931b5bc9baaf4932e1384401ddc0d54840b9708b42a42654b121e29d47ee4bcb";
 
 /// Lists the exact set of `vendor/lean-miri` files that must each carry one
 /// consumer-side patch record in `UPSTREAM_PIN.json`.
@@ -49,6 +49,9 @@ pub const LOCKED_PATCHED_MIRI_FILES: &[&str] = &[
     "Miri/Interpreter/OperandMachine.lean",
     "Miri/Interpreter/Place.lean",
     "Miri/Interpreter/PlaceMachine.lean",
+    "Miri/Memory/Allocation.lean",
+    "Miri/Memory/InitMask.lean",
+    "Miri/Memory/ProvenanceMap.lean",
 ];
 
 /// Deserializes `vendor/lean-miri/UPSTREAM_PIN.json`.
@@ -738,7 +741,7 @@ fn verify_upstream_pin_bytes(vendor_root: &Path, pin_bytes: &[u8]) -> Result<Ups
         ));
     }
 
-    // Verify `patched_files` against the closed 10-file allowlist.
+    // Verify `patched_files` against the closed 13-file allowlist.
     let mut patched_map: BTreeMap<&str, &PatchedMiriFile> = BTreeMap::new();
     for pf in &pin.patched_files {
         if !LOCKED_PATCHED_MIRI_FILES.contains(&pf.path.as_str()) {
@@ -770,7 +773,7 @@ fn verify_upstream_pin_bytes(vendor_root: &Path, pin_bytes: &[u8]) -> Result<Ups
     if patched_map.len() != LOCKED_PATCHED_MIRI_FILES.len() {
         return Err(Failure::policy(
             phase,
-            "patched_files list in UPSTREAM_PIN.json does not match locked 10-file set",
+            "patched_files list in UPSTREAM_PIN.json does not match locked 13-file set",
         ));
     }
 
@@ -1161,7 +1164,7 @@ mod tests {
         assert_eq!(err_dropped.code, 1);
         assert!(
             err_dropped.message.contains(
-                "patched_files list in UPSTREAM_PIN.json does not match locked 10-file set"
+                "patched_files list in UPSTREAM_PIN.json does not match locked 13-file set"
             ),
             "unexpected error: {err_dropped}"
         );
