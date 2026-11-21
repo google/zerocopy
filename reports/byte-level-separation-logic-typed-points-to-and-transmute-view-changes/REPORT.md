@@ -1175,16 +1175,24 @@ No hypotheses beyond the typed binders of the statement (no representation law a
 * **Plain claim:** For every byte payload type and every representation r (no laws assumed), each of the following commands is safety-monotone and has the frame property on the byte heap with read-only sharing: the byte store bstore a b and the typed store tstore r a v (fault unless every written cell is held with full permission; then write the byte, resp. r.encode v); the byte copy bcopy src dst (fault unless the source cell is allocated with any permission and the destination cell is held with full permission; copies one abstract byte, uninit included); the typed copy tcopy r src dst (fault unless the n source cells are allocated with any permission and decode, and the n destination cells are held with full permission; then write r.encode of the decoded value); and the typed load tload r a (fault unless the n cells are allocated with any permission and decode; it leaves the heap unchanged and returns nothing). Moreover (readBytes_frame_stable) the bytes such a read sees, hence the value it decodes, are the same in every disjoint extension of the heap, with the frame on either side.
 * **Design question:** A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these.
 
-**Lean statement(s)** (pretty-printed by Lean with namespaces `Toy.ByteSL` and `SepStruct` open):
+**Lean statement(s)** (quoted verbatim from the source, where they are stated in `namespace Toy.ByteSL` with `open SepStruct`):
 
 ```lean
-Toy.ByteSL.byte_commands_local {D : Type} :
-  (∀ (a : Nat) (b : AByte D), Local (bstore a b)) ∧ ∀ (src dst : Nat), Local (bcopy src dst)
-Toy.ByteSL.typed_commands_local {D V : Type} {n : Nat} (r : Rep (Bytes D n) V) :
-  (∀ (a : Nat) (v : V), Local (tstore r a v)) ∧
-    (∀ (src dst : Nat), Local (tcopy r src dst)) ∧ ∀ (a : Nat), Local (tload r a)
-Toy.ByteSL.readBytes_frame_stable {D : Type} {h h' : BHeap D} (hd : disj h h') {a n : Nat} {x : Bytes D n}
-  (hr : readBytes h a n = some x) : readBytes (union h h') a n = some x ∧ readBytes (union h' h) a n = some x
+-- lean/Toy/ByteSL/Commands.lean:248-250
+theorem byte_commands_local {D : Type} :
+    (∀ (a : Nat) (b : AByte D), Local (bstore (D := D) a b)) ∧
+      (∀ (src dst : Nat), Local (bcopy (D := D) src dst))
+
+-- lean/Toy/ByteSL/Commands.lean:297-300
+theorem typed_commands_local {D V : Type} {n : Nat} (r : Rep (Bytes D n) V) :
+    (∀ (a : Nat) (v : V), Local (tstore r a v)) ∧
+      (∀ (src dst : Nat), Local (tcopy r src dst)) ∧
+      (∀ (a : Nat), Local (tload r a))
+
+-- lean/Toy/ByteSL/Commands.lean:681-683
+theorem readBytes_frame_stable {D : Type} {h h' : BHeap D} (hd : disj h h') {a n : Nat}
+    {x : Bytes D n} (hr : readBytes h a n = some x) :
+    readBytes (union h h') a n = some x ∧ readBytes (union h' h) a n = some x
 ```
 
 **Unfolded** (key definitions expanded by hand; the Lean statement above is authoritative): `byte_commands_local {D}` : `(∀ a b, Local (bstore a b)) ∧ (∀ src dst, Local (bcopy src dst))`;
@@ -1271,18 +1279,20 @@ Toy.ByteSL.tcopyLoose_local_of_decodeMono {D V : Type} {n : Nat} (r : Rep (Bytes
 * **Plain claim:** The byte copy that reads an unallocated source cell as uninit (bcopyLoose 0 1) is safety-monotone but violates the frame property, and the frame rule fails for it: the triple {1 |-> uninit} bcopyLoose 0 1 {cell 1 holds uninit} holds, but its framing with {0 |-> init 5} does not.
 * **Design question:** A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these.
 
-**Lean statement(s)** (pretty-printed by Lean with namespaces `Toy.ByteSL` and `SepStruct` open):
+**Lean statement(s)** (quoted verbatim from the source, where they are stated in `namespace Toy.ByteSL` with `open SepStruct`):
 
 ```lean
-Toy.ByteSL.bcopyLoose_safetyMono_and_not_frameProp :
-  SafetyMono (bcopyLoose 0 1) ∧
-    ¬FrameProp (bcopyLoose 0 1) ∧
-      (Triple (ptsB Perm.full 1 #v[AByte.uninit]) (bcopyLoose 0 1) fun h =>
-          h.val 1 = some { perm := Perm.full, byte := AByte.uninit }) ∧
-        ¬Triple (sep (ptsB Perm.full 1 #v[AByte.uninit]) (ptsB Perm.full 0 #v[AByte.init 5])) (bcopyLoose 0 1)
-              (sep (fun h => h.val 1 = some { perm := Perm.full, byte := AByte.uninit })
-                (ptsB Perm.full 0 #v[AByte.init 5])) ∧
-          ¬FrameRuleSound (bcopyLoose 0 1)
+-- lean/Toy/ByteSL/Commands.lean:460-469
+theorem bcopyLoose_safetyMono_and_not_frameProp :
+    SafetyMono (bcopyLoose (D := Byte) 0 1) ∧ ¬ FrameProp (bcopyLoose (D := Byte) 0 1) ∧
+      Triple (ptsB .full 1 (#v[.uninit] : Bytes Byte 1)) (bcopyLoose (D := Byte) 0 1)
+        (fun h => h.val 1 = some ⟨.full, .uninit⟩) ∧
+      ¬ Triple (sep (ptsB .full 1 (#v[.uninit] : Bytes Byte 1))
+            (ptsB .full 0 (#v[.init 5] : Bytes Byte 1)))
+          (bcopyLoose (D := Byte) 0 1)
+          (sep (fun h => h.val 1 = some ⟨.full, .uninit⟩)
+            (ptsB .full 0 (#v[.init 5] : Bytes Byte 1))) ∧
+      ¬ FrameRuleSound (bcopyLoose (D := Byte) 0 1)
 ```
 
 **Unfolded** (key definitions expanded by hand; the Lean statement above is authoritative): `bcopyLoose_safetyMono_and_not_frameProp` (payload `Byte`) :
@@ -1306,19 +1316,21 @@ No hypotheses beyond the typed binders of the statement (no representation law a
 * **Plain claim:** A byte store permitted with read-only permission (bstoreShared 0 (init 2)) is safety-monotone but violates the frame property: the read-only cell hRO1 = {0 |->ro 1} is disjoint from itself, yet every run of the store from hRO1 ends in {0 |->ro 2}, which is not disjoint from the frame hRO1. The frame rule fails for it: {0 |->ro 1} bstoreShared 0 (init 2) {0 |->ro 2} holds, but its framing with {0 |->ro 1} does not.
 * **Design question:** A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these.
 
-**Lean statement(s)** (pretty-printed by Lean with namespaces `Toy.ByteSL` and `SepStruct` open):
+**Lean statement(s)** (quoted verbatim from the source, where they are stated in `namespace Toy.ByteSL` with `open SepStruct`):
 
 ```lean
-Toy.ByteSL.bstoreShared_safetyMono_and_not_frameProp :
-  SafetyMono (bstoreShared 0 (AByte.init 2)) ∧
-    ¬FrameProp (bstoreShared 0 (AByte.init 2)) ∧
+-- lean/Toy/ByteSL/Commands.lean:547-557
+theorem bstoreShared_safetyMono_and_not_frameProp :
+    SafetyMono (bstoreShared (D := Byte) 0 (.init 2)) ∧
+      ¬ FrameProp (bstoreShared (D := Byte) 0 (.init 2)) ∧
       disj hRO1 hRO1 ∧
-        (∀ (h₀ : BHeap Byte), bstoreShared 0 (AByte.init 2) hRO1 (Outcome.ok h₀) → ¬disj h₀ hRO1) ∧
-          Triple (ptsB Perm.ro 0 #v[AByte.init 1]) (bstoreShared 0 (AByte.init 2)) (ptsB Perm.ro 0 #v[AByte.init 2]) ∧
-            ¬Triple (sep (ptsB Perm.ro 0 #v[AByte.init 1]) (ptsB Perm.ro 0 #v[AByte.init 1]))
-                  (bstoreShared 0 (AByte.init 2))
-                  (sep (ptsB Perm.ro 0 #v[AByte.init 2]) (ptsB Perm.ro 0 #v[AByte.init 1])) ∧
-              ¬FrameRuleSound (bstoreShared 0 (AByte.init 2))
+      (∀ h₀, bstoreShared (D := Byte) 0 (.init 2) hRO1 (.ok h₀) → ¬ disj h₀ hRO1) ∧
+      Triple (ptsB .ro 0 (#v[.init 1] : Bytes Byte 1)) (bstoreShared (D := Byte) 0 (.init 2))
+        (ptsB .ro 0 (#v[.init 2] : Bytes Byte 1)) ∧
+      ¬ Triple (sep (ptsB .ro 0 (#v[.init 1] : Bytes Byte 1)) (ptsB .ro 0 (#v[.init 1] : Bytes Byte 1)))
+          (bstoreShared (D := Byte) 0 (.init 2))
+          (sep (ptsB .ro 0 (#v[.init 2] : Bytes Byte 1)) (ptsB .ro 0 (#v[.init 1] : Bytes Byte 1))) ∧
+      ¬ FrameRuleSound (bstoreShared (D := Byte) 0 (.init 2))
 ```
 
 **Unfolded** (key definitions expanded by hand; the Lean statement above is authoritative): `bstoreShared_safetyMono_and_not_frameProp` (with `hRO1 := block ro 0 [init 1]`) :
