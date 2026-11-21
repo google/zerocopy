@@ -1,0 +1,1645 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Render.AgreeOnFull": [
+      "propext"
+    ],
+    "Toy.Render.AnnKind": [],
+    "Toy.Render.AnnKind.casesOn": [],
+    "Toy.Render.AnnKind.coercion": [],
+    "Toy.Render.AnnKind.coercion.elim": [],
+    "Toy.Render.AnnKind.coercion.sizeOf_spec": [],
+    "Toy.Render.AnnKind.ctorElim": [],
+    "Toy.Render.AnnKind.ctorElimType": [],
+    "Toy.Render.AnnKind.ctorIdx": [],
+    "Toy.Render.AnnKind.noConfusion": [],
+    "Toy.Render.AnnKind.noConfusionType": [],
+    "Toy.Render.AnnKind.numType": [],
+    "Toy.Render.AnnKind.numType.elim": [],
+    "Toy.Render.AnnKind.numType.sizeOf_spec": [],
+    "Toy.Render.AnnKind.ofNat": [],
+    "Toy.Render.AnnKind.ofNat_ctorIdx": [],
+    "Toy.Render.AnnKind.rec": [],
+    "Toy.Render.AnnKind.recOn": [],
+    "Toy.Render.AnnKind.typeArg": [],
+    "Toy.Render.AnnKind.typeArg.elim": [],
+    "Toy.Render.AnnKind.typeArg.sizeOf_spec": [],
+    "Toy.Render.CoeRule": [],
+    "Toy.Render.CoeRule.atLeaves": [],
+    "Toy.Render.CoeRule.atLeaves.elim": [],
+    "Toy.Render.CoeRule.atLeaves.sizeOf_spec": [],
+    "Toy.Render.CoeRule.atOperator": [],
+    "Toy.Render.CoeRule.atOperator.elim": [],
+    "Toy.Render.CoeRule.atOperator.sizeOf_spec": [],
+    "Toy.Render.CoeRule.casesOn": [],
+    "Toy.Render.CoeRule.ctorElim": [],
+    "Toy.Render.CoeRule.ctorElimType": [],
+    "Toy.Render.CoeRule.ctorIdx": [],
+    "Toy.Render.CoeRule.noConfusion": [],
+    "Toy.Render.CoeRule.noConfusionType": [],
+    "Toy.Render.CoeRule.ofNat": [],
+    "Toy.Render.CoeRule.ofNat_ctorIdx": [],
+    "Toy.Render.CoeRule.rec": [],
+    "Toy.Render.CoeRule.recOn": [],
+    "Toy.Render.Def": [],
+    "Toy.Render.Def.body": [],
+    "Toy.Render.Def.casesOn": [],
+    "Toy.Render.Def.ctorIdx": [],
+    "Toy.Render.Def.mk": [],
+    "Toy.Render.Def.mk.inj": [],
+    "Toy.Render.Def.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Def.mk.noConfusion": [],
+    "Toy.Render.Def.mk.sizeOf_spec": [],
+    "Toy.Render.Def.name": [],
+    "Toy.Render.Def.noConfusion": [],
+    "Toy.Render.Def.noConfusionType": [],
+    "Toy.Render.Def.rec": [],
+    "Toy.Render.Def.recOn": [],
+    "Toy.Render.Def.ty": [],
+    "Toy.Render.DefaultRecoverable": [
+      "propext"
+    ],
+    "Toy.Render.Denote": [
+      "propext"
+    ],
+    "Toy.Render.Denote.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.ElabCfg": [],
+    "Toy.Render.ElabCfg.casesOn": [],
+    "Toy.Render.ElabCfg.ctorIdx": [],
+    "Toy.Render.ElabCfg.mk": [],
+    "Toy.Render.ElabCfg.mk.inj": [],
+    "Toy.Render.ElabCfg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Render.ElabCfg.mk.noConfusion": [],
+    "Toy.Render.ElabCfg.mk.sizeOf_spec": [],
+    "Toy.Render.ElabCfg.noConfusion": [],
+    "Toy.Render.ElabCfg.noConfusionType": [],
+    "Toy.Render.ElabCfg.numDefault": [],
+    "Toy.Render.ElabCfg.rec": [],
+    "Toy.Render.ElabCfg.recOn": [],
+    "Toy.Render.ElabCfg.rule": [],
+    "Toy.Render.Elabs": [],
+    "Toy.Render.Elabs.add": [],
+    "Toy.Render.Elabs.and": [],
+    "Toy.Render.Elabs.asc": [],
+    "Toy.Render.Elabs.below": [],
+    "Toy.Render.Elabs.below.add": [],
+    "Toy.Render.Elabs.below.and": [],
+    "Toy.Render.Elabs.below.asc": [],
+    "Toy.Render.Elabs.below.casesOn": [],
+    "Toy.Render.Elabs.below.coe": [],
+    "Toy.Render.Elabs.below.coeIns": [],
+    "Toy.Render.Elabs.below.const": [],
+    "Toy.Render.Elabs.below.eq": [],
+    "Toy.Render.Elabs.below.iff": [],
+    "Toy.Render.Elabs.below.num": [],
+    "Toy.Render.Elabs.below.rec": [],
+    "Toy.Render.Elabs.below.sub": [],
+    "Toy.Render.Elabs.below.var": [],
+    "Toy.Render.Elabs.brecOn": [],
+    "Toy.Render.Elabs.casesOn": [],
+    "Toy.Render.Elabs.coe": [],
+    "Toy.Render.Elabs.coeIns": [],
+    "Toy.Render.Elabs.const": [],
+    "Toy.Render.Elabs.eq": [],
+    "Toy.Render.Elabs.iff": [],
+    "Toy.Render.Elabs.num": [],
+    "Toy.Render.Elabs.rec": [],
+    "Toy.Render.Elabs.recOn": [],
+    "Toy.Render.Elabs.sub": [],
+    "Toy.Render.Elabs.var": [],
+    "Toy.Render.Env": [],
+    "Toy.Render.Env.casesOn": [],
+    "Toy.Render.Env.ctorIdx": [],
+    "Toy.Render.Env.int": [],
+    "Toy.Render.Env.mk": [],
+    "Toy.Render.Env.mk.inj": [],
+    "Toy.Render.Env.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Env.mk.noConfusion": [],
+    "Toy.Render.Env.mk.sizeOf_spec": [],
+    "Toy.Render.Env.nat": [],
+    "Toy.Render.Env.noConfusion": [],
+    "Toy.Render.Env.noConfusionType": [],
+    "Toy.Render.Env.prop": [],
+    "Toy.Render.Env.rec": [],
+    "Toy.Render.Env.recOn": [],
+    "Toy.Render.Faithful": [
+      "propext"
+    ],
+    "Toy.Render.Faithful.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.HintLe": [],
+    "Toy.Render.Mask": [],
+    "Toy.Render.Path": [],
+    "Toy.Render.Reader": [],
+    "Toy.Render.S_illDef": [],
+    "Toy.Render.Sig": [],
+    "Toy.Render.Sig.casesOn": [],
+    "Toy.Render.Sig.constTy": [],
+    "Toy.Render.Sig.ctorIdx": [],
+    "Toy.Render.Sig.ctx": [],
+    "Toy.Render.Sig.defs": [],
+    "Toy.Render.Sig.mk": [],
+    "Toy.Render.Sig.mk.inj": [],
+    "Toy.Render.Sig.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Sig.mk.noConfusion": [],
+    "Toy.Render.Sig.mk.sizeOf_spec": [],
+    "Toy.Render.Sig.noConfusion": [],
+    "Toy.Render.Sig.noConfusionType": [],
+    "Toy.Render.Sig.rec": [],
+    "Toy.Render.Sig.recOn": [],
+    "Toy.Render.Sig.varTy": [],
+    "Toy.Render.Sig.varTy.eq_1": [],
+    "Toy.Render.Stx": [],
+    "Toy.Render.Stx.add": [],
+    "Toy.Render.Stx.add.elim": [],
+    "Toy.Render.Stx.add.inj": [],
+    "Toy.Render.Stx.add.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.add.noConfusion": [],
+    "Toy.Render.Stx.add.sizeOf_spec": [],
+    "Toy.Render.Stx.and": [],
+    "Toy.Render.Stx.and.elim": [],
+    "Toy.Render.Stx.and.inj": [],
+    "Toy.Render.Stx.and.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.and.noConfusion": [],
+    "Toy.Render.Stx.and.sizeOf_spec": [],
+    "Toy.Render.Stx.annCount": [],
+    "Toy.Render.Stx.annCount.eq_1": [],
+    "Toy.Render.Stx.annCount.eq_10": [],
+    "Toy.Render.Stx.annCount.eq_2": [],
+    "Toy.Render.Stx.annCount.eq_3": [],
+    "Toy.Render.Stx.annCount.eq_4": [],
+    "Toy.Render.Stx.annCount.eq_5": [],
+    "Toy.Render.Stx.annCount.eq_6": [],
+    "Toy.Render.Stx.annCount.eq_7": [],
+    "Toy.Render.Stx.annCount.eq_8": [],
+    "Toy.Render.Stx.annCount.eq_9": [],
+    "Toy.Render.Stx.annCount.eq_def": [],
+    "Toy.Render.Stx.asc": [],
+    "Toy.Render.Stx.asc.elim": [],
+    "Toy.Render.Stx.asc.inj": [],
+    "Toy.Render.Stx.asc.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.asc.noConfusion": [],
+    "Toy.Render.Stx.asc.sizeOf_spec": [],
+    "Toy.Render.Stx.below": [],
+    "Toy.Render.Stx.brecOn": [],
+    "Toy.Render.Stx.brecOn.eq": [],
+    "Toy.Render.Stx.brecOn.go": [],
+    "Toy.Render.Stx.casesOn": [],
+    "Toy.Render.Stx.coe": [],
+    "Toy.Render.Stx.coe.elim": [],
+    "Toy.Render.Stx.coe.inj": [],
+    "Toy.Render.Stx.coe.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.coe.noConfusion": [],
+    "Toy.Render.Stx.coe.sizeOf_spec": [],
+    "Toy.Render.Stx.const": [],
+    "Toy.Render.Stx.const.elim": [],
+    "Toy.Render.Stx.const.inj": [],
+    "Toy.Render.Stx.const.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.const.noConfusion": [],
+    "Toy.Render.Stx.const.sizeOf_spec": [],
+    "Toy.Render.Stx.ctorElim": [],
+    "Toy.Render.Stx.ctorElimType": [],
+    "Toy.Render.Stx.ctorIdx": [],
+    "Toy.Render.Stx.eq": [],
+    "Toy.Render.Stx.eq.elim": [],
+    "Toy.Render.Stx.eq.inj": [],
+    "Toy.Render.Stx.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.eq.noConfusion": [],
+    "Toy.Render.Stx.eq.sizeOf_spec": [],
+    "Toy.Render.Stx.erase": [],
+    "Toy.Render.Stx.fullyAnnotated": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_10": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_11": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_3": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_4": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_5": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_6": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_7": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_8": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_9": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.eq_def": [
+      "propext"
+    ],
+    "Toy.Render.Stx.fullyAnnotated.match_1": [
+      "propext"
+    ],
+    "Toy.Render.Stx.iff": [],
+    "Toy.Render.Stx.iff.elim": [],
+    "Toy.Render.Stx.iff.inj": [],
+    "Toy.Render.Stx.iff.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.iff.noConfusion": [],
+    "Toy.Render.Stx.iff.sizeOf_spec": [],
+    "Toy.Render.Stx.noConfusion": [],
+    "Toy.Render.Stx.noConfusionType": [],
+    "Toy.Render.Stx.num": [],
+    "Toy.Render.Stx.num.elim": [],
+    "Toy.Render.Stx.num.inj": [],
+    "Toy.Render.Stx.num.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.num.noConfusion": [],
+    "Toy.Render.Stx.num.sizeOf_spec": [],
+    "Toy.Render.Stx.rec": [],
+    "Toy.Render.Stx.recOn": [],
+    "Toy.Render.Stx.sub": [],
+    "Toy.Render.Stx.sub.elim": [],
+    "Toy.Render.Stx.sub.inj": [],
+    "Toy.Render.Stx.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.sub.noConfusion": [],
+    "Toy.Render.Stx.sub.sizeOf_spec": [],
+    "Toy.Render.Stx.subAnnotated": [],
+    "Toy.Render.Stx.subAnnotated.eq_1": [],
+    "Toy.Render.Stx.subAnnotated.eq_10": [],
+    "Toy.Render.Stx.subAnnotated.eq_2": [],
+    "Toy.Render.Stx.subAnnotated.eq_3": [],
+    "Toy.Render.Stx.subAnnotated.eq_4": [],
+    "Toy.Render.Stx.subAnnotated.eq_5": [],
+    "Toy.Render.Stx.subAnnotated.eq_6": [],
+    "Toy.Render.Stx.subAnnotated.eq_7": [],
+    "Toy.Render.Stx.subAnnotated.eq_8": [],
+    "Toy.Render.Stx.subAnnotated.eq_9": [],
+    "Toy.Render.Stx.subAnnotated.eq_def": [],
+    "Toy.Render.Stx.subFree": [],
+    "Toy.Render.Stx.subFree.eq_1": [],
+    "Toy.Render.Stx.subFree.eq_10": [],
+    "Toy.Render.Stx.subFree.eq_2": [],
+    "Toy.Render.Stx.subFree.eq_3": [],
+    "Toy.Render.Stx.subFree.eq_4": [],
+    "Toy.Render.Stx.subFree.eq_5": [],
+    "Toy.Render.Stx.subFree.eq_6": [],
+    "Toy.Render.Stx.subFree.eq_7": [],
+    "Toy.Render.Stx.subFree.eq_8": [],
+    "Toy.Render.Stx.subFree.eq_9": [],
+    "Toy.Render.Stx.subFree.eq_def": [],
+    "Toy.Render.Stx.var": [],
+    "Toy.Render.Stx.var.elim": [],
+    "Toy.Render.Stx.var.inj": [],
+    "Toy.Render.Stx.var.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Stx.var.noConfusion": [],
+    "Toy.Render.Stx.var.sizeOf_spec": [],
+    "Toy.Render.S\u2080": [],
+    "Toy.Render.S\u2080.eq_1": [],
+    "Toy.Render.Tm": [],
+    "Toy.Render.Tm.add": [],
+    "Toy.Render.Tm.add.elim": [],
+    "Toy.Render.Tm.add.inj": [],
+    "Toy.Render.Tm.add.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Tm.add.noConfusion": [],
+    "Toy.Render.Tm.add.sizeOf_spec": [],
+    "Toy.Render.Tm.and": [],
+    "Toy.Render.Tm.and.elim": [],
+    "Toy.Render.Tm.and.inj": [],
+    "Toy.Render.Tm.and.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Tm.and.noConfusion": [],
+    "Toy.Render.Tm.and.sizeOf_spec": [],
+    "Toy.Render.Tm.below": [],
+    "Toy.Render.Tm.brecOn": [],
+    "Toy.Render.Tm.brecOn.eq": [],
+    "Toy.Render.Tm.brecOn.go": [],
+    "Toy.Render.Tm.casesOn": [],
+    "Toy.Render.Tm.coe": [],
+    "Toy.Render.Tm.coe.elim": [],
+    "Toy.Render.Tm.coe.inj": [],
+    "Toy.Render.Tm.coe.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Tm.coe.noConfusion": [],
+    "Toy.Render.Tm.coe.sizeOf_spec": [],
+    "Toy.Render.Tm.const": [],
+    "Toy.Render.Tm.const.elim": [],
+    "Toy.Render.Tm.const.inj": [],
+    "Toy.Render.Tm.const.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Tm.const.noConfusion": [],
+    "Toy.Render.Tm.const.sizeOf_spec": [],
+    "Toy.Render.Tm.ctorElim": [],
+    "Toy.Render.Tm.ctorElimType": [],
+    "Toy.Render.Tm.ctorIdx": [],
+    "Toy.Render.Tm.eq": [],
+    "Toy.Render.Tm.eq.elim": [],
+    "Toy.Render.Tm.eq.inj": [],
+    "Toy.Render.Tm.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Tm.eq.noConfusion": [],
+    "Toy.Render.Tm.eq.sizeOf_spec": [],
+    "Toy.Render.Tm.iff": [],
+    "Toy.Render.Tm.iff.elim": [],
+    "Toy.Render.Tm.iff.inj": [],
+    "Toy.Render.Tm.iff.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Tm.iff.noConfusion": [],
+    "Toy.Render.Tm.iff.sizeOf_spec": [],
+    "Toy.Render.Tm.isCoe": [
+      "propext"
+    ],
+    "Toy.Render.Tm.isCoe.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.Tm.isCoe.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.Tm.isCoe.match_1": [
+      "propext"
+    ],
+    "Toy.Render.Tm.lit": [],
+    "Toy.Render.Tm.lit.elim": [],
+    "Toy.Render.Tm.lit.inj": [],
+    "Toy.Render.Tm.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Tm.lit.noConfusion": [],
+    "Toy.Render.Tm.lit.sizeOf_spec": [],
+    "Toy.Render.Tm.noConfusion": [],
+    "Toy.Render.Tm.noConfusionType": [],
+    "Toy.Render.Tm.rec": [],
+    "Toy.Render.Tm.recOn": [],
+    "Toy.Render.Tm.sub": [],
+    "Toy.Render.Tm.sub.elim": [],
+    "Toy.Render.Tm.sub.inj": [],
+    "Toy.Render.Tm.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Tm.sub.noConfusion": [],
+    "Toy.Render.Tm.sub.sizeOf_spec": [],
+    "Toy.Render.Tm.var": [],
+    "Toy.Render.Tm.var.elim": [],
+    "Toy.Render.Tm.var.inj": [],
+    "Toy.Render.Tm.var.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Tm.var.noConfusion": [],
+    "Toy.Render.Tm.var.sizeOf_spec": [],
+    "Toy.Render.Ty": [],
+    "Toy.Render.Ty.casesOn": [],
+    "Toy.Render.Ty.ctorElim": [],
+    "Toy.Render.Ty.ctorElimType": [],
+    "Toy.Render.Ty.ctorIdx": [],
+    "Toy.Render.Ty.int": [],
+    "Toy.Render.Ty.int.elim": [],
+    "Toy.Render.Ty.int.sizeOf_spec": [],
+    "Toy.Render.Ty.isNum": [],
+    "Toy.Render.Ty.isNum.eq_1": [],
+    "Toy.Render.Ty.isNum.eq_2": [],
+    "Toy.Render.Ty.isNum.eq_3": [],
+    "Toy.Render.Ty.max": [
+      "propext"
+    ],
+    "Toy.Render.Ty.max.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.Ty.max.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.Ty.max.eq_3": [
+      "propext"
+    ],
+    "Toy.Render.Ty.max.eq_4": [
+      "propext"
+    ],
+    "Toy.Render.Ty.max.eq_5": [
+      "propext"
+    ],
+    "Toy.Render.Ty.max.match_1": [
+      "propext"
+    ],
+    "Toy.Render.Ty.nat": [],
+    "Toy.Render.Ty.nat.elim": [],
+    "Toy.Render.Ty.nat.sizeOf_spec": [],
+    "Toy.Render.Ty.noConfusion": [],
+    "Toy.Render.Ty.noConfusionType": [],
+    "Toy.Render.Ty.ofNat": [],
+    "Toy.Render.Ty.ofNat_ctorIdx": [],
+    "Toy.Render.Ty.prop": [],
+    "Toy.Render.Ty.prop.elim": [],
+    "Toy.Render.Ty.prop.sizeOf_spec": [],
+    "Toy.Render.Ty.rec": [],
+    "Toy.Render.Ty.recOn": [],
+    "Toy.Render.Val": [],
+    "Toy.Render.Val.casesOn": [],
+    "Toy.Render.Val.ctorElim": [],
+    "Toy.Render.Val.ctorElimType": [],
+    "Toy.Render.Val.ctorIdx": [],
+    "Toy.Render.Val.int": [],
+    "Toy.Render.Val.int.elim": [],
+    "Toy.Render.Val.int.inj": [],
+    "Toy.Render.Val.int.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Val.int.noConfusion": [],
+    "Toy.Render.Val.int.sizeOf_spec": [],
+    "Toy.Render.Val.nat": [],
+    "Toy.Render.Val.nat.elim": [],
+    "Toy.Render.Val.nat.inj": [],
+    "Toy.Render.Val.nat.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Val.nat.noConfusion": [],
+    "Toy.Render.Val.nat.sizeOf_spec": [],
+    "Toy.Render.Val.noConfusion": [],
+    "Toy.Render.Val.noConfusionType": [],
+    "Toy.Render.Val.prop": [],
+    "Toy.Render.Val.prop.elim": [],
+    "Toy.Render.Val.prop.inj": [],
+    "Toy.Render.Val.prop.injEq": [
+      "propext"
+    ],
+    "Toy.Render.Val.prop.noConfusion": [],
+    "Toy.Render.Val.prop.sizeOf_spec": [],
+    "Toy.Render.Val.rec": [],
+    "Toy.Render.Val.recOn": [],
+    "Toy.Render.Val.toBool": [
+      "propext"
+    ],
+    "Toy.Render.Val.toBool.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.Val.toBool.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.Val.toBool.match_1": [
+      "propext"
+    ],
+    "Toy.Render.Val.toInt": [
+      "propext"
+    ],
+    "Toy.Render.Val.toInt.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.Val.toInt.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.Val.toInt.match_1": [
+      "propext"
+    ],
+    "Toy.Render.Val.toNat": [
+      "propext"
+    ],
+    "Toy.Render.Val.toNat.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.Val.toNat.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.Val.toNat.match_1": [
+      "propext"
+    ],
+    "Toy.Render.Valid": [
+      "propext"
+    ],
+    "Toy.Render.WellTyped": [],
+    "Toy.Render.agreeOnFull_refl": [
+      "propext"
+    ],
+    "Toy.Render.agreeing_reader_reads_ppExplicit": [
+      "propext"
+    ],
+    "Toy.Render.annCount_overhead_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.annCount_overhead_examples_other_readers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.annPos": [],
+    "Toy.Render.annPos.eq_1": [],
+    "Toy.Render.annPos.eq_2": [],
+    "Toy.Render.annPos.eq_3": [],
+    "Toy.Render.annPos.eq_4": [],
+    "Toy.Render.annPos.eq_5": [],
+    "Toy.Render.annPos.eq_6": [],
+    "Toy.Render.annPos.eq_7": [],
+    "Toy.Render.annPos.eq_8": [],
+    "Toy.Render.annPos.eq_9": [],
+    "Toy.Render.annPos.eq_def": [],
+    "Toy.Render.annPos_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.annPos_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.annPos_not_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.annPos_suffix": [
+      "propext"
+    ],
+    "Toy.Render.append_cons_inj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ce_agreeing_reader_drop_agree": [
+      "propext"
+    ],
+    "Toy.Render.ce_agreeing_reader_drop_wellTyped": [
+      "propext"
+    ],
+    "Toy.Render.ce_defaultRecoverable_drop_faithful": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabE_sound_drop_elab": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabSys_ppDefault_drop_defaultRecoverable": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabWith_eq_elabSys_drop_fullyAnnotated": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabWith_ppExplicit_drop_wellTyped": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabs_coherent_drop_fullyAnnotated": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabs_coherent_drop_subAnnotated": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabs_coherent_drop_subFree": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabs_coherent_of_fullyAnnotated_drop_elabs": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabs_coherent_of_subAnnotated_drop_elabs": [
+      "propext"
+    ],
+    "Toy.Render.ce_elabs_coherent_of_subFree_drop_elabs": [
+      "propext"
+    ],
+    "Toy.Render.ce_eval_eq_drop_deltaNF": [
+      "propext"
+    ],
+    "Toy.Render.ce_faithful_ppMask_mono_drop_faithful": [
+      "propext"
+    ],
+    "Toy.Render.ce_faithful_ppMask_mono_drop_le": [
+      "propext"
+    ],
+    "Toy.Render.ce_faithful_reading_drop_faithful": [
+      "propext"
+    ],
+    "Toy.Render.ce_ppDefault_elabWith_drop_annotationFree": [
+      "propext"
+    ],
+    "Toy.Render.ce_ppDefault_elabWith_drop_elab": [
+      "propext"
+    ],
+    "Toy.Render.ce_ppMin_eq_ppDefault_drop_faithful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ce_ppMin_faithful_drop_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ce_ppMin_locally_minimal_drop_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ce_ppMin_locally_minimal_drop_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ce_textual_round_trip_drop_faithful": [
+      "propext"
+    ],
+    "Toy.Render.cfg0": [],
+    "Toy.Render.cfg0.eq_1": [],
+    "Toy.Render.cfgIntNumerals": [],
+    "Toy.Render.cfgLeaves": [],
+    "Toy.Render.cfgPropNumerals": [],
+    "Toy.Render.coerceTo": [],
+    "Toy.Render.coerceTo.eq_1": [],
+    "Toy.Render.coerceTo.eq_2": [],
+    "Toy.Render.coerceTo.match_1": [],
+    "Toy.Render.coerceTo_eq_coe": [
+      "propext"
+    ],
+    "Toy.Render.coerceTo_inj": [
+      "propext"
+    ],
+    "Toy.Render.coerceTo_inj_sameTy": [
+      "propext"
+    ],
+    "Toy.Render.coerceTo_self": [
+      "propext"
+    ],
+    "Toy.Render.coerceTo_some_ty": [
+      "propext"
+    ],
+    "Toy.Render.coerceTo_sound": [
+      "propext"
+    ],
+    "Toy.Render.ctxLookup": [],
+    "Toy.Render.ctxLookup.eq_1": [],
+    "Toy.Render.ctxLookup.eq_2": [],
+    "Toy.Render.ctxLookup.eq_def": [],
+    "Toy.Render.ctxLookup.match_1": [],
+    "Toy.Render.defRec": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_3": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_4": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_5": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_6": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_7": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_8": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_9": [
+      "propext"
+    ],
+    "Toy.Render.defRec.eq_def": [
+      "propext"
+    ],
+    "Toy.Render.defRec.match_1": [],
+    "Toy.Render.defRec_complete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.defRec_sound": [
+      "propext"
+    ],
+    "Toy.Render.defaultRecoverable_of_elabSys_ppDefault": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.defaultRecoverable_tAddIntNumEqZ": [
+      "propext"
+    ],
+    "Toy.Render.defaultRecoverable_tZ": [
+      "propext"
+    ],
+    "Toy.Render.default_and_min_texts_faithful_for_cfg0_but_not_other_readers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.default_text_incoherent_operator_vs_leaf_coercion": [
+      "propext"
+    ],
+    "Toy.Render.deltaNF": [],
+    "Toy.Render.deltaNF_check_rejects_reordered_unfolded_rendering": [
+      "propext"
+    ],
+    "Toy.Render.deltaNF_not_wellTyped_of_illTyped_defs": [
+      "propext"
+    ],
+    "Toy.Render.dh": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_3": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_4": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_5": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_6": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_7": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_8": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_9": [
+      "propext"
+    ],
+    "Toy.Render.dh.eq_def": [
+      "propext"
+    ],
+    "Toy.Render.eLeavesOnNonFull": [
+      "propext"
+    ],
+    "Toy.Render.eLeavesOnNonFull.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.elabE": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_10": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_3": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_4": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_5": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_6": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_7": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_8": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_9": [
+      "propext"
+    ],
+    "Toy.Render.elabE.eq_def": [
+      "propext"
+    ],
+    "Toy.Render.elabE.match_1": [
+      "propext"
+    ],
+    "Toy.Render.elabE.match_4": [],
+    "Toy.Render.elabE.match_6": [],
+    "Toy.Render.elabE_add_build": [
+      "propext"
+    ],
+    "Toy.Render.elabE_add_inv": [
+      "propext"
+    ],
+    "Toy.Render.elabE_and_inv": [
+      "propext"
+    ],
+    "Toy.Render.elabE_eq_build": [
+      "propext"
+    ],
+    "Toy.Render.elabE_eq_cfg0_of_fullyAnnotated": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.elabE_eq_inv": [
+      "propext"
+    ],
+    "Toy.Render.elabE_iff_inv": [
+      "propext"
+    ],
+    "Toy.Render.elabE_int_not_coe_of_hint_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.elabE_natTm_coe_exp": [
+      "propext"
+    ],
+    "Toy.Render.elabE_ppDefault_coe": [
+      "propext"
+    ],
+    "Toy.Render.elabE_ppExplicit": [
+      "propext"
+    ],
+    "Toy.Render.elabE_shift_int_nat": [
+      "propext"
+    ],
+    "Toy.Render.elabE_some_exp_ty": [
+      "propext"
+    ],
+    "Toy.Render.elabE_sound": [
+      "propext"
+    ],
+    "Toy.Render.elabE_sound_aux": [
+      "propext"
+    ],
+    "Toy.Render.elabE_sound_aux.match_1_12": [],
+    "Toy.Render.elabE_sound_aux.match_1_24": [],
+    "Toy.Render.elabE_sound_aux.match_1_26": [],
+    "Toy.Render.elabE_sound_aux.match_1_28": [],
+    "Toy.Render.elabE_sound_aux.match_1_30": [],
+    "Toy.Render.elabE_sound_aux.match_1_32": [],
+    "Toy.Render.elabE_sound_aux.match_1_34": [],
+    "Toy.Render.elabE_sub_build": [
+      "propext"
+    ],
+    "Toy.Render.elabE_sub_inv": [
+      "propext"
+    ],
+    "Toy.Render.elabSys": [
+      "propext"
+    ],
+    "Toy.Render.elabSys.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.elabSys_ppDefault_eq_some_iff_defaultRecoverable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.elabSys_ppDefault_of_defaultRecoverable": [
+      "propext"
+    ],
+    "Toy.Render.elabSys_ppDefault_tIffNat": [
+      "propext"
+    ],
+    "Toy.Render.elabSys_ppDefault_tZ": [
+      "propext"
+    ],
+    "Toy.Render.elabWith": [
+      "propext"
+    ],
+    "Toy.Render.elabWith.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.elabWith_agreeOnFull": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.elabWith_eq_elabSys_of_fullyAnnotated": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.elabWith_ppExplicit_of_wellTyped": [
+      "propext"
+    ],
+    "Toy.Render.elabs_coh_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.elabs_coherent_of_fullyAnnotated": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.elabs_coherent_of_subAnnotated": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.elabs_coherent_of_subFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.elabs_not_complete_for_elabWith": [
+      "propext"
+    ],
+    "Toy.Render.elabs_not_complete_for_elabWith.match_1_1": [],
+    "Toy.Render.elabs_ppDefault_tZ_tZ": [],
+    "Toy.Render.elabs_ppDefault_tZ_tZLeaves": [],
+    "Toy.Render.eqType_raise": [
+      "propext"
+    ],
+    "Toy.Render.eval": [
+      "propext"
+    ],
+    "Toy.Render.eval.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.evalD": [
+      "propext"
+    ],
+    "Toy.Render.evalD.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.evalD.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.evalD.eq_def": [
+      "propext"
+    ],
+    "Toy.Render.evalD.match_1": [],
+    "Toy.Render.evalD_eq_evalWith_const": [
+      "propext"
+    ],
+    "Toy.Render.evalD_eq_unfoldDefs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.evalWith": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_10": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_11": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_12": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_13": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_14": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_15": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_16": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_17": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_18": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_19": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_3": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_4": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_5": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_6": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_7": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_8": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_9": [
+      "propext"
+    ],
+    "Toy.Render.evalWith.eq_def": [
+      "propext"
+    ],
+    "Toy.Render.evalWith_substConst": [
+      "propext"
+    ],
+    "Toy.Render.eval_eq_of_deltaNF_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.eval_equivalence_identifies_distinct_valid_terms": [
+      "propext"
+    ],
+    "Toy.Render.faithfulB": [
+      "propext"
+    ],
+    "Toy.Render.faithfulB.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.faithfulB_iff": [
+      "propext"
+    ],
+    "Toy.Render.faithful_ppExplicit_tTrunc": [
+      "propext"
+    ],
+    "Toy.Render.faithful_ppMask_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.faithful_ppMask_mono_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.faithful_reading_unique_and_same_denotation": [
+      "propext"
+    ],
+    "Toy.Render.foldl_erase_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.foldl_greedy_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.foldl_greedy_faithful": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.foldl_greedy_kept": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.foldl_greedy_sublist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.greedyStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.hint": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_10": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_11": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_12": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_3": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_4": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_5": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_6": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_7": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_8": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_9": [
+      "propext"
+    ],
+    "Toy.Render.hint.eq_def": [
+      "propext"
+    ],
+    "Toy.Render.hint_ppDefault": [
+      "propext"
+    ],
+    "Toy.Render.hint_ppMask_le": [
+      "propext"
+    ],
+    "Toy.Render.instDecidableDefaultRecoverable": [
+      "propext"
+    ],
+    "Toy.Render.instDecidableDenote": [
+      "propext"
+    ],
+    "Toy.Render.instDecidableEqAnnKind": [],
+    "Toy.Render.instDecidableEqCoeRule": [],
+    "Toy.Render.instDecidableEqDef": [],
+    "Toy.Render.instDecidableEqDef.decEq": [],
+    "Toy.Render.instDecidableEqDef.decEq.match_1": [],
+    "Toy.Render.instDecidableEqElabCfg": [],
+    "Toy.Render.instDecidableEqElabCfg.decEq": [],
+    "Toy.Render.instDecidableEqElabCfg.decEq.match_1": [],
+    "Toy.Render.instDecidableEqSig": [],
+    "Toy.Render.instDecidableEqSig.decEq": [],
+    "Toy.Render.instDecidableEqSig.decEq.match_1": [],
+    "Toy.Render.instDecidableEqStx": [],
+    "Toy.Render.instDecidableEqStx.decEq": [],
+    "Toy.Render.instDecidableEqStx.decEq.match_1": [],
+    "Toy.Render.instDecidableEqTm": [],
+    "Toy.Render.instDecidableEqTm.decEq": [],
+    "Toy.Render.instDecidableEqTm.decEq.match_1": [],
+    "Toy.Render.instDecidableEqTy": [],
+    "Toy.Render.instDecidableEqVal": [],
+    "Toy.Render.instDecidableEqVal.decEq": [],
+    "Toy.Render.instDecidableEqVal.decEq.match_1": [],
+    "Toy.Render.instDecidableFaithful": [
+      "propext"
+    ],
+    "Toy.Render.instDecidableWellTyped": [
+      "propext"
+    ],
+    "Toy.Render.instDecidableWellTyped.match_1": [],
+    "Toy.Render.instDecidableWellTyped.match_3": [],
+    "Toy.Render.instReprAnnKind": [],
+    "Toy.Render.instReprAnnKind.repr": [],
+    "Toy.Render.instReprAnnKind.repr.match_1": [],
+    "Toy.Render.instReprCoeRule": [],
+    "Toy.Render.instReprCoeRule.repr": [],
+    "Toy.Render.instReprCoeRule.repr.match_1": [],
+    "Toy.Render.instReprDef": [],
+    "Toy.Render.instReprDef.repr": [],
+    "Toy.Render.instReprElabCfg": [],
+    "Toy.Render.instReprElabCfg.repr": [],
+    "Toy.Render.instReprSig": [
+      "propext"
+    ],
+    "Toy.Render.instReprSig.repr": [
+      "propext"
+    ],
+    "Toy.Render.instReprStx": [],
+    "Toy.Render.instReprStx.repr": [],
+    "Toy.Render.instReprStx.repr.match_1": [],
+    "Toy.Render.instReprTm": [],
+    "Toy.Render.instReprTm.repr": [],
+    "Toy.Render.instReprTm.repr.match_1": [],
+    "Toy.Render.instReprTy": [],
+    "Toy.Render.instReprTy.repr": [],
+    "Toy.Render.instReprTy.repr.match_1": [],
+    "Toy.Render.instReprVal": [
+      "propext"
+    ],
+    "Toy.Render.instReprVal.repr": [
+      "propext"
+    ],
+    "Toy.Render.instReprVal.repr.match_1": [],
+    "Toy.Render.joinH": [
+      "propext"
+    ],
+    "Toy.Render.joinH.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.joinH.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.joinH.eq_3": [
+      "propext"
+    ],
+    "Toy.Render.joinH.match_1": [],
+    "Toy.Render.joinH_hintLe": [
+      "propext"
+    ],
+    "Toy.Render.joinH_raise": [
+      "propext"
+    ],
+    "Toy.Render.joinH_some_left": [
+      "propext"
+    ],
+    "Toy.Render.joinH_some_right": [
+      "propext"
+    ],
+    "Toy.Render.lookupDef": [],
+    "Toy.Render.lookupDef.match_1": [],
+    "Toy.Render.maskOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.maskOf.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.maskOf_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.maskOf_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.minMask": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.minMaskRev": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.minMask_eq_foldl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.not_agreeOnFull_none": [
+      "propext"
+    ],
+    "Toy.Render.not_defaultRecoverable_tCoeNumSub": [
+      "propext"
+    ],
+    "Toy.Render.not_defaultRecoverable_tCoeTwoEqZ": [
+      "propext"
+    ],
+    "Toy.Render.not_defaultRecoverable_tTrunc": [
+      "propext"
+    ],
+    "Toy.Render.not_denote_tIntSub": [
+      "propext"
+    ],
+    "Toy.Render.not_elabs_int_var_at_nat": [
+      "propext"
+    ],
+    "Toy.Render.not_faithful_ppDefault_tTrunc": [
+      "propext"
+    ],
+    "Toy.Render.not_valid_tIntSub": [
+      "propext"
+    ],
+    "Toy.Render.not_valid_tTrunc": [
+      "propext"
+    ],
+    "Toy.Render.not_wellTyped_coe_int": [
+      "propext"
+    ],
+    "Toy.Render.not_wellTyped_tIll": [
+      "propext"
+    ],
+    "Toy.Render.numOnly": [],
+    "Toy.Render.numOnly.eq_1": [],
+    "Toy.Render.numOnly.eq_2": [],
+    "Toy.Render.numOnly.match_1": [],
+    "Toy.Render.numOnly_getD_isNum": [],
+    "Toy.Render.nv_agreeing_reader_reads_ppExplicit": [
+      "propext"
+    ],
+    "Toy.Render.nv_defaultRecoverable_of_elabSys_ppDefault": [
+      "propext"
+    ],
+    "Toy.Render.nv_elabE_sound": [
+      "propext"
+    ],
+    "Toy.Render.nv_elabSys_ppDefault_eq_some_iff_defaultRecoverable": [
+      "propext"
+    ],
+    "Toy.Render.nv_elabSys_ppDefault_of_defaultRecoverable": [
+      "propext"
+    ],
+    "Toy.Render.nv_elabWith_eq_elabSys_of_fullyAnnotated": [
+      "propext"
+    ],
+    "Toy.Render.nv_elabWith_ppExplicit_of_wellTyped": [
+      "propext"
+    ],
+    "Toy.Render.nv_elabs_coherent_of_fullyAnnotated": [
+      "propext"
+    ],
+    "Toy.Render.nv_elabs_coherent_of_subAnnotated": [
+      "propext"
+    ],
+    "Toy.Render.nv_elabs_coherent_of_subFree": [],
+    "Toy.Render.nv_eval_eq_of_deltaNF_eq": [],
+    "Toy.Render.nv_faithful_ppMask_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.nv_faithful_reading_unique_and_same_denotation": [
+      "propext"
+    ],
+    "Toy.Render.nv_ppDefault_elabWith_of_annotationFree": [
+      "propext"
+    ],
+    "Toy.Render.nv_ppMin_eq_ppDefault_of_faithful_ppDefault": [
+      "propext"
+    ],
+    "Toy.Render.nv_ppMin_faithful_of_wellTyped": [
+      "propext"
+    ],
+    "Toy.Render.nv_ppMin_locally_minimal_of_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.nv_textual_round_trip_of_faithful": [
+      "propext"
+    ],
+    "Toy.Render.opType": [
+      "propext"
+    ],
+    "Toy.Render.opType.eq_1": [
+      "propext"
+    ],
+    "Toy.Render.opType.eq_2": [
+      "propext"
+    ],
+    "Toy.Render.opType_int_nat": [
+      "propext"
+    ],
+    "Toy.Render.opType_raise": [
+      "propext"
+    ],
+    "Toy.Render.opType_some_of": [
+      "propext"
+    ],
+    "Toy.Render.option_getD_eq_or": [
+      "propext"
+    ],
+    "Toy.Render.partial_annotation_faithful_for_every_configuration": [
+      "propext"
+    ],
+    "Toy.Render.partial_annotation_faithful_for_every_configuration.match_1_1": [],
+    "Toy.Render.ppCoercions": [],
+    "Toy.Render.ppCoercions_textual_round_trip_fails": [
+      "propext"
+    ],
+    "Toy.Render.ppDefault": [],
+    "Toy.Render.ppDefault.eq_1": [],
+    "Toy.Render.ppDefault_annCount_zero": [
+      "propext"
+    ],
+    "Toy.Render.ppDefault_coerceTo": [
+      "propext"
+    ],
+    "Toy.Render.ppDefault_collision_natSub_intSub_changes_truth": [
+      "propext"
+    ],
+    "Toy.Render.ppDefault_elabE_of_annotationFree": [
+      "propext"
+    ],
+    "Toy.Render.ppDefault_elabE_of_annotationFree.match_1_12": [],
+    "Toy.Render.ppDefault_elabE_of_annotationFree.match_1_26": [],
+    "Toy.Render.ppDefault_elabWith_of_annotationFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppDefault_tEqAB_faithful_for_named_readers": [
+      "propext"
+    ],
+    "Toy.Render.ppDefault_tTrunc": [],
+    "Toy.Render.ppExplicit": [],
+    "Toy.Render.ppExplicit.eq_1": [],
+    "Toy.Render.ppExplicit_fullyAnnotated": [
+      "propext"
+    ],
+    "Toy.Render.ppExplicit_separates_natSub_intSub": [
+      "propext"
+    ],
+    "Toy.Render.ppExplicit_tTrunc": [],
+    "Toy.Render.ppMask": [],
+    "Toy.Render.ppMask.eq_1": [],
+    "Toy.Render.ppMask.eq_2": [],
+    "Toy.Render.ppMask.eq_3": [],
+    "Toy.Render.ppMask.eq_4": [],
+    "Toy.Render.ppMask.eq_5": [],
+    "Toy.Render.ppMask.eq_6": [],
+    "Toy.Render.ppMask.eq_7": [],
+    "Toy.Render.ppMask.eq_8": [],
+    "Toy.Render.ppMask.eq_9": [],
+    "Toy.Render.ppMask.eq_def": [],
+    "Toy.Render.ppMask.match_1": [],
+    "Toy.Render.ppMask_congr": [
+      "propext"
+    ],
+    "Toy.Render.ppMask_false_irrel": [
+      "propext"
+    ],
+    "Toy.Render.ppMask_maskOf_annPos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMask_mono_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_cfg0_tEqAB_faithful_for_all_cfg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_cfg0_tEqAB_faithful_for_all_cfg.match_1_1": [],
+    "Toy.Render.ppMin_eq_ppDefault_converse_false_on_tIll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_eq_ppDefault_of_faithful_ppDefault": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_faithful_of_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_kept_position_not_globally_necessary": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_locally_minimal_of_wellTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_not_globally_minimal_cfg0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_not_globally_minimal_on_tTrunc_cfgLeaves": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_tIntSub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppMin_tTrunc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.ppNumericTypes": [],
+    "Toy.Render.ppWith": [],
+    "Toy.Render.ppWith.eq_1": [],
+    "Toy.Render.rSwapped": [],
+    "Toy.Render.read_by_all_agreeing_readers_iff": [
+      "propext"
+    ],
+    "Toy.Render.read_by_all_readers_agreeing_on_pred_iff": [
+      "propext"
+    ],
+    "Toy.Render.sAASub": [],
+    "Toy.Render.sSubAnnMixed": [],
+    "Toy.Render.sTwoEqZ": [],
+    "Toy.Render.sWrongSub": [],
+    "Toy.Render.sZZSub": [],
+    "Toy.Render.subAnnotated_not_necessary_for_coherence_cancel": [
+      "propext"
+    ],
+    "Toy.Render.subAnnotated_not_necessary_for_coherence_int": [
+      "propext"
+    ],
+    "Toy.Render.subAnnotated_of_fullyAnnotated": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.subAnnotated_of_subFree": [
+      "propext"
+    ],
+    "Toy.Render.subFree_term_round_trip_fails_across_readers": [
+      "propext"
+    ],
+    "Toy.Render.substConst": [],
+    "Toy.Render.substConst.eq_1": [],
+    "Toy.Render.substConst.eq_2": [],
+    "Toy.Render.substConst.eq_3": [],
+    "Toy.Render.substConst.eq_4": [],
+    "Toy.Render.substConst.eq_5": [],
+    "Toy.Render.substConst.eq_6": [],
+    "Toy.Render.substConst.eq_7": [],
+    "Toy.Render.substConst.eq_8": [],
+    "Toy.Render.substConst.eq_9": [],
+    "Toy.Render.substConst.eq_def": [],
+    "Toy.Render.tAddIntNumEqZ": [],
+    "Toy.Render.tAddLeaves": [],
+    "Toy.Render.tAddOp": [],
+    "Toy.Render.tCoeEqCoe": [],
+    "Toy.Render.tCoeNumSub": [],
+    "Toy.Render.tCoeTwoEqZ": [],
+    "Toy.Render.tCoeZeroEqZero": [],
+    "Toy.Render.tEqAB": [],
+    "Toy.Render.tIffNat": [],
+    "Toy.Render.tIll": [],
+    "Toy.Render.tIllEq": [],
+    "Toy.Render.tIntSub": [],
+    "Toy.Render.tIntSub.eq_1": [],
+    "Toy.Render.tLitProp": [],
+    "Toy.Render.tNatSub": [],
+    "Toy.Render.tReread": [],
+    "Toy.Render.tReread.eq_1": [],
+    "Toy.Render.tSwapped": [],
+    "Toy.Render.tSwapped.eq_1": [],
+    "Toy.Render.tTrunc": [],
+    "Toy.Render.tZ": [],
+    "Toy.Render.tZLeaves": [],
+    "Toy.Render.tZeroEqZero": [],
+    "Toy.Render.tZeroEqZero.eq_1": [],
+    "Toy.Render.textual_round_trip_holds_on_elaborating_ppDefault": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.textual_round_trip_of_faithful": [
+      "propext"
+    ],
+    "Toy.Render.textual_round_trip_passes_on_tTrunc_but_term_and_truth_change": [
+      "propext"
+    ],
+    "Toy.Render.tyMatches": [],
+    "Toy.Render.tyMatches.eq_1": [],
+    "Toy.Render.tyMatches.eq_2": [],
+    "Toy.Render.tyMatches.match_1": [],
+    "Toy.Render.tyMatches_some": [
+      "propext"
+    ],
+    "Toy.Render.tyOf": [],
+    "Toy.Render.tyOf.eq_1": [],
+    "Toy.Render.tyOf.eq_2": [],
+    "Toy.Render.tyOf.eq_3": [],
+    "Toy.Render.tyOf.eq_4": [],
+    "Toy.Render.tyOf.eq_5": [],
+    "Toy.Render.tyOf.eq_6": [],
+    "Toy.Render.tyOf.eq_7": [],
+    "Toy.Render.tyOf.eq_8": [],
+    "Toy.Render.tyOf.eq_9": [],
+    "Toy.Render.tyOf.eq_def": [],
+    "Toy.Render.undefVal": [],
+    "Toy.Render.unfoldDefs": [],
+    "Toy.Render.unfoldDefs.eq_1": [],
+    "Toy.Render.unfoldDefs.eq_2": [],
+    "Toy.Render.unfoldDefs.eq_def": [],
+    "Toy.Render.unfoldDefs.match_1": [],
+    "Toy.Render.vA": [],
+    "Toy.Render.vA.eq_1": [],
+    "Toy.Render.vB": [],
+    "Toy.Render.vB.eq_1": [],
+    "Toy.Render.vZ": [],
+    "Toy.Render.vZ.eq_1": [],
+    "Toy.Render.valid_tNatSub": [
+      "propext"
+    ],
+    "Toy.Render.valid_tReread": [
+      "propext"
+    ],
+    "Toy.Render.visiting_order_changes_kept_set_on_tTrunc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Render.wellTyped_tTrunc": [
+      "propext"
+    ],
+    "Toy.Render.wrong_type_annotation_changes_term_tZ": [
+      "propext"
+    ],
+    "Toy.Render.\u03c1\u2080": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

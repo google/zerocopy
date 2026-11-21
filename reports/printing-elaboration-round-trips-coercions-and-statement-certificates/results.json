@@ -1,0 +1,1120 @@
+[
+  {
+    "id": "default_printer_collision_changes_truth",
+    "lean": "Toy.Render.ppDefault_collision_natSub_intSub_changes_truth",
+    "lean_names": [
+      "Toy.Render.default_and_min_texts_faithful_for_cfg0_but_not_other_readers",
+      "Toy.Render.Stx",
+      "Toy.Render.Env",
+      "Toy.Render.Valid",
+      "Toy.Render.Reader",
+      "Toy.Render.elabSys",
+      "Toy.Render.ppWith",
+      "Toy.Render.ppDefault",
+      "Toy.Render.ppExplicit",
+      "Toy.Render.ppNumericTypes",
+      "Toy.Render.S₀",
+      "Toy.Render.tNatSub",
+      "Toy.Render.tIntSub",
+      "Toy.Render.valid_tNatSub",
+      "Toy.Render.not_denote_tIntSub",
+      "Toy.Render.not_valid_tIntSub"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "In the running signature S₀, the default printer (which elides numeral types, type arguments and coercions) maps the distinct closed terms (2 : Nat) - 3 = 0 and (2 : Int) - 3 = 0 to the same text 2 - 3 = 0; the first is valid and the second is not; and for every reader R (any function from a signature and a text to an optional term), R does not return (2 : Nat) - 3 = 0 on the default text of the first, or R does not return (2 : Int) - 3 = 0 on the default text of the second.",
+    "hypotheses": [],
+    "nonvacuity_witness": "No hypotheses: the statement is about two concrete closed terms of S₀.",
+    "positive_control_lean": "Toy.Render.ppExplicit_separates_natSub_intSub",
+    "non_claims": [
+      "Does not say that default text is usually ambiguous: one collision is exhibited; how often collisions occur in any real corpus is not examined.",
+      "Does not say that every reader misreads 2 - 3 = 0: the system elaborator reads it as the Nat statement (default_and_min_texts_faithful_for_cfg0_but_not_other_readers); the impossibility is that no single reader returns both terms.",
+      "Escape hatch: a printer that shows an annotation separating the two terms defeats the impossibility (positive control ppExplicit_separates_natSub_intSub).",
+      "Does not formalize Pollack-inconsistency: the toy has no proof system, so the collision is a toy analogue of one Pollack-axiom in the sense of Wiedijk (2012, Definition 1.4), not a derivation of a contradiction (Definition 1.5).",
+      "Text in this package is a parsed syntax tree (Stx), not a character string. That Lean v4.34.1 prints both statements as 2 - 3 = 0 by default is a separate build-checked observation (LeanObservations.lean), not a consequence of this theorem."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified. Relation to this card: the two terms give the toy analogue of a Pollack-axiom (2 : Nat) - 3 = 0 ↔ (2 : Int) - 3 = 0 whose sides differ in truth.",
+      "Robert Pollack, 'How to believe a machine-checked proof', in G. Sambin and J. M. Smith (eds.), Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998, pp. 205-220, DOI 10.1093/oso/9780198501275.003.0013; preprint BRICS Report Series RS-97-18 (1997), DOI 10.7146/brics.v4i18.18945. Section 3.1 'Reading the files': a reader sees a concrete representation (a string) while the checker uses an abstract syntax tree; unless their relationship is understood nothing the checker says can be believed, so a checker should support an official syntax that is parseable and printable.",
+      "Mark Adams, 'HOL Zero's Solutions for Pollack-Inconsistency', Interactive Theorem Proving (ITP 2016), LNCS 9807, pp. 20-35, Springer, 2016, DOI 10.1007/978-3-319-43144-4_2. Only the abstract was consulted: HOL Zero aims at well-behaved parsing/printing and Pollack-consistency, and annotates terms minimally with types for unambiguous printing.",
+      "Lean 4 v4.34.1 (leanprover/lean4 commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Lean/PrettyPrinter/Delaborator/Options.lean: pp.explicit (default false, 'display implicit arguments'), pp.coercions (default true, described as 'hide coercion applications'; with the default, coercions are displayed as an up-arrow, not elided), pp.numericTypes (default false, 'display types of numeric literals'); src/Lean/PrettyPrinter/Delaborator/TopDownAnalyze.lean: pp.analyze (default false, 'try to determine annotations sufficient to ensure round-tripping'); its module documentation says the analyzer 'is neither sound nor complete'. With pp.analyze enabled, this toolchain prints ((2 : Int) - 3 = 0) as 2 - 3 = 0 (build-checked observation in LeanObservations.lean). Modeling bridge (model–system relation: none proved): the toy models neither this printer nor the analyzer."
+    ],
+    "design_question": "Can a reader of printed statements rely on default-printed text to identify the statement that was proved? (No: in the toy, two statements with different truth values share their default text.)"
+  },
+  {
+    "id": "explicit_printer_section_law",
+    "lean": "Toy.Render.elabWith_ppExplicit_of_wellTyped",
+    "lean_names": [
+      "Toy.Render.Tm",
+      "Toy.Render.Def",
+      "Toy.Render.Sig",
+      "Toy.Render.WellTyped",
+      "Toy.Render.CoeRule",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfg0",
+      "Toy.Render.elabWith",
+      "Toy.Render.ppExplicit",
+      "Toy.Render.ppMin",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc",
+      "Toy.Render.tIll",
+      "Toy.Render.wellTyped_tTrunc",
+      "Toy.Render.not_wellTyped_coe_int",
+      "Toy.Render.not_wellTyped_tIll",
+      "Toy.Render.ppExplicit_tTrunc",
+      "Toy.Render.agreeing_reader_reads_ppExplicit",
+      "Toy.Render.elabE_sound",
+      "Toy.Render.annCount_overhead_examples"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every elaborator configuration cfg of the family (any numeral default, including the degenerate default Prop, and either coercion-placement rule), every signature S and every term t: if t is well typed in S, then cfg reads the explicit text ppExplicit t (every type argument, numeral ascription and coercion printed) back as exactly t.",
+    "hypotheses": [
+      {
+        "name": "ht : WellTyped S t",
+        "purpose": "The explicit printer omits the type annotation of a variable (the context supplies it), so an annotation that disagrees with the context cannot be recovered; every term that an elaborator of the family returns is well typed (elabE_sound).",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabWith_ppExplicit_drop_wellTyped",
+        "witness_class": "an ill-typed variable term (a : Nat annotated as Int) under the system configuration cfg0"
+      }
+    ],
+    "nonvacuity_witness": "tTrunc = ↑(a - b) = ↑a - ↑b at Int is well typed in S₀.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_elabWith_ppExplicit_of_wellTyped",
+    "non_claims": [
+      "Does not say the explicit text is the shortest faithful text: on tTrunc the deletion-greedy rendering ppMin cfg0 has 1 annotation token versus 6 (annCount_overhead_examples).",
+      "Does not say the explicit text is faithful for readers outside the configuration family; for an arbitrary reader, agreement with the system elaborator on fully annotated text suffices (agreeing_reader_reads_ppExplicit).",
+      "Does not cover variable binder types: the typing context is assumed to be shared by writer and reader."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified. Relation to this card: the explicit printer plays the role of the failsafe printer of Section 8.1, and this card is its round-trip property for the toy family.",
+      "Nils Anders Danielsson, 'Correct-by-construction pretty-printing', Proceedings of the 2013 ACM SIGPLAN Workshop on Dependently-Typed Programming (DTP '13), pp. 1-12, DOI 10.1145/2502409.2502410: pretty-printing and then parsing with the same unambiguous grammar returns the original value; it concerns concrete syntax and involves no elaboration.",
+      "Tillmann Rendel and Klaus Ostermann, 'Invertible syntax descriptions: unifying parsing and pretty printing', Haskell '10 (Third ACM Haskell Symposium), pp. 1-12, ACM, 2010, DOI 10.1145/1863523.1863525, also in ACM SIGPLAN Notices 45(11): one syntax description yields both a parser and a printer via partial isomorphisms; it concerns concrete syntax and involves no elaboration.",
+      "Lean 4 v4.34.1 (leanprover/lean4 commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Lean/PrettyPrinter/Delaborator/Options.lean: pp.explicit (default false, 'display implicit arguments'), pp.coercions (default true, described as 'hide coercion applications'; with the default, coercions are displayed as an up-arrow, not elided), pp.numericTypes (default false, 'display types of numeric literals'); src/Lean/PrettyPrinter/Delaborator/TopDownAnalyze.lean: pp.analyze (default false, 'try to determine annotations sufficient to ensure round-tripping'); its module documentation says the analyzer 'is neither sound nor complete'. With pp.analyze enabled, this toolchain prints ((2 : Int) - 3 = 0) as 2 - 3 = 0 (build-checked observation in LeanObservations.lean). Modeling bridge (model–system relation: none proved): the toy models neither this printer nor the analyzer."
+    ],
+    "design_question": "Is there a printer whose output every configuration of the family reads back as the original term? (Yes on well-typed terms: the explicit printer.)"
+  },
+  {
+    "id": "default_faithful_iff_default_recoverable",
+    "lean": [
+      "Toy.Render.elabSys_ppDefault_eq_some_iff_defaultRecoverable",
+      "Toy.Render.elabSys_ppDefault_of_defaultRecoverable",
+      "Toy.Render.defaultRecoverable_of_elabSys_ppDefault"
+    ],
+    "lean_names": [
+      "Toy.Render.Ty.isNum",
+      "Toy.Render.Ty.max",
+      "Toy.Render.joinH",
+      "Toy.Render.numOnly",
+      "Toy.Render.Tm",
+      "Toy.Render.Sig",
+      "Toy.Render.ctxLookup",
+      "Toy.Render.lookupDef",
+      "Toy.Render.Sig.varTy",
+      "Toy.Render.Sig.constTy",
+      "Toy.Render.cfg0",
+      "Toy.Render.hint",
+      "Toy.Render.opType",
+      "Toy.Render.elabSys",
+      "Toy.Render.ppDefault",
+      "Toy.Render.dh",
+      "Toy.Render.tyMatches",
+      "Toy.Render.defRec",
+      "Toy.Render.DefaultRecoverable",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc",
+      "Toy.Render.tZ",
+      "Toy.Render.ρ₀",
+      "Toy.Render.defaultRecoverable_tZ",
+      "Toy.Render.not_defaultRecoverable_tTrunc",
+      "Toy.Render.tCoeTwoEqZ",
+      "Toy.Render.tCoeNumSub",
+      "Toy.Render.tAddIntNumEqZ",
+      "Toy.Render.not_defaultRecoverable_tCoeTwoEqZ",
+      "Toy.Render.not_defaultRecoverable_tCoeNumSub",
+      "Toy.Render.defaultRecoverable_tAddIntNumEqZ"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every signature S and every term t (well typed or not): the system elaborator cfg0 (numeral default Nat, coercions at the operator) reads the default text of t back as t if and only if t passes the structural check DefaultRecoverable S t (the recursion defRec, quoted verbatim under Applicability; clause-by-clause description in this card).",
+    "definitions": [
+      "DefaultRecoverable S t is defRec S none none t = true, where defRec S e w t checks t against the expected type e at which cfg0 meets the default text of t, with w constraining the type of t itself before any coercion inserted at its root (none admits every type); dh S a is the hint announced by the default text of a, and dh S (coe a) = dh S a. Clauses: var x τ: S.varTy x = some τ and w admits τ. lit τ n: τ = (numOnly e).getD Nat and w admits τ. add/sub τ a b: τ = opType cfg0 (joinH (dh S a) (dh S b)) e (the join of the operand hints if it is not none, else e if numeric, else Nat), τ is numeric, both operands pass defRec S (some τ) (some τ), and w admits τ. eq τ a b: τ = (joinH (dh S a) (dh S b)).getD Nat (e is not consulted), τ is numeric, both operands pass defRec S (some τ) (some τ), and w admits Prop. iff/and a b: both operands pass defRec S (some Prop) (some Prop), and w admits Prop. coe a: e = some Int, w admits Int, and a passes defRec S (some Int) (some Nat): met at expected Int (the coercion itself is not in the text), a must still come out at type Nat. const c: S.constTy c = some τ for a τ that w admits."
+    ],
+    "hypotheses": [
+      {
+        "name": "h : DefaultRecoverable S t (in elabSys_ppDefault_of_defaultRecoverable)",
+        "purpose": "The 'if' direction as a separate lemma.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabSys_ppDefault_drop_defaultRecoverable",
+        "witness_class": "the well-typed tTrunc in S₀"
+      },
+      {
+        "name": "h : elabSys S (ppDefault t) = some t (in defaultRecoverable_of_elabSys_ppDefault)",
+        "purpose": "The 'only if' direction as a separate lemma.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_defaultRecoverable_drop_faithful",
+        "witness_class": "the well-typed tTrunc in S₀"
+      }
+    ],
+    "nonvacuity_witness": "Both sides hold on tZ = ↑(a - b) = z, whose default text a - b = z elides one coercion and two type arguments; both sides fail on tTrunc.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_elabSys_ppDefault_eq_some_iff_defaultRecoverable",
+    "non_claims": [
+      "DefaultRecoverable is specific to the system elaborator cfg0; it says nothing about other configurations (faithfulness_is_reader_relative).",
+      "DefaultRecoverable does not admit a coercion wherever a Nat-typed subterm meets an expected Int: the coerced subterm must still come out at type Nat when elaborated at expected Int, which excludes coerced numerals and coerced unannotated numeral arithmetic (not_defaultRecoverable_tCoeTwoEqZ: ↑(2 : Nat) = z, whose default text 2 = z re-reads as (2 : Int) = z; not_defaultRecoverable_tCoeNumSub: ↑((2 : Nat) - 3) = z, whose default text re-reads as (2 : Int) - 3 = z, which differs from it in truth at ρ₀).",
+      "An operator whose two operand hints are none takes the expected numeric type (defaultRecoverable_tAddIntNumEqZ: (2 : Int) + 3 = z is default-recoverable).",
+      "Does not say default-recoverable terms are common or rare."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified. Relation to this card: Definition 1.2 asks for the round trip on all terms; this card characterizes the terms on which one fixed printer/reader pair has it.",
+      "Lean 4 v4.34.1 (leanprover/lean4 commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Lean/PrettyPrinter/Delaborator/Options.lean: pp.explicit (default false, 'display implicit arguments'), pp.coercions (default true, described as 'hide coercion applications'; with the default, coercions are displayed as an up-arrow, not elided), pp.numericTypes (default false, 'display types of numeric literals'); src/Lean/PrettyPrinter/Delaborator/TopDownAnalyze.lean: pp.analyze (default false, 'try to determine annotations sufficient to ensure round-tripping'); its module documentation says the analyzer 'is neither sound nor complete'. With pp.analyze enabled, this toolchain prints ((2 : Int) - 3 = 0) as 2 - 3 = 0 (build-checked observation in LeanObservations.lean). Modeling bridge (model–system relation: none proved): the toy models neither this printer nor the analyzer.",
+      "Lean 4 v4.34.1 (leanprover/lean4 commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Lean/Elab/Extra.lean, module documentation of the binop%/binrel% elaborators: computes a 'maximal type' for an operator tree and inserts coercions in the 'leaves'. Modeling bridge (model–system relation: none proved): the toy's system elaborator places coercions at the operator, and its leaf-coercion reader cfgLeaves resembles the Lean rule."
+    ],
+    "design_question": "For which terms is default text enough for the system elaborator? (Exactly the terms passing DefaultRecoverable; the card proves both directions.)"
+  },
+  {
+    "id": "textual_round_trip_does_not_certify_term",
+    "lean": "Toy.Render.textual_round_trip_passes_on_tTrunc_but_term_and_truth_change",
+    "lean_names": [
+      "Toy.Render.valid_tReread",
+      "Toy.Render.not_valid_tTrunc",
+      "Toy.Render.ce_textual_round_trip_drop_faithful",
+      "Toy.Render.tIllEq",
+      "Toy.Render.ppCoercions_textual_round_trip_fails",
+      "Toy.Render.Val.toBool",
+      "Toy.Render.Denote",
+      "Toy.Render.Valid",
+      "Toy.Render.elabSys",
+      "Toy.Render.ppDefault",
+      "Toy.Render.ppCoercions",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc",
+      "Toy.Render.tReread",
+      "Toy.Render.ρ₀",
+      "Toy.Render.ppDefault_tTrunc"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "In S₀, the term tTrunc = ↑(a - b) = ↑a - ↑b at Int, with a b : Nat, has default text a - b = a - b; the system elaborator reads that text as the different term a - b = a - b at Nat, whose default text is again a - b = a - b; the re-read term is valid, while tTrunc is not valid and is false at a = 0, b = 1.",
+    "hypotheses": [],
+    "nonvacuity_witness": "No hypotheses: a concrete statement about tTrunc and tReread in S₀.",
+    "non_claims": [
+      "Does not say textual round trips never detect anything: they fail when the text does not elaborate (ce_textual_round_trip_drop_faithful), and for a printer that shows annotations they can fail when the elaborator inserts an annotation the text lacked (ppCoercions_textual_round_trip_fails).",
+      "Lean v4.34.1 shows coercions by default (as an up-arrow), so this exact collision does not arise there with default options; that is a build-checked observation, not part of this result.",
+      "Mathlib's linter.ppRoundtrip is not an instance of this check: it formats unelaborated syntax and compares strings, without elaboration or delaboration (see prior art).",
+      "Does not quantify how often a textual round trip passes while the term changes."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified.",
+      "Robert Pollack, 'How to believe a machine-checked proof', in G. Sambin and J. M. Smith (eds.), Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998, pp. 205-220, DOI 10.1093/oso/9780198501275.003.0013; preprint BRICS Report Series RS-97-18 (1997), DOI 10.7146/brics.v4i18.18945. Section 3.1 'Reading the files': a reader sees a concrete representation (a string) while the checker uses an abstract syntax tree; unless their relationship is understood nothing the checker says can be believed, so a checker should support an official syntax that is parseable and printable.",
+      "Mathlib linter.ppRoundtrip (leanprover-community/mathlib4 commit 3eae40f5eb25c5934211edf662d3b24c5afbe47a, Mathlib/Tactic/Linter/PPRoundtrip.lean, lines 124-147): for a command that produced no error messages, it formats the command's parsed, unelaborated Syntax with Lean.PrettyPrinter.ppCategory `command (Lean v4.34.1 src/Lean/PrettyPrinter.lean, lines 20-23: sanitize, parenthesize, format), normalizes whitespace in the formatted string and in the original source, and warns at the first difference. It does not elaborate to a kernel term, does not delaborate, and does not reparse the formatted string; annotations written in the source, such as (2 : Int), stay in the Syntax. It is a syntax-level format-and-compare check, not an instance of the elaborate-then-print round trip studied here. Relation to this card: a contrast, not an instance: annotations survive that check because no elaboration happens, whereas ppDefault after elaboration erases them."
+    ],
+    "design_question": "Does 'elaborate, default-print, compare strings' certify a printed statement? (No: the strings can agree while the term and its truth change.)"
+  },
+  {
+    "id": "textual_idempotence_necessary_for_faithfulness",
+    "lean": "Toy.Render.textual_round_trip_of_faithful",
+    "lean_names": [
+      "Toy.Render.textual_round_trip_holds_on_elaborating_ppDefault",
+      "Toy.Render.Tm",
+      "Toy.Render.Stx",
+      "Toy.Render.Sig",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfg0",
+      "Toy.Render.elabWith",
+      "Toy.Render.elabSys",
+      "Toy.Render.ppDefault",
+      "Toy.Render.S₀",
+      "Toy.Render.tZ",
+      "Toy.Render.tIffNat",
+      "Toy.Render.elabSys_ppDefault_tIffNat"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "definitional",
+    "plain_claim": "For every configuration cfg, signature S, printer p : Tm → Stx and term t: if cfg reads p t back as t, then printing the re-read term with p gives back the text p t.",
+    "hypotheses": [
+      {
+        "name": "h : elabWith cfg S (p t) = some t",
+        "purpose": "Faithfulness of p on t.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_textual_round_trip_drop_faithful",
+        "witness_class": "p = ppDefault under cfg0 on the ill-typed a ↔ a (a : Nat), whose default text does not elaborate. Within terms whose default text elaborates, h is not tight for p = ppDefault: the conclusion then holds without it (textual_round_trip_holds_on_elaborating_ppDefault)"
+      }
+    ],
+    "nonvacuity_witness": "p = ppDefault, cfg = cfg0, t = tZ: the default text of tZ is faithful.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_textual_round_trip_of_faithful",
+    "non_claims": [
+      "The converse is false: textual idempotence does not imply faithfulness (textual_round_trip_does_not_certify_term).",
+      "A failed textual round trip refutes faithfulness (the contrapositive of this theorem). For annotation-free text a passed textual round trip carries no information beyond the fact that the text elaborates: every annotation-free text that elaborates passes it (annotation_free_text_survives_textual_round_trip, textual_round_trip_holds_on_elaborating_ppDefault)."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified."
+    ],
+    "design_question": "What does a textual round trip check? (A necessary condition for faithfulness, which on annotation-free text holds whenever the text elaborates.)"
+  },
+  {
+    "id": "annotation_free_text_survives_textual_round_trip",
+    "lean": "Toy.Render.ppDefault_elabWith_of_annotationFree",
+    "lean_names": [
+      "Toy.Render.ppCoercions_textual_round_trip_fails",
+      "Toy.Render.Tm",
+      "Toy.Render.Stx",
+      "Toy.Render.Sig",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfg0",
+      "Toy.Render.elabWith",
+      "Toy.Render.elabSys",
+      "Toy.Render.ppDefault",
+      "Toy.Render.Stx.annCount",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc",
+      "Toy.Render.tReread",
+      "Toy.Render.tIffNat",
+      "Toy.Render.elabSys_ppDefault_tZ"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every configuration cfg, signature S, text s and term t': if s contains no annotation tokens (s.annCount = 0) and cfg elaborates s to t', then the default printing of t' is s.",
+    "hypotheses": [
+      {
+        "name": "hs : s.annCount = 0",
+        "purpose": "An annotated text such as (2 : Int) loses its annotation when default-printed.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_ppDefault_elabWith_drop_annotationFree",
+        "witness_class": "the ascribed numeral text (2 : Int) under cfg0"
+      },
+      {
+        "name": "h : elabWith cfg S s = some t'",
+        "purpose": "Without it t' is unrelated to s.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_ppDefault_elabWith_drop_elab",
+        "witness_class": "the annotation-free text of a ↔ a (a : Nat), which does not elaborate, paired with an unrelated numeral term"
+      }
+    ],
+    "nonvacuity_witness": "The default text a - b = a - b of tTrunc is annotation-free and elaborates under cfg0 (to tReread).",
+    "nonvacuity_witness_lean": "Toy.Render.nv_ppDefault_elabWith_of_annotationFree",
+    "non_claims": [
+      "Its hypothesis is that the text is annotation-free; it says nothing about annotated text, and for a printer that shows annotations the textual round trip can fail (ppCoercions_textual_round_trip_fails, on an ill-typed term).",
+      "Does not say the re-read term t' is the term the text was printed from (textual_round_trip_does_not_certify_term)."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified.",
+      "Mathlib linter.ppRoundtrip (leanprover-community/mathlib4 commit 3eae40f5eb25c5934211edf662d3b24c5afbe47a, Mathlib/Tactic/Linter/PPRoundtrip.lean, lines 124-147): for a command that produced no error messages, it formats the command's parsed, unelaborated Syntax with Lean.PrettyPrinter.ppCategory `command (Lean v4.34.1 src/Lean/PrettyPrinter.lean, lines 20-23: sanitize, parenthesize, format), normalizes whitespace in the formatted string and in the original source, and warns at the first difference. It does not elaborate to a kernel term, does not delaborate, and does not reparse the formatted string; annotations written in the source, such as (2 : Int), stay in the Syntax. It is a syntax-level format-and-compare check, not an instance of the elaborate-then-print round trip studied here. Relation to this card: a contrast, not an instance: that linter compares source text with formatted unelaborated syntax, so it is not the elaborate-then-default-print check this card analyzes."
+    ],
+    "design_question": "Why is a textual round trip on default text uninformative? (Every annotation-free text that elaborates passes it, under every configuration.)"
+  },
+  {
+    "id": "term_round_trip_determines_reading",
+    "lean": "Toy.Render.faithful_reading_unique_and_same_denotation",
+    "lean_names": [
+      "Toy.Render.Tm",
+      "Toy.Render.Stx",
+      "Toy.Render.Sig",
+      "Toy.Render.Denote",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfg0",
+      "Toy.Render.elabWith",
+      "Toy.Render.Faithful",
+      "Toy.Render.ppDefault",
+      "Toy.Render.ppExplicit",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc",
+      "Toy.Render.tReread",
+      "Toy.Render.faithful_ppExplicit_tTrunc",
+      "Toy.Render.not_faithful_ppDefault_tTrunc"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "definitional",
+    "plain_claim": "For every configuration cfg, signature S, text r and term t: if cfg reads r as t (Faithful cfg S r t), then every term t' that cfg returns on r equals t and has the same denotation as t in every environment.",
+    "hypotheses": [
+      {
+        "name": "h : Faithful cfg S r t",
+        "purpose": "The term round trip.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_faithful_reading_drop_faithful",
+        "witness_class": "the default text of tTrunc under cfg0, which is read as a different term"
+      }
+    ],
+    "nonvacuity_witness": "The explicit text of tTrunc is faithful under cfg0.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_faithful_reading_unique_and_same_denotation",
+    "non_claims": [
+      "The certificate is relative to the reader cfg: it says nothing about a reader with a different configuration (faithfulness_is_reader_relative).",
+      "It identifies the term, not that the statement says what a human intended.",
+      "Decidability of Faithful (a Decidable instance in Defs.lean) is not part of this theorem."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified.",
+      "Robert Pollack, 'How to believe a machine-checked proof', in G. Sambin and J. M. Smith (eds.), Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998, pp. 205-220, DOI 10.1093/oso/9780198501275.003.0013; preprint BRICS Report Series RS-97-18 (1997), DOI 10.7146/brics.v4i18.18945. Section 3.1 'Reading the files': a reader sees a concrete representation (a string) while the checker uses an abstract syntax tree; unless their relationship is understood nothing the checker says can be believed, so a checker should support an official syntax that is parseable and printable.",
+      "Nils Anders Danielsson, 'Correct-by-construction pretty-printing', Proceedings of the 2013 ACM SIGPLAN Workshop on Dependently-Typed Programming (DTP '13), pp. 1-12, DOI 10.1145/2502409.2502410: pretty-printing and then parsing with the same unambiguous grammar returns the original value; it concerns concrete syntax and involves no elaboration."
+    ],
+    "design_question": "What check identifies the term a printed statement denotes for a given reader? (The term round trip under that reader's elaborator.)"
+  },
+  {
+    "id": "greedy_printer_faithful",
+    "lean": "Toy.Render.ppMin_faithful_of_wellTyped",
+    "lean_names": [
+      "Toy.Render.default_and_min_texts_faithful_for_cfg0_but_not_other_readers",
+      "Toy.Render.tEqAB",
+      "Toy.Render.tCoeZeroEqZero",
+      "Toy.Render.ppMin_not_globally_minimal_cfg0",
+      "Toy.Render.ppMin_not_globally_minimal_on_tTrunc_cfgLeaves",
+      "Toy.Render.minMaskRev",
+      "Toy.Render.visiting_order_changes_kept_set_on_tTrunc",
+      "Toy.Render.Tm",
+      "Toy.Render.Sig",
+      "Toy.Render.WellTyped",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfg0",
+      "Toy.Render.cfgIntNumerals",
+      "Toy.Render.cfgLeaves",
+      "Toy.Render.Faithful",
+      "Toy.Render.ppDefault",
+      "Toy.Render.faithfulB",
+      "Toy.Render.minMask",
+      "Toy.Render.ppMin",
+      "Toy.Render.S₀",
+      "Toy.Render.tNatSub",
+      "Toy.Render.tIntSub",
+      "Toy.Render.tTrunc",
+      "Toy.Render.tZ",
+      "Toy.Render.tIll",
+      "Toy.Render.ppMin_tTrunc",
+      "Toy.Render.ppMin_tIntSub",
+      "Toy.Render.ppMin_cfg0_tEqAB_faithful_for_all_cfg",
+      "Toy.Render.annCount_overhead_examples",
+      "Toy.Render.annCount_overhead_examples_other_readers"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every configuration cfg, signature S and term t: if t is well typed in S, then cfg reads the deletion-greedy rendering ppMin cfg S t back as t.",
+    "definitions": [
+      "ppMin cfg S t shows exactly the annotation positions kept by minMask cfg S t, the deletion-greedy selection: start from all annotation positions of t (the explicit text), visit them in pre-order, and drop a position whenever cfg still reads the rendering without it back as t. The name abbreviates 'locally minimal'; it is not a minimum-size printer."
+    ],
+    "hypotheses": [
+      {
+        "name": "ht : WellTyped S t",
+        "purpose": "The deletion search starts from the explicit text, which is proved faithful for well-typed terms (explicit_printer_section_law); without well-typedness the greedy rendering need not be faithful (see the counterexample).",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_ppMin_faithful_drop_wellTyped",
+        "witness_class": "an ill-typed variable term under cfg0"
+      }
+    ],
+    "nonvacuity_witness": "tTrunc is well typed and its default text is not faithful under cfg0, so ppMin must keep annotations.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_ppMin_faithful_of_wellTyped",
+    "non_claims": [
+      "Guaranteed faithful for the reader cfg it was computed against; it neither establishes nor refutes faithfulness for other configurations, which can fail (default_and_min_texts_faithful_for_cfg0_but_not_other_readers: ppMin cfg0 S₀ tZ is the default text a - b = z, which cfgLeaves reads as a different term) or still hold (ppMin_cfg0_tEqAB_faithful_for_all_cfg: ppMin cfg0 S₀ tEqAB is faithful for every configuration, and ppMin cfg0 S₀ tTrunc is faithful for cfgIntNumerals).",
+      "Not a minimum-size rendering: ppMin_not_globally_minimal_cfg0 (under cfg0, 2 annotations kept where a faithful 1-annotation rendering exists) and ppMin_not_globally_minimal_on_tTrunc_cfgLeaves.",
+      "The kept set depends on the visiting order (visiting_order_changes_kept_set_on_tTrunc).",
+      "The rendering may read oddly to a human: for tTrunc under cfg0 it is a - b = a - ↑b.",
+      "Annotation tokens on the running examples (default / ppMin cfg0 / explicit): tTrunc 0/1/6, tZ 0/0/3, tIntSub 0/1/5, tNatSub 0/0/5 (annCount_overhead_examples); ppMin cfgLeaves: 2, 1, 1, 0 and ppMin cfgIntNumerals: 1, 0, 0, 1 (annCount_overhead_examples_other_readers).",
+      "ppMin models a search over annotation subsets checked by re-elaboration; it does not model Lean's pp.analyze, which is heuristic and does not add a numeral type to (2 : Int) - 3 = 0 (LeanObservations.lean)."
+    ],
+    "prior_art": [
+      "Kevin Kappelmann, Maximilian Schäffeler, Lukas Stevens, Mohammad Abdulaziz, Andrei Popescu and Dmitriy Traytel, 'Type Annotations with Roundtrip Property', Archive of Formal Proofs, May 2026 (entry Printing_Parsing_Roundtrip), companion paper arXiv:2604.15713: complete and minimal type annotations for rank-one polymorphic λ-terms as printed by Isabelle, so that reparsing and type inference recover the term; mechanized in Isabelle/HOL; a reverse-greedy approach yields a locally minimal and complete annotation set. The closest mechanized prior art for the deletion-greedy printer here; its setting is Hindley-Milner type inference, not coercions and numeral defaults. Relation to this card: same shape of algorithm (greedy deletion checked by re-reading) in a different type system.",
+      "Steffen Juilf Smolka and Jasmin Christian Blanchette, 'Robust, Semi-Intelligible Isabelle Proofs from ATP Proofs', PxTP 2013, EPiC Series in Computing 14, pp. 117-132, 2013, DOI 10.29007/zbdb: Isabelle proof reconstruction that provides enough type annotations for formulas to be parsed correctly without printing all types.",
+      "Jasmin Christian Blanchette, Sascha Böhme, Mathias Fleury, Steffen Juilf Smolka and Albert Steckermeier, 'Semi-intelligible Isar proofs from machine-generated proofs', Journal of Automated Reasoning 56(2), pp. 155-200, 2016, DOI 10.1007/s10817-015-9335-3 (journal account of the same reconstruction work; cited as background, its annotation procedure is not compared here in detail).",
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified. Relation to this card: Section 8.1 falls back to the fully annotated printing as a whole; ppMin drops annotations one position at a time.",
+      "Mark Adams, 'HOL Zero's Solutions for Pollack-Inconsistency', Interactive Theorem Proving (ITP 2016), LNCS 9807, pp. 20-35, Springer, 2016, DOI 10.1007/978-3-319-43144-4_2. Only the abstract was consulted: HOL Zero aims at well-behaved parsing/printing and Pollack-consistency, and annotates terms minimally with types for unambiguous printing.",
+      "Lean 4 v4.34.1 (leanprover/lean4 commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Lean/PrettyPrinter/Delaborator/Options.lean: pp.explicit (default false, 'display implicit arguments'), pp.coercions (default true, described as 'hide coercion applications'; with the default, coercions are displayed as an up-arrow, not elided), pp.numericTypes (default false, 'display types of numeric literals'); src/Lean/PrettyPrinter/Delaborator/TopDownAnalyze.lean: pp.analyze (default false, 'try to determine annotations sufficient to ensure round-tripping'); its module documentation says the analyzer 'is neither sound nor complete'. With pp.analyze enabled, this toolchain prints ((2 : Int) - 3 = 0) as 2 - 3 = 0 (build-checked observation in LeanObservations.lean). Modeling bridge (model–system relation: none proved): the toy models neither this printer nor the analyzer."
+    ],
+    "design_question": "Can a certified rendering use fewer annotations than the explicit text? (Yes: greedy deletion checked by re-elaboration gives a faithful rendering; it is not minimum-size.)"
+  },
+  {
+    "id": "greedy_printer_locally_minimal",
+    "lean": "Toy.Render.ppMin_locally_minimal_of_wellTyped",
+    "lean_names": [
+      "Toy.Render.ppMin_not_globally_minimal_cfg0",
+      "Toy.Render.tCoeEqCoe",
+      "Toy.Render.ppMin_kept_position_not_globally_necessary",
+      "Toy.Render.tLitProp",
+      "Toy.Render.Tm",
+      "Toy.Render.Sig",
+      "Toy.Render.WellTyped",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfg0",
+      "Toy.Render.Faithful",
+      "Toy.Render.AnnKind",
+      "Toy.Render.Path",
+      "Toy.Render.ppMask",
+      "Toy.Render.maskOf",
+      "Toy.Render.minMask",
+      "Toy.Render.ppMin",
+      "Toy.Render.Stx.erase",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every configuration cfg, signature S, term t and annotation position q: if t is well typed in S and q is kept by minMask cfg S t, then cfg reads ppMin cfg S t back as t, and cfg does not read back as t the rendering that shows the kept positions except q.",
+    "definitions": [
+      "ppMin cfg S t shows exactly the annotation positions kept by minMask cfg S t, the deletion-greedy selection: start from all annotation positions of t (the explicit text), visit them in pre-order, and drop a position whenever cfg still reads the rendering without it back as t. The name abbreviates 'locally minimal'; it is not a minimum-size printer."
+    ],
+    "hypotheses": [
+      {
+        "name": "ht : WellTyped S t",
+        "purpose": "On ill-typed terms minMask can keep a position although ppMin itself is not faithful.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_ppMin_locally_minimal_drop_wellTyped",
+        "witness_class": "the ill-typed numeral lit Prop 0 under cfg0, for which minMask keeps one position"
+      },
+      {
+        "name": "hq : q ∈ minMask cfg S t",
+        "purpose": "Erasing a position that was not kept changes nothing.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_ppMin_locally_minimal_drop_mem",
+        "witness_class": "the well-typed tTrunc under cfg0 with q the type argument of = (dropped by minMask)"
+      }
+    ],
+    "nonvacuity_witness": "tTrunc is well typed and minMask cfg0 keeps the coercion on b (position [1, 1]).",
+    "nonvacuity_witness_lean": "Toy.Render.nv_ppMin_locally_minimal_of_wellTyped",
+    "non_claims": [
+      "Minimality here is local: dropping q is tested against the remaining kept set. A kept position need not be shown by every faithful rendering (ppMin_kept_position_not_globally_necessary: on ↑a = ↑b, two other single-position renderings are faithful), and ppMin is not minimum-size (ppMin_not_globally_minimal_cfg0).",
+      "Dropping several kept positions at once is not stated here (not proved here; it would follow from correct_annotations_monotone).",
+      "The proof uses correct_annotations_monotone and the fact that annotation positions are pairwise distinct."
+    ],
+    "prior_art": [
+      "Kevin Kappelmann, Maximilian Schäffeler, Lukas Stevens, Mohammad Abdulaziz, Andrei Popescu and Dmitriy Traytel, 'Type Annotations with Roundtrip Property', Archive of Formal Proofs, May 2026 (entry Printing_Parsing_Roundtrip), companion paper arXiv:2604.15713: complete and minimal type annotations for rank-one polymorphic λ-terms as printed by Isabelle, so that reparsing and type inference recover the term; mechanized in Isabelle/HOL; a reverse-greedy approach yields a locally minimal and complete annotation set. The closest mechanized prior art for the deletion-greedy printer here; its setting is Hindley-Milner type inference, not coercions and numeral defaults. Relation to this card: the AFP entry also proves local minimality of a greedy annotation set.",
+      "Steffen Juilf Smolka and Jasmin Christian Blanchette, 'Robust, Semi-Intelligible Isabelle Proofs from ATP Proofs', PxTP 2013, EPiC Series in Computing 14, pp. 117-132, 2013, DOI 10.29007/zbdb: Isabelle proof reconstruction that provides enough type annotations for formulas to be parsed correctly without printing all types.",
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified."
+    ],
+    "design_question": "Can any single annotation shown by the greedy printer be dropped without losing the certificate? (No, on well-typed terms; this is minimality relative to the kept set, not minimum size.)"
+  },
+  {
+    "id": "greedy_printer_eq_default_when_default_faithful",
+    "lean": "Toy.Render.ppMin_eq_ppDefault_of_faithful_ppDefault",
+    "lean_names": [
+      "Toy.Render.ppMin_eq_ppDefault_converse_false_on_tIll",
+      "Toy.Render.Tm",
+      "Toy.Render.Sig",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfg0",
+      "Toy.Render.Faithful",
+      "Toy.Render.ppDefault",
+      "Toy.Render.minMask",
+      "Toy.Render.ppMin",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc",
+      "Toy.Render.tZ",
+      "Toy.Render.tIll"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every configuration cfg, signature S and term t: if cfg reads the default text of t back as t, then ppMin cfg S t is the default text of t.",
+    "definitions": [
+      "ppMin cfg S t shows exactly the annotation positions kept by minMask cfg S t, the deletion-greedy selection: start from all annotation positions of t (the explicit text), visit them in pre-order, and drop a position whenever cfg still reads the rendering without it back as t. The name abbreviates 'locally minimal'; it is not a minimum-size printer."
+    ],
+    "hypotheses": [
+      {
+        "name": "h : Faithful cfg S (ppDefault t) t",
+        "purpose": "Otherwise some annotation must be kept.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_ppMin_eq_ppDefault_drop_faithful",
+        "witness_class": "the well-typed tTrunc under cfg0"
+      }
+    ],
+    "nonvacuity_witness": "The default text of tZ is faithful under cfg0.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_ppMin_eq_ppDefault_of_faithful_ppDefault",
+    "non_claims": [
+      "ppMin does not start from the default text: minMask starts from all annotation positions (the explicit text) and deletes; this card says the deletions reach the default text when that text is faithful.",
+      "The converse fails: on the ill-typed tIll, ppMin returns the default text although it is not faithful (ppMin_eq_ppDefault_converse_false_on_tIll).",
+      "Does not say the default text is faithful for other readers.",
+      "The proof uses correct_annotations_monotone."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified. Relation to this card: the combined printer of Section 8.1 also returns the normal output whenever re-reading it succeeds."
+    ],
+    "design_question": "Does the greedy printer fall back to the default printer when default text already certifies the term? (Yes.)"
+  },
+  {
+    "id": "elaborator_family_agrees_on_fully_annotated_text",
+    "lean": [
+      "Toy.Render.elabWith_eq_elabSys_of_fullyAnnotated",
+      "Toy.Render.elabWith_agreeOnFull"
+    ],
+    "lean_names": [
+      "Toy.Render.ppDefault_tEqAB_faithful_for_named_readers",
+      "Toy.Render.partial_annotation_faithful_for_every_configuration",
+      "Toy.Render.Stx",
+      "Toy.Render.Sig",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfgLeaves",
+      "Toy.Render.elabWith",
+      "Toy.Render.elabSys",
+      "Toy.Render.ppDefault",
+      "Toy.Render.ppExplicit",
+      "Toy.Render.Stx.fullyAnnotated",
+      "Toy.Render.AgreeOnFull",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc",
+      "Toy.Render.tZ",
+      "Toy.Render.cfgPropNumerals"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every configuration cfg (any numeral default, including Prop, and either coercion rule), signature S and text s: if s is fully annotated (every +, -, = carries a type argument and every numeral is directly ascribed), then cfg and the system elaborator return the same result on s.",
+    "hypotheses": [
+      {
+        "name": "hs : s.fullyAnnotated = true",
+        "purpose": "Unannotated operators and numerals are where configurations differ.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabWith_eq_elabSys_drop_fullyAnnotated",
+        "witness_class": "the annotation-free default text a - b = z under the leaf-coercion configuration cfgLeaves"
+      }
+    ],
+    "nonvacuity_witness": "The explicit text of tTrunc is fully annotated, and cfgLeaves reads it to a term, as the system elaborator does.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_elabWith_eq_elabSys_of_fullyAnnotated",
+    "non_claims": [
+      "'Fully annotated' does not require coercions to be printed.",
+      "Full annotation is not needed for every configuration to read a given text as the intended term: the rendering of (2 : Int) - 3 = 0 that shows its two type arguments and no other annotation is read as that term by every configuration (partial_annotation_faithful_for_every_configuration).",
+      "Does not cover readers outside this toy family."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified. Relation to this card: the failsafe printing of Section 8.1 prints type annotations everywhere so that it is trivially parsed correctly.",
+      "Val Breazu-Tannen, Thierry Coquand, Carl A. Gunter and Andre Scedrov, 'Inheritance as implicit coercion', Information and Computation 93(1), pp. 172-221, 1991, DOI 10.1016/0890-5401(91)90055-7: coherence of a coercion semantics, i.e. independence of the meaning from the derivation chosen. The toy has a single coercion Nat → Int, so uniqueness of coercion paths is trivial here; the toy's coherence question is whether coercion insertion commutes with the overloaded operators."
+    ],
+    "design_question": "Which readers read annotated text the same way? (In the toy, every configuration of the family, on fully annotated text.)"
+  },
+  {
+    "id": "explicit_text_faithful_for_every_agreeing_reader",
+    "lean": "Toy.Render.agreeing_reader_reads_ppExplicit",
+    "lean_names": [
+      "Toy.Render.partial_annotation_faithful_for_every_configuration",
+      "Toy.Render.read_by_all_readers_agreeing_on_pred_iff",
+      "Toy.Render.read_by_all_agreeing_readers_iff",
+      "Toy.Render.Tm",
+      "Toy.Render.Stx",
+      "Toy.Render.Sig",
+      "Toy.Render.WellTyped",
+      "Toy.Render.Reader",
+      "Toy.Render.elabSys",
+      "Toy.Render.ppDefault",
+      "Toy.Render.ppExplicit",
+      "Toy.Render.AgreeOnFull",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc",
+      "Toy.Render.tZ",
+      "Toy.Render.tIll",
+      "Toy.Render.agreeOnFull_refl",
+      "Toy.Render.not_agreeOnFull_none",
+      "Toy.Render.eLeavesOnNonFull"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every signature S, term t and reader e' (any function from a signature and a text to an optional term): if t is well typed in S and, in every signature, e' returns the same result as the system elaborator on every fully annotated text, then e' reads the explicit text of t as t.",
+    "hypotheses": [
+      {
+        "name": "ht : WellTyped S t",
+        "purpose": "The section law needs it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_agreeing_reader_drop_wellTyped",
+        "witness_class": "an ill-typed variable term, with e' the system elaborator itself"
+      },
+      {
+        "name": "hag : AgreeOnFull elabSys e'",
+        "purpose": "Transfers the system elaborator's reading of fully annotated text to e'.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_agreeing_reader_drop_agree",
+        "witness_class": "the reader that always returns none, which lies outside the configuration family (inside the family hag always holds, by elaborator_family_agrees_on_fully_annotated_text)"
+      }
+    ],
+    "nonvacuity_witness": "tTrunc with the reader eLeavesOnNonFull, which agrees with the system elaborator on fully annotated text but reads the default text a - b = z differently.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_agreeing_reader_reads_ppExplicit",
+    "non_claims": [
+      "Agreement on fully annotated text is an assumption about the reader; nothing here establishes it for a real reader.",
+      "Does not say full annotation is required. A text r is read as t by every reader agreeing with the system elaborator on fully annotated text iff r is fully annotated and the system elaborator reads it as t (read_by_all_agreeing_readers_iff), but the same equivalence holds for any predicate in place of full annotation (read_by_all_readers_agreeing_on_pred_iff), because such readers are unconstrained elsewhere; for the configuration family, partial annotation can suffice (partial_annotation_faithful_for_every_configuration)."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified. Relation to this card: Section 8.1 requires the adapted parser to read the failsafe output correctly; agreement on fully annotated text is the analogous assumption here."
+    ],
+    "design_question": "What does full annotation buy for a reader whose elaborator differs from the system's? (A correct reading, provided the reader agrees with the system on fully annotated text.)"
+  },
+  {
+    "id": "faithfulness_is_reader_relative",
+    "lean": "Toy.Render.default_and_min_texts_faithful_for_cfg0_but_not_other_readers",
+    "lean_names": [
+      "Toy.Render.subFree_term_round_trip_fails_across_readers",
+      "Toy.Render.Denote",
+      "Toy.Render.Valid",
+      "Toy.Render.cfg0",
+      "Toy.Render.cfgIntNumerals",
+      "Toy.Render.cfgLeaves",
+      "Toy.Render.elabWith",
+      "Toy.Render.Faithful",
+      "Toy.Render.ppDefault",
+      "Toy.Render.ppExplicit",
+      "Toy.Render.ppMin",
+      "Toy.Render.S₀",
+      "Toy.Render.tNatSub",
+      "Toy.Render.tIntSub",
+      "Toy.Render.tZ",
+      "Toy.Render.tZLeaves",
+      "Toy.Render.ρ₀"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "In S₀: the default text a - b = z of tZ = ↑(a - b) = z is faithful for the system elaborator and equals ppMin cfg0 S₀ tZ, but the leaf-coercion reader reads it as ↑a - ↑b = z, which differs in truth from tZ at a = 0, b = 1, z = 0; the default text 2 - 3 = 0 of (2 : Nat) - 3 = 0 is faithful for the system elaborator and equals ppMin cfg0 of that term, but the Int-numeral reader reads it as (2 : Int) - 3 = 0, which is not valid while (2 : Nat) - 3 = 0 is; and the leaf-coercion and Int-numeral readers read the respective explicit texts back as the original terms.",
+    "hypotheses": [],
+    "nonvacuity_witness": "No hypotheses: concrete statements about tZ and tNatSub in S₀.",
+    "non_claims": [
+      "Two concrete readers and two terms; no frequency claim.",
+      "Both readers agree with the system elaborator on fully annotated text (elaborator_family_agrees_on_fully_annotated_text); the disagreement is confined to unannotated operators and numerals.",
+      "Coherent text can also fail the term round trip for another reader: the subtraction-free default text a + b = z is read differently by cfg0 and cfgLeaves although both readings agree in value (subFree_term_round_trip_fails_across_readers, coherence_without_subtraction)."
+    ],
+    "prior_art": [
+      "Dmitriy Traytel, Stefan Berghofer and Tobias Nipkow, 'Extending Hindley-Milner type inference with coercive structural subtyping', APLAS 2011, LNCS 7078, pp. 89-104, Springer, 2011, DOI 10.1007/978-3-642-25318-8_10. Section 5.1: sin(n + n) with n : N, an overloaded + and real : N → R has the two type-correct completions sin(real(n + n)) and sin(real n + real n); the deterministic implementation picks the first, and the authors note that without coherence a system may silently prove a different theorem. Relation to this card: the operator-coercion and leaf-coercion readings of a - b = z are the toy counterparts of the two completions of sin(n + n).",
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified.",
+      "Lean 4 v4.34.1 (leanprover/lean4 commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Lean/Elab/Extra.lean, module documentation of the binop%/binrel% elaborators: computes a 'maximal type' for an operator tree and inserts coercions in the 'leaves'. Modeling bridge (model–system relation: none proved): the toy's system elaborator places coercions at the operator, and its leaf-coercion reader cfgLeaves resembles the Lean rule."
+    ],
+    "design_question": "Does a certificate computed against the system's elaborator certify the statement for a reader with a different elaborator? (No.)"
+  },
+  {
+    "id": "correct_annotations_monotone",
+    "lean": "Toy.Render.faithful_ppMask_mono",
+    "lean_names": [
+      "Toy.Render.Tm",
+      "Toy.Render.Sig",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfg0",
+      "Toy.Render.Faithful",
+      "Toy.Render.Mask",
+      "Toy.Render.ppMask",
+      "Toy.Render.annPos",
+      "Toy.Render.maskOf",
+      "Toy.Render.S₀",
+      "Toy.Render.tTrunc"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every configuration cfg, signature S, term t and masks m, m' (functions from a position and an annotation kind to Bool): if every position-kind pair selected by m is selected by m', and cfg reads back as t the rendering of t that shows the annotations selected by m, then cfg reads back as t the rendering of t that shows the annotations selected by m'.",
+    "hypotheses": [
+      {
+        "name": "hle : ∀ p k, m p k = true → m' p k = true",
+        "purpose": "Only annotations are added, none removed.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_faithful_ppMask_mono_drop_le",
+        "witness_class": "tTrunc under cfg0 with m selecting everything and m' nothing"
+      },
+      {
+        "name": "hf : Faithful cfg S (ppMask m [] t) t",
+        "purpose": "The smaller rendering must already be faithful.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_faithful_ppMask_mono_drop_faithful",
+        "witness_class": "tTrunc under cfg0 with m = m' selecting nothing"
+      }
+    ],
+    "nonvacuity_witness": "From the single annotation 'coercion on b' (the faithful text a - b = a - ↑b) to all annotation positions of tTrunc, under cfg0.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_faithful_ppMask_mono",
+    "non_claims": [
+      "Only annotations that t actually carries are added: ppMask prints t's own types and coercions. A type-correct but wrong annotation can change the reading (wrong_type_annotation_changes_term).",
+      "The Lean source has no order relation on Mask; the hypothesis hle is stated pointwise."
+    ],
+    "prior_art": [
+      "Kevin Kappelmann, Maximilian Schäffeler, Lukas Stevens, Mohammad Abdulaziz, Andrei Popescu and Dmitriy Traytel, 'Type Annotations with Roundtrip Property', Archive of Formal Proofs, May 2026 (entry Printing_Parsing_Roundtrip), companion paper arXiv:2604.15713: complete and minimal type annotations for rank-one polymorphic λ-terms as printed by Isabelle, so that reparsing and type inference recover the term; mechanized in Isabelle/HOL; a reverse-greedy approach yields a locally minimal and complete annotation set. The closest mechanized prior art for the deletion-greedy printer here; its setting is Hindley-Milner type inference, not coercions and numeral defaults. Relation to this card: completeness of an annotation set (every superset also round-trips) is part of what the AFP entry establishes in its setting.",
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified."
+    ],
+    "design_question": "Can adding correct annotations ever break a certified rendering? (No, for every configuration of the toy family.)"
+  },
+  {
+    "id": "wrong_type_annotation_changes_term",
+    "lean": "Toy.Render.wrong_type_annotation_changes_term_tZ",
+    "lean_names": [
+      "Toy.Render.sWrongSub",
+      "Toy.Render.WellTyped",
+      "Toy.Render.Denote",
+      "Toy.Render.cfg0",
+      "Toy.Render.elabSys",
+      "Toy.Render.Faithful",
+      "Toy.Render.ppDefault",
+      "Toy.Render.Stx.erase",
+      "Toy.Render.S₀",
+      "Toy.Render.tZ",
+      "Toy.Render.tZLeaves",
+      "Toy.Render.ρ₀"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "In S₀: adding the type argument Int to the - of the faithful default text a - b = z of tZ = ↑(a - b) = z gives a text with the same annotation-erased form, which the system elaborator reads without error as the well-typed ↑a - ↑b = z, a term different from tZ that differs from it in truth at a = 0, b = 1, z = 0.",
+    "hypotheses": [],
+    "nonvacuity_witness": "No hypotheses: concrete statement about tZ and sWrongSub in S₀.",
+    "non_claims": [
+      "Does not say every added annotation is dangerous: annotations that t actually carries preserve faithfulness (correct_annotations_monotone).",
+      "One example; no frequency claim."
+    ],
+    "prior_art": [
+      "Freek Wiedijk, 'Pollack-inconsistency', Electronic Notes in Theoretical Computer Science 285 (2012), pp. 85-100 (UITP 2010), DOI 10.1016/j.entcs.2012.06.008. Definition 1.2: parse and print are well-behaved if parse is a left inverse of print (this package's term round trip). Definition 1.4: a Pollack-axiom is a well-typed equation t₁ = t₂ (or equivalence of formulas) whose two sides have the same output under the system's default printer. Definition 1.5: a system is Pollack-inconsistent if a contradiction is derivable from finitely many Pollack-axioms; two terms with the same printed form give a Pollack-axiom, not by themselves an inconsistency. Section 8.1: a failsafe printer (all coercions and type annotations printed), a parser adapted to also read the failsafe output, and a combined printer that prints normally, parses the output back, and falls back to the failsafe output when the reparse differs; both the printer and the parser are modified.",
+      "Dmitriy Traytel, Stefan Berghofer and Tobias Nipkow, 'Extending Hindley-Milner type inference with coercive structural subtyping', APLAS 2011, LNCS 7078, pp. 89-104, Springer, 2011, DOI 10.1007/978-3-642-25318-8_10. Section 5.1: sin(n + n) with n : N, an overloaded + and real : N → R has the two type-correct completions sin(real(n + n)) and sin(real n + real n); the deterministic implementation picks the first, and the authors note that without coherence a system may silently prove a different theorem."
+    ],
+    "design_question": "Is it safe for a human to 'clarify' a printed statement by adding a plausible annotation? (No: a type-correct but wrong annotation silently changes the term.)"
+  },
+  {
+    "id": "equal_delta_normal_forms_equal_evaluation",
+    "lean": "Toy.Render.eval_eq_of_deltaNF_eq",
+    "lean_names": [
+      "Toy.Render.S_illDef",
+      "Toy.Render.deltaNF_not_wellTyped_of_illTyped_defs",
+      "Toy.Render.tZeroEqZero",
+      "Toy.Render.eval_equivalence_identifies_distinct_valid_terms",
+      "Toy.Render.Tm",
+      "Toy.Render.Sig",
+      "Toy.Render.Val",
+      "Toy.Render.Val.toNat",
+      "Toy.Render.Val.toInt",
+      "Toy.Render.evalWith",
+      "Toy.Render.undefVal",
+      "Toy.Render.evalD",
+      "Toy.Render.eval",
+      "Toy.Render.substConst",
+      "Toy.Render.unfoldDefs",
+      "Toy.Render.deltaNF",
+      "Toy.Render.vA",
+      "Toy.Render.vB",
+      "Toy.Render.S₀",
+      "Toy.Render.tNatSub",
+      "Toy.Render.tIntSub",
+      "Toy.Render.ρ₀"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "For every signature S and terms t₁, t₂: if t₁ and t₂ have the same δ-normal form in S (every definition of S unfolded), then they evaluate to the same value in every environment.",
+    "hypotheses": [
+      {
+        "name": "h : deltaNF S t₁ = deltaNF S t₂",
+        "purpose": "The δ-check.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_eval_eq_drop_deltaNF",
+        "witness_class": "the closed terms (2 : Nat) - 3 = 0 and (2 : Int) - 3 = 0 in S₀"
+      }
+    ],
+    "nonvacuity_witness": "The abbreviation P and its body a = b are distinct terms with the same δ-normal form in S₀.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_eval_eq_of_deltaNF_eq",
+    "non_claims": [
+      "Equal evaluation is a coarse equivalence: all valid propositions evaluate alike (eval_equivalence_identifies_distinct_valid_terms); it is not syntactic or definitional equality.",
+      "The converse fails: equal evaluation does not imply equal δ-normal form (delta_check_incomplete).",
+      "No well-typedness of definitions is assumed, and with ill-typed definitions δ-unfolding need not preserve typing (deltaNF_not_wellTyped_of_illTyped_defs).",
+      "Names not defined in the signature are left unchanged by deltaNF."
+    ],
+    "prior_art": [
+      "Robert Pollack, 'How to believe a machine-checked proof', in G. Sambin and J. M. Smith (eds.), Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998, pp. 205-220, DOI 10.1093/oso/9780198501275.003.0013; preprint BRICS Report Series RS-97-18 (1997), DOI 10.7146/brics.v4i18.18945. Section 1.1: to believe a checked theorem one must read its formal statement and the definitions used hereditarily in stating it; Section 3.3 'What theorem is it?': library definitions must mean what they informally claim.",
+      "Paula Severi and Erik Poll, 'Pure type systems with definitions', LFCS '94, LNCS 813, pp. 316-328, Springer, 1994, DOI 10.1007/3-540-58140-5_30: pure type systems extended with definitions and a reduction that unfolds them."
+    ],
+    "design_question": "Does equality of δ-normal forms show that an unfolded rendering means the same as the original? (It shows equal evaluation in every environment.)"
+  },
+  {
+    "id": "delta_check_incomplete",
+    "lean": "Toy.Render.deltaNF_check_rejects_reordered_unfolded_rendering",
+    "lean_names": [
+      "Toy.Render.rSwapped",
+      "Toy.Render.tSwapped",
+      "Toy.Render.eval_equivalence_identifies_distinct_valid_terms",
+      "Toy.Render.eval",
+      "Toy.Render.deltaNF",
+      "Toy.Render.elabSys",
+      "Toy.Render.S₀"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "depth": "shallow",
+    "plain_claim": "In S₀ (P := a = b, Q := z = 0, PQ := P ∧ Q): the system elaborator reads the unfolded, conjunct-swapped rendering z = 0 ∧ a = b as a term whose δ-normal form differs from that of PQ, and that term and PQ evaluate identically in every environment.",
+    "hypotheses": [],
+    "nonvacuity_witness": "No hypotheses: concrete statement about rSwapped and PQ in S₀.",
+    "non_claims": [
+      "Does not say equal evaluation is decidable in general; it is proved here for one pair.",
+      "Does not prescribe what a checker should do when the δ-check fails (not examined).",
+      "Equal evaluation is coarse (eval_equivalence_identifies_distinct_valid_terms)."
+    ],
+    "prior_art": [
+      "Robert Pollack, 'How to believe a machine-checked proof', in G. Sambin and J. M. Smith (eds.), Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998, pp. 205-220, DOI 10.1093/oso/9780198501275.003.0013; preprint BRICS Report Series RS-97-18 (1997), DOI 10.7146/brics.v4i18.18945. Section 1.1: to believe a checked theorem one must read its formal statement and the definitions used hereditarily in stating it; Section 3.3 'What theorem is it?': library definitions must mean what they informally claim.",
+      "Paula Severi and Erik Poll, 'Pure type systems with definitions', LFCS '94, LNCS 813, pp. 316-328, Springer, 1994, DOI 10.1007/3-540-58140-5_30: pure type systems extended with definitions and a reduction that unfolds them."
+    ],
+    "design_question": "Is the δ-normal-form check complete for unfolded renderings? (No.)"
+  },
+  {
+    "id": "deterministic_elaborators_sound_for_declarative_elaboration",
+    "lean": "Toy.Render.elabE_sound",
+    "lean_names": [
+      "Toy.Render.elabs_not_complete_for_elabWith",
+      "Toy.Render.Ty",
+      "Toy.Render.Tm",
+      "Toy.Render.Stx",
+      "Toy.Render.Sig",
+      "Toy.Render.tyOf",
+      "Toy.Render.ElabCfg",
+      "Toy.Render.cfg0",
+      "Toy.Render.coerceTo",
+      "Toy.Render.elabE",
+      "Toy.Render.ppDefault",
+      "Toy.Render.Elabs",
+      "Toy.Render.S₀",
+      "Toy.Render.tZ",
+      "Toy.Render.elabs_ppDefault_tZ_tZ",
+      "Toy.Render.elabs_ppDefault_tZ_tZLeaves",
+      "Toy.Render.not_elabs_int_var_at_nat"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every configuration cfg, signature S, optional expected type exp, text s, term t and type τ: if elabE cfg S exp s returns (t, τ), then t is a declarative elaboration of s at τ (Elabs S s τ t, which allows a Nat → Int coercion at any node) and t has type τ.",
+    "hypotheses": [
+      {
+        "name": "h : elabE cfg S exp s = some (t, τ)",
+        "purpose": "The elaborator succeeded.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabE_sound_drop_elab",
+        "witness_class": "the variable text a with an unrelated numeral term at Nat in S₀"
+      }
+    ],
+    "nonvacuity_witness": "The system elaborator on the default text of tZ.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_elabE_sound",
+    "non_claims": [
+      "Not completeness: Elabs admits the elaboration ↑(2 : Nat) = z of the fully annotated @eq Int (2 : Int) z, which no configuration returns (elabs_not_complete_for_elabWith)."
+    ],
+    "prior_art": [
+      "Val Breazu-Tannen, Thierry Coquand, Carl A. Gunter and Andre Scedrov, 'Inheritance as implicit coercion', Information and Computation 93(1), pp. 172-221, 1991, DOI 10.1016/0890-5401(91)90055-7: coherence of a coercion semantics, i.e. independence of the meaning from the derivation chosen. The toy has a single coercion Nat → Int, so uniqueness of coercion paths is trivial here; the toy's coherence question is whether coercion insertion commutes with the overloaded operators.",
+      "Amokrane Saïbi, 'Typing algorithm in type theory with inheritance', POPL '97, pp. 292-301, ACM, 1997, DOI 10.1145/263699.263742: coercion inference for a type theory with inheritance.",
+      "Dmitriy Traytel, Stefan Berghofer and Tobias Nipkow, 'Extending Hindley-Milner type inference with coercive structural subtyping', APLAS 2011, LNCS 7078, pp. 89-104, Springer, 2011, DOI 10.1007/978-3-642-25318-8_10. Section 5.1: sin(n + n) with n : N, an overloaded + and real : N → R has the two type-correct completions sin(real(n + n)) and sin(real n + real n); the deterministic implementation picks the first, and the authors note that without coherence a system may silently prove a different theorem."
+    ],
+    "design_question": "Do the coherence results about the declarative judgment apply to the concrete readers? (Yes: every configuration returns one declarative elaboration.)"
+  },
+  {
+    "id": "coherence_when_every_subtraction_annotated",
+    "lean": "Toy.Render.elabs_coherent_of_subAnnotated",
+    "lean_names": [
+      "Toy.Render.subFree_term_round_trip_fails_across_readers",
+      "Toy.Render.Ty",
+      "Toy.Render.Tm",
+      "Toy.Render.Stx",
+      "Toy.Render.Sig",
+      "Toy.Render.eval",
+      "Toy.Render.ppDefault",
+      "Toy.Render.Stx.fullyAnnotated",
+      "Toy.Render.Stx.subFree",
+      "Toy.Render.Stx.subAnnotated",
+      "Toy.Render.Elabs",
+      "Toy.Render.vA",
+      "Toy.Render.vB",
+      "Toy.Render.vZ",
+      "Toy.Render.S₀",
+      "Toy.Render.tNatSub",
+      "Toy.Render.tZ",
+      "Toy.Render.tZLeaves",
+      "Toy.Render.tAddOp",
+      "Toy.Render.ρ₀",
+      "Toy.Render.sZZSub",
+      "Toy.Render.subAnnotated_not_necessary_for_coherence_int",
+      "Toy.Render.sAASub",
+      "Toy.Render.subAnnotated_not_necessary_for_coherence_cancel",
+      "Toy.Render.sSubAnnMixed"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "substantive",
+    "plain_claim": "For every signature S, text s, type τ and terms t₁, t₂: if every subtraction in s carries an explicit type argument (s.subAnnotated) and t₁ and t₂ are both declarative elaborations of s at τ, then t₁ and t₂ evaluate identically in every environment.",
+    "hypotheses": [
+      {
+        "name": "hs : s.subAnnotated = true",
+        "purpose": "Fixes the type of every subtraction, the one operator that does not commute with Nat → Int.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabs_coherent_drop_subAnnotated",
+        "witness_class": "the default text a - b = z with its operator-coercion and leaf-coercion elaborations"
+      },
+      {
+        "name": "h₁ : Elabs S s τ t₁",
+        "purpose": "t₁ must be an elaboration of s.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabs_coherent_of_subAnnotated_drop_elabs",
+        "witness_class": "a closed term unrelated to s (in place of t₁), with t₂ a genuine elaboration"
+      },
+      {
+        "name": "h₂ : Elabs S s τ t₂",
+        "purpose": "Symmetric to h1.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabs_coherent_of_subAnnotated_drop_elabs",
+        "witness_class": "the same instance with the roles of t₁ and t₂ exchanged"
+      }
+    ],
+    "nonvacuity_witness": "The text a - b + a = z in which the subtraction carries the type argument Nat and nothing else is annotated is subtraction-annotated but neither subtraction-free nor fully annotated, and has two distinct elaborations.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_elabs_coherent_of_subAnnotated",
+    "non_claims": [
+      "Coherence is semantic: the two elaborations can be different terms, so the term round trip across readers can still fail (subFree_term_round_trip_fails_across_readers).",
+      "Not claimed for languages with other operators or other coercions (not examined).",
+      "s.subAnnotated = true is sufficient, not necessary, for coherence: the unannotated texts z - z = z (whose subtraction is forced to Int by its operands; subAnnotated_not_necessary_for_coherence_int) and a - a = z (with the two distinct declarative elaborations ↑(a - a) = z and ↑a - ↑a = z, which evaluate identically because truncated subtraction gives a - a = 0; subAnnotated_not_necessary_for_coherence_cancel) have subAnnotated = false, and all of their declarative elaborations evaluate identically in every environment."
+    ],
+    "prior_art": [
+      "John C. Reynolds, 'Using category theory to design implicit conversions and generic operators', in N. D. Jones (ed.), Semantics-Directed Compiler Generation, LNCS 94, pp. 211-258, Springer, 1980, DOI 10.1007/3-540-10250-7_24: implicit conversions and generic operators organized so that conversions commute with the operators. Truncating Nat subtraction is the toy's operator that does not commute with Nat → Int.",
+      "Val Breazu-Tannen, Thierry Coquand, Carl A. Gunter and Andre Scedrov, 'Inheritance as implicit coercion', Information and Computation 93(1), pp. 172-221, 1991, DOI 10.1016/0890-5401(91)90055-7: coherence of a coercion semantics, i.e. independence of the meaning from the derivation chosen. The toy has a single coercion Nat → Int, so uniqueness of coercion paths is trivial here; the toy's coherence question is whether coercion insertion commutes with the overloaded operators.",
+      "Dmitriy Traytel, Stefan Berghofer and Tobias Nipkow, 'Extending Hindley-Milner type inference with coercive structural subtyping', APLAS 2011, LNCS 7078, pp. 89-104, Springer, 2011, DOI 10.1007/978-3-642-25318-8_10. Section 5.1: sin(n + n) with n : N, an overloaded + and real : N → R has the two type-correct completions sin(real(n + n)) and sin(real n + real n); the deterministic implementation picks the first, and the authors note that without coherence a system may silently prove a different theorem."
+    ],
+    "design_question": "When does the choice of coercion placement stop mattering semantically in the toy? (Whenever every subtraction carries its type; this condition is sufficient, not necessary: subAnnotated_not_necessary_for_coherence_int, subAnnotated_not_necessary_for_coherence_cancel.)"
+  },
+  {
+    "id": "coherence_without_subtraction",
+    "lean": "Toy.Render.elabs_coherent_of_subFree",
+    "lean_names": [
+      "Toy.Render.subFree_term_round_trip_fails_across_readers",
+      "Toy.Render.Ty",
+      "Toy.Render.Tm",
+      "Toy.Render.Stx",
+      "Toy.Render.Sig",
+      "Toy.Render.eval",
+      "Toy.Render.ppDefault",
+      "Toy.Render.Stx.subFree",
+      "Toy.Render.Elabs",
+      "Toy.Render.S₀",
+      "Toy.Render.tNatSub",
+      "Toy.Render.tZ",
+      "Toy.Render.tZLeaves",
+      "Toy.Render.tAddOp",
+      "Toy.Render.tAddLeaves",
+      "Toy.Render.ρ₀",
+      "Toy.Render.subAnnotated_not_necessary_for_coherence_int"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every signature S, text s, type τ and terms t₁, t₂: if s contains no subtraction and t₁ and t₂ are both declarative elaborations of s at τ, then t₁ and t₂ evaluate identically in every environment, wherever their coercions were inserted.",
+    "hypotheses": [
+      {
+        "name": "hs : s.subFree = true",
+        "purpose": "Fixes the type of every subtraction, the one operator that does not commute with Nat → Int.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabs_coherent_drop_subFree",
+        "witness_class": "the default text a - b = z with its operator-coercion and leaf-coercion elaborations"
+      },
+      {
+        "name": "h₁ : Elabs S s τ t₁",
+        "purpose": "t₁ must be an elaboration of s.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabs_coherent_of_subFree_drop_elabs",
+        "witness_class": "a closed term unrelated to s (in place of t₁), with t₂ a genuine elaboration"
+      },
+      {
+        "name": "h₂ : Elabs S s τ t₂",
+        "purpose": "Symmetric to h1.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabs_coherent_of_subFree_drop_elabs",
+        "witness_class": "the same instance with the roles of t₁ and t₂ exchanged"
+      }
+    ],
+    "nonvacuity_witness": "The default text a + b = z is subtraction-free and has two distinct elaborations, ↑(a + b) = z and ↑a + ↑b = z.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_elabs_coherent_of_subFree",
+    "non_claims": [
+      "Depth: an immediate corollary of coherence_when_every_subtraction_annotated.",
+      "Coherence is semantic: the two elaborations are different terms, so the term round trip across readers can still fail (subFree_term_round_trip_fails_across_readers).",
+      "Not claimed for languages with other operators or other coercions (not examined).",
+      "s.subFree = true is sufficient, not necessary, for coherence: the text z - z = z contains a subtraction, and all of its declarative elaborations evaluate identically in every environment (subAnnotated_not_necessary_for_coherence_int)."
+    ],
+    "prior_art": [
+      "John C. Reynolds, 'Using category theory to design implicit conversions and generic operators', in N. D. Jones (ed.), Semantics-Directed Compiler Generation, LNCS 94, pp. 211-258, Springer, 1980, DOI 10.1007/3-540-10250-7_24: implicit conversions and generic operators organized so that conversions commute with the operators. Truncating Nat subtraction is the toy's operator that does not commute with Nat → Int.",
+      "Val Breazu-Tannen, Thierry Coquand, Carl A. Gunter and Andre Scedrov, 'Inheritance as implicit coercion', Information and Computation 93(1), pp. 172-221, 1991, DOI 10.1016/0890-5401(91)90055-7: coherence of a coercion semantics, i.e. independence of the meaning from the derivation chosen. The toy has a single coercion Nat → Int, so uniqueness of coercion paths is trivial here; the toy's coherence question is whether coercion insertion commutes with the overloaded operators."
+    ],
+    "design_question": "When does it not matter, semantically, how a reader inserts coercions? (Sufficient conditions: the text has no subtraction, or more generally every subtraction is annotated; neither condition is necessary: subAnnotated_not_necessary_for_coherence_int.)"
+  },
+  {
+    "id": "coherence_on_fully_annotated_syntax",
+    "lean": "Toy.Render.elabs_coherent_of_fullyAnnotated",
+    "lean_names": [
+      "Toy.Render.Ty",
+      "Toy.Render.Tm",
+      "Toy.Render.Stx",
+      "Toy.Render.Sig",
+      "Toy.Render.eval",
+      "Toy.Render.ppDefault",
+      "Toy.Render.Stx.fullyAnnotated",
+      "Toy.Render.Elabs",
+      "Toy.Render.vZ",
+      "Toy.Render.S₀",
+      "Toy.Render.tNatSub",
+      "Toy.Render.tZ",
+      "Toy.Render.tZLeaves",
+      "Toy.Render.sTwoEqZ",
+      "Toy.Render.ρ₀",
+      "Toy.Render.subAnnotated_not_necessary_for_coherence_int",
+      "Toy.Render.subAnnotated_not_necessary_for_coherence_cancel"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "For every signature S, text s, type τ and terms t₁, t₂: if s is fully annotated (subtraction allowed) and t₁ and t₂ are both declarative elaborations of s at τ, then t₁ and t₂ evaluate identically in every environment.",
+    "hypotheses": [
+      {
+        "name": "hs : s.fullyAnnotated = true",
+        "purpose": "Fixes the type of every subtraction, the one operator that does not commute with Nat → Int.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabs_coherent_drop_fullyAnnotated",
+        "witness_class": "the default text a - b = z with its operator-coercion and leaf-coercion elaborations"
+      },
+      {
+        "name": "h₁ : Elabs S s τ t₁",
+        "purpose": "t₁ must be an elaboration of s.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabs_coherent_of_fullyAnnotated_drop_elabs",
+        "witness_class": "a closed term unrelated to s (in place of t₁), with t₂ a genuine elaboration"
+      },
+      {
+        "name": "h₂ : Elabs S s τ t₂",
+        "purpose": "Symmetric to h1.",
+        "tightness": "tight",
+        "counterexample": "Toy.Render.ce_elabs_coherent_of_fullyAnnotated_drop_elabs",
+        "witness_class": "the same instance with the roles of t₁ and t₂ exchanged"
+      }
+    ],
+    "nonvacuity_witness": "@eq Int (2 : Int) z is fully annotated and has two distinct elaborations, (2 : Int) = z and ↑(2 : Nat) = z.",
+    "nonvacuity_witness_lean": "Toy.Render.nv_elabs_coherent_of_fullyAnnotated",
+    "non_claims": [
+      "Depth: an immediate corollary of coherence_when_every_subtraction_annotated.",
+      "Does not say fully annotated syntax has a unique elaboration term: @eq Int (2 : Int) z has two (nv_elabs_coherent_of_fullyAnnotated).",
+      "s.fullyAnnotated = true is sufficient, not necessary, for coherence: the texts z - z = z and a - a = z are not fully annotated, and all of their declarative elaborations evaluate identically in every environment (subAnnotated_not_necessary_for_coherence_int, subAnnotated_not_necessary_for_coherence_cancel)."
+    ],
+    "prior_art": [
+      "John C. Reynolds, 'Using category theory to design implicit conversions and generic operators', in N. D. Jones (ed.), Semantics-Directed Compiler Generation, LNCS 94, pp. 211-258, Springer, 1980, DOI 10.1007/3-540-10250-7_24: implicit conversions and generic operators organized so that conversions commute with the operators. Truncating Nat subtraction is the toy's operator that does not commute with Nat → Int.",
+      "Val Breazu-Tannen, Thierry Coquand, Carl A. Gunter and Andre Scedrov, 'Inheritance as implicit coercion', Information and Computation 93(1), pp. 172-221, 1991, DOI 10.1016/0890-5401(91)90055-7: coherence of a coercion semantics, i.e. independence of the meaning from the derivation chosen. The toy has a single coercion Nat → Int, so uniqueness of coercion paths is trivial here; the toy's coherence question is whether coercion insertion commutes with the overloaded operators."
+    ],
+    "design_question": "Is full annotation enough to make the meaning independent of a reader that inserts coercions freely? (Yes in the toy.)"
+  },
+  {
+    "id": "default_text_incoherent",
+    "lean": "Toy.Render.default_text_incoherent_operator_vs_leaf_coercion",
+    "lean_names": [
+      "Toy.Render.Denote",
+      "Toy.Render.cfgLeaves",
+      "Toy.Render.elabWith",
+      "Toy.Render.elabSys",
+      "Toy.Render.ppDefault",
+      "Toy.Render.Elabs",
+      "Toy.Render.S₀",
+      "Toy.Render.tZ",
+      "Toy.Render.tZLeaves",
+      "Toy.Render.ρ₀"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "shallow",
+    "plain_claim": "In S₀: the default text a - b = z has two declarative elaborations, ↑(a - b) = z (returned by the system elaborator) and ↑a - ↑b = z (returned by the leaf-coercion reader), which differ in truth at a = 0, b = 1, z = 0.",
+    "hypotheses": [],
+    "nonvacuity_witness": "No hypotheses: concrete statement about the default text of tZ in S₀.",
+    "non_claims": [
+      "Does not say every default text is incoherent: subtraction-free text is coherent (coherence_without_subtraction), and so is any text whose subtractions are annotated (coherence_when_every_subtraction_annotated)."
+    ],
+    "prior_art": [
+      "Dmitriy Traytel, Stefan Berghofer and Tobias Nipkow, 'Extending Hindley-Milner type inference with coercive structural subtyping', APLAS 2011, LNCS 7078, pp. 89-104, Springer, 2011, DOI 10.1007/978-3-642-25318-8_10. Section 5.1: sin(n + n) with n : N, an overloaded + and real : N → R has the two type-correct completions sin(real(n + n)) and sin(real n + real n); the deterministic implementation picks the first, and the authors note that without coherence a system may silently prove a different theorem.",
+      "John C. Reynolds, 'Using category theory to design implicit conversions and generic operators', in N. D. Jones (ed.), Semantics-Directed Compiler Generation, LNCS 94, pp. 211-258, Springer, 1980, DOI 10.1007/3-540-10250-7_24: implicit conversions and generic operators organized so that conversions commute with the operators. Truncating Nat subtraction is the toy's operator that does not commute with Nat → Int.",
+      "Val Breazu-Tannen, Thierry Coquand, Carl A. Gunter and Andre Scedrov, 'Inheritance as implicit coercion', Information and Computation 93(1), pp. 172-221, 1991, DOI 10.1016/0890-5401(91)90055-7: coherence of a coercion semantics, i.e. independence of the meaning from the derivation chosen. The toy has a single coercion Nat → Int, so uniqueness of coercion paths is trivial here; the toy's coherence question is whether coercion insertion commutes with the overloaded operators.",
+      "Lean 4 v4.34.1 (leanprover/lean4 commit 5045d0056413266e57c625dcd7c365b10e377c52), src/Lean/Elab/Extra.lean, module documentation of the binop%/binrel% elaborators: computes a 'maximal type' for an operator tree and inserts coercions in the 'leaves'. Modeling bridge (model–system relation: none proved): the toy's system elaborator places coercions at the operator, and its leaf-coercion reader cfgLeaves resembles the Lean rule."
+    ],
+    "design_question": "Why does default text fail to fix the meaning across readers? (Coercion placement is not coherent around an unannotated truncating subtraction.)"
+  }
+]

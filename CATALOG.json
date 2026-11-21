@@ -66521,6 +66521,122 @@
         "pl/nondeterminism"
       ]
     },
+    "printing-elaboration-round-trips-coercions-and-statement-certificates": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "3eae40f5eb25c5934211edf662d3b24c5afbe47a"
+          },
+          "name": "Mathlib (Mathlib/Tactic/Linter/PPRoundtrip.lean, cited as a contrast; not a dependency)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.entcs.2012.06.008"
+          },
+          "name": "Pollack-inconsistency (Wiedijk; ENTCS 285, 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/oso/9780198501275.003.0013",
+            "preprint_doi": "10.7146/brics.v4i18.18945"
+          },
+          "name": "How to believe a machine-checked proof (Pollack; Twenty-Five Years of Constructive Type Theory, 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-43144-4_2"
+          },
+          "name": "HOL Zero's Solutions for Pollack-Inconsistency (Adams; ITP 2016)"
+        },
+        {
+          "identity": {
+            "afp_entry": "Printing_Parsing_Roundtrip",
+            "arxiv": "2604.15713",
+            "url": "https://www.isa-afp.org/entries/Printing_Parsing_Roundtrip.html"
+          },
+          "name": "Type Annotations with Roundtrip Property (Kappelmann, Sch\u00e4ffeler, Stevens, Abdulaziz, Popescu, Traytel; Archive of Formal Proofs, 2026)"
+        },
+        {
+          "identity": {
+            "doi": "10.29007/zbdb"
+          },
+          "name": "Robust, Semi-Intelligible Isabelle Proofs from ATP Proofs (Smolka, Blanchette; PxTP 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-015-9335-3"
+          },
+          "name": "Semi-intelligible Isar proofs from machine-generated proofs (Blanchette, B\u00f6hme, Fleury, Smolka, Steckermeier; JAR 56(2), 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-25318-8_10"
+          },
+          "name": "Extending Hindley-Milner type inference with coercive structural subtyping (Traytel, Berghofer, Nipkow; APLAS 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0890-5401(91)90055-7"
+          },
+          "name": "Inheritance as implicit coercion (Breazu-Tannen, Coquand, Gunter, Scedrov; Information and Computation 93(1), 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-10250-7_24"
+          },
+          "name": "Using category theory to design implicit conversions and generic operators (Reynolds; LNCS 94, 1980)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/263699.263742"
+          },
+          "name": "Typing algorithm in type theory with inheritance (Sa\u00efbi; POPL 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2502409.2502410"
+          },
+          "name": "Correct-by-construction pretty-printing (Danielsson; DTP 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1863523.1863525"
+          },
+          "name": "Invertible syntax descriptions: unifying parsing and pretty printing (Rendel, Ostermann; Haskell 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-58140-5_30"
+          },
+          "name": "Pure type systems with definitions (Severi, Poll; LFCS 1994)"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/mechanization",
+        "lean/pretty-printer",
+        "lean/elaboration",
+        "verification",
+        "verification/formalized-results",
+        "verification/trusted-computing-base",
+        "verification/statement-fidelity",
+        "pl",
+        "pl/elaboration",
+        "pl/pretty-printing",
+        "pl/coercions",
+        "pl/round-trip-properties"
+      ]
+    },
     "probabilistic-programming-measure-semantics-and-inference-compilers": {
       "observed_at": "2026-11-19",
       "subjects": [

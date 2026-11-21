@@ -1,0 +1,6 @@
+name = "printing-elaboration-round-trips-coercions-and-statement-certificates"
+version = "0.1.0"
+defaultTargets = ["Toy"]
+
+[[lean_lib]]
+name = "Toy"

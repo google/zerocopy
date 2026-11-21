@@ -1,0 +1,7 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name":
+ "«printing-elaboration-round-trips-coercions-and-statement-certificates»",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}
