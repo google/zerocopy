@@ -293,7 +293,7 @@
   ],
   "non_claims": [
    "Congruence is for the package's value-level refinement only. The coarser comparison of produced integers (ObsRefinesU) is not a congruence (card undef-observational-refinement-not-congruence).",
-   "Congruence covers the constructs of this language only; nothing is claimed about memory operations, calls, loops or select.",
+   "Congruence is proved for the constructs of this language; nothing is claimed either way about memory operations, calls, loops or select.",
    "The let case relies on monotonicity of the semantics in the environment (Toy.UB.semU_mono, Toy.UB.semP_mono), which holds because no construct can inspect whether a value is poison or how large an undef set is.",
    "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
    "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",

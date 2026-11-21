@@ -10,10 +10,13 @@ poison is UB, and `freeze` turns poison into an arbitrary but fixed integer), an
 **eager reading of uninitialised inputs** (reading one is UB). It proves 22 results about
 outcome-set refinement (target first: `RefinesU w tgt src`, `RefinesP w tgt src`) and about
 classic rewrites: changing the number of uses of a value, GVN on a branch condition, hoisting
-a branch out of a conditional ("loop unswitching"), and the laws of `freeze`. All results are
-theorems about the toy models; these theorems neither establish nor refute the corresponding
-claims about LLVM IR or Rust, and every connection to them is a separately labelled modeling
-bridge under **Findings**.
+a branch out of a conditional ("loop unswitching"), and the laws of `freeze`.
+Model–system relation: none proved (the refinements proved here relate programs of this
+package's language, and its poison and eager-uninitialised readings, to one another; no theorem
+relates these models to the semantics of LLVM IR or Rust). All results are theorems about the
+toy models; these theorems neither establish nor refute the corresponding claims about LLVM IR
+or Rust, and every connection to them is a separately labelled modeling bridge under
+**Findings**.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -2359,7 +2362,7 @@ Non-claims come first: those shared by several results, then those of each resul
 **3. `refinement-congruence`** (also S1, S2, S3, S4, S5, S6):
 
 - Congruence is for the package's value-level refinement only. The coarser comparison of produced integers (ObsRefinesU) is not a congruence (card undef-observational-refinement-not-congruence).
-- Congruence covers the constructs of this language only; nothing is claimed about memory operations, calls, loops or select.
+- Congruence is proved for the constructs of this language; nothing is claimed either way about memory operations, calls, loops or select.
 - The let case relies on monotonicity of the semantics in the environment (Toy.UB.semU_mono, Toy.UB.semP_mono), which holds because no construct can inspect whether a value is poison or how large an undef set is.
 
 **4. `undef-observational-refinement-not-congruence`** (also S1, S2, S3, S4, S5):
