@@ -408,20 +408,6 @@ Toy.Perm.Cell.compat_negative_examples {V : Type} [DecidableEq V] (v w : V) (hvw
   (shared 0 v).compat (shared 1 v) = false ∧
     (shared 0 v).compat (shared 0 v) = false ∧ (shared 1 v).compat (shared 1 w) = false
 
-Toy.Perm.CellStep.apply_examples {V : Type} (v w : V) :
-  CellStep.endShare.apply (shared 1 v) = some (shared 0 v) ∧
-    CellStep.share.apply (shared 0 v) = some (shared 1 v) ∧
-      (CellStep.write w).apply (shared 0 v) = some (shared 0 w) ∧
-        (CellStep.endBorrow w).apply borrowed = some (shared 0 w)
-
-Toy.Perm.CellStep.restoresExclusive_examples {V : Type} (v w : V) :
-  CellStep.endShare.RestoresExclusive (shared 1 v) ∧
-    (CellStep.endBorrow w).RestoresExclusive borrowed
-
-Toy.Perm.CellStep.restoresExclusive_negative_examples {V : Type} (v w : V) :
-  ¬(CellStep.write w).RestoresExclusive (shared 0 v) ∧
-    ¬CellStep.endShare.RestoresExclusive (shared 2 v)
-
 Toy.Perm.Cell.valid_examples :
   Valid [shared 1 7, shared 2 7, borrowed] ∧ ¬Valid [shared 0 7, shared 1 7]
 
@@ -439,7 +425,7 @@ Toy.Perm.cellSumAlg_examples :
         (cellSumAlg Nat).op (shared 1 7) (shared 1 8) = none
 ```
 
-The statements of `Toy.Perm.Cell.compat_examples` and `Toy.Perm.CellStep.apply_negative_examples` are quoted from the source (in `namespace Toy.Perm.Cell` with `variable {V : Type} [DecidableEq V]`, and in `namespace Toy.Perm.CellStep` with `variable {V : Type}`, respectively), because their printed signatures leave the payload type of `borrowed` undetermined:
+The statements of `Toy.Perm.Cell.compat_examples` and `Toy.Perm.CellStep.apply_negative_examples` are quoted from the source (in `namespace Toy.Perm.Cell` with `variable {V : Type} [DecidableEq V]`, and in `namespace Toy.Perm.CellStep` with `variable {V : Type}`, respectively), because their printed signatures leave the payload type of `borrowed` undetermined. The statements of `Toy.Perm.CellStep.apply_examples`, `Toy.Perm.CellStep.restoresExclusive_examples` and `Toy.Perm.CellStep.restoresExclusive_negative_examples` are also quoted from the source (in `namespace Toy.Perm.CellStep` with `variable {V : Type}`):
 
 ```lean
 -- lean/ToyPerm/Depth.lean:75-77
@@ -452,6 +438,23 @@ theorem apply_negative_examples (v w : V) :
     (CellStep.write w).apply (.shared 1 v) = none ∧ (CellStep.borrow).apply (.shared 1 v) = none ∧
       (CellStep.endShare).apply (.shared 0 v) = none ∧
       (CellStep.share).apply (.borrowed : Cell V) = none
+
+-- lean/ToyPerm/Depth.lean:117-121
+theorem apply_examples (v w : V) :
+    (CellStep.endShare).apply (.shared 1 v) = some (.shared 0 v) ∧
+      (CellStep.share).apply (.shared 0 v) = some (.shared 1 v) ∧
+      (CellStep.write w).apply (.shared 0 v) = some (.shared 0 w) ∧
+      (CellStep.endBorrow w).apply (.borrowed : Cell V) = some (.shared 0 w)
+
+-- lean/ToyPerm/Depth.lean:139-141
+theorem restoresExclusive_examples (v w : V) :
+    (CellStep.endShare).RestoresExclusive (.shared 1 v) ∧
+      (CellStep.endBorrow w).RestoresExclusive (.borrowed : Cell V)
+
+-- lean/ToyPerm/Depth.lean:146-148
+theorem restoresExclusive_negative_examples (v w : V) :
+    ¬ (CellStep.write w).RestoresExclusive (.shared 0 v) ∧
+      ¬ (CellStep.endShare).RestoresExclusive (.shared 2 v)
 ```
 
 #### D5. Bounded counting and maps between designs (`ToyPerm/Translate.lean`)
@@ -576,7 +579,7 @@ Basis: execution (Lean kernel check) for the named definition examples. Basis: d
 
 ### Results
 
-Lean statements are printed by Lean's `PrettyPrinter.ppSignature` with `open Toy.Perm Toy.Perm.PartialAlg Toy.Perm.FracPerm Toy.Perm.Count Toy.Perm.Cell`. Prior-art keys `P1`–`P20` refer to the full records under **Evidence → Primary sources**.
+Lean statements are printed by Lean's `PrettyPrinter.ppSignature` with `open Toy.Perm Toy.Perm.PartialAlg Toy.Perm.FracPerm Toy.Perm.Count Toy.Perm.Cell`, except those introduced as quoted from the source, which are verbatim source text under a `-- file:lines` citation. Prior-art keys `P1`–`P20` refer to the full records under **Evidence → Primary sources**.
 
 #### R1a-frac-count-pcm-laws
 
@@ -1149,11 +1152,18 @@ Toy.Perm.Cell.valid_set_iff {V : Type} [DecidableEq V] (cfg : List (Cell V)) (hv
   (i : Nat) (c c' : Cell V) (t : CellStep V) (hi : cfg[i]? = some c) (ht : t.apply c = some c') :
   Valid (cfg.set i c') ↔
     t.RestoresExclusive c → ∀ (j : Nat) (d : Cell V), j ≠ i → cfg[j]? = some d → d = borrowed
+```
 
-Toy.Perm.CellStep.restoresExclusive_iff {V : Type} (t : CellStep V) (c : Cell V) :
-  t.RestoresExclusive c ↔
-    (t = CellStep.endShare ∧ ∃ v, c = shared 1 v) ∨ ∃ v, t = CellStep.endBorrow v ∧ c = borrowed
+The statement of `Toy.Perm.CellStep.restoresExclusive_iff` is quoted from the source (in `namespace Toy.Perm.CellStep` with `variable {V : Type}`):
 
+```lean
+-- lean/ToyPerm/Depth.lean:155-157
+theorem restoresExclusive_iff (t : CellStep V) (c : Cell V) :
+    t.RestoresExclusive c ↔
+      (t = .endShare ∧ ∃ v, c = .shared 1 v) ∨ (∃ v, t = .endBorrow v ∧ c = .borrowed)
+```
+
+```lean
 Toy.Perm.Cell.stepAt_isSome_iff {V : Type} [DecidableEq V] (cfg : List (Cell V)) (hv : Valid cfg)
   (i : Nat) (t : CellStep V) :
   (stepAt cfg i t).isSome = true ↔
