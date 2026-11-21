@@ -1,0 +1,6 @@
+name = "place-evaluation-ub-placemention-erasure-inbounds-projections-and-equal-target-switches"
+version = "0.1.0"
+defaultTargets = ["Toy"]
+
+[[lean_lib]]
+name = "Toy"

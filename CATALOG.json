@@ -69009,6 +69009,90 @@
         "verification/survey"
       ]
     },
+    "place-evaluation-ub-placemention-erasure-inbounds-projections-and-equal-target-switches": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc MIR documentation (compiler/rustc_middle/src/mir/syntax.rs), module documentation of the MIR passes in remove_place_mention.rs, remove_storage_markers.rs and simplify.rs, core::ptr offset documentation (library/core/src/ptr/docs/offset.md), and the addr_of! documentation in library/core/src/ptr/mod.rs"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference, behavior considered undefined (src/behavior-considered-undefined.md)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "RFC 2582, raw reference MIR operator (text/2582-raw-reference-mir-operator.md)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification (spec/lang/representation.md, spec/lang/step/expressions.md, statements.md, terminators.md, operators.md)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "5e4ef44c57b22cdc2e1893770843fd693a5f82e1"
+          },
+          "name": "CompCert program behaviours and behaviour improvement (common/Behaviors.v)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1538788.1538814"
+          },
+          "name": "Formal verification of a realistic compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062343"
+          },
+          "name": "Taming Undefined Behavior in LLVM"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3276495"
+          },
+          "name": "Reconciling High-Level Optimizations and Low-Level Code in LLVM"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "compilers/mir-optimizations",
+        "compilers/storage-markers",
+        "pl/undefined-behavior",
+        "pl/place-expressions",
+        "pl/pointer-provenance",
+        "minirust/semantics",
+        "rustc/mir"
+      ]
+    },
     "point-kinetics-xenon-feedback-openmc-keff-source-convergence-and-cram-depletion": {
       "observed_at": "2026-11-20",
       "subjects": [

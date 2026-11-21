@@ -1,0 +1,1188 @@
+[
+ {
+  "id": "place-evaluation-ub-exact-conditions",
+  "lean": "Toy.PlaceEval.evalPlace_eq_none_iff",
+  "lean_names": [
+   "Toy.PlaceEval.projStep_deref_eq_none_iff",
+   "Toy.PlaceEval.projStep_field_eq_none_iff",
+   "Toy.PlaceEval.projStep_index_eq_none_iff",
+   "Toy.PlaceEval.evalPrefix",
+   "Toy.PlaceEval.ptrSize",
+   "Toy.PlaceEval.ptrAlign",
+   "Toy.PlaceEval.Mem.inBounds",
+   "Toy.PlaceEval.State.basePtr",
+   "Toy.PlaceEval.State.allocOf",
+   "Toy.PlaceEval.projStep",
+   "Toy.PlaceEval.idxTy",
+   "Toy.PlaceEval.evalPlace_eq_none_iff_instance",
+   "Toy.PlaceEval.stEx",
+   "Toy.PlaceEval.mEx",
+   "Toy.PlaceEval.evalPlace_ex_neg_misaligned_load",
+   "Toy.PlaceEval.evalPlace_ex_neg_unallocated_local",
+   "Toy.PlaceEval.evalPlace_ex_neg_field_past_end",
+   "Toy.PlaceEval.Place",
+   "Toy.PlaceEval.Mem.offsetInbounds",
+   "Toy.PlaceEval.Mem.dereferenceable",
+   "Toy.PlaceEval.DerefLoadOk",
+   "Toy.PlaceEval.State.readIndex",
+   "Toy.PlaceEval.basePtr_missing_alloc_eq_none",
+   "Toy.PlaceEval.basePtr_freed_in_frame_eq_some",
+   "Toy.PlaceEval.stMissingAlloc",
+   "Toy.PlaceEval.stFreedInFrame",
+   "Toy.PlaceEval.evalPlace_ex_pos_index_zero_size",
+   "Toy.PlaceEval.evalPlace_ex_neg_index_dangling",
+   "Toy.PlaceEval.stDangIdx",
+   "Toy.PlaceEval.offsetInbounds_ex_pos_zero_null",
+   "Toy.PlaceEval.decodePtr_ex_neg_mismatch",
+   "Toy.PlaceEval.Block",
+   "Toy.PlaceEval.Block.unreach",
+   "Toy.PlaceEval.Cell",
+   "Toy.PlaceEval.Cfg",
+   "Toy.PlaceEval.Label",
+   "Toy.PlaceEval.Layout",
+   "Toy.PlaceEval.Local",
+   "Toy.PlaceEval.Mem",
+   "Toy.PlaceEval.Mem.get",
+   "Toy.PlaceEval.Mem.readCells",
+   "Toy.PlaceEval.Mem.store",
+   "Toy.PlaceEval.Mem.writeCells",
+   "Toy.PlaceEval.Operand",
+   "Toy.PlaceEval.Operand.eval",
+   "Toy.PlaceEval.Outcome",
+   "Toy.PlaceEval.Outcome.cons",
+   "Toy.PlaceEval.Outcome.isRunning",
+   "Toy.PlaceEval.Outcome.trace",
+   "Toy.PlaceEval.Proj",
+   "Toy.PlaceEval.Ptr",
+   "Toy.PlaceEval.Ptr.offset",
+   "Toy.PlaceEval.SrcUB",
+   "Toy.PlaceEval.State",
+   "Toy.PlaceEval.State.readLocal",
+   "Toy.PlaceEval.StepResult",
+   "Toy.PlaceEval.Stmt",
+   "Toy.PlaceEval.Stmt.isMarkerOf",
+   "Toy.PlaceEval.StmtResult",
+   "Toy.PlaceEval.Term",
+   "Toy.PlaceEval.Ty",
+   "Toy.PlaceEval.Ty.align",
+   "Toy.PlaceEval.Ty.size",
+   "Toy.PlaceEval.Val",
+   "Toy.PlaceEval.Val.encode",
+   "Toy.PlaceEval.aligned",
+   "Toy.PlaceEval.aligned_ex_neg",
+   "Toy.PlaceEval.aligned_ex_pos",
+   "Toy.PlaceEval.derefLoadOk_ex_neg_not_a_pointer",
+   "Toy.PlaceEval.derefLoadOk_ex_pos",
+   "Toy.PlaceEval.dereferenceable_ex_neg_freed",
+   "Toy.PlaceEval.dereferenceable_ex_pos_zero_null",
+   "Toy.PlaceEval.disjointRanges",
+   "Toy.PlaceEval.encodeLE",
+   "Toy.PlaceEval.evalPlace",
+   "Toy.PlaceEval.evalPlace_ex_neg_inner_not_pointer",
+   "Toy.PlaceEval.evalPlace_ex_pos_deref",
+   "Toy.PlaceEval.evalPlace_ex_pos_index",
+   "Toy.PlaceEval.evalPrefix_ex_pos",
+   "Toy.PlaceEval.evalProjs",
+   "Toy.PlaceEval.execStmt",
+   "Toy.PlaceEval.goesWrongFrom_ex_neg",
+   "Toy.PlaceEval.goesWrongFrom_ex_pos",
+   "Toy.PlaceEval.inBounds_ex_neg_freed",
+   "Toy.PlaceEval.inBounds_ex_neg_past",
+   "Toy.PlaceEval.inBounds_ex_pos",
+   "Toy.PlaceEval.inBounds_ex_pos_end",
+   "Toy.PlaceEval.offsetInbounds_eq_dereferenceable",
+   "Toy.PlaceEval.offsetInbounds_ex_neg_freed",
+   "Toy.PlaceEval.offsetInbounds_ex_pos_one_past_end",
+   "Toy.PlaceEval.pHalt",
+   "Toy.PlaceEval.pNull_zero_beh",
+   "Toy.PlaceEval.placeCells",
+   "Toy.PlaceEval.prefixOf",
+   "Toy.PlaceEval.reachableAt_ex_neg",
+   "Toy.PlaceEval.reachableAt_ex_pos",
+   "Toy.PlaceEval.readIndex_ex_pos",
+   "Toy.PlaceEval.stIdx",
+   "Toy.PlaceEval.store_ex_neg_freed",
+   "Toy.PlaceEval.store_ex_pos"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "The conditions are stated in prose by the MIR `Place` documentation and executably by MiniRust's `eval_place`; a mechanized iff over a projection list appears uncommon. No novelty is claimed.",
+  "plain_claim": "In the toy, for every state `st` (reachable or not) and place `p`, evaluating `p` is UB (`evalPlace st p = none`) iff (a) `st.basePtr p.base = none` (the frame records no allocation for the base local, or records an allocation index missing from the table; a frame entry naming a freed allocation still yields a pointer, `basePtr_freed_in_frame_eq_some`), or, for some projection index `i` such that the first `i` projections evaluate to a pointer `q` (`evalPrefix`), projection `i` is (b) a `deref` whose pointer load at `q` fails (`¬ DerefLoadOk`: `q` is not dereferenceable for `ptrSize` bytes, is not aligned for `ptrAlign`, or its cells do not hold a pointer value), (c) a `field off` with `off ≠ 0` whose byte range is not in bounds of a live allocation that `q` is derived from (`Mem.inBounds`), (d) an `index j sz` whose read of the index local `j` fails (`State.readIndex`), or (e) an `index j sz` whose index value `n` gives a non-zero offset `n * sz` (unbounded natural-number product) that is not in bounds. Degenerate edges: a zero offset (`off = 0`, or `n = 0` or `sz = 0`) is never checked, even for a null or dangling `q` (`evalPlace_ex_pos_index_zero_size`). No disjunct constrains the pointer that evaluation finally produces.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "No hypotheses. `evalPlace_eq_none_iff_instance`: in `stEx` the place `*(*l0)` fails (disjunct (b): the second load reads a byte and an uninitialized cell) while `*l0` evaluates; further instances: `evalPlace_ex_neg_unallocated_local` and `basePtr_missing_alloc_eq_none` (disjunct (a)), `evalPlace_ex_neg_misaligned_load` (disjunct (b), misaligned load), `evalPlace_ex_neg_field_past_end` (disjunct (c)), `evalPlace_ex_neg_index_dangling` (disjunct (e)).",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.evalPlace_eq_none_iff_instance",
+  "non_claims": [
+   "Disjunct (a) is stated over arbitrary states. On states reached by the semantics a frame entry always names an existing allocation and the allocation of an allocated local is live, so (a) means the base local is unallocated (not proved here as a standalone invariant); the theorem itself does not assume this (`basePtr_missing_alloc_eq_none`, `basePtr_freed_in_frame_eq_some`).",
+   "Disjunct (a) models the `StorageLive` documentation's rule that using an unallocated local in any way is UB; (b) and (c) model the MIR `Place` documentation; (d) models its description of `Index` as reading the index local as if by `Operand::Copy`.",
+   "Degenerate edges of `index j sz`: for index value `n = 0` or element size `sz = 0` the byte offset `n * sz` is `0` and no bounds check happens, even on a null or dangling pointer (`evalPlace_ex_pos_index_zero_size`); MiniRust's `PlaceExpr::Index` first checks the index against the array or slice length (not modelled). Index locals are one-byte integers (`idxTy`) decoded with Nat remainder `b % 256`.",
+   "Not modelled: the safe-pointer dereferenceability check and the array-length check on `index` that MiniRust's `eval_place` performs; with either, the characterization would need an extra disjunct.",
+   "In-bounds offsets require a live allocation: an offset of a pointer into a freed allocation is UB unless it is zero (the toy identifies `Mem.offsetInbounds` with `Mem.dereferenceable`, as MiniRust's `ptr_offset_inbounds` uses `signed_dereferenceable`).",
+   "Offsets are non-negative and addresses are unbounded natural numbers: there is no wrapping, no `isize` bound and no negative offset.",
+   "`decodePtr` treats two fragments of different pointers, or a fragment next to a byte, as not a pointer value (UB on load); MiniRust's `decode_ptr` instead decodes initialized bytes with mismatched provenance as a pointer without provenance (spec/lang/representation.md L102–103), so `DerefLoadOk` is stricter than MiniRust on partially overwritten pointers.",
+   "Toy simplifications: `Mem.store` does not check that the stored value matches the type (`Val.encode` writes pointer fragments for a pointer at any type, and little-endian bytes for an integer); `Ty.decode` ignores the size field of `Ty.int` and `Ty.enum` (the length comes from `Mem.load` reading `τ.size` cells); bytes decode with Nat remainder `b % 256`; index locals have the one-byte type `idxTy`; pointers have size `ptrSize = 2` and alignment `ptrAlign = 2`.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L1152–1160 (doc comment of `Place`; `///` markers removed, typos as in the source): \"The \"validity invariant\" of places is the same as that of raw pointers, meaning that e.g. `*ptr` on a dangling or unaligned pointer is never UB. (Later doing a load/store on that place or turning it into a reference can be UB though!) The only ways for a place computation can cause UB are: - On a `Deref` projection, we do an actual load of the inner place, with all the usual consequences (the inner place must be based on an aligned pointer, it must point to allocated memory, the aliasig model must allow reads, this must not be a data race). - For the projections that perform pointer arithmetic, the offset must in-bounds of an allocation (i.e., the preconditions of `ptr::offset` must be met).\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L1145–1150 (doc comment of `Place`, `Deref` projections; `///` markers removed): \"- [`Deref`](ProjectionElem::Deref): Derefs are the last type of projection, and the most complicated. They are only legal on parent places that are references, pointers, or `Box`. A `Deref` projection begins by loading a value from the parent place, as if by [`Operand::Copy`]. It then dereferences the resulting pointer, creating a place of the pointee's type. The resulting address is the address that was stored in the pointer. If the pointee type is unsized, the pointer additionally stored the value of the metadata.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L1139–1144 (doc comment of `Place`, `Index` projections; `///` markers removed): \"- [`Index`](ProjectionElem::Index): Like `ConstantIndex`, only legal on `[T; N]` or `[T]`. However, `Index` additionally takes a local from which the value of the index is computed at runtime. Computing the value of the index involves interpreting the `Local` as a `Place { local, projection: [] }`, and then computing its value as if done via [`Operand::Copy`]. The array/slice is then indexed with the resulting value. The local must have type `usize`.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L364–381 (doc comment of `StatementKind::StorageLive`/`StorageDead`; `///` markers removed): \"`StorageLive` and `StorageDead` statements mark the live range of a local. At any point during the execution of a function, each local is either allocated or unallocated. Except as noted below, all locals except function parameters are initially unallocated. `StorageLive` statements cause memory to be allocated for the local while `StorageDead` statements cause the memory to be freed. In other words, `StorageLive`/`StorageDead` act like the heap operations `allocate`/`deallocate`, but for stack-allocated local variables. Using a local in any way (not only reading/writing from it) while it is unallocated is UB. Some locals have no `StorageLive` or `StorageDead` statements within the entire MIR body. These locals are implicitly allocated for the full duration of the function. There is a convenience method at `rustc_mir_dataflow::storage::always_storage_live_locals` for computing these locals. If the local is already allocated, calling `StorageLive` again will implicitly free the local and then allocate fresh uninitialized memory. If a local is already deallocated, calling `StorageDead` again is a NOP.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/docs/offset.md L16–19 (Safety of `pointer::offset`): \"* If the computed offset is non-zero, then `self` must be [derived from][crate::ptr#provenance] a pointer to some [allocation], and the entire memory range between `self` and `result` (i.e., `min(self.addr(), result)..max(self.addr(), result)`) must be in bounds of that allocation.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust merge commit 5d328a1f62fe7c9d3a31d14b88dfa13310b7c989 (pull request #117329, \"offset: allow zero-byte offset on arbitrary pointers\", merged 2024-05-22); cited in prose for the zero-offset exemption that the toy's `Mem.offsetInbounds` encodes (a zero offset is permitted on every pointer).",
+   "[documentation; connection to the toy: derived (modeling bridge)] The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L19: \"* Accessing (loading from or storing to) a place that is [dangling] or [based on a misaligned pointer].\"; L22: \"* Performing an offsetting place projection that violates the requirements of [in-bounds pointer arithmetic](pointer#method.offset). An offsetting place projection is a [field expression][project-field], a [tuple index expression][project-tuple], or an [array/slice index expression][project-slice].\"; L104: \"A reference/pointer is \"dangling\" if not all of the bytes it [points to] are part of the same live [allocation] (so in particular they all have to be part of *some* allocation).\"; L110: \"> This also implies that if the [size is 0][zero-sized], then the pointer is trivially never \"dangling\" (even if it is a null pointer).\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/expressions.md: L214 \"Like a raw pointer, the result can be misaligned or null!\" (doc of `eval_place`); L228–235 (`PlaceExpr::Local`: a dead local raises UB \"access to a dead local\"); L246–263 (`PlaceExpr::Deref`: the operand is evaluated as a value; for safe pointer types the pointer must also be dereferenceable; misalignment is recorded in the place rather than raised); L271–299 (`PlaceExpr::Field`: `ptr_offset_inbounds`); L301–329 (`PlaceExpr::Index`: an index outside the array or slice length raises UB \"access to out-of-bounds index\", then `ptr_offset_inbounds`); spec/lang/step/operators.md L389–399 (`ptr_offset_inbounds` checks `signed_dereferenceable`).",
+   "reference corpus package `pointer-provenance-models-and-integer-pointer-cast-optimizations`, cards `R5a-integer-load-of-pointer-bytes-strips-or-exposes` and `R5c-integer-value-roundtrip-does-not-carry-provenance` (provenance on stored pointer bytes; the toy here uses a minimal provenance, an optional allocation identifier, and treats pointer fragments read at an integer type as UB rather than stripping or exposing provenance).",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/representation.md L102–103: \"When decoding, we have to deal with the possibility of the pointer bytes not all having the same provenance;\nthis is defined to yield a pointer without provenance.\""
+  ],
+  "design_question": "What exactly makes a place computation UB, so that a verifier knows which obligations a `PlaceMention`, a `&raw` or the place part of an access must discharge?"
+ },
+ {
+  "id": "place-evaluation-ignores-final-pointee",
+  "lean": "Toy.PlaceEval.evalPlace_deref_zeroFields",
+  "lean_names": [
+   "Toy.PlaceEval.evalPlace_append_deref_isSome_iff",
+   "Toy.PlaceEval.evalPlace_deref_zeroFields_instance",
+   "Toy.PlaceEval.evalPlace_ex_pos_field_one_past_end",
+   "Toy.PlaceEval.Mem.loadPtr",
+   "Toy.PlaceEval.DerefLoadOk",
+   "Toy.PlaceEval.stEx",
+   "Toy.PlaceEval.mEx"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Documented in prose (MIR `Place` docs, `addr_of!` docs, MiniRust's `eval_place` doc); stated here as an equation.",
+  "plain_claim": "In the toy, for every state `st`, local `x`, projection list `pre` and `k`, the place `pre ++ [deref] ++ k × [field 0]` evaluates to exactly the pointer loaded by its final `deref` (`evalPlace_deref_zeroFields`); hence `pre ++ [deref]` evaluates iff `pre` evaluates to some `q` with `DerefLoadOk` at `q` (`evalPlace_append_deref_isSome_iff`), whatever the loaded pointer is: null, dangling, pointing into a freed allocation, misaligned, or pointing to uninitialized cells.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "No hypotheses. `evalPlace_deref_zeroFields_instance` (`k = 2` in `stEx`); `evalPlace_ex_pos_field_one_past_end` shows a result that is not dereferenceable.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.evalPlace_deref_zeroFields_instance",
+  "non_claims": [
+   "The pointee of the final `deref` is unconstrained, but evaluating the inner place `pre` and loading the pointer from it still requires `DerefLoadOk` (a dereferenceable, aligned cell pair holding a pointer value), by `evalPlace_append_deref_isSome_iff`.",
+   "A non-zero `field` offset after the last `deref` does inspect the loaded pointer (it must be in bounds of a live allocation the pointer is derived from); see `evalPlace_eq_none_iff` and `place_computation_not_free`.",
+   "`field 0` stands for a field at byte offset `0`; Rust's default representation does not guarantee that the first field in source order has offset `0`.",
+   "Equal evaluated pointers for `*p` and `(*p).field 0` do not imply equal access semantics in Rust or MiniRust, where a place also records whether its pointer is aligned for the pointee type (the Reference's \"based on a misaligned pointer\"); the toy checks the accessed type's alignment at the final address instead.",
+   "The theorem says nothing about loads or stores through the resulting place, which check dereferenceability, alignment and contents.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L1152–1160 (doc comment of `Place`; `///` markers removed, typos as in the source): \"The \"validity invariant\" of places is the same as that of raw pointers, meaning that e.g. `*ptr` on a dangling or unaligned pointer is never UB. (Later doing a load/store on that place or turning it into a reference can be UB though!) The only ways for a place computation can cause UB are: - On a `Deref` projection, we do an actual load of the inner place, with all the usual consequences (the inner place must be based on an aligned pointer, it must point to allocated memory, the aliasig model must allow reads, this must not be a data race). - For the projections that perform pointer arithmetic, the offset must in-bounds of an allocation (i.e., the preconditions of `ptr::offset` must be met).\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs L2707–2710 (Safety of `addr_of!`; `///` markers removed): \"The `expr` in `addr_of!(expr)` is evaluated as a place expression, but never loads from the place or requires the place to be dereferenceable. This means that `addr_of!((*ptr).field)` still requires the projection to `field` to be in-bounds, using the same rules as [`offset`]. However, `addr_of!(*ptr)` is defined behavior even if `ptr` is null, dangling, or misaligned.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/expressions.md: L214 \"Like a raw pointer, the result can be misaligned or null!\" (doc of `eval_place`); L228–235 (`PlaceExpr::Local`: a dead local raises UB \"access to a dead local\"); L246–263 (`PlaceExpr::Deref`: the operand is evaluated as a value; for safe pointer types the pointer must also be dereferenceable; misalignment is recorded in the place rather than raised); L271–299 (`PlaceExpr::Field`: `ptr_offset_inbounds`); L301–329 (`PlaceExpr::Index`: an index outside the array or slice length raises UB \"access to out-of-bounds index\", then `ptr_offset_inbounds`); spec/lang/step/operators.md L389–399 (`ptr_offset_inbounds` checks `signed_dereferenceable`).",
+   "[documentation; connection to the toy: derived (modeling bridge)] RFC 2582 (raw reference MIR operator, merged), rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2582-raw-reference-mir-operator.md L44: \"No intermediate reference exists, so no invariants have to be adhered to: the pointer may be unaligned and/or dangling.\"; L211: \"which is better, but still UB: we emit a `getelementptr inbounds` for the `.field` offset computation.\" (said of `&raw mut (*x).field` for a dangling `x`; the RFC predates the zero-offset exemption of `library/core/src/ptr/docs/offset.md`, introduced by rust-lang/rust merge commit 5d328a1f62fe7c9d3a31d14b88dfa13310b7c989)."
+  ],
+  "design_question": "May a verifier treat `*p` (and `(*p).first` at offset 0) as free of obligations on the pointee when the place is not accessed?"
+ },
+ {
+  "id": "place-computation-not-free",
+  "lean": "Toy.PlaceEval.place_computation_not_free",
+  "lean_names": [
+   "Toy.PlaceEval.place_computation_zero_offset_and_bare_deref_ok",
+   "Toy.PlaceEval.SEx",
+   "Toy.PlaceEval.sEx",
+   "Toy.PlaceEval.pDerefUninit",
+   "Toy.PlaceEval.pDanglingRaw",
+   "Toy.PlaceEval.pNull",
+   "Toy.PlaceEval.pDanglingMention",
+   "Toy.PlaceEval.pMisaligned",
+   "Toy.PlaceEval.nullV",
+   "Toy.PlaceEval.ptrL"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Concrete instances of documented rules (MIR `Place` docs, `offset` docs, RFC 2582 L211); a re-derivation in the toy's vocabulary.",
+  "plain_claim": "Under the deterministic example semantics `SEx`: `placeMention (*(*pp))` with `*pp` uninitialized is UB (`pDerefUninit`: the intermediate pointer load fails); `r := &raw (*p).field 2` with `p` pointing into a freed allocation is UB (`pDanglingRaw 2`); and `r := &raw (*p).field 2` with `p` null is UB (`pNull 2`). Positive control (`place_computation_zero_offset_and_bare_deref_ok`): `r := &raw (*p).field 0` and `placeMention ((*p).field 0)` with `p` pointing into a freed allocation, `placeMention (*p)` and `r := &raw (*p).field 0` with `p` null, and the same two statements with `p` misaligned (with provenance), are UB-free.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Counterexample (concrete programs, fully evaluated).",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.place_computation_not_free",
+  "positive_control_lean": "Toy.PlaceEval.place_computation_zero_offset_and_bare_deref_ok",
+  "non_claims": [
+   "The instances use the slot assignment `sEx`; the place-evaluation outcome does not depend on the allocation mode, but the program-level statements are proved for `SEx`.",
+   "A misaligned pointer here has provenance and lies inside a live allocation; the null pointer has no provenance.",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L1152–1160 (doc comment of `Place`; `///` markers removed, typos as in the source): \"The \"validity invariant\" of places is the same as that of raw pointers, meaning that e.g. `*ptr` on a dangling or unaligned pointer is never UB. (Later doing a load/store on that place or turning it into a reference can be UB though!) The only ways for a place computation can cause UB are: - On a `Deref` projection, we do an actual load of the inner place, with all the usual consequences (the inner place must be based on an aligned pointer, it must point to allocated memory, the aliasig model must allow reads, this must not be a data race). - For the projections that perform pointer arithmetic, the offset must in-bounds of an allocation (i.e., the preconditions of `ptr::offset` must be met).\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/docs/offset.md L16–19 (Safety of `pointer::offset`): \"* If the computed offset is non-zero, then `self` must be [derived from][crate::ptr#provenance] a pointer to some [allocation], and the entire memory range between `self` and `result` (i.e., `min(self.addr(), result)..max(self.addr(), result)`) must be in bounds of that allocation.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs L2707–2710 (Safety of `addr_of!`; `///` markers removed): \"The `expr` in `addr_of!(expr)` is evaluated as a place expression, but never loads from the place or requires the place to be dereferenceable. This means that `addr_of!((*ptr).field)` still requires the projection to `field` to be in-bounds, using the same rules as [`offset`]. However, `addr_of!(*ptr)` is defined behavior even if `ptr` is null, dangling, or misaligned.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] RFC 2582 (raw reference MIR operator, merged), rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2582-raw-reference-mir-operator.md L44: \"No intermediate reference exists, so no invariants have to be adhered to: the pointer may be unaligned and/or dangling.\"; L211: \"which is better, but still UB: we emit a `getelementptr inbounds` for the `.field` offset computation.\" (said of `&raw mut (*x).field` for a dangling `x`; the RFC predates the zero-offset exemption of `library/core/src/ptr/docs/offset.md`, introduced by rust-lang/rust merge commit 5d328a1f62fe7c9d3a31d14b88dfa13310b7c989).",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust merge commit 5d328a1f62fe7c9d3a31d14b88dfa13310b7c989 (pull request #117329, \"offset: allow zero-byte offset on arbitrary pointers\", merged 2024-05-22); cited in prose for the zero-offset exemption that the toy's `Mem.offsetInbounds` encodes (a zero offset is permitted on every pointer)."
+  ],
+  "design_question": "Is \"place computations are free\" a sound simplification for a verifier? (No.)"
+ },
+ {
+  "id": "place-mention-erasure-refines",
+  "lean": "Toy.PlaceEval.erasePlaceMention_refinesPP",
+  "lean_names": [
+   "Toy.PlaceEval.deleteStmt",
+   "Toy.PlaceEval.erasePlaceMention_nonvacuous",
+   "Toy.PlaceEval.erasePlaceMention_erases_place_ub",
+   "Toy.PlaceEval.deleteStmt_emit_counterexample",
+   "Toy.PlaceEval.pEmitL",
+   "Toy.PlaceEval.pDerefUninit",
+   "Toy.PlaceEval.pDanglingMention",
+   "Toy.PlaceEval.RefinesPP",
+   "Toy.PlaceEval.ImprovesPP",
+   "Toy.PlaceEval.refinesAcross_trans",
+   "Toy.PlaceEval.deleteStmt_refinesPP",
+   "Toy.PlaceEval.Beh",
+   "Toy.PlaceEval.Beh.HasPrefix",
+   "Toy.PlaceEval.HasBeh",
+   "Toy.PlaceEval.HasBehFrom",
+   "Toy.PlaceEval.HasBehIn",
+   "Toy.PlaceEval.Prog",
+   "Toy.PlaceEval.Prog.blk",
+   "Toy.PlaceEval.Prog.initState",
+   "Toy.PlaceEval.Prog.layout",
+   "Toy.PlaceEval.Prog.setBlk",
+   "Toy.PlaceEval.Sem",
+   "Toy.PlaceEval.Sem.mode",
+   "Toy.PlaceEval.deleteStmt_ex",
+   "Toy.PlaceEval.deleteStmt_ex_out_of_range",
+   "Toy.PlaceEval.hasBeh_ex_neg_erased_addrCmp",
+   "Toy.PlaceEval.improvesPP_ex_neg_nonprefix",
+   "Toy.PlaceEval.improvesPP_ex_pos_prefix",
+   "Toy.PlaceEval.run",
+   "Toy.PlaceEval.runFromInit",
+   "Toy.PlaceEval.step"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Instance of the standard fact that deleting a statement whose only possible effect is UB is a behaviour-improving refinement (CompCert's `behavior_improves`; LLVM UB-removing refinement); mechanized here over the toy.",
+  "plain_claim": "In the toy, under every semantics `S` (fresh addresses, or any static slot assignment), for every program `P`, block `l` and index `i`: if statement `i` of block `l` is `placeMention p`, then deleting it gives a prefix-preserving refinement of `P` (every behaviour of the edited program equals a behaviour of `P` or extends the trace of a UB behaviour of `P`).",
+  "hypotheses": [
+   {
+    "name": "hs : (P.blk l).stmts[i]? = some (.placeMention p)",
+    "purpose": "identifies the deleted statement as a `placeMention`",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.deleteStmt_emit_counterexample",
+    "witness_class": "one-block program `pEmitL` under `SEx` whose statement `(0, 0)` is `emit 1`"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`erasePlaceMention_nonvacuous`: `pDerefUninit` at `(0, 2)` satisfies `hs`.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.erasePlaceMention_nonvacuous",
+  "non_claims": [
+   "The refinement may erase UB, so it is not an equivalence: `erasePlaceMention_erases_place_ub` (under `SEx`, the failing `placeMention` of `pDerefUninit` and of `pDanglingMention 2` are deleted; each source reaches UB, each edited program terminates).",
+   "Refinement is one-directional: it is the direction a compiler needs, not the direction a verifier of the edited program needs. UB-freedom of the edited program does not imply UB-freedom of `P` (`erasePlaceMention_erases_place_ub`).",
+   "The theorem concerns deleting one statement. Forward refinement composes over several deletions (`refinesAcross_trans`), but single-statement equivalence does not compose to the deletion of several statements: in `pTwoMentions`, deleting either failing `placeMention` alone is an equivalence (`erasePlaceMention_equivPP_despite_reachable_failure` for the first), whereas deleting both erases the UB (not proved here as a separate theorem).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/remove_place_mention.rs L1 (module doc, the pass's documented intent; `//!` marker removed): \"This pass removes `PlaceMention` statement, which has no effect at codegen.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L387–392 (doc comment of `StatementKind::PlaceMention`; `///` markers removed): \"This statement exists to preserve a trace of a scrutinee matched against a wildcard binding. This is especially useful for `let _ = PLACE;` bindings that desugar to a single `PlaceMention(PLACE)`. When executed at runtime, this computes the given place, but then discards it without doing a load. `let _ = *ptr;` is fine even if the pointer is dangling.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/statements.md L44–46: \"This is what `let _ = place;` compiles to. The place expression is still evaluated (so e.g. projections in there must be in-bounds), but no load occurs. This means `let _ = *danling_ptr;` is legal.\"; L48–55 (`Statement::PlaceMention` evaluates the place and discards it).",
+   "CompCert, AbsInt/CompCert 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: \"Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.\" (`beh1` is the source behaviour); `ImprovesPP bt bs` is this relation with `bs` as `beh1`.",
+   "Xavier Leroy, \"Formal verification of a realistic compiler\", Communications of the ACM 52(7), 2009, DOI 10.1145/1538788.1538814 (behaviour-improvement refinement for a verified compiler; the improvement relation here is CompCert's, prefix-preserving).",
+   "Juneyoung Lee et al., \"Taming Undefined Behavior in LLVM\", PLDI 2017, DOI 10.1145/3062341.3062343 (refinement that may remove UB, for compiler transformations)."
+  ],
+  "design_question": "May an optimizer or a verification pipeline delete `PlaceMention` statements, and in which direction do properties transfer?"
+ },
+ {
+  "id": "place-mention-erasure-equivalence-sufficient-condition",
+  "lean": "Toy.PlaceEval.erasePlaceMention_equivPP_of_evalPlace_reachable",
+  "lean_names": [
+   "Toy.PlaceEval.erasePlaceMention_equiv_nonvacuous",
+   "Toy.PlaceEval.erasePlaceMention_equiv_hs_counterexample",
+   "Toy.PlaceEval.erasePlaceMention_equiv_hok_counterexample",
+   "Toy.PlaceEval.erasePlaceMention_erases_place_ub",
+   "Toy.PlaceEval.erasePlaceMention_equivPP_despite_reachable_failure",
+   "Toy.PlaceEval.deleteStmt_emit_counterexample",
+   "Toy.PlaceEval.ReachableAt",
+   "Toy.PlaceEval.EquivPP",
+   "Toy.PlaceEval.pDanglingMention",
+   "Toy.PlaceEval.pDerefUninit",
+   "Toy.PlaceEval.pEmitL",
+   "Toy.PlaceEval.pDerefUninit_beh",
+   "Toy.PlaceEval.pDerefUninit_erased_beh",
+   "Toy.PlaceEval.pDanglingMention_two_beh",
+   "Toy.PlaceEval.pDanglingMention_two_erased_beh",
+   "Toy.PlaceEval.deleteStmt_rev_refinesPP",
+   "Toy.PlaceEval.Reach"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "The standard erasure pattern (deleting a statement whose UB condition never holds on reachable states is an equivalence), stated over the toy; folklore made precise and mechanized.",
+  "plain_claim": "In the toy, under every semantics `S`, for every program `P`: if statement `i` of block `l` is `placeMention p` and evaluating `p` succeeds in every state in which `(l, i)` is reachable, then deleting the statement is a prefix-preserving equivalence (refinement in both directions).",
+  "hypotheses": [
+   {
+    "name": "hs : (P.blk l).stmts[i]? = some (.placeMention p)",
+    "purpose": "identifies the deleted statement as a `placeMention`",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.erasePlaceMention_equiv_hs_counterexample",
+    "witness_class": "`pEmitL` under `SEx`: a one-statement program whose deleted statement is `emit 1`; evaluation of `⟨0, []⟩` succeeds at every reachable state at `(0, 0)` and deleting the statement is not an equivalence"
+   },
+   {
+    "name": "hok : ∀ st, ReachableAt S P l i st → (evalPlace st p).isSome = true",
+    "purpose": "excludes place-evaluation UB at the deleted statement",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.erasePlaceMention_equiv_hok_counterexample",
+    "witness_class": "`pDerefUninit` under `SEx`: the deleted `placeMention (*(*pp))` with `*pp` uninitialized; the source reaches UB, the edited program terminates (`erasePlaceMention_erases_place_ub`)"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`erasePlaceMention_equiv_nonvacuous`: `pDanglingMention 0` at `(0, 3)` under `SEx` (the place `(*p).field 0` evaluates at every reachable state although `p` dangles).",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.erasePlaceMention_equiv_nonvacuous",
+  "non_claims": [
+   "The condition is sufficient, not necessary: `erasePlaceMention_equivPP_despite_reachable_failure`.",
+   "Without `hok` deletion can erase UB: `erasePlaceMention_erases_place_ub` (under `SEx`, deleting the failing `placeMention (*(*pp))` of `pDerefUninit` and the failing `placeMention ((*p).field 2)` of `pDanglingMention 2`; each source reaches UB before any event, each edited program terminates).",
+   "The theorem concerns deleting one statement. Forward refinement composes over several deletions (`refinesAcross_trans`), but single-statement equivalence does not compose to the deletion of several statements: in `pTwoMentions`, deleting either failing `placeMention` alone is an equivalence (`erasePlaceMention_equivPP_despite_reachable_failure` for the first), whereas deleting both erases the UB (not proved here as a separate theorem).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/remove_place_mention.rs L1 (module doc, the pass's documented intent; `//!` marker removed): \"This pass removes `PlaceMention` statement, which has no effect at codegen.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L387–392 (doc comment of `StatementKind::PlaceMention`; `///` markers removed): \"This statement exists to preserve a trace of a scrutinee matched against a wildcard binding. This is especially useful for `let _ = PLACE;` bindings that desugar to a single `PlaceMention(PLACE)`. When executed at runtime, this computes the given place, but then discards it without doing a load. `let _ = *ptr;` is fine even if the pointer is dangling.\"",
+   "CompCert, AbsInt/CompCert 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: \"Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.\" (`beh1` is the source behaviour); `ImprovesPP bt bs` is this relation with `bs` as `beh1`.",
+   "Xavier Leroy, \"Formal verification of a realistic compiler\", Communications of the ACM 52(7), 2009, DOI 10.1145/1538788.1538814 (behaviour-improvement refinement for a verified compiler; the improvement relation here is CompCert's, prefix-preserving)."
+  ],
+  "design_question": "Under what checkable condition does deleting a `PlaceMention` lose no UB?"
+ },
+ {
+  "id": "place-mention-erasure-equivalence-exact-condition-static-slots",
+  "lean": "Toy.PlaceEval.erasePlaceMention_equivPP_iff_slots",
+  "lean_names": [
+   "Toy.PlaceEval.erasePlaceMention_nonvacuous",
+   "Toy.PlaceEval.erasePlaceMention_iff_hs_counterexample",
+   "Toy.PlaceEval.erasePlaceMention_erases_place_ub",
+   "Toy.PlaceEval.erasePlaceMention_equivPP_despite_reachable_failure",
+   "Toy.PlaceEval.GoesWrongFrom",
+   "Toy.PlaceEval.ReachableAt",
+   "Toy.PlaceEval.Prog.at",
+   "Toy.PlaceEval.pEmitL",
+   "Toy.PlaceEval.pDerefUninit",
+   "Toy.PlaceEval.pTwoMentions"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: the exact condition is a continuation condition (the edited program reaches UB from the point after the edit before any event), stated for a deterministic semantics and mechanized.",
+  "plain_claim": "In the toy, under the deterministic semantics `slots s` for every slot assignment `s`, for every program `P`: if statement `i` of block `l` is `placeMention p`, then deleting it is a prefix-preserving equivalence iff, for every reachable state at `(l, i)` in which evaluating `p` is UB, the run of the edited program from the point after the deleted statement reaches UB before emitting any event.",
+  "hypotheses": [
+   {
+    "name": "hs : (P.blk l).stmts[i]? = some (.placeMention p)",
+    "purpose": "identifies the deleted statement as a `placeMention`",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.erasePlaceMention_iff_hs_counterexample",
+    "witness_class": "`pEmitL` under `SEx`: the deleted statement is `emit 1`; the right-hand side holds (evaluation never fails) while the equivalence fails, so the biconditional is false"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Both sides true: `erasePlaceMention_equivPP_despite_reachable_failure`; both sides false: `erasePlaceMention_erases_place_ub`; `hs` holds for `pDerefUninit` at `(0, 2)` (`erasePlaceMention_nonvacuous`).",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.erasePlaceMention_nonvacuous",
+  "non_claims": [
+   "The characterization is exact for prefix-preserving equivalence (`EquivPP`), which requires the edited continuation to reach UB before emitting any event (`[]`). The weaker property that UB-freedom of the edited program implies UB-freedom of `P` can hold when the edited continuation emits further events before reaching UB (not proved here).",
+   "Stated for the deterministic `slots` semantics; exactness under fresh addresses is unknown (not examined).",
+   "The theorem concerns deleting one statement. Forward refinement composes over several deletions (`refinesAcross_trans`), but single-statement equivalence does not compose to the deletion of several statements: in `pTwoMentions`, deleting either failing `placeMention` alone is an equivalence (`erasePlaceMention_equivPP_despite_reachable_failure` for the first), whereas deleting both erases the UB (not proved here as a separate theorem).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/remove_place_mention.rs L1 (module doc, the pass's documented intent; `//!` marker removed): \"This pass removes `PlaceMention` statement, which has no effect at codegen.\"",
+   "CompCert, AbsInt/CompCert 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: \"Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.\" (`beh1` is the source behaviour); `ImprovesPP bt bs` is this relation with `bs` as `beh1`."
+  ],
+  "design_question": "When exactly is deleting a `PlaceMention` a prefix-preserving equivalence (`EquivPP`) under a deterministic semantics?"
+ },
+ {
+  "id": "place-mention-erasure-equivalence-despite-reachable-failure",
+  "lean": "Toy.PlaceEval.erasePlaceMention_equivPP_despite_reachable_failure",
+  "lean_names": [
+   "Toy.PlaceEval.pTwoMentions",
+   "Toy.PlaceEval.pTwoMentions_beh",
+   "Toy.PlaceEval.pTwoMentions_erased_beh",
+   "Toy.PlaceEval.stTwoMentions",
+   "Toy.PlaceEval.initEx",
+   "Toy.PlaceEval.SEx"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "A concrete instance of a known phenomenon (a later identical UB can mask the deleted one); re-derived in the toy.",
+  "plain_claim": "Under `SEx`, in `pTwoMentions` (two identical statements `placeMention (*(*pp))` with `*pp` uninitialized) evaluation of the first fails at a reachable state, yet deleting it is a prefix-preserving equivalence: both programs reach UB before any event (`pTwoMentions_beh`, `pTwoMentions_erased_beh`), the edited one at the second statement. So place-evaluation UB-freedom at the erased point is sufficient for equivalence but not necessary.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Counterexample (concrete program).",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.erasePlaceMention_equivPP_despite_reachable_failure",
+  "non_claims": [
+   "Refutes the converse of `erasePlaceMention_equivPP_of_evalPlace_reachable`, not the theorem itself.",
+   "Deleting both failing statements of `pTwoMentions` erases the UB (not proved here as a separate theorem); single-statement equivalence does not compose.",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "Xavier Leroy, \"Formal verification of a realistic compiler\", Communications of the ACM 52(7), 2009, DOI 10.1145/1538788.1538814 (behaviour-improvement refinement for a verified compiler; the improvement relation here is CompCert's, prefix-preserving)."
+  ],
+  "design_question": "Is \"place evaluation is UB-free wherever the `PlaceMention` executes\" necessary? (No.)"
+ },
+ {
+  "id": "ub-check-after-erasure-incomplete",
+  "lean": [
+   "Toy.PlaceEval.ubCheck_after_erasePlaceMention_misses_place_ub",
+   "Toy.PlaceEval.ubCheck_after_eraseMarkers_misses_stale_read"
+  ],
+  "lean_names": [
+   "Toy.PlaceEval.exactUBChecker_exists",
+   "Toy.PlaceEval.ExactUBChecker",
+   "Toy.PlaceEval.UBFree",
+   "Toy.PlaceEval.pDerefUninit",
+   "Toy.PlaceEval.pDerefUninit_beh",
+   "Toy.PlaceEval.pDerefUninit_erased_beh",
+   "Toy.PlaceEval.pStale",
+   "Toy.PlaceEval.pStale_fresh_wrong",
+   "Toy.PlaceEval.pStale_erased_fresh_beh",
+   "Toy.PlaceEval.not_exactUBChecker_const_true"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Concrete instances of the known fact that a UB check of a refined (UB-erasing) program does not transfer back to the source; re-derived in the toy.",
+  "plain_claim": "Under `SEx`, `pDerefUninit` with its `placeMention` (statement `(0, 2)`) deleted is UB-free while `pDerefUninit` is not, so every exact UB checker for `SEx` (a Boolean function `chk` with `chk P = true ↔ UBFree SEx P`; such checkers exist noncomputably, `exactUBChecker_exists`) accepts the edited program (`ubCheck_after_erasePlaceMention_misses_place_ub`). Under fresh addresses, every exact UB checker for `.fresh` accepts `pStale` with the markers of local `0` erased, although `pStale` (a read of `x` after a re-`storageLive`) is not UB-free (`ubCheck_after_eraseMarkers_misses_stale_read`).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Counterexamples; exact checkers exist for every semantics (`exactUBChecker_exists`), so the universally quantified checker is not vacuous.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.exactUBChecker_exists",
+  "non_claims": [
+   "The checker is an idealized exact decision of `UBFree` (noncomputable), not a tool. A sound over-approximating checker (`chk P = true → UBFree S P`, allowed to reject UB-free programs) is not covered and need not accept the edited programs.",
+   "UB found in the edited program is UB of the source, provided `NoProvConst P` holds for storage-marker erasure: both erasures are forward refinements (`erasePlaceMention_refinesPP`; `eraseMarkers_refinesPP_of_noProvConst`, which assumes `NoProvConst P`), so a UB behaviour of the edited program improves a UB behaviour of the source with a prefix of its trace (consequence of refinement; not stated as a separate theorem). Without `NoProvConst P`, UB in the marker-erased program need not be UB of the source: in `eraseMarkers_fresh_noProvConst_counterexample` the source `pConstProvFresh` is UB-free under fresh addresses while the marker-erased program has a UB behaviour that improves no source behaviour.",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L364–381 (doc comment of `StatementKind::StorageLive`/`StorageDead`; `///` markers removed): \"`StorageLive` and `StorageDead` statements mark the live range of a local. At any point during the execution of a function, each local is either allocated or unallocated. Except as noted below, all locals except function parameters are initially unallocated. `StorageLive` statements cause memory to be allocated for the local while `StorageDead` statements cause the memory to be freed. In other words, `StorageLive`/`StorageDead` act like the heap operations `allocate`/`deallocate`, but for stack-allocated local variables. Using a local in any way (not only reading/writing from it) while it is unallocated is UB. Some locals have no `StorageLive` or `StorageDead` statements within the entire MIR body. These locals are implicitly allocated for the full duration of the function. There is a convenience method at `rustc_mir_dataflow::storage::always_storage_live_locals` for computing these locals. If the local is already allocated, calling `StorageLive` again will implicitly free the local and then allocate fresh uninitialized memory. If a local is already deallocated, calling `StorageDead` again is a NOP.\"",
+   "Juneyoung Lee et al., \"Taming Undefined Behavior in LLVM\", PLDI 2017, DOI 10.1145/3062341.3062343 (refinement that may remove UB, for compiler transformations)."
+  ],
+  "design_question": "Does a UB check run after `PlaceMention` erasure or storage-marker erasure find UB of the source? (No: place-evaluation UB at the erased statement and stale reads are missed.)"
+ },
+ {
+  "id": "ub-check-after-place-mention-erasure-complete-outside-place-ub",
+  "lean": "Toy.PlaceEval.ubFree_of_ubFree_erasePlaceMention_of_evalPlace_reachable",
+  "lean_names": [
+   "Toy.PlaceEval.ubFree_erasePlaceMention_nonvacuous",
+   "Toy.PlaceEval.deleteStmt_ubAssign_counterexample",
+   "Toy.PlaceEval.ubCheck_after_erasePlaceMention_misses_place_ub",
+   "Toy.PlaceEval.ubFree_erasePlaceMention_htgt_counterexample",
+   "Toy.PlaceEval.pMentionUnreach",
+   "Toy.PlaceEval.pUBAssign",
+   "Toy.PlaceEval.pDanglingMention",
+   "Toy.PlaceEval.pDerefUninit",
+   "Toy.PlaceEval.erasePlaceMention_equivPP_of_evalPlace_reachable",
+   "Toy.PlaceEval.ubFree_of_refinesPP_rev"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Corollary of the sufficient condition and of the standard reverse-refinement argument (UB-freedom transfers backwards along a refinement); re-derived in the toy.",
+  "plain_claim": "In the toy, under every semantics `S`, for every program `P`: if statement `i` of block `l` is `placeMention p`, evaluating `p` succeeds at every reachable state at `(l, i)`, and the program with that statement deleted is UB-free, then `P` is UB-free. Equivalently, if the edited program is UB-free and `P` is not, some reachable state at `(l, i)` has a failing evaluation of `p`.",
+  "hypotheses": [
+   {
+    "name": "hs : (P.blk l).stmts[i]? = some (.placeMention p)",
+    "purpose": "identifies the deleted statement as a `placeMention`",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.deleteStmt_ubAssign_counterexample",
+    "witness_class": "`pUBAssign` under `SEx`: the deleted statement is an assignment that reads an uninitialized local"
+   },
+   {
+    "name": "hok : ∀ st, ReachableAt S P l i st → (evalPlace st p).isSome = true",
+    "purpose": "excludes place-evaluation UB at the erased statement",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.ubCheck_after_erasePlaceMention_misses_place_ub",
+    "witness_class": "`pDerefUninit` under `SEx`: the edited program is UB-free, the source is not"
+   },
+   {
+    "name": "htgt : UBFree S (deleteStmt P l i)",
+    "purpose": "the verdict being transferred (UB-freedom of the edited program)",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.ubFree_erasePlaceMention_htgt_counterexample",
+    "witness_class": "`pMentionUnreach` under `SEx`: a valid `placeMention` followed by `unreachable`; `hs` and `hok` hold and the program is not UB-free"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`ubFree_erasePlaceMention_nonvacuous`: `pDanglingMention 0` at `(0, 3)` under `SEx`.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.ubFree_erasePlaceMention_nonvacuous",
+  "non_claims": [
+   "Proved from `erasePlaceMention_equivPP_of_evalPlace_reachable` and `ubFree_of_refinesPP_rev`.",
+   "The theorem concerns deleting one statement. Forward refinement composes over several deletions (`refinesAcross_trans`), but single-statement equivalence does not compose to the deletion of several statements: in `pTwoMentions`, deleting either failing `placeMention` alone is an equivalence (`erasePlaceMention_equivPP_despite_reachable_failure` for the first), whereas deleting both erases the UB (not proved here as a separate theorem).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "Xavier Leroy, \"Formal verification of a realistic compiler\", Communications of the ACM 52(7), 2009, DOI 10.1145/1538788.1538814 (behaviour-improvement refinement for a verified compiler; the improvement relation here is CompCert's, prefix-preserving)."
+  ],
+  "design_question": "Which UB does a check after `PlaceMention` erasure miss? (Place-evaluation UB at the erased statement.)"
+ },
+ {
+  "id": "switch-operand-ub-conditions",
+  "lean": "Toy.PlaceEval.evalInt_copy_eq_none_iff",
+  "lean_names": [
+   "Toy.PlaceEval.decode_enum_eq_some_iff",
+   "Toy.PlaceEval.decode_int_eq_some_iff",
+   "Toy.PlaceEval.evalInt_copy_instance",
+   "Toy.PlaceEval.Operand.evalInt",
+   "Toy.PlaceEval.Mem.load",
+   "Toy.PlaceEval.Ty.decode",
+   "Toy.PlaceEval.decodeLE",
+   "Toy.PlaceEval.bool2",
+   "Toy.PlaceEval.stEx",
+   "Toy.PlaceEval.mEx",
+   "Toy.PlaceEval.load_ex_pos_zero_size_null",
+   "Toy.PlaceEval.dereferenceable_of_size_eq_zero",
+   "Toy.PlaceEval.readCells_of_size_eq_zero",
+   "Toy.PlaceEval.decode_readCells_of_size_eq_zero_iff",
+   "Toy.PlaceEval.load_ex_pos_zero_size_enum",
+   "Toy.PlaceEval.load_ex_neg_zero_size_enum",
+   "Toy.PlaceEval.aligned_zero_ex_pos",
+   "Toy.PlaceEval.aligned_zero_ex_neg",
+   "Toy.PlaceEval.evalPlace_eq_none_iff",
+   "Toy.PlaceEval.decodePtr",
+   "Toy.PlaceEval.decodePtr_ex_neg_uninit",
+   "Toy.PlaceEval.decodePtr_ex_pos_bytes",
+   "Toy.PlaceEval.decodePtr_ex_pos_frags",
+   "Toy.PlaceEval.decode_enum_ex_neg_tag",
+   "Toy.PlaceEval.decode_enum_ex_pos",
+   "Toy.PlaceEval.decode_int_ex_neg_uninit",
+   "Toy.PlaceEval.evalInt_ex_pos",
+   "Toy.PlaceEval.load_ex_neg_freed",
+   "Toy.PlaceEval.load_ex_neg_misaligned",
+   "Toy.PlaceEval.load_ex_neg_uninit",
+   "Toy.PlaceEval.load_ex_pos_int",
+   "Toy.PlaceEval.load_ex_pos_ptr"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "A definitional unfolding of documented rules (copy semantics; validity of integers and enum tags); a reference point for the switch cards.",
+  "plain_claim": "In the toy, for every state `st`, place `p` and type `τ`, the operand `copy p τ` fails to evaluate to an integer iff evaluating `p` fails (`evalPlace_eq_none_iff`), or the resulting pointer `q` is not dereferenceable for `τ.size` bytes, or is not aligned for `τ.align`, or its cells do not decode to an integer at `τ`. At an enum type the cells decode to `n` iff they are bytes encoding `n` and `n` is a valid tag (`decode_enum_eq_some_iff`); at an integer type, iff they are bytes encoding `n` (`decode_int_eq_some_iff`), each byte contributing `b % 256` (Nat remainder); an uninitialized cell or a pointer fragment never decodes via `decodeLE`. Degenerate edges: if `τ.size = 0`, then every pointer, including null, is dereferenceable for `τ.size` bytes (`dereferenceable_of_size_eq_zero`), the cells read form the empty list (`readCells_of_size_eq_zero`), and they decode at `τ` to the integer `n` iff `n = 0` and, when `τ` is an enum type `Ty.enum s a valid`, `0 ∈ valid` (`decode_readCells_of_size_eq_zero_iff`); instances in `mEx`: a zero-size read through null succeeds with `0` at `Ty.int 0 1` (`load_ex_pos_zero_size_null`) and at `Ty.enum 0 1 [0]` (`load_ex_pos_zero_size_enum`), and fails at `Ty.enum 0 1 [1]`, whose valid tags exclude `0` (`load_ex_neg_zero_size_enum`); for `τ.align = 0` exactly address `0` is aligned (`aligned_zero_ex_pos`, `aligned_zero_ex_neg`).",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "No hypotheses. `evalInt_copy_instance`: in `stEx` local `0` holds pointer fragments, so reading it at `bool2` fails.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.evalInt_copy_instance",
+  "non_claims": [
+   "Pointer-typed values never evaluate to integers (`Operand.evalInt` rejects `.ptr`), so a `switchInt` on a pointer operand is UB in the toy; at `Ty.ptr`, `decodePtr` does decode pointer fragments, but the result is a pointer, not an integer.",
+   "`decode_int_eq_some_iff` and `decode_enum_eq_some_iff` do not constrain the length of the cell list; in `evalInt_copy_eq_none_iff` the cells are `readCells q.addr τ.size`, of length `τ.size`.",
+   "`Ty.enum` models a field-less enum or `bool` read directly by the operand. In rustc MIR and MiniRust (`ValueExpr::GetDiscriminant`), the discriminant of an enum with fields is read by a separate statement before the `SwitchInt`.",
+   "Toy simplifications: `Mem.store` does not check that the stored value matches the type (`Val.encode` writes pointer fragments for a pointer at any type, and little-endian bytes for an integer); `Ty.decode` ignores the size field of `Ty.int` and `Ty.enum` (the length comes from `Mem.load` reading `τ.size` cells); bytes decode with Nat remainder `b % 256`; index locals have the one-byte type `idxTy`; pointers have size `ptrSize = 2` and alignment `ptrAlign = 2`.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/terminators.md L34–48 (`Terminator::Switch` evaluates its value expression, then jumps).",
+   "reference corpus package `undefined-values-poison-undef-freeze-and-refinement`, cards `source-ub-refined-by-anything` and `poison-refines-eager-uninit` (value-level reads of uninitialized data; the toy here uses the eager reading: reading an uninitialized byte at an integer, pointer or enum type is UB).",
+   "reference corpus package `enum-niche-layout-guarantees-and-validity-invariants`, card `nicheLayout_lawful_iff_isNiche` (validity sets of enum representations); the toy's `Ty.enum` validity is a finite list of valid tags.",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/expressions.md L104–128 (`ValueExpr::GetDiscriminant`, paraphrase): reading the discriminant of an enum is a separate value expression that loads only the bytes the discriminator touches."
+  ],
+  "design_question": "What must hold for the read performed by a `switchInt` operand to be UB-free?"
+ },
+ {
+  "id": "equal-target-switch-erasure-refines",
+  "lean": "Toy.PlaceEval.switchToGoto_refinesPP",
+  "lean_names": [
+   "Toy.PlaceEval.setTerm",
+   "Toy.PlaceEval.switchToGoto_nonvacuous",
+   "Toy.PlaceEval.setTerm_nonSwitch_counterexample",
+   "Toy.PlaceEval.switchToGoto_differentTargets_counterexample",
+   "Toy.PlaceEval.switchToGoto_erases_operand_ub",
+   "Toy.PlaceEval.pSwUninit",
+   "Toy.PlaceEval.pSwDiff",
+   "Toy.PlaceEval.pHaltEmit",
+   "Toy.PlaceEval.pSwTag",
+   "Toy.PlaceEval.selectTarget",
+   "Toy.PlaceEval.setTerm_refinesPP",
+   "Toy.PlaceEval.setTerm_ex",
+   "Toy.PlaceEval.setTerm_ex_out_of_range"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Documented as a transformation that may remove UB-causing reads (rustc `simplify.rs` comment at L309); a standard UB-removing refinement, mechanized over the toy.",
+  "plain_claim": "In the toy, under every semantics `S`, for every program `P`: if block `l` ends in `switchInt o arms b` and every arm targets `b`, then replacing that terminator by `goto b` gives a prefix-preserving refinement of `P`.",
+  "hypotheses": [
+   {
+    "name": "ht : (P.blk l).term = .switchInt o arms b",
+    "purpose": "identifies the replaced terminator as the switch",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.setTerm_nonSwitch_counterexample",
+    "witness_class": "`pHaltEmit` under `SEx`: block `0` ends in `halt`, arms `[]`"
+   },
+   {
+    "name": "hall : ∀ a ∈ arms, a.2 = b",
+    "purpose": "every arm targets the `otherwise` label `b`",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.switchToGoto_differentTargets_counterexample",
+    "witness_class": "`pSwDiff` under `SEx`: arm `0 → 1`, `otherwise` `2`"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`switchToGoto_nonvacuous`: `pSwUninit` at block `0`.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.switchToGoto_nonvacuous",
+  "non_claims": [
+   "The refinement may erase UB, so it is not an equivalence: `switchToGoto_erases_operand_ub`.",
+   "Refinement is one-directional: it is the direction a compiler needs, not the direction a verifier of the edited program needs. UB-freedom of the edited program does not imply UB-freedom of `P` (`switchToGoto_erases_operand_ub`).",
+   "`Ty.enum` models a field-less enum or `bool` read directly by the switch operand. In rustc MIR and MiniRust, switching on an enum with fields reads the discriminant in a separate statement; replacing the `SwitchInt` by a `Goto` does not by itself remove that read.",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/simplify.rs L307 (comment on `simplify_branch`; `//` marker removed): \"turn a branch with all successors identical to a goto\"; and (paraphrase, not a quote) the first clause of the comment sentence at L309 states that removing a `SwitchInt` terminator may remove reads that result in UB.",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/terminators.md L34–48 (`Terminator::Switch` evaluates its value expression, then jumps).",
+   "CompCert, AbsInt/CompCert 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: \"Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.\" (`beh1` is the source behaviour); `ImprovesPP bt bs` is this relation with `bs` as `beh1`.",
+   "Juneyoung Lee et al., \"Taming Undefined Behavior in LLVM\", PLDI 2017, DOI 10.1145/3062341.3062343 (refinement that may remove UB, for compiler transformations)."
+  ],
+  "design_question": "May an equal-target `SwitchInt` be turned into a `Goto`?"
+ },
+ {
+  "id": "equal-target-switch-erasure-equivalence-sufficient-condition",
+  "lean": "Toy.PlaceEval.switchToGoto_equivPP_of_operand_reachable",
+  "lean_names": [
+   "Toy.PlaceEval.switchToGoto_equiv_nonvacuous",
+   "Toy.PlaceEval.switchToGoto_equiv_ht_counterexample",
+   "Toy.PlaceEval.switchToGoto_equiv_hall_counterexample",
+   "Toy.PlaceEval.switchToGoto_equiv_hok_counterexample",
+   "Toy.PlaceEval.switchToGoto_erases_operand_ub",
+   "Toy.PlaceEval.switchToGoto_validTag_equivPP",
+   "Toy.PlaceEval.pSwTag",
+   "Toy.PlaceEval.pSwUninit",
+   "Toy.PlaceEval.pSwDiff",
+   "Toy.PlaceEval.pHaltEmit",
+   "Toy.PlaceEval.bool2",
+   "Toy.PlaceEval.u8",
+   "Toy.PlaceEval.pSwUninit_beh",
+   "Toy.PlaceEval.pSwUninit_goto_beh",
+   "Toy.PlaceEval.pSwTag_two_beh",
+   "Toy.PlaceEval.pSwTag_two_goto_beh",
+   "Toy.PlaceEval.setTerm_rev_refinesPP"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "The standard erasure pattern for a terminator whose UB condition never holds on reachable states, stated over the toy; folklore made precise and mechanized.",
+  "plain_claim": "In the toy, under every semantics `S`, for every program `P`: if block `l` ends in `switchInt o arms b`, every arm targets `b`, and `o` evaluates to an integer in every reachable state at the switch (for `o = copy p τ`: place evaluation succeeds and the read is a valid integer, or a valid tag for an enum type, `switch-operand-ub-conditions`), then replacing the switch by `goto b` is a prefix-preserving equivalence.",
+  "hypotheses": [
+   {
+    "name": "ht : (P.blk l).term = .switchInt o arms b",
+    "purpose": "identifies the replaced terminator as the switch",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.switchToGoto_equiv_ht_counterexample",
+    "witness_class": "`pHaltEmit` under `SEx`: a `halt` terminator replaced by `goto 1` (arms `[]`, constant operand)"
+   },
+   {
+    "name": "hall : ∀ a ∈ arms, a.2 = b",
+    "purpose": "all arms target the `otherwise` label",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.switchToGoto_equiv_hall_counterexample",
+    "witness_class": "`pSwDiff` under `SEx`: the arm `0 → 1` differs from the `otherwise` label `2`"
+   },
+   {
+    "name": "hok : ∀ st, ReachableAt S P l (P.blk l).stmts.length st → (o.evalInt st).isSome = true",
+    "purpose": "excludes operand UB at the switch",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.switchToGoto_equiv_hok_counterexample",
+    "witness_class": "`pSwUninit` under `SEx`: the operand is an uninitialized one-byte integer"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`switchToGoto_equiv_nonvacuous`: `pSwTag 1` (tag `1` valid) under `SEx`.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.switchToGoto_equiv_nonvacuous",
+  "non_claims": [
+   "Without `hok` the replacement can erase UB: `switchToGoto_erases_operand_ub` (under `SEx`, in `pSwUninit` the operand is uninitialized and in `pSwTag 2` it holds the invalid tag `2` of `bool2`; each source reaches UB before any event and each edited program terminates). Positive control: for `pSwTag 1` (valid tag) the replacement is an equivalence (`switchToGoto_validTag_equivPP`).",
+   "Sufficient, not necessary (as for `PlaceMention`, an identical later UB can make the replacement an equivalence; not proved here for switches).",
+   "`Ty.enum` models a field-less enum or `bool` read directly by the switch operand; for enums with fields, rustc MIR and MiniRust read the discriminant in a separate statement (`ValueExpr::GetDiscriminant`), which the replacement does not remove.",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/simplify.rs L307 (comment on `simplify_branch`; `//` marker removed): \"turn a branch with all successors identical to a goto\"; and (paraphrase, not a quote) the first clause of the comment sentence at L309 states that removing a `SwitchInt` terminator may remove reads that result in UB.",
+   "reference corpus package `enum-niche-layout-guarantees-and-validity-invariants`, card `nicheLayout_lawful_iff_isNiche` (validity sets of enum representations); the toy's `Ty.enum` validity is a finite list of valid tags.",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/expressions.md L104–128 (`ValueExpr::GetDiscriminant`, paraphrase): reading the discriminant of an enum is a separate value expression that loads only the bytes the discriminator touches."
+  ],
+  "design_question": "Under what condition does switch-to-goto lose no UB, in particular for enum discriminants?"
+ },
+ {
+  "id": "equal-target-switch-erasure-equivalence-exact-condition-static-slots",
+  "lean": "Toy.PlaceEval.switchToGoto_equivPP_iff_slots",
+  "lean_names": [
+   "Toy.PlaceEval.switchToGoto_nonvacuous",
+   "Toy.PlaceEval.switchToGoto_iff_ht_counterexample",
+   "Toy.PlaceEval.switchToGoto_iff_hall_counterexample",
+   "Toy.PlaceEval.switchToGoto_erases_operand_ub",
+   "Toy.PlaceEval.switchToGoto_validTag_equivPP",
+   "Toy.PlaceEval.GoesWrongFrom",
+   "Toy.PlaceEval.ReachableAt",
+   "Toy.PlaceEval.Prog.entry",
+   "Toy.PlaceEval.pSwUninit",
+   "Toy.PlaceEval.pSwDiff",
+   "Toy.PlaceEval.pHaltEmit",
+   "Toy.PlaceEval.pSwTag"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: the exact condition is a continuation condition (the edited program reaches UB from the entry of `b` before any event), stated for a deterministic semantics and mechanized.",
+  "plain_claim": "In the toy, under the deterministic semantics `slots s` for every slot assignment `s`, for every program `P`: if block `l` ends in `switchInt o arms b` and every arm targets `b`, then replacing the switch by `goto b` is a prefix-preserving equivalence iff, for every reachable state at the switch in which `o` does not evaluate to an integer, the run of the edited program from the entry of `b` reaches UB before emitting any event.",
+  "hypotheses": [
+   {
+    "name": "ht : (P.blk l).term = .switchInt o arms b",
+    "purpose": "identifies the replaced terminator as the switch",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.switchToGoto_iff_ht_counterexample",
+    "witness_class": "`pHaltEmit` under `SEx`: a `halt` terminator replaced by `goto 1`; the right-hand side holds (the constant operand always evaluates) while the equivalence fails"
+   },
+   {
+    "name": "hall : ∀ a ∈ arms, a.2 = b",
+    "purpose": "all arms target the `otherwise` label",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.switchToGoto_iff_hall_counterexample",
+    "witness_class": "`pSwDiff` under `SEx`: the operand always evaluates, so the right-hand side holds, while the equivalence fails"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "Hypotheses: `switchToGoto_nonvacuous` (`pSwUninit` at block `0`). Both sides false: `switchToGoto_erases_operand_ub`; both sides true: `switchToGoto_validTag_equivPP`.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.switchToGoto_nonvacuous",
+  "non_claims": [
+   "The characterization is exact for prefix-preserving equivalence (`EquivPP`), which requires the edited continuation to reach UB before emitting any event (`[]`). The weaker property that UB-freedom of the edited program implies UB-freedom of `P` can hold when the edited continuation emits further events before reaching UB (not proved here).",
+   "Stated for the deterministic `slots` semantics; exactness under fresh addresses is unknown (not examined).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/simplify.rs L307 (comment on `simplify_branch`; `//` marker removed): \"turn a branch with all successors identical to a goto\"; and (paraphrase, not a quote) the first clause of the comment sentence at L309 states that removing a `SwitchInt` terminator may remove reads that result in UB."
+  ],
+  "design_question": "When exactly is replacing an equal-target `SwitchInt` by a `Goto` a prefix-preserving equivalence (`EquivPP`) under a deterministic semantics?"
+ },
+ {
+  "id": "raw-and-shared-reference-ub-conditions",
+  "lean": "Toy.PlaceEval.ref_eval_eq_none_iff",
+  "lean_names": [
+   "Toy.PlaceEval.rawRef_eval_eq_none_iff",
+   "Toy.PlaceEval.ref_eval_instance",
+   "Toy.PlaceEval.RefOk",
+   "Toy.PlaceEval.stEx",
+   "Toy.PlaceEval.mEx",
+   "Toy.PlaceEval.refOk_ex_neg_align_zero",
+   "Toy.PlaceEval.refOk_ex_pos_dangling_zero_size",
+   "Toy.PlaceEval.refOk_ex_neg_null_zero_size",
+   "Toy.PlaceEval.Rvalue",
+   "Toy.PlaceEval.Rvalue.eval",
+   "Toy.PlaceEval.refOk_ex_neg_misaligned",
+   "Toy.PlaceEval.refOk_ex_pos"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "A definitional re-derivation of documented rules (`addr_of!` docs, RFC 2582, the Reference); a reference point for the rewrite cards.",
+  "plain_claim": "In the toy, for every state `st`, place `p` and layout `L`: `&raw p` fails to evaluate iff evaluating `p` fails (`rawRef_eval_eq_none_iff`); `&p` with pointee layout `L` fails iff evaluating `p` fails or the resulting pointer `q` violates `RefOk` (`q` has address `0`, i.e. `q.addr = 0` regardless of provenance, or is not aligned for `L.align`, or is not dereferenceable for `L.size` bytes) (`ref_eval_eq_none_iff`).",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "No hypotheses. `ref_eval_instance`: in `stEx`, `&raw (*l0).field 1` evaluates to the odd address `7` while `&(*l0).field 1` at a 2-aligned pointee fails.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.ref_eval_instance",
+  "non_claims": [
+   "`RefOk` does not require the pointee to be initialized or valid (the Reference records that requirement as debated); a zero-size `&` needs an aligned pointer whose address is `≠ 0` (regardless of provenance) and nothing else (`refOk_ex_pos_dangling_zero_size`, `refOk_ex_neg_null_zero_size`).",
+   "Degenerate edge: for pointee alignment `L.align = 0`, `RefOk m q L` fails for every pointer, since `q.addr ≠ 0` contradicts `aligned 0 q.addr` (`refOk_ex_neg_align_zero`).",
+   "`L` is the pointee layout written in the statement; the toy has no type checker relating it to the place.",
+   "Under an aliasing model (Stacked Borrows, Tree Borrows, or MiniRust's `ValueExpr::AddrOf` calling `mem.retag_ptr`), creating `&p` and `&raw p` also differ in retagging and aliasing permissions; not modelled.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs L2707–2710 (Safety of `addr_of!`; `///` markers removed): \"The `expr` in `addr_of!(expr)` is evaluated as a place expression, but never loads from the place or requires the place to be dereferenceable. This means that `addr_of!((*ptr).field)` still requires the projection to `field` to be in-bounds, using the same rules as [`offset`]. However, `addr_of!(*ptr)` is defined behavior even if `ptr` is null, dangling, or misaligned.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] RFC 2582 (raw reference MIR operator, merged), rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2582-raw-reference-mir-operator.md L44: \"No intermediate reference exists, so no invariants have to be adhered to: the pointer may be unaligned and/or dangling.\"; L211: \"which is better, but still UB: we emit a `getelementptr inbounds` for the `.field` offset computation.\" (said of `&raw mut (*x).field` for a dangling `x`; the RFC predates the zero-offset exemption of `library/core/src/ptr/docs/offset.md`, introduced by rust-lang/rust merge commit 5d328a1f62fe7c9d3a31d14b88dfa13310b7c989).",
+   "[documentation; connection to the toy: derived (modeling bridge)] The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L152: \"* A reference or [`Box<T>`] must be aligned and non-null, it cannot be [dangling], and it must point to a valid value (in case of dynamically sized types, using the actual dynamic type of the pointee as determined by the [metadata]). Note that the last point (about pointing to a valid value) remains a subject of some debate.\"; L94: \"`&`/`&mut` on a place requires the alignment of the field type (or else the program would be \"producing an invalid value\"), which generally is a less restrictive requirement than being based on an aligned pointer.\"; L83: \"A place is said to be \"based on a misaligned pointer\" if the last `*` projection during place computation was performed on a pointer that was not aligned for its type. (If there is no `*` projection in the place expression, then this is accessing the field of a local or `static` and rustc will guarantee proper alignment. If there are multiple `*` projections, then each of them incurs a load of the pointer-to-be-dereferenced itself from memory, and each of these loads is subject to the alignment constraint. Note that some `*` projections can be omitted in surface Rust syntax due to automatic dereferencing; we are considering the fully expanded place expression here.)\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/expressions.md: L214 \"Like a raw pointer, the result can be misaligned or null!\" (doc of `eval_place`); L228–235 (`PlaceExpr::Local`: a dead local raises UB \"access to a dead local\"); L246–263 (`PlaceExpr::Deref`: the operand is evaluated as a value; for safe pointer types the pointer must also be dereferenceable; misalignment is recorded in the place rather than raised); L271–299 (`PlaceExpr::Field`: `ptr_offset_inbounds`); L301–329 (`PlaceExpr::Index`: an index outside the array or slice length raises UB \"access to out-of-bounds index\", then `ptr_offset_inbounds`); spec/lang/step/operators.md L389–399 (`ptr_offset_inbounds` checks `signed_dereferenceable`).",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/expressions.md L170–173 (`ValueExpr::AddrOf`): \"        // Let the aliasing model know.\n        let lookup = self.vtable_lookup();\n        let ptr = self.mutate_cur_frame(|frame, mem| {\n            mem.retag_ptr(&mut frame.extra, place.ptr, ptr_ty, /* fn_entry */ false, /* fn_implicit_writes */ true, lookup)\"",
+   "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer, \"Stacked Borrows: An Aliasing Model for Rust\", POPL 2020, DOI 10.1145/3371109 (creating a reference retags the pointer; not modelled here)."
+  ],
+  "design_question": "How do `&raw` and `&` of a place differ in their UB conditions?"
+ },
+ {
+  "id": "reference-to-raw-rewrite-refines",
+  "lean": "Toy.PlaceEval.refToRaw_refinesPP",
+  "lean_names": [
+   "Toy.PlaceEval.setStmt",
+   "Toy.PlaceEval.refToRaw_nonvacuous",
+   "Toy.PlaceEval.setStmt_nonRef_counterexample",
+   "Toy.PlaceEval.raw_ref_rewrites_not_equivalences",
+   "Toy.PlaceEval.pRefDangling",
+   "Toy.PlaceEval.pRawDangling",
+   "Toy.PlaceEval.pEmitL",
+   "Toy.PlaceEval.refDerefStmt",
+   "Toy.PlaceEval.rawDerefStmt",
+   "Toy.PlaceEval.setStmt_ref_refinesPP",
+   "Toy.PlaceEval.setStmt_ex",
+   "Toy.PlaceEval.setStmt_ex_out_of_range_blk",
+   "Toy.PlaceEval.setStmt_ex_out_of_range_idx"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Folklore (dropping a validity assertion is a refinement), re-derived over the toy and mechanized.",
+  "plain_claim": "In the toy, under every semantics `S`, for every program `P`: if statement `i` of block `l` is `dst := &p` at type `τ` with pointee layout `L`, then replacing it by `dst := &raw p` gives a prefix-preserving refinement of `P`.",
+  "hypotheses": [
+   {
+    "name": "hs : (P.blk l).stmts[i]? = some (.assign dst τ (.ref p L))",
+    "purpose": "identifies the replaced statement as a reference creation",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.setStmt_nonRef_counterexample",
+    "witness_class": "`pEmitL` under `SEx`: replacing `emit 1` by `x := &raw x`"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`refToRaw_nonvacuous`: `pRefDangling` at `(0, 3)`.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.refToRaw_nonvacuous",
+  "non_claims": [
+   "Not an equivalence in general: `raw_ref_rewrites_not_equivalences`.",
+   "The refinement goes in the compilation direction: the rewrite `&` → `&raw` can erase UB (in `pRefDangling` the source reaches UB and the rewritten program terminates, `raw_ref_rewrites_not_equivalences`), so UB-freedom of the `&raw` program does not imply UB-freedom of the `&` program.",
+   "Under an aliasing model (Stacked Borrows, Tree Borrows, or MiniRust's `mem.retag_ptr`), `&` → `&raw` also changes retagging and permissions; not modelled.",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs L2707–2710 (Safety of `addr_of!`; `///` markers removed): \"The `expr` in `addr_of!(expr)` is evaluated as a place expression, but never loads from the place or requires the place to be dereferenceable. This means that `addr_of!((*ptr).field)` still requires the projection to `field` to be in-bounds, using the same rules as [`offset`]. However, `addr_of!(*ptr)` is defined behavior even if `ptr` is null, dangling, or misaligned.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] RFC 2582 (raw reference MIR operator, merged), rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2582-raw-reference-mir-operator.md L44: \"No intermediate reference exists, so no invariants have to be adhered to: the pointer may be unaligned and/or dangling.\"; L211: \"which is better, but still UB: we emit a `getelementptr inbounds` for the `.field` offset computation.\" (said of `&raw mut (*x).field` for a dangling `x`; the RFC predates the zero-offset exemption of `library/core/src/ptr/docs/offset.md`, introduced by rust-lang/rust merge commit 5d328a1f62fe7c9d3a31d14b88dfa13310b7c989).",
+   "CompCert, AbsInt/CompCert 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v L81–82: \"Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.\" (`beh1` is the source behaviour); `ImprovesPP bt bs` is this relation with `bs` as `beh1`.",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/expressions.md L170–173 (`ValueExpr::AddrOf`): \"        // Let the aliasing model know.\n        let lookup = self.vtable_lookup();\n        let ptr = self.mutate_cur_frame(|frame, mem| {\n            mem.retag_ptr(&mut frame.extra, place.ptr, ptr_ty, /* fn_entry */ false, /* fn_implicit_writes */ true, lookup)\"",
+   "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer, \"Stacked Borrows: An Aliasing Model for Rust\", POPL 2020, DOI 10.1145/3371109 (creating a reference retags the pointer; not modelled here)."
+  ],
+  "design_question": "Which direction of the `&` / `&raw` rewrite is a sound refinement, and does it preserve UB for verification?"
+ },
+ {
+  "id": "raw-and-shared-reference-rewrites-not-equivalences",
+  "lean": "Toy.PlaceEval.raw_ref_rewrites_not_equivalences",
+  "lean_names": [
+   "Toy.PlaceEval.pRawDangling",
+   "Toy.PlaceEval.pRefDangling",
+   "Toy.PlaceEval.pRawPacked",
+   "Toy.PlaceEval.refDerefStmt",
+   "Toy.PlaceEval.rawDerefStmt",
+   "Toy.PlaceEval.refPackedStmt",
+   "Toy.PlaceEval.pRawDangling_beh",
+   "Toy.PlaceEval.pRefDangling_beh",
+   "Toy.PlaceEval.pRawPacked_beh",
+   "Toy.PlaceEval.pRawPacked_ref_beh",
+   "Toy.PlaceEval.setStmt_pRawDangling_ref",
+   "Toy.PlaceEval.setStmt_pRefDangling_raw"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Concrete instances of documented rules (RFC 2582; the Reference's packed-field note); re-derived in the toy.",
+  "plain_claim": "Under `SEx`: rewriting `r := &raw (*p)` to `r := &(*p)` (pointee layout `⟨4, 2⟩`) for `p` pointing into a freed allocation (`pRawDangling`), and rewriting `r := &raw (s.b)` to `r := &(s.b)` for the 2-aligned field at offset 1 of a packed 3-byte local (`pRawPacked`), are not refinements (each introduces UB: `pRawDangling_beh`, `pRefDangling_beh`, `pRawPacked_beh`, `pRawPacked_ref_beh`); rewriting `r := &(*p)` to `r := &raw (*p)` in `pRefDangling` is a refinement but not an equivalence (it erases UB). So neither rewrite is an equivalence in either direction.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Counterexample (concrete programs).",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.raw_ref_rewrites_not_equivalences",
+  "non_claims": [
+   "In Rust, `&packed.field` for an under-aligned field is rejected at compile time (the Reference, L97); `&(*raw_ptr).field` through a raw pointer to a packed struct compiles in `unsafe` code and is subject to the runtime alignment requirement that `pRawPacked` illustrates (the toy has no type checker).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] RFC 2582 (raw reference MIR operator, merged), rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2582-raw-reference-mir-operator.md L44: \"No intermediate reference exists, so no invariants have to be adhered to: the pointer may be unaligned and/or dangling.\"; L211: \"which is better, but still UB: we emit a `getelementptr inbounds` for the `.field` offset computation.\" (said of `&raw mut (*x).field` for a dangling `x`; the RFC predates the zero-offset exemption of `library/core/src/ptr/docs/offset.md`, introduced by rust-lang/rust merge commit 5d328a1f62fe7c9d3a31d14b88dfa13310b7c989).",
+   "[documentation; connection to the toy: derived (modeling bridge)] The Rust Reference, rust-lang/reference c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/behavior-considered-undefined.md L152: \"* A reference or [`Box<T>`] must be aligned and non-null, it cannot be [dangling], and it must point to a valid value (in case of dynamically sized types, using the actual dynamic type of the pointee as determined by the [metadata]). Note that the last point (about pointing to a valid value) remains a subject of some debate.\"; L94: \"`&`/`&mut` on a place requires the alignment of the field type (or else the program would be \"producing an invalid value\"), which generally is a less restrictive requirement than being based on an aligned pointer.\"; L83: \"A place is said to be \"based on a misaligned pointer\" if the last `*` projection during place computation was performed on a pointer that was not aligned for its type. (If there is no `*` projection in the place expression, then this is accessing the field of a local or `static` and rustc will guarantee proper alignment. If there are multiple `*` projections, then each of them incurs a load of the pointer-to-be-dereferenced itself from memory, and each of these loads is subject to the alignment constraint. Note that some `*` projections can be omitted in surface Rust syntax due to automatic dereferencing; we are considering the fully expanded place expression here.)\""
+  ],
+  "design_question": "Is `&` ↔ `&raw` an equivalence in either direction? (No.)"
+ },
+ {
+  "id": "storage-marker-erasure-refines",
+  "lean": "Toy.PlaceEval.eraseMarkers_refinesPP_of_noProvConst",
+  "lean_names": [
+   "Toy.PlaceEval.eraseMarkers",
+   "Toy.PlaceEval.NoProvConst",
+   "Toy.PlaceEval.Operand.provFree",
+   "Toy.PlaceEval.Rvalue.provFree",
+   "Toy.PlaceEval.Stmt.provFree",
+   "Toy.PlaceEval.Term.provFree",
+   "Toy.PlaceEval.eraseMarkers_refinesPP_nonvacuous",
+   "Toy.PlaceEval.eraseMarkers_noProvConst_counterexample",
+   "Toy.PlaceEval.eraseMarkers_fresh_noProvConst_counterexample",
+   "Toy.PlaceEval.refuted_eraseMarkers_refinesPP",
+   "Toy.PlaceEval.pConstProvSlots",
+   "Toy.PlaceEval.pConstProvFresh",
+   "Toy.PlaceEval.pConstProvSlots_beh",
+   "Toy.PlaceEval.pConstProvSlots_erased_beh",
+   "Toy.PlaceEval.pConstProvFresh_fresh_beh",
+   "Toy.PlaceEval.pConstProvFresh_erased_fresh_wrong",
+   "Toy.PlaceEval.pConstProvFresh_ubFree",
+   "Toy.PlaceEval.pConstProvFresh_alignPos",
+   "Toy.PlaceEval.noProvConst_ex_pos",
+   "Toy.PlaceEval.noProvConst_ex_neg",
+   "Toy.PlaceEval.eraseMarkers_staleRead_not_equivPP",
+   "Toy.PlaceEval.eraseMarkers_addrObserved_not_equivPP",
+   "Toy.PlaceEval.eraseMarkers_sharedSlot_lowering_mismatch",
+   "Toy.PlaceEval.eraseMarkers_alignZero_not_equivPP",
+   "Toy.PlaceEval.pAlignZero",
+   "Toy.PlaceEval.pStale",
+   "Toy.PlaceEval.Alloc",
+   "Toy.PlaceEval.AllocId",
+   "Toy.PlaceEval.AllocMode",
+   "Toy.PlaceEval.Prog.hasMarkers",
+   "Toy.PlaceEval.allocEntry",
+   "Toy.PlaceEval.allocate",
+   "Toy.PlaceEval.allocate_fresh_ex_neg_overlap",
+   "Toy.PlaceEval.allocate_fresh_ex_pos",
+   "Toy.PlaceEval.deallocate",
+   "Toy.PlaceEval.deallocate_ex",
+   "Toy.PlaceEval.deallocate_ex_noop",
+   "Toy.PlaceEval.eraseMarkers_ex",
+   "Toy.PlaceEval.eraseMarkers_ex_other_local",
+   "Toy.PlaceEval.evalPrefix_ex_neg_unallocated",
+   "Toy.PlaceEval.hasMarkers_ex_neg",
+   "Toy.PlaceEval.hasMarkers_ex_pos",
+   "Toy.PlaceEval.readIndex_ex_neg_unallocated"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore that lifetime extension refines (more memory allocated for longer), here with the condition on pointer constants made explicit; stated for nondeterministic fresh addresses and for static slot assignments.",
+  "plain_claim": "In the toy, under every semantics `S` (fresh addresses, or any static slot assignment, including one in which `x` shares its slot with another local), for every program `P` and local `x`: if no operand of `P` is a pointer constant carrying an allocation identifier (`NoProvConst P`), then erasing every `storageLive x` and `storageDead x` (so that, for `x < P.locals.length`, `x` is allocated at entry for the whole run) gives a prefix-preserving refinement of `P`. Without `NoProvConst` the statement is false (`refuted_eraseMarkers_refinesPP`).",
+  "hypotheses": [
+   {
+    "name": "hnp : NoProvConst P",
+    "purpose": "excludes pointer constants that name an allocation identifier; erasure allocates `x` at entry and shifts the identifiers of later allocations, so such a constant can denote another allocation after the edit",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.eraseMarkers_noProvConst_counterexample",
+    "witness_class": "`pConstProvSlots` under `SEx`: a one-block program whose constant `⟨some 0, 8⟩` denotes local `1` in the source and is out of bounds after erasure; for fresh addresses see also `eraseMarkers_fresh_noProvConst_counterexample` (`pConstProvFresh`, UB-free, all alignments `1`)"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`eraseMarkers_refinesPP_nonvacuous`: `pStale` has no pointer constant with provenance; the refinement for it holds under fresh addresses (`eraseMarkers_staleRead_not_equivPP`).",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.eraseMarkers_refinesPP_nonvacuous",
+  "non_claims": [
+   "Refuted without `NoProvConst`: `refuted_eraseMarkers_refinesPP` (and `eraseMarkers_fresh_noProvConst_counterexample` for fresh addresses, with a UB-free source whose locals all have alignment `1`).",
+   "No slot-disjointness hypothesis is needed for this statement under a fixed slot assignment: in the toy, a source read of a cell that a shared slot clobbers in the edited program is UB in the source (a read after a re-`storageLive` before a write, a read of another live local whose shared cell was reset to `.uninit` by a `storageLive x` of the source, or an access to an unallocated local). This explains `eraseMarkers_sharedSlot_lowering_mismatch`; it is not a statement that slot mismatches require source UB in general: for programs that observe addresses they do not (not proved here).",
+   "Not an equivalence in general: `eraseMarkers_addrObserved_not_equivPP`, `eraseMarkers_staleRead_not_equivPP`.",
+   "`RefinesPP` is behavioural inclusion; it does not require the target to have any behaviour. Under fresh addresses a target whose every oracle choice is refused refines every source vacuously (`eraseMarkers_alignZero_not_equivPP`: the marker-erased `pAlignZero` has no behaviour). For locals of alignment at least `1` the edited program's allocations are not refused merely because of the erasure (not proved here as a separate non-blocking theorem).",
+   "Addresses are unbounded natural numbers, so the fresh-address semantics never runs out of memory and has no stack bound; on a machine with a finite stack or address space, extending lifetimes by erasing storage markers can exhaust memory (not modelled).",
+   "The toy follows the rule documented for rustc MIR that locals without storage markers are allocated for the whole function: for `x < P.locals.length`, erasing all markers of `x` makes `Prog.initState` allocate `x` at entry; a local `x ≥ P.locals.length` is never recorded in the frame in either program. MiniRust's `create_frame` allocates only the return local and the arguments (spec/lang/step/terminators.md L196–200), so deleting `StorageLive`/`StorageDead` there would leave the local unallocated (not modelled).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L364–381 (doc comment of `StatementKind::StorageLive`/`StorageDead`; `///` markers removed): \"`StorageLive` and `StorageDead` statements mark the live range of a local. At any point during the execution of a function, each local is either allocated or unallocated. Except as noted below, all locals except function parameters are initially unallocated. `StorageLive` statements cause memory to be allocated for the local while `StorageDead` statements cause the memory to be freed. In other words, `StorageLive`/`StorageDead` act like the heap operations `allocate`/`deallocate`, but for stack-allocated local variables. Using a local in any way (not only reading/writing from it) while it is unallocated is UB. Some locals have no `StorageLive` or `StorageDead` statements within the entire MIR body. These locals are implicitly allocated for the full duration of the function. There is a convenience method at `rustc_mir_dataflow::storage::always_storage_live_locals` for computing these locals. If the local is already allocated, calling `StorageLive` again will implicitly free the local and then allocate fresh uninitialized memory. If a local is already deallocated, calling `StorageDead` again is a NOP.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/remove_storage_markers.rs L1 (module doc, the pass's documented intent; `//!` marker removed): \"This pass removes storage markers if they won't be emitted during codegen.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/statements.md L160–201 (`storage_live` first runs `storage_dead`, then allocates fresh storage through the memory model's `allocate`; `storage_dead` deallocates if allocated).",
+   "reference corpus package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing`, card `marker-reset-breaks-slot-sharing` (address-free base case: merging two slots breaks lockstep bisimulation when a `StorageLive` of one resets the other).",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/terminators.md L196–200 (in `create_frame`): \"        // Allocate all the initially live locals.\n        frame.storage_live(&mut self.mem, func.ret)?;\n        for arg_local in func.args {\n            frame.storage_live(&mut self.mem, arg_local)?;\n        }\" (only the return local and the arguments are allocated when a frame is created).",
+   "Juneyoung Lee et al., \"Reconciling High-Level Optimizations and Low-Level Code in LLVM\", OOPSLA 2018 (PACMPL 2), DOI 10.1145/3276495 (a memory model with nondeterministic allocation addresses, address observation and allocation lifetimes)."
+  ],
+  "design_question": "Is erasing storage markers a refinement, and under which address model and which condition on constants?"
+ },
+ {
+  "id": "storage-marker-erasure-end-to-end-with-static-slots",
+  "lean": "Toy.PlaceEval.eraseMarkers_slots_refinesAcross_fresh_of_noProvConst",
+  "lean_names": [
+   "Toy.PlaceEval.eraseMarkers_slots_nonvacuous",
+   "Toy.PlaceEval.eraseMarkers_slots_invalid_counterexample",
+   "Toy.PlaceEval.eraseMarkers_slots_noProvConst_counterexample",
+   "Toy.PlaceEval.refuted_eraseMarkers_slots_refinesAcross_fresh",
+   "Toy.PlaceEval.RefinesAcross",
+   "Toy.PlaceEval.refinesAcross_trans",
+   "Toy.PlaceEval.eraseMarkers_refinesPP_of_noProvConst",
+   "Toy.PlaceEval.pAlias",
+   "Toy.PlaceEval.sAlias",
+   "Toy.PlaceEval.pAlias_fresh_beh",
+   "Toy.PlaceEval.pLive",
+   "Toy.PlaceEval.pConstProvFresh",
+   "Toy.PlaceEval.pConstProvFresh_slots_valid",
+   "Toy.PlaceEval.pConstProvFresh_erased_slots_beh",
+   "Toy.PlaceEval.sEx",
+   "Toy.PlaceEval.NoProvConst",
+   "Toy.PlaceEval.eraseMarkers_sharedSlot_lowering_mismatch",
+   "Toy.PlaceEval.sShare",
+   "Toy.PlaceEval.pShare"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Transitivity of refinement (CompCert's `behavior_improves` is transitive) applied to `eraseMarkers_refinesPP_of_noProvConst`; re-derived in the toy.",
+  "plain_claim": "In the toy, for every slot assignment `s`, program `P` and local `x`: if no operand of `P` is a pointer constant carrying an allocation identifier (`NoProvConst P`) and the slot execution of `P` refines its fresh-address execution (`RefinesAcross .fresh P (.slots s) P`), then the slot execution of `P` with the markers of `x` erased, with the same `s`, refines the fresh-address execution of `P`. Without `NoProvConst` the statement is false (`refuted_eraseMarkers_slots_refinesAcross_fresh`).",
+  "hypotheses": [
+   {
+    "name": "hnp : NoProvConst P",
+    "purpose": "excludes pointer constants that name an allocation identifier",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.eraseMarkers_slots_noProvConst_counterexample",
+    "witness_class": "`pConstProvFresh` with `sEx`: `sEx` is valid for it, and the slot execution of its marker-erased version reaches UB, improving no fresh behaviour"
+   },
+   {
+    "name": "hvalid : RefinesAcross .fresh P (.slots s) P",
+    "purpose": "the slot assignment is valid for the source",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.eraseMarkers_slots_invalid_counterexample",
+    "witness_class": "`pAlias` with `sAlias`: two simultaneously live locals share a slot; `NoProvConst pAlias` holds and the end-to-end refinement fails"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`eraseMarkers_slots_nonvacuous`: `pLive` has no pointer constant with provenance and `sEx` is valid for it.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.eraseMarkers_slots_nonvacuous",
+  "non_claims": [
+   "The conclusion is an end-to-end refinement from the fresh execution of `P` to the slot execution of the marker-erased program. It does not make `s` a valid slot assignment for the marker-erased program itself: `eraseMarkers_sharedSlot_lowering_mismatch` shows this for a program with UB; for a UB-free program that observes addresses the same can happen (not proved here).",
+   "The theorem covers lowering the marker-erased program directly with `s`. It says nothing about composing marker erasure with a further transformation that is sound under fresh addresses (for example one that moves a write of `x` across another local's live range, which is valid when the two are disjoint) before lowering with `s`; such a composition can clobber values, so `s` must then be recomputed (not proved here).",
+   "Refuted without `NoProvConst`: `refuted_eraseMarkers_slots_refinesAcross_fresh`.",
+   "Addresses are unbounded natural numbers, so the fresh-address semantics never runs out of memory and has no stack bound; on a machine with a finite stack or address space, extending lifetimes by erasing storage markers can exhaust memory (not modelled).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "reference corpus package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing`, card `marker-reset-breaks-slot-sharing` (address-free base case: merging two slots breaks lockstep bisimulation when a `StorageLive` of one resets the other).",
+   "Xavier Leroy, \"Formal verification of a realistic compiler\", Communications of the ACM 52(7), 2009, DOI 10.1145/1538788.1538814 (behaviour-improvement refinement for a verified compiler; the improvement relation here is CompCert's, prefix-preserving)."
+  ],
+  "design_question": "May a static slot assignment computed for `P` be kept when lowering the marker-erased program directly, with no other pass in between?"
+ },
+ {
+  "id": "storage-marker-erasure-shared-slot-lowering-mismatch",
+  "lean": "Toy.PlaceEval.eraseMarkers_sharedSlot_lowering_mismatch",
+  "lean_names": [
+   "Toy.PlaceEval.pShare",
+   "Toy.PlaceEval.sShare",
+   "Toy.PlaceEval.pShare_fresh_wrong",
+   "Toy.PlaceEval.pShare_slots_beh",
+   "Toy.PlaceEval.pShare_erased_slots_beh",
+   "Toy.PlaceEval.pShare_erased_fresh_beh"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "A concrete instance distinguishing slot-assignment validity for the source from validity for the marker-erased program; the address-free analogue is the cited slot-compaction card.",
+  "plain_claim": "Under the slot assignment `sShare`, which places locals `0` and `1` of `pShare` at the same address (their live ranges are disjoint, and `pShare` reaches UB at its final read: `pShare_fresh_wrong`, `pShare_slots_beh`): the slot execution of `pShare` refines its fresh-address execution; the slot execution of `pShare` with the markers of local `0` erased still refines the fresh-address execution of `pShare`; but it does not refine the fresh-address execution of the marker-erased program itself: the write of `7` to local `1` overwrites the shared cell, so the slot execution emits `7` (`pShare_erased_slots_beh`), while every fresh-address execution of the marker-erased program emits `5` or blocks (`pShare_erased_fresh_beh`).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Counterexample (concrete program; the fresh side is analysed for every oracle).",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.eraseMarkers_sharedSlot_lowering_mismatch",
+  "non_claims": [
+   "This is not a counterexample to end-to-end refinement: the clobbered value is observed on a run where the source has UB (the read after the re-`storageLive`).",
+   "It shows that a slot assignment valid for the source need not be valid for the marker-erased program. Every run of `pShare` has UB; the theorem says nothing about UB-free programs (for UB-free programs that observe addresses a slot assignment valid for the source can also be invalid for the marker-erased program; not proved here).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "reference corpus package `dead-slot-compaction-injective-reindexing-bisimulation-and-indexed-store-framing`, card `marker-reset-breaks-slot-sharing` (address-free base case: merging two slots breaks lockstep bisimulation when a `StorageLive` of one resets the other).",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L364–381 (doc comment of `StatementKind::StorageLive`/`StorageDead`; `///` markers removed): \"`StorageLive` and `StorageDead` statements mark the live range of a local. At any point during the execution of a function, each local is either allocated or unallocated. Except as noted below, all locals except function parameters are initially unallocated. `StorageLive` statements cause memory to be allocated for the local while `StorageDead` statements cause the memory to be freed. In other words, `StorageLive`/`StorageDead` act like the heap operations `allocate`/`deallocate`, but for stack-allocated local variables. Using a local in any way (not only reading/writing from it) while it is unallocated is UB. Some locals have no `StorageLive` or `StorageDead` statements within the entire MIR body. These locals are implicitly allocated for the full duration of the function. There is a convenience method at `rustc_mir_dataflow::storage::always_storage_live_locals` for computing these locals. If the local is already allocated, calling `StorageLive` again will implicitly free the local and then allocate fresh uninitialized memory. If a local is already deallocated, calling `StorageDead` again is a NOP.\""
+  ],
+  "design_question": "Does erasing markers after slot sharing let one local's writes clobber another, and does that break end-to-end refinement?"
+ },
+ {
+  "id": "storage-marker-erasure-equivalence-sufficient-condition",
+  "lean": "Toy.PlaceEval.eraseMarkers_fresh_equivPP_of_alignPos_of_noAddrObs_of_ubFree",
+  "lean_names": [
+   "Toy.PlaceEval.noAddrObs_ubFree_pLive",
+   "Toy.PlaceEval.eraseMarkers_hwf_counterexample",
+   "Toy.PlaceEval.eraseMarkers_hobs_counterexample",
+   "Toy.PlaceEval.eraseMarkers_hub_counterexample",
+   "Toy.PlaceEval.eraseMarkers_alignZero_not_equivPP",
+   "Toy.PlaceEval.eraseMarkers_addrObserved_not_equivPP",
+   "Toy.PlaceEval.eraseMarkers_staleRead_not_equivPP",
+   "Toy.PlaceEval.NoAddrObs",
+   "Toy.PlaceEval.Rvalue.observesAddr",
+   "Toy.PlaceEval.Stmt.rvalue?",
+   "Toy.PlaceEval.UBFree",
+   "Toy.PlaceEval.pLive",
+   "Toy.PlaceEval.pAlignZero",
+   "Toy.PlaceEval.pAddrCmp",
+   "Toy.PlaceEval.pStale",
+   "Toy.PlaceEval.pAddrSelf",
+   "Toy.PlaceEval.pAddrCmp_fresh_beh",
+   "Toy.PlaceEval.pAddrCmp_erased_fresh_beh",
+   "Toy.PlaceEval.pStale_fresh_beh",
+   "Toy.PlaceEval.pStale_erased_fresh_beh",
+   "Toy.PlaceEval.pAlignZero_fresh_beh",
+   "Toy.PlaceEval.pAlignZero_erased_fresh_beh",
+   "Toy.PlaceEval.eraseMarkers_fresh_equivPP_without_ubFree_or_noAddrObs",
+   "Toy.PlaceEval.eraseMarkers_fresh_equivPP_without_alignPos",
+   "Toy.PlaceEval.noAddrObs_ex_neg",
+   "Toy.PlaceEval.noAddrObs_ex_pos",
+   "Toy.PlaceEval.pAddrCmp_fresh_term_zero"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise (lifetime extension is unobservable when addresses are not observed and the program has no UB), with the conditions sharpened (alignment at least `1`, whole-program absence of address observation, UB-freedom under every oracle).",
+  "plain_claim": "In the toy, under fresh addresses, for every program `P` and local `x`: if every local of `P` has alignment at least `1` (`hwf`), no statement of `P` observes an address (`NoAddrObs`: no `ptrEq` and no `addrOf`), and `P` is UB-free (`UBFree .fresh P`), then erasing the markers of `x` is a prefix-preserving equivalence (traces coincide, and UB-freedom transfers in both directions). Each of the three hypotheses is tight (`eraseMarkers_hwf_counterexample`, `eraseMarkers_hobs_counterexample`, `eraseMarkers_hub_counterexample`).",
+  "hypotheses": [
+   {
+    "name": "hwf : ∀ L ∈ P.locals, 1 ≤ L.align",
+    "purpose": "with alignment `0` every fresh allocation sits at address `0`, so pinning `x` there refuses every later allocation of another alignment-0 local",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.eraseMarkers_hwf_counterexample",
+    "witness_class": "`pAlignZero`: two alignment-0 locals with disjoint live ranges; no address observation, UB-free, and the marker-erased program has no behaviour"
+   },
+   {
+    "name": "hobs : NoAddrObs P",
+    "purpose": "no statement compares or casts addresses",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.eraseMarkers_hobs_counterexample",
+    "witness_class": "`pAddrCmp`: two live ranges of `x` with their addresses compared (two iterations of a loop body, unrolled); alignments at least `1`, UB-free"
+   },
+   {
+    "name": "hub : UBFree .fresh P",
+    "purpose": "excludes stale reads and other UB that erasure removes",
+    "tightness": "tight",
+    "counterexample": "Toy.PlaceEval.eraseMarkers_hub_counterexample",
+    "witness_class": "`pStale`: a read of `x` after a re-`storageLive`; alignment `1`, no address observation"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`noAddrObs_ubFree_pLive`: `pLive` satisfies all three hypotheses.",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.noAddrObs_ubFree_pLive",
+  "non_claims": [
+   "The hypotheses are sufficient, not necessary: `eraseMarkers_fresh_equivPP_without_ubFree_or_noAddrObs` and `eraseMarkers_fresh_equivPP_without_alignPos`.",
+   "`NoAddrObs` is a whole-program syntactic condition: it also rejects address observations in unreachable blocks and benign self-comparisons (`pAddrSelf`).",
+   "Stated for fresh addresses. Under a static slot assignment `.slots s`, local `x` receives the fixed address `s x` on every live range and allocation never blocks, so a different (possibly weaker) condition may suffice there (not proved here).",
+   "The statement does not require `NoProvConst`, and it is not derived from `eraseMarkers_refinesPP_of_noProvConst`: its forward direction is proved directly, by a simulation in which every source allocation is placed above the addresses of all pointer constants of `P`, which uses `hwf` (with alignment `0` an allocation sits at address `0` under every oracle and cannot be moved). It is not claimed that `UBFree .fresh P` and `NoAddrObs P` without `hwf` exclude a successful access through a pointer constant with provenance; with an alignment-0 local such an access can succeed under every oracle (not proved here).",
+   "Addresses are unbounded natural numbers, so the fresh-address semantics never runs out of memory and has no stack bound; on a machine with a finite stack or address space, extending lifetimes by erasing storage markers can exhaust memory (not modelled).",
+   "The toy follows the rule documented for rustc MIR that locals without storage markers are allocated for the whole function: for `x < P.locals.length`, erasing all markers of `x` makes `Prog.initState` allocate `x` at entry; a local `x ≥ P.locals.length` is never recorded in the frame in either program. MiniRust's `create_frame` allocates only the return local and the arguments (spec/lang/step/terminators.md L196–200), so deleting `StorageLive`/`StorageDead` there would leave the local unallocated (not modelled).",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L364–381 (doc comment of `StatementKind::StorageLive`/`StorageDead`; `///` markers removed): \"`StorageLive` and `StorageDead` statements mark the live range of a local. At any point during the execution of a function, each local is either allocated or unallocated. Except as noted below, all locals except function parameters are initially unallocated. `StorageLive` statements cause memory to be allocated for the local while `StorageDead` statements cause the memory to be freed. In other words, `StorageLive`/`StorageDead` act like the heap operations `allocate`/`deallocate`, but for stack-allocated local variables. Using a local in any way (not only reading/writing from it) while it is unallocated is UB. Some locals have no `StorageLive` or `StorageDead` statements within the entire MIR body. These locals are implicitly allocated for the full duration of the function. There is a convenience method at `rustc_mir_dataflow::storage::always_storage_live_locals` for computing these locals. If the local is already allocated, calling `StorageLive` again will implicitly free the local and then allocate fresh uninitialized memory. If a local is already deallocated, calling `StorageDead` again is a NOP.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/remove_storage_markers.rs L1 (module doc, the pass's documented intent; `//!` marker removed): \"This pass removes storage markers if they won't be emitted during codegen.\"",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/statements.md L160–201 (`storage_live` first runs `storage_dead`, then allocates fresh storage through the memory model's `allocate`; `storage_dead` deallocates if allocated).",
+   "[documentation; connection to the toy: derived (modeling bridge)] minirust/minirust 063d784186d3252bee242217f218223205c0b568, spec/lang/step/terminators.md L196–200 (in `create_frame`): \"        // Allocate all the initially live locals.\n        frame.storage_live(&mut self.mem, func.ret)?;\n        for arg_local in func.args {\n            frame.storage_live(&mut self.mem, arg_local)?;\n        }\" (only the return local and the arguments are allocated when a frame is created).",
+   "Juneyoung Lee et al., \"Reconciling High-Level Optimizations and Low-Level Code in LLVM\", OOPSLA 2018 (PACMPL 2), DOI 10.1145/3276495 (a memory model with nondeterministic allocation addresses, address observation and allocation lifetimes)."
+  ],
+  "design_question": "When do properties proved for the marker-erased program transfer back to the source?"
+ },
+ {
+  "id": "storage-marker-erasure-equivalence-conditions-not-necessary",
+  "lean": [
+   "Toy.PlaceEval.eraseMarkers_fresh_equivPP_without_ubFree_or_noAddrObs",
+   "Toy.PlaceEval.eraseMarkers_fresh_equivPP_without_alignPos"
+  ],
+  "lean_names": [
+   "Toy.PlaceEval.pDeadUse",
+   "Toy.PlaceEval.pAddrSelf",
+   "Toy.PlaceEval.pAlignZeroOne",
+   "Toy.PlaceEval.pDeadUse_fresh_beh",
+   "Toy.PlaceEval.pDeadUse_erased_fresh_beh",
+   "Toy.PlaceEval.pAddrSelf_fresh_beh",
+   "Toy.PlaceEval.pAddrSelf_erased_fresh_beh",
+   "Toy.PlaceEval.pAlignZeroOne_fresh_beh",
+   "Toy.PlaceEval.pAlignZeroOne_erased_fresh_beh",
+   "Toy.PlaceEval.eraseMarkers_fresh_equivPP_of_alignPos_of_noAddrObs_of_ubFree"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "tier_justification": "Concrete instances analysed for every oracle; re-derived in the toy.",
+  "plain_claim": "Under fresh addresses: erasing the markers of `pDeadUse` (which writes `x` while it is unallocated and then reaches `unreachable`, so it is not UB-free) is an equivalence: both programs reach UB before any event, the marker-erased one at `unreachable` (`pDeadUse_fresh_beh`, `pDeadUse_erased_fresh_beh`); erasing the markers of `pAddrSelf` (which compares `&raw x` with itself within one live range, so `NoAddrObs` fails) is an equivalence (both emit `1` or block: `pAddrSelf_fresh_beh`, `pAddrSelf_erased_fresh_beh`); and erasing the markers of `pAlignZeroOne` (one local of alignment `0`, no address observation, UB-free) is an equivalence (`eraseMarkers_fresh_equivPP_without_alignPos`).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Counterexamples (concrete programs, analysed for every oracle).",
+  "nonvacuity_witness_lean": "Toy.PlaceEval.eraseMarkers_fresh_equivPP_without_ubFree_or_noAddrObs",
+  "non_claims": [
+   "A characterization (iff) of marker-erasure equivalence is not stated. These instances refute the converse of the sufficient condition, one hypothesis at a time: equivalence does not imply UB-freedom, the absence of address observation, or alignment at least `1`.",
+   "`pDeadUse` exercises a use of an unallocated local followed by `unreachable`; it is not a stale read after a re-`storageLive`.",
+   "Programs are closed: there are no inputs and no calls, and reachability ranges over the allocation oracle from a fixed initial state.",
+   "The toy has raw pointers and no reference or `Box` types (MiniRust additionally requires a dereferenced pointer of a safe pointer type to be dereferenceable; not modelled), no unsized places, no `ConstantIndex`, `Subslice`, `Downcast` or `OpaqueCast` projections, no array-length check on `index` (MiniRust additionally makes an index outside the array or slice length UB; not modelled), no aliasing model and no concurrency. Value accesses check the alignment of the accessed type at the final address, not the Reference's 'based on a misaligned pointer' condition.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's MIR semantics, Miri, MiniRust or the Rust Reference."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/syntax.rs L364–381 (doc comment of `StatementKind::StorageLive`/`StorageDead`; `///` markers removed): \"`StorageLive` and `StorageDead` statements mark the live range of a local. At any point during the execution of a function, each local is either allocated or unallocated. Except as noted below, all locals except function parameters are initially unallocated. `StorageLive` statements cause memory to be allocated for the local while `StorageDead` statements cause the memory to be freed. In other words, `StorageLive`/`StorageDead` act like the heap operations `allocate`/`deallocate`, but for stack-allocated local variables. Using a local in any way (not only reading/writing from it) while it is unallocated is UB. Some locals have no `StorageLive` or `StorageDead` statements within the entire MIR body. These locals are implicitly allocated for the full duration of the function. There is a convenience method at `rustc_mir_dataflow::storage::always_storage_live_locals` for computing these locals. If the local is already allocated, calling `StorageLive` again will implicitly free the local and then allocate fresh uninitialized memory. If a local is already deallocated, calling `StorageDead` again is a NOP.\""
+  ],
+  "design_question": "Are the hypotheses `UBFree`, `NoAddrObs` and `hwf` of `eraseMarkers_fresh_equivPP_of_alignPos_of_noAddrObs_of_ubFree` necessary for marker-erasure equivalence? (No.)"
+ }
+]
