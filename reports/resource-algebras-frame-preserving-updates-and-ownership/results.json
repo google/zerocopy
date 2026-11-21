@@ -377,7 +377,7 @@
       "Does not establish left-framing (c · a ⤳ c · b) or left-frame protection without OpComm; the asymmetry comes from defining fpUpdate via right-composed frames opOpt R a mf (witnessed by Toy.RA.pathCat_fpUpdate_breaks_left_frame). Under OpComm alone, right-frame preservation also preserves each single left-composed frame (f · a; Toy.RA.fpUpdate_preserve_left_of_opComm), whereas simultaneous two-sided contexts l · (a · r) require both OpComm and OpAssoc (Toy.RA.fpUpdate2_of_assoc_comm; refuted under OpComm alone by Toy.RA.opComm_alone_not_two_sided).",
       "Does not show that OpAssoc is globally necessary for right-framing: in any algebra where every element is valid (such as natSubRA, Toy.RA.frame_right_holds_without_opAssoc_example), universal right-framing holds without OpAssoc. Tightness shows only that OpAssoc cannot be dropped from this general statement.",
       "Does not require or establish that a, b, or c are valid elements.",
-      "Discrete only: does not cover step-indexed CMRAs, OFE non-expansiveness, or operational program-logic frame rules without a modeling bridge."
+      "Discrete algebras: does not cover step-indexed CMRAs, OFE non-expansiveness, or operational program-logic frame rules without a modeling bridge; it neither establishes nor refutes the corresponding claims about them."
     ],
     "prior_art": [
       "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_op, lines 93-96, derived from cmra_updateP_op using only assoc and comm)",
@@ -430,7 +430,7 @@
       "Does not show that OpAssoc and OpComm are globally necessary for parallel composition: in universally valid algebras, parallel composition holds without OpComm (boolLeftProjRA) or without either law (natSubRA) (derived: every element of these algebras is valid, so fpUpdate holds for all pairs; no separate Lean declaration is given). Tightness shows only that neither hypothesis can be deleted from this general statement.",
       "May fail without OpComm (e.g., in pathCatRA, Toy.RA.fpUpdate_op_nonComm_counterexample).",
       "Does not apply to sequential composition (Toy.RA.fpUpdate_trans), which requires zero algebraic laws on R.",
-      "Does not require or imply ValidOpL, and covers only discrete algebras without step-indexing or OFE metrics."
+      "Does not require or imply ValidOpL. It is stated for discrete algebras without step-indexing or OFE metrics; it neither establishes nor refutes the corresponding claims about step-indexed CMRAs."
     ],
     "prior_art": [
       "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_op, lines 93-96, proved via cmra_updateP_op using only assoc and comm)",
@@ -484,7 +484,7 @@
       "Does not show that OpAssoc and OpComm are globally necessary for parallel composition (tightness means irredundancy in this general statement, not necessity in every algebra).",
       "May fail without OpComm (e.g., in pathCatRA, Toy.RA.fpUpdateP_op_nonComm_counterexample).",
       "Does not force a single uniform pair (b₁, b₂) across all frames mf; each frame mf may choose different witnesses b₁, b₂ (matching Iris's cmra_updateP).",
-      "Discrete only: does not cover step-indexed non-deterministic updates where target choice may depend on the step index n."
+      "Discrete algebras: does not cover step-indexed non-deterministic updates where target choice may depend on the step index n; it neither establishes nor refutes the corresponding claims about them."
     ],
     "prior_art": [
       "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_updateP_op, lines 78-88, proved using only cmra_op_opM_assoc and comm)",
@@ -525,7 +525,7 @@
     "non_claims": [
       "Does not show that weakening requires OpAssoc or OpComm. ∀ a b, a · b ⤳ a holds in the non-commutative boolLeftProjRA (Toy.RA.drop_right_holds_without_opComm_example) and in the non-associative natSubRA (Toy.RA.drop_right_holds_without_opAssoc_example). ValidOpL is the only globally necessary law: (∀ a b, a · b ⤳ a) → ValidOpL R (Toy.RA.validOpL_of_fpUpdate_drop_right_all).",
       "May fail without OpComm (e.g., in pathCatRA, Toy.RA.fpUpdate_drop_right_nonComm_counterexample).",
-      "Discrete algebraic frame preservation only: does not imply that discarding resources is sound in linear (non-affine) separation logics where forgetting ownership leaks obligations, and does not cover step-indexed CMRAs without a modeling bridge."
+      "Discrete algebraic frame preservation: does not imply that discarding resources is sound in linear (non-affine) separation logics where forgetting ownership leaks obligations, and does not cover step-indexed CMRAs without a modeling bridge; it neither establishes nor refutes the corresponding claims about those settings."
     ],
     "prior_art": [
       "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_op_l, cmra_update_included)",
@@ -555,7 +555,7 @@
       "The equivalence with the bare form is for right-composed frames only; without OpComm, neither fpUpdate nor fpUpdateBare need protect left-composed frames (and even with OpComm, simultaneous two-sided contexts l · (a · r) additionally require OpAssoc; Toy.RA.opComm_alone_not_two_sided).",
       "IsRightUnit is sufficient, not necessary, for fpUpdate ↔ fpUpdateBare: non-unital algebras with right identities on valid elements and ValidOpL (such as agreeRA Bool) also satisfy the equivalence via Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL.",
       "Does not permit dropping the optional empty frame in non-unital algebras without right identities on valid elements, such as exclRA or fracValRA, where fpUpdateBare erroneously permits updating valid elements to invalid ones.",
-      "Discrete only: does not cover step-indexed CMRAs (✓{n}) or OFE cameras."
+      "Discrete algebras: does not cover step-indexed CMRAs (✓{n}) or OFE cameras; it neither establishes nor refutes the corresponding claims about them."
     ],
     "prior_art": [
       "Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§2.1 fn. 6, p. 12: optional frame needed because non-unital RAs lack a global unit ε)",
@@ -593,7 +593,7 @@
       "Does not apply to non-total, non-unital algebras without right identities on valid elements (such as exclRA or fracRA), where fpUpdateBare is strictly weaker than fpUpdate.",
       "When every element is idempotent (x · x = x) and OpComm holds, fpUpdate coincides with fpUpdateBare without ValidOpL (Toy.RA.fpUpdate_iff_bare_of_idemp_opComm). So no commutative algebra in which every element is idempotent is a tightness witness for ValidOpL; a commutative witness may still contain idempotent elements (in zeroBoolRA, false · false = false, and false is the source of the separating pair (false, true) of Toy.RA.two_element_comm_validOpL_witness). Without OpComm, an idempotent, associative 2-element tightness witness with HasLocalRightUnits exists (Toy.RA.idempotent_noncomm_validOpL_witness).",
       "Does not show that HasLocalRightUnits is required on invalid elements (Toy.RA.rightIdOnValidOnlyRA_props constructs a 3-element commutative, associative, ValidOpL algebra meeting HasRightIdOnValid where HasLocalRightUnits fails).",
-      "Discrete only: does not cover step-indexed CMRAs (✓{n}) or OFE cameras."
+      "Discrete algebras: does not cover step-indexed CMRAs (✓{n}) or OFE cameras; it neither establishes nor refutes the corresponding claims about them."
     ],
     "prior_art": [
       "Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_total_update lines 123-133 and cmra_discrete_total_update line 155, using only cmra_core_r and cmra_validN_op_l)",

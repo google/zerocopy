@@ -261,7 +261,8 @@ The named auxiliary algebras below are all `RawRA` instances; each entry gives t
 - **Modeling bridge:** `Basis: derived (modeling bridge)` — Connecting `¬ (exclRA α).valid ((exclRA α).op (.excl x) f)` to mutual exclusion or absence of aliasing in a concurrent program requires an external separation-logic soundness theorem mapping thread-local ghost assertions to composed algebraic states under a global validity invariant; no program logic or operational heap is formalized in `Toy.RA`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.excl_no_valid_frame {α : Type} (x : α) (f : Excl α) :
+-- lean/Toy/RA/Excl.lean:57-58
+theorem excl_no_valid_frame {α : Type} (x : α) (f : Excl α) :
     ¬ (exclRA α).valid ((exclRA α).op (.excl x) f)
 -- Unfolded:
 --   (exclRA α).op (.excl x) f = Excl.invalid
@@ -289,7 +290,8 @@ theorem Toy.RA.excl_no_valid_frame {α : Type} (x : α) (f : Excl α) :
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.excl_fpUpdate_iff` (axioms: `none`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.excl_fpUpdate_iff {α : Type} (x : α) (e : Excl α) :
+-- lean/Toy/RA/Excl.lean:79-80
+theorem excl_fpUpdate_iff {α : Type} (x : α) (e : Excl α) :
     fpUpdate (exclRA α) (.excl x) e ↔ ∃ y : α, e = .excl y
 -- Unfolded:
 --   (∀ mf : Option (Excl α),
@@ -320,7 +322,8 @@ theorem Toy.RA.excl_fpUpdate_iff {α : Type} (x : α) (e : Excl α) :
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.exclusive_fpUpdate` (axioms: `none`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.exclusive_fpUpdate {α : Type} (R : RawRA α) (a b : α)
+-- lean/Toy/RA/Core.lean:254-256
+theorem exclusive_fpUpdate {α : Type} (R : RawRA α) (a b : α)
     (hExcl : IsExclusive R a) (hb : R.valid b) :
     fpUpdate R a b
 -- Unfolded:
@@ -355,7 +358,8 @@ theorem Toy.RA.exclusive_fpUpdate {α : Type} (R : RawRA α) (a b : α)
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.agree_fpUpdate_iff` (axioms: `Quot.sound`, `propext`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.agree_fpUpdate_iff {α : Type} (x : α) (s : Agree α) :
+-- lean/Toy/RA/Agree.lean:131-132
+theorem agree_fpUpdate_iff {α : Type} (x : α) (s : Agree α) :
     fpUpdate (agreeRA α) (.ag x) s ↔ s = .ag x
 -- Unfolded:
 --   Agree.ag x = ⟨fun y => y = x, ⟨x, rfl⟩⟩
@@ -391,7 +395,8 @@ theorem Toy.RA.agree_fpUpdate_iff {α : Type} (x : α) (s : Agree α) :
 - **Modeling bridge:** `Basis: derived (modeling bridge)` — Interpreting the algebraic witness frame `Agree.ag x` as 'another thread or client holding a duplicate read-only agreement token' relies on an external separation-logic adequacy bridge linking ghost ownership composition to concurrent executions; inside `Toy.RA`, `Agree.ag x` is purely a universally quantified carrier element.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.agree_distinct_not_fpUpdate {α : Type} {x y : α} (hxy : x ≠ y) :
+-- lean/Toy/RA/Agree.lean:186-189
+theorem agree_distinct_not_fpUpdate {α : Type} {x y : α} (hxy : x ≠ y) :
     (agreeRA α).valid ((agreeRA α).op (.ag x) (.ag x)) ∧
     ¬ (agreeRA α).valid ((agreeRA α).op (.ag y) (.ag x)) ∧
     ¬ fpUpdate (agreeRA α) (.ag x) (.ag y)
@@ -430,7 +435,8 @@ theorem Toy.RA.agree_distinct_not_fpUpdate {α : Type} {x y : α} (hxy : x ≠ y
 - **Modeling bridge:** `Basis: derived (modeling bridge)` — Interpreting share `PosRat.one` in `fracValRA α` as 'unique write permission after collecting all read shares' depends on an external program-logic points-to interpretation tying heap mutation rules to frame-preserving updates on `fracValRA α`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.fracVal_full_fpUpdate_iff {α : Type} (x : α) (q' : PosRat) (s : Agree α) :
+-- lean/Toy/RA/Frac.lean:129-131
+theorem fracVal_full_fpUpdate_iff {α : Type} (x : α) (q' : PosRat) (s : Agree α) :
     fpUpdate (fracValRA α) (fracVal PosRat.one x) (q', s) ↔
       PosRat.le q' PosRat.one ∧ ∃ y : α, s = .ag y
 -- Unfolded:
@@ -466,7 +472,8 @@ theorem Toy.RA.fracVal_full_fpUpdate_iff {α : Type} (x : α) (q' : PosRat) (s :
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.fracVal_partial_fpUpdate_iff` (axioms: `Quot.sound`, `propext`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.fracVal_partial_fpUpdate_iff {α : Type}
+-- lean/Toy/RA/Frac.lean:191-194
+theorem fracVal_partial_fpUpdate_iff {α : Type}
     {q q' : PosRat} (hq : PosRat.lt q PosRat.one) (x : α) (s : Agree α) :
     fpUpdate (fracValRA α) (fracVal q x) (q', s) ↔
       PosRat.le q' q ∧ s = .ag x
@@ -502,7 +509,8 @@ theorem Toy.RA.fracVal_partial_fpUpdate_iff {α : Type}
 - **Modeling bridge:** `Basis: derived (modeling bridge)` — Interpreting the complementary share `fracValComplement q hq x = (1 - q, Agree.ag x)` as 'concurrent readers holding the remaining permission' relies on an external separation-logic soundness theorem; algebraically, the theorem proves only that the hypothetical frame `(1 - q, Agree.ag x)` is compatible with `(q, Agree.ag x)` and incompatible with `(q', Agree.ag y)`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.fracVal_partial_value_change_impossible {α : Type}
+-- lean/Toy/RA/Frac.lean:276-278
+theorem fracVal_partial_value_change_impossible {α : Type}
     {q q' : PosRat} (hq : PosRat.lt q PosRat.one) {x y : α} (hxy : x ≠ y) :
     ¬ fpUpdate (fracValRA α) (fracVal q x) (fracVal q' y)
 -- Unfolded:
@@ -537,7 +545,8 @@ theorem Toy.RA.fracVal_partial_value_change_impossible {α : Type}
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.auth_both_fpUpdate_iff` (axioms: `propext`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.auth_both_fpUpdate_iff {α : Type} (R : RawRA α) (a b a' b' : α) :
+-- lean/Toy/RA/Auth.lean:268-272
+theorem auth_both_fpUpdate_iff {α : Type} (R : RawRA α) (a b a' b' : α) :
     fpUpdate (authRA R) ((authRA R).op (authElem a) (fragElem b))
                         ((authRA R).op (authElem a') (fragElem b')) ↔
       ∀ mbf : Option α, R.valid a ∧ includedRefl R (opOpt R b mbf) a →
@@ -570,7 +579,8 @@ theorem Toy.RA.auth_both_fpUpdate_iff {α : Type} (R : RawRA α) (a b a' b' : α
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.auth_localUpdate_fpUpdate` (axioms: `propext`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.auth_localUpdate_fpUpdate {α : Type} (R : RawRA α) (hAssoc : OpAssoc R)
+-- lean/Toy/RA/Auth.lean:321-324
+theorem auth_localUpdate_fpUpdate {α : Type} (R : RawRA α) (hAssoc : OpAssoc R)
     (a b a' b' : α) (hLoc : LocalUpdate R a b a' b') :
     fpUpdate (authRA R) ((authRA R).op (authElem a) (fragElem b))
                         ((authRA R).op (authElem a') (fragElem b'))
@@ -607,7 +617,8 @@ theorem Toy.RA.auth_localUpdate_fpUpdate {α : Type} (R : RawRA α) (hAssoc : Op
 - **Modeling bridge:** `Basis: derived (modeling bridge)` — Interpreting compatibility with every optional fragment frame `mbf` as 'monotonically advancing shared state without invalidating concurrent threads' fragment invariants' requires an external program-logic invariant and update-modality soundness theorem.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.auth_counter_inc_fpUpdate (a b k : Nat) :
+-- lean/Toy/RA/Auth.lean:363-366
+theorem auth_counter_inc_fpUpdate (a b k : Nat) :
     fpUpdate (authRA counterRA)
       ((authRA counterRA).op (authElem a) (fragElem b))
       ((authRA counterRA).op (authElem (a + k)) (fragElem (b + k)))
@@ -638,7 +649,8 @@ theorem Toy.RA.auth_counter_inc_fpUpdate (a b k : Nat) :
 - **Modeling bridge:** `Basis: derived (modeling bridge)` — Reading the conflicting frame `fragElem 1` as 'another thread's contributed count' is a modeling bridge through an external separation logic; the Lean theorem establishes the discrete algebraic validity failure `(1 + 1 ≤ 2)` vs. `¬ (1 + 1 ≤ 1)`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.auth_counter_dec_auth_only_fails :
+-- lean/Toy/RA/Auth.lean:408-417
+theorem auth_counter_dec_auth_only_fails :
     OpAssoc counterRA ∧ OpComm counterRA ∧ ValidOpL counterRA ∧
     ¬ LocalUpdate counterRA 2 1 1 1 ∧
     (authRA counterRA).valid
@@ -669,7 +681,8 @@ theorem Toy.RA.auth_counter_dec_auth_only_fails :
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.fpUpdate_frame_right` (axioms: `none`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.fpUpdate_frame_right {α : Type} (R : RawRA α) (hAssoc : OpAssoc R)
+-- lean/Toy/RA/Laws.lean:359-361
+theorem fpUpdate_frame_right {α : Type} (R : RawRA α) (hAssoc : OpAssoc R)
     {a b : α} (c : α) (hab : fpUpdate R a b) :
     fpUpdate R (R.op a c) (R.op b c)
 -- Unfolded:
@@ -686,7 +699,7 @@ theorem Toy.RA.fpUpdate_frame_right {α : Type} (R : RawRA α) (hAssoc : OpAssoc
   - Does not establish left-framing (c · a ⤳ c · b) or left-frame protection without OpComm; the asymmetry comes from defining fpUpdate via right-composed frames opOpt R a mf (witnessed by Toy.RA.pathCat_fpUpdate_breaks_left_frame). Under OpComm alone, right-frame preservation also preserves each single left-composed frame (f · a; Toy.RA.fpUpdate_preserve_left_of_opComm), whereas simultaneous two-sided contexts l · (a · r) require both OpComm and OpAssoc (Toy.RA.fpUpdate2_of_assoc_comm; refuted under OpComm alone by Toy.RA.opComm_alone_not_two_sided).
   - Does not show that OpAssoc is globally necessary for right-framing: in any algebra where every element is valid (such as natSubRA, Toy.RA.frame_right_holds_without_opAssoc_example), universal right-framing holds without OpAssoc. Tightness shows only that OpAssoc cannot be dropped from this general statement.
   - Does not require or establish that a, b, or c are valid elements.
-  - Discrete only: does not cover step-indexed CMRAs, OFE non-expansiveness, or operational program-logic frame rules without a modeling bridge.
+  - Discrete algebras: does not cover step-indexed CMRAs, OFE non-expansiveness, or operational program-logic frame rules without a modeling bridge; it neither establishes nor refutes the corresponding claims about them.
 - **Prior art:**
   - Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_op, lines 93-96, derived from cmra_updateP_op using only assoc and comm)
   - iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.op)
@@ -702,7 +715,8 @@ theorem Toy.RA.fpUpdate_frame_right {α : Type} (R : RawRA α) (hAssoc : OpAssoc
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.fpUpdate_op` (axioms: `none`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.fpUpdate_op {α : Type} (R : RawRA α) (hAssoc : OpAssoc R) (hComm : OpComm R)
+-- lean/Toy/RA/Laws.lean:424-427
+theorem fpUpdate_op {α : Type} (R : RawRA α) (hAssoc : OpAssoc R) (hComm : OpComm R)
     {a₁ b₁ a₂ b₂ : α}
     (h₁ : fpUpdate R a₁ b₁) (h₂ : fpUpdate R a₂ b₂) :
     fpUpdate R (R.op a₁ a₂) (R.op b₁ b₂)
@@ -724,7 +738,7 @@ theorem Toy.RA.fpUpdate_op {α : Type} (R : RawRA α) (hAssoc : OpAssoc R) (hCom
   - Does not show that OpAssoc and OpComm are globally necessary for parallel composition: in universally valid algebras, parallel composition holds without OpComm (boolLeftProjRA) or without either law (natSubRA) (derived: every element of these algebras is valid, so fpUpdate holds for all pairs; no separate Lean declaration is given). Tightness shows only that neither hypothesis can be deleted from this general statement.
   - May fail without OpComm (e.g., in pathCatRA, Toy.RA.fpUpdate_op_nonComm_counterexample).
   - Does not apply to sequential composition (Toy.RA.fpUpdate_trans), which requires zero algebraic laws on R.
-  - Does not require or imply ValidOpL, and covers only discrete algebras without step-indexing or OFE metrics.
+  - Does not require or imply ValidOpL. It is stated for discrete algebras without step-indexing or OFE metrics; it neither establishes nor refutes the corresponding claims about step-indexed CMRAs.
 - **Prior art:**
   - Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_op, lines 93-96, proved via cmra_updateP_op using only assoc and comm)
   - iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.op)
@@ -739,7 +753,8 @@ theorem Toy.RA.fpUpdate_op {α : Type} (R : RawRA α) (hAssoc : OpAssoc R) (hCom
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.fpUpdateP_op` (axioms: `none`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.fpUpdateP_op {α : Type} (R : RawRA α) (hAssoc : OpAssoc R) (hComm : OpComm R)
+-- lean/Toy/RA/Laws.lean:518-522
+theorem fpUpdateP_op {α : Type} (R : RawRA α) (hAssoc : OpAssoc R) (hComm : OpComm R)
     {a₁ a₂ : α} {P₁ P₂ Q : α → Prop}
     (h₁ : fpUpdateP R a₁ P₁) (h₂ : fpUpdateP R a₂ P₂)
     (hQ : ∀ b₁ b₂, P₁ b₁ → P₂ b₂ → Q (R.op b₁ b₂)) :
@@ -762,7 +777,7 @@ theorem Toy.RA.fpUpdateP_op {α : Type} (R : RawRA α) (hAssoc : OpAssoc R) (hCo
   - Does not show that OpAssoc and OpComm are globally necessary for parallel composition (tightness means irredundancy in this general statement, not necessity in every algebra).
   - May fail without OpComm (e.g., in pathCatRA, Toy.RA.fpUpdateP_op_nonComm_counterexample).
   - Does not force a single uniform pair (b₁, b₂) across all frames mf; each frame mf may choose different witnesses b₁, b₂ (matching Iris's cmra_updateP).
-  - Discrete only: does not cover step-indexed non-deterministic updates where target choice may depend on the step index n.
+  - Discrete algebras: does not cover step-indexed non-deterministic updates where target choice may depend on the step index n; it neither establishes nor refutes the corresponding claims about them.
 - **Prior art:**
   - Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_updateP_op, lines 78-88, proved using only cmra_op_opM_assoc and comm)
   - iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.UpdateP.op)
@@ -777,7 +792,8 @@ theorem Toy.RA.fpUpdateP_op {α : Type} (R : RawRA α) (hAssoc : OpAssoc R) (hCo
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.fpUpdate_drop_right` (axioms: `none`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.fpUpdate_drop_right {α : Type} (R : RawRA α)
+-- lean/Toy/RA/Laws.lean:689-692
+theorem fpUpdate_drop_right {α : Type} (R : RawRA α)
     (hAssoc : OpAssoc R) (hComm : OpComm R) (hValidOpL : ValidOpL R)
     (a b : α) :
     fpUpdate R (R.op a b) a
@@ -796,7 +812,7 @@ theorem Toy.RA.fpUpdate_drop_right {α : Type} (R : RawRA α)
 - **Non-claims:**
   - Does not show that weakening requires OpAssoc or OpComm. ∀ a b, a · b ⤳ a holds in the non-commutative boolLeftProjRA (Toy.RA.drop_right_holds_without_opComm_example) and in the non-associative natSubRA (Toy.RA.drop_right_holds_without_opAssoc_example). ValidOpL is the only globally necessary law: (∀ a b, a · b ⤳ a) → ValidOpL R (Toy.RA.validOpL_of_fpUpdate_drop_right_all).
   - May fail without OpComm (e.g., in pathCatRA, Toy.RA.fpUpdate_drop_right_nonComm_counterexample).
-  - Discrete algebraic frame preservation only: does not imply that discarding resources is sound in linear (non-affine) separation logics where forgetting ownership leaks obligations, and does not cover step-indexed CMRAs without a modeling bridge.
+  - Discrete algebraic frame preservation: does not imply that discarding resources is sound in linear (non-affine) separation logics where forgetting ownership leaks obligations, and does not cover step-indexed CMRAs without a modeling bridge; it neither establishes nor refutes the corresponding claims about those settings.
 - **Prior art:**
   - Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_update_op_l, cmra_update_included)
   - iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.op_l)
@@ -811,7 +827,8 @@ theorem Toy.RA.fpUpdate_drop_right {α : Type} (R : RawRA α)
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.fpUpdate_iff_bare_of_rightUnit` (axioms: `none`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.fpUpdate_iff_bare_of_rightUnit {α : Type} (R : RawRA α) (e : α)
+-- lean/Toy/RA/Laws.lean:767-769
+theorem fpUpdate_iff_bare_of_rightUnit {α : Type} (R : RawRA α) (e : α)
     (hUnit : IsRightUnit R e) (a b : α) :
     fpUpdate R a b ↔ fpUpdateBare R a b
 -- Unfolded:
@@ -827,7 +844,7 @@ theorem Toy.RA.fpUpdate_iff_bare_of_rightUnit {α : Type} (R : RawRA α) (e : α
   - The equivalence with the bare form is for right-composed frames only; without OpComm, neither fpUpdate nor fpUpdateBare need protect left-composed frames (and even with OpComm, simultaneous two-sided contexts l · (a · r) additionally require OpAssoc; Toy.RA.opComm_alone_not_two_sided).
   - IsRightUnit is sufficient, not necessary, for fpUpdate ↔ fpUpdateBare: non-unital algebras with right identities on valid elements and ValidOpL (such as agreeRA Bool) also satisfy the equivalence via Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL.
   - Does not permit dropping the optional empty frame in non-unital algebras without right identities on valid elements, such as exclRA or fracValRA, where fpUpdateBare erroneously permits updating valid elements to invalid ones.
-  - Discrete only: does not cover step-indexed CMRAs (✓{n}) or OFE cameras.
+  - Discrete algebras: does not cover step-indexed CMRAs (✓{n}) or OFE cameras; it neither establishes nor refutes the corresponding claims about them.
 - **Prior art:**
   - Jung et al., 'Iris from the ground up', JFP 28 (2018), e20, DOI 10.1017/S0956796818000151 (§2.1 fn. 6, p. 12: optional frame needed because non-unital RAs lack a global unit ε)
   - Iris technical documentation at commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732: tex/algebra.tex (§RA, lines 149-156)
@@ -843,7 +860,8 @@ theorem Toy.RA.fpUpdate_iff_bare_of_rightUnit {α : Type} (R : RawRA α) (e : α
 - **Basis:** `execution (Lean kernel check)` — `Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL` (axioms: `none`) and all referenced witnesses and counterexamples compile under `leanprover/lean4:v4.34.1` without `sorry`.
 - **Lean statement (with key definitions unfolded):**
 ```lean
-theorem Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL {α : Type} (R : RawRA α)
+-- lean/Toy/RA/Laws.lean:808-810
+theorem fpUpdate_iff_bare_of_rightIdOnValid_validOpL {α : Type} (R : RawRA α)
     (hRightId : HasRightIdOnValid R) (hValidOpL : ValidOpL R) (a b : α) :
     fpUpdate R a b ↔ fpUpdateBare R a b
 -- Unfolded:
@@ -862,7 +880,7 @@ theorem Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL {α : Type} (R : Raw
   - Does not apply to non-total, non-unital algebras without right identities on valid elements (such as exclRA or fracRA), where fpUpdateBare is strictly weaker than fpUpdate.
   - When every element is idempotent (x · x = x) and OpComm holds, fpUpdate coincides with fpUpdateBare without ValidOpL (Toy.RA.fpUpdate_iff_bare_of_idemp_opComm). So no commutative algebra in which every element is idempotent is a tightness witness for ValidOpL; a commutative witness may still contain idempotent elements (in zeroBoolRA, false · false = false, and false is the source of the separating pair (false, true) of Toy.RA.two_element_comm_validOpL_witness). Without OpComm, an idempotent, associative 2-element tightness witness with HasLocalRightUnits exists (Toy.RA.idempotent_noncomm_validOpL_witness).
   - Does not show that HasLocalRightUnits is required on invalid elements (Toy.RA.rightIdOnValidOnlyRA_props constructs a 3-element commutative, associative, ValidOpL algebra meeting HasRightIdOnValid where HasLocalRightUnits fails).
-  - Discrete only: does not cover step-indexed CMRAs (✓{n}) or OFE cameras.
+  - Discrete algebras: does not cover step-indexed CMRAs (✓{n}) or OFE cameras; it neither establishes nor refutes the corresponding claims about them.
 - **Prior art:**
   - Iris (Rocq) tag iris-4.4.0 (commit 82dbf5e7a11d7ffaafe78e95186b5b376f4df732): iris/algebra/updates.v (cmra_total_update lines 123-133 and cmra_discrete_total_update line 155, using only cmra_core_r and cmra_validN_op_l)
   - iris-lean (Lean 4) commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b: Iris/Iris/Algebra/Updates.lean (Iris.Update.discrete_total, lines 169-174)
@@ -880,7 +898,7 @@ theorem Toy.RA.fpUpdate_iff_bare_of_rightIdOnValid_validOpL {α : Type} (R : Raw
   - Under `OpComm` alone, right-frame preservation also preserves each **single** left-composed frame `f · a` (`Toy.RA.fpUpdate_preserve_left_of_opComm`), **not** simultaneous two-sided contexts `l · (a · r)` or `(l · a) · r`. Over the commutative, `ValidOpL`-satisfying, non-associative algebra `nonAssocCommValidRA`, `e0 ⤳ e1` holds for all right frames, yet `e2 · (e0 · e1)` is valid while `e2 · (e1 · e1)` is invalid (and `(e1 · e0) · e2` is valid while `(e1 · e1) · e2` is invalid), refuting `fpUpdate2` (`Toy.RA.opComm_alone_not_two_sided`). The exact same failure arises inside `authRA nonAssocCommValidRA` for `authElem .e0 · fragElem .e0 ⤳ authElem .e0 · fragElem .e1` under the two-sided fragment context `fragElem .e2 · (_ · fragElem .e1)` (`Toy.RA.auth_opComm_alone_not_two_sided`). Simultaneous two-sided contexts `l · (a · r)` are preserved under `OpComm ∧ OpAssoc` (`Toy.RA.fpUpdate2_of_assoc_comm`).
 - **NC-G2 (tightness is irredundancy, not global necessity).** Marking a hypothesis `tight` means only that deleting it from *that* general theorem while keeping the remaining hypotheses makes the general theorem false. It does **not** mean the law is required in every individual algebra: in universally valid algebras, universal right-framing holds without `OpAssoc` (`natSubRA`, `Toy.RA.frame_right_holds_without_opAssoc_example`), parallel composition holds without `OpComm` (`boolLeftProjRA`) or without either law (`natSubRA`) (`Basis: derived` — every element of these algebras is valid, so `fpUpdate` holds for all pairs; no separate Lean declaration is given), and universal right-dropping `∀ a b, a · b ⤳ a` holds without `OpComm` (`Toy.RA.drop_right_holds_without_opComm_example`) and without `OpAssoc` (`Toy.RA.drop_right_holds_without_opAssoc_example`). Across all raw algebras, **only `ValidOpL` is globally necessary** for universal right-dropping (`Toy.RA.validOpL_of_fpUpdate_drop_right_all`).
 - **NC-G3 (no internalized program logic or concurrency semantics).** No assertion language, points-to predicate, invariant mechanism, update modality, or operational thread semantics is formalized here. Every reference to 'concurrent readers', 'another thread's frame', or 'external fragment holders' is an external `derived (modeling bridge)` claim contingent on a separate separation-logic adequacy theorem.
-- **NC-G4 (discrete Leibniz equality only — step-indexed cameras not examined).** Every type and law in `Toy.RA` is discrete. Results do not establish theorems about step-indexed Iris cameras (OFEs with `≡{n}≡` and `✓{n}`; cf. Jung et al., JFP 2018, and Jung, Krebbers, Birkedal, and Dreyer, *Higher-order ghost state*, ICFP 2016, DOI `10.1145/2951913.2951943` as background context) without restricting to discrete cameras.
+- **NC-G4 (discrete Leibniz equality — step-indexed cameras not examined).** Every type and law in `Toy.RA` is discrete. Results neither establish nor refute theorems about step-indexed Iris cameras (OFEs with `≡{n}≡` and `✓{n}`; cf. Jung et al., JFP 2018, and Jung, Krebbers, Birkedal, and Dreyer, *Higher-order ghost state*, ICFP 2016, DOI `10.1145/2951913.2951943` as background context) without restricting to discrete cameras.
 - **NC-G5 (core-free, unit-optional, non-cancellative vocabulary).** `IsCoreFreeRA` (`OpAssoc ∧ OpComm ∧ ValidOpL`) omits Iris's partial core `pcore` and core monotonicity/idempotence axioms, and imposes neither a unit nor cancellativity (unlike F\* PCMs and Calcagno–O'Hearn–Yang / Dockins–Hobor–Appel separation algebras). Likewise, `HasRightIdOnValid` and `HasLocalRightUnits` assert existential per-element right identities without canonical core laws, and `HasRightIdOnValid` is strictly weaker than `HasLocalRightUnits` (`Toy.RA.rightIdOnValidOnlyRA_props`).
 - **NC-G6 (`ValidOpL` tightness witness structure on Card 18 — known not to apply without qualifiers).** While `OpComm` plus idempotence (`∀ x, x · x = x`) implies `fpUpdate ↔ fpUpdateBare` without `ValidOpL` (`Toy.RA.fpUpdate_iff_bare_of_idemp_opComm`), so that no commutative algebra in which every element is idempotent is a tightness witness for `ValidOpL`, a commutative witness may still contain idempotent elements (in `zeroBoolRA`, `false · false = false`), and non-commutative tightness witnesses for `ValidOpL` *can* have every element idempotent (`Toy.RA.idempotent_noncomm_validOpL_witness` on the 2-element right-zero band `rightZeroBoolRA`). The 5-element canonical witness `fiveLocalUnitsNoValidOpLRA` (`Toy.RA.fpUpdate_bare_rightIdOnValid_noValidOpL_counterexample`) additionally satisfies `HasLocalRightUnits` on every element alongside `OpAssoc` and `OpComm`; nothing is claimed about whether a smaller witness with these properties exists. Under Card 18's actual hypothesis `HasRightIdOnValid`, a 2-element commutative associative zero semigroup already separates `fpUpdateBare` from `fpUpdate` (`Toy.RA.two_element_comm_validOpL_witness`).
 - **NC-G7 (invalid-source vacuity and `LocalUpdate` non-necessity).** Updates out of invalid sources (`Excl.invalid`, multi-element `Agree α` predicates, over-full shares `q > 1` as in `Toy.RA.fracVal_partial_iff_overfull_counterexample`) hold vacuously because no optional frame makes the source valid. In `authRA R`, `LocalUpdate R a b a' b'` is sufficient under `OpAssoc R` (`Toy.RA.auth_localUpdate_fpUpdate`) but **not** necessary (`Toy.RA.auth_counter_alloc_only_not_localUpdate`); the exact condition is `Toy.RA.auth_both_fpUpdate_iff`.
