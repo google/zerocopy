@@ -1,0 +1,820 @@
+[
+  {
+    "id": "R1",
+    "lean": "Toy.Variance.table_le_safeTable_typing_sound",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Soundness of Rust's variance table is folklore and is covered for a core calculus by RustBelt's semantic model; mechanized here for a toy language parameterised by the table.",
+    "plain_claim": "For every variance table tbl that is pointwise at most as permissive as safeTable (the Rust table with PhantomData made bivariant): every toy program accepted by the checker chk with copies along SubGen tbl NoAx (reflexivity, transitivity, one congruence rule per constructor) is safe, i.e. the interpreter exec, run with any fuel, never returns the dangling-access result or any other stuck result.",
+    "hypotheses": [
+      {
+        "name": "h : Table.le tbl safeTable",
+        "purpose": "Restricts to tables no more permissive than the Rust table (the PhantomData entry may be anything).",
+        "tightness": "tight",
+        "counterexample": "Toy.Variance.refMut_co_table_not_le_safeTable_unsound",
+        "witness_class": "a single-entry modification of rustTable (&mut covariant in T)",
+        "counterexample_note": "rustTable with &mut covariant in T violates h and is unsound.",
+        "not_necessary": "Toy.Variance.rigidLftTable_not_le_safeTable_sound",
+        "not_necessary_note": "h is sufficient, not necessary: rigidLftTable violates h and is sound."
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "Syntactic heap-typing proof in ToyVariance/Soundness.lean: preservation for top-level and function-body execution, closures typed by their accepted bodies, and a monotone set of live locations inside calls; the auxiliary relation MSub contains SubGen safeTable NoAx.",
+    "nonvacuity_witness": "tbl = rustTable, and the program progCoerceShrink (which uses the proper coercion &'static nat <= &'sh nat) is typed.",
+    "nonvacuity_witness_lean": "Toy.Variance.table_le_safeTable_typing_sound_nonvacuous",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "Does not claim that rustc's type system is sound, nor that its variance table is implemented as here; rust-lang/rust#25860 is outside the model.",
+      "The checker requires every lifetime in the type of a used variable to be live at the use; that check is stronger than Rust's liveness constraints, and the result does not cover a checker without it.",
+      "Safety here means: no stuck result (dangling access or ill-shaped value) from exec for any fuel. It says nothing about termination, panics (abort is safe), memory leaks, or functional correctness.",
+      "Function bodies allocate in 'static and capture a single 'static-typed value; the result does not cover closures capturing short-lived data (Rust's dyn Fn + 'a).",
+      "Aliased &mut references are harmless in the toy because each heap location holds a whole immutable value tree, regions expire as a whole, and there are no sum types, no interior pointers into a location, and no destructors. In Rust, aliased &mut references are unsound even for 'static data once enums or interior pointers exist (not proved here); the result says nothing about borrow checking.",
+      "In SubGen an invariant position requires subtyping in both directions, not syntactic equality as in rustc: under safeTable, &'static mut PhantomData<nat> <= &'static mut PhantomData<()> is derivable (safeTable_refMut_phantom_coerce).",
+      "The hypothesis is sufficient, not necessary: rigidLftTable_not_le_safeTable_sound."
+    ],
+    "prior_art": [
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer. 'RustBelt: Securing the Foundations of the Rust Programming Language.' Proc. ACM Program. Lang. 2(POPL), 66:1-66:34, 2018. doi:10.1145/3158154. Semantic soundness, in the Iris separation logic, of a core Rust calculus with lifetimes, together with proofs that libraries such as Cell are safe against their semantic types; the full development is in R. Jung, 'Understanding and Evolving the Rust Programming Language', PhD dissertation, Saarland University, 2020. Cited for the existence of a mechanized soundness proof for a core Rust calculus; no claim is made here about which subtyping or variance rules that work states, and this package neither reuses nor mirrors its model.",
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance.",
+      "The Rust Reference, 'Subtyping and Variance' (src/subtyping.md), rust-lang/reference commit 49115e0d52bf24fb2ff39a4ca03e70870bdce4ec, https://github.com/rust-lang/reference/blob/49115e0d52bf24fb2ff39a4ca03e70870bdce4ec/src/subtyping.md. r[subtyping.variance.builtin-types]: &'a T covariant in 'a and T; &'a mut T covariant in 'a, invariant in T; fn() -> T covariant; fn(T) -> () contravariant; UnsafeCell<T> invariant; PhantomData<T> covariant. r[subtyping.variance.user-composite-types]: 'If the parameter is used in positions with different variances then the parameter is invariant.' r[subtyping.variance.builtin-composite-types]: outside a struct, enum or union, variance is checked at each location separately (with a tuple example).",
+      "D. J. Pearce. 'A Lightweight Formalism for Reference Lifetimes and Borrowing in Rust.' ACM Transactions on Programming Languages and Systems, 2021. doi:10.1145/3443420. A core calculus with lifetimes, borrowing and a flow-sensitive borrow check, with a soundness proof; a different design point from this package (which has no borrow checker).",
+      "A. Weiss, O. Gierczak, D. Patterson, A. Ahmed. 'Oxide: The Essence of Rust.' arXiv:1903.00982 (first version 2019; version 4, 2021). A source-level borrow-checking calculus with a syntactic (progress and preservation) type-safety proof."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.Lft",
+      "Toy.Variance.Lft.live",
+      "Toy.Variance.Lft.outlives",
+      "Toy.Variance.Variance",
+      "Toy.Variance.Variance.fwd",
+      "Toy.Variance.Variance.bwd",
+      "Toy.Variance.Variance.ofDirs",
+      "Toy.Variance.Variance.le",
+      "Toy.Variance.Variance.meet",
+      "Toy.Variance.Variance.comp",
+      "Toy.Variance.Variance.Rel",
+      "Toy.Variance.LRel",
+      "Toy.Variance.Pos",
+      "Toy.Variance.Table",
+      "Toy.Variance.rustTable",
+      "Toy.Variance.Table.set",
+      "Toy.Variance.Table.le",
+      "Toy.Variance.safeTable",
+      "Toy.Variance.Ty",
+      "Toy.Variance.Ty.subst",
+      "Toy.Variance.Ty.closed",
+      "Toy.Variance.Ty.phantomFree",
+      "Toy.Variance.SubGen",
+      "Toy.Variance.NoAx",
+      "Toy.Variance.Stmt",
+      "Toy.Variance.Val",
+      "Toy.Variance.Env",
+      "Toy.Variance.Env.empty",
+      "Toy.Variance.St",
+      "Toy.Variance.St.init",
+      "Toy.Variance.Res",
+      "Toy.Variance.Res.isDangling",
+      "Toy.Variance.Res.isStuck",
+      "Toy.Variance.exec",
+      "Toy.Variance.Ctx",
+      "Toy.Variance.Ctx.empty",
+      "Toy.Variance.Mode",
+      "Toy.Variance.chk",
+      "Toy.Variance.Checks",
+      "Toy.Variance.Typed",
+      "Toy.Variance.Safe",
+      "Toy.Variance.Sound",
+      "Toy.Variance.sh",
+      "Toy.Variance.rs",
+      "Toy.Variance.rsh",
+      "Toy.Variance.prelude",
+      "Toy.Variance.Env.set",
+      "Toy.Variance.Env.frame",
+      "Toy.Variance.Ctx.set",
+      "Toy.Variance.Ctx.frame",
+      "Toy.Variance.Mode.lv",
+      "Toy.Variance.Mode.get",
+      "Toy.Variance.Ty.liveIn",
+      "Toy.Variance.Ty.allStatic",
+      "Toy.Variance.rustTable_typing_sound",
+      "Toy.Variance.rigidLftTable",
+      "Toy.Variance.rigidLftTable_not_le_safeTable_sound",
+      "Toy.Variance.safeTable_refMut_phantom_coerce",
+      "Toy.Variance.progCoerceShrink",
+      "Toy.Variance.progRefMutCo",
+      "Toy.Variance.MSub",
+      "Toy.Variance.ETy",
+      "Toy.Variance.erase",
+      "Toy.Variance.MSub_sound",
+      "Toy.Variance.MSub.of_safeTable"
+    ]
+  },
+  {
+    "id": "R1-sem",
+    "lean": "Toy.Variance.rustTable_subGen_implies_semSub",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Corollary of R1; the contextual notion of semantic subtyping is standard in spirit (RustBelt uses a semantic model).",
+    "plain_claim": "For all types S and T: if S <= T is derivable in SubGen rustTable NoAx, then SemSub S T holds, i.e. adding S <= T as one more generator of the Rust-table subtyping (usable under every constructor, in every program) keeps the toy type system sound: every program accepted by the checker chk with that extended subtyping is safe under the interpreter exec (run with any fuel, exec never returns the dangling-access result or any other stuck result).",
+    "hypotheses": [
+      {
+        "name": "h : SubGen rustTable NoAx S T",
+        "purpose": "Syntactic subtyping under the Rust table.",
+        "tightness": "tight",
+        "counterexample": "Toy.Variance.not_semSub_refMut_shrink",
+        "witness_class": "a single pair of &mut types",
+        "counterexample_note": "&'static mut &'static nat <= &'sh mut &'sh nat is not derivable and is not a semantic subtyping."
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "A reference-point corollary of R1 by monotonicity of the generated relation in its generators.",
+    "nonvacuity_witness": "S = &'static nat, T = &'sh nat (distinct), with a program typed using the pair as the extra generator.",
+    "nonvacuity_witness_lean": "Toy.Variance.rustTable_subGen_implies_semSub_nonvacuous",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "Semantic subtyping is defined contextually (soundness of the system with one extra generator), not by a value-level logical relation.",
+      "The converse fails: PhantomData<&'sh nat> <= PhantomData<&'static nat> is a semantic subtyping but is not derivable under rustTable (semSub_phantom_not_subGen).",
+      "SemSub is not shown to be transitive, and no characterization of SemSub is given; it may contain further pairs, including PhantomData-free ones (not proved here)."
+    ],
+    "prior_art": [
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer. 'RustBelt: Securing the Foundations of the Rust Programming Language.' Proc. ACM Program. Lang. 2(POPL), 66:1-66:34, 2018. doi:10.1145/3158154. Semantic soundness, in the Iris separation logic, of a core Rust calculus with lifetimes, together with proofs that libraries such as Cell are safe against their semantic types; the full development is in R. Jung, 'Understanding and Evolving the Rust Programming Language', PhD dissertation, Saarland University, 2020. Cited for the existence of a mechanized soundness proof for a core Rust calculus; no claim is made here about which subtyping or variance rules that work states, and this package neither reuses nor mirrors its model."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.SemSub",
+      "Toy.Variance.semSub_phantom_not_subGen",
+      "Toy.Variance.progR1Sem",
+      "Toy.Variance.progRefMutCo"
+    ]
+  },
+  {
+    "id": "R2",
+    "lean": "Toy.Variance.refMut_covariant_in_T_admits_dangling_read",
+    "kind": "impossibility",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Invariance of mutable references is textbook material (TAPL Section 15.5) and is explained informally for &mut in the Rustonomicon; restated here as a concrete program in the toy.",
+    "plain_claim": "With &mut made covariant in its pointee type (all other entries as in rustTable), the program progRefMutCo, which stores a &'sh nat into a &'static mut &'static nat slot through a covariant alias &'sh mut &'sh nat, ends 'sh, and reads through the slot, is accepted by the checker chk, and the interpreter exec with fuel 40 returns the dangling-access result.",
+    "hypotheses": [
+      {
+        "name": "(none: concrete table and program)",
+        "purpose": "The modified table and the witness program are fixed in the statement.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Kernel evaluation (decide) of the checker and the interpreter on the concrete program.",
+    "nonvacuity_witness": "The statement has no hypotheses; the concrete program is exhibited in it.",
+    "nonvacuity_witness_lean": "Toy.Variance.refMut_covariant_in_T_admits_dangling_read",
+    "positive_control_lean": "Toy.Variance.rustTable_rejects_refMut_covariant_coercion",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "Exhibits one program for one table. Soundness of the Rust entry is R1; that invariance is the one sound variance for this entry among the four is R-iff (contravariance: refMut_contravariant_in_T_admits_dangling).",
+      "The toy has no borrow checker: the original slot reference and the covariant alias coexist. In Rust the alias would be a reborrow; the bridge to Rust's &mut invariance is prose (modeling bridge).",
+      "The impossibility depends on a pointer type through which aliases can both read and write. A unique, move-only owning pointer without reborrows (like Box<T>) or a type split into read-only and write-only capabilities (a source and a sink) can soundly be covariant (the source, Box) or contravariant (the sink) in its contents; such types are not modelled (not proved here)."
+    ],
+    "prior_art": [
+      "B. C. Pierce. Types and Programming Languages. MIT Press, 2002. Chapter 15 (Subtyping): Section 15.2 gives the arrow rule, contravariant in the argument and covariant in the result; Section 15.5 discusses references and why Ref T must be invariant. Textbook source for the invariance of mutable references and the contravariance of function arguments, in a calculus without lifetimes.",
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance.",
+      "J. Gosling, B. Joy, G. Steele, G. Bracha, A. Buckley, D. Smith, G. Bierman. The Java Language Specification, Java SE 21 Edition, 2023, Section 10.5 'Array Store Exception', https://docs.oracle.com/javase/specs/jls/se21/html/jls-10.html#jls-10.5: 'an assignment to a component of the array is checked at run time ... an ArrayStoreException is thrown.' A dynamic check as the alternative to invariance for covariant mutable containers (prose only)."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.progRefMutCo",
+      "Toy.Variance.refMut_contravariant_in_T_admits_dangling",
+      "Toy.Variance.progRefMutContra",
+      "Toy.Variance.rustTable_entry_sound_iff"
+    ]
+  },
+  {
+    "id": "R3",
+    "lean": "Toy.Variance.fn_covariant_in_arg_admits_dangling_read",
+    "kind": "impossibility",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Contravariance of function arguments is textbook material (TAPL Section 15.2); restated here as a concrete program in the toy.",
+    "plain_claim": "With fn made covariant in its argument (all other entries as in rustTable), the program progFnArgCo, in which the identity f : fn(&'static nat) -> &'static nat is accepted at fn(&'sh nat) -> &'static nat, applied to s : &'sh nat, and its result read after 'sh ends, is accepted by the checker chk, and the interpreter exec with fuel 40 returns the dangling-access result.",
+    "hypotheses": [
+      {
+        "name": "(none: concrete table and program)",
+        "purpose": "The modified table and the witness program are fixed in the statement.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Kernel evaluation (decide) of the checker and the interpreter on the concrete program.",
+    "nonvacuity_witness": "The statement has no hypotheses; the concrete program is exhibited in it.",
+    "nonvacuity_witness_lean": "Toy.Variance.fn_covariant_in_arg_admits_dangling_read",
+    "positive_control_lean": "Toy.Variance.rustTable_rejects_fn_covariant_arg_coercion",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "Exhibits one program for one table; the forcedness of the entry among all variances is R-forced and R-iff.",
+      "The witness returns its argument directly; it does not need a closure that stores its argument."
+    ],
+    "prior_art": [
+      "B. C. Pierce. Types and Programming Languages. MIT Press, 2002. Chapter 15 (Subtyping): Section 15.2 gives the arrow rule, contravariant in the argument and covariant in the result; Section 15.5 discusses references and why Ref T must be invariant. Textbook source for the invariance of mutable references and the contravariance of function arguments, in a calculus without lifetimes.",
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.progFnArgCo"
+    ]
+  },
+  {
+    "id": "R4",
+    "lean": "Toy.Variance.cell_covariant_admits_dangling_read",
+    "kind": "impossibility",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Invariance of interior-mutable cells follows the same argument as for mutable references (TAPL Section 15.5; Rustonomicon variance table); restated here as a concrete program in the toy.",
+    "plain_claim": "With Cell made covariant (all other entries as in rustTable), the program progCellCo, in which c : &'static Cell<&'static nat> is accepted at &'static Cell<&'sh nat>, set to s : &'sh nat through that alias, 'sh ended, and *c.get() read, is accepted by the checker chk, and the interpreter exec with fuel 40 returns the dangling-access result.",
+    "hypotheses": [
+      {
+        "name": "(none: concrete table and program)",
+        "purpose": "The modified table and the witness program are fixed in the statement.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Kernel evaluation (decide) of the checker and the interpreter on the concrete program.",
+    "nonvacuity_witness": "The statement has no hypotheses; the concrete program is exhibited in it.",
+    "nonvacuity_witness_lean": "Toy.Variance.cell_covariant_admits_dangling_read",
+    "positive_control_lean": "Toy.Variance.rustTable_rejects_cell_covariant_coercion",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "Exhibits one program for one table; the forcedness of the entry among all variances is R-forced and R-iff.",
+      "Cell contents are mutated through a shared reference &'l Cell<T> (cellGet, cellSet). A bare Cell<T> value can also be copied out by read, paired, projected, and boxed again with alloc (progBareCellAccess_typed_and_not_stuck); this differs from Rust, where Cell<T> is not Copy. A bare Cell value is an immutable copy.",
+      "The impossibility depends on a pointer type through which aliases can both read and write. A unique, move-only owning pointer without reborrows (like Box<T>) or a type split into read-only and write-only capabilities (a source and a sink) can soundly be covariant (the source, Box) or contravariant (the sink) in its contents; such types are not modelled (not proved here)."
+    ],
+    "prior_art": [
+      "B. C. Pierce. Types and Programming Languages. MIT Press, 2002. Chapter 15 (Subtyping): Section 15.2 gives the arrow rule, contravariant in the argument and covariant in the result; Section 15.5 discusses references and why Ref T must be invariant. Textbook source for the invariance of mutable references and the contravariance of function arguments, in a calculus without lifetimes.",
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance.",
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer. 'RustBelt: Securing the Foundations of the Rust Programming Language.' Proc. ACM Program. Lang. 2(POPL), 66:1-66:34, 2018. doi:10.1145/3158154. Semantic soundness, in the Iris separation logic, of a core Rust calculus with lifetimes, together with proofs that libraries such as Cell are safe against their semantic types; the full development is in R. Jung, 'Understanding and Evolving the Rust Programming Language', PhD dissertation, Saarland University, 2020. Cited for the existence of a mechanized soundness proof for a core Rust calculus; no claim is made here about which subtyping or variance rules that work states, and this package neither reuses nor mirrors its model.",
+      "J. Gosling, B. Joy, G. Steele, G. Bracha, A. Buckley, D. Smith, G. Bierman. The Java Language Specification, Java SE 21 Edition, 2023, Section 10.5 'Array Store Exception', https://docs.oracle.com/javase/specs/jls/se21/html/jls-10.html#jls-10.5: 'an assignment to a component of the array is checked at run time ... an ArrayStoreException is thrown.' A dynamic check as the alternative to invariance for covariant mutable containers (prose only)."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.progCellCo",
+      "Toy.Variance.progBareCellAccess",
+      "Toy.Variance.progBareCellAccess_typed_and_not_stuck"
+    ]
+  },
+  {
+    "id": "R-forced",
+    "lean": [
+      "Toy.Variance.rustTable_entry_not_le_admits_dangling",
+      "Toy.Variance.rustTable_entry_not_le_unsound"
+    ],
+    "kind": "impossibility",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "The individual entries are folklore (Rustonomicon, Reference); a mechanized statement covering every position and every alternative variance is new in form.",
+    "plain_claim": "For every built-in position p other than PhantomData and every variance v that is not at most as permissive as rustTable p (a strictly more permissive variance, or an incomparable one such as a covariant fn argument), the table rustTable.set p v admits a dangling access: some program accepted by the checker chk with SubGen (rustTable.set p v) NoAx makes the interpreter exec return the dangling-access result. Bundled corollary (rustTable_entry_not_le_unsound): under the same hypotheses, SubGen (rustTable.set p v) NoAx is not sound.",
+    "hypotheses": [
+      {
+        "name": "hp : p ≠ .phantom",
+        "purpose": "The PhantomData entry is not forced.",
+        "tightness": "tight",
+        "counterexample": "Toy.Variance.phantom_bi_not_le_and_sound",
+        "witness_class": "p = phantom, v = bi",
+        "counterexample_note": "p = phantom, v = bi satisfies hv and violates hp; the table is sound and admits no dangling access (both conclusions, AdmitsDanglingAccess and the bundled not-sound corollary, fail)."
+      },
+      {
+        "name": "hv : v.le (rustTable p) = false",
+        "purpose": "v is strictly more permissive than, or incomparable with, the Rust entry.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Variance.rustTable_entry_le_no_dangling",
+          "Toy.Variance.rustTable_entry_le_sound"
+        ],
+        "witness_class": "p = refMutTy, v = inv",
+        "counterexample_note": "p = refMutTy with v = inv (the Rust entry itself) satisfies hp, violates hv, and gives a table that admits no dangling access (rustTable_entry_le_no_dangling); the same table is sound (rustTable_entry_le_sound, from the positive direction of rustTable_entry_sound_iff), so the bundled not-sound corollary fails there as well."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Eleven concrete programs checked by kernel evaluation, and monotonicity of the generated relation in the table.",
+    "nonvacuity_witness": "p = refMutTy, v = co.",
+    "nonvacuity_witness_lean": "Toy.Variance.rustTable_entry_not_le_admits_dangling_nonvacuous",
+    "positive_control_lean": [
+      "Toy.Variance.rustTable_rejects_all_forcing_coercions",
+      "Toy.Variance.rustTable_typing_sound"
+    ],
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "Single-entry changes: each statement changes one entry of rustTable. It is not a classification of sound tables: changing several entries at once can give a sound table that is not at most as permissive as safeTable, e.g. rigidLftTable, whose &mut and Cell contents and fn argument are covariant (rigidLftTable_not_le_safeTable_sound).",
+      "The hypothesis hv also covers incomparable variances (rustTable_entry_not_le_covers_incomparable).",
+      "The impossibility depends on a pointer type through which aliases can both read and write. A unique, move-only owning pointer without reborrows (like Box<T>) or a type split into read-only and write-only capabilities (a source and a sink) can soundly be covariant (the source, Box) or contravariant (the sink) in its contents; such types are not modelled (not proved here)."
+    ],
+    "prior_art": [
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance.",
+      "The Rust Reference, 'Subtyping and Variance' (src/subtyping.md), rust-lang/reference commit 49115e0d52bf24fb2ff39a4ca03e70870bdce4ec, https://github.com/rust-lang/reference/blob/49115e0d52bf24fb2ff39a4ca03e70870bdce4ec/src/subtyping.md. r[subtyping.variance.builtin-types]: &'a T covariant in 'a and T; &'a mut T covariant in 'a, invariant in T; fn() -> T covariant; fn(T) -> () contravariant; UnsafeCell<T> invariant; PhantomData<T> covariant. r[subtyping.variance.user-composite-types]: 'If the parameter is used in positions with different variances then the parameter is invariant.' r[subtyping.variance.builtin-composite-types]: outside a struct, enum or union, variance is checked at each location separately (with a tuple example).",
+      "B. C. Pierce. Types and Programming Languages. MIT Press, 2002. Chapter 15 (Subtyping): Section 15.2 gives the arrow rule, contravariant in the argument and covariant in the result; Section 15.5 discusses references and why Ref T must be invariant. Textbook source for the invariance of mutable references and the contravariance of function arguments, in a calculus without lifetimes."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.AdmitsDanglingAccess",
+      "Toy.Variance.subAlg",
+      "Toy.Variance.ob",
+      "Toy.Variance.lrelB",
+      "Toy.Variance.subGen_iff_subAlg",
+      "Toy.Variance.rustTable_typing_sound",
+      "Toy.Variance.rigidLftTable",
+      "Toy.Variance.rigidLftTable_not_le_safeTable_sound",
+      "Toy.Variance.rustTable_entry_not_le_covers_incomparable",
+      "Toy.Variance.rustTable_entry_sound_iff",
+      "Toy.Variance.refMut_covariant_in_T_admits_dangling",
+      "Toy.Variance.refMut_contravariant_in_T_admits_dangling",
+      "Toy.Variance.cell_covariant_admits_dangling",
+      "Toy.Variance.cell_contravariant_admits_dangling",
+      "Toy.Variance.fn_covariant_in_arg_admits_dangling",
+      "Toy.Variance.fn_contravariant_in_result_admits_dangling",
+      "Toy.Variance.ref_contravariant_in_lifetime_admits_dangling",
+      "Toy.Variance.ref_contravariant_in_T_admits_dangling",
+      "Toy.Variance.refMut_contravariant_in_lifetime_admits_dangling",
+      "Toy.Variance.prod_contravariant_left_admits_dangling",
+      "Toy.Variance.prod_contravariant_right_admits_dangling",
+      "Toy.Variance.admitsDanglingAccess_of_table_le",
+      "Toy.Variance.progRefMutContra",
+      "Toy.Variance.progCellContra",
+      "Toy.Variance.progFnResContra",
+      "Toy.Variance.progRefLftContra",
+      "Toy.Variance.progRefTyContra",
+      "Toy.Variance.progRefMutLftContra",
+      "Toy.Variance.progProdLContra",
+      "Toy.Variance.progProdRContra",
+      "Toy.Variance.progRefMutCo",
+      "Toy.Variance.progCellCo",
+      "Toy.Variance.progFnArgCo"
+    ]
+  },
+  {
+    "id": "R-iff",
+    "lean": "Toy.Variance.rustTable_entry_sound_iff",
+    "kind": "characterization",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Combines R1 and R-forced into an exact single-entry characterization.",
+    "plain_claim": "For every built-in position p other than PhantomData and every variance v: the table rustTable.set p v is sound (every program accepted by the checker chk with its generated subtyping is safe under the interpreter exec) iff v is at most as permissive as rustTable p.",
+    "hypotheses": [
+      {
+        "name": "hp : p ≠ .phantom",
+        "purpose": "The PhantomData entry is not forced.",
+        "tightness": "tight",
+        "counterexample": "Toy.Variance.phantom_bi_not_le_and_sound",
+        "witness_class": "p = phantom, v = bi",
+        "counterexample_note": "p = phantom, v = bi: v is not at most as permissive as the Rust entry, yet the table is sound."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "From R1 and R-forced.",
+    "nonvacuity_witness": "p = cell, v = inv.",
+    "nonvacuity_witness_lean": "Toy.Variance.rustTable_entry_sound_iff_nonvacuous",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "Single-entry changes: each statement changes one entry of rustTable. It is not a classification of sound tables: changing several entries at once can give a sound table that is not at most as permissive as safeTable, e.g. rigidLftTable, whose &mut and Cell contents and fn argument are covariant (rigidLftTable_not_le_safeTable_sound)."
+    ],
+    "prior_art": [
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance.",
+      "The Rust Reference, 'Subtyping and Variance' (src/subtyping.md), rust-lang/reference commit 49115e0d52bf24fb2ff39a4ca03e70870bdce4ec, https://github.com/rust-lang/reference/blob/49115e0d52bf24fb2ff39a4ca03e70870bdce4ec/src/subtyping.md. r[subtyping.variance.builtin-types]: &'a T covariant in 'a and T; &'a mut T covariant in 'a, invariant in T; fn() -> T covariant; fn(T) -> () contravariant; UnsafeCell<T> invariant; PhantomData<T> covariant. r[subtyping.variance.user-composite-types]: 'If the parameter is used in positions with different variances then the parameter is invariant.' r[subtyping.variance.builtin-composite-types]: outside a struct, enum or union, variance is checked at each location separately (with a tuple example)."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.table_le_safeTable_typing_sound",
+      "Toy.Variance.rustTable_entry_not_le_unsound",
+      "Toy.Variance.rigidLftTable",
+      "Toy.Variance.rigidLftTable_not_le_safeTable_sound"
+    ]
+  },
+  {
+    "id": "R-phantom",
+    "lean": "Toy.Variance.phantom_entry_any_variance_sound",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Instance of R1.",
+    "plain_claim": "For every variance v (including bivariant), replacing the PhantomData entry of rustTable by v gives a sound toy type system: every program accepted by the checker chk with the generated subtyping is safe under the interpreter exec.",
+    "hypotheses": [
+      {
+        "name": "(none: v ranges over all four variances)",
+        "purpose": "No restriction on the new entry.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Instance of R1.",
+    "nonvacuity_witness": "v = bi, with progPhantomBi (coercing PhantomData<&'sh nat> to PhantomData<&'static nat>) typed under the bivariant entry and not typed under rustTable.",
+    "nonvacuity_witness_lean": "Toy.Variance.phantom_entry_any_variance_sound_nonvacuous",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "In the toy a PhantomData value is () and the type has no other role. In Rust, PhantomData's declared variance is relied on by unsafe code (the variance and ownership contracts of raw-pointer-based types), by drop check and auto traits, and it interacts with implied outlives bounds of struct definitions; none of these is modelled, and no claim is made that changing PhantomData's variance in Rust would be sound (not proved here).",
+      "For struct bodies containing PhantomData fields, inferVar uses the table entry; see bodyRule_phantom_bi_sound for the bivariant body rule on PhantomData<T>."
+    ],
+    "prior_art": [
+      "The Rust Reference, 'Subtyping and Variance' (src/subtyping.md), rust-lang/reference commit 49115e0d52bf24fb2ff39a4ca03e70870bdce4ec, https://github.com/rust-lang/reference/blob/49115e0d52bf24fb2ff39a4ca03e70870bdce4ec/src/subtyping.md. r[subtyping.variance.builtin-types]: &'a T covariant in 'a and T; &'a mut T covariant in 'a, invariant in T; fn() -> T covariant; fn(T) -> () contravariant; UnsafeCell<T> invariant; PhantomData<T> covariant. r[subtyping.variance.user-composite-types]: 'If the parameter is used in positions with different variances then the parameter is invariant.' r[subtyping.variance.builtin-composite-types]: outside a struct, enum or union, variance is checked at each location separately (with a tuple example).",
+      "rustc variance inference, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e: compiler/rustc_hir_analysis/src/variance/solve.rs (greatest lower bound over the lattice with bivariant as top), variance/constraints.rs (constraints generated at parameter occurrences via xform), variance/terms.rs (PhantomData declared covariant, UnsafeCell invariant), compiler/rustc_type_ir/src/lib.rs Variance::xform ((Invariant, _) => Invariant, including (Invariant, Bivariant); transcribed as Variance.xform in ToyVariance/Examples.lean). Prose comparison only (modeling bridge)."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.progPhantomBi",
+      "Toy.Variance.bodyRule_phantom_bi_sound"
+    ]
+  },
+  {
+    "id": "R5a",
+    "lean": "Toy.Variance.inferVar_admissible",
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T0",
+    "tier_justification": "Admissibility (soundness) of inferred definition-site variance is published (Emir et al. 2006 for C#; Altidor et al. 2011 for Java); restated here for the toy table-parameterised subtyping.",
+    "plain_claim": "For every table tbl, every body F and all types A and B: if A and B are related along inferVar tbl F (A <= B in SubGen tbl NoAx when the inferred variance requires the forward direction, and B <= A when it requires the backward direction), then F[A] <= F[B] is derivable in SubGen tbl NoAx.",
+    "hypotheses": [
+      {
+        "name": "h : Variance.Rel (inferVar tbl F) (SubGen tbl NoAx) A B",
+        "purpose": "A and B are related along the inferred variance.",
+        "tightness": "tight",
+        "counterexample": "Toy.Variance.inferVar_admissible_rel_counterexample",
+        "witness_class": "F = Cell<T>, tbl = rustTable, A = &'static nat, B = &'sh nat",
+        "counterexample_note": "For F = Cell<T>, A = &'static nat, B = &'sh nat the relation fails and F[A] <= F[B] is not derivable."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Structural induction on F with variance composition and meet lemmas.",
+    "nonvacuity_witness": "F = (&'static T, ()), A = &'static nat, B = &'sh nat (A ≠ B).",
+    "nonvacuity_witness_lean": "Toy.Variance.inferVar_admissible_nonvacuous",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "Struct language: one type parameter, no lifetime parameters of the struct, no recursive structs; a k-field struct is the body prod F1 (prod F2 ... unit).",
+      "inferVar composes with comp, which maps inv ∘ bi to bi. rustc's Variance::xform (transcribed as Variance.xform) agrees with comp whenever the inner variance is not bi (Variance.comp_eq_xform_of_ne_bi), but the bottom-up recursion with xform in place of comp differs from inferVar on parameter-free subterms under an invariant constructor, e.g. (Cell<()>, T) (inferVar_vs_inferVarXform). rustc's solver generates constraints at parameter occurrences; no claim is made about the variance rustc infers (not proved here)."
+    ],
+    "prior_art": [
+      "J. Altidor, S. S. Huang, Y. Smaragdakis. 'Taming the Wildcards: Combining Definition- and Use-Site Variance.' PLDI 2011, pp. 602-613. doi:10.1145/1993498.1993569. Definition-site variance inference over the four variances with a variance-transform (composition) operator; rustc's Variance::xform cites its 'Figure 1' (compiler/rustc_type_ir/src/lib.rs, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e).",
+      "B. Emir, A. Kennedy, C. V. Russo, D. Yu. 'Variance and Generalized Constraints for C# Generics.' ECOOP 2006, LNCS 4067, pp. 279-303. doi:10.1007/11785477_18. Soundness of declaration-site variance with a variance-validity check over member signatures, in a nominal object-oriented setting (a soundness result; it does not address maximality).",
+      "rustc variance inference, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e: compiler/rustc_hir_analysis/src/variance/solve.rs (greatest lower bound over the lattice with bivariant as top), variance/constraints.rs (constraints generated at parameter occurrences via xform), variance/terms.rs (PhantomData declared covariant, UnsafeCell invariant), compiler/rustc_type_ir/src/lib.rs Variance::xform ((Invariant, _) => Invariant, including (Invariant, Bivariant); transcribed as Variance.xform in ToyVariance/Examples.lean). Prose comparison only (modeling bridge).",
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance.",
+      "The Rust Reference, 'Subtyping and Variance' (src/subtyping.md), rust-lang/reference commit 49115e0d52bf24fb2ff39a4ca03e70870bdce4ec, https://github.com/rust-lang/reference/blob/49115e0d52bf24fb2ff39a4ca03e70870bdce4ec/src/subtyping.md. r[subtyping.variance.builtin-types]: &'a T covariant in 'a and T; &'a mut T covariant in 'a, invariant in T; fn() -> T covariant; fn(T) -> () contravariant; UnsafeCell<T> invariant; PhantomData<T> covariant. r[subtyping.variance.user-composite-types]: 'If the parameter is used in positions with different variances then the parameter is invariant.' r[subtyping.variance.builtin-composite-types]: outside a struct, enum or union, variance is checked at each location separately (with a tuple example)."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.inferVar",
+      "Toy.Variance.Variance.xform",
+      "Toy.Variance.Variance.comp_eq_xform_of_ne_bi",
+      "Toy.Variance.inferVarXform",
+      "Toy.Variance.inferVar_vs_inferVarXform"
+    ]
+  },
+  {
+    "id": "R5b",
+    "lean": [
+      "Toy.Variance.bodyAx_le_inferVar_iff"
+    ],
+    "kind": "characterization",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Corollary of R5a for the schematic body rule.",
+    "plain_claim": "For every body F, every declared variance v that is at most as permissive as inferVar rustTable F, and all types S and T: S <= T is derivable in SubGen rustTable (BodyAx F v) iff it is derivable in SubGen rustTable NoAx. So the schematic body rule at such v adds no subtyping pairs.",
+    "hypotheses": [
+      {
+        "name": "hv : v.le (inferVar rustTable F) = true",
+        "purpose": "The declared variance is at most as permissive as the inferred one.",
+        "tightness": "tight",
+        "counterexample": "Toy.Variance.bodyAx_param_contra_adds_pair",
+        "witness_class": "F = param, v = contra",
+        "counterexample_note": "For F = param and v = contra the rule derives &'sh nat <= &'static nat, which SubGen rustTable NoAx does not."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "From R5a by monotonicity of the generated relation in its generators.",
+    "nonvacuity_witness": "F = (T, ()), v = co: the rule contains the proper pair (&'static nat, ()) <= (&'sh nat, ()), and a program using it is typed.",
+    "nonvacuity_witness_lean": "Toy.Variance.bodyAx_le_inferVar_iff_nonvacuous",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "BodyAx is a schematic rule on unfolded body types; the toy has no nominal struct types. A declared variance stricter than inferVar does not remove built-in structural coercions between the unfolded bodies (bodyAx_inv_still_covariant), and a more permissive one adds coercions between ordinary built-in types (bodyAx_param_contra_coerces_bare_refs). Nothing is claimed about nominal struct types, which in Rust are related to each other through the declared or inferred variance of the struct (not modelled).",
+      "The iff relates the two subtyping relations for a fixed body F and a fixed v that satisfies hv; it is not an iff in v. Whether the two relations can coincide for some body F and some v that violates hv is not addressed (not proved here).",
+      "R5b is a statement about the generated subtyping alone; it does not quantify over executions. Soundness of the system with the body rule is the separate result R5b-sound (bodyRule_le_inferVar_sound)."
+    ],
+    "prior_art": [
+      "J. Altidor, S. S. Huang, Y. Smaragdakis. 'Taming the Wildcards: Combining Definition- and Use-Site Variance.' PLDI 2011, pp. 602-613. doi:10.1145/1993498.1993569. Definition-site variance inference over the four variances with a variance-transform (composition) operator; rustc's Variance::xform cites its 'Figure 1' (compiler/rustc_type_ir/src/lib.rs, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e).",
+      "B. Emir, A. Kennedy, C. V. Russo, D. Yu. 'Variance and Generalized Constraints for C# Generics.' ECOOP 2006, LNCS 4067, pp. 279-303. doi:10.1007/11785477_18. Soundness of declaration-site variance with a variance-validity check over member signatures, in a nominal object-oriented setting (a soundness result; it does not address maximality).",
+      "rustc variance inference, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e: compiler/rustc_hir_analysis/src/variance/solve.rs (greatest lower bound over the lattice with bivariant as top), variance/constraints.rs (constraints generated at parameter occurrences via xform), variance/terms.rs (PhantomData declared covariant, UnsafeCell invariant), compiler/rustc_type_ir/src/lib.rs Variance::xform ((Invariant, _) => Invariant, including (Invariant, Bivariant); transcribed as Variance.xform in ToyVariance/Examples.lean). Prose comparison only (modeling bridge).",
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.BodyAx",
+      "Toy.Variance.inferVar",
+      "Toy.Variance.bodyAx_inv_still_covariant",
+      "Toy.Variance.bodyAx_param_contra_coerces_bare_refs",
+      "Toy.Variance.progBodyCov",
+      "Toy.Variance.progRefLftContra",
+      "Toy.Variance.bodyAx_inferVar_iff",
+      "Toy.Variance.bodyRule_le_inferVar_sound"
+    ]
+  },
+  {
+    "id": "R5b-at",
+    "lean": [
+      "Toy.Variance.bodyAx_inferVar_iff"
+    ],
+    "kind": "characterization",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Instance of R5b at the inferred variance.",
+    "plain_claim": "For every body F and all types S and T: S <= T is derivable in SubGen rustTable (BodyAx F (inferVar rustTable F)) iff it is derivable in SubGen rustTable NoAx. So the schematic body rule at the inferred variance itself adds no subtyping pairs.",
+    "hypotheses": [
+      {
+        "name": "(none: the declared variance is inferVar rustTable F; F, S and T range over all types)",
+        "purpose": "No restriction on the body.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "definitional",
+    "depth_note": "R5b at v = inferVar rustTable F, where hv holds by reflexivity of Variance.le; the proof is one line.",
+    "nonvacuity_witness": "F = (T, ()), whose inferred variance is co: the rule at the inferred variance contains the proper pair (&'static nat, ()) <= (&'sh nat, ()), and a program using it is typed.",
+    "nonvacuity_witness_lean": "Toy.Variance.bodyAx_inferVar_iff_nonvacuous",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "BodyAx is a schematic rule on unfolded body types, not a nominal struct rule (see R5b).",
+      "The statement is the case v = inferVar rustTable F of R5b; it says nothing about other declared variances. It is a statement about the generated subtyping alone and does not quantify over executions."
+    ],
+    "prior_art": [
+      "J. Altidor, S. S. Huang, Y. Smaragdakis. 'Taming the Wildcards: Combining Definition- and Use-Site Variance.' PLDI 2011, pp. 602-613. doi:10.1145/1993498.1993569. Definition-site variance inference over the four variances with a variance-transform (composition) operator; rustc's Variance::xform cites its 'Figure 1' (compiler/rustc_type_ir/src/lib.rs, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e).",
+      "B. Emir, A. Kennedy, C. V. Russo, D. Yu. 'Variance and Generalized Constraints for C# Generics.' ECOOP 2006, LNCS 4067, pp. 279-303. doi:10.1007/11785477_18. Soundness of declaration-site variance with a variance-validity check over member signatures, in a nominal object-oriented setting (a soundness result; it does not address maximality).",
+      "rustc variance inference, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e: compiler/rustc_hir_analysis/src/variance/solve.rs (greatest lower bound over the lattice with bivariant as top), variance/constraints.rs (constraints generated at parameter occurrences via xform), variance/terms.rs (PhantomData declared covariant, UnsafeCell invariant), compiler/rustc_type_ir/src/lib.rs Variance::xform ((Invariant, _) => Invariant, including (Invariant, Bivariant); transcribed as Variance.xform in ToyVariance/Examples.lean). Prose comparison only (modeling bridge).",
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.BodyAx",
+      "Toy.Variance.inferVar",
+      "Toy.Variance.Variance.le",
+      "Toy.Variance.progBodyCov",
+      "Toy.Variance.bodyAx_le_inferVar_iff"
+    ]
+  },
+  {
+    "id": "R5b-sound",
+    "lean": [
+      "Toy.Variance.bodyRule_le_inferVar_sound"
+    ],
+    "kind": "theorem",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Corollary of R5b and R1 for the schematic body rule.",
+    "plain_claim": "For every body F and every declared variance v that is at most as permissive as inferVar rustTable F: the system SubGen rustTable (BodyAx F v) is sound, i.e. every program accepted by the checker chk with SubGen rustTable (BodyAx F v) is safe: the interpreter exec, run with any fuel, never returns the dangling-access result or any other stuck result.",
+    "hypotheses": [
+      {
+        "name": "hv : v.le (inferVar rustTable F) = true",
+        "purpose": "The declared variance is at most as permissive as the inferred one.",
+        "tightness": "tight",
+        "counterexample": "Toy.Variance.bodyAx_param_contra_unsound",
+        "witness_class": "F = param, v = contra",
+        "counterexample_note": "For the data body F = param (inferred co) and v = contra, hv fails and the body rule is not sound (bodyAx_param_contra_unsound, from bodyRule_not_le_inferVar_unsound_of_dataBody).",
+        "not_necessary": [
+          "Toy.Variance.bodyRule_prod_cell_co_sound",
+          "Toy.Variance.bodyRule_fn_fn_contra_sound",
+          "Toy.Variance.bodyRule_phantom_bi_sound"
+        ],
+        "not_necessary_note": "hv is sufficient, not necessary: the bodies (Cell<T>, ()) at co, fn(fn(T) -> ()) -> () at contra and PhantomData<T> at bi each violate hv, and each of these body rules is sound (bodyRule_prod_cell_co_sound, bodyRule_fn_fn_contra_sound, bodyRule_phantom_bi_sound)."
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "From R5b and rustTable_typing_sound (R1 at rustTable): soundness is antitone in the subtyping relation.",
+    "nonvacuity_witness": "F = (T, ()), v = co (hv holds): the rule contains the proper pair (&'static nat, ()) <= (&'sh nat, ()), and a program using it is typed.",
+    "nonvacuity_witness_lean": "Toy.Variance.bodyAx_le_inferVar_iff_nonvacuous",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "hv is sufficient, not necessary, for soundness of the body rule (bodyRule_prod_cell_co_sound, bodyRule_fn_fn_contra_sound, bodyRule_phantom_bi_sound). For first-order data bodies it is also necessary (R5c, bodyRule_not_le_inferVar_unsound_of_dataBody); for other bodies no characterization is given.",
+      "BodyAx is a schematic rule on unfolded body types, not a nominal struct rule (see R5b)."
+    ],
+    "prior_art": [
+      "J. Altidor, S. S. Huang, Y. Smaragdakis. 'Taming the Wildcards: Combining Definition- and Use-Site Variance.' PLDI 2011, pp. 602-613. doi:10.1145/1993498.1993569. Definition-site variance inference over the four variances with a variance-transform (composition) operator; rustc's Variance::xform cites its 'Figure 1' (compiler/rustc_type_ir/src/lib.rs, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e).",
+      "B. Emir, A. Kennedy, C. V. Russo, D. Yu. 'Variance and Generalized Constraints for C# Generics.' ECOOP 2006, LNCS 4067, pp. 279-303. doi:10.1007/11785477_18. Soundness of declaration-site variance with a variance-validity check over member signatures, in a nominal object-oriented setting (a soundness result; it does not address maximality).",
+      "rustc variance inference, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e: compiler/rustc_hir_analysis/src/variance/solve.rs (greatest lower bound over the lattice with bivariant as top), variance/constraints.rs (constraints generated at parameter occurrences via xform), variance/terms.rs (PhantomData declared covariant, UnsafeCell invariant), compiler/rustc_type_ir/src/lib.rs Variance::xform ((Invariant, _) => Invariant, including (Invariant, Bivariant); transcribed as Variance.xform in ToyVariance/Examples.lean). Prose comparison only (modeling bridge).",
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.BodyAx",
+      "Toy.Variance.inferVar",
+      "Toy.Variance.progBodyCov",
+      "Toy.Variance.rustTable_typing_sound",
+      "Toy.Variance.bodyAx_le_inferVar_iff",
+      "Toy.Variance.bodyRule_not_le_inferVar_unsound_of_dataBody",
+      "Toy.Variance.bodyRule_prod_cell_co_sound",
+      "Toy.Variance.bodyRule_fn_fn_contra_sound",
+      "Toy.Variance.bodyRule_phantom_bi_sound"
+    ]
+  },
+  {
+    "id": "R5c",
+    "lean": [
+      "Toy.Variance.bodyRule_not_le_inferVar_admits_dangling_of_dataBody",
+      "Toy.Variance.bodyRule_not_le_inferVar_unsound_of_dataBody"
+    ],
+    "kind": "impossibility",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Maximality of syntactically inferred variance is known informally and, for GADT variance checks, in another formalism (Scherer and Rémy 2013); mechanized here for the toy's first-order data bodies.",
+    "plain_claim": "For every first-order data body F (F.dataBody: built from unit, nat, param, tuples, &, &mut, and Cell directly under &) and every declared variance v that is not at most as permissive as inferVar rustTable F, the subtyping SubGen rustTable (BodyAx F v) admits a dangling access: some program accepted by the checker chk with it makes the interpreter exec return the dangling-access result. Bundled corollary (bodyRule_not_le_inferVar_unsound_of_dataBody): under the same hypotheses, SubGen rustTable (BodyAx F v) is not sound.",
+    "hypotheses": [
+      {
+        "name": "hF : F.dataBody = true",
+        "purpose": "First-order data bodies: no function types, no PhantomData, no Cell outside a shared reference.",
+        "tightness": "tight",
+        "counterexample": "Toy.Variance.bodyRule_prod_cell_co_sound",
+        "further_counterexamples": [
+          "Toy.Variance.bodyRule_fn_fn_contra_sound",
+          "Toy.Variance.bodyRule_phantom_bi_sound"
+        ],
+        "witness_class": "a one-field body with a bare Cell field (F = (Cell<T>, ()), v = co)",
+        "counterexample_note": "F = (Cell<T>, ()) at co violates hF and satisfies hv, and the rule is sound and admits no dangling access (a bare Cell value is an immutable copy, and there is no shared projection from &(A, B) to &A). Further witnesses outside dataBody: F = fn(fn(T) -> ()) -> () at contra (bodyRule_fn_fn_contra_sound; closures capture 'static-typed data and allocate in 'static) and F = PhantomData<T> at bi (bodyRule_phantom_bi_sound).",
+        "not_necessary": [
+          "Toy.Variance.bodyRule_cell_co_admits_dangling",
+          "Toy.Variance.bodyRule_fnUnit_contra_admits_dangling_read"
+        ],
+        "not_necessary_note": "hF is sufficient, not necessary: some bodies outside dataBody still admit a dangling access beyond the inferred variance (bodyRule_cell_co_admits_dangling, bodyRule_fnUnit_contra_admits_dangling_read)."
+      },
+      {
+        "name": "hv : v.le (inferVar rustTable F) = false",
+        "purpose": "v is strictly more permissive than, or incomparable with, the inferred variance.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Variance.bodyRule_refMut_inv_no_dangling",
+          "Toy.Variance.bodyRule_refMut_inv_sound"
+        ],
+        "witness_class": "F = &'static mut T, v = inv",
+        "counterexample_note": "F = &'static mut T (a data body) with v = inv (the inferred variance) violates hv and admits no dangling access (bodyRule_refMut_inv_no_dangling); the same rule is sound (bodyRule_refMut_inv_sound, from bodyRule_le_inferVar_sound), so the bundled not-sound corollary fails there as well."
+      }
+    ],
+    "depth": "substantive",
+    "depth_note": "Generic witness programs built by recursion on F (ToyVariance/Maximality.lean): a value builder, a projection to a parameter position, and a navigation to a &mut or &Cell node; one attack when v does not require the forward direction (F[&'sh nat] <= F[&'static nat]), another when v requires it but inferVar also requires the backward one (F[&'static nat] <= F[&'sh nat] with a parameter under &mut or Cell).",
+    "nonvacuity_witness": "F = &'static Cell<T>, v = co (concrete witness: bodyRule_refCell_co_admits_dangling).",
+    "nonvacuity_witness_lean": "Toy.Variance.bodyRule_not_le_inferVar_admits_dangling_of_dataBody_nonvacuous",
+    "positive_control_lean": [
+      "Toy.Variance.bodyRule_refCell_at_inferVar_rejects_coercion",
+      "Toy.Variance.bodyRule_le_inferVar_sound"
+    ],
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "BodyAx is a schematic rule on unfolded body types, not a nominal struct rule (see R5b).",
+      "For bodies outside dataBody the conclusion can fail (bodyRule_prod_cell_co_sound, bodyRule_fn_fn_contra_sound, bodyRule_phantom_bi_sound) and can hold (bodyRule_cell_co_admits_dangling, bodyRule_fnUnit_contra_admits_dangling_read); no characterization of non-data bodies is given.",
+      "The maximality statement over all PhantomData-free bodies is false (not_bodyRule_not_le_inferVar_unsound_of_phantomFree).",
+      "Rust closures can capture short-lived borrows (Box<dyn Fn(T) + 'a>); the toy's boundary result for fn(fn(T) -> ()) -> () rests on closures capturing 'static-typed data, and no claim is made about Rust for such bodies (not proved here).",
+      "The witnesses instantiate the parameter with &'static nat and &'sh nat."
+    ],
+    "prior_art": [
+      "G. Scherer, D. Rémy. 'GADTs Meet Subtyping.' ESOP 2013, LNCS 7792, pp. 554-573. doi:10.1007/978-3-642-37036-6_30. A sound and complete check of variance annotations for GADT definitions in an ML-like language with subtyping; published prior work on completeness of syntactic variance checks, in a different language setting.",
+      "J. Altidor, S. S. Huang, Y. Smaragdakis. 'Taming the Wildcards: Combining Definition- and Use-Site Variance.' PLDI 2011, pp. 602-613. doi:10.1145/1993498.1993569. Definition-site variance inference over the four variances with a variance-transform (composition) operator; rustc's Variance::xform cites its 'Figure 1' (compiler/rustc_type_ir/src/lib.rs, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e).",
+      "rustc variance inference, rust-lang/rust commit 94add9677e2de57a2e414350bedcd13f07426a5e: compiler/rustc_hir_analysis/src/variance/solve.rs (greatest lower bound over the lattice with bivariant as top), variance/constraints.rs (constraints generated at parameter occurrences via xform), variance/terms.rs (PhantomData declared covariant, UnsafeCell invariant), compiler/rustc_type_ir/src/lib.rs Variance::xform ((Invariant, _) => Invariant, including (Invariant, Bivariant); transcribed as Variance.xform in ToyVariance/Examples.lean). Prose comparison only (modeling bridge).",
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance.",
+      "The Rust Reference, 'Subtyping and Variance' (src/subtyping.md), rust-lang/reference commit 49115e0d52bf24fb2ff39a4ca03e70870bdce4ec, https://github.com/rust-lang/reference/blob/49115e0d52bf24fb2ff39a4ca03e70870bdce4ec/src/subtyping.md. r[subtyping.variance.builtin-types]: &'a T covariant in 'a and T; &'a mut T covariant in 'a, invariant in T; fn() -> T covariant; fn(T) -> () contravariant; UnsafeCell<T> invariant; PhantomData<T> covariant. r[subtyping.variance.user-composite-types]: 'If the parameter is used in positions with different variances then the parameter is invariant.' r[subtyping.variance.builtin-composite-types]: outside a struct, enum or union, variance is checked at each location separately (with a tuple example)."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.Ty.dataBodyAt",
+      "Toy.Variance.Ty.dataBody",
+      "Toy.Variance.BodyAx",
+      "Toy.Variance.inferVar",
+      "Toy.Variance.AdmitsDanglingAccess",
+      "Toy.Variance.bodyRule_fn_fn_contra_sound",
+      "Toy.Variance.bodyRule_phantom_bi_sound",
+      "Toy.Variance.bodyRule_cell_co_admits_dangling",
+      "Toy.Variance.bodyRule_fnUnit_contra_admits_dangling_read",
+      "Toy.Variance.bodyRule_refCell_co_admits_dangling",
+      "Toy.Variance.bodyRule_refMut_co_admits_dangling",
+      "Toy.Variance.bodyRule_prod_contra_admits_dangling",
+      "Toy.Variance.not_bodyRule_not_le_inferVar_unsound_of_phantomFree",
+      "Toy.Variance.admitsDanglingAccess_of_dataBody_not_le",
+      "Toy.Variance.progCellCo",
+      "Toy.Variance.progRefMutCoStatic",
+      "Toy.Variance.progProdLContra",
+      "Toy.Variance.progStructFnUnitContra"
+    ]
+  },
+  {
+    "id": "R5c-ho",
+    "lean": "Toy.Variance.bodyRule_fnUnit_contra_admits_dangling_read",
+    "kind": "counterexample",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "A concrete higher-order witness in the toy.",
+    "plain_claim": "For the non-data body F = fn() -> T (inferred covariant) declared contravariant, the program progStructFnUnitContra, in which a thunk returning a function that stashes its &'static nat argument in a 'static cell is re-typed as returning a function that accepts &'sh nat, is accepted by the checker chk with SubGen rustTable (BodyAx F contra), and the interpreter exec with fuel 60 returns the dangling-access result.",
+    "hypotheses": [
+      {
+        "name": "(none: concrete body, variance and program)",
+        "purpose": "Concrete instance.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Kernel evaluation of the checker and the interpreter on the concrete program.",
+    "nonvacuity_witness": "The statement has no hypotheses; the program is exhibited in it.",
+    "nonvacuity_witness_lean": "Toy.Variance.bodyRule_fnUnit_contra_admits_dangling_read",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "The witness instantiates T with a function type; whether a witness exists for this body with first-order instantiations is not decided (not proved here).",
+      "Shows that the conclusion of R5c can hold for a body outside dataBody: dataBody is sufficient, not necessary, for a dangling access beyond the inferred variance (this theorem and bodyRule_cell_co_admits_dangling)."
+    ],
+    "prior_art": [
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.progStructFnUnitContra",
+      "Toy.Variance.bodyRule_fn_fn_bi_wrong_not_dangling",
+      "Toy.Variance.progFnFnBiWrong"
+    ]
+  },
+  {
+    "id": "R5c-refuted",
+    "lean": [
+      "Toy.Variance.not_bodyRule_not_le_inferVar_unsound_of_phantomFree",
+      "Toy.Variance.bodyRule_prod_cell_co_sound",
+      "Toy.Variance.bodyRule_fn_fn_contra_sound"
+    ],
+    "kind": "counterexample",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Boundary results for the maximality question in the toy.",
+    "plain_claim": "The stronger maximality statement over all PhantomData-free bodies is false. For F = (Cell<T>, ()) at co and for F = fn(fn(T) -> ()) -> () at contra, F is PhantomData-free, F is not a data body, the declared variance is not at most as permissive as inferVar rustTable F, and yet the system SubGen rustTable (BodyAx F v) is sound (every program accepted by the checker chk with it is safe under the interpreter exec) and admits no dangling access (no program accepted by chk with it makes exec return the dangling-access result). Hence the statement 'for every PhantomData-free body F and every v not at most as permissive as inferVar rustTable F, SubGen rustTable (BodyAx F v) is not sound' is false; it is recorded as a refuted reference point, not as a result.",
+    "hypotheses": [
+      {
+        "name": "(none: concrete bodies and variances)",
+        "purpose": "Concrete instances.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "Soundness from the general soundness proof for the auxiliary relation MSub, which contains these rules (MSub.of_prodCellAx, MSub.of_fnFnAx).",
+    "nonvacuity_witness": "The statements have no hypotheses.",
+    "nonvacuity_witness_lean": "Toy.Variance.bodyRule_prod_cell_co_sound",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "These boundaries come from two toy features: bare Cell values are immutable copies with no shared field projection, and closures capture 'static-typed data. Neither feature is claimed to match Rust (not proved here).",
+      "The refuted statement is not a result of this package; the proved maximality statement is R5c, restricted to data bodies (hypothesis hF)."
+    ],
+    "prior_art": [
+      "The Rustonomicon, chapter 'Subtyping and Variance' (src/subtyping.md), rust-lang/nomicon commit 69c1421f159dceca565305de2bdd6cd1abd2e4f8, https://github.com/rust-lang/nomicon/blob/69c1421f159dceca565305de2bdd6cd1abd2e4f8/src/subtyping.md. It states 'There are three kinds of variance in Rust' (covariant, contravariant, invariant; bivariance is not discussed); gives a variance table for &'a T, &'a mut T, Box<T>, Vec<T>, UnsafeCell<T>, Cell<T>, fn(T) -> U, *const T and *mut T; explains informally why &mut T is invariant in T (a program assigning a short-lived &str through &mut &'static str, rejected by rustc) and why fn is contravariant in its argument (a thread_local! store of &'static str); and states the struct rule 'If all uses of A are covariant, then MyType is covariant over A; If all uses of A are contravariant, then MyType is contravariant over A; Otherwise, MyType is invariant over A'. It does not mention PhantomData or tuples, gives no Cell program and no counterexamples for contravariant &, &mut, Cell, fn results or tuples, and says nothing about maximality of struct variance.",
+      "The Rust Reference, 'Subtyping and Variance' (src/subtyping.md), rust-lang/reference commit 49115e0d52bf24fb2ff39a4ca03e70870bdce4ec, https://github.com/rust-lang/reference/blob/49115e0d52bf24fb2ff39a4ca03e70870bdce4ec/src/subtyping.md. r[subtyping.variance.builtin-types]: &'a T covariant in 'a and T; &'a mut T covariant in 'a, invariant in T; fn() -> T covariant; fn(T) -> () contravariant; UnsafeCell<T> invariant; PhantomData<T> covariant. r[subtyping.variance.user-composite-types]: 'If the parameter is used in positions with different variances then the parameter is invariant.' r[subtyping.variance.builtin-composite-types]: outside a struct, enum or union, variance is checked at each location separately (with a tuple example)."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.bodyRule_phantom_bi_sound",
+      "Toy.Variance.MSub",
+      "Toy.Variance.MSub_sound",
+      "Toy.Variance.MSub.of_prodCellAx",
+      "Toy.Variance.MSub.of_fnFnAx",
+      "Toy.Variance.rustTable_typing_sound"
+    ]
+  },
+  {
+    "id": "R-rigid",
+    "lean": "Toy.Variance.rigidLftTable_not_le_safeTable_sound",
+    "kind": "counterexample",
+    "status": "proved",
+    "tier": "T1",
+    "tier_justification": "Boundary result for reading R1 and R-iff as a classification.",
+    "plain_claim": "The table rigidLftTable, with the lifetime positions of & and &mut and the PhantomData position invariant and every other position covariant (including &mut contents, Cell contents and the fn argument), is not at most as permissive as safeTable, and it is sound: every program accepted by the checker chk with its generated subtyping (which is equality, rigidLftTable_subGen_eq) is safe under the interpreter exec.",
+    "hypotheses": [
+      {
+        "name": "(none: concrete table)",
+        "purpose": "Concrete instance.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "The generated relation is equality; soundness from R1 at rustTable.",
+    "nonvacuity_witness": "The statement has no hypotheses.",
+    "nonvacuity_witness_lean": "Toy.Variance.rigidLftTable_not_le_safeTable_sound",
+    "non_claims": [
+      "These are statements about the toy model of this package: a straight-line imperative language with numbered variables, a heap of region-tagged locations, lifetimes 'static and till n with a total outlives order driven by one clock, closures that capture one 'static-typed value, no loops, no borrow checker (aliases of &mut coexist), no lifetime generics, no nominal struct types, and no unsafe code. They neither establish nor refute the corresponding claims about Rust or rustc. Model–system relation: none proved (no embedding, abstraction or simulation between the toy and Rust is established); any link to Rust is a separate derived (modeling bridge) claim.",
+      "With lifetimes rigid no proper coercion is derivable, so the table is sound for a trivial reason; it shows that the hypothesis of R1 and the single-entry scope of R-iff matter, not that such a table is useful."
+    ],
+    "prior_art": [
+      "B. C. Pierce. Types and Programming Languages. MIT Press, 2002. Chapter 15 (Subtyping): Section 15.2 gives the arrow rule, contravariant in the argument and covariant in the result; Section 15.5 discusses references and why Ref T must be invariant. Textbook source for the invariance of mutable references and the contravariance of function arguments, in a calculus without lifetimes."
+    ],
+    "design_question": "Rust's variance table and struct variance inference: which table entries are forced (replacing an entry by a variance that is not at most as permissive admits a typed program that reaches a dangling access), and is the inferred variance of a struct body the most permissive declared variance whose schematic body rule admits no dangling access?",
+    "evidence_role": "execution (Lean kernel check)",
+    "lean_names": [
+      "Toy.Variance.rigidLftTable",
+      "Toy.Variance.rigidLftTable_subGen_eq",
+      "Toy.Variance.rustTable_typing_sound"
+    ]
+  }
+]

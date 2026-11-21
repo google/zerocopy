@@ -1,0 +1,97 @@
+{
+  "topics": [
+    "lean",
+    "lean/mechanization",
+    "verification",
+    "verification/formalized-results",
+    "verification/type-soundness",
+    "pl",
+    "pl/variance",
+    "pl/subtyping",
+    "pl/lifetimes"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "The Rustonomicon, Subtyping and Variance",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "69c1421f159dceca565305de2bdd6cd1abd2e4f8",
+        "path": "src/subtyping.md"
+      }
+    },
+    {
+      "name": "The Rust Reference, Subtyping and Variance",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "49115e0d52bf24fb2ff39a4ca03e70870bdce4ec",
+        "path": "src/subtyping.md"
+      }
+    },
+    {
+      "name": "rustc variance inference",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "94add9677e2de57a2e414350bedcd13f07426a5e",
+        "path": "compiler/rustc_hir_analysis/src/variance; compiler/rustc_type_ir/src/lib.rs"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language",
+      "identity": {
+        "doi": "10.1145/3158154"
+      }
+    },
+    {
+      "name": "Taming the Wildcards: Combining Definition- and Use-Site Variance",
+      "identity": {
+        "doi": "10.1145/1993498.1993569"
+      }
+    },
+    {
+      "name": "Variance and Generalized Constraints for C# Generics",
+      "identity": {
+        "doi": "10.1007/11785477_18"
+      }
+    },
+    {
+      "name": "GADTs Meet Subtyping",
+      "identity": {
+        "doi": "10.1007/978-3-642-37036-6_30"
+      }
+    },
+    {
+      "name": "A Lightweight Formalism for Reference Lifetimes and Borrowing in Rust",
+      "identity": {
+        "doi": "10.1145/3443420"
+      }
+    },
+    {
+      "name": "Oxide: The Essence of Rust",
+      "identity": {
+        "arxiv": "1903.00982",
+        "version": "v4"
+      }
+    },
+    {
+      "name": "Types and Programming Languages",
+      "identity": {
+        "isbn": "978-0-262-16209-8"
+      }
+    },
+    {
+      "name": "The Java Language Specification, Java SE 21 Edition",
+      "identity": {
+        "url": "https://docs.oracle.com/javase/specs/jls/se21/html/jls-10.html#jls-10.5"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
