@@ -699,7 +699,7 @@ The proofs are in `lean/ToyProphecy/Sim/`; the five general statements of
   after each violation-free step.
 - **Callee frames** (`Sim/CalleeBack.lean`, `Sim/Callee.lean`,
   `Sim/CalleeRun.lean`). For `calleeBack_eq_final_…`, an invariant assigns each
-  bound borrow a depth smaller than that of its parent, so following parents from
+  bound borrow a depth greater than that of its parent (parameter at depth 0), so following parents from
   `f.ret` reaches the parameter within `f.body.length + 1` steps and every
   backward function forwards its argument unchanged. For
   `prophContract_iff_…`, the live borrows of a clean callee form one chain from
@@ -788,7 +788,7 @@ def violations (P : Prog) : List Violation :=
 
 Basis: execution (Lean kernel check) — the Lean statement above is proved; axioms and statement hashes are recorded under Evidence.
 
-Basis: derived (modeling bridge) — the toy `backSem` follows the description of backward functions in [S1] (one backward function per borrow, applied when the borrow ends, returning the new lender values from the borrow's final value) and the toy prophecy translation follows the (current, final) encoding with resolution at the end of the borrow described in [S5] and [S6]. The theorem therefore suggests, but does not establish, that such translations behave as stated for the corresponding fragment of Rust under a borrow discipline at least as strict as the hypotheses; the gaps listed under Applicability (lazy borrow ending, inferred lifetimes, shared borrows, loops and branches, compound values, unsafe code) are not covered.
+Basis: derived (modeling bridge) — the toy `backSem` follows the description of backward functions in [S1] (one backward function per borrow, applied when the borrow ends, returning the new lender values from the borrow's final value). The theorem therefore suggests, but does not establish, that such translations behave as stated for the corresponding fragment of Rust under a borrow discipline at least as strict as the hypotheses; the gaps listed under Applicability (lazy borrow ending, inferred lifetimes, shared borrows, loops and branches, compound values, unsafe code) are not covered.
 
 ---
 
@@ -1322,7 +1322,7 @@ def ProphContract (f : Callee) (a c pf rf : Int) : Prop :=
 
 Basis: execution (Lean kernel check) — the Lean statement above is proved; axioms and statement hashes are recorded under Evidence.
 
-Basis: derived (modeling bridge) — the backward summary models a backward function of a callee returning a borrow ([S1]); the prophecy contract models a callee specification over the argument's prophecy and the returned borrow's prophecy ([S5], [S6]). In this single-borrow model the summary carries no information beyond the projection; nothing is claimed about callees with several borrows, compound values, or user-written specifications.
+Basis: derived (modeling bridge) — the backward summary models a backward function of a callee returning a borrow ([S1]). In this single-borrow model the summary carries no information beyond the projection; nothing is claimed about callees with several borrows, compound values, or user-written specifications.
 
 ---
 
