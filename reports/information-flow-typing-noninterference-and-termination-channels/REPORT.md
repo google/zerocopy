@@ -1077,7 +1077,7 @@ None. Every statement on the result cards is proved in Lean exactly as printed, 
 
 ### Statements of all card-hashed declarations, as printed by Lean
 
-Output of `#check @name` (with `open Toy.IFC`) on the built library, unedited, for all 51 declarations hashed in `audit/statements.json`.
+Output of `#check @name` (with `open Toy.IFC`) on the built library, unedited, for all 51 declarations hashed in `audit/statements.json`. The entry for `nonEmptyTraceSet_not_subsetClosed` is printed with `set_option pp.analyze true`, which shows the instantiation `(α := Unit)` that the default output omits.
 
 ```lean
 @cmdTyped_allows_termination_channel : ∀ {Var : Type} [inst : DecidableEq Var] {Γ : Var → Level} {pc : Level} {h : Var},
@@ -1139,7 +1139,8 @@ noPcTyped_implicit_flow_violates_tsni_witness : NoPcTyped twoVarEnv (implicitFlo
 noPcTyped_violates_tini_witness : NoPcTyped twoVarEnv (implicitFlowProg TwoVar.l TwoVar.h) ∧
   (∀ (pc : Level), ¬CmdTyped twoVarEnv pc (implicitFlowProg TwoVar.l TwoVar.h)) ∧
     ¬TINI twoVarEnv (implicitFlowProg TwoVar.l TwoVar.h)
-nonEmptyTraceSet_not_subsetClosed : ¬IsTwoSafety nonEmptyTraceSet ∧ ¬SubsetClosed nonEmptyTraceSet
+nonEmptyTraceSet_not_subsetClosed : ¬IsTwoSafety (α := Unit) nonEmptyTraceSet ∧
+  ¬SubsetClosed (α := Unit) nonEmptyTraceSet
 @pcLowWhileTyped_allows_termination_channel : ∀ {Var : Type} [inst : DecidableEq Var] {Γ : Var → Level} {h : Var},
   Γ h = Level.high →
     PcLowWhileTyped Γ Level.low (termChannelProg h) ∧
@@ -1238,10 +1239,11 @@ Each result's `scope_witnesses_lean` field in `results.json` lists every package
 | 12 `while-no-pc-typed-implicit-flow-counterexample` | `whileNoPcTyped_neg_implicit_flow` |
 | 13 `tsni-out-hyperprop-is-two-safety` | `tsni_iff_tsniOutHyperprop`, `eval_deterministic`, `tsniOutHyperprop_isTwoSafety`, `isTwoSafety_iff_csTwoSafety`, `isTwoSafety_holds_empty`, `false_hyperprop_not_isTwoSafety` |
 
-Output of `#check @name` (with `open Toy.IFC`) on the built library for all 37 scope witnesses, sorted by name, unedited:
+Output of `#check @name` (with `open Toy.IFC`) on the built library for all 37 scope witnesses, sorted by name, unedited, except that the entries for `atMostTwoTraces_subsetClosed_not_twoSafety` and `false_hyperprop_not_isTwoSafety` are printed with `set_option pp.analyze true`, which shows the instantiations `(α := Fin 3)` and `(α := Unit)` that the default output omits:
 
 ```lean
-atMostTwoTraces_subsetClosed_not_twoSafety : SubsetClosed atMostTwoTraces ∧ ¬IsTwoSafety atMostTwoTraces
+atMostTwoTraces_subsetClosed_not_twoSafety : SubsetClosed (α := Fin 3) atMostTwoTraces ∧
+  ¬IsTwoSafety (α := Fin 3) atMostTwoTraces
 @cmdTyped_allows_termination_channel : ∀ {Var : Type} [inst : DecidableEq Var] {Γ : Var → Level} {pc : Level} {h : Var},
   Γ h = Level.high →
     CmdTyped Γ pc (termChannelProg h) ∧
@@ -1259,7 +1261,7 @@ constBranch_tini_not_cmdTyped : TINI twoVarEnv
         (Cmd.ite (Expr.var TwoVar.h) (Cmd.assign TwoVar.l (Expr.lit 0)) (Cmd.assign TwoVar.l (Expr.lit 0)))
 @eval_deterministic : ∀ {Var : Type} [inst : DecidableEq Var] {c : Cmd Var} {σ σ₁ σ₂ : Store Var},
   Eval c σ σ₁ → Eval c σ σ₂ → σ₁ = σ₂
-false_hyperprop_not_isTwoSafety : ¬IsTwoSafety fun x => False
+false_hyperprop_not_isTwoSafety : ¬IsTwoSafety (α := Unit) fun x => False
 @isTwoSafety_holds_empty : ∀ {α : Type} {H : Hyperproperty α}, IsTwoSafety H → H fun x => False
 @isTwoSafety_iff_csTwoSafety : ∀ {α : Type} (H : Hyperproperty α), IsTwoSafety H ↔ CSTwoSafety H
 @lowGuardWhileTyped_allows_termination_channel : ∀ {Var : Type} [inst : DecidableEq Var] {Γ : Var → Level} {pc : Level}
@@ -1420,7 +1422,7 @@ These proved declarations are cited in non-claims, definitions, or prose, or ser
 | `tsniOutHyperprop_pos_skip` | `tsniOutHyperprop` positive example | `Classical.choice`, `Quot.sound`, `propext` |
 | `tsniOutHyperprop_neg_while_h` | `tsniOutHyperprop` negative example | `Classical.choice`, `Quot.sound`, `propext` |
 
-Output of `#check @name` (with `open Toy.IFC`) on the built library, unedited:
+Output of `#check @name` (with `open Toy.IFC`) on the built library, unedited, except that the entries for `false_hyperprop_not_isTwoSafety`, `atMostTwoTraces_subsetClosed_not_twoSafety`, `subsetClosed_neg_nonEmpty` and `csTwoSafety_neg_atMostTwoTraces` are printed with `set_option pp.analyze true`, which shows the instantiations `(α := Unit)` or `(α := Fin 3)` that the default output omits:
 
 ```lean
 cmdTyped_violates_tsni_witness : CmdTyped twoVarEnv Level.low (termChannelProg TwoVar.h) ∧
@@ -1432,8 +1434,9 @@ cmdTyped_violates_tsni_witness : CmdTyped twoVarEnv Level.low (termChannelProg T
 @isTwoSafety_holds_empty : ∀ {α : Type} {H : Hyperproperty α}, IsTwoSafety H → H fun x => False
 @isTwoSafety_admits_empty : ∀ {α : Type} {H : Hyperproperty α}, IsTwoSafety H → H fun x => False
 @isTwoSafety_iff_csTwoSafety : ∀ {α : Type} (H : Hyperproperty α), IsTwoSafety H ↔ CSTwoSafety H
-false_hyperprop_not_isTwoSafety : ¬IsTwoSafety fun x => False
-atMostTwoTraces_subsetClosed_not_twoSafety : SubsetClosed atMostTwoTraces ∧ ¬IsTwoSafety atMostTwoTraces
+false_hyperprop_not_isTwoSafety : ¬IsTwoSafety (α := Unit) fun x => False
+atMostTwoTraces_subsetClosed_not_twoSafety : SubsetClosed (α := Fin 3) atMostTwoTraces ∧
+  ¬IsTwoSafety (α := Fin 3) atMostTwoTraces
 tiniHyperprop_not_oneSafety : ¬IsOneSafety (tiniHyperprop twoVarEnv)
 @tini_iff_tiniHyperprop : ∀ {Var : Type} [inst : DecidableEq Var] (Γ : Var → Level) (c : Cmd Var),
   TINI Γ c ↔ tiniHyperprop Γ (ioBehavior c)
@@ -1538,12 +1541,12 @@ outcomeBehavior_pos_while_one : outcomeBehavior (Cmd.whileLoop (Expr.lit 1) Cmd.
 outcomeBehavior_neg_assign_none : ¬outcomeBehavior (Cmd.assign TwoVar.l (Expr.lit 1)) (storeZero, none)
 outcomeBehavior_neg_wrong_final : ¬outcomeBehavior (Cmd.assign TwoVar.l (Expr.lit 1)) (storeZero, some storeZero)
 subsetClosed_pos_tiniHyperprop : SubsetClosed (tiniHyperprop twoVarEnv)
-subsetClosed_neg_nonEmpty : ¬SubsetClosed nonEmptyTraceSet
+subsetClosed_neg_nonEmpty : ¬SubsetClosed (α := Unit) nonEmptyTraceSet
 subsetClosed_neg_tsniHyperprop : ¬SubsetClosed (tsniHyperprop twoVarEnv)
 isOneSafety_pos_lowOutputZero : IsOneSafety fun S => ∀ (t : IOTrace TwoVar), S t → t.snd TwoVar.l = 0
 isTwoSafety_pos_tiniHyperprop : IsTwoSafety (tiniHyperprop twoVarEnv)
 csTwoSafety_pos_tiniHyperprop : CSTwoSafety (tiniHyperprop twoVarEnv)
-csTwoSafety_neg_atMostTwoTraces : ¬CSTwoSafety atMostTwoTraces
+csTwoSafety_neg_atMostTwoTraces : ¬CSTwoSafety (α := Fin 3) atMostTwoTraces
 tiniHyperprop_pos_skip : tiniHyperprop twoVarEnv (ioBehavior Cmd.skip)
 tiniHyperprop_neg_explicit_flow : ¬tiniHyperprop twoVarEnv (ioBehavior (explicitFlowProg TwoVar.l TwoVar.h))
 tsniHyperprop_pos_skip : tsniHyperprop twoVarEnv (ioBehavior Cmd.skip)
