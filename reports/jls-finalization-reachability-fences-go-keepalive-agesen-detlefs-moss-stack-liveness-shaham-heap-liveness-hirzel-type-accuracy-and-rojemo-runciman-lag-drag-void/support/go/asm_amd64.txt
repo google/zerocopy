@@ -1,0 +1,81 @@
+main.useNoFence STEXT size=83 align=0x0 args=0x8 locals=0x38 funcid=0x0
+    0x0000 00000  TEXT	main.useNoFence(SB), ABIInternal, $56-8
+    0x0000 00000  CMPQ	SP, 16(R14)
+    0x0004 00004  PCDATA	$0, $-2
+    0x0004 00004  JLS	66
+    0x0006 00006  PCDATA	$0, $-1
+    0x0006 00006  PUSHQ	BP
+    0x0007 00007  MOVQ	SP, BP
+    0x000a 00010  SUBQ	$48, SP
+    0x000e 00014  FUNCDATA	$0, gclocals·wvjpxkknJ4nY1JtrArJJaw==(SB)
+    0x000e 00014  FUNCDATA	$1, gclocals·J26BEvPExEQhJvjp9E8Whg==(SB)
+    0x000e 00014  FUNCDATA	$5, main.useNoFence.arginfo1(SB)
+    0x000e 00014  FUNCDATA	$6, main.useNoFence.argliveinfo(SB)
+    0x000e 00014  PCDATA	$3, $1
+    0x000e 00014  MOVQ	(AX), AX
+    0x0011 00017  MOVQ	AX, main.fd+40(SP)
+    0x0016 00022  PCDATA	$1, $1
+    0x0016 00022  CALL	main.gcAndWait(SB)
+    0x001b 00027  MOVB	$120, main..autotmp_15+39(SP)
+    0x0020 00032  NOP
+    0x0020 00032  MOVQ	main.fd+40(SP), AX
+    0x0025 00037  LEAQ	main..autotmp_15+39(SP), BX
+    0x002a 00042  MOVL	$1, CX
+    0x002f 00047  MOVL	CX, DI
+    0x0031 00049  CALL	syscall.write(SB)
+    0x0036 00054  MOVQ	BX, AX
+    0x0039 00057  MOVQ	CX, BX
+    0x003c 00060  ADDQ	$48, SP
+    0x0040 00064  POPQ	BP
+    0x0041 00065  RET
+    0x0042 00066  NOP
+    0x0042 00066  PCDATA	$1, $-1
+    0x0042 00066  PCDATA	$0, $-2
+    0x0042 00066  MOVQ	AX, 8(SP)
+    0x0047 00071  CALL	runtime.morestack_noctxt(SB)
+    0x004c 00076  PCDATA	$0, $-1
+    0x004c 00076  MOVQ	8(SP), AX
+    0x0051 00081  JMP	0
+
+main.useKeepAlive STEXT size=98 align=0x0 args=0x8 locals=0x38 funcid=0x0
+    0x0000 00000  TEXT	main.useKeepAlive(SB), ABIInternal, $56-8
+    0x0000 00000  CMPQ	SP, 16(R14)
+    0x0004 00004  PCDATA	$0, $-2
+    0x0004 00004  JLS	81
+    0x0006 00006  PCDATA	$0, $-1
+    0x0006 00006  PUSHQ	BP
+    0x0007 00007  MOVQ	SP, BP
+    0x000a 00010  SUBQ	$48, SP
+    0x000e 00014  FUNCDATA	$0, gclocals·wvjpxkknJ4nY1JtrArJJaw==(SB)
+    0x000e 00014  FUNCDATA	$1, gclocals·J26BEvPExEQhJvjp9E8Whg==(SB)
+    0x000e 00014  FUNCDATA	$5, main.useKeepAlive.arginfo1(SB)
+    0x000e 00014  FUNCDATA	$6, main.useKeepAlive.argliveinfo(SB)
+    0x000e 00014  PCDATA	$3, $1
+    0x000e 00014  MOVQ	AX, main.p+64(SP)
+    0x0013 00019  PCDATA	$3, $-1
+    0x0013 00019  MOVQ	(AX), AX
+    0x0016 00022  MOVQ	AX, main.fd+40(SP)
+    0x001b 00027  PCDATA	$1, $0
+    0x001b 00027  NOP
+    0x0020 00032  CALL	main.gcAndWait(SB)
+    0x0025 00037  MOVB	$120, main..autotmp_15+39(SP)
+    0x002a 00042  NOP
+    0x002a 00042  MOVQ	main.fd+40(SP), AX
+    0x002f 00047  LEAQ	main..autotmp_15+39(SP), BX
+    0x0034 00052  MOVL	$1, CX
+    0x0039 00057  MOVL	CX, DI
+    0x003b 00059  NOP
+    0x0040 00064  CALL	syscall.write(SB)
+    0x0045 00069  MOVQ	BX, AX
+    0x0048 00072  MOVQ	CX, BX
+    0x004b 00075  ADDQ	$48, SP
+    0x004f 00079  POPQ	BP
+    0x0050 00080  RET
+    0x0051 00081  NOP
+    0x0051 00081  PCDATA	$1, $-1
+    0x0051 00081  PCDATA	$0, $-2
+    0x0051 00081  MOVQ	AX, 8(SP)
+    0x0056 00086  CALL	runtime.morestack_noctxt(SB)
+    0x005b 00091  PCDATA	$0, $-1
+    0x005b 00091  MOVQ	8(SP), AX
+    0x0060 00096  JMP	0

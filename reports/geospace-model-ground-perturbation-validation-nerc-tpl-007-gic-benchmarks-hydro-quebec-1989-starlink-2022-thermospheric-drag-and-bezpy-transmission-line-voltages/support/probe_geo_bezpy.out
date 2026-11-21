@@ -1,0 +1,78 @@
+== P1: alpha, eq.3 formula vs Table 2 ==
+  L=  40  formula=0.1000  table=0.10  diff=+0.0000
+  L=  45  formula=0.1768  table=0.20  diff=-0.0232
+  L=  50  formula=0.3142  table=0.30  diff=+0.0142
+  L=  54  formula=0.4977  table=0.50  diff=-0.0023
+  L=  56  formula=0.6264  table=0.60  diff=+0.0264
+  L=  57  formula=0.7027  table=0.70  diff=+0.0027
+  L=  58  formula=0.7884  table=0.80  diff=-0.0116
+  L=  59  formula=0.8845  table=0.90  diff=-0.0155
+  L=  60  formula=0.9923  table=1.00  diff=-0.0077
+  max |formula-table| over Table 2 rows = 0.0264
+== P2: beta from shipped 1-D models under synthetic waveforms ==
+      table3_beta_b  synthetic_min  synthetic_median  synthetic_max  max_over_min
+AK1A           0.56          0.338             0.390          0.397         1.175
+AK1B           0.56          0.338             0.390          0.397         1.176
+AP1            0.33          0.225             0.276          0.277         1.229
+AP2            0.82          0.688             0.776          0.779         1.131
+BR1            0.22          0.203             0.230          0.231         1.141
+CL1            0.76          0.626             0.641          0.643         1.027
+CO1            0.27          0.216             0.259          0.259         1.196
+CP1            0.81          0.854             0.860          0.906         1.062
+CP2            0.95          1.036             1.313          1.317         1.271
+FL1            0.76          0.637             0.768          0.769         1.208
+CS1            0.41          0.249             0.294          0.295         1.185
+IP1            0.94          0.676             0.683          0.793         1.173
+IP2            0.28          0.159             0.223          0.225         1.415
+IP3            0.93          0.782             0.787          0.808         1.033
+IP4            0.41          0.131             0.168          0.239         1.822
+NE1            0.81          0.667             0.736          0.740         1.110
+PB1            0.62          0.292             0.294          0.393         1.347
+PB2            0.46          0.185             0.186          0.268         1.447
+PT1            1.17          1.168             1.172          1.224         1.048
+SL1            0.53          0.321             0.383          0.390         1.217
+SU1            0.93          0.813             0.816          0.817         1.004
+BOU            0.28          0.073             0.121          0.170         2.323
+  s1989_e0.5: spearman_vs_table3=0.946 median_abs_err=0.116
+  s2003_e0.5: spearman_vs_table3=0.964 median_abs_err=0.133
+  s2024_e0.5: spearman_vs_table3=0.899 median_abs_err=0.118
+  s1989_e1.0: spearman_vs_table3=0.918 median_abs_err=0.116
+  s2003_e1.0: spearman_vs_table3=0.934 median_abs_err=0.115
+  s2024_e1.0: spearman_vs_table3=0.899 median_abs_err=0.117
+  s1989_e1.5: spearman_vs_table3=0.899 median_abs_err=0.117
+  s2003_e1.5: spearman_vs_table3=0.899 median_abs_err=0.117
+  s2024_e1.5: spearman_vs_table3=0.899 median_abs_err=0.117
+  models compared: 22
+== P3: EPRI 21-bus network, uniform 1 V/km field ==
+  Network(8 substations, 15 transformers, 15 branches)
+  north_1Vkm: max |I_neutral|/3 = 46.660 A per phase; solve+neutral 1.79 ms
+  east_1Vkm: max |I_neutral|/3 = 58.889 A per phase; solve+neutral 0.58 ms
+             north_1Vkm  east_1Vkm
+xf-1-2-0          0.000      0.000
+xf-4-3-1          2.514     11.627
+xf-4-3-2          2.514     11.627
+xf-4-3-3          0.800      9.076
+xf-4-3-4          0.800      9.076
+xf-5-20-5        46.660     10.895
+xf-5-20-6        46.660     10.895
+xf-6-7-7          9.563     58.889
+xf-6-8-8          9.563     58.889
+xf-12-13-9       10.160     22.290
+xf-12-14-10      10.160     22.290
+xf-15-16-11      23.466     18.150
+xf-15-16-12      23.466     18.150
+xf-17-18-13      19.284     31.431
+xf-17-19-14      19.284     31.431
+  xf-6-7-7: bezpy=59.017 A/phase published=59.090 rel_err=-1.23e-03
+  xf-6-8-8: bezpy=59.017 A/phase published=59.090 rel_err=-1.23e-03
+  xf-12-13-9: bezpy=22.339 A/phase published=22.373 rel_err=-1.52e-03
+  xf-12-14-10: bezpy=22.339 A/phase published=22.373 rel_err=-1.52e-03
+  xf-17-18-13: bezpy=31.501 A/phase published=31.548 rel_err=-1.50e-03
+  xf-17-19-14: bezpy=31.501 A/phase published=31.548 rel_err=-1.50e-03
+== P4: convolution cost (SiteCollection.convolve_fft) ==
+  nsites=  100 ntimes=  8640: 1.946 s wall; output 6.6 MiB per component
+  nsites= 1000 ntimes=  8640: 20.214 s wall; output 65.9 MiB per component
+  nsites= 1000 ntimes= 86400: 191.871 s wall; output 659.2 MiB per component
+  peak RSS of this process: 2528 MiB
+# /usr/bin/time -v: Elapsed (wall clock) time (h:mm:ss or m:ss): 3:44.70
+# /usr/bin/time -v: Maximum resident set size (kbytes): 2588484

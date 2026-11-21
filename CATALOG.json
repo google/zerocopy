@@ -33545,6 +33545,92 @@
         "compilers"
       ]
     },
+    "geospace-model-ground-perturbation-validation-nerc-tpl-007-gic-benchmarks-hydro-quebec-1989-starlink-2022-thermospheric-drag-and-bezpy-transmission-line-voltages": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "standard": "NERC TPL-007-4",
+            "text_examined_via": "https://nercipedia.com/active-standards/tpl-007-4-transmission-system-planned-performance-for-geomagnetic-disturbance-events/",
+            "url": "https://www.nerc.com/pa/Stand/Reliability%20Standards/TPL-007-4.pdf"
+          },
+          "name": "NERC Reliability Standard TPL-007-4 (Transmission System Planned Performance for Geomagnetic Disturbance Events)"
+        },
+        {
+          "identity": {
+            "repository": "greglucas/bezpy",
+            "revision": "b7944f9404f3ab59373279f8116cc288e90dc390"
+          },
+          "name": "bezpy geoelectric field, line voltage, TPL-007 and GIC network library"
+        },
+        {
+          "identity": {
+            "repository": "SWMFsoftware/SWMF",
+            "revision": "4e927561205457169a907668d93eeffa014f2414"
+          },
+          "name": "Space Weather Modeling Framework (control and coupling repository)"
+        },
+        {
+          "identity": {
+            "repository": "spacepy/spacepy",
+            "revision": "015c1adcf20f642fb31f8a35cb94463cac520fe7"
+          },
+          "name": "SpacePy (pybats readers for framework magnetometer output)"
+        },
+        {
+          "identity": {
+            "repository": "SWxTREC/pymsis",
+            "revision": "d8170cbde127aa802fc48b9deaf328f25ce32eb5",
+            "version": "0.13.0"
+          },
+          "name": "pymsis Python interface to NRLMSISE-00 and NRLMSIS 2.0/2.1"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/swe.20056"
+          },
+          "name": "Pulkkinen et al. 2013, community-wide validation of geospace ground magnetic perturbation predictions"
+        },
+        {
+          "identity": {
+            "doi": "10.1029/2018SW002064"
+          },
+          "name": "Welling et al. 2018, recommendations for next-generation ground magnetic perturbation validation"
+        },
+        {
+          "identity": {
+            "doi": "10.1029/2022SW003193"
+          },
+          "name": "Fang et al. 2022, space weather environment during the Starlink satellite loss"
+        },
+        {
+          "identity": {
+            "doi": "10.1029/2019SW002278"
+          },
+          "name": "Boteler 2019, a 21st century view of the March 1989 magnetic storm"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/2017SW001779"
+          },
+          "name": "Lucas, Love and Kelbert 2018, transmission line voltages with realistic Earth impedances"
+        },
+        {
+          "identity": {
+            "dataset": "Kp_ap_Ap_SN_F107_since_1932.txt",
+            "retrieved": "2026-11-21",
+            "url": "https://kp.gfz.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt"
+          },
+          "name": "GFZ geomagnetic Kp/ap and F10.7 index file"
+        }
+      ],
+      "topics": [
+        "domains/geomagnetically-induced-currents",
+        "domains/space-weather-forecast-validation",
+        "verification/geospace-model-skill-metrics",
+        "tooling/open-space-weather-modelling-frameworks"
+      ]
+    },
     "gherrit-multi-remote-ancestry-and-graphql-batch-idempotency-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -42074,6 +42160,142 @@
         "runtimes/vm/inline-caches",
         "verification/jit",
         "verification/compiler-verification"
+      ]
+    },
+    "jls-finalization-reachability-fences-go-keepalive-agesen-detlefs-moss-stack-liveness-shaham-heap-liveness-hirzel-type-accuracy-and-rojemo-runciman-lag-drag-void": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "section": "12.6, 12.6.1, 12.6.2",
+            "standard": "The Java Language Specification, Java SE 25 Edition",
+            "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html"
+          },
+          "name": "The Java Language Specification, Java SE 25 Edition, section 12.6 (Finalization of Class Instances)"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "b76004bf59b75303c539de649ce9321fd8d28cf3"
+          },
+          "name": "OpenJDK (java.lang.ref.Reference, Cleaner, Object.finalize, HotSpot C2 reachability fences, jtreg tests)"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "86147150ffa135e77b0429208dd0b15df1206ea3"
+          },
+          "name": "Go runtime and compiler (runtime.SetFinalizer, AddCleanup, KeepAlive, SSA KeepAlive op)"
+        },
+        {
+          "identity": {
+            "path": "src/coreclr/System.Private.CoreLib/src/System/GC.CoreCLR.cs",
+            "repository": "dotnet/runtime",
+            "revision": "f23392b4a8e37dbbf072eb893f547705312a457a"
+          },
+          "name": ".NET runtime (System.GC.KeepAlive in CoreCLR System.Private.CoreLib)"
+        },
+        {
+          "identity": {
+            "path": "spec.html",
+            "repository": "tc39/ecma262",
+            "revision": "74c33d406ec1763ca9ee5ad9165571661649d6e6"
+          },
+          "name": "ECMA-262 ECMAScript specification source (WeakRef and FinalizationRegistry processing model, liveness, kept-objects list)"
+        },
+        {
+          "identity": {
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "GHC (biographical heap profiling documentation; selector-thunk evaluation in the copying collector)"
+        },
+        {
+          "identity": {
+            "path": "include/gc/gc.h",
+            "repository": "ivmai/bdwgc",
+            "revision": "35ad5371a9c8524c5512e50892506217043cb52d"
+          },
+          "name": "Boehm-Demers-Weiser conservative collector public header (GC_reachable_here)"
+        },
+        {
+          "identity": {
+            "platform": "linux/amd64",
+            "repository": "golang/go",
+            "revision": "2aae1000ea1d4b28923b96db28acf4e3b99d6aff",
+            "version": "go1.27.3"
+          },
+          "name": "Go toolchain go1.27.3 (executed for the early-reclamation probe and assembly listing)"
+        },
+        {
+          "identity": {
+            "platform": "linux-x86_64",
+            "release_date": "2026-11-18",
+            "upstream_release_tag": "openjdk/jdk27u jdk-27.0.1-ga",
+            "version": "27.0.1"
+          },
+          "name": "OpenJDK 27.0.1 HotSpot 64-Bit Server VM, vendor build (executed for the early-reclamation probe)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/224164.224182"
+          },
+          "name": "Morrisett, Felleisen, Harper: Abstract Models of Memory Management (FPCA 1995)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/277650.277738"
+          },
+          "name": "Agesen, Detlefs, Moss: Garbage Collection and Local Variable Type-Precision and Liveness in Java Virtual Machines (PLDI 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512429.512437"
+          },
+          "name": "Shaham, Kolodner, Sagiv: Estimating the Impact of Heap Liveness Information on Space Consumption in Java (ISMM 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/586088.586089"
+          },
+          "name": "Hirzel, Diwan, Henkel: On the Usefulness of Type and Liveness Accuracy for Garbage Collection and Leak Detection (TOPLAS 24(6), 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/232627.232633"
+          },
+          "name": "R\u00f6jemo, Runciman: Lag, Drag, Void and Use - Heap Profiling and Space-Efficient Compilation Revisited (ICFP 1996)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-61628-4_6"
+          },
+          "name": "Runciman, R\u00f6jemo: Heap Profiling for Space Efficiency (Advanced Functional Programming, LNCS 1129, 1996)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/spe.4380170904"
+          },
+          "name": "Wadler: Fixing Some Space Leaks with a Garbage Collector (Software: Practice and Experience 17(9), 1987)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/231379.231394"
+          },
+          "name": "Boehm: Simple Garbage-Collector-Safety (PLDI 1996)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/604131.604153"
+          },
+          "name": "Boehm: Destructors, Finalizers, and Synchronization (POPL 2003)"
+        }
+      ],
+      "topics": [
+        "runtimes/liveness-driven-reclamation-observability",
+        "pl/finalization-and-reachability-fences",
+        "verification/collector-liveness-precision-measurement",
+        "compilers/dead-binding-narrowing-and-space"
       ]
     },
     "jvm-bytecode-verification-jmm-causality-valhalla-loom-and-panama-ffi": {

@@ -1,0 +1,11 @@
+[-Xint] java=27.0.1+VENDOR-BUILD mode=nofence trials=20 cleaned_while_method_running=0 first_early_trial=-1
+[-Xint] java=27.0.1+VENDOR-BUILD mode=fence trials=20 cleaned_while_method_running=0 first_early_trial=-1
+[-XX:TieredStopAtLevel=1 -Xcomp] java=27.0.1+VENDOR-BUILD mode=nofence trials=20 cleaned_while_method_running=20 first_early_trial=0
+[-XX:TieredStopAtLevel=1 -Xcomp] java=27.0.1+VENDOR-BUILD mode=fence trials=20 cleaned_while_method_running=0 first_early_trial=-1
+[-XX:-TieredCompilation -Xcomp] java=27.0.1+VENDOR-BUILD mode=nofence trials=20 cleaned_while_method_running=20 first_early_trial=0
+[-XX:-TieredCompilation -Xcomp] java=27.0.1+VENDOR-BUILD mode=fence trials=20 cleaned_while_method_running=0 first_early_trial=-1
+[default tiered] java=27.0.1+VENDOR-BUILD mode=nofence trials=400 cleaned_while_method_running=144 first_early_trial=256
+[default tiered] java=27.0.1+VENDOR-BUILD mode=fence trials=400 cleaned_while_method_running=0 first_early_trial=-1
+--- java -XX:+PrintCompilation -cp classes EarlyReclaim nofence 300 (filtered to the probe method and summary line) ---
+20062   77       3       EarlyReclaim$Resource::actionNoFence (16 bytes)
+java=27.0.1+VENDOR-BUILD mode=nofence trials=300 cleaned_while_method_running=44 first_early_trial=256

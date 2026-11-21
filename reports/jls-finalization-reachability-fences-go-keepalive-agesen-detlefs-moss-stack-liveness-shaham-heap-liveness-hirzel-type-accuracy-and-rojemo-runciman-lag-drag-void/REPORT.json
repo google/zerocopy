@@ -1,0 +1,136 @@
+{
+  "topics": [
+    "runtimes/liveness-driven-reclamation-observability",
+    "pl/finalization-and-reachability-fences",
+    "verification/collector-liveness-precision-measurement",
+    "compilers/dead-binding-narrowing-and-space"
+  ],
+  "subjects": [
+    {
+      "name": "The Java Language Specification, Java SE 25 Edition, section 12.6 (Finalization of Class Instances)",
+      "identity": {
+        "standard": "The Java Language Specification, Java SE 25 Edition",
+        "section": "12.6, 12.6.1, 12.6.2",
+        "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html"
+      }
+    },
+    {
+      "name": "OpenJDK (java.lang.ref.Reference, Cleaner, Object.finalize, HotSpot C2 reachability fences, jtreg tests)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "b76004bf59b75303c539de649ce9321fd8d28cf3"
+      }
+    },
+    {
+      "name": "Go runtime and compiler (runtime.SetFinalizer, AddCleanup, KeepAlive, SSA KeepAlive op)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "86147150ffa135e77b0429208dd0b15df1206ea3"
+      }
+    },
+    {
+      "name": ".NET runtime (System.GC.KeepAlive in CoreCLR System.Private.CoreLib)",
+      "identity": {
+        "repository": "dotnet/runtime",
+        "revision": "f23392b4a8e37dbbf072eb893f547705312a457a",
+        "path": "src/coreclr/System.Private.CoreLib/src/System/GC.CoreCLR.cs"
+      }
+    },
+    {
+      "name": "ECMA-262 ECMAScript specification source (WeakRef and FinalizationRegistry processing model, liveness, kept-objects list)",
+      "identity": {
+        "repository": "tc39/ecma262",
+        "revision": "74c33d406ec1763ca9ee5ad9165571661649d6e6",
+        "path": "spec.html"
+      }
+    },
+    {
+      "name": "GHC (biographical heap profiling documentation; selector-thunk evaluation in the copying collector)",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+      }
+    },
+    {
+      "name": "Boehm-Demers-Weiser conservative collector public header (GC_reachable_here)",
+      "identity": {
+        "repository": "ivmai/bdwgc",
+        "revision": "35ad5371a9c8524c5512e50892506217043cb52d",
+        "path": "include/gc/gc.h"
+      }
+    },
+    {
+      "name": "Go toolchain go1.27.3 (executed for the early-reclamation probe and assembly listing)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "2aae1000ea1d4b28923b96db28acf4e3b99d6aff",
+        "version": "go1.27.3",
+        "platform": "linux/amd64"
+      }
+    },
+    {
+      "name": "OpenJDK 27.0.1 HotSpot 64-Bit Server VM, vendor build (executed for the early-reclamation probe)",
+      "identity": {
+        "version": "27.0.1",
+        "release_date": "2026-11-18",
+        "upstream_release_tag": "openjdk/jdk27u jdk-27.0.1-ga",
+        "platform": "linux-x86_64"
+      }
+    },
+    {
+      "name": "Morrisett, Felleisen, Harper: Abstract Models of Memory Management (FPCA 1995)",
+      "identity": {
+        "doi": "10.1145/224164.224182"
+      }
+    },
+    {
+      "name": "Agesen, Detlefs, Moss: Garbage Collection and Local Variable Type-Precision and Liveness in Java Virtual Machines (PLDI 1998)",
+      "identity": {
+        "doi": "10.1145/277650.277738"
+      }
+    },
+    {
+      "name": "Shaham, Kolodner, Sagiv: Estimating the Impact of Heap Liveness Information on Space Consumption in Java (ISMM 2002)",
+      "identity": {
+        "doi": "10.1145/512429.512437"
+      }
+    },
+    {
+      "name": "Hirzel, Diwan, Henkel: On the Usefulness of Type and Liveness Accuracy for Garbage Collection and Leak Detection (TOPLAS 24(6), 2002)",
+      "identity": {
+        "doi": "10.1145/586088.586089"
+      }
+    },
+    {
+      "name": "Röjemo, Runciman: Lag, Drag, Void and Use - Heap Profiling and Space-Efficient Compilation Revisited (ICFP 1996)",
+      "identity": {
+        "doi": "10.1145/232627.232633"
+      }
+    },
+    {
+      "name": "Runciman, Röjemo: Heap Profiling for Space Efficiency (Advanced Functional Programming, LNCS 1129, 1996)",
+      "identity": {
+        "doi": "10.1007/3-540-61628-4_6"
+      }
+    },
+    {
+      "name": "Wadler: Fixing Some Space Leaks with a Garbage Collector (Software: Practice and Experience 17(9), 1987)",
+      "identity": {
+        "doi": "10.1002/spe.4380170904"
+      }
+    },
+    {
+      "name": "Boehm: Simple Garbage-Collector-Safety (PLDI 1996)",
+      "identity": {
+        "doi": "10.1145/231379.231394"
+      }
+    },
+    {
+      "name": "Boehm: Destructors, Finalizers, and Synchronization (POPL 2003)",
+      "identity": {
+        "doi": "10.1145/604131.604153"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

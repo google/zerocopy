@@ -1,0 +1,13 @@
+early_opt: go=go1.27.3 mech=cleanup mode=nofence trials=20 write_failed_EBADF=19
+early_opt: go=go1.27.3 mech=cleanup mode=keepalive trials=20 write_failed_EBADF=0
+early_opt: go=go1.27.3 mech=finalizer mode=nofence trials=20 write_failed_EBADF=19
+early_opt: go=go1.27.3 mech=finalizer mode=keepalive trials=20 write_failed_EBADF=0
+early_noopt: go=go1.27.3 mech=cleanup mode=nofence trials=20 write_failed_EBADF=20
+early_noopt: go=go1.27.3 mech=cleanup mode=keepalive trials=20 write_failed_EBADF=0
+early_noopt: go=go1.27.3 mech=finalizer mode=nofence trials=20 write_failed_EBADF=20
+early_noopt: go=go1.27.3 mech=finalizer mode=keepalive trials=20 write_failed_EBADF=0
+--- second run (50 trials, nofence only; prints trial indices whose write succeeded) ---
+early_opt: go=go1.27.3 mech=cleanup mode=nofence trials=50 write_failed_EBADF=50 writes_ok_at_trials=[]
+early_opt: go=go1.27.3 mech=finalizer mode=nofence trials=50 write_failed_EBADF=49 writes_ok_at_trials=[0]
+early_noopt: go=go1.27.3 mech=cleanup mode=nofence trials=50 write_failed_EBADF=50 writes_ok_at_trials=[]
+early_noopt: go=go1.27.3 mech=finalizer mode=nofence trials=50 write_failed_EBADF=50 writes_ok_at_trials=[]
