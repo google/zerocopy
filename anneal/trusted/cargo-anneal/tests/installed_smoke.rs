@@ -481,6 +481,10 @@ fn audit_case(name: &str, case: &mut CaseDirectory, root: &Path) -> TestResult {
             "fixture/trusted/lean/Trusted",
         )?;
         case.copy(
+            &root.join("share/anneal/theory/Anneal/NatBitwise.lean"),
+            "fixture/theory/Anneal/NatBitwise.lean",
+        )?;
+        case.copy(
             &root.join("share/anneal/theory/Anneal/MirWp.lean"),
             "fixture/theory/Anneal/MirWp.lean",
         )?;
