@@ -9434,6 +9434,96 @@
         "verification/hypervisors"
       ]
     },
+    "armv9-sme2-streaming-za-laziness-wasm-relaxed-simd-nondeterminism-and-callee-vector-abis": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "path": "aapcs64/aapcs64.rst",
+            "repository": "ARM-software/abi-aa",
+            "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+          },
+          "name": "Procedure Call Standard for the Arm 64-bit Architecture (AAPCS64 and SME/SME2 PCS)"
+        },
+        {
+          "identity": {
+            "paper": "Armstrong et al., POPL 2019, doi:10.1145/3290384",
+            "repository": "rems-project/sail-arm",
+            "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+          },
+          "name": "Sail Armv9.4-A formal ISA specification (SVE2, SME, and SME2)"
+        },
+        {
+          "identity": {
+            "path": "Documentation/arch/arm64/sme.rst",
+            "repository": "torvalds/linux",
+            "revision": "f1715c0c04606ebbe832cc760abf49dfd6f2ae1f"
+          },
+          "name": "Linux kernel AArch64 Scalable Matrix Extension user-space ABI specification"
+        },
+        {
+          "identity": {
+            "paper": "Youn et al., SpecTec, PLDI 2024, doi:10.1145/3656440",
+            "relaxed_simd_repository": "WebAssembly/relaxed-simd",
+            "relaxed_simd_revision": "c3f9359af2cd607cc46b0a3274f90ea52543a2f2",
+            "repository": "WebAssembly/spec",
+            "revision": "d0b2e8d5544d2049fba0521922c436e3f0fcaebe"
+          },
+          "name": "WebAssembly 3.0 formal specification, reference interpreter, and Relaxed SIMD specification"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "40e0d780e4bfa34325d342db5bcf492bea227e07"
+          },
+          "name": "Wasmtime and Cranelift WebAssembly JIT compiler (x64 and AArch64 Relaxed SIMD lowering)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "f61dfd8c0d8cfa6ed8a1ea3a16174d9673184825"
+          },
+          "name": "LLVM compiler infrastructure and compiler-rt AArch64 SME ABI runtime"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "280a220986a0bc6249248187717a771153d073db"
+          },
+          "name": "AWS s2n-bignum HOL Light x86_64 (SysV/Win64) and AArch64 ABI subroutine proofs"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "e8574d0b22b126acc76007babce536c68bc07d0a"
+          },
+          "name": "FFmpeg multimedia framework (AArch64 SME2 VVC ALF and x86inc.asm Win64/SysV ABI macros)"
+        },
+        {
+          "identity": {
+            "sysv_abi": "System V Application Binary Interface AMD64 Architecture Processor Supplement v1.0",
+            "win64_abi": "Microsoft x64 Calling Convention and Unwind Data Specification"
+          },
+          "name": "Microsoft x64 Calling Convention and System V AMD64 psABI specifications"
+        },
+        {
+          "identity": {
+            "platform": "linux-x86_64",
+            "runtime": "Node.js v24.21.0 (V8)"
+          },
+          "name": "Node.js v24.21.0 (V8 WebAssembly 3.0 engine executed on Linux x86_64)"
+        }
+      ],
+      "topics": [
+        "isa/simd",
+        "isa/aarch64",
+        "isa/wasm",
+        "isa/x86-64",
+        "verification/isa-semantics",
+        "compilers/abi",
+        "ffi/calling-conventions"
+      ]
+    },
     "arrow-ipc-validity-bitmaps-flight-streams-and-parquet-dremel-striping": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -29332,6 +29422,79 @@
         "domains/video-codecs",
         "build/dynamic-linking",
         "security/media-codecs"
+      ]
+    },
+    "dual-context-bitstream-transcoding-lenses-rational-timestamp-rescaling-and-mp4-chunk-relocation": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "e8574d0b22b126acc76007babce536c68bc07d0a"
+          },
+          "name": "FFmpeg multimedia framework (CodedBitstream, bitstream filters, rational mathematics, and ISOBMFF faststart)"
+        },
+        {
+          "identity": {
+            "paper": "Cai et al., USENIX Security 2025, ISBN 978-1-939133-52-6, pp. 6917-6935",
+            "repository": "secure-foundations/vest",
+            "revision": "026867a37d4b918153058df2c8db6c52fc62ba35"
+          },
+          "name": "Vest verified parser and serializer combinator framework for Rust"
+        },
+        {
+          "identity": {
+            "paper": "Ramananandro et al., USENIX Security 2019, ISBN 978-1-939133-06-9, pp. 1515-1532",
+            "repository": "project-everest/everparse",
+            "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+          },
+          "name": "EverParse and LowParse verified non-malleable parser-serializer framework"
+        },
+        {
+          "identity": {
+            "clauses": "7.3.1, 7.3.2.1.1, 7.3.2.2, 7.3.3, 7.4.1",
+            "edition": "08/2024",
+            "standard": "ITU-T Rec. H.264 | ISO/IEC 14496-10"
+          },
+          "name": "ITU-T Recommendation H.264 | ISO/IEC 14496-10 Advanced Video Coding"
+        },
+        {
+          "identity": {
+            "clauses": "4.2, 8.7.5, 8.7.13, 8.8.7, 8.11.3",
+            "edition": "2022 (7th edition)",
+            "standard": "ISO/IEC 14496-12:2022"
+          },
+          "name": "ISO/IEC 14496-12 ISO Base Media File Format (ISOBMFF)"
+        },
+        {
+          "identity": {
+            "doi_lenses": "10.1145/1232420.1232424",
+            "doi_quotient_lenses": "10.1145/1411203.1411257"
+          },
+          "name": "Foster et al., Combinators for Bidirectional Tree Transformations and Quotient Lenses"
+        },
+        {
+          "identity": {
+            "doi_categorical": "10.32408/compositionality-6-1",
+            "doi_profunctor": "10.22152/programming-journal.org/2017/1/7"
+          },
+          "name": "Pickering, Gibbons, and Wu, Profunctor Optics, and Clarke et al., Profunctor Optics, a Categorical Update"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341686",
+            "venue": "PACMPL 3(ICFP), Article 82, 2019"
+          },
+          "name": "Delaware et al., Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats"
+        }
+      ],
+      "topics": [
+        "verification/dsp-media",
+        "pl/lenses-bidirectional",
+        "pl/bidirectional-lenses",
+        "verification/parsers",
+        "domains/media-containers",
+        "systems/ffmpeg"
       ]
     },
     "dual-polar-mutation-refutation-spec-strength-auditing-and-anti-vacuity-harnesses": {

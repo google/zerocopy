@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "verification/dsp-media",
+    "pl/lenses-bidirectional",
+    "pl/bidirectional-lenses",
+    "verification/parsers",
+    "domains/media-containers",
+    "systems/ffmpeg"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg multimedia framework (CodedBitstream, bitstream filters, rational mathematics, and ISOBMFF faststart)",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "e8574d0b22b126acc76007babce536c68bc07d0a"
+      }
+    },
+    {
+      "name": "Vest verified parser and serializer combinator framework for Rust",
+      "identity": {
+        "paper": "Cai et al., USENIX Security 2025, ISBN 978-1-939133-52-6, pp. 6917-6935",
+        "repository": "secure-foundations/vest",
+        "revision": "026867a37d4b918153058df2c8db6c52fc62ba35"
+      }
+    },
+    {
+      "name": "EverParse and LowParse verified non-malleable parser-serializer framework",
+      "identity": {
+        "paper": "Ramananandro et al., USENIX Security 2019, ISBN 978-1-939133-06-9, pp. 1515-1532",
+        "repository": "project-everest/everparse",
+        "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+      }
+    },
+    {
+      "name": "ITU-T Recommendation H.264 | ISO/IEC 14496-10 Advanced Video Coding",
+      "identity": {
+        "clauses": "7.3.1, 7.3.2.1.1, 7.3.2.2, 7.3.3, 7.4.1",
+        "edition": "08/2024",
+        "standard": "ITU-T Rec. H.264 | ISO/IEC 14496-10"
+      }
+    },
+    {
+      "name": "ISO/IEC 14496-12 ISO Base Media File Format (ISOBMFF)",
+      "identity": {
+        "clauses": "4.2, 8.7.5, 8.7.13, 8.8.7, 8.11.3",
+        "edition": "2022 (7th edition)",
+        "standard": "ISO/IEC 14496-12:2022"
+      }
+    },
+    {
+      "name": "Foster et al., Combinators for Bidirectional Tree Transformations and Quotient Lenses",
+      "identity": {
+        "doi_lenses": "10.1145/1232420.1232424",
+        "doi_quotient_lenses": "10.1145/1411203.1411257"
+      }
+    },
+    {
+      "name": "Pickering, Gibbons, and Wu, Profunctor Optics, and Clarke et al., Profunctor Optics, a Categorical Update",
+      "identity": {
+        "doi_categorical": "10.32408/compositionality-6-1",
+        "doi_profunctor": "10.22152/programming-journal.org/2017/1/7"
+      }
+    },
+    {
+      "name": "Delaware et al., Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats",
+      "identity": {
+        "doi": "10.1145/3341686",
+        "venue": "PACMPL 3(ICFP), Article 82, 2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
