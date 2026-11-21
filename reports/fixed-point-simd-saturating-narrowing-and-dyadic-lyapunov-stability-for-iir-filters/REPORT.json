@@ -1,0 +1,58 @@
+{
+  "topics": [
+    "verification/dsp-media",
+    "isa/simd",
+    "verification/numerical-methods",
+    "domains/audio-dsp",
+    "isa/x86-64",
+    "isa/aarch64",
+    "isa/riscv64",
+    "rust/simd"
+  ],
+  "subjects": [
+    {
+      "name": "Rust standard architecture SIMD intrinsics (core_arch)",
+      "identity": {
+        "repository": "rust-lang/stdarch",
+        "revision": "ca26a96d57b295dcd927622877242940a0f3c02e"
+      }
+    },
+    {
+      "name": "Rust core modular integer wrapper (core::num::Wrapping)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+      }
+    },
+    {
+      "name": "RISC-V Vector Extension Specification",
+      "identity": {
+        "repository": "riscv/riscv-v-spec",
+        "revision": "2f68ef7256d6ec53e4d2bd7cb12862f406d64e34",
+        "version": "1.0"
+      }
+    },
+    {
+      "name": "ARM CMSIS-DSP fixed-point biquad cascade filters",
+      "identity": {
+        "repository": "ARM-software/CMSIS-DSP",
+        "revision": "9f64ba31591e527c505951943b4b95b0eb2f834b"
+      }
+    },
+    {
+      "name": "gemmlowp fixed-point saturating rounding arithmetic library",
+      "identity": {
+        "repository": "google/gemmlowp",
+        "revision": "16e8662c34917be0065110bfcd9cc27d30f52fdf"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure target SIMD intrinsics",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "c11543baec3048ab67ebb61f2186172f90983d57"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
