@@ -9,7 +9,6 @@
     clippy::missing_inline_in_public_items,
 )]
 #[deny(ambiguous_associated_items)]
-#[automatically_derived]
 const _: () = {
     enum ẕfield {}
     #[allow(
@@ -23,7 +22,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl ::zerocopy::HasTag<::zerocopy::project_clients::ProjectDerive>
         for Foo {
@@ -43,7 +41,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl ::zerocopy::HasField<
             ::zerocopy::project_clients::ProjectDerive,
@@ -82,7 +79,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             ___ZcAliasing: ::zerocopy::invariant::Aliasing,
@@ -114,7 +110,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             ___ZcAliasing: ::zerocopy::invariant::Aliasing,
@@ -146,7 +141,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             ___ZcAliasing: ::zerocopy::invariant::Aliasing,

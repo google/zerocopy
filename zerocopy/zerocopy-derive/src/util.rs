@@ -220,7 +220,7 @@ impl Ctx {
             let error_message =
                 "`on_error` is experimental; pass '--cfg zerocopy_unstable_linux' to enable";
             quote::quote_spanned! {span=>
-                #[allow(unused_attributes, unexpected_cfgs)]
+                #[allow(unexpected_cfgs)]
                 const _: () = {
                     #[cfg(not(zerocopy_unstable_linux))]
                     #core::compile_error!(#error_message);
@@ -236,7 +236,7 @@ impl Ctx {
             let error_message =
                 "`invariant` is experimental; pass '--cfg zerocopy_unstable_ptr' to enable";
             quote::quote_spanned! {span=>
-                #[allow(unused_attributes, unexpected_cfgs)]
+                #[allow(unexpected_cfgs)]
                 const _: () = {
                     #[cfg(not(zerocopy_unstable_ptr))]
                     #core::compile_error!(#error_message);
@@ -937,9 +937,6 @@ pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) 
     quote! {
         #allow
         #[deny(ambiguous_associated_items)]
-        // While there are not currently any warnings that this suppresses
-        // (that we're aware of), it's good future-proofing hygiene.
-        #[automatically_derived]
         const _: () = {
             #(#items)*
         };
