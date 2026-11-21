@@ -75,6 +75,7 @@ One-sentence summary of each result (every Lean statement, hypothesis ledger, an
 - Depth labels follow one uniform criterion across all 20 cards: `definitional` means true by `rfl` / definitional unfolding alone (such as the companion identity `classicalCodec_enc`), whereas `shallow` means a short non-`rfl` proof by propositional, equality, or case-split reasoning (including Cards 2, 3, and 12).
 - Hypothesis ledgers mark every hypothesis of every card theorem and hashed companion `tight` (with a proved counterexample where all remaining hypotheses hold and the conclusion fails) or `harmless` (with justification). On Card 20 (`complementEquivOfCodecEq_intertwines`), all five proof hypotheses (`hl₁`, `hr₁`, `hl₂`, `hr₂`, and `heq`) appear inside the conclusion's term `complementEquivOfCodecEq f₁ g₁ f₂ g₂ hl₁ hr₁ hl₂ hr₂ heq` and are explicitly marked as structurally required with surrogate counterexamples.
 - Every package constant, witness codec, helper map, supporting lemma, definition example, tightness counterexample, and non-vacuity witness named anywhere in the prose is either defined in full in **Core Definitions** / **Witness Definitions and Supporting / Counterexample Declarations** (at the end of **Findings**) or quoted with its kernel `#check` signature.
+- Where a signature printed with Lean's default options would not elaborate back to the declaration's statement, it is printed with one added option: `set_option pp.funBinderTypes true` (types of `fun` and `∃` binders shown, as in `∃ (φ : Toy.Codec.Equiv C₁ C₂), …`, which the default prints as `∃ φ, …`), `set_option pp.proofs true` (proof arguments shown instead of `⋯`, as in `⟨true, rfl⟩`), or `set_option pp.analyze true` (implicit arguments that the printed term does not determine shown as named arguments, as in `Toy.Codec.inlMatcher (C := Nat) (Sum.inl true)`). Every card or listing that contains such an entry names it and its option.
 
 ### Core Definitions (`lean/Toy/Codec/Defs.lean`)
 
@@ -1392,16 +1393,16 @@ Supporting lemmas cited across the result cards (`Toy/Codec/Witnesses.lean` and 
 - **Kind:** `characterization` | **Tier:** `T1` (concrete characterization of when two mutually inverse coproduct decompositions induce the same codec (not stated in Riley, Clarke et al., Isabelle AFP `Optics`, or Mathlib)) | **Depth:** `shallow`
 - **Verified axioms (`audit/axioms.json`):** `codecOfSplit_eq_iff_exists_intertwining_equiv`: `Quot.sound`; `complementEquivOfCodecEq_intertwines`: none (`[]`); `complementEquivOfCodecEq`: none (`[]`)
 - **Plain claim:** Given two mutually inverse coproduct decompositions (f₁, g₁) of B as A ⊕ C₁ and (f₂, g₂) of B as A ⊕ C₂, they induce the same codec (codecOfSplit f₁ g₁ = codecOfSplit f₂ g₂) if and only if there exists an equivalence φ : Equiv C₁ C₂ intertwining them (∀ b, f₂ b = Sum.map id φ.toFun (f₁ b)); moreover, when the codecs are equal, complementEquivOfCodecEq constructs that Equiv C₁ C₂ in Type with zero axioms and complementEquivOfCodecEq_intertwines proves the intertwining equation (axiom qualifiers established by the kernel axiom record: [Quot.sound] for codecOfSplit_eq_iff_exists_intertwining_equiv, and no axioms for complementEquivOfCodecEq and complementEquivOfCodecEq_intertwines).
-- **Lean statement(s) (`#check` output):**
+- **Lean statement(s) (`#check` output; `codecOfSplit_eq_iff_exists_intertwining_equiv` printed with `set_option pp.funBinderTypes true`):**
   ```lean
-  Toy.Codec.codecOfSplit_eq_iff_exists_intertwining_equiv.{u, v, w₁, w₂} : ∀ {A : Type u} {B : Type v} {C₁ : Type w₁} {C₂ : Type w₂} (f₁ : B → A ⊕ C₁) (g₁ : A ⊕ C₁ → B)
-    (f₂ : B → A ⊕ C₂) (g₂ : A ⊕ C₂ → B),
+  Toy.Codec.codecOfSplit_eq_iff_exists_intertwining_equiv.{u, v, w₁, w₂} : ∀ {A : Type u} {B : Type v} {C₁ : Type w₁} {C₂ : Type w₂} (f₁ : B → A ⊕ C₁) (g₁ : A ⊕ C₁ → B) (f₂ : B → A ⊕ C₂)
+    (g₂ : A ⊕ C₂ → B),
     Toy.Codec.LeftInv f₁ g₁ →
       Toy.Codec.RightInv f₁ g₁ →
         Toy.Codec.LeftInv f₂ g₂ →
           Toy.Codec.RightInv f₂ g₂ →
             (Toy.Codec.codecOfSplit f₁ g₁ = Toy.Codec.codecOfSplit f₂ g₂ ↔
-              ∃ φ, ∀ (b : B), f₂ b = Sum.map id φ.toFun (f₁ b))
+              ∃ (φ : Toy.Codec.Equiv C₁ C₂), ∀ (b : B), f₂ b = Sum.map id φ.toFun (f₁ b))
   Toy.Codec.complementEquivOfCodecEq_intertwines.{u, v, w₁, w₂} : ∀ {A : Type u} {B : Type v} {C₁ : Type w₁} {C₂ : Type w₂} (f₁ : B → A ⊕ C₁) (g₁ : A ⊕ C₁ → B)
     (f₂ : B → A ⊕ C₂) (g₂ : A ⊕ C₂ → B) (hl₁ : Toy.Codec.LeftInv f₁ g₁)
     (hr₁ : Toy.Codec.RightInv f₁ g₁) (hl₂ : Toy.Codec.LeftInv f₂ g₂)
@@ -1838,6 +1839,8 @@ end Toy.Codec
 
 #### Supporting lemma and boundary-witness signatures (`Witnesses.lean` and `Counterexamples.lean`)
 
+Printed with `set_option pp.funBinderTypes true` (see **How to read this section**): `const_imagePrefixFree_not_prefixFree`, `same_complement_different_codec`.
+
 ```lean
 Toy.Codec.classicalCodec_enc.{u, v} : ∀ {A : Type u} {B : Type v} (f : A → B), (Toy.Codec.classicalCodec f).enc = f
 Toy.Codec.codecOfFiberSplit_encDec.{u, v} : ∀ {A : Type u} {B : Type v} (f : A → B) (s : Toy.Codec.FiberSplit f),
@@ -1934,7 +1937,7 @@ Toy.Codec.suffixEnc_not_prefixFree_yet_concat_lawful : Function.Injective Toy.Co
 Toy.Codec.decInj_and_surjective_dec_not_lawful : Toy.Codec.DecInj Toy.Codec.shiftedBoolCodec ∧
   (∀ (a : Bool), ∃ b, Toy.Codec.shiftedBoolCodec.dec b = some a) ∧
     ¬Toy.Codec.DecEnc Toy.Codec.shiftedBoolCodec ∧ ¬Toy.Codec.EncDec Toy.Codec.shiftedBoolCodec
-Toy.Codec.const_imagePrefixFree_not_prefixFree : (Toy.Codec.ImagePrefixFree fun x => [true]) ∧ ¬Toy.Codec.PrefixFree fun x => [true]
+Toy.Codec.const_imagePrefixFree_not_prefixFree : (Toy.Codec.ImagePrefixFree fun (x : Bool) => [true]) ∧ ¬Toy.Codec.PrefixFree fun (x : Bool) => [true]
 Toy.Codec.lenient_not_prefixDecEnc_yet_listCodec_decEnc : ¬Toy.Codec.PrefixDecEnc Toy.Codec.lenientFc ∧
   Toy.Codec.NonEmptyEnc Toy.Codec.lenientFc.enc ∧
     Toy.Codec.DecEnc (Toy.Codec.listCodec Toy.Codec.lenientFc)
@@ -1953,10 +1956,8 @@ Toy.Codec.same_complement_different_codec : Toy.Codec.LeftInv Toy.Codec.splitBoo
         Nonempty (Toy.Codec.Equiv Unit Unit) ∧
           Toy.Codec.codecOfSplit Toy.Codec.splitBoolFalseToFun Toy.Codec.splitBoolFalseInvFun ≠
               Toy.Codec.codecOfSplit Toy.Codec.splitBoolTrueToFun Toy.Codec.splitBoolTrueInvFun ∧
-            ¬∃ φ,
-                ∀ (b : Bool),
-                  Toy.Codec.splitBoolTrueToFun b =
-                    Sum.map id φ.toFun (Toy.Codec.splitBoolFalseToFun b)
+            ¬∃ (φ : Toy.Codec.Equiv Unit Unit),
+                ∀ (b : Bool), Toy.Codec.splitBoolTrueToFun b = Sum.map id φ.toFun (Toy.Codec.splitBoolFalseToFun b)
 Toy.Codec.badLeftSplit_rightInv : Toy.Codec.RightInv Toy.Codec.badLeftSplitToFun Toy.Codec.badLeftSplitInvFun
 Toy.Codec.badRightInlSplit_leftInv : Toy.Codec.LeftInv Toy.Codec.badRightInlSplitToFun Toy.Codec.badRightInlSplitInvFun
 Toy.Codec.emptyBoolSplit_leftInv : Toy.Codec.LeftInv Toy.Codec.emptyBoolSplitToFun Toy.Codec.emptyBoolSplitInvFun
@@ -1992,6 +1993,8 @@ Toy.Codec.fiberSplit_exists_for_every_function.{u, v} : ∀ {A : Type u} {B : Ty
 
 #### Definition example signatures (`Examples.lean` and `Counterexamples.lean`)
 
+Printed with an added option (see **How to read this section**): `pp.funBinderTypes true` for `ex_classicalCodec_neg`, `ex_codecOfSplit_neg` and `ex_complementEquivOfCodecEq_neg`; `pp.proofs true` for `ex_fiberSplitOfLawful_pos`, `ex_junkToC_pos`, `ex_junkToC_neg_nonRightInv` and `ex_complementEquivOfCodecEq_pos`; `pp.analyze true` for `ex_inlMatcher_pos` and `ex_inlMatcher_neg`.
+
 ```lean
 Toy.Codec.ex_leftInv_pos : Toy.Codec.LeftInv (fun b => !b) fun b => !b
 Toy.Codec.ex_leftInv_neg : ¬Toy.Codec.LeftInv (fun x => ()) fun x => false
@@ -2023,13 +2026,13 @@ Toy.Codec.ex_canonicalize_pos : Toy.Codec.Lawful (Toy.Codec.canonicalize Toy.Cod
 Toy.Codec.ex_canonicalize_neg : ¬Toy.Codec.DecEnc (Toy.Codec.canonicalize Toy.Codec.alwaysFailBoolCodec)
 Toy.Codec.ex_classicalCodec_pos : (Toy.Codec.classicalCodec Toy.Codec.boolToNatCodec.enc).dec 1 = some true ∧
   (Toy.Codec.classicalCodec Toy.Codec.boolToNatCodec.enc).dec 2 = none
-Toy.Codec.ex_classicalCodec_neg : ¬Toy.Codec.DecEnc (Toy.Codec.classicalCodec fun x => ())
+Toy.Codec.ex_classicalCodec_neg : ¬Toy.Codec.DecEnc (Toy.Codec.classicalCodec fun (x : Bool) => ())
 Toy.Codec.ex_fiberSplit_pos : Toy.Codec.Lawful
   (Toy.Codec.codecOfFiberSplit Toy.Codec.boolToNatCodec.enc Toy.Codec.boolToNatFiberSplit)
 Toy.Codec.ex_fiberSplit_neg_nonInjective : ¬Toy.Codec.DecEnc (Toy.Codec.codecOfFiberSplit (fun x => ()) Toy.Codec.constUnitFiberSplit)
-Toy.Codec.ex_fiberSplitOfLawful_pos : Toy.Codec.fiberSplitOfLawful Toy.Codec.boolToNatCodec Toy.Codec.boolToNatCodec_decEnc
-      Toy.Codec.boolToNatCodec_encDec 1 =
-    PSum.inl ⟨true, ⋯⟩ ∧
+Toy.Codec.ex_fiberSplitOfLawful_pos : Toy.Codec.fiberSplitOfLawful Toy.Codec.boolToNatCodec Toy.Codec.boolToNatCodec_decEnc Toy.Codec.boolToNatCodec_encDec
+      1 =
+    PSum.inl ⟨true, rfl⟩ ∧
   (match
       Toy.Codec.fiberSplitOfLawful Toy.Codec.boolToNatCodec Toy.Codec.boolToNatCodec_decEnc
         Toy.Codec.boolToNatCodec_encDec 2 with
@@ -2073,8 +2076,8 @@ Toy.Codec.ex_listCodec_neg : ¬Toy.Codec.DecEnc (Toy.Codec.listCodec Toy.Codec.e
 Toy.Codec.ex_decList_guard_rejects : Toy.Codec.decList Toy.Codec.emptyUnitFramedCodec [true] = none
 Toy.Codec.ex_junk_pos : Nonempty (Toy.Codec.Junk Toy.Codec.boolToNatCodec)
 Toy.Codec.ex_junk_neg : Toy.Codec.boolToNatCodec.dec 0 ≠ none
-Toy.Codec.ex_inlMatcher_pos : Toy.Codec.inlMatcher (Sum.inl true) = some true
-Toy.Codec.ex_inlMatcher_neg : Toy.Codec.inlMatcher (Sum.inr 0) = none
+Toy.Codec.ex_inlMatcher_pos : Toy.Codec.inlMatcher (C := Nat) (Sum.inl true) = some true
+Toy.Codec.ex_inlMatcher_neg : Eq (α := Option Bool) (Toy.Codec.inlMatcher (Sum.inr 0)) none
 Toy.Codec.ex_decomp_pos : Toy.Codec.IsEquiv (Toy.Codec.decompToFun Toy.Codec.boolToNatCodec)
   (Toy.Codec.decompInvFun Toy.Codec.boolToNatCodec)
 Toy.Codec.ex_decomp_neg_malleable : ¬Toy.Codec.IsEquiv (Toy.Codec.decompToFun Toy.Codec.nonCanonicalBoolCodec)
@@ -2090,30 +2093,28 @@ Toy.Codec.natBoolSplit_eq_subSplit : Toy.Codec.codecOfSplit Toy.Codec.natBoolSpl
 Toy.Codec.ex_codecOfSplit_pos : Toy.Codec.codecOfSplit Toy.Codec.natBoolSplitToFun Toy.Codec.natBoolSplitInvFun =
   Toy.Codec.boolToNatCodec
 Toy.Codec.ex_codecOfSplit_neg : ¬Toy.Codec.EncDec
-    (Toy.Codec.codecOfSplit (fun x => Sum.inl ()) fun x =>
+    (Toy.Codec.codecOfSplit (fun (x : Bool) => Sum.inl ()) fun (x : Unit ⊕ Empty) =>
       match x with
       | Sum.inl PUnit.unit => false
       | Sum.inr e => e.elim)
-Toy.Codec.ex_junkToC_pos : Toy.Codec.junkToC Toy.Codec.natBoolSplitToFun Toy.Codec.natBoolSplitInvFun ⟨2, ⋯⟩ = 0 ∧
-  Toy.Codec.junkToC Toy.Codec.natBoolSplitToFun Toy.Codec.natBoolSplitInvFun ⟨5, ⋯⟩ = 3
+Toy.Codec.ex_junkToC_pos : Toy.Codec.junkToC Toy.Codec.natBoolSplitToFun Toy.Codec.natBoolSplitInvFun ⟨2, rfl⟩ = 0 ∧
+  Toy.Codec.junkToC Toy.Codec.natBoolSplitToFun Toy.Codec.natBoolSplitInvFun ⟨5, rfl⟩ = 3
 Toy.Codec.ex_junkToC_neg_nonRightInv : Toy.Codec.LeftInv Toy.Codec.collidingJunkToFun Toy.Codec.collidingJunkInvFun ∧
-  (∀ (a : Empty),
-      Toy.Codec.collidingJunkToFun (Toy.Codec.collidingJunkInvFun (Sum.inl a)) = Sum.inl a) ∧
+  (∀ (a : Empty), Toy.Codec.collidingJunkToFun (Toy.Codec.collidingJunkInvFun (Sum.inl a)) = Sum.inl a) ∧
     Toy.Codec.junkToC Toy.Codec.collidingJunkToFun Toy.Codec.collidingJunkInvFun
-        ⟨Toy.Codec.collidingJunkInvFun (Sum.inr true), ⋯⟩ ≠
+        ⟨Toy.Codec.collidingJunkInvFun (Sum.inr true), rfl⟩ ≠
       true
 Toy.Codec.ex_complementEquivOfCodecEq_pos : (Toy.Codec.complementEquivOfCodecEq Toy.Codec.natBoolSplitToFun Toy.Codec.natBoolSplitInvFun
-        Toy.Codec.natBoolSubSplitToFun Toy.Codec.natBoolSubSplitInvFun
-        Toy.Codec.natBoolSplit_leftInv Toy.Codec.natBoolSplit_rightInv
-        Toy.Codec.natBoolSubSplit_leftInv Toy.Codec.natBoolSubSplit_rightInv
+        Toy.Codec.natBoolSubSplitToFun Toy.Codec.natBoolSubSplitInvFun Toy.Codec.natBoolSplit_leftInv
+        Toy.Codec.natBoolSplit_rightInv Toy.Codec.natBoolSubSplit_leftInv Toy.Codec.natBoolSubSplit_rightInv
         Toy.Codec.natBoolSplit_eq_subSplit).toFun
     3 =
-  ⟨5, ⋯⟩
-Toy.Codec.ex_complementEquivOfCodecEq_neg : ((Toy.Codec.codecOfSplit (fun x => Sum.inr ()) fun x =>
+  ⟨5, Nat.le_add_left 2 3⟩
+Toy.Codec.ex_complementEquivOfCodecEq_neg : ((Toy.Codec.codecOfSplit (fun (x : Bool) => Sum.inr ()) fun (x : Empty ⊕ Unit) =>
       match x with
       | Sum.inl e => e.elim
       | Sum.inr PUnit.unit => false) =
-    Toy.Codec.codecOfSplit Sum.inr fun x =>
+    Toy.Codec.codecOfSplit Sum.inr fun (x : Empty ⊕ Bool) =>
       match x with
       | Sum.inl e => e.elim
       | Sum.inr b => b) ∧
@@ -2123,6 +2124,8 @@ Toy.Codec.ex_codecId_ne_boolNot : Toy.Codec.Codec.id Bool ≠ Toy.Codec.boolNotC
 ```
 
 #### Canonical hypothesis-tightness counterexample signatures (`Counterexamples.lean`)
+
+Printed with `set_option pp.funBinderTypes true` (see **How to read this section**): `ce_classicalCodec_decEnc_drop_inj`, `ce_codecOfSplit_eq_iff_drop_hl1`, `ce_codecOfSplit_eq_iff_drop_hr1`, `ce_codecOfSplit_eq_iff_drop_hl2`, `ce_codecOfSplit_eq_iff_drop_hr2`.
 
 ```lean
 Toy.Codec.ce_decEnc_imp_enc_injective_drop_decEnc : Toy.Codec.EncDec Toy.Codec.alwaysFailConstCodec ∧
@@ -2158,7 +2161,7 @@ Toy.Codec.ce_dec_unique_drop_hed2 : Toy.Codec.boolToNatCodec.enc = Toy.Codec.non
     Toy.Codec.EncDec Toy.Codec.boolToNatCodec ∧
       Toy.Codec.DecEnc Toy.Codec.nonCanonicalBoolCodec ∧
         Toy.Codec.boolToNatCodec.dec ≠ Toy.Codec.nonCanonicalBoolCodec.dec
-Toy.Codec.ce_classicalCodec_decEnc_drop_inj : (¬Function.Injective fun x => ()) ∧ ¬Toy.Codec.DecEnc (Toy.Codec.classicalCodec fun x => ())
+Toy.Codec.ce_classicalCodec_decEnc_drop_inj : (¬Function.Injective fun (x : Bool) => ()) ∧ ¬Toy.Codec.DecEnc (Toy.Codec.classicalCodec fun (x : Bool) => ())
 Toy.Codec.ce_classicalCodec_recover_drop_decEnc : Toy.Codec.EncDec Toy.Codec.alwaysFailBoolCodec ∧
   Toy.Codec.classicalCodec Toy.Codec.alwaysFailBoolCodec.enc ≠ Toy.Codec.alwaysFailBoolCodec
 Toy.Codec.ce_classicalCodec_recover_drop_encDec : Toy.Codec.DecEnc Toy.Codec.nonCanonicalBoolCodec ∧
@@ -2377,39 +2380,29 @@ Toy.Codec.ce_codecOfSplit_eq_iff_drop_hl1 : Toy.Codec.RightInv Toy.Codec.badEmpt
     Toy.Codec.RightInv Toy.Codec.emptyBoolSplitToFun Toy.Codec.emptyBoolSplitInvFun ∧
       ¬(Toy.Codec.codecOfSplit Toy.Codec.badEmptyUnitSplitToFun Toy.Codec.badEmptyUnitSplitInvFun =
             Toy.Codec.codecOfSplit Toy.Codec.emptyBoolSplitToFun Toy.Codec.emptyBoolSplitInvFun ↔
-          ∃ φ,
-            ∀ (b : Bool),
-              Toy.Codec.emptyBoolSplitToFun b =
-                Sum.map id φ.toFun (Toy.Codec.badEmptyUnitSplitToFun b))
+          ∃ (φ : Toy.Codec.Equiv Unit Bool),
+            ∀ (b : Bool), Toy.Codec.emptyBoolSplitToFun b = Sum.map id φ.toFun (Toy.Codec.badEmptyUnitSplitToFun b))
 Toy.Codec.ce_codecOfSplit_eq_iff_drop_hr1 : Toy.Codec.LeftInv Toy.Codec.badRightInrSplitToFun Toy.Codec.badRightInrSplitInvFun ∧
   Toy.Codec.LeftInv Toy.Codec.unitEmptySplitToFun Toy.Codec.unitEmptySplitInvFun ∧
     Toy.Codec.RightInv Toy.Codec.unitEmptySplitToFun Toy.Codec.unitEmptySplitInvFun ∧
       ¬(Toy.Codec.codecOfSplit Toy.Codec.badRightInrSplitToFun Toy.Codec.badRightInrSplitInvFun =
             Toy.Codec.codecOfSplit Toy.Codec.unitEmptySplitToFun Toy.Codec.unitEmptySplitInvFun ↔
-          ∃ φ,
-            ∀ (b : Unit),
-              Toy.Codec.unitEmptySplitToFun b =
-                Sum.map id φ.toFun (Toy.Codec.badRightInrSplitToFun b))
+          ∃ (φ : Toy.Codec.Equiv Bool Empty),
+            ∀ (b : Unit), Toy.Codec.unitEmptySplitToFun b = Sum.map id φ.toFun (Toy.Codec.badRightInrSplitToFun b))
 Toy.Codec.ce_codecOfSplit_eq_iff_drop_hl2 : Toy.Codec.LeftInv Toy.Codec.emptyBoolSplitToFun Toy.Codec.emptyBoolSplitInvFun ∧
   Toy.Codec.RightInv Toy.Codec.emptyBoolSplitToFun Toy.Codec.emptyBoolSplitInvFun ∧
     Toy.Codec.RightInv Toy.Codec.badEmptyUnitSplitToFun Toy.Codec.badEmptyUnitSplitInvFun ∧
       ¬(Toy.Codec.codecOfSplit Toy.Codec.emptyBoolSplitToFun Toy.Codec.emptyBoolSplitInvFun =
-            Toy.Codec.codecOfSplit Toy.Codec.badEmptyUnitSplitToFun
-              Toy.Codec.badEmptyUnitSplitInvFun ↔
-          ∃ φ,
-            ∀ (b : Bool),
-              Toy.Codec.badEmptyUnitSplitToFun b =
-                Sum.map id φ.toFun (Toy.Codec.emptyBoolSplitToFun b))
+            Toy.Codec.codecOfSplit Toy.Codec.badEmptyUnitSplitToFun Toy.Codec.badEmptyUnitSplitInvFun ↔
+          ∃ (φ : Toy.Codec.Equiv Bool Unit),
+            ∀ (b : Bool), Toy.Codec.badEmptyUnitSplitToFun b = Sum.map id φ.toFun (Toy.Codec.emptyBoolSplitToFun b))
 Toy.Codec.ce_codecOfSplit_eq_iff_drop_hr2 : Toy.Codec.LeftInv Toy.Codec.unitEmptySplitToFun Toy.Codec.unitEmptySplitInvFun ∧
   Toy.Codec.RightInv Toy.Codec.unitEmptySplitToFun Toy.Codec.unitEmptySplitInvFun ∧
     Toy.Codec.LeftInv Toy.Codec.badRightInrSplitToFun Toy.Codec.badRightInrSplitInvFun ∧
       ¬(Toy.Codec.codecOfSplit Toy.Codec.unitEmptySplitToFun Toy.Codec.unitEmptySplitInvFun =
-            Toy.Codec.codecOfSplit Toy.Codec.badRightInrSplitToFun
-              Toy.Codec.badRightInrSplitInvFun ↔
-          ∃ φ,
-            ∀ (b : Unit),
-              Toy.Codec.badRightInrSplitToFun b =
-                Sum.map id φ.toFun (Toy.Codec.unitEmptySplitToFun b))
+            Toy.Codec.codecOfSplit Toy.Codec.badRightInrSplitToFun Toy.Codec.badRightInrSplitInvFun ↔
+          ∃ (φ : Toy.Codec.Equiv Empty Bool),
+            ∀ (b : Unit), Toy.Codec.badRightInrSplitToFun b = Sum.map id φ.toFun (Toy.Codec.unitEmptySplitToFun b))
 Toy.Codec.ce_intertwines_drop_heq : Toy.Codec.LeftInv Toy.Codec.splitBoolFalseToFun Toy.Codec.splitBoolFalseInvFun ∧
   Toy.Codec.RightInv Toy.Codec.splitBoolFalseToFun Toy.Codec.splitBoolFalseInvFun ∧
     Toy.Codec.LeftInv Toy.Codec.splitBoolTrueToFun Toy.Codec.splitBoolTrueInvFun ∧
@@ -2424,6 +2417,8 @@ Toy.Codec.ce_nonEmptyEnc_of_prefixDecEnc_of_ne_drop_hpde : false ≠ true ∧
 ```
 
 #### Non-vacuity witness signatures (`Witnesses.lean`)
+
+Printed with `set_option pp.funBinderTypes true` (see **How to read this section**): `nv_classicalCodec_encDec`, `nv_codecOfSplit_eq_iff_exists_intertwining_equiv`.
 
 ```lean
 Toy.Codec.nv_decEnc_imp_enc_injective : Toy.Codec.DecEnc Toy.Codec.boolToNatCodec
@@ -2443,7 +2438,7 @@ Toy.Codec.nv_dec_unique_of_lawful : Toy.Codec.boolToNatCodec.enc =
           (Toy.Codec.codecOfFiberSplit Toy.Codec.boolToNatCodec.enc Toy.Codec.boolToNatFiberSplit)
 Toy.Codec.nv_classicalCodec_decEnc_of_injective : Function.Injective Toy.Codec.boolToNatCodec.enc
 Toy.Codec.nv_classicalCodec_encDec : Toy.Codec.EncDec (Toy.Codec.classicalCodec Toy.Codec.boolToNatCodec.enc) ∧
-  Toy.Codec.EncDec (Toy.Codec.classicalCodec fun x => ())
+  Toy.Codec.EncDec (Toy.Codec.classicalCodec fun (x : Bool) => ())
 Toy.Codec.nv_classicalCodec_recover_of_lawful : Toy.Codec.DecEnc Toy.Codec.boolToNatCodec ∧ Toy.Codec.EncDec Toy.Codec.boolToNatCodec
 Toy.Codec.nv_codecOfFiberSplit_decEnc_of_injective : Function.Injective Toy.Codec.boolToNatCodec.enc ∧
   Nonempty (Toy.Codec.FiberSplit Toy.Codec.boolToNatCodec.enc)
@@ -2495,8 +2490,7 @@ Toy.Codec.nv_codecOfSplit_eq_iff_exists_intertwining_equiv : (Toy.Codec.LeftInv 
       Toy.Codec.LeftInv Toy.Codec.natBoolSubSplitToFun Toy.Codec.natBoolSubSplitInvFun ∧
         Toy.Codec.RightInv Toy.Codec.natBoolSubSplitToFun Toy.Codec.natBoolSubSplitInvFun ∧
           Toy.Codec.codecOfSplit Toy.Codec.natBoolSplitToFun Toy.Codec.natBoolSplitInvFun =
-              Toy.Codec.codecOfSplit Toy.Codec.natBoolSubSplitToFun
-                Toy.Codec.natBoolSubSplitInvFun ∧
+              Toy.Codec.codecOfSplit Toy.Codec.natBoolSubSplitToFun Toy.Codec.natBoolSubSplitInvFun ∧
             ∀ (b : Nat),
               Toy.Codec.natBoolSubSplitToFun b =
                 Sum.map id Toy.Codec.natBoolSubEquiv.toFun (Toy.Codec.natBoolSplitToFun b)) ∧
@@ -2506,10 +2500,8 @@ Toy.Codec.nv_codecOfSplit_eq_iff_exists_intertwining_equiv : (Toy.Codec.LeftInv 
         Toy.Codec.RightInv Toy.Codec.splitBoolTrueToFun Toy.Codec.splitBoolTrueInvFun ∧
           Toy.Codec.codecOfSplit Toy.Codec.splitBoolFalseToFun Toy.Codec.splitBoolFalseInvFun ≠
               Toy.Codec.codecOfSplit Toy.Codec.splitBoolTrueToFun Toy.Codec.splitBoolTrueInvFun ∧
-            ¬∃ φ,
-                ∀ (b : Bool),
-                  Toy.Codec.splitBoolTrueToFun b =
-                    Sum.map id φ.toFun (Toy.Codec.splitBoolFalseToFun b)
+            ¬∃ (φ : Toy.Codec.Equiv Unit Unit),
+                ∀ (b : Bool), Toy.Codec.splitBoolTrueToFun b = Sum.map id φ.toFun (Toy.Codec.splitBoolFalseToFun b)
 Toy.Codec.nv_nonEmptyEnc_of_prefixDecEnc_of_ne : Toy.Codec.PrefixDecEnc Toy.Codec.varLenBoolFramedCodec ∧
   false ≠ true ∧ Toy.Codec.NonEmptyEnc Toy.Codec.varLenBoolFramedCodec.enc
 ```
