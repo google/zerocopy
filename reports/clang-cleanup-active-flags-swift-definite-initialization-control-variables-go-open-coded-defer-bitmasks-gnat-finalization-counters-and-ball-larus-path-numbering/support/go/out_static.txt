@@ -1,0 +1,88 @@
+## mode=opt: defer kinds (file:line: kind)
+./deferprobe.go:30:2: open-coded defer
+./deferprobe.go:39:3: open-coded defer
+./deferprobe.go:61:2: open-coded defer
+./deferprobe.go:62:2: open-coded defer
+./deferprobe.go:63:2: open-coded defer
+./deferprobe.go:64:2: open-coded defer
+./deferprobe.go:65:2: open-coded defer
+./deferprobe.go:66:2: open-coded defer
+./deferprobe.go:67:2: open-coded defer
+./deferprobe.go:68:2: open-coded defer
+./deferprobe.go:76:2: stack-allocated defer
+./deferprobe.go:77:2: stack-allocated defer
+./deferprobe.go:78:2: stack-allocated defer
+./deferprobe.go:79:2: stack-allocated defer
+./deferprobe.go:80:2: stack-allocated defer
+./deferprobe.go:81:2: stack-allocated defer
+./deferprobe.go:82:2: stack-allocated defer
+./deferprobe.go:83:2: stack-allocated defer
+./deferprobe.go:84:2: stack-allocated defer
+./deferprobe.go:93:3: heap-allocated defer
+./deferprobe.go:102:2: open-coded defer
+./deferprobe.go:103:2: open-coded defer
+./deferprobe.go:104:2: open-coded defer
+./deferprobe.go:105:2: open-coded defer
+./deferprobe.go:119:2: stack-allocated defer
+./deferprobe.go:120:2: stack-allocated defer
+./deferprobe.go:121:2: stack-allocated defer
+./deferprobe.go:122:2: stack-allocated defer
+./deferprobe.go:138:2: open-coded defer
+./deferprobe.go:152:3: heap-allocated defer
+## mode=opt: per-function frame size, code bytes, deferreturn calls
+func	frame_bytes	text_bytes	deferreturn_calls	deferproc_calls
+NoDefer	24	67	0	0
+DeferUncond	56	143	1	0
+DeferCond	56	173	1	0
+ManualCond	24	101	0	0
+Defer8	96	329	1	0
+Defer9	456	369	2	9
+DeferLoop	56	206	2	1
+Defer4Ret3	64	374	1	0
+Defer4Ret4	216	404	5	4
+PanicOpen	56	165	1	0
+PanicLoop	56	233	2	1
+## mode=N: defer kinds (file:line: kind)
+./deferprobe.go:30:2: stack-allocated defer
+./deferprobe.go:39:3: stack-allocated defer
+./deferprobe.go:61:2: stack-allocated defer
+./deferprobe.go:62:2: stack-allocated defer
+./deferprobe.go:63:2: stack-allocated defer
+./deferprobe.go:64:2: stack-allocated defer
+./deferprobe.go:65:2: stack-allocated defer
+./deferprobe.go:66:2: stack-allocated defer
+./deferprobe.go:67:2: stack-allocated defer
+./deferprobe.go:68:2: stack-allocated defer
+./deferprobe.go:76:2: stack-allocated defer
+./deferprobe.go:77:2: stack-allocated defer
+./deferprobe.go:78:2: stack-allocated defer
+./deferprobe.go:79:2: stack-allocated defer
+./deferprobe.go:80:2: stack-allocated defer
+./deferprobe.go:81:2: stack-allocated defer
+./deferprobe.go:82:2: stack-allocated defer
+./deferprobe.go:83:2: stack-allocated defer
+./deferprobe.go:84:2: stack-allocated defer
+./deferprobe.go:93:3: heap-allocated defer
+./deferprobe.go:102:2: stack-allocated defer
+./deferprobe.go:103:2: stack-allocated defer
+./deferprobe.go:104:2: stack-allocated defer
+./deferprobe.go:105:2: stack-allocated defer
+./deferprobe.go:119:2: stack-allocated defer
+./deferprobe.go:120:2: stack-allocated defer
+./deferprobe.go:121:2: stack-allocated defer
+./deferprobe.go:122:2: stack-allocated defer
+./deferprobe.go:138:2: stack-allocated defer
+./deferprobe.go:152:3: heap-allocated defer
+## mode=N: per-function frame size, code bytes, deferreturn calls
+func	frame_bytes	text_bytes	deferreturn_calls	deferproc_calls
+NoDefer	32	85	0	0
+DeferUncond	112	165	2	1
+DeferCond	112	197	2	1
+ManualCond	40	127	0	0
+Defer8	416	380	2	8
+Defer9	464	414	2	9
+DeferLoop	80	221	2	1
+Defer4Ret3	232	405	4	4
+Defer4Ret4	232	471	5	4
+PanicOpen	96	165	2	1
+PanicLoop	64	250	2	1

@@ -1,0 +1,982 @@
+Source recreated from tree for Fin_Probe (body)
+-----------------------------------------------
+
+with ada;
+with ada.ada__text_io;
+with ada__strings.ada__strings.ada__strings__text_buffers;
+with system.system__img_int;
+with system.system__concat_3;
+with system.system__return_stack;
+with ada.ada__tags;
+with system.system__finalization_primitives;
+with system;
+with system.system__soft_links;
+with system.system__standard_library;
+with ada.ada__exceptions;
+with system.system__storage_elements;
+
+package body fin_probe is
+
+   procedure fin_probe__initialize (x : in out fin_probe__ctrl) is
+   begin
+      fin_probe__inits := fin_probe__inits {+} 1;
+      if fin_probe__inits = fin_probe__fail_at then
+         [constraint_error "explicit raise"]
+      end if;
+      x.v := fin_probe__inits;
+      return;
+   end fin_probe__initialize;
+
+   procedure fin_probe__finalize (x : in out fin_probe__ctrl) is
+   begin
+      fin_probe__fins := fin_probe__fins {+} 1;
+      if fin_probe__trace then
+         B1b : declare
+         begin
+            subtype fin_probe__finalize__B1b__TS2bS is string (1 ..
+              11);
+            S2b : string (1 .. 11);
+            P3b : natural;
+            $system__img_int__impl__image_integer (x.v, S2b, P3b);
+            R4b : constant natural := P3b;
+            [subtype fin_probe__finalize__B1b__T5b is integer range
+              1 .. R4b]
+            [subtype fin_probe__finalize__B1b__T6b is string (
+              fin_probe__finalize__B1b__T5b)]
+            reference fin_probe__finalize__B1b__T6b
+            L9b : constant integer := S2b (1 .. R4b)'length;
+            L12b : constant integer := 7 + L9b;
+            L13b : constant integer := L12b + 1;
+            subtype fin_probe__finalize__B1b__TS14bS is string (1 ..
+              19);
+            S14b : string (1 .. 19);
+            $system__concat_3__str_concat_3 (S14b, " fin(V=", S2b (
+              1 .. R4b), ")");
+            [constraint_error when
+              1 + (L13b - 1) > 19
+              "range check failed"]
+            [subtype fin_probe__finalize__B1b__T15b is integer range
+              1 .. 1 {+} (L13b - 1)]
+            [subtype fin_probe__finalize__B1b__T16b is string (
+              fin_probe__finalize__B1b__T15b)]
+            reference fin_probe__finalize__B1b__T16b
+            ada.ada__text_io.ada__text_io__put__4 (S14b (1 .. 1 {+} (
+              L13b - 1)));
+         end B1b;
+      end if;
+      return;
+   end fin_probe__finalize;
+
+   function fin_probe__make (v : integer) return fin_probe__ctrl is
+   begin
+      R19b : declare
+         N23b : aliased system__finalization_primitives__master_node;
+         $system__finalization_primitives__master_nodeIP (N23b);
+         null;
+         type fin_probe__make__R19b__A20b is access all fin_probe__ctrl;
+         freeze fin_probe__make__R19b__A20b []
+         R21b : constant fin_probe__make__R19b__A20b := new
+           fin_probe__ctrl[storage_pool = system__return_stack__rs_pool]
+           [procedure_to_call = __builtin_return_slot];
+         R18b : fin_probe__ctrl renames R21b.all;
+         $ada__finalization__controlledIP (
+           ada__finalization__controlled(R18b), P5s => 0);
+         null;
+         R18b.v := v;
+         R18b._tag := fin_probe__ctrlP;
+         $system__finalization_primitives__attach_object_to_node (R18b'
+           address, fin_probe__ctrlFD'unrestricted_access, N23b);
+         procedure fin_probe__make__R19b___finalizer;
+         freeze fin_probe__make__R19b___finalizer []
+      begin
+
+           $system__finalization_primitives__suppress_object_finalize_at_end
+           (N23b);
+         return R18b;
+
+         procedure fin_probe__make__R19b___finalizer is
+         begin
+            system__soft_links__abort_defer.all;
+            $system__finalization_primitives__finalize_object (N23b,
+              fin_probe__ctrlFD'unrestricted_access);
+            system__soft_links__abort_undefer.all;
+            return;
+         end fin_probe__make__R19b___finalizer;
+      end R19b;
+      at end
+         fin_probe__make__R19b___finalizer;
+   end fin_probe__make;
+
+   procedure fin_probe__use_rec is
+      rMN : aliased system__finalization_primitives__master_node;
+      $system__finalization_primitives__master_nodeIP (rMN);
+      r : fin_probe__rec3;
+      B27b : begin
+         system__soft_links__abort_defer.all;
+         fin_probe__rec3IP (r);
+         B28b : begin
+            fin_probe__rec3DI (r);
+            $system__finalization_primitives__attach_object_to_node (r'
+              address, fin_probe__rec3FD'unrestricted_access, rMN);
+         exception
+            when others =>
+               fin_probe__rec3DF (r, false);
+               raise;
+         end B28b;
+      at end
+         system__standard_library__abort_undefer_direct;
+      end B27b;
+      procedure fin_probe__use_rec___finalizer;
+      freeze fin_probe__use_rec___finalizer []
+   begin
+      fin_probe__inits := fin_probe__inits {+} r.c.v;
+
+      procedure fin_probe__use_rec___finalizer is
+         A30b : constant boolean :=
+           $ada__exceptions__triggered_by_abort;
+         R29b : boolean := false;
+      begin
+         system__soft_links__abort_defer.all;
+         B32b : begin
+            $system__finalization_primitives__finalize_object (rMN,
+              fin_probe__rec3FD'unrestricted_access);
+         exception
+            when others =>
+               R29b := true;
+         end B32b;
+         system__soft_links__abort_undefer.all;
+         if R29b and then not A30b then
+            [program_error "finalize raised exception"]
+         end if;
+         return;
+      end fin_probe__use_rec___finalizer;
+
+      return;
+   end fin_probe__use_rec;
+   at end
+      fin_probe__use_rec___finalizer;
+
+   procedure fin_probe__use_arr (n : positive) is
+      aMN : aliased system__finalization_primitives__master_node;
+      $system__finalization_primitives__master_nodeIP (aMN);
+      subtype fin_probe__use_arr__TaS is fin_probe__arr (1 .. n);
+      a : fin_probe__arr (1 .. n);
+      B34b : begin
+         system__soft_links__abort_defer.all;
+         fin_probe__arrIP (a);
+         B35b : begin
+            fin_probe__arrDI (a);
+            $system__finalization_primitives__attach_object_to_node (
+              system__address!(system__address!(a'address) -
+              system__address!(integer(fin_probe__arr'descriptor_size) /
+              8)), fin_probe__arrFD'unrestricted_access, aMN);
+         exception
+            when others =>
+               fin_probe__arrDF (a, false);
+               raise;
+         end B35b;
+      at end
+         system__standard_library__abort_undefer_direct;
+      end B34b;
+      procedure fin_probe__use_arr___finalizer;
+      freeze fin_probe__use_arr___finalizer []
+   begin
+      [constraint_error when
+        not (integer(n) in 1 .. n)
+        "index check failed"]
+      fin_probe__inits := fin_probe__inits {+} a (n).v;
+
+      procedure fin_probe__use_arr___finalizer is
+         A37b : constant boolean :=
+           $ada__exceptions__triggered_by_abort;
+         R36b : boolean := false;
+      begin
+         system__soft_links__abort_defer.all;
+         B39b : begin
+            $system__finalization_primitives__finalize_object (aMN,
+              fin_probe__arrFD'unrestricted_access);
+         exception
+            when others =>
+               R36b := true;
+         end B39b;
+         system__soft_links__abort_undefer.all;
+         if R36b and then not A37b then
+            [program_error "finalize raised exception"]
+         end if;
+         return;
+      end fin_probe__use_arr___finalizer;
+
+      return;
+   end fin_probe__use_arr;
+   at end
+      fin_probe__use_arr___finalizer;
+
+   procedure fin_probe__use_block (flag : boolean) is
+      subtype fin_probe__use_block__TM43bS is
+        system__finalization_primitives__finalization_master (true,
+        false, false);
+      M43b : system__finalization_primitives__finalization_master (true,
+        false, false);
+      $system__finalization_primitives__finalization_masterIP (M43b,
+        true, false, false, _init_level => 2);
+      xMN : aliased system__finalization_primitives__master_node;
+      $system__finalization_primitives__master_nodeIP (xMN);
+      x : fin_probe__ctrl;
+      B41b : begin
+         system__soft_links__abort_defer.all;
+         fin_probe__ctrlIP (x, P8s => 0);
+         fin_probe__initialize (x);
+         $system__finalization_primitives__attach_object_to_master (x'
+           address, fin_probe__ctrlFD'unrestricted_access, xMN'
+           unrestricted_access, M43b);
+      at end
+         system__standard_library__abort_undefer_direct;
+      end B41b;
+      yMN : aliased system__finalization_primitives__master_node;
+      $system__finalization_primitives__master_nodeIP (yMN);
+      y : fin_probe__ctrl := fin_probe__make ((if flag then 1 else
+        2));
+      $system__finalization_primitives__attach_object_to_master (y'
+        address, fin_probe__ctrlFD'unrestricted_access, yMN'
+        unrestricted_access, M43b);
+      y._tag := fin_probe__ctrlP;
+      procedure fin_probe__use_block___finalizer;
+      freeze fin_probe__use_block___finalizer []
+   begin
+      fin_probe__inits := fin_probe__inits {+} x.v {+} y.v;
+
+      procedure fin_probe__use_block___finalizer is
+         A45b : constant boolean :=
+           $ada__exceptions__triggered_by_abort;
+         R44b : boolean := false;
+      begin
+         system__soft_links__abort_defer.all;
+         B50b : begin
+            $system__finalization_primitives__finalize_master (M43b);
+         exception
+            when others =>
+               R44b := true;
+         end B50b;
+         system__soft_links__abort_undefer.all;
+         if R44b and then not A45b then
+            [program_error "finalize raised exception"]
+         end if;
+         return;
+      end fin_probe__use_block___finalizer;
+
+      return;
+   end fin_probe__use_block;
+   at end
+      fin_probe__use_block___finalizer;
+
+   function fin_probe__pick (flag : boolean) return integer is
+   begin
+      B52b : declare
+         N56b : aliased system__finalization_primitives__master_node;
+         $system__finalization_primitives__master_nodeIP (N56b);
+         null;
+         procedure fin_probe__pick__B52b___finalizer;
+         freeze fin_probe__pick__B52b___finalizer []
+      begin
+         if flag then
+            type fin_probe__pick__B52b__A54b is access all
+              fin_probe__ctrl;
+            freeze fin_probe__pick__B52b__A54b []
+            R53b : constant fin_probe__pick__B52b__A54b :=
+              fin_probe__make (3)'reference;
+            $system__finalization_primitives__attach_object_to_node (
+              R53b.all'address, fin_probe__ctrlFD'unrestricted_access,
+              N56b);
+            return R53b.all.v;
+         else
+            return 0;
+         end if;
+
+         procedure fin_probe__pick__B52b___finalizer is
+         begin
+            system__soft_links__abort_defer.all;
+            $system__finalization_primitives__finalize_object (N56b,
+              fin_probe__ctrlFD'unrestricted_access);
+            system__soft_links__abort_undefer.all;
+            return;
+         end fin_probe__pick__B52b___finalizer;
+      end B52b;
+      at end
+         fin_probe__pick__B52b___finalizer;
+   end fin_probe__pick;
+begin
+   null;
+end fin_probe;
+
+Source recreated from tree for Fin_Probe (spec)
+-----------------------------------------------
+
+with ada;
+with ada;
+with ada.ada__finalization;
+with ada.ada__strings.ada__strings__text_buffers;
+with ada.ada__streams;
+with ada.ada__tags;
+with system;
+with system.system__put_images;
+with system.system__stream_attributes;
+with system.system__return_stack;
+with system.system__soft_links;
+with system.system__standard_library;
+with system.system__finalization_primitives;
+with ada.ada__exceptions;
+with system.system__storage_elements;
+with system.system__secondary_stack;
+fin_probe_E : short_integer := 0;
+
+package fin_probe is
+   type fin_probe__ctrl is new ada.ada__finalization.
+     ada__finalization__controlled with record
+      _parent : ada__finalization__controlled;
+      v : integer := 0;
+   end record;
+   procedure fin_probe__initialize (x : in out fin_probe__ctrl);
+   procedure fin_probe__finalize (x : in out fin_probe__ctrl);
+   fin_probe__fail_at : integer := 0;
+   fin_probe__inits : integer := 0;
+   fin_probe__fins : integer := 0;
+   fin_probe__trace : boolean := false;
+   type fin_probe__rec3 is record
+      a : fin_probe__ctrl;
+      b : fin_probe__ctrl;
+      c : fin_probe__ctrl;
+   end record;
+   type fin_probe__arr is array (1 .. 16#7FFF_FFFF# range <>) of
+     fin_probe__ctrl;
+   procedure fin_probe__use_rec;
+   procedure fin_probe__use_arr (n : positive);
+   procedure fin_probe__use_block (flag : boolean);
+   function fin_probe__pick (flag : boolean) return integer;
+   function fin_probe___size (x : fin_probe__ctrl) return
+     long_long_integer;
+   procedure fin_probe__ctrlPI (s : in out
+     ada__strings__text_buffers__Troot_buffer_typeC; v :
+     fin_probe__ctrl);
+   procedure fin_probe__ctrlSR (s : not null access
+     ada__streams__Troot_stream_typeC; v : out fin_probe__ctrl; sL :
+     natural);
+   procedure fin_probe__ctrlSW (s : not null access
+     ada__streams__Troot_stream_typeC; v : fin_probe__ctrl; sL :
+     natural);
+   function fin_probe__ctrlSI (s : not null access
+     ada__streams__Troot_stream_typeC; sL : natural) return
+     fin_probe__ctrl;
+   procedure fin_probe__ctrlSO (s : not null access
+     ada__streams__Troot_stream_typeC; v : fin_probe__ctrl; sL :
+     natural);
+   function fin_probe__Oeq (x : fin_probe__ctrl; y : fin_probe__ctrl)
+     return boolean;
+   procedure fin_probe___assign (x : out fin_probe__ctrl; y :
+     fin_probe__ctrl);
+   procedure fin_probe__ctrlDA (v : in out fin_probe__ctrl; f : boolean :=
+     true);
+   procedure fin_probe__ctrlDF (v : in out fin_probe__ctrl; f : boolean :=
+     true);
+   freeze fin_probe__ctrl [
+      null;
+      subtype fin_probe__TctrlTS is ada__tags__dispatch_table_wrapper (
+        3);
+      fin_probe__ctrlT : aliased constant
+        ada__tags__dispatch_table_wrapper (3);
+      $pragma import (ada, fin_probe__ctrlT, "fin_probe__ctrlT");
+      fin_probe__ctrlP : static constant ada__tags__tag :=
+        ada__tags__tag!(fin_probe__ctrlT.prims_ptr'address);
+      fin_probe__ctrlY : constant system__address := fin_probe__ctrlT.
+        predef_prims'address;
+      subtype fin_probe__ctrlG is ada__tags__address_array (1 .. 3);
+      type fin_probe__ctrlH is access fin_probe__ctrlG;
+      freeze fin_probe__ctrlH []
+      freeze fin_probe__initialize []
+      freeze fin_probe__finalize []
+      freeze fin_probe___size []
+      freeze fin_probe__ctrlPI []
+      freeze fin_probe__ctrlSR []
+      freeze fin_probe__ctrlSW []
+      freeze fin_probe__ctrlSI []
+      freeze fin_probe__ctrlSO []
+      freeze fin_probe__Oeq []
+      freeze fin_probe___assign []
+      freeze fin_probe__ctrlDA []
+      freeze fin_probe__ctrlDF []
+      procedure fin_probe__ctrlIP (_init : out fin_probe__ctrl; P8s :
+        natural := 0) is
+      begin
+         if P8s = 0 then
+            _init._tag := fin_probe__ctrlP;
+         end if;
+         if P8s /= 3 then
+            $ada__finalization__controlledIP (_init._parent, 1);
+         end if;
+         if P8s /= 3 then
+            _init.v := 0;
+         end if;
+         null;
+         return;
+      end fin_probe__ctrlIP;
+      procedure fin_probe__ctrlFD (v : system__address) is
+      begin
+         B11s : declare
+            type fin_probe__ctrlFD__B11s__P9s is access all
+              fin_probe__ctrl;
+            for fin_probe__ctrlFD__B11s__P9s'storage_size use 0;
+            freeze fin_probe__ctrlFD__B11s__P9s []
+         begin
+            fin_probe__finalize (fin_probe__ctrlFD__B11s__P9s!(v).all);
+         end B11s;
+         return;
+      end fin_probe__ctrlFD;
+      function fin_probe___size (x : fin_probe__ctrl) return
+        long_long_integer is
+      begin
+         return long_long_integer(x'size);
+      end fin_probe___size;
+      procedure fin_probe__ctrlPI (s : in out
+        ada__strings__text_buffers__Troot_buffer_typeC; v :
+        fin_probe__ctrl) is
+      begin
+         $system__put_images__put_image_unknown (s, "FIN_PROBE.CTRL");
+         return;
+      end fin_probe__ctrlPI;
+      procedure fin_probe__ctrlSR (s : not null access
+        ada__streams__Troot_stream_typeC; v : out fin_probe__ctrl; sL :
+        natural) is
+         A15s : natural := natural'min(2, sL);
+      begin
+         $ada__finalization__controlledSR__2 (s, v._parent, sL => A15s);
+         v.v := integer!($system__stream_attributes__i_i (s));
+         return;
+      end fin_probe__ctrlSR;
+      procedure fin_probe__ctrlSW (s : not null access
+        ada__streams__Troot_stream_typeC; v : fin_probe__ctrl; sL :
+        natural) is
+         A17s : natural := natural'min(2, sL);
+      begin
+         $ada__finalization__controlledSW__2 (s, v._parent, sL => A17s);
+         $system__stream_attributes__w_i (s, v.v);
+         return;
+      end fin_probe__ctrlSW;
+      function fin_probe__ctrlSI (s : not null access
+        ada__streams__Troot_stream_typeC; sL : natural) return
+        fin_probe__ctrl is
+         A19s : natural := natural'min(2, sL);
+      begin
+         R20s : declare
+            N25s : aliased system__finalization_primitives__master_node;
+            $system__finalization_primitives__master_nodeIP (N25s);
+            null;
+            type fin_probe__ctrlSI__R20s__A21s is access all
+              fin_probe__ctrl;
+            freeze fin_probe__ctrlSI__R20s__A21s []
+            R22s : constant fin_probe__ctrlSI__R20s__A21s := new
+              fin_probe__ctrl[storage_pool =
+              system__return_stack__rs_pool][procedure_to_call =
+              __builtin_return_slot];
+            v : fin_probe__ctrl renames R22s.all;
+            $system__finalization_primitives__attach_object_to_node (v'
+              address, fin_probe__ctrlFD'unrestricted_access, N25s);
+            B24s : begin
+               system__soft_links__abort_defer.all;
+               fin_probe__ctrlIP (v, P8s => 0);
+               fin_probe__initialize (v);
+            at end
+               system__standard_library__abort_undefer_direct;
+            end B24s;
+            procedure fin_probe__ctrlSI__R20s___finalizer;
+            freeze fin_probe__ctrlSI__R20s___finalizer []
+         begin
+            B27s : declare
+            begin
+               fin_probe__ctrlSR (s, v, sL => A19s);
+            end B27s;
+
+              $system__finalization_primitives__suppress_object_finalize_at_end
+              (N25s);
+            return v;
+            procedure fin_probe__ctrlSI__R20s___finalizer is
+            begin
+               system__soft_links__abort_defer.all;
+               $system__finalization_primitives__finalize_object (N25s,
+                 fin_probe__ctrlFD'unrestricted_access);
+               system__soft_links__abort_undefer.all;
+               return;
+            end fin_probe__ctrlSI__R20s___finalizer;
+         end R20s;
+         at end
+            fin_probe__ctrlSI__R20s___finalizer;
+      end fin_probe__ctrlSI;
+      procedure fin_probe__ctrlSO (s : not null access
+        ada__streams__Troot_stream_typeC; v : fin_probe__ctrl; sL :
+        natural) is
+         A31s : natural := natural'min(2, sL);
+      begin
+         fin_probe__ctrlSW (s, v, sL => A31s);
+         return;
+      end fin_probe__ctrlSO;
+      function fin_probe__Oeq (x : fin_probe__ctrl; y : fin_probe__ctrl)
+        return boolean is
+      begin
+         return $ada__finalization__Oeq__3 (x._parent, y._parent) and then
+           x.v = y.v;
+      end fin_probe__Oeq;
+      procedure fin_probe___assign (x : out fin_probe__ctrl; y :
+        fin_probe__ctrl) is
+      begin
+         B34s : begin
+            system__soft_links__abort_defer.all;
+            B35s : begin
+               if not (x'address = y'address) then
+                  fin_probe__finalize (x);
+                  A33s : ada__tags__tag := x._tag;
+                  x := y;
+                  x._tag := A33s;
+                  null;
+               end if;
+            exception
+               when e : others =>
+                  $ada__exceptions__raise_from_controlled_operation (e);
+            end B35s;
+         at end
+            system__standard_library__abort_undefer_direct;
+         end B34s;
+         return;
+      end fin_probe___assign;
+      procedure fin_probe__ctrlDA (v : in out fin_probe__ctrl; f :
+        boolean := true) is
+      begin
+         null;
+         return;
+      end fin_probe__ctrlDA;
+      procedure fin_probe__ctrlDF (v : in out fin_probe__ctrl; f :
+        boolean := true) is
+      begin
+         fin_probe__finalize (v);
+         return;
+      end fin_probe__ctrlDF;
+   ]
+   freeze fin_probe__TctrlC [
+      procedure fin_probe__TctrlCFD (v : system__address) is
+      begin
+         B37s : declare
+            type fin_probe__TctrlCFD__B37s__P10s is access all
+              fin_probe__TctrlC;
+            for fin_probe__TctrlCFD__B37s__P10s'storage_size use 0;
+            freeze fin_probe__TctrlCFD__B37s__P10s []
+         begin
+            [type fin_probe__TctrlCFD__B37s__T38s is procedure (v : in out
+              fin_probe__TctrlC, f : boolean)]
+            [subtype fin_probe__TctrlCFD__B37s__T39s is access
+              fin_probe__TctrlCFD__B37s__T38s]
+            fin_probe__TctrlCFD__B37s__T39s!(
+              ada__tags__predef_prims_table_ptr!(ada__tags__addr_ptr!(
+              system__address!(system__address!(system__address!(
+              fin_probe__TctrlCFD__B37s__P10s!(v).all._tag)) - 24)).all).all
+              (9)).all (fin_probe__TctrlCFD__B37s__P10s!(v).all, true);
+         end B37s;
+         return;
+      end fin_probe__TctrlCFD;
+   ]
+   freeze fin_probe__rec3 [
+      function fin_probe__rec3EQ (x : fin_probe__rec3; y :
+        fin_probe__rec3) return boolean is
+      begin
+         return fin_probe__Oeq (x.a, y.a) and then fin_probe__Oeq (x.b,
+           y.b) and then fin_probe__Oeq (x.c, y.c);
+      end fin_probe__rec3EQ;
+      procedure fin_probe__rec3DI (v : in out fin_probe__rec3) is
+      begin
+         return;
+      end fin_probe__rec3DI;
+      procedure fin_probe__rec3DA (v : in out fin_probe__rec3; f :
+        boolean := true) is
+      begin
+         B48s : declare
+            A41s : constant boolean :=
+              $ada__exceptions__triggered_by_abort;
+            R40s : boolean := false;
+         begin
+            B49s : begin
+               null;
+            exception
+               when others =>
+                  R40s := true;
+            end B49s;
+            B50s : begin
+               null;
+            exception
+               when others =>
+                  R40s := true;
+            end B50s;
+            B51s : begin
+               null;
+            exception
+               when others =>
+                  R40s := true;
+            end B51s;
+            if R40s and then not A41s then
+               [program_error "finalize raised exception"]
+            end if;
+         end B48s;
+         return;
+      end fin_probe__rec3DA;
+      procedure fin_probe__rec3DF (v : in out fin_probe__rec3; f :
+        boolean := true) is
+      begin
+         B52s : declare
+            A43s : constant boolean :=
+              $ada__exceptions__triggered_by_abort;
+            R42s : boolean := false;
+         begin
+            B53s : declare
+            begin
+               B54s : begin
+                  fin_probe__finalize (v.c);
+               exception
+                  when others =>
+                     R42s := true;
+               end B54s;
+               B55s : begin
+                  fin_probe__finalize (v.b);
+               exception
+                  when others =>
+                     R42s := true;
+               end B55s;
+               B56s : begin
+                  fin_probe__finalize (v.a);
+               exception
+                  when others =>
+                     R42s := true;
+               end B56s;
+            end B53s;
+            if R42s and then not A43s then
+               [program_error "finalize raised exception"]
+            end if;
+         end B52s;
+         return;
+      end fin_probe__rec3DF;
+      procedure fin_probe__rec3FD (v : system__address) is
+      begin
+         B57s : declare
+            type fin_probe__rec3FD__B57s__P44s is access all
+              fin_probe__rec3;
+            for fin_probe__rec3FD__B57s__P44s'storage_size use 0;
+            freeze fin_probe__rec3FD__B57s__P44s []
+         begin
+            fin_probe__rec3DF (fin_probe__rec3FD__B57s__P44s!(v).all, f =>
+              true);
+         end B57s;
+         return;
+      end fin_probe__rec3FD;
+      procedure fin_probe__rec3IP (_init : out fin_probe__rec3) is
+         C1 : integer := 0;
+         procedure fin_probe__rec3IP___finalizer (v : in out
+           fin_probe__rec3; f : boolean := true) is
+         begin
+            B58s : declare
+               A46s : constant boolean :=
+                 $ada__exceptions__triggered_by_abort;
+               R45s : boolean := false;
+            begin
+               B59s : declare
+                  L3 : label
+                  L2 : label
+                  L1 : label
+                  L0 : label
+               begin
+                  case C1 is
+                     when 3 =>
+                        goto L3;
+                     when 2 =>
+                        goto L2;
+                     when 1 =>
+                        goto L1;
+                     when others =>
+                        goto L0;
+                  end case;
+                  <<L3>>
+                  B60s : begin
+                     fin_probe__finalize (v.c);
+                  exception
+                     when others =>
+                        R45s := true;
+                  end B60s;
+                  <<L2>>
+                  B61s : begin
+                     fin_probe__finalize (v.b);
+                  exception
+                     when others =>
+                        R45s := true;
+                  end B61s;
+                  <<L1>>
+                  B62s : begin
+                     fin_probe__finalize (v.a);
+                  exception
+                     when others =>
+                        R45s := true;
+                  end B62s;
+                  <<L0>>
+               end B59s;
+               if R45s and then not A46s then
+                  [program_error "finalize raised exception"]
+               end if;
+            end B58s;
+            return;
+         end fin_probe__rec3IP___finalizer;
+      begin
+         fin_probe__ctrlIP (_init.a, P8s => 0);
+         fin_probe__initialize (_init.a);
+         C1 := C1 {+} 1;
+         fin_probe__ctrlIP (_init.b, P8s => 0);
+         fin_probe__initialize (_init.b);
+         C1 := C1 {+} 1;
+         fin_probe__ctrlIP (_init.c, P8s => 0);
+         fin_probe__initialize (_init.c);
+         C1 := C1 {+} 1;
+         return;
+      exception
+         when others =>
+            fin_probe__rec3IP___finalizer (_init, false);
+            raise;
+      end fin_probe__rec3IP;
+   ]
+   freeze fin_probe__arr [
+      procedure fin_probe__arrIP (_init : in out fin_probe__arr) is
+         subtype fin_probe__arrIP__S80s is fin_probe__arr (_init'first(
+           1) .. _init'last(1));
+      begin
+         L81s : for J1 in _init'first(1) .. _init'last(1) loop
+            fin_probe__ctrlIP (_init (J1), P8s => 0);
+         end loop L81s;
+         return;
+      end fin_probe__arrIP;
+      procedure fin_probe__arrDI (v : in out fin_probe__arr) is
+         subtype fin_probe__arrDI__S83s is fin_probe__arr (v'first(
+           1) .. v'last(1));
+      begin
+         B84s : declare
+            C63s : integer := 0;
+         begin
+            L85s : for J1 in v'first(1) .. v'last(1) loop
+               B87s : begin
+                  fin_probe__initialize (v (J1));
+                  C63s := C63s + 1;
+               exception
+                  when others =>
+                     B88s : declare
+                        A65s : constant boolean :=
+                          $ada__exceptions__triggered_by_abort;
+                        R64s : boolean := false;
+                     begin
+                        C63s := v'length(1) - C63s;
+                        L89s : for F1 in reverse v'first(1) .. v'last(
+                          1) loop
+                           if C63s > 0 then
+                              C63s := C63s - 1;
+                           else
+                              B91s : begin
+                                 fin_probe__finalize (v (F1));
+                              exception
+                                 when others =>
+                                    R64s := true;
+                              end B91s;
+                           end if;
+                        end loop L89s;
+                        if R64s and then not A65s then
+                           [program_error "finalize raised exception"]
+                        end if;
+                        raise;
+                     end B88s;
+               end B87s;
+            end loop L85s;
+         end B84s;
+         return;
+      end fin_probe__arrDI;
+      procedure fin_probe__arrDA (v : in out fin_probe__arr; f :
+        boolean := true) is
+         subtype fin_probe__arrDA__S92s is fin_probe__arr (v'first(
+           1) .. v'last(1));
+      begin
+         B93s : declare
+            A67s : constant boolean :=
+              $ada__exceptions__triggered_by_abort;
+            R66s : boolean := false;
+         begin
+            L94s : for J1 in v'first(1) .. v'last(1) loop
+               B96s : begin
+                  null;
+               exception
+                  when others =>
+                     R66s := true;
+               end B96s;
+            end loop L94s;
+            if R66s and then not A67s then
+               [program_error "finalize raised exception"]
+            end if;
+         end B93s;
+         return;
+      end fin_probe__arrDA;
+      procedure fin_probe__arrDF (v : in out fin_probe__arr; f :
+        boolean := true) is
+         subtype fin_probe__arrDF__S97s is fin_probe__arr (v'first(
+           1) .. v'last(1));
+      begin
+         B98s : declare
+            A69s : constant boolean :=
+              $ada__exceptions__triggered_by_abort;
+            R68s : boolean := false;
+         begin
+            L99s : for J1 in reverse v'first(1) .. v'last(1) loop
+               B101s : begin
+                  fin_probe__finalize (v (J1));
+               exception
+                  when others =>
+                     R68s := true;
+               end B101s;
+            end loop L99s;
+            if R68s and then not A69s then
+               [program_error "finalize raised exception"]
+            end if;
+         end B98s;
+         return;
+      end fin_probe__arrDF;
+      procedure fin_probe__arrFD (v : system__address) is
+      begin
+         B102s : declare
+            type fin_probe__arrFD__B102s__P70s is access all
+              fin_probe__arr;
+            for fin_probe__arrFD__B102s__P70s'storage_size use 0;
+            for fin_probe__arrFD__B102s__P70s'size use 64;
+            freeze fin_probe__arrFD__B102s__P70s []
+         begin
+            fin_probe__arrDF (fin_probe__arrFD__B102s__P70s!(
+              system__address!(system__address!(v) + system__address!(
+              integer(fin_probe__arr'descriptor_size) / 8))).all, f =>
+              true);
+         end B102s;
+         return;
+      end fin_probe__arrFD;
+      procedure fin_probe__arrSA (A71s : out fin_probe__arr; R72s :
+        fin_probe__arr; L73s : integer; L74s : integer; R75s : integer;
+        R76s : integer; D77s : boolean) is
+         subtype fin_probe__arrSA__S104s is fin_probe__arr (R72s'first(
+           1) .. R72s'last(1));
+         subtype fin_probe__arrSA__S103s is fin_probe__arr (A71s'first(
+           1) .. A71s'last(1));
+         L78s : integer;
+         R79s : integer;
+      begin
+         if L74s < L73s then
+            return;
+         end if;
+         if D77s then
+            L78s := L74s;
+            R79s := R76s;
+         else
+            L78s := L73s;
+            R79s := R75s;
+         end if;
+         L106s : loop
+            B107s : begin
+               system__soft_links__abort_defer.all;
+               fin_probe___assign (A71s (L78s), R72s (R79s));
+            at end
+               system__standard_library__abort_undefer_direct;
+            end B107s;
+            if D77s then
+               exit when L78s = L73s;
+               L78s := integer'pred(L78s);
+               R79s := integer'pred(R79s);
+            else
+               exit when L78s = L74s;
+               L78s := integer'succ(L78s);
+               R79s := integer'succ(R79s);
+            end if;
+         end loop L106s;
+         return;
+      end fin_probe__arrSA;
+   ]
+   procedure fin_probe__finalize_spec;
+   freeze fin_probe__finalize_spec []
+
+   procedure fin_probe__finalize_spec is
+   begin
+      $ada__tags__unregister_tag (fin_probe__ctrlP);
+      return;
+   end fin_probe__finalize_spec;
+
+   [type fin_probe__T108s is any type'Class]
+   freeze fin_probe__T108s [
+      subtype fin_probe__TctrlE110sS is string (1 .. 15);
+      fin_probe__ctrlE110s : static constant string (1 .. 15) :=
+        "FIN_PROBE.CTRL["00"]";
+      fin_probe__ctrlH111s : ada__tags__tag := ada__tags__no_tag;
+      subtype fin_probe__TctrlB114sS is ada__tags__type_specific_data (
+        2);
+      [subtype fin_probe__T124s is ada__tags__tag_table (0 .. 2)]
+      reference fin_probe__T124s
+      fin_probe__ctrlB114s : static aliased constant
+        ada__tags__type_specific_data (2) := (
+         idepth => 2,
+         access_level => 0,
+         alignment => natural(fin_probe__ctrl'alignment),
+         expanded_name => ada__tags__cstring_ptr!(fin_probe__ctrlE110s'
+           address),
+         external_tag => ada__tags__cstring_ptr!(fin_probe__ctrlE110s'
+           address),
+         ht_link => ada__tags__tag_ptr!(fin_probe__ctrlH111s'address),
+         transportable => false,
+         is_abstract => false,
+         needs_finalization => true,
+         size_func => ada__tags__size_ptr!(fin_probe___size'
+           unrestricted_access),
+         interfaces_table => null,
+         ssd => null,
+         tags_table => (fin_probe__ctrlP,
+           ada__finalization__controlledP,
+           system__finalization_root__root_controlledP));
+      [subtype fin_probe__T5s is not null access
+        ada__streams__Troot_stream_typeC]
+      function fin_probe__T115s (s : fin_probe__T5s; sL : natural)
+        return fin_probe__ctrl is
+         A125s : natural := natural'min(2, sL);
+      begin
+         return fin_probe__ctrlSI (s, sL => sL)[storage_pool =
+           system__secondary_stack__ss_pool][procedure_to_call =
+           system__secondary_stack__ss_allocate];
+      end fin_probe__T115s;
+
+      subtype fin_probe__S116s is ada__tags__address_array;
+      [subtype fin_probe__T138s is ada__tags__address_array (1 .. 10)]
+      fin_probe__ctrlR112s : static aliased constant fin_probe__T138s :=
+        (fin_probe___size'unrestricted_access, fin_probe__ctrlSR'
+        unrestricted_access, fin_probe__ctrlSW'unrestricted_access,
+        fin_probe__T115s'unrestricted_access, fin_probe__ctrlSO'
+        unrestricted_access, fin_probe__Oeq'unrestricted_access,
+        fin_probe___assign'unrestricted_access, fin_probe__ctrlDA'
+        unrestricted_access, fin_probe__ctrlDF'unrestricted_access,
+        fin_probe__ctrlPI'unrestricted_access);
+      subtype fin_probe__TctrlT109sS is
+        ada__tags__dispatch_table_wrapper (3);
+      [subtype fin_probe__T146s is ada__tags__address_array (1 .. 3)]
+      reference fin_probe__T146s
+      fin_probe__ctrlT : static aliased constant
+        ada__tags__dispatch_table_wrapper (3) := (
+         num_prims => 3,
+         signature => ada__tags__primary_dt,
+         tag_kind => ada__tags__tk_tagged,
+         predef_prims => fin_probe__ctrlR112s'address,
+         offset_to_top => 0,
+         tsd => fin_probe__ctrlB114s'address,
+         prims_ptr => (ada__finalization__adjust'unrestricted_access,
+           fin_probe__finalize'unrestricted_access,
+           fin_probe__initialize'unrestricted_access));
+      $pragma export (ada, fin_probe__ctrlT, "fin_probe__ctrlT");
+      $ada__tags__check_tsd (fin_probe__ctrlB114s'unchecked_access);
+      $ada__tags__register_tag (fin_probe__ctrlP);
+   ]
+end fin_probe;
+

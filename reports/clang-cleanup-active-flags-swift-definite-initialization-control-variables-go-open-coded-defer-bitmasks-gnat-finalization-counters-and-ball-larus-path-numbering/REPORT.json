@@ -1,0 +1,116 @@
+{
+  "topics": [
+    "compilers/conditional-release-state-in-production-compilers",
+    "runtimes/deferred-call-and-destructor-bookkeeping-cost",
+    "verification/minimal-path-information-encodings",
+    "tooling/conditional-release-codegen-probes"
+  ],
+  "subjects": [
+    {
+      "name": "Clang code generation (cleanup scopes and active flags)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "d71d3a9b75d9b21fc8fc8069cce2de71023b5b41",
+        "path": "clang/lib/CodeGen"
+      }
+    },
+    {
+      "name": "Swift definite-initialization pass",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "df95e655b44760b7d16a7da561cbedb3f4294fed",
+        "path": "lib/SILOptimizer/Mandatory"
+      }
+    },
+    {
+      "name": "Go compiler and runtime (open-coded defers)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "2dbf8b413af37486224cd62bae53dafc516ce875"
+      }
+    },
+    {
+      "name": "Go open-coded defers design document",
+      "identity": {
+        "repository": "golang/proposal",
+        "revision": "83ee2aaf9fdcc1a1cf4bb4d20216fc979635cf04",
+        "path": "design/34481-opencoded-defers.md"
+      }
+    },
+    {
+      "name": "GNAT Ada front end and finalization runtime",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "88f95ebe13064c5745d2571bf19b09ba641bf6fe",
+        "path": "gcc/ada"
+      }
+    },
+    {
+      "name": "Rust RFC 320 (non-zeroing dynamic drop)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "path": "text/0320-nonzeroing-dynamic-drop.md"
+      }
+    },
+    {
+      "name": "Clang release toolchain (probed)",
+      "identity": {
+        "package": "clang-19 (Debian)",
+        "version": "1:19.1.7-10.1+build1",
+        "binary_sha256": "652e82bfb8c2b0881693501a9643e3106d5f22aa18da3b0697888c2d0fc995ae"
+      }
+    },
+    {
+      "name": "Go release toolchain (probed)",
+      "identity": {
+        "package": "golang-1.27-go (Debian)",
+        "version": "go1.27.3 linux/amd64",
+        "binary_sha256": "bed03ff113340190c4ebf8c6dcf1c1ad90d302c759a43fee4564ae24aa3b896e"
+      }
+    },
+    {
+      "name": "GNAT FSF release toolchain (probed)",
+      "identity": {
+        "artifact": "gnat-x86_64-linux-16.1.0-1.tar.gz",
+        "release": "alire-project/GNAT-FSF-builds gnat-16.1.0-1",
+        "sha256": "9f74f58a827a2ad40dd84c72a413e75ea52888e0d8f7e252fba4d26762402703"
+      }
+    },
+    {
+      "name": "C++ standard, stack unwinding",
+      "identity": {
+        "standard": "ISO/IEC 14882",
+        "clause": "[except.ctor]",
+        "url": "https://eel.is/c++draft/except.ctor"
+      }
+    },
+    {
+      "name": "Ada reference manual, completion and finalization",
+      "identity": {
+        "standard": "ISO/IEC 8652:2023 (Ada 2022)",
+        "clause": "7.6.1",
+        "url": "http://www.ada-auth.org/standards/22rm/html/RM-7-6-1.html"
+      }
+    },
+    {
+      "name": "Knuth and Stevenson, optimal measurement points",
+      "identity": {
+        "doi": "10.1007/BF01951942"
+      }
+    },
+    {
+      "name": "Ball and Larus, optimally profiling and tracing programs",
+      "identity": {
+        "doi": "10.1145/183432.183527"
+      }
+    },
+    {
+      "name": "Ball and Larus, efficient path profiling",
+      "identity": {
+        "doi": "10.1109/MICRO.1996.566449"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

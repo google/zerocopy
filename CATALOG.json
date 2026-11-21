@@ -12839,6 +12839,110 @@
         "verification/translation-validation"
       ]
     },
+    "bohm-jacopini-flag-variables-kosaraju-hierarchy-peterson-kasami-tokura-carter-ferrante-thomborson-exponential-node-splitting-mueller-whalley-replication-and-dbds": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "path": "llvm/lib",
+            "repository": "llvm/llvm-project",
+            "revision": "d71d3a9b75d9b21fc8fc8069cce2de71023b5b41"
+          },
+          "name": "LLVM optimizer and code generator (duplication thresholds, FixIrreducible)"
+        },
+        {
+          "identity": {
+            "path": "gcc",
+            "repository": "gcc-mirror/gcc",
+            "revision": "88f95ebe13064c5745d2571bf19b09ba641bf6fe"
+          },
+          "name": "GCC middle end (jump threading, tracer, parameters)"
+        },
+        {
+          "identity": {
+            "binary_sha256": "652e82bfb8c2b0881693501a9643e3106d5f22aa18da3b0697888c2d0fc995ae",
+            "package": "clang-19 / llvm-19 (Debian)",
+            "version": "1:19.1.7-10.1+build1"
+          },
+          "name": "Clang/LLVM release toolchain (probed)"
+        },
+        {
+          "identity": {
+            "binary_sha256": "9a5248796bf632e9ca737f8e707978dc87f8d5aeedb7dd17a75c4e262d0855c0",
+            "package": "gcc-15 (Debian)",
+            "version": "15.2.0-14"
+          },
+          "name": "GCC release toolchain (probed)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/355592.365646"
+          },
+          "name": "B\u00f6hm and Jacopini, flow diagrams with two formation rules"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/355609.362337"
+          },
+          "name": "Peterson, Kasami and Tokura, while, repeat and exit statements"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0022-0000(74)80043-7"
+          },
+          "name": "Kosaraju, analysis of structured programs"
+        },
+        {
+          "identity": {
+            "revision": "1380706708",
+            "url": "https://en.wikipedia.org/wiki/Structured_program_theorem"
+          },
+          "name": "Structured program theorem (secondary account of Kosaraju's results)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/604131.604141"
+          },
+          "name": "Carter, Ferrante and Thomborson, reducible flow graphs are exponentially larger"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/267959.269971"
+          },
+          "name": "Janssen and Corporaal, controlled node splitting"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/567097.567098"
+          },
+          "name": "Unger and Mueller, optimized node splitting versus DJ-graphs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/207110.207116"
+          },
+          "name": "Mueller and Whalley, avoiding conditional branches by code replication"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/277650.277665"
+          },
+          "name": "Ammons and Larus, data-flow analysis with path profiles"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3168811"
+          },
+          "name": "Leopoldseder et al., dominance-based duplication simulation"
+        }
+      ],
+      "topics": [
+        "compilers/code-duplication-versus-run-time-state",
+        "pl/structured-control-flow-expressiveness-and-auxiliary-variables",
+        "compilers/duplication-budgets-in-production-optimizers",
+        "verification/code-growth-lower-bounds"
+      ]
+    },
     "boolean-derivative-guard-sensitivity-conjunct-independence-and-test-probe-evasion": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -17783,6 +17887,122 @@
         "compilers/lifetime-shortening-and-deinitialization-barriers",
         "runtimes/finalization-timing-across-implementations",
         "verification/reference-count-elimination-conditions"
+      ]
+    },
+    "clang-cleanup-active-flags-swift-definite-initialization-control-variables-go-open-coded-defer-bitmasks-gnat-finalization-counters-and-ball-larus-path-numbering": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "path": "clang/lib/CodeGen",
+            "repository": "llvm/llvm-project",
+            "revision": "d71d3a9b75d9b21fc8fc8069cce2de71023b5b41"
+          },
+          "name": "Clang code generation (cleanup scopes and active flags)"
+        },
+        {
+          "identity": {
+            "path": "lib/SILOptimizer/Mandatory",
+            "repository": "swiftlang/swift",
+            "revision": "df95e655b44760b7d16a7da561cbedb3f4294fed"
+          },
+          "name": "Swift definite-initialization pass"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "2dbf8b413af37486224cd62bae53dafc516ce875"
+          },
+          "name": "Go compiler and runtime (open-coded defers)"
+        },
+        {
+          "identity": {
+            "path": "design/34481-opencoded-defers.md",
+            "repository": "golang/proposal",
+            "revision": "83ee2aaf9fdcc1a1cf4bb4d20216fc979635cf04"
+          },
+          "name": "Go open-coded defers design document"
+        },
+        {
+          "identity": {
+            "path": "gcc/ada",
+            "repository": "gcc-mirror/gcc",
+            "revision": "88f95ebe13064c5745d2571bf19b09ba641bf6fe"
+          },
+          "name": "GNAT Ada front end and finalization runtime"
+        },
+        {
+          "identity": {
+            "path": "text/0320-nonzeroing-dynamic-drop.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 320 (non-zeroing dynamic drop)"
+        },
+        {
+          "identity": {
+            "binary_sha256": "652e82bfb8c2b0881693501a9643e3106d5f22aa18da3b0697888c2d0fc995ae",
+            "package": "clang-19 (Debian)",
+            "version": "1:19.1.7-10.1+build1"
+          },
+          "name": "Clang release toolchain (probed)"
+        },
+        {
+          "identity": {
+            "binary_sha256": "bed03ff113340190c4ebf8c6dcf1c1ad90d302c759a43fee4564ae24aa3b896e",
+            "package": "golang-1.27-go (Debian)",
+            "version": "go1.27.3 linux/amd64"
+          },
+          "name": "Go release toolchain (probed)"
+        },
+        {
+          "identity": {
+            "artifact": "gnat-x86_64-linux-16.1.0-1.tar.gz",
+            "release": "alire-project/GNAT-FSF-builds gnat-16.1.0-1",
+            "sha256": "9f74f58a827a2ad40dd84c72a413e75ea52888e0d8f7e252fba4d26762402703"
+          },
+          "name": "GNAT FSF release toolchain (probed)"
+        },
+        {
+          "identity": {
+            "clause": "[except.ctor]",
+            "standard": "ISO/IEC 14882",
+            "url": "https://eel.is/c++draft/except.ctor"
+          },
+          "name": "C++ standard, stack unwinding"
+        },
+        {
+          "identity": {
+            "clause": "7.6.1",
+            "standard": "ISO/IEC 8652:2023 (Ada 2022)",
+            "url": "http://www.ada-auth.org/standards/22rm/html/RM-7-6-1.html"
+          },
+          "name": "Ada reference manual, completion and finalization"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF01951942"
+          },
+          "name": "Knuth and Stevenson, optimal measurement points"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/183432.183527"
+          },
+          "name": "Ball and Larus, optimally profiling and tracing programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MICRO.1996.566449"
+          },
+          "name": "Ball and Larus, efficient path profiling"
+        }
+      ],
+      "topics": [
+        "compilers/conditional-release-state-in-production-compilers",
+        "runtimes/deferred-call-and-destructor-bookkeeping-cost",
+        "verification/minimal-path-information-encodings",
+        "tooling/conditional-release-codegen-probes"
       ]
     },
     "clausal-proof-certificates-rup-rat-and-deletion-soundness": {

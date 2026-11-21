@@ -1,0 +1,15 @@
+eh	jt_threshold	t_cond_jcc	t_cond_bytes	t_two_jcc	t_two_bytes
+-fno-exceptions	0	2	56	4	135
+-fno-exceptions	3	2	56	4	135
+-fno-exceptions	4	1	55	4	135
+-fno-exceptions	5	1	55	4	121
+-fno-exceptions	6	1	55	4	121
+-fno-exceptions	50	1	55	4	121
+-fno-exceptions	1000	1	55	4	121
+-fexceptions	0	3	82	8	196
+-fexceptions	3	3	82	8	196
+-fexceptions	4	3	82	8	196
+-fexceptions	5	3	82	8	196
+-fexceptions	6	3	82	8	196
+-fexceptions	50	3	82	8	196
+-fexceptions	1000	3	82	8	196

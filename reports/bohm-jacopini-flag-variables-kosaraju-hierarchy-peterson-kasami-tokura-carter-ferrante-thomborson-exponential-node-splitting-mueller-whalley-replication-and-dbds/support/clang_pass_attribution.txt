@@ -1,0 +1,5 @@
+[default] body_sites=2 bytes=121
+[-mllvm -jump-threading-threshold=0] body_sites=2 bytes=121
+[-mllvm -simplifycfg-max-small-block-size=0] body_sites=2 bytes=121
+[-mllvm -jump-threading-threshold=0 -mllvm -simplifycfg-max-small-block-size=0] body_sites=1 bytes=113
+[-mllvm -disable-tail-duplicate -mllvm -disable-early-taildup -mllvm -tail-dup-placement=false] body_sites=2 bytes=117

@@ -1,0 +1,41 @@
+goos: linux
+goarch: amd64
+pkg: deferprobe
+cpu: Intel(R) Xeon(R) CPU @ 2.60GHz
+BenchmarkNoDefer        	 5000000	         4.629 ns/op
+BenchmarkNoDefer        	 5000000	         4.605 ns/op
+BenchmarkNoDefer        	 5000000	         4.556 ns/op
+BenchmarkDeferUncond    	 5000000	         4.387 ns/op
+BenchmarkDeferUncond    	 5000000	         4.360 ns/op
+BenchmarkDeferUncond    	 5000000	         4.359 ns/op
+BenchmarkDeferCondTrue  	 5000000	         4.715 ns/op
+BenchmarkDeferCondTrue  	 5000000	         4.843 ns/op
+BenchmarkDeferCondTrue  	 5000000	         4.665 ns/op
+BenchmarkDeferCondFalse 	 5000000	         2.419 ns/op
+BenchmarkDeferCondFalse 	 5000000	         2.432 ns/op
+BenchmarkDeferCondFalse 	 5000000	         2.406 ns/op
+BenchmarkManualCondTrue 	 5000000	         4.485 ns/op
+BenchmarkManualCondTrue 	 5000000	         4.471 ns/op
+BenchmarkManualCondTrue 	 5000000	         4.473 ns/op
+BenchmarkDefer8         	 5000000	        25.89 ns/op
+BenchmarkDefer8         	 5000000	        26.04 ns/op
+BenchmarkDefer8         	 5000000	        26.15 ns/op
+BenchmarkDefer9         	 5000000	        89.72 ns/op
+BenchmarkDefer9         	 5000000	        87.72 ns/op
+BenchmarkDefer9         	 5000000	       103.3 ns/op
+BenchmarkDeferLoop1     	 5000000	        48.80 ns/op
+BenchmarkDeferLoop1     	 5000000	        52.44 ns/op
+BenchmarkDeferLoop1     	 5000000	        53.72 ns/op
+BenchmarkDefer4Ret3     	 5000000	        12.97 ns/op
+BenchmarkDefer4Ret3     	 5000000	        12.94 ns/op
+BenchmarkDefer4Ret3     	 5000000	        13.07 ns/op
+BenchmarkDefer4Ret4     	 5000000	        46.65 ns/op
+BenchmarkDefer4Ret4     	 5000000	        45.74 ns/op
+BenchmarkDefer4Ret4     	 5000000	        47.56 ns/op
+BenchmarkPanicOpen      	 5000000	       268.3 ns/op
+BenchmarkPanicOpen      	 5000000	       248.7 ns/op
+BenchmarkPanicOpen      	 5000000	       242.0 ns/op
+BenchmarkPanicLoop      	 5000000	       303.8 ns/op
+BenchmarkPanicLoop      	 5000000	       323.5 ns/op
+BenchmarkPanicLoop      	 5000000	       325.5 ns/op
+PASS

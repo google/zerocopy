@@ -1,0 +1,30 @@
+== O0 pattern=0
+rep=0 flag_ns_per_call=8.962 dup_ns_per_call=10.063
+rep=1 flag_ns_per_call=8.001 dup_ns_per_call=6.871
+rep=2 flag_ns_per_call=7.259 dup_ns_per_call=6.701
+acc=7499999850000000
+== O0 pattern=1
+rep=0 flag_ns_per_call=8.098 dup_ns_per_call=8.381
+rep=1 flag_ns_per_call=11.047 dup_ns_per_call=8.477
+rep=2 flag_ns_per_call=8.021 dup_ns_per_call=8.263
+acc=7499999850000000
+== O0 pattern=2
+rep=0 flag_ns_per_call=6.798 dup_ns_per_call=4.654
+rep=1 flag_ns_per_call=5.556 dup_ns_per_call=6.211
+rep=2 flag_ns_per_call=4.888 dup_ns_per_call=5.316
+acc=7499999850000000
+== O2 pattern=0
+rep=0 flag_ns_per_call=4.187 dup_ns_per_call=3.013
+rep=1 flag_ns_per_call=4.019 dup_ns_per_call=3.070
+rep=2 flag_ns_per_call=4.132 dup_ns_per_call=3.002
+acc=7499999850000000
+== O2 pattern=1
+rep=0 flag_ns_per_call=3.282 dup_ns_per_call=2.976
+rep=1 flag_ns_per_call=3.494 dup_ns_per_call=2.972
+rep=2 flag_ns_per_call=3.325 dup_ns_per_call=3.040
+acc=7499999850000000
+== O2 pattern=2
+rep=0 flag_ns_per_call=2.711 dup_ns_per_call=1.778
+rep=1 flag_ns_per_call=2.666 dup_ns_per_call=1.779
+rep=2 flag_ns_per_call=2.694 dup_ns_per_call=1.785
+acc=7499999850000000

@@ -1,0 +1,123 @@
+## expanded-source lines mentioning counters / master nodes / finalizers
+87:         $system__finalization_primitives__attach_object_to_node (R18b'
+89:         procedure fin_probe__make__R19b___finalizer;
+90:         freeze fin_probe__make__R19b___finalizer []
+97:         procedure fin_probe__make__R19b___finalizer is
+100:            $system__finalization_primitives__finalize_object (N23b,
+104:         end fin_probe__make__R19b___finalizer;
+107:         fin_probe__make__R19b___finalizer;
+111:      rMN : aliased system__finalization_primitives__master_node;
+119:            $system__finalization_primitives__attach_object_to_node (r'
+129:      procedure fin_probe__use_rec___finalizer;
+130:      freeze fin_probe__use_rec___finalizer []
+134:      procedure fin_probe__use_rec___finalizer is
+141:            $system__finalization_primitives__finalize_object (rMN,
+152:      end fin_probe__use_rec___finalizer;
+157:      fin_probe__use_rec___finalizer;
+160:      aMN : aliased system__finalization_primitives__master_node;
+169:            $system__finalization_primitives__attach_object_to_node (
+181:      procedure fin_probe__use_arr___finalizer;
+182:      freeze fin_probe__use_arr___finalizer []
+189:      procedure fin_probe__use_arr___finalizer is
+196:            $system__finalization_primitives__finalize_object (aMN,
+207:      end fin_probe__use_arr___finalizer;
+212:      fin_probe__use_arr___finalizer;
+222:      xMN : aliased system__finalization_primitives__master_node;
+229:         $system__finalization_primitives__attach_object_to_master (x'
+235:      yMN : aliased system__finalization_primitives__master_node;
+239:      $system__finalization_primitives__attach_object_to_master (y'
+243:      procedure fin_probe__use_block___finalizer;
+244:      freeze fin_probe__use_block___finalizer []
+248:      procedure fin_probe__use_block___finalizer is
+265:      end fin_probe__use_block___finalizer;
+270:      fin_probe__use_block___finalizer;
+278:         procedure fin_probe__pick__B52b___finalizer;
+279:         freeze fin_probe__pick__B52b___finalizer []
+287:            $system__finalization_primitives__attach_object_to_node (
+295:         procedure fin_probe__pick__B52b___finalizer is
+298:            $system__finalization_primitives__finalize_object (N56b,
+302:         end fin_probe__pick__B52b___finalizer;
+305:         fin_probe__pick__B52b___finalizer;
+480:            $system__finalization_primitives__attach_object_to_node (v'
+489:            procedure fin_probe__ctrlSI__R20s___finalizer;
+490:            freeze fin_probe__ctrlSI__R20s___finalizer []
+500:            procedure fin_probe__ctrlSI__R20s___finalizer is
+503:               $system__finalization_primitives__finalize_object (N25s,
+507:            end fin_probe__ctrlSI__R20s___finalizer;
+510:            fin_probe__ctrlSI__R20s___finalizer;
+675:         C1 : integer := 0;
+676:         procedure fin_probe__rec3IP___finalizer (v : in out
+690:                  case C1 is
+692:                        goto L3;
+694:                        goto L2;
+696:                        goto L1;
+698:                        goto L0;
+728:         end fin_probe__rec3IP___finalizer;
+742:            fin_probe__rec3IP___finalizer (_init, false);
+## run (-O0)
+record: inits_attempted= 2 finalized= 1
+array(6), raise at 4th: inits_attempted= 4 finalized= 9
+pick(true)= 3 pick(false)= 0 finalized= 1
+## trace (-O0): V of each finalized element, in call order
+ fin(V= 3) fin(V= 2) fin(V= 1) fin(V= 0) fin(V= 0) fin(V= 0) fin(V= 3) fin(V= 2) fin(V= 1)
+completed_initialize=3 finalize_calls= 9
+## code bytes per subprogram
+level	symbol	bytes
+O0	fin_probe__arrDF	282
+O0	fin_probe__arrDI	489
+O0	fin_probe__arrIP	162
+O0	fin_probe__pick	194
+O0	fin_probe__pick__B52b___finalizer.6	61
+O0	fin_probe__rec3DF	328
+O0	fin_probe__rec3DI	10
+O0	fin_probe__rec3IP	368
+O0	fin_probe__rec3IP___finalizer.1	365
+O0	fin_probe__use_arr	764
+O0	fin_probe__use_arr___finalizer.4	185
+O0	fin_probe__use_block	479
+O0	fin_probe__use_block___finalizer.5	175
+O0	fin_probe__use_rec	395
+O0	fin_probe__use_rec___finalizer.3	185
+O1	fin_probe__arrDF	185
+O1	fin_probe__arrDI	326
+O1	fin_probe__arrIP	92
+O1	fin_probe__pick	167
+O1	fin_probe__rec3DF	227
+O1	fin_probe__rec3DI	1
+O1	fin_probe__rec3IP	371
+O1	fin_probe__use_arr	706
+O1	fin_probe__use_block	536
+O1	fin_probe__use_rec	459
+O2	fin_probe__arrDF	154
+O2	fin_probe__arrDF.cold	47
+O2	fin_probe__arrDI	171
+O2	fin_probe__arrDI.cold	223
+O2	fin_probe__arrIP	83
+O2	fin_probe__pick	260
+O2	fin_probe__pick__B58b___finalizer.6	32
+O2	fin_probe__pick.cold	36
+O2	fin_probe__rec3DF	70
+O2	fin_probe__rec3DF.cold	162
+O2	fin_probe__rec3DI	1
+O2	fin_probe__rec3IP	307
+O2	fin_probe__rec3IP.cold	236
+O2	fin_probe__use_arr	396
+O2	fin_probe__use_arr.cold	254
+O2	fin_probe__use_block	562
+O2	fin_probe__use_block.cold	189
+O2	fin_probe__use_rec	204
+O2	fin_probe__use_rec.cold	261
+Os	fin_probe__arrDF	155
+Os	fin_probe__arrDI	293
+Os	fin_probe__arrIP	70
+Os	fin_probe__pick	117
+Os	fin_probe__pick__B58b___finalizer.6	32
+Os	fin_probe__rec3DF	183
+Os	fin_probe__rec3DI	1
+Os	fin_probe__rec3IP	336
+Os	fin_probe__use_arr	371
+Os	fin_probe__use_arr___finalizer.3	109
+Os	fin_probe__use_block	299
+Os	fin_probe__use_block___finalizer.5	102
+Os	fin_probe__use_rec	217
+Os	fin_probe__use_rec___finalizer.2	109

@@ -1,0 +1,86 @@
+{
+  "topics": [
+    "compilers/code-duplication-versus-run-time-state",
+    "pl/structured-control-flow-expressiveness-and-auxiliary-variables",
+    "compilers/duplication-budgets-in-production-optimizers",
+    "verification/code-growth-lower-bounds"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM optimizer and code generator (duplication thresholds, FixIrreducible)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "d71d3a9b75d9b21fc8fc8069cce2de71023b5b41",
+        "path": "llvm/lib"
+      }
+    },
+    {
+      "name": "GCC middle end (jump threading, tracer, parameters)",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "88f95ebe13064c5745d2571bf19b09ba641bf6fe",
+        "path": "gcc"
+      }
+    },
+    {
+      "name": "Clang/LLVM release toolchain (probed)",
+      "identity": {
+        "package": "clang-19 / llvm-19 (Debian)",
+        "version": "1:19.1.7-10.1+build1",
+        "binary_sha256": "652e82bfb8c2b0881693501a9643e3106d5f22aa18da3b0697888c2d0fc995ae"
+      }
+    },
+    {
+      "name": "GCC release toolchain (probed)",
+      "identity": {
+        "package": "gcc-15 (Debian)",
+        "version": "15.2.0-14",
+        "binary_sha256": "9a5248796bf632e9ca737f8e707978dc87f8d5aeedb7dd17a75c4e262d0855c0"
+      }
+    },
+    {
+      "name": "Böhm and Jacopini, flow diagrams with two formation rules",
+      "identity": { "doi": "10.1145/355592.365646" }
+    },
+    {
+      "name": "Peterson, Kasami and Tokura, while, repeat and exit statements",
+      "identity": { "doi": "10.1145/355609.362337" }
+    },
+    {
+      "name": "Kosaraju, analysis of structured programs",
+      "identity": { "doi": "10.1016/S0022-0000(74)80043-7" }
+    },
+    {
+      "name": "Structured program theorem (secondary account of Kosaraju's results)",
+      "identity": {
+        "url": "https://en.wikipedia.org/wiki/Structured_program_theorem",
+        "revision": "1380706708"
+      }
+    },
+    {
+      "name": "Carter, Ferrante and Thomborson, reducible flow graphs are exponentially larger",
+      "identity": { "doi": "10.1145/604131.604141" }
+    },
+    {
+      "name": "Janssen and Corporaal, controlled node splitting",
+      "identity": { "doi": "10.1145/267959.269971" }
+    },
+    {
+      "name": "Unger and Mueller, optimized node splitting versus DJ-graphs",
+      "identity": { "doi": "10.1145/567097.567098" }
+    },
+    {
+      "name": "Mueller and Whalley, avoiding conditional branches by code replication",
+      "identity": { "doi": "10.1145/207110.207116" }
+    },
+    {
+      "name": "Ammons and Larus, data-flow analysis with path profiles",
+      "identity": { "doi": "10.1145/277650.277665" }
+    },
+    {
+      "name": "Leopoldseder et al., dominance-based duplication simulation",
+      "identity": { "doi": "10.1145/3168811" }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

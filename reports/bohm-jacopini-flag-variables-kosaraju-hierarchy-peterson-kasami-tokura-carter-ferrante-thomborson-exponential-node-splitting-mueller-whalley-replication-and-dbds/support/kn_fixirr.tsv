@@ -1,0 +1,9 @@
+n	blocks_before	insts_before	blocks_after	insts_after	guard_blocks	i1_phis	switches_after	text_bytes_before	text_bytes_after	cft_lower_bound_nodes_2^(n-1)
+3	17	35	18	37	1	1	0	136	168	4
+4	26	54	28	58	2	2	0	192	256	8
+5	37	77	40	83	3	3	0	307	367	16
+6	50	104	54	112	4	4	0	378	428	32
+7	65	135	70	145	5	5	0	464	544	64
+8	82	170	88	182	6	6	0	754	840	128
+9	101	209	108	223	7	7	0	916	1064	256
+10	122	252	130	268	8	8	0	1000	1301	512

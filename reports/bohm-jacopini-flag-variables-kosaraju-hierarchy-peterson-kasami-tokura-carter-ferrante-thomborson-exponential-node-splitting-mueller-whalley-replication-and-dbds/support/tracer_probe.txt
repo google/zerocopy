@@ -1,0 +1,12 @@
+g_indep_3_1 [-O2] body_sites=6 bytes=256
+g_indep_3_1 [-O2 -ftracer] body_sites=6 bytes=266
+g_indep_3_1 [-O2 -ftracer --param tracer-max-code-growth=1000 --param tracer-min-branch-probability=0 --param tracer-dynamic-coverage=100] body_sites=6 bytes=266
+g_indep_3_4 [-O2] body_sites=8 bytes=241
+g_indep_3_4 [-O2 -ftracer] body_sites=16 bytes=366
+g_indep_3_4 [-O2 -ftracer --param tracer-max-code-growth=1000 --param tracer-min-branch-probability=0 --param tracer-dynamic-coverage=100] body_sites=16 bytes=366
+g_indep_6_1 [-O2] body_sites=6 bytes=464
+g_indep_6_1 [-O2 -ftracer] body_sites=8 bytes=576
+g_indep_6_1 [-O2 -ftracer --param tracer-max-code-growth=1000 --param tracer-min-branch-probability=0 --param tracer-dynamic-coverage=100] body_sites=8 bytes=560
+g_nested_4_4 [-O2] body_sites=12 bytes=323
+g_nested_4_4 [-O2 -ftracer] body_sites=20 bytes=389
+g_nested_4_4 [-O2 -ftracer --param tracer-max-code-growth=1000 --param tracer-min-branch-probability=0 --param tracer-dynamic-coverage=100] body_sites=20 bytes=389
