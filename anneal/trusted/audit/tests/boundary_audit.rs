@@ -1026,7 +1026,7 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     let pin = anneal_audit::verify_upstream_pin(&checkout.join("vendor/lean-miri")).unwrap();
     assert_eq!(pin.schema_version, 2);
     assert_eq!(pin.vendor_tree.file_count, 608);
-    assert_eq!(pin.patched_files.len(), 10);
+    assert_eq!(pin.patched_files.len(), 13);
     assert_eq!(pin.execution_machine_closure.len(), 160);
 
     // 1. Deleting `vendor/` in a repository checkout fails `Checker::run()`
@@ -1081,27 +1081,28 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     );
     fs::write(&target_lean, &orig_lean).unwrap();
 
-    // 2b. A patched `.lean` file is verified against `patched_sha256`, never
+    // 2b. Patched `.lean` files are verified against `patched_sha256`, never
     // exempted from on-disk digest checking.
-    let patched_rel = "Miri/Interpreter/Call.lean";
-    let patched_lean = vendor_copy.join(patched_rel);
-    let orig_patched = fs::read(&patched_lean).unwrap();
-    let expected_patched_sha = &pin
-        .patched_files
-        .iter()
-        .find(|p| p.path == patched_rel)
-        .expect("Call.lean must be listed in patched_files")
-        .patched_sha256;
-    fs::write(&patched_lean, b"-- tampered patched file\n").unwrap();
-    let err_patched_tamper = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
-    assert_eq!(err_patched_tamper.code, 1);
-    assert!(
-        err_patched_tamper.message.contains(&format!(
-            "vendor file SHA-256 mismatch for {patched_rel}: expected {expected_patched_sha}"
-        )),
-        "unexpected error: {err_patched_tamper}"
-    );
-    fs::write(&patched_lean, &orig_patched).unwrap();
+    for patched_rel in ["Miri/Interpreter/Call.lean", "Miri/Memory/Allocation.lean"] {
+        let patched_lean = vendor_copy.join(patched_rel);
+        let orig_patched = fs::read(&patched_lean).unwrap();
+        let expected_patched_sha = &pin
+            .patched_files
+            .iter()
+            .find(|p| p.path == patched_rel)
+            .unwrap_or_else(|| panic!("{patched_rel} must be listed in patched_files"))
+            .patched_sha256;
+        fs::write(&patched_lean, b"-- tampered patched file\n").unwrap();
+        let err_patched_tamper = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+        assert_eq!(err_patched_tamper.code, 1);
+        assert!(
+            err_patched_tamper.message.contains(&format!(
+                "vendor file SHA-256 mismatch for {patched_rel}: expected {expected_patched_sha}"
+            )),
+            "unexpected error: {err_patched_tamper}"
+        );
+        fs::write(&patched_lean, &orig_patched).unwrap();
+    }
 
     // 3. Unlisted `.lean` file is rejected.
     let rogue_lean = vendor_copy.join("Miri/Rogue.lean");
