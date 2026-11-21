@@ -423,12 +423,13 @@ jobs:
       contents: read
     outputs:
       version: ${{ steps.check.outputs.version }}
+      commit: ${{ steps.check.outputs.commit }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Compare the release manifests across this push
+      - name: Find the commit that pins the release
         id: check
         working-directory: anneal
         env:
@@ -439,19 +440,19 @@ jobs:
           ACTIONS_RUNTIME_URL: ''
         run: |
           set -euo pipefail
-          version="$(python3 -B ci/alpha_release.py --changed-since "$BEFORE")"
-          printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
+          python3 -B ci/alpha_release.py --changed-since "$BEFORE" >> "$GITHUB_OUTPUT"
 
   anneal-qualify-package:
     name: Qualify the packaged Anneal alpha
     needs: check-anneal-release
-    if: needs.check-anneal-release.outputs.version != ''
+    if: needs.check-anneal-release.outputs.commit != ''
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
     outputs:
       version: ${{ needs.check-anneal-release.outputs.version }}
+      commit: ${{ needs.check-anneal-release.outputs.commit }}
     env:
       CARGO_BUILD_JOBS: 2
       ACTIONS_CACHE_URL: ''
@@ -461,6 +462,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ needs.check-anneal-release.outputs.commit }}
           persist-credentials: false
       - name: Check Anneal publishing environment protections
         run: |
@@ -512,6 +514,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ needs.anneal-qualify-package.outputs.commit }}
           persist-credentials: false
       - name: Authenticate with crates.io
         id: anneal-auth

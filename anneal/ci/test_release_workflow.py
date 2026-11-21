@@ -84,6 +84,18 @@ class ReleaseWorkflowTests(unittest.TestCase):
         publisher = self.jobs["anneal-publish-crate"]
         self.assertEqual(publisher["environment"], "anneal-release")
         self.assertNotEqual(publisher["environment"], self.jobs["release"]["environment"])
+        self.assertEqual(self.jobs["check-anneal-release"]["outputs"], {
+            "version": "${{ steps.check.outputs.version }}",
+            "commit": "${{ steps.check.outputs.commit }}",
+        })
+        self.assertEqual(self.jobs["anneal-qualify-package"]["outputs"], {
+            "version": "${{ needs.check-anneal-release.outputs.version }}",
+            "commit": "${{ needs.check-anneal-release.outputs.commit }}",
+        })
+        pinned_refs = {
+            "anneal-qualify-package": "${{ needs.check-anneal-release.outputs.commit }}",
+            "anneal-publish-crate": "${{ needs.anneal-qualify-package.outputs.commit }}",
+        }
         for name in (
             "anneal-build-archive",
             "anneal-host-archive",
@@ -97,7 +109,11 @@ class ReleaseWorkflowTests(unittest.TestCase):
                     if step.get("uses", "").startswith("actions/checkout@")
                 ]
                 self.assertNotIn("repository", checkout["with"])
-                self.assertIn(checkout["with"].get("ref"), (None, "${{ github.sha }}"))
+                ref = checkout["with"].get("ref")
+                if name in pinned_refs:
+                    self.assertEqual(ref, pinned_refs[name])
+                else:
+                    self.assertIn(ref, (None, "${{ github.sha }}"))
                 self.assertEqual(checkout["with"]["persist-credentials"], "false")
         [publish] = [step["run"] for step in publisher["steps"] if "run" in step]
         self.assertEqual(publish, "cargo publish --locked -p cargo-anneal --registry crates-io")
@@ -106,10 +122,10 @@ class ReleaseWorkflowTests(unittest.TestCase):
         detect = self.jobs["check-anneal-release"]
         [check] = [step for step in detect["steps"] if "run" in step]
         self.assertEqual(check["env"]["BEFORE"], "${{ github.event.before }}")
-        self.assertIn('--changed-since "$BEFORE"', check["run"])
+        self.assertIn('--changed-since "$BEFORE" >> "$GITHUB_OUTPUT"', check["run"])
         qualify = self.jobs["anneal-qualify-package"]
         self.assertEqual(qualify["needs"], "check-anneal-release")
-        self.assertEqual(qualify["if"], "needs.check-anneal-release.outputs.version != ''")
+        self.assertEqual(qualify["if"], "needs.check-anneal-release.outputs.commit != ''")
         self.assertEqual(qualify["runs-on"], "ubuntu-24.04")
         steps = qualify["steps"]
         [protections, package] = [step for step in steps if "run" in step]

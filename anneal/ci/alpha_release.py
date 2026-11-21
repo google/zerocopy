@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 import subprocess
 import tomllib
+from typing import NamedTuple
 
 
 REPO = Path(__file__).resolve().parents[2]
@@ -37,6 +38,11 @@ ARCHIVE_INPUTS = (
     "anneal/theory",
     "anneal/trusted/cargo-anneal/src/bundled_resources.rs",
 )
+
+
+class Release(NamedTuple):
+    version: str
+    commit: str
 
 
 def alpha_number(version):
@@ -164,6 +170,35 @@ def version_to_publish(before, after):
     return version if digest != UNPINNED else ""
 
 
+def release_to_publish(repo, before):
+    previous_manifest = read_manifest(repo, before)
+    head = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=repo, text=True,
+    ).strip()
+    commits = subprocess.check_output(
+        ["git", "rev-list", "--first-parent", "--reverse", "--parents", f"{before}..{head}"],
+        cwd=repo, text=True,
+    ).splitlines()
+    release = None
+    previous_commit = before
+    for entry in commits:
+        commit, *parents = entry.split()
+        if not parents or parents[0] != previous_commit:
+            raise ValueError("push base must be on the first-parent history of HEAD")
+        manifest = read_manifest(repo, commit)
+        version = version_to_publish(previous_manifest, manifest)
+        if version:
+            if release is not None:
+                raise ValueError(
+                    f"multiple Anneal releases in one push: {release.version}, {version}"
+                )
+            release = Release(version, commit)
+        previous_commit, previous_manifest = commit, manifest
+    if previous_commit != head:
+        raise ValueError("push base must be on the first-parent history of HEAD")
+    return release
+
+
 def pin(text, version, digest):
     if not re.fullmatch(r"[0-9a-f]{64}", digest) or digest == UNPINNED:
         raise ValueError("expected the nonzero SHA-256 of the released archive")
@@ -205,8 +240,10 @@ def main():
     try:
         if args.changed_since:
             if args.version:
-                raise ValueError("derive the version from the manifests on a push")
-            print(version_to_publish(read_manifest(REPO, args.changed_since), MANIFEST.read_text()))
+                raise ValueError("derive the release from the commits on a push")
+            release = release_to_publish(REPO, args.changed_since)
+            if release is not None:
+                print(f"version={release.version}\ncommit={release.commit}")
             return
         if not args.version:
             raise ValueError("expected an Anneal release version")

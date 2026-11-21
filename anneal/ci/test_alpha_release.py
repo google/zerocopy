@@ -15,7 +15,7 @@ import unittest
 
 from alpha_release import (
     LOCK_PATH, MANIFEST, MANIFEST_PATH, ROOT_HASH_PATH, UNPINNED, archive,
-    archive_url, check_archive_base, pin, prepare, version_to_publish,
+    archive_url, check_archive_base, pin, prepare, release_to_publish, version_to_publish,
 )
 
 
@@ -65,6 +65,56 @@ class AlphaReleaseTest(unittest.TestCase):
             version_to_publish(next_pin, self.text)
         historical = self.text.replace("anneal-toolchain-v", "anneal-mir-toolchain-v")
         self.assertEqual(version_to_publish(historical, self.text), "")
+
+    def test_publish_selects_the_pinning_commit_on_main(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = Path(directory)
+
+            def git(*args):
+                return subprocess.check_output(
+                    ["git", "-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+                     "-c", "commit.gpgSign=false", *args],
+                    cwd=repo, text=True,
+                ).strip()
+
+            def commit(message):
+                git("add", ".")
+                git("commit", "--quiet", "-m", message)
+                return git("rev-parse", "HEAD")
+
+            git("init", "--quiet", "--initial-branch=main")
+            manifest = repo / MANIFEST_PATH
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text(self.text)
+            before = commit("unpublished alpha")
+            self.assertIsNone(release_to_publish(repo, before))
+
+            git("switch", "--quiet", "-c", "release-pr")
+            manifest.write_text(pin(self.text, self.version, "1" * 64))
+            pr_head = commit("pin archive in PR")
+            git("switch", "--quiet", "main")
+            git("merge", "--quiet", "--no-ff", "release-pr", "-m", "merge release PR")
+            release_commit = git("rev-parse", "HEAD")
+
+            cli_source = manifest.parent / "src/main.rs"
+            cli_source.parent.mkdir()
+            cli_source.write_text("later CLI change\n")
+            commit("change CLI after pinning")
+            self.assertEqual(release_to_publish(repo, before), (self.version, release_commit))
+            self.assertIsNone(release_to_publish(repo, release_commit))
+            with self.assertRaisesRegex(ValueError, "first-parent history"):
+                release_to_publish(repo, pr_head)
+
+            next_text = self.text.replace(self.version, self.next_version)
+            manifest.write_text(next_text)
+            commit("start the next alpha without pinning")
+            self.assertEqual(release_to_publish(repo, before), (self.version, release_commit))
+            self.assertIsNone(release_to_publish(repo, release_commit))
+
+            manifest.write_text(pin(next_text, self.next_version, "2" * 64))
+            commit("pin a second release")
+            with self.assertRaisesRegex(ValueError, "multiple Anneal releases"):
+                release_to_publish(repo, before)
 
     def test_prepare_recreates_source_and_binds_the_release_pr_to_it(self):
         with tempfile.TemporaryDirectory() as directory:
