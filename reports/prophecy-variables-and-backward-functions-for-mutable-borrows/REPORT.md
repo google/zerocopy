@@ -10,7 +10,10 @@ three semantics for it: an address-based reference semantics (the ground truth),
 a backward-function translation in the style described for Aeneas, and a
 prophecy translation in the style described for RustHorn and Creusot. A static
 checker defines five separate parts of a borrow discipline. Every result below
-is a kernel-checked theorem about this toy model only.
+is a kernel-checked theorem about this toy model; these theorems neither
+establish nor refute the corresponding claims about Aeneas, RustHorn, Creusot or
+Rust's borrow checker, and the `Basis: derived (modeling bridge)` paragraphs
+under **Findings** argue each connection to those systems separately.
 
 - **`back-sound`** — For every program that has no access to lent locals, no
   access to reborrowed borrows, no use of a borrow after its end, fresh borrow
@@ -427,24 +430,28 @@ def selSameLocal : Prog :=
 ```
 
 ```lean
+-- lean/ToyProphecy/Results.lean:33-36
 -- (Results.lean)
 theorem backSem_eq_refSem_of_discipline (P : Prog) (σ : Store)
     (hL : NoLentAccess P) (hF : NoFrozenAccess P) (hE : NoUseAfterEnd P)
     (hB : FreshBindings P) (hX : AllEndedAtExit P) :
     backSem P σ = refSem P σ
 
+-- lean/ToyProphecy/Results.lean:46-49
 -- (Results.lean)
 theorem prophOutcome_iff_backSem_of_discipline (P : Prog) (σ : Store)
     (hL : NoLentAccess P) (hF : NoFrozenAccess P) (hE : NoUseAfterEnd P)
     (hB : FreshBindings P) (hX : AllEndedAtExit P) :
     ∀ σ', ProphOutcome P σ σ' ↔ backSem P σ = some σ'
 
+-- lean/ToyProphecy/Results.lean:60-63
 -- (Results.lean; derived from the statements above)
 theorem prophOutcome_iff_refSem_of_discipline (P : Prog) (σ : Store)
     (hL : NoLentAccess P) (hF : NoFrozenAccess P) (hE : NoUseAfterEnd P)
     (hB : FreshBindings P) (hX : AllEndedAtExit P) :
     ∀ σ', ProphOutcome P σ σ' ↔ refSem P σ = some σ'
 
+-- lean/ToyProphecy/Results.lean:76-80
 -- (Results.lean)
 theorem prophOutcome_of_refSem_of_noLentAccess_of_noFrozenAccess_of_noUseAfterEnd_of_freshBindings
     (P : Prog) (σ σ' : Store)
@@ -452,10 +459,12 @@ theorem prophOutcome_of_refSem_of_noLentAccess_of_noFrozenAccess_of_noUseAfterEn
     (hB : FreshBindings P)
     (h : refSem P σ = some σ') : ProphOutcome P σ σ'
 
+-- lean/ToyProphecy/Results.lean:89-90
 -- (Results.lean)
 theorem prophOutcomeWith_omitAtEnd_of_prophOutcome (r : RefVar) (P : Prog) (σ σ' : Store)
     (h : ProphOutcome P σ σ') : ProphOutcomeWith (ResPolicy.omitAtEnd r) P σ σ'
 
+-- lean/ToyProphecy/Results.lean:104-108
 -- (Results.lean; derived from the statements above)
 theorem prophOutcomeWith_omitAtEnd_of_refSem_of_noLentAccess_of_noFrozenAccess_of_noUseAfterEnd_of_freshBindings
     (r : RefVar) (P : Prog) (σ σ' : Store)
@@ -463,11 +472,13 @@ theorem prophOutcomeWith_omitAtEnd_of_refSem_of_noLentAccess_of_noFrozenAccess_o
     (hB : FreshBindings P)
     (h : refSem P σ = some σ') : ProphOutcomeWith (ResPolicy.omitAtEnd r) P σ σ'
 
+-- lean/ToyProphecy/Results.lean:121-123
 -- (Results.lean)
 theorem calleeBack_eq_final_of_calleeScoped_of_calleeFreshBindings (f : Callee)
     (hS : CalleeScoped f) (hB : CalleeFreshBindings f) :
     ∀ a v, calleeBack f a v = v
 
+-- lean/ToyProphecy/Results.lean:133-137
 -- (Results.lean)
 theorem prophContract_iff_backwardSummary_of_calleeNoFrozenAccess_of_calleeNoUseAfterEnd_of_calleeFreshBindings
     (f : Callee)
@@ -475,6 +486,7 @@ theorem prophContract_iff_backwardSummary_of_calleeNoFrozenAccess_of_calleeNoUse
     (hB : CalleeFreshBindings f) :
     ∀ a c pf rf, ProphContract f a c pf rf ↔ (calleeFwd f a = some c ∧ pf = calleeBack f a rf)
 
+-- lean/ToyProphecy/Resolution.lean:59-63
 -- (Resolution.lean)
 theorem omitting_resolution_admits_unproducible_store :
     NoLentAccess writeThenRead ∧ NoFrozenAccess writeThenRead ∧ NoUseAfterEnd writeThenRead ∧
@@ -482,10 +494,12 @@ theorem omitting_resolution_admits_unproducible_store :
     ∃ σ', ProphOutcomeWith (ResPolicy.omitAtEnd 0) writeThenRead zeroStore σ' ∧
       σ' 0 = 7 ∧ σ' 1 = 7 ∧ refSem writeThenRead zeroStore ≠ some σ'
 
+-- lean/ToyProphecy/Resolution.lean:33-34
 -- (positive control) (Resolution.lean)
 theorem prophOutcome_writeThenRead_iff (σ' : Store) :
     ProphOutcome writeThenRead zeroStore σ' ↔ refSem writeThenRead zeroStore = some σ'
 
+-- lean/ToyProphecy/Resolution.lean:88-93
 -- (Resolution.lean)
 theorem premature_resolution_excludes_real_store :
     NoLentAccess writeOnce ∧ NoFrozenAccess writeOnce ∧ NoUseAfterEnd writeOnce ∧
@@ -494,16 +508,19 @@ theorem premature_resolution_excludes_real_store :
     (∃ σ', ProphOutcomeWith (ResPolicy.resolveAfter 0 0) writeOnce zeroStore σ') ∧
     (refSem writeOnce zeroStore).map (· 0) = some 5
 
+-- lean/ToyProphecy/Resolution.lean:106-108
 -- (positive control) (Resolution.lean)
 theorem resolution_after_last_write_exact (σ' : Store) :
     ProphOutcomeWith (ResPolicy.resolveAfter 1 0) writeOnce zeroStore σ' ↔
       refSem writeOnce zeroStore = some σ'
 
+-- lean/ToyProphecy/Resolution.lean:136-138
 -- (positive control) (Resolution.lean)
 theorem parent_resolution_while_reborrow_live_exact (σ' : Store) :
     ProphOutcomeWith (ResPolicy.resolveAfter 1 0) reborrowOnce zeroStore σ' ↔
       refSem reborrowOnce zeroStore = some σ'
 
+-- lean/ToyProphecy/Resolution.lean:168-173
 -- (Resolution.lean)
 theorem omitting_callee_exit_resolution_admits_unproducible_store :
     NoLentAccess callDeep ∧ NoFrozenAccess callDeep ∧ NoUseAfterEnd callDeep ∧
@@ -512,14 +529,17 @@ theorem omitting_callee_exit_resolution_admits_unproducible_store :
     ∃ σ', ProphOutcomeWith ResPolicy.omitAtCalleeExit callDeep idStore σ' ∧
       σ' 0 = 7 ∧ σ' 1 = 7 ∧ refSem callDeep idStore ≠ some σ'
 
+-- lean/ToyProphecy/Resolution.lean:207-208
 -- (positive control) (Resolution.lean)
 theorem callDeep_prophOutcome_iff (σ' : Store) :
     ProphOutcome callDeep idStore σ' ↔ refSem callDeep idStore = some σ'
 
+-- lean/ToyProphecy/Resolution.lean:232-233
 -- (Resolution.lean)
 theorem callDeep_omitAtCalleeExit_admits_real :
     ProphOutcomeWith ResPolicy.omitAtCalleeExit callDeep idStore callDeepOut
 
+-- lean/ToyProphecy/Resolution.lean:250-254
 -- (Resolution.lean)
 theorem endParentFirst_prophecy_exact_backward_lossy :
     violations endParentFirst = [.frozenAccess] ∧
@@ -527,6 +547,7 @@ theorem endParentFirst_prophecy_exact_backward_lossy :
     (backSem endParentFirst zeroStore).map (· 0) = some 0 ∧
     ∀ σ', ProphOutcome endParentFirst zeroStore σ' ↔ refSem endParentFirst zeroStore = some σ'
 
+-- lean/ToyProphecy/Resolution.lean:287-291
 -- (Resolution.lean)
 theorem endParentFirstChildUnended_imprecise :
     violations endParentFirstChildUnended = [.frozenAccess, .unendedAtExit] ∧
@@ -534,11 +555,13 @@ theorem endParentFirstChildUnended_imprecise :
     (∃ σ', ProphOutcome endParentFirstChildUnended zeroStore σ' ∧ σ' 0 = 7) ∧
     (∃ σ', ProphOutcome endParentFirstChildUnended zeroStore σ' ∧ σ' 0 = 8)
 
+-- lean/ToyProphecy/Selection.lean:55-57
 -- (Selection.lean)
 theorem selIncr_both_translations_correct (σ : Store) :
     backSem selIncr σ = refSem selIncr σ ∧
     ∀ σ', ProphOutcome selIncr σ σ' ↔ refSem selIncr σ = some σ'
 
+-- lean/ToyProphecy/Selection.lean:102-112
 -- (Selection.lean)
 theorem selIncr_backward_shape (σ : Store) :
     (∃ s q, runB (BState.init σ) [op (borrowSel 0 (var 2) 0 1)] = some s ∧
@@ -552,6 +575,7 @@ theorem selIncr_backward_shape (σ : Store) :
       (s.store 0, s.store 1) =
         selLenders (decide (σ 2 ≠ 0)) (σ 0) (σ 1) ((if σ 2 ≠ 0 then σ 0 else σ 1) + 1))
 
+-- lean/ToyProphecy/Selection.lean:124-129
 -- (Selection.lean)
 theorem selIncr_prophecy_shape (σ : Store) (φ : Nat → Int) :
     (∃ s q, runP ResPolicy.std φ 0 (PState.init σ) [op (borrowSel 0 (var 2) 0 1)] = some s ∧
@@ -560,18 +584,22 @@ theorem selIncr_prophecy_shape (σ : Store) (φ : Nat → Int) :
     (∃ s, runP ResPolicy.std φ 0 (PState.init σ) selIncr = some s ∧ s.next = 1 ∧
       s.cs = [((if σ 2 ≠ 0 then σ 0 else σ 1) + 1, φ 0)])
 
+-- lean/ToyProphecy/Selection.lean:140-141
 -- (Selection.lean)
 theorem selLenders_depends_on_condition (x0 y0 : Int) :
     ¬ ∃ g : Int → Int × Int, ∀ b v, g v = selLenders b x0 y0 v
 
+-- lean/ToyProphecy/Boundaries.lean:41-42
 -- (boundary fact) (Boundaries.lean)
 theorem checkOps_of_stuck (L : Bool) (c : CState) (h : c.stuck = true) :
     ∀ os, checkOps L c os = c
 
+-- lean/ToyProphecy/Boundaries.lean:51-52
 -- (boundary fact) (Boundaries.lean)
 theorem checkStmts_of_stuck (c : CState) (h : c.stuck = true) :
     ∀ P, checkStmts c P = c
 
+-- lean/ToyProphecy/Boundaries.lean:79-88
 -- (boundary fact) (Boundaries.lean)
 theorem stuckProg_satisfies_all_avoids :
     NoLentAccess stuckProgWithViolations ∧
@@ -584,6 +612,7 @@ theorem stuckProg_satisfies_all_avoids :
     (∀ φ, runP ResPolicy.std φ 0 (PState.init zeroStore) stuckProgWithViolations = none) ∧
     (∀ σ', ¬ ProphOutcome stuckProgWithViolations zeroStore σ')
 
+-- lean/ToyProphecy/Boundaries.lean:105-109
 -- (boundary fact) (Boundaries.lean)
 theorem stuckCallee_satisfies_all_avoids :
     ¬ CalleeScoped stuckCalleeWithViolations ∧
@@ -591,17 +620,20 @@ theorem stuckCallee_satisfies_all_avoids :
     CalleeNoUseAfterEnd stuckCalleeWithViolations ∧
     CalleeFreshBindings stuckCalleeWithViolations
 
+-- lean/ToyProphecy/Boundaries.lean:115-118
 -- (boundary fact) (Boundaries.lean)
 theorem cxCalleeLocal_avoids_all_no_contract :
     CalleeNoFrozenAccess cxCalleeLocal ∧ CalleeNoUseAfterEnd cxCalleeLocal ∧
     CalleeFreshBindings cxCalleeLocal ∧ (∀ a, calleeFwd cxCalleeLocal a = none) ∧
     ∀ a c pf rf, ¬ ProphContract cxCalleeLocal a c pf rf
 
+-- lean/ToyProphecy/Boundaries.lean:33-35
 -- (boundary fact) (Boundaries.lean)
 theorem emptyBody_unboundRet_not_scoped :
     emptyBodyUnboundRet.body = [] ∧ CalleeFreshBindings emptyBodyUnboundRet ∧
     ¬ CalleeScoped emptyBodyUnboundRet ∧ calleeBack emptyBodyUnboundRet 0 5 = 0
 
+-- lean/ToyProphecy/Boundaries.lean:137-144
 -- (boundary fact) (Boundaries.lean)
 theorem reuseEndedCallee_harmless :
     CalleeScoped reuseEndedCallee ∧
@@ -612,22 +644,27 @@ theorem reuseEndedCallee_harmless :
     (∀ a c pf rf, ProphContract reuseEndedCallee a c pf rf ↔
       (calleeFwd reuseEndedCallee a = some c ∧ pf = calleeBack reuseEndedCallee a rf))
 
+-- lean/ToyProphecy/Boundaries.lean:195-196
 -- (boundary fact) (Boundaries.lean)
 theorem calleeBack_masks_none_at_zero :
     calleeBack? cxCalleeRebind 0 0 = none ∧ calleeBack cxCalleeRebind 0 0 = 0
 
+-- lean/ToyProphecy/Boundaries.lean:201-202
 -- (boundary fact) (Boundaries.lean)
 theorem calleeBackOpt_eq_some_of_calleeBack_eq_of_ne_zero (f : Callee) (a v : Int)
     (h : calleeBack f a v = v) (hv : v ≠ 0) : calleeBack? f a v = some v
 
+-- lean/ToyProphecy/Boundaries.lean:219-220
 -- (boundary fact) (Boundaries.lean)
 theorem callDeep_omitAtEnd0_callee_still_resolved :
     ∀ σ', ProphOutcomeWith (ResPolicy.omitAtEnd 0) callDeep idStore σ' → σ' 1 = 15
 
+-- lean/ToyProphecy/Boundaries.lean:240-241
 -- (boundary fact) (Boundaries.lean)
 theorem callDeep_std_excludes_spurious :
     ¬ ∃ σ', ProphOutcome callDeep idStore σ' ∧ σ' 0 = 7 ∧ σ' 1 = 7
 
+-- lean/ToyProphecy/Boundaries.lean:253-257
 -- (boundary fact, edge case) (Boundaries.lean)
 theorem emptyProg_edge_case (σ : Store) :
     NoLentAccess [] ∧ NoFrozenAccess [] ∧ NoUseAfterEnd [] ∧
@@ -635,6 +672,7 @@ theorem emptyProg_edge_case (σ : Store) :
     backSem [] σ = refSem [] σ ∧
     (∀ σ', ProphOutcome [] σ σ' ↔ backSem [] σ = some σ')
 
+-- lean/ToyProphecy/Boundaries.lean:274-281
 -- (boundary fact, edge case) (Boundaries.lean)
 theorem emptyCallee_edge_case :
     CalleeScoped emptyCallee ∧
@@ -645,6 +683,7 @@ theorem emptyCallee_edge_case :
     (∀ a c pf rf, ProphContract emptyCallee a c pf rf ↔
       (calleeFwd emptyCallee a = some c ∧ pf = calleeBack emptyCallee a rf))
 
+-- lean/ToyProphecy/Boundaries.lean:307-311
 -- (boundary fact, edge case) (Boundaries.lean)
 theorem selSameLocal_edge_case (σ : Store) :
     NoLentAccess selSameLocal ∧ NoFrozenAccess selSameLocal ∧ NoUseAfterEnd selSameLocal ∧
@@ -736,6 +775,7 @@ The proofs are in `lean/ToyProphecy/Sim/`; the five general statements of
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Results.lean:33-36
 -- lean/ToyProphecy/Results.lean
 theorem backSem_eq_refSem_of_discipline (P : Prog) (σ : Store)
     (hL : NoLentAccess P) (hF : NoFrozenAccess P) (hE : NoUseAfterEnd P)
@@ -801,6 +841,7 @@ Basis: derived (modeling bridge) — the toy `backSem` follows the description o
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Results.lean:46-49
 -- lean/ToyProphecy/Results.lean
 theorem prophOutcome_iff_backSem_of_discipline (P : Prog) (σ : Store)
     (hL : NoLentAccess P) (hF : NoFrozenAccess P) (hE : NoUseAfterEnd P)
@@ -866,6 +907,7 @@ Basis: derived (modeling bridge) — the toy `backSem` follows the description o
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Results.lean:60-63
 -- lean/ToyProphecy/Results.lean
 theorem prophOutcome_iff_refSem_of_discipline (P : Prog) (σ : Store)
     (hL : NoLentAccess P) (hF : NoFrozenAccess P) (hE : NoUseAfterEnd P)
@@ -931,6 +973,7 @@ Basis: derived (modeling bridge) — the toy prophecy translation follows the (c
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Results.lean:76-80
 -- lean/ToyProphecy/Results.lean
 theorem prophOutcome_of_refSem_of_noLentAccess_of_noFrozenAccess_of_noUseAfterEnd_of_freshBindings
     (P : Prog) (σ σ' : Store)
@@ -997,6 +1040,7 @@ Basis: derived (modeling bridge) — the toy prophecy translation follows the (c
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Results.lean:89-90
 -- lean/ToyProphecy/Results.lean
 theorem prophOutcomeWith_omitAtEnd_of_prophOutcome (r : RefVar) (P : Prog) (σ σ' : Store)
     (h : ProphOutcome P σ σ') : ProphOutcomeWith (ResPolicy.omitAtEnd r) P σ σ'
@@ -1043,6 +1087,7 @@ Basis: derived (modeling bridge) — the resolution policies model where a proph
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Results.lean:104-108
 -- lean/ToyProphecy/Results.lean
 theorem prophOutcomeWith_omitAtEnd_of_refSem_of_noLentAccess_of_noFrozenAccess_of_noUseAfterEnd_of_freshBindings
     (r : RefVar) (P : Prog) (σ σ' : Store)
@@ -1096,6 +1141,7 @@ Basis: derived (modeling bridge) — the resolution policies model where a proph
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Resolution.lean:59-63
 -- lean/ToyProphecy/Resolution.lean
 theorem omitting_resolution_admits_unproducible_store :
     NoLentAccess writeThenRead ∧ NoFrozenAccess writeThenRead ∧ NoUseAfterEnd writeThenRead ∧
@@ -1155,6 +1201,7 @@ Basis: derived (modeling bridge) — the resolution policies model where a proph
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Resolution.lean:88-93
 -- lean/ToyProphecy/Resolution.lean
 theorem premature_resolution_excludes_real_store :
     NoLentAccess writeOnce ∧ NoFrozenAccess writeOnce ∧ NoUseAfterEnd writeOnce ∧
@@ -1215,6 +1262,7 @@ Basis: derived (modeling bridge) — the resolution policies model where a proph
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Resolution.lean:168-173
 -- lean/ToyProphecy/Resolution.lean
 theorem omitting_callee_exit_resolution_admits_unproducible_store :
     NoLentAccess callDeep ∧ NoFrozenAccess callDeep ∧ NoUseAfterEnd callDeep ∧
@@ -1275,6 +1323,7 @@ Basis: derived (modeling bridge) — the resolution policies model where a proph
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Results.lean:121-123
 -- lean/ToyProphecy/Results.lean
 theorem calleeBack_eq_final_of_calleeScoped_of_calleeFreshBindings (f : Callee)
     (hS : CalleeScoped f) (hB : CalleeFreshBindings f) :
@@ -1335,6 +1384,7 @@ Basis: derived (modeling bridge) — the backward summary models a backward func
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Results.lean:133-137
 -- lean/ToyProphecy/Results.lean
 theorem prophContract_iff_backwardSummary_of_calleeNoFrozenAccess_of_calleeNoUseAfterEnd_of_calleeFreshBindings
     (f : Callee)
@@ -1398,6 +1448,7 @@ Basis: derived (modeling bridge) — the backward summary models a backward func
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Selection.lean:55-57
 -- lean/ToyProphecy/Selection.lean
 theorem selIncr_both_translations_correct (σ : Store) :
     backSem selIncr σ = refSem selIncr σ ∧
@@ -1443,6 +1494,7 @@ Basis: derived (modeling bridge) — the example is the toy analogue of the run-
 **Lean statement** (proof omitted):
 
 ```lean
+-- lean/ToyProphecy/Selection.lean:102-112
 -- lean/ToyProphecy/Selection.lean
 theorem selIncr_backward_shape (σ : Store) :
     (∃ s q, runB (BState.init σ) [op (borrowSel 0 (var 2) 0 1)] = some s ∧
@@ -1455,6 +1507,7 @@ theorem selIncr_backward_shape (σ : Store) :
     (∃ s, runB (BState.init σ) selIncr = some s ∧
       (s.store 0, s.store 1) =
         selLenders (decide (σ 2 ≠ 0)) (σ 0) (σ 1) ((if σ 2 ≠ 0 then σ 0 else σ 1) + 1))
+-- lean/ToyProphecy/Selection.lean:124-129
 -- lean/ToyProphecy/Selection.lean
 theorem selIncr_prophecy_shape (σ : Store) (φ : Nat → Int) :
     (∃ s q, runP ResPolicy.std φ 0 (PState.init σ) [op (borrowSel 0 (var 2) 0 1)] = some s ∧
@@ -1462,6 +1515,7 @@ theorem selIncr_prophecy_shape (σ : Store) (φ : Nat → Int) :
       SelProphSpec (decide (σ 2 ≠ 0)) (σ 0) (σ 1) q.cur q.fin (s.store 0) (s.store 1)) ∧
     (∃ s, runP ResPolicy.std φ 0 (PState.init σ) selIncr = some s ∧ s.next = 1 ∧
       s.cs = [((if σ 2 ≠ 0 then σ 0 else σ 1) + 1, φ 0)])
+-- lean/ToyProphecy/Selection.lean:140-141
 -- lean/ToyProphecy/Selection.lean
 theorem selLenders_depends_on_condition (x0 y0 : Int) :
     ¬ ∃ g : Int → Int × Int, ∀ b v, g v = selLenders b x0 y0 v
