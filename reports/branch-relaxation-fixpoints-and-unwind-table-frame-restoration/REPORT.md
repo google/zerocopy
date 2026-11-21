@@ -2,7 +2,7 @@
 
 ## Summary
 
-This package contains 20 kernel-checked results about two small Lean 4 models: `Toy.Relax`, a toy model of span-dependent branch encoding ("branch relaxation") in an assembler, and `Toy.Unwind`, a toy model of DWARF-CFI-style unwind tables for one straight-line function body. All results are proved in core Lean `v4.34.1` without Mathlib; no result is a claim about a real assembler, linker, compiler or unwinder (every such connection is a separately labeled `derived (modeling bridge)` statement under **Findings**).
+This package contains 20 kernel-checked results about two small Lean 4 models: `Toy.Relax`, a toy model of span-dependent branch encoding ("branch relaxation") in an assembler, and `Toy.Unwind`, a toy model of DWARF-CFI-style unwind tables for one straight-line function body. All results are proved in core Lean `v4.34.1` without Mathlib; no result is a claim about a real assembler, linker, compiler or unwinder (every such connection is a separately labeled `derived (modeling bridge)` statement under **Findings**). Model–system relation: none proved. These are statements about the toy models; they neither establish nor refute the corresponding claims about real assemblers and linkers (such as LLVM's MC layer or CompCert's `Branch_relaxation` module), compiler-emitted DWARF call frame information or real unwinders.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -1534,7 +1534,7 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 
 **R7a** (`checkTable_sound`):
 
-* Sound for the toy language only; any extension (calls, branches, computed addresses) needs a new proof.
+* Proved for the toy language; whether checkTable stays sound for extensions (calls, branches, computed addresses) is not addressed (not proved either way), and any extension needs a new proof.
 * The checker checks only registers in cs; rules for other registers are ignored.
 * Single-frame virtual unwinding only: TableCorrect does not forbid the body from writing into the caller's frame (addresses >= entry sp; tableCorrect_permits_caller_frame_write) and does not require the body to restore sp or any register by its end (tableCorrect_permits_unrestored_sp).
 * TableCorrect quantifies over every entry state, including ones a real ABI excludes (unaligned sp, arbitrary memory); registers and stack words are unbounded integers.

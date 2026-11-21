@@ -548,7 +548,7 @@
   "nonvacuity_witness": "Frame body [subSp 2, saveAt 3 1, setReg 3 7, addSp 1, pop 3] with its generated table.",
   "nonvacuity_witness_lean": "Toy.Unwind.checkTable_nonvacuity",
   "non_claims": [
-   "Sound for the toy language only; any extension (calls, branches, computed addresses) needs a new proof.",
+   "Proved for the toy language; whether checkTable stays sound for extensions (calls, branches, computed addresses) is not addressed (not proved either way), and any extension needs a new proof.",
    "The checker checks only registers in cs; rules for other registers are ignored.",
    "Single-frame virtual unwinding only: TableCorrect does not forbid the body from writing into the caller's frame (addresses >= entry sp; tableCorrect_permits_caller_frame_write) and does not require the body to restore sp or any register by its end (tableCorrect_permits_unrestored_sp).",
    "TableCorrect quantifies over every entry state, including ones a real ABI excludes (unaligned sp, arbitrary memory); registers and stack words are unbounded integers.",
