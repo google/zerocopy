@@ -1,0 +1,1997 @@
+{
+  "meta": {
+    "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+    "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "repeats": 3,
+    "anneal_git_rev": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+  },
+  "base_modules": {
+    "Trusted": {
+      "cached": true,
+      "olean_bytes": 2120
+    },
+    "Trusted.MirAst": {
+      "cached": true,
+      "olean_bytes": 1387952
+    },
+    "Trusted.MirSemantics": {
+      "cached": true,
+      "olean_bytes": 1235928
+    },
+    "Anneal.MirWp": {
+      "cached": true,
+      "olean_bytes": 4379472
+    },
+    "MirR3LocalCompactionRefinement": {
+      "cached": true,
+      "olean_bytes": 9301800
+    }
+  },
+  "suite1": [
+    {
+      "k": 4,
+      "locals_r0": 12,
+      "locals_r3": 4,
+      "stmts_r0": 13,
+      "stmts_r3": 3,
+      "mode": "LinearAssoc_OSL_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.3850682080083061,
+      "rss_mb": 172.62890625,
+      "olean_bytes": 17696,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5576831920188852,
+          "rss_mb": 172.2734375,
+          "error_tag": null,
+          "olean_bytes": 17696
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.3850682080083061,
+          "rss_mb": 172.62890625,
+          "error_tag": null,
+          "olean_bytes": 17696
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.3218192030035425,
+          "rss_mb": 172.94921875,
+          "error_tag": null,
+          "olean_bytes": 17696
+        }
+      ]
+    },
+    {
+      "k": 4,
+      "locals_r0": 12,
+      "locals_r3": 4,
+      "stmts_r0": 13,
+      "stmts_r3": 3,
+      "mode": "PositionalUnbatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.2683400999812875,
+      "rss_mb": 169.1640625,
+      "olean_bytes": 19496,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.2982004789810162,
+          "rss_mb": 170.38671875,
+          "error_tag": null,
+          "olean_bytes": 19496
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.2611118689819705,
+          "rss_mb": 169.1640625,
+          "error_tag": null,
+          "olean_bytes": 19496
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.2683400999812875,
+          "rss_mb": 168.625,
+          "error_tag": null,
+          "olean_bytes": 19496
+        }
+      ]
+    },
+    {
+      "k": 4,
+      "locals_r0": 12,
+      "locals_r3": 4,
+      "stmts_r0": 13,
+      "stmts_r3": 3,
+      "mode": "PositionalBatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.2817992719938047,
+      "rss_mb": 168.23828125,
+      "olean_bytes": 17704,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.35943057099939324,
+          "rss_mb": 167.953125,
+          "error_tag": null,
+          "olean_bytes": 17704
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.24942978701437823,
+          "rss_mb": 169.390625,
+          "error_tag": null,
+          "olean_bytes": 17704
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.2817992719938047,
+          "rss_mb": 168.23828125,
+          "error_tag": null,
+          "olean_bytes": 17704
+        }
+      ]
+    },
+    {
+      "k": 4,
+      "locals_r0": 12,
+      "locals_r3": 4,
+      "stmts_r0": 13,
+      "stmts_r3": 3,
+      "mode": "PositionalBatched_OS_decide",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.3113514760043472,
+      "rss_mb": 168.96484375,
+      "olean_bytes": 18728,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.3113514760043472,
+          "rss_mb": 169.5234375,
+          "error_tag": null,
+          "olean_bytes": 18728
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.30732929302030243,
+          "rss_mb": 168.96484375,
+          "error_tag": null,
+          "olean_bytes": 18728
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.3305296929902397,
+          "rss_mb": 168.48828125,
+          "error_tag": null,
+          "olean_bytes": 18728
+        }
+      ]
+    },
+    {
+      "k": 4,
+      "locals_r0": 12,
+      "locals_r3": 4,
+      "stmts_r0": 13,
+      "stmts_r3": 3,
+      "mode": "R3_SymbolicExecutes_Proof",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.41377075100899674,
+      "rss_mb": 173.9609375,
+      "olean_bytes": 31560,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.36870136301149614,
+          "rss_mb": 173.91015625,
+          "error_tag": null,
+          "olean_bytes": 31560
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.41377075100899674,
+          "rss_mb": 173.9609375,
+          "error_tag": null,
+          "olean_bytes": 31560
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.4265222290123347,
+          "rss_mb": 174.69140625,
+          "error_tag": null,
+          "olean_bytes": 31560
+        }
+      ]
+    },
+    {
+      "k": 4,
+      "locals_r0": 12,
+      "locals_r3": 4,
+      "stmts_r0": 13,
+      "stmts_r3": 3,
+      "mode": "R0_SymbolicExecutes_Proof",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.7592318250099197,
+      "rss_mb": 176.7109375,
+      "olean_bytes": 41904,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.0123638040095102,
+          "rss_mb": 176.7109375,
+          "error_tag": null,
+          "olean_bytes": 41904
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.7592318250099197,
+          "rss_mb": 176.87890625,
+          "error_tag": null,
+          "olean_bytes": 41904
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5503040319890715,
+          "rss_mb": 176.49609375,
+          "error_tag": null,
+          "olean_bytes": 41904
+        }
+      ]
+    },
+    {
+      "k": 8,
+      "locals_r0": 24,
+      "locals_r3": 8,
+      "stmts_r0": 25,
+      "stmts_r3": 7,
+      "mode": "LinearAssoc_OSL_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.6993416619952768,
+      "rss_mb": 181.02734375,
+      "olean_bytes": 24568,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.6872796509996988,
+          "rss_mb": 180.69921875,
+          "error_tag": null,
+          "olean_bytes": 24568
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.6993416619952768,
+          "rss_mb": 181.8671875,
+          "error_tag": null,
+          "olean_bytes": 24568
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.7341070420225151,
+          "rss_mb": 181.02734375,
+          "error_tag": null,
+          "olean_bytes": 24568
+        }
+      ]
+    },
+    {
+      "k": 8,
+      "locals_r0": 24,
+      "locals_r3": 8,
+      "stmts_r0": 25,
+      "stmts_r3": 7,
+      "mode": "PositionalUnbatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.3170887070009485,
+      "rss_mb": 170.74609375,
+      "olean_bytes": 26304,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.3170887070009485,
+          "rss_mb": 170.74609375,
+          "error_tag": null,
+          "olean_bytes": 26304
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.3049548050039448,
+          "rss_mb": 170.59765625,
+          "error_tag": null,
+          "olean_bytes": 26304
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.33727099298266694,
+          "rss_mb": 172.79296875,
+          "error_tag": null,
+          "olean_bytes": 26304
+        }
+      ]
+    },
+    {
+      "k": 8,
+      "locals_r0": 24,
+      "locals_r3": 8,
+      "stmts_r0": 25,
+      "stmts_r3": 7,
+      "mode": "PositionalBatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.35238257399760187,
+      "rss_mb": 171.0390625,
+      "olean_bytes": 24576,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.35238257399760187,
+          "rss_mb": 171.0390625,
+          "error_tag": null,
+          "olean_bytes": 24576
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5815492380061187,
+          "rss_mb": 171.96875,
+          "error_tag": null,
+          "olean_bytes": 24576
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.31505888199899346,
+          "rss_mb": 170.49609375,
+          "error_tag": null,
+          "olean_bytes": 24576
+        }
+      ]
+    },
+    {
+      "k": 8,
+      "locals_r0": 24,
+      "locals_r3": 8,
+      "stmts_r0": 25,
+      "stmts_r3": 7,
+      "mode": "PositionalBatched_OS_decide",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.2953394489886705,
+      "rss_mb": 170.65625,
+      "olean_bytes": 25600,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.31620288800331764,
+          "rss_mb": 170.41015625,
+          "error_tag": null,
+          "olean_bytes": 25600
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.2944300259987358,
+          "rss_mb": 172.15234375,
+          "error_tag": null,
+          "olean_bytes": 25600
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.2953394489886705,
+          "rss_mb": 170.65625,
+          "error_tag": null,
+          "olean_bytes": 25600
+        }
+      ]
+    },
+    {
+      "k": 8,
+      "locals_r0": 24,
+      "locals_r3": 8,
+      "stmts_r0": 25,
+      "stmts_r3": 7,
+      "mode": "R3_SymbolicExecutes_Proof",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.5790135310089681,
+      "rss_mb": 178.98046875,
+      "olean_bytes": 41520,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5790135310089681,
+          "rss_mb": 178.98046875,
+          "error_tag": null,
+          "olean_bytes": 41520
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5954741329769604,
+          "rss_mb": 181.24609375,
+          "error_tag": null,
+          "olean_bytes": 41520
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5696536549949087,
+          "rss_mb": 177.32421875,
+          "error_tag": null,
+          "olean_bytes": 41520
+        }
+      ]
+    },
+    {
+      "k": 8,
+      "locals_r0": 24,
+      "locals_r3": 8,
+      "stmts_r0": 25,
+      "stmts_r3": 7,
+      "mode": "R0_SymbolicExecutes_Proof",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 1.420733322011074,
+      "rss_mb": 189.01171875,
+      "olean_bytes": 67352,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.2938234799948987,
+          "rss_mb": 189.01171875,
+          "error_tag": null,
+          "olean_bytes": 67352
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.420733322011074,
+          "rss_mb": 190.578125,
+          "error_tag": null,
+          "olean_bytes": 67352
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.8353659589774907,
+          "rss_mb": 188.60546875,
+          "error_tag": null,
+          "olean_bytes": 67352
+        }
+      ]
+    },
+    {
+      "k": 16,
+      "locals_r0": 48,
+      "locals_r3": 16,
+      "stmts_r0": 49,
+      "stmts_r3": 15,
+      "mode": "LinearAssoc_OSL_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 2.310107710014563,
+      "rss_mb": 244.4609375,
+      "olean_bytes": 37848,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 2.310107710014563,
+          "rss_mb": 243.8359375,
+          "error_tag": null,
+          "olean_bytes": 37848
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 3.1021995290066116,
+          "rss_mb": 245.69921875,
+          "error_tag": null,
+          "olean_bytes": 37848
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.9702095589891542,
+          "rss_mb": 244.4609375,
+          "error_tag": null,
+          "olean_bytes": 37848
+        }
+      ]
+    },
+    {
+      "k": 16,
+      "locals_r0": 48,
+      "locals_r3": 16,
+      "stmts_r0": 49,
+      "stmts_r3": 15,
+      "mode": "PositionalUnbatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.5476217399991583,
+      "rss_mb": 177.2734375,
+      "olean_bytes": 39584,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5476217399991583,
+          "rss_mb": 177.2734375,
+          "error_tag": null,
+          "olean_bytes": 39584
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5424001380160917,
+          "rss_mb": 178.26953125,
+          "error_tag": null,
+          "olean_bytes": 39584
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5755605059966911,
+          "rss_mb": 176.54296875,
+          "error_tag": null,
+          "olean_bytes": 39584
+        }
+      ]
+    },
+    {
+      "k": 16,
+      "locals_r0": 48,
+      "locals_r3": 16,
+      "stmts_r0": 49,
+      "stmts_r3": 15,
+      "mode": "PositionalBatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.6307517139939591,
+      "rss_mb": 179.58203125,
+      "olean_bytes": 37856,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.7464551029843278,
+          "rss_mb": 180.40625,
+          "error_tag": null,
+          "olean_bytes": 37856
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.6307517139939591,
+          "rss_mb": 179.58203125,
+          "error_tag": null,
+          "olean_bytes": 37856
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.4816560019971803,
+          "rss_mb": 179.47265625,
+          "error_tag": null,
+          "olean_bytes": 37856
+        }
+      ]
+    },
+    {
+      "k": 16,
+      "locals_r0": 48,
+      "locals_r3": 16,
+      "stmts_r0": 49,
+      "stmts_r3": 15,
+      "mode": "PositionalBatched_OS_decide",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 0.5047692410007585,
+      "rss_mb": 178.57421875,
+      "olean_bytes": 38880,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5047692410007585,
+          "rss_mb": 179.625,
+          "error_tag": null,
+          "olean_bytes": 38880
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.48063955700490624,
+          "rss_mb": 178.57421875,
+          "error_tag": null,
+          "olean_bytes": 38880
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.5240601370169315,
+          "rss_mb": 178.48046875,
+          "error_tag": null,
+          "olean_bytes": 38880
+        }
+      ]
+    },
+    {
+      "k": 16,
+      "locals_r0": 48,
+      "locals_r3": 16,
+      "stmts_r0": 49,
+      "stmts_r3": 15,
+      "mode": "R3_SymbolicExecutes_Proof",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 1.5303025899920613,
+      "rss_mb": 192.36328125,
+      "olean_bytes": 62544,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.5303025899920613,
+          "rss_mb": 193.12890625,
+          "error_tag": null,
+          "olean_bytes": 62544
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.9241428609821014,
+          "rss_mb": 190.8359375,
+          "error_tag": null,
+          "olean_bytes": 62544
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.5240222480206285,
+          "rss_mb": 192.36328125,
+          "error_tag": null,
+          "olean_bytes": 62544
+        }
+      ]
+    },
+    {
+      "k": 16,
+      "locals_r0": 48,
+      "locals_r3": 16,
+      "stmts_r0": 49,
+      "stmts_r3": 15,
+      "mode": "R0_SymbolicExecutes_Proof",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 4.412212029012153,
+      "rss_mb": 227.91015625,
+      "olean_bytes": 132288,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 4.104330992005998,
+          "rss_mb": 229.70703125,
+          "error_tag": null,
+          "olean_bytes": 132288
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 4.494457419990795,
+          "rss_mb": 226.96875,
+          "error_tag": null,
+          "olean_bytes": 132288
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 4.412212029012153,
+          "rss_mb": 227.91015625,
+          "error_tag": null,
+          "olean_bytes": 132288
+        }
+      ]
+    },
+    {
+      "k": 32,
+      "locals_r0": 96,
+      "locals_r3": 32,
+      "stmts_r0": 97,
+      "stmts_r3": 31,
+      "mode": "LinearAssoc_OSL_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 9.053339371021139,
+      "rss_mb": 478.6015625,
+      "olean_bytes": 59760,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 9.053339371021139,
+          "rss_mb": 478.6015625,
+          "error_tag": null,
+          "olean_bytes": 59760
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 7.917548106983304,
+          "rss_mb": 479.76953125,
+          "error_tag": null,
+          "olean_bytes": 59760
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 10.067975081998156,
+          "rss_mb": 478.5703125,
+          "error_tag": null,
+          "olean_bytes": 59760
+        }
+      ]
+    },
+    {
+      "k": 32,
+      "locals_r0": 96,
+      "locals_r3": 32,
+      "stmts_r0": 97,
+      "stmts_r3": 31,
+      "mode": "PositionalUnbatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 1.1384973579843063,
+      "rss_mb": 183.04296875,
+      "olean_bytes": 61496,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.1384973579843063,
+          "rss_mb": 181.5390625,
+          "error_tag": null,
+          "olean_bytes": 61496
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.3323433019977529,
+          "rss_mb": 183.04296875,
+          "error_tag": null,
+          "olean_bytes": 61496
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.1081189060059842,
+          "rss_mb": 185.234375,
+          "error_tag": null,
+          "olean_bytes": 61496
+        }
+      ]
+    },
+    {
+      "k": 32,
+      "locals_r0": 96,
+      "locals_r3": 32,
+      "stmts_r0": 97,
+      "stmts_r3": 31,
+      "mode": "PositionalBatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 1.1394600940111559,
+      "rss_mb": 188.3671875,
+      "olean_bytes": 59768,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.1376202579995152,
+          "rss_mb": 188.51953125,
+          "error_tag": null,
+          "olean_bytes": 59768
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.1394600940111559,
+          "rss_mb": 188.2578125,
+          "error_tag": null,
+          "olean_bytes": 59768
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.205974476004485,
+          "rss_mb": 188.3671875,
+          "error_tag": null,
+          "olean_bytes": 59768
+        }
+      ]
+    },
+    {
+      "k": 32,
+      "locals_r0": 96,
+      "locals_r3": 32,
+      "stmts_r0": 97,
+      "stmts_r3": 31,
+      "mode": "PositionalBatched_OS_decide",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 1.000714342982974,
+      "rss_mb": 189.515625,
+      "olean_bytes": 60792,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.0594483840104658,
+          "rss_mb": 188.47265625,
+          "error_tag": null,
+          "olean_bytes": 60792
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 0.945360696001444,
+          "rss_mb": 189.515625,
+          "error_tag": null,
+          "olean_bytes": 60792
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.000714342982974,
+          "rss_mb": 190.2265625,
+          "error_tag": null,
+          "olean_bytes": 60792
+        }
+      ]
+    },
+    {
+      "k": 32,
+      "locals_r0": 96,
+      "locals_r3": 32,
+      "stmts_r0": 97,
+      "stmts_r3": 31,
+      "mode": "R3_SymbolicExecutes_Proof",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 6.283547607978107,
+      "rss_mb": 224.03515625,
+      "olean_bytes": 107760,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 5.237052463984583,
+          "rss_mb": 224.03515625,
+          "error_tag": null,
+          "olean_bytes": 107760
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 6.283547607978107,
+          "rss_mb": 224.81640625,
+          "error_tag": null,
+          "olean_bytes": 107760
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 10.088258150004549,
+          "rss_mb": 223.9453125,
+          "error_tag": null,
+          "olean_bytes": 107760
+        }
+      ]
+    },
+    {
+      "k": 32,
+      "locals_r0": 96,
+      "locals_r3": 32,
+      "stmts_r0": 97,
+      "stmts_r3": 31,
+      "mode": "R0_SymbolicExecutes_Proof",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 39.97383364898269,
+      "rss_mb": 405.77734375,
+      "olean_bytes": 314200,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 26.798112805001438,
+          "rss_mb": 406.88671875,
+          "error_tag": null,
+          "olean_bytes": 314200
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 39.97383364898269,
+          "rss_mb": 405.6640625,
+          "error_tag": null,
+          "olean_bytes": 314200
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 57.90450362197589,
+          "rss_mb": 405.77734375,
+          "error_tag": null,
+          "olean_bytes": 314200
+        }
+      ]
+    },
+    {
+      "k": 64,
+      "locals_r0": 192,
+      "locals_r3": 64,
+      "stmts_r0": 193,
+      "stmts_r3": 63,
+      "mode": "LinearAssoc_OSL_rfl",
+      "rc": 1,
+      "error_tag": "maxRecDepth",
+      "wall_sec": 0.7118521080119535,
+      "rss_mb": 164.69140625,
+      "olean_bytes": 0,
+      "runs": [
+        {
+          "rc": 1,
+          "timed_out": false,
+          "wall_sec": 0.7118521080119535,
+          "rss_mb": 164.69140625,
+          "error_tag": "maxRecDepth",
+          "olean_bytes": 0
+        }
+      ],
+      "error_tail": "$WORKDIR/suite1/S1_LinearAssoc_OSL_rfl_K64.lean:69:48: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n"
+    },
+    {
+      "k": 64,
+      "locals_r0": 192,
+      "locals_r3": 64,
+      "stmts_r0": 193,
+      "stmts_r3": 63,
+      "mode": "PositionalUnbatched_OS_rfl",
+      "rc": 1,
+      "error_tag": "maxRecDepth",
+      "wall_sec": 0.8238930930092465,
+      "rss_mb": 168.64453125,
+      "olean_bytes": 0,
+      "runs": [
+        {
+          "rc": 1,
+          "timed_out": false,
+          "wall_sec": 0.8238930930092465,
+          "rss_mb": 168.64453125,
+          "error_tag": "maxRecDepth",
+          "olean_bytes": 0
+        }
+      ],
+      "error_tail": "$WORKDIR/suite1/S1_PositionalUnbatched_OS_rfl_K64.lean:69:54: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n"
+    },
+    {
+      "k": 64,
+      "locals_r0": 192,
+      "locals_r3": 64,
+      "stmts_r0": 193,
+      "stmts_r3": 63,
+      "mode": "PositionalBatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 1.9738206610199995,
+      "rss_mb": 230.765625,
+      "olean_bytes": 101344,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.9480500810022932,
+          "rss_mb": 232.3203125,
+          "error_tag": null,
+          "olean_bytes": 101344
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 1.9738206610199995,
+          "rss_mb": 230.765625,
+          "error_tag": null,
+          "olean_bytes": 101344
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 2.760175714007346,
+          "rss_mb": 230.09765625,
+          "error_tag": null,
+          "olean_bytes": 101344
+        }
+      ]
+    },
+    {
+      "k": 64,
+      "locals_r0": 192,
+      "locals_r3": 64,
+      "stmts_r0": 193,
+      "stmts_r3": 63,
+      "mode": "PositionalBatched_OS_decide",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 2.8341706870123744,
+      "rss_mb": 232.6171875,
+      "olean_bytes": 102368,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 3.9393615839944687,
+          "rss_mb": 232.30078125,
+          "error_tag": null,
+          "olean_bytes": 102368
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 2.8341706870123744,
+          "rss_mb": 233.78515625,
+          "error_tag": null,
+          "olean_bytes": 102368
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 2.396993009984726,
+          "rss_mb": 232.6171875,
+          "error_tag": null,
+          "olean_bytes": 102368
+        }
+      ]
+    },
+    {
+      "k": 64,
+      "locals_r0": 192,
+      "locals_r3": 64,
+      "stmts_r0": 193,
+      "stmts_r3": 63,
+      "mode": "R3_SymbolicExecutes_Proof",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 18.018995489022927,
+      "rss_mb": 385.4765625,
+      "olean_bytes": 219536,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 17.297257390018785,
+          "rss_mb": 384.8515625,
+          "error_tag": null,
+          "olean_bytes": 219536
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 18.018995489022927,
+          "rss_mb": 385.86328125,
+          "error_tag": null,
+          "olean_bytes": 219536
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 22.29303178199916,
+          "rss_mb": 385.4765625,
+          "error_tag": null,
+          "olean_bytes": 219536
+        }
+      ]
+    },
+    {
+      "k": 64,
+      "locals_r0": 192,
+      "locals_r3": 64,
+      "stmts_r0": 193,
+      "stmts_r3": 63,
+      "mode": "R0_SymbolicExecutes_Proof",
+      "rc": 1,
+      "error_tag": "maxRecDepth",
+      "wall_sec": 1.39393932101666,
+      "rss_mb": 166.72265625,
+      "olean_bytes": 0,
+      "runs": [
+        {
+          "rc": 1,
+          "timed_out": false,
+          "wall_sec": 1.39393932101666,
+          "rss_mb": 166.72265625,
+          "error_tag": "maxRecDepth",
+          "olean_bytes": 0
+        }
+      ],
+      "error_tail": "$WORKDIR/suite1/S1_R0_SymbolicExecutes_Proof_K64.lean:73:43: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n"
+    },
+    {
+      "k": 128,
+      "locals_r0": 384,
+      "locals_r3": 128,
+      "stmts_r0": 385,
+      "stmts_r3": 127,
+      "mode": "LinearAssoc_OSL_rfl",
+      "rc": 1,
+      "error_tag": "maxRecDepth",
+      "wall_sec": 1.8915092830138747,
+      "rss_mb": 174.2734375,
+      "olean_bytes": 0,
+      "runs": [
+        {
+          "rc": 1,
+          "timed_out": false,
+          "wall_sec": 1.8915092830138747,
+          "rss_mb": 174.2734375,
+          "error_tag": "maxRecDepth",
+          "olean_bytes": 0
+        }
+      ],
+      "error_tail": "$WORKDIR/suite1/S1_LinearAssoc_OSL_rfl_K128.lean:104:48: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n"
+    },
+    {
+      "k": 128,
+      "locals_r0": 384,
+      "locals_r3": 128,
+      "stmts_r0": 385,
+      "stmts_r3": 127,
+      "mode": "PositionalUnbatched_OS_rfl",
+      "rc": 1,
+      "error_tag": "maxRecDepth",
+      "wall_sec": 3.305052779003745,
+      "rss_mb": 184.3984375,
+      "olean_bytes": 0,
+      "runs": [
+        {
+          "rc": 1,
+          "timed_out": false,
+          "wall_sec": 3.305052779003745,
+          "rss_mb": 184.3984375,
+          "error_tag": "maxRecDepth",
+          "olean_bytes": 0
+        }
+      ],
+      "error_tail": "$WORKDIR/suite1/S1_PositionalUnbatched_OS_rfl_K128.lean:104:54: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n"
+    },
+    {
+      "k": 128,
+      "locals_r0": 384,
+      "locals_r3": 128,
+      "stmts_r0": 385,
+      "stmts_r3": 127,
+      "mode": "PositionalBatched_OS_rfl",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 7.68656306801131,
+      "rss_mb": 370.015625,
+      "olean_bytes": 184312,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 7.68656306801131,
+          "rss_mb": 369.4453125,
+          "error_tag": null,
+          "olean_bytes": 184312
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 9.288258106011199,
+          "rss_mb": 370.015625,
+          "error_tag": null,
+          "olean_bytes": 184312
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 5.994300938007655,
+          "rss_mb": 372.4453125,
+          "error_tag": null,
+          "olean_bytes": 184312
+        }
+      ]
+    },
+    {
+      "k": 128,
+      "locals_r0": 384,
+      "locals_r3": 128,
+      "stmts_r0": 385,
+      "stmts_r3": 127,
+      "mode": "PositionalBatched_OS_decide",
+      "rc": 0,
+      "error_tag": null,
+      "wall_sec": 6.740277497010538,
+      "rss_mb": 372.4140625,
+      "olean_bytes": 185328,
+      "runs": [
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 5.8271238669985905,
+          "rss_mb": 372.58984375,
+          "error_tag": null,
+          "olean_bytes": 185328
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 6.740277497010538,
+          "rss_mb": 372.4140625,
+          "error_tag": null,
+          "olean_bytes": 185328
+        },
+        {
+          "rc": 0,
+          "timed_out": false,
+          "wall_sec": 9.684344831999624,
+          "rss_mb": 370.5859375,
+          "error_tag": null,
+          "olean_bytes": 185328
+        }
+      ]
+    },
+    {
+      "k": 128,
+      "locals_r0": 384,
+      "locals_r3": 128,
+      "stmts_r0": 385,
+      "stmts_r3": 127,
+      "mode": "R3_SymbolicExecutes_Proof",
+      "rc": 1,
+      "error_tag": "maxRecDepth",
+      "wall_sec": 1.9449141059885733,
+      "rss_mb": 174.56640625,
+      "olean_bytes": 0,
+      "runs": [
+        {
+          "rc": 1,
+          "timed_out": false,
+          "wall_sec": 1.9449141059885733,
+          "rss_mb": 174.56640625,
+          "error_tag": "maxRecDepth",
+          "olean_bytes": 0
+        }
+      ],
+      "error_tail": "$WORKDIR/suite1/S1_R3_SymbolicExecutes_Proof_K128.lean:108:43: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n"
+    },
+    {
+      "k": 128,
+      "locals_r0": 384,
+      "locals_r3": 128,
+      "stmts_r0": 385,
+      "stmts_r3": 127,
+      "mode": "R0_SymbolicExecutes_Proof",
+      "rc": 1,
+      "error_tag": "maxRecDepth",
+      "wall_sec": 2.434962703002384,
+      "rss_mb": 176.71875,
+      "olean_bytes": 0,
+      "runs": [
+        {
+          "rc": 1,
+          "timed_out": false,
+          "wall_sec": 2.434962703002384,
+          "rss_mb": 176.71875,
+          "error_tag": "maxRecDepth",
+          "olean_bytes": 0
+        }
+      ],
+      "error_tail": "$WORKDIR/suite1/S1_R0_SymbolicExecutes_Proof_K128.lean:108:43: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information\n"
+    }
+  ],
+  "suite2": {
+    "crate_call_graphs": {
+      "zerocopy": {
+        "defined_fns": 284,
+        "intra_edges": 8,
+        "self_recursive": 0,
+        "scc_count": 284,
+        "multi_scc_count": 0,
+        "multi_scc_sizes": [],
+        "dag_edges": 8,
+        "max_dag_depth": 1
+      },
+      "miniz_oxide": {
+        "defined_fns": 609,
+        "intra_edges": 921,
+        "self_recursive": 0,
+        "scc_count": 609,
+        "multi_scc_count": 0,
+        "multi_scc_sizes": [],
+        "dag_edges": 921,
+        "max_dag_depth": 15
+      },
+      "regex_syntax": {
+        "defined_fns": 2836,
+        "intra_edges": 5258,
+        "self_recursive": 7,
+        "scc_count": 2749,
+        "multi_scc_count": 9,
+        "multi_scc_sizes": [
+          25,
+          23,
+          18,
+          11,
+          5,
+          4,
+          4,
+          4,
+          2
+        ],
+        "dag_edges": 5058,
+        "max_dag_depth": 29
+      }
+    },
+    "workloads": [
+      {
+        "workload": "miniz_oxide_DAG",
+        "call_graph": {
+          "defined_fns": 609,
+          "intra_edges": 921,
+          "self_recursive": 0,
+          "scc_count": 609,
+          "multi_scc_count": 0,
+          "multi_scc_sizes": [],
+          "dag_edges": 921,
+          "max_dag_depth": 15
+        },
+        "partition": {
+          "num_shards": 12,
+          "shard_scc_counts": [
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            48
+          ],
+          "shard_fn_counts": [
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            51,
+            48
+          ],
+          "shard_multi_sccs": [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "shard_deps": {
+            "0": [],
+            "1": [
+              0
+            ],
+            "2": [
+              0,
+              1
+            ],
+            "3": [
+              0,
+              2
+            ],
+            "4": [
+              2,
+              3
+            ],
+            "5": [
+              0,
+              3,
+              4
+            ],
+            "6": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "7": [
+              0,
+              1,
+              2,
+              6
+            ],
+            "8": [
+              0,
+              1,
+              3,
+              6,
+              7
+            ],
+            "9": [
+              3,
+              5,
+              6,
+              8
+            ],
+            "10": [
+              0,
+              1,
+              2,
+              3,
+              5,
+              6,
+              7,
+              8,
+              9
+            ],
+            "11": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              6,
+              7,
+              8,
+              9,
+              10
+            ]
+          },
+          "shard_rdeps": {
+            "0": [
+              1,
+              2,
+              3,
+              5,
+              6,
+              7,
+              8,
+              10,
+              11
+            ],
+            "1": [
+              2,
+              6,
+              7,
+              8,
+              10,
+              11
+            ],
+            "2": [
+              3,
+              4,
+              6,
+              7,
+              10,
+              11
+            ],
+            "3": [
+              4,
+              5,
+              6,
+              8,
+              9,
+              10,
+              11
+            ],
+            "4": [
+              5,
+              11
+            ],
+            "5": [
+              9,
+              10
+            ],
+            "6": [
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "7": [
+              8,
+              10,
+              11
+            ],
+            "8": [
+              9,
+              10,
+              11
+            ],
+            "9": [
+              10,
+              11
+            ],
+            "10": [
+              11
+            ],
+            "11": []
+          },
+          "shard_levels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "critical_path_levels": 10
+        },
+        "monolithic": {
+          "cold_wall_sec": 19.584058362990618,
+          "peak_rss_mb": 238.72265625,
+          "olean_bytes": 1066144
+        },
+        "sharded": {
+          "num_shards": 12,
+          "cold_total_wall_sec": 24.02682086196728,
+          "cold_critical_path_wall_sec": 20.438114230986685,
+          "max_per_shard_rss_mb": 172.56640625,
+          "total_olean_bytes": 1421216,
+          "rss_reduction_ratio": 1.3833669103832311,
+          "cold_overhead_ratio": 1.226856069188012,
+          "crit_path_speedup": 0.9582125895596956
+        },
+        "incremental": {
+          "edited_mid_shard": 0,
+          "edited_mid_multi_sccs": [],
+          "cascade_shards_count": 12,
+          "hsig_digest_sha256_before": "aaed36ddf408c57e1970eaa6ed5715cf16a5f77f4decc63f1413d7d47aa5bc6b",
+          "hsig_digest_sha256_after": "aaed36ddf408c57e1970eaa6ed5715cf16a5f77f4decc63f1413d7d47aa5bc6b",
+          "hsig_1shard_rebuild_wall_sec": 1.773540906026028,
+          "hsig_speedup_vs_monolithic": 11.042349401950139,
+          "naive_mtime_cascade_wall_sec": 27.538017619983293,
+          "naive_mtime_cascade_crit_path_wall_sec": 22.39562000799924,
+          "naive_speedup_vs_monolithic": 0.7111644212464738,
+          "hsig_speedup_vs_naive_cascade": 15.52713981753469,
+          "hsig_speedup_vs_naive_crit_path": 12.627630934197674,
+          "leaf_shard": 11,
+          "leaf_1shard_rebuild_wall_sec": 2.6621090339904185,
+          "leaf_speedup_vs_monolithic": 7.356595133008029
+        }
+      },
+      {
+        "workload": "regex_syntax_MultiSCC",
+        "call_graph": {
+          "defined_fns": 2836,
+          "intra_edges": 5258,
+          "self_recursive": 7,
+          "scc_count": 2749,
+          "multi_scc_count": 9,
+          "multi_scc_sizes": [
+            25,
+            23,
+            18,
+            11,
+            5,
+            4,
+            4,
+            4,
+            2
+          ],
+          "dag_edges": 5058,
+          "max_dag_depth": 29
+        },
+        "partition": {
+          "num_shards": 14,
+          "shard_scc_counts": [
+            203,
+            203,
+            183,
+            200,
+            203,
+            203,
+            192,
+            203,
+            199,
+            200,
+            157,
+            203,
+            203,
+            197
+          ],
+          "shard_fn_counts": [
+            203,
+            203,
+            203,
+            203,
+            203,
+            203,
+            203,
+            203,
+            203,
+            203,
+            203,
+            203,
+            203,
+            197
+          ],
+          "shard_multi_sccs": [
+            [],
+            [],
+            [
+              18,
+              4
+            ],
+            [
+              4
+            ],
+            [],
+            [],
+            [
+              11,
+              2
+            ],
+            [],
+            [
+              5
+            ],
+            [
+              4
+            ],
+            [
+              25,
+              23
+            ],
+            [],
+            [],
+            []
+          ],
+          "shard_deps": {
+            "0": [],
+            "1": [
+              0
+            ],
+            "2": [
+              0,
+              1
+            ],
+            "3": [
+              0,
+              1,
+              2
+            ],
+            "4": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "5": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "6": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "7": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "8": [
+              0,
+              1,
+              2,
+              3,
+              5,
+              6,
+              7
+            ],
+            "9": [
+              0,
+              1,
+              2,
+              4,
+              5,
+              6,
+              7,
+              8
+            ],
+            "10": [
+              0,
+              1,
+              2,
+              5,
+              7,
+              9
+            ],
+            "11": [
+              0,
+              1,
+              2,
+              3,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "12": [
+              0,
+              1,
+              2,
+              3,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "13": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ]
+          },
+          "shard_rdeps": {
+            "0": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13
+            ],
+            "1": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13
+            ],
+            "2": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13
+            ],
+            "3": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              11,
+              12,
+              13
+            ],
+            "4": [
+              5,
+              6,
+              7,
+              9,
+              13
+            ],
+            "5": [
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13
+            ],
+            "6": [
+              7,
+              8,
+              9,
+              11,
+              12,
+              13
+            ],
+            "7": [
+              8,
+              9,
+              10,
+              11,
+              12,
+              13
+            ],
+            "8": [
+              9,
+              11,
+              12,
+              13
+            ],
+            "9": [
+              10,
+              11,
+              12,
+              13
+            ],
+            "10": [
+              11,
+              12,
+              13
+            ],
+            "11": [
+              12,
+              13
+            ],
+            "12": [
+              13
+            ],
+            "13": []
+          },
+          "shard_levels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "critical_path_levels": 14
+        },
+        "monolithic": {
+          "cold_wall_sec": 21.44181438497617,
+          "peak_rss_mb": 249.47265625,
+          "olean_bytes": 1263528
+        },
+        "sharded": {
+          "num_shards": 14,
+          "cold_total_wall_sec": 22.988986330950866,
+          "cold_critical_path_wall_sec": 22.988986330950866,
+          "max_per_shard_rss_mb": 172.86328125,
+          "total_olean_bytes": 1704712,
+          "rss_reduction_ratio": 1.443178993514564,
+          "cold_overhead_ratio": 1.0721567642642578,
+          "crit_path_speedup": 0.9326994272952486
+        },
+        "incremental": {
+          "edited_mid_shard": 2,
+          "edited_mid_multi_sccs": [
+            18,
+            4
+          ],
+          "cascade_shards_count": 12,
+          "hsig_digest_sha256_before": "dc6916c0d84d12c6672198a6c2096763b3497fec4c1bf7cd1f542d385416ac4c",
+          "hsig_digest_sha256_after": "dc6916c0d84d12c6672198a6c2096763b3497fec4c1bf7cd1f542d385416ac4c",
+          "hsig_1shard_rebuild_wall_sec": 1.8365156340005342,
+          "hsig_speedup_vs_monolithic": 11.67526918258183,
+          "naive_mtime_cascade_wall_sec": 19.649884683982236,
+          "naive_mtime_cascade_crit_path_wall_sec": 19.649884683982236,
+          "naive_speedup_vs_monolithic": 1.09119288636104,
+          "hsig_speedup_vs_naive_cascade": 10.699546641581446,
+          "hsig_speedup_vs_naive_crit_path": 10.699546641581446,
+          "leaf_shard": 13,
+          "leaf_1shard_rebuild_wall_sec": 1.823721053020563,
+          "leaf_speedup_vs_monolithic": 11.75717873600399
+        }
+      }
+    ],
+    "cyclic_split_negative_check": {
+      "a_first_rc": 1,
+      "a_first_error_tag": "cycleOrImportError",
+      "a_first_output_tail": "$WORKDIR/cyc_split/CycleNodeA.lean:1:0: error: unknown module prefix 'CycleNodeB'\n\nNo directory 'CycleNodeB' or file 'CycleNodeB.olean' in the search path entries:\n$BUILD_CACHE\n$WORKDIR/cyc_split\n$HOME/.elan/toolchains/leanprover--lean4---v4.34.1/lib/lean\n",
+      "b_first_rc": 1,
+      "b_first_error_tag": "cycleOrImportError",
+      "b_first_output_tail": "$WORKDIR/cyc_split/CycleNodeB.lean:1:0: error: unknown module prefix 'CycleNodeA'\n\nNo directory 'CycleNodeA' or file 'CycleNodeA.olean' in the search path entries:\n$BUILD_CACHE\n$WORKDIR/cyc_split\n$HOME/.elan/toolchains/leanprover--lean4---v4.34.1/lib/lean\n"
+    }
+  }
+}

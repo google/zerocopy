@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/verification-scaling",
+    "lean",
+    "lean/mechanization",
+    "lean/performance",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "joshlf/anneal (Trusted.MirAst, Trusted.MirSemantics, Anneal.MirWp, TrustedBoundary.lean)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.98.0-nightly host toolchain)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "google/zerocopy crate (v0.8.63)",
+      "identity": {
+        "path": "zerocopy",
+        "repository": "google/zerocopy",
+        "revision": "0f4623ace6d17078dabe62799cf86f5533eba522",
+        "version": "0.8.63"
+      }
+    },
+    {
+      "name": "Frommi/miniz_oxide crate (v0.8.9)",
+      "identity": {
+        "path": "miniz_oxide",
+        "repository": "Frommi/miniz_oxide",
+        "revision": "44e43c7786e379b2b1a7fde4aa0e63be719e583d",
+        "version": "0.8.9"
+      }
+    },
+    {
+      "name": "oyvindln/adler2 crate (v2.0.1 build dependency for miniz_oxide)",
+      "identity": {
+        "repository": "oyvindln/adler2",
+        "revision": "89a031a0f42eeff31c70dc598b398cbf31f1680f",
+        "version": "2.0.1"
+      }
+    },
+    {
+      "name": "rust-lang/regex regex-syntax crate (v0.8.11)",
+      "identity": {
+        "path": "regex-syntax",
+        "repository": "rust-lang/regex",
+        "revision": "140167995737fa11dfe11b8af8b9aa143b790b4e",
+        "version": "0.8.11"
+      }
+    },
+    {
+      "name": "Tarjan depth-first strongly connected components algorithm",
+      "identity": {
+        "doi": "10.1137/0201010",
+        "publication": "SIAM Journal on Computing 1(2):146-160 (1972)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
