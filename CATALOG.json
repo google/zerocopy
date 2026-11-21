@@ -65989,6 +65989,64 @@
         "pl/fixed-point-theorems"
       ]
     },
+    "riscv-menvcfg-senvcfg-hierarchical-delegation-fiom-ordering-and-cbo-privilege-traps": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V Instruction Set Manual, Volume II: Privileged Architecture"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "71dc9c251a82eb3ecf6f271b02b0161ea8345dfd"
+          },
+          "name": "Sail RISC-V Formal Architecture Specification"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/riscv-isa-sim",
+            "revision": "e53c8ccf3448ae459877ed3236cb39b2a1d493bf"
+          },
+          "name": "Spike RISC-V ISA Simulator"
+        },
+        {
+          "identity": {
+            "path": "target/riscv/tcg",
+            "repository": "qemu/qemu",
+            "revision": "225d5bd4691fc75e32536428fc9a23ddb8e30784"
+          },
+          "name": "QEMU RISC-V TCG Target"
+        },
+        {
+          "identity": {
+            "path": "lib/sbi/sbi_hart.c",
+            "repository": "riscv-software-src/opensbi",
+            "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+          },
+          "name": "OpenSBI RISC-V Supervisor Binary Interface Firmware"
+        },
+        {
+          "identity": {
+            "path": "arch/riscv/kernel/cpufeature.c",
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux Kernel RISC-V Architecture Port"
+        }
+      ],
+      "topics": [
+        "isa/riscv",
+        "systems/firmware",
+        "verification/os-kernels",
+        "isa/riscv64",
+        "isa/sail",
+        "systems/os-kernels"
+      ]
+    },
     "riscv-plic-priority-threshold-ordering-nested-sie-and-msrp-cross-hart-locking": {
       "observed_at": "2026-11-20",
       "subjects": [
