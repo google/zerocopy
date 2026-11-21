@@ -415,13 +415,13 @@ theorem execCertNoHypGuard_eq_of_hypsOk {pol : FieldPolicy} {R : RuleSet} {c : C
         | none => rfl
         | some stk' => exact ih hc' _
 
-/-- **Shared-artifact re-checking defeats these two disjoint defects.**  For
-every rule table `R`, the shared-artifact quorum of the arity-trusting
-re-checker and the missing-guard mutant of the recomputing re-checker is
-faithful, although (for the standard rules) neither member is: a certificate
-accepted by the trusting re-checker passes every `hyp` guard, and on such a
-certificate the missing-guard mutant executes exactly like the recomputing
-re-checker. -/
+/-- **Shared-artifact re-checking defeats these two disjoint defects.**  With the
+identity translation `tr = id` (both members read the same certificate), for every
+rule table `R` the shared-artifact quorum of the arity-trusting re-checker and the
+missing-guard mutant of the recomputing re-checker is faithful, although (for the
+standard rules) neither member is: a certificate accepted by the trusting re-checker
+passes every `hyp` guard, and on such a certificate the missing-guard mutant executes
+exactly like the recomputing re-checker. -/
 theorem sharedQuorum_recheckTrust_recheckNoHypGuard_faithful (R : RuleSet) :
     Faithful (sharedQuorum (recheckTrust R) (recheckNoHypGuard R) id) R := by
   intro c Γ φ h

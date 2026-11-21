@@ -144,11 +144,13 @@ Basis for every Lean statement: **execution (Lean kernel check)**. Every stateme
 ### K1 — faithfulness + semantic soundness ⇒ accepted statements are valid
 
 ```lean
+-- lean/KernelTrust/Layers.lean:26-29
 theorem accepted_semValid_of_faithful_of_semSound
     (C : Checker) (R : RuleSet)
     (hFaithful : Faithful C R) (hSemSound : SemSound R) :
     ∀ (w : C.Wit) (Γ : Ctx) (φ : Form), C.accepts w Γ φ = true → SemValid Γ φ
 
+-- lean/KernelTrust/Layers.lean:38-41
 theorem not_accepts_bot_of_faithful_of_semSound
     (C : Checker) (R : RuleSet)
     (hFaithful : Faithful C R) (hSemSound : SemSound R) :
@@ -169,7 +171,7 @@ Unfolded: `Faithful C R := ∀ w Γ φ, C.accepts w Γ φ = true → Derivable R
 
 * **Depth.** `definitional`: the main statement is the composition of the two definitions. It is an architectural reference point; the work is in *establishing* the hypotheses for a particular checker and rule table (S-recompute, S-semSound).
 * **Non-vacuity witness.** `k1_nonvacuous`.
-* **Non-claims.** (i) Toy propositional logic only. (ii) Nothing about binaries, compilers, runtimes, I/O or hardware. (iii) `Faithful` is one direction; `rejectAll` is faithful to everything. (iv) Validity is relative to the trusted reference semantics; a misconception shared by rules and semantics is invisible. (v) Without pinning, nothing is said about *which* statement was checked. (vi) No completeness claim for `stdRules`.
+* **Non-claims.** (i) The theorems are about the toy propositional logic; they neither establish nor refute the corresponding claims about real proof-checker kernels such as Lean's or Rocq's (the modeling-bridge note below argues the connection separately). (ii) Nothing about binaries, compilers, runtimes, I/O or hardware. (iii) `Faithful` is one direction; `rejectAll` is faithful to everything. (iv) Validity is relative to the trusted reference semantics; a misconception shared by rules and semantics is invisible. (v) Without pinning, nothing is said about *which* statement was checked. (vi) No completeness claim for `stdRules`.
 * **Prior art.** Kumar et al. 2016; Candle 2022 and 2025; Davis, Myreen 2015 (Milawa); Harrison 2006; Barras 2010; Sozeau et al. 2020 (MetaCoq, now MetaRocq; POPL and JAR); Carneiro 2026 (Lean4Lean); Barendregt, Wiedijk 2005 (de Bruijn criterion); Abel, Öhman, Vezzosi 2018.
 * **Basis: derived (modeling bridge).** Real-world grounding: Lean4Lean, MetaRocq, Candle and Milawa are efforts to establish the *faithfulness* layer for real checkers. The MetaCoq POPL 2020 paper proves its checker correct "with respect to its formal specification and axiomatisation of part of its metatheory" and explains that the correctness of the specification itself cannot be proved completely inside Coq, "thus moving from a trusted code base (TCB) to a trusted theory base (TTB) paradigm": faithfulness relative to axiomatised metatheory, not a semantic-soundness theorem for the rules. Relativised *semantic soundness* (the `SemSound` layer, proved in a stronger metatheory) is what Harrison 2006, Kumar et al. 2016 and Barras 2010 establish. The toy theorem does not apply to any of these systems.
 * **Design question.** Which assurance layers must a proof-checking pipeline have, and which class of defect does each fail to cover?
@@ -177,6 +179,7 @@ Unfolded: `Faithful C R := ∀ w Γ φ, C.accepts w Γ φ = true → Derivable R
 ### K1-pinned — what pinning adds
 
 ```lean
+-- lean/KernelTrust/Layers.lean:54-59
 theorem pinned_accepted_name_semValid_of_faithful_of_semSound
     (C : Checker) (R : RuleSet)
     (hFaithful : Faithful C R) (hSemSound : SemSound R)
@@ -188,11 +191,13 @@ theorem pinned_accepted_name_semValid_of_faithful_of_semSound
 Unfolded: `Pinned official P name := ∃ φ, official.lookup name = some φ ∧ P.lookup name = some φ`; `C.acceptsNamed P w name := match P.lookup name with | some φ => C.accepts w [] φ | none => false`.
 
 ```lean
+-- lean/KernelTrust/Layers.lean:136-139
 theorem pinned_official_meaning_forall_iff_exists
     {official P : StmtTable} {name : String} (hPinned : Pinned official P name) :
     (∀ φ, official.lookup name = some φ → SemValid [] φ) ↔
       (∃ φ, official.lookup name = some φ ∧ SemValid [] φ)
 
+-- lean/KernelTrust/Layers.lean:156-162
 theorem accepted_name_semValid_of_faithful_of_semSound_of_agreement
     (C : Checker) (R : RuleSet)
     (hFaithful : Faithful C R) (hSemSound : SemSound R)
@@ -229,6 +234,7 @@ Each, except the positive half of K2c (`pinned_False_never_accepted`), has the f
 **K2a** — semantic soundness is necessary.
 
 ```lean
+-- lean/KernelTrust/Layers.lean:174-179
 theorem faithful_checker_for_unsound_rules_accepts_bot :
     Faithful (recheckRecompute badRules) badRules ∧
     Complete (recheckRecompute badRules) badRules ∧
@@ -242,12 +248,14 @@ theorem faithful_checker_for_unsound_rules_accepts_bot :
 **K2b** — faithfulness is necessary; quorums of two checkers.
 
 ```lean
+-- lean/KernelTrust/Layers.lean:187-191
 theorem unfaithful_checker_for_sound_rules_accepts_bot :
     SemSound stdRules ∧
     ¬ Faithful (recheckNoHypGuard stdRules) stdRules ∧
     (recheckNoHypGuard stdRules).accepts (bogusHypCert .bot) [] .bot = true ∧
     ¬ SemValid [] .bot
 
+-- lean/KernelTrust/Layers.lean:281-287
 theorem separate_artifact_quorum_of_two_unfaithful_checkers_accepts_bot :
     SemSound stdRules ∧
     (quorum (recheckTrust stdRules) (recheckNoHypGuard stdRules)).accepts
@@ -256,6 +264,7 @@ theorem separate_artifact_quorum_of_two_unfaithful_checkers_accepts_bot :
     (recheckTrust stdRules).accepts (bogusHypCert .bot) [] .bot = false ∧
     ¬ Faithful (quorum (recheckTrust stdRules) (recheckNoHypGuard stdRules)) stdRules
 
+-- lean/KernelTrust/Layers.lean:298-308
 theorem shared_artifact_quorum_of_checkers_with_a_shared_defect_accepts_bot :
     SemSound stdRules ∧
     ¬ Faithful (recheckTrustNoHypGuard stdRules) stdRules ∧
@@ -274,6 +283,7 @@ theorem shared_artifact_quorum_of_checkers_with_a_shared_defect_accepts_bot :
 **K2c** — pinning is necessary.
 
 ```lean
+-- lean/KernelTrust/Layers.lean:199-205
 theorem unpinned_faithful_checker_for_sound_rules_accepts_renamed_False :
     Faithful (recheckRecompute stdRules) stdRules ∧
     SemSound stdRules ∧
@@ -282,6 +292,7 @@ theorem unpinned_faithful_checker_for_sound_rules_accepts_renamed_False :
     (recheckRecompute stdRules).acceptsNamed poisonedTable topCert "False" = true ∧
     ¬ Pinned officialTable poisonedTable "False"
 
+-- lean/KernelTrust/Layers.lean:211-213
 theorem pinned_False_never_accepted (P : StmtTable) (w : Cert)
     (hPinned : Pinned officialTable P "False") :
     (recheckRecompute stdRules).acceptsNamed P w "False" = false
@@ -292,6 +303,7 @@ theorem pinned_False_never_accepted (P : StmtTable) (w : Cert)
 **K2d** — recomputation of derived fields is necessary.
 
 ```lean
+-- lean/KernelTrust/Layers.lean:229-236
 theorem trusting_rechecker_accepts_bot_recomputing_rechecker_rejects :
     SemSound stdRules ∧
     (recheckTrust stdRules).accepts (lyingCert .bot) [] .bot = true ∧
@@ -315,7 +327,7 @@ theorem trusting_rechecker_accepts_bot_recomputing_rechecker_rejects :
 
 * **Depth.** `shallow`: finite evaluations on top of the general theorems about the re-checkers.
 * **Non-vacuity witness.** K2a, K2b, K2d and the negative half of K2c exhibit their own witnesses. For `pinned_False_never_accepted` the hypothesis is satisfiable: `ex_pinned_official_pos : Pinned officialTable officialTable "False"`.
-* **Non-claims.** (i) Toy logic only; no claim that any real rule set is unsound or any real checker unfaithful. (ii) The four layers are **not exhaustive**: binary, parser, I/O and "the official table is wrong" are not modelled. (iii) The layers are **not logically independent**: K2d is an instance of K2b (the trusting re-checker is an unfaithful checker); its content is the mechanism and the paired positive statement. (iv) `quorum C D` accepts a pair of independent proof objects `(w₁, w₂)`, one per checker; in `separate_artifact_quorum_of_two_unfaithful_checkers_accepts_bot`, the two checkers are given different certificates (`lyingCert .bot` and `bogusHypCert .bot`), each of which the other checker rejects. No single `Cert` is accepted for `[] ⊢ ⊥` by both `recheckTrust stdRules` and `recheckNoHypGuard stdRules` (by `sharedQuorum_recheckTrust_recheckNoHypGuard_faithful`). That theorem therefore does not model two independent checkers accepting the same bogus proof due to a shared defect, nor does it show that disjoint bugs defeat same-artifact N-version checking; the same-artifact cases are `shared_artifact_quorum_of_checkers_with_a_shared_defect_accepts_bot` and S-shared-quorum. (v) Nothing is said about how likely independent implementations are to share a defect. (vi) K2c: the checker accepted a *valid* sequent; no definitional dependencies, notation or elaboration; empty context only. (vii) K2d: one derived field in one toy format; the recomputing re-checker ignores the stored field (recompute-and-ignore) rather than validating it against the recomputed value (validate-and-reject). (viii) K2a's unsound rule is detectable by a truth table; unsoundness arising only from feature interaction is not illustrated.
+* **Non-claims.** (i) The theorems are about the toy logic; they neither establish nor refute the corresponding claims about real rule sets or proof-checker kernels (the modeling-bridge notes below argue the connections separately), and no claim is made that any real rule set is unsound or any real checker unfaithful. (ii) The four layers are **not exhaustive**: binary, parser, I/O and "the official table is wrong" are not modelled. (iii) The layers are **not logically independent**: K2d is an instance of K2b (the trusting re-checker is an unfaithful checker); its content is the mechanism and the paired positive statement. (iv) `quorum C D` accepts a pair of independent proof objects `(w₁, w₂)`, one per checker; in `separate_artifact_quorum_of_two_unfaithful_checkers_accepts_bot`, the two checkers are given different certificates (`lyingCert .bot` and `bogusHypCert .bot`), each of which the other checker rejects. No single `Cert` is accepted for `[] ⊢ ⊥` by both `recheckTrust stdRules` and `recheckNoHypGuard stdRules` (by `sharedQuorum_recheckTrust_recheckNoHypGuard_faithful`). That theorem therefore does not model two independent checkers accepting the same bogus proof due to a shared defect, nor does it show that disjoint bugs defeat same-artifact N-version checking; the same-artifact cases are `shared_artifact_quorum_of_checkers_with_a_shared_defect_accepts_bot` and S-shared-quorum. (v) Nothing is said about how likely independent implementations are to share a defect. (vi) K2c: the checker accepted a *valid* sequent; no definitional dependencies, notation or elaboration; empty context only. (vii) K2d: one derived field in one toy format; the recomputing re-checker ignores the stored field (recompute-and-ignore) rather than validating it against the recomputed value (validate-and-reject). (viii) K2a's unsound rule is detectable by a truth table; unsoundness arising only from feature interaction is not illustrated.
 * **Prior art.** Pollack 1998; Adams 2016; Carneiro 2020 (Metamath Zero); Hurd 2011 (OpenTheory proof articles); Barendregt, Wiedijk 2005; Kumar et al. 2016; Harrison 2006; Carneiro 2026; Candle 2022.
 * **Basis: derived (modeling bridge).** Real-world grounding; each item below is a separate modeling claim, not a kernel-checked fact.
   * K2b, same-artifact quorum with a shared defect: repository `leanprover/lean4`, pull request 14807, "fix: make the kernel `is_prop` check require a sort" (merged 2026-08-18T01:37:02Z, merge commit `7412bc4c852c9a9fafa69b67a11e4bf9f5dcbc24`). Its description states: "The bogus proof was also accepted by nanoda, an independent implementation of the Lean kernel. We believe the lean4lean external kernel does not have this bug." Reasoning: one artifact (a bogus proof of `False`) was accepted by two independently written kernels, so a same-artifact quorum of those two kernels would have accepted it; `shared_artifact_quorum_of_checkers_with_a_shared_defect_accepts_bot` is the toy form of exactly this structure (two different checkers, one shared defect, one artifact, `[] ⊢ ⊥` accepted). The bridge concerns only the quorum structure: the toy says nothing about the actual defect (a stuck inferred type treated as "not a proposition"), the statement about lean4lean is the pull request authors' belief and was not examined here, and nothing is inferred about how often independent kernels share defects.
@@ -328,9 +340,11 @@ theorem trusting_rechecker_accepts_bot_recomputing_rechecker_rejects :
 ### S-shared-quorum — same-artifact re-checking with disjoint defects
 
 ```lean
+-- lean/KernelTrust/Cert.lean:425-426
 theorem sharedQuorum_recheckTrust_recheckNoHypGuard_faithful (R : RuleSet) :
     Faithful (sharedQuorum (recheckTrust R) (recheckNoHypGuard R) id) R
 
+-- lean/KernelTrust/Layers.lean:323-329
 theorem shared_artifact_quorum_of_checkers_with_disjoint_defects_is_faithful :
     ¬ Faithful (recheckTrust stdRules) stdRules ∧
     ¬ Faithful (recheckNoHypGuard stdRules) stdRules ∧
@@ -343,16 +357,20 @@ theorem shared_artifact_quorum_of_checkers_with_disjoint_defects_is_faithful :
 Same-artifact quorums under a translation `tr` of proof objects (supporting statements for non-claim (iii)):
 
 ```lean
+-- lean/KernelTrust/Checker.lean:142-143
 theorem sharedQuorum_faithful_left {C D : Checker} {tr : C.Wit → D.Wit} {R : RuleSet}
     (h : Faithful C R) : Faithful (sharedQuorum C D tr) R
 
+-- lean/KernelTrust/Layers.lean:338-339
 theorem sharedQuorum_faithful_right {C D : Checker} {tr : C.Wit → D.Wit} {R : RuleSet}
     (h : Faithful D R) : Faithful (sharedQuorum C D tr) R
 
+-- lean/KernelTrust/Layers.lean:347-349
 def exploitTranslator : Cert → Cert
   | [.rule [] 8 [φ] 0] => bogusHypCert φ
   | c => c
 
+-- lean/KernelTrust/Layers.lean:358-366
 theorem shared_artifact_quorum_of_disjoint_defects_accepts_bot_under_exploit_translator :
     SemSound stdRules ∧
     ¬ Faithful (recheckTrust stdRules) stdRules ∧
@@ -403,6 +421,7 @@ def FaithfulImpliesMetaSound {n : Nat} (V : VerifierRing n) (R : RuleSet) : Prop
 ```
 
 ```lean
+-- lean/KernelTrust/Rings.lean:191-196
 theorem ring_all_faithful_of_metaSound_anchor_of_faithfulImpliesMetaSound
     {n : Nat} (V : VerifierRing n) (R : RuleSet)
     (hClosed : RingClosed V)
@@ -410,6 +429,7 @@ theorem ring_all_faithful_of_metaSound_anchor_of_faithfulImpliesMetaSound
     (hAnchor : ∃ i₀ : Fin n, MetaSound V R i₀) :
     ∀ j : Fin n, Faithful (V.checker j) R
 
+-- lean/KernelTrust/Rings.lean:222-228
 theorem ring_no_node_accepts_bot_of_metaSound_anchor_of_faithfulImpliesMetaSound_of_consistent
     {n : Nat} (V : VerifierRing n) (R : RuleSet)
     (hClosed : RingClosed V)
@@ -418,6 +438,7 @@ theorem ring_no_node_accepts_bot_of_metaSound_anchor_of_faithfulImpliesMetaSound
     (hConsistent : Consistent R) :
     ∀ (j : Fin n) (w : (V.checker j).Wit), (V.checker j).accepts w [] .bot = false
 
+-- lean/KernelTrust/Rings.lean:128-130
 theorem ring_metaSound_of_all_faithful {n : Nat} (V : VerifierRing n) (R : RuleSet)
     (hAll : ∀ j, Faithful (V.checker j) R) :
     (∀ i, MetaSound V R i) ∧ FaithfulImpliesMetaSound V R
@@ -448,6 +469,7 @@ theorem ring_metaSound_of_all_faithful {n : Nat} (V : VerifierRing n) (R : RuleS
 ### K3b — three unfaithful checkers close a ring
 
 ```lean
+-- lean/KernelTrust/Rings.lean:340-346
 theorem three_unfaithful_checkers_close_faithfulness_ring :
     SemSound stdRules ∧
     RingClosed buggyRing ∧
@@ -456,6 +478,7 @@ theorem three_unfaithful_checkers_close_faithfulness_ring :
     (∀ i, ¬ Faithful (buggyRing.checker i) stdRules) ∧
     (∀ i, (buggyRing.checker i).AcceptsBot)
 
+-- lean/KernelTrust/Rings.lean:361-364
 theorem unfaithful_checker_certifies_its_own_faithfulness :
     RingClosed (selfHostedRing (fun _ : Fin 1 => recheckTrust stdRules) (fun _ => Form.var 0)) ∧
     ¬ Faithful (recheckTrust stdRules) stdRules ∧
@@ -475,6 +498,7 @@ theorem unfaithful_checker_certifies_its_own_faithfulness :
 ### K3c — a ring of faithful checkers over unsound rules
 
 ```lean
+-- lean/KernelTrust/Rings.lean:377-383
 theorem ring_of_faithful_checkers_over_unsound_rules_accepts_bot :
     RingClosed (faithfulRing badRules) ∧
     (∀ i, MetaSound (faithfulRing badRules) badRules i) ∧
@@ -534,6 +558,7 @@ structure CrossHBLFrom (i : ι) : Prop where
 ```
 
 ```lean
+-- lean/KernelTrust/Provability.lean:168-174
 theorem consistencyRing_anchor_inconsistent_of_impClosed_godelII_crossHBLFrom
     {n : Nat} (F : ProvFamily (Fin n)) (i₀ : Fin n)
     (hImpClosed : F.ImpClosed i₀)
@@ -542,10 +567,12 @@ theorem consistencyRing_anchor_inconsistent_of_impClosed_godelII_crossHBLFrom
     (hRing : ∀ i, F.Thm i (F.con (ringNext i))) :
     F.Thm i₀ F.bot
 
+-- lean/KernelTrust/Provability.lean:203-205
 theorem inconsistent_of_proves_con_of_inconsistent {ι : Type} (F : ProvFamily ι) {j k : ι}
     (hMp : F.MpClosed j) (hNec : F.CrossNec j k) (hCon : F.Thm j (F.con k))
     (hk : F.Thm k F.bot) : F.Thm j F.bot
 
+-- lean/KernelTrust/Provability.lean:220-226
 theorem consistencyRing_all_inconsistent_of_impClosed_godelIIAnchor_crossHBL
     {n : Nat} (F : ProvFamily (Fin n))
     (hImpClosed : ∀ i, F.ImpClosed i)
@@ -590,13 +617,14 @@ theorem consistencyRing_all_inconsistent_of_impClosed_godelIIAnchor_crossHBL
 * **Depth.** `shallow` for both. K4a-local: the anchor shows that "proves the consistency statement of" is transitive along the ring (three lines per step), reaches its own consistency statement, and applies `GodelII`. The substance of Gödel's theorem is inside the assumed `GodelII`.
 * **Non-vacuity witnesses.** `k4a_nonvacuous` (all hypotheses of K4a in `trivialFamily (Fin n)`, `n ≥ 1`), `k4a_local_nonvacuous` (same for K4a-local at every node). Necessarily inconsistent families; the tightness witnesses are consistent families satisfying all hypotheses but one. For K4a-local there is also a non-degenerate instance: in `oneBrokenNecFamily` (two theories) theory 0 satisfies every hypothesis of K4a-local while theory 1 of the same ring is consistent (`k4a_local_hypotheses_hold_in_mixed_ring`).
 * **Positive controls (nearby settings where the conclusion fails).** `consistency_proof_along_open_chain_is_consistent` (ω-chain model: every structural hypothesis holds, theory 0 proves theory 1's consistency, both consistent, no theory proves any `□ⱼ⊥` or `□ⱼ□ₖ⊥`: only *closing the cycle* is excluded); `two_consistent_theories_prove_each_others_consistency_without_crossSigma1` (K4b); `consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsistency`; `one_unverified_ring_link_leaves_anchor_inconsistent` (two theories with one unverified ring link, `¬ CrossNec 1 0`). For K4a it is a positive control because theory 1, the theory before the broken link, is consistent, so K4a's conclusion "every theory proves `⊥`" fails. For K4a-local it is a positive control **at theory 1**: there every hypothesis of K4a-local holds except `CrossHBLFrom 1` (its `nec` part fails, because `CrossNec 1 0` fails), and the conclusion fails (`Consistent 1`). Theory 0 of the same family, the "anchor" of the theorem's name, is not a control: it satisfies every hypothesis of K4a-local and proves `⊥`, as K4a-local requires, and is the mixed-ring non-vacuity witness above (`k4a_local_hypotheses_hold_in_mixed_ring`).
-* **Non-claims.** (i) About abstract `ProvFamily` structures only (see the applicability paragraph). (ii) Dropping Löb's rule or Gödel's second incompleteness property (or `CrossSigma1`, `CrossNec`, `CrossDistrib`) at a single node or in a single direction does not escape K4a: as soon as even one node `i₀` satisfies the Gödel-II instance (`Thm i₀ (con i₀) → Thm i₀ bot`), implicational closure, and the cross-theory conditions from `i₀` to the other theories, `i₀` proves `⊥` (K4a-local), and `CrossNec` on the ring links together with the ring hypothesis and modus ponens forces every other node to prove `⊥` as well. For every theory of the ring to be consistent, every theory must fail at least one of its own anchor conditions (`ImpClosed`, `GodelII`, `CrossHBLFrom`); breaking a single ring link `CrossNec i (ringNext i)` only shields theory `i` from inheriting an anchor's inconsistency. In K4b's two-theory countermodel `starFamily 2`, both `CrossSigma1 0 1 0` and `CrossSigma1 1 0 1` fail. (iii) K4a excludes cycles of categorical consistency proofs (`Thm i (con (ringNext i))`); it does not exclude mutual relative consistency proofs or equiconsistency (`Thm i (con i → con j)` and `Thm j (con j → con i)`), nor mutual interpretability between consistent theories of equal consistency strength (such as ZF and ZFC, or PA and ACA₀). (iv) `ProvFamily` assumes all `n` theories share a single sentence type `Sent` with common `bot`, `imp`, and provability boxes. Applying K4a to distinct concrete formal systems (such as Lean and Rocq) additionally requires translating provability statements into a common syntactic fragment (such as arithmetic) so that the bridge conditions hold across those translations. (v) Like K4b's `starFamily`, the abstract models `leafFamily` and `possibilityFamily`, and theory 1 of `oneBrokenNecFamily`, contain consistent theories that prove their own inconsistency statement `□ᵢ⊥` (and in `leafFamily` and `possibilityFamily` every theory proves every `□ⱼ□ₖ⊥`, so `CrossSigma1` holds there vacuously): `finite_countermodels_prove_own_inconsistency`. They establish logical independence of K4a's conditions, not the existence of Σ₁-sound theories exhibiting those behaviours. `omegaChainFamily` and `omegaStarFamily` contain no theory proving its own inconsistency statement. (vi) Does **not** say one theory cannot prove another's consistency (open chain). (vii) Does not exclude infinite descending sequences of theories each proving the next one's consistency (Pakhomov, Walsh 2021, abstract: "it is possible to construct descending chains of artificial theories with respect to consistency strength"). (viii) `GodelII` is a hypothesis; the package proves Gödel's second theorem or Löb's theorem for no theory. (ix) Not a statement about proof checkers or kernels: reading it as "two type theories cannot prove each other consistent" requires verifying every named condition, and a common sentence language, for those theories. (x) About consistency statements `□ⱼ⊥ → ⊥` only; it does not address relativised soundness results (soundness assuming a stronger principle), which is how real self-hosted soundness proofs are stated. (xi) K4a-local's conclusion concerns the anchor only, and its freedom from `D1`–`D3` does not suggest that dropping `D1`–`D3` is a realistic escape for concrete theories.
+* **Non-claims.** (i) The theorems are about abstract `ProvFamily` structures; they neither establish nor refute the corresponding claims about concrete formal systems or proof checkers (the applicability paragraph argues the connection separately). (ii) Dropping Löb's rule or Gödel's second incompleteness property (or `CrossSigma1`, `CrossNec`, `CrossDistrib`) at a single node or in a single direction does not escape K4a: as soon as even one node `i₀` satisfies the Gödel-II instance (`Thm i₀ (con i₀) → Thm i₀ bot`), implicational closure, and the cross-theory conditions from `i₀` to the other theories, `i₀` proves `⊥` (K4a-local), and `CrossNec` on the ring links together with the ring hypothesis and modus ponens forces every other node to prove `⊥` as well. For every theory of the ring to be consistent, every theory must fail at least one of its own anchor conditions (`ImpClosed`, `GodelII`, `CrossHBLFrom`); breaking a single ring link `CrossNec i (ringNext i)` only shields theory `i` from inheriting an anchor's inconsistency. In K4b's two-theory countermodel `starFamily 2`, both `CrossSigma1 0 1 0` and `CrossSigma1 1 0 1` fail. (iii) K4a excludes cycles of categorical consistency proofs (`Thm i (con (ringNext i))`); it does not exclude mutual relative consistency proofs or equiconsistency (`Thm i (con i → con j)` and `Thm j (con j → con i)`), nor mutual interpretability between consistent theories of equal consistency strength (such as ZF and ZFC, or PA and ACA₀). (iv) `ProvFamily` assumes all `n` theories share a single sentence type `Sent` with common `bot`, `imp`, and provability boxes. Applying K4a to distinct concrete formal systems (such as Lean and Rocq) additionally requires translating provability statements into a common syntactic fragment (such as arithmetic) so that the bridge conditions hold across those translations. (v) Like K4b's `starFamily`, the abstract models `leafFamily` and `possibilityFamily`, and theory 1 of `oneBrokenNecFamily`, contain consistent theories that prove their own inconsistency statement `□ᵢ⊥` (and in `leafFamily` and `possibilityFamily` every theory proves every `□ⱼ□ₖ⊥`, so `CrossSigma1` holds there vacuously): `finite_countermodels_prove_own_inconsistency`. They establish logical independence of K4a's conditions, not the existence of Σ₁-sound theories exhibiting those behaviours. `omegaChainFamily` and `omegaStarFamily` contain no theory proving its own inconsistency statement. (vi) Does **not** say one theory cannot prove another's consistency (open chain). (vii) Does not exclude infinite descending sequences of theories each proving the next one's consistency (Pakhomov, Walsh 2021, abstract: "it is possible to construct descending chains of artificial theories with respect to consistency strength"). (viii) `GodelII` is a hypothesis; the package proves Gödel's second theorem or Löb's theorem for no theory. (ix) Not a statement about proof checkers or kernels: reading it as "two type theories cannot prove each other consistent" requires verifying every named condition, and a common sentence language, for those theories. (x) About consistency statements `□ⱼ⊥ → ⊥` only; it does not address relativised soundness results (soundness assuming a stronger principle), which is how real self-hosted soundness proofs are stated. (xi) K4a-local's conclusion concerns the anchor only, and its freedom from `D1`–`D3` does not suggest that dropping `D1`–`D3` is a realistic escape for concrete theories.
 * **Prior art.** Gödel 1931; Hilbert, Bernays 1939; Löb 1955; Feferman 1960; Kreisel, Lévy 1968; Boolos 1993; Smoryński 1985; Carlson 1986; Beklemishev 1996; Japaridze, de Jongh 1998; Willard 2001; Kurahashi 2020; Mummert 2013; Mathematics Stack Exchange 2208419; Pakhomov, Walsh 2021; Hamkins 2022; Lindström 2017; Paulson 2015; Popescu, Traytel 2019, 2021; Saitou, Noguchi 2026; Shankar 1994; O'Connor 2005; Kirst, Hermes 2023.
 * **Design question.** Can mutually certifying or self-certifying systems establish consistency or soundness of their *logics*, rather than faithfulness of their implementations?
 
 ### K4b — consistent theories proving each other's consistency once `CrossSigma1` is dropped
 
 ```lean
+-- lean/KernelTrust/Kripke.lean:190-201
 theorem two_consistent_theories_prove_each_others_consistency_without_crossSigma1 :
     (starFamily 2).Consistent 0 ∧
     (starFamily 2).Consistent 1 ∧
@@ -610,6 +638,7 @@ theorem two_consistent_theories_prove_each_others_consistency_without_crossSigma
     ¬ (starFamily 2).CrossSigma1 0 1 0 ∧
     ¬ (starFamily 2).CrossSigma1 1 0 1
 
+-- lean/KernelTrust/Kripke.lean:164-174
 theorem consistencyRing_consistent_without_crossSigma1 (n : Nat) (hn : 2 ≤ n) :
     (∀ i, (starFamily n).ImpClosed i) ∧
     (∀ i, (starFamily n).HBL i) ∧
@@ -622,6 +651,7 @@ theorem consistencyRing_consistent_without_crossSigma1 (n : Nat) (hn : 2 ≤ n) 
     ¬ (∀ i, (starFamily n).Thm i (starFamily n).bot) ∧
     (∀ i, ¬ (starFamily n).CrossSigma1 i (ringNext i) i)
 
+-- lean/KernelTrust/Kripke.lean:287-299
 theorem consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsistency
     (n : Nat) (hn : 2 ≤ n) :
     (∀ i, (omegaStarFamily n).ImpClosed i) ∧
@@ -636,6 +666,7 @@ theorem consistencyRing_consistent_without_crossSigma1_not_proving_own_inconsist
     (∀ i, ¬ (omegaStarFamily n).Thm i ((omegaStarFamily n).box i (omegaStarFamily n).bot)) ∧
     (∀ i, ¬ (omegaStarFamily n).CrossSigma1 i (ringNext i) i)
 
+-- lean/KernelTrust/Kripke.lean:211-212
 theorem starFamily_proves_own_inconsistency (n : Nat) (i : Fin n) :
     (starFamily n).Thm i ((starFamily n).box i (starFamily n).bot)
 ```
@@ -661,14 +692,17 @@ theorem starFamily_proves_own_inconsistency (n : Nat) (i : Fin n) :
 ### K5 / K5-iff — an inconsistent theory proves every local reflection schema, its own included
 
 ```lean
+-- lean/KernelTrust/Provability.lean:251-253
 theorem inconsistent_proves_every_local_reflection_of_mp_efq {ι : Type} (F : ProvFamily ι)
     (i : ι) (hMp : F.MpClosed i) (hEfq : F.HasEfq i) (hInconsistent : F.Thm i F.bot) :
     ∀ (j : ι) (A : F.Sent), F.Thm i (F.imp (F.box j A) A)
 
+-- lean/KernelTrust/Provability.lean:259-261
 theorem inconsistent_proves_every_con_of_mp_efq {ι : Type} (F : ProvFamily ι) (i : ι)
     (hMp : F.MpClosed i) (hEfq : F.HasEfq i) (hInconsistent : F.Thm i F.bot) :
     ∀ j : ι, F.Thm i (F.con j)
 
+-- lean/KernelTrust/Provability.lean:267-270
 theorem proves_own_local_reflection_iff_inconsistent_of_mp_efq_godelII
     {ι : Type} (F : ProvFamily ι) (i : ι)
     (hMp : F.MpClosed i) (hEfq : F.HasEfq i) (hGodelII : F.GodelII i) :
@@ -691,7 +725,7 @@ theorem proves_own_local_reflection_iff_inconsistent_of_mp_efq_godelII
 
 * **Depth.** `shallow` (one application of modus ponens to an ex falso instance; the equivalence adds one use of `GodelII`).
 * **Non-vacuity witnesses.** `k5_nonvacuous` (`trivialFamily`); `k5_iff_nonvacuous` (`trivialFamily`: both sides true) and `k5_iff_nonvacuous_consistent` (theory 0 of `omegaChainFamily`: consistent, both sides false).
-* **Non-claims.** (i) Abstract structures only. (ii) The implication from inconsistency (`Thm i bot`) to every local reflection schema (`□ⱼA → A`) depends essentially on ex falso quodlibet (`HasEfq`) and does not apply to paraconsistent or minimal-logic theories; deriving `con j := □ⱼ⊥ → ⊥` from `Thm i bot` requires only modus ponens and either ex falso or the axiom scheme K. (iii) Proving implementation faithfulness (that a checker accepts only derivations of a specification `R`) inside a system implementing `R` is not a proof of the local reflection schema `□A → A` or of `Con(R)`, and is not forbidden by K5 or Löb's rule. (iv) K5 alone does **not** say that a system proving its own soundness is inconsistent; that needs `GodelII` (K5-iff). (v) Nothing is said about uniform reflection, typed soundness theorems, or soundness proofs carried out in a stronger metatheory. (vi) Not "verified or self-verified kernels are worthless": relativised results are untouched.
+* **Non-claims.** (i) The theorems are about abstract `ProvFamily` structures; they neither establish nor refute the corresponding claims about concrete formal systems or proof checkers (the modeling-bridge note below argues the connection separately). (ii) The implication from inconsistency (`Thm i bot`) to every local reflection schema (`□ⱼA → A`) depends essentially on ex falso quodlibet (`HasEfq`) and does not apply to paraconsistent or minimal-logic theories; deriving `con j := □ⱼ⊥ → ⊥` from `Thm i bot` requires only modus ponens and either ex falso or the axiom scheme K. (iii) Proving implementation faithfulness (that a checker accepts only derivations of a specification `R`) inside a system implementing `R` is not a proof of the local reflection schema `□A → A` or of `Con(R)`, and is not forbidden by K5 or Löb's rule. (iv) K5 alone does **not** say that a system proving its own soundness is inconsistent; that needs `GodelII` (K5-iff). (v) Nothing is said about uniform reflection, typed soundness theorems, or soundness proofs carried out in a stronger metatheory. (vi) Not "verified or self-verified kernels are worthless": relativised results are untouched.
 * **Prior art.** Löb 1955; Kreisel, Lévy 1968; Feferman 1962; Boolos 1993; Smoryński 1985; Beklemishev 2005; Feferman 1960; Willard 2001.
 * **Basis: derived (modeling bridge).** Real-world grounding: self-hosted correctness developments such as Lean4Lean and MetaRocq prove faithfulness of an implementation to a specification, which K5 does not concern (non-claim (iii)).
 * **Design question.** As K4a.
@@ -701,25 +735,33 @@ theorem proves_own_local_reflection_iff_inconsistent_of_mp_efq_godelII
 ### Supporting results and reference points
 
 ```lean
+-- lean/KernelTrust/Semantics.lean:67
 theorem stdRules_semSound : SemSound stdRules
 
+-- lean/KernelTrust/Semantics.lean:131
 theorem stdRules_consistent : Consistent stdRules
 
+-- lean/KernelTrust/Cert.lean:199
 theorem recheckRecompute_faithful (R : RuleSet) : Faithful (recheckRecompute R) R
 
+-- lean/KernelTrust/Cert.lean:309
 theorem recheck_complete (pol : FieldPolicy) (R : RuleSet) : Complete (recheck pol R) R
 
+-- lean/KernelTrust/Cert.lean:320-322
 theorem execCert_trust_eq_recompute_of_honest {R : RuleSet} {c : Cert}
     (hc : Cert.honest R c = true) :
     ∀ stk : Stack, execCert .trust R stk c = execCert .recompute R stk c
 
+-- lean/KernelTrust/Trace.lean:112
 theorem traceChecker_faithful (R : RuleSet) : Faithful (traceChecker R) R
 
+-- lean/KernelTrust/Provability.lean:329-332
 structure NaivePropProv where
   Prov : Prop → Prop
   nec  : ∀ {P : Prop}, P → Prov P
   lob  : ∀ {P : Prop}, Prov (Prov P → P) → Prov P
 
+-- lean/KernelTrust/Provability.lean:339
 theorem NaivePropProv.not_not_prov_false (T : NaivePropProv) : ¬ ¬ T.Prov False
 ```
 
@@ -743,8 +785,8 @@ S-semSound and S-naive-interface have no hypotheses.
 
 **Non-claims, prior art and design questions of the supporting results.**
 
-* **S-semSound.** Non-claims: (i) toy propositional logic only: no binders, dependent types, definitional equality, universes or inductive types; nothing here is a theorem about Lean, Rocq, HOL Light, Metamath or any production checker; (ii) no completeness claim. Prior art: van Dalen 2013 (soundness of propositional natural deduction for truth tables; book level); Troelstra, Schwichtenberg 2000 (book level). Design question: reference point supporting K1 and the K2 counterexamples.
-* **S-recompute.** Non-claims: (i) toy propositional logic only, as for S-semSound; (ii) nothing about compiled binaries, compilers, runtimes, memory safety, serialisation, I/O or hardware faults: a `Checker` is a mathematical function, and the model cannot express miscompilation. Prior art: Hurd 2011 (OpenTheory proof articles); Carneiro 2020 (Metamath Zero). Design question: reference point supporting K1, K2d and the rings.
+* **S-semSound.** Non-claims: (i) a statement about the toy propositional logic (no binders, dependent types, definitional equality, universes or inductive types); it neither establishes nor refutes the corresponding claims about Lean, Rocq, HOL Light, Metamath or any production checker; (ii) no completeness claim. Prior art: van Dalen 2013 (soundness of propositional natural deduction for truth tables; book level); Troelstra, Schwichtenberg 2000 (book level). Design question: reference point supporting K1 and the K2 counterexamples.
+* **S-recompute.** Non-claims: (i) a statement about the toy propositional logic, which neither establishes nor refutes the corresponding claims about production checkers, as for S-semSound; (ii) nothing about compiled binaries, compilers, runtimes, memory safety, serialisation, I/O or hardware faults: a `Checker` is a mathematical function, and the model cannot express miscompilation. Prior art: Hurd 2011 (OpenTheory proof articles); Carneiro 2020 (Metamath Zero). Design question: reference point supporting K1, K2d and the rings.
 * **S-naive-interface.** Non-claims: (i) only the fields `nec` and `lob` are used; (ii) a statement about this interface, not about provability in any formal system. Prior art: Boolos 1993; Smoryński 1985. Design question: how should an abstract provability interface be designed so that impossibility results stated over it are not vacuous?
 
 S-naive-interface is a reference point for interface design (how to state an abstract provability interface so that impossibility results over it are not vacuous); it is why `ProvFamily` separates theoremhood `Thm` from truth.
@@ -754,29 +796,37 @@ S-naive-interface is a reference point for interface design (how to state an abs
 Tightness counterexamples, positive controls and non-vacuity witnesses referenced above, in full.
 
 ```lean
+-- lean/KernelTrust/Pinning.lean:78
 theorem ex_pinned_official_pos : Pinned officialTable officialTable "False"
 
+-- lean/KernelTrust/Semantics.lean:219
 theorem ex_semSound_stdRules_pos : SemSound stdRules ∧ Consistent stdRules
 
+-- lean/KernelTrust/Cert.lean:484-487
 theorem ex_faithful_recheckRecompute_pos :
     Faithful (recheckRecompute stdRules) stdRules ∧
     Complete (recheckRecompute stdRules) stdRules ∧
     (recheckRecompute stdRules).accepts topCert [] Form.top = true
 
+-- lean/KernelTrust/Trace.lean:142-143
 theorem ex_traceChecker_accepts_topTrace_pos :
     (traceChecker stdRules).accepts topTrace [] Form.top = true
 
+-- lean/KernelTrust/Cert.lean:501
 theorem ex_honest_topCert_pos : Cert.honest stdRules topCert = true
 
+-- lean/KernelTrust/Provability.lean:343-346
 def NaivePropProv.trivial : NaivePropProv where
   Prov := fun _ => True
   nec := fun _ => True.intro
   lob := fun _ => True.intro
 
+-- lean/KernelTrust/Provability.lean:350
 theorem NaivePropProv.nonempty : Nonempty NaivePropProv
 ```
 
 ```lean
+-- lean/KernelTrust/Layers.lean:99-104
 theorem pinned_name_semValid_fails_without_faithful :
     SemSound stdRules ∧
     Pinned officialTable officialTable "False" ∧
@@ -784,6 +834,7 @@ theorem pinned_name_semValid_fails_without_faithful :
     ¬ (∀ w, (recheckNoHypGuard stdRules).acceptsNamed officialTable w "False" = true →
         ∀ φ, officialTable.lookup "False" = some φ → SemValid [] φ)
 
+-- lean/KernelTrust/Layers.lean:111-116
 theorem pinned_name_semValid_fails_without_semSound :
     Faithful (recheckRecompute badRules) badRules ∧
     Pinned officialTable officialTable "False" ∧
@@ -791,6 +842,7 @@ theorem pinned_name_semValid_fails_without_semSound :
     ¬ (∀ w, (recheckRecompute badRules).acceptsNamed officialTable w "False" = true →
         ∀ φ, officialTable.lookup "False" = some φ → SemValid [] φ)
 
+-- lean/KernelTrust/Layers.lean:123-128
 theorem pinned_name_semValid_fails_without_pinned :
     Faithful (recheckRecompute stdRules) stdRules ∧
     SemSound stdRules ∧
@@ -798,12 +850,14 @@ theorem pinned_name_semValid_fails_without_pinned :
     ¬ (∀ w, (recheckRecompute stdRules).acceptsNamed poisonedTable w "False" = true →
         ∀ φ, officialTable.lookup "False" = some φ → SemValid [] φ)
 
+-- lean/KernelTrust/Layers.lean:71-75
 theorem k1_nonvacuous :
     Faithful (recheckRecompute stdRules) stdRules ∧
     SemSound stdRules ∧
     Complete (recheckRecompute stdRules) stdRules ∧
     (recheckRecompute stdRules).accepts topCert [] Form.top = true
 
+-- lean/KernelTrust/Layers.lean:83-87
 theorem k1_pinned_nonvacuous :
     Faithful (recheckRecompute stdRules) stdRules ∧
     SemSound stdRules ∧
@@ -812,6 +866,7 @@ theorem k1_pinned_nonvacuous :
 ```
 
 ```lean
+-- lean/KernelTrust/Rings.lean:399-405
 theorem metaSound_anchor_ring_fails_without_faithfulImpliesMetaSound :
     SemSound stdRules ∧
     RingClosed rubberStampRing ∧
@@ -820,6 +875,7 @@ theorem metaSound_anchor_ring_fails_without_faithfulImpliesMetaSound :
     ¬ Faithful (rubberStampRing.checker 0) stdRules ∧
     (rubberStampRing.checker 0).AcceptsBot
 
+-- lean/KernelTrust/Rings.lean:423-430
 theorem ring_with_uncertified_link_does_not_propagate :
     SemSound stdRules ∧
     (∀ i, MetaSound brokenLinkRing stdRules i) ∧
@@ -829,6 +885,7 @@ theorem ring_with_uncertified_link_does_not_propagate :
     ¬ Faithful (brokenLinkRing.checker 1) stdRules ∧
     (brokenLinkRing.checker 1).AcceptsBot
 
+-- lean/KernelTrust/Rings.lean:318-323
 theorem k3a_nonvacuous :
     RingClosed (faithfulRing stdRules) ∧
     FaithfulImpliesMetaSound (faithfulRing stdRules) stdRules ∧
@@ -836,6 +893,7 @@ theorem k3a_nonvacuous :
     SemSound stdRules ∧
     Consistent stdRules
 
+-- lean/KernelTrust/Rings.lean:474-477
 theorem ex_metaSound_pos :
     MetaSound rubberStampRing stdRules 0 ∧
     rubberStampRing.acceptsCert 0 () 0 = false ∧
@@ -843,6 +901,7 @@ theorem ex_metaSound_pos :
 ```
 
 ```lean
+-- lean/KernelTrust/SyntacticModels.lean:59-72
 theorem consistencyRing_consistent_without_mp (n : Nat) (hn : 2 ≤ n) :
     (∀ i A B, (noMpFamily n).Thm i ((noMpFamily n).imp A ((noMpFamily n).imp B A))) ∧
     (∀ i A B C, (noMpFamily n).Thm i
@@ -858,6 +917,7 @@ theorem consistencyRing_consistent_without_mp (n : Nat) (hn : 2 ≤ n) :
     (∀ i, ¬ (noMpFamily n).MpClosed i) ∧
     (∀ i, ¬ (noMpFamily n).ImpClosed i)
 
+-- lean/KernelTrust/SyntacticModels.lean:161-174
 theorem consistencyRing_consistent_without_axK_axS (n : Nat) (hn : 2 ≤ n) :
     (∀ i, (noKSFamily n).MpClosed i) ∧
     (∀ i, (noKSFamily n).HasEfq i) ∧
@@ -873,6 +933,7 @@ theorem consistencyRing_consistent_without_axK_axS (n : Nat) (hn : 2 ≤ n) :
         ((noKSFamily n).imp ((noKSFamily n).imp A B) ((noKSFamily n).imp A C)))) ∧
     (∀ i, ¬ (noKSFamily n).ImpClosed i)
 
+-- lean/KernelTrust/Kripke.lean:553-560
 theorem consistencyRing_consistent_without_godelII (n : Nat) (hn : 1 ≤ n) :
     (∀ i, (reflexiveFamily (Fin n)).ImpClosed i) ∧
     (reflexiveFamily (Fin n)).CrossHBL ∧
@@ -882,6 +943,7 @@ theorem consistencyRing_consistent_without_godelII (n : Nat) (hn : 1 ≤ n) :
     (∀ i, ¬ (reflexiveFamily (Fin n)).GodelII i) ∧
     (∀ i, ¬ (reflexiveFamily (Fin n)).LobRule i)
 
+-- lean/KernelTrust/Kripke.lean:420-430
 theorem consistencyRing_consistent_without_crossNec (n : Nat) (hn : 2 ≤ n) :
     (∀ i, (leafFamily n).ImpClosed i) ∧
     (∀ i, (leafFamily n).HBL i) ∧
@@ -894,6 +956,7 @@ theorem consistencyRing_consistent_without_crossNec (n : Nat) (hn : 2 ≤ n) :
     ¬ (∀ i, (leafFamily n).Thm i (leafFamily n).bot) ∧
     (∀ i, ¬ (leafFamily n).CrossNec i (ringNext i))
 
+-- lean/KernelTrust/Kripke.lean:499-509
 theorem consistencyRing_consistent_without_crossDistrib (n : Nat) (hn : 2 ≤ n) :
     (∀ i, (possibilityFamily n).ImpClosed i) ∧
     (∀ i, (possibilityFamily n).HBL i) ∧
@@ -906,6 +969,7 @@ theorem consistencyRing_consistent_without_crossDistrib (n : Nat) (hn : 2 ≤ n)
     ¬ (∀ i, (possibilityFamily n).Thm i (possibilityFamily n).bot) ∧
     (∀ i, ¬ (possibilityFamily n).CrossDistrib i (ringNext i))
 
+-- lean/KernelTrust/Kripke.lean:747-759
 theorem consistency_proof_along_open_chain_is_consistent :
     (∀ i, omegaChainFamily.ImpClosed i) ∧
     (∀ i, omegaChainFamily.LobRule i) ∧
@@ -920,6 +984,7 @@ theorem consistency_proof_along_open_chain_is_consistent :
     (∀ i j k, ¬ omegaChainFamily.Thm i
       (omegaChainFamily.box j (omegaChainFamily.box k omegaChainFamily.bot)))
 
+-- lean/KernelTrust/Kripke.lean:810-823
 theorem one_unverified_ring_link_leaves_anchor_inconsistent :
     (∀ i, oneBrokenNecFamily.ImpClosed i) ∧
     (∀ i, oneBrokenNecFamily.LobRule i) ∧
@@ -935,6 +1000,7 @@ theorem one_unverified_ring_link_leaves_anchor_inconsistent :
     oneBrokenNecFamily.Consistent 1 ∧
     ¬ oneBrokenNecFamily.CrossNec 1 0
 
+-- lean/KernelTrust/Kripke.lean:874-882
 theorem finite_countermodels_prove_own_inconsistency (n : Nat) (hn : 2 ≤ n) :
     (∀ i, (starFamily n).Thm i ((starFamily n).box i (starFamily n).bot)) ∧
     (∀ i, (leafFamily n).Thm i ((leafFamily n).box i (leafFamily n).bot)) ∧
@@ -945,18 +1011,21 @@ theorem finite_countermodels_prove_own_inconsistency (n : Nat) (hn : 2 ≤ n) :
       ((possibilityFamily n).box j ((possibilityFamily n).box k (possibilityFamily n).bot))) ∧
     oneBrokenNecFamily.Thm 1 (oneBrokenNecFamily.box 1 oneBrokenNecFamily.bot)
 
+-- lean/KernelTrust/Provability.lean:289-293
 theorem k4a_nonvacuous (n : Nat) (hn : 1 ≤ n) :
     (∀ i, (trivialFamily (Fin n)).ImpClosed i) ∧
     (∃ i₀ : Fin n, (trivialFamily (Fin n)).GodelII i₀) ∧
     (trivialFamily (Fin n)).CrossHBL ∧
     (∀ i, (trivialFamily (Fin n)).Thm i ((trivialFamily (Fin n)).con (ringNext i)))
 
+-- lean/KernelTrust/Provability.lean:301-305
 theorem k4a_local_nonvacuous (n : Nat) (i₀ : Fin n) :
     (trivialFamily (Fin n)).ImpClosed i₀ ∧
     (trivialFamily (Fin n)).GodelII i₀ ∧
     (trivialFamily (Fin n)).CrossHBLFrom i₀ ∧
     (∀ i, (trivialFamily (Fin n)).Thm i ((trivialFamily (Fin n)).con (ringNext i)))
 
+-- lean/KernelTrust/Kripke.lean:1131-1136
 theorem consistencyRing_consistent_without_crossSigma1_fails_below_two :
     ringNext (0 : Fin 1) = 0 ∧
     ¬ (∀ i, (starFamily 1).Thm i ((starFamily 1).con (ringNext i))) ∧
@@ -966,6 +1035,7 @@ theorem consistencyRing_consistent_without_crossSigma1_fails_below_two :
 ```
 
 ```lean
+-- lean/KernelTrust/SyntacticModels.lean:230-239
 theorem local_reflection_fails_without_mp :
     noMpEfqFamily.HasEfq 0 ∧
     noMpEfqFamily.Thm 0 noMpEfqFamily.bot ∧
@@ -977,6 +1047,7 @@ theorem local_reflection_fails_without_mp :
           noMpEfqFamily.Thm 0 (noMpEfqFamily.imp (noMpEfqFamily.box 0 A) A)) ↔
         noMpEfqFamily.Thm 0 noMpEfqFamily.bot)
 
+-- lean/KernelTrust/SyntacticModels.lean:269-283
 theorem local_reflection_fails_without_efq :
     noEfqBoolFamily.MpClosed () ∧
     (∀ A B, noEfqBoolFamily.Thm () (noEfqBoolFamily.imp A (noEfqBoolFamily.imp B A))) ∧
@@ -993,6 +1064,7 @@ theorem local_reflection_fails_without_efq :
           noEfqBoolFamily.Thm () (noEfqBoolFamily.imp (noEfqBoolFamily.box () A) A)) ↔
         noEfqBoolFamily.Thm () noEfqBoolFamily.bot)
 
+-- lean/KernelTrust/Kripke.lean:908-914
 theorem local_reflection_fails_without_inconsistency :
     omegaChainFamily.MpClosed 0 ∧
     omegaChainFamily.HasEfq 0 ∧
@@ -1001,6 +1073,7 @@ theorem local_reflection_fails_without_inconsistency :
         omegaChainFamily.Thm 0 (omegaChainFamily.imp (omegaChainFamily.box j A) A)) ∧
     ¬ (∀ j : Fin 2, omegaChainFamily.Thm 0 (omegaChainFamily.con j))
 
+-- lean/KernelTrust/Kripke.lean:939-949
 theorem local_reflection_iff_fails_without_godelII :
     (reflexiveFamily Unit).MpClosed () ∧
     (reflexiveFamily Unit).HasEfq () ∧
@@ -1013,14 +1086,17 @@ theorem local_reflection_iff_fails_without_godelII :
             ((reflexiveFamily Unit).imp ((reflexiveFamily Unit).box () A) A)) ↔
         (reflexiveFamily Unit).Thm () (reflexiveFamily Unit).bot)
 
+-- lean/KernelTrust/Provability.lean:311-313
 theorem k5_nonvacuous :
     (trivialFamily Unit).MpClosed () ∧ (trivialFamily Unit).HasEfq () ∧
     (trivialFamily Unit).Thm () (trivialFamily Unit).bot
 
+-- lean/KernelTrust/Provability.lean:320-322
 theorem k5_iff_nonvacuous :
     (trivialFamily Unit).MpClosed () ∧ (trivialFamily Unit).HasEfq () ∧
     (trivialFamily Unit).GodelII ()
 
+-- lean/KernelTrust/Kripke.lean:924-930
 theorem k5_iff_nonvacuous_consistent :
     omegaChainFamily.MpClosed 0 ∧
     omegaChainFamily.HasEfq 0 ∧
@@ -1031,17 +1107,20 @@ theorem k5_iff_nonvacuous_consistent :
 ```
 
 ```lean
+-- lean/KernelTrust/Layers.lean:248-251
 theorem execCert_trust_eq_recompute_fails_without_honest :
     Cert.honest stdRules (lyingCert .bot) = false ∧
     ¬ (∀ stk : Stack, execCert .trust stdRules stk (lyingCert .bot) =
         execCert .recompute stdRules stk (lyingCert .bot))
 
+-- lean/KernelTrust/SyntacticModels.lean:308-312
 theorem con_fails_without_mp :
     noMpEfqFamily.HasEfq 0 ∧
     noMpEfqFamily.Thm 0 noMpEfqFamily.bot ∧
     ¬ noMpEfqFamily.MpClosed 0 ∧
     ¬ (∀ j : Fin 1, noMpEfqFamily.Thm 0 (noMpEfqFamily.con j))
 
+-- lean/KernelTrust/SyntacticModels.lean:321-326
 def onlyBotFamily : ProvFamily Unit where
   Sent := SynSent 1
   bot  := .bot
@@ -1049,6 +1128,7 @@ def onlyBotFamily : ProvFamily Unit where
   box  := fun _ => .box 0
   Thm  := fun _ s => s = .bot
 
+-- lean/KernelTrust/SyntacticModels.lean:334-340
 theorem con_fails_without_efq :
     onlyBotFamily.MpClosed () ∧
     onlyBotFamily.Thm () onlyBotFamily.bot ∧
@@ -1057,6 +1137,7 @@ theorem con_fails_without_efq :
         onlyBotFamily.Thm () (onlyBotFamily.imp A (onlyBotFamily.imp B A))) ∧
     ¬ (∀ j : Unit, onlyBotFamily.Thm () (onlyBotFamily.con j))
 
+-- lean/KernelTrust/Kripke.lean:1089-1094
 theorem k4a_local_hypotheses_hold_in_mixed_ring :
     oneBrokenNecFamily.ImpClosed 0 ∧
     oneBrokenNecFamily.GodelII 0 ∧
@@ -1064,6 +1145,7 @@ theorem k4a_local_hypotheses_hold_in_mixed_ring :
     (∀ i, oneBrokenNecFamily.Thm i (oneBrokenNecFamily.con (ringNext i))) ∧
     oneBrokenNecFamily.Consistent 1
 
+-- lean/KernelTrust/Kripke.lean:1100-1102
 theorem omegaStarFamily_not_proves_nested_box_bot (n : Nat) (i j k : Fin n) :
     ¬ (omegaStarFamily n).Thm i
         ((omegaStarFamily n).box j ((omegaStarFamily n).box k (omegaStarFamily n).bot))
@@ -1076,57 +1158,72 @@ theorem omegaStarFamily_not_proves_nested_box_bot (n : Nat) (i j k : Fin n) :
 Statements cited in the prose above that are neither results nor witnesses of a card, in full, with the two definitions they need. Their axioms are listed under `## Evidence`.
 
 ```lean
+-- lean/KernelTrust/Checker.lean:68-69
 theorem not_acceptsBot_of_faithful_of_consistent {C : Checker} {R : RuleSet}
     (hF : Faithful C R) (hC : Consistent R) : ¬ C.AcceptsBot
 
+-- lean/KernelTrust/Semantics.lean:254-255
 theorem ex_consistent_not_semSound_anyImpRules :
     Consistent anyImpRules ∧ ¬ SemSound anyImpRules
 
+-- lean/KernelTrust/Semantics.lean:172
 theorem badRules_derives_every_formula (φ : Form) : Derivable badRules [] φ
 
+-- lean/KernelTrust/Semantics.lean:224
 theorem ex_semSound_badRules_neg : ¬ SemSound badRules ∧ ¬ Consistent badRules
 
+-- lean/KernelTrust/Pinning.lean:89
 theorem ex_pinned_undefined_neg : ¬ Pinned officialTable officialTable "Undefined"
 
+-- lean/KernelTrust/Cert.lean:364-365
 theorem hypsOk_of_execCert {pol : FieldPolicy} {R : RuleSet} {stk out : Stack} {c : Cert}
     (h : execCert pol R stk c = some out) : Cert.HypsOk c
 
+-- lean/KernelTrust/Cert.lean:395-397
 theorem execCertNoHypGuard_eq_of_hypsOk {pol : FieldPolicy} {R : RuleSet} {c : Cert}
     (hc : Cert.HypsOk c) :
     ∀ stk : Stack, execCertNoHypGuard pol R stk c = execCert pol R stk c
 ```
 
 ```lean
+-- lean/KernelTrust/Rings.lean:137-140
 def selfHostedRing {n : Nat} (C : Fin n → Checker) (enc : Fin n → Form) : VerifierRing n where
   checker := C
   MetaCert := fun i => (C i).Wit
   acceptsCert := fun i m j => (C i).accepts m [] (enc j)
 
+-- lean/KernelTrust/Rings.lean:146-147
 def ClaimReflection {n : Nat} (R : RuleSet) (C : Fin n → Checker) (enc : Fin n → Form) : Prop :=
   ∀ j : Fin n, Derivable R [] (enc j) → Faithful (C j) R
 
+-- lean/KernelTrust/Rings.lean:151-154
 theorem faithfulImpliesMetaSound_of_selfHosted_of_claimReflection {n : Nat}
     {R : RuleSet} {C : Fin n → Checker} {enc : Fin n → Form}
     (hRefl : ClaimReflection R C enc) :
     FaithfulImpliesMetaSound (selfHostedRing C enc) R
 
+-- lean/KernelTrust/Rings.lean:167-169
 theorem not_claimReflection_badRules_of_unfaithful {n : Nat} (C : Fin n → Checker)
     (enc : Fin n → Form) (j : Fin n) (hU : ¬ Faithful (C j) badRules) :
     ¬ ClaimReflection badRules C enc
 ```
 
 ```lean
+-- lean/KernelTrust/Provability.lean:138
 -- Declared inside `namespace ProvFamily` with `variable {ι : Type} (F : ProvFamily ι)`;
 -- `HBL i` is the conjunction of `D1 i`, `D2 i` and `D3 i`.
 theorem LobRule.godelII {i : ι} (h : F.LobRule i) : F.GodelII i
 
+-- lean/KernelTrust/Provability.lean:143
 theorem CrossHBL.hbl (h : F.CrossHBL) (i : ι) : F.HBL i
 ```
 
 ```lean
+-- lean/KernelTrust/Kripke.lean:712-713
 theorem omegaChainFamily_not_proves_con_zero :
     ¬ omegaChainFamily.Thm 1 (omegaChainFamily.con 0)
 
+-- lean/KernelTrust/SyntacticModels.lean:295
 theorem ex_mpClosed_neg : ¬ (noMpFamily 2).MpClosed 0
 ```
 
