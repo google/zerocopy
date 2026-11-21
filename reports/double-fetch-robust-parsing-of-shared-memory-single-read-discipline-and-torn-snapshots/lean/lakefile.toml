@@ -1,0 +1,5 @@
+name = "DoubleFetch"
+defaultTargets = ["DoubleFetch"]
+
+[[lean_lib]]
+name = "DoubleFetch"

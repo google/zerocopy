@@ -1,0 +1,1181 @@
+[
+ {
+  "id": "snapshot-parse-rstate",
+  "lean": [
+   "Toy.DoubleFetch.snapParse_exec_eq_and_rstate"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every spec `spec : Region n → α` and every writer `adv : Adversary n`, the snapshot parser `snapParse spec` run by `Prog.exec` returns `spec (adv 0)`, the spec of the state at the time of its one atomic access; hence `snapParse spec` is R-state (`RState spec (snapParse spec)`). This is a reference point: it holds because the toy's `snap` primitive is atomic by definition.",
+  "unfolded_prose": "for all `adv`, `(snapParse spec).exec adv = spec (adv 0)`, and for all `adv` there is a time `t` (namely `0`) with `(snapParse spec).exec adv = spec (adv t)`.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Hypothesis-free; instantiated at the pair spec in `snapParse_pair_rstate_counterexample`.",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.snapParse_pair_rstate_counterexample",
+  "non_claims": [
+   "R-state here follows from the toy's `snap` primitive, which copies all `n` bytes in one memory access by definition. This result neither establishes nor refutes atomicity of any real copy routine (`memcpy`, `copy_from_user`, a Rust slice copy, a struct assignment through a volatile pointer); in the toy, copying one byte at a time is `byteCopy`, which is not R-state (`copyParse_pair_torn_not_rstate`).",
+   "Covers the parser that applies `spec` to the snapshot and reads nothing else; a parser that reads shared memory again after the snapshot is not `snapParse spec`.",
+   "`RState` checks a single run against one writer, and its witness time ranges over all of `Nat` (here it is `0`, inside the run). It is not linearizability across several invocations and says nothing about the order of results of consecutive runs.",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Y. Afek, H. Attiya, D. Dolev, E. Gafni, M. Merritt, N. Shavit, \"Atomic snapshots of shared memory\", J. ACM 40(4):873-890, 1993, doi:10.1145/153724.153741 (author's copy: https://people.csail.mit.edu/shanir/publications/AADGMS.pdf): \"This paper presents three wait-free implementations of atomic snapshot memory.\" There the memory is updated through the implementation's own update operation, so every writer follows a protocol; cited as contrast with the unconstrained writer here.",
+   "M. P. Herlihy, J. M. Wing, \"Linearizability: a correctness condition for concurrent objects\", ACM TOPLAS 12(3):463-492, 1990, doi:10.1145/78969.78972 (bibliographic data checked against Crossref; not quoted). Cited for contrast: linearizability orders the operations of several concurrent invocations, whereas `RState` constrains one run in isolation."
+  ],
+  "design_question": "When a parser must act on a state that actually existed in memory another party can write, does copying the whole region in one atomic step suffice? (Reference point: the atomicity is assumed by the model.)",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.NoByteDeterminesOutput",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.addrAt",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Prog.execFrom_eq_eval_of_agree",
+   "Toy.DoubleFetch.Prog.obs_snd",
+   "Toy.DoubleFetch.RState",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.andSpec_examples",
+   "Toy.DoubleFetch.assemble_example",
+   "Toy.DoubleFetch.boolParse_examples",
+   "Toy.DoubleFetch.byteCopy",
+   "Toy.DoubleFetch.ckParse_examples",
+   "Toy.DoubleFetch.copyInBounds_examples",
+   "Toy.DoubleFetch.copyParse_pair_torn_not_rstate",
+   "Toy.DoubleFetch.dataDepProg_examples",
+   "Toy.DoubleFetch.eval_example",
+   "Toy.DoubleFetch.exec_example",
+   "Toy.DoubleFetch.exec_ne_eval_example",
+   "Toy.DoubleFetch.hasUndeterminedState_examples",
+   "Toy.DoubleFetch.hasUndeterminedState_of_pos_of_noByteDeterminesOutput",
+   "Toy.DoubleFetch.implements_examples",
+   "Toy.DoubleFetch.incr",
+   "Toy.DoubleFetch.incrementBoundedWriter_examples",
+   "Toy.DoubleFetch.lpParse_examples",
+   "Toy.DoubleFetch.noByteDeterminesOutput_examples",
+   "Toy.DoubleFetch.noSnap_examples",
+   "Toy.DoubleFetch.obsRefines_examples",
+   "Toy.DoubleFetch.obs_example",
+   "Toy.DoubleFetch.oneStepVersionWriter_examples",
+   "Toy.DoubleFetch.privRefines_examples",
+   "Toy.DoubleFetch.readSeq",
+   "Toy.DoubleFetch.readTwice",
+   "Toy.DoubleFetch.robustRefines_examples",
+   "Toy.DoubleFetch.rsafe_examples",
+   "Toy.DoubleFetch.rstateUnder_examples",
+   "Toy.DoubleFetch.rstateUnder_true_iff",
+   "Toy.DoubleFetch.rstate_examples",
+   "Toy.DoubleFetch.seqSpec_not_noByteDeterminesOutput",
+   "Toy.DoubleFetch.sevenNine",
+   "Toy.DoubleFetch.singleRead_examples",
+   "Toy.DoubleFetch.singleRead_read_then_snap_rejected",
+   "Toy.DoubleFetch.snapParse",
+   "Toy.DoubleFetch.snapParse_pair_rstate_counterexample",
+   "Toy.DoubleFetch.twoStepVersionWriter_examples",
+   "Toy.DoubleFetch.validBoolOut_examples",
+   "Toy.DoubleFetch.validE_examples",
+   "Toy.DoubleFetch.versionPath_examples",
+   "Toy.DoubleFetch.versionStep_examples",
+   "Toy.DoubleFetch.viewOK_examples",
+   "Toy.DoubleFetch.viewProg_example",
+   "Toy.DoubleFetch.viewSpec_examples"
+  ]
+ },
+ {
+  "id": "bytecopy-parse-diagonal-rvalid",
+  "lean": [
+   "Toy.DoubleFetch.copyParse_exec_eq_diagonal_and_rvalid",
+   "Toy.DoubleFetch.copyParse_singleRead_implements"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every spec `spec : Region n → α` and every writer `adv : Adversary n`, the byte-by-byte copy parser `copyParse spec` (reads address `j` at time `j`, for every address `j` of the region, then applies `spec` to the private copy) returns `spec (fun j => adv j.val j)`, the spec of the diagonal vector of bytes as read; hence it is R-valid (`RValid spec (copyParse spec)`). For every spec, `copyParse spec` is also single-read and implements `spec` in private memory (`copyParse_singleRead_implements`).",
+  "unfolded_prose": "for all `adv`, `(copyParse spec).exec adv = spec (fun j => adv j.val j)`, and for all `adv` there is a byte vector `s'` with `(copyParse spec).exec adv = spec s'`; moreover `SingleRead (copyParse spec)` and `∀ s, (copyParse spec).eval s = spec s`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Hypothesis-free; computed on the pair spec in `copyParse_pair_torn_not_rstate`.",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.copyParse_pair_torn_not_rstate",
+  "non_claims": [
+   "The diagonal vector need not be any state the writer produced; see `copyParse_pair_torn_not_rstate`.",
+   "The access order `0, 1, …, n - 1` is a choice of `byteCopy`; another order gives another mix of times.",
+   "Degenerate edge `n = 0`: `List.finRange 0` is empty, so `byteCopy` performs no memory access and the statement reduces to `spec` of the unique empty region (by unfolding the definitions; no separate theorem).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "XSA-155 patch \"xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch\" (SHA-256 of the fetched file: `e52467fcec73bcc86d3e96d06f8ca8085ae56a83d2c42a30c16bc3dc630d8f8a`), https://xenbits.xen.org/xsa/xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch: \"Safe usage of a request generally requires taking a local copy.\" (xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch:8-9) and, in the macro comment, \"Use this in preference to RING_GET_REQUEST() so all processing is done on a local copy that cannot be modified by the other end.\" (xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch:40-41, where each line carries the comment prefix \"+ * \") The macro copies the request by a struct assignment from a volatile source; the patch does not describe the copy as atomic. In the toy, taking a local copy and parsing the copy instead of the shared bytes corresponds to `copyParse` (one-byte reads), not to `snap` (derived (modeling bridge)).",
+   "P. Wang, J. Krinke, K. Lu, G. Li, S. Dodier-Lazaro, \"How Double-Fetch Situations turn into Double-Fetch Vulnerabilities: A Study of Double Fetches in the Linux Kernel\", 26th USENIX Security Symposium (USENIX Security 17), Vancouver, 2017, pp. 1-16, https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/wang-pengfei. Empirical study of double fetches in the Linux kernel and a static detector; informal."
+  ],
+  "design_question": "Does copying shared bytes one at a time into private memory give the parser a consistent state, or merely some byte vector?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.eval",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.RValid",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.byteCopy",
+   "Toy.DoubleFetch.copyParse",
+   "Toy.DoubleFetch.copyParse_pair_torn_not_rstate",
+   "Toy.DoubleFetch.readSeq"
+  ]
+ },
+ {
+  "id": "bytecopy-torn-not-rstate",
+  "lean": [
+   "Toy.DoubleFetch.copyParse_pair_torn_not_rstate"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Against the writer `pairTornAdv` (state `(0,0)` at time `0`, `(1,1)` at every later time), the byte-by-byte copy parser of the pair spec returns `(0, 1)`, which differs from `pairSpec (pairTornAdv t)` for every time `t`; so `copyParse pairSpec` is not R-state.",
+  "unfolded_prose": "`(copyParse pairSpec).exec pairTornAdv = (0, 1)`; for every `t`, `(copyParse pairSpec).exec pairTornAdv ≠ pairSpec (pairTornAdv t)`; and `¬ RState pairSpec (copyParse pairSpec)`.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Closed concrete statement.",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.copyParse_pair_torn_not_rstate",
+  "non_claims": [
+   "Does not say every writer tears the copy: against the writer that never writes, every parser returns its private-memory result (`Prog.exec_const`).",
+   "The torn value `(0, 1)` reflects the access order `0, 1`; with the reverse order the same writer would yield `(1, 0)` (not proved here).",
+   "The toy has one-byte reads and whole-region snapshots; a hardware load that reads an aligned multi-byte value in one access is not modelled.",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Folklore in systems security: validating shared bytes and then reading them again (time-of-check to time-of-use) is unsafe against a concurrent writer; no source states this toy formulation."
+  ],
+  "design_question": "Is a byte-by-byte copy of shared memory a consistent snapshot?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Adversary.const",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Prog.exec_const",
+   "Toy.DoubleFetch.RState",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.copyParse",
+   "Toy.DoubleFetch.pairSpec",
+   "Toy.DoubleFetch.pairTornAdv",
+   "Toy.DoubleFetch.reg2"
+  ]
+ },
+ {
+  "id": "single-read-exec-eq-eval-assemble",
+  "lean": [
+   "Toy.DoubleFetch.singleRead_exec_eq_eval_assemble"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every parser `p : Prog n α` that satisfies the single-read discipline `SingleRead p` (on every root-to-leaf path each address is read at most once, a `snap` counting as a read of every address), every writer `adv` and every filler `d : Region n`, the run `p.exec adv` equals the private-memory result `p.eval (p.assemble adv d)` on the assembled vector, which holds at each address read during the run the byte observed there and `d` elsewhere. This covers parsers whose later addresses are computed from earlier bytes, such as `dataDepProg` (`dataDepProg_singleRead`).",
+  "unfolded_prose": "if `SingleRead p` then for all `adv` and `d`, `p.exec adv = p.eval (p.assemble adv d)`.",
+  "hypotheses": [
+   {
+    "name": "`hp : SingleRead p`",
+    "purpose": "Rules out a second read of an address whose first read already steered the path or result.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.lenReread_exec_ne_eval_assemble",
+    "counterexample_class": "the double-fetch length parser `lenReread m cap` for any `m` and any `cap < 255`"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`dataDepProg`, a single-read parser whose second address depends on the first byte (`dataDepProg_singleRead`); also `lenOnce m cap` and `copyParse spec`.",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.dataDepProg_singleRead",
+  "non_claims": [
+   "The assembled vector is generally not a state the writer produced (`copyParse_pair_torn_not_rstate`), so the theorem yields R-valid, not R-state.",
+   "`SingleRead` is sufficient for the R-valid conclusion, not necessary (`rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate`).",
+   "Parsers here read and return a value at a leaf; programs that write to the region or emit effects before finishing are not covered.",
+   "Degenerate edge `n = 0`: a snapshot of the empty region reads no address, so `SingleRead` admits repeated snapshots there (`singleRead_zero_double_snap`); harmless, since `Region 0` has one element.",
+   "In Rust, C and C++, a non-atomic read of a shared byte (for example through `&[u8]`), or a `core::ptr::read_volatile`, that races with a concurrent write to the same location is undefined behaviour (a data race), even if each byte is read once. The toy has no notion of a data race, so this result says nothing about avoiding that undefined behaviour (derived (modeling bridge); the Rust sources are quoted under Applicability).",
+   "Source-level single reads need not survive compilation: a private-memory refinement can turn a single-read parser into a double fetch (`remat_lenCheck_singleRead_robust_to_not_rsafe_not_rvalid`). Which access semantics (volatile, atomic) prevent this in a real compiler is not modelled.",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "N. Swamy, T. Ramananandro, A. Rastogi, I. Spiridonova, H. Ni, D. Malloy, J. Vazquez, M. Tang, O. Cardona, A. Gupta, \"Hardening Attack Surfaces with Formally Proven Binary Format Parsers\", PLDI 2022, pp. 31-45, doi:10.1145/3519939.3523708 (author's copy: http://www.normalesup.org/~ramanana/research/everparse/pldi2022/paper.pdf): \"Adhering to this discipline ensures that the host observes a single logical snapshot of the packet even in the presence of concurrent mutations by the guest, inasmuch as what the host sees after a concurrent mutation, the untrusted guest could just as well have put in the packet to begin with.\" and \"Our input streams are designed with a permission model that allows us to prove that validators are double-fetch free. In particular, reading a byte from the stream advances it and makes it provably impossible to read that byte again.\" The informal \"single logical snapshot\" there is what the toy calls R-valid (some byte vector), not R-state; EverParse3D mechanizes double-fetch freedom of generated validators, and the semantic statement here is not claimed to appear there in this form.",
+   "P. Wang, J. Krinke, K. Lu, G. Li, S. Dodier-Lazaro, \"How Double-Fetch Situations turn into Double-Fetch Vulnerabilities: A Study of Double Fetches in the Linux Kernel\", 26th USENIX Security Symposium (USENIX Security 17), Vancouver, 2017, pp. 1-16, https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/wang-pengfei. Empirical study of double fetches in the Linux kernel and a static detector; informal.",
+   "M. Jurczyk and G. Coldwind, \"Identifying and Exploiting Windows Kernel Race Conditions via Memory Access Patterns\", whitepaper accompanying the SyScan 2013 talk on Bochspwn, April 2013, https://research.google.com/pubs/archive/42189.pdf (also listed at https://research.google/pubs/identifying-and-exploiting-windows-kernel-race-conditions-via-memory-access-patterns/ and on the authors' talk page https://j00ru.vexillium.org/talks/syscan-bochspwn-exploiting-kernel-race-conditions/; title, authors and date checked against a search index, the PDF itself could not be fetched on the observation date). Describes double fetches of user-mode memory by kernel code and a memory-access-pattern detector; informal."
+  ],
+  "design_question": "Is 'read each shared byte at most once' enough for a parser to behave as on some byte vector, even when addresses depend on earlier reads?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.assemble",
+   "Toy.DoubleFetch.Prog.assembleFrom",
+   "Toy.DoubleFetch.Prog.eval",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.copyParse",
+   "Toy.DoubleFetch.copyParse_pair_torn_not_rstate",
+   "Toy.DoubleFetch.dataDepProg",
+   "Toy.DoubleFetch.dataDepProg_singleRead",
+   "Toy.DoubleFetch.lenOnce",
+   "Toy.DoubleFetch.lenReread",
+   "Toy.DoubleFetch.lenReread_exec_ne_eval_assemble",
+   "Toy.DoubleFetch.remat_lenCheck_singleRead_robust_to_not_rsafe_not_rvalid",
+   "Toy.DoubleFetch.rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate",
+   "Toy.DoubleFetch.singleRead_zero_double_snap"
+  ]
+ },
+ {
+  "id": "single-read-rvalid",
+  "lean": [
+   "Toy.DoubleFetch.rvalid_of_singleRead_of_implements"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every spec `spec` and parser `p`, if `p` is single-read (`SingleRead p`) and implements `spec` in private memory (`Implements p spec`: `p.eval s = spec s` for every region `s`), then `p` is R-valid for `spec`: against every writer its result is `spec s'` for some byte vector `s'`.",
+  "unfolded_prose": "if `SingleRead p` and `∀ s, p.eval s = spec s`, then `∀ adv, ∃ s', p.exec adv = spec s'`.",
+  "hypotheses": [
+   {
+    "name": "`hp : SingleRead p`",
+    "purpose": "Excludes double fetches.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.singleRead_hyp_counterexample_rvalid",
+    "counterexample_class": "the double-fetch length parser on a one-byte region with `cap = 0`"
+   },
+   {
+    "name": "`himpl : Implements p spec`",
+    "purpose": "Ties the parser to the spec on private memory.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.implements_hyp_counterexample_rvalid",
+    "counterexample_class": "a constant parser on a one-byte region"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`lenOnce m cap` with `lpParse cap` (`lenOnce_singleRead_implements` states both hypotheses).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.lenOnce_singleRead_implements",
+  "non_claims": [
+   "R-valid allows a vector the writer never produced; it does not imply R-state.",
+   "`SingleRead` is sufficient for `RValid`, not necessary (`rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate`).",
+   "`RValid spec p` is a condition on each result: it is `spec s'` for some byte vector `s'`, which need not agree with any byte the writer wrote; for example `Prog.ret r` is R-valid whenever `r` is in the image of `spec` (by the definition of `RValid`; no separate theorem). The per-byte provenance statement is `singleRead_exec_eq_eval_assemble`.",
+   "In Rust, C and C++, a non-atomic read of a shared byte (for example through `&[u8]`), or a `core::ptr::read_volatile`, that races with a concurrent write to the same location is undefined behaviour (a data race), even if each byte is read once. The toy has no notion of a data race, so this result says nothing about avoiding that undefined behaviour (derived (modeling bridge); the Rust sources are quoted under Applicability).",
+   "Source-level single reads need not survive compilation: a private-memory refinement can turn a single-read parser into a double fetch (`remat_lenCheck_singleRead_robust_to_not_rsafe_not_rvalid`). Which access semantics (volatile, atomic) prevent this in a real compiler is not modelled.",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "N. Swamy, T. Ramananandro, A. Rastogi, I. Spiridonova, H. Ni, D. Malloy, J. Vazquez, M. Tang, O. Cardona, A. Gupta, \"Hardening Attack Surfaces with Formally Proven Binary Format Parsers\", PLDI 2022, pp. 31-45, doi:10.1145/3519939.3523708 (author's copy: http://www.normalesup.org/~ramanana/research/everparse/pldi2022/paper.pdf): \"Adhering to this discipline ensures that the host observes a single logical snapshot of the packet even in the presence of concurrent mutations by the guest, inasmuch as what the host sees after a concurrent mutation, the untrusted guest could just as well have put in the packet to begin with.\" and \"Our input streams are designed with a permission model that allows us to prove that validators are double-fetch free. In particular, reading a byte from the stream advances it and makes it provably impossible to read that byte again.\" The informal \"single logical snapshot\" there is what the toy calls R-valid (some byte vector), not R-state; EverParse3D mechanizes double-fetch freedom of generated validators, and the semantic statement here is not claimed to appear there in this form.",
+   "Folklore in systems security: validating shared bytes and then reading them again (time-of-check to time-of-use) is unsafe against a concurrent writer; no source states this toy formulation."
+  ],
+  "design_question": "Does every result of a single-read parser that is correct on private memory come from some byte vector?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Implements",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.eval",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.RValid",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.implements_hyp_counterexample_rvalid",
+   "Toy.DoubleFetch.lenOnce",
+   "Toy.DoubleFetch.lenOnce_singleRead_implements",
+   "Toy.DoubleFetch.lpParse",
+   "Toy.DoubleFetch.remat_lenCheck_singleRead_robust_to_not_rsafe_not_rvalid",
+   "Toy.DoubleFetch.rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate",
+   "Toy.DoubleFetch.singleRead_exec_eq_eval_assemble",
+   "Toy.DoubleFetch.singleRead_hyp_counterexample_rvalid"
+  ]
+ },
+ {
+  "id": "single-read-rsafe",
+  "lean": [
+   "Toy.DoubleFetch.rsafe_of_singleRead_of_staticSafe"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every predicate `safe : α → Prop` on result values (it depends on the result alone, not on the writer's states) and every parser `p`, if `p` is single-read and every private-memory result is safe (`∀ s, safe (p.eval s)`), then `p` is R-safe: against every writer its result satisfies `safe`. In the toy an action such as \"copy `len` bytes\" is represented by the result value `some len`, so `safe` can constrain the parameters of actions computed from the bytes read.",
+  "unfolded_prose": "if `SingleRead p` and `∀ s, safe (p.eval s)`, then `∀ adv, safe (p.exec adv)`.",
+  "hypotheses": [
+   {
+    "name": "`hp : SingleRead p`",
+    "purpose": "Excludes double fetches.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.singleRead_hyp_counterexample_rsafe",
+    "counterexample_class": "the double-fetch length parser on a one-byte region with `cap = 0`"
+   },
+   {
+    "name": "`hsafe : ∀ s : Region n, safe (p.eval s)`",
+    "purpose": "Safety on private memory.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.staticSafe_hyp_counterexample_rsafe",
+    "counterexample_class": "a constant parser on a one-byte region"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`lenOnce 0 4` with `CopyInBounds 4` satisfies both hypotheses (`rsafe_of_singleRead_hyps_nonvacuous`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.rsafe_of_singleRead_hyps_nonvacuous",
+  "non_claims": [
+   "`safe` is a predicate on the returned value. Relational properties that link the result to the writer's states (of type `Region n → α → Prop`), and actions that read shared memory again after the parser returns (for example copying `len` payload bytes from the shared region), are not covered.",
+   "In Rust, C and C++, a non-atomic read of a shared byte (for example through `&[u8]`), or a `core::ptr::read_volatile`, that races with a concurrent write to the same location is undefined behaviour (a data race), even if each byte is read once. The toy has no notion of a data race, so this result says nothing about avoiding that undefined behaviour (derived (modeling bridge); the Rust sources are quoted under Applicability).",
+   "Source-level single reads need not survive compilation: a private-memory refinement can turn a single-read parser into a double fetch (`remat_lenCheck_singleRead_robust_to_not_rsafe_not_rvalid`). Which access semantics (volatile, atomic) prevent this in a real compiler is not modelled.",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "N. Swamy, T. Ramananandro, A. Rastogi, I. Spiridonova, H. Ni, D. Malloy, J. Vazquez, M. Tang, O. Cardona, A. Gupta, \"Hardening Attack Surfaces with Formally Proven Binary Format Parsers\", PLDI 2022, pp. 31-45, doi:10.1145/3519939.3523708 (author's copy: http://www.normalesup.org/~ramanana/research/everparse/pldi2022/paper.pdf): \"Adhering to this discipline ensures that the host observes a single logical snapshot of the packet even in the presence of concurrent mutations by the guest, inasmuch as what the host sees after a concurrent mutation, the untrusted guest could just as well have put in the packet to begin with.\" and \"Our input streams are designed with a permission model that allows us to prove that validators are double-fetch free. In particular, reading a byte from the stream advances it and makes it provably impossible to read that byte again.\" The informal \"single logical snapshot\" there is what the toy calls R-valid (some byte vector), not R-state; EverParse3D mechanizes double-fetch freedom of generated validators, and the semantic statement here is not claimed to appear there in this form.",
+   "Folklore in systems security: validating shared bytes and then reading them again (time-of-check to time-of-use) is unsafe against a concurrent writer; no source states this toy formulation."
+  ],
+  "design_question": "Does private-memory safety of a single-read parser carry over to a concurrent writer?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.CopyInBounds",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.eval",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.lenOnce",
+   "Toy.DoubleFetch.remat_lenCheck_singleRead_robust_to_not_rsafe_not_rvalid",
+   "Toy.DoubleFetch.rsafe_of_singleRead_hyps_nonvacuous",
+   "Toy.DoubleFetch.singleRead_hyp_counterexample_rsafe",
+   "Toy.DoubleFetch.staticSafe_hyp_counterexample_rsafe"
+  ]
+ },
+ {
+  "id": "single-read-not-necessary",
+  "lean": [
+   "Toy.DoubleFetch.rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "The re-read-and-compare parser `rereadCompare` on a one-byte region (read the byte twice; return the error result `none` if the two reads differ, otherwise decode the byte with `boolParse`) implements `boolParse` in private memory, is R-valid for `boolParse` and R-safe for `ValidBoolOut`, is not single-read, and is not R-state for `boolParse`.",
+  "unfolded_prose": "`∀ s, rereadCompare.eval s = boolParse s`; `∀ adv, ∃ s', rereadCompare.exec adv = boolParse s'`; `∀ adv, ValidBoolOut (rereadCompare.exec adv)`; `¬ SingleRead rereadCompare`; and `¬ ∀ adv, ∃ t, rereadCompare.exec adv = boolParse (adv t)`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Closed concrete statement.",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate",
+  "non_claims": [
+   "It does not show that re-reading is as good as reading once: `rereadCompare` is not R-state (against a writer showing `0` then `1` it returns `none`, although every state the writer produced is a valid `bool`).",
+   "The mismatch branch returns `none`, which lies in the image of `boolParse`. Specs without an error result admit the same phenomenon: for every spec on a one-byte region, `rereadFallback spec` returns `spec` of the zero byte on a mismatch, implements `spec`, is R-valid for it, and is not single-read (`rereadFallback_implements_rvalid_not_singleRead`).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Folklore in systems security: validating shared bytes and then reading them again (time-of-check to time-of-use) is unsafe against a concurrent writer; no source states this toy formulation."
+  ],
+  "design_question": "Is reading each byte at most once necessary for robustness, or a sufficient condition that robust parsers may violate?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.eval",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.ValidBoolOut",
+   "Toy.DoubleFetch.boolParse",
+   "Toy.DoubleFetch.rereadCompare",
+   "Toy.DoubleFetch.rereadFallback",
+   "Toy.DoubleFetch.rereadFallback_implements_rvalid_not_singleRead"
+  ]
+ },
+ {
+  "id": "rvalid-iff-robust-refinement-of-single-read-implementation",
+  "lean": [
+   "Toy.DoubleFetch.rvalid_iff_robustRefines_singleRead_implementation",
+   "Toy.DoubleFetch.rvalid_iff_robustRefines_copyParse"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For every spec `spec : Region n → α` and every parser `p`, `p` is R-valid for `spec` iff there is a single-read parser `q` that implements `spec` in private memory such that `p` robustly refines `q` (`RobustRefines p q`: every result `p` returns against some writer, `q` returns against some writer). For every spec, the single-read implementation can be taken to be `copyParse spec`: `p` is R-valid for `spec` iff `RobustRefines p (copyParse spec)`.",
+  "unfolded_prose": "`(∀ adv, ∃ s', p.exec adv = spec s') ↔ ∃ q, SingleRead q ∧ (∀ s, q.eval s = spec s) ∧ ∀ adv, ∃ adv', p.exec adv = q.exec adv'`, and `(∀ adv, ∃ s', p.exec adv = spec s') ↔ ∀ adv, ∃ adv', p.exec adv = (copyParse spec).exec adv'`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Both sides hold for `rereadCompare` and `boolParse` with `q = tagOnce 0` (`robustRefines_transfer_nonvacuous`), and both fail for `lenReread 0 4` and `lpParse 4` (`rvalid_examples`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.robustRefines_transfer_nonvacuous",
+  "non_claims": [
+   "It characterizes R-valid, not R-state: `rereadCompare` robustly refines the single-read `tagOnce 0` and is R-valid, but it is not R-state (`robustRefines_rereadCompare_tagOnce_not_preserves_rstate`).",
+   "Refinement here is one-directional. The two equivalence readings, agreement against every writer and agreement in private memory, fail (`rvalid_equivalence_readings_refuted`).",
+   "The characterization is close to the definitions: every byte vector is the diagonal vector of some writer. Its use is to name the notion of 'behaves like a single-read parser' under which the folklore statement holds.",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "N. Swamy, T. Ramananandro, A. Rastogi, I. Spiridonova, H. Ni, D. Malloy, J. Vazquez, M. Tang, O. Cardona, A. Gupta, \"Hardening Attack Surfaces with Formally Proven Binary Format Parsers\", PLDI 2022, pp. 31-45, doi:10.1145/3519939.3523708 (author's copy: http://www.normalesup.org/~ramanana/research/everparse/pldi2022/paper.pdf): \"Adhering to this discipline ensures that the host observes a single logical snapshot of the packet even in the presence of concurrent mutations by the guest, inasmuch as what the host sees after a concurrent mutation, the untrusted guest could just as well have put in the packet to begin with.\" and \"Our input streams are designed with a permission model that allows us to prove that validators are double-fetch free. In particular, reading a byte from the stream advances it and makes it provably impossible to read that byte again.\" The informal \"single logical snapshot\" there is what the toy calls R-valid (some byte vector), not R-state; EverParse3D mechanizes double-fetch freedom of generated validators, and the semantic statement here is not claimed to appear there in this form.",
+   "C. Abate, R. Blanco, D. Garg, C. Hritcu, M. Patrignani, J. Thibault, \"Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation\", 2019 IEEE 32nd Computer Security Foundations Symposium (CSF), doi:10.1109/CSF.2019.00025 (long version arXiv:1807.04603): \"We are the first to thoroughly explore a large space of formal secure compilation criteria based on robust property preservation, i.e., the preservation of properties satisfied against arbitrary adversarial contexts.\" and \"For each of the studied criteria we propose an equivalent \"property-free\" characterization that clarifies which proof techniques apply.\" The toy's `robustRefines_iff_preserves_rsafe` is a property-free characterization of this kind for result properties, with the writer as the adversarial context."
+  ],
+  "design_question": "Is 'R-valid' the same as 'behaves like some single-read parser', and under which notion of 'behaves like'?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.eval",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.RobustRefines",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.boolParse",
+   "Toy.DoubleFetch.copyParse",
+   "Toy.DoubleFetch.lenReread",
+   "Toy.DoubleFetch.lpParse",
+   "Toy.DoubleFetch.rereadCompare",
+   "Toy.DoubleFetch.robustRefines_iff_preserves_rsafe",
+   "Toy.DoubleFetch.robustRefines_rereadCompare_tagOnce_not_preserves_rstate",
+   "Toy.DoubleFetch.robustRefines_transfer_nonvacuous",
+   "Toy.DoubleFetch.rvalid_equivalence_readings_refuted",
+   "Toy.DoubleFetch.rvalid_examples",
+   "Toy.DoubleFetch.tagCheck",
+   "Toy.DoubleFetch.tagOnce"
+  ]
+ },
+ {
+  "id": "rvalid-equivalence-readings-refuted",
+  "lean": [
+   "Toy.DoubleFetch.rvalid_equivalence_readings_refuted"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Two equivalence readings of 'R-valid iff equivalent to a single-read parser' fail. (i) Agreement against every writer: `rereadCompare` is R-valid for `boolParse`, but no single-read parser on a one-byte region returns the same result as `rereadCompare` against every writer. (ii) Agreement in private memory: for every region size `m + 1` and capacity `cap` with `cap < 255`, the double-fetch length parser `lenReread m cap` agrees in private memory with `lenOnce m cap` (`PrivRefines (lenReread m cap) (lenOnce m cap)`), which is single-read and R-valid for `lpParse cap`, yet `lenReread m cap` is not R-valid for `lpParse cap`.",
+  "unfolded_prose": "if `cap < 255`: `RValid boolParse rereadCompare` and no `q : Prog 1 (Option Byte)` with `SingleRead q` has `q.exec adv = rereadCompare.exec adv` for all `adv`; and `SingleRead (lenOnce m cap)`, `RValid (lpParse cap) (lenOnce m cap)`, `∀ s, (lenReread m cap).eval s = (lenOnce m cap).eval s`, `¬ RValid (lpParse cap) (lenReread m cap)`.",
+  "hypotheses": [
+   {
+    "name": "`hcap : cap < 255`",
+    "purpose": "Some byte fails the length check, so the re-read can exceed the capacity.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.lenReread_cap255_counterexample",
+    "counterexample_class": "an instance with `m = 0` and `cap = 255`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`cap = 4` satisfies `hcap` (`lenReread_cap_lt_255_nonvacuous`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.lenReread_cap_lt_255_nonvacuous",
+  "non_claims": [
+   "The theorem refutes the backward direction of reading (ii): for `cap < 255`, agreeing in private memory with the single-read parser `lenOnce m cap`, which is R-valid for `lpParse cap`, does not make `lenReread m cap` R-valid for `lpParse cap`. Whether the forward direction holds depends on what the single-read witness must satisfy. With a witness that is R-valid for the spec, it holds: for every spec `spec` and every parser `p`, if `RValid spec p`, then `copyParse (fun s => p.eval s)` is single-read, is R-valid for `spec`, and agrees with `p` in private memory (`rvalid_imp_exists_singleRead_rvalid_privRefines`). With a witness that implements the spec in private memory, it fails: for every spec `spec` and every parser `p`, a single-read parser that implements `spec` and agrees with `p` in private memory exists iff `p` itself implements `spec` (`exists_singleRead_implements_privRefines_iff_implements`; when `p` implements `spec`, `copyParse spec` is such a parser, by `copyParse_singleRead_implements`), and the constant parser `Prog.ret (0, 0)` is R-valid for `pairSpec` but agrees in private memory with no single-read parser that implements `pairSpec` (`rvalid_not_imp_exists_singleRead_implements_privRefines`).",
+   "The characterization that holds uses one-directional robust refinement (`rvalid_iff_robustRefines_singleRead_implementation`).",
+   "Degenerate edge `cap ≥ 255`: every byte passes the length check and `lenReread m cap` is R-safe and R-valid (`lenReread_rsafe_rvalid_of_255_le_cap`).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Folklore in systems security: validating shared bytes and then reading them again (time-of-check to time-of-use) is unsafe against a concurrent writer; no source states this toy formulation."
+  ],
+  "design_question": "Which readings of 'R-valid iff equivalent to some single-read parser' are false?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Byte",
+   "Toy.DoubleFetch.Implements",
+   "Toy.DoubleFetch.PrivRefines",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.eval",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.RValid",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.boolParse",
+   "Toy.DoubleFetch.copyParse",
+   "Toy.DoubleFetch.copyParse_singleRead_implements",
+   "Toy.DoubleFetch.exists_singleRead_implements_privRefines_iff_implements",
+   "Toy.DoubleFetch.lenOnce",
+   "Toy.DoubleFetch.lenReread",
+   "Toy.DoubleFetch.lenReread_cap255_counterexample",
+   "Toy.DoubleFetch.lenReread_cap_lt_255_nonvacuous",
+   "Toy.DoubleFetch.lenReread_rsafe_rvalid_of_255_le_cap",
+   "Toy.DoubleFetch.lpParse",
+   "Toy.DoubleFetch.pairSpec",
+   "Toy.DoubleFetch.rereadCompare",
+   "Toy.DoubleFetch.rvalid_iff_robustRefines_singleRead_implementation",
+   "Toy.DoubleFetch.rvalid_imp_exists_singleRead_rvalid_privRefines",
+   "Toy.DoubleFetch.rvalid_not_imp_exists_singleRead_implements_privRefines"
+  ]
+ },
+ {
+  "id": "length-reread-out-of-bounds-and-invalid",
+  "lean": [
+   "Toy.DoubleFetch.lenReread_flip_out_of_bounds_and_invalid",
+   "Toy.DoubleFetch.lenReread_not_rsafe_not_rvalid",
+   "Toy.DoubleFetch.lenReread_implements",
+   "Toy.DoubleFetch.lenOnce_singleRead_implements",
+   "Toy.DoubleFetch.lenOnce_rsafe_rvalid"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For every region size `m + 1` and capacity `cap` with `cap < 255`, against the writer `lenFlipAdv m cap` (length byte `cap` at time `0`, `cap + 1` afterwards) the double-fetch length parser `lenReread m cap` (read the length, check `len ≤ cap`, read the length again, copy the re-read length) returns `some (cap + 1)`: copying `cap + 1` bytes into the buffer of capacity `cap` is out of bounds, and the result equals `lpParse cap s'` for no byte vector `s'`; so `lenReread m cap` is neither R-safe for `CopyInBounds cap` nor R-valid for `lpParse cap`. For every `m` and `cap`, `lenReread m cap` implements `lpParse cap` in private memory, and `lenOnce m cap` is single-read, implements `lpParse cap`, and is R-safe and R-valid.",
+  "unfolded_prose": "if `cap < 255`: `(lenReread m cap).exec (lenFlipAdv m cap) = some (cap + 1)`, which violates `CopyInBounds cap` and differs from `lpParse cap s'` for every `s'`, so `¬ RSafe (CopyInBounds cap) (lenReread m cap)` and `¬ RValid (lpParse cap) (lenReread m cap)`; for all `m cap`, `Implements (lenReread m cap) (lpParse cap)`, `SingleRead (lenOnce m cap)`, `Implements (lenOnce m cap) (lpParse cap)`, `RSafe (CopyInBounds cap) (lenOnce m cap)` and `RValid (lpParse cap) (lenOnce m cap)`.",
+  "hypotheses": [
+   {
+    "name": "`hcap : cap < 255` (first two theorems)",
+    "purpose": "Some byte fails the length check; bytes are below 256.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.lenReread_cap255_counterexample",
+    "counterexample_class": "an instance with `m = 0` and `cap = 255`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`m = 0`, `cap = 4` (`lenReread_cap_lt_255_nonvacuous`: `4 < 255` and the parser returns `some 5`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.lenReread_cap_lt_255_nonvacuous",
+  "non_claims": [
+   "Degenerate edges: the region has `m + 1 ≥ 1` bytes, so the empty region is excluded; at `m = 0` the region holds the length byte and no payload; at `cap = 0` every nonzero length is out of bounds; for `cap ≥ 255` every byte passes the check and `lenReread m cap` is R-safe and R-valid (`lenReread_rsafe_rvalid_of_255_le_cap`).",
+   "The toy models the destination bound `len ≤ cap`, not the source-side bound that `len` payload bytes are present.",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "P. Wang, J. Krinke, K. Lu, G. Li, S. Dodier-Lazaro, \"How Double-Fetch Situations turn into Double-Fetch Vulnerabilities: A Study of Double Fetches in the Linux Kernel\", 26th USENIX Security Symposium (USENIX Security 17), Vancouver, 2017, pp. 1-16, https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/wang-pengfei. Empirical study of double fetches in the Linux kernel and a static detector; informal.",
+   "M. Xu, C. Qian, K. Lu, M. Backes, T. Kim, \"Precise and Scalable Detection of Double-Fetch Bugs in OS Kernels\", IEEE Symposium on Security and Privacy 2018, pp. 661-678, doi:10.1109/SP.2018.00017 (bibliographic data checked against Crossref; not quoted). Cited for the bug class (a value checked after one fetch and used after another).",
+   "M. Jurczyk and G. Coldwind, \"Identifying and Exploiting Windows Kernel Race Conditions via Memory Access Patterns\", whitepaper accompanying the SyScan 2013 talk on Bochspwn, April 2013, https://research.google.com/pubs/archive/42189.pdf (also listed at https://research.google/pubs/identifying-and-exploiting-windows-kernel-race-conditions-via-memory-access-patterns/ and on the authors' talk page https://j00ru.vexillium.org/talks/syscan-bochspwn-exploiting-kernel-race-conditions/; title, authors and date checked against a search index, the PDF itself could not be fetched on the observation date). Describes double fetches of user-mode memory by kernel code and a memory-access-pattern detector; informal."
+  ],
+  "design_question": "Does a bounds check on a shared length protect a copy that re-reads the length?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.CopyInBounds",
+   "Toy.DoubleFetch.Implements",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.RSafe",
+   "Toy.DoubleFetch.RValid",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.lenFlipAdv",
+   "Toy.DoubleFetch.lenOnce",
+   "Toy.DoubleFetch.lenReread",
+   "Toy.DoubleFetch.lenReread_cap255_counterexample",
+   "Toy.DoubleFetch.lenReread_cap_lt_255_nonvacuous",
+   "Toy.DoubleFetch.lenReread_rsafe_rvalid_of_255_le_cap",
+   "Toy.DoubleFetch.lpParse"
+  ]
+ },
+ {
+  "id": "tag-reread-invalid-bool",
+  "lean": [
+   "Toy.DoubleFetch.tagReread_flip_invalid_bool",
+   "Toy.DoubleFetch.tagReread_not_rsafe_not_rvalid",
+   "Toy.DoubleFetch.tagReread_implements",
+   "Toy.DoubleFetch.tagOnce_singleRead_implements",
+   "Toy.DoubleFetch.tagOnce_rsafe_rvalid"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For every region size `m + 1`, against the writer `tagFlipAdv m` (byte `1` at time `0`, `2` afterwards) the double-fetch `bool` parser `tagReread m` (validate that the byte is `0` or `1`, then read it again and hand on the re-read byte as a `bool`) returns `some 2`, which is not a valid `bool` representation (`¬ ValidBoolOut (some 2)`) and equals `boolParse s'` for no byte vector `s'`; so `tagReread m` is neither R-safe for `ValidBoolOut` nor R-valid for `boolParse`. Both `tagReread m` and the single-read `tagOnce m` implement `boolParse` in private memory, and `tagOnce m` is single-read, R-safe for `ValidBoolOut` and R-valid for `boolParse`.",
+  "unfolded_prose": "`(tagReread m).exec (tagFlipAdv m) = some 2`, which violates `ValidBoolOut` and differs from `boolParse s'` for every `s'`, so `¬ RSafe ValidBoolOut (tagReread m)` and `¬ RValid boolParse (tagReread m)`; `Implements (tagReread m) boolParse`, `SingleRead (tagOnce m)`, `Implements (tagOnce m) boolParse`, `RSafe ValidBoolOut (tagOnce m)` and `RValid boolParse (tagOnce m)`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Closed in `m`; holds for every `m`.",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.tagReread_flip_invalid_bool",
+  "non_claims": [
+   "The result is the raw byte (`Option Byte`), so the invalid `bool` byte `2` is representable in the toy. In Rust, producing a `bool` other than `0` or `1` is undefined behaviour (Rust Reference, \"Invalid values\", quoted below), so the toy's `some 2` corresponds to a value a Rust program must never produce (derived (modeling bridge)).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "The Rust Reference (Rust 1.83.0), \"Behavior considered undefined\", https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html, section \"Invalid values\": \"The Rust compiler assumes that all values produced during program execution are “valid”, and producing an invalid value is hence immediate UB.\" and \"A bool value must be false (0) or true (1).\"",
+   "zerocopy 0.8.64, https://docs.rs/zerocopy/0.8.64/zerocopy/trait.TryFromBytes.html: `fn try_ref_from_bytes(source: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>> where Self: KnownLayout + Immutable`, \"If the bytes of source are a valid instance of Self, this method returns a reference to those bytes interpreted as a Self.\" Cited for the shape validate-then-reference; no zerocopy position on concurrently written memory is asserted.",
+   "Folklore in systems security: validating shared bytes and then reading them again (time-of-check to time-of-use) is unsafe against a concurrent writer; no source states this toy formulation."
+  ],
+  "design_question": "Does a validity check on a shared byte protect a typed use that re-reads the byte?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Byte",
+   "Toy.DoubleFetch.Implements",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.RSafe",
+   "Toy.DoubleFetch.RValid",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.ValidBoolOut",
+   "Toy.DoubleFetch.boolParse",
+   "Toy.DoubleFetch.tagCheck",
+   "Toy.DoubleFetch.tagFlipAdv",
+   "Toy.DoubleFetch.tagOnce",
+   "Toy.DoubleFetch.tagReread"
+  ]
+ },
+ {
+  "id": "checksum-torn-value-matches-no-state",
+  "lean": [
+   "Toy.DoubleFetch.ckParse_torn_passes_checksum_matches_no_state",
+   "Toy.DoubleFetch.copyParse_ckParse_twoValidStates",
+   "Toy.DoubleFetch.copyParse_singleRead_implements"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Against the writer `ckTornAdv` (states `(0,0,0)`, `(1,1,2)`, then `(2,255,1)` from time `2` on, each passing the checksum, which is addition modulo 256), the byte-by-byte copy parser `copyParse ckParse`, which is single-read (`copyParse_singleRead_implements`), returns `some (0, 1)`; this equals `ckParse (reg3 0 1 1)`, the result for a checksum-passing vector, but differs from `ckParse (ckTornAdv t)` for every time `t`. With two states this cannot happen when both pass the checksum: for all regions `A` and `B` that both pass the checksum and every writer whose every state is `A` or `B`, every checksum-passing result of `copyParse ckParse` equals `ckParse A` or `ckParse B` (`copyParse_ckParse_twoValidStates`).",
+  "unfolded_prose": "every `ckParse (ckTornAdv t)` is not `none`; `(copyParse ckParse).exec ckTornAdv = some (0, 1) = ckParse (reg3 0 1 1)`; and for every `t` it differs from `ckParse (ckTornAdv t)`. If `A 2 = A 0 + A 1`, `B 2 = B 0 + B 1`, every `adv t` is `A` or `B`, and the result is not `none`, then the result is `ckParse A` or `ckParse B`. For every `spec`: `SingleRead (copyParse spec)` and `∀ s, (copyParse spec).eval s = spec s` (`Implements (copyParse spec) spec`).",
+  "hypotheses": [
+   {
+    "name": "`hA : A 2 = A 0 + A 1` (in `copyParse_ckParse_twoValidStates`)",
+    "purpose": "The first state passes the checksum.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hA_counterexample",
+    "counterexample_class": "two states `(1,1,1)` (failing) and `(0,0,0)`"
+   },
+   {
+    "name": "`hB : B 2 = B 0 + B 1`",
+    "purpose": "The second state passes the checksum.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hA_counterexample",
+    "counterexample_class": "the same instance with `A` and `B` exchanged"
+   },
+   {
+    "name": "`hadv : ∀ t, adv t = A ∨ adv t = B`",
+    "purpose": "The writer shows two states.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hadv_counterexample",
+    "counterexample_class": "the three-state writer `ckTornAdv`"
+   },
+   {
+    "name": "`hpass : (copyParse ckParse).exec adv ≠ none`",
+    "purpose": "The torn result passes the checksum.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hpass_counterexample",
+    "counterexample_class": "two passing states `(0,0,0)` and `(1,1,2)` whose diagonal mix fails the checksum"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The first theorem is closed; all hypotheses of `copyParse_ckParse_twoValidStates` hold for the passing states `(0,0,0)` and `(1,1,2)` and a writer that switches between them after time `2` (`copyParse_ckParse_twoValidStates_nonvacuous`).",
+  "nonvacuity_witness_lean": [
+   "Toy.DoubleFetch.ckParse_torn_passes_checksum_matches_no_state",
+   "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_nonvacuous"
+  ],
+  "non_claims": [
+   "With one checksum-passing and one failing state, a checksum-passing torn result can match neither state (`copyParse_ckParse_twoValidStates_hA_counterexample`), so the two-state statement fails without `hA` (or `hB`).",
+   "The toy's checksum is unkeyed addition modulo 256 against an unbounded writer; whether a keyed cryptographic MAC against a computationally bounded writer prevents torn accepted results is not addressed (not proved either way).",
+   "The cancellation used by the two-state statement holds for addition modulo 256; other checksum functions are not covered.",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Folklore in systems security: validating shared bytes and then reading them again (time-of-check to time-of-use) is unsafe against a concurrent writer; no source states this toy formulation."
+  ],
+  "design_question": "Does an integrity check over the bytes read guarantee a state that actually existed?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.ckMixAdv",
+   "Toy.DoubleFetch.ckParse",
+   "Toy.DoubleFetch.ckTornAdv",
+   "Toy.DoubleFetch.copyParse",
+   "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hA_counterexample",
+   "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hadv_counterexample",
+   "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hpass_counterexample",
+   "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_nonvacuous",
+   "Toy.DoubleFetch.reg3"
+  ]
+ },
+ {
+  "id": "torn-value-impossibility",
+  "lean": [
+   "Toy.DoubleFetch.not_rstate_of_noSnap_of_hasUndeterminedState",
+   "Toy.DoubleFetch.hasUndeterminedState_iff_no_noSnap_rstate",
+   "Toy.DoubleFetch.pairSpec_hasUndeterminedState",
+   "Toy.DoubleFetch.ckParse_hasUndeterminedState",
+   "Toy.DoubleFetch.seqSpec_hasUndeterminedState",
+   "Toy.DoubleFetch.andSpec_hasUndeterminedState",
+   "Toy.DoubleFetch.viewSpec_hasUndeterminedState",
+   "Toy.DoubleFetch.not_hasUndeterminedState_of_region_zero",
+   "Toy.DoubleFetch.not_hasUndeterminedState_of_region_one"
+  ],
+  "kind": "impossibility",
+  "tier": "T1",
+  "plain_claim": "For every region size `n` (including `0` and `1`), every spec `spec : Region n → α` and every parser `p` that uses one-byte reads and no snapshot (`p.NoSnap`): if `spec` has an undetermined state (`HasUndeterminedState spec`: some region state `s0` such that `spec` is not constant and, for every address `i` and every candidate output `r`, some region that agrees with `s0` at `i` has an output different from `r`), then `p` is not R-state for `spec`; the parser need not implement `spec`. Conversely, if `spec` has no undetermined state, some snapshot-free parser is R-state for `spec` (`hasUndeterminedState_iff_no_noSnap_rstate`). The pair spec, the checksum spec, the seqlock spec, two-byte boolean AND and the tagged-value spec `viewSpec k` (for every `k`) have undetermined states; no spec on a region of size `0` or `1` has one.",
+  "unfolded_prose": "if `∃ s0, (∀ r, ∃ σ, spec σ ≠ r) ∧ ∀ i r, ∃ σ, σ i = s0 i ∧ spec σ ≠ r` and `p.NoSnap`, then `¬ ∀ adv, ∃ t, p.exec adv = spec (adv t)`; and that condition on `spec` holds iff `∀ p, p.NoSnap → ¬ RState spec p`.",
+  "hypotheses": [
+   {
+    "name": "`hspec : HasUndeterminedState spec` (in `not_rstate_of_noSnap_of_hasUndeterminedState`)",
+    "purpose": "Lets the writer surround each byte the parser reads with bytes that move the spec away from the parser's result.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.readFst_rstate_counterexample",
+    "counterexample_class": "a two-byte region with the spec returning byte `0`"
+   },
+   {
+    "name": "`hp : p.NoSnap` (in `not_rstate_of_noSnap_of_hasUndeterminedState`)",
+    "purpose": "Excludes the atomic whole-region read.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.snapParse_pair_rstate_counterexample",
+    "counterexample_class": "the snapshot parser of the pair spec on a two-byte region"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`n = 2`, `pairSpec`, and the snapshot-free `copyParse pairSpec` (`torn_impossibility_nonvacuous`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.torn_impossibility_nonvacuous",
+  "positive_control_lean": [
+   "Toy.DoubleFetch.snapParse_pair_rstate_counterexample",
+   "Toy.DoubleFetch.seqlock_positive_control"
+  ],
+  "positive_control": "Nearby settings in which R-state holds, each changing one condition: the snapshot parser of the pair spec (it drops `hp`; `snapParse_pair_rstate_counterexample`), and the snapshot-free seqlock reader for the seqlock spec, which has an undetermined state, against writers that follow the version protocol with one step per access (the writer constraint is the one change; `seqlock_positive_control`).",
+  "non_claims": [
+   "Proved escape hatches, each of which defeats the impossibility in the toy: (a) an atomic whole-region read (`snap`; `snapParse_exec_eq_and_rstate`, `snapParse_pair_rstate_counterexample`); (b) a constrained writer, such as one following a version protocol with one step per access (`seqlock_positive_control`); (c) a spec with no undetermined state, for example one determined by a single byte (`readFst_rstate_counterexample`, and in general the converse direction of `hasUndeterminedState_iff_no_noSnap_rstate`). Relaxations that are unaddressed or unmodelled, and are neither proved nor refuted to defeat the impossibility: (d) a weaker consistency notion, such as accepted-result consistency (`p.exec adv = some v → ∃ t, spec (adv t) = some v`): the writer built in the proof may use states whose output is the error result, and accepted-result consistency against writers restricted to valid or authenticated states is not addressed (not proved either way), although `ckParse_torn_passes_checksum_matches_no_state` shows that `copyParse ckParse` violates it for a writer whose states all pass the checksum; (e) parsers outside `Prog`: retrying loops (every `Prog` terminates), randomized parsers, and atomic reads of several but not all addresses are not modelled.",
+   "`RState` lets the time `t` range over all of `Nat`, beyond the parser's run; the impossibility therefore also excludes the notion restricted to the access window.",
+   "The R-state parser built for the converse direction reads bytes one at a time until one byte determines the output; it is a construction for the proof, not a recommended parser.",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Y. Afek, H. Attiya, D. Dolev, E. Gafni, M. Merritt, N. Shavit, \"Atomic snapshots of shared memory\", J. ACM 40(4):873-890, 1993, doi:10.1145/153724.153741 (author's copy: https://people.csail.mit.edu/shanir/publications/AADGMS.pdf): \"This paper presents three wait-free implementations of atomic snapshot memory.\" There the memory is updated through the implementation's own update operation, so every writer follows a protocol; cited as contrast with the unconstrained writer here.",
+   "L. Lamport, \"Concurrent reading and writing\", Communications of the ACM 20(11):806-811, 1977, doi:10.1145/359863.359878 (author's copy: https://lamport.azurewebsites.net/pubs/rd-wr.pdf). \"Our algorithm maintains two version numbers for the data: v1 and v2. The writer increments v1 before writing the data item and increments v2 after writing. The reader reads v2 before reading the data item and v1 after reading it. If it finds them equal, then it knows that it read a single version of the data.\" On bounded counters: \"Suppose we know that at most P write operations can occur during a single iteration of the reading loop, and a single digit can assume P + 1 distinct values. Then we can let v1 and v2 be single-digit variables which cycle through P + 1 or more values\". (The PDF text extraction renders \"v1\" as \"vl\".) The paper assumes that reading and writing a single digit are atomic, and its reader repeats on a mismatch. The toy uses one counter with odd/even phases (the seqlock form) instead of two counters, and its reader returns an error instead of repeating.",
+   "M. P. Herlihy, J. M. Wing, \"Linearizability: a correctness condition for concurrent objects\", ACM TOPLAS 12(3):463-492, 1990, doi:10.1145/78969.78972 (bibliographic data checked against Crossref; not quoted). Cited for contrast: linearizability orders the operations of several concurrent invocations, whereas `RState` constrains one run in isolation.",
+   "Folklore in systems security: validating shared bytes and then reading them again (time-of-check to time-of-use) is unsafe against a concurrent writer; no source states this toy formulation."
+  ],
+  "design_question": "For which specs can a byte-at-a-time parser recover a state that actually existed, when the writer is untrusted?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.HasUndeterminedState",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.NoSnap",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.RState",
+   "Toy.DoubleFetch.RStateUnder",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.ValidE",
+   "Toy.DoubleFetch.andSpec",
+   "Toy.DoubleFetch.ckParse",
+   "Toy.DoubleFetch.ckParse_torn_passes_checksum_matches_no_state",
+   "Toy.DoubleFetch.copyParse",
+   "Toy.DoubleFetch.fstSpec",
+   "Toy.DoubleFetch.pairSpec",
+   "Toy.DoubleFetch.readFst",
+   "Toy.DoubleFetch.readFst_rstate_counterexample",
+   "Toy.DoubleFetch.seqlock_positive_control",
+   "Toy.DoubleFetch.snapParse_exec_eq_and_rstate",
+   "Toy.DoubleFetch.snapParse_pair_rstate_counterexample",
+   "Toy.DoubleFetch.torn_impossibility_nonvacuous",
+   "Toy.DoubleFetch.viewSpec"
+  ]
+ },
+ {
+  "id": "seqlock-rstate-one-step-protocol-writer",
+  "lean": [
+   "Toy.DoubleFetch.seqlock_rstate_of_oneStepVersionWriter"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every writer `adv : Adversary 3` that follows the version protocol and takes at most one protocol step between consecutive reader accesses (`OneStepVersionWriter adv`: each step leaves the state unchanged, begins a write by incrementing an even version, changes data under an odd version, or ends a write by incrementing an odd version; increments are modulo 256), the seqlock reader `seqlockReader` (read the version; if it is odd, return `none` at once; otherwise read the two data bytes and the version again, and return the data iff the two version reads agree, otherwise `none`) returns `seqSpec (adv t)` for some time `t ≤ 3`.",
+  "unfolded_prose": "if `∀ t, VersionStep (adv t) (adv (t + 1))` then `∃ t, t ≤ 3 ∧ seqlockReader.exec adv = seqSpec (adv t)`.",
+  "hypotheses": [
+   {
+    "name": "`hW : OneStepVersionWriter adv`",
+    "purpose": "The writer follows the version protocol, one step per reader access.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.DoubleFetch.seqlock_not_rstate_rogueWriter",
+     "Toy.DoubleFetch.seqlock_not_rstateUnder_twoStepVersionWriter"
+    ],
+    "counterexample_class": "a writer that changes the data under an unchanged even version (torn `some` result); a protocol writer taking two steps between two accesses, with no data change and no wraparound (error result while no state of the writer has an odd version)"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`seqSlowAdv`, a one-step protocol writer that writes during the read (`seqlock_oneStep_nonvacuous`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.seqlock_oneStep_nonvacuous",
+  "non_claims": [
+   "The one-step bound serves the error case of a reader that does not retry: when the version changes between two accesses, R-state needs some state of the writer with an odd version to match the result `none`. Two protocol steps between accesses, with no data change and no wraparound, already break R-state (`seqlock_not_rstateUnder_twoStepVersionWriter`). This bound is unrelated to counter wraparound; consistency of accepted results under a bound on version increments is `seqlock-accepted-consistent-under-increment-bound`.",
+   "The writer's transitions after time `3` do not affect the reader's run; `OneStepVersionWriter` quantifies over all times, which is more than the proof uses.",
+   "The protocol is a hypothesis about the writer; the theorem gives nothing against a writer that ignores it, such as an untrusted party (`seqlock_not_rstate_rogueWriter`).",
+   "Memory-model requirements of real seqlocks are not modelled: in C11, C++11 and Rust, reading the protected data non-atomically while a writer modifies it is a data race, and implementations use atomic accesses with acquire/release ordering or fences. The toy's accesses are atomic and sequentially ordered by construction (derived (modeling bridge)).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "L. Lamport, \"Concurrent reading and writing\", Communications of the ACM 20(11):806-811, 1977, doi:10.1145/359863.359878 (author's copy: https://lamport.azurewebsites.net/pubs/rd-wr.pdf). \"Our algorithm maintains two version numbers for the data: v1 and v2. The writer increments v1 before writing the data item and increments v2 after writing. The reader reads v2 before reading the data item and v1 after reading it. If it finds them equal, then it knows that it read a single version of the data.\" On bounded counters: \"Suppose we know that at most P write operations can occur during a single iteration of the reading loop, and a single digit can assume P + 1 distinct values. Then we can let v1 and v2 be single-digit variables which cycle through P + 1 or more values\". (The PDF text extraction renders \"v1\" as \"vl\".) The paper assumes that reading and writing a single digit are atomic, and its reader repeats on a mismatch. The toy uses one counter with odd/even phases (the seqlock form) instead of two counters, and its reader returns an error instead of repeating.",
+   "H.-J. Boehm, \"Can seqlocks get along with programming language memory models?\", Proceedings of the 2012 ACM SIGPLAN Workshop on Memory Systems Performance and Correctness (MSPC 2012), pp. 12-20, doi:10.1145/2247684.2247688 (bibliographic data checked against Crossref; not quoted). Cited for the memory-model side of seqlocks, which the toy does not model."
+  ],
+  "design_question": "What must a writer promise for a version check to give a non-retrying reader a state that actually existed?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.OneStepVersionWriter",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.RStateUnder",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.TwoStepVersionWriter",
+   "Toy.DoubleFetch.VersionStep",
+   "Toy.DoubleFetch.seqRogueAdv",
+   "Toy.DoubleFetch.seqSlowAdv",
+   "Toy.DoubleFetch.seqSpec",
+   "Toy.DoubleFetch.seqTwoStepAdv",
+   "Toy.DoubleFetch.seqlockReader",
+   "Toy.DoubleFetch.seqlock_not_rstateUnder_twoStepVersionWriter",
+   "Toy.DoubleFetch.seqlock_not_rstate_rogueWriter",
+   "Toy.DoubleFetch.seqlock_oneStep_nonvacuous"
+  ]
+ },
+ {
+  "id": "seqlock-accepted-consistent-under-increment-bound",
+  "lean": [
+   "Toy.DoubleFetch.seqlock_accepted_eq_seqSpec_adv0_of_incrementBound",
+   "Toy.DoubleFetch.versionPath_any"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every writer `adv : Adversary 3` that follows the version protocol, with any number of protocol steps between consecutive reader accesses, and increments the version fewer than 256 times in total from time `0` to time `3` (`IncrementBoundedWriter 256 adv`; the version byte wraps modulo 256), and every `d`, if `seqlockReader` accepts with `some d`, then `seqSpec (adv 0) = some d`. Without a bound on increments the protocol constrains nothing: every region state reaches every other by a protocol path (`versionPath_any`).",
+  "unfolded_prose": "if `∃ c0 c1 c2, VersionPath c0 (adv 0) (adv 1) ∧ VersionPath c1 (adv 1) (adv 2) ∧ VersionPath c2 (adv 2) (adv 3) ∧ c0 + c1 + c2 < 256` and `seqlockReader.exec adv = some d`, then `seqSpec (adv 0) = some d`; and for all `s s'`, `∃ c, VersionPath c s s'`.",
+  "hypotheses": [
+   {
+    "name": "`hW : IncrementBoundedWriter 256 adv` (in `seqlock_accepted_eq_seqSpec_adv0_of_incrementBound`)",
+    "purpose": "Fewer increments than counter values, so an unchanged version means no write began.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.seqlock_accepted_torn_of_256Increments",
+    "counterexample_class": "a protocol writer, bounded by `257`, that takes exactly 256 version increments between the reader's reads of the first and the second data byte (times `1` and `2`; `IncrementBoundedWriter` allows any number of protocol steps between consecutive accesses); the reader accepts the torn pair `some (0, 1)`, which is `seqSpec` of the writer's state at no time `t`"
+   },
+   {
+    "name": "`hacc : seqlockReader.exec adv = some d` (in `seqlock_accepted_eq_seqSpec_adv0_of_incrementBound`)",
+    "purpose": "The result is accepted.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.seqlock_accepted_hacc_counterexample",
+    "counterexample_class": "the writer that never writes, with an odd version"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The writer that never writes, with version `0`, is bounded and accepted with `some (5, 5)` (`seqlock_incrementBound_nonvacuous`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.seqlock_incrementBound_nonvacuous",
+  "non_claims": [
+   "The theorem concerns accepted results: it says nothing about the result `none`. A reader that retries on `none`, as in Lamport's algorithm, is outside the model (every `Prog` terminates).",
+   "The bound counts version increments, not complete writes; a complete write increments the version twice. The toy fixes an 8-bit version; other counter widths are not modelled (not proved either way).",
+   "Memory-model requirements of real seqlocks are not modelled: in C11, C++11 and Rust, reading the protected data non-atomically while a writer modifies it is a data race, and implementations use atomic accesses with acquire/release ordering or fences. The toy's accesses are atomic and sequentially ordered by construction (derived (modeling bridge)).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "L. Lamport, \"Concurrent reading and writing\", Communications of the ACM 20(11):806-811, 1977, doi:10.1145/359863.359878 (author's copy: https://lamport.azurewebsites.net/pubs/rd-wr.pdf). \"Our algorithm maintains two version numbers for the data: v1 and v2. The writer increments v1 before writing the data item and increments v2 after writing. The reader reads v2 before reading the data item and v1 after reading it. If it finds them equal, then it knows that it read a single version of the data.\" On bounded counters: \"Suppose we know that at most P write operations can occur during a single iteration of the reading loop, and a single digit can assume P + 1 distinct values. Then we can let v1 and v2 be single-digit variables which cycle through P + 1 or more values\". (The PDF text extraction renders \"v1\" as \"vl\".) The paper assumes that reading and writing a single digit are atomic, and its reader repeats on a mismatch. The toy uses one counter with odd/even phases (the seqlock form) instead of two counters, and its reader returns an error instead of repeating.",
+   "H.-J. Boehm, \"Can seqlocks get along with programming language memory models?\", Proceedings of the 2012 ACM SIGPLAN Workshop on Memory Systems Performance and Correctness (MSPC 2012), pp. 12-20, doi:10.1145/2247684.2247688 (bibliographic data checked against Crossref; not quoted). Cited for the memory-model side of seqlocks, which the toy does not model."
+  ],
+  "design_question": "Which bound on writer progress does a wrapping version counter need for accepted reads to be consistent?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Adversary.const",
+   "Toy.DoubleFetch.IncrementBoundedWriter",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.VersionPath",
+   "Toy.DoubleFetch.seqSpec",
+   "Toy.DoubleFetch.seqWrapAdv",
+   "Toy.DoubleFetch.seqlockReader",
+   "Toy.DoubleFetch.seqlock_accepted_hacc_counterexample",
+   "Toy.DoubleFetch.seqlock_accepted_torn_of_256Increments",
+   "Toy.DoubleFetch.seqlock_incrementBound_nonvacuous"
+  ]
+ },
+ {
+  "id": "remat-breaks-robustness",
+  "lean": [
+   "Toy.DoubleFetch.remat_lenCheck_singleRead_robust_to_not_rsafe_not_rvalid",
+   "Toy.DoubleFetch.remat_privRefines_compile"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "For every check-then-use fragment `c : CheckUse n α`, read rematerialization is a refinement in the private-memory semantics (`PrivRefines c.remat c.compile`). For every region size `m + 1` and capacity `cap` with `cap < 255`, the length check-then-use fragment `lenCheck m cap` compiles to a single-read parser that is R-safe for `CopyInBounds cap` and R-valid for `lpParse cap`, while its read rematerialization, a private-memory refinement of it, is neither R-safe nor R-valid.",
+  "unfolded_prose": "if `cap < 255`: `SingleRead (lenCheck m cap).compile`, `RSafe (CopyInBounds cap) (lenCheck m cap).compile`, `RValid (lpParse cap) (lenCheck m cap).compile`, `∀ s, (lenCheck m cap).remat.eval s = (lenCheck m cap).compile.eval s`, `¬ RSafe (CopyInBounds cap) (lenCheck m cap).remat` and `¬ RValid (lpParse cap) (lenCheck m cap).remat`; and for every `c`, `∀ s, c.remat.eval s = c.compile.eval s`.",
+  "hypotheses": [
+   {
+    "name": "`hcap : cap < 255` (first theorem)",
+    "purpose": "Some byte fails the length check.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.lenReread_cap255_counterexample",
+    "counterexample_class": "an instance with `m = 0` and `cap = 255`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`m = 0`, `cap = 4` (`lenReread_cap_lt_255_nonvacuous`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.lenReread_cap_lt_255_nonvacuous",
+  "non_claims": [
+   "`CheckUse.remat` is defined on the check-then-use fragment, not as a general transformation of all parsers; it models a compiler that re-loads a local from shared memory instead of keeping it in a register.",
+   "Which real compilers perform this transformation, and under which conditions, is not addressed; the sources quoted below say that a compiler may reload a variable and describe compiler-generated double fetches (derived (modeling bridge)).",
+   "Volatile or atomic accesses as a remedy are not modelled; in Rust, C and C++ a non-atomic or volatile read that races with a write is undefined behaviour in any case (Applicability).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Xen Security Advisory CVE-2015-8550 / XSA-155 (version 6, public release 2015-12-17), \"paravirtualized drivers incautious about shared memory contents\", https://xenbits.xen.org/xsa/advisory-155.html: \"The compiler can emit optimizations in the PV backend drivers which can lead to double fetch vulnerabilities. Specifically the shared memory between the frontend and backend can be fetched twice (during which time the frontend can alter the contents) possibly leading to arbitrary code execution in backend.\"",
+   "Linux kernel, `torvalds/linux` tag v6.12 (commit adc218676eef25575469234709c2d87185ca223a), Documentation/memory-barriers.txt, COMPILER BARRIER section, https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/Documentation/memory-barriers.txt: \"The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizations that, while perfectly safe in single-threaded code, can be fatal in concurrent code.\" (Documentation/memory-barriers.txt@adc218676eef25575469234709c2d87185ca223a:1555-1557) and \"The compiler is within its rights to reload a variable, for example, in cases where high register pressure prevents the compiler from keeping all data of interest in registers.\" (Documentation/memory-barriers.txt@adc218676eef25575469234709c2d87185ca223a:1597-1599)",
+   "J. Ševčík, \"Safe optimisations for shared-memory concurrent programs\", PLDI 2011, pp. 306-316, doi:10.1145/1993498.1993534 (author's copy: https://www.cl.cam.ac.uk/~pes20/weakmemory/transsafety.pdf): \"We also show that, perhaps surprisingly, redundant read introduction invalidates some optimisations that are otherwise safe for the DRF-guarantee.\" A trace-semantics study of which transformations preserve the DRF guarantee; the toy's rematerialization result concerns robustness against an unconstrained writer instead.",
+   "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4 (bibliographic data checked against Crossref; not quoted). Cited for contrast: semantic preservation of sequential programs, the analogue of the toy's private-memory refinement, which does not preserve robustness here."
+  ],
+  "design_question": "Which compiler transformations are valid for private memory but destroy robustness?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.CheckUse",
+   "Toy.DoubleFetch.CheckUse.compile",
+   "Toy.DoubleFetch.CheckUse.remat",
+   "Toy.DoubleFetch.CopyInBounds",
+   "Toy.DoubleFetch.PrivRefines",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.eval",
+   "Toy.DoubleFetch.RSafe",
+   "Toy.DoubleFetch.RValid",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.lenCheck",
+   "Toy.DoubleFetch.lenReread_cap255_counterexample",
+   "Toy.DoubleFetch.lenReread_cap_lt_255_nonvacuous",
+   "Toy.DoubleFetch.lpParse"
+  ]
+ },
+ {
+  "id": "remat-robust-refinement-characterization",
+  "lean": [
+   "Toy.DoubleFetch.remat_pure_robustRefines_iff",
+   "Toy.DoubleFetch.remat_lenCheck_privRefines_not_robustRefines"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For every address `a`, check `check : Byte → Bool`, use `u : Byte → α` and failure value `e : α`, the rematerialization of `CheckUse.pure a check u e` (a fragment whose use and failure branch perform no further reads) robustly refines the original iff, whenever the check accepts some byte, every use value `u b'` (for every byte `b'`, including bytes the check rejects) is a result of the original: `u b` for some accepted `b`, or `e` when some byte `b` is rejected. For every region size `m + 1` and capacity `cap` with `cap < 255`, rematerializing `lenCheck m cap` is a private-memory refinement and not a robust refinement.",
+  "unfolded_prose": "`(∀ adv, ∃ adv', (CheckUse.pure a check u e).remat.exec adv = (CheckUse.pure a check u e).compile.exec adv') ↔ ((∃ b, check b = true) → ∀ b', ∃ b, (check b = true ∧ u b = u b') ∨ (check b = false ∧ e = u b'))`; and if `cap < 255`, `PrivRefines (lenCheck m cap).remat (lenCheck m cap).compile ∧ ¬ RobustRefines (lenCheck m cap).remat (lenCheck m cap).compile`.",
+  "hypotheses": [
+   {
+    "name": "`hcap : cap < 255` (second theorem)",
+    "purpose": "Some byte fails the length check.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.remat_lenCheck_cap255_robustRefines",
+    "counterexample_class": "an instance with `m = 0` and `cap = 255`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Robust case: a use that ignores its byte (`remat_pure_robustRefines_const_use`); non-robust case and `hcap`: `lenCheck 0 4` (`lenReread_cap_lt_255_nonvacuous`).",
+  "nonvacuity_witness_lean": [
+   "Toy.DoubleFetch.remat_pure_robustRefines_const_use",
+   "Toy.DoubleFetch.lenReread_cap_lt_255_nonvacuous"
+  ],
+  "non_claims": [
+   "For fragments whose use or failure branch reads memory again, no closed form is given (not addressed); robust refinement is then decided by its definition.",
+   "Robust refinement compares results; it does not preserve R-state (`robustRefines_rereadCompare_tagOnce_not_preserves_rstate`).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. Ševčík, \"Safe optimisations for shared-memory concurrent programs\", PLDI 2011, pp. 306-316, doi:10.1145/1993498.1993534 (author's copy: https://www.cl.cam.ac.uk/~pes20/weakmemory/transsafety.pdf): \"We also show that, perhaps surprisingly, redundant read introduction invalidates some optimisations that are otherwise safe for the DRF-guarantee.\" A trace-semantics study of which transformations preserve the DRF guarantee; the toy's rematerialization result concerns robustness against an unconstrained writer instead.",
+   "C. Abate, R. Blanco, D. Garg, C. Hritcu, M. Patrignani, J. Thibault, \"Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation\", 2019 IEEE 32nd Computer Security Foundations Symposium (CSF), doi:10.1109/CSF.2019.00025 (long version arXiv:1807.04603): \"We are the first to thoroughly explore a large space of formal secure compilation criteria based on robust property preservation, i.e., the preservation of properties satisfied against arbitrary adversarial contexts.\" and \"For each of the studied criteria we propose an equivalent \"property-free\" characterization that clarifies which proof techniques apply.\" The toy's `robustRefines_iff_preserves_rsafe` is a property-free characterization of this kind for result properties, with the writer as the adversarial context."
+  ],
+  "design_question": "Which read rematerializations preserve every robust safety property?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Byte",
+   "Toy.DoubleFetch.CheckUse.compile",
+   "Toy.DoubleFetch.CheckUse.pure",
+   "Toy.DoubleFetch.CheckUse.remat",
+   "Toy.DoubleFetch.PrivRefines",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.RobustRefines",
+   "Toy.DoubleFetch.lenCheck",
+   "Toy.DoubleFetch.lenReread_cap_lt_255_nonvacuous",
+   "Toy.DoubleFetch.remat_lenCheck_cap255_robustRefines",
+   "Toy.DoubleFetch.remat_pure_robustRefines_const_use",
+   "Toy.DoubleFetch.robustRefines_iff_preserves_rsafe",
+   "Toy.DoubleFetch.robustRefines_rereadCompare_tagOnce_not_preserves_rstate"
+  ]
+ },
+ {
+  "id": "robust-refinement-preserves-exactly-rsafe",
+  "lean": [
+   "Toy.DoubleFetch.robustRefines_iff_preserves_rsafe",
+   "Toy.DoubleFetch.rsafe_of_robustRefines",
+   "Toy.DoubleFetch.rvalid_of_robustRefines",
+   "Toy.DoubleFetch.robustRefines_rereadCompare_tagOnce_not_preserves_rstate",
+   "Toy.DoubleFetch.obsRefines_iff_eq"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For all parsers `q` and `p`, `q` robustly refines `p` (`RobustRefines q p`: every result `q` returns against some writer, `p` returns against some writer) iff every predicate `safe : α → Prop` on result values that `p` satisfies against every writer, `q` satisfies against every writer. Hence, for every predicate `safe` and spec `spec`, if `RobustRefines q p` and `p` is R-safe for `safe` (respectively R-valid for `spec`), then `q` is R-safe for `safe` (respectively R-valid for `spec`). Robust refinement relates distinct parsers and does not transfer R-state: `rereadCompare` differs from `tagOnce 0`, robustly refines it, and is not R-state for `boolParse`, while `tagOnce 0` is. Observable-access refinement, in which every memory access is an observable event carrying the bytes seen, is equality of parsers (`ObsRefines q p ↔ q = p`).",
+  "unfolded_prose": "`(∀ adv, ∃ adv', q.exec adv = p.exec adv') ↔ ∀ safe, (∀ adv, safe (p.exec adv)) → ∀ adv, safe (q.exec adv)`; transfers of `RSafe` and `RValid` along `RobustRefines q p`; `rereadCompare ≠ tagOnce 0`, `RobustRefines rereadCompare (tagOnce 0)`, `RState boolParse (tagOnce 0)` and `¬ RState boolParse rereadCompare`; and `ObsRefines q p ↔ q = p`.",
+  "hypotheses": [
+   {
+    "name": "`hqp : RobustRefines q p` (in `rsafe_of_robustRefines`, `rvalid_of_robustRefines`)",
+    "purpose": "Every result of `q` is a result of `p`.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.robustRefines_hqp_counterexample",
+    "counterexample_class": "the rematerialized length parser with `cap = 0`, a private-memory refinement"
+   },
+   {
+    "name": "`hp : RSafe safe p` / `hp : RValid spec p`",
+    "purpose": "The source is robust.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.robustRefines_source_counterexample",
+    "counterexample_class": "the double-fetch length parser with `cap = 0`, refining itself"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`rereadCompare` robustly refines the distinct parser `tagOnce 0`, which is R-valid for `boolParse` and R-safe for `ValidBoolOut` (`robustRefines_transfer_nonvacuous`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.robustRefines_transfer_nonvacuous",
+  "non_claims": [
+   "Robust refinement compares results, not memory accesses or writer states; it is too weak for R-state (`robustRefines_rereadCompare_tagOnce_not_preserves_rstate`).",
+   "`ObsRefines` treats every access as observable with the bytes seen; in this deterministic model that leaves no freedom for any transformation (`obsRefines_iff_eq`). Refinement notions with internal unobservable steps, or with reads that are not observable, are not modelled.",
+   "Which real compiler-correctness criteria imply robust refinement is not addressed (not proved either way).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "C. Abate, R. Blanco, D. Garg, C. Hritcu, M. Patrignani, J. Thibault, \"Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation\", 2019 IEEE 32nd Computer Security Foundations Symposium (CSF), doi:10.1109/CSF.2019.00025 (long version arXiv:1807.04603): \"We are the first to thoroughly explore a large space of formal secure compilation criteria based on robust property preservation, i.e., the preservation of properties satisfied against arbitrary adversarial contexts.\" and \"For each of the studied criteria we propose an equivalent \"property-free\" characterization that clarifies which proof techniques apply.\" The toy's `robustRefines_iff_preserves_rsafe` is a property-free characterization of this kind for result properties, with the writer as the adversarial context.",
+   "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363-446, 2009, doi:10.1007/s10817-009-9155-4 (bibliographic data checked against Crossref; not quoted). Cited for contrast: semantic preservation of sequential programs, the analogue of the toy's private-memory refinement, which does not preserve robustness here.",
+   "Rust core 1.83.0, `core::ptr::read_volatile`, https://doc.rust-lang.org/1.83.0/core/ptr/fn.read_volatile.html: \"Volatile operations are intended to act on I/O memory, and are guaranteed to not be elided or reordered by the compiler across other volatile operations.\", \"The compiler shouldn’t change the relative order or number of volatile memory operations.\" and, in its Safety section, \"Just like in C, whether an operation is volatile has no bearing whatsoever on questions involving concurrent access from multiple threads. Volatile accesses behave exactly like non-atomic accesses in that regard. In particular, a race between a read_volatile and any write operation to the same location is undefined behavior.\" The toy's observable-access semantics `Prog.obs` mirrors the first two sentences; the third sentence means that volatile reads of memory a concurrent writer modifies are not a remedy in Rust (derived (modeling bridge))."
+  ],
+  "design_question": "Which notion of compiler correctness preserves robustness against a concurrent writer?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Event",
+   "Toy.DoubleFetch.ObsRefines",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Prog.obs",
+   "Toy.DoubleFetch.Prog.obsFrom",
+   "Toy.DoubleFetch.RSafe",
+   "Toy.DoubleFetch.RState",
+   "Toy.DoubleFetch.RValid",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.RobustRefines",
+   "Toy.DoubleFetch.ValidBoolOut",
+   "Toy.DoubleFetch.boolParse",
+   "Toy.DoubleFetch.rereadCompare",
+   "Toy.DoubleFetch.robustRefines_hqp_counterexample",
+   "Toy.DoubleFetch.robustRefines_source_counterexample",
+   "Toy.DoubleFetch.robustRefines_transfer_nonvacuous",
+   "Toy.DoubleFetch.tagCheck",
+   "Toy.DoubleFetch.tagOnce"
+  ]
+ },
+ {
+  "id": "validated-view-sound-without-foreign-writes",
+  "lean": [
+   "Toy.DoubleFetch.viewProg_viewOK_of_noForeignWrites",
+   "Toy.DoubleFetch.viewProg_implements"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every number `k` of later decodes and every writer `adv : Adversary 2` that changes nothing during the run of the view program (`adv t = adv 0` for every `t < 2 + 2 * k`), every decode returned by `viewProg k` (validate tag and payload once, then decode `k` times through the view, re-reading tag and payload without re-validating) is a valid tagged value (`ViewOK`). For every `k`, `viewProg k` implements `viewSpec k` in private memory.",
+  "unfolded_prose": "if `∀ t, t < 2 + 2 * k → adv t = adv 0`, then `ViewOK ((viewProg k).exec adv)`; and `∀ s, (viewProg k).eval s = viewSpec k s`.",
+  "hypotheses": [
+   {
+    "name": "`hno : ∀ t, t < 2 + 2 * k → adv t = adv 0` (in `viewProg_viewOK_of_noForeignWrites`)",
+    "purpose": "No foreign write during the run.",
+    "tightness": "tight",
+    "counterexample": "Toy.DoubleFetch.viewProg_tagFlip_invalid",
+    "counterexample_class": "an instance with `k = 1` and a writer that flips the tag after validation"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The writer that never writes, with `k = 2` (`viewProg_nonvacuous`).",
+  "nonvacuity_witness_lean": "Toy.DoubleFetch.viewProg_nonvacuous",
+  "non_claims": [
+   "Degenerate edge `k = 0`: with no later decodes, `viewProg 0` satisfies `ViewOK` against every writer (`viewProg_zero_rsafe`), so `hno` is not needed there.",
+   "The hypothesis forbids every write during the run, and for `k = 1` it cannot be weakened to 'every state of the writer is a valid tagged value': `validSwitchAdv` has a valid tagged value in every state and switches once, atomically, from `(1, 1)` to `(0, 2)` between the view's read of the tag (time `2`) and of the payload (time `3`); against it, the one later decode of `viewProg 1` is the invalid `(1, 2)` (`viewProg_validSwitch_breaks_viewOK`). Rust treats the bytes behind a live shared reference as immutable and counts any overlapping write as a mutation, even one that keeps the bytes unchanged (Rust Reference, quoted below; derived (modeling bridge)).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "zerocopy 0.8.64, https://docs.rs/zerocopy/0.8.64/zerocopy/trait.TryFromBytes.html: `fn try_ref_from_bytes(source: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>> where Self: KnownLayout + Immutable`, \"If the bytes of source are a valid instance of Self, this method returns a reference to those bytes interpreted as a Self.\" Cited for the shape validate-then-reference; no zerocopy position on concurrently written memory is asserted.",
+   "The Rust Reference (Rust 1.83.0), \"Behavior considered undefined\", https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html: \"Moreover, the bytes pointed to by a shared reference, including transitively through other references (both shared and mutable) and Boxes, are immutable\" and \"A mutation is any write of more than 0 bytes which overlaps with any of the relevant bytes (even if that write does not change the memory contents).\""
+  ],
+  "design_question": "When is 'validate once, then hand out a typed reference' sound?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Adversary.const",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.eval",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.ValidE",
+   "Toy.DoubleFetch.ViewOK",
+   "Toy.DoubleFetch.reg2",
+   "Toy.DoubleFetch.validSwitchAdv",
+   "Toy.DoubleFetch.viewFlipAdv",
+   "Toy.DoubleFetch.viewProg",
+   "Toy.DoubleFetch.viewProg_nonvacuous",
+   "Toy.DoubleFetch.viewProg_tagFlip_invalid",
+   "Toy.DoubleFetch.viewProg_validSwitch_breaks_viewOK",
+   "Toy.DoubleFetch.viewProg_zero_rsafe",
+   "Toy.DoubleFetch.viewSpec",
+   "Toy.DoubleFetch.viewUses"
+  ]
+ },
+ {
+  "id": "copy-out-and-owned-decode-sound",
+  "lean": [
+   "Toy.DoubleFetch.copyOutProg_singleRead_implements_rvalid_rsafe_viewOK",
+   "Toy.DoubleFetch.ownedProg_singleRead_implements_rvalid_rsafe_viewOK",
+   "Toy.DoubleFetch.ownedProg_exec_eq_copyOutProg_exec",
+   "Toy.DoubleFetch.copyOutProg_ownedProg_access_counts",
+   "Toy.DoubleFetch.ownedProg_ne_copyOutProg",
+   "Toy.DoubleFetch.copyOutProg_torn_valid_not_rstate",
+   "Toy.DoubleFetch.ownedProg_torn_valid_not_rstate"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every number `k` of later decodes, byte-by-byte copy-out (`copyOutProg k`: copy tag and payload into private memory one byte at a time, at times `0` and `1`, then validate the copy and serve all decodes from it) and single-read decoding into an owned value (`ownedProg k`: read the tag; if it exceeds `1`, return the error result without reading the payload; otherwise read the payload once, validate, and serve all decodes from the owned value) are each single-read, implement `viewSpec k` in private memory and agree there with the view program `viewProg k`, and, against every writer, return a result that is `viewSpec k s'` for some byte vector `s'` and whose decodes are all valid tagged values (`RSafe ViewOK`). The two parsers differ in their memory accesses and agree in their results: for every `k` and every writer `adv`, copy-out performs two reads, owned decoding performs one read when the tag `adv 0 0` it reads at time `0` exceeds `1` and two reads otherwise, and both return the same result; for every `k` they are different parsers, and neither observably refines the other (`ObsRefines`). Neither is a consistent snapshot: against `copyTornAdv` (`(0, 2)` at time `0`, `(1, 1)` afterwards, both valid), `copyOutProg 1` and `ownedProg 1` each return `some [(0, 1)]`, a valid decode that is `viewSpec 1` of no state the writer produced; so neither `copyOutProg 1` nor `ownedProg 1` is R-state for `viewSpec 1`.",
+  "unfolded_prose": "for each of `copyOutProg k` and `ownedProg k`: `SingleRead`, `Implements _ (viewSpec k)`, `PrivRefines _ (viewProg k)`, `RValid (viewSpec k) _` and `RSafe ViewOK _`; for every `adv`, `(ownedProg k).exec adv = (copyOutProg k).exec adv`, `((copyOutProg k).obs adv).1.length = 2` and `((ownedProg k).obs adv).1.length = if 1 < (adv 0 0).val then 1 else 2`; `ownedProg k ≠ copyOutProg k` and `ObsRefines` fails between them in both directions; and for each `p` of `copyOutProg 1` and `ownedProg 1`, `p.exec copyTornAdv = some [(0, 1)]`, which satisfies `ViewOK` and differs from `viewSpec 1 (copyTornAdv t)` for every `t`, so `¬ RState (viewSpec 1) p`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Hypothesis-free; `copyOutProg_example` and `ownedProg_examples` compute non-error results.",
+  "nonvacuity_witness_lean": [
+   "Toy.DoubleFetch.copyOutProg_example",
+   "Toy.DoubleFetch.ownedProg_examples"
+  ],
+  "non_claims": [
+   "Copy-out and owned decoding here are non-atomic: they give validity of every decode (R-safe, R-valid), not a state that existed (`copyOutProg_torn_valid_not_rstate`, `ownedProg_torn_valid_not_rstate`). An atomic copy of the whole region is the toy's `snap`, for which `snapParse (viewSpec k)` is R-state (`snapParse_exec_eq_and_rstate`). This result neither establishes nor refutes atomicity of real copy routines (`memcpy`, `copy_from_user`, the XSA-155 `RING_COPY_REQUEST` macro, `zerocopy::TryFromBytes::try_read_from_bytes`).",
+   "In this toy the two strategies differ in the number of reads they perform, not in their results (`ownedProg_exec_eq_copyOutProg_exec`, `copyOutProg_ownedProg_access_counts`): rejecting an invalid tag early saves one read and does not prevent tearing (`ownedProg_torn_valid_not_rstate`). The toy does not model allocation, copying cost or timing, so it gives no reason to prefer either strategy over the other (not addressed).",
+   "In Rust, a non-atomic read of memory that another thread writes concurrently is a data race and undefined behaviour; this applies to reading the source of `try_read_from_bytes(source: &[u8])` while it is concurrently written (derived (modeling bridge) from the Rust Reference; Applicability). The toy has no data races.",
+   "This result does not show that copy-out and owned decoding are the sole sound strategies: in the R-valid sense `rereadCompare` reads twice and is robust (`rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate`).",
+   "The writer model is the full function space `Adversary n = Nat → Region n`: it fixes the region state seen by each memory access of the parser. Each one-byte `read` and each whole-region `snap` is atomic, and the clock advances by exactly one per access. Writes during a byte read, weak-memory reordering, and real timing are not modelled.",
+   "These are statements about the toy model `Toy.DoubleFetch`; they neither establish nor refute the corresponding claims about real parsers, compilers, kernels, hypervisors, Rust or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "XSA-155 patch \"xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch\" (SHA-256 of the fetched file: `e52467fcec73bcc86d3e96d06f8ca8085ae56a83d2c42a30c16bc3dc630d8f8a`), https://xenbits.xen.org/xsa/xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch: \"Safe usage of a request generally requires taking a local copy.\" (xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch:8-9) and, in the macro comment, \"Use this in preference to RING_GET_REQUEST() so all processing is done on a local copy that cannot be modified by the other end.\" (xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch:40-41, where each line carries the comment prefix \"+ * \") The macro copies the request by a struct assignment from a volatile source; the patch does not describe the copy as atomic. In the toy, taking a local copy and parsing the copy instead of the shared bytes corresponds to `copyParse` (one-byte reads), not to `snap` (derived (modeling bridge)).",
+   "zerocopy 0.8.64, https://docs.rs/zerocopy/0.8.64/zerocopy/trait.TryFromBytes.html: `fn try_read_from_bytes(source: &[u8]) -> Result<Self, TryReadError<&[u8], Self>> where Self: Sized`, \"Attempts to read the given source as a Self.\" Cited for the shape validate-then-copy; no zerocopy position on concurrently written memory is asserted.",
+   "N. Swamy, T. Ramananandro, A. Rastogi, I. Spiridonova, H. Ni, D. Malloy, J. Vazquez, M. Tang, O. Cardona, A. Gupta, \"Hardening Attack Surfaces with Formally Proven Binary Format Parsers\", PLDI 2022, pp. 31-45, doi:10.1145/3519939.3523708 (author's copy: http://www.normalesup.org/~ramanana/research/everparse/pldi2022/paper.pdf): \"Adhering to this discipline ensures that the host observes a single logical snapshot of the packet even in the presence of concurrent mutations by the guest, inasmuch as what the host sees after a concurrent mutation, the untrusted guest could just as well have put in the packet to begin with.\" and \"Our input streams are designed with a permission model that allows us to prove that validators are double-fetch free. In particular, reading a byte from the stream advances it and makes it provably impossible to read that byte again.\" The informal \"single logical snapshot\" there is what the toy calls R-valid (some byte vector), not R-state; EverParse3D mechanizes double-fetch freedom of generated validators, and the semantic statement here is not claimed to appear there in this form."
+  ],
+  "design_question": "What should replace 'validate once, then hand out a reference' when the writer is untrusted?",
+  "lean_names": [
+   "Toy.DoubleFetch.Adversary",
+   "Toy.DoubleFetch.Adversary.const",
+   "Toy.DoubleFetch.Event",
+   "Toy.DoubleFetch.Implements",
+   "Toy.DoubleFetch.ObsRefines",
+   "Toy.DoubleFetch.PrivRefines",
+   "Toy.DoubleFetch.Prog",
+   "Toy.DoubleFetch.Prog.SingleReadFrom",
+   "Toy.DoubleFetch.Prog.exec",
+   "Toy.DoubleFetch.Prog.execFrom",
+   "Toy.DoubleFetch.Prog.obs",
+   "Toy.DoubleFetch.Prog.obsFrom",
+   "Toy.DoubleFetch.RSafe",
+   "Toy.DoubleFetch.RState",
+   "Toy.DoubleFetch.RValid",
+   "Toy.DoubleFetch.Region",
+   "Toy.DoubleFetch.SingleRead",
+   "Toy.DoubleFetch.ValidE",
+   "Toy.DoubleFetch.ViewOK",
+   "Toy.DoubleFetch.copyOutProg",
+   "Toy.DoubleFetch.copyOutProg_example",
+   "Toy.DoubleFetch.copyParse",
+   "Toy.DoubleFetch.copyTornAdv",
+   "Toy.DoubleFetch.ownedProg",
+   "Toy.DoubleFetch.ownedProg_examples",
+   "Toy.DoubleFetch.reg2",
+   "Toy.DoubleFetch.rereadCompare",
+   "Toy.DoubleFetch.rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate",
+   "Toy.DoubleFetch.snapParse",
+   "Toy.DoubleFetch.snapParse_exec_eq_and_rstate",
+   "Toy.DoubleFetch.viewProg",
+   "Toy.DoubleFetch.viewSpec",
+   "Toy.DoubleFetch.viewUses"
+  ]
+ }
+]

@@ -1,0 +1,6 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name": "DoubleFetch",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

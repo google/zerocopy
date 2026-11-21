@@ -1,0 +1,136 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/refinement",
+    "verification/robust-property-preservation",
+    "security/double-fetch",
+    "security/time-of-check-time-of-use",
+    "security/shared-memory-parsing",
+    "pl/concurrency-semantics",
+    "compilers/read-rematerialization"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Concurrent reading and writing (Lamport, CACM 1977)",
+      "identity": {
+        "doi": "10.1145/359863.359878"
+      }
+    },
+    {
+      "name": "Atomic snapshots of shared memory (Afek, Attiya, Dolev, Gafni, Merritt, Shavit, J. ACM 1993)",
+      "identity": {
+        "doi": "10.1145/153724.153741"
+      }
+    },
+    {
+      "name": "Linearizability: a correctness condition for concurrent objects (Herlihy, Wing, TOPLAS 1990)",
+      "identity": {
+        "doi": "10.1145/78969.78972"
+      }
+    },
+    {
+      "name": "Hardening Attack Surfaces with Formally Proven Binary Format Parsers (Swamy et al., PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523708"
+      }
+    },
+    {
+      "name": "Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (Abate et al., CSF 2019)",
+      "identity": {
+        "doi": "10.1109/CSF.2019.00025"
+      }
+    },
+    {
+      "name": "Safe optimisations for shared-memory concurrent programs (Sevcik, PLDI 2011)",
+      "identity": {
+        "doi": "10.1145/1993498.1993534"
+      }
+    },
+    {
+      "name": "Can seqlocks get along with programming language memory models? (Boehm, MSPC 2012)",
+      "identity": {
+        "doi": "10.1145/2247684.2247688"
+      }
+    },
+    {
+      "name": "A Formally Verified Compiler Back-end (Leroy, JAR 2009)",
+      "identity": {
+        "doi": "10.1007/s10817-009-9155-4"
+      }
+    },
+    {
+      "name": "Precise and Scalable Detection of Double-Fetch Bugs in OS Kernels (Xu et al., IEEE S&P 2018)",
+      "identity": {
+        "doi": "10.1109/SP.2018.00017"
+      }
+    },
+    {
+      "name": "How Double-Fetch Situations turn into Double-Fetch Vulnerabilities (Wang et al., USENIX Security 2017)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/wang-pengfei"
+      }
+    },
+    {
+      "name": "Xen Security Advisory XSA-155 (paravirtualized drivers incautious about shared memory contents)",
+      "identity": {
+        "advisory": "XSA-155",
+        "cve": "CVE-2015-8550",
+        "version": "6",
+        "url": "https://xenbits.xen.org/xsa/advisory-155.html"
+      }
+    },
+    {
+      "name": "XSA-155 patch: xen: Add RING_COPY_REQUEST()",
+      "identity": {
+        "url": "https://xenbits.xen.org/xsa/xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch",
+        "sha256": "e52467fcec73bcc86d3e96d06f8ca8085ae56a83d2c42a30c16bc3dc630d8f8a"
+      }
+    },
+    {
+      "name": "Linux kernel Documentation/memory-barriers.txt",
+      "identity": {
+        "repository": "torvalds/linux",
+        "version": "v6.12",
+        "revision": "adc218676eef25575469234709c2d87185ca223a",
+        "path": "Documentation/memory-barriers.txt"
+      }
+    },
+    {
+      "name": "Rust core library documentation, core::ptr::read_volatile",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.83.0",
+        "revision": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+        "url": "https://doc.rust-lang.org/1.83.0/core/ptr/fn.read_volatile.html"
+      }
+    },
+    {
+      "name": "The Rust Reference, Behavior considered undefined",
+      "identity": {
+        "version": "1.83.0",
+        "url": "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html"
+      }
+    },
+    {
+      "name": "zerocopy crate, TryFromBytes documentation",
+      "identity": {
+        "crate": "zerocopy",
+        "version": "0.8.64",
+        "crates_io_checksum": "ed43f3060383c64b000f3c630550aebdfa9d3b76d48de32390483dd2cc7e0865",
+        "repository": "google/zerocopy",
+        "revision": "2a2de7378759cdcc2ccb9e0d4b408cf6d9126b17",
+        "url": "https://docs.rs/zerocopy/0.8.64/zerocopy/trait.TryFromBytes.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

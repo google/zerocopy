@@ -30229,6 +30229,142 @@
         "verification/authenticated-sector-atomicity"
       ]
     },
+    "double-fetch-robust-parsing-of-shared-memory-single-read-discipline-and-torn-snapshots": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/359863.359878"
+          },
+          "name": "Concurrent reading and writing (Lamport, CACM 1977)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/153724.153741"
+          },
+          "name": "Atomic snapshots of shared memory (Afek, Attiya, Dolev, Gafni, Merritt, Shavit, J. ACM 1993)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/78969.78972"
+          },
+          "name": "Linearizability: a correctness condition for concurrent objects (Herlihy, Wing, TOPLAS 1990)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523708"
+          },
+          "name": "Hardening Attack Surfaces with Formally Proven Binary Format Parsers (Swamy et al., PLDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF.2019.00025"
+          },
+          "name": "Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (Abate et al., CSF 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1993498.1993534"
+          },
+          "name": "Safe optimisations for shared-memory concurrent programs (Sevcik, PLDI 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2247684.2247688"
+          },
+          "name": "Can seqlocks get along with programming language memory models? (Boehm, MSPC 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9155-4"
+          },
+          "name": "A Formally Verified Compiler Back-end (Leroy, JAR 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2018.00017"
+          },
+          "name": "Precise and Scalable Detection of Double-Fetch Bugs in OS Kernels (Xu et al., IEEE S&P 2018)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/wang-pengfei"
+          },
+          "name": "How Double-Fetch Situations turn into Double-Fetch Vulnerabilities (Wang et al., USENIX Security 2017)"
+        },
+        {
+          "identity": {
+            "advisory": "XSA-155",
+            "cve": "CVE-2015-8550",
+            "url": "https://xenbits.xen.org/xsa/advisory-155.html",
+            "version": "6"
+          },
+          "name": "Xen Security Advisory XSA-155 (paravirtualized drivers incautious about shared memory contents)"
+        },
+        {
+          "identity": {
+            "sha256": "e52467fcec73bcc86d3e96d06f8ca8085ae56a83d2c42a30c16bc3dc630d8f8a",
+            "url": "https://xenbits.xen.org/xsa/xsa155-xen-0001-xen-Add-RING_COPY_REQUEST.patch"
+          },
+          "name": "XSA-155 patch: xen: Add RING_COPY_REQUEST()"
+        },
+        {
+          "identity": {
+            "path": "Documentation/memory-barriers.txt",
+            "repository": "torvalds/linux",
+            "revision": "adc218676eef25575469234709c2d87185ca223a",
+            "version": "v6.12"
+          },
+          "name": "Linux kernel Documentation/memory-barriers.txt"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+            "url": "https://doc.rust-lang.org/1.83.0/core/ptr/fn.read_volatile.html",
+            "version": "1.83.0"
+          },
+          "name": "Rust core library documentation, core::ptr::read_volatile"
+        },
+        {
+          "identity": {
+            "url": "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html",
+            "version": "1.83.0"
+          },
+          "name": "The Rust Reference, Behavior considered undefined"
+        },
+        {
+          "identity": {
+            "crate": "zerocopy",
+            "crates_io_checksum": "ed43f3060383c64b000f3c630550aebdfa9d3b76d48de32390483dd2cc7e0865",
+            "repository": "google/zerocopy",
+            "revision": "2a2de7378759cdcc2ccb9e0d4b408cf6d9126b17",
+            "url": "https://docs.rs/zerocopy/0.8.64/zerocopy/trait.TryFromBytes.html",
+            "version": "0.8.64"
+          },
+          "name": "zerocopy crate, TryFromBytes documentation"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "verification/robust-property-preservation",
+        "security/double-fetch",
+        "security/time-of-check-time-of-use",
+        "security/shared-memory-parsing",
+        "pl/concurrency-semantics",
+        "compilers/read-rematerialization"
+      ]
+    },
     "double-fetch-toctou-shared-dma-rings-and-single-fetch-logics": {
       "observed_at": "2026-11-20",
       "subjects": [

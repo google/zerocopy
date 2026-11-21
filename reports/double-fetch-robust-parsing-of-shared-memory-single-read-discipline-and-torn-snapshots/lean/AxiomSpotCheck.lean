@@ -1,0 +1,22 @@
+import DoubleFetch
+
+#print axioms Toy.DoubleFetch.snapParse_exec_eq_and_rstate
+#print axioms Toy.DoubleFetch.copyParse_exec_eq_diagonal_and_rvalid
+#print axioms Toy.DoubleFetch.copyParse_pair_torn_not_rstate
+#print axioms Toy.DoubleFetch.singleRead_exec_eq_eval_assemble
+#print axioms Toy.DoubleFetch.rvalid_of_singleRead_of_implements
+#print axioms Toy.DoubleFetch.rsafe_of_singleRead_of_staticSafe
+#print axioms Toy.DoubleFetch.rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate
+#print axioms Toy.DoubleFetch.rvalid_iff_robustRefines_singleRead_implementation
+#print axioms Toy.DoubleFetch.rvalid_equivalence_readings_refuted
+#print axioms Toy.DoubleFetch.lenReread_flip_out_of_bounds_and_invalid
+#print axioms Toy.DoubleFetch.tagReread_flip_invalid_bool
+#print axioms Toy.DoubleFetch.ckParse_torn_passes_checksum_matches_no_state
+#print axioms Toy.DoubleFetch.not_rstate_of_noSnap_of_hasUndeterminedState
+#print axioms Toy.DoubleFetch.seqlock_rstate_of_oneStepVersionWriter
+#print axioms Toy.DoubleFetch.seqlock_accepted_eq_seqSpec_adv0_of_incrementBound
+#print axioms Toy.DoubleFetch.remat_lenCheck_singleRead_robust_to_not_rsafe_not_rvalid
+#print axioms Toy.DoubleFetch.remat_pure_robustRefines_iff
+#print axioms Toy.DoubleFetch.robustRefines_iff_preserves_rsafe
+#print axioms Toy.DoubleFetch.viewProg_viewOK_of_noForeignWrites
+#print axioms Toy.DoubleFetch.copyOutProg_singleRead_implements_rvalid_rsafe_viewOK

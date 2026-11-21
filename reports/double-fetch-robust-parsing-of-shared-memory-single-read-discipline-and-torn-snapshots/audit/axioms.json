@@ -1,0 +1,1092 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.DoubleFetch.Adversary": [],
+    "Toy.DoubleFetch.Adversary.const": [],
+    "Toy.DoubleFetch.Adversary.const.eq_1": [],
+    "Toy.DoubleFetch.Byte": [],
+    "Toy.DoubleFetch.CheckUse": [],
+    "Toy.DoubleFetch.CheckUse.addr": [],
+    "Toy.DoubleFetch.CheckUse.casesOn": [],
+    "Toy.DoubleFetch.CheckUse.check": [],
+    "Toy.DoubleFetch.CheckUse.compile": [],
+    "Toy.DoubleFetch.CheckUse.compile.eq_1": [],
+    "Toy.DoubleFetch.CheckUse.ctorIdx": [],
+    "Toy.DoubleFetch.CheckUse.mk": [],
+    "Toy.DoubleFetch.CheckUse.mk.inj": [],
+    "Toy.DoubleFetch.CheckUse.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.CheckUse.mk.noConfusion": [],
+    "Toy.DoubleFetch.CheckUse.mk.sizeOf_spec": [],
+    "Toy.DoubleFetch.CheckUse.noConfusion": [],
+    "Toy.DoubleFetch.CheckUse.noConfusionType": [],
+    "Toy.DoubleFetch.CheckUse.onFail": [],
+    "Toy.DoubleFetch.CheckUse.pure": [],
+    "Toy.DoubleFetch.CheckUse.pure.eq_1": [],
+    "Toy.DoubleFetch.CheckUse.rec": [],
+    "Toy.DoubleFetch.CheckUse.recOn": [],
+    "Toy.DoubleFetch.CheckUse.remat": [],
+    "Toy.DoubleFetch.CheckUse.remat.eq_1": [],
+    "Toy.DoubleFetch.CheckUse.use": [],
+    "Toy.DoubleFetch.CopyInBounds": [],
+    "Toy.DoubleFetch.CopyInBounds.eq_1": [],
+    "Toy.DoubleFetch.CopyInBounds.eq_2": [],
+    "Toy.DoubleFetch.CopyInBounds.match_1": [],
+    "Toy.DoubleFetch.Event": [],
+    "Toy.DoubleFetch.Event.casesOn": [],
+    "Toy.DoubleFetch.Event.ctorElim": [],
+    "Toy.DoubleFetch.Event.ctorElimType": [],
+    "Toy.DoubleFetch.Event.ctorIdx": [],
+    "Toy.DoubleFetch.Event.noConfusion": [],
+    "Toy.DoubleFetch.Event.noConfusionType": [],
+    "Toy.DoubleFetch.Event.rd": [],
+    "Toy.DoubleFetch.Event.rd.elim": [],
+    "Toy.DoubleFetch.Event.rd.inj": [],
+    "Toy.DoubleFetch.Event.rd.injEq": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.Event.rd.noConfusion": [],
+    "Toy.DoubleFetch.Event.rd.sizeOf_spec": [],
+    "Toy.DoubleFetch.Event.rec": [],
+    "Toy.DoubleFetch.Event.recOn": [],
+    "Toy.DoubleFetch.Event.sn": [],
+    "Toy.DoubleFetch.Event.sn.elim": [],
+    "Toy.DoubleFetch.Event.sn.inj": [],
+    "Toy.DoubleFetch.Event.sn.injEq": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.Event.sn.noConfusion": [],
+    "Toy.DoubleFetch.Event.sn.sizeOf_spec": [],
+    "Toy.DoubleFetch.HasUndeterminedState": [],
+    "Toy.DoubleFetch.Implements": [],
+    "Toy.DoubleFetch.IncrementBoundedWriter": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.NoByteDeterminesOutput": [],
+    "Toy.DoubleFetch.ObsRefines": [],
+    "Toy.DoubleFetch.OneStepVersionWriter": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.PrivRefines": [],
+    "Toy.DoubleFetch.Prog": [],
+    "Toy.DoubleFetch.Prog.NoSnap": [],
+    "Toy.DoubleFetch.Prog.NoSnap.eq_1": [],
+    "Toy.DoubleFetch.Prog.NoSnap.eq_2": [],
+    "Toy.DoubleFetch.Prog.NoSnap.eq_3": [],
+    "Toy.DoubleFetch.Prog.NoSnap.eq_def": [],
+    "Toy.DoubleFetch.Prog.NoSnap.match_1": [],
+    "Toy.DoubleFetch.Prog.SingleReadFrom": [],
+    "Toy.DoubleFetch.Prog.SingleReadFrom.eq_1": [],
+    "Toy.DoubleFetch.Prog.SingleReadFrom.eq_2": [],
+    "Toy.DoubleFetch.Prog.SingleReadFrom.eq_3": [],
+    "Toy.DoubleFetch.Prog.SingleReadFrom.eq_def": [],
+    "Toy.DoubleFetch.Prog.SingleReadFrom.match_1": [],
+    "Toy.DoubleFetch.Prog.addrAt": [],
+    "Toy.DoubleFetch.Prog.addrAt.eq_1": [],
+    "Toy.DoubleFetch.Prog.addrAt.eq_2": [],
+    "Toy.DoubleFetch.Prog.addrAt.eq_3": [],
+    "Toy.DoubleFetch.Prog.addrAt.eq_4": [],
+    "Toy.DoubleFetch.Prog.addrAt.eq_5": [],
+    "Toy.DoubleFetch.Prog.addrAt.eq_def": [],
+    "Toy.DoubleFetch.Prog.addrAt.match_1": [],
+    "Toy.DoubleFetch.Prog.assemble": [],
+    "Toy.DoubleFetch.Prog.assembleFrom": [],
+    "Toy.DoubleFetch.Prog.assembleFrom.eq_1": [],
+    "Toy.DoubleFetch.Prog.assembleFrom.eq_2": [],
+    "Toy.DoubleFetch.Prog.assembleFrom.eq_3": [],
+    "Toy.DoubleFetch.Prog.assembleFrom.eq_def": [],
+    "Toy.DoubleFetch.Prog.assembleFrom.match_1": [],
+    "Toy.DoubleFetch.Prog.below": [],
+    "Toy.DoubleFetch.Prog.brecOn": [],
+    "Toy.DoubleFetch.Prog.brecOn.eq": [],
+    "Toy.DoubleFetch.Prog.brecOn.go": [],
+    "Toy.DoubleFetch.Prog.casesOn": [],
+    "Toy.DoubleFetch.Prog.ctorElim": [],
+    "Toy.DoubleFetch.Prog.ctorElimType": [],
+    "Toy.DoubleFetch.Prog.ctorIdx": [],
+    "Toy.DoubleFetch.Prog.eval": [],
+    "Toy.DoubleFetch.Prog.eval.eq_1": [],
+    "Toy.DoubleFetch.Prog.eval.eq_2": [],
+    "Toy.DoubleFetch.Prog.eval.eq_3": [],
+    "Toy.DoubleFetch.Prog.eval.eq_def": [],
+    "Toy.DoubleFetch.Prog.eval.match_1": [],
+    "Toy.DoubleFetch.Prog.eval_congr_of_singleReadFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.Prog.exec": [],
+    "Toy.DoubleFetch.Prog.exec.eq_1": [],
+    "Toy.DoubleFetch.Prog.execFrom": [],
+    "Toy.DoubleFetch.Prog.execFrom.eq_1": [],
+    "Toy.DoubleFetch.Prog.execFrom.eq_2": [],
+    "Toy.DoubleFetch.Prog.execFrom.eq_3": [],
+    "Toy.DoubleFetch.Prog.execFrom.eq_def": [],
+    "Toy.DoubleFetch.Prog.execFrom.match_1": [],
+    "Toy.DoubleFetch.Prog.execFrom_const": [],
+    "Toy.DoubleFetch.Prog.execFrom_eq_eval_assembleFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.Prog.execFrom_eq_eval_of_agree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.Prog.execFrom_eq_eval_of_allRead": [
+      "Quot.sound"
+    ],
+    "Toy.DoubleFetch.Prog.exec_const": [],
+    "Toy.DoubleFetch.Prog.noConfusion": [],
+    "Toy.DoubleFetch.Prog.noConfusionType": [],
+    "Toy.DoubleFetch.Prog.obs": [],
+    "Toy.DoubleFetch.Prog.obs.eq_1": [],
+    "Toy.DoubleFetch.Prog.obsFrom": [],
+    "Toy.DoubleFetch.Prog.obsFrom.eq_1": [],
+    "Toy.DoubleFetch.Prog.obsFrom.eq_2": [],
+    "Toy.DoubleFetch.Prog.obsFrom.eq_3": [],
+    "Toy.DoubleFetch.Prog.obsFrom.eq_def": [],
+    "Toy.DoubleFetch.Prog.obsFrom_snd": [],
+    "Toy.DoubleFetch.Prog.obs_snd": [],
+    "Toy.DoubleFetch.Prog.read": [],
+    "Toy.DoubleFetch.Prog.read.elim": [],
+    "Toy.DoubleFetch.Prog.read.inj": [],
+    "Toy.DoubleFetch.Prog.read.injEq": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.Prog.read.noConfusion": [],
+    "Toy.DoubleFetch.Prog.read.sizeOf_spec": [],
+    "Toy.DoubleFetch.Prog.rec": [],
+    "Toy.DoubleFetch.Prog.recOn": [],
+    "Toy.DoubleFetch.Prog.ret": [],
+    "Toy.DoubleFetch.Prog.ret.elim": [],
+    "Toy.DoubleFetch.Prog.ret.inj": [],
+    "Toy.DoubleFetch.Prog.ret.injEq": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.Prog.ret.noConfusion": [],
+    "Toy.DoubleFetch.Prog.ret.sizeOf_spec": [],
+    "Toy.DoubleFetch.Prog.snap": [],
+    "Toy.DoubleFetch.Prog.snap.elim": [],
+    "Toy.DoubleFetch.Prog.snap.inj": [],
+    "Toy.DoubleFetch.Prog.snap.injEq": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.Prog.snap.noConfusion": [],
+    "Toy.DoubleFetch.Prog.snap.sizeOf_spec": [],
+    "Toy.DoubleFetch.RSafe": [],
+    "Toy.DoubleFetch.RState": [],
+    "Toy.DoubleFetch.RStateUnder": [],
+    "Toy.DoubleFetch.RValid": [],
+    "Toy.DoubleFetch.Region": [],
+    "Toy.DoubleFetch.RobustRefines": [],
+    "Toy.DoubleFetch.SingleRead": [],
+    "Toy.DoubleFetch.TwoStepVersionWriter": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ValidBoolOut": [],
+    "Toy.DoubleFetch.ValidBoolOut.eq_1": [],
+    "Toy.DoubleFetch.ValidBoolOut.eq_2": [],
+    "Toy.DoubleFetch.ValidBoolOut.match_1": [],
+    "Toy.DoubleFetch.ValidE": [],
+    "Toy.DoubleFetch.ValidE.eq_1": [],
+    "Toy.DoubleFetch.VersionPath": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.below": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.below.bump": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.below.casesOn": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.below.rec": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.below.refl": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.below.stay": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.brecOn": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.bump": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.casesOn": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.rec": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.recOn": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.refl": [],
+    "Toy.DoubleFetch.VersionPath.stay": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionPath.trans": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.VersionStep": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ViewOK": [],
+    "Toy.DoubleFetch.ViewOK.match_1": [],
+    "Toy.DoubleFetch.andSpec": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.andSpec_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.andSpec_hasUndeterminedState": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.andSpec_hasUndeterminedState.match_1_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.assemble_example": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.boolParse": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.boolParse.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.boolParse_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.byteCopy": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.byteCopy.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.byte_add_left_cancel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.byte_add_one_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.byte_add_right_cancel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckMixAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckMixAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckParse": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckParse.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckParse_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckParse_hasUndeterminedState": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckParse_noByteDeterminesOutput": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckParse_noByteDeterminesOutput.match_1_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckParse_noByteDeterminesOutput.match_1_5": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckParse_torn_passes_checksum_matches_no_state": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckTornAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ckTornAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyInBounds_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyOutProg": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyOutProg.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyOutProg_example": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyOutProg_ownedProg_access_counts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyOutProg_singleRead_implements_rvalid_rsafe_viewOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyOutProg_torn_valid_not_rstate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse_ckParse_twoValidStates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hA_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hadv_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_hpass_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse_ckParse_twoValidStates_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse_exec_eq_diagonal_and_rvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse_pair_torn_not_rstate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyParse_singleRead_implements": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyTornAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.copyTornAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.dataDepProg": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.dataDepProg_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.dataDepProg_singleRead": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.eval_example": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.exec_example": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.exec_ne_eval_example": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.exists_singleRead_implements_privRefines_iff_implements": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.fillSeq": [],
+    "Toy.DoubleFetch.fillSeq.eq_1": [],
+    "Toy.DoubleFetch.fillSeq.eq_2": [],
+    "Toy.DoubleFetch.fillSeq.eq_def": [],
+    "Toy.DoubleFetch.fillSeq.match_1": [],
+    "Toy.DoubleFetch.fillSeq_finRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.fillSeq_getElem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.fillSeq_not_mem": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.fstSpec": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.hasUndeterminedState_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.hasUndeterminedState_iff_no_noSnap_rstate": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.hasUndeterminedState_of_pos_of_noByteDeterminesOutput": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.implements_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.implements_hyp_counterexample_rvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.incr": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.incr.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.incr.eq_2": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.incr.eq_def": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.incr.match_1": [],
+    "Toy.DoubleFetch.incr_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.incrementBoundedWriter_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.instDecidableValidE": [],
+    "Toy.DoubleFetch.lenCheck": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenCheck.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenFlipAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenFlipAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenOnce": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenOnce.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenOnce_rsafe_rvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenOnce_singleRead_implements": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenReread": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenReread.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenReread_cap255_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenReread_cap_lt_255_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenReread_exec_ne_eval_assemble": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenReread_flip_out_of_bounds_and_invalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenReread_implements": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenReread_not_rsafe_not_rvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.lenReread_rsafe_rvalid_of_255_le_cap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.lpParse": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lpParse.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.lpParse_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.noByteDeterminesOutput_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.noSnap_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.not_hasUndeterminedState_of_region_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.not_hasUndeterminedState_of_region_zero": [
+      "Quot.sound"
+    ],
+    "Toy.DoubleFetch.not_rstate_of_noSnap_of_hasUndeterminedState": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.not_rstate_of_noSnap_of_hasUndeterminedState.match_1_1": [],
+    "Toy.DoubleFetch.obsFrom_shift": [],
+    "Toy.DoubleFetch.obsRefines_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.obsRefines_iff_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.obs_example": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.oneStepVersionWriter_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ownedProg": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ownedProg.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.ownedProg_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.ownedProg_exec_eq_copyOutProg_exec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.ownedProg_ne_copyOutProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.ownedProg_singleRead_implements_rvalid_rsafe_viewOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.ownedProg_torn_valid_not_rstate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.pairSpec": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.pairSpec_hasUndeterminedState": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.pairSpec_noByteDeterminesOutput": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.pairSpec_noByteDeterminesOutput.match_1_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.pairTornAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.pairTornAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.privRefines_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.readFst": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.readFst_rstate_counterexample": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.readSeq": [],
+    "Toy.DoubleFetch.readSeq.eq_1": [],
+    "Toy.DoubleFetch.readSeq.eq_2": [],
+    "Toy.DoubleFetch.readSeq.eq_def": [],
+    "Toy.DoubleFetch.readSeq.match_1": [],
+    "Toy.DoubleFetch.readSeq_execFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.readSeq_noSnap": [],
+    "Toy.DoubleFetch.readSeq_singleReadFrom": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.readTwice": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.reg2": [],
+    "Toy.DoubleFetch.reg2.eq_1": [],
+    "Toy.DoubleFetch.reg3": [],
+    "Toy.DoubleFetch.reg3.eq_1": [],
+    "Toy.DoubleFetch.reg3_eta": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.reg3_eta.match_1_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.remat_lenCheck_cap255_robustRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.remat_lenCheck_privRefines_not_robustRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.remat_lenCheck_singleRead_robust_to_not_rsafe_not_rvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.remat_privRefines_compile": [],
+    "Toy.DoubleFetch.remat_pure_robustRefines_const_use": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.remat_pure_robustRefines_const_use.match_1_1": [],
+    "Toy.DoubleFetch.remat_pure_robustRefines_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rereadCompare": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.rereadCompare.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.rereadCompare_implements": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rereadCompare_implements_rvalid_rsafe_not_singleRead_not_rstate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rereadCompare_not_advEquiv_singleRead": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rereadFallback": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.rereadFallback.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.rereadFallback_implements_rvalid_not_singleRead": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.robustRefines_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.robustRefines_hqp_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.robustRefines_iff_preserves_rsafe": [],
+    "Toy.DoubleFetch.robustRefines_of_obsRefines": [],
+    "Toy.DoubleFetch.robustRefines_rereadCompare_tagOnce_not_preserves_rstate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.robustRefines_source_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.robustRefines_transfer_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rsafe_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rsafe_of_robustRefines": [],
+    "Toy.DoubleFetch.rsafe_of_singleRead_hyps_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rsafe_of_singleRead_of_staticSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rstateUnder_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rstateUnder_true_iff": [],
+    "Toy.DoubleFetch.rstate_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rvalid_equivalence_readings_refuted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rvalid_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rvalid_iff_robustRefines_copyParse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rvalid_iff_robustRefines_singleRead_implementation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rvalid_imp_exists_singleRead_rvalid_privRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rvalid_not_imp_exists_singleRead_implements_privRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.rvalid_of_robustRefines": [],
+    "Toy.DoubleFetch.rvalid_of_singleRead_of_implements": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqRogueAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqRogueAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqSlowAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqSlowAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqSpec": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqSpec.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqSpec_hasUndeterminedState": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqSpec_hasUndeterminedState.match_1_3": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqSpec_not_noByteDeterminesOutput": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqTwoStepAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqTwoStepAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqWrapAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqWrapAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlockReader": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlockReader.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlockReader_exec": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlockReader_noSnap": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_accepted_eq_seqSpec_adv0_of_incrementBound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_accepted_hacc_counterexample": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_accepted_torn_of_256Increments": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_implements": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_incrementBound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_not_rstateUnder_twoStepVersionWriter": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_not_rstate_rogueWriter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_oneStep_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_oneStep_nonvacuous.match_1_1": [],
+    "Toy.DoubleFetch.seqlock_positive_control": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_rstateUnder_oneStepVersionWriter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.seqlock_rstate_of_oneStepVersionWriter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.sevenNine": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.singleRead_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.singleRead_exec_eq_eval_assemble": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.singleRead_hyp_counterexample_rsafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.singleRead_hyp_counterexample_rvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.singleRead_oneByte_exec_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.singleRead_read_then_snap_rejected": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.singleRead_zero_double_snap": [],
+    "Toy.DoubleFetch.snapParse": [],
+    "Toy.DoubleFetch.snapParse_exec_eq_and_rstate": [],
+    "Toy.DoubleFetch.snapParse_pair_rstate_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.staticSafe_hyp_counterexample_rsafe": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagCheck": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagCheck.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagFlipAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagFlipAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagOnce": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagOnce.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagOnce_rsafe_rvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagOnce_singleRead_implements": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagReread": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagReread.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagReread_flip_invalid_bool": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagReread_implements": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.tagReread_not_rsafe_not_rvalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.torn_impossibility_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.twoStepVersionWriter_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.validBoolOut_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.validE_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.validSwitchAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.validSwitchAdv.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.versionPath_any": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.versionPath_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.versionPath_incr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.versionPath_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.versionPath_zero_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.versionStep_eq_of_even_of_same": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.versionStep_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.versionStep_val": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewFlipAdv": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewOK_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewOK_viewSpec": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewProg": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewProg.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewProg_example": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewProg_implements": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewProg_nonvacuous": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewProg_tagFlip_invalid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewProg_validSwitch_breaks_viewOK": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewProg_viewOK_of_noForeignWrites": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewProg_zero_rsafe": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewSpec": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewSpec.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewSpec_examples": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewSpec_hasUndeterminedState": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewSpec_hasUndeterminedState.match_1_4": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewUses": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewUses.eq_1": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewUses.eq_2": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewUses.eq_def": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewUses.match_1": [],
+    "Toy.DoubleFetch.viewUses_eval": [
+      "propext"
+    ],
+    "Toy.DoubleFetch.viewUses_execFrom_of_window": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
