@@ -276,6 +276,7 @@ Each result lists: kind, tier, and depth; the Lean statement (verbatim); a readi
 * **Lean name(s):** `adequacy_semTyped_nil_safe`.
 
 ```lean
+-- lean/ToySemType/Results.lean:315-316
 theorem adequacy_semTyped_nil_safe {e : Expr} {τ : Ty}
     (hsem : SemTyped Recipe.std [] e τ) (h : Heap) : Safe (e, h)
 ```
@@ -299,13 +300,16 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:828-829
 theorem adequacy_semTyped_hyp_tight :
     (∀ τ, ¬ SemTyped Recipe.std [] forgedRead τ) ∧ ¬ Safe (forgedRead, [])
 
+-- lean/ToySemType/Results.lean:835-837
 theorem adequacy_nil_ctx_hyp_tight :
     HasType [.int] (.var 0) .int ∧ SemTyped Recipe.std [.int] (.var 0) .int ∧
     ¬ Safe (.var 0, [])
 
+-- lean/ToySemType/Results.lean:1061
 theorem adequacy_nonvacuous : SemTyped Recipe.std [] (.app checkedRead (.num 0)) .int
 ```
 
@@ -315,6 +319,7 @@ theorem adequacy_nonvacuous : SemTyped Recipe.std [] (.app checkedRead (.num 0))
 * **Lean name(s):** `fundamental_hasType_semTyped`.
 
 ```lean
+-- lean/ToySemType/Results.lean:321-322
 theorem fundamental_hasType_semTyped {Γ : List Ty} {e : Expr} {τ : Ty}
     (hty : HasType Γ e τ) : SemTyped Recipe.std Γ e τ
 ```
@@ -340,10 +345,12 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:848-850
 theorem fundamental_hasType_hyp_tight :
     (∀ Γ τ, ¬ HasType Γ uncheckedRead τ) ∧
     ¬ SemTyped Recipe.std [] uncheckedRead (.arrow .int .int)
 
+-- lean/ToySemType/Results.lean:1066-1067
 theorem fundamental_nonvacuous :
     HasType [] allocThenRead .int ∧ HasType [.arrow .int .int] callWith7 .int
 ```
@@ -354,6 +361,7 @@ theorem fundamental_nonvacuous :
 * **Lean name(s):** `hasType_closed_safe`.
 
 ```lean
+-- lean/ToySemType/Results.lean:455-456
 theorem hasType_closed_safe {e : Expr} {τ : Ty} (hty : HasType [] e τ) (h : Heap) :
     Safe (e, h)
 ```
@@ -375,14 +383,17 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:500-502
 theorem forgedRead_unsafe_ill_typed :
     (∀ Γ τ, ¬ HasType Γ forgedRead τ) ∧ (∀ τ, ¬ SemTyped Recipe.std [] forgedRead τ) ∧
     ¬ Safe (forgedRead, [])
 
+-- lean/ToySemType/Results.lean:835-837
 theorem adequacy_nil_ctx_hyp_tight :
     HasType [.int] (.var 0) .int ∧ SemTyped Recipe.std [.int] (.var 0) .int ∧
     ¬ Safe (.var 0, [])
 
+-- lean/ToySemType/Results.lean:1066-1067
 theorem fundamental_nonvacuous :
     HasType [] allocThenRead .int ∧ HasType [.arrow .int .int] callWith7 .int
 ```
@@ -393,6 +404,7 @@ theorem fundamental_nonvacuous :
 * **Lean name(s):** `semTyped_let_compat`.
 
 ```lean
+-- lean/ToySemType/Results.lean:431-433
 theorem semTyped_let_compat {Γ : List Ty} {σ τ : Ty} {c lib : Expr}
     (hc : SemTyped Recipe.std (σ :: Γ) c τ) (hlib : SemTyped Recipe.std Γ lib σ) :
     SemTyped Recipe.std Γ (.app (.lam c) lib) τ
@@ -418,6 +430,7 @@ Basis: derived (modeling bridge) — Compositional verification in RustBelt-styl
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:863-868
 theorem client_hyp_tight :
     (∀ τ, ¬ HasType [.int] readCastVar τ) ∧
     (∀ τ, ¬ SemTyped Recipe.std [.int] readCastVar τ) ∧
@@ -425,6 +438,7 @@ theorem client_hyp_tight :
     ¬ SemTyped Recipe.std [] (.app (.lam readCastVar) (.num 7)) .int ∧
     ¬ Safe (.app (.lam readCastVar) (.num 7), [])
 
+-- lean/ToySemType/Results.lean:922-927
 theorem lib_hyp_tight :
     HasType [.arrow .int .int] callWith7 .int ∧
     SemTyped Recipe.std [.arrow .int .int] callWith7 .int ∧
@@ -432,6 +446,7 @@ theorem lib_hyp_tight :
     ¬ SemTyped Recipe.std [] (.app (.lam callWith7) uncheckedRead) .int ∧
     ¬ Safe (.app (.lam callWith7) uncheckedRead, [])
 
+-- lean/ToySemType/Results.lean:1072-1074
 theorem semTyped_let_compat_nonvacuous :
     SemTyped Recipe.std [.arrow .int .int] callWith7 .int ∧
     SemTyped Recipe.std [] checkedRead (.arrow .int .int)
@@ -443,6 +458,7 @@ theorem semTyped_let_compat_nonvacuous :
 * **Lean name(s):** `semTyped_client_semTyped_lib_safe`.
 
 ```lean
+-- lean/ToySemType/Results.lean:463-465
 theorem semTyped_client_semTyped_lib_safe {σ τ : Ty} {c lib : Expr}
     (hc : SemTyped Recipe.std [σ] c τ) (hlib : SemTyped Recipe.std [] lib σ) (h : Heap) :
     Safe (.app (.lam c) lib, h)
@@ -468,6 +484,7 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:863-868
 theorem client_hyp_tight :
     (∀ τ, ¬ HasType [.int] readCastVar τ) ∧
     (∀ τ, ¬ SemTyped Recipe.std [.int] readCastVar τ) ∧
@@ -475,6 +492,7 @@ theorem client_hyp_tight :
     ¬ SemTyped Recipe.std [] (.app (.lam readCastVar) (.num 7)) .int ∧
     ¬ Safe (.app (.lam readCastVar) (.num 7), [])
 
+-- lean/ToySemType/Results.lean:922-927
 theorem lib_hyp_tight :
     HasType [.arrow .int .int] callWith7 .int ∧
     SemTyped Recipe.std [.arrow .int .int] callWith7 .int ∧
@@ -482,22 +500,27 @@ theorem lib_hyp_tight :
     ¬ SemTyped Recipe.std [] (.app (.lam callWith7) uncheckedRead) .int ∧
     ¬ Safe (.app (.lam callWith7) uncheckedRead, [])
 
+-- lean/ToySemType/Results.lean:938-940
 theorem linking_single_var_ctx_tight :
     HasType [.int, .int] (.var 1) .int ∧ SemTyped Recipe.std [.int, .int] (.var 1) .int ∧
     SemTyped Recipe.std [] (.num 7) .int ∧ ¬ Safe (.app (.lam (.var 1)) (.num 7), [])
 
+-- lean/ToySemType/Results.lean:952-954
 theorem linking_lib_nil_ctx_tight :
     HasType [.int] (.var 0) .int ∧ SemTyped Recipe.std [.int] (.var 0) .int ∧
     ¬ Safe (.app (.lam (.var 0)) (.var 0), [])
 
+-- lean/ToySemType/Results.lean:961-963
 theorem linking_interface_match_tight :
     HasType [.ref] (.read (.var 0)) .int ∧ SemTyped Recipe.std [.ref] (.read (.var 0)) .int ∧
     SemTyped Recipe.std [] (.num 7) .int ∧ ¬ Safe (.app (.lam (.read (.var 0))) (.num 7), [])
 
+-- lean/ToySemType/Results.lean:1072-1074
 theorem semTyped_let_compat_nonvacuous :
     SemTyped Recipe.std [.arrow .int .int] callWith7 .int ∧
     SemTyped Recipe.std [] checkedRead (.arrow .int .int)
 
+-- lean/ToySemType/Results.lean:1117-1118
 theorem linking_structure_nonvacuous :
     HasType [.arrow .int .int] callWith7 .int ∧ (Expr.closedAt 0 checkedRead = true)
 ```
@@ -508,6 +531,7 @@ theorem linking_structure_nonvacuous :
 * **Lean name(s):** `hasType_client_semTyped_lib_safe`.
 
 ```lean
+-- lean/ToySemType/Results.lean:472-474
 theorem hasType_client_semTyped_lib_safe {σ τ : Ty} {c lib : Expr}
     (hc : HasType [σ] c τ) (hlib : SemTyped Recipe.std [] lib σ) (h : Heap) :
     Safe (.app (.lam c) lib, h)
@@ -537,6 +561,7 @@ Basis: derived (modeling bridge) — This is the toy form of the statement RustB
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:863-868
 theorem client_hyp_tight :
     (∀ τ, ¬ HasType [.int] readCastVar τ) ∧
     (∀ τ, ¬ SemTyped Recipe.std [.int] readCastVar τ) ∧
@@ -544,6 +569,7 @@ theorem client_hyp_tight :
     ¬ SemTyped Recipe.std [] (.app (.lam readCastVar) (.num 7)) .int ∧
     ¬ Safe (.app (.lam readCastVar) (.num 7), [])
 
+-- lean/ToySemType/Results.lean:922-927
 theorem lib_hyp_tight :
     HasType [.arrow .int .int] callWith7 .int ∧
     SemTyped Recipe.std [.arrow .int .int] callWith7 .int ∧
@@ -551,22 +577,27 @@ theorem lib_hyp_tight :
     ¬ SemTyped Recipe.std [] (.app (.lam callWith7) uncheckedRead) .int ∧
     ¬ Safe (.app (.lam callWith7) uncheckedRead, [])
 
+-- lean/ToySemType/Results.lean:938-940
 theorem linking_single_var_ctx_tight :
     HasType [.int, .int] (.var 1) .int ∧ SemTyped Recipe.std [.int, .int] (.var 1) .int ∧
     SemTyped Recipe.std [] (.num 7) .int ∧ ¬ Safe (.app (.lam (.var 1)) (.num 7), [])
 
+-- lean/ToySemType/Results.lean:952-954
 theorem linking_lib_nil_ctx_tight :
     HasType [.int] (.var 0) .int ∧ SemTyped Recipe.std [.int] (.var 0) .int ∧
     ¬ Safe (.app (.lam (.var 0)) (.var 0), [])
 
+-- lean/ToySemType/Results.lean:961-963
 theorem linking_interface_match_tight :
     HasType [.ref] (.read (.var 0)) .int ∧ SemTyped Recipe.std [.ref] (.read (.var 0)) .int ∧
     SemTyped Recipe.std [] (.num 7) .int ∧ ¬ Safe (.app (.lam (.read (.var 0))) (.num 7), [])
 
+-- lean/ToySemType/Results.lean:1079-1081
 theorem hasType_client_semTyped_lib_nonvacuous :
     HasType [.arrow .int .int] callWith7 .int ∧
     SemTyped Recipe.std [] checkedRead (.arrow .int .int)
 
+-- lean/ToySemType/Results.lean:1117-1118
 theorem linking_structure_nonvacuous :
     HasType [.arrow .int .int] callWith7 .int ∧ (Expr.closedAt 0 checkedRead = true)
 ```
@@ -577,6 +608,7 @@ theorem linking_structure_nonvacuous :
 * **Lean name(s):** `checkedRead_not_hasType`.
 
 ```lean
+-- lean/ToySemType/Results.lean:481
 theorem checkedRead_not_hasType (Γ : List Ty) (τ : Ty) : ¬ HasType Γ checkedRead τ
 ```
 
@@ -594,6 +626,7 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Concrete.lean:51-52
 theorem checkedRead_applied_semTyped (n : Nat) :
     SemTyped Recipe.std [] (.app checkedRead (.num n)) .int
 ```
@@ -604,6 +637,7 @@ theorem checkedRead_applied_semTyped (n : Nat) :
 * **Lean name(s):** `checkedRead_semTyped`.
 
 ```lean
+-- lean/ToySemType/Concrete.lean:45
 theorem checkedRead_semTyped : SemTyped Recipe.std [] checkedRead (.arrow .int .int)
 ```
 
@@ -625,6 +659,7 @@ Basis: derived (modeling bridge) — A Rust library that wraps an unchecked acce
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Concrete.lean:51-52
 theorem checkedRead_applied_semTyped (n : Nat) :
     SemTyped Recipe.std [] (.app checkedRead (.num n)) .int
 ```
@@ -635,6 +670,7 @@ theorem checkedRead_applied_semTyped (n : Nat) :
 * **Lean name(s):** `checkedRead_hasType_clients_safe`.
 
 ```lean
+-- lean/ToySemType/Results.lean:486-488
 theorem checkedRead_hasType_clients_safe {τ : Ty} {c : Expr}
     (hc : HasType [.arrow .int .int] c τ) (h : Heap) :
     Safe (.app (.lam c) checkedRead, h)
@@ -658,14 +694,17 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:985-987
 theorem checkedRead_client_hyp_tight :
     (∀ τ, ¬ HasType [.arrow .int .int] castResultClient τ) ∧
     ¬ Safe (.app (.lam castResultClient) checkedRead, [])
 
+-- lean/ToySemType/Results.lean:976-978
 theorem checkedRead_single_var_ctx_tight :
     HasType [.arrow .int .int, .int] (.var 1) .int ∧
     ¬ Safe (.app (.lam (.var 1)) checkedRead, [])
 
+-- lean/ToySemType/Results.lean:1079-1081
 theorem hasType_client_semTyped_lib_nonvacuous :
     HasType [.arrow .int .int] callWith7 .int ∧
     SemTyped Recipe.std [] checkedRead (.arrow .int .int)
@@ -677,6 +716,7 @@ theorem hasType_client_semTyped_lib_nonvacuous :
 * **Lean name(s):** `forgedRead_unsafe_ill_typed`.
 
 ```lean
+-- lean/ToySemType/Results.lean:500-502
 theorem forgedRead_unsafe_ill_typed :
     (∀ Γ τ, ¬ HasType Γ forgedRead τ) ∧ (∀ τ, ¬ SemTyped Recipe.std [] forgedRead τ) ∧
     ¬ Safe (forgedRead, [])
@@ -699,13 +739,16 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 * **Lean name(s):** `cast_of_int_var_not_semTyped_of_closureEnforcesValues_of_hasInvalidRef`, `cast_of_int_var_not_semTyped`, `typing_relation_deriving_cast_of_int_var_unsound`.
 
 ```lean
+-- lean/ToySemType/Results.lean:520-522
 theorem cast_of_int_var_not_semTyped_of_closureEnforcesValues_of_hasInvalidRef {R : Recipe}
     (hclose : R.ClosureEnforcesValues) (hinv : R.HasInvalidRef) (τ : Ty) :
     ¬ SemTyped R [.int] (.cast (.var 0)) τ
 
+-- lean/ToySemType/Results.lean:537-538
 theorem cast_of_int_var_not_semTyped (τ : Ty) :
     ¬ SemTyped Recipe.std [.int] (.cast (.var 0)) τ
 
+-- lean/ToySemType/Results.lean:544-546
 theorem typing_relation_deriving_cast_of_int_var_unsound
     (T : List Ty → Expr → Ty → Prop) (τ : Ty) (hT : T [.int] (.cast (.var 0)) τ) :
     ¬ (∀ Γ e τ', T Γ e τ' → SemTyped Recipe.std Γ e τ')
@@ -731,22 +774,27 @@ Basis: derived (modeling bridge) — In Rust, a uniform rule turning integers in
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:1019-1021
 theorem cast_of_int_var_semTyped_safetyOnly :
     Recipe.safetyOnly.HasInvalidRef ∧
     ∀ τ, SemTyped Recipe.safetyOnly [.int] (.cast (.var 0)) τ
 
+-- lean/ToySemType/Results.lean:1030-1032
 theorem cast_of_int_var_semTyped_anyLoc_ref :
     Recipe.anyLoc.ClosureEnforcesValues ∧
     SemTyped Recipe.anyLoc [.int] (.cast (.var 0)) .ref
 
+-- lean/ToySemType/Results.lean:1042-1044
 theorem typing_relation_hyp_tight :
     (∀ τ, ¬ RestrictedCastRule [.int] (.cast (.var 0)) τ) ∧
     (∀ Γ e τ, RestrictedCastRule Γ e τ → SemTyped Recipe.std Γ e τ)
 
+-- lean/ToySemType/Results.lean:1100-1102
 theorem cast_of_int_var_not_semTyped_nonvacuous :
     Recipe.std.ClosureEnforcesValues ∧ Recipe.std.HasInvalidRef ∧
     G Recipe.std [.int] 0 [.num 7]
 
+-- lean/ToySemType/Results.lean:1111
 theorem typing_relation_nonvacuous : withCastRootRule [.int] (.cast (.var 0)) .ref
 ```
 
@@ -756,6 +804,7 @@ theorem typing_relation_nonvacuous : withCastRootRule [.int] (.cast (.var 0)) .r
 * **Lean name(s):** `cast_literal_safe_but_not_semTyped`.
 
 ```lean
+-- lean/ToySemType/Results.lean:595-596
 theorem cast_literal_safe_but_not_semTyped (n : Nat) :
     (∀ h, Safe (.cast (.num n), h)) ∧ ∀ τ, ¬ SemTyped Recipe.std [] (.cast (.num n)) τ
 ```
@@ -779,6 +828,7 @@ Basis: derived (modeling bridge) — The safety half of this card depends on def
 * **Lean name(s):** `valuesOnly_adequacy_fails`.
 
 ```lean
+-- lean/ToySemType/Results.lean:610-611
 theorem valuesOnly_adequacy_fails :
     SemTyped Recipe.valuesOnly [] forgedRead .int ∧ ¬ Safe (forgedRead, [])
 ```
@@ -800,6 +850,7 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 * **Lean name(s):** `safetyOnly_semTyped_nil_iff_safe`.
 
 ```lean
+-- lean/ToySemType/Results.lean:629-630
 theorem safetyOnly_semTyped_nil_iff_safe {e : Expr} {τ : Ty} :
     SemTyped Recipe.safetyOnly [] e τ ↔ ∀ h, Safe (e, h)
 ```
@@ -819,9 +870,11 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:1009-1010
 theorem safetyOnly_nil_ctx_hyp_tight :
     SemTyped Recipe.safetyOnly [.int] (.var 0) .int ∧ ¬ (∀ h, Safe (.var 0, h))
 
+-- lean/ToySemType/Results.lean:1051-1054
 theorem safetyOnly_semTyped_nil_iff_safe_nonvacuous :
     SemTyped Recipe.safetyOnly [] castSeven (.arrow .int .ref) ∧
     (∀ h, Safe (castSeven, h)) ∧
@@ -834,12 +887,14 @@ theorem safetyOnly_semTyped_nil_iff_safe_nonvacuous :
 * **Lean name(s):** `safetyOnly_breaks_fundamental_and_encapsulation`, `safetyOnly_breaks_let_compat`.
 
 ```lean
+-- lean/ToySemType/Results.lean:651-655
 theorem safetyOnly_breaks_fundamental_and_encapsulation :
     HasType [.arrow .int .ref] readResultOf0 .int ∧
     SemTyped Recipe.safetyOnly [] castSeven (.arrow .int .ref) ∧
     ¬ SemTyped Recipe.safetyOnly [.arrow .int .ref] readResultOf0 .int ∧
     ¬ Safe (.app (.lam readResultOf0) castSeven, [])
 
+-- lean/ToySemType/Results.lean:672-676
 theorem safetyOnly_breaks_let_compat :
     SemTyped Recipe.safetyOnly [.int] (.lt (.var 0) (.num 0)) .int ∧
     SemTyped Recipe.safetyOnly [] (.lam (.num 0)) .int ∧
@@ -864,6 +919,7 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 * **Lean name(s):** `nonKripke_breaks_monotonicity_and_fundamental`, `nonKripke_breaks_closed_encapsulation`.
 
 ```lean
+-- lean/ToySemType/Results.lean:733-738
 theorem nonKripke_breaks_monotonicity_and_fundamental :
     V Recipe.nonKripke (.arrow .ref .int) 1 probeCellZero ∧
     ¬ V Recipe.nonKripke (.arrow .ref .int) 2 probeCellZero ∧
@@ -871,6 +927,7 @@ theorem nonKripke_breaks_monotonicity_and_fundamental :
     HasType [.arrow .ref .int] callOnFreshCell .int ∧
     ¬ SemTyped Recipe.nonKripke [.arrow .ref .int] callOnFreshCell .int
 
+-- lean/ToySemType/Results.lean:764-767
 theorem nonKripke_breaks_closed_encapsulation :
     HasType [.arrow .ref .int] callOnFreshCell .int ∧
     SemTyped Recipe.nonKripke [] sizeGuardedProbe (.arrow .ref .int) ∧
@@ -897,6 +954,7 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 * **Lean name(s):** `anyLoc_breaks_fundamental`.
 
 ```lean
+-- lean/ToySemType/Results.lean:796-798
 theorem anyLoc_breaks_fundamental :
     HasType [] derefArg (.arrow .ref .int) ∧
     ¬ SemTyped Recipe.anyLoc [] derefArg (.arrow .ref .int)
@@ -920,6 +978,7 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 * **Lean name(s):** `synVal_rejects_checkedRead`.
 
 ```lean
+-- lean/ToySemType/Results.lean:812-815
 theorem synVal_rejects_checkedRead :
     (∀ W, V Recipe.std (.arrow .int .int) W checkedRead) ∧
     (∀ τ W, ¬ SynVal τ W checkedRead) ∧
@@ -944,6 +1003,7 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 * **Lean name(s):** `V_std_mono`.
 
 ```lean
+-- lean/ToySemType/Results.lean:26-27
 theorem V_std_mono {τ : Ty} {W W' : Nat} {v : Expr} (hW : W ≤ W')
     (h : V Recipe.std τ W v) : V Recipe.std τ W' v
 ```
@@ -967,12 +1027,15 @@ Basis: execution (Lean kernel check) — the statement(s) above and every witnes
 Verbatim statements of the counterexamples, witnesses, and controls named above:
 
 ```lean
+-- lean/ToySemType/Results.lean:993-994
 theorem V_std_mono_hyp_tight :
     ¬ (1 ≤ 0) ∧ V Recipe.std .ref 1 (.loc 0) ∧ ¬ V Recipe.std .ref 0 (.loc 0)
 
+-- lean/ToySemType/Results.lean:1000-1001
 theorem V_std_mono_val_hyp_tight :
     (0 ≤ 1) ∧ ¬ V Recipe.std .ref 0 (.loc 1) ∧ ¬ V Recipe.std .ref 1 (.loc 1)
 
+-- lean/ToySemType/Results.lean:1086-1088
 theorem V_std_mono_nonvacuous :
     (1 ≤ 2 ∧ V Recipe.std .ref 1 (.loc 0)) ∧
     (0 ≤ 1 ∧ V Recipe.std (.arrow .ref .int) 0 derefArg)
@@ -1007,7 +1070,7 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * Is stated for `Recipe.std` only; the same one-step argument applies to any recipe whose expression closure implies `safeOnly` (e.g. `Recipe.anyLoc`, `Recipe.nonKripke`, `Recipe.safetyOnly`), but that is not stated.
 * Says nothing about termination: divergence is safe.
 * Depth is definitional: the content of the model lies in the fundamental theorem and in let-compatibility, not here; adequacy alone does not validate a model (see `safetyOnly_semTyped_nil_iff_safe`).
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R2. Fundamental theorem** [`fundamental-theorem`]
 
@@ -1016,14 +1079,14 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * The function case of `V` carries the syntactic side condition `b.closedAt 1 = true` (so that the shifting-free substitution is capture-free). Syntactically typed terms satisfy it, but operationally safe abstractions with free variables in dead code are excluded from `V` (`V_std_rejects_open_dead_lam`: `λ x. ifz 0 x y`), so `V` is not a purely extensional realizability predicate.
 * The absence of step-indexing relies on this toy's restrictions (word-only store, no recursive types); it does not show step-indexing is unnecessary for richer languages.
 * Does not hold for the ablated recipes `Recipe.safetyOnly`, `Recipe.nonKripke`, `Recipe.anyLoc` (see their counterexamples); its status for `Recipe.valuesOnly` is unknown (not examined).
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R3. Syntactic type safety (corollary)** [`syntactic-type-safety-corollary`]
 
 * Does not establish preservation (semantic soundness implies syntactic safety but not preservation).
 * Says nothing about programs that use `cast`; for those see the encapsulation principle.
 * Its proof depends on the two main results above; it is a corollary, not independent evidence.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R4. Semantic let-compatibility (linking)** [`semantic-let-compatibility`]
 
@@ -1032,7 +1095,7 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * Does not depend on, and does not imply, any syntactic typing of `c` or `lib`.
 * Cannot verify a stateful unsafe library whose safety depends on an invariant over the contents of heap cells preserved across calls (for example a stored length bound, or a private monotone counter as in the symbol ADT of Timany et al. 2024): worlds `W : Nat` record only a lower bound on the heap length, and `safeAndIn` quantifies over all heaps of at least that length with arbitrary cell contents. `cellBoundRead_not_semTyped` shows that `cellBoundRead` (a raw read guarded by a bound stored in a private cell) is not semantically typed at its interface type `int ⇒ int` (`¬ SemTyped std [] cellBoundRead (int ⇒ int)`), although it is safe with the client `x 7` (`cellBoundRead_callWith7_safe`). Invariants and ghost state, as in Iris-based models such as RustBelt, are what lift this restriction.
 * Imposes no closedness condition on the client `c`, and does not imply an unconditional semantic `lam`-introduction rule: the function case of `V` requires a body closed under one binder (`b.closedAt 1 = true`), so semantic `lam`-introduction needs `b.closedAt (Γ.length + 1) = true` (which the syntactic `lam` rule supplies in `fundamental_hasType_semTyped`). `semTyped_lam_compat_needs_closedAt` shows a client `ifz 1 (var 1) 0` semantically typed at `int` in `[int]` whose abstraction is not semantically typed at `int ⇒ int` in the empty context, while the linked program `(λ. ifz 1 (var 1) 0) 7` is semantically typed; the linked program never places `λ. c` in `V` because call-by-value β-reduction consumes it.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R5. Linking safety, semantic client** [`linking-safety-semantic-client`]
 
@@ -1040,7 +1103,7 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * Covers only call-by-value let-linking `app (lam c) lib` of one library expression, typed in the empty context, into a client whose context is exactly the one library variable of the library's type; textual substitution `c[lib/0]` of a non-value library (which would duplicate or drop its effects), several libraries, and libraries sharing state are not covered.
 * Does not say that the client cannot observe or modify the library's cells: the toy has no ownership or abstraction (e.g. `checkedRead` can read any allocated cell, and a client can overwrite any cell it holds a reference to).
 * Cannot verify a stateful unsafe library whose safety depends on an invariant over the contents of heap cells preserved across calls (for example a stored length bound, or a private monotone counter as in the symbol ADT of Timany et al. 2024): worlds `W : Nat` record only a lower bound on the heap length, and `safeAndIn` quantifies over all heaps of at least that length with arbitrary cell contents. `cellBoundRead_not_semTyped` shows that `cellBoundRead` (a raw read guarded by a bound stored in a private cell) is not semantically typed at its interface type `int ⇒ int` (`¬ SemTyped std [] cellBoundRead (int ⇒ int)`), although it is safe with the client `x 7` (`cellBoundRead_callWith7_safe`). Invariants and ghost state, as in Iris-based models such as RustBelt, are what lift this restriction.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R6. Encapsulation principle** [`encapsulation-principle`]
 
@@ -1048,12 +1111,12 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * Covers only call-by-value let-linking `app (lam c) lib` of one library expression, typed in the empty context, into a client whose context is exactly the one library variable of the library's type; textual substitution `c[lib/0]` of a non-value library (which would duplicate or drop its effects), several libraries, and libraries sharing state are not covered.
 * Cannot verify a stateful unsafe library whose safety depends on an invariant over the contents of heap cells preserved across calls (for example a stored length bound, or a private monotone counter as in the symbol ADT of Timany et al. 2024): worlds `W : Nat` record only a lower bound on the heap length, and `safeAndIn` quantifies over all heaps of at least that length with arbitrary cell contents. `cellBoundRead_not_semTyped` shows that `cellBoundRead` (a raw read guarded by a bound stored in a private cell) is not semantically typed at its interface type `int ⇒ int` (`¬ SemTyped std [] cellBoundRead (int ⇒ int)`), although it is safe with the client `x 7` (`cellBoundRead_callWith7_safe`). Invariants and ghost state, as in Iris-based models such as RustBelt, are what lift this restriction.
 * Does not cover deallocation or concurrency.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R7. The encapsulated library is not syntactically typable** [`checked-read-not-syntactically-typable`]
 
 * Only about this `HasType`. Adding the uniform rule `Γ ⊢ a : int ⟹ Γ ⊢ cast a : ref` would be unsound for the standard model (`typing_relation_deriving_cast_of_int_var_unsound` applies to `withCastRootRule`, by `typing_relation_nonvacuous`), but restricted rules with `cast` at the root can be sound (`restrictedCastRule_sound`: `ref :: Γ ⊢ cast 0 : ref` and `Γ ⊢ cast ((λ _. 0) (alloc 0)) : ref`). It is not claimed that no typing rule mentioning `cast` can be sound.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R8. The encapsulated library is semantically well typed** [`checked-read-semantically-typed`]
 
@@ -1063,7 +1126,7 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * `checkedRead` is semantically typed only because it compares against the primitive `size` (the current heap length) on every call and relies on no stored cell contents. Cannot verify a stateful unsafe library whose safety depends on an invariant over the contents of heap cells preserved across calls (for example a stored length bound, or a private monotone counter as in the symbol ADT of Timany et al. 2024): worlds `W : Nat` record only a lower bound on the heap length, and `safeAndIn` quantifies over all heaps of at least that length with arbitrary cell contents. `cellBoundRead_not_semTyped` shows that `cellBoundRead` (a raw read guarded by a bound stored in a private cell) is not semantically typed at its interface type `int ⇒ int` (`¬ SemTyped std [] cellBoundRead (int ⇒ int)`), although it is safe with the client `x 7` (`cellBoundRead_callWith7_safe`). Invariants and ghost state, as in Iris-based models such as RustBelt, are what lift this restriction.
 * The single comparison `lt n size` suffices without a lower-bound check only because words are unsigned naturals; with signed integers a two-sided check would be needed.
 * Models a global `peek(n)` on the heap rather than a container-scoped `get(i)`: `checkedRead` takes no reference or slice argument and reads any allocated cell.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R9. Every syntactically typed client of the library is safe** [`checked-read-syntactic-clients-safe`]
 
@@ -1071,13 +1134,13 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * Linking is restricted to call-by-value `app (lam c) checkedRead` with the client's only free variable bound to the library.
 * Does not say that the client cannot observe or modify the library's cells: the toy has no ownership or abstraction (e.g. `checkedRead` can read any allocated cell, and a client can overwrite any cell it holds a reference to).
 * `checkedRead` relies only on the primitive `size`; this result says nothing about libraries whose safety depends on stored cell contents, which the standard model cannot verify (`cellBoundRead_not_semTyped`: `cellBoundRead` is not semantically typed at `int ⇒ int`).
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R10. An unsafe use: stuck and semantically ill typed** [`forged-read-unsafe-and-semantically-ill-typed`]
 
 * Only from the empty heap: from heaps with more than 7 cells it is safe.
 * Semantic ill-typedness is stated for the empty context: `read (cast 0)` has no semantic type in `[]` but is semantically typed at `int` in `[ref]`, because a `ref` assumption forces cell 0 to be allocated (`read_cast_zero_semTyped_ref_ctx`).
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R11. `cast` of an `int` variable has no semantic type (impossibility)** [`cast-of-int-variable-has-no-semantic-type`]
 
@@ -1085,32 +1148,32 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * Escape hatches: the conclusion fails if the closure does not enforce values (`Recipe.safetyOnly`: `cast x` is then semantically typed at every type) or if every address is a valid reference (`Recipe.anyLoc`: `cast x` is then semantically typed at `ref`, but that recipe breaks the fundamental theorem, `anyLoc_breaks_fundamental`).
 * Depends on `cast` producing the single reference type `ref`, which supports a safe `read`. A design that separates raw addresses (no validity invariant, no safe dereference) from references is not modeled, and this result gives no obstruction to casting words to such a raw type. (Safe Rust allows integer-to-raw-pointer casts and requires `unsafe` to dereference a raw pointer.)
 * Does not exclude sound typing rules for `cast` in richer type systems that constrain the argument (e.g. refinement types restricting it to allocated addresses).
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R11b. Safety does not imply semantic typing** [`cast-literal-safe-but-not-semantically-typed`]
 
 * Safety of `cast n` relies on this machine deferring undefined behavior to `read` and `write` (the cast itself always steps to `loc n`). In Rust, producing a dangling or unaligned reference value is already undefined behavior, even if it is never dereferenced (Rust Reference, 'Behavior considered undefined').
 * Under the safety-only closure (`Recipe.safetyOnly`), `cast n` is semantically typed at every type (by `safetyOnly_semTyped_nil_iff_safe` and the first conjunct); the separation depends on the value conjunct of `safeAndIn`.
 * Proved directly; it is not derived from `cast_of_int_var_not_semTyped`.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R12. Dropping safety from the expression closure breaks adequacy** [`values-only-closure-breaks-adequacy`]
 
 * Concerns the partial-correctness closure `valuesIn`, which holds vacuously for executions that get stuck. A total-correctness closure requiring convergence to a value in the interpretation would exclude stuck executions, because the semantics is deterministic (`safe_of_reaches_value`), but it would also reject divergent programs; such a closure is not examined here.
 * Does not claim the fundamental theorem fails for `Recipe.valuesOnly` (unknown; not examined).
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R13. The safety-only closure collapses semantic typing to safety** [`safety-only-closure-collapses-typing-to-safety`]
 
 * Only for the empty context. In a non-empty context the context interpretation still requires the substituted values to have the right shape (a word for `int`, an allocated `loc l` for `ref`, a closed abstraction for an arrow type), so semantic typing is not just safety there (`safetyOnly_nil_ctx_hyp_tight`).
 * Adequacy holding for this shortcut does not make it a good model: it breaks the fundamental theorem and linking (`safetyOnly_breaks_fundamental_and_encapsulation`, `safetyOnly_breaks_let_compat`).
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R14. Dropping the value part breaks the fundamental theorem, encapsulation, and linking** [`safety-only-closure-breaks-fundamental-theorem-and-linking`]
 
 * Part (1) does not instantiate semantic let-compatibility, because its client is not semantically typed under `Recipe.safetyOnly`; part (2) is the direct counterexample to semantic linking and needs no `cast`.
 * Shows failure for this one ablation of the standard recipe, not for every model lacking the value conjunct.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R15. Dropping Kripke structure breaks monotonicity, the fundamental theorem, and closed encapsulation** [`non-kripke-model-breaks-monotonicity-and-fundamental-theorem`]
 
@@ -1119,26 +1182,26 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * Both counterexamples combine a function-typed library with allocation by the client. At types without arrows the value interpretation does not consult `future`, so the two recipes agree there; whether `Recipe.nonKripke` breaks the fundamental theorem in a fragment without `alloc` is not examined.
 * Concerns this one non-Kripke variant (the expression interpretation still quantifies over all heaps with at least `W` cells); other non-Kripke designs are not examined.
 * "Closed encapsulation fails" refers to a syntactically typed client linked with a closed `nonKripke`-typed library. Closed semantic-client linking still holds under `Recipe.nonKripke`: a client `nonKripke`-typed in `[σ]` linked with a library `nonKripke`-typed at `σ` in the empty context is safe from every heap (`nonKripke_semTyped_client_nil_safe`), unlike under `Recipe.safetyOnly` (`safetyOnly_breaks_let_compat`). What fails for `Recipe.nonKripke` is semantic let-compatibility in a non-empty ambient context (`nonKripke_breaks_open_let_compat`: context `[ref ⇒ int]`, client `f r`, library `alloc 0`).
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R16. Treating every address as valid breaks the fundamental theorem** [`any-location-model-breaks-fundamental-theorem`]
 
 * Relies on `read` and `write` getting stuck on unallocated addresses. With dynamically checked `read`/`write` that return a default or error value instead, this counterexample would not apply; such a semantics is not formalized here.
 * Adequacy still holds for `Recipe.anyLoc` (its expression closure is `safeAndIn`), but this is not stated.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R17. The syntactic value interpretation cannot express encapsulation** [`syntactic-value-interpretation-rejects-encapsulated-library`]
 
 * `SynVal` includes store typing: it admits runtime closures that capture allocated references (`synVal_pos`: `λ _. read (loc 0)` in world 1; `captureRef_safeAndIn_synVal`: `safeAndIn (SynVal (int ⇒ int)) 0 captureRef`, i.e. from every heap, `captureRef = (λ r. λ _. read r) (alloc 5)` never gets stuck and every value it reaches is in `SynVal (int ⇒ int)` at the length of the reached heap). Its rejection of `checkedRead` comes from the absence of any typing rule for `cast` (`SynVal.castFree`), so it rejects every value containing `cast`.
 * Does not claim that a `SynVal`-based model fails adequacy or a fundamental theorem for `HasType`; not examined.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 **R18. Kripke monotonicity** [`kripke-monotonicity`]
 
 * States monotonicity of the value interpretation only (the expression interpretation is also monotone in `W`, trivially, but this is not stated).
 * The proof does not use the expression closure; monotonicity holds for any recipe whose `refOK` is monotone in the world and for which `future W' W''` implies `future W W''` whenever `W ≤ W'`, but that is not stated.
 * Relies on the absence of deallocation; with deallocation validity is not monotone.
-* Applies only to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); it is not a statement about Rust or any real verifier.
+* Applies to the toy language of this package (words modeled as unsigned naturals, a heap of word cells with allocation but no deallocation, one unchecked integer-to-reference cast, no recursion, no ownership, no concurrency); these theorems neither establish nor refute the corresponding claims about Rust, RustBelt-style verification of Rust libraries, or any other real verifier; the modeling-bridge paragraphs under Findings argue the connection separately.
 
 ### Attractive stronger conclusions that are not established
 
@@ -1157,6 +1220,7 @@ Each list is self-contained; every Lean name mentioned is a fully proved declara
 * Change the type language: R11 depends on `cast` returning the single type `ref`, whose `read` is safe. A separate raw-address type with no validity invariant is not modeled, and no obstruction to casting words to such a type is shown. Refinement-typed rules (for example, `cast` of a word known to be below `size`) are not excluded.
 
 ```lean
+-- lean/ToySemType/Results.lean:1407-1410
 theorem cast_of_int_var_not_semTyped_anyLoc_nonRef :
     ¬ Recipe.anyLoc.HasInvalidRef ∧
     ¬ SemTyped Recipe.anyLoc [.int] (.cast (.var 0)) .int ∧
@@ -1168,6 +1232,7 @@ theorem cast_of_int_var_not_semTyped_anyLoc_nonRef :
 **Semantic let-compatibility needs no closedness of the client, but semantic `lam`-introduction does.** Because the function case of `V` requires `b.closedAt 1 = true`, the rule "`SemTyped std (σ :: Γ) b τ` implies `SemTyped std Γ (lam b) (σ ⇒ τ)`" is false without the side condition `b.closedAt (Γ.length + 1) = true` (which the syntactic `lam` rule supplies inside R2). R4 nonetheless holds with no condition on `c`, because call-by-value β-reduction of `app (lam c) lib` consumes `lam c` and never places it in `V`. R4 therefore does not factor through, and does not imply, an unconditional semantic `lam` rule. Kernel-checked:
 
 ```lean
+-- lean/ToySemType/Results.lean:1309-1312
 theorem semTyped_lam_compat_needs_closedAt :
     SemTyped Recipe.std [.int] (.ifz (.num 1) (.var 1) (.num 0)) .int ∧
     ¬ SemTyped Recipe.std [] (.lam (.ifz (.num 1) (.var 1) (.num 0))) (.arrow .int .int) ∧
@@ -1177,11 +1242,13 @@ theorem semTyped_lam_compat_needs_closedAt :
 **What exactly fails without Kripke structure.** R15's "closed encapsulation fails" concerns a *syntactically* typed client linked with a closed `nonKripke`-typed library. Closed *semantic*-client linking still holds under `Recipe.nonKripke`, because with an empty ambient context there is no closing substitution that must survive the library's allocations. This contrasts with `Recipe.safetyOnly`, under which even closed semantic-client linking fails (`safetyOnly_breaks_let_compat`). What fails under `Recipe.nonKripke` is semantic let-compatibility in a **non-empty** ambient context. Kernel-checked:
 
 ```lean
+-- lean/ToySemType/Results.lean:1335-1338
 theorem nonKripke_semTyped_client_nil_safe {σ τ : Ty} {c lib : Expr}
     (hc : SemTyped Recipe.nonKripke [σ] c τ)
     (hlib : SemTyped Recipe.nonKripke [] lib σ) (h : Heap) :
     Safe (.app (.lam c) lib, h)
 
+-- lean/ToySemType/Results.lean:1356-1360
 theorem nonKripke_breaks_open_let_compat :
     SemTyped Recipe.nonKripke [.ref, .arrow .ref .int] (.app (.var 1) (.var 0)) .int ∧
     SemTyped Recipe.nonKripke [.arrow .ref .int] (.alloc (.num 0)) .ref ∧
