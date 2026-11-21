@@ -18,14 +18,25 @@ on:
         required: true
         default: 'main'
 
-permissions: {}
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      branch:
+        required: true
+        type: string
+    secrets:
+      GOOGLE_PR_CREATION_BOT_TOKEN:
+        required: false
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+permissions: {}
 
 jobs:
   release:
+    concurrency:
+      group: zerocopy-release-preparation-${{ inputs.branch }}
+      cancel-in-progress: true
     permissions:
       contents: read
       pull-requests: write # Required to create pull requests
@@ -35,22 +46,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ inputs.branch }}
           persist-credentials: false
       - name: Overwrite Cargo.toml files
         env:
-          VERSION: ${{ github.event.inputs.version }}
+          VERSION: ${{ inputs.version }}
         run: ./zerocopy/ci/release_crate_version.sh "$VERSION"
 
       - name: Submit PR
         id: submit-pr
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.0 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1 # zizmor: ignore[superfluous-actions]
         with:
-          commit-message: "Release ${{ github.event.inputs.version }}"
+          commit-message: "Release ${{ inputs.version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
-          title: "Release ${{ github.event.inputs.version }}"
-          branch: release-${{ github.event.inputs.version }}
+          title: "Release ${{ inputs.version }}"
+          branch: release-${{ inputs.version }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
 

@@ -15,6 +15,7 @@ edition = "2024"
 description = "Formally verify Rust programs in Lean 4."
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy/tree/main/anneal"
+readme = "../../README.md"
 
 # Release preparation pins the published x86-64 Linux archive before
 # crates.io publication. An all-zero digest keeps remote setup disabled.
@@ -22,7 +23,7 @@ repository = "https://github.com/google/zerocopy/tree/main/anneal"
 os = "linux"
 arch = "x86_64"
 sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
-url = "https://github.com/google/zerocopy/releases/download/anneal-mir-toolchain-v0.2.0-alpha.1/anneal-toolchain-linux-x86_64.tar.zst"
+url = "https://github.com/google/zerocopy/releases/download/anneal-toolchain-v0.2.0-alpha.1/anneal-toolchain-linux-x86_64.tar.zst"
 
 [[bin]]
 name = "cargo-anneal"

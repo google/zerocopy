@@ -15,27 +15,30 @@ on:
     paths:
       - 'zerocopy/Cargo.toml'
       - 'zerocopy/zerocopy-derive/Cargo.toml'
+      - 'anneal/trusted/cargo-anneal/Cargo.toml'
   workflow_dispatch:
     inputs:
-      track:
-        description: Anneal MIR release operation
+      project:
+        description: Project to release
         type: choice
         required: true
+        default: zerocopy
         options:
-          - mir-prepare
-          - mir-publish
+          - zerocopy
+          - anneal
       version:
-        description: Anneal MIR alpha version
+        description: Crate version to prepare
         required: true
         type: string
+      branch:
+        description: Branch to update
+        required: true
+        type: string
+        default: main
 
 # We set no permissions at the top level, and instead set them granularly for
 # each job.
 permissions: {}
-
-concurrency:
-  group: ${{ github.event_name == 'workflow_dispatch' && 'anneal-mir-release' || 'release' }}
-  cancel-in-progress: false
 
 jobs:
   check-version:
@@ -106,6 +109,9 @@ jobs:
     needs: check-version
     if: needs.check-version.outputs.changed == 'true'
     runs-on: ubuntu-latest
+    concurrency:
+      group: release
+      cancel-in-progress: false
     defaults:
       run:
         working-directory: zerocopy
@@ -237,20 +243,37 @@ jobs:
           fi
           gh release create "${ARGS[@]}"
 
-  mir-build-archive:
-    name: Build the MIR alpha archive
+  prepare-zerocopy:
+    name: Prepare Zerocopy release
+    if: github.event_name == 'workflow_dispatch' && inputs.project == 'zerocopy'
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: ./.github/workflows/release-crate-version.yml
+    with:
+      version: ${{ inputs.version }}
+      branch: ${{ inputs.branch }}
+    secrets:
+      GOOGLE_PR_CREATION_BOT_TOKEN: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+
+  anneal-build-archive:
+    name: Prepare Anneal release archive
     if: >-
-      github.event_name == 'workflow_dispatch' && inputs.track == 'mir-prepare'
-      && github.ref == 'refs/heads/main' && github.repository == 'google/zerocopy'
+      github.event_name == 'workflow_dispatch' && inputs.project == 'anneal'
+      && inputs.branch == 'main' && github.ref == 'refs/heads/main'
+      && github.repository == 'google/zerocopy'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     permissions:
       contents: read
+    outputs:
+      source: ${{ steps.prepare.outputs.source }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Validate input
+      - name: Stage the release source
+        id: prepare
         working-directory: anneal
         env:
           VERSION: ${{ inputs.version }}
@@ -261,7 +284,9 @@ jobs:
         run: |
           set -euo pipefail
           test "$GITHUB_REF" = refs/heads/main
-          python3 -B ci/alpha_release.py "$VERSION"
+          source="$(python3 -B ci/alpha_release.py "$VERSION" --prepare)"
+          git checkout --detach "$source"
+          printf 'source=%s\n' "$source" >> "$GITHUB_OUTPUT"
       - uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
       - name: Build the pinned x86-64 Linux toolchain
         working-directory: anneal
@@ -276,15 +301,18 @@ jobs:
           cp "$archive" "$RUNNER_TEMP/anneal-toolchain-linux-x86_64.tar.zst"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: anneal-mir-alpha-archive
+          name: anneal-alpha-archive
           path: ${{ runner.temp }}/anneal-toolchain-linux-x86_64.tar.zst
           compression-level: 0
           if-no-files-found: error
 
-  mir-host-archive:
-    name: Host the MIR alpha archive and propose its digest
-    needs: mir-build-archive
+  anneal-host-archive:
+    name: Host the archive and open the Anneal release PR
+    needs: anneal-build-archive
     runs-on: ubuntu-latest
+    concurrency:
+      group: anneal-prepare-${{ inputs.version }}
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:
@@ -293,14 +321,27 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          name: anneal-mir-alpha-archive
-          path: ${{ runner.temp }}/mir-alpha
+          name: anneal-alpha-archive
+          path: ${{ runner.temp }}/anneal-alpha
+      - name: Recreate the archive source
+        working-directory: anneal
+        env:
+          VERSION: ${{ inputs.version }}
+          SOURCE_SHA: ${{ needs.anneal-build-archive.outputs.source }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+        run: |
+          set -euo pipefail
+          source="$(python3 -B ci/alpha_release.py "$VERSION" --prepare)"
+          test "$source" = "$SOURCE_SHA"
       - name: Host the immutable archive
         working-directory: anneal
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ inputs.version }}
-          SOURCE_SHA: ${{ github.sha }}
+          SOURCE_SHA: ${{ needs.anneal-build-archive.outputs.source }}
           ACTIONS_CACHE_URL: ''
           ACTIONS_RESULTS_URL: ''
           ACTIONS_RUNTIME_TOKEN: ''
@@ -309,7 +350,7 @@ jobs:
           set -euo pipefail
           tag="$(env -u GH_TOKEN python3 -B ci/alpha_release.py "$VERSION")"
           asset=anneal-toolchain-linux-x86_64.tar.zst
-          archive="$RUNNER_TEMP/mir-alpha/$asset"
+          archive="$RUNNER_TEMP/anneal-alpha/$asset"
           tag_api="repos/$GITHUB_REPOSITORY/git/ref/tags/$tag"
           read_tag() {
             gh api "$tag_api" --jq '.object | select(.type == "commit") | .sha'
@@ -317,14 +358,14 @@ jobs:
           expected=''
           if ! gh release view "$tag" >/dev/null 2>&1; then
             if ! target="$(read_tag 2>/dev/null)"; then
-              gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
-                -f "ref=refs/tags/$tag" -f "sha=$SOURCE_SHA" --silent
+              git -c credential.helper= -c 'credential.helper=!gh auth git-credential' \
+                push origin "$SOURCE_SHA:refs/tags/$tag"
               target="$(read_tag)"
             fi
             test "$target" = "$SOURCE_SHA"
             expected="$(sha256sum "$archive" | cut -d ' ' -f1)"
             gh release create "$tag" "$archive" --verify-tag --prerelease \
-              --title "Anneal MIR alpha toolchain $VERSION" \
+              --title "Anneal alpha toolchain $VERSION" \
               --notes "Pinned x86-64 Linux omnibus archive built from $SOURCE_SHA."
           fi
           target="$(read_tag)"
@@ -342,35 +383,75 @@ jobs:
           test -z "$expected" || test "$digest" = "$expected"
           env -u GH_TOKEN git fetch --no-tags origin "$target"
           env -u GH_TOKEN python3 -B ci/alpha_release.py "$VERSION" \
-            --archive-base "$target" --pin "$digest"
-      - name: Open the archive pin PR
+            --archive-base "$target" --archive-tree "$SOURCE_SHA" --pin "$digest"
+      - name: Open the Anneal release PR
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1 # zizmor: ignore[superfluous-actions]
         with:
-          commit-message: "Pin the Anneal MIR alpha toolchain"
+          commit-message: |
+            Release Anneal ${{ inputs.version }}
+
+            Set the CLI version and pin the hosted toolchain digest. When the
+            version changes, update the workspace lockfile version and its
+            pinned SHA-256 together.
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
-          title: "Pin the Anneal MIR alpha toolchain"
+          title: "Release Anneal ${{ inputs.version }}"
           body: |
             ## Human review surface
 
-            Pin the published x86-64 Linux toolchain archive in the MIR alpha
-            CLI manifest. Verify the source SHA and digest on the archive release.
-            Policy relaxations. None.
+            Set the CLI version and pin the published x86-64 Linux toolchain
+            in `anneal/trusted/cargo-anneal/Cargo.toml`. When the version
+            changes, update `anneal/Cargo.lock` and its SHA-256 in
+            `anneal/trusted/root-manifest.sha256`. Review the source commit
+            and digest on the toolchain release. Policy relaxations. None.
           base: main
-          branch: anneal-mir-alpha-archive-pin
-          add-paths: anneal/trusted/cargo-anneal/Cargo.toml
+          branch: anneal-release-${{ inputs.version }}
+          add-paths: |
+            anneal/trusted/cargo-anneal/Cargo.toml
+            anneal/Cargo.lock
+            anneal/trusted/root-manifest.sha256
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
 
-  mir-qualify-package:
-    name: Qualify the packaged MIR alpha
+  check-anneal-release:
+    name: Check for a new Anneal release
     if: >-
-      github.event_name == 'workflow_dispatch' && inputs.track == 'mir-publish'
+      github.event_name == 'push'
       && github.ref == 'refs/heads/main' && github.repository == 'google/zerocopy'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Compare the release manifests across this push
+        id: check
+        working-directory: anneal
+        env:
+          BEFORE: ${{ github.event.before }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+        run: |
+          set -euo pipefail
+          version="$(python3 -B ci/alpha_release.py --changed-since "$BEFORE")"
+          printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
+
+  anneal-qualify-package:
+    name: Qualify the packaged Anneal alpha
+    needs: check-anneal-release
+    if: needs.check-anneal-release.outputs.version != ''
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
+    outputs:
+      version: ${{ needs.check-anneal-release.outputs.version }}
     env:
       CARGO_BUILD_JOBS: 2
       ACTIONS_CACHE_URL: ''
@@ -381,10 +462,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Check MIR publishing environment protections
+      - name: Check Anneal publishing environment protections
         run: |
           set -euo pipefail
-          environment_api="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/environments/anneal-mir-release"
+          environment_api="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/environments/anneal-release"
           # GitHub can create a missing job environment without protections.
           curl -fsS --retry 3 "$environment_api" | jq -e '
             .deployment_branch_policy.custom_branch_policies == true and
@@ -398,7 +479,7 @@ jobs:
       - name: Package, install, and verify a scalar function
         working-directory: anneal
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ needs.check-anneal-release.outputs.version }}
         run: |
           set -euo pipefail
           test "$GITHUB_REF" = refs/heads/main
@@ -417,11 +498,14 @@ jobs:
           (cd "$scratch" && "$cli" setup)
           python3 -B ci/probe_alpha.py --cli "$cli"
 
-  mir-publish-crate:
-    name: Publish the MIR alpha crate
-    needs: mir-qualify-package
+  anneal-publish-crate:
+    name: Publish cargo-anneal on crates.io
+    needs: anneal-qualify-package
     runs-on: ubuntu-latest
-    environment: anneal-mir-release
+    environment: anneal-release
+    concurrency:
+      group: anneal-publish-${{ needs.anneal-qualify-package.outputs.version }}
+      cancel-in-progress: false
     permissions:
       contents: read
       id-token: write
@@ -430,10 +514,10 @@ jobs:
         with:
           persist-credentials: false
       - name: Authenticate with crates.io
-        id: mir-auth
+        id: anneal-auth
         uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
       - name: Publish the qualified workspace package
         working-directory: anneal
         env:
-          CARGO_REGISTRY_TOKEN: ${{ steps.mir-auth.outputs.token }}
+          CARGO_REGISTRY_TOKEN: ${{ steps.anneal-auth.outputs.token }}
         run: cargo publish --locked -p cargo-anneal --registry crates-io

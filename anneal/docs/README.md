@@ -46,8 +46,8 @@ cargo run --locked -p anneal-audit -- \
   calls the [current verifier checks](../../.github/workflows/anneal-current.yml).
   The current checks build and install the archive, audit the trust boundary,
   and test the Rust workspace.
-- The [Release workflow](../../.github/workflows/release.yml) prepares and
-  publishes the [MIR verifier alpha](alpha.md).
+- The [release workflows](alpha.md#cut-the-release) prepare and publish
+  the [Anneal alpha](alpha.md).
 - The [Codex review guide](codex-review.md) describes review gates and the
   standalone diagnostic evaluator.
 
