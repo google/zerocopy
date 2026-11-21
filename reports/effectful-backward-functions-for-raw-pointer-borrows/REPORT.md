@@ -2,7 +2,7 @@
 
 ## Summary
 
-A Lean 4 model of translating unsafe-Rust raw-pointer reborrows (`&mut *p`, `p.as_mut()`) into a functional target with forward and backward functions. Every result below is kernel-checked in a toy model of straight-line programs over integer cells; nothing is proved about any real tool, and every connection to one is a separately labeled derived modeling bridge.
+A Lean 4 model of translating unsafe-Rust raw-pointer reborrows (`&mut *p`, `p.as_mut()`) into a functional target with forward and backward functions. Every result below is kernel-checked in a toy model of straight-line programs over integer cells; nothing is proved about any real tool, and every connection to one is a separately labeled derived modeling bridge. Model–system relation: none proved (the agreement theorems relate the package's own translations `effSem`, `lockSem` and `prophSem` to one another and to its own heap semantics `heapSem`). These are statements about the toy model; they neither establish nor refute the corresponding claims about Aeneas, Creusot, RustHorn-style prophecy encodings, or any other verifier or translation tool for unsafe-Rust raw-pointer reborrows.
 
 - **sound-lazy.** For every toy program that obeys the aliasing discipline and every initial heap, the effectful-backward (unchecked write-back) translation that ends each region at the owner's next access to its cell, or at the program end, has exactly the heap semantics' outcome: both succeed with the same final heap and local variables, or both are stuck.
 - **sound-eager.** The same holds, for programs that obey the aliasing discipline, when each region ends immediately after the later of its creation and its last use (`max i (last use) + 1`).
