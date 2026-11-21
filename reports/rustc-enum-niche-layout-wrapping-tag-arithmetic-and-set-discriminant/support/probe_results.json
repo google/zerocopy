@@ -1,0 +1,316 @@
+{
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "part_a_wrapping_niche_and_layout": {
+    "llvm_ir": {
+      "classify_middle_3niches": "define dso_local noundef range(i8 10, 31) i8 @classify_middle_3niches(i8 noundef zeroext %x) unnamed_addr #3 {\nstart:\n  %0 = icmp ne i8 %x, -1\n  tail call void @llvm.assume(i1 %0)\n  %1 = add i8 %x, 2\n  %2 = icmp ult i8 %1, 3\n  %3 = mul nsw i8 %1, 10\n  %4 = add nsw i8 %3, 10\n  %switch.offset = select i1 %2, i8 %4, i8 20\n  ret i8 %switch.offset\n}",
+      "classify_opt2_bool": "define dso_local noundef range(i8 1, 5) i8 @classify_opt2_bool(i8 noundef zeroext range(i8 -1, 3) %0) unnamed_addr #4 {\nstart:\n  %switch.tableidx = add nsw i8 %0, 1\n  %switch.cast = zext i8 %switch.tableidx to i32\n  %switch.shiftamt = shl nuw nsw i32 %switch.cast, 3\n  %switch.downshift = lshr i32 50462980, %switch.shiftamt\n  %switch.masked = trunc i32 %switch.downshift to i8\n  ret i8 %switch.masked\n}",
+      "classify_outer_edge": "define dso_local noundef range(i8 10, 31) i8 @classify_outer_edge(i8 noundef zeroext %x) unnamed_addr #4 {\nstart:\n  %0 = add i8 %x, 1\n  %1 = icmp ult i8 %0, 2\n  %2 = mul i8 %x, 10\n  %3 = add i8 %2, 30\n  %switch.offset = select i1 %1, i8 %3, i8 10\n  ret i8 %switch.offset\n}",
+      "load_inner254_from_ref": "define dso_local noundef range(i8 1, -1) i8 @load_inner254_from_ref(ptr noalias noundef readonly captures(none) dereferenceable(1) %x) unnamed_addr #5 {\nstart:\n  %_2 = load i8, ptr %x, align 1, !range !10, !noundef !6\n  ret i8 %_2\n}",
+      "load_opt_bool_from_ref": "define dso_local noundef range(i8 0, 3) i8 @load_opt_bool_from_ref(ptr noalias noundef readonly captures(none) dereferenceable(1) %x) unnamed_addr #5 {\nstart:\n  %0 = load i8, ptr %x, align 1, !range !11, !noundef !6\n  %switch.selectcmp = icmp ne i8 %0, 0\n  %switch.select = zext i1 %switch.selectcmp to i8\n  %switch.selectcmp1 = icmp eq i8 %0, 2\n  %switch.select2 = select i1 %switch.selectcmp1, i8 2, i8 %switch.select\n  ret i8 %switch.select2\n}",
+      "range_metadata_nodes": [
+        "!0 = !{i32 8, !\"PIC Level\", i32 2}",
+        "!1 = !{i32 7, !\"PIE Level\", i32 2}",
+        "!2 = !{i32 2, !\"RtLibUseGOT\", i32 1}",
+        "!3 = !{i32 7, !\"uwtable\", i32 2}",
+        "!5 = !{i64 54079707058020626}",
+        "!10 = !{i8 1, i8 -1}",
+        "!11 = !{i8 0, i8 3}"
+      ]
+    },
+    "miri_rc": 0,
+    "miri_stderr": "",
+    "print_type_sizes": {
+      "Option<&u32>": [
+        "print-type-size type: `std::option::Option<&u32>`: 8 bytes, alignment: 8 bytes",
+        "print-type-size     variant `Some`: 8 bytes",
+        "print-type-size         field `.0`: 8 bytes",
+        "print-type-size     variant `None`: 0 bytes"
+      ],
+      "Option<Option<bool>>": [
+        "print-type-size type: `std::option::Option<std::option::Option<bool>>`: 1 bytes, alignment: 1 bytes",
+        "print-type-size     variant `Some`: 1 bytes",
+        "print-type-size         field `.0`: 1 bytes",
+        "print-type-size     variant `None`: 0 bytes"
+      ],
+      "Option<UnsafeCell<bool>>": [
+        "print-type-size type: `std::option::Option<std::cell::UnsafeCell<bool>>`: 2 bytes, alignment: 1 bytes",
+        "print-type-size     discriminant: 1 bytes",
+        "print-type-size     variant `Some`: 1 bytes",
+        "print-type-size         field `.0`: 1 bytes",
+        "print-type-size     variant `None`: 0 bytes"
+      ],
+      "OuterExplicitReprU8": [
+        "print-type-size type: `OuterExplicitReprU8`: 2 bytes, alignment: 1 bytes",
+        "print-type-size     discriminant: 1 bytes",
+        "print-type-size     variant `UntaggedPayload`: 1 bytes",
+        "print-type-size         field `.0`: 1 bytes",
+        "print-type-size     variant `FirstNiche`: 0 bytes",
+        "print-type-size     variant `SecondNiche`: 0 bytes"
+      ],
+      "OuterThreeEdge": [
+        "print-type-size type: `OuterThreeEdge`: 1 bytes, alignment: 1 bytes",
+        "print-type-size     variant `UntaggedPayload`: 1 bytes",
+        "print-type-size         field `.0`: 1 bytes",
+        "print-type-size     variant `FirstNiche`: 0 bytes",
+        "print-type-size     variant `SecondNiche`: 0 bytes"
+      ],
+      "OuterThreeEdgeTail": [
+        "print-type-size type: `OuterThreeEdgeTail`: 1 bytes, alignment: 1 bytes",
+        "print-type-size     variant `UntaggedPayload`: 1 bytes",
+        "print-type-size         field `.0`: 1 bytes",
+        "print-type-size     variant `FirstNiche`: 0 bytes",
+        "print-type-size     variant `SecondNiche`: 0 bytes"
+      ],
+      "OuterThreeMiddle": [
+        "print-type-size type: `OuterThreeMiddle`: 2 bytes, alignment: 1 bytes",
+        "print-type-size     discriminant: 1 bytes",
+        "print-type-size     variant `UntaggedPayload`: 1 bytes",
+        "print-type-size         field `.0`: 1 bytes",
+        "print-type-size     variant `FirstNiche`: 0 bytes",
+        "print-type-size     variant `SecondNiche`: 0 bytes"
+      ],
+      "OuterThreeMiddle3Niches": [
+        "print-type-size type: `OuterThreeMiddle3Niches`: 1 bytes, alignment: 1 bytes",
+        "print-type-size     variant `UntaggedPayload`: 1 bytes",
+        "print-type-size         field `.0`: 1 bytes",
+        "print-type-size     variant `FirstNiche`: 0 bytes",
+        "print-type-size     variant `SecondNiche`: 0 bytes"
+      ],
+      "Result<&u32, ()>": [
+        "print-type-size type: `std::result::Result<&u32, ()>`: 8 bytes, alignment: 8 bytes",
+        "print-type-size     variant `Ok`: 8 bytes",
+        "print-type-size         field `.0`: 8 bytes",
+        "print-type-size     variant `Err`: 0 bytes",
+        "print-type-size         field `.0`: 0 bytes"
+      ]
+    },
+    "runtime": {
+      "aligns_bytes": {
+        "Option_ref_u32": 8,
+        "OuterThreeEdge": 1,
+        "OuterThreeMiddle": 1,
+        "Result_ref_u32_unit": 8
+      },
+      "classifications": {
+        "Option_Option_bool": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "OuterThreeEdge": [
+          10,
+          20,
+          30
+        ],
+        "OuterThreeMiddle3Niches": [
+          10,
+          20,
+          30
+        ],
+        "load_checks": [
+          1,
+          7
+        ]
+      },
+      "raw_bytes": {
+        "Option_NonZero_u8_None": 0,
+        "Option_Option_Option_bool_None": 254,
+        "Option_Option_bool_None": 255,
+        "Option_bool": {
+          "None": 2,
+          "Some_false": 0,
+          "Some_true": 1
+        },
+        "Option_ref_u32_None_usize": 0,
+        "OuterThreeEdge": {
+          "FirstNiche": 255,
+          "SecondNiche": 0,
+          "UntaggedPayload_V1": 1,
+          "UntaggedPayload_V254": 254
+        },
+        "OuterThreeEdgeTail": {
+          "FirstNiche": 255,
+          "SecondNiche": 0,
+          "UntaggedPayload_V1": 1
+        },
+        "OuterThreeMiddle3Niches": {
+          "FirstNiche": 254,
+          "SecondNiche": 0,
+          "UntaggedPayload_V1": 1,
+          "UntaggedPayload_V253": 253,
+          "dead_middle_niche_byte": 255
+        },
+        "Result_ref_u32_unit_Err_usize": 0
+      },
+      "sizes_bytes": {
+        "Inner1To253": 1,
+        "Inner1To254": 1,
+        "Option_NonZero_u8": 1,
+        "Option_Option_NonZero_u8": 2,
+        "Option_Option_Option_bool": 1,
+        "Option_Option_bool": 1,
+        "Option_Option_ref_u32": 16,
+        "Option_OuterThreeEdge": 2,
+        "Option_UnsafeCell_NonZero_u8": 2,
+        "Option_UnsafeCell_bool": 2,
+        "Option_bool": 1,
+        "Option_ref_slice_u32": 16,
+        "Option_ref_u32": 8,
+        "OuterExplicitReprU8": 2,
+        "OuterThreeEdge": 1,
+        "OuterThreeEdgeTail": 1,
+        "OuterThreeMiddle": 2,
+        "OuterThreeMiddle3Niches": 1,
+        "Result_ref_u32_unit": 8
+      }
+    },
+    "x86_64_asm_opt2": {
+      "classify_middle_3niches": "classify_middle_3niches:\n\t.cfi_startproc\n\tleal\t2(%rdi), %eax\n\taddl\t%edi, %edi\n\tleal\t(%rdi,%rdi,4), %ecx\n\taddb\t$30, %cl\n\tcmpb\t$3, %al\n\tmovzbl\t%cl, %ecx\n\tmovl\t$20, %eax\n\tcmovbl\t%ecx, %eax\n\tretq\n.Lfunc_end5:\n\t.size\tclassify_middle_3niches, .Lfunc_end5-classify_middle_3niches\n\t.cfi_endproc\n",
+      "classify_opt2_bool": "classify_opt2_bool:\n\t.cfi_startproc\n\tincb\t%dil\n\tmovzbl\t%dil, %ecx\n\tshll\t$3, %ecx\n\tmovl\t$50462980, %eax\n\tshrl\t%cl, %eax\n\tretq\n.Lfunc_end6:\n\t.size\tclassify_opt2_bool, .Lfunc_end6-classify_opt2_bool\n\t.cfi_endproc\n",
+      "classify_outer_edge": "classify_outer_edge:\n\t.cfi_startproc\n\tleal\t1(%rdi), %eax\n\taddl\t%edi, %edi\n\tleal\t(%rdi,%rdi,4), %ecx\n\taddb\t$30, %cl\n\tcmpb\t$2, %al\n\tmovzbl\t%cl, %ecx\n\tmovl\t$10, %eax\n\tcmovbl\t%ecx, %eax\n\tretq\n.Lfunc_end7:\n\t.size\tclassify_outer_edge, .Lfunc_end7-classify_outer_edge\n\t.cfi_endproc\n"
+    }
+  },
+  "part_b_set_discriminant_and_invalid_tag_ub": {
+    "middle_3niches_dead_slot_invalid_tag_ub": {
+      "miri_diag_head": [
+        "error: Undefined Behavior: enum value has invalid tag: 0xff",
+        "  --> <TMPDIR>/b4_middle_dead_slot_nostd.rs:23:15",
+        "   |               ^^ Undefined Behavior occurred here",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information"
+      ],
+      "miri_opt0_rc": 1,
+      "native_opt2_rc": 0,
+      "native_opt2_stdout": "TAG:20"
+    },
+    "native_opt2_machine_code_identical_b1_b2a_b2b": true,
+    "option_bool_byte3_niche_hole_ub": {
+      "miri_diag_head": [
+        "error: Undefined Behavior: enum value has invalid tag: 0x03",
+        "  --> <TMPDIR>/b3_opt_bool_byte3_nostd.rs:11:15",
+        "   |               ^^ Undefined Behavior occurred here",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information"
+      ],
+      "miri_opt0_rc": 1,
+      "native_opt2_rc": 0,
+      "native_opt2_stdout": "TAG:1"
+    },
+    "reordered_set_discriminant_before_payload_over_none_ub": {
+      "asm_func": "make_some_nz:\n\t.cfi_startproc\n\tmovl\t%edi, %eax\n\tretq\n.Lfunc_end5:\n\t.size\tmake_some_nz, .Lfunc_end5-make_some_nz\n\t.cfi_endproc\n",
+      "asm_instructions": [
+        "movl %edi, %eax",
+        "retq"
+      ],
+      "miri_diag_head": [
+        "error: Undefined Behavior: trying to set discriminant of a core::option::Option<core::num::NonZero<u8>> to the niched variant, but the value does not match",
+        "  --> <TMPDIR>/b2a_reordered_none_nostd.rs:15:13",
+        "   |             ^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information",
+        "               at <TMPDIR>/b2a_reordered_none_nostd.rs:15:13: 15:36",
+        "               at <TMPDIR>/b2a_reordered_none_nostd.rs:26:13: 26:51"
+      ],
+      "miri_opt0_rc": 1,
+      "native_opt2_rc": 0,
+      "native_opt2_stdout": "OK:7"
+    },
+    "reordered_set_discriminant_before_payload_over_uninit_ub": {
+      "asm_func": "make_some_nz:\n\t.cfi_startproc\n\tmovl\t%edi, %eax\n\tretq\n.Lfunc_end5:\n\t.size\tmake_some_nz, .Lfunc_end5-make_some_nz\n\t.cfi_endproc\n",
+      "asm_instructions": [
+        "movl %edi, %eax",
+        "retq"
+      ],
+      "miri_diag_head": [
+        "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory",
+        "  --> <TMPDIR>/b2b_reordered_uninit_nostd.rs:14:13",
+        "   |             ^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information",
+        "               at <TMPDIR>/b2b_reordered_uninit_nostd.rs:14:13: 14:36",
+        "               at <TMPDIR>/b2b_reordered_uninit_nostd.rs:25:13: 25:51"
+      ],
+      "miri_opt0_rc": 1,
+      "native_opt2_rc": 0,
+      "native_opt2_stdout": "OK:7"
+    },
+    "valid_payload_before_set_discriminant": {
+      "asm_func": "make_some_nz:\n\t.cfi_startproc\n\tmovl\t%edi, %eax\n\tretq\n.Lfunc_end5:\n\t.size\tmake_some_nz, .Lfunc_end5-make_some_nz\n\t.cfi_endproc\n",
+      "asm_instructions": [
+        "movl %edi, %eax",
+        "retq"
+      ],
+      "miri_diag_head": [],
+      "miri_opt0_rc": 0,
+      "native_opt2_rc": 0,
+      "native_opt2_stdout": "OK:7"
+    }
+  },
+  "part_c_mir_enum_ops": {
+    "async_coroutine_probe": {
+      "counts": {
+        "final_optimized": {
+          "adt_aggregates": 2,
+          "bodies": 2,
+          "discriminant_rvalues": 2,
+          "downcast_projections": 1,
+          "set_discriminant_stmts": 3
+        },
+        "post_cleanup": {
+          "adt_aggregates": 2,
+          "bodies": 2,
+          "discriminant_rvalues": 2,
+          "downcast_projections": 1,
+          "set_discriminant_stmts": 3
+        }
+      },
+      "post_cleanup_set_discriminant_lines": [
+        "discriminant((*_27)) = 3;",
+        "discriminant((*_27)) = 1;",
+        "discriminant((*_27)) = 2;"
+      ]
+    },
+    "zerocopy_mir_census": {
+      "build_cfgs": [
+        "--cfg",
+        "no_zerocopy_allocator_api_1_100_0"
+      ],
+      "crate_version": "0.8.64",
+      "default_no_std": {
+        "final_optimized": {
+          "adt_aggregates": 1513,
+          "bodies": 4478,
+          "discriminant_rvalues": 1642,
+          "downcast_projections": 873,
+          "set_discriminant_stmts": 0
+        },
+        "post_cleanup": {
+          "adt_aggregates": 410,
+          "bodies": 4715,
+          "discriminant_rvalues": 657,
+          "downcast_projections": 1074,
+          "set_discriminant_stmts": 0
+        }
+      },
+      "std_alloc_simd": {
+        "final_optimized": {
+          "adt_aggregates": 1532,
+          "bodies": 4590,
+          "discriminant_rvalues": 1649,
+          "downcast_projections": 880,
+          "set_discriminant_stmts": 0
+        },
+        "post_cleanup": {
+          "adt_aggregates": 417,
+          "bodies": 4840,
+          "discriminant_rvalues": 664,
+          "downcast_projections": 1080,
+          "set_discriminant_stmts": 0
+        }
+      }
+    }
+  },
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "target_triple": "x86_64-unknown-linux-gnu"
+}

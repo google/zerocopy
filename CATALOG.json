@@ -86532,6 +86532,74 @@
         "verification"
       ]
     },
+    "rustc-enum-niche-layout-wrapping-tag-arithmetic-and-set-discriminant": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "rustc compiler source (ABI layout, const-eval discriminant, codegen SSA/LLVM, MIR transform)"
+        },
+        {
+          "identity": {
+            "llvm_version": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc and Miri nightly toolchain (live execution target)"
+        },
+        {
+          "identity": {
+            "llvm_version": "23.1.5",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc and Miri nightly toolchain (cross-revision LLVM 23 comparison)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR AST and vendored lean-miri interpreter"
+        },
+        {
+          "identity": {
+            "crate_version": "0.8.64",
+            "repository": "google/zerocopy",
+            "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0"
+          },
+          "name": "zerocopy crate (MIR enum-operation census subject)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and toolchain"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/abi",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-experimental-corpora-and-harness-conventions": {
       "observed_at": "2026-11-13",
       "subjects": [
