@@ -50,7 +50,7 @@ Results (one plain-language claim each; every hypothesis named in a claim is par
   - `cast_roundTrip_widen_then_narrow_of_widthLe` (theorem): For any x : BitVec n and width m satisfying WidthLe n m (n ≤ m), widening then narrowing back is an exact identity for both unsigned (castFromUnsigned n (castFromUnsigned m x) = x) and signed (castFromSigned n (castFromSigned m x) = x) casts.
   - `ce_cast_roundTrip_narrow_then_widen` (counterexample): Narrowing then widening does not preserve values, unsigned or signed: castFromUnsigned 16 (castFromUnsigned 8 256#16) ≠ 256#16 and castFromSigned 16 (castFromSigned 8 128#16) ≠ 128#16; and sign-extending a signed value differs from first reinterpreting it as unsigned and then zero-extending: castFromSigned 16 (-1#8) ≠ castFromUnsigned 16 (reinterpretCast (-1#8)).
 
-Companion results (proved, cited from the cards above): `castFromUnsigned_widened_toNat_eq_mod_forall_iff` (the composed unsigned cast identity holds for every `x` exactly when `m ≤ k ∨ n ≤ k`); `castFromUnsigned_widened_toNat_eq_mod_of_source_le` (it holds when `n ≤ k`); `mod_eq_and_mask_forall_iff_isPowerOfTwo` (`k % n = k &&& (n - 1)` for every `k` exactly when `n` is a power of two).
+Companion results (proved, cited from the cards above): `castFromUnsigned_widened_toNat_eq_mod_forall_iff` (the composed unsigned cast identity holds for every `x` exactly when `m ≤ k ∨ n ≤ k`); `castFromUnsigned_widened_toNat_eq_mod_of_source_le` (it holds when `n ≤ k`); `mod_eq_and_mask_forall_iff_isPowerOfTwo` (`k % n = k &&& (n - 1)` for every `k`, with truncated `Nat` subtraction `n - 1`, exactly when `n` is a power of two).
 
 What these results do **not** say is recorded under Boundaries; the package-wide non-claims N1 (no floating point), N2 (`usize`/`isize` only by instantiating `n` for a stated target) and N3 (no claims about C or C++) apply to every result.
 
@@ -304,7 +304,7 @@ def smulOverflow {w : Nat} (x y : BitVec w) : Bool :=
   (x.toInt * y.toInt ≥ 2 ^ (w - 1)) || (x.toInt * y.toInt < - 2 ^ (w - 1))
 ```
 
-Notation: `2 ^ n` in `Int.bmod x (2 ^ n)` is a natural number; `↑` is the coercion `Nat → Int`; `x.toNat`/`x.toInt` are the unsigned and two's-complement readings of `x : BitVec n`; `-1#n` is the all-ones vector. Statements below are printed by Lean's pretty-printer from the compiled declarations with namespace `Toy.MachInt` opened; where the specification predicates (`PosWidth`, `WidthLe`, `ShiftInBounds`, `InUnsignedRange`, `InSignedRange`, `sMinVal`, `sMaxVal`, `IntRingIdentity`, `Ult`, `Slt`, `NoUAddOverflow`, `NoSAddOverflow`, `NonZeroDiv`, `NoSDivOverflow`) occur, a second form with them unfolded (`Meta.deltaExpand`) follows. Where the default output would not elaborate back to the theorem's statement because the target type of a coercion `↑` is not fixed by its context, the statement is printed with `set_option pp.coercions.types true`, which shows that type, as in `(↑(2 ^ n) : Int)`.
+Notation: `2 ^ n` in `Int.bmod x (2 ^ n)` is a natural number; `↑` is the coercion `Nat → Int`; `x.toNat`/`x.toInt` are the unsigned and two's-complement readings of `x : BitVec n`; `-1#n` is the all-ones vector. Each Lean statement below is quoted verbatim from the source lines named in the comment line just above it (`-- <file>:<lines>`; proofs omitted). Where the specification predicates (`PosWidth`, `WidthLe`, `ShiftInBounds`, `InUnsignedRange`, `InSignedRange`, `sMinVal`, `sMaxVal`, `IntRingIdentity`, `Ult`, `Slt`, `NoUAddOverflow`, `NoSAddOverflow`, `NonZeroDiv`, `NoSDivOverflow`) occur, a second form follows under "With the specification predicates unfolded": the declaration's type after unfolding them (`Meta.deltaExpand`), printed by Lean's pretty-printer with namespace `Toy.MachInt` opened. Each second form is a Lean term that elaborates in the theorem's context and is definitionally equal to the quoted statement.
 
 ### Result 1: wrapping evaluation refines integer ring arithmetic modulo 2^n
 
@@ -315,9 +315,9 @@ Notation: `2 ^ n` in `Int.bmod x (2 ^ n)` is a natural number; `↑` is the coer
 - **Lean statement** (`Toy.MachInt.evalWrap_toNat_eq_emod`):
 
 ```lean
-theorem evalWrap_toNat_eq_emod :
-  ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
-    ↑(evalWrap n env e).toNat = evalInt (fun i => ↑(env i).toNat) e % ↑(2 ^ n)
+-- lean/Toy/MachInt/Statements.lean:37-38
+theorem evalWrap_toNat_eq_emod (n : Nat) (env : Nat → BitVec n) (e : RingExpr) :
+    ((evalWrap n env e).toNat : Int) = (evalInt (fun i => (env i).toNat) e) % ((2 ^ n : Nat) : Int)
 ```
 
 - **Hypothesis ledger:** no hypotheses.
@@ -325,17 +325,14 @@ theorem evalWrap_toNat_eq_emod :
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:122-128
 theorem ce_evalWrap_eq_not_imp_intRingIdentity :
-  (∀ (env : Nat → BitVec 8),
-      evalWrap 8 env ((RingExpr.lit 64).mul ((RingExpr.lit 4).mul (RingExpr.var 0))) =
-        evalWrap 8 env (RingExpr.lit 0)) ∧
-    ¬IntRingIdentity ((RingExpr.lit 64).mul ((RingExpr.lit 4).mul (RingExpr.var 0)))
-          (RingExpr.lit 0) ∧
-      (∀ (env : Nat → BitVec 8),
-          evalWrap 8 env ((RingExpr.lit 128).mul ((RingExpr.var 0).add (RingExpr.var 0))) =
-            evalWrap 8 env (RingExpr.lit 0)) ∧
-        ¬IntRingIdentity ((RingExpr.lit 128).mul ((RingExpr.var 0).add (RingExpr.var 0)))
-            (RingExpr.lit 0)
+    (∀ env : Nat → BitVec 8,
+      evalWrap 8 env (.mul (.lit 64) (.mul (.lit 4) (.var 0))) = evalWrap 8 env (.lit 0)) ∧
+    ¬ IntRingIdentity (.mul (.lit 64) (.mul (.lit 4) (.var 0))) (.lit 0) ∧
+    (∀ env : Nat → BitVec 8,
+      evalWrap 8 env (.mul (.lit 128) (.add (.var 0) (.var 0))) = evalWrap 8 env (.lit 0)) ∧
+    ¬ IntRingIdentity (.mul (.lit 128) (.add (.var 0) (.var 0))) (.lit 0)
 ```
 
 - **Prior art:**
@@ -360,8 +357,8 @@ theorem ce_evalWrap_eq_not_imp_intRingIdentity :
 - **Lean statement** (`Toy.MachInt.evalWrap_toInt_eq_bmod`):
 
 ```lean
-theorem evalWrap_toInt_eq_bmod :
-  ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
+-- lean/Toy/MachInt/Statements.lean:44-45
+theorem evalWrap_toInt_eq_bmod (n : Nat) (env : Nat → BitVec n) (e : RingExpr) :
     (evalWrap n env e).toInt = (evalInt (fun i => (env i).toInt) e).bmod (2 ^ n)
 ```
 
@@ -387,10 +384,15 @@ theorem evalWrap_toInt_eq_bmod :
 - **Lean statement** (`Toy.MachInt.evalWrap_eq_of_intRingIdentity`):
 
 ```lean
-theorem evalWrap_eq_of_intRingIdentity :
-  ∀ (n : Nat) (env : Nat → BitVec n) {e₁ e₂ : RingExpr},
-    IntRingIdentity e₁ e₂ → evalWrap n env e₁ = evalWrap n env e₂
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:51-53
+theorem evalWrap_eq_of_intRingIdentity (n : Nat) (env : Nat → BitVec n)
+    {e₁ e₂ : RingExpr} (hid : IntRingIdentity e₁ e₂) :
+    evalWrap n env e₁ = evalWrap n env e₂
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ (n : Nat) (env : Nat → BitVec n) {e₁ e₂ : RingExpr},
     (∀ (ρ : Nat → Int), evalInt ρ e₁ = evalInt ρ e₂) → evalWrap n env e₁ = evalWrap n env e₂
 ```
@@ -401,25 +403,25 @@ theorem evalWrap_eq_of_intRingIdentity :
   Counterexample `ce_evalWrap_eq_drop_intRingIdentity` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:112-115
 theorem ce_evalWrap_eq_drop_intRingIdentity :
-  ∃ n env e₁ e₂, ¬IntRingIdentity e₁ e₂ ∧ evalWrap n env e₁ ≠ evalWrap n env e₂
+    ∃ (n : Nat) (env : Nat → BitVec n) (e₁ e₂ : RingExpr),
+      ¬ IntRingIdentity e₁ e₂ ∧
+      evalWrap n env e₁ ≠ evalWrap n env e₂
 ```
 
 - **Non-vacuity witness:** e₁ = (x₀ + x₁) - x₁ and e₂ = x₀ satisfy IntRingIdentity e₁ e₂ and agree under evalWrap 8 [200#8, 100#8]. Lean: `nv_evalWrap_eq_of_intRingIdentity`.
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:122-128
 theorem ce_evalWrap_eq_not_imp_intRingIdentity :
-  (∀ (env : Nat → BitVec 8),
-      evalWrap 8 env ((RingExpr.lit 64).mul ((RingExpr.lit 4).mul (RingExpr.var 0))) =
-        evalWrap 8 env (RingExpr.lit 0)) ∧
-    ¬IntRingIdentity ((RingExpr.lit 64).mul ((RingExpr.lit 4).mul (RingExpr.var 0)))
-          (RingExpr.lit 0) ∧
-      (∀ (env : Nat → BitVec 8),
-          evalWrap 8 env ((RingExpr.lit 128).mul ((RingExpr.var 0).add (RingExpr.var 0))) =
-            evalWrap 8 env (RingExpr.lit 0)) ∧
-        ¬IntRingIdentity ((RingExpr.lit 128).mul ((RingExpr.var 0).add (RingExpr.var 0)))
-            (RingExpr.lit 0)
+    (∀ env : Nat → BitVec 8,
+      evalWrap 8 env (.mul (.lit 64) (.mul (.lit 4) (.var 0))) = evalWrap 8 env (.lit 0)) ∧
+    ¬ IntRingIdentity (.mul (.lit 64) (.mul (.lit 4) (.var 0))) (.lit 0) ∧
+    (∀ env : Nat → BitVec 8,
+      evalWrap 8 env (.mul (.lit 128) (.add (.var 0) (.var 0))) = evalWrap 8 env (.lit 0)) ∧
+    ¬ IntRingIdentity (.mul (.lit 128) (.add (.var 0) (.var 0))) (.lit 0)
 ```
 
 - **Prior art:**
@@ -443,9 +445,10 @@ theorem ce_evalWrap_eq_not_imp_intRingIdentity :
 - **Lean statement** (`Toy.MachInt.evalCheckedU_sound`):
 
 ```lean
-theorem evalCheckedU_sound :
-  ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr) (v : BitVec n),
-    evalCheckedU n env e = some v → ↑v.toNat = evalInt (fun i => ↑(env i).toNat) e
+-- lean/Toy/MachInt/Statements.lean:63-65
+theorem evalCheckedU_sound (n : Nat) (env : Nat → BitVec n) (e : RingExpr) (v : BitVec n)
+    (hsome : evalCheckedU n env e = some v) :
+    (v.toNat : Int) = evalInt (fun i => (env i).toNat) e
 ```
 
 - **Hypothesis ledger:**
@@ -454,13 +457,12 @@ theorem evalCheckedU_sound :
   Counterexample `ce_evalCheckedU_sound_drop_some` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:150-154
 theorem ce_evalCheckedU_sound_drop_some :
-  have env := fun x =>
-    match x with
-    | 0 => 200#8
-    | x => 100#8;
-  have e := (RingExpr.var 0).add (RingExpr.var 1);
-  evalCheckedU 8 env e = none ∧ ↑(evalWrap 8 env e).toNat ≠ evalInt (fun i => ↑(env i).toNat) e
+    let env : Nat → BitVec 8 := fun | 0 => 200#8 | _ => 100#8
+    let e : RingExpr := .add (.var 0) (.var 1)
+    evalCheckedU 8 env e = none ∧
+    ((evalWrap 8 env e).toNat : Int) ≠ evalInt (fun i => (env i).toNat) e
 ```
 
 - **Non-vacuity witness:** At n = 8, env = [200#8, 55#8], and e = (x₀ + x₁) - x₁, evalCheckedU returns some 200#8 and 200 = evalInt [200, 55] e. Lean: `nv_evalCheckedU_sound`.
@@ -486,11 +488,15 @@ theorem ce_evalCheckedU_sound_drop_some :
 - **Lean statement** (`Toy.MachInt.evalCheckedU_complete`):
 
 ```lean
-theorem evalCheckedU_complete :
-  ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
-    SubexprsInRange (InUnsignedRange n) (fun i => ↑(env i).toNat) e →
-      evalCheckedU n env e = some (evalWrap n env e)
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:72-74
+theorem evalCheckedU_complete (n : Nat) (env : Nat → BitVec n) (e : RingExpr)
+    (hrange : SubexprsInRange (InUnsignedRange n) (fun i => (env i).toNat) e) :
+    evalCheckedU n env e = some (evalWrap n env e)
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
     SubexprsInRange (fun z => 0 ≤ z ∧ z < ↑(2 ^ n)) (fun i => ↑(env i).toNat) e →
       evalCheckedU n env e = some (evalWrap n env e)
@@ -502,15 +508,13 @@ theorem evalCheckedU_complete :
   Counterexample `ce_checkedU_add_sub_intermediate_overflow` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:168-173
 theorem ce_checkedU_add_sub_intermediate_overflow :
-  have env := fun x =>
-    match x with
-    | 0 => 200#8
-    | x => 100#8;
-  have ρ := fun i => ↑(env i).toNat;
-  InUnsignedRange 8 (evalInt ρ addSubCancelExpr) ∧
-    ¬SubexprsInRange (InUnsignedRange 8) ρ addSubCancelExpr ∧
-      evalCheckedU 8 env addSubCancelExpr ≠ some (evalWrap 8 env addSubCancelExpr)
+    let env : Nat → BitVec 8 := fun | 0 => 200#8 | _ => 100#8
+    let ρ : Nat → Int := fun i => (env i).toNat
+    InUnsignedRange 8 (evalInt ρ addSubCancelExpr) ∧
+    ¬ SubexprsInRange (InUnsignedRange 8) ρ addSubCancelExpr ∧
+    evalCheckedU 8 env addSubCancelExpr ≠ some (evalWrap 8 env addSubCancelExpr)
 ```
 
 - **Non-vacuity witness:** At n = 8, env = [200#8, 55#8], and e = (x₀ + x₁) - x₁, all subexpressions (200, 55, 255, 200) lie in [0, 256) and evalCheckedU returns some 200#8. Lean: `nv_evalCheckedU_complete`.
@@ -532,11 +536,15 @@ theorem ce_checkedU_add_sub_intermediate_overflow :
 - **Lean statement** (`Toy.MachInt.evalCheckedU_isSome_iff_subexprsInRange`):
 
 ```lean
-theorem evalCheckedU_isSome_iff_subexprsInRange :
-  ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
+-- lean/Toy/MachInt/Statements.lean:80-82
+theorem evalCheckedU_isSome_iff_subexprsInRange (n : Nat) (env : Nat → BitVec n) (e : RingExpr) :
     (evalCheckedU n env e).isSome = true ↔
-      SubexprsInRange (InUnsignedRange n) (fun i => ↑(env i).toNat) e
--- with the specification predicates unfolded:
+      SubexprsInRange (InUnsignedRange n) (fun i => (env i).toNat) e
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
     (evalCheckedU n env e).isSome = true ↔
       SubexprsInRange (fun z => 0 ≤ z ∧ z < ↑(2 ^ n)) (fun i => ↑(env i).toNat) e
@@ -564,9 +572,10 @@ theorem evalCheckedU_isSome_iff_subexprsInRange :
 - **Lean statement** (`Toy.MachInt.evalCheckedS_sound`):
 
 ```lean
-theorem evalCheckedS_sound :
-  ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr) (v : BitVec n),
-    evalCheckedS n env e = some v → v.toInt = evalInt (fun i => (env i).toInt) e
+-- lean/Toy/MachInt/Statements.lean:94-96
+theorem evalCheckedS_sound (n : Nat) (env : Nat → BitVec n) (e : RingExpr) (v : BitVec n)
+    (hsome : evalCheckedS n env e = some v) :
+    v.toInt = evalInt (fun i => (env i).toInt) e
 ```
 
 - **Hypothesis ledger:**
@@ -575,13 +584,12 @@ theorem evalCheckedS_sound :
   Counterexample `ce_evalCheckedS_sound_drop_some` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:159-163
 theorem ce_evalCheckedS_sound_drop_some :
-  have env := fun x =>
-    match x with
-    | 0 => 100#8
-    | x => 50#8;
-  have e := (RingExpr.var 0).add (RingExpr.var 1);
-  evalCheckedS 8 env e = none ∧ (evalWrap 8 env e).toInt ≠ evalInt (fun i => (env i).toInt) e
+    let env : Nat → BitVec 8 := fun | 0 => 100#8 | _ => 50#8
+    let e : RingExpr := .add (.var 0) (.var 1)
+    evalCheckedS 8 env e = none ∧
+    (evalWrap 8 env e).toInt ≠ evalInt (fun i => (env i).toInt) e
 ```
 
 - **Non-vacuity witness:** At n = 8, env = [100#8, 27#8], and e = (x₀ + x₁) - x₁, evalCheckedS returns some 100#8 and (100#8).toInt = 100 = evalInt [100, 27] e. Lean: `nv_evalCheckedS_sound`.
@@ -605,11 +613,15 @@ theorem ce_evalCheckedS_sound_drop_some :
 - **Lean statement** (`Toy.MachInt.evalCheckedS_complete`):
 
 ```lean
-theorem evalCheckedS_complete :
-  ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
-    SubexprsInRange (InSignedRange n) (fun i => (env i).toInt) e →
-      evalCheckedS n env e = some (evalWrap n env e)
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:103-105
+theorem evalCheckedS_complete (n : Nat) (env : Nat → BitVec n) (e : RingExpr)
+    (hrange : SubexprsInRange (InSignedRange n) (fun i => (env i).toInt) e) :
+    evalCheckedS n env e = some (evalWrap n env e)
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
     SubexprsInRange (fun z => (BitVec.intMin n).toInt ≤ z ∧ z ≤ (BitVec.intMax n).toInt)
         (fun i => (env i).toInt) e →
@@ -622,24 +634,23 @@ theorem evalCheckedS_complete :
   Counterexample `ce_checkedS_add_sub_intermediate_overflow` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:178-183
 theorem ce_checkedS_add_sub_intermediate_overflow :
-  have env := fun x =>
-    match x with
-    | 0 => 100#8
-    | x => 50#8;
-  have ρ := fun i => (env i).toInt;
-  InSignedRange 8 (evalInt ρ addSubCancelExpr) ∧
-    ¬SubexprsInRange (InSignedRange 8) ρ addSubCancelExpr ∧
-      evalCheckedS 8 env addSubCancelExpr ≠ some (evalWrap 8 env addSubCancelExpr)
+    let env : Nat → BitVec 8 := fun | 0 => 100#8 | _ => 50#8
+    let ρ : Nat → Int := fun i => (env i).toInt
+    InSignedRange 8 (evalInt ρ addSubCancelExpr) ∧
+    ¬ SubexprsInRange (InSignedRange 8) ρ addSubCancelExpr ∧
+    evalCheckedS 8 env addSubCancelExpr ≠ some (evalWrap 8 env addSubCancelExpr)
 ```
 
 - **Non-vacuity witness:** At n = 8, env = [100#8, 27#8], and e = (x₀ + x₁) - x₁, all subexpressions (100, 27, 127, 100) lie in [-128, 127] and evalCheckedS returns some 100#8. Lean: `nv_evalCheckedS_complete`.
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
-theorem inSignedRange_iff_two_pow_of_posWidth :
-  ∀ {n : Nat},
-    PosWidth n → ∀ (z : Int), InSignedRange n z ↔ -↑(2 ^ (n - 1)) ≤ z ∧ z < ↑(2 ^ (n - 1))
+-- lean/Toy/MachInt/Examples.lean:50-52
+theorem inSignedRange_iff_two_pow_of_posWidth {n : Nat} (hn : PosWidth n) (z : Int) :
+    InSignedRange n z ↔
+      (-((2 ^ (n - 1) : Nat) : Int) ≤ z ∧ z < ((2 ^ (n - 1) : Nat) : Int))
 ```
 
 - **Prior art:**
@@ -660,11 +671,15 @@ theorem inSignedRange_iff_two_pow_of_posWidth :
 - **Lean statement** (`Toy.MachInt.evalCheckedS_isSome_iff_subexprsInRange`):
 
 ```lean
-theorem evalCheckedS_isSome_iff_subexprsInRange :
-  ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
+-- lean/Toy/MachInt/Statements.lean:111-113
+theorem evalCheckedS_isSome_iff_subexprsInRange (n : Nat) (env : Nat → BitVec n) (e : RingExpr) :
     (evalCheckedS n env e).isSome = true ↔
       SubexprsInRange (InSignedRange n) (fun i => (env i).toInt) e
--- with the specification predicates unfolded:
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ (n : Nat) (env : Nat → BitVec n) (e : RingExpr),
     (evalCheckedS n env e).isSome = true ↔
       SubexprsInRange (fun z => (BitVec.intMin n).toInt ≤ z ∧ z ≤ (BitVec.intMax n).toInt)
@@ -693,26 +708,25 @@ theorem evalCheckedS_isSome_iff_subexprsInRange :
 - **Lean statement** (`Toy.MachInt.ce_checked_add_sub_intermediate_overflow`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:29-41
 theorem ce_checked_add_sub_intermediate_overflow :
-  have uEnv := fun x =>
-    match x with
-    | 0 => 200#8
-    | x => 100#8;
-  have uIntEnv := fun i => ↑(uEnv i).toNat;
-  have sEnv := fun x =>
-    match x with
-    | 0 => 100#8
-    | x => 50#8;
-  have sIntEnv := fun i => (sEnv i).toInt;
-  InUnsignedRange 8 (evalInt uIntEnv addSubCancelExpr) ∧
-    ↑(evalWrap 8 uEnv addSubCancelExpr).toNat = evalInt uIntEnv addSubCancelExpr ∧
-      evalCheckedU 8 uEnv addSubCancelExpr = none ∧
-        evalPlainU 8 uEnv addSubCancelExpr = Outcome.panic ∧
-          InSignedRange 8 (evalInt sIntEnv addSubCancelExpr) ∧
-            (evalWrap 8 sEnv addSubCancelExpr).toInt = evalInt sIntEnv addSubCancelExpr ∧
-              evalCheckedS 8 sEnv addSubCancelExpr = none ∧
-                evalPlainS 8 sEnv addSubCancelExpr = Outcome.panic
--- with the specification predicates unfolded:
+    let uEnv : Nat → BitVec 8 := fun | 0 => 200#8 | _ => 100#8
+    let uIntEnv : Nat → Int := fun i => (uEnv i).toNat
+    let sEnv : Nat → BitVec 8 := fun | 0 => 100#8 | _ => 50#8
+    let sIntEnv : Nat → Int := fun i => (sEnv i).toInt
+    InUnsignedRange 8 (evalInt uIntEnv addSubCancelExpr) ∧
+    ((evalWrap 8 uEnv addSubCancelExpr).toNat : Int) = evalInt uIntEnv addSubCancelExpr ∧
+    evalCheckedU 8 uEnv addSubCancelExpr = none ∧
+    evalPlainU 8 uEnv addSubCancelExpr = Outcome.panic ∧
+    InSignedRange 8 (evalInt sIntEnv addSubCancelExpr) ∧
+    (evalWrap 8 sEnv addSubCancelExpr).toInt = evalInt sIntEnv addSubCancelExpr ∧
+    evalCheckedS 8 sEnv addSubCancelExpr = none ∧
+    evalPlainS 8 sEnv addSubCancelExpr = Outcome.panic
+```
+
+With the specification predicates unfolded:
+
+```lean
   have uEnv := fun x =>
     match x with
     | 0 => 200#8
@@ -757,11 +771,16 @@ theorem ce_checked_add_sub_intermediate_overflow :
 - **Lean statement** (`Toy.MachInt.not_ult_allOnes_add_one`):
 
 ```lean
-theorem not_ult_allOnes_add_one :
-  ∀ (n : Nat),
+-- lean/Toy/MachInt/Statements.lean:127-130
+theorem not_ult_allOnes_add_one (n : Nat) :
     BitVec.allOnes n + 1#n = 0#n ∧
-      ¬Ult (BitVec.allOnes n) (BitVec.allOnes n + 1#n) ∧ ¬∀ (x : BitVec n), Ult x (x + 1#n)
--- with the specification predicates unfolded:
+    ¬ Ult (BitVec.allOnes n) (BitVec.allOnes n + 1#n) ∧
+    ¬ (∀ x : BitVec n, Ult x (x + 1#n))
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ (n : Nat),
     BitVec.allOnes n + 1#n = 0#n ∧
       ¬(BitVec.allOnes n).ult (BitVec.allOnes n + 1#n) = true ∧
@@ -773,26 +792,30 @@ theorem not_ult_allOnes_add_one :
 - **Positive control** (a nearby setting where the impossibility's conclusion fails): `pc_ult_add_one_of_lt_uMax`:
 
 ```lean
+-- lean/Toy/MachInt/Witnesses.lean:128-130
 theorem pc_ult_add_one_of_lt_uMax :
-  (∀ (n : Nat) (x : BitVec n), Ult x (BitVec.allOnes n) → Ult x (x + 1#n)) ∧
-    Ult (254#8) (BitVec.allOnes 8) ∧ Ult (254#8) (254#8 + 1#8)
+    (∀ (n : Nat) (x : BitVec n), Ult x (BitVec.allOnes n) → Ult x (x + 1#n)) ∧
+    (Ult (254#8) (BitVec.allOnes 8) ∧ Ult (254#8) (254#8 + 1#8))
 ```
 
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
-theorem not_ult_add_one_uMax :
-  ∀ (n : Nat), ¬∀ (x : BitVec n), Ult x (x + 1#n)
+-- lean/Toy/MachInt/Statements.lean:142-143
+theorem not_ult_add_one_uMax (n : Nat) :
+    ¬ (∀ x : BitVec n, Ult x (x + 1#n))
 ```
 
 ```lean
-theorem ult_add_one_iff_ne_allOnes :
-  ∀ {n : Nat} (x : BitVec n), Ult x (x + 1#n) ↔ x ≠ BitVec.allOnes n
+-- lean/Toy/MachInt/Witnesses.lean:93-94
+theorem ult_add_one_iff_ne_allOnes {n : Nat} (x : BitVec n) :
+    Ult x (x + 1#n) ↔ x ≠ BitVec.allOnes n
 ```
 
 ```lean
-theorem ult_allOnes_add_one_allOnes_of_posWidth :
-  ∀ {n : Nat}, PosWidth n → Ult (BitVec.allOnes n + 1#n) (BitVec.allOnes n)
+-- lean/Toy/MachInt/Statements.lean:147-148
+theorem ult_allOnes_add_one_allOnes_of_posWidth {n : Nat} (hn : PosWidth n) :
+    Ult (BitVec.allOnes n + 1#n) (BitVec.allOnes n)
 ```
 
 - **Prior art:**
@@ -813,11 +836,16 @@ theorem ult_allOnes_add_one_allOnes_of_posWidth :
 - **Lean statement** (`Toy.MachInt.not_slt_intMax_add_one`):
 
 ```lean
-theorem not_slt_intMax_add_one :
-  ∀ (n : Nat),
+-- lean/Toy/MachInt/Statements.lean:157-160
+theorem not_slt_intMax_add_one (n : Nat) :
     BitVec.intMax n + 1#n = BitVec.intMin n ∧
-      ¬Slt (BitVec.intMax n) (BitVec.intMax n + 1#n) ∧ ¬∀ (x : BitVec n), Slt x (x + 1#n)
--- with the specification predicates unfolded:
+    ¬ Slt (BitVec.intMax n) (BitVec.intMax n + 1#n) ∧
+    ¬ (∀ x : BitVec n, Slt x (x + 1#n))
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ (n : Nat),
     BitVec.intMax n + 1#n = BitVec.intMin n ∧
       ¬(BitVec.intMax n).slt (BitVec.intMax n + 1#n) = true ∧
@@ -829,26 +857,30 @@ theorem not_slt_intMax_add_one :
 - **Positive control** (a nearby setting where the impossibility's conclusion fails): `pc_slt_add_one_of_lt_sMax`:
 
 ```lean
+-- lean/Toy/MachInt/Witnesses.lean:157-159
 theorem pc_slt_add_one_of_lt_sMax :
-  (∀ (n : Nat) (x : BitVec n), Slt x (BitVec.intMax n) → Slt x (x + 1#n)) ∧
-    Slt (126#8) (BitVec.intMax 8) ∧ Slt (126#8) (126#8 + 1#8)
+    (∀ (n : Nat) (x : BitVec n), Slt x (BitVec.intMax n) → Slt x (x + 1#n)) ∧
+    (Slt (126#8) (BitVec.intMax 8) ∧ Slt (126#8) (126#8 + 1#8))
 ```
 
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
-theorem not_slt_add_one_sMax :
-  ∀ (n : Nat), ¬∀ (x : BitVec n), Slt x (x + 1#n)
+-- lean/Toy/MachInt/Statements.lean:171-172
+theorem not_slt_add_one_sMax (n : Nat) :
+    ¬ (∀ x : BitVec n, Slt x (x + 1#n))
 ```
 
 ```lean
-theorem slt_add_one_iff_ne_intMax :
-  ∀ {n : Nat} (x : BitVec n), Slt x (x + 1#n) ↔ x ≠ BitVec.intMax n
+-- lean/Toy/MachInt/Witnesses.lean:195-196
+theorem slt_add_one_iff_ne_intMax {n : Nat} (x : BitVec n) :
+    Slt x (x + 1#n) ↔ x ≠ BitVec.intMax n
 ```
 
 ```lean
-theorem slt_intMax_add_one_intMax_of_posWidth :
-  ∀ {n : Nat}, PosWidth n → Slt (BitVec.intMax n + 1#n) (BitVec.intMax n)
+-- lean/Toy/MachInt/Statements.lean:176-177
+theorem slt_intMax_add_one_intMax_of_posWidth {n : Nat} (hn : PosWidth n) :
+    Slt (BitVec.intMax n + 1#n) (BitVec.intMax n)
 ```
 
 - **Prior art:**
@@ -868,9 +900,15 @@ theorem slt_intMax_add_one_intMax_of_posWidth :
 - **Lean statement** (`Toy.MachInt.ult_add_right_of_noUAddOverflow`):
 
 ```lean
-theorem ult_add_right_of_noUAddOverflow :
-  ∀ {n : Nat} (a b c : BitVec n), Ult a b → NoUAddOverflow b c → Ult (a + c) (b + c)
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:190-192
+theorem ult_add_right_of_noUAddOverflow {n : Nat} (a b c : BitVec n)
+    (hlt : Ult a b) (hnoB : NoUAddOverflow b c) :
+    Ult (a + c) (b + c)
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat} (a b c : BitVec n),
     a.ult b = true → b.uaddOverflow c = false → (a + c).ult (b + c) = true
 ```
@@ -882,24 +920,31 @@ theorem ult_add_right_of_noUAddOverflow :
   Counterexample `ce_ult_add_right_drop_hlt` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:189-192
 theorem ce_ult_add_right_drop_hlt :
-  ¬Ult 10#8 5#8 ∧ NoUAddOverflow 5#8 1#8 ∧ ¬Ult (10#8 + 1#8) (5#8 + 1#8)
+    ¬ Ult (10#8) (5#8) ∧
+    NoUAddOverflow (5#8) (1#8) ∧
+    ¬ Ult (10#8 + 1#8) (5#8 + 1#8)
 ```
 
 
   Counterexample `ce_ult_add_right_drop_noUAddOverflow` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:195-198
 theorem ce_ult_add_right_drop_noUAddOverflow :
-  Ult 1#8 255#8 ∧ ¬NoUAddOverflow 255#8 1#8 ∧ ¬Ult (1#8 + 1#8) (255#8 + 1#8)
+    Ult (1#8) (255#8) ∧
+    ¬ NoUAddOverflow (255#8) (1#8) ∧
+    ¬ Ult (1#8 + 1#8) (255#8 + 1#8)
 ```
 
 - **Non-vacuity witness:** 10#8 < 20#8 and 20#8 + 5#8 does not overflow u8, so 15#8 < 25#8. Lean: `nv_ult_add_right_of_noUAddOverflow`.
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
-theorem noUAddOverflow_of_ult_of_noUAddOverflow :
-  ∀ {n : Nat} {a b c : BitVec n}, Ult a b → NoUAddOverflow b c → NoUAddOverflow a c
+-- lean/Toy/MachInt/Examples.lean:88-89
+theorem noUAddOverflow_of_ult_of_noUAddOverflow {n : Nat} {a b c : BitVec n}
+    (hlt : Ult a b) (hnoB : NoUAddOverflow b c) : NoUAddOverflow a c
 ```
 
 - **Prior art:**
@@ -919,10 +964,15 @@ theorem noUAddOverflow_of_ult_of_noUAddOverflow :
 - **Lean statement** (`Toy.MachInt.slt_add_right_of_noSAddOverflow`):
 
 ```lean
-theorem slt_add_right_of_noSAddOverflow :
-  ∀ {n : Nat} (a b c : BitVec n),
-    Slt a b → NoSAddOverflow a c → NoSAddOverflow b c → Slt (a + c) (b + c)
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:204-206
+theorem slt_add_right_of_noSAddOverflow {n : Nat} (a b c : BitVec n)
+    (hlt : Slt a b) (hnoA : NoSAddOverflow a c) (hnoB : NoSAddOverflow b c) :
+    Slt (a + c) (b + c)
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat} (a b c : BitVec n),
     a.slt b = true →
       a.saddOverflow c = false → b.saddOverflow c = false → (a + c).slt (b + c) = true
@@ -936,27 +986,36 @@ theorem slt_add_right_of_noSAddOverflow :
   Counterexample `ce_slt_add_right_drop_hlt` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:201-205
 theorem ce_slt_add_right_drop_hlt :
-  ¬Slt 10#8 5#8 ∧ NoSAddOverflow 10#8 1#8 ∧ NoSAddOverflow 5#8 1#8 ∧ ¬Slt (10#8 + 1#8) (5#8 + 1#8)
+    ¬ Slt (10#8) (5#8) ∧
+    NoSAddOverflow (10#8) (1#8) ∧
+    NoSAddOverflow (5#8) (1#8) ∧
+    ¬ Slt (10#8 + 1#8) (5#8 + 1#8)
 ```
 
 
   Counterexample `ce_slt_add_right_drop_noSAddOverflow_left` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:208-212
 theorem ce_slt_add_right_drop_noSAddOverflow_left :
-  Slt (-128#8) 10#8 ∧
-    ¬NoSAddOverflow (-128#8) (-1#8) ∧
-      NoSAddOverflow (10#8) (-1#8) ∧ ¬Slt (-128#8 + -1#8) (10#8 + -1#8)
+    Slt (-128#8) (10#8) ∧
+    ¬ NoSAddOverflow (-128#8) (-1#8) ∧
+    NoSAddOverflow (10#8) (-1#8) ∧
+    ¬ Slt (-128#8 + -1#8) (10#8 + -1#8)
 ```
 
 
   Counterexample `ce_slt_add_right_drop_noSAddOverflow_right` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:215-219
 theorem ce_slt_add_right_drop_noSAddOverflow_right :
-  Slt 10#8 127#8 ∧
-    NoSAddOverflow 10#8 1#8 ∧ ¬NoSAddOverflow 127#8 1#8 ∧ ¬Slt (10#8 + 1#8) (127#8 + 1#8)
+    Slt (10#8) (127#8) ∧
+    NoSAddOverflow (10#8) (1#8) ∧
+    ¬ NoSAddOverflow (127#8) (1#8) ∧
+    ¬ Slt (10#8 + 1#8) (127#8 + 1#8)
 ```
 
 - **Non-vacuity witness:** -10#8 < 20#8 and neither -10#8 + 5#8 nor 20#8 + 5#8 overflows i8, yielding -5#8 < 25#8. Lean: `nv_slt_add_right_of_noSAddOverflow`.
@@ -977,10 +1036,14 @@ theorem ce_slt_add_right_drop_noSAddOverflow_right :
 - **Lean statement** (`Toy.MachInt.ult_add_right_iff_uaddOverflow_eq`):
 
 ```lean
-theorem ult_add_right_iff_uaddOverflow_eq :
-  ∀ {n : Nat} (a b c : BitVec n),
-    Ult a b → (Ult (a + c) (b + c) ↔ a.uaddOverflow c = b.uaddOverflow c)
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:244-245
+theorem ult_add_right_iff_uaddOverflow_eq {n : Nat} (a b c : BitVec n) (hlt : Ult a b) :
+    Ult (a + c) (b + c) ↔ BitVec.uaddOverflow a c = BitVec.uaddOverflow b c
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat} (a b c : BitVec n),
     a.ult b = true → ((a + c).ult (b + c) = true ↔ a.uaddOverflow c = b.uaddOverflow c)
 ```
@@ -991,19 +1054,23 @@ theorem ult_add_right_iff_uaddOverflow_eq :
   Counterexample `ce_ult_add_right_iff_drop_hlt` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:224-227
 theorem ce_ult_add_right_iff_drop_hlt :
-  ¬Ult 10#8 5#8 ∧
-    ¬(Ult (10#8 + 1#8) (5#8 + 1#8) ↔ (10#8).uaddOverflow 1#8 = (5#8).uaddOverflow 1#8)
+    ¬ Ult (10#8) (5#8) ∧
+    ¬ (Ult (10#8 + 1#8) (5#8 + 1#8) ↔
+        BitVec.uaddOverflow (10#8) (1#8) = BitVec.uaddOverflow (5#8) (1#8))
 ```
 
 - **Non-vacuity witness:** At n = 8, Ult 200#8 250#8 holds, both sums overflow with c = 100#8, and Ult (200#8 + 100#8) (250#8 + 100#8) holds. Lean: `nv_ult_add_right_iff_uaddOverflow_eq`.
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:240-244
 theorem ce_ult_add_right_both_wrap :
-  Ult 200#8 250#8 ∧
-    ¬NoUAddOverflow 200#8 100#8 ∧
-      ¬NoUAddOverflow 250#8 100#8 ∧ Ult (200#8 + 100#8) (250#8 + 100#8)
+    Ult (200#8) (250#8) ∧
+    ¬ NoUAddOverflow (200#8) (100#8) ∧
+    ¬ NoUAddOverflow (250#8) (100#8) ∧
+    Ult (200#8 + 100#8) (250#8 + 100#8)
 ```
 
 - **Prior art:**
@@ -1022,10 +1089,14 @@ theorem ce_ult_add_right_both_wrap :
 - **Lean statement** (`Toy.MachInt.slt_add_right_iff_saddOverflow_eq`):
 
 ```lean
-theorem slt_add_right_iff_saddOverflow_eq :
-  ∀ {n : Nat} (a b c : BitVec n),
-    Slt a b → (Slt (a + c) (b + c) ↔ a.saddOverflow c = b.saddOverflow c)
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:298-299
+theorem slt_add_right_iff_saddOverflow_eq {n : Nat} (a b c : BitVec n) (hlt : Slt a b) :
+    Slt (a + c) (b + c) ↔ BitVec.saddOverflow a c = BitVec.saddOverflow b c
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat} (a b c : BitVec n),
     a.slt b = true → ((a + c).slt (b + c) = true ↔ a.saddOverflow c = b.saddOverflow c)
 ```
@@ -1036,19 +1107,23 @@ theorem slt_add_right_iff_saddOverflow_eq :
   Counterexample `ce_slt_add_right_iff_drop_hlt` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:232-235
 theorem ce_slt_add_right_iff_drop_hlt :
-  ¬Slt 10#8 5#8 ∧
-    ¬(Slt (10#8 + 1#8) (5#8 + 1#8) ↔ (10#8).saddOverflow 1#8 = (5#8).saddOverflow 1#8)
+    ¬ Slt (10#8) (5#8) ∧
+    ¬ (Slt (10#8 + 1#8) (5#8 + 1#8) ↔
+        BitVec.saddOverflow (10#8) (1#8) = BitVec.saddOverflow (5#8) (1#8))
 ```
 
 - **Non-vacuity witness:** At n = 8, Slt 100#8 120#8 holds, both sums overflow with c = 100#8, and Slt (100#8 + 100#8) (120#8 + 100#8) holds. Lean: `nv_slt_add_right_iff_saddOverflow_eq`.
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:249-253
 theorem ce_slt_add_right_both_wrap :
-  Slt 100#8 120#8 ∧
-    ¬NoSAddOverflow 100#8 100#8 ∧
-      ¬NoSAddOverflow 120#8 100#8 ∧ Slt (100#8 + 100#8) (120#8 + 100#8)
+    Slt (100#8) (120#8) ∧
+    ¬ NoSAddOverflow (100#8) (100#8) ∧
+    ¬ NoSAddOverflow (120#8) (100#8) ∧
+    Slt (100#8 + 100#8) (120#8 + 100#8)
 ```
 
 - **Prior art:**
@@ -1069,13 +1144,17 @@ theorem ce_slt_add_right_both_wrap :
 - **Lean statement** (`Toy.MachInt.checkedUDiv_and_checkedURem_eq_nat_div_mod`):
 
 ```lean
-theorem checkedUDiv_and_checkedURem_eq_nat_div_mod :
-  ∀ {n : Nat} (a b : BitVec n),
-    NonZeroDiv b →
-      ∃ q r,
-        checkedUDiv a b = some q ∧
-          checkedURem a b = some r ∧ q.toNat = a.toNat / b.toNat ∧ r.toNat = a.toNat % b.toNat
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:410-414
+theorem checkedUDiv_and_checkedURem_eq_nat_div_mod {n : Nat} (a b : BitVec n)
+    (hb : NonZeroDiv b) :
+    ∃ q r : BitVec n,
+      checkedUDiv a b = some q ∧ checkedURem a b = some r ∧
+      q.toNat = a.toNat / b.toNat ∧ r.toNat = a.toNat % b.toNat
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat} (a b : BitVec n),
     b ≠ 0#n →
       ∃ q r,
@@ -1089,12 +1168,12 @@ theorem checkedUDiv_and_checkedURem_eq_nat_div_mod :
   Counterexample `ce_checkedUDiv_drop_nonZeroDiv` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:258-262
 theorem ce_checkedUDiv_drop_nonZeroDiv :
-  ¬NonZeroDiv 0#8 ∧
-    ¬∃ q r,
-        checkedUDiv 7#8 0#8 = some q ∧
-          checkedURem 7#8 0#8 = some r ∧
-            q.toNat = (7#8).toNat / (0#8).toNat ∧ r.toNat = (7#8).toNat % (0#8).toNat
+    ¬ NonZeroDiv (0#8) ∧
+    ¬ (∃ q r : BitVec 8,
+      checkedUDiv (7#8) (0#8) = some q ∧ checkedURem (7#8) (0#8) = some r ∧
+      q.toNat = (7#8).toNat / (0#8).toNat ∧ r.toNat = (7#8).toNat % (0#8).toNat)
 ```
 
 - **Non-vacuity witness:** At n = 8, checkedUDiv 7#8 4#8 = some 1#8 and checkedURem 7#8 4#8 = some 3#8. Lean: `nv_checkedUDiv_and_checkedURem_eq_nat_div_mod`.
@@ -1116,11 +1195,16 @@ theorem ce_checkedUDiv_drop_nonZeroDiv :
 - **Lean statement** (`Toy.MachInt.checkedSDiv_eq_some_and_toInt_eq_tdiv`):
 
 ```lean
-theorem checkedSDiv_eq_some_and_toInt_eq_tdiv :
-  ∀ {n : Nat} (a b : BitVec n),
-    NonZeroDiv b →
-      NoSDivOverflow a b → ∃ q, checkedSDiv a b = some q ∧ q.toInt = a.toInt.tdiv b.toInt
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:424-427
+theorem checkedSDiv_eq_some_and_toInt_eq_tdiv {n : Nat} (a b : BitVec n)
+    (hb : NonZeroDiv b) (hno : NoSDivOverflow a b) :
+    ∃ q : BitVec n,
+      checkedSDiv a b = some q ∧ q.toInt = a.toInt.tdiv b.toInt
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat} (a b : BitVec n),
     b ≠ 0#n →
       ¬(a = BitVec.intMin n ∧ b = -1#n) →
@@ -1134,22 +1218,24 @@ theorem checkedSDiv_eq_some_and_toInt_eq_tdiv :
   Counterexample `ce_checkedSDiv_drop_nonZeroDiv` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:266-269
 theorem ce_checkedSDiv_drop_nonZeroDiv :
-  ¬NonZeroDiv 0#8 ∧
-    NoSDivOverflow 7#8 0#8 ∧
-      ¬∃ q, checkedSDiv 7#8 0#8 = some q ∧ q.toInt = (7#8).toInt.tdiv (0#8).toInt
+    ¬ NonZeroDiv (0#8) ∧
+    NoSDivOverflow (7#8) (0#8) ∧
+    ¬ (∃ q : BitVec 8, checkedSDiv (7#8) (0#8) = some q ∧ q.toInt = (7#8).toInt.tdiv (0#8).toInt)
 ```
 
 
   Counterexample `ce_checkedSDiv_drop_noSDivOverflow` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:273-278
 theorem ce_checkedSDiv_drop_noSDivOverflow :
-  NonZeroDiv (-1#8) ∧
-    ¬NoSDivOverflow (BitVec.intMin 8) (-1#8) ∧
-      ¬∃ q,
-          checkedSDiv (BitVec.intMin 8) (-1#8) = some q ∧
-            q.toInt = (BitVec.intMin 8).toInt.tdiv (-1#8).toInt
+    NonZeroDiv (-1#8) ∧
+    ¬ NoSDivOverflow (BitVec.intMin 8) (-1#8) ∧
+    ¬ (∃ q : BitVec 8,
+      checkedSDiv (BitVec.intMin 8) (-1#8) = some q ∧
+      q.toInt = (BitVec.intMin 8).toInt.tdiv (-1#8).toInt)
 ```
 
 - **Non-vacuity witness:** At n = 8, checkedSDiv (-7#8) 4#8 = some (-1#8) and (-1#8).toInt = (-7 : Int).tdiv 4. Lean: `nv_checkedSDiv_eq_some_and_toInt_eq_tdiv`.
@@ -1175,11 +1261,16 @@ theorem ce_checkedSDiv_drop_noSDivOverflow :
 - **Lean statement** (`Toy.MachInt.checkedSRem_eq_some_and_toInt_eq_tmod`):
 
 ```lean
-theorem checkedSRem_eq_some_and_toInt_eq_tmod :
-  ∀ {n : Nat} (a b : BitVec n),
-    NonZeroDiv b →
-      NoSDivOverflow a b → ∃ r, checkedSRem a b = some r ∧ r.toInt = a.toInt.tmod b.toInt
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:433-436
+theorem checkedSRem_eq_some_and_toInt_eq_tmod {n : Nat} (a b : BitVec n)
+    (hb : NonZeroDiv b) (hno : NoSDivOverflow a b) :
+    ∃ r : BitVec n,
+      checkedSRem a b = some r ∧ r.toInt = a.toInt.tmod b.toInt
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat} (a b : BitVec n),
     b ≠ 0#n →
       ¬(a = BitVec.intMin n ∧ b = -1#n) →
@@ -1193,22 +1284,24 @@ theorem checkedSRem_eq_some_and_toInt_eq_tmod :
   Counterexample `ce_checkedSRem_drop_nonZeroDiv` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:282-285
 theorem ce_checkedSRem_drop_nonZeroDiv :
-  ¬NonZeroDiv 0#8 ∧
-    NoSDivOverflow 7#8 0#8 ∧
-      ¬∃ r, checkedSRem 7#8 0#8 = some r ∧ r.toInt = (7#8).toInt.tmod (0#8).toInt
+    ¬ NonZeroDiv (0#8) ∧
+    NoSDivOverflow (7#8) (0#8) ∧
+    ¬ (∃ r : BitVec 8, checkedSRem (7#8) (0#8) = some r ∧ r.toInt = (7#8).toInt.tmod (0#8).toInt)
 ```
 
 
   Counterexample `ce_checkedSRem_drop_noSDivOverflow` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:289-294
 theorem ce_checkedSRem_drop_noSDivOverflow :
-  NonZeroDiv (-1#8) ∧
-    ¬NoSDivOverflow (BitVec.intMin 8) (-1#8) ∧
-      ¬∃ r,
-          checkedSRem (BitVec.intMin 8) (-1#8) = some r ∧
-            r.toInt = (BitVec.intMin 8).toInt.tmod (-1#8).toInt
+    NonZeroDiv (-1#8) ∧
+    ¬ NoSDivOverflow (BitVec.intMin 8) (-1#8) ∧
+    ¬ (∃ r : BitVec 8,
+      checkedSRem (BitVec.intMin 8) (-1#8) = some r ∧
+      r.toInt = (BitVec.intMin 8).toInt.tmod (-1#8).toInt)
 ```
 
 - **Non-vacuity witness:** At n = 8, checkedSRem (-7#8) 4#8 = some (-3#8) and (-3#8).toInt = (-7 : Int).tmod 4. Lean: `nv_checkedSRem_eq_some_and_toInt_eq_tmod`.
@@ -1233,11 +1326,15 @@ theorem ce_checkedSRem_drop_noSDivOverflow :
 - **Lean statement** (`Toy.MachInt.tdiv_not_inSignedRange_iff_intMin_negOne`):
 
 ```lean
-theorem tdiv_not_inSignedRange_iff_intMin_negOne :
-  ∀ {n : Nat},
-    PosWidth n →
-      ∀ (a b : BitVec n), ¬InSignedRange n (a.toInt.tdiv b.toInt) ↔ a = BitVec.intMin n ∧ b = -1#n
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:442-444
+theorem tdiv_not_inSignedRange_iff_intMin_negOne {n : Nat} (hn : PosWidth n)
+    (a b : BitVec n) :
+    ¬ InSignedRange n (a.toInt.tdiv b.toInt) ↔ (a = BitVec.intMin n ∧ b = -1#n)
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat},
     0 < n →
       ∀ (a b : BitVec n),
@@ -1252,18 +1349,22 @@ theorem tdiv_not_inSignedRange_iff_intMin_negOne :
   Counterexample `ce_tdiv_overflow_iff_drop_posWidth` (states the facts from which the failure follows; the canonical form is `ce_tdiv_overflow_iff_drop_posWidth_canonical` below):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:299-302
 theorem ce_tdiv_overflow_iff_drop_posWidth :
-  ¬PosWidth 0 ∧
-    (0#0 = BitVec.intMin 0 ∧ 0#0 = -1#0) ∧ InSignedRange 0 ((0#0).toInt.tdiv (0#0).toInt)
+    ¬ PosWidth 0 ∧
+    (0#0 = BitVec.intMin 0 ∧ (0#0) = -1#0) ∧
+    InSignedRange 0 ((0#0).toInt.tdiv (0#0).toInt)
 ```
 
 
   Counterexample `ce_tdiv_overflow_iff_drop_posWidth_canonical` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Supplements.lean:98-101
 theorem ce_tdiv_overflow_iff_drop_posWidth_canonical :
-  ¬PosWidth 0 ∧
-    ¬(¬InSignedRange 0 ((0#0).toInt.tdiv (0#0).toInt) ↔ 0#0 = BitVec.intMin 0 ∧ 0#0 = -1#0)
+    ¬ PosWidth 0 ∧
+    ¬ (¬ InSignedRange 0 ((0#0).toInt.tdiv (0#0).toInt) ↔
+        ((0#0) = BitVec.intMin 0 ∧ (0#0) = -1#0))
 ```
 
 - **Non-vacuity witness:** At n = 8, (BitVec.intMin 8).toInt.tdiv (-1#8).toInt = 128, which lies outside InSignedRange 8 = [-128, 127]. Both sides false: at n = 8, 5.tdiv (-1) = -5 is in range and (5#8, -1#8) is not (MIN, -1). Width one: -1#1 = intMin 1 and (intMin 1).toInt.tdiv (-1#1).toInt = 1 lies outside InSignedRange 1 = [-1, 0]. Lean: `nv_tdiv_not_inSignedRange_iff_intMin_negOne`, `nv_tdiv_iff_both_false`, `nv_tdiv_iff_width_one`.
@@ -1286,14 +1387,17 @@ theorem ce_tdiv_overflow_iff_drop_posWidth_canonical :
 - **Lean statement** (`Toy.MachInt.checkedSRem_intMin_negOne_eq_none`):
 
 ```lean
-theorem checkedSRem_intMin_negOne_eq_none :
-  ∀ {n : Nat},
-    PosWidth n →
-      NonZeroDiv (-1#n) ∧
-        InSignedRange n ((BitVec.intMin n).toInt.tmod (-1#n).toInt) ∧
-          checkedSRem (BitVec.intMin n) (-1#n) = none ∧
-            checkedSRemEuclid (BitVec.intMin n) (-1#n) = none
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:463-467
+theorem checkedSRem_intMin_negOne_eq_none {n : Nat} (hn : PosWidth n) :
+    NonZeroDiv (-1#n) ∧
+    InSignedRange n ((BitVec.intMin n).toInt.tmod (-1#n).toInt) ∧
+    checkedSRem (BitVec.intMin n) (-1#n) = none ∧
+    checkedSRemEuclid (BitVec.intMin n) (-1#n) = none
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat},
     0 < n →
       -1#n ≠ 0#n ∧
@@ -1309,30 +1413,32 @@ theorem checkedSRem_intMin_negOne_eq_none :
   Counterexample `ce_checkedSRem_intMin_drop_posWidth` (states the facts from which the failure follows; the canonical form is `ce_checkedSRem_intMin_drop_posWidth_canonical` below):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:307-308
 theorem ce_checkedSRem_intMin_drop_posWidth :
-  ¬PosWidth 0 ∧ ¬NonZeroDiv (-1#0)
+    ¬ PosWidth 0 ∧ ¬ NonZeroDiv (-1#0)
 ```
 
 
   Counterexample `ce_checkedSRem_intMin_drop_posWidth_canonical` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Supplements.lean:107-112
 theorem ce_checkedSRem_intMin_drop_posWidth_canonical :
-  ¬PosWidth 0 ∧
-    ¬(NonZeroDiv (-1#0) ∧
+    ¬ PosWidth 0 ∧
+    ¬ (NonZeroDiv (-1#0) ∧
         InSignedRange 0 ((BitVec.intMin 0).toInt.tmod (-1#0).toInt) ∧
-          checkedSRem (BitVec.intMin 0) (-1#0) = none ∧
-            checkedSRemEuclid (BitVec.intMin 0) (-1#0) = none)
+        checkedSRem (BitVec.intMin 0) (-1#0) = none ∧
+        checkedSRemEuclid (BitVec.intMin 0) (-1#0) = none)
 ```
 
 - **Non-vacuity witness:** At n = 8, -1#8 ≠ 0#8 and 0 ∈ InSignedRange 8, yet checkedSRem (BitVec.intMin 8) (-1#8) = none. Lean: `nv_checkedSRem_intMin_negOne_eq_none`.
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
-theorem checkedSRem_intMin_negOne_eq_none_unconditional :
-  ∀ (n : Nat),
+-- lean/Toy/MachInt/Examples.lean:106-108
+theorem checkedSRem_intMin_negOne_eq_none_unconditional (n : Nat) :
     checkedSRem (BitVec.intMin n) (-1#n) = none ∧
-      checkedSRemEuclid (BitVec.intMin n) (-1#n) = none
+    checkedSRemEuclid (BitVec.intMin n) (-1#n) = none
 ```
 
 - **Prior art:**
@@ -1354,11 +1460,16 @@ theorem checkedSRem_intMin_negOne_eq_none_unconditional :
 - **Lean statement** (`Toy.MachInt.checkedSDivEuclid_eq_some_and_toInt_eq_ediv`):
 
 ```lean
-theorem checkedSDivEuclid_eq_some_and_toInt_eq_ediv :
-  ∀ {n : Nat} (a b : BitVec n),
-    NonZeroDiv b →
-      NoSDivOverflow a b → ∃ q, checkedSDivEuclid a b = some q ∧ q.toInt = a.toInt.ediv b.toInt
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:495-498
+theorem checkedSDivEuclid_eq_some_and_toInt_eq_ediv {n : Nat} (a b : BitVec n)
+    (hb : NonZeroDiv b) (hno : NoSDivOverflow a b) :
+    ∃ q : BitVec n,
+      checkedSDivEuclid a b = some q ∧ q.toInt = a.toInt.ediv b.toInt
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat} (a b : BitVec n),
     b ≠ 0#n →
       ¬(a = BitVec.intMin n ∧ b = -1#n) →
@@ -1372,22 +1483,25 @@ theorem checkedSDivEuclid_eq_some_and_toInt_eq_ediv :
   Counterexample `ce_checkedSDivEuclid_drop_nonZeroDiv` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:312-316
 theorem ce_checkedSDivEuclid_drop_nonZeroDiv :
-  ¬NonZeroDiv 0#8 ∧
-    NoSDivOverflow 7#8 0#8 ∧
-      ¬∃ q, checkedSDivEuclid 7#8 0#8 = some q ∧ q.toInt = (7#8).toInt.ediv (0#8).toInt
+    ¬ NonZeroDiv (0#8) ∧
+    NoSDivOverflow (7#8) (0#8) ∧
+    ¬ (∃ q : BitVec 8,
+      checkedSDivEuclid (7#8) (0#8) = some q ∧ q.toInt = (7#8).toInt.ediv (0#8).toInt)
 ```
 
 
   Counterexample `ce_checkedSDivEuclid_drop_noSDivOverflow` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:320-325
 theorem ce_checkedSDivEuclid_drop_noSDivOverflow :
-  NonZeroDiv (-1#8) ∧
-    ¬NoSDivOverflow (BitVec.intMin 8) (-1#8) ∧
-      ¬∃ q,
-          checkedSDivEuclid (BitVec.intMin 8) (-1#8) = some q ∧
-            q.toInt = (BitVec.intMin 8).toInt.ediv (-1#8).toInt
+    NonZeroDiv (-1#8) ∧
+    ¬ NoSDivOverflow (BitVec.intMin 8) (-1#8) ∧
+    ¬ (∃ q : BitVec 8,
+      checkedSDivEuclid (BitVec.intMin 8) (-1#8) = some q ∧
+      q.toInt = (BitVec.intMin 8).toInt.ediv (-1#8).toInt)
 ```
 
 - **Non-vacuity witness:** At n = 8, checkedSDivEuclid (-7#8) 4#8 = some (-2#8) and (-2#8).toInt = (-7 : Int).ediv 4. Lean: `nv_checkedSDivEuclid_eq_some_and_toInt_eq_ediv`.
@@ -1409,11 +1523,16 @@ theorem ce_checkedSDivEuclid_drop_noSDivOverflow :
 - **Lean statement** (`Toy.MachInt.checkedSRemEuclid_eq_some_and_toInt_eq_emod`):
 
 ```lean
-theorem checkedSRemEuclid_eq_some_and_toInt_eq_emod :
-  ∀ {n : Nat} (a b : BitVec n),
-    NonZeroDiv b →
-      NoSDivOverflow a b → ∃ r, checkedSRemEuclid a b = some r ∧ r.toInt = a.toInt.emod b.toInt
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:504-507
+theorem checkedSRemEuclid_eq_some_and_toInt_eq_emod {n : Nat} (a b : BitVec n)
+    (hb : NonZeroDiv b) (hno : NoSDivOverflow a b) :
+    ∃ r : BitVec n,
+      checkedSRemEuclid a b = some r ∧ r.toInt = a.toInt.emod b.toInt
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n : Nat} (a b : BitVec n),
     b ≠ 0#n →
       ¬(a = BitVec.intMin n ∧ b = -1#n) →
@@ -1427,22 +1546,25 @@ theorem checkedSRemEuclid_eq_some_and_toInt_eq_emod :
   Counterexample `ce_checkedSRemEuclid_drop_nonZeroDiv` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:329-333
 theorem ce_checkedSRemEuclid_drop_nonZeroDiv :
-  ¬NonZeroDiv 0#8 ∧
-    NoSDivOverflow 7#8 0#8 ∧
-      ¬∃ r, checkedSRemEuclid 7#8 0#8 = some r ∧ r.toInt = (7#8).toInt.emod (0#8).toInt
+    ¬ NonZeroDiv (0#8) ∧
+    NoSDivOverflow (7#8) (0#8) ∧
+    ¬ (∃ r : BitVec 8,
+      checkedSRemEuclid (7#8) (0#8) = some r ∧ r.toInt = (7#8).toInt.emod (0#8).toInt)
 ```
 
 
   Counterexample `ce_checkedSRemEuclid_drop_noSDivOverflow` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:337-342
 theorem ce_checkedSRemEuclid_drop_noSDivOverflow :
-  NonZeroDiv (-1#8) ∧
-    ¬NoSDivOverflow (BitVec.intMin 8) (-1#8) ∧
-      ¬∃ r,
-          checkedSRemEuclid (BitVec.intMin 8) (-1#8) = some r ∧
-            r.toInt = (BitVec.intMin 8).toInt.emod (-1#8).toInt
+    NonZeroDiv (-1#8) ∧
+    ¬ NoSDivOverflow (BitVec.intMin 8) (-1#8) ∧
+    ¬ (∃ r : BitVec 8,
+      checkedSRemEuclid (BitVec.intMin 8) (-1#8) = some r ∧
+      r.toInt = (BitVec.intMin 8).toInt.emod (-1#8).toInt)
 ```
 
 - **Non-vacuity witness:** At n = 8, checkedSRemEuclid (-7#8) 4#8 = some (1#8) and (1#8).toInt = (-7 : Int).emod 4. Lean: `nv_checkedSRemEuclid_eq_some_and_toInt_eq_emod`.
@@ -1464,19 +1586,20 @@ theorem ce_checkedSRemEuclid_drop_noSDivOverflow :
 - **Lean statement** (`Toy.MachInt.ce_sdiv_srem_ne_int_ediv_emod`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:50-62
 theorem ce_sdiv_srem_ne_int_ediv_emod :
-  ((-7#8).sdiv 4#8).toInt = -1 ∧
-    ((-7#8).srem 4#8).toInt = -3 ∧
-      -7 / 4 = -2 ∧
-        -7 % 4 = 1 ∧
-          ((-7#8).sdiv 4#8).toInt ≠ (-7#8).toInt / (4#8).toInt ∧
-            ((-7#8).srem 4#8).toInt ≠ (-7#8).toInt % (4#8).toInt ∧
-              (sdivEuclid (-7#8) 4#8).toInt = (-7).ediv 4 ∧
-                (sremEuclid (-7#8) 4#8).toInt = (-7).emod 4 ∧
-                  ((7#8).sdiv (-4#8)).toInt = (7#8).toInt / (-4#8).toInt ∧
-                    ((7#8).srem (-4#8)).toInt = (7#8).toInt % (-4#8).toInt ∧
-                      ((7#8).sdiv (-4#8)).toInt ≠ Int.fdiv 7 (-4) ∧
-                        ((7#8).srem (-4#8)).toInt ≠ ((7#8).smod (-4#8)).toInt
+    ((-7#8).sdiv (4#8)).toInt = -1 ∧
+    ((-7#8).srem (4#8)).toInt = -3 ∧
+    ((-7 : Int) / (4 : Int)) = -2 ∧
+    ((-7 : Int) % (4 : Int)) = 1 ∧
+    ((-7#8).sdiv (4#8)).toInt ≠ (-7#8).toInt / (4#8).toInt ∧
+    ((-7#8).srem (4#8)).toInt ≠ (-7#8).toInt % (4#8).toInt ∧
+    (sdivEuclid (-7#8) (4#8)).toInt = (-7 : Int).ediv 4 ∧
+    (sremEuclid (-7#8) (4#8)).toInt = (-7 : Int).emod 4 ∧
+    ((7#8).sdiv (-4#8)).toInt = (7#8).toInt / (-4#8).toInt ∧
+    ((7#8).srem (-4#8)).toInt = (7#8).toInt % (-4#8).toInt ∧
+    ((7#8).sdiv (-4#8)).toInt ≠ (7 : Int).fdiv (-4) ∧
+    ((7#8).srem (-4#8)).toInt ≠ ((7#8).smod (-4#8)).toInt
 ```
 
 - **Hypothesis ledger:** no hypotheses.
@@ -1499,13 +1622,17 @@ theorem ce_sdiv_srem_ne_int_ediv_emod :
 - **Lean statement** (`Toy.MachInt.wrappingShl_eq_mul_twoPow_of_shiftInBounds`):
 
 ```lean
-theorem wrappingShl_eq_mul_twoPow_of_shiftInBounds :
-  ∀ {n k : Nat} (x : BitVec n),
-    ShiftInBounds n k →
-      checkedShl x k = some (wrappingShl x k) ∧
-        (wrappingShl x k).toNat = x.toNat * 2 ^ k % 2 ^ n ∧
-          (wrappingShl x k).toInt = (x.toInt * ↑(2 ^ k)).bmod (2 ^ n)
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:515-519
+theorem wrappingShl_eq_mul_twoPow_of_shiftInBounds {n k : Nat} (x : BitVec n)
+    (hk : ShiftInBounds n k) :
+    checkedShl x k = some (wrappingShl x k) ∧
+    (wrappingShl x k).toNat = (x.toNat * 2 ^ k) % 2 ^ n ∧
+    (wrappingShl x k).toInt = (x.toInt * ((2 ^ k : Nat) : Int)).bmod (2 ^ n)
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n k : Nat} (x : BitVec n),
     k < n →
       checkedShl x k = some (wrappingShl x k) ∧
@@ -1519,40 +1646,46 @@ theorem wrappingShl_eq_mul_twoPow_of_shiftInBounds :
   Counterexample `ce_wrappingShl_overshift_ne_mul_twoPow` (states the facts from which the failure follows; the canonical form is `ce_wrappingShl_drop_shiftInBounds_canonical` below):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:69-74
 theorem ce_wrappingShl_overshift_ne_mul_twoPow :
-  checkedShl (1#8) 8 = none ∧
-    (wrappingShl (1#8) 8).toNat ≠ 1 * 2 ^ 8 % 2 ^ 8 ∧
-      checkedShl (5#8) 9 = none ∧
-        (wrappingShl (5#8) 9).toNat ≠ 5 * 2 ^ 9 % 2 ^ 8 ∧
-          (wrappingShl (-1#8) 8).toInt ≠ (-1 * (↑(2 ^ 8) : Int)).bmod (2 ^ 8)
+    checkedShl (1#8) 8 = none ∧
+    (wrappingShl (1#8) 8).toNat ≠ (1 * 2 ^ 8) % 2 ^ 8 ∧
+    checkedShl (5#8) 9 = none ∧
+    (wrappingShl (5#8) 9).toNat ≠ (5 * 2 ^ 9) % 2 ^ 8 ∧
+    (wrappingShl (-1#8) 8).toInt ≠ ((-1 : Int) * ((2 ^ 8 : Nat) : Int)).bmod (2 ^ 8)
 ```
 
   Counterexample `ce_wrappingShl_drop_shiftInBounds_canonical` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Supplements.lean:120-124
 theorem ce_wrappingShl_drop_shiftInBounds_canonical :
-  ¬ShiftInBounds 8 8 ∧
-    ¬(checkedShl (1#8) 8 = some (wrappingShl (1#8) 8) ∧
+    ¬ ShiftInBounds 8 8 ∧
+    ¬ (checkedShl (1#8) 8 = some (wrappingShl (1#8) 8) ∧
         (wrappingShl (1#8) 8).toNat = (1#8).toNat * 2 ^ 8 % 2 ^ 8 ∧
-          (wrappingShl (1#8) 8).toInt = ((1#8).toInt * ↑(2 ^ 8)).bmod (2 ^ 8))
+        (wrappingShl (1#8) 8).toInt = ((1#8).toInt * ((2 ^ 8 : Nat) : Int)).bmod (2 ^ 8))
 ```
 
 - **Non-vacuity witness:** At n = 8, x = 5#8, k = 3 < 8: checkedShl (5#8) 3 = some (wrappingShl (5#8) 3) = some (40#8). Lean: `nv_wrappingShl_eq_mul_twoPow_of_shiftInBounds`.
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:94-96
 theorem ce_wrappingShl_mod_ne_and_mask_nonPowTwo :
-  4 % 3 ≠ 4 &&& 3 - 1 ∧ wrappingShl (1#3) 4 ≠ 1#3 <<< (4 &&& 3 - 1)
+    4 % 3 ≠ 4 &&& (3 - 1) ∧
+    wrappingShl (1#3) 4 ≠ (1#3) <<< (4 &&& (3 - 1))
 ```
 
 ```lean
-theorem mod_eq_and_mask_forall_iff_isPowerOfTwo :
-  ∀ (n : Nat), (∀ (k : Nat), k % n = k &&& n - 1) ↔ ∃ m, n = 2 ^ m
+-- lean/Toy/MachInt/Supplements.lean:78-79
+theorem mod_eq_and_mask_forall_iff_isPowerOfTwo (n : Nat) :
+    (∀ k : Nat, k % n = k &&& (n - 1)) ↔ ∃ m : Nat, n = 2 ^ m
 ```
 
 ```lean
-theorem mod_twoPow_eq_and_mask :
-  ∀ (m k : Nat), k % 2 ^ m = k &&& 2 ^ m - 1
+-- lean/Toy/MachInt/Examples.lean:97-98
+theorem mod_twoPow_eq_and_mask (m k : Nat) :
+    k % (2 ^ m) = k &&& (2 ^ m - 1)
 ```
 
 - **Prior art:**
@@ -1568,7 +1701,7 @@ theorem mod_twoPow_eq_and_mask :
   - Does not hold when k ≥ n: wrapping_shl masks k modulo n rather than shifting bits out to zero (see ce_wrappingShl_overshift_ne_mul_twoPow).
   - Does not equate wrapping_shl with Rust's unbounded_shl (which yields 0 for k ≥ n).
   - `ShiftInBounds n k` (equivalently, `checked_shl` returning `Some`, or `<<` not panicking under overflow checks) does not imply that no set bits are shifted out: `128u8.checked_shl(1) == Some(0)` (see `ce_checkedShl_drops_high_bits_without_none`). Replacing `x << k` by the unbounded integer `x * 2^k` additionally requires `x * 2^k < 2^n` (unsigned) or the signed analogue, which neither the operator nor `checked_shl` checks.
-  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
+  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). In `mod_eq_and_mask_forall_iff_isPowerOfTwo`, `n - 1` is truncated `Nat` subtraction: at `n = 0` the mask is `0`, not the all-ones value of a wrapping `n - 1`, and with Lean's `k % 0 = k` the left side fails there (`1 % 0 = 1` but `1 &&& 0 = 0`), as does the right side (0 is not a power of two); its `n = 0` case is therefore not the wrapping machine-integer reading. All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
 
 #### `wrappingUShr_and_wrappingSShr_of_shiftInBounds`
 
@@ -1577,14 +1710,18 @@ theorem mod_twoPow_eq_and_mask :
 - **Lean statement** (`Toy.MachInt.wrappingUShr_and_wrappingSShr_of_shiftInBounds`):
 
 ```lean
-theorem wrappingUShr_and_wrappingSShr_of_shiftInBounds :
-  ∀ {n k : Nat} (x : BitVec n),
-    ShiftInBounds n k →
-      checkedUShr x k = some (wrappingUShr x k) ∧
-        (wrappingUShr x k).toNat = x.toNat / 2 ^ k ∧
-          checkedSShr x k = some (wrappingSShr x k) ∧
-            (wrappingSShr x k).toInt = x.toInt.fdiv ↑(2 ^ k)
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:537-542
+theorem wrappingUShr_and_wrappingSShr_of_shiftInBounds {n k : Nat} (x : BitVec n)
+    (hk : ShiftInBounds n k) :
+    checkedUShr x k = some (wrappingUShr x k) ∧
+    (wrappingUShr x k).toNat = x.toNat / 2 ^ k ∧
+    checkedSShr x k = some (wrappingSShr x k) ∧
+    (wrappingSShr x k).toInt = x.toInt.fdiv ((2 ^ k : Nat) : Int)
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n k : Nat} (x : BitVec n),
     k < n →
       checkedUShr x k = some (wrappingUShr x k) ∧
@@ -1599,46 +1736,54 @@ theorem wrappingUShr_and_wrappingSShr_of_shiftInBounds :
   Counterexample `ce_wrappingShr_overshift` (states the facts from which the failure follows; the canonical form is `ce_wrappingShr_drop_shiftInBounds_canonical` below):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:349-354
 theorem ce_wrappingShr_overshift :
-  ¬ShiftInBounds 8 8 ∧
+    ¬ ShiftInBounds 8 8 ∧
     checkedUShr (128#8) 8 = none ∧
-      (wrappingUShr (128#8) 8).toNat ≠ (128#8).toNat / 2 ^ 8 ∧
-        checkedSShr (-128#8) 8 = none ∧
-          (wrappingSShr (-128#8) 8).toInt ≠ (-128#8).toInt.fdiv ↑(2 ^ 8)
+    (wrappingUShr (128#8) 8).toNat ≠ (128#8).toNat / 2 ^ 8 ∧
+    checkedSShr (-128#8) 8 = none ∧
+    (wrappingSShr (-128#8) 8).toInt ≠ (-128#8).toInt.fdiv ((2 ^ 8 : Nat) : Int)
 ```
 
   Counterexample `ce_wrappingShr_drop_shiftInBounds_canonical` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Supplements.lean:130-135
 theorem ce_wrappingShr_drop_shiftInBounds_canonical :
-  ¬ShiftInBounds 8 8 ∧
-    ¬(checkedUShr (128#8) 8 = some (wrappingUShr (128#8) 8) ∧
+    ¬ ShiftInBounds 8 8 ∧
+    ¬ (checkedUShr (128#8) 8 = some (wrappingUShr (128#8) 8) ∧
         (wrappingUShr (128#8) 8).toNat = (128#8).toNat / 2 ^ 8 ∧
-          checkedSShr (128#8) 8 = some (wrappingSShr (128#8) 8) ∧
-            (wrappingSShr (128#8) 8).toInt = (128#8).toInt.fdiv ↑(2 ^ 8))
+        checkedSShr (128#8) 8 = some (wrappingSShr (128#8) 8) ∧
+        (wrappingSShr (128#8) 8).toInt = (128#8).toInt.fdiv ((2 ^ 8 : Nat) : Int))
 ```
 
 - **Non-vacuity witness:** At n = 8, k = 2 < 8: wrappingUShr 9#8 2 = 2#8 and wrappingSShr (-7#8) 2 = -2#8 = (-7).fdiv 4. Lean: `nv_wrappingUShr_and_wrappingSShr_of_shiftInBounds`.
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:359-361
 theorem ce_sshiftRight_ne_sdiv_twoPow :
-  (wrappingSShr (-1#8) 1).toInt = (-1).fdiv 2 ∧ (wrappingSShr (-1#8) 1).toInt ≠ (-1).tdiv 2
+    (wrappingSShr (-1#8) 1).toInt = (-1 : Int).fdiv 2 ∧
+    (wrappingSShr (-1#8) 1).toInt ≠ (-1 : Int).tdiv 2
 ```
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:94-96
 theorem ce_wrappingShl_mod_ne_and_mask_nonPowTwo :
-  4 % 3 ≠ 4 &&& 3 - 1 ∧ wrappingShl (1#3) 4 ≠ 1#3 <<< (4 &&& 3 - 1)
+    4 % 3 ≠ 4 &&& (3 - 1) ∧
+    wrappingShl (1#3) 4 ≠ (1#3) <<< (4 &&& (3 - 1))
 ```
 
 ```lean
-theorem mod_eq_and_mask_forall_iff_isPowerOfTwo :
-  ∀ (n : Nat), (∀ (k : Nat), k % n = k &&& n - 1) ↔ ∃ m, n = 2 ^ m
+-- lean/Toy/MachInt/Supplements.lean:78-79
+theorem mod_eq_and_mask_forall_iff_isPowerOfTwo (n : Nat) :
+    (∀ k : Nat, k % n = k &&& (n - 1)) ↔ ∃ m : Nat, n = 2 ^ m
 ```
 
 ```lean
-theorem mod_twoPow_eq_and_mask :
-  ∀ (m k : Nat), k % 2 ^ m = k &&& 2 ^ m - 1
+-- lean/Toy/MachInt/Examples.lean:97-98
+theorem mod_twoPow_eq_and_mask (m k : Nat) :
+    k % (2 ^ m) = k &&& (2 ^ m - 1)
 ```
 
 - **Prior art:**
@@ -1652,7 +1797,7 @@ theorem mod_twoPow_eq_and_mask :
 - **Non-claims:** package-wide N1, N2, N3, N5 (stated in full under Boundaries), and:
   - Does not equate signed arithmetic right shift `>>` with Rust's signed `/` by 2^k (which truncates toward 0, e.g. -1 >> 1 = -1 ≠ 0 = (-1).tdiv 2; see ce_sshiftRight_ne_sdiv_twoPow).
   - Does not hold when k ≥ n (see ce_wrappingShr_overshift).
-  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
+  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). In `mod_eq_and_mask_forall_iff_isPowerOfTwo`, `n - 1` is truncated `Nat` subtraction: at `n = 0` the mask is `0`, not the all-ones value of a wrapping `n - 1`, and with Lean's `k % 0 = k` the left side fails there (`1 % 0 = 1` but `1 &&& 0 = 0`), as does the right side (0 is not a power of two); its `n = 0` case is therefore not the wrapping machine-integer reading. All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
 
 #### `ce_wrappingShl_overshift_ne_mul_twoPow`
 
@@ -1661,12 +1806,13 @@ theorem mod_twoPow_eq_and_mask :
 - **Lean statement** (`Toy.MachInt.ce_wrappingShl_overshift_ne_mul_twoPow`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:69-74
 theorem ce_wrappingShl_overshift_ne_mul_twoPow :
-  checkedShl (1#8) 8 = none ∧
-    (wrappingShl (1#8) 8).toNat ≠ 1 * 2 ^ 8 % 2 ^ 8 ∧
-      checkedShl (5#8) 9 = none ∧
-        (wrappingShl (5#8) 9).toNat ≠ 5 * 2 ^ 9 % 2 ^ 8 ∧
-          (wrappingShl (-1#8) 8).toInt ≠ (-1 * (↑(2 ^ 8) : Int)).bmod (2 ^ 8)
+    checkedShl (1#8) 8 = none ∧
+    (wrappingShl (1#8) 8).toNat ≠ (1 * 2 ^ 8) % 2 ^ 8 ∧
+    checkedShl (5#8) 9 = none ∧
+    (wrappingShl (5#8) 9).toNat ≠ (5 * 2 ^ 9) % 2 ^ 8 ∧
+    (wrappingShl (-1#8) 8).toInt ≠ ((-1 : Int) * ((2 ^ 8 : Nat) : Int)).bmod (2 ^ 8)
 ```
 
 - **Hypothesis ledger:** no hypotheses.
@@ -1674,18 +1820,22 @@ theorem ce_wrappingShl_overshift_ne_mul_twoPow :
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:94-96
 theorem ce_wrappingShl_mod_ne_and_mask_nonPowTwo :
-  4 % 3 ≠ 4 &&& 3 - 1 ∧ wrappingShl (1#3) 4 ≠ 1#3 <<< (4 &&& 3 - 1)
+    4 % 3 ≠ 4 &&& (3 - 1) ∧
+    wrappingShl (1#3) 4 ≠ (1#3) <<< (4 &&& (3 - 1))
 ```
 
 ```lean
-theorem mod_eq_and_mask_forall_iff_isPowerOfTwo :
-  ∀ (n : Nat), (∀ (k : Nat), k % n = k &&& n - 1) ↔ ∃ m, n = 2 ^ m
+-- lean/Toy/MachInt/Supplements.lean:78-79
+theorem mod_eq_and_mask_forall_iff_isPowerOfTwo (n : Nat) :
+    (∀ k : Nat, k % n = k &&& (n - 1)) ↔ ∃ m : Nat, n = 2 ^ m
 ```
 
 ```lean
-theorem mod_twoPow_eq_and_mask :
-  ∀ (m k : Nat), k % 2 ^ m = k &&& 2 ^ m - 1
+-- lean/Toy/MachInt/Examples.lean:97-98
+theorem mod_twoPow_eq_and_mask (m k : Nat) :
+    k % (2 ^ m) = k &&& (2 ^ m - 1)
 ```
 
 - **Prior art:**
@@ -1697,7 +1847,7 @@ theorem mod_twoPow_eq_and_mask :
 - **Basis:** derived (modeling bridge) for the Rust reading: `wrappingShl`/`wrappingUShr`/`wrappingSShr` reduce the shift count modulo `n`; Rust's `wrapping_shl`/`wrapping_shr` mask it with `rhs & (BITS - 1)`, and the two agree for every count exactly when `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`), which covers every Rust fixed-width integer type. `checkedShl`/`checkedUShr`/`checkedSShr` mirror `checked_shl`/`checked_shr` (`None` iff `rhs >= BITS`), and `>>` on signed types is an arithmetic shift (Rust Reference). In Rust terms the conjuncts concern `1u8.checked_shl(8)`, `5u8.checked_shl(9)`, `1u8.wrapping_shl(8)`, `5u8.wrapping_shl(9)` and `(-1i8).wrapping_shl(8)`. Execution cross-check (not proof): `1u8.checked_shl(8) = None`, `1u8.wrapping_shl(8) = 1`, `5u8.wrapping_shl(9) = 10`, `(-1i8).wrapping_shl(8) = -1`, `128u8.checked_shl(1) = Some(0)`, `64i8.checked_shl(1) = Some(-128)`, and `1u8 << 8` panics only under overflow checks.
 - **Non-claims:** package-wide N1, N2, N3, N5 (stated in full under Boundaries), and:
   - Does not assert that plain `<<` masks k as a language guarantee when overflow checks are disabled; masking in unchecked builds is rustc behaviour while the Reference permits either panic or wrapping (and RFC 560's unconditional shift-masking rule is superseded by [expr.operator.int-overflow.shift]).
-  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
+  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). In `mod_eq_and_mask_forall_iff_isPowerOfTwo`, `n - 1` is truncated `Nat` subtraction: at `n = 0` the mask is `0`, not the all-ones value of a wrapping `n - 1`, and with Lean's `k % 0 = k` the left side fails there (`1 % 0 = 1` but `1 &&& 0 = 0`), as does the right side (0 is not a power of two); its `n = 0` case is therefore not the wrapping machine-integer reading. All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
 
 #### `ce_checkedShl_drops_high_bits_without_none`
 
@@ -1706,14 +1856,20 @@ theorem mod_twoPow_eq_and_mask :
 - **Lean statement** (`Toy.MachInt.ce_checkedShl_drops_high_bits_without_none`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:82-89
 theorem ce_checkedShl_drops_high_bits_without_none :
-  ShiftInBounds 8 1 ∧
-    checkedShl (128#8) 1 = some 0#8 ∧
-      (0#8).toNat ≠ (128#8).toNat * 2 ^ 1 ∧
-        checkedUMul 128#8 2#8 = none ∧
-          checkedShl (64#8) 1 = some (-128#8) ∧
-            (-128#8).toInt ≠ (64#8).toInt * ↑(2 ^ 1) ∧ checkedSMul 64#8 2#8 = none
--- with the specification predicates unfolded:
+    ShiftInBounds 8 1 ∧
+    checkedShl (128#8) 1 = some (0#8) ∧
+    (0#8).toNat ≠ (128#8).toNat * 2 ^ 1 ∧
+    checkedUMul (128#8) (2#8) = none ∧
+    checkedShl (64#8) 1 = some (-128#8) ∧
+    (-128#8).toInt ≠ (64#8).toInt * ((2 ^ 1 : Nat) : Int) ∧
+    checkedSMul (64#8) (2#8) = none
+```
+
+With the specification predicates unfolded:
+
+```lean
   1 < 8 ∧
     checkedShl (128#8) 1 = some 0#8 ∧
       (0#8).toNat ≠ (128#8).toNat * 2 ^ 1 ∧
@@ -1727,18 +1883,22 @@ theorem ce_checkedShl_drops_high_bits_without_none :
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:94-96
 theorem ce_wrappingShl_mod_ne_and_mask_nonPowTwo :
-  4 % 3 ≠ 4 &&& 3 - 1 ∧ wrappingShl (1#3) 4 ≠ 1#3 <<< (4 &&& 3 - 1)
+    4 % 3 ≠ 4 &&& (3 - 1) ∧
+    wrappingShl (1#3) 4 ≠ (1#3) <<< (4 &&& (3 - 1))
 ```
 
 ```lean
-theorem mod_eq_and_mask_forall_iff_isPowerOfTwo :
-  ∀ (n : Nat), (∀ (k : Nat), k % n = k &&& n - 1) ↔ ∃ m, n = 2 ^ m
+-- lean/Toy/MachInt/Supplements.lean:78-79
+theorem mod_eq_and_mask_forall_iff_isPowerOfTwo (n : Nat) :
+    (∀ k : Nat, k % n = k &&& (n - 1)) ↔ ∃ m : Nat, n = 2 ^ m
 ```
 
 ```lean
-theorem mod_twoPow_eq_and_mask :
-  ∀ (m k : Nat), k % 2 ^ m = k &&& 2 ^ m - 1
+-- lean/Toy/MachInt/Examples.lean:97-98
+theorem mod_twoPow_eq_and_mask (m k : Nat) :
+    k % (2 ^ m) = k &&& (2 ^ m - 1)
 ```
 
 - **Prior art:**
@@ -1749,7 +1909,7 @@ theorem mod_twoPow_eq_and_mask :
 - **Basis:** derived (modeling bridge) for the Rust reading: `wrappingShl`/`wrappingUShr`/`wrappingSShr` reduce the shift count modulo `n`; Rust's `wrapping_shl`/`wrapping_shr` mask it with `rhs & (BITS - 1)`, and the two agree for every count exactly when `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`), which covers every Rust fixed-width integer type. `checkedShl`/`checkedUShr`/`checkedSShr` mirror `checked_shl`/`checked_shr` (`None` iff `rhs >= BITS`), and `>>` on signed types is an arithmetic shift (Rust Reference). Execution cross-check (not proof): `128u8.checked_shl(1) = Some(0)`, `64i8.checked_shl(1) = Some(-128)`, `1u8.wrapping_shl(8) = 1`, and `1u8 << 8` panics only under overflow checks.
 - **Non-claims:** package-wide N1, N2, N3, N5 (stated in full under Boundaries), and:
   - Does not claim `checked_shl` returns `None` when nonzero bits are shifted out; Rust's `checked_shl` checks only `rhs < BITS` (unlike the unstable `exact_shl`, feature `exact_bitshifts` at Rust 1.91.0, renamed `shl_exact` on later nightlies).
-  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
+  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). In `mod_eq_and_mask_forall_iff_isPowerOfTwo`, `n - 1` is truncated `Nat` subtraction: at `n = 0` the mask is `0`, not the all-ones value of a wrapping `n - 1`, and with Lean's `k % 0 = k` the left side fails there (`1 % 0 = 1` but `1 &&& 0 = 0`), as does the right side (0 is not a power of two); its `n = 0` case is therefore not the wrapping machine-integer reading. All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
 
 ### Result 6: numeric `as` casts
 
@@ -1760,8 +1920,9 @@ theorem mod_twoPow_eq_and_mask :
 - **Lean statement** (`Toy.MachInt.castFromUnsigned_toNat_eq_mod`):
 
 ```lean
-theorem castFromUnsigned_toNat_eq_mod :
-  ∀ {n m : Nat} (x : BitVec n), (castFromUnsigned m x).toNat = x.toNat % 2 ^ m
+-- lean/Toy/MachInt/Statements.lean:581-582
+theorem castFromUnsigned_toNat_eq_mod {n m : Nat} (x : BitVec n) :
+    (castFromUnsigned m x).toNat = x.toNat % 2 ^ m
 ```
 
 - **Hypothesis ledger:** no hypotheses.
@@ -1783,10 +1944,14 @@ theorem castFromUnsigned_toNat_eq_mod :
 - **Lean statement** (`Toy.MachInt.castFromUnsigned_widened_toNat_eq_mod`):
 
 ```lean
-theorem castFromUnsigned_widened_toNat_eq_mod :
-  ∀ {n m k : Nat} (x : BitVec n),
-    WidthLe m k → (castFromUnsigned k (castFromUnsigned m x)).toNat = x.toNat % 2 ^ m
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:589-590
+theorem castFromUnsigned_widened_toNat_eq_mod {n m k : Nat} (x : BitVec n) (hle : WidthLe m k) :
+    (castFromUnsigned k (castFromUnsigned m x)).toNat = x.toNat % 2 ^ m
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n m k : Nat} (x : BitVec n),
     m ≤ k → (castFromUnsigned k (castFromUnsigned m x)).toNat = x.toNat % 2 ^ m
 ```
@@ -1797,31 +1962,34 @@ theorem castFromUnsigned_widened_toNat_eq_mod :
   Counterexample `ce_castFromUnsigned_widened_drop_widthLe` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:367-369
 theorem ce_castFromUnsigned_widened_drop_widthLe :
-  ¬WidthLe 16 8 ∧
-    (castFromUnsigned 8 (castFromUnsigned 16 256#32)).toNat ≠ (256#32).toNat % 2 ^ 16
+    ¬ WidthLe 16 8 ∧
+    (castFromUnsigned 8 (castFromUnsigned 16 (256#32))).toNat ≠ (256#32).toNat % 2 ^ 16
 ```
 
 - **Non-vacuity witness:** At n = 32, m = 8, k = 32, x = 0x12345678#32: ((x as u8) as u32).toNat = x.toNat % 256. Lean: `nv_castFromUnsigned_widened_toNat_eq_mod`.
 - **Cited companion lemmas** (proved; statements hashed in `audit/statements.json`):
 
 ```lean
-theorem castFromUnsigned_widened_toNat_eq_mod_forall_iff :
-  ∀ (n m k : Nat),
-    (∀ (x : BitVec n), (castFromUnsigned k (castFromUnsigned m x)).toNat = x.toNat % 2 ^ m) ↔
-      m ≤ k ∨ n ≤ k
+-- lean/Toy/MachInt/Supplements.lean:53-55
+theorem castFromUnsigned_widened_toNat_eq_mod_forall_iff (n m k : Nat) :
+    (∀ x : BitVec n, (castFromUnsigned k (castFromUnsigned m x)).toNat = x.toNat % 2 ^ m) ↔
+      (m ≤ k ∨ n ≤ k)
 ```
 
 ```lean
-theorem castFromUnsigned_widened_toNat_eq_mod_of_source_le :
-  ∀ {n m k : Nat} (x : BitVec n),
-    n ≤ k → (castFromUnsigned k (castFromUnsigned m x)).toNat = x.toNat % 2 ^ m
+-- lean/Toy/MachInt/Supplements.lean:32-34
+theorem castFromUnsigned_widened_toNat_eq_mod_of_source_le {n m k : Nat} (x : BitVec n)
+    (hnk : n ≤ k) :
+    (castFromUnsigned k (castFromUnsigned m x)).toNat = x.toNat % 2 ^ m
 ```
 
 ```lean
+-- lean/Toy/MachInt/Supplements.lean:45-47
 theorem widened_identity_holds_without_widthLe :
-  ¬WidthLe 32 16 ∧
-    ∀ (x : BitVec 8), (castFromUnsigned 16 (castFromUnsigned 32 x)).toNat = x.toNat % 2 ^ 32
+    ¬ WidthLe 32 16 ∧
+    ∀ x : BitVec 8, (castFromUnsigned 16 (castFromUnsigned 32 x)).toNat = x.toNat % 2 ^ 32
 ```
 
 - **Prior art:**
@@ -1841,8 +2009,9 @@ theorem widened_identity_holds_without_widthLe :
 - **Lean statement** (`Toy.MachInt.cast_u32_to_u8_to_u32_eq_mod_256`):
 
 ```lean
-theorem cast_u32_to_u8_to_u32_eq_mod_256 :
-  ∀ (x : BitVec 32), (castFromUnsigned 32 (castFromUnsigned 8 x)).toNat = x.toNat % 256
+-- lean/Toy/MachInt/Statements.lean:595-596
+theorem cast_u32_to_u8_to_u32_eq_mod_256 (x : BitVec 32) :
+    (castFromUnsigned 32 (castFromUnsigned 8 x)).toNat = x.toNat % 256
 ```
 
 - **Hypothesis ledger:** no hypotheses.
@@ -1862,9 +2031,14 @@ theorem cast_u32_to_u8_to_u32_eq_mod_256 :
 - **Lean statement** (`Toy.MachInt.castFromSigned_toInt_eq_of_widthLe`):
 
 ```lean
-theorem castFromSigned_toInt_eq_of_widthLe :
-  ∀ {n m : Nat} (x : BitVec n), WidthLe n m → (castFromSigned m x).toInt = x.toInt
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:601-602
+theorem castFromSigned_toInt_eq_of_widthLe {n m : Nat} (x : BitVec n) (hle : WidthLe n m) :
+    (castFromSigned m x).toInt = x.toInt
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n m : Nat} (x : BitVec n), n ≤ m → (castFromSigned m x).toInt = x.toInt
 ```
 
@@ -1874,8 +2048,10 @@ theorem castFromSigned_toInt_eq_of_widthLe :
   Counterexample `ce_castFromSigned_drop_widthLe` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:380-382
 theorem ce_castFromSigned_drop_widthLe :
-  ¬WidthLe 16 8 ∧ (castFromSigned 8 128#16).toInt ≠ (128#16).toInt
+    ¬ WidthLe 16 8 ∧
+    (castFromSigned 8 (128#16)).toInt ≠ (128#16).toInt
 ```
 
 - **Non-vacuity witness:** At n = 8, m = 16, x = -17#8: (castFromSigned 16 (-17#8)).toInt = -17. Lean: `nv_castFromSigned_toInt_eq_of_widthLe`.
@@ -1896,11 +2072,10 @@ theorem ce_castFromSigned_drop_widthLe :
 - **Lean statement** (`Toy.MachInt.reinterpretCast_characterization`):
 
 ```lean
-theorem reinterpretCast_characterization :
-  ∀ {n : Nat} (x : BitVec n),
-    ((↑(reinterpretCast x).toNat : Int) =
-        if x.toInt < 0 then x.toInt + (↑(2 ^ n) : Int) else x.toInt) ∧
-      (reinterpretCast x).toInt = (↑x.toNat : Int).bmod (2 ^ n)
+-- lean/Toy/MachInt/Statements.lean:609-611
+theorem reinterpretCast_characterization {n : Nat} (x : BitVec n) :
+    (reinterpretCast x).toNat = (if x.toInt < 0 then x.toInt + ((2 ^ n : Nat) : Int) else x.toInt) ∧
+    (reinterpretCast x).toInt = Int.bmod x.toNat (2 ^ n)
 ```
 
 - **Hypothesis ledger:** no hypotheses.
@@ -1923,11 +2098,16 @@ theorem reinterpretCast_characterization :
 - **Lean statement** (`Toy.MachInt.cast_roundTrip_widen_then_narrow_of_widthLe`):
 
 ```lean
-theorem cast_roundTrip_widen_then_narrow_of_widthLe :
-  ∀ {n m : Nat} (x : BitVec n),
-    WidthLe n m →
-      castFromUnsigned n (castFromUnsigned m x) = x ∧ castFromSigned n (castFromSigned m x) = x
--- with the specification predicates unfolded:
+-- lean/Toy/MachInt/Statements.lean:629-632
+theorem cast_roundTrip_widen_then_narrow_of_widthLe {n m : Nat} (x : BitVec n)
+    (hle : WidthLe n m) :
+    castFromUnsigned n (castFromUnsigned m x) = x ∧
+    castFromSigned n (castFromSigned m x) = x
+```
+
+With the specification predicates unfolded:
+
+```lean
   ∀ {n m : Nat} (x : BitVec n),
     n ≤ m →
       castFromUnsigned n (castFromUnsigned m x) = x ∧ castFromSigned n (castFromSigned m x) = x
@@ -1939,19 +2119,21 @@ theorem cast_roundTrip_widen_then_narrow_of_widthLe :
   Counterexample `ce_cast_roundTrip_drop_widthLe` (states the facts from which the failure follows; the canonical form is `ce_cast_roundTrip_drop_widthLe_canonical` below):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:386-389
 theorem ce_cast_roundTrip_drop_widthLe :
-  ¬WidthLe 16 8 ∧
-    castFromUnsigned 16 (castFromUnsigned 8 256#16) ≠ 256#16 ∧
-      castFromSigned 16 (castFromSigned 8 128#16) ≠ 128#16
+    ¬ WidthLe 16 8 ∧
+    castFromUnsigned 16 (castFromUnsigned 8 (256#16)) ≠ (256#16) ∧
+    castFromSigned 16 (castFromSigned 8 (128#16)) ≠ (128#16)
 ```
 
   Counterexample `ce_cast_roundTrip_drop_widthLe_canonical` (all other hypotheses hold and the conclusion fails):
 
 ```lean
+-- lean/Toy/MachInt/Supplements.lean:141-144
 theorem ce_cast_roundTrip_drop_widthLe_canonical :
-  ¬WidthLe 16 8 ∧
-    ¬(castFromUnsigned 16 (castFromUnsigned 8 256#16) = 256#16 ∧
-        castFromSigned 16 (castFromSigned 8 256#16) = 256#16)
+    ¬ WidthLe 16 8 ∧
+    ¬ (castFromUnsigned 16 (castFromUnsigned 8 (256#16)) = 256#16 ∧
+        castFromSigned 16 (castFromSigned 8 (256#16)) = 256#16)
 ```
 
 - **Non-vacuity witness:** At n = 8, m = 16: (200u8 as u16) as u8 = 200u8 and (-17i8 as i16) as i8 = -17i8. Lean: `nv_cast_roundTrip_widen_then_narrow_of_widthLe`.
@@ -1972,10 +2154,11 @@ theorem ce_cast_roundTrip_drop_widthLe_canonical :
 - **Lean statement** (`Toy.MachInt.ce_cast_roundTrip_narrow_then_widen`):
 
 ```lean
+-- lean/Toy/MachInt/Counterexamples.lean:102-105
 theorem ce_cast_roundTrip_narrow_then_widen :
-  castFromUnsigned 16 (castFromUnsigned 8 256#16) ≠ 256#16 ∧
-    castFromSigned 16 (castFromSigned 8 128#16) ≠ 128#16 ∧
-      castFromSigned 16 (-1#8) ≠ castFromUnsigned 16 (reinterpretCast (-1#8))
+    castFromUnsigned 16 (castFromUnsigned 8 (256#16)) ≠ (256#16) ∧
+    castFromSigned 16 (castFromSigned 8 (128#16)) ≠ (128#16) ∧
+    castFromSigned 16 (-1#8) ≠ castFromUnsigned 16 (reinterpretCast (-1#8))
 ```
 
 - **Hypothesis ledger:** no hypotheses.
@@ -1996,7 +2179,7 @@ Package-wide non-claims (N1–N3 are on every card; N4 on every cast card, i.e. 
 
 - **N1.** No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.
 - **N2.** `usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.
-- **N3.** No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, "Understanding Integer Overflow in C/C++", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here.
+- **N3.** No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model; they neither establish nor refute the corresponding claims about C or C++. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, "Understanding Integer Overflow in C/C++", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here.
 - **N4.** Only integer-to-integer `as` casts between fixed widths are covered. No claim is made about `bool`/`char`/enum/pointer casts, `From`/`TryFrom` conversions (which reject out-of-range values), or float casts.
 - **N5.** Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.
 
@@ -2087,17 +2270,17 @@ Result-specific non-claims:
   - Does not hold when k ≥ n: wrapping_shl masks k modulo n rather than shifting bits out to zero (see ce_wrappingShl_overshift_ne_mul_twoPow).
   - Does not equate wrapping_shl with Rust's unbounded_shl (which yields 0 for k ≥ n).
   - `ShiftInBounds n k` (equivalently, `checked_shl` returning `Some`, or `<<` not panicking under overflow checks) does not imply that no set bits are shifted out: `128u8.checked_shl(1) == Some(0)` (see `ce_checkedShl_drops_high_bits_without_none`). Replacing `x << k` by the unbounded integer `x * 2^k` additionally requires `x * 2^k < 2^n` (unsigned) or the signed analogue, which neither the operator nor `checked_shl` checks.
-  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
+  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). In `mod_eq_and_mask_forall_iff_isPowerOfTwo`, `n - 1` is truncated `Nat` subtraction: at `n = 0` the mask is `0`, not the all-ones value of a wrapping `n - 1`, and with Lean's `k % 0 = k` the left side fails there (`1 % 0 = 1` but `1 &&& 0 = 0`), as does the right side (0 is not a power of two); its `n = 0` case is therefore not the wrapping machine-integer reading. All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
 - `wrappingUShr_and_wrappingSShr_of_shiftInBounds`:
   - Does not equate signed arithmetic right shift `>>` with Rust's signed `/` by 2^k (which truncates toward 0, e.g. -1 >> 1 = -1 ≠ 0 = (-1).tdiv 2; see ce_sshiftRight_ne_sdiv_twoPow).
   - Does not hold when k ≥ n (see ce_wrappingShr_overshift).
-  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
+  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). In `mod_eq_and_mask_forall_iff_isPowerOfTwo`, `n - 1` is truncated `Nat` subtraction: at `n = 0` the mask is `0`, not the all-ones value of a wrapping `n - 1`, and with Lean's `k % 0 = k` the left side fails there (`1 % 0 = 1` but `1 &&& 0 = 0`), as does the right side (0 is not a power of two); its `n = 0` case is therefore not the wrapping machine-integer reading. All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
 - `ce_wrappingShl_overshift_ne_mul_twoPow`:
   - Does not assert that plain `<<` masks k as a language guarantee when overflow checks are disabled; masking in unchecked builds is rustc behaviour while the Reference permits either panic or wrapping (and RFC 560's unconditional shift-masking rule is superseded by [expr.operator.int-overflow.shift]).
-  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
+  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). In `mod_eq_and_mask_forall_iff_isPowerOfTwo`, `n - 1` is truncated `Nat` subtraction: at `n = 0` the mask is `0`, not the all-ones value of a wrapping `n - 1`, and with Lean's `k % 0 = k` the left side fails there (`1 % 0 = 1` but `1 &&& 0 = 0`), as does the right side (0 is not a power of two); its `n = 0` case is therefore not the wrapping machine-integer reading. All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
 - `ce_checkedShl_drops_high_bits_without_none`:
   - Does not claim `checked_shl` returns `None` when nonzero bits are shifted out; Rust's `checked_shl` checks only `rhs < BITS` (unlike the unstable `exact_shl`, feature `exact_bitshifts` at Rust 1.91.0, renamed `shl_exact` on later nightlies).
-  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
+  - The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). In `mod_eq_and_mask_forall_iff_isPowerOfTwo`, `n - 1` is truncated `Nat` subtraction: at `n = 0` the mask is `0`, not the all-ones value of a wrapping `n - 1`, and with Lean's `k % 0 = k` the left side fails there (`1 % 0 = 1` but `1 &&& 0 = 0`), as does the right side (0 is not a power of two); its `n = 0` case is therefore not the wrapping machine-integer reading. All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.
 - `castFromUnsigned_toNat_eq_mod`:
   - Does not claim that casting from a signed type via castFromSigned (m < n vs m ≥ n) agrees with unsigned zero-extension when x is negative.
   - Does not assert preservation of x.toInt under castFromUnsigned; e.g. 255u8 as i8 = -1.
