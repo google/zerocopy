@@ -125,8 +125,8 @@ Counterexample for the finite-branching hypotheses of
 `exists_wpFuelTotal_iff_wpLfp_of_finitelyBranching`,
 `exists_wpFuelTotal_iff_wpLfp_of_deterministic` and
 `exists_wpFuelTotal_of_wpGfp_of_not_hasInfiniteRun_of_finitelyBranchingFrom`.
-In `countdownSys` (`x := ?; while x > 0 do x := x - 1`) the state `start` is not
-finitely branching and the system is not deterministic, yet `start` satisfies
+In `countdownSys` (`x := ?; while x > 0 do x := x - 1`) the system is not finitely
+branching from `start` and is not deterministic, yet `start` satisfies
 `wpLfp`, `wpGfp` and has no infinite run; but no fuel `n` gives
 `wpFuelTotal countdownSys n (fun _ => True) start`. -/
 theorem countdown_wpLfp_without_uniform_fuel :

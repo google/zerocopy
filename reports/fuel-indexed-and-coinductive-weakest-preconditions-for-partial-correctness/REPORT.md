@@ -754,7 +754,7 @@ theorem nonvacuity_koenig_form :
 
 - **Kind:** counterexample
 - **Tier:** `T0` — The random-assignment countdown (x := ?; while x > 0 do x := x - 1) is the standard example of unbounded nondeterminism breaking continuity (Dijkstra 1976; Apt and Plotkin 1986); restated as a fuel counterexample.
-- **Plain claim:** In countdownSys (from start choose any k : Nat, then count down to a terminal count 0), the state start is not finitely branching, the system is not deterministic, and start satisfies wpLfp (fun _ => True) and wpGfp (fun _ => True) and has no infinite run, yet no fuel n gives wpFuelTotal n (fun _ => True) start.
+- **Plain claim:** In countdownSys (from start choose any k : Nat, then count down to a terminal count 0), the system is not finitely branching from start (not every non-terminal state reachable from start has its successors contained in a finite list), the system is not deterministic, and start satisfies wpLfp (fun _ => True) and wpGfp (fun _ => True) and has no infinite run, yet no fuel n gives wpFuelTotal n (fun _ => True) start.
 - **Depth:** `shallow`
 - **Lean statement:**
 
@@ -800,7 +800,7 @@ theorem wpLfp_iff_wpGfp_and_not_hasInfiniteRun (S : System σ) (Q : σ → Prop)
 ```
 
 - **Hypothesis ledger:** No hypotheses. The biconditional is stated for an arbitrary system `S`, postcondition `Q` and state `s`; there is no fuel parameter.
-- **Non-vacuity witness:** Both sides hold at the infinitely branching countdownSys start state; at loopSys the left side fails while wpGfp holds and an infinite run exists. (`nonvacuity_wpLfp_iff_wpGfp_and_not_hasInfiniteRun`)
+- **Non-vacuity witness:** Both sides hold at the countdownSys start state, which is not finitely branching (countdownSys_not_finitelyBranchingAt_start); at loopSys the left side fails while wpGfp holds and an infinite run exists. (`nonvacuity_wpLfp_iff_wpGfp_and_not_hasInfiniteRun`)
 - **Logic (`#print axioms`):** wpLfp_iff_wpGfp_and_not_hasInfiniteRun: proved; #print axioms: Classical.choice, Quot.sound, propext. The forward direction has a proof with no axioms (wpGfp_and_not_hasInfiniteRun_of_wpLfp). The backward direction is not constructively provable: the statement implies Markov's principle even restricted to a deterministic system with decidable step and terminal predicates (markov_of_wpLfp_iff_wpGfp_and_not_hasInfiniteRun; #print axioms: no axioms), and Markov's principle is not derivable in intuitionistic logic. Whether more than Markov's principle (for example full dependent choice) is needed is not determined here.
   Evidence: `wpGfp_and_not_hasInfiniteRun_of_wpLfp` (none), `markov_of_wpLfp_iff_wpGfp_and_not_hasInfiniteRun` (none).
 - **Non-claims:** see Boundaries, card 9.
@@ -827,6 +827,11 @@ theorem nonvacuity_wpLfp_iff_wpGfp_and_not_hasInfiniteRun :
         ¬ HasInfiniteRun countdownSys .start) ∧
       (¬ wpLfp loopSys (fun _ => True) () ∧ wpGfp loopSys (fun _ => True) () ∧
         HasInfiniteRun loopSys ())
+
+-- lean/ToyFuelWP/Systems.lean:387-388
+-- ToyFuelWP.Systems
+theorem countdownSys_not_finitelyBranchingAt_start :
+    ¬ FinitelyBranchingAt countdownSys .start
 ```
 
 ### 10. `divergence-satisfies-every-partial-wp-and-no-total-wp`
@@ -1707,6 +1712,7 @@ Further declarations referenced by the cards (`logic_evidence_lean`, `boundary_e
 | `countdownSys_start_wpLfp` | propext |
 | `wpGfp_and_not_hasInfiniteRun_of_wpLfp` | none |
 | `markov_of_wpLfp_iff_wpGfp_and_not_hasInfiniteRun` | none |
+| `countdownSys_not_finitelyBranchingAt_start` | Quot.sound, propext |
 | `spinOrExitSys_conjugate_ne_wpLfp` | none |
 | `alwaysDiverges_neg_spinOrExit` | none |
 | `not_wpGfp_not_iff_wpLfp_of_deterministic_of_not_stuck` | Classical.choice, Quot.sound, propext |

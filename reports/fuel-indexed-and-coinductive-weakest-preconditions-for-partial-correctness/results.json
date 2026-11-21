@@ -412,7 +412,7 @@
     "kind": "counterexample",
     "tier": "T0",
     "tier_justification": "The random-assignment countdown (x := ?; while x > 0 do x := x - 1) is the standard example of unbounded nondeterminism breaking continuity (Dijkstra 1976; Apt and Plotkin 1986); restated as a fuel counterexample.",
-    "plain_claim": "In countdownSys (from start choose any k : Nat, then count down to a terminal count 0), the state start is not finitely branching, the system is not deterministic, and start satisfies wpLfp (fun _ => True) and wpGfp (fun _ => True) and has no infinite run, yet no fuel n gives wpFuelTotal n (fun _ => True) start.",
+    "plain_claim": "In countdownSys (from start choose any k : Nat, then count down to a terminal count 0), the system is not finitely branching from start (not every non-terminal state reachable from start has its successors contained in a finite list), the system is not deterministic, and start satisfies wpLfp (fun _ => True) and wpGfp (fun _ => True) and has no infinite run, yet no fuel n gives wpFuelTotal n (fun _ => True) start.",
     "hypotheses": [],
     "depth": "shallow",
     "nonvacuity_witness": "The statement is a concrete instance.",
@@ -449,7 +449,7 @@
     "plain_claim": "For every transition system (no branching assumption), postcondition Q and state s: wpLfp Q s holds if and only if wpGfp Q s holds and no run from s is infinite.",
     "hypotheses": [],
     "depth": "substantive",
-    "nonvacuity_witness": "Both sides hold at the infinitely branching countdownSys start state; at loopSys the left side fails while wpGfp holds and an infinite run exists.",
+    "nonvacuity_witness": "Both sides hold at the countdownSys start state, which is not finitely branching (countdownSys_not_finitelyBranchingAt_start); at loopSys the left side fails while wpGfp holds and an infinite run exists.",
     "nonvacuity_witness_lean": [
       "Toy.FuelWP.nonvacuity_wpLfp_iff_wpGfp_and_not_hasInfiniteRun"
     ],
@@ -475,6 +475,9 @@
       "V. Preoteasa. Algebra of Monotonic Boolean Transformers. Archive of Formal Proofs, September 2011 (isa-afp.org/entries/MonoBoolTranAlgebra.html). Abstract: an algebra of monotonic Boolean transformers modelling total correctness, refinement, demonic and angelic choice.",
       "W. Guttmann. Algebras for Iteration, Infinite Executions and Correctness of Sequential Computations. Archive of Formal Proofs, October 2021 (isa-afp.org/entries/Correctness_Algebras.html). Abstract: algebras for iteration and infinite executions that unify computation models differing in the fixpoints used for iteration, and correctness statements across models.",
       "D. Bridges, E. Palmgren and H. Ishihara. Constructive Mathematics. Stanford Encyclopedia of Philosophy, substantive revision of 25 August 2022, https://plato.stanford.edu/entries/mathematics-constructive/. Section 1 (Introduction): the limited principle of omniscience (LPO) is not constructively derivable (Kripke models; Bridges and Richman 1987, chapter 7). Section 2 (The Constructive Interpretation of Logic): Markov's principle (MP) is not constructively derivable (a Kripke model; Bridges and Richman 1987, pp. 137–138)."
+    ],
+    "boundary_evidence_lean": [
+      "Toy.FuelWP.countdownSys_not_finitelyBranchingAt_start"
     ],
     "design_question": "A verification framework whose trusted kernel forbids coinductive definitions and general recursion defines its weakest precondition by structural recursion on fuel. For which properties is that the same as the coinductive (greatest-fixpoint) definition, how should 'verified at fuel n' be read, and where do the two differ (total correctness, divergence, liveness)? This card: the gap between the two notions is exactly termination."
   },
