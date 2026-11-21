@@ -277,6 +277,7 @@ Notation in the unfolded statements: `Pat n = Fin (256 ^ n)`, `Val V = {p : Pat 
 * **Plain claim:** For any payload validity set V and pattern q, the niche-filled layout of Opt V in the payload's size (None -> q, Some v -> v's pattern, decoder reading q as None first) satisfies both round-trip laws iff q is invalid for V.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:43-44
 theorem nicheLayout_lawful_iff_isNiche (V : Validity n) (q : Pat n) :
     Lawful (nicheLayout V q) ↔ IsNiche V q
 -- nicheLayout V q : enc none = q, enc (some v) = v.val,
@@ -301,6 +302,7 @@ Basis: derived (modeling bridge) — For a Rust payload type `T` whose values co
 * **Plain claim:** For a layout of Opt V in the payload's size n in which every valid payload pattern decodes to Some of itself (DecSomeTransparent, the payload-to-option transmute) and decode-after-encode holds (DecEnc), the pattern of None is a niche of V: None cannot sit on a valid payload pattern. Nothing is assumed about how Some is encoded or about canonical decoding.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:29-31
 theorem isNiche_enc_none_of_decSomeTransparent_of_decEnc {V : Validity n}
     (L : Layout (Opt V) n) (hdst : DecSomeTransparent L) (hde : DecEnc L) :
     IsNiche V (L.enc none)
@@ -329,6 +331,7 @@ Basis: derived (modeling bridge) — For `Option<T>` with `T` in the `core::opti
 * **Plain claim:** A layout L of Opt V in the payload's size is Some-transparent (SomeTransparent: Some v -> v's pattern) and lawful iff L's None pattern q is a niche of V and L equals the niche-filled layout nicheLayout V q (encoder and decoder); the choice of niche is the only freedom. For lawful layouts SomeTransparent and DecSomeTransparent are equivalent (someTransparent_iff_decSomeTransparent_of_lawful).
 
 ```lean
+-- lean/Toy/Niche/Results.lean:57-59
 theorem someTransparent_lawful_iff_eq_nicheLayout {V : Validity n} (L : Layout (Opt V) n) :
     (SomeTransparent L ∧ Lawful L) ↔
       (IsNiche V (L.enc none) ∧ L = nicheLayout V (L.enc none))
@@ -355,6 +358,7 @@ Basis: derived (modeling bridge) — If a Rust `Option<T>` layout (payload model
 * **Plain claim:** If a layout of Opt V has the payload's size n (hsize), the payload has at most one niche (hV: numInvalid V <= 1) and decode-after-encode holds (hde), then decoding is canonical and every n-byte pattern decodes (FromBytes); neither the pattern of None nor canonical decoding is assumed.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:104-106
 theorem opt_canonical_and_fromBytes_of_size_eq_of_numInvalid_le_one_of_decEnc
     (V : Validity n) (L : Layout (Opt V) m) (hsize : m = n) (hV : numInvalid V ≤ 1)
     (hde : DecEnc L) : Canonical L ∧ FromBytes L
@@ -383,6 +387,7 @@ Basis: derived (modeling bridge) — For `Option<NonZeroUN>`, the documented sam
 * **Plain claim:** For any layout of an option type (any payload type, any size) with None -> the zero pattern (hnone: NonePinned L 0) and both round-trip laws (hde, hcan), a pattern decodes to None iff it is the zero pattern. A definitional reference point for the canonical-free version.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:144-146
 theorem dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_decEnc_of_canonical
     (L : Layout (Option β) m) (hnone : NonePinned L (zeroPat m)) (hde : DecEnc L)
     (hcan : Canonical L) : ∀ p, L.dec p = some none ↔ p = zeroPat m
@@ -410,6 +415,7 @@ Basis: derived (modeling bridge) — For a Rust option type with the documented 
 * **Plain claim:** If a layout of Opt V has the payload's size (hsize), the payload has at most one niche (hV), decode-after-encode holds (hde) and None -> the zero pattern (hnone), then a pattern decodes to None iff it is the zero pattern; canonical decoding is not assumed (it is forced by hsize, hV, hde).
 
 ```lean
+-- lean/Toy/Niche/Results.lean:159-162
 theorem dec_eq_some_none_iff_eq_zero_of_nonePinned_zero_of_size_eq_of_numInvalid_le_one_of_decEnc
     (V : Validity n) (L : Layout (Opt V) m) (hsize : m = n) (hV : numInvalid V ≤ 1)
     (hde : DecEnc L) (hnone : NonePinned L (zeroPat m)) :
@@ -439,6 +445,7 @@ Basis: derived (modeling bridge) — For `Option<NonZeroUN>`, documented facts a
 * **Plain claim:** Under the documented guarantee NichePinned L 0 (size n and None -> 0), with at most one payload niche (hV: numInvalid V <= 1) and decode-after-encode (hde), every n-byte pattern decodes and the zero pattern is exactly None. The identity of the payload's niche is not used; for NonZero payloads hV follows from 'zero is the only niche' (numInvalid_le_one_of_only_niche_zero).
 
 ```lean
+-- lean/Toy/Niche/Results.lean:171-174
 theorem opt_fromBytes_and_zero_iff_none_of_nichePinned_zero_of_numInvalid_le_one_of_decEnc
     (V : Validity n) (L : Layout (Opt V) m) (hpin : NichePinned L (zeroPat m))
     (hV : numInvalid V ≤ 1) (hde : DecEnc L) :
@@ -469,6 +476,7 @@ Basis: derived (modeling bridge) — For `Option<NonZeroUN>`, the documented gua
 * **Plain claim:** For the n-byte NonZero payload, any layout of Opt (nonZeroV n) in n bytes in which every valid payload pattern decodes to Some of itself (DecSomeTransparent) and decode-after-encode holds (DecEnc) represents None by the zero pattern.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:181-183
 theorem nonePinned_zero_of_nonZero_of_decSomeTransparent_of_decEnc
     (L : Layout (Opt (nonZeroV n)) n) (hdst : DecSomeTransparent L) (hde : DecEnc L) :
     NonePinned L (zeroPat n)
@@ -495,6 +503,7 @@ Basis: derived (modeling bridge) — For `Option<NonZeroUN>`, the transmute `t -
 * **Plain claim:** For the n-byte NonZero payload, any layout of Opt (nonZeroV n) in n bytes in which every valid payload pattern decodes to Some of itself (DecSomeTransparent) and decode-after-encode holds (DecEnc) equals nicheLayout (nonZeroV n) (zeroPat n): zero <-> None and every other pattern p <-> Some p. Neither canonical decoding nor encoder-side transparency is assumed.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:189-191
 theorem nonZero_layout_eq_nicheLayout_zero_of_decSomeTransparent_of_decEnc
     (L : Layout (Opt (nonZeroV n)) n) (hdst : DecSomeTransparent L) (hde : DecEnc L) :
     L = nicheLayout (nonZeroV n) (zeroPat n)
@@ -524,6 +533,7 @@ Basis: derived (modeling bridge) — For `Option<NonZeroUN>`, the nightly-docume
 * **Plain claim:** For the bool-like payload (valid patterns 0 and 1 of 256), both the 1-byte niche-filled layout with None -> 2 and the 2-byte separately tagged layout are lawful, so validity plus lawfulness do not determine the size of Opt bool.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:228-229
 theorem opt_bool_lawful_layouts_in_one_and_two_bytes :
     Lawful (nicheLayout boolV 2) ∧ Lawful (taggedLayout (payloadLayout boolV))
 -- nicheLayout boolV 2 : Layout (Opt boolV) 1 ; taggedLayout (payloadLayout boolV) : Layout (Opt boolV) 2
@@ -548,6 +558,7 @@ Basis: derived (modeling bridge) — `bool`'s documented validity (0 and 1 valid
 * **Plain claim:** For every one-byte pattern q, not every lawful Some-transparent 1-byte layout of Opt bool represents None by q (NonePinned L q); even with the size and Some-transparency pinned, bool's validity set does not determine None's byte.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:235-236
 theorem opt_bool_none_pattern_not_forced_by_someTransparent_lawful (q : Pat 1) :
     ¬ ∀ L : Layout (Opt boolV) 1, SomeTransparent L → Lawful L → NonePinned L q
 -- NonePinned L q : L.enc none = q
@@ -572,6 +583,7 @@ Basis: derived (modeling bridge) — No single byte pattern for `None` in a 1-by
 * **Plain claim:** Niche filling of k extra dataless (inhabited) variants into the payload's n bytes with tag patterns t (nicheLayoutK V t) is lawful iff t is injective and every t i is a niche of V.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:251-253
 theorem nicheLayoutK_lawful_iff_injective_and_isNiche {k : Nat} (V : Validity n)
     (t : Fin k → Pat n) :
     Lawful (nicheLayoutK V t) ↔ (Function.Injective t ∧ ∀ i, IsNiche V (t i))
@@ -597,6 +609,7 @@ Basis: derived (modeling bridge) — An enum with `k` inhabited dataless variant
 * **Plain claim:** Any layout of an enum with k extra dataless (inhabited) variants over payload V that is no larger than the payload (hsize: m <= n) and satisfies decode-after-encode (hde) needs k <= numInvalid V (pigeonhole).
 
 ```lean
+-- lean/Toy/Niche/Results.lean:304-305
 theorem le_numInvalid_of_decEnc_of_size_le {k : Nat} (V : Validity n)
     (L : Layout (ExtEnum k V) m) (hsize : m ≤ n) (hde : DecEnc L) : k ≤ numInvalid V
 -- ExtEnum k V = Fin k ⊕ Val V
@@ -624,6 +637,7 @@ Basis: derived (modeling bridge) — An enum with `k` inhabited dataless variant
 * **Plain claim:** For k extra dataless (inhabited) variants over payload V: k <= numInvalid V iff some lawful layout of the enum fits in the payload's n bytes, iff the specific layout nicheLayoutK V (firstNiches V k) (the first k niches, in increasing order, used as tags) is lawful.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:335-338
 theorem le_numInvalid_iff_exists_lawful_layout_iff_lawful_nicheLayoutK_firstNiches
     (V : Validity n) (k : Nat) :
     (k ≤ numInvalid V ↔ ∃ L : Layout (ExtEnum k V) n, Lawful L) ∧
@@ -649,6 +663,7 @@ Basis: derived (modeling bridge) — `k` inhabited dataless variants fit next to
 * **Plain claim:** For every n, the two-level option over the n-byte NonZero payload (Option (Opt (nonZeroV n)), modeling Option<Option<NonZeroUN>>; 257 values for n = 1) has no decode-after-encode layout in n bytes.
 
 ```lean
+-- lean/Toy/Niche/Results.lean:351-352
 theorem opt_opt_nonZero_no_decEnc_layout_in_payload_size
     (L : Layout (Option (Opt (nonZeroV n))) n) : ¬ DecEnc L
 -- Option (Opt (nonZeroV n)) = Option (Option {p : Fin (256 ^ n) // p.val != 0})
