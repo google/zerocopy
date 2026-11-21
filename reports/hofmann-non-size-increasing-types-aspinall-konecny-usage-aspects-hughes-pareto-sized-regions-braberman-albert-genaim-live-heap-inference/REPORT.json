@@ -1,0 +1,138 @@
+{
+  "topics": [
+    "pl/non-size-increasing-type-systems",
+    "verification/usage-aspects-and-read-only-sharing",
+    "compilers/parametric-live-heap-bound-inference",
+    "runtimes/peak-heap-under-collection-and-aliasing"
+  ],
+  "subjects": [
+    {
+      "name": "ReSyn (liquid resource types checker and synthesizer)",
+      "identity": {
+        "repository": "tjknoth/resyn",
+        "revision": "54ff304c635f26b4b498b82be267923a65e0662d"
+      }
+    },
+    {
+      "name": "Hofmann, Linear types and non-size-increasing polynomial time computation (LICS 1999)",
+      "identity": {
+        "doi": "10.1109/LICS.1999.782641",
+        "venue": "Proceedings 14th Symposium on Logic in Computer Science",
+        "year": "1999"
+      }
+    },
+    {
+      "name": "Hofmann, A type system for bounded space and functional in-place update (ESOP 2000)",
+      "identity": {
+        "doi": "10.1007/3-540-46425-5_11",
+        "venue": "ESOP 2000, LNCS, pp. 165-179",
+        "year": "2000"
+      }
+    },
+    {
+      "name": "Aspinall and Hofmann, Another type system for in-place update (ESOP 2002)",
+      "identity": {
+        "doi": "10.1007/3-540-45927-8_4",
+        "venue": "ESOP 2002, LNCS, pp. 36-52",
+        "year": "2002"
+      }
+    },
+    {
+      "name": "Aspinall, Hofmann and Konecny, A type system with usage aspects (JFP 18(2))",
+      "identity": {
+        "doi": "10.1017/S0956796807006399",
+        "venue": "Journal of Functional Programming 18(2):141-178",
+        "year": "2008"
+      }
+    },
+    {
+      "name": "Jost, Hammond, Loidl and Hofmann, Static determination of quantitative resource usage for higher-order programs (POPL 2010)",
+      "identity": {
+        "doi": "10.1145/1706299.1706327",
+        "venue": "POPL 2010, pp. 223-236",
+        "year": "2010"
+      }
+    },
+    {
+      "name": "Atkey, Amortised resource analysis with separation logic (LMCS 7(2:17))",
+      "identity": {
+        "doi": "10.2168/LMCS-7(2:17)2011",
+        "venue": "Logical Methods in Computer Science 7(2)",
+        "year": "2011"
+      }
+    },
+    {
+      "name": "Knoth, Wang, Polikarpova and Hoffmann, Resource-guided program synthesis (PLDI 2019)",
+      "identity": {
+        "doi": "10.1145/3314221.3314602",
+        "venue": "PLDI 2019, pp. 253-268",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Knoth, Wang, Reynolds, Hoffmann and Polikarpova, Liquid resource types (PACMPL 4(ICFP))",
+      "identity": {
+        "doi": "10.1145/3408988",
+        "venue": "Proceedings of the ACM on Programming Languages 4(ICFP), article 106",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Niu and Hoffmann, Automatic space bound analysis for functional programs with garbage collection (LPAR-22)",
+      "identity": {
+        "doi": "10.29007/xkwx",
+        "venue": "EPiC Series in Computing 57",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Unnikrishnan, Stoller and Liu, Optimized live heap bound analysis (VMCAI 2003)",
+      "identity": {
+        "doi": "10.1007/3-540-36384-X_9",
+        "venue": "VMCAI 2003, LNCS 2575, pp. 70-85",
+        "year": "2003"
+      }
+    },
+    {
+      "name": "Braberman, Fernandez, Garbervetsky and Yovine, Parametric prediction of heap memory requirements (ISMM 2008)",
+      "identity": {
+        "doi": "10.1145/1375634.1375655",
+        "venue": "ISMM 2008, pp. 141-150",
+        "year": "2008"
+      }
+    },
+    {
+      "name": "Chin, Nguyen, Popeea and Qin, Analysing memory resource bounds for low-level programs (ISMM 2008)",
+      "identity": {
+        "doi": "10.1145/1375634.1375656",
+        "venue": "ISMM 2008, pp. 151-160",
+        "year": "2008"
+      }
+    },
+    {
+      "name": "Albert, Genaim and Gomez-Zamalloa, Live heap space analysis for languages with garbage collection (ISMM 2009)",
+      "identity": {
+        "doi": "10.1145/1542431.1542450",
+        "venue": "ISMM 2009, pp. 129-138",
+        "year": "2009"
+      }
+    },
+    {
+      "name": "Albert, Genaim and Gomez-Zamalloa, Parametric inference of memory requirements for garbage collected languages (ISMM 2010)",
+      "identity": {
+        "doi": "10.1145/1806651.1806671",
+        "venue": "ISMM 2010, pp. 121-130",
+        "year": "2010"
+      }
+    },
+    {
+      "name": "Lorenzen, Leijen and Swierstra, FP2: Fully in-place functional programming (PACMPL 7(ICFP))",
+      "identity": {
+        "doi": "10.1145/3607840",
+        "venue": "Proceedings of the ACM on Programming Languages 7(ICFP), pp. 275-304",
+        "year": "2023"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

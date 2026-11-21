@@ -16686,6 +16686,101 @@
         "tooling/ci"
       ]
     },
+    "clang-arc-precise-lifetime-swift-lexical-lifetimes-ossa-withextendedlifetime-cpython-pypy-finalization-timing-and-joisha-rc-elimination": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "5a16359b417eac2413c493856d80cc2877c3f6aa"
+          },
+          "name": "LLVM project: Clang Automatic Reference Counting specification, Clang ARC code generation, and LLVM ObjCARC optimizer"
+        },
+        {
+          "identity": {
+            "target": "x86_64-pc-linux-gnu",
+            "version": "Debian clang version 19.1.7 (10.1+build1)"
+          },
+          "name": "Clang compiler (executed for Objective-C ARC release-placement probes)"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "876c94b16c5d1c9ff94fe67e8476a123da0d4f50"
+          },
+          "name": "Swift compiler and standard library: Ownership SSA, ARC optimization, deinit barriers, lexical lifetimes, withExtendedLifetime"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift-evolution",
+            "revision": "58a97fabc7233f58af6b8a1e8d3d5a25fb4f7060"
+          },
+          "name": "Swift Evolution proposals SE-0366 (consume operator) and SE-0377 (borrowing and consuming parameter modifiers)"
+        },
+        {
+          "identity": {
+            "date": "2022-09-12",
+            "url": "https://www.swift.org/blog/swift-5.7-released/"
+          },
+          "name": "Swift 5.7 release announcement (ARC and lexical-lifetime change)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "dc222c8d6c366e3d52d4b0d0053ad7bb8a601fff"
+          },
+          "name": "CPython source and documentation (language reference data model, gc and weakref docs, Include/refcount.h)"
+        },
+        {
+          "identity": {
+            "build": "default (GIL-enabled, Py_GIL_DISABLED=0), x86_64 Linux",
+            "version": "3.13.15"
+          },
+          "name": "CPython interpreter (executed for finalization-timing probes)"
+        },
+        {
+          "identity": {
+            "repository": "python/peps",
+            "revision": "4434e728a7db24540d581f52e96570ca1230356e"
+          },
+          "name": "Python Enhancement Proposals PEP 442 (safe object finalization) and PEP 703 (optional GIL, deferred and biased reference counting)"
+        },
+        {
+          "identity": {
+            "repository": "pypy/pypy",
+            "revision": "dc27dd3d6d624e4516c965d450c84d3023640dba"
+          },
+          "name": "PyPy documentation: differences from CPython (garbage collection and finalization)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1346256.1346275",
+            "technical_report": "MSR-TR-2007-104"
+          },
+          "name": "Joisha, A principled approach to nondeferred reference-counting garbage collection (VEE 2008; abstract of technical report MSR-TR-2007-104)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/604131.604153",
+            "url": "https://www.hboehm.info/popl03/slides.pdf"
+          },
+          "name": "Boehm, Destructors, finalizers, and synchronization (POPL 2003), examined through the author's talk slides"
+        },
+        {
+          "identity": {
+            "arxiv": "1908.05647v3",
+            "doi": "10.1145/3412932.3412935"
+          },
+          "name": "Ullrich and de Moura, Counting immutable beans: reference counting optimized for purely functional programming (IFL 2019)"
+        }
+      ],
+      "topics": [
+        "pl/release-timing-contracts-in-reference-counted-languages",
+        "compilers/lifetime-shortening-and-deinitialization-barriers",
+        "runtimes/finalization-timing-across-implementations",
+        "verification/reference-count-elimination-conditions"
+      ]
+    },
     "clausal-proof-certificates-rup-rat-and-deletion-soundness": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -38388,6 +38483,144 @@
         "pl/nested-parallel-composition-semantics",
         "verification/reduction-and-determinacy-theorems",
         "tooling/schedule-reduced-exploration-soundness"
+      ]
+    },
+    "hofmann-non-size-increasing-types-aspinall-konecny-usage-aspects-hughes-pareto-sized-regions-braberman-albert-genaim-live-heap-inference": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "tjknoth/resyn",
+            "revision": "54ff304c635f26b4b498b82be267923a65e0662d"
+          },
+          "name": "ReSyn (liquid resource types checker and synthesizer)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.1999.782641",
+            "venue": "Proceedings 14th Symposium on Logic in Computer Science",
+            "year": "1999"
+          },
+          "name": "Hofmann, Linear types and non-size-increasing polynomial time computation (LICS 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-46425-5_11",
+            "venue": "ESOP 2000, LNCS, pp. 165-179",
+            "year": "2000"
+          },
+          "name": "Hofmann, A type system for bounded space and functional in-place update (ESOP 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-45927-8_4",
+            "venue": "ESOP 2002, LNCS, pp. 36-52",
+            "year": "2002"
+          },
+          "name": "Aspinall and Hofmann, Another type system for in-place update (ESOP 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796807006399",
+            "venue": "Journal of Functional Programming 18(2):141-178",
+            "year": "2008"
+          },
+          "name": "Aspinall, Hofmann and Konecny, A type system with usage aspects (JFP 18(2))"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1706299.1706327",
+            "venue": "POPL 2010, pp. 223-236",
+            "year": "2010"
+          },
+          "name": "Jost, Hammond, Loidl and Hofmann, Static determination of quantitative resource usage for higher-order programs (POPL 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.2168/LMCS-7(2:17)2011",
+            "venue": "Logical Methods in Computer Science 7(2)",
+            "year": "2011"
+          },
+          "name": "Atkey, Amortised resource analysis with separation logic (LMCS 7(2:17))"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314602",
+            "venue": "PLDI 2019, pp. 253-268",
+            "year": "2019"
+          },
+          "name": "Knoth, Wang, Polikarpova and Hoffmann, Resource-guided program synthesis (PLDI 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408988",
+            "venue": "Proceedings of the ACM on Programming Languages 4(ICFP), article 106",
+            "year": "2020"
+          },
+          "name": "Knoth, Wang, Reynolds, Hoffmann and Polikarpova, Liquid resource types (PACMPL 4(ICFP))"
+        },
+        {
+          "identity": {
+            "doi": "10.29007/xkwx",
+            "venue": "EPiC Series in Computing 57",
+            "year": "2018"
+          },
+          "name": "Niu and Hoffmann, Automatic space bound analysis for functional programs with garbage collection (LPAR-22)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-36384-X_9",
+            "venue": "VMCAI 2003, LNCS 2575, pp. 70-85",
+            "year": "2003"
+          },
+          "name": "Unnikrishnan, Stoller and Liu, Optimized live heap bound analysis (VMCAI 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1375634.1375655",
+            "venue": "ISMM 2008, pp. 141-150",
+            "year": "2008"
+          },
+          "name": "Braberman, Fernandez, Garbervetsky and Yovine, Parametric prediction of heap memory requirements (ISMM 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1375634.1375656",
+            "venue": "ISMM 2008, pp. 151-160",
+            "year": "2008"
+          },
+          "name": "Chin, Nguyen, Popeea and Qin, Analysing memory resource bounds for low-level programs (ISMM 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1542431.1542450",
+            "venue": "ISMM 2009, pp. 129-138",
+            "year": "2009"
+          },
+          "name": "Albert, Genaim and Gomez-Zamalloa, Live heap space analysis for languages with garbage collection (ISMM 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1806651.1806671",
+            "venue": "ISMM 2010, pp. 121-130",
+            "year": "2010"
+          },
+          "name": "Albert, Genaim and Gomez-Zamalloa, Parametric inference of memory requirements for garbage collected languages (ISMM 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3607840",
+            "venue": "Proceedings of the ACM on Programming Languages 7(ICFP), pp. 275-304",
+            "year": "2023"
+          },
+          "name": "Lorenzen, Leijen and Swierstra, FP2: Fully in-place functional programming (PACMPL 7(ICFP))"
+        }
+      ],
+      "topics": [
+        "pl/non-size-increasing-type-systems",
+        "verification/usage-aspects-and-read-only-sharing",
+        "compilers/parametric-live-heap-bound-inference",
+        "runtimes/peak-heap-under-collection-and-aliasing"
       ]
     },
     "hol-zero-pollack-audits-doc-gen4-rendered-code-leanblueprint-statement-links-and-minif2f-putnambench-corrections": {

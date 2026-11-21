@@ -1,0 +1,13 @@
+== Part A: in-place (diamond = cell location) toy model ==
+reverse [1..5] -> [5, 4, 3, 2, 1] | cells before/after: 5 5
+twice [1,2]: functional [0,0,0,0]; in-place reads [0] then revisits a cell (cyclic)
+cons(d,sumlist(l),reverse(l)): functional (6,[3,2,1]); in-place (6, [3, 2, 1])
+cons(d,nth_tail(2,l),cons(d',reverse(l),nil)): functional [[3],[3,2,1]]; in-place [[3, 2, 1], [3, 2, 1]]
+aspect check: sumlist-then-reverse accepted = True | nth_tail-then-reverse accepted = False
+== Part B: refcount heap, appTwice l = (append(l,[]), append(l,[])) ==
+ m  total_alloc  peak_live_minus_input
+   1           2                      1
+  10          20                     10
+ 100         200                    100
+ 500        1000                    500
+minimal per-element potential p: {'allocation metric': 2, 'GC metric + copy-on-share': 1}

@@ -1,0 +1,160 @@
+# Three consecutive runs of:
+#   python3 -X dev -c "import runpy; runpy.run_path('py_finalization_probe.py', run_name='__main__')"
+# CPython 3.13.15 (GIL build), x86_64 Linux workstation, 2026-11-21.
+# Note: gc.collect()'s return value counts all unreachable objects found, including unrelated garbage.
+
+######## run 1
+py_finalization_probe.py:101: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmph5_45r7z/out.txt' mode='w' encoding='UTF-8'>
+  del f
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+py_finalization_probe.py:109: ResourceWarning: unclosed <socket.socket fd=4, family=2, type=1, proto=0, laddr=('0.0.0.0', 0)>
+  del s
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+implementation=cpython version=3.13.15 Py_GIL_DISABLED=0 gc_thresholds=(2000, 10, 10)
+scenario_local_last_use
+    use local
+    marker after last use (x still bound)
+    __del__ local
+    weakref.finalize callback local
+    returned from scenario_local_last_use
+scenario_del_statement
+    use del
+    __del__ del
+    marker after del
+    returned from scenario_del_statement
+scenario_temporary
+    __del__ temp
+    marker after expression statement
+    returned from scenario_temporary
+scenario_rebind
+    __del__ first
+    marker after rebinding x
+    __del__ second
+    returned from scenario_rebind
+scenario_cycle
+    marker after dropping both names (cycle remains)
+    __del__ cycle-a
+    __del__ cycle-b
+    gc.collect() returned 8
+    returned from scenario_cycle
+scenario_exception_keeps_frame
+    in except clause (traceback references inner frame)
+    __del__ in-raising-frame
+    marker after except clause (name e is unbound at clause end)
+    returned from scenario_exception_keeps_frame
+scenario_generator_finally
+    generator suspended inside try
+    generator finally block ran
+    marker after del of suspended generator
+    returned from scenario_generator_finally
+scenario_file_flush
+    file size before drop=0 after drop=5
+scenario_socket_fd
+    socket fd 4 after drop: closed
+timing
+    create+drop 1e6 objects (best of 5): plain 89.9 ns/obj, with __del__ 138.5 ns/obj
+    gc.collect() over 100000 two-object cycles: 200000 objects, 64.0 ms
+
+######## run 2
+py_finalization_probe.py:101: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpjntsf36x/out.txt' mode='w' encoding='UTF-8'>
+  del f
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+py_finalization_probe.py:109: ResourceWarning: unclosed <socket.socket fd=4, family=2, type=1, proto=0, laddr=('0.0.0.0', 0)>
+  del s
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+implementation=cpython version=3.13.15 Py_GIL_DISABLED=0 gc_thresholds=(2000, 10, 10)
+scenario_local_last_use
+    use local
+    marker after last use (x still bound)
+    __del__ local
+    weakref.finalize callback local
+    returned from scenario_local_last_use
+scenario_del_statement
+    use del
+    __del__ del
+    marker after del
+    returned from scenario_del_statement
+scenario_temporary
+    __del__ temp
+    marker after expression statement
+    returned from scenario_temporary
+scenario_rebind
+    __del__ first
+    marker after rebinding x
+    __del__ second
+    returned from scenario_rebind
+scenario_cycle
+    marker after dropping both names (cycle remains)
+    __del__ cycle-a
+    __del__ cycle-b
+    gc.collect() returned 8
+    returned from scenario_cycle
+scenario_exception_keeps_frame
+    in except clause (traceback references inner frame)
+    __del__ in-raising-frame
+    marker after except clause (name e is unbound at clause end)
+    returned from scenario_exception_keeps_frame
+scenario_generator_finally
+    generator suspended inside try
+    generator finally block ran
+    marker after del of suspended generator
+    returned from scenario_generator_finally
+scenario_file_flush
+    file size before drop=0 after drop=5
+scenario_socket_fd
+    socket fd 4 after drop: closed
+timing
+    create+drop 1e6 objects (best of 5): plain 87.9 ns/obj, with __del__ 129.8 ns/obj
+    gc.collect() over 100000 two-object cycles: 200000 objects, 56.8 ms
+
+######## run 3
+py_finalization_probe.py:101: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpsfpdsjdg/out.txt' mode='w' encoding='UTF-8'>
+  del f
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+py_finalization_probe.py:109: ResourceWarning: unclosed <socket.socket fd=4, family=2, type=1, proto=0, laddr=('0.0.0.0', 0)>
+  del s
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+implementation=cpython version=3.13.15 Py_GIL_DISABLED=0 gc_thresholds=(2000, 10, 10)
+scenario_local_last_use
+    use local
+    marker after last use (x still bound)
+    __del__ local
+    weakref.finalize callback local
+    returned from scenario_local_last_use
+scenario_del_statement
+    use del
+    __del__ del
+    marker after del
+    returned from scenario_del_statement
+scenario_temporary
+    __del__ temp
+    marker after expression statement
+    returned from scenario_temporary
+scenario_rebind
+    __del__ first
+    marker after rebinding x
+    __del__ second
+    returned from scenario_rebind
+scenario_cycle
+    marker after dropping both names (cycle remains)
+    __del__ cycle-a
+    __del__ cycle-b
+    gc.collect() returned 8
+    returned from scenario_cycle
+scenario_exception_keeps_frame
+    in except clause (traceback references inner frame)
+    __del__ in-raising-frame
+    marker after except clause (name e is unbound at clause end)
+    returned from scenario_exception_keeps_frame
+scenario_generator_finally
+    generator suspended inside try
+    generator finally block ran
+    marker after del of suspended generator
+    returned from scenario_generator_finally
+scenario_file_flush
+    file size before drop=0 after drop=5
+scenario_socket_fd
+    socket fd 4 after drop: closed
+timing
+    create+drop 1e6 objects (best of 5): plain 83.7 ns/obj, with __del__ 126.6 ns/obj
+    gc.collect() over 100000 two-object cycles: 200000 objects, 56.1 ms

@@ -1,0 +1,212 @@
+=== arc_probe -O0
+scenario_A_imprecise
+    new A rc=1
+    use A (dead=0)
+    -- A: marker after last use
+    release A rc=0
+    dealloc A
+scenario_A_precise
+    new Ap rc=1
+    use Ap (dead=0)
+    -- Ap: marker after last use
+    release Ap rc=0
+    dealloc Ap
+    new B rc=1
+scenario_B_imprecise
+    retain B rc=2
+    release B rc=1
+    callee: parameter object B is alive (caller held a +1)
+    -- B: marker after call
+    release B rc=0
+    dealloc B
+    new Bp rc=1
+scenario_B_precise
+    retain Bp rc=2
+    release Bp rc=1
+    callee: parameter object Bp is alive (caller held a +1)
+    -- Bp: marker after call
+    release Bp rc=0
+    dealloc Bp
+scenario_C_weak
+    new C rc=1
+    use C (dead=0)
+    -- C: before weak load
+    retain C rc=2
+    -- C: weak load -> object (still alive)
+    release C rc=1
+    release C rc=0
+    dealloc C
+=== arc_probe -O1
+scenario_A_imprecise
+    new A rc=1
+    use A (dead=0)
+    -- A: marker after last use
+    release A rc=0
+    dealloc A
+scenario_A_precise
+    new Ap rc=1
+    use Ap (dead=0)
+    -- Ap: marker after last use
+    release Ap rc=0
+    dealloc Ap
+    new B rc=1
+scenario_B_imprecise
+    release B rc=0
+    dealloc B
+    callee: parameter object B is DEALLOCATED (caller held no +1)
+    -- B: marker after call
+    new Bp rc=1
+scenario_B_precise
+    retain Bp rc=2
+    release Bp rc=1
+    callee: parameter object Bp is alive (caller held a +1)
+    -- Bp: marker after call
+    release Bp rc=0
+    dealloc Bp
+scenario_C_weak
+    new C rc=1
+    use C (dead=0)
+    -- C: before weak load
+    retain C rc=2
+    -- C: weak load -> object (still alive)
+    release C rc=1
+    release C rc=0
+    dealloc C
+=== arc_probe -O2
+scenario_A_imprecise
+    new A rc=1
+    use A (dead=0)
+    -- A: marker after last use
+    release A rc=0
+    dealloc A
+scenario_A_precise
+    new Ap rc=1
+    use Ap (dead=0)
+    -- Ap: marker after last use
+    release Ap rc=0
+    dealloc Ap
+    new B rc=1
+scenario_B_imprecise
+    release B rc=0
+    dealloc B
+    callee: parameter object B is DEALLOCATED (caller held no +1)
+    -- B: marker after call
+    new Bp rc=1
+scenario_B_precise
+    retain Bp rc=2
+    release Bp rc=1
+    callee: parameter object Bp is alive (caller held a +1)
+    -- Bp: marker after call
+    release Bp rc=0
+    dealloc Bp
+scenario_C_weak
+    new C rc=1
+    use C (dead=0)
+    -- C: before weak load
+    retain C rc=2
+    -- C: weak load -> object (still alive)
+    release C rc=1
+    release C rc=0
+    dealloc C
+=== arc_probe -O3
+scenario_A_imprecise
+    new A rc=1
+    use A (dead=0)
+    -- A: marker after last use
+    release A rc=0
+    dealloc A
+scenario_A_precise
+    new Ap rc=1
+    use Ap (dead=0)
+    -- Ap: marker after last use
+    release Ap rc=0
+    dealloc Ap
+    new B rc=1
+scenario_B_imprecise
+    release B rc=0
+    dealloc B
+    callee: parameter object B is DEALLOCATED (caller held no +1)
+    -- B: marker after call
+    new Bp rc=1
+scenario_B_precise
+    retain Bp rc=2
+    release Bp rc=1
+    callee: parameter object Bp is alive (caller held a +1)
+    -- Bp: marker after call
+    release Bp rc=0
+    dealloc Bp
+scenario_C_weak
+    new C rc=1
+    use C (dead=0)
+    -- C: before weak load
+    retain C rc=2
+    -- C: weak load -> object (still alive)
+    release C rc=1
+    release C rc=0
+    dealloc C
+=== arc_probe -Os
+scenario_A_imprecise
+    new A rc=1
+    use A (dead=0)
+    -- A: marker after last use
+    release A rc=0
+    dealloc A
+scenario_A_precise
+    new Ap rc=1
+    use Ap (dead=0)
+    -- Ap: marker after last use
+    release Ap rc=0
+    dealloc Ap
+    new B rc=1
+scenario_B_imprecise
+    release B rc=0
+    dealloc B
+    callee: parameter object B is DEALLOCATED (caller held no +1)
+    -- B: marker after call
+    new Bp rc=1
+scenario_B_precise
+    retain Bp rc=2
+    release Bp rc=1
+    callee: parameter object Bp is alive (caller held a +1)
+    -- Bp: marker after call
+    release Bp rc=0
+    dealloc Bp
+scenario_C_weak
+    new C rc=1
+    use C (dead=0)
+    -- C: before weak load
+    retain C rc=2
+    -- C: weak load -> object (still alive)
+    release C rc=1
+    release C rc=0
+    dealloc C
+=== arc_callee -O0
+    new D rc=1
+scenario_D
+    retain D rc=2
+    release D rc=1
+    use D (dead=0)
+    -- D: marker after use
+    release D rc=0
+    dealloc D
+=== arc_callee -O2
+    new D rc=1
+scenario_D
+    retain D rc=2
+    release D rc=1
+    use D (dead=0)
+    release D rc=0
+    dealloc D
+    -- D: marker after use
+=== ARC runtime calls in -O2 IR (function: call)
+scenario_A_imprecise:  tail call void @llvm.objc.release(ptr %1) #3, !clang.imprecise_release !5
+scenario_A_precise:  tail call void @llvm.objc.release(ptr %1) #3
+scenario_B_precise:  %2 = tail call ptr @llvm.objc.retain(ptr %1) #3
+scenario_B_precise:  tail call void @llvm.objc.release(ptr %1) #3
+scenario_C_weak:  call void @llvm.objc.release(ptr %6) #3, !clang.imprecise_release !5
+scenario_C_weak:  call void @llvm.objc.release(ptr %2) #3, !clang.imprecise_release !5
+interior_imprecise:  %2 = tail call ptr @llvm.objc.retainAutorelease(ptr %1) #2
+interior_imprecise:  tail call void @llvm.objc.release(ptr %1) #2, !clang.imprecise_release !5
+interior_precise:  tail call void @llvm.objc.release(ptr %1) #2
+scenario_D_arc_callee:  %2 = tail call ptr @llvm.objc.retain(ptr %0) #1
+scenario_D_arc_callee:  tail call void @llvm.objc.release(ptr %0) #1, !clang.imprecise_release !5

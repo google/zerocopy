@@ -1,0 +1,7 @@
+# /usr/bin/time -f '%e s wall, %M KB maxrss' on arc_probe.m; Debian clang 19.1.7; x86_64 Linux workstation; 2026-11-21
+compile -O0 run 1: 0.19 s wall, 104412 KB maxrss
+compile -O0 run 2: 0.03 s wall, 105676 KB maxrss
+compile -O0 run 3: 0.03 s wall, 105572 KB maxrss
+compile -O2 run 1: 0.03 s wall, 108996 KB maxrss
+compile -O2 run 2: 0.04 s wall, 108956 KB maxrss
+compile -O2 run 3: 0.04 s wall, 108996 KB maxrss

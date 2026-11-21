@@ -1,0 +1,95 @@
+{
+  "topics": [
+    "pl/release-timing-contracts-in-reference-counted-languages",
+    "compilers/lifetime-shortening-and-deinitialization-barriers",
+    "runtimes/finalization-timing-across-implementations",
+    "verification/reference-count-elimination-conditions"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM project: Clang Automatic Reference Counting specification, Clang ARC code generation, and LLVM ObjCARC optimizer",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "5a16359b417eac2413c493856d80cc2877c3f6aa"
+      }
+    },
+    {
+      "name": "Clang compiler (executed for Objective-C ARC release-placement probes)",
+      "identity": {
+        "version": "Debian clang version 19.1.7 (10.1+build1)",
+        "target": "x86_64-pc-linux-gnu"
+      }
+    },
+    {
+      "name": "Swift compiler and standard library: Ownership SSA, ARC optimization, deinit barriers, lexical lifetimes, withExtendedLifetime",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "876c94b16c5d1c9ff94fe67e8476a123da0d4f50"
+      }
+    },
+    {
+      "name": "Swift Evolution proposals SE-0366 (consume operator) and SE-0377 (borrowing and consuming parameter modifiers)",
+      "identity": {
+        "repository": "swiftlang/swift-evolution",
+        "revision": "58a97fabc7233f58af6b8a1e8d3d5a25fb4f7060"
+      }
+    },
+    {
+      "name": "Swift 5.7 release announcement (ARC and lexical-lifetime change)",
+      "identity": {
+        "url": "https://www.swift.org/blog/swift-5.7-released/",
+        "date": "2022-09-12"
+      }
+    },
+    {
+      "name": "CPython source and documentation (language reference data model, gc and weakref docs, Include/refcount.h)",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "dc222c8d6c366e3d52d4b0d0053ad7bb8a601fff"
+      }
+    },
+    {
+      "name": "CPython interpreter (executed for finalization-timing probes)",
+      "identity": {
+        "version": "3.13.15",
+        "build": "default (GIL-enabled, Py_GIL_DISABLED=0), x86_64 Linux"
+      }
+    },
+    {
+      "name": "Python Enhancement Proposals PEP 442 (safe object finalization) and PEP 703 (optional GIL, deferred and biased reference counting)",
+      "identity": {
+        "repository": "python/peps",
+        "revision": "4434e728a7db24540d581f52e96570ca1230356e"
+      }
+    },
+    {
+      "name": "PyPy documentation: differences from CPython (garbage collection and finalization)",
+      "identity": {
+        "repository": "pypy/pypy",
+        "revision": "dc27dd3d6d624e4516c965d450c84d3023640dba"
+      }
+    },
+    {
+      "name": "Joisha, A principled approach to nondeferred reference-counting garbage collection (VEE 2008; abstract of technical report MSR-TR-2007-104)",
+      "identity": {
+        "doi": "10.1145/1346256.1346275",
+        "technical_report": "MSR-TR-2007-104"
+      }
+    },
+    {
+      "name": "Boehm, Destructors, finalizers, and synchronization (POPL 2003), examined through the author's talk slides",
+      "identity": {
+        "doi": "10.1145/604131.604153",
+        "url": "https://www.hboehm.info/popl03/slides.pdf"
+      }
+    },
+    {
+      "name": "Ullrich and de Moura, Counting immutable beans: reference counting optimized for purely functional programming (IFL 2019)",
+      "identity": {
+        "doi": "10.1145/3412932.3412935",
+        "arxiv": "1908.05647v3"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
