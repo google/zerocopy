@@ -23,7 +23,7 @@ Results (one sentence each, with the key hypotheses; Lean names in parentheses).
 * **R2f** (`Toy.Zc.derive_isSafe_eq_validInit_of_wf_of_length`): In the model, for every well-formed description and every byte list whose length is the description's modeled size, the modeled TryFromBytes::is_safe (isSafe: the model of the derived validator for structs, enums and unions together with zerocopy's primitive validators) returns exactly the model's validity check validInit.
 * **R3a** (`Toy.Zc.fieldless_enum_fromBytes_iff_every_tag_is_discriminant`): In the model, a fieldless enum description with a primitive representation repr(t) is SemFromBytes iff every tag value n < 2^(8*width t) is the tag code (Desc.codes) of some variant's resolved discriminant.
 * **R3b** (`Toy.Zc.enum_variant_count_check_sound`): In the model, if an enum description's resolved discriminants are pairwise distinct and representable in its tag type (discrsWF), then the modeled FromBytes variant-count check enumVariantCountOK (representation u8, i8, u16 or i16 and exactly 2^bits variants) implies that every tag value n < 2^(8*width) is the tag code of some resolved discriminant.
-* **R3c** (`Toy.Zc.enum_fromBytes_of_count_check`): In the model, for an enum description (fieldless or data-carrying) whose resolved discriminants are distinct and representable (discrsWF), if the modeled variant-count check enumVariantCountOK passes and every field of every variant is SemFromBytes, then the enum is SemFromBytes.
+* **R3c** (`Toy.Zc.enum_fromBytes_of_count_check`): In the model, for an enum description (fieldless or data-carrying) whose resolved discriminants are distinct and representable (discrsWF), if the modeled variant-count check enumVariantCountOK passes and every field of every variant is SemFromBytes, then the enum is SemFromBytes; even when all of these hypotheses hold, the modeled derive check implFromBytes, which also runs findZeroVariant, can reject the enum (Toy.Zc.fromBytes_enum_rejected_by_findZeroVariant: the fieldless repr(u8) enum description nonLiteralZeroFullU8 satisfies them and is SemFromBytes, yet implFromBytes rejects it).
 * **R3d** (`Toy.Zc.enum_fromZeros_iff_zero_variant_fields_fromZeros_of_discrsWF`): In the model, for an enum description whose resolved discriminants are distinct and representable (discrsWF), the enum is SemFromZeros iff some variant has resolved discriminant 0 and every field of that variant is SemFromZeros.
 * **R3e** (`Toy.Zc.findZeroVariant_sound`, `Toy.Zc.findZeroVariant_complete_of_no_unknown`, `Toy.Zc.enum_fromZeros_of_findZeroVariant`): In the model, findZeroVariant (the model of zerocopy-derive's syntactic find_zero_variant) is sound with respect to the model's discriminant resolver resolveDiscrs (if it returns Ok(i), resolveDiscrs assigns variant i the discriminant 0) and complete when it returns Err(false), that is, when it saw no non-literal discriminant (then no resolved discriminant is 0); and for distinct representable discriminants (discrsWF), Ok(i) together with SemFromZeros fields of variant i implies that the enum description is SemFromZeros.
 * **R3f** (`Toy.Zc.enum_validInit_iff_first_matching_variant_valid`, `Toy.Zc.isSafe_enm_eq_validInit`): In the model, on byte lists of the enum description's modeled size, the modeled validity validInit of an enum holds exactly when the tag read from the bytes equals the tag code of some variant's discriminant and the fields of the first such variant are valid (validInit) at their modeled offsets; and if the modeled is_safe (isSafe) agrees with validInit on every field description at that field's size and the discriminants are distinct and representable (discrsWF), the modeled enum isSafe (including its model of the could_be_from_bytes shortcut) equals validInit.
@@ -1025,7 +1025,7 @@ Basis: derived (modeling bridge): via B8, B9. `enumVariantCountOK` transcribes `
 ### R3c-enum-fromBytes-derive-sound
 
 - **Tier / kind / depth:** T1 / theorem / shallow. T1: informal in zerocopy/src/lib.rs:4132-4137; precise for data-carrying enums.
-- **Plain claim:** In the model, for an enum description (fieldless or data-carrying) whose resolved discriminants are distinct and representable (discrsWF), if the modeled variant-count check enumVariantCountOK passes and every field of every variant is SemFromBytes, then the enum is SemFromBytes.
+- **Plain claim:** In the model, for an enum description (fieldless or data-carrying) whose resolved discriminants are distinct and representable (discrsWF), if the modeled variant-count check enumVariantCountOK passes and every field of every variant is SemFromBytes, then the enum is SemFromBytes; even when all of these hypotheses hold, the modeled derive check implFromBytes, which also runs findZeroVariant, can reject the enum (Toy.Zc.fromBytes_enum_rejected_by_findZeroVariant: the fieldless repr(u8) enum description nonLiteralZeroFullU8 satisfies them and is SemFromBytes, yet implFromBytes rejects it).
 - **Lean statement(s):**
 
 ```lean
@@ -1038,12 +1038,12 @@ theorem enum_fromBytes_of_count_check (r : EnumRepr) (vs : List (DiscrSyn × Lis
 - **Unfolded reading** (key definitions expanded):
 
 ```text
-distinct representable discriminants → count check → (∀ variant, ∀ field, FromBytes field) → FromBytes (enm r vs)
+distinct representable discriminants → count check → (∀ variant, ∀ field, SemFromBytes field) → SemFromBytes (enm r vs)
 ```
 - **Hypothesis ledger:**
   - `hwf`: Distinct and representable discriminants (one counterexample drops each half). Tightness: **tight: counterexample `Toy.Zc.ce_enum_fromBytes_drop_wf`, `Toy.Zc.ce_enum_fromBytes_drop_representable`**.
   - `hc`: The count check. Tightness: **tight: counterexample `Toy.Zc.ce_enum_fromBytes_drop_count`**.
-  - `hF`: Every field of every variant is FromBytes. Tightness: **tight: counterexample `Toy.Zc.ce_enum_fromBytes_drop_fields`**.
+  - `hF`: Every field of every variant is SemFromBytes. Tightness: **tight: counterexample `Toy.Zc.ce_enum_fromBytes_drop_fields`**.
 - **Depth:** shallow.
 - **Non-vacuity witness:** repr(u8) enum with 256 variants, variant 0 carrying a u8. (`Toy.Zc.nv_enum_fromBytes_data`)
 - **Prior art:**

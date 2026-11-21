@@ -304,7 +304,7 @@
     "lean": "Toy.Zc.enum_fromBytes_of_count_check",
     "kind": "theorem",
     "tier": "T1",
-    "plain_claim": "In the model, for an enum description (fieldless or data-carrying) whose resolved discriminants are distinct and representable (discrsWF), if the modeled variant-count check enumVariantCountOK passes and every field of every variant is SemFromBytes, then the enum is SemFromBytes.",
+    "plain_claim": "In the model, for an enum description (fieldless or data-carrying) whose resolved discriminants are distinct and representable (discrsWF), if the modeled variant-count check enumVariantCountOK passes and every field of every variant is SemFromBytes, then the enum is SemFromBytes; even when all of these hypotheses hold, the modeled derive check implFromBytes, which also runs findZeroVariant, can reject the enum (Toy.Zc.fromBytes_enum_rejected_by_findZeroVariant: the fieldless repr(u8) enum description nonLiteralZeroFullU8 satisfies them and is SemFromBytes, yet implFromBytes rejects it).",
     "hypotheses": [
       {
         "name": "hwf",
@@ -323,7 +323,7 @@
       },
       {
         "name": "hF",
-        "purpose": "Every field of every variant is FromBytes.",
+        "purpose": "Every field of every variant is SemFromBytes.",
         "tightness": "tight",
         "counterexample": "Toy.Zc.ce_enum_fromBytes_drop_fields"
       }
