@@ -1,0 +1,10 @@
+Probe environment (smr-benchmark stalled-thread probe)
+Host class: shared cloud VM, 96 vCPUs reported by nproc, Intel Xeon @ 2.60GHz, 236 GiB RAM; other tenants' workloads were running.
+Toolchain: rustc nightly-2025-03-02 (the repository pins nightly-2025-03-03 in rust-toolchain.toml; overridden with RUSTUP_TOOLCHAIN).
+Harness dependencies resolved by the repository Cargo.lock: crossbeam-epoch (EBR) git kaist-cp/crossbeam branch smr-benchmark at ee760604650f37e9bef5ebcd55a1c6403c6dfe0c; crossbeam-pebr-epoch git kaist-cp/crossbeam branch pebr at 8c4b969c866a7d1b1c698f6b374e781615efb8c8.
+Build: cargo build --release --bin ebr --bin pebr --bin hp --bin nbr --bin hp-brcu --bin vbr --bin nr --bin hp-pp : 66 s wall, 6 min 16 s user (from 'time').
+Start/end timestamps and load averages ('date -u; uptime'):
+Sat Nov 21 04:30:08 AM UTC 2026
+ 04:30:08 up 18 days, 17:21,  4 users,  load average: 134.35, 154.82, 188.78
+Sat Nov 21 04:35:46 AM UTC 2026
+ 04:35:46 up 18 days, 17:27,  4 users,  load average: 119.50, 120.57, 162.74

@@ -1,0 +1,166 @@
+{
+  "topics": [
+    "runtimes/robust-safe-memory-reclamation-bounds",
+    "systems/unreclaimed-memory-under-stalled-threads",
+    "verification/reclamation-space-bound-proofs",
+    "tooling/reclamation-benchmark-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "smr-benchmark (SMR microbenchmark suite: EBR, PEBR, HP, HP++, NBR+, HP-BRCU, VBR drivers)",
+      "identity": {
+        "repository": "kaist-cp/smr-benchmark",
+        "revision": "00b4e4d06d9b91f289b4644163f0cac0660d4af7"
+      }
+    },
+    {
+      "name": "crossbeam EBR fork used by smr-benchmark (branch smr-benchmark)",
+      "identity": {
+        "repository": "kaist-cp/crossbeam",
+        "revision": "ee760604650f37e9bef5ebcd55a1c6403c6dfe0c"
+      }
+    },
+    {
+      "name": "crossbeam PEBR fork used by smr-benchmark (branch pebr)",
+      "identity": {
+        "repository": "kaist-cp/crossbeam",
+        "revision": "8c4b969c866a7d1b1c698f6b374e781615efb8c8"
+      }
+    },
+    {
+      "name": "lfsmr (Hyaline schemes and benchmark)",
+      "identity": {
+        "repository": "rusnikola/lfsmr",
+        "revision": "64f944145184e8fb13c3ca12584f8f5ee7e6ff9c"
+      }
+    },
+    {
+      "name": "Interval-Based-Reclamation (IBR schemes and benchmark harness)",
+      "identity": {
+        "repository": "urcs-sync/Interval-Based-Reclamation",
+        "revision": "10c25f9af13cae8e8cce958ace674281a8a8c7b4"
+      }
+    },
+    {
+      "name": "crossbeam-epoch",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+      }
+    },
+    {
+      "name": "Folly hazard-pointer domain",
+      "identity": {
+        "repository": "facebook/folly",
+        "revision": "27995cd3a568a6af718ba6694ed5b2ed6b6c37f7"
+      }
+    },
+    {
+      "name": "Userspace RCU (liburcu)",
+      "identity": {
+        "repository": "urcu/userspace-rcu",
+        "revision": "a6df537ffa987b8c68601be24ef17cf937d389c1"
+      }
+    },
+    {
+      "name": "Linux kernel RCU requirements documentation",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "aa31d5f8b151b786b748c6bfc9a8c4f1855c8adc"
+      }
+    },
+    {
+      "name": "Hazard Eras extended paper hosted by its authors",
+      "identity": {
+        "repository": "pramalhe/ConcurrencyFreaks",
+        "revision": "ae40ca8412569bd19636baad223413e9c4c4c793",
+        "path": "papers/hazarderas-2017.pdf"
+      }
+    },
+    {
+      "name": "The ERA Theorem for Safe Memory Reclamation (Sheffi, Petrank; PODC 2023)",
+      "identity": {
+        "doi": "10.1145/3583668.3594564",
+        "arxiv": "2211.04351v1"
+      }
+    },
+    {
+      "name": "Hazard Pointers: Safe Memory Reclamation for Lock-Free Objects (Michael; IEEE TPDS 15(6), 2004)",
+      "identity": {
+        "doi": "10.1109/TPDS.2004.8"
+      }
+    },
+    {
+      "name": "Practical lock-freedom (Fraser; Cambridge technical report UCAM-CL-TR-579, 2004)",
+      "identity": {
+        "doi": "10.48456/tr-579"
+      }
+    },
+    {
+      "name": "Reclaiming Memory for Lock-Free Data Structures: There Has to Be a Better Way (Brown; PODC 2015)",
+      "identity": {
+        "doi": "10.1145/2767386.2767436",
+        "arxiv": "1712.01044v1"
+      }
+    },
+    {
+      "name": "NBR: Neutralization Based Reclamation (Singh, Brown, Mashtizadeh; PPoPP 2021)",
+      "identity": {
+        "doi": "10.1145/3437801.3441625",
+        "arxiv": "2012.14542v2"
+      }
+    },
+    {
+      "name": "Interval-Based Memory Reclamation (Wen, Izraelevitz, Cai, Beadle, Scott; PPoPP 2018)",
+      "identity": {
+        "doi": "10.1145/3178487.3178488"
+      }
+    },
+    {
+      "name": "Brief Announcement: Hazard Eras - Non-Blocking Memory Reclamation (Ramalhete, Correia; SPAA 2017)",
+      "identity": {
+        "doi": "10.1145/3087556.3087588"
+      }
+    },
+    {
+      "name": "Snapshot-Free, Transparent, and Robust Memory Reclamation for Lock-Free Data Structures (Nikolaev, Ravindran; PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454090",
+        "arxiv": "1905.07903v2"
+      }
+    },
+    {
+      "name": "A Family of Fast and Memory Efficient Lock- and Wait-Free Reclamation (Nikolaev, Ravindran; PACMPL 8(PLDI), 2024)",
+      "identity": {
+        "doi": "10.1145/3658851"
+      }
+    },
+    {
+      "name": "VBR: Version Based Reclamation (Sheffi, Herlihy, Petrank; DISC 2021 and SPAA 2021 brief announcement)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.DISC.2021.35",
+        "doi_brief_announcement": "10.1145/3409964.3461817",
+        "arxiv": "2107.13843v1"
+      }
+    },
+    {
+      "name": "A Marriage of Pointer- and Epoch-Based Reclamation (Kang, Jung; PLDI 2020)",
+      "identity": {
+        "doi": "10.1145/3385412.3385978"
+      }
+    },
+    {
+      "name": "Expediting Hazard Pointers with Bounded RCU Critical Sections (Kim, Jung, Kang; SPAA 2024)",
+      "identity": {
+        "doi": "10.1145/3626183.3659941"
+      }
+    },
+    {
+      "name": "User-Level Implementations of Read-Copy Update (Desnoyers, McKenney, Stern, Dagenais, Walpole; IEEE TPDS 23(2), 2012)",
+      "identity": {
+        "doi": "10.1109/TPDS.2011.159"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

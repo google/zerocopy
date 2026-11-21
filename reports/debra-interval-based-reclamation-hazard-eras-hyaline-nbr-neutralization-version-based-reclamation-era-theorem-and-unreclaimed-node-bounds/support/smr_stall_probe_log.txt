@@ -1,0 +1,78 @@
+### ebr -n 0 -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 57620438, peak mem: 91.421 MiB, avg_mem: 11.471 MiB, peak garb: 1411072, avg garb: 56608
+### pebr -n 0 -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 59150678, peak mem: 20.260 MiB, avg_mem: 7.355 MiB, peak garb: 287744, avg garb: 15728
+### ebr -n 3 -i 10
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 67917232, peak mem: 10.140 GiB, avg_mem: 5.028 GiB, peak garb: 169788139, avg garb: 84157586
+### pebr -n 3 -i 10
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 46358397, peak mem: 18.498 MiB, avg_mem: 8.028 MiB, peak garb: 247296, avg garb: 25804
+### ebr -n 0 -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 55520245, peak mem: 65.749 MiB, avg_mem: 11.367 MiB, peak garb: 1004544, avg garb: 54366
+### pebr -n 0 -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 55855378, peak mem: 19.376 MiB, avg_mem: 8.025 MiB, peak garb: 264704, avg garb: 25798
+### ebr -n 3 -i 10
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 83289641, peak mem: 12.432 GiB, avg_mem: 5.843 GiB, peak garb: 208203264, avg garb: 97813778
+### pebr -n 3 -i 10
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 46343830, peak mem: 20.233 MiB, avg_mem: 8.109 MiB, peak garb: 280576, avg garb: 26634
+### ebr -n 0 -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 52083485, peak mem: 51.275 MiB, avg_mem: 11.791 MiB, peak garb: 699392, avg garb: 60865
+### pebr -n 0 -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 60612497, peak mem: 18.116 MiB, avg_mem: 7.367 MiB, peak garb: 243712, avg garb: 16660
+### ebr -n 3 -i 10
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 57308513, peak mem: 8.554 GiB, avg_mem: 4.025 GiB, peak garb: 143244288, avg garb: 67354945
+### pebr -n 3 -i 10
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 51427566, peak mem: 19.275 MiB, avg_mem: 7.564 MiB, peak garb: 274944, avg garb: 19014
+### ebr -n 1 -i 10
+hash-map: 32 threads, n1, c1, g0, small bag
+ops/s: 60676298, peak mem: 42.279 MiB, avg_mem: 13.169 MiB, peak garb: 605184, avg garb: 84948
+### pebr -n 1 -i 10
+hash-map: 32 threads, n1, c1, g0, small bag
+ops/s: 48986801, peak mem: 20.657 MiB, avg_mem: 10.564 MiB, peak garb: 298496, avg garb: 71045
+### ebr -n 2 -i 10
+hash-map: 32 threads, n2, c1, g0, small bag
+ops/s: 52077501, peak mem: 77.012 MiB, avg_mem: 34.321 MiB, peak garb: 1161216, avg garb: 420149
+### pebr -n 2 -i 10
+hash-map: 32 threads, n2, c1, g0, small bag
+ops/s: 51139752, peak mem: 21.802 MiB, avg_mem: 11.281 MiB, peak garb: 325632, avg garb: 79834
+### ebr -n 3 -i 5
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 69511849, peak mem: 5.190 GiB, avg_mem: 2.598 GiB, peak garb: 86872703, avg garb: 43440579
+### pebr -n 3 -i 5
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 53629715, peak mem: 18.779 MiB, avg_mem: 7.729 MiB, peak garb: 248832, avg garb: 20952
+### ebr -n 3 -i 20
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 68251302, peak mem: 20.373 GiB, avg_mem: 10.009 GiB, peak garb: 341233011, avg garb: 167596174
+### pebr -n 3 -i 20
+hash-map: 32 threads, n3, c1, g0, small bag
+ops/s: 54016973, peak mem: 17.796 MiB, avg_mem: 7.553 MiB, peak garb: 229376, avg garb: 18962
+### nr -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 77033345, peak mem: 5.742 GiB, avg_mem: 2.864 GiB, peak garb: 0, avg garb: 0
+### hp -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 59487454, peak mem: 15.924 MiB, avg_mem: 13.652 MiB, peak garb: 30313, avg garb: 10396
+### hp-pp -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 37755448, peak mem: 26.269 MiB, avg_mem: 12.782 MiB, peak garb: 40032, avg garb: 13842
+### nbr -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 15702221, peak mem: 8.039 MiB, avg_mem: 4.229 MiB, peak garb: 15454, avg garb: 13153
+### hp-brcu -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 83679307, peak mem: 17.242 MiB, avg_mem: 10.962 MiB, peak garb: 38413, avg garb: 10377
+### vbr -i 10
+hash-map: 32 threads, n0, c1, g0, small bag
+ops/s: 74112843, peak mem: 10.310 MiB, avg_mem: 8.206 MiB, peak garb: 0, avg garb: 0
