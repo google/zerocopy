@@ -1,0 +1,575 @@
+{
+  "toolchain": {
+    "rustc_verbose_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "target_triple": "x86_64-unknown-linux-gnu"
+  },
+  "mir_opt_sweep": {
+    "mir_opt_level_0": {
+      "s01_array_to_slice_len": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 1,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s02_zst_slice_max_len": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 0,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 1,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s03_dst_wrap_slice_tail": {
+        "ptr_metadata_ops": 2,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": true
+      },
+      "s04_nested_2level_dst_wrap": {
+        "ptr_metadata_ops": 1,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s05_dyn_supertrait_upcast": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 5,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 2,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s06_dst_wrap_dyn_tail": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 3,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s07_custom_coerce_unsized": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 2,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s08_from_raw_parts_roundtrip": {
+        "ptr_metadata_ops": 2,
+        "unsize_coercions": 0,
+        "raw_ptr_aggregates": 4,
+        "ptr_to_ptr_casts": 2,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s09_size_and_align_peephole": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 0,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 3,
+        "align_of_val_calls": 3,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s10_packed_dst_wrap": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      }
+    },
+    "mir_opt_level_1": {
+      "s01_array_to_slice_len": {
+        "ptr_metadata_ops": 1,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s02_zst_slice_max_len": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 0,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 1,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s03_dst_wrap_slice_tail": {
+        "ptr_metadata_ops": 2,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": true
+      },
+      "s04_nested_2level_dst_wrap": {
+        "ptr_metadata_ops": 1,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s05_dyn_supertrait_upcast": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 3,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 2,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s06_dst_wrap_dyn_tail": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s07_custom_coerce_unsized": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 2,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s08_from_raw_parts_roundtrip": {
+        "ptr_metadata_ops": 2,
+        "unsize_coercions": 0,
+        "raw_ptr_aggregates": 2,
+        "ptr_to_ptr_casts": 3,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s09_size_and_align_peephole": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 0,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 2,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s10_packed_dst_wrap": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      }
+    },
+    "mir_opt_level_2": {
+      "s01_array_to_slice_len": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": true,
+        "const_3_usize": false
+      },
+      "s02_zst_slice_max_len": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 0,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 1,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s03_dst_wrap_slice_tail": {
+        "ptr_metadata_ops": 2,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": true
+      },
+      "s04_nested_2level_dst_wrap": {
+        "ptr_metadata_ops": 1,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s05_dyn_supertrait_upcast": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 3,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 2,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s06_dst_wrap_dyn_tail": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s07_custom_coerce_unsized": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 2,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s08_from_raw_parts_roundtrip": {
+        "ptr_metadata_ops": 1,
+        "unsize_coercions": 0,
+        "raw_ptr_aggregates": 2,
+        "ptr_to_ptr_casts": 1,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 0,
+        "align_of_val_calls": 0,
+        "const_4_usize": false,
+        "const_3_usize": false
+      },
+      "s09_size_and_align_peephole": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 0,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 2,
+        "align_of_val_calls": 1,
+        "const_4_usize": true,
+        "const_3_usize": false
+      },
+      "s10_packed_dst_wrap": {
+        "ptr_metadata_ops": 0,
+        "unsize_coercions": 1,
+        "raw_ptr_aggregates": 0,
+        "ptr_to_ptr_casts": 0,
+        "slice_len_calls": 0,
+        "size_of_val_calls": 1,
+        "align_of_val_calls": 1,
+        "const_4_usize": false,
+        "const_3_usize": false
+      }
+    }
+  },
+  "mir_and_llvm_highlights": {
+    "unchecked_sumul_nuw_nsw_present": true,
+    "dst_align_bitmask_roundup_present": true,
+    "s01_mir_body_opt2": "fn s01_array_to_slice_len(_1: &[u32; 4]) -> usize {\n    debug a => _1;\n    let mut _0: usize;\n    let _2: &[u32];\n    scope 1 {\n        debug s => _2;\n    }\n\n    bb0: {\n        _2 = copy _1 as &[u32] (PointerCoercion(Unsize, Implicit));\n        _0 = const 4_usize;\n        return;\n    }\n}",
+    "s03_mir_body_opt2": "fn s03_dst_wrap_slice_tail(_1: &DstWrap<[u32; 4]>) -> (usize, usize, usize, u16, u8, u32) {\n    debug w => _1;\n    let mut _0: (usize, usize, usize, u16, u8, u32);\n    let _2: &DstWrap<[u32]>;\n    let mut _5: *const DstWrap<[u32]>;\n    let mut _7: *const DstWrap<[u32]>;\n    let mut _8: u16;\n    let mut _9: u8;\n    let mut _10: u32;\n    let mut _11: *const [u32];\n    let mut _12: usize;\n    let mut _13: bool;\n    scope 1 {\n        debug uw => _2;\n        let _3: usize;\n        scope 2 {\n            debug meta => _3;\n            let _4: usize;\n            scope 3 {\n                debug sz => _4;\n                let _6: usize;\n                scope 4 {\n                    debug al => _6;\n                }\n            }\n        }\n    }\n\n    bb0: {\n        _2 = copy _1 as &DstWrap<[u32]> (PointerCoercion(Unsize, Implicit));\n        _3 = PtrMetadata(copy _2);\n        _5 = &raw const (*_2);\n        _4 = std::intrinsics::size_of_val::<DstWrap<[u32]>>(move _5) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _7 = &raw const (*_2);\n        _6 = std::intrinsics::align_of_val::<DstWrap<[u32]>>(move _7) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _8 = copy ((*_2).1: u16);\n        _9 = copy ((*_2).0: u8);\n        _11 = &raw const (fake) ((*_2).2: [u32]);\n        _12 = PtrMetadata(copy _11);\n        _13 = Lt(const 3_usize, copy _12);\n        assert(move _13, \"index out of bounds: the length is {} but the index is {}\", move _12, const 3_usize) -> [success: bb3, unwind continue];\n    }\n\n    bb3: {\n        _10 = copy ((*_2).2: [u32])[3 of 4];\n        _0 = (copy _3, copy _4, copy _6, move _8, move _9, move _10);\n        return;\n    }\n}",
+    "s01_mir_body_opt0": "fn s01_array_to_slice_len(_1: &[u32; 4]) -> usize {\n    debug a => _1;\n    let mut _0: usize;\n    let _2: &[u32];\n    let mut _3: &[u32; 4];\n    let mut _4: &[u32];\n    scope 1 {\n        debug s => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = &(*_1);\n        _2 = move _3 as &[u32] (PointerCoercion(Unsize, Implicit));\n        StorageDead(_3);\n        StorageLive(_4);\n        _4 = &(*_2);\n        _0 = core::slice::<impl [u32]>::len(move _4) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageDead(_2);\n        return;\n    }\n}",
+    "s01_mir_body_opt1": "fn s01_array_to_slice_len(_1: &[u32; 4]) -> usize {\n    debug a => _1;\n    let mut _0: usize;\n    let _2: &[u32];\n    scope 1 {\n        debug s => _2;\n    }\n\n    bb0: {\n        _2 = copy _1 as &[u32] (PointerCoercion(Unsize, Implicit));\n        _0 = PtrMetadata(copy _2);\n        return;\n    }\n}"
+  },
+  "native_execution": {
+    "s01_len": 4,
+    "s02_zst": [
+      18446744073709551615,
+      0,
+      1
+    ],
+    "s03_dst_slice": [
+      4,
+      20,
+      4,
+      4660,
+      7,
+      4
+    ],
+    "s04_nested": [
+      3,
+      32,
+      8,
+      3405691582,
+      21930,
+      33
+    ],
+    "s05_dyn_upcast": [
+      32,
+      16,
+      32,
+      16,
+      303,
+      101,
+      202,
+      true
+    ],
+    "s06_dst_dyn": [
+      32,
+      16,
+      48,
+      16,
+      9
+    ],
+    "s07_custom_ptr": [
+      4,
+      77,
+      32
+    ],
+    "s08_roundtrip_len": 4,
+    "s08_thin_eq": true,
+    "s09_peephole": [
+      8,
+      8,
+      16,
+      4,
+      20,
+      4
+    ],
+    "s10_packed": [
+      34,
+      2,
+      90
+    ],
+    "ptr_sizes": {
+      "thin_ref_u32": 8,
+      "wide_ref_slice_u32": 16,
+      "wide_ref_dyn": 16,
+      "wide_ref_dst_wrap": 16,
+      "tagged_ptr_thin": 16,
+      "tagged_ptr_wide": 24
+    },
+    "offsets": {
+      "DstWrap_u8": [
+        0,
+        2,
+        3,
+        4,
+        2
+      ],
+      "DstWrap_arr4_u32": [
+        0,
+        2,
+        4,
+        20,
+        4
+      ],
+      "DstWrap_u64": [
+        0,
+        2,
+        8,
+        16,
+        8
+      ],
+      "DstWrap_Aligned16": [
+        0,
+        2,
+        16,
+        48,
+        16
+      ],
+      "DstWrap_dyn_SubTrait_runtime": [
+        0,
+        2,
+        16
+      ],
+      "SizedWrap_u8": [
+        0,
+        2,
+        3,
+        4,
+        2
+      ],
+      "SizedWrap_u64": [
+        8,
+        10,
+        0,
+        16,
+        8
+      ]
+    }
+  },
+  "miri_tree_borrows_suite": {
+    "total_cases": 12,
+    "expected_matches": 12,
+    "valid_pass_cases": 5,
+    "ub_caught_cases": 7,
+    "cases": [
+      {
+        "case_id": "m01_valid_array_to_slice_and_raw_parts",
+        "description": "Valid &[u32; 4] -> &[u32] unsizing, raw-parts round-trip, and size_of_val_raw == 16",
+        "expected": "PASS",
+        "observed": "PASS",
+        "exit_code": 0,
+        "ub_diagnostic": null
+      },
+      {
+        "case_id": "m02_valid_zst_slice_usize_max",
+        "description": "Valid ZST slice &[(); usize::MAX] with 0 total byte size <= isize::MAX",
+        "expected": "PASS",
+        "observed": "PASS",
+        "exit_code": 0,
+        "ub_diagnostic": null
+      },
+      {
+        "case_id": "m03_valid_nested_dst_wrap_slice_and_dyn",
+        "description": "Valid custom DST struct-tail unsizing for both [u32; 4] -> [u32] and AlignedPayload -> dyn SubTrait",
+        "expected": "PASS",
+        "observed": "PASS",
+        "exit_code": 0,
+        "ub_diagnostic": null
+      },
+      {
+        "case_id": "m04_valid_packed2_dyn_dst_size_align",
+        "description": "Valid #[repr(packed(2))] custom DST with 16-aligned dyn payload: align capped to 2 and size == 34",
+        "expected": "PASS",
+        "observed": "PASS",
+        "exit_code": 0,
+        "ub_diagnostic": null
+      },
+      {
+        "case_id": "m05_valid_zero_len_dangling_slice_size_of_val_raw",
+        "description": "Valid size_of_val_raw on zero-length dangling raw slice pointer without dereference",
+        "expected": "PASS",
+        "observed": "PASS",
+        "exit_code": 0,
+        "ub_diagnostic": null
+      },
+      {
+        "case_id": "m06_ub_slice_size_of_val_raw_isize_overflow",
+        "description": "UB: size_of_val_raw::<[u32]> when len * 4 == isize::MAX + 1 exceeds isize::MAX (InvalidMeta::SliceTooBig)",
+        "expected": "UB",
+        "observed": "UB",
+        "exit_code": 1,
+        "ub_diagnostic": "error: Undefined Behavior: invalid metadata in wide pointer: slice is bigger than largest supported object"
+      },
+      {
+        "case_id": "m07_ub_slice_size_of_val_raw_u64_wrap_boundary",
+        "description": "UB: size_of_val_raw::<[u32]> at len = 2^62 + 1 where wrapping len * 4 == 4 mod 2^64 (sharpness witness for CE1)",
+        "expected": "UB",
+        "observed": "UB",
+        "exit_code": 1,
+        "ub_diagnostic": "error: Undefined Behavior: invalid metadata in wide pointer: slice is bigger than largest supported object"
+      },
+      {
+        "case_id": "m08_ub_struct_tail_prefix_pushes_over_isize_max",
+        "description": "UB: DstWrap<[u8]> where slice tail alone fits isize::MAX - 1, but prefix + tail rounding exceeds isize::MAX (InvalidMeta::TooBig)",
+        "expected": "UB",
+        "observed": "UB",
+        "exit_code": 1,
+        "ub_diagnostic": "error: Undefined Behavior: invalid metadata in wide pointer: total size is bigger than largest supported object"
+      },
+      {
+        "case_id": "m09_ub_forged_non_vtable_dyn_metadata",
+        "description": "UB: size_of_val_raw::<dyn SubTrait> with forged non-vtable pointer in DynMetadata",
+        "expected": "UB",
+        "observed": "UB",
+        "exit_code": 1,
+        "ub_diagnostic": "error: Undefined Behavior: constructing invalid value of type *const dyn SubTrait: encountered 0x20130[alloc17]<18>, but expected a vtable pointer"
+      },
+      {
+        "case_id": "m10_ub_wrong_trait_vtable_transmute",
+        "description": "UB: size_of_val_raw::<dyn SubTrait> when DynMetadata was unsized for UnrelatedTrait",
+        "expected": "UB",
+        "observed": "UB",
+        "exit_code": 1,
+        "ub_diagnostic": "error: Undefined Behavior: constructing invalid value of type *const dyn SubTrait: wrong trait in wide pointer vtable: expected `SubTrait`, but encountered `UnrelatedTrait`"
+      },
+      {
+        "case_id": "m11_ub_misaligned_zst_slice_reference",
+        "description": "UB: constructing &[ZeroSizedAlign8] reference with len = 0 at misaligned address 4",
+        "expected": "UB",
+        "observed": "UB",
+        "exit_code": 1,
+        "ub_diagnostic": "error: Undefined Behavior: constructing invalid value of type &[ZeroSizedAlign8]: encountered an unaligned reference (required 8 byte alignment but found 4)"
+      },
+      {
+        "case_id": "m12_ub_null_zst_slice_reference",
+        "description": "UB: constructing &[()] reference with len = 0 from null data pointer",
+        "expected": "UB",
+        "observed": "UB",
+        "exit_code": 1,
+        "ub_diagnostic": "error: Undefined Behavior: constructing invalid value of type &[()]: encountered a null reference"
+      }
+    ]
+  }
+}
