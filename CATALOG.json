@@ -64827,6 +64827,91 @@
         "verification/compiler-verification"
       ]
     },
+    "relocation-invariant-binary-verification-pc-relative-elf-proofs-and-address-shift-resilience": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "path": "riscv-elf.adoc",
+            "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+            "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+          },
+          "name": "RISC-V ELF psABI Specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229",
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML Verified Compiler Backend"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454065",
+            "repository": "mit-plv/bedrock2",
+            "revision": "67b682a504041acd2cd678782ff2505983d7cd6f"
+          },
+          "name": "bedrock2 Verified Low-Level Systems Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523434",
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris Machine-Code Verification Framework"
+        },
+        {
+          "identity": {
+            "path": "riscV",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert Verified C Compiler (RISC-V Backend)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428265",
+            "venue": "PACMPL (OOPSLA)",
+            "year": "2020"
+          },
+          "name": "CompCertELF Verified ELF Object Emitter"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2983996",
+            "repository": "rems-project/linksem",
+            "revision": "446412810661b91a39c86425c1e924e35661098c"
+          },
+          "name": "Linksem Formal ELF Static Linking Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2491956.2462183",
+            "repository": "seL4/graph-refine",
+            "revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4"
+          },
+          "name": "seL4 Binary Translation Validation (graph-refine)"
+        },
+        {
+          "identity": {
+            "path": "lld/ELF/Arch/RISCV.cpp",
+            "repository": "llvm/llvm-project",
+            "revision": "25b1c803e1e1504f6dc11f7afd68e65ad3ee5964"
+          },
+          "name": "LLVM LLD Linker (RISC-V ELF Target)"
+        }
+      ],
+      "topics": [
+        "verification/assembly",
+        "systems/elf",
+        "verification/os-kernels",
+        "isa/elf-relocations",
+        "isa/riscv64",
+        "compilers/linking"
+      ]
+    },
     "repr-c-layout-algebra-dst-tails-and-enum-tags": {
       "observed_at": "2026-11-20",
       "subjects": [
