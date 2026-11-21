@@ -1,0 +1,6 @@
+name = "toy-slot-compact"
+version = "0.1.0"
+defaultTargets = ["ToySlotCompact"]
+
+[[lean_lib]]
+name = "ToySlotCompact"

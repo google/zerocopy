@@ -1,0 +1,2092 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.SlotCompact.Ann": [],
+    "Toy.SlotCompact.Cmd": [],
+    "Toy.SlotCompact.Cmd.casesOn": [],
+    "Toy.SlotCompact.Cmd.check": [],
+    "Toy.SlotCompact.Cmd.check.elim": [],
+    "Toy.SlotCompact.Cmd.check.inj": [],
+    "Toy.SlotCompact.Cmd.check.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Cmd.check.noConfusion": [],
+    "Toy.SlotCompact.Cmd.check.sizeOf_spec": [],
+    "Toy.SlotCompact.Cmd.ctorElim": [],
+    "Toy.SlotCompact.Cmd.ctorElimType": [],
+    "Toy.SlotCompact.Cmd.ctorIdx": [],
+    "Toy.SlotCompact.Cmd.incr": [],
+    "Toy.SlotCompact.Cmd.incr.elim": [],
+    "Toy.SlotCompact.Cmd.incr.inj": [],
+    "Toy.SlotCompact.Cmd.incr.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Cmd.incr.noConfusion": [],
+    "Toy.SlotCompact.Cmd.incr.sizeOf_spec": [],
+    "Toy.SlotCompact.Cmd.noConfusion": [],
+    "Toy.SlotCompact.Cmd.noConfusionType": [],
+    "Toy.SlotCompact.Cmd.rec": [],
+    "Toy.SlotCompact.Cmd.recOn": [],
+    "Toy.SlotCompact.CompactRel": [],
+    "Toy.SlotCompact.Compaction": [],
+    "Toy.SlotCompact.Compaction.get?": [],
+    "Toy.SlotCompact.Compaction.get?.eq_1": [],
+    "Toy.SlotCompact.Compaction.get?_of_kept": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Compaction.get?_of_not_kept": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Compaction.slotExpr": [],
+    "Toy.SlotCompact.Compaction.slotExpr.eq_1": [],
+    "Toy.SlotCompact.Compaction.slotExpr.match_1": [],
+    "Toy.SlotCompact.Complete": [],
+    "Toy.SlotCompact.CostModel": [],
+    "Toy.SlotCompact.CostModel.casesOn": [],
+    "Toy.SlotCompact.CostModel.ctorIdx": [],
+    "Toy.SlotCompact.CostModel.getCost": [],
+    "Toy.SlotCompact.CostModel.mk": [],
+    "Toy.SlotCompact.CostModel.mk.inj": [],
+    "Toy.SlotCompact.CostModel.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.CostModel.mk.noConfusion": [],
+    "Toy.SlotCompact.CostModel.mk.sizeOf_spec": [],
+    "Toy.SlotCompact.CostModel.noConfusion": [],
+    "Toy.SlotCompact.CostModel.noConfusionType": [],
+    "Toy.SlotCompact.CostModel.putCost": [],
+    "Toy.SlotCompact.CostModel.rec": [],
+    "Toy.SlotCompact.CostModel.recOn": [],
+    "Toy.SlotCompact.DbgReadsKept": [
+      "propext"
+    ],
+    "Toy.SlotCompact.DbgReadsLive": [
+      "propext"
+    ],
+    "Toy.SlotCompact.DependsOnlyOnEntryLive": [],
+    "Toy.SlotCompact.DependsOnlyOnLive": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Expr": [],
+    "Toy.SlotCompact.Expr.add": [],
+    "Toy.SlotCompact.Expr.add.elim": [],
+    "Toy.SlotCompact.Expr.add.inj": [],
+    "Toy.SlotCompact.Expr.add.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Expr.add.noConfusion": [],
+    "Toy.SlotCompact.Expr.add.sizeOf_spec": [],
+    "Toy.SlotCompact.Expr.below": [],
+    "Toy.SlotCompact.Expr.brecOn": [],
+    "Toy.SlotCompact.Expr.brecOn.eq": [],
+    "Toy.SlotCompact.Expr.brecOn.go": [],
+    "Toy.SlotCompact.Expr.casesOn": [],
+    "Toy.SlotCompact.Expr.const": [],
+    "Toy.SlotCompact.Expr.const.elim": [],
+    "Toy.SlotCompact.Expr.const.inj": [],
+    "Toy.SlotCompact.Expr.const.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Expr.const.noConfusion": [],
+    "Toy.SlotCompact.Expr.const.sizeOf_spec": [],
+    "Toy.SlotCompact.Expr.ctorElim": [],
+    "Toy.SlotCompact.Expr.ctorElimType": [],
+    "Toy.SlotCompact.Expr.ctorIdx": [],
+    "Toy.SlotCompact.Expr.eval": [],
+    "Toy.SlotCompact.Expr.eval.eq_1": [],
+    "Toy.SlotCompact.Expr.eval.eq_2": [],
+    "Toy.SlotCompact.Expr.eval.eq_3": [],
+    "Toy.SlotCompact.Expr.eval.eq_def": [],
+    "Toy.SlotCompact.Expr.eval_congr": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Expr.noConfusion": [],
+    "Toy.SlotCompact.Expr.noConfusionType": [],
+    "Toy.SlotCompact.Expr.reads": [],
+    "Toy.SlotCompact.Expr.reads.eq_1": [],
+    "Toy.SlotCompact.Expr.reads.eq_2": [],
+    "Toy.SlotCompact.Expr.reads.eq_3": [],
+    "Toy.SlotCompact.Expr.reads.eq_def": [],
+    "Toy.SlotCompact.Expr.reads.match_1": [],
+    "Toy.SlotCompact.Expr.rec": [],
+    "Toy.SlotCompact.Expr.recOn": [],
+    "Toy.SlotCompact.Expr.slot": [],
+    "Toy.SlotCompact.Expr.slot.elim": [],
+    "Toy.SlotCompact.Expr.slot.inj": [],
+    "Toy.SlotCompact.Expr.slot.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Expr.slot.noConfusion": [],
+    "Toy.SlotCompact.Expr.slot.sizeOf_spec": [],
+    "Toy.SlotCompact.Expr.subst": [],
+    "Toy.SlotCompact.Expr.subst.eq_1": [],
+    "Toy.SlotCompact.Expr.subst.eq_2": [],
+    "Toy.SlotCompact.Expr.subst.eq_3": [],
+    "Toy.SlotCompact.Expr.subst.eq_def": [],
+    "Toy.SlotCompact.GetPutOther": [],
+    "Toy.SlotCompact.GetPutSame": [],
+    "Toy.SlotCompact.InjOnLiveAt": [],
+    "Toy.SlotCompact.Instr": [],
+    "Toy.SlotCompact.Instr.assign": [],
+    "Toy.SlotCompact.Instr.assign.elim": [],
+    "Toy.SlotCompact.Instr.assign.inj": [],
+    "Toy.SlotCompact.Instr.assign.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.assign.noConfusion": [],
+    "Toy.SlotCompact.Instr.assign.sizeOf_spec": [],
+    "Toy.SlotCompact.Instr.branch": [],
+    "Toy.SlotCompact.Instr.branch.elim": [],
+    "Toy.SlotCompact.Instr.branch.inj": [],
+    "Toy.SlotCompact.Instr.branch.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.branch.noConfusion": [],
+    "Toy.SlotCompact.Instr.branch.sizeOf_spec": [],
+    "Toy.SlotCompact.Instr.casesOn": [],
+    "Toy.SlotCompact.Instr.ctorElim": [],
+    "Toy.SlotCompact.Instr.ctorElimType": [],
+    "Toy.SlotCompact.Instr.ctorIdx": [],
+    "Toy.SlotCompact.Instr.dbg": [],
+    "Toy.SlotCompact.Instr.dbg.elim": [],
+    "Toy.SlotCompact.Instr.dbg.inj": [],
+    "Toy.SlotCompact.Instr.dbg.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.dbg.noConfusion": [],
+    "Toy.SlotCompact.Instr.dbg.sizeOf_spec": [],
+    "Toy.SlotCompact.Instr.defs": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.defs.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.defs.eq_2": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.defs.eq_3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.defs.eq_4": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.defs.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.halt": [],
+    "Toy.SlotCompact.Instr.halt.elim": [],
+    "Toy.SlotCompact.Instr.halt.inj": [],
+    "Toy.SlotCompact.Instr.halt.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.halt.noConfusion": [],
+    "Toy.SlotCompact.Instr.halt.sizeOf_spec": [],
+    "Toy.SlotCompact.Instr.noConfusion": [],
+    "Toy.SlotCompact.Instr.noConfusionType": [],
+    "Toy.SlotCompact.Instr.nop": [],
+    "Toy.SlotCompact.Instr.nop.elim": [],
+    "Toy.SlotCompact.Instr.nop.sizeOf_spec": [],
+    "Toy.SlotCompact.Instr.rec": [],
+    "Toy.SlotCompact.Instr.recOn": [],
+    "Toy.SlotCompact.Instr.storageDead": [],
+    "Toy.SlotCompact.Instr.storageDead.elim": [],
+    "Toy.SlotCompact.Instr.storageDead.inj": [],
+    "Toy.SlotCompact.Instr.storageDead.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.storageDead.noConfusion": [],
+    "Toy.SlotCompact.Instr.storageDead.sizeOf_spec": [],
+    "Toy.SlotCompact.Instr.storageLive": [],
+    "Toy.SlotCompact.Instr.storageLive.elim": [],
+    "Toy.SlotCompact.Instr.storageLive.inj": [],
+    "Toy.SlotCompact.Instr.storageLive.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.storageLive.noConfusion": [],
+    "Toy.SlotCompact.Instr.storageLive.sizeOf_spec": [],
+    "Toy.SlotCompact.Instr.succs": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.succs.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.succs.eq_2": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.succs.eq_3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.succs.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.uses": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.uses.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.uses.eq_2": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.uses.eq_3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.uses.eq_4": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Instr.uses.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.IsHalt": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Kept": [],
+    "Toy.SlotCompact.KeptRel": [],
+    "Toy.SlotCompact.LA": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LB": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LC": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LD": [],
+    "Toy.SlotCompact.LDisj": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LDisj.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LE": [],
+    "Toy.SlotCompact.LE3": [],
+    "Toy.SlotCompact.LF": [],
+    "Toy.SlotCompact.LH": [],
+    "Toy.SlotCompact.LK": [],
+    "Toy.SlotCompact.LKD": [],
+    "Toy.SlotCompact.LM": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LNK": [],
+    "Toy.SlotCompact.LO": [],
+    "Toy.SlotCompact.LR": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LS": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LT": [],
+    "Toy.SlotCompact.LU": [],
+    "Toy.SlotCompact.LV": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LX": [
+      "propext"
+    ],
+    "Toy.SlotCompact.LockstepBisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.NoAssignClobber": [
+      "propext"
+    ],
+    "Toy.SlotCompact.NoMarkerClobber": [
+      "propext"
+    ],
+    "Toy.SlotCompact.OptRel": [
+      "propext"
+    ],
+    "Toy.SlotCompact.OptRel.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.OptRel.eq_2": [
+      "propext"
+    ],
+    "Toy.SlotCompact.OptRel.eq_3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.OptRel.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.below": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.below.casesOn": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.below.pass": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.below.rec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.below.use": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.brecOn": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.casesOn": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.pass": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.rec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.recOn": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PathLive.use": [
+      "propext"
+    ],
+    "Toy.SlotCompact.PostCorr": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Prog": [],
+    "Toy.SlotCompact.PutGetId": [],
+    "Toy.SlotCompact.PutPut": [],
+    "Toy.SlotCompact.ReadsKept": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ReadsLive": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Res": [],
+    "Toy.SlotCompact.Res.casesOn": [],
+    "Toy.SlotCompact.Res.ctorElim": [],
+    "Toy.SlotCompact.Res.ctorElimType": [],
+    "Toy.SlotCompact.Res.ctorIdx": [],
+    "Toy.SlotCompact.Res.ev": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Res.ev.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Res.ev.eq_2": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Res.ev.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Res.halted": [],
+    "Toy.SlotCompact.Res.halted.elim": [],
+    "Toy.SlotCompact.Res.halted.inj": [],
+    "Toy.SlotCompact.Res.halted.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Res.halted.noConfusion": [],
+    "Toy.SlotCompact.Res.halted.sizeOf_spec": [],
+    "Toy.SlotCompact.Res.noConfusion": [],
+    "Toy.SlotCompact.Res.noConfusionType": [],
+    "Toy.SlotCompact.Res.rec": [],
+    "Toy.SlotCompact.Res.recOn": [],
+    "Toy.SlotCompact.Res.running": [],
+    "Toy.SlotCompact.Res.running.elim": [],
+    "Toy.SlotCompact.Res.running.inj": [],
+    "Toy.SlotCompact.Res.running.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.Res.running.noConfusion": [],
+    "Toy.SlotCompact.Res.running.sizeOf_spec": [],
+    "Toy.SlotCompact.Res.stuck": [],
+    "Toy.SlotCompact.Res.stuck.elim": [],
+    "Toy.SlotCompact.Res.stuck.sizeOf_spec": [],
+    "Toy.SlotCompact.ResRel": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRel.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRel.eq_2": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRel.eq_3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRel.eq_4": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRel.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRelS": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRelS.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRelS.eq_2": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRelS.eq_3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.ResRelS.eq_4": [
+      "propext"
+    ],
+    "Toy.SlotCompact.SilentBisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.State": [],
+    "Toy.SlotCompact.State.casesOn": [],
+    "Toy.SlotCompact.State.ctorIdx": [],
+    "Toy.SlotCompact.State.mk": [],
+    "Toy.SlotCompact.State.mk.inj": [],
+    "Toy.SlotCompact.State.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.State.mk.noConfusion": [],
+    "Toy.SlotCompact.State.mk.sizeOf_spec": [],
+    "Toy.SlotCompact.State.noConfusion": [],
+    "Toy.SlotCompact.State.noConfusionType": [],
+    "Toy.SlotCompact.State.pc": [],
+    "Toy.SlotCompact.State.rec": [],
+    "Toy.SlotCompact.State.recOn": [],
+    "Toy.SlotCompact.State.st": [],
+    "Toy.SlotCompact.Store": [],
+    "Toy.SlotCompact.StoreOps": [],
+    "Toy.SlotCompact.StoreOps.casesOn": [],
+    "Toy.SlotCompact.StoreOps.ctorIdx": [],
+    "Toy.SlotCompact.StoreOps.get": [],
+    "Toy.SlotCompact.StoreOps.mk": [],
+    "Toy.SlotCompact.StoreOps.mk.inj": [],
+    "Toy.SlotCompact.StoreOps.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.StoreOps.mk.noConfusion": [],
+    "Toy.SlotCompact.StoreOps.mk.sizeOf_spec": [],
+    "Toy.SlotCompact.StoreOps.noConfusion": [],
+    "Toy.SlotCompact.StoreOps.noConfusionType": [],
+    "Toy.SlotCompact.StoreOps.put": [],
+    "Toy.SlotCompact.StoreOps.rec": [],
+    "Toy.SlotCompact.StoreOps.recOn": [],
+    "Toy.SlotCompact.TransferClosed": [
+      "propext"
+    ],
+    "Toy.SlotCompact.alistCost": [],
+    "Toy.SlotCompact.alistCost.eq_1": [],
+    "Toy.SlotCompact.alistGet": [],
+    "Toy.SlotCompact.alistGet.eq_1": [],
+    "Toy.SlotCompact.alistGet.eq_2": [],
+    "Toy.SlotCompact.alistGet.eq_def": [],
+    "Toy.SlotCompact.alistGet.match_1": [],
+    "Toy.SlotCompact.alistGet_put_other": [
+      "propext"
+    ],
+    "Toy.SlotCompact.alistGet_put_same": [
+      "propext"
+    ],
+    "Toy.SlotCompact.alistGet_put_view": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.alistOps": [],
+    "Toy.SlotCompact.alistOps.eq_1": [],
+    "Toy.SlotCompact.alistOps_empty_not_putGetId": [
+      "propext"
+    ],
+    "Toy.SlotCompact.alistOps_laws": [
+      "propext"
+    ],
+    "Toy.SlotCompact.alistOps_not_putGetId": [
+      "propext"
+    ],
+    "Toy.SlotCompact.alistOps_zero_putGetId": [],
+    "Toy.SlotCompact.alistPut": [],
+    "Toy.SlotCompact.alistPut.eq_1": [],
+    "Toy.SlotCompact.alistPut.eq_2": [],
+    "Toy.SlotCompact.alistPut.eq_def": [],
+    "Toy.SlotCompact.alistPut.match_1": [],
+    "Toy.SlotCompact.alistPut_get_of_mem": [
+      "propext"
+    ],
+    "Toy.SlotCompact.alistPut_keys": [
+      "propext"
+    ],
+    "Toy.SlotCompact.alistPut_put": [
+      "propext"
+    ],
+    "Toy.SlotCompact.all_points_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.bisim_observes_halt_outputs": [
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_alistCost_complete": [
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_bisim_injective_dbgReadsLive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_bisim_injective_injective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_bisim_injective_readsLive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_bisim_injective_transferClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_bisim_noClobber_dbgReadsLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_bisim_noClobber_noAssignClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_bisim_noClobber_noMarkerClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_bisim_noClobber_readsLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_bisim_noClobber_transferClosed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_cert_pathLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_cert_readsLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_cert_transferClosed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_checkLive_sound_accepted": [
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_checkLive_sound_pathLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_keptBisim_dbgReadsKept": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_keptBisim_injective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_keptBisim_readsKept": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_missing_requires_omission": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_missing_requires_pathLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_postClass_injAtHalts": [
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_postCorr_pullPost_dependsOnlyOnLive": [
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_pushStore_injOnLiveAt": [
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_repInd_funOps_alistOps_view": [
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_repInd_h1o": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_repInd_h1s": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_repInd_h2o": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_repInd_h2s": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_repInd_view": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcBwd_injOnLiveAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcBwd_noAssignClobber": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcBwd_noMarkerClobber": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcBwd_post": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcBwd_pre": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcBwd_readsLive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcBwd_transferClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcFwd_noAssignClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcFwd_noMarkerClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcFwd_post": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcFwd_readsLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_vcFwd_transferClosed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_wp_noAssignClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_wp_noMarkerClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_wp_postCorr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_wp_readsLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.cex_wp_transferClosed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.checkDbgKept": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkDbgLive": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkDbgLive.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkDbgLive.match_4": [],
+    "Toy.SlotCompact.checkInjAtHalts": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkInjAtHalts.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkInjAtHalts.match_4": [],
+    "Toy.SlotCompact.checkInjOnLiveAt": [],
+    "Toy.SlotCompact.checkInjective": [],
+    "Toy.SlotCompact.checkLive": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive_accepts_overapprox": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive_both_verdicts": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive_eq_false_of_missing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive_eq_true_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive_pathLiveMask": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive_pathLiveMask_not_sufficient_with_dbg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive_rejects_underapprox": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.checkLive_sound.match_1_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkNoAssignClobber": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkNoAssignClobber.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkNoMarkerClobber": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkNoMarkerClobber.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkReads": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkReads.match_1": [],
+    "Toy.SlotCompact.checkReads_eq_true_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.checkTransfer": [
+      "propext"
+    ],
+    "Toy.SlotCompact.checkTransfer_eq_true_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.clobberOps": [],
+    "Toy.SlotCompact.clobberOps.eq_1": [],
+    "Toy.SlotCompact.clobberOps_getPutSame": [
+      "propext"
+    ],
+    "Toy.SlotCompact.clobberOps_not_getPutOther": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.compact": [],
+    "Toy.SlotCompact.compact.eq_1": [],
+    "Toy.SlotCompact.compactExpr": [],
+    "Toy.SlotCompact.compactExpr.eq_1": [],
+    "Toy.SlotCompact.compactInstr": [],
+    "Toy.SlotCompact.compactInstr.eq_1": [],
+    "Toy.SlotCompact.compactInstr.eq_2": [],
+    "Toy.SlotCompact.compactInstr.eq_3": [],
+    "Toy.SlotCompact.compactInstr.eq_4": [],
+    "Toy.SlotCompact.compactInstr.eq_5": [],
+    "Toy.SlotCompact.compactInstr.eq_6": [],
+    "Toy.SlotCompact.compactInstr.eq_7": [],
+    "Toy.SlotCompact.compactRel_pullStore": [
+      "propext"
+    ],
+    "Toy.SlotCompact.compactRel_pushStore": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.compact_ev_eq_of_dbgReadsLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.compact_getElem?": [
+      "propext"
+    ],
+    "Toy.SlotCompact.compact_keptRel_lockstepBisim_of_injective": [
+      "propext"
+    ],
+    "Toy.SlotCompact.compact_keptRel_lockstepBisim_of_injective.match_1_1": [],
+    "Toy.SlotCompact.compact_lockstepBisim_of_injective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.compact_lockstepBisim_of_noClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.compact_silentBisim_of_noClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.compact_silentBisim_of_noClobber.match_1_1": [],
+    "Toy.SlotCompact.complete_with_repeated_keys": [
+      "propext"
+    ],
+    "Toy.SlotCompact.consPutOps": [],
+    "Toy.SlotCompact.consPutOps.eq_1": [],
+    "Toy.SlotCompact.consPutOps_getPutOther": [
+      "propext"
+    ],
+    "Toy.SlotCompact.consPutOps_getPutSame": [
+      "propext"
+    ],
+    "Toy.SlotCompact.consPutOps_not_putPut": [
+      "propext"
+    ],
+    "Toy.SlotCompact.dbgReadsKept_of_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.dbgReadsKept_of_dbgReadsLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.dbgReadsLive_of_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.dependsOnlyOnLive_postAt": [
+      "propext"
+    ],
+    "Toy.SlotCompact.disjoint_live_ranges_not_noAssignClobber": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.disjoint_live_ranges_not_noAssignClobber.match_1_1": [],
+    "Toy.SlotCompact.eval_compactExpr": [
+      "propext"
+    ],
+    "Toy.SlotCompact.eval_compactExpr_of_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.exec.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.exec.eq_2": [
+      "propext"
+    ],
+    "Toy.SlotCompact.exec.eq_def": [
+      "propext"
+    ],
+    "Toy.SlotCompact.exec.match_1": [],
+    "Toy.SlotCompact.exec.match_3": [],
+    "Toy.SlotCompact.exec_det": [
+      "propext"
+    ],
+    "Toy.SlotCompact.exec_isHalt": [
+      "propext"
+    ],
+    "Toy.SlotCompact.exec_mono": [
+      "propext"
+    ],
+    "Toy.SlotCompact.exec_optRel_of_silentBisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.exists_postCorr_iff_dependsOnlyOnLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.famAlist": [],
+    "Toy.SlotCompact.famAlist.eq_1": [],
+    "Toy.SlotCompact.famAlist_complete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.famScript": [],
+    "Toy.SlotCompact.famScript.eq_1": [],
+    "Toy.SlotCompact.forall_exists_compactRel_iff_injOnLiveAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.funOps": [],
+    "Toy.SlotCompact.funOps.eq_1": [],
+    "Toy.SlotCompact.funOps_laws": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.ignorePutOps": [],
+    "Toy.SlotCompact.ignorePutOps.eq_1": [],
+    "Toy.SlotCompact.ignorePutOps_getPutOther": [],
+    "Toy.SlotCompact.ignorePutOps_not_getPutSame": [
+      "propext"
+    ],
+    "Toy.SlotCompact.injAtHalts_of_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.injOnLiveAt_of_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.injOnLiveAt_of_injective": [],
+    "Toy.SlotCompact.injective_of_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.instDecidableEqCmd": [],
+    "Toy.SlotCompact.instDecidableEqCmd.decEq": [],
+    "Toy.SlotCompact.instDecidableEqCmd.decEq.match_1": [],
+    "Toy.SlotCompact.instDecidableEqExpr": [],
+    "Toy.SlotCompact.instDecidableEqExpr.decEq": [],
+    "Toy.SlotCompact.instDecidableEqExpr.decEq.match_1": [],
+    "Toy.SlotCompact.instDecidableEqInstr": [],
+    "Toy.SlotCompact.instDecidableEqInstr.decEq": [],
+    "Toy.SlotCompact.instDecidableEqInstr.decEq.match_1": [],
+    "Toy.SlotCompact.instReprCmd": [],
+    "Toy.SlotCompact.instReprCmd.repr": [],
+    "Toy.SlotCompact.instReprCmd.repr.match_1": [],
+    "Toy.SlotCompact.instReprExpr": [],
+    "Toy.SlotCompact.instReprExpr.repr": [],
+    "Toy.SlotCompact.instReprExpr.repr.match_1": [],
+    "Toy.SlotCompact.instReprInstr": [
+      "propext"
+    ],
+    "Toy.SlotCompact.instReprInstr.repr": [
+      "propext"
+    ],
+    "Toy.SlotCompact.instReprInstr.repr.match_1": [],
+    "Toy.SlotCompact.isHalt_lt": [
+      "propext"
+    ],
+    "Toy.SlotCompact.keptBisim_kept_dead_dbg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.keptBisim_noninjective_writeFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.keptRel_postAt_iff": [
+      "propext"
+    ],
+    "Toy.SlotCompact.keptRel_postAt_iff.match_1_1": [],
+    "Toy.SlotCompact.kept_of_getElem?": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.lockstepBisim_eq": [
+      "propext"
+    ],
+    "Toy.SlotCompact.lockstepBisim_of_silent": [
+      "propext"
+    ],
+    "Toy.SlotCompact.map_filterMap_get?": [
+      "propext"
+    ],
+    "Toy.SlotCompact.map_filterMap_get?.match_1_1": [],
+    "Toy.SlotCompact.markerOK": [],
+    "Toy.SlotCompact.noAssignClobber_of_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.noAssignClobber_of_injective": [
+      "propext"
+    ],
+    "Toy.SlotCompact.noMarkerClobber_of_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.noMarkerClobber_of_injective": [
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_bisim_injective_loop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_bisim_injective_straightLine": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_bisim_noClobber_loop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_bisim_noClobber_sharing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_checkLive_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_entry_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_keptBisim": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_keptBisim_kept_dead_dbg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_keptBisim_not_transferClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_postClass": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_repInd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_repInd_funOps_alistOps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_vc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_vc_bwd_sharing": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_wp_transport": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.nonvacuous_wp_transport_rel": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.not_lockstepBisim_of_wp_ne": [
+      "propext"
+    ],
+    "Toy.SlotCompact.not_pathLive_of_unused": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_dbg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_dbgKept": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_inj0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_keptRel": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_not_assign": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_not_bisim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_not_inj": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_not_keptBisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_rel": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_vc_bwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_vc_fwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pA_wp_ne": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pB": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pB_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pB_dbg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pB_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pB_inj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pB_injAtHalts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pC": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pC_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pC_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pC_compact": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pC_dbg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pC_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pC_inj0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pC_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pC_not_inj": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pD": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_events": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_inj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_not_bisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_not_dbg": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_not_dbgKept": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_not_keptBisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_readsKept": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pD_silent_not_lockstep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pDisj": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE3.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE3_not_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE3_not_injAtHalt": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE3_postCorr_false": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pE_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pE_dbg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pE_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pE_not_inj0": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pE_vc_bwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pF": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pF.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pF_not_kept": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pF_not_reads": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pH": [],
+    "Toy.SlotCompact.pH_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_inj0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_not_postCorr": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_rel": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_vc_post_bwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_vc_pre_bwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pH_wp_ne": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pI": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pK": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pKD": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pKD_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pKD_dbgKept": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pKD_inj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pKD_not_dbg": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pK_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pK_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pK_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pK_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pK_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pK_vc_fwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pM": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_dbg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_inj0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_not_bisim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_not_marker": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_rel": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_vc_bwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_vc_fwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pM_wp_ne": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pNK": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pNK.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pNK_dbgKept": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pNK_not_inj": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pNK_readsKept": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pO": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pO_compact": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pO_not_bisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pO_not_bisim.match_1_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pO_not_reads": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_dbg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_dbgKept": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_inj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_inj0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_keptRel": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_not_bisim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_not_keptBisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_not_reads": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_not_readsKept": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_rel": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_vc_bwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pR_wp_ne": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pS": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pS_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pS_compact": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pS_dbg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pS_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pS_inj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pS_not_kept2": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pT": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_dbg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_first_step": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_inj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_not_bisim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_not_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_pathLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_reads": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_rel": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pT_wp_ne": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pU": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pU_not_reads": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pU_pathLive": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pU_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pV": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pV_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pV_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pV_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pV_inj0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pV_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pV_not_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pV_reads": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pV_vc_bwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pV_vc_fwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pX": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pX_assign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pX_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pX_exec_c": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pX_marker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pX_not_reads": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pX_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pX_vc_fwd_fails": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pathLiveMask": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pathLiveMask.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pathLiveMask_cert": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pathLiveMask_eq_true": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pathLiveMask_least_cert": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.pathLive_faint_operand": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pathLive_imp_mask_of_cert": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pathLive_infeasible_branch": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.postA": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postA5": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postA5_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postA_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postAt": [],
+    "Toy.SlotCompact.postB": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postB_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postC": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postCorr_pullPost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.postCorr_pullPost.match_1_1": [],
+    "Toy.SlotCompact.postE": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postE3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postE_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postFalse": [],
+    "Toy.SlotCompact.postFalse.eq_1": [],
+    "Toy.SlotCompact.postFalse_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postH": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postH_not_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postK": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postK_not_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postM": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postM0": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postM0_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postM_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postR0": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postR0_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postR7": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postR7_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postS": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postT": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postT_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postTrue": [],
+    "Toy.SlotCompact.postTrue.eq_1": [],
+    "Toy.SlotCompact.postV": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postV3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postV3_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postV_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postX": [
+      "propext"
+    ],
+    "Toy.SlotCompact.postX_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.preA": [
+      "propext"
+    ],
+    "Toy.SlotCompact.preA_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.preA_depM": [
+      "propext"
+    ],
+    "Toy.SlotCompact.preC": [
+      "propext"
+    ],
+    "Toy.SlotCompact.preH": [
+      "propext"
+    ],
+    "Toy.SlotCompact.preH_not_dep": [
+      "propext"
+    ],
+    "Toy.SlotCompact.preNe": [
+      "propext"
+    ],
+    "Toy.SlotCompact.preS": [
+      "propext"
+    ],
+    "Toy.SlotCompact.preTrue": [],
+    "Toy.SlotCompact.preTrue_dep": [],
+    "Toy.SlotCompact.pullPost": [],
+    "Toy.SlotCompact.pullStore": [],
+    "Toy.SlotCompact.pullStore.eq_1": [],
+    "Toy.SlotCompact.pullStore_kept": [
+      "propext"
+    ],
+    "Toy.SlotCompact.pushStore": [],
+    "Toy.SlotCompact.pushStore_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.readsKept_of_readsLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.runCheck": [],
+    "Toy.SlotCompact.runCheck.eq_1": [],
+    "Toy.SlotCompact.runCheck.eq_2": [],
+    "Toy.SlotCompact.runCheck.eq_3": [],
+    "Toy.SlotCompact.runCheck.eq_def": [],
+    "Toy.SlotCompact.runCheck.match_1": [],
+    "Toy.SlotCompact.runCheck_eq_of_getPut": [
+      "propext"
+    ],
+    "Toy.SlotCompact.runCheck_funOps_eq_alistOps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.runCheck_funOps_eq_alistOps.match_1_1": [],
+    "Toy.SlotCompact.runCheck_funOps_eq_alistOps.match_1_3": [],
+    "Toy.SlotCompact.runCost": [],
+    "Toy.SlotCompact.runCost.eq_1": [],
+    "Toy.SlotCompact.runCost.eq_2": [],
+    "Toy.SlotCompact.runCost.eq_3": [],
+    "Toy.SlotCompact.runCost.eq_def": [],
+    "Toy.SlotCompact.runCost_alistOps_family": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.runCost_alistOps_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.runCost_unitCost_family": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.runCost_unitCost_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.scanCost": [],
+    "Toy.SlotCompact.scanCost.eq_1": [],
+    "Toy.SlotCompact.scanCost.eq_2": [],
+    "Toy.SlotCompact.scanCost.eq_def": [],
+    "Toy.SlotCompact.scanCost.match_1": [],
+    "Toy.SlotCompact.scanCost_append_of_not_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.scanCost_finRange_last": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.scanCost_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.silentBisim_of_lockstepBisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.step": [
+      "propext"
+    ],
+    "Toy.SlotCompact.step.eq_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.step.match_1": [],
+    "Toy.SlotCompact.stepInstr": [],
+    "Toy.SlotCompact.stepInstr.eq_1": [],
+    "Toy.SlotCompact.stepInstr.eq_2": [],
+    "Toy.SlotCompact.stepInstr.eq_3": [],
+    "Toy.SlotCompact.stepInstr.eq_4": [],
+    "Toy.SlotCompact.stepInstr.eq_5": [],
+    "Toy.SlotCompact.stepInstr.eq_6": [],
+    "Toy.SlotCompact.stepInstr.eq_7": [],
+    "Toy.SlotCompact.stepInstr.match_1": [],
+    "Toy.SlotCompact.step_compact_of_getElem?": [
+      "propext"
+    ],
+    "Toy.SlotCompact.step_compact_of_getElem?_none": [
+      "propext"
+    ],
+    "Toy.SlotCompact.step_of_getElem?": [
+      "propext"
+    ],
+    "Toy.SlotCompact.step_of_getElem?_none": [
+      "propext"
+    ],
+    "Toy.SlotCompact.unitCost": [],
+    "Toy.SlotCompact.unitCost.eq_1": [],
+    "Toy.SlotCompact.upd": [],
+    "Toy.SlotCompact.upd.eq_1": [],
+    "Toy.SlotCompact.upd_other": [
+      "propext"
+    ],
+    "Toy.SlotCompact.upd_same": [
+      "propext"
+    ],
+    "Toy.SlotCompact.vc_backward_of_noClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.vc_backward_without_inj0_postTrue": [
+      "propext"
+    ],
+    "Toy.SlotCompact.vc_forward_of_noClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.vc_forward_vacuous_dropped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.vc_forward_vacuous_merged": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.vc_transfer_of_noClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.wp": [
+      "propext"
+    ],
+    "Toy.SlotCompact.wp_iff_of_exec": [
+      "propext"
+    ],
+    "Toy.SlotCompact.wp_iff_of_silentBisim": [
+      "propext"
+    ],
+    "Toy.SlotCompact.wp_transport_of_noClobber": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0Am": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0B": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0Cm": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0D": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0Disj": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0E3": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0Em": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0F": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0H": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0K": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0KD": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0Mm": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0NK": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0O": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0O.match_1": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0R": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0S": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0T": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0Vm": [
+      "propext"
+    ],
+    "Toy.SlotCompact.\u03c0Xm": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

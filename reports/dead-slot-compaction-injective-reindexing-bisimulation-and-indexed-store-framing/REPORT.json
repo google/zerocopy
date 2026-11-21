@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/bisimulation",
+    "verification/refinement",
+    "verification/weakest-preconditions",
+    "compilers/liveness-analysis",
+    "compilers/stack-slot-coloring",
+    "compilers/register-allocation",
+    "pl/store-laws",
+    "pl/representation-independence"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "CakeML compiler backend (word_alloc colouring proof)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb",
+        "path": "compiler/backend/proofs/word_allocProofScript.sml"
+      }
+    },
+    {
+      "name": "The verified CakeML compiler backend",
+      "identity": {
+        "doi": "10.1017/S0956796818000229"
+      }
+    },
+    {
+      "name": "CompCert backend (Allocation, Stacking, Liveness, Deadcode)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Validating Register Allocation and Spilling",
+      "identity": {
+        "doi": "10.1007/978-3-642-11970-5_13"
+      }
+    },
+    {
+      "name": "LLVM StackColoring and StackSlotColoring",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "25b1c803e1e1504f6dc11f7afd68e65ad3ee5964"
+      }
+    },
+    {
+      "name": "rustc MIR SimplifyLocals",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+        "path": "compiler/rustc_mir_transform/src/simplify.rs"
+      }
+    },
+    {
+      "name": "Towards a Mathematical Science of Computation",
+      "identity": {
+        "url": "http://www-formal.stanford.edu/jmc/towards/towards.html"
+      }
+    },
+    {
+      "name": "Combinators for Bidirectional Tree Transformations: A Linguistic Approach to the View-Update Problem",
+      "identity": {
+        "doi": "10.1145/1232420.1232424"
+      }
+    },
+    {
+      "name": "Concrete Semantics with Isabelle/HOL",
+      "identity": {
+        "doi": "10.1007/978-3-319-10542-0"
+      }
+    },
+    {
+      "name": "Principles of Program Analysis",
+      "identity": {
+        "doi": "10.1007/978-3-662-03811-6",
+        "isbn": "978-3-540-65410-0"
+      }
+    },
+    {
+      "name": "The Isabelle Collections Framework",
+      "identity": {
+        "doi": "10.1007/978-3-642-14052-5_24",
+        "url": "https://www.isa-afp.org/entries/Collections.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

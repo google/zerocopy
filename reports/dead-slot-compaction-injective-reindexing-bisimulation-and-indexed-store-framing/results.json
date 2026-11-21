@@ -1,0 +1,1026 @@
+[
+  {
+    "id": "compact-bisim-no-clobber",
+    "lean": "Toy.SlotCompact.compact_lockstepBisim_of_noClobber",
+    "lean_names": [
+      "Toy.SlotCompact.bisim_observes_halt_outputs",
+      "Toy.SlotCompact.disjoint_live_ranges_not_noAssignClobber",
+      "Toy.SlotCompact.pathLive_faint_operand"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Soundness of slot sharing under liveness-based interference conditions is mechanized in other formalisms: the HOL4 proof of register and stack-slot colouring in CakeML (colouring_ok, evaluate_apply_colour), for a structured language with computed liveness, and validated register allocation in CompCert (Rideau and Leroy 2010). Restated here for a control-flow graph with a claimed mask that is checked rather than computed, resetting storage markers, and debug observations.",
+    "plain_claim": "Let p be a program over N slots, L a liveness mask and π a map from the kept slots (those L declares live somewhere) into M slots, not necessarily injective. If L is a liveness certificate for p (every use at a point, i.e. every semantic read and every halt output, is of a slot L declares live there, and L is closed under the backward transfer), every debug read is of a slot L declares live there, for every assignment to a kept slot d no different kept slot declared live just after it has the same target as d under π, and likewise for every storage marker of a kept slot, then CompactRel (same program counter, and σ'(π i) = σ i for every kept slot i declared live at the current point) is a lockstep bisimulation between p and compact p L π for the small-step function step: from related states both programs step to related states with equal debug events, or both halt in related states emitting equal output values, or both are stuck. Control flow is arbitrary, including loops.",
+    "statement": "ReadsLive p L → TransferClosed p L → DbgReadsLive p L → NoAssignClobber p L π → NoMarkerClobber p L π → LockstepBisim p (compact p L π) (CompactRel p L π)",
+    "hypotheses": [
+      {
+        "name": "hR : ReadsLive p L",
+        "purpose": "every use at a point (semantic read or halt output) is of a slot the mask declares live there (gen half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_bisim_noClobber_readsLive",
+        "witness_class": "two instructions over 2 slots, M = 1"
+      },
+      {
+        "name": "hT : TransferClosed p L",
+        "purpose": "a slot declared live at a successor and not overwritten by the instruction is declared live before it (transfer half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_bisim_noClobber_transferClosed",
+        "witness_class": "two instructions over 1 slot, identity map"
+      },
+      {
+        "name": "hD : DbgReadsLive p L",
+        "purpose": "debug observations read only slots declared live; liveness itself ignores debug reads",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_bisim_noClobber_dbgReadsLive",
+        "witness_class": "two instructions over 1 slot, nothing kept"
+      },
+      {
+        "name": "hA : NoAssignClobber p L π",
+        "purpose": "an assignment never writes the shared target of a different kept slot that is declared live after it",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_bisim_noClobber_noAssignClobber",
+        "witness_class": "two instructions over 2 slots merged into 1"
+      },
+      {
+        "name": "hM : NoMarkerClobber p L π",
+        "purpose": "a storage marker (which resets its slot) never resets the shared target of a different kept slot that is declared live after it",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_bisim_noClobber_noMarkerClobber",
+        "witness_class": "three instructions over 2 slots merged into 1"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pC (a non-injective sharing of two slots with disjoint live ranges onto one slot) and pB (a loop with an injective map) satisfy all hypotheses.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_bisim_noClobber_sharing",
+      "Toy.SlotCompact.nonvacuous_bisim_noClobber_loop"
+    ],
+    "non_claims": [
+      "The bisimulation is relative to CompactRel: it says nothing about initial store pairs that are not related. For a non-injective π, some original stores have no related compacted store at all unless π is injective on the slots live at entry (entry-adequacy-iff-injective-on-live).",
+      "The interference conditions are stated relative to the given mask, not to path liveness, and they are a write-versus-live-after formulation. Pointwise disjoint live ranges (π injective on the live slots at every point) do not imply NoAssignClobber, because compact keeps writes to kept slots even where the written slot is dead (disjoint_live_ranges_not_noAssignClobber). No equivalence with the live-interval overlap tests of real allocators is claimed.",
+      "Each counterexample shows that dropping that one hypothesis can break the conclusion in its witness class; it neither establishes nor refutes that the hypothesis is necessary outside that class. For instance, ReadsLive is not necessary in general: dropping every slot of x1 := x0; halt [] with the empty mask, which violates ReadsLive, still gives a lockstep bisimulation (pathLive_faint_operand).",
+      "Observations are the debug events emitted by dbg and the output values emitted by halt outs (the values of the slots in outs, in order). The compacted halt emits the values of outs.filterMap π.get?, which drops unkept slots; the outputs agree because ReadsLive makes every output slot live, hence kept and related. The rest of the final store is constrained only through the relation, and no relation-free notion of observational equivalence is defined.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined.",
+      "The compacted program keeps a nop at every erased instruction, so program points coincide; compaction that also removes instructions and renumbers program points is not covered.",
+      "Neither establishes nor refutes any claim about rustc, LLVM, CompCert, CakeML or any verification framework; any connection is a separate derived modeling bridge, and no performance figure is claimed."
+    ],
+    "prior_art": [
+      "CakeML/cakeml at commit 2874b664e10939a3ee462215b2e068c89c1f70eb, file compiler/backend/proofs/word_allocProofScript.sml (read at that commit), the HOL4 correctness proof of register and stack-slot colouring in the CakeML compiler backend (described in Tan et al., 'The verified CakeML compiler backend', Journal of Functional Programming 29, e2, 2019, DOI 10.1017/S0956796818000229; bibliographic data from search results, paper not read here). colouring_ok (lines 99-141) requires the colouring f to be injective on each live set and on the union of an instruction's writes with the set live after it; strong_locals_rel (lines 178-183) relates source and target locals on a live set through f; Theorem evaluate_apply_colour (from line 1107) shows that, unless the source evaluation fails, evaluating apply_colour f prog from strong_locals_rel-related states gives the same result, for a structured language with sequencing, conditionals, loops and calls. Modeling bridge (derived, not kernel-checked): the same shape as InjOnLiveAt, NoAssignClobber and CompactRel, mechanized for computed liveness in a structured language rather than for a checked mask over a control-flow graph; storage markers and debug events have no counterpart there.",
+      "Silvain Rideau and Xavier Leroy, 'Validating Register Allocation and Spilling', Compiler Construction (CC 2010), LNCS 6011, Springer, 2010, pp. 224-243, DOI 10.1007/978-3-642-11970-5_13 (bibliographic data from search results; paper text not read here). The corresponding Coq development is AbsInt/CompCert backend/Allocation.v, whose header reads 'Register allocation by external oracle and a posteriori validation' (read at commit 2685140bf72c959446981fb99b5e44a8975021bc), with its proof in backend/Allocproof.v. Modeling bridge (derived, not kernel-checked): a mechanized validator for a proposed, generally non-injective, assignment of variables to locations, the analogue of checking a claimed mask and interference conditions instead of recomputing them.",
+      "llvm/llvm-project at commit 25b1c803e1e1504f6dc11f7afd68e65ad3ee5964, file llvm/lib/CodeGen/StackSlotColoring.cpp (read at that commit). Spill slots are colored so that a color is reused only when the slot's live interval does not overlap the intervals already given that color (ColorAssignmentInfo::overlaps, lines 109-115; StackSlotColoring::ColorSlot from line 303). Modeling bridge (derived, not kernel-checked): a non-injective compaction under an interference condition on live intervals; the package's NoAssignClobber/NoMarkerClobber (write versus live-after) conditions are a different formulation and no equivalence is claimed.",
+      "llvm/llvm-project at commit 25b1c803e1e1504f6dc11f7afd68e65ad3ee5964, file llvm/lib/CodeGen/StackColoring.cpp (read at that commit), implementation notes lines 135-160: rules L1-L7 (lines 138-152) say that on a lifetime.start a stack slot is marked in-scope 'and the stack slot is overwritten with undef' (L2, lines 141-142), that lifetime.end marks it out-of-scope (L3) and that memory accesses to out-of-scope slots are UB (L6, line 147); lines 154-160 define a slot as in-use at a point 'if it either can be written to at that point, or if it has a live and non-undef content at that point' and state that slots never in-use together can be merged. Modeling bridge (derived, not kernel-checked): a lifetime start behaves as a write, the analogue of counting storage markers as writes in NoMarkerClobber; unlike LLVM, the toy resets slots to 0 at both markers instead of making later access undefined.",
+      "AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (read at that commit). backend/Stacking.v lays out activation records and maps local stack slot x to byte offset fe_ofs_local + 4 * x (offset_local, line 27), an injective slot renumbering; backend/Stackingproof.v proves transf_program_correct : forward_simulation (Linear.semantics prog) (Mach.semantics return_address_offset tprog) (lines 2201-2202) using forward_simulation_plus; backend/Linearizeproof.v proves a forward simulation from LTL to Linear for code linearization (lines 728-729), which concerns control-flow layout rather than slot assignment; backend/Allocproof.v proves a forward simulation for register allocation by validated translation from RTL to LTL (header lines 13-14, theorem lines 2528-2529). Modeling bridge (derived, not kernel-checked): realistic forward simulations, not lockstep bisimulations of this toy.",
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here)."
+    ],
+    "design_question": "When is renumbering a function's slots through a map from the live slots into a smaller index set a sound transformation for executions, and which conditions make it fail?"
+  },
+  {
+    "id": "compact-bisim-injective",
+    "lean": "Toy.SlotCompact.compact_lockstepBisim_of_injective",
+    "lean_names": [
+      "Toy.SlotCompact.checkLive_pathLiveMask_not_sufficient_with_dbg",
+      "Toy.SlotCompact.pathLiveMask_cert"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Injective renaming of live slots is the injective special case of verified colouring (CakeML word_alloc) and the shape of CompCert's injective stack-slot layout (Stacking.v); here a corollary of compact-bisim-no-clobber.",
+    "plain_claim": "If π is injective, the mask L is a liveness certificate for p (every semantic read and halt output at a point is of a slot L declares live there, and L is closed under the backward transfer), and every debug read is of a slot L declares live there, then CompactRel is a lockstep bisimulation between p and compact p L π for step (equal debug events, equal halt outputs, related successor states), for arbitrary control flow; storage markers that reset slots are allowed.",
+    "statement": "Function.Injective π → ReadsLive p L → TransferClosed p L → DbgReadsLive p L → LockstepBisim p (compact p L π) (CompactRel p L π)",
+    "hypotheses": [
+      {
+        "name": "hInj : Function.Injective π",
+        "purpose": "distinct kept slots get distinct targets",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_bisim_injective_injective",
+        "witness_class": "two instructions over 2 slots merged into 1, both live after the write"
+      },
+      {
+        "name": "hR : ReadsLive p L",
+        "purpose": "every use at a point (semantic read or halt output) is of a slot the mask declares live there (gen half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_bisim_injective_readsLive",
+        "witness_class": "two instructions over 2 slots, M = 1"
+      },
+      {
+        "name": "hT : TransferClosed p L",
+        "purpose": "a slot declared live at a successor and not overwritten by the instruction is declared live before it (transfer half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_bisim_injective_transferClosed",
+        "witness_class": "two instructions over 1 slot, identity map"
+      },
+      {
+        "name": "hD : DbgReadsLive p L",
+        "purpose": "debug observations read only slots declared live; liveness itself ignores debug reads",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_bisim_injective_dbgReadsLive",
+        "witness_class": "two instructions over 1 slot, nothing kept"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pS (straight-line code with StorageLive/StorageDead resets, a debug read of a live slot, and a write to a dropped slot) and pB (a loop) satisfy all hypotheses.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_bisim_injective_straightLine",
+      "Toy.SlotCompact.nonvacuous_bisim_injective_loop"
+    ],
+    "non_claims": [
+      "Injectivity is sufficient, not necessary: compact-bisim-no-clobber covers non-injective sharings (nonvacuous_bisim_noClobber_sharing).",
+      "Injectivity together with ReadsLive is not enough on its own: dropping closure under the backward transfer breaks the conclusion on a two-instruction program over 1 slot (cex_bisim_injective_transferClosed). With the path-liveness mask, both certificate halves hold automatically (pathLiveMask_cert).",
+      "A certificate, even one accepted by checkLive and even L = pathLiveMask p with an injective π, says nothing about debug reads or slot-sharing interference: checkLive checks only ReadsLive and TransferClosed, not DbgReadsLive, NoAssignClobber or NoMarkerClobber, and on dbg x0; halt [] the compaction is not a lockstep bisimulation (checkLive_pathLiveMask_not_sufficient_with_dbg).",
+      "Storage-marker resets are harmless here because markers are renamed through the same injective π; nothing is claimed for compactions that drop or move markers of kept slots.",
+      "Observations are the debug events emitted by dbg and the output values emitted by halt outs (the values of the slots in outs, in order). The compacted halt emits the values of outs.filterMap π.get?, which drops unkept slots; the outputs agree because ReadsLive makes every output slot live, hence kept and related. The rest of the final store is constrained only through the relation, and no relation-free notion of observational equivalence is defined.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined.",
+      "The compacted program keeps a nop at every erased instruction, so program points coincide; compaction that also removes instructions and renumbers program points is not covered.",
+      "Neither establishes nor refutes any claim about rustc, LLVM, CompCert, CakeML or any verification framework; any connection is a separate derived modeling bridge, and no performance figure is claimed."
+    ],
+    "prior_art": [
+      "CakeML/cakeml at commit 2874b664e10939a3ee462215b2e068c89c1f70eb, file compiler/backend/proofs/word_allocProofScript.sml (read at that commit), the HOL4 correctness proof of register and stack-slot colouring in the CakeML compiler backend (described in Tan et al., 'The verified CakeML compiler backend', Journal of Functional Programming 29, e2, 2019, DOI 10.1017/S0956796818000229; bibliographic data from search results, paper not read here). colouring_ok (lines 99-141) requires the colouring f to be injective on each live set and on the union of an instruction's writes with the set live after it; strong_locals_rel (lines 178-183) relates source and target locals on a live set through f; Theorem evaluate_apply_colour (from line 1107) shows that, unless the source evaluation fails, evaluating apply_colour f prog from strong_locals_rel-related states gives the same result, for a structured language with sequencing, conditionals, loops and calls. Modeling bridge (derived, not kernel-checked): the same shape as InjOnLiveAt, NoAssignClobber and CompactRel, mechanized for computed liveness in a structured language rather than for a checked mask over a control-flow graph; storage markers and debug events have no counterpart there.",
+      "rust-lang/rust at commit c7d5ba59d8e11ee2e2204b173458eec4cb41c973, file compiler/rustc_mir_transform/src/simplify.rs (read at that commit). The SimplifyLocals pass (enum at line 436, run_pass from line 455) counts actual uses of each local (UsedLocals), treats the return place, the arguments and locals referenced by debug info as always used (line 529: always_used = debuginfo_locals(body)), turns assignments and StorageLive/StorageDead statements of unused locals into nops (remove_unused_definitions_helper from line 629; make_nop at line 659), and renumbers the remaining locals in order (make_local_map from line 496). Removal is iterated to a fixed point (comment at lines 461-466; loop 'while modified' at line 636): removing a statement decrements the use counts of the locals it read (statement_removed, line 658), so chains of dead assignments disappear; uses through indirect places (line 568) and right-hand sides that are not safe to remove (line 600) are kept. Modeling bridge (derived, not kernel-checked): an injective, order-preserving compaction keyed on use counts rather than per-point liveness, which is the shape of compact_keptRel_lockstepBisim_of_injective; the toy's single-pass ReadsKept does not model the fixed-point cascade, and the toy keeps nops in place whereas rustc strips them (line 661).",
+      "AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (read at that commit). backend/Stacking.v lays out activation records and maps local stack slot x to byte offset fe_ofs_local + 4 * x (offset_local, line 27), an injective slot renumbering; backend/Stackingproof.v proves transf_program_correct : forward_simulation (Linear.semantics prog) (Mach.semantics return_address_offset tprog) (lines 2201-2202) using forward_simulation_plus; backend/Linearizeproof.v proves a forward simulation from LTL to Linear for code linearization (lines 728-729), which concerns control-flow layout rather than slot assignment; backend/Allocproof.v proves a forward simulation for register allocation by validated translation from RTL to LTL (header lines 13-14, theorem lines 2528-2529). Modeling bridge (derived, not kernel-checked): realistic forward simulations, not lockstep bisimulations of this toy.",
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here)."
+    ],
+    "design_question": "When is renumbering a function's slots through a map from the live slots into a smaller index set a sound transformation for executions, and which conditions make it fail?"
+  },
+  {
+    "id": "compact-kept-bisim-injective",
+    "lean": "Toy.SlotCompact.compact_keptRel_lockstepBisim_of_injective",
+    "lean_names": [
+      "Toy.SlotCompact.keptBisim_kept_dead_dbg",
+      "Toy.SlotCompact.keptBisim_noninjective_writeFree",
+      "Toy.SlotCompact.pathLive_faint_operand"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Combines injective renaming (the injective special case of verified colouring, CakeML word_alloc) with erasure of writes to slots that are never read, a degenerate case of the mechanized dead-computation elimination in CompCert (Deadcodeproof.v); restated here with the relation on all kept slots.",
+    "plain_claim": "If π is injective and every semantic read, every halt output and every debug read of p is of a kept slot (a slot the mask L declares live at some point of p), then KeptRel (same program counter, and σ'(π i) = σ i for every kept slot i, live or not) is a lockstep bisimulation between p and compact p L π for step; no per-point condition on L (in particular no transfer closure) is assumed.",
+    "statement": "Function.Injective π → ReadsKept p L → DbgReadsKept p L → LockstepBisim p (compact p L π) (KeptRel p L π)",
+    "hypotheses": [
+      {
+        "name": "hInj : Function.Injective π",
+        "purpose": "distinct kept slots get distinct targets",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_keptBisim_injective",
+        "witness_class": "two instructions over 2 slots merged into 1, with a write to one merged slot"
+      },
+      {
+        "name": "hRK : ReadsKept p L",
+        "purpose": "every semantic read and halt output is of a kept slot, so renamed reads never see the constant 0 used for dropped slots",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_keptBisim_readsKept",
+        "witness_class": "two instructions over 2 slots, one kept"
+      },
+      {
+        "name": "hDK : DbgReadsKept p L",
+        "purpose": "every debug read is of a kept slot",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_keptBisim_dbgReadsKept",
+        "witness_class": "two instructions over 1 slot, nothing kept"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pS with the injective πS; pT, whose mask is not transfer closed; and pKD, which has a debug read of a kept slot at a point where it is dead: all satisfy every hypothesis.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_keptBisim",
+      "Toy.SlotCompact.nonvacuous_keptBisim_not_transferClosed",
+      "Toy.SlotCompact.nonvacuous_keptBisim_kept_dead_dbg"
+    ],
+    "non_claims": [
+      "KeptRel relates only stores that agree on every kept slot, live or dead; it is stronger than CompactRel and relates fewer state pairs.",
+      "Debug reads of kept slots at points where they are dead are allowed here, while under CompactRel the same compaction is not a lockstep bisimulation although the mask is a certificate (keptBisim_kept_dead_dbg); debug reads of dropped slots break both (cex_keptBisim_dbgReadsKept, cex_bisim_injective_dbgReadsLive).",
+      "Injectivity is not necessary in general: on the write-free program nop; halt [x0, x1], merging both kept slots still gives a KeptRel lockstep bisimulation (keptBisim_noninjective_writeFree). Dropping injectivity breaks the conclusion when a write lands on a merged kept slot (cex_keptBisim_injective); slot sharing in the presence of writes is covered, under CompactRel, by compact-bisim-no-clobber.",
+      "ReadsKept is a single-pass syntactic condition: a read whose value flows only into an assignment to a dropped slot still counts as a read. On x1 := x0; halt [] with nothing kept ReadsKept fails, yet dropping both slots gives a KeptRel lockstep bisimulation (pathLive_faint_operand), so ReadsKept is not necessary in general. The iterated removal of such assignments, as in rustc's SimplifyLocals, is not modeled.",
+      "Observations are the debug events emitted by dbg and the output values emitted by halt outs (the values of the slots in outs, in order). The compacted halt emits the values of outs.filterMap π.get?, which drops unkept slots; the outputs agree because ReadsKept makes every output slot kept, hence related. The rest of the final store is constrained only through the relation, and no relation-free notion of observational equivalence is defined.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined.",
+      "The compacted program keeps a nop at every erased instruction, so program points coincide; compaction that also removes instructions and renumbers program points is not covered.",
+      "Neither establishes nor refutes any claim about rustc, LLVM, CompCert, CakeML or any verification framework; any connection is a separate derived modeling bridge, and no performance figure is claimed."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit c7d5ba59d8e11ee2e2204b173458eec4cb41c973, file compiler/rustc_mir_transform/src/simplify.rs (read at that commit). The SimplifyLocals pass (enum at line 436, run_pass from line 455) counts actual uses of each local (UsedLocals), treats the return place, the arguments and locals referenced by debug info as always used (line 529: always_used = debuginfo_locals(body)), turns assignments and StorageLive/StorageDead statements of unused locals into nops (remove_unused_definitions_helper from line 629; make_nop at line 659), and renumbers the remaining locals in order (make_local_map from line 496). Removal is iterated to a fixed point (comment at lines 461-466; loop 'while modified' at line 636): removing a statement decrements the use counts of the locals it read (statement_removed, line 658), so chains of dead assignments disappear; uses through indirect places (line 568) and right-hand sides that are not safe to remove (line 600) are kept. Modeling bridge (derived, not kernel-checked): an injective, order-preserving compaction keyed on use counts rather than per-point liveness, which is the shape of compact_keptRel_lockstepBisim_of_injective; the toy's single-pass ReadsKept does not model the fixed-point cascade, and the toy keeps nops in place whereas rustc strips them (line 661).",
+      "CakeML/cakeml at commit 2874b664e10939a3ee462215b2e068c89c1f70eb, file compiler/backend/proofs/word_allocProofScript.sml (read at that commit), the HOL4 correctness proof of register and stack-slot colouring in the CakeML compiler backend (described in Tan et al., 'The verified CakeML compiler backend', Journal of Functional Programming 29, e2, 2019, DOI 10.1017/S0956796818000229; bibliographic data from search results, paper not read here). colouring_ok (lines 99-141) requires the colouring f to be injective on each live set and on the union of an instruction's writes with the set live after it; strong_locals_rel (lines 178-183) relates source and target locals on a live set through f; Theorem evaluate_apply_colour (from line 1107) shows that, unless the source evaluation fails, evaluating apply_colour f prog from strong_locals_rel-related states gives the same result, for a structured language with sequencing, conditionals, loops and calls. Modeling bridge (derived, not kernel-checked): the same shape as InjOnLiveAt, NoAssignClobber and CompactRel, mechanized for computed liveness in a structured language rather than for a checked mask over a control-flow graph; storage markers and debug events have no counterpart there.",
+      "AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (read at that commit). backend/Liveness.v ('Liveness analysis over RTL') computes liveness with Backward_Dataflow_Solver (line 111); its transfer function (lines 68-91) makes the arguments of an operation live only if the result register is live after it (lines 78-79), i.e. strong liveness, unlike PathLive here. backend/Deadcodeproof.v ('Elimination of unneeded computations over RTL: correctness proof') proves transf_program_correct : forward_simulation (RTL.semantics prog) (RTL.semantics tprog) (lines 1263-1264). Modeling bridge (derived, not kernel-checked): mechanized backward liveness and dead-computation elimination in a realistic compiler."
+    ],
+    "design_question": "When is renumbering a function's slots through a map from the live slots into a smaller index set a sound transformation for executions, and which conditions make it fail?"
+  },
+  {
+    "id": "entry-adequacy-iff-injective-on-live",
+    "lean": [
+      "Toy.SlotCompact.forall_exists_compactRel_iff_injOnLiveAt",
+      "Toy.SlotCompact.compactRel_pushStore",
+      "Toy.SlotCompact.compactRel_pullStore"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "That simultaneously live values cannot share a location is folklore. Mechanized colouring proofs assume injectivity on live sets as a hypothesis (CakeML colouring_ok), which is the sufficiency direction; the converse, that injectivity on the live slots is needed for every original store to have a related compacted store, was not found mechanized. Made precise here as an exact condition with exposed witnesses.",
+    "plain_claim": "For any slot map π and any program point pc (the intended use is the entry point pc = 0): every original store σ has some compacted store σ' that is CompactRel-related to it at pc if and only if π is injective on the kept slots declared live at pc; when π is injective there, the push-forward pushStore π pc σ is such a σ'. Independently of injectivity, every compacted store σ' is CompactRel-related at pc to its pull-back pullStore π σ' (which reads dropped slots as 0).",
+    "statement": "(∀ σ, ∃ σ', CompactRel p L π ⟨pc, σ⟩ ⟨pc, σ'⟩) ↔ InjOnLiveAt p L π pc;  InjOnLiveAt p L π pc → ∀ σ, CompactRel p L π ⟨pc, σ⟩ ⟨pc, pushStore π pc σ⟩;  ∀ σ', CompactRel p L π ⟨pc, pullStore π σ'⟩ ⟨pc, σ'⟩",
+    "hypotheses": [
+      {
+        "name": "hinj : InjOnLiveAt p L π pc (hypothesis of compactRel_pushStore)",
+        "purpose": "pushStore stores one value per target slot, so two live slots sharing a target cannot both be represented (cex_pushStore_injOnLiveAt; the general statement is forall_exists_compactRel_iff_injOnLiveAt)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_pushStore_injOnLiveAt",
+        "witness_class": "a one-instruction program over 2 slots, both live at entry, merged into 1"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Both sides of the equivalence hold for pB at entry and both fail for pE (two entry-live slots merged); pB at entry satisfies the hypothesis of compactRel_pushStore. compactRel_pullStore has no hypotheses.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_entry_iff"
+    ],
+    "non_claims": [
+      "Says nothing about executions; combine with a bisimulation result for program equivalence from related initial states.",
+      "pushStore π pc σ is one witness; uniqueness of related compacted stores is not claimed, and the pull-back reads dropped slots as 0, so it is in general not the original store a compacted store was obtained from.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "CakeML/cakeml at commit 2874b664e10939a3ee462215b2e068c89c1f70eb, file compiler/backend/proofs/word_allocProofScript.sml (read at that commit), the HOL4 correctness proof of register and stack-slot colouring in the CakeML compiler backend (described in Tan et al., 'The verified CakeML compiler backend', Journal of Functional Programming 29, e2, 2019, DOI 10.1017/S0956796818000229; bibliographic data from search results, paper not read here). colouring_ok (lines 99-141) requires the colouring f to be injective on each live set and on the union of an instruction's writes with the set live after it; strong_locals_rel (lines 178-183) relates source and target locals on a live set through f; Theorem evaluate_apply_colour (from line 1107) shows that, unless the source evaluation fails, evaluating apply_colour f prog from strong_locals_rel-related states gives the same result, for a structured language with sequencing, conditionals, loops and calls. Modeling bridge (derived, not kernel-checked): the same shape as InjOnLiveAt, NoAssignClobber and CompactRel, mechanized for computed liveness in a structured language rather than for a checked mask over a control-flow graph; storage markers and debug events have no counterpart there.",
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here)."
+    ],
+    "design_question": "When is renumbering a function's slots through a map from the live slots into a smaller index set a sound transformation for executions, and which conditions make it fail?"
+  },
+  {
+    "id": "wp-transport-no-clobber",
+    "lean": "Toy.SlotCompact.wp_transport_of_noClobber",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Weakest preconditions are preserved along a bisimulation: folklore made precise for this toy.",
+    "plain_claim": "If the mask L is a liveness certificate for p (reads and halt outputs live, closed under the backward transfer), π satisfies NoAssignClobber and NoMarkerClobber (in particular if π is injective), and the postconditions Q (original) and Q' (compacted) agree on every pair of CompactRel-related halting states of p, then for every CompactRel-related pair of states the total-correctness weakest precondition wp, defined from the fuel-bounded execution exec, of p for Q holds if and only if that of compact p L π for Q' holds; debug reads play no role.",
+    "statement": "ReadsLive p L → TransferClosed p L → NoAssignClobber p L π → NoMarkerClobber p L π → PostCorr p L π Q Q' → ∀ s s', CompactRel p L π s s' → (wp p Q s ↔ wp (compact p L π) Q' s')",
+    "hypotheses": [
+      {
+        "name": "hR : ReadsLive p L",
+        "purpose": "every use at a point (semantic read or halt output) is of a slot the mask declares live there (gen half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_wp_readsLive",
+        "witness_class": "two instructions over 2 slots"
+      },
+      {
+        "name": "hT : TransferClosed p L",
+        "purpose": "a slot declared live at a successor and not overwritten by the instruction is declared live before it (transfer half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_wp_transferClosed",
+        "witness_class": "two instructions over 1 slot"
+      },
+      {
+        "name": "hA : NoAssignClobber p L π",
+        "purpose": "an assignment never writes the shared target of a different kept slot that is declared live after it",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_wp_noAssignClobber",
+        "witness_class": "two instructions over 2 slots merged"
+      },
+      {
+        "name": "hM : NoMarkerClobber p L π",
+        "purpose": "a storage marker (which resets its slot) never resets the shared target of a different kept slot that is declared live after it",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_wp_noMarkerClobber",
+        "witness_class": "three instructions over 2 slots merged"
+      },
+      {
+        "name": "hQ : PostCorr p L π Q Q'",
+        "purpose": "Q and Q' agree on every pair of related halting states",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_wp_postCorr",
+        "witness_class": "a one-instruction program with Q = True, Q' = False"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The loop pB with LB, πB and postB (x1 = 12 at the halt) and its transport: all hypotheses hold, wp holds for a run that goes once around the loop, and that entry store is CompactRel-related to its push-forward.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_wp_transport",
+      "Toy.SlotCompact.nonvacuous_wp_transport_rel"
+    ],
+    "non_claims": [
+      "wp is total correctness (it requires the program to halt within some fuel); partial correctness and nontermination are not examined.",
+      "Postconditions are evaluated on halting states, and debug events are ignored, which is why DbgReadsLive is not a hypothesis.",
+      "The relation is CompactRel; agreement of wp on unrelated states is not claimed.",
+      "exec p n and exec (compact p L π) n are related for the same fuel n because compact keeps a nop at every erased instruction; for a pass that also removes instructions the required fuel would differ (not proved here).",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined.",
+      "The compacted program keeps a nop at every erased instruction, so program points coincide; compaction that also removes instructions and renumbers program points is not covered.",
+      "Neither establishes nor refutes any claim about rustc, LLVM, CompCert, CakeML or any verification framework; any connection is a separate derived modeling bridge, and no performance figure is claimed."
+    ],
+    "prior_art": [
+      "AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (read at that commit). backend/Stacking.v lays out activation records and maps local stack slot x to byte offset fe_ofs_local + 4 * x (offset_local, line 27), an injective slot renumbering; backend/Stackingproof.v proves transf_program_correct : forward_simulation (Linear.semantics prog) (Mach.semantics return_address_offset tprog) (lines 2201-2202) using forward_simulation_plus; backend/Linearizeproof.v proves a forward simulation from LTL to Linear for code linearization (lines 728-729), which concerns control-flow layout rather than slot assignment; backend/Allocproof.v proves a forward simulation for register allocation by validated translation from RTL to LTL (header lines 13-14, theorem lines 2528-2529). Modeling bridge (derived, not kernel-checked): realistic forward simulations, not lockstep bisimulations of this toy."
+    ],
+    "design_question": "When does a verification condition proved for the original program transfer to the compacted program, or back, and for which postconditions?"
+  },
+  {
+    "id": "transportable-postconditions-characterization",
+    "lean": [
+      "Toy.SlotCompact.exists_postCorr_iff_dependsOnlyOnLive",
+      "Toy.SlotCompact.postCorr_pullPost"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "'Postconditions may mention only live variables' is folklore; the exact class, and which direction needs which hypothesis, is made precise.",
+    "plain_claim": "For any slot map π: if a postcondition Q depends, at every halt of p, only on the slots the mask declares live there, then pullPost π Q (Q evaluated on the pulled-back store) agrees with Q on every pair of CompactRel-related halting states. If moreover π is injective on the live slots at each halt, the converse also holds: Q has some compacted counterpart Q' agreeing with it on all related halting states if and only if Q depends only on live slots at every halt.",
+    "statement": "(∀ pc, IsHalt p pc → InjOnLiveAt p L π pc) → ((∃ Q', PostCorr p L π Q Q') ↔ DependsOnlyOnLive p L Q);  DependsOnlyOnLive p L Q → PostCorr p L π Q (pullPost π Q)",
+    "hypotheses": [
+      {
+        "name": "hinj : ∀ pc, IsHalt p pc → InjOnLiveAt p L π pc (hypothesis of exists_postCorr_iff_dependsOnlyOnLive)",
+        "purpose": "needed in the proof of the direction from a counterpart to DependsOnlyOnLive: merged live slots make some original halting states unrelatable, so Q can depend on dead slots there",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_postClass_injAtHalts",
+        "witness_class": "a one-instruction program over 3 slots with two live slots merged"
+      },
+      {
+        "name": "hQ : DependsOnlyOnLive p L Q (hypothesis of postCorr_pullPost)",
+        "purpose": "pullPost reads dropped slots as 0, so it can disagree with a Q that inspects dead slots (cex_postCorr_pullPost_dependsOnlyOnLive)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_postCorr_pullPost_dependsOnlyOnLive",
+        "witness_class": "a one-instruction program over 1 slot with nothing live, Q reading the dropped slot"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pB with LB, πB and postB (x1 = 12 at the halt): πB is injective on the slots LB declares live at the halt, and postB depends only on live slots, so both theorems apply with nontrivial content.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_postClass"
+    ],
+    "non_claims": [
+      "The class is relative to the mask; with a larger mask more postconditions qualify, but the transport theorems still assume that the mask is a certificate.",
+      "Counterparts other than pullPost π Q are not characterized.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here)."
+    ],
+    "design_question": "When does a verification condition proved for the original program transfer to the compacted program, or back, and for which postconditions?"
+  },
+  {
+    "id": "vc-transfer-original-to-compacted",
+    "lean": "Toy.SlotCompact.vc_forward_of_noClobber",
+    "lean_names": [
+      "Toy.SlotCompact.vc_forward_vacuous_dropped",
+      "Toy.SlotCompact.vc_forward_vacuous_merged"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Verification conditions transfer along a correct compilation step: folklore made precise.",
+    "plain_claim": "If the mask L is a liveness certificate for p, π satisfies NoAssignClobber and NoMarkerClobber, and Q depends only on live slots at every halt, then: if for every store σ, Pre σ implies wp p Q from the entry state with store σ, then for every compacted store σ', Pre (pullStore π σ') implies wp (compact p L π) (pullPost π Q) from the entry state with store σ'. No injectivity at entry and no condition on Pre is assumed; the price is that the transported precondition Pre ∘ pullStore π can be unsatisfiable although Pre is satisfiable (see the non-claims).",
+    "statement": "ReadsLive p L → TransferClosed p L → NoAssignClobber p L π → NoMarkerClobber p L π → DependsOnlyOnLive p L Q → (∀ σ, Pre σ → wp p Q ⟨0, σ⟩) → ∀ σ', Pre (pullStore π σ') → wp (compact p L π) (pullPost π Q) ⟨0, σ'⟩",
+    "hypotheses": [
+      {
+        "name": "hR : ReadsLive p L",
+        "purpose": "every use at a point (semantic read or halt output) is of a slot the mask declares live there (gen half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcFwd_readsLive",
+        "witness_class": "three instructions over 2 slots merged into 1"
+      },
+      {
+        "name": "hT : TransferClosed p L",
+        "purpose": "a slot declared live at a successor and not overwritten by the instruction is declared live before it (transfer half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcFwd_transferClosed",
+        "witness_class": "three instructions over 2 slots merged into 1"
+      },
+      {
+        "name": "hA : NoAssignClobber p L π",
+        "purpose": "an assignment never writes the shared target of a different kept slot that is declared live after it",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcFwd_noAssignClobber",
+        "witness_class": "two instructions over 2 slots merged"
+      },
+      {
+        "name": "hM : NoMarkerClobber p L π",
+        "purpose": "a storage marker (which resets its slot) never resets the shared target of a different kept slot that is declared live after it",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcFwd_noMarkerClobber",
+        "witness_class": "three instructions over 2 slots merged"
+      },
+      {
+        "name": "hQ : DependsOnlyOnLive p L Q",
+        "purpose": "Q mentions only slots live at each halt",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcFwd_post",
+        "witness_class": "a dead store over 1 slot with Q reading the dropped slot"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pS with preS (x0 = 0) and postS (x1 = 1 at the halt): all hypotheses hold, preS and the transported precondition are satisfiable, and the original condition (the premise) is proved.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_vc"
+    ],
+    "non_claims": [
+      "Without InjOnLiveAt p L π 0 and DependsOnlyOnEntryLive p L Pre, the transferred implication can hold vacuously, because the compacted precondition is restricted to pulled-back stores, Pre ∘ pullStore π: if Pre requires a dropped slot to be nonzero (vc_forward_vacuous_dropped) or two merged entry-live slots to differ (vc_forward_vacuous_merged), then Pre (pullStore π σ') is false for every σ' and the transferred condition holds vacuously.",
+      "The covered transports are Pre ∘ pullStore π and pullPost π Q (pullStore reads dropped slots as 0); other ways of transporting pre- and postconditions are not examined.",
+      "The statement concerns total correctness from the entry point (pc 0); other entry points and partial correctness are not examined.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined.",
+      "The compacted program keeps a nop at every erased instruction, so program points coincide; compaction that also removes instructions and renumbers program points is not covered.",
+      "Neither establishes nor refutes any claim about rustc, LLVM, CompCert, CakeML or any verification framework; any connection is a separate derived modeling bridge, and no performance figure is claimed."
+    ],
+    "prior_art": [
+      "AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (read at that commit). backend/Stacking.v lays out activation records and maps local stack slot x to byte offset fe_ofs_local + 4 * x (offset_local, line 27), an injective slot renumbering; backend/Stackingproof.v proves transf_program_correct : forward_simulation (Linear.semantics prog) (Mach.semantics return_address_offset tprog) (lines 2201-2202) using forward_simulation_plus; backend/Linearizeproof.v proves a forward simulation from LTL to Linear for code linearization (lines 728-729), which concerns control-flow layout rather than slot assignment; backend/Allocproof.v proves a forward simulation for register allocation by validated translation from RTL to LTL (header lines 13-14, theorem lines 2528-2529). Modeling bridge (derived, not kernel-checked): realistic forward simulations, not lockstep bisimulations of this toy."
+    ],
+    "design_question": "When does a verification condition proved for the original program transfer to the compacted program, or back, and for which postconditions?"
+  },
+  {
+    "id": "vc-transfer-compacted-to-original",
+    "lean": "Toy.SlotCompact.vc_backward_of_noClobber",
+    "lean_names": [
+      "Toy.SlotCompact.vc_backward_without_inj0_postTrue",
+      "Toy.SlotCompact.vc_transfer_of_noClobber"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Reflecting verification conditions back through a compilation step is folklore; the additional hypotheses that make it work here (injectivity on the entry-live slots, a precondition on kept entry-live slots) are made precise, each tight in the witness class of its counterexample.",
+    "plain_claim": "If the mask L is a liveness certificate for p, π satisfies NoAssignClobber and NoMarkerClobber and is injective on the kept slots live at entry, Pre depends only on kept entry-live slots, and Q depends only on live slots at every halt, then: if for every compacted store σ', Pre (pullStore π σ') implies wp (compact p L π) (pullPost π Q) from the entry state with store σ', then for every store σ, Pre σ implies wp p Q from the entry state with store σ.",
+    "statement": "ReadsLive p L → TransferClosed p L → NoAssignClobber p L π → NoMarkerClobber p L π → InjOnLiveAt p L π 0 → DependsOnlyOnEntryLive p L Pre → DependsOnlyOnLive p L Q → (∀ σ', Pre (pullStore π σ') → wp (compact p L π) (pullPost π Q) ⟨0, σ'⟩) → ∀ σ, Pre σ → wp p Q ⟨0, σ⟩",
+    "hypotheses": [
+      {
+        "name": "hR : ReadsLive p L",
+        "purpose": "every use at a point (semantic read or halt output) is of a slot the mask declares live there (gen half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcBwd_readsLive",
+        "witness_class": "two instructions over 2 slots"
+      },
+      {
+        "name": "hT : TransferClosed p L",
+        "purpose": "a slot declared live at a successor and not overwritten by the instruction is declared live before it (transfer half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcBwd_transferClosed",
+        "witness_class": "three instructions over 2 slots merged"
+      },
+      {
+        "name": "hA : NoAssignClobber p L π",
+        "purpose": "an assignment never writes the shared target of a different kept slot that is declared live after it",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcBwd_noAssignClobber",
+        "witness_class": "two instructions over 2 slots merged"
+      },
+      {
+        "name": "hM : NoMarkerClobber p L π",
+        "purpose": "a storage marker (which resets its slot) never resets the shared target of a different kept slot that is declared live after it",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcBwd_noMarkerClobber",
+        "witness_class": "three instructions over 2 slots merged"
+      },
+      {
+        "name": "hinj0 : InjOnLiveAt p L π 0",
+        "purpose": "gives every original entry store a related compacted entry store, pushStore π 0 σ",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcBwd_injOnLiveAt",
+        "witness_class": "one instruction, two entry-live slots merged"
+      },
+      {
+        "name": "hPre : DependsOnlyOnEntryLive p L Pre",
+        "purpose": "lets the precondition survive the round trip through pushStore and pullStore",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcBwd_pre",
+        "witness_class": "one instruction over 1 dead slot"
+      },
+      {
+        "name": "hQ : DependsOnlyOnLive p L Q",
+        "purpose": "Q mentions only slots live at each halt",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_vcBwd_post",
+        "witness_class": "one instruction over 1 dead slot"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pC with the non-injective πCm, preC (x0 = 4) and postC (x1 = 5 at the halt): all hypotheses hold, the transported precondition is satisfiable, and the compacted verification condition (the premise) is proved directly.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_vc_bwd_sharing"
+    ],
+    "non_claims": [
+      "InjOnLiveAt p L π 0 is not necessary in general: with the postcondition True the conclusion holds on pE although πEm merges both entry-live slots (vc_backward_without_inj0_postTrue); its tightness is witnessed in the class of cex_vcBwd_injOnLiveAt (a one-instruction program over 3 slots), not in general.",
+      "The witness compacted entry store is pushStore π 0 σ; other choices are not discussed.",
+      "vc_transfer_of_noClobber packages both directions as an equivalence under the union of the hypotheses; the forward direction alone needs fewer (vc-transfer-original-to-compacted).",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined.",
+      "The compacted program keeps a nop at every erased instruction, so program points coincide; compaction that also removes instructions and renumbers program points is not covered.",
+      "Neither establishes nor refutes any claim about rustc, LLVM, CompCert, CakeML or any verification framework; any connection is a separate derived modeling bridge, and no performance figure is claimed."
+    ],
+    "prior_art": [
+      "AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (read at that commit). backend/Stacking.v lays out activation records and maps local stack slot x to byte offset fe_ofs_local + 4 * x (offset_local, line 27), an injective slot renumbering; backend/Stackingproof.v proves transf_program_correct : forward_simulation (Linear.semantics prog) (Mach.semantics return_address_offset tprog) (lines 2201-2202) using forward_simulation_plus; backend/Linearizeproof.v proves a forward simulation from LTL to Linear for code linearization (lines 728-729), which concerns control-flow layout rather than slot assignment; backend/Allocproof.v proves a forward simulation for register allocation by validated translation from RTL to LTL (header lines 13-14, theorem lines 2528-2529). Modeling bridge (derived, not kernel-checked): realistic forward simulations, not lockstep bisimulations of this toy."
+    ],
+    "design_question": "When does a verification condition proved for the original program transfer to the compacted program, or back, and for which postconditions?"
+  },
+  {
+    "id": "non-live-read-breaks-compaction",
+    "lean": [
+      "Toy.SlotCompact.cex_bisim_noClobber_readsLive",
+      "Toy.SlotCompact.cex_bisim_injective_readsLive",
+      "Toy.SlotCompact.cex_wp_readsLive",
+      "Toy.SlotCompact.pR_rel",
+      "Toy.SlotCompact.pR_exec",
+      "Toy.SlotCompact.pR_exec_c"
+    ],
+    "lean_names": [
+      "Toy.SlotCompact.pathLive_faint_operand"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "role": "reference card",
+    "tier_justification": "Concrete kernel-checked instance of the folklore pitfall of reading a slot that the liveness information declares dead.",
+    "plain_claim": "For p = [x1 := x0; halt [x1]] over 2 slots, the mask LR that declares only x1 live and only at the halt (it omits x0 at the read but is transfer closed), and the injective map πR of the kept slot x1 onto one slot: every hypothesis of compact-bisim-no-clobber, compact-bisim-injective and wp-transport-no-clobber except ReadsLive holds, and each conclusion fails. Concretely, from any original store σ the original halts with x1 = σ x0 (pR_exec), while the compacted program reads the dropped x0 as the constant 0 and halts with its slot equal to 0 (pR_exec_c); so from the entry stores (x0 = 7, x1 = 0) and (0), which are CompactRel-related (pR_rel), the original halts with x1 = 7 and the compacted program with 0.",
+    "statement": "¬ ReadsLive pR LR ∧ TransferClosed pR LR ∧ DbgReadsLive pR LR ∧ NoAssignClobber pR LR πR ∧ NoMarkerClobber pR LR πR ∧ ¬ LockstepBisim pR (compact pR LR πR) (CompactRel pR LR πR);  Function.Injective πR ∧ ¬ ReadsLive pR LR ∧ TransferClosed pR LR ∧ DbgReadsLive pR LR ∧ ¬ LockstepBisim pR (compact pR LR πR) (CompactRel pR LR πR);  ¬ ReadsLive pR LR ∧ TransferClosed pR LR ∧ NoAssignClobber pR LR πR ∧ NoMarkerClobber pR LR πR ∧ PostCorr pR LR πR postR7 (pullPost πR postR7) ∧ ¬ (∀ s s', CompactRel pR LR πR s s' → (wp pR postR7 s ↔ wp (compact pR LR πR) (pullPost πR postR7) s'));  CompactRel pR LR πR ⟨0, fun i => if i = 0 then 7 else 0⟩ ⟨0, fun _ => 0⟩;  exec pR 2 ⟨0, σ⟩ = some ⟨1, upd σ 1 (σ 0)⟩;  exec (compact pR LR πR) 2 ⟨0, σ'⟩ = some ⟨1, upd σ' 0 0⟩",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Reference card: collects the canonical counterexamples used in the hypothesis ledgers of compact-bisim-no-clobber, compact-bisim-injective and wp-transport-no-clobber (hypothesis hR); the statement is itself a concrete instance, so no separate non-vacuity witness applies.",
+    "non_claims": [
+      "Shows that the gen half of the certificate cannot be dropped in this instance; it does not quantify how often such masks arise, and ReadsLive is not necessary in general (pathLive_faint_operand).",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here)."
+    ],
+    "design_question": "When is renumbering a function's slots through a map from the live slots into a smaller index set a sound transformation for executions, and which conditions make it fail?",
+    "nonvacuity_witness_lean": []
+  },
+  {
+    "id": "non-transfer-closed-mask-breaks-compaction",
+    "lean": [
+      "Toy.SlotCompact.cex_bisim_noClobber_transferClosed",
+      "Toy.SlotCompact.cex_bisim_injective_transferClosed",
+      "Toy.SlotCompact.cex_wp_transferClosed",
+      "Toy.SlotCompact.pT_first_step",
+      "Toy.SlotCompact.pT_exec",
+      "Toy.SlotCompact.pT_exec_c"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "role": "reference card",
+    "tier_justification": "Concrete instance showing that a mask that satisfies the gen inequality but is not closed under the backward transfer fails bisimulation.",
+    "plain_claim": "For p = [nop; halt [x0]] over 1 slot with the mask LT that declares x0 live at the halt but not before the nop (LT satisfies ReadsLive but is not transfer closed), the identity compaction satisfies every other hypothesis of compact-bisim-no-clobber, compact-bisim-injective and wp-transport-no-clobber, and each conclusion fails. Concretely (pT_first_step), the entry states with x0 = 7 and x0 = 0 are CompactRel-related because LT leaves x0 unconstrained at pc 0; one nop step takes both to pc 1, where LT declares x0 live, so the successor states are not related; the runs then halt with x0 = 7 and x0 = 0 respectively (pT_exec, pT_exec_c).",
+    "statement": "ReadsLive pT LT ∧ ¬ TransferClosed pT LT ∧ DbgReadsLive pT LT ∧ NoAssignClobber pT LT πT ∧ NoMarkerClobber pT LT πT ∧ ¬ LockstepBisim pT (compact pT LT πT) (CompactRel pT LT πT);  Function.Injective πT ∧ ReadsLive pT LT ∧ ¬ TransferClosed pT LT ∧ DbgReadsLive pT LT ∧ ¬ LockstepBisim pT (compact pT LT πT) (CompactRel pT LT πT);  ReadsLive pT LT ∧ ¬ TransferClosed pT LT ∧ NoAssignClobber pT LT πT ∧ NoMarkerClobber pT LT πT ∧ PostCorr pT LT πT postT (pullPost πT postT) ∧ ¬ (∀ s s', CompactRel pT LT πT s s' → (wp pT postT s ↔ wp (compact pT LT πT) (pullPost πT postT) s'));  CompactRel pT LT πT ⟨0, fun _ => 7⟩ ⟨0, fun _ => 0⟩ ∧ step pT ⟨0, fun _ => 7⟩ = .running ⟨1, fun _ => 7⟩ none ∧ step (compact pT LT πT) ⟨0, fun _ => 0⟩ = .running ⟨1, fun _ => 0⟩ none ∧ ¬ CompactRel pT LT πT ⟨1, fun _ => 7⟩ ⟨1, fun _ => 0⟩;  exec pT 2 ⟨0, σ⟩ = some ⟨1, σ⟩;  exec (compact pT LT πT) 2 ⟨0, σ'⟩ = some ⟨1, σ'⟩",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Reference card: collects the canonical counterexamples used in the hypothesis ledgers of compact-bisim-no-clobber, compact-bisim-injective and wp-transport-no-clobber (hypothesis hT); the statement is itself a concrete instance, so no separate non-vacuity witness applies.",
+    "non_claims": [
+      "Injective compactions do not need transfer closure for the stronger kept-slot relation (compact-kept-bisim-injective, witness nonvacuous_keptBisim_not_transferClosed on this same program); the failure is specific to the live-slot relation CompactRel.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here)."
+    ],
+    "design_question": "When is renumbering a function's slots through a map from the live slots into a smaller index set a sound transformation for executions, and which conditions make it fail?",
+    "nonvacuity_witness_lean": []
+  },
+  {
+    "id": "merging-simultaneously-live-slots-breaks-compaction",
+    "lean": [
+      "Toy.SlotCompact.cex_bisim_injective_injective",
+      "Toy.SlotCompact.cex_bisim_noClobber_noAssignClobber",
+      "Toy.SlotCompact.cex_keptBisim_injective",
+      "Toy.SlotCompact.cex_wp_noAssignClobber",
+      "Toy.SlotCompact.pA_rel",
+      "Toy.SlotCompact.pA_exec",
+      "Toy.SlotCompact.pA_exec_c"
+    ],
+    "lean_names": [
+      "Toy.SlotCompact.keptBisim_noninjective_writeFree"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "role": "reference card",
+    "tier_justification": "Concrete instance of the classic interference pitfall.",
+    "plain_claim": "For p = [x1 := 5; halt [x0, x1]] over 2 slots with its path-liveness mask LA, the map πAm merging x0 and x1 into one slot satisfies the certificate, debug and marker conditions but neither injectivity nor NoAssignClobber, and the conclusions of compact-bisim-no-clobber, compact-bisim-injective, compact-kept-bisim-injective and wp-transport-no-clobber fail. Concretely, from any original store σ the original halts with x0 = σ x0 (pA_exec), while the compacted program halts with the shared slot equal to 5 (pA_exec_c); so from the entry stores (x0 = 3, x1 = 0) and (3), which are CompactRel-related (pA_rel), the original halts with x0 = 3 and the compacted program with 5.",
+    "statement": "¬ Function.Injective πAm ∧ ReadsLive pA LA ∧ TransferClosed pA LA ∧ DbgReadsLive pA LA ∧ ¬ LockstepBisim pA (compact pA LA πAm) (CompactRel pA LA πAm);  ReadsLive pA LA ∧ TransferClosed pA LA ∧ DbgReadsLive pA LA ∧ ¬ NoAssignClobber pA LA πAm ∧ NoMarkerClobber pA LA πAm ∧ ¬ LockstepBisim pA (compact pA LA πAm) (CompactRel pA LA πAm);  ¬ Function.Injective πAm ∧ ReadsKept pA LA ∧ DbgReadsKept pA LA ∧ ¬ LockstepBisim pA (compact pA LA πAm) (KeptRel pA LA πAm);  ReadsLive pA LA ∧ TransferClosed pA LA ∧ ¬ NoAssignClobber pA LA πAm ∧ NoMarkerClobber pA LA πAm ∧ PostCorr pA LA πAm postA (pullPost πAm postA) ∧ ¬ (∀ s s', CompactRel pA LA πAm s s' → (wp pA postA s ↔ wp (compact pA LA πAm) (pullPost πAm postA) s'));  CompactRel pA LA πAm ⟨0, fun i => if i = 0 then 3 else 0⟩ ⟨0, fun _ => 3⟩;  exec pA 2 ⟨0, σ⟩ = some ⟨1, upd σ 1 5⟩;  exec (compact pA LA πAm) 2 ⟨0, σ'⟩ = some ⟨1, upd σ' 0 5⟩",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Reference card: collects the canonical counterexamples used in the hypothesis ledgers of compact-bisim-injective and compact-kept-bisim-injective (hypothesis hInj), compact-bisim-no-clobber and wp-transport-no-clobber (hypothesis hA); the statement is itself a concrete instance, so no separate non-vacuity witness applies.",
+    "non_claims": [
+      "Non-injective maps are not unsound in general: on pC a merging map satisfies every hypothesis of compact-bisim-no-clobber, so that compaction is a lockstep bisimulation (nonvacuous_bisim_noClobber_sharing with compact_lockstepBisim_of_noClobber), and on write-free programs even merging simultaneously kept slots is a KeptRel bisimulation (keptBisim_noninjective_writeFree).",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "llvm/llvm-project at commit 25b1c803e1e1504f6dc11f7afd68e65ad3ee5964, file llvm/lib/CodeGen/StackSlotColoring.cpp (read at that commit). Spill slots are colored so that a color is reused only when the slot's live interval does not overlap the intervals already given that color (ColorAssignmentInfo::overlaps, lines 109-115; StackSlotColoring::ColorSlot from line 303). Modeling bridge (derived, not kernel-checked): a non-injective compaction under an interference condition on live intervals; the package's NoAssignClobber/NoMarkerClobber (write versus live-after) conditions are a different formulation and no equivalence is claimed.",
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here)."
+    ],
+    "design_question": "When is renumbering a function's slots through a map from the live slots into a smaller index set a sound transformation for executions, and which conditions make it fail?",
+    "nonvacuity_witness_lean": []
+  },
+  {
+    "id": "marker-reset-breaks-slot-sharing",
+    "lean": [
+      "Toy.SlotCompact.cex_bisim_noClobber_noMarkerClobber",
+      "Toy.SlotCompact.cex_wp_noMarkerClobber",
+      "Toy.SlotCompact.pM_exec",
+      "Toy.SlotCompact.pM_exec_c"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "role": "reference card",
+    "tier_justification": "Concrete instance of the folklore pitfall that a lifetime-start marker acts as a write.",
+    "plain_claim": "For p = [StorageLive(x1); x1 := x0; halt [x1]] over 2 slots with its path-liveness mask LM, the map πMm merging x0 and x1 into one slot satisfies the certificate, debug and NoAssignClobber conditions but not NoMarkerClobber, and the conclusions of compact-bisim-no-clobber and wp-transport-no-clobber fail. Concretely, from any original store σ the original halts with x1 = σ x0 (pM_exec), while in the compacted program StorageLive resets the shared slot, destroying x0 before it is copied, and the run halts with its slot equal to 0 (pM_exec_c).",
+    "statement": "ReadsLive pM LM ∧ TransferClosed pM LM ∧ DbgReadsLive pM LM ∧ NoAssignClobber pM LM πMm ∧ ¬ NoMarkerClobber pM LM πMm ∧ ¬ LockstepBisim pM (compact pM LM πMm) (CompactRel pM LM πMm);  ReadsLive pM LM ∧ TransferClosed pM LM ∧ NoAssignClobber pM LM πMm ∧ ¬ NoMarkerClobber pM LM πMm ∧ PostCorr pM LM πMm postM (pullPost πMm postM) ∧ ¬ (∀ s s', CompactRel pM LM πMm s s' → (wp pM postM s ↔ wp (compact pM LM πMm) (pullPost πMm postM) s'));  exec pM 3 ⟨0, σ⟩ = some ⟨2, upd (upd σ 1 0) 1 (σ 0)⟩;  exec (compact pM LM πMm) 3 ⟨0, σ'⟩ = some ⟨2, upd (upd σ' 0 0) 0 0⟩",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Reference card: collects the canonical counterexamples used in the hypothesis ledgers of compact-bisim-no-clobber and wp-transport-no-clobber (hypothesis hM); the statement is itself a concrete instance, so no separate non-vacuity witness applies.",
+    "non_claims": [
+      "Resets do not break injective compactions: compact-bisim-injective allows resetting markers (nonvacuous_bisim_injective_straightLine).",
+      "Both markers reset the slot to 0 here; in LLVM, lifetime.end instead makes later access undefined behaviour (StackColoring.cpp rule L6), which is not modeled.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "llvm/llvm-project at commit 25b1c803e1e1504f6dc11f7afd68e65ad3ee5964, file llvm/lib/CodeGen/StackColoring.cpp (read at that commit), implementation notes lines 135-160: rules L1-L7 (lines 138-152) say that on a lifetime.start a stack slot is marked in-scope 'and the stack slot is overwritten with undef' (L2, lines 141-142), that lifetime.end marks it out-of-scope (L3) and that memory accesses to out-of-scope slots are UB (L6, line 147); lines 154-160 define a slot as in-use at a point 'if it either can be written to at that point, or if it has a live and non-undef content at that point' and state that slots never in-use together can be merged. Modeling bridge (derived, not kernel-checked): a lifetime start behaves as a write, the analogue of counting storage markers as writes in NoMarkerClobber; unlike LLVM, the toy resets slots to 0 at both markers instead of making later access undefined.",
+      "rust-lang/rust at commit c7d5ba59d8e11ee2e2204b173458eec4cb41c973, file compiler/rustc_mir_transform/src/simplify.rs (read at that commit). The SimplifyLocals pass (enum at line 436, run_pass from line 455) counts actual uses of each local (UsedLocals), treats the return place, the arguments and locals referenced by debug info as always used (line 529: always_used = debuginfo_locals(body)), turns assignments and StorageLive/StorageDead statements of unused locals into nops (remove_unused_definitions_helper from line 629; make_nop at line 659), and renumbers the remaining locals in order (make_local_map from line 496). Removal is iterated to a fixed point (comment at lines 461-466; loop 'while modified' at line 636): removing a statement decrements the use counts of the locals it read (statement_removed, line 658), so chains of dead assignments disappear; uses through indirect places (line 568) and right-hand sides that are not safe to remove (line 600) are kept. Modeling bridge (derived, not kernel-checked): an injective, order-preserving compaction keyed on use counts rather than per-point liveness, which is the shape of compact_keptRel_lockstepBisim_of_injective; the toy's single-pass ReadsKept does not model the fixed-point cascade, and the toy keeps nops in place whereas rustc strips them (line 661)."
+    ],
+    "design_question": "When is renumbering a function's slots through a map from the live slots into a smaller index set a sound transformation for executions, and which conditions make it fail?",
+    "nonvacuity_witness_lean": []
+  },
+  {
+    "id": "dead-debug-read-breaks-lockstep-bisimulation",
+    "lean": [
+      "Toy.SlotCompact.cex_bisim_noClobber_dbgReadsLive",
+      "Toy.SlotCompact.cex_bisim_injective_dbgReadsLive",
+      "Toy.SlotCompact.cex_keptBisim_dbgReadsKept",
+      "Toy.SlotCompact.pD_events"
+    ],
+    "lean_names": [
+      "Toy.SlotCompact.checkLive_pathLiveMask_not_sufficient_with_dbg",
+      "Toy.SlotCompact.pD_silent_not_lockstep"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "role": "reference card",
+    "tier_justification": "Concrete instance of the folklore pitfall that debuggers can observe dead variables.",
+    "plain_claim": "For p = [dbg x0; halt []] over 1 slot with the empty mask (nothing is live, because debug reads are not liveness uses) and the empty compaction πD, every hypothesis of compact-bisim-no-clobber, compact-bisim-injective and compact-kept-bisim-injective except the debug condition holds, and each conclusion fails: at entry the original emits the debug event x0, while the compacted program reads the dropped slot as the constant 0 and emits 0 (pD_events), so the events differ exactly when the initial x0 is nonzero.",
+    "statement": "ReadsLive pD LD ∧ TransferClosed pD LD ∧ ¬ DbgReadsLive pD LD ∧ NoAssignClobber pD LD πD ∧ NoMarkerClobber pD LD πD ∧ ¬ LockstepBisim pD (compact pD LD πD) (CompactRel pD LD πD);  Function.Injective πD ∧ ReadsLive pD LD ∧ TransferClosed pD LD ∧ ¬ DbgReadsLive pD LD ∧ ¬ LockstepBisim pD (compact pD LD πD) (CompactRel pD LD πD);  Function.Injective πD ∧ ReadsKept pD LD ∧ ¬ DbgReadsKept pD LD ∧ ¬ LockstepBisim pD (compact pD LD πD) (KeptRel pD LD πD);  (step pD ⟨0, σ⟩).ev = some (σ 0) ∧ (step (compact pD LD πD) ⟨0, σ'⟩).ev = some 0",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Reference card: collects the canonical counterexamples used in the hypothesis ledgers of compact-bisim-no-clobber and compact-bisim-injective (hypothesis hD) and compact-kept-bisim-injective (hypothesis hDK); the statement is itself a concrete instance, so no separate non-vacuity witness applies.",
+    "non_claims": [
+      "Debug reads do not affect weakest preconditions: wp-transport-no-clobber has no debug hypothesis, and on this instance the compaction is a silent bisimulation (events ignored) though not a lockstep one (pD_silent_not_lockstep).",
+      "The checker checkLive accepts this mask, which is the path-liveness mask, so checked liveness does not exclude this failure (checkLive_pathLiveMask_not_sufficient_with_dbg).",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit c7d5ba59d8e11ee2e2204b173458eec4cb41c973, file compiler/rustc_mir_transform/src/simplify.rs (read at that commit). The SimplifyLocals pass (enum at line 436, run_pass from line 455) counts actual uses of each local (UsedLocals), treats the return place, the arguments and locals referenced by debug info as always used (line 529: always_used = debuginfo_locals(body)), turns assignments and StorageLive/StorageDead statements of unused locals into nops (remove_unused_definitions_helper from line 629; make_nop at line 659), and renumbers the remaining locals in order (make_local_map from line 496). Removal is iterated to a fixed point (comment at lines 461-466; loop 'while modified' at line 636): removing a statement decrements the use counts of the locals it read (statement_removed, line 658), so chains of dead assignments disappear; uses through indirect places (line 568) and right-hand sides that are not safe to remove (line 600) are kept. Modeling bridge (derived, not kernel-checked): an injective, order-preserving compaction keyed on use counts rather than per-point liveness, which is the shape of compact_keptRel_lockstepBisim_of_injective; the toy's single-pass ReadsKept does not model the fixed-point cascade, and the toy keeps nops in place whereas rustc strips them (line 661)."
+    ],
+    "design_question": "When is renumbering a function's slots through a map from the live slots into a smaller index set a sound transformation for executions, and which conditions make it fail?",
+    "nonvacuity_witness_lean": []
+  },
+  {
+    "id": "liveness-certificate-overapproximates",
+    "lean": "Toy.SlotCompact.pathLive_imp_mask_of_cert",
+    "lean_names": [
+      "Toy.SlotCompact.checkLive_accepts_overapprox",
+      "Toy.SlotCompact.checkLive_pathLiveMask_not_sufficient_with_dbg",
+      "Toy.SlotCompact.pathLive_faint_operand",
+      "Toy.SlotCompact.pathLive_infeasible_branch"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Correctness of solutions of the backward liveness inequalities with respect to path liveness is textbook material; mechanized backward liveness analyses exist (CompCert Liveness.v).",
+    "plain_claim": "If a mask L satisfies the gen inequality for p (every use at a point, i.e. every semantic read and halt output, is of a slot L declares live there) and the transfer inequality (a slot declared live at a successor and not overwritten by the instruction is declared live before it), and slot i is path-live at pc (some control-flow path from pc reaches a use of i, with no overwrite of i before that use), then L pc i = true.",
+    "statement": "ReadsLive p L → TransferClosed p L → PathLive p pc i → L pc i = true",
+    "hypotheses": [
+      {
+        "name": "hR : ReadsLive p L",
+        "purpose": "every use at a point is declared live there (gen half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_cert_readsLive",
+        "witness_class": "one instruction over 1 slot, empty mask"
+      },
+      {
+        "name": "hT : TransferClosed p L",
+        "purpose": "a slot declared live at a successor and not overwritten is declared live before (transfer half of the certificate)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_cert_transferClosed",
+        "witness_class": "two instructions over 1 slot"
+      },
+      {
+        "name": "h : PathLive p pc i",
+        "purpose": "the conclusion is promised only for path-live slots",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_cert_pathLive",
+        "witness_class": "a 5-instruction loop over 3 slots whose certificate omits a never-used slot"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The loop pB with its mask, where x0 is path-live at entry.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_cert"
+    ],
+    "non_claims": [
+      "PathLive is syntactic path liveness: it follows every syntactic successor, including branch targets that are never taken (pathLive_infeasible_branch), and it counts the operand of an assignment to a dead slot as a use (pathLive_faint_operand). It is neither strong (non-faint) liveness nor dynamic liveness; semantic (observational) liveness is not defined or compared.",
+      "Masks are over-approximations, not exact liveness: they can be arbitrarily larger than path liveness; the all-live mask is accepted on pB although slot x2 is never used (checkLive_accepts_overapprox). A larger mask keeps more slots (fewer writes become nop in compact) and makes NoAssignClobber, NoMarkerClobber and InjOnLiveAt harder to satisfy (immediate from the definitions; not stated as a theorem).",
+      "A certificate, even one accepted by checkLive and even L = pathLiveMask p with an injective π, says nothing about debug reads or slot-sharing interference: checkLive checks only ReadsLive and TransferClosed, not DbgReadsLive, NoAssignClobber or NoMarkerClobber, and on dbg x0; halt [] the compaction is not a lockstep bisimulation (checkLive_pathLiveMask_not_sufficient_with_dbg).",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here).",
+      "Flemming Nielson, Hanne Riis Nielson, Chris Hankin, Principles of Program Analysis, Springer, 1999, hardcover ISBN 978-3-540-65410-0, DOI 10.1007/978-3-662-03811-6 (ISBN and DOI read on the publisher page); chapter 2 'Data Flow Analysis', section 2.1.4 'Live Variables Analysis' (section number confirmed by table-of-contents listings found by search; section text not read here).",
+      "Tobias Nipkow and Gerwin Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, DOI 10.1007/978-3-319-10542-0 (bibliographic data from search results): chapter 10 'Program Analysis', section 10.3 'Live Variable Analysis' (p. 164) and section 10.4 'True Liveness' (p. 172), titles and pages checked in the table of contents of the authors' freely available PDF; section text not read here. Cited for terminology: PathLive here is the plain live-variable notion of section 10.3; because the following section is titled 'True Liveness', this package does not use that name for PathLive.",
+      "AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (read at that commit). backend/Liveness.v ('Liveness analysis over RTL') computes liveness with Backward_Dataflow_Solver (line 111); its transfer function (lines 68-91) makes the arguments of an operation live only if the result register is live after it (lines 78-79), i.e. strong liveness, unlike PathLive here. backend/Deadcodeproof.v ('Elimination of unneeded computations over RTL: correctness proof') proves transf_program_correct : forward_simulation (RTL.semantics prog) (RTL.semantics tprog) (lines 1263-1264). Modeling bridge (derived, not kernel-checked): mechanized backward liveness and dead-computation elimination in a realistic compiler."
+    ],
+    "design_question": "Can a certificate checker accept claimed liveness masks soundly, so that compaction can rely on checked rather than recomputed liveness?"
+  },
+  {
+    "id": "liveness-checker-characterization-and-soundness",
+    "lean": [
+      "Toy.SlotCompact.checkLive_eq_true_iff",
+      "Toy.SlotCompact.checkLive_sound"
+    ],
+    "lean_names": [
+      "Toy.SlotCompact.checkLive_accepts_overapprox",
+      "Toy.SlotCompact.checkLive_pathLiveMask_not_sufficient_with_dbg",
+      "Toy.SlotCompact.pathLive_faint_operand",
+      "Toy.SlotCompact.pathLive_infeasible_branch"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Checking a claimed dataflow solution pointwise is standard, and mechanized validators of claimed allocation and liveness information exist (Rideau and Leroy 2010); made precise here.",
+    "plain_claim": "The Boolean checker checkLive accepts a mask L for p exactly when L satisfies both certificate inequalities (ReadsLive and TransferClosed). Consequently, if checkLive accepts L and slot i is path-live at pc, then L pc i = true.",
+    "statement": "checkLive p L = true ↔ ReadsLive p L ∧ TransferClosed p L;  checkLive p L = true → PathLive p pc i → L pc i = true",
+    "hypotheses": [
+      {
+        "name": "h : checkLive p L = true (checkLive_sound)",
+        "purpose": "the conclusion is promised only for accepted masks",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_checkLive_sound_accepted",
+        "witness_class": "a one-instruction program over 1 slot with the empty mask"
+      },
+      {
+        "name": "hl : PathLive p pc i (checkLive_sound)",
+        "purpose": "the conclusion is promised only for path-live slots",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_checkLive_sound_pathLive",
+        "witness_class": "a 5-instruction loop over 3 slots, a never-used slot"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "On pB the mask LB is accepted and x0 is path-live at entry, so both hypotheses of checkLive_sound hold; both verdicts of checkLive occur (pB accepted, pR rejected), so both sides of the equivalence are inhabited.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_checkLive_sound",
+      "Toy.SlotCompact.checkLive_both_verdicts"
+    ],
+    "non_claims": [
+      "Acceptance certifies over-approximation, not precision: the all-live mask is accepted (checkLive_accepts_overapprox), so the checker certifies neither precision nor minimality.",
+      "A certificate, even one accepted by checkLive and even L = pathLiveMask p with an injective π, says nothing about debug reads or slot-sharing interference: checkLive checks only ReadsLive and TransferClosed, not DbgReadsLive, NoAssignClobber or NoMarkerClobber, and on dbg x0; halt [] the compaction is not a lockstep bisimulation (checkLive_pathLiveMask_not_sufficient_with_dbg).",
+      "PathLive is syntactic path liveness: it follows every syntactic successor, including branch targets that are never taken (pathLive_infeasible_branch), and it counts the operand of an assignment to a dead slot as a use (pathLive_faint_operand). It is neither strong (non-faint) liveness nor dynamic liveness; semantic (observational) liveness is not defined or compared.",
+      "The checker runs over a finite program and finitely many slots; its running time is not analysed.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "Silvain Rideau and Xavier Leroy, 'Validating Register Allocation and Spilling', Compiler Construction (CC 2010), LNCS 6011, Springer, 2010, pp. 224-243, DOI 10.1007/978-3-642-11970-5_13 (bibliographic data from search results; paper text not read here). The corresponding Coq development is AbsInt/CompCert backend/Allocation.v, whose header reads 'Register allocation by external oracle and a posteriori validation' (read at commit 2685140bf72c959446981fb99b5e44a8975021bc), with its proof in backend/Allocproof.v. Modeling bridge (derived, not kernel-checked): a mechanized validator for a proposed, generally non-injective, assignment of variables to locations, the analogue of checking a claimed mask and interference conditions instead of recomputing them.",
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here).",
+      "Flemming Nielson, Hanne Riis Nielson, Chris Hankin, Principles of Program Analysis, Springer, 1999, hardcover ISBN 978-3-540-65410-0, DOI 10.1007/978-3-662-03811-6 (ISBN and DOI read on the publisher page); chapter 2 'Data Flow Analysis', section 2.1.4 'Live Variables Analysis' (section number confirmed by table-of-contents listings found by search; section text not read here).",
+      "AbsInt/CompCert at commit 2685140bf72c959446981fb99b5e44a8975021bc (read at that commit). backend/Liveness.v ('Liveness analysis over RTL') computes liveness with Backward_Dataflow_Solver (line 111); its transfer function (lines 68-91) makes the arguments of an operation live only if the result register is live after it (lines 78-79), i.e. strong liveness, unlike PathLive here. backend/Deadcodeproof.v ('Elimination of unneeded computations over RTL: correctness proof') proves transf_program_correct : forward_simulation (RTL.semantics prog) (RTL.semantics tprog) (lines 1263-1264). Modeling bridge (derived, not kernel-checked): mechanized backward liveness and dead-computation elimination in a realistic compiler."
+    ],
+    "design_question": "Can a certificate checker accept claimed liveness masks soundly, so that compaction can rely on checked rather than recomputed liveness?"
+  },
+  {
+    "id": "liveness-checker-rejects-omitted-path-live-slot",
+    "lean": "Toy.SlotCompact.checkLive_eq_false_of_missing",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Contrapositive of checker soundness; standard.",
+    "plain_claim": "If slot i is path-live at pc in p and the mask L omits it there (L pc i = false), then checkLive p L = false.",
+    "statement": "PathLive p pc i → L pc i = false → checkLive p L = false",
+    "hypotheses": [
+      {
+        "name": "hl : PathLive p pc i",
+        "purpose": "rejection is promised only for omitted slots that are path-live",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_missing_requires_pathLive",
+        "witness_class": "a 5-instruction loop over 3 slots whose mask omits a never-used slot"
+      },
+      {
+        "name": "hL : L pc i = false",
+        "purpose": "rejection is promised only when the slot is actually omitted",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_missing_requires_omission",
+        "witness_class": "the same loop with the slot present"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pR with mask LR omits the path-live x0 at the read and is rejected.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.checkLive_rejects_underapprox"
+    ],
+    "non_claims": [
+      "This is a sufficient condition for rejection; the exact acceptance condition is liveness-checker-characterization-and-soundness.",
+      "Omission is measured against syntactic path liveness; slots that are live in a dynamic or semantic sense but are not path-live are not examined.",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here).",
+      "Flemming Nielson, Hanne Riis Nielson, Chris Hankin, Principles of Program Analysis, Springer, 1999, hardcover ISBN 978-3-540-65410-0, DOI 10.1007/978-3-662-03811-6 (ISBN and DOI read on the publisher page); chapter 2 'Data Flow Analysis', section 2.1.4 'Live Variables Analysis' (section number confirmed by table-of-contents listings found by search; section text not read here)."
+    ],
+    "design_question": "Can a certificate checker accept claimed liveness masks soundly, so that compaction can rely on checked rather than recomputed liveness?"
+  },
+  {
+    "id": "path-liveness-least-certificate",
+    "lean": [
+      "Toy.SlotCompact.pathLiveMask_least_cert",
+      "Toy.SlotCompact.checkLive_pathLiveMask"
+    ],
+    "lean_names": [
+      "Toy.SlotCompact.checkLive_pathLiveMask_not_sufficient_with_dbg",
+      "Toy.SlotCompact.pathLive_faint_operand",
+      "Toy.SlotCompact.pathLive_infeasible_branch"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Path liveness is the least solution of the liveness inequalities: textbook material.",
+    "plain_claim": "For every program p, the (noncomputable) path-liveness mask pathLiveMask p satisfies both certificate inequalities, is accepted by checkLive, and is pointwise below every mask that satisfies both inequalities; so it is the least certificate.",
+    "statement": "(ReadsLive p (pathLiveMask p) ∧ TransferClosed p (pathLiveMask p)) ∧ ∀ L, ReadsLive p L → TransferClosed p L → ∀ pc i, pathLiveMask p pc i = true → L pc i = true;  checkLive p (pathLiveMask p) = true",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "No hypotheses (holds for every program); pT_pathLive exhibits a nonempty path-live set.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.pT_pathLive"
+    ],
+    "non_claims": [
+      "pathLiveMask is defined with classical choice and is not computed; no iterative analysis is implemented or proved to converge.",
+      "PathLive is syntactic path liveness: it follows every syntactic successor, including branch targets that are never taken (pathLive_infeasible_branch), and it counts the operand of an assignment to a dead slot as a use (pathLive_faint_operand). It is neither strong (non-faint) liveness nor dynamic liveness; semantic (observational) liveness is not defined or compared.",
+      "A certificate, even one accepted by checkLive and even L = pathLiveMask p with an injective π, says nothing about debug reads or slot-sharing interference: checkLive checks only ReadsLive and TransferClosed, not DbgReadsLive, NoAssignClobber or NoMarkerClobber, and on dbg x0; halt [] the compaction is not a lockstep bisimulation (checkLive_pathLiveMask_not_sufficient_with_dbg).",
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about real compilers or verifiers. The toy has no memory, pointers or address-taken slots, calls, exceptions, or undefined behaviour; values are natural numbers; storage markers reset the slot to 0 instead of making later access undefined."
+    ],
+    "prior_art": [
+      "Andrew W. Appel, Modern Compiler Implementation in ML (also in Java and in C), Cambridge University Press, 1998: chapter 10 'Liveness analysis' with sections 'Solution of dataflow equations', 'Liveness in the Tiger compiler' and 'Interference graph construction', and chapter 11 'Register allocation' (chapter and section titles verified on the author's table-of-contents page; chapter text not read here).",
+      "Flemming Nielson, Hanne Riis Nielson, Chris Hankin, Principles of Program Analysis, Springer, 1999, hardcover ISBN 978-3-540-65410-0, DOI 10.1007/978-3-662-03811-6 (ISBN and DOI read on the publisher page); chapter 2 'Data Flow Analysis', section 2.1.4 'Live Variables Analysis' (section number confirmed by table-of-contents listings found by search; section text not read here).",
+      "Tobias Nipkow and Gerwin Klein, Concrete Semantics with Isabelle/HOL, Springer, 2014, DOI 10.1007/978-3-319-10542-0 (bibliographic data from search results): chapter 10 'Program Analysis', section 10.3 'Live Variable Analysis' (p. 164) and section 10.4 'True Liveness' (p. 172), titles and pages checked in the table of contents of the authors' freely available PDF; section text not read here. Cited for terminology: PathLive here is the plain live-variable notion of section 10.3; because the following section is titled 'True Liveness', this package does not use that name for PathLive."
+    ],
+    "design_question": "Can a certificate checker accept claimed liveness masks soundly, so that compaction can rely on checked rather than recomputed liveness?"
+  },
+  {
+    "id": "store-laws-on-common-domain",
+    "lean": [
+      "Toy.SlotCompact.funOps_laws",
+      "Toy.SlotCompact.alistOps_laws",
+      "Toy.SlotCompact.alistOps_empty_not_putGetId",
+      "Toy.SlotCompact.alistOps_zero_putGetId"
+    ],
+    "lean_names": [
+      "Toy.SlotCompact.consPutOps_getPutOther",
+      "Toy.SlotCompact.consPutOps_getPutSame",
+      "Toy.SlotCompact.consPutOps_not_putPut"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Read-over-write laws of function stores go back to McCarthy (1963) and reappear as lens laws (Foster et al. 2007); the association-list case is standard.",
+    "plain_claim": "For every N and V, the indexed store funOps N V (a total function Fin N → V) satisfies GetPutSame, GetPutOther, PutGetId and PutPut. For every default d, the association-list store alistOps N d (first match wins; put replaces the first match or appends) satisfies GetPutSame, GetPutOther and PutPut on all lists, and PutGetId on complete lists (lists containing every key). When N ≥ 1 the empty list is incomplete and violates PutGetId (writing back the value read for slot 0 appends an entry); when N = 0, PutGetId holds.",
+    "statement": "GetPutSame (funOps N V) ∧ GetPutOther (funOps N V) ∧ PutGetId (funOps N V) ∧ PutPut (funOps N V);  GetPutSame (alistOps N d) ∧ GetPutOther (alistOps N d) ∧ PutPut (alistOps N d) ∧ ∀ l : List (Fin N × V), Complete l → ∀ k, (alistOps N d).put l k ((alistOps N d).get l k) = l;  ¬ Complete ([] : List (Fin (N + 1) × V)) ∧ (alistOps (N + 1) d).put [] 0 ((alistOps (N + 1) d).get [] 0) ≠ [];  PutGetId (alistOps 0 d)",
+    "hypotheses": [
+      {
+        "name": "Complete l (hypothesis of the PutGetId clause of alistOps_laws)",
+        "purpose": "writing back the read value appends a new entry when the key is absent",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.alistOps_empty_not_putGetId",
+        "witness_class": "the empty list, for any number of slots N + 1 ≥ 1"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "famAlist L is complete for every L; the remaining clauses have no hypotheses.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.famAlist_complete"
+    ],
+    "non_claims": [
+      "The indexed store here is a mathematical function, not a machine array; array bounds, sharing and destructive update are not modeled.",
+      "Representation-level laws can distinguish implementations that get cannot: the shadowing association list consPutOps (put prepends an entry) satisfies GetPutSame and GetPutOther (consPutOps_getPutSame, consPutOps_getPutOther) but, with at least one slot, not PutPut (consPutOps_not_putPut)."
+    ],
+    "prior_art": [
+      "John McCarthy, 'Towards a Mathematical Science of Computation', Information Processing 1962 (Proceedings of IFIP Congress 62), C. M. Popplewell (ed.), North-Holland, 1963, pp. 21-28 (bibliographic data from search results). The author's web version of the paper (read) introduces c(var, ξ), the contents of a variable in a state vector, and a(var, val, ξ), assignment, with the axioms c(u, a(v, α, ξ)) = if u = v then α else c(u, ξ); a(v, c(v, ξ), ξ) = ξ; and a(u, α, a(v, β, ξ)) = if u = v then a(u, α, ξ) else a(v, β, a(u, α, ξ)). These are GetPutSame with GetPutOther, PutGetId, and PutPut (with commutation of writes to distinct keys) for the indexed store.",
+      "J. Nathan Foster, Michael B. Greenwald, Jonathan T. Moore, Benjamin C. Pierce, Alan Schmitt, 'Combinators for Bidirectional Tree Transformations: A Linguistic Approach to the View-Update Problem', ACM Transactions on Programming Languages and Systems 29(3), Article 17, 2007, DOI 10.1145/1232420.1232424 (bibliographic data and law names from search results; paper text not read here): the lens laws PutGet, GetPut and PutPut, defining well-behaved and very well-behaved lenses. Viewing one key of a store as a lens, they correspond to GetPutSame, PutGetId and PutPut; GetPutOther (framing across keys) is not a single-lens law.",
+      "Andrew W. Appel, Verified Functional Algorithms (Software Foundations, volume 3), chapter 'ADT: Abstract Data Types', https://softwarefoundations.cis.upenn.edu/vfa-current/ADT.html (opening of the chapter read: an association-table ADT with a formal specification that hides its implementation). Modeling bridge (derived, not kernel-checked): the textbook form, in Coq, of interchangeable table implementations behind an interface."
+    ],
+    "design_question": "When is an array-backed indexed store a faithful replacement for an association-list store inside a certificate checker, and what does it buy in primitive operations?"
+  },
+  {
+    "id": "certificate-checker-representation-independence",
+    "lean": [
+      "Toy.SlotCompact.runCheck_eq_of_getPut",
+      "Toy.SlotCompact.runCheck_funOps_eq_alistOps"
+    ],
+    "lean_names": [
+      "Toy.SlotCompact.consPutOps_getPutOther",
+      "Toy.SlotCompact.consPutOps_getPutSame",
+      "Toy.SlotCompact.consPutOps_not_putPut"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Representation independence for data abstraction is classical (Reynolds 1983) and mechanized for interchangeable map implementations (Isabelle Collections Framework; Verified Functional Algorithms, chapter ADT); proved here directly for one command language.",
+    "plain_claim": "For the replay checker runCheck, which uses the store only through get and put: if two store implementations both satisfy GetPutSame and GetPutOther and the initial stores have the same view (equal get on every key), then the checker gives the same verdict on every command list. In particular, if the view of an association list l with default d is the indexed store σ (alistGet d l = σ), then the indexed store started from σ and the association-list store started from l give the same verdict on every command list.",
+    "statement": "GetPutSame ops₁ → GetPutOther ops₁ → GetPutSame ops₂ → GetPutOther ops₂ → (∀ k, ops₁.get s₁ k = ops₂.get s₂ k) → runCheck ops₁ s₁ c = runCheck ops₂ s₂ c;  alistGet d l = σ → runCheck (funOps N Nat) σ c = runCheck (alistOps N d) l c",
+    "hypotheses": [
+      {
+        "name": "h1s : GetPutSame ops₁",
+        "purpose": "reads after writes return the written value",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_repInd_h1s",
+        "witness_class": "1 key, a store whose put is ignored"
+      },
+      {
+        "name": "h1o : GetPutOther ops₁",
+        "purpose": "writes do not disturb other keys (framing)",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_repInd_h1o",
+        "witness_class": "2 keys, a store whose put zeroes other keys"
+      },
+      {
+        "name": "h2s : GetPutSame ops₂",
+        "purpose": "as h1s, for the second implementation",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_repInd_h2s",
+        "witness_class": "1 key, a store whose put is ignored"
+      },
+      {
+        "name": "h2o : GetPutOther ops₂",
+        "purpose": "as h1o, for the second implementation",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_repInd_h2o",
+        "witness_class": "2 keys, a store whose put zeroes other keys"
+      },
+      {
+        "name": "hview : ∀ k, ops₁.get s₁ k = ops₂.get s₂ k",
+        "purpose": "the initial views agree",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_repInd_view",
+        "witness_class": "1 key, initial values 0 and 1"
+      },
+      {
+        "name": "hview : alistGet d l = σ (runCheck_funOps_eq_alistOps)",
+        "purpose": "the association list's view is the indexed store",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_repInd_funOps_alistOps_view",
+        "witness_class": "1 key, indexed store holding 1 versus the empty list with default 0"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The indexed store and a complete association list with the same view, on a script whose verdict is true, for both theorems.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.nonvacuous_repInd",
+      "Toy.SlotCompact.nonvacuous_repInd_funOps_alistOps"
+    ],
+    "non_claims": [
+      "runCheck is a standalone straight-line replay checker for incr/check command lists over StoreOps; it does not execute Prog N and is not the liveness checker checkLive.",
+      "Representation independence holds here because runCheck touches the store only through get and put. A client that compares stores structurally (for example to detect a fixpoint) can distinguish implementations satisfying GetPutSame and GetPutOther: consPutOps satisfies both laws, yet putting twice and putting once give structurally different lists with the same view (consPutOps_getPutSame, consPutOps_getPutOther, consPutOps_not_putPut).",
+      "Proved for this one command language and checker by induction; it is not a parametricity (free) theorem, and no parametricity principle is used.",
+      "Equal verdicts, not equal costs (see the cost results).",
+      "PutGetId and PutPut are not needed and are not hypotheses."
+    ],
+    "prior_art": [
+      "John C. Reynolds, 'Types, Abstraction and Parametric Polymorphism', Information Processing 83, R.E.A. Mason (ed.), Elsevier Science Publishers B.V. (North-Holland), 1983, pp. 513-523 (first page and abstract read from a scan; page range per dblp). The abstract generalizes homomorphisms to relations to obtain an 'abstraction' theorem; the opening example concerns two representations of complex numbers used interchangeably through their primitive operations. The package's result is a direct induction for one fixed command language, not an instance of the abstraction theorem.",
+      "Peter Lammich (with contributions from Andreas Lochbihler and Thomas Tuerk), 'Collections Framework', Archive of Formal Proofs, November 25, 2009, https://www.isa-afp.org/entries/Collections.html (entry page read: an Isabelle/HOL collections library that uses data refinement from abstract specifications to concrete data structures; its theories include Impl_Array_Map); companion paper Peter Lammich and Andreas Lochbihler, 'The Isabelle Collections Framework', Interactive Theorem Proving (ITP 2010), pp. 339-354, DOI 10.1007/978-3-642-14052-5_24 (as listed on the entry page). Modeling bridge (derived, not kernel-checked): mechanized data refinement lets algorithms written against a map interface run on interchangeable implementations, the shape of runCheck_eq_of_getPut.",
+      "Andrew W. Appel, Verified Functional Algorithms (Software Foundations, volume 3), chapter 'ADT: Abstract Data Types', https://softwarefoundations.cis.upenn.edu/vfa-current/ADT.html (opening of the chapter read: an association-table ADT with a formal specification that hides its implementation). Modeling bridge (derived, not kernel-checked): the textbook form, in Coq, of interchangeable table implementations behind an interface."
+    ],
+    "design_question": "When is an array-backed indexed store a faithful replacement for an association-list store inside a certificate checker, and what does it buy in primitive operations?"
+  },
+  {
+    "id": "alist-checker-toy-cost-theta-SL",
+    "lean": [
+      "Toy.SlotCompact.runCost_alistOps_family",
+      "Toy.SlotCompact.runCost_alistOps_le"
+    ],
+    "lean_names": [
+      "Toy.SlotCompact.complete_with_repeated_keys"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Linear-scan association lists cost time proportional to their length per access: folklore, stated in a toy cost model.",
+    "plain_claim": "Toy cost-model theorem (not real performance), counting one primitive operation per association-list cell scanned by each get and put that runCheck performs (runCost stops at the first failing check, as runCheck does): (a) for the family of S increments of the last of K = L + 1 slots, run from the complete key-ordered list of length K, the checker scans exactly 2 S K cells; (b) for any command list c run from a complete association list l, it scans at most 2 · c.length · l.length cells. Hence on that family the cost is Θ(S · K), with K the number of slots.",
+    "statement": "runCost (alistOps (L + 1) 0) (alistCost (L + 1) Nat) (famAlist L) (famScript S L) = 2 * S * (L + 1);  Complete l → runCost (alistOps N d) (alistCost N Nat) l c ≤ 2 * c.length * l.length",
+    "hypotheses": [
+      {
+        "name": "hl : Complete l (hypothesis of bound (b))",
+        "purpose": "puts never append to a complete list, so its length stays l.length",
+        "tightness": "tight",
+        "counterexample": "Toy.SlotCompact.cex_alistCost_complete",
+        "witness_class": "the empty list over 1 key, two commands"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The family inputs are complete lists.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.famAlist_complete"
+    ],
+    "non_claims": [
+      "Toy cost model: one unit per scanned cell; allocation, caching, hashing, kernel reduction cost and real hardware are not modeled.",
+      "l.length counts entries, not distinct keys: a complete list may repeat keys and be longer than the number of slots (complete_with_repeated_keys).",
+      "The lower bound is exhibited on one family (famAlist L with famScript S L); it is not a worst-case lower bound over all inputs or all association-list implementations.",
+      "runCost charges nothing for building the initial store. A dense indexed store over N slots needs work proportional to N to allocate or initialize, and copies proportional to N per update if updated non-destructively, whereas an association list started from [] grows only with the slots a script touches; neither effect is modeled (not proved here).",
+      "No figure about any real verification framework or proof checker is implied."
+    ],
+    "prior_art": [
+      "No source establishes these toy counts; they are self-contained cost-model facts. For context (not a source for these counts): verified association-list and array-backed map implementations coexist behind one interface in the Isabelle Collections Framework (Lammich, Archive of Formal Proofs, 2009, https://www.isa-afp.org/entries/Collections.html; entry page read)."
+    ],
+    "design_question": "When is an array-backed indexed store a faithful replacement for an association-list store inside a certificate checker, and what does it buy in primitive operations?"
+  },
+  {
+    "id": "unit-cost-checker-toy-cost-O-S",
+    "lean": [
+      "Toy.SlotCompact.runCost_unitCost_le",
+      "Toy.SlotCompact.runCost_unitCost_family"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Constant cost per access gives cost linear in the number of commands: immediate in a unit-cost model.",
+    "plain_claim": "Toy cost-model theorem (not real performance): under the unit cost model unitCost, which charges one primitive operation per get and per put (the usual model of an array indexed by slot number), the run of runCheck over any store implementation and any command list c costs at most 2 · c.length operations, independent of the number of slots, and exactly 2 S on the family of S increments. The bound comes from the cost model alone: it holds for every StoreOps, including the association-list store; the indexed store funOps is the intended instantiation.",
+    "statement": "runCost ops (unitCost S N) s c ≤ 2 * c.length;  runCost ops (unitCost St (L + 1)) s (famScript S L) = 2 * S",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "No hypotheses (holds for every store implementation, store and script); the family run is an instance.",
+    "nonvacuity_witness_lean": [
+      "Toy.SlotCompact.runCost_unitCost_family"
+    ],
+    "non_claims": [
+      "Unit cost per access is an assumption of the toy model, not a property of funOps or of any real array implementation. In Lean, funOps.put builds a nested conditional function, and evaluating a lookup after S updates by reduction inspects up to S conditionals (not proved here); unitCost does not measure that.",
+      "runCost charges nothing for building the initial store; allocating or initializing a dense N-slot array costs work proportional to N, which is one reason to shrink N by dead-slot compaction before switching to an indexed store (not proved here).",
+      "No claim about speedups of any real verification or kernel-checking pipeline."
+    ],
+    "prior_art": [
+      "No source establishes these toy counts; they are self-contained cost-model facts. For context (not a source for these counts): verified association-list and array-backed map implementations coexist behind one interface in the Isabelle Collections Framework (Lammich, Archive of Formal Proofs, 2009, https://www.isa-afp.org/entries/Collections.html; entry page read)."
+    ],
+    "design_question": "When is an array-backed indexed store a faithful replacement for an association-list store inside a certificate checker, and what does it buy in primitive operations?"
+  }
+]
