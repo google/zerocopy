@@ -1,0 +1,149 @@
+{
+  "topics": [
+    "agents/data-analysis",
+    "agents/text-to-sql",
+    "agents/ml-engineering",
+    "agents/scientific-discovery",
+    "domains/data-warehouses",
+    "domains/tabular-analytics",
+    "domains/bioinformatics",
+    "verification/benchmark-evaluators",
+    "verification/statistical-validity",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "Fangyu Lei et al., Spider 2.0 Enterprise Text-to-SQL Benchmark and Spider-Agent (ICLR 2025, xlang-ai/Spider2)",
+      "identity": {
+        "arxiv": "2411.07763v2",
+        "repository": "xlang-ai/Spider2",
+        "revision": "cafb867313aab4e674652054198f383cf4018943",
+        "venue": "ICLR 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Shayan Talaei et al., CHESS Contextual Harnessing for Efficient SQL Synthesis (ShayanTalaei/CHESS)",
+      "identity": {
+        "arxiv": "2405.16755v3",
+        "repository": "ShayanTalaei/CHESS",
+        "revision": "3d6e835f858d26885d21d4bc0215aeecf855efbe",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Benjamin Ascoli et al., ESM+ / Enhanced Tree Matching SQL Equivalence Verifier (emorynlp/ETM)",
+      "identity": {
+        "arxiv": "2407.07313v4",
+        "repository": "emorynlp/ETM",
+        "revision": "21f6ea7de617ba4c0c3bafdc4909a38b26dd91bb",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Xinyu Liu et al., NL2SQL-BUGs Semantic Error Detection Benchmark (KDD 2025, HKUSTDial/NL2SQL-Bugs-Benchmark)",
+      "identity": {
+        "arxiv": "2503.11984v2",
+        "repository": "HKUSTDial/NL2SQL-Bugs-Benchmark",
+        "revision": "9cb75ddbf3f64120cdc254df6048601e85b039ee",
+        "venue": "KDD 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Jun Shern Chan et al., MLE-bench Machine Learning Engineering Benchmark (ICLR 2025, openai/mle-bench)",
+      "identity": {
+        "arxiv": "2410.07095v6",
+        "repository": "openai/mle-bench",
+        "revision": "507f92e1138bb6e40dac5c6ee7a6758e6424bf97",
+        "venue": "ICLR 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Zhengyao Jiang et al., AIDE Tree-Search Machine Learning Engineering Agent (WecoAI/aideml)",
+      "identity": {
+        "arxiv": "2502.13138v1",
+        "repository": "WecoAI/aideml",
+        "revision": "ad73d227af481bea3de06f884f41b2993dd6453a",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Qian Huang et al., MLAgentBench Machine Learning Experimentation Suite (ICML 2024, snap-stanford/MLAgentBench)",
+      "identity": {
+        "arxiv": "2310.03302",
+        "repository": "snap-stanford/MLAgentBench",
+        "revision": "5d71205cc20a8e95d43aa7cb7120e89ca3323e31",
+        "venue": "ICML 2024",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Bodhisattwa Prasad Majumder et al., DiscoveryBench Data-Driven Scientific Discovery Benchmark (ICLR 2025, allenai/discoverybench)",
+      "identity": {
+        "arxiv": "2407.01725v1",
+        "repository": "allenai/discoverybench",
+        "revision": "c31fcf011e070f021a5f5b906896d0821f6880e8",
+        "venue": "ICLR 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Ken Gu et al., BLADE Multi-Analyst Scientific Analysis Benchmark (EMNLP 2024, behavioral-data/BLADE)",
+      "identity": {
+        "arxiv": "2408.09667v3",
+        "repository": "behavioral-data/BLADE",
+        "revision": "6118fa8d5007b91aa8c91c518182db82446a4547",
+        "venue": "EMNLP 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Ziru Chen et al., ScienceAgentBench Scientific Discovery Coding Benchmark (ICLR 2025, osu-nlp-group/ScienceAgentBench)",
+      "identity": {
+        "arxiv": "2410.05080v3",
+        "repository": "osu-nlp-group/ScienceAgentBench",
+        "revision": "cc87b58cddf3954673c8ed29ac0d5a4a081b5d00",
+        "venue": "ICLR 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Laurent Mitchener et al., BixBench Computational Biology Agent Benchmark (Future-House/BixBench)",
+      "identity": {
+        "arxiv": "2503.00096v3",
+        "repository": "Future-House/BixBench",
+        "revision": "49311180bdacb324c596f2e07596c126f2004008",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Yiming Huang et al., DA-Code Workspace Data Science Benchmark (EMNLP 2024, yiyihum/DA-Code); Yuhang Lai et al., DS-1000 (ICML 2023, xlang-ai/DS-1000); Xueyu Hu et al., InfiAgent-DABench (ICML 2024, InfiAgent/InfiAgent)",
+      "identity": {
+        "arxiv": "2410.07331v2; 2211.11501v1; 2401.05507",
+        "repositories": "yiyihum/DA-Code; xlang-ai/DS-1000; InfiAgent/InfiAgent",
+        "revisions": "b211daf51fdc9b52d5087c9df28ac50191bcabed; cddd24520f374c6cdf3497adf058467394f3cf0b; 3d6c4a70198e0a41fadf539f5b43c88b8c1a2d9c",
+        "venue": "EMNLP 2024; ICML 2023; ICML 2024",
+        "year": "2022-2024"
+      }
+    },
+    {
+      "name": "Jinyang Li et al., BIRD (NeurIPS 2023); Dawei Gao et al., DAIL-SQL (PVLDB 2024); Bing Wang et al., MAC-SQL (COLING 2025); Danna Zheng et al., Archer (EACL 2024); Karime Maamari et al., Schema Linking Study; Mohammadreza Pourreza et al., CHASE-SQL (ICLR 2025); Zhewei Yao et al., Arctic-Text2SQL-R1; Yingqi Gao et al., XiYan-SQL",
+      "identity": {
+        "arxiv": "2305.03111v3; 2308.15363; 2312.11242v6; 2402.12554v2; 2408.07702; 2410.01943v1; 2505.20315v2; 2507.04701v2",
+        "venue": "NeurIPS 2023; PVLDB 17(5) 2024; COLING 2025; EACL 2024; arXiv 2024; ICLR 2025; arXiv 2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Cynthia Dwork et al., Adaptive Data Analysis (STOC 2015); Dan Zhang et al., DataSciBench; Alex Egg et al., DABstep Operational Multi-Step Reasoning Benchmark",
+      "identity": {
+        "arxiv": "1411.2664; 2502.13897; 2506.23719v1",
+        "venue": "STOC 2015; arXiv 2025",
+        "year": "2015-2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

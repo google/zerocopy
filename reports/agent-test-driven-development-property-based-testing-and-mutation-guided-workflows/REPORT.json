@@ -1,0 +1,173 @@
+{
+  "topics": [
+    "agents/test-driven-development",
+    "agents/self-debugging",
+    "agents/test-generation",
+    "verification/property-based-testing",
+    "verification/mutation-testing",
+    "verification/specifications",
+    "tooling/test-generation",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "Noble Saji Mathews and Meiyappan Nagappan, Test-Driven Development for Code Generation (LLM4TDD / TGen)",
+      "identity": {
+        "arxiv": "2402.13521v2",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Toufique Ahmed, Martin Hirzel, Rangeet Pan, Avraham Shinnar, and Saurabh Sinha, TDD-Bench Verified: Can LLMs Generate Tests for Issues Before They Get Resolved? (arXiv:2412.02883v1 and IBM/TDD-Bench-Verified)",
+      "identity": {
+        "arxiv": "2412.02883v1",
+        "repository": "IBM/TDD-Bench-Verified",
+        "revision": "3df8be066e486789d0b8e0d2865a3a4422b4560f",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Bei Chen et al., CodeT: Code Generation with Generated Tests (ICLR 2023, arXiv:2207.10397v2 and microsoft/CodeT)",
+      "identity": {
+        "arxiv": "2207.10397v2",
+        "repository": "microsoft/CodeT",
+        "revision": "35f54d60b152cc31d134b788e702878ad613d9f7",
+        "venue": "ICLR 2023",
+        "year": "2022-2023"
+      }
+    },
+    {
+      "name": "Kexun Zhang et al., ALGO: Synthesizing Algorithmic Programs with LLM-Generated Oracle Verifiers (EMNLP Findings 2023); Kefan Li and Yuan Yuan, TestChain (2024); Naman Jain et al., R2E (ICML 2024, r2e-project/r2e)",
+      "identity": {
+        "arxiv": "2305.14591v3; 2404.13340v1",
+        "repository": "r2e-project/r2e",
+        "revision": "bcbed156711bb939de14aa46b27eee15073f5272",
+        "venue": "EMNLP Findings 2023; arXiv 2024; ICML 2024",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Shuvendu K. Lahiri et al. and Sarah Fakhoury, Aaditya Naik, Georgios Sakkas, Saikat Chakraborty, and Shuvendu K. Lahiri, LLM-Based Test-Driven Interactive Code Generation (TiCoder, IEEE TSE 2024, microsoft/TiCoder)",
+      "identity": {
+        "arxiv": "2208.05950v2; 2404.10100v2",
+        "repository": "microsoft/TiCoder",
+        "revision": "3362f0019a8e5152fcab19cacd1a09e69d8d2f1d",
+        "venue": "IEEE Transactions on Software Engineering",
+        "year": "2022-2024"
+      }
+    },
+    {
+      "name": "Yihan Chen, Yufeng Tao, et al., Revisit Self-Debugging with Self-Generated Tests for Code Generation (ACL 2025)",
+      "identity": {
+        "arxiv": "2501.12793v1",
+        "venue": "ACL 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Michael Konstantinou, Florian Tambon, and Mike Papadakis, On the Risk of Coding Before Testing (2026) and Companion Oracle Study (2026); Dong Huang et al., Measuring the Influence of Incorrect Code on Test Generation (ICSE 2026); Dong Huang et al., AgentCoder (2023)",
+      "identity": {
+        "arxiv": "2607.05139v1; 2410.21136v2; 2409.09464v3; 2312.13010v3",
+        "venue": "arXiv 2026; ICSE 2026",
+        "year": "2023-2026"
+      }
+    },
+    {
+      "name": "Archiki Prasad, Elias Stengel-Eskin, Justin Chih-Yao Chen, Zaid Khan, and Mohit Bansal, Learning to Generate Unit Tests for Automated Debugging (UTGen / UTDebug, COLM 2025)",
+      "identity": {
+        "arxiv": "2502.01619v3",
+        "venue": "COLM 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Chamath Silva and Indika Perera, Bayesian Co-Evolution of Code and Tests (BACE, GECCO 2026, arXiv:2603.28653v2 and wso2-incubator/BACE)",
+      "identity": {
+        "arxiv": "2603.28653v2",
+        "repository": "wso2-incubator/BACE",
+        "revision": "d859540ef849dbb93615b6b2178b8a5ce205309f",
+        "venue": "GECCO 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Nadia Alshahwan, Mark Harman, et al., Automated Unit Test Improvement using Large Language Models at Meta (TestGen-LLM, FSE 2024); Christopher Foster, Abhishek Gulati, Mark Harman, et al., Mutation-Guided LLM-based Test Generation at Meta (ACH, FSE Companion 2025)",
+      "identity": {
+        "arxiv": "2402.09171v1; 2501.12862v1",
+        "venue": "FSE 2024 Industry; FSE Companion 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Arghavan Moradi Dakhel et al., Effective Test Generation Using Pre-trained Large Language Models and Mutation Testing (MuTAP, Information and Software Technology 2024)",
+      "identity": {
+        "arxiv": "2308.16557v1",
+        "venue": "Information and Software Technology Vol. 171",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Bo Wang, Mingda Xu, Lionel C. Briand, and Yepang Liu, Mutation-Guided Test Generation with Large Language Models (MutGen, IEEE TSE 2026, Amocy-Wang/MUTGEN); Lukas Kiele et al., Test-Aware Mutant Generation (ESEM 2026)",
+      "identity": {
+        "arxiv": "2506.02954v8; 2609.35841",
+        "repository": "Amocy-Wang/MUTGEN",
+        "revision": "69dd37ddfab16b8c5efd22117dc3d213ab05418d",
+        "venue": "IEEE Transactions on Software Engineering 52(5); ESEM 2026",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Hypothesis Property-Based Testing Engine (HypothesisWorks/hypothesis)",
+      "identity": {
+        "repository": "HypothesisWorks/hypothesis",
+        "revision": "9a15ddde58248954d62f97e6265c8bf99c25bd54",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Vasudev Vikram, Caroline Lemieux, Joshua Sunshine, and Rohan Padhye, Can Large Language Models Write Good Property-Based Tests? (Proptest-AI, 2024); Zihan He et al., Property-Generated Solver (PGS, 2026)",
+      "identity": {
+        "arxiv": "2307.04346v2; 2506.18315v2",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Muhammad Maaz, Jules DeVoe, Zac Hatfield-Dodds, and Nicholas Carlini, Agentic Property-Based Testing (arXiv:2510.09907v1 and mmaaz-git/agentic-pbt); Arash Naziri, Zihan Qin, Rohan Patel, and Marcelo d'Amorim, Multi-Domain Agentic Property-Based Testing (2026)",
+      "identity": {
+        "arxiv": "2510.09907v1; 2610.34487v2",
+        "repository": "mmaaz-git/agentic-pbt",
+        "revision": "7ac6a15f891cae90f176ca7dbb0e76144383a1b1",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Hao Jing, Yifan Wang, Yuxuan Zhang, and Xiaoning Du, PBT-Bench (2026); Kazuki Tanaka et al., Combining Property-Based and Example-Based Testing with LLMs (AIware 2025)",
+      "identity": {
+        "arxiv": "2605.15229v4; 2510.25297v1",
+        "venue": "arXiv 2026; AIware 2025",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Chuyue Sun, Ying Sheng, Oded Padon, and Clark Barrett, Clover: Closed-Loop Verifiable Code Generation (arXiv:2310.17807v4 and ChuyueSun/Clover); Lezhi Ma et al., SpecGen (ICSE 2025)",
+      "identity": {
+        "arxiv": "2310.17807v4; 2401.08807v5",
+        "repository": "ChuyueSun/Clover",
+        "revision": "02144bec1bbf8d38951ef2df6f0c2870965a214e",
+        "venue": "arXiv 2024; ICSE 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Jiawei Liu, Chunqiu Steven Xia, Yuyao Wang, and Lingming Zhang, Is Your Code Generated by ChatGPT Really Correct? Rigorous Evaluation of Large Language Models for Code Generation (EvalPlus, NeurIPS 2023, evalplus/evalplus)",
+      "identity": {
+        "arxiv": "2305.01210v3",
+        "repository": "evalplus/evalplus",
+        "revision": "26d6d00bb1fd0fa37f39c99d5290da67891d1c5e",
+        "venue": "NeurIPS 2023",
+        "year": "2023"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

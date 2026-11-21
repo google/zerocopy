@@ -1,0 +1,205 @@
+{
+  "topics": [
+    "agents/skill-acquisition",
+    "agents/continual-learning",
+    "agents/toolbox-pruning",
+    "agents/portfolio-interference",
+    "agents/workflow-induction",
+    "agents/instruction-conflict",
+    "agents/negation-compliance",
+    "agents/prompt-optimization",
+    "tooling/agent-harnesses",
+    "verification/statistical-gating"
+  ],
+  "subjects": [
+    {
+      "name": "Guanzhi Wang et al., Voyager: An Open-Ended Embodied Agent with Large Language Models (TMLR 2024, MineDojo/Voyager)",
+      "identity": {
+        "arxiv": "2305.16291v2",
+        "repository": "MineDojo/Voyager",
+        "revision": "55e45a880755d0c8c66ca7fb5fe7962ac8974f89",
+        "venue": "TMLR 2024",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Zhiruo Wang, Daniel Fried, and Graham Neubig, TroVE: Inducing Verifiable and Efficient Toolboxes for Solving Programmatic Tasks (ICML 2024, zorazrw/TroVE)",
+      "identity": {
+        "arxiv": "2401.12869v1",
+        "repository": "zorazrw/TroVE",
+        "revision": "c4d16b6a2e38020540db2a611fdea722da6b880c",
+        "venue": "ICML 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Boyuan Zheng et al., SkillWeaver: Web Agents can Self-Improve by Discovering and Honing Skills (OSU-NLP-Group/SkillWeaver)",
+      "identity": {
+        "arxiv": "2504.07079v1",
+        "repository": "OSU-NLP-Group/SkillWeaver",
+        "revision": "f2a63d65d0f6ff46ac30e817cede8797f8f25b97",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Jiahao Qiu et al., Alita: Generalist Agent Enabling Scalable Agentic Reasoning with Minimal Predefinition and Maximal Self-Evolution (CharlesQ9/Alita)",
+      "identity": {
+        "arxiv": "2505.20286v1",
+        "repository": "CharlesQ9/Alita",
+        "revision": "2a37fc0647dbcc15e4ae12a5d5fdb586c2116831",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Zora Zhiruo Wang et al., Agent Workflow Memory (ICML 2025, zorazrw/agent-workflow-memory)",
+      "identity": {
+        "arxiv": "2409.07429v1",
+        "repository": "zorazrw/agent-workflow-memory",
+        "revision": "8c0ff8cd11d648c8fceb99e4e42f37e3b75381b1",
+        "venue": "ICML 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Andrew Zhao et al., ExpeL: LLM Agents Are Experiential Learners (AAAI 2024, LeapLabTHU/ExpeL)",
+      "identity": {
+        "arxiv": "2308.10144v3",
+        "repository": "LeapLabTHU/ExpeL",
+        "revision": "e41ec9a24823e7b560c561ab191441b56d9bcefc",
+        "venue": "AAAI 2024",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Mirac Suzgun et al., Dynamic Cheatsheet: Test-Time Learning with Adaptive Memory (suzgunmirac/dynamic-cheatsheet)",
+      "identity": {
+        "arxiv": "2504.07952v1",
+        "repository": "suzgunmirac/dynamic-cheatsheet",
+        "revision": "5cfe3c37e8e52b1d858d0f3df46e7f17c50991b9",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Litao Guo et al., How Feedback-Free Self-Evolution Reshapes Agent Skills: A Systematic Study (LitaoGuo/How-Self-Evolution-Reshapes-Skills)",
+      "identity": {
+        "arxiv": "2611.25534v1",
+        "repository": "LitaoGuo/How-Self-Evolution-Reshapes-Skills",
+        "revision": "db2cdbde29e752ebc9cc81817f17400b64056c40",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Xiangyi Li et al., SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks (benchflow-ai/skillsbench)",
+      "identity": {
+        "arxiv": "2602.12670v4",
+        "repository": "benchflow-ai/skillsbench",
+        "revision": "f860ecf02ef53412a030f8661c83d644b739ff01",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Anish Laddha, Nitesh Pradhan, and Gaurav Srivastava, Position, Role or Label? A Controlled Study of Instruction Conflicts in LLM Agents (anishh15/WhoWins)",
+      "identity": {
+        "arxiv": "2610.33201v1",
+        "repository": "anishh15/WhoWins",
+        "revision": "4638423e017f6d018777ac315ba610af0731099b",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Valentina Pyatkin et al., Generalizing Verifiable Instruction Following (allenai/IFBench)",
+      "identity": {
+        "arxiv": "2507.02833v3",
+        "repository": "allenai/IFBench",
+        "revision": "488918665d53f867fa908a293769ec6e71e74aec",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Tobias Schnabel and Jennifer Neville, Symbolic Prompt Program Search: A Structure-Aware Approach to Efficient Compile-Time Prompt Optimization (EMNLP 2024 Findings, microsoft/sammo)",
+      "identity": {
+        "arxiv": "2404.02319v2",
+        "repository": "microsoft/sammo",
+        "revision": "736552381d70238d154c5fabae196489f1df597b",
+        "venue": "EMNLP 2024 Findings",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Tianle Cai et al., Large Language Models as Tool Makers (ICLR 2024); Cheng Qian et al., CREATOR (EMNLP 2023 Findings); Lifan Yuan et al., CRAFT (ICLR 2024)",
+      "identity": {
+        "arxiv": "2305.17126v2; 2305.14318v3; 2309.17428v2",
+        "venue": "ICLR 2024; EMNLP 2023 Findings; ICLR 2024",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Longtao Zheng et al., Synapse: Trajectory-as-Exemplar Prompting with Memory for Computer Control (ICLR 2024), and Ling Yang et al., Buffer of Thoughts (NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2306.07863v3; 2406.04271v2",
+        "venue": "ICLR 2024; NeurIPS 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Yanli Wang et al., EvoGuard: Mitigating Degradation in Online Skill Evolution, and Daniel Chalef et al., Learning by Doing: Autonomously Compiling and Curating Agent Skills from Verified Traces",
+      "identity": {
+        "arxiv": "2611.06444v1; 2611.01386v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Yifan Yang et al., SkillOpt: Executive Strategy for Self-Evolving Agent Skills; Jingwei Ni et al., Trace2Skill; Boyin Tan et al., Evolve Where It Matters; Jiahao Wang et al., Program-Aided Patchable Skill Evolution",
+      "identity": {
+        "arxiv": "2605.23904v2; 2603.25158v5; 2611.25429v1; 2611.14019v2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Yutao Yang et al., AutoSkill: Experience-Driven Lifelong Learning via Skill Self-Evolution; Jinyu Xiang et al., Self-Supervised Prompt Optimization; Chrisantha Fernando et al., Promptbreeder (ICML 2024)",
+      "identity": {
+        "arxiv": "2603.01145v2; 2502.06855v3; 2309.16797v1",
+        "venue": "arXiv 2026; arXiv 2025; ICML 2024",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Xingwei He et al., ConInstruct: Evaluating Large Language Models on Conflict Detection and Resolution in Instructions (AAAI 2026), and Tehreem Javed et al., PRIME: Evaluating Prompt Resolution Under Incompatible Instructions in LLMs",
+      "identity": {
+        "arxiv": "2511.14342v2; 2606.22470v1",
+        "venue": "AAAI 2026; arXiv 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Eric Wallace et al., The Instruction Hierarchy; Yanzhao Qin et al., SysBench; Zhaochen Su et al., ConflictBank (NeurIPS 2024); Jingyu Zhang et al., Many-Tier Instruction Hierarchy in LLM Agents; Enrique Balp-Straffon et al., How Language Models Choose Sides",
+      "identity": {
+        "arxiv": "2404.13208v1; 2408.10943v2; 2408.12076v1; 2604.09443v4; 2608.28648v1",
+        "venue": "arXiv 2024; arXiv 2024; NeurIPS 2024; arXiv 2026; arXiv 2026",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Shailesh Rana, Semantic Gravity Wells: Why Negative Constraints Backfire; Diego Miguel Lozano et al., Polarity Blindness in LLM Safety; Hyundong Jin and Yo-Sub Han, NCO",
+      "identity": {
+        "arxiv": "2601.08070v1; 2610.27908v2; 2605.10065v2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Zihan Li, Feifei Li, and Wenhui Que, DUET: Dual-Teacher On-Policy Distillation via Same-Weight Disagreement for Prohibition Compliance, and Xing Zhang et al., Guardrails Beat Guidance: A Large-Scale Study of Rules, Skills, and Persistent Configuration for Coding Agents",
+      "identity": {
+        "arxiv": "2608.14644v1; 2604.11088v2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Yubo Li, Ramayya Krishnan, and Rema Padman, LLMs Know the Constraint But Do Not Use It; Jongwook Yoon et al., How Do LLMs Change Predictions Under Negation?; Zhejian Zhou et al., How Language Models Process Negation; Quan Cheng, Via Negativa for AI Alignment",
+      "identity": {
+        "arxiv": "2608.12321v1; 2610.09571v2; 2605.03052v2; 2603.16417v1",
+        "year": "2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

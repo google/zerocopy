@@ -2503,6 +2503,526 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-continual-skill-acquisition-portfolio-interference-and-workflow-induction": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2305.16291v2",
+            "repository": "MineDojo/Voyager",
+            "revision": "55e45a880755d0c8c66ca7fb5fe7962ac8974f89",
+            "venue": "TMLR 2024",
+            "year": "2023-2024"
+          },
+          "name": "Guanzhi Wang et al., Voyager: An Open-Ended Embodied Agent with Large Language Models (TMLR 2024, MineDojo/Voyager)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.12869v1",
+            "repository": "zorazrw/TroVE",
+            "revision": "c4d16b6a2e38020540db2a611fdea722da6b880c",
+            "venue": "ICML 2024",
+            "year": "2024"
+          },
+          "name": "Zhiruo Wang, Daniel Fried, and Graham Neubig, TroVE: Inducing Verifiable and Efficient Toolboxes for Solving Programmatic Tasks (ICML 2024, zorazrw/TroVE)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.07079v1",
+            "repository": "OSU-NLP-Group/SkillWeaver",
+            "revision": "f2a63d65d0f6ff46ac30e817cede8797f8f25b97",
+            "year": "2025"
+          },
+          "name": "Boyuan Zheng et al., SkillWeaver: Web Agents can Self-Improve by Discovering and Honing Skills (OSU-NLP-Group/SkillWeaver)"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.20286v1",
+            "repository": "CharlesQ9/Alita",
+            "revision": "2a37fc0647dbcc15e4ae12a5d5fdb586c2116831",
+            "year": "2025"
+          },
+          "name": "Jiahao Qiu et al., Alita: Generalist Agent Enabling Scalable Agentic Reasoning with Minimal Predefinition and Maximal Self-Evolution (CharlesQ9/Alita)"
+        },
+        {
+          "identity": {
+            "arxiv": "2409.07429v1",
+            "repository": "zorazrw/agent-workflow-memory",
+            "revision": "8c0ff8cd11d648c8fceb99e4e42f37e3b75381b1",
+            "venue": "ICML 2025",
+            "year": "2024-2025"
+          },
+          "name": "Zora Zhiruo Wang et al., Agent Workflow Memory (ICML 2025, zorazrw/agent-workflow-memory)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.10144v3",
+            "repository": "LeapLabTHU/ExpeL",
+            "revision": "e41ec9a24823e7b560c561ab191441b56d9bcefc",
+            "venue": "AAAI 2024",
+            "year": "2023-2024"
+          },
+          "name": "Andrew Zhao et al., ExpeL: LLM Agents Are Experiential Learners (AAAI 2024, LeapLabTHU/ExpeL)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.07952v1",
+            "repository": "suzgunmirac/dynamic-cheatsheet",
+            "revision": "5cfe3c37e8e52b1d858d0f3df46e7f17c50991b9",
+            "year": "2025"
+          },
+          "name": "Mirac Suzgun et al., Dynamic Cheatsheet: Test-Time Learning with Adaptive Memory (suzgunmirac/dynamic-cheatsheet)"
+        },
+        {
+          "identity": {
+            "arxiv": "2611.25534v1",
+            "repository": "LitaoGuo/How-Self-Evolution-Reshapes-Skills",
+            "revision": "db2cdbde29e752ebc9cc81817f17400b64056c40",
+            "year": "2026"
+          },
+          "name": "Litao Guo et al., How Feedback-Free Self-Evolution Reshapes Agent Skills: A Systematic Study (LitaoGuo/How-Self-Evolution-Reshapes-Skills)"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.12670v4",
+            "repository": "benchflow-ai/skillsbench",
+            "revision": "f860ecf02ef53412a030f8661c83d644b739ff01",
+            "year": "2026"
+          },
+          "name": "Xiangyi Li et al., SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks (benchflow-ai/skillsbench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2610.33201v1",
+            "repository": "anishh15/WhoWins",
+            "revision": "4638423e017f6d018777ac315ba610af0731099b",
+            "year": "2026"
+          },
+          "name": "Anish Laddha, Nitesh Pradhan, and Gaurav Srivastava, Position, Role or Label? A Controlled Study of Instruction Conflicts in LLM Agents (anishh15/WhoWins)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.02833v3",
+            "repository": "allenai/IFBench",
+            "revision": "488918665d53f867fa908a293769ec6e71e74aec",
+            "year": "2025-2026"
+          },
+          "name": "Valentina Pyatkin et al., Generalizing Verifiable Instruction Following (allenai/IFBench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.02319v2",
+            "repository": "microsoft/sammo",
+            "revision": "736552381d70238d154c5fabae196489f1df597b",
+            "venue": "EMNLP 2024 Findings",
+            "year": "2024"
+          },
+          "name": "Tobias Schnabel and Jennifer Neville, Symbolic Prompt Program Search: A Structure-Aware Approach to Efficient Compile-Time Prompt Optimization (EMNLP 2024 Findings, microsoft/sammo)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.17126v2; 2305.14318v3; 2309.17428v2",
+            "venue": "ICLR 2024; EMNLP 2023 Findings; ICLR 2024",
+            "year": "2023-2024"
+          },
+          "name": "Tianle Cai et al., Large Language Models as Tool Makers (ICLR 2024); Cheng Qian et al., CREATOR (EMNLP 2023 Findings); Lifan Yuan et al., CRAFT (ICLR 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2306.07863v3; 2406.04271v2",
+            "venue": "ICLR 2024; NeurIPS 2024",
+            "year": "2024"
+          },
+          "name": "Longtao Zheng et al., Synapse: Trajectory-as-Exemplar Prompting with Memory for Computer Control (ICLR 2024), and Ling Yang et al., Buffer of Thoughts (NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2611.06444v1; 2611.01386v1",
+            "year": "2026"
+          },
+          "name": "Yanli Wang et al., EvoGuard: Mitigating Degradation in Online Skill Evolution, and Daniel Chalef et al., Learning by Doing: Autonomously Compiling and Curating Agent Skills from Verified Traces"
+        },
+        {
+          "identity": {
+            "arxiv": "2605.23904v2; 2603.25158v5; 2611.25429v1; 2611.14019v2",
+            "year": "2026"
+          },
+          "name": "Yifan Yang et al., SkillOpt: Executive Strategy for Self-Evolving Agent Skills; Jingwei Ni et al., Trace2Skill; Boyin Tan et al., Evolve Where It Matters; Jiahao Wang et al., Program-Aided Patchable Skill Evolution"
+        },
+        {
+          "identity": {
+            "arxiv": "2603.01145v2; 2502.06855v3; 2309.16797v1",
+            "venue": "arXiv 2026; arXiv 2025; ICML 2024",
+            "year": "2024-2026"
+          },
+          "name": "Yutao Yang et al., AutoSkill: Experience-Driven Lifelong Learning via Skill Self-Evolution; Jinyu Xiang et al., Self-Supervised Prompt Optimization; Chrisantha Fernando et al., Promptbreeder (ICML 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2511.14342v2; 2606.22470v1",
+            "venue": "AAAI 2026; arXiv 2026",
+            "year": "2026"
+          },
+          "name": "Xingwei He et al., ConInstruct: Evaluating Large Language Models on Conflict Detection and Resolution in Instructions (AAAI 2026), and Tehreem Javed et al., PRIME: Evaluating Prompt Resolution Under Incompatible Instructions in LLMs"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.13208v1; 2408.10943v2; 2408.12076v1; 2604.09443v4; 2608.28648v1",
+            "venue": "arXiv 2024; arXiv 2024; NeurIPS 2024; arXiv 2026; arXiv 2026",
+            "year": "2024-2026"
+          },
+          "name": "Eric Wallace et al., The Instruction Hierarchy; Yanzhao Qin et al., SysBench; Zhaochen Su et al., ConflictBank (NeurIPS 2024); Jingyu Zhang et al., Many-Tier Instruction Hierarchy in LLM Agents; Enrique Balp-Straffon et al., How Language Models Choose Sides"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.08070v1; 2610.27908v2; 2605.10065v2",
+            "year": "2026"
+          },
+          "name": "Shailesh Rana, Semantic Gravity Wells: Why Negative Constraints Backfire; Diego Miguel Lozano et al., Polarity Blindness in LLM Safety; Hyundong Jin and Yo-Sub Han, NCO"
+        },
+        {
+          "identity": {
+            "arxiv": "2608.14644v1; 2604.11088v2",
+            "year": "2026"
+          },
+          "name": "Zihan Li, Feifei Li, and Wenhui Que, DUET: Dual-Teacher On-Policy Distillation via Same-Weight Disagreement for Prohibition Compliance, and Xing Zhang et al., Guardrails Beat Guidance: A Large-Scale Study of Rules, Skills, and Persistent Configuration for Coding Agents"
+        },
+        {
+          "identity": {
+            "arxiv": "2608.12321v1; 2610.09571v2; 2605.03052v2; 2603.16417v1",
+            "year": "2026"
+          },
+          "name": "Yubo Li, Ramayya Krishnan, and Rema Padman, LLMs Know the Constraint But Do Not Use It; Jongwook Yoon et al., How Do LLMs Change Predictions Under Negation?; Zhejian Zhou et al., How Language Models Process Negation; Quan Cheng, Via Negativa for AI Alignment"
+        }
+      ],
+      "topics": [
+        "agents/skill-acquisition",
+        "agents/continual-learning",
+        "agents/toolbox-pruning",
+        "agents/portfolio-interference",
+        "agents/workflow-induction",
+        "agents/instruction-conflict",
+        "agents/negation-compliance",
+        "agents/prompt-optimization",
+        "tooling/agent-harnesses",
+        "verification/statistical-gating"
+      ]
+    },
+    "agent-data-analysis-sql-generation-ml-experimentation-and-scientific-workflows": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2411.07763v2",
+            "repository": "xlang-ai/Spider2",
+            "revision": "cafb867313aab4e674652054198f383cf4018943",
+            "venue": "ICLR 2025",
+            "year": "2024-2025"
+          },
+          "name": "Fangyu Lei et al., Spider 2.0 Enterprise Text-to-SQL Benchmark and Spider-Agent (ICLR 2025, xlang-ai/Spider2)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.16755v3",
+            "repository": "ShayanTalaei/CHESS",
+            "revision": "3d6e835f858d26885d21d4bc0215aeecf855efbe",
+            "year": "2024-2025"
+          },
+          "name": "Shayan Talaei et al., CHESS Contextual Harnessing for Efficient SQL Synthesis (ShayanTalaei/CHESS)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.07313v4",
+            "repository": "emorynlp/ETM",
+            "revision": "21f6ea7de617ba4c0c3bafdc4909a38b26dd91bb",
+            "year": "2024-2025"
+          },
+          "name": "Benjamin Ascoli et al., ESM+ / Enhanced Tree Matching SQL Equivalence Verifier (emorynlp/ETM)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.11984v2",
+            "repository": "HKUSTDial/NL2SQL-Bugs-Benchmark",
+            "revision": "9cb75ddbf3f64120cdc254df6048601e85b039ee",
+            "venue": "KDD 2025",
+            "year": "2025"
+          },
+          "name": "Xinyu Liu et al., NL2SQL-BUGs Semantic Error Detection Benchmark (KDD 2025, HKUSTDial/NL2SQL-Bugs-Benchmark)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.07095v6",
+            "repository": "openai/mle-bench",
+            "revision": "507f92e1138bb6e40dac5c6ee7a6758e6424bf97",
+            "venue": "ICLR 2025",
+            "year": "2024-2025"
+          },
+          "name": "Jun Shern Chan et al., MLE-bench Machine Learning Engineering Benchmark (ICLR 2025, openai/mle-bench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.13138v1",
+            "repository": "WecoAI/aideml",
+            "revision": "ad73d227af481bea3de06f884f41b2993dd6453a",
+            "year": "2025"
+          },
+          "name": "Zhengyao Jiang et al., AIDE Tree-Search Machine Learning Engineering Agent (WecoAI/aideml)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.03302",
+            "repository": "snap-stanford/MLAgentBench",
+            "revision": "5d71205cc20a8e95d43aa7cb7120e89ca3323e31",
+            "venue": "ICML 2024",
+            "year": "2023-2024"
+          },
+          "name": "Qian Huang et al., MLAgentBench Machine Learning Experimentation Suite (ICML 2024, snap-stanford/MLAgentBench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.01725v1",
+            "repository": "allenai/discoverybench",
+            "revision": "c31fcf011e070f021a5f5b906896d0821f6880e8",
+            "venue": "ICLR 2025",
+            "year": "2024-2025"
+          },
+          "name": "Bodhisattwa Prasad Majumder et al., DiscoveryBench Data-Driven Scientific Discovery Benchmark (ICLR 2025, allenai/discoverybench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.09667v3",
+            "repository": "behavioral-data/BLADE",
+            "revision": "6118fa8d5007b91aa8c91c518182db82446a4547",
+            "venue": "EMNLP 2024",
+            "year": "2024"
+          },
+          "name": "Ken Gu et al., BLADE Multi-Analyst Scientific Analysis Benchmark (EMNLP 2024, behavioral-data/BLADE)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.05080v3",
+            "repository": "osu-nlp-group/ScienceAgentBench",
+            "revision": "cc87b58cddf3954673c8ed29ac0d5a4a081b5d00",
+            "venue": "ICLR 2025",
+            "year": "2024-2025"
+          },
+          "name": "Ziru Chen et al., ScienceAgentBench Scientific Discovery Coding Benchmark (ICLR 2025, osu-nlp-group/ScienceAgentBench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.00096v3",
+            "repository": "Future-House/BixBench",
+            "revision": "49311180bdacb324c596f2e07596c126f2004008",
+            "year": "2025"
+          },
+          "name": "Laurent Mitchener et al., BixBench Computational Biology Agent Benchmark (Future-House/BixBench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.07331v2; 2211.11501v1; 2401.05507",
+            "repositories": "yiyihum/DA-Code; xlang-ai/DS-1000; InfiAgent/InfiAgent",
+            "revisions": "b211daf51fdc9b52d5087c9df28ac50191bcabed; cddd24520f374c6cdf3497adf058467394f3cf0b; 3d6c4a70198e0a41fadf539f5b43c88b8c1a2d9c",
+            "venue": "EMNLP 2024; ICML 2023; ICML 2024",
+            "year": "2022-2024"
+          },
+          "name": "Yiming Huang et al., DA-Code Workspace Data Science Benchmark (EMNLP 2024, yiyihum/DA-Code); Yuhang Lai et al., DS-1000 (ICML 2023, xlang-ai/DS-1000); Xueyu Hu et al., InfiAgent-DABench (ICML 2024, InfiAgent/InfiAgent)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.03111v3; 2308.15363; 2312.11242v6; 2402.12554v2; 2408.07702; 2410.01943v1; 2505.20315v2; 2507.04701v2",
+            "venue": "NeurIPS 2023; PVLDB 17(5) 2024; COLING 2025; EACL 2024; arXiv 2024; ICLR 2025; arXiv 2025",
+            "year": "2023-2025"
+          },
+          "name": "Jinyang Li et al., BIRD (NeurIPS 2023); Dawei Gao et al., DAIL-SQL (PVLDB 2024); Bing Wang et al., MAC-SQL (COLING 2025); Danna Zheng et al., Archer (EACL 2024); Karime Maamari et al., Schema Linking Study; Mohammadreza Pourreza et al., CHASE-SQL (ICLR 2025); Zhewei Yao et al., Arctic-Text2SQL-R1; Yingqi Gao et al., XiYan-SQL"
+        },
+        {
+          "identity": {
+            "arxiv": "1411.2664; 2502.13897; 2506.23719v1",
+            "venue": "STOC 2015; arXiv 2025",
+            "year": "2015-2025"
+          },
+          "name": "Cynthia Dwork et al., Adaptive Data Analysis (STOC 2015); Dan Zhang et al., DataSciBench; Alex Egg et al., DABstep Operational Multi-Step Reasoning Benchmark"
+        }
+      ],
+      "topics": [
+        "agents/data-analysis",
+        "agents/text-to-sql",
+        "agents/ml-engineering",
+        "agents/scientific-discovery",
+        "domains/data-warehouses",
+        "domains/tabular-analytics",
+        "domains/bioinformatics",
+        "verification/benchmark-evaluators",
+        "verification/statistical-validity",
+        "tooling/agent-harnesses"
+      ]
+    },
+    "agent-debugging-fault-localization-root-cause-diagnosis-and-execution-feedback": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2503.21557",
+            "repository": "microsoft/debug-gym",
+            "revision": "6a10dee1601ed63144b9136c74708998841ec85e",
+            "year": "2025-2026"
+          },
+          "name": "Microsoft debug-gym Interactive Debugging Environment (microsoft/debug-gym; Xingdi Yuan et al.)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.16354v5",
+            "doi": "10.1145/3729355",
+            "repository": "plasma-umass/ChatDBG",
+            "revision": "8ca3cd61c000548596095c721faed8269c93cc39",
+            "venue": "PACMSE Vol. 2 (FSE 2025), Article FSE085",
+            "year": "2025-2026"
+          },
+          "name": "ChatDBG LLM-Augmented Debugger (plasma-umass/ChatDBG; Levin, van Kempen, Berger, & Freund, PACMSE/FSE 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.05427v3; 2408.02232v4",
+            "repository": "AutoCodeRoverSG/auto-code-rover",
+            "revision": "585d3e639aeda58ef0b6a151dd1cc2721a94d267",
+            "venue": "ISSTA 2024; ICSE 2025",
+            "year": "2024-2025"
+          },
+          "name": "AutoCodeRover and SpecRover (AutoCodeRoverSG/auto-code-rover; Zhang, Ruan, Fan, & Roychoudhury ISSTA 2024; Ruan, Zhang, & Roychoudhury ICSE 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.16906v6",
+            "repository": "FloridSleeves/LLMDebugger",
+            "revision": "49ac191f181d47911cf38e5b9944fbbe6d4a6e60",
+            "venue": "Findings of ACL 2024",
+            "year": "2024"
+          },
+          "name": "LDB Large Language Model Debugger (FloridSleeves/LLMDebugger; Zhong, Wang, & Shang, Findings of ACL 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.05487v3",
+            "repository": "coinse/autofl",
+            "revision": "477190e2513b10be2b6079f6fc1ca132ab839e60",
+            "venue": "PACMSE Vol. 1 (FSE 2024), Article 64",
+            "year": "2024"
+          },
+          "name": "AutoFL Explainable Fault Localization (coinse/autofl; Kang, An, & Yoo, PACMSE/FSE 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.00350",
+            "repository": "fishmingyu/OrcaLoca",
+            "revision": "cbaf265f87c3b046c658727ca1c6601a985f8443",
+            "venue": "ICML 2025 (PMLR 267)",
+            "year": "2025-2026"
+          },
+          "name": "OrcaLoca Issue Localization Framework (fishmingyu/OrcaLoca; Yu et al., ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.14684",
+            "repository": "ozyyshr/RepoGraph",
+            "revision": "6c3977d87845993bf2c0359b4ac752278d7f3c45",
+            "venue": "ICLR 2025",
+            "year": "2025"
+          },
+          "name": "RepoGraph Repository-Level Code Graph (ozyyshr/RepoGraph; Ouyang et al., ICLR 2025)"
+        },
+        {
+          "identity": {
+            "repository": "acorn421/san2patch",
+            "revision": "a8c5ace939cdf3de835fa50c617f4fe979f35e6d",
+            "venue": "34th USENIX Security Symposium (2025), pp. 4401-4418",
+            "year": "2025"
+          },
+          "name": "San2Patch Sanitizer-Guided Vulnerability Repair (acorn421/san2patch; Kim, Shin, Kim, & Yoon, USENIX Security 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.12922v2",
+            "repository": "coinse/fonte",
+            "revision": "f8739873615164a69d9274bc0b12334f8bd1a41a",
+            "year": "2024-2025"
+          },
+          "name": "Fonte Bug-Inducing Commit Finder and Weighted Bisection (coinse/fonte; An, Choi, Hong, Kim, & Yoo)"
+        },
+        {
+          "identity": {
+            "arxiv": "2611.08666v1; 2602.18571v2",
+            "venue": "NeurIPS 2026 Workshop on Who Verifies the Agents?; arXiv 2026",
+            "year": "2026"
+          },
+          "name": "Ryan Magnuson, Ellie Kitanidis, and Ariel Lee, Pdb or Not to Be: Comparing Debugging Interfaces With Pass_X@k; Garg & Huang, Debug2Fix: Can Interactive Debugging Help Coding Agents Fix More Bugs?"
+        },
+        {
+          "identity": {
+            "arxiv": "2610.25826v1",
+            "year": "2026"
+          },
+          "name": "Xinyu Shi, Zhou Yang, and An Ran Chen, From Finding to Fixing: How Useful is Fault Localization for Agentic Program Repair?"
+        },
+        {
+          "identity": {
+            "arxiv": "2304.05128v2; 2402.06229v1",
+            "venue": "ICLR 2024; IEEE VL/HCC 2024",
+            "year": "2024"
+          },
+          "name": "Chen, Lin, Sch\u00e4rli, & Zhou, Teaching Large Language Models to Self-Debug (ICLR 2024); Bajpai, Chopra, et al., ROBIN Conversational Debugging (IEEE VL/HCC 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.16362; 2310.01726; 2403.10507v1; 2502.15292",
+            "venue": "IEEE TSE 51(4) 2025; ICSE 2024; arXiv 2024-2025",
+            "year": "2024-2025"
+          },
+          "name": "Qin et al., AgentFL and SOAPFL (IEEE TSE 2025); Yang, Le Goues, Martins, & Hellendoorn, LLMAO (ICSE 2024); Widyasari et al., Demystifying Faulty Code with LLM (FuseFL); Jianming Chang et al., BugCerberus"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.04621; 2411.02310",
+            "venue": "Findings of ACL 2024; Findings of ACL 2026",
+            "year": "2024-2026"
+          },
+          "name": "Tian et al. (incl. Haotian Hui), DebugBench (Findings of ACL 2024); Liu et al., MdEval (Findings of ACL 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.15223v2",
+            "venue": "ICSE 2026",
+            "year": "2025-2026"
+          },
+          "name": "Yibo Wang, Michael Pradel, and Zhongxin Liu, Are \"Solved Issues\" in SWE-bench Really Solved Correctly? An Empirical Study (PatchDiff, ICSE 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.07634v1; 2510.22530v1; 2405.05541",
+            "venue": "arXiv 2025; MSR 2024",
+            "year": "2024-2025"
+          },
+          "name": "Liu et al. & Roychoudhury, Agent That Debugs (VulDebugger); Kang, Yun, Hong, Yoo, & An, Finding the Needle in the Crash Stack: Industrial-Scale Crash Root Cause Localization with AutoCrashFL; Philip Oliver et al., CrashJS (MSR 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2511.18854",
+            "year": "2025"
+          },
+          "name": "Yujing Wang and Weize Hong, Time Travel: LLM-Assisted Semantic Behavior Localization with Git Bisect"
+        }
+      ],
+      "topics": [
+        "agents/debugging",
+        "agents/fault-localization",
+        "agents/root-cause-diagnosis",
+        "agents/program-repair",
+        "agents/execution-feedback",
+        "tooling/interactive-debuggers",
+        "vcs/git-bisect",
+        "security/vulnerability-repair",
+        "verification/differential-testing"
+      ]
+    },
     "agent-instruction-compliance-context-rot-reasoning-models-and-skill-routing": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -3351,6 +3871,179 @@
         "compilers/parsing",
         "tooling/agent-harnesses",
         "security/sandboxing"
+      ]
+    },
+    "agent-test-driven-development-property-based-testing-and-mutation-guided-workflows": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2402.13521v2",
+            "year": "2024"
+          },
+          "name": "Noble Saji Mathews and Meiyappan Nagappan, Test-Driven Development for Code Generation (LLM4TDD / TGen)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.02883v1",
+            "repository": "IBM/TDD-Bench-Verified",
+            "revision": "3df8be066e486789d0b8e0d2865a3a4422b4560f",
+            "year": "2024"
+          },
+          "name": "Toufique Ahmed, Martin Hirzel, Rangeet Pan, Avraham Shinnar, and Saurabh Sinha, TDD-Bench Verified: Can LLMs Generate Tests for Issues Before They Get Resolved? (arXiv:2412.02883v1 and IBM/TDD-Bench-Verified)"
+        },
+        {
+          "identity": {
+            "arxiv": "2207.10397v2",
+            "repository": "microsoft/CodeT",
+            "revision": "35f54d60b152cc31d134b788e702878ad613d9f7",
+            "venue": "ICLR 2023",
+            "year": "2022-2023"
+          },
+          "name": "Bei Chen et al., CodeT: Code Generation with Generated Tests (ICLR 2023, arXiv:2207.10397v2 and microsoft/CodeT)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.14591v3; 2404.13340v1",
+            "repository": "r2e-project/r2e",
+            "revision": "bcbed156711bb939de14aa46b27eee15073f5272",
+            "venue": "EMNLP Findings 2023; arXiv 2024; ICML 2024",
+            "year": "2023-2024"
+          },
+          "name": "Kexun Zhang et al., ALGO: Synthesizing Algorithmic Programs with LLM-Generated Oracle Verifiers (EMNLP Findings 2023); Kefan Li and Yuan Yuan, TestChain (2024); Naman Jain et al., R2E (ICML 2024, r2e-project/r2e)"
+        },
+        {
+          "identity": {
+            "arxiv": "2208.05950v2; 2404.10100v2",
+            "repository": "microsoft/TiCoder",
+            "revision": "3362f0019a8e5152fcab19cacd1a09e69d8d2f1d",
+            "venue": "IEEE Transactions on Software Engineering",
+            "year": "2022-2024"
+          },
+          "name": "Shuvendu K. Lahiri et al. and Sarah Fakhoury, Aaditya Naik, Georgios Sakkas, Saikat Chakraborty, and Shuvendu K. Lahiri, LLM-Based Test-Driven Interactive Code Generation (TiCoder, IEEE TSE 2024, microsoft/TiCoder)"
+        },
+        {
+          "identity": {
+            "arxiv": "2501.12793v1",
+            "venue": "ACL 2025",
+            "year": "2025"
+          },
+          "name": "Yihan Chen, Yufeng Tao, et al., Revisit Self-Debugging with Self-Generated Tests for Code Generation (ACL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2607.05139v1; 2410.21136v2; 2409.09464v3; 2312.13010v3",
+            "venue": "arXiv 2026; ICSE 2026",
+            "year": "2023-2026"
+          },
+          "name": "Michael Konstantinou, Florian Tambon, and Mike Papadakis, On the Risk of Coding Before Testing (2026) and Companion Oracle Study (2026); Dong Huang et al., Measuring the Influence of Incorrect Code on Test Generation (ICSE 2026); Dong Huang et al., AgentCoder (2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.01619v3",
+            "venue": "COLM 2025",
+            "year": "2025"
+          },
+          "name": "Archiki Prasad, Elias Stengel-Eskin, Justin Chih-Yao Chen, Zaid Khan, and Mohit Bansal, Learning to Generate Unit Tests for Automated Debugging (UTGen / UTDebug, COLM 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2603.28653v2",
+            "repository": "wso2-incubator/BACE",
+            "revision": "d859540ef849dbb93615b6b2178b8a5ce205309f",
+            "venue": "GECCO 2026",
+            "year": "2026"
+          },
+          "name": "Chamath Silva and Indika Perera, Bayesian Co-Evolution of Code and Tests (BACE, GECCO 2026, arXiv:2603.28653v2 and wso2-incubator/BACE)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.09171v1; 2501.12862v1",
+            "venue": "FSE 2024 Industry; FSE Companion 2025",
+            "year": "2024-2025"
+          },
+          "name": "Nadia Alshahwan, Mark Harman, et al., Automated Unit Test Improvement using Large Language Models at Meta (TestGen-LLM, FSE 2024); Christopher Foster, Abhishek Gulati, Mark Harman, et al., Mutation-Guided LLM-based Test Generation at Meta (ACH, FSE Companion 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.16557v1",
+            "venue": "Information and Software Technology Vol. 171",
+            "year": "2023-2024"
+          },
+          "name": "Arghavan Moradi Dakhel et al., Effective Test Generation Using Pre-trained Large Language Models and Mutation Testing (MuTAP, Information and Software Technology 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.02954v8; 2609.35841",
+            "repository": "Amocy-Wang/MUTGEN",
+            "revision": "69dd37ddfab16b8c5efd22117dc3d213ab05418d",
+            "venue": "IEEE Transactions on Software Engineering 52(5); ESEM 2026",
+            "year": "2025-2026"
+          },
+          "name": "Bo Wang, Mingda Xu, Lionel C. Briand, and Yepang Liu, Mutation-Guided Test Generation with Large Language Models (MutGen, IEEE TSE 2026, Amocy-Wang/MUTGEN); Lukas Kiele et al., Test-Aware Mutant Generation (ESEM 2026)"
+        },
+        {
+          "identity": {
+            "repository": "HypothesisWorks/hypothesis",
+            "revision": "9a15ddde58248954d62f97e6265c8bf99c25bd54",
+            "year": "2026"
+          },
+          "name": "Hypothesis Property-Based Testing Engine (HypothesisWorks/hypothesis)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.04346v2; 2506.18315v2",
+            "year": "2024-2026"
+          },
+          "name": "Vasudev Vikram, Caroline Lemieux, Joshua Sunshine, and Rohan Padhye, Can Large Language Models Write Good Property-Based Tests? (Proptest-AI, 2024); Zihan He et al., Property-Generated Solver (PGS, 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.09907v1; 2610.34487v2",
+            "repository": "mmaaz-git/agentic-pbt",
+            "revision": "7ac6a15f891cae90f176ca7dbb0e76144383a1b1",
+            "year": "2025-2026"
+          },
+          "name": "Muhammad Maaz, Jules DeVoe, Zac Hatfield-Dodds, and Nicholas Carlini, Agentic Property-Based Testing (arXiv:2510.09907v1 and mmaaz-git/agentic-pbt); Arash Naziri, Zihan Qin, Rohan Patel, and Marcelo d'Amorim, Multi-Domain Agentic Property-Based Testing (2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2605.15229v4; 2510.25297v1",
+            "venue": "arXiv 2026; AIware 2025",
+            "year": "2025-2026"
+          },
+          "name": "Hao Jing, Yifan Wang, Yuxuan Zhang, and Xiaoning Du, PBT-Bench (2026); Kazuki Tanaka et al., Combining Property-Based and Example-Based Testing with LLMs (AIware 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.17807v4; 2401.08807v5",
+            "repository": "ChuyueSun/Clover",
+            "revision": "02144bec1bbf8d38951ef2df6f0c2870965a214e",
+            "venue": "arXiv 2024; ICSE 2025",
+            "year": "2024-2025"
+          },
+          "name": "Chuyue Sun, Ying Sheng, Oded Padon, and Clark Barrett, Clover: Closed-Loop Verifiable Code Generation (arXiv:2310.17807v4 and ChuyueSun/Clover); Lezhi Ma et al., SpecGen (ICSE 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.01210v3",
+            "repository": "evalplus/evalplus",
+            "revision": "26d6d00bb1fd0fa37f39c99d5290da67891d1c5e",
+            "venue": "NeurIPS 2023",
+            "year": "2023"
+          },
+          "name": "Jiawei Liu, Chunqiu Steven Xia, Yuyao Wang, and Lingming Zhang, Is Your Code Generated by ChatGPT Really Correct? Rigorous Evaluation of Large Language Models for Code Generation (EvalPlus, NeurIPS 2023, evalplus/evalplus)"
+        }
+      ],
+      "topics": [
+        "agents/test-driven-development",
+        "agents/self-debugging",
+        "agents/test-generation",
+        "verification/property-based-testing",
+        "verification/mutation-testing",
+        "verification/specifications",
+        "tooling/test-generation",
+        "tooling/agent-harnesses"
       ]
     },
     "airbus-do-333-unit-proof-observable-mcdc-fault-finding-kind2-cocospec-agree-contracts-and-copilot-monitors": {

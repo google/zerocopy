@@ -1,0 +1,166 @@
+{
+  "topics": [
+    "agents/debugging",
+    "agents/fault-localization",
+    "agents/root-cause-diagnosis",
+    "agents/program-repair",
+    "agents/execution-feedback",
+    "tooling/interactive-debuggers",
+    "vcs/git-bisect",
+    "security/vulnerability-repair",
+    "verification/differential-testing"
+  ],
+  "subjects": [
+    {
+      "name": "Microsoft debug-gym Interactive Debugging Environment (microsoft/debug-gym; Xingdi Yuan et al.)",
+      "identity": {
+        "arxiv": "2503.21557",
+        "repository": "microsoft/debug-gym",
+        "revision": "6a10dee1601ed63144b9136c74708998841ec85e",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "ChatDBG LLM-Augmented Debugger (plasma-umass/ChatDBG; Levin, van Kempen, Berger, & Freund, PACMSE/FSE 2025)",
+      "identity": {
+        "arxiv": "2403.16354v5",
+        "doi": "10.1145/3729355",
+        "repository": "plasma-umass/ChatDBG",
+        "revision": "8ca3cd61c000548596095c721faed8269c93cc39",
+        "venue": "PACMSE Vol. 2 (FSE 2025), Article FSE085",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "AutoCodeRover and SpecRover (AutoCodeRoverSG/auto-code-rover; Zhang, Ruan, Fan, & Roychoudhury ISSTA 2024; Ruan, Zhang, & Roychoudhury ICSE 2025)",
+      "identity": {
+        "arxiv": "2404.05427v3; 2408.02232v4",
+        "repository": "AutoCodeRoverSG/auto-code-rover",
+        "revision": "585d3e639aeda58ef0b6a151dd1cc2721a94d267",
+        "venue": "ISSTA 2024; ICSE 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "LDB Large Language Model Debugger (FloridSleeves/LLMDebugger; Zhong, Wang, & Shang, Findings of ACL 2024)",
+      "identity": {
+        "arxiv": "2402.16906v6",
+        "repository": "FloridSleeves/LLMDebugger",
+        "revision": "49ac191f181d47911cf38e5b9944fbbe6d4a6e60",
+        "venue": "Findings of ACL 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "AutoFL Explainable Fault Localization (coinse/autofl; Kang, An, & Yoo, PACMSE/FSE 2024)",
+      "identity": {
+        "arxiv": "2308.05487v3",
+        "repository": "coinse/autofl",
+        "revision": "477190e2513b10be2b6079f6fc1ca132ab839e60",
+        "venue": "PACMSE Vol. 1 (FSE 2024), Article 64",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "OrcaLoca Issue Localization Framework (fishmingyu/OrcaLoca; Yu et al., ICML 2025)",
+      "identity": {
+        "arxiv": "2502.00350",
+        "repository": "fishmingyu/OrcaLoca",
+        "revision": "cbaf265f87c3b046c658727ca1c6601a985f8443",
+        "venue": "ICML 2025 (PMLR 267)",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "RepoGraph Repository-Level Code Graph (ozyyshr/RepoGraph; Ouyang et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2410.14684",
+        "repository": "ozyyshr/RepoGraph",
+        "revision": "6c3977d87845993bf2c0359b4ac752278d7f3c45",
+        "venue": "ICLR 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "San2Patch Sanitizer-Guided Vulnerability Repair (acorn421/san2patch; Kim, Shin, Kim, & Yoon, USENIX Security 2025)",
+      "identity": {
+        "repository": "acorn421/san2patch",
+        "revision": "a8c5ace939cdf3de835fa50c617f4fe979f35e6d",
+        "venue": "34th USENIX Security Symposium (2025), pp. 4401-4418",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Fonte Bug-Inducing Commit Finder and Weighted Bisection (coinse/fonte; An, Choi, Hong, Kim, & Yoo)",
+      "identity": {
+        "arxiv": "2502.12922v2",
+        "repository": "coinse/fonte",
+        "revision": "f8739873615164a69d9274bc0b12334f8bd1a41a",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Ryan Magnuson, Ellie Kitanidis, and Ariel Lee, Pdb or Not to Be: Comparing Debugging Interfaces With Pass_X@k; Garg & Huang, Debug2Fix: Can Interactive Debugging Help Coding Agents Fix More Bugs?",
+      "identity": {
+        "arxiv": "2611.08666v1; 2602.18571v2",
+        "venue": "NeurIPS 2026 Workshop on Who Verifies the Agents?; arXiv 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Xinyu Shi, Zhou Yang, and An Ran Chen, From Finding to Fixing: How Useful is Fault Localization for Agentic Program Repair?",
+      "identity": {
+        "arxiv": "2610.25826v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Chen, Lin, Schärli, & Zhou, Teaching Large Language Models to Self-Debug (ICLR 2024); Bajpai, Chopra, et al., ROBIN Conversational Debugging (IEEE VL/HCC 2024)",
+      "identity": {
+        "arxiv": "2304.05128v2; 2402.06229v1",
+        "venue": "ICLR 2024; IEEE VL/HCC 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Qin et al., AgentFL and SOAPFL (IEEE TSE 2025); Yang, Le Goues, Martins, & Hellendoorn, LLMAO (ICSE 2024); Widyasari et al., Demystifying Faulty Code with LLM (FuseFL); Jianming Chang et al., BugCerberus",
+      "identity": {
+        "arxiv": "2403.16362; 2310.01726; 2403.10507v1; 2502.15292",
+        "venue": "IEEE TSE 51(4) 2025; ICSE 2024; arXiv 2024-2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Tian et al. (incl. Haotian Hui), DebugBench (Findings of ACL 2024); Liu et al., MdEval (Findings of ACL 2026)",
+      "identity": {
+        "arxiv": "2401.04621; 2411.02310",
+        "venue": "Findings of ACL 2024; Findings of ACL 2026",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Yibo Wang, Michael Pradel, and Zhongxin Liu, Are \"Solved Issues\" in SWE-bench Really Solved Correctly? An Empirical Study (PatchDiff, ICSE 2026)",
+      "identity": {
+        "arxiv": "2503.15223v2",
+        "venue": "ICSE 2026",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Liu et al. & Roychoudhury, Agent That Debugs (VulDebugger); Kang, Yun, Hong, Yoo, & An, Finding the Needle in the Crash Stack: Industrial-Scale Crash Root Cause Localization with AutoCrashFL; Philip Oliver et al., CrashJS (MSR 2024)",
+      "identity": {
+        "arxiv": "2504.07634v1; 2510.22530v1; 2405.05541",
+        "venue": "arXiv 2025; MSR 2024",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Yujing Wang and Weize Hong, Time Travel: LLM-Assisted Semantic Behavior Localization with Git Bisect",
+      "identity": {
+        "arxiv": "2511.18854",
+        "year": "2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
