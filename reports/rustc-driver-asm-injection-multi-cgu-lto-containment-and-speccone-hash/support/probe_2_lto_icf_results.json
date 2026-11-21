@@ -1,0 +1,566 @@
+{
+  "toolchains": {
+    "1.99.1": {
+      "icf_matrix": {
+        "ld_bfd": {
+          "icf_all": {
+            "rc": 1,
+            "stderr_first_line": "error: linking with `cc` failed: exit status: 1",
+            "unsupported_flag": true
+          },
+          "icf_none": {
+            "rc": 1,
+            "stderr_first_line": "error: linking with `cc` failed: exit status: 1",
+            "unsupported_flag": true
+          },
+          "icf_safe": {
+            "rc": 1,
+            "stderr_first_line": "error: linking with `cc` failed: exit status: 1",
+            "unsupported_flag": true
+          }
+        },
+        "rust_lld": {
+          "lto_fat_cgu_16_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 388,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_16_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 401,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_16_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 401,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_1_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 388,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_1_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 401,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_1_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 401,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_16_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 516,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_16_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 538,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_16_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 538,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 515,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_all_addrsig": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 515,
+            "has_llvm_addrsig_section": true,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 537,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_none_addrsig": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 537,
+            "has_llvm_addrsig_section": true,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 537,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_safe_addrsig": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 4,
+            "eh_frame_fde_count": 536,
+            "has_llvm_addrsig_section": true,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_16_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 465,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_16_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 485,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_16_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 485,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_1_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 465,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_1_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 485,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_1_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 485,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          }
+        }
+      },
+      "lto_global_asm_matrix": {
+        "lto_fat_cgu_1": {
+          "cfi_strip_upstream_catch_unwind_rc": -6,
+          "downstream_macro_vs_upstream_never_inline": 25,
+          "downstream_macro_vs_upstream_thinlto_importable": 25,
+          "lto_rcgu_attested_sites_count": 2,
+          "lto_rcgu_detected_add_opcode": true,
+          "sibling_rlib_macro_vs_upstream_never_inline": 25,
+          "upstream_pure_promoted_to_ifunc": true,
+          "weak_override_link_rc": 0,
+          "weak_override_runtime_val": 999
+        },
+        "lto_fat_cgu_16": {
+          "cfi_strip_upstream_catch_unwind_rc": -6,
+          "downstream_macro_vs_upstream_never_inline": 25,
+          "downstream_macro_vs_upstream_thinlto_importable": 25,
+          "lto_rcgu_attested_sites_count": 2,
+          "lto_rcgu_detected_add_opcode": true,
+          "sibling_rlib_macro_vs_upstream_never_inline": 25,
+          "upstream_pure_promoted_to_ifunc": true,
+          "weak_override_link_rc": 0,
+          "weak_override_runtime_val": 999
+        },
+        "lto_off_cgu_1": {
+          "cfi_strip_upstream_catch_unwind_rc": 0,
+          "downstream_macro_vs_upstream_never_inline": 15,
+          "downstream_macro_vs_upstream_thinlto_importable": 15,
+          "lto_rcgu_attested_sites_count": 0,
+          "lto_rcgu_detected_add_opcode": false,
+          "sibling_rlib_macro_vs_upstream_never_inline": 15,
+          "upstream_pure_promoted_to_ifunc": false,
+          "weak_override_link_rc": 1,
+          "weak_override_runtime_val": null
+        },
+        "lto_off_cgu_16": {
+          "cfi_strip_upstream_catch_unwind_rc": 0,
+          "downstream_macro_vs_upstream_never_inline": 15,
+          "downstream_macro_vs_upstream_thinlto_importable": 15,
+          "lto_rcgu_attested_sites_count": 0,
+          "lto_rcgu_detected_add_opcode": false,
+          "sibling_rlib_macro_vs_upstream_never_inline": 15,
+          "upstream_pure_promoted_to_ifunc": false,
+          "weak_override_link_rc": 1,
+          "weak_override_runtime_val": null
+        },
+        "lto_thin_cgu_1": {
+          "cfi_strip_upstream_catch_unwind_rc": 0,
+          "downstream_macro_vs_upstream_never_inline": 15,
+          "downstream_macro_vs_upstream_thinlto_importable": 25,
+          "lto_rcgu_attested_sites_count": 3,
+          "lto_rcgu_detected_add_opcode": true,
+          "sibling_rlib_macro_vs_upstream_never_inline": 15,
+          "upstream_pure_promoted_to_ifunc": false,
+          "weak_override_link_rc": 1,
+          "weak_override_runtime_val": null
+        },
+        "lto_thin_cgu_16": {
+          "cfi_strip_upstream_catch_unwind_rc": 0,
+          "downstream_macro_vs_upstream_never_inline": 15,
+          "downstream_macro_vs_upstream_thinlto_importable": 25,
+          "lto_rcgu_attested_sites_count": 3,
+          "lto_rcgu_detected_add_opcode": true,
+          "sibling_rlib_macro_vs_upstream_never_inline": 15,
+          "upstream_pure_promoted_to_ifunc": false,
+          "weak_override_link_rc": 1,
+          "weak_override_runtime_val": null
+        }
+      },
+      "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)"
+    },
+    "nightly": {
+      "icf_matrix": {
+        "ld_bfd": {
+          "icf_all": {
+            "rc": 1,
+            "stderr_first_line": "error: linking with `cc` failed: exit status: 1",
+            "unsupported_flag": true
+          },
+          "icf_none": {
+            "rc": 1,
+            "stderr_first_line": "error: linking with `cc` failed: exit status: 1",
+            "unsupported_flag": true
+          },
+          "icf_safe": {
+            "rc": 1,
+            "stderr_first_line": "error: linking with `cc` failed: exit status: 1",
+            "unsupported_flag": true
+          }
+        },
+        "rust_lld": {
+          "lto_fat_cgu_16_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 396,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_16_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 411,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_16_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 411,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_1_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 396,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_1_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 411,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_fat_cgu_1_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 411,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_16_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 522,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_16_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 544,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_16_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 544,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 521,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_all_addrsig": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 521,
+            "has_llvm_addrsig_section": true,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 543,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_none_addrsig": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 543,
+            "has_llvm_addrsig_section": true,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 543,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_off_cgu_1_icf_safe_addrsig": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 4,
+            "eh_frame_fde_count": 542,
+            "has_llvm_addrsig_section": true,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_16_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 471,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_16_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 491,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_16_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 491,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_1_icf_all": {
+            "asm_folded": true,
+            "distinct_twin_addresses": 3,
+            "eh_frame_fde_count": 471,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": true,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_1_icf_none": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 491,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          },
+          "lto_thin_cgu_1_icf_safe": {
+            "asm_folded": false,
+            "distinct_twin_addresses": 5,
+            "eh_frame_fde_count": 491,
+            "has_llvm_addrsig_section": false,
+            "naked_folded": false,
+            "prelink_attested_sites": 4,
+            "pure_folded": true
+          }
+        }
+      },
+      "lto_global_asm_matrix": {
+        "lto_fat_cgu_1": {
+          "cfi_strip_upstream_catch_unwind_rc": -6,
+          "downstream_macro_vs_upstream_never_inline": 25,
+          "downstream_macro_vs_upstream_thinlto_importable": 25,
+          "lto_rcgu_attested_sites_count": 2,
+          "lto_rcgu_detected_add_opcode": true,
+          "sibling_rlib_macro_vs_upstream_never_inline": 25,
+          "upstream_pure_promoted_to_ifunc": true,
+          "weak_override_link_rc": 0,
+          "weak_override_runtime_val": 999
+        },
+        "lto_fat_cgu_16": {
+          "cfi_strip_upstream_catch_unwind_rc": -6,
+          "downstream_macro_vs_upstream_never_inline": 25,
+          "downstream_macro_vs_upstream_thinlto_importable": 25,
+          "lto_rcgu_attested_sites_count": 2,
+          "lto_rcgu_detected_add_opcode": true,
+          "sibling_rlib_macro_vs_upstream_never_inline": 25,
+          "upstream_pure_promoted_to_ifunc": true,
+          "weak_override_link_rc": 0,
+          "weak_override_runtime_val": 999
+        },
+        "lto_off_cgu_1": {
+          "cfi_strip_upstream_catch_unwind_rc": 0,
+          "downstream_macro_vs_upstream_never_inline": 15,
+          "downstream_macro_vs_upstream_thinlto_importable": 15,
+          "lto_rcgu_attested_sites_count": 0,
+          "lto_rcgu_detected_add_opcode": false,
+          "sibling_rlib_macro_vs_upstream_never_inline": 15,
+          "upstream_pure_promoted_to_ifunc": false,
+          "weak_override_link_rc": 1,
+          "weak_override_runtime_val": null
+        },
+        "lto_off_cgu_16": {
+          "cfi_strip_upstream_catch_unwind_rc": 0,
+          "downstream_macro_vs_upstream_never_inline": 15,
+          "downstream_macro_vs_upstream_thinlto_importable": 15,
+          "lto_rcgu_attested_sites_count": 0,
+          "lto_rcgu_detected_add_opcode": false,
+          "sibling_rlib_macro_vs_upstream_never_inline": 15,
+          "upstream_pure_promoted_to_ifunc": false,
+          "weak_override_link_rc": 1,
+          "weak_override_runtime_val": null
+        },
+        "lto_thin_cgu_1": {
+          "cfi_strip_upstream_catch_unwind_rc": 0,
+          "downstream_macro_vs_upstream_never_inline": 15,
+          "downstream_macro_vs_upstream_thinlto_importable": 25,
+          "lto_rcgu_attested_sites_count": 3,
+          "lto_rcgu_detected_add_opcode": true,
+          "sibling_rlib_macro_vs_upstream_never_inline": 15,
+          "upstream_pure_promoted_to_ifunc": false,
+          "weak_override_link_rc": 1,
+          "weak_override_runtime_val": null
+        },
+        "lto_thin_cgu_16": {
+          "cfi_strip_upstream_catch_unwind_rc": 0,
+          "downstream_macro_vs_upstream_never_inline": 15,
+          "downstream_macro_vs_upstream_thinlto_importable": 25,
+          "lto_rcgu_attested_sites_count": 3,
+          "lto_rcgu_detected_add_opcode": true,
+          "sibling_rlib_macro_vs_upstream_never_inline": 15,
+          "upstream_pure_promoted_to_ifunc": false,
+          "weak_override_link_rc": 1,
+          "weak_override_runtime_val": null
+        }
+      },
+      "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+    }
+  }
+}

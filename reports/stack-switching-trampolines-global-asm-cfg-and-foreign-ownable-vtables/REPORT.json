@@ -1,0 +1,145 @@
+{
+  "topics": [
+    "anneal/trusted-boundary",
+    "compilers/dwarf-cfi",
+    "compilers/unwind-tables",
+    "ffi/callbacks",
+    "ffi/handle-tables",
+    "ffi/reentrancy",
+    "ffi/vtables",
+    "isa/aarch64",
+    "isa/binary-lifting",
+    "isa/x86-64",
+    "lean/mechanization",
+    "minirust/tree-borrows",
+    "runtimes/coroutines",
+    "rust/ffi",
+    "rust/inline-asm",
+    "rust/tree-borrows",
+    "systems/fuchsia",
+    "systems/linux-kernel",
+    "systems/object-formats",
+    "verification/machine-code"
+  ],
+  "subjects": [
+    {
+      "name": "Fuchsia OS (Starnix restricted-mode trampolines, Zircon context switch, libc thread-start, and fdf_sys)",
+      "identity": {
+        "repository": "https://fuchsia.googlesource.com/fuchsia",
+        "revision": "4799c98e7566bf11f1bb3f07dfea86173f00e336"
+      }
+    },
+    {
+      "name": "Linux kernel (Rust-for-Linux ForeignOwnable, Box/Arc impls, miscdevice, and VFS open/fput)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "corosensei stackful coroutine runtime",
+      "identity": {
+        "repository": "Amanieu/corosensei",
+        "revision": "4b5db4845204a4b2663d3f7f75866be4cc3c680d"
+      }
+    },
+    {
+      "name": "Wasmtime fiber runtime and Miri stack-switch emulation",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "40e0d780e4bfa34325d342db5bcf492bea227e07"
+      }
+    },
+    {
+      "name": "unwinding crate and gimli DWARF CFI evaluator",
+      "identity": {
+        "crate": "unwinding",
+        "version": "0.2.10",
+        "gimli_version": "0.34.0",
+        "registry": "crates.io"
+      }
+    },
+    {
+      "name": "AWS-LC Perlasm cryptographic and ABI-test assembly",
+      "identity": {
+        "repository": "aws/aws-lc",
+        "revision": "cd481c207e38f06aeb5766f4a1cdfce10a4c0af8",
+        "crate": "aws-lc-sys 0.47.0"
+      }
+    },
+    {
+      "name": "ring Perlasm cryptographic assembly",
+      "identity": {
+        "repository": "briansmith/ring",
+        "revision": "0b237cbbb4364529818608839faec2d2f9e12664",
+        "crate": "ring 0.17.14"
+      }
+    },
+    {
+      "name": "Rust compiler (codegen_global_asm vs codegen_naked_asm upstream source)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "Rust compiler (1.99.1 executed toolchain for x86_64 and aarch64)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "llvm_version": "23.1.1"
+      }
+    },
+    {
+      "name": "Rust compiler and Miri (1.102.0-nightly executed toolchain)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11); miri 0.1.0 (3ef0c22cdb 2026-11-11)",
+        "llvm_version": "23.1.5"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Anneal verification framework and vendored lean-miri",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+        "lean_miri_revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "GCC, GNU Binutils, LLVM DWARF tools, and QEMU AArch64 user-mode emulator",
+      "identity": {
+        "gcc": "gcc (Debian 15.2.0-14) 15.2.0",
+        "binutils": "GNU Binutils for Debian 2.47",
+        "llvm_dwarfdump": "Debian LLVM 21.1.8",
+        "qemu_aarch64": "qemu-aarch64 11.1.2 (Debian 1:11.1.2+ds-2)"
+      }
+    },
+    {
+      "name": "DWARF CFI, System V AMD64 psABI, and Arm AAPCS64 / DWARF for AArch64 specifications",
+      "identity": {
+        "dwarf": "DWARF Debugging Information Format Version 4 (2010) & Version 5 (2017), Section 6.4",
+        "x86_64_psabi": "System V Application Binary Interface AMD64 Architecture Processor Supplement",
+        "aarch64_dwarf": "DWARF for the Arm 64-bit Architecture (AArch64), Section 4.1 (Call Frame Information)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,108 @@
+{
+  "topics": [
+    "isa/x86-64",
+    "isa/decoding",
+    "isa/simd",
+    "isa/rflags",
+    "verification/machine-code",
+    "verification/correspondence",
+    "verification/simd",
+    "anneal/tcb",
+    "anneal/pass-2",
+    "lean/kernel-replay",
+    "lean/transpilation",
+    "rustc/intrinsics",
+    "rust/core-arch",
+    "llvm/x86-backend"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "lean-miri formal MIR and SIMD/x86 intrinsic interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "AWS s2n-bignum HOL Light x86-64 formal verification suite",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "d4518712d040485efe621caba1c723a07fbc549e"
+      }
+    },
+    {
+      "name": "Intel X86 Encoder Decoder (XED)",
+      "identity": {
+        "repository": "intelxed/xed",
+        "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+      }
+    },
+    {
+      "name": "Rust compiler and core::arch standard library (stable 1.99.1)",
+      "identity": {
+        "llvm_version": "23.1.1",
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust compiler and core::arch standard library (nightly 1.102.0)",
+      "identity": {
+        "llvm_version": "23.1.5",
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "LLVM machine-code disassembler (llvm-mc)",
+      "identity": {
+        "package": "Debian llvm 21.1.8",
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "21.1.8"
+      }
+    },
+    {
+      "name": "GNU Binutils objdump",
+      "identity": {
+        "package": "Debian binutils 2.47",
+        "target": "x86_64-linux-gnu",
+        "version": "2.47"
+      }
+    },
+    {
+      "name": "Intel Xeon Ice Lake-SP x86-64 processor and Linux trap delivery",
+      "identity": {
+        "cpu": "GenuineIntel Family 6 Model 106 Stepping 6 (Intel Xeon @ 2.60GHz)",
+        "kernel": "Linux 7.1.6-1rodete1-amd64 x86_64"
+      }
+    },
+    {
+      "name": "Intel 64 and IA-32 Architectures Software Developer's Manual",
+      "identity": {
+        "document_number": "325462-087US",
+        "edition": "2025",
+        "publisher": "Intel Corporation"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

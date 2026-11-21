@@ -1,0 +1,50 @@
+{
+  "linux_vm_4kib_and_memfd": {
+    "bleed_corrupted": true,
+    "bleed_val_hex": "0xbad0c0decafebabe",
+    "zc_read_matches": true,
+    "ro_write_trapped": true,
+    "ro_sig": 11,
+    "ro_si_code": 2,
+    "host_unmutated": true,
+    "guard_trapped": true,
+    "guard_sig": 11,
+    "guard_si_code": 2,
+    "segv_accerr_const": 2
+  },
+  "miri_tree_borrows": {
+    "miri_version": "miri 0.1.0 (3ef0c22cdb 2026-11-11)",
+    "cases": {
+      "ub_frozen": {
+        "rc": 1,
+        "stdout": "",
+        "ub_detected": true,
+        "ub_headline": "error: Undefined Behavior: write access through <wildcard> at alloc866[0x0] is forbidden"
+      },
+      "ub_sibling_mut": {
+        "rc": 1,
+        "stdout": "",
+        "ub_detected": true,
+        "ub_headline": "error: Undefined Behavior: write access through <wildcard> at alloc870[0x1000] is forbidden"
+      },
+      "ub_reentrant_cb": {
+        "rc": 1,
+        "stdout": "",
+        "ub_detected": true,
+        "ub_headline": "error: Undefined Behavior: read access through <1894> at alloc874[0x0] is forbidden"
+      },
+      "ub_box_backing": {
+        "rc": 1,
+        "stdout": "",
+        "ub_detected": true,
+        "ub_headline": "error: Undefined Behavior: write access through <wildcard> at alloc878[0x0] is forbidden"
+      },
+      "ok_sfi_arena": {
+        "rc": 0,
+        "stdout": "MIRI_OK final_a=43 final_b=200",
+        "ub_detected": false,
+        "ub_headline": ""
+      }
+    }
+  }
+}

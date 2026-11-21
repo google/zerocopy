@@ -1,0 +1,464 @@
+{
+  "loops_synthesized": 6,
+  "manual_invariant_loc_total": 0,
+  "loops": [
+    {
+      "slug": "ByteSumUnroll4",
+      "schedule": {
+        "unroll_stride": 64,
+        "pipeline_lag": 0,
+        "has_early_exit": false
+      },
+      "initial_candidates": 6,
+      "houdini_kept": 5,
+      "houdini_dropped": [
+        "acc0 == refPrefix [single-acc guess]"
+      ],
+      "cegis_rounds": 2,
+      "class_ii_pruned": [
+        {
+          "clause": "rcx <= 192 [coincidental micro-trace bound]",
+          "round": 1,
+          "triage": "Class II (unreachable non-inductive trace artifact)",
+          "solve_ms": 4.63,
+          "witness": {
+            "k": 3,
+            "blocks": 15,
+            "rcx": 192,
+            "rdx": 960,
+            "acc0": 65535,
+            "acc1": 65535,
+            "ref": 65534
+          }
+        }
+      ],
+      "final_cutbox_clauses": [
+        "rcx == 64 * k",
+        "rdx == 64 * blocks",
+        "k <= blocks",
+        "(acc0 + acc1) == refPrefix"
+      ],
+      "monolithic_16bit_rup_steps": 49259,
+      "monolithic_16bit_cert_bytes": 6967074,
+      "monolithic_16bit_solve_ms": 1548.74,
+      "aig_gates": 255,
+      "cnf_vars": 287,
+      "lrat": {
+        "solve_ms": 4.65,
+        "trim_ms": 5.41,
+        "total_cnf_clauses": 874,
+        "core_cnf_clauses": 421,
+        "raw_rup_steps": 361,
+        "trimmed_rup_steps": 256,
+        "rat_steps": 0,
+        "max_recycled_slot": 443,
+        "o_depth": 5,
+        "init_leaves": 18,
+        "step_leaves": 59
+      },
+      "emitted_cert_bytes": 33646,
+      "total_synth_ms": 5658.34
+    },
+    {
+      "slug": "DotMaddubsUnroll2",
+      "schedule": {
+        "unroll_stride": 64,
+        "pipeline_lag": 0,
+        "has_early_exit": false
+      },
+      "initial_candidates": 7,
+      "houdini_kept": 6,
+      "houdini_dropped": [
+        "ymm0Sum == ymm1Sum [symmetric lane guess]"
+      ],
+      "cegis_rounds": 2,
+      "class_ii_pruned": [
+        {
+          "clause": "k <= 3 [coincidental micro-trace trip bound]",
+          "round": 1,
+          "triage": "Class II (unreachable non-inductive trace artifact)",
+          "solve_ms": 3.33,
+          "witness": {
+            "k": 3,
+            "blocks": 7,
+            "rcx": 192,
+            "rdx": 448,
+            "y0": 65535,
+            "y1": 65535,
+            "y2": 1,
+            "ref": 65534
+          }
+        }
+      ],
+      "final_cutbox_clauses": [
+        "rcx == 64 * k",
+        "rdx == 64 * blocks",
+        "k <= blocks",
+        "ymm2 == ones16 (scale == 1)",
+        "(ymm0Sum + ymm1Sum) == dotPrefix"
+      ],
+      "monolithic_16bit_rup_steps": 16112,
+      "monolithic_16bit_cert_bytes": 2206809,
+      "monolithic_16bit_solve_ms": 330.22,
+      "aig_gates": 242,
+      "cnf_vars": 276,
+      "lrat": {
+        "solve_ms": 4.57,
+        "trim_ms": 3.69,
+        "total_cnf_clauses": 826,
+        "core_cnf_clauses": 389,
+        "raw_rup_steps": 183,
+        "trimmed_rup_steps": 155,
+        "rat_steps": 0,
+        "max_recycled_slot": 411,
+        "o_depth": 5,
+        "init_leaves": 17,
+        "step_leaves": 35
+      },
+      "emitted_cert_bytes": 26384,
+      "total_synth_ms": 1135.03,
+      "ablation_missing_ymm2_pin_sat_ms": 3.64
+    },
+    {
+      "slug": "PipelinedMac",
+      "schedule": {
+        "unroll_stride": 1,
+        "pipeline_lag": 1,
+        "has_early_exit": false
+      },
+      "initial_candidates": 5,
+      "houdini_kept": 4,
+      "houdini_dropped": [
+        "acc == macPrefix(k) [naive mu=0 invariant]"
+      ],
+      "cegis_rounds": 2,
+      "class_ii_pruned": [
+        {
+          "clause": "idx <= 6 [coincidental micro-trace bound]",
+          "round": 1,
+          "triage": "Class II (unreachable non-inductive trace artifact)",
+          "solve_ms": 2.71,
+          "witness": {
+            "k": 6,
+            "n": 32,
+            "idx": 6,
+            "acc": 0,
+            "stage": 0,
+            "ref": 0
+          }
+        }
+      ],
+      "final_cutbox_clauses": [
+        "idx == k",
+        "1 <= k <= n",
+        "(acc + stage) == macPrefix(k) [mu=1 lagged conservation]"
+      ],
+      "monolithic_16bit_rup_steps": 585,
+      "monolithic_16bit_cert_bytes": 77698,
+      "monolithic_16bit_solve_ms": 6.65,
+      "aig_gates": 205,
+      "cnf_vars": 234,
+      "lrat": {
+        "solve_ms": 3.49,
+        "trim_ms": 2.84,
+        "total_cnf_clauses": 699,
+        "core_cnf_clauses": 363,
+        "raw_rup_steps": 295,
+        "trimmed_rup_steps": 186,
+        "rat_steps": 0,
+        "max_recycled_slot": 364,
+        "o_depth": 5,
+        "init_leaves": 16,
+        "step_leaves": 46
+      },
+      "emitted_cert_bytes": 21553,
+      "total_synth_ms": 63.24
+    },
+    {
+      "slug": "AdcLimbCarry",
+      "schedule": {
+        "unroll_stride": 1,
+        "pipeline_lag": 0,
+        "has_early_exit": false
+      },
+      "initial_candidates": 5,
+      "houdini_kept": 4,
+      "houdini_dropped": [
+        "cf == 0 [carry-free guess]"
+      ],
+      "cegis_rounds": 2,
+      "class_ii_pruned": [
+        {
+          "clause": "k <= 4 [coincidental micro-trace bound]",
+          "round": 1,
+          "triage": "Class II (unreachable non-inductive trace artifact)",
+          "solve_ms": 2.66,
+          "witness": {
+            "k": 4,
+            "n": 16,
+            "idx": 4,
+            "cf": 0
+          }
+        }
+      ],
+      "final_cutbox_clauses": [
+        "idx == k",
+        "k <= n",
+        "outLimbs + cf * W^k == aLimbs + bLimbs"
+      ],
+      "monolithic_16bit_rup_steps": 1880,
+      "monolithic_16bit_cert_bytes": 243641,
+      "monolithic_16bit_solve_ms": 31.37,
+      "aig_gates": 167,
+      "cnf_vars": 189,
+      "lrat": {
+        "solve_ms": 3.18,
+        "trim_ms": 2.59,
+        "total_cnf_clauses": 570,
+        "core_cnf_clauses": 338,
+        "raw_rup_steps": 130,
+        "trimmed_rup_steps": 122,
+        "rat_steps": 0,
+        "max_recycled_slot": 339,
+        "o_depth": 5,
+        "init_leaves": 15,
+        "step_leaves": 29
+      },
+      "emitted_cert_bytes": 20213,
+      "total_synth_ms": 144.76
+    },
+    {
+      "slug": "MemchrEarlyExit",
+      "schedule": {
+        "unroll_stride": 16,
+        "pipeline_lag": 0,
+        "has_early_exit": true
+      },
+      "initial_candidates": 4,
+      "houdini_kept": 4,
+      "houdini_dropped": [],
+      "cegis_rounds": 2,
+      "class_ii_pruned": [
+        {
+          "clause": "k <= 3 [coincidental micro-trace bound]",
+          "round": 1,
+          "triage": "Class II (unreachable non-inductive trace artifact)",
+          "solve_ms": 2.76,
+          "witness": {
+            "k": 3,
+            "blocks": 7,
+            "cursor": 48,
+            "no_match_pref": 1,
+            "eq_bits": 0
+          }
+        }
+      ],
+      "final_cutbox_clauses": [
+        "cursor == 16 * k",
+        "k <= blocks",
+        "noMatchBefore(16 * k) == true"
+      ],
+      "monolithic_16bit_rup_steps": 232,
+      "monolithic_16bit_cert_bytes": 47572,
+      "monolithic_16bit_solve_ms": 5.56,
+      "aig_gates": 169,
+      "cnf_vars": 202,
+      "lrat": {
+        "solve_ms": 2.97,
+        "trim_ms": 1.42,
+        "total_cnf_clauses": 571,
+        "core_cnf_clauses": 213,
+        "raw_rup_steps": 167,
+        "trimmed_rup_steps": 91,
+        "rat_steps": 0,
+        "max_recycled_slot": 214,
+        "o_depth": 5,
+        "init_leaves": 9,
+        "step_leaves": 23
+      },
+      "emitted_cert_bytes": 10677,
+      "total_synth_ms": 52.21
+    },
+    {
+      "slug": "CtCmovScan",
+      "schedule": {
+        "unroll_stride": 1,
+        "pipeline_lag": 0,
+        "has_early_exit": false
+      },
+      "initial_candidates": 5,
+      "houdini_kept": 5,
+      "houdini_dropped": [],
+      "cegis_rounds": 2,
+      "class_ii_pruned": [
+        {
+          "clause": "k1 <= 6 [coincidental micro-trace bound]",
+          "round": 1,
+          "triage": "Class II (unreachable non-inductive trace artifact)",
+          "solve_ms": 2.88,
+          "witness": {
+            "k1": 6,
+            "k2": 6,
+            "n": 32,
+            "tgt1": 0,
+            "tgt2": 0,
+            "rax1": 0,
+            "ref1": 0,
+            "leak_eq": 1
+          }
+        }
+      ],
+      "final_cutbox_clauses": [
+        "k1 == k2 (2-safety lockstep)",
+        "k1 <= n",
+        "rax1 == (target1 < k1 ? table[target1] : 0)",
+        "leakTrace1 == leakTrace2 (secret-independent address/branch trace)"
+      ],
+      "monolithic_16bit_rup_steps": 473,
+      "monolithic_16bit_cert_bytes": 69692,
+      "monolithic_16bit_solve_ms": 7.3,
+      "aig_gates": 134,
+      "cnf_vars": 154,
+      "lrat": {
+        "solve_ms": 3.1,
+        "trim_ms": 2.51,
+        "total_cnf_clauses": 449,
+        "core_cnf_clauses": 273,
+        "raw_rup_steps": 223,
+        "trimmed_rup_steps": 149,
+        "rat_steps": 0,
+        "max_recycled_slot": 274,
+        "o_depth": 5,
+        "init_leaves": 12,
+        "step_leaves": 36
+      },
+      "emitted_cert_bytes": 19413,
+      "total_synth_ms": 69.29
+    }
+  ],
+  "lean_verification": {
+    "lrat_checker_unsafe_rec": 0,
+    "compile_stats": {
+      "LoopCegisBase": {
+        "source_bytes": 12671,
+        "olean_bytes": 749632,
+        "compile_ms": 719.08
+      },
+      "UntrustedCegisHints": {
+        "source_bytes": 46719,
+        "olean_bytes": 3808136,
+        "compile_ms": 4265.81
+      },
+      "AutoLoop_ByteSumUnroll4": {
+        "source_bytes": 34827,
+        "olean_bytes": 301568,
+        "compile_ms": 10124.82
+      },
+      "AutoLoop_DotMaddubsUnroll2": {
+        "source_bytes": 27613,
+        "olean_bytes": 211208,
+        "compile_ms": 7616.68
+      },
+      "AutoLoop_PipelinedMac": {
+        "source_bytes": 22674,
+        "olean_bytes": 241760,
+        "compile_ms": 5413.42
+      },
+      "AutoLoop_AdcLimbCarry": {
+        "source_bytes": 21344,
+        "olean_bytes": 180664,
+        "compile_ms": 5412.81
+      },
+      "AutoLoop_MemchrEarlyExit": {
+        "source_bytes": 11808,
+        "olean_bytes": 134528,
+        "compile_ms": 2665.8
+      },
+      "AutoLoop_CtCmovScan": {
+        "source_bytes": 21028,
+        "olean_bytes": 197328,
+        "compile_ms": 5561.12
+      }
+    },
+    "per_loop_private_replay": {
+      "AutoLoop_ByteSumUnroll4": {
+        "manual_invariant_loc": 0,
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 3,
+        "import_ms": 79.76,
+        "replay_ms": 2691.63,
+        "transitive_axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_DotMaddubsUnroll2": {
+        "manual_invariant_loc": 0,
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 3,
+        "import_ms": 90.0,
+        "replay_ms": 2354.3,
+        "transitive_axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_PipelinedMac": {
+        "manual_invariant_loc": 0,
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 3,
+        "import_ms": 77.0,
+        "replay_ms": 1593.77,
+        "transitive_axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_AdcLimbCarry": {
+        "manual_invariant_loc": 0,
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 3,
+        "import_ms": 75.64,
+        "replay_ms": 1602.07,
+        "transitive_axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_MemchrEarlyExit": {
+        "manual_invariant_loc": 0,
+        "replayed_constants": 3,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 3,
+        "import_ms": 73.65,
+        "replay_ms": 684.1,
+        "transitive_axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      "AutoLoop_CtCmovScan": {
+        "manual_invariant_loc": 0,
+        "replayed_constants": 4,
+        "unsafe_rec_constants": 0,
+        "type_hints": 0,
+        "val_hints": 6,
+        "import_ms": 75.84,
+        "replay_ms": 1412.49,
+        "transitive_axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      }
+    }
+  }
+}

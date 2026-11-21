@@ -1,0 +1,116 @@
+{
+  "topics": [
+    "anneal/inline-asm",
+    "ffi",
+    "isa/riscv64",
+    "lean/mechanization",
+    "llvm/lld",
+    "llvm/mc-layer",
+    "rust/inline-asm",
+    "rustc/codegen",
+    "security/assembler-directives",
+    "systems/elf-linker-instruction-relaxation",
+    "systems/sfi-lfi",
+    "verification/inline-asm-soundness"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (1.95.0-nightly)",
+      "identity": {
+        "commit_date": "2026-01-24",
+        "repository": "rust-lang/rust",
+        "revision": "f134bbc78dac04a17324341a8d4a15a6930d81a7",
+        "version": "1.95.0-nightly"
+      }
+    },
+    {
+      "name": "Rust compiler (1.99.1)",
+      "identity": {
+        "commit_date": "2026-10-13",
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly)",
+      "identity": {
+        "commit_date": "2026-11-11",
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "LLVM and rust-lld 21.1.8",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "85a90d119deb25b518867cd37d62c7b93b575a6f",
+        "version": "21.1.8"
+      }
+    },
+    {
+      "name": "LLVM and rust-lld 23.1.1",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "LLVM and rust-lld 23.1.5",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+        "version": "23.1.5"
+      }
+    },
+    {
+      "name": "mold linker",
+      "identity": {
+        "package": "Debian mold 2.42.1",
+        "repository": "rui314/mold",
+        "tool": "ld.mold",
+        "version": "2.42.1"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "RISC-V ELF psABI Specification",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+        "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+      }
+    },
+    {
+      "name": "RISC-V Instruction Set Manual",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "5f1104a0613af80219232b1e4bc108f9ec2bd6b2"
+      }
+    },
+    {
+      "name": "QEMU user-mode RISC-V 64-bit emulator",
+      "identity": {
+        "package": "Debian qemu-user 1:11.1.2+ds-2",
+        "tool": "qemu-riscv64",
+        "version": "11.1.2"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

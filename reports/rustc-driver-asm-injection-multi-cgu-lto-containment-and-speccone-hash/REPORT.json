@@ -1,0 +1,98 @@
+{
+  "topics": [
+    "anneal/rustc-capture",
+    "anneal/spec-cone",
+    "isa/aarch64",
+    "isa/riscv64",
+    "isa/x86-64",
+    "lean/mechanization",
+    "llvm/icf",
+    "llvm/lto",
+    "llvm/mc-layer",
+    "rust/inline-asm",
+    "rustc/codegen",
+    "rustc/driver",
+    "rustc/layout-abi",
+    "rustc/lto",
+    "rustc/mir",
+    "rustc/tyctxt",
+    "security/assembler-directives",
+    "verification/inline-asm-soundness",
+    "verification/non-interference"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (1.98.0-nightly)",
+      "identity": {
+        "commit_date": "2026-05-31",
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Rust compiler (1.99.1)",
+      "identity": {
+        "commit_date": "2026-10-13",
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly)",
+      "identity": {
+        "commit_date": "2026-11-11",
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "LLVM and rust-lld 23.1.1",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "LLVM and rust-lld 23.1.5",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+        "version": "23.1.5"
+      }
+    },
+    {
+      "name": "Anneal Rust verifier",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "GNU Binutils (ld.bfd and readelf)",
+      "identity": {
+        "package": "GNU Binutils for Debian",
+        "version": "2.47"
+      }
+    },
+    {
+      "name": "LLVM 21 CLI tools (llc and llvm-mc)",
+      "identity": {
+        "package": "Debian llvm-21-tools",
+        "version": "21.1.8"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

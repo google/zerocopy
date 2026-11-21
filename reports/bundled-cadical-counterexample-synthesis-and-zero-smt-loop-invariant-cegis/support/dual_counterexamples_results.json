@@ -1,0 +1,399 @@
+{
+  "bugs_tested": 12,
+  "bugs_refuted_in_lean_kernel": 12,
+  "bugs_caught_in_rust_exec": 12,
+  "bugs": [
+    {
+      "bug_id": 1,
+      "slug": "vpmaddubsw_i16_sat",
+      "failure_class": "Class Ib",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 1514,
+      "cnf_vars": 1547,
+      "cnf_clauses": 5089,
+      "solve_ms": 44.23,
+      "shrink_calls": 24,
+      "shrink_ms": 283.67,
+      "hw_raw": 25,
+      "hw_1bit_local": 24,
+      "hw_shrunk": 18,
+      "raw_witness": {
+        "u0": 255,
+        "u1": 255,
+        "s0": -64,
+        "s1": -65
+      },
+      "witness": {
+        "u0": 255,
+        "u1": 254,
+        "s0": 64,
+        "s1": 65
+      }
+    },
+    {
+      "bug_id": 2,
+      "slug": "swar_borrow_bleed",
+      "failure_class": "Class Ib",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 341,
+      "cnf_vars": 406,
+      "cnf_clauses": 1136,
+      "solve_ms": 2.82,
+      "shrink_calls": 9,
+      "shrink_ms": 27.47,
+      "hw_raw": 6,
+      "hw_1bit_local": 1,
+      "hw_shrunk": 1,
+      "raw_witness": {
+        "x": "0x80810101010000"
+      },
+      "witness": {
+        "x": 256,
+        "x_hex": "0x100"
+      }
+    },
+    {
+      "bug_id": 3,
+      "slug": "bsf_zero_undef_dst",
+      "failure_class": "Class Ia/Ib (Demonic Undef Dst)",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 781,
+      "cnf_vars": 910,
+      "cnf_clauses": 2352,
+      "solve_ms": 2.66,
+      "shrink_calls": 2,
+      "shrink_ms": 9.38,
+      "hw_raw": 0,
+      "hw_1bit_local": 0,
+      "hw_shrunk": 0,
+      "raw_witness": {
+        "x": "0x0",
+        "bsfUndefDst": "0x0"
+      },
+      "witness": {
+        "x": 0,
+        "bsfUndefDst": 0
+      }
+    },
+    {
+      "bug_id": 4,
+      "slug": "imul_zf_undef_branch",
+      "failure_class": "Class Ia/Ib (Demonic Undef RFLAGS.ZF)",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 707,
+      "cnf_vars": 741,
+      "cnf_clauses": 2349,
+      "solve_ms": 3.03,
+      "shrink_calls": 3,
+      "shrink_ms": 11.63,
+      "hw_raw": 33,
+      "hw_1bit_local": 3,
+      "hw_shrunk": 0,
+      "raw_witness": {
+        "a": 65535,
+        "b": 65535,
+        "imulUndefZf": true
+      },
+      "witness": {
+        "a": 0,
+        "b": 0,
+        "imulUndefZf": false
+      }
+    },
+    {
+      "bug_id": 5,
+      "slug": "vmovdqu_cross_page_sigsegv",
+      "failure_class": "Class Ia (PROT_NONE Page Fault)",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 155,
+      "cnf_vars": 174,
+      "cnf_clauses": 531,
+      "solve_ms": 1.89,
+      "shrink_calls": 14,
+      "shrink_ms": 30.62,
+      "hw_raw": 8,
+      "hw_1bit_local": 8,
+      "hw_shrunk": 8,
+      "raw_witness": {
+        "len": 0,
+        "pageMisalign": 4080
+      },
+      "witness": {
+        "len": 0,
+        "pageMisalign": 4065
+      }
+    },
+    {
+      "bug_id": 6,
+      "slug": "off_by_one_tail_mask_slack",
+      "failure_class": "Class Ib (Demonic Slack Read)",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 1069,
+      "cnf_vars": 1202,
+      "cnf_clauses": 3304,
+      "solve_ms": 3.34,
+      "shrink_calls": 28,
+      "shrink_ms": 138.34,
+      "hw_raw": 131,
+      "hw_1bit_local": 2,
+      "hw_shrunk": 2,
+      "raw_witness": {
+        "len": 7,
+        "slice0": 255,
+        "slack0": 255
+      },
+      "witness": {
+        "len": 1,
+        "slice": [
+          0
+        ],
+        "slack0": 1
+      }
+    },
+    {
+      "bug_id": 7,
+      "slug": "ct_vpmovmskb_early_exit_leak",
+      "failure_class": "Class Ib-2Safety (Secret Branch Leak)",
+      "engine": "CaDiCaL-SAT (2-Safety Product)",
+      "single_trace_functional_rc": 20,
+      "single_trace_ms": 1.9,
+      "aig_gates": 511,
+      "cnf_vars": 896,
+      "cnf_clauses": 1792,
+      "solve_ms": 2.44,
+      "shrink_calls": 56,
+      "shrink_ms": 218.23,
+      "hw_raw": 383,
+      "hw_1bit_local": 256,
+      "hw_shrunk": 1,
+      "raw_witness": {
+        "pub0": 255,
+        "sec1_0": 255,
+        "sec2_0": 255
+      },
+      "witness": {
+        "pub": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sec1": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sec2": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "bug_id": 8,
+      "slug": "pclmulqdq_crc64_poly_bitflip",
+      "failure_class": "Class Ib (GF(2) Polynomial Constant Typo)",
+      "engine": "F2BasisSimd Unit-Basis (SAT shrink stalls >3,000 ms)",
+      "aig_gates": 6922,
+      "cnf_vars": 7051,
+      "cnf_clauses": 27573,
+      "sat_raw_solve_ms": 12.46,
+      "sat_phase0_hw": 128,
+      "sat_shrink_stalled": true,
+      "sat_shrink_stall_ms": 3018.99,
+      "f2_basis_evals": 65,
+      "solve_ms": 1.335,
+      "shrink_calls": 0,
+      "shrink_ms": 0.0,
+      "hw_raw": 128,
+      "hw_1bit_local": 128,
+      "hw_shrunk": 1,
+      "raw_witness": {
+        "h": "0xffffffffffffffff",
+        "l": "0xffffffffffffffff"
+      },
+      "witness": {
+        "h": 0,
+        "l": 1
+      }
+    },
+    {
+      "bug_id": 9,
+      "slug": "adcx_adox_carry_swap",
+      "failure_class": "Class Ib (Dual Carry-Chain Drop)",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 3218,
+      "cnf_vars": 3479,
+      "cnf_clauses": 10756,
+      "solve_ms": 10.22,
+      "shrink_calls": 91,
+      "shrink_ms": 1112.7,
+      "hw_raw": 260,
+      "hw_1bit_local": 130,
+      "hw_shrunk": 36,
+      "raw_witness": {
+        "b": 15,
+        "t0": "0xffffffffffffffff",
+        "t1": "0xffffffffffffffff",
+        "a0": "0xffffffffffffffff",
+        "a1": "0xffffffffffffffff"
+      },
+      "witness": {
+        "t0": 0,
+        "t1": 0,
+        "a0": 1229782938247303442,
+        "a1": 1229782938247303441,
+        "b": 15
+      }
+    },
+    {
+      "bug_id": 10,
+      "slug": "vpshufb_bit7_zeroing",
+      "failure_class": "Class Ib (SIMD Lane Zeroing)",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 410,
+      "cnf_vars": 547,
+      "cnf_clauses": 1240,
+      "solve_ms": 2.52,
+      "shrink_calls": 29,
+      "shrink_ms": 83.32,
+      "hw_raw": 136,
+      "hw_1bit_local": 2,
+      "hw_shrunk": 2,
+      "raw_witness": {
+        "lut0": 255,
+        "idx0": 255
+      },
+      "witness": {
+        "lut0": 1,
+        "idx0": 128
+      }
+    },
+    {
+      "bug_id": 11,
+      "slug": "vminss_nan_signed_zero_swap",
+      "failure_class": "Class Ib (IEEE-754 Non-Commutative Tie/NaN)",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 655,
+      "cnf_vars": 720,
+      "cnf_clauses": 2121,
+      "solve_ms": 2.42,
+      "shrink_calls": 4,
+      "shrink_ms": 14.26,
+      "hw_raw": 63,
+      "hw_1bit_local": 9,
+      "hw_shrunk": 1,
+      "raw_witness": {
+        "aBits": "0xffffffff",
+        "bBits": "0x7fffffff"
+      },
+      "witness": {
+        "aBits": 2147483648,
+        "bBits": 0,
+        "aBits_hex": "0x80000000",
+        "bBits_hex": "0x0",
+        "nan_aBits": 2139095041,
+        "nan_bBits": 0,
+        "nan_aBits_hex": "0x7f800001",
+        "nan_bBits_hex": "0x0"
+      }
+    },
+    {
+      "bug_id": 12,
+      "slug": "bzhi_count_ge64_vs_shift",
+      "failure_class": "Class Ib (BMI2 Saturation vs Mod-64 Shift)",
+      "engine": "CaDiCaL-SAT",
+      "aig_gates": 697,
+      "cnf_vars": 770,
+      "cnf_clauses": 2220,
+      "solve_ms": 3.84,
+      "shrink_calls": 16,
+      "shrink_ms": 61.25,
+      "hw_raw": 72,
+      "hw_1bit_local": 2,
+      "hw_shrunk": 2,
+      "raw_witness": {
+        "x": "0xffffffffffffffff",
+        "n": 255
+      },
+      "witness": {
+        "x": 1,
+        "n": 64
+      }
+    }
+  ],
+  "verification": {
+    "lean_modules": {
+      "DemonicIsaModel": {
+        "source_bytes": 16320,
+        "olean_bytes": 1052944,
+        "compile_ms": 1048.43
+      },
+      "RefuteSimdAsm12": {
+        "source_bytes": 7983,
+        "olean_bytes": 105128,
+        "compile_ms": 462.74
+      }
+    },
+    "private_kernel_replay": {
+      "replayed_constants": 21,
+      "import_ms": 35.26,
+      "replay_ms": 36.55,
+      "transitive_axioms": [
+        "propext"
+      ]
+    },
+    "rust_test_suite": {
+      "rustc_version": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+      "compile_ms": 153.88,
+      "exec_median_ms": 2.58,
+      "exec_all_ms": [
+        2.4,
+        2.52,
+        2.58,
+        2.63,
+        9.59
+      ],
+      "passed_tests": 12
+    }
+  }
+}

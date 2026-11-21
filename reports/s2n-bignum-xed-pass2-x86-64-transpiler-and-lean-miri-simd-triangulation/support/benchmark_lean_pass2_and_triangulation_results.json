@@ -1,0 +1,174 @@
+{
+  "compile_flags": [
+    "-j1",
+    "-M4096",
+    "-t0",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false"
+  ],
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "modules": {
+    "ByteX86Pass2Correspondence.lean": {
+      "compile_wall_ms": 5609.91,
+      "maxrss_kb": 394564,
+      "olean_all_parts_bytes": 6231776,
+      "olean_bytes": 6231776,
+      "olean_sha256": "89b4a4a3b2b8f90aa682cac7b26e5693cd2b238d34cfa647dec051853c4bd253",
+      "source_bytes": 57809,
+      "source_lines": 1191,
+      "source_sha256": "577775b8bcb659e0a83884616d880773dcf474328469edde46e36f197b54f029",
+      "zero_forbidden_tokens": true,
+      "zero_warnings_and_errors": true
+    },
+    "SiliconCheck224.lean": {
+      "compile_wall_ms": 65882.07,
+      "maxrss_kb": 1257860,
+      "olean_all_parts_bytes": 3353648,
+      "olean_bytes": 3353648,
+      "olean_sha256": "013b06b0a18cda2883b1339c2c481e05af63cecd70645eef88305837d69156a8",
+      "source_bytes": 143538,
+      "source_lines": 547,
+      "source_sha256": "a5bac91e3b6debffc463a9fa91c88e59eed7fdd02c8c9cfe494f546e287eb4a3",
+      "zero_forbidden_tokens": true,
+      "zero_warnings_and_errors": true
+    },
+    "SimdTriangulation24.lean": {
+      "compile_wall_ms": 10308.58,
+      "maxrss_kb": 447872,
+      "olean_all_parts_bytes": 9261048,
+      "olean_bytes": 9261048,
+      "olean_sha256": "6b2bbf54151ae2c65ff157a956652f49d5155ea41bdef14a540403cb6e130d75",
+      "source_bytes": 64928,
+      "source_lines": 1101,
+      "source_sha256": "3641a4f044bb3671891ed8d3746698c1e3150ded6f5e4894f4eccc811137c557",
+      "zero_forbidden_tokens": true,
+      "zero_warnings_and_errors": true
+    },
+    "VendorX86Ref/Decode.lean": {
+      "compile_wall_ms": 1943.14,
+      "maxrss_kb": 326464,
+      "olean_all_parts_bytes": 1853864,
+      "olean_bytes": 1853864,
+      "olean_sha256": "71614d87d5d1eda42c3887ea8548376577a99b7e6d60cc8872ae94e75dad890f",
+      "source_bytes": 36641,
+      "source_lines": 723,
+      "source_sha256": "f134f7f26645824c4293142d6e4334e430f55f5159d3583e7a6356b2a7ba56bf",
+      "zero_forbidden_tokens": true,
+      "zero_warnings_and_errors": true
+    },
+    "VendorX86Ref/Machine.lean": {
+      "compile_wall_ms": 357.42,
+      "maxrss_kb": 291176,
+      "olean_all_parts_bytes": 141552,
+      "olean_bytes": 141552,
+      "olean_sha256": "8dfbd1bd96c8dc573e60968bf123084a9568cdd6e5858d39c591044401836538",
+      "source_bytes": 3240,
+      "source_lines": 76,
+      "source_sha256": "37e75c1eee1dcb94d4c22448308cb6e2bb5478468bacb214ca576d7c11c2904e",
+      "zero_forbidden_tokens": true,
+      "zero_warnings_and_errors": true
+    },
+    "VendorX86Ref/SemanticsScalar.lean": {
+      "compile_wall_ms": 1112.03,
+      "maxrss_kb": 305320,
+      "olean_all_parts_bytes": 1204792,
+      "olean_bytes": 1204792,
+      "olean_sha256": "031294eb06c90a98095d8f8f741a9815640e1a1619e356c646b3eac12dbeae6f",
+      "source_bytes": 22253,
+      "source_lines": 527,
+      "source_sha256": "6b726bd6250db011d0a3aba34d536fde0dd9f8aa4dd23610e3338c476a69209f",
+      "zero_forbidden_tokens": true,
+      "zero_warnings_and_errors": true
+    },
+    "VendorX86Ref/SemanticsSimd.lean": {
+      "compile_wall_ms": 1359.98,
+      "maxrss_kb": 315472,
+      "olean_all_parts_bytes": 1548360,
+      "olean_bytes": 1548360,
+      "olean_sha256": "f1c910273d92cb7bdc89cb41f96e52173d28f9157a860be15b9d4e05ae091026",
+      "source_bytes": 25453,
+      "source_lines": 417,
+      "source_sha256": "cafa98c81e0888ddc95a49cb42add5804fdc107b10130b1fdd8d6094259f9a7a",
+      "zero_forbidden_tokens": true,
+      "zero_warnings_and_errors": true
+    },
+    "VendorX86Ref/Types.lean": {
+      "compile_wall_ms": 4258.73,
+      "maxrss_kb": 386696,
+      "olean_all_parts_bytes": 6670888,
+      "olean_bytes": 6670888,
+      "olean_sha256": "a6cf4e1af6c358548c291d2d18d81bb9563a0552712df8cabf5ff9ae1d34623b",
+      "source_bytes": 15035,
+      "source_lines": 375,
+      "source_sha256": "3b39cf958a7d6a197f8f68f8fbadc66d6cb29ffa6c091ce74a20a52040b5779e",
+      "zero_forbidden_tokens": true,
+      "zero_warnings_and_errors": true
+    }
+  },
+  "standalone_private_kernel_replay": {
+    "pass2": {
+      "delta_consts": 454,
+      "load_private_ms": 181,
+      "replay_ms": 668,
+      "transitive_axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "vmhwm_kb": 2002188
+    },
+    "triangulation": {
+      "axiom_consts": [],
+      "delta_consts": 1063,
+      "forbidden_refs": [],
+      "load_private_ms": 184,
+      "opaque_consts": [],
+      "partial_consts": [],
+      "per_module_kernel_consts": {
+        "ByteX86Pass2Correspondence": 454,
+        "SiliconCheck224": 484,
+        "SimdTriangulation24": 579,
+        "VendorX86Ref.Decode": 115,
+        "VendorX86Ref.Machine": 20,
+        "VendorX86Ref.SemanticsScalar": 37,
+        "VendorX86Ref.SemanticsSimd": 82,
+        "VendorX86Ref.Types": 1577
+      },
+      "replay_ms": 14355,
+      "transitive_axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "unsafe_consts": [],
+      "vmhwm_kb": 2536500
+    },
+    "triangulation_only": {
+      "delta_consts": 579,
+      "load_private_ms": 187,
+      "replay_ms": 1505,
+      "vmhwm_kb": 2019848
+    },
+    "vendor": {
+      "delta_consts": 1831,
+      "load_private_ms": 200,
+      "replay_ms": 547,
+      "transitive_axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "vmhwm_kb": 1977652
+    }
+  },
+  "summary": {
+    "all_7_staged_modules_compile_wall_ms": 24949.79,
+    "all_7_staged_modules_olean_bytes": 26912280,
+    "max_single_module_compile_wall_ms": 10308.58,
+    "max_single_module_source_bytes": 64928,
+    "mir_ub_asymmetry_theorems_kernel_verified": 3,
+    "silicon_vectors_kernel_verified": 224,
+    "staged_lean_modules_count": 7,
+    "triangulation_theorems_kernel_verified": 29,
+    "vendor_x86_ref_5_modules_compile_wall_ms": 9031.3,
+    "vendor_x86_ref_5_modules_olean_bytes": 11419456
+  }
+}

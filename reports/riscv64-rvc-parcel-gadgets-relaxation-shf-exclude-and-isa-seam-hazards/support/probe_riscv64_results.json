@@ -1,0 +1,338 @@
+{
+  "preserves_flags_rvv_and_stt_tls": {
+    "live_fcsr_frm_inversion_and_rvv_preserves_flags_rc": 0,
+    "nightly_1_102_llvm_ir_constraints": [
+      "call void asm sideeffect alignstack \"nop\", \"~{fflags},~{vtype},~{vl},~{vxsat},~{vxrm},~{memory}\"(), !srcloc !6",
+      "call void asm sideeffect alignstack \"nop\", \"~{memory}\"(), !srcloc !8",
+      "call void asm sideeffect alignstack \"nop\", \"~{v0},~{fflags},~{vtype},~{vl},~{vxsat},~{vxrm},~{memory}\"(), !srcloc !10"
+    ],
+    "stt_tls_pie_matrix": {
+      "mold_2.42.1": {
+        "elf_header_0x30_word_hex": "0038004000000005",
+        "link_returncode": 0,
+        "qemu_returncode": 0,
+        "stdout_hex": "1122334455667788"
+      },
+      "rust_lld_21.1.8": {
+        "elf_header_0x30_word_hex": "0038004000000005",
+        "link_returncode": 0,
+        "qemu_returncode": -11,
+        "stdout_hex": ""
+      },
+      "rust_lld_23.1.1": {
+        "elf_header_0x30_word_hex": "0038004000000005",
+        "link_returncode": 0,
+        "qemu_returncode": 0,
+        "stdout_hex": "0038004000000005"
+      },
+      "rust_lld_23.1.5": {
+        "elf_header_0x30_word_hex": "0038004000000005",
+        "link_returncode": 0,
+        "qemu_returncode": 0,
+        "stdout_hex": "0038004000000005"
+      }
+    }
+  },
+  "relax_and_shf_exclude": {
+    "link_outcomes": {
+      "lld21_norelax": {
+        "keep_section_retained": true,
+        "post_fn_size": 40,
+        "qemu_rc": 0,
+        "relocated_spans": [
+          {
+            "end": "0x1121c",
+            "len": 8,
+            "start": "0x11214"
+          },
+          {
+            "end": "0x11222",
+            "len": 4,
+            "start": "0x1121e"
+          },
+          {
+            "end": "0x1122a",
+            "len": 8,
+            "start": "0x11222"
+          }
+        ],
+        "shf_exclude_rela_retained": false,
+        "shf_exclude_retained": false
+      },
+      "lld21_relax": {
+        "keep_section_retained": true,
+        "post_fn_size": 34,
+        "qemu_rc": 0,
+        "relocated_spans": [
+          {
+            "end": "0x11218",
+            "len": 4,
+            "start": "0x11214"
+          },
+          {
+            "end": "0x11222",
+            "len": 8,
+            "start": "0x1121a"
+          },
+          {
+            "end": "0x11224",
+            "len": 2,
+            "start": "0x11222"
+          }
+        ],
+        "shf_exclude_rela_retained": false,
+        "shf_exclude_retained": false
+      },
+      "lld23_norelax": {
+        "keep_section_retained": true,
+        "post_fn_size": 40,
+        "qemu_rc": 0,
+        "relocated_spans": [
+          {
+            "end": "0x1121c",
+            "len": 8,
+            "start": "0x11214"
+          },
+          {
+            "end": "0x11222",
+            "len": 4,
+            "start": "0x1121e"
+          },
+          {
+            "end": "0x1122a",
+            "len": 8,
+            "start": "0x11222"
+          }
+        ],
+        "shf_exclude_rela_retained": false,
+        "shf_exclude_retained": false
+      },
+      "lld23_relax": {
+        "keep_section_retained": true,
+        "post_fn_size": 34,
+        "qemu_rc": 0,
+        "relocated_spans": [
+          {
+            "end": "0x11218",
+            "len": 4,
+            "start": "0x11214"
+          },
+          {
+            "end": "0x11222",
+            "len": 8,
+            "start": "0x1121a"
+          },
+          {
+            "end": "0x11224",
+            "len": 2,
+            "start": "0x11222"
+          }
+        ],
+        "shf_exclude_rela_retained": false,
+        "shf_exclude_retained": false
+      },
+      "mold_norelax": {
+        "keep_section_retained": true,
+        "post_fn_size": 40,
+        "qemu_rc": 0,
+        "relocated_spans": [
+          {
+            "end": "0x20131c",
+            "len": 8,
+            "start": "0x201314"
+          },
+          {
+            "end": "0x201322",
+            "len": 4,
+            "start": "0x20131e"
+          },
+          {
+            "end": "0x20132a",
+            "len": 8,
+            "start": "0x201322"
+          }
+        ],
+        "shf_exclude_rela_retained": false,
+        "shf_exclude_retained": false
+      },
+      "mold_relax": {
+        "keep_section_retained": true,
+        "post_fn_size": 34,
+        "qemu_rc": 0,
+        "relocated_spans": [
+          {
+            "end": "0x201318",
+            "len": 4,
+            "start": "0x201314"
+          },
+          {
+            "end": "0x201322",
+            "len": 8,
+            "start": "0x20131a"
+          },
+          {
+            "end": "0x201324",
+            "len": 2,
+            "start": "0x201322"
+          }
+        ],
+        "shf_exclude_rela_retained": false,
+        "shf_exclude_retained": false
+      }
+    },
+    "pre_link_site3_end_offset": 38,
+    "pre_link_victim_fn_size": 52,
+    "sysroot_crates_with_relax": {
+      "libcompiler_builtins": {
+        "R_RISCV_ALIGN": 0,
+        "R_RISCV_CALL_PLT": 240,
+        "R_RISCV_RELAX": 236
+      },
+      "libprofiler_builtins": {
+        "R_RISCV_ALIGN": 0,
+        "R_RISCV_CALL_PLT": 607,
+        "R_RISCV_RELAX": 1641
+      }
+    },
+    "sysroot_reloc_totals": {
+      "R_RISCV_32": 105342,
+      "R_RISCV_32_PCREL": 4257,
+      "R_RISCV_64": 177635,
+      "R_RISCV_ADD16": 37927,
+      "R_RISCV_ADD32": 4426,
+      "R_RISCV_ADD64": 708,
+      "R_RISCV_BRANCH": 555,
+      "R_RISCV_CALL_PLT": 18046,
+      "R_RISCV_GOT_HI20": 725,
+      "R_RISCV_PCREL_HI20": 9072,
+      "R_RISCV_PCREL_LO12_I": 9810,
+      "R_RISCV_PCREL_LO12_S": 191,
+      "R_RISCV_RELAX": 1877,
+      "R_RISCV_RVC_BRANCH": 319,
+      "R_RISCV_RVC_JUMP": 259,
+      "R_RISCV_SET6": 129,
+      "R_RISCV_SET8": 50,
+      "R_RISCV_SUB16": 37941,
+      "R_RISCV_SUB32": 4426,
+      "R_RISCV_SUB6": 129,
+      "R_RISCV_SUB64": 708,
+      "R_RISCV_TLS_GD_HI20": 179
+    },
+    "sysroot_rlibs_scanned": 27
+  },
+  "rvc_gadgets_and_cgu": {
+    "bcc_get_inline_asm_length_drift": {
+      "105": {
+        "multiline_pushsection": {
+          "sha256_16": "a18d46cd2fd72945",
+          "size_bytes": 230
+        },
+        "uninstrumented": {
+          "sha256_16": "ab46617346bac5f9",
+          "size_bytes": 228
+        },
+        "zero_sep_site_macro": {
+          "sha256_16": "ab46617346bac5f9",
+          "size_bytes": 228
+        }
+      },
+      "520": {
+        "multiline_pushsection": {
+          "sha256_16": "1e6ad3635924afd5",
+          "size_bytes": 1060
+        },
+        "uninstrumented": {
+          "sha256_16": "0a1df5048fdc14a7",
+          "size_bytes": 1060
+        },
+        "zero_sep_site_macro": {
+          "sha256_16": "0a1df5048fdc14a7",
+          "size_bytes": 1060
+        }
+      },
+      "80": {
+        "multiline_pushsection": {
+          "sha256_16": "5232ac0cc728093c",
+          "size_bytes": 178
+        },
+        "uninstrumented": {
+          "sha256_16": "5232ac0cc728093c",
+          "size_bytes": 178
+        },
+        "zero_sep_site_macro": {
+          "sha256_16": "5232ac0cc728093c",
+          "size_bytes": 178
+        }
+      }
+    },
+    "cgu_containment_matrix": {
+      "baseline": {
+        "asm_streamer_pure_relax": false,
+        "asm_streamer_pure_rvc": true,
+        "obj_streamer_pure_relax": false,
+        "obj_streamer_pure_rvc": true,
+        "obj_streamer_tag_arch": "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zicsr2p0_zifencei2p0_zmmul1p0_zaamo1p0_zalrsc1p0_zca1p0_zcd1p0"
+      },
+      "uncalled_attribute_arch_poison": {
+        "asm_streamer_pure_relax": false,
+        "asm_streamer_pure_rvc": false,
+        "obj_streamer_pure_relax": false,
+        "obj_streamer_pure_rvc": true,
+        "obj_streamer_tag_arch": "rv64i2p1"
+      },
+      "uncalled_option_arch_plus_v": {
+        "asm_streamer_pure_relax": false,
+        "asm_streamer_pure_rvc": true,
+        "obj_streamer_pure_relax": false,
+        "obj_streamer_pure_rvc": true,
+        "obj_streamer_tag_arch": "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zicsr2p0_zifencei2p0_zmmul1p0_zaamo1p0_zalrsc1p0_zca1p0_zcd1p0"
+      },
+      "uncalled_option_norvc": {
+        "asm_streamer_pure_relax": false,
+        "asm_streamer_pure_rvc": false,
+        "obj_streamer_pure_relax": false,
+        "obj_streamer_pure_rvc": true,
+        "obj_streamer_tag_arch": "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zicsr2p0_zifencei2p0_zmmul1p0_zaamo1p0_zalrsc1p0_zca1p0_zcd1p0"
+      },
+      "uncalled_option_relax": {
+        "asm_streamer_pure_relax": true,
+        "asm_streamer_pure_rvc": true,
+        "obj_streamer_pure_relax": false,
+        "obj_streamer_pure_rvc": true,
+        "obj_streamer_tag_arch": "rv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_zicsr2p0_zifencei2p0_zmmul1p0_zaamo1p0_zalrsc1p0_zca1p0_zcd1p0"
+      }
+    },
+    "live_qemu_gadgets_and_half11_ret_swallow_rc": 0,
+    "rvc_16bit_encoding_space": {
+      "total_low2_ne_11": 49152,
+      "valid_non_trapping_rv64gc": 46743,
+      "valid_pct": 95.1
+    },
+    "sysroot_libcore_liballoc_libstd_census": {
+      "categories": {
+        "direct_branch_jump_c_j_bz": 1899,
+        "illegal_16b": 19130,
+        "low2_eq_11_4b_prefix": 6281,
+        "rvc_alu_reg": 23403,
+        "rvc_load": 2716,
+        "rvc_store": 17438,
+        "sp_mutation": 8299
+      },
+      "cross_boundary_32b": {
+        "BRANCH_0x63": 71,
+        "JALR_0x67": 253,
+        "JAL_0x6f": 62,
+        "LOAD_0x03": 459,
+        "STORE_0x23": 88,
+        "SYSTEM_0x73": 84
+      },
+      "insns_16b": 74512,
+      "insns_32b": 79166,
+      "pc_plus_2_low2_ne_11": 72885,
+      "pc_plus_2_low2_ne_11_pct": 92.07,
+      "pc_plus_2_valid_rvc": 53755,
+      "pc_plus_2_valid_rvc_pct": 67.9,
+      "total_insns": 153678
+    }
+  }
+}

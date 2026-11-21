@@ -1,0 +1,397 @@
+{
+  "toolchains": {
+    "1.99.1": {
+      "baseline_fractures": {
+        "cgu16_global_asm_rc": 1,
+        "cgu16_invalid_mnemonic_errors": 1,
+        "per_cgu_uid_strings": [
+          "cgu=0:uid=0",
+          "cgu=1:uid=0"
+        ],
+        "rmeta_consumer_failed_mnemonic": true,
+        "rmeta_consumer_global_asm_rc": 1,
+        "uid_resets_to_zero_across_cgus": true
+      },
+      "cross_arch_invariance": {
+        "aarch64_N5000": {
+          "cr_zero_drift_byte_delta": 0,
+          "cr_zero_drift_exact_sha256_parity": true,
+          "ifndef_macro_byte_delta": 4,
+          "modes": {
+            "cr_zero_drift": {
+              "attested_sites": 5000,
+              "head16_hex": "60710236210400912104009121040091",
+              "sha256_16": "4e81e5e467c69aa7",
+              "text_bytes": 20020
+            },
+            "ifndef_macro": {
+              "attested_sites": 5000,
+              "head16_hex": "400000378b1300142104009121040091",
+              "sha256_16": "1506d6095a7f1217",
+              "text_bytes": 20024
+            },
+            "multiline_pushsection": {
+              "attested_sites": 5000,
+              "head16_hex": "400000378b1300142104009121040091",
+              "sha256_16": "1506d6095a7f1217",
+              "text_bytes": 20024
+            },
+            "off": {
+              "attested_sites": 0,
+              "head16_hex": "60710236210400912104009121040091",
+              "sha256_16": "4e81e5e467c69aa7",
+              "text_bytes": 20020
+            }
+          },
+          "multiline_byte_delta": 4
+        },
+        "riscv64gc_N900": {
+          "cr_zero_drift_byte_delta": 0,
+          "cr_zero_drift_exact_sha256_parity": true,
+          "ifndef_macro_byte_delta": 0,
+          "modes": {
+            "cr_zero_drift": {
+              "attested_sites": 900,
+              "head16_hex": "63080570850585058505850585058505",
+              "sha256_16": "b85f3f2cce282b77",
+              "text_bytes": 1812
+            },
+            "ifndef_macro": {
+              "attested_sites": 900,
+              "head16_hex": "11e139a7850585058505850585058505",
+              "sha256_16": "2d26595a9ab21703",
+              "text_bytes": 1812
+            },
+            "multiline_pushsection": {
+              "attested_sites": 900,
+              "head16_hex": "11e139a7850585058505850585058505",
+              "sha256_16": "2d26595a9ab21703",
+              "text_bytes": 1812
+            },
+            "off": {
+              "attested_sites": 0,
+              "head16_hex": "63080570850585058505850585058505",
+              "sha256_16": "b85f3f2cce282b77",
+              "text_bytes": 1812
+            }
+          },
+          "multiline_byte_delta": 0
+        },
+        "x86_64": {
+          "cr_zero_drift_byte_delta": 0,
+          "cr_zero_drift_exact_sha256_parity": true,
+          "ifndef_macro_byte_delta": 0,
+          "modes": {
+            "cr_zero_drift": {
+              "attested_sites": 35,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            },
+            "ifndef_macro": {
+              "attested_sites": 35,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            },
+            "multiline_pushsection": {
+              "attested_sites": 35,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            },
+            "off": {
+              "attested_sites": 0,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            }
+          },
+          "multiline_byte_delta": 0
+        }
+      },
+      "driver_multi_cgu_and_rmeta": {
+        "all_same_section_and_nonempty": true,
+        "both_up_and_down_nonces_present": true,
+        "downstream_attested_records": 5,
+        "downstream_cgu_objects": 4,
+        "downstream_exec_rc": 0,
+        "downstream_nonces_preserved": [
+          "11223344556677889900aabbccddeeff",
+          "aa11bb22cc33dd44ee55ff6677889900"
+        ],
+        "forbidden_macro_directive_rejected": true,
+        "linked_elf_stripped_shf_exclude": true,
+        "mir_built_attested_records": 21,
+        "mir_built_hook_rc": 0,
+        "upstream_attested_records": 21,
+        "upstream_cgu_objects": 16,
+        "upstream_lint_warnings": 0,
+        "upstream_objs_with_sites": 16
+      },
+      "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)"
+    },
+    "nightly": {
+      "baseline_fractures": {
+        "cgu16_global_asm_rc": 1,
+        "cgu16_invalid_mnemonic_errors": 15,
+        "per_cgu_uid_strings": [
+          "cgu=0:uid=0",
+          "cgu=1:uid=0"
+        ],
+        "rmeta_consumer_failed_mnemonic": true,
+        "rmeta_consumer_global_asm_rc": 1,
+        "uid_resets_to_zero_across_cgus": true
+      },
+      "cross_arch_invariance": {
+        "aarch64_N5000": {
+          "cr_zero_drift_byte_delta": 0,
+          "cr_zero_drift_exact_sha256_parity": true,
+          "ifndef_macro_byte_delta": 4,
+          "modes": {
+            "cr_zero_drift": {
+              "attested_sites": 5000,
+              "head16_hex": "60710236210400912104009121040091",
+              "sha256_16": "4e81e5e467c69aa7",
+              "text_bytes": 20020
+            },
+            "ifndef_macro": {
+              "attested_sites": 5000,
+              "head16_hex": "400000378b1300142104009121040091",
+              "sha256_16": "1506d6095a7f1217",
+              "text_bytes": 20024
+            },
+            "multiline_pushsection": {
+              "attested_sites": 5000,
+              "head16_hex": "400000378b1300142104009121040091",
+              "sha256_16": "1506d6095a7f1217",
+              "text_bytes": 20024
+            },
+            "off": {
+              "attested_sites": 0,
+              "head16_hex": "60710236210400912104009121040091",
+              "sha256_16": "4e81e5e467c69aa7",
+              "text_bytes": 20020
+            }
+          },
+          "multiline_byte_delta": 4
+        },
+        "riscv64gc_N900": {
+          "cr_zero_drift_byte_delta": 0,
+          "cr_zero_drift_exact_sha256_parity": true,
+          "ifndef_macro_byte_delta": 0,
+          "modes": {
+            "cr_zero_drift": {
+              "attested_sites": 900,
+              "head16_hex": "63080570850585058505850585058505",
+              "sha256_16": "b85f3f2cce282b77",
+              "text_bytes": 1812
+            },
+            "ifndef_macro": {
+              "attested_sites": 900,
+              "head16_hex": "11e139a7850585058505850585058505",
+              "sha256_16": "2d26595a9ab21703",
+              "text_bytes": 1812
+            },
+            "multiline_pushsection": {
+              "attested_sites": 900,
+              "head16_hex": "11e139a7850585058505850585058505",
+              "sha256_16": "2d26595a9ab21703",
+              "text_bytes": 1812
+            },
+            "off": {
+              "attested_sites": 0,
+              "head16_hex": "63080570850585058505850585058505",
+              "sha256_16": "b85f3f2cce282b77",
+              "text_bytes": 1812
+            }
+          },
+          "multiline_byte_delta": 0
+        },
+        "x86_64": {
+          "cr_zero_drift_byte_delta": 0,
+          "cr_zero_drift_exact_sha256_parity": true,
+          "ifndef_macro_byte_delta": 0,
+          "modes": {
+            "cr_zero_drift": {
+              "attested_sites": 35,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            },
+            "ifndef_macro": {
+              "attested_sites": 35,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            },
+            "multiline_pushsection": {
+              "attested_sites": 35,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            },
+            "off": {
+              "attested_sites": 0,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            }
+          },
+          "multiline_byte_delta": 0
+        }
+      },
+      "driver_multi_cgu_and_rmeta": {
+        "all_same_section_and_nonempty": true,
+        "both_up_and_down_nonces_present": true,
+        "downstream_attested_records": 5,
+        "downstream_cgu_objects": 6,
+        "downstream_exec_rc": 0,
+        "downstream_nonces_preserved": [
+          "11223344556677889900aabbccddeeff",
+          "aa11bb22cc33dd44ee55ff6677889900"
+        ],
+        "forbidden_macro_directive_rejected": true,
+        "linked_elf_stripped_shf_exclude": true,
+        "mir_built_attested_records": 21,
+        "mir_built_hook_rc": 0,
+        "upstream_attested_records": 21,
+        "upstream_cgu_objects": 16,
+        "upstream_lint_warnings": 0,
+        "upstream_objs_with_sites": 16
+      },
+      "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+    },
+    "nightly-2026-06-01": {
+      "baseline_fractures": {
+        "cgu16_global_asm_rc": 1,
+        "cgu16_invalid_mnemonic_errors": 15,
+        "per_cgu_uid_strings": [
+          "cgu=0:uid=0",
+          "cgu=1:uid=0"
+        ],
+        "rmeta_consumer_failed_mnemonic": true,
+        "rmeta_consumer_global_asm_rc": 1,
+        "uid_resets_to_zero_across_cgus": true
+      },
+      "cross_arch_invariance": {
+        "aarch64_N5000": {
+          "cr_zero_drift_byte_delta": 0,
+          "cr_zero_drift_exact_sha256_parity": true,
+          "ifndef_macro_byte_delta": 4,
+          "modes": {
+            "cr_zero_drift": {
+              "attested_sites": 5000,
+              "head16_hex": "60710236210400912104009121040091",
+              "sha256_16": "4e81e5e467c69aa7",
+              "text_bytes": 20020
+            },
+            "ifndef_macro": {
+              "attested_sites": 5000,
+              "head16_hex": "400000378b1300142104009121040091",
+              "sha256_16": "1506d6095a7f1217",
+              "text_bytes": 20024
+            },
+            "multiline_pushsection": {
+              "attested_sites": 5000,
+              "head16_hex": "400000378b1300142104009121040091",
+              "sha256_16": "1506d6095a7f1217",
+              "text_bytes": 20024
+            },
+            "off": {
+              "attested_sites": 0,
+              "head16_hex": "60710236210400912104009121040091",
+              "sha256_16": "4e81e5e467c69aa7",
+              "text_bytes": 20020
+            }
+          },
+          "multiline_byte_delta": 4
+        },
+        "riscv64gc_N900": {
+          "cr_zero_drift_byte_delta": 0,
+          "cr_zero_drift_exact_sha256_parity": true,
+          "ifndef_macro_byte_delta": 0,
+          "modes": {
+            "cr_zero_drift": {
+              "attested_sites": 900,
+              "head16_hex": "63080570850585058505850585058505",
+              "sha256_16": "b85f3f2cce282b77",
+              "text_bytes": 1812
+            },
+            "ifndef_macro": {
+              "attested_sites": 900,
+              "head16_hex": "11e139a7850585058505850585058505",
+              "sha256_16": "2d26595a9ab21703",
+              "text_bytes": 1812
+            },
+            "multiline_pushsection": {
+              "attested_sites": 900,
+              "head16_hex": "11e139a7850585058505850585058505",
+              "sha256_16": "2d26595a9ab21703",
+              "text_bytes": 1812
+            },
+            "off": {
+              "attested_sites": 0,
+              "head16_hex": "63080570850585058505850585058505",
+              "sha256_16": "b85f3f2cce282b77",
+              "text_bytes": 1812
+            }
+          },
+          "multiline_byte_delta": 0
+        },
+        "x86_64": {
+          "cr_zero_drift_byte_delta": 0,
+          "cr_zero_drift_exact_sha256_parity": true,
+          "ifndef_macro_byte_delta": 0,
+          "modes": {
+            "cr_zero_drift": {
+              "attested_sites": 35,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            },
+            "ifndef_macro": {
+              "attested_sites": 35,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            },
+            "multiline_pushsection": {
+              "attested_sites": 35,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            },
+            "off": {
+              "attested_sites": 0,
+              "head16_hex": "4889f04885ff7401c34883c0014883c0",
+              "sha256_16": "40bb058163bb27d1",
+              "text_bytes": 150
+            }
+          },
+          "multiline_byte_delta": 0
+        }
+      },
+      "driver_multi_cgu_and_rmeta": {
+        "all_same_section_and_nonempty": true,
+        "both_up_and_down_nonces_present": true,
+        "downstream_attested_records": 5,
+        "downstream_cgu_objects": 4,
+        "downstream_exec_rc": 0,
+        "downstream_nonces_preserved": [
+          "11223344556677889900aabbccddeeff",
+          "aa11bb22cc33dd44ee55ff6677889900"
+        ],
+        "forbidden_macro_directive_rejected": true,
+        "linked_elf_stripped_shf_exclude": true,
+        "mir_built_attested_records": 21,
+        "mir_built_hook_rc": 0,
+        "upstream_attested_records": 21,
+        "upstream_cgu_objects": 16,
+        "upstream_lint_warnings": 0,
+        "upstream_objs_with_sites": 16
+      },
+      "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+    }
+  }
+}

@@ -1,0 +1,466 @@
+{
+  "toolchains": {
+    "1.99.1": {
+      "baseline_num_allocs": 3,
+      "baseline_num_instances": 18,
+      "baseline_num_types": 40,
+      "baseline_spec_cone_hash_16": "7c8d8d6c4de80fd7",
+      "benign_false_positives": 0,
+      "benign_total": 4,
+      "cases": {
+        "C01_optimize_hot_opt_asm": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "benign",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "7c8d8d6c4de80fd7",
+          "tyctxt_speccone_changed": false
+        },
+        "C02_unrelated_module_and_types": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "benign",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "7c8d8d6c4de80fd7",
+          "tyctxt_speccone_changed": false
+        },
+        "C03_comments_and_50_line_shift": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "benign",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "7c8d8d6c4de80fd7",
+          "tyctxt_speccone_changed": false
+        },
+        "C04_local_variable_alpha_rename": {
+          "hot_ref_tokens_byte_identical": false,
+          "kind": "benign",
+          "naive_token_hash_changed": true,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "7c8d8d6c4de80fd7",
+          "tyctxt_speccone_changed": false
+        },
+        "V01_transitive_callee_body": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "e4d37aefd7ec9138",
+          "tyctxt_speccone_changed": true
+        },
+        "V02_adt_repr_packed_offsets": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "72480574b35b4304",
+          "tyctxt_speccone_changed": true
+        },
+        "V03_adt_uninit_padding_mask": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 41,
+          "spec_cone_hash_16": "21046462cfc83e8d",
+          "tyctxt_speccone_changed": true
+        },
+        "V04_adt_niche_valid_range": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 19,
+          "num_types": 44,
+          "spec_cone_hash_16": "fcd997b45425957b",
+          "tyctxt_speccone_changed": true
+        },
+        "V05_implicit_drop_glue": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "4d87f75e685c733d",
+          "tyctxt_speccone_changed": true
+        },
+        "V06_trait_default_method_override": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "7e80c56ea75f09d4",
+          "tyctxt_speccone_changed": true
+        },
+        "V07_const_allocation_bytes": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "6bab8bf480529650",
+          "tyctxt_speccone_changed": true
+        },
+        "V08_deref_coercion_impl": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 22,
+          "num_types": 49,
+          "spec_cone_hash_16": "ca3a16d68735b949",
+          "tyctxt_speccone_changed": true
+        },
+        "V09_callee_abi_and_target_feature": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "0c14348391cdc870",
+          "tyctxt_speccone_changed": true
+        },
+        "V10_promoted_const_array_element": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "df672b91301dc2c6",
+          "tyctxt_speccone_changed": true
+        }
+      },
+      "naive_token_detected_tampers": 0,
+      "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "tamper_detected": 10,
+      "tamper_total": 10
+    },
+    "nightly": {
+      "baseline_num_allocs": 3,
+      "baseline_num_instances": 18,
+      "baseline_num_types": 40,
+      "baseline_spec_cone_hash_16": "f602cb3dbdb1bd4d",
+      "benign_false_positives": 0,
+      "benign_total": 4,
+      "cases": {
+        "C01_optimize_hot_opt_asm": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "benign",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "f602cb3dbdb1bd4d",
+          "tyctxt_speccone_changed": false
+        },
+        "C02_unrelated_module_and_types": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "benign",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "f602cb3dbdb1bd4d",
+          "tyctxt_speccone_changed": false
+        },
+        "C03_comments_and_50_line_shift": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "benign",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "f602cb3dbdb1bd4d",
+          "tyctxt_speccone_changed": false
+        },
+        "C04_local_variable_alpha_rename": {
+          "hot_ref_tokens_byte_identical": false,
+          "kind": "benign",
+          "naive_token_hash_changed": true,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "f602cb3dbdb1bd4d",
+          "tyctxt_speccone_changed": false
+        },
+        "V01_transitive_callee_body": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "ed3298fdb5960193",
+          "tyctxt_speccone_changed": true
+        },
+        "V02_adt_repr_packed_offsets": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "e40d46d4765504f6",
+          "tyctxt_speccone_changed": true
+        },
+        "V03_adt_uninit_padding_mask": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 41,
+          "spec_cone_hash_16": "fb89298d9c3f9e37",
+          "tyctxt_speccone_changed": true
+        },
+        "V04_adt_niche_valid_range": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 19,
+          "num_types": 44,
+          "spec_cone_hash_16": "bf6b32c01e56667a",
+          "tyctxt_speccone_changed": true
+        },
+        "V05_implicit_drop_glue": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "0132bf29c57125a8",
+          "tyctxt_speccone_changed": true
+        },
+        "V06_trait_default_method_override": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "189a7f2a435ccef3",
+          "tyctxt_speccone_changed": true
+        },
+        "V07_const_allocation_bytes": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "9268bb122c78a961",
+          "tyctxt_speccone_changed": true
+        },
+        "V08_deref_coercion_impl": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 22,
+          "num_types": 49,
+          "spec_cone_hash_16": "31d3ce75e585f27e",
+          "tyctxt_speccone_changed": true
+        },
+        "V09_callee_abi_and_target_feature": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "9e1a2ec23d945b7c",
+          "tyctxt_speccone_changed": true
+        },
+        "V10_promoted_const_array_element": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "1b339b75e7b98f14",
+          "tyctxt_speccone_changed": true
+        }
+      },
+      "naive_token_detected_tampers": 0,
+      "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+      "tamper_detected": 10,
+      "tamper_total": 10
+    },
+    "nightly-2026-06-01": {
+      "baseline_num_allocs": 3,
+      "baseline_num_instances": 18,
+      "baseline_num_types": 40,
+      "baseline_spec_cone_hash_16": "cc2d0722390c4fd0",
+      "benign_false_positives": 0,
+      "benign_total": 4,
+      "cases": {
+        "C01_optimize_hot_opt_asm": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "benign",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "cc2d0722390c4fd0",
+          "tyctxt_speccone_changed": false
+        },
+        "C02_unrelated_module_and_types": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "benign",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "cc2d0722390c4fd0",
+          "tyctxt_speccone_changed": false
+        },
+        "C03_comments_and_50_line_shift": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "benign",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "cc2d0722390c4fd0",
+          "tyctxt_speccone_changed": false
+        },
+        "C04_local_variable_alpha_rename": {
+          "hot_ref_tokens_byte_identical": false,
+          "kind": "benign",
+          "naive_token_hash_changed": true,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "cc2d0722390c4fd0",
+          "tyctxt_speccone_changed": false
+        },
+        "V01_transitive_callee_body": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "69e73fff923635fc",
+          "tyctxt_speccone_changed": true
+        },
+        "V02_adt_repr_packed_offsets": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "31f27fb3f49c5825",
+          "tyctxt_speccone_changed": true
+        },
+        "V03_adt_uninit_padding_mask": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 41,
+          "spec_cone_hash_16": "0aca7c932f08b609",
+          "tyctxt_speccone_changed": true
+        },
+        "V04_adt_niche_valid_range": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 19,
+          "num_types": 44,
+          "spec_cone_hash_16": "3b792145bed9816b",
+          "tyctxt_speccone_changed": true
+        },
+        "V05_implicit_drop_glue": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "1896b3b0beddfbc8",
+          "tyctxt_speccone_changed": true
+        },
+        "V06_trait_default_method_override": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "ea3746d4c2330389",
+          "tyctxt_speccone_changed": true
+        },
+        "V07_const_allocation_bytes": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "03efe456813528e6",
+          "tyctxt_speccone_changed": true
+        },
+        "V08_deref_coercion_impl": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 22,
+          "num_types": 49,
+          "spec_cone_hash_16": "cf3965a86096050b",
+          "tyctxt_speccone_changed": true
+        },
+        "V09_callee_abi_and_target_feature": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "ccc0a1b7cba044a7",
+          "tyctxt_speccone_changed": true
+        },
+        "V10_promoted_const_array_element": {
+          "hot_ref_tokens_byte_identical": true,
+          "kind": "tamper",
+          "naive_token_hash_changed": false,
+          "num_allocs": 3,
+          "num_instances": 18,
+          "num_types": 40,
+          "spec_cone_hash_16": "98b777a103ba9bad",
+          "tyctxt_speccone_changed": true
+        }
+      },
+      "naive_token_detected_tampers": 0,
+      "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+      "tamper_detected": 10,
+      "tamper_total": 10
+    }
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "elab_flags": [
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-j1",
+    "-M2048"
+  ],
+  "gcc_sfi_text_2048b_sha256": "9fadbc9aed287afb9f160620d4b6f40e340a4582f9e484363f617b65933b7d9a",
+  "modules": {
+    "PicMultiFnSfi.lean": {
+      "source_bytes": 140312,
+      "source_lines": 2844,
+      "wall_s": 11.084,
+      "cpu_s": 11.07,
+      "rss_mb": 510.72
+    },
+    "UnwindJumpOverAndTreeBorrows.lean": {
+      "source_bytes": 23454,
+      "source_lines": 456,
+      "wall_s": 1.2106,
+      "cpu_s": 1.12,
+      "rss_mb": 303.09
+    },
+    "StockGccWorkloadCert.lean (generated in tmpdir)": {
+      "source_bytes": 15617,
+      "wall_s": 16.2645,
+      "cpu_s": 16.2,
+      "rss_mb": 566.14
+    }
+  },
+  "replay_audit": {
+    "trust_level": 0,
+    "load_exts": false,
+    "visibility_level": "private",
+    "wall_s": 20.5982,
+    "cpu_s": 7.98,
+    "rss_mb": 2802.9,
+    "allowed_axioms_ceiling": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "audited_theorems": [
+      {
+        "module": "PicMultiFnSfi",
+        "theorem": "PicMultiFnSfi.raw_ret_0xc3_rop_escape",
+        "import_ms": 216,
+        "fresh_kernel_replay_ms": 567,
+        "replayed_constants": 1457,
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "module": "PicMultiFnSfi",
+        "theorem": "PicMultiFnSfi.legacy_abs32_indirect_jmp_null_page_fault",
+        "import_ms": 216,
+        "fresh_kernel_replay_ms": 567,
+        "replayed_constants": 1457,
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "module": "PicMultiFnSfi",
+        "theorem": "PicMultiFnSfi.checkSfiPicMultiFn_rejects_untrusted_ret",
+        "import_ms": 216,
+        "fresh_kernel_replay_ms": 567,
+        "replayed_constants": 1457,
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "module": "PicMultiFnSfi",
+        "theorem": "PicMultiFnSfi.checkSfiPicMultiFn_sound",
+        "import_ms": 216,
+        "fresh_kernel_replay_ms": 567,
+        "replayed_constants": 1457,
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "module": "UnwindJumpOverAndTreeBorrows",
+        "theorem": "SfiUnwindAndTreeBorrows.canary_guest_fde_unwind_rop_escape",
+        "import_ms": 173,
+        "fresh_kernel_replay_ms": 61,
+        "replayed_constants": 363,
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "module": "UnwindJumpOverAndTreeBorrows",
+        "theorem": "SfiUnwindAndTreeBorrows.canary_guest_fde_csr_corrupt",
+        "import_ms": 173,
+        "fresh_kernel_replay_ms": 61,
+        "replayed_constants": 363,
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "module": "UnwindJumpOverAndTreeBorrows",
+        "theorem": "SfiUnwindAndTreeBorrows.canary_stateless_reentrant_clobbers_outer_guest_frame",
+        "import_ms": 173,
+        "fresh_kernel_replay_ms": 61,
+        "replayed_constants": 363,
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "module": "UnwindJumpOverAndTreeBorrows",
+        "theorem": "SfiUnwindAndTreeBorrows.reentrant_watermark_disjointness",
+        "import_ms": 173,
+        "fresh_kernel_replay_ms": 61,
+        "replayed_constants": 363,
+        "axioms": []
+      },
+      {
+        "module": "UnwindJumpOverAndTreeBorrows",
+        "theorem": "SfiUnwindAndTreeBorrows.jump_over_fde_zero_guest_reads",
+        "import_ms": 173,
+        "fresh_kernel_replay_ms": 61,
+        "replayed_constants": 363,
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "module": "UnwindJumpOverAndTreeBorrows",
+        "theorem": "SfiUnwindAndTreeBorrows.jump_over_fde_double_nested_reentrant_unwind_sound",
+        "import_ms": 173,
+        "fresh_kernel_replay_ms": 61,
+        "replayed_constants": 363,
+        "axioms": [
+          "propext"
+        ]
+      },
+      {
+        "module": "UnwindJumpOverAndTreeBorrows",
+        "theorem": "SfiUnwindAndTreeBorrows.sfi_arena_loan_preserves_tree_borrows",
+        "import_ms": 173,
+        "fresh_kernel_replay_ms": 61,
+        "replayed_constants": 363,
+        "axioms": []
+      },
+      {
+        "module": "UnwindJumpOverAndTreeBorrows",
+        "theorem": "SfiUnwindAndTreeBorrows.dual_mapped_prot_read_preserves_frozen_and_host_bytes",
+        "import_ms": 173,
+        "fresh_kernel_replay_ms": 61,
+        "replayed_constants": 363,
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "module": "StockGccWorkloadCert",
+        "theorem": "StockGccWorkloadCert.stockGccWorkload_verified",
+        "import_ms": 199,
+        "fresh_kernel_replay_ms": 3811,
+        "replayed_constants": 15,
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "module": "StockGccWorkloadCert",
+        "theorem": "StockGccWorkloadCert.stockGccWorkload_pic_sfi_sound",
+        "import_ms": 199,
+        "fresh_kernel_replay_ms": 3811,
+        "replayed_constants": 15,
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,1180 @@
+{
+  "comparison_summary": {
+    "byte_identical_across_toolchains": 29,
+    "companion_boundary_count": 5,
+    "curated_24_count": 24,
+    "differing_functions": [],
+    "total_functions_extracted": 29
+  },
+  "primitives": {
+    "p01_simd_add": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          245,
+          252,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f5 fc c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpaddb ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "a1b418c8bf55a302e2ae8eb2ff9bd82e23293e8626fd0b39cbd92368f428dfca",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          245,
+          252,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f5 fc c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpaddb ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "a1b418c8bf55a302e2ae8eb2ff9bd82e23293e8626fd0b39cbd92368f428dfca",
+        "size_bytes": 5
+      }
+    },
+    "p02_simd_sub": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          248,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd f8 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsubb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "9a9eba0a61154e5e6d22472aafd455d31380cfc3ac58bcafbec6d281775a4146",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          248,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd f8 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsubb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "9a9eba0a61154e5e6d22472aafd455d31380cfc3ac58bcafbec6d281775a4146",
+        "size_bytes": 5
+      }
+    },
+    "p03_simd_and": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          244,
+          84,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f4 54 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vandps ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "7c1ff13f8e961870b3be3708148b888f083c8d40859391ed788b30d6bc3d46f3",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          244,
+          84,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f4 54 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vandps ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "7c1ff13f8e961870b3be3708148b888f083c8d40859391ed788b30d6bc3d46f3",
+        "size_bytes": 5
+      }
+    },
+    "p04_simd_or": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          244,
+          86,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f4 56 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vorps  ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "e1b8b8be9194a982c71fa87019a1ee2680c059d2846ff3ec7ae4232b8648baec",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          244,
+          86,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f4 56 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vorps  ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "e1b8b8be9194a982c71fa87019a1ee2680c059d2846ff3ec7ae4232b8648baec",
+        "size_bytes": 5
+      }
+    },
+    "p05_simd_xor": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          244,
+          87,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f4 57 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vxorps ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "12c5538ee15bfd47bc72232512972a3c4bbee7f7e826aadc4ddcfcc0b54835f6",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          244,
+          87,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f4 57 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vxorps ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "12c5538ee15bfd47bc72232512972a3c4bbee7f7e826aadc4ddcfcc0b54835f6",
+        "size_bytes": 5
+      }
+    },
+    "p06_simd_eq": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          116,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd 74 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpcmpeqb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "774f2ce8f8451bb1486ac29f42b525db8ee6563158f2047b2cadf69efbf3cd46",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          116,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd 74 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpcmpeqb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "774f2ce8f8451bb1486ac29f42b525db8ee6563158f2047b2cadf69efbf3cd46",
+        "size_bytes": 5
+      }
+    },
+    "p07_simd_gt": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          100,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd 64 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpcmpgtb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "0b6dc937be59f2f0ebc39e6042eab55ece30d5c9b8f3f637352207c8ddc38030",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          100,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd 64 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpcmpgtb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "0b6dc937be59f2f0ebc39e6042eab55ece30d5c9b8f3f637352207c8ddc38030",
+        "size_bytes": 5
+      }
+    },
+    "p08_simd_lt": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          241,
+          100,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f1 64 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpcmpgtb xmm0,xmm1,xmm0",
+          "ret"
+        ],
+        "sha256": "40e9d9aaba5999ebbd400a25c5d4d80ba5d0768baf26705048d0bcc0d1c59e42",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          241,
+          100,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f1 64 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpcmpgtb xmm0,xmm1,xmm0",
+          "ret"
+        ],
+        "sha256": "40e9d9aaba5999ebbd400a25c5d4d80ba5d0768baf26705048d0bcc0d1c59e42",
+        "size_bytes": 5
+      }
+    },
+    "p09_simd_bitmask": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          215,
+          192,
+          197,
+          248,
+          119,
+          195
+        ],
+        "hex_bytes": "c5 fd d7 c0 c5 f8 77 c3",
+        "insn_count": 3,
+        "insns": [
+          "vpmovmskb eax,ymm0",
+          "vzeroupper",
+          "ret"
+        ],
+        "sha256": "cd5207b81fe3940d4b1dd583472753be32827b0778a7791489be7e12fcc7f4e8",
+        "size_bytes": 8
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          215,
+          192,
+          197,
+          248,
+          119,
+          195
+        ],
+        "hex_bytes": "c5 fd d7 c0 c5 f8 77 c3",
+        "insn_count": 3,
+        "insns": [
+          "vpmovmskb eax,ymm0",
+          "vzeroupper",
+          "ret"
+        ],
+        "sha256": "cd5207b81fe3940d4b1dd583472753be32827b0778a7791489be7e12fcc7f4e8",
+        "size_bytes": 8
+      }
+    },
+    "p10_simd_extract": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          196,
+          227,
+          249,
+          22,
+          192,
+          1,
+          195
+        ],
+        "hex_bytes": "c4 e3 f9 16 c0 01 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpextrq rax,xmm0,0x1",
+          "ret"
+        ],
+        "sha256": "a73a5d6c529a88ea02abec35b865dcc75188ecf965e5679b42d6de8a28666e0e",
+        "size_bytes": 7
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          196,
+          227,
+          249,
+          22,
+          192,
+          1,
+          195
+        ],
+        "hex_bytes": "c4 e3 f9 16 c0 01 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpextrq rax,xmm0,0x1",
+          "ret"
+        ],
+        "sha256": "a73a5d6c529a88ea02abec35b865dcc75188ecf965e5679b42d6de8a28666e0e",
+        "size_bytes": 7
+      }
+    },
+    "p11_simd_funnel_shl": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          98,
+          242,
+          125,
+          40,
+          21,
+          193,
+          195
+        ],
+        "hex_bytes": "62 f2 7d 28 15 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vprolvd ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "011d4451b6e2e0dac266c74d6770b29beba05f91213d9804be808794339f198f",
+        "size_bytes": 7
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          98,
+          242,
+          125,
+          40,
+          21,
+          193,
+          195
+        ],
+        "hex_bytes": "62 f2 7d 28 15 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vprolvd ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "011d4451b6e2e0dac266c74d6770b29beba05f91213d9804be808794339f198f",
+        "size_bytes": 7
+      }
+    },
+    "p12_simd_reduce_or": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          49,
+          192,
+          196,
+          226,
+          125,
+          23,
+          200,
+          15,
+          148,
+          192,
+          197,
+          248,
+          119,
+          195
+        ],
+        "hex_bytes": "31 c0 c4 e2 7d 17 c8 0f 94 c0 c5 f8 77 c3",
+        "insn_count": 5,
+        "insns": [
+          "xor    eax,eax",
+          "vptest ymm1,ymm0",
+          "sete   al",
+          "vzeroupper",
+          "ret"
+        ],
+        "sha256": "467eaef88a470f5e8b772f5f9ada191e0706731f9abcdd62cf51eb8857928224",
+        "size_bytes": 14
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          49,
+          192,
+          196,
+          226,
+          125,
+          23,
+          200,
+          15,
+          148,
+          192,
+          197,
+          248,
+          119,
+          195
+        ],
+        "hex_bytes": "31 c0 c4 e2 7d 17 c8 0f 94 c0 c5 f8 77 c3",
+        "insn_count": 5,
+        "insns": [
+          "xor    eax,eax",
+          "vptest ymm1,ymm0",
+          "sete   al",
+          "vzeroupper",
+          "ret"
+        ],
+        "sha256": "467eaef88a470f5e8b772f5f9ada191e0706731f9abcdd62cf51eb8857928224",
+        "size_bytes": 14
+      }
+    },
+    "p13_simd_saturating_sub": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          216,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd d8 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsubusb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "d872fdf3e798a6a98143cb0ccf87851fe27ee0f11486c3f7a0ed9a400add3103",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          216,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd d8 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsubusb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "d872fdf3e798a6a98143cb0ccf87851fe27ee0f11486c3f7a0ed9a400add3103",
+        "size_bytes": 5
+      }
+    },
+    "p14_simd_shl": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          114,
+          240,
+          7,
+          195
+        ],
+        "hex_bytes": "c5 fd 72 f0 07 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpslld ymm0,ymm0,0x7",
+          "ret"
+        ],
+        "sha256": "9ce86e29dcb25c5dcf5102a02f0d8f0f44206cefa468a8fe256312788fcc1ce1",
+        "size_bytes": 6
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          114,
+          240,
+          7,
+          195
+        ],
+        "hex_bytes": "c5 fd 72 f0 07 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpslld ymm0,ymm0,0x7",
+          "ret"
+        ],
+        "sha256": "9ce86e29dcb25c5dcf5102a02f0d8f0f44206cefa468a8fe256312788fcc1ce1",
+        "size_bytes": 6
+      }
+    },
+    "p14b_simd_shl_var": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          196,
+          226,
+          125,
+          71,
+          193,
+          195
+        ],
+        "hex_bytes": "c4 e2 7d 47 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsllvd ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "0dbeb9d8d4c3cfa220c524b4abc7291392432125d01b0964e606825be87caf0e",
+        "size_bytes": 6
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          196,
+          226,
+          125,
+          71,
+          193,
+          195
+        ],
+        "hex_bytes": "c4 e2 7d 47 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsllvd ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "0dbeb9d8d4c3cfa220c524b4abc7291392432125d01b0964e606825be87caf0e",
+        "size_bytes": 6
+      }
+    },
+    "p14c_simd_shl_oob40": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          248,
+          87,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f8 57 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vxorps xmm0,xmm0,xmm0",
+          "ret"
+        ],
+        "sha256": "fcfc19d3f135ca9a888eb1e115a1b623b770ebd3db2990a53889e448f4e124ce",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          248,
+          87,
+          192,
+          195
+        ],
+        "hex_bytes": "c5 f8 57 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vxorps xmm0,xmm0,xmm0",
+          "ret"
+        ],
+        "sha256": "fcfc19d3f135ca9a888eb1e115a1b623b770ebd3db2990a53889e448f4e124ce",
+        "size_bytes": 5
+      }
+    },
+    "p15_simd_shr": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          114,
+          208,
+          7,
+          195
+        ],
+        "hex_bytes": "c5 fd 72 d0 07 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsrld ymm0,ymm0,0x7",
+          "ret"
+        ],
+        "sha256": "4e2aa741b781ab0b48332fcddd5728c9adc98e059fa31609f81d1ffca2e24090",
+        "size_bytes": 6
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          114,
+          208,
+          7,
+          195
+        ],
+        "hex_bytes": "c5 fd 72 d0 07 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsrld ymm0,ymm0,0x7",
+          "ret"
+        ],
+        "sha256": "4e2aa741b781ab0b48332fcddd5728c9adc98e059fa31609f81d1ffca2e24090",
+        "size_bytes": 6
+      }
+    },
+    "p15b_simd_sar": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          114,
+          224,
+          7,
+          195
+        ],
+        "hex_bytes": "c5 fd 72 e0 07 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsrad ymm0,ymm0,0x7",
+          "ret"
+        ],
+        "sha256": "de9012429989515814997a8bf4bc0514e474ec2f4760bd89aef89ca676c2370b",
+        "size_bytes": 6
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          114,
+          224,
+          7,
+          195
+        ],
+        "hex_bytes": "c5 fd 72 e0 07 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsrad ymm0,ymm0,0x7",
+          "ret"
+        ],
+        "sha256": "de9012429989515814997a8bf4bc0514e474ec2f4760bd89aef89ca676c2370b",
+        "size_bytes": 6
+      }
+    },
+    "p15c_simd_sar_oob40": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          114,
+          224,
+          31,
+          195
+        ],
+        "hex_bytes": "c5 fd 72 e0 1f c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsrad ymm0,ymm0,0x1f",
+          "ret"
+        ],
+        "sha256": "fd367a5a1cc34b0c5e1606cb99dfcc6cd57700d1947eabb4599dfe1cc2a2d5c7",
+        "size_bytes": 6
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          114,
+          224,
+          31,
+          195
+        ],
+        "hex_bytes": "c5 fd 72 e0 1f c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsrad ymm0,ymm0,0x1f",
+          "ret"
+        ],
+        "sha256": "fd367a5a1cc34b0c5e1606cb99dfcc6cd57700d1947eabb4599dfe1cc2a2d5c7",
+        "size_bytes": 6
+      }
+    },
+    "p16_simd_shuffle": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          196,
+          227,
+          125,
+          6,
+          193,
+          33,
+          195
+        ],
+        "hex_bytes": "c4 e3 7d 06 c1 21 c3",
+        "insn_count": 2,
+        "insns": [
+          "vperm2f128 ymm0,ymm0,ymm1,0x21",
+          "ret"
+        ],
+        "sha256": "87d3d3b0b670d5c3d7ab719af220a0e6d9a59a73f55586ff3e739491a248c540",
+        "size_bytes": 7
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          196,
+          227,
+          125,
+          6,
+          193,
+          33,
+          195
+        ],
+        "hex_bytes": "c4 e3 7d 06 c1 21 c3",
+        "insn_count": 2,
+        "insns": [
+          "vperm2f128 ymm0,ymm0,ymm1,0x21",
+          "ret"
+        ],
+        "sha256": "87d3d3b0b670d5c3d7ab719af220a0e6d9a59a73f55586ff3e739491a248c540",
+        "size_bytes": 7
+      }
+    },
+    "p16b_simd_shuffle_zero": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          196,
+          227,
+          125,
+          25,
+          192,
+          1,
+          195
+        ],
+        "hex_bytes": "c4 e3 7d 19 c0 01 c3",
+        "insn_count": 2,
+        "insns": [
+          "vextractf128 xmm0,ymm0,0x1",
+          "ret"
+        ],
+        "sha256": "6826cb59a1457be821f5db37035e333fe8b4dbfd652920f639f7d4b5cead7eb3",
+        "size_bytes": 7
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          196,
+          227,
+          125,
+          25,
+          192,
+          1,
+          195
+        ],
+        "hex_bytes": "c4 e3 7d 19 c0 01 c3",
+        "insn_count": 2,
+        "insns": [
+          "vextractf128 xmm0,ymm0,0x1",
+          "ret"
+        ],
+        "sha256": "6826cb59a1457be821f5db37035e333fe8b4dbfd652920f639f7d4b5cead7eb3",
+        "size_bytes": 7
+      }
+    },
+    "p17_pclmulqdq": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          196,
+          227,
+          121,
+          68,
+          193,
+          16,
+          195
+        ],
+        "hex_bytes": "c4 e3 79 44 c1 10 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpclmullqhqdq xmm0,xmm0,xmm1",
+          "ret"
+        ],
+        "sha256": "4893aaff38e5a163ea4ad68d3dc16c0304c02e239e4bad27fcbd46941cc5952f",
+        "size_bytes": 7
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          196,
+          227,
+          121,
+          68,
+          193,
+          16,
+          195
+        ],
+        "hex_bytes": "c4 e3 79 44 c1 10 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpclmullqhqdq xmm0,xmm0,xmm1",
+          "ret"
+        ],
+        "sha256": "4893aaff38e5a163ea4ad68d3dc16c0304c02e239e4bad27fcbd46941cc5952f",
+        "size_bytes": 7
+      }
+    },
+    "p18_aesni": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          196,
+          226,
+          121,
+          220,
+          193,
+          195
+        ],
+        "hex_bytes": "c4 e2 79 dc c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vaesenc xmm0,xmm0,xmm1",
+          "ret"
+        ],
+        "sha256": "7e76961e29b95a8b26201ea5772a93e93890f2e43546fb3d26ab00a4af231a3b",
+        "size_bytes": 6
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          196,
+          226,
+          121,
+          220,
+          193,
+          195
+        ],
+        "hex_bytes": "c4 e2 79 dc c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vaesenc xmm0,xmm0,xmm1",
+          "ret"
+        ],
+        "sha256": "7e76961e29b95a8b26201ea5772a93e93890f2e43546fb3d26ab00a4af231a3b",
+        "size_bytes": 6
+      }
+    },
+    "p19_pshufb": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          196,
+          226,
+          125,
+          0,
+          193,
+          195
+        ],
+        "hex_bytes": "c4 e2 7d 00 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpshufb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "7473e83ea63cb54efd7e9c84f8314193c5b93a78882f6c6781f63f6ca760ef16",
+        "size_bytes": 6
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          196,
+          226,
+          125,
+          0,
+          193,
+          195
+        ],
+        "hex_bytes": "c4 e2 7d 00 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpshufb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "7473e83ea63cb54efd7e9c84f8314193c5b93a78882f6c6781f63f6ca760ef16",
+        "size_bytes": 6
+      }
+    },
+    "p20_psadbw": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          246,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd f6 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsadbw ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "9002409f3682b40445aed06a6e2c3765c2b881af7e7070f99c28afe13b57d4d4",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          246,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd f6 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpsadbw ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "9002409f3682b40445aed06a6e2c3765c2b881af7e7070f99c28afe13b57d4d4",
+        "size_bytes": 5
+      }
+    },
+    "p21_vperm": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          196,
+          226,
+          117,
+          22,
+          192,
+          195
+        ],
+        "hex_bytes": "c4 e2 75 16 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpermps ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "4476d7513e2e238c6f37fe0485e17875be76ae26a03f57f2c4c9253fc929b713",
+        "size_bytes": 6
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          196,
+          226,
+          117,
+          22,
+          192,
+          195
+        ],
+        "hex_bytes": "c4 e2 75 16 c0 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpermps ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "sha256": "4476d7513e2e238c6f37fe0485e17875be76ae26a03f57f2c4c9253fc929b713",
+        "size_bytes": 6
+      }
+    },
+    "p22_pternlog": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          98,
+          243,
+          117,
+          40,
+          37,
+          194,
+          150,
+          195
+        ],
+        "hex_bytes": "62 f3 75 28 25 c2 96 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpternlogd ymm0,ymm1,ymm2,0x96",
+          "ret"
+        ],
+        "sha256": "c69c6299239250861ea302ebdfdd243072431475c90180061e132fea7ed5244b",
+        "size_bytes": 8
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          98,
+          243,
+          117,
+          40,
+          37,
+          194,
+          150,
+          195
+        ],
+        "hex_bytes": "62 f3 75 28 25 c2 96 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpternlogd ymm0,ymm1,ymm2,0x96",
+          "ret"
+        ],
+        "sha256": "c69c6299239250861ea302ebdfdd243072431475c90180061e132fea7ed5244b",
+        "size_bytes": 8
+      }
+    },
+    "p23_pmaddwd": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          197,
+          253,
+          245,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd f5 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpmaddwd ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "e045f1091744e1787d9a6dca5e048d9d68184b09d40218d6b2e70aa4d37f3788",
+        "size_bytes": 5
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          197,
+          253,
+          245,
+          193,
+          195
+        ],
+        "hex_bytes": "c5 fd f5 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpmaddwd ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "e045f1091744e1787d9a6dca5e048d9d68184b09d40218d6b2e70aa4d37f3788",
+        "size_bytes": 5
+      }
+    },
+    "p24_pmaddubsw": {
+      "byte_identical_199_vs_nightly": true,
+      "rustc_1_102_0_nightly": {
+        "byte_list": [
+          196,
+          226,
+          125,
+          4,
+          193,
+          195
+        ],
+        "hex_bytes": "c4 e2 7d 04 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpmaddubsw ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "47eceaf1978a4621c66a41ed030eada8eb9959cc1c90b9d39ec8135d8d6451da",
+        "size_bytes": 6
+      },
+      "rustc_1_99_1": {
+        "byte_list": [
+          196,
+          226,
+          125,
+          4,
+          193,
+          195
+        ],
+        "hex_bytes": "c4 e2 7d 04 c1 c3",
+        "insn_count": 2,
+        "insns": [
+          "vpmaddubsw ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "sha256": "47eceaf1978a4621c66a41ed030eada8eb9959cc1c90b9d39ec8135d8d6451da",
+        "size_bytes": 6
+      }
+    }
+  },
+  "toolchains": {
+    "rustc_1_102_0_nightly": {
+      "LLVM version": "23.1.5",
+      "binary": "rustc",
+      "commit-date": "2026-11-11",
+      "commit-hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.102.0-nightly",
+      "silicon_execution": "ALL_SILICON_SIMD_ASSERTIONS_PASSED"
+    },
+    "rustc_1_99_1": {
+      "LLVM version": "23.1.1",
+      "binary": "rustc",
+      "commit-date": "2026-10-13",
+      "commit-hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.99.1",
+      "silicon_execution": "ALL_SILICON_SIMD_ASSERTIONS_PASSED"
+    }
+  }
+}

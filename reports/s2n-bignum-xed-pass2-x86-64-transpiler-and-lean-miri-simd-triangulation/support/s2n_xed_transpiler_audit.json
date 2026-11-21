@@ -1,0 +1,972 @@
+{
+  "architectural_opcode_variants_emitted": 75,
+  "curated_24_rustc_o_audit": {
+    "raw_s2n_bignum_decoded_count": 12,
+    "raw_s2n_bignum_decoded_pct": 50.0,
+    "raw_s2n_bignum_rejected_count": 12,
+    "raw_s2n_bignum_rejected_details": [
+      {
+        "insns": [
+          "vandps ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vandps"
+        ],
+        "primitive": "p03_simd_and"
+      },
+      {
+        "insns": [
+          "vorps  ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vorps"
+        ],
+        "primitive": "p04_simd_or"
+      },
+      {
+        "insns": [
+          "vxorps ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vxorps"
+        ],
+        "primitive": "p05_simd_xor"
+      },
+      {
+        "insns": [
+          "vpcmpeqb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vpcmpeqb"
+        ],
+        "primitive": "p06_simd_eq"
+      },
+      {
+        "insns": [
+          "vpcmpgtb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vpcmpgtb"
+        ],
+        "primitive": "p07_simd_gt"
+      },
+      {
+        "insns": [
+          "vpcmpgtb xmm0,xmm1,xmm0",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vpcmpgtb"
+        ],
+        "primitive": "p08_simd_lt"
+      },
+      {
+        "insns": [
+          "vprolvd ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vprolvd"
+        ],
+        "primitive": "p11_simd_funnel_shl"
+      },
+      {
+        "insns": [
+          "vpsubusb ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vpsubusb"
+        ],
+        "primitive": "p13_simd_saturating_sub"
+      },
+      {
+        "insns": [
+          "vperm2f128 ymm0,ymm0,ymm1,0x21",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vperm2f128"
+        ],
+        "primitive": "p16_simd_shuffle"
+      },
+      {
+        "insns": [
+          "vaesenc xmm0,xmm0,xmm1",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vaesenc"
+        ],
+        "primitive": "p18_aesni"
+      },
+      {
+        "insns": [
+          "vpsadbw ymm0,ymm0,ymm1",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vpsadbw"
+        ],
+        "primitive": "p20_psadbw"
+      },
+      {
+        "insns": [
+          "vpermps ymm0,ymm1,ymm0",
+          "ret"
+        ],
+        "missing_opcodes": [
+          "vpermps"
+        ],
+        "primitive": "p21_vperm"
+      }
+    ],
+    "raw_s2n_bignum_rejected_pct": 50.0,
+    "total_curated_primitives": 24,
+    "vendor_x86_ref_decoded_count": 24,
+    "vendor_x86_ref_decoded_pct": 100.0
+  },
+  "emitted_lean_modules": {
+    "VendorX86Ref/Decode.lean": {
+      "bytes": 36641,
+      "lines": 723,
+      "sha256": "f134f7f26645824c4293142d6e4334e430f55f5159d3583e7a6356b2a7ba56bf"
+    },
+    "VendorX86Ref/Machine.lean": {
+      "bytes": 3240,
+      "lines": 76,
+      "sha256": "37e75c1eee1dcb94d4c22448308cb6e2bb5478468bacb214ca576d7c11c2904e"
+    },
+    "VendorX86Ref/SemanticsScalar.lean": {
+      "bytes": 22253,
+      "lines": 527,
+      "sha256": "6b726bd6250db011d0a3aba34d536fde0dd9f8aa4dd23610e3338c476a69209f"
+    },
+    "VendorX86Ref/SemanticsSimd.lean": {
+      "bytes": 25453,
+      "lines": 417,
+      "sha256": "cafa98c81e0888ddc95a49cb42add5804fdc107b10130b1fdd8d6094259f9a7a"
+    },
+    "VendorX86Ref/Types.lean": {
+      "bytes": 15035,
+      "lines": 375,
+      "sha256": "3b39cf958a7d6a197f8f68f8fbadc66d6cb29ffa6c091ce74a20a52040b5779e"
+    }
+  },
+  "opcode_family_entries": 88,
+  "opcode_slice_provenance": [
+    {
+      "group": "gp_alu",
+      "lockable_mem": true,
+      "opcode": "ADD",
+      "s2n_ctor": "ADD",
+      "s2n_decode": true,
+      "xed_iclass": "ADD"
+    },
+    {
+      "group": "gp_alu",
+      "lockable_mem": true,
+      "opcode": "ADC",
+      "s2n_ctor": "ADC",
+      "s2n_decode": true,
+      "xed_iclass": "ADC"
+    },
+    {
+      "group": "gp_alu",
+      "lockable_mem": true,
+      "opcode": "SUB",
+      "s2n_ctor": "SUB",
+      "s2n_decode": true,
+      "xed_iclass": "SUB"
+    },
+    {
+      "group": "gp_alu",
+      "lockable_mem": true,
+      "opcode": "SBB",
+      "s2n_ctor": "SBB",
+      "s2n_decode": true,
+      "xed_iclass": "SBB"
+    },
+    {
+      "group": "gp_alu",
+      "lockable_mem": true,
+      "opcode": "AND",
+      "s2n_ctor": "AND",
+      "s2n_decode": true,
+      "xed_iclass": "AND"
+    },
+    {
+      "group": "gp_alu",
+      "lockable_mem": true,
+      "opcode": "OR",
+      "s2n_ctor": "OR",
+      "s2n_decode": true,
+      "xed_iclass": "OR"
+    },
+    {
+      "group": "gp_alu",
+      "lockable_mem": true,
+      "opcode": "XOR",
+      "s2n_ctor": "XOR",
+      "s2n_decode": true,
+      "xed_iclass": "XOR"
+    },
+    {
+      "group": "gp_alu",
+      "lockable_mem": false,
+      "opcode": "CMP",
+      "s2n_ctor": "CMP",
+      "s2n_decode": true,
+      "xed_iclass": "CMP"
+    },
+    {
+      "group": "gp_alu",
+      "lockable_mem": false,
+      "opcode": "TEST",
+      "s2n_ctor": "TEST",
+      "s2n_decode": true,
+      "xed_iclass": "TEST"
+    },
+    {
+      "group": "gp_unary",
+      "lockable_mem": true,
+      "opcode": "INC",
+      "s2n_ctor": "INC",
+      "s2n_decode": true,
+      "xed_iclass": "INC"
+    },
+    {
+      "group": "gp_unary",
+      "lockable_mem": true,
+      "opcode": "DEC",
+      "s2n_ctor": "DEC",
+      "s2n_decode": true,
+      "xed_iclass": "DEC"
+    },
+    {
+      "group": "gp_unary",
+      "lockable_mem": true,
+      "opcode": "NEG",
+      "s2n_ctor": "NEG",
+      "s2n_decode": true,
+      "xed_iclass": "NEG"
+    },
+    {
+      "group": "gp_unary",
+      "lockable_mem": true,
+      "opcode": "NOT",
+      "s2n_ctor": "NOT",
+      "s2n_decode": true,
+      "xed_iclass": "NOT"
+    },
+    {
+      "group": "gp_unary",
+      "lockable_mem": false,
+      "opcode": "BSWAP",
+      "s2n_ctor": "BSWAP",
+      "s2n_decode": true,
+      "xed_iclass": "BSWAP"
+    },
+    {
+      "group": "gp_shift",
+      "lockable_mem": false,
+      "opcode": "SHL",
+      "s2n_ctor": "SHL",
+      "s2n_decode": true,
+      "xed_iclass": "SHL"
+    },
+    {
+      "group": "gp_shift",
+      "lockable_mem": false,
+      "opcode": "SHR",
+      "s2n_ctor": "SHR",
+      "s2n_decode": true,
+      "xed_iclass": "SHR"
+    },
+    {
+      "group": "gp_shift",
+      "lockable_mem": false,
+      "opcode": "SAR",
+      "s2n_ctor": "SAR",
+      "s2n_decode": true,
+      "xed_iclass": "SAR"
+    },
+    {
+      "group": "gp_shift",
+      "lockable_mem": false,
+      "opcode": "ROL",
+      "s2n_ctor": "ROL",
+      "s2n_decode": true,
+      "xed_iclass": "ROL"
+    },
+    {
+      "group": "gp_shift",
+      "lockable_mem": false,
+      "opcode": "ROR",
+      "s2n_ctor": "ROR",
+      "s2n_decode": true,
+      "xed_iclass": "ROR"
+    },
+    {
+      "group": "mul_adx",
+      "lockable_mem": false,
+      "opcode": "IMUL2",
+      "s2n_ctor": "IMUL",
+      "s2n_decode": true,
+      "xed_iclass": "IMUL"
+    },
+    {
+      "group": "mul_adx",
+      "lockable_mem": false,
+      "opcode": "IMUL3",
+      "s2n_ctor": "IMUL3",
+      "s2n_decode": true,
+      "xed_iclass": "IMUL"
+    },
+    {
+      "group": "mul_adx",
+      "lockable_mem": false,
+      "opcode": "MUL",
+      "s2n_ctor": "MUL2",
+      "s2n_decode": true,
+      "xed_iclass": "MUL"
+    },
+    {
+      "group": "mul_adx",
+      "lockable_mem": false,
+      "opcode": "MULX",
+      "s2n_ctor": "MULX4",
+      "s2n_decode": true,
+      "xed_iclass": "MULX"
+    },
+    {
+      "group": "mul_adx",
+      "lockable_mem": false,
+      "opcode": "ADCX",
+      "s2n_ctor": "ADCX",
+      "s2n_decode": true,
+      "xed_iclass": "ADCX"
+    },
+    {
+      "group": "mul_adx",
+      "lockable_mem": false,
+      "opcode": "ADOX",
+      "s2n_ctor": "ADOX",
+      "s2n_decode": true,
+      "xed_iclass": "ADOX"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "BSF",
+      "s2n_ctor": "BSF",
+      "s2n_decode": true,
+      "xed_iclass": "BSF"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "BSR",
+      "s2n_ctor": "BSR",
+      "s2n_decode": true,
+      "xed_iclass": "BSR"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "TZCNT",
+      "s2n_ctor": "TZCNT",
+      "s2n_decode": true,
+      "xed_iclass": "TZCNT"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "LZCNT",
+      "s2n_ctor": "LZCNT",
+      "s2n_decode": true,
+      "xed_iclass": "LZCNT"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "POPCNT",
+      "s2n_ctor": "POPCNT",
+      "s2n_decode": true,
+      "xed_iclass": "POPCNT"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "ANDN",
+      "s2n_ctor": "ANDN",
+      "s2n_decode": true,
+      "xed_iclass": "ANDN"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "SHRX",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "SHRX"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "SHLX",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "SHLX"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "SARX",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "SARX"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "BZHI",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "BZHI"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "PDEP",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "PDEP"
+    },
+    {
+      "group": "bit_bmi",
+      "lockable_mem": false,
+      "opcode": "PEXT",
+      "s2n_ctor": "PEXT",
+      "s2n_decode": true,
+      "xed_iclass": "PEXT"
+    },
+    {
+      "group": "cond",
+      "lockable_mem": false,
+      "opcode": "CMOVcc",
+      "s2n_ctor": "CMOV",
+      "s2n_decode": true,
+      "xed_iclass": "CMOVcc"
+    },
+    {
+      "group": "cond",
+      "lockable_mem": false,
+      "opcode": "SETcc",
+      "s2n_ctor": "SET",
+      "s2n_decode": true,
+      "xed_iclass": "SETcc"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "MOV",
+      "s2n_ctor": "MOV",
+      "s2n_decode": true,
+      "xed_iclass": "MOV"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "MOVZX",
+      "s2n_ctor": "MOVZX",
+      "s2n_decode": true,
+      "xed_iclass": "MOVZX"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "MOVSXD",
+      "s2n_ctor": "MOVSX",
+      "s2n_decode": true,
+      "xed_iclass": "MOVSXD"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "LEA",
+      "s2n_ctor": "LEA",
+      "s2n_decode": true,
+      "xed_iclass": "LEA"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": true,
+      "opcode": "XCHG",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "XCHG"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "PUSH",
+      "s2n_ctor": "PUSH",
+      "s2n_decode": true,
+      "xed_iclass": "PUSH"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "POP",
+      "s2n_ctor": "POP",
+      "s2n_decode": true,
+      "xed_iclass": "POP"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "CALL",
+      "s2n_ctor": "CALL",
+      "s2n_decode": true,
+      "xed_iclass": "CALL_NEAR"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "RET",
+      "s2n_ctor": "RET",
+      "s2n_decode": true,
+      "xed_iclass": "RET_NEAR"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "JMP",
+      "s2n_ctor": "JUMP",
+      "s2n_decode": true,
+      "xed_iclass": "JMP"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "Jcc",
+      "s2n_ctor": "JUMP",
+      "s2n_decode": true,
+      "xed_iclass": "Jcc"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "NOP",
+      "s2n_ctor": "NOP",
+      "s2n_decode": true,
+      "xed_iclass": "NOP"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "ENDBR64",
+      "s2n_ctor": "ENDBR64",
+      "s2n_decode": true,
+      "xed_iclass": "ENDBR64"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "UD2",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "UD2"
+    },
+    {
+      "group": "move_ctrl",
+      "lockable_mem": false,
+      "opcode": "CLI",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "CLI"
+    },
+    {
+      "group": "atomic_lock",
+      "lockable_mem": true,
+      "opcode": "LOCK_XADD",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "XADD_LOCK"
+    },
+    {
+      "group": "atomic_lock",
+      "lockable_mem": true,
+      "opcode": "LOCK_CMPXCHG",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "CMPXCHG_LOCK"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VMOVDQU",
+      "s2n_ctor": "VMOVDQU",
+      "s2n_decode": true,
+      "xed_iclass": "VMOVDQU"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VMOVDQA",
+      "s2n_ctor": "VMOVDQA",
+      "s2n_decode": true,
+      "xed_iclass": "VMOVDQA"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VMOVD_Q",
+      "s2n_ctor": "VMOVQ",
+      "s2n_decode": true,
+      "xed_iclass": "VMOVQ"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPADD_BWQD",
+      "s2n_ctor": "VPADDB",
+      "s2n_decode": true,
+      "xed_iclass": "VPADDB"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPSUB_BWQD",
+      "s2n_ctor": "VPSUBB",
+      "s2n_decode": true,
+      "xed_iclass": "VPSUBB"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPADDSW",
+      "s2n_ctor": "VPADDSW",
+      "s2n_decode": true,
+      "xed_iclass": "VPADDSW"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPSUBUSB",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "VPSUBUSB"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPAND_VANDPS",
+      "s2n_ctor": "VPAND",
+      "s2n_decode": false,
+      "xed_iclass": "VANDPS"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPOR_VORPS",
+      "s2n_ctor": "VPOR",
+      "s2n_decode": false,
+      "xed_iclass": "VORPS"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPXOR_VXORPS",
+      "s2n_ctor": "VPXOR",
+      "s2n_decode": false,
+      "xed_iclass": "VXORPS"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPANDN",
+      "s2n_ctor": "VPANDN",
+      "s2n_decode": true,
+      "xed_iclass": "VPANDN"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPCMPEQ_BW",
+      "s2n_ctor": "VPCMPEQW",
+      "s2n_decode": false,
+      "xed_iclass": "VPCMPEQB"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPCMPGT_BD",
+      "s2n_ctor": "VPCMPGTD",
+      "s2n_decode": false,
+      "xed_iclass": "VPCMPGTB"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPMOVMSKB",
+      "s2n_ctor": "VPMOVMSKB",
+      "s2n_decode": true,
+      "xed_iclass": "VPMOVMSKB"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPEXTRQ",
+      "s2n_ctor": "VPEXTRQ",
+      "s2n_decode": true,
+      "xed_iclass": "VPEXTRQ"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPSHUFB",
+      "s2n_ctor": "VPSHUFB",
+      "s2n_decode": true,
+      "xed_iclass": "VPSHUFB"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPSHUFD",
+      "s2n_ctor": "VPSHUFD",
+      "s2n_decode": true,
+      "xed_iclass": "VPSHUFD"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPMADDUBSW",
+      "s2n_ctor": "VPMADDUBSW",
+      "s2n_decode": true,
+      "xed_iclass": "VPMADDUBSW"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPMADDWD",
+      "s2n_ctor": "VPMADDWD",
+      "s2n_decode": true,
+      "xed_iclass": "VPMADDWD"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPSADBW",
+      "s2n_ctor": null,
+      "s2n_decode": false,
+      "xed_iclass": "VPSADBW"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPSHIFT_D",
+      "s2n_ctor": "VPSLLD",
+      "s2n_decode": true,
+      "xed_iclass": "VPSLLD"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPSHIFTV_D",
+      "s2n_ctor": "VPSLLVD",
+      "s2n_decode": true,
+      "xed_iclass": "VPSLLVD"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPERMD_PS",
+      "s2n_ctor": "VPERMD",
+      "s2n_decode": false,
+      "xed_iclass": "VPERMPS"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPERMQ",
+      "s2n_ctor": "VPERMQ",
+      "s2n_decode": true,
+      "xed_iclass": "VPERMQ"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPERM2_128",
+      "s2n_ctor": "VPERM2I128",
+      "s2n_decode": false,
+      "xed_iclass": "VPERM2F128"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VEXTRACT_128",
+      "s2n_ctor": "VEXTRACTI128",
+      "s2n_decode": false,
+      "xed_iclass": "VEXTRACTF128"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPCLMULQDQ",
+      "s2n_ctor": "VPCLMULQDQ",
+      "s2n_decode": true,
+      "xed_iclass": "VPCLMULQDQ"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VAESENC",
+      "s2n_ctor": "AESENC",
+      "s2n_decode": false,
+      "xed_iclass": "VAESENC"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VPTEST",
+      "s2n_ctor": "VPTEST",
+      "s2n_decode": true,
+      "xed_iclass": "VPTEST"
+    },
+    {
+      "group": "simd_evex",
+      "lockable_mem": false,
+      "opcode": "VPROLVD",
+      "s2n_ctor": "VPROLVQ",
+      "s2n_decode": false,
+      "xed_iclass": "VPROLVD"
+    },
+    {
+      "group": "simd_evex",
+      "lockable_mem": false,
+      "opcode": "VPTERNLOGD",
+      "s2n_ctor": "VPTERNLOGD",
+      "s2n_decode": true,
+      "xed_iclass": "VPTERNLOGD"
+    },
+    {
+      "group": "simd_vex",
+      "lockable_mem": false,
+      "opcode": "VZEROUPPER",
+      "s2n_ctor": "VZEROUPPER",
+      "s2n_decode": true,
+      "xed_iclass": "VZEROUPPER"
+    }
+  ],
+  "pinned_s2n_blobs": {
+    "decode.ml": {
+      "git_blob_sha1": "4c9a45b64f10e89e6314ddd2931ccb87c0058df6",
+      "path": "x86/proofs/decode.ml",
+      "size_bytes": 180031
+    },
+    "instruction.ml": {
+      "git_blob_sha1": "e2d3e3c7fcf8238b862795e449819196166a42f4",
+      "path": "x86/proofs/instruction.ml",
+      "size_bytes": 26071
+    },
+    "x86.ml": {
+      "git_blob_sha1": "dfcd64bcccb2ff8c9c701609aa13ebc763d541e4",
+      "path": "x86/proofs/x86.ml",
+      "size_bytes": 331579
+    }
+  },
+  "pinned_s2n_commit": "d4518712d040485efe621caba1c723a07fbc549e",
+  "pinned_xed_commit": "0bcb6237345c5066726dcc08b3d87928df3b5b26",
+  "silicon_224_raw_s2n_vs_overlay": {
+    "raw_s2n_diverging_vectors_count": 47,
+    "raw_s2n_matching_pct": 79.02,
+    "raw_s2n_matching_vectors_count": 177,
+    "total_silicon_vectors": 224,
+    "vendor_x86_ref_matching_pct_expected": 100.0
+  },
+  "upstream_parse_summary": {
+    "raw_s2n_source_verified_gaps": {
+      "allows_unbounded_0x66_above_15_bytes": true,
+      "bsf_models_undefined_dest_on_zero": true,
+      "rejects_lock_0xf0_unconditionally": true,
+      "single_pass_rex_after_read_prefixes": true,
+      "vpmovmskb_requires_vex_L_256_only": true
+    },
+    "s2n_commit": "d4518712d040485efe621caba1c723a07fbc549e",
+    "s2n_instruction_constructor_count": 178,
+    "s2n_selected_undef_clauses": {
+      "x86_AND": [
+        "AF"
+      ],
+      "x86_BSF": [
+        "AF",
+        "CF",
+        "OF",
+        "PF",
+        "SF",
+        "destx"
+      ],
+      "x86_BSR": [
+        "AF",
+        "CF",
+        "OF",
+        "PF",
+        "SF",
+        "destx"
+      ],
+      "x86_IMUL": [],
+      "x86_LZCNT": [
+        "AF",
+        "OF",
+        "PF",
+        "SF"
+      ],
+      "x86_MUL2": [
+        "AF",
+        "PF",
+        "SF",
+        "ZF"
+      ],
+      "x86_OR": [
+        "AF"
+      ],
+      "x86_SAR": [
+        "AF",
+        "OF"
+      ],
+      "x86_SHL": [
+        "AF",
+        "CF",
+        "OF"
+      ],
+      "x86_SHR": [
+        "AF",
+        "CF",
+        "OF"
+      ],
+      "x86_TEST": [
+        "AF"
+      ],
+      "x86_TZCNT": [
+        "AF",
+        "OF",
+        "PF",
+        "SF"
+      ],
+      "x86_XOR": [
+        "AF"
+      ]
+    },
+    "s2n_x86_semantic_def_count": 200,
+    "xed_commit": "0bcb6237345c5066726dcc08b3d87928df3b5b26",
+    "xed_datafile_count": 25,
+    "xed_distinct_iclass_count": 1334
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "suite_1a_miri_dormant_stack_tree_borrows": {
+    "m1_raw_inline_asm_stack_switch_unsupported_in_miri": {
+      "diagnostic": "error: unsupported operation: inline assembly is not supported",
+      "exit_code": 1,
+      "passed": false
+    },
+    "m2a_dormant_stack_disjoint_access_ok": {
+      "diagnostic": "",
+      "exit_code": 0,
+      "passed": true
+    },
+    "m2b_dormant_stack_child_ptr_write_from_stack_b_ok": {
+      "diagnostic": "",
+      "exit_code": 0,
+      "passed": true
+    },
+    "m2c_dormant_stack_activated_mut_sibling_write_immediate_ub": {
+      "diagnostic": "error: Undefined Behavior: write access through <127520> (root of the allocation) at alloc40415[0x0] is forbidden",
+      "exit_code": 1,
+      "passed": false
+    },
+    "m2d_dormant_stack_activated_mut_sibling_read_immediate_ub": {
+      "diagnostic": "error: Undefined Behavior: read access through <129718> (root of the allocation) at alloc41066[0x0] is forbidden",
+      "exit_code": 1,
+      "passed": false
+    },
+    "m2e_dormant_stack_reserved_frz_sibling_read_taints_resumed_write_ub": {
+      "diagnostic": "error: Undefined Behavior: write access through <131140> at alloc40596[0x0] is forbidden",
+      "exit_code": 1,
+      "passed": false
+    },
+    "m2f_dormant_stack_reserved_frz_sibling_read_resumed_read_only_ok": {
+      "diagnostic": "",
+      "exit_code": 0,
+      "passed": true
+    },
+    "m2g_stackless_coroutine_yield_retires_fn_entry_protector_contrast": {
+      "diagnostic": "",
+      "exit_code": 0,
+      "passed": true
+    }
+  },
+  "suite_1b_x86_64_trampoline_cfi_undefined": {
+    "eh_frame_has_dw_cfa_undefined_rip": true,
+    "runs": {
+      "bad_bt": {
+        "exit_code": -11,
+        "stdout": ""
+      },
+      "bad_uncaught": {
+        "exit_code": -11,
+        "stdout": ""
+      },
+      "good_bt": {
+        "exit_code": 0,
+        "stdout": "OK variant=good_bt bt_frames=3 drops=0"
+      },
+      "good_catch": {
+        "exit_code": 0,
+        "stdout": "OK variant=good_catch bt_frames=0 drops=1"
+      },
+      "good_uncaught": {
+        "exit_code": -6,
+        "stdout": ""
+      }
+    }
+  },
+  "suite_1c_aarch64_qemu_trampoline_cfi_undefined": {
+    "eh_frame_has_dw_cfa_undefined_x30": true,
+    "runs": {
+      "bad_deref_bt": {
+        "exit_code": -11,
+        "stdout": "",
+        "timed_out": false
+      },
+      "bad_deref_uncaught": {
+        "exit_code": -11,
+        "stdout": "",
+        "timed_out": false
+      },
+      "bad_sameval_bt_loop": {
+        "exit_code": 22,
+        "stdout": "A64_BAD_SAMEVAL_LOOP",
+        "timed_out": false
+      },
+      "bad_sameval_uncaught_phase1_hang": {
+        "exit_code": null,
+        "stdout": "",
+        "timed_out": true
+      },
+      "good_bt": {
+        "exit_code": 4,
+        "stdout": "A64_GOOD_BT_OK",
+        "timed_out": false
+      },
+      "good_catch": {
+        "exit_code": 0,
+        "stdout": "A64_GOOD_CATCH_OK",
+        "timed_out": false
+      },
+      "good_uncaught_end_of_stack": {
+        "exit_code": 55,
+        "stdout": "",
+        "timed_out": false
+      },
+      "unwinding_crate_omitted_x30_treated_as_zero": {
+        "exit_code": 4,
+        "stdout": "A64_UNWINDING_CRATE_OMITTED_TREATED_AS_ZERO",
+        "timed_out": false
+      }
+    }
+  },
+  "suite_2_global_asm_and_perlasm_swecg": {
+    "gcc_perlasm_specimen_symbols": {
+      "perlasm_interior_unwind_marker": {
+        "st_size": 0,
+        "st_value": 10,
+        "type": 0
+      },
+      "perlasm_xts_dec_nosize": {
+        "st_size": 0,
+        "st_value": 6,
+        "type": 2
+      },
+      "perlasm_xts_enc_nosize": {
+        "st_size": 0,
+        "st_value": 0,
+        "type": 2
+      }
+    },
+    "naive_lifter_a_st_size": {
+      "gasm_nosize_common": "BUG_ZERO_BYTE_SLICE_VACUOUS",
+      "gasm_nosize_fast": "BUG_ZERO_BYTE_SLICE_VACUOUS",
+      "gasm_sized_with_shared_tail": "BUG_out_of_bounds_pc:6",
+      "gasm_two_entry_alt": "BUG_ZERO_BYTE_SLICE_VACUOUS",
+      "gasm_two_entry_enter": "OK"
+    },
+    "naive_lifter_b_next_sym": {
+      "gasm_nosize_common": {
+        "entry_cfg_errors": [
+          "out_of_bounds_pc:12"
+        ],
+        "slice_len": 6
+      },
+      "gasm_nosize_fast": {
+        "entry_cfg_errors": [
+          "out_of_bounds_pc:4"
+        ],
+        "slice_len": 4
+      },
+      "gasm_sized_with_shared_tail": {
+        "entry_cfg_errors": [],
+        "slice_len": 30
+      },
+      "gasm_two_entry_alt": {
+        "entry_cfg_errors": [
+          "out_of_bounds_pc:-4"
+        ],
+        "slice_len": 9
+      },
+      "gasm_two_entry_enter": {
+        "entry_cfg_errors": [],
+        "slice_len": 12
+      }
+    },
+    "runtime_stdout": "GASM_EXEC_OK (8, 9, 144, 124, 154, 107, 307)",
+    "rustc_global_asm_cluster_size": 61,
+    "rustc_symbols": {
+      "gasm_nosize_common": {
+        "st_size": 0,
+        "st_value": 4
+      },
+      "gasm_nosize_fast": {
+        "st_size": 0,
+        "st_value": 0
+      },
+      "gasm_sized_with_shared_tail": {
+        "st_size": 6,
+        "st_value": 10
+      },
+      "gasm_two_entry_alt": {
+        "st_size": 0,
+        "st_value": 52
+      },
+      "gasm_two_entry_enter": {
+        "st_size": 12,
+        "st_value": 40
+      },
+      "naked_single_fn": {
+        "st_size": 5,
+        "st_value": 0
+      },
+      "regular_asm_fn": {
+        "st_size": 8,
+        "st_value": 0
+      }
+    },
+    "swecg_lifter": {
+      "cutpoints_hex": [
+        "0x0",
+        "0x4",
+        "0xa",
+        "0x10",
+        "0x28",
+        "0x30",
+        "0x34"
+      ],
+      "decode_errors": [],
+      "exec_byte_count": 49,
+      "exec_rodata_disjoint": true,
+      "rodata_byte_count": 8,
+      "visited_insn_count": 15
+    }
+  },
+  "suite_3_foreign_ownable_c_vtables": {
+    "miri_vtable": {
+      "v1_miri_open_error_after_into_foreign_leaks_allocation": {
+        "diagnostic": "error: memory leaked: alloc41679 (Rust heap, size: 8, align: 8), allocated here:",
+        "exit_code": 1,
+        "passed": false
+      },
+      "v2_miri_reentrant_ioctl_borrow_mut_aliasing_ub": {
+        "diagnostic": "error: Undefined Behavior: read access through <129305> at alloc41615[0x0] is forbidden",
+        "exit_code": 1,
+        "passed": false
+      },
+      "v3_miri_double_release_from_foreign_uaf_ub": {
+        "diagnostic": "error: Undefined Behavior: constructing invalid value of type std::boxed::Box<u64>: encountered a dangling box (use-after-free)",
+        "exit_code": 1,
+        "passed": false
+      },
+      "v4_miri_sound_foreign_ownable_lifecycle_passes": {
+        "diagnostic": "",
+        "exit_code": 0,
+        "passed": true
+      }
+    },
+    "native_gcc_c_rust_vfs": {
+      "bug1_drops": 0,
+      "bug1_leaked_handles": 1,
+      "bug1_open_rc": -22,
+      "sound_drops": 1,
+      "sound_live_after_fput": 0,
+      "sound_reentrant_mut_ebusy": -16,
+      "sound_reentrant_shared_val": 115,
+      "sound_second_release_rc": -22
+    }
+  }
+}

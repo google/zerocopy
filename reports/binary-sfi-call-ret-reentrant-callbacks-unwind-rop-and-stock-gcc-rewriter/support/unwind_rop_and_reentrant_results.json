@@ -1,0 +1,93 @@
+{
+  "kernel": "Linux 7.1.6-1rodete1-amd64 x86_64",
+  "mmap_min_addr": 65536,
+  "x86_64_rustc_1_99_1": {
+    "rustc_vV": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+    "cases": {
+      "unsound_normal": {
+        "rc": 0,
+        "stdout": "OUTCOME=NORMAL_OK ret=0x64 r12=0x1122334455667788",
+        "stderr_tail": ""
+      },
+      "guest_fde_cfa_redirect": {
+        "rc": 42,
+        "stdout": "OUTCOME=UNWIND_REDIRECTED_OUTSIDE_SANDBOX",
+        "stderr_tail": "thread 'main' (2526098) panicked at <TMP>/unwind_sfi_1_99_1.rs:26:9:\nreentrant_callback_panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      },
+      "guest_fde_csr_corrupt": {
+        "rc": 0,
+        "stdout": "OUTCOME=CAUGHT caught=true r12=0x5555666677778888 corrupted=true",
+        "stderr_tail": "thread 'main' (2526100) panicked at <TMP>/unwind_sfi_1_99_1.rs:26:9:\nreentrant_callback_panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      },
+      "missing_fde_sfi_obj_abort": {
+        "rc": -6,
+        "stdout": "",
+        "stderr_tail": "thread 'main' (2526103) panicked at <TMP>/unwind_sfi_1_99_1.rs:26:9:\nreentrant_callback_panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nfatal runtime error: failed to initiate panic, error 5, aborting"
+      },
+      "stateless_reentrant_clobber": {
+        "rc": 0,
+        "stdout": "OUTCOME=STATELESS_DONE got=0x7777888811114286 expected=0x3064 clobbered=true",
+        "stderr_tail": ""
+      },
+      "fixed_jump_over_fde_suite": {
+        "rc": 0,
+        "stdout": "OUTCOME=FIXED_OK reentrant=0x3064 wm_norm=0x80000 caught=true r12=0x1122334455667788 outer_drops=1 inner_drops=2 wm_panic=0x80000 post_panic=0x6064",
+        "stderr_tail": "thread 'main' (2526136) panicked at <TMP>/unwind_sfi_1_99_1.rs:281:19:\nreentrant_host_cb_explicit_panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      }
+    }
+  },
+  "x86_64_rustc_nightly": {
+    "rustc_vV": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+    "cases": {
+      "unsound_normal": {
+        "rc": 0,
+        "stdout": "OUTCOME=NORMAL_OK ret=0x64 r12=0x1122334455667788",
+        "stderr_tail": ""
+      },
+      "guest_fde_cfa_redirect": {
+        "rc": 42,
+        "stdout": "OUTCOME=UNWIND_REDIRECTED_OUTSIDE_SANDBOX",
+        "stderr_tail": "thread 'main' (2526288) panicked at <TMP>/unwind_sfi_nightly.rs:26:9:\nreentrant_callback_panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      },
+      "guest_fde_csr_corrupt": {
+        "rc": 0,
+        "stdout": "OUTCOME=CAUGHT caught=true r12=0x5555666677778888 corrupted=true",
+        "stderr_tail": "thread 'main' (2526289) panicked at <TMP>/unwind_sfi_nightly.rs:26:9:\nreentrant_callback_panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      },
+      "missing_fde_sfi_obj_abort": {
+        "rc": -6,
+        "stdout": "",
+        "stderr_tail": "thread 'main' (2526290) panicked at <TMP>/unwind_sfi_nightly.rs:26:9:\nreentrant_callback_panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nfatal runtime error: failed to initiate panic, error 5, aborting"
+      },
+      "stateless_reentrant_clobber": {
+        "rc": 0,
+        "stdout": "OUTCOME=STATELESS_DONE got=0x7777888811114286 expected=0x3064 clobbered=true",
+        "stderr_tail": ""
+      },
+      "fixed_jump_over_fde_suite": {
+        "rc": 0,
+        "stdout": "OUTCOME=FIXED_OK reentrant=0x3064 wm_norm=0x80000 caught=true r12=0x1122334455667788 outer_drops=1 inner_drops=2 wm_panic=0x80000 post_panic=0x6064",
+        "stderr_tail": "thread 'main' (2526384) panicked at <TMP>/unwind_sfi_nightly.rs:281:19:\nreentrant_host_cb_explicit_panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      }
+    }
+  },
+  "aarch64_lfi_qemu_max": {
+    "qemu_version": "qemu-aarch64 version 11.1.2 (Debian 1:11.1.2+ds-2)",
+    "clang_version": "Debian clang version 19.1.7 (10.1+build1)",
+    "reentrant_and_poisoned_unwind": {
+      "rc": 0,
+      "stdout": "A64_LFI_OK r1=0x0000000000003064 caught=0x000000000000004d x19=0x1122334455667788 wm=0x0000000000080000 r2=0x0000000000006064",
+      "stderr": ""
+    },
+    "prot_bti_missing_landing_pad_trap": {
+      "rc": -4,
+      "stdout": "",
+      "stderr": "qemu: uncaught target signal 4 (Illegal instruction) - core dumped"
+    },
+    "feat_fpac_corrupted_lr_trap": {
+      "rc": -4,
+      "stdout": "",
+      "stderr": "qemu: uncaught target signal 4 (Illegal instruction) - core dumped"
+    }
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "topics": [
+    "anneal/tcb",
+    "anneal/trusted-boundary",
+    "compilers/dwarf-cfi",
+    "compilers/gcc",
+    "compilers/unwind-tables",
+    "ffi/abi",
+    "ffi/callbacks",
+    "ffi/reentrancy",
+    "ffi/unwinding",
+    "isa/aarch64",
+    "isa/x86-64",
+    "lean/kernel-scaling",
+    "lean/mechanization",
+    "minirust/tree-borrows",
+    "rust/calling-conventions",
+    "rust/tree-borrows",
+    "security/sandboxing",
+    "systems/virtual-memory",
+    "verification/machine-code",
+    "verification/sfi",
+    "verification/stack-separation",
+    "zerocopy/zero-copy-sharing"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler (1.99.1)",
+      "identity": {
+        "commit_date": "2026-10-13",
+        "llvm_version": "23.1.1",
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly) and Miri interpreter (0.1.0)",
+      "identity": {
+        "commit_date": "2026-11-11",
+        "llvm_version": "23.1.5",
+        "miri_version": "miri 0.1.0 (3ef0c22cdb 2026-11-11)",
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "commit_date": "2026-11-17",
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Lightweight Fault Isolation (LFI) binary verifier",
+      "identity": {
+        "repository": "lfi-project/lfi-verifier",
+        "revision": "8c3c47983572039b138f8fa15c12231f2655bbef"
+      }
+    },
+    {
+      "name": "lean-miri and Tree Borrows formal specification",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "GCC C compiler and libgcc_s DWARF unwinder",
+      "identity": {
+        "package": "Debian gcc 15.2.0-14",
+        "target": "x86_64-linux-gnu",
+        "version": "15.2.0"
+      }
+    },
+    {
+      "name": "GNU Binutils assembler, objdump, readelf, and objcopy",
+      "identity": {
+        "package": "Debian binutils 2.47",
+        "target": "x86_64-linux-gnu",
+        "version": "2.47"
+      }
+    },
+    {
+      "name": "Clang/LLVM AArch64 cross-compiler and LLD linker",
+      "identity": {
+        "package": "Debian clang 19.1.7 (10.1+build1)",
+        "target": "aarch64-linux-gnu",
+        "version": "19.1.7"
+      }
+    },
+    {
+      "name": "QEMU user-mode AArch64 emulator",
+      "identity": {
+        "cpu_profile": "max (FEAT_BTI, FEAT_PAUTH, FEAT_FPAC)",
+        "package": "Debian qemu-user 1:11.1.2+ds-2",
+        "version": "11.1.2"
+      }
+    },
+    {
+      "name": "Linux kernel virtual memory and x86-64 processor",
+      "identity": {
+        "cpu": "GenuineIntel Family 6 Model 106 Stepping 6 (Intel Xeon @ 2.60GHz)",
+        "kernel": "Linux 7.1.6-1rodete1-amd64 x86_64",
+        "mmap_min_addr": "65536"
+      }
+    },
+    {
+      "name": "Intel 64 and IA-32 Architectures Software Developer's Manual",
+      "identity": {
+        "document_number": "325462-087US",
+        "edition": "2025",
+        "publisher": "Intel Corporation"
+      }
+    },
+    {
+      "name": "Arm Architecture Reference Manual for A-profile architecture",
+      "identity": {
+        "extensions": "FEAT_BTI (PROT_BTI = 0x10), FEAT_PAUTH, FEAT_FPAC",
+        "publisher": "Arm Limited",
+        "specification": "Armv8.5-A / Armv9-A A64 ISA"
+      }
+    },
+    {
+      "name": "DWARF Call Frame Information, System V AMD64, and Itanium EH ABI specifications",
+      "identity": {
+        "dwarf": "DWARF Debugging Information Format Version 4 (2010) & Version 5 (2017), Section 6.4",
+        "itanium_eh": "Itanium C++ ABI: Exception Handling (Level I Base ABI & Level II C++ ABI)",
+        "psabi": "System V Application Binary Interface AMD64 Architecture Processor Supplement 1.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

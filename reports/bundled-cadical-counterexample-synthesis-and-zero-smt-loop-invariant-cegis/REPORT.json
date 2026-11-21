@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "anneal/isa",
+    "anneal/theory",
+    "isa/simd",
+    "isa/x86-64",
+    "lean/certificates",
+    "lean/kernel-evaluation",
+    "lean/kernel-replay",
+    "rust/inline-asm",
+    "rustc/stdarch",
+    "security/constant-time",
+    "smt/lrat-certificates",
+    "verification/counterexample-synthesis",
+    "verification/equivalence",
+    "verification/invariants"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover, kernel, compiler, and replay interface",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean v4.34.1 Linux x86_64 toolchain archive (lean and bundled CaDiCaL SAT solver)",
+      "identity": {
+        "artifact": "lean-4.34.1-linux-x86_64",
+        "version": "v4.34.1",
+        "lean_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+        "cadical_version": "2.1.2",
+        "cadical_sha256": "8e92f427cfb72072fc605ec6d5f641443c35921b29c39ab2f027776cd533afce"
+      }
+    },
+    {
+      "name": "rustc (1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "llvm_version": "23.1.1"
+      }
+    },
+    {
+      "name": "Anneal verification framework and Pass-1 trust boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
