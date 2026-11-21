@@ -231,10 +231,11 @@ Basis (all theorems in this section): execution (Lean kernel check).
 
 - **Tier:** T0 (Roy–Floyd–Warshall closure is textbook; mechanized in Isabelle/HOL by Wenzel,
   AFP 2014). **Kind:** characterization. **Depth:** shallow.
-- **Statement** (`Rel.lean`):
+- **Statement** (`Rel.lean:18`, `Rel.lean:156`, `Rel.lean:160`; inside `namespace Rel`):
   ```lean
-  theorem Rel.warshall_iff_path {r : Rel n} {a b : Fin n} : warshall r n a b = true ↔ Path r a b
-  theorem Rel.acyclicB_eq_true_iff {r : Rel n} : acyclicB r = true ↔ Acyclic r
+  variable {n : Nat}
+  theorem warshall_iff_path {r : Rel n} {a b : Fin n} : warshall r n a b = true ↔ Path r a b
+  theorem acyclicB_eq_true_iff {r : Rel n} : acyclicB r = true ↔ Acyclic r
   -- warshall r 0 = r;  warshall r (k+1) a b = warshall r k a b || (k < n && warshall r k a k && warshall r k k b)
   -- acyclicB r = (List.finRange n).all fun a => !warshall r n a a
   ```
@@ -253,8 +254,8 @@ Basis (all theorems in this section): execution (Lean kernel check).
 ### 2. `sc-implies-tso`
 
 - **Tier:** T0. **Kind:** theorem. **Depth:** shallow.
-- **Statement** (`Inclusion.lean`):
-  `theorem tsoConsistent_of_scConsistent (X : Exec n) (h : X.SCConsistent) : X.TSOConsistent`
+- **Statement** (`Inclusion.lean:14-15`):
+  `theorem tsoConsistent_of_scConsistent {n : Nat} (X : Exec n) (h : X.SCConsistent) : X.TSOConsistent`
 - **Plain claim:** every candidate execution, well formed or not, that is SC-consistent
   (`po ∪ rf ∪ co ∪ fr` acyclic) is TSO-consistent (SC per location, and
   `ppo ∪ rfe ∪ co ∪ fr ∪ fenceOrd` acyclic, where `ppo` and `fenceOrd` relate memory accesses
@@ -372,9 +373,9 @@ Basis (all theorems in this section): execution (Lean kernel check).
 ### 5. `keep-same-location-wr-ppo-variant-rejected` (counterexample)
 
 - **Tier:** T0. **Kind:** counterexample. **Depth:** definitional.
-- **Statement** (`Inclusion.lean`, `Litmus.lean`):
+- **Statement** (`Inclusion.lean:38-39`, `Litmus.lean`):
   ```lean
-  theorem tsoConsistent_of_tsoConsistentKeepSameLocWR (X : Exec n)
+  theorem tsoConsistent_of_tsoConsistentKeepSameLocWR {n : Nat} (X : Exec n)
       (h : X.TSOConsistentKeepSameLocWR) : X.TSOConsistent
   theorem Litmus.n6_weak_tso_allowed_keepSameLocWR_forbidden :
       ExecOf n6Prog n6Weak ∧ n6Weak.Wf ∧ n6Weak.TSOConsistent ∧
@@ -419,9 +420,9 @@ Basis (all theorems in this section): execution (Lean kernel check).
 ### 6. `fence-mapping-soundness-execution`
 
 - **Tier:** T0. **Kind:** theorem. **Depth:** shallow.
-- **Statement** (`Fence.lean`):
+- **Statement** (`Fence.lean:43-45`):
   ```lean
-  theorem scConsistentErased_of_tso_of_fenceBetweenWR (X : Exec n)
+  theorem scConsistentErased_of_tso_of_fenceBetweenWR {n : Nat} (X : Exec n)
       (htot : X.PoTotal) (hrf : X.RfSameLoc) (hfence : X.FenceBetweenWR)
       (hloc : X.PerLocSC) (hghb : X.TsoGhbAcyclic) : X.SCConsistentErased
   ```
@@ -456,9 +457,9 @@ Basis (all theorems in this section): execution (Lean kernel check).
 ### 7. `fence-mapping-soundness-program`
 
 - **Tier:** T0. **Kind:** theorem. **Depth:** shallow.
-- **Statement** (`Fence.lean`):
+- **Statement** (`Fence.lean:64-66`):
   ```lean
-  theorem scConsistentErased_of_tso_fenceAfterStores (P : Prog) (X : Exec n)
+  theorem scConsistentErased_of_tso_fenceAfterStores (P : Prog) {n : Nat} (X : Exec n)
       (hX : ExecOf (fenceAfterStores P) X) (hrf : X.RfSameLoc) (hloc : X.PerLocSC)
       (hghb : X.TsoGhbAcyclic) : X.SCConsistentErased
   ```
@@ -550,9 +551,9 @@ Basis (all theorems in this section): execution (Lean kernel check).
 ### 9. `fence-erasure` (reference point: supporting infrastructure)
 
 - **Tier:** T0. **Kind:** theorem. **Depth:** shallow.
-- **Statement** (`Fence.lean`):
+- **Statement** (`Fence.lean:335-337`):
   ```lean
-  theorem scConsistent_of_scConsistentErased (X : Exec n)
+  theorem scConsistent_of_scConsistentErased {n : Nat} (X : Exec n)
       (hirr : X.PoIrrefl) (htrans : X.PoTrans) (hrfk : X.RfKinds) (hcok : X.CoKinds)
       (h : X.SCConsistentErased) : X.SCConsistent
   ```
@@ -585,14 +586,14 @@ Basis (all theorems in this section): execution (Lean kernel check).
   statement was found in the works cited, a search limited to them and the Coq/HOL4 developments
   listed; Vafeiadis and Zappa Nardelli, SAS 2011, mechanize a different fence optimisation).
   **Kind:** theorem. **Depth:** substantive.
-- **Statement** (`Fence.lean`):
+- **Statement** (`Fence.lean:91-95`; the corollary at `Fence.lean:321-325`):
   ```lean
-  theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR (X : Exec n)
+  theorem scConsistentErased_of_tso_of_fenceBetweenBothSharedWR {n : Nat} (X : Exec n)
       (hptrans : X.PoTrans) (hpth : X.PoWithinThread) (htot : X.PoTotal)
       (hrfl : X.RfSameLoc) (hcol : X.CoSameLoc)
       (hfence : X.FenceBetweenBothSharedWR) (hloc : X.PerLocSC) (hghb : X.TsoGhbAcyclic) :
       X.SCConsistentErased
-  theorem scConsistentErased_of_tso_of_fenceBetweenSharedWR (X : Exec n)   -- corollary
+  theorem scConsistentErased_of_tso_of_fenceBetweenSharedWR {n : Nat} (X : Exec n)
       (hptrans : X.PoTrans) (hpth : X.PoWithinThread) (htot : X.PoTotal)
       (hrfl : X.RfSameLoc) (hcok : X.CoKinds)
       (hfence : X.FenceBetweenSharedWR) (hloc : X.PerLocSC) (hghb : X.TsoGhbAcyclic) :
@@ -655,12 +656,13 @@ Basis (all theorems in this section): execution (Lean kernel check).
 ### 11. `partial-fencing-unsound` (counterexample)
 
 - **Tier:** T0. **Kind:** counterexample. **Depth:** definitional.
-- **Statement** (`Tightness.lean`):
+- **Statement** (`Tightness.lean:210-215`):
   ```lean
   theorem sbOneFence_execution_tso_not_scErased :
       ExecOf sbOneFenceProg sbOneFenceWeak ∧ sbOneFenceWeak.Wf ∧
         sbOneFenceWeak.TSOConsistent ∧ ¬ sbOneFenceWeak.SCConsistentErased ∧
-        sbOneFenceWeak.fenceOrd ⟨2, _⟩ ⟨4, _⟩ = true ∧ sbOneFenceWeak.fenceOrd ⟨5, _⟩ ⟨6, _⟩ = false ∧
+        sbOneFenceWeak.fenceOrd ⟨2, by decide⟩ ⟨4, by decide⟩ = true ∧
+        sbOneFenceWeak.fenceOrd ⟨5, by decide⟩ ⟨6, by decide⟩ = false ∧
         ¬ sbOneFenceWeak.FenceBetweenSharedWR ∧ ¬ sbOneFenceWeak.FenceBetweenBothSharedWR
   -- sbOneFenceProg := [[.store 0 1, .mfence, .load 1], [.store 1 2, .load 0]]
   ```
@@ -775,13 +777,13 @@ Basis (all theorems in this section): execution (Lean kernel check).
 ### 14. `drf-either-fenced-variant-rejected` (counterexample)
 
 - **Tier:** T0. **Kind:** counterexample. **Depth:** shallow.
-- **Statement** (`Tightness.lean`):
+- **Statement** (`Tightness.lean:351-357`):
   ```lean
   theorem conflictsWRFencedEither_does_not_imply_sc :
       sbOneFenceProg.ConflictsWRFencedEither ∧
         (∀ (m : Nat) (Y : Exec m), ExecOf sbOneFenceProg Y → Y.Wf → Y.SCConsistent →
           Y.RaceFreeEither) ∧
-        sbOneFenceWeak.fenceOrd ⟨2, _⟩ ⟨4, _⟩ = true ∧
+        sbOneFenceWeak.fenceOrd ⟨2, by decide⟩ ⟨4, by decide⟩ = true ∧
         ExecOf sbOneFenceProg sbOneFenceWeak ∧ sbOneFenceWeak.Wf ∧
         sbOneFenceWeak.TSOConsistent ∧ ¬ sbOneFenceWeak.SCConsistent
   ```
@@ -1126,15 +1128,19 @@ theorem localWRProg_not_conflictsWRFenced_but_fenceBetweenSharedWR :
 -- localWR: initW 0, initW 1, initW 2, W 0 2 1, R 0 0 0, W 1 0 2; rf 0 → 4; co 0 → 5, 2 → 3
 ```
 
-Statements of the other supplementary theorems (`lean/ToyWMM/Remarks.lean`):
+Statements of the other supplementary theorems (`lean/ToyWMM/Remarks.lean`;
+`Exec.rfFunctional_of_perLocSC` is at lines 280-282, `Exec.coTrans_of_perLocSC` at 300-302 and
+`exists_sc_execution_hb_unordered_needs_conflict` at 350-355):
 
 ```lean
 theorem forall_prog_exists_wf_sc_exec (P : Prog) :
     ExecOf P (seqSCExec P) ∧ (seqSCExec P).Wf ∧ (seqSCExec P).SCConsistent
-theorem Exec.rfFunctional_of_perLocSC (X : Exec n) (hloc : X.PerLocSC) (hrfl : X.RfSameLoc)
-    (hrfk : X.RfKinds) (hcot : X.CoTotal) : X.RfFunctional
-theorem Exec.coTrans_of_perLocSC (X : Exec n) (hloc : X.PerLocSC) (hcok : X.CoKinds)
-    (hcot : X.CoTotal) : X.CoTrans
+theorem Exec.rfFunctional_of_perLocSC {n : Nat} (X : Exec n)
+    (hloc : X.PerLocSC) (hrfl : X.RfSameLoc) (hrfk : X.RfKinds) (hcot : X.CoTotal) :
+    X.RfFunctional
+theorem Exec.coTrans_of_perLocSC {n : Nat} (X : Exec n)
+    (hloc : X.PerLocSC) (hcok : X.CoKinds) (hcot : X.CoTotal) :
+    X.CoTrans
 theorem storeFenceExtraRfOnInserted_check :     -- initW 0, W 0 0 1, F 0 with rf 0 → 2 (into the fence)
     ExecOf (fenceAfterStores [[.store 0 1]]) storeFenceExtraRfOnInserted ∧
       storeFenceExtraRfOnInserted.TSOConsistent ∧ ¬ storeFenceExtraRfOnInserted.RfCoWf ∧
@@ -1143,9 +1149,11 @@ theorem storeFenceExtraRfOnInserted_check :     -- initW 0, W 0 0 1, F 0 with rf
         ExecOf [[.store 0 1]] (storeFenceExtraRfOnInserted.comap f) ∧
         (storeFenceExtraRfOnInserted.comap f).Wf ∧ (storeFenceExtraRfOnInserted.comap f).SCConsistent
 theorem exists_sc_execution_hb_unordered_needs_conflict :
-    ¬ (skel loadStoreSameProg).Conflict ⟨1, _⟩ ⟨2, _⟩ ∧
-      ¬ ∃ Y : Exec (layout loadStoreSameProg).length, ExecOf loadStoreSameProg Y ∧ Y.Wf ∧
-        Y.SCConsistent ∧ Y.Conflict ⟨1, _⟩ ⟨2, _⟩ ∧ ¬ Y.HB ⟨1, _⟩ ⟨2, _⟩ ∧ ¬ Y.HB ⟨2, _⟩ ⟨1, _⟩
+    ¬ (skel loadStoreSameProg).Conflict ⟨1, by decide⟩ ⟨2, by decide⟩ ∧
+      ¬ ∃ Y : Exec (layout loadStoreSameProg).length,
+        ExecOf loadStoreSameProg Y ∧ Y.Wf ∧ Y.SCConsistent ∧
+        Y.Conflict ⟨1, by decide⟩ ⟨2, by decide⟩ ∧
+        ¬ Y.HB ⟨1, by decide⟩ ⟨2, by decide⟩ ∧ ¬ Y.HB ⟨2, by decide⟩ ⟨1, by decide⟩
 theorem coBetweenReadsSameLoc_separates_coSameLoc_from_coKinds :   -- initW 0, R 0 0 0, R 1 0 0, co 1 → 2
     coBetweenReadsSameLoc.PoTrans ∧ coBetweenReadsSameLoc.PoWithinThread ∧
       coBetweenReadsSameLoc.PoTotal ∧ coBetweenReadsSameLoc.RfSameLoc ∧
