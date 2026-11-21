@@ -1,0 +1,231 @@
+{
+  "topics": [
+    "agents/calibration",
+    "agents/abstention",
+    "agents/clarification",
+    "agents/sycophancy",
+    "agents/human-handoff",
+    "agents/reasoning-models",
+    "verification/conformal-prediction",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "Adam Tauman Kalai and Santosh S. Vempala, Calibrated Language Models Must Hallucinate (STOC 2024), and Adam Tauman Kalai, Ofir Nachum, Santosh S. Vempala, and Edwin Zhang, Why Language Models Hallucinate (2025)",
+      "identity": {
+        "arxiv": "2311.14648v3; 2509.04664v1",
+        "doi": "10.1145/3618260.3649777",
+        "venue": "STOC 2024; arXiv 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Jason Wei et al., SimpleQA (arXiv:2411.04368v1 and openai/simple-evals)",
+      "identity": {
+        "arxiv": "2411.04368v1",
+        "repository": "openai/simple-evals",
+        "revision": "652c89d0ca9df547706735883097e9537d40dc47",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Polina Kirichenko, Mark Ibrahim, Kamalika Chaudhuri, and Samuel J. Bell, AbstentionBench (arXiv:2506.09038v1 and facebookresearch/AbstentionBench)",
+      "identity": {
+        "arxiv": "2506.09038v1",
+        "repository": "facebookresearch/AbstentionBench",
+        "revision": "e29184174c69bc95139b8c33dcca09aacab9442a",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Mehul Damani et al., Beyond Binary Rewards: Training LMs to Reason About Their Uncertainty (RLCR, ICLR 2026, damanimehul/RLCR)",
+      "identity": {
+        "arxiv": "2507.16806v2",
+        "repository": "damanimehul/RLCR",
+        "revision": "be2624b1753d738b9552df4dd6d50ac33b3668ee",
+        "venue": "ICLR 2026",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Michael Bereket and Jure Leskovec, Uncalibrated Reasoning: GRPO Induces Overconfidence for Stochastic Outcomes",
+      "identity": {
+        "arxiv": "2508.11800v1",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Dongkeun Yoon et al., Reasoning Models Better Express Their Confidence (NeurIPS 2025, MattYoon/reasoning-models-confidence); Zeng et al., Thinking Out Loud (EMNLP 2025); Romain Lacombe, Kerrie Wu, and Eddie Dilworth, Don't Think Twice! (ICML 2025 Workshop)",
+      "identity": {
+        "arxiv": "2505.14489v2; 2504.06564v3; 2508.15050v1",
+        "repository": "MattYoon/reasoning-models-confidence",
+        "revision": "1bb950d60b4556e1d02560fd55e5bd866354afec",
+        "venue": "NeurIPS 2025; EMNLP 2025; ICML 2025 Workshop",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Saurav Kadavath et al. (2022); Katherine Tian et al., Just Ask for Calibration (EMNLP 2023); Miao Xiong et al. (ICLR 2024, MiaoXiong2320/llm-uncertainty); Jiahui Geng et al. (NAACL 2024); Sanyam Kapoor et al. (NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2207.05221v4; 2305.14975v2; 2306.13063v2; 2311.08298v2; 2406.08391v3",
+        "doi": "10.18653/v1/2023.emnlp-main.330; 10.18653/v1/2024.naacl-long.366",
+        "repository": "MiaoXiong2320/llm-uncertainty",
+        "revision": "78a5d2fb1dc0c54352cd5d898cccec1e16c26fc5",
+        "year": "2022-2024"
+      }
+    },
+    {
+      "name": "Victor Quach et al., Conformal Language Modeling (ICLR 2024); Christopher Mohri and Tatsunori Hashimoto, Conformal Factuality Guarantees (ICML 2024); John J. Cherian, Isaac Gibbs, and Emmanuel J. Candes, Enhanced Conformal Prediction (NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2306.10193v2; 2402.10978v1; 2406.09714v2",
+        "repository": "jjcherian/conditional-conformal",
+        "revision": "cb83dcdcce0f33f2fdb5b057ba22480a1b652256",
+        "venue": "ICLR 2024; ICML 2024; NeurIPS 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Conformal Language Modeling Reference Implementations (Varal7/conformal-language-modeling and tatsu-lab/conformal-factual-lm)",
+      "identity": {
+        "repository": "Varal7/conformal-language-modeling; tatsu-lab/conformal-factual-lm",
+        "revision": "13fd7ab8bf18c9748535280d590d1f5707faeb76; 6022b4c90c6580f524f123b0cb97bbb61ab621d1"
+      }
+    },
+    {
+      "name": "Lorenz Kuhn, Yarin Gal, and Sebastian Farquhar, Semantic Uncertainty (ICLR 2023), and Sebastian Farquhar, Jannik Kossen, Lorenz Kuhn, and Yarin Gal, Semantic Entropy (Nature 2024, jlko/semantic_uncertainty)",
+      "identity": {
+        "arxiv": "2302.09664v3",
+        "doi": "10.1038/s41586-024-07421-0",
+        "repository": "jlko/semantic_uncertainty",
+        "revision": "a8d9aa8cecd5f3bec09b19ae38ab13552e0846f4",
+        "venue": "ICLR 2023; Nature 630:625-630",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Hanning Zhang et al., R-Tuning (NAACL 2024, shizhediao/R-Tuning); Bingbing Wen et al., Know Your Limits (TACL 2025); Potsawee Manakul, Adian Liusie, and Mark J. F. Gales, SelfCheckGPT (EMNLP 2023); Shengding Hu et al., FalseQA (ACL 2023)",
+      "identity": {
+        "arxiv": "2311.09677v3; 2407.18418v3; 2303.08896v3; 2307.02394v1",
+        "doi": "10.18653/v1/2024.naacl-long.394; 10.1162/tacl_a_00754; 10.18653/v1/2023.emnlp-main.557",
+        "repository": "shizhediao/R-Tuning",
+        "revision": "27e0384a0142b0f4e09bcdef9b216f432923fd4c",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Sanidhya Vijayvargiya, Xuhui Zhou, Akhila Yerukola, Maarten Sap, and Graham Neubig, Ambig-SWE (ICLR 2026, sani903/InteractiveSWEAgents)",
+      "identity": {
+        "arxiv": "2502.13069v3",
+        "repository": "sani903/InteractiveSWEAgents",
+        "revision": "00421fe393380d916b9a17b9874949a5c41528cc",
+        "venue": "ICLR 2026",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Belinda Z. Li, Been Kim, and Zi Wang, QuestBench (NeurIPS 2025 Datasets and Benchmarks, google-deepmind/questbench)",
+      "identity": {
+        "arxiv": "2503.22674v2",
+        "repository": "google-deepmind/questbench",
+        "revision": "e119f9ecc15c0776480b34bf932b5f05d0b5a066",
+        "venue": "NeurIPS 2025 Datasets and Benchmarks",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Shirley Wu et al., CollabLLM (ICML 2025, microsoft/CollabLLM)",
+      "identity": {
+        "arxiv": "2502.00640v3",
+        "repository": "microsoft/CollabLLM",
+        "revision": "99ad6829d75e1e0880929074a9a9f676670a8623",
+        "venue": "ICML 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Lorenz Kuhn et al., CLAM (2023); Fangwen Mu et al., ClarifyGPT (PACMSE/FSE 2024, CLARIFYGPT/ClarifyGPT); Michael J. Q. Zhang and Eunsol Choi, Clarify When Necessary (NAACL 2025 Findings); Chinmay Andukuri et al., STaR-GATE (COLM 2024); Xuan Zhang et al., Ask-before-Plan (EMNLP 2024 Findings); Cheng Qian et al., UserBench (SalesforceAIResearch/UserBench)",
+      "identity": {
+        "arxiv": "2212.07769v2; 2310.10996v1; 2311.09469v1; 2403.19154v3; 2406.12639v2; 2507.22034v1",
+        "doi": "10.1145/3660810",
+        "repository": "CLARIFYGPT/ClarifyGPT; SalesforceAIResearch/UserBench",
+        "revision": "543b34b35c5525579d9afee838c992792a3a43dd; 80506d2ab484cab843e60a2401ff3e0290d05b87",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Mrinank Sharma et al., Towards Understanding Sycophancy in Language Models (ICLR 2024, meg-tong/sycophancy-eval)",
+      "identity": {
+        "arxiv": "2310.13548v4",
+        "repository": "meg-tong/sycophancy-eval",
+        "revision": "9a1694221e3639887138f61deae344335eca6752",
+        "venue": "ICLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Myra Cheng et al., ELEPHANT: Measuring and Understanding Social Sycophancy in LLMs (arXiv:2505.13995v2, Science 2026, myracheng/elephant)",
+      "identity": {
+        "arxiv": "2505.13995v2",
+        "doi": "10.1126/science.aec8352",
+        "repository": "myracheng/elephant",
+        "revision": "61f7044fc0e11defc971dfaa9bc84d7340fa88eb",
+        "venue": "Science Vol. 391, Issue 6792",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Ivo Petrov, Jasper Dekoninck, and Martin Vechev, BrokenMath: A Benchmark for Sycophancy in Theorem Proving with LLMs (insait-institute/broken-math)",
+      "identity": {
+        "arxiv": "2510.04721v1",
+        "repository": "insait-institute/broken-math",
+        "revision": "fe0fc0a9e7e2bb9a8a7a3e8aa6b0a3ac50ecaf8f",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Stephanie Lin, Jacob Hilton, and Owain Evans, TruthfulQA (ACL 2022, sylinrl/TruthfulQA); Ethan Perez et al. (ACL 2023 Findings, anthropics/evals); Philippe Laban et al., FlipFlop (2024); Aaron Fanous et al., SycEval (AIES 2025); Ruibo Liu et al., TRUTH DECAY (2025); Jiseung Hong et al., SYCON-Bench (EMNLP 2025 Findings, JiseungHong/SYCON-Bench)",
+      "identity": {
+        "arxiv": "2109.07958v2; 2212.09251v1; 2311.08596v2; 2502.08177v4; 2503.11656v1; 2505.23840v4",
+        "doi": "10.18653/v1/2022.acl-long.229; 10.18653/v1/2025.findings-emnlp.121",
+        "repository": "sylinrl/TruthfulQA; anthropics/evals; JiseungHong/SYCON-Bench",
+        "revision": "d71c110897f5d31c5d7f309e7bc316c152f6f031; 84fcc677e52e1902d696c32cd1a6b663e70d3993; 6356b923905ff5b05877ac7bb65e5207be00e1c2",
+        "year": "2022-2025"
+      }
+    },
+    {
+      "name": "Michelle Vaccaro, Abdullah Almaatouq, and Thomas Malone, When Combinations of Humans and AI Are Useful (Nature Human Behaviour 2024)",
+      "identity": {
+        "arxiv": "2405.06087v2",
+        "doi": "10.1038/s41562-024-02024-1",
+        "venue": "Nature Human Behaviour 8:2293-2303",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Raja Parasuraman and Dietrich H. Manzey (Human Factors 2010); Hussein Mozannar and David Sontag (ICML 2020); Gagan Bansal et al. (CHI 2021); Zana Bucinca, Maja Barbara Malaya, and Krzysztof Z. Gajos (CSCW 2021); Kailas Vodrahalli, Tobias Gerstenberg, and James Zou (NeurIPS 2022); Sunnie S. Y. Kim et al. (ACM FAccT 2024); Mark Steyvers et al. (Nature Machine Intelligence 2025)",
+      "identity": {
+        "arxiv": "2006.01862v3; 2006.14779v3; 2102.09692v1; 2202.05983v3; 2405.00623v2; 2401.13835v2",
+        "doi": "10.1177/0018720810376055; 10.1145/3411764.3445717; 10.1145/3449287; 10.1145/3630106.3658941; 10.1038/s42256-024-00976-7",
+        "year": "2010-2025"
+      }
+    },
+    {
+      "name": "Joel Becker, Nate Rush, Elizabeth Barnes, and David Rein, Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity (arXiv:2507.09089v2 and METR/Measuring-Early-2025-AI-on-Exp-OSS-Devs)",
+      "identity": {
+        "arxiv": "2507.09089v2",
+        "repository": "METR/Measuring-Early-2025-AI-on-Exp-OSS-Devs",
+        "revision": "7ff2d7670235f531dff77eff58355bd77392f396",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "METR Late-2025 Open-Source Developer Follow-Up Dataset and Regression Code (METR/Measuring-Late-2025-AI-on-OSS-Devs)",
+      "identity": {
+        "repository": "METR/Measuring-Late-2025-AI-on-OSS-Devs",
+        "revision": "55f007216a26493f0a9b7650ab3191cad7fb9e7f",
+        "year": "2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

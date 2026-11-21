@@ -1,0 +1,143 @@
+{
+  "topics": [
+    "agents/structured-outputs",
+    "agents/constrained-decoding",
+    "agents/tool-calling",
+    "agents/programmatic-tool-calling",
+    "agents/computer-use",
+    "agents/gui-grounding",
+    "agents/mcp",
+    "compilers/parsing",
+    "tooling/agent-harnesses",
+    "security/sandboxing"
+  ],
+  "subjects": [
+    {
+      "name": "MLC-AI XGrammar Constrained Decoding Engine (mlc-ai/xgrammar and MLSys 2025)",
+      "identity": {
+        "arxiv": "2411.15100v3",
+        "repository": "mlc-ai/xgrammar",
+        "revision": "3fe39321a6f24c90c2cc4fa4519b87e22367bcfc",
+        "venue": "MLSys 2025",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Guidance-AI LLGuidance Constrained Parser (guidance-ai/llguidance)",
+      "identity": {
+        "repository": "guidance-ai/llguidance",
+        "revision": "4b1bdd7eaab212dacdbcebcd71ad84d194dfc629",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Outlines Structured Generation Library (dottxt-ai/outlines and Willard & Louf)",
+      "identity": {
+        "arxiv": "2307.09702v4",
+        "repository": "dottxt-ai/outlines",
+        "revision": "c52af8472c6fe8a607a733ec11b709476af77a96",
+        "year": "2023-2026"
+      }
+    },
+    {
+      "name": "Shishir G. Patil et al., Berkeley Function Calling Leaderboard (ICML 2025, ShishirPatil/gorilla)",
+      "identity": {
+        "pmlr": "v267:patil25a",
+        "repository": "ShishirPatil/gorilla",
+        "revision": "6ea57973c7a6097fd7c5915698c54c17c5b1b6c8",
+        "venue": "ICML 2025",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Tianbao Xie et al., OSWorld Multimodal Computer-Use Benchmark (NeurIPS 2024, xlang-ai/OSWorld)",
+      "identity": {
+        "arxiv": "2404.07972v2",
+        "repository": "xlang-ai/OSWorld",
+        "revision": "5123bfdbbc34b947bcffcff564abc62d0ab7072d",
+        "venue": "NeurIPS 2024",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Browser-Use CDP Accessibility and Python REPL Agent Framework (browser-use/browser-use)",
+      "identity": {
+        "repository": "browser-use/browser-use",
+        "revision": "e682e0dc02d77a307a5b2aedf17142c2cd69af5b",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Microsoft Playwright MCP Server (microsoft/playwright-mcp)",
+      "identity": {
+        "repository": "microsoft/playwright-mcp",
+        "revision": "2337aff0213d28db41d3e3daf48cee19b3d0bd82",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Microsoft Playwright Core Tools Backend (microsoft/playwright)",
+      "identity": {
+        "repository": "microsoft/playwright",
+        "revision": "99d4c415db3794d1c989be16ac4987f4529e3220",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Zhi Rui Tam et al., Let Me Speak Freely? (EMNLP 2024); Saibo Geng et al., JSONSchemaBench; Debangshu Banerjee et al., CRANE (ICML 2025); Dang Nguyen et al., Thinking Before Constraining (In-Writing); Minh Le, Schema-Key Wording under Constrained Decoding (AACL-IJCNLP 2026); Jialin Yang et al., StructEval (TMLR 2026)",
+      "identity": {
+        "arxiv": "2408.02442v3; 2501.10868v3; 2502.09061v4; 2601.07525v2; 2604.14862v3; 2505.20139v3",
+        "venue": "EMNLP 2024; arXiv 2025; ICML 2025; arXiv 2026; AACL-IJCNLP 2026; TMLR 2026",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Luca Beurer-Kellner et al., DOMINO (ICML 2024); Kanghee Park et al., Grammar-Aligned Decoding / ASAp (NeurIPS 2024); Joao Loula et al., Syntactic and Semantic Control via SMC (ICLR 2025)",
+      "identity": {
+        "arxiv": "2403.06988v1; 2405.21047v4; 2504.13139v2",
+        "venue": "ICML 2024; NeurIPS 2024; ICLR 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Xingyao Wang et al., CodeAct (ICML 2024); Dang Nguyen et al., DynaSaur (COLM 2025); Jiarui Lu et al., CodeTool (ACL 2025); Lehar Patel et al., The Bitter Lesson of Tool Calling; Shuofei Mak et al., Is Bash All You Need?; Ziming Mao et al., Interactive Programmatic Tool Calling (I-PTC); Animesh Rai, Beyond Plain MCP",
+      "identity": {
+        "arxiv": "2402.01030v4; 2411.01747v3; 2503.20840v2; 2608.06370v1; 2609.11999v1; 2611.01446v1; 2611.19123v1",
+        "venue": "ICML 2024; COLM 2025; ACL 2025; arXiv 2026",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Minghao Li et al., API-Bank (EMNLP 2023); Yuchen Zhuang et al., ToolQA (NeurIPS 2023); Yangjun Ruan et al., ToolEmu (ICLR 2024); Zhicheng Guo et al., StableToolBench (ACL 2024); Olly Styles et al., WorkBench (COLM 2024); Jiarui Lu et al., ToolSandbox (NAACL 2025); Qiqiang Lin et al., Hammer (ICLR 2025)",
+      "identity": {
+        "arxiv": "2304.08244; 2306.13304; 2309.15817; 2403.07714; 2405.00823; 2408.04682; 2410.04587v2",
+        "venue": "EMNLP 2023; NeurIPS 2023; ICLR 2024; ACL 2024 Findings; COLM 2024; NAACL 2025; ICLR 2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Xiang Deng et al., Mind2Web (NeurIPS 2023); Shuyan Zhou et al., WebArena (ICLR 2024); Jianwei Yang et al., Set-of-Mark; Jing Yu Koh et al., VisualWebArena (ACL 2024); Kanzhi Cheng et al., SeeClick & ScreenSpot (ACL 2024); Yadong Lu et al., OmniParser; Boyu Gou et al., UGround (ICLR 2025)",
+      "identity": {
+        "arxiv": "2306.06070v3; 2307.13854v4; 2310.11441v2; 2401.13649v2; 2401.10935v2; 2408.00203v1; 2410.05243v3",
+        "venue": "NeurIPS 2023; ICLR 2024; arXiv 2023; ACL 2024; arXiv 2024; ICLR 2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Saaket Agashe et al., Agent S (ICLR 2025) & Agent S2; Yujia Qin et al., UI-TARS; Tianci Xue et al., Online-Mind2Web (COLM 2025); Kaixin Li et al., ScreenSpot-Pro & ScreenSeekeR; ByteDance Seed, UI-TARS-2",
+      "identity": {
+        "arxiv": "2410.08164v1; 2504.00906v1; 2501.12326v1; 2504.01382v4; 2504.07981v1; 2509.02544v2",
+        "venue": "ICLR 2025; COLM 2025; arXiv 2025",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Vendor and Benchmark Engineering Disclosures: Cloudflare Code Mode, Anthropic Code Execution with MCP & Advanced Tool Use, XLANG OSWorld-Verified, and Gorilla BFCL v4 Format Sensitivity",
+      "identity": {
+        "published_date": "2025-07-28 to 2025-11-24",
+        "urls": "https://blog.cloudflare.com/code-mode/ ; https://www.anthropic.com/engineering/code-execution-with-mcp ; https://www.anthropic.com/engineering/advanced-tool-use ; https://xlang.ai/blog/osworld-verified"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,168 @@
+{
+  "topics": [
+    "agents/planning",
+    "agents/decomposition",
+    "agents/error-recovery",
+    "agents/long-horizon-execution",
+    "agents/tree-search",
+    "agents/checkpointing",
+    "agents/loop-detection",
+    "tooling/agent-harnesses",
+    "verification/external-critics"
+  ],
+  "subjects": [
+    {
+      "name": "OpenHands Software Agent SDK and Runtime Migration (OpenHands/software-agent-sdk and OpenHands/OpenHands)",
+      "identity": {
+        "migration_repository": "OpenHands/OpenHands",
+        "migration_revision": "0f4cb6af95915fee776913c4aa8694e7c4b76033",
+        "repository": "OpenHands/software-agent-sdk",
+        "revision": "3a893a1b26de7ec02cc0dd2427906eea6aea3fc7"
+      }
+    },
+    {
+      "name": "LangGraph Pregel Runtime and Checkpointer (langchain-ai/langgraph)",
+      "identity": {
+        "repository": "langchain-ai/langgraph",
+        "revision": "c6335a4255dc1d8abc25a7677f9c072c7ab27b9c"
+      }
+    },
+    {
+      "name": "Google Agent Development Kit Python (google/adk-python)",
+      "identity": {
+        "repository": "google/adk-python",
+        "revision": "2b90353cd2f1ee0a8a52262a7843333b6f7d2c8d"
+      }
+    },
+    {
+      "name": "SWE-agent and mini-swe-agent Harnesses (SWE-agent/SWE-agent and SWE-agent/mini-swe-agent)",
+      "identity": {
+        "mini_repository": "SWE-agent/mini-swe-agent",
+        "mini_revision": "04d809ceab9df28f9adaed044884180159172930",
+        "repository": "SWE-agent/SWE-agent",
+        "revision": "3ea751c087f32b16e039a2233dd6eefecef325d5"
+      }
+    },
+    {
+      "name": "PydanticAI Usage Limits and Fallback Model Runtime (pydantic/pydantic-ai)",
+      "identity": {
+        "repository": "pydantic/pydantic-ai",
+        "revision": "4ba5d7d1a2cac0ad3997c4166feda6d1bad0050c"
+      }
+    },
+    {
+      "name": "Karthik Valmeekam et al., PlanBench and LLMs-Planning Leaderboard (karthikv792/LLMs-Planning)",
+      "identity": {
+        "arxiv": "2206.10498v4; 2305.15771v2; 2409.13373v1",
+        "repository": "karthikv792/LLMs-Planning",
+        "revision": "fc638a1aff7df3fe7a1a1d289fa2c04cc24dc284",
+        "venue": "NeurIPS 2023; TMLR 2025",
+        "year": "2022-2025"
+      }
+    },
+    {
+      "name": "METR Task-Completion Time Horizons TH1 and TH1.1 Benchmark Dataset",
+      "identity": {
+        "arxiv": "2503.14499v4",
+        "long_tasks_revision": "799cc9c4b4483a93fc3445623a49ea1bd74fdeb2",
+        "swaa_revision": "f6cc84052e2a79dd540766c8a1b15ff399696371",
+        "url": "https://metr.org/assets/benchmark_results_1_1.yaml",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Shunyu Yao et al., ReAct (ICLR 2023); Lei Wang et al., Plan-and-Solve (ACL 2023); Binfeng Xu et al., ReWOO; Sehoon Kim et al., LLMCompiler (ICML 2024); Archiki Prasad et al., ADaPT (NAACL 2024)",
+      "identity": {
+        "arxiv": "2210.03629v3; 2305.04091v3; 2305.18323v1; 2312.04511v3; 2311.05772v2",
+        "venue": "ICLR 2023; ACL 2023; arXiv 2023; ICML 2024; Findings NAACL 2024",
+        "year": "2022-2024"
+      }
+    },
+    {
+      "name": "Lutfi Eren Erdogan et al., Plan-and-Act (ICML 2025); Ziyang Yu et al., WebAnchor; Yifan Zhu et al., ToolMaze",
+      "identity": {
+        "arxiv": "2503.09572v3; 2601.03164v2; 2606.05806v1",
+        "venue": "ICML 2025; arXiv 2026",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Subbarao Kambhampati et al., LLM-Modulo Frameworks (ICML 2024 Position) and Kayhan Gundawar et al., Robust LLM-Modulo",
+      "identity": {
+        "arxiv": "2402.01817v3; 2411.14484v1",
+        "venue": "ICML 2024; arXiv 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Andy Zhou et al., LATS (ICML 2024); Antonis Antoniades et al., SWE-Search (ICLR 2025); Jing Yu Koh et al., Tree Search for Language Model Agents (TMLR 2025); Yu Gu et al., WebDreamer; Jiarui Yang et al., ToolTree (ICLR 2026)",
+      "identity": {
+        "arxiv": "2310.04406v3; 2410.20285v6; 2407.01476v4; 2411.06559v2; 2603.12740v1",
+        "venue": "ICML 2024; ICLR 2025; TMLR 2025; arXiv 2024; ICLR 2026",
+        "year": "2023-2026"
+      }
+    },
+    {
+      "name": "Axel Backlund and Lukas Petersson, Vending-Bench and Andon Labs Vending-Bench 2",
+      "identity": {
+        "arxiv": "2502.15840v1",
+        "url": "https://andonlabs.com/evals/vending-bench-2",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Grégoire Mialon et al., GAIA (ICLR 2024); Tianbao Xie et al., OSWorld (NeurIPS 2024); Alexandre Drouin et al., WorkArena++ (NeurIPS 2024); Frank F. Xu et al., TheAgentCompany",
+      "identity": {
+        "arxiv": "2311.12983v1; 2404.07972v2; 2407.05291v2; 2412.14161v3",
+        "venue": "ICLR 2024; NeurIPS 2024; arXiv 2024",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Jie Huang et al., Large Language Models Cannot Self-Correct Reasoning Yet (ICLR 2024), and Ryo Kamoi et al., When Can LLMs Actually Correct Their Own Mistakes? (TACL 2024)",
+      "identity": {
+        "arxiv": "2310.01798v2; 2406.01297v3",
+        "venue": "ICLR 2024; TACL 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Mert Cemri et al., MAST; Shaokun Zhang et al., Who&When (ICML 2025); Kunlun Zhu et al., AgentDebug",
+      "identity": {
+        "arxiv": "2503.13657v3; 2505.00212v3; 2509.25370v1",
+        "venue": "arXiv 2025; ICML 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Xinyi Hou et al., IAL-Scan: Infinite Agentic Loops in LLM-Based Agent Systems",
+      "identity": {
+        "arxiv": "2607.01641v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Zhiyuan Gao, Yiming Yang, and Jian Yang, Looping Is Not Reliability (AgenticDev 2026)",
+      "identity": {
+        "arxiv": "2607.24604v3",
+        "venue": "AgenticDev 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Yuxuan Zhuang et al., AgentRewind; Yixin Ji et al., Sentry; Mingyu Hu et al., CUA-Recovery",
+      "identity": {
+        "arxiv": "2608.14380v1; 2610.02994v1; 2610.27645v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Abhishek Rath, Agent Drift (quarantined synthetic simulation study)",
+      "identity": {
+        "arxiv": "2601.04170v1",
+        "year": "2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

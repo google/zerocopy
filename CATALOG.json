@@ -2105,6 +2105,237 @@
         "tooling/static-analysis"
       ]
     },
+    "agent-calibration-abstention-clarification-sycophancy-and-human-handoff": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2311.14648v3; 2509.04664v1",
+            "doi": "10.1145/3618260.3649777",
+            "venue": "STOC 2024; arXiv 2025",
+            "year": "2024-2025"
+          },
+          "name": "Adam Tauman Kalai and Santosh S. Vempala, Calibrated Language Models Must Hallucinate (STOC 2024), and Adam Tauman Kalai, Ofir Nachum, Santosh S. Vempala, and Edwin Zhang, Why Language Models Hallucinate (2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2411.04368v1",
+            "repository": "openai/simple-evals",
+            "revision": "652c89d0ca9df547706735883097e9537d40dc47",
+            "year": "2024"
+          },
+          "name": "Jason Wei et al., SimpleQA (arXiv:2411.04368v1 and openai/simple-evals)"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.09038v1",
+            "repository": "facebookresearch/AbstentionBench",
+            "revision": "e29184174c69bc95139b8c33dcca09aacab9442a",
+            "year": "2025"
+          },
+          "name": "Polina Kirichenko, Mark Ibrahim, Kamalika Chaudhuri, and Samuel J. Bell, AbstentionBench (arXiv:2506.09038v1 and facebookresearch/AbstentionBench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.16806v2",
+            "repository": "damanimehul/RLCR",
+            "revision": "be2624b1753d738b9552df4dd6d50ac33b3668ee",
+            "venue": "ICLR 2026",
+            "year": "2025-2026"
+          },
+          "name": "Mehul Damani et al., Beyond Binary Rewards: Training LMs to Reason About Their Uncertainty (RLCR, ICLR 2026, damanimehul/RLCR)"
+        },
+        {
+          "identity": {
+            "arxiv": "2508.11800v1",
+            "year": "2025"
+          },
+          "name": "Michael Bereket and Jure Leskovec, Uncalibrated Reasoning: GRPO Induces Overconfidence for Stochastic Outcomes"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.14489v2; 2504.06564v3; 2508.15050v1",
+            "repository": "MattYoon/reasoning-models-confidence",
+            "revision": "1bb950d60b4556e1d02560fd55e5bd866354afec",
+            "venue": "NeurIPS 2025; EMNLP 2025; ICML 2025 Workshop",
+            "year": "2025"
+          },
+          "name": "Dongkeun Yoon et al., Reasoning Models Better Express Their Confidence (NeurIPS 2025, MattYoon/reasoning-models-confidence); Zeng et al., Thinking Out Loud (EMNLP 2025); Romain Lacombe, Kerrie Wu, and Eddie Dilworth, Don't Think Twice! (ICML 2025 Workshop)"
+        },
+        {
+          "identity": {
+            "arxiv": "2207.05221v4; 2305.14975v2; 2306.13063v2; 2311.08298v2; 2406.08391v3",
+            "doi": "10.18653/v1/2023.emnlp-main.330; 10.18653/v1/2024.naacl-long.366",
+            "repository": "MiaoXiong2320/llm-uncertainty",
+            "revision": "78a5d2fb1dc0c54352cd5d898cccec1e16c26fc5",
+            "year": "2022-2024"
+          },
+          "name": "Saurav Kadavath et al. (2022); Katherine Tian et al., Just Ask for Calibration (EMNLP 2023); Miao Xiong et al. (ICLR 2024, MiaoXiong2320/llm-uncertainty); Jiahui Geng et al. (NAACL 2024); Sanyam Kapoor et al. (NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2306.10193v2; 2402.10978v1; 2406.09714v2",
+            "repository": "jjcherian/conditional-conformal",
+            "revision": "cb83dcdcce0f33f2fdb5b057ba22480a1b652256",
+            "venue": "ICLR 2024; ICML 2024; NeurIPS 2024",
+            "year": "2024"
+          },
+          "name": "Victor Quach et al., Conformal Language Modeling (ICLR 2024); Christopher Mohri and Tatsunori Hashimoto, Conformal Factuality Guarantees (ICML 2024); John J. Cherian, Isaac Gibbs, and Emmanuel J. Candes, Enhanced Conformal Prediction (NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "repository": "Varal7/conformal-language-modeling; tatsu-lab/conformal-factual-lm",
+            "revision": "13fd7ab8bf18c9748535280d590d1f5707faeb76; 6022b4c90c6580f524f123b0cb97bbb61ab621d1"
+          },
+          "name": "Conformal Language Modeling Reference Implementations (Varal7/conformal-language-modeling and tatsu-lab/conformal-factual-lm)"
+        },
+        {
+          "identity": {
+            "arxiv": "2302.09664v3",
+            "doi": "10.1038/s41586-024-07421-0",
+            "repository": "jlko/semantic_uncertainty",
+            "revision": "a8d9aa8cecd5f3bec09b19ae38ab13552e0846f4",
+            "venue": "ICLR 2023; Nature 630:625-630",
+            "year": "2023-2024"
+          },
+          "name": "Lorenz Kuhn, Yarin Gal, and Sebastian Farquhar, Semantic Uncertainty (ICLR 2023), and Sebastian Farquhar, Jannik Kossen, Lorenz Kuhn, and Yarin Gal, Semantic Entropy (Nature 2024, jlko/semantic_uncertainty)"
+        },
+        {
+          "identity": {
+            "arxiv": "2311.09677v3; 2407.18418v3; 2303.08896v3; 2307.02394v1",
+            "doi": "10.18653/v1/2024.naacl-long.394; 10.1162/tacl_a_00754; 10.18653/v1/2023.emnlp-main.557",
+            "repository": "shizhediao/R-Tuning",
+            "revision": "27e0384a0142b0f4e09bcdef9b216f432923fd4c",
+            "year": "2023-2025"
+          },
+          "name": "Hanning Zhang et al., R-Tuning (NAACL 2024, shizhediao/R-Tuning); Bingbing Wen et al., Know Your Limits (TACL 2025); Potsawee Manakul, Adian Liusie, and Mark J. F. Gales, SelfCheckGPT (EMNLP 2023); Shengding Hu et al., FalseQA (ACL 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.13069v3",
+            "repository": "sani903/InteractiveSWEAgents",
+            "revision": "00421fe393380d916b9a17b9874949a5c41528cc",
+            "venue": "ICLR 2026",
+            "year": "2025-2026"
+          },
+          "name": "Sanidhya Vijayvargiya, Xuhui Zhou, Akhila Yerukola, Maarten Sap, and Graham Neubig, Ambig-SWE (ICLR 2026, sani903/InteractiveSWEAgents)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.22674v2",
+            "repository": "google-deepmind/questbench",
+            "revision": "e119f9ecc15c0776480b34bf932b5f05d0b5a066",
+            "venue": "NeurIPS 2025 Datasets and Benchmarks",
+            "year": "2025"
+          },
+          "name": "Belinda Z. Li, Been Kim, and Zi Wang, QuestBench (NeurIPS 2025 Datasets and Benchmarks, google-deepmind/questbench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.00640v3",
+            "repository": "microsoft/CollabLLM",
+            "revision": "99ad6829d75e1e0880929074a9a9f676670a8623",
+            "venue": "ICML 2025",
+            "year": "2025"
+          },
+          "name": "Shirley Wu et al., CollabLLM (ICML 2025, microsoft/CollabLLM)"
+        },
+        {
+          "identity": {
+            "arxiv": "2212.07769v2; 2310.10996v1; 2311.09469v1; 2403.19154v3; 2406.12639v2; 2507.22034v1",
+            "doi": "10.1145/3660810",
+            "repository": "CLARIFYGPT/ClarifyGPT; SalesforceAIResearch/UserBench",
+            "revision": "543b34b35c5525579d9afee838c992792a3a43dd; 80506d2ab484cab843e60a2401ff3e0290d05b87",
+            "year": "2023-2025"
+          },
+          "name": "Lorenz Kuhn et al., CLAM (2023); Fangwen Mu et al., ClarifyGPT (PACMSE/FSE 2024, CLARIFYGPT/ClarifyGPT); Michael J. Q. Zhang and Eunsol Choi, Clarify When Necessary (NAACL 2025 Findings); Chinmay Andukuri et al., STaR-GATE (COLM 2024); Xuan Zhang et al., Ask-before-Plan (EMNLP 2024 Findings); Cheng Qian et al., UserBench (SalesforceAIResearch/UserBench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.13548v4",
+            "repository": "meg-tong/sycophancy-eval",
+            "revision": "9a1694221e3639887138f61deae344335eca6752",
+            "venue": "ICLR 2024",
+            "year": "2024"
+          },
+          "name": "Mrinank Sharma et al., Towards Understanding Sycophancy in Language Models (ICLR 2024, meg-tong/sycophancy-eval)"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.13995v2",
+            "doi": "10.1126/science.aec8352",
+            "repository": "myracheng/elephant",
+            "revision": "61f7044fc0e11defc971dfaa9bc84d7340fa88eb",
+            "venue": "Science Vol. 391, Issue 6792",
+            "year": "2025-2026"
+          },
+          "name": "Myra Cheng et al., ELEPHANT: Measuring and Understanding Social Sycophancy in LLMs (arXiv:2505.13995v2, Science 2026, myracheng/elephant)"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.04721v1",
+            "repository": "insait-institute/broken-math",
+            "revision": "fe0fc0a9e7e2bb9a8a7a3e8aa6b0a3ac50ecaf8f",
+            "year": "2025"
+          },
+          "name": "Ivo Petrov, Jasper Dekoninck, and Martin Vechev, BrokenMath: A Benchmark for Sycophancy in Theorem Proving with LLMs (insait-institute/broken-math)"
+        },
+        {
+          "identity": {
+            "arxiv": "2109.07958v2; 2212.09251v1; 2311.08596v2; 2502.08177v4; 2503.11656v1; 2505.23840v4",
+            "doi": "10.18653/v1/2022.acl-long.229; 10.18653/v1/2025.findings-emnlp.121",
+            "repository": "sylinrl/TruthfulQA; anthropics/evals; JiseungHong/SYCON-Bench",
+            "revision": "d71c110897f5d31c5d7f309e7bc316c152f6f031; 84fcc677e52e1902d696c32cd1a6b663e70d3993; 6356b923905ff5b05877ac7bb65e5207be00e1c2",
+            "year": "2022-2025"
+          },
+          "name": "Stephanie Lin, Jacob Hilton, and Owain Evans, TruthfulQA (ACL 2022, sylinrl/TruthfulQA); Ethan Perez et al. (ACL 2023 Findings, anthropics/evals); Philippe Laban et al., FlipFlop (2024); Aaron Fanous et al., SycEval (AIES 2025); Ruibo Liu et al., TRUTH DECAY (2025); Jiseung Hong et al., SYCON-Bench (EMNLP 2025 Findings, JiseungHong/SYCON-Bench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.06087v2",
+            "doi": "10.1038/s41562-024-02024-1",
+            "venue": "Nature Human Behaviour 8:2293-2303",
+            "year": "2024"
+          },
+          "name": "Michelle Vaccaro, Abdullah Almaatouq, and Thomas Malone, When Combinations of Humans and AI Are Useful (Nature Human Behaviour 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2006.01862v3; 2006.14779v3; 2102.09692v1; 2202.05983v3; 2405.00623v2; 2401.13835v2",
+            "doi": "10.1177/0018720810376055; 10.1145/3411764.3445717; 10.1145/3449287; 10.1145/3630106.3658941; 10.1038/s42256-024-00976-7",
+            "year": "2010-2025"
+          },
+          "name": "Raja Parasuraman and Dietrich H. Manzey (Human Factors 2010); Hussein Mozannar and David Sontag (ICML 2020); Gagan Bansal et al. (CHI 2021); Zana Bucinca, Maja Barbara Malaya, and Krzysztof Z. Gajos (CSCW 2021); Kailas Vodrahalli, Tobias Gerstenberg, and James Zou (NeurIPS 2022); Sunnie S. Y. Kim et al. (ACM FAccT 2024); Mark Steyvers et al. (Nature Machine Intelligence 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.09089v2",
+            "repository": "METR/Measuring-Early-2025-AI-on-Exp-OSS-Devs",
+            "revision": "7ff2d7670235f531dff77eff58355bd77392f396",
+            "year": "2025"
+          },
+          "name": "Joel Becker, Nate Rush, Elizabeth Barnes, and David Rein, Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity (arXiv:2507.09089v2 and METR/Measuring-Early-2025-AI-on-Exp-OSS-Devs)"
+        },
+        {
+          "identity": {
+            "repository": "METR/Measuring-Late-2025-AI-on-OSS-Devs",
+            "revision": "55f007216a26493f0a9b7650ab3191cad7fb9e7f",
+            "year": "2026"
+          },
+          "name": "METR Late-2025 Open-Source Developer Follow-Up Dataset and Regression Code (METR/Measuring-Late-2025-AI-on-OSS-Devs)"
+        }
+      ],
+      "topics": [
+        "agents/calibration",
+        "agents/abstention",
+        "agents/clarification",
+        "agents/sycophancy",
+        "agents/human-handoff",
+        "agents/reasoning-models",
+        "verification/conformal-prediction",
+        "tooling/agent-harnesses"
+      ]
+    },
     "agent-context-compaction-externalized-memory-coordination-scaling-and-retrieval": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -2444,6 +2675,342 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-planning-decomposition-error-recovery-and-long-horizon-execution": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "migration_repository": "OpenHands/OpenHands",
+            "migration_revision": "0f4cb6af95915fee776913c4aa8694e7c4b76033",
+            "repository": "OpenHands/software-agent-sdk",
+            "revision": "3a893a1b26de7ec02cc0dd2427906eea6aea3fc7"
+          },
+          "name": "OpenHands Software Agent SDK and Runtime Migration (OpenHands/software-agent-sdk and OpenHands/OpenHands)"
+        },
+        {
+          "identity": {
+            "repository": "langchain-ai/langgraph",
+            "revision": "c6335a4255dc1d8abc25a7677f9c072c7ab27b9c"
+          },
+          "name": "LangGraph Pregel Runtime and Checkpointer (langchain-ai/langgraph)"
+        },
+        {
+          "identity": {
+            "repository": "google/adk-python",
+            "revision": "2b90353cd2f1ee0a8a52262a7843333b6f7d2c8d"
+          },
+          "name": "Google Agent Development Kit Python (google/adk-python)"
+        },
+        {
+          "identity": {
+            "mini_repository": "SWE-agent/mini-swe-agent",
+            "mini_revision": "04d809ceab9df28f9adaed044884180159172930",
+            "repository": "SWE-agent/SWE-agent",
+            "revision": "3ea751c087f32b16e039a2233dd6eefecef325d5"
+          },
+          "name": "SWE-agent and mini-swe-agent Harnesses (SWE-agent/SWE-agent and SWE-agent/mini-swe-agent)"
+        },
+        {
+          "identity": {
+            "repository": "pydantic/pydantic-ai",
+            "revision": "4ba5d7d1a2cac0ad3997c4166feda6d1bad0050c"
+          },
+          "name": "PydanticAI Usage Limits and Fallback Model Runtime (pydantic/pydantic-ai)"
+        },
+        {
+          "identity": {
+            "arxiv": "2206.10498v4; 2305.15771v2; 2409.13373v1",
+            "repository": "karthikv792/LLMs-Planning",
+            "revision": "fc638a1aff7df3fe7a1a1d289fa2c04cc24dc284",
+            "venue": "NeurIPS 2023; TMLR 2025",
+            "year": "2022-2025"
+          },
+          "name": "Karthik Valmeekam et al., PlanBench and LLMs-Planning Leaderboard (karthikv792/LLMs-Planning)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.14499v4",
+            "long_tasks_revision": "799cc9c4b4483a93fc3445623a49ea1bd74fdeb2",
+            "swaa_revision": "f6cc84052e2a79dd540766c8a1b15ff399696371",
+            "url": "https://metr.org/assets/benchmark_results_1_1.yaml",
+            "year": "2025-2026"
+          },
+          "name": "METR Task-Completion Time Horizons TH1 and TH1.1 Benchmark Dataset"
+        },
+        {
+          "identity": {
+            "arxiv": "2210.03629v3; 2305.04091v3; 2305.18323v1; 2312.04511v3; 2311.05772v2",
+            "venue": "ICLR 2023; ACL 2023; arXiv 2023; ICML 2024; Findings NAACL 2024",
+            "year": "2022-2024"
+          },
+          "name": "Shunyu Yao et al., ReAct (ICLR 2023); Lei Wang et al., Plan-and-Solve (ACL 2023); Binfeng Xu et al., ReWOO; Sehoon Kim et al., LLMCompiler (ICML 2024); Archiki Prasad et al., ADaPT (NAACL 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.09572v3; 2601.03164v2; 2606.05806v1",
+            "venue": "ICML 2025; arXiv 2026",
+            "year": "2025-2026"
+          },
+          "name": "Lutfi Eren Erdogan et al., Plan-and-Act (ICML 2025); Ziyang Yu et al., WebAnchor; Yifan Zhu et al., ToolMaze"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.01817v3; 2411.14484v1",
+            "venue": "ICML 2024; arXiv 2024",
+            "year": "2024"
+          },
+          "name": "Subbarao Kambhampati et al., LLM-Modulo Frameworks (ICML 2024 Position) and Kayhan Gundawar et al., Robust LLM-Modulo"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.04406v3; 2410.20285v6; 2407.01476v4; 2411.06559v2; 2603.12740v1",
+            "venue": "ICML 2024; ICLR 2025; TMLR 2025; arXiv 2024; ICLR 2026",
+            "year": "2023-2026"
+          },
+          "name": "Andy Zhou et al., LATS (ICML 2024); Antonis Antoniades et al., SWE-Search (ICLR 2025); Jing Yu Koh et al., Tree Search for Language Model Agents (TMLR 2025); Yu Gu et al., WebDreamer; Jiarui Yang et al., ToolTree (ICLR 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.15840v1",
+            "url": "https://andonlabs.com/evals/vending-bench-2",
+            "year": "2025-2026"
+          },
+          "name": "Axel Backlund and Lukas Petersson, Vending-Bench and Andon Labs Vending-Bench 2"
+        },
+        {
+          "identity": {
+            "arxiv": "2311.12983v1; 2404.07972v2; 2407.05291v2; 2412.14161v3",
+            "venue": "ICLR 2024; NeurIPS 2024; arXiv 2024",
+            "year": "2023-2024"
+          },
+          "name": "Gr\u00e9goire Mialon et al., GAIA (ICLR 2024); Tianbao Xie et al., OSWorld (NeurIPS 2024); Alexandre Drouin et al., WorkArena++ (NeurIPS 2024); Frank F. Xu et al., TheAgentCompany"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.01798v2; 2406.01297v3",
+            "venue": "ICLR 2024; TACL 2024",
+            "year": "2024"
+          },
+          "name": "Jie Huang et al., Large Language Models Cannot Self-Correct Reasoning Yet (ICLR 2024), and Ryo Kamoi et al., When Can LLMs Actually Correct Their Own Mistakes? (TACL 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.13657v3; 2505.00212v3; 2509.25370v1",
+            "venue": "arXiv 2025; ICML 2025",
+            "year": "2025"
+          },
+          "name": "Mert Cemri et al., MAST; Shaokun Zhang et al., Who&When (ICML 2025); Kunlun Zhu et al., AgentDebug"
+        },
+        {
+          "identity": {
+            "arxiv": "2607.01641v1",
+            "year": "2026"
+          },
+          "name": "Xinyi Hou et al., IAL-Scan: Infinite Agentic Loops in LLM-Based Agent Systems"
+        },
+        {
+          "identity": {
+            "arxiv": "2607.24604v3",
+            "venue": "AgenticDev 2026",
+            "year": "2026"
+          },
+          "name": "Zhiyuan Gao, Yiming Yang, and Jian Yang, Looping Is Not Reliability (AgenticDev 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2608.14380v1; 2610.02994v1; 2610.27645v1",
+            "year": "2026"
+          },
+          "name": "Yuxuan Zhuang et al., AgentRewind; Yixin Ji et al., Sentry; Mingyu Hu et al., CUA-Recovery"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.04170v1",
+            "year": "2026"
+          },
+          "name": "Abhishek Rath, Agent Drift (quarantined synthetic simulation study)"
+        }
+      ],
+      "topics": [
+        "agents/planning",
+        "agents/decomposition",
+        "agents/error-recovery",
+        "agents/long-horizon-execution",
+        "agents/tree-search",
+        "agents/checkpointing",
+        "agents/loop-detection",
+        "tooling/agent-harnesses",
+        "verification/external-critics"
+      ]
+    },
+    "agent-prompt-injection-tool-security-sandboxing-and-reward-hacking-defenses": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2406.13352v3",
+            "repository": "ethz-spylab/agentdojo",
+            "revision": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+            "venue": "NeurIPS 2024 Datasets and Benchmarks",
+            "year": "2024"
+          },
+          "name": "Edoardo Debenedetti et al., AgentDojo (ethz-spylab/agentdojo and arXiv:2406.13352v3)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.18813v2",
+            "repository": "google-research/camel-prompt-injection",
+            "revision": "f083b6b396399d3b3c7f2ddaf613a5945eaf32d8",
+            "year": "2025"
+          },
+          "name": "Edoardo Debenedetti et al., Defeating Prompt Injections by Design / CaMeL (google-research/camel-prompt-injection and arXiv:2503.18813v2)"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.23643v2",
+            "repository": "microsoft/fides",
+            "revision": "669c046c4adbc56ee49c9672fdd30c54937ea062",
+            "year": "2025"
+          },
+          "name": "Manuel Costa et al., Securing AI Agents with Information-Flow Control / FIDES (microsoft/fides and arXiv:2505.23643v2)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.11703v3",
+            "repository": "sunblaze-ucb/progent",
+            "revision": "3e797539fbcd55b92459d627e29fdaef16b9089a",
+            "year": "2026"
+          },
+          "name": "Tianneng Shi et al., Progent: Securing AI Agents with Privilege Control (sunblaze-ucb/progent and arXiv:2504.11703v3)"
+        },
+        {
+          "identity": {
+            "repository": "openai/codex",
+            "revision": "586bd4b891fab95ad3abf9ff57e38746c63d7499"
+          },
+          "name": "OpenAI Codex CLI and Linux/macOS Sandbox Runtime (openai/codex)"
+        },
+        {
+          "identity": {
+            "repository": "anthropics/sandbox-runtime",
+            "revision": "0bbebed0aa9a8e628dc4df8bc30293550a1988eb",
+            "version": "v0.0.83"
+          },
+          "name": "Anthropic Sandbox Runtime (anthropics/sandbox-runtime)"
+        },
+        {
+          "identity": {
+            "repository": "anthropics/claude-code",
+            "revision": "e1cd3c1ba8e992c43e8317760096338596105a4d"
+          },
+          "name": "Anthropic Claude Code CLI Repository (anthropics/claude-code)"
+        },
+        {
+          "identity": {
+            "repository": "OpenHands/software-agent-sdk",
+            "revision": "3a893a1b26de7ec02cc0dd2427906eea6aea3fc7"
+          },
+          "name": "OpenHands Software Agent SDK and Workspace Backends (OpenHands/software-agent-sdk)"
+        },
+        {
+          "identity": {
+            "repository": "OpenHands/OpenHands",
+            "revision": "0f4cb6af95915fee776913c4aa8694e7c4b76033"
+          },
+          "name": "OpenHands Platform Repository (OpenHands/OpenHands)"
+        },
+        {
+          "identity": {
+            "repository": "snyk/agent-scan",
+            "revision": "ebf2d6fcfa67194d49abf4e28d68bc7ca41dd0d0"
+          },
+          "name": "Snyk / Invariant Labs Agent & MCP Scanner (snyk/agent-scan)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.00061v2",
+            "repository": "uiuc-kang-lab/AdaptiveAttackAgent",
+            "revision": "7ea08cf4424e689079c6bc6348e28fbb84a090eb",
+            "venue": "NAACL 2025 Findings",
+            "year": "2025"
+          },
+          "name": "Qiusi Zhan et al., Adaptive Attacks Break Defenses Against Indirect Prompt Injection Attacks on LLM Agents (uiuc-kang-lab/AdaptiveAttackAgent)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.06363v2; 2410.05451v3; 2507.02735v4",
+            "repositories": "Sizhe-Chen/StruQ@e4372b9e3d45ecdfc7c0ad70662094efe6e3850b; facebookresearch/SecAlign@3fc9c9c3244a21512f5a1f3859a9858090711f0e; facebookresearch/Meta_SecAlign@2031502bdf5a046b437ec835c6b05ff468aa0699",
+            "venue": "USENIX Security 2025; ACM CCS 2025; arXiv 2026"
+          },
+          "name": "Sizhe Chen et al., StruQ (Sizhe-Chen/StruQ), SecAlign (facebookresearch/SecAlign), and Meta-SecAlign (facebookresearch/Meta_SecAlign)"
+        },
+        {
+          "identity": {
+            "arxiv": "2302.12173v2; 2403.02691v3; 2410.02644v4",
+            "venue": "AISec 2023; ACL 2024 Findings; ICLR 2025",
+            "year": "2023-2025"
+          },
+          "name": "Kai Greshake et al., Indirect Prompt Injection (AISec 2023); Qiusi Zhan et al., InjecAgent (ACL 2024); Hanrong Zhang et al., Agent Security Bench / ASB (ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.09023v1",
+            "year": "2025"
+          },
+          "name": "Milad Nasr et al., The Attacker Moves Second: Stronger Adaptive Attacks Bypass Defenses Against LLM Jailbreaks and Prompt Injections"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.04960v2",
+            "published_date": "2023-04-25; 2025",
+            "url": "https://simonwillison.net/2023/Apr/25/dual-llm-pattern/",
+            "venue": "NDSS 2025"
+          },
+          "name": "Simon Willison, Dual-LLM Pattern, and Yuhao Wu et al., IsolateGPT (NDSS 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2508.14925v2; 2508.13220v3; 2601.07395v1; 2605.24069v1",
+            "year": "2025-2026"
+          },
+          "name": "MCP Tool Poisoning Benchmarks: MCPTox, MCPSecBench, MCP-ITP, and When the Manual Lies (MCP-TDP)"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.20156v3; 2604.03081v1; 2605.11418v1",
+            "year": "2026"
+          },
+          "name": "Agent Skill Supply-Chain Studies: Skill-Inject, DDIPE, and Under the Hood of SKILL.md"
+        },
+        {
+          "identity": {
+            "cve": "CVE-2025-6514; CVE-2025-53773; CVE-2025-54135; CVE-2025-54136; CVE-2025-54794; CVE-2025-54795; CVE-2025-55284",
+            "disclosures": "Invariant Labs MCP Security Notification (2025-04); Pillar Security Rules File Backdoor (2025); Legit Security CamoLeak (2025)"
+          },
+          "name": "MITRE CVE Records and Primary Disclosures for MCP & Coding Agents"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.10162v3; 2502.13295v3; 2503.11926v1; 2511.18397v1",
+            "report_url": "https://metr.org/blog/2025-06-05-recent-reward-hacking/",
+            "year": "2024-2025"
+          },
+          "name": "Coding-Agent Reward Hacking, Evaluation Tampering, and CoT Monitoring Studies (Denison et al.; Bondarenko et al.; Baker et al.; METR; MacDiarmid et al.)"
+        }
+      ],
+      "topics": [
+        "agents/prompt-injection",
+        "agents/tool-security",
+        "agents/mcp",
+        "agents/reward-hacking",
+        "security/prompt-injection",
+        "security/sandboxing",
+        "security/information-flow-control",
+        "security/supply-chain",
+        "systems/linux-sandboxing",
+        "tooling/agent-harnesses"
+      ]
+    },
     "agent-scaffolding-automated-prompt-optimization-and-divergent-design-exploration": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -2641,6 +3208,149 @@
         "systems/design-space-exploration",
         "systems/bayesian-experimental-design",
         "tooling/agent-harnesses"
+      ]
+    },
+    "agent-structured-outputs-constrained-decoding-tool-schemas-and-computer-use": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2411.15100v3",
+            "repository": "mlc-ai/xgrammar",
+            "revision": "3fe39321a6f24c90c2cc4fa4519b87e22367bcfc",
+            "venue": "MLSys 2025",
+            "year": "2025-2026"
+          },
+          "name": "MLC-AI XGrammar Constrained Decoding Engine (mlc-ai/xgrammar and MLSys 2025)"
+        },
+        {
+          "identity": {
+            "repository": "guidance-ai/llguidance",
+            "revision": "4b1bdd7eaab212dacdbcebcd71ad84d194dfc629",
+            "year": "2026"
+          },
+          "name": "Guidance-AI LLGuidance Constrained Parser (guidance-ai/llguidance)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.09702v4",
+            "repository": "dottxt-ai/outlines",
+            "revision": "c52af8472c6fe8a607a733ec11b709476af77a96",
+            "year": "2023-2026"
+          },
+          "name": "Outlines Structured Generation Library (dottxt-ai/outlines and Willard & Louf)"
+        },
+        {
+          "identity": {
+            "pmlr": "v267:patil25a",
+            "repository": "ShishirPatil/gorilla",
+            "revision": "6ea57973c7a6097fd7c5915698c54c17c5b1b6c8",
+            "venue": "ICML 2025",
+            "year": "2025-2026"
+          },
+          "name": "Shishir G. Patil et al., Berkeley Function Calling Leaderboard (ICML 2025, ShishirPatil/gorilla)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.07972v2",
+            "repository": "xlang-ai/OSWorld",
+            "revision": "5123bfdbbc34b947bcffcff564abc62d0ab7072d",
+            "venue": "NeurIPS 2024",
+            "year": "2024-2026"
+          },
+          "name": "Tianbao Xie et al., OSWorld Multimodal Computer-Use Benchmark (NeurIPS 2024, xlang-ai/OSWorld)"
+        },
+        {
+          "identity": {
+            "repository": "browser-use/browser-use",
+            "revision": "e682e0dc02d77a307a5b2aedf17142c2cd69af5b",
+            "year": "2026"
+          },
+          "name": "Browser-Use CDP Accessibility and Python REPL Agent Framework (browser-use/browser-use)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/playwright-mcp",
+            "revision": "2337aff0213d28db41d3e3daf48cee19b3d0bd82",
+            "year": "2026"
+          },
+          "name": "Microsoft Playwright MCP Server (microsoft/playwright-mcp)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/playwright",
+            "revision": "99d4c415db3794d1c989be16ac4987f4529e3220",
+            "year": "2026"
+          },
+          "name": "Microsoft Playwright Core Tools Backend (microsoft/playwright)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.02442v3; 2501.10868v3; 2502.09061v4; 2601.07525v2; 2604.14862v3; 2505.20139v3",
+            "venue": "EMNLP 2024; arXiv 2025; ICML 2025; arXiv 2026; AACL-IJCNLP 2026; TMLR 2026",
+            "year": "2024-2026"
+          },
+          "name": "Zhi Rui Tam et al., Let Me Speak Freely? (EMNLP 2024); Saibo Geng et al., JSONSchemaBench; Debangshu Banerjee et al., CRANE (ICML 2025); Dang Nguyen et al., Thinking Before Constraining (In-Writing); Minh Le, Schema-Key Wording under Constrained Decoding (AACL-IJCNLP 2026); Jialin Yang et al., StructEval (TMLR 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.06988v1; 2405.21047v4; 2504.13139v2",
+            "venue": "ICML 2024; NeurIPS 2024; ICLR 2025",
+            "year": "2024-2025"
+          },
+          "name": "Luca Beurer-Kellner et al., DOMINO (ICML 2024); Kanghee Park et al., Grammar-Aligned Decoding / ASAp (NeurIPS 2024); Joao Loula et al., Syntactic and Semantic Control via SMC (ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.01030v4; 2411.01747v3; 2503.20840v2; 2608.06370v1; 2609.11999v1; 2611.01446v1; 2611.19123v1",
+            "venue": "ICML 2024; COLM 2025; ACL 2025; arXiv 2026",
+            "year": "2024-2026"
+          },
+          "name": "Xingyao Wang et al., CodeAct (ICML 2024); Dang Nguyen et al., DynaSaur (COLM 2025); Jiarui Lu et al., CodeTool (ACL 2025); Lehar Patel et al., The Bitter Lesson of Tool Calling; Shuofei Mak et al., Is Bash All You Need?; Ziming Mao et al., Interactive Programmatic Tool Calling (I-PTC); Animesh Rai, Beyond Plain MCP"
+        },
+        {
+          "identity": {
+            "arxiv": "2304.08244; 2306.13304; 2309.15817; 2403.07714; 2405.00823; 2408.04682; 2410.04587v2",
+            "venue": "EMNLP 2023; NeurIPS 2023; ICLR 2024; ACL 2024 Findings; COLM 2024; NAACL 2025; ICLR 2025",
+            "year": "2023-2025"
+          },
+          "name": "Minghao Li et al., API-Bank (EMNLP 2023); Yuchen Zhuang et al., ToolQA (NeurIPS 2023); Yangjun Ruan et al., ToolEmu (ICLR 2024); Zhicheng Guo et al., StableToolBench (ACL 2024); Olly Styles et al., WorkBench (COLM 2024); Jiarui Lu et al., ToolSandbox (NAACL 2025); Qiqiang Lin et al., Hammer (ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2306.06070v3; 2307.13854v4; 2310.11441v2; 2401.13649v2; 2401.10935v2; 2408.00203v1; 2410.05243v3",
+            "venue": "NeurIPS 2023; ICLR 2024; arXiv 2023; ACL 2024; arXiv 2024; ICLR 2025",
+            "year": "2023-2025"
+          },
+          "name": "Xiang Deng et al., Mind2Web (NeurIPS 2023); Shuyan Zhou et al., WebArena (ICLR 2024); Jianwei Yang et al., Set-of-Mark; Jing Yu Koh et al., VisualWebArena (ACL 2024); Kanzhi Cheng et al., SeeClick & ScreenSpot (ACL 2024); Yadong Lu et al., OmniParser; Boyu Gou et al., UGround (ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.08164v1; 2504.00906v1; 2501.12326v1; 2504.01382v4; 2504.07981v1; 2509.02544v2",
+            "venue": "ICLR 2025; COLM 2025; arXiv 2025",
+            "year": "2024-2025"
+          },
+          "name": "Saaket Agashe et al., Agent S (ICLR 2025) & Agent S2; Yujia Qin et al., UI-TARS; Tianci Xue et al., Online-Mind2Web (COLM 2025); Kaixin Li et al., ScreenSpot-Pro & ScreenSeekeR; ByteDance Seed, UI-TARS-2"
+        },
+        {
+          "identity": {
+            "published_date": "2025-07-28 to 2025-11-24",
+            "urls": "https://blog.cloudflare.com/code-mode/ ; https://www.anthropic.com/engineering/code-execution-with-mcp ; https://www.anthropic.com/engineering/advanced-tool-use ; https://xlang.ai/blog/osworld-verified"
+          },
+          "name": "Vendor and Benchmark Engineering Disclosures: Cloudflare Code Mode, Anthropic Code Execution with MCP & Advanced Tool Use, XLANG OSWorld-Verified, and Gorilla BFCL v4 Format Sensitivity"
+        }
+      ],
+      "topics": [
+        "agents/structured-outputs",
+        "agents/constrained-decoding",
+        "agents/tool-calling",
+        "agents/programmatic-tool-calling",
+        "agents/computer-use",
+        "agents/gui-grounding",
+        "agents/mcp",
+        "compilers/parsing",
+        "tooling/agent-harnesses",
+        "security/sandboxing"
       ]
     },
     "airbus-do-333-unit-proof-observable-mcdc-fault-finding-kind2-cocospec-agree-contracts-and-copilot-monitors": {

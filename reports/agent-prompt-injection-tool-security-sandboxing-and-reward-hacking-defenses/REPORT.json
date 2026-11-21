@@ -1,0 +1,168 @@
+{
+  "topics": [
+    "agents/prompt-injection",
+    "agents/tool-security",
+    "agents/mcp",
+    "agents/reward-hacking",
+    "security/prompt-injection",
+    "security/sandboxing",
+    "security/information-flow-control",
+    "security/supply-chain",
+    "systems/linux-sandboxing",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "Edoardo Debenedetti et al., AgentDojo (ethz-spylab/agentdojo and arXiv:2406.13352v3)",
+      "identity": {
+        "arxiv": "2406.13352v3",
+        "repository": "ethz-spylab/agentdojo",
+        "revision": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+        "venue": "NeurIPS 2024 Datasets and Benchmarks",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Edoardo Debenedetti et al., Defeating Prompt Injections by Design / CaMeL (google-research/camel-prompt-injection and arXiv:2503.18813v2)",
+      "identity": {
+        "arxiv": "2503.18813v2",
+        "repository": "google-research/camel-prompt-injection",
+        "revision": "f083b6b396399d3b3c7f2ddaf613a5945eaf32d8",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Manuel Costa et al., Securing AI Agents with Information-Flow Control / FIDES (microsoft/fides and arXiv:2505.23643v2)",
+      "identity": {
+        "arxiv": "2505.23643v2",
+        "repository": "microsoft/fides",
+        "revision": "669c046c4adbc56ee49c9672fdd30c54937ea062",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Tianneng Shi et al., Progent: Securing AI Agents with Privilege Control (sunblaze-ucb/progent and arXiv:2504.11703v3)",
+      "identity": {
+        "arxiv": "2504.11703v3",
+        "repository": "sunblaze-ucb/progent",
+        "revision": "3e797539fbcd55b92459d627e29fdaef16b9089a",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "OpenAI Codex CLI and Linux/macOS Sandbox Runtime (openai/codex)",
+      "identity": {
+        "repository": "openai/codex",
+        "revision": "586bd4b891fab95ad3abf9ff57e38746c63d7499"
+      }
+    },
+    {
+      "name": "Anthropic Sandbox Runtime (anthropics/sandbox-runtime)",
+      "identity": {
+        "repository": "anthropics/sandbox-runtime",
+        "revision": "0bbebed0aa9a8e628dc4df8bc30293550a1988eb",
+        "version": "v0.0.83"
+      }
+    },
+    {
+      "name": "Anthropic Claude Code CLI Repository (anthropics/claude-code)",
+      "identity": {
+        "repository": "anthropics/claude-code",
+        "revision": "e1cd3c1ba8e992c43e8317760096338596105a4d"
+      }
+    },
+    {
+      "name": "OpenHands Software Agent SDK and Workspace Backends (OpenHands/software-agent-sdk)",
+      "identity": {
+        "repository": "OpenHands/software-agent-sdk",
+        "revision": "3a893a1b26de7ec02cc0dd2427906eea6aea3fc7"
+      }
+    },
+    {
+      "name": "OpenHands Platform Repository (OpenHands/OpenHands)",
+      "identity": {
+        "repository": "OpenHands/OpenHands",
+        "revision": "0f4cb6af95915fee776913c4aa8694e7c4b76033"
+      }
+    },
+    {
+      "name": "Snyk / Invariant Labs Agent & MCP Scanner (snyk/agent-scan)",
+      "identity": {
+        "repository": "snyk/agent-scan",
+        "revision": "ebf2d6fcfa67194d49abf4e28d68bc7ca41dd0d0"
+      }
+    },
+    {
+      "name": "Qiusi Zhan et al., Adaptive Attacks Break Defenses Against Indirect Prompt Injection Attacks on LLM Agents (uiuc-kang-lab/AdaptiveAttackAgent)",
+      "identity": {
+        "arxiv": "2503.00061v2",
+        "repository": "uiuc-kang-lab/AdaptiveAttackAgent",
+        "revision": "7ea08cf4424e689079c6bc6348e28fbb84a090eb",
+        "venue": "NAACL 2025 Findings",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Sizhe Chen et al., StruQ (Sizhe-Chen/StruQ), SecAlign (facebookresearch/SecAlign), and Meta-SecAlign (facebookresearch/Meta_SecAlign)",
+      "identity": {
+        "arxiv": "2402.06363v2; 2410.05451v3; 2507.02735v4",
+        "repositories": "Sizhe-Chen/StruQ@e4372b9e3d45ecdfc7c0ad70662094efe6e3850b; facebookresearch/SecAlign@3fc9c9c3244a21512f5a1f3859a9858090711f0e; facebookresearch/Meta_SecAlign@2031502bdf5a046b437ec835c6b05ff468aa0699",
+        "venue": "USENIX Security 2025; ACM CCS 2025; arXiv 2026"
+      }
+    },
+    {
+      "name": "Kai Greshake et al., Indirect Prompt Injection (AISec 2023); Qiusi Zhan et al., InjecAgent (ACL 2024); Hanrong Zhang et al., Agent Security Bench / ASB (ICLR 2025)",
+      "identity": {
+        "arxiv": "2302.12173v2; 2403.02691v3; 2410.02644v4",
+        "venue": "AISec 2023; ACL 2024 Findings; ICLR 2025",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Milad Nasr et al., The Attacker Moves Second: Stronger Adaptive Attacks Bypass Defenses Against LLM Jailbreaks and Prompt Injections",
+      "identity": {
+        "arxiv": "2510.09023v1",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Simon Willison, Dual-LLM Pattern, and Yuhao Wu et al., IsolateGPT (NDSS 2025)",
+      "identity": {
+        "arxiv": "2403.04960v2",
+        "published_date": "2023-04-25; 2025",
+        "url": "https://simonwillison.net/2023/Apr/25/dual-llm-pattern/",
+        "venue": "NDSS 2025"
+      }
+    },
+    {
+      "name": "MCP Tool Poisoning Benchmarks: MCPTox, MCPSecBench, MCP-ITP, and When the Manual Lies (MCP-TDP)",
+      "identity": {
+        "arxiv": "2508.14925v2; 2508.13220v3; 2601.07395v1; 2605.24069v1",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Agent Skill Supply-Chain Studies: Skill-Inject, DDIPE, and Under the Hood of SKILL.md",
+      "identity": {
+        "arxiv": "2602.20156v3; 2604.03081v1; 2605.11418v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "MITRE CVE Records and Primary Disclosures for MCP & Coding Agents",
+      "identity": {
+        "cve": "CVE-2025-6514; CVE-2025-53773; CVE-2025-54135; CVE-2025-54136; CVE-2025-54794; CVE-2025-54795; CVE-2025-55284",
+        "disclosures": "Invariant Labs MCP Security Notification (2025-04); Pillar Security Rules File Backdoor (2025); Legit Security CamoLeak (2025)"
+      }
+    },
+    {
+      "name": "Coding-Agent Reward Hacking, Evaluation Tampering, and CoT Monitoring Studies (Denison et al.; Bondarenko et al.; Baker et al.; METR; MacDiarmid et al.)",
+      "identity": {
+        "arxiv": "2406.10162v3; 2502.13295v3; 2503.11926v1; 2511.18397v1",
+        "report_url": "https://metr.org/blog/2025-06-05-recent-reward-hacking/",
+        "year": "2024-2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
