@@ -1,0 +1,2104 @@
+{
+  "abi": {
+    "assembly": {
+      "<A as DeclTracked>::m": [
+        "addl\t16(%rdx), %esi",
+        "leal\t(%rsi,%rsi,2), %eax",
+        "retq"
+      ],
+      "<B as DeclUntracked>::m": [
+        "addl\t16(%rdx), %esi",
+        "leal\t(%rsi,%rsi,4), %eax",
+        "retq"
+      ],
+      "<B as DeclUntracked>::m::{shim:reify}": [
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.4(%rip), %rdx",
+        "jmpq\t*_RNvXs_CseQY1KQsWaM5_9abi_probeNtB4_1BNtB4_13DeclUntracked1m@GOTPCREL(%rip)"
+      ],
+      "abi_tracked0": [
+        "movl\t16(%rdi), %eax",
+        "retq"
+      ],
+      "abi_tracked0::{shim:reify}": [
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.1(%rip), %rdi",
+        "jmpq\t*_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked0@GOTPCREL(%rip)"
+      ],
+      "abi_tracked1": [
+        "movq\t%rdi, %rax",
+        "addl\t16(%rsi), %eax",
+        "retq"
+      ],
+      "abi_tracked1::{shim:reify}": [
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.2(%rip), %rsi",
+        "jmpq\t*_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked1@GOTPCREL(%rip)"
+      ],
+      "abi_tracked2": [
+        "leal\t(%rsi,%rdi), %eax",
+        "addl\t16(%rdx), %eax",
+        "retq"
+      ],
+      "abi_tracked2::{shim:reify}": [
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.3(%rip), %rdx",
+        "jmpq\t*_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked2@GOTPCREL(%rip)"
+      ],
+      "abi_tracked6": [
+        "movq\t%r9, %rax",
+        "movq\t8(%rsp), %r9",
+        "xorl\t%edi, %esi",
+        "xorl\t%edx, %ecx",
+        "xorl\t%esi, %ecx",
+        "xorl\t%r8d, %eax",
+        "xorl\t%ecx, %eax",
+        "addl\t16(%r9), %eax",
+        "retq"
+      ],
+      "abi_untracked1": [
+        "leal\t36(%rdi), %eax",
+        "retq"
+      ],
+      "call_through_pointer": [
+        "movq\t%rdi, %rax",
+        "movq\t%rsi, %rdi",
+        "jmpq\t*%rax"
+      ],
+      "call_tracked0": [
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.5(%rip), %rdi",
+        "jmpq\t*_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked0@GOTPCREL(%rip)"
+      ],
+      "call_tracked1": [
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.6(%rip), %rsi",
+        "jmpq\t*_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked1@GOTPCREL(%rip)"
+      ],
+      "call_tracked2": [
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.7(%rip), %rdx",
+        "jmpq\t*_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked2@GOTPCREL(%rip)"
+      ],
+      "forward_tracked1": [
+        "jmpq\t*_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked1@GOTPCREL(%rip)"
+      ],
+      "make_dyn_decl_tracked": [
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.8(%rip), %rdx",
+        "movl\t$1, %eax",
+        "retq"
+      ],
+      "make_dyn_decl_untracked": [
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.9(%rip), %rdx",
+        "movl\t$1, %eax",
+        "retq"
+      ],
+      "reify0": [
+        "leaq\t_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked05reify(%rip), %rax",
+        "retq"
+      ],
+      "reify1": [
+        "leaq\t_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked15reify(%rip), %rax",
+        "retq"
+      ],
+      "reify2": [
+        "leaq\t_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked25reify(%rip), %rax",
+        "retq"
+      ],
+      "reify_untracked1": [
+        "movq\t_RNvCseQY1KQsWaM5_9abi_probe14abi_untracked1@GOTPCREL(%rip), %rax",
+        "retq"
+      ],
+      "virtual_call_decl_tracked": [
+        "movq\t24(%rsi), %rcx",
+        "leaq\t.Lanon.67a0083fc9ffa20373073e29e16f4921.10(%rip), %rax",
+        "movq\t%rdx, %rsi",
+        "movq\t%rax, %rdx",
+        "jmpq\t*%rcx"
+      ],
+      "virtual_call_decl_untracked": [
+        "movq\t24(%rsi), %rax",
+        "movq\t%rdx, %rsi",
+        "jmpq\t*%rax"
+      ]
+    },
+    "callee_location_registers": {
+      "<A as DeclTracked>::m": [
+        "rdx"
+      ],
+      "<B as DeclUntracked>::m": [
+        "rdx"
+      ],
+      "abi_tracked0": [
+        "rdi"
+      ],
+      "abi_tracked1": [
+        "rsi"
+      ],
+      "abi_tracked2": [
+        "rdx"
+      ],
+      "abi_tracked6": {
+        "dereferenced": [
+          "r9"
+        ],
+        "loaded_from": "0x8(%rsp)"
+      }
+    },
+    "command": "rustc --edition 2021 -C opt-level=3 -C codegen-units=1 -C debuginfo=0 -C symbol-mangling-version=v0 --emit=asm,obj --out-dir abi_out abi_probe.rs",
+    "disassembly": {
+      "<A as DeclTracked>::m": [
+        "add 0x10(%rdx),%esi",
+        "lea (%rsi,%rsi,2),%eax",
+        "ret"
+      ],
+      "<B as DeclUntracked>::m": [
+        "add 0x10(%rdx),%esi",
+        "lea (%rsi,%rsi,4),%eax",
+        "ret"
+      ],
+      "<B as DeclUntracked>::m::{shim:reify}": [
+        "lea 0x0(%rip),%rdx # 7 <_RNSNvXs_CseQY1KQsWaM5_9abi_probeNtB6_1BNtB6_13DeclUntracked1m5reify+0x7>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.4-0x4",
+        "jmp *0x0(%rip) # d <_RNSNvXs_CseQY1KQsWaM5_9abi_probeNtB6_1BNtB6_13DeclUntracked1m5reify+0xd>",
+        "R_X86_64_GOTPCREL _RNvXs_CseQY1KQsWaM5_9abi_probeNtB4_1BNtB4_13DeclUntracked1m-0x4"
+      ],
+      "abi_tracked0": [
+        "mov 0x10(%rdi),%eax",
+        "ret"
+      ],
+      "abi_tracked0::{shim:reify}": [
+        "lea 0x0(%rip),%rdi # 7 <_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked05reify+0x7>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.1-0x4",
+        "jmp *0x0(%rip) # d <_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked05reify+0xd>",
+        "R_X86_64_GOTPCREL _RNvCseQY1KQsWaM5_9abi_probe12abi_tracked0-0x4"
+      ],
+      "abi_tracked1": [
+        "mov %rdi,%rax",
+        "add 0x10(%rsi),%eax",
+        "ret"
+      ],
+      "abi_tracked1::{shim:reify}": [
+        "lea 0x0(%rip),%rsi # 7 <_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked15reify+0x7>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.2-0x4",
+        "jmp *0x0(%rip) # d <_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked15reify+0xd>",
+        "R_X86_64_GOTPCREL _RNvCseQY1KQsWaM5_9abi_probe12abi_tracked1-0x4"
+      ],
+      "abi_tracked2": [
+        "lea (%rsi,%rdi,1),%eax",
+        "add 0x10(%rdx),%eax",
+        "ret"
+      ],
+      "abi_tracked2::{shim:reify}": [
+        "lea 0x0(%rip),%rdx # 7 <_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked25reify+0x7>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.3-0x4",
+        "jmp *0x0(%rip) # d <_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked25reify+0xd>",
+        "R_X86_64_GOTPCREL _RNvCseQY1KQsWaM5_9abi_probe12abi_tracked2-0x4"
+      ],
+      "abi_tracked6": [
+        "mov %r9,%rax",
+        "mov 0x8(%rsp),%r9",
+        "xor %edi,%esi",
+        "xor %edx,%ecx",
+        "xor %esi,%ecx",
+        "xor %r8d,%eax",
+        "xor %ecx,%eax",
+        "add 0x10(%r9),%eax",
+        "ret"
+      ],
+      "abi_untracked1": [
+        "lea 0x24(%rdi),%eax",
+        "ret"
+      ],
+      "call_through_pointer": [
+        "mov %rdi,%rax",
+        "mov %rsi,%rdi",
+        "jmp *%rax"
+      ],
+      "call_tracked0": [
+        "lea 0x0(%rip),%rdi # 7 <_RNvCseQY1KQsWaM5_9abi_probe13call_tracked0+0x7>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.5-0x4",
+        "jmp *0x0(%rip) # d <_RNvCseQY1KQsWaM5_9abi_probe13call_tracked0+0xd>",
+        "R_X86_64_GOTPCREL _RNvCseQY1KQsWaM5_9abi_probe12abi_tracked0-0x4"
+      ],
+      "call_tracked1": [
+        "lea 0x0(%rip),%rsi # 7 <_RNvCseQY1KQsWaM5_9abi_probe13call_tracked1+0x7>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.6-0x4",
+        "jmp *0x0(%rip) # d <_RNvCseQY1KQsWaM5_9abi_probe13call_tracked1+0xd>",
+        "R_X86_64_GOTPCREL _RNvCseQY1KQsWaM5_9abi_probe12abi_tracked1-0x4"
+      ],
+      "call_tracked2": [
+        "lea 0x0(%rip),%rdx # 7 <_RNvCseQY1KQsWaM5_9abi_probe13call_tracked2+0x7>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.7-0x4",
+        "jmp *0x0(%rip) # d <_RNvCseQY1KQsWaM5_9abi_probe13call_tracked2+0xd>",
+        "R_X86_64_GOTPCREL _RNvCseQY1KQsWaM5_9abi_probe12abi_tracked2-0x4"
+      ],
+      "forward_tracked1": [
+        "jmp *0x0(%rip) # 6 <_RNvCseQY1KQsWaM5_9abi_probe16forward_tracked1+0x6>",
+        "R_X86_64_GOTPCREL _RNvCseQY1KQsWaM5_9abi_probe12abi_tracked1-0x4"
+      ],
+      "make_dyn_decl_tracked": [
+        "lea 0x0(%rip),%rdx # 7 <_RNvCseQY1KQsWaM5_9abi_probe21make_dyn_decl_tracked+0x7>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.8-0x4",
+        "mov $0x1,%eax",
+        "ret"
+      ],
+      "make_dyn_decl_untracked": [
+        "lea 0x0(%rip),%rdx # 7 <_RNvCseQY1KQsWaM5_9abi_probe23make_dyn_decl_untracked+0x7>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.9-0x4",
+        "mov $0x1,%eax",
+        "ret"
+      ],
+      "reify0": [
+        "lea 0x0(%rip),%rax # 7 <_RNvCseQY1KQsWaM5_9abi_probe6reify0+0x7>",
+        "R_X86_64_PC32 .text._RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked05reify-0x4",
+        "ret"
+      ],
+      "reify1": [
+        "lea 0x0(%rip),%rax # 7 <_RNvCseQY1KQsWaM5_9abi_probe6reify1+0x7>",
+        "R_X86_64_PC32 .text._RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked15reify-0x4",
+        "ret"
+      ],
+      "reify2": [
+        "lea 0x0(%rip),%rax # 7 <_RNvCseQY1KQsWaM5_9abi_probe6reify2+0x7>",
+        "R_X86_64_PC32 .text._RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked25reify-0x4",
+        "ret"
+      ],
+      "reify_untracked1": [
+        "mov 0x0(%rip),%rax # 7 <_RNvCseQY1KQsWaM5_9abi_probe16reify_untracked1+0x7>",
+        "R_X86_64_GOTPCREL _RNvCseQY1KQsWaM5_9abi_probe14abi_untracked1-0x4",
+        "ret"
+      ],
+      "virtual_call_decl_tracked": [
+        "mov 0x18(%rsi),%rcx",
+        "lea 0x0(%rip),%rax # b <_RNvCseQY1KQsWaM5_9abi_probe25virtual_call_decl_tracked+0xb>",
+        "R_X86_64_PC32 .data.rel.ro..Lanon.67a0083fc9ffa20373073e29e16f4921.10-0x4",
+        "mov %rdx,%rsi",
+        "mov %rax,%rdx",
+        "jmp *%rcx"
+      ],
+      "virtual_call_decl_untracked": [
+        "mov 0x18(%rsi),%rax",
+        "mov %rdx,%rsi",
+        "jmp *%rax"
+      ]
+    },
+    "kcfi": {
+      "command": "rustc --edition 2021 -C opt-level=3 -C codegen-units=1 -C debuginfo=0 -C symbol-mangling-version=v0 -Zsanitizer=kcfi -C panic=abort -Cunsafe-allow-abi-mismatch=sanitizer --emit=asm --out-dir kcfi_out abi_probe.rs",
+      "exit": 0,
+      "shim_symbol_suffix_counts": {
+        "reify_fnptr": 3,
+        "reify_vtable": 1
+      }
+    },
+    "location_constants_loaded": {
+      "<B as DeclUntracked>::m::{shim:reify}": [
+        {
+          "column": 5,
+          "file": "abi_probe.rs",
+          "file_len": 12,
+          "label": ".Lanon.67a0083fc9ffa20373073e29e16f4921.4",
+          "line": 108,
+          "register": "rdx",
+          "size_bytes": 24
+        }
+      ],
+      "abi_tracked0::{shim:reify}": [
+        {
+          "column": 1,
+          "file": "abi_probe.rs",
+          "file_len": 12,
+          "label": ".Lanon.67a0083fc9ffa20373073e29e16f4921.1",
+          "line": 11,
+          "register": "rdi",
+          "size_bytes": 24
+        }
+      ],
+      "abi_tracked1::{shim:reify}": [
+        {
+          "column": 1,
+          "file": "abi_probe.rs",
+          "file_len": 12,
+          "label": ".Lanon.67a0083fc9ffa20373073e29e16f4921.2",
+          "line": 17,
+          "register": "rsi",
+          "size_bytes": 24
+        }
+      ],
+      "abi_tracked2::{shim:reify}": [
+        {
+          "column": 1,
+          "file": "abi_probe.rs",
+          "file_len": 12,
+          "label": ".Lanon.67a0083fc9ffa20373073e29e16f4921.3",
+          "line": 23,
+          "register": "rdx",
+          "size_bytes": 24
+        }
+      ],
+      "call_tracked0": [
+        {
+          "column": 5,
+          "file": "abi_probe.rs",
+          "file_len": 12,
+          "label": ".Lanon.67a0083fc9ffa20373073e29e16f4921.5",
+          "line": 42,
+          "register": "rdi",
+          "size_bytes": 24
+        }
+      ],
+      "call_tracked1": [
+        {
+          "column": 5,
+          "file": "abi_probe.rs",
+          "file_len": 12,
+          "label": ".Lanon.67a0083fc9ffa20373073e29e16f4921.6",
+          "line": 47,
+          "register": "rsi",
+          "size_bytes": 24
+        }
+      ],
+      "call_tracked2": [
+        {
+          "column": 5,
+          "file": "abi_probe.rs",
+          "file_len": 12,
+          "label": ".Lanon.67a0083fc9ffa20373073e29e16f4921.7",
+          "line": 52,
+          "register": "rdx",
+          "size_bytes": 24
+        }
+      ],
+      "virtual_call_decl_tracked": [
+        {
+          "column": 7,
+          "file": "abi_probe.rs",
+          "file_len": 12,
+          "label": ".Lanon.67a0083fc9ffa20373073e29e16f4921.10",
+          "line": 115,
+          "register": "rax",
+          "size_bytes": 24
+        }
+      ]
+    },
+    "markers": {
+      "ABI0_DEF": 11,
+      "ABI1_DEF": 17,
+      "ABI2_DEF": 23,
+      "CALL0_SITE": 42,
+      "CALL1_SITE": 47,
+      "CALL2_SITE": 52,
+      "IMPL_ONLY_DEF": 108,
+      "UNTRACKED1_SELF": 36,
+      "VCALL_TRACKED_SITE": 115
+    },
+    "objdump_command": "objdump -d -r --no-show-raw-insn abi_out/abi_probe.o",
+    "shim_symbol_suffix_counts": {
+      "reify": 4
+    },
+    "symbols": {
+      "<A as DeclTracked>::m": "_RNvXCseQY1KQsWaM5_9abi_probeNtB2_1ANtB2_11DeclTracked1m",
+      "<B as DeclUntracked>::m": "_RNvXs_CseQY1KQsWaM5_9abi_probeNtB4_1BNtB4_13DeclUntracked1m",
+      "<B as DeclUntracked>::m::{shim:reify}": "_RNSNvXs_CseQY1KQsWaM5_9abi_probeNtB6_1BNtB6_13DeclUntracked1m5reify",
+      "abi_tracked0": "_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked0",
+      "abi_tracked0::{shim:reify}": "_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked05reify",
+      "abi_tracked1": "_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked1",
+      "abi_tracked1::{shim:reify}": "_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked15reify",
+      "abi_tracked2": "_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked2",
+      "abi_tracked2::{shim:reify}": "_RNSNvCseQY1KQsWaM5_9abi_probe12abi_tracked25reify",
+      "abi_tracked6": "_RNvCseQY1KQsWaM5_9abi_probe12abi_tracked6",
+      "abi_untracked1": "_RNvCseQY1KQsWaM5_9abi_probe14abi_untracked1",
+      "call_through_pointer": "_RNvCseQY1KQsWaM5_9abi_probe20call_through_pointer",
+      "call_tracked0": "_RNvCseQY1KQsWaM5_9abi_probe13call_tracked0",
+      "call_tracked1": "_RNvCseQY1KQsWaM5_9abi_probe13call_tracked1",
+      "call_tracked2": "_RNvCseQY1KQsWaM5_9abi_probe13call_tracked2",
+      "forward_tracked1": "_RNvCseQY1KQsWaM5_9abi_probe16forward_tracked1",
+      "make_dyn_decl_tracked": "_RNvCseQY1KQsWaM5_9abi_probe21make_dyn_decl_tracked",
+      "make_dyn_decl_untracked": "_RNvCseQY1KQsWaM5_9abi_probe23make_dyn_decl_untracked",
+      "reify0": "_RNvCseQY1KQsWaM5_9abi_probe6reify0",
+      "reify1": "_RNvCseQY1KQsWaM5_9abi_probe6reify1",
+      "reify2": "_RNvCseQY1KQsWaM5_9abi_probe6reify2",
+      "reify_untracked1": "_RNvCseQY1KQsWaM5_9abi_probe16reify_untracked1",
+      "virtual_call_decl_tracked": "_RNvCseQY1KQsWaM5_9abi_probe25virtual_call_decl_tracked",
+      "virtual_call_decl_untracked": "_RNvCseQY1KQsWaM5_9abi_probe27virtual_call_decl_untracked"
+    },
+    "vtable_method_entries": {
+      "A as DeclTracked": [
+        "_RNvXCseQY1KQsWaM5_9abi_probeNtB2_1ANtB2_11DeclTracked1m"
+      ],
+      "B as DeclUntracked": [
+        "_RNSNvXs_CseQY1KQsWaM5_9abi_probeNtB6_1BNtB6_13DeclUntracked1m5reify"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "detail": "the MIR that Miri executed for `direct_site` contains `(inlined #[track_caller] top_tracked)`",
+      "name": "regimes/miri_mir_inline/interpreted_body_is_inlined",
+      "pass": true
+    },
+    {
+      "detail": "observed=0 expected=0",
+      "name": "regimes/native_o0_no_mir_inline/exit",
+      "pass": true
+    },
+    {
+      "detail": "observed='19' expected='19'",
+      "name": "regimes/native_o0_no_mir_inline/UNTRACKED_SELF_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='43' expected='43'",
+      "name": "regimes/native_o0_no_mir_inline/DIRECT_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='49' expected='49'",
+      "name": "regimes/native_o0_no_mir_inline/WRAPPER_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='49' expected='49'",
+      "name": "regimes/native_o0_no_mir_inline/TRACKED_OUTER_WRAPPER_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='72' expected='72'",
+      "name": "regimes/native_o0_no_mir_inline/FP1_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='72' expected='72'",
+      "name": "regimes/native_o0_no_mir_inline/FP2_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='81' expected='81'",
+      "name": "regimes/native_o0_no_mir_inline/FNPTR_DIRECT_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='121' expected='121'",
+      "name": "regimes/native_o0_no_mir_inline/DYN_DECL_TRACKED_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='122' expected='122'",
+      "name": "regimes/native_o0_no_mir_inline/DYN_PROVIDED_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='108' expected='108'",
+      "name": "regimes/native_o0_no_mir_inline/DYN_IMPL_ONLY_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='125' expected='125'",
+      "name": "regimes/native_o0_no_mir_inline/STATIC_IMPL_ONLY_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='115' expected='115'",
+      "name": "regimes/native_o0_no_mir_inline/GENERIC_STATIC_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='108' expected='108'",
+      "name": "regimes/native_o0_no_mir_inline/GENERIC_DYN_line",
+      "pass": true
+    },
+    {
+      "detail": "observed=0 expected=0",
+      "name": "regimes/native_o3_mir_inline/exit",
+      "pass": true
+    },
+    {
+      "detail": "observed='19' expected='19'",
+      "name": "regimes/native_o3_mir_inline/UNTRACKED_SELF_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='43' expected='43'",
+      "name": "regimes/native_o3_mir_inline/DIRECT_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='49' expected='49'",
+      "name": "regimes/native_o3_mir_inline/WRAPPER_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='49' expected='49'",
+      "name": "regimes/native_o3_mir_inline/TRACKED_OUTER_WRAPPER_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='72' expected='72'",
+      "name": "regimes/native_o3_mir_inline/FP1_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='72' expected='72'",
+      "name": "regimes/native_o3_mir_inline/FP2_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='81' expected='81'",
+      "name": "regimes/native_o3_mir_inline/FNPTR_DIRECT_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='121' expected='121'",
+      "name": "regimes/native_o3_mir_inline/DYN_DECL_TRACKED_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='122' expected='122'",
+      "name": "regimes/native_o3_mir_inline/DYN_PROVIDED_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='108' expected='108'",
+      "name": "regimes/native_o3_mir_inline/DYN_IMPL_ONLY_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='125' expected='125'",
+      "name": "regimes/native_o3_mir_inline/STATIC_IMPL_ONLY_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='115' expected='115'",
+      "name": "regimes/native_o3_mir_inline/GENERIC_STATIC_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='108' expected='108'",
+      "name": "regimes/native_o3_mir_inline/GENERIC_DYN_line",
+      "pass": true
+    },
+    {
+      "detail": "line:column pairs agree",
+      "name": "regimes/native_o3_mir_inline/identical_to_first_configuration",
+      "pass": true
+    },
+    {
+      "detail": "observed=0 expected=0",
+      "name": "regimes/miri_no_mir_opts/exit",
+      "pass": true
+    },
+    {
+      "detail": "observed='19' expected='19'",
+      "name": "regimes/miri_no_mir_opts/UNTRACKED_SELF_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='43' expected='43'",
+      "name": "regimes/miri_no_mir_opts/DIRECT_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='49' expected='49'",
+      "name": "regimes/miri_no_mir_opts/WRAPPER_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='49' expected='49'",
+      "name": "regimes/miri_no_mir_opts/TRACKED_OUTER_WRAPPER_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='72' expected='72'",
+      "name": "regimes/miri_no_mir_opts/FP1_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='72' expected='72'",
+      "name": "regimes/miri_no_mir_opts/FP2_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='81' expected='81'",
+      "name": "regimes/miri_no_mir_opts/FNPTR_DIRECT_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='121' expected='121'",
+      "name": "regimes/miri_no_mir_opts/DYN_DECL_TRACKED_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='122' expected='122'",
+      "name": "regimes/miri_no_mir_opts/DYN_PROVIDED_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='108' expected='108'",
+      "name": "regimes/miri_no_mir_opts/DYN_IMPL_ONLY_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='125' expected='125'",
+      "name": "regimes/miri_no_mir_opts/STATIC_IMPL_ONLY_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='115' expected='115'",
+      "name": "regimes/miri_no_mir_opts/GENERIC_STATIC_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='108' expected='108'",
+      "name": "regimes/miri_no_mir_opts/GENERIC_DYN_line",
+      "pass": true
+    },
+    {
+      "detail": "line:column pairs agree",
+      "name": "regimes/miri_no_mir_opts/identical_to_first_configuration",
+      "pass": true
+    },
+    {
+      "detail": "observed=0 expected=0",
+      "name": "regimes/miri_mir_inline/exit",
+      "pass": true
+    },
+    {
+      "detail": "observed='19' expected='19'",
+      "name": "regimes/miri_mir_inline/UNTRACKED_SELF_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='43' expected='43'",
+      "name": "regimes/miri_mir_inline/DIRECT_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='49' expected='49'",
+      "name": "regimes/miri_mir_inline/WRAPPER_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='49' expected='49'",
+      "name": "regimes/miri_mir_inline/TRACKED_OUTER_WRAPPER_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='72' expected='72'",
+      "name": "regimes/miri_mir_inline/FP1_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='72' expected='72'",
+      "name": "regimes/miri_mir_inline/FP2_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='81' expected='81'",
+      "name": "regimes/miri_mir_inline/FNPTR_DIRECT_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='121' expected='121'",
+      "name": "regimes/miri_mir_inline/DYN_DECL_TRACKED_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='122' expected='122'",
+      "name": "regimes/miri_mir_inline/DYN_PROVIDED_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='108' expected='108'",
+      "name": "regimes/miri_mir_inline/DYN_IMPL_ONLY_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='125' expected='125'",
+      "name": "regimes/miri_mir_inline/STATIC_IMPL_ONLY_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='115' expected='115'",
+      "name": "regimes/miri_mir_inline/GENERIC_STATIC_line",
+      "pass": true
+    },
+    {
+      "detail": "observed='108' expected='108'",
+      "name": "regimes/miri_mir_inline/GENERIC_DYN_line",
+      "pass": true
+    },
+    {
+      "detail": "line:column pairs agree",
+      "name": "regimes/miri_mir_inline/identical_to_first_configuration",
+      "pass": true
+    },
+    {
+      "detail": "observed='72:1' expected='72:1'",
+      "name": "regimes/FP1_equals_FP2",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "regimes/wrapper_call_site_never_reported",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "regimes/tracked_outer_call_site_never_reported",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "regimes/dyn_impl_only_call_site_never_reported",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/emits",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/direct_site/present",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/direct_site/caller_location_intrinsic_call_survives",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/direct_site/no_residual_call_to_top_tracked",
+      "pass": true
+    },
+    {
+      "detail": "observed='43:5' expected='43:5'",
+      "name": "mir/inlined/direct_site/scope_walk_predicts_executed_output",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/wrapper_site/present",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/wrapper_site/caller_location_intrinsic_call_survives",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/wrapper_site/no_residual_call_to_top_tracked",
+      "pass": true
+    },
+    {
+      "detail": "observed='49:5' expected='49:5'",
+      "name": "mir/inlined/wrapper_site/scope_walk_predicts_executed_output",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/tracked_outer_site/present",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/tracked_outer_site/caller_location_intrinsic_call_survives",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/tracked_outer_site/no_residual_call_to_top_tracked",
+      "pass": true
+    },
+    {
+      "detail": "observed='49:5' expected='49:5'",
+      "name": "mir/inlined/tracked_outer_site/scope_walk_predicts_executed_output",
+      "pass": true
+    },
+    {
+      "detail": "the two bodies differ only in their scope trees",
+      "name": "mir/inlined/direct_and_wrapper_blocks_identical_modulo_scopes",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/inlined/wrapper_outermost_inlined_scope_is_untracked_wrapper",
+      "pass": true
+    },
+    {
+      "detail": "observed='54' expected='54'",
+      "name": "mir/inlined/wrapper_scope_callsite_is_wrapper_call_site",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/not_inlined/emits",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/not_inlined/direct_site_calls_top_tracked",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/shim/dump_present",
+      "pass": true
+    },
+    {
+      "detail": "observed=1 expected=1",
+      "name": "mir/shim/single_direct_call",
+      "pass": true
+    },
+    {
+      "detail": "observed=72 expected=72",
+      "name": "mir/shim/call_span_is_definition_header_line",
+      "pass": true
+    },
+    {
+      "detail": "observed=1 expected=1",
+      "name": "mir/shim/call_span_starts_at_column_one",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "mir/shim/no_inlined_scope",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/compiles",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/objdump_runs",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/abi_tracked0",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/abi_tracked1",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/abi_tracked2",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/abi_tracked6",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/abi_untracked1",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/call_tracked0",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/call_tracked1",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/call_tracked2",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/forward_tracked1",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/call_through_pointer",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/reify0",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/reify1",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/reify2",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/reify_untracked1",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/virtual_call_decl_tracked",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/virtual_call_decl_untracked",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/make_dyn_decl_tracked",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/make_dyn_decl_untracked",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/abi_tracked0::{shim:reify}",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/abi_tracked1::{shim:reify}",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/abi_tracked2::{shim:reify}",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/<A as DeclTracked>::m",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/<B as DeclUntracked>::m",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/symbol_found/<B as DeclUntracked>::m::{shim:reify}",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/no_shim_symbol_for_untracked_function",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/no_shim_symbol_for_decl_tracked_impl",
+      "pass": true
+    },
+    {
+      "detail": "observed=['rdi'] expected=['rdi']",
+      "name": "abi/callee/abi_tracked0/location_pointer_register",
+      "pass": true
+    },
+    {
+      "detail": "observed=['rsi'] expected=['rsi']",
+      "name": "abi/callee/abi_tracked1/location_pointer_register",
+      "pass": true
+    },
+    {
+      "detail": "observed=['rdx'] expected=['rdx']",
+      "name": "abi/callee/abi_tracked2/location_pointer_register",
+      "pass": true
+    },
+    {
+      "detail": "observed=['rdx'] expected=['rdx']",
+      "name": "abi/callee/<A as DeclTracked>::m/location_pointer_register",
+      "pass": true
+    },
+    {
+      "detail": "observed=['rdx'] expected=['rdx']",
+      "name": "abi/callee/<B as DeclUntracked>::m/location_pointer_register",
+      "pass": true
+    },
+    {
+      "detail": "seventh integer-class argument: read from 8(%rsp), then dereferenced at offset 16",
+      "name": "abi/callee/abi_tracked6/location_pointer_is_first_stack_argument",
+      "pass": true
+    },
+    {
+      "detail": "observed=[] expected=[]",
+      "name": "abi/callee/abi_untracked1/no_location_dereference",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/caller/abi_tracked0::{shim:reify}/materialises_exactly_one_location_constant",
+      "pass": true
+    },
+    {
+      "detail": "observed='rdi' expected='rdi'",
+      "name": "abi/caller/abi_tracked0::{shim:reify}/register",
+      "pass": true
+    },
+    {
+      "detail": "observed=11 expected=11",
+      "name": "abi/caller/abi_tracked0::{shim:reify}/line",
+      "pass": true
+    },
+    {
+      "detail": "observed=1 expected=1",
+      "name": "abi/caller/abi_tracked0::{shim:reify}/column",
+      "pass": true
+    },
+    {
+      "detail": "observed=24 expected=24",
+      "name": "abi/caller/abi_tracked0::{shim:reify}/constant_size_bytes",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/caller/abi_tracked1::{shim:reify}/materialises_exactly_one_location_constant",
+      "pass": true
+    },
+    {
+      "detail": "observed='rsi' expected='rsi'",
+      "name": "abi/caller/abi_tracked1::{shim:reify}/register",
+      "pass": true
+    },
+    {
+      "detail": "observed=17 expected=17",
+      "name": "abi/caller/abi_tracked1::{shim:reify}/line",
+      "pass": true
+    },
+    {
+      "detail": "observed=1 expected=1",
+      "name": "abi/caller/abi_tracked1::{shim:reify}/column",
+      "pass": true
+    },
+    {
+      "detail": "observed=24 expected=24",
+      "name": "abi/caller/abi_tracked1::{shim:reify}/constant_size_bytes",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/caller/abi_tracked2::{shim:reify}/materialises_exactly_one_location_constant",
+      "pass": true
+    },
+    {
+      "detail": "observed='rdx' expected='rdx'",
+      "name": "abi/caller/abi_tracked2::{shim:reify}/register",
+      "pass": true
+    },
+    {
+      "detail": "observed=23 expected=23",
+      "name": "abi/caller/abi_tracked2::{shim:reify}/line",
+      "pass": true
+    },
+    {
+      "detail": "observed=1 expected=1",
+      "name": "abi/caller/abi_tracked2::{shim:reify}/column",
+      "pass": true
+    },
+    {
+      "detail": "observed=24 expected=24",
+      "name": "abi/caller/abi_tracked2::{shim:reify}/constant_size_bytes",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/caller/<B as DeclUntracked>::m::{shim:reify}/materialises_exactly_one_location_constant",
+      "pass": true
+    },
+    {
+      "detail": "observed='rdx' expected='rdx'",
+      "name": "abi/caller/<B as DeclUntracked>::m::{shim:reify}/register",
+      "pass": true
+    },
+    {
+      "detail": "observed=108 expected=108",
+      "name": "abi/caller/<B as DeclUntracked>::m::{shim:reify}/line",
+      "pass": true
+    },
+    {
+      "detail": "observed=5 expected=5",
+      "name": "abi/caller/<B as DeclUntracked>::m::{shim:reify}/column",
+      "pass": true
+    },
+    {
+      "detail": "observed=24 expected=24",
+      "name": "abi/caller/<B as DeclUntracked>::m::{shim:reify}/constant_size_bytes",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/caller/call_tracked0/materialises_exactly_one_location_constant",
+      "pass": true
+    },
+    {
+      "detail": "observed='rdi' expected='rdi'",
+      "name": "abi/caller/call_tracked0/register",
+      "pass": true
+    },
+    {
+      "detail": "observed=42 expected=42",
+      "name": "abi/caller/call_tracked0/line",
+      "pass": true
+    },
+    {
+      "detail": "observed=5 expected=5",
+      "name": "abi/caller/call_tracked0/column",
+      "pass": true
+    },
+    {
+      "detail": "observed=24 expected=24",
+      "name": "abi/caller/call_tracked0/constant_size_bytes",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/caller/call_tracked1/materialises_exactly_one_location_constant",
+      "pass": true
+    },
+    {
+      "detail": "observed='rsi' expected='rsi'",
+      "name": "abi/caller/call_tracked1/register",
+      "pass": true
+    },
+    {
+      "detail": "observed=47 expected=47",
+      "name": "abi/caller/call_tracked1/line",
+      "pass": true
+    },
+    {
+      "detail": "observed=5 expected=5",
+      "name": "abi/caller/call_tracked1/column",
+      "pass": true
+    },
+    {
+      "detail": "observed=24 expected=24",
+      "name": "abi/caller/call_tracked1/constant_size_bytes",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/caller/call_tracked2/materialises_exactly_one_location_constant",
+      "pass": true
+    },
+    {
+      "detail": "observed='rdx' expected='rdx'",
+      "name": "abi/caller/call_tracked2/register",
+      "pass": true
+    },
+    {
+      "detail": "observed=52 expected=52",
+      "name": "abi/caller/call_tracked2/line",
+      "pass": true
+    },
+    {
+      "detail": "observed=5 expected=5",
+      "name": "abi/caller/call_tracked2/column",
+      "pass": true
+    },
+    {
+      "detail": "observed=24 expected=24",
+      "name": "abi/caller/call_tracked2/constant_size_bytes",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/shim/abi_tracked0::{shim:reify}/transfers_to_tracked_callee",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/shim/abi_tracked1::{shim:reify}/transfers_to_tracked_callee",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/shim/abi_tracked2::{shim:reify}/transfers_to_tracked_callee",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/shim/<B as DeclUntracked>::m::{shim:reify}/transfers_to_tracked_callee",
+      "pass": true
+    },
+    {
+      "detail": "loads=[{'register': 'rax', 'label': '.Lanon.67a0083fc9ffa20373073e29e16f4921.10', 'file': 'abi_probe.rs', 'file_len': 12, 'line': 115, 'column': 7, 'size_bytes': 24}]",
+      "name": "abi/virtual/decl_tracked_call_site_passes_its_own_location",
+      "pass": true
+    },
+    {
+      "detail": "observed=[] expected=[]",
+      "name": "abi/virtual/decl_untracked_call_site_passes_no_location",
+      "pass": true
+    },
+    {
+      "detail": "observed=[] expected=[]",
+      "name": "abi/forward/tracked_caller_materialises_no_constant",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/forward/tracked_caller_transfers_to_callee",
+      "pass": true
+    },
+    {
+      "detail": "observed=[] expected=[]",
+      "name": "abi/pointer_call/passes_no_location",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/pointer_call/is_indirect",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/reify/reify0_returns_shim_address",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/reify/reify1_returns_shim_address",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/reify/reify2_returns_shim_address",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "abi/reify/untracked_returns_function_itself",
+      "pass": true
+    },
+    {
+      "detail": "observed=['_RNvXCseQY1KQsWaM5_9abi_probeNtB2_1ANtB2_11DeclTracked1m'] expected=['_RNvXCseQY1KQsWaM5_9abi_probeNtB2_1ANtB2_11DeclTracked1m']",
+      "name": "abi/vtable/decl_tracked_slot_is_impl_itself",
+      "pass": true
+    },
+    {
+      "detail": "observed=['_RNSNvXs_CseQY1KQsWaM5_9abi_probeNtB6_1BNtB6_13DeclUntracked1m5reify'] expected=['_RNSNvXs_CseQY1KQsWaM5_9abi_probeNtB6_1BNtB6_13DeclUntracked1m5reify']",
+      "name": "abi/vtable/impl_only_slot_is_reify_shim",
+      "pass": true
+    },
+    {
+      "detail": "observed={'reify_fnptr': 3, 'reify_vtable': 1} expected={'reify_fnptr': 3, 'reify_vtable': 1}",
+      "name": "kcfi/shim_suffixes",
+      "pass": true
+    },
+    {
+      "detail": "observed={'reify': 4} expected={'reify': 4}",
+      "name": "abi/shim_suffixes_without_kcfi",
+      "pass": true
+    },
+    {
+      "detail": "codes=['E0737']",
+      "name": "compile_matrix/extern_c_fn.rs/E0737",
+      "pass": true
+    },
+    {
+      "detail": "codes=['E0737']",
+      "name": "compile_matrix/extern_rust_call_fn.rs/E0737",
+      "pass": true
+    },
+    {
+      "detail": "errors=[]",
+      "name": "compile_matrix/explicit_extern_rust_fn.rs/accepted",
+      "pass": true
+    },
+    {
+      "detail": "errors=[{'code': None, 'message': '`main` function is not allowed to be `#[track_caller]`'}]",
+      "name": "compile_matrix/main_fn.rs/message",
+      "pass": true
+    },
+    {
+      "detail": "codes=['E0737']",
+      "name": "compile_matrix/foreign_block_c.rs/E0737",
+      "pass": true
+    },
+    {
+      "detail": "errors=[]",
+      "name": "compile_matrix/foreign_block_rust.rs/accepted",
+      "pass": true
+    },
+    {
+      "detail": "codes=['E0737', 'E0736']",
+      "name": "compile_matrix/naked_fn.rs/E0736",
+      "pass": true
+    },
+    {
+      "detail": "codes=['E0658', 'E0658']",
+      "name": "compile_matrix/closure_without_feature.rs/E0658",
+      "pass": true
+    },
+    {
+      "detail": "errors=[{'code': None, 'message': '`#[track_caller]` attribute cannot be used on structs'}]",
+      "name": "compile_matrix/struct_item.rs/rejected",
+      "pass": true
+    },
+    {
+      "detail": "errors=[{'code': None, 'message': 'a function marked with `#[track_caller]` cannot perform a tail-call'}]",
+      "name": "compile_matrix/tail_call_from_tracked.rs/message",
+      "pass": true
+    },
+    {
+      "detail": "errors=[]",
+      "name": "compile_matrix/trait_decl_and_impl.rs/accepted",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "extern_decl/match/compiles",
+      "pass": true
+    },
+    {
+      "detail": "observed='20' expected='20'",
+      "name": "extern_decl/match/native/reports_call_site",
+      "pass": true
+    },
+    {
+      "detail": "observed='20' expected='20'",
+      "name": "extern_decl/match/miri/reports_call_site",
+      "pass": true
+    },
+    {
+      "detail": "outcome=not_detected_reports_call_site_of_mismatched_declaration",
+      "name": "extern_decl/mismatch/miri_outcome_classified",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "closures/native_o0/compiles",
+      "pass": true
+    },
+    {
+      "detail": "",
+      "name": "closures/native_o3/compiles",
+      "pass": true
+    },
+    {
+      "detail": "observed='closure_probe.rs:26' expected='closure_probe.rs:26'",
+      "name": "closures/native_o0/direct",
+      "pass": true
+    },
+    {
+      "detail": "observed='closure_probe.rs:16' expected='closure_probe.rs:16'",
+      "name": "closures/native_o0/generic_fn",
+      "pass": true
+    },
+    {
+      "detail": "observed='closure_probe.rs:21' expected='closure_probe.rs:21'",
+      "name": "closures/native_o0/generic_once",
+      "pass": true
+    },
+    {
+      "detail": "ops/function.rs:79",
+      "name": "closures/native_o0/CLOSURE_DYN_points_into_core_ops_function_rs",
+      "pass": true
+    },
+    {
+      "detail": "observed='ops/function.rs:79' expected='ops/function.rs:79'",
+      "name": "closures/native_o0/CLOSURE_DYN_is_Fn_trait_method_declaration",
+      "pass": true
+    },
+    {
+      "detail": "ops/function.rs:250",
+      "name": "closures/native_o0/CLOSURE_BOX_ONCE_points_into_core_ops_function_rs",
+      "pass": true
+    },
+    {
+      "detail": "observed='ops/function.rs:250' expected='ops/function.rs:250'",
+      "name": "closures/native_o0/CLOSURE_BOX_ONCE_is_Fn_trait_method_declaration",
+      "pass": true
+    },
+    {
+      "detail": "observed='closure_probe.rs:26' expected='closure_probe.rs:26'",
+      "name": "closures/native_o3/direct",
+      "pass": true
+    },
+    {
+      "detail": "observed='closure_probe.rs:16' expected='closure_probe.rs:16'",
+      "name": "closures/native_o3/generic_fn",
+      "pass": true
+    },
+    {
+      "detail": "observed='closure_probe.rs:21' expected='closure_probe.rs:21'",
+      "name": "closures/native_o3/generic_once",
+      "pass": true
+    },
+    {
+      "detail": "ops/function.rs:79",
+      "name": "closures/native_o3/CLOSURE_DYN_points_into_core_ops_function_rs",
+      "pass": true
+    },
+    {
+      "detail": "observed='ops/function.rs:79' expected='ops/function.rs:79'",
+      "name": "closures/native_o3/CLOSURE_DYN_is_Fn_trait_method_declaration",
+      "pass": true
+    },
+    {
+      "detail": "ops/function.rs:250",
+      "name": "closures/native_o3/CLOSURE_BOX_ONCE_points_into_core_ops_function_rs",
+      "pass": true
+    },
+    {
+      "detail": "observed='ops/function.rs:250' expected='ops/function.rs:250'",
+      "name": "closures/native_o3/CLOSURE_BOX_ONCE_is_Fn_trait_method_declaration",
+      "pass": true
+    },
+    {
+      "detail": "observed='closure_probe.rs:26' expected='closure_probe.rs:26'",
+      "name": "closures/miri/direct",
+      "pass": true
+    },
+    {
+      "detail": "observed='closure_probe.rs:16' expected='closure_probe.rs:16'",
+      "name": "closures/miri/generic_fn",
+      "pass": true
+    },
+    {
+      "detail": "observed='closure_probe.rs:21' expected='closure_probe.rs:21'",
+      "name": "closures/miri/generic_once",
+      "pass": true
+    },
+    {
+      "detail": "ops/function.rs:79",
+      "name": "closures/miri/CLOSURE_DYN_points_into_core_ops_function_rs",
+      "pass": true
+    },
+    {
+      "detail": "observed='ops/function.rs:79' expected='ops/function.rs:79'",
+      "name": "closures/miri/CLOSURE_DYN_is_Fn_trait_method_declaration",
+      "pass": true
+    },
+    {
+      "detail": "ops/function.rs:250",
+      "name": "closures/miri/CLOSURE_BOX_ONCE_points_into_core_ops_function_rs",
+      "pass": true
+    },
+    {
+      "detail": "observed='ops/function.rs:250' expected='ops/function.rs:250'",
+      "name": "closures/miri/CLOSURE_BOX_ONCE_is_Fn_trait_method_declaration",
+      "pass": true
+    },
+    {
+      "detail": "tail_call_probe.rs:14:12: warning: tail calling a function marked with `#[track_caller]` has no special effect\nwarning: 1 warning emitted\n",
+      "name": "tail_call/native_o0/compiles",
+      "pass": true
+    },
+    {
+      "detail": "['tail_call_probe.rs:14:12: warning: tail calling a function marked with `#[track_caller]` has no special effect']",
+      "name": "tail_call/native_o0/lint_emitted",
+      "pass": true
+    },
+    {
+      "detail": "observed='8' expected='8'",
+      "name": "tail_call/native_o0/reports_definition_of_callee",
+      "pass": true
+    },
+    {
+      "detail": "observed='19' expected='19'",
+      "name": "tail_call/native_o0/plain_call_reports_call_site",
+      "pass": true
+    },
+    {
+      "detail": "tail_call_probe.rs:14:12: warning: tail calling a function marked with `#[track_caller]` has no special effect\nwarning: 1 warning emitted\n",
+      "name": "tail_call/native_o3/compiles",
+      "pass": true
+    },
+    {
+      "detail": "['tail_call_probe.rs:14:12: warning: tail calling a function marked with `#[track_caller]` has no special effect']",
+      "name": "tail_call/native_o3/lint_emitted",
+      "pass": true
+    },
+    {
+      "detail": "observed='8' expected='8'",
+      "name": "tail_call/native_o3/reports_definition_of_callee",
+      "pass": true
+    },
+    {
+      "detail": "observed='19' expected='19'",
+      "name": "tail_call/native_o3/plain_call_reports_call_site",
+      "pass": true
+    },
+    {
+      "detail": "TAIL_CALL=23 -> call_site_of_the_tail_calling_function",
+      "name": "tail_call/miri/outcome_classified",
+      "pass": true
+    },
+    {
+      "detail": "observed='19' expected='19'",
+      "name": "tail_call/miri/plain_call_reports_call_site",
+      "pass": true
+    }
+  ],
+  "closures": {
+    "fn_trait_method_declaration_lines": {
+      "call": 79,
+      "call_mut": 166,
+      "call_once": 250
+    },
+    "markers": {
+      "CLOSURE_BOX_ONCE_SITE": 32,
+      "CLOSURE_DEF": 25,
+      "CLOSURE_DIRECT_SITE": 26,
+      "CLOSURE_DYN_SITE": 28,
+      "CLOSURE_GENERIC_FN_SITE": 16,
+      "CLOSURE_GENERIC_ONCE_SITE": 21
+    },
+    "runs": {
+      "miri": {
+        "CLOSURE_BOX_ONCE": "ops/function.rs:250",
+        "CLOSURE_DIRECT": "closure_probe.rs:26",
+        "CLOSURE_DYN": "ops/function.rs:79",
+        "CLOSURE_GENERIC_FN": "closure_probe.rs:16",
+        "CLOSURE_GENERIC_ONCE": "closure_probe.rs:21"
+      },
+      "native_o0": {
+        "CLOSURE_BOX_ONCE": "ops/function.rs:250",
+        "CLOSURE_DIRECT": "closure_probe.rs:26",
+        "CLOSURE_DYN": "ops/function.rs:79",
+        "CLOSURE_GENERIC_FN": "closure_probe.rs:16",
+        "CLOSURE_GENERIC_ONCE": "closure_probe.rs:21"
+      },
+      "native_o3": {
+        "CLOSURE_BOX_ONCE": "ops/function.rs:250",
+        "CLOSURE_DIRECT": "closure_probe.rs:26",
+        "CLOSURE_DYN": "ops/function.rs:79",
+        "CLOSURE_GENERIC_FN": "closure_probe.rs:16",
+        "CLOSURE_GENERIC_ONCE": "closure_probe.rs:21"
+      }
+    }
+  },
+  "compile_matrix": {
+    "closure_without_feature.rs": {
+      "errors": [
+        {
+          "code": "E0658",
+          "message": "attributes on expressions are experimental"
+        },
+        {
+          "code": "E0658",
+          "message": "`#[track_caller]` on closures is currently unstable"
+        }
+      ],
+      "exit": 1
+    },
+    "command_template": "rustc --edition 2021 --error-format=json --emit=metadata --out-dir matrix_out compile_matrix/<file>",
+    "explicit_extern_rust_fn.rs": {
+      "errors": [],
+      "exit": 0
+    },
+    "extern_c_fn.rs": {
+      "errors": [
+        {
+          "code": "E0737",
+          "message": "`#[track_caller]` can only be used with the Rust ABI"
+        }
+      ],
+      "exit": 1
+    },
+    "extern_rust_call_fn.rs": {
+      "errors": [
+        {
+          "code": "E0737",
+          "message": "`#[track_caller]` can only be used with the Rust ABI"
+        }
+      ],
+      "exit": 1
+    },
+    "foreign_block_c.rs": {
+      "errors": [
+        {
+          "code": "E0737",
+          "message": "`#[track_caller]` can only be used with the Rust ABI"
+        }
+      ],
+      "exit": 1
+    },
+    "foreign_block_rust.rs": {
+      "errors": [],
+      "exit": 0
+    },
+    "main_fn.rs": {
+      "errors": [
+        {
+          "code": null,
+          "message": "`main` function is not allowed to be `#[track_caller]`"
+        }
+      ],
+      "exit": 1
+    },
+    "naked_fn.rs": {
+      "errors": [
+        {
+          "code": "E0737",
+          "message": "`#[track_caller]` can only be used with the Rust ABI"
+        },
+        {
+          "code": "E0736",
+          "message": "attribute incompatible with `#[unsafe(naked)]`"
+        }
+      ],
+      "exit": 1
+    },
+    "struct_item.rs": {
+      "errors": [
+        {
+          "code": null,
+          "message": "`#[track_caller]` attribute cannot be used on structs"
+        }
+      ],
+      "exit": 1
+    },
+    "tail_call_from_tracked.rs": {
+      "errors": [
+        {
+          "code": null,
+          "message": "a function marked with `#[track_caller]` cannot perform a tail-call"
+        }
+      ],
+      "exit": 1
+    },
+    "trait_decl_and_impl.rs": {
+      "errors": [],
+      "exit": 0
+    }
+  },
+  "extern_declarations": {
+    "match": {
+      "markers": {
+        "EXTERN_DECL_CALL": 20
+      },
+      "runs": {
+        "miri": {
+          "EXTERN_DECL_MATCH": "20"
+        },
+        "native": {
+          "EXTERN_DECL_MATCH": "20"
+        }
+      }
+    },
+    "mismatch": {
+      "markers": {
+        "MISMATCH_CALL": 24
+      },
+      "miri": {
+        "exit": 0,
+        "first_error_line": "",
+        "outcome": "not_detected_reports_call_site_of_mismatched_declaration",
+        "stdout": {
+          "MISMATCH_NOT_DETECTED": "24"
+        }
+      },
+      "native": "deliberately not executed: undefined behaviour"
+    }
+  },
+  "mir": {
+    "command_inlined": "rustc --edition 2021 -C opt-level=3 -Zinline-mir=yes -Zmir-include-spans=on --emit=mir -o inlined.mir track_caller_probe.rs",
+    "command_not_inlined": "rustc --edition 2021 -C opt-level=0 -Zinline-mir=no --emit=mir -o plain.mir track_caller_probe.rs",
+    "command_shim": "rustc --edition 2021 -C opt-level=3 -Zmir-include-spans=on -Zdump-mir=leaf_tracked_noinline -Zdump-mir-dir=shim_mir -o shim_bin track_caller_probe.rs",
+    "inlined_bodies": {
+      "direct_site": {
+        "intrinsic_scope": 4,
+        "pretty_mir": "fn direct_site() -> (u32, u32) {\n    let mut _0: (u32, u32);              // return place in scope 0 at track_caller_probe.rs:42:21: 42:24\n    scope 1 (inlined #[track_caller] top_tracked) { // at track_caller_probe.rs:43:5: 43:18\n        scope 2 (inlined #[track_caller] mid_tracked) { // at track_caller_probe.rs:38:5: 38:18\n            scope 3 (inlined #[track_caller] leaf_tracked) { // at track_caller_probe.rs:32:5: 32:19\n                let _1: &std::panic::Location<'_>; // in scope 3 at track_caller_probe.rs:26:9: 26:27\n                scope 4 (inlined #[track_caller] Location::<'_>::caller) { // at track_caller_probe.rs:26:9: 26:27\n                }\n                scope 5 (inlined pos) {  // at track_caller_probe.rs:26:5: 26:28\n                    let mut _2: u32;     // in scope 5 at track_caller_probe.rs:13:6: 13:14\n                    let mut _3: u32;     // in scope 5 at track_caller_probe.rs:13:16: 13:26\n                    scope 6 (inlined Location::<'_>::line) { // at track_caller_probe.rs:13:8: 13:14\n                    }\n                    scope 7 (inlined Location::<'_>::column) { // at track_caller_probe.rs:13:18: 13:26\n                    }\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_1);                 // scope 2 at track_caller_probe.rs:32:5: 32:19\n        _1 = caller_location() -> [return: bb1, unwind unreachable]; // scope 4 at $SYSROOT/lib/rustlib/src/rust/library/core/src/panic/location.rs:181:9: 181:45\n                                         // mir::ConstOperand\n                                         // + span: no-location\n                                         // + const_: Const { ty: fn() -> &'static Location<'static> {caller_location}, val: Value(caller_location) }\n    }\n\n    bb1: {\n        StorageLive(_2);                 // scope 5 at track_caller_probe.rs:13:6: 13:14\n        _2 = copy ((*_1).1: u32);        // scope 6 at $SYSROOT/lib/rustlib/src/rust/library/core/src/panic/location.rs:269:9: 269:18\n        StorageLive(_3);                 // scope 5 at track_caller_probe.rs:13:16: 13:26\n        _3 = copy ((*_1).2: u32);        // scope 7 at $SYSROOT/lib/rustlib/src/rust/library/core/src/panic/location.rs:294:9: 294:17\n        _0 = (move _2, move _3);         // scope 5 at track_caller_probe.rs:13:5: 13:27\n        StorageDead(_3);                 // scope 5 at track_caller_probe.rs:13:26: 13:27\n        StorageDead(_2);                 // scope 5 at track_caller_probe.rs:13:26: 13:27\n        StorageDead(_1);                 // scope 2 at track_caller_probe.rs:32:5: 32:19\n        return;                          // scope 0 at track_caller_probe.rs:44:2: 44:2\n    }\n}\n",
+        "scope_walk_prediction": "43:5",
+        "scopes": [
+          {
+            "callsite_line_col": null,
+            "inlined_callee": null,
+            "inlined_parent_scope": null,
+            "requires_caller_location": null,
+            "scope": 0
+          },
+          {
+            "callsite_line_col": "43:5",
+            "inlined_callee": "top_tracked",
+            "inlined_parent_scope": null,
+            "requires_caller_location": true,
+            "scope": 1
+          },
+          {
+            "callsite_line_col": "38:5",
+            "inlined_callee": "mid_tracked",
+            "inlined_parent_scope": 1,
+            "requires_caller_location": true,
+            "scope": 2
+          },
+          {
+            "callsite_line_col": "32:5",
+            "inlined_callee": "leaf_tracked",
+            "inlined_parent_scope": 2,
+            "requires_caller_location": true,
+            "scope": 3
+          },
+          {
+            "callsite_line_col": "26:9",
+            "inlined_callee": "Location::<'_>::caller",
+            "inlined_parent_scope": 3,
+            "requires_caller_location": true,
+            "scope": 4
+          },
+          {
+            "callsite_line_col": "26:5",
+            "inlined_callee": "pos",
+            "inlined_parent_scope": 3,
+            "requires_caller_location": false,
+            "scope": 5
+          },
+          {
+            "callsite_line_col": "13:8",
+            "inlined_callee": "Location::<'_>::line",
+            "inlined_parent_scope": 5,
+            "requires_caller_location": false,
+            "scope": 6
+          },
+          {
+            "callsite_line_col": "13:18",
+            "inlined_callee": "Location::<'_>::column",
+            "inlined_parent_scope": 5,
+            "requires_caller_location": false,
+            "scope": 7
+          }
+        ]
+      },
+      "tracked_outer_site": {
+        "intrinsic_scope": 6,
+        "pretty_mir": "fn tracked_outer_site() -> (u32, u32) {\n    let mut _0: (u32, u32);              // return place in scope 0 at track_caller_probe.rs:65:28: 65:31\n    scope 1 (inlined #[track_caller] tracked_outer_via_wrapper) { // at track_caller_probe.rs:66:5: 66:32\n        scope 2 (inlined untracked_wrapper) { // at track_caller_probe.rs:61:5: 61:24\n            scope 3 (inlined #[track_caller] top_tracked) { // at track_caller_probe.rs:49:5: 49:18\n                scope 4 (inlined #[track_caller] mid_tracked) { // at track_caller_probe.rs:38:5: 38:18\n                    scope 5 (inlined #[track_caller] leaf_tracked) { // at track_caller_probe.rs:32:5: 32:19\n                        let _1: &std::panic::Location<'_>; // in scope 5 at track_caller_probe.rs:26:9: 26:27\n                        scope 6 (inlined #[track_caller] Location::<'_>::caller) { // at track_caller_probe.rs:26:9: 26:27\n                        }\n                        scope 7 (inlined pos) { // at track_caller_probe.rs:26:5: 26:28\n                            let mut _2: u32; // in scope 7 at track_caller_probe.rs:13:6: 13:14\n                            let mut _3: u32; // in scope 7 at track_caller_probe.rs:13:16: 13:26\n                            scope 8 (inlined Location::<'_>::line) { // at track_caller_probe.rs:13:8: 13:14\n                            }\n                            scope 9 (inlined Location::<'_>::column) { // at track_caller_probe.rs:13:18: 13:26\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_1);                 // scope 4 at track_caller_probe.rs:32:5: 32:19\n        _1 = caller_location() -> [return: bb1, unwind unreachable]; // scope 6 at $SYSROOT/lib/rustlib/src/rust/library/core/src/panic/location.rs:181:9: 181:45\n                                         // mir::ConstOperand\n                                         // + span: no-location\n                                         // + const_: Const { ty: fn() -> &'static Location<'static> {caller_location}, val: Value(caller_location) }\n    }\n\n    bb1: {\n        StorageLive(_2);                 // scope 7 at track_caller_probe.rs:13:6: 13:14\n        _2 = copy ((*_1).1: u32);        // scope 8 at $SYSROOT/lib/rustlib/src/rust/library/core/src/panic/location.rs:269:9: 269:18\n        StorageLive(_3);                 // scope 7 at track_caller_probe.rs:13:16: 13:26\n        _3 = copy ((*_1).2: u32);        // scope 9 at $SYSROOT/lib/rustlib/src/rust/library/core/src/panic/location.rs:294:9: 294:17\n        _0 = (move _2, move _3);         // scope 7 at track_caller_probe.rs:13:5: 13:27\n        StorageDead(_3);                 // scope 7 at track_caller_probe.rs:13:26: 13:27\n        StorageDead(_2);                 // scope 7 at track_caller_probe.rs:13:26: 13:27\n        StorageDead(_1);                 // scope 4 at track_caller_probe.rs:32:5: 32:19\n        return;                          // scope 0 at track_caller_probe.rs:67:2: 67:2\n    }\n}\n",
+        "scope_walk_prediction": "49:5",
+        "scopes": [
+          {
+            "callsite_line_col": null,
+            "inlined_callee": null,
+            "inlined_parent_scope": null,
+            "requires_caller_location": null,
+            "scope": 0
+          },
+          {
+            "callsite_line_col": "66:5",
+            "inlined_callee": "tracked_outer_via_wrapper",
+            "inlined_parent_scope": null,
+            "requires_caller_location": true,
+            "scope": 1
+          },
+          {
+            "callsite_line_col": "61:5",
+            "inlined_callee": "untracked_wrapper",
+            "inlined_parent_scope": 1,
+            "requires_caller_location": false,
+            "scope": 2
+          },
+          {
+            "callsite_line_col": "49:5",
+            "inlined_callee": "top_tracked",
+            "inlined_parent_scope": 2,
+            "requires_caller_location": true,
+            "scope": 3
+          },
+          {
+            "callsite_line_col": "38:5",
+            "inlined_callee": "mid_tracked",
+            "inlined_parent_scope": 3,
+            "requires_caller_location": true,
+            "scope": 4
+          },
+          {
+            "callsite_line_col": "32:5",
+            "inlined_callee": "leaf_tracked",
+            "inlined_parent_scope": 4,
+            "requires_caller_location": true,
+            "scope": 5
+          },
+          {
+            "callsite_line_col": "26:9",
+            "inlined_callee": "Location::<'_>::caller",
+            "inlined_parent_scope": 5,
+            "requires_caller_location": true,
+            "scope": 6
+          },
+          {
+            "callsite_line_col": "26:5",
+            "inlined_callee": "pos",
+            "inlined_parent_scope": 5,
+            "requires_caller_location": false,
+            "scope": 7
+          },
+          {
+            "callsite_line_col": "13:8",
+            "inlined_callee": "Location::<'_>::line",
+            "inlined_parent_scope": 7,
+            "requires_caller_location": false,
+            "scope": 8
+          },
+          {
+            "callsite_line_col": "13:18",
+            "inlined_callee": "Location::<'_>::column",
+            "inlined_parent_scope": 7,
+            "requires_caller_location": false,
+            "scope": 9
+          }
+        ]
+      },
+      "wrapper_site": {
+        "intrinsic_scope": 5,
+        "pretty_mir": "fn wrapper_site() -> (u32, u32) {\n    let mut _0: (u32, u32);              // return place in scope 0 at track_caller_probe.rs:53:22: 53:25\n    scope 1 (inlined untracked_wrapper) { // at track_caller_probe.rs:54:5: 54:24\n        scope 2 (inlined #[track_caller] top_tracked) { // at track_caller_probe.rs:49:5: 49:18\n            scope 3 (inlined #[track_caller] mid_tracked) { // at track_caller_probe.rs:38:5: 38:18\n                scope 4 (inlined #[track_caller] leaf_tracked) { // at track_caller_probe.rs:32:5: 32:19\n                    let _1: &std::panic::Location<'_>; // in scope 4 at track_caller_probe.rs:26:9: 26:27\n                    scope 5 (inlined #[track_caller] Location::<'_>::caller) { // at track_caller_probe.rs:26:9: 26:27\n                    }\n                    scope 6 (inlined pos) { // at track_caller_probe.rs:26:5: 26:28\n                        let mut _2: u32; // in scope 6 at track_caller_probe.rs:13:6: 13:14\n                        let mut _3: u32; // in scope 6 at track_caller_probe.rs:13:16: 13:26\n                        scope 7 (inlined Location::<'_>::line) { // at track_caller_probe.rs:13:8: 13:14\n                        }\n                        scope 8 (inlined Location::<'_>::column) { // at track_caller_probe.rs:13:18: 13:26\n                        }\n                    }\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_1);                 // scope 3 at track_caller_probe.rs:32:5: 32:19\n        _1 = caller_location() -> [return: bb1, unwind unreachable]; // scope 5 at $SYSROOT/lib/rustlib/src/rust/library/core/src/panic/location.rs:181:9: 181:45\n                                         // mir::ConstOperand\n                                         // + span: no-location\n                                         // + const_: Const { ty: fn() -> &'static Location<'static> {caller_location}, val: Value(caller_location) }\n    }\n\n    bb1: {\n        StorageLive(_2);                 // scope 6 at track_caller_probe.rs:13:6: 13:14\n        _2 = copy ((*_1).1: u32);        // scope 7 at $SYSROOT/lib/rustlib/src/rust/library/core/src/panic/location.rs:269:9: 269:18\n        StorageLive(_3);                 // scope 6 at track_caller_probe.rs:13:16: 13:26\n        _3 = copy ((*_1).2: u32);        // scope 8 at $SYSROOT/lib/rustlib/src/rust/library/core/src/panic/location.rs:294:9: 294:17\n        _0 = (move _2, move _3);         // scope 6 at track_caller_probe.rs:13:5: 13:27\n        StorageDead(_3);                 // scope 6 at track_caller_probe.rs:13:26: 13:27\n        StorageDead(_2);                 // scope 6 at track_caller_probe.rs:13:26: 13:27\n        StorageDead(_1);                 // scope 3 at track_caller_probe.rs:32:5: 32:19\n        return;                          // scope 0 at track_caller_probe.rs:55:2: 55:2\n    }\n}\n",
+        "scope_walk_prediction": "49:5",
+        "scopes": [
+          {
+            "callsite_line_col": null,
+            "inlined_callee": null,
+            "inlined_parent_scope": null,
+            "requires_caller_location": null,
+            "scope": 0
+          },
+          {
+            "callsite_line_col": "54:5",
+            "inlined_callee": "untracked_wrapper",
+            "inlined_parent_scope": null,
+            "requires_caller_location": false,
+            "scope": 1
+          },
+          {
+            "callsite_line_col": "49:5",
+            "inlined_callee": "top_tracked",
+            "inlined_parent_scope": 1,
+            "requires_caller_location": true,
+            "scope": 2
+          },
+          {
+            "callsite_line_col": "38:5",
+            "inlined_callee": "mid_tracked",
+            "inlined_parent_scope": 2,
+            "requires_caller_location": true,
+            "scope": 3
+          },
+          {
+            "callsite_line_col": "32:5",
+            "inlined_callee": "leaf_tracked",
+            "inlined_parent_scope": 3,
+            "requires_caller_location": true,
+            "scope": 4
+          },
+          {
+            "callsite_line_col": "26:9",
+            "inlined_callee": "Location::<'_>::caller",
+            "inlined_parent_scope": 4,
+            "requires_caller_location": true,
+            "scope": 5
+          },
+          {
+            "callsite_line_col": "26:5",
+            "inlined_callee": "pos",
+            "inlined_parent_scope": 4,
+            "requires_caller_location": false,
+            "scope": 6
+          },
+          {
+            "callsite_line_col": "13:8",
+            "inlined_callee": "Location::<'_>::line",
+            "inlined_parent_scope": 6,
+            "requires_caller_location": false,
+            "scope": 7
+          },
+          {
+            "callsite_line_col": "13:18",
+            "inlined_callee": "Location::<'_>::column",
+            "inlined_parent_scope": 6,
+            "requires_caller_location": false,
+            "scope": 8
+          }
+        ]
+      }
+    },
+    "not_inlined_direct_site": "fn direct_site() -> (u32, u32) {\n    let mut _0: (u32, u32);\n\n    bb0: {\n        _0 = top_tracked() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+    "reify_shim_dump_file": "track_caller_probe.leaf_tracked_noinline.1-1-003.SimplifyCfg-make_shim.after.mir",
+    "reify_shim_mir": "// MIR for `leaf_tracked_noinline` after SimplifyCfg-make_shim\n\nfn leaf_tracked_noinline() -> (u32, u32) {\n    let mut _0: (u32, u32);              // return place in scope 0 at track_caller_probe.rs:72:1: 72:34\n\n    bb0: {\n        _0 = leaf_tracked_noinline() -> [return: bb1, unwind continue]; // scope 0 at track_caller_probe.rs:72:1: 72:34\n                                         // mir::ConstOperand\n                                         // + span: track_caller_probe.rs:72:1: 72:34\n                                         // + const_: Const { ty: fn() -> (u32, u32) {leaf_tracked_noinline}, val: Value(leaf_tracked_noinline) }\n    }\n\n    bb1: {\n        return;                          // scope 0 at track_caller_probe.rs:72:1: 72:34\n    }\n}\n"
+  },
+  "probe": "probe_track_caller_abi_and_shims",
+  "regime_matrix": {
+    "commands": {
+      "miri_mir_inline": "miri --sysroot $MIRI_SYSROOT --edition 2021 -Zmir-opt-level=3 -Zinline-mir=yes -Zdump-mir=direct_site -Zdump-mir-dir=miri_mir track_caller_probe.rs",
+      "miri_no_mir_opts": "miri --sysroot $MIRI_SYSROOT --edition 2021 track_caller_probe.rs",
+      "native_o0_no_mir_inline": "rustc --edition 2021 -C opt-level=0 -Zinline-mir=no -o native_o0_no_mir_inline track_caller_probe.rs",
+      "native_o3_mir_inline": "rustc --edition 2021 -C opt-level=3 -Zinline-mir=yes -o native_o3_mir_inline track_caller_probe.rs"
+    },
+    "expected_lines": {
+      "DIRECT": 43,
+      "DYN_DECL_TRACKED": 121,
+      "DYN_IMPL_ONLY": 108,
+      "DYN_PROVIDED": 122,
+      "FNPTR_DIRECT": 81,
+      "FP1": 72,
+      "FP2": 72,
+      "GENERIC_DYN": 108,
+      "GENERIC_STATIC": 115,
+      "STATIC_IMPL_ONLY": 125,
+      "TRACKED_OUTER_WRAPPER": 49,
+      "UNTRACKED_SELF": 19,
+      "WRAPPER": 49
+    },
+    "markers": {
+      "DECL_TRACKED_IMPL_DEF": 96,
+      "DIRECT_SITE": 43,
+      "DYN_DECL_TRACKED_CALL": 121,
+      "DYN_IMPL_ONLY_CALL": 124,
+      "DYN_PROVIDED_CALL": 122,
+      "FNPTR_COERCE": 78,
+      "FNPTR_DEF": 72,
+      "FNPTR_DIRECT_CALL": 81,
+      "FP1_CALL": 79,
+      "FP2_CALL": 80,
+      "GENERIC_SITE": 115,
+      "IMPL_ONLY_DEF": 108,
+      "MID_BODY": 32,
+      "STATIC_IMPL_ONLY_CALL": 125,
+      "TOP_BODY": 38,
+      "TRACKED_OUTER_BODY": 61,
+      "TRACKED_OUTER_CALL_SITE": 66,
+      "UNTRACKED_SELF": 19,
+      "WRAPPER_CALL_SITE": 54,
+      "WRAPPER_DEF_SITE": 49
+    },
+    "reference_output": {
+      "DIRECT": "43:5",
+      "DYN_DECL_TRACKED": "121:22",
+      "DYN_IMPL_ONLY": "108:5",
+      "DYN_PROVIDED": "122:26",
+      "FNPTR_DIRECT": "81:18",
+      "FP1": "72:1",
+      "FP2": "72:1",
+      "GENERIC_DYN": "108:5",
+      "GENERIC_STATIC": "115:7",
+      "STATIC_IMPL_ONLY": "125:30",
+      "TRACKED_OUTER_WRAPPER": "49:5",
+      "UNTRACKED_SELF": "19:9",
+      "WRAPPER": "49:5"
+    },
+    "runs": {
+      "miri_mir_inline": {
+        "exit": 0,
+        "stdout": {
+          "DIRECT": "43:5",
+          "DYN_DECL_TRACKED": "121:22",
+          "DYN_IMPL_ONLY": "108:5",
+          "DYN_PROVIDED": "122:26",
+          "FNPTR_DIRECT": "81:18",
+          "FP1": "72:1",
+          "FP2": "72:1",
+          "GENERIC_DYN": "108:5",
+          "GENERIC_STATIC": "115:7",
+          "STATIC_IMPL_ONLY": "125:30",
+          "TRACKED_OUTER_WRAPPER": "49:5",
+          "UNTRACKED_SELF": "19:9",
+          "WRAPPER": "49:5"
+        }
+      },
+      "miri_no_mir_opts": {
+        "exit": 0,
+        "stdout": {
+          "DIRECT": "43:5",
+          "DYN_DECL_TRACKED": "121:22",
+          "DYN_IMPL_ONLY": "108:5",
+          "DYN_PROVIDED": "122:26",
+          "FNPTR_DIRECT": "81:18",
+          "FP1": "72:1",
+          "FP2": "72:1",
+          "GENERIC_DYN": "108:5",
+          "GENERIC_STATIC": "115:7",
+          "STATIC_IMPL_ONLY": "125:30",
+          "TRACKED_OUTER_WRAPPER": "49:5",
+          "UNTRACKED_SELF": "19:9",
+          "WRAPPER": "49:5"
+        }
+      },
+      "native_o0_no_mir_inline": {
+        "exit": 0,
+        "stdout": {
+          "DIRECT": "43:5",
+          "DYN_DECL_TRACKED": "121:22",
+          "DYN_IMPL_ONLY": "108:5",
+          "DYN_PROVIDED": "122:26",
+          "FNPTR_DIRECT": "81:18",
+          "FP1": "72:1",
+          "FP2": "72:1",
+          "GENERIC_DYN": "108:5",
+          "GENERIC_STATIC": "115:7",
+          "STATIC_IMPL_ONLY": "125:30",
+          "TRACKED_OUTER_WRAPPER": "49:5",
+          "UNTRACKED_SELF": "19:9",
+          "WRAPPER": "49:5"
+        }
+      },
+      "native_o3_mir_inline": {
+        "exit": 0,
+        "stdout": {
+          "DIRECT": "43:5",
+          "DYN_DECL_TRACKED": "121:22",
+          "DYN_IMPL_ONLY": "108:5",
+          "DYN_PROVIDED": "122:26",
+          "FNPTR_DIRECT": "81:18",
+          "FP1": "72:1",
+          "FP2": "72:1",
+          "GENERIC_DYN": "108:5",
+          "GENERIC_STATIC": "115:7",
+          "STATIC_IMPL_ONLY": "125:30",
+          "TRACKED_OUTER_WRAPPER": "49:5",
+          "UNTRACKED_SELF": "19:9",
+          "WRAPPER": "49:5"
+        }
+      }
+    }
+  },
+  "summary": {
+    "all_checks_passed": true,
+    "failed": [],
+    "passed": 223,
+    "total_checks": 223
+  },
+  "tail_calls": {
+    "markers": {
+      "PLAIN_CALL_SITE": 19,
+      "TAIL_CALLER_CALL_SITE": 23,
+      "TAIL_CALL_SITE": 14,
+      "TAIL_TARGET_DEF": 8
+    },
+    "miri_tail_call_outcome": "call_site_of_the_tail_calling_function",
+    "runs": {
+      "miri": {
+        "PLAIN_CALL": "19",
+        "TAIL_CALL": "23"
+      },
+      "native_o0": {
+        "PLAIN_CALL": "19",
+        "TAIL_CALL": "8"
+      },
+      "native_o3": {
+        "PLAIN_CALL": "19",
+        "TAIL_CALL": "8"
+      }
+    },
+    "warnings": {
+      "native_o0": [
+        "tail_call_probe.rs:14:12: warning: tail calling a function marked with `#[track_caller]` has no special effect"
+      ],
+      "native_o3": [
+        "tail_call_probe.rs:14:12: warning: tail calling a function marked with `#[track_caller]` has no special effect"
+      ]
+    }
+  },
+  "toolchain": {
+    "miri_runs": true,
+    "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "objdump_version": "GNU objdump (GNU Binutils for Debian) 2.47",
+    "rustc_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+  }
+}

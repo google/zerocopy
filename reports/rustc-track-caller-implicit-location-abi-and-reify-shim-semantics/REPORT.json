@@ -1,0 +1,80 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/abi",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/codegen",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc and Miri, nightly-2026-06-01 toolchain (source audited and executed)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "rustc (source audited; the rustc commit named by Anneal's trusted MIR syntax and vendored interpreter)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "rustc (source audited)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+      }
+    },
+    {
+      "name": "The Rust Reference, track_caller attribute",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+        "path": "src/attributes/codegen.md"
+      }
+    },
+    {
+      "name": "RFC 2091 (implicit caller location)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "path": "text/2091-inline-semantic.md"
+      }
+    },
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "lean-miri (vendored in Anneal vendor/lean-miri/UPSTREAM_PIN.json)",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

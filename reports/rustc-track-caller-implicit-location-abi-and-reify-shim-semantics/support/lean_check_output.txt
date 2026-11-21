@@ -1,0 +1,42 @@
+Lean toolchain: Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+
+$ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true TrackCallerAbiAndReifySoundness.lean
+exit status: 0
+'TrackCaller.resolveChain_append' does not depend on any axioms
+'TrackCaller.find_of_hasChain' depends on axioms: [propext]
+'TrackCaller.hasChain_remap_callee' depends on axioms: [propext]
+'TrackCaller.remapScopesOnInline_exact' depends on axioms: [propext]
+'TrackCaller.remapScopesOnInline_caller_unchanged' depends on axioms: [propext]
+'TrackCaller.Node.inl_observations_eq_call' depends on axioms: [propext]
+'TrackCaller.location_caller_invariant_under_inlining' depends on axioms: [propext]
+'TrackCaller.observations_eq_of_uninline_eq' depends on axioms: [propext]
+'TrackCaller.stackWalk_eq_codegen' does not depend on any axioms
+'TrackCaller.mismatched_declaration_diverges' does not depend on any axioms
+'TrackCaller.lowerFnAbiTrackCaller_length' depends on axioms: [propext]
+'TrackCaller.reifyToFnPtrShim_abi_safe' depends on axioms: [propext]
+'TrackCaller.ce1_omitting_reify_shim_corrupts_implicit_location_register_abi' depends on axioms: [propext]
+'TrackCaller.vtable_abi_agreement' does not depend on any axioms
+'TrackCaller.vtable_decl_tracked_reports_call_site' does not depend on any axioms
+'TrackCaller.vtable_impl_only_reports_impl_definition' does not depend on any axioms
+'TrackCaller.vtable_untracked_reads_nothing' does not depend on any axioms
+'TrackCaller.vtableMethodDispatch_ignores_stale' does not depend on any axioms
+'TrackCaller.collapsing_untracked_scope_leaks_enclosing_location' does not depend on any axioms
+'TrackCaller.ce2_collapsing_untracked_inline_scope_leaks_outer_caller_location' does not depend on any axioms
+'TrackCaller.walking_through_untracked_scope_reports_wrapper_call_site' does not depend on any axioms
+'TrackCaller.probe_scope_tables_reproduce_executed_locations' does not depend on any axioms
+'TrackCaller.probe_remap_reproduces_executed_location' does not depend on any axioms
+'TrackCaller.probe_wrapper_site_hasChain' does not depend on any axioms
+'TrackCaller.probe_untrackedWrapper_wellFormed' does not depend on any axioms
+
+$ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true -o TrackCallerAbiAndReifySoundness.olean TrackCallerAbiAndReifySoundness.lean
+exit status: 0 (same messages as above)
+
+$ LEAN_PATH=. lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true EnvironmentAudit.lean
+exit status: 0
+module constants audited: 133 theorems, 248 definitions, 17 inductive types
+axioms reachable from the module: [propext]
+audit passed: no axiom, opaque, unsafe or partial constant; no compiled recursion helper; no well-founded recursion; axioms within [propext, Quot.sound]
+
+sha256 of the checked sources:
+e366e6eba03d63b3a31e776df6478a270a6debeb8f10ffd76d89d63039625c62  TrackCallerAbiAndReifySoundness.lean
+1ed6d1999fd49c956d9e5023e20856ea66abb02ce7172d7753ff5b4cd765d8b5  EnvironmentAudit.lean
