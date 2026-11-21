@@ -33,6 +33,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             "static-checks",
             "build-exocrate",
             "test-and-verify",
+            "installed-smoke",
             "workspace-tests",
         ):
             steps = workflow["jobs"][job_name]["steps"]
@@ -360,29 +361,46 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
 
         jobs = self.workflow["jobs"]
         self.assertEqual(
-            jobs["test-and-verify"]["env"].get("ANNEAL_TEST_JOBS"), "4"
+            jobs["installed-smoke"]["env"].get("ANNEAL_TEST_JOBS"), "4"
         )
-        opt_flags = tuple(
+        hash_opt_flags = tuple(
             f"--config 'profile.dev.package.{pkg}.opt-level=3'"
             for pkg in ("cpufeatures", "digest", "sha2")
         )
-        for job_name, step_ids in (
+        full_opt_flags = hash_opt_flags + (
+            "--config 'profile.dev.package.zstd-sys.opt-level=3'",
+        )
+        for job_name, step_ids, required_flags in (
+            ("test-and-verify", ("audit",), hash_opt_flags),
             (
-                "test-and-verify",
-                ("installed_cli", "installed_auditor", "audit", "package", "smoke"),
+                "installed-smoke",
+                ("installed_cli", "installed_auditor", "package", "smoke"),
+                full_opt_flags,
             ),
-            ("workspace-tests", ("installed_cli", "workspace")),
+            ("workspace-tests", ("installed_cli", "workspace"), full_opt_flags),
         ):
             by_id = {
                 s["id"]: s for s in jobs[job_name]["steps"] if "id" in s
             }
             for step_id in step_ids:
-                for flag in opt_flags:
+                for flag in required_flags:
                     self.assertIn(
                         flag,
                         by_id[step_id]["run"],
                         f"{job_name}.{step_id} missing {flag}",
                     )
+        # Verify BOTH `cargo publish --dry-run` and `cargo test --no-run` in
+        # `installed-smoke.package` receive all four optimization `--config`
+        # flags so Cargo does not recompile deps at opt-level=0.
+        pkg_run = next(
+            s["run"]
+            for s in jobs["installed-smoke"]["steps"]
+            if s.get("id") == "package"
+        )
+        publish_block, test_block = pkg_run.split("prepared_manifest=", 1)
+        for flag in full_opt_flags:
+            self.assertIn(flag, publish_block, f"cargo publish missing {flag}")
+            self.assertIn(flag, test_block, f"packaged cargo test missing {flag}")
 
         rg_step = next(
             s for s in jobs["static-checks"]["steps"]
@@ -391,7 +409,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         self.assertIn("set -euo pipefail", rg_step["run"])
         self.assertIn("rg --version", rg_step["run"])
 
-        for job_name in ("test-and-verify", "workspace-tests"):
+        for job_name in ("test-and-verify", "installed-smoke", "workspace-tests"):
             sandbox_step = next(
                 s for s in jobs[job_name]["steps"] if s.get("id") == "sandbox"
             )
@@ -399,8 +417,16 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             self.assertIn("bwrap --unshare-all", sandbox_step["run"])
             self.assertIn("-- /true", sandbox_step["run"])
 
-        alpha_step = next(
+        extract_step = next(
             s for s in jobs["test-and-verify"]["steps"]
+            if s.get("id") == "extract_lean"
+        )
+        self.assertIn("tar --no-same-owner --zstd -xf", extract_step["run"])
+        self.assertIn('test -f "$install_root/lean/bin/lean"', extract_step["run"])
+        self.assertIn('test ! -L "$install_root/lean/bin/lean"', extract_step["run"])
+
+        alpha_step = next(
+            s for s in jobs["installed-smoke"]["steps"]
             if s.get("name") == "Check the scalar alpha with the installed toolchain"
         )
         self.assertIn('"$ANNEAL_TEST_CARGO_ANNEAL" /cargo-anneal', alpha_step["run"])
@@ -408,8 +434,9 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
 
     def test_parallel_workspace_tests_job_wired_into_gate_and_isolated(self):
         jobs = self.workflow["jobs"]
-        self.assertIn("workspace-tests", jobs["all-jobs-succeed"]["needs"])
-        self.assertEqual(jobs["workspace-tests"]["needs"], ["build-exocrate"])
+        for parallel_job in ("installed-smoke", "workspace-tests"):
+            self.assertIn(parallel_job, jobs["all-jobs-succeed"]["needs"])
+            self.assertEqual(jobs[parallel_job]["needs"], ["build-exocrate"])
         ws_steps_list = jobs["workspace-tests"]["steps"]
         ws_steps = {
             step["id"]: step
@@ -425,31 +452,33 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             "ACTIONS_RESULTS_URL",
             "ACTIONS_RUNTIME_TOKEN",
         )
-        # Every run step after checkout in workspace-tests (including manifest
-        # and Record workspace test step results) must strip Actions tokens.
-        checkout_idx = next(
-            i for i, step in enumerate(ws_steps_list)
-            if step.get("id") == "checkout"
-        )
-        post_checkout_run_steps = [
-            step for step in ws_steps_list[checkout_idx + 1:] if "run" in step
-        ]
-        self.assertGreaterEqual(len(post_checkout_run_steps), 7)
-        for step in post_checkout_run_steps:
-            step_env = step.get("env", {})
-            for token in tokens:
-                self.assertEqual(
-                    step_env.get(token),
-                    "",
-                    f"workspace-tests step {step.get('name')!r} must strip {token}",
-                )
-        # Record test step results in test-and-verify strips Actions tokens too.
-        record_test_step = next(
-            s for s in jobs["test-and-verify"]["steps"]
-            if s.get("name") == "Record test step results"
-        )
-        for token in tokens:
-            self.assertEqual(record_test_step.get("env", {}).get(token), "")
+        # Every run step after checkout in test-and-verify, installed-smoke,
+        # and workspace-tests must strip Actions tokens.
+        for job_name, min_run_steps in (
+            ("test-and-verify", 6),
+            ("installed-smoke", 11),
+            ("workspace-tests", 7),
+        ):
+            steps_list = jobs[job_name]["steps"]
+            checkout_idx = next(
+                i for i, step in enumerate(steps_list)
+                if step.get("id") == "checkout"
+            )
+            self.assertEqual(
+                steps_list[checkout_idx]["with"]["persist-credentials"], "false"
+            )
+            post_checkout_run_steps = [
+                step for step in steps_list[checkout_idx + 1:] if "run" in step
+            ]
+            self.assertGreaterEqual(len(post_checkout_run_steps), min_run_steps)
+            for step in post_checkout_run_steps:
+                step_env = step.get("env", {})
+                for token in tokens:
+                    self.assertEqual(
+                        step_env.get(token),
+                        "",
+                        f"{job_name} step {step.get('name')!r} must strip {token}",
+                    )
         # Every inline python3 heredoc in anneal-current.yml must run isolated
         # (-I -B) so untrusted repo root files cannot shadow stdlib modules.
         inline_py_count = 0
@@ -463,11 +492,12 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                         f"{job_name}/{step.get('name')!r} must use python3 -I -B -: "
                         f"{match.group(0)!r}",
                     )
-        self.assertGreaterEqual(inline_py_count, 6)
-        # Verify clean_tree in both test-and-verify and workspace-tests fails
-        # closed when git status errors (e.g., outside a git repository).
+        self.assertGreaterEqual(inline_py_count, 7)
+        # Verify clean_tree in test-and-verify, installed-smoke, and
+        # workspace-tests fails closed when git status errors (e.g., outside a
+        # git repository).
         with tempfile.TemporaryDirectory() as non_git_dir:
-            for job_name in ("test-and-verify", "workspace-tests"):
+            for job_name in ("test-and-verify", "installed-smoke", "workspace-tests"):
                 clean_step = next(
                     s for s in jobs[job_name]["steps"]
                     if s.get("id") == "clean_tree"
@@ -484,17 +514,20 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                     0,
                     f"{job_name}.clean_tree masked git status failure",
                 )
-        # Diagnostic artifact names must stay distinct so parallel failures
-        # never collide during upload.
-        test_upload = next(
-            s for s in jobs["test-and-verify"]["steps"]
-            if s.get("name") == "Upload failed test diagnostics"
-        )
-        ws_upload = next(
-            s for s in jobs["workspace-tests"]["steps"]
-            if s.get("name") == "Upload failed workspace test diagnostics"
-        )
-        self.assertNotEqual(test_upload["with"]["name"], ws_upload["with"]["name"])
+        # Diagnostic artifact names must stay distinct across all parallel jobs
+        # so concurrent failures never collide during upload.
+        upload_names = []
+        for job_name, step_name in (
+            ("test-and-verify", "Upload failed test diagnostics"),
+            ("installed-smoke", "Upload failed installed smoke diagnostics"),
+            ("workspace-tests", "Upload failed workspace test diagnostics"),
+        ):
+            upload = next(
+                s for s in jobs[job_name]["steps"]
+                if s.get("name") == step_name
+            )
+            upload_names.append(upload["with"]["name"])
+        self.assertEqual(len(upload_names), len(set(upload_names)), upload_names)
 
 
 if __name__ == "__main__":

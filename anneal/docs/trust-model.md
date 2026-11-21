@@ -462,8 +462,9 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    compiler-generated `isPartial` `*._unsafe_rec` helpers so any reference to
    them fails replay with `unknown constant`) from scratch through the
    standalone Lean 4 kernel (`baseEnv.toKernelEnv.replay`) on every run—cold
-   build and warm cache hit alike—followed directly by replaying all repository
-   declarations (Pass 1 plus Pass 2 `Trusted.Correspondence*`,
+   build and warm cache hit alike—followed directly by replaying all Pass 2
+   repository declarations (`Trusted.*`, the Pass 1 `theory/` transitive import
+   closure of `correspondence/`, `Trusted.Correspondence*`,
    `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof`) onto
    that replayed vendor kernel environment. Before that repository replay, it
    rejects any repository constant whose name already exists in the replayed
@@ -524,8 +525,9 @@ tracked for a follow-up PR:
    active in Pass 2 above.
 3. **Standalone vendor and correspondence kernel replay plus cone purity
    (active):** Full standalone kernel replay over all 160 vendored closure
-   modules plus all Pass 1 and Pass 2 repository modules and 36-root cone
-   purity checks are active in Pass 2 above.
+   modules plus `trusted/lean/`, the Pass 1 `theory/` transitive import closure
+   of `correspondence/`, and all Pass 2 correspondence modules, together with
+   36-root cone purity checks, are active in Pass 2 above.
 4. **Correspondence witness locks and evaluator independence (active):**
    Universe-monomorphic claim/proof checking with non-empty required-constants
    lists (`verifyCorrespondenceClaims`) and `verifyRefEvaluatorIndependence`

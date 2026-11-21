@@ -1747,28 +1747,24 @@ def classifyCorrModules (j : Json) (env : Environment)
       fail s!"foreign module {m.module} in correspondence environment"
   return roles4
 
-/-- Return `true` if `ci`'s type, value (including `opaque` definitions), or
-recursor rules directly reference `sorryAx`. -/
-def constantHasSorry (ci : ConstantInfo) : Bool :=
-  ci.type.hasSorry ||
-    (ci.value? (allowOpaque := true)).any Expr.hasSorry ||
-    match ci with
-    | .recInfo v => v.rules.any (·.rhs.hasSorry)
-    | _ => false
+/-- Return `true` if `n` is `sorryAx` or one of the `Init.Core`
+compiler-reflection primitives whose use trusts the Lean compiler and runtime
+interpreter instead of the standalone kernel. -/
+def isForbiddenVendorRef (n : Name) : Bool :=
+  n == `sorryAx ||
+  n == `Lean.ofReduceBool ||
+  n == `Lean.ofReduceNat ||
+  n == `Lean.trustCompiler ||
+  n == `Lean.reduceBool ||
+  n == `Lean.reduceNat
 
-/-- Compiler-reflection primitives in `Init.Core` whose use trusts the Lean
-compiler and runtime interpreter instead of the standalone kernel. -/
-def forbiddenVendorCompilerRefs : List Name :=
-  [`Lean.ofReduceBool, `Lean.ofReduceNat, `Lean.trustCompiler,
-   `Lean.reduceBool, `Lean.reduceNat]
-
-/-- Return the first constant name in `targets` directly referenced in `ci`'s
-type, value (including `opaque` definitions), or recursor rules, if any. -/
-def constantFindRef? (ci : ConstantInfo) (targets : List Name) :
-    Option Name :=
+/-- Return the first forbidden vendor constant (`sorryAx` or a compiler
+reflection primitive) directly referenced in `ci`'s type, value (including
+`opaque` definitions), or recursor rules, if any. -/
+def constantFindForbiddenVendorRef? (ci : ConstantInfo) : Option Name :=
   let findInExpr (e : Expr) : Option Name :=
     match e.find? fun
-      | .const n _ => targets.contains n
+      | .const n _ => isForbiddenVendorRef n
       | _ => false with
     | some (.const n _) => some n
     | _ => none
@@ -1859,13 +1855,13 @@ def verifyAndCollectCorrLocals (env : Environment)
         -- by `ci.isAxiom` above.
         if ci.hasValue true && (ci.value? true).isNone then
           fail s!"missing stored body {ci.name}"
-        if constantHasSorry ci then
-          fail (s!"vendor Miri module {m.module} constant {ci.name} " ++
-            "references sorryAx")
-        if let some badRef :=
-            constantFindRef? ci forbiddenVendorCompilerRefs then
-          fail (s!"vendor Miri module {m.module} constant {ci.name} " ++
-            s!"references forbidden compiler primitive {badRef}")
+        if let some badRef := constantFindForbiddenVendorRef? ci then
+          if badRef == `sorryAx then
+            fail (s!"vendor Miri module {m.module} constant {ci.name} " ++
+              "references sorryAx")
+          else
+            fail (s!"vendor Miri module {m.module} constant {ci.name} " ++
+              s!"references forbidden compiler primitive {badRef}")
         if orig == m.module then
           vendorOrigSeen := vendorOrigSeen.insert ci.name
         match vendorLocals.get? ci.name with

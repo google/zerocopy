@@ -390,8 +390,9 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      sysroot, replays all non-`isPartial` `.vendorMiri` constants (38,603 in
      the unpatched closure; 39,088 with the 13-file consumer patch) onto
      `baseEnv.toKernelEnv`, and—within the same isolated Pass 2
-     staging run—replays every freshly compiled `.repo` declaration
-     (`trusted/lean/`, `theory/`, `Trusted.Correspondence*`,
+     staging run—replays every compiled Pass 2 `.repo` declaration
+     (`trusted/lean/`, the Pass 1 `theory/` transitive import closure of
+     `correspondence/`, `Trusted.Correspondence*`,
      `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof`)
      directly onto that replayed vendor kernel environment, matching the
      end-to-end Pass 1 + Pass 2 isolated staging and kernel-replay architecture
@@ -447,8 +448,10 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      `Trusted.Correspondence` importing `theory/` in both Pass 2 preflight and
      compiled correspondence audit
      (`rejects_compiled_trusted_header_import_of_theory`,
-     `rejects_trusted_correspondence_import_of_theory_in_pass2_preflight`, and
-     `rejects_trusted_correspondence_import_of_theory_in_correspondence_audit`);
+     `rejects_trusted_correspondence_import_of_theory_in_pass2_preflight`,
+     `rejects_trusted_correspondence_import_of_theory_in_correspondence_audit`,
+     `rejects_unadmitted_pass1_theory_import_in_correspondence_audit`, and
+     `rejects_overlapping_pass1_and_pass2_module_names`);
      and missing or weakened locked WP/correspondence claims, canaries, and
      `verifyRefEvaluatorIndependence` regressions
      (`enforces_mir_wp_non_backsliding`,
