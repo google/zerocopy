@@ -283,6 +283,7 @@ analyses `topAnalysis` and `botAnalysis`; they are not precision guarantees.
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Consequence.lean:19-21
 -- ToyIL/Consequence.lean
 theorem hoare_consequence_strengthen_pre_weaken_post {P P' Q Q' : Assn σ} {c : Cmd σ}
     {e : Exit} (hpre : Entails P' P) (h : Hoare P c e Q) (hpost : Entails Q Q') :
@@ -291,7 +292,7 @@ theorem hoare_consequence_strengthen_pre_weaken_post {P P' Q Q' : Assn σ} {c : 
 
 With the key definitions unfolded:
 
-```text
+```lean
 (∀ s, P' s → P s) → (∀ t, (∃ s, P s ∧ Exec c s e t) → Q t) → (∀ t, Q t → Q' t) → ∀ t, (∃ s, P' s ∧ Exec c s e t) → Q' t
 ```
 
@@ -320,6 +321,7 @@ Basis: derived (modeling bridge) — A verifier that has proved `{P} c {e : Q}` 
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Consequence.lean:27-29
 -- ToyIL/Consequence.lean
 theorem il_consequence_weaken_pre_strengthen_post {P P' Q Q' : Assn σ} {c : Cmd σ}
     {e : Exit} (hpre : Entails P P') (h : IL P c e Q) (hpost : Entails Q' Q) :
@@ -328,7 +330,7 @@ theorem il_consequence_weaken_pre_strengthen_post {P P' Q Q' : Assn σ} {c : Cmd
 
 With the key definitions unfolded:
 
-```text
+```lean
 (∀ s, P s → P' s) → (∀ t, Q t → ∃ s, P s ∧ Exec c s e t) → (∀ t, Q' t → Q t) → ∀ t, Q' t → ∃ s, P' s ∧ Exec c s e t
 ```
 
@@ -357,18 +359,21 @@ Basis: derived (modeling bridge) — A bug finder holding a valid under-approxim
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Consequence.lean:151-152
 -- ToyIL/Consequence.lean
 theorem hoare_and_il_iff_eq_post {P Q : Assn σ} {c : Cmd σ} {e : Exit} :
     Hoare P c e Q ∧ IL P c e Q ↔ ∀ t, Q t ↔ post c e P t
+-- lean/ToyIL/Consequence.lean:167-168
 -- ToyIL/Consequence.lean
 theorem il_or_post_iff {P Q₁ Q₂ : Assn σ} {c : Cmd σ} {e : Exit} :
     IL P c e Q₁ ∧ IL P c e Q₂ ↔ IL P c e (fun t => Q₁ t ∨ Q₂ t)
+-- lean/ToyIL/Consequence.lean:177-178
 -- ToyIL/Consequence.lean
 theorem hoare_and_post_iff {P Q₁ Q₂ : Assn σ} {c : Cmd σ} {e : Exit} :
     Hoare P c e Q₁ ∧ Hoare P c e Q₂ ↔ Hoare P c e (fun t => Q₁ t ∧ Q₂ t)
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 hoare_and_il_iff_eq_post: ((∀ t, (∃ s, P s ∧ Exec c s e t) → Q t) ∧ (∀ t, Q t → ∃ s, P s ∧ Exec c s e t)) ↔ ∀ t, Q t ↔ ∃ s, P s ∧ Exec c s e t
@@ -397,16 +402,18 @@ Basis: derived (modeling bridge) — A tool that holds both an over-approximate 
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Consequence.lean:236-237
 -- ToyIL/Consequence.lean
 theorem il_hoare_agreement {U U' O O' : Assn σ} {c : Cmd σ} {e : Exit}
     (hil : IL U c e U') (hsub : Entails U O) (hh : Hoare O c e O') : Entails U' O'
+-- lean/ToyIL/Consequence.lean:244-246
 -- ToyIL/Consequence.lean
 theorem il_denies_hoare {U U' O O' : Assn σ} {c : Cmd σ} {e : Exit}
     (hil : IL U c e U') (hsub : Entails U O) (hout : ¬ Entails U' O') :
     ¬ Hoare O c e O'
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 il_hoare_agreement: (∀ t, U' t → ∃ s, U s ∧ Exec c s e t) → (∀ s, U s → O s) → (∀ t, (∃ s, O s ∧ Exec c s e t) → O' t) → ∀ t, U' t → O' t
@@ -438,6 +445,7 @@ Basis: derived (modeling bridge) — A tool can move facts between an under-appr
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Consequence.lean:325-326
 -- ToyIL/Consequence.lean
 theorem not_hoare_iff_exists_il_singleton_outside {P Q : Assn σ} {c : Cmd σ} {e : Exit} :
     ¬ Hoare P c e Q ↔ ∃ t, ¬ Q t ∧ IL P c e (fun x => x = t)
@@ -445,7 +453,7 @@ theorem not_hoare_iff_exists_il_singleton_outside {P Q : Assn σ} {c : Cmd σ} {
 
 With the key definitions unfolded:
 
-```text
+```lean
 ¬ (∀ t, (∃ s, P s ∧ Exec c s e t) → Q t) ↔ ∃ t, ¬ Q t ∧ ∀ x, x = t → ∃ s, P s ∧ Exec c s e x
 ```
 
@@ -472,18 +480,21 @@ Basis: derived (modeling bridge) — Every refutation of a Hoare specification c
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Licensing.lean:22-23
 -- ToyIL/Licensing.lean
 theorem il_er_nonempty_post_true_positive {P Q : Assn σ} {c : Cmd σ}
     (hil : IL P c .er Q) (hne : ∃ t, Q t) : ∃ s t, P s ∧ Q t ∧ Exec c s .er t
+-- lean/ToyIL/Licensing.lean:69-70
 -- ToyIL/Licensing.lean
 theorem errReachable_iff_exists_il_er_nonempty {P : Assn σ} {c : Cmd σ} :
     ErrReachable P c ↔ ∃ Q, IL P c .er Q ∧ ∃ t, Q t
+-- lean/ToyIL/Licensing.lean:80-81
 -- ToyIL/Licensing.lean
 theorem safe_iff_all_il_er_posts_empty {P : Assn σ} {c : Cmd σ} :
     Safe P c ↔ ∀ Q, IL P c .er Q → ∀ t, ¬ Q t
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 il_er_nonempty_post_true_positive: (∀ t, Q t → ∃ s, P s ∧ Exec c s .er t) → (∃ t, Q t) → ∃ s t, P s ∧ Q t ∧ Exec c s .er t
@@ -517,15 +528,17 @@ Basis: derived (modeling bridge) — An under-approximate tool that reports a va
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Licensing.lean:97-98
 -- ToyIL/Licensing.lean
 theorem safe_iff_hoare_er_false {P : Assn σ} {c : Cmd σ} :
     Safe P c ↔ Hoare P c .er (fun _ => False)
+-- lean/ToyIL/Licensing.lean:105-106
 -- ToyIL/Licensing.lean
 theorem safe_of_hoare_er_false {P : Assn σ} {c : Cmd σ}
     (h : Hoare P c .er (fun _ => False)) : Safe P c
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 safe_iff_hoare_er_false: (∀ s t, P s → ¬ Exec c s .er t) ↔ ∀ t, (∃ s, P s ∧ Exec c s .er t) → False
@@ -556,18 +569,21 @@ Basis: derived (modeling bridge) — Reference point: a verifier establishes tha
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Licensing.lean:166-167
 -- ToyIL/Licensing.lean
 theorem not_il_er_empty_post_implies_safe :
     ¬ ∀ (P : Assn Nat) (c : Cmd Nat), IL P c .er (fun _ => False) → Safe P c
+-- lean/ToyIL/Licensing.lean:159-161
 -- ToyIL/Licensing.lean
 theorem il_er_empty_post_valid_yet_unsafe :
     IL (fun _ : Nat => True) .error .er (fun _ => False) ∧
       ¬ Safe (fun _ : Nat => True) (.error : Cmd Nat)
+-- lean/ToyIL/Licensing.lean:154
 -- ToyIL/Licensing.lean
 theorem il_empty_post (P : Assn σ) (c : Cmd σ) (e : Exit) : IL P c e (fun _ => False)
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 not_il_er_empty_post_implies_safe: ¬ ∀ (P : Nat → Prop) (c : Cmd Nat), (∀ t, False → ∃ s, P s ∧ Exec c s .er t) → ∀ s t, P s → ¬ Exec c s .er t
@@ -597,17 +613,21 @@ Basis: derived (modeling bridge) — A bug finder whose result is an empty error
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Licensing.lean:198-199
 -- ToyIL/Licensing.lean
 theorem not_hoare_er_nonempty_post_implies_errReachable :
     ¬ ∀ (P Q : Assn Nat) (c : Cmd Nat), Hoare P c .er Q → (∃ t, Q t) → ErrReachable P c
+-- lean/ToyIL/Licensing.lean:190-192
 -- ToyIL/Licensing.lean
 theorem hoare_er_nonempty_post_without_reachable_error :
     Hoare (fun _ => True) mkevenProg .er (fun n => n = 4) ∧ (∃ t : Nat, t = 4) ∧
       ¬ ErrReachable (fun _ => True) mkevenProg
+-- lean/ToyIL/Licensing.lean:228-230
 -- ToyIL/Licensing.lean
 theorem not_hoare_ok_then_il_er_implies_errReachable :
     ¬ ∀ (P Q R : Assn Nat) (c₁ c₂ : Cmd Nat),
       Hoare P c₁ .ok Q → IL Q c₂ .er R → (∃ t, R t) → ErrReachable P (.seq c₁ c₂)
+-- lean/ToyIL/Licensing.lean:216-219
 -- ToyIL/Licensing.lean
 theorem hoare_ok_summary_then_il_er_without_reachable_error :
     Hoare (fun _ => True) mkevenBody .ok (fun n => n = 2 ∨ n = 4) ∧
@@ -615,7 +635,7 @@ theorem hoare_ok_summary_then_il_er_without_reachable_error :
       ¬ ErrReachable (fun _ => True) (.seq mkevenBody mkevenCheck)
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 not_hoare_er_nonempty_post_implies_errReachable: ¬ ∀ (P Q : Nat → Prop) (c : Cmd Nat), (∀ t, (∃ s, P s ∧ Exec c s .er t) → Q t) → (∃ t, Q t) → ∃ s t, P s ∧ Exec c s .er t
@@ -644,15 +664,17 @@ Basis: derived (modeling bridge) — A compositional analyzer that combines an o
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Rules.lean:76-77
 -- ToyIL/Rules.lean
 theorem ilDeriv_sound {P Q : Assn σ} {c : Cmd σ} {e : Exit} (h : ILDeriv P c e Q) :
     IL P c e Q
+-- lean/ToyIL/Rules.lean:64-65
 -- ToyIL/Rules.lean
 theorem il_backwardsVariant_sound {c : Cmd σ} (p : Nat → Assn σ)
     (h : ∀ n, IL (p n) c .ok (p (n + 1))) : IL (p 0) (.star c) .ok (fun s => ∃ n, p n s)
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 ilDeriv_sound: ILDeriv P c e Q → ∀ t, Q t → ∃ s, P s ∧ Exec c s e t
@@ -687,15 +709,18 @@ Basis: derived (modeling bridge) — A bug finder whose derivations are instance
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Rules.lean:304-306
 -- ToyIL/Rules.lean
 theorem il_conjunction_rule_unsound :
     ¬ ∀ (P₁ P₂ Q₁ Q₂ : Assn Nat) (c : Cmd Nat) (e : Exit),
       IL P₁ c e Q₁ → IL P₂ c e Q₂ → IL (fun s => P₁ s ∧ P₂ s) c e (fun s => Q₁ s ∧ Q₂ s)
+-- lean/ToyIL/Rules.lean:292-295
 -- ToyIL/Rules.lean
 theorem il_conjunction_counterexample :
     IL (fun n => n = 1) conjCounterProg .ok (fun n => n = 88) ∧
     IL (fun n => n = 2) conjCounterProg .ok (fun n => n = 88) ∧
     ¬ IL (fun n => n = 1 ∧ n = 2) conjCounterProg .ok (fun n => n = 88 ∧ n = 88)
+-- lean/ToyIL/Rules.lean:441-444
 -- ToyIL/Rules.lean
 theorem il_conjunction_rule_sound_iff_subsingleton (τ : Type) :
     (∀ (P₁ P₂ Q₁ Q₂ : Assn τ) (c : Cmd τ) (e : Exit),
@@ -703,7 +728,7 @@ theorem il_conjunction_rule_sound_iff_subsingleton (τ : Type) :
       (∀ s₁ s₂ : τ, s₁ = s₂)
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 il_conjunction_rule_unsound: ¬ ∀ P₁ P₂ Q₁ Q₂ c e, IL P₁ c e Q₁ → IL P₂ c e Q₂ → IL (P₁ ∧ P₂) c e (Q₁ ∧ Q₂)   (over Nat)
@@ -732,23 +757,28 @@ Basis: derived (modeling bridge) — An under-approximate analysis must not conj
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Rules.lean:239-241
 -- ToyIL/Rules.lean
 theorem hoare_conjunction_sound {P₁ P₂ Q₁ Q₂ : Assn σ} {c : Cmd σ} {e : Exit}
     (h₁ : Hoare P₁ c e Q₁) (h₂ : Hoare P₂ c e Q₂) :
     Hoare (fun s => P₁ s ∧ P₂ s) c e (fun s => Q₁ s ∧ Q₂ s)
+-- lean/ToyIL/Rules.lean:231-233
 -- ToyIL/Rules.lean
 theorem hoare_disjunction_sound {P₁ P₂ Q₁ Q₂ : Assn σ} {c : Cmd σ} {e : Exit}
     (h₁ : Hoare P₁ c e Q₁) (h₂ : Hoare P₂ c e Q₂) :
     Hoare (fun s => P₁ s ∨ P₂ s) c e (fun s => Q₁ s ∨ Q₂ s)
+-- lean/ToyIL/Rules.lean:223-225
 -- ToyIL/Rules.lean
 theorem il_disjunction_sound {P₁ P₂ Q₁ Q₂ : Assn σ} {c : Cmd σ} {e : Exit}
     (h₁ : IL P₁ c e Q₁) (h₂ : IL P₂ c e Q₂) :
     IL (fun s => P₁ s ∨ P₂ s) c e (fun s => Q₁ s ∨ Q₂ s)
+-- lean/ToyIL/Rules.lean:313-316
 -- ToyIL/Rules.lean
 theorem il_conjunction_sound_of_backward_unique {P₁ P₂ Q₁ Q₂ : Assn σ} {c : Cmd σ} {e : Exit}
     (huniq : ∀ s₁ s₂ t, Exec c s₁ e t → Exec c s₂ e t → s₁ = s₂)
     (h₁ : IL P₁ c e Q₁) (h₂ : IL P₂ c e Q₂) :
     IL (fun s => P₁ s ∧ P₂ s) c e (fun s => Q₁ s ∧ Q₂ s)
+-- lean/ToyIL/Rules.lean:407-410
 -- ToyIL/Rules.lean
 theorem il_conjunction_rule_iff_backward_unique (c : Cmd σ) (e : Exit) :
     (∀ P₁ P₂ Q₁ Q₂ : Assn σ, IL P₁ c e Q₁ → IL P₂ c e Q₂ →
@@ -756,7 +786,7 @@ theorem il_conjunction_rule_iff_backward_unique (c : Cmd σ) (e : Exit) :
       (∀ s₁ s₂ t, Exec c s₁ e t → Exec c s₂ e t → s₁ = s₂)
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 hoare_conjunction_sound / hoare_disjunction_sound: Hoare P₁ c e Q₁ → Hoare P₂ c e Q₂ → Hoare (P₁ ∧ P₂) c e (Q₁ ∧ Q₂), and the same with ∨
@@ -789,14 +819,16 @@ Basis: derived (modeling bridge) — Over-approximate tools may conjoin and disj
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Rules.lean:581-582
 -- ToyIL/Rules.lean
 theorem ilDeriv_relatively_complete {P Q : Assn σ} {c : Cmd σ} {e : Exit} (h : IL P c e Q) :
     ILDeriv P c e Q
+-- lean/ToyIL/Rules.lean:507
 -- ToyIL/Rules.lean
 theorem ilDeriv_post (c : Cmd σ) : ∀ (P : Assn σ) (e : Exit), ILDeriv P c e (post c e P)
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 ilDeriv_relatively_complete: (∀ t, Q t → ∃ s, P s ∧ Exec c s e t) → ILDeriv P c e Q
@@ -827,14 +859,16 @@ Basis: derived (modeling bridge) — Relative completeness: with an entailment o
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Analyses.lean:226
 -- ToyIL/Analyses.lean
 theorem absPost_sound {ρ : Assn σ → Assn σ} (hρ : Extensive ρ) : SoundOver (absPost ρ)
+-- lean/ToyIL/Analyses.lean:240-241
 -- ToyIL/Analyses.lean
 theorem soundOver_absPost_iff_extensive (ρ : Assn σ → Assn σ) :
     SoundOver (absPost ρ) ↔ Extensive ρ
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 absPost_sound: (∀ X s, X s → ρ X s) → ∀ P c e t, (∃ s, P s ∧ Exec c s e t) → absPost ρ c e P t
@@ -866,10 +900,12 @@ Basis: derived (modeling bridge) — An abstract interpreter that applies an ope
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Analyses.lean:486-488
 -- ToyIL/Analyses.lean
 theorem soundOver_silentOnErrorFree_alarm_not_imply_errReachable :
     ¬ ∀ (A : Analysis Nat), SoundOver A → SilentOnErrorFree A →
       ∀ P c, Alarm A P c → ErrReachable P c
+-- lean/ToyIL/Analyses.lean:461-464
 -- ToyIL/Analyses.lean
 theorem hullAnalysis_false_alarm :
     SoundOver hullAnalysis ∧ SilentOnErrorFree hullAnalysis ∧
@@ -877,7 +913,7 @@ theorem hullAnalysis_false_alarm :
       ¬ ErrReachable (fun _ => True) falseAlarmProg
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 soundOver_silentOnErrorFree_alarm_not_imply_errReachable: ¬ ∀ A : Analysis Nat, (∀ P c e t, (∃ s, P s ∧ Exec c s e t) → A c e P t) → (∀ P c, c.errorFree = true → ¬ ∃ t, A c .er P t) → ∀ P c, (∃ t, A c .er P t) → ∃ s t, P s ∧ Exec c s .er t
@@ -907,15 +943,17 @@ Basis: derived (modeling bridge) — A sound over-approximate analyzer, even one
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Analyses.lean:76-77
 -- ToyIL/Analyses.lean
 theorem soundUnder_alarm_errReachable {U : Analysis σ} {P : Assn σ} {c : Cmd σ}
     (hU : SoundUnder U) (ha : Alarm U P c) : ErrReachable P c
+-- lean/ToyIL/Analyses.lean:82-83
 -- ToyIL/Analyses.lean
 theorem soundOver_no_alarm_safe {A : Analysis σ} {P : Assn σ} {c : Cmd σ}
     (hA : SoundOver A) (hna : ¬ Alarm A P c) : Safe P c
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 soundUnder_alarm_errReachable: (∀ P c e t, U c e P t → ∃ s, P s ∧ Exec c s e t) → (∃ t, U c .er P t) → ∃ s t, P s ∧ Exec c s .er t
@@ -948,20 +986,23 @@ Basis: derived (modeling bridge) — Reference point: sound under-approximate al
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Analyses.lean:632-634
 -- ToyIL/Analyses.lean
 theorem soundUnder_exactOnLoopFree_no_alarm_not_imply_safe :
     ¬ ∀ (U : Analysis Nat), SoundUnder U → ExactOnLoopFree U →
       ∀ P c, ¬ Alarm U P c → Safe P c
+-- lean/ToyIL/Analyses.lean:607-610
 -- ToyIL/Analyses.lean
 theorem unrollAnalysis_two_false_negative :
     SoundUnder (unrollAnalysis 2 : Analysis Nat) ∧ ExactOnLoopFree (unrollAnalysis 2 : Analysis Nat) ∧
       ¬ Alarm (unrollAnalysis 2) (fun n => n = 0) countProg ∧
       ¬ Safe (fun n => n = 0) countProg
+-- lean/ToyIL/Analyses.lean:552
 -- ToyIL/Analyses.lean
 theorem unrollAnalysis_soundUnder (k : Nat) : SoundUnder (unrollAnalysis k : Analysis σ)
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 soundUnder_exactOnLoopFree_no_alarm_not_imply_safe: ¬ ∀ U : Analysis Nat, (∀ P c e t, U c e P t → ∃ s, P s ∧ Exec c s e t) → (∀ P c e t, c.loopFree = true → (U c e P t ↔ ∃ s, P s ∧ Exec c s e t)) → ∀ P c, ¬ (∃ t, U c .er P t) → ∀ s t, P s → ¬ Exec c s .er t
@@ -992,17 +1033,19 @@ Basis: derived (modeling bridge) — Bounded exploration (loop unrolling up to a
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Manifest.lean:93-95
 -- ToyIL/Manifest.lean
 theorem manifestError_liftFst {τ : Type} {P Q : Assn σ} {c : Cmd σ}
     (h : ManifestError P c Q) :
     ManifestError (fun p : σ × τ => P p.1) c.liftFst (fun p => Q p.1)
+-- lean/ToyIL/Manifest.lean:205-207
 -- ToyIL/Manifest.lean
 theorem manifestError_liftFst_iff {τ : Type} (r₀ : τ) {P Q : Assn σ} {c : Cmd σ} :
     ManifestError (fun p : σ × τ => P p.1) (c.liftFst (τ := τ)) (fun p => Q p.1) ↔
       ManifestError P c Q
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 manifestError_liftFst: ((∀ t, Q t → ∃ s, P s ∧ Exec c s .er t) ∧ ∀ s, ∃ t, Q t ∧ Exec c s .er t) → ((∀ p, Q p.1 → ∃ p₀, P p₀.1 ∧ Exec c.liftFst p₀ .er p) ∧ ∀ p₀, ∃ p, Q p.1 ∧ Exec c.liftFst p₀ .er p)
@@ -1036,20 +1079,23 @@ Basis: derived (modeling bridge) — A manifest error found on part of the state
 Lean statement(s), quoted from the sources:
 
 ```lean
+-- lean/ToyIL/Manifest.lean:291-293
 -- ToyIL/Manifest.lean
 theorem error_in_context_of_err_at_hole {c : Cmd σ} {Q : Assn σ} {K : Ctx σ} {s u : σ}
     (hu : ∃ t, Q t ∧ Exec c u .er t) (hr : Reaches c K s u) :
     ∃ t, Q t ∧ Exec (K.fill c) s .er t
+-- lean/ToyIL/Manifest.lean:311-313
 -- ToyIL/Manifest.lean
 theorem manifestReach_iff_forall_reaching_contexts {c : Cmd σ} {Q : Assn σ} :
     ManifestReach c Q ↔
       ∀ (K : Ctx σ) (s u : σ), Reaches c K s u → ∃ t, Q t ∧ Exec (K.fill c) s .er t
+-- lean/ToyIL/Manifest.lean:318-319
 -- ToyIL/Manifest.lean
 theorem manifestReach_fill_of_reaches_from_every_state {c : Cmd σ} {Q : Assn σ} {K : Ctx σ}
     (hm : ManifestReach c Q) (hr : ∀ s, ∃ u, Reaches c K s u) : ManifestReach (K.fill c) Q
 ```
 
-With the key definitions unfolded:
+With the key definitions unfolded (prose):
 
 ```text
 error_in_context_of_err_at_hole: (∃ t, Q t ∧ Exec c u .er t) → Reaches c K s u → ∃ t, Q t ∧ Exec (K.fill c) s .er t
@@ -1080,6 +1126,7 @@ under Evidence; `support/revalidate.py` checks the axioms of every declaration o
 including this one.
 
 ```lean
+-- lean/ToyIL/Manifest.lean:415-422
 -- ToyIL/Manifest.lean
 theorem manifestError_not_preserved_by_context :
     let c : Cmd Nat := .choice (.seq (.assume (fun n => n == 0)) .error)
@@ -1109,7 +1156,8 @@ Basis: derived (modeling bridge) — A manifest error can be reported independen
 ### Non-claims
 
 What each result does **not** show, card by card. Two non-claims apply to every card: every
-theorem is about the toy semantics only (see Applicability), and "proved" never means "true of a
+theorem is about the toy semantics (see Applicability) and neither establishes nor refutes the
+corresponding claim about a real analyzer or verifier, and "proved" never means "true of a
 real analyzer or verifier"; the `derived (modeling bridge)` lines under Findings are reasoned
 claims, not kernel-checked ones.
 
@@ -1118,7 +1166,7 @@ claims, not kernel-checked ones.
 - Says nothing about incorrectness triples, whose consequence rule runs in the opposite direction (il-consequence-weaken-pre-strengthen-post); the counterexamples show each direction fails in the other logic.
 - Entailments are semantic and supplied as proofs; nothing is claimed about a tool whose entailment checker is unsound or incomplete.
 - Partial correctness only: says nothing about termination or about the other exit kind.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **2. il-consequence-weaken-pre-strengthen-post**
 
@@ -1126,28 +1174,28 @@ claims, not kernel-checked ones.
 - Does not license strengthening the pre: il_consequence_pre_tight shows [True] skip [ok : x = 1] holds but [x = 0] skip [ok : x = 1] does not.
 - Weakening the pre of an error triple [P] c [er : Q] to [True] c [er : Q] is sound, but it does not make the error manifest: [True] c [er : Q] only guarantees that some initial state reaches Q via er, not that every initial state does, nor that a caller reaching c in a state satisfying True triggers the error (il_er_true_pre_yet_caller_state_avoids_error).
 - Entailments are semantic and supplied as proofs.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **3. exact-post-duality-and-or-symmetry**
 
 - Does not say exact posts are computable or expressible in any assertion language; assertions here are arbitrary predicates.
 - The two iff-laws are not characterizations of post c e P: any family of assertions of the form {Q | Q ⊆ R} (or {Q | R ⊆ Q}) satisfies the corresponding law.
 - For a fixed pre P, the dual laws fail in the splitting direction: [P] c [e : Q1 ∧ Q2] does not imply [P] c [e : Q1] ∧ [P] c [e : Q2] (il_and_post_not_split, with Q1 = True, Q2 = False), and {P} c {e : Q1 ∨ Q2} does not imply {P} c {e : Q1} ∧ {P} c {e : Q2} (hoare_or_post_not_split). Incorrectness posts for a fixed pre are closed under conjunction (il_and_post_of_il_left, by strengthening the post), whereas conjoining two incorrectness triples with different pres P1 ∧ P2 is unsound in general (il-conjunction-rule-unsound); Hoare triples with different pres are closed under disjunction (conjunction-and-disjunction-rule-soundness).
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **4. il-hoare-agreement-and-denial**
 
 - Denial refutes one specific Hoare triple {O} c {e : O'}; it does not show that c is wrong with respect to any other specification, nor that the pre O is reachable in any enclosing program.
 - Agreement does not let a Hoare triple prove an incorrectness triple, or vice versa.
 - An incorrectness triple with empty post never satisfies the escape hypothesis of denial (the empty assertion is contained in every O', entails_empty_left), so [U] c [er : False] never refutes any Hoare triple.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **5. hoare-invalid-iff-il-singleton-outside-post**
 
 - The left-to-right direction is classical (it uses excluded middle): it asserts that a refuting state exists, not that one can be computed or found by a bounded search.
 - The refuting incorrectness triple keeps the entire pre P; it does not isolate a single initial test state. Moreover {t} is a semantic singleton predicate and need not be expressible in any syntactic assertion language.
 - Says nothing about refuting Hoare triples for the other exit kind or with a different pre.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **6. il-error-triple-nonempty-post-true-positive**
 
@@ -1155,7 +1203,7 @@ claims, not kernel-checked ones.
 - Does not say every error of c is in Q, or that c errs from every state of P.
 - Does not say c terminates on all of P; other runs may diverge or exit normally.
 - The safety characterization quantifies over all assertions Q; a single valid triple with empty post, or the empty result of any particular search, does not establish safety (il-error-triple-empty-post-does-not-imply-safety). Nothing is claimed about whether a witnessing post is expressible in a given assertion language or found by a given analysis.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **7. safety-iff-hoare-error-triple-false**
 
@@ -1163,7 +1211,7 @@ claims, not kernel-checked ones.
 - While stating safety of a whole command c needs no ok-exit triple, proving {P} c1; c2 {er : False} or {P} c⋆ {er : False} compositionally uses over-approximate ok-exit summaries and loop invariants of subcommands (hoare_seq_er_false); the error-exit triples of the parts from the same pre do not determine safety of a sequence (safe_seq_not_of_safe_parts).
 - Safety here is absence of erroneous termination only; it says nothing about divergence or about the values of normal exits.
 - A Hoare error triple with a satisfiable post does not show that an error is reachable (hoare-summaries-do-not-imply-reachable-error).
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **8. il-error-triple-empty-post-does-not-imply-safety**
 
@@ -1171,7 +1219,7 @@ claims, not kernel-checked ones.
 - Combining [P] c [er : False] with a valid normal-exit triple [P] c [ok : Q] whose post Q is nonempty still does not imply safety: skip + error() satisfies [True] c [ok : True] and [True] c [er : False] and is unsafe (il_ok_nonempty_and_er_empty_yet_unsafe).
 - Stated over the state type Nat; over the empty state type the refuted implication holds vacuously (refuted_implications_hold_on_empty_state_space), so the negative result needs at least one state. Likewise, when P is unsatisfiable, Safe P c holds regardless of any triple.
 - Does not say anything about over-approximate analyses, whose silence does imply safety (sound-analyses-license-alarms-or-silence).
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **9. hoare-summaries-do-not-imply-reachable-error**
 
@@ -1179,7 +1227,7 @@ claims, not kernel-checked ones.
 - Does not say Hoare error triples are useless: with post False they are exactly safety (safety-iff-hoare-error-triple-false).
 - Does not say every Hoare-derived alarm is spurious; replacing the Hoare triple, or the over-approximate summary of the prefix, by an incorrectness triple restores the conclusion (positive controls il_er_nonempty_post_true_positive and il_ok_then_il_er_errReachable).
 - Stated over the state type Nat; over the empty state type the refuted implication holds vacuously (refuted_implications_hold_on_empty_state_space), so the negative result needs at least one state.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **10. il-proof-rules-sound**
 
@@ -1188,7 +1236,7 @@ claims, not kernel-checked ones.
 - The backwards-variant premise is infinitary (one derivation per n); nothing is claimed about finitary syntactic variants.
 - iterZero is derivable from backwardsVariant, empty and conseq (iterZero_derivable); it is kept as a separate rule only to mirror O'Hearn's Fig. 2.
 - Atomic updates are deterministic state functions f : σ → σ; nondeterminism comes only from binary choice and iteration. Nondeterministic assignment (x := nondet()) and the variable-specific rules of O'Hearn's Fig. 3 (assignment with substitution, constancy, local variables, substitution) are not modelled.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **11. il-conjunction-rule-unsound**
 
@@ -1197,26 +1245,26 @@ claims, not kernel-checked ones.
 - Over a state type with at most one element (for instance Unit) the conjunction rule holds universally (il_conjunction_rule_sound_on_unit); the failure needs two distinct states.
 - Concerns ordinary conjunction of assertions on a single state; separating conjunction and the frame rule of Incorrectness Separation Logic are not modelled.
 - Does not concern the disjunction rule, which is sound for both logics.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **12. conjunction-and-disjunction-rule-soundness**
 
 - The characterization is about the rule for all assertions at a fixed (c, e). A single instance of the conclusion can hold for a command that is not backward-unique, for example with empty posts (il_conjunction_instance_without_backward_unique), or with P1 = P2 (il_conjunction_same_pre_sound).
 - For commands that merge states (such as assignments of constants) the rule fails for some choice of P1, P2, Q1, Q2 (in general, with different pres); it is not claimed to fail for every instance.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **13. il-proof-rules-complete**
 
 - Relative completeness only: assertions are arbitrary predicates and entailment is an oracle; nothing is claimed about any assertion language, about decidability, or about finding derivations.
 - The loop case uses an infinitary backwards-variant premise; nothing is claimed for finitary rule sets.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **14. abs-post-sound-iff-extensive**
 
 - Soundness is not precision: the hull analysis raises false alarms (sound-overapproximate-alarm-not-a-true-positive).
 - ρ need not be monotone or idempotent, so it need not be an upper closure operator; ρ ∘ post is not claimed to be a best abstract transformer. For a non-monotone extensive ρ the loop set Inv need not itself satisfy absPost ρ c ok Inv ⊆ Inv (absPost_loop_set_not_closed_of_nonmonotone, with nonMonoRho X := if X = {0} then True else X over Nat, which is extensive but not monotone); soundness does not depend on that closure.
 - Inv quantifies over all assertions X, not only over the image of ρ; it is defined impredicatively and is not computable in general; no termination, widening or effective-analysis claim is made, and nothing is claimed about which other analyses (for example with widening) are sound.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **15. sound-overapproximate-alarm-not-a-true-positive**
 
@@ -1224,7 +1272,7 @@ claims, not kernel-checked ones.
 - The witness depends on a join losing precision (hull {0, 2} contains 1); an analysis whose computed error post at (P, c) is contained in the true error post raises only true alarms there (alarm_errReachable_of_er_post_under). Locally complete abstract interpretations (Bruni et al. 2021) give conditions of this kind for a given input; that theory is not formalized here.
 - The non-degeneracy condition SilentOnErrorFree only excludes analyses that alarm on programs without error() (such as topAnalysis, not_silentOnErrorFree_topAnalysis); it is not a precision guarantee.
 - Stated over the state type Nat; over the empty state type the refuted implication holds vacuously (refuted_implications_hold_on_empty_state_space), so the negative result needs at least one state.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **16. sound-analyses-license-alarms-or-silence**
 
@@ -1233,7 +1281,7 @@ claims, not kernel-checked ones.
 - Silence of a sound over-approximate analysis establishes only absence of erroneous termination (Safe P c); it says nothing about divergence or about the correctness of normal exits.
 - SoundUnder and SoundOver require soundness for all commands and both exit kinds, more than these two theorems use; compositional analyses do rely on soundness at the ok exit to propagate summaries across sequences and loops (hoare_seq_er_false, absPost).
 - Soundness is with respect to this relational semantics; whether an analysis's assumptions match a real program is outside the claim.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **17. sound-underapproximate-silence-not-safety**
 
@@ -1241,7 +1289,7 @@ claims, not kernel-checked ones.
 - Does not say under-approximate silence is never informative: it is safety when the analysis is also over-approximate (soundOver_no_alarm_safe), and on loop-free programs silence of an analysis that is exact there is safety (exactOnLoopFree_no_alarm_safe). More generally, when every erroneous run from P iterates each loop at most k times, the k-unrolling finds every error and its silence is safety; that general bounded-iteration statement is not formalized here.
 - The non-degeneracy condition ExactOnLoopFree excludes the trivial analysis botAnalysis (not_exactOnLoopFree_botAnalysis) and forces any unsafe program on which U is silent to contain a loop (c.loopFree = false; for unrollAnalysis k, specifically an error requiring more than k iterations of some loop). The first part is exactOnLoopFree_no_alarm_safe; the unrollAnalysis refinement is the contrapositive of the bounded-iteration remark above and is likewise not formalized here. ExactOnLoopFree does not place the missed error inside or after that loop, and it is not a completeness guarantee for programs with loops.
 - Stated over the state type Nat; over the empty state type the refuted implication holds vacuously (refuted_implications_hold_on_empty_state_space), so the negative result needs at least one state.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **18. manifest-error-preserved-under-state-frame-extension**
 
@@ -1249,7 +1297,7 @@ claims, not kernel-checked ones.
 - Frames that constrain the extra component (posts Q × F with F not everywhere true) are not covered: the every-state clause would fail.
 - ManifestError P c Q does not require P = True: [x = 99] x := 0; error() [er : x = 0] is a manifest error (manifestError_pre_need_not_be_true), so the pre of a manifest error need not describe the states that trigger it.
 - Over the empty frame type the lifted statement holds vacuously (manifestError_liftFst_iff_frame_tight); only the forward direction holds there.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 **19. manifest-reach-iff-error-in-every-reaching-context**
 
@@ -1259,7 +1307,7 @@ claims, not kernel-checked ones.
 - In loop contexts (star K'), whether the context reaches its hole depends on c itself, because earlier iterations run the filled body K'.fill c.
 - A latent error can still be triggered by a context that enters the hole in a triggering state (latent_error_triggered_by_context); manifestness is what makes the conclusion independent of the context.
 - Contexts are syntactic one-hole contexts of this language; there are no procedures, parameters or calls, so this is an analogue of, not a formalization of, Le et al.'s Theorem 3.4, which concludes only that main can err.
-- Toy model only: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle; nothing is claimed about any production analyzer or verifier.
+- Toy model: an abstract state type, deterministic state updates in place of assignment, no heap, no procedures or calls, no local variables, a single error kind, semantic assertions with entailment as an oracle. The kernel-checked theorems neither establish nor refute the corresponding claims about real analyzers and verifiers (incorrectness-logic bug finders, bounded model checkers, symbolic executors, Hoare-logic verifiers, abstract interpreters); the `derived (modeling bridge)` lines under Findings argue such connections separately.
 
 ### Attractive stronger readings that are not established
 
