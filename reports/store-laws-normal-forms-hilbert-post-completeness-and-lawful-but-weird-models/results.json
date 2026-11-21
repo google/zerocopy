@@ -1,0 +1,1020 @@
+[
+  {
+    "id": "getGet_of_getPut_of_putGet",
+    "lean": "Toy.StoreLaws.getGet_of_getPut_of_putGet",
+    "lean_names": [
+      "Toy.StoreLaws.getGet_of_getPut_of_putGet",
+      "Toy.StoreLaws.Derivable.getGet_of",
+      "Toy.StoreLaws.GetGet",
+      "Toy.StoreLaws.GetGetVia",
+      "Toy.StoreLaws.GetPut",
+      "Toy.StoreLaws.GetPutVia",
+      "Toy.StoreLaws.PutGet",
+      "Toy.StoreLaws.PutGetVia",
+      "Toy.StoreLaws.PutPutVia",
+      "Toy.StoreLaws.faultingCounter",
+      "Toy.StoreLaws.getGetVia_not_entailed_by_getPutVia_putGetVia",
+      "Toy.StoreLaws.getGet_not_entailed_by_pairs_with_putPut_bool",
+      "Toy.StoreLaws.getGet_of_tight_getPut",
+      "Toy.StoreLaws.getGet_of_tight_putGet",
+      "Toy.StoreLaws.inertHidden",
+      "Toy.StoreLaws.nv_getGet_of_getPut_of_putGet",
+      "Toy.StoreLaws.readToClear",
+      "Toy.StoreLaws.fstViaModel",
+      "Toy.StoreLaws.faultingRet"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "The derivation of get–get from get–put and put–get is published (Kidney–Yang–Wu 2024, with a proof in the authors' Agda repository; Matache et al. 2025; Hillerström 2021); restated here for models on arbitrary carriers.",
+    "plain_claim": "For every cell type S, every carrier X and every model M : Model S X, if M satisfies get–put and put–get as equations in X, then M satisfies get–get as an equation in X.",
+    "hypotheses": [
+      {
+        "name": "hGP : GetPut M",
+        "purpose": "Gives x = M.get (fun t => M.put t x) for every x : X, which places a write of the value just read in front of both sides of get–get.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.getGet_of_tight_getPut",
+        "witness_class": "a model on a Boolean cell with Boolean results (faultingCounter: counts reads, every write faults) satisfying put–get"
+      },
+      {
+        "name": "hPG : PutGet M",
+        "purpose": "Resolves the reads after that inserted write to the written value, collapsing both sides to M.get (fun t => M.put t (k t t)).",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.getGet_of_tight_putGet",
+        "witness_class": "a model on a Boolean cell with Boolean results (readToClear: reading resets the cell to false) satisfying get–put"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "inertHidden Bool Bool Bool (an ordinary cell next to an untouched hidden component) satisfies get–put and put–get.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_getGet_of_getPut_of_putGet",
+    "non_claims": [
+      "Concerns strict satisfaction (laws as equations in the carrier, for arbitrary carrier elements as continuations). Satisfaction through an observation (GetGetVia, GetPutVia, PutGetVia, PutPutVia) is a different notion: through a non-injective observation the strict entailments need not hold (getGetVia_not_entailed_by_getPutVia_putGetVia).",
+      "Does not say get–get follows from either law alone: each hypothesis is tight on a Boolean cell (getGet_of_tight_getPut, getGet_of_tight_putGet).",
+      "Does not say get–get is redundant together with put–put and one of the other two laws: getGet_not_entailed_by_pairs_with_putPut_bool gives Boolean-cell models of {get–put, put–put} and of {put–get, put–put} violating get–get.",
+      "The syntactic counterpart, derivability of every get–get instance from get–put and put–get instances, is the supporting lemma Derivable.getGet_of.",
+      "Models here take get and put with explicit continuations. For a monadic interface (get : m S, put : S → m Unit) the translation to these models relies on the monad laws (see the modeling bridge under Applicability); monads that violate them are not examined.",
+      "Concerns one cell; laws relating reads of different locations in multi-location state are not examined.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "J. Gibbons and R. Hinze, 'Just do it: simple monadic equational reasoning', ICFP 2011, ACM, pp. 2-14, DOI 10.1145/2034773.2034777. Section 6 states the four MonadState axioms put–put, put–get, get–put (get >>= put = skip) and get–get.",
+      "D. O. Kidney, Z. Yang and N. Wu, 'Algebraic Effects Meet Hoare Logic in Cubical Agda', Proc. ACM Program. Lang. 8 (POPL), Article 56, 2024, DOI 10.1145/3632898. Section 3, Eq. (12): the theory of mutable state with the three laws put–put, put–get, get–put; the text states that get–get 'in fact follows from the equations above'. The authors' public Agda repository (github.com/oisdk/algebraic-free-monads-agda at commit 09f6fa1e9304732acfc72b4f8f2b9a52756361de, file Effects/State.agda) contains a proof of get–get from put–get and get–put (observed in the source; not type-checked here).",
+      "C. Matache, S. Lindley, S. K. Moss, S. Staton, N. Wu and Z. Yang, 'Scoped Effects, Scoped Operations, and Parameterized Algebraic Theories', ACM Trans. Program. Lang. Syst. 47(2), Article 8, 2025, DOI 10.1145/3731678 (earlier preprint, the extended version of the ESOP 2024 paper, as 'Scoped Effects as Parameterized Algebraic Theories', arXiv:2402.03103). Example 2.8: for the state of a single bit, with equations for put–get, put–put and get–put, 'the conspicuously missing equation for a get after a get ... can be derived', followed by a five-step derivation.",
+      "D. Hillerström, 'Foundations for Programming and Implementing Effect Handlers', PhD thesis, The University of Edinburgh, 2021; Edinburgh Research Archive record (dated 2022), DOI 10.7488/era/2122, handle 1842/38868 (author's copy, to which the page numbers below refer: dhil.net/research/papers/thesis.pdf). Section 1.2.2 (pp. 9-10) remarks that get–get is derivable from get–put and put–get; Appendix B ('Get get is redundant', p. 271) gives the derivation.",
+      "A. Lochbihler, 'Effect Polymorphism in Higher-Order Logic (Proof Pearl)', ITP 2017, Lecture Notes in Computer Science, Springer, pp. 389-409, DOI 10.1007/978-3-319-66107-0_25; journal version J. Automated Reasoning 63(2):439-462, 2019, DOI 10.1007/s10817-018-9476-2; Archive of Formal Proofs entry Monomorphic_Monad (2017), isa-afp.org/entries/Monomorphic_Monad.html. The Isabelle locale monad_state uses the same continuation-style signature get : (s ⇒ m) ⇒ m, put : s ⇒ m ⇒ m and assumes put_get, get_get, put_put, get_put and get_const as axioms, together with bind_get and bind_put, which relate get and put to the monad's bind. The locale text was read in the current version of the entry as of 2026-11-21; no immutable identifier for the entry was located, so it is identified by name and URL."
+    ],
+    "design_question": "When an interface is specified by the four state laws, which of them must be stated and checked? Under strict satisfaction, get–get need not be checked separately once get–put and put–get hold; a model that violates get–get (e.g. a destructive or counting read) violates get–put or put–get."
+  },
+  {
+    "id": "getPut_putGet_putPut_independent_bool",
+    "lean": "Toy.StoreLaws.getPut_putGet_putPut_independent_bool",
+    "lean_names": [
+      "Toy.StoreLaws.getPut_putGet_putPut_independent_bool",
+      "Toy.StoreLaws.changeLog",
+      "Toy.StoreLaws.changeLog_getGet",
+      "Toy.StoreLaws.changeLog_getPut",
+      "Toy.StoreLaws.changeLog_not_putPut",
+      "Toy.StoreLaws.changeLog_putGet",
+      "Toy.StoreLaws.dirtyBit",
+      "Toy.StoreLaws.dirtyBit_getGet",
+      "Toy.StoreLaws.dirtyBit_not_getPut",
+      "Toy.StoreLaws.dirtyBit_putGet",
+      "Toy.StoreLaws.dirtyBit_putPut",
+      "Toy.StoreLaws.empty_cell_lawful_of_getPut",
+      "Toy.StoreLaws.getGet_of_getPut_of_putGet",
+      "Toy.StoreLaws.unit_cell_lawful_of_getPut_putPut",
+      "Toy.StoreLaws.unit_cell_putPut_of_getPut_putGet",
+      "Toy.StoreLaws.writesIgnored",
+      "Toy.StoreLaws.writesIgnored_getGet",
+      "Toy.StoreLaws.writesIgnored_getPut",
+      "Toy.StoreLaws.writesIgnored_not_putGet",
+      "Toy.StoreLaws.writesIgnored_putPut"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "Independence of these three laws is folklore-level; the specific countermodels and a mechanization were not located in the sources checked.",
+    "plain_claim": "For a Boolean cell with Boolean results, with laws as carrier equations: the change-log model satisfies get–get, get–put and put–get and violates put–put; the writes-ignored model satisfies get–get, get–put and put–put and violates put–get; the dirty-bit model satisfies get–get, put–get and put–put and violates get–put.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement (no hypotheses).",
+    "non_claims": [
+      "Does not provide a model satisfying get–put, put–get and put–put and violating get–get; none exists (getGet_of_getPut_of_putGet).",
+      "The violations are proved for S = Bool and V = Bool. The positive law facts of the three models are proved for all S and V (changeLog_getGet, changeLog_getPut, changeLog_putGet, writesIgnored_getGet, writesIgnored_getPut, writesIgnored_putPut, dirtyBit_getGet, dirtyBit_putGet, dirtyBit_putPut; changeLog assumes decidable equality on S).",
+      "The result is stated for a Boolean cell. It does not carry over to cells with at most one value: on a one-element cell, get–put and put–get imply put–put (unit_cell_putPut_of_getPut_putGet) and get–put and put–put imply all four laws (unit_cell_lawful_of_getPut_putPut); on an empty cell, get–put alone implies all four laws (empty_cell_lawful_of_getPut). Cells with three or more values are not examined.",
+      "The models are toy renderings of a change log, a read-only device and a modified flag. Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "J. Gibbons and R. Hinze, 'Just do it: simple monadic equational reasoning', ICFP 2011, ACM, pp. 2-14, DOI 10.1145/2034773.2034777. Section 6 states the four MonadState axioms put–put, put–get, get–put (get >>= put = skip) and get–get.",
+      "The specific independence models were not located in the sources checked."
+    ],
+    "design_question": "For a Boolean cell, which lawful-looking behaviors does each law rule out, and does each law rule out something the other three allow? On a Boolean cell, each of get–put, put–get and put–put is violated by a natural model of the other three: a log of value-changing writes (changeLog) violates put–put, a device that drops writes (writesIgnored) violates put–get, and a flag set by every write, including writes of the value already held (dirtyBit), violates get–put."
+  },
+  {
+    "id": "getGet_not_entailed_by_pairs_with_putPut_bool",
+    "lean": "Toy.StoreLaws.getGet_not_entailed_by_pairs_with_putPut_bool",
+    "lean_names": [
+      "Toy.StoreLaws.getGet_not_entailed_by_pairs_with_putPut_bool",
+      "Toy.StoreLaws.GetGetVia",
+      "Toy.StoreLaws.GetPutVia",
+      "Toy.StoreLaws.PutGetVia",
+      "Toy.StoreLaws.PutPutVia",
+      "Toy.StoreLaws.faultingCounter",
+      "Toy.StoreLaws.faultingCounter_not_getGet",
+      "Toy.StoreLaws.faultingCounter_not_getPut",
+      "Toy.StoreLaws.faultingCounter_putGet",
+      "Toy.StoreLaws.faultingCounter_putPut",
+      "Toy.StoreLaws.getGetVia_not_entailed_by_getPutVia_putGetVia",
+      "Toy.StoreLaws.getGet_of_getPut_of_putGet",
+      "Toy.StoreLaws.readToClear",
+      "Toy.StoreLaws.readToClear_getPut",
+      "Toy.StoreLaws.readToClear_not_getGet",
+      "Toy.StoreLaws.readToClear_not_putGet",
+      "Toy.StoreLaws.readToClear_putPut",
+      "Toy.StoreLaws.unit_cell_lawful_of_getPut_putPut"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "Folklore-level; the specific countermodels were not located in the sources checked.",
+    "plain_claim": "For a Boolean cell with Boolean results, with laws as carrier equations: the read-to-clear model (reading resets the cell to false) satisfies get–put and put–put and violates get–get; the faulting read-counter model (counts reads, every write faults) satisfies put–get and put–put and violates get–get.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement (no hypotheses).",
+    "non_claims": [
+      "Does not contradict getGet_of_getPut_of_putGet: readToClear violates put–get and faultingCounter violates get–put (readToClear_not_putGet, faultingCounter_not_getPut).",
+      "Proved for S = Bool, V = Bool. On a one-element cell, get–put and put–put imply get–get (unit_cell_lawful_of_getPut_putPut), so the read-to-clear countermodel has no one-element analogue; other cell types are not examined.",
+      "Concerns strict satisfaction (laws as equations in the carrier, for arbitrary carrier elements as continuations). Satisfaction through an observation (GetGetVia, GetPutVia, PutGetVia, PutPutVia) is a different notion: through a non-injective observation the strict entailments need not hold (getGetVia_not_entailed_by_getPutVia_putGetVia).",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "The specific models were not located in the sources checked.",
+      "J. Gibbons and R. Hinze, 'Just do it: simple monadic equational reasoning', ICFP 2011, ACM, pp. 2-14, DOI 10.1145/2034773.2034777. Section 6 states the four MonadState axioms put–put, put–get, get–put (get >>= put = skip) and get–get."
+    ],
+    "design_question": "Under strict satisfaction on a Boolean cell, when is get–get worth stating separately? It is implied once both get–put and put–get are present (getGet_of_getPut_of_putGet), and it is not implied by either of them together with put–put; so stating it matters for law sets that lack get–put or put–get."
+  },
+  {
+    "id": "entailsBool_iff",
+    "lean": "Toy.StoreLaws.entailsBool_iff",
+    "lean_names": [
+      "Toy.StoreLaws.entailsBool_iff",
+      "Toy.StoreLaws.GetGetVia",
+      "Toy.StoreLaws.GetPutVia",
+      "Toy.StoreLaws.PutGetVia",
+      "Toy.StoreLaws.PutPutVia",
+      "Toy.StoreLaws.derivable_lawsExcept_getGet_iff",
+      "Toy.StoreLaws.dropGetPut_loses_nf",
+      "Toy.StoreLaws.dropPutGet_loses_nf",
+      "Toy.StoreLaws.dropPutPut_loses_nf",
+      "Toy.StoreLaws.empty_cell_lawful_of_getPut",
+      "Toy.StoreLaws.getGetVia_not_entailed_by_getPutVia_putGetVia",
+      "Toy.StoreLaws.getGet_not_derivable_from_getPut_putPut",
+      "Toy.StoreLaws.getGet_not_derivable_from_putGet_putPut",
+      "Toy.StoreLaws.nv_entailsBool_iff",
+      "Toy.StoreLaws.unit_cell_lawful_of_getPut_putPut",
+      "Toy.StoreLaws.unit_cell_putPut_of_getPut_putGet",
+      "Toy.StoreLaws.Law",
+      "Toy.StoreLaws.Law.Holds",
+      "Toy.StoreLaws.LawSet",
+      "Toy.StoreLaws.SatisfiesAll",
+      "Toy.StoreLaws.EntailsBool",
+      "Toy.StoreLaws.allLaws",
+      "Toy.StoreLaws.lawsExcept"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_rationale": "The get–get direction is published (see prior art); the complete characterization for a Boolean cell and its mechanization were not located in the sources checked.",
+    "plain_claim": "For models on a Boolean cell (any carrier, laws as carrier equations), a set Γ of the four laws entails a law l (every model satisfying every law in Γ satisfies l) iff l is in Γ, or l is get–get and both get–put and put–get are in Γ.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Both sides are inhabited: {get–put, put–get} entails get–get, and the three laws other than put–put do not entail put–put.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_entailsBool_iff",
+    "non_claims": [
+      "The result is stated for a Boolean cell. It does not carry over to cells with at most one value: on a one-element cell, get–put and put–get imply put–put (unit_cell_putPut_of_getPut_putGet) and get–put and put–put imply all four laws (unit_cell_lawful_of_getPut_putPut); on an empty cell, get–put alone implies all four laws (empty_cell_lawful_of_getPut). Cells with three or more values are not examined.",
+      "Concerns entailment of single laws by sets of laws, with models on carriers in Type; entailment of other equations is not characterized here.",
+      "The syntactic counterpart is stated for the four law sets that omit one law (derivable_lawsExcept_getGet_iff, dropGetPut_loses_nf, dropPutGet_loses_nf, dropPutPut_loses_nf) and for get–get from the two-law sets {get–put, put–put} and {put–get, put–put} (getGet_not_derivable_from_getPut_putPut, getGet_not_derivable_from_putGet_putPut); other law sets are not examined syntactically.",
+      "Concerns strict satisfaction (laws as equations in the carrier, for arbitrary carrier elements as continuations). Satisfaction through an observation (GetGetVia, GetPutVia, PutGetVia, PutPutVia) is a different notion: through a non-injective observation the strict entailments need not hold (getGetVia_not_entailed_by_getPutVia_putGetVia).",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "J. Gibbons and R. Hinze, 'Just do it: simple monadic equational reasoning', ICFP 2011, ACM, pp. 2-14, DOI 10.1145/2034773.2034777. Section 6 states the four MonadState axioms put–put, put–get, get–put (get >>= put = skip) and get–get.",
+      "D. O. Kidney, Z. Yang and N. Wu, 'Algebraic Effects Meet Hoare Logic in Cubical Agda', Proc. ACM Program. Lang. 8 (POPL), Article 56, 2024, DOI 10.1145/3632898. Section 3, Eq. (12): the theory of mutable state with the three laws put–put, put–get, get–put; the text states that get–get 'in fact follows from the equations above'. The authors' public Agda repository (github.com/oisdk/algebraic-free-monads-agda at commit 09f6fa1e9304732acfc72b4f8f2b9a52756361de, file Effects/State.agda) contains a proof of get–get from put–get and get–put (observed in the source; not type-checked here).",
+      "C. Matache, S. Lindley, S. K. Moss, S. Staton, N. Wu and Z. Yang, 'Scoped Effects, Scoped Operations, and Parameterized Algebraic Theories', ACM Trans. Program. Lang. Syst. 47(2), Article 8, 2025, DOI 10.1145/3731678 (earlier preprint, the extended version of the ESOP 2024 paper, as 'Scoped Effects as Parameterized Algebraic Theories', arXiv:2402.03103). Example 2.8: for the state of a single bit, with equations for put–get, put–put and get–put, 'the conspicuously missing equation for a get after a get ... can be derived', followed by a five-step derivation.",
+      "D. Hillerström, 'Foundations for Programming and Implementing Effect Handlers', PhD thesis, The University of Edinburgh, 2021; Edinburgh Research Archive record (dated 2022), DOI 10.7488/era/2122, handle 1842/38868 (author's copy, to which the page numbers below refer: dhil.net/research/papers/thesis.pdf). Section 1.2.2 (pp. 9-10) remarks that get–get is derivable from get–put and put–get; Appendix B ('Get get is redundant', p. 271) gives the derivation.",
+      "The complete entailment characterization for a Boolean cell was not located in the sources checked."
+    ],
+    "design_question": "Complete tightness ledger for the law set on a Boolean cell: Γ ⊨ l with l not in Γ holds exactly when l = get–get and get–put, put–get are in Γ."
+  },
+  {
+    "id": "derivable_nf_of_getPut_putGet_putPut",
+    "lean": "Toy.StoreLaws.derivable_nf_of_getPut_putGet_putPut",
+    "lean_names": [
+      "Toy.StoreLaws.derivable_nf_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.Derivable",
+      "Toy.StoreLaws.Derivable.getGet_of",
+      "Toy.StoreLaws.dropGetPut_loses_nf",
+      "Toy.StoreLaws.dropPutGet_loses_nf",
+      "Toy.StoreLaws.dropPutPut_loses_nf",
+      "Toy.StoreLaws.intended",
+      "Toy.StoreLaws.lawsExcept",
+      "Toy.StoreLaws.nv_derivable_nf",
+      "Toy.StoreLaws.Prog",
+      "Toy.StoreLaws.Prog.ret",
+      "Toy.StoreLaws.Prog.get",
+      "Toy.StoreLaws.Prog.put",
+      "Toy.StoreLaws.run",
+      "Toy.StoreLaws.canon",
+      "Toy.StoreLaws.nf",
+      "Toy.StoreLaws.Derivable.get_congr"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "Normal forms for global state are standard (see prior art).",
+    "plain_claim": "For every cell type S, result type V and law set L containing get–put, put–get and put–put, every program p : Prog S V is derivable from L to be equal to get (fun s => put (run p s).2 (ret (run p s).1)), the canonical program of its intended observation run p.",
+    "hypotheses": [
+      {
+        "name": "hGP : L .getPut",
+        "purpose": "Introduces the leading read for returns (ret v = get (fun s => put s (ret v))) and removes a read whose continuation ignores the value.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.dropGetPut_loses_nf",
+        "witness_class": "L = all laws but get–put, Boolean cell, Boolean results, p = ret true"
+      },
+      {
+        "name": "hPG : L .putGet",
+        "purpose": "Resolves a read after a write (put t (get k) = put t (k t)); with get–put also derives get–get.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.dropPutGet_loses_nf",
+        "witness_class": "L = all laws but put–get, Boolean cell, Boolean results, p = put true (get ret)"
+      },
+      {
+        "name": "hPP : L .putPut",
+        "purpose": "Merges consecutive writes into the last one.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.dropPutPut_loses_nf",
+        "witness_class": "L = all laws but put–put, Boolean cell, Boolean results, p = put true (put false (ret true))"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "L = lawsExcept .getGet (get–put, put–get, put–put without get–get) satisfies all three hypotheses.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_derivable_nf",
+    "non_claims": [
+      "Does not require get–get in L; it is derivable from get–put and put–get (Derivable.getGet_of), and including it is harmless.",
+      "Normal forms are relative to the free-monad syntax Prog, where the monad laws hold as literal equalities of programs; a syntax with an explicit bind constructor (where monad laws are extra axioms) is not covered.",
+      "Derivable contains the congruence rule get_congr with one premise per value of S; for infinite S this is an infinitary proof system (as with the infinitary lookup operation of Plotkin–Power), and the theorem gives no decision procedure for derivability.",
+      "Prog.get takes an arbitrary Lean function S → Prog S V as its continuation, and the canonical program nf (run p) uses arbitrary functions S → S and S → V. In a programming language whose programs are finitary syntax these functions need not be definable, so the theorem says nothing about normal forms within such a syntax.",
+      "Establishes that a derivation exists in the equational relation Derivable L; it is not a terminating or confluent rewrite system and gives no normalization algorithm.",
+      "Says nothing about several cells, recursion, or other effects. Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "J. Gibbons and R. Hinze, 'Just do it: simple monadic equational reasoning', ICFP 2011, ACM, pp. 2-14, DOI 10.1145/2034773.2034777. Section 6 states the four MonadState axioms put–put, put–get, get–put (get >>= put = skip) and get–get.",
+      "A. Lochbihler, 'Effect Polymorphism in Higher-Order Logic (Proof Pearl)', ITP 2017, Lecture Notes in Computer Science, Springer, pp. 389-409, DOI 10.1007/978-3-319-66107-0_25; journal version J. Automated Reasoning 63(2):439-462, 2019, DOI 10.1007/s10817-018-9476-2; Archive of Formal Proofs entry Monomorphic_Monad (2017), isa-afp.org/entries/Monomorphic_Monad.html. The Isabelle locale monad_state uses the same continuation-style signature get : (s ⇒ m) ⇒ m, put : s ⇒ m ⇒ m and assumes put_get, get_get, put_put, get_put and get_const as axioms, together with bind_get and bind_put, which relate get and put to the monad's bind. The locale text was read in the current version of the entry as of 2026-11-21; no immutable identifier for the entry was located, so it is identified by name and URL."
+    ],
+    "design_question": "Does the law set pin down program equality? Get–put, put–get and put–put bring every program to a read-once, write-once, return form determined by its intended observation."
+  },
+  {
+    "id": "canon_eq_of_derivable",
+    "lean": "Toy.StoreLaws.canon_eq_of_derivable",
+    "lean_names": [
+      "Toy.StoreLaws.canon_eq_of_derivable",
+      "Toy.StoreLaws.Derivable",
+      "Toy.StoreLaws.allLaws",
+      "Toy.StoreLaws.canon_eq_tight",
+      "Toy.StoreLaws.derivable_nf_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.dropGetPut_loses_nf",
+      "Toy.StoreLaws.dropPutGet_loses_nf",
+      "Toy.StoreLaws.dropPutPut_loses_nf",
+      "Toy.StoreLaws.intended",
+      "Toy.StoreLaws.nv_canon_eq_of_derivable",
+      "Toy.StoreLaws.valueOnly_lawful_not_faithful"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "Uniqueness of normal forms by soundness in the intended model is standard.",
+    "plain_claim": "For every cell type S, result type V and law set L, if canon f g and canon f' g' are derivably equal from L, then f = f' and g = g'.",
+    "hypotheses": [
+      {
+        "name": "h : Derivable L (canon f g) (canon f' g')",
+        "purpose": "The premise; it transfers to equality of intended observations by soundness (the intended model satisfies every law).",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.canon_eq_tight",
+        "witness_class": "S = V = Bool: write maps fun s => s and fun s => !s, result maps both fun s => s; without the premise the conclusion fails for these maps"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Reflexivity: Derivable allLaws (canon (fun s => !s) (fun s => s)) (canon (fun s => !s) (fun s => s)).",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_canon_eq_of_derivable",
+    "non_claims": [
+      "Uniqueness up to derivability holds for every law set L. Existence of canonical forms is proved from get–put, put–get and put–put (derivable_nf_of_getPut_putGet_putPut); on a Boolean cell with Boolean results each of these three is tight for existence (dropGetPut_loses_nf, dropPutGet_loses_nf, dropPutPut_loses_nf).",
+      "Says nothing about uniqueness up to equality in a model other than the intended one: at a fixed valuation, lawful models may identify different canonical programs (valueOnly_lawful_not_faithful).",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'."
+    ],
+    "design_question": "Is the canonical form a faithful representative? Yes: distinct (write map, result map) pairs are never derivably equal."
+  },
+  {
+    "id": "derivable_iff_obsEq_of_getPut_putGet_putPut",
+    "lean": "Toy.StoreLaws.derivable_iff_obsEq_of_getPut_putGet_putPut",
+    "lean_names": [
+      "Toy.StoreLaws.derivable_iff_obsEq_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.Derivable",
+      "Toy.StoreLaws.ObsEq",
+      "Toy.StoreLaws.dropGetPut_loses_nf",
+      "Toy.StoreLaws.dropPutGet_loses_nf",
+      "Toy.StoreLaws.dropPutPut_loses_nf",
+      "Toy.StoreLaws.intended",
+      "Toy.StoreLaws.lawsExcept",
+      "Toy.StoreLaws.nv_derivable_nf"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_rationale": "Completeness of the state laws is standard.",
+    "plain_claim": "For every cell type S, result type V and law set L containing get–put, put–get and put–put, two programs p, q : Prog S V are derivably equal from L iff they are observationally equivalent (run p = run q).",
+    "hypotheses": [
+      {
+        "name": "hGP : L .getPut",
+        "purpose": "Used for completeness (right-to-left).",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.dropGetPut_loses_nf",
+        "witness_class": "L = all laws but get–put, Boolean cell, Boolean results"
+      },
+      {
+        "name": "hPG : L .putGet",
+        "purpose": "Used for completeness (right-to-left).",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.dropPutGet_loses_nf",
+        "witness_class": "L = all laws but put–get, Boolean cell, Boolean results"
+      },
+      {
+        "name": "hPP : L .putPut",
+        "purpose": "Used for completeness (right-to-left).",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.dropPutPut_loses_nf",
+        "witness_class": "L = all laws but put–put, Boolean cell, Boolean results"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "L = lawsExcept .getGet satisfies all three hypotheses.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_derivable_nf",
+    "non_claims": [
+      "Left-to-right (soundness) holds for every law set; the hypotheses are used for right-to-left (completeness).",
+      "Observational equivalence here observes final value and final cell content from every initial content; weaker observations (e.g. observing the final value alone) are not characterized here.",
+      "For infinite S, Derivable L is an infinitary proof system (get_congr has one premise per value of S) and ObsEq is extensional equality of functions on S; the theorem gives no decision procedure for either relation.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "J. Gibbons and R. Hinze, 'Just do it: simple monadic equational reasoning', ICFP 2011, ACM, pp. 2-14, DOI 10.1145/2034773.2034777. Section 6 states the four MonadState axioms put–put, put–get, get–put (get >>= put = skip) and get–get."
+    ],
+    "design_question": "Is reasoning with the laws complete for the intended semantics? For one cell, yes: every observationally equivalent pair (same final value and final cell content from every initial content, ObsEq) is derivably equal from any law set containing get–put, put–get and put–put."
+  },
+  {
+    "id": "interp_eq_fromObs_run_of_getPut_putGet_putPut",
+    "lean": "Toy.StoreLaws.interp_eq_fromObs_run_of_getPut_putGet_putPut",
+    "lean_names": [
+      "Toy.StoreLaws.interp_eq_fromObs_run_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.GetPut",
+      "Toy.StoreLaws.PutGet",
+      "Toy.StoreLaws.PutPut",
+      "Toy.StoreLaws.changeLog",
+      "Toy.StoreLaws.dirtyBit",
+      "Toy.StoreLaws.dropLog",
+      "Toy.StoreLaws.inertHidden",
+      "Toy.StoreLaws.inertHidden_pairFlipRet_changes_hidden",
+      "Toy.StoreLaws.intended",
+      "Toy.StoreLaws.intended_lawful",
+      "Toy.StoreLaws.intended_leafLog_lawful_and_logs",
+      "Toy.StoreLaws.interp_factor_tight_getPut",
+      "Toy.StoreLaws.interp_factor_tight_putGet",
+      "Toy.StoreLaws.interp_factor_tight_putPut",
+      "Toy.StoreLaws.nv_interp_factor",
+      "Toy.StoreLaws.pairFlipRet",
+      "Toy.StoreLaws.unitModel_lawful_not_faithful",
+      "Toy.StoreLaws.valueOnly_lawful_not_faithful",
+      "Toy.StoreLaws.writeLog_via_distinguishes_obsEq",
+      "Toy.StoreLaws.writesIgnored",
+      "Toy.StoreLaws.Model",
+      "Toy.StoreLaws.Model.interp",
+      "Toy.StoreLaws.Model.fromObs"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "A consequence of freeness of the state monad (Plotkin–Power).",
+    "plain_claim": "For every model M on a carrier X satisfying get–put, put–get and put–put as equations in X, every valuation ρ : V → X and every program p, M.interp ρ p = M.get (fun s => M.put (run p s).2 (ρ (run p s).1)); that is, the interpretation of p in M is determined by its intended observation run p and by ρ.",
+    "hypotheses": [
+      {
+        "name": "hGP : GetPut M",
+        "purpose": "Used through normal-form existence and soundness.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.interp_factor_tight_getPut",
+        "witness_class": "dirtyBit on a Boolean cell with Boolean results (satisfies put–get, put–put)"
+      },
+      {
+        "name": "hPG : PutGet M",
+        "purpose": "Used through normal-form existence and soundness.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.interp_factor_tight_putGet",
+        "witness_class": "writesIgnored on a Boolean cell with Boolean results (satisfies get–put, put–put)"
+      },
+      {
+        "name": "hPP : PutPut M",
+        "purpose": "Used through normal-form existence and soundness.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.interp_factor_tight_putPut",
+        "witness_class": "changeLog on a Boolean cell with Boolean results (satisfies get–put, put–get)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "inertHidden Bool Bool Bool satisfies get–put, put–get and put–put.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_interp_factor",
+    "non_claims": [
+      "Weakening strict satisfaction to satisfaction through a non-injective observation defeats the factorization: the write log satisfies all four laws through dropLog and distinguishes observationally equivalent programs (writeLog_via_distinguishes_obsEq).",
+      "Does not say the factor map is injective: at a fixed valuation, lawful models may identify different observations (valueOnly_lawful_not_faithful, unitModel_lawful_not_faithful).",
+      "The factorization is per valuation ρ; how M.interp depends on ρ is not constrained beyond this formula.",
+      "Does not exclude effects carried by the valuation: the strictly lawful intended model with results Bool × List Bool records a log supplied by the valuation (intended_leafLog_lawful_and_logs), and the strictly lawful inertHidden model changes its hidden component under the valuation pairFlipRet (inertHidden_pairFlipRet_changes_hidden). The laws constrain get and put; how these toy models relate to monad transformers such as a state monad over a writer monad is not proved here.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "G. D. Plotkin and M. Pretnar, 'Handlers of Algebraic Effects', ESOP 2009, Lecture Notes in Computer Science, Springer, pp. 80-94, DOI 10.1007/978-3-642-00590-9_7; journal version 'Handling Algebraic Effects', Logical Methods in Computer Science 9(4:23), 2013, DOI 10.2168/LMCS-9(4:23)2013. Handlers are models of the effect theory, and handling is the homomorphism induced by the universal property of the free model."
+    ],
+    "design_question": "What can a strictly lawful model reveal about a program beyond its intended semantics? Nothing beyond its intended observation and the valuation."
+  },
+  {
+    "id": "interp_eq_of_obsEq_of_getPut_putGet_putPut",
+    "lean": "Toy.StoreLaws.interp_eq_of_obsEq_of_getPut_putGet_putPut",
+    "lean_names": [
+      "Toy.StoreLaws.interp_eq_of_obsEq_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.GetPut",
+      "Toy.StoreLaws.ObsEq",
+      "Toy.StoreLaws.PutGet",
+      "Toy.StoreLaws.PutPut",
+      "Toy.StoreLaws.changeLog",
+      "Toy.StoreLaws.coupledHidden_lawful_changes_hidden",
+      "Toy.StoreLaws.dirtyBit",
+      "Toy.StoreLaws.dropLog",
+      "Toy.StoreLaws.forall_interp_eq_iff_obsEq_of_getPut_putGet_putPut_of_nontrivial",
+      "Toy.StoreLaws.inertHidden",
+      "Toy.StoreLaws.inertHidden_interp_eq",
+      "Toy.StoreLaws.inertHidden_pairFlipRet_changes_hidden",
+      "Toy.StoreLaws.intended",
+      "Toy.StoreLaws.intended_leafLog_lawful_and_logs",
+      "Toy.StoreLaws.interp_eq_tight_obsEq",
+      "Toy.StoreLaws.interp_factor_tight_getPut",
+      "Toy.StoreLaws.interp_factor_tight_putGet",
+      "Toy.StoreLaws.interp_factor_tight_putPut",
+      "Toy.StoreLaws.nv_interp_eq_of_obsEq",
+      "Toy.StoreLaws.pairFlipRet",
+      "Toy.StoreLaws.valueOnly_lawful_not_faithful",
+      "Toy.StoreLaws.writeLog_via_distinguishes_obsEq",
+      "Toy.StoreLaws.writesIgnored"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_rationale": "A direct corollary of the factorization.",
+    "plain_claim": "For every model M on a carrier X satisfying get–put, put–get and put–put as equations in X, every valuation ρ, and all programs p, q with run p = run q, M.interp ρ p = M.interp ρ q: no such model distinguishes observationally equivalent programs.",
+    "hypotheses": [
+      {
+        "name": "hGP : GetPut M",
+        "purpose": "Excludes, e.g., a flag set by every write.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.interp_factor_tight_getPut",
+        "witness_class": "dirtyBit, Boolean cell, Boolean results"
+      },
+      {
+        "name": "hPG : PutGet M",
+        "purpose": "Excludes, e.g., dropped writes.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.interp_factor_tight_putGet",
+        "witness_class": "writesIgnored, Boolean cell, Boolean results"
+      },
+      {
+        "name": "hPP : PutPut M",
+        "purpose": "Excludes, e.g., logging overwritten value-changing writes.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.interp_factor_tight_putPut",
+        "witness_class": "changeLog, Boolean cell, Boolean results"
+      },
+      {
+        "name": "h : ObsEq p q",
+        "purpose": "The premise.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.interp_eq_tight_obsEq",
+        "witness_class": "the intended model on a Boolean cell with p = ret true, q = ret false"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "inertHidden Bool Bool Bool satisfies get–put, put–get and put–put, and put true (put false (ret true)) and put false (ret true) are observationally equivalent.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_interp_eq_of_obsEq",
+    "positive_control_lean": "Toy.StoreLaws.writeLog_via_distinguishes_obsEq",
+    "non_claims": [
+      "Weakening strict satisfaction to satisfaction through the log-forgetting observation defeats the conclusion: the write log satisfies all four laws through dropLog and distinguishes put true (put false (ret true)) from put false (ret true) (writeLog_via_distinguishes_obsEq).",
+      "Does not say lawful models are faithful at a fixed valuation (valueOnly_lawful_not_faithful); faithfulness across all valuations for models with two distinct carrier elements is forall_interp_eq_iff_obsEq_of_getPut_putGet_putPut_of_nontrivial.",
+      "Does not exclude hidden state that no operation touches (inertHidden_interp_eq), nor hidden state that put changes as a function of the cell contents (coupledHidden_lawful_changes_hidden).",
+      "Does not exclude effects carried by the valuation: the strictly lawful intended model with results Bool × List Bool records a log supplied by the valuation (intended_leafLog_lawful_and_logs), and the strictly lawful inertHidden model changes its hidden component under the valuation pairFlipRet (inertHidden_pairFlipRet_changes_hidden). The laws constrain get and put; how these toy models relate to monad transformers such as a state monad over a writer monad is not proved here.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'."
+    ],
+    "design_question": "Can a strictly lawful model expose hidden write logs or counters through get and put? Not ones that differ between observationally equivalent programs: under strict laws, what such a model assigns to a program is fixed by the program's intended observation and the valuation. Effects carried by the valuation are not constrained by the laws."
+  },
+  {
+    "id": "fromObs_isHom_unique_of_getPut_putGet_putPut",
+    "lean": "Toy.StoreLaws.fromObs_isHom_unique_of_getPut_putGet_putPut",
+    "lean_names": [
+      "Toy.StoreLaws.fromObs_isHom_unique_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.GetPut",
+      "Toy.StoreLaws.PutGet",
+      "Toy.StoreLaws.PutPut",
+      "Toy.StoreLaws.changeLog",
+      "Toy.StoreLaws.dirtyBit",
+      "Toy.StoreLaws.fromObs_not_surjective_inertHidden",
+      "Toy.StoreLaws.fromObs_range_eq_interp_range",
+      "Toy.StoreLaws.fromObs_tight_getPut",
+      "Toy.StoreLaws.fromObs_tight_putGet",
+      "Toy.StoreLaws.fromObs_tight_putPut",
+      "Toy.StoreLaws.getPut_putGet_putPut_iff_exists_surjective_isHom",
+      "Toy.StoreLaws.inertHidden",
+      "Toy.StoreLaws.intended",
+      "Toy.StoreLaws.intendedRet",
+      "Toy.StoreLaws.isHom_eq_fromObs",
+      "Toy.StoreLaws.logRet",
+      "Toy.StoreLaws.nv_fromObs_isHom",
+      "Toy.StoreLaws.pairRet",
+      "Toy.StoreLaws.valueOnly",
+      "Toy.StoreLaws.valueOnly_lawful_not_faithful",
+      "Toy.StoreLaws.writesIgnored",
+      "Toy.StoreLaws.IsHom",
+      "Toy.StoreLaws.Model.fromObs"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_rationale": "Freeness of the state monad (Plotkin–Power Theorem 1).",
+    "plain_claim": "For every model M on a carrier X satisfying get–put, put–get and put–put as equations in X and every valuation ρ : V → X, the map o ↦ M.get (fun s => M.put (o s).2 (ρ (o s).1)) from intended observations S → V × S to X is a homomorphism from the intended model to M (it sends intendedRet v to ρ v and commutes with get and put), and every such homomorphism equals it.",
+    "hypotheses": [
+      {
+        "name": "hGP : GetPut M",
+        "purpose": "Used for the return clause of the homomorphism.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.fromObs_tight_getPut",
+        "witness_class": "dirtyBit, Boolean cell, Boolean results, ρ = pairRet"
+      },
+      {
+        "name": "hPG : PutGet M",
+        "purpose": "Used for the put clause (and, with get–put, the get clause).",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.fromObs_tight_putGet",
+        "witness_class": "writesIgnored, Boolean cell, Boolean results, ρ = intendedRet"
+      },
+      {
+        "name": "hPP : PutPut M",
+        "purpose": "Used for the put clause.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.fromObs_tight_putPut",
+        "witness_class": "changeLog, Boolean cell, Boolean results, ρ = logRet"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "valueOnly Bool Bool satisfies get–put, put–get and put–put.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_fromObs_isHom",
+    "non_claims": [
+      "The uniqueness half holds for every model M; it uses none of the laws (isHom_eq_fromObs).",
+      "Does not say M.fromObs ρ is surjective onto the carrier X: for the strictly lawful inertHidden Bool Bool Bool and ρ = pairRet it is not (fromObs_not_surjective_inertHidden). Its image is exactly the set of program interpretations under ρ (fromObs_range_eq_interp_range). That every strictly lawful model is a homomorphic image of the intended model on its own carrier is getPut_putGet_putPut_iff_exists_surjective_isHom.",
+      "Does not say the homomorphism is injective (valueOnly_lawful_not_faithful).",
+      "Freeness is stated for set-like carriers (Lean types) and one cell; the categorical generality of Plotkin–Power (categories with countable products and coproducts, several locations) is not formalized.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "G. D. Plotkin and J. Power, 'Algebraic Operations and Generic Effects', Applied Categorical Structures 11(1):69-94, 2003, DOI 10.1023/A:1023064908962. Global state via lookup/update operations and the corresponding generic effects.",
+      "G. D. Plotkin and M. Pretnar, 'Handlers of Algebraic Effects', ESOP 2009, Lecture Notes in Computer Science, Springer, pp. 80-94, DOI 10.1007/978-3-642-00590-9_7; journal version 'Handling Algebraic Effects', Logical Methods in Computer Science 9(4:23), 2013, DOI 10.2168/LMCS-9(4:23)2013. Handlers are models of the effect theory, and handling is the homomorphism induced by the universal property of the free model."
+    ],
+    "design_question": "Freeness: for a strictly lawful model M and any valuation ρ : V → X, there is exactly one structure-preserving map from the intended model on V to M that extends ρ, namely M.fromObs ρ; the program interpretations under ρ are its image."
+  },
+  {
+    "id": "getPut_putGet_putPut_iff_exists_surjective_isHom",
+    "lean": "Toy.StoreLaws.getPut_putGet_putPut_iff_exists_surjective_isHom",
+    "lean_names": [
+      "Toy.StoreLaws.getPut_putGet_putPut_iff_exists_surjective_isHom",
+      "Toy.StoreLaws.GetGetVia",
+      "Toy.StoreLaws.GetPutVia",
+      "Toy.StoreLaws.PutGetVia",
+      "Toy.StoreLaws.PutPutVia",
+      "Toy.StoreLaws.dirtyBit",
+      "Toy.StoreLaws.fromObs_not_surjective_inertHidden",
+      "Toy.StoreLaws.getGetVia_not_entailed_by_getPutVia_putGetVia",
+      "Toy.StoreLaws.getGet_of_getPut_of_putGet",
+      "Toy.StoreLaws.inertHidden",
+      "Toy.StoreLaws.intended",
+      "Toy.StoreLaws.intendedRet",
+      "Toy.StoreLaws.nv_getPut_putGet_putPut_iff_exists_surjective_isHom",
+      "Toy.StoreLaws.valueOnly_lawful_not_faithful",
+      "Toy.StoreLaws.isHom_id_surjective",
+      "Toy.StoreLaws.getPut_putGet_putPut_iff_exists_isHom"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_rationale": "Every model is a quotient of a free model (standard universal algebra; Plotkin–Power Theorem 1 for global state).",
+    "plain_claim": "For every cell type S, every carrier X and every model M : Model S X, M satisfies get–put, put–get and put–put as equations in X iff there is a map h from intended observations S → X × S to X that is a homomorphism from the intended model with result type X (returns intendedRet) to M sending intendedRet x to x, and that is surjective onto X.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Both sides are inhabited: inertHidden Bool Bool Bool has such a surjective homomorphism, and dirtyBit Bool Bool has none.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_getPut_putGet_putPut_iff_exists_surjective_isHom",
+    "non_claims": [
+      "The surjectivity conjunct adds no condition: IsHom M id h already implies it, since its return clause sends intendedRet x to x for every x : X (isHom_id_surjective); the characterization with the conjunct omitted is getPut_putGet_putPut_iff_exists_isHom.",
+      "The intended model here has result type X, the carrier itself. For another result type V and valuation ρ the comparison map need not be surjective (fromObs_not_surjective_inertHidden).",
+      "Does not say M is isomorphic to an intended model; at a fixed valuation strictly lawful models can be unfaithful (valueOnly_lawful_not_faithful).",
+      "Get–get is not among the conditions; it follows from get–put and put–get (getGet_of_getPut_of_putGet).",
+      "Concerns strict satisfaction (laws as equations in the carrier, for arbitrary carrier elements as continuations). Satisfaction through an observation (GetGetVia, GetPutVia, PutGetVia, PutPutVia) is a different notion: through a non-injective observation the strict entailments need not hold (getGetVia_not_entailed_by_getPutVia_putGetVia).",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "J. Power and O. Shkaravska, 'From Comodels to Coalgebras: State and Arrays', Electronic Notes in Theoretical Computer Science 106 (2004), 297-314, DOI 10.1016/j.entcs.2004.02.041. Models and comodels of the theory of state (related background).",
+      "F. Métayer, 'State monads and their algebras', arXiv:math/0407251, 2004. Investigates the algebras of state monads in cartesian closed categories (related background)."
+    ],
+    "design_question": "Representation theorem: the models satisfying get–put, put–get and put–put strictly are exactly the homomorphic images (quotients) of the intended model with result type X on their own carrier X, via a homomorphism that sends intendedRet x to x. Such a homomorphism is automatically surjective (isHom_id_surjective)."
+  },
+  {
+    "id": "lawful_not_faithful",
+    "lean": [
+      "Toy.StoreLaws.valueOnly_lawful_not_faithful",
+      "Toy.StoreLaws.unitModel_lawful_not_faithful"
+    ],
+    "lean_names": [
+      "Toy.StoreLaws.valueOnly_lawful_not_faithful",
+      "Toy.StoreLaws.unitModel_lawful_not_faithful",
+      "Toy.StoreLaws.forall_interp_eq_iff_obsEq_of_getPut_putGet_putPut_of_nontrivial",
+      "Toy.StoreLaws.getPut_putGet_putPut_iff_exists_surjective_isHom",
+      "Toy.StoreLaws.intended",
+      "Toy.StoreLaws.interp_eq_fromObs_run_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.unitModel",
+      "Toy.StoreLaws.unitModel_lawful",
+      "Toy.StoreLaws.valueOnly",
+      "Toy.StoreLaws.valueOnlyRet",
+      "Toy.StoreLaws.valueOnly_lawful",
+      "Toy.StoreLaws.valueOnly_separates_other_valuation_and_substitution",
+      "Toy.StoreLaws.Lawful"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "Standard observation that models of an equational theory need not be free; the instances are elementary.",
+    "plain_claim": "On a Boolean cell with Boolean results, the value-only model (carrier Bool → Bool; final cell content not observed) satisfies all four laws as carrier equations, and under the valuation valueOnlyRet (return v whatever the cell holds) it interprets ret true and ret false differently but interprets put true (ret true) and put false (ret true) equally, although they are not observationally equivalent. The one-point model satisfies all four laws and, under its unique valuation, interprets ret true and ret false equally, although they are not observationally equivalent.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement (no hypotheses).",
+    "non_claims": [
+      "Refutes 'lawful implies faithful at a given valuation'; it does not refute 'lawful implies homomorphic image', which holds (interp_eq_fromObs_run_of_getPut_putGet_putPut, getPut_putGet_putPut_iff_exists_surjective_isHom).",
+      "The unfaithfulness of valueOnly Bool Bool depends on the valuation: under the valuation fun _ s => s, and for the substitution instance with get ret in place of each returned value, it separates put true (ret true) from put false (ret true) (valueOnly_separates_other_valuation_and_substitution). Across all valuations every strictly lawful model with two distinct carrier elements is faithful (forall_interp_eq_iff_obsEq_of_getPut_putGet_putPut_of_nontrivial); the one-point model is the trivial case.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "Standard observation that models of an equational theory need not be free; the specific instances here are elementary."
+    ],
+    "design_question": "Does satisfying the laws make a model equivalent to the intended one? No: at a fixed valuation, lawful models can forget information (the final cell content, or everything)."
+  },
+  {
+    "id": "forall_interp_eq_iff_obsEq_of_getPut_putGet_putPut_of_nontrivial",
+    "lean": "Toy.StoreLaws.forall_interp_eq_iff_obsEq_of_getPut_putGet_putPut_of_nontrivial",
+    "lean_names": [
+      "Toy.StoreLaws.forall_interp_eq_iff_obsEq_of_getPut_putGet_putPut_of_nontrivial",
+      "Toy.StoreLaws.GetPut",
+      "Toy.StoreLaws.PutGet",
+      "Toy.StoreLaws.PutPut",
+      "Toy.StoreLaws.changeLog",
+      "Toy.StoreLaws.dirtyBit",
+      "Toy.StoreLaws.forall_interp_tight_getPut",
+      "Toy.StoreLaws.forall_interp_tight_nontrivial",
+      "Toy.StoreLaws.forall_interp_tight_putGet",
+      "Toy.StoreLaws.forall_interp_tight_putPut",
+      "Toy.StoreLaws.nv_forall_interp_eq_iff_obsEq",
+      "Toy.StoreLaws.valueOnly",
+      "Toy.StoreLaws.valueOnly_lawful_not_faithful",
+      "Toy.StoreLaws.writeLog_via_distinguishes_obsEq",
+      "Toy.StoreLaws.writesIgnored",
+      "Toy.StoreLaws.empty_carrier_breaks_forall_interp_iff",
+      "Toy.StoreLaws.empty_cell_getPut_not_nontrivial",
+      "Toy.StoreLaws.unitModel"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_rationale": "The model-theoretic counterpart of Hilbert–Post (equational) completeness, a known property of the state theory (see prior art).",
+    "plain_claim": "For every cell type S, carrier X, result type V and model M : Model S X satisfying get–put, put–get and put–put as equations in X, if X has two distinct elements, then for all programs p, q : Prog S V: M interprets p and q equally under every valuation ρ : V → X iff p and q are observationally equivalent.",
+    "hypotheses": [
+      {
+        "name": "hGP : GetPut M",
+        "purpose": "Used through the factorization and to recover carrier elements from writes.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.forall_interp_tight_getPut",
+        "witness_class": "dirtyBit on a Boolean cell with Boolean results (two distinct carrier elements), p = ret true and its canonical program"
+      },
+      {
+        "name": "hPG : PutGet M",
+        "purpose": "Used through the factorization and to resolve the separating read.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.forall_interp_tight_putGet",
+        "witness_class": "writesIgnored on a Boolean cell with Boolean results, p = put true (get ret) and its canonical program"
+      },
+      {
+        "name": "hPP : PutPut M",
+        "purpose": "Used through the factorization and to merge writes.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.forall_interp_tight_putPut",
+        "witness_class": "changeLog on a Boolean cell with Boolean results, p = put true (put false (ret true)) and its canonical program"
+      },
+      {
+        "name": "hnt : ∃ x y : X, x ≠ y",
+        "purpose": "Excludes subsingleton carriers, the empty carrier as well as one-point carriers. On a one-point carrier every two programs are identified; on the empty carrier there is no valuation ρ : V → X when V is inhabited, so the left-hand side holds vacuously.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.StoreLaws.forall_interp_tight_nontrivial",
+          "Toy.StoreLaws.empty_carrier_breaks_forall_interp_iff"
+        ],
+        "witness_class": "forall_interp_tight_nontrivial (the one-point model on a Boolean cell with Boolean results, p = ret true, q = ret false) and empty_carrier_breaks_forall_interp_iff (a model on a Boolean cell with the empty carrier, same p and q)"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "valueOnly Bool Bool satisfies get–put, put–get and put–put, and its carrier Bool → Bool has two distinct elements.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_forall_interp_eq_iff_obsEq",
+    "non_claims": [
+      "Quantifies over all valuations ρ : V → X. At a fixed valuation a strictly lawful model with two distinct carrier elements can still identify observationally distinct programs (valueOnly_lawful_not_faithful).",
+      "The proof uses classical logic (case distinctions on equality of cell contents and of returned values).",
+      "Says nothing about models that satisfy the laws through an observation (writeLog_via_distinguishes_obsEq).",
+      "On an empty cell (S = Empty) the hypotheses hGP and hnt cannot hold together (empty_cell_getPut_not_nontrivial), so the theorem has no instances there.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "J. Kalicki and D. Scott, 'Equational completeness of abstract algebras', Indagationes Mathematicae 17 (1955), 650-659 (publisher record: Indagationes Mathematicae (Proceedings) 58, DOI 10.1016/S1385-7258(55)50089-8). Equational completeness in universal algebra (bibliographic record checked; content not consulted).",
+      "J.-G. Dumas, D. Duval and J.-C. Reynaud, 'Patterns for computational effects arising from a monad or a comonad', arXiv:1310.0605, 2013. Section 3.3, Theorem 3.4: 'The theory for state is Hilbert-Post complete', for a single location, in a decorated logic whose axiomatization is not the four plain get/put equations; Appendix A, Proposition A.5: the key proposition, whose proof 'has been checked with the Coq proof assistant'."
+    ],
+    "design_question": "When do strictly lawful models pin down program equality? When the carrier has two distinct elements and all valuations are considered: then the model identifies exactly the observationally equivalent programs."
+  },
+  {
+    "id": "extDerivable_total_of_not_derivable",
+    "lean": "Toy.StoreLaws.extDerivable_total_of_not_derivable",
+    "lean_names": [
+      "Toy.StoreLaws.extDerivable_total_of_not_derivable",
+      "Toy.StoreLaws.Derivable",
+      "Toy.StoreLaws.Derivable.bind_left",
+      "Toy.StoreLaws.ExtDerivable",
+      "Toy.StoreLaws.ExtDerivableNoSubst",
+      "Toy.StoreLaws.allLaws",
+      "Toy.StoreLaws.empty_cell_all_derivable",
+      "Toy.StoreLaws.extDerivableNoSubst_not_total",
+      "Toy.StoreLaws.extDerivable_tight",
+      "Toy.StoreLaws.nv_extDerivable_total",
+      "Toy.StoreLaws.unit_cell_unit_result_all_derivable",
+      "Toy.StoreLaws.valueOnly",
+      "Toy.StoreLaws.valueOnlyRet",
+      "Toy.StoreLaws.valueOnly_lawful_not_faithful",
+      "Toy.StoreLaws.valueOnly_separates_other_valuation_and_substitution",
+      "Toy.StoreLaws.Prog.bind",
+      "Toy.StoreLaws.ExtDerivable.inst",
+      "Toy.StoreLaws.ExtDerivable.get_congr",
+      "Toy.StoreLaws.ExtDerivableNoSubst.get_congr"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "Hilbert–Post completeness of single-location global state is published (Pretnar 2010, as attested by Dumas–Duval–Reynaud 2013; Dumas–Duval–Reynaud 2013 in a decorated logic, with a Coq-checked key proposition).",
+    "plain_claim": "For every cell type S, result type V and programs p₀, q₀ : Prog S V such that p₀ = q₀ is not derivable from the four laws, the theory generated by the four laws together with every substitution instance p₀.bind σ = q₀.bind σ (σ : V → Prog S V) equates every two programs of type Prog S V.",
+    "hypotheses": [
+      {
+        "name": "h : ¬ Derivable allLaws p₀ q₀",
+        "purpose": "Excludes adding an equation already in the theory.",
+        "tightness": "tight",
+        "counterexample": "Toy.StoreLaws.extDerivable_tight",
+        "witness_class": "S = Bool, V = Bool, p₀ = q₀ = ret true"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "p₀ = ret true, q₀ = ret false (S = V = Bool) is not derivable.",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_extDerivable_total",
+    "positive_control_lean": [
+      "Toy.StoreLaws.extDerivable_tight",
+      "Toy.StoreLaws.extDerivableNoSubst_not_total"
+    ],
+    "non_claims": [
+      "'Collapse' means: all programs of the fixed type Prog S V are identified, including ret v₁ = ret v₂ when V has two values. For a one-element result type it identifies programs that differ in their final cell content; there are no distinct return values to identify. Theories spanning several result types are not formalized.",
+      "Closure under substitution is built into the extended theory (rule ExtDerivable.inst). Without it the extension need not collapse: adding ret true = ret false alone (ExtDerivableNoSubst) does not identify put true (ret true) with put false (ret true) (extDerivableNoSubst_not_total).",
+      "The proof uses classical logic: it builds a continuation that branches on whether the cell holds a given value and a substitution that branches on equality of returned values. Prog.get accepts arbitrary Lean functions as continuations; whether the result holds for a syntax restricted to computable or finitary continuations, or constructively without decidable equality on S and V, is not examined.",
+      "Does not contradict valueOnly_lawful_not_faithful: valueOnly Bool Bool validates put true (ret true) = put false (ret true) under the valuation valueOnlyRet but not under the valuation fun _ s => s, and not for the substitution instance with get ret in place of each returned value (valueOnly_separates_other_valuation_and_substitution), so it is not a model of the theory extended by that equation.",
+      "On an empty cell, and on a one-element cell with one-element results, every two programs are already derivably equal (empty_cell_all_derivable, unit_cell_unit_result_all_derivable), so the hypothesis cannot be met there.",
+      "Concerns extensions by equations between programs. Extensions by inequations, conditional equations, new operations, or several cells are not examined.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "G. D. Plotkin and J. Power, 'Notions of Computation Determine Monads', FoSSaCS 2002, Lecture Notes in Computer Science, Springer, pp. 342-356, DOI 10.1007/3-540-45931-6_24. Section 3: seven axiom schemas for global state; for one location, axioms 1-4 are get–put, get–get (stated as an axiom), put–put, put–get; Theorem 1: the category of models is monadic with monad (S ⊗ -)^S, which is (S × -)^S over sets (finite set of locations, countable set of values); the paper states without proof: 'It can be shown that this axiom system is Hilbert-Post complete, meaning that it has no equationally consistent extensions'.",
+      "M. Pretnar, 'Logic and handling of algebraic effects', PhD thesis, University of Edinburgh, 2010, http://hdl.handle.net/1842/4611. Hilbert-Post completeness is defined in Definition 2.8 and proved for single-location global state in Proposition 2.40, as attested by arXiv:1310.0605, Section 3.3; the thesis text itself was not consulted.",
+      "J.-G. Dumas, D. Duval and J.-C. Reynaud, 'Patterns for computational effects arising from a monad or a comonad', arXiv:1310.0605, 2013. Section 3.3, Theorem 3.4: 'The theory for state is Hilbert-Post complete', for a single location, in a decorated logic whose axiomatization is not the four plain get/put equations; Appendix A, Proposition A.5: the key proposition, whose proof 'has been checked with the Coq proof assistant'.",
+      "J.-G. Dumas, D. Duval, B. Ekici and D. Pous, 'Formal verification in Coq of program properties involving the global state effect', arXiv:1310.0794, 2013. The Coq framework for decorated global state; its conclusion reports that the framework was used to check the Hilbert-Post completeness proof of arXiv:1310.0605.",
+      "J.-G. Dumas, D. Duval, B. Ekici, D. Pous and J.-C. Reynaud, 'Relative Hilbert-Post Completeness for Exceptions', MACIS 2015 (proceedings published 2016), Lecture Notes in Computer Science, Springer, pp. 596-610, DOI 10.1007/978-3-319-32859-1_51; preprint titled 'Hilbert-Post completeness for the state and the exception effects', arXiv:1503.00948. Introduces relative Hilbert-Post completeness; its abstract describes the application to state as a generalization of Pretnar's work.",
+      "J. Kalicki and D. Scott, 'Equational completeness of abstract algebras', Indagationes Mathematicae 17 (1955), 650-659 (publisher record: Indagationes Mathematicae (Proceedings) 58, DOI 10.1016/S1385-7258(55)50089-8). Equational completeness in universal algebra (bibliographic record checked; content not consulted).",
+      "S. Staton, 'Completeness for Algebraic Theories of Local State', FoSSaCS 2010, Lecture Notes in Computer Science, Springer, pp. 48-63, DOI 10.1007/978-3-642-12032-9_5. Completeness for local (not global) state; related background."
+    ],
+    "design_question": "Is the law set Hilbert–Post complete? For one cell, yes in this sense: within a fixed program type Prog S V, with the added equation closed under substitution and the usual congruence rules, every equation not already derivable from the four laws makes every two programs derivably equal."
+  },
+  {
+    "id": "writeLog_via_distinguishes_obsEq",
+    "lean": "Toy.StoreLaws.writeLog_via_distinguishes_obsEq",
+    "lean_names": [
+      "Toy.StoreLaws.writeLog_via_distinguishes_obsEq",
+      "Toy.StoreLaws.GetGetVia",
+      "Toy.StoreLaws.GetPutVia",
+      "Toy.StoreLaws.PutGetVia",
+      "Toy.StoreLaws.PutPutVia",
+      "Toy.StoreLaws.dropLog",
+      "Toy.StoreLaws.getGetVia_not_entailed_by_getPutVia_putGetVia",
+      "Toy.StoreLaws.interp_eq_of_obsEq_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.laws_via_const_hold",
+      "Toy.StoreLaws.logRet",
+      "Toy.StoreLaws.writeLog_laws_via_dropLog",
+      "Toy.StoreLaws.writeLog_strict_profile_bool"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_rationale": "Elementary; satisfaction through an observation versus strict satisfaction is a standard distinction (see prior art).",
+    "plain_claim": "For a Boolean cell with Boolean results, the write-log model satisfies get–get, get–put, put–get and put–put when the two sides of each law instance are compared after applying the log-forgetting observation dropLog, and under the valuation logRet it interprets put true (put false (ret true)) and put false (ret true) differently, although they are observationally equivalent.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement (no hypotheses).",
+    "non_claims": [
+      "GetGetVia, GetPutVia, PutGetVia and PutPutVia compare the two sides of each law instance at top level after applying the observation; they are not behavioral satisfaction, which compares the sides in every observable context. Through a constant observation they hold for every model (laws_via_const_hold), and through a non-injective observation they need not obey the entailments of the strict laws (getGetVia_not_entailed_by_getPutVia_putGetVia).",
+      "Strictly, the write log violates get–put and put–put (writeLog_strict_profile_bool).",
+      "Through dropLog the four laws hold for every cell type and result type (writeLog_laws_via_dropLog); the distinguishing pair is shown for S = V = Bool.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "J. Goguen and G. Malcolm, 'A hidden agenda', Theoretical Computer Science 245(1):55-101, 2000, DOI 10.1016/S0304-3975(99)00275-3. Behavioral satisfaction: an algebra behaviorally satisfies t = t' iff it satisfies c[t] = c[t'] for every observable context c (Definition 5 in the authors' preprint); the ...Via laws of this package compare at top level.",
+      "The write-log instance is elementary; it was not located as a stated result."
+    ],
+    "design_question": "Do the laws exclude hidden write logs? Not if they are checked through an observation that forgets the log, such as dropLog. Imposed strictly, as equations in the carrier, they exclude logs that distinguish observationally equivalent programs (interp_eq_of_obsEq_of_getPut_putGet_putPut)."
+  },
+  {
+    "id": "writeLog_strict_profile_bool",
+    "lean": "Toy.StoreLaws.writeLog_strict_profile_bool",
+    "lean_names": [
+      "Toy.StoreLaws.writeLog_strict_profile_bool",
+      "Toy.StoreLaws.writeLog",
+      "Toy.StoreLaws.writeLog_getGet",
+      "Toy.StoreLaws.writeLog_not_getPut",
+      "Toy.StoreLaws.writeLog_not_putPut",
+      "Toy.StoreLaws.writeLog_putGet",
+      "Toy.StoreLaws.writeLog_lawful_of_empty_cell",
+      "Toy.StoreLaws.writeLog_lawful_of_empty_result"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "That a logging store is unlawful is folklore; this profile and a mechanization were not located in the sources checked.",
+    "plain_claim": "For a Boolean cell with Boolean results, the write-log model (carrier Bool → Bool × Bool × List Bool, every put logged) satisfies get–get and put–get as carrier equations and violates get–put and put–put.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement (no hypotheses).",
+    "non_claims": [
+      "The violations are proved for S = V = Bool, and they depend on inhabited cell and result types: with an empty cell type or an empty result type the write-log model satisfies all four laws strictly (writeLog_lawful_of_empty_cell, writeLog_lawful_of_empty_result). Other inhabited types are not examined. Get–get and put–get hold for all S, V (writeLog_getGet, writeLog_putGet).",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "Not located as a stated result; elementary."
+    ],
+    "design_question": "Is a full write log compatible with the strict laws? On a Boolean cell with Boolean results, no: it violates strict get–put (writing back the value just read is logged) and strict put–put (overwritten writes are logged)."
+  },
+  {
+    "id": "readCounter_strict_profile_bool",
+    "lean": "Toy.StoreLaws.readCounter_strict_profile_bool",
+    "lean_names": [
+      "Toy.StoreLaws.readCounter_strict_profile_bool",
+      "Toy.StoreLaws.getGet_of_getPut_of_putGet",
+      "Toy.StoreLaws.readCounter",
+      "Toy.StoreLaws.readCounter_not_getGet",
+      "Toy.StoreLaws.readCounter_not_getPut",
+      "Toy.StoreLaws.readCounter_not_putGet",
+      "Toy.StoreLaws.readCounter_putPut",
+      "Toy.StoreLaws.readCounter_lawful_of_empty_cell",
+      "Toy.StoreLaws.readCounter_lawful_of_empty_result",
+      "Toy.StoreLaws.counterRet"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "That a read counter is unlawful is folklore; this profile and a mechanization were not located in the sources checked.",
+    "plain_claim": "For a Boolean cell with Boolean results, the read-counter model (carrier Bool → Bool × Bool × Nat; every read increments the count) satisfies put–put as a carrier equation and violates get–get, get–put and put–get.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement (no hypotheses).",
+    "non_claims": [
+      "The violations are proved for S = V = Bool, and they depend on inhabited cell and result types: with an empty cell type or an empty result type the read-counter model satisfies all four laws strictly (readCounter_lawful_of_empty_cell, readCounter_lawful_of_empty_result). Other inhabited types are not examined. Put–put holds for all S, V (readCounter_putPut).",
+      "A read counter does not isolate get–get: no model satisfies get–put, put–get and put–put and violates get–get (getGet_of_getPut_of_putGet).",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "Not located as a stated result; elementary."
+    ],
+    "design_question": "Which laws does counting reads break? On a Boolean cell with Boolean results, strictly, all but put–put: get–get (two reads count twice), get–put (the read in a read-then-write-back is counted) and put–get (the read after a write is counted)."
+  },
+  {
+    "id": "inertHidden_interp_eq",
+    "lean": "Toy.StoreLaws.inertHidden_interp_eq",
+    "lean_names": [
+      "Toy.StoreLaws.inertHidden_interp_eq",
+      "Toy.StoreLaws.coupledHidden",
+      "Toy.StoreLaws.coupledHidden_lawful",
+      "Toy.StoreLaws.coupledHidden_lawful_changes_hidden",
+      "Toy.StoreLaws.inertHidden",
+      "Toy.StoreLaws.inertHidden_lawful",
+      "Toy.StoreLaws.inertHidden_pairFlipRet_changes_hidden",
+      "Toy.StoreLaws.interp_eq_fromObs_run_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.interp_eq_of_obsEq_of_getPut_putGet_putPut",
+      "Toy.StoreLaws.pairFlipRet",
+      "Toy.StoreLaws.pairRet",
+      "Toy.StoreLaws.nv_inertHidden_interp_eq"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_rationale": "Constant-complement / product-state construction; elementary.",
+    "plain_claim": "For all types S, H, V, the inert-hidden model (carrier S × H → V × (S × H); get reads the first component, put overwrites it) satisfies all four laws as carrier equations, and under the valuation pairRet (return v, leave the state) for every program p, cell content s and hidden value h, interpreting p from (s, h) returns (run p s).1 with final state ((run p s).2, h).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement (no hypotheses); the instance S = H = V = Bool is nv_inertHidden_interp_eq.",
+    "non_claims": [
+      "Preservation of the hidden component depends on the valuation pairRet: under pairFlipRet the same strictly lawful model changes the hidden component (inertHidden_pairFlipRet_changes_hidden).",
+      "Does not say strictly lawful hidden state must be left untouched by put: coupledHidden flips a hidden bit whenever a write changes the cell and satisfies all four laws strictly (coupledHidden_lawful_changes_hidden). The general constraint is the factorization interp_eq_fromObs_run_of_getPut_putGet_putPut.",
+      "Does not classify the strictly lawful models with hidden state.",
+      "The correspondence between strictly lawful state-transformer models and very well-behaved lenses is not formalized here; lens laws are outside the scope of this package.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "Constant-complement / product-state construction; elementary."
+    ],
+    "design_question": "Is hidden state per se excluded by the laws? No: hidden state is compatible with all four laws even strictly. In inertHidden under pairRet, programs neither observe nor change it; under other valuations, or in other strictly lawful models, it can change, but never in a way that distinguishes observationally equivalent programs (interp_eq_of_obsEq_of_getPut_putGet_putPut).",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_inertHidden_interp_eq"
+  },
+  {
+    "id": "derivable_lawsExcept_getGet_iff",
+    "lean": "Toy.StoreLaws.derivable_lawsExcept_getGet_iff",
+    "lean_names": [
+      "Toy.StoreLaws.derivable_lawsExcept_getGet_iff",
+      "Toy.StoreLaws.dropGetPut_loses_nf",
+      "Toy.StoreLaws.dropPutGet_loses_nf",
+      "Toy.StoreLaws.dropPutPut_loses_nf",
+      "Toy.StoreLaws.getGet_not_derivable_from_getPut_putPut",
+      "Toy.StoreLaws.getGet_not_derivable_from_putGet_putPut",
+      "Toy.StoreLaws.nv_derivable_lawsExcept_getGet_iff"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_rationale": "The derivation of get–get from get–put and put–get is published (see prior art).",
+    "plain_claim": "For every cell type S, result type V and programs p, q : Prog S V, p = q is derivable from get–put, put–get and put–put iff it is derivable from all four laws.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Both sides are inhabited: a get–get instance is derivable from the laws other than get–get, and ret true = ret false is derivable from neither (Boolean cell).",
+    "nonvacuity_witness_lean": "Toy.StoreLaws.nv_derivable_lawsExcept_getGet_iff",
+    "non_claims": [
+      "Does not say any other law can be dropped from the four: on a Boolean cell, dropping get–put, put–get or put–put loses equations (dropGetPut_loses_nf, dropPutGet_loses_nf, dropPutPut_loses_nf).",
+      "Dropping get–get is harmless when get–put and put–get are both present. It is not harmless from {get–get, get–put, put–put} or {get–get, put–get, put–put}: on a Boolean cell, a get–get instance is derivable neither from {get–put, put–put} nor from {put–get, put–put} (getGet_not_derivable_from_getPut_putPut, getGet_not_derivable_from_putGet_putPut).",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "D. O. Kidney, Z. Yang and N. Wu, 'Algebraic Effects Meet Hoare Logic in Cubical Agda', Proc. ACM Program. Lang. 8 (POPL), Article 56, 2024, DOI 10.1145/3632898. Section 3, Eq. (12): the theory of mutable state with the three laws put–put, put–get, get–put; the text states that get–get 'in fact follows from the equations above'. The authors' public Agda repository (github.com/oisdk/algebraic-free-monads-agda at commit 09f6fa1e9304732acfc72b4f8f2b9a52756361de, file Effects/State.agda) contains a proof of get–get from put–get and get–put (observed in the source; not type-checked here).",
+      "C. Matache, S. Lindley, S. K. Moss, S. Staton, N. Wu and Z. Yang, 'Scoped Effects, Scoped Operations, and Parameterized Algebraic Theories', ACM Trans. Program. Lang. Syst. 47(2), Article 8, 2025, DOI 10.1145/3731678 (earlier preprint, the extended version of the ESOP 2024 paper, as 'Scoped Effects as Parameterized Algebraic Theories', arXiv:2402.03103). Example 2.8: for the state of a single bit, with equations for put–get, put–put and get–put, 'the conspicuously missing equation for a get after a get ... can be derived', followed by a five-step derivation.",
+      "D. Hillerström, 'Foundations for Programming and Implementing Effect Handlers', PhD thesis, The University of Edinburgh, 2021; Edinburgh Research Archive record (dated 2022), DOI 10.7488/era/2122, handle 1842/38868 (author's copy, to which the page numbers below refer: dhil.net/research/papers/thesis.pdf). Section 1.2.2 (pp. 9-10) remarks that get–get is derivable from get–put and put–get; Appendix B ('Get get is redundant', p. 271) gives the derivation."
+    ],
+    "design_question": "Dropping get–get from the four laws changes no derivable equation; it is a derived law."
+  },
+  {
+    "id": "drop_law_loses_nf",
+    "lean": [
+      "Toy.StoreLaws.dropGetPut_loses_nf",
+      "Toy.StoreLaws.dropPutGet_loses_nf",
+      "Toy.StoreLaws.dropPutPut_loses_nf"
+    ],
+    "lean_names": [
+      "Toy.StoreLaws.dropGetPut_loses_nf",
+      "Toy.StoreLaws.dropPutGet_loses_nf",
+      "Toy.StoreLaws.dropPutPut_loses_nf",
+      "Toy.StoreLaws.changeLog",
+      "Toy.StoreLaws.dirtyBit",
+      "Toy.StoreLaws.unit_cell_lawful_of_getPut_putPut",
+      "Toy.StoreLaws.unit_cell_putPut_of_getPut_putGet",
+      "Toy.StoreLaws.writesIgnored"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_rationale": "Folklore-level; the specific non-derivability witnesses and a mechanization were not located in the sources checked.",
+    "plain_claim": "For a Boolean cell with Boolean results: from the laws other than get–put, ret true is not derivably equal to its canonical program get (fun s => put s (ret true)); from the laws other than put–get, put true (get ret) is not derivably equal to its canonical program; from the laws other than put–put, put true (put false (ret true)) is not derivably equal to its canonical program; in each case the two programs are observationally equivalent.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statements (no hypotheses).",
+    "non_claims": [
+      "Each non-derivability is shown by soundness in one model of the remaining three laws (dirtyBit, writesIgnored, changeLog respectively); other pairs of programs lost by dropping a law are not enumerated.",
+      "Proved for S = V = Bool. On a one-element cell the model-level independence behind these witnesses fails (unit_cell_putPut_of_getPut_putGet, unit_cell_lawful_of_getPut_putPut); whether the syntactic non-derivability results hold on other cell types is not examined.",
+      "Model–system relation: none proved. These are statements about the toy model (one cell, free program syntax, set-like carriers); they neither establish nor refute the corresponding claims about any concrete language, library, device or verification tool."
+    ],
+    "prior_art": [
+      "Not located as stated results; elementary."
+    ],
+    "design_question": "On a Boolean cell, each of get–put, put–get and put–put is tight for the normal-form and completeness theorems: without it, an observationally equivalent pair is not derivably equal."
+  }
+]

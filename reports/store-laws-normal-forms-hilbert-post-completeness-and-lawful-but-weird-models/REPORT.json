@@ -1,0 +1,153 @@
+{
+  "topics": [
+    "lean",
+    "lean/mechanization",
+    "verification",
+    "verification/formalized-results",
+    "verification/algebraic-effects",
+    "verification/equational-reasoning",
+    "pl",
+    "pl/algebraic-effects",
+    "pl/monads",
+    "pl/state-monad"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Notions of Computation Determine Monads",
+      "identity": {
+        "doi": "10.1007/3-540-45931-6_24"
+      }
+    },
+    {
+      "name": "Algebraic Operations and Generic Effects",
+      "identity": {
+        "doi": "10.1023/A:1023064908962"
+      }
+    },
+    {
+      "name": "Just do it: simple monadic equational reasoning",
+      "identity": {
+        "doi": "10.1145/2034773.2034777"
+      }
+    },
+    {
+      "name": "Algebraic Effects Meet Hoare Logic in Cubical Agda",
+      "identity": {
+        "doi": "10.1145/3632898"
+      }
+    },
+    {
+      "name": "Scoped Effects, Scoped Operations, and Parameterized Algebraic Theories",
+      "identity": {
+        "doi": "10.1145/3731678",
+        "arxiv": "2402.03103"
+      }
+    },
+    {
+      "name": "Foundations for Programming and Implementing Effect Handlers (PhD thesis)",
+      "identity": {
+        "doi": "10.7488/era/2122",
+        "handle": "1842/38868",
+        "url": "https://dhil.net/research/papers/thesis.pdf"
+      }
+    },
+    {
+      "name": "Effect Polymorphism in Higher-Order Logic (Proof Pearl)",
+      "identity": {
+        "doi": "10.1007/978-3-319-66107-0_25"
+      }
+    },
+    {
+      "name": "Effect Polymorphism in Higher-Order Logic (Proof Pearl), journal version",
+      "identity": {
+        "doi": "10.1007/s10817-018-9476-2"
+      }
+    },
+    {
+      "name": "Effect polymorphism in higher-order logic (Archive of Formal Proofs entry Monomorphic_Monad)",
+      "identity": {
+        "afp_entry": "Monomorphic_Monad",
+        "url": "https://www.isa-afp.org/entries/Monomorphic_Monad.html",
+        "issn": "2150-914x"
+      }
+    },
+    {
+      "name": "Handlers of Algebraic Effects",
+      "identity": {
+        "doi": "10.1007/978-3-642-00590-9_7"
+      }
+    },
+    {
+      "name": "Handling Algebraic Effects",
+      "identity": {
+        "doi": "10.2168/LMCS-9(4:23)2013"
+      }
+    },
+    {
+      "name": "From Comodels to Coalgebras: State and Arrays",
+      "identity": {
+        "doi": "10.1016/j.entcs.2004.02.041"
+      }
+    },
+    {
+      "name": "State monads and their algebras",
+      "identity": {
+        "arxiv": "math/0407251"
+      }
+    },
+    {
+      "name": "Patterns for computational effects arising from a monad or a comonad",
+      "identity": {
+        "arxiv": "1310.0605"
+      }
+    },
+    {
+      "name": "Formal verification in Coq of program properties involving the global state effect",
+      "identity": {
+        "arxiv": "1310.0794"
+      }
+    },
+    {
+      "name": "Relative Hilbert-Post Completeness for Exceptions",
+      "identity": {
+        "doi": "10.1007/978-3-319-32859-1_51",
+        "arxiv": "1503.00948"
+      }
+    },
+    {
+      "name": "Logic and handling of algebraic effects (PhD thesis)",
+      "identity": {
+        "handle": "1842/4611",
+        "url": "http://hdl.handle.net/1842/4611"
+      }
+    },
+    {
+      "name": "Completeness for Algebraic Theories of Local State",
+      "identity": {
+        "doi": "10.1007/978-3-642-12032-9_5"
+      }
+    },
+    {
+      "name": "A hidden agenda",
+      "identity": {
+        "doi": "10.1016/S0304-3975(99)00275-3"
+      }
+    },
+    {
+      "name": "Equational completeness of abstract algebras",
+      "identity": {
+        "doi": "10.1016/S1385-7258(55)50089-8",
+        "citation": "J. Kalicki and D. Scott, Indagationes Mathematicae 17 (1955), 650-659"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

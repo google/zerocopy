@@ -1,0 +1,537 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.StoreLaws.Derivable": [],
+    "Toy.StoreLaws.Derivable.below": [],
+    "Toy.StoreLaws.Derivable.below.casesOn": [],
+    "Toy.StoreLaws.Derivable.below.getGet": [],
+    "Toy.StoreLaws.Derivable.below.getPut": [],
+    "Toy.StoreLaws.Derivable.below.get_congr": [],
+    "Toy.StoreLaws.Derivable.below.putGet": [],
+    "Toy.StoreLaws.Derivable.below.putPut": [],
+    "Toy.StoreLaws.Derivable.below.put_congr": [],
+    "Toy.StoreLaws.Derivable.below.rec": [],
+    "Toy.StoreLaws.Derivable.below.refl": [],
+    "Toy.StoreLaws.Derivable.below.symm": [],
+    "Toy.StoreLaws.Derivable.below.trans": [],
+    "Toy.StoreLaws.Derivable.bind_left": [],
+    "Toy.StoreLaws.Derivable.brecOn": [],
+    "Toy.StoreLaws.Derivable.casesOn": [],
+    "Toy.StoreLaws.Derivable.getGet": [],
+    "Toy.StoreLaws.Derivable.getGet_of": [],
+    "Toy.StoreLaws.Derivable.getPut": [],
+    "Toy.StoreLaws.Derivable.get_congr": [],
+    "Toy.StoreLaws.Derivable.get_const_put": [],
+    "Toy.StoreLaws.Derivable.mono": [],
+    "Toy.StoreLaws.Derivable.putGet": [],
+    "Toy.StoreLaws.Derivable.putPut": [],
+    "Toy.StoreLaws.Derivable.put_congr": [],
+    "Toy.StoreLaws.Derivable.rec": [],
+    "Toy.StoreLaws.Derivable.recOn": [],
+    "Toy.StoreLaws.Derivable.refl": [],
+    "Toy.StoreLaws.Derivable.run_eq": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.Derivable.sound": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.Derivable.symm": [],
+    "Toy.StoreLaws.Derivable.trans": [],
+    "Toy.StoreLaws.EntailsBool": [],
+    "Toy.StoreLaws.ExtDerivable": [],
+    "Toy.StoreLaws.ExtDerivable.base": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.ExtDerivable.below": [],
+    "Toy.StoreLaws.ExtDerivable.below.casesOn": [],
+    "Toy.StoreLaws.ExtDerivable.below.get_congr": [],
+    "Toy.StoreLaws.ExtDerivable.below.inst": [],
+    "Toy.StoreLaws.ExtDerivable.below.of_derivable": [],
+    "Toy.StoreLaws.ExtDerivable.below.put_congr": [],
+    "Toy.StoreLaws.ExtDerivable.below.rec": [],
+    "Toy.StoreLaws.ExtDerivable.below.symm": [],
+    "Toy.StoreLaws.ExtDerivable.below.trans": [],
+    "Toy.StoreLaws.ExtDerivable.bind_left": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.ExtDerivable.brecOn": [],
+    "Toy.StoreLaws.ExtDerivable.casesOn": [],
+    "Toy.StoreLaws.ExtDerivable.get_congr": [],
+    "Toy.StoreLaws.ExtDerivable.inst": [],
+    "Toy.StoreLaws.ExtDerivable.of_derivable": [],
+    "Toy.StoreLaws.ExtDerivable.put_congr": [],
+    "Toy.StoreLaws.ExtDerivable.rec": [],
+    "Toy.StoreLaws.ExtDerivable.recOn": [],
+    "Toy.StoreLaws.ExtDerivable.run_eq_of": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.ExtDerivable.symm": [],
+    "Toy.StoreLaws.ExtDerivable.total_of_put": [],
+    "Toy.StoreLaws.ExtDerivable.trans": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.base": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.below": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.below.base": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.below.casesOn": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.below.get_congr": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.below.of_derivable": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.below.put_congr": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.below.rec": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.below.symm": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.below.trans": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.brecOn": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.casesOn": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.get_congr": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.of_derivable": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.put_congr": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.rec": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.recOn": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.sound": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.ExtDerivableNoSubst.symm": [],
+    "Toy.StoreLaws.ExtDerivableNoSubst.trans": [],
+    "Toy.StoreLaws.GetGet": [],
+    "Toy.StoreLaws.GetGetVia": [],
+    "Toy.StoreLaws.GetPut": [],
+    "Toy.StoreLaws.GetPutVia": [],
+    "Toy.StoreLaws.IsHom": [],
+    "Toy.StoreLaws.Law": [],
+    "Toy.StoreLaws.Law.Holds": [],
+    "Toy.StoreLaws.Law.Holds.match_1": [],
+    "Toy.StoreLaws.Law.casesOn": [],
+    "Toy.StoreLaws.Law.ctorElim": [],
+    "Toy.StoreLaws.Law.ctorElimType": [],
+    "Toy.StoreLaws.Law.ctorIdx": [],
+    "Toy.StoreLaws.Law.getGet": [],
+    "Toy.StoreLaws.Law.getGet.elim": [],
+    "Toy.StoreLaws.Law.getGet.sizeOf_spec": [],
+    "Toy.StoreLaws.Law.getPut": [],
+    "Toy.StoreLaws.Law.getPut.elim": [],
+    "Toy.StoreLaws.Law.getPut.sizeOf_spec": [],
+    "Toy.StoreLaws.Law.noConfusion": [],
+    "Toy.StoreLaws.Law.noConfusionType": [],
+    "Toy.StoreLaws.Law.ofNat": [],
+    "Toy.StoreLaws.Law.ofNat_ctorIdx": [],
+    "Toy.StoreLaws.Law.putGet": [],
+    "Toy.StoreLaws.Law.putGet.elim": [],
+    "Toy.StoreLaws.Law.putGet.sizeOf_spec": [],
+    "Toy.StoreLaws.Law.putPut": [],
+    "Toy.StoreLaws.Law.putPut.elim": [],
+    "Toy.StoreLaws.Law.putPut.sizeOf_spec": [],
+    "Toy.StoreLaws.Law.rec": [],
+    "Toy.StoreLaws.Law.recOn": [],
+    "Toy.StoreLaws.LawSet": [],
+    "Toy.StoreLaws.Lawful": [],
+    "Toy.StoreLaws.Model": [],
+    "Toy.StoreLaws.Model.casesOn": [],
+    "Toy.StoreLaws.Model.ctorIdx": [],
+    "Toy.StoreLaws.Model.fromObs": [],
+    "Toy.StoreLaws.Model.fromObs.eq_1": [],
+    "Toy.StoreLaws.Model.get": [],
+    "Toy.StoreLaws.Model.interp": [],
+    "Toy.StoreLaws.Model.interp.match_1": [],
+    "Toy.StoreLaws.Model.mk": [],
+    "Toy.StoreLaws.Model.mk.inj": [],
+    "Toy.StoreLaws.Model.mk.injEq": [
+      "propext"
+    ],
+    "Toy.StoreLaws.Model.mk.noConfusion": [],
+    "Toy.StoreLaws.Model.mk.sizeOf_spec": [],
+    "Toy.StoreLaws.Model.noConfusion": [],
+    "Toy.StoreLaws.Model.noConfusionType": [],
+    "Toy.StoreLaws.Model.put": [],
+    "Toy.StoreLaws.Model.rec": [],
+    "Toy.StoreLaws.Model.recOn": [],
+    "Toy.StoreLaws.ObsEq": [],
+    "Toy.StoreLaws.Prog": [],
+    "Toy.StoreLaws.Prog.below": [],
+    "Toy.StoreLaws.Prog.bind": [],
+    "Toy.StoreLaws.Prog.bind.match_1": [],
+    "Toy.StoreLaws.Prog.bind_assoc": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.Prog.bind_ret": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.Prog.brecOn": [],
+    "Toy.StoreLaws.Prog.brecOn.eq": [],
+    "Toy.StoreLaws.Prog.brecOn.go": [],
+    "Toy.StoreLaws.Prog.casesOn": [],
+    "Toy.StoreLaws.Prog.ctorElim": [],
+    "Toy.StoreLaws.Prog.ctorElimType": [],
+    "Toy.StoreLaws.Prog.ctorIdx": [],
+    "Toy.StoreLaws.Prog.get": [],
+    "Toy.StoreLaws.Prog.get.elim": [],
+    "Toy.StoreLaws.Prog.get.inj": [],
+    "Toy.StoreLaws.Prog.get.injEq": [
+      "propext"
+    ],
+    "Toy.StoreLaws.Prog.get.noConfusion": [],
+    "Toy.StoreLaws.Prog.get.sizeOf_spec": [],
+    "Toy.StoreLaws.Prog.get_bind": [],
+    "Toy.StoreLaws.Prog.noConfusion": [],
+    "Toy.StoreLaws.Prog.noConfusionType": [],
+    "Toy.StoreLaws.Prog.put": [],
+    "Toy.StoreLaws.Prog.put.elim": [],
+    "Toy.StoreLaws.Prog.put.inj": [],
+    "Toy.StoreLaws.Prog.put.injEq": [
+      "propext"
+    ],
+    "Toy.StoreLaws.Prog.put.noConfusion": [],
+    "Toy.StoreLaws.Prog.put.sizeOf_spec": [],
+    "Toy.StoreLaws.Prog.put_bind": [],
+    "Toy.StoreLaws.Prog.rec": [],
+    "Toy.StoreLaws.Prog.recOn": [],
+    "Toy.StoreLaws.Prog.ret": [],
+    "Toy.StoreLaws.Prog.ret.elim": [],
+    "Toy.StoreLaws.Prog.ret.inj": [],
+    "Toy.StoreLaws.Prog.ret.injEq": [
+      "propext"
+    ],
+    "Toy.StoreLaws.Prog.ret.noConfusion": [],
+    "Toy.StoreLaws.Prog.ret.sizeOf_spec": [],
+    "Toy.StoreLaws.Prog.ret_bind": [],
+    "Toy.StoreLaws.PutGet": [],
+    "Toy.StoreLaws.PutGetVia": [],
+    "Toy.StoreLaws.PutPut": [],
+    "Toy.StoreLaws.PutPutVia": [],
+    "Toy.StoreLaws.SatisfiesAll": [],
+    "Toy.StoreLaws.allLaws": [],
+    "Toy.StoreLaws.canon": [],
+    "Toy.StoreLaws.canon_eq_of_derivable": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.canon_eq_tight": [],
+    "Toy.StoreLaws.changeLog": [],
+    "Toy.StoreLaws.changeLog.eq_1": [],
+    "Toy.StoreLaws.changeLog_getGet": [],
+    "Toy.StoreLaws.changeLog_getPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.changeLog_not_putPut": [],
+    "Toy.StoreLaws.changeLog_putGet": [],
+    "Toy.StoreLaws.counterRet": [],
+    "Toy.StoreLaws.coupledHidden": [],
+    "Toy.StoreLaws.coupledHidden_lawful": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.coupledHidden_lawful.match_1_1": [],
+    "Toy.StoreLaws.coupledHidden_lawful_changes_hidden": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.derivable_iff_obsEq_of_getPut_putGet_putPut": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.derivable_lawsExcept_getGet_iff": [],
+    "Toy.StoreLaws.derivable_nf_of_getPut_putGet_putPut": [],
+    "Toy.StoreLaws.dirtyBit": [],
+    "Toy.StoreLaws.dirtyBit_getGet": [],
+    "Toy.StoreLaws.dirtyBit_not_getPut": [],
+    "Toy.StoreLaws.dirtyBit_putGet": [],
+    "Toy.StoreLaws.dirtyBit_putPut": [],
+    "Toy.StoreLaws.dropGetPut_loses_nf": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.dropLog": [],
+    "Toy.StoreLaws.dropPutGet_loses_nf": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.dropPutPut_loses_nf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.empty_carrier_breaks_forall_interp_iff": [],
+    "Toy.StoreLaws.empty_cell_all_derivable": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.empty_cell_getPut_not_nontrivial": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.empty_cell_lawful_of_getPut": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.empty_cell_subsingleton_of_getPut": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.entailsBool_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.ex_bind": [],
+    "Toy.StoreLaws.ex_derivable_neg": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.ex_derivable_pos": [],
+    "Toy.StoreLaws.ex_entailsBool_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.ex_entailsBool_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.ex_extDerivableNoSubst_neg": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.ex_extDerivableNoSubst_pos": [],
+    "Toy.StoreLaws.ex_extDerivable_neg": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.ex_extDerivable_pos": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.ex_fromObs_intended": [],
+    "Toy.StoreLaws.ex_getGetVia_neg": [],
+    "Toy.StoreLaws.ex_getGetVia_neg_fst": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.ex_getGet_neg": [],
+    "Toy.StoreLaws.ex_getGet_pos": [],
+    "Toy.StoreLaws.ex_getPut_neg": [],
+    "Toy.StoreLaws.ex_getPut_pos": [],
+    "Toy.StoreLaws.ex_isHom_neg": [],
+    "Toy.StoreLaws.ex_isHom_neg.match_1_1": [],
+    "Toy.StoreLaws.ex_isHom_pos": [],
+    "Toy.StoreLaws.ex_lawful_neg": [],
+    "Toy.StoreLaws.ex_lawful_pos": [],
+    "Toy.StoreLaws.ex_nf": [],
+    "Toy.StoreLaws.ex_obsEq_neg": [],
+    "Toy.StoreLaws.ex_obsEq_pos": [],
+    "Toy.StoreLaws.ex_putGetVia_neg": [],
+    "Toy.StoreLaws.ex_putGetVia_neg_dropLog": [],
+    "Toy.StoreLaws.ex_putGet_neg": [],
+    "Toy.StoreLaws.ex_putGet_pos": [],
+    "Toy.StoreLaws.ex_putPut_neg": [],
+    "Toy.StoreLaws.ex_putPut_pos": [],
+    "Toy.StoreLaws.ex_run": [],
+    "Toy.StoreLaws.ex_satisfiesAll_neg": [],
+    "Toy.StoreLaws.ex_satisfiesAll_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.ex_via_id_eq_strict": [],
+    "Toy.StoreLaws.ex_via_neg": [],
+    "Toy.StoreLaws.ex_via_pos": [],
+    "Toy.StoreLaws.extDerivableNoSubst_not_total": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.extDerivable_tight": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.extDerivable_total_of_not_derivable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.faultingCounter": [],
+    "Toy.StoreLaws.faultingCounter_not_getGet": [],
+    "Toy.StoreLaws.faultingCounter_not_getPut": [],
+    "Toy.StoreLaws.faultingCounter_putGet": [],
+    "Toy.StoreLaws.faultingCounter_putPut": [],
+    "Toy.StoreLaws.faultingRet": [],
+    "Toy.StoreLaws.forall_interp_eq_iff_obsEq_of_getPut_putGet_putPut_of_nontrivial": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.forall_interp_tight_getPut": [],
+    "Toy.StoreLaws.forall_interp_tight_nontrivial": [],
+    "Toy.StoreLaws.forall_interp_tight_putGet": [],
+    "Toy.StoreLaws.forall_interp_tight_putPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.fromObs_isHom_unique_of_getPut_putGet_putPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.fromObs_not_surjective_inertHidden": [
+      "propext"
+    ],
+    "Toy.StoreLaws.fromObs_range_eq_interp_range": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.fromObs_tight_getPut": [],
+    "Toy.StoreLaws.fromObs_tight_getPut.match_1_1": [],
+    "Toy.StoreLaws.fromObs_tight_putGet": [],
+    "Toy.StoreLaws.fromObs_tight_putGet.match_1_1": [],
+    "Toy.StoreLaws.fromObs_tight_putPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.fromObs_tight_putPut.match_1_1": [],
+    "Toy.StoreLaws.fstViaModel": [],
+    "Toy.StoreLaws.getGetVia_not_entailed_by_getPutVia_putGetVia": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.getGet_not_derivable_from_getPut_putPut": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.getGet_not_derivable_from_putGet_putPut": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.getGet_not_entailed_by_pairs_with_putPut_bool": [],
+    "Toy.StoreLaws.getGet_of_getPut_of_putGet": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.getGet_of_tight_getPut": [],
+    "Toy.StoreLaws.getGet_of_tight_putGet": [],
+    "Toy.StoreLaws.getPut_putGet_putPut_iff_exists_isHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.getPut_putGet_putPut_iff_exists_surjective_isHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.getPut_putGet_putPut_independent_bool": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.get_const_put_of": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.inertHidden": [],
+    "Toy.StoreLaws.inertHidden.eq_1": [],
+    "Toy.StoreLaws.inertHidden_interp_eq": [],
+    "Toy.StoreLaws.inertHidden_lawful": [],
+    "Toy.StoreLaws.inertHidden_pairFlipRet_changes_hidden": [],
+    "Toy.StoreLaws.instDecidableEqLaw": [],
+    "Toy.StoreLaws.instReprLaw": [],
+    "Toy.StoreLaws.instReprLaw.repr": [],
+    "Toy.StoreLaws.instReprLaw.repr.match_1": [],
+    "Toy.StoreLaws.intended": [],
+    "Toy.StoreLaws.intendedRet": [],
+    "Toy.StoreLaws.intended_lawful": [],
+    "Toy.StoreLaws.intended_leafLog_lawful_and_logs": [],
+    "Toy.StoreLaws.interp_eq_fromObs_run_of_getPut_putGet_putPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.interp_eq_of_obsEq_of_getPut_putGet_putPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.interp_eq_tight_obsEq": [],
+    "Toy.StoreLaws.interp_factor_tight_getPut": [],
+    "Toy.StoreLaws.interp_factor_tight_putGet": [],
+    "Toy.StoreLaws.interp_factor_tight_putPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.interp_intended": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.isHom_eq_fromObs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.isHom_id_surjective": [],
+    "Toy.StoreLaws.lawful_satisfiesAll": [],
+    "Toy.StoreLaws.lawsExcept": [],
+    "Toy.StoreLaws.laws_via_const_hold": [],
+    "Toy.StoreLaws.logRet": [],
+    "Toy.StoreLaws.nf": [],
+    "Toy.StoreLaws.nv_canon_eq_of_derivable": [],
+    "Toy.StoreLaws.nv_derivable_lawsExcept_getGet_iff": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.nv_derivable_nf": [],
+    "Toy.StoreLaws.nv_entailsBool_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.nv_extDerivable_total": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.nv_forall_interp_eq_iff_obsEq": [],
+    "Toy.StoreLaws.nv_fromObs_isHom": [],
+    "Toy.StoreLaws.nv_getGet_of_getPut_of_putGet": [],
+    "Toy.StoreLaws.nv_getPut_putGet_putPut_iff_exists_surjective_isHom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.nv_inertHidden_interp_eq": [],
+    "Toy.StoreLaws.nv_interp_eq_of_obsEq": [],
+    "Toy.StoreLaws.nv_interp_factor": [],
+    "Toy.StoreLaws.pairFlipRet": [],
+    "Toy.StoreLaws.pairRet": [],
+    "Toy.StoreLaws.pairRet.eq_1": [],
+    "Toy.StoreLaws.put_idem_of_getPut_putGet": [],
+    "Toy.StoreLaws.readCounter": [],
+    "Toy.StoreLaws.readCounter_lawful_of_empty_cell": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.readCounter_lawful_of_empty_result": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.readCounter_not_getGet": [],
+    "Toy.StoreLaws.readCounter_not_getPut": [],
+    "Toy.StoreLaws.readCounter_not_putGet": [],
+    "Toy.StoreLaws.readCounter_putPut": [],
+    "Toy.StoreLaws.readCounter_strict_profile_bool": [],
+    "Toy.StoreLaws.readToClear": [],
+    "Toy.StoreLaws.readToClear_getPut": [],
+    "Toy.StoreLaws.readToClear_not_getGet": [],
+    "Toy.StoreLaws.readToClear_not_putGet": [],
+    "Toy.StoreLaws.readToClear_putPut": [],
+    "Toy.StoreLaws.run": [],
+    "Toy.StoreLaws.run.match_1": [],
+    "Toy.StoreLaws.run_bind": [],
+    "Toy.StoreLaws.run_canon": [],
+    "Toy.StoreLaws.run_get": [],
+    "Toy.StoreLaws.run_nf": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.run_put": [],
+    "Toy.StoreLaws.run_ret": [],
+    "Toy.StoreLaws.unitModel": [],
+    "Toy.StoreLaws.unitModel_lawful": [],
+    "Toy.StoreLaws.unitModel_lawful_not_faithful": [],
+    "Toy.StoreLaws.unit_cell_lawful_of_getPut_putPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.StoreLaws.unit_cell_putPut_of_getPut_putGet": [],
+    "Toy.StoreLaws.unit_cell_unit_result_all_derivable": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.valueOnly": [],
+    "Toy.StoreLaws.valueOnlyRet": [],
+    "Toy.StoreLaws.valueOnly_lawful": [],
+    "Toy.StoreLaws.valueOnly_lawful_not_faithful": [],
+    "Toy.StoreLaws.valueOnly_separates_other_valuation_and_substitution": [],
+    "Toy.StoreLaws.writeLog": [],
+    "Toy.StoreLaws.writeLog_getGet": [],
+    "Toy.StoreLaws.writeLog_lawful_of_empty_cell": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.writeLog_lawful_of_empty_result": [
+      "Quot.sound"
+    ],
+    "Toy.StoreLaws.writeLog_laws_via_dropLog": [],
+    "Toy.StoreLaws.writeLog_not_getPut": [],
+    "Toy.StoreLaws.writeLog_not_putPut": [],
+    "Toy.StoreLaws.writeLog_putGet": [],
+    "Toy.StoreLaws.writeLog_strict_profile_bool": [],
+    "Toy.StoreLaws.writeLog_via_distinguishes_obsEq": [],
+    "Toy.StoreLaws.writesIgnored": [],
+    "Toy.StoreLaws.writesIgnored_getGet": [],
+    "Toy.StoreLaws.writesIgnored_getPut": [],
+    "Toy.StoreLaws.writesIgnored_not_putGet": [],
+    "Toy.StoreLaws.writesIgnored_putPut": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
