@@ -276,7 +276,7 @@ def viaCallMod : Module := [(0, .call 1 .var), (1, .lit 0)]
 have equal domains and return the same value at every entry and argument once the fuel is
 at least `2`, yet neither contextually refines the other: at fuel `1` one returns and the
 other is out of fuel. So `CtxRefines` is strictly finer than inclusion of eventual results
-(or of divergence-sensitive behaviour); it forbids adding or removing calls on any path. -/
+(or of divergence-sensitive behaviour); here adding or removing the call changes call depth. -/
 theorem cex_ctxRefines_fixes_call_depth :
     SameDom directMod viaCallMod ∧
     (∀ fuel e a, 2 ≤ fuel → eval fuel directMod e a = eval fuel viaCallMod e a) ∧

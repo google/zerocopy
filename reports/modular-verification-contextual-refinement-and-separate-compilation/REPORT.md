@@ -14,12 +14,12 @@ One sentence per result (the key hypotheses are part of each sentence):
 2. **ctx-refines-trans**: if `CtxRefines M₁ M₂` and `CtxRefines M₂ M₃`, then `CtxRefines M₁ M₃`, with no extra domain or linkability hypothesis on the middle module.
 3. **ctx-refines-precongruence-link**: if `CtxRefines M₁ M₁'`, `CtxRefines M₂ M₂'` and the source modules are disjoint (`Linkable M₁ M₂`), then `CtxRefines (link M₁ M₂) (link M₁' M₂')`; disjointness of the targets is derived.
 4. **ctx-refines-forces-same-domain**: `CtxRefines M M'` implies that `M` and `M'` define exactly the same function names, so (in this model, where every definition is exported and calling an undefined name is the observable outcome `undefinedCall`) adding, deleting, or renaming any function breaks contextual refinement.
-5. **cex-add-or-delete-function-not-contextual** (counterexample): deleting an exported function that no in-module code calls, or adding an unused function, preserves refinement in both directions at entry `0` of a closed module but is not a contextual refinement, purely because the domain changes.
+5. **cex-add-or-delete-function-not-contextual** (counterexample): for example, deleting an exported function that no in-module code calls (`deadSrc` → `deadTgt`, both closed) or adding an unused function preserves refinement in both directions at entry `0` but is not a contextual refinement, purely because the domain changes; every transformation that changes the set of defined function names fails `CtxRefines` (`ctxRefines_sameDom`).
 6. **ctx-refines-closed-collapse**: if the source or the target module is closed (`ClosedModule M ∨ ClosedModule M'`), then `CtxRefines M M'` is equivalent to standalone refinement at every entry point (`StandaloneRefines M M'`).
 7. **cex-closed-main-entry-refinement-not-contextual** (counterexample): specializing exported function `1` of a closed module to the argument its only in-module caller passes preserves refinement in both directions at entry `0`, with equal domains, but fails refinement at entry `1` with no context, hence is not a contextual refinement.
 8. **cex-open-specialization-standalone-refinement-not-contextual** (counterexample): for two open modules (an import supplied by the context), standalone refinement in both directions at every entry, plus refinement at entry `0` of the one program they ship in, does not imply contextual refinement: an entry-`1` call in that program and a context whose import calls back into the module separate them.
 9. **ctx-refines-reflects-may-divergence**: if `CtxRefines M M'` and the context `C` is disjoint from `M`, then wherever `link C M'` may diverge (`outOfFuel` at every fuel) so may `link C M`; contextual refinement observes divergence.
-10. **cex-ctx-refines-fixes-call-depth** (counterexample): two modules with equal domains that evaluate identically at every entry and argument once fuel is at least `2`, but differ by one call on a path, are unrelated by `CtxRefines` in both directions; contextual refinement fixes call depth.
+10. **cex-ctx-refines-fixes-call-depth** (counterexample): `directMod` and `viaCallMod`, two modules with equal domains that evaluate identically at every entry and argument once fuel is at least `2` and differ by one call on a path, are unrelated by `CtxRefines` in both directions; here adding or removing the call changes the call depth on the path, which `CtxRefines` observes.
 11. **ag-partial-correctness**: if every function with a satisfiable precondition is defined in `P` (`SpecsImplemented P S`) and every body of `P` satisfies its contract assuming every callee satisfies its contract (`ModuleVerifiedPartial P S S`), then `P` is partially correct for `S`, with no termination measure; the linked-module form takes the two module obligations separately.
 12. **cex-ag-total-circular-unsound** (counterexample): the self-loop `[(0, call 0 var)]` implements the contract "`0` returns `0`" and satisfies the circular partial-correctness obligation, yet is not totally correct; circular reasoning is unsound for termination.
 13. **ag-total-correctness-wf-measure**: if `rel` is well-founded, `P` implements every satisfiable precondition of `S`, and every body establishes its contract while every call strictly decreases one shared call measure `μ` under `rel` and meets the callee precondition (`ModuleVerifiedTotal rel μ P S S`), then `P` is totally correct for `S` (one finite fuel bound per argument); the linked-module form requires the same `(rel, μ)` for both modules.
@@ -669,7 +669,7 @@ Basis: derived (modeling bridge) — For toolchains in which every function is e
 #### 5. `cex-add-or-delete-function-not-contextual` (counterexample)
 
 - **Tier:** T1. Instances of `ctxRefines_sameDom`; no source states these particular transformations, so labelled folklore made precise.
-- **Plain claim:** Deleting an exported function that no in-module code calls, or adding an unused helper function, preserves refinement (both directions) at the designated entry `0` of a closed module, yet fails `CtxRefines` because the domain changes; this is domain observability, not a context-interaction phenomenon.
+- **Plain claim:** For example, deleting an exported function that no in-module code calls (`deadSrc` → `deadTgt`, both closed) or adding an unused helper function (`[(0, lit 0)]` → `[(0, lit 0), (7, lit 0)]`) preserves refinement (both directions) at the designated entry `0`, yet fails `CtxRefines` because the domain changes. The failure half is general: every transformation that changes the set of defined function names fails `CtxRefines` (`ctxRefines_sameDom`, card `ctx-refines-forces-same-domain`); this is domain observability, not a context-interaction phenomenon.
 - **Lean:** `Toy.Link.Cex.cex_delete_unused_export_not_ctxRefines`, `Toy.Link.Cex.cex_add_fresh_helper_not_ctxRefines`
 
 ```lean
@@ -903,12 +903,12 @@ theorem cex_reflects_mayDiverge_without_linkable :
 
 Basis: execution (Lean kernel check) — `Toy.Link.ctxRefines_reflects_mayDiverge`, `Toy.Link.Examples.nonvacuous_ctxRefines_reflects_mayDiverge`, `Toy.Link.Cex.cex_ctxRefines_rejects_new_divergence`, `Toy.Link.Cex.cex_reflects_mayDiverge_without_linkable`.
 
-Basis: derived (modeling bridge) — A compiler correctness notion modelled on `CtxRefines` (outcomes compared at equal call-depth bound) rejects transformations that introduce non-termination. It also rejects transformations that change call depth (see `cex-ctx-refines-fixes-call-depth`). Reasoning: `outOfFuel` is compared like any other outcome. Whether that strictness is desirable for a real compiler is a design question this package does not settle.
+Basis: derived (modeling bridge) — A compiler correctness notion modelled on `CtxRefines` (outcomes compared at equal call-depth bound) rejects transformations that introduce non-termination. It also rejects some transformations that change call depth, such as the pair in `cex-ctx-refines-fixes-call-depth`. Reasoning: `outOfFuel` is compared like any other outcome. Whether that strictness is desirable for a real compiler is a design question this package does not settle.
 
 #### 10. `cex-ctx-refines-fixes-call-depth` (counterexample)
 
 - **Tier:** T1. Folklore consequence of lockstep fuel indexing, made precise.
-- **Plain claim:** `directMod = [(0, lit 0), (1, lit 0)]` and `viaCallMod = [(0, call 1 var), (1, lit 0)]` have equal domains and evaluate identically at every entry and argument once fuel is at least `2`, yet neither contextually refines the other: `CtxRefines` forbids both adding and removing a call on a path.
+- **Plain claim:** `directMod = [(0, lit 0), (1, lit 0)]` and `viaCallMod = [(0, call 1 var), (1, lit 0)]` have equal domains and evaluate identically at every entry and argument once fuel is at least `2`, yet neither contextually refines the other: here adding or removing the call changes the call depth on the path from entry `0`, which `CtxRefines` observes because it compares outcomes at equal fuel. Whether every added or removed call breaks `CtxRefines` is not proved here.
 - **Lean:** `Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`
 
 ```lean
@@ -1505,7 +1505,7 @@ theorem cex_sep_comp_behavioural_corollary_without_hSrc :
 
 Basis: execution (Lean kernel check) — `Toy.Link.separate_compilation_ctxRefines_of_pass_ctxRefines`, `Toy.Link.separate_compilation_preserves_partial_correctness_of_pass_ctxRefines`, `Toy.Link.Examples.nonvacuous_separate_compilation_ctxRefines`, `Toy.Link.Examples.nonvacuous_sep_comp_behavioural_corollary`, `Toy.Link.Cex.cex_verifiability_preservation_not_behavioural`, `Toy.Link.Cex.cex_sep_comp_ctx_without_linkable`, `Toy.Link.Cex.cex_sep_comp_behavioural_corollary_without_hSrc`.
 
-Basis: derived (modeling bridge) — If each per-module pass is a contextual refinement in a language without shared state, separately compiled modules may be linked and the result refines the linked source. Reasoning: this is the precongruence theorem instantiated at the pass. Passes that change call depth, inline, or introduce helpers are not contextual refinements in this model, so they are outside its scope.
+Basis: derived (modeling bridge) — If each per-module pass is a contextual refinement in a language without shared state, separately compiled modules may be linked and the result refines the linked source. Reasoning: this is the precongruence theorem instantiated at the pass. Passes that introduce helpers are never contextual refinements in this model (`Toy.Link.ctxRefines_sameDom`), and passes that change call depth or inline need not be (`Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`), so they are outside its scope unless `CtxRefines` is proved for them.
 
 #### 18. `cex-verifiability-preservation-not-behavioural` (counterexample)
 
@@ -1621,7 +1621,7 @@ Each result's non-claims, as recorded in `results.json`. These are what a reader
 
 **2. `ctx-refines-trans`**
 
-- `CtxRefines` compares outcome sets at the same call-depth fuel, including `outOfFuel`; it constrains divergence and fixes call depth (`Toy.Link.Cex.cex_ctxRefines_rejects_new_divergence`, `Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`). Transformations that add or remove a call on some path fail `CtxRefines` even when they compute the same results.
+- `CtxRefines` compares outcome sets at the same call-depth fuel, including `outOfFuel`; it constrains divergence and fixes call depth (`Toy.Link.Cex.cex_ctxRefines_rejects_new_divergence`, `Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`). Adding or removing a call can break `CtxRefines` even when results agree at every fuel of at least `2`: `Toy.Link.Cex.cex_ctxRefines_fixes_call_depth` gives such a pair, in both directions.
 - Every defined function is exported; `CtxRefines` forces equal domains (`Toy.Link.ctxRefines_sameDom`). The model has no private symbols.
 - Unlike Patterson and Ahmed's discussion of vertical compositionality (which they distinguish from transitivity), this result relates modules of one language only; it says nothing about multi-pass compilers between different languages.
 
@@ -1629,7 +1629,7 @@ Each result's non-claims, as recorded in `results.json`. These are what a reader
 
 - Precongruence is close to definitional here: contexts are stateless first-order modules and compose by linking. Unlike CompCertO Theorem 3.4 and CompCertM HorComp (which needs self-related modules), it says nothing about simulation-based compiler correctness, where horizontal composition is a substantive theorem about memory and rely/guarantee conventions.
 - Does not hold for non-disjoint (shadowing) linking (`Toy.Link.Cex.cex_link_congr_without_linkable`).
-- `CtxRefines` constrains divergence and fixes call depth (`Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`); per-module passes that add or remove calls are not contextual refinements, so this theorem does not cover them. Specification-based separate compilation (`separate-compilation-preserves-verifiability`) admits such passes but gives no behavioural relation.
+- `CtxRefines` constrains divergence and fixes call depth (`Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`); a per-module pass that adds or removes a call need not be a contextual refinement (the same counterexample gives one that is not, in each direction), so this theorem does not cover such a pass unless `CtxRefines` is proved for it. Specification-based separate compilation (`separate-compilation-preserves-verifiability`) admits such passes but gives no behavioural relation.
 - Every defined function is exported; `CtxRefines` forces equal domains. The model has no private symbols.
 
 **4. `ctx-refines-forces-same-domain`**
@@ -1717,7 +1717,7 @@ Each result's non-claims, as recorded in `results.json`. These are what a reader
 
 **17. `separate-compilation-behavioural-refinement`**
 
-- The behaviour relation is `CtxRefines`, which compares outcomes in lockstep call depth, includes `outOfFuel`, and forces equal domains; passes that add or remove calls, inline, or introduce helpers are not covered (`Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`, `Toy.Link.ctxRefines_sameDom`).
+- The behaviour relation is `CtxRefines`, which compares outcomes in lockstep call depth, includes `outOfFuel`, and forces equal domains; passes that introduce helpers never satisfy it (`Toy.Link.ctxRefines_sameDom`), and passes that add or remove calls or inline need not (`Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`), so such passes are not covered unless `CtxRefines` is proved for them.
 - Same-language, stateless, first-order modules only: unlike CompCertO Theorem 3.8 or Patterson and Ahmed's Corollary 4.3, there is no change of language, memory model, or calling convention.
 - Behavioural refinement preserves partial correctness for the same specs; verifiability preservation does not imply behavioural refinement (`Toy.Link.Cex.cex_verifiability_preservation_not_behavioural`).
 
