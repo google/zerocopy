@@ -1,0 +1,3821 @@
+{
+  "toolchain": {
+    "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+  },
+  "sysroot_census": {
+    "library_root": "rustlib/src/rust/library",
+    "total_rs_files_scanned": 2878,
+    "total_asm_macro_invocations": 370,
+    "by_kind": {
+      "asm": 324,
+      "naked_asm": 17,
+      "global_asm": 29
+    },
+    "by_crate": {
+      "compiler-builtins": 135,
+      "core": 2,
+      "std": 29,
+      "std_detect": 6,
+      "stdarch": 197,
+      "unwind": 1
+    },
+    "option_counts_within_40_lines": {
+      "pure": 193,
+      "nomem": 192,
+      "readonly": 25,
+      "preserves_flags": 102,
+      "nostack": 303,
+      "noreturn": 4,
+      "may_unwind": 0,
+      "att_syntax": 19,
+      "raw": 26
+    },
+    "no_builtins_sites": [
+      {
+        "file": "compiler-builtins/compiler-builtins/src/lib.rs",
+        "line": 15,
+        "text": "#![no_builtins]"
+      }
+    ],
+    "mem_builtins": [
+      "compiler-builtins/compiler-builtins/src/macros.rs:397: $(#[$($attr:tt)*])*",
+      "compiler-builtins/compiler-builtins/src/mem/mod.rs:11: pub unsafe extern \"C\" fn memcpy(dest: *mut u8, src: *const u8, n: usize) -> *mut u8 {",
+      "compiler-builtins/compiler-builtins/src/mem/mod.rs:17: pub unsafe extern \"C\" fn memmove(dest: *mut u8, src: *const u8, n: usize) -> *mut u8 {",
+      "compiler-builtins/compiler-builtins/src/mem/mod.rs:30: pub unsafe extern \"C\" fn memset(s: *mut u8, c: core::ffi::c_int, n: usize) -> *mut u8 {",
+      "compiler-builtins/compiler-builtins/src/mem/mod.rs:36: pub unsafe extern \"C\" fn memcmp(s1: *const u8, s2: *const u8, n: usize) -> core::ffi::c_int {",
+      "compiler-builtins/compiler-builtins/src/mem/mod.rs:41: pub unsafe extern \"C\" fn bcmp(s1: *const u8, s2: *const u8, n: usize) -> core::ffi::c_int {",
+      "compiler-builtins/compiler-builtins/src/mem/mod.rs:46: pub unsafe extern \"C\" fn strlen(s: *const core::ffi::c_char) -> usize {"
+    ]
+  },
+  "constraint_and_options_matrix": {
+    "x86_64-unknown-linux-gnu": {
+      "module_asm": [
+        "module asm \".intel_syntax\"",
+        "module asm \".globl probe_global_asm_add42\"",
+        "module asm \".type probe_global_asm_add42, @function\"",
+        "module asm \"probe_global_asm_add42:\"",
+        "module asm \"lea rax, [rdi + 42]\"",
+        "module asm \"ret\"",
+        "module asm \".att_syntax\"",
+        "module asm \".intel_syntax\"",
+        "module asm \".pushsection .text.probe_naked_identity,\\22ax\\22, @progbits\"",
+        "module asm \".balign 4\"",
+        "module asm \".globl probe_naked_identity\"",
+        "module asm \".type probe_naked_identity, @function\"",
+        "module asm \"probe_naked_identity:\"",
+        "module asm \"mov rax, rdi\"",
+        "module asm \"ret\"",
+        "module asm \".Lfunc_end_probe_naked_identity:\"",
+        "module asm \".size probe_naked_identity, . - probe_naked_identity\"",
+        "module asm \".popsection\"",
+        "module asm \"\"",
+        "module asm \".att_syntax\""
+      ],
+      "probes": {
+        "probe_clobber_abi_c": {
+          "llvm_header": "define void @probe_clobber_abi_c() unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call { i32, i32, i32, i32, i32, i32, i32, i32, i32, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float } asm sideeffect alignstack inteldialect \"nop\", \"={ax},={cx},={dx},={si},={di},={r8},={r9},={r10},={r11},={xmm0},={xmm1},={xmm2},={xmm3},={xmm4},={xmm5},={xmm6},={xmm7},={xmm8},={xmm9},={xmm10},={xmm11},={xmm12},={xmm13},={xmm14},={xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{k0},~{k1},~{k2},~{k3},~{k4},~{k5},~{k6},~{k7},~{st},~{st(1)},~{st(2)},~{st(3)},~{st(4)},~{st(5)},~{st(6)},~{st(7)},~{tmm0},~{tmm1},~{tmm2},~{tmm3},~{tmm4},~{tmm5},~{tmm6},~{tmm7},~{dirflag},~{fpsr},~{flags},~{memory}\"() #11, !srcloc !6"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", lateout(\"ax\") _, lateout(\"cx\") _, lateout(\"dx\") _, lateout(\"si\") _, lateout(\"di\") _, lateout(\"r8\") _, lateout(\"r9\") _, lateout(\"r10\") _, lateout(\"r11\") _, lateout(\"xmm0\") _, lateout(\"xmm1\") _, lateout(\"xmm2\") _, lateout(\"xmm3\") _, lateout(\"xmm4\") _, lateout(\"xmm5\") _, lateout(\"xmm6\") _, lateout(\"xmm7\") _, lateout(\"xmm8\") _, lateout(\"xmm9\") _, lateout(\"xmm10\") _, lateout(\"xmm11\") _, lateout(\"xmm12\") _, lateout(\"xmm13\") _, lateout(\"xmm14\") _, lateout(\"xmm15\") _, lateout(\"zmm16\") _, lateout(\"zmm17\") _, lateout(\"zmm18\") _, lateout(\"zmm19\") _, lateout(\"zmm20\") _, lateout(\"zmm21\") _, lateout(\"zmm22\") _, lateout(\"zmm23\") _, lateout(\"zmm24\") _, lateout(\"zmm25\") _, lateout(\"zmm26\") _, lateout(\"zmm27\") _, lateout(\"zmm28\") _, lateout(\"zmm29\") _, lateout(\"zmm30\") _, lateout(\"zmm31\") _, lateout(\"k0\") _, lateout(\"k1\") _, lateout(\"k2\") _, lateout(\"k3\") _, lateout(\"k4\") _, lateout(\"k5\") _, lateout(\"k6\") _, lateout(\"k7\") _, lateout(\"mm0\") _, lateout(\"mm1\") _, lateout(\"mm2\") _, lateout(\"mm3\") _, lateout(\"mm4\") _, lateout(\"mm5\") _, lateout(\"mm6\") _, lateout(\"mm7\") _, lateout(\"st(0)\") _, lateout(\"st(1)\") _, lateout(\"st(2)\") _, lateout(\"st(3)\") _, lateout(\"st(4)\") _, lateout(\"st(5)\") _, lateout(\"st(6)\") _, lateout(\"st(7)\") _, lateout(\"tmm0\") _, lateout(\"tmm1\") _, lateout(\"tmm2\") _, lateout(\"tmm3\") _, lateout(\"tmm4\") _, lateout(\"tmm5\") _, lateout(\"tmm6\") _, lateout(\"tmm7\") _, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tpushq\t%rax",
+            "\t.cfi_def_cfa_offset 16",
+            "\t#APP",
+            "",
+            "\tnop",
+            "",
+            "\t#NO_APP",
+            "\tpopq\t%rax",
+            "\t.cfi_def_cfa_offset 8",
+            "\tretq",
+            ".Lfunc_end2:",
+            "\t.size\tprobe_clobber_abi_c, .Lfunc_end2-probe_clobber_abi_c",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_clobber_abi_win64,\"ax\",@progbits",
+            "\t.globl\tprobe_clobber_abi_win64",
+            "\t.p2align\t4",
+            "\t.type\tprobe_clobber_abi_win64,@function"
+          ]
+        },
+        "probe_clobber_abi_win64": {
+          "llvm_header": "define void @probe_clobber_abi_win64() unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call { i32, i32, i32, i32, i32, i32, i32, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float } asm sideeffect alignstack inteldialect \"nop\", \"={ax},={cx},={dx},={r8},={r9},={r10},={r11},={xmm0},={xmm1},={xmm2},={xmm3},={xmm4},={xmm5},={xmm6},={xmm7},={xmm8},={xmm9},={xmm10},={xmm11},={xmm12},={xmm13},={xmm14},={xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{k0},~{k1},~{k2},~{k3},~{k4},~{k5},~{k6},~{k7},~{st},~{st(1)},~{st(2)},~{st(3)},~{st(4)},~{st(5)},~{st(6)},~{st(7)},~{tmm0},~{tmm1},~{tmm2},~{tmm3},~{tmm4},~{tmm5},~{tmm6},~{tmm7},~{dirflag},~{fpsr},~{flags},~{memory}\"() #11, !srcloc !7"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", lateout(\"ax\") _, lateout(\"cx\") _, lateout(\"dx\") _, lateout(\"r8\") _, lateout(\"r9\") _, lateout(\"r10\") _, lateout(\"r11\") _, lateout(\"xmm0\") _, lateout(\"xmm1\") _, lateout(\"xmm2\") _, lateout(\"xmm3\") _, lateout(\"xmm4\") _, lateout(\"xmm5\") _, lateout(\"xmm6\") _, lateout(\"xmm7\") _, lateout(\"xmm8\") _, lateout(\"xmm9\") _, lateout(\"xmm10\") _, lateout(\"xmm11\") _, lateout(\"xmm12\") _, lateout(\"xmm13\") _, lateout(\"xmm14\") _, lateout(\"xmm15\") _, lateout(\"zmm16\") _, lateout(\"zmm17\") _, lateout(\"zmm18\") _, lateout(\"zmm19\") _, lateout(\"zmm20\") _, lateout(\"zmm21\") _, lateout(\"zmm22\") _, lateout(\"zmm23\") _, lateout(\"zmm24\") _, lateout(\"zmm25\") _, lateout(\"zmm26\") _, lateout(\"zmm27\") _, lateout(\"zmm28\") _, lateout(\"zmm29\") _, lateout(\"zmm30\") _, lateout(\"zmm31\") _, lateout(\"k0\") _, lateout(\"k1\") _, lateout(\"k2\") _, lateout(\"k3\") _, lateout(\"k4\") _, lateout(\"k5\") _, lateout(\"k6\") _, lateout(\"k7\") _, lateout(\"mm0\") _, lateout(\"mm1\") _, lateout(\"mm2\") _, lateout(\"mm3\") _, lateout(\"mm4\") _, lateout(\"mm5\") _, lateout(\"mm6\") _, lateout(\"mm7\") _, lateout(\"st(0)\") _, lateout(\"st(1)\") _, lateout(\"st(2)\") _, lateout(\"st(3)\") _, lateout(\"st(4)\") _, lateout(\"st(5)\") _, lateout(\"st(6)\") _, lateout(\"st(7)\") _, lateout(\"tmm0\") _, lateout(\"tmm1\") _, lateout(\"tmm2\") _, lateout(\"tmm3\") _, lateout(\"tmm4\") _, lateout(\"tmm5\") _, lateout(\"tmm6\") _, lateout(\"tmm7\") _, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tpushq\t%rax",
+            "\t.cfi_def_cfa_offset 16",
+            "\t#APP",
+            "",
+            "\tnop",
+            "",
+            "\t#NO_APP",
+            "\tpopq\t%rax",
+            "\t.cfi_def_cfa_offset 8",
+            "\tretq",
+            ".Lfunc_end3:",
+            "\t.size\tprobe_clobber_abi_win64, .Lfunc_end3-probe_clobber_abi_win64",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_inlateout_fixed,\"ax\",@progbits",
+            "\t.globl\tprobe_inlateout_fixed",
+            "\t.p2align\t4",
+            "\t.type\tprobe_inlateout_fixed,@function"
+          ]
+        },
+        "probe_inlateout_fixed": {
+          "llvm_header": "define noundef i64 @probe_inlateout_fixed(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect inteldialect \"add rax, 1\", \"={ax},{ax},~{dirflag},~{fpsr},~{flags}\"(i64 %0) #12, !srcloc !8"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind nonlazybind memory(inaccessiblemem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add rax, 1\", inlateout(\"ax\") copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tmovq\t%rdi, %rax",
+            "\t#APP",
+            "",
+            "\taddq\t$1, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end4:",
+            "\t.size\tprobe_inlateout_fixed, .Lfunc_end4-probe_inlateout_fixed",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_inlateout_reg,\"ax\",@progbits",
+            "\t.globl\tprobe_inlateout_reg",
+            "\t.p2align\t4",
+            "\t.type\tprobe_inlateout_reg,@function"
+          ]
+        },
+        "probe_inlateout_reg": {
+          "llvm_header": "define noundef i64 @probe_inlateout_reg(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect inteldialect \"add ${0:q}, 1\", \"=r,0,~{dirflag},~{fpsr},~{flags}\"(i64 %0) #12, !srcloc !9"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind nonlazybind memory(inaccessiblemem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add {0}, 1\", inlateout(reg) copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tmovq\t%rdi, %rax",
+            "\t#APP",
+            "",
+            "\taddq\t$1, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end5:",
+            "\t.size\tprobe_inlateout_reg, .Lfunc_end5-probe_inlateout_reg",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_inout_reg,\"ax\",@progbits",
+            "\t.globl\tprobe_inout_reg",
+            "\t.p2align\t4",
+            "\t.type\tprobe_inout_reg,@function"
+          ]
+        },
+        "probe_inout_reg": {
+          "llvm_header": "define noundef i64 @probe_inout_reg(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect inteldialect \"add ${0:q}, 1\", \"=&r,0,~{dirflag},~{fpsr},~{flags}\"(i64 %0) #12, !srcloc !10"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind nonlazybind memory(inaccessiblemem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add {0}, 1\", inout(reg) copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tmovq\t%rdi, %rax",
+            "\t#APP",
+            "",
+            "\taddq\t$1, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end6:",
+            "\t.size\tprobe_inout_reg, .Lfunc_end6-probe_inout_reg",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_lateout,\"ax\",@progbits",
+            "\t.globl\tprobe_lateout",
+            "\t.p2align\t4",
+            "\t.type\tprobe_lateout,@function"
+          ]
+        },
+        "probe_lateout": {
+          "llvm_header": "define noundef i64 @probe_lateout(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"mov ${0:q}, ${1:q}\", \"=r,r,~{dirflag},~{fpsr},~{flags}\"(i64 %x) #13, !srcloc !11"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {1}, {0}\", in(reg) copy _1, lateout(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t#APP",
+            "",
+            "\tmovq\t%rdi, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end7:",
+            "\t.size\tprobe_lateout, .Lfunc_end7-probe_lateout",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_default,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_default",
+            "\t.p2align\t4",
+            "\t.type\tprobe_opts_default,@function"
+          ]
+        },
+        "probe_opts_default": {
+          "llvm_header": "define noundef i64 @probe_opts_default(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect alignstack inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 %x) #11, !srcloc !12"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tpushq\t%rax",
+            "\t.cfi_def_cfa_offset 16",
+            "\t#APP",
+            "",
+            "\tmovq\t%rdi, %rax",
+            "",
+            "\t#NO_APP",
+            "\tpopq\t%rcx",
+            "\t.cfi_def_cfa_offset 8",
+            "\tretq",
+            ".Lfunc_end8:",
+            "\t.size\tprobe_opts_default, .Lfunc_end8-probe_opts_default",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_may_unwind,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_may_unwind",
+            "\t.p2align\t4",
+            "\t.type\tprobe_opts_may_unwind,@function"
+          ]
+        },
+        "probe_opts_may_unwind": {
+          "llvm_header": "define void @probe_opts_may_unwind(ptr noalias noundef align 8 dereferenceable(8) %flag) unnamed_addr #5 personality ptr @rust_eh_personality {",
+          "llvm_asm_lines": [
+            "invoke void asm sideeffect inteldialect unwind \"nop\", \"~{dirflag},~{fpsr},~{flags},~{memory}\"()"
+          ],
+          "llvm_resolved_attrs": {
+            "#5": "attributes #5 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "has_unreachable": false,
+          "has_invoke": true,
+          "mir_asm_lines": [
+            "fn probe_opts_may_unwind(_1: &mut u64) -> () {",
+            "asm!(\"nop\", options(NOSTACK | MAY_UNWIND)) -> [return: bb1, unwind: bb3];",
+            "drop(_2) -> [return: bb2, unwind continue];",
+            "return;",
+            "drop(_2) -> [return: bb4, unwind terminate(cleanup)];"
+          ],
+          "asm_lines": [
+            ".Lfunc_begin0:",
+            "\t.cfi_startproc",
+            "\t.cfi_personality 155, DW.ref.rust_eh_personality",
+            "\t.cfi_lsda 27, .Lexception0",
+            "\tpushq\t%rbx",
+            "\t.cfi_def_cfa_offset 16",
+            "\tsubq\t$16, %rsp",
+            "\t.cfi_def_cfa_offset 32",
+            "\t.cfi_offset %rbx, -16",
+            "\tmovq\t%rdi, 8(%rsp)",
+            ".Ltmp1:",
+            "\t#APP",
+            "",
+            "\tnop",
+            "",
+            "\t#NO_APP",
+            ".Ltmp2:",
+            "\tleaq\t8(%rsp), %rdi",
+            "\tcallq\t*_RNvXCs7eHAHRPjn75_29constraint_and_options_matrixNtB2_15UnwindDropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop@GOTPCREL(%rip)",
+            "\taddq\t$16, %rsp",
+            "\t.cfi_def_cfa_offset 16",
+            "\tpopq\t%rbx",
+            "\t.cfi_def_cfa_offset 8",
+            "\tretq",
+            ".LBB9_2:"
+          ]
+        },
+        "probe_opts_nomem": {
+          "llvm_header": "define noundef i64 @probe_opts_nomem(i64 noundef %x) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags}\"(i64 %x) #12, !srcloc !14"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind nonlazybind memory(inaccessiblemem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t#APP",
+            "",
+            "\tmovq\t%rdi, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end10:",
+            "\t.size\tprobe_opts_nomem, .Lfunc_end10-probe_opts_nomem",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_noreturn,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_noreturn",
+            "\t.p2align\t4",
+            "\t.type\tprobe_opts_noreturn,@function"
+          ]
+        },
+        "probe_opts_noreturn": {
+          "llvm_header": "define void @probe_opts_noreturn() unnamed_addr #6 {",
+          "llvm_asm_lines": [
+            "tail call void asm sideeffect alignstack inteldialect \"nop\", \"~{dirflag},~{fpsr},~{flags},~{memory}\"() #11, !srcloc !15"
+          ],
+          "llvm_resolved_attrs": {
+            "#6": "attributes #6 = { noreturn nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": true,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", options(NORETURN)) -> unwind unreachable;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tpushq\t%rax",
+            "\t.cfi_def_cfa_offset 16",
+            "\t#APP",
+            "",
+            "\tnop",
+            "",
+            "\t#NO_APP",
+            "\tud2",
+            ".Lfunc_end11:",
+            "\t.size\tprobe_opts_noreturn, .Lfunc_end11-probe_opts_noreturn",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_nostack,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_nostack",
+            "\t.p2align\t4",
+            "\t.type\tprobe_opts_nostack,@function"
+          ]
+        },
+        "probe_opts_nostack": {
+          "llvm_header": "define noundef i64 @probe_opts_nostack(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 %x) #11, !srcloc !16"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t#APP",
+            "",
+            "\tmovq\t%rdi, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end12:",
+            "\t.size\tprobe_opts_nostack, .Lfunc_end12-probe_opts_nostack",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_preserves_flags,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_preserves_flags",
+            "\t.p2align\t4",
+            "\t.type\tprobe_opts_preserves_flags,@function"
+          ]
+        },
+        "probe_opts_preserves_flags": {
+          "llvm_header": "define noundef i64 @probe_opts_preserves_flags(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{memory}\"(i64 %x) #11, !srcloc !17"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t#APP",
+            "",
+            "\tmovq\t%rdi, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end13:",
+            "\t.size\tprobe_opts_preserves_flags, .Lfunc_end13-probe_opts_preserves_flags",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_pure_nomem_dce_cse,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_pure_nomem_dce_cse",
+            "\t.p2align\t4",
+            "\t.type\tprobe_opts_pure_nomem_dce_cse,@function"
+          ]
+        },
+        "probe_opts_pure_nomem_dce_cse": {
+          "llvm_header": "define noundef range(i64 0, -1) i64 @probe_opts_pure_nomem_dce_cse(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags}\"(i64 %x) #13, !srcloc !18"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _2, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "asm!(\"mov {0}, {1}\", out(reg) _3, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb2, unwind unreachable];",
+            "asm!(\"mov {0}, {1}\", out(reg) _4, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb3, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t#APP",
+            "",
+            "\tmovq\t%rdi, %rax",
+            "",
+            "\t#NO_APP",
+            "\taddq\t%rax, %rax",
+            "\tretq",
+            ".Lfunc_end14:",
+            "\t.size\tprobe_opts_pure_nomem_dce_cse, .Lfunc_end14-probe_opts_pure_nomem_dce_cse",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_pure_readonly,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_pure_readonly",
+            "\t.p2align\t4",
+            "\t.type\tprobe_opts_pure_readonly,@function"
+          ]
+        },
+        "probe_opts_pure_readonly": {
+          "llvm_header": "define noundef i64 @probe_opts_pure_readonly(i64 noundef %x) unnamed_addr #7 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 %x) #15, !srcloc !19"
+          ],
+          "llvm_resolved_attrs": {
+            "#7": "attributes #7 = { mustprogress nofree nounwind nonlazybind willreturn memory(read) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#15": "attributes #15 = { nounwind willreturn memory(read) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(PURE | READONLY | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t#APP",
+            "",
+            "\tmovq\t%rdi, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end15:",
+            "\t.size\tprobe_opts_pure_readonly, .Lfunc_end15-probe_opts_pure_readonly",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_readonly,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_readonly",
+            "\t.p2align\t4",
+            "\t.type\tprobe_opts_readonly,@function"
+          ]
+        },
+        "probe_opts_readonly": {
+          "llvm_header": "define noundef i64 @probe_opts_readonly(i64 noundef %x) unnamed_addr #8 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 %x) #16, !srcloc !20"
+          ],
+          "llvm_resolved_attrs": {
+            "#8": "attributes #8 = { nounwind nonlazybind memory(read, inaccessiblemem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#16": "attributes #16 = { nounwind memory(read, inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(READONLY | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t#APP",
+            "",
+            "\tmovq\t%rdi, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end16:",
+            "\t.size\tprobe_opts_readonly, .Lfunc_end16-probe_opts_readonly",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_out_early_clobber,\"ax\",@progbits",
+            "\t.globl\tprobe_out_early_clobber",
+            "\t.p2align\t4",
+            "\t.type\tprobe_out_early_clobber,@function"
+          ]
+        },
+        "probe_out_early_clobber": {
+          "llvm_header": "define noundef i64 @probe_out_early_clobber(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags}\"(i64 %x) #13, !srcloc !21"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {1}, {0}\", in(reg) copy _1, out(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t#APP",
+            "",
+            "\tmovq\t%rdi, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end17:",
+            "\t.size\tprobe_out_early_clobber, .Lfunc_end17-probe_out_early_clobber",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_sym_and_const,\"ax\",@progbits",
+            "\t.globl\tprobe_sym_and_const",
+            "\t.p2align\t4",
+            "\t.type\tprobe_sym_and_const,@function"
+          ]
+        },
+        "probe_sym_and_const": {
+          "llvm_header": "define noundef i64 @probe_sym_and_const() unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"lea ${0:q}, [rip + ${1:c}]\\0Aadd ${0:q}, 7\", \"=&r,s,~{dirflag},~{fpsr},~{flags}\"(ptr nonnull @_RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target) #13, !srcloc !22"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"lea {2}, [rip + {0}]",
+            "add {2}, {1}\", sym_fn helper_target, const const probe_sym_and_const::{constant#0}, out(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t#APP",
+            "",
+            "\tleaq\t_RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target(%rip), %rax",
+            "\taddq\t$7, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            ".Lfunc_end18:",
+            "\t.size\tprobe_sym_and_const, .Lfunc_end18-probe_sym_and_const",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\tprobe_clobber_abi_sysv64",
+            "\t.type\tprobe_clobber_abi_sysv64,@function",
+            "probe_clobber_abi_sysv64 = probe_clobber_abi_c",
+            "\t.hidden\tDW.ref.rust_eh_personality",
+            "\t.weak\tDW.ref.rust_eh_personality",
+            "\t.section\t.data.DW.ref.rust_eh_personality,\"awG\",@progbits,DW.ref.rust_eh_personality,comdat",
+            "\t.p2align\t3, 0x0",
+            "\t.type\tDW.ref.rust_eh_personality,@object",
+            "\t.size\tDW.ref.rust_eh_personality, 8"
+          ]
+        }
+      },
+      "x86_objdump_probe_sym_excerpt": [
+        "   0:\t48 8d 47 2a          \tlea    0x2a(%rdi),%rax",
+        "Disassembly of section .text._RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target:",
+        "0000000000000000 <_RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target>:",
+        "   0:\t48 8d 47 01          \tlea    0x1(%rdi),%rax",
+        "Disassembly of section .text.probe_lateout:",
+        "0000000000000000 <probe_lateout>:",
+        "   b:\t48 8d 7c 24 08       \tlea    0x8(%rsp),%rdi",
+        "\t\t\t12: R_X86_64_GOTPCREL\t_RNvXCs7eHAHRPjn75_29constraint_and_options_matrixNtB2_15UnwindDropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop-0x4",
+        "  1f:\t48 8d 7c 24 08       \tlea    0x8(%rsp),%rdi",
+        "\t\t\t26: R_X86_64_GOTPCREL\t_RNvXCs7eHAHRPjn75_29constraint_and_options_matrixNtB2_15UnwindDropGuardNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop-0x4",
+        "\t\t\t2e: R_X86_64_PLT32\t_Unwind_Resume-0x4",
+        "Disassembly of section .text.probe_out_early_clobber:",
+        "0000000000000000 <probe_out_early_clobber>:",
+        "Disassembly of section .text.probe_sym_and_const:",
+        "0000000000000000 <probe_sym_and_const>:",
+        "   0:\t48 8d 05 00 00 00 00 \tlea    0x0(%rip),%rax        # 7 <probe_sym_and_const+0x7>",
+        "\t\t\t3: R_X86_64_PC32\t_RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target-0x4"
+      ]
+    },
+    "aarch64-unknown-linux-gnu": {
+      "module_asm": [
+        "module asm \".globl probe_global_asm_add42\"",
+        "module asm \".type probe_global_asm_add42, @function\"",
+        "module asm \"probe_global_asm_add42:\"",
+        "module asm \"add x0, x0, #42\"",
+        "module asm \"ret\"",
+        "module asm \".pushsection .text.probe_naked_identity,\\22ax\\22, @progbits\"",
+        "module asm \".balign 4\"",
+        "module asm \".globl probe_naked_identity\"",
+        "module asm \".type probe_naked_identity, @function\"",
+        "module asm \"probe_naked_identity:\"",
+        "module asm \"ret\"",
+        "module asm \".Lfunc_end_probe_naked_identity:\"",
+        "module asm \".size probe_naked_identity, . - probe_naked_identity\"",
+        "module asm \".popsection\""
+      ],
+      "probes": {
+        "probe_clobber_abi_c": {
+          "llvm_header": "define void @probe_clobber_abi_c() unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call { i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64> } asm sideeffect alignstack \"nop\", \"={w0},={w1},={w2},={w3},={w4},={w5},={w6},={w7},={w8},={w9},={w10},={w11},={w12},={w13},={w14},={w15},={w16},={w17},={w18},={w30},={q0},={q1},={q2},={q3},={q4},={q5},={q6},={q7},={q8},={q9},={q10},={q11},={q12},={q13},={q14},={q15},={q16},={q17},={q18},={q19},={q20},={q21},={q22},={q23},={q24},={q25},={q26},={q27},={q28},={q29},={q30},={q31},~{p0},~{p1},~{p2},~{p3},~{p4},~{p5},~{p6},~{p7},~{p8},~{p9},~{p10},~{p11},~{p12},~{p13},~{p14},~{p15},~{ffr},~{cc},~{memory}\"() #11, !srcloc !6"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", lateout(\"x0\") _, lateout(\"x1\") _, lateout(\"x2\") _, lateout(\"x3\") _, lateout(\"x4\") _, lateout(\"x5\") _, lateout(\"x6\") _, lateout(\"x7\") _, lateout(\"x8\") _, lateout(\"x9\") _, lateout(\"x10\") _, lateout(\"x11\") _, lateout(\"x12\") _, lateout(\"x13\") _, lateout(\"x14\") _, lateout(\"x15\") _, lateout(\"x16\") _, lateout(\"x17\") _, lateout(\"x18\") _, lateout(\"x30\") _, lateout(\"v0\") _, lateout(\"v1\") _, lateout(\"v2\") _, lateout(\"v3\") _, lateout(\"v4\") _, lateout(\"v5\") _, lateout(\"v6\") _, lateout(\"v7\") _, lateout(\"v8\") _, lateout(\"v9\") _, lateout(\"v10\") _, lateout(\"v11\") _, lateout(\"v12\") _, lateout(\"v13\") _, lateout(\"v14\") _, lateout(\"v15\") _, lateout(\"v16\") _, lateout(\"v17\") _, lateout(\"v18\") _, lateout(\"v19\") _, lateout(\"v20\") _, lateout(\"v21\") _, lateout(\"v22\") _, lateout(\"v23\") _, lateout(\"v24\") _, lateout(\"v25\") _, lateout(\"v26\") _, lateout(\"v27\") _, lateout(\"v28\") _, lateout(\"v29\") _, lateout(\"v30\") _, lateout(\"v31\") _, lateout(\"p0\") _, lateout(\"p1\") _, lateout(\"p2\") _, lateout(\"p3\") _, lateout(\"p4\") _, lateout(\"p5\") _, lateout(\"p6\") _, lateout(\"p7\") _, lateout(\"p8\") _, lateout(\"p9\") _, lateout(\"p10\") _, lateout(\"p11\") _, lateout(\"p12\") _, lateout(\"p13\") _, lateout(\"p14\") _, lateout(\"p15\") _, lateout(\"ffr\") _, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tstp\td15, d14, [sp, #-80]!",
+            "\t.cfi_def_cfa_offset 80",
+            "\tstp\td13, d12, [sp, #16]",
+            "\tstp\td11, d10, [sp, #32]",
+            "\tstp\td9, d8, [sp, #48]",
+            "\tstp\tx29, x30, [sp, #64]",
+            "\tadd\tx29, sp, #64",
+            "\t.cfi_def_cfa w29, 16",
+            "\t.cfi_offset w30, -8",
+            "\t.cfi_offset w29, -16",
+            "\t.cfi_offset b8, -24",
+            "\t.cfi_offset b9, -32",
+            "\t.cfi_offset b10, -40",
+            "\t.cfi_offset b11, -48",
+            "\t.cfi_offset b12, -56",
+            "\t.cfi_offset b13, -64",
+            "\t.cfi_offset b14, -72",
+            "\t.cfi_offset b15, -80",
+            "\t//APP",
+            "\tnop",
+            "\t//NO_APP",
+            "\t.cfi_def_cfa wsp, 80",
+            "\tldp\tx29, x30, [sp, #64]",
+            "\tldp\td9, d8, [sp, #48]"
+          ]
+        },
+        "probe_inlateout_fixed": {
+          "llvm_header": "define noundef i64 @probe_inlateout_fixed(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect \"add x0, x0, #1\", \"={x0},{x0},~{cc}\"(i64 %0) #12, !srcloc !7"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#1": "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind willreturn memory(readwrite, inaccessiblemem: none, target_mem0: none, target_mem1: none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add x0, x0, #1\", inlateout(\"x0\") copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tadd\tx0, x0, #1",
+            "\t//NO_APP",
+            "\tret",
+            ".Lfunc_end3:",
+            "\t.size\tprobe_inlateout_fixed, .Lfunc_end3-probe_inlateout_fixed",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_inlateout_reg,\"ax\",@progbits",
+            "\t.globl\tprobe_inlateout_reg",
+            "\t.p2align\t2",
+            "\t.type\tprobe_inlateout_reg,@function"
+          ]
+        },
+        "probe_inlateout_reg": {
+          "llvm_header": "define noundef i64 @probe_inlateout_reg(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect \"add ${0}, ${0}, #1\", \"=r,0,~{cc}\"(i64 %0) #12, !srcloc !8"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#1": "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind willreturn memory(readwrite, inaccessiblemem: none, target_mem0: none, target_mem1: none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add {0}, {0}, #1\", inlateout(reg) copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tadd\tx0, x0, #1",
+            "\t//NO_APP",
+            "\tret",
+            ".Lfunc_end4:",
+            "\t.size\tprobe_inlateout_reg, .Lfunc_end4-probe_inlateout_reg",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_inout_reg,\"ax\",@progbits",
+            "\t.globl\tprobe_inout_reg",
+            "\t.p2align\t2",
+            "\t.type\tprobe_inout_reg,@function"
+          ]
+        },
+        "probe_inout_reg": {
+          "llvm_header": "define noundef i64 @probe_inout_reg(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect \"add ${0}, ${0}, #1\", \"=&r,0,~{cc}\"(i64 %0) #12, !srcloc !9"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#1": "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind willreturn memory(readwrite, inaccessiblemem: none, target_mem0: none, target_mem1: none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add {0}, {0}, #1\", inout(reg) copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tadd\tx0, x0, #1",
+            "\t//NO_APP",
+            "\tret",
+            ".Lfunc_end5:",
+            "\t.size\tprobe_inout_reg, .Lfunc_end5-probe_inout_reg",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_lateout,\"ax\",@progbits",
+            "\t.globl\tprobe_lateout",
+            "\t.p2align\t2",
+            "\t.type\tprobe_lateout,@function"
+          ]
+        },
+        "probe_lateout": {
+          "llvm_header": "define noundef i64 @probe_lateout(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"mov ${0}, ${1}\", \"=r,r,~{cc}\"(i64 %x) #13, !srcloc !10"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {1}, {0}\", in(reg) copy _1, lateout(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tmov\tx0, x0",
+            "\t//NO_APP",
+            "\tret",
+            ".Lfunc_end6:",
+            "\t.size\tprobe_lateout, .Lfunc_end6-probe_lateout",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_default,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_default",
+            "\t.p2align\t2",
+            "\t.type\tprobe_opts_default,@function"
+          ]
+        },
+        "probe_opts_default": {
+          "llvm_header": "define noundef i64 @probe_opts_default(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect alignstack \"mov ${0}, ${1}\", \"=&r,r,~{cc},~{memory}\"(i64 %x) #11, !srcloc !11"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tstp\tx29, x30, [sp, #-16]!",
+            "\t.cfi_def_cfa_offset 16",
+            "\tmov\tx29, sp",
+            "\t.cfi_def_cfa w29, 16",
+            "\t.cfi_offset w30, -8",
+            "\t.cfi_offset w29, -16",
+            "\t//APP",
+            "\tmov\tx8, x0",
+            "\t//NO_APP",
+            "\tmov\tx0, x8",
+            "\t.cfi_def_cfa wsp, 16",
+            "\tldp\tx29, x30, [sp], #16",
+            "\t.cfi_def_cfa_offset 0",
+            "\t.cfi_restore w30",
+            "\t.cfi_restore w29",
+            "\tret",
+            ".Lfunc_end7:",
+            "\t.size\tprobe_opts_default, .Lfunc_end7-probe_opts_default",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_may_unwind,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_may_unwind",
+            "\t.p2align\t2",
+            "\t.type\tprobe_opts_may_unwind,@function"
+          ]
+        },
+        "probe_opts_may_unwind": {
+          "llvm_header": "define void @probe_opts_may_unwind(ptr noalias noundef align 8 dereferenceable(8) %flag) unnamed_addr #5 personality ptr @rust_eh_personality {",
+          "llvm_asm_lines": [
+            "invoke void asm sideeffect unwind \"nop\", \"~{cc},~{memory}\"()"
+          ],
+          "llvm_resolved_attrs": {
+            "#5": "attributes #5 = { uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }"
+          },
+          "has_unreachable": false,
+          "has_invoke": true,
+          "mir_asm_lines": [
+            "fn probe_opts_may_unwind(_1: &mut u64) -> () {",
+            "asm!(\"nop\", options(NOSTACK | MAY_UNWIND)) -> [return: bb1, unwind: bb3];",
+            "drop(_2) -> [return: bb2, unwind continue];",
+            "return;",
+            "drop(_2) -> [return: bb4, unwind terminate(cleanup)];"
+          ],
+          "asm_lines": [
+            ".Lfunc_begin0:",
+            "\t.cfi_startproc",
+            "\t.cfi_personality 156, DW.ref.rust_eh_personality",
+            "\t.cfi_lsda 28, .Lexception0",
+            "\tstp\tx29, x30, [sp, #-32]!",
+            "\t.cfi_def_cfa_offset 32",
+            "\tstr\tx19, [sp, #16]",
+            "\tmov\tx29, sp",
+            "\t.cfi_def_cfa w29, 32",
+            "\t.cfi_offset w19, -16",
+            "\t.cfi_offset w30, -24",
+            "\t.cfi_offset w29, -32",
+            "\t.cfi_remember_state",
+            "\tstr\tx0, [x29, #24]",
+            ".Ltmp1:",
+            "\t//APP",
+            "\tnop",
+            "\t//NO_APP",
+            ".Ltmp2:",
+            "\tadd\tx0, x29, #24",
+            "\tbl\t_RNvXCs7eHAHRPjn75_29constraint_and_options_matrixNtB2_15UnwindDropGuardNtNtNtCs2DABCSUuhbq_4core3ops4drop4Drop4drop",
+            "\t.cfi_def_cfa wsp, 32",
+            "\tldr\tx19, [sp, #16]",
+            "\tldp\tx29, x30, [sp], #32",
+            "\t.cfi_def_cfa_offset 0"
+          ]
+        },
+        "probe_opts_nomem": {
+          "llvm_header": "define noundef i64 @probe_opts_nomem(i64 noundef %x) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect \"mov ${0}, ${1}\", \"=&r,r,~{cc}\"(i64 %x) #12, !srcloc !13"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tmov\tx8, x0",
+            "\t//NO_APP",
+            "\tmov\tx0, x8",
+            "\tret",
+            ".Lfunc_end9:",
+            "\t.size\tprobe_opts_nomem, .Lfunc_end9-probe_opts_nomem",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_noreturn,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_noreturn",
+            "\t.p2align\t2",
+            "\t.type\tprobe_opts_noreturn,@function"
+          ]
+        },
+        "probe_opts_noreturn": {
+          "llvm_header": "define void @probe_opts_noreturn() unnamed_addr #6 {",
+          "llvm_asm_lines": [
+            "tail call void asm sideeffect alignstack \"nop\", \"~{cc},~{memory}\"() #11, !srcloc !14"
+          ],
+          "llvm_resolved_attrs": {
+            "#6": "attributes #6 = { noreturn nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": true,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", options(NORETURN)) -> unwind unreachable;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tstp\tx29, x30, [sp, #-16]!",
+            "\t.cfi_def_cfa_offset 16",
+            "\tmov\tx29, sp",
+            "\t.cfi_def_cfa w29, 16",
+            "\t.cfi_offset w30, -8",
+            "\t.cfi_offset w29, -16",
+            "\t//APP",
+            "\tnop",
+            "\t//NO_APP",
+            "\tbrk\t#0x1",
+            ".Lfunc_end10:",
+            "\t.size\tprobe_opts_noreturn, .Lfunc_end10-probe_opts_noreturn",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_nostack,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_nostack",
+            "\t.p2align\t2",
+            "\t.type\tprobe_opts_nostack,@function"
+          ]
+        },
+        "probe_opts_nostack": {
+          "llvm_header": "define noundef i64 @probe_opts_nostack(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect \"mov ${0}, ${1}\", \"=&r,r,~{cc},~{memory}\"(i64 %x) #11, !srcloc !15"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tmov\tx8, x0",
+            "\t//NO_APP",
+            "\tmov\tx0, x8",
+            "\tret",
+            ".Lfunc_end11:",
+            "\t.size\tprobe_opts_nostack, .Lfunc_end11-probe_opts_nostack",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_preserves_flags,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_preserves_flags",
+            "\t.p2align\t2",
+            "\t.type\tprobe_opts_preserves_flags,@function"
+          ]
+        },
+        "probe_opts_preserves_flags": {
+          "llvm_header": "define noundef i64 @probe_opts_preserves_flags(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect \"mov ${0}, ${1}\", \"=&r,r,~{memory}\"(i64 %x) #11, !srcloc !16"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tmov\tx8, x0",
+            "\t//NO_APP",
+            "\tmov\tx0, x8",
+            "\tret",
+            ".Lfunc_end12:",
+            "\t.size\tprobe_opts_preserves_flags, .Lfunc_end12-probe_opts_preserves_flags",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_pure_nomem_dce_cse,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_pure_nomem_dce_cse",
+            "\t.p2align\t2",
+            "\t.type\tprobe_opts_pure_nomem_dce_cse,@function"
+          ]
+        },
+        "probe_opts_pure_nomem_dce_cse": {
+          "llvm_header": "define noundef range(i64 0, -1) i64 @probe_opts_pure_nomem_dce_cse(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"mov ${0}, ${1}\", \"=&r,r,~{cc}\"(i64 %x) #13, !srcloc !17"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _2, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "asm!(\"mov {0}, {1}\", out(reg) _3, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb2, unwind unreachable];",
+            "asm!(\"mov {0}, {1}\", out(reg) _4, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb3, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tmov\tx8, x0",
+            "\t//NO_APP",
+            "\tlsl\tx0, x8, #1",
+            "\tret",
+            ".Lfunc_end13:",
+            "\t.size\tprobe_opts_pure_nomem_dce_cse, .Lfunc_end13-probe_opts_pure_nomem_dce_cse",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_pure_readonly,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_pure_readonly",
+            "\t.p2align\t2",
+            "\t.type\tprobe_opts_pure_readonly,@function"
+          ]
+        },
+        "probe_opts_pure_readonly": {
+          "llvm_header": "define noundef i64 @probe_opts_pure_readonly(i64 noundef %x) unnamed_addr #7 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"mov ${0}, ${1}\", \"=&r,r,~{cc},~{memory}\"(i64 %x) #15, !srcloc !18"
+          ],
+          "llvm_resolved_attrs": {
+            "#7": "attributes #7 = { mustprogress nofree nounwind willreturn memory(read) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#15": "attributes #15 = { nounwind willreturn memory(read) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(PURE | READONLY | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tmov\tx8, x0",
+            "\t//NO_APP",
+            "\tmov\tx0, x8",
+            "\tret",
+            ".Lfunc_end14:",
+            "\t.size\tprobe_opts_pure_readonly, .Lfunc_end14-probe_opts_pure_readonly",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_opts_readonly,\"ax\",@progbits",
+            "\t.globl\tprobe_opts_readonly",
+            "\t.p2align\t2",
+            "\t.type\tprobe_opts_readonly,@function"
+          ]
+        },
+        "probe_opts_readonly": {
+          "llvm_header": "define noundef i64 @probe_opts_readonly(i64 noundef %x) unnamed_addr #8 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect \"mov ${0}, ${1}\", \"=&r,r,~{cc},~{memory}\"(i64 %x) #16, !srcloc !19"
+          ],
+          "llvm_resolved_attrs": {
+            "#8": "attributes #8 = { nounwind memory(read, inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#16": "attributes #16 = { nounwind memory(read, inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(READONLY | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tmov\tx8, x0",
+            "\t//NO_APP",
+            "\tmov\tx0, x8",
+            "\tret",
+            ".Lfunc_end15:",
+            "\t.size\tprobe_opts_readonly, .Lfunc_end15-probe_opts_readonly",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_out_early_clobber,\"ax\",@progbits",
+            "\t.globl\tprobe_out_early_clobber",
+            "\t.p2align\t2",
+            "\t.type\tprobe_out_early_clobber,@function"
+          ]
+        },
+        "probe_out_early_clobber": {
+          "llvm_header": "define noundef i64 @probe_out_early_clobber(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"mov ${0}, ${1}\", \"=&r,r,~{cc}\"(i64 %x) #13, !srcloc !20"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {1}, {0}\", in(reg) copy _1, out(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tmov\tx8, x0",
+            "\t//NO_APP",
+            "\tmov\tx0, x8",
+            "\tret",
+            ".Lfunc_end16:",
+            "\t.size\tprobe_out_early_clobber, .Lfunc_end16-probe_out_early_clobber",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.probe_sym_and_const,\"ax\",@progbits",
+            "\t.globl\tprobe_sym_and_const",
+            "\t.p2align\t2",
+            "\t.type\tprobe_sym_and_const,@function"
+          ]
+        },
+        "probe_sym_and_const": {
+          "llvm_header": "define noundef i64 @probe_sym_and_const() unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"adrp ${0}, ${1:c}\\0Aadd ${0}, ${0}, :lo12:${1:c}\\0Aadd ${0}, ${0}, #7\", \"=&r,s,~{cc}\"(ptr nonnull @_RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target) #13, !srcloc !21"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#7": "attributes #7 = { mustprogress nofree nounwind willreturn memory(read) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"adrp {2}, {0}",
+            "add {2}, {2}, #{1}\", sym_fn helper_target, const const probe_sym_and_const::{constant#0}, out(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t//APP",
+            "\tadrp\tx0, _RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target",
+            "\tadd\tx0, x0, :lo12:_RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target",
+            "\tadd\tx0, x0, #7",
+            "\t//NO_APP",
+            "\tret",
+            ".Lfunc_end17:",
+            "\t.size\tprobe_sym_and_const, .Lfunc_end17-probe_sym_and_const",
+            "\t.cfi_endproc",
+            "",
+            "\t.hidden\tDW.ref.rust_eh_personality",
+            "\t.weak\tDW.ref.rust_eh_personality",
+            "\t.section\t.data.DW.ref.rust_eh_personality,\"awG\",@progbits,DW.ref.rust_eh_personality,comdat",
+            "\t.p2align\t3, 0x0",
+            "\t.type\tDW.ref.rust_eh_personality,@object",
+            "\t.size\tDW.ref.rust_eh_personality, 8"
+          ]
+        }
+      },
+      "x86_objdump_probe_sym_excerpt": []
+    },
+    "aarch64-apple-darwin": {
+      "module_asm": [
+        "module asm \".globl _probe_global_asm_add42\"",
+        "module asm \"_probe_global_asm_add42:\"",
+        "module asm \"add x0, x0, #42\"",
+        "module asm \"ret\"",
+        "module asm \".section __TEXT,__text,regular,pure_instructions\"",
+        "module asm \".balign 4\"",
+        "module asm \".globl _probe_naked_identity\"",
+        "module asm \"_probe_naked_identity:\"",
+        "module asm \"ret\"",
+        "module asm \".Lfunc_end__probe_naked_identity:\""
+      ],
+      "probes": {
+        "probe_clobber_abi_c": {
+          "llvm_header": "define void @probe_clobber_abi_c() unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call { i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64>, <2 x i64> } asm sideeffect alignstack \"nop\", \"={w0},={w1},={w2},={w3},={w4},={w5},={w6},={w7},={w8},={w9},={w10},={w11},={w12},={w13},={w14},={w15},={w16},={w17},={w30},={q0},={q1},={q2},={q3},={q4},={q5},={q6},={q7},={q8},={q9},={q10},={q11},={q12},={q13},={q14},={q15},={q16},={q17},={q18},={q19},={q20},={q21},={q22},={q23},={q24},={q25},={q26},={q27},={q28},={q29},={q30},={q31},~{p0},~{p1},~{p2},~{p3},~{p4},~{p5},~{p6},~{p7},~{p8},~{p9},~{p10},~{p11},~{p12},~{p13},~{p14},~{p15},~{ffr},~{cc},~{memory}\"() #11, !srcloc !6"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", lateout(\"x0\") _, lateout(\"x1\") _, lateout(\"x2\") _, lateout(\"x3\") _, lateout(\"x4\") _, lateout(\"x5\") _, lateout(\"x6\") _, lateout(\"x7\") _, lateout(\"x8\") _, lateout(\"x9\") _, lateout(\"x10\") _, lateout(\"x11\") _, lateout(\"x12\") _, lateout(\"x13\") _, lateout(\"x14\") _, lateout(\"x15\") _, lateout(\"x16\") _, lateout(\"x17\") _, lateout(\"x30\") _, lateout(\"v0\") _, lateout(\"v1\") _, lateout(\"v2\") _, lateout(\"v3\") _, lateout(\"v4\") _, lateout(\"v5\") _, lateout(\"v6\") _, lateout(\"v7\") _, lateout(\"v8\") _, lateout(\"v9\") _, lateout(\"v10\") _, lateout(\"v11\") _, lateout(\"v12\") _, lateout(\"v13\") _, lateout(\"v14\") _, lateout(\"v15\") _, lateout(\"v16\") _, lateout(\"v17\") _, lateout(\"v18\") _, lateout(\"v19\") _, lateout(\"v20\") _, lateout(\"v21\") _, lateout(\"v22\") _, lateout(\"v23\") _, lateout(\"v24\") _, lateout(\"v25\") _, lateout(\"v26\") _, lateout(\"v27\") _, lateout(\"v28\") _, lateout(\"v29\") _, lateout(\"v30\") _, lateout(\"v31\") _, lateout(\"p0\") _, lateout(\"p1\") _, lateout(\"p2\") _, lateout(\"p3\") _, lateout(\"p4\") _, lateout(\"p5\") _, lateout(\"p6\") _, lateout(\"p7\") _, lateout(\"p8\") _, lateout(\"p9\") _, lateout(\"p10\") _, lateout(\"p11\") _, lateout(\"p12\") _, lateout(\"p13\") _, lateout(\"p14\") _, lateout(\"p15\") _, lateout(\"ffr\") _, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tstp\td15, d14, [sp, #-80]!",
+            "\t.cfi_def_cfa_offset 80",
+            "\tstp\td13, d12, [sp, #16]",
+            "\tstp\td11, d10, [sp, #32]",
+            "\tstp\td9, d8, [sp, #48]",
+            "\tstp\tx29, x30, [sp, #64]",
+            "\tadd\tx29, sp, #64",
+            "\t.cfi_def_cfa w29, 16",
+            "\t.cfi_offset w30, -8",
+            "\t.cfi_offset w29, -16",
+            "\t.cfi_offset b8, -24",
+            "\t.cfi_offset b9, -32",
+            "\t.cfi_offset b10, -40",
+            "\t.cfi_offset b11, -48",
+            "\t.cfi_offset b12, -56",
+            "\t.cfi_offset b13, -64",
+            "\t.cfi_offset b14, -72",
+            "\t.cfi_offset b15, -80",
+            "\t; InlineAsm Start",
+            "\tnop",
+            "\t; InlineAsm End",
+            "\t.cfi_def_cfa wsp, 80",
+            "\tldp\tx29, x30, [sp, #64]",
+            "\tldp\td9, d8, [sp, #48]"
+          ]
+        },
+        "probe_inlateout_fixed": {
+          "llvm_header": "define noundef i64 @probe_inlateout_fixed(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect \"add x0, x0, #1\", \"={x0},{x0},~{cc}\"(i64 %0) #12, !srcloc !7"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#1": "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind willreturn memory(readwrite, inaccessiblemem: none, target_mem0: none, target_mem1: none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add x0, x0, #1\", inlateout(\"x0\") copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tadd\tx0, x0, #1",
+            "\t; InlineAsm End",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_inlateout_reg",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_inlateout_reg": {
+          "llvm_header": "define noundef i64 @probe_inlateout_reg(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect \"add ${0}, ${0}, #1\", \"=r,0,~{cc}\"(i64 %0) #12, !srcloc !8"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#1": "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind willreturn memory(readwrite, inaccessiblemem: none, target_mem0: none, target_mem1: none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add {0}, {0}, #1\", inlateout(reg) copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tadd\tx0, x0, #1",
+            "\t; InlineAsm End",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_inout_reg",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_inout_reg": {
+          "llvm_header": "define noundef i64 @probe_inout_reg(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect \"add ${0}, ${0}, #1\", \"=&r,0,~{cc}\"(i64 %0) #12, !srcloc !9"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#1": "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind willreturn memory(readwrite, inaccessiblemem: none, target_mem0: none, target_mem1: none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add {0}, {0}, #1\", inout(reg) copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tadd\tx0, x0, #1",
+            "\t; InlineAsm End",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_lateout",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_lateout": {
+          "llvm_header": "define noundef i64 @probe_lateout(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"mov ${0}, ${1}\", \"=r,r,~{cc}\"(i64 %x) #13, !srcloc !10"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {1}, {0}\", in(reg) copy _1, lateout(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tmov\tx0, x0",
+            "\t; InlineAsm End",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_opts_default",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_opts_default": {
+          "llvm_header": "define noundef i64 @probe_opts_default(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect alignstack \"mov ${0}, ${1}\", \"=&r,r,~{cc},~{memory}\"(i64 %x) #11, !srcloc !11"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tstp\tx29, x30, [sp, #-16]!",
+            "\t.cfi_def_cfa_offset 16",
+            "\tmov\tx29, sp",
+            "\t.cfi_def_cfa w29, 16",
+            "\t.cfi_offset w30, -8",
+            "\t.cfi_offset w29, -16",
+            "\t; InlineAsm Start",
+            "\tmov\tx8, x0",
+            "\t; InlineAsm End",
+            "\tmov\tx0, x8",
+            "\t.cfi_def_cfa wsp, 16",
+            "\tldp\tx29, x30, [sp], #16",
+            "\t.cfi_def_cfa_offset 0",
+            "\t.cfi_restore w30",
+            "\t.cfi_restore w29",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_opts_may_unwind",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_opts_may_unwind": {
+          "llvm_header": "define void @probe_opts_may_unwind(ptr noalias noundef align 8 dereferenceable(8) %flag) unnamed_addr #5 personality ptr @rust_eh_personality {",
+          "llvm_asm_lines": [
+            "invoke void asm sideeffect unwind \"nop\", \"~{cc},~{memory}\"()"
+          ],
+          "llvm_resolved_attrs": {
+            "#5": "attributes #5 = { uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }"
+          },
+          "has_unreachable": false,
+          "has_invoke": true,
+          "mir_asm_lines": [
+            "fn probe_opts_may_unwind(_1: &mut u64) -> () {",
+            "asm!(\"nop\", options(NOSTACK | MAY_UNWIND)) -> [return: bb1, unwind: bb3];",
+            "drop(_2) -> [return: bb2, unwind continue];",
+            "return;",
+            "drop(_2) -> [return: bb4, unwind terminate(cleanup)];"
+          ],
+          "asm_lines": []
+        },
+        "probe_opts_nomem": {
+          "llvm_header": "define noundef i64 @probe_opts_nomem(i64 noundef %x) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect \"mov ${0}, ${1}\", \"=&r,r,~{cc}\"(i64 %x) #12, !srcloc !13"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tmov\tx8, x0",
+            "\t; InlineAsm End",
+            "\tmov\tx0, x8",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_opts_noreturn",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_opts_noreturn": {
+          "llvm_header": "define void @probe_opts_noreturn() unnamed_addr #6 {",
+          "llvm_asm_lines": [
+            "tail call void asm sideeffect alignstack \"nop\", \"~{cc},~{memory}\"() #11, !srcloc !14"
+          ],
+          "llvm_resolved_attrs": {
+            "#6": "attributes #6 = { noreturn nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": true,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", options(NORETURN)) -> unwind unreachable;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\tstp\tx29, x30, [sp, #-16]!",
+            "\t.cfi_def_cfa_offset 16",
+            "\tmov\tx29, sp",
+            "\t.cfi_def_cfa w29, 16",
+            "\t.cfi_offset w30, -8",
+            "\t.cfi_offset w29, -16",
+            "\t; InlineAsm Start",
+            "\tnop",
+            "\t; InlineAsm End",
+            "\tbrk\t#0x1",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_opts_nostack",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_opts_nostack": {
+          "llvm_header": "define noundef i64 @probe_opts_nostack(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect \"mov ${0}, ${1}\", \"=&r,r,~{cc},~{memory}\"(i64 %x) #11, !srcloc !15"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tmov\tx8, x0",
+            "\t; InlineAsm End",
+            "\tmov\tx0, x8",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_opts_preserves_flags",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_opts_preserves_flags": {
+          "llvm_header": "define noundef i64 @probe_opts_preserves_flags(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect \"mov ${0}, ${1}\", \"=&r,r,~{memory}\"(i64 %x) #11, !srcloc !16"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tmov\tx8, x0",
+            "\t; InlineAsm End",
+            "\tmov\tx0, x8",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_opts_pure_nomem_dce_cse",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_opts_pure_nomem_dce_cse": {
+          "llvm_header": "define noundef range(i64 0, -1) i64 @probe_opts_pure_nomem_dce_cse(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"mov ${0}, ${1}\", \"=&r,r,~{cc}\"(i64 %x) #13, !srcloc !17"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _2, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "asm!(\"mov {0}, {1}\", out(reg) _3, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb2, unwind unreachable];",
+            "asm!(\"mov {0}, {1}\", out(reg) _4, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb3, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tmov\tx8, x0",
+            "\t; InlineAsm End",
+            "\tlsl\tx0, x8, #1",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_opts_pure_readonly",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_opts_pure_readonly": {
+          "llvm_header": "define noundef i64 @probe_opts_pure_readonly(i64 noundef %x) unnamed_addr #7 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"mov ${0}, ${1}\", \"=&r,r,~{cc},~{memory}\"(i64 %x) #15, !srcloc !18"
+          ],
+          "llvm_resolved_attrs": {
+            "#7": "attributes #7 = { mustprogress nofree nounwind willreturn memory(read) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#15": "attributes #15 = { nounwind willreturn memory(read) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(PURE | READONLY | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tmov\tx8, x0",
+            "\t; InlineAsm End",
+            "\tmov\tx0, x8",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_opts_readonly",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_opts_readonly": {
+          "llvm_header": "define noundef i64 @probe_opts_readonly(i64 noundef %x) unnamed_addr #8 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect \"mov ${0}, ${1}\", \"=&r,r,~{cc},~{memory}\"(i64 %x) #16, !srcloc !19"
+          ],
+          "llvm_resolved_attrs": {
+            "#8": "attributes #8 = { nounwind memory(read, inaccessiblemem: readwrite) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#16": "attributes #16 = { nounwind memory(read, inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(READONLY | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tmov\tx8, x0",
+            "\t; InlineAsm End",
+            "\tmov\tx0, x8",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_out_early_clobber",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_out_early_clobber": {
+          "llvm_header": "define noundef i64 @probe_out_early_clobber(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"mov ${0}, ${1}\", \"=&r,r,~{cc}\"(i64 %x) #13, !srcloc !20"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {1}, {0}\", in(reg) copy _1, out(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tmov\tx8, x0",
+            "\t; InlineAsm End",
+            "\tmov\tx0, x8",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            "\t.globl\t_probe_sym_and_const",
+            "\t.p2align\t2"
+          ]
+        },
+        "probe_sym_and_const": {
+          "llvm_header": "define noundef i64 @probe_sym_and_const() unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm \"adrp ${0}, ${1:c}@PAGE\\0Aadd ${0}, ${0}, ${1:c}@PAGEOFF\\0Aadd ${0}, ${0}, #7\", \"=&r,s,~{cc}\"(ptr nonnull @_RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target) #13, !srcloc !21"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#7": "attributes #7 = { mustprogress nofree nounwind willreturn memory(read) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"adrp {2}, {0}@PAGE",
+            "add {2}, {2}, #{1}\", sym_fn helper_target, const const probe_sym_and_const::{constant#0}, out(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t.cfi_startproc",
+            "\t; InlineAsm Start",
+            "\tadrp\tx0, __RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target@PAGE",
+            "\tadd\tx0, x0, __RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target@PAGEOFF",
+            "\tadd\tx0, x0, #7",
+            "\t; InlineAsm End",
+            "\tret",
+            "\t.cfi_endproc",
+            "",
+            ".subsections_via_symbols"
+          ]
+        }
+      },
+      "x86_objdump_probe_sym_excerpt": []
+    },
+    "x86_64-pc-windows-msvc": {
+      "module_asm": [
+        "module asm \".intel_syntax\"",
+        "module asm \".globl probe_global_asm_add42\"",
+        "module asm \"probe_global_asm_add42:\"",
+        "module asm \"lea rax, [rcx + 42]\"",
+        "module asm \"ret\"",
+        "module asm \".att_syntax\"",
+        "module asm \".intel_syntax\"",
+        "module asm \".def probe_naked_identity\"",
+        "module asm \".scl 2\"",
+        "module asm \".type 32\"",
+        "module asm \".endef\"",
+        "module asm \".section .text,\\22xr\\22,one_only,probe_naked_identity\"",
+        "module asm \".globl probe_naked_identity\"",
+        "module asm \".balign 16\"",
+        "module asm \"probe_naked_identity:\"",
+        "module asm \"mov rax, rdi\"",
+        "module asm \"ret\"",
+        "module asm \"\"",
+        "module asm \".att_syntax\""
+      ],
+      "probes": {
+        "probe_clobber_abi_c": {
+          "llvm_header": "define void @probe_clobber_abi_c() unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call { i32, i32, i32, i32, i32, i32, i32, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float } asm sideeffect alignstack inteldialect \"nop\", \"={ax},={cx},={dx},={r8},={r9},={r10},={r11},={xmm0},={xmm1},={xmm2},={xmm3},={xmm4},={xmm5},={xmm6},={xmm7},={xmm8},={xmm9},={xmm10},={xmm11},={xmm12},={xmm13},={xmm14},={xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{k0},~{k1},~{k2},~{k3},~{k4},~{k5},~{k6},~{k7},~{st},~{st(1)},~{st(2)},~{st(3)},~{st(4)},~{st(5)},~{st(6)},~{st(7)},~{tmm0},~{tmm1},~{tmm2},~{tmm3},~{tmm4},~{tmm5},~{tmm6},~{tmm7},~{dirflag},~{fpsr},~{flags},~{memory}\"() #11, !srcloc !5"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", lateout(\"ax\") _, lateout(\"cx\") _, lateout(\"dx\") _, lateout(\"r8\") _, lateout(\"r9\") _, lateout(\"r10\") _, lateout(\"r11\") _, lateout(\"xmm0\") _, lateout(\"xmm1\") _, lateout(\"xmm2\") _, lateout(\"xmm3\") _, lateout(\"xmm4\") _, lateout(\"xmm5\") _, lateout(\"xmm6\") _, lateout(\"xmm7\") _, lateout(\"xmm8\") _, lateout(\"xmm9\") _, lateout(\"xmm10\") _, lateout(\"xmm11\") _, lateout(\"xmm12\") _, lateout(\"xmm13\") _, lateout(\"xmm14\") _, lateout(\"xmm15\") _, lateout(\"zmm16\") _, lateout(\"zmm17\") _, lateout(\"zmm18\") _, lateout(\"zmm19\") _, lateout(\"zmm20\") _, lateout(\"zmm21\") _, lateout(\"zmm22\") _, lateout(\"zmm23\") _, lateout(\"zmm24\") _, lateout(\"zmm25\") _, lateout(\"zmm26\") _, lateout(\"zmm27\") _, lateout(\"zmm28\") _, lateout(\"zmm29\") _, lateout(\"zmm30\") _, lateout(\"zmm31\") _, lateout(\"k0\") _, lateout(\"k1\") _, lateout(\"k2\") _, lateout(\"k3\") _, lateout(\"k4\") _, lateout(\"k5\") _, lateout(\"k6\") _, lateout(\"k7\") _, lateout(\"mm0\") _, lateout(\"mm1\") _, lateout(\"mm2\") _, lateout(\"mm3\") _, lateout(\"mm4\") _, lateout(\"mm5\") _, lateout(\"mm6\") _, lateout(\"mm7\") _, lateout(\"st(0)\") _, lateout(\"st(1)\") _, lateout(\"st(2)\") _, lateout(\"st(3)\") _, lateout(\"st(4)\") _, lateout(\"st(5)\") _, lateout(\"st(6)\") _, lateout(\"st(7)\") _, lateout(\"tmm0\") _, lateout(\"tmm1\") _, lateout(\"tmm2\") _, lateout(\"tmm3\") _, lateout(\"tmm4\") _, lateout(\"tmm5\") _, lateout(\"tmm6\") _, lateout(\"tmm7\") _, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            ".seh_proc probe_clobber_abi_c",
+            "\tsubq\t$168, %rsp",
+            "\t.seh_stackalloc 168",
+            "\tmovaps\t%xmm15, 144(%rsp)",
+            "\t.seh_savexmm %xmm15, 144",
+            "\tmovaps\t%xmm14, 128(%rsp)",
+            "\t.seh_savexmm %xmm14, 128",
+            "\tmovaps\t%xmm13, 112(%rsp)",
+            "\t.seh_savexmm %xmm13, 112",
+            "\tmovaps\t%xmm12, 96(%rsp)",
+            "\t.seh_savexmm %xmm12, 96",
+            "\tmovaps\t%xmm11, 80(%rsp)",
+            "\t.seh_savexmm %xmm11, 80",
+            "\tmovaps\t%xmm10, 64(%rsp)",
+            "\t.seh_savexmm %xmm10, 64",
+            "\tmovaps\t%xmm9, 48(%rsp)",
+            "\t.seh_savexmm %xmm9, 48",
+            "\tmovaps\t%xmm8, 32(%rsp)",
+            "\t.seh_savexmm %xmm8, 32",
+            "\tmovaps\t%xmm7, 16(%rsp)",
+            "\t.seh_savexmm %xmm7, 16",
+            "\tmovaps\t%xmm6, (%rsp)",
+            "\t.seh_savexmm %xmm6, 0",
+            "\t.seh_endprologue",
+            "\t#APP"
+          ]
+        },
+        "probe_clobber_abi_sysv64": {
+          "llvm_header": "define void @probe_clobber_abi_sysv64() unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call { i32, i32, i32, i32, i32, i32, i32, i32, i32, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float } asm sideeffect alignstack inteldialect \"nop\", \"={ax},={cx},={dx},={si},={di},={r8},={r9},={r10},={r11},={xmm0},={xmm1},={xmm2},={xmm3},={xmm4},={xmm5},={xmm6},={xmm7},={xmm8},={xmm9},={xmm10},={xmm11},={xmm12},={xmm13},={xmm14},={xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{k0},~{k1},~{k2},~{k3},~{k4},~{k5},~{k6},~{k7},~{st},~{st(1)},~{st(2)},~{st(3)},~{st(4)},~{st(5)},~{st(6)},~{st(7)},~{tmm0},~{tmm1},~{tmm2},~{tmm3},~{tmm4},~{tmm5},~{tmm6},~{tmm7},~{dirflag},~{fpsr},~{flags},~{memory}\"() #11, !srcloc !6"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", lateout(\"ax\") _, lateout(\"cx\") _, lateout(\"dx\") _, lateout(\"si\") _, lateout(\"di\") _, lateout(\"r8\") _, lateout(\"r9\") _, lateout(\"r10\") _, lateout(\"r11\") _, lateout(\"xmm0\") _, lateout(\"xmm1\") _, lateout(\"xmm2\") _, lateout(\"xmm3\") _, lateout(\"xmm4\") _, lateout(\"xmm5\") _, lateout(\"xmm6\") _, lateout(\"xmm7\") _, lateout(\"xmm8\") _, lateout(\"xmm9\") _, lateout(\"xmm10\") _, lateout(\"xmm11\") _, lateout(\"xmm12\") _, lateout(\"xmm13\") _, lateout(\"xmm14\") _, lateout(\"xmm15\") _, lateout(\"zmm16\") _, lateout(\"zmm17\") _, lateout(\"zmm18\") _, lateout(\"zmm19\") _, lateout(\"zmm20\") _, lateout(\"zmm21\") _, lateout(\"zmm22\") _, lateout(\"zmm23\") _, lateout(\"zmm24\") _, lateout(\"zmm25\") _, lateout(\"zmm26\") _, lateout(\"zmm27\") _, lateout(\"zmm28\") _, lateout(\"zmm29\") _, lateout(\"zmm30\") _, lateout(\"zmm31\") _, lateout(\"k0\") _, lateout(\"k1\") _, lateout(\"k2\") _, lateout(\"k3\") _, lateout(\"k4\") _, lateout(\"k5\") _, lateout(\"k6\") _, lateout(\"k7\") _, lateout(\"mm0\") _, lateout(\"mm1\") _, lateout(\"mm2\") _, lateout(\"mm3\") _, lateout(\"mm4\") _, lateout(\"mm5\") _, lateout(\"mm6\") _, lateout(\"mm7\") _, lateout(\"st(0)\") _, lateout(\"st(1)\") _, lateout(\"st(2)\") _, lateout(\"st(3)\") _, lateout(\"st(4)\") _, lateout(\"st(5)\") _, lateout(\"st(6)\") _, lateout(\"st(7)\") _, lateout(\"tmm0\") _, lateout(\"tmm1\") _, lateout(\"tmm2\") _, lateout(\"tmm3\") _, lateout(\"tmm4\") _, lateout(\"tmm5\") _, lateout(\"tmm6\") _, lateout(\"tmm7\") _, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            ".seh_proc probe_clobber_abi_sysv64",
+            "\tpushq\t%rsi",
+            "\t.seh_pushreg %rsi",
+            "\tpushq\t%rdi",
+            "\t.seh_pushreg %rdi",
+            "\tsubq\t$168, %rsp",
+            "\t.seh_stackalloc 168",
+            "\tmovaps\t%xmm15, 144(%rsp)",
+            "\t.seh_savexmm %xmm15, 144",
+            "\tmovaps\t%xmm14, 128(%rsp)",
+            "\t.seh_savexmm %xmm14, 128",
+            "\tmovaps\t%xmm13, 112(%rsp)",
+            "\t.seh_savexmm %xmm13, 112",
+            "\tmovaps\t%xmm12, 96(%rsp)",
+            "\t.seh_savexmm %xmm12, 96",
+            "\tmovaps\t%xmm11, 80(%rsp)",
+            "\t.seh_savexmm %xmm11, 80",
+            "\tmovaps\t%xmm10, 64(%rsp)",
+            "\t.seh_savexmm %xmm10, 64",
+            "\tmovaps\t%xmm9, 48(%rsp)",
+            "\t.seh_savexmm %xmm9, 48",
+            "\tmovaps\t%xmm8, 32(%rsp)",
+            "\t.seh_savexmm %xmm8, 32",
+            "\tmovaps\t%xmm7, 16(%rsp)",
+            "\t.seh_savexmm %xmm7, 16"
+          ]
+        },
+        "probe_inlateout_fixed": {
+          "llvm_header": "define noundef i64 @probe_inlateout_fixed(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect inteldialect \"add rax, 1\", \"={ax},{ax},~{dirflag},~{fpsr},~{flags}\"(i64 %0) #12, !srcloc !7"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add rax, 1\", inlateout(\"ax\") copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\tmovq\t%rcx, %rax",
+            "\t#APP",
+            "",
+            "\taddq\t$1, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_inlateout_reg;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_inlateout_reg,unique,5",
+            "\t.globl\tprobe_inlateout_reg",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_inlateout_reg": {
+          "llvm_header": "define noundef i64 @probe_inlateout_reg(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect inteldialect \"add ${0:q}, 1\", \"=r,0,~{dirflag},~{fpsr},~{flags}\"(i64 %0) #12, !srcloc !8"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add {0}, 1\", inlateout(reg) copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\tmovq\t%rcx, %rax",
+            "\t#APP",
+            "",
+            "\taddq\t$1, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_inout_reg;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_inout_reg,unique,6",
+            "\t.globl\tprobe_inout_reg",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_inout_reg": {
+          "llvm_header": "define noundef i64 @probe_inout_reg(i64 noundef %0) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%1 = tail call i64 asm sideeffect inteldialect \"add ${0:q}, 1\", \"=&r,0,~{dirflag},~{fpsr},~{flags}\"(i64 %0) #12, !srcloc !9"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"add {0}, 1\", inout(reg) copy _1 => _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\tmovq\t%rcx, %rax",
+            "\t#APP",
+            "",
+            "\taddq\t$1, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_lateout;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_lateout,unique,7",
+            "\t.globl\tprobe_lateout",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_lateout": {
+          "llvm_header": "define noundef i64 @probe_lateout(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"mov ${0:q}, ${1:q}\", \"=r,r,~{dirflag},~{fpsr},~{flags}\"(i64 %x) #13, !srcloc !10"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {1}, {0}\", in(reg) copy _1, lateout(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t#APP",
+            "",
+            "\tmovq\t%rcx, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_opts_default;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_opts_default,unique,8",
+            "\t.globl\tprobe_opts_default",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_opts_default": {
+          "llvm_header": "define noundef i64 @probe_opts_default(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect alignstack inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 %x) #11, !srcloc !11"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options()) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            ".seh_proc probe_opts_default",
+            "\tpushq\t%rax",
+            "\t.seh_stackalloc 8",
+            "\t.seh_endprologue",
+            "\t#APP",
+            "",
+            "\tmovq\t%rcx, %rax",
+            "",
+            "\t#NO_APP",
+            "\t.seh_startepilogue",
+            "\tpopq\t%rcx",
+            "\t.seh_endepilogue",
+            "\tretq",
+            "\t.seh_endproc",
+            "",
+            "\t.def\tprobe_opts_may_unwind;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_opts_may_unwind,unique,9",
+            "\t.globl\tprobe_opts_may_unwind",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_opts_may_unwind": {
+          "llvm_header": "define void @probe_opts_may_unwind(ptr noalias noundef align 8 dereferenceable(8) %flag) unnamed_addr #5 personality ptr @__CxxFrameHandler3 {",
+          "llvm_asm_lines": [
+            "invoke void asm sideeffect inteldialect unwind \"nop\", \"~{dirflag},~{fpsr},~{flags},~{memory}\"()"
+          ],
+          "llvm_resolved_attrs": {
+            "#5": "attributes #5 = { uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }"
+          },
+          "has_unreachable": false,
+          "has_invoke": true,
+          "mir_asm_lines": [
+            "fn probe_opts_may_unwind(_1: &mut u64) -> () {",
+            "asm!(\"nop\", options(NOSTACK | MAY_UNWIND)) -> [return: bb1, unwind: bb3];",
+            "drop(_2) -> [return: bb2, unwind continue];",
+            "return;",
+            "drop(_2) -> [return: bb4, unwind terminate(cleanup)];"
+          ],
+          "asm_lines": [
+            ".Lfunc_begin0:",
+            ".seh_proc probe_opts_may_unwind",
+            "\t.seh_handler __CxxFrameHandler3, @unwind, @except",
+            "\tpushq\t%rbp",
+            "\t.seh_pushreg %rbp",
+            "\tsubq\t$48, %rsp",
+            "\t.seh_stackalloc 48",
+            "\tleaq\t48(%rsp), %rbp",
+            "\t.seh_setframe %rbp, 48",
+            "\t.seh_endprologue",
+            "\tmovq\t$-2, -8(%rbp)",
+            "\tmovq\t%rcx, -16(%rbp)",
+            ".Ltmp0:",
+            "\t#APP",
+            "",
+            "\tnop",
+            "",
+            "\tnop",
+            "\t#NO_APP",
+            ".Ltmp1:",
+            "\tleaq\t-16(%rbp), %rcx",
+            "\tcallq\t_RNvXCs7eHAHRPjn75_29constraint_and_options_matrixNtB2_15UnwindDropGuardNtNtNtCsc2Qp0FW1GCq_4core3ops4drop4Drop4drop",
+            "\tnop",
+            "\t.seh_startepilogue",
+            "\taddq\t$48, %rsp"
+          ]
+        },
+        "probe_opts_nomem": {
+          "llvm_header": "define noundef i64 @probe_opts_nomem(i64 noundef %x) unnamed_addr #3 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags}\"(i64 %x) #12, !srcloc !13"
+          ],
+          "llvm_resolved_attrs": {
+            "#3": "attributes #3 = { nounwind memory(inaccessiblemem: readwrite) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#12": "attributes #12 = { nounwind memory(inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t#APP",
+            "",
+            "\tmovq\t%rcx, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_opts_noreturn;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_opts_noreturn,unique,11",
+            "\t.globl\tprobe_opts_noreturn",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_opts_noreturn": {
+          "llvm_header": "define void @probe_opts_noreturn() unnamed_addr #6 {",
+          "llvm_asm_lines": [
+            "tail call void asm sideeffect alignstack inteldialect \"nop\", \"~{dirflag},~{fpsr},~{flags},~{memory}\"() #11, !srcloc !14"
+          ],
+          "llvm_resolved_attrs": {
+            "#6": "attributes #6 = { noreturn nounwind uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": true,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"nop\", options(NORETURN)) -> unwind unreachable;"
+          ],
+          "asm_lines": [
+            ".seh_proc probe_opts_noreturn",
+            "\tpushq\t%rax",
+            "\t.seh_stackalloc 8",
+            "\t.seh_endprologue",
+            "\t#APP",
+            "",
+            "\tnop",
+            "",
+            "\t#NO_APP",
+            "\tud2",
+            "\t.seh_endproc",
+            "",
+            "\t.def\tprobe_opts_nostack;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_opts_nostack,unique,12",
+            "\t.globl\tprobe_opts_nostack",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_opts_nostack": {
+          "llvm_header": "define noundef i64 @probe_opts_nostack(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 %x) #11, !srcloc !15"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t#APP",
+            "",
+            "\tmovq\t%rcx, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_opts_preserves_flags;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_opts_preserves_flags,unique,13",
+            "\t.globl\tprobe_opts_preserves_flags",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_opts_preserves_flags": {
+          "llvm_header": "define noundef i64 @probe_opts_preserves_flags(i64 noundef %x) unnamed_addr #2 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{memory}\"(i64 %x) #11, !srcloc !16"
+          ],
+          "llvm_resolved_attrs": {
+            "#2": "attributes #2 = { nounwind uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#11": "attributes #11 = { nounwind }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t#APP",
+            "",
+            "\tmovq\t%rcx, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_opts_pure_nomem_dce_cse;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_opts_pure_nomem_dce_cse,unique,14",
+            "\t.globl\tprobe_opts_pure_nomem_dce_cse",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_opts_pure_nomem_dce_cse": {
+          "llvm_header": "define noundef range(i64 0, -1) i64 @probe_opts_pure_nomem_dce_cse(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags}\"(i64 %x) #13, !srcloc !17"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _2, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "asm!(\"mov {0}, {1}\", out(reg) _3, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb2, unwind unreachable];",
+            "asm!(\"mov {0}, {1}\", out(reg) _4, in(reg) copy _1, options(PURE | NOMEM | NOSTACK)) -> [return: bb3, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t#APP",
+            "",
+            "\tmovq\t%rcx, %rax",
+            "",
+            "\t#NO_APP",
+            "\taddq\t%rax, %rax",
+            "\tretq",
+            "",
+            "\t.def\tprobe_opts_pure_readonly;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_opts_pure_readonly,unique,15",
+            "\t.globl\tprobe_opts_pure_readonly",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_opts_pure_readonly": {
+          "llvm_header": "define noundef i64 @probe_opts_pure_readonly(i64 noundef %x) unnamed_addr #7 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 %x) #15, !srcloc !18"
+          ],
+          "llvm_resolved_attrs": {
+            "#7": "attributes #7 = { mustprogress nofree nounwind willreturn memory(read) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#15": "attributes #15 = { nounwind willreturn memory(read) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(PURE | READONLY | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t#APP",
+            "",
+            "\tmovq\t%rcx, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_opts_readonly;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_opts_readonly,unique,16",
+            "\t.globl\tprobe_opts_readonly",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_opts_readonly": {
+          "llvm_header": "define noundef i64 @probe_opts_readonly(i64 noundef %x) unnamed_addr #8 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm sideeffect inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 %x) #16, !srcloc !19"
+          ],
+          "llvm_resolved_attrs": {
+            "#8": "attributes #8 = { nounwind memory(read, inaccessiblemem: readwrite) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#16": "attributes #16 = { nounwind memory(read, inaccessiblemem: readwrite) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {0}, {1}\", out(reg) _0, in(reg) copy _1, options(READONLY | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t#APP",
+            "",
+            "\tmovq\t%rcx, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_out_early_clobber;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_out_early_clobber,unique,17",
+            "\t.globl\tprobe_out_early_clobber",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_out_early_clobber": {
+          "llvm_header": "define noundef i64 @probe_out_early_clobber(i64 noundef %x) unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"mov ${0:q}, ${1:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags}\"(i64 %x) #13, !srcloc !20"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"mov {1}, {0}\", in(reg) copy _1, out(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t#APP",
+            "",
+            "\tmovq\t%rcx, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.def\tprobe_sym_and_const;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "\t.section\t.text,\"xr\",one_only,probe_sym_and_const,unique,18",
+            "\t.globl\tprobe_sym_and_const",
+            "\t.p2align\t4"
+          ]
+        },
+        "probe_sym_and_const": {
+          "llvm_header": "define noundef i64 @probe_sym_and_const() unnamed_addr #4 {",
+          "llvm_asm_lines": [
+            "%0 = tail call i64 asm inteldialect \"lea ${0:q}, [rip + ${1:c}]\\0Aadd ${0:q}, 7\", \"=&r,s,~{dirflag},~{fpsr},~{flags}\"(ptr nonnull @_RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target) #13, !srcloc !21"
+          ],
+          "llvm_resolved_attrs": {
+            "#4": "attributes #4 = { mustprogress nofree nosync nounwind willreturn memory(none) uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\" }",
+            "#13": "attributes #13 = { nounwind willreturn memory(none) }"
+          },
+          "has_unreachable": false,
+          "has_invoke": false,
+          "mir_asm_lines": [
+            "asm!(\"lea {2}, [rip + {0}]",
+            "add {2}, {1}\", sym_fn helper_target, const const probe_sym_and_const::{constant#0}, out(reg) _0, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable];",
+            "return;"
+          ],
+          "asm_lines": [
+            "\t#APP",
+            "",
+            "\tleaq\t_RNvCs7eHAHRPjn75_29constraint_and_options_matrix13helper_target(%rip), %rax",
+            "\taddq\t$7, %rax",
+            "",
+            "\t#NO_APP",
+            "\tretq",
+            "",
+            "\t.globl\tprobe_clobber_abi_win64",
+            "\t.def\tprobe_clobber_abi_win64;",
+            "\t.scl\t2;",
+            "\t.type\t32;",
+            "\t.endef",
+            "probe_clobber_abi_win64 = probe_clobber_abi_c"
+          ]
+        }
+      },
+      "x86_objdump_probe_sym_excerpt": []
+    },
+    "aarch64_branch_protection_naked_vs_normal": {
+      "normal_add1_llvm": {
+        "header": "define noundef i64 @normal_add1(i64 noundef %x) unnamed_addr #0 {",
+        "asm_lines": [],
+        "resolved_attrs": {
+          "#0": "attributes #0 = { mustprogress nofree norecurse nosync nounwind willreturn memory(none) uwtable \"branch-target-enforcement\" \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"sign-return-address\"=\"non-leaf\" \"sign-return-address-key\"=\"a_key\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }"
+        },
+        "has_unreachable": false,
+        "has_invoke": false
+      },
+      "naked_id_llvm": {},
+      "module_asm": [
+        "module asm \".pushsection .text.naked_id,\\22ax\\22, @progbits\"",
+        "module asm \".balign 4\"",
+        "module asm \".globl naked_id\"",
+        "module asm \".type naked_id, @function\"",
+        "module asm \"naked_id:\"",
+        "module asm \"ret\"",
+        "module asm \".Lfunc_end_naked_id:\"",
+        "module asm \".size naked_id, . - naked_id\"",
+        "module asm \".popsection\""
+      ],
+      "normal_add1_asm": [
+        "\t.cfi_startproc",
+        "\thint\t#34",
+        "\tadd\tx0, x0, #1",
+        "\tret",
+        ".Lfunc_end0:",
+        "\t.size\tnormal_add1, .Lfunc_end0-normal_add1",
+        "\t.cfi_endproc",
+        "",
+        "\t.ident\t\"rustc version 1.98.0-nightly (14210df0e 2026-05-31)\"",
+        "\t.section\t\".note.GNU-stack\",\"\",@progbits"
+      ],
+      "naked_id_asm": [
+        "\tret",
+        ".Lfunc_end_naked_id:",
+        ".Ltmp0:",
+        "\t.size\tnaked_id, .Ltmp0-naked_id",
+        "\t.text",
+        "",
+        "",
+        "",
+        "\t.section\t.text.normal_add1,\"ax\",@progbits",
+        "\t.globl\tnormal_add1",
+        "\t.p2align\t2",
+        "\t.type\tnormal_add1,@function"
+      ]
+    }
+  },
+  "compile_rejections": [
+    {
+      "name": "x86_64_reserved_rbp",
+      "target": "x86_64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "invalid register `rbp`: the frame pointer cannot be used as an operand for inline asm",
+        "aborting due to 1 previous error"
+      ]
+    },
+    {
+      "name": "x86_64_reserved_rsp",
+      "target": "x86_64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "invalid register `rsp`: the stack pointer cannot be used as an operand for inline asm",
+        "aborting due to 1 previous error"
+      ]
+    },
+    {
+      "name": "x86_64_reserved_rbx",
+      "target": "x86_64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "cannot use register `bx`: rbx is used internally by LLVM and cannot be used as an operand for inline asm",
+        "aborting due to 1 previous error"
+      ]
+    },
+    {
+      "name": "x86_64_reserved_ah",
+      "target": "x86_64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "cannot use register `ah`: high byte registers cannot be used as an operand on x86_64",
+        "aborting due to 1 previous error"
+      ]
+    },
+    {
+      "name": "aarch64_reserved_x19",
+      "target": "aarch64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "invalid register `x19`: x19 is used internally by LLVM and cannot be used as an operand for inline asm",
+        "aborting due to 1 previous error"
+      ]
+    },
+    {
+      "name": "aarch64_reserved_x29",
+      "target": "aarch64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "invalid register `x29`: the frame pointer cannot be used as an operand for inline asm",
+        "aborting due to 1 previous error"
+      ]
+    },
+    {
+      "name": "aarch64_reserved_sp",
+      "target": "aarch64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "invalid register `sp`: the stack pointer cannot be used as an operand for inline asm",
+        "aborting due to 1 previous error"
+      ]
+    },
+    {
+      "name": "aarch64_linux_x18_allowed",
+      "target": "aarch64-unknown-linux-gnu",
+      "compile_rc": 0,
+      "error_messages": []
+    },
+    {
+      "name": "aarch64_darwin_x18_reserved",
+      "target": "aarch64-apple-darwin",
+      "compile_rc": 1,
+      "error_messages": [
+        "cannot use register `x18`: x18 is a reserved register on this target",
+        "aborting due to 1 previous error"
+      ]
+    },
+    {
+      "name": "clobber_abi_with_regclass_out",
+      "target": "x86_64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "asm with `clobber_abi` must specify explicit registers for outputs",
+        "argument never used",
+        "aborting due to 2 previous errors"
+      ]
+    },
+    {
+      "name": "pure_without_nomem_readonly",
+      "target": "x86_64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "the `pure` option must be combined with either `nomem` or `readonly`",
+        "aborting due to 1 previous error"
+      ]
+    },
+    {
+      "name": "nomem_and_readonly_conflict",
+      "target": "x86_64-unknown-linux-gnu",
+      "compile_rc": 1,
+      "error_messages": [
+        "the `nomem` and `readonly` options are mutually exclusive",
+        "aborting due to 1 previous error"
+      ]
+    }
+  ],
+  "ce1_lateout_aliasing": {
+    "opt_O0": {
+      "stdout": "LATEOUT=0 OUT=42",
+      "llvm_asm_calls": [
+        "%0 = call i32 asm inteldialect \"mov ${0:k}, 0\\0Aadd ${0:k}, ${1:k}\", \"=r,r,~{dirflag},~{fpsr},~{flags}\"(i32 %x) #8, !srcloc !6",
+        "%0 = call i32 asm inteldialect \"mov ${0:k}, 0\\0Aadd ${0:k}, ${1:k}\", \"=&r,r,~{dirflag},~{fpsr},~{flags}\"(i32 %x) #8, !srcloc !7"
+      ],
+      "buggy_lateout_asm": [
+        "\t.cfi_startproc",
+        "\tpushq\t%rax",
+        "\t.cfi_def_cfa_offset 16",
+        "\tcallq\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing6id_eax",
+        "\t#APP",
+        "",
+        "\tmovl\t$0, %eax",
+        "\taddl\t%eax, %eax",
+        "",
+        "\t#NO_APP",
+        "\tmovl\t%eax, 4(%rsp)",
+        "\tmovl\t4(%rsp), %eax",
+        "\tpopq\t%rcx",
+        "\t.cfi_def_cfa_offset 8",
+        "\tretq",
+        ".Lfunc_end7:",
+        "\t.size\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing22buggy_lateout_zero_add, .Lfunc_end7-_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing22buggy_lateout_zero_add",
+        "\t.cfi_endproc",
+        "",
+        "\t.section\t.text._RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add,\"ax\",@progbits",
+        "\t.p2align\t4",
+        "\t.type\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add,@function"
+      ],
+      "safe_early_out_asm": [
+        "\t.cfi_startproc",
+        "\tpushq\t%rax",
+        "\t.cfi_def_cfa_offset 16",
+        "\tcallq\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing6id_eax",
+        "\tmovl\t%eax, %ecx",
+        "\t#APP",
+        "",
+        "\tmovl\t$0, %eax",
+        "\taddl\t%ecx, %eax",
+        "",
+        "\t#NO_APP",
+        "\tmovl\t%eax, 4(%rsp)",
+        "\tmovl\t4(%rsp), %eax",
+        "\tpopq\t%rcx",
+        "\t.cfi_def_cfa_offset 8",
+        "\tretq",
+        ".Lfunc_end8:",
+        "\t.size\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add, .Lfunc_end8-_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add",
+        "\t.cfi_endproc",
+        "",
+        "\t.section\t.text._RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing4main,\"ax\",@progbits",
+        "\t.hidden\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing4main",
+        "\t.globl\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing4main",
+        "\t.p2align\t4",
+        "\t.type\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing4main,@function"
+      ],
+      "objdump_excerpt": [
+        "0000000000013eb0 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing22buggy_lateout_zero_add>:",
+        "   13eb0:\t50                   \tpush   %rax",
+        "   13eb1:\te8 da 00 00 00       \tcall   13f90 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing6id_eax>",
+        "   13eb6:\tb8 00 00 00 00       \tmov    $0x0,%eax",
+        "   13ebb:\t01 c0                \tadd    %eax,%eax",
+        "   13ebd:\t89 44 24 04          \tmov    %eax,0x4(%rsp)",
+        "   13ec1:\t8b 44 24 04          \tmov    0x4(%rsp),%eax",
+        "   13ec5:\t59                   \tpop    %rcx",
+        "   13ec6:\tc3                   \tret",
+        "   13ec7:\tcc                   \tint3",
+        "   13ec8:\tcc                   \tint3",
+        "   13ec9:\tcc                   \tint3",
+        "   13eca:\tcc                   \tint3",
+        "   13ecb:\tcc                   \tint3",
+        "   13ecc:\tcc                   \tint3",
+        "0000000000013ed0 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add>:",
+        "   13ed0:\t50                   \tpush   %rax",
+        "   13ed1:\te8 ba 00 00 00       \tcall   13f90 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing6id_eax>",
+        "   13ed6:\t89 c1                \tmov    %eax,%ecx",
+        "   13ed8:\tb8 00 00 00 00       \tmov    $0x0,%eax",
+        "   13edd:\t01 c8                \tadd    %ecx,%eax",
+        "   13edf:\t89 44 24 04          \tmov    %eax,0x4(%rsp)",
+        "   13ee3:\t8b 44 24 04          \tmov    0x4(%rsp),%eax",
+        "   13ee7:\t59                   \tpop    %rcx",
+        "   13ee8:\tc3                   \tret",
+        "   13ee9:\tcc                   \tint3",
+        "   13eea:\tcc                   \tint3",
+        "   13eeb:\tcc                   \tint3",
+        "   13eec:\tcc                   \tint3",
+        "   13eed:\tcc                   \tint3",
+        "   13f04:\te8 a7 ff ff ff       \tcall   13eb0 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing22buggy_lateout_zero_add>",
+        "   13f09:\t8b 7c 24 0c          \tmov    0xc(%rsp),%edi",
+        "   13f0d:\t89 44 24 10          \tmov    %eax,0x10(%rsp)",
+        "   13f11:\te8 ba ff ff ff       \tcall   13ed0 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add>",
+        "   13f16:\t89 44 24 14          \tmov    %eax,0x14(%rsp)",
+        "   13f1a:\t48 8d 7c 24 38       \tlea    0x38(%rsp),%rdi",
+        "   13f1f:\t48 8d 74 24 10       \tlea    0x10(%rsp),%rsi",
+        "   13f24:\te8 c7 fe ff ff       \tcall   13df0 <_RINvMNtNtCs8b4M6GsfcPr_4core3fmt2rtNtB3_8Argument11new_displaymECsf4wsjs71Ta3_20ce1_lateout_aliasing>",
+        "   13f29:\t48 8d 7c 24 48       \tlea    0x48(%rsp),%rdi",
+        "   13f2e:\t48 8d 74 24 14       \tlea    0x14(%rsp),%rsi",
+        "   13f33:\te8 b8 fe ff ff       \tcall   13df0 <_RINvMNtNtCs8b4M6GsfcPr_4core3fmt2rtNtB3_8Argument11new_displaymECsf4wsjs71Ta3_20ce1_lateout_aliasing>",
+        "   13f38:\t48 8b 44 24 38       \tmov    0x38(%rsp),%rax",
+        "   13f3d:\t48 89 44 24 18       \tmov    %rax,0x18(%rsp)",
+        "   13f42:\t48 8b 44 24 40       \tmov    0x40(%rsp),%rax",
+        "   13f47:\t48 89 44 24 20       \tmov    %rax,0x20(%rsp)",
+        "   13f11:\te8 ba ff ff ff       \tcall   13ed0 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add>",
+        "   13f16:\t89 44 24 14          \tmov    %eax,0x14(%rsp)",
+        "   13f1a:\t48 8d 7c 24 38       \tlea    0x38(%rsp),%rdi",
+        "   13f1f:\t48 8d 74 24 10       \tlea    0x10(%rsp),%rsi",
+        "   13f24:\te8 c7 fe ff ff       \tcall   13df0 <_RINvMNtNtCs8b4M6GsfcPr_4core3fmt2rtNtB3_8Argument11new_displaymECsf4wsjs71Ta3_20ce1_lateout_aliasing>",
+        "   13f29:\t48 8d 7c 24 48       \tlea    0x48(%rsp),%rdi",
+        "   13f2e:\t48 8d 74 24 14       \tlea    0x14(%rsp),%rsi",
+        "   13f33:\te8 b8 fe ff ff       \tcall   13df0 <_RINvMNtNtCs8b4M6GsfcPr_4core3fmt2rtNtB3_8Argument11new_displaymECsf4wsjs71Ta3_20ce1_lateout_aliasing>",
+        "   13f38:\t48 8b 44 24 38       \tmov    0x38(%rsp),%rax",
+        "   13f3d:\t48 89 44 24 18       \tmov    %rax,0x18(%rsp)",
+        "   13f42:\t48 8b 44 24 40       \tmov    0x40(%rsp),%rax",
+        "   13f47:\t48 89 44 24 20       \tmov    %rax,0x20(%rsp)",
+        "   13f4c:\t48 8b 44 24 48       \tmov    0x48(%rsp),%rax",
+        "   13f51:\t48 89 44 24 28       \tmov    %rax,0x28(%rsp)",
+        "   13f56:\t48 8b 44 24 50       \tmov    0x50(%rsp),%rax"
+      ]
+    },
+    "opt_O2": {
+      "stdout": "LATEOUT=0 OUT=42",
+      "llvm_asm_calls": [
+        "%0 = tail call i32 asm inteldialect \"mov ${0:k}, 0\\0Aadd ${0:k}, ${1:k}\", \"=r,r,~{dirflag},~{fpsr},~{flags}\"(i32 %x) #9, !srcloc !10",
+        "%0 = tail call i32 asm inteldialect \"mov ${0:k}, 0\\0Aadd ${0:k}, ${1:k}\", \"=&r,r,~{dirflag},~{fpsr},~{flags}\"(i32 %x) #9, !srcloc !11"
+      ],
+      "buggy_lateout_asm": [
+        "\t.cfi_startproc",
+        "\tpushq\t%rax",
+        "\t.cfi_def_cfa_offset 16",
+        "\tcallq\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing6id_eax",
+        "\t#APP",
+        "",
+        "\tmovl\t$0, %eax",
+        "\taddl\t%eax, %eax",
+        "",
+        "\t#NO_APP",
+        "\tpopq\t%rcx",
+        "\t.cfi_def_cfa_offset 8",
+        "\tretq",
+        ".Lfunc_end4:",
+        "\t.size\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing22buggy_lateout_zero_add, .Lfunc_end4-_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing22buggy_lateout_zero_add",
+        "\t.cfi_endproc",
+        "",
+        "\t.section\t.text._RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add,\"ax\",@progbits",
+        "\t.p2align\t4",
+        "\t.type\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add,@function"
+      ],
+      "safe_early_out_asm": [
+        "\t.cfi_startproc",
+        "\tpushq\t%rax",
+        "\t.cfi_def_cfa_offset 16",
+        "\tcallq\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing6id_eax",
+        "\t#APP",
+        "",
+        "\tmovl\t$0, %ecx",
+        "\taddl\t%eax, %ecx",
+        "",
+        "\t#NO_APP",
+        "\tmovl\t%ecx, %eax",
+        "\tpopq\t%rcx",
+        "\t.cfi_def_cfa_offset 8",
+        "\tretq",
+        ".Lfunc_end5:",
+        "\t.size\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add, .Lfunc_end5-_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add",
+        "\t.cfi_endproc",
+        "",
+        "\t.section\t.text._RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing4main,\"ax\",@progbits",
+        "\t.hidden\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing4main",
+        "\t.globl\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing4main",
+        "\t.p2align\t4",
+        "\t.type\t_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing4main,@function"
+      ],
+      "objdump_excerpt": [
+        "0000000000013d30 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing22buggy_lateout_zero_add>:",
+        "   13d30:\t50                   \tpush   %rax",
+        "   13d31:\te8 9a 00 00 00       \tcall   13dd0 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing6id_eax>",
+        "   13d36:\tb8 00 00 00 00       \tmov    $0x0,%eax",
+        "   13d3b:\t01 c0                \tadd    %eax,%eax",
+        "   13d3d:\t59                   \tpop    %rcx",
+        "   13d3e:\tc3                   \tret",
+        "   13d3f:\tcc                   \tint3",
+        "",
+        "0000000000013d40 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add>:",
+        "   13d40:\t50                   \tpush   %rax",
+        "   13d41:\te8 8a 00 00 00       \tcall   13dd0 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing6id_eax>",
+        "   13d46:\tb9 00 00 00 00       \tmov    $0x0,%ecx",
+        "   13d4b:\t01 c1                \tadd    %eax,%ecx",
+        "   13d4d:\t89 c8                \tmov    %ecx,%eax",
+        "0000000000013d40 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add>:",
+        "   13d40:\t50                   \tpush   %rax",
+        "   13d41:\te8 8a 00 00 00       \tcall   13dd0 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing6id_eax>",
+        "   13d46:\tb9 00 00 00 00       \tmov    $0x0,%ecx",
+        "   13d4b:\t01 c1                \tadd    %eax,%ecx",
+        "   13d4d:\t89 c8                \tmov    %ecx,%eax",
+        "   13d4f:\t59                   \tpop    %rcx",
+        "   13d50:\tc3                   \tret",
+        "   13d51:\tcc                   \tint3",
+        "   13d52:\tcc                   \tint3",
+        "   13d53:\tcc                   \tint3",
+        "   13d54:\tcc                   \tint3",
+        "   13d55:\tcc                   \tint3",
+        "   13d56:\tcc                   \tint3",
+        "   13d57:\tcc                   \tint3",
+        "   13d75:\te8 b6 ff ff ff       \tcall   13d30 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing22buggy_lateout_zero_add>",
+        "   13d7a:\t89 44 24 10          \tmov    %eax,0x10(%rsp)",
+        "   13d7e:\t8b 7c 24 0c          \tmov    0xc(%rsp),%edi",
+        "   13d82:\te8 b9 ff ff ff       \tcall   13d40 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add>",
+        "   13d87:\t89 44 24 14          \tmov    %eax,0x14(%rsp)",
+        "   13d8b:\t48 8d 44 24 10       \tlea    0x10(%rsp),%rax",
+        "   13d90:\t48 89 44 24 18       \tmov    %rax,0x18(%rsp)",
+        "   13d95:\t48 8b 05 24 01 04 00 \tmov    0x40124(%rip),%rax        # 53ec0 <_DYNAMIC+0x238>",
+        "   13d9c:\t48 89 44 24 20       \tmov    %rax,0x20(%rsp)",
+        "   13da1:\t48 8d 4c 24 14       \tlea    0x14(%rsp),%rcx",
+        "   13da6:\t48 89 4c 24 28       \tmov    %rcx,0x28(%rsp)",
+        "   13dab:\t48 89 44 24 30       \tmov    %rax,0x30(%rsp)",
+        "   13db0:\t48 8d 3d e5 12 ff ff \tlea    -0xed1b(%rip),%rdi        # 509c <__abi_tag+0x4da0>",
+        "   13db7:\t48 8d 74 24 18       \tlea    0x18(%rsp),%rsi",
+        "   13dbc:\tff 15 06 01 04 00    \tcall   *0x40106(%rip)        # 53ec8 <_DYNAMIC+0x240>",
+        "   13d82:\te8 b9 ff ff ff       \tcall   13d40 <_RNvCsf4wsjs71Ta3_20ce1_lateout_aliasing23safe_early_out_zero_add>",
+        "   13d87:\t89 44 24 14          \tmov    %eax,0x14(%rsp)",
+        "   13d8b:\t48 8d 44 24 10       \tlea    0x10(%rsp),%rax",
+        "   13d90:\t48 89 44 24 18       \tmov    %rax,0x18(%rsp)",
+        "   13d95:\t48 8b 05 24 01 04 00 \tmov    0x40124(%rip),%rax        # 53ec0 <_DYNAMIC+0x238>",
+        "   13d9c:\t48 89 44 24 20       \tmov    %rax,0x20(%rsp)",
+        "   13da1:\t48 8d 4c 24 14       \tlea    0x14(%rsp),%rcx",
+        "   13da6:\t48 89 4c 24 28       \tmov    %rcx,0x28(%rsp)",
+        "   13dab:\t48 89 44 24 30       \tmov    %rax,0x30(%rsp)",
+        "   13db0:\t48 8d 3d e5 12 ff ff \tlea    -0xed1b(%rip),%rdi        # 509c <__abi_tag+0x4da0>",
+        "   13db7:\t48 8d 74 24 18       \tlea    0x18(%rsp),%rsi",
+        "   13dbc:\tff 15 06 01 04 00    \tcall   *0x40106(%rip)        # 53ec8 <_DYNAMIC+0x240>",
+        "   13dc2:\t48 83 c4 38          \tadd    $0x38,%rsp",
+        "   13dc6:\tc3                   \tret",
+        "   13dc7:\tcc                   \tint3"
+      ]
+    }
+  },
+  "ce2_redzone_nostack": {
+    "stdout": "EXPECTED=0x444444444444cccc NOSTACK=0x0 WITHOUT_NOSTACK=0x444444444444cccc CLOBBERED=true",
+    "llvm_asm_calls": [
+      "%0 = tail call i32 asm sideeffect inteldialect \"push ${1:q}\\0Apush ${1:q}\\0Apop ${0:q}\\0Apop ${0:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 -2401053092612145152) #7, !srcloc !10",
+      "%0 = tail call i32 asm sideeffect alignstack inteldialect \"push ${1:q}\\0Apush ${1:q}\\0Apop ${0:q}\\0Apop ${0:q}\", \"=&r,r,~{dirflag},~{fpsr},~{flags},~{memory}\"(i64 -2401053092612145152) #7, !srcloc !11"
+    ],
+    "leaf_with_nostack_has_sub_rsp": false,
+    "leaf_without_nostack_has_sub_rsp": true,
+    "leaf_with_nostack_asm": [
+      "\t.cfi_startproc",
+      "\tmovq\t%rdi, -16(%rsp)",
+      "\tmovq\t%rsi, -8(%rsp)",
+      "\tmovabsq\t$-2401053092612145152, %rax",
+      "\t#APP",
+      "",
+      "\tpushq\t%rax",
+      "\tpushq\t%rax",
+      "\tpopq\t%rcx",
+      "\tpopq\t%rcx",
+      "",
+      "\t#NO_APP",
+      "\tmovq\t-16(%rsp), %rax",
+      "\txorq\t-8(%rsp), %rax",
+      "\tretq",
+      ".Lfunc_end4:",
+      "\t.size\t_RNvCsetPoM0sv49M_19ce2_redzone_nostack17leaf_with_nostack, .Lfunc_end4-_RNvCsetPoM0sv49M_19ce2_redzone_nostack17leaf_with_nostack",
+      "\t.cfi_endproc",
+      "",
+      "\t.section\t.text._RNvCsetPoM0sv49M_19ce2_redzone_nostack20leaf_without_nostack,\"ax\",@progbits",
+      "\t.p2align\t4",
+      "\t.type\t_RNvCsetPoM0sv49M_19ce2_redzone_nostack20leaf_without_nostack,@function"
+    ],
+    "leaf_without_nostack_asm": [
+      "\t.cfi_startproc",
+      "\tsubq\t$24, %rsp",
+      "\t.cfi_def_cfa_offset 32",
+      "\tmovq\t%rdi, 8(%rsp)",
+      "\tmovq\t%rsi, 16(%rsp)",
+      "\tmovabsq\t$-2401053092612145152, %rax",
+      "\t#APP",
+      "",
+      "\tpushq\t%rax",
+      "\tpushq\t%rax",
+      "\tpopq\t%rcx",
+      "\tpopq\t%rcx",
+      "",
+      "\t#NO_APP",
+      "\tmovq\t8(%rsp), %rax",
+      "\txorq\t16(%rsp), %rax",
+      "\taddq\t$24, %rsp",
+      "\t.cfi_def_cfa_offset 8",
+      "\tretq",
+      ".Lfunc_end5:",
+      "\t.size\t_RNvCsetPoM0sv49M_19ce2_redzone_nostack20leaf_without_nostack, .Lfunc_end5-_RNvCsetPoM0sv49M_19ce2_redzone_nostack20leaf_without_nostack",
+      "\t.cfi_endproc",
+      "",
+      "\t.section\t.text._RNvCsetPoM0sv49M_19ce2_redzone_nostack4main,\"ax\",@progbits",
+      "\t.hidden\t_RNvCsetPoM0sv49M_19ce2_redzone_nostack4main",
+      "\t.globl\t_RNvCsetPoM0sv49M_19ce2_redzone_nostack4main",
+      "\t.p2align\t4",
+      "\t.type\t_RNvCsetPoM0sv49M_19ce2_redzone_nostack4main,@function"
+    ]
+  },
+  "builtins_and_loop_idiom": {
+    "u128_i128_ops": {
+      "x86_64-unknown-linux-gnu": {
+        "functions": {
+          "probe_u128_div": {
+            "llvm_calls": [
+              "_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero",
+              "_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind"
+            ],
+            "asm_lines": [
+              ".Lfunc_begin1:",
+              "\t.cfi_startproc",
+              "\t.cfi_personality 155, DW.ref.rust_eh_personality",
+              "\t.cfi_lsda 27, .Lexception1",
+              "\tpushq\t%rax",
+              "\t.cfi_def_cfa_offset 16",
+              "\tmovq\t%rdx, %rax",
+              "\torq\t%rcx, %rax",
+              "\tje\t.LBB1_1",
+              "\tcallq\t*__udivti3@GOTPCREL(%rip)",
+              "\tpopq\t%rcx",
+              "\t.cfi_def_cfa_offset 8",
+              "\tretq",
+              ".LBB1_1:",
+              "\t.cfi_def_cfa_offset 16",
+              ".Ltmp5:",
+              "\tleaq\t.Lalloc_05012b0330ed3dafd5458f54fe55661c(%rip), %rdi",
+              "\tcallq\t*_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero@GOTPCREL(%rip)",
+              ".Ltmp6:",
+              "\tud2",
+              ".LBB1_4:",
+              ".Ltmp7:",
+              "\tcallq\t*_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+              ".Lfunc_end1:",
+              "\t.size\tprobe_u128_div, .Lfunc_end1-probe_u128_div",
+              "\t.cfi_endproc",
+              "\t.section\t.gcc_except_table.probe_u128_div,\"a\",@progbits",
+              "\t.p2align\t2, 0x0"
+            ]
+          },
+          "probe_u128_rem": {
+            "llvm_calls": [
+              "_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_rem_by_zero",
+              "_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind"
+            ],
+            "asm_lines": [
+              ".Lfunc_begin2:",
+              "\t.cfi_startproc",
+              "\t.cfi_personality 155, DW.ref.rust_eh_personality",
+              "\t.cfi_lsda 27, .Lexception2",
+              "\tpushq\t%rax",
+              "\t.cfi_def_cfa_offset 16",
+              "\tmovq\t%rdx, %rax",
+              "\torq\t%rcx, %rax",
+              "\tje\t.LBB4_1",
+              "\tcallq\t*__umodti3@GOTPCREL(%rip)",
+              "\tpopq\t%rcx",
+              "\t.cfi_def_cfa_offset 8",
+              "\tretq",
+              ".LBB4_1:",
+              "\t.cfi_def_cfa_offset 16",
+              ".Ltmp8:",
+              "\tleaq\t.Lalloc_11f5af166d15a5297b0d5bd4806f91b6(%rip), %rdi",
+              "\tcallq\t*_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_rem_by_zero@GOTPCREL(%rip)",
+              ".Ltmp9:",
+              "\tud2",
+              ".LBB4_4:",
+              ".Ltmp10:",
+              "\tcallq\t*_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+              ".Lfunc_end4:",
+              "\t.size\tprobe_u128_rem, .Lfunc_end4-probe_u128_rem",
+              "\t.cfi_endproc",
+              "\t.section\t.gcc_except_table.probe_u128_rem,\"a\",@progbits",
+              "\t.p2align\t2, 0x0"
+            ]
+          },
+          "probe_i128_div": {
+            "llvm_calls": [
+              "_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero",
+              "_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind",
+              "_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const24panic_const_div_overflow"
+            ],
+            "asm_lines": [
+              ".Lfunc_begin0:",
+              "\t.cfi_startproc",
+              "\t.cfi_personality 155, DW.ref.rust_eh_personality",
+              "\t.cfi_lsda 27, .Lexception0",
+              "\tpushq\t%rax",
+              "\t.cfi_def_cfa_offset 16",
+              "\tmovq\t%rdx, %rax",
+              "\torq\t%rcx, %rax",
+              "\tje\t.LBB0_4",
+              "\tmovq\t%rdx, %xmm0",
+              "\tmovq\t%rcx, %xmm1",
+              "\tpunpcklqdq\t%xmm1, %xmm0",
+              "\tmovq\t%rdi, %xmm1",
+              "\tmovq\t%rsi, %xmm2",
+              "\tpunpcklqdq\t%xmm2, %xmm1",
+              "\tpcmpeqd\t%xmm2, %xmm2",
+              "\tpcmpeqb\t.LCPI0_0(%rip), %xmm1",
+              "\tpcmpeqb\t%xmm0, %xmm2",
+              "\tpand\t%xmm2, %xmm1",
+              "\tpmovmskb\t%xmm1, %eax",
+              "\tcmpl\t$65535, %eax",
+              "\tje\t.LBB0_6",
+              "\tcallq\t*__divti3@GOTPCREL(%rip)",
+              "\tpopq\t%rcx",
+              "\t.cfi_def_cfa_offset 8",
+              "\tretq",
+              ".LBB0_4:",
+              "\t.cfi_def_cfa_offset 16"
+            ]
+          },
+          "probe_u128_mul": {
+            "llvm_calls": [],
+            "asm_lines": [
+              "\t.cfi_startproc",
+              "\tmovq\t%rdx, %r8",
+              "\tmovq\t%rdx, %rax",
+              "\tmulq\t%rdi",
+              "\timulq\t%r8, %rsi",
+              "\taddq\t%rsi, %rdx",
+              "\timulq\t%rdi, %rcx",
+              "\taddq\t%rcx, %rdx",
+              "\tretq",
+              ".Lfunc_end3:",
+              "\t.size\tprobe_u128_mul, .Lfunc_end3-probe_u128_mul",
+              "\t.cfi_endproc",
+              "",
+              "\t.section\t.text.probe_u128_rem,\"ax\",@progbits",
+              "\t.globl\tprobe_u128_rem",
+              "\t.p2align\t4",
+              "\t.type\tprobe_u128_rem,@function"
+            ]
+          },
+          "probe_u128_shl": {
+            "llvm_calls": [],
+            "asm_lines": [
+              "\t.cfi_startproc",
+              "\tmovl\t%edx, %ecx",
+              "\tmovq\t%rsi, %rdx",
+              "\tshldq\t%cl, %rdi, %rdx",
+              "\tshlq\t%cl, %rdi",
+              "\txorl\t%eax, %eax",
+              "\ttestb\t$64, %cl",
+              "\tcmovneq\t%rdi, %rdx",
+              "\tcmoveq\t%rdi, %rax",
+              "\tretq",
+              ".Lfunc_end5:",
+              "\t.size\tprobe_u128_shl, .Lfunc_end5-probe_u128_shl",
+              "\t.cfi_endproc",
+              "",
+              "\t.type\t.Lalloc_86b05032f75c758521011338135fe8b6,@object",
+              "\t.section\t.rodata.str1.1,\"aMS\",@progbits,1",
+              ".Lalloc_86b05032f75c758521011338135fe8b6:",
+              "\t.asciz\t\"package/support/specimens/builtins_128bit_ops.rs\"",
+              "\t.size\t.Lalloc_86b05032f75c758521011338135fe8b6, 49",
+              "",
+              "\t.type\t.Lalloc_6367bbd9a5a383e254c79e6dc3640c1f,@object",
+              "\t.section\t.data.rel.ro..Lalloc_6367bbd9a5a383e254c79e6dc3640c1f,\"aw\",@progbits",
+              "\t.p2align\t3, 0x0",
+              ".Lalloc_6367bbd9a5a383e254c79e6dc3640c1f:",
+              "\t.quad\t.Lalloc_86b05032f75c758521011338135fe8b6",
+              "\t.asciz\t\"0\\000\\000\\000\\000\\000\\000\\000\\017\\000\\000\\000\\005\\000\\000\"",
+              "\t.size\t.Lalloc_6367bbd9a5a383e254c79e6dc3640c1f, 24",
+              ""
+            ]
+          },
+          "probe_u128_lshr": {
+            "llvm_calls": [],
+            "asm_lines": [
+              "\t.cfi_startproc",
+              "\tmovl\t%edx, %ecx",
+              "\tmovq\t%rdi, %rax",
+              "\tshrdq\t%cl, %rsi, %rax",
+              "\tshrq\t%cl, %rsi",
+              "\txorl\t%edx, %edx",
+              "\ttestb\t$64, %cl",
+              "\tcmovneq\t%rsi, %rax",
+              "\tcmoveq\t%rsi, %rdx",
+              "\tretq",
+              ".Lfunc_end2:",
+              "\t.size\tprobe_u128_lshr, .Lfunc_end2-probe_u128_lshr",
+              "\t.cfi_endproc",
+              "",
+              "\t.section\t.text.probe_u128_mul,\"ax\",@progbits",
+              "\t.globl\tprobe_u128_mul",
+              "\t.p2align\t4",
+              "\t.type\tprobe_u128_mul,@function"
+            ]
+          }
+        },
+        "obj_relocs": [
+          "\t\t\t2d: R_X86_64_PC32\t.LCPI0_0-0x4",
+          "\t\t\t46: R_X86_64_GOTPCREL\t__divti3-0x4",
+          "\t\t\t4f: R_X86_64_PC32\t.data.rel.ro..Lalloc_6367bbd9a5a383e254c79e6dc3640c1f-0x4",
+          "\t\t\t55: R_X86_64_GOTPCREL\t_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero-0x4",
+          "\t\t\t5e: R_X86_64_PC32\t.data.rel.ro..Lalloc_6367bbd9a5a383e254c79e6dc3640c1f-0x4",
+          "\t\t\t64: R_X86_64_GOTPCREL\t_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const24panic_const_div_overflow-0x4",
+          "\t\t\t6c: R_X86_64_GOTPCREL\t_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind-0x4",
+          "\t\t\tb: R_X86_64_GOTPCREL\t__udivti3-0x4",
+          "\t\t\t14: R_X86_64_PC32\t.data.rel.ro..Lalloc_05012b0330ed3dafd5458f54fe55661c-0x4",
+          "\t\t\t1a: R_X86_64_GOTPCREL\t_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero-0x4",
+          "\t\t\t22: R_X86_64_GOTPCREL\t_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind-0x4",
+          "\t\t\tb: R_X86_64_GOTPCREL\t__umodti3-0x4",
+          "\t\t\t14: R_X86_64_PC32\t.data.rel.ro..Lalloc_11f5af166d15a5297b0d5bd4806f91b6-0x4",
+          "\t\t\t1a: R_X86_64_GOTPCREL\t_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_rem_by_zero-0x4",
+          "\t\t\t22: R_X86_64_GOTPCREL\t_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind-0x4"
+        ]
+      },
+      "aarch64-unknown-linux-gnu": {
+        "functions": {
+          "probe_u128_div": {
+            "llvm_calls": [
+              "_RNvNtNtCs2DABCSUuhbq_4core9panicking11panic_const23panic_const_div_by_zero",
+              "_RNvNtCs2DABCSUuhbq_4core9panicking19panic_cannot_unwind"
+            ],
+            "asm_lines": [
+              ".Lfunc_begin1:",
+              "\t.cfi_startproc",
+              "\t.cfi_personality 156, DW.ref.rust_eh_personality",
+              "\t.cfi_lsda 28, .Lexception1",
+              "\tstp\tx29, x30, [sp, #-16]!",
+              "\t.cfi_def_cfa_offset 16",
+              "\tmov\tx29, sp",
+              "\t.cfi_def_cfa w29, 16",
+              "\t.cfi_offset w30, -8",
+              "\t.cfi_offset w29, -16",
+              "\t.cfi_remember_state",
+              "\torr\tx8, x2, x3",
+              "\tcbz\tx8, .LBB1_2",
+              "\tbl\t__udivti3",
+              "\t.cfi_def_cfa wsp, 16",
+              "\tldp\tx29, x30, [sp], #16",
+              "\t.cfi_def_cfa_offset 0",
+              "\t.cfi_restore w30",
+              "\t.cfi_restore w29",
+              "\tret",
+              ".LBB1_2:",
+              "\t.cfi_restore_state",
+              ".Ltmp5:",
+              "\tadrp\tx0, .Lalloc_05012b0330ed3dafd5458f54fe55661c",
+              "\tadd\tx0, x0, :lo12:.Lalloc_05012b0330ed3dafd5458f54fe55661c",
+              "\tbl\t_RNvNtNtCs2DABCSUuhbq_4core9panicking11panic_const23panic_const_div_by_zero",
+              ".Ltmp6:",
+              "\tbrk\t#0x1"
+            ]
+          },
+          "probe_u128_rem": {
+            "llvm_calls": [
+              "_RNvNtNtCs2DABCSUuhbq_4core9panicking11panic_const23panic_const_rem_by_zero",
+              "_RNvNtCs2DABCSUuhbq_4core9panicking19panic_cannot_unwind"
+            ],
+            "asm_lines": [
+              ".Lfunc_begin2:",
+              "\t.cfi_startproc",
+              "\t.cfi_personality 156, DW.ref.rust_eh_personality",
+              "\t.cfi_lsda 28, .Lexception2",
+              "\tstp\tx29, x30, [sp, #-16]!",
+              "\t.cfi_def_cfa_offset 16",
+              "\tmov\tx29, sp",
+              "\t.cfi_def_cfa w29, 16",
+              "\t.cfi_offset w30, -8",
+              "\t.cfi_offset w29, -16",
+              "\t.cfi_remember_state",
+              "\torr\tx8, x2, x3",
+              "\tcbz\tx8, .LBB4_2",
+              "\tbl\t__umodti3",
+              "\t.cfi_def_cfa wsp, 16",
+              "\tldp\tx29, x30, [sp], #16",
+              "\t.cfi_def_cfa_offset 0",
+              "\t.cfi_restore w30",
+              "\t.cfi_restore w29",
+              "\tret",
+              ".LBB4_2:",
+              "\t.cfi_restore_state",
+              ".Ltmp8:",
+              "\tadrp\tx0, .Lalloc_11f5af166d15a5297b0d5bd4806f91b6",
+              "\tadd\tx0, x0, :lo12:.Lalloc_11f5af166d15a5297b0d5bd4806f91b6",
+              "\tbl\t_RNvNtNtCs2DABCSUuhbq_4core9panicking11panic_const23panic_const_rem_by_zero",
+              ".Ltmp9:",
+              "\tbrk\t#0x1"
+            ]
+          },
+          "probe_i128_div": {
+            "llvm_calls": [
+              "_RNvNtNtCs2DABCSUuhbq_4core9panicking11panic_const23panic_const_div_by_zero",
+              "_RNvNtCs2DABCSUuhbq_4core9panicking19panic_cannot_unwind",
+              "_RNvNtNtCs2DABCSUuhbq_4core9panicking11panic_const24panic_const_div_overflow"
+            ],
+            "asm_lines": [
+              ".Lfunc_begin0:",
+              "\t.cfi_startproc",
+              "\t.cfi_personality 156, DW.ref.rust_eh_personality",
+              "\t.cfi_lsda 28, .Lexception0",
+              "\tstp\tx29, x30, [sp, #-16]!",
+              "\t.cfi_def_cfa_offset 16",
+              "\tmov\tx29, sp",
+              "\t.cfi_def_cfa w29, 16",
+              "\t.cfi_offset w30, -8",
+              "\t.cfi_offset w29, -16",
+              "\t.cfi_remember_state",
+              "\torr\tx8, x2, x3",
+              "\tcbz\tx8, .LBB0_4",
+              "\teor\tx8, x1, #0x8000000000000000",
+              "\torr\tx8, x0, x8",
+              "\tcbnz\tx8, .LBB0_3",
+              "\tand\tx8, x2, x3",
+              "\tcmn\tx8, #1",
+              "\tb.eq\t.LBB0_5",
+              ".LBB0_3:",
+              "\tbl\t__divti3",
+              "\t.cfi_def_cfa wsp, 16",
+              "\tldp\tx29, x30, [sp], #16",
+              "\t.cfi_def_cfa_offset 0",
+              "\t.cfi_restore w30",
+              "\t.cfi_restore w29",
+              "\tret",
+              ".LBB0_4:"
+            ]
+          },
+          "probe_u128_mul": {
+            "llvm_calls": [],
+            "asm_lines": [
+              "\t.cfi_startproc",
+              "\tumulh\tx8, x2, x0",
+              "\tmadd\tx8, x2, x1, x8",
+              "\tmadd\tx1, x3, x0, x8",
+              "\tmul\tx0, x2, x0",
+              "\tret",
+              ".Lfunc_end3:",
+              "\t.size\tprobe_u128_mul, .Lfunc_end3-probe_u128_mul",
+              "\t.cfi_endproc",
+              "",
+              "\t.section\t.text.probe_u128_rem,\"ax\",@progbits",
+              "\t.globl\tprobe_u128_rem",
+              "\t.p2align\t2",
+              "\t.type\tprobe_u128_rem,@function"
+            ]
+          },
+          "probe_u128_shl": {
+            "llvm_calls": [],
+            "asm_lines": [
+              "\t.cfi_startproc",
+              "\tlsr\tx8, x0, #1",
+              "\tand\tw9, w2, #0x7f",
+              "\tmvn\tw10, w2",
+              "\tlsl\tx11, x0, x9",
+              "\ttst\tx9, #0x40",
+              "\tlsr\tx8, x8, x10",
+              "\tlsl\tx10, x1, x9",
+              "\tcsel\tx0, xzr, x11, ne",
+              "\torr\tx8, x10, x8",
+              "\tcsel\tx1, x11, x8, ne",
+              "\tret",
+              ".Lfunc_end5:",
+              "\t.size\tprobe_u128_shl, .Lfunc_end5-probe_u128_shl",
+              "\t.cfi_endproc",
+              "",
+              "\t.type\t.Lalloc_86b05032f75c758521011338135fe8b6,@object",
+              "\t.section\t.rodata.str1.1,\"aMS\",@progbits,1",
+              ".Lalloc_86b05032f75c758521011338135fe8b6:",
+              "\t.asciz\t\"package/support/specimens/builtins_128bit_ops.rs\"",
+              "\t.size\t.Lalloc_86b05032f75c758521011338135fe8b6, 49",
+              "",
+              "\t.type\t.Lalloc_6367bbd9a5a383e254c79e6dc3640c1f,@object",
+              "\t.section\t.data.rel.ro..Lalloc_6367bbd9a5a383e254c79e6dc3640c1f,\"aw\",@progbits",
+              "\t.p2align\t3, 0x0",
+              ".Lalloc_6367bbd9a5a383e254c79e6dc3640c1f:",
+              "\t.xword\t.Lalloc_86b05032f75c758521011338135fe8b6",
+              "\t.asciz\t\"0\\000\\000\\000\\000\\000\\000\\000\\017\\000\\000\\000\\005\\000\\000\""
+            ]
+          },
+          "probe_u128_lshr": {
+            "llvm_calls": [],
+            "asm_lines": [
+              "\t.cfi_startproc",
+              "\tlsl\tx8, x1, #1",
+              "\tand\tw9, w2, #0x7f",
+              "\tmvn\tw10, w2",
+              "\tlsr\tx11, x1, x9",
+              "\ttst\tx9, #0x40",
+              "\tlsl\tx8, x8, x10",
+              "\tlsr\tx10, x0, x9",
+              "\tcsel\tx1, xzr, x11, ne",
+              "\torr\tx8, x8, x10",
+              "\tcsel\tx0, x11, x8, ne",
+              "\tret",
+              ".Lfunc_end2:",
+              "\t.size\tprobe_u128_lshr, .Lfunc_end2-probe_u128_lshr",
+              "\t.cfi_endproc",
+              "",
+              "\t.section\t.text.probe_u128_mul,\"ax\",@progbits",
+              "\t.globl\tprobe_u128_mul",
+              "\t.p2align\t2",
+              "\t.type\tprobe_u128_mul,@function"
+            ]
+          }
+        },
+        "obj_relocs": []
+      },
+      "riscv64gc-unknown-none-elf": {
+        "functions": {
+          "probe_u128_div": {
+            "llvm_calls": [
+              "_RNvNtNtCs39VJDtXfR5P_4core9panicking11panic_const23panic_const_div_by_zero"
+            ],
+            "asm_lines": [
+              "\taddi\tsp, sp, -16",
+              "\tsd\tra, 8(sp)",
+              "\tor\ta4, a2, a3",
+              "\tbeqz\ta4, .LBB1_2",
+              "\tcall\t__udivti3",
+              "\tld\tra, 8(sp)",
+              "\taddi\tsp, sp, 16",
+              "\tret",
+              ".LBB1_2:",
+              ".Lpcrel_hi2:",
+              "\tauipc\ta0, %pcrel_hi(.Lalloc_05012b0330ed3dafd5458f54fe55661c)",
+              "\taddi\ta0, a0, %pcrel_lo(.Lpcrel_hi2)",
+              "\tcall\t_RNvNtNtCs39VJDtXfR5P_4core9panicking11panic_const23panic_const_div_by_zero",
+              ".Lfunc_end1:",
+              "\t.size\tprobe_u128_div, .Lfunc_end1-probe_u128_div",
+              "",
+              "\t.section\t.text.probe_u128_lshr,\"ax\",@progbits",
+              "\t.globl\tprobe_u128_lshr",
+              "\t.p2align\t1",
+              "\t.type\tprobe_u128_lshr,@function"
+            ]
+          },
+          "probe_u128_rem": {
+            "llvm_calls": [
+              "_RNvNtNtCs39VJDtXfR5P_4core9panicking11panic_const23panic_const_rem_by_zero"
+            ],
+            "asm_lines": [
+              "\taddi\tsp, sp, -16",
+              "\tsd\tra, 8(sp)",
+              "\tor\ta4, a2, a3",
+              "\tbeqz\ta4, .LBB4_2",
+              "\tcall\t__umodti3",
+              "\tld\tra, 8(sp)",
+              "\taddi\tsp, sp, 16",
+              "\tret",
+              ".LBB4_2:",
+              ".Lpcrel_hi3:",
+              "\tauipc\ta0, %pcrel_hi(.Lalloc_11f5af166d15a5297b0d5bd4806f91b6)",
+              "\taddi\ta0, a0, %pcrel_lo(.Lpcrel_hi3)",
+              "\tcall\t_RNvNtNtCs39VJDtXfR5P_4core9panicking11panic_const23panic_const_rem_by_zero",
+              ".Lfunc_end4:",
+              "\t.size\tprobe_u128_rem, .Lfunc_end4-probe_u128_rem",
+              "",
+              "\t.section\t.text.probe_u128_shl,\"ax\",@progbits",
+              "\t.globl\tprobe_u128_shl",
+              "\t.p2align\t1",
+              "\t.type\tprobe_u128_shl,@function"
+            ]
+          },
+          "probe_i128_div": {
+            "llvm_calls": [
+              "_RNvNtNtCs39VJDtXfR5P_4core9panicking11panic_const23panic_const_div_by_zero",
+              "_RNvNtNtCs39VJDtXfR5P_4core9panicking11panic_const24panic_const_div_overflow"
+            ],
+            "asm_lines": [
+              "\taddi\tsp, sp, -16",
+              "\tsd\tra, 8(sp)",
+              "\tor\ta4, a2, a3",
+              "\tbeqz\ta4, .LBB0_4",
+              "\tli\ta4, -1",
+              "\tslli\ta5, a4, 63",
+              "\txor\ta5, a5, a1",
+              "\tor\ta5, a5, a0",
+              "\tbnez\ta5, .LBB0_3",
+              "\tand\ta5, a2, a3",
+              "\tbeq\ta5, a4, .LBB0_5",
+              ".LBB0_3:",
+              "\tcall\t__divti3",
+              "\tld\tra, 8(sp)",
+              "\taddi\tsp, sp, 16",
+              "\tret",
+              ".LBB0_4:",
+              ".Lpcrel_hi0:",
+              "\tauipc\ta0, %pcrel_hi(.Lalloc_6367bbd9a5a383e254c79e6dc3640c1f)",
+              "\taddi\ta0, a0, %pcrel_lo(.Lpcrel_hi0)",
+              "\tcall\t_RNvNtNtCs39VJDtXfR5P_4core9panicking11panic_const23panic_const_div_by_zero",
+              ".LBB0_5:",
+              ".Lpcrel_hi1:",
+              "\tauipc\ta0, %pcrel_hi(.Lalloc_6367bbd9a5a383e254c79e6dc3640c1f)",
+              "\taddi\ta0, a0, %pcrel_lo(.Lpcrel_hi1)",
+              "\tcall\t_RNvNtNtCs39VJDtXfR5P_4core9panicking11panic_const24panic_const_div_overflow",
+              ".Lfunc_end0:",
+              "\t.size\tprobe_i128_div, .Lfunc_end0-probe_i128_div"
+            ]
+          },
+          "probe_u128_mul": {
+            "llvm_calls": [],
+            "asm_lines": [
+              "\tmul\ta1, a2, a1",
+              "\tmulhu\ta4, a2, a0",
+              "\tmul\ta3, a3, a0",
+              "\tadd\ta1, a1, a4",
+              "\tadd\ta1, a1, a3",
+              "\tmul\ta0, a2, a0",
+              "\tret",
+              ".Lfunc_end3:",
+              "\t.size\tprobe_u128_mul, .Lfunc_end3-probe_u128_mul",
+              "",
+              "\t.section\t.text.probe_u128_rem,\"ax\",@progbits",
+              "\t.globl\tprobe_u128_rem",
+              "\t.p2align\t1",
+              "\t.type\tprobe_u128_rem,@function"
+            ]
+          },
+          "probe_u128_shl": {
+            "llvm_calls": [],
+            "asm_lines": [
+              "\tandi\ta4, a2, 127",
+              "\taddi\ta3, a4, -64",
+              "\tbltz\ta3, .LBB5_2",
+              "\tsll\ta1, a0, a4",
+              "\tj\t.LBB5_3",
+              ".LBB5_2:",
+              "\tsll\ta1, a1, a2",
+              "\tsrli\ta5, a0, 1",
+              "\tnot\ta4, a4",
+              "\tsrl\ta4, a5, a4",
+              "\tor\ta1, a1, a4",
+              ".LBB5_3:",
+              "\tsll\ta0, a0, a2",
+              "\tsrai\ta3, a3, 63",
+              "\tand\ta0, a0, a3",
+              "\tret",
+              ".Lfunc_end5:",
+              "\t.size\tprobe_u128_shl, .Lfunc_end5-probe_u128_shl",
+              "",
+              "\t.type\t.Lalloc_86b05032f75c758521011338135fe8b6,@object",
+              "\t.section\t.rodata.str1.1,\"aMS\",@progbits,1",
+              ".Lalloc_86b05032f75c758521011338135fe8b6:",
+              "\t.asciz\t\"package/support/specimens/builtins_128bit_ops.rs\"",
+              "\t.size\t.Lalloc_86b05032f75c758521011338135fe8b6, 49",
+              "",
+              "\t.type\t.Lalloc_6367bbd9a5a383e254c79e6dc3640c1f,@object",
+              "\t.section\t.rodata..Lalloc_6367bbd9a5a383e254c79e6dc3640c1f,\"a\",@progbits",
+              "\t.p2align\t3, 0x0"
+            ]
+          },
+          "probe_u128_lshr": {
+            "llvm_calls": [],
+            "asm_lines": [
+              "\tandi\ta4, a2, 127",
+              "\taddi\ta3, a4, -64",
+              "\tbltz\ta3, .LBB2_2",
+              "\tsrl\ta0, a1, a4",
+              "\tj\t.LBB2_3",
+              ".LBB2_2:",
+              "\tsrl\ta0, a0, a2",
+              "\tslli\ta5, a1, 1",
+              "\tnot\ta4, a4",
+              "\tsll\ta4, a5, a4",
+              "\tor\ta0, a0, a4",
+              ".LBB2_3:",
+              "\tsrl\ta1, a1, a2",
+              "\tsrai\ta3, a3, 63",
+              "\tand\ta1, a1, a3",
+              "\tret",
+              ".Lfunc_end2:",
+              "\t.size\tprobe_u128_lshr, .Lfunc_end2-probe_u128_lshr",
+              "",
+              "\t.section\t.text.probe_u128_mul,\"ax\",@progbits",
+              "\t.globl\tprobe_u128_mul",
+              "\t.p2align\t1",
+              "\t.type\tprobe_u128_mul,@function"
+            ]
+          }
+        },
+        "obj_relocs": []
+      }
+    },
+    "memcpy_loop_idiom": {
+      "without_no_builtins": {
+        "x86_64-unknown-linux-gnu": {
+          "memset_llvm_header": "define noundef ptr @memset(ptr noundef returned writeonly captures(address, ret: address, provenance) %s, i32 noundef %c, i64 noundef %n) unnamed_addr #3 personality ptr @rust_eh_personality {",
+          "memcpy_llvm_header": "define noundef ptr @memcpy(ptr noundef returned writeonly captures(ret: address, provenance) %dest, ptr noundef readonly captures(none) %src, i64 noundef %n) unnamed_addr #2 personality ptr @rust_eh_personality {",
+          "set_bytes_helper_llvm_header": "define internal fastcc void @_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins16set_bytes_helper(ptr noundef writeonly captures(address) %s, i8 noundef %c, i64 noundef %n) unnamed_addr #0 {",
+          "copy_forward_helper_llvm_header": "define internal fastcc void @_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins19copy_forward_helper(ptr noundef writeonly captures(none) %dest, ptr noundef readonly captures(none) %src) unnamed_addr #1 {",
+          "has_llvm_no_builtins_attr": false,
+          "has_helper_llvm_no_builtins_attr": false,
+          "resolved_attrs": {
+            "#0": "attributes #0 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_calls_llvm_memcpy": false,
+          "llvm_calls_llvm_memset": true,
+          "asm_self_recursive_memcpy": false,
+          "asm_self_recursive_memset": true,
+          "set_bytes_helper_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tleaq\t(%rdi,%rdx), %rax",
+            "\tcmpq\t%rax, %rdi",
+            "\tjae\t.LBB0_1",
+            "\tmovzbl\t%sil, %esi",
+            "\tjmpq\t*memset@GOTPCREL(%rip)",
+            ".LBB0_1:",
+            "\tretq",
+            ".Lfunc_end0:",
+            "\t.size\t_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins16set_bytes_helper, .Lfunc_end0-_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins16set_bytes_helper",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text._RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins19copy_forward_helper,\"ax\",@progbits",
+            "\t.p2align\t4",
+            "\t.type\t_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins19copy_forward_helper,@function"
+          ],
+          "copy_forward_helper_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tmovq\t%rdi, %rax",
+            "\tsubq\t%rsi, %rax",
+            "\tcmpq\t$32, %rax",
+            "\tjae\t.LBB1_1",
+            "\txorl\t%eax, %eax",
+            "\t.p2align\t4",
+            ".LBB1_5:",
+            "\tmovzbl\t(%rsi,%rax), %ecx",
+            "\tmovb\t%cl, (%rdi,%rax)",
+            "\tmovzbl\t1(%rsi,%rax), %ecx",
+            "\tmovb\t%cl, 1(%rdi,%rax)",
+            "\tmovzbl\t2(%rsi,%rax), %ecx",
+            "\tmovb\t%cl, 2(%rdi,%rax)",
+            "\tmovzbl\t3(%rsi,%rax), %ecx",
+            "\tmovb\t%cl, 3(%rdi,%rax)",
+            "\taddq\t$4, %rax",
+            "\tcmpq\t$4096, %rax",
+            "\tjne\t.LBB1_5",
+            "\tjmp\t.LBB1_3",
+            ".LBB1_1:",
+            "\txorl\t%eax, %eax",
+            "\t.p2align\t4",
+            ".LBB1_2:",
+            "\tmovups\t(%rsi,%rax), %xmm0"
+          ],
+          "memset_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tpushq\t%rbx",
+            "\t.cfi_def_cfa_offset 16",
+            "\t.cfi_offset %rbx, -16",
+            "\tmovq\t%rdi, %rbx",
+            "\tcallq\t_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins16set_bytes_helper",
+            "\tmovq\t%rbx, %rax",
+            "\tpopq\t%rbx",
+            "\t.cfi_def_cfa_offset 8",
+            "\tretq",
+            ".Lfunc_end3:",
+            "\t.size\tmemset, .Lfunc_end3-memset",
+            "\t.cfi_endproc",
+            "",
+            "\t.ident\t\"rustc version 1.98.0-nightly (14210df0e 2026-05-31)\""
+          ],
+          "memcpy_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tpushq\t%rbx",
+            "\t.cfi_def_cfa_offset 16",
+            "\t.cfi_offset %rbx, -16",
+            "\tmovq\t%rdi, %rbx",
+            "\tcallq\t_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins19copy_forward_helper",
+            "\tmovq\t%rbx, %rax",
+            "\tpopq\t%rbx",
+            "\t.cfi_def_cfa_offset 8",
+            "\tretq",
+            ".Lfunc_end2:",
+            "\t.size\tmemcpy, .Lfunc_end2-memcpy",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.memset,\"ax\",@progbits"
+          ]
+        },
+        "aarch64-unknown-linux-gnu": {
+          "memset_llvm_header": "define noundef ptr @memset(ptr noundef returned writeonly captures(address, ret: address, provenance) %s, i32 noundef %c, i64 noundef %n) unnamed_addr #3 personality ptr @rust_eh_personality {",
+          "memcpy_llvm_header": "define noundef ptr @memcpy(ptr noundef returned writeonly captures(ret: address, provenance) %dest, ptr noundef readonly captures(none) %src, i64 noundef %n) unnamed_addr #2 personality ptr @rust_eh_personality {",
+          "set_bytes_helper_llvm_header": "define internal fastcc void @_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins16set_bytes_helper(ptr noundef writeonly captures(address) %s, i8 noundef %c, i64 noundef %n) unnamed_addr #0 {",
+          "copy_forward_helper_llvm_header": "define internal fastcc void @_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins19copy_forward_helper(ptr noundef writeonly captures(none) %dest, ptr noundef readonly captures(none) %src) unnamed_addr #1 {",
+          "has_llvm_no_builtins_attr": false,
+          "has_helper_llvm_no_builtins_attr": false,
+          "resolved_attrs": {
+            "#0": "attributes #0 = { mustprogress nofree noinline norecurse nosync nounwind willreturn memory(argmem: write) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }"
+          },
+          "llvm_calls_llvm_memcpy": false,
+          "llvm_calls_llvm_memset": true,
+          "asm_self_recursive_memcpy": false,
+          "asm_self_recursive_memset": true,
+          "set_bytes_helper_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tadd\tx8, x0, x2",
+            "\tcmp\tx0, x8",
+            "\tb.hs\t.LBB0_2",
+            "\tb\tmemset",
+            ".LBB0_2:",
+            "\tret",
+            ".Lfunc_end0:",
+            "\t.size\t_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins16set_bytes_helper, .Lfunc_end0-_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins16set_bytes_helper",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text._RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins19copy_forward_helper,\"ax\",@progbits",
+            "\t.p2align\t2",
+            "\t.type\t_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins19copy_forward_helper,@function"
+          ],
+          "copy_forward_helper_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tsub\tx8, x0, x1",
+            "\tcmp\tx8, #32",
+            "\tb.hs\t.LBB1_3",
+            "\tmov\tx8, xzr",
+            ".LBB1_2:",
+            "\tldrb\tw9, [x1, x8]",
+            "\tstrb\tw9, [x0, x8]",
+            "\tadd\tx8, x8, #1",
+            "\tcmp\tx8, #1, lsl #12",
+            "\tb.ne\t.LBB1_2",
+            "\tb\t.LBB1_5",
+            ".LBB1_3:",
+            "\tadd\tx8, x0, #16",
+            "\tadd\tx9, x1, #16",
+            "\tmov\tw10, #4096",
+            ".LBB1_4:",
+            "\tldp\tq0, q1, [x9, #-16]",
+            "\tsubs\tx10, x10, #32",
+            "\tadd\tx9, x9, #32",
+            "\tstp\tq0, q1, [x8, #-16]",
+            "\tadd\tx8, x8, #32",
+            "\tb.ne\t.LBB1_4",
+            ".LBB1_5:",
+            "\tret"
+          ],
+          "memset_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tstp\tx29, x30, [sp, #-32]!",
+            "\t.cfi_def_cfa_offset 32",
+            "\tstr\tx19, [sp, #16]",
+            "\tmov\tx29, sp",
+            "\t.cfi_def_cfa w29, 32",
+            "\t.cfi_offset w19, -16",
+            "\t.cfi_offset w30, -24",
+            "\t.cfi_offset w29, -32",
+            "\tmov\tx19, x0",
+            "\tbl\t_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins16set_bytes_helper",
+            "\tmov\tx0, x19",
+            "\t.cfi_def_cfa wsp, 32",
+            "\tldr\tx19, [sp, #16]",
+            "\tldp\tx29, x30, [sp], #32"
+          ],
+          "memcpy_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tstp\tx29, x30, [sp, #-32]!",
+            "\t.cfi_def_cfa_offset 32",
+            "\tstr\tx19, [sp, #16]",
+            "\tmov\tx29, sp",
+            "\t.cfi_def_cfa w29, 32",
+            "\t.cfi_offset w19, -16",
+            "\t.cfi_offset w30, -24",
+            "\t.cfi_offset w29, -32",
+            "\tmov\tx19, x0",
+            "\tbl\t_RNvCsfuJ9zV4K5ME_26memcpy_without_no_builtins19copy_forward_helper",
+            "\tmov\tx0, x19",
+            "\t.cfi_def_cfa wsp, 32",
+            "\tldr\tx19, [sp, #16]",
+            "\tldp\tx29, x30, [sp], #32"
+          ]
+        }
+      },
+      "with_no_builtins": {
+        "x86_64-unknown-linux-gnu": {
+          "memset_llvm_header": "define noundef ptr @memset(ptr noundef returned writeonly captures(address, ret: address, provenance) %s, i32 noundef %c, i64 noundef %n) unnamed_addr #3 personality ptr @rust_eh_personality {",
+          "memcpy_llvm_header": "define noundef ptr @memcpy(ptr noundef returned writeonly captures(ret: address, provenance) %dest, ptr noundef readonly captures(none) %src, i64 noundef %n) unnamed_addr #2 personality ptr @rust_eh_personality {",
+          "set_bytes_helper_llvm_header": "define internal fastcc void @_RNvCs4ipYLFA0IKs_23memcpy_with_no_builtins16set_bytes_helper(ptr noundef writeonly captures(address) %s, i8 noundef %c, i64 noundef %n) unnamed_addr #0 {",
+          "copy_forward_helper_llvm_header": "define internal fastcc void @_RNvCs4ipYLFA0IKs_23memcpy_with_no_builtins19copy_forward_helper(ptr noundef writeonly captures(none) %dest, ptr noundef readonly captures(none) %src) unnamed_addr #1 {",
+          "has_llvm_no_builtins_attr": true,
+          "has_helper_llvm_no_builtins_attr": true,
+          "resolved_attrs": {
+            "#0": "attributes #0 = { nofree noinline norecurse nosync nounwind nonlazybind memory(argmem: write) uwtable \"no-builtins\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_calls_llvm_memcpy": false,
+          "llvm_calls_llvm_memset": false,
+          "asm_self_recursive_memcpy": false,
+          "asm_self_recursive_memset": false,
+          "set_bytes_helper_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tleaq\t(%rdi,%rdx), %rax",
+            "\tcmpq\t%rax, %rdi",
+            "\tjae\t.LBB0_7",
+            "\tcmpq\t$4, %rdx",
+            "\tjae\t.LBB0_2",
+            ".LBB0_13:",
+            "\tmovq\t%rdi, %r9",
+            "\tjmp\t.LBB0_14",
+            ".LBB0_2:",
+            "\tmovzbl\t%sil, %r8d",
+            "\tcmpq\t$32, %rdx",
+            "\tjae\t.LBB0_8",
+            "\txorl\t%ecx, %ecx",
+            "\tjmp\t.LBB0_4",
+            ".LBB0_8:",
+            "\tmovq\t%rdx, %rcx",
+            "\tandq\t$-32, %rcx",
+            "\tmovd\t%r8d, %xmm0",
+            "\tpunpcklbw\t%xmm0, %xmm0",
+            "\tpshuflw\t$0, %xmm0, %xmm0",
+            "\tpshufd\t$68, %xmm0, %xmm0",
+            "\txorl\t%r9d, %r9d",
+            "\t.p2align\t4",
+            ".LBB0_9:"
+          ],
+          "copy_forward_helper_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tmovq\t%rdi, %rax",
+            "\tsubq\t%rsi, %rax",
+            "\tcmpq\t$32, %rax",
+            "\tjae\t.LBB1_1",
+            "\txorl\t%eax, %eax",
+            "\t.p2align\t4",
+            ".LBB1_5:",
+            "\tmovzbl\t(%rsi,%rax), %ecx",
+            "\tmovb\t%cl, (%rdi,%rax)",
+            "\tmovzbl\t1(%rsi,%rax), %ecx",
+            "\tmovb\t%cl, 1(%rdi,%rax)",
+            "\tmovzbl\t2(%rsi,%rax), %ecx",
+            "\tmovb\t%cl, 2(%rdi,%rax)",
+            "\tmovzbl\t3(%rsi,%rax), %ecx",
+            "\tmovb\t%cl, 3(%rdi,%rax)",
+            "\taddq\t$4, %rax",
+            "\tcmpq\t$4096, %rax",
+            "\tjne\t.LBB1_5",
+            "\tjmp\t.LBB1_3",
+            ".LBB1_1:",
+            "\txorl\t%eax, %eax",
+            "\t.p2align\t4",
+            ".LBB1_2:",
+            "\tmovups\t(%rsi,%rax), %xmm0"
+          ],
+          "memset_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tpushq\t%rbx",
+            "\t.cfi_def_cfa_offset 16",
+            "\t.cfi_offset %rbx, -16",
+            "\tmovq\t%rdi, %rbx",
+            "\tcallq\t_RNvCs4ipYLFA0IKs_23memcpy_with_no_builtins16set_bytes_helper",
+            "\tmovq\t%rbx, %rax",
+            "\tpopq\t%rbx",
+            "\t.cfi_def_cfa_offset 8",
+            "\tretq",
+            ".Lfunc_end3:",
+            "\t.size\tmemset, .Lfunc_end3-memset",
+            "\t.cfi_endproc",
+            "",
+            "\t.ident\t\"rustc version 1.98.0-nightly (14210df0e 2026-05-31)\""
+          ],
+          "memcpy_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tpushq\t%rbx",
+            "\t.cfi_def_cfa_offset 16",
+            "\t.cfi_offset %rbx, -16",
+            "\tmovq\t%rdi, %rbx",
+            "\tcallq\t_RNvCs4ipYLFA0IKs_23memcpy_with_no_builtins19copy_forward_helper",
+            "\tmovq\t%rbx, %rax",
+            "\tpopq\t%rbx",
+            "\t.cfi_def_cfa_offset 8",
+            "\tretq",
+            ".Lfunc_end2:",
+            "\t.size\tmemcpy, .Lfunc_end2-memcpy",
+            "\t.cfi_endproc",
+            "",
+            "\t.section\t.text.memset,\"ax\",@progbits"
+          ]
+        },
+        "aarch64-unknown-linux-gnu": {
+          "memset_llvm_header": "define noundef ptr @memset(ptr noundef returned writeonly captures(address, ret: address, provenance) %s, i32 noundef %c, i64 noundef %n) unnamed_addr #3 personality ptr @rust_eh_personality {",
+          "memcpy_llvm_header": "define noundef ptr @memcpy(ptr noundef returned writeonly captures(ret: address, provenance) %dest, ptr noundef readonly captures(none) %src, i64 noundef %n) unnamed_addr #2 personality ptr @rust_eh_personality {",
+          "set_bytes_helper_llvm_header": "define internal fastcc void @_RNvCs4ipYLFA0IKs_23memcpy_with_no_builtins16set_bytes_helper(ptr noundef writeonly captures(address) %s, i8 noundef %c, i64 noundef %n) unnamed_addr #0 {",
+          "copy_forward_helper_llvm_header": "define internal fastcc void @_RNvCs4ipYLFA0IKs_23memcpy_with_no_builtins19copy_forward_helper(ptr noundef writeonly captures(none) %dest, ptr noundef readonly captures(none) %src) unnamed_addr #1 {",
+          "has_llvm_no_builtins_attr": true,
+          "has_helper_llvm_no_builtins_attr": true,
+          "resolved_attrs": {
+            "#0": "attributes #0 = { nofree noinline norecurse nosync nounwind memory(argmem: write) uwtable \"frame-pointer\"=\"non-leaf\" \"no-builtins\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }"
+          },
+          "llvm_calls_llvm_memcpy": false,
+          "llvm_calls_llvm_memset": false,
+          "asm_self_recursive_memcpy": false,
+          "asm_self_recursive_memset": false,
+          "set_bytes_helper_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tadd\tx8, x0, x2",
+            "\tcmp\tx0, x8",
+            "\tb.hs\t.LBB0_13",
+            "\tcmp\tx2, #8",
+            "\tb.hs\t.LBB0_3",
+            "\tmov\tx9, x0",
+            "\tb\t.LBB0_12",
+            ".LBB0_3:",
+            "\tcmp\tx2, #32",
+            "\tb.hs\t.LBB0_5",
+            "\tmov\tx10, xzr",
+            "\tb\t.LBB0_9",
+            ".LBB0_5:",
+            "\tdup\tv0.16b, w1",
+            "\tand\tx9, x2, #0x18",
+            "\tand\tx10, x2, #0xffffffffffffffe0",
+            "\tadd\tx11, x0, #16",
+            "\tand\tx12, x2, #0xffffffffffffffe0",
+            ".LBB0_6:",
+            "\tsubs\tx12, x12, #32",
+            "\tstp\tq0, q0, [x11, #-16]",
+            "\tadd\tx11, x11, #32",
+            "\tb.ne\t.LBB0_6",
+            "\tcmp\tx2, x10"
+          ],
+          "copy_forward_helper_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tsub\tx8, x0, x1",
+            "\tcmp\tx8, #32",
+            "\tb.hs\t.LBB1_3",
+            "\tmov\tx8, xzr",
+            ".LBB1_2:",
+            "\tldrb\tw9, [x1, x8]",
+            "\tstrb\tw9, [x0, x8]",
+            "\tadd\tx8, x8, #1",
+            "\tcmp\tx8, #1, lsl #12",
+            "\tb.ne\t.LBB1_2",
+            "\tb\t.LBB1_5",
+            ".LBB1_3:",
+            "\tadd\tx8, x0, #16",
+            "\tadd\tx9, x1, #16",
+            "\tmov\tw10, #4096",
+            ".LBB1_4:",
+            "\tldp\tq0, q1, [x9, #-16]",
+            "\tsubs\tx10, x10, #32",
+            "\tadd\tx9, x9, #32",
+            "\tstp\tq0, q1, [x8, #-16]",
+            "\tadd\tx8, x8, #32",
+            "\tb.ne\t.LBB1_4",
+            ".LBB1_5:",
+            "\tret"
+          ],
+          "memset_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tstp\tx29, x30, [sp, #-32]!",
+            "\t.cfi_def_cfa_offset 32",
+            "\tstr\tx19, [sp, #16]",
+            "\tmov\tx29, sp",
+            "\t.cfi_def_cfa w29, 32",
+            "\t.cfi_offset w19, -16",
+            "\t.cfi_offset w30, -24",
+            "\t.cfi_offset w29, -32",
+            "\tmov\tx19, x0",
+            "\tbl\t_RNvCs4ipYLFA0IKs_23memcpy_with_no_builtins16set_bytes_helper",
+            "\tmov\tx0, x19",
+            "\t.cfi_def_cfa wsp, 32",
+            "\tldr\tx19, [sp, #16]",
+            "\tldp\tx29, x30, [sp], #32"
+          ],
+          "memcpy_asm_excerpt": [
+            "\t.cfi_startproc",
+            "\tstp\tx29, x30, [sp, #-32]!",
+            "\t.cfi_def_cfa_offset 32",
+            "\tstr\tx19, [sp, #16]",
+            "\tmov\tx29, sp",
+            "\t.cfi_def_cfa w29, 32",
+            "\t.cfi_offset w19, -16",
+            "\t.cfi_offset w30, -24",
+            "\t.cfi_offset w29, -32",
+            "\tmov\tx19, x0",
+            "\tbl\t_RNvCs4ipYLFA0IKs_23memcpy_with_no_builtins19copy_forward_helper",
+            "\tmov\tx0, x19",
+            "\t.cfi_def_cfa wsp, 32",
+            "\tldr\tx19, [sp, #16]",
+            "\tldp\tx29, x30, [sp], #32"
+          ]
+        }
+      }
+    }
+  }
+}
