@@ -1,0 +1,195 @@
+{
+  "rustc_vv": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_available": true,
+  "specimen_sha256": {
+    "divergent_const_eval_select_and_ivsk_hazards.rs": "d5bdcebd51e75ff904e1d6dd0218a70267156365266b9aa5a559b5485423d7c8",
+    "gvn_ctfe_boundary_and_statically_known.rs": "6b44df7dd3063b52d9ad295951fa90a9e4b28516a89f88c80fad1dfef215528b",
+    "mir_const_forms_and_promotion.rs": "ceec62b9ada4818ba09c3c25b708b1cbbcb4df69c7013bc694bad8f9cb4686f6",
+    "miri_standalone_runtime_vs_ctfe.rs": "9839a9003f0af328535d55ed65a06094f6504c58506e14888a0e26b070a751ea",
+    "negative_ctfe_and_pme_cases.rs": "faa73f81f227b779f974746971f4d03ead0ad1bee6d933e17b5396003c4a42be",
+    "unsafecell_interning_and_rodata.rs": "95ef8838fb40147409b03ebec52242802f7e05c96a583fd05efedb9d1f3d2e38"
+  },
+  "passed_checks": 21,
+  "total_checks": 21,
+  "all_passed": true,
+  "checks": [
+    {
+      "name": "s1::compile_and_run_o0_o3_parity",
+      "passed": true,
+      "detail": {
+        "stdout_o0": "TRIVIAL=42 COMPUTED=55 INLINE=21 GENERIC=29 PROM=145 CT_SUM=55 RT_SUM=55",
+        "stdout_o3": "TRIVIAL=42 COMPUTED=55 INLINE=21 GENERIC=29 PROM=145 CT_SUM=55 RT_SUM=55"
+      }
+    },
+    {
+      "name": "s1::postcleanup_preserves_const_eval_select_both_arms",
+      "passed": true,
+      "detail": "both sum_bytes_ct and sum_bytes_rt present in Runtime(PostCleanup)"
+    },
+    {
+      "name": "s1::mir_for_ctfe_remaps_to_const_arm_with_ctfe_limit",
+      "passed": true,
+      "detail": "mir_for_ctfe calls sum_bytes_ct directly and injects ConstEvalCounter in loops"
+    },
+    {
+      "name": "s1::runtime_optimized_remaps_to_rt_arm_even_at_o0",
+      "passed": true,
+      "detail": "remap_mir_for_const_eval_select(NotConst) runs unconditionally before mir-opt passes"
+    },
+    {
+      "name": "s1::implicit_promotion_emits_two_promoted_bodies_and_skips_fallible_dead_div",
+      "passed": true,
+      "detail": {
+        "promoted_0_and_1_in_mir": true,
+        "promoted_dump_files": [
+          "mir_const_forms_and_promotion.promoted_and_unpromoted_borrows-promoted[0].3-2-000.runtime-post-cleanup.after.mir",
+          "mir_const_forms_and_promotion.promoted_and_unpromoted_borrows-promoted[1].3-2-000.runtime-post-cleanup.after.mir"
+        ]
+      }
+    },
+    {
+      "name": "s1::polymorphic_unevaluated_const_persists_while_inline_const_folds_at_o3",
+      "passed": true,
+      "detail": "T::LIMIT stays Const::Unevaluated in polymorphic MIR while monomorphic inline const { 10 } folds at -O3"
+    },
+    {
+      "name": "s2::guaranteed_eq_static_vs_const_memory_in_ctfe",
+      "passed": true,
+      "detail": {
+        "STATIC_SAME": "Some(true)",
+        "STATIC_DIFF": "Some(false)",
+        "CONST_MEM_EQ": "None"
+      }
+    },
+    {
+      "name": "s2::is_val_statically_known_flips_0_to_1_between_o0_and_o3_after_inlining",
+      "passed": true,
+      "detail": {
+        "ctfe": "false",
+        "o0_const_arg": "0",
+        "o3_const_arg": "1",
+        "o0_opaque_arg": "0",
+        "o3_opaque_arg": "0",
+        "o3_non_immediate_array": "false"
+      }
+    },
+    {
+      "name": "s2::mir_gvn_folds_scalar_unevaluated_const_but_preserves_ptr_expose_provenance",
+      "passed": true,
+      "detail": "GVN folds `const { 6 * 7 } + 9` -> `const 51_u64` while keeping PointerExposeProvenance symbolic"
+    },
+    {
+      "name": "s2::llvm_ir_emits_llvm_is_constant_at_o0_and_folds_away_at_o3",
+      "passed": true,
+      "detail": {
+        "o0_has_llvm_is_constant": true,
+        "o3_calls_llvm_is_constant": false
+      }
+    },
+    {
+      "name": "s3::frozen_static_is_llvm_constant_while_unsafecell_static_is_mutable_global",
+      "passed": true,
+      "detail": {
+        "frozen_decl": [
+          "@_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata13FROZEN_STATIC = internal constant [8 x i8] c\"\\88wfUD3\\22\\11\", align 8",
+          "@llvm.used = appending global [2 x ptr] [ptr @_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata13FROZEN_STATIC, ptr @_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata19INTERIOR_MUT_STATIC], section \"llvm.metadata\""
+        ],
+        "interior_mut_decl": [
+          "@_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata19INTERIOR_MUT_STATIC = internal global [8 x i8] c\"\\AAU\\AAU\\00\\00\\00\\00\", align 8",
+          "@llvm.used = appending global [2 x ptr] [ptr @_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata13FROZEN_STATIC, ptr @_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata19INTERIOR_MUT_STATIC], section \"llvm.metadata\""
+        ]
+      }
+    },
+    {
+      "name": "s3::const_unsafecell_not_promoted_and_fresh_per_use_plus_zst_cell_ref",
+      "passed": true,
+      "detail": {
+        "stdout": "FRESH_SUM=200 TEMP_MUT=777 BIG_CHECK=406 STATIC_NOW=1234",
+        "exercise_const_cells_promoted_count": 0
+      }
+    },
+    {
+      "name": "s4::unsound_const_eval_select_diverges_between_ctfe_and_runtime_without_error",
+      "passed": true,
+      "detail": {
+        "CE1_CT": "0",
+        "CE1_RT": "1"
+      }
+    },
+    {
+      "name": "s4::non_invariant_ivsk_violates_o0_vs_o3_refinement",
+      "passed": true,
+      "detail": {
+        "O0_CE3_IVSK": "200",
+        "O3_CE3_IVSK": "100"
+      }
+    },
+    {
+      "name": "s5::const_check_and_ctfe_reject_ptr_to_int_cast_and_ptr_byte_load",
+      "passed": true,
+      "detail": {
+        "cast_err": "error: pointers cannot be cast to integers during const eval",
+        "read_ptr_as_int_err": "error[E0080]: unable to turn pointer into integer"
+      }
+    },
+    {
+      "name": "s5::const_check_rejects_raw_pointer_relational_comparison",
+      "passed": true,
+      "detail": "error: pointers cannot be reliably compared during const eval"
+    },
+    {
+      "name": "s5::ctfe_validation_rejects_inner_unsafecell_behind_const_ref",
+      "passed": true,
+      "detail": "error[E0080]: constructing invalid value of type &Cell<u32>: at .<deref>.value, encountered `UnsafeCell` in read-only memory"
+    },
+    {
+      "name": "s5::uninstantiated_failing_assoc_const_succeeds_until_monomorphized_even_in_dead_branch",
+      "passed": true,
+      "detail": {
+        "u32_only_rc": 0,
+        "u64_in_if_false_o0": "error[E0080]: evaluation panicked: PME: T exceeds 4 bytes",
+        "u64_in_if_false_o3": "error[E0080]: evaluation panicked: PME: T exceeds 4 bytes",
+        "inline_const_in_if_false_o3": "error[E0080]: attempt to divide `1_u32` by zero"
+      }
+    },
+    {
+      "name": "s6::miri_permissive_executes_ptr_roundtrip_ces_divergence_and_nondet_ivsk_across_seeds",
+      "passed": true,
+      "detail": {
+        "seed0_exit_code_ivsk_true": 11,
+        "seed1_exit_code_ivsk_false": 10,
+        "warning_present": true
+      }
+    },
+    {
+      "name": "s6::miri_strict_provenance_rejects_int_to_ptr_and_catches_rodata_unsafecell_write_ub",
+      "passed": true,
+      "detail": {
+        "strict_provenance_first_err": "error: unsupported operation: integer-to-pointer casts and `ptr::with_exposed_provenance` are not supported with `-Zmiri-strict-provenance`",
+        "rodata_write_first_err": "error: Undefined Behavior: writing to alloc4 which is read-only"
+      }
+    },
+    {
+      "name": "census::sysroot_const_eval_select_32_sites_and_ivsk_sites_classified",
+      "passed": true,
+      "detail": {
+        "const_eval_select_total": 32,
+        "const_eval_select_by_crate": {
+          "alloc": 5,
+          "core": 26,
+          "stdarch": 1
+        },
+        "const_eval_select_by_class": {
+          "class_a_algorithmic_and_provenance_refinement": 7,
+          "class_b_ub_and_safety_guard": 11,
+          "class_c_contract_and_miri_hook": 3,
+          "class_d_diverging_panic_and_error": 4,
+          "class_e_const_heap_allocator": 4,
+          "class_f_simd_test_harness": 1,
+          "macro_definition": 2
+        },
+        "is_val_statically_known_total": 7
+      }
+    }
+  ]
+}

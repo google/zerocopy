@@ -1,0 +1,594 @@
+=== sum_dispatch (Runtime(PostCleanup)) ===
+// MIR for `sum_dispatch` after runtime-post-cleanup
+
+fn sum_dispatch(_1: &[u8]) -> u64 {
+    debug bytes => _1;
+    let mut _0: u64;
+    let mut _2: (*const u8, usize);
+    let mut _3: *const u8;
+    let mut _4: &[u8];
+    let mut _5: usize;
+    let mut _6: &[u8];
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = core::slice::<impl [u8]>::as_ptr(move _4) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = &(*_1);
+        _5 = core::slice::<impl [u8]>::len(move _6) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_6);
+        _2 = (move _3, move _5);
+        StorageDead(_5);
+        StorageDead(_3);
+        _0 = const_eval_select::<(*const u8, usize), fn(*const u8, usize) -> u64 {sum_bytes_ct}, fn(*const u8, usize) -> u64 {sum_bytes_rt}, u64>(move _2, sum_bytes_ct, sum_bytes_rt) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        StorageDead(_2);
+        return;
+    }
+}
+
+=== sum_dispatch (mir_for_ctfe after CtfeLimit) ===
+// MIR for `sum_dispatch` after CtfeLimit
+
+fn sum_dispatch(_1: &[u8]) -> u64 {
+    debug bytes => _1;
+    let mut _0: u64;
+    let mut _2: (*const u8, usize);
+    let mut _3: *const u8;
+    let mut _4: &[u8];
+    let mut _5: usize;
+    let mut _6: &[u8];
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        ConstEvalCounter;
+        _3 = core::slice::<impl [u8]>::as_ptr(move _4) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = &(*_1);
+        ConstEvalCounter;
+        _5 = core::slice::<impl [u8]>::len(move _6) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_6);
+        _2 = (move _3, move _5);
+        StorageDead(_5);
+        StorageDead(_3);
+        ConstEvalCounter;
+        _0 = sum_bytes_ct(move (_2.0: *const u8), move (_2.1: usize)) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        StorageDead(_2);
+        return;
+    }
+}
+
+=== sum_dispatch (Runtime(Optimized) at -O0) ===
+// MIR for `sum_dispatch` after runtime-optimized
+
+fn sum_dispatch(_1: &[u8]) -> u64 {
+    debug bytes => _1;
+    let mut _0: u64;
+    let mut _2: (*const u8, usize);
+    let mut _3: *const u8;
+    let mut _4: usize;
+
+    bb0: {
+        _3 = core::slice::<impl [u8]>::as_ptr(copy _1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _4 = PtrMetadata(copy _1);
+        _2 = (move _3, move _4);
+        _0 = sum_bytes_rt(move (_2.0: *const u8), move (_2.1: usize)) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        return;
+    }
+}
+
+=== generic_unevaluated (Runtime(PostCleanup)) ===
+// MIR for `generic_unevaluated` after runtime-post-cleanup
+
+fn generic_unevaluated(_1: u8) -> usize {
+    debug seed => _1;
+    let mut _0: usize;
+    let _2: [u8; N];
+    let mut _3: u8;
+    let mut _5: usize;
+    let mut _6: usize;
+    let mut _7: (usize, bool);
+    let mut _8: usize;
+    let mut _9: usize;
+    let mut _10: &[u8];
+    let mut _11: &[u8; N];
+    let mut _12: usize;
+    let mut _13: u8;
+    let _14: usize;
+    let mut _15: bool;
+    let mut _16: (usize, bool);
+    scope 1 {
+        debug arr => _2;
+        let _4: usize;
+        scope 2 {
+            debug inline_bump => _4;
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = copy _1;
+        _2 = [move _3; N];
+        StorageDead(_3);
+        StorageLive(_4);
+        _4 = const generic_unevaluated::<T, N>::{constant#1};
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = copy _4;
+        _7 = AddWithOverflow(const <T as Cap>::LIMIT, copy _6);
+        assert(!move (_7.1: bool), "attempt to compute `{} + {}`, which would overflow", const <T as Cap>::LIMIT, move _6) -> [success: bb1, unwind continue];
+    }
+
+    bb1: {
+        _5 = move (_7.0: usize);
+        StorageDead(_6);
+        StorageLive(_8);
+        StorageLive(_9);
+        StorageLive(_10);
+        StorageLive(_11);
+        _11 = &_2;
+        _10 = move _11 as &[u8] (PointerCoercion(Unsize, Implicit));
+        StorageDead(_11);
+        _9 = core::slice::<impl [u8]>::len(move _10) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_10);
+        StorageLive(_12);
+        StorageLive(_13);
+        StorageLive(_14);
+        _14 = const 0_usize;
+        _15 = Lt(copy _14, const N);
+        assert(move _15, "index out of bounds: the length is {} but the index is {}", const N, copy _14) -> [success: bb3, unwind continue];
+    }
+
+    bb3: {
+        _13 = copy _2[_14];
+        _12 = move _13 as usize (IntToInt);
+        StorageDead(_13);
+        _8 = BitXor(move _9, move _12);
+        StorageDead(_12);
+        StorageDead(_9);
+        _16 = AddWithOverflow(copy _5, copy _8);
+        assert(!move (_16.1: bool), "attempt to compute `{} + {}`, which would overflow", move _5, move _8) -> [success: bb4, unwind continue];
+    }
+
+    bb4: {
+        _0 = move (_16.0: usize);
+        StorageDead(_8);
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageDead(_2);
+        StorageDead(_14);
+        return;
+    }
+}
+
+=== generic_unevaluated (Runtime(Optimized) at -O3) ===
+// MIR for `generic_unevaluated` after runtime-optimized
+
+fn generic_unevaluated(_1: u8) -> usize {
+    debug seed => _1;
+    let mut _0: usize;
+    let _2: [u8; N];
+    let mut _3: usize;
+    let mut _4: usize;
+    let mut _5: usize;
+    let mut _6: bool;
+    scope 1 {
+        debug arr => _2;
+        scope 2 {
+            debug inline_bump => const 10_usize;
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = [copy _1; N];
+        StorageLive(_3);
+        _3 = Add(const <T as Cap>::LIMIT, const 10_usize);
+        StorageLive(_4);
+        StorageLive(_5);
+        _6 = Lt(const 0_usize, const N);
+        assert(move _6, "index out of bounds: the length is {} but the index is {}", const N, const 0_usize) -> [success: bb1, unwind continue];
+    }
+
+    bb1: {
+        _5 = copy _1 as usize (IntToInt);
+        _4 = BitXor(const N, move _5);
+        StorageDead(_5);
+        _0 = Add(move _3, move _4);
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+=== promoted_and_unpromoted_borrows (Runtime(PostCleanup)) ===
+// MIR for `promoted_and_unpromoted_borrows` after runtime-post-cleanup
+
+fn promoted_and_unpromoted_borrows(_1: u32, _2: bool) -> u32 {
+    debug divisor => _1;
+    debug dead_flag => _2;
+    let mut _0: u32;
+    let _3: &[u32; 3];
+    let _4: &[u32; 3];
+    let _5: [u32; 3];
+    let mut _7: &mut [u32; 0];
+    let mut _8: [u32; 0];
+    let _10: [u32; 1];
+    let mut _11: u32;
+    let mut _12: u32;
+    let _13: ();
+    let mut _14: bool;
+    let _16: u32;
+    let mut _17: bool;
+    let mut _18: u32;
+    let mut _19: u32;
+    let mut _20: u32;
+    let _21: usize;
+    let mut _22: bool;
+    let mut _23: u32;
+    let _24: usize;
+    let mut _25: bool;
+    let mut _26: (u32, bool);
+    let mut _27: u32;
+    let mut _28: usize;
+    let mut _29: &[u32];
+    let mut _30: &[u32; 0];
+    let mut _31: (u32, bool);
+    let mut _32: u32;
+    let _33: usize;
+    let mut _34: bool;
+    let mut _35: (u32, bool);
+    let mut _37: &[u32; 3];
+    scope 1 {
+        debug prom_slice => _3;
+        let _6: &mut [u32; 0];
+        let mut _36: &mut [u32; 0];
+        scope 2 {
+            debug prom_empty_mut => _6;
+            let _9: &[u32; 1];
+            scope 3 {
+                debug unprom_runtime => _9;
+                let _15: &u32;
+                scope 4 {
+                    debug _dead_ref => _15;
+                }
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _37 = const promoted_and_unpromoted_borrows::promoted[1];
+        _4 = &(*_37);
+        _3 = &(*_4);
+        StorageDead(_4);
+        StorageLive(_6);
+        StorageLive(_7);
+        _36 = const promoted_and_unpromoted_borrows::promoted[0];
+        _7 = &mut (*_36);
+        _6 = &mut (*_7);
+        StorageDead(_7);
+        StorageLive(_9);
+        StorageLive(_10);
+        StorageLive(_11);
+        StorageLive(_12);
+        _12 = copy _1;
+        _11 = core::num::<impl u32>::wrapping_add(const 100_u32, move _12) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_12);
+        _10 = [move _11];
+        StorageDead(_11);
+        _9 = &_10;
+        StorageLive(_13);
+        StorageLive(_14);
+        _14 = copy _2;
+        switchInt(move _14) -> [0: bb4, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageLive(_15);
+        StorageLive(_16);
+        _17 = Eq(const 0_u32, const 0_u32);
+        assert(!move _17, "attempt to divide `{}` by zero", const 1_u32) -> [success: bb3, unwind continue];
+    }
+
+    bb3: {
+        _16 = Div(const 1_u32, const 0_u32);
+        _15 = &_16;
+        _13 = const ();
+        StorageDead(_16);
+        StorageDead(_15);
+        goto -> bb5;
+    }
+
+    bb4: {
+        _13 = const ();
+        goto -> bb5;
+    }
+
+    bb5: {
+        StorageDead(_14);
+        StorageDead(_13);
+        StorageLive(_18);
+        StorageLive(_19);
+        StorageLive(_20);
+        StorageLive(_21);
+        _21 = const 0_usize;
+        _22 = Lt(copy _21, const 3_usize);
+        assert(move _22, "index out of bounds: the length is {} but the index is {}", const 3_usize, copy _21) -> [success: bb6, unwind continue];
+    }
+
+    bb6: {
+        _20 = copy (*_3)[_21];
+        StorageLive(_23);
+        StorageLive(_24);
+        _24 = const 2_usize;
+        _25 = Lt(copy _24, const 3_usize);
+        assert(move _25, "index out of bounds: the length is {} but the index is {}", const 3_usize, copy _24) -> [success: bb7, unwind continue];
+    }
+
+    bb7: {
+        _23 = copy (*_3)[_24];
+        _26 = AddWithOverflow(copy _20, copy _23);
+        assert(!move (_26.1: bool), "attempt to compute `{} + {}`, which would overflow", move _20, move _23) -> [success: bb8, unwind continue];
+    }
+
+    bb8: {
+        _19 = move (_26.0: u32);
+        StorageDead(_23);
+        StorageDead(_20);
+        StorageLive(_27);
+        StorageLive(_28);
+        StorageLive(_29);
+        StorageLive(_30);
+        _30 = &(*_6);
+        _29 = move _30 as &[u32] (PointerCoercion(Unsize, Implicit));
+        StorageDead(_30);
+        _28 = core::slice::<impl [u32]>::len(move _29) -> [return: bb9, unwind continue];
+    }
+
+    bb9: {
+        StorageDead(_29);
+        _27 = move _28 as u32 (IntToInt);
+        StorageDead(_28);
+        _31 = AddWithOverflow(copy _19, copy _27);
+        assert(!move (_31.1: bool), "attempt to compute `{} + {}`, which would overflow", move _19, move _27) -> [success: bb10, unwind continue];
+    }
+
+    bb10: {
+        _18 = move (_31.0: u32);
+        StorageDead(_27);
+        StorageDead(_19);
+        StorageLive(_32);
+        StorageLive(_33);
+        _33 = const 0_usize;
+        _34 = Lt(copy _33, const 1_usize);
+        assert(move _34, "index out of bounds: the length is {} but the index is {}", const 1_usize, copy _33) -> [success: bb11, unwind continue];
+    }
+
+    bb11: {
+        _32 = copy (*_9)[_33];
+        _35 = AddWithOverflow(copy _18, copy _32);
+        assert(!move (_35.1: bool), "attempt to compute `{} + {}`, which would overflow", move _18, move _32) -> [success: bb12, unwind continue];
+    }
+
+    bb12: {
+        _0 = move (_35.0: u32);
+        StorageDead(_32);
+        StorageDead(_18);
+        StorageDead(_10);
+        StorageDead(_9);
+        StorageDead(_6);
+        StorageDead(_3);
+        StorageDead(_33);
+        StorageDead(_24);
+        StorageDead(_21);
+        return;
+    }
+}
+
+=== gvn_scalar_vs_ptr_probe (after GVN at -O3) ===
+// MIR for `gvn_scalar_vs_ptr_probe` after GVN
+
+fn gvn_scalar_vs_ptr_probe(_1: u64) -> (u64, bool, usize) {
+    debug x => _1;
+    let mut _0: (u64, bool, usize);
+    let _2: u64;
+    let mut _4: u64;
+    let mut _6: u64;
+    let mut _9: *const u64;
+    let mut _11: usize;
+    let mut _14: usize;
+    let mut _15: *const u64;
+    let _16: &u64;
+    let mut _17: usize;
+    let mut _18: *const u64;
+    let _19: &u64;
+    let mut _20: u64;
+    let mut _21: u64;
+    let mut _22: u64;
+    let mut _23: u64;
+    let mut _24: u64;
+    let mut _25: bool;
+    let mut _26: usize;
+    let mut _27: usize;
+    let mut _28: u64;
+    scope 1 {
+        debug c => _2;
+        let _3: u64;
+        scope 2 {
+            debug folded_scalar => _3;
+            let _5: u64;
+            scope 3 {
+                debug local_val => _5;
+                let _7: *const u64;
+                scope 4 {
+                    debug raw => _7;
+                    let _8: usize;
+                    scope 5 {
+                        debug exposed_addr => _8;
+                        let _10: *const u64;
+                        scope 6 {
+                            debug roundtrip => _10;
+                            let _12: u64;
+                            scope 7 {
+                                debug rt_read => _12;
+                                let _13: bool;
+                                scope 8 {
+                                    debug cross_cmp => _13;
+                                }
+                            }
+                        }
+                        scope 12 (inlined std::ptr::with_exposed_provenance::<u64>) {
+                        }
+                    }
+                    scope 10 (inlined std::ptr::const_ptr::<impl *const u64>::expose_provenance) {
+                        let mut _29: *const ();
+                        scope 11 (inlined std::ptr::const_ptr::<impl *const u64>::cast::<()>) {
+                        }
+                    }
+                }
+            }
+            scope 9 (inlined core::num::<impl u64>::wrapping_add) {
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = const 42_u64;
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = const 42_u64;
+        _3 = const 51_u64;
+        StorageDead(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = copy _1;
+        StorageLive(_28);
+        _28 = const 1_u64;
+        _5 = Add(copy _1, const 1_u64);
+        StorageDead(_28);
+        StorageDead(_6);
+        StorageLive(_7);
+        _7 = &raw const _5;
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = copy _7;
+        StorageLive(_29);
+        _29 = copy _7 as *const () (PtrToPtr);
+        _8 = copy _29 as usize (PointerExposeProvenance);
+        StorageDead(_29);
+        StorageDead(_9);
+        StorageLive(_10);
+        StorageLive(_11);
+        _11 = copy _8;
+        _10 = copy _8 as *const u64 (PointerWithExposedProvenance);
+        StorageDead(_11);
+        StorageLive(_12);
+        _12 = copy (*_10);
+        StorageLive(_13);
+        StorageLive(_14);
+        StorageLive(_15);
+        StorageLive(_16);
+        _16 = const {alloc1: &u64};
+        _15 = &raw const (*_16);
+        _14 = copy _15 as usize (PointerExposeProvenance);
+        StorageDead(_15);
+        StorageLive(_17);
+        StorageLive(_18);
+        StorageLive(_19);
+        _19 = const {alloc2: &u64};
+        _18 = &raw const (*_19);
+        _17 = copy _18 as usize (PointerExposeProvenance);
+        StorageDead(_18);
+        _13 = Ne(move _14, move _17);
+        StorageDead(_17);
+        StorageDead(_14);
+        StorageDead(_19);
+        StorageDead(_16);
+        StorageLive(_20);
+        StorageLive(_21);
+        StorageLive(_22);
+        _22 = const 51_u64;
+        StorageLive(_23);
+        _23 = copy _12;
+        _21 = Add(const 51_u64, copy _12);
+        StorageDead(_23);
+        StorageDead(_22);
+        StorageLive(_24);
+        _24 = copy _5;
+        _20 = Sub(move _21, move _24);
+        StorageDead(_24);
+        StorageDead(_21);
+        StorageLive(_25);
+        _25 = copy _13;
+        StorageLive(_26);
+        StorageLive(_27);
+        _27 = copy _8;
+        _26 = const 0_usize;
+        StorageDead(_27);
+        _0 = (move _20, copy _13, const 0_usize);
+        StorageDead(_26);
+        StorageDead(_25);
+        StorageDead(_20);
+        StorageDead(_13);
+        StorageDead(_12);
+        StorageDead(_10);
+        StorageDead(_8);
+        StorageDead(_7);
+        StorageDead(_5);
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+alloc2 (static: STATIC_B, size: 8, align: 8) {
+    de 00 00 00 00 00 00 00                         │ ........
+}
+
+alloc1 (static: STATIC_A, size: 8, align: 8) {
+    6f 00 00 00 00 00 00 00                         │ o.......
+}

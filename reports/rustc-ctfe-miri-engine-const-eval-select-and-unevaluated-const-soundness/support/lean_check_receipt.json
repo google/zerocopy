@@ -1,0 +1,45 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "file": "support/CtfeAndConstEvalSelectSoundness.lean",
+  "sha256": "b22b63585333eee33ea63bbbb31ad39cf6690fd89cea3bd7916974ad176b3d6d",
+  "line_count": 1668,
+  "flags": [
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "wall_clock_sec": 6.9807,
+  "max_rss_kib": 590936,
+  "source_banned_token_counts": {
+    "sorry": 0,
+    "omega": 0,
+    "bv_decide": 0,
+    "native_decide": 0,
+    "Classical.choice": 0,
+    "partial_def": 0,
+    "unsafe_def": 0,
+    "user_axiom": 0,
+    "user_opaque": 0
+  },
+  "kernel_environment_stats": {
+    "namespace_constants": 568,
+    "is_unsafe": 0,
+    "is_partial": 0,
+    "unsafe_rec_helpers": 0,
+    "user_axioms": 0
+  },
+  "theorem_axiom_footprints": [
+    "'CtfeAndConstEvalSelectSoundness.ctfe_guaranteed_ptr_eq_sound' depends on axioms: [propext]",
+    "'CtfeAndConstEvalSelectSoundness.const_memory_guaranteed_eq_indeterminate_necessary' depends on axioms: [propext]",
+    "'CtfeAndConstEvalSelectSoundness.static_unsafecell_interned_writable' does not depend on any axioms",
+    "'CtfeAndConstEvalSelectSoundness.ctfeEval_preserves_validLayout' depends on axioms: [propext]",
+    "'CtfeAndConstEvalSelectSoundness.constEvalSelect_contextual_helper_sound' depends on axioms: [propext]",
+    "'CtfeAndConstEvalSelectSoundness.ctfe_eval_refines_rt_eval' depends on axioms: [propext]",
+    "'CtfeAndConstEvalSelectSoundness.ctfe_to_runtime_substitution_sound' depends on axioms: [propext]",
+    "'CtfeAndConstEvalSelectSoundness.ce1_unsound_const_eval_select_breaks_gvn_confluence' depends on axioms: [propext]",
+    "'CtfeAndConstEvalSelectSoundness.ce2_unsafecell_rodata_interning_ub_and_aliasing' depends on axioms: [propext]",
+    "'CtfeAndConstEvalSelectSoundness.ce3_non_invariant_ivsk_breaks_opt_refinement' depends on axioms: [propext]"
+  ],
+  "forbidden_axioms_present": false,
+  "all_checks_passed": true
+}

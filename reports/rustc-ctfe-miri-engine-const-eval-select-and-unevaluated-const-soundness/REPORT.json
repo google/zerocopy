@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/const-eval",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (rustc 1.98.0-nightly 2026-05-31: CompileTimeMachine, Miri EvalContext, interning/validity, promote_consts, MIR GVN, const_eval_select, and is_val_statically_known)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.99.1 2026-10-13: sysroot const_eval_select and is_val_statically_known comparison snapshot)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1 (58cf8f9c3 2026-10-13)"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.102.0-nightly 2026-11-11: later upstream snapshot checked for CTFE, promotion, and GVN source drift)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)"
+      }
+    },
+    {
+      "name": "rust-lang/reference (constant evaluation, constant/static items, and temporary lifetime extension chapters pinned by rust-lang/rust 14210df0e)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "joshlf/anneal (Trusted.MirAst, Trusted.MirSemantics, and TrustedBoundary constant ingestion boundary)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

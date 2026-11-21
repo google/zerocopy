@@ -1,0 +1,20 @@
+=== Specimen 2 (-O0 LLVM IR lines mentioning llvm.is.constant / ivsk_*) ===
+  %_2 = call i1 @llvm.is.constant.i64(i64 %x)
+; gvn_ctfe_boundary_and_statically_known::ivsk_observable_oracle
+define internal i32 @_RNvCsiQCHGcy7X8M_38gvn_ctfe_boundary_and_statically_known22ivsk_observable_oracleB1_(i64 %x) unnamed_addr #0 {
+  %_2 = call i1 @llvm.is.constant.i64(i64 %x)
+; gvn_ctfe_boundary_and_statically_known::ivsk_non_immediate_array
+define internal zeroext i1 @_RNvCsiQCHGcy7X8M_38gvn_ctfe_boundary_and_statically_known24ivsk_non_immediate_arrayB1_(ptr align 8 %arr) unnamed_addr #0 {
+; call gvn_ctfe_boundary_and_statically_known::ivsk_observable_oracle
+  %5 = call i32 @_RNvCsiQCHGcy7X8M_38gvn_ctfe_boundary_and_statically_known22ivsk_observable_oracleB1_(i64 42) #11
+; call gvn_ctfe_boundary_and_statically_known::ivsk_observable_oracle
+  %6 = call i32 @_RNvCsiQCHGcy7X8M_38gvn_ctfe_boundary_and_statically_known22ivsk_observable_oracleB1_(i64 %_8) #11
+; call gvn_ctfe_boundary_and_statically_known::ivsk_non_immediate_array
+  %11 = call zeroext i1 @_RNvCsiQCHGcy7X8M_38gvn_ctfe_boundary_and_statically_known24ivsk_non_immediate_arrayB1_(ptr align 8 %_10) #11
+declare i1 @llvm.is.constant.i64(i64) #6
+
+=== Specimen 3 (LLVM global mutability: Freeze `constant` vs !Freeze `global`) ===
+@_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata13FROZEN_STATIC = internal constant [8 x i8] c"\88wfUD3\22\11", align 8
+@llvm.used = appending global [2 x ptr] [ptr @_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata13FROZEN_STATIC, ptr @_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata19INTERIOR_MUT_STATIC], section "llvm.metadata"
+@_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata19INTERIOR_MUT_STATIC = internal global [8 x i8] c"\AAU\AAU\00\00\00\00", align 8
+@llvm.used = appending global [2 x ptr] [ptr @_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata13FROZEN_STATIC, ptr @_RNvCsiI6REUWWLfB_31unsafecell_interning_and_rodata19INTERIOR_MUT_STATIC], section "llvm.metadata"

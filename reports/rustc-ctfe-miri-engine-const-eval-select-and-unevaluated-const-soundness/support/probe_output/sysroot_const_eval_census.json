@@ -1,0 +1,329 @@
+{
+  "available": true,
+  "scanned_non_test_rs_files": 2472,
+  "const_eval_select": {
+    "total_sites": 32,
+    "by_crate": {
+      "alloc": 5,
+      "core": 26,
+      "stdarch": 1
+    },
+    "by_class": {
+      "class_a_algorithmic_and_provenance_refinement": 7,
+      "class_b_ub_and_safety_guard": 11,
+      "class_c_contract_and_miri_hook": 3,
+      "class_d_diverging_panic_and_error": 4,
+      "class_e_const_heap_allocator": 4,
+      "class_f_simd_test_harness": 1,
+      "macro_definition": 2
+    },
+    "sites": [
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 332,
+        "is_macro": false,
+        "class": "class_e_const_heap_allocator",
+        "snippet": "core::intrinsics::const_eval_select( (layout, zeroed), Global::alloc_impl_const, Global::alloc_impl_runtime, ) }  // SAFETY: Same as `Allocator::deallocate` #[inline] #[cfg_attr(miri, track_caller)] // even without panics, this helps for Mi"
+      },
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 344,
+        "is_macro": false,
+        "class": "class_e_const_heap_allocator",
+        "snippet": "core::intrinsics::const_eval_select( (ptr, layout), Global::deallocate_impl_const, Global::deallocate_impl_runtime, ) }  // SAFETY: Same as `Allocator::grow` #[inline] #[cfg_attr(miri, track_caller)] // even without panics, this helps for M"
+      },
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 362,
+        "is_macro": false,
+        "class": "class_e_const_heap_allocator",
+        "snippet": "core::intrinsics::const_eval_select( (self, ptr, old_layout, new_layout, zeroed), Global::grow_shrink_impl_const, Global::grow_impl_runtime, ) }  // SAFETY: Same as `Allocator::shrink` #[inline] #[cfg_attr(miri, track_caller)] // even witho"
+      },
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 379,
+        "is_macro": false,
+        "class": "class_e_const_heap_allocator",
+        "snippet": "core::intrinsics::const_eval_select( (self, ptr, old_layout, new_layout, false), Global::grow_shrink_impl_const, Global::shrink_impl_runtime, ) }  #[inline] #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtra"
+      },
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 557,
+        "is_macro": false,
+        "class": "class_d_diverging_panic_and_error",
+        "snippet": "core::intrinsics::const_eval_select((layout,), ct_error, rt_error) }  #[cfg(panic = \"immediate-abort\")] ct_error(layout) }  #[cfg(not(no_global_oom_handling))] #[doc(hidden)] #[allow(unused_attributes)] #[unstable(feature = \"alloc_internals"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ffi/c_str.rs",
+        "line": 390,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { bytes: &[u8] } -> &CStr: if const { // Saturating so that an empty slice panics in the assert with a good // message, not here due to underflow. let mut i = bytes.len().saturating_sub(1); assert!(!bytes.is_emp"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ffi/c_str.rs",
+        "line": 749,
+        "is_macro": true,
+        "class": "class_a_algorithmic_and_provenance_refinement",
+        "snippet": "const_eval_select!( @capture { s: *const c_char = ptr } -> usize: if const { let mut len = 0;  // SAFETY: Outer caller has provided a pointer to a valid C string. while unsafe { *s.add(len) } != 0 { len += 1; }  len } else { unsafe extern \""
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 2450,
+        "is_macro": false,
+        "class": "macro_definition",
+        "snippet": "const_eval_select(($($val,)*), compiletime, runtime) }}, // We support leaving away the `val` expressions for *all* arguments // (but not for *some* arguments, that's too tricky). ( @capture$([$($binders:tt)*])? { $($arg:ident : $ty:ty),* $"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 2461,
+        "is_macro": true,
+        "class": "macro_definition",
+        "snippet": "$crate::intrinsics::const_eval_select!( @capture$([$($binders)*])? { $($arg : $ty = $arg),* } $(-> $ret)? : if const $(#[$compiletime_attr])* $compiletime else $(#[$runtime_attr])* $runtime ) }, }  /// Returns whether the argument's value i"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 2689,
+        "is_macro": true,
+        "class": "class_c_contract_and_miri_hook",
+        "snippet": "const_eval_select!( @capture[C: Fn() -> bool + Copy] { cond: C } : if const { // Do nothing } else { if !cond() { // Emit no unwind panic in case this was a safety requirement. crate::panicking::panic_nounwind(\"failed requires check\"); } } "
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 2721,
+        "is_macro": true,
+        "class": "class_c_contract_and_miri_hook",
+        "snippet": "const_eval_select!( @capture[C: Fn(&Ret) -> bool + Copy, Ret] { cond: Option<C>, ret: Ret } -> Ret : if const { // Do nothing ret } else { match cond { crate::option::Option::Some(cond) => { if !cond(&ret) { // Emit no unwind panic in case "
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 3587,
+        "is_macro": true,
+        "class": "class_c_contract_and_miri_hook",
+        "snippet": "const_eval_select!( @capture { ptr: *const (), align: usize}: if const { // Do nothing. } else { // SAFETY: this call is always safe. unsafe { miri_promise_symbolic_alignment(ptr, align); } } ) } "
+      },
+      {
+        "crate": "core",
+        "file": "core/src/panic.rs",
+        "line": 167,
+        "is_macro": true,
+        "class": "class_d_diverging_panic_and_error",
+        "snippet": "$crate::intrinsics::const_eval_select!( @capture { $($arg: $ty = $arg),* } -> !: if const #[track_caller] { $crate::panic!($const_msg) } else #[track_caller] { $crate::panic!($runtime_msg) } ) }  do_panic($($val),*) }}, // We support leavin"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/panicking.rs",
+        "line": 96,
+        "is_macro": true,
+        "class": "class_d_diverging_panic_and_error",
+        "snippet": "const_eval_select!( @capture { fmt: fmt::Arguments<'_>, force_no_backtrace: bool } -> !: if const #[track_caller] { // We don't unwind anyway at compile-time so we can call the regular `panic_fmt`. panic_fmt(fmt) } else #[track_caller] { if"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 26,
+        "is_macro": true,
+        "class": "class_a_algorithmic_and_provenance_refinement",
+        "snippet": "const_eval_select!( @capture { ptr: *const u8 } -> bool: // This use of `const_raw_ptr_comparison` has been explicitly blessed by t-lang. if const #[rustc_allow_const_fn_unstable(const_raw_ptr_comparison)] { match (ptr).guaranteed_eq(null_m"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 357,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { this: *const (), count: isize, size: usize } -> bool: if const { true } else { // `size` is the size of a Rust type, so we know that // `size <= isize::MAX` and thus `as` cast here is not lossy. let Some(byte_"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 707,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { this: *const (), origin: *const () } -> bool: if const { true } else { this >= origin } ) }  ub_checks::assert_unsafe_precondition!( check_language_ub, \"ptr::offset_from_unsigned requires `self >= origin`\","
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 837,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { this: *const (), count: usize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size) else { return false; }; let (_, overflow) = this.addr().overflowing_add(byte_offse"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 943,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { this: *const (), count: usize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size) else { return false; }; byte_offset <= (isize::MAX as usize) && this.addr() >= byt"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/mod.rs",
+        "line": 1399,
+        "is_macro": true,
+        "class": "class_a_algorithmic_and_provenance_refinement",
+        "snippet": "const_eval_select!( @capture[T] { x: *mut T, y: *mut T, count: usize }: if const { // At compile-time we don't need all the special code below. // SAFETY: Same preconditions as this function unsafe { swap_nonoverlapping_const(x, y, count) }"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/mut_ptr.rs",
+        "line": 360,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { this: *const (), count: isize, size: usize } -> bool: if const { true } else { // `size` is the size of a Rust type, so we know that // `size <= isize::MAX` and thus `as` cast here is not lossy. let Some(byte_"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/mut_ptr.rs",
+        "line": 935,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { this: *const (), count: usize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size) else { return false; }; let (_, overflow) = this.addr().overflowing_add(byte_offse"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/mut_ptr.rs",
+        "line": 1041,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { this: *const (), count: usize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size) else { return false; }; byte_offset <= (isize::MAX as usize) && this.addr() >= byt"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/slice/ascii.rs",
+        "line": 461,
+        "is_macro": true,
+        "class": "class_a_algorithmic_and_provenance_refinement",
+        "snippet": "const_eval_select!( @capture { s: &[u8] } -> bool: if const { is_ascii_simple(s) } else { /// Returns `true` if any byte in the word `v` is nonascii (>= 128). Snarfed /// from `../str/mod.rs`, which does something similar for utf8 validatio"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/slice/ascii.rs",
+        "line": 598,
+        "is_macro": true,
+        "class": "class_a_algorithmic_and_provenance_refinement",
+        "snippet": "const_eval_select!( @capture { bytes: &[u8] } -> bool: if const { is_ascii_simple(bytes) } else { // For small inputs, use usize-at-a-time processing to avoid SSE2 call overhead. if bytes.len() < SSE2_CHUNK_SIZE { let chunks = bytes.chunks_"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/slice/memchr.rs",
+        "line": 54,
+        "is_macro": true,
+        "class": "class_a_algorithmic_and_provenance_refinement",
+        "snippet": "const_eval_select!( @capture { x: u8, text: &[u8] } -> Option<usize>: if const { memchr_naive(x, text) } else { // Scan for a single byte value by reading two `usize` words at a time. // // Split `text` in three parts // - unaligned initial"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/str/mod.rs",
+        "line": 69,
+        "is_macro": false,
+        "class": "class_d_diverging_panic_and_error",
+        "snippet": "crate::intrinsics::const_eval_select((s, begin, end), slice_error_fail_ct, slice_error_fail_rt) }  #[cfg(panic = \"immediate-abort\")] const fn slice_error_fail(s: &str, begin: usize, end: usize) -> ! { slice_error_fail_ct(s, begin, end) }  #"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/str/validations.rs",
+        "line": 136,
+        "is_macro": true,
+        "class": "class_a_algorithmic_and_provenance_refinement",
+        "snippet": "let align = const_eval_select!( @capture { v: &[u8] } -> usize: if const { usize::MAX } else { v.as_ptr().align_offset(USIZE_BYTES) } );  while index < len { let old_offset = index; macro_rules! err { ($error_len: expr) => {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ub_checks.rs",
+        "line": 98,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { } -> bool: if const { // Always disable UB checks. false } else { // Disable UB checks in Miri. !cfg!(miri) } ) && intrinsics::ub_checks() }  /// Checks whether `ptr` is properly aligned with respect to the gi"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ub_checks.rs",
+        "line": 136,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { ptr: *const (), align: usize } -> bool: if const { true } else { ptr.is_aligned_to(align) } ) }  #[inline] pub(crate) const fn is_valid_allocation_size(size: usize, len: usize) -> bool { let max_len = if size "
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ub_checks.rs",
+        "line": 166,
+        "is_macro": true,
+        "class": "class_b_ub_and_safety_guard",
+        "snippet": "const_eval_select!( @capture { src: *const (), dst: *const (), size: usize, count: usize } -> bool: if const { true } else { let src_usize = src.addr(); let dst_usize = dst.addr(); let Some(size) = size.checked_mul(count) else { crate::pani"
+      },
+      {
+        "crate": "stdarch",
+        "file": "stdarch/crates/core_arch/src/test.rs",
+        "line": 18,
+        "is_macro": false,
+        "class": "class_f_simd_test_harness",
+        "snippet": "$crate::intrinsics::const_eval_select((&$a, &$b), assert_eq_ct, $crate::core_arch::test::assert_eq_rt); }}; ($a:expr, $b:expr, $($t:tt)+) => { ::std::assert_eq!($a, $b, $($t)+) }; }  pub(crate) use assert_eq_const;"
+      }
+    ]
+  },
+  "is_val_statically_known": {
+    "total_sites": 7,
+    "by_crate": {
+      "core": 7
+    },
+    "sites": [
+      {
+        "crate": "core",
+        "file": "core/src/fmt/mod.rs",
+        "line": 898,
+        "line_text": "if core::intrinsics::is_val_statically_known(s.is_some()) { s } else { None }"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/int_macros.rs",
+        "line": 2513,
+        "line_text": "if intrinsics::is_val_statically_known(exp) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/int_macros.rs",
+        "line": 3128,
+        "line_text": "if intrinsics::is_val_statically_known(exp) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/uint_macros.rs",
+        "line": 1825,
+        "line_text": "if core::intrinsics::is_val_statically_known(base) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/uint_macros.rs",
+        "line": 2906,
+        "line_text": "if intrinsics::is_val_statically_known(exp) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/uint_macros.rs",
+        "line": 3577,
+        "line_text": "if intrinsics::is_val_statically_known(exp) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/slice/specialize.rs",
+        "line": 55,
+        "line_text": "if (cfg!(miri) && self.len() > 32) || crate::intrinsics::is_val_statically_known(value) {"
+      }
+    ]
+  }
+}
