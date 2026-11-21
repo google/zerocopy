@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/toy-models",
+    "verification/safe-abstractions",
+    "pl/rust-pinning",
+    "pl/structural-pinning",
+    "pl/drop-guarantee",
+    "pl/address-sensitive-types"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust standard library core::pin module documentation (library/core/src/pin.rs)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "fafcb2be486f2c24bbeb8417e5d32335df5d9a34",
+        "path": "library/core/src/pin.rs"
+      }
+    },
+    {
+      "name": "RFC 2349: pin",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4",
+        "path": "text/2349-pin.md"
+      }
+    },
+    {
+      "name": "pin-project 1.2.0 (#[pin_project] safety documentation)",
+      "identity": {
+        "repository": "taiki-e/pin-project",
+        "revision": "f49edb9596fdf8bb09d48091755e522bb4a119be",
+        "path": "pin-project-internal/src/lib.rs",
+        "version": "1.2.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -64338,6 +64338,54 @@
         "lean/mechanization"
       ]
     },
+    "pin-structural-projection-address-stability-and-drop-guarantee": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "path": "library/core/src/pin.rs",
+            "repository": "rust-lang/rust",
+            "revision": "fafcb2be486f2c24bbeb8417e5d32335df5d9a34"
+          },
+          "name": "Rust standard library core::pin module documentation (library/core/src/pin.rs)"
+        },
+        {
+          "identity": {
+            "path": "text/2349-pin.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "RFC 2349: pin"
+        },
+        {
+          "identity": {
+            "path": "pin-project-internal/src/lib.rs",
+            "repository": "taiki-e/pin-project",
+            "revision": "f49edb9596fdf8bb09d48091755e522bb4a119be",
+            "version": "1.2.0"
+          },
+          "name": "pin-project 1.2.0 (#[pin_project] safety documentation)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/toy-models",
+        "verification/safe-abstractions",
+        "pl/rust-pinning",
+        "pl/structural-pinning",
+        "pl/drop-guarantee",
+        "pl/address-sensitive-types"
+      ]
+    },
     "pinocchio-drake-surgical-cbf-singularities-and-klipper-cnc-kinematics": {
       "observed_at": "2026-11-19",
       "subjects": [

@@ -1,0 +1,6 @@
+name = "ToyPin"
+version = "0.1.0"
+defaultTargets = ["ToyPin"]
+
+[[lean_lib]]
+name = "ToyPin"

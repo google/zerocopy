@@ -1,0 +1,2178 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Option.all.eq_1": [],
+    "Option.all.eq_2": [],
+    "Toy.Pin.Act": [],
+    "Toy.Pin.Act.alloc": [],
+    "Toy.Pin.Act.alloc.elim": [],
+    "Toy.Pin.Act.alloc.inj": [],
+    "Toy.Pin.Act.alloc.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.alloc.noConfusion": [],
+    "Toy.Pin.Act.alloc.sizeOf_spec": [],
+    "Toy.Pin.Act.casesOn": [],
+    "Toy.Pin.Act.ctorElim": [],
+    "Toy.Pin.Act.ctorElimType": [],
+    "Toy.Pin.Act.ctorIdx": [],
+    "Toy.Pin.Act.dealloc": [],
+    "Toy.Pin.Act.dealloc.elim": [],
+    "Toy.Pin.Act.dealloc.inj": [],
+    "Toy.Pin.Act.dealloc.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.dealloc.noConfusion": [],
+    "Toy.Pin.Act.dealloc.sizeOf_spec": [],
+    "Toy.Pin.Act.dropLeaf": [],
+    "Toy.Pin.Act.dropLeaf.elim": [],
+    "Toy.Pin.Act.dropLeaf.inj": [],
+    "Toy.Pin.Act.dropLeaf.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.dropLeaf.noConfusion": [],
+    "Toy.Pin.Act.dropLeaf.sizeOf_spec": [],
+    "Toy.Pin.Act.dropTemp": [],
+    "Toy.Pin.Act.dropTemp.elim": [],
+    "Toy.Pin.Act.dropTemp.inj": [],
+    "Toy.Pin.Act.dropTemp.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.dropTemp.noConfusion": [],
+    "Toy.Pin.Act.dropTemp.sizeOf_spec": [],
+    "Toy.Pin.Act.forget": [],
+    "Toy.Pin.Act.forget.elim": [],
+    "Toy.Pin.Act.forget.inj": [],
+    "Toy.Pin.Act.forget.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.forget.noConfusion": [],
+    "Toy.Pin.Act.forget.sizeOf_spec": [],
+    "Toy.Pin.Act.freeTemp": [],
+    "Toy.Pin.Act.freeTemp.elim": [],
+    "Toy.Pin.Act.freeTemp.sizeOf_spec": [],
+    "Toy.Pin.Act.moveObj": [],
+    "Toy.Pin.Act.moveObj.elim": [],
+    "Toy.Pin.Act.moveObj.inj": [],
+    "Toy.Pin.Act.moveObj.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.moveObj.noConfusion": [],
+    "Toy.Pin.Act.moveObj.sizeOf_spec": [],
+    "Toy.Pin.Act.moveOut": [],
+    "Toy.Pin.Act.moveOut.elim": [],
+    "Toy.Pin.Act.moveOut.inj": [],
+    "Toy.Pin.Act.moveOut.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.moveOut.noConfusion": [],
+    "Toy.Pin.Act.moveOut.sizeOf_spec": [],
+    "Toy.Pin.Act.noConfusion": [],
+    "Toy.Pin.Act.noConfusionType": [],
+    "Toy.Pin.Act.pinField": [],
+    "Toy.Pin.Act.pinField.elim": [],
+    "Toy.Pin.Act.pinField.inj": [],
+    "Toy.Pin.Act.pinField.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.pinField.noConfusion": [],
+    "Toy.Pin.Act.pinField.sizeOf_spec": [],
+    "Toy.Pin.Act.pinObj": [],
+    "Toy.Pin.Act.pinObj.elim": [],
+    "Toy.Pin.Act.pinObj.inj": [],
+    "Toy.Pin.Act.pinObj.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.pinObj.noConfusion": [],
+    "Toy.Pin.Act.pinObj.sizeOf_spec": [],
+    "Toy.Pin.Act.rec": [],
+    "Toy.Pin.Act.recOn": [],
+    "Toy.Pin.Act.register": [],
+    "Toy.Pin.Act.register.elim": [],
+    "Toy.Pin.Act.register.inj": [],
+    "Toy.Pin.Act.register.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.register.noConfusion": [],
+    "Toy.Pin.Act.register.sizeOf_spec": [],
+    "Toy.Pin.Act.setSelf": [],
+    "Toy.Pin.Act.setSelf.elim": [],
+    "Toy.Pin.Act.setSelf.inj": [],
+    "Toy.Pin.Act.setSelf.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.setSelf.noConfusion": [],
+    "Toy.Pin.Act.setSelf.sizeOf_spec": [],
+    "Toy.Pin.Act.swap": [],
+    "Toy.Pin.Act.swap.elim": [],
+    "Toy.Pin.Act.swap.inj": [],
+    "Toy.Pin.Act.swap.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.swap.noConfusion": [],
+    "Toy.Pin.Act.swap.sizeOf_spec": [],
+    "Toy.Pin.Act.write": [],
+    "Toy.Pin.Act.write.elim": [],
+    "Toy.Pin.Act.write.inj": [],
+    "Toy.Pin.Act.write.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Act.write.noConfusion": [],
+    "Toy.Pin.Act.write.sizeOf_spec": [],
+    "Toy.Pin.ActAvoids": [],
+    "Toy.Pin.ActAvoids.match_1": [],
+    "Toy.Pin.ActKeepsAlloc": [
+      "propext"
+    ],
+    "Toy.Pin.ActKeepsAlloc.match_1": [
+      "propext"
+    ],
+    "Toy.Pin.ActTyped": [
+      "propext"
+    ],
+    "Toy.Pin.ActTyped.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.ActTyped.eq_2": [
+      "propext"
+    ],
+    "Toy.Pin.ActTyped.eq_3": [
+      "propext"
+    ],
+    "Toy.Pin.ActTyped.eq_4": [
+      "propext"
+    ],
+    "Toy.Pin.ActTyped.eq_5": [
+      "propext"
+    ],
+    "Toy.Pin.ActTyped.match_1": [
+      "propext"
+    ],
+    "Toy.Pin.AddrInv": [
+      "propext"
+    ],
+    "Toy.Pin.AddrStateAtProjected": [
+      "propext"
+    ],
+    "Toy.Pin.AddrStateAtProjected.step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.Always": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.Always.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.Always.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.Always.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.ApiOp": [],
+    "Toy.Pin.ApiOp.casesOn": [],
+    "Toy.Pin.ApiOp.ctorElim": [],
+    "Toy.Pin.ApiOp.ctorElimType": [],
+    "Toy.Pin.ApiOp.ctorIdx": [],
+    "Toy.Pin.ApiOp.noConfusion": [],
+    "Toy.Pin.ApiOp.noConfusionType": [],
+    "Toy.Pin.ApiOp.overwrite": [],
+    "Toy.Pin.ApiOp.overwrite.elim": [],
+    "Toy.Pin.ApiOp.overwrite.inj": [],
+    "Toy.Pin.ApiOp.overwrite.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.ApiOp.overwrite.noConfusion": [],
+    "Toy.Pin.ApiOp.overwrite.sizeOf_spec": [],
+    "Toy.Pin.ApiOp.projMut": [],
+    "Toy.Pin.ApiOp.projMut.elim": [],
+    "Toy.Pin.ApiOp.projMut.inj": [],
+    "Toy.Pin.ApiOp.projMut.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.ApiOp.projMut.noConfusion": [],
+    "Toy.Pin.ApiOp.projMut.sizeOf_spec": [],
+    "Toy.Pin.ApiOp.projPin": [],
+    "Toy.Pin.ApiOp.projPin.elim": [],
+    "Toy.Pin.ApiOp.projPin.inj": [],
+    "Toy.Pin.ApiOp.projPin.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.ApiOp.projPin.noConfusion": [],
+    "Toy.Pin.ApiOp.projPin.sizeOf_spec": [],
+    "Toy.Pin.ApiOp.rec": [],
+    "Toy.Pin.ApiOp.recOn": [],
+    "Toy.Pin.ApiOp.take": [],
+    "Toy.Pin.ApiOp.take.elim": [],
+    "Toy.Pin.ApiOp.take.inj": [],
+    "Toy.Pin.ApiOp.take.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.ApiOp.take.noConfusion": [],
+    "Toy.Pin.ApiOp.take.sizeOf_spec": [],
+    "Toy.Pin.Conds": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.ca": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.casesOn": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.cb": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.cc": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.cd": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.ce": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.cf": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.mk": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.rec": [
+      "propext"
+    ],
+    "Toy.Pin.Conds.recOn": [
+      "propext"
+    ],
+    "Toy.Pin.CoreInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.CoreInv.addrInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.CoreInv.clear_obj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.CoreInv.dropAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.CoreInv.entry_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.CoreInv.no_entry": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.CoreInv.of_frame": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.CoreInv.selfPtr_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.CoreInv.step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.Decl": [],
+    "Toy.Pin.Decl.PinnedNonUnpinField": [
+      "propext"
+    ],
+    "Toy.Pin.Decl.api": [],
+    "Toy.Pin.Decl.casesOn": [],
+    "Toy.Pin.Decl.ctorIdx": [],
+    "Toy.Pin.Decl.dtor": [],
+    "Toy.Pin.Decl.fieldTy": [
+      "propext"
+    ],
+    "Toy.Pin.Decl.fieldTy_eq_true_of_le": [
+      "propext"
+    ],
+    "Toy.Pin.Decl.fieldUnpin": [],
+    "Toy.Pin.Decl.fieldUnpin_getElem?_of_fieldTy_false": [
+      "propext"
+    ],
+    "Toy.Pin.Decl.forall_pnu_iff": [
+      "propext"
+    ],
+    "Toy.Pin.Decl.instDecidablePinnedNonUnpinField": [
+      "propext"
+    ],
+    "Toy.Pin.Decl.lt_of_pinnedNonUnpinField": [
+      "propext"
+    ],
+    "Toy.Pin.Decl.mk": [],
+    "Toy.Pin.Decl.mk.inj": [],
+    "Toy.Pin.Decl.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Decl.mk.noConfusion": [],
+    "Toy.Pin.Decl.mk.sizeOf_spec": [],
+    "Toy.Pin.Decl.nfields": [],
+    "Toy.Pin.Decl.noConfusion": [],
+    "Toy.Pin.Decl.noConfusionType": [],
+    "Toy.Pin.Decl.packed": [],
+    "Toy.Pin.Decl.rec": [],
+    "Toy.Pin.Decl.recOn": [],
+    "Toy.Pin.Decl.unpin": [],
+    "Toy.Pin.DropGuaranteeAct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.DropGuaranteeAct.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.DropGuaranteeAct.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.DropGuaranteeAct.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.DropGuaranteeAct.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.DropGuaranteeAct.match_1": [
+      "propext"
+    ],
+    "Toy.Pin.DropGuaranteeForPinned": [
+      "propext"
+    ],
+    "Toy.Pin.DtorNoMoveOutOfPinned": [
+      "propext"
+    ],
+    "Toy.Pin.DtorOp": [],
+    "Toy.Pin.DtorOp.casesOn": [],
+    "Toy.Pin.DtorOp.ctorElim": [],
+    "Toy.Pin.DtorOp.ctorElimType": [],
+    "Toy.Pin.DtorOp.ctorIdx": [],
+    "Toy.Pin.DtorOp.moveOut": [],
+    "Toy.Pin.DtorOp.moveOut.elim": [],
+    "Toy.Pin.DtorOp.moveOut.inj": [],
+    "Toy.Pin.DtorOp.moveOut.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.DtorOp.moveOut.noConfusion": [],
+    "Toy.Pin.DtorOp.moveOut.sizeOf_spec": [],
+    "Toy.Pin.DtorOp.noConfusion": [],
+    "Toy.Pin.DtorOp.noConfusionType": [],
+    "Toy.Pin.DtorOp.overwrite": [],
+    "Toy.Pin.DtorOp.overwrite.elim": [],
+    "Toy.Pin.DtorOp.overwrite.inj": [],
+    "Toy.Pin.DtorOp.overwrite.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.DtorOp.overwrite.noConfusion": [],
+    "Toy.Pin.DtorOp.overwrite.sizeOf_spec": [],
+    "Toy.Pin.DtorOp.rec": [],
+    "Toy.Pin.DtorOp.recOn": [],
+    "Toy.Pin.Good": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.Leaf": [],
+    "Toy.Pin.Leaf.casesOn": [],
+    "Toy.Pin.Leaf.ctorIdx": [],
+    "Toy.Pin.Leaf.id": [],
+    "Toy.Pin.Leaf.mk": [],
+    "Toy.Pin.Leaf.mk.inj": [],
+    "Toy.Pin.Leaf.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Leaf.mk.noConfusion": [],
+    "Toy.Pin.Leaf.mk.sizeOf_spec": [],
+    "Toy.Pin.Leaf.noConfusion": [],
+    "Toy.Pin.Leaf.noConfusionType": [],
+    "Toy.Pin.Leaf.rec": [],
+    "Toy.Pin.Leaf.recOn": [],
+    "Toy.Pin.Leaf.selfPtr": [],
+    "Toy.Pin.Leaf.unpin": [],
+    "Toy.Pin.ListOK": [
+      "propext"
+    ],
+    "Toy.Pin.Loc": [],
+    "Toy.Pin.MacroInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.MacroInv.pnu": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.MacroInv.runActs": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.MacroInv.step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.MutFieldAvail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.MutStructAvail": [
+      "propext"
+    ],
+    "Toy.Pin.NoPinnedMove": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.NoPinnedMove.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.NoPinnedMove.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.NoPinnedMove.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.NoPinnedMove.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.NoPinnedMove.match_1": [
+      "propext"
+    ],
+    "Toy.Pin.NoPinnedTake": [
+      "propext"
+    ],
+    "Toy.Pin.NotPackedIfPinned": [
+      "propext"
+    ],
+    "Toy.Pin.Obj": [],
+    "Toy.Pin.Obj.casesOn": [],
+    "Toy.Pin.Obj.ctorIdx": [],
+    "Toy.Pin.Obj.fields": [],
+    "Toy.Pin.Obj.fresh": [],
+    "Toy.Pin.Obj.fresh.eq_1": [],
+    "Toy.Pin.Obj.leaf": [
+      "propext"
+    ],
+    "Toy.Pin.Obj.leaf.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.Obj.leaf.match_1": [],
+    "Toy.Pin.Obj.leaf_fresh": [
+      "propext"
+    ],
+    "Toy.Pin.Obj.leaf_fresh.match_1": [],
+    "Toy.Pin.Obj.leaf_of_out_of_range": [
+      "propext"
+    ],
+    "Toy.Pin.Obj.leaked": [],
+    "Toy.Pin.Obj.live": [],
+    "Toy.Pin.Obj.mk": [],
+    "Toy.Pin.Obj.mk.inj": [],
+    "Toy.Pin.Obj.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Obj.mk.noConfusion": [],
+    "Toy.Pin.Obj.mk.sizeOf_spec": [],
+    "Toy.Pin.Obj.noConfusion": [],
+    "Toy.Pin.Obj.noConfusionType": [],
+    "Toy.Pin.Obj.pinned": [],
+    "Toy.Pin.Obj.pinnedFields": [],
+    "Toy.Pin.Obj.rec": [],
+    "Toy.Pin.Obj.recOn": [],
+    "Toy.Pin.Op": [],
+    "Toy.Pin.Op.Mentions": [],
+    "Toy.Pin.Op.Mentions.eq_1": [],
+    "Toy.Pin.Op.Mentions.eq_10": [],
+    "Toy.Pin.Op.Mentions.eq_11": [],
+    "Toy.Pin.Op.Mentions.eq_12": [],
+    "Toy.Pin.Op.Mentions.eq_13": [],
+    "Toy.Pin.Op.Mentions.eq_2": [],
+    "Toy.Pin.Op.Mentions.eq_3": [],
+    "Toy.Pin.Op.Mentions.eq_4": [],
+    "Toy.Pin.Op.Mentions.eq_5": [],
+    "Toy.Pin.Op.Mentions.eq_6": [],
+    "Toy.Pin.Op.Mentions.eq_7": [],
+    "Toy.Pin.Op.Mentions.eq_8": [],
+    "Toy.Pin.Op.Mentions.eq_9": [],
+    "Toy.Pin.Op.Mentions.match_1": [],
+    "Toy.Pin.Op.assignField": [],
+    "Toy.Pin.Op.assignField.elim": [],
+    "Toy.Pin.Op.assignField.inj": [],
+    "Toy.Pin.Op.assignField.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.assignField.noConfusion": [],
+    "Toy.Pin.Op.assignField.sizeOf_spec": [],
+    "Toy.Pin.Op.casesOn": [],
+    "Toy.Pin.Op.ctorElim": [],
+    "Toy.Pin.Op.ctorElimType": [],
+    "Toy.Pin.Op.ctorIdx": [],
+    "Toy.Pin.Op.drop": [],
+    "Toy.Pin.Op.drop.elim": [],
+    "Toy.Pin.Op.drop.inj": [],
+    "Toy.Pin.Op.drop.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.drop.noConfusion": [],
+    "Toy.Pin.Op.drop.sizeOf_spec": [],
+    "Toy.Pin.Op.forget": [],
+    "Toy.Pin.Op.forget.elim": [],
+    "Toy.Pin.Op.forget.inj": [],
+    "Toy.Pin.Op.forget.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.forget.noConfusion": [],
+    "Toy.Pin.Op.forget.sizeOf_spec": [],
+    "Toy.Pin.Op.initSelf": [],
+    "Toy.Pin.Op.initSelf.elim": [],
+    "Toy.Pin.Op.initSelf.inj": [],
+    "Toy.Pin.Op.initSelf.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.initSelf.noConfusion": [],
+    "Toy.Pin.Op.initSelf.sizeOf_spec": [],
+    "Toy.Pin.Op.link": [],
+    "Toy.Pin.Op.link.elim": [],
+    "Toy.Pin.Op.link.inj": [],
+    "Toy.Pin.Op.link.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.link.noConfusion": [],
+    "Toy.Pin.Op.link.sizeOf_spec": [],
+    "Toy.Pin.Op.new": [],
+    "Toy.Pin.Op.new.elim": [],
+    "Toy.Pin.Op.new.sizeOf_spec": [],
+    "Toy.Pin.Op.noConfusion": [],
+    "Toy.Pin.Op.noConfusionType": [],
+    "Toy.Pin.Op.overwrite": [],
+    "Toy.Pin.Op.overwrite.elim": [],
+    "Toy.Pin.Op.overwrite.inj": [],
+    "Toy.Pin.Op.overwrite.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.overwrite.noConfusion": [],
+    "Toy.Pin.Op.overwrite.sizeOf_spec": [],
+    "Toy.Pin.Op.pin": [],
+    "Toy.Pin.Op.pin.elim": [],
+    "Toy.Pin.Op.pin.inj": [],
+    "Toy.Pin.Op.pin.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.pin.noConfusion": [],
+    "Toy.Pin.Op.pin.sizeOf_spec": [],
+    "Toy.Pin.Op.projPin": [],
+    "Toy.Pin.Op.projPin.elim": [],
+    "Toy.Pin.Op.projPin.inj": [],
+    "Toy.Pin.Op.projPin.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.projPin.noConfusion": [],
+    "Toy.Pin.Op.projPin.sizeOf_spec": [],
+    "Toy.Pin.Op.rec": [],
+    "Toy.Pin.Op.recOn": [],
+    "Toy.Pin.Op.replaceField": [],
+    "Toy.Pin.Op.replaceField.elim": [],
+    "Toy.Pin.Op.replaceField.inj": [],
+    "Toy.Pin.Op.replaceField.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.replaceField.noConfusion": [],
+    "Toy.Pin.Op.replaceField.sizeOf_spec": [],
+    "Toy.Pin.Op.replaceStruct": [],
+    "Toy.Pin.Op.replaceStruct.elim": [],
+    "Toy.Pin.Op.replaceStruct.inj": [],
+    "Toy.Pin.Op.replaceStruct.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.replaceStruct.noConfusion": [],
+    "Toy.Pin.Op.replaceStruct.sizeOf_spec": [],
+    "Toy.Pin.Op.swapField": [],
+    "Toy.Pin.Op.swapField.elim": [],
+    "Toy.Pin.Op.swapField.inj": [],
+    "Toy.Pin.Op.swapField.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.swapField.noConfusion": [],
+    "Toy.Pin.Op.swapField.sizeOf_spec": [],
+    "Toy.Pin.Op.take": [],
+    "Toy.Pin.Op.take.elim": [],
+    "Toy.Pin.Op.take.inj": [],
+    "Toy.Pin.Op.take.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.Op.take.noConfusion": [],
+    "Toy.Pin.Op.take.sizeOf_spec": [],
+    "Toy.Pin.PinnedFieldsUnpin": [
+      "propext"
+    ],
+    "Toy.Pin.PinnedNonUnpin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.ProjectionConsistent": [
+      "propext"
+    ],
+    "Toy.Pin.SafeOp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.SafeProgram": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.SafeProgram.match_1": [],
+    "Toy.Pin.SafeProgramsKeepAddrInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.SelfRefOK": [
+      "propext"
+    ],
+    "Toy.Pin.SoundUnpinRule": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State": [],
+    "Toy.Pin.State.casesOn": [],
+    "Toy.Pin.State.ctorIdx": [],
+    "Toy.Pin.State.deallocAt": [],
+    "Toy.Pin.State.deallocAt.eq_1": [],
+    "Toy.Pin.State.deallocAt_heap_length": [
+      "propext"
+    ],
+    "Toy.Pin.State.dropAt": [
+      "propext"
+    ],
+    "Toy.Pin.State.dropAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.State.dropAt.match_1": [],
+    "Toy.Pin.State.dropAt_heap_length": [
+      "propext"
+    ],
+    "Toy.Pin.State.heap": [],
+    "Toy.Pin.State.init": [],
+    "Toy.Pin.State.init.eq_1": [],
+    "Toy.Pin.State.isLeaked": [
+      "propext"
+    ],
+    "Toy.Pin.State.isLeaked.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.State.isLive": [
+      "propext"
+    ],
+    "Toy.Pin.State.isLive.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.State.isLive_lt": [
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned": [
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_deallocAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_dropAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_modifyObj_of_pf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_pinField_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_push_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_push_imp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_push_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_setLeaf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_withNextId": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinnedLoc_withRegistry": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned_congr": [
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned_deallocAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned_dropAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned_lt": [
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned_modifyObj_of_pinned": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned_push_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned_push_imp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned_push_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.isPinned_setLeaf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt": [
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt.match_1": [],
+    "Toy.Pin.State.leafAt_clear": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_congr": [
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_deallocAt_cases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_dropAt_cases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_dropAt_of_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_dropAt_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_modifyObj_of_fields": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_push_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_push_gt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_push_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_setLeaf_ne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_setLeaf_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_setLeaf_self_of_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_some_bounds": [
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_withNextId": [
+      "propext"
+    ],
+    "Toy.Pin.State.leafAt_withRegistry": [
+      "propext"
+    ],
+    "Toy.Pin.State.mk": [],
+    "Toy.Pin.State.mk.inj": [],
+    "Toy.Pin.State.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Pin.State.mk.noConfusion": [],
+    "Toy.Pin.State.mk.sizeOf_spec": [],
+    "Toy.Pin.State.modifyObj": [],
+    "Toy.Pin.State.modifyObj.eq_1": [],
+    "Toy.Pin.State.modifyObj_heap": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.modifyObj_heap_ne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.modifyObj_length": [
+      "propext"
+    ],
+    "Toy.Pin.State.modifyObj_registry": [],
+    "Toy.Pin.State.nextId": [],
+    "Toy.Pin.State.noConfusion": [],
+    "Toy.Pin.State.noConfusionType": [],
+    "Toy.Pin.State.push": [],
+    "Toy.Pin.State.push.eq_1": [],
+    "Toy.Pin.State.push_heap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.State.push_length": [
+      "propext"
+    ],
+    "Toy.Pin.State.push_registry": [],
+    "Toy.Pin.State.rec": [],
+    "Toy.Pin.State.recOn": [],
+    "Toy.Pin.State.registry": [],
+    "Toy.Pin.State.setLeaf": [],
+    "Toy.Pin.State.setLeaf_length": [
+      "propext"
+    ],
+    "Toy.Pin.State.setLeaf_registry": [],
+    "Toy.Pin.State.width": [
+      "propext"
+    ],
+    "Toy.Pin.State.width.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.State.width_congr": [
+      "propext"
+    ],
+    "Toy.Pin.State.width_modifyObj_of_len": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.StatusIs": [
+      "propext"
+    ],
+    "Toy.Pin.StatusIs.congr": [
+      "propext"
+    ],
+    "Toy.Pin.StatusIs.dropAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.StatusIs.lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.StatusIs.modifyObj": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.StatusIs.push": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.StatusIs.setLeaf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.StatusIs.step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.UnpinOnlyIfPinnedFieldsUnpin": [
+      "propext"
+    ],
+    "Toy.Pin.Untouched": [
+      "propext"
+    ],
+    "Toy.Pin.Untouched.step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.addrInv_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.addrInv_of_noPinnedMove_of_dropGuarantee": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.addrInv_of_structural_pinning_conditions": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.addrInv_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.addrStateAtProjected_pos_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.addrState_hsafe_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.addrState_only_at_structurally_projected_fields": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.alwaysUnpin_unsound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_append.match_1_1": [],
+    "Toy.Pin.always_flatMap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_flatMap.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_inv.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_mono.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_of_forall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_of_forall.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_of_forall_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.always_of_forall_mem.match_1_1": [],
+    "Toy.Pin.applyAct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_10": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_11": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_12": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_13": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_14": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_6": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.applyAct.eq_9": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.autoUnpin": [],
+    "Toy.Pin.autoUnpin_conservative": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.autoUnpin_does_not_rescue_dB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.autoUnpin_ignores_unpin": [],
+    "Toy.Pin.autoUnpin_implies_h_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.autoUnpin_implies_pinnedFieldsUnpin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.autoUnpin_pos_neg": [],
+    "Toy.Pin.autoUnpin_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.autoUnpin_sound_b_to_f_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.autoUnpin_sound_b_to_f_tight_combined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.autoUnpin_true_witness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.compile": [
+      "propext"
+    ],
+    "Toy.Pin.compile.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.conditions_a_to_e_insufficient": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.conditions_abdef_tight_via_list": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.conditions_pos_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.conditions_vacuous_without_pinned_nonUnpin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.conds_of_unpin_pinnedFieldsUnpin": [
+      "propext"
+    ],
+    "Toy.Pin.coreInv_init": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.coreInv_states": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.coreInv_states.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.coreMoveActs": [],
+    "Toy.Pin.coreNonVacuousActs": [],
+    "Toy.Pin.coreReuseActs": [],
+    "Toy.Pin.core_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dA": [],
+    "Toy.Pin.dB": [],
+    "Toy.Pin.dBase": [],
+    "Toy.Pin.dBase_satisfies_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dBase_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dC": [],
+    "Toy.Pin.dC'": [],
+    "Toy.Pin.dConservative": [],
+    "Toy.Pin.dD": [],
+    "Toy.Pin.dE": [],
+    "Toy.Pin.dF": [],
+    "Toy.Pin.dFUnpin": [],
+    "Toy.Pin.dFUnpin_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dNoProj": [],
+    "Toy.Pin.dNoProj.eq_1": [],
+    "Toy.Pin.dPermissive": [],
+    "Toy.Pin.dRich": [],
+    "Toy.Pin.dUnpinField": [],
+    "Toy.Pin.dUnpinNonStructural": [],
+    "Toy.Pin.dZero": [],
+    "Toy.Pin.dZero.eq_1": [],
+    "Toy.Pin.dZeroOutOfBounds": [],
+    "Toy.Pin.decAlways": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.decSafeProgram": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dropActs": [
+      "propext"
+    ],
+    "Toy.Pin.dropActs.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.dropAt_heap_ne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dropAt_registry_keep": [
+      "propext"
+    ],
+    "Toy.Pin.dropGuaranteeAct_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dropGuaranteeAct_not_necessary_on_a_trace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dropGuaranteeAct_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dropGuaranteeForPinned_api_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dropGuaranteeForPinned_dtor_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dropGuaranteeForPinned_invisible_to_selfRef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dropGuarantee_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.drop_good": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.dtorActs": [
+      "propext"
+    ],
+    "Toy.Pin.dtorActs.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.dtorActs.eq_2": [
+      "propext"
+    ],
+    "Toy.Pin.dtorNoMoveOut_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.expand": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_1": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_10": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_11": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_12": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_13": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_2": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_3": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_4": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_5": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_6": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_7": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_8": [
+      "propext"
+    ],
+    "Toy.Pin.expand.eq_9": [
+      "propext"
+    ],
+    "Toy.Pin.forget_does_not_freeze_fields": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.forget_frame": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.forget_instead_of_reuse_keeps_addrInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.forget_keeps_addrInv_and_blocks_drop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.forget_preserves_addrInv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.forget_preserves_addrInv_h_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.forget_respects_contract": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.getElem?_mkFields": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.getElem?_mkFields.match_1_1": [],
+    "Toy.Pin.getElem?_modifyAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.getElem?_modifyAt.match_1_1": [],
+    "Toy.Pin.glueActs": [],
+    "Toy.Pin.glueActs.eq_1": [],
+    "Toy.Pin.glue_empty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.glue_empty.match_1_1": [],
+    "Toy.Pin.good_compile": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.good_compile.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.heap_reads_at_out_of_range_address": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.heap_reads_in_init": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instDecidableAddrInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instDecidableDropGuaranteeAct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instDecidableDropGuaranteeForPinned": [
+      "propext"
+    ],
+    "Toy.Pin.instDecidableDtorNoMoveOutOfPinned": [
+      "propext"
+    ],
+    "Toy.Pin.instDecidableEqAct": [],
+    "Toy.Pin.instDecidableEqAct.decEq": [],
+    "Toy.Pin.instDecidableEqAct.decEq.match_1": [],
+    "Toy.Pin.instDecidableEqApiOp": [],
+    "Toy.Pin.instDecidableEqApiOp.decEq": [],
+    "Toy.Pin.instDecidableEqApiOp.decEq.match_1": [],
+    "Toy.Pin.instDecidableEqDecl": [],
+    "Toy.Pin.instDecidableEqDecl.decEq": [],
+    "Toy.Pin.instDecidableEqDecl.decEq.match_1": [],
+    "Toy.Pin.instDecidableEqDtorOp": [],
+    "Toy.Pin.instDecidableEqDtorOp.decEq": [],
+    "Toy.Pin.instDecidableEqDtorOp.decEq.match_1": [],
+    "Toy.Pin.instDecidableEqLeaf": [],
+    "Toy.Pin.instDecidableEqLeaf.decEq": [],
+    "Toy.Pin.instDecidableEqLeaf.decEq.match_1": [],
+    "Toy.Pin.instDecidableEqObj": [],
+    "Toy.Pin.instDecidableEqObj.decEq": [],
+    "Toy.Pin.instDecidableEqObj.decEq.match_1": [],
+    "Toy.Pin.instDecidableEqOp": [],
+    "Toy.Pin.instDecidableEqOp.decEq": [],
+    "Toy.Pin.instDecidableEqOp.decEq.match_1": [],
+    "Toy.Pin.instDecidableEqState": [],
+    "Toy.Pin.instDecidableEqState.decEq": [],
+    "Toy.Pin.instDecidableEqState.decEq.match_1": [],
+    "Toy.Pin.instDecidableListOK": [
+      "propext"
+    ],
+    "Toy.Pin.instDecidableMentions": [],
+    "Toy.Pin.instDecidableMutFieldAvail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instDecidableMutStructAvail": [
+      "propext"
+    ],
+    "Toy.Pin.instDecidableNoPinnedMove": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instDecidableNoPinnedTake": [
+      "propext"
+    ],
+    "Toy.Pin.instDecidableNotPackedIfPinned": [
+      "propext"
+    ],
+    "Toy.Pin.instDecidablePinnedFieldsUnpin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instDecidablePinnedNonUnpin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instDecidableProjectionConsistent": [
+      "propext"
+    ],
+    "Toy.Pin.instDecidableSafeOp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instDecidableSelfRefOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instDecidableUnpinOnlyIfPinnedFieldsUnpin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.instReprAct": [
+      "propext"
+    ],
+    "Toy.Pin.instReprAct.repr": [
+      "propext"
+    ],
+    "Toy.Pin.instReprAct.repr.match_1": [],
+    "Toy.Pin.instReprApiOp": [],
+    "Toy.Pin.instReprApiOp.repr": [],
+    "Toy.Pin.instReprApiOp.repr.match_1": [],
+    "Toy.Pin.instReprDecl": [
+      "propext"
+    ],
+    "Toy.Pin.instReprDecl.repr": [
+      "propext"
+    ],
+    "Toy.Pin.instReprDtorOp": [],
+    "Toy.Pin.instReprDtorOp.repr": [],
+    "Toy.Pin.instReprDtorOp.repr.match_1": [],
+    "Toy.Pin.instReprLeaf": [
+      "propext"
+    ],
+    "Toy.Pin.instReprLeaf.repr": [
+      "propext"
+    ],
+    "Toy.Pin.instReprObj": [
+      "propext"
+    ],
+    "Toy.Pin.instReprObj.repr": [
+      "propext"
+    ],
+    "Toy.Pin.instReprOp": [
+      "propext"
+    ],
+    "Toy.Pin.instReprOp.repr": [
+      "propext"
+    ],
+    "Toy.Pin.instReprOp.repr.match_1": [],
+    "Toy.Pin.instReprState": [
+      "propext"
+    ],
+    "Toy.Pin.instReprState.repr": [
+      "propext"
+    ],
+    "Toy.Pin.isPinnedLoc_applyAct_imp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.isPinnedLoc_at_out_of_range_field": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.isPinnedLoc_pinField_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.isPinnedLoc_push_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.isPinned_applyAct_imp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.isPinned_applyAct_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.isPinned_runActs_imp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.isPinned_runActs_imp.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leafAt_applyAct_cases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leafAt_clear_cases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leafAt_of_out_of_range_field": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leafAt_push_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leafAt_setLeaf_cases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leaf_mkFields_selfPtr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leaf_mkFields_typed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leaf_moveObj": [
+      "propext"
+    ],
+    "Toy.Pin.leaf_moveObj.match_1": [],
+    "Toy.Pin.leaf_tempFields": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leakProg": [],
+    "Toy.Pin.leaked_object_hleak_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leaked_object_hsafe_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leaked_object_never_dropped_or_deallocated": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.leaked_object_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.length_le_applyAct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.length_le_runActs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.length_le_runActs.match_1_1": [],
+    "Toy.Pin.length_modifyAt": [
+      "propext"
+    ],
+    "Toy.Pin.length_modifyAt.match_1_1": [],
+    "Toy.Pin.length_moveDrop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.listOK_after_proper_drop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.listOK_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.listOK_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.macroInv_init": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.mem_states_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.mem_states_append.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.mkFields": [],
+    "Toy.Pin.mkFields.eq_1": [],
+    "Toy.Pin.mkFields.eq_2": [],
+    "Toy.Pin.mkFields.eq_def": [],
+    "Toy.Pin.mkFields.match_1": [],
+    "Toy.Pin.modifyAt": [],
+    "Toy.Pin.modifyAt.eq_1": [],
+    "Toy.Pin.modifyAt.eq_2": [],
+    "Toy.Pin.modifyAt.eq_3": [],
+    "Toy.Pin.modifyAt.eq_def": [],
+    "Toy.Pin.modifyAt.match_1": [],
+    "Toy.Pin.moveDrop": [],
+    "Toy.Pin.moveDrop.eq_1": [],
+    "Toy.Pin.moveDrop_avoids": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.moveDrop_good": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.moveDrop_keepsAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.moveDrop_noPin": [
+      "propext"
+    ],
+    "Toy.Pin.moveOut_keeps_stale_pointer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.neverUnpin_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.noAddrState_hno_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.noAddrState_hsafe_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.noAddrState_nonvacuous_nonempty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.noPinnedMove_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.noPinnedMove_not_necessary_on_a_trace": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.noPinnedMove_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.noPinnedMove_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.noPinnedTake_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.noProjection_unpin_vacuously_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.no_addrState_without_structural_projection": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.notPacked_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.not_forall_addrInv_of_exists_not_selfRefOK": [
+      "propext"
+    ],
+    "Toy.Pin.not_pnu_of_mutField": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.not_pnu_of_mutStruct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.not_safeProgramsKeepAddrInv_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.op_avoids": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.op_good": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.op_good.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.op_keepsAlloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.op_mentions_pos_neg": [],
+    "Toy.Pin.op_typed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.permissiveRule": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.permissiveRule_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinAndInit": [],
+    "Toy.Pin.pinAndLink": [],
+    "Toy.Pin.pinField_without_pinObj_protects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinObj_inert_in_core": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedFieldsRule": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedFieldsRule_greatest_hr_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedFieldsRule_greatest_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedFieldsRule_greatest_under_b_to_f": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedFieldsRule_ignores_unpin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedFieldsRule_not_greatest_without_b_to_f": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedFieldsRule_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedFieldsUnpin_pos_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedNonUnpinField_neg": [
+      "propext"
+    ],
+    "Toy.Pin.pinnedNonUnpinField_pos": [
+      "propext"
+    ],
+    "Toy.Pin.pinnedNonUnpin_in_range": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedNonUnpin_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.pinnedNonUnpin_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.progA": [],
+    "Toy.Pin.progB": [],
+    "Toy.Pin.progC": [],
+    "Toy.Pin.progC'": [],
+    "Toy.Pin.progD": [],
+    "Toy.Pin.progE": [],
+    "Toy.Pin.progF": [],
+    "Toy.Pin.progRich": [],
+    "Toy.Pin.progZero": [],
+    "Toy.Pin.projectionConsistent_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.projection_inconsistent_assign_harmless": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.projection_inconsistent_unpin_field_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.rPackedOrPinned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.rPackedOrPinned.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.rPackedOrPinned_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.register_requires_pinned_nonUnpin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.registry_applyAct_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.registry_dropAt_sub": [
+      "propext"
+    ],
+    "Toy.Pin.registry_sub_of_no_register": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.reuse_breaks_list_not_selfRef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.ruleResults_b_to_f_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.ruleResults_h_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.runActs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.runActs.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.runActs.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.runActs.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.runActs.match_1": [],
+    "Toy.Pin.runActs_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.runActs_append.match_1_1": [],
+    "Toy.Pin.runActs_dropLeafs_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.runActs_dropLeafs_none.match_1_1": [
+      "propext"
+    ],
+    "Toy.Pin.safeOp_pos_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.safeProgram_not_necessary_for_a_program": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.safeProgram_pos_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.safeProgram_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.selfRefCheck": [
+      "propext"
+    ],
+    "Toy.Pin.selfRefOK_iff_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.selfRefOK_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.selfRefOK_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.self_mem_states": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.setLeaf_heap_ne": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.setSelf_requires_pinned_nonUnpin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.soundUnpinRule_false_hproj_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.soundUnpinRule_false_hty_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.soundUnpinRule_false_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Pin.soundUnpinRule_false_of_grants_structural_nonUnpin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.soundUnpinRule_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.sound_declarations_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.sound_of_pinnedFieldsUnpin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.stLeaked": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.stLinked": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.stSelf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.states": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.states.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.states.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.states.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.statusIs_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.structural_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.structural_nonvacuous_conclusion": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.tempActs_noop_on_empty_heap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.tempFields": [],
+    "Toy.Pin.typed_compile": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.typed_compile.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unmentioned_leaves_hb_not_tight_on_zero_field": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unmentioned_leaves_hb_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unmentioned_leaves_hmention_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unmentioned_object_hb_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unmentioned_object_hmention_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unmentioned_object_leaves_and_entries": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unmentioned_object_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unmentioned_object_unchanged": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpinOnlyIf_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpinOnlyIf_iff_pinnedFieldsUnpin": [
+      "propext"
+    ],
+    "Toy.Pin.unpinOnlyIf_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpinWitness": [],
+    "Toy.Pin.unpinWitness.eq_1": [],
+    "Toy.Pin.unpinWitness_breaks_selfRef_of_unpin_of_structural_nonUnpin_field": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpinWitness_fieldTy_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpinWitness_hu_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpinWitness_projPin_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpin_iff_hu_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpin_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpin_sound_iff_pinnedFieldsUnpin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Pin.unpin_unsound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Pin.zero_field_declarations_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

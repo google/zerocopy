@@ -1,0 +1,911 @@
+[
+  {
+    "id": "core-no-move-and-drop-guarantee-keep-address-invariants",
+    "lean": "Toy.Pin.addrInv_of_noPinnedMove_of_dropGuarantee",
+    "lean_names": [
+      "Toy.Pin.Act",
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.Always",
+      "Toy.Pin.DropGuaranteeAct",
+      "Toy.Pin.Leaf",
+      "Toy.Pin.ListOK",
+      "Toy.Pin.Loc",
+      "Toy.Pin.NoPinnedMove",
+      "Toy.Pin.Obj",
+      "Toy.Pin.Obj.leaf_of_out_of_range",
+      "Toy.Pin.PinnedNonUnpin",
+      "Toy.Pin.SafeOp",
+      "Toy.Pin.SelfRefOK",
+      "Toy.Pin.State",
+      "Toy.Pin.State.deallocAt",
+      "Toy.Pin.State.dropAt",
+      "Toy.Pin.State.init",
+      "Toy.Pin.State.isLeaked",
+      "Toy.Pin.State.isLive",
+      "Toy.Pin.State.isPinned",
+      "Toy.Pin.State.isPinnedLoc",
+      "Toy.Pin.State.leafAt",
+      "Toy.Pin.State.modifyObj",
+      "Toy.Pin.State.push",
+      "Toy.Pin.State.setLeaf",
+      "Toy.Pin.State.width",
+      "Toy.Pin.addrInv_neg",
+      "Toy.Pin.addrInv_pos",
+      "Toy.Pin.coreMoveActs",
+      "Toy.Pin.coreNonVacuousActs",
+      "Toy.Pin.coreReuseActs",
+      "Toy.Pin.dropGuaranteeAct_neg",
+      "Toy.Pin.dropGuaranteeAct_not_necessary_on_a_trace",
+      "Toy.Pin.dropGuaranteeAct_pos",
+      "Toy.Pin.heap_reads_at_out_of_range_address",
+      "Toy.Pin.heap_reads_in_init",
+      "Toy.Pin.isPinnedLoc_pinField_self",
+      "Toy.Pin.leafAt_of_out_of_range_field",
+      "Toy.Pin.listOK_after_proper_drop",
+      "Toy.Pin.listOK_neg",
+      "Toy.Pin.listOK_pos",
+      "Toy.Pin.mkFields",
+      "Toy.Pin.modifyAt",
+      "Toy.Pin.noPinnedMove_neg",
+      "Toy.Pin.noPinnedMove_not_necessary_on_a_trace",
+      "Toy.Pin.noPinnedMove_pos",
+      "Toy.Pin.pinField_without_pinObj_protects",
+      "Toy.Pin.pinObj_inert_in_core",
+      "Toy.Pin.pinnedNonUnpin_in_range",
+      "Toy.Pin.pinnedNonUnpin_neg",
+      "Toy.Pin.pinnedNonUnpin_pos",
+      "Toy.Pin.register_requires_pinned_nonUnpin",
+      "Toy.Pin.selfRefOK_neg",
+      "Toy.Pin.selfRefOK_pos",
+      "Toy.Pin.setSelf_requires_pinned_nonUnpin",
+      "Toy.Pin.stLinked",
+      "Toy.Pin.stSelf",
+      "Toy.Pin.states",
+      "Toy.Pin.tempActs_noop_on_empty_heap",
+      "Toy.Pin.tempFields"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "tier_justification": "The pinning contract (no move, and the drop guarantee) and its purpose (self-references, intrusive collections) are documented informally in core::pin and in Jung's 2018 posts; here the implication from the contract to two concrete address-sensitive invariants is made precise and mechanized for a toy heap.",
+    "plain_claim": "For every list acts of primitive actions run from the empty toy heap State.init (every list of Act is allowed): if no action moves a value out of a pinned field location holding a non-Unpin value (Always NoPinnedMove State.init acts) and no action deallocates or overwrites the memory of such a value before its destructor has run (Always DropGuaranteeAct State.init acts), then in every visited state every set self-pointer points at its own field location (SelfRefOK) and every intrusive-list entry finds, at its address, the value that registered (ListOK).",
+    "hypotheses": [
+      {
+        "name": "hmove : Always NoPinnedMove State.init acts",
+        "purpose": "No action moves a value out of a pinned field location whose value is not Unpin (compiler moves, such as packed drop glue, count as moves).",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.noPinnedMove_tight",
+        "witness_class": "a one-object, one-field trace of 5 primitive actions from State.init (coreMoveActs)"
+      },
+      {
+        "name": "hdrop : Always DropGuaranteeAct State.init acts",
+        "purpose": "The drop guarantee: no deallocation or overwrite of a pinned non-Unpin value's memory before its destructor runs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.dropGuarantee_tight",
+        "witness_class": "a one-object, one-field trace of 6 primitive actions from State.init (coreReuseActs)"
+      }
+    ],
+    "nonvacuity_witness": "coreNonVacuousActs: 21 actions that pin a non-Unpin value, set its self-pointer, link it into the list, move a pinned Unpin value and an unpinned non-Unpin value, swap, drop in place, write into emptied locations, deallocate and leak; both hypotheses hold and the self-pointer and list entry are really established.",
+    "nonvacuity_witness_lean": "Toy.Pin.core_nonvacuous",
+    "non_claims": [
+      "These are statements about the toy model (model–system relation: none proved); they neither establish nor refute the corresponding claims about Rust's Pin API, the Rust standard library or the Rust compiler. Actions, invariants and states are a toy; the readings 'NoPinnedMove = no &mut to a pinned non-Unpin value is used to move it' and 'DropGuaranteeAct = the documented drop guarantee' are modeling bridges (derived), not theorems.",
+      "The informal form 'no &mut to a pinned non-Unpin value is ever produced' is not the hypothesis. On one 6-operation program, producing a non-structural &mut and using it only to assign in place (drop, then write) keeps both invariants (projection_inconsistent_assign_harmless); no general statement about move-free uses of &mut is proved here.",
+      "hmove and hdrop are tight for this universally quantified theorem, with one-object, one-field witness traces (noPinnedMove_tight, dropGuarantee_tight); in particular 'no moves' alone does not suffice (dropGuarantee_tight). They are not necessary on an individual trace: moving a pinned non-Unpin value that never stored its address or linked itself, or overwriting one that only set a self-pointer, keeps AddrInv on that trace (noPinnedMove_not_necessary_on_a_trace, dropGuaranteeAct_not_necessary_on_a_trace).",
+      "'Pinned' means that pinField has run on that field location. Pinning an object (Act.pinObj) by itself protects none of its fields under NoPinnedMove or DropGuaranteeAct, and pinField protects a field even if the object was never pinned (pinObj_inert_in_core, pinField_without_pinObj_protects); SafeOp, not the primitive actions, requires the object to be pinned before a structural projection.",
+      "Built-in modeling assumption, not a hypothesis: self-pointers and list entries are established only at a pinned field location holding a non-Unpin value (setSelf and register are no-ops otherwise). Types that rely on their address while being Unpin, or that set up such reliance before being pinned, are outside the model.",
+      "Two address-sensitive invariants are modelled: a field location's value pointing to that same location, and one external list holding field locations. Pointers from one field to a sibling field of the same struct (as in compiler-generated async state machines), pointers between distinct values, interior pointers and pointer arithmetic are not modelled.",
+      "dropTemp and freeTemp act on the most recently allocated object whatever its origin (address heap.length - 1 with truncated subtraction; on the empty heap both are no-ops, tempActs_noop_on_empty_heap); on a heap whose last object is a pinned non-Unpin value, freeTemp is excluded by hdrop (dropGuaranteeAct_neg).",
+      "Starts from the empty heap; no claim for arbitrary initial states.",
+      "No claim about undefined behaviour under any Rust aliasing model: 'invariant broken' means a stale pointer exists in the toy state."
+    ],
+    "prior_art": [
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): 'Subtle details and the Drop guarantee', lines 509-586 (a pinned value must stay valid at the same address until drop: not moved, and its memory not invalidated or repurposed, lines 521-535; 'required for intrusive data structures', line 535). Relationship (derived, modeling bridge): NoPinnedMove and DropGuaranteeAct are toy formalizations of these two parts.",
+      "RFC 2349 'Pin', rust-lang/rfcs text/2349-pin.md at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4: the goal 'a reference type where the referent is guaranteed to never move before being dropped' (line 29); a stricter guarantee that would ensure 'a destructor always runs if the memory becomes invalid' is listed under 'Unresolved questions' (lines 392-403), noting that it would make the stack-pinning API sketched at lines 341-366 unsound.",
+      "R. Jung, 'Safe Intrusive Collections with Pinning', blog post, 2018-04-10, https://www.ralfj.de/blog/2018/04/10/safe-intrusive-collections-with-pinning.html: pinning without a drop guarantee lets an entry be deallocated while a collection still points to it (section 1.2); adopts the guarantee 'If the memory a Pin<T> points to is ever deallocated or otherwise invalidated, drop has been called on it', credited to cramertj (section 1.3).",
+      "R. Jung, 'A Formal Look at Pinning', blog post, 2018-04-05, https://www.ralfj.de/blog/2018/04/05/a-formal-look-at-pinning.html: extends a RustBelt-style model of type invariants with a pinned typestate, on paper (not mechanized in the post).",
+      "Rust for Linux project, 'The Safe Pinned Initialization Problem', web page, https://rust-for-linux.com/the-safe-pinned-initialization-problem (author attribution not verified): motivates the drop guarantee with an intrusive doubly linked list whose memory must not be deallocated or reused (e.g. by ptr::write) without dropping it first, and discusses pin projections. Relationship (derived, modeling bridge): coreReuseActs is a toy instance of that failure.",
+      "Y. Guan and C. Pit-Claudel, 'Precise Reasoning About Container-Internal Pointers with Logical Pinning', CPP 2026, https://doi.org/10.1145/3779031.3779096 (arXiv:2509.23229v2): 'logical pinning', a borrowing model in separation logic for selectively tracking container-internal pointers of sequential programs, with all results mechanized in the Rocq proof assistant using CFML (per its abstract). A related use of the word 'pinning'; per its abstract it is not a model of Rust's Pin API.",
+      "Search for mechanized treatments (2026-11-21; terms: Rust Pin, pinning, structural pinning, Coq/Rocq, Iris, Lean, mechanized): no mechanized proof of the structural-pinning requirements was found. This is a negative search result, not a claim that none exists."
+    ],
+    "design_question": "Which action-level discipline keeps self-pointers and intrusive-list entries of pinned values valid, and does dropping either part of the pinning contract (no moves; the drop guarantee) admit a trace that breaks them?"
+  },
+  {
+    "id": "structural-pinning-sound-under-six-conditions",
+    "lean": "Toy.Pin.addrInv_of_structural_pinning_conditions",
+    "lean_names": [
+      "Toy.Pin.Act",
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.ApiOp",
+      "Toy.Pin.Decl",
+      "Toy.Pin.Decl.fieldTy",
+      "Toy.Pin.Decl.nfields",
+      "Toy.Pin.DropGuaranteeForPinned",
+      "Toy.Pin.DtorNoMoveOutOfPinned",
+      "Toy.Pin.DtorOp",
+      "Toy.Pin.ListOK",
+      "Toy.Pin.MutFieldAvail",
+      "Toy.Pin.NoPinnedTake",
+      "Toy.Pin.NotPackedIfPinned",
+      "Toy.Pin.Obj.fresh",
+      "Toy.Pin.Op",
+      "Toy.Pin.ProjectionConsistent",
+      "Toy.Pin.SafeOp",
+      "Toy.Pin.SafeProgram",
+      "Toy.Pin.SelfRefOK",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.UnpinOnlyIfPinnedFieldsUnpin",
+      "Toy.Pin.compile",
+      "Toy.Pin.conditions_pos_neg",
+      "Toy.Pin.conditions_vacuous_without_pinned_nonUnpin",
+      "Toy.Pin.dA",
+      "Toy.Pin.dB",
+      "Toy.Pin.dBase",
+      "Toy.Pin.dBase_satisfies_all",
+      "Toy.Pin.dC",
+      "Toy.Pin.dC'",
+      "Toy.Pin.dD",
+      "Toy.Pin.dE",
+      "Toy.Pin.dF",
+      "Toy.Pin.dPermissive",
+      "Toy.Pin.dRich",
+      "Toy.Pin.dZeroOutOfBounds",
+      "Toy.Pin.dropActs",
+      "Toy.Pin.dtorActs",
+      "Toy.Pin.expand",
+      "Toy.Pin.glueActs",
+      "Toy.Pin.isPinnedLoc_at_out_of_range_field",
+      "Toy.Pin.moveDrop",
+      "Toy.Pin.pinnedNonUnpinField_neg",
+      "Toy.Pin.pinnedNonUnpinField_pos",
+      "Toy.Pin.progA",
+      "Toy.Pin.progRich",
+      "Toy.Pin.progZero",
+      "Toy.Pin.safeOp_pos_neg",
+      "Toy.Pin.safeProgram_not_necessary_for_a_program",
+      "Toy.Pin.safeProgram_pos_neg",
+      "Toy.Pin.states",
+      "Toy.Pin.structural_nonvacuous_conclusion",
+      "Toy.Pin.zero_field_declarations_sound"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "tier_justification": "The four requirements of core::pin (structural Unpin, pinned destruction including not packed, drop guarantee, no move-out operations) plus the documented consistency of the projection choice, made precise for a toy struct and mechanized; pin-project enforces the same list.",
+    "plain_claim": "For every toy struct declaration d: if (a) d is declared Unpin (d.unpin = true) only when every structurally projected field (ApiOp.projPin i in d.api) has an Unpin type, (b) its destructor does not move out of a structurally projected field of non-Unpin type, (c) neither its API nor its destructor overwrites such a field without dropping its value, (d) it offers no Pin<&mut S> -> F move-out of such a field, (e) it is not packed when it has such a field, and (f) such a field is not also offered through a non-structural projection, then every program accepted by SafeProgram d from State.init (a list of Op, compiled to primitive actions by compile d) keeps SelfRefOK and ListOK in every visited state.",
+    "hypotheses": [
+      {
+        "name": "ha : UnpinOnlyIfPinnedFieldsUnpin d",
+        "purpose": "(a) declared Unpin only if every structurally projected field's type is Unpin; otherwise Pin::get_mut yields &mut S and mem::replace moves the pinned field.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.unpinOnlyIf_tight",
+        "witness_class": "a one-field declaration (dA) and a 5-operation safe program"
+      },
+      {
+        "name": "hb : DtorNoMoveOutOfPinned d",
+        "purpose": "(b) The destructor (which receives &mut self) does not move out of a structurally projected non-Unpin field.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.dtorNoMoveOut_tight",
+        "witness_class": "a one-field declaration (dB) and a 5-operation safe program"
+      },
+      {
+        "name": "hc : DropGuaranteeForPinned d",
+        "purpose": "(c) Neither the API nor the destructor overwrites a structurally projected non-Unpin field without dropping its value. Both conjuncts are tight separately.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Pin.dropGuaranteeForPinned_api_tight",
+          "Toy.Pin.dropGuaranteeForPinned_dtor_tight"
+        ],
+        "witness_class": "one-field declarations (dC: API overwrite; dC': destructor overwrite) and 5-operation safe programs"
+      },
+      {
+        "name": "hd : NoPinnedTake d",
+        "purpose": "(d) No Pin<&mut S> -> F move-out (Option::take-like) for a structurally projected non-Unpin field.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.noPinnedTake_tight",
+        "witness_class": "a one-field declaration (dD) and a 5-operation safe program"
+      },
+      {
+        "name": "he : NotPackedIfPinned d",
+        "purpose": "(e) Not #[repr(packed)] when there is a structurally projected non-Unpin field (packed drop glue moves fields to aligned temporaries).",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.notPacked_tight",
+        "witness_class": "a one-field declaration (dE) and a 5-operation safe program"
+      },
+      {
+        "name": "hf : ProjectionConsistent d",
+        "purpose": "(f) A structurally projected non-Unpin field is not also offered through a non-structural projection Pin<&mut S> -> &mut F.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.projectionConsistent_tight",
+        "witness_class": "a one-field declaration (dF) and a 6-operation safe program"
+      },
+      {
+        "name": "hsafe : SafeProgram d State.init prog",
+        "purpose": "Restricts to programs every operation of which SafeOp permits in the state where it runs (e.g. a &mut to a field or to S only when SafeOp provides one).",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.safeProgram_tight",
+        "witness_class": "the one-field declaration dBase (satisfying (a)-(f)) and the 5-operation program progA"
+      }
+    ],
+    "nonvacuity_witness": "dRich: three fields (non-Unpin structurally projected; non-Unpin non-structural with take, overwrite and a destructor that moves it out and overwrites it; Unpin with both projections); progRich: 20 safe operations including pinning, a self-reference, two list entries, replace/swap/take/overwrite/assign of non-structural fields, replacing an unpinned struct, leaking, and dropping. All six conditions and safety hold; the conclusion is also checked directly (structural_nonvacuous_conclusion).",
+    "nonvacuity_witness_lean": "Toy.Pin.structural_nonvacuous",
+    "non_claims": [
+      "(a)-(e) alone are not sufficient in this model (conditions_a_to_e_insufficient): for the one-field declaration dF a non-structural &mut to the structurally projected field lets mem::swap move it.",
+      "The conditions constrain only structurally projected fields whose type is not Unpin; for Unpin fields they hold vacuously (conditions_vacuous_without_pinned_nonUnpin). For a generic field type T, a library must meet them for non-Unpin instantiations, which gives the documentation's unqualified requirements; this generic reading is a modeling bridge, not proved.",
+      "'Structurally pinned field' means exactly ApiOp.projPin i in d.api. Self-pointers and list entries arise only at such fields (addrState_only_at_structurally_projected_fields). Private fields whose address S's own unsafe code relies on without offering a structural projection, and pointers between sibling fields, are outside the model.",
+      "Field alignment is not modelled: dPermissive is packed, has a structurally projected field of Unpin type and satisfies (a)-(f), whereas in Rust taking a reference to a possibly unaligned field of a #[repr(packed)] struct is rejected or undefined behaviour and core::pin says pinning cannot be used with packed types (pin.rs lines 630-633) (modeling bridge).",
+      "Soundness for Unpin fields relies on the built-in modeling assumption that Unpin values never establish self-pointers or list entries (Act.setSelf and Act.register are no-ops on them).",
+      "The safe API is closed: safe code can do exactly the Op constructors; S's own operations are the four ApiOp forms (take and overwrite are callable whether or not the object is pinned, which only adds programs) and its destructor is a list of the two DtorOp forms (move a field out; overwrite a field without drop). Destructors that drop a field in place and then reuse its storage, and arbitrary unsafe-implemented APIs (e.g. RefCell-like get_pin_mut plus borrow_mut), are covered insofar as they reduce to these forms and are not covered otherwise.",
+      "After Op.forget b, references to b stay usable in this model (closer to Box::leak than to mem::forget); see forget-frame-and-leaked-object-never-dropped-by-safe-continuations.",
+      "One struct type, one level of fields (no nested structural pinning), a field is either empty or occupied (no general enums), no shared pinning (Pin<&S>), no interior mutability, no panics or unwinding, no concurrency.",
+      "Values moved out by replaceField/take are dropped immediately; packed drop glue is modelled as moving every field to a fresh temporary; which fields a real compiler moves is not examined.",
+      "Not a soundness proof for pin-project, the standard library, or any crate."
+    ],
+    "prior_art": [
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): 'Implementing Drop for types with address-sensitive states' (lines 594-633; packed types, lines 630-633); 'Projections and Structural Pinning' (lines 696-847; consistency of the projection choice, lines 722-725; the four requirements, lines 791-846). Relationship (derived, modeling bridge): (a)-(f) are toy formalizations; nothing here is checked against the library's code.",
+      "pin-project crate, taiki-e/pin-project commit f49edb9596fdf8bb09d48091755e522bb4a119be (release 1.2.0), pin-project-internal/src/lib.rs, lines 87-159: #[pin_project] enforces the documented requirements: a generated Unpin impl requiring only the #[pin] fields to be Unpin (lines 96-108), #[pinned_drop] instead of Drop (lines 110-135), the drop guarantee (lines 137-147), no move-out of #[pin] fields (lines 149-155), rejection of #[repr(packed)] (lines 157-159). Relationship (derived, modeling bridge): no claim about the crate's implementation.",
+      "withoutboats, 'Pinned places', blog post, 2024-07-23, https://without.boats/blog/pinned-places/: proposes language-level pinned places and a 'pinned' field annotation for safe pinned projections, with checks on the containing type (no explicit Unpin implementation, among others).",
+      "Y. Dai and Y. Feng, 'PinChecker: Identifying Unsound Safe Abstractions of Rust Pinning APIs', arXiv:2504.14500v2 (2025), https://doi.org/10.48550/arXiv.2504.14500: an intermediate representation (RPIL) of library functions' pinning behaviour and a tool that synthesizes client programs violating the pinning contract (bug finding, not proof). Venue not verified here.",
+      "Z. Rao, J. Zhou, H. Tian, X. Wang, H. Xu, 'Annotating and Auditing the Safety Properties of Unsafe Rust', arXiv:2504.21312v2 (2026), https://doi.org/10.48550/arXiv.2504.21312: a standard for documenting safety properties of unsafe Rust APIs, with tooling; its treatment of core::pin was not examined here.",
+      "G. Pirlea, 'A Formal Model of Rust's Pinning', talk at the Max Planck Institute for Software Systems, September 2019, listed on the author's homepage https://pirlea.net/; no paper or public mechanization was found and the talk's content was not examined here.",
+      "Search for mechanized treatments (2026-11-21; terms: Rust Pin, pinning, structural pinning, Coq/Rocq, Iris, Lean, mechanized): no mechanized proof of the structural-pinning requirements was found. This is a negative search result, not a claim that none exists."
+    ],
+    "design_question": "Which conditions on a struct's declaration (Unpin, destructor, API, packedness, projection choice) make structural projection Pin<&mut S> -> Pin<&mut F> sound for every safe program?"
+  },
+  {
+    "id": "each-structural-pinning-condition-tight-with-one-field-witness",
+    "lean": [
+      "Toy.Pin.unpinOnlyIf_tight",
+      "Toy.Pin.dtorNoMoveOut_tight",
+      "Toy.Pin.dropGuaranteeForPinned_api_tight",
+      "Toy.Pin.dropGuaranteeForPinned_dtor_tight",
+      "Toy.Pin.noPinnedTake_tight",
+      "Toy.Pin.notPacked_tight",
+      "Toy.Pin.projectionConsistent_tight",
+      "Toy.Pin.conditions_abdef_tight_via_list",
+      "Toy.Pin.dropGuaranteeForPinned_invisible_to_selfRef"
+    ],
+    "lean_names": [
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.ApiOp",
+      "Toy.Pin.Decl",
+      "Toy.Pin.Decl.PinnedNonUnpinField",
+      "Toy.Pin.DropGuaranteeForPinned",
+      "Toy.Pin.DtorNoMoveOutOfPinned",
+      "Toy.Pin.ListOK",
+      "Toy.Pin.NoPinnedTake",
+      "Toy.Pin.NotPackedIfPinned",
+      "Toy.Pin.ProjectionConsistent",
+      "Toy.Pin.SafeProgram",
+      "Toy.Pin.SafeProgramsKeepAddrInv",
+      "Toy.Pin.SelfRefOK",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.UnpinOnlyIfPinnedFieldsUnpin",
+      "Toy.Pin.compile",
+      "Toy.Pin.conditions_vacuous_without_pinned_nonUnpin",
+      "Toy.Pin.dA",
+      "Toy.Pin.dB",
+      "Toy.Pin.dC",
+      "Toy.Pin.dC'",
+      "Toy.Pin.dD",
+      "Toy.Pin.dE",
+      "Toy.Pin.dF",
+      "Toy.Pin.pinAndInit",
+      "Toy.Pin.pinAndLink",
+      "Toy.Pin.progA",
+      "Toy.Pin.progB",
+      "Toy.Pin.progC",
+      "Toy.Pin.progC'",
+      "Toy.Pin.progD",
+      "Toy.Pin.progE",
+      "Toy.Pin.progF",
+      "Toy.Pin.states"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "definitional",
+    "tier_justification": "Each failure mode is described informally in core::pin (the Option::take example, the packed-drop remark, the RefCell example); here each is a concrete, checked program in the toy model.",
+    "plain_claim": "For each of (a)-(f) there is a one-field toy declaration that satisfies the other five conditions and violates that one, together with a program of at most six operations accepted by SafeProgram from State.init along which AddrInv fails: for (a), (b), (d), (e), (f) the program sets a self-pointer, SelfRefOK fails in some visited state and ListOK holds in all of them; for (c), both by S's API (dC) and by its destructor (dC'), the program links into the list, ListOK fails in some visited state and SelfRefOK holds in all of them. Replacing the self-pointer by a list link in the (a), (b), (d), (e), (f) programs gives programs accepted by SafeProgram along which ListOK fails; with a self-pointer only, the (c) overwrite keeps AddrInv.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Not applicable (closed statements without hypotheses); each theorem exhibits its declaration (dA, dB, dC, dC', dD, dE, dF) and program and checks every conjunct by evaluation.",
+    "nonvacuity_witness_lean": "Toy.Pin.unpinOnlyIf_tight",
+    "positive_control_lean": "Toy.Pin.dBase_sound",
+    "non_claims": [
+      "These theorems establish tightness of (a)-(f) in addrInv_of_structural_pinning_conditions within the class of one-field declarations and programs of at most six operations; they do not prove the universal converses (for every d, SafeProgramsKeepAddrInv d implies the condition) (not proved here), and they do not enumerate all exploitations.",
+      "Condition (c) is invisible to the self-reference invariant on its witness: with only a self-reference the same overwrite keeps both invariants (dropGuaranteeForPinned_invisible_to_selfRef). A model with only self-referential values would make (c) look unneeded.",
+      "Escape hatches that defeat the witnesses: if the projected field's type is Unpin, or ApiOp.projPin i is not offered, all six conditions hold vacuously (conditions_vacuous_without_pinned_nonUnpin and the definition of Decl.PinnedNonUnpinField); if the object is leaked instead of dropped, the destructor-triggered failures (b), (c)-destructor and (e) do not occur on it (leaked_object_never_dropped_or_deallocated).",
+      "'Breaks an invariant' means a stale pointer in the toy state; no claim that the corresponding Rust program has undefined behaviour under a particular aliasing model.",
+      "The packed witness models the compiler moving the field before dropping it; whether a particular compiler version moves a particular (aligned) field is not examined."
+    ],
+    "prior_art": [
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): the four requirements and their failure examples (lines 791-846: an Option::take-like move-out, the RefCell example at lines 840-846), packed drop glue (lines 630-633). Relationship (derived, modeling bridge).",
+      "withoutboats, 'Pin', blog post, 2024-07-19, https://without.boats/blog/pin/: history and design of Pin; describes how a destructor that moves out of a pin-projected field (Drop::drop takes &mut self) violates the pinning guarantee, and that crates such as pin-project-lite restrict destructors."
+    ],
+    "design_question": "Is each of the six structural-pinning conditions tight (does dropping it, with the other five kept, admit a safe program that breaks an invariant), and which concrete invariant (self-reference or intrusive-list entry) breaks when it is dropped?"
+  },
+  {
+    "id": "conditions-a-to-e-insufficient-without-projection-consistency",
+    "lean": [
+      "Toy.Pin.conditions_a_to_e_insufficient",
+      "Toy.Pin.projection_inconsistent_assign_harmless",
+      "Toy.Pin.projection_inconsistent_unpin_field_sound"
+    ],
+    "lean_names": [
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.DropGuaranteeForPinned",
+      "Toy.Pin.DtorNoMoveOutOfPinned",
+      "Toy.Pin.NoPinnedTake",
+      "Toy.Pin.NotPackedIfPinned",
+      "Toy.Pin.SafeProgram",
+      "Toy.Pin.SafeProgramsKeepAddrInv",
+      "Toy.Pin.SelfRefOK",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.UnpinOnlyIfPinnedFieldsUnpin",
+      "Toy.Pin.compile",
+      "Toy.Pin.coreReuseActs",
+      "Toy.Pin.dF",
+      "Toy.Pin.dFUnpin",
+      "Toy.Pin.pinAndLink",
+      "Toy.Pin.progF",
+      "Toy.Pin.sound_of_pinnedFieldsUnpin",
+      "Toy.Pin.states"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "definitional",
+    "tier_justification": "The documentation states that the projection choice must be consistent and gives a RefCell example of pinned and unpinned access to the same data; here the minimal toy instance and two controls are checked.",
+    "plain_claim": "The one-field toy declaration dF, which offers both a structural projection Pin<&mut S> -> Pin<&mut F> and a non-structural projection Pin<&mut S> -> &mut F of its non-Unpin field, satisfies (a)-(e); the 6-operation program progF is accepted by SafeProgram dF from State.init, uses the non-structural &mut F with mem::swap, and breaks SelfRefOK, so not every program accepted by SafeProgram dF keeps AddrInv. On the same declaration, the one 6-operation program that uses the non-structural &mut F only to assign in place (drop, then write) is accepted by SafeProgram and keeps AddrInv; and the one-field declaration dFUnpin, identical except that the field's type is Unpin, keeps AddrInv for every program accepted by SafeProgram.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Not applicable (closed statements); dF, progF and dFUnpin are exposed. The soundness statement for dFUnpin covers a non-empty set of programs: a 6-operation program using both projections of its Unpin field is accepted by SafeProgram dFUnpin (dFUnpin_nonvacuous).",
+    "nonvacuity_witness_lean": [
+      "Toy.Pin.conditions_a_to_e_insufficient",
+      "Toy.Pin.dFUnpin_nonvacuous"
+    ],
+    "positive_control_lean": [
+      "Toy.Pin.projection_inconsistent_assign_harmless",
+      "Toy.Pin.projection_inconsistent_unpin_field_sound"
+    ],
+    "non_claims": [
+      "projection_inconsistent_assign_harmless checks a single program; that every move-free use of the non-structural &mut is harmless is not proved here.",
+      "projection_inconsistent_unpin_field_sound checks the single declaration dFUnpin. The general fact that every declaration whose structurally projected fields all have Unpin types keeps AddrInv for every safe program, whatever projections it also offers, is sound_of_pinnedFieldsUnpin; nothing is claimed for structurally projected non-Unpin fields beyond conditions_a_to_e_insufficient.",
+      "In safe Rust, a public fn(Pin<&mut S>) -> &mut F for F: Sized + !Unpin lets any caller use mem::swap or mem::replace; restricting mutation to drop-then-write requires keeping &mut F encapsulated in an operation such as Pin::set (modeling bridge, not proved).",
+      "Interior mutability (the documentation's RefCell example) is not modelled; the modelled case is the direct one, with two projections of the same field."
+    ],
+    "prior_art": [
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): the projection choice must be consistent (lines 722-725); the RefCell example of pinned and unpinned access to the same content (lines 840-846); Pin::set drops before overwriting (lines 690-694). Relationship (derived, modeling bridge).",
+      "Rust for Linux project, 'The Safe Pinned Initialization Problem', web page, https://rust-for-linux.com/the-safe-pinned-initialization-problem (author attribution not verified): motivates the drop guarantee with an intrusive doubly linked list whose memory must not be deallocated or reused (e.g. by ptr::write) without dropping it first, and discusses pin projections. Relationship (derived, modeling bridge): coreReuseActs is a toy instance of that failure."
+    ],
+    "design_question": "Are the four documented requirements enough without the consistency of the projection choice, and is it the &mut itself or the moves it enables that breaks pinned invariants?"
+  },
+  {
+    "id": "unpin-sound-iff-pinned-fields-unpin",
+    "lean": "Toy.Pin.unpin_sound_iff_pinnedFieldsUnpin",
+    "lean_names": [
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.ApiOp",
+      "Toy.Pin.Decl",
+      "Toy.Pin.ListOK",
+      "Toy.Pin.MutStructAvail",
+      "Toy.Pin.Obj.leaf",
+      "Toy.Pin.PinnedFieldsUnpin",
+      "Toy.Pin.SafeProgram",
+      "Toy.Pin.SafeProgramsKeepAddrInv",
+      "Toy.Pin.SelfRefOK",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.compile",
+      "Toy.Pin.dA",
+      "Toy.Pin.dBase",
+      "Toy.Pin.dConservative",
+      "Toy.Pin.dPermissive",
+      "Toy.Pin.pinnedFieldsUnpin_pos_neg",
+      "Toy.Pin.sound_of_pinnedFieldsUnpin",
+      "Toy.Pin.states"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "shallow",
+    "tier_justification": "Documented requirement 1 ('a struct can be Unpin only if all of its structurally-pinned fields are') and pin-project's generated Unpin bound, stated as an exact equivalence in the toy model and mechanized.",
+    "plain_claim": "For every toy struct declaration d declared Unpin (d.unpin = true), with no other hypothesis: every program accepted by SafeProgram d from State.init keeps SelfRefOK and ListOK in every visited state if and only if every structurally projected field of d (ApiOp.projPin i in d.api) has an Unpin type (d.fieldTy i = true).",
+    "hypotheses": [
+      {
+        "name": "hu : d.unpin = true",
+        "purpose": "The equivalence is about declaring S : Unpin; for a declaration not declared Unpin, soundness does not require its structurally projected fields to be Unpin.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.unpin_iff_hu_tight",
+        "witness_class": "the one-field declaration dBase"
+      }
+    ],
+    "nonvacuity_witness": "dConservative (declared Unpin; its only structurally projected field is Unpin) satisfies the hypothesis and the right side; dA (declared Unpin; structurally projected non-Unpin field) satisfies the hypothesis and fails the right side.",
+    "nonvacuity_witness_lean": "Toy.Pin.unpin_iff_nonvacuous",
+    "non_claims": [
+      "Scope boundary: in this model a location is a field location (b, i); no location denotes a whole struct, so the struct itself never holds a self-pointer or list entry, and every self-pointer target and list entry created by a safe program lies at a field index with an offered structural projection (addrState_only_at_structurally_projected_fields). A declaration with no structural projection therefore satisfies PinnedFieldsUnpin vacuously and keeps AddrInv for every safe program whatever its unpin value, because it never has any address-sensitive state (sound_of_pinnedFieldsUnpin, no_addrState_without_structural_projection; instance noProjection_unpin_vacuously_sound).",
+      "Do not apply this to conclude that a Rust type that is itself address-sensitive may implement Unpin, for example a self-referential leaf type with no projecting methods, or a #[pin_project] struct whose PhantomPinned marker lacks #[pin] (pin-project documents that PhantomPinned without #[pin] has no effect, lib.rs lines 297-313). Such types are outside the model; for them Unpin must be suppressed (modeling bridge).",
+      "A declared-Unpin struct may not offer a structural projection of a non-Unpin field, whatever the other conditions: unpinWitness_breaks_selfRef_of_unpin_of_structural_nonUnpin_field gives a breaking safe program for every such declaration.",
+      "The 'if' direction says nothing about structurally projected non-Unpin fields because, under its hypothesis, there are none; it is not a sufficient-conditions theorem for pinning such fields (see addrInv_of_structural_pinning_conditions).",
+      "Relies on the built-in modeling assumption that Unpin values never establish self-pointers or list entries.",
+      "Unpin is a single boolean of the declaration. For a generic struct S<T> with impl<T: Unpin> Unpin for S<T>, the vacuity of (b)-(f) applies only to instantiations with T: Unpin; S<T> must still meet (b)-(f) for non-Unpin T (modeling bridge, not proved). Negative impls and UnsafeUnpin-style manual impls are not modelled beyond that boolean.",
+      "Field alignment is not modelled: a packed declaration whose structurally projected fields all have Unpin types satisfies PinnedFieldsUnpin (dPermissive is packed, declared Unpin, and its only structurally projected field is Unpin), whereas in Rust taking a reference to a possibly unaligned field of a #[repr(packed)] struct is rejected or undefined behaviour and core::pin says pinning cannot be used with packed types (pin.rs lines 630-633) (modeling bridge)."
+    ],
+    "prior_art": [
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): requirement 1, Structural Unpin (lines 791-801); a struct may impl Unpin even if a non-structurally pinned field is not Unpin (lines 766-769). Relationship (derived, modeling bridge).",
+      "pin-project crate, taiki-e/pin-project commit f49edb9596fdf8bb09d48091755e522bb4a119be (release 1.2.0), pin-project-internal/src/lib.rs: the generated Unpin impl requires only the #[pin] fields to be Unpin (lines 96-108); PhantomPinned needs #[pin] to make the struct !Unpin (lines 297-313).",
+      "RFC 2349 'Pin', rust-lang/rfcs text/2349-pin.md at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4: Unpin semantics (lines 39-44) and the Unpin auto trait (lines 63-75)."
+    ],
+    "design_question": "When may a struct with structurally projected fields be declared Unpin, and does any condition other than the field types matter?"
+  },
+  {
+    "id": "unpin-with-structural-non-unpin-field-witness-breaks-self-reference",
+    "lean": "Toy.Pin.unpinWitness_breaks_selfRef_of_unpin_of_structural_nonUnpin_field",
+    "lean_names": [
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.ApiOp",
+      "Toy.Pin.Decl",
+      "Toy.Pin.ListOK",
+      "Toy.Pin.SafeProgram",
+      "Toy.Pin.SelfRefOK",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.compile",
+      "Toy.Pin.dA",
+      "Toy.Pin.dBase",
+      "Toy.Pin.dConservative",
+      "Toy.Pin.dUnpinField",
+      "Toy.Pin.dUnpinNonStructural",
+      "Toy.Pin.states",
+      "Toy.Pin.unpinWitness"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "depth": "shallow",
+    "tier_justification": "Documented failure mode of requirement 1 (a manual impl Unpin plus a structural projection to a non-Unpin field), with an exposed witness program for every toy declaration.",
+    "plain_claim": "For every toy struct declaration d declared Unpin (d.unpin = true) and every field index i such that d offers a structural projection of field i (ApiOp.projPin i in d.api) and field i's type is not Unpin (d.fieldTy i = false), with no other condition on d: the explicit 5-operation program unpinWitness i (create, pin, project field i structurally, let the field store its own address, then mem::replace the whole struct through the &mut S that Pin::get_mut provides) is accepted by SafeProgram d from State.init, SelfRefOK fails in some visited state, and ListOK holds in every visited state.",
+    "hypotheses": [
+      {
+        "name": "hu : d.unpin = true",
+        "purpose": "Declaring S : Unpin is what makes &mut S, hence the whole-struct replace, available to safe code on a pinned S.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.unpinWitness_hu_tight",
+        "witness_class": "the one-field declaration dBase with i = 0"
+      },
+      {
+        "name": "hproj : ApiOp.projPin i ∈ d.api",
+        "purpose": "Field i is structurally projected, so the program can pin it and let it store its address.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.unpinWitness_projPin_tight",
+        "witness_class": "the one-field declaration dUnpinNonStructural with i = 0"
+      },
+      {
+        "name": "hty : d.fieldTy i = false",
+        "purpose": "Field i's type is not Unpin, so its value can establish a self-pointer.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.unpinWitness_fieldTy_tight",
+        "witness_class": "the one-field declaration dUnpinField with i = 0"
+      }
+    ],
+    "nonvacuity_witness": "dA with i = 0.",
+    "nonvacuity_witness_lean": "Toy.Pin.unpin_unsound_nonvacuous",
+    "positive_control_lean": [
+      "Toy.Pin.unpinWitness_fieldTy_tight",
+      "Toy.Pin.unpinWitness_projPin_tight",
+      "Toy.Pin.dBase_sound"
+    ],
+    "non_claims": [
+      "Does not show that every program over such a declaration misbehaves; one witness program per declaration and field.",
+      "Escape hatches that defeat the conclusion: (1) offering field i through a non-structural projection and not through a structural one (dUnpinNonStructural is then sound for every safe program, unpinWitness_projPin_tight; also dConservative, autoUnpin_conservative); (2) not declaring S Unpin (dBase_sound, unpinWitness_hu_tight); (3) field i having an Unpin type (unpinWitness_fieldTy_tight), under the built-in assumption that Unpin values establish no address-sensitive state; (4) in Rust, a whole-struct mem::replace needs S: Sized, so unsized structs escape this witness (not modelled; modeling bridge).",
+      "Field types are concrete booleans; structs whose Unpin depends on generic parameters are not modelled."
+    ],
+    "prior_art": [
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): requirement 1, Structural Unpin (lines 791-801). Relationship (derived, modeling bridge).",
+      "RFC 2349 'Pin', rust-lang/rfcs text/2349-pin.md at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4: with T: !Unpin, &mut access is enough to move data out of the referent, e.g. by mem::replace (line 42)."
+    ],
+    "design_question": "Can a struct declared Unpin offer a structural projection of a non-Unpin field under any other conditions?"
+  },
+  {
+    "id": "sound-unpin-rules-characterized-on-declarations-satisfying-b-to-f",
+    "lean": [
+      "Toy.Pin.soundUnpinRule_iff",
+      "Toy.Pin.pinnedFieldsRule_sound",
+      "Toy.Pin.pinnedFieldsRule_greatest_under_b_to_f",
+      "Toy.Pin.soundUnpinRule_false_of_grants_structural_nonUnpin"
+    ],
+    "lean_names": [
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.ApiOp",
+      "Toy.Pin.Decl",
+      "Toy.Pin.DropGuaranteeForPinned",
+      "Toy.Pin.DtorNoMoveOutOfPinned",
+      "Toy.Pin.NoPinnedTake",
+      "Toy.Pin.NotPackedIfPinned",
+      "Toy.Pin.Obj.leaf",
+      "Toy.Pin.PinnedFieldsUnpin",
+      "Toy.Pin.ProjectionConsistent",
+      "Toy.Pin.SafeProgram",
+      "Toy.Pin.SoundUnpinRule",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.autoUnpin",
+      "Toy.Pin.autoUnpin_ignores_unpin",
+      "Toy.Pin.dB",
+      "Toy.Pin.dBase",
+      "Toy.Pin.dC",
+      "Toy.Pin.dC'",
+      "Toy.Pin.dConservative",
+      "Toy.Pin.dD",
+      "Toy.Pin.dE",
+      "Toy.Pin.dF",
+      "Toy.Pin.dUnpinField",
+      "Toy.Pin.neverUnpin_sound",
+      "Toy.Pin.permissiveRule",
+      "Toy.Pin.permissiveRule_sound",
+      "Toy.Pin.pinnedFieldsRule",
+      "Toy.Pin.pinnedFieldsRule_ignores_unpin",
+      "Toy.Pin.rPackedOrPinned",
+      "Toy.Pin.rPackedOrPinned_sound",
+      "Toy.Pin.sound_of_pinnedFieldsUnpin"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "depth": "shallow",
+    "tier_justification": "pin-project derives Unpin from the #[pin] fields only and the documentation allows impl Unpin regardless of non-structural fields; here the rule-level statement is made exact on declarations satisfying (b)-(f).",
+    "plain_claim": "Call a rule r : Decl -> Bool (which may read the whole declaration, including the unpin value it replaces) sound (SoundUnpinRule r) when, for every declaration d satisfying (b)-(f), setting d.unpin := r d makes every program accepted by SafeProgram from State.init keep AddrInv in every visited state. Then: r is sound iff, on every declaration satisfying (b)-(f), r grants Unpin only when every structurally projected field has an Unpin type (soundUnpinRule_iff); pinnedFieldsRule is sound; for every sound r and every declaration d satisfying (b)-(f), r d = true implies pinnedFieldsRule d = true, so on declarations satisfying (b)-(f) pinnedFieldsRule is the most permissive sound rule; and every rule that grants Unpin to some declaration satisfying (b)-(f) that has a structurally projected field of non-Unpin type is not sound.",
+    "hypotheses": [
+      {
+        "name": "hr : SoundUnpinRule r (pinnedFieldsRule_greatest_under_b_to_f)",
+        "purpose": "Maximality is stated among sound rules; an unsound rule can grant Unpin where pinnedFieldsRule does not (pinnedFieldsRule_greatest_hr_tight).",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.pinnedFieldsRule_greatest_hr_tight",
+        "witness_class": "the rule 'always Unpin' and the one-field declaration dBase"
+      },
+      {
+        "name": "hb hc hd he hf : (b)-(f) for d (pinnedFieldsRule_greatest_under_b_to_f and soundUnpinRule_false_of_grants_structural_nonUnpin)",
+        "purpose": "By its definition, SoundUnpinRule constrains rules on declarations satisfying (b)-(f) and on no others; each of the five is tight separately in both theorems.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.ruleResults_b_to_f_tight",
+        "witness_class": "the sound rule permissiveRule and the one-field declarations dB, dC, dD, dE, dF (field 0), each violating exactly one of (b)-(f)"
+      },
+      {
+        "name": "h : r d = true (both theorems)",
+        "purpose": "The conclusions concern declarations to which the rule grants Unpin.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.ruleResults_h_tight",
+        "witness_class": "the sound rule 'never Unpin' and the one-field declaration dBase (field 0)"
+      },
+      {
+        "name": "hproj : ApiOp.projPin i ∈ d.api (soundUnpinRule_false_of_grants_structural_nonUnpin)",
+        "purpose": "A structurally projected field of non-Unpin type is what makes granting Unpin unsound on declarations satisfying (b)-(f) (soundUnpinRule_iff).",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.soundUnpinRule_false_hproj_tight",
+        "witness_class": "the sound rule pinnedFieldsRule and the two-field declaration dConservative, field 0"
+      },
+      {
+        "name": "hty : d.fieldTy i = false (soundUnpinRule_false_of_grants_structural_nonUnpin)",
+        "purpose": "A structurally projected field of Unpin type does not make granting Unpin unsound.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.soundUnpinRule_false_hty_tight",
+        "witness_class": "the sound rule pinnedFieldsRule and the one-field declaration dUnpinField, field 0"
+      }
+    ],
+    "nonvacuity_witness": "pinnedFieldsRule (sound) and dConservative (satisfying (b)-(f), granted Unpin) satisfy the hypotheses of pinnedFieldsRule_greatest_under_b_to_f; the rule 'always Unpin', dBase and field 0 satisfy those of soundUnpinRule_false_of_grants_structural_nonUnpin.",
+    "nonvacuity_witness_lean": [
+      "Toy.Pin.pinnedFieldsRule_greatest_nonvacuous",
+      "Toy.Pin.soundUnpinRule_false_nonvacuous"
+    ],
+    "positive_control_lean": [
+      "Toy.Pin.alwaysUnpin_unsound",
+      "Toy.Pin.pinnedFieldsRule_not_greatest_without_b_to_f"
+    ],
+    "non_claims": [
+      "Off the (b)-(f) domain SoundUnpinRule imposes no constraint, so pinnedFieldsRule is not the most permissive sound rule over all declarations: rPackedOrPinned and permissiveRule are sound and grant Unpin to declarations violating (b)-(f) that pinnedFieldsRule refuses (pinnedFieldsRule_not_greatest_without_b_to_f, ruleResults_b_to_f_tight).",
+      "Nothing is claimed about which unpin value, if any, makes a declaration violating (b)-(f) sound; for the witnesses dB, dC, dC', dD, dE, dF (each with unpin = false) some safe program breaks AddrInv (the _tight theorems of each-structural-pinning-condition-tight-with-one-field-witness).",
+      "Rules may read the whole declaration, including the unpin value they replace; pinnedFieldsRule and autoUnpin do not read it (pinnedFieldsRule_ignores_unpin, autoUnpin_ignores_unpin). Rules that depend on information outside the declaration are not considered.",
+      "Scope boundary: self-pointers and list entries arise only at field locations with an offered structural projection; no location denotes a whole struct, so the struct itself is never address-sensitive in this model (addrState_only_at_structurally_projected_fields). A declaration without structural projections keeps AddrInv for every safe program whatever its unpin value (sound_of_pinnedFieldsUnpin; instance noProjection_unpin_vacuously_sound). Do not conclude that a Rust type that is itself address-sensitive (a self-referential leaf type, or a #[pin_project] struct whose PhantomPinned marker lacks #[pin]) may implement Unpin: such types are outside the model, and for them refusing Unpin is required, not conservative (modeling bridge).",
+      "Does not describe Rust's auto-trait machinery; autoUnpin is a toy rule mirroring it (modeling bridge)."
+    ],
+    "prior_art": [
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): requirement 1 (lines 791-801) and the remark that a struct may impl Unpin regardless of non-structurally pinned fields (lines 766-769). Relationship (derived, modeling bridge).",
+      "pin-project crate, taiki-e/pin-project commit f49edb9596fdf8bb09d48091755e522bb4a119be (release 1.2.0), pin-project-internal/src/lib.rs: the generated Unpin impl requires only the #[pin] fields to be Unpin (lines 96-108). Relationship (derived, modeling bridge): pinnedFieldsRule mirrors that bound; no claim about the crate's implementation."
+    ],
+    "design_question": "Which rules for deriving Unpin from a struct declaration are sound, and is the conjunction over structurally projected fields the most permissive one?"
+  },
+  {
+    "id": "auto-unpin-sound-under-b-to-f-and-strictly-conservative-on-one-instance",
+    "lean": [
+      "Toy.Pin.autoUnpin_sound",
+      "Toy.Pin.autoUnpin_implies_pinnedFieldsUnpin",
+      "Toy.Pin.autoUnpin_conservative"
+    ],
+    "lean_names": [
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.Decl",
+      "Toy.Pin.DropGuaranteeForPinned",
+      "Toy.Pin.DtorNoMoveOutOfPinned",
+      "Toy.Pin.NoPinnedTake",
+      "Toy.Pin.NotPackedIfPinned",
+      "Toy.Pin.Obj.leaf",
+      "Toy.Pin.PinnedFieldsUnpin",
+      "Toy.Pin.ProjectionConsistent",
+      "Toy.Pin.SafeProgram",
+      "Toy.Pin.SafeProgramsKeepAddrInv",
+      "Toy.Pin.SoundUnpinRule",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.autoUnpin",
+      "Toy.Pin.autoUnpin_does_not_rescue_dB",
+      "Toy.Pin.autoUnpin_pos_neg",
+      "Toy.Pin.dB",
+      "Toy.Pin.dBase",
+      "Toy.Pin.dC",
+      "Toy.Pin.dC'",
+      "Toy.Pin.dConservative",
+      "Toy.Pin.dD",
+      "Toy.Pin.dE",
+      "Toy.Pin.dF",
+      "Toy.Pin.dUnpinField",
+      "Toy.Pin.sound_of_pinnedFieldsUnpin",
+      "Toy.Pin.states"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "definitional",
+    "tier_justification": "Follows the documentation's remark that a struct may impl Unpin even if a non-structurally pinned field's type is not Unpin; mechanized for the toy model.",
+    "plain_claim": "For every toy declaration d satisfying (b)-(f), setting d.unpin := autoUnpin d (Unpin iff every field's type is Unpin, as Rust's auto trait computes for a struct without a manual impl) makes every program accepted by SafeProgram from State.init keep AddrInv in every visited state (this is SoundUnpinRule autoUnpin with the definition of SoundUnpinRule substituted); for every declaration d, autoUnpin d = true implies that every structurally projected field has an Unpin type; and for the two-field declaration dConservative, whose only non-Unpin field is offered only through a non-structural projection, autoUnpin refuses Unpin although dConservative, declared Unpin, keeps AddrInv for every program accepted by SafeProgram.",
+    "hypotheses": [
+      {
+        "name": "(b)-(f) for d, inside SoundUnpinRule autoUnpin",
+        "purpose": "SoundUnpinRule quantifies over the declarations satisfying (b)-(f); each is tight separately.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Pin.autoUnpin_sound_b_to_f_tight",
+          "Toy.Pin.autoUnpin_sound_b_to_f_tight_combined"
+        ],
+        "witness_class": "the one-field declarations dB, dC, dC', dD, dE, dF (each violating exactly one of (b)-(f)), with unpin := autoUnpin X = false. autoUnpin_sound_b_to_f_tight states autoUnpin X = false and the failure of SafeProgramsKeepAddrInv for dB, dC, dD, dE, dF; that the other four of (b)-(f) hold for each witness is in the companion theorems dtorNoMoveOut_tight, dropGuaranteeForPinned_api_tight, dropGuaranteeForPinned_dtor_tight, noPinnedTake_tight, notPacked_tight and projectionConsistent_tight; autoUnpin_sound_b_to_f_tight_combined states all of these conjuncts (including dC') in one theorem"
+      },
+      {
+        "name": "h : autoUnpin d = true (autoUnpin_implies_pinnedFieldsUnpin)",
+        "purpose": "The conclusion concerns declarations to which autoUnpin grants Unpin; without that, a structurally projected field may have a non-Unpin type.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.autoUnpin_implies_h_tight",
+        "witness_class": "the one-field declaration dBase"
+      }
+    ],
+    "nonvacuity_witness": "dUnpinField satisfies (b)-(f) and autoUnpin dUnpinField = true; with unpin := autoUnpin dUnpinField every safe program keeps AddrInv (autoUnpin_true_witness). dConservative is exposed in autoUnpin_conservative, and a non-empty 7-operation program is accepted by SafeProgram dConservative (sound_declarations_nonvacuous).",
+    "nonvacuity_witness_lean": [
+      "Toy.Pin.autoUnpin_true_witness",
+      "Toy.Pin.autoUnpin_conservative",
+      "Toy.Pin.sound_declarations_nonvacuous"
+    ],
+    "non_claims": [
+      "autoUnpin does not repair declarations violating (b)-(f): for dB, dC, dC', dD, dE, dF, autoUnpin refuses Unpin and some safe program still breaks AddrInv (autoUnpin_sound_b_to_f_tight, autoUnpin_sound_b_to_f_tight_combined, autoUnpin_does_not_rescue_dB).",
+      "Strict conservativeness is shown on the one declaration dConservative; it is relative to the two invariants of this model, and a type may have other reasons to stay !Unpin.",
+      "Scope boundary: self-pointers and list entries arise only at field locations with an offered structural projection; no location denotes a whole struct, so the struct itself is never address-sensitive in this model (addrState_only_at_structurally_projected_fields). A declaration without structural projections keeps AddrInv for every safe program whatever its unpin value (sound_of_pinnedFieldsUnpin; instance noProjection_unpin_vacuously_sound). Do not conclude that a Rust type that is itself address-sensitive (a self-referential leaf type, or a #[pin_project] struct whose PhantomPinned marker lacks #[pin]) may implement Unpin: such types are outside the model, and for them refusing Unpin is required, not conservative (modeling bridge).",
+      "Does not claim Rust's auto trait is exactly autoUnpin (modeling bridge)."
+    ],
+    "prior_art": [
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): a struct may impl Unpin even if a non-structurally pinned field is not Unpin (lines 766-769). Relationship (derived, modeling bridge).",
+      "pin-project crate, taiki-e/pin-project commit f49edb9596fdf8bb09d48091755e522bb4a119be (release 1.2.0), pin-project-internal/src/lib.rs: PhantomPinned needs #[pin] to make the struct !Unpin (lines 297-313)."
+    ],
+    "design_question": "Is the auto-trait rule (all fields Unpin) sound for structs with structural projections, and how much does it give up compared with the pinned-fields rule?"
+  },
+  {
+    "id": "forget-frame-and-leaked-object-never-dropped-by-safe-continuations",
+    "lean": [
+      "Toy.Pin.forget_preserves_addrInv",
+      "Toy.Pin.forget_frame",
+      "Toy.Pin.forget_respects_contract",
+      "Toy.Pin.leaked_object_never_dropped_or_deallocated",
+      "Toy.Pin.unmentioned_object_unchanged",
+      "Toy.Pin.unmentioned_object_leaves_and_entries"
+    ],
+    "lean_names": [
+      "Toy.Pin.Act",
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.Decl",
+      "Toy.Pin.DropGuaranteeAct",
+      "Toy.Pin.ListOK",
+      "Toy.Pin.NoPinnedMove",
+      "Toy.Pin.Obj.fresh",
+      "Toy.Pin.Obj.leaf",
+      "Toy.Pin.Op",
+      "Toy.Pin.Op.Mentions",
+      "Toy.Pin.SafeOp",
+      "Toy.Pin.SafeProgram",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.applyAct",
+      "Toy.Pin.compile",
+      "Toy.Pin.coreMoveActs",
+      "Toy.Pin.dBase",
+      "Toy.Pin.dRich",
+      "Toy.Pin.dUnpinField",
+      "Toy.Pin.dZero",
+      "Toy.Pin.forget_does_not_freeze_fields",
+      "Toy.Pin.leakProg",
+      "Toy.Pin.op_mentions_pos_neg",
+      "Toy.Pin.pinAndInit",
+      "Toy.Pin.stLeaked",
+      "Toy.Pin.states",
+      "Toy.Pin.unmentioned_leaves_hb_not_tight_on_zero_field"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "tier_justification": "The documentation and Jung's post state that leaking (mem::forget of a Box) satisfies the drop guarantee because the storage is never freed or reused; made precise for the toy model.",
+    "plain_claim": "(1) For every toy state st and address b: Act.forget b changes no leaf, pinned location, pinned flag, liveness or list entry and satisfies NoPinnedMove and DropGuaranteeAct; if st satisfies AddrInv, so does the state after forget b. (2) For every declaration d, every state st in which the object at b is leaked, and every program rest accepted by SafeProgram d from st (compiled by compile d): rest contains no Op.drop b, and in every visited state the object at b has the liveness it had in st and is still leaked, so Op.drop b (S's struct destructor, struct drop glue, and deallocation of b) never runs; field-level in-place drops of b's fields (Act.dropLeaf, e.g. from Op.assignField) can still occur (forget_does_not_freeze_fields). (3) For every declaration d, every state st with an object at address b, and every program rest none of whose operations mentions b (compiled by compile d; no safety assumption): in every visited state the object at b (its leaves, self-pointers and flags) equals the one in st, and every list entry of st located in b is still present and finds the same leaf. The leaf-level statement of part (3) (unmentioned_object_leaves_and_entries) is a corollary of the object-level one (unmentioned_object_unchanged), with the same hypotheses.",
+    "hypotheses": [
+      {
+        "name": "h : AddrInv st (forget_preserves_addrInv)",
+        "purpose": "Preservation needs the invariants before the leak.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.forget_preserves_addrInv_h_tight",
+        "witness_class": "the state reached by the 5-action trace coreMoveActs"
+      },
+      {
+        "name": "hleak : st.isLeaked b = true (leaked_object_never_dropped_or_deallocated)",
+        "purpose": "Without the leaked flag, SafeOp permits Op.drop b on a live object.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.leaked_object_hleak_tight",
+        "witness_class": "dBase, the state after pinAndInit, b = 0, the one-operation continuation [drop 0]"
+      },
+      {
+        "name": "hsafe : SafeProgram d st rest (leaked_object_never_dropped_or_deallocated)",
+        "purpose": "Unsafe continuations may drop the leaked object.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.leaked_object_hsafe_tight",
+        "witness_class": "dBase, stLeaked, b = 0, the one-operation continuation [drop 0]"
+      },
+      {
+        "name": "hb : b < st.heap.length (unmentioned_object_unchanged)",
+        "purpose": "An address beyond the heap gets an object at the next allocation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.unmentioned_object_hb_tight",
+        "witness_class": "State.init, b = 0, the continuation [new]"
+      },
+      {
+        "name": "hmention : ∀ op ∈ rest, ¬ op.Mentions b (unmentioned_object_unchanged)",
+        "purpose": "Operations on b may change it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.unmentioned_object_hmention_tight",
+        "witness_class": "dBase, stLeaked, b = 0, the continuation [assignField 0 0]"
+      },
+      {
+        "name": "hb : b < st.heap.length (unmentioned_object_leaves_and_entries)",
+        "purpose": "An address beyond the heap gets an object, with fresh leaves, at the next allocation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.unmentioned_leaves_hb_tight",
+        "witness_class": "the one-field declaration dBase, State.init, b = 0, the continuation [new]. Within zero-field declarations the same violation is not a counterexample: for dZero the leaf-level conclusion still holds (unmentioned_leaves_hb_not_tight_on_zero_field)"
+      },
+      {
+        "name": "hmention : ∀ op ∈ rest, ¬ op.Mentions b (unmentioned_object_leaves_and_entries)",
+        "purpose": "Operations on b may replace its leaves.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.unmentioned_leaves_hmention_tight",
+        "witness_class": "the one-field declaration dBase, stLeaked, b = 0, the continuation [assignField 0 0]"
+      }
+    ],
+    "nonvacuity_witness": "leakProg on dBase (pin, self-reference, link, forget) is safe and keeps AddrInv; in its final state stLeaked object 0 is leaked, a 5-operation continuation using object 0 again is safe, and a safe 6-operation continuation that never mentions object 0 exists.",
+    "nonvacuity_witness_lean": [
+      "Toy.Pin.forget_keeps_addrInv_and_blocks_drop",
+      "Toy.Pin.leaked_object_nonvacuous",
+      "Toy.Pin.unmentioned_object_nonvacuous"
+    ],
+    "non_claims": [
+      "In this model Op.forget leaves references usable (closer to Box::leak than to a value-consuming mem::forget): after forget b, safe continuations may still assign, replace or overwrite fields of b where SafeOp allows it, also for declarations satisfying (a)-(f) (forget_does_not_freeze_fields, on dUnpinField and dRich). Part (2) therefore says that Op.drop b (struct destructor, struct drop glue, deallocation) never runs, not that b's contents are frozen: a field of b can still be dropped in place (Act.dropLeaf) and rewritten.",
+      "Part (3) does not assume ListOK at st; the entries it preserves are valid at the end exactly when they were valid at st. Reading part (3) as the continuations available after a value-consuming mem::forget of the only owner (which leaves safe code no handle to b) is a modeling bridge; raw pointers kept by unsafe code are not modelled.",
+      "Forgetting a Pin<&mut T> to a stack-pinned value, which in Rust does not leak the value, is not modelled; the model's forget always leaks the object.",
+      "Does not claim that leaking is free of other costs (memory leak) or preserves other invariants."
+    ],
+    "prior_art": [
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): leaking memory so that its storage is never invalidated or re-used is still fine; mem::forget of a Box<T> prevents its storage from ever getting re-used, so the drop guarantee is still satisfied (lines 584-586). Relationship (derived, modeling bridge).",
+      "R. Jung, 'Safe Intrusive Collections with Pinning', blog post, 2018-04-10, https://www.ralfj.de/blog/2018/04/10/safe-intrusive-collections-with-pinning.html: pinning without a drop guarantee lets an entry be deallocated while a collection still points to it (section 1.2); adopts the guarantee 'If the memory a Pin<T> points to is ever deallocated or otherwise invalidated, drop has been called on it', credited to cramertj (section 1.3).",
+      "RFC 2349 'Pin', rust-lang/rfcs text/2349-pin.md at commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4: the drop-guarantee proposal in 'Unresolved questions' allows leaking only 'unless the memory remains valid for the remainder of the program lifetime' (lines 399-403)."
+    ],
+    "design_question": "Does leaking a pinned value respect the drop guarantee, and what exactly can later safe code still do to the leaked object?"
+  },
+  {
+    "id": "reuse-without-drop-breaks-list-not-self-reference-on-one-trace",
+    "lean": "Toy.Pin.reuse_breaks_list_not_selfRef",
+    "lean_names": [
+      "Toy.Pin.Act",
+      "Toy.Pin.AddrInv",
+      "Toy.Pin.Always",
+      "Toy.Pin.DropGuaranteeAct",
+      "Toy.Pin.ListOK",
+      "Toy.Pin.NoPinnedMove",
+      "Toy.Pin.SelfRefOK",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.coreReuseActs",
+      "Toy.Pin.runActs",
+      "Toy.Pin.states"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "depth": "definitional",
+    "tier_justification": "The motivating example of the drop guarantee in Jung's intrusive-collections post and in core::pin; the observation that a self-reference alone does not detect the violation on this trace is made precise here.",
+    "plain_claim": "On the 6-action trace coreReuseActs from State.init (allocate a non-Unpin value, pin its object and field, set its self-pointer, link it into the list, then overwrite its memory without running its destructor): no action moves a pinned non-Unpin value, the final write violates DropGuaranteeAct, ListOK fails in the final state, and SelfRefOK holds in every visited state.",
+    "hypotheses": [],
+    "nonvacuity_witness": "Not applicable (closed statement exhibiting coreReuseActs).",
+    "nonvacuity_witness_lean": "Toy.Pin.reuse_breaks_list_not_selfRef",
+    "positive_control_lean": "Toy.Pin.forget_instead_of_reuse_keeps_addrInv",
+    "non_claims": [
+      "One trace; no general statement that reuse without drop always breaks ListOK or never breaks SelfRefOK is proved here (the one-field (c) witnesses dropGuaranteeForPinned_api_tight and dropGuaranteeForPinned_dtor_tight show the same pattern for two safe programs).",
+      "SelfRefOK survives because the self-pointer lives inside the overwritten value itself. With a pointer from one field to a sibling field of the same struct (not modelled), overwriting or deallocating the target field without running the struct's destructor would leave that pointer dangling without any external list (not proved here).",
+      "Does not say memory reuse is harmless for self-referential values in Rust: a real value may be referenced from elsewhere (wakers, other structures).",
+      "Reuse is a primitive write action; which Rust operations (ptr::write, set_len, stack frame reuse) correspond to it is a modeling bridge."
+    ],
+    "prior_art": [
+      "R. Jung, 'Safe Intrusive Collections with Pinning', blog post, 2018-04-10, https://www.ralfj.de/blog/2018/04/10/safe-intrusive-collections-with-pinning.html: pinning without a drop guarantee lets an entry be deallocated while a collection still points to it (section 1.2); adopts the guarantee 'If the memory a Pin<T> points to is ever deallocated or otherwise invalidated, drop has been called on it', credited to cramertj (section 1.3).",
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): 'required for intrusive data structures' (line 535). Relationship (derived, modeling bridge).",
+      "Rust for Linux project, 'The Safe Pinned Initialization Problem', web page, https://rust-for-linux.com/the-safe-pinned-initialization-problem (author attribution not verified): motivates the drop guarantee with an intrusive doubly linked list whose memory must not be deallocated or reused (e.g. by ptr::write) without dropping it first, and discusses pin projections. Relationship (derived, modeling bridge): coreReuseActs is a toy instance of that failure."
+    ],
+    "design_question": "Which invariant witnesses a violation of the drop guarantee: would a model with only self-referential values detect it?"
+  },
+  {
+    "id": "address-sensitive-state-only-at-structurally-projected-fields",
+    "lean": [
+      "Toy.Pin.addrState_only_at_structurally_projected_fields",
+      "Toy.Pin.no_addrState_without_structural_projection"
+    ],
+    "lean_names": [
+      "Toy.Pin.AddrStateAtProjected",
+      "Toy.Pin.ApiOp",
+      "Toy.Pin.Decl",
+      "Toy.Pin.Obj.leaf",
+      "Toy.Pin.Op",
+      "Toy.Pin.SafeProgram",
+      "Toy.Pin.State",
+      "Toy.Pin.State.init",
+      "Toy.Pin.addrStateAtProjected_pos_neg",
+      "Toy.Pin.compile",
+      "Toy.Pin.dBase",
+      "Toy.Pin.dNoProj",
+      "Toy.Pin.dRich",
+      "Toy.Pin.pinAndInit",
+      "Toy.Pin.progRich",
+      "Toy.Pin.states"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "depth": "shallow",
+    "tier_justification": "Makes precise a scope fact of this toy model that bounds the Unpin results; the corresponding Rust practice (a struct that is itself address-sensitive must be !Unpin) is documented in core::pin and pin-project.",
+    "plain_claim": "For every toy declaration d and every program accepted by SafeProgram d from State.init (compiled by compile d), in every visited state every self-pointer target and every intrusive-list entry is a field location (b, i) with ApiOp.projPin i in d.api; consequently, if d offers no structural projection, every visited state has an empty list and no leaf with a self-pointer. (Locations are field locations; no location denotes a whole struct.)",
+    "hypotheses": [
+      {
+        "name": "hsafe : SafeProgram d State.init prog (both theorems)",
+        "purpose": "Unsafe programs may pin and use fields that are not structurally projected.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Pin.addrState_hsafe_tight",
+          "Toy.Pin.noAddrState_hsafe_tight"
+        ],
+        "witness_class": "the one-field declaration dNoProj and the 4-operation program pinAndInit. For addrState_only_at_structurally_projected_fields, hsafe is its only hypothesis (addrState_hsafe_tight). For no_addrState_without_structural_projection, the other hypothesis hno : ∀ i, ApiOp.projPin i ∉ dNoProj.api is in the companion theorem noProjection_unpin_vacuously_sound; noAddrState_hsafe_tight states hno, the failure of hsafe and the failure of the conclusion in one theorem"
+      },
+      {
+        "name": "hno : ∀ i, ApiOp.projPin i ∉ d.api (no_addrState_without_structural_projection)",
+        "purpose": "With a structural projection, a safe program can set a self-pointer.",
+        "tightness": "tight",
+        "counterexample": "Toy.Pin.noAddrState_hno_tight",
+        "witness_class": "the one-field declaration dBase and the 4-operation program pinAndInit"
+      }
+    ],
+    "nonvacuity_witness": "dRich and progRich (safe; two list entries and a self-pointer are established) for the first theorem; dNoProj (no structural projection, declared Unpin, non-Unpin field) with the safe 5-operation program [new, pin 0, replaceField 0 0, replaceStruct 0, drop 0] for the second.",
+    "nonvacuity_witness_lean": [
+      "Toy.Pin.structural_nonvacuous",
+      "Toy.Pin.noAddrState_nonvacuous_nonempty",
+      "Toy.Pin.noProjection_unpin_vacuously_sound"
+    ],
+    "non_claims": [
+      "This is a statement about the toy model (model–system relation: none proved); it neither establishes nor refutes the corresponding claim about Rust. Real types can be address-sensitive as a whole (a self-referential leaf type) or through private fields used by their own unsafe code; such types are outside the model, and the Unpin results of this package do not apply to them (modeling bridge).",
+      "The theorems locate address-sensitive state; they say nothing about whether it stays valid (that is addrInv_of_structural_pinning_conditions).",
+      "Relies on the built-in assumption that setSelf and register act only at pinned field locations holding non-Unpin values."
+    ],
+    "prior_art": [
+      "pin-project crate, taiki-e/pin-project commit f49edb9596fdf8bb09d48091755e522bb4a119be (release 1.2.0), pin-project-internal/src/lib.rs: PhantomPinned with #[pin] makes the struct !Unpin; without #[pin] it has no effect (lines 297-313). Relationship (derived, modeling bridge).",
+      "Rust standard library, core::pin module documentation, library/core/src/pin.rs at rust-lang/rust commit fafcb2be486f2c24bbeb8417e5d32335df5d9a34 (the last commit touching that file as of 2026-08-13; line numbers verified at that commit on 2026-11-21): 'Projections and Structural Pinning' (lines 696-847)."
+    ],
+    "design_question": "Where can address-sensitive state live in a struct whose author chooses structural projections, and what does that imply for the scope of the Unpin results?"
+  }
+]
