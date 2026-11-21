@@ -8,7 +8,7 @@
 
 [package]
 name = "cargo-anneal"
-# FIXME(#87): We must address all blockers listed in #87 before permitting
+# FIXME(#4012): We must address all blockers listed in #4012 before permitting
 # stable releases.
 version = "0.1.0-alpha.1"
 edition = "2024"

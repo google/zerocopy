@@ -11,7 +11,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# FIXME(#87): We must address all blockers listed in #87 before permitting
+# FIXME(#4012): We must address all blockers listed in #4012 before permitting
 # stable releases.
 python3 - <<'EOF'
 import re
@@ -43,17 +43,17 @@ if not version:
 # 0.1.0-alpha.1). Under SemVer 2.0.0, pre-release versions append a hyphen and a
 # series of dot-separated identifiers to the patch version. Normal / stable
 # versions (such as 0.1.0 or 1.0.0) lack a pre-release tag and are forbidden
-# until all blockers in #87 are resolved.
+# until all blockers in #4012 are resolved.
 #
-# FIXME(#87): We must address all blockers listed in #87 before permitting
+# FIXME(#4012): We must address all blockers listed in #4012 before permitting
 # stable releases.
 prerelease_pattern = r"^[0-9]+\.[0-9]+\.[0-9]+-[0-9A-Za-z.-]+$"
 if not re.match(prerelease_pattern, version):
     print(
         f"Error: package.version '{version}' in {manifest_path} is not a "
         "pre-release version.\n"
-        "Stable releases are blocked until all issues in #87 are resolved.\n"
-        "See: https://github.com/joshlf/anneal/issues/87",
+        "Stable releases are blocked until all issues in #4012 are resolved.\n"
+        "See: https://github.com/google/zerocopy/issues/4012",
         file=sys.stderr,
     )
     sys.exit(1)

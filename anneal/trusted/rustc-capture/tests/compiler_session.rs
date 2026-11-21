@@ -531,7 +531,7 @@ fn compiler_panics_use_rustcs_ice_hook() {
     assert_failed(&output, "the compiler unexpectedly panicked");
     let diagnostics = stderr(&output);
     assert!(
-        diagnostics.contains("https://github.com/joshlf/anneal/issues/new"),
+        diagnostics.contains("https://github.com/google/zerocopy/issues/new?template=anneal.yml"),
         "{diagnostics}"
     );
     assert!(diagnostics.contains("f8a08b688"), "{diagnostics}");
