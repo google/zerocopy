@@ -30,8 +30,8 @@ These instructions apply to work in the `zerocopy/` subtree.
   `TODO`. Use `FIXME` for non-blocking follow-up work.
 <!-- TODO-check-enable -->
 
-- **Documentation:** Keep documentation and instruction references synchronized
-  when moving, renaming, or changing the behavior of referenced code or files.
+- **Documentation:** Follow the
+  [repository documentation rule](../AGENTS.md#documentation).
 - **File headers:** New files must use the repository copyright header with the
   file's creation year. Preserve an existing file's original creation year.
 - **Formatting:** Follow `ci/check_fmt.sh`.

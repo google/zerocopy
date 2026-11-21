@@ -12,3 +12,10 @@ Follow the `AGENTS.md` file nearest the code under review. For changes in
 `zerocopy/`, also follow `zerocopy/AGENTS.md` and the
 `skills/zerocopy-review/SKILL.md` skill. If the review involves unsafe Rust or
 soundness-sensitive code, also follow `skills/unsafe-rust/SKILL.md`.
+
+## Documentation review
+
+<!-- docs-reviewer -->
+Check affected docs, examples, and links against each PR's diff. Flag stale
+text, missing guidance, and broken links.
+<!-- /docs-reviewer -->

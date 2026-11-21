@@ -25,8 +25,8 @@ never proves defect absence or substitutes for CI or merge gates.
   base worktree or neutral directory. If a reviewer is already running inside a
   candidate-head checkout (including hosted bots), still judge edits to
   governing docs, review rules, agent instructions, or security checks against
-  the base rules (e.g. `git show <target_base>:AGENTS.md` when history is
-  available) and note that workspace condition; any undisclosed or unsound
+  the base rules (e.g. `git show <target_base>:anneal/AGENTS.md` when history
+  is available) and note that workspace condition. Any undisclosed or unsound
   weakening blocks merge. The **Human review surface** covers: stated specs and
   every definition their meaning transitively depends on (helpers, predicates,
   constants, types, trait impls), public API or theorem types, waivers
@@ -229,6 +229,11 @@ never proves defect absence or substitutes for CI or merge gates.
   `PRINCIPLES.md` on new code and non-`SKILL.md` Markdown, 80-col prose
   wrapping, relative links and anchors). For policy edits, check for
   contradictory duties, missing routing, and authority creep.
+- **Documentation review:**
+  <!-- docs-reviewer -->
+  Check affected docs, examples, and links against each PR's diff. Flag stale
+  text, missing guidance, and broken links.
+  <!-- /docs-reviewer -->
 - **Execution, isolation, and probes:** Complete static, non-elaborating Pass 1
   checks before running any diff-derived code. Rely on executed deterministic
   checks for what they enforce and focus manual review beyond them. Verify
