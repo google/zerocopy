@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": ".",
+    "crate_root": "lib.rs",
+    "crate_name": "scalar",
+    "source_files": ["lib.rs"]
+  },
+  "scope": { "kind": "selected_unit", "roots": ["zero"] },
+  "proof": {
+    "source_root": ".",
+    "sources": [
+      { "module": "Spec", "path": "Spec.lean", "role": "specification" },
+      { "module": "Proof", "path": "Proof.lean", "role": "proof" }
+    ]
+  }
+}

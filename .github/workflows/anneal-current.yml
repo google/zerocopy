@@ -473,6 +473,35 @@ jobs:
           path: ${{ runner.temp }}/anneal-miri-olean-cache
           key: ${{ steps.miri_olean_cache.outputs.cache-primary-key }}
 
+      - name: Check the scalar alpha with the installed toolchain
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+        run: |
+          set -euo pipefail
+          cargo build --locked -p cargo-anneal
+          # Authored Lean runs inside the sandbox with the verifier. Keep its
+          # output in diagnostics rather than interpreting it as runner commands.
+          bwrap --unshare-all --die-with-parent --new-session --clearenv \
+            --cap-drop ALL --tmpfs / --dev /dev --proc /proc --tmpfs /tmp \
+            --dir /tmp/home --chdir /tmp \
+            --setenv HOME /tmp/home --setenv PATH /usr/bin:/bin \
+            --setenv XDG_CACHE_HOME /toolchain-cache \
+            --ro-bind /usr /usr \
+            --ro-bind-try /bin /bin --ro-bind-try /lib /lib \
+            --ro-bind-try /lib64 /lib64 \
+            --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
+            --ro-bind "$XDG_CACHE_HOME" /toolchain-cache \
+            --ro-bind "$CARGO_TARGET_DIR/debug/cargo-anneal" /cargo-anneal \
+            --ro-bind "$PWD/ci/probe_alpha.py" /anneal/ci/probe_alpha.py \
+            --ro-bind "$PWD/trusted/cargo-anneal/tests/fixtures/scalar" \
+              /anneal/trusted/cargo-anneal/tests/fixtures/scalar \
+            -- /usr/bin/python3 -B /anneal/ci/probe_alpha.py --cli /cargo-anneal \
+            > "$ANNEAL_TEST_DIAGNOSTICS/alpha-probe.log" 2>&1
+          echo "Sandboxed scalar alpha probe passed."
+
       - name: Check crate packaging
         id: package
         run: |

@@ -29,6 +29,8 @@ XDG_CACHE_HOME="$(mktemp -d)" \
 The command uses a fresh cache because setup reuses an existing installation
 for the same version key.
 
+The [MIR verifier alpha](alpha.md) includes an end-to-end scalar example.
+
 To audit the checkout, use the `lean/bin/lean` under the installation path
 printed by setup. The full MIR correspondence audit uses Linux bubblewrap
 at `/usr/bin/bwrap`.

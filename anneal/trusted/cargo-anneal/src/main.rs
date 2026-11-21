@@ -9,16 +9,13 @@
 //! CLI entrypoint for `cargo-anneal`.
 
 mod setup;
+mod verify;
 
-use std::env;
-use std::ffi::OsString;
-use std::path::PathBuf;
-use std::process::ExitCode;
+use std::{env, ffi::OsString, path::PathBuf, process::ExitCode};
 
-use clap::error::ErrorKind;
-use clap::{CommandFactory, Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand, error::ErrorKind};
 
-#[derive(Debug, Parser)]
+#[derive(Parser)]
 #[command(
     name = "cargo-anneal",
     bin_name = "cargo anneal",
@@ -31,7 +28,7 @@ struct Cli {
     command: Option<Command>,
 }
 
-#[derive(Debug, Subcommand)]
+#[derive(Subcommand)]
 enum Command {
     /// Install the pinned Anneal toolchain archive.
     Setup {
@@ -39,6 +36,13 @@ enum Command {
         #[arg(long, value_name = "path")]
         local_archive: Option<PathBuf>,
     },
+    /// Capture a configured compilation and check its authored source proof.
+    Verify(verify::VerifyArgs),
+}
+
+enum Action {
+    Print(String),
+    Verify(verify::VerifyArgs),
 }
 
 #[derive(Debug)]
@@ -59,32 +63,27 @@ fn parse(mut args: Vec<OsString>) -> Result<Cli, clap::Error> {
 fn dispatch(
     cli: Cli,
     install: impl FnOnce(Option<PathBuf>) -> Result<PathBuf, String>,
-) -> Result<String, String> {
+) -> Result<Action, String> {
     match cli.command {
-        None => Ok(format!("{}\n", Cli::command().render_help())),
+        None => Ok(Action::Print(format!("{}\n", Cli::command().render_help()))),
         Some(Command::Setup { local_archive }) => {
             let root = install(local_archive)?;
-            Ok(format!(
-                "Installed Anneal toolchain at {}\n",
-                root.display()
-            ))
+            Ok(Action::Print(format!("Installed Anneal toolchain at {}\n", root.display())))
         }
+        Some(Command::Verify(args)) => Ok(Action::Verify(args)),
     }
 }
 
 fn run(
     args: Vec<OsString>,
     install: impl FnOnce(Option<PathBuf>) -> Result<PathBuf, String>,
-) -> Result<String, Failure> {
+) -> Result<Action, Failure> {
     let cli = match parse(args) {
         Ok(cli) => cli,
         Err(error)
-            if matches!(
-                error.kind(),
-                ErrorKind::DisplayHelp | ErrorKind::DisplayVersion
-            ) =>
+            if matches!(error.kind(), ErrorKind::DisplayHelp | ErrorKind::DisplayVersion) =>
         {
-            return Ok(error.to_string());
+            return Ok(Action::Print(error.to_string()));
         }
         Err(error) => return Err(Failure::Arguments(error)),
     };
@@ -93,10 +92,11 @@ fn run(
 
 fn main() -> ExitCode {
     match run(env::args_os().collect(), setup::install) {
-        Ok(output) => {
+        Ok(Action::Print(output)) => {
             print!("{output}");
             ExitCode::SUCCESS
         }
+        Ok(Action::Verify(args)) => verify::main(args),
         Err(Failure::Arguments(error)) => {
             eprint!("{error}");
             ExitCode::from(2)
@@ -120,6 +120,13 @@ mod tests {
         panic!("argument handling must not install a toolchain")
     }
 
+    fn output(action: Action) -> String {
+        match action {
+            Action::Print(output) => output,
+            Action::Verify(_) => panic!("expected printable output"),
+        }
+    }
+
     #[test]
     fn help_and_version_do_not_install() {
         for prefix in [&["cargo-anneal"][..], &["cargo-anneal", "anneal"]] {
@@ -131,19 +138,26 @@ mod tests {
                 &["setup", "-h"],
                 &["setup", "--help"],
                 &["help", "setup"],
+                &["verify", "-h"],
+                &["verify", "--help"],
+                &["help", "verify"],
             ] {
-                let output = run(args(&[prefix, suffix].concat()), must_not_install)
-                    .expect("help must succeed");
+                let output = output(
+                    run(args(&[prefix, suffix].concat()), must_not_install)
+                        .expect("help must succeed"),
+                );
                 assert!(output.contains("Usage:"), "{output}");
-                assert!(output.contains("setup"), "{output}");
+                if suffix.is_empty() {
+                    assert!(output.contains("setup"), "{output}");
+                    assert!(output.contains("verify"), "{output}");
+                }
             }
             for suffix in ["-V", "--version"] {
-                let output = run(args(&[prefix, &[suffix]].concat()), must_not_install)
-                    .expect("version must succeed");
-                assert_eq!(
-                    output,
-                    format!("cargo-anneal {}\n", env!("CARGO_PKG_VERSION"))
+                let output = output(
+                    run(args(&[prefix, &[suffix]].concat()), must_not_install)
+                        .expect("version must succeed"),
                 );
+                assert_eq!(output, format!("cargo-anneal {}\n", env!("CARGO_PKG_VERSION")));
             }
         }
     }
@@ -156,12 +170,14 @@ mod tests {
             &["setup", "--unknown"],
             &["setup", "--local-archive"],
             &["setup", "--local-archive", "--unknown"],
+            &["verify"],
+            &["verify", "--request"],
+            &["verify", "--request", "request.json", "--unknown"],
+            &["verify", "--request", "request.json", "--manifest-path", "Cargo.toml"],
         ] {
-            let failure = run(
-                args(&[&["cargo-anneal"], suffix].concat()),
-                must_not_install,
-            )
-            .expect_err("malformed arguments must fail");
+            let failure = run(args(&[&["cargo-anneal"], suffix].concat()), must_not_install)
+                .err()
+                .expect("malformed arguments must fail");
             let Failure::Arguments(error) = failure else {
                 panic!("expected an argument failure, got {failure:?}");
             };
@@ -178,22 +194,32 @@ mod tests {
                 input.push("--local-archive".into());
                 input.push(path.as_os_str().into());
             }
-            let output = run(input.clone(), |actual| {
-                assert_eq!(actual, archive);
-                Ok(PathBuf::from("installed toolchain"))
-            })
-            .expect("setup must return the operation's success");
-            assert_eq!(
-                output,
-                "Installed Anneal toolchain at installed toolchain\n"
+            let output = output(
+                run(input.clone(), |actual| {
+                    assert_eq!(actual, archive);
+                    Ok(PathBuf::from("installed toolchain"))
+                })
+                .expect("setup must return the operation's success"),
             );
+            assert_eq!(output, "Installed Anneal toolchain at installed toolchain\n");
 
             let failure = run(input, |_| Err("archive unavailable".into()))
-                .expect_err("setup must return the operation's failure");
+                .err()
+                .expect("setup must return the operation's failure");
             assert!(matches!(
                 failure,
                 Failure::Operation(message) if message == "archive unavailable"
             ));
+        }
+    }
+
+    #[test]
+    fn verify_dispatch_preserves_both_invocation_routes() {
+        for prefix in [&["cargo-anneal"][..], &["cargo-anneal", "anneal"]] {
+            let suffix = &["verify", "--request", "request.json"];
+            let action = run(args(&[prefix, suffix].concat()), must_not_install)
+                .expect("verify arguments must parse and dispatch");
+            assert!(matches!(action, Action::Verify(_)));
         }
     }
 

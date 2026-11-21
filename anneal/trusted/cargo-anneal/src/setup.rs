@@ -28,6 +28,25 @@ exocrate::parse_remote_archive! {
     const REMOTE_ARCHIVE: RemoteArchive = "Cargo.toml";
 }
 
+pub(crate) struct InstalledTools {
+    pub(crate) capture: PathBuf,
+    pub(crate) sysroot: PathBuf,
+    pub(crate) lean: PathBuf,
+}
+
+/// Resolves the installed toolchain without downloading anything or consulting
+/// the working directory for tool paths.
+pub(crate) fn installed_tools() -> Result<InstalledTools, String> {
+    let root = CONFIG
+        .resolve_installation_dir(exocrate::Location::UserGlobal)
+        .map_err(|e| format!("toolchain unavailable; run cargo anneal setup: {e}"))?;
+    Ok(InstalledTools {
+        capture: root.join("bin/anneal-rustc-capture"),
+        sysroot: root.join("rust"),
+        lean: root.join("lean/bin/lean"),
+    })
+}
+
 /// Installs or resolves the Anneal toolchain archive in the user-global cache.
 ///
 /// Uses `local_archive` when set, falling back to the remote archive recorded
@@ -56,8 +75,7 @@ pub(crate) fn install_at(
 
 #[cfg(test)]
 mod tests {
-    use std::fs;
-    use std::path::Path;
+    use std::{fs, path::Path};
 
     use super::*;
 
