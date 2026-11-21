@@ -15,12 +15,6 @@ import Init.Data.Nat.Div.Basic
 import Init.Data.Nat.Bitwise.Basic
 import Init.Control.Except
 import Miri.Interpreter.ExecutionMachine
-import Miri.Interpreter.LocalAccess
-import Miri.Interpreter.Place
-import Miri.Interpreter.Rvalue
-import Miri.Interpreter.Discriminant
-import Miri.Interpreter.Step
-import Miri.Interpreter.ControlFlow
 import Trusted.MirAst
 import Trusted.MirModel
 import Trusted.Correspondence.Codec
@@ -30,61 +24,82 @@ namespace Trusted.Correspondence
 open Trusted.MirAst Trusted.MirSemantics
 
 /-!
-# Reference State, Operators, and Init (`Trusted.Correspondence.State`)
+# Reference Machine State, Layouts, AST Lowering, and Init
+(`Trusted.Correspondence.State`)
 
-Defines `RefState`, `RefOutcome`, `Miri.Interpreter` scalar/enum adapters, and
-entry initialization (`initRefState`). Imports only `Trusted.MirAst` and
-`Trusted.MirModel`, never `Trusted.MirSemantics`.
+Defines the real `Miri.Interpreter.MachineHooks.State`-backed reference state
+(`RefUser`, `RefState`), `RefOutcome`, `Miri.ABI.LayoutData` adapters, real
+`Miri.MIR.Body` lowering (`toMiriBody`), return-allocation initialization
+(`refInitMemoryAndRetPlace`, `initRefState`), and return-value decoding
+(`refReadReturnVal`). Imports only `Init.*`, `Miri.*`, `Trusted.MirAst`,
+`Trusted.MirModel`, and `Trusted.Correspondence.Codec`, never
+`Trusted.MirSemantics`.
 -/
 
-/-! ## Reference Machine State and Step Engine ($M_{\text{ref}}$) -/
+/-! ## Reference Machine State and Step Outcomes ($M_{\text{ref}}$) -/
 
-/-- Reference local slot (`Miri.Interpreter.LocalState` in
-`Miri/Interpreter/Operand.lean`, line 32), pairing the runtime
-`slot : LocalSlot` with `cachedLayout : Option MirTy` pre-populated by
-`initRefState`. -/
-structure RefLocalState where
-  slot : LocalSlot
-  cachedLayout : Option MirTy
-
-/-- Reference call-stack frame (`Miri.Interpreter.Frame` in
-`Miri/Interpreter/Stack.lean`).
-
-`isCallerSentinel` distinguishes the two kinds of frames that the reference
-stack holds: `false` marks an active frame that executes `defId`'s body, and
-`true` marks the suspended caller sentinel frame (`callerSentinelFrame`) beneath
-the entry frame that owns its return destination slot `_0`. `evalRefStep`
-executes only the top frame and requires `[sentinel, rframe]` with
-`sentinel.isCallerSentinel = true` and `rframe.isCallerSentinel = false`. -/
-structure RefFrameState where
-  defId : DefId
-  blockIdx : BasicBlockId
-  stmtIdx : Nat
-  locals : List RefLocalState
-  isCallerSentinel : Bool := false
-
-/-- Reference machine state for $M_{\text{ref}}$, which executes
-`Miri.Interpreter.Step.step` over
-`StepState (Option Val) LocalLayout Unit RefStepMachine` using Anneal-authored
-hooks (`refStepHooksFor` and friends) rather than wrapping
-`Miri.Interpreter.MachineHooks.State` (`Miri/Interpreter/MachineHooks.lean`) or
-`Miri.Interpreter.ExecutionMachine.Limits`. Tracks `stepsExecuted : Nat` and
-`maxSteps : Nat` explicitly so `RefWellFormed` and `RefBehavior` quantify over
-the step budget; `Miri.Interpreter.ExecutionMachine.step` is wired separately
-by `MiriMoveDeinitWiringClaim` (tying `ExecutionMachine.step` to
-`ExecutionMachine.stepHooks`, not `refStepHooksFor`). -/
-structure RefState where
-  frames : List RefFrameState
+/-- User payload embedded in `Miri.Interpreter.MachineHooks.MachineState Unit
+RefUser`, carrying `TerminatorMachine.Control Unit` (stepped by
+`beforeTerminatorWithChoice`) and `callerMem : CallerMemory`. -/
+structure RefUser where
+  control : Miri.Interpreter.TerminatorMachine.Control Unit
   callerMem : CallerMemory
+
+/-- Initial deterministic terminator-control state for $M_{\text{ref}}$:
+wrapping counters (`checkedArithmetic := false`), disabled GC
+(`gcInterval := 0`), zero preemption rate, and virtual monotonic clock at `0`.
+-/
+noncomputable def refInitControl :
+    Miri.Interpreter.TerminatorMachine.Control Unit := {
+  basicBlockCount := 0
+  sinceGc := 0
+  gcInterval := 0
+  monotonic := .virtual 0
+  preemptionRateBits := 0
+  checkedArithmetic := false
+}
+
+/-- One-terminator deterministic update of `TerminatorMachine.Control Unit`
+matching `Miri.Interpreter.TerminatorMachine.beforeTerminatorWithChoice` under
+`checkedArithmetic = false`, `gcInterval = 0`, and `fixedScheduling = true`. -/
+noncomputable def advanceRefControl
+    (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit) :
+    Miri.Interpreter.TerminatorMachine.Control Unit :=
+  let nextMono :=
+    match ctrl.monotonic with
+    | .virtual n => .virtual (BitVec.ofNat 128 (n.toNat + 5000))
+    | .host h => .host h
+  { ctrl with
+    basicBlockCount := ctrl.basicBlockCount + 1
+    sinceGc := ctrl.sinceGc + 1
+    monotonic := nextMono }
+
+/-- Invariant on `TerminatorMachine.Control Unit` preserved across every
+reference execution step. -/
+def RefControlValid
+    (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit) : Prop :=
+  ctrl.gcInterval = 0 ∧
+  ctrl.preemptionRateBits = 0 ∧
+  ctrl.checkedArithmetic = false ∧
+  ∃ n : Miri.ABI.U128, ctrl.monotonic = .virtual n
+
+/-- Reference machine state for $M_{\text{ref}}$, directly wrapping
+`Miri.Interpreter.MachineHooks.State Unit RefUser` stepped by
+`Miri.Interpreter.ExecutionMachine.step`, paired with the entry function's
+return type `retTy`, caller-owned return allocation `retPlace` in
+`miri.machine.memory` (matching `Miri.Interpreter.callMain`), and explicit
+outer step-budget counters `stepsExecuted` / `maxSteps`. -/
+structure RefState where
+  miri : Miri.Interpreter.MachineHooks.State Unit RefUser
+  retTy : MirTy
+  retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance
   stepsExecuted : Nat := 0
   maxSteps : Nat := 0
 
-/-- Five-way adapter step outcome translating `Miri.Interpreter.Step.step`'s
-`StepResult (StepState (Option Val) LocalLayout Unit RefStepMachine) Bool`
-(i.e. `(StepState ..., Except StepError Bool)` in `Miri/Interpreter/Step.lean`,
-under Anneal-authored hooks `refStepHooksFor` rather than
-`Miri.Interpreter.ExecutionMachine.step`) together with explicit step-budget
-exhaustion (`exhaustedStepLimit`). -/
+/-- Five-way reference step outcome translating
+`Miri.Interpreter.ExecutionMachine.step`'s `StepResult (MachineHooks.State Unit
+RefUser) Bool` together with explicit outer step-budget exhaustion
+(`exhaustedStepLimit`). -/
 inductive RefOutcome where
   | running (next : RefState)
   | returned (out : TerminalOut)
@@ -103,24 +118,7 @@ noncomputable def faultToRefOutcome : FaultKind → RefOutcome
   | .undefined => .ub
   | .unsupported => .blocked
 
-/-- Convert the `StepResult` of executing the top frame's statement or
-terminator into a `RefOutcome`.
-
-Statement and terminator evaluators rebuild only the top frame
-(`frames := [rframe']`). On `.step`, this function restores the caller
-`sentinel` beneath that frame and increments `stepsExecuted`. -/
-noncomputable def stepResultToRefOutcome (sentinel : RefFrameState)
-    (stepsExecuted maxSteps : Nat) :
-    StepResult RefState TerminalOut → RefOutcome
-  | .step rs' =>
-    .running {
-      rs' with
-      frames := sentinel :: rs'.frames
-      stepsExecuted := stepsExecuted + 1
-      maxSteps := maxSteps
-    }
-  | .done out => .returned out
-  | .fault k => faultToRefOutcome k
+/-! ## Static Body Checks in $M_{\text{ref}}$ -/
 
 /-- Whether `RefStatementKind` is a `StorageLive` or `StorageDead` annotation
 for `localId`. -/
@@ -145,6 +143,8 @@ noncomputable def refStorageAnnotationsInBounds (rbody : RefBody) : Bool :=
       match stmt with
       | .storageLive id | .storageDead id => Nat.blt id numLocals
       | _ => true))
+
+/-! ## Scalar, Integer, and Fieldless-Enum Adapters -/
 
 /-- Map an Anneal `IntWidth` to its `Miri.ABI.Size` in bytes (`1`, `2`, `4`,
 `8`, or `16` bytes on 64-bit targets). -/
@@ -199,6 +199,14 @@ noncomputable def toMiriInteger : IntWidth → Miri.ABI.Integer
   | .i64 => .I64
   | .i128 => .I128
   | .isize => .I64
+
+/-- Map a `Miri.ABI.Integer` back to a fixed-width `IntWidth`. -/
+noncomputable def intWidthOfMiriInteger : Miri.ABI.Integer → IntWidth
+  | .I8 => .i8
+  | .I16 => .i16
+  | .I32 => .i32
+  | .I64 => .i64
+  | .I128 => .i128
 
 /-- Independent `List Nat` non-membership check in $M_{\text{ref}}$. -/
 noncomputable def refNatNotElem (x : Nat) : List Nat → Bool
@@ -260,6 +268,38 @@ noncomputable def refEnumAdmitted (ety : EnumTy) : Bool :=
           | none => false
         | .error _ => false)
 
+/-- Independent $M_{\text{ref}}$ check that every unprojected
+`Assign(dst, Discriminant(src))` in `rbody` whose `src` has an admitted
+fieldless enum type `.enum ety` and whose `dst` is in bounds has destination
+type `.int ety.discrWidth ety.discrSigned`, matching `rustc`'s MIR
+well-typedness invariant for `Rvalue::Discriminant`. -/
+noncomputable def refDiscriminantTypesValid (localTys : List MirTy)
+    (rbody : RefBody) : Bool :=
+  rbody.basicBlocks.all (fun bb =>
+    bb.statements.all (fun stmt =>
+      match stmt with
+      | .assign dst rv =>
+        match rv with
+        | .discriminant src =>
+          if dst.projection.isEmpty && src.projection.isEmpty then
+            match MirSemantics.getElem? localTys src.localId with
+            | some srcTy =>
+              match srcTy with
+              | .enum ety =>
+                match MirSemantics.getElem? localTys dst.localId with
+                | some dstTy =>
+                  if refEnumAdmitted ety then
+                    MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
+                  else
+                    true
+                | none => true
+              | _ => true
+            | none => true
+          else
+            true
+        | _ => true
+      | _ => true))
+
 /-- Independent $M_{\text{ref}}$ 0-byte ZST enum check (`Variants.Single 0`). -/
 noncomputable def refIsZstEnumTy (ety : EnumTy) : Bool :=
   match ety.tagRepr with
@@ -289,11 +329,6 @@ noncomputable def refIsSupportedLocalTy : MirTy → Bool
   | .enum ety => refEnumAdmitted ety
   | _ => false
 
-/-- Independent $M_{\text{ref}}$ primitive-readable type check. -/
-noncomputable def refIsPrimitiveReadableTy : MirTy → Bool
-  | .bool | .int _ _ => true
-  | _ => false
-
 /-- Independent $M_{\text{ref}}$ initial live slot for `ty` (inhabited for
 0-byte ZSTs `.unit` and admitted `.zeroSized` 1-variant enums). -/
 noncomputable def refLiveUninitSlot : MirTy → LocalSlot
@@ -301,6 +336,87 @@ noncomputable def refLiveUninitSlot : MirTy → LocalSlot
   | .enum ety =>
     if refIsZstEnumTy ety then .live (some (.enumVal ety 0)) else .live none
   | _ => .live none
+
+/-! ## Canonical Type-Table Resolution and `Miri.ABI.LayoutData` -/
+
+/-- Auxiliary offset code for built-in scalar/unit types (`bool`, `unit`, and
+the 12 integer types) when `ExecutionMachine` queries a compiler-known type
+(such as `boolLayout` or an enum tag integer type) not interned in
+`RefProg.types`. Indices `>= types.length` never collide with real `RefProg`
+`TyId`s. -/
+noncomputable def auxTyCode : MirTy → Option Nat
+  | .bool => some 0
+  | .unit => some 1
+  | .int .i8 true => some 2
+  | .int .i8 false => some 3
+  | .int .i16 true => some 4
+  | .int .i16 false => some 5
+  | .int .i32 true => some 6
+  | .int .i32 false => some 7
+  | .int .i64 true => some 8
+  | .int .i64 false => some 9
+  | .int .i128 true => some 10
+  | .int .i128 false => some 11
+  | .int .isize true => some 12
+  | .int .isize false => some 13
+  | _ => none
+
+/-- Inverse of `auxTyCode`. -/
+noncomputable def auxTyOfCode : Nat → Option MirTy
+  | 0 => some .bool
+  | 1 => some .unit
+  | 2 => some (.int .i8 true)
+  | 3 => some (.int .i8 false)
+  | 4 => some (.int .i16 true)
+  | 5 => some (.int .i16 false)
+  | 6 => some (.int .i32 true)
+  | 7 => some (.int .i32 false)
+  | 8 => some (.int .i64 true)
+  | 9 => some (.int .i64 false)
+  | 10 => some (.int .i128 true)
+  | 11 => some (.int .i128 false)
+  | 12 => some (.int .isize true)
+  | 13 => some (.int .isize false)
+  | _ => none
+
+/-- Canonical `TyId` for `ty` against `types`: returns the first matching index
+in `types` when present, or a collision-free auxiliary index `types.length +
+code` for built-in scalar/unit types not interned in `types`. -/
+noncomputable def tyIdFor (types : List MirTy) (ty : MirTy) : TyId :=
+  match indexOfTy types ty with
+  | some idx => idx
+  | none =>
+    match auxTyCode ty with
+    | some code => types.length + code
+    | none => types.length + 14
+
+/-- Resolve a canonical `TyId` (either in `types` or an auxiliary index
+`>= types.length`) back to its `MirTy`. -/
+noncomputable def resolveTy (types : List MirTy) (tyId : TyId) :
+    Option MirTy :=
+  match MirSemantics.getElem? types tyId with
+  | some ty => some ty
+  | none =>
+    if Nat.ble types.length tyId then
+      auxTyOfCode (tyId - types.length)
+    else
+      none
+
+/-- Normalize an in-bounds `RefProg` `TyId` to its first occurrence in `types`,
+so duplicate entries in non-canonical `RefProg.types` tables map to identical
+`Miri.MIR.TyId`s for `ScalarOps.assertSameType` and `Rvalue.assertRvalueLayout`
+while out-of-bounds `TyId`s remain out of bounds (`>= types.length`). -/
+noncomputable def canonicalTyId (types : List MirTy) (tyId : TyId) : TyId :=
+  match MirSemantics.getElem? types tyId with
+  | some ty => tyIdFor types ty
+  | none => tyId
+
+/-- Full unsigned `Miri.ABI.WrappingRange` for `sz : Miri.ABI.Size`. -/
+noncomputable def refFullWrappingRangeSize (sz : Miri.ABI.Size) :
+    Miri.ABI.WrappingRange :=
+  match Miri.ABI.WrappingRange.full sz with
+  | .ok r => r
+  | .error _ => ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 0⟩
 
 /-- Shared baseline `Miri.ABI.LayoutData` (`Align.ONE`, `Variants.Single 0`,
 `.Primitive` fields) parameterized by `backendRepr` and byte `size`. -/
@@ -319,18 +435,53 @@ noncomputable def refBaseLayoutData (repr : Miri.ABI.BackendRepr)
   randomizationSeed := 0
 }
 
-/-- Construct a scalar `Miri.ABI.LayoutData` for `(w, signed)`. -/
+/-- Construct an initialized scalar `Miri.ABI.LayoutData` for `(w, signed)` so
+`Miri.Interpreter.readImmediate` accepts primitive integer reads. -/
 noncomputable def refScalarLayoutData (w : IntWidth) (s : Bool) :
     Miri.ABI.LayoutData :=
-  refBaseLayoutData (.Scalar (.Union (value := .Int (toMiriInteger w) s)))
-    (toMiriSize w)
+  let sz := toMiriSize w
+  refBaseLayoutData
+    (.Scalar (.Initialized (value := .Int (toMiriInteger w) s)
+      (validRange := refFullWrappingRangeSize sz)))
+    sz
+
+/-- Construct the initialized 1-byte `Miri.ABI.LayoutData` for `bool`
+(`validRange := [0, 1]`). -/
+noncomputable def refBoolLayoutData : Miri.ABI.LayoutData :=
+  refBaseLayoutData
+    (.Scalar (.Initialized (value := .Int .I8 false)
+      (validRange := ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 1⟩)))
+    (Miri.ABI.Size.ofBytes 1)
+
+/-- Construct the 0-byte fieldless aggregate `Miri.ABI.LayoutData` for `()` and
+1-variant ZST enums (`FieldsShape.Arbitrary #[] #[]`, `Variants.Single 0`). -/
+noncomputable def refUnitLayoutData : Miri.ABI.LayoutData := {
+  refBaseLayoutData (.Memory (sized := true)) Miri.ABI.Size.ZERO with
+  fields := .Arbitrary Array.empty Array.empty
+  variants := .Single 0
+}
+
+/-- Construct the uninhabited 0-byte `Miri.ABI.LayoutData` for `!`
+(`MirTy.never`, `uninhabited := true`, `Variants.Empty`). -/
+noncomputable def refNeverLayoutData : Miri.ABI.LayoutData := {
+  refBaseLayoutData (.Memory (sized := true)) Miri.ABI.Size.ZERO with
+  fields := .Arbitrary Array.empty Array.empty
+  variants := .Empty
+  uninhabited := true
+}
 
 /-- Construct a `Miri.ABI.LayoutData` from a `Miri.ABI.Scalar` tag descriptor
-for `Miri.Interpreter.DiscriminantHooks.tagLayout`. -/
+for `Miri.Interpreter.DiscriminantHooks.tagLayout` (`BackendRepr.Scalar
+(.Initialized ..)` so `PlaceMachine.readImmediate` reads the projected tag
+field). -/
 noncomputable def refTagScalarLayout? (tag : Miri.ABI.Scalar) :
     Option Miri.ABI.LayoutData :=
   match tag.primitive with
-  | .Int integer _ => some (refBaseLayoutData (.Scalar tag) integer.size)
+  | .Int integer signed =>
+    some (refBaseLayoutData
+      (.Scalar (.Initialized (value := .Int integer signed)
+        (validRange := refFullWrappingRangeSize integer.size)))
+      integer.size)
   | _ => none
 
 /-- Inhabited 0-field `Miri.ABI.VariantLayout` entry for fieldless enum variants
@@ -345,94 +496,47 @@ noncomputable def refInhabitedVariantLayout : Miri.ABI.VariantLayout := {
 }
 
 /-- `Miri.ABI.LayoutData` for a fieldless enum `ety : EnumTy`:
-`Variants.Single 0` (`Size.ZERO`, `isZst = true`) for `.zeroSized`, and
-`Variants.Multiple tag .Direct 0 variants` for `.scalar tagW tagS`.
-
-For `.scalar tagW tagS`, `tag` uses `Miri.ABI.Scalar.Union` so
-`Miri.ABI.Scalar.validRange` yields the full width range
-(`WrappingRange.full`) without computing a wrapping-range hull over possibly
-non-contiguous discriminants. Exact tag validity is still enforced by
-`Miri.Interpreter.Discriminant.readDiscriminant` via `variantForDiscriminant`
-(raising `InvalidTag(no declared discriminant)` UB for undeclared bit
-patterns), and uninitialized enum slots are rejected earlier as UB by
-`readImmediate` because `encodeRefEnumTagOp` maps `none` to `.uninit`. -/
+- `.zeroSized`: 0-byte fieldless aggregate (`Variants.Single 0`, `isZst = true`,
+  `FieldsShape.Arbitrary #[] #[]`).
+- `.scalar tagW tagS`: `BackendRepr.Scalar (.Union (.Int tagW tagS))` with
+  `fields := .Arbitrary #[Size.ZERO] #[0]` and `variants := .Multiple tag
+  .Direct 0 variants`. Using `.Union` on the outer enum makes
+  `MemoryOperand.readImmediate` reject raw primitive reads on enum locals
+  (`BinaryOp`/`UnaryOp`/`SwitchInt`), while field `0` projects to the
+  initialized tag scalar (`refScalarLayoutData tagW tagS`) for both
+  `Discriminant.readDiscriminant` and `ValidityVisitor.validatePlace` (whose
+  field-0 visit marks `[0, tagSize)` as data bytes so `resetPadding` preserves
+  the tag in memory on `Return`). -/
 noncomputable def refEnumLayoutData (ety : EnumTy) : Miri.ABI.LayoutData :=
   match ety.tagRepr with
-  | .zeroSized =>
-    refBaseLayoutData (.Memory (sized := true)) Miri.ABI.Size.ZERO
+  | .zeroSized => refUnitLayoutData
   | .scalar tagW tagS =>
     let tag : Miri.ABI.Scalar :=
       .Union (value := .Int (toMiriInteger tagW) tagS)
     let variants :=
       Array.mk (ety.discriminants.map (fun _ => refInhabitedVariantLayout))
     {
-      refScalarLayoutData tagW tagS with
+      refBaseLayoutData (.Scalar tag) (toMiriSize tagW) with
+      fields := .Arbitrary (Array.mk [Miri.ABI.Size.ZERO]) (Array.mk [0])
       variants := .Multiple tag .Direct 0 variants
     }
 
-/-- Single `Miri.Interpreter.DiscriminantHooks` adapter for a fieldless enum
-`ety : EnumTy` over state `S`, shared by both `evalRefConstLit` (`S = Unit`)
-and `evalRefMiriRvalue` (`S = List RefLocalState`) to drive
-`Miri.Interpreter.Discriminant.readDiscriminant` and
-`Miri.Interpreter.Discriminant.discriminantForVariant`.
+/-- Canonical `Miri.ABI.LayoutData` for any `MirTy` in $M_{\text{ref}}$. -/
+noncomputable def refLayoutDataForTy : MirTy → Miri.ABI.LayoutData
+  | .int w s => refScalarLayoutData w s
+  | .bool => refBoolLayoutData
+  | .unit => refUnitLayoutData
+  | .never => refNeverLayoutData
+  | .enum ety => refEnumLayoutData ety
+  | _ => refUnitLayoutData
 
-Note on `TyId`s `0` and `1`: this closed single-enum hook record never indexes
-`RefProg.types`; `0` and `1` are private local sentinels identifying `ety` and
-its discriminant integer type inside a single `Discriminant` call. `tagLayout`
-and `projectRead` also stamp `0` on the tag scalar layout, which is harmless
-because `Miri.Interpreter.Discriminant` never reads the tag layout's `TyId`. -/
-noncomputable def refDiscriminantHooks (S : Type) (ety : EnumTy) :
-    Miri.Interpreter.DiscriminantHooks Miri.Memory.Provenance S Unit Unit := {
-  runtimeTarget := Miri.ABI.RuntimeTargetDataLayout.default
-  discriminantLayout := fun _ ty s =>
-    if Nat.beq ty 0 then
-      .ok ⟨1, refScalarLayoutData ety.discrWidth ety.discrSigned⟩ s
-    else
-      .error (.invalidProgram "unexpected enum TyId in discriminantLayout") s
-  tagLayout := fun _ tag s =>
-    match refTagScalarLayout? tag with
-    | some l => .ok ⟨0, l⟩ s
-    | none => .error (.invalidProgram "non-integer enum tag") s
-  discriminantValue := fun _ ty variant s =>
-    if Nat.beq ty 0 then
-      match MirSemantics.getElem? ety.discriminants variant with
-      | some disc => .ok (some (1, BitVec.ofNat 128 disc)) s
-      | none => .error (.invalidProgram "enum variant out of bounds") s
-    else
-      .error (.invalidProgram "unexpected enum TyId in discriminantValue") s
-  variantForDiscriminant := fun _ ty discrBits s =>
-    if Nat.beq ty 0 then
-      .ok (refFindDiscrVariant? discrBits ety.discriminants) s
-    else
-      .error (.invalidProgram
-        "unexpected enum TyId in variantForDiscriminant") s
-  adtVariantCount := fun _ _ s => .ok ety.discriminants.length s
-  projectRead := fun _ op field s =>
-    if Nat.beq field 0 then
-      match op.layout.layout.variants with
-      | .Multiple tag _ _ _ =>
-        match refTagScalarLayout? tag with
-        | some tl => .ok ⟨op.op, ⟨0, tl⟩⟩ s
-        | none => .error (.invalidProgram "non-integer enum tag") s
-      | _ => .error (.invalidProgram "projectRead on non-Multiple enum") s
-    else
-      .error (.invalidProgram "non-zero tag field on fieldless enum") s
-  readImmediate := fun _ op s =>
-    match op.op with
-    | .immediate .uninit =>
-      .error (.undefinedBehavior "InvalidUninitBytes(None)") s
-    | .immediate imm => .ok ⟨imm, op.layout⟩ s
-    | .indirect _ => .error (.unsupported "memory enum place unsupported") s
-  destLayout := fun _ =>
-    ⟨1, refScalarLayoutData ety.discrWidth ety.discrSigned⟩
-  projectWrite := fun _ _ _ s =>
-    .error (.unsupported "SetDiscriminant unsupported") s
-  writeScalar := fun _ _ _ s =>
-    .error (.unsupported "SetDiscriminant unsupported") s
-  toOp := fun _ _ s =>
-    .error (.unsupported "SetDiscriminant unsupported") s
-  scalarMayBeNull := fun _ _ s => .ok true s
-}
+/-- Canonical `Miri.Interpreter.LocalLayout` pairing `tyIdFor types ty` with
+`refLayoutDataForTy ty`. -/
+noncomputable def refLocalLayoutForTy (types : List MirTy) (ty : MirTy) :
+    Miri.Interpreter.LocalLayout :=
+  ⟨tyIdFor types ty, refLayoutDataForTy ty⟩
+
+/-! ## Real `Miri.MIR` Syntax Lowering -/
 
 /-- Map `Trusted.MirAst.UnOp` to `Miri.MIR.UnOp`. -/
 noncomputable def toMiriUnOp : UnOp → Miri.MIR.UnOp
@@ -468,39 +572,112 @@ noncomputable def toMiriBinOp : BinOp → Miri.MIR.BinOp
   | .gt => .Gt
   | .offset => .Offset
 
+/-- Map `RefPlace` to `Miri.MIR.Place` (preserving `localId` and marking any
+non-empty projection with `.Deref` so `OperandMachine.evalPlaceToOp` and
+`PlaceDynamic.evalPlace` fail closed with `.unsupported` after checking local
+bounds/liveness). -/
+noncomputable def toMiriPlace (rp : RefPlace) : Miri.MIR.Place :=
+  ⟨rp.localId,
+    if rp.projection.isEmpty then Array.empty else Array.mk [.Deref]⟩
+
+/-- Map `RefOperand` to `Miri.MIR.Operand`, carrying the canonicalized
+`RefProg.types` index on `.Constant` operands (out-of-bounds indices remain
+out of bounds so `constantAt` fails closed). -/
+noncomputable def toMiriOperand (types : List MirTy) :
+    RefOperand → Miri.MIR.Operand
+  | .copy rp => .Copy (toMiriPlace rp)
+  | .move rp => .Move (toMiriPlace rp)
+  | .constant c =>
+    let cv : Miri.MIR.ConstValue :=
+      match c.lit with
+      | .scalar bits => .Scalar (.Int bits.toNat 16)
+      | .zeroSized => .ZeroSized
+    .Constant ⟨⟨0⟩, none, .Val cv (canonicalTyId types c.ty)⟩
+
+/-- Map `RefRvalue` to `Miri.MIR.Rvalue`. Day-1 unmodeled rvalues (`.ref`,
+`.addressOf`, `.aggregateTuple`, and `.unsupported`) map to the fail-closed
+sentinel `.CopyForDeref ⟨0, Array.empty⟩` that `evalRvalueIntoPlace` rejects
+immediately with `.invalidProgram` (`.blocked`), without evaluating unmodeled
+operands or forcing stack allocations. -/
+noncomputable def toMiriRvalue (types : List MirTy) :
+    RefRvalue → Miri.MIR.Rvalue
+  | .use op => .Use (toMiriOperand types op) .No
+  | .binaryOp op lhs rhs =>
+    .BinaryOp (toMiriBinOp op) (toMiriOperand types lhs)
+      (toMiriOperand types rhs)
+  | .unaryOp op opnd =>
+    .UnaryOp (toMiriUnOp op) (toMiriOperand types opnd)
+  | .discriminant rp => .Discriminant (toMiriPlace rp)
+  | .ref _ _ | .addressOf _ _ | .aggregateTuple _ | .unsupported =>
+    .CopyForDeref ⟨0, Array.empty⟩
+
+/-- Map `RefStatementKind` to `Miri.MIR.Statement`. `.unsupported` lowers to
+`.Assign ⟨0, #[]⟩ (.CopyForDeref ⟨0, #[]⟩)`, which `evalRvalueIntoPlace`
+rejects fail-closed with `.invalidProgram` (or `.invalidLocal 0` on an empty
+locals array), never triggering UB or mutating state. -/
+noncomputable def toMiriStatement (types : List MirTy) :
+    RefStatementKind → Miri.MIR.Statement
+  | .nop => { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .Nop }
+  | .storageLive localId =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .StorageLive localId }
+  | .storageDead localId =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .StorageDead localId }
+  | .assign dst rvalue =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩
+      kind := .Assign (toMiriPlace dst) (toMiriRvalue types rvalue) }
+  | .unsupported =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩
+      kind := .Assign ⟨0, Array.empty⟩ (.CopyForDeref ⟨0, Array.empty⟩) }
+
+/-- Map `RefTerminatorKind` to `Miri.MIR.Terminator`. Day-1 unmodeled
+terminators (`.unwindResume`, `.assert`, `.call`, and `.unsupported`) map to
+`.CoroutineDrop`, which `ControlFlow.evalTerminator` rejects fail-closed with
+`.invalidProgram` (`.blocked`). -/
+noncomputable def toMiriTerminator (types : List MirTy) :
+    RefTerminatorKind → Miri.MIR.Terminator
+  | .goto target =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .Goto target Array.empty }
+  | .return_ =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .Return }
+  | .unreachable =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .Unreachable }
+  | .switchInt discr targets =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩
+      kind := .SwitchInt (toMiriOperand types discr)
+        { cases := Array.mk
+            (targets.branches.map (fun b => .Case b.1.toNat b.2))
+          otherwise := targets.otherwise } }
+  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .CoroutineDrop }
+
+/-- Lower a `RefBasicBlock` to a `Miri.MIR.BasicBlock`. -/
+noncomputable def toMiriBasicBlock (types : List MirTy)
+    (rbb : RefBasicBlock) : Miri.MIR.BasicBlock := {
+  statements := Array.mk (rbb.statements.map (toMiriStatement types))
+  terminator := toMiriTerminator types rbb.terminator
+  cleanup := rbb.cleanup
+}
+
+/-- Lower a `RefBody` to a real `Miri.MIR.Body` (`Runtime(PostCleanup)` phase)
+whose local type table uses canonical `TyId`s. -/
+noncomputable def toMiriBody (types : List MirTy) (rbody : RefBody) :
+    Miri.MIR.Body := {
+  phase := .Runtime .PostCleanup
+  argumentCount := rbody.argumentCount
+  spreadArgument := none
+  locals := Array.mk (rbody.locals.map (canonicalTyId types))
+  basicBlocks := Array.mk (rbody.basicBlocks.map (toMiriBasicBlock types))
+}
+
+/-! ## Constant Decoding, Value Encoding, and Entry Initialization -/
+
 /-- Reference constant-literal decoder calling
 `Miri.Memory.ScalarInt.tryFromUInt` and `Miri.Memory.ScalarInt.tryToBool`
-(`vendor/lean-miri/Miri/Memory/ScalarInt.lean`), matching
-`ScalarInt::try_from_uint` and `ScalarInt::try_to_bool` in
-`compiler/rustc_middle/src/ty/consts/int.rs` and `Scalar::to_bool` in
-`compiler/rustc_middle/src/mir/interpret/value.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "pub fn try_from_uint(i: impl Into<u128>, size: Size) -> Option<Self> {
->     let (r, overflow) = Self::truncate_from_uint(i, size);
->     if overflow { None } else { Some(r) }
-> }"
->
-> "pub fn try_to_bool(self) -> Result<bool, ()> {
->     match self.to_u8() {
->         0 => Ok(false),
->         1 => Ok(true),
->         _ => Err(()),
->     }
-> }"
-> (`compiler/rustc_middle/src/ty/consts/int.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
->
-> "pub fn to_bool(self) -> InterpResult<'tcx, bool> {
->     let val = self.to_u8()?;
->     match val {
->         0 => interp_ok(false),
->         1 => interp_ok(true),
->         _ => throw_ub!(InvalidBool(val)),
->     }
-> }"
-> (`compiler/rustc_middle/src/mir/interpret/value.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
+(`vendor/lean-miri/Miri/Memory/ScalarInt.lean`) and `refMiriTagToDiscrBits` /
+`refFindDiscrVariant?`, matching `ScalarInt::try_from_uint` and
+`ScalarInt::try_to_bool` in `compiler/rustc_middle/src/ty/consts/int.rs` and
+`read_discriminant` in `compiler/rustc_const_eval/src/interpret/discriminant.rs`
+(`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
 noncomputable def evalRefConstLit : MirTy → ConstLit → Except FaultKind Val
   | .int w s, .scalar bits =>
     match Miri.Memory.ScalarInt.tryFromUInt bits (toMiriSize w) with
@@ -520,90 +697,22 @@ noncomputable def evalRefConstLit : MirTy → ConstLit → Except FaultKind Val
   | .enum ety, .scalar bits =>
     match ety.tagRepr with
     | .zeroSized => .error .unsupported
-    | .scalar tagW _ =>
+    | .scalar tagW tagS =>
       if !refEnumAdmitted ety then
         .error .unsupported
       else
         match Miri.Memory.ScalarInt.tryFromUInt bits (toMiriSize tagW) with
         | .ok (some sc) =>
-          let op : Miri.Interpreter.OpTy Miri.Memory.Provenance :=
-            ⟨.immediate (.scalar (.fromScalarInt sc)),
-              ⟨0, refEnumLayoutData ety⟩⟩
-          match Miri.Interpreter.Discriminant.readDiscriminant
-              (refDiscriminantHooks Unit ety) () op () with
-          | .ok v _ => .ok (.enumVal ety v)
-          | .error (.undefinedBehavior _) _ => .error .undefined
-          | .error _ _ => .error .unsupported
+          match refMiriTagToDiscrBits tagW tagS ety.discrWidth sc.data with
+          | some discrBits =>
+            match refFindDiscrVariant? discrBits ety.discriminants with
+            | some v => .ok (.enumVal ety v)
+            | none => .error .undefined
+          | none => .error .unsupported
         | _ => .error .unsupported
   | _, _ => .error .unsupported
 
-/-- Reference unary operator evaluator over `Miri.MIR.UnOp` calling
-`Miri.Interpreter.IntegerOps.unary`
-(`vendor/lean-miri/Miri/Interpreter/IntegerOps.lean`), matching `unary_op` in
-`compiler/rustc_const_eval/src/interpret/operator.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "pub fn unary_op(
->     &self,
->     un_op: mir::UnOp,
->     val: &ImmTy<'tcx, M::Provenance>,
-> ) -> InterpResult<'tcx, ImmTy<'tcx, M::Provenance>>"
-> (`compiler/rustc_const_eval/src/interpret/operator.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
-noncomputable def evalRefMiriUnOp (op : Miri.MIR.UnOp) (v : Val) :
-    Except FaultKind Val :=
-  match op, v with
-  | .Not, .bool b => .ok (.bool (!b))
-  | _, .scalar sv =>
-    match Miri.Interpreter.IntegerOps.unary op (miriIntValue sv) with
-    | .ok sc => .ok (.scalar ⟨sv.width, sv.signed, sc.data⟩)
-    | .error (.undefinedBehavior _) => .error .undefined
-    | .error _ => .error .unsupported
-  | _, _ => .error .unsupported
-
-/-- Reference binary operator evaluator over `Miri.MIR.BinOp` calling
-`Miri.Interpreter.IntegerOps.binary` and
-`Miri.Interpreter.IntegerOps.binaryBool`
-(`vendor/lean-miri/Miri/Interpreter/IntegerOps.lean`), matching `binary_op` in
-`compiler/rustc_const_eval/src/interpret/operator.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "pub fn binary_op(
->     &self,
->     bin_op: mir::BinOp,
->     left: &ImmTy<'tcx, M::Provenance>,
->     right: &ImmTy<'tcx, M::Provenance>,
-> ) -> InterpResult<'tcx, ImmTy<'tcx, M::Provenance>>"
-> (`compiler/rustc_const_eval/src/interpret/operator.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
-noncomputable def evalRefMiriBinOp (op : Miri.MIR.BinOp) (lhs rhs : Val) :
-    Except FaultKind Val :=
-  match lhs, rhs with
-  | .scalar l, .scalar r =>
-    match op with
-    | .AddWithOverflow | .SubWithOverflow | .MulWithOverflow | .Offset =>
-      .error .unsupported
-    | _ =>
-      match Miri.Interpreter.IntegerOps.binary op
-          (miriIntValue l) (miriIntValue r) with
-      | .ok (.scalar sc) => .ok (.scalar ⟨l.width, l.signed, sc.data⟩)
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported
-  | .bool l, .bool r =>
-    match op with
-    | .AddWithOverflow | .SubWithOverflow | .MulWithOverflow | .Offset =>
-      .error .unsupported
-    | _ =>
-      match Miri.Interpreter.IntegerOps.binaryBool op l r with
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported
-  | _, _ => .error .unsupported
-
-/-- Reference scalar/boolean/unit/enum value validity and type check calling
+/-- Reference value validity and type check calling
 `Miri.Memory.ScalarInt.tryFromUInt` and `Miri.Memory.ScalarInt.ofBool`. -/
 noncomputable def checkRefVal (v : Val) (ty : MirTy) : Bool :=
   match v, ty with
@@ -628,49 +737,170 @@ noncomputable def checkRefArgsMatch : List Val → List MirTy → Bool
   | v :: vs, ty :: tys => checkRefVal v ty && checkRefArgsMatch vs tys
   | _, _ => false
 
-/-- Caller sentinel frame beneath the entry function's frame.
+/-- Encode a runtime `Val` at type `ty` into a real
+`Miri.Interpreter.Immediate Miri.Memory.Provenance`:
+- `.scalar sv` -> `.scalar (.fromScalarInt (miriScalar sv.width sv.bits))`
+- `.bool b` -> `.scalar (.fromBool b)`
+- `.unit` and `.zeroSized` `.enumVal` -> `.uninit` (canonical ZST immediate)
+- `.scalar tagW _` `.enumVal ety v` -> `.scalar (.fromScalarInt (miriScalar
+  tagW (BitVec.ofNat 128 disc)))` for `ety.discriminants[v]`. -/
+noncomputable def valToMiriImmediate :
+    MirTy → Val → Miri.Interpreter.Immediate Miri.Memory.Provenance
+  | .int w _, .scalar sv =>
+    .scalar (.fromScalarInt (miriScalar w sv.bits))
+  | .bool, .bool b =>
+    .scalar (.fromBool b)
+  | .unit, .unit => .uninit
+  | .enum ety, .enumVal _ v =>
+    match ety.tagRepr with
+    | .zeroSized => .uninit
+    | .scalar tagW _ =>
+      match MirSemantics.getElem? ety.discriminants v with
+      | some disc =>
+        .scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))
+      | none => .uninit
+  | _, _ => .uninit
 
-$M_{\text{ref}}$ represents the caller of the entry function as an explicit
-frame that owns the entry function's return place. In `lean-miri`,
-`Miri.Interpreter.callMain`
-(`vendor/lean-miri/Miri/Interpreter/MainThread.lean`) allocates the return
-place `retPlace` before it calls the entry function, so that place outlives the
-entry frame. The sentinel models this caller-owned place as a single live
-destination slot (`_0`) of the entry function's return type `retTy`.
+/-- Encode a `LocalSlot` at type `ty` into a real
+`Miri.Interpreter.LocalValue Miri.Memory.Provenance`. -/
+noncomputable def slotToMiriLocalValue (ty : MirTy) :
+    LocalSlot → Miri.Interpreter.LocalValue Miri.Memory.Provenance
+  | .dead => .dead
+  | .live none => .live (.immediate .uninit)
+  | .live (some v) => .live (.immediate (valToMiriImmediate ty v))
 
-The sentinel never executes a statement and is marked with
-`isCallerSentinel := true`. `initRefState` places it beneath the entry frame,
-and `evalRefStep` requires it and preserves it on every running step, so the
-reference stack has one fixed shape. Returning from the entry frame ends the
-execution with `.returned` (`evalRefTerminator`) instead of resuming the
-sentinel. Its `defId`, `blockIdx`, and `stmtIdx` are unused. -/
-noncomputable def callerSentinelFrame (retTy : MirTy) : RefFrameState := {
-  defId := 0
-  blockIdx := 0
-  stmtIdx := 0
-  locals := [⟨refLiveUninitSlot retTy, some retTy⟩]
-  isCallerSentinel := true
-}
+/-- Construct a pre-cached `Miri.Interpreter.LocalState Provenance LocalLayout`
+for a `(ty, slot)` pair. -/
+noncomputable def refLocalStateOfSlot (types : List MirTy) (ty : MirTy)
+    (slot : LocalSlot) :
+    Miri.Interpreter.LocalState Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout :=
+  ⟨slotToMiriLocalValue ty slot, some (refLocalLayoutForTy types ty)⟩
 
-/-- Initialize `RefLocalState` slots at function entry, pre-populating
-`cachedLayout := some ty` on every slot, matching
-`Miri.Interpreter.CallMachine.pushDone` (`alwaysLiveVarsAndTemps`) and
-`compiler/rustc_const_eval/src/interpret/stack.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+/-- Allocate the caller-owned return buffer for `retTy` inside fresh
+`Miri.Memory.MemoryState.empty`, matching `Miri.Interpreter.callMain`
+(`vendor/lean-miri/Miri/Interpreter/MainThread.lean`). -/
+noncomputable def refInitMemoryAndRetPlace (types : List MirTy)
+    (retTy : MirTy) :
+    Except FaultKind
+      (Miri.Memory.MemoryState Miri.Memory.Provenance
+        Miri.TreeBorrows.BorrowTree Unit ×
+       Miri.Interpreter.MPlaceTy Miri.Memory.Provenance) :=
+  let retLayout := refLocalLayoutForTy types retTy
+  let sz := retLayout.layout.size
+  let align := retLayout.layout.align.abi
+  match Miri.Memory.Allocation.tryNew (Prov := Miri.Memory.Provenance)
+      sz align .Uninit
+      (fun n _ => some (Array.replicate n.bytes.toNat 0)) with
+  | .error _ => .error .unsupported
+  | .ok rawAlloc =>
+    let (mem1, reserved) := Miri.Memory.MemoryState.empty.reserveAllocId
+    match reserved with
+    | .error _ => .error .unsupported
+    | .ok allocId =>
+      let tree := Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one sz
+      let alloc := rawAlloc.withExtra tree
+      let mem2 := { mem1 with
+        live := mem1.live.push (allocId, ⟨.stack, alloc⟩) }
+      let ptr : Miri.Memory.Pointer (Option Miri.Memory.Provenance) :=
+        ⟨Miri.ABI.Size.ZERO, some (.concrete allocId Miri.Memory.BorTag.one)⟩
+      let mplace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance :=
+        ⟨⟨ptr, .none, none⟩, retLayout⟩
+      .ok (mem2, mplace)
 
-> "self.storage_live(mir::RETURN_PLACE)?;
->
-> let body = self.body();
-> let always_live = always_storage_live_locals(body);
-> for local in body.vars_and_temps_iter() {
->     if always_live.contains(local) {
->         self.storage_live(local)?;
->     }
-> }"
-> (`compiler/rustc_const_eval/src/interpret/stack.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
-noncomputable def initRefLocalsLoop (rbody : RefBody) (args : List Val) :
-    Nat → List MirTy → List RefLocalState
+/-- Decode the entry function's returned `Val` out of the caller-owned return
+allocation `retPlace` in `memory` after `Return` pops the root frame and
+`ExecutionControl.hooks.copyReturn` writes and validates `_0` into `retPlace`.
+-/
+noncomputable def refReadReturnVal
+    (memory : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit)
+    (retTy : MirTy)
+    (retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance) :
+    Except FaultKind Val :=
+  match retTy with
+  | .unit => .ok .unit
+  | .enum ety =>
+    match ety.tagRepr with
+    | .zeroSized =>
+      if refIsZstEnumTy ety then .ok (.enumVal ety 0)
+      else .error .unsupported
+    | .scalar tagW tagS =>
+      if !refEnumAdmitted ety then
+        .error .unsupported
+      else
+        match retPlace.mplace.ptr.provenance with
+        | some (.concrete allocId _) =>
+          match memory.live.find? (fun entry => entry.1 == allocId) with
+          | none => .error .unsupported
+          | some (_, localAlloc) =>
+            let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
+              (toMiriSize tagW)
+            match localAlloc.allocation.readScalar
+                Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+            | .ok sc =>
+              match sc.tryToScalarInt with
+              | .ok (.integer sci) =>
+                match refMiriTagToDiscrBits tagW tagS ety.discrWidth
+                    sci.data with
+                | some discrBits =>
+                  match refFindDiscrVariant? discrBits ety.discriminants with
+                  | some v => .ok (.enumVal ety v)
+                  | none => .error .undefined
+                | none => .error .unsupported
+              | _ => .error .unsupported
+            | .error (.invalidUninitBytes _) => .error .undefined
+            | .error _ => .error .unsupported
+        | _ => .error .unsupported
+  | .int w s =>
+    match retPlace.mplace.ptr.provenance with
+    | some (.concrete allocId _) =>
+      match memory.live.find? (fun entry => entry.1 == allocId) with
+      | none => .error .unsupported
+      | some (_, localAlloc) =>
+        let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO (toMiriSize w)
+        match localAlloc.allocation.readScalar
+            Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+        | .ok sc =>
+          match sc.tryToScalarInt with
+          | .ok (.integer sci) => .ok (.scalar ⟨w, s, sci.data⟩)
+          | _ => .error .unsupported
+        | .error (.invalidUninitBytes _) => .error .undefined
+        | .error _ => .error .unsupported
+    | _ => .error .unsupported
+  | .bool =>
+    match retPlace.mplace.ptr.provenance with
+    | some (.concrete allocId _) =>
+      match memory.live.find? (fun entry => entry.1 == allocId) with
+      | none => .error .unsupported
+      | some (_, localAlloc) =>
+        let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
+          (Miri.ABI.Size.ofBytes 1)
+        match localAlloc.allocation.readScalar
+            Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+        | .ok sc =>
+          match sc.tryToScalarInt with
+          | .ok (.integer sci) =>
+            match sci.tryToBool with
+            | .ok b => .ok (.bool b)
+            | .error (.invalidBool _) => .error .undefined
+            | .error _ => .error .unsupported
+          | _ => .error .unsupported
+        | .error (.invalidUninitBytes _) => .error .undefined
+        | .error _ => .error .unsupported
+    | _ => .error .unsupported
+  | _ => .error .unsupported
+
+/-- Initialize real `Miri.Interpreter.LocalState` entries at function entry,
+pre-populating `layout := some (refLocalLayoutForTy types ty)` on every local,
+matching `Miri.Interpreter.CallMachine.pushDone` (`alwaysLiveVarsAndTemps`)
+and `compiler/rustc_const_eval/src/interpret/stack.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
+noncomputable def initRefLocalsLoop (types : List MirTy) (rbody : RefBody)
+    (args : List Val) :
+    Nat → List MirTy →
+      List (Miri.Interpreter.LocalState Miri.Memory.Provenance
+        Miri.Interpreter.LocalLayout)
   | _, [] => []
   | idx, ty :: rest =>
       let slot : LocalSlot :=
@@ -684,18 +914,68 @@ noncomputable def initRefLocalsLoop (rbody : RefBody) (args : List Val) :
           .dead
         else
           refLiveUninitSlot ty
-      ⟨slot, some ty⟩ :: initRefLocalsLoop rbody args (idx + 1) rest
+      refLocalStateOfSlot types ty slot ::
+        initRefLocalsLoop types rbody args (idx + 1) rest
+
+/-- Construct a real `Miri.Interpreter.Frame` executing `defId`/`rbody` at
+`(blockIdx, stmtIdx)` with `locals` and caller-owned return destination
+`retPlace` (`returnContinuation := .stop false`). -/
+noncomputable def mkRefMiriFrame (types : List MirTy) (defId : DefId)
+    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+    (locals : List (Miri.Interpreter.LocalState Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout))
+    (retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance) :
+    Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra := {
+  body := toMiriBody types rbody
+  bodyIdentity := Miri.Interpreter.BodyIdentity.ofCanonicalIndex defId
+  functionInstance := { kind := .Item defId, args := Array.empty }
+  extra := {
+    borrowTracker := none
+    catchUnwind := none
+    userRelevance := 255
+    dataRace := none
+  }
+  returnContinuation := .stop false
+  returnPlace := .memory retPlace
+  localsIdentity := Miri.Interpreter.LocalsIdentity.ofAllocationToken 0
+  locals := Array.mk locals
+  vaList := Array.empty
+  trackCallerArg := none
+  location := .mir ⟨blockIdx, stmtIdx⟩
+}
+
+/-- Construct a real `Miri.Interpreter.MachineHooks.State Unit RefUser` holding
+a single active frame, return-place memory `mem`, terminator control `ctrl`,
+and `callerMem`. -/
+noncomputable def mkRefMiriState
+    (frame : Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra)
+    (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit)
+    (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
+    (callerMem : CallerMemory) :
+    Miri.Interpreter.MachineHooks.State Unit RefUser := {
+  stack := ⟨Array.mk [frame]⟩
+  machine := {
+    memory := mem
+    borrowTracker := none
+    dataRace := none
+    threads := Miri.Concurrency.ThreadManager.initial true
+    raceAllocations := Array.empty
+    allocationSpans := Array.empty
+    user := { control := ctrl, callerMem := callerMem }
+    pendingMoveDeinit := false
+  }
+}
 
 /-- Entry initialization of $M_{\text{ref}}$ (`initRefState rp q maxSteps`):
-resolves `rbody.locals` against `rp.types`, pre-populates `cachedLayout := some
-ty` on every local, and initializes `stepsExecuted := 0` and
-`maxSteps := maxSteps`.
-
-Like `Trusted.MirSemantics.initState`, it first rejects programs captured for
-a target whose pointer width is not 64 bits or whose `mirProfileVersion` is not
-1. The initial stack is `[callerSentinelFrame retTy, rframe]`, where `retTy` is
-the type of the entry function's return place `_0` and `rframe` executes the
-entry body. -/
+validates 64-bit target layout, MIR profile version 1, empty `callerMem`,
+entry body existence, non-empty basic blocks, `argumentCount < locals.length`,
+in-bounds storage annotations, well-typed `Discriminant` destinations,
+supported local types, and matching arguments; allocates the caller-owned
+return buffer in `MemoryState.empty`; and initializes a single-frame
+`Miri.Interpreter.MachineHooks.State` ready for `ExecutionMachine.step`. -/
 noncomputable def initRefState (rp : RefProg) (q : Query)
     (maxSteps : Nat) : Except FaultKind RefState :=
   if !Nat.beq rp.pointerWidthBits 64 || !Nat.beq rp.mirProfileVersion 1 then
@@ -715,6 +995,8 @@ noncomputable def initRefState (rp : RefProg) (q : Query)
           .error .unsupported
         else if !refStorageAnnotationsInBounds rbody then
           .error .unsupported
+        else if !refDiscriminantTypesValid localTys rbody then
+          .error .unsupported
         else if !localTys.all refIsSupportedLocalTy then
           .error .unsupported
         else
@@ -722,24 +1004,21 @@ noncomputable def initRefState (rp : RefProg) (q : Query)
           if !checkRefArgsMatch q.args paramTys then
             .error .unsupported
           else
-            -- `argumentCount < localTys.length` makes `_0` present here; the
-            -- `none` arm keeps the definition total and fails closed.
             match MirSemantics.getElem? localTys 0 with
             | none => .error .unsupported
             | some retTy =>
-              let rlocals := initRefLocalsLoop rbody q.args 0 localTys
-              let rframe : RefFrameState := {
-                defId := rp.entryDefId
-                blockIdx := 0
-                stmtIdx := 0
-                locals := rlocals
-                isCallerSentinel := false
-              }
-              .ok {
-                frames := [callerSentinelFrame retTy, rframe]
-                callerMem := q.callerMem
-                stepsExecuted := 0
-                maxSteps := maxSteps
-              }
+              match refInitMemoryAndRetPlace rp.types retTy with
+              | .error k => .error k
+              | .ok (mem, retPlace) =>
+                let rlocals := initRefLocalsLoop rp.types rbody q.args 0 localTys
+                let frame := mkRefMiriFrame rp.types rp.entryDefId rbody 0 0
+                  rlocals retPlace
+                .ok {
+                  miri := mkRefMiriState frame mem refInitControl q.callerMem
+                  retTy := retTy
+                  retPlace := retPlace
+                  stepsExecuted := 0
+                  maxSteps := maxSteps
+                }
 
 end Trusted.Correspondence

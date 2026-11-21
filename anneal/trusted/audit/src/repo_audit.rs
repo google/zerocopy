@@ -154,10 +154,15 @@ pub enum InspectorRequest {
     /// kernel-replays every non-`isPartial` `.vendorMiri` declaration onto the
     /// authenticated sysroot base on every run (cold compile and cache hit
     /// alike), kernel-replays all correspondence declarations onto that
-    /// replayed vendor kernel environment, and verifies constant-cone purity,
-    /// all 30 correspondence/wiring/canary claims, and reference-evaluator
-    /// independence (reaching the 21 required `Miri.*` primitives while
-    /// restricting `Trusted` dependencies in the reference-evaluator cone to
+    /// replayed vendor kernel environment, and verifies 36-root constant-cone
+    /// purity, all 33 correspondence, choice-coupled, wiring, `AllowedStep`
+    /// soundness, and canary claims, and reference-evaluator independence
+    /// (reaching all 34 live `ExecutionMachine` `Miri.*` primitives from
+    /// `[evalRefStep, initRefState]` without relying on `RefAllowedStep`,
+    /// checking `AllowedStep` separately on `RefAllowedStep`, requiring
+    /// isolated submodule placement and zero direct/transitive disallowed
+    /// `Trusted` imports in `Trusted.Correspondence.*` evaluator submodules,
+    /// and restricting `Trusted` dependencies across both cones to
     /// `Trusted.MirAst*`, `Trusted.MirModel`, and `Trusted.Correspondence*`,
     /// with human review of `trusted/correspondence/` and `Trusted.MirModel`
     /// remaining the semantic boundary).

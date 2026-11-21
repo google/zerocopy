@@ -108,18 +108,13 @@ table indexed by `TyId`.
 
 Every `TyId` in a reference program resolves through `types[tyId]?`:
 `initRefState` resolves the entry body's local declarations once and caches
-each local's `MirTy` in `RefLocalState.cachedLayout`, and a constant operand
-resolves `types[c.ty]?` when `evalRefMiriOperandToSlot` evaluates it. Adapters
-derive type-specific `lean-miri` layouts from that cached `MirTy` where
-semantics depend on it (`refLocalLayoutForTy` in `evalRefPlaceOperand` so
-`isZst` governs move deinitialization for `MirTy.unit` and admitted 1-variant
-ZST enums, and `refEnumLayoutData` plus `refScalarLayoutData` /
-`refTagScalarLayout?` for enum constant and `Discriminant` evaluation); all
-other single-local and rvalue adapter sites use the fixed 8-byte placeholder
-`refSizedLocalLayout` (see the authoritative call-site list on
-`refSizedLocalLayout`). Each `Miri.Interpreter.Frame` that the adapters build
-carries its local's layout pre-cached, so `Miri.Interpreter.localToOp` never
-mutates `frame.locals` during read-only accesses.
+each local's `LocalLayout` via `refLocalLayoutForTy` on the real
+`Miri.Interpreter.Frame`, while `refExecutionConfig` resolves `TyId`s on demand
+through `resolveTy` (`tyIdFor` / `auxTyCode` for built-in layouts such as
+`boolLayout` and `usizeLayout`, and `refLocalLayoutForTy` for local, constant,
+and discriminant queries). Each frame entry carries its `LocalLayout`
+pre-cached so `OperandMachine.localToOp` never mutates `frame.locals` during
+read-only accesses.
 
 `pointerWidthBits` and `mirProfileVersion` carry `Program.pointerWidthBits` and
 `Program.mirProfileVersion` across the codec so that `initRefState`

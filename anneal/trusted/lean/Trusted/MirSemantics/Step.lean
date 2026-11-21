@@ -106,7 +106,7 @@ noncomputable def evalConstLit : MirTy → ConstLit → Except FaultKind Val
         | none => .error .undefined
   | _, _ => .error .unsupported
 
-/-- Stage 1 of operand evaluation (`eval_operand` in
+/-- Stage 1 of operand evaluation (`eval_operand` and `eval_place_to_op` in
 `compiler/rustc_const_eval/src/interpret/operand.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`, and
 `Miri.Interpreter.OperandMachine.evalOperand` in
@@ -123,14 +123,26 @@ noncomputable def evalConstLit : MirTy → ConstLit → Except FaultKind Val
 > };"
 > (`compiler/rustc_const_eval/src/interpret/operand.rs`, `rust-lang/rust`
 > `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+>
+> "let mut op = self.local_to_op(
+>     place.local,
+>     if place.projection.is_empty() { layout } else { None },
+> )?;
+> for elem in place.projection.iter() {
+>     op = self.project(&op, elem)?
+> }"
+> (`compiler/rustc_const_eval/src/interpret/operand.rs`, `rust-lang/rust`
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
 
-Note that upstream `eval_operand` currently leaves move invalidation
-unimplemented (as recorded in the `FIXME` above). As a deliberate, conservative
-over-approximation (sound because deinitializing can only introduce faults on
-subsequent reads), `evalOperandToSlot` resolves an `Operand` to
-`(ty : MirTy, optVal : Option Val, locals' : List LocalSlot)` without yet
-requiring `optVal` to be initialized (`some v`), and deinitializes moved
-non-ZST locals:
+Matching `eval_place_to_op`, local bounds and liveness (`.dead` -> UB) are
+checked before inspecting `place.projection` (`.unsupported` on non-empty
+projections). Note that upstream `eval_operand` currently leaves move
+invalidation unimplemented (as recorded in the `FIXME` above). As a
+deliberate, conservative over-approximation (sound because deinitializing can
+only introduce faults on subsequent reads), `evalOperandToSlot` resolves an
+`Operand` to `(ty : MirTy, optVal : Option Val, locals' : List LocalSlot)`
+without yet requiring `optVal` to be initialized (`some v`), and deinitializes
+moved non-ZST locals:
 - `.copy place`: reads `(ty, optVal)` without mutating `locals`.
 - `.move place`: reads `(ty, optVal)` and conservatively transitions
   `locals[place.localId]` to `liveUninitSlot ty` (preserving
@@ -143,26 +155,27 @@ noncomputable def evalOperandToSlot (bodyLocals : List MirTy)
     (locals : List LocalSlot) :
     Operand → Except FaultKind (MirTy × Option Val × List LocalSlot)
   | .copy place =>
-    if !place.projection.isEmpty then
-      .error .unsupported
-    else
-      match getElem? bodyLocals place.localId,
-          getElem? locals place.localId with
-      | some ty, some (.live optVal) => .ok (ty, optVal, locals)
-      | some _, some .dead => .error .undefined
-      | _, _ => .error .unsupported
+    match getElem? bodyLocals place.localId,
+        getElem? locals place.localId with
+    | some _, some .dead => .error .undefined
+    | some ty, some (.live optVal) =>
+      if !place.projection.isEmpty then
+        .error .unsupported
+      else
+        .ok (ty, optVal, locals)
+    | _, _ => .error .unsupported
   | .move place =>
-    if !place.projection.isEmpty then
-      .error .unsupported
-    else
-      match getElem? bodyLocals place.localId,
-          getElem? locals place.localId with
-      | some ty, some (.live optVal) =>
+    match getElem? bodyLocals place.localId,
+        getElem? locals place.localId with
+    | some _, some .dead => .error .undefined
+    | some ty, some (.live optVal) =>
+      if !place.projection.isEmpty then
+        .error .unsupported
+      else
         match setElem? locals place.localId (liveUninitSlot ty) with
         | some locals' => .ok (ty, optVal, locals')
         | none => .error .unsupported
-      | some _, some .dead => .error .undefined
-      | _, _ => .error .unsupported
+    | _, _ => .error .unsupported
   | .constant c =>
     match evalConstLit c.ty c.lit with
     | .ok v => .ok (c.ty, some v, locals)
@@ -285,49 +298,55 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
       | .error k => .error k
       | .ok res => .ok (res, locals₁)
   | .discriminant place =>
-    if !place.projection.isEmpty then
-      .error .unsupported
-    else
-      match getElem? bodyLocals place.localId,
-          getElem? locals place.localId with
-      | some (.enum ety), some slot =>
-        if !enumAdmitted ety then
-          .error .unsupported
-        else
-          -- For 1-variant `.zeroSized` enums, `Miri`'s `readDiscriminant`
-          -- (`Variants::Single { index: 0 }`) returns variant `0` without
-          -- reading tag bytes even if a slot holds `.live none` (`Uninit`),
-          -- preserving universal 1-step lockstep over arbitrary `FrameState`s.
-          match ety.tagRepr, slot with
-          | _, .dead => .error .undefined
-          | .zeroSized, .live none =>
-            match getElem? ety.discriminants 0 with
-            | some disc =>
-              .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
-            | none => .error .unsupported
-          | .zeroSized, .live (some (.enumVal ety' v)) =>
-            if EnumTy.beq ety ety' && Nat.beq v 0 then
+    match getElem? bodyLocals place.localId,
+        getElem? locals place.localId with
+    | some _, some .dead => .error .undefined
+    | some srcTy, some (.live optVal) =>
+      if !place.projection.isEmpty then
+        .error .unsupported
+      else
+        match srcTy with
+        | .enum ety =>
+          if !enumAdmitted ety then
+            .error .unsupported
+          else
+            -- For 1-variant `.zeroSized` enums, `Miri`'s `readDiscriminant`
+            -- (`Variants::Single { index: 0 }`) returns variant `0` without
+            -- reading tag bytes even if a slot holds `.live none` (`Uninit`),
+            -- preserving universal 1-step lockstep over arbitrary
+            -- `FrameState`s.
+            match ety.tagRepr, optVal with
+            | .zeroSized, none =>
               match getElem? ety.discriminants 0 with
               | some disc =>
                 .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
                   truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
               | none => .error .unsupported
-            else
-              .error .unsupported
-          | .zeroSized, .live (some _) => .error .unsupported
-          | .scalar _ _, .live none => .error .undefined
-          | .scalar _ _, .live (some (.enumVal ety' v)) =>
-            if EnumTy.beq ety ety' && Nat.blt v ety.discriminants.length then
-              match getElem? ety.discriminants v with
-              | some disc =>
-                .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                  truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
-              | none => .error .unsupported
-            else
-              .error .unsupported
-          | .scalar _ _, .live (some _) => .error .unsupported
-      | _, _ => .error .unsupported
+            | .zeroSized, some (.enumVal ety' v) =>
+              if EnumTy.beq ety ety' && Nat.beq v 0 then
+                match getElem? ety.discriminants 0 with
+                | some disc =>
+                  .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
+                    truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩,
+                    locals)
+                | none => .error .unsupported
+              else
+                .error .unsupported
+            | .zeroSized, some _ => .error .unsupported
+            | .scalar _ _, none => .error .undefined
+            | .scalar _ _, some (.enumVal ety' v) =>
+              if EnumTy.beq ety ety' && Nat.blt v ety.discriminants.length then
+                match getElem? ety.discriminants v with
+                | some disc =>
+                  .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
+                    truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩,
+                    locals)
+                | none => .error .unsupported
+              else
+                .error .unsupported
+            | .scalar _ _, some _ => .error .unsupported
+        | _ => .error .unsupported
+    | _, _ => .error .unsupported
   | _ => .error .unsupported
 
 /-- Write `val` into an unprojected `dst : Place` of known `dstTy : MirTy` in

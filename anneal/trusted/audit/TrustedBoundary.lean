@@ -105,9 +105,9 @@ this file across six JSON IPC modes (`run` and `main`):
   `.sysrootFoundation` base on every run (cold build and cache hit alike),
   replays all repository declarations (including `trusted/correspondence/` and
   `correspondence/`) directly on top of that replayed vendor kernel
-  environment, checks that the 21-root `Miri.Interpreter.ExecutionMachine` cone
+  environment, checks that the 36-root `Miri.Interpreter.ExecutionMachine` cone
   and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
-  `opaque`, and unapproved axioms, and verifies all 30 Pass 2 correspondence,
+  `opaque`, and unapproved axioms, and verifies all 33 Pass 2 correspondence,
   wiring, and canary claims plus reference-evaluator independence checks.
 - **`"target-audit"` (external target crate verification):**
   Loads compiled target `.olean` artifacts (`TargetOrigin`: `.foundation`,
@@ -1887,34 +1887,50 @@ def closureCorr (env : Environment)
         "correspondence dependency cone")
   closure (lookupConst env) provenance axioms pending onVisit
 
-/-- Verify the 21-root `Miri.Interpreter.ExecutionMachine` transitive
+/-- Verify the 36-root `Miri.Interpreter.ExecutionMachine` transitive
 dependency cone under `closureCorr`, starting with
-`Miri.Interpreter.ExecutionMachine.step`. -/
+`Miri.Interpreter.ExecutionMachine.step` and
+`Miri.Interpreter.ExecutionMachine.AllowedStep`. -/
 def verifyMiriExecutionMachineCone (env : Environment)
     (roles : Std.HashMap Name CorrOrigin)
     (axiomPolicy : Array (String × String)) : IO (Array Name × NameSet) :=
   closureCorr env roles axiomPolicy [
     `Miri.Interpreter.ExecutionMachine.step,
+    `Miri.Interpreter.ExecutionMachine.AllowedStep,
     `Miri.Interpreter.ExecutionMachine.withValidation,
+    `Miri.Interpreter.ExecutionMachine.stepHooks,
+    `Miri.Interpreter.ExecutionMachine.rvalueHooks,
     `Miri.Interpreter.ExecutionMachine.operandHooks,
+    `Miri.Interpreter.ExecutionMachine.projectionHooks,
+    `Miri.Interpreter.ExecutionMachine.discriminantHooks,
+    `Miri.Interpreter.ExecutionMachine.scalarHooks,
+    `Miri.Interpreter.Step.step,
+    `Miri.Interpreter.Step.evalStatement,
+    `Miri.Interpreter.ControlFlow.goToBlock,
+    `Miri.Interpreter.ControlFlow.evalTerminator,
+    `Miri.Interpreter.ControlFlow.returnFromCurrentFrame,
+    `Miri.Interpreter.ExecutionControl.hooks,
+    `Miri.Interpreter.MachineHooks.storageLiveDyn,
+    `Miri.Interpreter.MachineHooks.storageDead,
+    `Miri.Interpreter.OperandMachine.evalOperand,
+    `Miri.Interpreter.OperandMachine.evalPlaceToOp,
+    `Miri.Interpreter.PlaceMachine.readImmediate,
+    `Miri.Interpreter.PlaceMachine.writeMemory,
+    `Miri.Interpreter.ValidityVisitor.validatePlace,
+    `Miri.Interpreter.ValidityMemory.bind,
+    `Miri.Interpreter.evalRvalueIntoPlace,
+    `Miri.Interpreter.TerminatorMachine.beforeTerminatorWithChoice,
+    `Miri.Interpreter.ScalarOps.binary,
+    `Miri.Interpreter.ScalarOps.unary,
     `Miri.Interpreter.IntegerOps.binary,
     `Miri.Interpreter.IntegerOps.binaryBool,
     `Miri.Interpreter.IntegerOps.unary,
+    `Miri.Interpreter.Discriminant.readDiscriminant,
+    `Miri.Interpreter.Discriminant.discriminantForVariant,
     `Miri.Memory.ScalarInt.truncateFromUInt,
     `Miri.Memory.ScalarInt.tryFromUInt,
     `Miri.Memory.ScalarInt.tryToBool,
-    `Miri.Interpreter.evalOperand,
-    `Miri.Interpreter.evalPlaceToOp,
-    `Miri.Interpreter.localToOp,
-    `Miri.Interpreter.placeWriteLocalImmediate,
-    `Miri.Interpreter.evalRvalueIntoPlace,
-    `Miri.Interpreter.runRvalue,
-    `Miri.Interpreter.Step.evalStatement,
-    `Miri.Interpreter.Frame.storageLive,
-    `Miri.Interpreter.Frame.storageDead,
-    `Miri.Interpreter.ControlFlow.goToBlock,
-    `Miri.Interpreter.ControlFlow.evalTerminator,
-    `Miri.Interpreter.ControlFlow.returnFromCurrentFrame]
+    `Miri.Interpreter.evalOperand]
 
 /-- Verify that `claimName` is a `Prop` definition in `Trusted.Correspondence`
 referencing every constant in the non-empty `reqConsts` list, and that
@@ -1926,12 +1942,15 @@ def requireCorrClaimProof (env : Environment)
   requireClaimProof env corrLocals `Trusted.Correspondence
     `Anneal.MirCorrespondenceProof claimName none proofName reqConsts
 
-/-- Verify that all 30 Pass 2 correspondence, wiring, and canary (`D6`–`D13`)
-claims—covering top-level correspondence, fault equivalence, `deinitMovedPlace`
-wiring, codec round-trip, constructor preservation, uniqueness, simulation, and
-canaries—are present in `Trusted.Correspondence`, reference their required
-semantic definitions (so replacing any claim with `True` fails CI), and are
-proved with exact claim-type equality in `Anneal.MirCorrespondenceProof`. -/
+/-- Verify that all 33 Pass 2 correspondence, choice-coupled, wiring,
+`AllowedStep` soundness, and canary (`D6`–`D13`) claims—covering aggregate and
+choice-coupled correspondence and fault equivalence, `ExecutionMachine.step` /
+`OperandMachine.evalOperand` / `LocalAccess.evalOperand` `deinitMovedPlace`
+wiring, `RefStep` soundness for `RefAllowedStep`, codec round-trip, constructor
+preservation, uniqueness, simulation, and canaries—are present in
+`Trusted.Correspondence`, reference their required semantic definitions (so
+replacing any claim with `True` fails CI), and are proved with exact claim-type
+equality in `Anneal.MirCorrespondenceProof`. -/
 def verifyCorrespondenceClaims (env : Environment)
     (corrLocals : Std.HashMap Name ConstantInfo) : IO Unit := do
   requireCorrClaimProof env corrLocals
@@ -1952,6 +1971,25 @@ def verifyCorrespondenceClaims (env : Environment)
       `Trusted.Correspondence.faultToRefOutcome,
       `Trusted.Correspondence.encodeProg ]
   requireCorrClaimProof env corrLocals
+    `Trusted.Correspondence.CorrespondenceAtChoicesClaim
+    `Anneal.MirCorrespondenceProof.correspondence_at_choices_claim_holds
+    [ `Trusted.MirSemantics.WellFormed,
+      `Trusted.Correspondence.RefWellFormed,
+      `Trusted.Correspondence.RefValidPrefixAtChoices,
+      `Trusted.MirSemantics.ValidPrefixAtChoices,
+      `Trusted.Correspondence.RefBehaviorAtChoices,
+      `Trusted.MirSemantics.BehaviorAtChoices,
+      `Trusted.Correspondence.RefDivergesAtChoices,
+      `Trusted.MirSemantics.DivergesAtChoices,
+      `Trusted.Correspondence.encodeProg ]
+  requireCorrClaimProof env corrLocals
+    `Trusted.Correspondence.FaultEquivalenceAtChoicesClaim
+    `Anneal.MirCorrespondenceProof.fault_equivalence_at_choices_claim_holds
+    [ `Trusted.MirSemantics.ReachesResultAtChoices,
+      `Trusted.Correspondence.RefReachesOutcomeAtChoices,
+      `Trusted.Correspondence.faultToRefOutcome,
+      `Trusted.Correspondence.encodeProg ]
+  requireCorrClaimProof env corrLocals
     `Trusted.Correspondence.MiriMoveDeinitWiringClaim
     `Anneal.MirCorrespondenceProof.miri_move_deinit_wiring_claim_holds
     [ `Miri.Interpreter.ExecutionMachine.step,
@@ -1959,6 +1997,8 @@ def verifyCorrespondenceClaims (env : Environment)
       `Miri.Interpreter.Step.step,
       `Miri.Interpreter.ExecutionMachine.withValidation,
       `Miri.Interpreter.ExecutionMachine.operandHooks,
+      `Miri.Interpreter.OperandMachine.evalOperand,
+      `Miri.Interpreter.OperandMachine.evalPlaceToOp,
       `Miri.Interpreter.evalOperand,
       `Miri.Interpreter.MachineHooks.takeLastPendingMoveDeinit,
       `Miri.Interpreter.MachineHooks.recordPendingMoveDeinit,
@@ -2125,7 +2165,12 @@ def verifyCorrespondenceClaims (env : Environment)
          `Trusted.MirSemantics.ReachesResult,
          `Trusted.MirSemantics.WellFormed,
          `Trusted.Correspondence.RefReachesOutcome,
-         `Trusted.Correspondence.encodeProg])] do
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.RefStepSoundForAllowedStepClaim,
+       `Anneal.MirCorrespondenceProof.refStep_sound_for_allowedStep_holds,
+       [`Trusted.Correspondence.RefStep,
+         `Trusted.Correspondence.RefAllowedStep,
+         `Trusted.Correspondence.refReadReturnVal])] do
     requireCorrClaimProof env corrLocals claimName proofName reqConsts
 
 /-- Return `true` when `modName` is an allowlisted `Trusted` module permitted in
@@ -2139,47 +2184,140 @@ def isAllowedRefTrustedModule (modName : Name) : Bool :=
   modName == `Trusted.MirModel ||
   (`Trusted.Correspondence).isPrefixOf modName
 
+/-- Return `true` when `modName` is a `Trusted.Correspondence.*` submodule
+belonging to the isolated reference-evaluator layer (every
+`Trusted.Correspondence.*` module other than the umbrella
+`Trusted.Correspondence` and the bridge/canary modules
+`Trusted.Correspondence.{Simulation,CanaryFixtures}`). -/
+def isRefEvalSubmodule (modName : Name) : Bool :=
+  (`Trusted.Correspondence).isPrefixOf modName &&
+  modName != `Trusted.Correspondence &&
+  modName != `Trusted.Correspondence.Simulation &&
+  modName != `Trusted.Correspondence.CanaryFixtures
+
+/-- Return `true` when `modName` is an allowlisted `Trusted` module permitted in
+the transitive import closure of the isolated `M_ref` evaluator submodules:
+`Trusted.MirAst*`, `Trusted.MirModel`, or an isolated `Trusted.Correspondence.*`
+evaluator submodule itself. Every other `Trusted` module—including `Trusted`,
+`Trusted.MirSemantics*`, `Trusted.Correspondence`,
+`Trusted.Correspondence.Simulation`, `Trusted.Correspondence.CanaryFixtures`,
+and any sibling `Trusted.*` module—is excluded fail-closed. -/
+def isAllowedRefEvalImportTrustedModule (modName : Name) : Bool :=
+  (`Trusted.MirAst).isPrefixOf modName ||
+  modName == `Trusted.MirModel ||
+  isRefEvalSubmodule modName
+
 /-- Verify that the reference machine `M_ref`
-(`Trusted.Correspondence.evalRefStep` and
-`Trusted.Correspondence.initRefState`) reaches the 21 required
-`vendor/lean-miri` primitives and references only allowlisted `Trusted` modules
+(`Trusted.Correspondence.evalRefStep` and `Trusted.Correspondence.initRefState`)
+reaches all 34 required live `vendor/lean-miri` `ExecutionMachine` primitives
+without relying on `RefAllowedStep`, that `Trusted.Correspondence.RefAllowedStep`
+separately reaches `Miri.Interpreter.ExecutionMachine.AllowedStep`, that every
+isolated `Trusted.Correspondence.*` evaluator submodule never directly or
+transitively imports any disallowed `Trusted` module (including `Trusted`,
+`Trusted.MirSemantics*`, `Trusted.Correspondence`,
+`Trusted.Correspondence.Simulation`, `Trusted.Correspondence.CanaryFixtures`, or
+sibling `Trusted.*` modules), that in a modular correspondence layout
+`evalRefStep`, `initRefState`, and `RefAllowedStep` are all defined inside those
+isolated evaluator submodules, and that both the evaluator cone and the
+`RefAllowedStep` cone reference only allowlisted `Trusted` modules
 (`Trusted.MirAst*`, `Trusted.MirModel`, and `Trusted.Correspondence*`)—never
-`Trusted.MirSemantics`, `Trusted.MirSemantics.*`, or any other `Trusted`
-module. This enforces closed module-origin isolation across the full `M_anneal`
+`Trusted.MirSemantics`, `Trusted.MirSemantics.*`, or any other `Trusted` module.
+This enforces closed module-origin isolation across the full `M_anneal`
 operational-rule cone rather than a manually curated symbol denylist; human
 review of `trusted/correspondence/` and `Trusted.MirModel` remains the semantic
 boundary. -/
 def verifyRefEvaluatorIndependence (env : Environment)
-    (roles : Std.HashMap Name CorrOrigin)
+    (roles : Std.HashMap Name CorrOrigin) (corrModSet : NameSet)
     (axiomPolicy : Array (String × String)) : IO Unit := do
+  let mut modIdxMap : Std.HashMap Name Nat := {}
+  for i in [:env.header.moduleNames.size] do
+    modIdxMap := modIdxMap.insert env.header.moduleNames[i]! i
+  let evalMods := (corrModSet.toArray.filter fun modName =>
+    match roles[modName]? with
+    | some (CorrOrigin.repo (SourceRole.trusted _)) => isRefEvalSubmodule modName
+    | _ => false).qsort Name.lt
+  for rootMod in evalMods do
+    unless modIdxMap.contains rootMod do
+      fail s!"reference evaluator module {rootMod} missing from compiled environment"
+    let mut visited : NameSet := {}
+    let mut queue : List Name := [rootMod]
+    while !queue.isEmpty do
+      match queue with
+      | [] => pure ()
+      | cur :: rest =>
+        queue := rest
+        if !visited.contains cur then
+          visited := visited.insert cur
+          if let some curIdx := modIdxMap[cur]? then
+            for imp in env.header.moduleData[curIdx]!.imports do
+              let impMod := imp.module
+              if (impMod == `Trusted || (`Trusted).isPrefixOf impMod) &&
+                  !isAllowedRefEvalImportTrustedModule impMod then
+                let via := if cur == rootMod then "" else s!" (via {cur})"
+                fail (s!"reference evaluator module {rootMod} illegally " ++
+                  s!"imports disallowed module {impMod}{via}")
+              if !visited.contains impMod then
+                queue := impMod :: queue
+  if !evalMods.isEmpty then
+    for sym in [
+        `Trusted.Correspondence.evalRefStep,
+        `Trusted.Correspondence.initRefState,
+        `Trusted.Correspondence.RefAllowedStep] do
+      let (orig, _) ← constProvenance env roles sym
+      unless isRefEvalSubmodule orig do
+        fail (s!"modular correspondence layout requires reference evaluator " ++
+          s!"symbol {sym} to be defined in an isolated evaluator module, " ++
+          s!"found {orig}")
   let (_, refCone) ← closureCorr env roles axiomPolicy
-    [`Trusted.Correspondence.evalRefStep, `Trusted.Correspondence.initRefState]
+    [ `Trusted.Correspondence.evalRefStep,
+      `Trusted.Correspondence.initRefState ]
   for reqMiri in [
+      `Miri.Interpreter.ExecutionMachine.step,
+      `Miri.Interpreter.ExecutionMachine.withValidation,
+      `Miri.Interpreter.ExecutionMachine.stepHooks,
+      `Miri.Interpreter.ExecutionMachine.rvalueHooks,
+      `Miri.Interpreter.ExecutionMachine.operandHooks,
+      `Miri.Interpreter.ExecutionMachine.projectionHooks,
+      `Miri.Interpreter.ExecutionMachine.discriminantHooks,
+      `Miri.Interpreter.ExecutionMachine.scalarHooks,
       `Miri.Interpreter.Step.step,
+      `Miri.Interpreter.Step.evalStatement,
+      `Miri.Interpreter.ControlFlow.goToBlock,
+      `Miri.Interpreter.ControlFlow.evalTerminator,
+      `Miri.Interpreter.ControlFlow.returnFromCurrentFrame,
+      `Miri.Interpreter.ExecutionControl.hooks,
+      `Miri.Interpreter.MachineHooks.storageLiveDyn,
+      `Miri.Interpreter.MachineHooks.storageDead,
+      `Miri.Interpreter.OperandMachine.evalOperand,
+      `Miri.Interpreter.OperandMachine.evalPlaceToOp,
+      `Miri.Interpreter.PlaceMachine.readImmediate,
+      `Miri.Interpreter.PlaceMachine.writeMemory,
+      `Miri.Interpreter.ValidityVisitor.validatePlace,
+      `Miri.Interpreter.ValidityMemory.bind,
+      `Miri.Interpreter.evalRvalueIntoPlace,
+      `Miri.Interpreter.TerminatorMachine.beforeTerminatorWithChoice,
+      `Miri.Interpreter.ScalarOps.binary,
+      `Miri.Interpreter.ScalarOps.unary,
       `Miri.Interpreter.IntegerOps.binary,
       `Miri.Interpreter.IntegerOps.binaryBool,
       `Miri.Interpreter.IntegerOps.unary,
-      `Miri.Memory.ScalarInt.truncateFromUInt,
-      `Miri.Memory.ScalarInt.tryFromUInt,
-      `Miri.Memory.ScalarInt.tryToBool,
-      `Miri.Interpreter.evalOperand,
-      `Miri.Interpreter.evalPlaceToOp,
-      `Miri.Interpreter.localToOp,
-      `Miri.Interpreter.placeWriteLocalImmediate,
-      `Miri.Interpreter.evalRvalueIntoPlace,
-      `Miri.Interpreter.runRvalue,
       `Miri.Interpreter.Discriminant.readDiscriminant,
       `Miri.Interpreter.Discriminant.discriminantForVariant,
-      `Miri.Interpreter.Step.evalStatement,
-      `Miri.Interpreter.Frame.storageLive,
-      `Miri.Interpreter.Frame.storageDead,
-      `Miri.Interpreter.ControlFlow.goToBlock,
-      `Miri.Interpreter.ControlFlow.evalTerminator,
-      `Miri.Interpreter.ControlFlow.returnFromCurrentFrame] do
+      `Miri.Memory.ScalarInt.truncateFromUInt,
+      `Miri.Memory.ScalarInt.tryFromUInt,
+      `Miri.Memory.ScalarInt.tryToBool] do
     unless refCone.contains reqMiri do
       fail (s!"reference evaluator cone is missing required Miri " ++
         s!"primitive {reqMiri}")
-  let sortedRefCone := refCone.toArray.qsort Name.lt
+  let (_, allowedStepCone) ← closureCorr env roles axiomPolicy
+    [`Trusted.Correspondence.RefAllowedStep]
+  unless allowedStepCone.contains `Miri.Interpreter.ExecutionMachine.AllowedStep do
+    fail ("RefAllowedStep cone is missing required Miri primitive " ++
+      "Miri.Interpreter.ExecutionMachine.AllowedStep")
+  let mut combinedCone := refCone
+  for n in allowedStepCone.toArray do
+    combinedCone := combinedCone.insert n
+  let sortedRefCone := combinedCone.toArray.qsort Name.lt
   for cName in sortedRefCone do
     let (orig, role) ← constProvenance env roles cName
     match role with
@@ -2309,10 +2447,10 @@ def replayCorrAndVendor (sysrootStr : String)
       s!"{corrLocals.size} correspondence declarations")
   return (miriReplayed, corrReplayed)
 
-/-- Verify the 21-root `Miri.Interpreter.ExecutionMachine` cone and—when
-Pass 2 correspondence modules are present—all 30 correspondence claims,
-reference-evaluator independence, and the correspondence dependency cone in a
-dedicated scope. -/
+/-- Verify the 36-root `Miri.Interpreter.ExecutionMachine` cone and—when
+Pass 2 correspondence modules are present—all 33 correspondence, choice-coupled,
+wiring, `AllowedStep` soundness, and canary claims, reference-evaluator
+independence, and the correspondence dependency cone in a dedicated scope. -/
 def verifyCorrConesAndClaims
     (foundation allTrusted allTheory vendorMiri : Array Name)
     (roles : Std.HashMap Name CorrOrigin)
@@ -2325,7 +2463,7 @@ def verifyCorrConesAndClaims
   if corrModSet.isEmpty then
     return (miriAxioms, miriVisited.size, #[], 0)
   verifyCorrespondenceClaims env corrLocals
-  verifyRefEvaluatorIndependence env roles axiomPolicy
+  verifyRefEvaluatorIndependence env roles corrModSet axiomPolicy
   let corrRoots := corrLocals.fold (init := []) fun acc n _ => n :: acc
   let (corrAxioms, corrVisited) ←
     closureCorr env roles axiomPolicy corrRoots

@@ -93,6 +93,67 @@ noncomputable def SatisfiesPost (p : Program) (q : Query)
   WellFormed p q ∧ ∀ out : TerminalOut, Behavior p q out → post out
 
 /-!
+## Choice-Coupled Execution Predicates
+
+Choice-indexed versions of reachability, finite prefix admissibility, outcome
+reachability, terminal behavior, and divergence in $M_{\text{anneal}}$. These
+predicates couple each step's demonic choice `c : Choice` across finite choice
+lists `choices : List Choice` and infinite choice streams
+`choiceStream : Nat → Choice` so correspondence proofs prevent cross-branch
+outcome permutation when nondeterministic choices are introduced.
+-/
+
+/-- Choice-coupled finite-step reachability in $M_{\text{anneal}}$ along an
+explicit sequence of admissible demonic choices. -/
+inductive ReachesAtChoices (p : Program) :
+    State → List Choice → State → Prop where
+  | nil (s : State) : ReachesAtChoices p s [] s
+  | cons {s₁ s₂ s₃ : State} {c : Choice} {cs : List Choice} :
+      ValidChoice p s₁ c →
+      evalStep p c s₁ = .step s₂ →
+      ReachesAtChoices p s₂ cs s₃ →
+      ReachesAtChoices p s₁ (c :: cs) s₃
+
+/-- Admissible finite execution prefix in $M_{\text{anneal}}$ along `choices`,
+including prefixes that stop before terminating or faulting. -/
+def ValidPrefixAtChoices (p : Program) (q : Query)
+    (choices : List Choice) : Prop :=
+  ∃ s₀ s : State,
+    initState p q = .ok s₀ ∧ ReachesAtChoices p s₀ choices s
+
+/-- Choice-coupled outcome reachability in $M_{\text{anneal}}$: entry faults
+consume `choices = []`, while post-entry transitions consume `prefixChoices ++
+[c]`. -/
+def ReachesResultAtChoices (p : Program) (q : Query)
+    (choices : List Choice) (res : StepResult State TerminalOut) : Prop :=
+  match initState p q with
+  | .error k => choices = [] ∧ res = .fault k
+  | .ok s₀ =>
+    ∃ (prefixChoices : List Choice) (c : Choice) (s : State),
+      choices = prefixChoices ++ [c] ∧
+      ReachesAtChoices p s₀ prefixChoices s ∧
+      ValidChoice p s c ∧
+      evalStep p c s = res
+
+/-- Choice-coupled observable terminal behavior of `(p, q)` in
+$M_{\text{anneal}}$. -/
+def BehaviorAtChoices (p : Program) (q : Query)
+    (choices : List Choice) (out : TerminalOut) : Prop :=
+  ReachesResultAtChoices p q choices (.done out)
+
+/-- Choice-coupled divergence of `(p, q)` in $M_{\text{anneal}}$ along an
+infinite choice stream `choiceStream : Nat → Choice`. -/
+def DivergesAtChoices (p : Program) (q : Query)
+    (choiceStream : Nat → Choice) : Prop :=
+  ∃ s₀ : State,
+    initState p q = .ok s₀ ∧
+    ∃ trace : Nat → State,
+      trace 0 = s₀ ∧
+      ∀ n : Nat,
+        ValidChoice p (trace n) (choiceStream n) ∧
+        evalStep p (choiceStream n) (trace n) = .step (trace (n + 1))
+
+/-!
 ## Multi-Body Program, Crate, and Proof-Unit Verification Judgments
 
 The definitions below state the top-level per-body (`BodyVerified`),
@@ -141,9 +202,9 @@ noncomputable def bodiesHaveUniqueIdentities (bodies : List Body) : Bool :=
 /-- Unconditional static admission predicate for `(p, body)`: checks 64-bit
 target layout, MIR semantic profile version 1, non-empty `body.identity`,
 non-empty basic blocks, `argumentCount < locals.length`, in-bounds storage
-annotations, and supported local types (`isSupportedScalarOrUnitTy`) even when
-`body` has uninhabited (`MirTy.never`) parameters and `ValidEntryArgs body args`
-is vacuously empty. -/
+annotations, well-typed `Discriminant` destinations, and supported local types
+(`isSupportedScalarOrUnitTy`) even when `body` has uninhabited (`MirTy.never`)
+parameters and `ValidEntryArgs body args` is vacuously empty. -/
 noncomputable def BodyStaticAdmitted (p : Program) (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 1 &&
@@ -151,6 +212,7 @@ noncomputable def BodyStaticAdmitted (p : Program) (body : Body) : Bool :=
     !body.basicBlocks.isEmpty &&
     Nat.blt body.argumentCount body.locals.length &&
     storageAnnotationsInBounds body &&
+    discriminantTypesValid body &&
     body.locals.all isSupportedScalarOrUnitTy
 
 /-- Verification judgment for a single MIR function body `body` at index `defId`

@@ -544,8 +544,9 @@ theorem initState_eq_ok {p : Program} {body : Body} {args : List Val}
     cases h3 : body.basicBlocks.isEmpty <;>
     cases h4 : Nat.blt body.argumentCount body.locals.length <;>
     cases h5 : storageAnnotationsInBounds body <;>
+    cases h5d : discriminantTypesValid body <;>
     cases h6 : body.locals.all isSupportedScalarOrUnitTy <;>
-    rw [h1, h2, hid, h3, h4, h5, h6] at h_adm <;>
+    rw [h1, h2, hid, h3, h4, h5, h5d, h6] at h_adm <;>
     cases h_adm
   rfl
 
