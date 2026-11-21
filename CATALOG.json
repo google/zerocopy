@@ -83328,6 +83328,55 @@
         "verification"
       ]
     },
+    "rustc-closure-capture-modes-fntrait-shims-and-async-by-move-lowering": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "rustc upstream compiler source"
+        },
+        {
+          "identity": {
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm_version": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "rustc nightly toolchain (empirical MIR, LLVM IR, and native execution)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR AST and operational semantics"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 proof assistant kernel"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rust/ownership",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-codegen-backend-abi-intrinsics-and-rv64gc-cross-compilation": {
       "observed_at": "2026-11-02",
       "subjects": [
