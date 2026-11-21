@@ -8,13 +8,17 @@
 
 """Check Anneal release triggers, permissions, and source binding."""
 
+import os
 from pathlib import Path
+import subprocess
+import tempfile
 import unittest
 
 from workflow_yaml import load_workflow_yaml
 
 
 WORKFLOWS = Path(__file__).resolve().parents[2] / ".github/workflows"
+PUBLISH_ACTION = "./.github/actions/publish-github-release"
 MANIFEST = "anneal/trusted/cargo-anneal/Cargo.toml"
 
 
@@ -137,6 +141,100 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn("--require-pinned --archive-base", package["run"])
         self.assertIn("cargo package --locked -p cargo-anneal", package["run"])
         self.assertIn("ci/probe_alpha.py", package["run"])
+
+    def test_anneal_github_release_uses_the_successfully_published_commit(self):
+        announcement = self.jobs["anneal-publish-github"]
+        self.assertEqual(announcement["needs"], [
+            "anneal-qualify-package", "anneal-publish-crate",
+        ])
+        self.assertNotIn("if", announcement)
+        self.assertNotIn("continue-on-error", announcement)
+        self.assertEqual(announcement["permissions"], {
+            "contents": "write", "issues": "read", "pull-requests": "read",
+        })
+        self.assertEqual(announcement["env"]["RELEASE_COMMIT"],
+                         "${{ needs.anneal-qualify-package.outputs.commit }}")
+        version = "${{ needs.anneal-qualify-package.outputs.version }}"
+        self.assertEqual(announcement["env"]["RELEASE_TAG"], "anneal-v" + version)
+        checkout, notes, publish = announcement["steps"]
+        self.assertTrue(checkout["uses"].startswith("actions/checkout@"))
+        self.assertEqual(checkout["with"], {
+            "ref": "${{ github.sha }}", "fetch-depth": "0",
+            "persist-credentials": "false",
+        })
+        self.assertIn('python3 .github/release_notes.py --tag "$RELEASE_TAG"', notes["run"])
+        self.assertIn('--target "$RELEASE_COMMIT" --path anneal', notes["run"])
+        self.assertEqual(publish["uses"], PUBLISH_ACTION)
+        self.assertEqual(publish["with"], {
+            "tag": "${{ env.RELEASE_TAG }}", "commit": "${{ env.RELEASE_COMMIT }}",
+            "notes-file": "${{ runner.temp }}/release-notes.md",
+        })
+        zerocopy = self.jobs["release"]
+        [zerocopy_publish] = [step for step in zerocopy["steps"] if step.get("uses") == PUBLISH_ACTION]
+        self.assertEqual(zerocopy["env"]["RELEASE_TAG"], "v${{ needs.check-version.outputs.version }}")
+        self.assertEqual(zerocopy_publish["with"]["tag"], "${{ env.RELEASE_TAG }}")
+        self.assertEqual(zerocopy_publish["with"]["commit"], "${{ github.sha }}")
+
+    def test_shared_github_release_action_selects_status_and_retries(self):
+        action_path = WORKFLOWS.parents[1] / PUBLISH_ACTION / "action.yml"
+        action = load_workflow_yaml(action_path.read_text())
+        [step] = action["runs"]["steps"]
+        simulate_commands = """
+git() {
+  if [[ "$1" == ls-remote ]]; then
+    if [[ -n "$REMOTE_COMMIT" ]]; then
+      printf '%s\\t%s\\n' "$OBJECT_ID" "$3" "$REMOTE_COMMIT" "$4"
+    fi
+  else
+    printf 'git %s\\n' "$*"
+  fi
+}
+gh() {
+  if [[ "$2" == view ]]; then
+    [[ -n "$EXISTING" ]] || return 1
+    printf '%s\\n' "$EXISTING"
+  else
+    printf '%s\\n' "$@"
+  fi
+}
+"""
+        commit = "1" * 40
+        alpha = "anneal-v0.2.0-alpha.2"
+        published = '{"isDraft":false,"isPrerelease":true}'
+        for tag, remote, existing, expected_exit, expected_flags in (
+            ("v0.8.64+build-with-hyphen", commit, "", 0, {"--latest"}),
+            (alpha, "", "", 0, {"--prerelease", "--latest=false"}),
+            (alpha, commit, published, 0, set()),
+            (alpha, "3" * 40, published, 1, set()),
+            (alpha, commit, '{"isDraft":true,"isPrerelease":true}', 1, set()),
+        ):
+            with self.subTest(tag=tag, remote=remote, existing=existing), tempfile.TemporaryDirectory() as directory:
+                notes = Path(directory) / "release-notes.md"
+                notes.write_text("Release notes\n")
+                result = subprocess.run(
+                    [step["shell"], "-c", simulate_commands + step["run"]],
+                    env={**os.environ, "RELEASE_TAG": tag, "RELEASE_COMMIT": commit,
+                         "GITHUB_ACTION_PATH": str(action_path.parent), "NOTES_FILE": str(notes),
+                         "EXISTING": existing, "REMOTE_COMMIT": remote, "OBJECT_ID": "2" * 40},
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, expected_exit, result.stderr)
+                git_writes = [line for line in result.stdout.splitlines() if line.startswith("git ")]
+                if remote:
+                    self.assertEqual(git_writes, [])
+                else:
+                    self.assertEqual(len(git_writes), 2)
+                    self.assertIn(f"-- {tag} {commit}", git_writes[0])
+                    self.assertTrue(git_writes[1].endswith(f"push origin refs/tags/{tag}"))
+                args = [line for line in result.stdout.splitlines() if not line.startswith("git ")]
+                if not existing:
+                    self.assertEqual(args[:2], ["release", "create"])
+                    self.assertIn("--verify-tag", args)
+                    self.assertEqual(args[-2:], ["--", tag])
+                else:
+                    self.assertNotIn("create", args)
+                self.assertEqual(set(args) & {"--latest", "--latest=false", "--prerelease"},
+                                 expected_flags)
 
     def test_archive_source_and_release_pr_are_bound_to_the_prepared_commit(self):
         build = self.jobs["anneal-build-archive"]

@@ -125,6 +125,7 @@ jobs:
       pull-requests: read # required to resolve PR metadata for release notes
     env:
       CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
+      RELEASE_TAG: v${{ needs.check-version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -145,13 +146,10 @@ jobs:
           mv .cargo/config.toml.bak .cargo/config.toml
 
       - name: Check if tag already exists
-        env:
-          VERSION: ${{ needs.check-version.outputs.version }}
         run: |
           set -eo pipefail
-          TAG="v$VERSION"
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Error: Tag $TAG already exists." >&2
+          if git rev-parse "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Error: Tag $RELEASE_TAG already exists." >&2
             exit 1
           fi
 
@@ -163,29 +161,25 @@ jobs:
           ACTIONS_ID_TOKEN_REQUEST_URL: ''
           ACTIONS_RESULTS_URL: ''
           ACTIONS_RUNTIME_TOKEN: ''
-          VERSION: ${{ needs.check-version.outputs.version }}
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eo pipefail
-          TAG="v$VERSION"
-          python3 tools/release_notes.py \
-            --tag "$TAG" \
+          python3 .github/release_notes.py \
+            --tag "$RELEASE_TAG" \
             --target HEAD \
             --path zerocopy \
             > "$RUNNER_TEMP/release-notes.md"
 
       - name: Create git tag
         env:
-          VERSION: ${{ needs.check-version.outputs.version }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           set -eo pipefail
-          TAG="v$VERSION"
           git config user.name "Google PR Creation Bot"
           git config user.email "github-pull-request-creation-bot@google.com"
-          git tag -a "$TAG" -m "Release $TAG"
-          git push https://x-access-token:$GH_TOKEN@github.com/$GH_REPO.git "$TAG"
+          git tag -a "$RELEASE_TAG" -m "Release $RELEASE_TAG"
+          git push https://x-access-token:$GH_TOKEN@github.com/$GH_REPO.git "$RELEASE_TAG"
         
       - name: Authenticate with crates.io
         uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
@@ -224,24 +218,13 @@ jobs:
           mv .cargo/config.toml.bak .cargo/config.toml
 
       - name: Create GitHub Release
+        uses: ./.github/actions/publish-github-release
+        with:
+          tag: ${{ env.RELEASE_TAG }}
+          commit: ${{ github.sha }}
+          notes-file: ${{ runner.temp }}/release-notes.md
         env:
-          VERSION: ${{ needs.check-version.outputs.version }}
           GH_TOKEN: ${{ github.token }}
-        run: |
-          set -eo pipefail
-          TAG="v$VERSION"
-          ARGS=(
-            "$TAG"
-            --title "$TAG"
-            --notes-file "$RUNNER_TEMP/release-notes.md"
-          )
-          if [[ "${VERSION%+*}" == *-* ]]; then
-            ARGS+=(--prerelease --latest=false)
-          else
-            # Only set --latest if it's not a prerelease.
-            ARGS+=(--latest)
-          fi
-          gh release create "${ARGS[@]}"
 
   prepare-zerocopy:
     name: Prepare Zerocopy release
@@ -524,3 +507,48 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ steps.anneal-auth.outputs.token }}
         run: cargo publish --locked -p cargo-anneal --registry crates-io
+
+  anneal-publish-github:
+    name: Publish Anneal GitHub Release
+    needs: [anneal-qualify-package, anneal-publish-crate]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: anneal-github-release-${{ needs.anneal-qualify-package.outputs.version }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      issues: read
+      pull-requests: read
+    env:
+      ACTIONS_CACHE_URL: ''
+      ACTIONS_RESULTS_URL: ''
+      ACTIONS_RUNTIME_TOKEN: ''
+      ACTIONS_RUNTIME_URL: ''
+      RELEASE_COMMIT: ${{ needs.anneal-qualify-package.outputs.commit }}
+      RELEASE_TAG: anneal-v${{ needs.anneal-qualify-package.outputs.version }}
+    steps:
+      - name: Checkout release workflow revision and tags
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Generate Anneal release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          version="${RELEASE_TAG#anneal-v}"
+          printf '[cargo-anneal %s on crates.io](https://crates.io/crates/cargo-anneal/%s) · [Linux toolchain archive](https://github.com/%s/releases/tag/anneal-toolchain-v%s)\n\n' \
+            "$version" "$version" "$GITHUB_REPOSITORY" "$version" \
+            > "$RUNNER_TEMP/release-notes.md"
+          python3 .github/release_notes.py --tag "$RELEASE_TAG" \
+            --target "$RELEASE_COMMIT" --path anneal >> "$RUNNER_TEMP/release-notes.md"
+      - name: Create GitHub Release
+        uses: ./.github/actions/publish-github-release
+        with:
+          tag: ${{ env.RELEASE_TAG }}
+          commit: ${{ env.RELEASE_COMMIT }}
+          notes-file: ${{ runner.temp }}/release-notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}

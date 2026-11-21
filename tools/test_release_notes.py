@@ -6,7 +6,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-"""Unit tests for `tools/release_notes.py`."""
+"""Unit tests for the shared workflow release-notes generator."""
 
 from __future__ import annotations
 
@@ -15,10 +15,13 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
 
+WORKFLOW_DIR = Path(__file__).resolve().parents[1] / ".github"
+sys.path.insert(0, str(WORKFLOW_DIR))
 import release_notes as rn
 
 
