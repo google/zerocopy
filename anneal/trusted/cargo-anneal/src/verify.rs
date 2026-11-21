@@ -36,7 +36,7 @@ use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 // canonical audited sources without running a build hook.
 include!("bundled_resources.rs");
 
-const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 4;
+const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 5;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 const RECEIPT_SCHEMA_VERSION: u32 = 3;
 

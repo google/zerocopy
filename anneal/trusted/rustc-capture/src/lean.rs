@@ -11,8 +11,8 @@
 //! constructors, so names never enter the emitted command or literal syntax.
 
 use crate::ir::{
-    self, AssertKind, BinOp, CastKind, ConstLit, Operand, Place, ProjectionElem, Rvalue, Statement,
-    Terminator, Ty, UnOp, UnwindAction,
+    self, AggregateKind, AssertKind, BinOp, CastKind, ConstLit, Operand, Place, ProjectionElem,
+    Rvalue, Statement, StructTy, Terminator, Ty, UnOp, UnwindAction,
 };
 
 const HEADER: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
@@ -30,6 +30,52 @@ fn list<T>(values: &[T], render: impl Fn(&T) -> String) -> String {
     )
 }
 
+fn struct_ty(sty: &StructTy) -> String {
+    format!(
+        "{{ id := {}, fields := {} }}",
+        sty.id(),
+        list(sty.fields(), ty)
+    )
+}
+
+fn enum_ty(ety: &ir::EnumTy) -> String {
+    let tag_repr = match ety.tag_repr() {
+        ir::EnumTagRepr::ZeroSized => "Trusted.MirAst.EnumTagRepr.zeroSized".into(),
+        ir::EnumTagRepr::Single { variant } => {
+            format!("(Trusted.MirAst.EnumTagRepr.single {variant})")
+        }
+        ir::EnumTagRepr::Scalar(tag) => format!(
+            "(Trusted.MirAst.EnumTagRepr.scalar Trusted.MirAst.IntWidth.{} {})",
+            tag.width.lean_name(),
+            tag.signed
+        ),
+        ir::EnumTagRepr::Niche {
+            tag,
+            valid_start,
+            valid_end,
+            niche_path,
+            untagged,
+            start,
+            last,
+            niche_start,
+        } => format!(
+            "(Trusted.MirAst.EnumTagRepr.niche Trusted.MirAst.IntWidth.{} {} (BitVec.ofNat 128 {valid_start}) (BitVec.ofNat 128 {valid_end}) {} {untagged} {start} {last} (BitVec.ofNat 128 {niche_start}))",
+            tag.width.lean_name(),
+            tag.signed,
+            list(niche_path, u32::to_string)
+        ),
+    };
+    let discr = ety.discr();
+    format!(
+        "{{ id := {}, discrWidth := Trusted.MirAst.IntWidth.{}, discrSigned := {}, tagRepr := {tag_repr}, discriminants := {}, variantFields := {} }}",
+        ety.id(),
+        discr.width.lean_name(),
+        discr.signed,
+        list(ety.discriminants(), u128::to_string),
+        list(ety.variant_fields(), |fs| list(fs, ty))
+    )
+}
+
 fn ty(t: &Ty) -> String {
     match t {
         Ty::Bool => "Trusted.MirAst.MirTy.bool".into(),
@@ -40,27 +86,10 @@ fn ty(t: &Ty) -> String {
             ity.width.lean_name(),
             ity.signed
         ),
+        Ty::Struct(sty) => format!("(Trusted.MirAst.MirTy.adtStruct {})", struct_ty(sty)),
         Ty::Tuple { fields } => format!("(Trusted.MirAst.MirTy.tuple {})", list(fields, ty)),
-        Ty::Enum(ety) => {
-            let tag_repr = match ety.tag_repr() {
-                ir::EnumTagRepr::ZeroSized => "Trusted.MirAst.EnumTagRepr.zeroSized".into(),
-                ir::EnumTagRepr::Scalar(tag) => format!(
-                    "(Trusted.MirAst.EnumTagRepr.scalar Trusted.MirAst.IntWidth.{} {})",
-                    tag.width.lean_name(),
-                    tag.signed
-                ),
-            };
-            let discr = ety.discr();
-            let variant_fields: Vec<&str> = vec!["[]"; ety.discriminants().len()];
-            format!(
-                "(Trusted.MirAst.MirTy.enum {{ id := {}, discrWidth := Trusted.MirAst.IntWidth.{}, discrSigned := {}, tagRepr := {tag_repr}, discriminants := {}, variantFields := {} }})",
-                ety.id(),
-                discr.width.lean_name(),
-                discr.signed,
-                list(ety.discriminants(), u128::to_string),
-                list(&variant_fields, |s| (*s).to_string())
-            )
-        }
+        Ty::Enum(ety) => format!("(Trusted.MirAst.MirTy.enum {})", enum_ty(ety)),
+        Ty::Array { elem, len } => format!("(Trusted.MirAst.MirTy.array {} {len})", ty(elem)),
     }
 }
 
@@ -72,6 +101,19 @@ fn projection_elem(elem: &ProjectionElem) -> String {
         } => format!(
             "(Trusted.MirAst.ProjectionElem.field {index} {})",
             ty(field_ty)
+        ),
+        ProjectionElem::Downcast { variant_idx } => {
+            format!("(Trusted.MirAst.ProjectionElem.downcast {variant_idx})")
+        }
+        ProjectionElem::Index { local } => {
+            format!("(Trusted.MirAst.ProjectionElem.index {local})")
+        }
+        ProjectionElem::ConstantIndex {
+            offset,
+            min_length,
+            from_end,
+        } => format!(
+            "(Trusted.MirAst.ProjectionElem.constantIndex {offset} {min_length} {from_end})"
         ),
     }
 }
@@ -177,10 +219,33 @@ fn rvalue(value: &Rvalue) -> String {
             operand(opnd),
             ty(target_ty)
         ),
-        Rvalue::AggregateTuple { operands } => format!(
-            "(Trusted.MirAst.Rvalue.aggregateTuple {})",
-            list(operands, operand)
-        ),
+        Rvalue::Aggregate {
+            aggregate_kind,
+            operands,
+        } => match aggregate_kind {
+            AggregateKind::Tuple => format!(
+                "(Trusted.MirAst.Rvalue.aggregateTuple {})",
+                list(operands, operand)
+            ),
+            AggregateKind::AdtStruct { sty } => format!(
+                "(Trusted.MirAst.Rvalue.aggregate (Trusted.MirAst.AggregateKind.adtStruct {}) {})",
+                struct_ty(sty),
+                list(operands, operand)
+            ),
+            AggregateKind::AdtEnum { ety, variant_idx } => format!(
+                "(Trusted.MirAst.Rvalue.aggregate (Trusted.MirAst.AggregateKind.adtEnum {} {variant_idx}) {})",
+                enum_ty(ety),
+                list(operands, operand)
+            ),
+            AggregateKind::Array { elem_ty } => format!(
+                "(Trusted.MirAst.Rvalue.aggregate (Trusted.MirAst.AggregateKind.array {}) {})",
+                ty(elem_ty),
+                list(operands, operand)
+            ),
+        },
+        Rvalue::Repeat { operand: op, count } => {
+            format!("(Trusted.MirAst.Rvalue.repeat_ {} {count})", operand(op))
+        }
         Rvalue::Discriminant { place: p } => {
             format!("(Trusted.MirAst.Rvalue.discriminant {})", place(p))
         }
@@ -193,6 +258,13 @@ fn statement(stmt: &Statement) -> String {
             "(Trusted.MirAst.StatementKind.assign {} {})",
             place(p),
             rvalue(value)
+        ),
+        Statement::SetDiscriminant {
+            place: p,
+            variant_idx,
+        } => format!(
+            "(Trusted.MirAst.StatementKind.setDiscriminant {} {variant_idx})",
+            place(p)
         ),
         Statement::StorageLive { local } => {
             format!("(Trusted.MirAst.StatementKind.storageLive {local})")
@@ -224,6 +296,7 @@ fn assert_kind(kind: AssertKind) -> String {
         AssertKind::OverflowNeg => "Trusted.MirAst.AssertKind.overflowNeg".into(),
         AssertKind::DivisionByZero => "Trusted.MirAst.AssertKind.divByZero".into(),
         AssertKind::RemainderByZero => "Trusted.MirAst.AssertKind.remByZero".into(),
+        AssertKind::BoundsCheck => "Trusted.MirAst.AssertKind.boundsCheck".into(),
         AssertKind::NullPointerDereference => "Trusted.MirAst.AssertKind.nullPtrDeref".into(),
     }
 }
@@ -389,17 +462,17 @@ mod tests {
                 statements: vec![
                     Statement::Assign {
                         place: Place::local(0),
-                        value: Rvalue::Unit,
+                        value: Box::new(Rvalue::Unit),
                     },
                     Statement::Assign {
                         place: Place::local(0),
-                        value: Rvalue::Use {
+                        value: Box::new(Rvalue::Use {
                             operand: Operand::Constant {
                                 ty: Ty::Unit,
                                 lit: ConstLit::ZeroSized,
                             },
                             with_retag: true,
-                        },
+                        }),
                     },
                 ],
                 terminator: Terminator::Ret,

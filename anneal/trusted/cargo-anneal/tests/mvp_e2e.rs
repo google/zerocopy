@@ -1572,3 +1572,76 @@ fn verifies_tier1_overflow_checks_and_transitive_call_closure() {
         .collect();
     assert_eq!(selected_paths, vec!["selected", "clamp_gap"]);
 }
+
+#[test]
+fn verifies_tier2_u64_range_and_make_identity_milestones() {
+    let tools = Tools::discover();
+
+    // 1. Whole-crate Tier 2 Starnix `U64Range` milestone: structs, inherent
+    //    methods, `u64::MAX`, `overflowing_add`, `checked_mul` (`Option<u64>`),
+    //    `Discriminant`, `Downcast`, and `Anneal.BitVec` range soundness.
+    let u64_range = Fixture::new();
+    let u64_range_src = include_str!("fixtures/tier2_u64_range/lib.rs");
+    u64_range.write("rust/lib.rs", u64_range_src);
+    u64_range.write(
+        "lean/Spec.lean",
+        include_str!("fixtures/tier2_u64_range/Spec.lean"),
+    );
+    u64_range.write(
+        "lean/Proof.lean",
+        include_str!("fixtures/tier2_u64_range/Proof.lean"),
+    );
+    let mut range_request = u64_range.request.clone();
+    range_request["compilation"]["crate_name"] = json!("tier2_u64_range");
+    let range_receipt = u64_range.run(&tools, "tier2-u64-range", &range_request);
+    range_receipt.expect(0, "crate_verified", None);
+    assert_eq!(range_receipt.value["audit"]["exactType"], true);
+    assert_eq!(range_receipt.value["audit"]["replay"], true);
+    assert_eq!(range_receipt.value["taint_reasons"], json!([]));
+
+    // Mutating `add_range`'s overflow guard must be rejected by the proof.
+    let mutated_u64_range = u64_range_src.replace(
+        "min_overflowed != max_overflowed",
+        "min_overflowed == max_overflowed",
+    );
+    assert_ne!(mutated_u64_range, u64_range_src);
+    u64_range.write("rust/lib.rs", mutated_u64_range);
+    u64_range
+        .run(&tools, "tier2-u64-range-mutated", &range_request)
+        .expect(1, "proof_failed", Some("audit"));
+
+    // 2. Selected-unit Tier 2 Fuchsia `make_identity` milestone: `to_le_bytes`,
+    //    `ConstantIndex` array destructuring, 12-byte array aggregate, and
+    //    injectivity proved via `Anneal.BitVec` + `Anneal.LeBytes`.
+    let make_id = Fixture::new();
+    let make_id_src = include_str!("fixtures/tier2_make_identity/lib.rs");
+    make_id.write("rust/lib.rs", make_id_src);
+    make_id.write(
+        "lean/Spec.lean",
+        include_str!("fixtures/tier2_make_identity/Spec.lean"),
+    );
+    make_id.write(
+        "lean/Proof.lean",
+        include_str!("fixtures/tier2_make_identity/Proof.lean"),
+    );
+    let mut id_request = make_id.request.clone();
+    id_request["compilation"]["crate_name"] = json!("tier2_make_identity");
+    id_request["scope"] = json!({"kind": "selected_unit", "roots": ["make_identity"]});
+    let id_receipt = make_id.run(&tools, "tier2-make-identity", &id_request);
+    id_receipt.expect(0, "selected_unit_verified", None);
+    assert_eq!(id_receipt.value["audit"]["exactType"], true);
+    assert_eq!(id_receipt.value["audit"]["replay"], true);
+    assert_eq!(id_receipt.value["taint_reasons"], json!([]));
+
+    // Dropping an output byte in `make_identity` breaks injectivity and must be
+    // rejected by the proof.
+    let mutated_make_id = make_id_src.replace(
+        "[o0, o1, o2, o3, o4, o5, o6, o7, l0, l1, l2, l3]",
+        "[o0, o0, o2, o3, o4, o5, o6, o7, l0, l1, l2, l3]",
+    );
+    assert_ne!(mutated_make_id, make_id_src);
+    make_id.write("rust/lib.rs", mutated_make_id);
+    make_id
+        .run(&tools, "tier2-make-identity-mutated", &id_request)
+        .expect(1, "proof_failed", Some("audit"));
+}

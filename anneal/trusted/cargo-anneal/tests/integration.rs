@@ -1650,7 +1650,9 @@ fn parse_one_fn(fn_chunk: &str, requires: &[String], specs: &[String]) -> Result
 enum BodyPattern {
     DirectId(RustIntTy),
     MoveId(RustIntTy),
+    StructWrapperId(RustIntTy),
     ConstZero(RustIntTy),
+    UnitNoop,
     U32Add,
     ClampNonzero,
     CustomMirNonzero(RustIntTy),
@@ -1671,6 +1673,9 @@ fn classify_body(f: &ParsedFn) -> BodyPattern {
             if f.body_norm == format!("let y = {p}; y") {
                 return BodyPattern::MoveId(int_ty);
             }
+            if f.body_norm == format!("let w = Wrapper {{ val: {p} }}; w.val") {
+                return BodyPattern::StructWrapperId(int_ty);
+            }
             if f.body_norm == format!("let _ = {p}; 0") || f.body_norm == "0" {
                 return BodyPattern::ConstZero(int_ty);
             }
@@ -1688,6 +1693,9 @@ fn classify_body(f: &ParsedFn) -> BodyPattern {
             && (f.body_norm == "0" || f.body_norm.ends_with("; 0"))
         {
             return BodyPattern::ConstZero(out_ty);
+        }
+        if f.ret_ty.is_none() && f.body_norm.is_empty() {
+            return BodyPattern::UnitNoop;
         }
     }
     if f.params.len() == 2 && f.params[0].1 == "u32" && f.params[1].1 == "u32" {
@@ -1909,6 +1917,55 @@ theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.saf
   exact congrArg some h_zero"#
                     );
                 }
+            }
+            BodyPattern::UnitNoop => {
+                let _ = writeln!(
+                    block,
+                    r#"theorem body{i}_runs (v : Val) :
+    Runs body{i} 4 [v] .unit := rfl
+theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.safety body{i}.identity) := by
+  refine bodyVerified_of_safe rfl rfl (fun args h_valid _ => ?_)
+  let ⟨v, h_eq, _⟩ := validArgs1 h_valid
+  subst h_eq
+  exact (run_initial_success (body{i}_runs v)).1"#
+                );
+            }
+            BodyPattern::StructWrapperId(int_ty) => {
+                let w = int_ty.width_lean;
+                let s = int_ty.signed;
+                let ty = int_ty.mir_ty_lean();
+                let _ = writeln!(
+                    block,
+                    r#"def st{i} : StructTy :=
+  match body{i}.locals with
+  | _ :: _ :: .adtStruct s :: _ => s
+  | _ => ⟨0, []⟩
+theorem body{i}_exec (v : Val) (hv : checkVal v {ty} = true) :
+    Executes body{i} (initial body{i} [v]) v := by
+  let ⟨bits, hb, _⟩ := checkVal_scalar_inv hv
+  subst hb
+  let v : Val := .scalar ⟨{w}, {s}, bits⟩
+  let sv : SlotVal := .scalar ⟨{w}, {s}, bits⟩
+  let wun : SlotVal := .structVal st{i} [.uninit]
+  let wsv : SlotVal := .structVal st{i} [sv]
+  have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 0, 1, [.live .uninit, .live sv, .live wun, .dead], none⟩], ⟨[]⟩⟩ := rfl
+  have s1 : step body{i} ⟨[⟨0, 0, 1, [.live .uninit, .live sv, .live wun, .dead], none⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live wun, .live .uninit], none⟩], ⟨[]⟩⟩ := rfl
+  have s2 : step body{i} ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live wun, .live .uninit], none⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 3, [.live .uninit, .live sv, .live wun, .live sv], none⟩], ⟨[]⟩⟩ := by
+    change (match writePlaceWithLocalTy {ty} [.live .uninit, .live sv, .live wun, .live .uninit] ⟨3, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 3, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv]; rfl
+  have s3 : step body{i} ⟨[⟨0, 0, 3, [.live .uninit, .live sv, .live wun, .live sv], none⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 4, [.live .uninit, .live sv, .live wsv, .live .uninit], none⟩], ⟨[]⟩⟩ := by
+    change (match (match writePlaceWithLocalTy (.adtStruct st{i}) [.live .uninit, .live sv, .live wun, .live .uninit] ⟨2, [.field 0 {ty}]⟩ {ty} v with | .error k => Except.error k | .ok locals₂ => Except.ok locals₂) with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 4, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv]; rfl
+  have s4 : step body{i} ⟨[⟨0, 0, 4, [.live .uninit, .live sv, .live wsv, .live .uninit], none⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 5, [.live .uninit, .live sv, .live wsv, .dead], none⟩], ⟨[]⟩⟩ := rfl
+  have s5 : step body{i} ⟨[⟨0, 0, 5, [.live .uninit, .live sv, .live wsv, .dead], none⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 6, [.live sv, .live sv, .live wsv, .dead], none⟩], ⟨[]⟩⟩ := by
+    change (match writePlaceWithLocalTy {ty} [.live .uninit, .live sv, .live wsv, .dead] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 6, l', none⟩], ⟨[]⟩⟩) = _
+    unfold writePlaceWithLocalTy; rw [hv]; rfl
+  have s6 : step body{i} ⟨[⟨0, 0, 6, [.live sv, .live sv, .live wsv, .dead], none⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 7, [.live sv, .live sv, .dead, .dead], none⟩], ⟨[]⟩⟩ := rfl
+  have s7 : step body{i} ⟨[⟨0, 0, 7, [.live sv, .live sv, .dead, .dead], none⟩], ⟨[]⟩⟩ = .done (.returned ⟨v, ⟨[]⟩⟩) := rfl
+  exact .next s0 (.next s1 (.next s2 (.next s3 (.next s4 (.next s5 (.next s6 (.ret s7)))))))
+theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.safety body{i}.identity) :=
+  bodyVerified_of_exec1 rfl rfl rfl (fun v hv => ⟨v, body{i}_exec v hv⟩)"#
+                );
             }
             BodyPattern::Unproved => {
                 // Intentionally emits an ill-typed `exact .ret rfl` proof stub
@@ -4487,9 +4544,9 @@ fn verify_sandbox_runs_real_capture_before_spec_synthesis_error() {
     // real capture rejection under `FailureStage::Capture` rather than masking
     // it with the spec error.
     let bad_mir_and_spec = "\
-pub struct S { val: usize }
+pub union U { val: usize }
 /// anneal:requires x != 1
-pub unsafe fn f(x: usize) -> S { S { val: x } }
+pub unsafe fn f(x: usize) -> U { U { val: x } }
 ";
     let sandbox_mir = SandboxCrate::new("capture-first-mir", bad_mir_and_spec);
     let err = verify_sandbox(&tools, &sandbox_mir, bad_mir_and_spec).unwrap_err();
@@ -4498,7 +4555,7 @@ pub unsafe fn f(x: usize) -> S { S { val: x } }
     assert!(
         failure
             .diagnostic
-            .contains("whole-crate obligation is unsupported: Struct"),
+            .contains("whole-crate obligation is unsupported: Union"),
         "expected real capture rejection before spec error, got: {}",
         failure.diagnostic
     );

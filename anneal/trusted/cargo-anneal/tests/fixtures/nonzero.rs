@@ -6,14 +6,13 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-// All cases below currently fail at MIR capture because `Struct` items are
-// rejected (`whole-crate obligation is unsupported: Struct`). None of them
-// exercise semantic `NonZero` niche or validity-invariant verification yet;
-// they pin the capture-refusal boundary across candidate `NonZeroUsize` shapes
-// until struct capture and invariant verification are implemented.
+// Struct capture is now admitted in Tier 2, while `unreachable_unchecked` and
+// `anneal:invariant` validity-invariant directives remain unmodeled. The cases
+// below pin that updated boundary across candidate `NonZeroUsize` shapes and
+// verify a plain struct wrapper end to end.
 
-// === case: struct_capture_refused_nonzero_library ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: unreachable_unchecked_refused_nonzero_library ===
+//@ fail(capture): "external `#[track_caller]` call is unsupported: core::hint::unreachable_unchecked"
 
 /// anneal:invariant val != 0
 #[repr(transparent)]
@@ -46,10 +45,10 @@ pub fn get_unchecked(x: NonZeroUsize) -> usize {
     }
 }
 
-// === case: struct_capture_refused_zero_returning_safe_ctor ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: unreachable_unchecked_refused_zero_returning_safe_ctor ===
+//@ fail(capture): "external `#[track_caller]` call is unsupported: core::hint::unreachable_unchecked"
 
-// Rejected at `Struct` capture before any invariant check on `make_nonzero`.
+// Rejected at `unreachable_unchecked` capture before any invariant check.
 /// anneal:invariant val != 0
 #[repr(transparent)]
 pub struct NonZeroUsize {
@@ -78,10 +77,10 @@ pub fn get_unchecked(x: NonZeroUsize) -> usize {
     }
 }
 
-// === case: struct_capture_refused_pub_field_struct ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: unreachable_unchecked_refused_pub_field_struct ===
+//@ fail(capture): "external `#[track_caller]` call is unsupported: core::hint::unreachable_unchecked"
 
-// Rejected at `Struct` capture before any field-visibility invariant check.
+// Rejected at `unreachable_unchecked` capture before any visibility check.
 /// anneal:invariant val != 0
 #[repr(transparent)]
 pub struct NonZeroUsize {
@@ -113,10 +112,10 @@ pub fn get_unchecked(x: NonZeroUsize) -> usize {
     }
 }
 
-// === case: struct_capture_refused_zero_returning_unsafe_ctor ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: invariant_directive_refused_zero_returning_unsafe_ctor ===
+//@ fail(spec): "unsupported `anneal:` doc directive `anneal:invariant val != 0`"
 
-// Rejected at `Struct` capture before any safety or invariant check.
+// Struct capture succeeds; the spec stage rejects `invariant` directives.
 /// anneal:invariant val != 0
 #[repr(transparent)]
 pub struct NonZeroUsize {
@@ -129,10 +128,10 @@ pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
     NonZeroUsize { val: 0 }
 }
 
-// === case: struct_capture_refused_with_requires_clause ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: invariant_directive_refused_with_requires_clause ===
+//@ fail(spec): "unsupported `anneal:` doc directive `anneal:invariant val != 0`"
 
-// Real capture refuses `Struct` before the harness inspects `anneal:requires`.
+// Struct capture succeeds; the spec stage rejects `invariant` directives.
 /// anneal:invariant val != 0
 #[repr(transparent)]
 pub struct NonZeroUsize {
@@ -144,10 +143,10 @@ pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
     NonZeroUsize { val: x }
 }
 
-// === case: struct_capture_refused_with_spec_clause ===
-//@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
+// === case: invariant_directive_refused_with_spec_clause ===
+//@ fail(spec): "unsupported `anneal:` doc directive `anneal:invariant val != 0`"
 
-// Real capture refuses `Struct` before the harness inspects `anneal:spec`.
+// Struct capture succeeds; the spec stage rejects `invariant` directives.
 /// anneal:invariant val != 0
 #[repr(transparent)]
 pub struct NonZeroUsize {
@@ -163,8 +162,11 @@ pub fn make_nonzero(x: usize) -> NonZeroUsize {
     }
 }
 
-// === case: struct_capture_refused_plain_wrapper ===
-//@ fail(capture): "Wrapper: whole-crate obligation is unsupported: Struct"
+// === case: plain_wrapper_supported ===
+//@ pass
+//@ mir-contains: "Trusted.MirAst.MirTy.adtStruct"
+//@ mir-contains: "Trusted.MirAst.AggregateKind.adtStruct"
+//@ mir-contains: "Trusted.MirAst.ProjectionElem.field"
 
 #[repr(transparent)]
 pub struct Wrapper {
