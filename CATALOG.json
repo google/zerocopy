@@ -85412,6 +85412,139 @@
         "pl/fuel-indexed-semantics"
       ]
     },
+    "symbolic-loop-invariants-for-boot-page-table-construction-and-non-vacuity-witnesses": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "3142f66fd71c7ea0326b3687072318aedab587f8"
+          },
+          "name": "RISC-V Instruction Set Manual, Volume II: Privileged Architecture (Sv39 Virtual Memory)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "04bcb62ccab96e35b9d6ce01873851972945af6f"
+          },
+          "name": "Sail RISC-V Formal Architecture Specification and Lean 4 Backend"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3100ef55b25b50b44d2010ee44d266e75b28cddd"
+          },
+          "name": "Lean 4 Theorem Prover Kernel and Runtime Stack Guards"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel (RISC-V Sv39 and x86-64 Early Boot Subsystems)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "l4v Formal Verification of seL4 (KernelInit_AI and RISCV64 ArchKernelInit_AI)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux Kernel RISC-V Early Boot Assembly"
+        }
+      ],
+      "topics": [
+        "verification/os-kernels",
+        "verification/lean4",
+        "verification/vacuity",
+        "isa/riscv",
+        "isa/x86-64",
+        "lean/kernel"
+      ]
+    },
+    "symbolic-strided-tile-splitting-uninit-padding-independence-and-in-place-stencil-framing": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "e8574d0b22b126acc76007babce536c68bc07d0a"
+          },
+          "name": "FFmpeg"
+        },
+        {
+          "identity": {
+            "repository": "AOMediaCodec/av1-spec",
+            "revision": "5e04f3f75e73a5898d7616c47c52f032144b8f80"
+          },
+          "name": "AV1 Bitstream and Decoding Process Specification"
+        },
+        {
+          "identity": {
+            "repository": "rust-ndarray/ndarray",
+            "revision": "53df84ade302c5d4d49b91aa6e4a18d252d26cc2"
+          },
+          "name": "ndarray"
+        },
+        {
+          "identity": {
+            "repository": "kornelski/imgref",
+            "revision": "d4e4c27772b5767f078f17a210e54bcea2a31839"
+          },
+          "name": "imgref"
+        },
+        {
+          "identity": {
+            "repository": "halide/Halide",
+            "revision": "54c1a9bd6733081c8700a7c2521871161a701fad"
+          },
+          "name": "Halide"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "88a13ae26ef3fe4623daf37347cfe0d7dea41698"
+          },
+          "name": "zerocopy"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rust"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "domains/media",
+        "domains/scientific-computing",
+        "lean/mechanization",
+        "rust/unsafe",
+        "rust/validity",
+        "verification/separation-logic",
+        "zerocopy/layout"
+      ]
+    },
     "symplectic-verlet-pme-electrostatics-lammps-halos-and-mujoco-contact-solvers": {
       "observed_at": "2026-11-19",
       "subjects": [

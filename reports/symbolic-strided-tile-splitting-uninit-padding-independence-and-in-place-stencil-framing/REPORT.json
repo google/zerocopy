@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "domains/media",
+    "domains/scientific-computing",
+    "lean/mechanization",
+    "rust/unsafe",
+    "rust/validity",
+    "verification/separation-logic",
+    "zerocopy/layout"
+  ],
+  "subjects": [
+    {
+      "name": "rav1d",
+      "identity": {
+        "repository": "memorysafety/rav1d",
+        "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+      }
+    },
+    {
+      "name": "FFmpeg",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "e8574d0b22b126acc76007babce536c68bc07d0a"
+      }
+    },
+    {
+      "name": "AV1 Bitstream and Decoding Process Specification",
+      "identity": {
+        "repository": "AOMediaCodec/av1-spec",
+        "revision": "5e04f3f75e73a5898d7616c47c52f032144b8f80"
+      }
+    },
+    {
+      "name": "ndarray",
+      "identity": {
+        "repository": "rust-ndarray/ndarray",
+        "revision": "53df84ade302c5d4d49b91aa6e4a18d252d26cc2"
+      }
+    },
+    {
+      "name": "imgref",
+      "identity": {
+        "repository": "kornelski/imgref",
+        "revision": "d4e4c27772b5767f078f17a210e54bcea2a31839"
+      }
+    },
+    {
+      "name": "Halide",
+      "identity": {
+        "repository": "halide/Halide",
+        "revision": "54c1a9bd6733081c8700a7c2521871161a701fad"
+      }
+    },
+    {
+      "name": "zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "88a13ae26ef3fe4623daf37347cfe0d7dea41698"
+      }
+    },
+    {
+      "name": "rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "verification/os-kernels",
+    "verification/lean4",
+    "verification/vacuity",
+    "isa/riscv",
+    "isa/x86-64",
+    "lean/kernel"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Instruction Set Manual, Volume II: Privileged Architecture (Sv39 Virtual Memory)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "3142f66fd71c7ea0326b3687072318aedab587f8"
+      }
+    },
+    {
+      "name": "Sail RISC-V Formal Architecture Specification and Lean 4 Backend",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "04bcb62ccab96e35b9d6ce01873851972945af6f"
+      }
+    },
+    {
+      "name": "Lean 4 Theorem Prover Kernel and Runtime Stack Guards",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3100ef55b25b50b44d2010ee44d266e75b28cddd"
+      }
+    },
+    {
+      "name": "seL4 Microkernel (RISC-V Sv39 and x86-64 Early Boot Subsystems)",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "l4v Formal Verification of seL4 (KernelInit_AI and RISCV64 ArchKernelInit_AI)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Linux Kernel RISC-V Early Boot Assembly",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
