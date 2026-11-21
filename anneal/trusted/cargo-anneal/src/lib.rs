@@ -23,10 +23,13 @@
 
 #[doc(hidden)]
 pub mod bundle;
+#[doc(hidden)]
+pub mod sandbox;
 mod stage;
 mod target;
 mod toolchain;
 
+pub use sandbox::{ActiveSandbox, SandboxMode};
 pub use stage::Checker;
 pub use target::{TargetAuditRequest, TargetBindings, TargetModule, TargetRole};
 #[doc(hidden)]

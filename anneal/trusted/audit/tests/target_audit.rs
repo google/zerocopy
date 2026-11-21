@@ -55,6 +55,7 @@ impl Fixture {
                 canonical_root: "Trusted.MirSemantics.UnitTheorem".into(),
                 subject_declaration: "Captured.program".into(),
                 specification_declaration: "Spec.specs".into(),
+                allow_sorry_in_proof: false,
                 bindings: TargetBindings {
                     request_sha256: h.clone(),
                     capture_sha256: h.clone(),
@@ -854,7 +855,7 @@ fn target_library_inventory_case(module: &str, mode: &str, rejection: Option<&st
         .unwrap(),
     )
     .unwrap();
-    let output = checker.stage().join(format!("{module}.olean"));
+    let output = checker.stage().join("lib").join(format!("{module}.olean"));
     let producer = checker.stage().join("ForgeTargetLibrary.lean");
     fs::write(&producer, r#"
 import Lean
@@ -1190,4 +1191,1036 @@ fn kernel_result_channels_preserve_success_mismatch_and_operational_error() {
             &[probe.to_string_lossy().into_owned()],
         )
         .unwrap();
+}
+
+/// `"headers"` rejects Lean 4 module-system headers (`module`), import
+/// modifiers (`import all`, `public import`, `meta import`), and
+/// `Lean.*`/`Lake.*` imports with exit code 1, while accepting omitted
+/// `prelude` (synthetic non-meta + meta `Init` pair) in unpinned mode.
+#[test]
+fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude() {
+    for (label, header, expected) in [
+        (
+            "module",
+            "module\nprelude\nimport Model\n",
+            "module system header",
+        ),
+        (
+            "import-all",
+            "prelude\nimport all Model\n",
+            "header parser error",
+        ),
+        (
+            "public-import",
+            "prelude\npublic import Model\n",
+            "header parser error",
+        ),
+        (
+            "meta-import",
+            "prelude\nmeta import Model\n",
+            "header parser error",
+        ),
+        (
+            "lean-import",
+            "prelude\nimport Lean.Elab\nimport Model\n",
+            "disallowed sysroot import",
+        ),
+        (
+            "lake-import",
+            "prelude\nimport Lake.Build\nimport Model\n",
+            "disallowed sysroot import",
+        ),
+    ] {
+        let mut f = Fixture::new(PROOF);
+        f.set(
+            "Spec",
+            TargetRole::Specification,
+            &format!("{header}def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n"),
+        );
+        let err = f.run().unwrap_err();
+        assert_eq!(err.code, 1, "{label}: {err}");
+        assert_eq!(err.phase, "headers", "{label}: {err}");
+        assert!(err.message.contains(expected), "{label}: {err}");
+    }
+
+    // Direct unit probe of `validateTargetImports` confirming importAll,
+    // !isExported, unpaired meta Init, meta non-Init, and Lean/Lake rejections
+    // as well as acceptance of the synthetic `!hasPrelude` Init pair.
+    let probe_fixture = Fixture::new(PROOF);
+    let mut probe_checker = Checker::new(&probe_fixture.root, None).unwrap();
+    let inspector = probe_checker.tool_admission().unwrap().inspector.clone();
+    let mut probe_src = fs::read_to_string(inspector).unwrap();
+    probe_src.push_str(
+        r#"
+
+#eval do
+  let okPair : Array Lean.Import := #[
+    { module := `Init, importAll := false, isExported := true, isMeta := false },
+    { module := `Init, importAll := false, isExported := true, isMeta := true }
+  ]
+  TrustedBoundary.validateTargetImports "Spec" okPair
+  let badCases : Array (String × Array Lean.Import × String) := #[
+    ("importAll", #[{ module := `Init, importAll := true, isExported := true, isMeta := false }], "import modifiers"),
+    ("private", #[{ module := `Init, importAll := false, isExported := false, isMeta := false }], "import modifiers"),
+    ("unpairedMetaInit", #[{ module := `Init, importAll := false, isExported := true, isMeta := true }], "meta import Init"),
+    ("metaNonInit", #[{ module := `Init, importAll := false, isExported := true, isMeta := false }, { module := `Model, importAll := false, isExported := true, isMeta := true }], "meta import Model"),
+    ("lean", #[{ module := `Lean.Elab, importAll := false, isExported := true, isMeta := false }], "disallowed sysroot import"),
+    ("lake", #[{ module := `Lake, importAll := false, isExported := true, isMeta := false }], "disallowed sysroot import")
+  ]
+  for (label, imps, want) in badCases do
+    let ok ← try
+      TrustedBoundary.validateTargetImports "Spec" imps
+      pure false
+    catch e =>
+      let msg := e.toString
+      unless msg.startsWith "policy:" && (msg.splitOn want).length > 1 do
+        throw <| IO.userError s!"{label}: unexpected error {msg}"
+      pure true
+    unless ok do
+      throw <| IO.userError s!"{label}: unexpectedly accepted"
+"#,
+    );
+    let probe_path = probe_checker.stage().join("ValidateTargetImports.lean");
+    fs::write(&probe_path, probe_src).unwrap();
+    probe_checker
+        .process(
+            "validate-target-imports-unit",
+            &[probe_path.to_string_lossy().into_owned()],
+        )
+        .unwrap();
+
+    // Unpinned mode: omitting `prelude` produces Lean 4's synthetic
+    // `Init(isMeta = false)` + `Init(isMeta = true)` pair and must pass
+    // `"headers"`, `"spec-preflight"`, and `"target-audit"` end-to-end.
+    let mut f = Fixture::new(
+        "import Expected\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f.set(
+        "Spec",
+        TargetRole::Specification,
+        "import Model\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    let report = checker.run_target(&f.request).unwrap();
+    assert_eq!(report["replay"], true);
+    assert_eq!(report["exactType"], true);
+    assert_eq!(report["sorryDeclarations"], serde_json::json!([]));
+}
+
+/// Live parse-tree round-trip verification against the pinned Lean parser plus
+/// comprehensive negative tests for `"spec-preflight"` covering commands,
+/// modifiers, lexical scopes, attributes, deriving, `set_option`, tactics, and
+/// term/quotation guards.
+#[test]
+fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
+    // 1. Live parse-tree round-trip probe + exhaustive 62-vector negative
+    //    check against the real `TrustedBoundary.parseAndInspectSpecCommands`
+    //    on one loaded `Init` + `Std` parser environment (fast in CI).
+    let spec_base = "def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n";
+    let vectors: &[(&str, &str, &str)] = &[
+        ("eval-cmd", "#eval 1\n", "unsupported command"),
+        (
+            "axiom-decl",
+            "axiom badAx : True\n",
+            "unsupported declaration kind",
+        ),
+        (
+            "opaque-decl",
+            "opaque badOp : Nat := 0\n",
+            "unsupported declaration kind",
+        ),
+        (
+            "example-decl",
+            "example : True := trivial\n",
+            "unsupported declaration kind",
+        ),
+        (
+            "macro-cmd",
+            "macro \"m\" : term => `(0)\n",
+            "unsupported command",
+        ),
+        (
+            "syntax-cmd",
+            "syntax \"mykw\" : term\n",
+            "unsupported command",
+        ),
+        ("init-cmd", "initialize pure ()\n", "unsupported command"),
+        (
+            "notation-cmd",
+            "notation \"x99\" => 1\n",
+            "unsupported command",
+        ),
+        (
+            "in-bad-lhs",
+            "namespace N in def f : Nat := 0\n",
+            "unsupported command on LHS of `in`",
+        ),
+        (
+            "in-bad-rhs",
+            "open Nat in namespace N\n",
+            "unsupported command inside `in`",
+        ),
+        (
+            "mutual-nested-sec",
+            "mutual\nsection S\nend S\nend\n",
+            "unsupported mutual-block shape",
+        ),
+        (
+            "partial-def",
+            "partial def p (n : Nat) : Nat := p n\n",
+            "unsupported declaration modifier",
+        ),
+        (
+            "unsafe-def",
+            "unsafe def u : Nat := 0\n",
+            "unsupported declaration modifier",
+        ),
+        (
+            "meta-def",
+            "meta def m : Nat := 0\n",
+            "unsupported declaration modifier",
+        ),
+        (
+            "public-def",
+            "public def pub : Nat := 0\n",
+            "unsupported declaration modifier",
+        ),
+        (
+            "term-unsafe",
+            "def u2 : Nat := unsafe 0\n",
+            "disallowed modifier",
+        ),
+        (
+            "public-section",
+            "public section S\nend S\n",
+            "unsupported section/namespace modifier",
+        ),
+        (
+            "meta-section",
+            "meta section S\nend S\n",
+            "unsupported section/namespace modifier",
+        ),
+        (
+            "partial-fixpoint",
+            "def pf (n : Nat) : Nat := pf n\npartial_fixpoint\n",
+            "disallowed modifier",
+        ),
+        (
+            "unsafe-rec-ident",
+            "def foo._unsafe_rec : Nat := 0\n",
+            "_unsafe_rec",
+        ),
+        ("open-io", "open IO\n", "forbidden namespace IO"),
+        ("open-lean", "open Lean\n", "forbidden namespace Lean"),
+        ("open-lake", "open Lake\n", "forbidden namespace Lake"),
+        ("open-system", "open System\n", "forbidden namespace System"),
+        (
+            "open-platform-all",
+            "open System.Platform\n",
+            "forbidden namespace System.Platform",
+        ),
+        (
+            "open-platform-target",
+            "open System.Platform (target)\n",
+            "disallowed open item System.Platform.target",
+        ),
+        (
+            "open-platform-hiding",
+            "open System.Platform hiding target\n",
+            "forbidden namespace System.Platform",
+        ),
+        (
+            "open-scoped-io",
+            "open scoped IO\n",
+            "forbidden namespace IO",
+        ),
+        ("ns-io", "namespace IO\nend IO\n", "disallowed reference IO"),
+        (
+            "term-open-io",
+            "def x : Nat := open IO in 0\n",
+            "forbidden namespace IO",
+        ),
+        (
+            "export-platform-target",
+            "export System.Platform (target)\n",
+            "disallowed export item System.Platform.target",
+        ),
+        (
+            "ref-io",
+            "def x := IO.println\n",
+            "disallowed reference IO.println",
+        ),
+        (
+            "ref-platform-target",
+            "def x := System.Platform.target\n",
+            "disallowed reference System.Platform.target",
+        ),
+        (
+            "attr-impl-by",
+            "@[implemented_by Nat.add] def f := Nat.add\n",
+            "unsupported attribute implemented_by",
+        ),
+        (
+            "attr-extern",
+            "@[extern \"c_fn\"] def f (x : Nat) : Nat := x\n",
+            "unsupported attribute kind",
+        ),
+        (
+            "attr-csimp",
+            "@[csimp] theorem t : Nat.add = Nat.add := rfl\n",
+            "unsupported attribute csimp",
+        ),
+        (
+            "attr-scoped-simp",
+            "@[scoped simp] theorem t : True := trivial\n",
+            "only global or local attributes",
+        ),
+        (
+            "attr-erase-extern",
+            "attribute [-extern] Nat.add\n",
+            "unsupported attribute removal extern",
+        ),
+        (
+            "deriving-unknown",
+            "structure S where\n  x : Nat\nderiving UnknownClass\n",
+            "unsupported deriving class",
+        ),
+        (
+            "opt-skip-kernel",
+            "set_option debug.skipKernelTC true\n",
+            "unsupported option debug.skipKernelTC",
+        ),
+        (
+            "opt-non-num",
+            "set_option maxHeartbeats true\n",
+            "requires a numeric literal",
+        ),
+        (
+            "opt-non-bool",
+            "set_option linter.unusedVariables 1\n",
+            "requires a boolean literal",
+        ),
+        (
+            "term-opt-bad",
+            "def x : Nat := set_option debug.skipKernelTC true in 0\n",
+            "unsupported option debug.skipKernelTC",
+        ),
+        (
+            "tactic-sorry",
+            "theorem t : True := by sorry\n",
+            "unsupported tactic",
+        ),
+        (
+            "tactic-admit",
+            "theorem t : True := by admit\n",
+            "unsupported tactic",
+        ),
+        (
+            "tactic-native-decide",
+            "theorem t : 1 = 1 := by native_decide\n",
+            "unsupported tactic",
+        ),
+        (
+            "tactic-decide-native",
+            "theorem t : 1 = 1 := by decide +native\n",
+            "unsupported decide config option native",
+        ),
+        (
+            "tactic-decide-valcfg",
+            "theorem t : 1 = 1 := by decide (config := { native := true })\n",
+            "unsupported decide config",
+        ),
+        (
+            "tactic-bv-decide",
+            "theorem t : true = true := by bv_decide\n",
+            "unsupported tactic",
+        ),
+        (
+            "tactic-grind",
+            "theorem t : 1 = 1 := by grind\n",
+            "unsupported tactic",
+        ),
+        (
+            "tactic-rfl-prime",
+            "theorem t : 1 = 1 := by rfl'\n",
+            "unsupported tactic",
+        ),
+        (
+            "tactic-run-tac",
+            "theorem t : True := by run_tac pure ()\n",
+            "unsupported tactic",
+        ),
+        (
+            "tactic-open",
+            "theorem t : True := by open Nat in trivial\n",
+            "unsupported tactic",
+        ),
+        (
+            "tactic-set-option",
+            "theorem t : True := by set_option maxHeartbeats 1 in trivial\n",
+            "unsupported tactic",
+        ),
+        (
+            "tactic-conv",
+            "theorem t : 1 = 1 := by conv => rfl\n",
+            "unsupported tactic",
+        ),
+        (
+            "term-include-str",
+            "def s := include_str \"foo\"\n",
+            "disallowed syntax Lean.includeStr",
+        ),
+        (
+            "term-by-elab",
+            "def e : Nat := by_elab return 0\n",
+            "disallowed syntax Lean.byElab",
+        ),
+        (
+            "term-sorry",
+            "def s : Nat := sorry\n",
+            "disallowed syntax Lean.Parser.Term.sorry",
+        ),
+        (
+            "term-dbg-trace",
+            "def d : Nat := dbg_trace \"hi\"; 0\n",
+            "disallowed syntax Lean.Parser.Term.dbgTrace",
+        ),
+        (
+            "term-decl-name",
+            "def f := decl_name%\n",
+            "disallowed syntax Lean.Parser.Term.declName",
+        ),
+        (
+            "term-quot",
+            "def q := `(1 + 2)\n",
+            "disallowed syntax Lean.Parser.Term.quot",
+        ),
+        (
+            "term-dyn-quot",
+            "def dq := `(term| 1 + 2)\n",
+            "disallowed syntax Lean.Parser.Term.dynamicQuot",
+        ),
+        (
+            "auto-param-exploit",
+            "universe u\n\
+             def idAt {α : Sort u} (_f : α → Prop) (a : α) : α := a\n\
+             def myTac := idAt (fun s => autoParam True s)\n\
+               (.node .none `Lean.Parser.Tactic.tacticSeq #[\n\
+                 .node .none `Lean.Parser.Tactic.tacticSeq1Indented #[\n\
+                   .node .none `null #[\n\
+                     .node .none `Lean.Parser.Tactic.tacticSorry #[.atom .none \"sorry\"]]]])\n\
+             theorem evil (h : autoParam False myTac) : False := h\n",
+            "disallowed identifier autoParam",
+        ),
+        (
+            "quoted-name",
+            "def qn := `foo\n",
+            "disallowed syntax Lean.Parser.Term.quotedName",
+        ),
+        (
+            "double-quoted-name",
+            "def dqn := ``Nat.add\n",
+            "disallowed syntax Lean.Parser.Term.doubleQuotedName",
+        ),
+        (
+            "binder-tactic",
+            "def half (n : Nat) (h : n > 0 := by omega) : Nat := n / 2\n",
+            "disallowed syntax Lean.Parser.Term.binderTactic",
+        ),
+        (
+            "scoped-instance",
+            "namespace N\nscoped instance : Inhabited Unit := ⟨()⟩\nend N\n",
+            "disallowed modifier Lean.Parser.Term.scoped",
+        ),
+    ];
+
+    // 1. Live parse-tree round-trip probe + exhaustive check of all negative
+    //    vectors against `TrustedBoundary.parseAndInspectSpecCommands` in one
+    //    loaded `Init` + `Std` parser environment (~3 s total).
+    let fixture = Fixture::new(PROOF);
+    let mut checker = Checker::new(&fixture.root, None).unwrap();
+    let adm = checker.tool_admission().unwrap().clone();
+    let vectors_json_path = checker.stage().join("spec_preflight_vectors.json");
+    let vectors_json: Vec<Json> = vectors
+        .iter()
+        .map(|(label, snippet, expected)| {
+            serde_json::json!([label, format!("{snippet}{spec_base}"), expected])
+        })
+        .collect();
+    fs::write(
+        &vectors_json_path,
+        serde_json::to_vec(&vectors_json).unwrap(),
+    )
+    .unwrap();
+    let mut source = fs::read_to_string(&adm.inspector).unwrap();
+    source.push_str(&format!(
+        r#"
+
+#eval do
+  Lean.initSearchPath (System.FilePath.mk {:?})
+  unsafe Lean.enableInitializersExecution
+  let env ← Lean.importModules #[{{ module := `Init }}, {{ module := `Std }}] {{}}
+    (trustLevel := 0) (plugins := #[]) (loadExts := true) (level := .private)
+  let (cmdKinds, tacKinds) ← TrustedBoundary.collectSpecParserSets env
+  unless cmdKinds.contains ``Lean.Parser.Command.eval &&
+      cmdKinds.contains ``Lean.Parser.Command.initialize &&
+      !cmdKinds.contains ``Lean.Parser.Command.declModifiers do
+    throw <| IO.userError "unexpected commandLikeKinds partition"
+  unless tacKinds.contains `Lean.Parser.Tactic.bvDecide &&
+      tacKinds.contains `Lean.Parser.Tactic.nativeDecide &&
+      tacKinds.contains `Lean.Parser.Tactic.grind &&
+      tacKinds.contains `Lean.Parser.Tactic.runTac &&
+      tacKinds.contains `Lean.Parser.Tactic.Conv.conv do
+    throw <| IO.userError "unexpected tacticLikeKinds partition"
+  let parseHasKind (src : String) (want : Lean.Name) : IO Unit := do
+    let ctx := Lean.Parser.mkInputContext src "<rt>"
+    let (stx, st, msgs) := Lean.Parser.parseCommand ctx {{ env := env, options := {{}} }} {{}} {{}}
+    if msgs.hasErrors || st.recovering then
+      throw <| IO.userError s!"parse failed for: {{src}}"
+    let rec hasKind : Lean.Syntax → Bool
+      | .node _ k args => k == want || args.any hasKind
+      | _ => false
+    unless hasKind stx do
+      throw <| IO.userError s!"expected syntax kind {{want}} in: {{src}}"
+  parseHasKind "def s := include_str \"foo\"" ``Lean.includeStr
+  parseHasKind "def e : Nat := by_elab return 0" ``Lean.byElab
+  parseHasKind "noncomputable section S" ``Lean.Parser.Command.sectionHeader
+  parseHasKind "attribute [local simp] Nat.add_zero" ``Lean.Parser.Term.attrInstance
+  parseHasKind "deriving instance BEq for Nat" ``Lean.Parser.Command.derivingClass
+  parseHasKind "set_option maxHeartbeats 100 in def f := 1" ``Lean.Parser.Command.set_option
+  parseHasKind "def f := set_option maxHeartbeats 100 in 1" ``Lean.Parser.Term.set_option
+  parseHasKind "theorem t : 1 = 1 := by decide +native" `Lean.Parser.Tactic.decide
+  parseHasKind "def q := `(1 + 2)" `Lean.Parser.Term.quot
+  parseHasKind "def dq := `(term| 1 + 2)" `Lean.Parser.Term.dynamicQuot
+  let raw ← IO.FS.readFile (System.FilePath.mk {:?})
+  let j ← IO.ofExcept (Lean.Json.parse raw)
+  let cases ← IO.ofExcept (Lean.fromJson? (α := Array (Array String)) j)
+  let rootScope : TrustedBoundary.ParseScope :=
+    {{ header := "", currNamespace := .anonymous, openDecls := [] }}
+  for row in cases do
+    let #[label, body, want] := row
+      | throw <| IO.userError "malformed test vector row"
+    let ctx := Lean.Parser.mkInputContext body label
+    let ok ← try
+      TrustedBoundary.parseAndInspectSpecCommands ctx cmdKinds tacKinds env
+        [rootScope] `Spec {{}} {{}}
+      pure false
+    catch e =>
+      let msg := e.toString
+      unless msg.startsWith "policy:" && (msg.splitOn want).length > 1 do
+        throw <| IO.userError s!"{{label}}: expected {{want}} in {{msg}}"
+      pure true
+    unless ok do
+      throw <| IO.userError s!"{{label}}: unexpectedly accepted"
+"#,
+        adm.prefix.to_string_lossy(),
+        vectors_json_path.to_string_lossy()
+    ));
+    let probe = checker.stage().join("SpecPreflightRoundTrip.lean");
+    fs::write(&probe, source).unwrap();
+    checker
+        .process(
+            "spec-preflight-roundtrip",
+            &[probe.to_string_lossy().into_owned()],
+        )
+        .unwrap();
+
+    // 2. End-to-end `run_target` and sandboxed wire-protocol
+    //    `inspect_spec_preflight` checks proving `"spec-preflight"` halts with
+    //    exit code 1 inside `ExecSeal` BEFORE any target compilation.
+    for (label, snippet, expected) in [
+        ("e2e-eval", "#eval 1\n", "unsupported command"),
+        (
+            "e2e-include-str",
+            "def s := include_str \"foo\"\n",
+            "disallowed syntax Lean.includeStr",
+        ),
+    ] {
+        let mut e2e_f = Fixture::new(
+            "import Expected\n\
+             theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+        );
+        e2e_f.set(
+            "Spec",
+            TargetRole::Specification,
+            &format!("import Model\n{snippet}{spec_base}"),
+        );
+        let mut c = cargo_anneal::Checker::new(&e2e_f.root, None).unwrap();
+        c.set_allow_unpinned_lean(true);
+        let err = c.run_target(&e2e_f.request).unwrap_err();
+        assert_eq!(err.code, 1, "{label}: {err}");
+        assert_eq!(err.phase, "spec-preflight", "{label}: {err}");
+        assert!(err.message.contains(expected), "{label}: {err}");
+    }
+
+    let mut base_fixture = Fixture::new(
+        "import Expected\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    let mut unpinned = cargo_anneal::Checker::new(&base_fixture.root, None).unwrap();
+    unpinned.set_allow_unpinned_lean(true);
+    base_fixture.set(
+        "Spec",
+        TargetRole::Specification,
+        &format!("import Model\n{spec_base}"),
+    );
+    unpinned.run_target(&base_fixture.request).unwrap();
+
+    let wire_samples = [
+        "axiom-decl",
+        "partial-def",
+        "unsafe-rec-ident",
+        "open-platform-target",
+        "attr-impl-by",
+        "deriving-unknown",
+        "tactic-decide-native",
+        "term-quot",
+        "auto-param-exploit",
+        "scoped-instance",
+    ];
+    for (idx, (label, snippet, expected)) in vectors
+        .iter()
+        .filter(|(label, _, _)| wire_samples.contains(label))
+        .enumerate()
+    {
+        let path = base_fixture.root.join(format!("neg_spec_{idx:03}.lean"));
+        fs::write(&path, format!("import Model\n{snippet}{spec_base}")).unwrap();
+        let err = unpinned
+            .inspect_spec_preflight(&[("Spec".to_owned(), path)])
+            .unwrap_err();
+        assert_eq!(err.code, 1, "{label}: {err}");
+        assert_eq!(err.phase, "spec-preflight", "{label}: {err}");
+        assert!(
+            err.message.contains(expected),
+            "{label}: expected {expected:?} in {err}"
+        );
+    }
+}
+
+/// Positive end-to-end check confirming rich pure specifications—including
+/// `noncomputable section`, `@[local simp]`, `@[reducible, inline]`,
+/// `deriving BEq, DecidableEq, Repr, Inhabited, Ord, Hashable`,
+/// `set_option maxHeartbeats` / `linter.*`, `decide +kernel`, `decide +revert`,
+/// `omega`, `open System.Platform (numBits)`, and well-founded recursion
+/// (`termination_by`/`decreasing_by`, which generates paired
+/// `wfRec._unsafe_rec`)—pass `"spec-preflight"` and `"target-audit"` cleanly.
+#[test]
+fn spec_preflight_and_target_audit_accept_rich_pure_specs_and_wf_recursion() {
+    let mut f = Fixture::new(
+        "import Expected\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f.set(
+        "Spec",
+        TargetRole::Specification,
+        r#"import Model
+set_option linter.unusedVariables false
+open System.Platform (numBits)
+noncomputable section SpecRich
+structure Tag where
+  val : Nat
+deriving BEq, DecidableEq, Repr, Inhabited, Ord, Hashable
+@[reducible, inline] def hostBits : Nat := numBits + System.Platform.numBits
+@[local simp] theorem hostBits_pos : 0 < hostBits := by
+  have h := System.Platform.numBits_eq
+  rcases h with h32 | h64
+  · simp [hostBits, h32]
+  · simp [hostBits, h64]
+set_option maxHeartbeats 200000 in
+theorem dec_kernel_ok : 2 + 2 = 4 := by decide +kernel
+theorem dec_revert_ok (b : Bool) : (b || !b) = true := by decide +revert
+theorem omega_ok (n : Nat) : n + 1 > n := by omega
+def wfHalf (n : Nat) : Nat :=
+  if h : n = 0 then 0 else wfHalf (n / 2)
+termination_by n
+decreasing_by exact Nat.div_lt_self (Nat.pos_of_ne_zero h) (by decide)
+section
+open BitVec
+def bvLit (x : Nat) (h : x < 2^8) : BitVec 8 := x#'h
+end
+section
+open BitVec hiding ofNat
+def bvLitHide (x : Nat) (h : x < 2^8) : BitVec 8 := x#'h
+end
+section
+open Int
+def negSuccVal (n : Nat) : Int := -[n+1]
+end
+end SpecRich
+def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p
+"#,
+    );
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    let report = checker.run_target(&f.request).unwrap();
+    assert_eq!(report["replay"], true);
+    assert_eq!(report["exactType"], true);
+    assert_eq!(report["sorryDeclarations"], serde_json::json!([]));
+}
+
+/// Unified `"target-audit"` Phase 1 enforces whole-specification invariants
+/// even on declarations unreferenced by `Spec.specs` (rejecting `opaque`,
+/// `sorryAx` even when `allow_sorry_in_proof = true`, transitive `IO`,
+/// `dbgTrace`, or `System.Platform.target`, forged unpaired `._unsafe_rec`, and
+/// forged `Proof` references to a paired `._unsafe_rec`, plus companion
+/// artifact parts).
+#[test]
+fn target_audit_phase1_enforces_whole_spec_opaque_effects_and_unsafe_rec_invariants() {
+    use anneal_audit::ModuleArtifacts;
+    use std::collections::BTreeMap;
+
+    // Helper: compile ONE valid unpinned baseline via `run_target` (which
+    // admits the full `Init` closure into `checker.admitted()`), then overwrite
+    // and recompile `Spec` (and `Expected`/`Proof`) directly into `stage/lib`
+    // to exercise `"target-audit"` Phase 1 directly without `"spec-preflight"`.
+    let mut f = Fixture::new(
+        "import Expected\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f.set(
+        "Spec",
+        TargetRole::Specification,
+        "import Model\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    checker.run_target(&f.request).unwrap();
+
+    let mut audit_bypassing_preflight = |spec_src: &str,
+                                         proof_src: &str,
+                                         allow_sorry: bool,
+                                         forge_companion: bool|
+     -> Result<Json, Failure> {
+        f.set("Spec", TargetRole::Specification, spec_src);
+        f.set("Proof", TargetRole::Proof, proof_src);
+        f.request.allow_sorry_in_proof = allow_sorry;
+        for name in ["Spec", "Expected", "Proof"] {
+            let m = f.request.modules.iter().find(|x| x.module == name).unwrap();
+            let staged_src = checker.stage().join("ro").join(format!("{name}.lean"));
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                let _ = fs::set_permissions(&staged_src, fs::Permissions::from_mode(0o600));
+            }
+            fs::copy(&m.source, &staged_src).unwrap();
+            let hdr_json = checker
+                .inspect_headers(&[(name.to_string(), staged_src.clone())])
+                .unwrap();
+            let hdrs: cargo_anneal::PreflightResult = serde_json::from_value(hdr_json).unwrap();
+            let edges = hdrs.headers.into_iter().next().unwrap().imports;
+            let dest_olean = checker.stage().join("lib").join(format!("{name}.olean"));
+            if dest_olean.exists() {
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
+                    let _ = fs::set_permissions(&dest_olean, fs::Permissions::from_mode(0o600));
+                }
+            }
+            checker
+                .compile_lean_module(name, &staged_src, edges, "lib", false, true)
+                .unwrap();
+        }
+        if forge_companion {
+            let spec_olean = checker.stage().join("lib/Spec.olean");
+            let fake_priv = checker.stage().join("lib/Spec.olean.private");
+            fs::copy(&spec_olean, &fake_priv).unwrap();
+            let mut avail = BTreeMap::new();
+            avail.insert("olean", spec_olean.to_string_lossy().into_owned());
+            avail.insert("olean.private", fake_priv.to_string_lossy().into_owned());
+            let adm = checker.admitted_mut().unwrap();
+            adm.artifacts.insert(
+                "Spec".into(),
+                ModuleArtifacts::from_available(&avail, "fixture", || "missing".into()).unwrap(),
+            );
+        }
+        checker.inspect_target(&f.request)
+    };
+
+    let clean_proof = "import Expected\n\
+        theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n";
+
+    // 1. Unused `opaque` in `Spec` rejected in Phase 1.
+    let err = audit_bypassing_preflight(
+        "import Model\nopaque Spec.unusedOp : Nat := 0\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        clean_proof,
+        false,
+        false,
+    )
+    .unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
+    assert!(
+        err.message.contains("opaque declaration Spec.unusedOp"),
+        "{err}"
+    );
+
+    // 2. Unused `sorry` in `Spec` rejected in Phase 1 EVEN WITH
+    //    `allow_sorry_in_proof = true`.
+    let err = audit_bypassing_preflight(
+        "import Model\ntheorem Spec.unusedSorry : True := sorry\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        clean_proof,
+        true,
+        false,
+    )
+    .unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
+    assert!(err.message.contains("unapproved axiom sorryAx"), "{err}");
+
+    // 3. Unused `Spec` declaration transitively referencing `IO`, `dbgTrace`,
+    //    or `System.Platform.target` rejected in Phase 1.
+    for (label, decl, expected) in [
+        (
+            "io",
+            "def Spec.unusedIo : IO Unit := pure ()\n",
+            "disallowed constant IO",
+        ),
+        (
+            "dbg-trace",
+            "def Spec.unusedDbg : Nat := dbgTrace \"x\" (fun _ => 0)\n",
+            "disallowed constant dbgTrace",
+        ),
+        (
+            "platform-target",
+            "def Spec.unusedTarget : String := System.Platform.target\n",
+            "disallowed constant System.Platform.target",
+        ),
+    ] {
+        let err = audit_bypassing_preflight(
+            &format!(
+                "import Model\n{decl}def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n"
+            ),
+            clean_proof,
+            false,
+            false,
+        )
+        .unwrap_err();
+        assert_eq!(
+            (err.code, err.phase.as_str()),
+            (1, "target-audit"),
+            "{label}: {err}"
+        );
+        assert!(err.message.contains(expected), "{label}: {err}");
+    }
+
+    // 4. Unpaired `partial def Spec.orphan._unsafe_rec` rejected in Phase 1.
+    let err = audit_bypassing_preflight(
+        "import Model\npartial def Spec.orphan._unsafe_rec (n : Nat) : Nat := \
+         Spec.orphan._unsafe_rec n\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        clean_proof,
+        false,
+        false,
+    )
+    .unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
+    assert!(
+        err.message
+            .contains("opaque declaration Spec.orphan._unsafe_rec")
+            || err.message.contains("unsafe/partial"),
+        "{err}"
+    );
+
+    // 5a. Safe Proof referencing a legitimately paired
+    //     `Spec.wfHalf._unsafe_rec` is already rejected by Lean's kernel during
+    //     `compile-Proof`; an `unsafe def` in `Spec` referencing
+    //     `Spec.wfHalf._unsafe_rec` (or an `unsafe def Spec.foo._unsafe_rec`
+    //     paired by name with total `Spec.foo`) compiles cleanly and is
+    //     rejected by `"target-audit"` Phase 1.
+    let wf_spec = r#"import Model
+def Spec.wfHalf (n : Nat) : Nat :=
+  if h : n = 0 then 0 else Spec.wfHalf (n / 2)
+termination_by n
+decreasing_by exact Nat.div_lt_self (Nat.pos_of_ne_zero h) (by decide)
+def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p
+"#;
+    let err = audit_bypassing_preflight(
+        &format!("{wf_spec}unsafe def Spec.sneak (n : Nat) : Nat := Spec.wfHalf._unsafe_rec n\n"),
+        clean_proof,
+        false,
+        false,
+    )
+    .unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
+    assert!(
+        err.message.contains("unsafe/partial") || err.message.contains("paired _unsafe_rec"),
+        "{err}"
+    );
+
+    // 5b. `unsafe def Spec.foo._unsafe_rec` next to total `def Spec.foo` fails
+    //     the `!ci.isUnsafe` pairing guard and is rejected by `"target-audit"`.
+    let err = audit_bypassing_preflight(
+        "import Model\ndef Spec.foo (n : Nat) : Nat := n\n\
+         unsafe def Spec.foo._unsafe_rec (n : Nat) : Nat := n\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        clean_proof,
+        false,
+        false,
+    )
+    .unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
+    assert!(
+        err.message
+            .contains("unsafe/partial logical dependency Spec.foo._unsafe_rec"),
+        "{err}"
+    );
+
+    // 6. Companion artifact part (`.olean.private`) on a target source module
+    //    rejected by `"target-audit"`.
+    let err = audit_bypassing_preflight(
+        "import Model\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+        clean_proof,
+        false,
+        true,
+    )
+    .unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
+    assert!(
+        err.message.contains("companion artifact parts unsupported"),
+        "{err}"
+    );
+
+    // 7. Forged `isModule = true` `.olean` on a target source module rejected
+    //    by `"target-audit"`.
+    let clean_spec = "import Model\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n";
+    let _ = audit_bypassing_preflight(clean_spec, clean_proof, false, false).unwrap();
+    let spec_olean = checker.stage().join("lib/Spec.olean");
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let _ = fs::set_permissions(&spec_olean, fs::Permissions::from_mode(0o600));
+    }
+    let forge_script = checker.stage().join("ForgeIsModule.lean");
+    fs::write(
+        &forge_script,
+        format!(
+            r#"import Lean
+open Lean in
+def main : IO Unit := do
+  let p := System.FilePath.mk {:?}
+  let (data, _) ← readModuleData p
+  saveModuleData p `Spec {{ data with isModule := true }}
+"#,
+            spec_olean.to_string_lossy()
+        ),
+    )
+    .unwrap();
+    checker
+        .process(
+            "forge-is-module",
+            &[
+                "--run".to_string(),
+                forge_script.to_string_lossy().into_owned(),
+            ],
+        )
+        .unwrap();
+    let mut avail_single = BTreeMap::new();
+    avail_single.insert("olean", spec_olean.to_string_lossy().into_owned());
+    checker.admitted_mut().unwrap().artifacts.insert(
+        "Spec".into(),
+        ModuleArtifacts::from_available(&avail_single, "fixture", || "missing".into()).unwrap(),
+    );
+    let err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(err.phase.as_str(), "target-audit", "{err}");
+    assert!(
+        (err.code == 1 && err.message.contains("module-system artifact unsupported"))
+            || (err.code == 2 && err.message.contains("missing data file for module Spec")),
+        "expected fail-closed rejection of forged isModule .olean: {err}"
+    );
+}
+
+/// Phase 2 `"target-audit"` with `allow_sorry_in_proof`:
+/// - rejects proof `sorry` when `allow_sorry_in_proof = false`;
+/// - admits proof-only `sorry` when `allow_sorry_in_proof = true` and records
+///   ALL proof declarations that reference `sorryAx` (verifying per-edge
+///   admission before `visited` short-circuiting);
+/// - emits `"sorryDeclarations": []` without `"sorryAx"` in `"axioms"` when a
+///   proof under `allow_sorry_in_proof = true` uses zero `sorry`s; and
+/// - rejects `sorry` in `Model`, `Capture`, or `Expected` even when
+///   `allow_sorry_in_proof = true`.
+#[test]
+fn target_audit_phase2_allow_sorry_in_proof_tracks_multiple_helpers_and_isolates_phase1() {
+    let multi_sorry_proof = "prelude\nimport Expected\n\
+        theorem Proof.helperA : Captured.program.toNat = 7 := sorry\n\
+        theorem Proof.helperB : Spec.specs Captured.program := sorry\n\
+        theorem Proof.verify : Expected.claim := And.intro Proof.helperA Proof.helperB\n";
+
+    // 1. Default (`allow_sorry_in_proof = false`) rejects proof `sorry`.
+    let f_strict = Fixture::new(multi_sorry_proof);
+    f_strict.reject_audit("unapproved axiom sorryAx from Init.Prelude");
+
+    // 2. `allow_sorry_in_proof = true` admits BOTH proof helpers and reports
+    //    both in sorted `sorryDeclarations`.
+    let mut f_allow = Fixture::new(multi_sorry_proof);
+    f_allow.request.allow_sorry_in_proof = true;
+    let report = f_allow.run().unwrap();
+    assert_eq!(report["replay"], true);
+    assert_eq!(report["exactType"], true);
+    assert_eq!(
+        report["sorryDeclarations"],
+        serde_json::json!(["Proof.helperA", "Proof.helperB"])
+    );
+    assert!(
+        report["axioms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|a| a == "sorryAx"),
+        "expected sorryAx in axioms: {report}"
+    );
+
+    // 3. Clean proof under `allow_sorry_in_proof = true` has empty
+    //    `sorryDeclarations` and omits `sorryAx` from `axioms`.
+    let mut f_clean = Fixture::new(PROOF);
+    f_clean.request.allow_sorry_in_proof = true;
+    let clean_report = f_clean.run().unwrap();
+    assert_eq!(clean_report["sorryDeclarations"], serde_json::json!([]));
+    assert!(
+        clean_report["axioms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|a| a != "sorryAx"),
+        "unexpected sorryAx in clean axioms: {clean_report}"
+    );
+
+    // 4. `sorry` in `Capture`, `Model`, or `Expected` (Phase 1) is rejected
+    //    EVEN WITH `allow_sorry_in_proof = true`.
+    let mut f_bad_capture = Fixture::new(multi_sorry_proof);
+    f_bad_capture.request.allow_sorry_in_proof = true;
+    f_bad_capture.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Model\ndef Captured.program : BitVec 8 := sorry\n",
+    );
+    f_bad_capture.reject_audit("unapproved axiom sorryAx from Init.Prelude");
+
+    let mut f_bad_model = Fixture::new(multi_sorry_proof);
+    f_bad_model.request.allow_sorry_in_proof = true;
+    f_bad_model.set(
+        "Model",
+        TargetRole::Model,
+        "prelude\nimport Init.Prelude\nimport Init.Core\nimport Init.Data.BitVec.Basic\n\
+         namespace Trusted.MirSemantics\n\
+         structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+         theorem modelHelper : True := sorry\n\
+         def UnitTheorem (c : Crate) : Prop := (fun _ : True => c.program.toNat = 7 ∧ c.specs c.program) modelHelper\n\
+         end Trusted.MirSemantics\n",
+    );
+    f_bad_model.reject_audit("unapproved axiom sorryAx from Init.Prelude");
+
+    let mut f_bad_expected = Fixture::new(multi_sorry_proof);
+    f_bad_expected.request.allow_sorry_in_proof = true;
+    f_bad_expected.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Model\nimport Captured\nimport Spec\n\
+         theorem Expected.helper : True := sorry\n\
+         def Expected.claim : Prop := (fun _ : True => Trusted.MirSemantics.UnitTheorem (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)) Expected.helper\n",
+    );
+    f_bad_expected.reject_audit("unapproved axiom sorryAx from Init.Prelude");
 }

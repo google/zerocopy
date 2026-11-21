@@ -133,13 +133,23 @@ files), its environment variables (`PATH`, `LD_PRELOAD`), its working files
 during verification, or the channel reporting the verification result and TCB
 audit log.
 
-This includes host OS tampering executed during compilation or elaboration by
-build-time code inside the repository—such as Cargo `build.rs` build scripts,
-procedural macros, compiler plugins, or Lean 4 elaborator I/O (`#eval`,
-`run_cmd`, `by_elab`, `initialize`). (By contrast, non-malicious Rust code
-*generated* by a `build.rs` script or procedural macro is compiled by `rustc`
-and verified by Anneal under the same soundness, specification, and TCB rules as
+This includes host OS tampering executed during compilation by Rust build-time
+code inside the repository—such as Cargo `build.rs` build scripts, procedural
+macros, or compiler plugins. (By contrast, non-malicious Rust code *generated*
+by a `build.rs` script or procedural macro is compiled by `rustc` and verified
+by Anneal under the same soundness, specification, and TCB rules as
 hand-written code in the crate.)
+
+Build-time Lean 4 elaboration (`#eval`, `run_cmd`, `by_elab`, `initialize`) is
+bounded separately: on Linux, Anneal aims to contain untrusted Lean elaborator
+host file reads and writes, network access, and host IPC during verification,
+and restricts specification modules to declarative syntax before elaboration.
+Four residual boundaries remain outside automated elaborator containment: host
+path-metadata and existence visibility when unprivileged user namespaces are
+unavailable on the runner, non-Linux hosts or runs where the operator
+explicitly opts into unsandboxed elaboration (which taints the verification
+outcome), local resource exhaustion or denial of service, and external
+interactive editor or Lean language-server sessions outside Anneal.
 
 **There is no in-principle way for an un-sandboxed user-space tool to defend
 against a compromised execution environment.** If an agent running under the
@@ -173,11 +183,12 @@ development environments** and **Continuous Integration (CI)**:
   contributor or AI agent cannot touch the runner's binaries or environment
   directly; their only interface is **proposing changes to repository files in a
   pull request**. Because software projects already rely on isolated CI runners
-  (with OS-level build sandboxing where untrusted `build.rs`, macro, or
-  elaborator execution is a concern) and human code review to gate merges to
-  `main`, running `cargo anneal` in CI with protected workflow configurations
-  and a pinned Anneal toolchain satisfies the uncompromised execution
-  environment assumption.
+  (complementing Anneal's default Linux Lean-elaborator sandboxing with
+  runner-level isolation where untrusted `build.rs` or procedural-macro
+  execution is a concern) and human code review to gate merges to `main`,
+  running `cargo anneal` in CI with protected workflow configurations and a
+  pinned Anneal toolchain satisfies the uncompromised execution environment
+  assumption.
 
 ### 2. Weak, vacuous, or unintended specifications and explicit TCB assumptions
 

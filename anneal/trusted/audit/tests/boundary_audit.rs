@@ -1488,8 +1488,8 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     assert!(!checkout_victim.exists(), "sandboxed run_cmd must not be able to write to checkout");
 
     // Case 2: A malicious `run_cmd` attempting to write into the auditor's
-    // read-only `/work/miri-lib` or host `stage` fails and leaves both
-    // untouched.
+    // read-only `/work/lp0` (`miri-lib` mount) or host `stage` fails with
+    // `EROFS`/`ENOENT` and leaves both untouched.
     let mut c2 = Checker::new(&fix.root, None).unwrap();
     c2.set_require_mir_wp(false);
     c2.run().unwrap();
@@ -1502,7 +1502,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
            try\n\
              IO.FS.writeFile \"{}\" \"pwned\"\n\
            catch _ =>\n\
-             IO.FS.writeFile \"/work/miri-lib/sandbox-escape-ro.txt\" \"pwned\"\n\
+             IO.FS.writeFile \"/work/lp0/sandbox-escape-ro.txt\" \"pwned\"\n\
          def x : Nat := 1\n\
          end Miri.EscapeStage\n",
         stage_victim.display()
@@ -1590,13 +1590,15 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     c3.set_require_mir_wp(false);
     c3.set_miri_cache_dir(Some(cache_dir.path().to_path_buf()));
     c3.run().unwrap();
-    let err3 =
-        c3.verify_and_stage_miri_entries(&vendor_dir, &[extra_entry], &extra_sources).unwrap_err();
-    assert_eq!(err3.code, 1, "expected policy error for extra sandbox output: {err3}");
+    let err3 = c3
+        .verify_and_stage_miri_entries(&vendor_dir, &[extra_entry], &extra_sources)
+        .unwrap_err();
+    assert_eq!(
+        err3.code, 2,
+        "expected Door 1 error for extra sandbox output: {err3}"
+    );
     assert!(
-        err3.message.contains(
-            "unexpected file in sandboxed Miri output for Miri.ExtraOut: unexpected-drop.txt"
-        ),
+        err3.message.contains("unexpected compiler output unexpected-drop.txt"),
         "unexpected error message: {err3}"
     );
     assert!(
@@ -1652,17 +1654,19 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
 
     // Case 5: A non-module cold compile (`olean_server_sha256` and
     // `olean_private_sha256` both `None`) that emits `.ir` or `.ir.sig`
-    // alongside a digest-matching `.olean` must still be rejected with policy
-    // exit code `1`, staging and caching nothing.
-    for (module, stem, ext) in
-        [("Miri.ExtraIr", "Miri/ExtraIr", "ir"), ("Miri.ExtraIrSig", "Miri/ExtraIrSig", "ir.sig")]
-    {
+    // alongside a digest-matching `.olean` must still be rejected with Door 1
+    // operational exit code `2`, staging and caching nothing.
+    for (module, stem, leaf, ext) in [
+        ("Miri.ExtraIr", "Miri/ExtraIr", "ExtraIr", "ir"),
+        ("Miri.ExtraIrSig", "Miri/ExtraIrSig", "ExtraIrSig", "ir.sig"),
+    ] {
         let sidecar_rel = format!("{stem}.{ext}");
+        let sidecar_leaf = format!("{leaf}.{ext}");
         let src = format!(
             "import Lean\n\
              namespace {module}\n\
              run_cmd do\n\
-               IO.FS.writeFile \"out/{sidecar_rel}\" \"fake-ir\"\n\
+               IO.FS.writeFile \"out/{sidecar_leaf}\" \"fake-ir\"\n\
              def x : Nat := 1\n\
              end {module}\n"
         );
@@ -1716,13 +1720,19 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
         c5.set_require_mir_wp(false);
         c5.set_miri_cache_dir(Some(ir_cache.path().to_path_buf()));
         c5.run().unwrap();
-        let err5 =
-            c5.verify_and_stage_miri_entries(&vendor_dir, &[ir_entry], &ir_sources).unwrap_err();
-        assert_eq!(err5.code, 1, "expected policy error for non-module {ext} sidecar: {err5}");
-        assert_eq!(err5.phase, "miri-pin");
-        let expected_diag =
-            format!("unexpected file in sandboxed Miri output for {module}: {sidecar_rel}");
-        assert!(err5.message.contains(&expected_diag), "expected `{expected_diag}`, got: {err5}");
+        let err5 = c5
+            .verify_and_stage_miri_entries(&vendor_dir, &[ir_entry], &ir_sources)
+            .unwrap_err();
+        assert_eq!(
+            err5.code, 2,
+            "expected Door 1 error for non-module {ext} sidecar: {err5}"
+        );
+        assert_eq!(err5.phase, "door1");
+        let expected_diag = format!("unexpected compiler output {sidecar_leaf}");
+        assert!(
+            err5.message.contains(&expected_diag),
+            "expected `{expected_diag}`, got: {err5}"
+        );
         assert!(
             !c5.stage().join("miri-lib").join(&olean_rel).exists()
                 && !c5.stage().join("miri-lib").join(&sidecar_rel).exists()
@@ -7100,6 +7110,7 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     // 1. `"correspondence-preflight"` runs inside `bwrap`: importing
     // `Miri.InitHost` with `loadExts := true` fails when the `[init]` hook
     // tries to write outside `/work/out`, leaving `host_victim` untouched.
+    fs::create_dir_all(prebuild.stage().join("theory-lib")).unwrap();
     let src_dir = prebuild.stage().join("src/p2-sandbox-test");
     fs::create_dir_all(src_dir.join("Trusted")).unwrap();
     let sample_src = src_dir.join("Trusted/Correspondence.lean");
@@ -7190,25 +7201,25 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
         })
         .unwrap_err();
     assert_eq!(
-        err_drop.code, 1,
-        "expected policy rejection for unexpected file in /work/out: {err_drop}"
+        err_drop.code, 2,
+        "expected Door 1 rejection for unexpected file in /work/out: {err_drop}"
     );
     assert!(
-        err_drop.message.contains("unexpected file in sandboxed correspondence-preflight output"),
+        err_drop.message.contains("unexpected inspector outputs"),
         "unexpected error message: {err_drop}"
     );
 
     // 3. Pass 2 module compilation (`run_correspondence_with_closure`) runs
     // inside `bwrap`: a vendored `[init]` that stays silent during
-    // `"correspondence-preflight"` (where `/work/src/pass2` is absent) and
-    // attempts to write to the host checkout during Pass 2 compilation fails
-    // inside the sandbox, leaving `compile_host_victim` untouched.
+    // `"correspondence-preflight"` (where `/work/src/corr-trusted` is absent)
+    // and attempts to write to the host checkout during Pass 2 compilation
+    // fails inside the sandbox, leaving `compile_host_victim` untouched.
     let compile_host_victim = fix.root.join("pass2-compile-escape-host.txt");
     let init_compile_host_src = format!(
         "import Lean\n\
          namespace Miri.InitCompileHost\n\
          initialize _ : Unit ← do\n\
-           if ← System.FilePath.pathExists \"/work/src/pass2\" then\n\
+           if ← System.FilePath.pathExists \"/work/src/corr-trusted\" then\n\
              IO.FS.writeFile \"{}\" \"pwned\"\n\
            pure ()\n\
          def ok : Nat := 1\n\
@@ -7297,12 +7308,12 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     );
 
     // 4. Even if a vendored `[init]` drops an extra file into `/work/out`
-    // during Pass 2 compilation, `anneal-audit` rejects it with policy exit
-    // code `1` and stages nothing into `lib/`.
+    // during Pass 2 compilation, `anneal-audit` Door 1 rejects it and stages
+    // nothing into `lib/`.
     let init_compile_drop_src = "import Lean\n\
         namespace Miri.InitCompileDrop\n\
         initialize _ : Unit ← do\n\
-          if ← System.FilePath.pathExists \"/work/src/pass2\" then\n\
+          if ← System.FilePath.pathExists \"/work/src/corr-trusted\" then\n\
             IO.FS.writeFile \"/work/out/sneaky-pass2.txt\" \"junk\"\n\
           pure ()\n\
         def ok : Nat := 1\n\
@@ -7354,11 +7365,13 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
         )
         .unwrap_err();
     assert_eq!(
-        err_compile_drop.code, 1,
-        "expected policy rejection for unexpected file in Pass 2 /work/out: {err_compile_drop}"
+        err_compile_drop.code, 2,
+        "expected Door 1 rejection for unexpected file in Pass 2 /work/out: {err_compile_drop}"
     );
     assert!(
-        err_compile_drop.message.contains("unexpected file in sandboxed Pass 2 output"),
+        err_compile_drop
+            .message
+            .contains("unexpected compiler outputs"),
         "unexpected error message: {err_compile_drop}"
     );
     assert!(
@@ -7432,7 +7445,7 @@ fn precompiled_inspector_handles_colon_in_tmpdir_and_drops_lean_path() {
 
     // Run `anneal-audit` in a child process with `TMPDIR=<outer>/evil:sub`
     // (avoiding mutating the test binary's global `TMPDIR`) and verify the
-    // relative `LEAN_PATH="inspector-lib"` succeeds without touching the decoy.
+    // relative `LEAN_PATH="control"` succeeds without touching the decoy.
     // Note: `TempFixture` omits `Trusted.MirAst`/`Anneal.MirWp`, so the binary
     // executes `"preflight"`, compiles `Trusted.lean`, and reaches `"audit"`
     // cleanly before `require_mir_wp` checks MIR modules; reaching the
@@ -7464,9 +7477,9 @@ fn precompiled_inspector_handles_colon_in_tmpdir_and_drops_lean_path() {
     );
 
     // Part 2: verify `TrustedBoundary.initHermeticSearchPath` drops the
-    // bootstrap `LEAN_PATH="inspector-lib"` from `Lean.searchPathRef` before
-    // `importCorrEnv` loads modules, so `inspector-lib/TrustedBoundary.olean`
-    // is never visible as an importable module.
+    // bootstrap `LEAN_PATH="control"` from `Lean.searchPathRef` before
+    // `importCorrEnv` loads modules, so `control/TrustedBoundary.olean` is
+    // never visible as an importable module.
     let mut checker = Checker::new(&fix.root, Some(&lean)).unwrap();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
@@ -7489,12 +7502,16 @@ fn precompiled_inspector_handles_colon_in_tmpdir_and_drops_lean_path() {
     let drop_out = Command::new(&lean)
         .current_dir(checker.stage())
         .env_clear()
-        .env("LEAN_PATH", "inspector-lib")
+        .env("LEAN_PATH", "control")
         .args([
             "-j1",
             "-M2048",
             "--run",
-            checker.stage().join("inspector-lib/Runner.lean").to_str().unwrap(),
+            checker
+                .stage()
+                .join("control/TrustedBoundaryEntry.lean")
+                .to_str()
+                .unwrap(),
             req_path.to_str().unwrap(),
             res_path.to_str().unwrap(),
         ])

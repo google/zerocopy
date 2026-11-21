@@ -260,13 +260,6 @@ pub(crate) struct LibraryLock {
     pub graph: BTreeMap<String, Vec<ImportEdge>>,
 }
 
-/// Stage-local compiled inspector and its thin import runner.
-#[derive(Debug, Clone)]
-pub(crate) struct CompiledInspectorPaths {
-    pub(crate) lib_dir: PathBuf,
-    pub(crate) runner: PathBuf,
-}
-
 /// Holds the admitted Lean 4.34.1 toolchain state, `foundation-lock.json`
 /// metadata, and active artifact graph produced by
 /// [`crate::Checker::tool_admission`].
@@ -279,13 +272,10 @@ pub(crate) struct CompiledInspectorPaths {
 pub struct AdmittedToolchain {
     /// Holds the staged path of `TrustedBoundary.lean`.
     pub inspector: PathBuf,
-    /// SHA-256 digest of the staged `TrustedBoundary.lean` source.
+    /// SHA-256 digest of staged `control/TrustedBoundary.lean` at admission.
     pub(crate) inspector_sha256: String,
     /// Verified SHA-256 digest of the admitted `lean` binary.
     pub(crate) lean_sha256: String,
-    /// Stage-local precompiled `TrustedBoundary.olean` library and runner,
-    /// lazily populated on first inspector invocation.
-    pub(crate) compiled_inspector: Option<CompiledInspectorPaths>,
     /// Holds the verified `lean --version` string matching
     /// `foundation-lock.json`.
     pub version: String,
@@ -321,6 +311,14 @@ pub struct AdmittedToolchain {
     /// Records the SHA-256 digest of the unpinned Lean binary at admission so
     /// `target-provenance` can detect mid-run binary replacement.
     pub lean_binary_sha256: Option<String>,
+    /// Resolved executable Lean binary (`<prefix>/bin/lean` when present, else
+    /// the caller-provided Lean path).
+    pub(crate) exec_lean: PathBuf,
+    /// Expected locked SHA-256 digest of `exec_lean` in pinned mode.
+    pub(crate) expected_lean_sha: Option<String>,
+    /// Staged precompiled `control/TrustedBoundary.olean` built once per
+    /// `Checker` from `control/TrustedBoundary.lean`, plus its SHA-256 digest.
+    pub(crate) inspector_olean: Option<(PathBuf, String)>,
 }
 
 impl AdmittedToolchain {

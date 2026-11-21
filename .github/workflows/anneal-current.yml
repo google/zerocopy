@@ -871,6 +871,72 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+  sandbox-aarch64:
+    runs-on: ubuntu-24.04-arm
+    name: ExecSeal aarch64 containment tests
+    timeout-minutes: 30
+    env:
+      ACTIONS_CACHE_URL: ''
+      ACTIONS_RESULTS_URL: ''
+      ACTIONS_RUNTIME_TOKEN: ''
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify root TCB manifest
+        run: |
+          set -euo pipefail
+          linked_path="$(find trusted -type l -print -quit)"
+          if [ -n "$linked_path" ]; then
+            echo "symlink in Anneal trusted tree: $linked_path" >&2
+            exit 1
+          fi
+          sha256sum --check --strict trusted/root-manifest.sha256
+          for root in . "$GITHUB_WORKSPACE"; do
+            for name in .cargo rust-toolchain rust-toolchain.toml .gitmodules; do
+              path="$root/$name"
+              if [ -e "$path" ] || [ -L "$path" ]; then
+                echo "forbidden root config override: $path" >&2
+                exit 1
+              fi
+            done
+          done
+      - name: Install bubblewrap
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y bubblewrap
+          if [ ! -f /etc/apparmor.d/bwrap ] && command -v apparmor_parser >/dev/null 2>&1; then
+            sudo tee /etc/apparmor.d/bwrap <<'PROFILE' >/dev/null
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bwrap /usr/bin/bwrap flags=(unconfined) {
+            userns,
+            include if exists <local/bwrap>
+          }
+          PROFILE
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap
+          fi
+      - name: Compile and test ExecSeal on aarch64
+        run: |
+          set -euo pipefail
+          cargo clippy --locked -p cargo-anneal --lib --test sandbox_escape -- -D warnings
+          cargo test --locked -p cargo-anneal --lib sandbox:: -- --list \
+            > "$RUNNER_TEMP/sandbox-aarch64-lib.stdout"
+          test "$(grep -c ': test$' "$RUNNER_TEMP/sandbox-aarch64-lib.stdout")" -ge 1
+          cargo test --locked -p cargo-anneal --lib sandbox:: -- --test-threads=1
+          cargo test --locked -p cargo-anneal --test sandbox_escape -- --list --exact \
+            sandbox_escape_vectors_blocked_in_tier1_and_tier2 \
+            wall_clock_timeout_kills_process_group_in_tier1_and_tier2 \
+            tier1_as_pid1_prevents_post_exit_out_writes \
+            > "$RUNNER_TEMP/sandbox-aarch64-selection.stdout"
+          test "$(grep -c ': test$' "$RUNNER_TEMP/sandbox-aarch64-selection.stdout")" -eq 3
+          cargo test --locked -p cargo-anneal --test sandbox_escape -- --test-threads=1 --exact \
+            sandbox_escape_vectors_blocked_in_tier1_and_tier2 \
+            wall_clock_timeout_kills_process_group_in_tier1_and_tier2 \
+            tier1_as_pid1_prevents_post_exit_out_writes
+
   all-jobs-succeed:
       name: Current Anneal checks succeeded
       # Run even when a dependency fails, is skipped, or is cancelled, then
@@ -878,7 +944,7 @@ jobs:
       # success in branch protection, so this aggregation must fail closed.
       if: ${{ always() }}
       runs-on: ubuntu-latest
-      needs: [static-checks, build-exocrate, test-and-verify, workspace-tests]
+      needs: [static-checks, build-exocrate, test-and-verify, workspace-tests, sandbox-aarch64]
       steps:
         - name: Reject workflow cancellation
           if: ${{ cancelled() }}
