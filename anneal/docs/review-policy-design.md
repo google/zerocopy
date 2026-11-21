@@ -25,15 +25,15 @@ it never proves defect absence or substitutes for CI or the merge gates in
 ## Policy ownership
 
 Every operational procedure has **one canonical owner**; except for the
-self-contained `Code Review Rules` mirror shared verbatim between `AGENTS.md`
-and `.gemini/styleguide.md` (governed by the parity rules and drift checks
-below), peer files link to the canonical owner in at most one sentence without
+self-contained `Code Review Rules` and documentation clauses named below,
+peer files link to the canonical owner in at most one sentence without
 repeating CLI flags, path blocklists, or multi-step checklists. This table is
 the single repository-wide ownership map:
 
 | File | Sole canonical ownership |
 |---|---|
-| [`AGENTS.md`](../AGENTS.md) | Repository conventions, deterministic preflight checklist, privacy rule, author routing table, and shared [Code Review Rules](../AGENTS.md#code-review-rules) |
+| [Root `AGENTS.md`](../../AGENTS.md#documentation) | Repository-wide PR documentation requirement |
+| [`anneal/AGENTS.md`](../AGENTS.md) | Anneal conventions, deterministic preflight checklist, privacy rule, author routing table, and shared [Code Review Rules](../AGENTS.md#code-review-rules) |
 | [`.gemini/styleguide.md`](../.gemini/styleguide.md) | Role-pure single-turn reviewer mirror of the shared Code Review Rules (zero links, zero author workflow) |
 | [`skills/change-review/SKILL.md`](../skills/change-review/SKILL.md) | Reviewer coverage, isolated probes, and host-constrained reporting (Part I); evidence reuse, risk/structure sizing, delegation, holdouts, pipelining, adjudication, and receipts (Part II) |
 | [`skills/trust-review/SKILL.md`](../skills/trust-review/SKILL.md) | Path-to-surface map, repo-wide filesystem/Unicode hygiene, Pass 1 untrusted/seam/spec audit, Pass 2 TCB/CI checklists, and pre-existing hazard reporting |
@@ -48,10 +48,10 @@ Single-turn hosted reviewers cannot follow links, so `AGENTS.md` and
 `.gemini/styleguide.md` carry a verbatim marker-delimited `Code Review Rules`
 block. Codex's `project_doc_max_bytes` (32 KiB) is a **shared cumulative
 budget** across global user instructions, root `AGENTS.md`, and nested
-`AGENTS.md` files (truncating silently when exceeded); keep the repository's
-cumulative `AGENTS.md` footprint under 31 KiB (enforced below by reserving at
-least 1 KiB—or `GLOBAL_AGENTS_BYTES` when set—for global instructions within
-the 32 KiB limit). Maintain parity using two rules:
+`AGENTS.md` files, with silent truncation at the limit. Keep the root and
+Anneal instructions under 31 KiB combined. The check below reserves 1 KiB
+for global instructions by default, or `GLOBAL_AGENTS_BYTES` when set.
+Maintain parity using two rules:
 
 1. Every bullet in `Code Review Rules` maps to one canonical section in
    `change-review` or `trust-review`; the skill hubs add multi-turn procedures,
@@ -64,12 +64,23 @@ the 32 KiB limit). Maintain parity using two rules:
    `TrustedBoundary.lean` and `docs/trust-model.md` whenever the allowlists
    change.
 
+Root `AGENTS.md` owns the documentation rule. Anneal's `AGENTS.md` mirrors
+the author clause for hosts that load the local instructions. Both Gemini
+guides, Anneal's embedded review rules, and `change-review` mirror the
+reviewer clause. The checks below compare each marked clause across line
+wrapping. Each clause must be an ordinary Markdown paragraph after its
+designated heading or list label.
+
 ## Drift checks
 
-Run these fail-closed checks whenever editing any file in the ownership table
-(and run `python3 -B -m unittest discover -s ci -p 'test_codex_review.py'`
-whenever `ci/codex_review.py`, `.github/workflows/codex-review.yml`, or
-`.github/codex-review-ruleset.json` changes):
+Run these fail-closed checks when editing an ownership-table file or a
+documentation mirror. Run from `anneal/` with Python 3.10 or newer and
+`markdown-it-py==4.3.0` installed, for example in an activated virtual
+environment (`python3 -m pip install markdown-it-py==4.3.0`). The parser is
+only needed for this maintainer check. Also run
+`python3 -B -m unittest discover -s ci -p 'test_codex_review.py'` when
+`ci/codex_review.py`, `.github/workflows/codex-review.yml`, or
+`.github/codex-review-ruleset.json` changes:
 
 ```bash
 set -euo pipefail
@@ -91,6 +102,7 @@ for req in \
   '^- \*\*Pass 1, filesystem hygiene, untrusted contents, and specifications:\*\*' \
   '^- \*\*Pass 2, TCB and CI \(only when triggered\):\*\*' \
   '^- \*\*General pass:\*\*' \
+  '^- \*\*Documentation review:\*\*' \
   '^- \*\*Execution, isolation, and probes:\*\*' \
   '^- \*\*Findings, severity, hazards, and host output:\*\*'; do
   if ! grep -Eq -- "$req" <<< "$rules"; then
@@ -128,15 +140,90 @@ if [ "$(grep -c '^#' .gemini/styleguide.md)" -ne 1 ]; then
   fail 'unexpected heading in styleguide'
 fi
 global_reserve="${GLOBAL_AGENTS_BYTES:-1024}"
-case "$global_reserve" in
-  ''|*[!0-9]*) fail "invalid GLOBAL_AGENTS_BYTES: $global_reserve" ;;
-esac
-agents_bytes="$(git ls-files -z 'AGENTS.md' '*/AGENTS.md' \
-  'AGENTS.override.md' '*/AGENTS.override.md' | \
-  xargs -0 wc -c | tail -n 1 | awk '{print $1}')"
-if [ "$((agents_bytes + global_reserve))" -ge 32768 ]; then
-  fail "AGENTS.md ($agents_bytes B) + global reserve ($global_reserve B) >= 32 KiB"
-fi
+repo_root="$(git rev-parse --show-toplevel)"
+agents_bytes="$(
+  cd "$repo_root"
+  git ls-files -z -- AGENTS.md AGENTS.override.md \
+    ':(glob)anneal/**/AGENTS.md' ':(glob)anneal/**/AGENTS.override.md' | \
+    xargs -0 wc -c | tail -n 1 | awk '{print $1}'
+)"
+python3 -I -B - "$repo_root" "$agents_bytes" "$global_reserve" <<'PY'
+from pathlib import Path
+import sys
+
+repo_path, agents_bytes, global_reserve = sys.argv[1:]
+if not (global_reserve.isascii() and global_reserve.isdecimal()):
+    sys.exit(f"invalid GLOBAL_AGENTS_BYTES: {global_reserve!r}")
+reserve = global_reserve.lstrip("0") or "0"
+if len(reserve) > 5 or int(agents_bytes) + int(reserve) >= 32768:
+    sys.exit(f"AGENTS.md ({agents_bytes} B) + global reserve "
+             f"({global_reserve} B) >= 32 KiB")
+
+try:
+    from markdown_it import MarkdownIt, __version__
+    from markdown_it.tree import SyntaxTreeNode
+except ImportError:
+    sys.exit("policy drift check requires markdown-it-py==4.3.0")
+if __version__ != "4.3.0":
+    sys.exit(f"policy drift check requires markdown-it-py==4.3.0 "
+             f"(found {__version__})")
+
+root = Path(repo_path)
+markdown = MarkdownIt("commonmark")
+
+
+def clause(path, role, anchor, label_tag):
+    text = (root / path).read_text(encoding="utf-8")
+    start, end = f"<!-- docs-{role} -->", f"<!-- /docs-{role} -->"
+    if text.count(start) != 1 or text.count(end) != 1:
+        sys.exit(f"expected one documentation clause for {role} in {path}")
+
+    tree = SyntaxTreeNode(markdown.parse(text))
+    marker = next((node for node in tree.walk()
+                   if node.type == "html_block" and node.content.strip() == start),
+                  None)
+    error = f"invalid documentation clause for {role} in {path}"
+    if marker is None:
+        sys.exit(error)
+
+    container = marker.parent
+    if label_tag == "p":
+        if (container.type != "list_item" or container.parent.type != "bullet_list"
+                or not container.parent.parent.is_root):
+            sys.exit(error)
+    elif not container.is_root:
+        sys.exit(error)
+
+    # An active clause is a paragraph between two markers after its label.
+    before = marker.previous_sibling
+    body = marker.next_sibling
+    closing = body.next_sibling if body else None
+    if (before is None or before.tag != label_tag
+            or before.children[0].content != anchor
+            or body is None or body.type != "paragraph"
+            or closing is None or closing.type != "html_block"
+            or closing.content.strip() != end):
+        sys.exit(error)
+    inline = body.children[0]
+    if any(child.type not in {"text", "softbreak"} for child in inline.children):
+        sys.exit(error)
+    return " ".join(inline.content.split())
+
+author = clause("AGENTS.md", "author", "Authors", "h3")
+if author != clause("anneal/AGENTS.md", "author", "**Documentation:**", "p"):
+    sys.exit("documentation rule for author differs in anneal/AGENTS.md")
+
+reviewer = clause("AGENTS.md", "reviewer", "Reviewers", "h3")
+mirrors = {
+    ".gemini/styleguide.md": ("Documentation review", "h2"),
+    "anneal/AGENTS.md": ("**Documentation review:**", "p"),
+    "anneal/.gemini/styleguide.md": ("**Documentation review:**", "p"),
+    "anneal/skills/change-review/SKILL.md": ("**Documentation review:**", "p"),
+}
+for path, (anchor, label_tag) in mirrors.items():
+    if reviewer != clause(path, "reviewer", anchor, label_tag):
+        sys.exit(f"documentation rule for reviewer differs in {path}")
+PY
 set +e
 git grep --untracked -n 'diff[-]tree' -- '*.md' ':!skills/source-control/SKILL.md'
 rc=$?

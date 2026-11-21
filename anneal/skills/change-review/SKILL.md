@@ -86,7 +86,7 @@ integration, publication, and stack locking or rebasing.
   handling, cross-file contracts, test adequacy, maintainability, and manual
   conventions CI does not enforce (Fuchsia copyright headers on all new code
   and non-`SKILL.md` Markdown files, 80-column wrapping, relative links, and
-  heading anchors). Check the **Human review surface** defined in
+  heading anchors). Check the **Human review surface** in
   [`AGENTS.md`](../../AGENTS.md#code-review-rules): verify that the PR
   description's `Human review surface` block (or branch-only task handoff)
   accurately lists every changed surface (including indirect helpers,
@@ -98,8 +98,13 @@ integration, publication, and stack locking or rebasing.
   sound. Any omission, mischaracterization, or unsound relaxation blocks merge
   or ready-for-review. When a change edits governing docs, skills, review
   rules, or `AGENTS.md`, judge it against the base rules (for example via
-  `git show <target_base>:AGENTS.md`) and audit for contradictory duties,
+  `git show <target_base>:anneal/AGENTS.md`). Audit for contradictory duties,
   missing routing, unintended authority expansion, or weakened checks.
+- **Documentation review:**
+  <!-- docs-reviewer -->
+  Check affected docs, examples, and links against each PR's diff. Flag stale
+  text, missing guidance, and broken links.
+  <!-- /docs-reviewer -->
 - **Stale-base discipline:** Do not flag an earlier stack commit's architectural
   or roadmap prose solely because later stack commits have not landed yet; check
   whether the prose makes a false claim about current code or hardcodes
