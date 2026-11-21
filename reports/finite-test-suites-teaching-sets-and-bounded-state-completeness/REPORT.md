@@ -860,7 +860,7 @@ have S := Toy.Witness.monotoneConjTeachingSet V;
       (Toy.Witness.Teaches H h S ↔ Toy.Witness.HitsAllDisagreements H h (List.map Prod.fst S))
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types X, Y, class H : (X → Y) → Prop, target h : X → Y, sample S : List (X × Y):
@@ -927,7 +927,7 @@ Basis: derived (modeling bridge) — Checking whether a conformance suite `S` pi
               Toy.Witness.patchAt h x₀ y' ≠ h ∧ ¬Toy.Witness.Teaches H h S
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types X, Y, class H, target h, sample S, input x₀ : X, output y' : Y:
@@ -988,7 +988,7 @@ Basis: derived (modeling bridge) — Whenever a class of deterministic implement
     Toy.Witness.HasTwoDistinct Y → Toy.Witness.HasUntestedInput S → ¬Toy.Witness.Teaches H h S
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types X, Y, class H, target h, sample S:
@@ -1049,7 +1049,7 @@ Toy.Witness.eventuallyFalse_no_finite_teaching_set : ∀ (h : Nat → Bool) (S :
   ¬Toy.Witness.Teaches Toy.Witness.EventuallyFalse h S
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types X, Y, class H:
@@ -1102,7 +1102,7 @@ Toy.Witness.monotone_conj_teaching_set_exact : ∀ (m : Nat) (V : Fin m → Bool
         (min (Toy.Witness.relevantCount V + 1) m)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all m : Nat and V : Fin m → Bool:
@@ -1149,7 +1149,7 @@ Toy.Witness.monotone_conjunctions_teaching_dimension : ∀ (m : Nat),
   Toy.Witness.HasTeachingDimension (Toy.Witness.MonotoneConjunctions m) m
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all m : Nat:
@@ -1200,7 +1200,7 @@ Basis: derived (modeling bridge) — Worst-case minimum teaching-suite size acro
       List.length w < n → Toy.Witness.MooreMachine.behavior M s w = Toy.Witness.MooreMachine.behavior M t w
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types I, O, state count n : Nat, machine M : MooreMachine I O (Fin n), states s, t : Fin n:
@@ -1248,7 +1248,7 @@ Basis: derived (modeling bridge) — Within a deterministic Moore machine with `
         Toy.Witness.InitMooreMachine.behavior M₁ w = Toy.Witness.InitMooreMachine.behavior M₂ w
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types I, O, counts n₁ n₂ : Nat, initialized machines M₁ : InitMooreMachine I O n₁, M₂ : InitMooreMachine I O n₂:
@@ -1303,7 +1303,7 @@ Toy.Witness.moore_bound_sharp : ∀ (n : Nat),
                 ¬Toy.Witness.StateEquiv (Toy.Witness.delayChain n) s₀ s₁
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all n : Nat:
@@ -1360,7 +1360,7 @@ Basis: derived (modeling bridge) — The worst-case distinguishing word length `
         (Toy.Witness.mooreSpecTestSuite alphabet M k₂)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types I, O, n₁ k₂ : Nat, alphabet : List I, M : InitMooreMachine I O n₁:
@@ -1418,7 +1418,7 @@ Basis: derived (modeling bridge) — Given a known `n₁`-state deterministic Mo
       Toy.Witness.Teaches (Toy.Witness.BoundedMooreBehaviors I O k) h (Toy.Witness.mooreClassTestSuite alphabet k h)
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types I, O, alphabet : List I, k : Nat, h : List I → O:
@@ -1472,7 +1472,7 @@ Toy.Witness.moore_two_machine_bound_sharp : ∀ (m₁ m₂ : Nat),
       Toy.Witness.InitMooreMachine.behavior M₁ ≠ Toy.Witness.InitMooreMachine.behavior M₂
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all m₁ m₂ : Nat:
@@ -1546,7 +1546,7 @@ Toy.Witness.two_state_moore_length_lt_k_insufficient : Toy.Witness.BoundedMooreB
               (Toy.Witness.wordsUpTo [()] 1))
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all k : Nat:
@@ -1602,7 +1602,7 @@ Basis: derived (modeling bridge) — Testing only words of length `< k` or `≤ 
   Toy.Witness.Teaches (Toy.Witness.BoundedMooreBehaviors I O 1) (fun x => c) [([], c)]
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types I, O, k : Nat:
@@ -1663,7 +1663,7 @@ Basis: derived (modeling bridge) — When outputs can take at least two distinct
           Toy.Witness.InitMooreMachine.behavior M
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types I, O, n : Nat, M : InitMooreMachine I O n, k : Nat, a : I, y' : O:
@@ -1709,7 +1709,7 @@ Basis: derived (modeling bridge) — Given any finite test budget of words of le
       ∀ (h : List I → O) (S : List (List I × O)), ¬Toy.Witness.Teaches (Toy.Witness.FiniteStateMooreBehaviors I O) h S
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types I, O:
@@ -1770,7 +1770,7 @@ Basis: derived (modeling bridge) — Knowing only that an implementation is 'fin
     Toy.Witness.Teaches H h S → ∀ (impl : X → Y), C impl → Toy.Witness.Consistent S impl → impl = h
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types X, Y, classes C H : HypothesisClass X Y, target h : X → Y, sample S : List (X × Y):
@@ -1840,7 +1840,7 @@ Basis: derived (modeling bridge) — In practice, passing a complete conformance
         Toy.Witness.Consistent S impl ∧ (∀ (x : X), ¬x ∈ List.map Prod.fst S → impl x = outside x) ∧ impl ≠ h ∧ ¬H impl
 ```
 
-Unfolded:
+Unfolded (prose):
 
 ```text
 for all types X, Y, class H, functions h outside : X → Y, sample S : List (X × Y), input x₀ : X:
